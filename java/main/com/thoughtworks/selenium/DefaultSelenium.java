@@ -18,14 +18,13 @@
 package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.embedded.jetty.JettyCommandProcessor;
-import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 import com.thoughtworks.selenium.launchers.DefaultBrowserLauncher;
 
 import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class DefaultSelenium implements Selenium {
 
@@ -48,16 +47,31 @@ public class DefaultSelenium implements Selenium {
         launcher = new DefaultBrowserLauncher();
     }
 
-    public boolean open(String path) {
-        return commandProcessor.doCommand("open", path, "").equals("open-done");
+    public void open(String path) {
+        String result = commandProcessor.doCommand("open", path, "");
+        if(!result.equals("open-done")) {
+            throw new SeleniumException(result);
+        };
     }
 
-    public boolean click(String field) {
-        return commandProcessor.doCommand("click", field, "").equals("click-done");
+    public void clickAndWait(String field) {
+        String result = commandProcessor.doCommand("clickAndWait", field, "");
+        if(!result.equals("clickAndWait-done")) {
+            throw new SeleniumException(result);
+        };
     }
 
-    public boolean setTextField(String field, String value) {
-        return commandProcessor.doCommand("setText", field, value).equals("setText-done");
+    public void setTextField(String field, String value) {
+        String result = commandProcessor.doCommand("setText", field, value);
+        if(!result.equals("setText-done")) {
+            throw new SeleniumException(result);
+        };
+    }
+
+    public void verifyText(String type, String text) {
+    }
+
+    public void verifyLocation(String location) {
     }
 
     public void endOfRun() {
