@@ -2,9 +2,9 @@ Done * Finish Driven Selenium compatibility with Java and Ruby drivers.
 
 * Config or property file for default host port number
 
-* More sample scripts for using driven XML-RPC selenium in python, ruby, perl
+DONE * Sample scripts for using driven XML-RPC selenium in python, ruby, perl
 
-* Use PerlApp or PAR to create exe version of CGIProxy
+DONE * Use PerlApp or PAR to create exe version of CGIProxy
   This removes the dependency of needing Perl installed.
 
 DONE * Use Py2Exe to create exe version of selenium_server.py
