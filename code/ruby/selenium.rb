@@ -34,6 +34,7 @@ module Selenium
   end
 
   class SeleneseInterpreter
+    include Selenium
   
     def initialize(in_queue, out_queue, timeout)
       @in_queue, @out_queue, @timeout = in_queue, out_queue, timeout
@@ -67,7 +68,7 @@ module Selenium
     
     # Reserved ruby methods (such as 'send') must be prefixed with '__'
     def method_missing(method, *args)
-      method_name = (method.to_s =~ /__(.*)/ ? $1 : method.to_s)
+      method_name = translate_method_to_wire_command(method)
       element_identifier = args[0]
       value = args[1]
       command_string = "|#{method_name}|#{element_identifier}|#{value}|"
@@ -75,6 +76,12 @@ module Selenium
       doCommand(command_string)
     end
   end
+
+  def translate_method_to_wire_command (method)
+      method_no_prefix = (method.to_s =~ /__(.*)/ ? $1 : method.to_s)
+      dropped_underscores = (method_no_prefix.gsub(/(_(.))/) {$2.upcase}) 
+  end
+  private :translate_method_to_wire_command
   
   class WebrickCommandProcessor
     include WEBrick::HTMLUtils # escape mixin
@@ -168,7 +175,7 @@ module Selenium
     def launch(url)
       @thread = Thread.new{system("#{@executable} #{url}")}
     end
-    def close; end
+    def close; end # need to find a way
   end
     
   class WindowsSpecifiedPathBrowserLauncher2
@@ -176,15 +183,15 @@ module Selenium
     def launch(url)
       system("start #{@executable} #{url}")\
     end
-    def close; end
+    def close; end # need to find a way
   end
 
   # Will use existing browser if available; won't close it regardless
   class WindowsDefaultBrowserLauncher
-      def launch(url)
-        system('cmd /c start ' + url)
-      end
-      def close; end
+    def launch(url)
+      system('cmd /c start ' + url)
+    end
+    def close; end
   end
 
 end
