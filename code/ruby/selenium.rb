@@ -121,7 +121,39 @@ module Selenium
       SeleneseInterpreter.new(@in_queue, @out_queue, @timeout)
     end
   end
-   
+
+  class WindowsDefaultBrowserLauncher
+    def initialize()
+    end
+    def launch(url)
+    end
+    def close()
+    end
+  end
+
+  class WindowsIEBrowserLauncher
+    def initialize()
+      require 'win32ole'
+      @ie = nil
+    end
+    def launch(url)
+      @ie = WIN32OLE.new('InternetExplorer.Application') if @ie == nil
+      show
+      @ie.navigate(url)
+    end
+    def close()
+      sleep 0.2
+      @ie.quit if @ie
+      @ie = nil
+    end
+    def show
+      @ie.visible = true
+    end
+    def hide
+      @ie.visible = false
+    end
+  end  
+       
 end
 
 class SeleniumCommandError < RuntimeError 
