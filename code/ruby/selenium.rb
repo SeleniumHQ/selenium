@@ -122,15 +122,7 @@ module Selenium
     end
   end
 
-  class WindowsDefaultBrowserLauncher
-    def initialize()
-    end
-    def launch(url)
-    end
-    def close()
-    end
-  end
-
+  # Will create and then close an instance of IE
   class WindowsIEBrowserLauncher
     def initialize()
       require 'win32ole'
@@ -142,7 +134,7 @@ module Selenium
       @ie.navigate(url)
     end
     def close()
-      sleep 0.2
+      sleep 0.2 # a hack, we should be waiting for the testcomplete command to be processed
       @ie.quit if @ie
       @ie = nil
     end
@@ -153,7 +145,48 @@ module Selenium
       @ie.visible = false
     end
   end  
-       
+
+  module SpecifiedPathBrowserLauncher
+    @@executable = nil
+    def initialize(executable = @@executable)
+      @executable = executable || raise("No executable specified")
+    end
+  end
+    
+  class UnixSpecifiedPathBrowserLauncher
+    include SpecifiedPathBrowserLauncher
+    def launch(url)
+      @pid = Process.fork{exec "#{@executable} #{url}"}
+    end
+    def close
+      Process.kill('SIGKILL', @pid)
+    end
+  end
+
+  class WindowsSpecifiedPathBrowserLauncher
+    include SpecifiedPathBrowserLauncher
+    def launch(url)
+      @thread = Thread.new{system("#{@executable} #{url}")}
+    end
+    def close; end
+  end
+    
+  class WindowsSpecifiedPathBrowserLauncher2
+    include SpecifiedPathBrowserLauncher
+    def launch(url)
+      system("start #{@executable} #{url}")\
+    end
+    def close; end
+  end
+
+  # Will use existing browser if available; won't close it regardless
+  class WindowsDefaultBrowserLauncher
+      def launch(url)
+        system('cmd /c start ' + url)
+      end
+      def close; end
+  end
+
 end
 
 class SeleniumCommandError < RuntimeError 

@@ -16,7 +16,8 @@ require 'selenium'
 
 selenium = Selenium::WebrickCommandProcessor.new.proxy
 
-browser = Selenium::WindowsIEBrowserLauncher.new
+#browser = Selenium::WindowsIEBrowserLauncher.new
+browser = Selenium::WindowsDefaultBrowserLauncher.new
 browser.launch("http://localhost:7896/selenium-driver/SeleneseRunner.html")
 
 # Send some commands to the browser
