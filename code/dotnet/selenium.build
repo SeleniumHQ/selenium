@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <project name="Selenium" default="test">
 
-	<property name="map-iis-vdir.VDirName" value="Selenium-Driver" />
+	<property name="iis_vdir.VDirName" value="Selenium-Driver" />
+	<property name="iis_vdir.applicationMapping" value=".sel" />
 
 	<!-- Targets should contain tasks OR dependencies, but NOT both.
 			Public targets should have a description -->
@@ -144,13 +145,15 @@
 	</target>
 	
 	<target name="setup-nant-iis">
-		<property name="map-iis-vdir.Path" value="${nant.project.basedir}\deployed\BridgeWebApp" />
+		<property name="iis_vdir.Path" value="${nant.project.basedir}\deployed\BridgeWebApp" />
 		<call target="map-iis-vdir" />
+		<call target="setup-application-mapping" />
 	</target>
 
 	<target name="setup-vs-iis">
-		<property name="map-iis-vdir.Path" value="${nant.project.basedir}\src\BridgeWebApp" />
+		<property name="iis_vdir.Path" value="${nant.project.basedir}\src\BridgeWebApp" />
 		<call target="map-iis-vdir" />
+		<call target="setup-application-mapping" />
 	</target>
 
 	<target name="continuous-integration" depends="clean, continuous-integration-setup-versioning, all, continuous-integration-publish" />
@@ -190,51 +193,51 @@
 	<!-- Script targets start here -->
 
 	<target name="map-iis-vdir">
-		<ifnot test="${property::exists('map-iis-vdir.VDirName')}">
-			<fail message="map-iis-vdir.VDirName property not set, so can't Virtual Directory" />
+		<ifnot test="${property::exists('iis_vdir.VDirName')}">
+			<fail message="iis_vdir.VDirName property not set, so can't Virtual Directory" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.Path')}">
-			<fail message="map-iis-vdir.Path property not set, so can't Virtual Directory" />
+		<ifnot test="${property::exists('iis_vdir.Path')}">
+			<fail message="iis_vdir.Path property not set, so can't Virtual Directory" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.WebSite')}">
-			<property name="map-iis-vdir.WebSite" value="Default Web Site" />
+		<ifnot test="${property::exists('iis_vdir.WebSite')}">
+			<property name="iis_vdir.WebSite" value="Default Web Site" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.RootDir')}">
-			<property name="map-iis-vdir.RootDir" value="false" />
+		<ifnot test="${property::exists('iis_vdir.RootDir')}">
+			<property name="iis_vdir.RootDir" value="false" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.chkRead')}">
-			<property name="map-iis-vdir.chkRead" value="true" />
+		<ifnot test="${property::exists('iis_vdir.chkRead')}">
+			<property name="iis_vdir.chkRead" value="true" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.chkWrite')}">
-			<property name="map-iis-vdir.chkWrite" value="false" />
+		<ifnot test="${property::exists('iis_vdir.chkWrite')}">
+			<property name="iis_vdir.chkWrite" value="false" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.chkExecute')}">
-			<property name="map-iis-vdir.chkExecute" value="false" />
+		<ifnot test="${property::exists('iis_vdir.chkExecute')}">
+			<property name="iis_vdir.chkExecute" value="false" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.chkScript')}">
-			<property name="map-iis-vdir.chkScript" value="true" />
+		<ifnot test="${property::exists('iis_vdir.chkScript')}">
+			<property name="iis_vdir.chkScript" value="true" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.chkAuth')}">
-			<property name="map-iis-vdir.chkAuth" value="false" />
+		<ifnot test="${property::exists('iis_vdir.chkAuth')}">
+			<property name="iis_vdir.chkAuth" value="false" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.webSiteNum')}">
-			<property name="map-iis-vdir.webSiteNum" value="1" />
+		<ifnot test="${property::exists('iis_vdir.webSiteNum')}">
+			<property name="iis_vdir.webSiteNum" value="1" />
 		</ifnot>
 
-		<ifnot test="${property::exists('map-iis-vdir.serverName')}">
-			<property name="map-iis-vdir.serverName" value="localhost" />
+		<ifnot test="${property::exists('iis_vdir.serverName')}">
+			<property name="iis_vdir.serverName" value="localhost" />
 		</ifnot>
 		
-		<echo message="Creating Virtual Directory [${map-iis-vdir.VDirName}] at [${map-iis-vdir.Path}]" />
+		<echo message="Creating Virtual Directory [${iis_vdir.VDirName}] at [${iis_vdir.Path}]" />
 		
 		<script language="C#">
 			<references>
@@ -248,17 +251,17 @@
 					public static void ScriptMain(Project project)
 					{
 						CreateVDir(
-							project.Properties["map-iis-vdir.WebSite"], 
-							project.Properties["map-iis-vdir.VDirName"], 
-							project.Properties["map-iis-vdir.Path"], 
-							bool.Parse(project.Properties["map-iis-vdir.RootDir"]), 
-							bool.Parse(project.Properties["map-iis-vdir.chkRead"]), 
-							bool.Parse(project.Properties["map-iis-vdir.chkWrite"]), 
-							bool.Parse(project.Properties["map-iis-vdir.chkExecute"]), 
-							bool.Parse(project.Properties["map-iis-vdir.chkScript"]), 
-							bool.Parse(project.Properties["map-iis-vdir.chkAuth"]), 
-							int.Parse(project.Properties["map-iis-vdir.webSiteNum"]), 
-							project.Properties["map-iis-vdir.serverName"]);
+							project.Properties["iis_vdir.WebSite"], 
+							project.Properties["iis_vdir.VDirName"], 
+							project.Properties["iis_vdir.Path"], 
+							bool.Parse(project.Properties["iis_vdir.RootDir"]), 
+							bool.Parse(project.Properties["iis_vdir.chkRead"]), 
+							bool.Parse(project.Properties["iis_vdir.chkWrite"]), 
+							bool.Parse(project.Properties["iis_vdir.chkExecute"]), 
+							bool.Parse(project.Properties["iis_vdir.chkScript"]), 
+							bool.Parse(project.Properties["iis_vdir.chkAuth"]), 
+							int.Parse(project.Properties["iis_vdir.webSiteNum"]), 
+							project.Properties["iis_vdir.serverName"]);
 					}
 
 					public static string CreateVDir(string  WebSite, string VDirName, string Path, bool  RootDir, 
@@ -369,6 +372,107 @@
 						return sRet;
 					}
 					
+				]]>
+			</code>
+		</script>
+	</target>
+
+	<target name="setup-application-mapping">
+		<ifnot test="${property::exists('iis_vdir.VDirName')}">
+			<fail message="iis_vdir.VDirName property not set, so can't Virtual Directory" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.WebSite')}">
+			<property name="iis_vdir.WebSite" value="Default Web Site" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.RootDir')}">
+			<property name="iis_vdir.RootDir" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.webSiteNum')}">
+			<property name="iis_vdir.webSiteNum" value="1" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.serverName')}">
+			<property name="iis_vdir.serverName" value="localhost" />
+		</ifnot>
+		
+		<ifnot test="${property::exists('iis_vdir.applicationMapping')}">
+			<fail message="iis_vdir.applicationMapping property not set, so can't set IIS Mapping" />
+		</ifnot>
+		
+		<echo message="Creating Virtual Directory [${iis_vdir.VDirName}] at [${iis_vdir.Path}]" />
+		
+		<script language="C#">
+			<references>
+				<include name="System.DirectoryServices.dll" />
+			</references>
+			<imports>
+				<import name="System.DirectoryServices" />
+			</imports>
+			<code>
+				<![CDATA[
+					public static void ScriptMain(Project project)
+					{
+						SetupApplicationMapping(
+							project.Properties["iis_vdir.WebSite"], 
+							project.Properties["iis_vdir.VDirName"], 
+							bool.Parse(project.Properties["iis_vdir.RootDir"]), 
+							int.Parse(project.Properties["iis_vdir.webSiteNum"]), 
+							project.Properties["iis_vdir.serverName"],
+							project.Properties["iis_vdir.applicationMapping"]
+							);
+					}
+
+					public static void SetupApplicationMapping(string  WebSite, string VDirName, bool  RootDir, int webSiteNum, string serverName, string applicationMapping)
+					{
+						System.DirectoryServices.DirectoryEntry IISAdmin;
+						System.DirectoryServices.DirectoryEntry VDir;
+
+						IISAdmin = new  System.DirectoryServices.DirectoryEntry("IIS://" +serverName + "/W3SVC/" + webSiteNum + "/Root");
+						VDir = IISAdmin;
+
+						if (!RootDir)
+						{
+							bool foundVDir = false;
+						    
+							foreach(System.DirectoryServices.DirectoryEntry v in IISAdmin.Children)
+							{
+								if (v.Name.Trim().Equals(VDirName.Trim()))
+								{
+									VDir = v;
+									foundVDir = true;
+								}
+							}
+							
+							if (! foundVDir)
+							{		
+								throw new Exception(string.Format("Cannot find virtual directory {0} on server {1}, site {2}", VDirName, serverName, webSiteNum));
+							}
+						}
+						else
+						{
+							VDir = IISAdmin;
+						}
+									
+						string aspxScriptMap = "";
+						foreach (string scriptMap in VDir.Properties["ScriptMaps"])
+						{
+							if (scriptMap.StartsWith(".aspx"))
+							{
+								aspxScriptMap = scriptMap;
+							}
+						}
+						if (aspxScriptMap == "")
+							throw new Exception("Cannot Find ASPX Application Mapping to Copy - do you have ASP.NET mapped to IIS?");
+									
+						string newScriptMap = aspxScriptMap.Replace(".aspx", applicationMapping);
+						
+						VDir.Properties["ScriptMaps"].Add(newScriptMap);
+						VDir.CommitChanges();
+					}
+		
 				]]>
 			</code>
 		</script>
