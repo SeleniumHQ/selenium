@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <project name="Selenium" default="test">
 
+	<property name="map-iis-vdir.VDirName" value="Selenium-Driver" />
+
 	<!-- Targets should contain tasks OR dependencies, but NOT both.
 			Public targets should have a description -->
 
@@ -22,7 +24,7 @@
 	<target name="deploy-nant" depends="compile, create-deployment-directory, setup-nant-iis"
 		description="Deploys Selenium Bridge and sets up IIS to use the NAnt deployed version" />
 	
-	<target name="deploy-VS" depends="setup-nant-vs"
+	<target name="deploy-VS" depends="setup-vs-iis"
 		description="Sets up IIS to use the Visual Studio deployed Bridge" />
 		
 	<target name="undeploy"
@@ -131,14 +133,15 @@
 	</target>
 	
 	<target name="setup-nant-iis">
-		<echo message="IIS to be implemented" />
+		<property name="map-iis-vdir.Path" value="${nant.project.basedir}\deployed\BridgeWebApp" />
+		<call target="map-iis-vdir" />
 	</target>
 
-	<target name="setup-nant-vs">
-		<echo message="IIS to be implemented" />
+	<target name="setup-vs-iis">
+		<property name="map-iis-vdir.Path" value="${nant.project.basedir}\src\BridgeWebApp" />
+		<call target="map-iis-vdir" />
 	</target>
 
-	
 	<target name="continuous-integration" depends="clean, continuous-integration-setup-versioning, all, continuous-integration-publish" />
 
 	<target name="continuous-integration-setup-versioning">
@@ -172,4 +175,193 @@
 			</fileset>
 		</copy>			
 	</target>
+	
+	<!-- Script targets start here -->
+
+	<target name="map-iis-vdir">
+		<ifnot test="${property::exists('map-iis-vdir.VDirName')}">
+			<fail message="map-iis-vdir.VDirName property not set, so can't Virtual Directory" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.Path')}">
+			<fail message="map-iis-vdir.Path property not set, so can't Virtual Directory" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.WebSite')}">
+			<property name="map-iis-vdir.WebSite" value="Default Web Site" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.RootDir')}">
+			<property name="map-iis-vdir.RootDir" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.chkRead')}">
+			<property name="map-iis-vdir.chkRead" value="true" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.chkWrite')}">
+			<property name="map-iis-vdir.chkWrite" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.chkExecute')}">
+			<property name="map-iis-vdir.chkExecute" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.chkScript')}">
+			<property name="map-iis-vdir.chkScript" value="true" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.chkAuth')}">
+			<property name="map-iis-vdir.chkAuth" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.webSiteNum')}">
+			<property name="map-iis-vdir.webSiteNum" value="1" />
+		</ifnot>
+
+		<ifnot test="${property::exists('map-iis-vdir.serverName')}">
+			<property name="map-iis-vdir.serverName" value="localhost" />
+		</ifnot>
+		
+		<echo message="Creating Virtual Directory [${map-iis-vdir.VDirName}] at [${map-iis-vdir.Path}]" />
+		
+		<script language="C#">
+			<references>
+				<include name="System.DirectoryServices.dll" />
+			</references>
+			<imports>
+				<import name="System.DirectoryServices" />
+			</imports>
+			<code>
+				<![CDATA[
+					public static void ScriptMain(Project project)
+					{
+						CreateVDir(
+							project.Properties["map-iis-vdir.WebSite"], 
+							project.Properties["map-iis-vdir.VDirName"], 
+							project.Properties["map-iis-vdir.Path"], 
+							bool.Parse(project.Properties["map-iis-vdir.RootDir"]), 
+							bool.Parse(project.Properties["map-iis-vdir.chkRead"]), 
+							bool.Parse(project.Properties["map-iis-vdir.chkWrite"]), 
+							bool.Parse(project.Properties["map-iis-vdir.chkExecute"]), 
+							bool.Parse(project.Properties["map-iis-vdir.chkScript"]), 
+							bool.Parse(project.Properties["map-iis-vdir.chkAuth"]), 
+							int.Parse(project.Properties["map-iis-vdir.webSiteNum"]), 
+							project.Properties["map-iis-vdir.serverName"]);
+					}
+
+					public static string CreateVDir(string  WebSite, string VDirName, string Path, bool  RootDir, 
+						bool chkRead,bool chkWrite, bool chkExecute, bool chkScript, bool chkAuth,
+						int webSiteNum, string serverName)
+					{
+						string sRet=String.Empty;
+						System.DirectoryServices.DirectoryEntry IISSchema;
+						System.DirectoryServices.DirectoryEntry IISAdmin;
+						System.DirectoryServices.DirectoryEntry VDir;
+						bool IISUnderNT;
+
+						//
+						// Determine version of IIS
+						//
+						IISSchema = new  System.DirectoryServices.DirectoryEntry("IIS://" +serverName + 
+							"/Schema/AppIsolated");
+						if  (IISSchema.Properties["Syntax"].Value.ToString().ToUpper() == "BOOLEAN")
+							IISUnderNT = true;
+						else
+							IISUnderNT = false;
+						IISSchema.Dispose();
+
+						//
+						// Get the admin object
+						//
+						IISAdmin = new  System.DirectoryServices.DirectoryEntry("IIS://" +serverName +
+							"/W3SVC/" + webSiteNum + "/Root");
+
+						//
+						// If we're not creating a root directory
+						//
+						if (!RootDir)
+						{
+							//
+							// If the virtual directory already exists then delete it
+							//
+			    
+							foreach(System.DirectoryServices.DirectoryEntry v in IISAdmin.Children)
+							{
+								if (v.Name == VDirName)
+								{
+									// Delete the specified virtual directory if it already exists
+									try
+									{
+										IISAdmin.Invoke("Delete", new string [] { v.SchemaClassName, VDirName });
+										IISAdmin.CommitChanges();
+									}
+									catch(Exception ex)
+									{
+										sRet+=ex.Message;
+									}
+								}
+							}
+						}  
+
+						//
+						// Create the virtual directory
+						//
+						if (!RootDir)
+						{
+							VDir = IISAdmin.Children.Add(VDirName, "IIsWebVirtualDir");
+						}
+						else
+						{
+							VDir = IISAdmin;
+						}
+
+						//
+						// Setup the VDir
+						//
+						VDir.Properties["AccessRead"][0] = chkRead;
+						VDir.Properties["AccessExecute"][0] = chkExecute;
+						VDir.Properties["AccessWrite"][0] = chkWrite;
+						VDir.Properties["AccessScript"][0] = chkScript;
+						VDir.Properties["AuthNTLM"][0] = chkAuth;
+						VDir.Properties["EnableDefaultDoc"][0] = true;
+						VDir.Properties["EnableDirBrowsing"][0] = false;
+						VDir.Properties["DefaultDoc"][0] = true;
+						VDir.Properties["Path"][0] = Path;
+
+						//
+						// NT doesn't support this property
+						//
+						if (!IISUnderNT)
+						{
+							VDir.Properties["AspEnableParentPaths"][0] = true;
+						}
+
+						//
+						// Set the changes  
+						//
+						VDir.CommitChanges();
+
+						//
+						// Make it a web application
+						//
+						if (IISUnderNT)
+						{
+							VDir.Invoke("AppCreate", false);
+						}
+						else
+						{
+							VDir.Invoke("AppCreate", 1);
+						}
+
+						sRet+= "VRoot " +VDirName + " created!";
+						return sRet;
+					}
+					
+				]]>
+			</code>
+		</script>
+	</target>
+
+	<!-- Script targets end here -->
 </project>
