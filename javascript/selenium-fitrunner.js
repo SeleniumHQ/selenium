@@ -643,7 +643,7 @@ function handleVerifyTextPresent(stringValue) {
 }
 
 function handleVerifyElementPresent(target) {
-    element = getDoc().getElementById(target);
+    var element = findElementByIdOrName(target);
 
     if(element != null)
         setRowPassed();
@@ -654,7 +654,7 @@ function handleVerifyElementPresent(target) {
 }
 
 function handleVerifyElementNotPresent(target) {
-    element = getDoc().getElementById(target);
+    var element = findElementByIdOrName(target);
 
     if(element == null)
         setRowPassed();
