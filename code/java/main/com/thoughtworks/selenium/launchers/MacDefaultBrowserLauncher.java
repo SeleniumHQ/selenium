@@ -23,16 +23,14 @@ import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
-public class MacDefaultBrowserLauncher implements BrowserLauncher {
+public class MacDefaultBrowserLauncher extends AbstractBrowserLauncher {
 
-    Runtime runtime = Runtime.getRuntime();
 
     public void launch(String url) {
         try {
-            String command = "open " + url;
-            runtime.exec(command);
+            exec("open " + url);
         } catch (IOException e) {
             throw new RuntimeException("Could not launch default browser.", e);
         }

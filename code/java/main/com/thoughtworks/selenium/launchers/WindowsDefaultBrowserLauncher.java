@@ -23,17 +23,13 @@ import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
-public class WindowsDefaultBrowserLauncher implements BrowserLauncher {
-
-    Runtime runtime = Runtime.getRuntime();
-    private Process process;
+public class WindowsDefaultBrowserLauncher extends AbstractBrowserLauncher implements BrowserLauncher {
 
     public void launch(String url) {
         try {
-            String command = "cmd /c start " + url;
-            process = runtime.exec(command);
+            exec("cmd /c start " + url);
         } catch (IOException e) {
             throw new RuntimeException("Could not launch default browser.", e);
         }
@@ -43,7 +39,4 @@ public class WindowsDefaultBrowserLauncher implements BrowserLauncher {
         process.destroy();
     }
 
-    public static void main(String[] args) {
-        new WindowsDefaultBrowserLauncher().launch("http://www.google.com");
-    }
 }
