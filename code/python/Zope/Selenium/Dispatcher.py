@@ -33,14 +33,9 @@ class Dispatcher:
         self._commands = PersistentList()
         self._results = PersistentList()
 
-
-    def setTimeout(self,timeout):
-        """ Set the timeout period in seconds that a browser or driver should
-        wait before timing out"""
-        self.queue_timeout = timeout
-        return "Timeout set to %s seconds" % timeout
-            
-    
+    #
+    # Command queue methods
+    #  
     def addCommand(self, command, REQUEST=None):
         """ Add a command to the commands queue """  
         
@@ -87,7 +82,9 @@ class Dispatcher:
         return size
 
 
-        
+    #
+    # Result queue methods
+    #             
     def addResult(self, result, REQUEST=None):
         """ Add a result to the results queue """
         
@@ -133,13 +130,23 @@ class Dispatcher:
         size = len(self._results)
         return size
 
-                               
+    #
+    # Misc. methods
+    #
+    def setTimeout(self,timeout):
+        """ Set the timeout period in seconds that a browser or driver should
+        wait before timing out"""
+        self.queue_timeout = timeout
+        return "Timeout set to %s seconds" % timeout
+            
+                                   
     def webDriver(self, REQUEST=None):
         """" Gets a command from the command queue. Also, adds a result 
         to the result queue, unless the seleniumStart form paramter 
         (seleniumStart=true) is present.
         
-        Note: this method is usually called from a web browser as "http://<server>/<selenium>/driver"
+        Note: this method is usually called from a web browser
+        as "http://<server>/selenium-driver/driver"
         """             
         if REQUEST:
             command_result = REQUEST.form.get('commandResult')
