@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.embedded.jetty.JettyCommandProcessor;
+import com.thoughtworks.selenium.embedded.jetty.DirectoryStaticContentHandler;
 import com.thoughtworks.selenium.launchers.DefaultBrowserLauncher;
 
 import java.io.File;
@@ -44,7 +45,8 @@ public class DefaultSelenium implements Selenium {
     }
 
     public DefaultSelenium(File webAppRoot) {
-        commandProcessor = new JettyCommandProcessor(webAppRoot, getContextName());
+        commandProcessor = new JettyCommandProcessor(webAppRoot, getContextName(), 
+                new DirectoryStaticContentHandler(new File(DEFAULT_SELENIUM_CONTEXT)));
         launcher = new DefaultBrowserLauncher();
     }
 
