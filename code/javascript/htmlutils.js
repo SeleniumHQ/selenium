@@ -116,7 +116,7 @@ function getFunctionName(aFunction) {
 function describe(object) {
     var props = new Array();
     for (var prop in object) {
-        props.push(prop);
+        props.push(prop + " -> " + object[prop]);
     }
     return props.join('\n');
 }

@@ -16,13 +16,25 @@ Copyright 2004 ThoughtWorks, Inc
 <html>
 <head>
 <script type="text/javascript">
-function openWindow() {
+function openWindow(evt) {
+//	if (!e) var e = window.event;
+//	if (e.target) targ = e.target;
+//	else if (e.srcElement) targ = e.srcElement;
+//	if (targ.nodeType == 3) // defeat Safari bug
+//		targ = targ.parentNode;
+//    alert('here: ' + e.target + " " + e.srcElement + " " + targ);
     myPopupWindow = window.open('./test_select_window_popup.html', 'myNewWindow');
+}
+
+function attachEvents() {
+    document.getElementById("popupPage").onclick = openWindow;
 }
 </script>
 </head>
-<body>
+<body onload="attachEvents();">
 <img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
-<button id="popupPage" onclick="javascript:openWindow()">Click here to open a popup window</button>
+<form action="." method="GET" onsubmit="return false;">
+<button id="popupPage" name="foo">Click here to open a popup window</button>
+</form>
 </body>
 </html>

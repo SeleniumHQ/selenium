@@ -38,6 +38,8 @@
     font-weight: bold;
     font-size: 12px;
     display: block;
+    cursor: pointer;
+    margin-top:7pt;
 }
 #runSpeedPanel {
     position: absolute;
