@@ -54,10 +54,14 @@ class HTTPHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         HTTPHandler.quitRequestReceived = True 
 
 if __name__ == '__main__':
-        server_address = ('', PORT)
+	port = PORT
+	if len(sys.argv) > 1:
+	    port = int(sys.argv[1])
+	
+        server_address = ('', port)
     	httpd = BaseHTTPServer.HTTPServer(server_address, HTTPHandler)
     
-    	print "serving at port", PORT
+    	print "serving at port", port
     	print "To run the entire JsUnit test suite, open"
     	print "  http://localhost:8000/jsunit/testRunner.html?testPage=http://localhost:8000/tests/JsUnitSuite.html&autoRun=true"
     	print "To run the acceptance test suite, open"
