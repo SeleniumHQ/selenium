@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.3.3: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.3.5: http://docutils.sourceforge.net/" />
 <title>Selenium Reference</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
@@ -14,7 +14,7 @@
 <p>A <strong>command</strong> is what tells Selenium what to do. Selenium commands come in two 'flavors', <strong>Actions</strong> and <strong>Assertions</strong>.
 Each command call is one line in the test table of the form:</p>
 <blockquote>
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="39%" />
 <col width="33%" />
@@ -39,7 +39,7 @@ Each command call is one line in the test table of the form:</p>
 <p>The first row will be ignored by Selenium, so this can be used for a title or any other information.</p>
 <p>Example:</p>
 <blockquote>
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="31%" />
 <col width="38%" />
@@ -78,7 +78,7 @@ Each command call is one line in the test table of the form:</p>
 <p><strong>XPath:</strong> locates an element using a defined XPath expression. XPath locators <em>must</em> begin with &quot;//&quot;.</p>
 <p>Locator examples:</p>
 <blockquote>
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="27%" />
 <col width="73%" />
@@ -121,7 +121,7 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="15%" />
 <col width="65%" />
@@ -146,7 +146,7 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 <p><strong>value</strong> (<em>optional</em>) <strong>:</strong> nowait - Tells Selenium that it should not wait for a page to load before continuing.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="17%" />
 <col width="62%" />
@@ -179,7 +179,7 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 <p><strong>value:</strong> The text that will be typed, or the value of the option selected (not the visible text).</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="23%" />
 <col width="55%" />
@@ -204,7 +204,7 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 <p><strong>value:</strong> The label of the option to be selected.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="28%" />
 <col width="34%" />
@@ -229,7 +229,7 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="40%" />
 <col width="43%" />
@@ -254,7 +254,7 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="36%" />
 <col width="29%" />
@@ -273,13 +273,15 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 </table>
 </blockquote>
 </dd>
-<dt><strong>storeValue</strong></dt>
-<dd><p class="first">Stores the entire text of a page into a variable.  This variable can later be accessed by using the syntax ${variableName}</p>
-<p><strong>target:</strong> The variable to store into.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</dl>
+<p><strong>storeValue</strong></p>
+<blockquote>
+<p>Stores the value of an input field into a variable.</p>
+<p><strong>target:</strong> The id of the input field.</p>
+<p><strong>value:</strong> Name of the variable to store the field value into.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
-<table border class="table">
+<blockquote>
+<table border="1" class="table">
 <colgroup>
 <col width="36%" />
 <col width="32%" />
@@ -287,8 +289,8 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 </colgroup>
 <tbody valign="top">
 <tr><td>storeValue</td>
+<td>userName</td>
 <td>userID</td>
-<td>&nbsp;</td>
 </tr>
 <tr><td>type</td>
 <td>userName</td>
@@ -297,8 +299,33 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 </tbody>
 </table>
 </blockquote>
-</dd>
-</dl>
+</blockquote>
+<p><strong>storeText</strong></p>
+<blockquote>
+<p>Stores the text of an element into a variable.</p>
+<p><strong>target:</strong> The id of the element.</p>
+<p><strong>value:</strong> Name of the variable to store the element text into.</p>
+<p><strong>examples:</strong></p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="26%" />
+<col width="26%" />
+<col width="48%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>storeText</td>
+<td>currentDate</td>
+<td>expectedStartDate</td>
+</tr>
+<tr><td>verifyValue</td>
+<td>startDate</td>
+<td>${expectedStartDate}</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
 </blockquote>
 </div>
 <div class="section" id="selenium-checks">
@@ -314,7 +341,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="54%" />
 <col width="27%" />
@@ -339,7 +366,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="48%" />
 <col width="30%" />
@@ -364,7 +391,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> The expected value.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="23%" />
 <col width="56%" />
@@ -389,7 +416,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> The expected label of the selected option.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="27%" />
 <col width="53%" />
@@ -414,7 +441,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> A comma-separated list of option labels.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="29%" />
 <col width="41%" />
@@ -439,7 +466,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> The expected text.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="25%" />
 <col width="50%" />
@@ -464,7 +491,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> The expected attribute value.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="32%" />
 <col width="47%" />
@@ -493,7 +520,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="39%" />
 <col width="50%" />
@@ -518,7 +545,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="48%" />
 <col width="40%" />
@@ -543,7 +570,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="58%" />
 <col width="30%" />
@@ -568,7 +595,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p><strong>value:</strong> The expected value of the cell.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="35%" />
 <col width="35%" />
@@ -593,10 +620,10 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <div class="section" id="variables">
 <h1><a name="variables">Variables</a></h1>
 <blockquote>
-<p>Selenium can handle simple variables.  A variable is stored with the storeValue command.  Then, it can be used in the target or value column with the syntax: ${variableName}.</p>
+<p>Selenium can handle simple variables.  A variable is stored with the storeValue or storeText commands.  Later, it can be used in the target or value column with the syntax: ${variableName}.</p>
 <p>Example:</p>
 <blockquote>
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="25%" />
 <col width="50%" />
@@ -610,8 +637,8 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <td>&nbsp;</td>
 </tr>
 <tr><td>storeValue</td>
+<td>nameField</td>
 <td>myVar</td>
-<td>&nbsp;</td>
 </tr>
 <tr><td>open</td>
 <td>/page2</td>
@@ -631,7 +658,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p>Functions can also be applied to variables.  Just append a &quot;.&quot; and the function call to the variable reference.</p>
 <p>Example:</p>
 <blockquote>
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="11%" />
 <col width="26%" />
@@ -654,7 +681,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <p>Example:</p>
 <blockquote>
 <p>For the T&amp;E project, we wanted the functional tests to run as a dummy user.  Therefore, we made a /setUpFT URL that would create a dummy user and write the userID to the page.  Then, we can store this value (using the command storeValue) and use it in the script.  Finally, we made a /tearDownFT URL which takes the dummy userID as a parameter and deletes the user.  Therefore, our tests look like this:</p>
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="21%" />
 <col width="58%" />
@@ -697,7 +724,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 <blockquote>
 <p>Selenium can be integrated with an automated build.  When the parameter &quot;auto=true&quot; is added to the URL, Selenium will run the entire suite of tests, and then post the results to the URL /postResults.  The fields of the post are:</p>
 <blockquote>
-<table border class="table">
+<table border="1" class="table">
 <colgroup>
 <col width="15%" />
 <col width="85%" />

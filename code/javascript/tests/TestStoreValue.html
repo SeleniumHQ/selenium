@@ -27,6 +27,65 @@ Copyright 2004 ThoughtWorks, Inc
       <td rowspan="1" colspan="3">Test storeValue<br>
       </td>
     </tr>
+
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_verifications.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>storeValue</td>
+      <td>theHidden</td>
+      <td>storedHiddenValue</td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_store_value.html</td>
+      <td/>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${storedHiddenValue}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>the hidden value</td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_verifications.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>storeText</td>
+      <td>theSpan</td>
+      <td>storedSpanText</td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_store_value.html</td>
+      <td/>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${storedSpanText}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>this is the span</td>
+    </tr>
+
+    <!-- backward compatibility -->
     <tr>
       <td>open</td>
       <td>./tests/html/test_open.html</td>
@@ -57,6 +116,7 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theText</td>
       <td>This is a test of the open command.</td>
     </tr>
+
   </tbody>
 </table>
 </body>

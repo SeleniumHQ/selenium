@@ -157,18 +157,34 @@ Selenium Actions
             =====   ====  =====
 
     **storeValue**
-        Stores the entire text of a page into a variable.  This variable can later be accessed by using the syntax ${variableName}
 
-        **target:** The variable to store into.
+        Stores the value of an input field into a variable. 
 
-        **value:** *ignored*
+        **target:** The id of the input field.
+
+        **value:** Name of the variable to store the field value into.
 
         **examples:**
 
             ==========   =========  =========
-            storeValue   userID
+            storeValue   userName   userID
             type         userName   ${userID}
             ==========   =========  =========
+
+    **storeText**
+
+        Stores the text of an element into a variable. 
+
+        **target:** The id of the element.
+
+        **value:** Name of the variable to store the element text into.
+
+        **examples:**
+
+            ===========   ===========   ====================
+            storeText     currentDate   expectedStartDate
+            verifyValue   startDate     ${expectedStartDate}
+            ===========   ===========   ====================
 
 ---------------
 Selenium Checks
@@ -338,7 +354,7 @@ Selenium Checks
 Variables
 -----------------
 
-    Selenium can handle simple variables.  A variable is stored with the storeValue command.  Then, it can be used in the target or value column with the syntax: ${variableName}.
+    Selenium can handle simple variables.  A variable is stored with the storeValue or storeText commands.  Later, it can be used in the target or value column with the syntax: ${variableName}.
 
     Example:
 
@@ -346,7 +362,7 @@ Variables
         Variable Test
         ----------------------------------------------
         open         /page1     
-        storeValue   myVar
+        storeValue   nameField              myVar
         open         /page2
         type         nameField              ${myVar}
         open         /login?user=${myVar}

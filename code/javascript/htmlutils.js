@@ -51,6 +51,16 @@ function setText(element, text) {
     }
 }
 
+// Get the value of an <input> element
+function getInputValue(inputElement) {
+    if (inputElement.type.toUpperCase() == 'CHECKBOX' || 
+        inputElement.type.toUpperCase() == 'RADIO') 
+    {
+        return (inputElement.checked ? 'on' : 'off');
+    }
+    return inputElement.value;
+}
+
 /* Fire an event in a browser-compatible manner */
 function triggerEvent(element, eventType, canBubble) {
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
