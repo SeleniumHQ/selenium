@@ -35,6 +35,9 @@ Copyright 2004 ThoughtWorks, Inc
     <tr><td>verifyValue</td><td>eventlog</td>
             <td>{focus(theLink)} {click(theLink)} {blur(theLink)}</td></tr>
     <tr><td>verifyAlert</td><td>link clicked</td><td/></tr>
+
+    <!-- Perform another action to ensure that there are no more alerts -->
+    <tr><td>click</td><td>theButton</td><td>nowait</td></tr>
   </tbody>
 </table>
 </body>
