@@ -10,14 +10,28 @@ namespace Selenium.UnitTests
 	[TestFixture]
 	public class InternetExplorerBrowserLauncherTest
 	{
+		private InternetExplorerBrowserLauncher launcher;
 		private const string URL = "http://www.yahoo.com";
+
+		[TearDown]
+		public void Teardown()
+		{
+			try
+			{
+				launcher.Close();
+			}
+			catch (Exception)
+			{
+				// Don't care about exceptions here
+			}
+		}
 
 		[Test]
 		public void LaunchInternetExplorerShouldWork()
 		{
-			InternetExplorerBrowserLauncher launcher = new InternetExplorerBrowserLauncher();
+			launcher = new InternetExplorerBrowserLauncher();
 			launcher.Launch(URL);
-			Assert.IsTrue(launcher.ProcessID != 0);
+			Assert.IsTrue(this.launcher.ProcessID != 0);
 		}
 
 		[Test]
