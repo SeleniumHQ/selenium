@@ -156,7 +156,7 @@
                 <exclude name="Acme/**"/>
             </fileset>
         </instrument>
-    </target>
+    </target> 
 
     <target name="-coverage-report" depends="test" description="Generate jCoverage report">
         <available file="jcoverage.ser" property="jcoverage.ser.available"/>
