@@ -11,23 +11,51 @@
 
 // The window to which the commands will be sent.  For example, to click on a
 // popup window, first select that window, and then do a normal click command.
-currentWindow = null;
+currentWindowName = null;
 
-//Required so "click" method can be sent to anchor ("A") tags in Mozilla
+currentDocument = null;
+
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
-if (!isIE){
-    HTMLAnchorElement.prototype.click = function() {
-        var evt = this.ownerDocument.createEvent('MouseEvents');
-        evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-        this.dispatchEvent(evt);
+
+// Modify the DOM of the test frame window - not sure if this is necessary.
+modifyWindow(window);
+
+//Required so "click" method can be sent to anchor ("A") tags in Mozilla
+function modifyWindow(windowObject) {
+    if (!isIE) {
+	    windowObject.HTMLAnchorElement.prototype.click = function() {
+	        var evt = this.ownerDocument.createEvent('MouseEvents');
+	        evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+	        this.dispatchEvent(evt);
+	    }
+
+	    windowObject.HTMLImageElement.prototype.mousedown = function() {
+	                    var evt = this.ownerDocument.createEvent('MouseEvents');
+	                    evt.initMouseEvent('mousedown', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+	                    this.dispatchEvent(evt);
+	    }
+    }
+}
+
+/*
+ * In IE, getElementById() also searches by name.
+ * To provied consistent functionality with Firefox, we
+ * search by name attribute if an element with the id isn't found.
+ */
+function findElementByIdOrName(idOrName) {
+    var element = getDoc().getElementById(idOrName);
+
+    if (element == null
+        && !isIE // IE checks this without asking
+        && document.evaluate // DOM3 XPath
+        )
+    {
+        var xpath = "//*[@name='" + idOrName + "']";
+        element = document.evaluate(xpath, getDoc(), null, 0, null).iterateNext();
     }
 
-    HTMLImageElement.prototype.mousedown = function() {
-                    var evt = this.ownerDocument.createEvent('MouseEvents');
-                    evt.initMouseEvent('mousedown', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-                    this.dispatchEvent(evt);
-    }
+    return element;
 }
 
 function selectOptionWithLabel(element, stringValue) {
@@ -69,6 +97,7 @@ function SelfRemovingLoadListener(fn) {
         try {
             fn();
         } finally {
+            currentDocument = null;
             removeLoadListener(getIframe(), self.invoke);
         }
     }
@@ -82,6 +111,9 @@ function clickElement(element, loadCallback) {
 
     triggerEvent(element, 'focus', false);
 
+// DD REMOVED: This appears unnecessary in all of my testing.
+//         Could it be the relic of an earlier experiment?
+/*
     // If this is a javascript call ("javascript:foo()"), pull out the
     // function part and just call that.
     if(element.toString().indexOf("javascript") == 0) {
@@ -92,12 +124,14 @@ function clickElement(element, loadCallback) {
         eval("getContentWindow().window." + currentWindow + "."+array[1]);
     }
     else {
-        var wasChecked = element.checked;
-        element.click();
-        if (isIE && isDefined(element.checked) && wasChecked != element.checked) {
-            triggerEvent(element, 'change', true);
-        }
+*/
+    var wasChecked = element.checked;
+    triggerEvent(element, 'click', false);
+    element.click();
+    if (isIE && isDefined(element.checked) && wasChecked != element.checked) {
+        triggerEvent(element, 'change', true);
     }
+
     triggerEvent(element, 'blur', false);
 }
 
@@ -123,21 +157,26 @@ function getIframe() {
 }
 
 function getDoc(){
-    if(currentWindow == null) {
-        return getContentWindow().document;
-    } else {
-        commandStr = "getContentWindow().window." + currentWindow + ".document";
-        return eval(commandStr);
+    if(currentDocument == null) {
+        var testWindow = getContentWindow();
+        if (currentWindowName != null) {
+	        commandStr = "getContentWindow().window." + currentWindowName;
+	        testWindow = eval(commandStr);
+        }
+	    modifyWindow(testWindow);
+	    currentDocument = testWindow.document;
     }
+
+    return currentDocument;
 }
 
 function selectWindow(target) {
     if(target == "null")
-        currentWindow = null;
+        currentWindowName = null;
     else {
         // If window exists
         if(eval("getContentWindow().window." + target))
-            currentWindow = target;
+            currentWindowName = target;
         else
             throw new Error("Window does not exist");
     }
