@@ -14,19 +14,6 @@
  *  limitations under the License.
  *
  */
- 
-// TODO - use jsUnit here?
-// No - let's keep the number of dependencies as low as possible (AH).
-function assertStringEquals(expected, actual) {
-    if (expected.trim() !== actual.trim()) {
-        throw new Error("Expected: '" + expected + "' but was '" + actual + "'");
-    }
-}
-
-function fail(message) {
-    throw new Error(message);
-}
-
 SELENIUM_PROCESS_WAIT = "wait";
 SELENIUM_PROCESS_PAUSED = "paused";
 SELENIUM_PROCESS_COMPLETE = "complete";
@@ -89,7 +76,7 @@ Selenium.prototype.doSelectWindow = function(windowName) {
  * Verify the location of the current page.
  */
 Selenium.prototype.assertLocation = function(expectedLocation) {
-    assertStringEquals(expectedLocation, this.page().location);
+    assertEquals(expectedLocation, this.page().location);
 }
 
 /*
@@ -105,7 +92,7 @@ Selenium.prototype.assertValue = function(locator, expectedValue) {
         actualValue = element.value;
     }
 
-    assertStringEquals(expectedValue, actualValue);
+    assertEquals(expectedValue, actualValue.trim());
 }
 
 /*
@@ -114,7 +101,7 @@ Selenium.prototype.assertValue = function(locator, expectedValue) {
 Selenium.prototype.assertText = function(locator, expectedContent) {
     var element = this.page().findElement(locator);
     var actualText = getText(element);
-    assertStringEquals(expectedContent, actualText);
+    assertEquals(expectedContent, actualText.trim());
 }
 
 /*
@@ -127,7 +114,7 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
     pattern = /(.*)\.(\d)+\.(\d+)/
 
     if(!pattern.test(tableLocator)) {
-        throw new Error("Invalid target format. Correct format is tableName.rowNum.columnNum");
+        error("Invalid target format. Correct format is tableName.rowNum.columnNum");
     }
 
     pieces = tableLocator.match(pattern);
@@ -141,7 +128,7 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
         fail("No such row or column in table");
     else {
         actualContent = getText(table.rows[row].cells[col]);
-        assertStringEquals(expectedContent, actualContent);
+        assertEquals(expectedContent, actualContent.trim());
     }
 }
 
@@ -152,7 +139,7 @@ Selenium.prototype.assertTextPresent = function(expectedText) {
     var allText = this.page().bodyText();
 
     if(allText == "") {
-        throw new Error("Page text not found")
+        error("Page text not found")
     } else if(allText.indexOf(expectedText) == -1) {
 // https://issues.wazokazi.com/browse/SEL-28
 // alert(allText)

@@ -81,15 +81,11 @@ function setRunInterval() {
 }
 
 function getSuiteFrame() {
-    return window.parent.document.getElementById('testSuiteFrame');
+    return document.getElementById('testSuiteFrame');
 }
 
 function getTestFrame(){
-    return window.parent.document.getElementById('testFrame');
-}
-
-function getApplicationFrame(){
-    return window.parent.document.getElementById('applicationFrame');
+    return document.getElementById('testFrame');
 }
 
 function loadAndRunIfAuto() {
@@ -97,7 +93,7 @@ function loadAndRunIfAuto() {
 }
 
 function loadSuiteFrame() {
-    browserbot = new BrowserBot(getApplicationFrame());
+    browserbot = new BrowserBot(document.getElementById('myiframe'));
     selenium = new Selenium(browserbot);
     registerCommandHandlers()
 
@@ -108,31 +104,19 @@ function loadSuiteFrame() {
     testSuiteName = getQueryStringTestName();
 
     if( testSuiteName != "" ) {
-        addLoadListener(getSuiteFrame(), suiteFrameLoadHook);
+        addLoadListener(getSuiteFrame(), loadTestFrame);
         getSuiteFrame().src = testSuiteName;
     } else {
-        suiteFrameLoadHook();
+        loadTestFrame();
     }
 }
 
-function addStylesheetLink(doc, bodyClass) {
-    cssLink = doc.createElement("link");
-    cssLink.setAttribute("href", "http://localhost:8000/selenium.css");
-    cssLink.setAttribute("rel", "stylesheet");
-    cssLink.setAttribute("type", "text/css");
-    doc.getElementsByTagName("head")[0].appendChild(cssLink);
-    doc.body.className = bodyClass;
-}
+function loadTestFrame() {
+    removeLoadListener(getSuiteFrame(), loadTestFrame);
+    suiteTable = getSuiteFrame().contentWindow.document.getElementsByTagName("table")[0];
 
-function suiteFrameLoadHook() {
-    removeLoadListener(getSuiteFrame(), suiteFrameLoadHook);
-
-    suiteDocument = getSuiteFrame().contentWindow.document;
-    addStylesheetLink(suiteDocument, "Suite");
-    
     // Add an onclick function to each link in the suite table
-    suiteTable = suiteDocument.getElementsByTagName("table")[0]
-    for (rowNum = 1;rowNum < suiteTable.rows.length; rowNum++) {
+    for(rowNum = 1;rowNum < suiteTable.rows.length; rowNum++) {
         addOnclick(suiteTable, rowNum);
     }
 
@@ -140,7 +124,7 @@ function suiteFrameLoadHook() {
         startTestSuite();
     else {
         testLink = suiteTable.rows[currentTestRow+1].cells[0].getElementsByTagName("a")[0];
-        loadTest(testLink.href);
+        getTestFrame().src = testLink.href;
     }
 }
 
@@ -170,7 +154,7 @@ function addOnclick(suiteTable, rowNum) {
         }
         // Otherwise, just open up the fresh page.
         else {
-            loadTest(suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href);
+            getTestFrame().src = suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href;
         }
 
         return false;
@@ -179,13 +163,12 @@ function addOnclick(suiteTable, rowNum) {
 
 function getQueryStringTestName() {
     testName = "";
-
     myVars = location.search.substr(1).split('&');
-    for (var i =0;i < myVars.length; i++)
-    {
+    for (var i =0;i < myVars.length; i++) {
         nameVal = myVars[i].split('=')
-        if( nameVal[0] == "test" )
+        if( nameVal[0] == "test" ) {
             testName="/" + nameVal[1];
+        }
     }
     return testName;
 }
@@ -208,18 +191,6 @@ function resetMetrics() {
     numCommandFailures = 0;
     numCommandErrors = 0;
     startTime = new Date().getTime();
-}
-
-function loadTest(testSrc) {
-    addLoadListener(getTestFrame(), testFrameLoadHook);
-    getTestFrame().src = testSrc;
-}
-
-function testFrameLoadHook() {
-    removeLoadListener(getTestFrame(), testFrameLoadHook);
-    addStylesheetLink(getTestFrame().contentWindow.document, "Test");
-    var testDocument = getTestFrame().contentWindow.document;
-    var testTable = testDocument.getElementsByTagName("table")[0];
 }
 
 function runSingleTest() {
@@ -295,7 +266,7 @@ function runNextTest() {
         testLink = suiteTable.rows[currentTestRow].cells[0].getElementsByTagName("a")[0];
 
         addLoadListener(getTestFrame(), startTest);
-        loadTest(testLink.href);
+        getTestFrame().src = testLink.href;
     }
 }
 
@@ -420,10 +391,10 @@ function replaceVariables(str) {
      var variableFunction='';
 
      if(pattern.test(str)) {
-             pieces = str.split('.');
+         pieces = str.split('.');
 
-             variableIndex = pieces[0];
-             variableFunction = pieces[1];
+         variableIndex = pieces[0];
+         variableFunction = pieces[1];
     }
 
 
@@ -511,12 +482,10 @@ function TestLoop(commandFactory) {
 
                 return processNext;
             } catch (e) {
-                if (handler.type == "action") {
-                    this.commandError(e.message);
-                    return SELENIUM_PROCESS_COMPLETE;
+                if (e.isJsUnitException && handler.type == "assert") {
+                    this.assertionFailed(e.jsUnitMessage);
                 } else {
-                    this.assertionFailed(e.message);
-                    return;
+                    this.commandError(e.message);
                 }
             }
         }
