@@ -25,7 +25,7 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision$
  */
-public class MacDefaultBrowserLauncher extends AbstractBrowserLauncher {
+public class MacDefaultBrowserLauncher extends RuntimeExecutingBrowserLauncher {
 
 
     public void launch(String url) {
