@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 */
 
 /**
- * @version $Id: CreateHostCommandTest.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * @version $Id: CreateHostCommandTest.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
  */
 public class CreateHostCommandTest extends TestCase {
 
@@ -41,7 +41,7 @@ public class CreateHostCommandTest extends TestCase {
         String dir = "/site/";
         String expectedHost = "www.amazon.com";
         HTTPRequest httpRequest = new HTTPRequest("GET: " + dir + HTTPRequest.CRLF +
-                                                  "Referer: http://" + expectedHost + HTTPRequest.CRLF);
+                                                  "Referer: http://" + expectedHost + dir + HTTPRequest.CRLF);
         CreateHostCommand command = new CreateHostCommand();
         command.execute(httpRequest);
         assertEquals(expectedHost, httpRequest.getHost());

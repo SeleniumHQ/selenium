@@ -23,10 +23,12 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * @version $Id: RedirectingRelay.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * @version $Id: RedirectingRelay.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
  */
 public class RedirectingRelay implements Relay {
     private static final Log LOG = LogFactory.getLog(RedirectingRelay.class);
+    private static final String proxy = (String) System.getProperties().get("http.proxyHost");
+    private static final String proxyPort = (String) System.getProperties().get("http.proxyPort");
     private final RequestStream requestStream;
     private final ResponseStream responseStream;
     private final RequestModificationCommand requestModificationCommand;
@@ -45,7 +47,7 @@ public class RedirectingRelay implements Relay {
 
     public void relay() {
         HTTPRequest request = requestStream.read();
-        if (!isLocalHost(request)) {
+        if (!hasBeenRedirected(request.getUri())) {
             byte[] redirectMessage = redirectResponse(request).getBytes();
             responseStream.write(redirectMessage, redirectMessage.length);
             responseStream.flush();
@@ -54,17 +56,21 @@ public class RedirectingRelay implements Relay {
         }
     }
 
+    private boolean hasBeenRedirected(String uri) {
+        return uri.startsWith(HTTPRequest.SELENIUM_REDIRECT_PROTOCOL + HTTPRequest.SELENIUM_REDIRECT_SERVER);
+    }
+
     private void sendToIntendedTarget(HTTPRequest request) {
         requestModificationCommand.execute(request);
         String requestToDest = request.getRequest();
-        System.out.println("Writing\n" + requestToDest);
-        String dest = request.getDestinationServer();
-        int port = request.getDestinationPort();
-        System.out.println("Connecting to " + dest + " on " + port);
+        LOG.debug("Writing\n" + requestToDest);
+        int port = getPort(request.getDestinationPort(), request.getDestinationServer());
+        String dest = getServer(request.getDestinationServer());
+        LOG.debug("Connecting to " + dest + " on " + port);
         try {
             Socket destinationSocket = new Socket(dest, port);
-            OutputStream destStream = new BufferedOutputStream(destinationSocket.getOutputStream());
-            InputStream backStream = new BufferedInputStream(destinationSocket.getInputStream());
+            OutputStream destStream = destinationSocket.getOutputStream();
+            InputStream backStream = destinationSocket.getInputStream();
             destStream.write(requestToDest.getBytes());
             destStream.flush();
             getResponse(backStream, responseStream);
@@ -73,15 +79,29 @@ public class RedirectingRelay implements Relay {
         }
     }
 
+    private int getPort(int destinationPort, String destinationServer) {
+        if (proxyPort == null || destinationServer.startsWith(HTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
+            return destinationPort;
+        }
+        return Integer.parseInt(proxyPort);
+    }
+
+    private String getServer(String destinationServer) {
+        if (proxy == null || destinationServer.startsWith(HTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
+            return destinationServer;
+        }
+        return proxy;
+    }
+
     private void getResponse(InputStream inputStream, ResponseStream clientOutputStream) throws IOException {
         int bytesRead = 0;
-        byte[] response = new byte[8192];
+        byte[] response = new byte[2048];
         while (bytesRead > -1) {
             bytesRead = inputStream.read(response);
             if (bytesRead > -1) {
+                LOG.debug("Waiting");
                 clientOutputStream.write(response, bytesRead);
-                System.out.println("Number of bytes returned = " + bytesRead);
-                System.out.println("RESPONSE\n" + new String(response, 0, bytesRead));
+                LOG.debug("Number of bytes returned = " + bytesRead);
             }
         }
         clientOutputStream.flush();
@@ -91,12 +111,8 @@ public class RedirectingRelay implements Relay {
         String response = request.getProtocol() + " 302 Moved Temporarily\r\nLocation: " +
                           HTTPRequest.SELENIUM_REDIRECT_URI  +
                           request.getUri().substring(7) + "\r\n";
-        System.out.println("Response\n" + response);
+        LOG.debug("Redirected Response\n" + response);
         return response;
-    }
-
-    private boolean isLocalHost(HTTPRequest request) {
-        return request.getHost().equals(HTTPRequest.SELENIUM_REDIRECT_SERVER);
     }
 
 }

@@ -15,15 +15,15 @@ package com.thoughtworks.selenium.proxy;
   limitations under the License.
 */
 
-import com.thoughtworks.selenium.utils.Assert;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.thoughtworks.selenium.utils.Assert;
+
 /**
  * @author <a href="mailto:mikemelia@thoughtworks.net">Mike Melia</a>
- * @version $Id: SeleniumProxy.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * @version $Id: SeleniumProxy.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
  */
 public class SeleniumProxy
 {
@@ -48,6 +48,7 @@ public class SeleniumProxy
         CompositeCommand command = new CompositeCommand();
         command.addCommand(new ProxyDetailsRemovalCommand());
         command.addCommand(new RemoveProxyFromRefererNameCommand());
+        command.addCommand(new RemoveLocalhostServerNameFromRelativeURLCommand());
         command.addCommand(new CreateHostCommand());
         command.addCommand(new RemoveLocalhostServerNameCommand());
         command.addCommand(new SetupDestinationDetailsCommand());

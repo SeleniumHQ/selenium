@@ -19,22 +19,20 @@ import junit.framework.TestCase;
 */
 
 /**
- * @version $Id: RemoveProxyFromRefererNameCommandTest.java,v 1.1 2004/11/11 12:19:49 mikemelia Exp $
+ * @version $Id: RemoveProxyFromRefererNameCommandTest.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
  */
 public class RemoveProxyFromRefererNameCommandTest extends TestCase {
-
+    
     public void testIsARequestModificationCommand() {
         assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveProxyFromRefererNameCommand.class));
     }
 
-    public void testServerNameAndProtocolRemovedFromUrlIfLocalHost() {
-        String dir = "/site/";
-        String host = "localhost:8000";
-        String uri = host + dir;
-        String expectedHost = "www.amazon.com";
-        HTTPRequest httpRequest = new HTTPRequest("GET: http://" + uri + HTTPRequest.CRLF +
+    public void testProxyRemovedFromReferer() {
+        String server = "www.amazon.com/site/";
+        String expectedHost = HTTPRequest.SELENIUM_REDIRECT_PROTOCOL + server;
+        HTTPRequest httpRequest = new HTTPRequest("GET: " + HTTPRequest.SELENIUM_REDIRECT_URI + HTTPRequest.CRLF +
                                                   "Referer: " + HTTPRequest.SELENIUM_REDIRECT_URI +
-                                                   expectedHost + HTTPRequest.CRLF );
+                                                   server + HTTPRequest.CRLF );
         RemoveProxyFromRefererNameCommand command = new RemoveProxyFromRefererNameCommand();
         command.execute(httpRequest);
         assertEquals(expectedHost, httpRequest.getHeaderField("Referer"));
