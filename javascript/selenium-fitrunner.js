@@ -526,124 +526,44 @@ function handleStoreValue(target) {
 }
 
 function handleVerifyLocation(stringValue) {
-    actualValue = browserbot.getCurrentPage().location;
-    checkEquality(stringValue, actualValue);
-
+    selenium.verifyLocation(stringValue);
+    setRowPassed();
     processCommand();
 }
 
 function handleVerifyValue(target, stringValue) {
-    element = findElement(target);
-
-    if(element != null) {
-        if (element.type.toUpperCase() == 'CHECKBOX' || element.type.toUpperCase() == 'RADIO') {
-            actualValue = element.checked ? 'on' : 'off';
-        }
-        else {
-            actualValue = element.value;
-        }
-        checkEquality(stringValue, actualValue);
-    }
-
+    selenium.verifyValue(target, stringValue);
+    setRowPassed();
     processCommand();
 }
 
 function handleVerifyText(target, stringValue) {
-    element = findElement(target);
-
-    if(element != null) {
-        actualValue = getText(element);
-        checkEquality(stringValue, actualValue);
-    }
-
+    selenium.verifyText(target, stringValue);
+    setRowPassed();
     processCommand();
 }
 
 function handleVerifyTable(target, stringValue) {
-    // This regular expression matches "tableName.row.column"
-    // For example, "mytable.3.4"
-    pattern = /(.*)\.(\d)+\.(\d+)/
-
-    if(!pattern.test(target)) {
-        setRowFailed("Invalid target format.  Correct format is tableName.rowNum.columnNum", ERROR);
-    }
-    else {
-        pieces = target.match(pattern);
-
-        tableName = pieces[1];
-        row = pieces[2];
-        col = pieces[3];
-
-        element = findElement(tableName);
-
-        if(element != null) {
-            if (row > element.rows.length || col > element.rows[row].cells.length)
-                setRowFailed("No such row or column in table", ERROR);
-            else {
-                actualValue = getText(element.rows[row].cells[col]);
-
-                checkEquality(stringValue, actualValue);
-            }
-        }
-    }
-
+    selenium.verifyTable(target, stringValue);
+    setRowPassed();
     processCommand();
 }
 
-function checkEquality(expectedValue, actualValue) {
-    if(trim(expectedValue) == trim(actualValue))
-        setRowPassed();
-    else
-        setRowFailed("Expected: "+expectedValue + "<br/>Actual:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+actualValue, FAILURE);
-}
-
-function trim(s) {
-  while (s.substring(0,1) == ' ') {
-    s = s.substring(1,s.length);
-  }
-  while (s.substring(s.length-1,s.length) == ' ') {
-    s = s.substring(0,s.length-1);
-  }
-  return s;
-}
-
 function handleVerifyTextPresent(stringValue) {
-    allText = browserbot.getCurrentPage().bodyText();
-
-    if(allText == "") {
-        setRowFailed("Page text not found", ERROR)
-    } else if(allText.indexOf(stringValue) == -1) {
-// https://issues.wazokazi.com/browse/SEL-28
-// alert(allText)
-        setRowFailed("'" + stringValue + "' not found.", FAILURE);
-    } else {
-        setRowPassed();
-    }
-
+    selenium.verifyTextPresent(stringValue);
+    setRowPassed();
     processCommand();
 }
 
 function handleVerifyElementPresent(target) {
-    try {
-        browserbot.getCurrentPage().findElement(target);
-        setRowPassed();
-    }
-    catch (e) {
-        setRowFailed("Element " + target + " not found.", FAILURE);
-    }
-
+    selenium.verifyElementPresent(target);
+    setRowPassed();
     processCommand();
 }
 
 function handleVerifyElementNotPresent(target) {
-    try {
-        element = browserbot.getCurrentPage().findElement(target);
-        setRowFailed("Element " + target + " found.", FAILURE);
-    }
-    catch (e) {
-        setRowPassed();
-    }
-
+    selenium.verifyElementNotPresent(target);
+    setRowPassed();
     processCommand();
 }
 

@@ -9,9 +9,9 @@
 <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
 
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="/selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript">
-
 function setUp() {
     mockPageBot = new Mock();
 
@@ -91,6 +91,26 @@ function testSelectWindow() {
     selenium.selectWindow("windowName");
     verify();
 }
+
+// Verify functions
+function testVerifyLocationSuccess() {
+    mockPageBot.expectsProperty("location").returns("foo");
+    selenium.verifyLocation("foo");
+    verify();
+}
+
+function testVerifyLocationFailed() {
+    mockPageBot.expectsProperty("location").returns("foo");
+    try {
+        selenium.verifyLocation("bar");
+        fail("Verify location should have failed");
+    }
+    catch (e) {
+        // Expected
+    }
+}
+
+// TODO: Tests for the rest of the API methods...
 </script>
   </head>
   <body>Selenium BrowserBot Tests</body>
