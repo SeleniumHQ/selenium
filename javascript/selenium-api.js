@@ -18,9 +18,12 @@ function Selenium(browserbot) {
  * Click on the located element, and attach a callback to notify
  * when the page is reloaded.
  */
-Selenium.prototype.clickElement = function(locator, callback) {
+Selenium.prototype.clickElement = function(locator, loadCallback) {
     var element = this.page().findElement(locator);
-    this.page().clickElement(element, callback);
+    this.page().clickElement(element);
+    if (loadCallback) {
+        this.browserbot.callOnNextPageLoad(loadCallback);
+    }
 }
 
 /**
@@ -45,7 +48,10 @@ Selenium.prototype.select = function(locator, optionText) {
  * Open the browser to a new location.
  */
 Selenium.prototype.open = function(newLocation, callback) {
-    this.browserbot.openLocation(newLocation, callback);
+    this.browserbot.openLocation(newLocation);
+    if (callback) {
+        this.browserbot.callOnNextPageLoad(callback);
+    }
 }
 
 /*

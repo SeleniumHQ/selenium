@@ -30,15 +30,16 @@ function verify() {
 // Tests for Element actions
 function testClickElementWithoutCallback() {
     mockPageBot.expects("findElement", "id").returns("elementToClick");
-    mockPageBot.expects("clickElement", "elementToClick", undefined);
+    mockPageBot.expects("clickElement", "elementToClick");
 
     selenium.clickElement("id");
     verify();
 }
 
-function testClickElementWithoutCallback() {
+function testClickElementWithCallback() {
     mockPageBot.expects("findElement", "id").returns("elementToClick");
-    mockPageBot.expects("clickElement", "elementToClick", "function");
+    mockPageBot.expects("clickElement", "elementToClick");
+    mockBrowserBot.expects("callOnNextPageLoad", "function");
 
     selenium.clickElement("id", "function");
     verify();
@@ -63,7 +64,8 @@ function testSelect() {
 
 // Browser actions
 function testOpen() {
-    mockBrowserBot.expects("openLocation", "new/location", "callbackFunction");
+    mockBrowserBot.expects("callOnNextPageLoad", "callbackFunction");
+    mockBrowserBot.expects("openLocation", "new/location");
 
     selenium.open("new/location", "callbackFunction");
     verify();

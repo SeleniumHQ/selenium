@@ -64,11 +64,7 @@ BrowserBot.prototype.selectWindow = function(target) {
 BrowserBot.prototype.openLocation = function(target, onloadCallback) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
-
-    if (onloadCallback) {
-        var el = new SelfRemovingLoadListener(onloadCallback, this.frame);
-        addLoadListener(this.getFrame(), el.invoke);
-    }
+    this.callOnNextPageLoad(onloadCallback);
     this.getFrame().src = target;
 }
 
@@ -90,6 +86,13 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
         throw new Error("Window does not exist");
     }
     return targetWindow;
+}
+
+BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
+    if (onloadCallback) {
+        var el = new SelfRemovingLoadListener(onloadCallback, this.frame);
+        addLoadListener(this.getFrame(), el.invoke);
+    }
 }
 
 PageBot = function(pageWindow, browserBot) {
@@ -186,12 +189,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'blur', false);
 }
 
-PageBot.prototype.clickElement = function(element, loadCallback) {
-    if (loadCallback) {
-        var el = new SelfRemovingLoadListener(loadCallback, this.browserBot.getFrame());
-        addLoadListener(this.browserBot.getFrame(), el.invoke);
-    }
-
+PageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'focus', false);
 
     var wasChecked = element.checked;
