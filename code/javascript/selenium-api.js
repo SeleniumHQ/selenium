@@ -361,3 +361,10 @@ Selenium.prototype.getAllLinks = function() {
 Selenium.prototype.getAllFields = function() {
  		return this.page().getAllFields();
 }
+
+/*
+  * Set the context for the current Test
+  */
+Selenium.prototype.doContext = function(context) {
+ 		return this.page().setContext(context);
+}

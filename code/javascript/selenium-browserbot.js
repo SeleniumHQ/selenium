@@ -444,6 +444,11 @@ PageBot.prototype.getAllLinks = function() {
     return result;
 }
 
+PageBot.prototype.setContext = function(strContext) {
+     //set the current test title
+	 context.innerHTML=strContext;
+}
+
 
 
 function isDefined(value) {
