@@ -44,44 +44,42 @@ DAMAGE.
 package com.thoughtworks.selenium.proxy;
 
 import com.thoughtworks.selenium.utils.Assert;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
-
 
 /**
- * @version $Id: ClientConnectionThread.java,v 1.6 2004/11/15 10:44:38 mikemelia Exp $
+ * @version $Id: SeleniumPump.java,v 1.1 2004/11/15 10:44:38 mikemelia Exp $
  */
-public class ClientConnectionThread extends Thread implements ConnectionThread {
-    private final Socket socket;
-    private final RequestModificationCommand requestModificationCommand;
+public class SeleniumPump implements Pump {
+    public static final int BLOCK_SIZE = 2048;
+    private static final Log LOG = LogFactory.getLog(SeleniumPump.class);
+    private InputStream in;
+    private OutputStream out;
 
-    public ClientConnectionThread(Socket socket, RequestModificationCommand requestModificationCommand) {
-        Assert.assertIsTrue(socket != null, "socket can't be null");
-        Assert.assertIsTrue(requestModificationCommand != null, "requestModificationCommand can't be null");
-        this.socket = socket;
-        this.requestModificationCommand = requestModificationCommand;
+    public SeleniumPump(InputStream in, OutputStream out) {
+        Assert.assertIsTrue(in != null, "in can't be null");
+        Assert.assertIsTrue(out != null, "out can't be null");
+        this.in = in;
+        this.out = out;
     }
 
-    /**
-     * @see Thread#run()
-     */
-    public void run() {
-        try {
-            InputStream inputStream = socket.getInputStream();
-            OutputStream outputStream = socket.getOutputStream();
-            Relay relay = new RedirectingRelay(new RequestInputStream(inputStream),
-                                               outputStream,
-                                               requestModificationCommand);
-            relay.relay();
-            outputStream.flush();
-            inputStream.close();
-            outputStream.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void pump() throws IOException {
+        int bytesRead = 0;
+        byte[] response = new byte[BLOCK_SIZE];
+        while (bytesRead > -1) {
+            bytesRead = in.read(response);
+
+            if (bytesRead > -1) {
+                LOG.debug("Waiting");
+                out.write(response, 0, bytesRead);
+                LOG.debug("Number of bytes returned = " + bytesRead);
+                LOG.debug("RESPONSE\n" + new String(response, 0, bytesRead));
+            }
         }
+        out.flush();
     }
 }

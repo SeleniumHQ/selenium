@@ -44,13 +44,15 @@ DAMAGE.
 package com.thoughtworks.selenium.proxy;
 
 import com.thoughtworks.selenium.utils.Assert;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @version $Id: SeleniumHTTPRequest.java,v 1.2 2004/11/13 06:16:05 ahelleso Exp $
+ * @version $Id: SeleniumHTTPRequest.java,v 1.3 2004/11/15 10:44:38 mikemelia Exp $
  */
 public class SeleniumHTTPRequest implements HTTPRequest {
     public static final String SELENIUM_REDIRECT_SERVERNAME = "localhost";
@@ -64,6 +66,7 @@ public class SeleniumHTTPRequest implements HTTPRequest {
                                                        SELENIUM_REDIRECT_DIR;
     private static final String auth = System.getProperties().get("http.proxy.user") + ":" +
                                        System.getProperties().get("http.proxy.password");
+    private static final Log LOG = LogFactory.getLog(SeleniumHTTPRequest.class);
     private String method;
     private String uri;
     private String protocol;
@@ -74,6 +77,7 @@ public class SeleniumHTTPRequest implements HTTPRequest {
 
     public SeleniumHTTPRequest(String request) {
         original = request;
+        LOG.debug("received\n" + original);
         parse(request);
         headers.put("Proxy-Authorization", "Basic " + new sun.misc.BASE64Encoder().encode(auth.getBytes()));
     }
