@@ -30,6 +30,8 @@
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
 
+
+
 /*
  * The 'invoke' method will call the required function, and then
  * remove itself from the window object. This allows a calling app
@@ -42,10 +44,10 @@ function SelfRemovingLoadListener(fn, frame) {
 
     this.invoke=function () {
         try {
-            fn();
-        } finally {
             // we've moved to a new page - clear the current one
             browserbot.currentPage = null;
+            fn();
+        } finally {
             removeLoadListener(frame, self.invoke);
         }
     }
@@ -55,6 +57,27 @@ BrowserBot = function(frame) {
     this.frame = frame;
     this.currentPage = null;
     this.currentWindowName = null;
+    
+    this.recordedAlerts = new Array();    
+   
+}
+
+BrowserBot.prototype.recordAlert = function(alert) {
+   this.recordedAlerts.push(alert);
+}
+
+/*
+ *  Indicates any alerts have been generated
+ */
+BrowserBot.prototype.hasAlerts = function() {
+   return (this.recordedAlerts.length > 0) ;
+}
+
+/*
+ * Retreives the next alert
+ */
+BrowserBot.prototype.getNextAlert = function() {
+   return this.recordedAlerts.shift();
 }
 
 BrowserBot.prototype.getFrame = function() {
@@ -68,7 +91,6 @@ BrowserBot.prototype.getContentWindow = function() {
 BrowserBot.prototype.selectWindow = function(target) {
     // we've moved to a new page - clear the current one
     this.currentPage = null;
-
     this.currentWindowName = null;
     if (target != "null") {
         // If window exists
@@ -86,16 +108,13 @@ BrowserBot.prototype.openLocation = function(target, onloadCallback) {
 }
 
 BrowserBot.prototype.getCurrentPage = function() {
-// TODO: Cache the currentPage
-// We currently don't do this as we have no way of telling when it becomes "stale" (eg we move to a new page, and pause).
-
-//    if (this.currentPage == null) {
+    if (this.currentPage == null) {
         var testWindow = this.getContentWindow().window;
         if (this.currentWindowName != null) {
             testWindow = this.getTargetWindow(this.currentWindowName);
         }
         this.currentPage = new PageBot(testWindow, this)
-//    }
+    }
     return this.currentPage;
 }
 
@@ -115,15 +134,40 @@ BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
     }
 }
 
+
 PageBot = function(pageWindow, browserBot) {
     this.currentWindow = pageWindow;
     this.browserBot = browserBot;
     this.currentDocument = pageWindow.document;
-
     this.location = pageWindow.location.pathname;
+     this.title = function() {return this.currentDocument.title};
 
-    this.title = function() {return this.currentDocument.title};
+    modifyWindowToRecordAlerts(pageWindow, browserBot);
+        
+    //SPIKE factor this better via TDD    
+    function clearPageCache() {
+       browserbot.currentPage = null;
+    }
+    
+    if (window.addEventListener) { 
+        this.currentWindow.addEventListener("unload",clearPageCache, true);
+    }     
+    else if (window.attachEvent) {
+        this.currentWindow.attachEvent("onunload",clearPageCache);
+    } 
+    // End SPIKE
+    
+    function modifyWindowToRecordAlerts(window, browserBot) {     
+         window.alert = function(alert){browserBot.recordAlert(alert);};
+    }
+    
+
+
+    
 }
+
+
+
 
 /*
  * Finds an element on the current page, using various lookup protocols
@@ -212,6 +256,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
 }
 
 PageBot.prototype.clickElement = function(element) {
+
     triggerEvent(element, 'focus', false);
 
     var wasChecked = element.checked;

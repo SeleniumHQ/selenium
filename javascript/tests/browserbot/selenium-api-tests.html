@@ -270,6 +270,44 @@ function testVerifyElementNotPresentFailure() {
     verifyMocks();
 }
 
+function testShouldFailIfTryToVerifyAlertWhenThereAreNone() {
+    mockBrowserBot.expects("hasAlerts").returns(false);
+    
+    try {
+        selenium.assertAlert("A made up alert");
+        fail("verifyAlert should have failed");
+    } catch (e) {
+       assertEquals("There were no alerts", e.jsUnitMessage);
+    }   
+    
+    verifyMocks(); 
+}
+
+function testShouldFailIfdoVerifyAlertWithWrongMessage() {
+     mockBrowserBot.expects("hasAlerts").returns(true);
+     mockBrowserBot.expects("getNextAlert").returns("The real alert");
+    
+    try {
+        selenium.assertAlert("The expected alert");
+        fail("verifyAlert should have failed");
+    } catch (e) {
+       assertEquals("The alert was [The real alert]", e.jsUnitMessage);
+    }   
+    
+    verifyMocks(); 
+}
+
+function testShouldPassIfdoVerifyAlertWithRightMessage() {
+     mockBrowserBot.expects("hasAlerts").returns(true);
+     mockBrowserBot.expects("getNextAlert").returns("The real alert");
+
+    selenium.assertAlert("The real alert");
+    
+    verifyMocks(); 
+}
+
+
+
 function assertCallFails(message, theCall) {
     try {
         theCall();
@@ -280,5 +318,5 @@ function assertCallFails(message, theCall) {
 }
 </script>
   </head>
-  <body>Selenium BrowserBot Tests</body>
+  <body>Selenium API Tests</body>
 </html>

@@ -70,6 +70,22 @@ Selenium.prototype.doSelectWindow = function(windowName) {
 }
 
 /*
+ *  Asserts that the supplied message was received as an alert
+ */
+ Selenium.prototype.assertAlert = function(expectedAlert) {
+    if ( this.browserbot.hasAlerts()) {
+        
+        receivedAlert = this.browserbot.getNextAlert();
+        if ( receivedAlert != expectedAlert ) {
+           fail("The alert was [" + receivedAlert + "]");   
+        }
+                          
+    } else {
+        fail("There were no alerts"); 
+    }
+ } 
+
+/*
  * Verify the location of the current page.
  */
 Selenium.prototype.assertLocation = function(expectedLocation) {
@@ -259,10 +275,18 @@ function ActionHandler(action, wait) {
     if (wait) {
         this.wait = true;
     }
+    
 }
 
 ActionHandler.prototype = new CommandHandler;
 
+ActionHandler.prototype.execute = function(seleniumApi, command) {
+          if ( seleniumApi.browserbot.hasAlerts() ) {
+             throw new Error("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
+          }
+          return CommandHandler.prototype.execute.call(this, seleniumApi, command);  
+}
+          
 function AccessorHandler(accessor) {
     this.base = CommandHandler;
     this.base("accessor", true, accessor);
