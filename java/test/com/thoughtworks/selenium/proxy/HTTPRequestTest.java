@@ -23,7 +23,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 /**
- * @version $Id: HTTPRequestTest.java,v 1.1 2004/11/11 12:19:49 mikemelia Exp $
+ * @version $Id: HTTPRequestTest.java,v 1.2 2004/11/13 05:00:09 ahelleso Exp $
  */
 public class HTTPRequestTest extends TestCase {
     // relying on defs found at http://www.w3.org/Protocols/HTTP/Request.html
@@ -84,7 +84,7 @@ public class HTTPRequestTest extends TestCase {
         assertEquals(acceptEncoding, httpRequest.getHeaderField("Accept-Encoding"));
     }
     
-    public void testReconstructsCorrectRequest() {
+    public void testReconstructsCorrectRequestWithAdditionalProxyAuthorizationField() {
         String request = "GET /dir/page HTTP/1.0\r\n" +
                 "Host: www.thoughtworks.com\r\n" +
                 "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1\r\n" +
@@ -100,13 +100,14 @@ public class HTTPRequestTest extends TestCase {
         String rebuiltRequest = httpRequest.getRequest();
         assertTrue(rebuiltRequest.startsWith("GET /dir/page HTTP/1.0\r\n"));
 
-        assertSameContents(request, rebuiltRequest);
+        assertContainsSame(request, rebuiltRequest);
     }
 
-    private void assertSameContents(String request, String rebuiltRequest) {
-        List expectedList = getTextLinesAsList(request);
+    private void assertContainsSame(String expectedRequest, String rebuiltRequest) {
+        List expectedList = getTextLinesAsList(expectedRequest);
         List retrievedList = getTextLinesAsList(rebuiltRequest);
-        assertEquals(expectedList.size(), retrievedList.size());
+// We can't expect the size to be the same - there might be additional headers in the rebuiltRequest (such as Proxy-Authorization)
+//        assertEquals(expectedList.size(), retrievedList.size());
         for (Iterator i = expectedList.iterator(); i.hasNext();) {
             assertTrue(retrievedList.contains(i.next()));
         }
