@@ -1,0 +1,9 @@
+<decorators defaultdir="/">
+
+	<decorator name="main" page="default-decorator.jsp"> <pattern>*.html</pattern></decorator>
+
+        <decorator name="printable" page="/printable-decorator.jsp"/>
+
+        <decorator name="none"><pattern>/demo*/*</pattern></decorator>
+
+</decorators>

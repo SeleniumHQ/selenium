@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Click</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Click<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_click_page1.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>nextPage</td>
+      <td>Click here for next page</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>nextPage</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>/demo2/tests/html/test_click_page2.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTextPresent</td>
+      <td>This is a test of the click command.<br>
+      </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>previousPage</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>/demo2/tests/html/test_click_page1.html</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
