@@ -110,7 +110,7 @@ function start() {
 function loadSuiteFrame(executionContext) {
 
     var testAppFrame = executionContext.loadFrame();
-    browserbot = new BrowserBot(testAppFrame,executionContext);
+    browserbot = createBrowserBot(testAppFrame,executionContext);
     selenium = new Selenium(browserbot);
     registerCommandHandlers();
 
