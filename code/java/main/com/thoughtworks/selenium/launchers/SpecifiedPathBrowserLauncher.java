@@ -25,22 +25,10 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision$
  */
-public class SpecifiedPathBrowserLauncher extends RuntimeExecutingBrowserLauncher {
-
-    private final String browserPath;
+public class SpecifiedPathBrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
     public SpecifiedPathBrowserLauncher(String browserPath) {
-        this.browserPath = browserPath;
+        super(browserPath);
     }
 
-    public void launch(String url) {
-        try {
-            exec(browserPath + " " + url);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not launch default browser.", e);
-        }
-    }
-
-    public void close() {
-    }
 }

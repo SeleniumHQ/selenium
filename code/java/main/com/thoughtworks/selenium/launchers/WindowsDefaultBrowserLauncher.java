@@ -25,18 +25,11 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision$
  */
-public class WindowsDefaultBrowserLauncher extends RuntimeExecutingBrowserLauncher implements BrowserLauncher {
+public class WindowsDefaultBrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher implements BrowserLauncher {
 
-    public void launch(String url) {
-        try {
-            exec("cmd /c start " + url);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not launch default browser.", e);
-        }
-    }
-
-    public void close() {
-        process.destroy();
+    public WindowsDefaultBrowserLauncher() {
+        super("cmd /c start");
+        
     }
 
 }
