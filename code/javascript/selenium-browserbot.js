@@ -194,12 +194,17 @@ PageBot = function(pageWindow) {
  * Finds an element on the current page, using various lookup protocols
  */
 PageBot.prototype.findElement = function(locator) {
-    // Try the locators one at a time.
-    for (var i = 0; i < this.locators.length; i++) {
-        var locatorFunction = this.locators[i];
-        var element = locatorFunction.call(this, locator);
-        if (element != null) {
-            return element;
+    var element = this.findElementInDocument(locator, this.currentDocument);
+    
+    if (element != null) {
+        return element;
+    } else {
+        for (var i = 0; i < this.currentDocument.frames.length; i++) {
+            //alert("looking for " + locator + " in " + this.currentDocument.frames[i].location.href);
+            element = this.findElementInDocument(locator, this.currentDocument.frames[i].document);
+            if (element != null) {
+                return element;
+            }
         }
     }
 
@@ -207,22 +212,33 @@ PageBot.prototype.findElement = function(locator) {
     throw new Error("Element " + locator + " not found");
 }
 
+PageBot.prototype.findElementInDocument = function(locator, inDocument) {
+    // Try the locators one at a time.
+    for (var i = 0; i < this.locators.length; i++) {
+        var locatorFunction = this.locators[i];
+        var element = locatorFunction.call(this, locator, inDocument);
+        if (element != null) {
+            return element;
+        }
+    }
+}
+
 /*
  * In IE, getElementById() also searches by name.
  * To provied consistent functionality with Firefox, we
  * search by name attribute if an element with the id isn't found.
  */
-PageBot.prototype.findIdentifiedElement = function(identifier) {
+PageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
     // Since we try to get an id with _any_ string, we need to handle
     // cases where this causes an exception.
     try {
-        var element = this.currentDocument.getElementById(identifier);
+        var element = inDocument.getElementById(identifier);
         if (element == null
             && !isIE // IE checks this without asking
             && document.evaluate )// DOM3 XPath
         {
              var xpath = "//*[@name='" + identifier + "']";
-             element = document.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
+             element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
         }
     } catch (e) {
         return null;
@@ -235,14 +251,14 @@ PageBot.prototype.findIdentifiedElement = function(identifier) {
  * Finds an element using by evaluating the "document.*" string against the
  * current document object. Dom expressions must begin with "document."
  */
-PageBot.prototype.findElementByDomTraversal = function(domTraversal) {
+PageBot.prototype.findElementByDomTraversal = function(domTraversal, inDocument) {
     if (domTraversal.indexOf("document.") != 0) {
         return null;
     }
 
     // Trim the leading 'document'
     domTraversal = domTraversal.substr(9);
-    var locatorScript = "this.currentDocument." + domTraversal;
+    var locatorScript = "inDocument." + domTraversal;
     var element = eval(locatorScript);
 
     if (!element) {
@@ -256,20 +272,20 @@ PageBot.prototype.findElementByDomTraversal = function(domTraversal) {
  * Finds an element identified by the xpath expression. Expressions _must_
  * begin with "//".
  */
-PageBot.prototype.findElementByXPath = function(xpath) {
+PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
     if (xpath.indexOf("//") != 0) {
         return null;
     }
 
     // If the document doesn't support XPath, mod it with html-xpath.
     // This only works for IE.
-    if (!this.currentDocument.evaluate) {
-        addXPathSupport(this.currentDocument);
+    if (!inDocument.evaluate) {
+        addXPathSupport(inDocument);
     }
 
     // If we still don't have XPath bail.
     // TODO implement subset of XPath for browsers without native support.
-    if (!this.currentDocument.evaluate) {
+    if (!inDocument.evaluate) {
         throw new Error("XPath not supported");
     }
 
@@ -278,7 +294,7 @@ PageBot.prototype.findElementByXPath = function(xpath) {
         xpath = xpath.slice(0, xpath.length - 1);
     }
 
-    return this.currentDocument.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
+    return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
 }
 
 /**

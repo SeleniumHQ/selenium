@@ -37,7 +37,6 @@ function IFrameExecutionContext() {
         // the command has completed execution.
         selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay()")});
     }
-
 }
 
 var windowExecutionContext;
