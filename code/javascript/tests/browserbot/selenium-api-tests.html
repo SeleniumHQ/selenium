@@ -32,7 +32,7 @@ function setUp() {
     mockPageBot = new Mock();
 
     mockBrowserBot = new Mock();
-    mockBrowserBot.getCurrentPage = function() { return mockPageBot };
+    mockBrowserBot.getCurrentPage = function() { return mockPageBot; };
 
     selenium = new Selenium(mockBrowserBot);
     assertEquals(mockPageBot, selenium.page());
@@ -100,7 +100,7 @@ function testVerifyLocationSuccess() {
 function testVerifyLocationFailed() {
     mockPageBot.expectsProperty("location").returns("foo");
     assertCallFails("Verify location should have failed",
-                    function() {selenium.assertLocation("bar")});
+                    function() {selenium.assertLocation("bar");});
     verifyMocks();
 }
 
@@ -113,7 +113,7 @@ function testVerifyTitleSuccess() {
 function testVerifyTitleFailed() {
     mockPageBot.expects("title").returns("foo");
     assertCallFails("Verify title should have failed",
-                    function() {selenium.assertTitle("bar")});
+                    function() {selenium.assertTitle("bar");});
     verifyMocks();
 }
 
@@ -134,7 +134,7 @@ function testVerifyValueOfTextInputFailure() {
     mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
     assertCallFails("Verify value should have failed",
-                    function() { selenium.assertValue("id", "a different value") });
+                    function() { selenium.assertValue("id", "a different value"); });
     verifyMocks();
 }
 
@@ -156,7 +156,7 @@ function testVerifyValueOfCheckboxFailure() {
     mockControl.checked = false;
     mockPageBot.expects("findElement", "id").returns(mockControl);
     assertCallFails("Verify value should have failed",
-                    function() {selenium.assertValue("id", "the value")});
+                    function() {selenium.assertValue("id", "the value");});
     verifyMocks();
 }
 
@@ -174,7 +174,7 @@ function testVerifyTextFailed() {
     mockPageBot.expects("findElement", "id").returns(mockElement);
 
     assertCallFails("Verify text should have failed",
-                    function() {selenium.assertText("id", "bar")});
+                    function() {selenium.assertText("id", "bar");});
 }
 
 function getMockTable() {
@@ -202,29 +202,33 @@ function testVerifyTableSuccess() {
 function testVerifyTableFailure() {
     mockPageBot.expects("findElement", "table").returns(getMockTable());
     assertCallFails("VerifyTable should have failed",
-                    function() {selenium.assertTable("table.0.0", "bar")});
+                    function() {selenium.assertTable("table.0.0", "bar");},
+                    "Expected 'bar' but was 'foo'");
     verifyMocks();
 }
 
 function testVerifyTableInvalidLocator() {
     assertCallFails("VerifyTable should have failed for invalid locator",
-                    function() {selenium.assertTable("foo", "bar")});
+                    function() {selenium.assertTable("foo", "bar");},
+                    "Invalid target format. Correct format is tableName.rowNum.columnNum");
     verifyMocks();
 }
 
 function testVerifyTableNoSuchRow() {
-    var mockTable = new Object();
+    var mockTable = getMockTable();
     mockPageBot.expects("findElement", "table").returns(mockTable);
     assertCallFails("VerifyTable should have failed for no such row",
-                    function() {selenium.assertTable("table.11.0", "bar")});
+                    function() {selenium.assertTable("table.11.0", "bar");},
+                    "Cannot access row 11 - table has 2 rows");
     verifyMocks();
 }
 
 function testVerifyTableNoSuchColumn() {
-    var mockTable = new Object();
+    var mockTable = getMockTable();
     mockPageBot.expects("findElement", "table").returns(mockTable);
     assertCallFails("VerifyTable should have failed for no such column",
-                    function() {selenium.assertTable("table.0.11", "bar")});
+                    function() {selenium.assertTable("table.0.11", "bar");},
+                    "Cannot access column 11 - table row has 2 columns");
     verifyMocks();
 }
 
@@ -238,7 +242,7 @@ function testVerifyTextPresentFailed() {
     mockPageBot.expects("bodyText").returns("this is some foo text");
 
     assertCallFails("Verify text should have failed",
-                    function() { selenium.assertTextPresent("bar")});
+                    function() { selenium.assertTextPresent("bar");});
     verifyMocks();
 }
 
@@ -252,7 +256,7 @@ function testVerifyElementPresentFailure() {
     mockPageBot.expects("findElement", "id").andThrows("foo");
 
     assertCallFails("VerifyElementPresent should have failed",
-                    function() {selenium.assertElementPresent("id")});
+                    function() {selenium.assertElementPresent("id");});
     verifyMocks();
 }
 
@@ -284,40 +288,33 @@ function testVerifyElementNotPresentFailure() {
     mockPageBot.expects("findElement", "id").returns("foo");
 
     assertCallFails("VerifyElementNotPresent should have failed",
-                    function() {selenium.assertElementNotPresent("id")});
+                    function() { selenium.assertElementNotPresent("id"); });
     verifyMocks();
 }
 
 function testShouldFailIfTryToVerifyAlertWhenThereAreNone() {
     mockBrowserBot.expects("hasAlerts").returns(false);
 
-    try {
-        selenium.assertAlert("A made up alert");
-        fail("verifyAlert should have failed");
-    } catch (e) {
-       assertEquals("There were no alerts", e.jsUnitMessage);
-    }
+    assertCallFails("verifyAlert should have failed",
+                    function() {selenium.assertAlert("A made up alert."); },
+                    "There were no alerts");
 
     verifyMocks();
 }
 
 function testShouldFailIfdoVerifyAlertWithWrongMessage() {
-     mockBrowserBot.expects("hasAlerts").returns(true);
-     mockBrowserBot.expects("getNextAlert").returns("The real alert");
+    mockBrowserBot.expects("hasAlerts").returns(true);
+    mockBrowserBot.expects("getNextAlert").returns("The real alert");
 
-    try {
-        selenium.assertAlert("The expected alert");
-        fail("verifyAlert should have failed");
-    } catch (e) {
-       assertEquals("The alert was [The real alert]", e.jsUnitMessage);
-    }
-
+    assertCallFails("verifyAlert should have failed",
+                    function() {selenium.assertAlert("The expected alert"); },
+                    "The alert was [The real alert]");
     verifyMocks();
 }
 
 function testShouldPassIfdoVerifyAlertWithRightMessage() {
-     mockBrowserBot.expects("hasAlerts").returns(true);
-     mockBrowserBot.expects("getNextAlert").returns("The real alert");
+    mockBrowserBot.expects("hasAlerts").returns(true);
+    mockBrowserBot.expects("getNextAlert").returns("The real alert");
 
     selenium.assertAlert("The real alert");
 
@@ -325,28 +322,22 @@ function testShouldPassIfdoVerifyAlertWithRightMessage() {
 }
 
 function testShouldFailIfTryToVerifyConfirmationWhenThereAreNone() {
-     mockBrowserBot.expects("hasConfirmations").returns(false);
+    mockBrowserBot.expects("hasConfirmations").returns(false);
 
-     try {
-         selenium.assertConfirmation("A made up confirmation");
-         fail("verifyConfirmation should have failed");
-     } catch (e) {
-        assertEquals("There were no confirmations", e.jsUnitMessage);
-     }
+    assertCallFails("verifyConfirmation should have failed",
+                    function() {selenium.assertConfirmation("A made up confirmation");},
+                    "There were no confirmations");
 
-     verifyMocks();
+    verifyMocks();
 }
 
 function testShouldFailIfdoVerifyConfirmationWithWrongMessage() {
-      mockBrowserBot.expects("hasConfirmations").returns(true);
-      mockBrowserBot.expects("getNextConfirmation").returns("The real confirmation");
+    mockBrowserBot.expects("hasConfirmations").returns(true);
+    mockBrowserBot.expects("getNextConfirmation").returns("The real confirmation");
 
-     try {
-         selenium.assertConfirmation("The expected confirmation");
-         fail("verifyConfirmation should have failed");
-     } catch (e) {
-        assertEquals("The confirmation message was [The real confirmation]", e.jsUnitMessage);
-     }
+    assertCallFails("verifyConfirmation should have failed",
+                    function() {selenium.assertConfirmation("The expected confirmation");},
+                    "The confirmation message was [The real confirmation]");
 
      verifyMocks();
 }
@@ -383,7 +374,7 @@ function testVerifySelectedFailed() {
     mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
     assertCallFails("Verify selected should have failed.",
-                    function() {selenium.assertSelected("id", "option2")});
+                    function() {selenium.assertSelected("id", "option2");});
     verifyMocks();
 }
 
@@ -402,7 +393,7 @@ function testVerifySelectOptionsFailed() {
     mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
     assertCallFails("Verify select options failed.",
-                    function() { selenium.assertSelectOptions("id", "option0")});
+                    function() { selenium.assertSelectOptions("id", "option0"); });
     verifyMocks();
 }
 
@@ -422,10 +413,16 @@ function testVerifyAttributeWithId() {
     verifyMocks();
 }
 
-function assertCallFails(message, theCall) {
+function assertCallFails(message, theCall, expectedFailureMessage) {
     try {
         theCall();
     } catch (e) {
+        if (!e.isAssertionFailedError) {
+            throw e;
+        }
+        if (expectedFailureMessage) {
+            assertEquals(expectedFailureMessage, e.failureMessage);
+        }
         return;
     }
     fail(message);
