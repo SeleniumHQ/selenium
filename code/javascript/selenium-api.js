@@ -308,8 +308,37 @@ Selenium.prototype.getEffectiveStyle = function(element) {
     if (element.currentStyle) {
         // non-standard IE alternative
         return element.currentStyle;
+        // TODO: this won't really work in a general sense, as
+        //   currentStyle is not identical to getComputedStyle()
+        //   ... but it's good enough for "visibility"
     }
     throw new Error("cannot determine effective stylesheet in this browser");
+}
+
+/**
+ * Asserts that the specified element accepts user input visible
+ */
+Selenium.prototype.assertEditable = function(locator) {
+    var element = this.page().findElement(locator);
+    if (element.value == undefined) {
+        fail("Element " + locator + " is not an input.");
+    }
+    if (element.disabled) {
+        fail("Element " + locator + " is disabled.");
+    }
+}
+
+/**
+ * Asserts that the specified element does not accept user input
+ */
+Selenium.prototype.assertNotEditable = function(locator) {
+    var element = this.page().findElement(locator);
+    if (element.value == undefined) {
+        return; // not an input
+    }
+    if (element.disabled == false) {
+        fail("Element " + locator + " is editable.");
+    }
 }
 
  /*

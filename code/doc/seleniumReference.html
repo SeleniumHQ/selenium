@@ -614,6 +614,108 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </table>
 </blockquote>
 </dd>
+<dt><strong>verifyVisible / assertVisible</strong></dt>
+<dd><p class="first">Verifies that the specified element is both present <em>and</em> visible. An element can be rendered invisible by setting the CSS &quot;visibility&quot; property to &quot;hidden&quot;, or the &quot;display&quot; property to &quot;none&quot;, either for the element itself or one if its ancestors.</p>
+<p><strong>target:</strong> The element that should be visible.</p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="50%" />
+<col width="31%" />
+<col width="19%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>verifyVisible</td>
+<td>postcode</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>assertVisible</td>
+<td>postcode</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>verifyNotVisible / assertNotVisible</strong></dt>
+<dd><p class="first">Verifies that the specified element is not visible.  Elements that are simply not present are also considered invisible.</p>
+<p><strong>target:</strong> The element that should not be visible.</p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="55%" />
+<col width="28%" />
+<col width="17%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>verifyNotVisible</td>
+<td>postcode</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>assertNotVisible</td>
+<td>postcode</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>verifyEditable / assertEditable</strong></dt>
+<dd><p class="first">Verifies that the specified element is editable, ie. it's an input
+element, and hasn't been disabled.</p>
+<p><strong>target:</strong> The element that should be editable.</p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="52%" />
+<col width="30%" />
+<col width="19%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>verifyEditable</td>
+<td>shape</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>assertEditable</td>
+<td>colour</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>verifyNotEditable / assertNotEditable</strong></dt>
+<dd><p class="first">Verifies that the specified element is NOT editable, ie. it's NOT
+an input element, or has been disabled.</p>
+<p><strong>target:</strong> The element that should be read-only.</p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="52%" />
+<col width="33%" />
+<col width="15%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>verifyNotEditable</td>
+<td>creditLimit</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>assertNotEditable</td>
+<td>userName</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
 </dl>
 </blockquote>
 </div>
