@@ -229,10 +229,6 @@ function runNextTest() {
     if (!runAllTests)
         return;
 
-    // Scroll the suite frame down by 25 pixels once we get past the first cell.
-    if(currentTestRow >= 1)
-        getSuiteFrame().contentWindow.scrollBy(0,25);
-
     suiteTable = (getSuiteFrame().contentWindow.document.getElementsByTagName("table"))[0];
 
     // Do not change the row color of the first row
@@ -267,7 +263,8 @@ function runNextTest() {
         setCellColor(suiteTable.rows, currentTestRow, 0, workingColor);
 
         testLink = suiteTable.rows[currentTestRow].cells[0].getElementsByTagName("a")[0];
-
+        testLink.focus();
+        
         addLoadListener(getTestFrame(), startTest);
         getTestFrame().src = testLink.href;
     }
@@ -469,14 +466,21 @@ function nextCommand() {
     return command;
 }
 
+function focusOnElement(element) {
+    if (element.focus) {
+        element.focus();
+        return;
+    }
+    var anchor = element.ownerDocument.createElement("a");
+    anchor.innerHTML = "!CURSOR!";
+    element.appendChild(anchor, element);
+    anchor.focus();
+    element.removeChild(anchor);
+}
+
 function commandStarted() {
-    // Make the current row blue
     inputTableRows[currentCommandRow].bgColor = "#DEE7EC";
-
-    // Scroll the test frame down by 25 pixels once we get past the first 5 cells.
-    if(currentCommandRow >= 5)
-        getTestFrame().contentWindow.scrollBy(0,25);
-
+    focusOnElement(inputTableRows[currentCommandRow].cells[0]);
     printMetrics();
 }
 
