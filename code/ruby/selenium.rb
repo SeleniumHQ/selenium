@@ -40,30 +40,27 @@ module Selenium
     end
     
     def to_s
-      "Selenese"
+      "SeleneseInterpreter"
     end
 
     def doCommand(commandString)
       timeout(@timeout) do
         result = nil
         Thread.new do
-          #puts "about to push #{commandString} onto the out queue"
+          puts "about to push #{commandString} onto the out queue"
           @out_queue.push(commandString)
           if "|testComplete|" != commandString
             #puts "Waiting for next reply/request"
             result = @in_queue.pop
           end
         end.join
-        #if nil != result
-        #  puts "-->" + result + "<"
-        #  if "OK" != result
-        #    raise RuntimeError, result
-        #  else
-        #    if "PASSED" != result
-        #      raise RuntimeError, result
-        #    end
-        #  end
-        #end
+        if nil != result
+          if "OK" != result
+            if "PASSED" != result
+              raise RuntimeError, result
+            end
+          end
+        end
         result
       end
     end
