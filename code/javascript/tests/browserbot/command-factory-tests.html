@@ -23,8 +23,8 @@ Copyright 2004 ThoughtWorks, Inc
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
-<script language="JavaScript" type="text/javascript" src="/selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript">
 
     function testNullIsReturnedForUnknownCommands() {
@@ -131,12 +131,11 @@ Copyright 2004 ThoughtWorks, Inc
         assertEquals("assert2", factory.getCommandHandler("assertSomeOtherThing").executor);
         assertEquals("assert2", factory.getCommandHandler("verifySomeOtherThing").executor);
     }
-</script>
+  </script>
   </head>
 
   <body>
-    <h1>FitRunner component tests</h1>
-
-    <p>This page contains tests for different components in the FitRunner. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
+    <a href="#" onclick="testAllMethodsWithDoPrefixAreRegisteredAsActionsByRegisterAll();">try</a>
+    <p>This page contains tests for the CommandFactory object in selenium-commandhandlers.js. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
   </body>
 </html>
