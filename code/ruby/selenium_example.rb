@@ -14,7 +14,7 @@
 #
 require 'selenium'
 
-puts "Go to http://localhost:7896/SeleneseRunner.html"
+puts "Go to http://localhost:7896/selenium-driver/SeleneseRunner.html"
 
 selenium = Selenium::WebrickCommandProcessor.new.proxy
 

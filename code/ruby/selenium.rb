@@ -54,6 +54,16 @@ module Selenium
             result = @in_queue.pop
           end
         end.join
+        #if nil != result
+        #  puts "-->" + result + "<"
+        #  if "OK" != result
+        #    raise RuntimeError, result
+        #  else
+        #    if "PASSED" != result
+        #      raise RuntimeError, result
+        #    end
+        #  end
+        #end
         result
       end
     end
