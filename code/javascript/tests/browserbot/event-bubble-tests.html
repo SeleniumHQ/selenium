@@ -31,8 +31,8 @@ Copyright 2004 ThoughtWorks, Inc
 function setUp() {
     pageBot = new PageBot(window);
 
-    theForm = document.getElementById("theForm")
-    theTextbox = document.getElementById("theTextbox")
+    theForm = document.getElementById("theFormElement");
+    theTextbox = document.getElementById("theTextboxElement");
 }
 
 function testFocusEventNeverBubbles() {
@@ -48,6 +48,7 @@ function testFocusEventNeverBubbles() {
 }
 
 function testSelectEventCanBubbleInFirefoxButNotInIE() {
+    assertTrue(true);
     var textboxSelect = false;
     var formSelect = false;
     theTextbox.onselect = function() {textboxSelect = true};
@@ -82,7 +83,7 @@ function testChangeEventCanBubbleInFirefoxButNotInIE() {
 function testClickEventAlwaysBubbles() {
     var buttonClick = false;
     var formClick = false;
-    var theButton = document.getElementById("theButton")
+    var theButton = document.getElementById("theButtonElement")
     theButton.onclick = function() {buttonClick = true};
     theForm.onclick = function() {formClick = true};
 
@@ -97,9 +98,9 @@ function testClickEventAlwaysBubbles() {
   <body>
     <h1>Selenium Browserbot Tests</h1>
 
-    <form id="theForm" name="theForm">
-      <input name="theTextbox" id="theTextbox" type="text" value="theTextbox"/>
-      <input name="theButton" id="theButton" type="button" value="theButton"/>
+    <form id="theFormElement" name="theFormElement">
+      <input name="theTextboxElement" id="theTextboxElement" type="text" value="theTextbox"/>
+      <input name="theButtonElement" id="theButtonElement" type="button" value="theButton"/>
     </form>
   </body>
 </html>
