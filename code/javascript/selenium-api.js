@@ -104,14 +104,7 @@ Selenium.prototype.assertTitle = function(expectedTitle) {
  */
 Selenium.prototype.assertValue = function(locator, expectedValue) {
     var element = this.page().findElement(locator);
-    var actualValue;
-    if (element.type.toUpperCase() == 'CHECKBOX' || element.type.toUpperCase() == 'RADIO') {
-        actualValue = element.checked ? 'on' : 'off';
-    }
-    else {
-        actualValue = element.value;
-    }
-
+    var actualValue = getInputValue(element);
     assertEquals(expectedValue, actualValue.trim());
 }
 
