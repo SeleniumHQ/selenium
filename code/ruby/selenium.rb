@@ -47,9 +47,9 @@ module Selenium
       timeout(@timeout) do
         result = nil
         Thread.new do
-          puts "about to push #{commandString} onto the out queue"
+          #puts "about to push #{commandString} onto the out queue"
           @out_queue.push(commandString)
-          if "|testComplete|" != commandString
+          if "|testComplete|||" != commandString
             #puts "Waiting for next reply/request"
             result = @in_queue.pop
           end
@@ -107,8 +107,8 @@ module Selenium
         if "GET" == req.request_method
           command_result = req.query['commandResult']
           selenium_start = req.query['seleniumStart']
-          #puts "--> #{command_result} #{selenium_start}" 
-          @in_queue.push(command_result)
+          # puts "--> #{command_result} , #{selenium_start}" 
+          @in_queue.push(command_result) unless selenium_start
           get_reply = @out_queue.pop
           res.body = get_reply
         end
