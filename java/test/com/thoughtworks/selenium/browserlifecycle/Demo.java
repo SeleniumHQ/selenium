@@ -88,9 +88,9 @@ public class Demo {
 		session.run(timeout);
 
 		// Expect that this will result in :
-		//         - firefox window on google for 5 secs before it is killed by
+		//         - firefox window for 5 secs before it is killed by
 		// notification from the demo server
-		//         - IE window on google for 10 secs before killed by timeout
+		//         - IE window for 10 secs before killed by timeout
 		// if thread timing is off, then both may time out
 
 	}
