@@ -1,95 +1,168 @@
-<project name="selenium" default="jar">
+<project name="selenium" default="all">
     <property name="version" value="0.1.3-SNAPSHOT"/>
+
+    <property environment="env"/>
+    <property name="ant.home" location="${env.ANT_HOME}"/>
+    <property name="reports.dir" location="target/reports" />
+    <property name="checkstyle.reports.dir" location="${reports.dir}/checkstyle" />
+    <property name="checkstyle-tests.reports.dir" location="${reports.dir}/checkstyle-tests" />
+    <property name="simian.reports.dir" location="${reports.dir}/simian" />
+    <property name="jcoverage.reports.dir" location="${reports.dir}/jcoverage" />
+    <property name="test.reports.dir" location="${reports.dir}/tests" />
+    <property name="test.logs.dir" location="${test.reports.dir}/logs" />
+    <property name="main.dir" location="main" />
+    <property name="test.dir" location="test" />
+    <property name="etc.dir" location="etc" />
+    <property name="lib.dir" location="lib" />
+    <property name="report.lib.dir" location="${lib.dir}/report" />
+    <property name="classes.dir" location="target/classes" />
+    <property name="instrumented.classes.dir" location="target/instrumented-classes" />
+    <property name="test.classes.dir" location="target/test-classes" />
+
+    <path id="report.classpath">
+        <fileset dir="${report.lib.dir}"/>
+    </path>
 
     <path id="classpath">
         <fileset dir="lib"/>
-        <pathelement location="target/classes"/>
-        <pathelement location="target/test-classes"/>
-        <pathelement location="${ant.home}/lib/clover.jar"/>
+        <pathelement location="${classes.dir}"/>
+        <pathelement location="${test.classes.dir}"/>
         <pathelement location="${ant.home}/lib"/>
     </path>
 
-    <target name="compile" description="Compile java source">
-        <mkdir dir="target/classes"/>
-        <javac destdir="target/classes" classpathref="classpath" debug="on">
-            <src location="main"/>
+    <path id="instrumented.classpath">
+        <fileset dir="lib"/>
+        <pathelement location="${instrumented.classes.dir}"/>
+        <pathelement location="${test.classes.dir}"/>
+        <pathelement location="${ant.home}/lib"/>
+    </path>
+
+    <target name="all" depends="clean, init, compile, test, report, jar"/>
+
+    <target name="clean">
+        <delete dir="target"/>
+        <delete file="jcoverage.ser"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${reports.dir}"/>
+        <mkdir dir="${checkstyle.reports.dir}"/>
+        <mkdir dir="${checkstyle-tests.reports.dir}"/>
+        <mkdir dir="${simian.reports.dir}"/>
+        <mkdir dir="${jcoverage.reports.dir}"/>
+        <mkdir dir="${test.reports.dir}"/>
+        <mkdir dir="${test.logs.dir}"/>
+    </target>
+
+    <target name="compile-main" description="Compile java source">
+        <mkdir dir="${classes.dir}"/>
+        <javac destdir="${classes.dir}" classpathref="classpath" debug="on">
+            <src location="${main.dir}"/>
         </javac>
 
-        <mkdir dir="target/test-classes"/>
-        <javac destdir="target/test-classes" classpathref="classpath" debug="on">
-            <src location="test"/>
+        <mkdir dir="${test.classes.dir}"/>
+        <javac destdir="${test.classes.dir}" classpathref="classpath" debug="on">
+            <src location="${test.dir}"/>
         </javac>
     </target>
 
-    <target name="test" depends="compile">
-        <mkdir dir="target/test-logs"/>
-<!--        <fail unless="browser">Specify -Dbrowser=firefox (or some other browser) on the command line when running the tests</fail> -->
-        <echo>**************************************************</echo>
-        <echo>Open a browser and point it to:</echo>
-        <echo>http://localhost:9090/jsunit/testRunner.html?testPage=http://localhost:9090/tests/xmlrpcrunner/xmlrpcrunner-tests.html&amp;autoRun=true</echo>
-        <echo>**************************************************</echo>
-        <junit dir="../javascript" fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
-            <jvmarg value="-Dbrowser=${browser}"/>
-            <classpath refid="classpath"/>
+    <target name="compile" depends="compile-main, -instrument-main"/>
+
+    <target name="test" depends="compile-main">
+        <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
             <formatter type="plain"/>
-            <batchtest todir="target/test-logs">
-                <fileset dir="test">
+            <batchtest todir="${test.logs.dir}">
+                <fileset dir="${test.dir}">
                     <include name="**/*Test.java"/>
                     <exclude name="com/thoughtworks/selenium/SeleniumIntegrationTest.java"/>
                 </fileset>
             </batchtest>
         </junit>
 
-        <mkdir dir="target/test-reports"/>
-        <junitreport todir="target/test-reports">
-            <fileset dir="target/test-logs">
+        <junitreport todir="${test.reports.dir}">
+            <fileset dir="${test.logs.dir}">
                 <include name="TEST-*.xml"/>
                 <!-- This one is always empty for some reason -->
                 <exclude name="TEST-com.thoughtworks.selenium.SeleniumIntegrationTest.xml"/>
             </fileset>
-            <report format="frames" todir="target/test-reports" styledir="${ant.home}/etc"/>
+            <report format="frames" todir="${test.reports.dir}" styledir="${ant.home}/etc"/>
         </junitreport>
         <fail if="tests.failed">There were test failures</fail>
     </target>
 
-    <target name="jar" depends="compile, test" description="Jar java classes">
+    <target name="jar" depends="compile-main" description="Jar java classes">
         <jar basedir="target/classes" destfile="target/${ant.project.name}-${version}.jar"/>
     </target>
 
-    <target name="clover-init">
-        <taskdef resource="clovertasks"/>
-        <typedef resource="clovertypes"/>
+    <target name="report" depends="-checkstyle,-checkstyle-tests,-simian,-coverage-report"/>
 
-        <mkdir dir="target/clover"/>
-        <clover-setup initString="target/clover/testCoverage.db">
-            <files>
-                <!-- exclude test-related classes, because they generally inflate the average. -->
-                <exclude name="**/*Test.java"/>
-            </files>
-        </clover-setup>
+    <!-- ================== Checkstyle target Definitions ======================= -->
+    <target name="-checkstyle" depends="init" description="Validate code against coding standards">
+        <taskdef resource="checkstyletask.properties" classpathref="report.classpath"/>
+
+        <checkstyle config="${etc.dir}/checkstyle-main.xml" failureProperty="checkstyle.failed" failonviolation="false">
+            <fileset dir="${main.dir}">
+                <exclude name="Acme/**"/>
+                <include name="**/*.java"/>
+            </fileset>
+            <formatter type="xml" tofile="${checkstyle.reports.dir}/checkstyle-main-errors.xml"/>
+        </checkstyle>
+
+        <style  in="${checkstyle.reports.dir}/checkstyle-main-errors.xml"
+                out="${checkstyle.reports.dir}/checkstyle.html"
+                style="${etc.dir}/checkstyle-noframes.xsl"/>
+
+<!--        <fail if="checkstyle.failed" message="Checkstyle failed - see report for details"/>-->
     </target>
 
-    <fileset dir="main" id="coverage-fileset">
-        <include name="com/thoughtworks/**/*"/>
-    </fileset>
+    <target name="-checkstyle-tests" depends="init" description="Validate test code against coding standards">
+        <taskdef resource="checkstyletask.properties" classpathref="report.classpath"/>
 
-    <target name="clover-report">
-        <clover-report>
-            <current summary="yes" outfile="target/clover">
-                <format type="html"/>
-                <fileset refid="coverage-fileset"/>
-            </current>
-            <current summary="yes" outfile="target/clover/clover.xml">
-                <format type="xml"/>
-                <fileset refid="coverage-fileset"/>
-            </current>
-        </clover-report>
+        <checkstyle config="${etc.dir}/checkstyle-tests.xml" failureProperty="checkstyle.failed" failonviolation="false">
+            <fileset dir="${test.dir}" includes="**/*.java"/>
+            <formatter type="xml" tofile="${checkstyle-tests.reports.dir}/checkstyle-errors.xml"/>
+        </checkstyle>
+
+        <style  in="${checkstyle-tests.reports.dir}/checkstyle-errors.xml"
+                out="${checkstyle-tests.reports.dir}/checkstyle.html"
+                style="${etc.dir}/checkstyle-noframes.xsl"/>
+
+<!--           <fail if="checkstyle.failed" message="Checkstyle failed - see report for details"/>-->
     </target>
 
-    <target name="clover" depends="clean, clover-init, test, clover-report"/>
+    <!-- ================== Simian target Definitions ======================= -->
+    <target name="-simian" depends="init"  description="Do code duplication analysis" >
+        <taskdef resource="simiantask.properties" classpathref="report.classpath"/>
 
-    <target name="clean">
-        <delete dir="target"/>
+        <simian threshold="6" failOnDuplication="false">
+            <fileset dir="${main.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+            <formatter type="xml" tofile="${simian.reports.dir}/simian.xml"/>
+        </simian>
+
+        <style  in="${simian.reports.dir}/simian.xml"
+                out="${simian.reports.dir}/index.html"
+                style="${etc.dir}/simian.xsl"/>
     </target>
+
+    <!-- ================== Coverage target Definitions ======================= -->
+    <target name="-instrument-main" description="Add JCoverage Instumentation">
+        <taskdef name="instrument" classname="com.jcoverage.ant.InstrumentTask" classpathref="report.classpath"/>
+        <instrument todir="${instrumented.classes.dir}" classpathref="report.classpath">
+            <fileset dir="${classes.dir}">
+                <exclude name="Acme/**"/>
+            </fileset>
+        </instrument>
+    </target>
+
+    <target name="-coverage-report" depends="test" description="Generate jCoverage report">
+        <available file="jcoverage.ser" property="jcoverage.ser.available"/>
+        <fail unless="jcoverage.ser.available" message="jcoverage.ser does not exist. The instrument task must be ran first."/>
+        <taskdef name="report" classname="com.jcoverage.ant.CoverageReportTask" classpathref="report.classpath"/>
+        <report srcdir="${main.dir}" destdir="${jcoverage.reports.dir}"/>
+    </target>
+
 </project>
