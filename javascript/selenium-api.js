@@ -112,10 +112,10 @@ Selenium.prototype.verifyTable = function(tableLocator, expectedContent) {
     row = pieces[2];
     col = pieces[3];
 
-    var table = this.page().findIdentifiedElement(tableName);
-    if (row > table.rows.length || col > table.rows[row].cells.length)
+    var table = this.page().findElement(tableName);
+    if (row > table.rows.length || col > table.rows[row].cells.length) {
         fail("No such row or column in table");
-    else {
+    } else {
         actualContent = getText(table.rows[row].cells[col]);
         assertStringEquals(expectedContent, actualContent);
     }
@@ -149,9 +149,9 @@ Selenium.prototype.verifyElementPresent = function(locator) {
 Selenium.prototype.verifyElementNotPresent = function(locator) {
     try {
         this.page().findElement(locator);
-        fail("Element " + locator + " found.");
     }
-    catch (e) {
-        // Expected
+    catch (expected) {
+        return;
     }
+    fail("Element " + locator + " found.");
 }

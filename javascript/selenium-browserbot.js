@@ -119,7 +119,7 @@ PageBot.prototype.findElement = function(locator) {
     // TODO: try xpath
 
     if (element == null) {
-        throw new Error("Element not found");
+        throw new Error("Element " + locator + " not found");
     }
 
     return element;
