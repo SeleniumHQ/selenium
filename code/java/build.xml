@@ -169,7 +169,19 @@
         <fail if="tests.failed">There were test failures</fail>
     </target>
 
-    <target name="integration-test" depends="compile-main">
+    <target name="integration-test-mac" depends="compile-main">
+
+        <echo>--> ${os.name}</echo>
+
+    </target>
+
+    <target name="integration-test-windows" depends="compile-main">
+
+        <echo>--> ${os.name}</echo>
+
+    </target>
+
+    <target name="integration-test" depends="compile-main, integration-test-mac, integration-test-windows">
 
         <echo>Integration Tests for Embedded Web Container</echo>
 
