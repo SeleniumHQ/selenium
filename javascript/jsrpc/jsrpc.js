@@ -36,58 +36,73 @@ function Marshaller() {
 }
 
 Marshaller.prototype.invoke = function(jsRmiInvocation) {
-    var jsEpression
+    var jsExpression
+    var jsExpressionAsFunction
     var tokens
     if(tokens = new RegExp("([^.]*)\.([A-Za-z]*=?)[\(](.*)[\)]").exec(jsRmiInvocation)) {
+        // receiver of the function is an object (this was a call by ref)
+
         ob = tokens[1]
         function_name = tokens[2]
         arguments = tokens[3]
 
-        jsEpression = this.unmarshalObjectToJs(ob) + "." + function_name
+        jsExpression = this.unmarshalObjectToJs(ob) + "." + function_name
         var n = 0
         while((tokens = new RegExp("([^,]*),?(.*)").exec(arguments)) && (arguments != "")) {
             if(n == 0) {
-                jsEpression += "("
+                jsExpression += "("
             } else {
-                jsEpression += ","
+                jsExpression += ","
             }
             arg = tokens[1]
-            jsEpression += this.unmarshalObjectToJs(arg)
+            jsExpression += this.unmarshalObjectToJs(arg)
             arguments = tokens[2]
             n++
         }
         if(n > 0) {
-            jsEpression += ")"
+            jsExpression += ")"
         }
-        // receiver of the function is an object (this was a call by ref)
+        if(n == 0) {
+            jsExpressionAsFunction = jsExpression + "()"
+        }
     } else {
         alert("bad JsRmi invocation format:" + jsRmiInvocation)
         // TODO: throw an exception
     }
-    var result = eval(jsEpression)
+    var result
+    if(jsExpressionAsFunction) {
+        // try to execute as a function before trying to execute as property if there are no args
+        try {
+            result = eval(jsExpressionAsFunction)
+        } catch(e) {
+            result = eval(jsExpression)
+        }
+    } else {
+        result = eval(jsExpression)
+    }
     return result;
 }
 
 // unmarshals a JsRmiObject String to a Javascript expression
 // that can be eval()'ed to a real Javascript object.
 Marshaller.prototype.unmarshalObjectToJs = function(jsRmiObject) {
-    var jsEpression
+    var jsExpression
     var tokens
     if(tokens = new RegExp("__JsObject__[A-Za-z]*__([0-9]*)").exec(jsRmiObject)) {
         var object_id = tokens[1]
-        jsEpression = "this.ids_to_objects[" + object_id + "]"
+        jsExpression = "this.ids_to_objects[" + object_id + "]"
         // TODO: some verification mechanism to verify that the type
         // is consistent?
     } else {
         // It was a primitive (by-value) object
-        jsEpression = jsRmiObject
+        jsExpression = jsRmiObject
     }
-    return jsEpression;
+    return jsExpression;
 }
 
 Marshaller.prototype.unmarshalObject = function(jsRmiObject) {
-    jsEpression = this.unmarshalObjectToJs(jsRmiObject)
-    return eval(jsEpression)
+    jsExpression = this.unmarshalObjectToJs(jsRmiObject)
+    return eval(jsExpression)
 }
 
 Marshaller.prototype.marshalObject = function(object) {
@@ -157,8 +172,13 @@ RmiConnection.prototype.requestNextMessage = function() {
                 connection.requestNextMessage();
             } else {
                 var message = http.responseText
-                var result = marshaller.invoke(message)
-                reply = marshaller.marshalObject(result)
+                var reply 
+                try {
+                    result = marshaller.invoke(message)
+                    reply = marshaller.marshalObject(result)
+                } catch(e) {
+                    reply = "__JsException:" + e
+                }
                 connection.sendMessage(reply);
             }
         }
