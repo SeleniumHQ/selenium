@@ -17,15 +17,16 @@ package com.thoughtworks.selenium.proxy;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.IOException;
 
 import org.jmock.MockObjectTestCase;
 
 /**
- * @version $Id: DefaultRequestStreamTest.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * @version $Id: DefaultRequestStreamTest.java,v 1.2 2004/11/13 04:46:58 ahelleso Exp $
  */
 public class DefaultRequestStreamTest extends MockObjectTestCase {
     
-    public void testReadsWholeBufferWhileBlocking() {
+    public void testReadsWholeBufferWhileBlocking() throws IOException {
         
         byte[] testBuffer = new byte[20000];
         for (int i = 0; i < testBuffer.length; ++i) {
@@ -44,7 +45,7 @@ public class DefaultRequestStreamTest extends MockObjectTestCase {
                             "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z; session-id-time=1099900800; session-id=102-3724782-9228157\r\n" +
                             "Dummy-Data: " + bufferString + "\r\n";
         InputStream byteStream = new ByteArrayInputStream(testString.getBytes());
-        RequestStream stream = new DefaultRequestStream(byteStream);
-        assertEquals(bufferString, stream.read().getHeaderField("Dummy-Data"));
+        RequestInput input = new RequestInputStream(byteStream);
+        assertEquals(bufferString, input.readRequest().getHeaderField("Dummy-Data"));
     }
 }

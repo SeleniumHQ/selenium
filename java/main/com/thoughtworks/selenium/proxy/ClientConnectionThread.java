@@ -22,7 +22,7 @@ import com.thoughtworks.selenium.utils.Assert;
 
 
 /**
- * @version $Id: ClientConnectionThread.java,v 1.1 2004/11/11 12:19:47 mikemelia Exp $
+ * @version $Id: ClientConnectionThread.java,v 1.2 2004/11/13 04:46:57 ahelleso Exp $
  */
 public class ClientConnectionThread extends Thread implements ConnectionThread {
     private final Socket socket;
@@ -40,7 +40,7 @@ public class ClientConnectionThread extends Thread implements ConnectionThread {
      */
     public void run() {
         try {
-            Relay relay = new RedirectingRelay(new DefaultRequestStream(socket.getInputStream()), 
+            Relay relay = new RedirectingRelay(new RequestInputStream(socket.getInputStream()),
                                                new DefaultResponseStream(socket.getOutputStream()),
                                                requestModificationCommand);
             relay.relay();

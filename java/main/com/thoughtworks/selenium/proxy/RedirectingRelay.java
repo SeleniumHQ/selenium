@@ -23,30 +23,30 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * @version $Id: RedirectingRelay.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
+ * @version $Id: RedirectingRelay.java,v 1.3 2004/11/13 04:46:57 ahelleso Exp $
  */
 public class RedirectingRelay implements Relay {
     private static final Log LOG = LogFactory.getLog(RedirectingRelay.class);
     private static final String proxy = (String) System.getProperties().get("http.proxyHost");
     private static final String proxyPort = (String) System.getProperties().get("http.proxyPort");
-    private final RequestStream requestStream;
+    private final RequestInput requestInput;
     private final ResponseStream responseStream;
     private final RequestModificationCommand requestModificationCommand;
 
-    public RedirectingRelay(RequestStream requestStream,
+    public RedirectingRelay(RequestInput requestInput,
                             ResponseStream responseStream,
                             RequestModificationCommand requestModificationCommand) {
-        Assert.assertIsTrue(requestStream != null, "requestStream can't be null");
+        Assert.assertIsTrue(requestInput != null, "requestInputcan't be null");
         Assert.assertIsTrue(responseStream != null, "responseStream can't be null");
         Assert.assertIsTrue(requestModificationCommand != null, "requestModificationCommand can't be null");
-        this.requestStream = requestStream;
+        this.requestInput = requestInput;
         this.responseStream = responseStream;
         this.requestModificationCommand = requestModificationCommand;
     }
 
 
-    public void relay() {
-        HTTPRequest request = requestStream.read();
+    public void relay() throws IOException {
+        HTTPRequest request = requestInput.readRequest();
         if (!hasBeenRedirected(request.getUri())) {
             byte[] redirectMessage = redirectResponse(request).getBytes();
             responseStream.write(redirectMessage, redirectMessage.length);
