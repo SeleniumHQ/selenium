@@ -35,6 +35,8 @@ errorColor = "#ffffff";
 workingColor = "#DEE7EC";
 doneColor = "#FFFFCC";
 
+slowMode = false;
+
 var postResult = "OK";
 
 function runTest() {
@@ -86,6 +88,10 @@ function runTest() {
  }
 
  function extractCommand(xmlHttp) {
+
+    if (slowMode) {
+      delay(2000);
+    }
     var command;
     try {
         command = xmlHttp.responseText;
@@ -126,13 +132,29 @@ function runTest() {
     commandNode.style.backgroundColor = errorColor;
     commandNode.title = message;
  }
+
+ function slowClicked() {
+   slowMode = !slowMode;
+ }
+
+
+ function delay(millis) {
+   startMillis = new Date();
+   while (true) {
+     milli = new Date();
+     if (milli-startMillis > millis) {
+       break;
+     }
+   }
+ }
+
 </script>
 </head>
 
 <body onLoad="runTest()">
 
 <h1>Selenium Functional Web Application Testing.</h1>
-Open Source From <a href="http://www.thoughtWorks.com">ThoughtWorks Inc</a><br>
+Open Source From <a href="http://www.thoughtWorks.com">ThoughtWorks Inc</a>&nbsp;&nbsp;&nbsp;Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"><br>
 <p>
 <div style="float:left;">
 <b>Command List</b><br/>
