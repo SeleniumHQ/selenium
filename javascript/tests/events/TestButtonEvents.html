@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Type Text Events</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Type Text Events<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_form_events.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Click the button -->
+    <tr>
+      <td>click</td>
+      <td>theButton</td>
+      <td>nowait</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>{focus(theButton)} {click(theButton)} {blur(theButton)}</td>
+    </tr>
+    <tr>
+       <td>type</td>
+       <td>eventlog</td>
+       <td></td>
+    </tr>
+
+    <!-- Click the submit -->
+    <tr>
+      <td>click</td>
+      <td>theSubmit</td>
+      <td>nowait</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>{focus(theSubmit)} {click(theSubmit)} {blur(theSubmit)}</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -214,7 +214,9 @@ PageBot.prototype.clickElement = function(element, loadCallback) {
     else {
 */
     var wasChecked = element.checked;
-    triggerEvent(element, 'click', false);
+    if (!isIE) {
+        triggerEvent(element, 'click', true);
+    }
     element.click();
     if (isIE && isDefined(element.checked) && wasChecked != element.checked) {
         triggerEvent(element, 'change', true);
