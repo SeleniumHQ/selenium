@@ -7,9 +7,10 @@ namespace Selenium
 	/// </summary>
 	public class DefaultSelenium : ISelenium
 	{
-		public static readonly string SELENIUM_DRIVER_URL = "http://localhost/selenium-driver/SeleneseRunner.html";
+		public static readonly string SELENESE_RUNNER_URL = "http://localhost/selenium-driver/SeleneseRunner.html";
 
 		private readonly IBrowserLauncher launcher;
+		private readonly string seleneseRunnerUrl;
 		private readonly ICommandProcessor processor;	
 
 		public ICommandProcessor Processor
@@ -22,10 +23,15 @@ namespace Selenium
 			get { return launcher; }
 		}
 
-		public DefaultSelenium(ICommandProcessor processor, IBrowserLauncher launcher)
+		public DefaultSelenium(ICommandProcessor processor, IBrowserLauncher launcher) 
+			: this (processor, launcher, SELENESE_RUNNER_URL)
+		{ }
+
+		public DefaultSelenium(ICommandProcessor processor, IBrowserLauncher launcher, string seleneseRunnerUrl)
 		{
 			this.processor = processor;
 			this.launcher = launcher;
+			this.seleneseRunnerUrl = seleneseRunnerUrl;
 		}
 
 		public void ChooseCancelOnNextConfirmation()
@@ -175,7 +181,7 @@ namespace Selenium
 
 		public void Start()
 		{
-			launcher.Launch(SELENIUM_DRIVER_URL);
+			launcher.Launch(seleneseRunnerUrl);
 		}
 
 		public void Stop()

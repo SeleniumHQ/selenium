@@ -77,6 +77,7 @@
 		<copy todir="deployed/BridgeWebApp">
 			<fileset basedir="src/BridgeWebApp">
 				<include name="SeleneseRunner.html" />
+				<include name="SeleneseRunner.hta" />
 				<include name="web.config" />
 				<include name="global.asax*" />
 				
@@ -96,7 +97,6 @@
 				
 				<include name="*.js" />
 				<include name="*.jpg" />
-				<include name="*.html" />
 				<exclude name="**/.svn/**" />
 				<exclude name="**/SeleneseRunner.html" />
 			</fileset>

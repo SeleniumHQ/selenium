@@ -43,7 +43,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[Test]
 		public void StartSeleniumShouldWork()
 		{
-			mockLauncher.Expect("Launch", DefaultSelenium.SELENIUM_DRIVER_URL);
+			mockLauncher.Expect("Launch", DefaultSelenium.SELENESE_RUNNER_URL);
 			selenium.Start();
 		}
 
