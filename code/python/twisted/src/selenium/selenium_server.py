@@ -1,5 +1,5 @@
 """ Selenium Server in Twisted Python
-
+    
     Jason Huggins
     jrhuggins@thoughtworks.com
     
@@ -10,9 +10,9 @@
     2) A proxy server:
     Application Under Test (AUT) to be proxied and have its URLs rewritten to have the same
     hostname of the Selenium server. Uses perl-based CGIProxy.
-
+    
     3) Driver interface for selenium (aka "Selenese")
-
+    
     4) XML-RPC Server interface to driver.
     For taking 'Selenese' requests from Python, Ruby, Java, or .C# programs    
 """   
@@ -30,31 +30,26 @@ import os
 import Interpreter
 import Dispatcher
 
-class PerlScript(twcgi.FilteredScript):
-    filter = 'c:/Perl/bin/perl.exe' # Points to the perl parser
-
 def main():
+    print "Starting up Selenium Server..."
     root = resource.Resource()
     
     # The proxy server (aka "The Funnel")
-    # BUG: When the path includes a space... like in 
-    # "C:\Program Files\Selenium", Twisted can't seam to find the file...
-    # Works fine when there are no spaces in the path
-    path = os.path.join(os.getcwd(),"cgi-bin","nph-proxy.cgi")
-    #path = '"%s"' % path
-    proxy = PerlScript(path)    
+    path = os.path.join(os.getcwd(),"cgi-bin","nph-proxy.exe")
+    proxy = twcgi.CGIScript(path)    
     root.putChild("AUT",proxy)        
     
-    # The selenium javascript directory,driver web interface, and
-    # the XML-RPC are all available from the /selenium-driver/ 
-    
+    #The followoing are all available from /selenium-driver/     
+    #  * Selenium BrowserBot html, css, and javascript (/selenium-driver/*)
+    #  * Selenese driver    (/selenium-driver/driver/)
+    #  * XML-RPC listener   (/selenium-driver/RP2/)
     driver = static.File("./selenium_driver")
     driver.ignoreExt('.rpy')
     driver.indexNames=['index.rpy']
     driver.processors = {'.rpy': script.ResourceScript}    
     root.putChild('selenium-driver', driver)       
-
-    reactor.listenTCP(8081, server.Site(root))
+    
+    reactor.listenTCP(8080, server.Site(root))
     reactor.run()
 
 if __name__ == '__main__':
