@@ -109,6 +109,12 @@ function loadSuiteFrame(executionContext) {
     selenium = new Selenium(browserbot);
     registerCommandHandlers();
 
+    //set the runInterval if there is a queryParameter for it
+    var tempRunInterval = getQueryParameter("runInterval");
+    if (tempRunInterval) {
+        runInterval = tempRunInterval;
+    }
+
     document.getElementById("modeRun").onclick = setRunInterval;
     document.getElementById('modeWalk').onclick = setRunInterval;
     document.getElementById('modeStep').onclick = setRunInterval;
