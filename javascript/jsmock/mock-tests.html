@@ -65,7 +65,7 @@ function testCallingExpectedFunctionWithTooFewArgumentsShouldFail() {
    } catch(expected) {
      return
    }
-   fail("Should fail because all args weren't passed!")
+   fail("Should fail because too few arguments were passed!")
 }
 
 function testCallingExpectedFunctionWithTooManyArgumentsShouldFail() {
@@ -76,7 +76,7 @@ function testCallingExpectedFunctionWithTooManyArgumentsShouldFail() {
    } catch(expected) {
      return
    }
-   fail("Should fail because too many args were passed!")
+   fail("Should fail because too many arguments were passed!")
 }
 
 function testShouldCreateMockInstancesWithoutSideffects() {
@@ -91,7 +91,7 @@ function testShouldCreateMockInstancesWithoutSideffects() {
    } catch(expected) {
      return
    }
-   fail("Should fail because bar was called with the wrong method!")
+   fail("Should fail because an unexpected bar was called!")
 }
 
 function testCallingExpectedFunctionWithReturnShouldReturnValue() {
@@ -101,6 +101,48 @@ function testCallingExpectedFunctionWithReturnShouldReturnValue() {
    assertEquals("foo", myMock.someMethod("bar"))
    assertEquals("bang", myMock.theOtherMethod("zap", "ping", "pong"))
    myMock.verify()
+}
+
+function testSettingExpectedPropertyShouldPass() {
+   var myMock = new Mock()
+   myMock.expectsProperty("foo", "bar")
+   myMock.foo = "bar"
+   myMock.verify()
+}
+
+function testNotSettingExpectedPropertyShouldFail() {
+   var myMock = new Mock()
+   myMock.expectsProperty("foo", "bar")
+   try {
+       myMock.verify()
+   } catch(expected) {
+       return
+   }
+   fail("Should fail because an expected property was not set!")
+}
+
+function testSettingExpectedPropertyWithUnexpectedValueShouldFail() {
+   var myMock = new Mock()
+   myMock.expectsProperty("foo", "bar")
+   myMock.foo="zap"
+   try {
+       myMock.verify()
+   } catch(expected) {
+       return
+   }
+   fail("Should fail because an expected property was set with unexpected value!")
+}
+
+function testSettingUnexpectedPropertyShouldFail() {
+   var myMock = new Mock()
+   myMock.foo = "bar"
+
+   try {
+       myMock.verify()
+   } catch(expected) {
+       return
+   }
+   fail("Should fail because an unexpected property was set!")
 }
 
 function TODO_testShouldAllowExpectationOfSameFunctionWithDifferentArguments() {
