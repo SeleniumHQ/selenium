@@ -43,35 +43,35 @@ function setUp() {
 }
 
 //
-// Tests for PageBot.findIdentifiedElement()
+// Tests for PageBot.locateElementById()
 //
-function testFindIdentifiedElementReturnsNullIfElementNotPresent() {
-    assertNull(pageBot.findIdentifiedElement('noSuchElement', frameDocument));
+function testLocateElementByIdReturnsNullIfElementNotPresent() {
+    assertNull(pageBot.locateElementById('noSuchElement', frameDocument));
 }
 
-function testFindIdentifiedElementReturnsHtmlElementWithMatchingId() {
-    assertEquals(element3, pageBot.findIdentifiedElement('id3', frameDocument));
+function testLocateElementByIdReturnsHtmlElementWithMatchingId() {
+    assertEquals(element3, pageBot.locateElementById('id3', frameDocument));
 }
 
-function testFindIdentifiedElementReturnsFirstElementWithMatchingName() {
-    assertEquals(element2, pageBot.findIdentifiedElement('name1', frameDocument));
+function testLocateElementByIdReturnsFirstElementWithMatchingName() {
+    assertEquals(element2, pageBot.locateElementById('name1', frameDocument));
 }
 
 //
-// Tests for PageBot.findElementByDomTraversal
+// Tests for PageBot.locateElementByDomTraversal
 //
-function testFindElementByDomTraversal() {
+function testLocateElementByDomTraversal() {
     assertEquals(element2,
-                 pageBot.findElementByDomTraversal("document.links[1]", frameDocument));
+                 pageBot.locateElementByDomTraversal("document.links[1]", frameDocument));
 }
 
-function testFindElementByDomTraversalReturnsNullForNoMatchingElement() {
-    assertNull(pageBot.findElementByDomTraversal("document.links[3]", frameDocument));
+function testLocateElementByDomTraversalReturnsNullForNoMatchingElement() {
+    assertNull(pageBot.locateElementByDomTraversal("document.links[3]", frameDocument));
 }
 
-function testFindElementByDomTraversalFailsWithInvalidDomString() {
+function testLocateElementByDomTraversalFailsWithInvalidDomString() {
     try {
-        pageBot.findElementByDomTraversal("document.foo.bar", frameDocument);
+        pageBot.locateElementByDomTraversal("document.foo.bar", frameDocument);
         fail("Should have thrown exception");
     }
     catch (e) {
@@ -80,52 +80,53 @@ function testFindElementByDomTraversalFailsWithInvalidDomString() {
 }
 
 //
-// Tests for PageBot.findElementByXPath
+// Tests for PageBot.locateElementByXPath
 //
-function testFindElementByXPathWithTagNameOnly() {
+function testLocateElementByXPathWithTagNameOnly() {
     assertEquals(element4,
-                 pageBot.findElementByXPath("//p", frameDocument));
+                 pageBot.locateElementByXPath("//p", frameDocument));
 }
 
-function testFindElementByXPathWithAttributeOnly() {
+function testLocateElementByXPathWithAttributeOnly() {
     assertEquals(element4,
-                 pageBot.findElementByXPath("//*[@class='pstyle']", frameDocument));
+                 pageBot.locateElementByXPath("//*[@class='pstyle']", frameDocument));
 }
 
-function testFindElementByXPathWithTagNameAndAttribute() {
+function testLocateElementByXPathWithTagNameAndAttribute() {
     assertEquals(element4,
-                 pageBot.findElementByXPath("//p[@name='name1']", frameDocument));
+                 pageBot.locateElementByXPath("//p[@name='name1']", frameDocument));
 }
 
-function testFindElementByXPathReturnsFirstMatchingElement() {
+function testLocateElementByXPathReturnsFirstMatchingElement() {
     assertEquals(element2,
-                 pageBot.findElementByXPath("//*[@name='name1']", frameDocument));
+                 pageBot.locateElementByXPath("//*[@name='name1']", frameDocument));
 }
 
 //
-// Tests for PageBot.findLink()
+// Tests for PageBot.locateLinkByText()
 //
-function testFindLinkReturnsNullIfLocatorIsNotLinkLocator() {
-    assertNull(pageBot.findLink('//NotALinkLocator', frameDocument));
+function testLocateLinkReturnsNullIfLocatorIsNotLinkLocator() {
+    assertNull(pageBot.locateLinkByText('//NotALinkLocator', frameDocument));
 }
 
-function testFindLinkReturnsNullIfLinkNotPresent() {
-    assertNull(pageBot.findLink('link:No Such Link', frameDocument));
+function testLocateLinkReturnsNullIfLinkNotPresent() {
+    assertNull(pageBot.locateLinkByText('link:No Such Link', frameDocument));
 }
 
 function testLinkElementReturnsLinkWithMatchingText() {
-    assertEquals(element3, pageBot.findLink('link:this is the third element', frameDocument));
+    assertEquals(element3, pageBot.locateLinkByText('link:this is the third element', frameDocument));
 }
-
+ 
 //
 // Tests for PageBot.findElement()
 //
 function testFindElementCallsEachLocatorInSequenceAndThrowsErrorIfNoneReturnElement() {
     var calls = new Array();
-    var locators = [function(locator) {calls.push("1 " + locator);},
-                    function(locator) {calls.push("2 " + locator);},
-                    function(locator) {calls.push("3 " + locator);}];
-    pageBot.locators = locators;
+    pageBot.locatorFunctions = [
+        function(locator) {calls.push("1 " + locator);},
+        function(locator) {calls.push("2 " + locator);},
+        function(locator) {calls.push("3 " + locator);}
+    ];
 
     var element = null;
     var failureMessage = null;
@@ -142,10 +143,11 @@ function testFindElementCallsEachLocatorInSequenceAndThrowsErrorIfNoneReturnElem
 
 function testFindElementReturnsTheFirstElementReturnedByALocatorFunction() {
     var calls = new Array();
-    var locators = [function(locator) {calls.push("1 " + locator);},
-                    function(locator) {calls.push("2 " + locator); return "bar";},
-                    function(locator) {calls.push("3 " + locator);}];
-    pageBot.locators = locators;
+    pageBot.locatorFunctions = [
+        function(locator) {calls.push("1 " + locator);},
+        function(locator) {calls.push("2 " + locator); return "bar";},
+        function(locator) {calls.push("3 " + locator);}
+    ];
 
     var element = null;
     var failureMessage = null;
