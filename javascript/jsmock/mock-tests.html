@@ -103,6 +103,15 @@ function testCallingExpectedFunctionWithReturnShouldReturnValue() {
    myMock.verify()
 }
 
+function TODO_testShouldAllowExpectationOfSameFunctionWithDifferentArguments() {
+   var myMock = new Mock()
+   myMock.expects("aslak", "hello").returns("world")
+   myMock.expects("aslak", "bonjour").returns("monde")
+   assertEquals("world", myMock.aslak("hello"))
+   assertEquals("monde", myMock.aslak("bonjour"))
+   myMock.verify()
+}
+
 </script>
   </head>
 

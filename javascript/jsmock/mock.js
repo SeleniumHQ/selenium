@@ -14,8 +14,8 @@ Mock.prototype.expects = function() {
    for(i = 1; i < arguments.length; i++) {
        this.expectedArgs[functionName][i-1] = arguments[i];
    }
-   javascript_code = "this." + functionName + " = function() {\n" +
-     "   // mark this function as \"executed\"\n" +
+   javascriptCode = "this." + functionName + " = function() {\n" +
+     "  // mark this function as \"executed\"\n" +
      "  this.expectedInvocations[\"" + functionName + "\"] = true;\n" +
      "  assertEquals(\"" + functionName + ": Wrong number of arguments.\", " + this.expectedArgs[functionName].length + ", arguments.length);\n" +
      "  for(i = 0; i < arguments.length; i++) {\n" +
@@ -23,7 +23,7 @@ Mock.prototype.expects = function() {
      "  };\n" +
      "  return this.returnValues[\"" + functionName + "\"];\n" +
      "}";
-   eval(javascript_code);
+   eval(javascriptCode);
    // initially mark this function as "not yet executed"
    this.expectedInvocations[functionName] = false;
    return new Returner(this, functionName);

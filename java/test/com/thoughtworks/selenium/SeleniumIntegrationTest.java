@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  * Selenium - http://localhost:9090/selenium-b-tests.html
  *
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class SeleniumIntegrationTest extends TestCase {
     public void testShouldStartServerAndCreateBrowser() {
@@ -17,7 +17,7 @@ public class SeleniumIntegrationTest extends TestCase {
         }
         // TODO: don't point to JsUnit but to a web page with Selenium B loaded,
         // and let Selenium B be the driver on the client side instead of JsUnit.
-        String jsUnitUrl = "http://localhost:9090/jsunit/testRunner.html?testPage=http://localhost:9090/selenium-b-tests.html&autoRun=true";
+        String jsUnitUrl = "http://localhost:9090/jsunit/testRunner.html?testPage=http://localhost:9090/selenium-rpcrunner-tests.html&autoRun=true";
         Selenium selenium = new Selenium(browserName, jsUnitUrl);
         Browser browser = selenium.getBrowser();
 

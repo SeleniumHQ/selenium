@@ -13,9 +13,8 @@
 <script language="JavaScript" type="text/javascript" src="jsolait/lib/xml.js"></script>
 <script language="JavaScript" type="text/javascript" src="jsolait/lib/urllib.js"></script>
 
-<script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-b.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-rpcrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
@@ -67,7 +66,7 @@ function testShouldLoopAndExecuteCommands() {
     var wikiRow = "| type | someField |Hello|"
 
     wikiTableRows = new Mock()
-    wikiTableRows.expectsAndReturns("getRow", wikiRow)
+    wikiTableRows.expects("getRow").returns(wikiRow)
     new SeleniumB(wikiTableRows).loop()
 
     wikiTableRows.verify()

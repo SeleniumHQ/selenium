@@ -1,18 +1,4 @@
-// override the original sel A code
-function processCommand(){
-    if(testFailed) {
-        alert("DOH")
-    }
-}
-
-function setRowFailed(errorMsg, failureType) {
-        alert(errorMsg)
-}
-
-
 SeleniumB = function(wikiTableRows) {
-    buildCommandHandlers()
-    currentDoc = document
     if(wikiTableRows) {
         // during testing we can pass in a mock to avoid XML-RPC
         this.wikiTableRows = wikiTableRows
@@ -60,7 +46,7 @@ SeleniumB.prototype.createInvocation = function(functionName, arg1, arg2) {
 SeleniumB.prototype.loop = function() {
     row = this.getRow()
     javascript = this.createJavaScriptFromWikiRow(row)
-    eval(javascript)
+    alert("Got command from external process - executing " + javascript)
 }
 
 // TODO: These should be prototypes for SeleniumA
