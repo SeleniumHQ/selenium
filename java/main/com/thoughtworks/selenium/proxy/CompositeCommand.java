@@ -50,11 +50,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * $Id: CompositeCommand.java,v 1.3 2004/11/13 06:16:05 ahelleso Exp $
+ * This class is a composite holding RequestModificationCommands.
+ * Any commands added to the composite will be executed in order.
+ * All registered commands will be able to modify the same request.
+ * CAUTION - order of execution may be important.
+ * $Id: CompositeCommand.java,v 1.4 2004/11/14 06:25:51 mikemelia Exp $
  */
 public class CompositeCommand implements RequestModificationCommand {
     private final List components = new LinkedList();
 
+    /**
+     * @see RequestModificationCommand#execute
+     */
     public void execute(HTTPRequest request) {
         Assert.assertIsTrue(request != null, "request can't be null");
 
@@ -63,6 +70,10 @@ public class CompositeCommand implements RequestModificationCommand {
         }
     }
 
+    /**
+     * Adds a command to the list of commands to be executed.
+     * @param command the new command.
+     */
     public void addCommand(RequestModificationCommand command) {
         Assert.assertIsTrue(command != null, "command can't be null");
         components.add(command);

@@ -50,8 +50,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * @author <a href="mailto:mikemelia@thoughtworks.net">Mike Melia</a>
- * @version $Id: SeleniumProxy.java,v 1.4 2004/11/13 06:16:05 ahelleso Exp $
+ * @version $Id: SeleniumProxy.java,v 1.5 2004/11/14 06:25:52 mikemelia Exp $
  */
 public class SeleniumProxy
 {
@@ -74,11 +73,17 @@ public class SeleniumProxy
 
     private RequestModificationCommand buildRequestModificationCommand() {
         CompositeCommand command = new CompositeCommand();
-        command.addCommand(new ProxyDetailsRemovalCommand());
-        command.addCommand(new RemoveProxyFromRefererNameCommand());
-        command.addCommand(new RemoveLocalhostServerNameFromRelativeURLCommand());
+        // we want to remove the redirection details from the requested uri
+        command.addCommand(new RemoveRedirectionDetailsFromURICommand());
+        // we want to remove the redirection details from the referer uri
+        command.addCommand(new RemoveRedirectionDetailsFromRefererNameCommand());
+        // if the request was originally relative to the redirection, we need to mod it.
+        command.addCommand(new RemoveRedirectedServerNameFromRelativeURLCommand());
+        // we can now create the host field in the header
         command.addCommand(new CreateHostCommand());
-        command.addCommand(new RemoveLocalhostServerNameCommand());
+        // we need to remove the server name from any URI on the same host as the proxy
+        command.addCommand(new RemoveServerNameForSameServerTargetCommand());
+        // we now set up the correct destination server to communicate with.
         command.addCommand(new SetupDestinationDetailsCommand());
         return command;
     }

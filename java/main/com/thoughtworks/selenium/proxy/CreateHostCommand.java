@@ -43,11 +43,16 @@ DAMAGE.
 */
 package com.thoughtworks.selenium.proxy;
 /**
- * @version $Id: CreateHostCommand.java,v 1.3 2004/11/13 06:16:05 ahelleso Exp $
+ * This command creates the host field for the request from either the uri. If the uri is relative then the
+ * host is set up from the referer.
+ * @version $Id: CreateHostCommand.java,v 1.4 2004/11/14 06:25:52 mikemelia Exp $
  */
 public class CreateHostCommand implements RequestModificationCommand {
     private static int start = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
 
+    /**
+     * @see RequestModificationCommand#execute(HTTPRequest)
+     */
     public void execute(HTTPRequest httpRequest) {
         String uri = httpRequest.getUri();
         String newHost = getHost(uri);

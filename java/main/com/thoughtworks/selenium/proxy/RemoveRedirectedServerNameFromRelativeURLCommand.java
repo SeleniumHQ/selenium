@@ -43,26 +43,20 @@ DAMAGE.
 */
 package com.thoughtworks.selenium.proxy;
 
-import org.jmock.MockObjectTestCase;
-
 /**
- * @version $Id: ClientConnectionThreadTest.java,v 1.4 2004/11/13 06:16:06 ahelleso Exp $
+ * This command fixes the URI for any resources that were requested with a relative address.
+ * @version $Id: RemoveRedirectedServerNameFromRelativeURLCommand.java,v 1.1 2004/11/14 06:25:52 mikemelia Exp $
  */
-public class ClientConnectionThreadTest extends MockObjectTestCase {
-    
-    public void testRequestIsReadAndPassedToTheRelayAndTheResponseIsWrittenAndTheStreamsAreClosed() {
-//        Mock mock = mock(RequestResponseRelay.class);
-//        RequestInput requestStream = (RequestInput) mock.proxy();
-//        ResponseStream responseStream = (ResponseStream) mock.proxy();
-//        Relay relay = (Relay) mock.proxy();
-//
-//        HTTPRequest request = new HTTPRequest("this is a request");
-//        mock.expects(once()).method("read").withNoArguments().will(returnValue(request));
-//        String expectedResponse = "this is the response";
-//        mock.expects(once()).method("relayMessage").with(same(request)).will(returnValue(expectedResponse));
-//        mock.expects(once()).method("write").with(same(expectedResponse));
-//        
-//        ClientConnectionThread thread = new ClientConnectionThread(requestStream, responseStream);
-//        thread.run();
+public class RemoveRedirectedServerNameFromRelativeURLCommand implements RequestModificationCommand {
+    public static int start = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
+    public static String textToReplace = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL +
+                                                 SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER;
+
+    /**
+     * @see RequestModificationCommand#execute(HTTPRequest)
+     */
+    public void execute(HTTPRequest httpRequest) {
+        String uri = httpRequest.getUri();
+        httpRequest.setUri(uri.replaceFirst(textToReplace, ""));
     }
 }

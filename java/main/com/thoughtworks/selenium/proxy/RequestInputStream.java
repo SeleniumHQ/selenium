@@ -49,14 +49,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * @version $Id: RequestInputStream.java,v 1.3 2004/11/13 06:16:05 ahelleso Exp $
+ * @version $Id: RequestInputStream.java,v 1.4 2004/11/14 06:25:52 mikemelia Exp $
  */
 public class RequestInputStream extends BufferedReader implements RequestInput {
     public RequestInputStream(InputStream inputStream) {
         super(new InputStreamReader(inputStream));
     }
 
-    public SeleniumHTTPRequest readRequest() throws IOException {
+    public HTTPRequest readRequest() throws IOException {
         StringBuffer content = new StringBuffer();
         String line = null;
         while ((line = readLine()) != null && line.length() > 0) {

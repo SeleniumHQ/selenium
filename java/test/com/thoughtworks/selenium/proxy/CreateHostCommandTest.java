@@ -46,7 +46,7 @@ package com.thoughtworks.selenium.proxy;
 import junit.framework.TestCase;
 
 /**
- * @version $Id: CreateHostCommandTest.java,v 1.4 2004/11/13 06:16:06 ahelleso Exp $
+ * @version $Id: CreateHostCommandTest.java,v 1.5 2004/11/14 06:25:53 mikemelia Exp $
  */
 public class CreateHostCommandTest extends TestCase {
 
@@ -58,7 +58,7 @@ public class CreateHostCommandTest extends TestCase {
         String dir = "/site/";
         String expectedHost = "www.amazon.com";
         String uri = expectedHost + dir;
-        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: http://" + uri + HTTPRequest.CRLF);
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: http://" + uri + HTTPRequest.CRLF);
         CreateHostCommand command = new CreateHostCommand();
         command.execute(httpRequest);
         assertEquals(expectedHost, httpRequest.getHost());
@@ -67,7 +67,7 @@ public class CreateHostCommandTest extends TestCase {
     public void testHostSetupFromReferrerIfURIRelative() {
         String dir = "/site/";
         String expectedHost = "www.amazon.com";
-        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + dir + HTTPRequest.CRLF +
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + dir + HTTPRequest.CRLF +
                                                   "Referer: http://" + expectedHost + dir + HTTPRequest.CRLF);
         CreateHostCommand command = new CreateHostCommand();
         command.execute(httpRequest);

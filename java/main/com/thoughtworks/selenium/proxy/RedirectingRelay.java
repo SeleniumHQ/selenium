@@ -52,17 +52,16 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * @version $Id: RedirectingRelay.java,v 1.6 2004/11/13 06:16:05 ahelleso Exp $
+ * @version $Id: RedirectingRelay.java,v 1.7 2004/11/14 06:25:52 mikemelia Exp $
  */
 public class RedirectingRelay implements Relay {
     private static final Log LOG = LogFactory.getLog(RedirectingRelay.class);
     private static final String proxy = (String) System.getProperties().get("http.proxyHost");
     private static final String proxyPort = (String) System.getProperties().get("http.proxyPort");
+    private static final int protocolLength = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
     private final RequestInput requestInput;
     private final OutputStream responseStream;
     private final RequestModificationCommand requestModificationCommand;
-    // TODO: what's this? (AH)
-    private static final int MAGIC_NUMBER = 1;
 
     public RedirectingRelay(RequestInput requestInput,
                             OutputStream responseStream,
@@ -74,7 +73,7 @@ public class RedirectingRelay implements Relay {
 
 
     public void relay() throws IOException {
-        SeleniumHTTPRequest request = requestInput.readRequest();
+        HTTPRequest request = requestInput.readRequest();
         if (!hasBeenRedirected(request.getUri())) {
             byte[] redirectMessage = redirectResponse(request).getBytes();
             responseStream.write(redirectMessage);
@@ -88,12 +87,12 @@ public class RedirectingRelay implements Relay {
         return uri.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL + SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER);
     }
 
-    private void sendToIntendedTarget(SeleniumHTTPRequest request) {
+    private void sendToIntendedTarget(HTTPRequest request) {
         requestModificationCommand.execute(request);
         String requestToDest = request.getRequest();
         LOG.debug("Writing\n" + requestToDest);
-        int port = getPort(request.getDestinationPort(), request.getDestinationServer());
-        String dest = getServer(request.getDestinationServer());
+        int port = request.getDestinationPort();
+        String dest = request.getDestinationServer();
         LOG.debug("Connecting to " + dest + " on " + port);
         try {
             Socket destinationSocket = new Socket(dest, port);
@@ -105,20 +104,6 @@ public class RedirectingRelay implements Relay {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private int getPort(int destinationPort, String destinationServer) {
-        if (proxyPort == null || destinationServer.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
-            return destinationPort;
-        }
-        return Integer.parseInt(proxyPort);
-    }
-
-    private String getServer(String destinationServer) {
-        if (proxy == null || destinationServer.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
-            return destinationServer;
-        }
-        return proxy;
     }
 
     private void pump(InputStream in, OutputStream out) throws IOException {
@@ -140,7 +125,7 @@ public class RedirectingRelay implements Relay {
         final String uri = request.getUri();
         String response = protocol + " 302 Moved Temporarily\r\nLocation: " +
                           SeleniumHTTPRequest.SELENIUM_REDIRECT_URI  +
-                          uri.substring(MAGIC_NUMBER) + "\r\n";
+                          uri.substring(protocolLength) + "\r\n";
         LOG.debug("Redirected Response\n" + response);
         return response;
     }

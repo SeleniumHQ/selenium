@@ -47,14 +47,21 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * @version $Id: SetupDestinationDetailsCommand.java,v 1.5 2004/11/13 06:16:05 ahelleso Exp $
+ * @version $Id: SetupDestinationDetailsCommand.java,v 1.6 2004/11/14 06:25:52 mikemelia Exp $
  */
 public class SetupDestinationDetailsCommand implements RequestModificationCommand {
+
+    private final String proxy = (String) System.getProperties().get("http.proxyHost");
+    private final String proxyPort = (String) System.getProperties().get("http.proxyPort");
+    /**
+     * @see RequestModificationCommand#execute(HTTPRequest)
+     */
     public void execute(HTTPRequest httpRequest) {
         try {
             URI uri = new URI(SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL + httpRequest.getHost());
-            httpRequest.setDestinationServer(uri.getHost());
-            httpRequest.setDestinationPort(getPort(uri));
+            String host = uri.getHost();
+            httpRequest.setDestinationServer(getServer(host));
+            httpRequest.setDestinationPort(getPort(getPort(uri), host));
         } catch (URISyntaxException e) {
             throw new IllegalStateException("Should have a valid host");
         }
@@ -63,5 +70,18 @@ public class SetupDestinationDetailsCommand implements RequestModificationComman
     private int getPort(URI uri) {
         int port = uri.getPort();
         return port == -1 ? 80 : port;
+    }
+    private int getPort(int destinationPort, String destinationServer) {
+        if (proxyPort == null || destinationServer.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
+            return destinationPort;
+        }
+        return Integer.parseInt(proxyPort);
+    }
+
+    private String getServer(String destinationServer) {
+        if (proxy == null || destinationServer.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
+            return destinationServer;
+        }
+        return proxy;
     }
 }

@@ -46,8 +46,8 @@ package com.thoughtworks.selenium.proxy;
 import java.io.IOException;
 
 /**
- * @version $Id: RequestInput.java,v 1.3 2004/11/13 06:16:05 ahelleso Exp $
+ * @version $Id: RequestInput.java,v 1.4 2004/11/14 06:25:52 mikemelia Exp $
  */
 public interface RequestInput {
-    public SeleniumHTTPRequest readRequest() throws IOException;
+    public HTTPRequest readRequest() throws IOException;
 }

@@ -44,15 +44,22 @@ DAMAGE.
 package com.thoughtworks.selenium.proxy;
 
 /**
- * @version $Id: RemoveLocalhostServerNameFromRelativeURLCommand.java,v 1.3 2004/11/13 06:16:05 ahelleso Exp $
+ * This command removes the server name from the URI if the target server is hosted on the same machine as
+ * Selenium. This means that we can proxy to the Selenium TinyWebServer.
+ * @version $Id: RemoveServerNameForSameServerTargetCommand.java,v 1.1 2004/11/14 06:25:52 mikemelia Exp $
  */
-public class RemoveLocalhostServerNameFromRelativeURLCommand implements RequestModificationCommand {
+public class RemoveServerNameForSameServerTargetCommand implements RequestModificationCommand {
     public static int start = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
-    public static String textToReplace = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL +
-                                                 SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER;
-    
+    public static String sameServerAsSelenium = (SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL +
+                                                 SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME).toUpperCase();
+
+    /**
+     * @see RequestModificationCommand#execute(HTTPRequest)
+     */
     public void execute(HTTPRequest httpRequest) {
         String uri = httpRequest.getUri();
-        httpRequest.setUri(uri.replaceFirst(textToReplace, ""));
+        if (uri.toUpperCase().startsWith(sameServerAsSelenium)) {
+            httpRequest.setUri(uri.substring(uri.indexOf('/', start)));
+        }
     }
 }

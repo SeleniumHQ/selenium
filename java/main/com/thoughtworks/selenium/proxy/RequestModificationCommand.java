@@ -45,8 +45,11 @@ package com.thoughtworks.selenium.proxy;
 
 /**
  * Defines the common interface for commands.
- * @version $Id: RequestModificationCommand.java,v 1.3 2004/11/13 06:16:05 ahelleso Exp $
+ * @version $Id: RequestModificationCommand.java,v 1.4 2004/11/14 06:25:52 mikemelia Exp $
  */
 public interface RequestModificationCommand {
+    /**
+     * @param httpRequest the request to modify.
+     */
     public void execute(HTTPRequest httpRequest);
 }

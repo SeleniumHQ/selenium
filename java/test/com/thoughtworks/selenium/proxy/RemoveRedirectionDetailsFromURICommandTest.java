@@ -43,18 +43,24 @@ DAMAGE.
 */
 package com.thoughtworks.selenium.proxy;
 
+import junit.framework.TestCase;
+
 /**
- * @version $Id: RemoveLocalhostServerNameCommand.java,v 1.3 2004/11/13 06:16:05 ahelleso Exp $
+ * @version $Id: RemoveRedirectionDetailsFromURICommandTest.java,v 1.1 2004/11/14 06:25:53 mikemelia Exp $
  */
-public class RemoveLocalhostServerNameCommand implements RequestModificationCommand {
-    public static int start = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
-    public static String sameServerAsSelenium = (SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL +
-                                                 SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME).toUpperCase();
-    
-    public void execute(HTTPRequest httpRequest) {
-        String uri = httpRequest.getUri();
-        if (uri.toUpperCase().startsWith(sameServerAsSelenium)) {
-            httpRequest.setUri(uri.substring(uri.indexOf('/', start)));
-        }
+public class RemoveRedirectionDetailsFromURICommandTest extends TestCase {
+
+    public void testIsARequestModificationCommand() {
+        assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveRedirectionDetailsFromURICommand.class));
+    }
+
+    public void testProxyDetailsRemovedFromUri() {
+        String uri = "www.amazon.com/site/";
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI +
+                                                  uri + HTTPRequest.CRLF);
+        RemoveRedirectionDetailsFromURICommand command = new RemoveRedirectionDetailsFromURICommand();
+        command.execute(httpRequest);
+        String expectedUri = "http://" + uri;
+        assertEquals(expectedUri, httpRequest.getUri());
     }
 }
