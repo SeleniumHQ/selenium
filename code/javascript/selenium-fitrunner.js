@@ -33,9 +33,6 @@ runAllTests = false;
 testFailed = false;
 suiteFailed = false;
 
-// Test Suite name got from query string
-testSuiteName = "";
-
 // Holds variables that are stored in a script
 storedVars = new Object();
 
@@ -89,6 +86,16 @@ function loadAndRunIfAuto() {
     loadSuiteFrame();
 }
 
+function getQueryParameter(searchKey) {
+    var clauses = location.search.substr(1).split('&');
+    for (var i = 0; i < clauses.length; i++) {
+        var keyValuePair = clauses[i].split('=',2);
+        var key = unescape(keyValuePair[0]);
+        var value = unescape(keyValuePair[1]);
+        if (key == searchKey) return value;
+    }
+}
+
 function loadSuiteFrame() {
     var testAppFrame = document.getElementById('myiframe');
     browserbot = new BrowserBot(testAppFrame);
@@ -100,9 +107,9 @@ function loadSuiteFrame() {
     document.getElementById('modeStep').onclick = setRunInterval;
     document.getElementById('continueTest').onclick = continueCurrentTest;
 
-    testSuiteName = getQueryStringTestName();
+    var testSuiteName = getQueryParameter("test");
 
-    if( testSuiteName != "" ) {
+    if (testSuiteName) {
         addLoadListener(getSuiteFrame(), loadTestFrame);
         getSuiteFrame().src = testSuiteName;
     } else {
@@ -160,18 +167,6 @@ function addOnclick(suiteTable, rowNum) {
 
         return false;
     };
-}
-
-function getQueryStringTestName() {
-    testName = "";
-    myVars = location.search.substr(1).split('&');
-    for (var i =0;i < myVars.length; i++) {
-        nameVal = myVars[i].split('=')
-        if( nameVal[0] == "test" ) {
-            testName="/" + nameVal[1];
-        }
-    }
-    return testName;
 }
 
 function isAutomatedRun() {
@@ -298,7 +293,11 @@ function setResultsData(suiteTable, row) {
     suiteTable.rows[row].appendChild(new_column);
 }
 
-// Post the results to /postResults.  The parameters are:
+// Post the results to a servlet, CGI-script, etc.  The URL of the
+// results-handler defaults to "/postResults", but an alternative location
+// can be specified by providing a "resultsUrl" query parameter.
+//
+// Parameters passed to the results-handler are:
 //      result:         passed/failed depending on whether the suite passed or failed
 //      totalTime:      the total running time in seconds for the suite.
 //
@@ -311,58 +310,69 @@ function setResultsData(suiteTable, row) {
 //
 //      suite:      the suite table, including the hidden column of test results
 //      testTable.1 to testTable.N: the individual test tables
+//
 function postTestResults(suiteFailed, suiteTable) {
+    
     form = document.createElement("form");
+    document.body.appendChild(form);
+    
     form.id = "resultsForm";
-    form.action = "/postResults"
     form.method="post";
-    form.enctype="multipart/form-data"
+        
+    var resultsUrl = getQueryParameter("resultsUrl");
+    if (!resultsUrl) {
+        resultsUrl = "/postResults";
+    }
 
-    resultInput = createInputField("result", suiteFailed == true ? "failed" : "passed");
-    form.appendChild(resultInput);
+    var actionAndParameters = resultsUrl.split('?',2);
+    form.action = actionAndParameters[0];
+    var resultsUrlQueryString = actionAndParameters[1];
 
-    timeInput = createInputField("totalTime", Math.floor((currentTime - startTime) / 1000));
-    form.appendChild(timeInput);
+    form.createHiddenField = function(name, value) {
+        input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        this.appendChild(input);
+    }
 
-    testPassesInput = createInputField("numTestPasses", numTestPasses);
-    form.appendChild(testPassesInput);
-
-    testFailuresInput = createInputField("numTestFailures", numTestFailures);
-    form.appendChild(testFailuresInput);
-
-    commandPassesInput = createInputField("numCommandPasses", numCommandPasses);
-    form.appendChild(commandPassesInput);
-
-    commandFailuresInput = createInputField("numCommandFailures", numCommandFailures);
-    form.appendChild(commandFailuresInput);
-
-    commandErrorsInput = createInputField("numCommandErrors", numCommandErrors);
-    form.appendChild(commandErrorsInput);
-
-    suiteInput = createInputField("suite", escape(suiteTable.parentNode.innerHTML));
-    form.appendChild(suiteInput);
-
-    // Create an input for each test table.  The inputs are named testTable.1, testTable.2, etc.
-    for (rowNum = 1;rowNum < suiteTable.rows.length;rowNum++) {
-        // If there is a second column, then add a new input
-        if (suiteTable.rows[rowNum].cells.length > 1) {
-            testInput = createInputField("testTable." + rowNum, escape(getText(suiteTable.rows[rowNum].cells[1])));
-            form.appendChild(testInput);
+    if (resultsUrlQueryString) {
+        var clauses = resultsUrlQueryString.split('&');
+        for (var i = 0; i < clauses.length; i++) {
+            var keyValuePair = clauses[i].split('=',2);
+            var key = unescape(keyValuePair[0]);
+            var value = unescape(keyValuePair[1]);
+            form.createHiddenField(key, value);
         }
     }
 
-    document.body.appendChild(form);
+    form.createHiddenField("result", suiteFailed == true ? "failed" : "passed");
+
+    form.createHiddenField("totalTime", Math.floor((currentTime - startTime) / 1000));
+    form.createHiddenField("numTestPasses", numTestPasses);
+    form.createHiddenField("numTestFailures", numTestFailures);
+    form.createHiddenField("numCommandPasses", numCommandPasses);
+    form.createHiddenField("numCommandFailures", numCommandFailures);
+    form.createHiddenField("numCommandErrors", numCommandErrors);
+
+    // Create an input for each test table.  The inputs are named
+    // testTable.1, testTable.2, etc.
+    for (rowNum = 1; rowNum < suiteTable.rows.length;rowNum++) {
+        // If there is a second column, then add a new input
+        if (suiteTable.rows[rowNum].cells.length > 1) {
+            var resultCell = suiteTable.rows[rowNum].cells[1];
+            form.createHiddenField("testTable." + rowNum, getText(resultCell));
+            // remove the resultCell, so it's not included in the suite HTML
+            resultCell.parentNode.removeChild(resultCell); 
+        }
+    }
+
+    // Add HTML for the suite itself
+    form.createHiddenField("suite", suiteTable.parentNode.innerHTML);
 
     form.submit();
-}
-
-function createInputField(name, value) {
-    input = document.createElement("input");
-    input.type = "hidden";
-    input.name = name;
-    input.value = value;
-
-    return input;
+    document.body.removeChild(form);
+    
 }
 
 function printMetrics() {
@@ -562,6 +572,3 @@ Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
     }
 
 }
-
-
-
