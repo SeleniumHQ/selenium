@@ -141,7 +141,7 @@ BrowserBot.prototype.getCurrentPage = function() {
         oldShowModalDialog = window.showModalDialog;
 
         window.showModalDialog = function(url, args, features) {
-            var fullURL = "/TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url);
+            var fullURL = "/TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runInterval;
             browserBot.modalDialogTest = null;
 
             var returnValue = oldShowModalDialog(fullURL, args, features);
