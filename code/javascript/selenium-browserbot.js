@@ -53,6 +53,16 @@ function SelfRemovingLoadListener(fn, frame) {
         }
     };
 }
+
+function createBrowserBot(frame, executionContext) {
+    if (isIE) {
+        return new IEBrowserBot(frame, executionContext);
+    }
+    else {
+        return new MozillaBrowserBot(frame, executionContext);
+    }
+}
+
 BrowserBot = function(frame, executionContext) {
     this.frame = frame;
     this.executionContext = executionContext;
@@ -63,7 +73,6 @@ BrowserBot = function(frame, executionContext) {
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
     this.nextConfirmResult = true;
-
 };
 
 BrowserBot.prototype.doModalDialogTest = function(test) {
@@ -126,7 +135,7 @@ BrowserBot.prototype.getCurrentPage = function() {
         }
         this.modifyWindowToRecordPopUpDialogs(testWindow, this);
         this.modifyWindowToClearPageCache(testWindow, this);
-        this.currentPage =  new PageBot(testWindow);
+        this.currentPage = this.createPageBot(testWindow);
     }
 
     return this.currentPage;
@@ -173,26 +182,21 @@ BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
     }
 };
 
-function createBrowserBot(frame, executionContext) {
-    if (isIE) {
-        return new IEBrowserBot(frame, executionContext);
-    }
-    else {
-        return new MozillaBrowserBot(frame, executionContext);
-    }
-}
-
 function MozillaBrowserBot(frame, executionContext) {
-    this.base = BrowserBot;
-    this.base(frame, executionContext);
+    BrowserBot.call(this, frame, executionContext);
 }
 MozillaBrowserBot.prototype = new BrowserBot;
+MozillaBrowserBot.prototype.createPageBot = function(testWindow) {
+    return new MozillaPageBot(testWindow);
+};
 
 function IEBrowserBot(frame, executionContext) {
-    this.base = BrowserBot;
-    this.base(frame, executionContext);
+    BrowserBot.call(this, frame, executionContext);
 }
 IEBrowserBot.prototype = new BrowserBot;
+IEBrowserBot.prototype.createPageBot = function(testWindow) {
+    return new IEPageBot(testWindow);
+};
 
 IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     BrowserBot.prototype.modifyWindowToRecordPopUpDialogs(windowToModify, browserBot);
@@ -211,25 +215,34 @@ IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModif
         browserBot.modalDialogTest = null;
 
         var returnValue = oldShowModalDialog(fullURL, args, features);
-        //windowToModify.open(fullURL);
-        //alert(returnValue);
         return returnValue;
     };
 };
 
-
 PageBot = function(pageWindow) {
-    this.currentWindow = pageWindow;
-    this.currentDocument = pageWindow.document;
-    this.location = pageWindow.location.pathname;
-    this.title = function() {return this.currentDocument.title;};
+    if (pageWindow) {
+        this.currentWindow = pageWindow;
+        this.currentDocument = pageWindow.document;
+        this.location = pageWindow.location.pathname;
+        this.title = function() {return this.currentDocument.title;};
 
-    this.locators = new Array();
-    this.locators.push(this.findIdentifiedElement);
-    this.locators.push(this.findElementByDomTraversal);
-    this.locators.push(this.findElementByXPath);
-    this.locators.push(this.findLink);
+        this.locators = new Array();
+        this.locators.push(this.findIdentifiedElement);
+        this.locators.push(this.findElementByDomTraversal);
+        this.locators.push(this.findElementByXPath);
+        this.locators.push(this.findLink);
+    }
 };
+
+MozillaPageBot = function(pageWindow) {
+    PageBot.call(this, pageWindow);
+};
+MozillaPageBot.prototype = new PageBot();
+
+IEPageBot = function(pageWindow) {
+    PageBot.call(this, pageWindow);
+};
+IEPageBot.prototype = new PageBot();
 
 /*
 * Finds an element on the current page, using various lookup protocols
@@ -241,7 +254,6 @@ PageBot.prototype.findElement = function(locator) {
         return element;
     } else {
         for (var i = 0; i < this.currentWindow.frames.length; i++) {
-            //alert("looking for " + locator + " in " + this.currentDocument.frames[i].location.href);
             element = this.findElementInDocument(locator, this.currentWindow.frames[i].document);
             if (element != null) {
                 return element;
@@ -250,7 +262,7 @@ PageBot.prototype.findElement = function(locator) {
     }
 
     // Element was not found by any locator function.
-    throw new Error("Element " + locator + " not found");
+    throw new AssertionFailedError("Element " + locator + " not found");
 };
 
 PageBot.prototype.findElementInDocument = function(locator, inDocument) {
@@ -266,25 +278,34 @@ PageBot.prototype.findElementInDocument = function(locator, inDocument) {
 
 /*
 * In IE, getElementById() also searches by name.
-* To provied consistent functionality with Firefox, we
+*/
+IEPageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
+    try {
+        return inDocument.getElementById(identifier);
+    } catch (e) {
+        return null;
+    }
+};
+
+/*
+* In Mozilla, getElementById() does not search by name.
+* To provied consistent functionality with IE, we
 * search by name attribute if an element with the id isn't found.
 */
-PageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
-    // Since we try to get an id with _any_ string, we need to handle
-    // cases where this causes an exception.
+MozillaPageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
     try {
         var element = inDocument.getElementById(identifier);
-        if (element == null
-            && !isIE) // IE checks this without asking
+        if (element == null)
         {
             if ( document.evaluate ) {// DOM3 XPath
                 var xpath = "//*[@name='" + identifier + "']";
                 element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
             }
-	    // Search through all elements for Konqueror/Safari
-            else if (document.all) {
-                for (var i = 0; i < inDocument.all.length; i++) {
-                    var testElement = inDocument.all[i];
+	        // Search through all elements for Konqueror/Safari
+            else {
+                var allElements = inDocument.getElementsByTagName("*");
+                for (var i = 0; i < allElements.length; i++) {
+                    var testElement = allElements[i];
                     if (testElement.name && testElement.name === identifier) {
                         element = testElement;
                         break;
@@ -329,13 +350,7 @@ PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
         return null;
     }
 
-    // If the document doesn't support XPath, mod it with html-xpath.
-    // This only works for IE.
-    if (!inDocument.evaluate) {
-        addXPathSupport(inDocument);
-    }
-
-    // If we still don't have XPath bail.
+    // If don't have XPath bail.
     // TODO implement subset of XPath for browsers without native support.
     if (!inDocument.evaluate) {
         throw new Error("XPath not supported");
@@ -347,6 +362,21 @@ PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
     }
 
     return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+};
+
+/**
+ * For IE, we implement XPath support using the html-xpath library.
+ */
+IEPageBot.prototype.findElementByXPath = function(xpath, inDocument) {
+    if (xpath.indexOf("//") != 0) {
+        return null;
+    }
+
+    if (!inDocument.evaluate) {
+        addXPathSupport(inDocument);
+    }
+
+    return PageBot.prototype.findElementByXPath(xpath, inDocument);
 };
 
 /**
@@ -414,45 +444,53 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'blur', false);
 };
 
-PageBot.prototype.clickElement = function(element) {
+MozillaPageBot.prototype.clickElement = function(element) {
 
     triggerEvent(element, 'focus', false);
 
-    var wasChecked = element.checked;
-    if (isIE) {
-        element.click();
+    // Add an event listener that detects if the default action has been prevented.
+    // (This is caused by a javascript onclick handler returning false)
+    var preventDefault = false;
+    if (geckoVersion) {
+        element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
     }
-    else {
-        // Add an event listener that detects if the default action has been prevented.
-        // (This is caused by a javascript onclick handler returning false)
-        var preventDefault = false;
-        if (geckoVersion) {
-            element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
+
+    // Trigger the click event.
+    triggerMouseEvent(element, 'click', true);
+
+    // In FireFox < 1.0 Final, and Mozilla <= 1.7.3, just sending the click event is enough.
+    // But in newer versions, we need to do it ourselves.
+    var needsProgrammaticClick = (geckoVersion > '20041025');
+    // Perform the link action if preventDefault was set.
+    if (needsProgrammaticClick && !preventDefault) {
+        // Try the element itself, as well as it's parent - this handles clicking images inside links.
+        if (element.href) {
+            this.currentWindow.location.href = element.href;
         }
-
-        // Trigger the click event.
-        triggerMouseEvent(element, 'click', true);
-
-        // In FireFox < 1.0 Final, and Mozilla <= 1.7.3, just sending the click event is enough.
-        // But in newer versions, we need to do it ourselves.
-        var needsProgrammaticClick = (geckoVersion > '20041025');
-        // Perform the link action if preventDefault was set.
-        if (needsProgrammaticClick && !preventDefault) {
-            // Try the element itself, as well as it's parent - this handles clicking images inside links.
-            if (element.href) {
-                this.currentWindow.location.href = element.href;
-            }
-            else if (element.parentNode.href) {
-                this.currentWindow.location.href = element.parentNode.href;
-            }
+        else if (element.parentNode.href) {
+            this.currentWindow.location.href = element.parentNode.href;
         }
     }
 
     if (this.windowClosed()) {
         return;
     }
+
+    triggerEvent(element, 'blur', false);
+};
+
+IEPageBot.prototype.clickElement = function(element) {
+
+    triggerEvent(element, 'focus', false);
+
+    var wasChecked = element.checked;
+    element.click();
+
+    if (this.windowClosed()) {
+        return;
+    }
     // Onchange event is not triggered automatically in IE.
-    if (isIE && isDefined(element.checked) && wasChecked != element.checked) {
+    if (isDefined(element.checked) && wasChecked != element.checked) {
         triggerEvent(element, 'change', true);
     }
 
@@ -515,8 +553,6 @@ PageBot.prototype.setContext = function(strContext) {
      //set the current test title
     context.innerHTML=strContext;
 };
-
-
 
 function isDefined(value) {
     return typeof(value) != undefined;
