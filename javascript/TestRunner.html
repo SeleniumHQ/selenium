@@ -8,15 +8,9 @@ http-equiv="content-type">
 <script type="text/javascript" src="selenium-api.js"></script>
 <script type="text/javascript" src="selenium-fitrunner.js"></script>
 <script type="text/javascript" src="htmlutils.js"></script>
-<script type="text/javascript">
-var browserbot = new BrowserBot();
-var testApp = new TestApp(browserbot);
-</script>
 </head>
 
-
 <body onLoad="javascript:loadSuiteFrame();">
-
 
 <button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">run functional test</button>
 <button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">run test suite</button>

@@ -60,6 +60,9 @@ function getTestFrame(){
 
 function loadSuiteFrame()
 {
+        browserbot = new BrowserBot(document.getElementById('myiframe'));
+        testApp = new TestApp(browserbot);
+
 	testSuiteName = getQueryStringTestName();
 
 	if( testSuiteName != "" ) {
