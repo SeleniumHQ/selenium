@@ -19,26 +19,28 @@
 	</table>
 </DIV>
 <DIV class="container">&nbsp;
-	<DIV class="rightbar">
-		<table border="0" cellpadding="2" cellspacing="0">
-			<tr>
-				<td class="smalltext" align="left"><img src="index_files/icon_printer.gif" border="0" alt="Printer"/>
-				&nbsp<a href="<%= request.getRequestURI() %>?printable=true">Printer friendly form of this page</a></td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td class="newshead" align="left"><u>Latest News:</u></td>
-			</tr>			
-			<tr>
-				<td class="newstext" align="left">12.04.04<br>&nbsp;&nbsp;- Selenium v0.1.3 available for <a href="http://gforge.public.thoughtworks.org/project/showfiles.php?group_id=1028">download</a></td>
-			</tr>
-			<tr>
-				<td class="newstext" align="left">11.19.04<br>&nbsp;&nbsp;- New <A href="contact.html">mailing</a> lists created</td>
-			</tr>			
-		</table>
-	</DIV>
+	<table align="right" border="0" cellpadding="2" cellspacing="0">
+		<tr>
+			<td class="smalltext" align="left"><img src="index_files/icon_printer.gif" border="0" alt="Printer"/>
+			&nbsp<a href="<%= request.getRequestURI() %>?printable=true">Printer friendly form of this page</a></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="newshead" align="left"><u>Latest News:</u></td>
+		</tr>			
+		<tr>
+			<td class="newstext" align="left">12.14.04<br>&nbsp;&nbsp;- FAQ's are now on <A href="http://confluence.public.thoughtworks.org/display/SEL/Home">Selenium Confluence</a></td>
+		</tr>			
+		<tr>
+			<td class="newstext" align="left">12.04.04<br>&nbsp;&nbsp;- Selenium v0.1.3 available for <a href="http://gforge.public.thoughtworks.org/project/showfiles.php?group_id=1028">download</a></td>
+		</tr>
+		<tr>
+			<td class="newstext" align="left">11.19.04<br>&nbsp;&nbsp;- New <A href="contact.html">mailing</a> lists created</td>
+		</tr>			
+	</table>
+	
 	<DIV id=menu>
 		<UL id=menulist>
 			<LI><A href="index.html">home</A></LI>
