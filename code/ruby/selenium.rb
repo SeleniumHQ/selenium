@@ -57,7 +57,7 @@ module Selenium
         if nil != result
           if "OK" != result
             if "PASSED" != result
-              raise RuntimeError, result
+              raise SeleniumCommandError, result
             end
           end
         end
@@ -120,5 +120,8 @@ module Selenium
     def proxy
       SeleneseInterpreter.new(@in_queue, @out_queue, @timeout)
     end
+  end
+   
+  class SeleniumCommandError < RuntimeError 
   end
 end
