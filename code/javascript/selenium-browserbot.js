@@ -27,9 +27,17 @@
 // The window to which the commands will be sent.  For example, to click on a
 // popup window, first select that window, and then do a normal click command.
 
+
+// Although it's generally better web development practice not to use browser-detection
+// (feature detection is better), the subtle browser differences that Selenium has to
+// work around seem to make it necessary. Maybe as we learn more about what we need,
+// we can do this in a more "feature-centric" rather than "browser-centric" way.
+// TODO we should probably reuse an available browser-detection library
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
 var isKonqueror = (browserName == "Konqueror");
+var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
+
 // Get the Gecko version as an 8 digit date.
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
@@ -56,24 +64,34 @@ function SelfRemovingLoadListener(fn, frame) {
 }
 
 function createBrowserBot(frame, executionContext) {
-    switch (browserName) {
-        case "Microsoft Internet Explorer":
-            return new IEBrowserBot(frame, executionContext);
-        case "Konqueror":
-            return new KonquerorBrowserBot(frame, executionContext);
-        default:
-            return new MozillaBrowserBot(frame, executionContext);
+    if (isIE) {
+        return new IEBrowserBot(frame, executionContext);
+    }
+    else if (isKonqueror) {
+        return new KonquerorBrowserBot(frame, executionContext);
+    }
+    else if (isSafari) {
+        return new SafariBrowserBot(frame, executionContext);
+    }
+    else {
+        // Use mozilla by default
+        return new MozillaBrowserBot(frame, executionContext);
     }
 }
 
 function createPageBot(windowObject) {
-    switch (browserName) {
-        case "Microsoft Internet Explorer":
-            return new IEPageBot(windowObject);
-        case "Konqueror":
-            return new KonquerorPageBot(windowObject);
-        default:
-            return new MozillaPageBot(windowObject);
+    if (isIE) {
+        return new IEPageBot(windowObject);
+    }
+    else if (isKonqueror) {
+        return new KonquerorPageBot(windowObject);
+    }
+    else if (isSafari) {
+        return new SafariPageBot(windowObject);
+    }
+    else {
+        // Use mozilla by default
+        return new MozillaPageBot(windowObject);
     }
 }
 
@@ -206,6 +224,11 @@ function KonquerorBrowserBot(frame, executionContext) {
 }
 KonquerorBrowserBot.prototype = new BrowserBot;
 
+function SafariBrowserBot(frame, executionContext) {
+    BrowserBot.call(this, frame, executionContext);
+}
+SafariBrowserBot.prototype = new BrowserBot;
+
 function IEBrowserBot(frame, executionContext) {
     BrowserBot.call(this, frame, executionContext);
 }
@@ -258,6 +281,11 @@ KonquerorPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
 };
 KonquerorPageBot.prototype = new PageBot();
+
+SafariPageBot = function(pageWindow) {
+    PageBot.call(this, pageWindow);
+};
+SafariPageBot.prototype = new PageBot();
 
 IEPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
@@ -511,20 +539,60 @@ KonquerorPageBot.prototype.clickElement = function(element) {
 
     triggerEvent(element, 'focus', false);
 
-    // TODO: Add an event listener that detects if the default action has been prevented.
-    // (This is caused by a javascript onclick handler returning false)
-    // I think there will be a bug where a checkbox will get checked even if it's onclick returns false.
-
-    // Change the value of checkboxes and radios (this doesn't just work in Konq)
-    if (element.type == "checkbox") {
-        element.checked = !element.checked;
+    if (element.click) {
+        element.click();
     }
-    else if (element.type == "radio") {
-        if (!element.checked) {
-            element.checked = true;
+    else {
+        triggerMouseEvent(element, 'click', true);
+    }
+
+    if (this.windowClosed()) {
+        return;
+    }
+
+    triggerEvent(element, 'blur', false);
+};
+
+SafariPageBot.prototype.clickElement = function(element) {
+
+    triggerEvent(element, 'focus', false);
+
+    // For form element it is simple.
+    if (element.click) {
+        alert('simple click');
+        element.click();
+    }
+    // For links and other elements, event emulation is required.
+    else {
+        alert('emulate click');
+        triggerEvent(element, 'click', true);
+
+        // Unfortunately, triggering the event doesn't seem to activate onclick handlers.
+        // We currently call onclick for the link, but I'm guessing that the onclick for containing
+        // elements is not being called.
+        var success = true;
+        if (element.onclick) {
+            var onclickResult = element.onclick();
+            if (onclickResult === false) {
+                success = false;
+            }
+        }
+
+        if (success) {
+            // Try the element itself, as well as it's parent - this handles clicking images inside links.
+            if (element.href) {
+                this.currentWindow.location.href = element.href;
+            }
+            else if (element.parentNode.href) {
+                this.currentWindow.location.href = element.parentNode.href;
+            } else {
+                // This is true for buttons outside of forms, and maybe others.
+                // Just ignore this case for now...
+                // TODO - work out if we need better handling here...
+                alert(describe(element));
+            }
         }
     }
-    triggerMouseEvent(element, 'click', true);
 
     if (this.windowClosed()) {
         return;

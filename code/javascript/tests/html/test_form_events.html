@@ -27,7 +27,7 @@ function recordEvent(e) {
 	if (!e) var e = window.event;
 	var targetString = this.id;
 	var eventMessage = '{' + e.type + '(' + targetString + ')} ';
-    document.getElementById('eventlog').value += eventMessage;
+    log(eventMessage);
     return true;
 }
 
@@ -50,6 +50,10 @@ function setupEventRecorders() {
     attachEventRecorders('theButton');
     attachEventRecorders('theSubmit');
     attachEventRecorders('theLink');
+    document.theForm.onsubmit = function() {
+        log('{submit} ');
+        return false;
+    }
 }
 
 // This functionality is only provided for manual clickety-click assessing of events.
@@ -64,12 +68,16 @@ function setupFormEventRecorders(enable) {
     formElement.onblur=recorder;
 }
 
+function log(message) {
+    document.getElementById('eventlog').value += message;
+}
+
 -->
 </script>
 </head>
 <body id="theBody" onload="setupEventRecorders()">
 <img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
-<form id="theForm" name="theForm" onsubmit="return false">
+<form id="theForm" name="theForm" onsubmit="return false;">
 <input name="theTextbox" id="theTextbox" type="text" value=""/>
 <input name="theCheckbox" id="theCheckbox" type="checkbox"/>
 <input name="theRadio" id="theRadio1" type="radio" value="radio1"/><input name="theRadio" id="theRadio2" type="radio" value="theRadio"/>
