@@ -18,7 +18,7 @@ if not interpreter:
     interpreter = registry.getComponent(SeleniumInterpreter)
 
 class XMLRPCinterface(xmlrpc.XMLRPC):
-
+    """ XML-RPC methods for the selenium interpreter """
     #
     # Command queue methods
     #
@@ -47,8 +47,8 @@ class XMLRPCinterface(xmlrpc.XMLRPC):
     # Misc. methods
     #
     def xmlrpc_setTimeout(self, timeout):
-        """ Set the timeout period in seconds that a browser or driver should
-        wait before timing out"""
+        """ Set the timeout period in seconds for requests 
+        from a web browser or driver """
         return deferToThread(interpreter.setTimeout, timeout)
 
     def xmlrpc_apiDriver(self,command_string):
