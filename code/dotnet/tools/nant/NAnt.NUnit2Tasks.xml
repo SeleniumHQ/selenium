@@ -1,0 +1,599 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NAnt.NUnit2Tasks</name>
+    </assembly>
+    <members>
+        <member name="T:NAnt.NUnit2.Types.Category">
+            <summary>
+            Represents a certain group of test cases or fixtures.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.Category.CategoryName">
+            <summary>
+            A name of a category, or comma-separated list of names.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.Category.IfDefined">
+            <summary>
+            If <see langword="true" /> then the category will be processed;
+            otherwise, skipped. The default is <see langword="true" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.Category.UnlessDefined">
+            <summary>
+            If <see langword="true" /> then the category will be skipped;
+            otherwise, processed. The default is <see langword="false" />.
+            </summary>
+        </member>
+        <member name="T:NAnt.NUnit2.Types.CategoryCollection">
+            <summary>
+            Contains a collection of <see cref="T:NAnt.NUnit2.Types.Category"/> items.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:NAnt.NUnit2.Types.CategoryEnumerator"/> for the entire collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.ToString">
+            <summary>
+            Returns a comma-delimited list of categories.
+            </summary>
+            <returns>
+            A comma-delimited list of categories, or an empty 
+            <see cref="T:System.String"/> if there are no categories.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.System#Collections#IList#Insert(System.Int32,System.Object)">
+            <summary>
+            Inserts a <see cref="T:NAnt.NUnit2.Types.Category"/> into the collection at the
+            specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.System#Collections#IList#Remove(System.Object)">
+            <summary>
+            Removes the specified <see cref="T:NAnt.NUnit2.Types.Category"/> from the
+            collection.
+            </summary>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> to remove from the collection.</param>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.System#Collections#IList#Contains(System.Object)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.NUnit2.Types.Category"/> is in the collection.
+            </summary>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="value"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.System#Collections#IList#IndexOf(System.Object)">
+            <summary>
+            Gets the location of a <see cref="T:NAnt.NUnit2.Types.Category"/> in the collection.
+            </summary>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> object to locate.</param> 
+            <returns>
+            The zero-based location of the <see cref="T:NAnt.NUnit2.Types.Category"/> in the
+            collection.
+            </returns>
+            <remarks>
+            If the <see cref="T:NAnt.NUnit2.Types.Category"/> is not currently a member of 
+            the collection, -1 is returned.
+            </remarks>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.System#Collections#IList#Add(System.Object)">
+            <summary>
+            Adds a <see cref="T:NAnt.NUnit2.Types.Category"/> to the end of the collection.
+            </summary>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> to be added to the end of the collection.</param> 
+            <returns>
+            The position into which the new item was inserted.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.AddRange(NAnt.NUnit2.Types.CategoryCollection)">
+            <summary>
+            Adds the items of a <see cref="T:NAnt.NUnit2.Types.CategoryCollection"/> to the end of the collection.
+            </summary>
+            <param name="items">The <see cref="T:NAnt.NUnit2.Types.CategoryCollection"/> to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.Add(NAnt.NUnit2.Types.Category)">
+            <summary>
+            Adds a <see cref="T:NAnt.NUnit2.Types.Category"/> to the end of the collection.
+            </summary>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> to be added to the end of the collection.</param> 
+            <returns>
+            The position into which the new item was inserted.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.Insert(System.Int32,NAnt.NUnit2.Types.Category)">
+            <summary>
+            Inserts a <see cref="T:NAnt.NUnit2.Types.Category"/> into the collection at the
+            specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.Remove(NAnt.NUnit2.Types.Category)">
+            <summary>
+            Removes the specified <see cref="T:NAnt.NUnit2.Types.Category"/> from the
+            collection.
+            </summary>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> to remove from the collection.</param>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.Contains(NAnt.NUnit2.Types.Category)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.NUnit2.Types.Category"/> is in the collection.
+            </summary>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="value"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryCollection.IndexOf(NAnt.NUnit2.Types.Category)">
+            <summary>
+            Gets the location of a <see cref="T:NAnt.NUnit2.Types.Category"/> in the collection.
+            </summary>
+            <param name="value">The <see cref="T:NAnt.NUnit2.Types.Category"/> object to locate.</param> 
+            <returns>
+            The zero-based location of the <see cref="T:NAnt.NUnit2.Types.Category"/> in the
+            collection.
+            </returns>
+            <remarks>
+            If the <see cref="T:NAnt.NUnit2.Types.Category"/> is not currently a member of 
+            the collection, -1 is returned.
+            </remarks>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.CategoryCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the item at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the item to get or set.</param>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.CategoryCollection.Item(System.String)">
+            <summary>
+            Gets the <see cref="T:NAnt.NUnit2.Types.Category"/> with the specified name.
+            </summary>
+            <param name="value">The name of the <see cref="T:NAnt.NUnit2.Types.Category"/> to get.</param>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.CategoryCollection.ItemType">
+            <summary>
+            Gets the <see cref="T:System.Type"/> of the items in this collection.
+            </summary>
+            <value>
+            The <see cref="T:System.Type"/> of the items in this collection.
+            </value>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.CategoryCollection.System#Collections#IList#$Item$(System.Int32)">
+            <summary>
+            Gets or sets the item at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the item to get or set.</param>
+        </member>
+        <member name="T:NAnt.NUnit2.Types.CategoryEnumerator">
+            <summary>
+            Enumerates the <see cref="T:NAnt.NUnit2.Types.Category"/> items of a <see cref="T:NAnt.NUnit2.Types.CategoryCollection"/>.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryEnumerator.#ctor(NAnt.NUnit2.Types.CategoryCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit2.Types.CategoryEnumerator"/> class
+            with the specified <see cref="T:NAnt.NUnit2.Types.CategoryCollection"/>.
+            </summary>
+            <param name="arguments">The collection that should be enumerated.</param>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next item of the collection.
+            </summary>
+            <returns>
+            <see langword="true" /> if the enumerator was successfully advanced 
+            to the next item; <see langword="false" /> if the enumerator has 
+            passed the end of the collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.CategoryEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the 
+            first item in the collection.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.CategoryEnumerator.Current">
+            <summary>
+            Gets the current item in the collection.
+            </summary>
+            <returns>
+            The current item in the collection.
+            </returns>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.CategoryEnumerator.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets the current item in the collection.
+            </summary>
+            <returns>
+            The current item in the collection.
+            </returns>
+        </member>
+        <member name="T:NAnt.NUnit2.Types.CategorySet">
+            <summary>
+            Controls the categories of tests to execute using the <see cref="T:NAnt.NUnit2.Tasks.NUnit2Task"/>.
+            </summary>
+            <example>
+              <para>
+              Only include test cases and fixtures that require no internet access.
+              </para>
+              <code>
+                <![CDATA[
+            <categoryset>
+                <include name="NoInternetAccess" />
+            </categoryset>
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Exclude test cases and fixtures that are known to fail.
+              </para>
+              <code>
+                <![CDATA[
+            <categoryset>
+                <exclude name="NotWorking" />
+            </categoryset>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.CategorySet.Includes">
+            <summary>
+            Specifies a list of categories to include.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.CategorySet.Excludes">
+            <summary>
+            Specifies a list of categories to exclude.
+            </summary>
+        </member>
+        <member name="T:NAnt.NUnit2.Types.NUnit2TestCollection">
+            <summary>
+            Contains a strongly typed collection of <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> objects.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit2.Types.NUnit2TestCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.#ctor(NAnt.NUnit2.Types.NUnit2TestCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit2.Types.NUnit2TestCollection"/> class
+            with the specified <see cref="T:NAnt.NUnit2.Types.NUnit2TestCollection"/> instance.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.#ctor(NAnt.NUnit2.Types.NUnit2Test[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit2.Types.NUnit2TestCollection"/> class
+            with the specified array of <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> instances.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.Add(NAnt.NUnit2.Types.NUnit2Test)">
+            <summary>
+            Adds a <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> to the end of the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> to be added to the end of the collection.</param> 
+            <returns>The position into which the new element was inserted.</returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.AddRange(NAnt.NUnit2.Types.NUnit2Test[])">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> array to the end of the collection.
+            </summary>
+            <param name="items">The array of <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> elements to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.AddRange(NAnt.NUnit2.Types.NUnit2TestCollection)">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.NUnit2.Types.NUnit2TestCollection"/> to the end of the collection.
+            </summary>
+            <param name="items">The <see cref="T:NAnt.NUnit2.Types.NUnit2TestCollection"/> to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.Contains(NAnt.NUnit2.Types.NUnit2Test)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> is in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="item"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.CopyTo(NAnt.NUnit2.Types.NUnit2Test[],System.Int32)">
+            <summary>
+            Copies the entire collection to a compatible one-dimensional array, starting at the specified index of the target array.        
+            </summary>
+            <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param> 
+            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.IndexOf(NAnt.NUnit2.Types.NUnit2Test)">
+            <summary>
+            Retrieves the index of a specified <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> object in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> object for which the index is returned.</param> 
+            <returns>
+            The index of the specified <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/>. If the <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> is not currently a member of the collection, it returns -1.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.Insert(System.Int32,NAnt.NUnit2.Types.NUnit2Test)">
+            <summary>
+            Inserts a <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> into the collection at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="item">The <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:NAnt.NUnit2.Types.NUnit2TestEnumerator"/> for the entire collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestCollection.Remove(NAnt.NUnit2.Types.NUnit2Test)">
+            <summary>
+            Removes a member from the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> to remove from the collection.</param>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2TestCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+        </member>
+        <member name="T:NAnt.NUnit2.Types.NUnit2TestEnumerator">
+            <summary>
+            Enumerates the <see cref="T:NAnt.NUnit2.Types.NUnit2Test"/> elements of a <see cref="T:NAnt.NUnit2.Types.NUnit2TestCollection"/>.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestEnumerator.#ctor(NAnt.NUnit2.Types.NUnit2TestCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit2.Types.NUnit2TestEnumerator"/> class
+            with the specified <see cref="T:NAnt.NUnit2.Types.NUnit2TestCollection"/>.
+            </summary>
+            <param name="arguments">The collection that should be enumerated.</param>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            <see langword="true" /> if the enumerator was successfully advanced 
+            to the next element; <see langword="false" /> if the enumerator has 
+            passed the end of the collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Types.NUnit2TestEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the 
+            first element in the collection.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2TestEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <returns>
+            The current element in the collection.
+            </returns>
+        </member>
+        <member name="T:NAnt.NUnit2.Tasks.NUnit2Task">
+            <summary>
+            Runs tests using the NUnit V2.2 framework.
+            </summary>
+            <remarks>
+              <para>
+              The <see cref="P:NAnt.NUnit2.Tasks.NUnit2Task.HaltOnFailure"/> attribute is only useful when more 
+              than one test suite is used, and you want to continue running other 
+              test suites although a test failed.
+              </para>
+              <para>
+              Set <see cref="P:NAnt.Core.Task.FailOnError"/> to <see langword="false"/> to 
+              ignore any errors and continue the build.
+              </para>
+              <para>
+              In order to run a test assembly built with NUnit 2.0 or 2.1 using the 
+              NAnt <see cref="T:NAnt.NUnit2.Tasks.NUnit2Task"/>, you must add the following node to your 
+              test config file :
+              </para>
+              <code>
+                <![CDATA[
+            <configuration>
+                ...
+                <runtime>
+                    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+                        <dependentAssembly>
+                            <assemblyIdentity name="nunit.framework" publicKeyToken="96d09a1eb7f44a77" culture="Neutral" /> 
+                            <bindingRedirect oldVersion="2.0.6.0" newVersion="2.2.0.0" /> 
+                            <bindingRedirect oldVersion="2.1.4.0" newVersion="2.2.0.0" /> 
+                        </dependentAssembly>
+                    </assemblyBinding>
+                </runtime>
+                ...
+            </configuration>
+                ]]>
+              </code>
+              <para>
+              See the <see href="http://nunit.sf.net">NUnit home page</see> for more 
+              information.
+              </para>
+            </remarks>
+            <example>
+              <para>
+              Run tests in the <c>MyProject.Tests.dll</c> assembly.
+              </para>
+              <code>
+                <![CDATA[
+            <nunit2>
+                <formatter type="Plain" />
+                <test assemblyname="MyProject.Tests.dll" appconfig="MyProject.Tests.dll.config" />
+            </nunit2>
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Only run tests that are not known to fail in files listed in the <c>tests.txt</c>
+              file.
+              </para>
+              <code>
+                <![CDATA[
+            <nunit2>
+                <formatter type="Xml" usefile="true" extension=".xml" outputdir="${build.dir}/results" />
+                <test>
+                    <assemblies>
+                        <includesfile name="tests.txt" />
+                    </assemblies>
+                    <categories>
+                        <exclude name="NotWorking" />
+                    </categories>
+                </test>
+            </nunit2>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.NUnit2.Tasks.NUnit2Task.ExecuteTask">
+            <summary>
+            Runs the tests and sets up the formatters.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Tasks.NUnit2Task.HaltOnFailure">
+            <summary>
+            Stop the test run if a test fails. The default is <see langword="false" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Tasks.NUnit2Task.Tests">
+            <summary>
+            Tests to run.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Tasks.NUnit2Task.FormatterElements">
+            <summary>
+            Formatters to output results of unit tests.
+            </summary>
+        </member>
+        <member name="T:NAnt.NUnit2.Types.NUnit2Test">
+            <summary>
+            Represents a <c>test</c> element of an <see cref="T:NAnt.NUnit2.Tasks.NUnit2Task"/>.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2Test.AssemblyFile">
+            <summary>
+            Name of the assembly to search for tests.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2Test.TestName">
+            <summary>
+            Name of a specific testfixture to run. If not specified then all 
+            testfixtures are run.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2Test.Assemblies">
+            <summary>
+            Assemblies to include in test.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2Test.Categories">
+            <summary>
+            Categories of test cases to include or exclude.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2Test.HaltOnFailure">
+            <summary>
+            Build fails on failure. The default is <see langword="true" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2Test.XsltFile">
+            <summary>
+            XSLT transform file to use when using the <see cref="F:NAnt.NUnit.Types.FormatterType.Plain"/> 
+            formatter.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2Test.AppConfigFile">
+            <summary>
+            The application configuration file to use for the NUnit test domain.
+            If not specified, NAnt will try to use a configuration name matching
+            the file name of the assembly with extension ".config".
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit2.Types.NUnit2Test.TestAssemblies">
+            <summary>
+            Gets all assemblies specified for these tests.
+            </summary>
+            <returns>
+            All assemblies specified for these tests.
+            </returns>
+        </member>
+        <member name="T:NAnt.NUnit2.Tasks.NUnit2TestDomain">
+            <summary>
+            Custom TestDomain, similar to the one included with NUnit, in order 
+            to workaround some limitations in it.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Tasks.NUnit2TestDomain.CreateRunner(System.IO.FileInfo,System.IO.FileInfo)">
+            <summary>
+            Runs a single testcase.
+            </summary>
+            <param name="assemblyFile">The test assembly.</param>
+            <param name="configFile">The application configuration file for the test domain.</param>
+            <returns>
+            The result of the test.
+            </returns>
+        </member>
+        <member name="T:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler">
+            <summary>
+            Helper class called when an assembly resolve event is raised.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler.#ctor(System.Collections.Specialized.StringCollection)">
+            <summary> 
+            Initializes an instanse of the <see cref="T:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler"/> 
+            class.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler.ResolveAssembly(System.Object,System.ResolveEventArgs)">
+            <summary>
+            Called back when the CLR cannot resolve a given assembly.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="args">A <see cref="T:System.ResolveEventArgs"/> that contains the event data.</param>
+            <returns>
+            The <c>nunit.framework</c> we know to be in NAnts bin directory, if 
+            that is the assembly that needs to be resolved; otherwise, 
+            <see langword="null"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler.AssemblyLoad(System.Object,System.AssemblyLoadEventArgs)">
+            <summary>
+            Occurs when an assembly is loaded. The loaded assembly is added 
+            to the assembly cache.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="args">An <see cref="T:System.AssemblyLoadEventArgs"/> that contains the event data.</param>
+        </member>
+        <member name="F:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler._probePaths">
+            <summary>
+            Holds the list of directories that will be scanned for missing
+            assembly references.
+            </summary>
+        </member>
+        <member name="F:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler._assemblyCache">
+            <summary>
+            Holds the loaded assemblies.
+            </summary>
+        </member>
+    </members>
+</doc>
