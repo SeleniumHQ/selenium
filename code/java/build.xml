@@ -53,7 +53,7 @@
 
         <echo file="dist/readme.txt">Only some of these jars are necessary for you to run Selenium. Many are optional. Read the docs!</echo>
 
-        <zip destfile="dist/${ant.project.name}-${version}.zip">
+        <zip destfile="dist/${ant.project.name}-${version}-java.zip">
             <fileset dir="target">
                 <include name="${ant.project.name}-${version}.jar"/>            
             </fileset>
@@ -81,12 +81,29 @@
                 <include name="web.xml"/>
             </zipfileset>
         </zip>
+
+        <zip destfile="dist/${ant.project.name}-${version}-java-src.zip">
+            <fileset dir="..">
+                <include name="java/**"/>
+                <exclude name="java/target/**"/>
+                <exclude name="java/dist/**"/>
+            </fileset>
+            <fileset dir="..">
+                <include name="javascript/**"/>
+            </fileset>
+        </zip>
         <delete file="dist/readme.txt"/>
   
     </target>
+    <target name="publish-dist" depends="dist">
+    
+        <copy todir="../../website/webapps/ROOT" file="dist/selenium-${version}-java-src.zip"/>
+        <copy todir="../../website/webapps/ROOT" file="dist/selenium-${version}-java.zip"/>
 
+    </target>
     <target name="clean">
         <delete dir="target"/>
+        <delete dir="dist"/>
         <delete file="jcoverage.ser"/>
     </target>
 
@@ -165,6 +182,11 @@
             </batchtest>
         </junit>
 
+        <fail unless="env.CATALINA_HOME">
+        Cannot run Outbedded Integration tests because environment variable CATALINA_HOME is not set.
+        Please set CATALINA_HOME to your Tomcat installation directory.
+        </fail>
+        
         <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
