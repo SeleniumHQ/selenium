@@ -23,14 +23,13 @@ class Driver(resource.Resource):
         return "%s" % r
     
     def render_GET(self, request):  
+        # It was hard to figure out how to wait for a response and not return
+        # the deferred object back to user. This doc helped:
+        #http://twistedmatrix.com/documents/current/howto/tutorial/components           
         d = deferToThread(interpreter.driver, request)   
         d.addCallback(self.printResult).addErrback(self.printResult)
         d.addCallback(request.write)
         d.addCallback(lambda _: request.finish())
-        
-        #Finally figured out how to wait for a response and not return
-        # the deferred object back to user from this doc:
-        #http://twistedmatrix.com/documents/current/howto/tutorial/components        
         return server.NOT_DONE_YET
 
 resource = Driver()
