@@ -93,8 +93,13 @@ function loadAndRunIfAuto() {
 function getExecutionContext() {
     if (isNewWindow()) {
         return getWindowExecutionContext();
-    } else {
+    }
+    else if (getTestFrame().contentWindow)
+    {
         return new IFrameExecutionContext();
+    }
+    else {
+        return new KonquerorIFrameExecutionContext();
     }
 }
 
@@ -137,9 +142,19 @@ function startSingleTest() {
     getTestFrame().src = singleTestName;
 }
 
+function getIframeDocument(iframe)
+{
+    if (iframe.contentDocument) {
+        return iframe.contentDocument;
+    }
+    else {
+        return iframe.contentWindow.document;
+    }
+}
+
 function loadTestFrame() {
     removeLoadListener(getSuiteFrame(), loadTestFrame);
-    suiteTable = getSuiteFrame().contentWindow.document.getElementsByTagName("table")[0];
+    suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
 
     // Add an onclick function to each link in the suite table
     for(rowNum = 1;rowNum < suiteTable.rows.length; rowNum++) {
@@ -178,8 +193,8 @@ function addOnclick(suiteTable, rowNum) {
         else if (getSuiteFrame().contentWindow.event)
                 srcObj = getSuiteFrame().contentWindow.event.srcElement;
 
-        // The target row
-        row = srcObj.parentNode.parentNode.rowIndex;
+        // The target row (the event source is not consistently reported by browsers)
+        row = srcObj.parentNode.parentNode.rowIndex || srcObj.parentNode.parentNode.parentNode.rowIndex;
 
         // If the row has a stored results table, use that
         if(suiteTable.rows[row].cells[1]) {
@@ -235,8 +250,16 @@ function runSingleTest() {
 
 function startTest() {
     removeLoadListener(getTestFrame(), startTest);
-    getTestFrame().contentWindow.scrollTo(0,0);
-    inputTable = (getTestFrame().contentWindow.document.getElementsByTagName("table"))[0];
+
+    // Scroll to the top of the test frame
+    if (getTestFrame().contentWindow) {
+        getTestFrame().contentWindow.scrollTo(0,0);
+    }
+    else {
+        document.frames['testFrame'].scrollTo(0,0);
+    }
+
+    inputTable = getIframeDocument(getTestFrame()).getElementsByTagName("table")[0];
     inputTableRows = inputTable.rows;
     currentCommandRow = 0;
     testFailed = false;
@@ -267,7 +290,7 @@ function runNextTest() {
     if (!runAllTests)
             return;
 
-    suiteTable = (getSuiteFrame().contentWindow.document.getElementsByTagName("table"))[0];
+    suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
 
     // Do not change the row color of the first row
     if(currentTestRow > 0) {
@@ -500,8 +523,14 @@ function nextCommand() {
     var target = replaceVariables(getCellText(currentCommandRow, 1));
     var value = replaceVariables(getCellText(currentCommandRow, 2));
 
-    var command = new SeleniumCommand(commandName, target, value);
+
+    var command = new SeleniumCommand(commandName, target, removeNbsp(value));
     return command;
+}
+
+function removeNbsp(value)
+{
+    return value.replace(/\240/g, "");
 }
 
 function focusOnElement(element) {

@@ -1,0 +1,78 @@
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1"
+http-equiv="content-type">
+<link rel="stylesheet" type="text/css" href="selenium-Konqueror.css">
+<title>Selenium Functional Test Runner</title>
+<script language="JavaScript" type="text/javascript" src="html-xpath/html-xpath-patched.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+
+
+</head>
+
+<body onload="start();">
+<div id="leftColumn">
+    <div id="testSuitePanel">
+        <iframe name="testSuiteFrame" id="testSuiteFrame" src="./tests/TestSuite.html" width="95%" height="29%"></iframe>
+    </div>
+    <div id="testPanel">
+        <iframe name="testFrame" id="testFrame" src="about:blank" width="95%" height="68%"></iframe>
+    </div>
+</div>
+
+<div id="rightColumn">
+    <div id="seleniumControlPanel">
+    <table>
+    <tr>
+    <td id="launchPanel">
+            <b>Run:</b>
+            <button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">Selected test</button>
+            <button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">All tests</button>
+    </td>
+    <td id="runSpeedPanel">
+            <b>Run mode:</b>
+            <label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
+            <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
+            <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
+            <button type="button" id="continueTest">Next/Continue</button>
+    </td>
+    <td id="resultsPanel">
+        <table id="resultsTable">
+            <tr><th>Elapsed Time:</th><td id="elapsedTime">00.00</td></tr>
+            <tr><th colspan="2">Test Results</th><th colspan="2">Command Results</th></tr>
+            <tr><td>Total run:</td><td id="testRuns">0</td><td>Passes:</td><td id="commandPasses">0</td></tr>
+            <tr><td>Failures:</td><td id="testFailures">0</td><td>Failures:</td><td id="commandFailures">0</td></tr>
+            <tr><td colspan="2"/><td>Errors:</td><td id="commandErrors">0</td></tr>
+        </table>
+    </td>
+    </tr>
+    </table>
+    </div>
+    <div id="appPanel">
+        <iframe name="myiframe" id="myiframe" src="about:blank" height="75%" width="75%"></iframe>
+    </div>
+</div>
+</body>
+</html>
+
