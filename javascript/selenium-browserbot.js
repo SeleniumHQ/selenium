@@ -245,15 +245,6 @@ PageBot.prototype.clickElement = function(element, loadCallback) {
     triggerEvent(element, 'blur', false);
 }
 
-PageBot.prototype.onclickElement = function(element, loadCallback) {
-    if (loadCallback) {
-        var el = new SelfRemovingLoadListener(loadCallback, this.browserBot.getFrame());
-        addLoadListener(this.browserBot.getFrame(), el.invoke);
-    }
-
-    element.click();
-}
-
 PageBot.prototype.clearOnBeforeUnload = function() {
     //For IE: even though the event was linked to the window, the event appears to be attached to the 'body' object in IE.
     this.currentWindow.document.body.onbeforeunload = null;
