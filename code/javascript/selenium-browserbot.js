@@ -141,7 +141,13 @@ BrowserBot.prototype.getCurrentPage = function() {
         oldShowModalDialog = window.showModalDialog;
 
         window.showModalDialog = function(url, args, features) {
-            var fullURL = "/TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runInterval;
+            // Get relative directory to where TestRunner.html lives
+            // A risky assumption is that the user's TestRunner is named TestRunner.html
+            var doc_location = document.location.toString();
+	    var end_of_base_ref = doc_location.indexOf('TestRunner.html')
+	    var base_ref = doc_location.substring(0,end_of_base_ref)
+	    
+            var fullURL = base_ref + "TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runInterval;
             browserBot.modalDialogTest = null;
 
             var returnValue = oldShowModalDialog(fullURL, args, features);
