@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @version $Id: HTTPRequest.java,v 1.1 2004/11/11 12:19:47 mikemelia Exp $
+ * @version $Id: HTTPRequest.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
  */
 public class HTTPRequest {
     public static final String SELENIUM_REDIRECT_SERVERNAME = "localhost";
@@ -33,11 +33,13 @@ public class HTTPRequest {
                                                           SELENIUM_REDIRECT_PORT;
     public static final String SELENIUM_REDIRECT_DIR = "/selenium/";
     public static final String SELENIUM_REDIRECT_PROTOCOL = "http://";
-    public static final String SELENIUM_REDIRECT_URI = SELENIUM_REDIRECT_PROTOCOL + 
+    public static final String SELENIUM_REDIRECT_URI = SELENIUM_REDIRECT_PROTOCOL +
                                                        SELENIUM_REDIRECT_SERVER +
                                                        SELENIUM_REDIRECT_DIR;
     public static final String CRLF = "\r\n";
     private static final Log LOG = LogFactory.getLog(DefaultRequestStream.class);
+    private static final String auth = System.getProperties().get("http.proxy.user") + ":" +
+                                       System.getProperties().get("http.proxy.password");
     private String method;
     private String uri;
     private String protocol;
@@ -48,9 +50,10 @@ public class HTTPRequest {
 
     public HTTPRequest(String request) {
         Assert.assertIsTrue(request != null, "request can't be null");
-        System.out.println("Request\n" + request);
+        LOG.debug("Request\n" + request);
         original = request;
         parse(request);
+        map.put("Proxy-Authorization", "Basic " + new sun.misc.BASE64Encoder().encode(auth.getBytes()));
     }
 
     public String getDestinationServer() {
