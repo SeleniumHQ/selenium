@@ -397,7 +397,12 @@ function processCommand(){
             processCommand();
         }
         else
-            handler(target, value);
+            try {
+                handler(target, value);
+            } catch (e) {
+                setRowFailed(e.message, ERROR);
+                processCommand();
+            }
     }
 }
 
@@ -427,13 +432,13 @@ function pad (num) {
 // Find the element by id and returns it.  If it is not found, changes the
 // table to include an error message.
 function findElement(id) {
-    var element = testApp.findElement(id);
-
-    if(element == null) {
-        setRowFailed("Element not found", ERROR);
+    try {
+        return testApp.findElement(id);
     }
-
-    return element;
+    catch (e) {
+        setRowFailed(e.message, ERROR);
+        return null;
+    }
 }
 
 // Search through str and replace all variable references ${varName} with their
@@ -469,67 +474,40 @@ function replaceVariables(str) {
 }
 
 function handleClick(target, wait) {
-    element = findElement(target);
-
-    if(element == null) {
-        processCommand();
-        return;
-    }
-
     if(wait == "nowait") {
-        browserbot.getCurrentPage().clickElement(element);
+        testApp.clickElement(target);
         processCommand();
     } else {
-        browserbot.getCurrentPage().clickElement(element, processCommand);
+        testApp.clickElement(target, processCommand);
     }
 }
 
 /* TODO write a test for this - it could be broken */
 function handleOnClick(target, wait) {
-    element = findElement(target);
-
-    if(element == null) {
-        processCommand();
-        return;
-    }
-
     if(wait == "nowait") {
-        browserbot.getCurrentPage().onclickElement(element);
+        testApp.onclickElement(element);
         processCommand();
     } else {
-        browserbot.getCurrentPage().onclickElement(element, processCommand);
+        testApp.onclickElement(element, processCommand);
     }
 }
 
 function handleType(target, stringValue) {
-    element = findElement(target);
-
-    if(element != null) {
-        browserbot.getCurrentPage().replaceText(element, stringValue);
-    }
+    testApp.type(target, stringValue);
     processCommand();
 }
 
 function handleOpen(target) {
-    browserbot.openLocation(target, processCommand);
+    testApp.open(target, processCommand);
 }
 
 function handleSelectWindow(target) {
-    try {
-        browserbot.selectWindow(target);
-    } catch (e) {
-        setRowFailed(e.message, ERROR);
-    }
-
+    testApp.selectWindow(target);
     processCommand();
 }
 
 function handleSelect(target, stringValue) {
-	element = findElement(target);
-
-	if(element != null) {
-	    browserbot.getCurrentPage().selectOptionWithLabel(element, stringValue);
-	}
+    testApp.select(target, stringValue);
 	processCommand();
 }
 
@@ -643,23 +621,25 @@ function handleVerifyTextPresent(stringValue) {
 }
 
 function handleVerifyElementPresent(target) {
-    var element = testApp.findElement(target);
-
-    if(element != null)
+    try {
+        testApp.findElement(target);
         setRowPassed();
-    else
+    }
+    catch (e) {
         setRowFailed("Element " + target + " not found.", FAILURE);
+    }
 
     processCommand();
 }
 
 function handleVerifyElementNotPresent(target) {
-    var element = testApp.findElement(target);
-
-    if(element == null)
-        setRowPassed();
-    else
+    try {
+        element = testApp.findElement(target);
         setRowFailed("Element " + target + " found.", FAILURE);
+    }
+    catch (e) {
+        setRowPassed();
+    }
 
     processCommand();
 }
