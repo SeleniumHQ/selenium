@@ -376,6 +376,7 @@ function postTestResults(suiteFailed, suiteTable) {
 
     form.id = "resultsForm";
     form.method="post";
+    form.target="myiframe";
 
     var resultsUrl = getQueryParameter("resultsUrl");
     if (!resultsUrl) {
