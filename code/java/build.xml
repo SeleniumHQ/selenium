@@ -107,7 +107,10 @@
     </target>
 
     <target name="integration-test" depends="compile-main">
+
+
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <jvmarg value="-Dcode_root=.."/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
             <formatter type="plain"/>
@@ -115,7 +118,6 @@
                 <fileset dir="${integration.test.dir}">
                     <include name="**/*Test.java"/>
                     <include name="**/*TestCase.java"/> 
-                    <exclude name="**/RealDealIntegrationTest.java"/>
                 </fileset>
             </batchtest>
         </junit>
