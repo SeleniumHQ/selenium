@@ -16,7 +16,7 @@ function setUp() {
     mockPageBot = new Mock();
 
     mockBrowserBot = new Mock();
-    mockBrowserBot.currentPage = mockPageBot;
+    mockBrowserBot.getCurrentPage = function() { return mockPageBot };
 
     selenium = new Selenium(mockBrowserBot);
     assertEquals(mockPageBot, selenium.page());

@@ -11,7 +11,7 @@ function fail(message) {
 
 function Selenium(browserbot) {
     this.browserbot = browserbot;
-    this.page = function() {return browserbot.currentPage};
+    this.page = function() {return browserbot.getCurrentPage()};
 }
 
 /*
