@@ -418,10 +418,10 @@ function replaceVariables(str) {
         return eval("variableValue."+ eval("variableFunction") + "()" )
     }
 }
-    // Register all of the built-in command handlers with the CommandFactory.
+    // Register all of the built-in command handlers with the CommandHandlerFactory.
 // TODO work out an easy way for people to register handlers without modifying the Selenium sources.
 function registerCommandHandlers() {
-    commandFactory = new CommandFactory();
+    commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
     // These actions are overridden for fitrunner, as they still involve some FitRunner smarts,
@@ -435,12 +435,10 @@ function initialiseTestLoop() {
     testLoop.commandInterval = runInterval;
 
     testLoop.nextCommand = nextCommand;
-    testLoop.beginCommand = beginCommand;
+    testLoop.commandStarted = commandStarted;
+    testLoop.commandComplete = commandComplete;
     testLoop.commandError = setRowFailed;
-    testLoop.actionOK = setRowWhite;
-    testLoop.assertionPassed = setRowPassed;
-    testLoop.assertionFailed = setRowFailed;
-    testLoop.onTestComplete = onTestComplete;
+    testLoop.testComplete = testComplete;
     return testLoop
 }
 
@@ -459,7 +457,7 @@ function nextCommand() {
     return command;
 }
 
-function beginCommand() {
+function commandStarted() {
     // Make the current row blue
     inputTableRows[currentCommandRow].bgColor = "#DEE7EC";
 
@@ -470,23 +468,18 @@ function beginCommand() {
     printMetrics();
 }
 
-function setRowWhite() {
-    inputTableRows[currentCommandRow].bgColor = "white";
+function commandComplete(result) {
+    if (result.failed) {
+        setRowFailed(result.failureMessage, FAILURE);
+    } else if (result.passed) {
+        setRowPassed();
+    } else {
+        setRowWhite();
+    }
 }
 
-function onTestComplete() {
-     if(testFailed) {
-         inputTableRows[0].bgColor = failColor;
-         numTestFailures += 1;
-     }
-     else {
-         inputTableRows[0].bgColor = passColor;
-         numTestPasses += 1;
-     }
-
-     printMetrics();
-
-    window.setTimeout("runNextTest()", 1);
+function setRowWhite() {
+    inputTableRows[currentCommandRow].bgColor = "white";
 }
 
 function setRowPassed() {
@@ -511,13 +504,27 @@ function setRowFailed(errorMsg, failureType) {
     suiteFailed = true;
 }
 
+function testComplete() {
+     if(testFailed) {
+         inputTableRows[0].bgColor = failColor;
+         numTestFailures += 1;
+     }
+     else {
+         inputTableRows[0].bgColor = passColor;
+         numTestPasses += 1;
+     }
+
+     printMetrics();
+
+    window.setTimeout("runNextTest()", 1);
+}
+
 function getCellText(rowNumber, columnNumber) {
     return getText(inputTableRows[rowNumber].cells[columnNumber]);
 }
 
 Selenium.prototype.doPause = function(waitTime) {
-    setTimeout("testLoop.continueCurrentTest()", waitTime);
-    return SELENIUM_PROCESS_PAUSED;
+    testLoop.pauseInterval = waitTime;
 }
 
 // Reads the text of the page and stores it in a variable with the name of the target

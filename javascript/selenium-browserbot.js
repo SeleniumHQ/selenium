@@ -140,7 +140,7 @@ PageBot = function(pageWindow, browserBot) {
     this.browserBot = browserBot;
     this.currentDocument = pageWindow.document;
     this.location = pageWindow.location.pathname;
-     this.title = function() {return this.currentDocument.title};
+    this.title = function() {return this.currentDocument.title};
 
     modifyWindowToRecordAlerts(pageWindow, browserBot);
         
@@ -149,7 +149,7 @@ PageBot = function(pageWindow, browserBot) {
        browserbot.currentPage = null;
     }
     
-    if (window.addEventListener) { 
+    if (window.addEventListener) {
         this.currentWindow.addEventListener("unload",clearPageCache, true);
     }     
     else if (window.attachEvent) {
@@ -160,14 +160,7 @@ PageBot = function(pageWindow, browserBot) {
     function modifyWindowToRecordAlerts(window, browserBot) {     
          window.alert = function(alert){browserBot.recordAlert(alert);};
     }
-    
-
-
-    
 }
-
-
-
 
 /*
  * Finds an element on the current page, using various lookup protocols

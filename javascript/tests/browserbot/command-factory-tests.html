@@ -23,31 +23,31 @@ Copyright 2004 ThoughtWorks, Inc
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
-<script language="JavaScript" type="text/javascript" src="/selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
     function testNullIsReturnedForUnknownCommands() {
-        var commandFactory = new CommandFactory();
-        assertNull(commandFactory.getCommandHandler("unknown"));
+        var factory = new CommandHandlerFactory();
+        assertNull(factory.getCommandHandler("unknown"));
     }
 
-    function testActionsAreTypedAndAvailableAfterRegistrationInCommandFactory() {
-        var commandFactory = new CommandFactory();
-        commandFactory.registerAction("myAction", "actionFunction");
+    function testActionsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
+        var factory = new CommandHandlerFactory();
+        factory.registerAction("myAction", "actionFunction");
 
-        var myAction = commandFactory.getCommandHandler("myAction");
+        var myAction = factory.getCommandHandler("myAction");
         assertNotNull(myAction);
         assertEquals(CommandHandler, myAction.constructor);
         assertEquals("actionFunction", myAction.executor);
         assertEquals("action", myAction.type);
     }
 
-    function testAssertsAreTypedAndAvailableAfterRegistrationInCommandFactory() {
-        var commandFactory = new CommandFactory();
-        commandFactory.registerAssert("assertFoo", "assertFunction", true);
+    function testAssertsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
+        var factory = new CommandHandlerFactory();
+        factory.registerAssert("assertFoo", "assertFunction", true);
 
-        var myAssert = commandFactory.getCommandHandler("assertFoo");
+        var myAssert = factory.getCommandHandler("assertFoo");
         assertNotNull(myAssert);
         assertEquals(CommandHandler, myAssert.constructor);
         assertEquals("assertFunction", myAssert.executor);
@@ -55,11 +55,11 @@ Copyright 2004 ThoughtWorks, Inc
         assertTrue(myAssert.haltOnFailure);
     }
 
-    function testAccessorsAreTypedAndAvailableAfterRegistrationInCommandFactory() {
-        var commandFactory = new CommandFactory();
-        commandFactory.registerAccessor("getFoo", "accessorFunction");
+    function testAccessorsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
+        var factory = new CommandHandlerFactory();
+        factory.registerAccessor("getFoo", "accessorFunction");
 
-        var myAccessor = commandFactory.getCommandHandler("getFoo");
+        var myAccessor = factory.getCommandHandler("getFoo");
         assertNotNull(myAccessor);
         assertEquals(CommandHandler, myAccessor.constructor);
         assertEquals("accessorFunction", myAccessor.executor);
@@ -68,68 +68,68 @@ Copyright 2004 ThoughtWorks, Inc
 
     function testAllMethodsWithGetPrefixAreRegisteredAsAccessorsByRegisterAll() {
         var actionSet = {getOne: "get1", getTwo: "get2", getdontGet: "another"};
-        var commandFactory = new CommandFactory();
-        commandFactory.registerAll(actionSet);
+        var factory = new CommandHandlerFactory();
+        factory.registerAll(actionSet);
 
-        assertNull(commandFactory.getCommandHandler("getdontGet"));
-        assertNull(commandFactory.getCommandHandler("notEvenClose"));
+        assertNull(factory.getCommandHandler("getdontGet"));
+        assertNull(factory.getCommandHandler("notEvenClose"));
 
-        assertEquals("get1", commandFactory.getCommandHandler("getOne").executor);
-        assertEquals("get2", commandFactory.getCommandHandler("getTwo").executor);
+        assertEquals("get1", factory.getCommandHandler("getOne").executor);
+        assertEquals("get2", factory.getCommandHandler("getTwo").executor);
     }
 
     function testHaltOnFailureDefaultsToFalseForAsserts() {
-        var commandFactory = new CommandFactory();
-        commandFactory.registerAssert("doHalt", "assertFunction", true);
-        commandFactory.registerAssert("dontHalt", "assertFunction");
+        var factory = new CommandHandlerFactory();
+        factory.registerAssert("doHalt", "assertFunction", true);
+        factory.registerAssert("dontHalt", "assertFunction");
 
-        assertTrue(commandFactory.getCommandHandler("doHalt").haltOnFailure);
-        assertFalse(commandFactory.getCommandHandler("dontHalt").haltOnFailure);
+        assertTrue(factory.getCommandHandler("doHalt").haltOnFailure);
+        assertFalse(factory.getCommandHandler("dontHalt").haltOnFailure);
     }
 
     function testAllMethodsWithDoPrefixAreRegisteredAsActionsByRegisterAll() {
         var actionSet = {doAnAction: "action1", doAnotherAction: "action2", dontRegister: "another"};
-        var commandFactory = new CommandFactory();
-        commandFactory.registerAll(actionSet);
+        var factory = new CommandHandlerFactory();
+        factory.registerAll(actionSet);
 
-        assertNull(commandFactory.getCommandHandler("dontRegister"));
-        assertNull(commandFactory.getCommandHandler("notEvenClose"));
+        assertNull(factory.getCommandHandler("dontRegister"));
+        assertNull(factory.getCommandHandler("notEvenClose"));
 
-        assertEquals("action1", commandFactory.getCommandHandler("anAction").executor);
-        assertEquals("action2", commandFactory.getCommandHandler("anotherAction").executor);
+        assertEquals("action1", factory.getCommandHandler("anAction").executor);
+        assertEquals("action2", factory.getCommandHandler("anotherAction").executor);
     }
 
     function testActionsAreRegisteredWithAndWaitSuffix() {
         var actionSet = {doAnAction: "action1"};
-        var commandFactory = new CommandFactory();
-        commandFactory.registerAll(actionSet);
+        var factory = new CommandHandlerFactory();
+        factory.registerAll(actionSet);
 
-        assertEquals("action1", commandFactory.getCommandHandler("anAction").executor);
-        assertEquals("action1", commandFactory.getCommandHandler("anActionAndWait").executor);
-        assertUndefined(commandFactory.getCommandHandler("anAction").wait);
-        assertTrue(commandFactory.getCommandHandler("anActionAndWait").wait);
+        assertEquals("action1", factory.getCommandHandler("anAction").executor);
+        assertEquals("action1", factory.getCommandHandler("anActionAndWait").executor);
+        assertUndefined(factory.getCommandHandler("anAction").wait);
+        assertTrue(factory.getCommandHandler("anActionAndWait").wait);
     }
 
     function testAllMethodsWithAssertPrefixAreRegisteredForAssertAndVerifyByRegisterAll() {
         var actionSet = {assertSomething: "assert1", assertSomeOtherThing: "assert2", assertionOther: "shouldn't register"};
-        var commandFactory = new CommandFactory();
-        commandFactory.registerAll(actionSet);
+        var factory = new CommandHandlerFactory();
+        factory.registerAll(actionSet);
 
-        assertNull(commandFactory.getCommandHandler("assertionOther"));
-        assertNull(commandFactory.getCommandHandler("notEvenClose"));
+        assertNull(factory.getCommandHandler("assertionOther"));
+        assertNull(factory.getCommandHandler("notEvenClose"));
 
-        var myAssert = commandFactory.getCommandHandler("assertSomething");
+        var myAssert = factory.getCommandHandler("assertSomething");
         assertEquals("assert1", myAssert.executor);
         assertTrue(myAssert.haltOnFailure);
         assertEquals("assert", myAssert.type);
 
-        var myVerify = commandFactory.getCommandHandler("verifySomething");
+        var myVerify = factory.getCommandHandler("verifySomething");
         assertEquals("assert1", myVerify.executor);
         assertFalse(myVerify.haltOnFailure);
         assertEquals("assert", myVerify.type);
 
-        assertEquals("assert2", commandFactory.getCommandHandler("assertSomeOtherThing").executor);
-        assertEquals("assert2", commandFactory.getCommandHandler("verifySomeOtherThing").executor);
+        assertEquals("assert2", factory.getCommandHandler("assertSomeOtherThing").executor);
+        assertEquals("assert2", factory.getCommandHandler("verifySomeOtherThing").executor);
     }
 </script>
   </head>

@@ -14,99 +14,106 @@
  *  limitations under the License.
  */
 
-SELENIUM_PROCESS_CONTINUE = "continue";
 SELENIUM_PROCESS_WAIT = "wait";
-SELENIUM_PROCESS_PAUSED = "paused";
-SELENIUM_PROCESS_COMPLETE = "complete";
+
+TEST_FINISHED = true;
+TEST_CONTINUE = false;
 
 function TestLoop(commandFactory) {
     this.commandFactory = commandFactory;
     this.commandInterval = 0;
-
-    this.processState == SELENIUM_PROCESS_CONTINUE;
+    this.nextCommandInterval = this.commandInterval;
 
     var self = this;
 
     this.start = function() {
-        self.continueCurrentTest();
+        this.continueCurrentTest();
     }
 
     this.continueCurrentTest = function() {
-        this.processState = self.executeNextCommand();
-        if (this.processState == SELENIUM_PROCESS_WAIT) {
-            // TODO there is a thread-safety issue by attaching a load listener after
-            // the command has completed execution.
-            selenium.callOnNextPageLoad(function() {eval("testLoop.continueCurrentTest()")});
-            return;
-        }
-        if (this.processState == SELENIUM_PROCESS_PAUSED) {
-            return; // Will re-enter this loop on reload.
-        }
-        if (this.processState != SELENIUM_PROCESS_COMPLETE) {
-            // Continue processing
-            if (this.commandInterval >= 0) {
-                window.setTimeout("testLoop.continueCurrentTest();", this.commandInterval);
-            }
-            return;
-        }
+        var testStatus = this.kickoffNextCommandExecution();
 
-        this.onTestComplete();
+        if (testStatus == TEST_FINISHED) {
+            this.testComplete();
+        }
     }
 
-    this.executeNextCommand = function() {
+    this.kickoffNextCommandExecution = function() {
 
         var command = this.nextCommand();
-        if (!command) return SELENIUM_PROCESS_COMPLETE;
-
-        handler = this.commandFactory.getCommandHandler(command.command);
+        if (!command) return TEST_FINISHED;
 
         // Make the current row blue
-        this.beginCommand(command);
+        this.commandStarted(command);
 
-        // TODO the rest of this method is ugly - use exceptions and extract stuff.
-        if(handler == null) {
-            this.commandError("Unknown command", ERROR);
-            return SELENIUM_PROCESS_COMPLETE;
+        var result;
+        try {
+            var handler = this.commandFactory.getCommandHandler(command.command);
+            if(handler == null) {
+                throw new Error("Unknown command");
+            }
+
+            result = handler.execute(selenium, command);
+        } catch (e) {
+            this.commandError(e.message);
+            return TEST_FINISHED;
         }
 
-        try {
-            var result = handler.execute(selenium, command);
-            var processNext = result.processState;
-            
-            // If the handler didn't return a wait flag, check to see if the
-            // handler was registered with the wait flag.
-            if (processNext == undefined && handler.wait) {
-               processNext = SELENIUM_PROCESS_WAIT;
-            }
+        // Record the result so that we can continue the execution using window.setTimeout()
+        this.lastCommandResult = result;
+        if (result.processState == SELENIUM_PROCESS_WAIT) {
+            // Since we're waiting for page to reload, we can't continue command execution
+            // directly, we need use a page load listener.
 
-            if (handler.type == "assert") {
-                this.assertionPassed();
-            } else {
-                this.actionOK();
-            }
+            // TODO there is a potential race condition by attaching a load listener after
+            // the command has completed execution.
+            selenium.callOnNextPageLoad(
+                function() {eval("testLoop.continueCommandExecutionWithDelay()")}
+            );
+        } else {
+            // Continue processing
+            this.continueCommandExecutionWithDelay();
+        }
 
-            return processNext;
-        } catch (e) {
-            if (e.isJsUnitException && handler.type == "assert") {
-                this.assertionFailed(e.jsUnitMessage);
-            } else {
-                this.commandError(e.message);
-            }
+        // Test is not finished.
+        return TEST_CONTINUE;
+    }
+
+    /**
+     * Continues the command execution, after waiting for the specified delay.
+     */
+    this.continueCommandExecutionWithDelay = function() {
+        // Get the interval to use for this command execution, using the pauseInterval is
+        // specified. Reset the pause interval, since it's a one-off thing.
+        var interval = this.pauseInterval || this.commandInterval;
+        this.pauseInterval = undefined;
+
+        // Continue processing
+        if (interval < 0) {
+            // Interval < 0 means break the test at this point.
+            this.commandComplete(this.lastCommandResult);
+        } else {
+            window.setTimeout("testLoop.finishCommandExecution()", interval);
         }
     }
+
+    /**
+     * Finishes the execution of the previous command, and continues the test
+     */
+    this.finishCommandExecution = function() {
+        this.commandComplete(this.lastCommandResult);
+        this.continueCurrentTest();
+    }
 }
+
 TestLoop.prototype.nextCommand = noop;
 
-TestLoop.prototype.beginCommand = noop;
+TestLoop.prototype.commandStarted = noop;
 
 TestLoop.prototype.commandError = noop;
 
-TestLoop.prototype.actionOK = noop;
+TestLoop.prototype.commandComplete = noop;
 
-TestLoop.prototype.assertionPassed = noop;
-
-TestLoop.prototype.assertionFailed = noop;
-
-TestLoop.prototype.onTestComplete = function(){};
+TestLoop.prototype.testComplete = noop;
 
 function noop() {};

@@ -38,7 +38,7 @@ class HTTPHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 
         # Add a delay before serving up the slow-loading test page
         if self.path.find('test_slowloading_page') != -1:
-            time.sleep(0.1)
+            time.sleep(0.3)
         
         # Carry on with the rest of the processing...
         CGIHTTPServer.CGIHTTPRequestHandler.do_GET(self)  
