@@ -17,6 +17,7 @@
                 <exclude name="dist/selenium*.zip"/>
                 <exclude name="**/target/**"/>
                 <exclude name="**/junittestcases*.properties"/>
+                <exclude name="readme-selenium-rpcrunner.txt"/>
             </fileset>
         </copy>
     </target>
