@@ -20,5 +20,5 @@ package com.thoughtworks.selenium;
  * @version $Id: $
  */
 public interface SeleneseCommand {
-    String toString();
+    String getCommandString();
 }
