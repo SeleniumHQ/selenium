@@ -46,11 +46,12 @@ function KonquerorIFrameExecutionContext() {
     };
 
     this.open = function(target,frame) {
+        frame.src = "about:blank";
         frame.src = target;
     };
 
     this.getContentWindow = function(frame) {
-        return document.frames['myiframe'];
+        return frames['myiframe'];
     };
 
     this.waitForPageLoad = function(testloop,selenium) {
