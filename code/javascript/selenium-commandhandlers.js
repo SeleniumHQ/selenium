@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 function CommandHandlerFactory() {
     this.actions = {};
     this.asserts = {};
@@ -49,8 +48,10 @@ function CommandHandlerFactory() {
 
     var registerAllActions = function(commandObject) {
         for (var functionName in commandObject) {
-            if (/^do([A-Z].+)$/.exec(functionName) != null) {
-                var actionName = RegExp["$1"].toCamelCase();
+            var result = /^do([A-Z].+)$/.exec(functionName);
+            if (result != null) {
+                var actionName = toCamelCase(result[1]);
+
                 // Register the action without the wait flag.
                 var action = commandObject[functionName];
                 self.registerAction(actionName, action, false);
@@ -64,11 +65,16 @@ function CommandHandlerFactory() {
 
     var registerAllAsserts = function(commandObject) {
         for (var functionName in commandObject) {
-            if (/^assert([A-Z].+)$/.exec(functionName) != null) {
-                var assertName = functionName;
-                var verifyName = "verify" + RegExp["$1"];
+            var result = /^assert([A-Z].+)$/.exec(functionName);
+            if (result != null) {
                 var assert = commandObject[functionName];
+
+                // Register the assert with the "assert" prefix, and halt on failure.
+                var assertName = functionName;
                 self.registerAssert(assertName, assert, true);
+
+                // Register the assert with the "verify" prefix, and do not halt on failure.
+                var verifyName = "verify" + result[1];
                 self.registerAssert(verifyName, assert, false);
             }
         }
@@ -81,6 +87,10 @@ function CommandHandlerFactory() {
                 self.registerAccessor(functionName, accessor);
             }
         }
+    }
+
+    function toCamelCase(aString) {
+        return aString.charAt(0).toLowerCase() + aString.substr(1);
     }
 }
 
