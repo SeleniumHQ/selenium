@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.Writer;
 
 /**
@@ -280,28 +279,4 @@ public class AbstractSeleneseServletTest extends MockObjectTestCase {
         }
     }
 
-    private final class MockWriter extends Writer {
-        private Writer stringWriter = new StringWriter();
-        private String expectation;
-
-        public MockWriter(String expectation) {
-            this.expectation = expectation;
-        }
-
-        public void close() throws IOException {
-            stringWriter.close();
-        }
-
-        public void flush() throws IOException {
-            stringWriter.flush();
-        }
-
-        public void write(char cbuf[], int off, int len) throws IOException {
-            stringWriter.write(cbuf, off, len);
-        }
-
-        public boolean verify() {
-            return expectation.equals(stringWriter.toString());
-        }
-    }
 }
