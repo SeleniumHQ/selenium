@@ -42,18 +42,18 @@ public class SeleniumSessionFactoryTest extends MockObjectTestCase {
 		
 		String browser = "testBrowser";
 		String url     = "testUrl";
-		Session session = factory.buildSingleBrowserSession(browser, url);
+		BrowserSession session = factory.buildSingleBrowserSession();
 		
 		waiterFactory.verify();
 		
-		assertTrue("Factory Should return a BrowserSession", session instanceof BrowserSession);
+		assertTrue("Factory Should return a BrowserSession", session instanceof StoppableBrowserSession);
 		
 		// intent of following is not to test BrowserSession but to check what it was constructed with
 		windowSpawner.expects(once()).method("spawn").with(eq(browser), eq(url)).will(returnValue(window.proxy()));
 		waiter.expects(once()).method("waitFor");
 		window.stubs();
 		
-		session.run(0);
+		session.run(browser, url, 0);
 		
 		windowSpawner.verify();
 		waiter.verify();
@@ -77,8 +77,8 @@ public class SeleniumSessionFactoryTest extends MockObjectTestCase {
 		String browser = "browser";
 		String[] browsers = new String[]{browser};
 		
-		Session session = factory.buildMultipleBrowserSession(browsers, url);
-		assertTrue("Factory Should return a MultipleBrowserSession", session instanceof MultipleBrowserSession);
+		MultipleBrowserSession session = factory.buildMultipleBrowserSession();
+		assertTrue("Factory Should return a MultipleBrowserSession", session instanceof SequentialMultipleBrowserSession);
 		
 
 		
@@ -88,7 +88,7 @@ public class SeleniumSessionFactoryTest extends MockObjectTestCase {
 		waiter.expects(once()).method("waitFor");
 		window.stubs();
 		
-		session.run(0);
+		session.run(browsers, url, 0);
 		
 		waiterFactory.verify();
 		windowSpawner.verify();

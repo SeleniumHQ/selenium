@@ -24,7 +24,7 @@ import com.thoughtworks.selenium.browserlifecycle.coordinate.Waiter;
 import com.thoughtworks.selenium.browserlifecycle.window.Killable;
 import com.thoughtworks.selenium.browserlifecycle.window.Spawner;
 
-public class BrowserSessionTest extends MockObjectTestCase {
+public class StoppableBrowserSessionTest extends MockObjectTestCase {
 
 	public void testShouldSpawnThenWaitThenKill() throws LifeCycleException {
 
@@ -32,15 +32,15 @@ public class BrowserSessionTest extends MockObjectTestCase {
 		Mock waiter = mock(Waiter.class);
 		Mock window = mock(Killable.class);
 
-		BrowserSession session = new BrowserSession((Spawner) spawner.proxy(),
-				(Waiter) waiter.proxy(), "irrelevant", "irrelevant");
+		StoppableBrowserSession session = new StoppableBrowserSession((Spawner) spawner.proxy(),
+				(Waiter) waiter.proxy());
 
 		spawner.expects(once()).method("spawn").will(
 				returnValue(window.proxy())).id("spawn called");
 		waiter.expects(once()).method("waitFor").after(spawner, "spawn called")
 				.id("wait called");
 		window.expects(once()).method("die").after(waiter, "wait called");
-		session.run(0);
+		session.run("irrelevant", "irrelevant", 0);
 
 		spawner.verify();
 		waiter.verify();
@@ -57,15 +57,15 @@ public class BrowserSessionTest extends MockObjectTestCase {
 		String executable = "testBowserExecutable";
 		String url = "testUrl";
 
-		BrowserSession session = new BrowserSession((Spawner) spawner.proxy(),
-				(Waiter) waiter.proxy(), executable, url);
+		StoppableBrowserSession session = new StoppableBrowserSession((Spawner) spawner.proxy(),
+				(Waiter) waiter.proxy());
 
 		waiter.stubs();
 		window.stubs();
 		spawner.expects(once()).method("spawn").with(eq(executable), eq(url))
 				.will(returnValue(window.proxy()));
 
-		session.run(0);
+		session.run( executable, url, 0);
 
 		spawner.verify();
 
@@ -79,14 +79,14 @@ public class BrowserSessionTest extends MockObjectTestCase {
 
 		long timeout = 1;
 
-		BrowserSession session = new BrowserSession((Spawner) spawner.proxy(),
-				(Waiter) waiter.proxy(), "irrelevant", "irrelevant");
+		StoppableBrowserSession session = new StoppableBrowserSession((Spawner) spawner.proxy(),
+				(Waiter) waiter.proxy());
 
 		window.stubs();
 		spawner.stubs().method("spawn").will(returnValue(window.proxy()));
 		waiter.expects(once()).method("waitFor").with(eq(timeout));
 
-		session.run(timeout);
+		session.run("irrelevant", "irrelevant", timeout);
 
 		waiter.verify();
 	}
@@ -98,13 +98,13 @@ public class BrowserSessionTest extends MockObjectTestCase {
 
 		Exception problem = new LifeCycleException("test exception", new Throwable());
 
-		BrowserSession session = new BrowserSession((Spawner) spawner.proxy(),
-				(Waiter) waiter.proxy(), "irrelevant", "irrelevant");
+		StoppableBrowserSession session = new StoppableBrowserSession((Spawner) spawner.proxy(),
+				(Waiter) waiter.proxy());
 		
 		spawner.stubs().method("spawn").will(throwException(problem));
 		
 		try {
-			session.run(0);
+			session.run("irrelevant", "irrelevant", 0);
 			fail("Expected Exception to be Thrown");
 		} catch (LifeCycleException e) {
 			assertSame(problem, e);
@@ -120,17 +120,17 @@ public class BrowserSessionTest extends MockObjectTestCase {
 
 		long timeout = 1;
 
-		BrowserSession session = new BrowserSession((Spawner) spawner.proxy(),
-				(Waiter) waiter.proxy(), "irrelevant", "irrelevant");
+		StoppableBrowserSession session = new StoppableBrowserSession((Spawner) spawner.proxy(),
+				(Waiter) waiter.proxy());
 
 		window.stubs();
 		spawner.stubs().method("spawn").will(returnValue(window.proxy()));
 		waiter.expects(once()).method("waitFor").will(throwException(new InterruptedException()));;
 
 		try {
-			session.run(timeout);
+			session.run( "irrelevant", "irrelevant", timeout);
 			fail("Expected exception to be thrown");
-		} catch (BrowserSession.SessionInterruptedException e) {
+		} catch (StoppableBrowserSession.SessionInterruptedException e) {
 			//expected
 		}
 

@@ -1,68 +1,26 @@
 /*
  * Copyright 2004 ThoughtWorks, Inc.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ *  
+ */ 
 package com.thoughtworks.selenium.browserlifecycle.session;
 
 import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
-import com.thoughtworks.selenium.browserlifecycle.coordinate.Waiter;
-import com.thoughtworks.selenium.browserlifecycle.window.Killable;
-import com.thoughtworks.selenium.browserlifecycle.window.Spawner;
 
-class BrowserSession implements Session {
-	
-	private Spawner _windowSpawner;
-	private Waiter _sessionWaiter;
-	private String _browserExecutable;
-	private String _url;
+public interface BrowserSession {
 
-	public BrowserSession(Spawner windowSpawner, Waiter sessionWaiter,
-			String browserExecutable, String url) {
-		_windowSpawner = windowSpawner;
-		_sessionWaiter = sessionWaiter;
-		_browserExecutable = browserExecutable;
-		_url = url;
-	}
-
-	public void run(long timeout) throws LifeCycleException {
-		Killable window = startBrowser();
-		waitUntilSessionIsOver(timeout);
-		stopBrowser(window);
-	}
-
-	private Killable startBrowser() throws LifeCycleException {
-		return _windowSpawner.spawn(_browserExecutable, _url);
-	}
-
-	private void waitUntilSessionIsOver(long timeout)
-			throws SessionInterruptedException {
-		try {
-			_sessionWaiter.waitFor(timeout);
-		} catch (InterruptedException e) {
-			throw new SessionInterruptedException(e);
-		}
-	}
-
-	private void stopBrowser(Killable window) {
-		window.die();
-	}
-
-	public class SessionInterruptedException extends LifeCycleException {
-		public SessionInterruptedException(InterruptedException cause) {
-			super("BrowserSession was interrupted", cause);
-		}
-	}
+	public void run(String browserExecutable, String url, long timeout)
+			throws LifeCycleException;
 
 }
