@@ -18,47 +18,47 @@ package com.thoughtworks.selenium.browserlifecycle.session;
 
 import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 import com.thoughtworks.selenium.browserlifecycle.coordinate.Waiter;
-import com.thoughtworks.selenium.browserlifecycle.window.Killable;
 import com.thoughtworks.selenium.browserlifecycle.window.BrowserSpawner;
+import com.thoughtworks.selenium.browserlifecycle.window.Killable;
 
 public class StoppableBrowserSession implements BrowserSession {
-	
-	private BrowserSpawner _windowSpawner;
-	private Waiter _sessionWaiter;
 
-	public StoppableBrowserSession(BrowserSpawner windowSpawner, Waiter sessionWaiter) {
-		_windowSpawner = windowSpawner;
-		_sessionWaiter = sessionWaiter;
-	}
+    private BrowserSpawner windowSpawner;
+    private Waiter sessionWaiter;
 
-	public void run(String url, long timeout) throws LifeCycleException {
-		_sessionWaiter.initialise();
-		Killable window = startBrowser(url);
-		waitUntilSessionIsOver(timeout);
-		stopBrowser(window);
-	}
+    public StoppableBrowserSession(BrowserSpawner windowSpawner, Waiter sessionWaiter) {
+        this.windowSpawner = windowSpawner;
+        this.sessionWaiter = sessionWaiter;
+    }
 
-	private Killable startBrowser(String url) throws LifeCycleException {
-		return _windowSpawner.spawn(url);
-	}
+    public void run(String url, long timeout) throws LifeCycleException {
+        sessionWaiter.initialise();
+        Killable window = startBrowser(url);
+        waitUntilSessionIsOver(timeout);
+        stopBrowser(window);
+    }
 
-	private void waitUntilSessionIsOver(long timeout)
-			throws SessionInterruptedException {
-		try {
-			_sessionWaiter.waitFor(timeout);
-		} catch (InterruptedException e) {
-			throw new SessionInterruptedException(e);
-		}
-	}
+    private Killable startBrowser(String url) throws LifeCycleException {
+        return windowSpawner.spawn(url);
+    }
 
-	private void stopBrowser(Killable window) {
-		window.die();
-	}
+    private void waitUntilSessionIsOver(long timeout)
+            throws SessionInterruptedException {
+        try {
+            sessionWaiter.waitFor(timeout);
+        } catch (InterruptedException e) {
+            throw new SessionInterruptedException(e);
+        }
+    }
 
-	public class SessionInterruptedException extends LifeCycleException {
-		public SessionInterruptedException(InterruptedException cause) {
-			super("BrowserSession was interrupted", cause);
-		}
-	}
+    private void stopBrowser(Killable window) {
+        window.die();
+    }
+
+    public class SessionInterruptedException extends LifeCycleException {
+        public SessionInterruptedException(InterruptedException cause) {
+            super("BrowserSession was interrupted", cause);
+        }
+    }
 
 }

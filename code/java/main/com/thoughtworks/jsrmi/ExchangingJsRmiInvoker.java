@@ -26,7 +26,7 @@ import edu.emory.mathcs.util.concurrent.TimeoutException;
  *
  * see http://altair.cs.oswego.edu/pipermail/concurrency-interest/2004-September/001035.html
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class ExchangingJsRmiInvoker implements JsRmiInvoker {
     private final Exchanger exchanger;
@@ -43,7 +43,7 @@ public class ExchangingJsRmiInvoker implements JsRmiInvoker {
 
     public Object invoke(final String jsRmiInvocation) throws TimeoutException {
         try {
-            if(timeout < 0) {
+            if (timeout < 0) {
                 return exchanger.exchange(jsRmiInvocation);
             } else {
                 return exchanger.exchange(jsRmiInvocation, timeout, TimeUnit.MILLISECONDS);

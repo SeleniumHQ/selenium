@@ -19,10 +19,10 @@ package com.thoughtworks.jsrmi;
 import edu.emory.mathcs.util.concurrent.TimeoutException;
 
 /**
- * Represents a remote Javascript object
+ * Represents a remote Javascript object.
  *
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class JsObject {
     private final JsRmiInvoker jsRmiInvoker;
@@ -67,9 +67,7 @@ public class JsObject {
     private String toJsObject(Object argument) {
         if (argument instanceof String) {
             return "\"" + argument + "\"";
-        } else if (argument instanceof Number) {
-            return argument.toString();
-        } else if (argument instanceof JsObject) {
+        } else if (argument instanceof Number || argument instanceof JsObject) {
             return argument.toString();
         } else {
             throw new RuntimeException("Unsupported type:" + argument.getClass());

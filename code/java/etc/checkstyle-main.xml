@@ -29,7 +29,9 @@
 
     <!-- Checks that a package.html file exists for each package.     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html#PackageHtml -->
-    <module name="PackageHtml"/>
+    <module name="PackageHtml">
+        <property name="severity" value="warning"/>
+    </module>
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
@@ -45,12 +47,15 @@
         <module name="JavadocType">
             <!-- Version tag must be $ID junk$ -->
             <property name="versionFormat" value="\$Id.*\$$"/>
+            <property name="severity" value="warning"/>
         </module>
         <module name="JavadocMethod">
             <property name="scope" value="package"/>
+            <property name="severity" value="warning"/>
         </module>
         <module name="JavadocVariable">
             <property name="scope" value="package"/>
+            <property name="severity" value="warning"/>
         </module>
         <module name="JavadocStyle"/>
 
@@ -139,21 +144,18 @@
             <property name="option" value="eol"/>
         </module>
         <module name="NeedBraces"/>
-        <module name="RightCurly">
-            <property name="option" value="alone"/>
-        </module>
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
         <!-- <module name="AvoidInlineConditionals"/> -->
-        <module name="DoubleCheckedLocking"/>    
+        <module name="DoubleCheckedLocking"/>
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
 <!--        <module name="HiddenField"/>-->
         <module name="IllegalInstantiation"/>
-        <module name="IllegalToken">
+        <!--module name="IllegalToken">
             <property name="tokens" value="POST_INC, POST_DEC"/>
-        </module>
+        </module-->
         <module name="IllegalType">
             <property name="severity" value="warning"/>
         </module>

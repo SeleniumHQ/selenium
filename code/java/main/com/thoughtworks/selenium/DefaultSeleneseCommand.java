@@ -25,10 +25,14 @@ import com.thoughtworks.selenium.utils.Assert;
  */
 public class DefaultSeleneseCommand implements SeleneseCommand {
     // as we have beginning and ending pipes, we will have 1 more entry than we need
-    private static final int numArgsIncludingBoundaries = 4;
-    private static final int firstIndex = 1;
-    private static final int secondIndex = 2;
-    private static final int thirdIndex = 3;
+    private static final int NUMARGSINCLUDINGBOUNDARIES = 4;
+    private static final int FIRSTINDEX = 1;
+    private static final int SECONDINDEX = 2;
+    private static final int THIRDINDEX = 3;
+    private final String command;
+    private final String field;
+    private final String value;
+
 
     public DefaultSeleneseCommand(String command, String field, String value) {
         this.command = command;
@@ -36,20 +40,16 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         this.value = value;
     }
 
-    public final String command;
-    public final String field;
-    public final String value;
-
     public String getCommandString() {
-        return "|" + command + "|" + field + "|" + value +"|";
+        return "|" + command + "|" + field + "|" + value + "|";
     }
 
     public static SeleneseCommand parse(String inputLine) {
         Assert.assertIsTrue(inputLine != null, "inputLine can't be null");
         String[] values = inputLine.split("\\|");
-        if (values.length != numArgsIncludingBoundaries) {
+        if (values.length != NUMARGSINCLUDINGBOUNDARIES) {
             throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
         }
-        return new DefaultSeleneseCommand(values[firstIndex], values[secondIndex], values[thirdIndex]);
+        return new DefaultSeleneseCommand(values[FIRSTINDEX], values[SECONDINDEX], values[THIRDINDEX]);
     }
 }

@@ -18,7 +18,7 @@ package com.thoughtworks.selenium.browserlifecycle;
 
 
 public class LifeCycleException extends Exception {
-	public LifeCycleException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public LifeCycleException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
