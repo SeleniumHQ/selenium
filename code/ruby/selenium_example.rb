@@ -16,13 +16,13 @@ require 'selenium'
 
 puts "Go to http://localhost:7896/SeleneseRunner.html"
 
-selenium = Selenium::Browser.new.proxy
+selenium = Selenium::WebrickCommandProcessor.new.proxy
 
 # Send some commands to the browser
-puts selenium.open('/tests/html/test_click_page1.html')
+puts selenium.open('/test_click_page1.html')
 puts selenium.verifyText('link', 'Click here for next page')
 puts selenium.clickAndWait('link')
-puts selenium.verifyLocation('/tests/html/test_click_page2.html')
+puts selenium.verifyLocation('/test_click_page2.html')
 puts selenium.clickAndWait('previousPage')
 
 puts selenium.verifyText("link", "This is WRONG")

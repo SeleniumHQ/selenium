@@ -69,7 +69,7 @@ module Selenium
     end
   end
   
-  class Browser
+  class WebrickCommandProcessor
     include WEBrick::HTMLUtils # escape mixin
     
     attr_accessor :proxy_server
@@ -86,9 +86,12 @@ module Selenium
         :AccessLog => {} #comment out to enable access logging
       )
 
-      @rmi_server.mount("/", NonCachingFileHandler, "../javascript")
+      # AUT
+      @rmi_server.mount("/", NonCachingFileHandler, "../javascript/tests/html")
 
-      @rmi_server.mount_proc("/driver") do |req, res|
+      # Selenium's static files and dynamic handler
+      @rmi_server.mount("/selenium-driver", NonCachingFileHandler, "../javascript")
+      @rmi_server.mount_proc("/selenium-driver/driver") do |req, res|
         res["Cache-control"] = "no-cache"
         res["Pragma"] = "no-cache"
         res["Expires"] = "-1"
