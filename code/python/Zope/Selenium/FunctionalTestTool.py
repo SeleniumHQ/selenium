@@ -108,17 +108,19 @@ class FunctionalTestTool (Item, Persistent, Implicit, RoleManager):
 
             return user.username
         except: #which exception?
-            return "ERROR: Couldn't create user"
+            raise "ERROR: Couldn't create user"
                      
     def deleteUser(self, user):
         """ Deletes the user from Plone. """
-        # Delete the user from acl_users
-        self.acl_users._delUsers([user])
+        try:
+            # Delete the user from acl_users
+            self.acl_users._delUsers([user])
 
-        # Delete the users member data
-        pm = utils.getToolByName(self, 'portal_memberdata')
-        pm.pruneMemberDataContents()
-        
+            # Delete the users member data
+            pm = utils.getToolByName(self, 'portal_memberdata')
+            pm.pruneMemberDataContents()
+        except:
+            raise "ERROR: Couldn't delete user with username=%s" % (user)
         
     security.declarePublic('postResults')         
     def postResults(self, formData, userAgent):
