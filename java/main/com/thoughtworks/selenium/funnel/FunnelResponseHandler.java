@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class FunnelResponseHandler {
     private static final int BLOCK_SIZE = 2048;
@@ -107,13 +107,10 @@ public class FunnelResponseHandler {
 
         modifiedResponseFromServer.writeTo(clientResponse);
 
-
         if (statusCode == 200) {
             pumpBody(contentLength, serverIn, clientResponse);
         }
         if (closeConnection) {
-            clientResponse.close();
-            serverIn.close();
             relay.close();
         }
     }

@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  *
  * @author Aslak Helles&oslash;y
  * @author Mike Melia
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class HttpClient implements Client {
     private static final Pattern HOST_PATTERN = Pattern.compile("(.*):([0-9]*)");
@@ -45,7 +45,10 @@ public class HttpClient implements Client {
 
     public void request(InputStream clientRequest, OutputStream clientResponse, String host, ByteArrayOutputStream serverRequestBuffer) throws IOException {
         if (socket == null || socket.isClosed()) {
+            System.out.println("** Opening socket **");
             open(host);
+        } else {
+            System.out.println("** Using already open socket **");
         }
         // write the request
         OutputStream serverOut = socket.getOutputStream();
