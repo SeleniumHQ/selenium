@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.BrowserLauncher;
 import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
+import com.thoughtworks.selenium.launchers.SystemDefaultBrowserLauncher;
 import junit.framework.TestCase;
 
 /**
@@ -37,7 +38,7 @@ public class InBrowserWithJavaScriptIntegrationTest extends TestCase {
         selenium = new SeleneseTestingSelenium(
                 new JettyCommandProcessor(null, DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
                         new TestIngPurposesStaticContentHandler()),
-                new WindowsDefaultBrowserLauncher()
+                new SystemDefaultBrowserLauncher()
         );
         selenium.start();
     }
