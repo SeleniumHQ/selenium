@@ -17,25 +17,30 @@
 
 package com.thoughtworks.selenium;
 
+import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
-import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.6 $
+ * @version $Revision$
  */
 public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
+    Mock commandProcessor;
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        commandProcessor = new Mock(CommandProcessor.class);
+    }
+
     public void testOpenWorking() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("open"), eq("123.com"), eq("")).will(returnValue("OK"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.open("123.com");
     }
 
     public void testOpenFailing() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("open"), eq("123.com"), eq("")).will(returnValue("dfsdfasde"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         try {
@@ -47,15 +52,13 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
         }
     }
 
-    public void testClickWorking() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
+    public void testClickAndWaitWorking() {
         commandProcessor.expects(once()).method("doCommand").with(eq("clickAndWait"), eq("foobar"), eq("")).will(returnValue("OK"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.clickAndWait("foobar");
     }
 
-    public void testClickFailing() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
+    public void testClickAndWaitFailing() {
         commandProcessor.expects(once()).method("doCommand").with(eq("clickAndWait"), eq("foobar"), eq("")).will(returnValue("dfg sfdg dd"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         try {
@@ -67,14 +70,12 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
     }
 
     public void testSetTextWorking() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("setText"), eq("whatsit"), eq("something")).will(returnValue("OK"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.setTextField("whatsit", "something");
     }
 
     public void testSetTextFailing() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("setText"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         try {
@@ -86,14 +87,12 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
     }
 
     public void testVerifyTextWorking() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("verifyText"), eq("whatsit"), eq("something")).will(returnValue("PASSED"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.verifyText("whatsit", "something");
     }
 
     public void testVerifyTextFailing() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("verifyText"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         try {
@@ -105,14 +104,12 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
     }
 
     public void testVerifyLocationWorking() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("verifyLocation"), eq("whatsit"), eq("")).will(returnValue("PASSED"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.verifyLocation("whatsit");
     }
 
     public void testVerifyLocationFailing() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("verifyLocation"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         try {
@@ -123,12 +120,351 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
         }
     }
 
-
     public void testTestCompleteWorking() {
-        Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("testComplete"), eq(""), eq("")).will(returnValue(""));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.testComplete();
+    }
+
+    public void testChooseCancelOnNextConfirmationWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("chooseCancelOnNextConfirmation"), eq(""), eq("")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.chooseCancelOnNextConfirmation();
+
+    }
+
+    public void testChooseCancelOnNextConfirmationFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("chooseCancelOnNextConfirmation"), eq(""), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.chooseCancelOnNextConfirmation();
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testClickWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("click"), eq("whatsit"), eq("")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.click("whatsit");
+    }
+
+    public void testClickFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("click"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.click("whatsit");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testPauseWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("pause"), eq("100"), eq("")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.pause(100);
+    }
+
+    public void testPauseFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("pause"), eq("100"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.pause(100);
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testSelectAndWaitWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("selectAndWait"), eq("whatsit"), eq("something")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.selectAndWait("whatsit", "something");
+    }
+
+    public void testSelectAndWaitFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("selectAndWait"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.selectAndWait("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testSelectWindowWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("selectWindow"), eq("whatsit"), eq("")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.selectWindow("whatsit");
+    }
+
+    public void testSelectWindowFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("selectWindow"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.selectWindow("whatsit");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testStoreTextWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("storeText"), eq("whatsit"), eq("something")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.storeText("whatsit", "something");
+    }
+
+    public void testStoreTextFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("storeText"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.storeText("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testStoreValueWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("storeValue"), eq("whatsit"), eq("something")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.storeValue("whatsit", "something");
+    }
+
+    public void testStoreValueFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("storeValue"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.storeValue("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testTypeWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("type"), eq("whatsit"), eq("something")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.type("whatsit", "something");
+    }
+
+    public void testTypeFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("type"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.type("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testTypeAndWaitWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("typeAndWait"), eq("whatsit"), eq("something")).will(returnValue("OK"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.typeAndWait("whatsit", "something");
+    }
+
+    public void testTypeAndWaitFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("typeAndWait"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.typeAndWait("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyAlertWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyAlert"), eq("whatsit"), eq("")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyAlert("whatsit");
+    }
+
+    public void testVerifyAlertFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyAlert"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyAlert("whatsit");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyAttributeWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyAttribute"), eq("whatsit"), eq("something")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyAttribute("whatsit", "something");
+    }
+
+    public void testVerifyAttributeFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyAttribute"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyAttribute("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyConfirmationWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyConfirmation"), eq("whatsit"), eq("")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyConfirmation("whatsit");
+    }
+
+    public void testVerifyConfirmationFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyConfirmation"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyConfirmation("whatsit");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyElementNotPresentWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyElementNotPresent"), eq("whatsit"), eq("")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyElementNotPresent("whatsit");
+    }
+
+    public void testVerifyElementNotPresentFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyElementNotPresent"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyElementNotPresent("whatsit");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyElementPresentWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyElementPresent"), eq("whatsit"), eq("")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyElementPresent("whatsit");
+    }
+
+    public void testVerifyElementPresentFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyElementPresent"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyElementPresent("whatsit");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifySelectOptionsWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifySelectOptions"), eq("whatsit"), eq("foo,bar")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifySelectOptions("whatsit", new String[] {"foo", "bar"});
+    }
+
+    public void testVerifySelectOptionsFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifySelectOptions"), eq("whatsit"), eq("foo,bar")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifySelectOptions("whatsit", new String[] {"foo", "bar"});
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifySelectedWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifySelected"), eq("whatsit"), eq("something")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifySelected("whatsit", "something");
+    }
+
+    public void testVerifySelectedFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifySelected"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifySelected("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyTableWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTable"), eq("whatsit"), eq("something")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyTable("whatsit", "something");
+    }
+
+    public void testVerifyTableFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTable"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyTable("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyTextPresentWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTextPresent"), eq("whatsit"), eq("something")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyTextPresent("whatsit", "something");
+    }
+
+    public void testVerifyTextPresentFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTextPresent"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyTextPresent("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyTitleWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTitle"), eq("whatsit"), eq("")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyTitle("whatsit");
+    }
+
+    public void testVerifyTitleFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTitle"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyTitle("whatsit");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyValueWorking() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyValue"), eq("whatsit"), eq("something")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyValue("whatsit", "something");
+    }
+
+    public void testVerifyValueFailing() {
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyValue"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyValue("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
     }
 
 }

@@ -19,14 +19,34 @@ package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.10 $
+ * @version $Revision$
  */
 public interface Selenium extends Startable {
 
-    void open(String path);
+    void chooseCancelOnNextConfirmation();
+    void click(String field);
     void clickAndWait(String field);
+    void open(String path);
+    void pause(int duration); // is this needed for driven ?
+    void selectAndWait(String field, String value);
+    void selectWindow(String window);
     void setTextField(String field, String value);
-    void verifyText(String type, String text);
-    void verifyLocation(String location);
+    void storeText(String element, String value);
+    void storeValue(String field, String value);
     void testComplete();
+    void type(String field, String value);
+    void typeAndWait(String field, String value);
+    void verifyAlert(String alert);
+    void verifyAttribute(String element, String value);
+    void verifyConfirmation(String confirmation);
+    void verifyElementNotPresent(String type);
+    void verifyElementPresent(String type);
+    void verifyLocation(String location);
+    void verifySelectOptions(String field, String[] values);
+    void verifySelected(String field, String value);
+    void verifyTable(String table, String value);
+    void verifyText(String type, String text);
+    void verifyTextPresent(String type, String text);
+    void verifyTitle(String title);
+    void verifyValue(String field, String value);
 }
