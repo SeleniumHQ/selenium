@@ -34,7 +34,8 @@ function TestLoop(commandFactory) {
     this.continueCurrentTest = function() {
         this.processState = self.executeNextCommand();
         if (this.processState == SELENIUM_PROCESS_WAIT) {
-            //window.setTimeout("continueCurrentTest()", 500);
+            // TODO there is a thread-safety issue by attaching a load listener after
+            // the command has completed execution.
             selenium.callOnNextPageLoad(function() {eval("testLoop.continueCurrentTest()")});
             return;
         }
@@ -69,7 +70,9 @@ function TestLoop(commandFactory) {
         }
 
         try {
-            var processNext = handler.executor.call(selenium, command.target, command.value);
+            var result = handler.execute(selenium, command);
+            var processNext = result.processState;
+            
             // If the handler didn't return a wait flag, check to see if the
             // handler was registered with the wait flag.
             if (processNext == undefined && handler.wait) {

@@ -174,64 +174,110 @@ Selenium.prototype.assertElementNotPresent = function(locator) {
 function CommandFactory() {
     this.actions = {};
     this.asserts = {};
+    this.accessors = {};
 
     var self = this;
 
     this.registerAction = function(name, action, wait) {
-        var handler = new CommandHandler("action", true, action);
-        if (wait) {
-            handler.wait = true;
-        }
+        var handler = new ActionHandler(action, wait);
         this.actions[name] = handler;
     }
 
+    this.registerAccessor = function(name, accessor) {
+        var handler = new AccessorHandler(accessor);
+        this.accessors[name] = handler;
+    }
+
     this.registerAssert = function(name, assertion, haltOnFailure) {
-        haltOnFailure = (haltOnFailure == undefined) ? false : haltOnFailure;
-        var handler = new CommandHandler("assert", haltOnFailure, assertion);
+        var handler = new AssertHandler(assertion, haltOnFailure);
         this.asserts[name] = handler;
     }
 
     this.getCommandHandler = function(name) {
-        return this.actions[name] || this.asserts[name] || null;
+        return this.actions[name] || this.accessors[name] || this.asserts[name] || null;
     }
 
     this.registerAll = function(commandObject) {
-        this.registerAllActions(commandObject);
-        this.registerAllAsserts(commandObject);
+        registerAllActions(commandObject);
+        registerAllAsserts(commandObject);
+        registerAllAccessors(commandObject);
     }
 
-    this.registerAllActions = function(commandObject) {
+    var registerAllActions = function(commandObject) {
         for (var functionName in commandObject) {
             if (/^do([A-Z].+)$/.exec(functionName) != null) {
                 var actionName = RegExp["$1"].toCamelCase();
                 // Register the action without the wait flag.
                 var action = commandObject[functionName];
-                this.registerAction(actionName, action, false);
+                self.registerAction(actionName, action, false);
 
                 // Register actionName + "AndWait" with the wait flag;
                 var waitActionName = actionName + "AndWait";
-                this.registerAction(waitActionName, action, true);
+                self.registerAction(waitActionName, action, true);
             }
         }
     }
 
-    this.registerAllAsserts = function(commandObject) {
+    var registerAllAsserts = function(commandObject) {
         for (var functionName in commandObject) {
             if (/^assert([A-Z].+)$/.exec(functionName) != null) {
                 var assertName = functionName;
                 var verifyName = "verify" + RegExp["$1"];
                 var assert = commandObject[functionName];
-                this.registerAssert(assertName, assert, true);
-                this.registerAssert(verifyName, assert, false);
+                self.registerAssert(assertName, assert, true);
+                self.registerAssert(verifyName, assert, false);
+            }
+        }
+    }
+
+    var registerAllAccessors = function(commandObject) {
+        for (var functionName in commandObject) {
+            if (/^get[A-Z].+$/.exec(functionName) != null) {
+                var accessor = commandObject[functionName];
+                self.registerAccessor(functionName, accessor);
             }
         }
     }
 }
 
+
+// NOTE: The CommandHandler is effectively an abstract base for ActionHandler,
+//      AccessorHandler and AssertHandler.
 function CommandHandler(type, haltOnFailure, executor) {
     this.type = type;
     this.haltOnFailure = haltOnFailure;
     this.executor = executor;
+}
+
+CommandHandler.prototype.execute = function(selenium, command) {
+    return new CommandResult(this.executor.call(selenium, command.target, command.value));
+}
+
+function ActionHandler(action, wait) {
+    this.base = CommandHandler;
+    this.base("action", true, action);
+    if (wait) {
+        this.wait = true;
+    }
+}
+
+ActionHandler.prototype = new CommandHandler;
+
+function AccessorHandler(accessor) {
+    this.base = CommandHandler;
+    this.base("accessor", true, accessor);
+}
+AccessorHandler.prototype = new CommandHandler;
+
+function AssertHandler(assertion, haltOnFailure) {
+    this.base = CommandHandler;
+    this.base("assert", haltOnFailure || false, assertion);
+}
+AssertHandler.prototype = new CommandHandler;
+
+function CommandResult(processState) {
+    this.processState = processState;
+    this.result = "OK";
 }
 
 function SeleniumCommand(command, target, value) {

@@ -55,7 +55,30 @@ Copyright 2004 ThoughtWorks, Inc
         assertTrue(myAssert.haltOnFailure);
     }
 
-    function testHaltOnFailureDefaultsToFalse() {
+    function testAccessorsAreTypedAndAvailableAfterRegistrationInCommandFactory() {
+        var commandFactory = new CommandFactory();
+        commandFactory.registerAccessor("getFoo", "accessorFunction");
+
+        var myAccessor = commandFactory.getCommandHandler("getFoo");
+        assertNotNull(myAccessor);
+        assertEquals(CommandHandler, myAccessor.constructor);
+        assertEquals("accessorFunction", myAccessor.executor);
+        assertEquals("accessor", myAccessor.type);
+    }
+
+    function testAllMethodsWithGetPrefixAreRegisteredAsAccessorsByRegisterAll() {
+        var actionSet = {getOne: "get1", getTwo: "get2", getdontGet: "another"};
+        var commandFactory = new CommandFactory();
+        commandFactory.registerAll(actionSet);
+
+        assertNull(commandFactory.getCommandHandler("getdontGet"));
+        assertNull(commandFactory.getCommandHandler("notEvenClose"));
+
+        assertEquals("get1", commandFactory.getCommandHandler("getOne").executor);
+        assertEquals("get2", commandFactory.getCommandHandler("getTwo").executor);
+    }
+
+    function testHaltOnFailureDefaultsToFalseForAsserts() {
         var commandFactory = new CommandFactory();
         commandFactory.registerAssert("doHalt", "assertFunction", true);
         commandFactory.registerAssert("dontHalt", "assertFunction");
