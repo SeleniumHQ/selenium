@@ -102,14 +102,12 @@ function CommandHandler(type, haltOnFailure, executor) {
     this.haltOnFailure = haltOnFailure;
     this.executor = executor;
 }
-
 CommandHandler.prototype.execute = function(seleniumApi, command) {
     return new CommandResult(this.executor.call(seleniumApi, command.target, command.value));
 };
 
 function ActionHandler(action, wait) {
-    this.base = CommandHandler;
-    this.base("action", true, action);
+    CommandHandler.call(this, "action", true, action);
     if (wait) {
         this.wait = true;
     }
@@ -132,11 +130,9 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
 };
 
 function AccessorHandler(accessor) {
-    this.base = CommandHandler;
-    this.base("accessor", true, accessor);
+    CommandHandler.call("accessor", true, accessor);
 }
 AccessorHandler.prototype = new CommandHandler;
-
 AccessorHandler.prototype.execute = function(seleniumApi, command) {
     var returnValue = this.executor.call(seleniumApi, command.target, command.value);
     var result = new CommandResult();
@@ -145,8 +141,7 @@ AccessorHandler.prototype.execute = function(seleniumApi, command) {
 };
 
 function AssertHandler(assertion, haltOnFailure) {
-    this.base = CommandHandler;
-    this.base("assert", haltOnFailure || false, assertion);
+    CommandHandler.call(this, "assert", haltOnFailure || false, assertion);
 }
 AssertHandler.prototype = new CommandHandler;
 AssertHandler.prototype.execute = function(seleniumApi, command) {
