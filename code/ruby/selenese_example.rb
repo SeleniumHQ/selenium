@@ -16,18 +16,16 @@ require 'selenese'
 
 puts "Go to http://localhost:7896/SeleneseRunner.html"
 
-browser = Selenium::Browser.new.proxy
+selenium = Selenium::Browser.new.proxy
 
 # Send some commands to the browser
-puts browser.doCommand('|open|/tests/html/test_click_page1.html||')
-puts browser.doCommand('|verifyText|link|Click here for next page|')
-puts browser.doCommand('|clickAndWait|link||')
-puts browser.doCommand('|verifyLocation|/tests/html/test_click_page2.html||')
-puts browser.doCommand('|clickAndWait|previousPage||')
+puts selenium.open('/tests/html/test_click_page1.html')
+puts selenium.verifyText('link', 'Click here for next page')
+puts selenium.clickAndWait('link')
+puts selenium.verifyLocation('/tests/html/test_click_page2.html')
+puts selenium.clickAndWait('previousPage')
 
-# These examples use method_missing
-puts browser.verifyText("link", "This is WRONG")
-puts browser.verifyElementPresent("link")
+puts selenium.verifyText("link", "This is WRONG")
+puts selenium.verifyElementPresent("link")
 
-#finish the test
-puts browser.doCommand('|testComplete|')
+puts selenium.testComplete()
