@@ -77,6 +77,13 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
 }
 
 /*
+ * Verify the title of the current page.
+ */
+Selenium.prototype.assertTitle = function(expectedTitle) {
+    assertEquals(expectedTitle, this.page().title());
+}
+
+/*
  * Verify the value of a form element.
  */
 Selenium.prototype.assertValue = function(locator, expectedValue) {
@@ -170,8 +177,11 @@ function CommandFactory() {
 
     var self = this;
 
-    this.registerAction = function(name, action) {
+    this.registerAction = function(name, action, wait) {
         var handler = new CommandHandler("action", true, action);
+        if (wait) {
+            handler.wait = true;
+        }
         this.actions[name] = handler;
     }
 
@@ -194,8 +204,13 @@ function CommandFactory() {
         for (var functionName in commandObject) {
             if (/^do([A-Z].+)$/.exec(functionName) != null) {
                 var actionName = RegExp["$1"].toCamelCase();
+                // Register the action without the wait flag.
                 var action = commandObject[functionName];
-                this.registerAction(actionName, action);
+                this.registerAction(actionName, action, false);
+
+                // Register actionName + "AndWait" with the wait flag;
+                var waitActionName = actionName + "AndWait";
+                this.registerAction(waitActionName, action, true);
             }
         }
     }

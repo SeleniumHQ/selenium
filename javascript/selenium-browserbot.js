@@ -120,7 +120,9 @@ PageBot = function(pageWindow, browserBot) {
     this.browserBot = browserBot;
     this.currentDocument = pageWindow.document;
 
-    this.location = pageWindow.location.pathname
+    this.location = pageWindow.location.pathname;
+
+    this.title = function() {return this.currentDocument.title};
 }
 
 /*

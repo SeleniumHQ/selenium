@@ -99,17 +99,22 @@ function testVerifyLocationSuccess() {
 
 function testVerifyLocationFailed() {
     mockPageBot.expectsProperty("location").returns("foo");
+    assertCallFails("Verify location should have failed",
+                    function() {selenium.assertLocation("bar")});
+    verifyMocks();
+}
 
-    var failed = false;
-    try {
-        selenium.assertLocation("bar");
-    }
-    catch (e) {
-        var failed = true;
-    }
-    if (!failed) {
-        fail("Verify location should have failed");
-    }
+function testVerifyTitleSuccess() {
+    mockPageBot.expects("title").returns("foo");
+    selenium.assertTitle("foo");
+    verifyMocks();
+}
+
+function testVerifyTitleFailed() {
+    mockPageBot.expects("title").returns("foo");
+    assertCallFails("Verify title should have failed",
+                    function() {selenium.assertTitle("bar")});
+    verifyMocks();
 }
 
 function testVerifyValueOfTextInputSuccess() {

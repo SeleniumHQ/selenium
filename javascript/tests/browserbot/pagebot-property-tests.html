@@ -19,7 +19,7 @@ Copyright 2004 ThoughtWorks, Inc
 <html>
   <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>JsUnit Utility Tests</title>
+    <title>PageBot Property Tests</title>
     <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
@@ -30,6 +30,10 @@ Copyright 2004 ThoughtWorks, Inc
 
 function setUp() {
     pageBot = new PageBot(window)
+}
+
+function testTitleProperty() {
+    assertEquals("PageBot Property Tests", pageBot.title());
 }
 
 function testLocationProperty() {
