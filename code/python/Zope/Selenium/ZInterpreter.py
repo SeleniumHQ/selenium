@@ -21,6 +21,7 @@ class ZSeleniumInterpreter(SeleniumInterpreter, Item, Persistent, Implicit, Role
     def __init__(self, id):
         SeleniumInterpreter.__init__(self, id)
 
+    # Dispatcher methods - queue input/output
     security.declarePublic('driver')
     security.declarePublic('apiDriver')
     security.declarePublic('addCommand')
@@ -29,8 +30,34 @@ class ZSeleniumInterpreter(SeleniumInterpreter, Item, Persistent, Implicit, Role
     security.declarePublic('addResult')
     security.declarePublic('getResult')
     security.declarePublic('getResultQueueSize')
-    security.declarePublic('open')
+
+    # Interpreter methods - Selenese commands 
+    security.declarePublic('chooseCancelOnNextConfirmation')
     security.declarePublic('click')
+    security.declarePublic('clickAndWait')
+    security.declarePublic('open')
+    security.declarePublic('pause')
+    security.declarePublic('selectAndWait')
+    security.declarePublic('selectWindow')
+    security.declarePublic('setTextField')
+    security.declarePublic('storeText')
+    security.declarePublic('storeValue')
+    security.declarePublic('testComplete')
+    security.declarePublic('type')
+    security.declarePublic('typeAndWait')
+    security.declarePublic('verifyAlert')
+    security.declarePublic('verifyAttribute')
+    security.declarePublic('verifyConfirmation')
+    security.declarePublic('verifyElementNotPresent')
+    security.declarePublic('verifyElementPresent')
+    security.declarePublic('verifyLocation')
+    security.declarePublic('verifySelectOptions')
+    security.declarePublic('verifySelected')
+    security.declarePublic('verifyTable')
+    security.declarePublic('verifyText')
+    security.declarePublic('verifyTextPresent')
+    security.declarePublic('verifyTitle')
+    security.declarePublic('verifyValue')
 
 InitializeClass(ZSeleniumInterpreter)
 
