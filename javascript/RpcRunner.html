@@ -27,6 +27,7 @@ http-equiv="content-type">
 
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-xmlrpcrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
@@ -45,7 +46,7 @@ doneColor = "yellow";
     browserbot = new BrowserBot(document.getElementById('myiframe'));
     selenium = new Selenium(browserbot);
 
-    commandFactory = new CommandFactory();
+    commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
     testLoop = new TestLoop(commandFactory);

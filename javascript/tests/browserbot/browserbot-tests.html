@@ -89,9 +89,13 @@ function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIs
     browserBot.currentWindowName = null;
     browserBot.currentPage = null;
 
-    mockFrame.contentWindow.window.location = new String('location');
-    mockFrame.contentWindow.window.location.pathname = 'thelocation';
+    var mockLocation = new Mock();
+    mockLocation.expectsProperty('pathname').returns('thelocation');
+
+    mockFrame.contentWindow.window.location = mockLocation;
     mockFrame.contentWindow.window.document = 'thedocument';
+    mockFrame.contentWindow.window.addEventListener = function(){};
+    mockFrame.contentWindow.window.attachEvent = function(){};
 
     var pageBot = browserBot.getCurrentPage();
     assertEquals(pageBot, browserBot.currentPage);
@@ -99,21 +103,30 @@ function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIs
     assertEquals(mockFrame.contentWindow.window, pageBot.currentWindow);
     assertEquals('thedocument', pageBot.currentDocument);
     assertEquals('thelocation', pageBot.location);
+
+    mockLocation.verify();
 }
 
 function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSet() {
     browserBot.currentPage = null;
 
+    var mockLocation = new Mock();
+    mockLocation.expectsProperty('pathname').returns('thelocation');
+
     targetWindow = new String('anotherWindow');
-    targetWindow.location = new String('location');
+    targetWindow.location = mockLocation;
+    targetWindow.addEventListener = function(){};
+    targetWindow.attachEvent = function(){};
+
     mockFrame.contentWindow.window.targetWindow = targetWindow;
 
     browserBot.currentWindowName = 'targetWindow';
 
     var pageBot = browserBot.getCurrentPage();
     assertEquals(targetWindow, pageBot.currentWindow);
-}
 
+    mockLocation.verify();
+}
 </script>
   </head>
   <body>Selenium BrowserBot Tests</body>
