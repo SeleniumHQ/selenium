@@ -1,49 +1,17 @@
-using System;
-using System.Diagnostics;
-using NUnit.Framework;
 using Selenium;
+using ThoughtWorks.Selenium.Core;
 
 namespace ThoughtWorks.Selenium.UnitTests
 {
 	/// <summary>
-	/// Summary description for DefaultBrowserLauncherTest.
+	/// Summary description for InternetExplorerBrowserLauncherTest.
 	/// </summary>
-	[TestFixture]
-	public class InternetExplorerBrowserLauncherTest
+	public class InternetExplorerBrowserLauncherTest : DefaultBrowserLauncherTest
 	{
-		private InternetExplorerBrowserLauncher launcher;
-		private const string URL = "http://www.yahoo.com";
-
-		[TearDown]
-		public void Teardown()
+		protected override DefaultBrowserLauncher getBrowser()
 		{
-			try
-			{
-				launcher.Close();
-			}
-			catch (Exception)
-			{
-				// Don't care about exceptions here
-			}
+			return new InternetExplorerBrowserLauncher();
 		}
 
-		[Test]
-		public void LaunchInternetExplorerShouldWork()
-		{
-			launcher = new InternetExplorerBrowserLauncher();
-			launcher.Launch(URL);
-			Assert.IsTrue(this.launcher.ProcessID != 0);
-		}
-
-		[Test]
-		[ExpectedException(typeof (ArgumentException))]
-		public void CloseInternetExplorerShouldWork()
-		{
-			InternetExplorerBrowserLauncher launcher = new InternetExplorerBrowserLauncher();
-			launcher.Launch(URL);
-			launcher.Close();
-
-			Process.GetProcessById(launcher.ProcessID);
-		}
 	}
 }

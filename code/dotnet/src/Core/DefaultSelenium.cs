@@ -7,7 +7,7 @@ namespace Selenium
 	/// </summary>
 	public class DefaultSelenium : ISelenium
 	{
-		public static readonly string SELENIUM_DRIVER_URL = "http://localhost/selenium-driver/SeleniumRunner.html";
+		public static readonly string SELENIUM_DRIVER_URL = "http://localhost/selenium-driver/SeleneseRunner.html";
 
 		private readonly IBrowserLauncher launcher;
 		private readonly ICommandProcessor processor;	
@@ -80,7 +80,7 @@ namespace Selenium
 
 		public void TestComplete()
 		{
-			DoCommandAndFailIfNotSuccess("testComplete", "", "", "OK");
+			DoCommandAndFailIfNotSuccess("testComplete", "", "", "");
 		}
 
 		public void Type(String field, String value)
@@ -188,7 +188,7 @@ namespace Selenium
 			string actualResult = processor.DoCommand(command, argument1, argument2);
 			if (actualResult != expectedResult)
 			{
-				throw new SeleniumException();
+				throw new SeleniumException(actualResult);
 			}
 		}
 	}

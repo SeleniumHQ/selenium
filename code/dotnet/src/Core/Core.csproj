@@ -115,6 +115,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DefaultBrowserLauncher.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DefaultSeleneseCommand.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
