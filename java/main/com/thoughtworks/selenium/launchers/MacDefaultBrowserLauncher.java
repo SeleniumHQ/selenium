@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class MacDefaultBrowserLauncher implements BrowserLauncher {
 
@@ -36,5 +36,8 @@ public class MacDefaultBrowserLauncher implements BrowserLauncher {
         } catch (IOException e) {
             throw new RuntimeException("Could not launch default browser.", e);
         }
+    }
+
+    public void close() {
     }
 }

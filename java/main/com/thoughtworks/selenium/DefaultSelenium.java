@@ -25,7 +25,7 @@ import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DefaultSelenium implements Selenium {
 
@@ -70,6 +70,7 @@ public class DefaultSelenium implements Selenium {
     }
 
     public void stop() {
+        launcher.close();
         commandProcessor.stop();
     }
 }

@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class SystemPropertiesBrowserLauncher implements BrowserLauncher {
 
@@ -38,5 +38,8 @@ public class SystemPropertiesBrowserLauncher implements BrowserLauncher {
         } catch (IOException e) {
             throw new RuntimeException("Could not launch default browser.", e);
         }
+    }
+
+    public void close() {
     }
 }
