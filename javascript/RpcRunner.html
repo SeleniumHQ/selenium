@@ -1,0 +1,114 @@
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1"
+http-equiv="content-type">
+<title>Selenium Functional Test Runner</title>
+
+<script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsolait/init.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsolait/lib/xmlrpc.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsolait/lib/xml.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsolait/lib/urllib.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-xmlrpcrunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
+<script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script>
+passColor = "#cfffcf";
+failColor = "#ffcfcf";
+workingColor = "#DEE7EC";
+doneColor = "yellow";
+
+ function runSingleTest() {
+    xmlRpcRunner = new XmlRpcRunner();
+    wikiRows = xmlRpcRunner.getWikiTableRows()
+    tableParser = new TableParser(wikiRows);
+
+    browserbot = new BrowserBot(document.getElementById('myiframe'));
+    selenium = new Selenium(browserbot);
+
+    commandFactory = new CommandFactory();
+    commandFactory.registerAll(selenium);
+
+    testLoop = new TestLoop(commandFactory);
+    testLoop.commandInterval = 0;
+
+    testLoop.nextCommand = nextCommand;
+    testLoop.beginCommand = beginCommand;
+    testLoop.commandError = commandError;
+    testLoop.actionOK = actionOK;
+    testLoop.assertionPassed = assertionPassed;
+    testLoop.assertionFailed = assertionFailed;
+    testLoop.onTestComplete = function() {alert("onTestComplete")};
+
+    testLoop.start();
+ }
+
+ function nextCommand() {
+     var nextRow = wikiRows.getRow();
+     if (nextRow == null) return null;
+     wikiRows.setResult("OK");
+     return tableParser.createCommandFromWikiRow(nextRow);
+ }
+
+ function beginCommand(command) {
+    commandNode = document.createElement("li");
+    commandNode.innerHTML = command.command;
+    commandNode.style.backgroundColor = workingColor;
+    document.getElementById("commandList").appendChild(commandNode);
+ }
+
+ function actionOK() {
+     commandNode.style.backgroundColor = doneColor;
+ }
+
+ function assertionPassed() {
+     commandNode.style.backgroundColor = passColor;
+ }
+
+ function assertionFailed(message) {
+     commandNode.style.backgroundColor = failColor;
+     commandNode.title = message;
+ }
+
+ function commandError(message) {
+    commandNode.style.backgroundColor = failColor;
+    commandNode.title = message;
+ }
+</script>
+</head>
+
+<body>
+
+<button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">run a single test</button>
+<p>
+<div style="float:left;">
+<b>Command List</b><br/>
+(hover to see errors)
+<ul id="commandList">
+</ul>
+.
+</div>
+</p>
+<iframe NAME="myiframe" ID="myiframe" style="float:right;margin-top: 10px;" height="80%;" width="80%" border="0" SRC=""></iframe>
+</body>
+</html>
+
