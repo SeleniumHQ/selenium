@@ -1,7 +1,7 @@
 from ZODB.PersistentList import PersistentList
 import time
 
-QUEUE_TIMEOUT = 5       # in seconds
+QUEUE_TIMEOUT = 5       # default timeout in seconds
 """ 
     How long a 'get' command will wait before timing out if a queue is empty.
 
@@ -29,9 +29,17 @@ class Dispatcher:
     """
     
     def __init__(self):
-        self.QUEUE_TIMEOUT = QUEUE_TIMEOUT
+        self.queue_timeout = QUEUE_TIMEOUT             
         self._commands = PersistentList()
         self._results = PersistentList()
+
+
+    def setTimeout(self,timeout):
+        """ Set the timeout period in seconds that a browser or driver should
+        wait before timing out"""
+        self.queue_timeout = timeout
+        return "Timeout set to %s seconds" % timeout
+            
     
     def addCommand(self, command, REQUEST=None):
         """ Add a command to the commands queue """  
@@ -55,7 +63,7 @@ class Dispatcher:
             # until we're forced to time out the request.
             elapsed_time = 0
             step = .5   # in seconds
-            while elapsed_time <= QUEUE_TIMEOUT:
+            while elapsed_time <= self.queue_timeout:
                 time.sleep(step)   #in seconds
                 elapsed_time += step
                 
@@ -102,7 +110,7 @@ class Dispatcher:
             # until we're forced to time out the request.
             elapsed_time = 0
             step = .5   # in seconds
-            while elapsed_time <= QUEUE_TIMEOUT:
+            while elapsed_time <= self.queue_timeout:
                 time.sleep(step)   #in seconds
                 elapsed_time += step
                 
