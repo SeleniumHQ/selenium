@@ -22,20 +22,20 @@ browser.launch("http://localhost:7896/selenium-driver/SeleneseRunner.html")
 
 # Send some commands to the browser
 puts selenium.open('/test_click_page1.html')
-puts selenium.verifyText('link', 'Click here for next page')
-puts selenium.clickAndWait('link')
-puts selenium.verifyLocation('/test_click_page2.html')
-puts selenium.clickAndWait('previousPage')
+puts selenium.verify_text('link', 'Click here for next page')
+puts selenium.click_and_wait('link')
+puts selenium.verify_location('/test_click_page2.html')
+puts selenium.click_and_wait('previousPage')
 
 begin
-  puts selenium.verifyText("link", "This is WRONG") # should fail
+  puts selenium.verify_text("link", "This is WRONG") # should fail
 rescue SeleniumCommandError
   puts 'expected error occurred'
 else
   puts 'FAIL -- expected error not thrown'
 end
 
-puts selenium.verifyElementPresent("link")
-puts selenium.testComplete()
+puts selenium.verify_element_present("link")
+puts selenium.test_complete()
 
 browser.close
