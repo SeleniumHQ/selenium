@@ -29,7 +29,8 @@
 
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
-// Get the Gecko version as an 8 digit date. 
+var isKonqueror = (browserName == "Konqueror");
+// Get the Gecko version as an 8 digit date.
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
@@ -55,20 +56,24 @@ function SelfRemovingLoadListener(fn, frame) {
 }
 
 function createBrowserBot(frame, executionContext) {
-    if (isIE) {
-        return new IEBrowserBot(frame, executionContext);
-    }
-    else {
-        return new MozillaBrowserBot(frame, executionContext);
+    switch (browserName) {
+        case "Microsoft Internet Explorer":
+            return new IEBrowserBot(frame, executionContext);
+        case "Konqueror":
+            return new KonquerorBrowserBot(frame, executionContext);
+        default:
+            return new MozillaBrowserBot(frame, executionContext);
     }
 }
 
 function createPageBot(windowObject) {
-    if (isIE) {
-        return new IEPageBot(windowObject);
-    }
-    else {
-        return new MozillaPageBot(windowObject);
+    switch (browserName) {
+        case "Microsoft Internet Explorer":
+            return new IEPageBot(windowObject);
+        case "Konqueror":
+            return new KonquerorPageBot(windowObject);
+        default:
+            return new MozillaPageBot(windowObject);
     }
 }
 
@@ -196,6 +201,11 @@ function MozillaBrowserBot(frame, executionContext) {
 }
 MozillaBrowserBot.prototype = new BrowserBot;
 
+function KonquerorBrowserBot(frame, executionContext) {
+    BrowserBot.call(this, frame, executionContext);
+}
+KonquerorBrowserBot.prototype = new BrowserBot;
+
 function IEBrowserBot(frame, executionContext) {
     BrowserBot.call(this, frame, executionContext);
 }
@@ -243,6 +253,11 @@ MozillaPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
 };
 MozillaPageBot.prototype = new PageBot();
+
+KonquerorPageBot = function(pageWindow) {
+    PageBot.call(this, pageWindow);
+};
+KonquerorPageBot.prototype = new PageBot();
 
 IEPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
@@ -451,7 +466,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
     element.value=stringValue;
-    if (isIE) {
+    if (isIE || isKonqueror) {
         triggerEvent(element, 'change', true);
     }
     triggerEvent(element, 'blur', false);
@@ -484,6 +499,32 @@ MozillaPageBot.prototype.clickElement = function(element) {
             this.currentWindow.location.href = element.parentNode.href;
         }
     }
+
+    if (this.windowClosed()) {
+        return;
+    }
+
+    triggerEvent(element, 'blur', false);
+};
+
+KonquerorPageBot.prototype.clickElement = function(element) {
+
+    triggerEvent(element, 'focus', false);
+
+    // TODO: Add an event listener that detects if the default action has been prevented.
+    // (This is caused by a javascript onclick handler returning false)
+    // I think there will be a bug where a checkbox will get checked even if it's onclick returns false.
+
+    // Change the value of checkboxes and radios (this doesn't just work in Konq)
+    if (element.type == "checkbox") {
+        element.checked = !element.checked;
+    }
+    else if (element.type == "radio") {
+        if (!element.checked) {
+            element.checked = true;
+        }
+    }
+    triggerMouseEvent(element, 'click', true);
 
     if (this.windowClosed()) {
         return;
