@@ -1,0 +1,26 @@
+>>> selenium.addCommand('|open|http://localhost:8081/AUT/000000A/http/my.thoughtworks.com/||')
+>>> selenium.addCommand('|clickAndWait|login||')
+>>> selenium.addCommand('|type|__ac_name|jrhuggin|')
+>>> selenium.addCommand('|type|__ac_password|xxxxxx|')
+>>> selenium.addCommand('|testComplete|')
+
+
+# Launch browser after entering following command 
+# and goto http://localhost:8081/selenium-driver/SeleneseRunner.html
+>>> selenium.open('http://localhost:8081/AUT/000000A/http/www.plone.org/')
+'OK'
+
+
+"""
+To proxy a request
+http://localhost:8081/AUT/000000A/x-proxy/start?URL=http://www.slashdot.org
+"""
+
+
+
+
+
+
+
+
+

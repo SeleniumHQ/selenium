@@ -1,0 +1,1 @@
+Copy the entire contents of selenium/code/javascript to inside of this directory

@@ -1,0 +1,227 @@
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+
+C:\Program Files\Symantec AntiVirus>c:\Python23\python.exe
+Python 2.3.4 (#53, May 25 2004, 21:17:02) [MSC v.1200 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import xmlrpclib
+>>> selenium = xmlrpclib.ServerProxy("http://localhost:8081/selenium-driver/RPC2")
+>>> gcs = selenium.getCommandQueueSize
+>>> gcs()
+0
+>>> gc = selenium.getCommand
+>>> ac = selnium.addCommand
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+NameError: name 'selnium' is not defined
+>>> ac = selenium.addCommand
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> gcs()
+1
+>>> gc()
+'|open|http://my.thoughtworks.com||'
+>>> gc()
+'ERROR: Command queue was empty'
+>>> gc()
+'|open|http://my.thoughtworks.com||'
+>>> gc()
+'ERROR: Command queue was empty'
+>>> gc()
+'|open|http://my.thoughtworks.com||'
+>>> gc()
+'ERROR: Command queue was empty'
+>>> gc()
+'|open|http://my.thoughtworks.com||'
+>>> gc()
+'|type|__ac_name|jrhuggin|'
+>>> gc()
+'ERROR: Command queue was empty'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> gcs()
+0
+>>> grs = selenium.getResultQueueSize
+>>> grs()
+0
+>>> gr = selenium.getResult
+>>> ar = selenium.addResult
+>>> grs()
+0
+>>> gcs()
+0
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> gcs()
+1
+>>> grs()
+1
+>>> gr()
+'OK'
+>>> gcs()
+0
+>>> gcs()
+0
+>>> gr()
+'ERROR: Result queue was empty'
+>>> gr()
+'OK'
+>>> gr()
+'OK'
+>>> gr()
+'OK'
+>>> gr()
+'OK'
+>>> gr()
+'ERROR: Result queue was empty'
+>>> gr()
+'OK'
+>>> gr()
+'OK'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> gcs()
+0
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> gcs()
+1
+>>> grs()
+3
+>>> gr()
+'OK'
+>>> gcs()
+0
+>>> gr()
+'OK'
+>>> gr()
+'OK'
+>>> gr()
+'OK'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> gcs()
+1
+>>> grs()
+19
+>>> grs()
+19
+>>> grs()
+19
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> ac('|open|http://my.thoughtworks.com||')
+'Command added'
+>>> ac('|open|http://my.thoughtworks.coms||')
+'Command added'
+>>> ac('|open|http://my.thoughtworks.coms||')
+'Command added'
+>>> ac('|open|http://www.slashdot.org||')
+'Command added'
+>>> ac('|open|http://www.slashdot.org||')
+'Command added'
+>>> ac('|testComplete|')
+'Command added'
+>>> ac('|open|http://www.bankone.com||')
+'Command added'
+>>> ac('|testComplete|')
+'Command added'
+>>> grs()
+28
+>>> for i in range(27):
+...     gr()
+...
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+'OK'
+>>> selenium.open('http://www.google.com')
+'OK'
+>>> gr()
+'ERROR: Result queue was empty'
+>>> selenium.open('http://www.google.com')
+'OK'
+>>> ac('|testComplete|')
+'Command added'
+>>> gcs()
+1
+>>> gc()
+'|testComplete|'
+>>> grs()
+1
+>>> gr()
+'OK'
+>>> grs()
+0
+>>> gcs()
+0
+>>> selenium.open('http://www.google.com')
+'OK'
+>>> ac('|testComplete|')
+'Command added'
+>>> grs()
+0
+>>> grs()
+0
+>>> selenium.open('http://www.google.com')
+'ERROR: Result queue was empty'
+>>> ac('|testComplete|')
+'Command added'
+>>> gr()
+'ERROR: Result queue was empty'
+>>> grs()
+0
+>>> gcs()
+2
+>>> gc()
+'|open|http://www.google.com||'
+>>> gc()
+'|testComplete|'
+>>> selenium.open('http://localhost:8081/AUT/000000A/http/www.plone.org/')
+'ERROR: Result queue was empty'
+>>> selenium.setTimeout(10)
+'Timeout set to 10 seconds'
+>>> selenium.open('http://localhost:8081/AUT/000000A/http/www.slashdot.org/')
+'OK'
+>>> gc()
+'ERROR: Command queue was empty'
+>>> grs()
+1
+>>> gr()
+'OK'
+>>> selenium.open('http://localhost:8081/AUT/000000A/http/www.google.com/')
+'OK'
+>>>
