@@ -58,6 +58,18 @@ function runSingleTest() {
     testLoop.start();
  }
 
+ function startup() {
+   var xmlHttp = XmlHttp.create();
+
+    try {
+        xmlHttp.open("GET", "driver?seleniumStart=true", false);
+        xmlHttp.send(null);
+    } catch(e) {
+        return null;
+    }
+    return extractCommand(xmlHttp);
+ }
+
  function nextCommand() {
     var xmlHttp = XmlHttp.create();
 
@@ -67,7 +79,10 @@ function runSingleTest() {
     } catch(e) {
         return null;
     }
+    return extractCommand(xmlHttp);
+ }
 
+ function extractCommand(xmlHttp) {
     var command;
     try {
         command = xmlHttp.responseText;
