@@ -11,7 +11,6 @@
 
 // The window to which the commands will be sent.  For example, to click on a
 // popup window, first select that window, and then do a normal click command.
-var browserbot = new BrowserBot();
 
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
@@ -124,24 +123,6 @@ function PageBot(pageWindow) {
     this.currentDocument = pageWindow.document;
 
     this.location = pageWindow.location.pathname
-}
-
-/*
- * Finds an element, using various lookup protocols
- */
-PageBot.prototype.findElement = function(locator) {
-    // First try using id/name search
-    var element = this.findIdentifiedElement(locator)
-
-    // Next, if the locator starts with 'document.', try to use Dom traversal
-    if (element == null && locator.indexOf("document.") == 0) {
-        var domTraversal = locator.substr(9)
-        element = this.findElementByDomTraversal(domTraversal)
-    }
-
-    // TODO: try xpath
-
-    return element;
 }
 
 /*

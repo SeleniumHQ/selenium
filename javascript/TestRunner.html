@@ -5,8 +5,13 @@ http-equiv="content-type">
 <title>Selenium Functional Test Runner</title>
 
 <script type="text/javascript" src="selenium-browserbot.js"></script>
+<script type="text/javascript" src="selenium-api.js"></script>
 <script type="text/javascript" src="selenium-fitrunner.js"></script>
 <script type="text/javascript" src="htmlutils.js"></script>
+<script type="text/javascript">
+var browserbot = new BrowserBot();
+var testApp = new TestApp(browserbot);
+</script>
 </head>
 
 
