@@ -19,12 +19,13 @@ package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.embedded.jetty.JettyCommandProcessor;
 import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
+import com.thoughtworks.selenium.launchers.DefaultBrowserLauncher;
 
 import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DefaultSelenium implements Selenium {
 
@@ -44,7 +45,7 @@ public class DefaultSelenium implements Selenium {
 
     public DefaultSelenium(File webAppRoot) {
         commandProcessor = new JettyCommandProcessor(webAppRoot, SELENIUM_CONTEXT);
-        launcher = new WindowsDefaultBrowserLauncher();
+        launcher = new DefaultBrowserLauncher();
     }
 
     public boolean open(String path) {
