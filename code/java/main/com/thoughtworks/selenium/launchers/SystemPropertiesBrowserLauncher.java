@@ -25,13 +25,9 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision$
  */
-public class SystemPropertiesBrowserLauncher extends AbstractBrowserLauncher {
-
+public class SystemPropertiesBrowserLauncher extends SystemDefaultBrowserLauncher {
 
     private static final String browserPath = System.getProperty("selenium-browser-path");
-    private static final String osName = System.getProperty("os.name");
-
-    BrowserLauncher delegate;
 
     public SystemPropertiesBrowserLauncher() {
         if (browserPath != null && !browserPath.equals("")) {
@@ -48,20 +44,8 @@ public class SystemPropertiesBrowserLauncher extends AbstractBrowserLauncher {
                 }
 
             };
-        } else if (osName != null && osName.startsWith("Windows")) {
-            delegate = new WindowsDefaultBrowserLauncher();
-        } else if (osName != null && osName.startsWith("Mac")) {
-            delegate = new MacDefaultBrowserLauncher();
         } else {
-            delegate = new UnixDefaultBrowserLauncher();
+            defaultBrowsers();
         }
-    }
-
-    public void launch(String url) {
-        delegate.launch(url);
-    }
-
-    public void close() {
-        delegate.close();
     }
 }
