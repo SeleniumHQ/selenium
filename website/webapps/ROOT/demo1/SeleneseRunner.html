@@ -1,0 +1,169 @@
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1"
+http-equiv="content-type">
+<title>Selenium Functional Test Runner</title>
+
+<script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="xmlextras.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
+<script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script>
+passColor = "#cfffcf";
+failColor = "#ffcfcf";
+errorColor = "#ffffff";
+workingColor = "#DEE7EC";
+doneColor = "#FFFFCC";
+
+slowMode = false;
+
+var postResult = "OK";
+
+function runTest() {
+    tableParser = new TableParser();
+
+    browserbot = new BrowserBot(document.getElementById('myiframe'));
+    selenium = new Selenium(browserbot);
+
+    commandFactory = new CommandHandlerFactory();
+    commandFactory.registerAll(selenium);
+
+    testLoop = new TestLoop(commandFactory);
+
+    testLoop.firstCommand = startup;
+    testLoop.nextCommand = nextCommand;
+    testLoop.commandStarted = commandStarted;
+    testLoop.commandComplete = commandComplete;
+    testLoop.commandError = commandError;
+    testLoop.testComplete = function() {window.status = "Selenium Tests Complete, for this Test"};
+
+    testLoop.start();
+ }
+
+ function startup() {
+
+   var xmlHttp = XmlHttp.create();
+
+    try {
+        xmlHttp.open("GET", "driver?seleniumStart=true", false);
+        xmlHttp.send(null);
+    } catch(e) {
+        return null;
+    }
+    return extractCommand(xmlHttp);
+ }
+
+ function nextCommand() {
+
+    var xmlHttp = XmlHttp.create();
+
+    try {
+        xmlHttp.open("GET", "driver?commandResult=" + postResult, false);
+        xmlHttp.send(null);
+    } catch(e) {
+        return null;
+    }
+    return extractCommand(xmlHttp);
+ }
+
+ function extractCommand(xmlHttp) {
+
+    if (slowMode) {
+      delay(2000);
+    }
+    var command;
+    try {
+        command = xmlHttp.responseText;
+    } catch (e) {
+        alert('could not get responseText: ' + e.message);
+    }
+
+    if (command == "|testComplete|") {
+        alert('got test complete');
+        return null;
+    }
+    return tableParser.createCommandFromWikiRow(command);
+ }
+
+ function commandStarted(command) {
+    commandNode = document.createElement("li");
+    commandNode.innerHTML = command.command;
+    commandNode.style.backgroundColor = workingColor;
+    document.getElementById("commandList").appendChild(commandNode);
+ }
+
+ function commandComplete(result) {
+    if (result.failed) {
+        postResult = result.failureMessage;
+        commandNode.title = result.failureMessage;
+        commandNode.style.backgroundColor = failColor;
+    } else if (result.passed) {
+        postResult = "PASSED";
+        commandNode.style.backgroundColor = passColor;
+    } else {
+        postResult = result.result;
+        commandNode.style.backgroundColor = doneColor;
+    }
+ }
+
+ function commandError(message) {
+    postResult = "ERROR"
+    commandNode.style.backgroundColor = errorColor;
+    commandNode.title = message;
+ }
+
+ function slowClicked() {
+   slowMode = !slowMode;
+ }
+
+
+ function delay(millis) {
+   startMillis = new Date();
+   while (true) {
+     milli = new Date();
+     if (milli-startMillis > millis) {
+       break;
+     }
+   }
+ }
+
+</script>
+</head>
+
+<body onLoad="runTest()">
+
+<h1>Selenium Functional Web Application Testing.</h1>
+Open Source From <a href="http://www.thoughtWorks.com">ThoughtWorks Inc</a>&nbsp;&nbsp;&nbsp;Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"><br>
+<p>
+<div style="float:left;">
+<b>Command List</b><br/>
+(hover to see errors)
+<ul id="commandList">
+</ul>
+.
+</div>
+</p>
+<iframe NAME="myiframe" ID="myiframe" style="float:right;margin-top: 10px;" height="80%;" width="80%" border="0" SRC=""></iframe>
+</body>
+</html>
+
