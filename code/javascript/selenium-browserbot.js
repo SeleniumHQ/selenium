@@ -228,6 +228,7 @@ PageBot = function(pageWindow) {
     this.locators.push(this.findIdentifiedElement);
     this.locators.push(this.findElementByDomTraversal);
     this.locators.push(this.findElementByXPath);
+    this.locators.push(this.findLink);
 };
 
 /*
@@ -346,6 +347,19 @@ PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
     }
 
     return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+};
+
+/**
+* Finds a link element with text matching the expression supplied. Expressions must
+* begin with "link:".
+*/
+PageBot.prototype.findLink = function(linkDescription, inDocument) {
+    if (linkDescription.indexOf("link:") != 0) {
+        return null;
+    }
+
+    var linkText = linkDescription.substring(5);
+    return this.findElementByXPath("//a[text()='" + linkText + "']", inDocument);
 };
 
 /**
