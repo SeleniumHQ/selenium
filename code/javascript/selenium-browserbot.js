@@ -53,7 +53,6 @@ function SelfRemovingLoadListener(fn, frame) {
         }
     };
 }
-
 BrowserBot = function(frame, executionContext) {
     this.frame = frame;
     this.executionContext = executionContext;
@@ -125,58 +124,36 @@ BrowserBot.prototype.getCurrentPage = function() {
         if (this.currentWindowName != null) {
             testWindow = this.getTargetWindow(this.currentWindowName);
         }
-        modifyWindowToRecordPopUpDialogs(testWindow, this);
-        modifyWindowToClearPageCache(testWindow, this);
+        this.modifyWindowToRecordPopUpDialogs(testWindow, this);
+        this.modifyWindowToClearPageCache(testWindow, this);
         this.currentPage =  new PageBot(testWindow);
     }
 
     return this.currentPage;
+};
 
-    // private functions below - is there a better way?
+BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+    windowToModify.alert = function(alert) {
+        browserBot.recordedAlerts.push(alert);
+    };
 
-    function modifyWindowToRecordPopUpDialogs(window, browserBot) {
+    windowToModify.confirm = function(message) {
+        browserBot.recordedConfirmations.push(message);
+        var result = browserBot.nextConfirmResult;
+        browserBot.nextConfirmResult = true;
+        return result;
+    };
+};
 
-        // we will call the previous version of this method from within our own interception
-        oldShowModalDialog = window.showModalDialog;
+BrowserBot.prototype.modifyWindowToClearPageCache = function(windowToModify, browserBot) {
+    var clearPageCache = function() {
+        browserbot.currentPage = null;
+    };
 
-        window.showModalDialog = function(url, args, features) {
-            // Get relative directory to where TestRunner.html lives
-            // A risky assumption is that the user's TestRunner is named TestRunner.html
-            var doc_location = document.location.toString();
-            var end_of_base_ref = doc_location.indexOf('TestRunner.html');
-            var base_ref = doc_location.substring(0, end_of_base_ref);
-	    
-            var fullURL = base_ref + "TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runInterval;
-            browserBot.modalDialogTest = null;
-
-            var returnValue = oldShowModalDialog(fullURL, args, features);
-            //window.open(fullURL);
-            //alert(returnValue);
-            return returnValue;
-        };
-
-        window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
-
-        window.confirm = function(message){
-            browserBot.recordedConfirmations.push(message);
-            var result = browserBot.nextConfirmResult;
-            browserBot.nextConfirmResult = true;
-            return result;
-        };
-    }
-
-     function modifyWindowToClearPageCache(window, browserBot) {
-        //SPIKE factor this better via TDD
-        function clearPageCache() {
-            browserbot.currentPage = null;
-        }
-
-        if (window.addEventListener) {
-            testWindow.addEventListener("unload",clearPageCache, true);
-        } else if (window.attachEvent) {
-            testWindow.attachEvent("onunload",clearPageCache);
-        }
-       // End SPIKE
+    if (window.addEventListener) {
+        windowToModify.addEventListener("unload",clearPageCache, true);
+    } else if (window.attachEvent) {
+        windowToModify.attachEvent("onunload",clearPageCache);
     }
 };
 
@@ -194,6 +171,50 @@ BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
         var el = new SelfRemovingLoadListener(onloadCallback, this.frame);
         addLoadListener(this.frame, el.invoke);
     }
+};
+
+function createBrowserBot(frame, executionContext) {
+    if (isIE) {
+        return new IEBrowserBot(frame, executionContext);
+    }
+    else {
+        return new MozillaBrowserBot(frame, executionContext);
+    }
+}
+
+function MozillaBrowserBot(frame, executionContext) {
+    this.base = BrowserBot;
+    this.base(frame, executionContext);
+}
+MozillaBrowserBot.prototype = new BrowserBot;
+
+function IEBrowserBot(frame, executionContext) {
+    this.base = BrowserBot;
+    this.base(frame, executionContext);
+}
+IEBrowserBot.prototype = new BrowserBot;
+
+IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+    BrowserBot.prototype.modifyWindowToRecordPopUpDialogs(windowToModify, browserBot);
+
+    // we will call the previous version of this method from within our own interception
+    oldShowModalDialog = windowToModify.showModalDialog;
+
+    windowToModify.showModalDialog = function(url, args, features) {
+        // Get relative directory to where TestRunner.html lives
+        // A risky assumption is that the user's TestRunner is named TestRunner.html
+        var doc_location = document.location.toString();
+        var end_of_base_ref = doc_location.indexOf('TestRunner.html');
+        var base_ref = doc_location.substring(0, end_of_base_ref);
+
+        var fullURL = base_ref + "TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runInterval;
+        browserBot.modalDialogTest = null;
+
+        var returnValue = oldShowModalDialog(fullURL, args, features);
+        //windowToModify.open(fullURL);
+        //alert(returnValue);
+        return returnValue;
+    };
 };
 
 
