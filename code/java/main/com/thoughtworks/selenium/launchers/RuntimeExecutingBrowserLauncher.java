@@ -18,7 +18,7 @@ public abstract class RuntimeExecutingBrowserLauncher implements BrowserLauncher
         this.commandPath = commandPath;
     }
 
-    public final void launch(String url) {
+    public void launch(String url) {
         exec(commandPath + " " + url);
     }
 
