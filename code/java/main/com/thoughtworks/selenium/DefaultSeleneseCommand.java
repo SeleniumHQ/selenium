@@ -17,11 +17,18 @@
 
 package com.thoughtworks.selenium;
 
+import com.thoughtworks.selenium.utils.Assert;
+
 /**
  * @author Paul Hammant
  * @version $Revision$
  */
 public class DefaultSeleneseCommand implements SeleneseCommand {
+    // as we have beginning and ending pipes, we will have 1 more entry than we need
+    private static final int numArgsIncludingBoundaries = 4;
+    private static final int firstIndex = 1;
+    private static final int secondIndex = 2;
+    private static final int thirdIndex = 3;
 
     public DefaultSeleneseCommand(String command, String field, String value) {
         this.command = command;
@@ -38,12 +45,11 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     }
 
     public static SeleneseCommand parse(String inputLine) {
-        int ix = inputLine.indexOf('|');
-        int ix2 = inputLine.indexOf('|',ix+1);
-        int ix3 = inputLine.indexOf('|',ix2+1);
-        String command = inputLine.substring(1,ix);
-        String field = inputLine.substring(ix + 1 ,ix2);
-        String value = inputLine.substring(ix2 + 1, ix3);
-        return new DefaultSeleneseCommand(command, field, value);
+        Assert.assertIsTrue(inputLine != null, "inputLine can't be null");
+        String[] values = inputLine.split("\\|");
+        if (values.length != numArgsIncludingBoundaries) {
+            throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
+        }
+        return new DefaultSeleneseCommand(values[firstIndex], values[secondIndex], values[thirdIndex]);
     }
 }
