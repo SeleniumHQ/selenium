@@ -1,4 +1,4 @@
-* Finish Driven Selenium compatibility with Java and Ruby drivers.
+Done * Finish Driven Selenium compatibility with Java and Ruby drivers.
 
 * Config or property file for default host port number
 
@@ -16,9 +16,9 @@ DONE * Use NSIS to create Windows installer of the above two exes.
 * Creating Linux, Mac "exes" and installers.
 
 * Adding client proxy server (aka "The Squid/Squirm Proxy")
-	Mentioned on the developer list. This is an alternative approach
-	to getting around the same-origin policy for testing remote
-	server.
+    Mentioned on the developer list. This is an alternative approach
+    to getting around the same-origin policy for testing remote
+    server.
 
 * Installable as NT servive
     - provide links for:
