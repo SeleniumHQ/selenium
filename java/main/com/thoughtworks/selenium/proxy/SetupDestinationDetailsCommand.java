@@ -22,13 +22,12 @@ import java.net.URISyntaxException;
 */
 
 /**
- * @version $Id: SetupDestinationDetailsCommand.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * @version $Id: SetupDestinationDetailsCommand.java,v 1.2 2004/11/13 05:43:01 ahelleso Exp $
  */
 public class SetupDestinationDetailsCommand implements RequestModificationCommand {
     public void execute(HTTPRequest httpRequest) {
-        Assert.assertIsTrue(httpRequest != null, "httpRequest can't be null");
         try {
-            URI uri = new URI(HTTPRequest.SELENIUM_REDIRECT_PROTOCOL + httpRequest.getHost());
+            URI uri = new URI(SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL + httpRequest.getHost());
             httpRequest.setDestinationServer(uri.getHost());
             httpRequest.setDestinationPort(getPort(uri));
         } catch (URISyntaxException e) {

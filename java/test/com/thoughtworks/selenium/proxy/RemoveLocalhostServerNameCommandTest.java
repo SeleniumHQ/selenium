@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 */
 
 /**
- * @version $Id: RemoveLocalhostServerNameCommandTest.java,v 1.1 2004/11/11 12:19:49 mikemelia Exp $
+ * @version $Id: RemoveLocalhostServerNameCommandTest.java,v 1.2 2004/11/13 05:43:01 ahelleso Exp $
  */
 public class RemoveLocalhostServerNameCommandTest extends TestCase {
     
@@ -31,7 +31,7 @@ public class RemoveLocalhostServerNameCommandTest extends TestCase {
         String dir = "/site/";
         String host = "localhost:8000";
         String uri = host + dir;
-        HTTPRequest httpRequest = new HTTPRequest("GET: http://" + uri + HTTPRequest.CRLF);
+        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: http://" + uri + HTTPRequest.CRLF);
         RemoveLocalhostServerNameCommand command = new RemoveLocalhostServerNameCommand();
         command.execute(httpRequest);
         assertEquals(dir, httpRequest.getUri());

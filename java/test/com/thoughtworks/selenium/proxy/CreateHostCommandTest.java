@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 */
 
 /**
- * @version $Id: CreateHostCommandTest.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
+ * @version $Id: CreateHostCommandTest.java,v 1.3 2004/11/13 05:43:01 ahelleso Exp $
  */
 public class CreateHostCommandTest extends TestCase {
 
@@ -31,7 +31,7 @@ public class CreateHostCommandTest extends TestCase {
         String dir = "/site/";
         String expectedHost = "www.amazon.com";
         String uri = expectedHost + dir;
-        HTTPRequest httpRequest = new HTTPRequest("GET: http://" + uri + HTTPRequest.CRLF);
+        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: http://" + uri + HTTPRequest.CRLF);
         CreateHostCommand command = new CreateHostCommand();
         command.execute(httpRequest);
         assertEquals(expectedHost, httpRequest.getHost());
@@ -40,7 +40,7 @@ public class CreateHostCommandTest extends TestCase {
     public void testHostSetupFromReferrerIfURIRelative() {
         String dir = "/site/";
         String expectedHost = "www.amazon.com";
-        HTTPRequest httpRequest = new HTTPRequest("GET: " + dir + HTTPRequest.CRLF +
+        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + dir + HTTPRequest.CRLF +
                                                   "Referer: http://" + expectedHost + dir + HTTPRequest.CRLF);
         CreateHostCommand command = new CreateHostCommand();
         command.execute(httpRequest);

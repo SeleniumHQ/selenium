@@ -1,25 +1,28 @@
-package com.thoughtworks.selenium.proxy;
 /*
-  Copyright 2004 ThoughtWorks, Inc. 
-  
-  Licensed under the Apache License, Version 2.0 (the "License"); 
-  you may not use this file except in compliance with the License. 
-  You may obtain a copy of the License at 
-  
-      http://www.apache.org/licenses/LICENSE-2.0 
-  
-  Unless required by applicable law or agreed to in writing, software 
-  distributed under the License is distributed on an "AS IS" BASIS, 
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-  See the License for the specific language governing permissions and 
-  limitations under the License. 
+  Copyright 2004 ThoughtWorks, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
-import junit.framework.TestCase;
+
+package com.thoughtworks.selenium.proxy;
+
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
 
 /**
- * $Id: CompositeCommandTest.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * $Id: CompositeCommandTest.java,v 1.2 2004/11/13 05:43:01 ahelleso Exp $
  */
-public class CompositeCommandTest extends TestCase {
+public class CompositeCommandTest extends MockObjectTestCase {
     public void testIsARequestModificationCommand() {
         assertTrue(RequestModificationCommand.class.isAssignableFrom(CompositeCommand.class));
     }
@@ -33,7 +36,8 @@ public class CompositeCommandTest extends TestCase {
         command.addCommand(dummy1);
         command.addCommand(dummy2);
 
-        command.execute(null);
+        Mock httpRequest = mock(HTTPRequest.class);
+        command.execute((HTTPRequest) httpRequest.proxy());
 
         assertEquals(1, dummy1.getCallCount());
         assertEquals(1, dummy2.getCallCount());

@@ -17,12 +17,12 @@ package com.thoughtworks.selenium.proxy;
 */
 
 /**
- * @version $Id: RemoveLocalhostServerNameCommand.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * @version $Id: RemoveLocalhostServerNameCommand.java,v 1.2 2004/11/13 05:43:00 ahelleso Exp $
  */
 public class RemoveLocalhostServerNameCommand implements RequestModificationCommand {
-    public static int start = HTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
-    public static String sameServerAsSelenium = (HTTPRequest.SELENIUM_REDIRECT_PROTOCOL +
-                                                 HTTPRequest.SELENIUM_REDIRECT_SERVERNAME).toUpperCase();
+    public static int start = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
+    public static String sameServerAsSelenium = (SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL +
+                                                 SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME).toUpperCase();
     
     public void execute(HTTPRequest httpRequest) {
         String uri = httpRequest.getUri();

@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 */
 
 /**
- * @version $Id: SetupDestinationDetailsCommandTest.java,v 1.1 2004/11/11 12:19:49 mikemelia Exp $
+ * @version $Id: SetupDestinationDetailsCommandTest.java,v 1.2 2004/11/13 05:43:01 ahelleso Exp $
  */
 public class SetupDestinationDetailsCommandTest extends TestCase {
 
@@ -32,7 +32,7 @@ public class SetupDestinationDetailsCommandTest extends TestCase {
     public void testSetsUpCorrectServerAndPortForNonPort80() throws URISyntaxException {
         String expectedServer = "localhost";
         int expectedPort = 8000;
-        HTTPRequest httpRequest = new HTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
+        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
                                                   "Host: " + expectedServer + ":" + expectedPort + HTTPRequest.CRLF);
         SetupDestinationDetailsCommand command = new SetupDestinationDetailsCommand();
         command.execute(httpRequest);
@@ -43,7 +43,7 @@ public class SetupDestinationDetailsCommandTest extends TestCase {
     public void testSetsUpCorrectServerAndPortForDefaultPort() throws URISyntaxException {
         String expectedServer = "localhost";
         int expectedPort = 80;
-        HTTPRequest httpRequest = new HTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
+        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
                                                   "Host: " + expectedServer + HTTPRequest.CRLF);
         SetupDestinationDetailsCommand command = new SetupDestinationDetailsCommand();
         command.execute(httpRequest);

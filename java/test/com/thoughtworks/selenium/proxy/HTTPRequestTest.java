@@ -23,7 +23,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 /**
- * @version $Id: HTTPRequestTest.java,v 1.2 2004/11/13 05:00:09 ahelleso Exp $
+ * @version $Id: HTTPRequestTest.java,v 1.3 2004/11/13 05:43:01 ahelleso Exp $
  */
 public class HTTPRequestTest extends TestCase {
     // relying on defs found at http://www.w3.org/Protocols/HTTP/Request.html
@@ -31,7 +31,7 @@ public class HTTPRequestTest extends TestCase {
         String method = "GET";
         String uri = "http://www.google.com/";
         String request = method + " " + uri + "\r\n";
-        HTTPRequest httpRequest = new HTTPRequest(request);
+        HTTPRequest httpRequest = new SeleniumHTTPRequest(request);
         assertEquals(method, httpRequest.getMethod());
         assertEquals(uri, httpRequest.getUri());
     }
@@ -53,7 +53,7 @@ public class HTTPRequestTest extends TestCase {
                 "Connection: keep-alive\r\n" +
                 "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z";
         String fullRequest = MessageFormat.format(request, new Object[] {uri, protocol, host, acceptEncoding});
-        HTTPRequest httpRequest = new HTTPRequest(fullRequest);
+        HTTPRequest httpRequest = new SeleniumHTTPRequest(fullRequest);
         assertEquals(method, httpRequest.getMethod());
         assertEquals(uri, httpRequest.getUri());
         assertEquals(host, httpRequest.getHost());
@@ -77,7 +77,7 @@ public class HTTPRequestTest extends TestCase {
                 "Connection: keep-alive\r\n" +
                 "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z";
         String fullRequest = MessageFormat.format(request, new Object[] {uri, protocol, host, acceptEncoding});
-        HTTPRequest httpRequest = new HTTPRequest(fullRequest);
+        HTTPRequest httpRequest = new SeleniumHTTPRequest(fullRequest);
         assertEquals(method, httpRequest.getMethod());
         assertEquals(uri, httpRequest.getUri());
         assertEquals(host, httpRequest.getHost());
@@ -96,7 +96,7 @@ public class HTTPRequestTest extends TestCase {
                 "Connection: keep-alive\r\n" +
                 "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z";
 
-        HTTPRequest httpRequest = new HTTPRequest(request);
+        HTTPRequest httpRequest = new SeleniumHTTPRequest(request);
         String rebuiltRequest = httpRequest.getRequest();
         assertTrue(rebuiltRequest.startsWith("GET /dir/page HTTP/1.0\r\n"));
 
