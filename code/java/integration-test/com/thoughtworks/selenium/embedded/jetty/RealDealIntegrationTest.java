@@ -60,10 +60,15 @@ public class RealDealIntegrationTest extends TestCase {
     public void testWithJavaScript() {
         selenium.open("/test_click_page1.html");
         selenium.verifyText("link", "Click here for next page");
-        //System.out.println("--> " + selenium.getAllLinks());
+        System.out.println("--> " + selenium.getAllLinks());
         selenium.clickAndWait("link");
         selenium.verifyLocation("/test_click_page2.html");
         selenium.clickAndWait("previousPage");
         selenium.testComplete();
     }
+
+   public void testAgain() {
+        testWithJavaScript();
+   }
 }
+
