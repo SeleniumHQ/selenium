@@ -30,7 +30,7 @@ public class SeleniumSessionFactory implements SessionFactory {
 
 	}
 
-	public Session buildBrowserSession(String browserExecutable, String url) {
+	public Session buildSingleBrowserSession(String browserExecutable, String url) {
 		return new BrowserSession(_windowSpawner, _waiterFactory.getWaiter(),
 				browserExecutable, url);
 	}

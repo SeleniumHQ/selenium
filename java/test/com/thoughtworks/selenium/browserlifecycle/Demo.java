@@ -67,12 +67,11 @@ public class Demo {
 		DemoServer server = new DemoServer();
 
 		long timeout = 10000;
-		String url = "http://www.google.com.au/search?q=Selenium";
+		String url = "http://www.google.com/search?q=Selenium";
 		String[] browsers = new String[] {
 				"c:\\program files\\Mozilla Firefox\\firefox.exe",
 				"c:\\program files\\internet explorer\\iexplore.exe" };
 
-		Audible signaller;
 
 		WindowSpawner windowSpawner = new WindowSpawner();
 		SignalWaiterFactory waiterFactory = new SignalWaiterFactory(server);

@@ -34,7 +34,7 @@ public class MultipleBrowserSession implements Session {
 	public void run(long individualBrowserTimeout) throws LifeCycleException {
 		for (int i = 0; i < _browserExecutables.length; i++) {
 			Session browserSession = (Session) _browserSessionFactory
-					.buildBrowserSession(_browserExecutables[i], _url);
+					.buildSingleBrowserSession(_browserExecutables[i], _url);
 			browserSession.run(individualBrowserTimeout);
 		}
 
