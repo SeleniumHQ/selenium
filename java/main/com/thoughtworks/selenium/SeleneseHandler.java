@@ -17,14 +17,12 @@
 
 package com.thoughtworks.selenium.b;
 
+import com.thoughtworks.selenium.b.SeleneseCommand;
+
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  */
-public interface Selenium extends Startable {
-
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
-    void endOfRun();
+public interface SeleneseHandler {
+    SeleneseCommand handleCommandResult(String commandReply);
 }

@@ -23,14 +23,14 @@ import junit.framework.TestCase;
  * Selenium - http://localhost:9090/selenium-b-tests.html
  *
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class SeleniumIntegrationTest extends TestCase {
     public void testShouldStartServerAndCreateBrowser() {
         // TODO: don't point to JsUnit but to a web page with Selenium B loaded,
         // and let Selenium B be the driver on the client side instead of JsUnit.
         String jsUnitUrl = "http://localhost:9090/jsunit/testRunner.html?testPage=http://localhost:9090/tests/rpcrunner/rpcrunner-integration-tests.html&autoRun=true";
-        Selenium selenium = new Selenium(jsUnitUrl);
+        OldSelenium selenium = new OldSelenium(jsUnitUrl);
         Browser browser = selenium.getBrowser();
 
         assertEquals("OK", browser.open("/mypage"));
@@ -45,7 +45,7 @@ public class SeleniumIntegrationTest extends TestCase {
 
     public void testDriveTheBrowserWithXmlRpc() {
         String jsUnitUrl = "http://localhost:9090/RpcRunner.html";
-        Selenium selenium = new Selenium(jsUnitUrl);
+        OldSelenium selenium = new OldSelenium(jsUnitUrl);
         Browser browser = selenium.getBrowser();
 
         testClick(browser);
