@@ -546,7 +546,7 @@ function focusOnElement(element) {
 }
 
 function commandStarted() {
-    inputTableRows[currentCommandRow].bgColor = "#DEE7EC";
+    inputTableRows[currentCommandRow].bgColor = workingColor;
     focusOnElement(inputTableRows[currentCommandRow].cells[0]);
     printMetrics();
 }
