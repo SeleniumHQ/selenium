@@ -70,6 +70,45 @@ function testFindElementByDomTraversalFailsWithInvalidDomString() {
         // Expected
     }
 }
+
+//
+// Tests for PageBot.findElement()
+//
+function testFindElementReturnsElementWithMatchingIdentifier() {
+    assertEquals(element2, pageBot.findElement("id2"));
+}
+
+function testFindElementReturnsMatchingName() {
+    assertEquals(element2, pageBot.findElement("name1"));
+}
+
+function testFindElementLooksForIdentifiedElementBeforeDomTraversal() {
+    assertEquals(element4, pageBot.findElement("document.links[0]"));
+}
+
+function testUnknownElementWithoutDomTraversal() {
+    try {
+        pageBot.findElement("unknownElement");
+        fail("Should have failed for element not found");
+    }
+    catch (e) {
+        // expected
+    }
+}
+
+function testUnknownElementWithDomTraversal() {
+    try {
+        pageBot.findElement("document.foo");
+        fail("Should have failed for element not found");
+    }
+    catch (e) {
+        // expected
+    }
+}
+
+function testFindElementHandlesDomTraversal() {
+    assertEquals(element3, pageBot.findElement("document.links[2]"));
+}
 </script>
   </head>
 

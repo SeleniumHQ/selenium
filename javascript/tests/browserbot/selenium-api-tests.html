@@ -12,17 +12,14 @@
 <script language="JavaScript" type="text/javascript" src="/selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-//
-// Tests for findElement()
-//
 function setUp() {
     mockPageBot = new Mock();
 
     mockBrowserBot = new Mock();
     mockBrowserBot.currentPage = mockPageBot;
 
-    testApp = new TestApp(mockBrowserBot);
-    assertEquals(mockPageBot, testApp.page());
+    selenium = new Selenium(mockBrowserBot);
+    assertEquals(mockPageBot, selenium.page());
 }
 
 function verify() {
@@ -30,107 +27,53 @@ function verify() {
     mockPageBot.verify();
 }
 
-function testFindElementReturnsElementWithMatchingIdentifier() {
-    mockPageBot.expects("findIdentifiedElement", "id3").returns("1");
-
-    assertEquals("1", testApp.findElement('id3'));
-    verify();
-}
-
-function testFindElementReturnsMatchingName() {
-    mockPageBot.expects("findIdentifiedElement", "name1").returns("2");
-
-    assertEquals("2", testApp.findElement("name1"));
-    verify();
-}
-
-function testFindElementLooksForIdentifiedElementBeforeDomTraversal() {
-    mockPageBot.expects("findIdentifiedElement", "document.links[0]").returns("3");
-
-    assertEquals("3", testApp.findElement("document.links[0]"));
-    verify();
-}
-
-function testUnknownElementWithoutDomTraversal() {
-    mockPageBot.expects("findIdentifiedElement", "unknownElement").returns(null);
-
-    try {
-        testApp.findElement("unknownElement");
-        fail("Should have failed for element not found");
-    }
-    catch (e) {
-        verify();
-    }
-}
-
-function testUnknownElementWithDomTraversal() {
-    mockPageBot.expects("findIdentifiedElement", "document.foo").returns(null);
-    mockPageBot.expects("findElementByDomTraversal", "foo").returns(null);
-
-    try {
-        testApp.findElement("document.foo");
-        fail("Should have failed for element not found");
-    }
-    catch (e) {
-        verify();
-    }
-}
-
-function testFindElementHandlesDomTraversal() {
-    mockPageBot.expects("findIdentifiedElement", "document.links[0]").returns(null);
-    mockPageBot.expects("findElementByDomTraversal", "links[0]").returns("4");
-
-    assertEquals("4", testApp.findElement("document.links[0]"));
-    verify();
-}
-
 // Tests for Element actions
 function testClickElementWithoutCallback() {
-    mockPageBot.expects("findIdentifiedElement", "id").returns("elementToClick");
+    mockPageBot.expects("findElement", "id").returns("elementToClick");
     mockPageBot.expects("clickElement", "elementToClick", undefined);
 
-    testApp.clickElement("id");
+    selenium.clickElement("id");
     verify();
 }
 
 function testClickElementWithoutCallback() {
-    mockPageBot.expects("findIdentifiedElement", "id").returns("elementToClick");
+    mockPageBot.expects("findElement", "id").returns("elementToClick");
     mockPageBot.expects("clickElement", "elementToClick", "function");
 
-    testApp.clickElement("id", "function");
+    selenium.clickElement("id", "function");
     verify();
 }
 
 function testOnclickElementWithoutCallback() {
-    mockPageBot.expects("findIdentifiedElement", "id").returns("elementToClick");
+    mockPageBot.expects("findElement", "id").returns("elementToClick");
     mockPageBot.expects("onclickElement", "elementToClick", undefined);
 
-    testApp.onclickElement("id");
+    selenium.onclickElement("id");
     verify();
 }
 
 function testOnclickElementWithoutCallback() {
-    mockPageBot.expects("findIdentifiedElement", "id").returns("elementToClick");
+    mockPageBot.expects("findElement", "id").returns("elementToClick");
     mockPageBot.expects("onclickElement", "elementToClick", "function");
 
-    testApp.onclickElement("id", "function");
+    selenium.onclickElement("id", "function");
     verify();
 }
 
 function testType() {
-    mockPageBot.expects("findIdentifiedElement", "id").returns("elementToType");
+    mockPageBot.expects("findElement", "id").returns("elementToType");
     mockPageBot.expects("replaceText", "elementToType", "new text");
 
-    testApp.type("id", "new text");
+    selenium.type("id", "new text");
     verify();
 }
 
 function testSelect() {
-    mockPageBot.expects("findIdentifiedElement", "id").returns("selectElement");
+    mockPageBot.expects("findElement", "id").returns("selectElement");
     mockPageBot.expects("selectOptionWithLabel", "selectElement", "option text");
 
 
-    testApp.select("id", "option text");
+    selenium.select("id", "option text");
     verify();
 }
 
@@ -138,14 +81,14 @@ function testSelect() {
 function testOpen() {
     mockBrowserBot.expects("openLocation", "new/location", "callbackFunction");
 
-    testApp.open("new/location", "callbackFunction");
+    selenium.open("new/location", "callbackFunction");
     verify();
 }
 
 function testSelectWindow() {
     mockBrowserBot.expects("selectWindow", "windowName");
 
-    testApp.selectWindow("windowName");
+    selenium.selectWindow("windowName");
     verify();
 }
 </script>
