@@ -21,20 +21,20 @@ import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 public class MultipleBrowserSession implements Session {
 
 	SessionFactory _browserSessionFactory;
-	String[] _browsers;
+	String[] _browserExecutables;
 	String _url;
 
 	public MultipleBrowserSession(SessionFactory browserSessionFactory,
-			String[] browsers, String url) {
+			String[] browserExecutables, String url) {
 		_browserSessionFactory = browserSessionFactory;
-		_browsers = browsers;
+		_browserExecutables = browserExecutables;
 		_url = url;
 	}
 
 	public void run(long individualBrowserTimeout) throws LifeCycleException {
-		for (int i = 0; i < _browsers.length; i++) {
+		for (int i = 0; i < _browserExecutables.length; i++) {
 			Session browserSession = (Session) _browserSessionFactory
-					.buildBrowserSession(_browsers[i], _url);
+					.buildBrowserSession(_browserExecutables[i], _url);
 			browserSession.run(individualBrowserTimeout);
 		}
 
