@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+<taglib>
+
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>SiteMesh Decorator Tags</shortname>
+	<uri>sitemesh-decorator</uri>
+
+	<tag>
+		<name>head</name>
+		<tagclass>com.opensymphony.module.sitemesh.taglib.decorator.HeadTag</tagclass>
+		<bodycontent>empty</bodycontent>
+	</tag>
+
+	<tag>
+		<name>body</name>
+		<tagclass>com.opensymphony.module.sitemesh.taglib.decorator.BodyTag</tagclass>
+		<bodycontent>empty</bodycontent>
+	</tag>
+
+	<tag>
+		<name>title</name>
+		<tagclass>com.opensymphony.module.sitemesh.taglib.decorator.TitleTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>default</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>getProperty</name>
+		<tagclass>com.opensymphony.module.sitemesh.taglib.decorator.PropertyTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>default</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>writeEntireProperty</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>usePage</name>
+		<tagclass>com.opensymphony.module.sitemesh.taglib.decorator.UsePageTag</tagclass>
+		<teiclass>com.opensymphony.module.sitemesh.taglib.decorator.UsePageTEI</teiclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>useHtmlPage</name>
+		<tagclass>com.opensymphony.module.sitemesh.taglib.decorator.UsePageTag</tagclass>
+		<teiclass>com.opensymphony.module.sitemesh.taglib.decorator.UseHTMLPageTEI</teiclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+
+</taglib>

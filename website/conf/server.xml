@@ -1,0 +1,388 @@
+<!-- Example Server Configuration File -->
+<!-- Note that component elements are nested corresponding to their
+     parent-child relationships with each other -->
+
+<!-- A "Server" is a singleton element that represents the entire JVM,
+     which may contain one or more "Service" instances.  The Server
+     listens for a shutdown command on the indicated port.
+
+     Note:  A "Server" is not itself a "Container", so you may not
+     define subcomponents such as "Valves" or "Loggers" at this level.
+ -->
+
+<Server port="8005" shutdown="SHUTDOWN" debug="0">
+
+
+  <!-- Comment these entries out to disable JMX MBeans support -->
+  <!-- You may also configure custom components (e.g. Valves/Realms) by
+       including your own mbean-descriptor file(s), and setting the
+       "descriptors" attribute to point to a ';' seperated list of paths
+       (in the ClassLoader sense) of files to add to the default list.
+       e.g. descriptors="/com/myfirm/mypackage/mbean-descriptor.xml"
+  -->
+  <Listener className="org.apache.catalina.mbeans.ServerLifecycleListener"
+            debug="0"/>
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener"
+            debug="0"/>
+
+  <!-- Global JNDI resources -->
+  <GlobalNamingResources>
+
+    <!-- Test entry for demonstration purposes -->
+    <Environment name="simpleValue" type="java.lang.Integer" value="30"/>
+
+    <!-- Editable user database that can also be used by
+         UserDatabaseRealm to authenticate users -->
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+       description="User database that can be updated and saved">
+    </Resource>
+    <ResourceParams name="UserDatabase">
+      <parameter>
+        <name>factory</name>
+        <value>org.apache.catalina.users.MemoryUserDatabaseFactory</value>
+      </parameter>
+      <parameter>
+        <name>pathname</name>
+        <value>conf/tomcat-users.xml</value>
+      </parameter>
+    </ResourceParams>
+
+  </GlobalNamingResources>
+
+  <!-- A "Service" is a collection of one or more "Connectors" that share
+       a single "Container" (and therefore the web applications visible
+       within that Container).  Normally, that Container is an "Engine",
+       but this is not required.
+
+       Note:  A "Service" is not itself a "Container", so you may not
+       define subcomponents such as "Valves" or "Loggers" at this level.
+   -->
+
+  <!-- Define the Tomcat Stand-Alone Service -->
+  <Service name="Tomcat-Standalone">
+
+    <!-- A "Connector" represents an endpoint by which requests are received
+         and responses are returned.  Each Connector passes requests on to the
+         associated "Container" (normally an Engine) for processing.
+
+         By default, a non-SSL HTTP/1.1 Connector is established on port 8080.
+         You can also enable an SSL HTTP/1.1 Connector on port 8443 by
+         following the instructions below and uncommenting the second Connector
+         entry.  SSL support requires the following steps (see the SSL Config
+         HOWTO in the Tomcat 4.0 documentation bundle for more detailed
+         instructions):
+         * Download and install JSSE 1.0.2 or later, and put the JAR files
+           into "$JAVA_HOME/jre/lib/ext".
+         * Execute:
+             %JAVA_HOME%\bin\keytool -genkey -alias tomcat -keyalg RSA (Windows)
+             $JAVA_HOME/bin/keytool -genkey -alias tomcat -keyalg RSA  (Unix)
+           with a password value of "changeit" for both the certificate and
+           the keystore itself.
+
+         By default, DNS lookups are enabled when a web application calls
+         request.getRemoteHost().  This can have an adverse impact on
+         performance, so you can disable it by setting the
+         "enableLookups" attribute to "false".  When DNS lookups are disabled,
+         request.getRemoteHost() will return the String version of the
+         IP address of the remote client.
+    -->
+
+    <!-- Define a non-SSL Coyote HTTP/1.1 Connector on port 8080 -->
+    <Connector className="org.apache.coyote.tomcat4.CoyoteConnector"
+               port="8080" minProcessors="5" maxProcessors="75"
+               enableLookups="true" redirectPort="8443"
+               acceptCount="100" debug="0" connectionTimeout="20000"
+               useURIValidationHack="false" disableUploadTimeout="true" />
+    <!-- Note : To disable connection timeouts, set connectionTimeout value
+     to 0 -->
+
+    <!-- Define a SSL Coyote HTTP/1.1 Connector on port 8443 -->
+    <!--
+    <Connector className="org.apache.coyote.tomcat4.CoyoteConnector"
+               port="8443" minProcessors="5" maxProcessors="75"
+               enableLookups="true"
+           acceptCount="100" debug="0" scheme="https" secure="true"
+               useURIValidationHack="false" disableUploadTimeout="true">
+      <Factory className="org.apache.coyote.tomcat4.CoyoteServerSocketFactory"
+               clientAuth="false" protocol="TLS" />
+    </Connector>
+    -->
+
+    <!-- Define a Coyote/JK2 AJP 1.3 Connector on port 8009 -->
+    <Connector className="org.apache.coyote.tomcat4.CoyoteConnector"
+               port="8009" minProcessors="5" maxProcessors="75"
+               enableLookups="true" redirectPort="8443"
+               acceptCount="10" debug="0" connectionTimeout="0"
+               useURIValidationHack="false"
+               protocolHandlerClassName="org.apache.jk.server.JkCoyoteHandler"/>
+
+    <!-- Define an AJP 1.3 Connector on port 8009 -->
+    <!--
+    <Connector className="org.apache.ajp.tomcat4.Ajp13Connector"
+               port="8009" minProcessors="5" maxProcessors="75"
+               acceptCount="10" debug="0"/>
+    -->
+
+    <!-- Define a Proxied HTTP/1.1 Connector on port 8082 -->
+    <!-- See proxy documentation for more information about using this. -->
+    <!--
+    <Connector className="org.apache.coyote.tomcat4.CoyoteConnector"
+               port="8082" minProcessors="5" maxProcessors="75"
+               enableLookups="true"
+               acceptCount="100" debug="0" connectionTimeout="20000"
+               proxyPort="80" useURIValidationHack="false"
+               disableUploadTimeout="true" />
+    -->
+
+    <!-- Define a non-SSL legacy HTTP/1.1 Test Connector on port 8083 -->
+    <!--
+    <Connector className="org.apache.catalina.connector.http.HttpConnector"
+               port="8083" minProcessors="5" maxProcessors="75"
+               enableLookups="true" redirectPort="8443"
+               acceptCount="10" debug="0" />
+    -->
+
+    <!-- Define a non-SSL HTTP/1.0 Test Connector on port 8084 -->
+    <!--
+    <Connector className="org.apache.catalina.connector.http10.HttpConnector"
+               port="8084" minProcessors="5" maxProcessors="75"
+               enableLookups="true" redirectPort="8443"
+               acceptCount="10" debug="0" />
+    -->
+
+    <!-- An Engine represents the entry point (within Catalina) that processes
+         every request.  The Engine implementation for Tomcat stand alone
+         analyzes the HTTP headers included with the request, and passes them
+         on to the appropriate Host (virtual host). -->
+
+    <!-- You should set jvmRoute to support load-balancing via JK/JK2 ie :
+    <Engine name="Standalone" defaultHost="localhost" debug="0" jvmRoute="jvm1">
+    -->
+
+    <!-- Define the top level container in our container hierarchy -->
+    <Engine name="Standalone" defaultHost="localhost" debug="0">
+
+      <!-- The request dumper valve dumps useful debugging information about
+           the request headers and cookies that were received, and the response
+           headers and cookies that were sent, for all requests received by
+           this instance of Tomcat.  If you care only about requests to a
+           particular virtual host, or a particular application, nest this
+           element inside the corresponding <Host> or <Context> entry instead.
+
+           For a similar mechanism that is portable to all Servlet 2.3
+           containers, check out the "RequestDumperFilter" Filter in the
+           example application (the source for this filter may be found in
+           "$CATALINA_HOME/webapps/examples/WEB-INF/classes/filters").
+
+           Request dumping is disabled by default.  Uncomment the following
+           element to enable it. -->
+      <!--
+      <Valve className="org.apache.catalina.valves.RequestDumperValve"/>
+      -->
+
+      <!-- Global logger unless overridden at lower levels -->
+      <Logger className="org.apache.catalina.logger.FileLogger"
+              prefix="catalina_log." suffix=".txt"
+              timestamp="true"/>
+
+      <!-- Because this Realm is here, an instance will be shared globally -->
+
+      <!-- This Realm uses the UserDatabase configured in the global JNDI
+           resources under the key "UserDatabase".  Any edits
+           that are performed against this UserDatabase are immediately
+           available for use by the Realm.  -->
+      <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+                 debug="0" resourceName="UserDatabase"/>
+
+      <!-- Comment out the old realm but leave here for now in case we
+           need to go back quickly -->
+      <!--
+      <Realm className="org.apache.catalina.realm.MemoryRealm" />
+      -->
+
+      <!-- Replace the above Realm with one of the following to get a Realm
+           stored in a database and accessed via JDBC -->
+
+      <!--
+      <Realm  className="org.apache.catalina.realm.JDBCRealm" debug="99"
+             driverName="org.gjt.mm.mysql.Driver"
+          connectionURL="jdbc:mysql://localhost/authority"
+         connectionName="test" connectionPassword="test"
+              userTable="users" userNameCol="user_name" userCredCol="user_pass"
+          userRoleTable="user_roles" roleNameCol="role_name" />
+      -->
+
+      <!--
+      <Realm  className="org.apache.catalina.realm.JDBCRealm" debug="99"
+             driverName="oracle.jdbc.driver.OracleDriver"
+          connectionURL="jdbc:oracle:thin:@ntserver:1521:ORCL"
+         connectionName="scott" connectionPassword="tiger"
+              userTable="users" userNameCol="user_name" userCredCol="user_pass"
+          userRoleTable="user_roles" roleNameCol="role_name" />
+      -->
+
+      <!--
+      <Realm  className="org.apache.catalina.realm.JDBCRealm" debug="99"
+             driverName="sun.jdbc.odbc.JdbcOdbcDriver"
+          connectionURL="jdbc:odbc:CATALINA"
+              userTable="users" userNameCol="user_name" userCredCol="user_pass"
+          userRoleTable="user_roles" roleNameCol="role_name" />
+      -->
+
+      <!-- Define the default virtual host -->
+      <Host name="localhost" debug="0" appBase="webapps"
+       unpackWARs="true" autoDeploy="true">
+
+        <!-- Normally, users must authenticate themselves to each web app
+             individually.  Uncomment the following entry if you would like
+             a user to be authenticated the first time they encounter a
+             resource protected by a security constraint, and then have that
+             user identity maintained across *all* web applications contained
+             in this virtual host. -->
+        <!--
+        <Valve className="org.apache.catalina.authenticator.SingleSignOn"
+                   debug="0"/>
+        -->
+
+        <!-- Access log processes all requests for this virtual host.  By
+             default, log files are created in the "logs" directory relative to
+             $CATALINA_HOME.  If you wish, you can specify a different
+             directory with the "directory" attribute.  Specify either a relative
+             (to $CATALINA_HOME) or absolute path to the desired directory.
+        -->
+        <!--
+        <Valve className="org.apache.catalina.valves.AccessLogValve"
+                 directory="logs"  prefix="localhost_access_log." suffix=".txt"
+                 pattern="common" resolveHosts="false"/>
+        -->
+
+        <!-- Logger shared by all Contexts related to this virtual host.  By
+             default (when using FileLogger), log files are created in the "logs"
+             directory relative to $CATALINA_HOME.  If you wish, you can specify
+             a different directory with the "directory" attribute.  Specify either a
+             relative (to $CATALINA_HOME) or absolute path to the desired
+             directory.-->
+        <Logger className="org.apache.catalina.logger.FileLogger"
+                 directory="logs"  prefix="localhost_log." suffix=".txt"
+            timestamp="true"/>
+
+        <!-- Define properties for each web application.  This is only needed
+             if you want to set non-default properties, or have web application
+             document roots in places other than the virtual host's appBase
+             directory.  -->
+
+        <!-- Tomcat Root Context -->
+        <!--
+          <Context path="" docBase="ROOT" debug="0"/>
+        -->
+
+        <!-- Tomcat Examples Context -->
+        <Context path="/examples" docBase="examples" debug="0"
+                 reloadable="true" crossContext="true">
+          <Logger className="org.apache.catalina.logger.FileLogger"
+                     prefix="localhost_examples_log." suffix=".txt"
+              timestamp="true"/>
+          <Ejb   name="ejb/EmplRecord" type="Entity"
+                 home="com.wombat.empl.EmployeeRecordHome"
+               remote="com.wombat.empl.EmployeeRecord"/>
+
+          <!-- If you wanted the examples app to be able to edit the
+               user database, you would uncomment the following entry.
+               Of course, you would want to enable security on the
+               application as well, so this is not done by default!
+               The database object could be accessed like this:
+
+               Context initCtx = new InitialContext();
+               Context envCtx = (Context) initCtx.lookup("java:comp/env");
+               UserDatabase database =
+                    (UserDatabase) envCtx.lookup("userDatabase");
+          -->
+<!--
+          <ResourceLink name="userDatabase" global="UserDatabase"
+                        type="org.apache.catalina.UserDatabase"/>
+-->
+
+
+          <!-- PersistentManager: Uncomment the section below to test Persistent
+               Sessions.
+
+               saveOnRestart: If true, all active sessions will be saved
+                 to the Store when Catalina is shutdown, regardless of
+                 other settings. All Sessions found in the Store will be
+                 loaded on startup. Sessions past their expiration are
+                 ignored in both cases.
+               maxActiveSessions: If 0 or greater, having too many active
+                 sessions will result in some being swapped out. minIdleSwap
+                 limits this. -1 or 0 means unlimited sessions are allowed.
+                 If it is not possible to swap sessions new sessions will
+                 be rejected.
+                 This avoids thrashing when the site is highly active.
+               minIdleSwap: Sessions must be idle for at least this long
+                 (in seconds) before they will be swapped out due to
+                 activity.
+                 0 means sessions will almost always be swapped out after
+                 use - this will be noticeably slow for your users.
+               maxIdleSwap: Sessions will be swapped out if idle for this
+                 long (in seconds). If minIdleSwap is higher, then it will
+                 override this. This isn't exact: it is checked periodically.
+                 -1 means sessions won't be swapped out for this reason,
+                 although they may be swapped out for maxActiveSessions.
+                 If set to >= 0, guarantees that all sessions found in the
+                 Store will be loaded on startup.
+               maxIdleBackup: Sessions will be backed up (saved to the Store,
+                 but left in active memory) if idle for this long (in seconds),
+                 and all sessions found in the Store will be loaded on startup.
+                 If set to -1 sessions will not be backed up, 0 means they
+                 should be backed up shortly after being used.
+
+               To clear sessions from the Store, set maxActiveSessions, maxIdleSwap,
+               and minIdleBackup all to -1, saveOnRestart to false, then restart
+               Catalina.
+          -->
+          <!--
+          <Manager className="org.apache.catalina.session.PersistentManager"
+              debug="0"
+              saveOnRestart="true"
+              maxActiveSessions="-1"
+              minIdleSwap="-1"
+              maxIdleSwap="-1"
+              maxIdleBackup="-1">
+                <Store className="org.apache.catalina.session.FileStore"/>
+          </Manager>
+          -->
+          <Environment name="maxExemptions" type="java.lang.Integer"
+                      value="15"/>
+          <Parameter name="context.param.name" value="context.param.value"
+                     override="false"/>
+          <Resource name="jdbc/EmployeeAppDb" auth="SERVLET"
+                    type="javax.sql.DataSource"/>
+          <ResourceParams name="jdbc/EmployeeAppDb">
+            <parameter><name>username</name><value>sa</value></parameter>
+            <parameter><name>password</name><value></value></parameter>
+            <parameter><name>driverClassName</name>
+              <value>org.hsql.jdbcDriver</value></parameter>
+            <parameter><name>url</name>
+              <value>jdbc:HypersonicSQL:database</value></parameter>
+          </ResourceParams>
+          <Resource name="mail/Session" auth="Container"
+                    type="javax.mail.Session"/>
+          <ResourceParams name="mail/Session">
+            <parameter>
+              <name>mail.smtp.host</name>
+              <value>localhost</value>
+            </parameter>
+          </ResourceParams>
+          <ResourceLink name="linkToGlobalResource"
+                    global="simpleValue"
+                    type="java.lang.Integer"/>
+        </Context>
+
+      </Host>
+
+    </Engine>
+
+  </Service>
+
+
+</Server>

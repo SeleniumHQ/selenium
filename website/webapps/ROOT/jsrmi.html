@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>JSRMI</title>
+</head>
+<body>
+<p>JSRMI (Javascript Remote Method Invocation) is a portable browser-neutral Javascript library that makes it possible to execute
+Javascript functions in a browser from a process external to the browser.</p>
+<p>JSRMI is not in any way tied to Java's RMI, but provides a similar mechanism. JSRMI is completely decoupled from the core Selenium Javascript API, but it can
+be used to access the Selenium API from outside the browser.  </p>
+<p>All of the
+browser-side JSRMI code resides in the rmi.js script - available in the Selenium
+distribution.</p>
+<h2>Browser support</h2>
+<ul>
+  <li>IE 5</li>
+  <li>Mozilla 1</li>
+  <li>Netscape 7</li>
+  <li>Firefox 0.92</li>
+  <li>Safari 1.2</li>
+</ul>
+<h2>Language support</h2>
+<ul>
+  <li>Ruby</li>
+</ul>
+<p>Libraries for other languages are under way.</p>
+<h1>How do I use JSRMI from an external process?</h1>
+<h2>Ruby</h2>
+<p>Just include the jsrmi script in your own:</p>
+<p><font face="Courier New">require &quot;jsrmi&quot;<br>
+<br>
+browser = Selenium::Browser.new.proxy<br>
+someArea = browser.document.getElementById(&quot;someArea&quot;)<br>
+someArea.value = &quot;Hello from Ruby #{Time.new}&quot;</font></p>
+<p>This will modify the text of a text area in the browser. Looks strangely
+familiar to Javascript doesn't it? You can of course call the selenium API too
+if the browser has loaded the main Selenium page (which also includes the rmi.js
+script - at least that is the plan - I hope (Aslak)).</p>
+<h1>How does it work?</h1>
+<p>(You can safely skip this section if you don't care - this is gory details)</p>
+<h2>Browser side</h2>
+<p>The rmi.js script uses the
+<a href="http://developer.apple.com/internet/webcontent/xmlhttpreq.html">
+XMLHttpRequest</a> object (available in all compatible browsers) to communicate
+with the external process. It executes a GET-POST loop which is repeated ad
+infinitum - pulling JSRMI invocations from the external process with GET and
+POSTing the results back. This all happens in a separate thread, thereby having
+minimal impact on the rest of the web page - without causing a page refresh.</p>
+<p>The rmi.js script will do a HTTP GET to a URL on the same host/port as the rmi.js
+script was loaded from. The content returned from the GET (which must comply
+with the <a href="#protocol">JSRMI protocol</a>) is then translated into
+Javascript and dynamically executed via Javascript's <font face="Courier New">
+eval()</font> function.</p>
+<p>The result of the function call (typically a Javascript object) is translated
+back into the JSRMI protocol format and POSTed back to the same URL as the GET.</p>
+<h2>External process side</h2>
+<p>The external process typically consists of a library that embeds the
+following functionality:</p>
+<ul>
+  <li>A HTTP server (should be light to ensure fast startup)</li>
+  <li>An API that translates local invocations into the JSRMI protocol</li>
+  <li>Two blocking queues:</li>
+  <ul>
+    <li>Output queue - HTTP GET invocations will take JSRMI protocol strings
+    (representing browser side invocations) from this queue and block until
+    something is available. These strings are returned to the HTTP client (The
+    rmi.js script in the browser). This means a blocking GET for the JSRMI
+    browser side).</li>
+    <li>Input queue - HTTP POST data from the browser side JSRMI will be enqued
+    here. This data represents results of browser side Javascript invocations.</li>
+  </ul>
+</ul>
+<p>A local invocation should translate the invocation to a JSRMI protocol string
+and put it on the output queue (which jsrmi will GET). It should then wait for
+the result of the browser side invocation to be put back on the input queue via
+a POST from jsrmi. Finally it should translate the return value (another JSRMI
+protocol string) into a native object and return it to the caller.</p>
+<p>At any given point in time there should only be one single JSRMI protocol
+string in one of the queues - depending on the where the invocation is in its
+lifecycle.</p>
+<h2>Reference objects</h2>
+<p>JSRMI allows objects (such as browser side HTMLDocument, HTMLTextField etc)
+to be transferred back and forth. This is based on a simple mechanism where each
+object is given a unique id and maintained in a pool on each side. this pool is
+used to reference and dereference native objects back and forth from the JSRMI
+protocol strings.</p>
+<h1>Why would I use JSRMI?</h1>
+<h2>With Selenium</h2>
+<p>The Selenium browser runtime will load both selenium test scripts and the web 
+pages from the web application you're testing into the browser. Modern browsers 
+don't allow content to be loaded from different hosts (cross browsing security 
+restrictions). A web application being tested will typically be deployed on a 
+server, and therefore the selenium test scripts must be loaded from the same web 
+server. Depending on who's writing the Selenium scripts and executing them, this 
+may or may not be a restriction to its usage.</p>
+<p>Under some circumstances it is desirable to keep Selenium test scripts on 
+your local machine (the same as the one running the browser with the Selenium 
+runtime) rather than on a remote web server hosting the web application being 
+tested. Some examples are:</p>
+<ul>
+  <li>The edit/run cycle of selenium scripts can be cumbersome if the script has 
+  to be deployed to a server each time it is modified. Being able to keep the 
+  scripts on a different machine (such as the one on your desk) can 
+  significantly improve the ease of use and rapid development of tests. JSRMI 
+  lets you do just that.</li>
+  <li>Putting in place a deployment routine for selenium script requires 
+  technical knowledge of the web application's build process as well as the web 
+  server hosting it. Many users of Selenium will not have easy access to this 
+  expertise. JSRMI lets these users use Selenium nevertheless.</li>
+</ul>
+<p><i>It is important to emphasise that hosting the Selenium scripts on a local 
+machine would also require that the browser loads the web site being tested from 
+the local machine. Aren't we creating new problems by requiring testers to 
+install a full web server environment on their machines? Actually no. The JSRMI 
+libraries in Ruby and Java (and those who may follow) will soon provide a light 
+HTTP proxy server. The local browser will load the remote web site through this 
+HTTP proxy. The browser's security restrictions are satisfied since all content 
+(Selenium runtime, Selenium scripts and the remote website) is loaded through 
+localhost.</i></p>
+<h2>Scripting of existing web applications</h2>
+<p>Think of all boring web form tasks you could automate with JSRMI....</p>
+<h1><a name="protocol">The JSRMI protocol</a></h1>
+<p>TODO: describe the format.</p>
+<h1>How do I implement a JSRMI client library for language X?</h1>
+<p>Start by understand the inner workings - look at the ruby implementation and
+study the javascript. (When the JSRMI protocol is better described, studying
+this code should not be necessary).  </p>
+<p>It will be to implement a JSRMI client
+library in a dynamic language than a static language, because dynamic languages
+allow arbitrary messages (method invocations) to be sent to an object. Most
+dynamic languages (Ruby, Python, Groovy, Smalltalk) have a generic mechanism to
+intercept any message and an object message-&gt;JSRMI protocol translation logic is
+trivial to implement based on this.</p>
+<h2>Guidelines for static languages such as Java and C#</h2>
+<p>JSRMI clients for static languages such as Java or C# will either have to
+choose a subset of the Javascript functions and objects that you want to access,
+or implement some generic invocation mechanism that allows raw JSRMI protocol
+strings.</p>
+<p>The former is more easy to use from a user perspective, but will be
+restricted in terms of flexibility. The latter is completely generic, but
+awkward to deal with from a user perspective.</p>
+<p>The recommendation is to implement a raw interface to the JSRMI protocol and
+have a generic dynamic proxy implementation on top of that. This way the API
+support can easily be extended simply by implementing new interfaces for the
+Javascript counterparts and generate dynamic proxies on the fly as needed. </p>
+<h2>Calling functions/methods in an external process from the browser using JSRMI</h2>
+<p>This is currently not possible.</p>
+</body>
+</html>
