@@ -46,22 +46,22 @@ package com.thoughtworks.selenium.proxy;
 import junit.framework.TestCase;
 
 /**
- * @version $Id: RemoveLocalhostServerNameCommandTest.java,v 1.3 2004/11/13 06:16:07 ahelleso Exp $
+ * @version $Id: RemoveServerNameForSameServerTargetCommandTest.java,v 1.1 2004/11/14 06:25:53 mikemelia Exp $
  */
-public class RemoveLocalhostServerNameCommandTest extends TestCase {
-    
+public class RemoveServerNameForSameServerTargetCommandTest extends TestCase {
+
     public void testIsARequestModificationCommand() {
-        assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveLocalhostServerNameCommand.class));
+        assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveServerNameForSameServerTargetCommand.class));
     }
-    
+
     public void testServerNameAndProtocolRemovedFromUrlIfLocalHost() {
         String dir = "/site/";
         String host = "localhost:8000";
         String uri = host + dir;
-        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: http://" + uri + HTTPRequest.CRLF);
-        RemoveLocalhostServerNameCommand command = new RemoveLocalhostServerNameCommand();
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: http://" + uri + HTTPRequest.CRLF);
+        RemoveServerNameForSameServerTargetCommand command = new RemoveServerNameForSameServerTargetCommand();
         command.execute(httpRequest);
         assertEquals(dir, httpRequest.getUri());
-        
+
     }
 }

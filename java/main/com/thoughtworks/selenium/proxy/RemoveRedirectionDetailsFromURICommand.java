@@ -46,14 +46,19 @@ package com.thoughtworks.selenium.proxy;
 import com.thoughtworks.selenium.utils.Assert;
 
 /**
- * @version $Id: ProxyDetailsRemovalCommand.java,v 1.3 2004/11/13 06:16:05 ahelleso Exp $
+ * If the request has already been redirected to the proxy, then execution of this command will remove the redirection
+ * details from the URI in the request.
+ * @version $Id: RemoveRedirectionDetailsFromURICommand.java,v 1.1 2004/11/14 06:25:52 mikemelia Exp $
  */
-public class ProxyDetailsRemovalCommand implements RequestModificationCommand {
+public class RemoveRedirectionDetailsFromURICommand implements RequestModificationCommand {
     private static final String REGEX = SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER + SeleniumHTTPRequest.SELENIUM_REDIRECT_DIR;
 
+    /**
+     * @see RequestModificationCommand#execute
+     */
     public void execute(HTTPRequest httpRequest) {
         Assert.assertIsTrue(httpRequest != null, "httpRequest can't be null");
-        
+
         String uri = httpRequest.getUri();
         httpRequest.setUri(uri.replaceFirst(REGEX, ""));
     }

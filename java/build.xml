@@ -35,7 +35,7 @@
             <formatter type="plain"/>
             <batchtest todir="target/test-logs">
                 <fileset dir="test">
-<!--                    <include name="com/thoughtworks/selenium/proxy/*"/>-->
+                    <include name="com/thoughtworks/selenium/proxy/*"/>
                 </fileset>
             </batchtest>
         </junit>

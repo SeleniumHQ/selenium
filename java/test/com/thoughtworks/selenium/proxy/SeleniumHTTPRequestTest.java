@@ -50,9 +50,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @version $Id: HTTPRequestTest.java,v 1.5 2004/11/13 06:16:07 ahelleso Exp $
+ * @version $Id: SeleniumHTTPRequestTest.java,v 1.1 2004/11/14 06:25:53 mikemelia Exp $
  */
-public class HTTPRequestTest extends TestCase {
+public class SeleniumHTTPRequestTest extends TestCase {
     // relying on defs found at http://www.w3.org/Protocols/HTTP/Request.html
     public void testHandlesSimpleRequest() {
         String method = "GET";
@@ -110,7 +110,7 @@ public class HTTPRequestTest extends TestCase {
         assertEquals(host, httpRequest.getHost());
         assertEquals(acceptEncoding, httpRequest.getHeaderField("Accept-Encoding"));
     }
-    
+
     public void testReconstructsCorrectRequestWithAdditionalProxyAuthorizationField() {
         String request = "GET /dir/page HTTP/1.0\r\n" +
                 "Host: www.thoughtworks.com\r\n" +

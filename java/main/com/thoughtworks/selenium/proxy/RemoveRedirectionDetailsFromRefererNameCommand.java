@@ -43,26 +43,22 @@ DAMAGE.
 */
 package com.thoughtworks.selenium.proxy;
 
-import junit.framework.TestCase;
-
 /**
- * @version $Id: RemoveProxyFromRefererNameCommandTest.java,v 1.4 2004/11/13 06:16:07 ahelleso Exp $
+ * If the request has already been redirected to the proxy, then execution of this command will remove the redirection
+ * details from the URI in the request.
+ * @version $Id: RemoveRedirectionDetailsFromRefererNameCommand.java,v 1.1 2004/11/14 06:25:52 mikemelia Exp $
  */
-public class RemoveProxyFromRefererNameCommandTest extends TestCase {
-    
-    public void testIsARequestModificationCommand() {
-        assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveProxyFromRefererNameCommand.class));
-    }
+public class RemoveRedirectionDetailsFromRefererNameCommand implements RequestModificationCommand {
+    private final static String textToRemove = SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER + SeleniumHTTPRequest.SELENIUM_REDIRECT_DIR;
 
-    public void testProxyRemovedFromReferer() {
-        String server = "www.amazon.com/site/";
-        String expectedHost = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL + server;
-        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI + HTTPRequest.CRLF +
-                                                  "Referer: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI +
-                                                   server + HTTPRequest.CRLF );
-        RemoveProxyFromRefererNameCommand command = new RemoveProxyFromRefererNameCommand();
-        command.execute(httpRequest);
-        assertEquals(expectedHost, httpRequest.getHeaderField("Referer"));
-
+    /**
+     * @see RequestModificationCommand#execute(HTTPRequest)
+     */
+    public void execute(HTTPRequest httpRequest) {
+        String referer = httpRequest.getHeaderField("Referer");
+        if (referer != null) {
+            String newReferer = referer.replaceFirst(textToRemove, "");
+            httpRequest.setHeaderField("Referer", newReferer);
+        }
     }
 }

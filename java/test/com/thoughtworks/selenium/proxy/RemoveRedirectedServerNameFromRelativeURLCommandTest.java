@@ -43,35 +43,20 @@ DAMAGE.
 */
 package com.thoughtworks.selenium.proxy;
 
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
 
 /**
- * @version $Id: SeleniumProxyTest.java,v 1.2 2004/11/13 06:16:07 ahelleso Exp $
+ * @version $Id: RemoveRedirectedServerNameFromRelativeURLCommandTest.java,v 1.1 2004/11/14 06:25:53 mikemelia Exp $
  */
-public class SeleniumProxyTest extends MockObjectTestCase {
-    
-    public void testInvokesAcceptMethodOnSocketStartsConnectionThreadAndFinishesIfExceptionThrown() {
-//        // create a mock on both the SocketWrapper and ConnectionThread.
-//        Mock mock = mock(ConnectionThreadSocketWrapper.class);
-//        SocketWrapper socketWrapper = (SocketWrapper) mock.proxy();
-//        ConnectionThread connectionThread = (ConnectionThread) mock.proxy();
-//
-//        // set the expectations.
-//        mock.expects(atLeastOnce()).method("accept").withNoArguments().will(onConsecutiveCalls(
-//                returnValue(connectionThread), throwException(new IOException("stop now"))));
-//        mock.expects(once()).method("start").withNoArguments();
-//        
-//        // do the work.
-//        SeleniumProxy proxy = new SeleniumProxy(socketWrapper);
-//        try {
-//            proxy.listenAndDispatch();
-//            fail("IOException should have been thrown.");
-//        } catch (IOException e) {
-//            // expected this to happen.
-//        }
-    }
-    
-    private interface ConnectionThreadSocketWrapper extends ConnectionThread, SocketWrapper {
-    }
+public class RemoveRedirectedServerNameFromRelativeURLCommandTest extends TestCase {
 
+    public void testRemovesRedirectedServerFronURL() {
+        String relative = "/site/pic.gif";
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL +
+                                                          SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER + relative +
+                                                          HTTPRequest.CRLF);
+        RemoveRedirectedServerNameFromRelativeURLCommand command = new RemoveRedirectedServerNameFromRelativeURLCommand();
+        command.execute(httpRequest);
+        assertEquals(relative, httpRequest.getUri());
+    }
 }

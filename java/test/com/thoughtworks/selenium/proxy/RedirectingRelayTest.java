@@ -50,13 +50,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * @version $Id: RedirectingRelayTest.java,v 1.6 2004/11/13 06:16:07 ahelleso Exp $
+ * @version $Id: RedirectingRelayTest.java,v 1.7 2004/11/14 06:25:53 mikemelia Exp $
  */
 public class RedirectingRelayTest extends MockObjectTestCase {
 
     public void testRedirectsForNonLocalHostTarget() throws IOException {
         Mock requestInput = mock(RequestInput.class);
-        String requestString = "GET / HTTP/1.1\r\n" +
+        String requestString = "GET http://www.amazon.com/ HTTP/1.1\r\n" +
                 "Host: www.amazon.com\r\n" +
                 "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1\r\n" +
                 "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\r\n" +
@@ -69,7 +69,7 @@ public class RedirectingRelayTest extends MockObjectTestCase {
         HTTPRequest request = new SeleniumHTTPRequest(requestString);
         requestInput.expects(once()).method("readRequest").withNoArguments().will(returnValue(request));
 
-        String expectedResponse = "HTTP/1.1 302 Moved Temporarily\r\nLocation: http://localhost:9999/selenium/\r\n";
+        String expectedResponse = "HTTP/1.1 302 Moved Temporarily\r\nLocation: http://localhost:9999/selenium/www.amazon.com/\r\n";
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         RedirectingRelay relay = new RedirectingRelay((RequestInput) requestInput.proxy(), out, null);

@@ -46,21 +46,23 @@ package com.thoughtworks.selenium.proxy;
 import junit.framework.TestCase;
 
 /**
- * @version $Id: ProxyDetailsRemovalCommandTest.java,v 1.3 2004/11/13 06:16:07 ahelleso Exp $
+ * @version $Id: RemoveRedirectionDetailsFromRefererNameCommandTest.java,v 1.1 2004/11/14 06:25:53 mikemelia Exp $
  */
-public class ProxyDetailsRemovalCommandTest extends TestCase {
-    
+public class RemoveRedirectionDetailsFromRefererNameCommandTest extends TestCase {
+
     public void testIsARequestModificationCommand() {
-        assertTrue(RequestModificationCommand.class.isAssignableFrom(ProxyDetailsRemovalCommand.class));
+        assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveRedirectionDetailsFromRefererNameCommand.class));
     }
-    
-    public void testProxyDetailsRemovedFromUri() {
-        String uri = "www.amazon.com/site/";
-        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI +
-                                                  uri + HTTPRequest.CRLF);
-        ProxyDetailsRemovalCommand command = new ProxyDetailsRemovalCommand();
+
+    public void testProxyRemovedFromReferer() {
+        String server = "www.amazon.com/site/";
+        String expectedHost = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL + server;
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI + HTTPRequest.CRLF +
+                                                  "Referer: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI +
+                                                   server + HTTPRequest.CRLF );
+        RemoveRedirectionDetailsFromRefererNameCommand command = new RemoveRedirectionDetailsFromRefererNameCommand();
         command.execute(httpRequest);
-        String expectedUri = "http://" + uri;
-        assertEquals(expectedUri, httpRequest.getUri());
+        assertEquals(expectedHost, httpRequest.getHeaderField("Referer"));
+
     }
 }

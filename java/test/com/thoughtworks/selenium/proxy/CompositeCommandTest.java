@@ -47,11 +47,13 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
- * $Id: CompositeCommandTest.java,v 1.4 2004/11/13 06:16:06 ahelleso Exp $
+ * $Id: CompositeCommandTest.java,v 1.5 2004/11/14 06:25:53 mikemelia Exp $
  */
 public class CompositeCommandTest extends MockObjectTestCase {
-    public void testComponentsAreCalledOnceEach() throws Exception {
-        Mock httpRequest = mock(HTTPRequest.class);
+
+    public void testComponentsAreCalledOnceEachInOrder() throws Exception {
+        Mock mock = mock(HTTPRequest.class);
+        HTTPRequest httpRequest = (HTTPRequest) mock.proxy();
 
         CompositeCommand command = new CompositeCommand();
         Mock command1 = mock(RequestModificationCommand.class);
@@ -59,9 +61,9 @@ public class CompositeCommandTest extends MockObjectTestCase {
         command.addCommand((RequestModificationCommand) command1.proxy());
         command.addCommand((RequestModificationCommand) command2.proxy());
 
-        command1.expects(once()).method("execute").with(same(httpRequest.proxy()));
-        command2.expects(once()).method("execute").with(same(httpRequest.proxy()));
+        command1.expects(once()).method("execute").with(same(httpRequest));
+        command2.expects(once()).method("execute").with(same(httpRequest));
 
-        command.execute((HTTPRequest) httpRequest.proxy());
+        command.execute(httpRequest);
     }
 }

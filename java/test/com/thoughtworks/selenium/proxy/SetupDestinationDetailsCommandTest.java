@@ -46,20 +46,22 @@ package com.thoughtworks.selenium.proxy;
 import junit.framework.TestCase;
 
 import java.net.URISyntaxException;
+import java.util.Properties;
 
 /**
- * @version $Id: SetupDestinationDetailsCommandTest.java,v 1.4 2004/11/13 06:16:07 ahelleso Exp $
+ * @version $Id: SetupDestinationDetailsCommandTest.java,v 1.5 2004/11/14 06:25:53 mikemelia Exp $
  */
 public class SetupDestinationDetailsCommandTest extends TestCase {
+    private Properties props;
 
     public void testIsARequestModificationCommand() {
         assertTrue(RequestModificationCommand.class.isAssignableFrom(SetupDestinationDetailsCommand.class));
     }
-    
+
     public void testSetsUpCorrectServerAndPortForNonPort80() throws URISyntaxException {
         String expectedServer = "localhost";
         int expectedPort = 8000;
-        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
                                                   "Host: " + expectedServer + ":" + expectedPort + HTTPRequest.CRLF);
         SetupDestinationDetailsCommand command = new SetupDestinationDetailsCommand();
         command.execute(httpRequest);
@@ -70,11 +72,38 @@ public class SetupDestinationDetailsCommandTest extends TestCase {
     public void testSetsUpCorrectServerAndPortForDefaultPort() throws URISyntaxException {
         String expectedServer = "localhost";
         int expectedPort = 80;
-        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
                                                   "Host: " + expectedServer + HTTPRequest.CRLF);
         SetupDestinationDetailsCommand command = new SetupDestinationDetailsCommand();
         command.execute(httpRequest);
         assertEquals(expectedServer, httpRequest.getDestinationServer());
         assertEquals(expectedPort, httpRequest.getDestinationPort());
+    }
+
+    public void testSetsUpCorrectServerAndPortIfProxySpecified() {
+        String expectedServer = "corpproxy";
+        int expectedPort = 8080;
+
+        Properties props = new Properties();
+        props.put("http.proxyHost", expectedServer);
+        props.put("http.proxyPort", Integer.toString(expectedPort));
+        System.setProperties(props);
+
+        HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
+                                                  "Host: www.amazon.com:9090" + HTTPRequest.CRLF);
+        SetupDestinationDetailsCommand command = new SetupDestinationDetailsCommand();
+        command.execute(httpRequest);
+        assertEquals(expectedServer, httpRequest.getDestinationServer());
+        assertEquals(expectedPort, httpRequest.getDestinationPort());
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        props = System.getProperties();
+    }
+
+    protected void tearDown() throws Exception {
+        System.setProperties(props);
+        super.tearDown();
     }
 }
