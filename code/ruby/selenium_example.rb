@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-require 'selenese'
+require 'selenium'
 
 puts "Go to http://localhost:7896/SeleneseRunner.html"
 
