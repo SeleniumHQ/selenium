@@ -458,39 +458,28 @@ function pad (num) {
     return (num > 9) ? num : "0" + num;
 }
 
-// Search through str and replace all variable references ${varName} with their
-// value in storedVars.
+/*
+ * Search through str and replace all variable references ${varName} with their
+ * value in storedVars.
+ */
 function replaceVariables(str) {
-
-     //handle the case of ${userid}.toUpper
-    pattern = /\$\{(\w+)\}\.(.+)/;
-
-    var variableIndex = str;
-    var variableFunction='';
-
-    if(pattern.test(str)) {
-        pieces = str.split('.');
-
-        variableIndex = pieces[0];
-        variableFunction = pieces[1];
+    // We can't use a String.replace(regexp, replacementFunction) since this doesn't
+    // work in safari. So replace each match 1 at a time.
+    var stringResult = str;
+    var match;
+    while (match = stringResult.match(/\$\{(\w+)\}/)) {
+        var variable = match[0];
+        var name = match[1];
+        var replacement = storedVars[name];
+        stringResult = stringResult.replace(variable, replacement);
     }
-
-
-    regex = /\$\{(\w+)\}/g;
-
-    var variableValue = variableIndex.replace(regex, function(match, word) {
-        return storedVars[word];
-    });
-
-    if( variableFunction == '')
-            return variableValue;
-    else
-    {
-        return eval("variableValue."+ eval("variableFunction") + "()" );
-    }
+    return stringResult;
 }
-    // Register all of the built-in command handlers with the CommandHandlerFactory.
-// TODO work out an easy way for people to register handlers without modifying the Selenium sources.
+
+/*
+ * Register all of the built-in command handlers with the CommandHandlerFactory.
+ * TODO work out an easy way for people to register handlers without modifying the Selenium sources.
+ */
 function registerCommandHandlers() {
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
