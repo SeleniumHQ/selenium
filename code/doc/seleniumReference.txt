@@ -1,6 +1,6 @@
--------------------------
+=========================
 Selenium Reference
--------------------------
+=========================
 
     A **command** is what tells Selenium what to do. Selenium commands come in two 'flavors', **Actions** and **Assertions**.
     Each command call is one line in the test table of the form:

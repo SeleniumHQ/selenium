@@ -1,5 +1,5 @@
 ===========================================
- Selenium FAQ (Frequently Asked Questions)
+ Selenium Frequently Asked Questions
 ===========================================
 
 .. Please note that until there's a Q&A-specific construct available,
