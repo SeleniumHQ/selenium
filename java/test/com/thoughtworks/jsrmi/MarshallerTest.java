@@ -1,11 +1,10 @@
 package com.thoughtworks.jsrmi;
 
-import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class MarshallerTest extends MockObjectTestCase {
     public void testShouldBeAbleToUnarshalTopLevelObjectToJavaObject() {

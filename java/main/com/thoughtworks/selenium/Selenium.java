@@ -2,8 +2,6 @@ package com.thoughtworks.selenium;
 
 import edu.emory.mathcs.util.concurrent.Exchanger;
 
-import java.io.IOException;
-
 /**
  * This is the class that is used to start a Selenium session with a browser.
  * Intended usage:
@@ -14,7 +12,7 @@ import java.io.IOException;
  * </pre>
  * There is no direct JUnit integration, but you can use this class from a JUnit test.
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class Selenium {
     private final String browserName;

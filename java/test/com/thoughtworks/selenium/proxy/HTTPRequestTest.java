@@ -15,15 +15,15 @@ package com.thoughtworks.selenium.proxy;
   limitations under the License. 
 */
 
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 /**
- * @version $Id: HTTPRequestTest.java,v 1.3 2004/11/13 05:43:01 ahelleso Exp $
+ * @version $Id: HTTPRequestTest.java,v 1.4 2004/11/13 05:46:47 ahelleso Exp $
  */
 public class HTTPRequestTest extends TestCase {
     // relying on defs found at http://www.w3.org/Protocols/HTTP/Request.html

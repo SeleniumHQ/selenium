@@ -1,8 +1,8 @@
 package com.thoughtworks.selenium.proxy;
 
-import java.net.URISyntaxException;
-
 import junit.framework.TestCase;
+
+import java.net.URISyntaxException;
 
 /*
   Copyright 2004 ThoughtWorks, Inc. 
@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 */
 
 /**
- * @version $Id: SetupDestinationDetailsCommandTest.java,v 1.2 2004/11/13 05:43:01 ahelleso Exp $
+ * @version $Id: SetupDestinationDetailsCommandTest.java,v 1.3 2004/11/13 05:46:47 ahelleso Exp $
  */
 public class SetupDestinationDetailsCommandTest extends TestCase {
 

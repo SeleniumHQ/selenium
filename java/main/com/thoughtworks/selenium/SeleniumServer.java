@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium;
 
-import java.io.IOException;
+
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface SeleniumServer {
     void start();

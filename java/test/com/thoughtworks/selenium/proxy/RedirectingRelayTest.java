@@ -18,11 +18,11 @@ package com.thoughtworks.selenium.proxy;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
- * @version $Id: RedirectingRelayTest.java,v 1.4 2004/11/13 05:43:01 ahelleso Exp $
+ * @version $Id: RedirectingRelayTest.java,v 1.5 2004/11/13 05:46:47 ahelleso Exp $
  */
 public class RedirectingRelayTest extends MockObjectTestCase {
 
