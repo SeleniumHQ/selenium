@@ -25,31 +25,24 @@ import java.io.Writer;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class SeleneseProxyServlet extends AbstractSeleneseServlet {
 
 
     protected SeleneseHandler getRemoteSeleneseHandler(ServletContext servletContext, Writer writer) {
-        SeleneseProxy seleneseProxy;
-        seleneseProxy = (SeleneseProxy) servletContext.getAttribute("remote-selenese-handler");
-        if (seleneseProxy == null) {
-            seleneseProxy = new SeleneseProxy(host, port);
-        }
+        SeleneseProxy seleneseProxy = new SeleneseProxy(host, port);
         servletContext.setAttribute("remote-selenese-handler", seleneseProxy);
         return seleneseProxy;
     }
 
     protected SeleneseCommand handleCommand(ServletContext servletContext, String commandReply) {
-        SeleneseProxy seleneseProxy;
-        seleneseProxy = (SeleneseProxy) servletContext.getAttribute("remote-selenese-handler");
+        SeleneseHandler seleneseProxy = (SeleneseHandler) servletContext.getAttribute("remote-selenese-handler");
+        if (seleneseProxy == null) {
+            throw new IllegalStateException("We expected the attribute 'remote-selenese-handler' to exist");
+        }
         SeleneseCommand command = seleneseProxy.handleCommandResult(commandReply);
         return command;
-    }
-
-    private String getRmiName() {
-        String name = "rmi://" + host + ":" + port + "/" + RemoteSeleneseHandler.class.getName();
-        return name;
     }
 
     protected void endTests() {

@@ -19,7 +19,6 @@ package com.thoughtworks.selenium.servlet;
 
 import com.thoughtworks.selenium.SeleneseCommand;
 import com.thoughtworks.selenium.SeleneseHandler;
-import com.thoughtworks.selenium.SeleneseHandler;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
@@ -32,7 +31,7 @@ import java.rmi.RemoteException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class SeleneseRMIProxyServlet extends AbstractSeleneseServlet {
 
