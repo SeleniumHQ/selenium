@@ -19,6 +19,6 @@ package com.thoughtworks.selenium.browserlifecycle.session;
 
 public interface SessionFactory {
   
-	public Session buildBrowserSession(String browserExecutable, String url);
+	public Session buildSingleBrowserSession(String browserExecutable, String url);
 	public Session buildMultipleBrowserSession(String[] browserExecutables, String url);
 }

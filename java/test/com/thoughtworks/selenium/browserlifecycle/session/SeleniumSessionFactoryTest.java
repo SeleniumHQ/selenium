@@ -42,7 +42,7 @@ public class SeleniumSessionFactoryTest extends MockObjectTestCase {
 		
 		String browser = "testBrowser";
 		String url     = "testUrl";
-		Session session = factory.buildBrowserSession(browser, url);
+		Session session = factory.buildSingleBrowserSession(browser, url);
 		
 		waiterFactory.verify();
 		
