@@ -29,7 +29,7 @@ public class MacMozillaBrowserLauncher extends DestroyableRuntimeExecutingBrowse
 
 
     public MacMozillaBrowserLauncher() {
-        super("open -a /Applications/Mozilla.app");
+        super("/Applications/Mozilla.app/Contents/MacOS/mozilla-bin -P default");
     }
 
 }
