@@ -5,6 +5,8 @@
         <fileset dir="lib"/>
         <pathelement location="target/classes"/>
         <pathelement location="target/test-classes"/>
+        <pathelement location="${ant.home}/lib/clover.jar"/>
+        <pathelement location="${ant.home}/lib"/>
     </path>
 
     <target name="compile" description="Compile java source">
@@ -19,7 +21,7 @@
         </javac>
     </target>
 
-    <target name="test">
+    <target name="test" depends="compile">
         <mkdir dir="target/test-logs"/>
 <!--        <fail unless="browser">Specify -Dbrowser=firefox (or some other browser) on the command line when running the tests</fail> -->
         <echo>**************************************************</echo>
@@ -52,5 +54,41 @@
 
     <target name="jar" depends="compile, test" description="Jar java classes">
         <jar basedir="target/classes" destfile="target/${ant.project.name}-${version}.jar"/>
+    </target>
+
+    <target name="clover-init">
+        <taskdef resource="clovertasks"/>
+        <typedef resource="clovertypes"/>
+
+        <mkdir dir="target/clover"/>
+        <clover-setup initString="target/clover/testCoverage.db">
+            <files>
+                <!-- exclude test-related classes, because they generally inflate the average. -->
+                <exclude name="**/*Test.java"/>
+            </files>
+        </clover-setup>
+    </target>
+
+    <fileset dir="main" id="coverage-fileset">
+        <include name="com/thoughtworks/**/*"/>
+    </fileset>
+
+    <target name="clover-report">
+        <clover-report>
+            <current summary="yes" outfile="target/clover">
+                <format type="html"/>
+                <fileset refid="coverage-fileset"/>
+            </current>
+            <current summary="yes" outfile="target/clover/clover.xml">
+                <format type="xml"/>
+                <fileset refid="coverage-fileset"/>
+            </current>
+        </clover-report>
+    </target>
+
+    <target name="clover" depends="clean, clover-init, test, clover-report"/>
+
+    <target name="clean">
+        <delete dir="target"/>
     </target>
 </project>

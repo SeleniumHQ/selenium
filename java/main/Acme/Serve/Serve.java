@@ -30,8 +30,50 @@
 // All enhancments Copyright (C)1998-2004 by Dmitriy Rogatkin
 // This version is compatible with JSDK 2.4
 // http://tjws.sourceforge.net
-// $Id: Serve.java,v 1.1 2004/11/03 22:17:26 jwang Exp $
 
+/*
+Copyright (c) 2003 ThoughtWorks, Inc. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+   1. Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+
+   3. The end-user documentation included with the redistribution, if any, must
+      include the following acknowledgment:
+
+          This product includes software developed by ThoughtWorks, Inc.
+          (http://www.thoughtworks.com/).
+
+      Alternately, this acknowledgment may appear in the software itself, if and
+      wherever such third-party acknowledgments normally appear.
+
+   4. The names "CruiseControl", "CruiseControl.NET", "CCNET", and
+      "ThoughtWorks, Inc." must not be used to endorse or promote products derived
+      from this software without prior written permission. For written permission,
+      please contact opensource@thoughtworks.com.
+
+   5. Products derived from this software may not be called "Selenium" or
+      "ThoughtWorks", nor may "Selenium" or "ThoughtWorks" appear in their name,
+      without prior written permission of ThoughtWorks, Inc.
+
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THOUGHTWORKS
+INC OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
+*/
 package Acme.Serve;
 
 import java.io.*;
@@ -41,54 +83,6 @@ import java.text.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-/// Minimal Java HTTP server class.
-// <P>
-// This class implements a very small embeddable HTTP server.
-// It runs Servlets compatible with the API used by JavaSoft's
-// <A HREF="http://java.sun.com/products/java-server/">JavaServer</A> server.
-// It comes with default Servlets which provide the usual
-// httpd services, returning files and directory listings.
-// <P>
-// This is not in any sense a competitor for JavaServer.
-// JavaServer is a full-fledged HTTP server and more.
-// Acme.Serve is tiny, about 1500 lines, and provides only the
-// functionality necessary to deliver an Applet's .class files
-// and then start up a Servlet talking to the Applet.
-// They are both written in Java, they are both web servers, and
-// they both implement the Servlet API; other than that they couldn't
-// be more different.
-// <P>
-// This is actually the second HTTP server I've written.
-// The other one is called
-// <A HREF="http://www.acme.com/software/thttpd/">thttpd</A>,
-// it's written in C, and is also pretty small although much more
-// featureful than this.
-// <P>
-// Other Java HTTP servers:
-// <UL>
-// <LI> The above-mentioned <A
-// HREF="http://java.sun.com/products/java-server/">JavaServer</A>.
-// <LI> W3C's <A HREF="http://www.w3.org/pub/WWW/Jigsaw/">Jigsaw</A>.
-// <LI> David Wilkinson's <A
-// HREF="http://www.netlink.co.uk/users/cascade/http/">Cascade</A>.
-// <LI> Yahoo's <A
-// HREF="http://www.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Java/">list
-// of Java web servers</A>.
-// </UL>
-// <P>
-// A <A HREF="http://www.byte.com/art/9706/sec8/art1.htm">June 1997 BYTE
-// magazine article</A> mentioning this server.<BR>
-// A <A HREF="http://www.byte.com/art/9712/sec6/art7.htm">December 1997 BYTE
-// magazine article</A> giving it an Editor's Choice Award of Distinction.<BR>
-// <A HREF="/resources/classes/Acme/Serve/Serve.java">Fetch the
-// software.</A><BR>
-// <A HREF="/resources/classes/Acme.tar.Z">Fetch the entire Acme package.</A>
-// <P>
-// @see Acme.Serve.servlet.http.HttpServlet
-// @see FileServlet
-// @see CgiServlet
-
-// make it final?
 public class Serve implements ServletContext, RequestDispatcher, Serializable {
 
 	private static final String progName = "Serve";
@@ -1221,7 +1215,7 @@ public class Serve implements ServletContext, RequestDispatcher, Serializable {
 	final static class Identification {
 		public static final String serverName = "Rogatkin's JWS based on Acme.Serve";
 
-		public static final String serverVersion = "$Revision: 1.1 $";
+		public static final String serverVersion = "$Revision: 1.2 $";
 
 		public static final String serverUrl = "http://tjws.sourceforge.net";
 
