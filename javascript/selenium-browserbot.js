@@ -143,8 +143,8 @@ PageBot = function(pageWindow, browserBot) {
     this.title = function() {return this.currentDocument.title};
 
     modifyWindowToRecordAlerts(pageWindow, browserBot);
-        
-    //SPIKE factor this better via TDD    
+
+    //SPIKE factor this better via TDD
     function clearPageCache() {
        browserbot.currentPage = null;
     }
@@ -218,6 +218,18 @@ PageBot.prototype.findElementByDomTraversal = function(domTraversal) {
     }
 
     return element;
+}
+
+PageBot.prototype.findElementByXPath = function(xpath) {
+    if (xpath.indexOf("//") != 0) {
+        return null;
+    }
+
+    if (!document.evaluate) {
+        return null;
+    }
+
+    return document.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
 }
 
 /*

@@ -87,6 +87,29 @@ function testFindElementByDomTraversalFailsWithInvalidDomString() {
 }
 
 //
+// Tests for PageBot.findElementByXPath
+//
+function testFindElementByXPathWithTagNameOnly() {
+    assertEquals(element4,
+                 pageBot.findElementByXPath("//p"));
+}
+
+function testFindElementByXPathWithAttributeOnly() {
+    assertEquals(element4,
+                 pageBot.findElementByXPath("//*[@class='pstyle']"));
+}
+
+function testFindElementByXPathWithTagNameAndAttribute() {
+    assertEquals(element4,
+                 pageBot.findElementByXPath("//p[@name='name1']"));
+}
+
+function testFindElementByXPathReturnsFirstMatchingElement() {
+    assertEquals(element2,
+                 pageBot.findElementByXPath("//*[@name='name1']"));
+}
+
+//
 // Tests for PageBot.findElement()
 //
 function testFindElementReturnsElementWithMatchingIdentifier() {
@@ -132,6 +155,6 @@ function testFindElementHandlesDomTraversal() {
     <a id="id2" name="name1" href="#id2">this is the second element</a>
     <a id="id3" name="name1" href="#id3">this is the third element</a>
 
-    <p id="document.links[0]">dummy element</p>
+    <p id="document.links[0]" name="name1" class="pstyle">dummy element</p>
   </body>
 </html>
