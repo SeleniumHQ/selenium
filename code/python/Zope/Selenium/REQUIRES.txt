@@ -1,0 +1,1 @@
+Selenium requires at least Python 2.3. 

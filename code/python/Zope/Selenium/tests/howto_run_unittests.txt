@@ -1,0 +1,3 @@
+1) change directory to InstanceHome\Products\Selenium\tests
+2) python.exe test_dispatcher.py
+3) python.exe test_interpreter.py
