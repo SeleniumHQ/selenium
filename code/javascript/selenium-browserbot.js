@@ -229,11 +229,13 @@ PageBot = function(pageWindow) {
         this.location = pageWindow.location.pathname;
         this.title = function() {return this.currentDocument.title;};
 
-        this.locators = new Array();
-        this.locators.push(this.findIdentifiedElement);
-        this.locators.push(this.findElementByDomTraversal);
-        this.locators.push(this.findElementByXPath);
-        this.locators.push(this.findLink);
+        // Register all locate* functions
+        this.locatorFunctions = new Array();
+        for (var f in this) {
+            if (typeof(this[f]) == 'function' && f.match(/^locate/)) {
+                this.locatorFunctions.push(this[f]);
+            }
+        }
     }
 };
 
@@ -269,9 +271,9 @@ PageBot.prototype.findElement = function(locator) {
 };
 
 PageBot.prototype.findElementInDocument = function(locator, inDocument) {
-    // Try the locators one at a time.
-    for (var i = 0; i < this.locators.length; i++) {
-        var locatorFunction = this.locators[i];
+    // Try the locatorFunctions one at a time.
+    for (var i = 0; i < this.locatorFunctions.length; i++) {
+        var locatorFunction = this.locatorFunctions[i];
         var element = locatorFunction.call(this, locator, inDocument);
         if (element != null) {
             return element;
@@ -279,10 +281,10 @@ PageBot.prototype.findElementInDocument = function(locator, inDocument) {
     }
 };
 
-/*
-* In IE, getElementById() also searches by name.
-*/
-IEPageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
+/**
+ * In IE, getElementById() also searches by name.
+ */
+IEPageBot.prototype.locateElementById = function(identifier, inDocument) {
     try {
         return inDocument.getElementById(identifier);
     } catch (e) {
@@ -290,12 +292,12 @@ IEPageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
     }
 };
 
-/*
-* In Mozilla, getElementById() does not search by name.
-* To provied consistent functionality with IE, we
-* search by name attribute if an element with the id isn't found.
-*/
-MozillaPageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
+/**
+ * In other browsers, getElementById() does not search by name.  To provide
+ * functionality consistent with IE, we search by @name if an element with
+ * the @id isn't found.
+ */
+PageBot.prototype.locateElementById = function(identifier, inDocument) {
     try {
         var element = inDocument.getElementById(identifier);
         if (element == null)
@@ -304,7 +306,7 @@ MozillaPageBot.prototype.findIdentifiedElement = function(identifier, inDocument
                 var xpath = "//*[@name='" + identifier + "']";
                 element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
             }
-	        // Search through all elements for Konqueror/Safari
+            // Search through all elements for Konqueror/Safari
             else {
                 var allElements = inDocument.getElementsByTagName("*");
                 for (var i = 0; i < allElements.length; i++) {
@@ -327,7 +329,7 @@ MozillaPageBot.prototype.findIdentifiedElement = function(identifier, inDocument
 * Finds an element using by evaluating the "document.*" string against the
 * current document object. Dom expressions must begin with "document."
 */
-PageBot.prototype.findElementByDomTraversal = function(domTraversal, inDocument) {
+PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument) {
     if (domTraversal.indexOf("document.") != 0) {
         return null;
     }
@@ -348,7 +350,7 @@ PageBot.prototype.findElementByDomTraversal = function(domTraversal, inDocument)
 * Finds an element identified by the xpath expression. Expressions _must_
 * begin with "//".
 */
-PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
+PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
     if (xpath.indexOf("//") != 0) {
         return null;
     }
@@ -370,7 +372,7 @@ PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
 /**
  * For IE, we implement XPath support using the html-xpath library.
  */
-IEPageBot.prototype.findElementByXPath = function(xpath, inDocument) {
+IEPageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
     if (xpath.indexOf("//") != 0) {
         return null;
     }
@@ -379,20 +381,20 @@ IEPageBot.prototype.findElementByXPath = function(xpath, inDocument) {
         addXPathSupport(inDocument);
     }
 
-    return PageBot.prototype.findElementByXPath(xpath, inDocument);
+    return PageBot.prototype.locateElementByXPath(xpath, inDocument);
 };
 
 /**
 * Finds a link element with text matching the expression supplied. Expressions must
 * begin with "link:".
 */
-PageBot.prototype.findLink = function(linkDescription, inDocument) {
+PageBot.prototype.locateLinkByText = function(linkDescription, inDocument) {
     if (linkDescription.indexOf("link:") != 0) {
         return null;
     }
 
     var linkText = linkDescription.substring(5);
-    return this.findElementByXPath("//a[text()='" + linkText + "']", inDocument);
+    return this.locateElementByXPath("//a[text()='" + linkText + "']", inDocument);
 };
 
 /**
