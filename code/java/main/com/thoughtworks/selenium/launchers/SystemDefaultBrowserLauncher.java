@@ -23,22 +23,22 @@ import com.thoughtworks.selenium.BrowserLauncher;
  * @author Paul Hammant
  * @version $Revision: 1.8 $
  */
-public class SystemDefaultBrowserLauncher extends RuntimeExecutingBrowserLauncher {
+public class SystemDefaultBrowserLauncher implements BrowserLauncher {
 
     private static final String osName = System.getProperty("os.name");
-    protected BrowserLauncher delegate;
+    protected final BrowserLauncher delegate;
 
     public SystemDefaultBrowserLauncher() {
-        defaultBrowsers();
+        delegate = defaultBrowsers();
     }
 
-    protected void defaultBrowsers() {
+    protected BrowserLauncher defaultBrowsers() {
         if (osName != null && osName.startsWith("Windows")) {
-            delegate = new WindowsDefaultBrowserLauncher();
+            return new WindowsDefaultBrowserLauncher();
         } else if (osName != null && osName.startsWith("Mac")) {
-            delegate = new MacDefaultBrowserLauncher();
+            return new MacDefaultBrowserLauncher();
         } else {
-            delegate = new UnixMozillaBrowserLauncher();
+            return new UnixMozillaBrowserLauncher();
         }
     }
 

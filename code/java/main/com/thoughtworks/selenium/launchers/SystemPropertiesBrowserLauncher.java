@@ -25,27 +25,24 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision$
  */
-public class SystemPropertiesBrowserLauncher extends SystemDefaultBrowserLauncher {
+public class SystemPropertiesBrowserLauncher implements BrowserLauncher {
 
+    private BrowserLauncher delegate;
     private static final String browserPath = System.getProperty("selenium-browser-path");
 
     public SystemPropertiesBrowserLauncher() {
         if (browserPath != null && !browserPath.equals("")) {
-            delegate = new BrowserLauncher() {
-                public void launch(String url) {
-                    try {
-                        String command = browserPath + " " + url;
-                        exec(command);
-                    } catch (IOException e) {
-                        throw new RuntimeException("Could not launch default browser.", e);
-                    }
-                }
-                public void close() {
-                }
-
-            };
+            delegate = new SpecifiedPathBrowserLauncher(browserPath);
         } else {
-            defaultBrowsers();
+            delegate = new SystemDefaultBrowserLauncher();
         }
+    }
+
+    public void launch(String url) {
+        delegate.launch(url);
+    }
+
+    public void close() {
+        delegate.close();
     }
 }

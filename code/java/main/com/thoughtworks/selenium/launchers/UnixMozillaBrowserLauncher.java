@@ -17,26 +17,16 @@
 
 package com.thoughtworks.selenium.launchers;
 
-import com.thoughtworks.selenium.BrowserLauncher;
-
-import java.io.IOException;
 
 /**
  * @author Jez Humble
  * @version $Revision$
  */
-public class UnixMozillaBrowserLauncher extends RuntimeExecutingBrowserLauncher {
+public class UnixMozillaBrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
 
-    public void launch(String url) {
-        try {
-            //This is bogus
-            exec("mozilla " + url);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not launch Mozilla. You need to have Mozilla installed to run this test", e);
-        }
+    public UnixMozillaBrowserLauncher() {
+        super("mozilla");
     }
 
-    public void close() {
-    }
 }

@@ -110,6 +110,8 @@
 
     <target name="integration-test" depends="compile-main">
 
+        <echo>Integration Tests for Embedded Web Container</echo>
+
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
             <jvmarg value="-Dcode_root=.."/>
             <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
@@ -119,10 +121,29 @@
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
                     <include name="**/*Test.java"/>
-                    <include name="**/*TestCase.java"/> 
+                    <include name="**/*TestCase.java"/>
+                    <exclude name="**/outbedded/**"/>
                 </fileset>
             </batchtest>
         </junit>
+
+        <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
+
+        <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
+            <classpath refid="instrumented.classpath"/>
+            <formatter type="xml"/>
+            <formatter type="plain"/>
+            <batchtest todir="${integration.test.logs.dir}">
+                <fileset dir="${integration.test.dir}">
+                    <include name="**/*Test.java"/>
+                    <include name="**/*TestCase.java"/>
+                    <exclude name="**/embedded/**"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
 
         <junitreport todir="${integration.test.reports.dir}">
             <fileset dir="${integration.test.logs.dir}">
