@@ -9,10 +9,10 @@
 		<UL id=menulist>
 			<LI><A href="index.html">home</A></LI>
 			<LI><A href="download.html">download</A></LI>
-			<LI><A href="release-notes.html">&nbsp;&nbsp;&nbsp;&nbsp;release notes</A></LI>
+			<LI><A href="release-notes.html">&nbsp;&nbsp;&nbsp;&nbsp;- release notes</A></LI>
 			<LI><A href="usage.html">usage</A></LI>
-			<LI><A href="testrunner.html">&nbsp;&nbsp;&nbsp;&nbsp;test runner</A></LI>
-			<LI><A href="driven.html">&nbsp;&nbsp;&nbsp;&nbsp;driven</A></LI>
+			<LI><A href="testrunner.html">&nbsp;&nbsp;&nbsp;&nbsp;- test runner</A></LI>
+			<LI><A href="driven.html">&nbsp;&nbsp;&nbsp;&nbsp;- driven</A></LI>
             <LI><A href="developingdrivers.html">developing drivers</A></LI>
 			<LI><A href="FAQ.html">faq</A></LI>
 			<LI><A href="contact.html">contact</A></LI>
