@@ -23,15 +23,6 @@ Selenium.prototype.clickElement = function(locator, callback) {
     this.page().clickElement(element, callback);
 }
 
-/*
- * Trigger the onclick event on the located element,
- * and attach a callback to notify when the page is reloaded.
- */
-Selenium.prototype.onclickElement = function(locator, callback) {
-    var element = this.page().findElement(locator);
-    this.page().onclickElement(element, callback);
-}
-
 /**
  * Overwrite the text in the located text element.
  * TODO fail if it can't be typed into.

@@ -44,22 +44,6 @@ function testClickElementWithoutCallback() {
     verify();
 }
 
-function testOnclickElementWithoutCallback() {
-    mockPageBot.expects("findElement", "id").returns("elementToClick");
-    mockPageBot.expects("onclickElement", "elementToClick", undefined);
-
-    selenium.onclickElement("id");
-    verify();
-}
-
-function testOnclickElementWithoutCallback() {
-    mockPageBot.expects("findElement", "id").returns("elementToClick");
-    mockPageBot.expects("onclickElement", "elementToClick", "function");
-
-    selenium.onclickElement("id", "function");
-    verify();
-}
-
 function testType() {
     mockPageBot.expects("findElement", "id").returns("elementToType");
     mockPageBot.expects("replaceText", "elementToType", "new text");
