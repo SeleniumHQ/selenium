@@ -122,6 +122,7 @@ module Selenium
     end
   end
    
-  class SeleniumCommandError < RuntimeError 
-  end
+end
+
+class SeleniumCommandError < RuntimeError 
 end
