@@ -27,12 +27,6 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
-// Override the modifyWindow function for testing - eewww static methods...
-var modifyWindowCalled;
-function modifyWindow(windowObject) {
-    // Do nothing
-}
-
 function setUp() {
     browserBot = new BrowserBot();
 
@@ -43,8 +37,6 @@ function setUp() {
 
     browserBot.currentWindowName = 'originalWindowName';
     browserBot.currentPage = 'originalPage';
-
-    modifyWindowCalled = false;
 }
 
 function testContentWindowIsRetrievedFromFrame() {

@@ -437,7 +437,7 @@ function initialiseTestLoop() {
     testLoop.nextCommand = nextCommand;
     testLoop.commandStarted = commandStarted;
     testLoop.commandComplete = commandComplete;
-    testLoop.commandError = setRowFailed;
+    testLoop.commandError = commandError;
     testLoop.testComplete = testComplete;
     return testLoop
 }
@@ -476,6 +476,10 @@ function commandComplete(result) {
     } else {
         setRowWhite();
     }
+}
+
+function commandError(errorMessage) {
+    setRowFailed(errorMessage, ERROR);
 }
 
 function setRowWhite() {

@@ -29,92 +29,60 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     <tr>
       <td>open</td>
-      <td>./tests/html/test_click_page1.html</td>
+      <td>./tests/html/test_click_javascript_page.html</td>
       <td>&nbsp;</td>
     </tr>
-
+    
     <!-- Click a regular link -->
     <tr>
-      <td>verifyText</td>
-      <td>link</td>
-      <td>Click here for next page</td>
-    </tr>
-    <tr>
       <td>click</td>
       <td>link</td>
-      <td></td>
+      <td>nowait</td>
     </tr>
     <tr>
-      <td>verifyTitle</td>
-      <td>Click Page Target</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>click</td>
-      <td>previousPage</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>verifyTitle</td>
-      <td>Click Page 1</td>
+      <td>verifyAlert</td>
+      <td>link clicked</td>
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Click a regular link with an absolute url -->
-    <tr>
-      <td>click</td>
-      <td>absoluteLink</td>
-      <td>Click here for next page</td>
-    </tr>
-    <tr>
-      <td>verifyTitle</td>
-      <td>Click Page Target</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>click</td>
-      <td>previousPage</td>
-      <td>&nbsp;</td>
-    </tr>
-
-    <!-- Click a link with an enclosed image -->
-    <tr>
-      <td>click</td>
-      <td>linkWithEnclosedImage</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>verifyTitle</td>
-      <td>Click Page Target</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>click</td>
-      <td>previousPage</td>
-      <td>&nbsp;</td>
-    </tr>
-
-    <!-- Click a image inside a link -->
+    <!-- Click an image enclosed in a link -->
     <tr>
       <td>click</td>
       <td>enclosedImage</td>
-      <td>&nbsp;</td>
+      <td>nowait</td>
     </tr>
     <tr>
-      <td>verifyTitle</td>
-      <td>Click Page Target</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>click</td>
-      <td>previousPage</td>
+      <td>verifyAlert</td>
+      <td>enclosedImage clicked</td>
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Click a link with an href anchor target within this page -->
+    <!-- Click link with multiple javascript calls -->
     <tr>
       <td>click</td>
-      <td>linkToAnchorOnThisPage</td>
+      <td>linkWithMultipleJavascriptStatements</td>
+      <td>nowait</td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>alert1</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>alert2</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>alert3</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Click a link with javascript:void() href -->
+    <tr>
+      <td>click</td>
+      <td>linkWithJavascriptVoidHref</td>
       <td>nowait</td>
     </tr>
     <tr>
@@ -123,20 +91,18 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Click a link where onclick returns false -->
+    <!-- Click a link where onclick returns false
     <tr>
       <td>click</td>
       <td>linkWithOnclickReturnsFalse</td>
       <td>nowait</td>
-    </tr>
+    </tr> -->
+    <!-- Verify title, this will fail if an alert was raised.
     <tr>
       <td>verifyTitle</td>
       <td>Click Page 1</td>
       <td>&nbsp;</td>
-    </tr>
-
-    <!-- TODO Click a link with a target attribute -->
-
+    </tr> -->
   </tbody>
 </table>
 </body>
