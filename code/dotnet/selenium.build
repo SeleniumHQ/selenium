@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<project name="Selenium" default="test">
+
+	<!-- Targets should contain tasks OR dependencies, but NOT both.
+			Public targets should have a description -->
+
+    <target name="all" depends="test, dist" 
+		description="Do everything you might want to do on a developer workstation" />
+		
+	<target name="all-clean" depends="clean, all"
+		description="Clean up, then do everything you might want to do on a developer workstation" />
+		
+	<target name="test" depends="unit-tests" 
+		description="Run all tests"/>
+	
+	<target name="unit-tests" depends="compile, run-unit-tests" 
+		description="Run Unit Tests" />
+	
+	<target name="dist" depends="compile, create-selenium-zips" 
+		description="Create distributable files" />
+	
+	<target name="clean">
+		<!-- These mkdirs here to stop warnings -->
+		<mkdir dir="build" />
+		<mkdir dir="dist" />
+		<delete dir="build" failonerror="false"/>
+		<delete dir="dist" failonerror="false"/>
+	</target>
+
+	<target name="compile">
+		<mkdir dir="build" />
+		<solution configuration="Build" solutionfile="src\Selenium.sln" />
+	</target>
+
+	<target name="run-unit-tests">
+		<property name="unit.test.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
+		<exec 
+			program="tools\nunit\nunit-console.exe" 
+			workingdir="build\UnitTests" 
+			commandline="${unit.test.dll} /xml:../${unit.test.dll}-results.xml /nologo"/>
+	</target>
+
+	<target name="create-selenium-zips" >
+		<mkdir dir="build/dist/bin" />
+		<copy todir="build/dist/bin">
+			<fileset basedir="build/Core">
+				<include name="*.dll" />
+				<include name="*.config" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="dist" />
+		<zip zipfile="dist/Selenium.zip">
+			<fileset basedir="build/dist/bin">
+				<include name="**/*" />
+			</fileset>
+		</zip>
+
+		<mkdir dir="build/dist/source" />
+		<copy todir="build/dist/source">
+			<fileset basedir=".">
+				<include name="**/*" />
+
+				<exclude name="build" />
+				<exclude name="build/**" />
+				<exclude name="dist" />
+				<exclude name="dist/**" />
+				<exclude name="src/*/bin" />
+				<exclude name="src/*/obj" />
+				<exclude name="src/*/bin/**" />
+				<exclude name="src/*/obj/**" />
+				<exclude name="**/*.suo" />
+				<exclude name="**/*.user" />
+				<exclude name="**/*.resharperoptions" />
+				<exclude name="**/_Resharper*" />
+				<exclude name="**/_Resharper*/**" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="dist" />
+		<zip zipfile="dist/Selenium.source.zip">
+			<fileset basedir="build/dist/source">
+				<include name="**/*" />
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="continuous-integration" depends="clean, continuous-integration-setup-versioning, all, continuous-integration-publish" />
+
+	<target name="continuous-integration-setup-versioning">
+		<ifnot test="${property::exists('ccnet.label')}">
+			<fail message="ccnet.label property not set, so can't create labelled distribution files" />
+		</ifnot>
+
+		<regex pattern="(?'major'\d+)_(?'minor'\d+)_(?'revision'\d+)_(?'build'\d+)" input="${ccnet.label}" />
+		<property name="build.number" value="${major}.${minor}.${revision}.${build}" />
+		<echo message="Build number: ${build.number}"/>
+	
+		<asminfo output="src/CommonAssemblyInfo.cs" language="CSharp">
+			<imports>
+				<import name="System.Reflection" />
+			</imports>
+			<attributes>
+				<attribute type="AssemblyVersionAttribute" value="${build.number}" />
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright © 2005 ThoughtWorks Inc." />
+				<attribute type="AssemblyCompanyAttribute" value="ThoughtWorks" />
+				<attribute type="AssemblyProductAttribute" value="Selenium" />
+			</attributes>
+		</asminfo>
+	</target>
+		
+	<target name="continuous-integration-publish">
+		<property name="publish.dir" value="D:\download-area\Selenium-Builds\${ccnet.label}" />
+		<mkdir dir="${publish.dir}" />
+		<copy todir="${publish.dir}">
+			<fileset basedir="dist">
+				<include name="*"/>
+			</fileset>
+		</copy>			
+	</target>
+</project>
