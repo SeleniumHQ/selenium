@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1"
+http-equiv="content-type">
+<title>Selenium Functional Test Runner</title>
+
+<script type="text/javascript" src="selenium-browserbot.js"></script>
+<script type="text/javascript" src="selenium-fitrunner.js"></script>
+<script type="text/javascript" src="htmlutils.js"></script>
+</head>
+
+
+<body onLoad="javascript:loadSuiteFrame();">
+
+
+<button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">run functional test</button>
+<button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">run test suite</button>
+
+<p />
+
+<iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="15%" border="0"  SRC="./tests/TestSuite.html"></iframe>
+
+<div style="position: absolute; top: 20px; left: 500px;">
+    <b>Elapsed Time:</b>&nbsp;&nbsp;<span id=elapsedTime>00:00</span>
+</div>
+
+<div style="position: absolute; top: 60px; left: 300px;">
+    <table>
+        <tr><td colspan="2" align="center"><b>Test Results</b></td></tr>
+        <tr>
+            <td style="width: 100px; height: 50px;" align="center">Passes:&nbsp;&nbsp;<span id=testRuns>0</span></td>
+            <td style="width: 100px; height: 50px;" align="center">Failures:&nbsp;&nbsp;<span id=testFailures>0</span></td>
+        </tr>
+    </table>
+</div>
+
+<div style="position: absolute; top: 60px; left: 600px;">
+    <table>
+        <tr><td colspan="3" align="center"><b>Command Results</b></td></tr>
+        <tr>
+            <td style="width: 100px; height: 50px;" align="center">Passes:&nbsp;&nbsp;<span id=commandPasses>0</span></td>
+            <td style="width: 100px; height: 50px;" align="center">Failures:&nbsp;&nbsp;<span id=commandFailures>0</span></td>
+            <td style="width: 100px; height: 50px;" align="center">Errors:&nbsp;&nbsp;<span id=commandErrors>0</span></td>
+        </tr>
+    </table>
+</div>
+
+<iframe NAME="testFrame" ID="testFrame" style="float:left;margin-top: 10px;" height="75%" width="32%" border="0"  SRC=""></iframe>
+
+<iframe NAME="myiframe" ID="myiframe" style="float:right;margin-top: 10px;" height="75%;" width="65%" border="0"  SRC=""></iframe>
+
+<br>
+
+</body>
+</html>
+

@@ -1,0 +1,333 @@
+=======================
+Selenium Reference
+=======================
+
+-----------
+Test Tables
+-----------
+
+    The test tables are simple html tables with 3 columns: command, target, value.  Not all commands take a value, however.  In this case either leave the column blank or use a &nbsp; to make the table look better.
+
+    The first row will be ignored by Selenium, so this can be used for a title or any other information.
+
+    Example:
+
+        ==========  ============    ==========
+        Simple Test Table
+        --------------------------------------
+        open        /mypage     
+        type        nameField       John Smith
+        click       submitButton    True
+        verifyText  name            John Smith
+        ==========  ============    ==========
+
+
+-----------------
+Command Reference
+-----------------
+
+    Each command call is one line in the test table of the form:
+        
+        ======= ====== =====
+        command target value
+        ======= ====== =====
+
+
+    **open**
+        Opens a URL in the test frame.  This accepts both relative and absolute URLs.
+        
+        *Note*: The URL must be on the same site as Selenium due to security restrictions in the browser (Cross Site Scripting).
+        
+        **target:** The URL to open.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            ====  =================  =====
+            open  /mypage
+            open  http://localhost/
+            ====  =================  =====
+
+    **click**
+        Clicks on a link, button, checkbox or radio button.  By default, this command waits for a new page to load before continuing.
+        
+        **target:** The id of the element that should be clicked.
+        
+        **value** (*optional*) **:** nowait - Tells Selenium that it should not wait for a page to load before continuing.
+        
+        **examples:**
+            
+            =====   ==================  =====
+            click   someLink
+            click   buttonA
+            click   linkWithJavascript  nowait
+            click   someCheckbox        nowait
+            =====   ==================  =====
+
+    **onclick**
+        Calls the onclick function of a link.  By default, this command waits for a new page to load before continuing.
+        
+        **target:** The id of the element with the onclick function call.
+        
+        **value** (*optional*) **:** nowait - Tells Selenium that it should not wait for a page to load before continuing.
+        
+        **examples:**
+            
+            =======   ==================  =====
+            onclick   someLink
+            onclick   linkWithJavascript  nowait
+            =======   ==================  =====
+
+    **type**
+        Types (enters) text into an input field.  This works for text fields, combo boxes, check boxes, etc.
+        
+        **target:** The id of the element where the text should be typed.
+        
+        **value:** The text that will be typed, or the value of the option selected (not the visible text).
+        
+        **examples:**
+            
+            ====    =========   ==========
+            type    nameField   John Smith
+            type    drop-down   AUD
+            ====    =========   ==========
+
+    **select**
+        Select an option from a drop-down, based on the option text.
+
+        **target:** The id of the element where the text should be typed.
+
+        **value:** The label of the option to be selected.
+
+        **examples:**
+
+            ====    =========   ==========
+            select  dropDown    First Option
+            select  dropDown    Australian Dollars
+            ====    =========   ==========
+
+    **selectWindow**
+        Selects a popup window.  Once a popup window has been selected, all commands go to that window.  To select the main window again, use "null" as the target.
+        
+        **target:** The id of the window to select.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            ============    =============   =====
+            selectWindow    myPopupWindow   
+            selectWindow    null
+            ============    =============   =====
+
+    **storeValue**
+        Stores the text of a page into a variable.  This variable can later be accessed by using the syntax ${variableName}
+        
+        **target:** The variable to store into.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            ==========   =========  =========
+            storeValue   userID
+            type         userName   ${userID}
+            ==========   =========  =========
+
+    **pause**
+        Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.
+        
+        **target:** The number of milliseconds to pause.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            =====   ====  =====
+            pause   5000
+            pause   2000    
+            =====   ====  =====
+
+    **verifyLocation**
+        Verifies the location of the current page being tested.
+        
+        **target:** The expected relative location of the page.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            ==============   =======  =====
+            verifyLocation   /mypage
+            ==============   =======  =====
+
+    **verifyValue**
+        Verifies the value of an input field (or anything else with a value parameter).
+        
+        **target:** The id of the element to verify.
+        
+        **value:** The expected value.
+        
+        **examples:**
+            
+            ===========   =========   ==========
+            verifyValue   nameField   John Smith
+            ===========   =========   ==========
+
+    **verifyText**
+        Verifies the text of an element.  This works for any element that contains text.  This command uses either the textContent (Mozilla-like browsers) or the innerText (IE-like browsers) of the element, which is the rendered text shown to the user.
+        
+        **target:** The id of the element to verify.
+        
+        **value:** The expected text.
+        
+        **examples:**
+            
+            ==========   =============   ==========
+            verifyText   statusMessage   Successful
+            ==========   =============   ==========
+
+    **verifyTextPresent**
+        Verifies that the specified text appears somewhere on the rendered page shown to the user.
+        
+        **target:** The text that should be present.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            =================   ======================   =====
+            verifyTextPresent   You are now logged in.
+            =================   ======================   =====
+
+    **verifyElementPresent**
+        Verifies that the specified element is somewhere on the page.
+        
+        **target:** The element that should be present.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            ====================   =============   =====
+            verifyElementPresent   submitButton.
+            ====================   =============   =====
+
+    **verifyElementNotPresent**
+        Verifies that the specified element is not on the page.
+        
+        **target:** The element that should not be present.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            =======================   =============   =====
+            verifyElementNotPresent   cancelButton.
+            =======================   =============   =====
+
+    **verifyTable**
+        Verifies the text in a cell of a table. The correct syntax of the target is tableName.row.column, where row and column start at 0.
+        
+        **target:** The table, row, and column specified as table.row.col.
+        
+        **value:** The expected value of the cell.
+        
+        **examples:**
+            
+            ===========   ===========   =========
+            verifyTable   myTable.1.6   Submitted
+            verifyTable   results.0.2   13
+            ===========   ===========   =========
+
+
+-----------------
+Variables
+-----------------
+
+    Selenium can handle simple variables.  A variable is stored with the storeVariable command.  Then, it can be used in the target or value column with the syntax: ${variableName}.
+
+    Example:
+
+        ==========   ====================   ==========
+        Variable Test
+        ----------------------------------------------
+        open         /page1     
+        storeValue   myVar
+        open         /page2
+        type         nameField              ${myVar}
+        open         /login?user=${myVar}
+        ==========   ====================   ==========
+    
+    Functions can also be applied to variables.  Just append a "." and the function call to the variable reference.
+
+    Example:
+
+        ====   =========   ======================
+        type   nameField   ${myVar}.toUpperCase()
+        ====   =========   ======================
+
+
+-----------------
+SetUp / TearDown
+-----------------
+
+    There are no setUp and tearDown commands in Selenium, but there is a way to handle these common testing operations.  On the site being tested, create URLs for setUp and tearDown.  Then, when the test runner opens these URLs, the server can do whatever setUp or tearDown is necessary.
+
+    Example:
+    
+        For the T&E project, we wanted the functional tests to run as a dummy user.  Therefore, we made a /setUpFT URL that would create a dummy user and write the userID to the page.  Then, we can store this value (using the command storeValue) and use it in the script.  Finally, we made a /tearDownFT URL which takes the dummy userID as a parameter and deletes the user.  Therefore, our tests look like this:
+
+        ==========   ============================   ==========
+        Setup and Teardown
+        ------------------------------------------------------
+        open         /setUpFT     
+        storeValue   userid
+        open         /login
+        type         userID                         ${userid}
+        click        submit
+        open         /tearDownFT?userid=${userid}
+        ==========   ============================   ==========
+
+
+----------------------
+Continuous Integration
+----------------------
+    
+    Selenium can be integrated with an automated build.  When the parameter "auto=true" is added to the URL, Selenium will run the entire suite of tests, and then post the results to the URL /postResults.  The fields of the post are:
+
+        ==================  ======================================================================================================  
+        Parameter           Description
+        ==================  ======================================================================================================
+        result              the word "passed" or "failed" depending on whether the whole suite passed or at least one test failed.
+        totalTime           the time in seconds for the whole suite to run
+        numTestPasses       tht total number of tests which passed
+        numTestFailures     the total number of tests which failed.
+        numCommandPasses    the total number of commands which passed.
+        numCommandFailures  the total number of commands which failed.
+        numCommandErrors    the total number of commands which errored.
+        suite               the suite table, including the hidden column of test results
+        testTable.1         the first test table
+        testTable.2         the second test table
+        ...                 ...
+        testTable.N         The Nth test table
+        ==================  ======================================================================================================
+
+    Therefore, the steps for continuous integration are:
+        1. Create a servlet-type application at the url /postResults which can read the parameters above and write them to a file
+        2. Create a script which can start up a brower and send to to the URL: selenium?auto=true
+            - Generally, this can be done by merely calling the browser with the URL as an argument:
+                firefox.exe http://localhost/selenium?auto=true
+        3. Make your continuous build:
+            - Call the script from step 2, preferably using more than one browser
+            - Wait for it to finish, possibly by checking for the existence of the file(s) from step 1
+            - Parse these files to determine whether the build passed or failed
+            - Act accordingly (send emails, update a build web page, etc.)
+        
+
+------------------
+
+:Author:            Paul Gross, Jason Huggins
+:Created Date:      08/23/2004
+:Created With:      reStructuredText: http://docutils.sourceforge.net/rst.html

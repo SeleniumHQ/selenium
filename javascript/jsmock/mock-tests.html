@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsMock Tests</title>
+    <link rel="stylesheet" type="text/css" href="../jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="mock.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function testCallingExpectedFunctionShouldPass() {
+   var myMock = new Mock()
+   myMock.expects("aslak")
+   myMock.aslak()
+   myMock.verify()
+}
+
+function testCallingUnexpectedFunctionShouldFail() {
+   var myMock = new Mock()
+   try {
+     myMock.someMethod()
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because someMethod wasn't expected!")
+}
+
+function testNotCallingExpectedFunctionShouldFail() {
+   var myMock = new Mock()
+   myMock.expects("someMethod")
+   try {
+     myMock.verify()
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because someMethod wasn't called!")
+}
+
+function testCallingExpectedFunctionWithBadArgumentsShouldFail() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "foo")
+   try {
+     myMock.someMethod("bar")
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because bar wasn't the expected arg!")
+}
+
+function testCallingExpectedFunctionWithExpectedArgumentsShouldPass() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "foo")
+   myMock.expects("anotherMethod", "bar", "zap")
+   assertUndefined(myMock.someMethod("foo"))
+   assertUndefined(myMock.anotherMethod("bar", "zap"))
+}
+
+function testCallingExpectedFunctionWithTooFewArgumentsShouldFail() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "foo", "bar")
+   try {
+     myMock.someMethod("foo")
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because all args weren't passed!")
+}
+
+function testCallingExpectedFunctionWithTooManyArgumentsShouldFail() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "foo")
+   try {
+     myMock.someMethod("foo", "bar")
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because all args weren't passed!")
+}
+
+function testShouldCreateMockInstancesWithoutSideffects() {
+   var foo = new Mock()
+   var bar = new Mock()
+
+   foo.expects("foo")
+   bar.expects("bar")
+
+   try {
+     bar.foo()
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because bar wasn't the expected arg!")
+}
+
+function testCallingExpectedFunctionWithReturnShouldReturnValue() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "bar").returns("foo")
+   myMock.expects("theOtherMethod", "zap", "ping", "pong").returns("bang")
+   assertEquals("foo", myMock.someMethod("bar"))
+   assertEquals("bang", myMock.theOtherMethod("zap", "ping", "pong"))
+   myMock.verify()
+}
+
+</script>
+  </head>
+
+  <body>
+    <h1>JsMock Tests</h1>
+
+    <p>This page contains tests for JsMock. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
+  </body>
+</html>

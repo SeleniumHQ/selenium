@@ -1,0 +1,50 @@
+<project name="selenium" default="jar">
+    <property name="version" value="0.1-SNAPSHOT"/>
+
+    <path id="classpath">
+        <fileset dir="lib"/>
+        <pathelement location="target/classes"/>
+        <pathelement location="target/test-classes"/>
+    </path>
+
+    <target name="compile" description="Compile java source">
+        <mkdir dir="target/classes"/>
+        <javac destdir="target/classes" classpathref="classpath" debug="on">
+            <src location="main"/>
+        </javac>
+
+        <mkdir dir="target/test-classes"/>
+        <javac destdir="target/test-classes" classpathref="classpath" debug="on">
+            <src location="test"/>
+        </javac>
+    </target>
+
+    <target name="test">
+        <mkdir dir="target/test-logs"/>
+        <fail unless="browser">Specify -Dbrowser=firefox (or some other browser) on the command line when running the tests</fail> 
+        <junit dir="../javascript" fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <jvmarg value="-Dbrowser=${browser}"/>
+            <classpath refid="classpath"/>
+            <formatter type="xml"/>
+            <formatter type="plain"/>
+            <batchtest todir="target/test-logs">
+                <fileset dir="test"/>
+            </batchtest>
+        </junit>
+
+        <mkdir dir="target/test-reports"/>
+        <junitreport todir="target/test-reports">
+            <fileset dir="target/test-logs">
+                <include name="TEST-*.xml"/>
+                <!-- This one is always empty for some reason -->
+                <exclude name="TEST-com.thoughtworks.selenium.SeleniumIntegrationTest.xml"/>
+            </fileset>
+            <report format="frames" todir="target/test-reports" styledir="${ant.home}/etc"/>
+        </junitreport>
+        <fail if="tests.failed">There were test failures</fail>
+    </target>
+
+    <target name="jar" depends="compile, test" description="Jar java classes">
+        <jar basedir="target/classes" destfile="target/${ant.project.name}-${version}.jar"/>
+    </target>
+</project>

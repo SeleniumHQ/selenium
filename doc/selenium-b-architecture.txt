@@ -1,0 +1,32 @@
+This is a very brief explanation of the proposed no-server-for-selenium architecture. A more detailed description is to follow later.
+
+== GOALS ==
+o No server setup.
+o Browser driven interaction scriptable in several languages.
+
+== SAMPLE SCENARIO ==
+Tell browser to open a web page and verify that a particular table cell on the opened page contains a certain text.
+
+== SAMPLE EXECUTION STEPS ==
+
+1) In Java (Ruby and others soon to be supported) - Create a Browser proxy object. This will:
+   o Start a local web server and initialize everything seen in the orange part:
+     * Web server
+     * XML-RPC server (running in a servlet)
+     * File system servlet (serves HTML and Javascript)
+     * HTTP tunnel (TODO)
+   o Launch a browser window that loads the Selenium HTML and Javascript files 
+   o The Javascript will do an XML-RPC call to get the next command to execute.
+   
+2) Call various methods on the Java Browser object. These calls will ripple up to
+   the Javascript over XML-RPC. The calls are translated into a wiki table row format.
+   
+   Example: you call browser.click("myButton")
+   This translates to |click|myButton||
+   
+   The Javascript parses the wiki row and executes the corresponding function.
+   The result is then sent back to the Java side over XML-RPC again via the
+   setResult or setException methods.
+   
+   Finally, the Java side gets the result of the invocation and returns the result (if any)
+   or throws an exception if the call failed on the Javascript side.

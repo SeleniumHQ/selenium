@@ -1,0 +1,9 @@
+o Refactor functions in TestRunner.html so that a detailed exception is thrown rather than doing setRowFailed
+o Remove processCommand() from Handlers - handlers should throw ex if something is bad
+o Let the caller of the various handlers catch exceptions and set the colours of the rows
+o Introduce a SeleniumA class and methods to reduce clash risk
+o Write lots of JSunit tests - put test HTML elements in test page
+o Make a separate frame for selenium tables and run the tested website in a full frame?
+o In-browser editing of tests
+  use dropdowns for commands
+  save function - save as html and/or wiki. or at least pop up a window so it can be copied and manually saved.
