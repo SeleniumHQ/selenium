@@ -36,7 +36,7 @@ public class SeleniumSessionFactory implements SessionFactory {
 	}
 
 
-	public Session buildMultipleBrowserSession(String[] browsers, String url) {
-		return new MultipleBrowserSession(this ,browsers, url);
+	public Session buildMultipleBrowserSession(String[] browserExecutables, String url) {
+		return new MultipleBrowserSession(this ,browserExecutables, url);
 	}
 }
