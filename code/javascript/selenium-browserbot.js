@@ -62,10 +62,15 @@ BrowserBot = function(frame, executionContext) {
     this.currentPage = null;
     this.currentWindowName = null;
     
+    this.modalDialogReturnValue = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
     this.nextConfirmResult = true;
 
+}
+
+BrowserBot.prototype.expectModalDialogAndReturn = function(returnValue) {
+    this.modalDialogReturnValue = returnValue;
 }
 
 BrowserBot.prototype.cancelNextConfirmation = function() {
@@ -132,7 +137,12 @@ BrowserBot.prototype.getCurrentPage = function() {
 
     // private functions below - is there a better way?
 
-    function modifyWindowToRecordPopUpDialogs(window, browserBot) {   
+    function modifyWindowToRecordPopUpDialogs(window, browserBot) {
+
+    // Andy D. - I have modified this slightly since the last checkin.
+    // I wanted to explore the possibility of mocking these things out all together.
+    // I realise that this is not an ideal testing solution, but it might help the client to get SOMETHING rather than NOTHING
+
 
     // Andy D. - This is where the modal dialog stuff starts
     // in place of the modaldialog which causes our selenium thread to hang, we open a regular window,
@@ -141,17 +151,12 @@ BrowserBot.prototype.getCurrentPage = function() {
     // the average user of these things will go:  window.returnValue = bob; window.close();
 
         window.showModalDialog = function(url, args, features) {
+            var returnValue = browserBot.modalDialogReturnValue;
+            browserBot.modalDialogReturnValue = null;
+            return returnValue;
+
+/*            // open a new window
             var modalWindow = window.open(url, "modalDialog");
-
-            value = "";
-            keepLooping = true;
-
-            function modalClosed() {
-                value = modalWindow.returnValue;
-                keepLooping = false;
-            }
-
-            modalWindow.attachEvent("onunload", modalClosed);
 
             // change variables to point to the new window (but save references to the old ones)
             var pushedFrame = browserBot.frame;
@@ -163,21 +168,17 @@ BrowserBot.prototype.getCurrentPage = function() {
             var pushedExecutionContext = browserBot.executionContext;
             browserBot.executionContext = getWindowExecutionContext();
             
-            while(keepLooping) {
-                // call next instruction
-                testLoop.kickoffOneCommandExecution();
+            var localBrowserBot = browserBot;
+            
+            function modalClosed() {
+                // change variables back to the old references
+                localBrowserBot.executionContext = pushedExecutionContext;
+                localBrowserBot.currentPage = pushedPage;
+                localBrowserBot.frame = pushedFrame;
             }
 
-            // change variables back to the old references
-            browserBot.executionContext = pushedExecutionContext;
-            browserBot.currentPage = pushedPage;
-            browserBot.frame = pushedFrame;
-            
-            // tell the main loop to resume after a brief pause
-            testLoop.pauseInterval = 2000;
-            testLoop.continueCommandExecutionWithDelay();
-            
-            return value;
+            modalWindow.attachEvent("onunload", modalClosed);
+*/            
         };
 
         window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
