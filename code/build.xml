@@ -37,6 +37,10 @@
                 <exclude name="javascript/build.xml"/>            
                 <exclude name="javascript/**/web.xml"/>            
             </fileset>
+            <zipfileset dir="../website/webapps/ROOT" prefix="docs">
+                <include name="*.html"/>
+                <include name="*.png"/>            
+            </zipfileset>
         </zip>
 
     </target>
