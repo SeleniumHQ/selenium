@@ -82,8 +82,10 @@
             </zipfileset>
             <zipfileset dir="../../website/webapps/ROOT" prefix="docs">
                 <include name="*.html"/>
-                <include name="*.png"/>            
+                <include name="*.png"/>
             </zipfileset>
+            <!-- a rename because copied docs are undecorated, index is not really an index -->
+            <zipfileset dir="../../website/webapps/ROOT" includes="links.jsp" fullpath="docs/TABLE-OF-CONTENTS.html"/>
         </zip>
 
         <zip destfile="dist/${ant.project.name}-${version}-java-src.zip">

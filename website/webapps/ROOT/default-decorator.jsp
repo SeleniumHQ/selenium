@@ -29,35 +29,23 @@
 		</tr>
 		<tr>
 			<td class="newshead" align="left"><u>Latest News:</u></td>
-		</tr>			
+		</tr>
 		<tr>
 			<td class="newstext" align="left">01.24.05<br>&nbsp;&nbsp;- New <A href="http://selenium.thoughtworks.com/download.html">v.02 Downloads</a> available</td>
 		</tr>			
 		<tr>
 			<td class="newstext" align="left">12.14.04<br>&nbsp;&nbsp;- FAQ's are now on <A href="http://confluence.public.thoughtworks.org/display/SEL/FAQ">Selenium Confluence</a></td>
-		</tr>			
+		</tr>
 		<tr>
 			<td class="newstext" align="left">12.04.04<br>&nbsp;&nbsp;- Selenium v0.1.3 available for <a href="http://gforge.public.thoughtworks.org/project/showfiles.php?group_id=1028">download</a></td>
 		</tr>
 		<tr>
 			<td class="newstext" align="left">11.19.04<br>&nbsp;&nbsp;- New <A href="contact.html">mailing</a> lists created</td>
-		</tr>			
+		</tr>
 	</table>
-	
-	<DIV id=menu>
-		<UL id=menulist>
-			<LI><A href="index.html">home</A></LI>
-			<LI><A href="download.html">download</A></LI>
-			<LI><A href="usage.html">usage</A></LI>
-			<LI><A href="testrunner.html">&nbsp;&nbsp;&nbsp;&nbsp;test runner</A></LI>
-			<LI><A href="driven.html">&nbsp;&nbsp;&nbsp;&nbsp;driven</A></LI>
-                        <LI><A href="release-notes.html">release 
-notes</A></LI>
-			<LI><A href="FAQ.html">faq</A></LI>
-			<LI><A href="contact.html">contact</A></LI>
-			<LI><A href="demos.html">demos</A></LI>
-		</UL>
-	</DIV>
+
+    <page:applyDecorator name="panel" page="/links.jsp"/>
+
 	<DIV class="content">
 		<font class="pagetitle"><decorator:title /></font>
 		<h6 class="pagetitle"></h6>

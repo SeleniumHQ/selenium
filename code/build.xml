@@ -39,8 +39,10 @@
             </fileset>
             <zipfileset dir="../website/webapps/ROOT" prefix="docs">
                 <include name="*.html"/>
-                <include name="*.png"/>            
+                <include name="*.png"/>
             </zipfileset>
+            <!-- a rename because copied docs are undecorated, index is not really an index -->
+            <zipfileset dir="../website/webapps/ROOT" includes="links.jsp" fullpath="docs/TABLE-OF-CONTENTS.html"/>
         </zip>
 
     </target>
@@ -48,7 +50,6 @@
     <target name="publish-dist" depends="dist">
         <copy todir="${website.root}" file="dist/selenium-${version}-all-langs-src.zip"/>
         <copy todir="${website.root}" file="dist/selenium-${version}-ruby.zip"/>
-
     </target>
 
     <target name="publish-docs">
