@@ -1,4 +1,4 @@
-selenium-b.iws
-selenium-b.ipr
+*.iws
+*.ipr
 target
 junittestcases*.properties
