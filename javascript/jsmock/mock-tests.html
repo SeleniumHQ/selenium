@@ -17,6 +17,19 @@ function testCallingExpectedFunctionShouldPass() {
    myMock.verify()
 }
 
+function testAccessingExpectedPropertyShouldPass() {
+   var myMock = new Mock()
+   myMock.expectsProperty("hello").returns("world")
+   assertEquals("world", myMock.hello)
+}
+
+function testAccessingExpectedPropertyWithObjectShouldPass() {
+   var myMock = new Mock()
+   ob = [1,2]
+   myMock.expectsProperty("hello").returns(ob)
+   assertEquals(ob, myMock.hello)
+}
+
 function testCallingUnexpectedFunctionShouldFail() {
    var myMock = new Mock()
    try {
