@@ -377,6 +377,36 @@ Selenium Checks
             assertNotVisible   postcode
             ================   ========   =====
 
+    **verifyEditable / assertEditable**
+        Verifies that the specified element is editable, ie. it's an input
+        element, and hasn't been disabled.
+        
+        **target:** The element that should be editable.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            ==============   ========   =====
+            verifyEditable   shape
+            assertEditable   colour
+            ==============   ========   =====
+
+    **verifyNotEditable / assertNotEditable**
+        Verifies that the specified element is NOT editable, ie. it's NOT
+        an input element, or has been disabled.
+        
+        **target:** The element that should be read-only.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            =================   ===========   =====
+            verifyNotEditable   creditLimit
+            assertNotEditable   userName
+            =================   ===========   =====
+
 
 -----------------
 Variables
