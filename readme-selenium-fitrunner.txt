@@ -18,7 +18,10 @@ To run a test suite with simple web server:
         http://localhost:8000/TestRunner.html    
         (If you don't want the web server to run on port 8000, modify
         <selenium_home>\javascript\tinyWebServer.py)
-    
+
+To run a different test suite from the default, use the URL syntax:
+   ./TestRunner.html?test={my-test-suite}
+
 Supported Browsers:
     Microsoft Internet Explorer 6.0+
     Mozilla 1.6+
@@ -28,18 +31,15 @@ Supported Browsers:
     Opera, Konqueror, and Safari
     
 Gotchas:
-1) The path to TestSuite.html is hard-coded in TestRunner.html.
-This needs to factored out as a parameter like: ./TestRunner.html?testsuite=TestSuite.html
-
-2) The tinyWebServer included is not meant for production use. It is only
+1) The tinyWebServer included is not meant for production use. It is only
 provided to show a simple, working example of Selenium running from a web server.
 (TODO- provide instructions for installing in Apache or IIS)
 
-3) The tinyWebServer is only available from localhost (unless you hack the source).
+2) The tinyWebServer is only available from localhost (unless you hack the source).
 This was done as a security measure.
 
-4) The tests may not complete automatically the first time, because the browser may pop-up alert boxes:
+3) The tests may not complete automatically the first time, because the browser may pop-up alert boxes:
     a) Asking if you want to remember form values (click "No" or "Never for this site")
     b) Warning about security implications about posting data unencrypted.
 
-5) You'll need to whitelist "localhost" in your pop-up blocker, if it is enabled.
+4) You'll need to whitelist "localhost" in your pop-up blocker, if it is enabled.
