@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\Unit
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BridgeWebApp", "BridgeWebApp\BridgeWebApp.csproj", "{6DEA806A-5C5F-406E-AF46-666F573A8E40}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Build = Build
@@ -26,6 +30,12 @@ Global
 		{F0EBC9DA-192E-4421-A733-85E802FB5129}.Debug.Build.0 = Debug|.NET
 		{F0EBC9DA-192E-4421-A733-85E802FB5129}.Release.ActiveCfg = Release|.NET
 		{F0EBC9DA-192E-4421-A733-85E802FB5129}.Release.Build.0 = Release|.NET
+		{6DEA806A-5C5F-406E-AF46-666F573A8E40}.Build.ActiveCfg = Build|.NET
+		{6DEA806A-5C5F-406E-AF46-666F573A8E40}.Build.Build.0 = Build|.NET
+		{6DEA806A-5C5F-406E-AF46-666F573A8E40}.Debug.ActiveCfg = Debug|.NET
+		{6DEA806A-5C5F-406E-AF46-666F573A8E40}.Debug.Build.0 = Debug|.NET
+		{6DEA806A-5C5F-406E-AF46-666F573A8E40}.Release.ActiveCfg = Release|.NET
+		{6DEA806A-5C5F-406E-AF46-666F573A8E40}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
 		..\selenium.build = ..\selenium.build

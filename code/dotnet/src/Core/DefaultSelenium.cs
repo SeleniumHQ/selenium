@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 
 namespace Selenium
 {
@@ -8,11 +7,11 @@ namespace Selenium
 	/// </summary>
 	public class DefaultSelenium : ISelenium
 	{
-		public static readonly string SELENIUM_DRIVER_URL = "http://localhost/selenium/driver.sel";
+		public static readonly string SELENIUM_DRIVER_URL = "http://localhost/selenium-driver/SeleniumRunner.html";
 
 		private readonly IBrowserLauncher launcher;
-		private readonly ICommandProcessor processor;
-		
+		private readonly ICommandProcessor processor;	
+
 		public ICommandProcessor Processor
 		{
 			get { return processor; }
@@ -126,7 +125,7 @@ namespace Selenium
 
 		public void VerifySelectOptions(String field, String[] values)
 		{
-			DoCommandAndFailIfNotSuccess("verifySelectOptions", field, ConvertArrayToCSV(values), "PASSED");
+			DoCommandAndFailIfNotSuccess("verifySelectOptions", field, String.Join(",", values), "PASSED");
 		}
 
 		public void VerifySelected(String field, String value)
@@ -176,7 +175,7 @@ namespace Selenium
 
 		public void Start()
 		{
-			launcher.Launch(SELENIUM_DRIVER_URL);		
+			launcher.Launch(SELENIUM_DRIVER_URL);
 		}
 
 		public void Stop()
@@ -192,22 +191,5 @@ namespace Selenium
 				throw new SeleniumException();
 			}
 		}
-
-		private static string ConvertArrayToCSV(string[] values)
-		{
-			StringBuilder builder = new StringBuilder();
-			for (int i = 0; i < values.Length; i++)
-			{
-				string value = values[i];
-				builder.Append(value);
-				if (i != values.Length - 1)
-				{
-					builder.Append(",");
-				}
-			}
-			return builder.ToString();
-		}
-
-
 	}
 }

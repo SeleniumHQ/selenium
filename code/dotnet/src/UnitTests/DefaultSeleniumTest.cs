@@ -1,8 +1,8 @@
-using System;
-using NUnit.Framework;
 using NMock;
+using NUnit.Framework;
+using Selenium;
 
-namespace Selenium.UnitTests
+namespace ThoughtWorks.Selenium.UnitTests
 {
 	/// <summary>
 	/// Summary description for DefaultSeleniumTestCase.
