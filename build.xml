@@ -1,5 +1,4 @@
 <project name="selenium" default="dist-zip">
-
     <property name="version" value="1.2.0"/>
 
     <target name="dist">
