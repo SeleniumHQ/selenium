@@ -1,4 +1,3 @@
-package com.thoughtworks.selenium.proxy;
 /*
   Copyright 2004 ThoughtWorks, Inc.
 
@@ -14,6 +13,7 @@ package com.thoughtworks.selenium.proxy;
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+package com.thoughtworks.selenium.proxy;
 
 import com.thoughtworks.selenium.utils.Assert;
 import org.apache.commons.logging.Log;
@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @version $Id: HTTPRequest.java,v 1.3 2004/11/13 04:46:57 ahelleso Exp $
+ * @version $Id: HTTPRequest.java,v 1.4 2004/11/13 05:00:09 ahelleso Exp $
  */
 public class HTTPRequest {
     public static final String SELENIUM_REDIRECT_SERVERNAME = "localhost";
@@ -137,7 +137,7 @@ public class HTTPRequest {
             String key =  (String) i.next();
             buff.append(key + ": " + headers.get(key) + CRLF);
         }
-        buff.append("\r\n");
+        buff.append(CRLF);
         String request = String.valueOf(buff);
         return request;
     }
