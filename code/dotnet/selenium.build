@@ -136,6 +136,16 @@
 				<include name="**/*" />
 			</fileset>
 		</copy>
+
+		<mkdir dir="build/dist/bin/docs" />
+		<copy todir="build/dist/bin/docs">
+			<fileset basedir="../../website/webapps/ROOT">
+				<include name="*.png" />
+				<include name="*.html" />
+			</fileset>
+		</copy>
+		<copy tofile="build/dist/bin/docs/TABLE-OF-CONTENTS.html"
+		      file="../../website/webapps/ROOT/links.jsp"/>
 		
 		<mkdir dir="build/dist/source" />
 		<copy todir="build/dist/source">
