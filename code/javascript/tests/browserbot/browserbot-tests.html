@@ -33,7 +33,7 @@ function setUp() {
     mockFrame.contentWindow = new String('mockContentWindow');
     mockFrame.contentWindow.window = new String('mockWindow');
 
-    browserBot = new BrowserBot(mockFrame, new IFrameExecutionContext(mockFrame));
+    browserBot = createBrowserBot(mockFrame, new IFrameExecutionContext(mockFrame));
 
     browserBot.currentWindowName = 'originalWindowName';
     browserBot.currentPage = 'originalPage';

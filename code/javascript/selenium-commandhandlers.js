@@ -130,7 +130,7 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
 };
 
 function AccessorHandler(accessor) {
-    CommandHandler.call("accessor", true, accessor);
+    CommandHandler.call(this, "accessor", true, accessor);
 }
 AccessorHandler.prototype = new CommandHandler;
 AccessorHandler.prototype.execute = function(seleniumApi, command) {

@@ -63,6 +63,15 @@ function createBrowserBot(frame, executionContext) {
     }
 }
 
+function createPageBot(windowObject) {
+    if (isIE) {
+        return new IEPageBot(windowObject);
+    }
+    else {
+        return new MozillaPageBot(windowObject);
+    }
+}
+
 BrowserBot = function(frame, executionContext) {
     this.frame = frame;
     this.executionContext = executionContext;
@@ -135,7 +144,7 @@ BrowserBot.prototype.getCurrentPage = function() {
         }
         this.modifyWindowToRecordPopUpDialogs(testWindow, this);
         this.modifyWindowToClearPageCache(testWindow, this);
-        this.currentPage = this.createPageBot(testWindow);
+        this.currentPage = createPageBot(testWindow);
     }
 
     return this.currentPage;
@@ -186,17 +195,11 @@ function MozillaBrowserBot(frame, executionContext) {
     BrowserBot.call(this, frame, executionContext);
 }
 MozillaBrowserBot.prototype = new BrowserBot;
-MozillaBrowserBot.prototype.createPageBot = function(testWindow) {
-    return new MozillaPageBot(testWindow);
-};
 
 function IEBrowserBot(frame, executionContext) {
     BrowserBot.call(this, frame, executionContext);
 }
 IEBrowserBot.prototype = new BrowserBot;
-IEBrowserBot.prototype.createPageBot = function(testWindow) {
-    return new IEPageBot(testWindow);
-};
 
 IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     BrowserBot.prototype.modifyWindowToRecordPopUpDialogs(windowToModify, browserBot);
@@ -262,7 +265,7 @@ PageBot.prototype.findElement = function(locator) {
     }
 
     // Element was not found by any locator function.
-    throw new AssertionFailedError("Element " + locator + " not found");
+    throw new Error("Element " + locator + " not found");
 };
 
 PageBot.prototype.findElementInDocument = function(locator, inDocument) {
