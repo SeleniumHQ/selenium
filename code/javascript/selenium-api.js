@@ -31,8 +31,8 @@ function Selenium(browserbot) {
  * Click on the located element, and attach a callback to notify
  * when the page is reloaded.
  */
-Selenium.prototype.doExpectModalDialogAndReturn = function(returnValue) {
-    this.browserbot.expectModalDialogAndReturn(returnValue);
+Selenium.prototype.doModalDialogTestSuite = function(returnValue) {
+    this.browserbot.doModalDialogTestSuite(returnValue);
 }
 
 /*
