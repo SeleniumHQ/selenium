@@ -3,13 +3,13 @@
     Jason Huggins
     jrhuggins@thoughtworks.com
     
-    This server does the following:
+    This server provides the following:
     1) A static content web server for the TestRunner files,
     javascripts and stylesheets.
     
     2) A proxy server:
     Application Under Test (AUT) to be proxied and have its URLs rewritten to have the same
-    hostname of the Selenium server. Uses perl-based CGIProxy
+    hostname of the Selenium server. Uses perl-based CGIProxy.
 
     3) Driver interface for selenium (aka "Selenese")
 
@@ -37,7 +37,11 @@ def main():
     root = resource.Resource()
     
     # The proxy server (aka "The Funnel")
+    # BUG: When the path includes a space... like in 
+    # "C:\Program Files\Selenium", Twisted can't seam to find the file...
+    # Works fine when there are no spaces in the path
     path = os.path.join(os.getcwd(),"cgi-bin","nph-proxy.cgi")
+    #path = '"%s"' % path
     proxy = PerlScript(path)    
     root.putChild("AUT",proxy)        
     
