@@ -21,36 +21,49 @@ import junit.framework.TestCase;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * @version $Id: SeleniumPumpTest.java,v 1.2 2004/11/15 18:35:02 ahelleso Exp $
+ * @version $Id: SeleniumPumpTest.java,v 1.3 2004/11/15 21:19:21 ahelleso Exp $
  */
 public class SeleniumPumpTest extends TestCase {
 
-    public void testPumpsReceivedDataBackOut() throws IOException {
-        String jabber = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        ByteArrayInputStream in = new ByteArrayInputStream(jabber.getBytes());
-        ByteArrayOutputStream out = new ByteArrayOutputStream(SeleniumPump.BLOCK_SIZE);
+    public void testShouldOnlyPumpContentLengthBytesWhenSpecified() throws IOException {
+        String data = "" +
+                "HTTP/1.1 200 OK\r\n" +
+                "Content-Length: 4\r\n" +
+                "\r\n" +
+                "this";
+        String excess = " but not this";
+        String excessData = data + excess;
 
-        Pump pump = new SeleniumPump(in, out);
+        InputStream excessResponse = new ByteArrayInputStream(excessData.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Pump pump = new SeleniumPump(excessResponse, out);
         pump.pump();
-        assertEquals(jabber, out.toString());
+        String pumped = new String(out.toByteArray());
+        assertEquals(data, pumped);
+
+        // the remainder should be left
+        byte[] excessBytes = new byte[excess.length()];
+        excessResponse.read(excessBytes);
+        assertEquals(" but not this", new String(excessBytes));
     }
 
-    public void testMoreDataThanBlockSizePumped() throws IOException {
-        String jabber = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        StringBuffer buff = new StringBuffer(5000);
-        for (int i = 0; i < 100; ++i) {
-            buff.append(jabber);
-        }
-        ByteArrayInputStream in = new ByteArrayInputStream(buff.toString().getBytes());
-        ByteArrayOutputStream out = new ByteArrayOutputStream(5000);
+    public void testShouldPumpUntilEndWhenContentLengthNotSpecified() throws IOException {
+        String data = "" +
+                "HTTP/1.1 200 OK\r\n" +
+                "\r\n" +
+                "this";
 
-        Pump pump = new SeleniumPump(in, out);
+        InputStream response = new ByteArrayInputStream(data.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Pump pump = new SeleniumPump(response, out);
         pump.pump();
-        assertEquals(2600, out.toString().length());
-    }
+        String pumped = new String(out.toByteArray());
+        assertEquals(data, pumped);
 
-    public void testOnlyPumpsContentLengthBytes() throws IOException {
+        // there should be no remainder
+        assertEquals(-1, response.read());
     }
 }

@@ -1,5 +1,5 @@
 <project name="selenium" default="jar">
-    <property name="version" value="0.1-SNAPSHOT"/>
+    <property name="version" value="0.1.3-SNAPSHOT"/>
 
     <path id="classpath">
         <fileset dir="lib"/>
@@ -35,7 +35,7 @@
             <formatter type="plain"/>
             <batchtest todir="target/test-logs">
                 <fileset dir="test">
-                    <include name="com/thoughtworks/selenium/proxy/*"/>
+                    <exclude name="com/thoughtworks/selenium/SeleniumIntegrationTest.java"/>
                 </fileset>
             </batchtest>
         </junit>
