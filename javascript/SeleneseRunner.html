@@ -37,7 +37,7 @@ doneColor = "#FFFFCC";
 
 var postResult = "OK";
 
-function runSingleTest() {
+function runTest() {
     tableParser = new TableParser();
 
     browserbot = new BrowserBot(document.getElementById('myiframe'));
@@ -54,7 +54,7 @@ function runSingleTest() {
     testLoop.commandStarted = commandStarted;
     testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
-    testLoop.testComplete = function() {alert("TestComplete")};
+    testLoop.testComplete = function() {window.status = "Selenium Tests Complete, for this Test"};
 
     testLoop.start();
  }
@@ -129,9 +129,10 @@ function runSingleTest() {
 </script>
 </head>
 
-<body>
+<body onLoad="runTest()">
 
-<button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">run a single test</button>
+<h1>Selenium Functional Web Application Testing.</h1>
+Open Source From <a href="http://www.thoughtWorks.com">ThoughtWorks Inc</a><br>
 <p>
 <div style="float:left;">
 <b>Command List</b><br/>
