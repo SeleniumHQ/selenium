@@ -20,28 +20,25 @@ http-equiv="content-type">
 <title>Selenium Functional Test Runner</title>
 
 <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
-<script language="JavaScript" type="text/javascript" src="/jsolait/init.js"></script>
-<script language="JavaScript" type="text/javascript" src="/jsolait/lib/xmlrpc.js"></script>
-<script language="JavaScript" type="text/javascript" src="/jsolait/lib/xml.js"></script>
-<script language="JavaScript" type="text/javascript" src="/jsolait/lib/urllib.js"></script>
+<script type="text/javascript" src="xmlextras.js"></script>
 
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-xmlrpcrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
 <script>
 passColor = "#cfffcf";
 failColor = "#ffcfcf";
+errorColor = "#ffffff";
 workingColor = "#DEE7EC";
-doneColor = "yellow";
+doneColor = "#FFFFCC";
 
- function runSingleTest() {
-    xmlRpcRunner = new XmlRpcRunner();
-    wikiRows = xmlRpcRunner.getWikiTableRows()
-    tableParser = new TableParser(wikiRows);
+var postResult = "OK";
+
+function runSingleTest() {
+    tableParser = new TableParser();
 
     browserbot = new BrowserBot(document.getElementById('myiframe'));
     selenium = new Selenium(browserbot);
@@ -53,52 +50,62 @@ doneColor = "yellow";
     testLoop.commandInterval = 100;
 
     testLoop.nextCommand = nextCommand;
-    testLoop.beginCommand = beginCommand;
+    testLoop.commandStarted = commandStarted;
+    testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
-    testLoop.actionOK = actionOK;
-    testLoop.assertionPassed = assertionPassed;
-    testLoop.assertionFailed = assertionFailed;
-    testLoop.onTestComplete = function() {alert("onTestComplete")};
+    testLoop.testComplete = function() {alert("TestComplete")};
 
     testLoop.start();
  }
 
  function nextCommand() {
-     try {
-     var nextRow = wikiRows.getRow();
-     } catch (e) {
-        alert("exception: " + e.message);
-     }
-     if (nextRow == null) return null;
-     return tableParser.createCommandFromWikiRow(nextRow);
+    var xmlHttp = XmlHttp.create();
+
+    try {
+        xmlHttp.open("GET", "driver?commandResult=" + postResult, false);
+        xmlHttp.send(null);
+    } catch(e) {
+        return null;
+    }
+
+    var command;
+    try {
+        command = xmlHttp.responseText;
+    } catch (e) {
+        alert('could not get responseText: ' + e.message);
+    }
+
+    if (command == "|testComplete|") {
+        alert('got test complete');
+        return null;
+    }
+    return tableParser.createCommandFromWikiRow(command);
  }
 
- function beginCommand(command) {
+ function commandStarted(command) {
     commandNode = document.createElement("li");
     commandNode.innerHTML = command.command;
     commandNode.style.backgroundColor = workingColor;
     document.getElementById("commandList").appendChild(commandNode);
  }
 
- function actionOK() {
-     wikiRows.setResult("OK");
-     commandNode.style.backgroundColor = doneColor;
- }
-
- function assertionPassed() {
-     wikiRows.setResult("OK");
-     commandNode.style.backgroundColor = passColor;
- }
-
- function assertionFailed(message) {
-     wikiRows.setException(message);
-     commandNode.style.backgroundColor = failColor;
-     commandNode.title = message;
+ function commandComplete(result) {
+    if (result.failed) {
+        postResult = "OK";
+        commandNode.title = result.failureMessage;
+        commandNode.style.backgroundColor = failColor;
+    } else if (result.passed) {
+        postResult = "PASSED";
+        commandNode.style.backgroundColor = passColor;
+    } else {
+        postResult = "OK";
+        commandNode.style.backgroundColor = doneColor;
+    }
  }
 
  function commandError(message) {
-    wikiRows.setException(message);
-    commandNode.style.backgroundColor = failColor;
+    postResult = "ERROR"
+    commandNode.style.backgroundColor = errorColor;
     commandNode.title = message;
  }
 </script>
