@@ -379,7 +379,7 @@ function postTestResults(suiteFailed, suiteTable) {
 
     var resultsUrl = getQueryParameter("resultsUrl");
     if (!resultsUrl) {
-        resultsUrl = "/postResults";
+        resultsUrl = "./postResults";
     }
 
     var actionAndParameters = resultsUrl.split('?',2);
