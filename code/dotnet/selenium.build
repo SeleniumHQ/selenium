@@ -151,7 +151,6 @@
 		<copy todir="build/dist/source">
 			<fileset basedir=".">
 				<include name="**/*" />
-
 				<exclude name="build" />
 				<exclude name="build/**" />
 				<exclude name="dist" />
@@ -169,12 +168,12 @@
 		</copy>
 		
 		<mkdir dir="dist" />
-		<zip zipfile="dist/Selenium.zip">
+		<zip zipfile="dist/selenium-0.2-dotnet.zip">
 			<fileset basedir="build/dist/bin">
 				<include name="**/*" />
 			</fileset>
 		</zip>
-		<zip zipfile="dist/Selenium.source.zip">
+		<zip zipfile="dist/selenium-0.2-dotnet-src.zip">
 			<fileset basedir="build/dist/source">
 				<include name="**/*" />
 			</fileset>
