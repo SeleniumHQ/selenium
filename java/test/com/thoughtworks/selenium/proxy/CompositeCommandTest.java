@@ -20,42 +20,21 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
- * $Id: CompositeCommandTest.java,v 1.2 2004/11/13 05:43:01 ahelleso Exp $
+ * $Id: CompositeCommandTest.java,v 1.3 2004/11/13 05:53:22 ahelleso Exp $
  */
 public class CompositeCommandTest extends MockObjectTestCase {
-    public void testIsARequestModificationCommand() {
-        assertTrue(RequestModificationCommand.class.isAssignableFrom(CompositeCommand.class));
-    }
-
     public void testComponentsAreCalledOnceEach() throws Exception {
-        DummyCommand dummy1 = new DummyCommand();
-        DummyCommand dummy2 = new DummyCommand();
+        Mock httpRequest = mock(HTTPRequest.class);
 
         CompositeCommand command = new CompositeCommand();
+        Mock command1 = mock(RequestModificationCommand.class);
+        Mock command2 = mock(RequestModificationCommand.class);
+        command.addCommand((RequestModificationCommand) command1.proxy());
+        command.addCommand((RequestModificationCommand) command2.proxy());
 
-        command.addCommand(dummy1);
-        command.addCommand(dummy2);
+        command1.expects(once()).method("execute").with(same(httpRequest.proxy()));
+        command2.expects(once()).method("execute").with(same(httpRequest.proxy()));
 
-        Mock httpRequest = mock(HTTPRequest.class);
         command.execute((HTTPRequest) httpRequest.proxy());
-
-        assertEquals(1, dummy1.getCallCount());
-        assertEquals(1, dummy2.getCallCount());
-    }
-
-
-    private class DummyCommand implements RequestModificationCommand {
-        private int callCount;
-
-        public DummyCommand() {
-        }
-
-        public void execute(HTTPRequest request) {
-            ++callCount;
-        }
-
-        public int getCallCount() {
-            return callCount;
-        }
     }
 }
