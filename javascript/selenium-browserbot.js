@@ -157,6 +157,7 @@ function getIframe() {
 }
 
 function getDoc(){
+    // TODO this is getting ugly - refactor into a stateful Window wrapper
     if(currentDocument == null) {
         var testWindow = getContentWindow();
         if (currentWindowName != null) {
@@ -171,6 +172,9 @@ function getDoc(){
 }
 
 function selectWindow(target) {
+    // TODO this is getting ugly - refactor into a stateful Window wrapper
+    currentDocument = null;
+
     if(target == "null")
         currentWindowName = null;
     else {
@@ -183,6 +187,9 @@ function selectWindow(target) {
 }
 
 function openLocation(target, onloadCallback) {
+    // TODO this is getting ugly - refactor into a stateful Window wrapper
+    currentDocument = null;
+
     var el = new SelfRemovingLoadListener(onloadCallback);
     addLoadListener(getIframe(), el.invoke);
     getIframe().src = target;
