@@ -17,7 +17,7 @@
 
 */
 
-/** PATCH TO ALLOW USE WITH DOCUMENTS FROM OTHER WINDOWS:
+/** PATCH TO ALLOW USE WITH DOCUMENTS FROM OTHER WINDOWS: 2004-11-24
     TODO resubmit this to http://sf.net/projects/html-xpath */
 function addXPathSupport(document) {
 /** END PATCH */
