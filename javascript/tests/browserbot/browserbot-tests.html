@@ -91,13 +91,14 @@ function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSe
 
     targetWindow = new String('anotherWindow');
     targetWindow.location = new String('location');
-    mockFrame.contentWindow.window.windowName = targetWindow;
+    mockFrame.contentWindow.window.targetWindow = targetWindow;
 
     browserBot.currentWindowName = 'targetWindow';
 
     var pageBot = browserBot.getCurrentPage();
     assertEquals(targetWindow, pageBot.currentWindow);
 }
+
 </script>
   </head>
   <body>Selenium BrowserBot Tests</body>

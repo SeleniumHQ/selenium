@@ -78,14 +78,12 @@ BrowserBot.prototype.selectWindow = function(target) {
     // we've moved to a new page - clear the current one
     this.currentPage = null;
 
-    if(target == "null")
-        this.currentWindowName = null;
-    else {
+    this.currentWindowName = null;
+    if (target != "null") {
         // If window exists
-        if (this.getContentWindow().eval("window." + target))
+        if (this.getTargetWindow(target)) {
             this.currentWindowName = target;
-        else
-            throw new Error("Window does not exist");
+        }
     }
 }
 
@@ -104,11 +102,20 @@ BrowserBot.prototype.getCurrentPage = function() {
     if (this.currentPage == null) {
         var testWindow = this.getContentWindow().window;
         if (this.currentWindowName != null) {
-	        testWindow = this.getContentWindow().window.eval(this.currentWindowName);
+            testWindow = this.getTargetWindow(this.currentWindowName);
         }
         this.currentPage = new PageBot(testWindow)
     }
     return this.currentPage;
+}
+
+BrowserBot.prototype.getTargetWindow = function(windowName) {
+    var evalString = "this.getContentWindow().window." + windowName;
+    var targetWindow = eval(evalString);
+    if (!targetWindow) {
+        throw new Error("Window does not exist");
+    }
+    return targetWindow;
 }
 
 function PageBot(pageWindow) {
