@@ -17,7 +17,9 @@
 
 function Selenium(browserbot) {
     this.browserbot = browserbot;
-    this.page = function() {return browserbot.getCurrentPage();};
+    this.page = function() {
+        return browserbot.getCurrentPage();
+    };
 
     var self = this;
     this.callOnNextPageLoad = function(callback) {
@@ -129,9 +131,12 @@ Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
  */
 Selenium.prototype.assertLocation = function(expectedLocation) {
     var docLocation = this.page().location.toString();
-    assertTrue(docLocation.length == docLocation.indexOf(expectedLocation) + expectedLocation.length);
+    if (docLocation.length != docLocation.indexOf(expectedLocation) + expectedLocation.length)
+    {
+        fail("Expected location to end with '" + expectedLocation
+             + "' but was '" + docLocation + "'");
+    }
 };
-
 
 /*
  * Verify the title of the current page.
@@ -168,7 +173,7 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
     pattern = /(.*)\.(\d)+\.(\d+)/;
 
     if(!pattern.test(tableLocator)) {
-        error("Invalid target format. Correct format is tableName.rowNum.columnNum");
+        fail("Invalid target format. Correct format is tableName.rowNum.columnNum");
     }
 
     pieces = tableLocator.match(pattern);
@@ -204,7 +209,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
     var expectedOptions = options.split(",");
     var element = this.page().findElement(target);
 
-    assertEquals("wrong number of options", expectedOptions.length, element.options.length);
+    assertEquals("Wrong number of options.", expectedOptions.length, element.options.length);
 
     for (var i = 0; i < element.options.length; i++) {
         var option = element.options[i];
@@ -230,7 +235,7 @@ Selenium.prototype.assertTextPresent = function(expectedText) {
     var allText = this.page().bodyText();
 
     if(allText == "") {
-        error("Page text not found");
+        fail("Page text not found");
     } else if(allText.indexOf(expectedText) == -1) {
         fail("'" + expectedText + "' not found in page text.");
     }
@@ -386,3 +391,35 @@ Selenium.prototype.getAllFields = function() {
 Selenium.prototype.doContext = function(context) {
         return this.page().setContext(context);
 };
+
+function assertEquals()
+{
+    if (arguments.length == 2)
+    {
+        var comment = "";
+        var expected = arguments[0];
+        var actual = arguments[1];
+    }
+    else {
+        var comment = arguments[0] + " ";
+        var expected = arguments[1];
+        var actual = arguments[2];
+    }
+
+    if (expected === actual) {
+        return;
+    }
+    var errorMessage = comment + "Expected '" + expected + "' but was '" + actual + "'";
+
+    throw new AssertionFailedError(errorMessage);
+}
+
+function fail(message) {
+    throw new AssertionFailedError(message);
+}
+
+function AssertionFailedError(message) {
+  this.isAssertionFailedError = true;
+  this.failureMessage = message;
+}
+
