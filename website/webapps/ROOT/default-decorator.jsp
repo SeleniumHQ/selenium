@@ -20,7 +20,7 @@
 </DIV>
 <DIV class="container">&nbsp;
 	<DIV class="rightbar">
-		<table border="0" cellpadding="0" cellspacing="0">
+		<table border="0" cellpadding="2" cellspacing="0">
 			<tr>
 				<td class="smalltext" align="left"><img src="index_files/icon_printer.gif" border="0" alt="Printer"/>
 				&nbsp<a href="<%= request.getRequestURI() %>?printable=true">Printer friendly form of this page</a></td>
