@@ -15,13 +15,16 @@ Copyright 2004 ThoughtWorks, Inc
 -->
 <html>
 <head>
+<title>Click Page 1</title>
 <script type="text/javascript">
 </script>
 </head>
 <body>
-<a id="link" href="./test_click_page2.html">Click here for next page</a>
-<br>
-<A id="imgALink" HREF="./test_click_page2.html"><img id="imgLink" src="./tw.jpg"></A>
+<a id="link" href="./test_click_page2.html">Click here for next page</a><br>
+<a id="absoluteLink" href="/tests/html/test_click_page2.html">Click here for next page via absolute link</a><br>
+<a id="linkWithEnclosedImage" href="./test_click_page2.html"><img id="enclosedImage" src="./tw.jpg"></a><br/>
+<a id="linkToAnchorOnThisPage" href="#link">link to other link</a><br/>
+<a id="linkWithOnclickReturnsFalse" href="./test_click_page2.html" onclick="return false;">link with onclick="return false"</a><br/>
 </body>
 
 </html>
