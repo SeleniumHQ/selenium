@@ -80,6 +80,10 @@
             <zipfileset dir="../javascript/Embedded-WEB-INF" prefix="browser-bot/WEB-INF">
                 <include name="web.xml"/>
             </zipfileset>
+            <zipfileset dir="../../website/webapps/ROOT" prefix="docs">
+                <include name="*.html"/>
+                <include name="*.png"/>            
+            </zipfileset>
         </zip>
 
         <zip destfile="dist/${ant.project.name}-${version}-java-src.zip">

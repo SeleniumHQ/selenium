@@ -61,9 +61,8 @@ public class RealDealIntegrationTest extends TestCase {
         selenium.open("/test_click_page1.html");
         selenium.verifyText("link", "Click here for next page");
         String[] links = selenium.getAllLinks();
-		for (int i =0; i < links.length; i++) {
-		    System.out.println("--> link -" + links[i]);
-		}
+        assertTrue(links.length != 0);
+        assertEquals("linkToAnchorOnThisPage", links[3]);
         selenium.clickAndWait("link");
         selenium.verifyLocation("/test_click_page2.html");
         selenium.clickAndWait("previousPage");
