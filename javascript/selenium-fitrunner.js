@@ -208,9 +208,16 @@ function startTest() {
     testFailed = false;
     storedVars = new Object();
 
-    testLoop = new TestLoop(commandFactory);
-    testLoop.commandInterval = runInterval;
+    clearRowColours();
+
+    testLoop = initialiseTestLoop();
     testLoop.start();
+}
+
+function clearRowColours() {
+    for (var i = 0; i <= inputTableRows.length - 1; i++) {
+        inputTableRows[i].bgColor = "white";
+    }
 }
 
 function startTestSuite() {
@@ -411,92 +418,47 @@ function replaceVariables(str) {
         return eval("variableValue."+ eval("variableFunction") + "()" )
     }
 }
+    // Register all of the built-in command handlers with the CommandFactory.
+// TODO work out an easy way for people to register handlers without modifying the Selenium sources.
+function registerCommandHandlers() {
+    commandFactory = new CommandFactory();
+    commandFactory.registerAll(selenium);
 
-function TestLoop(commandFactory) {
-    this.commandFactory = commandFactory;
-    this.commandInterval = 0;
-
-    var self = this;
-
-    this.start = function() {
-        clearRowColours();
-        self.continueCurrentTest();
-    }
-
-    function clearRowColours() {
-        for (var i = 0; i <= inputTableRows.length - 1; i++) {
-            inputTableRows[i].bgColor = "white";
-        }
-    }
-
-    this.continueCurrentTest = function() {
-        processState = self.executeNextCommand();
-        if (processState == SELENIUM_PROCESS_WAIT) {
-            //window.setTimeout("continueCurrentTest()", 500);
-            selenium.callOnNextPageLoad(function() {eval("testLoop.continueCurrentTest()")});
-            return;
-        }
-        if (processState == SELENIUM_PROCESS_PAUSED) {
-            return; // Will re-enter this loop on reload.
-        }
-        if (processState != SELENIUM_PROCESS_COMPLETE) {
-            // Continue processing
-            if (this.commandInterval >= 0) {
-                window.setTimeout("testLoop.continueCurrentTest();", this.commandInterval);
-            }
-            return;
-        }
-
-        // Test is finished.
-        self.completeTest();
-        window.setTimeout("runNextTest()", 1);
-    }
-
-    this.executeNextCommand = function() {
-        if (currentCommandRow >= inputTableRows.length - 1) {
-            return SELENIUM_PROCESS_COMPLETE;
-        }
-
-        currentCommandRow++;
-        // Make the current row blue
-        this.beginCommand();
-
-        var command = getCellText(currentCommandRow, 0);
-        var target = replaceVariables(getCellText(currentCommandRow, 1));
-        var value = replaceVariables(getCellText(currentCommandRow, 2));
-
-        handler = this.commandFactory.getCommandHandler(command);
-
-        if(handler == null) {
-            this.commandError("Unknown command", ERROR);
-            return SELENIUM_PROCESS_COMPLETE;
-        }
-        else {
-            try {
-                var processNext = handler.executor.call(selenium, target, value);
-                if (handler.type == "assert") {
-                    this.assertionPassed();
-                } else {
-                    this.actionOK();
-                }
-
-                return processNext;
-            } catch (e) {
-                if (e.isJsUnitException && handler.type == "assert") {
-                    this.assertionFailed(e.jsUnitMessage);
-                } else {
-                    this.commandError(e.message);
-                }
-            }
-        }
-    }
-
-    function getCellText(rowNumber, columnNumber) {
-        return getText(inputTableRows[rowNumber].cells[columnNumber]);
-    }
+    // These actions are overridden for fitrunner, as they still involve some FitRunner smarts,
+    // because of the wait/nowait behaviour modification. We need a generic solution to this.
+    commandFactory.registerAction("click", selenium.doClickWithOptionalWait);
 }
 
-TestLoop.prototype.beginCommand = function() {
+function initialiseTestLoop() {
+    testLoop = new TestLoop(commandFactory);
+    testLoop.commandInterval = runInterval;
+
+    testLoop.nextCommand = nextCommand;
+    testLoop.beginCommand = beginCommand;
+    testLoop.commandError = setRowFailed;
+    testLoop.actionOK = setRowWhite;
+    testLoop.assertionPassed = setRowPassed;
+    testLoop.assertionFailed = setRowFailed;
+    testLoop.onTestComplete = onTestComplete;
+    return testLoop
+}
+
+function nextCommand() {
+    if (currentCommandRow >= inputTableRows.length - 1) {
+        return null;
+    }
+
+    currentCommandRow++;
+
+    var commandName = getCellText(currentCommandRow, 0);
+    var target = replaceVariables(getCellText(currentCommandRow, 1));
+    var value = replaceVariables(getCellText(currentCommandRow, 2));
+
+    var command = new SeleniumCommand(commandName, target, value);
+    return command;
+}
+
+function beginCommand() {
     // Make the current row blue
     inputTableRows[currentCommandRow].bgColor = "#DEE7EC";
 
@@ -507,23 +469,11 @@ TestLoop.prototype.beginCommand = function() {
     printMetrics();
 }
 
-TestLoop.prototype.commandError = function(message) {
-    this.setRowFailed(message, ERROR);
-}
-
-TestLoop.prototype.actionOK = function(message) {
+function setRowWhite() {
     inputTableRows[currentCommandRow].bgColor = "white";
 }
 
-TestLoop.prototype.assertionPassed = function() {
-    this.setRowPassed(currentCommandRow);
-}
-
-TestLoop.prototype.assertionFailed = function(message) {
-    this.setRowFailed(message, FAILURE);
-}
-
-TestLoop.prototype.completeTest = function() {
+function onTestComplete() {
      if(testFailed) {
          inputTableRows[0].bgColor = failColor;
          numTestFailures += 1;
@@ -534,17 +484,18 @@ TestLoop.prototype.completeTest = function() {
      }
 
      printMetrics();
-     this.completed = true;
+
+    window.setTimeout("runNextTest()", 1);
 }
 
-TestLoop.prototype.setRowPassed = function() {
+function setRowPassed() {
     numCommandPasses += 1;
 
     // Set cell background to green
     inputTableRows[currentCommandRow].bgColor = passColor;
 }
 
-TestLoop.prototype.setRowFailed = function(errorMsg, failureType) {
+function setRowFailed(errorMsg, failureType) {
     if (failureType == ERROR)
         numCommandErrors += 1;
     else if (failureType == FAILURE)
@@ -559,15 +510,8 @@ TestLoop.prototype.setRowFailed = function(errorMsg, failureType) {
     suiteFailed = true;
 }
 
-// Register all of the built-in command handlers with the CommandFactory.
-// TODO work out an easy way for people to register handlers without modifying the Selenium sources.
-function registerCommandHandlers() {
-    commandFactory = new CommandFactory();
-    commandFactory.registerAll(selenium);
-
-    // These actions are overridden for fitrunner, as they still involve some FitRunner smarts,
-    // because of the wait/nowait behaviour modification. We need a generic solution to this.
-    commandFactory.registerAction("click", selenium.doClickWithOptionalWait);
+function getCellText(rowNumber, columnNumber) {
+    return getText(inputTableRows[rowNumber].cells[columnNumber]);
 }
 
 Selenium.prototype.doPause = function(waitTime) {
