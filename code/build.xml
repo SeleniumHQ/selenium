@@ -22,10 +22,20 @@
                 <exclude name="readme-selenium-rpcrunner.txt"/>
             </fileset>
         </zip>
+
+        <zip zipfile="dist/selenium_v${version}-ruby.zip">
+            <fileset dir=".">
+                <include name="ruby/**"/>            
+                <include name="javascript/**"/>
+            </fileset>
+        </zip>
+
     </target>
 
     <target name="publish-dist" depends="dist">
         <copy todir="${website.root}" file="dist/selenium_v${version}-all-langs-src.zip"/>
+        <copy todir="${website.root}" file="dist/selenium_v${version}-ruby.zip"/>
+
     </target>
 
     <target name="publish-docs">
