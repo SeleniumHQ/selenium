@@ -10,6 +10,7 @@ puts "The string representation of the JSRMI by-ref object someArea is #{someAre
 
 # Set the value of the text area
 someArea.value = "Hello from Ruby #{Time.new}"
+puts someArea.value
 
 # Call a function on a by-ref object (the browser itself) with a by-ref argument (the text area)
 puts browser.logValueOf(someArea)

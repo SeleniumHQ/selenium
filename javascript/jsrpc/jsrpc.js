@@ -7,6 +7,10 @@
 // Original code by Aslak Hellesoy and and Darren Hobbs, inspired by Joe Walnes
 // -----------------
 
+function log(message) {
+    document.getElementById("log").value += message + "\n"
+}
+
 function Marshaller() {
     this.ids_to_objects = new Array(0);
     
@@ -22,7 +26,7 @@ Marshaller.prototype.invoke = function(jsRmiInvocation) {
         function_name = tokens[2]
         arguments = tokens[3]
 
-        jsEpression = this.unmarshalObject(ob) + "." + function_name
+        jsEpression = this.unmarshalObjectToJs(ob) + "." + function_name
         var n = 0
         while((tokens = new RegExp("([^,]*),?(.*)").exec(arguments)) && (arguments != "")) {
             if(n == 0) {
@@ -31,7 +35,7 @@ Marshaller.prototype.invoke = function(jsRmiInvocation) {
                 jsEpression += ","
             }
             arg = tokens[1]
-            jsEpression += this.unmarshalObject(arg)
+            jsEpression += this.unmarshalObjectToJs(arg)
             arguments = tokens[2]
             n++
         }
@@ -49,7 +53,7 @@ Marshaller.prototype.invoke = function(jsRmiInvocation) {
 
 // unmarshals a JsRmiObject String to a Javascript expression
 // that can be eval()'ed to a real Javascript object.
-Marshaller.prototype.unmarshalObject = function(jsRmiObject) {
+Marshaller.prototype.unmarshalObjectToJs = function(jsRmiObject) {
     var jsEpression
     var tokens
     if(tokens = new RegExp("__JsObject__[A-Za-z]*__([0-9]*)").exec(jsRmiObject)) {
@@ -62,6 +66,11 @@ Marshaller.prototype.unmarshalObject = function(jsRmiObject) {
         jsEpression = jsRmiObject
     }
     return jsEpression;
+}
+
+Marshaller.prototype.unmarshalObject = function(jsRmiObject) {
+    jsEpression = this.unmarshalObjectToJs(jsRmiObject)
+    return eval(jsEpression)
 }
 
 Marshaller.prototype.marshalObject = function(object) {
