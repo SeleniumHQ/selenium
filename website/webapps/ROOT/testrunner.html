@@ -15,6 +15,9 @@ The component of Selenium that is deployed with the AUT is called the
 BrowserBot. It is merely a set of HTML and Javascript files that are
 contained in a directory of their own.<br>
 <br>
+<img alt="diagram of standalone configuration" src="Standalone.png"
+ style="width: 535px; height: 380px;"><br>
+<br>
 BrowserBot reads tables from HTML pages that contain the specification
 of what to test. At the end of the tests it can publish its test-result
 data back to the server in a POST operation.&nbsp; Typically a test
@@ -33,7 +36,7 @@ Selenium commands come in two 'flavors', <strong>Actions</strong> and <strong>As
 Each command call is one line in the test table of the form:</p>
   <blockquote>
     <table class="table" border="1">
-      <colgroup> <col width="39%"><col width="33%"> <col width="28%"></colgroup>
+      <colgroup><col width="39%"><col width="33%"><col width="28%"></colgroup>
       <tbody valign="top">
         <tr>
           <td>command</td>
@@ -70,7 +73,7 @@ a title or any other information.</p>
   <p>Example:</p>
   <blockquote>
     <table class="table" border="1">
-      <colgroup> <col width="31%"><col width="38%"> <col width="31%"></colgroup>
+      <colgroup><col width="31%"><col width="38%"><col width="31%"></colgroup>
       <tbody valign="top">
         <tr>
           <td colspan="3">Simple Test Table</td>
@@ -117,7 +120,7 @@ expression. XPath locators <em>must</em> begin with "//".</p>
   <p>Locator examples:</p>
   <blockquote>
     <table class="table" border="1">
-      <colgroup> <col width="27%"><col width="73%"> </colgroup><tbody
+      <colgroup><col width="27%"><col width="73%"></colgroup><tbody
  valign="top">
         <tr>
           <td>Locator Type</td>
@@ -171,8 +174,8 @@ due to security restrictions in the browser (Cross Site Scripting).</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="15%"><col width="65%"> <col
- width="19%"></colgroup> <tbody valign="top">
+          <colgroup><col width="15%"><col width="65%"><col width="19%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>open</td>
               <td>/mypage</td>
@@ -200,8 +203,8 @@ before continuing.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="17%"><col width="62%"> <col
- width="21%"></colgroup> <tbody valign="top">
+          <colgroup><col width="17%"><col width="62%"><col width="21%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>click</td>
               <td>someLink</td>
@@ -237,8 +240,8 @@ value of the option selected (not the visible text).</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="23%"><col width="55%"> <col
- width="21%"></colgroup> <tbody valign="top">
+          <colgroup><col width="23%"><col width="55%"><col width="21%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>type</td>
               <td>nameField</td>
@@ -262,8 +265,8 @@ option label.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="28%"><col width="34%"> <col
- width="38%"></colgroup> <tbody valign="top">
+          <colgroup><col width="28%"><col width="34%"><col width="38%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>select</td>
               <td>dropDown</td>
@@ -288,8 +291,8 @@ window again, use "null" as the target.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="40%"><col width="43%"> <col
- width="17%"></colgroup> <tbody valign="top">
+          <colgroup><col width="40%"><col width="43%"><col width="17%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>selectWindow</td>
               <td>myPopupWindow</td>
@@ -314,8 +317,8 @@ pausing to wait for some server side action.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="36%"><col width="29%"> <col
- width="36%"></colgroup> <tbody valign="top">
+          <colgroup><col width="36%"><col width="29%"><col width="36%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>pause</td>
               <td>5000</td>
@@ -340,8 +343,8 @@ ${variableName}</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="36%"><col width="32%"> <col
- width="32%"></colgroup> <tbody valign="top">
+          <colgroup><col width="36%"><col width="32%"><col width="32%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>storeValue</td>
               <td>userID</td>
@@ -383,8 +386,8 @@ page.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="54%"><col width="27%"> <col
- width="19%"></colgroup> <tbody valign="top">
+          <colgroup><col width="54%"><col width="27%"><col width="19%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyLocation</td>
               <td>/mypage</td>
@@ -407,8 +410,8 @@ page.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="48%"><col width="30%"> <col
- width="22%"></colgroup> <tbody valign="top">
+          <colgroup><col width="48%"><col width="30%"><col width="22%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyTitle</td>
               <td>My Page</td>
@@ -434,8 +437,8 @@ or not.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="23%"><col width="56%"> <col
- width="21%"></colgroup> <tbody valign="top">
+          <colgroup><col width="23%"><col width="56%"><col width="21%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyValue</td>
               <td>nameField</td>
@@ -460,8 +463,8 @@ option.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="27%"><col width="53%"> <col
- width="20%"></colgroup> <tbody valign="top">
+          <colgroup><col width="27%"><col width="53%"><col width="20%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifySelected</td>
               <td>dropdown2</td>
@@ -487,8 +490,8 @@ labels.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="29%"><col width="41%"> <col
- width="30%"></colgroup> <tbody valign="top">
+          <colgroup><col width="29%"><col width="41%"><col width="30%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifySelectOptions</td>
               <td>dropdown2</td>
@@ -514,8 +517,8 @@ of the element, which is the rendered text shown to the user.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="25%"><col width="50%"> <col
- width="25%"></colgroup> <tbody valign="top">
+          <colgroup><col width="25%"><col width="50%"><col width="25%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyText</td>
               <td>statusMessage</td>
@@ -542,8 +545,8 @@ types of element locators.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="32%"><col width="47%"> <col
- width="21%"></colgroup> <tbody valign="top">
+          <colgroup><col width="32%"><col width="47%"><col width="21%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyAttribute</td>
               <td><a class="reference" href="mailto:txt1@class">txt1@class</a></td>
@@ -572,8 +575,8 @@ somewhere on the rendered page shown to the user.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="39%"><col width="50%"> <col
- width="11%"></colgroup> <tbody valign="top">
+          <colgroup><col width="39%"><col width="50%"><col width="11%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyTextPresent</td>
               <td>You are now logged in.</td>
@@ -597,8 +600,8 @@ on the page.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="48%"><col width="40%"> <col
- width="12%"></colgroup> <tbody valign="top">
+          <colgroup><col width="48%"><col width="40%"><col width="12%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyElementPresent</td>
               <td>submitButton</td>
@@ -623,8 +626,8 @@ present.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="58%"><col width="30%"> <col
- width="13%"></colgroup> <tbody valign="top">
+          <colgroup><col width="58%"><col width="30%"><col width="13%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyElementNotPresent</td>
               <td>cancelButton</td>
@@ -650,8 +653,8 @@ as table.row.col.</p>
       <p><strong>examples:</strong></p>
       <blockquote class="last">
         <table class="table" border="1">
-          <colgroup> <col width="35%"><col width="35%"> <col
- width="29%"></colgroup> <tbody valign="top">
+          <colgroup><col width="35%"><col width="35%"><col width="29%"></colgroup>
+          <tbody valign="top">
             <tr>
               <td>verifyTable</td>
               <td>myTable.1.6</td>
@@ -678,7 +681,7 @@ column with the syntax: ${variableName}.</p>
   <p>Example:</p>
   <blockquote>
     <table class="table" border="1">
-      <colgroup> <col width="25%"><col width="50%"> <col width="25%"></colgroup>
+      <colgroup><col width="25%"><col width="50%"><col width="25%"></colgroup>
       <tbody valign="top">
         <tr>
           <td colspan="3">Variable Test</td>
@@ -716,7 +719,7 @@ the function call to the variable reference.</p>
   <p>Example:</p>
   <blockquote>
     <table class="table" border="1">
-      <colgroup> <col width="11%"><col width="26%"> <col width="63%"></colgroup>
+      <colgroup><col width="11%"><col width="26%"><col width="63%"></colgroup>
       <tbody valign="top">
         <tr>
           <td>type</td>
@@ -745,7 +748,7 @@ value (using the command storeValue) and use it in the script. Finally,
 we made a /tearDownFT URL which takes the dummy userID as a parameter
 and deletes the user. Therefore, our tests look like this:</p>
     <table class="table" border="1">
-      <colgroup> <col width="21%"><col width="58%"> <col width="21%"></colgroup>
+      <colgroup><col width="21%"><col width="58%"><col width="21%"></colgroup>
       <tbody valign="top">
         <tr>
           <td colspan="3">Setup and Teardown</td>
@@ -794,7 +797,7 @@ suite of tests, and then post the results to the URL /postResults. The
 fields of the post are:</p>
   <blockquote>
     <table class="table" border="1">
-      <colgroup> <col width="15%"><col width="85%"> </colgroup><thead
+      <colgroup><col width="15%"><col width="85%"></colgroup><thead
  valign="bottom"> <tr>
         <th>Parameter</th>
         <th>Description</th>

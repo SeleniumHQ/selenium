@@ -11,7 +11,8 @@
 <div class="document" id="selenium-reference">
 <div class="section" id="test-tables">
 <h2><a name="test-tables">Overview</a>&nbsp;</h2>
-This document details how Selenium can be deployed to test web
+This document details how Selenium can be deployed to test or script
+web
 applications.<br>
 </div>
 <div class="section" id="command-reference">
@@ -19,15 +20,23 @@ applications.<br>
 Broadly speaking there are two modes of operation for Selenium
 TestRunner and Driven<br>
 <h3>TestRunner</h3>
-TestRunner is a mode of operation for selenium. It is where Selenium
-and its test suite is deployed alongside the Application Under Test
-(AUT). The test suite is coded as HTML tables.<br>
+<img alt="standalone pic" src="SmallStandalone.png"
+ style="width: 266px; height: 113px;"><br>
+<br>
+The TestRunner mode of operation for Selenium is where its HTML &amp;
+Javascript
+and the test suite are deployed alongside the Application Under Test
+(AUT) on a arbitrary web server. The test suite is coded as tables in a
+HTML page for each test.<br>
 <br>
 See <a href="testrunner.html">test runner documentation</a> for more
 information.<br>
 <h3>Driven</h3>
-Driven Selenium is where the browser is under the the control of an
-adjacent process. That process is either a Java, .Net, Ruby or Python
+<img alt="embedded pic" src="SmallEmbedded.png"
+ style="width: 248px; height: 113px;">&nbsp; <br>
+Driven Selenium is where the browser is under the the control of a
+process on the same machine. That process is either a Java, .Net, Ruby
+or Python
 application and it is typically run in conjunction with a unit testing
 framework like JUnit or NUnit. Also possible, is a console application
 driving a browser interactively. <br>
@@ -48,16 +57,23 @@ three major things have to happen:<br>
   <li>The test framework needs to publish a fresh copy of the AUT.
 Selenium prefers to mount its own web server temporarily for the
 purposes of testing.</li>
-  <li>The test framework needs to publish the static Selenium pages
-(refer selenium dir in TestRunner mode above) in an apparent directory
+  <li>The test framework needs to publish the static Selenium's HTML
+pages and Javascript in an apparent directory
 on the same web server as (1).</li>
   <li>The test framework needs to open a browser instance and point it
 to Selenium.html served in (2) above.</li>
 </ol>
 As each of these is a fairly time consuming operation, it is best that
-all three of those happen in a one time setup mode.&nbsp; As such, and
+all three of those happen in a one-time setup mode.&nbsp; As such, and
 even though these leverage a unit testing framework, this is definately
-for acceptance or functional testing.<br>
+for acceptance or functional rather than unit-testing.<br>
+<br>
+Some variations in the accesibility of the the webserver in question
+for testing purposes or its scriptablity mean a more complex setup is
+required:<br>
+<br>
+<img alt="Adjacent pic" src="SmallAdjacent.png"
+ style="width: 239px; height: 229px;"><br>
 <br>
 See the <a href="driven.html">driven documentation</a> for more
 information.<br>
