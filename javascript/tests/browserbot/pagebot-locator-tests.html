@@ -70,26 +70,6 @@ function testFindElementByDomTraversalFailsWithInvalidDomString() {
         // Expected
     }
 }
-
-//
-// Tests for PageBot.findElement() - should this method actually be in the intermediary API?
-// TODO test these by mocking the delegate methods...
-//
-function testFindElementReturnsMatchingId() {
-    assertEquals(element3, pageBot.findElement('id3'))
-}
-
-function testFindElementReturnsMatchingName() {
-    assertEquals(element2, pageBot.findElement('name1'))
-}
-
-function testFindElementLooksForIdentifiedElementBeforeDomTraversal() {
-    assertEquals(element4, pageBot.findElement("document.links[0]"))
-}
-
-function testFindElementHandlesDomTraversal() {
-    assertEquals(element2, pageBot.findElement("document.links[1]"))
-}
 </script>
   </head>
 

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>BrowserBot tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+//
+// Tests for findElement()
+//
+function setUp() {
+    mockPageBot = new Mock();
+
+    mockBrowserBot = new Object();
+    mockBrowserBot.currentPage = mockPageBot;
+
+    testApp = new TestApp(mockBrowserBot);
+    assertEquals(mockPageBot, testApp.page());
+
+}
+function testFindElementReturnsElementWithMatchingIdentifier() {
+    mockPageBot.expects("findIdentifiedElement", "id3").returns("1");
+
+    assertEquals("1", testApp.findElement('id3'));
+    mockPageBot.verify();
+}
+
+function testFindElementReturnsMatchingName() {
+    mockPageBot.expects("findIdentifiedElement", "name1").returns("2");
+
+    assertEquals("2", testApp.findElement("name1"));
+    mockPageBot.verify();
+}
+
+function testFindElementLooksForIdentifiedElementBeforeDomTraversal() {
+    mockPageBot.expects("findIdentifiedElement", "document.links[0]").returns("3");
+
+    assertEquals("3", testApp.findElement("document.links[0]"));
+    mockPageBot.verify();
+}
+
+function testUnknownElementWithoutDomTraversal() {
+    mockPageBot.expects("findIdentifiedElement", "unknownElement").returns(null);
+
+    assertEquals(null, testApp.findElement("unknownElement"));
+    mockPageBot.verify();
+}
+
+function testFindElementHandlesDomTraversal() {
+    mockPageBot.expects("findIdentifiedElement", "document.links[0]").returns(null);
+    mockPageBot.expects("findElementByDomTraversal", "links[0]").returns("4");
+
+    assertEquals("4", testApp.findElement("document.links[0]"));
+    mockPageBot.verify();
+}
+</script>
+  </head>
+  <body>Selenium BrowserBot Tests</body>
+</html>

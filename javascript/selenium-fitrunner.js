@@ -427,7 +427,7 @@ function pad (num) {
 // Find the element by id and returns it.  If it is not found, changes the
 // table to include an error message.
 function findElement(id) {
-    var element = browserbot.getCurrentPage().findElement(id);
+    var element = testApp.findElement(id);
 
     if(element == null) {
         setRowFailed("Element not found", ERROR);
@@ -643,7 +643,7 @@ function handleVerifyTextPresent(stringValue) {
 }
 
 function handleVerifyElementPresent(target) {
-    var element = browserbot.getCurrentPage().findElement(target);
+    var element = testApp.findElement(target);
 
     if(element != null)
         setRowPassed();
@@ -654,7 +654,7 @@ function handleVerifyElementPresent(target) {
 }
 
 function handleVerifyElementNotPresent(target) {
-    var element = browserbot.getCurrentPage().findElement(target);
+    var element = testApp.findElement(target);
 
     if(element == null)
         setRowPassed();
