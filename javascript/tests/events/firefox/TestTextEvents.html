@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Type Text Events</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Type Text Events<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_form_events.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theTextbox</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Set the textbox value from blank -->
+    <tr>
+      <td>type</td>
+      <td>theTextbox</td>
+      <td>first value</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theTextbox</td>
+      <td>first value</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>{focus(theTextbox)} {select(theTextbox)} {select(theForm)} {change(theTextbox)} {change(theForm)} {blur(theTextbox)}</td>
+    </tr>
+
+    <!-- Clear the event log, and change the value -->
+    <tr>
+      <td>type</td>
+      <td>eventlog</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theTextbox</td>
+      <td>changed value</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theTextbox</td>
+      <td>changed value</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>{focus(theTextbox)} {select(theTextbox)} {select(theForm)} {change(theTextbox)} {change(theForm)} {blur(theTextbox)}</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

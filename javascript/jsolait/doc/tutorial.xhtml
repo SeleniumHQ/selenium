@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>.: jsolait :. | documentation | tutorial</title>
+    <link rel="stylesheet" type="text/css" href="./html.css" />
+    <meta name="author" content="Jan-Klaas Kollhof" />
+    <meta name="keywords" content="JavaScript, OOP, object oriented programming, OOP in JavaScript, JS, OOP JS, tutorial, prototyping, inheritance, subclassing, data hiding" />
+    <link rel="stylesheet" type="text/css" href="./highlight.css" />
+    <style type="text/css">
+.S0 {
+	font-family: 'Times New Roman';
+	color: #000000;
+	font-size: 11pt;
+}
+.S1 {
+	color: #000080;
+}
+.S3 {
+	color: #008080;
+}
+.S6 {
+	color: #7F007F;
+}
+.S8 {
+	color: #800080;
+}
+span {
+	font-family: 'Verdana';
+	color: #000000;
+	font-size: 10pt;
+}
+</style>
+  </head>
+  <body>
+    <a name="top" id="top"></a>
+    <div class="navigationBar"><a href="./index.xhtml">documentation</a> | 
+                    tutorial</div>
+    <div class="menu">
+      <ul></ul>
+      
+      <div class="copyright">copyright © 2004, Jan-Klaas Kollhof</div>
+    </div>
+    <div class="content">
+        Please note, this is only a current draft of the online jsolait tutorial and is not complete.<br />
+        
+        <br />
+        <h1>Object Oriented Programming  using JavaScript o Lait</h1>
+        
+        It is very simple to use jsolait for object oriented programming.<br />
+        In this tutorial we will  look at how we can integrate jsolait functionality in our projects.<br />
+        Then we will create our first jsolait module. As we go on we will add classes and methods and will explore the 
+        OOP feautures of jsolai.<br />
+        All example code can be tried using your own webpage or <a href="../jsolaitonline.xhtml">jsolait online</a>.<br />
+        <div class="contentItem"><h2>integrating jsolait<a class="bttop" href="#top">▲</a></h2><div>
+            
+            To use jsolait you will need to copy the library files to the location of your website.
+            Add a refference to jsolait's initialization script( ./jsolait/init.js) in your page.<br />
+            In HTML it will look like this:<br />
+            <br /><div class="code">
+                <span style="margin-left:0.5em"></span><span class="S0">...</span><br />
+                <span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span class="S1">&lt;script</span><span class="S8"> </span><span class="S3">type</span><span class="S8">=</span><span class="S6">"text/javascript"</span><span class="S8"> </span><span class="S3">href</span><span class="S8">=</span><span class="S6">"./jsolait/init.js"</span><span class="S1">&gt;&lt;/script&gt;</span><br />
+
+                <span style="margin-left:0.5em"></span><span class="S0">...</span><br />
+            </div>
+            <br />
+            After that you are ready to begin working with jsolait<br />
+            An easy way to do so is to create a JavaScript file and refference it  in the page after the init script.<br />
+            The script can now use any jsolait functionality in addition to what is available in JavaScript alone.<br />
+            Your HTML file should now contain somethign similar to the following:<br />
+            <br /><div class="code">
+                <span style="margin-left:0.5em"></span><span class="S0">...</span><br />
+                <span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span class="S1">&lt;script</span><span class="S8"> </span><span class="S3">type</span><span class="S8">=</span><span class="S6">"text/javascript"</span><span class="S8"> </span><span class="S3">href</span><span class="S8">=</span><span class="S6">"./jsolait/init.js"</span><span class="S1">&gt;&lt;/script&gt;</span><br />
+                <span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span class="S1">&lt;script</span><span class="S8"> </span><span class="S3">type</span><span class="S8">=</span><span class="S6">"text/javascript"</span><span class="S8"> </span><span class="S3">href</span><span class="S8">=</span><span class="S6">"./tutorial.js"</span><span class="S1">&gt;&lt;/script&gt;</span><br />
+                <span style="margin-left:0.5em"></span><span class="S0">...</span><br />
+            </div>
+        </div></div>
+        
+        <div class="contentItem"><h2>first script using jsolait<a class="bttop" href="#top">▲</a></h2><div>
+            
+            As an example we will now use jsolait's powerful string-formating methods.<br />
+            <br /><div class="code">
+                <span>
+                <span class="S5">var</span><span class="S0"> </span>s1<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S6">"Hello %s!"</span><span class="S10">.</span>format<span class="S10">(</span><span class="S5">jsolait</span><span class="S10">.</span>name<span class="S10">);</span><br />
+                alert<span class="S10">(</span>s1<span class="S10">);</span><br />
+                <span class="S5">var</span><span class="S0"> </span>s2<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S6">"The number %d as a hexadecimal is %X."</span><span class="S10">.</span>format<span class="S10">(</span><span class="S4">123456789</span><span class="S10">,</span><span class="S4">123456789</span><span class="S10">);</span><br />
+                alert<span class="S10">(</span>s2<span class="S10">);</span>
+                </span>
+            </div>
+            <br />
+            In the example all <code>%s, %f, %X</code> are replaced by converting the values passed into the <code>format</code> method to a desired format.<br />
+            There are more formating specifiers than <code>%s, %f, %X</code>. Please see the documentation for the <a href="./stringformat.xhtml"><code>stringformat</code></a> module.
+        </div></div>
+        <div class="contentItem"><h2>using modules<a class="bttop" href="#top">▲</a></h2><div>
+            
+            To use modules in your script jsolait provides a special method called <code>importModule</code>.
+            Let us see how this works. For an example we will import the <code>codecs</code> module which provides e.g. base64 encoding of strings.<br />
+            <br /><div class="code">
+                <span class="S5">var</span> <span>codecs<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">importModule</span><span class="S10">(</span><span class="S6">"codecs"</span><span class="S10">);</span><br />
+                <br />
+                alert<span class="S10">(</span>codecs<span class="S10">.</span>listEncoders<span class="S10">());</span><br />
+                <br />
+                <span class="S5">var</span><span class="S0"> </span>s1<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S6">"Hello jsolait"</span><span class="S10">;</span><br />
+                <span class="S5">var</span><span class="S0"> </span>s2<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span>s1<span class="S10">.</span>encode<span class="S10">(</span><span class="S6">"base64"</span><span class="S10">);</span><br />
+                <br />
+                alert<span class="S10">(</span><span class="S6">"'%s' encoded using base64 is '%s'"</span><span class="S10">.</span>format<span class="S10">(</span>s1<span class="S10">,</span>s2<span class="S10">));</span><br />
+                </span>
+            </div>
+            <br />
+            The <code>codecs</code> module is loaded by jsolait and provided to the script calling the <code>importModule</code> function.<br />
+            Depending on your browser jsolait loads the module source files on demand, i.e. the file is retrieved during the first call to <code>importModule</code>.
+            A second call to <code>importModule</code> will only return the module object which has been loaded already by the first call, jsolait will not retrieve the file again.
+            In some browsers the feauture of loading moudule files on demand is not available.<br />
+            This does not mean you cannot uses jsolait. What you need to do is refference all module scripts in your web page.<br />
+            For oure example our web page would contain something like:<br />
+            <br /><div class="code">
+                <span style="margin-left:0.5em"></span><span class="S0">...</span><br />
+                <span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span class="S1">&lt;script</span><span class="S8"> </span><span class="S3">type</span><span class="S8">=</span><span class="S6">"text/javascript"</span><span class="S8"> </span><span class="S3">href</span><span class="S8">=</span><span class="S6">"./jsolait/init.js"</span><span class="S1">&gt;&lt;/script&gt;</span><br />
+                <span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span class="S1">&lt;script</span><span class="S8"> </span><span class="S3">type</span><span class="S8">=</span><span class="S6">"text/javascript"</span><span class="S8"> </span><span class="S3">href</span><span class="S8">=</span><span class="S6">"./jsolait/lib/codecs.js"</span><span class="S1">&gt;&lt;/script&gt;</span><br />
+                <span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span class="S1">&lt;script</span><span class="S8"> </span><span class="S3">type</span><span class="S8">=</span><span class="S6">"text/javascript"</span><span class="S8"> </span><span class="S3">href</span><span class="S8">=</span><span class="S6">"./tutorial.js"</span><span class="S1">&gt;&lt;/script&gt;</span><br />
+                <span style="margin-left:0.5em"></span><span class="S0">...</span><br />
+            </div>
+            All module scripts depend on the initialization script <code>init.js</code> to be loaded first.<br />
+            Depending on the module dependencies you must make sure the scripts are refferenced in the right order.<br />
+            But more on that later.<br />
+        </div></div>
+        
+        <div class="contentItem"><h2>creating a jsolait module<a class="bttop" href="#top">▲</a></h2><div>
+            
+            You can easily create your own modules by using the <code>Module</code> constructor.<br />
+            See the following code:<br />
+            <br /><div class="code">
+                <span><span class="S5">Module</span><span class="S10">(</span><span class="S6">"tutorial"</span><span class="S10">,</span><span class="S0"> </span><span class="S6">"0.0.1"</span><span class="S10">,</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span><span class="S5">mod</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">var</span><span class="S0"> </span>codecs<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">importModule</span><span class="S10">(</span><span class="S6">"codecs"</span><span class="S10">);</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">mod</span><span class="S10">.</span>testCodecs<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span>data<span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span>alert<span class="S10">(</span>codecs<span class="S10">.</span>listEncoders<span class="S10">());</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">var</span><span class="S0"> </span>s1<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S6">"Hello jsolait"</span><span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">var</span><span class="S0"> </span>s2<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span>s1<span class="S10">.</span>encode<span class="S10">(</span><span class="S6">"base64"</span><span class="S10">);</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span>alert<span class="S10">(</span><span class="S6">"'%s' encoded using base64 is '%s'"</span><span class="S10">.</span>format<span class="S10">(</span>s1<span class="S10">,</span>s2<span class="S10">));</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">}</span><br />
+                <span class="S10">})</span><br />
+                <span class="S0"></span></span>
+            </div>
+            The module constructor is a function with 3 parameters. The first one is the module's name. This name is used when importing modules.<br />
+            The second one is the modules version. It is good practice to give a module a version string.<br />
+            The third parameter is a function object. <br />
+            This function is called to construct the module. Once constructed the module is registered with jsolait and can be imported.<br />
+            A special parameter <code>mod</code> is passed to that function wich represents the modul. It is very similar to the <code>this</code> object in JavaScript.
+            All properties set on the <code>mod</code> object will become public properties of the module. In our example this would be the <code>testCodecs</code> method.<br />
+            Variables declared with <code>var</code> are only visible inside the module constructor. One could say they are the private objects of the module.
+            In our example this would be the <code>codecs</code> object.<br />
+            If you declare a variable without the <code>var</code> keyword then this object will become global.<br />
+            Only declare global objects if you realy intend to create global objects. In most cases you should never need them.
+            The jsolait module for example defines two global objects: <code>importModule and reportException</code>.<br />
+            At first, using a function object might seem a little awkward, but it allowes us to practice good data hiding.<br />
+        </div></div>
+        
+        <div class="contentItem"><h2>creating classes<a class="bttop" href="#top">▲</a></h2><div>
+            
+            Creating classes in jsolait is as simple as creating modules. Especially when it comes to inheritance jsolait will take 
+            care of all the work involved for creating subclasses in JavaScript.<br />
+            Have a look at the following code:<br />
+            <br /><div class="code">
+                <span><span class="S5">Module</span><span class="S10">(</span><span class="S6">"tutorial"</span><span class="S10">,</span><span class="S0"> </span><span class="S6">"0.0.1"</span><span class="S10">,</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span><span class="S5">mod</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">mod</span><span class="S10">.</span>SomeClass<span class="S10">=</span><span class="S5">Class</span><span class="S10">(</span><span class="S5">function</span><span class="S10">(</span><span class="S5">publ</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>foo<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span>p1<span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">return</span><span class="S0"> </span><span class="S5">this</span><span class="S10">.</span>bar<span class="S0"> </span><span class="S10">*</span><span class="S0"> </span>p1<span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">}</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>bar<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S4">3</span><span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">})</span><br />
+                <span class="S10">})</span><br />
+                <span class="S0"></span></span> 
+            </div>
+            You can see we declared a public object in our module. This object is a class object created with the <code>Class</code> function.<br />
+            The <code>Class</code> function accepts up to three parameters. For now we only need one, a function object.
+            Similar to the function object passed to the module constructor it is used for data hiding.<br />
+            The parameter passed to the function object is the <code>publ</code> object.
+            All properties added to this object will become the public members of the class.<br />
+            In our example we have two public members of the class: the method <code>foo</code> and the property <code>bar</code>.<br />
+            To create objects of the class we use the JavaScript <code>new</code> keyword.<br />
+            <br /><div class="code">
+                <span><span class="S5">var</span><span class="S0"> </span>tutorial<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">importModule</span><span class="S10">(</span><span class="S6">"tutorial"</span><span class="S10">);</span><br />
+                <br />
+                <span class="S5">var</span><span class="S0"> </span>obj<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">new</span><span class="S0"> </span>tutorial<span class="S10">.</span>SomeClass<span class="S10">();</span><br />
+                <br />
+                alert<span class="S10">(</span>obj<span class="S10">.</span>foo<span class="S10">(</span><span class="S4">3</span><span class="S10">));</span></span>
+            </div>
+            Becase our class <code>SomeClass</code> is part of the module <code>tutorial</code> we need to import that module before we use it.
+            Then we can create an object of our class and call methods of that objects.
+        </div></div>
+        
+        <div class="contentItem"><h2>inheritence<a class="bttop" href="#top">▲</a></h2><div>
+            
+            Let us create another class and have it be a subclass of <code>SomeClass</code>.<br />
+            
+            <br /><div class="code">
+                <span><span class="S5">Module</span><span class="S10">(</span><span class="S6">"tutorial"</span><span class="S10">,</span><span class="S0"> </span><span class="S6">"0.0.1"</span><span class="S10">,</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span><span class="S5">mod</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">mod</span><span class="S10">.</span>SomeClass<span class="S10">=</span><span class="S5">Class</span><span class="S10">(</span><span class="S5">function</span><span class="S10">(</span><span class="S5">publ</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>foo<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span>p1<span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">return</span><span class="S0"> </span><span class="S5">this</span><span class="S10">.</span>bar<span class="S0"> </span><span class="S10">*</span><span class="S0"> </span>p1<span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">}</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>bar<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S4">3</span><span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">})</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">mod</span><span class="S10">.</span>SubClass<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">Class</span><span class="S10">(</span><span class="S5">mod</span><span class="S10">.</span>SomeClass<span class="S10">,</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span><span class="S5">publ</span><span class="S10">,</span><span class="S0"> </span><span class="S5">supr</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>foo<span class="S10">=</span><span class="S5">function</span><span class="S10">(</span>p1<span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">var</span><span class="S0"> </span>v1<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">supr</span><span class="S10">(</span><span class="S5">this</span><span class="S10">).</span>foo<span class="S10">(</span>p1<span class="S10">);</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">return</span><span class="S0"> </span>v1<span class="S0"> </span><span class="S10">*</span><span class="S0"> </span><span class="S4">3</span><span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">}</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">})</span><span class="S0"> <span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S10">})</span><br /></span>
+            </div>
+            In the above excample one can see that we added another class to our module. The difference to the first class is that we pass in another parameter to the <code>Class</code> method before the 
+            last parameter, the function object.
+            This first parameter is the base class of our new class, i.e. our new class will inherit form that class.<br />
+            You can also notice that we have another parameter <code>supr</code> in our function object.
+            This parameter is a spechial function for calling overwritten methods of the base class. You can see how a base class method is invoked in the line <code>var v1 = supr(this).foo(p1)</code>.<br />
+            <code>SubClass</code> overwrites the <code>foo</code> method of <code>SomeClass</code>. When the <code>foo</code> method is called then it calls it's base class's <code>foo</code>
+             method first, then multiplying the return value by 3 and then returns the result.<br />
+            
+        </div></div>
+        
+        <div class="contentItem"><h2>object initialization<a class="bttop" href="#top">▲</a></h2><div>
+            
+            Whenever an object is created form a class an initialization method is called with the parameters passed to the constructor. This method is named <code>init</code> and you may 
+            consider it to be the constructor of the class, though technically speaking it is not.
+            You can overwrite the <code>init</code> method in your class. If you do so make sure you call the base class's <code>init</code> method.
+            For example:<br />
+            <br /><div class="code">
+                <span><span class="S5">Module</span><span class="S10">(</span><span class="S6">"tutorial"</span><span class="S10">,</span><span class="S0"> </span><span class="S6">"0.0.1"</span><span class="S10">,</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span><span class="S5">mod</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">mod</span><span class="S10">.</span>SomeClass<span class="S10">=</span><span class="S5">Class</span><span class="S10">(</span><span class="S5">function</span><span class="S10">(</span><span class="S5">publ</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>init<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span>barVal<span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">this</span><span class="S10">.</span>bar<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span>barVal<span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">}</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>foo<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span>p1<span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">return</span><span class="S0"> </span><span class="S5">this</span><span class="S10">.</span>bar<span class="S0"> </span><span class="S10">*</span><span class="S0"> </span>p1<span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">}</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>bar<span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">})</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">mod</span><span class="S10">.</span>SubClass<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">Class</span><span class="S10">(</span><span class="S5">mod</span><span class="S10">.</span>SomeClass<span class="S10">,</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span><span class="S5">publ</span><span class="S10">,</span><span class="S0"> </span><span class="S5">supr</span><span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>init<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">function</span><span class="S10">(</span>a<span class="S10">,</span><span class="S0"> </span>b<span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">supr</span><span class="S10">(</span><span class="S5">this</span><span class="S10">).</span>init<span class="S10">(</span>a<span class="S0"> </span><span class="S10">*</span><span class="S0"> </span>b<span class="S10">);</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">}</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">publ</span><span class="S10">.</span>foo<span class="S10">=</span><span class="S5">function</span><span class="S10">(</span>p1<span class="S10">){</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">var</span><span class="S0"> </span>v1<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">supr</span><span class="S10">(</span><span class="S5">this</span><span class="S10">).</span>foo<span class="S10">(</span>p1<span class="S10">);</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S5">return</span><span class="S0"> </span>v1<span class="S0"> </span><span class="S10">*</span><span class="S0"> </span><span class="S4">3</span><span class="S10">;</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">}</span><br />
+                <span class="S0"><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><span class="S10">})</span><span class="S0"> <span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span><span style="margin-left:0.5em"></span></span><br />
+                <span class="S10">})</span></span>
+            </div>
+            You can see that both of our classes have different initialization parameters and that <code>SubClass</code> calls the <code>SomeClass</code>'s initialization method.<br />
+            The code for the object creation would look like this:<br />
+            <br /><div class="code">
+                <span><span class="S5">var</span><span class="S0"> </span>tutorial<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">importModule</span><span class="S10">(</span><span class="S6">"tutorial"</span><span class="S10">);</span><br />
+                <br />
+                <span class="S5">var</span><span class="S0"> </span>obj<span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S5">new</span><span class="S0"> </span>tutorial<span class="S10">.</span>SubClass<span class="S10">(</span><span class="S4">3</span><span class="S10">,</span><span class="S4">4</span><span class="S10">);</span><br />
+                <br />
+                alert<span class="S10">(</span>obj<span class="S10">.</span>foo<span class="S10">(</span><span class="S4">3</span><span class="S10">));</span></span>
+            </div>
+            
+        </div></div>
+        
+        <div class="contentItem"><h2>exception handling<a class="bttop" href="#top">▲</a></h2><div>
+            
+            coming soon
+        </div></div>
+        
+        <div class="contentItem"><h2>module dependencies<a class="bttop" href="#top">▲</a></h2><div>
+            
+            coming soon
+        </div></div>
+        
+    </div>
+  </body>
+</html>

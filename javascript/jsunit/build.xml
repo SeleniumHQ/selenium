@@ -1,0 +1,86 @@
+<project name="JsUnit" default="create_distribution" basedir=".">
+
+    <property name="browserFileNames" value="c:\program files\internet explorer\iexplore.exe,c:\program files\Mozilla Firefox\firefox.exe"/>
+    <property name="url" value="file:///c:/dev/jsunit/testRunner.html?testPage=c:\dev\jsunit\tests\jsUnitTestSuite.html&amp;autoRun=true&amp;submitresults=true"/>
+    <property name="remoteMachineURLs" value="http://localhost:8080,http://localhost:8080"/>
+    <property name="port" value=""/>
+    <property name="resourceBase" value=""/>
+    <property name="logsDirectory" value=""/>
+
+    <property name="src" location="java/src"/>
+    <property name="bin" location="java/bin"/>
+    <property name="lib" location="java/lib"/>
+
+    <path id="classpath">
+        <fileset dir="${lib}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${bin}">
+            <include name="jsunit.jar"/>
+        </fileset>
+    </path>
+
+    <target name="compile" description="Compiles the source">
+        <delete dir="${bin}/net"/>
+        <javac srcdir="${src}" destdir="${bin}" target="1.1">
+            <classpath>
+                <fileset dir="${lib}">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="create_jar" depends="compile" description="Creates jsunit.jar">
+        <delete file="${bin}/jsunit.jar"/>
+        <jar jarfile="${bin}/jsunit.jar" basedir="${bin}"/>
+        <delete dir="${bin}/net"/>
+    </target>
+
+    <target name="run_self_tests" description="Runs the Java tests for JsUnit itself">
+        <java classname="junit.textui.TestRunner">
+            <classpath refid="classpath"/>
+            <arg value="net.jsunit.test.Suite"/>
+        </java>
+    </target>
+
+    <target name="start_server" description="Starts the JsUnit Server">
+        <java fork="true" classname="net.jsunit.JsUnitServer">
+            <classpath refid="classpath"/>
+            <sysproperty key="browserFileNames" value="${browserFileNames}"/>
+            <sysproperty key="url" value="${url}"/>
+            <sysproperty key="port" value="${port}"/>
+            <sysproperty key="resourceBase" value="${resourceBase}"/>
+            <sysproperty key="logsDirectory" value="${logsDirectory}"/>
+        </java>
+    </target>
+
+    <target name="stop_server" description="Stops the JsUnit Server">
+        <java fork="true" classname="org.mortbay.stop.Main" failonerror="true">
+            <classpath refid="classpath"/>
+        </java>
+    </target>
+
+    <target name="create_distribution" depends="create_jar,run_self_tests" description="Creates and tests the JsUnit distribution"/>
+
+    <target name="standalone_test" description="Runs JsUnit tests on the local machine as configured by the url and browserfilenames properties">
+        <junit showoutput="true" haltonerror="true" haltonfailure="true">
+            <classpath refid="classpath"/>
+            <sysproperty key="browserFileNames" value="${browserFileNames}"/>
+            <sysproperty key="url" value="${url}"/>
+            <sysproperty key="port" value="${port}"/>
+            <sysproperty key="resourceBase" value="${resourceBase}"/>
+            <sysproperty key="logsDirectory" value="${logsDirectory}"/>
+            <test name="net.jsunit.StandaloneTest"/>
+        </junit>
+    </target>
+
+    <target name="distributed_test" description="Runs JsUnit tests on remote machines">
+        <junit showoutput="true" haltonerror="true" haltonfailure="true">
+            <classpath refid="classpath"/>
+            <sysproperty key="remoteMachineURLs" value="${remoteMachineURLs}"/>
+            <test name="net.jsunit.DistributedTest"/>
+        </junit>
+    </target>
+
+</project>

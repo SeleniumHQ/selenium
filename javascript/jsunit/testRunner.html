@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
+            "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <title>JsUnit</title>
+    <script language="JavaScript" type="text/javascript" src="app/xbDebug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+  var DEFAULT_TEST_FRAME_HEIGHT=250;
+
+  // safe, strict access to jsUnitParmHash
+  function jsUnitGetParm(name)
+  {
+    if (typeof(top.jsUnitParmHash[name]) != 'undefined')
+    {
+      return top.jsUnitParmHash[name];
+    }
+    return null;
+  }
+
+  function jsUnitParseParms(string)
+  {
+    var i;
+    var searchString = unescape(string);
+    var jsUnitParmHash = new Object();
+
+    if (!searchString)
+    {
+      return jsUnitParmHash;
+    }
+
+    i = searchString.indexOf('?');
+    if (i != -1)
+    {
+      searchString = searchString.substring(i+1);
+    }
+
+    var parmList     = searchString.split('&');
+    var a;
+    for (i = 0; i < parmList.length; i++)
+    {
+      a = parmList[i].split('=');
+      a[0] = a[0].toLowerCase();
+      if (a.length > 1)
+      {
+        jsUnitParmHash[a[0]] =  a[1];
+      }
+      else
+      {
+        jsUnitParmHash[a[0]] =  true;
+      }
+    }
+    return jsUnitParmHash;
+  }
+
+  function jsUnitConstructTestParms()
+  {
+     var p;
+     var parms = '';
+
+     for (p in jsUnitParmHash)
+     {
+       var value = jsUnitParmHash[p];
+
+       if (!value ||
+           p == 'testpage' || 
+           p == 'autorun'  || 
+           p == 'submitresults' || 
+           p == 'showtestframe' || 
+           p == 'resultid')
+       {
+         continue;
+       }
+
+       if (parms)
+       {
+         parms += '&';
+       }
+
+       parms += p;
+
+       if (typeof(value) != 'boolean')
+       {
+         parms += '=' + value;
+       }
+     }
+     return escape(parms);
+  }
+
+  var jsUnitParmHash = jsUnitParseParms(document.location.search);
+
+  // set to true to turn debugging code on, false to turn it off.
+  xbDEBUG.on = jsUnitGetParm('debug') ? true : false;
+</script>
+
+<script language="JavaScript" type="text/javascript" src="app/jsUnitTestManager.js"></script>
+<script language="JavaScript" type="text/javascript" src="app/jsUnitTracer.js"></script>
+<script language="JavaScript" type="text/javascript" src="app/jsUnitTestSuite.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+  var testManager;
+  var utility;
+  var tracer;
+
+
+  var JSUNIT_UNDEFINED_VALUE;
+
+  if (!Array.prototype.push)
+  {
+    Array.prototype.push = function (anObject)
+    {
+      this[this.length] = anObject;
+    }
+  }
+
+  if (!Array.prototype.pop)
+  {
+    Array.prototype.pop = function ()
+    {
+      if (this.length > 0)
+      {
+        delete this[this.length - 1];
+        this.length--;
+      }
+    }
+  }
+  
+  function shouldKickOffTestsAutomatically() {
+  	return jsUnitGetParm('autorun')=="true";
+  }
+
+  function shouldShowTestFrame() {
+    return jsUnitGetParm('showtestframe');
+  }
+  
+  function shouldSubmitResults() {
+  	return jsUnitGetParm('submitresults');
+  }
+  
+  function getResultId() {
+    if (jsUnitGetParm('resultid')) 
+  		return jsUnitGetParm('resultid');
+  	return "";
+  }
+
+  function submitResults() {
+    window.mainFrame.mainData.document.testRunnerForm.runButton.disabled=true;
+    window.mainFrame.mainResults.populateHeaderFields(getResultId(), navigator.userAgent, JSUNIT_VERSION, testManager.resolveUserEnteredTestFileName());  
+  	window.mainFrame.mainResults.submitResults();
+  }
+  
+  function wasResultUrlSpecified() {
+  	return shouldSubmitResults() && jsUnitGetParm('submitresults')!='true';
+  }
+  
+  function getSpecifiedResultUrl() {
+	return jsUnitGetParm('submitresults');  
+  }
+  
+  function init()
+  {
+    if (shouldShowTestFrame() && window.testRunnerFrameset) {
+    	var testFrameHeight;
+    	if (jsUnitGetParm('showtestframe')=="true") 
+    		testFrameHeight=DEFAULT_TEST_FRAME_HEIGHT;    	
+    	else 
+    		testFrameHeight=jsUnitGetParm('showtestframe');
+       	window.testRunnerFrameset.rows="*,0," + testFrameHeight;
+    }
+    testManager = new jsUnitTestManager();
+    tracer      = new jsUnitTracer();    
+    if (shouldKickOffTestsAutomatically()) {
+    	window.mainFrame.mainData.kickOffTests();
+    }
+  }
+  
+</script>
+  </head>
+
+    <frameset id="testRunnerFrameset" rows="*,0,0" onload="init()">
+
+    <frame frameborder="0" name="mainFrame"      src="./app/main-frame.html">
+    <frame frameborder="0" name="documentLoader" src="./app/main-loader.html">
+    <frame frameborder="0" name="testContainer"  src="./app/testContainer.html">
+
+    <noframes>
+      <body>
+        <p>Sorry, JsUnit requires support for frames.</p>
+      </body>
+    </noframes>
+  </frameset>
+
+</html>

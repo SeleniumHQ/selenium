@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function setUp() {
+    document.getElementById("theSelect").options[1].selected = true
+}
+
+function testSelectOptionWithLabelShouldSelectAndTriggerOnChangeAndOnBlur() {
+    theSelect = document.getElementById("theSelect")
+    assertEquals("option2", theSelect.value)
+
+    theSelect.onchange = function() {onchange = true}
+    theSelect.onblur = function() {onblur = true}
+
+    selectOptionWithLabel(theSelect, "Third Option")
+    assertEquals("option3", theSelect.value)
+    assert(onchange)
+    assert(onblur)
+}
+
+function testSelectAlreadySelectedOptionWithLabelShouldOnlyTriggerOnBlur() {
+    theSelect = document.getElementById("theSelect")
+    assertEquals("option2", theSelect.value)
+
+    onchange = false
+    theSelect.onchange = function() {onchange = true}
+    theSelect.onblur = function() {onblur = true}
+
+    selectOptionWithLabel(theSelect, "Second Option")
+    assertEquals("option2", theSelect.value)
+    assert(!onchange)
+    assert(onblur)
+}
+
+function testReplaceTextInTextBoxShouldTriggerFourEvents() {
+    theTextbox = document.getElementById("theTextbox")
+    assertEquals("theTextbox", theTextbox.value)
+
+    theTextbox.onfocus = function() {onfocus = true}
+    theTextbox.onselect = function() {onselect = true}
+    theTextbox.onchange = function() {onchange = true}
+    theTextbox.onblur = function() {onblur = true}
+
+    replaceText(theTextbox, "new text")
+    assertEquals("new text", theTextbox.value)
+
+    assert("onfocus should happen", onfocus)
+    assert("onselect should happen", onselect)
+    assert("onchange should happen", onchange)
+    assert("onblur should happen", onblur)
+}
+
+</script>
+  </head>
+
+  <body>
+    <h1>SeleniumA Tests</h1>
+
+    <p>This page contains tests for SeleniumA. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
+
+<form id="theForm" name="theForm">
+  <input name="theTextbox" id="theTextbox" type="text" value="theTextbox"/>
+  <input name="theCheckbox" id="theCheckbox" type="checkbox"/>
+  <input name="theRadio" id="theRadio1" type="radio" value="radio1"/><input name="theRadio" id="theRadio2" type="radio" value="theRadio"/>
+  <select name="theSelect" id="theSelect">
+    <option value="option1">First Option</option>
+    <option value="option2" selected="true">Second Option</option>
+    <option value="option3">Third Option</option>
+  </select>
+</form>
+
+<hr/>
+
+<div>EventLog<br/>
+  <textarea id="eventlog" rows="15" cols="80"></textarea><br/>
+  Record events:<input type="checkbox" checked="checked" onclick="recording=this.checked;"/><br/>
+</div>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Type<br>
+      </td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>someButton</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>someButton</td>
+      <td>Click me!</td>
+    </tr>
+    <tr>
+      <td>this</td>
+      <td>is</td>
+      <td>a bad</td>
+      <td>row</td>
+    </tr>
+  </tbody>
+</table>
+  </body>
+</html>
