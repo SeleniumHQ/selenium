@@ -59,8 +59,12 @@ class Dispatcher:
                 time.sleep(step)   #in seconds
                 elapsed_time += step
                 
-                # Syncronize with the ZODB in case of any recent updates
-                self._p_jar.sync()
+                # Syncronize with the ZODB in case of any recent updates.
+                # If this is being run as a unit test, we won't have an
+                # attribute named "_p_jar" that we can sync()
+                if hasattr(self,'_p_jar'):
+                    self._p_jar.sync()
+                
                 try:
                     response = self._commands.pop(0)
                     break
@@ -102,8 +106,12 @@ class Dispatcher:
                 time.sleep(step)   #in seconds
                 elapsed_time += step
                 
-                # Syncronize with the ZODB in case of any recent updates
-                self._p_jar.sync()
+                # Syncronize with the ZODB in case of any recent updates.
+                # If this is being run as a unit test, we won't have an
+                # attribute named "_p_jar" that we can sync()
+                if hasattr(self,'_p_jar'):
+                    self._p_jar.sync()
+                    
                 try:
                     response = self._results.pop(0)
                     break
