@@ -1,5 +1,0 @@
-o Write lots of JSunit tests - put test HTML elements in test page
-o Make a separate frame for selenium tables and run the tested website in a full frame?
-o In-browser editing of tests
-  use dropdowns for commands
-  save function - save as html and/or wiki. or at least pop up a window so it can be copied and manually saved.

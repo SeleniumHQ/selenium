@@ -109,7 +109,7 @@ function loadSuiteFrame() {
         loadTestFrame();
     }
 
-    testAppFrame.src = "http://selenium.thoughtworks.com";
+    //testAppFrame.src = "http://selenium.thoughtworks.com";
 }
 
 function loadTestFrame() {
