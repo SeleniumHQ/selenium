@@ -245,6 +245,10 @@ public class DefaultSelenium implements Selenium {
             throw new SeleniumException(result);
         }
     }
+    
+    public void setContext(String context) {
+        String result = commandProcessor.doCommand("context", context, "");
+    }
 
     public String[] getAllButtons() {
         String stringResult = commandProcessor.doCommand("getAllButtons", "", "");
