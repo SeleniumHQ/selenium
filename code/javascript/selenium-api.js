@@ -31,6 +31,14 @@ function Selenium(browserbot) {
  * Click on the located element, and attach a callback to notify
  * when the page is reloaded.
  */
+Selenium.prototype.doExpectModalDialogAndReturn = function(returnValue) {
+    this.browserbot.expectModalDialogAndReturn(returnValue);
+}
+
+/*
+ * Click on the located element, and attach a callback to notify
+ * when the page is reloaded.
+ */
 Selenium.prototype.doClick = function(locator) {
     var element = this.page().findElement(locator);
     this.page().clickElement(element);
@@ -183,8 +191,8 @@ Selenium.prototype.assertSelected = function(target, expectedLabel) {
 Selenium.prototype.assertSelectOptions = function(target, options) {
     // Handle escpaced commas, by substitutine newlines.
     options = options.replace("\\,", "\n");
-	var expectedOptions = options.split(",");
-	var element = this.page().findElement(target);
+    var expectedOptions = options.split(",");
+    var element = this.page().findElement(target);
 
     assertEquals("wrong number of options", expectedOptions.length, element.options.length);
 
@@ -345,26 +353,26 @@ Selenium.prototype.assertNotEditable = function(locator) {
   * Return all buttons on the screen.
   */
 Selenium.prototype.getAllButtons = function() {
- 		return this.page().getAllButtons();
+        return this.page().getAllButtons();
 }
 
  /*
   * Return all links on the screen.
   */
 Selenium.prototype.getAllLinks = function() {
- 		return this.page().getAllLinks();
+        return this.page().getAllLinks();
 }
 
  /*
   * Return all fields on the screen.
   */
 Selenium.prototype.getAllFields = function() {
- 		return this.page().getAllFields();
+        return this.page().getAllFields();
 }
 
 /*
   * Set the context for the current Test
   */
 Selenium.prototype.doContext = function(context) {
- 		return this.page().setContext(context);
+        return this.page().setContext(context);
 }
