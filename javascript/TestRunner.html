@@ -12,9 +12,12 @@ http-equiv="content-type">
 
 <body onLoad="javascript:loadSuiteFrame();">
 
-<button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">run functional test</button>
-<button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">run test suite</button>
-
+<button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">run a single test</button>
+<button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">run all tests</button>
+<label><input id="modeRun" type="radio" name="runMode" value="0" onchange="setRunInterval(this);" checked="checked"/>Run</label>
+<label><input id="modeWalk" type="radio" name="runMode" value="300" onchange="setRunInterval(this);"/>Walk</label>
+<label><input id="modeStep" type="radio" name="runMode" value="-1" onchange="setRunInterval(this);"/>Step</label>
+<button type="button" id="stepNext" onClick="testLoop.continueCurrentTest()" style="visibility:hidden">Next</button>
 <p />
 
 <iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="15%" border="0"  SRC="./tests/TestSuite.html"></iframe>

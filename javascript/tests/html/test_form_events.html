@@ -52,7 +52,7 @@ function setupFormEventRecorders(enable) {
 </script>
 </head>
 <body id="theBody" onload="setupEventRecorders()">
-<form id="theForm" name="theForm">
+<form id="theForm" name="theForm" onsubmit="return false">
 <input name="theTextbox" id="theTextbox" type="text" value=""/>
 <input name="theCheckbox" id="theCheckbox" type="checkbox"/>
 <input name="theRadio" id="theRadio1" type="radio" value="radio1"/><input name="theRadio" id="theRadio2" type="radio" value="theRadio"/>
