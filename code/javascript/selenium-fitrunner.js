@@ -114,7 +114,6 @@ function loadSuiteFrame(executionContext) {
 
     if (testSuiteName) {
         addLoadListener(getSuiteFrame(), loadTestFrame);
-        alert(testSuiteName);
         getSuiteFrame().src = testSuiteName;
     } else {
         loadTestFrame();
