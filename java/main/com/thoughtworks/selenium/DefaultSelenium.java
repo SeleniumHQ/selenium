@@ -24,7 +24,7 @@ import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class DefaultSelenium implements Selenium {
 
@@ -80,7 +80,7 @@ public class DefaultSelenium implements Selenium {
 
     public void start() {
         commandProcessor.start();
-        launcher.launch("http://localhost:8080/" + SELENIUM_CONTEXT + "/Selenium.html");
+        launcher.launch("http://localhost:8080/" + SELENIUM_CONTEXT + "/SeleneseRunner.html");
     }
 
     public void stop() {
