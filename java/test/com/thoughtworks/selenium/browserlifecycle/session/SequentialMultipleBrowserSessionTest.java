@@ -23,83 +23,60 @@ import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 
 public class SequentialMultipleBrowserSessionTest extends MockObjectTestCase {
 
-	public void testShouldDoNothingIfPassedNoBrowsers() throws Exception {
+	public void testShouldDoNothingIfPassedNoBrowserSessions() throws Exception {
 
 		String url = "irrelevant";
-		String[] browsers = new String[] {};
-
-		Mock sessionFactory = mock(SessionFactory.class);
-
-		sessionFactory.expects(never());
+		BrowserSession[] browserSessions = new BrowserSession[] {};
 
 		SequentialMultipleBrowserSession session = new SequentialMultipleBrowserSession(
-				(SessionFactory) sessionFactory.proxy());
-		session.run(browsers, url, 0);
-
-		sessionFactory.verify();
+				browserSessions);
+		session.run(url, 0);
 	}
 
-	public void testShouldBuildAndRunASessionForASingleBrowser()
+	public void testShouldRunASingleBrowserSession()
 			throws Exception {
 
-		Mock sessionFactory = mock(SessionFactory.class);
 		Mock browserSession = mock(BrowserSession.class);
 
 		long timeout = 99;
 		String url = "testUrl";
-		String browser = "testSingleBrowser";
-		String[] browsers = new String[] { browser };
+		BrowserSession[] browserSessions = new BrowserSession[] { (BrowserSession) browserSession
+				.proxy() };
 
 		SequentialMultipleBrowserSession session = new SequentialMultipleBrowserSession(
-				(SessionFactory) sessionFactory.proxy());
+				browserSessions);
+		browserSession.expects(once()).method("run").with(eq(url), eq(timeout));
 
-		sessionFactory.expects(once()).method("buildSingleBrowserSession")
-				.will(returnValue(browserSession.proxy()));
-		browserSession.expects(once()).method("run").with(eq(browser), eq(url),
-				eq(timeout));
+		session.run(url, timeout);
 
-		session.run(browsers, url, timeout);
-
-		sessionFactory.verify();
 		browserSession.verify();
 	}
 
-	public void testShouldBuildAndRunASessionForMultipleBrowsersInOrder()
+	public void testShouldRunMultipleSessionsInOrder()
 			throws Exception {
 
-		Mock sessionFactory = mock(SessionFactory.class);
 		Mock browserSession1 = mock(BrowserSession.class);
 		Mock browserSession2 = mock(BrowserSession.class);
 
 		long timeout = 99;
 		String url = "testUrl";
-		String browser1 = "testFirstBrowser";
-		String browser2 = "testSecondBrowser";
-		String[] browsers = new String[] { browser1, browser2 };
+
+		BrowserSession[] browserSessions = new BrowserSession[] {
+				(BrowserSession) browserSession1.proxy(),
+				(BrowserSession) browserSession2.proxy() };
 
 		SequentialMultipleBrowserSession session = new SequentialMultipleBrowserSession(
-				(SessionFactory) sessionFactory.proxy());
+				browserSessions);
 
-		sessionFactory.expects(once()).method("buildSingleBrowserSession")
-				.will(returnValue(browserSession1.proxy())).id(
-						"first session created");
+		browserSession1.expects(once()).method("run")
+				.with(eq(url), eq(timeout)).id("first session run");
 
-		browserSession1.expects(once()).method("run").with(eq(browser1),
-				eq(url), eq(timeout)).after(sessionFactory,
-				"first session created").id("first session run");
+		browserSession2.expects(once()).method("run")
+				.with(eq(url), eq(timeout)).after(browserSession1,
+						"first session run");
 
-		sessionFactory.expects(once()).method("buildSingleBrowserSession")
-				.after(browserSession1, "first session run").will(
-						returnValue(browserSession2.proxy())).id(
-						"second session created");
+		session.run(url, timeout);
 
-		browserSession2.expects(once()).method("run").with(eq(browser2),
-				eq(url), eq(timeout)).after(sessionFactory,
-				"second session created");
-
-		session.run(browsers, url, timeout);
-
-		sessionFactory.verify();
 		browserSession1.verify();
 		browserSession2.verify();
 	}
@@ -107,35 +84,38 @@ public class SequentialMultipleBrowserSessionTest extends MockObjectTestCase {
 	// is this what we want? or should we just go on to the next browser
 	// and report at end?
 	public void testShouldAbortOnError() {
-		Mock sessionFactory = mock(SessionFactory.class);
-		Mock browserSession = mock(BrowserSession.class);
+
+		Mock browserSession1 = mock(BrowserSession.class);
+		Mock browserSession2 = mock(BrowserSession.class);
 
 		long timeout = 99;
 		String url = "testUrl";
-		String browser1 = "testFirstBrowser";
-		String browser2 = "testSecondBrowser";
-		String[] browsers = new String[] { browser1, browser2 };
+
+		BrowserSession[] browserSessions = new BrowserSession[] {
+				(BrowserSession) browserSession1.proxy(),
+				(BrowserSession) browserSession2.proxy() };
 
 		LifeCycleException error = new LifeCycleException("test",
 				new Throwable());
 
 		SequentialMultipleBrowserSession session = new SequentialMultipleBrowserSession(
-				(SessionFactory) sessionFactory.proxy());
+				browserSessions);
 
-		sessionFactory.expects(once()).method("buildSingleBrowserSession")
-				.will(returnValue(browserSession.proxy()));
-		browserSession.expects(once()).method("run").with(eq(browser1),
-				eq(url), eq(timeout)).will(throwException(error));
+		browserSession1.expects(once()).method("run")
+				.with(eq(url), eq(timeout)).will(throwException(error));
+		
+		browserSession2.expects(never());
 
 		try {
-			session.run(browsers, url, timeout);
+			session.run(url, timeout);
 			fail("Expected exception to be thrown");
 		} catch (LifeCycleException e) {
 			// woot
 		}
 
-		sessionFactory.verify();
-		browserSession.verify();
+
+		browserSession1.verify();
+		browserSession2.verify();
 	}
 
 }

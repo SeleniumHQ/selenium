@@ -14,18 +14,13 @@
  *  limitations under the License.
  *
  */
-package com.thoughtworks.selenium.browserlifecycle.coordinate;
+package com.thoughtworks.selenium.browserlifecycle.window;
 
-public class SignalWaiterFactory implements WaiterFactory {
+import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 
-	private Audible _signaller;
-
-	public SignalWaiterFactory(Audible signaller) {
-		_signaller = signaller;
-	}
-
-	public Waiter getWaiter() {
-		return new SignalWaiter(_signaller);
-	}
-
+public interface BrowserSpawner {
+	
+	public Killable spawn(String url)
+			throws LifeCycleException;
+	
 }

@@ -17,5 +17,8 @@
 package com.thoughtworks.selenium.browserlifecycle.coordinate;
 
 public interface Waiter {
+	
+	public void initialise();
+	
 	public void waitFor(long attentionSpan) throws InterruptedException;
 }

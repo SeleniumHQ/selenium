@@ -18,12 +18,17 @@ package com.thoughtworks.selenium.browserlifecycle.coordinate;
 
 public class SignalWaiter implements Waiter, Listener {
 
+	private Audible _signaller;
 	private boolean _signalled = false;
 
-	public SignalWaiter(Audible audible) {
-		audible.addListener(this);
+	public SignalWaiter(Audible signaller) {
+		_signaller = signaller;
 	}
 
+	public void initialise() {
+		_signaller.addListener(this);		
+	}
+	
 	public synchronized void waitFor(long attentionSpan)
 			throws InterruptedException {
 		if (!_signalled) {
@@ -35,4 +40,6 @@ public class SignalWaiter implements Waiter, Listener {
 		_signalled = true;
 		this.notify();
 	}
+	
+
 }
