@@ -28,16 +28,14 @@ import edu.emory.mathcs.util.concurrent.Exchanger;
  * </pre>
  * There is no direct JUnit integration, but you can use this class from a JUnit test.
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class Selenium {
-    private final String browserName;
     private final String initialUrl;
     private Browser browser;
     private SeleniumServer seleniumServer;
 
-    public Selenium(String browserName, String initialUrl) {
-        this.browserName = browserName;
+    public Selenium(String initialUrl) {
         this.initialUrl = initialUrl;
         Exchanger wikiCommandExchanger = new Exchanger();
         Exchanger resultExchanger = new Exchanger();

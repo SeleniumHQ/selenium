@@ -91,7 +91,7 @@ module Selenium
     
     attr_accessor :proxy_server
   
-    def initialize(target_host="www.google.com", port=4802, timeout=1000)
+    def initialize(port=7896, timeout=1000)
       @timeout = timeout
       @in_queue = Queue.new
       @out_queue = Queue.new
