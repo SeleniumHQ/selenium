@@ -24,7 +24,7 @@ import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class DefaultSelenium implements Selenium {
 
@@ -70,9 +70,17 @@ public class DefaultSelenium implements Selenium {
     }
 
     public void verifyText(String type, String text) {
+        String result = commandProcessor.doCommand("verifyText", type, text);
+        if(!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        };
     }
 
     public void verifyLocation(String location) {
+        String result = commandProcessor.doCommand("verifyLocation", location, "");
+        if(!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        };
     }
 
     public void testComplete() {

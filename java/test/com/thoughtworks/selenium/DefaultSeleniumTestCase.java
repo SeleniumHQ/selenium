@@ -23,7 +23,7 @@ import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
@@ -83,8 +83,46 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
             // expected
             assertEquals("fgadfgadfgadfg fg", e.getMessage());
         }
-
     }
+
+    public void testVerifyTextWorking() {
+        Mock commandProcessor = new Mock(CommandProcessor.class);
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyText"), eq("whatsit"), eq("something")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyText("whatsit", "something");
+    }
+
+    public void testVerifyTextFailing() {
+        Mock commandProcessor = new Mock(CommandProcessor.class);
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyText"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyText("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
+    public void testVerifyLocationWorking() {
+        Mock commandProcessor = new Mock(CommandProcessor.class);
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyLocation"), eq("whatsit"), eq("")).will(returnValue("PASSED"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        dftSelenium.verifyLocation("whatsit");
+    }
+
+    public void testVerifyLocationFailing() {
+        Mock commandProcessor = new Mock(CommandProcessor.class);
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyLocation"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
+        DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+        try {
+            dftSelenium.verifyLocation("whatsit");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+    }
+
 
     public void testTestCompleteWorking() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
