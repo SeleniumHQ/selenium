@@ -1,0 +1,1 @@
+"C:\Program Files\Mozilla Firefox\firefox.exe" http://localhost/selenium_driver/SeleneseRunner.html

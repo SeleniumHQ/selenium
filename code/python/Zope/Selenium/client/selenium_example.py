@@ -12,13 +12,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+
 import xmlrpclib
-selenium = xmlrpclib.ServerProxy("http://localhost/selenium_driver")
 
-print "Make sure your Zope server is already running...."
-print "Now load up a web browser and goto: http://localhost/selenium_driver/SeleneseRunner.html"
+# Make an object to represent the XML-RPC server.
+server_url = "http://localhost/selenium_driver"
+app = xmlrpclib.ServerProxy(server_url)
 
-# Send some commands to the browser
-print selenium.open('/test_click_page1.html')
+# Bump timeout a little higher than the default 5 seconds
+app.setTimeout(15)
 
+import os
+os.system('start run_firefox.bat')
 
+print app.open('/tests/html/test_click_page1.html')
+print app.verifyTextPresent('Click here for next page','')
+print app.click('link')
+print app.verifyTextPresent('This is a test of the click command.','')
+print app.click('previousPage')
+print app.testComplete()
