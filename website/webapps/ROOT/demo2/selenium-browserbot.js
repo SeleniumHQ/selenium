@@ -375,6 +375,52 @@ PageBot.prototype.bodyText = function() {
     return getText(this.currentDocument.body)
 }
 
+PageBot.prototype.getAllButtons = function() {
+    var elements = this.currentDocument.getElementsByTagName('input');
+    var result = '';
+
+    for (var i = 0; i < elements.length; i++) {
+    		if (elements[i].type == 'button' || elements[i].type == 'submit' || elements[i].type == 'reset') {
+    				result += elements[i].id;
+
+    				result += ',';
+    		}
+    }
+
+    return result;
+}
+
+
+PageBot.prototype.getAllFields = function() {
+    var elements = this.currentDocument.getElementsByTagName('input');
+    var result = '';
+
+    for (var i = 0; i < elements.length; i++) {
+    		if (elements[i].type == 'text') {
+    				result += elements[i].id;
+
+    				result += ',';
+    		}
+    }
+
+    return result;
+}
+
+PageBot.prototype.getAllLinks = function() {
+    var elements = this.currentDocument.getElementsByTagName('a');
+    var result = '';
+
+    for (var i = 0; i < elements.length; i++) {
+    		result += elements[i].id;
+
+    		result += ',';
+    }
+
+    return result;
+}
+
+
+
 function isDefined(value) {
     return typeof(value) != undefined;
 }
