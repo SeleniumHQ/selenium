@@ -89,6 +89,21 @@ Copyright 2004 ThoughtWorks, Inc
       <td>//a[@href='foo']</td>
       <td></td>
     </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>id1@class</td>
+      <td>a1</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>//a[@href='#id1']/@class</td>
+      <td>a1</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>document.links[0]@class</td>
+      <td>a1</td>
+    </tr>
   </tbody>
 </table>
 </body>

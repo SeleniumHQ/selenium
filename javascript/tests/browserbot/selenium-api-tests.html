@@ -306,7 +306,61 @@ function testShouldPassIfdoVerifyAlertWithRightMessage() {
     verifyMocks(); 
 }
 
+function testVerifySelectedSuccess() {
+    var mockTextControl = Object();
+    mockTextControl.selectedIndex = 1;
+    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
+    selenium.assertSelected("id", "option1");
+    verifyMocks();
+}
+
+function testVerifySelectedFailed() {
+    var mockTextControl = Object();
+    mockTextControl.selectedIndex = 1;
+    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    assertCallFails("Verify selected should have failed.",
+                    function() {selenium.assertSelected("id", "option2")});
+    verifyMocks();
+}
+
+function testVerifySelectOptionsSuccess() {
+    var mockTextControl = Object();
+    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    selenium.assertSelectOptions("id", "option0,option1,option2");
+    verifyMocks();
+}
+
+function testVerifySelectOptionsFailed() {
+    var mockTextControl = Object();
+    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    assertCallFails("Verify select options failed.",
+                    function() { selenium.assertSelectOptions("id", "option0")});
+    verifyMocks();
+}
+
+function testVerifySelectOptionsWithCommasEscaped() {
+    var mockTextControl = Object();
+    mockTextControl.options = [{text: "option,0"},{text: "option.1"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    selenium.assertSelectOptions("id", "option\\,0,option.1");
+    verifyMocks();
+}
+
+function testVerifyAttributeWithId() {
+    mockPageBot.expects("findAttribute", "id@attribute").returns("foo");
+
+    selenium.assertAttribute("id@attribute", "foo");
+    verifyMocks();
+}
 
 function assertCallFails(message, theCall) {
     try {
