@@ -50,6 +50,19 @@ currentTime = null;
 ERROR = 0;
 FAILURE = 1;
 
+runInterval = 0;
+
+function setRunInterval(radio) {
+    runInterval = radio.value;
+    var stepButton = document.getElementById("stepNext");
+    if (runInterval == -1) {
+        stepButton.style.visibility = '';
+    }
+    else {
+        stepButton.style.visibility = 'hidden';
+    }
+}
+
 function getSuiteFrame() {
     return document.getElementById('testSuiteFrame');
 }
@@ -179,6 +192,7 @@ function startTest() {
     storedVars = new Object();
 
     testLoop = new TestLoop(commandFactory);
+    testLoop.commandInterval = runInterval;
     testLoop.start();
 }
 
@@ -383,6 +397,8 @@ function replaceVariables(str) {
 
 function TestLoop(commandFactory) {
     this.commandFactory = commandFactory;
+    this.commandInterval = 0;
+
     var self = this;
 
     this.start = function() {
@@ -397,25 +413,34 @@ function TestLoop(commandFactory) {
     }
 
     this.continueCurrentTest = function() {
-        processState = SELENIUM_PROCESS_CONTINUE;
-        while (currentCommandRow < inputTableRows.length - 1) {
-            currentCommandRow++;
-            processState = self.executeNextCommand();
-            if (processState == SELENIUM_WAIT_FOR_RELOAD) {
-                return; // Will re-enter this loop on reload.
+        processState = self.executeNextCommand();
+        if (processState == SELENIUM_PROCESS_WAIT) {
+            //window.setTimeout("continueCurrentTest()", 500);
+            selenium.callOnNextPageLoad(function() {eval("testLoop.continueCurrentTest()")});
+            return;
+        }
+        if (processState == SELENIUM_PROCESS_PAUSED) {
+            return; // Will re-enter this loop on reload.
+        }
+        if (processState != SELENIUM_PROCESS_COMPLETE) {
+            // Continue processing
+            if (this.commandInterval >= 0) {
+                window.setTimeout("testLoop.continueCurrentTest();", this.commandInterval);
             }
-            if (processState == SELENIUM_PROCESS_ABORT) { // TODO remove this flag, use exception
-                break;
-            }
+            return;
         }
 
         // Test is finished.
         self.completeTest();
-        window.setTimeout("runNextTest()", 100);
+        window.setTimeout("runNextTest()", 1);
     }
 
     this.executeNextCommand = function() {
-        //alert("executeNextCommand(" + commandIndex + ")");
+        if (currentCommandRow >= inputTableRows.length - 1) {
+            return SELENIUM_PROCESS_COMPLETE;
+        }
+
+        currentCommandRow++;
         // Make the current row blue
         this.beginCommand();
 
@@ -425,10 +450,9 @@ function TestLoop(commandFactory) {
 
         handler = this.commandFactory.getCommandHandler(command);
 
-        // TODO invert this horrible recursive thing...
         if(handler == null) {
             this.commandError("Unknown command", ERROR);
-            return SELENIUM_PROCESS_ABORT;
+            return SELENIUM_PROCESS_COMPLETE;
         }
         else {
             try {
@@ -443,10 +467,10 @@ function TestLoop(commandFactory) {
             } catch (e) {
                 if (handler.type == "action") {
                     this.commandError(e.message);
-                    return SELENIUM_PROCESS_ABORT;
+                    return SELENIUM_PROCESS_COMPLETE;
                 } else {
                     this.assertionFailed(e.message);
-                    return SELENIUM_PROCESS_CONTINUE;
+                    return;
                 }
             }
         }
@@ -495,6 +519,7 @@ TestLoop.prototype.completeTest = function() {
      }
 
      printMetrics();
+     this.completed = true;
 }
 
 TestLoop.prototype.setRowPassed = function() {
@@ -533,29 +558,25 @@ function registerCommandHandlers() {
 
 Selenium.prototype.doPause = function(waitTime) {
     setTimeout("testLoop.continueCurrentTest()", waitTime);
-    return SELENIUM_WAIT_FOR_RELOAD;
+    return SELENIUM_PROCESS_PAUSED;
 }
 
 // Reads the text of the page and stores it in a variable with the name of the target
 Selenium.prototype.doStoreValue = function(target) {
     value = this.page().bodyText();
     storedVars[target] = value;
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
     this.doClick(target);
 
-    if(wait == "nowait") {
-        return SELENIUM_PROCESS_CONTINUE;
+    if(wait != "nowait") {
+        return SELENIUM_PROCESS_WAIT;
     }
-    this.callOnNextPageLoad(testLoop.continueCurrentTest);
-    return SELENIUM_WAIT_FOR_RELOAD;
 }
 
 Selenium.prototype.doOpenWithWait = function(target) {
     this.doOpen(target);
-    this.callOnNextPageLoad(testLoop.continueCurrentTest);
-    return SELENIUM_WAIT_FOR_RELOAD;
+    return SELENIUM_PROCESS_WAIT;
 }
 

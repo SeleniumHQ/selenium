@@ -9,9 +9,9 @@ function fail(message) {
     throw new Error(message);
 }
 
-SELENIUM_PROCESS_CONTINUE = 0;
-SELENIUM_PROCESS_ABORT = 1;
-SELENIUM_WAIT_FOR_RELOAD = 2;
+SELENIUM_PROCESS_WAIT = "wait";
+SELENIUM_PROCESS_PAUSED = "paused";
+SELENIUM_PROCESS_COMPLETE = "complete";
 
 function Selenium(browserbot) {
     this.browserbot = browserbot;
@@ -32,7 +32,6 @@ function Selenium(browserbot) {
 Selenium.prototype.doClick = function(locator) {
     var element = this.page().findElement(locator);
     this.page().clickElement(element);
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /**
@@ -42,7 +41,6 @@ Selenium.prototype.doClick = function(locator) {
 Selenium.prototype.doType = function(locator, newText) {
     var element = this.page().findElement(locator);
     this.page().replaceText(element, newText);
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /**
@@ -52,7 +50,6 @@ Selenium.prototype.doType = function(locator, newText) {
 Selenium.prototype.doSelect = function(locator, optionText) {
     var element = this.page().findElement(locator);
     this.page().selectOptionWithLabel(element, optionText);
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /*
@@ -60,7 +57,7 @@ Selenium.prototype.doSelect = function(locator, optionText) {
  */
 Selenium.prototype.doOpen = function(newLocation) {
     this.browserbot.openLocation(newLocation);
-    return SELENIUM_WAIT_FOR_RELOAD;
+    return SELENIUM_PROCESS_WAIT;
 }
 
 /*
@@ -68,7 +65,6 @@ Selenium.prototype.doOpen = function(newLocation) {
  */
 Selenium.prototype.doSelectWindow = function(windowName) {
     this.browserbot.selectWindow(windowName);
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /*
@@ -76,7 +72,6 @@ Selenium.prototype.doSelectWindow = function(windowName) {
  */
 Selenium.prototype.assertLocation = function(expectedLocation) {
     assertStringEquals(expectedLocation, this.page().location);
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /*
@@ -93,7 +88,6 @@ Selenium.prototype.assertValue = function(locator, expectedValue) {
     }
 
     assertStringEquals(expectedValue, actualValue);
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /*
@@ -103,7 +97,6 @@ Selenium.prototype.assertText = function(locator, expectedContent) {
     var element = this.page().findElement(locator);
     var actualText = getText(element);
     assertStringEquals(expectedContent, actualText);
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /*
@@ -132,7 +125,6 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
         actualContent = getText(table.rows[row].cells[col]);
         assertStringEquals(expectedContent, actualContent);
     }
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /*
@@ -148,7 +140,6 @@ Selenium.prototype.assertTextPresent = function(expectedText) {
 // alert(allText)
         fail("'" + expectedText + "' not found in page text.");
     }
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /*
@@ -156,7 +147,6 @@ Selenium.prototype.assertTextPresent = function(expectedText) {
  */
 Selenium.prototype.assertElementPresent = function(locator) {
     this.page().findElement(locator);
-    return SELENIUM_PROCESS_CONTINUE;
 }
 
 /*
@@ -167,7 +157,7 @@ Selenium.prototype.assertElementNotPresent = function(locator) {
         this.page().findElement(locator);
     }
     catch (e) {
-        return SELENIUM_PROCESS_CONTINUE;
+        return;
     }
     fail("Element " + locator + " found.");
 }
