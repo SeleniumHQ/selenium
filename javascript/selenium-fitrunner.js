@@ -350,7 +350,7 @@ function buildCommandHandlers() {
 
 function processCommand(){
     // TODO: write a test that breaks when this is removed
-    clearOnBeforeUnload();
+    getCurrentPage().clearOnBeforeUnload();
 
     // Scroll the test frame down by 25 pixels once we get past the first 5 cells.
     if(currentCommandRow >= 5)
@@ -427,7 +427,7 @@ function pad (num) {
 // Find the element by id and returns it.  If it is not found, changes the
 // table to include an error message.
 function findElement(id) {
-    var element = findElementByIdOrName(id);
+    var element = getCurrentPage().findIdentifiedElement(id);
 
     if(element == null) {
         setRowFailed("Element not found", ERROR);
@@ -477,10 +477,10 @@ function handleClick(target, wait) {
     }
 
     if(wait == "nowait") {
-        clickElement(element);
+        getCurrentPage().clickElement(element);
         processCommand();
     } else {
-        clickElement(element, processCommand);
+        getCurrentPage().clickElement(element, processCommand);
     }
 }
 
@@ -494,10 +494,10 @@ function handleOnClick(target, wait) {
     }
 
     if(wait == "nowait") {
-        onclickElement(element);
+        getCurrentPage().onclickElement(element);
         processCommand();
     } else {
-        onclickElement(element, processCommand);
+        getCurrentPage().onclickElement(element, processCommand);
     }
 }
 
@@ -505,7 +505,7 @@ function handleType(target, stringValue) {
     element = findElement(target);
 
     if(element != null) {
-        replaceText(element, stringValue);
+        getCurrentPage().replaceText(element, stringValue);
     }
     processCommand();
 }
@@ -528,7 +528,7 @@ function handleSelect(target, stringValue) {
 	element = findElement(target);
 
 	if(element != null) {
-	    selectOptionWithLabel(element, stringValue);
+	    getCurrentPage().selectOptionWithLabel(element, stringValue);
 	}
 	processCommand();
 }
@@ -539,13 +539,13 @@ function handlePause(waitTime) {
 
 // Reads the text of the page and stores it in a variable with the name of the target
 function handleStoreValue(target) {
-    value = getText(getDoc().body);
+    value = getCurrentPage().bodyText();
     storedVars[target] = value;
     processCommand();
 }
 
 function handleVerifyLocation(stringValue) {
-    actualValue = getDoc().location.pathname;
+    actualValue = getCurrentPage().location;
     checkEquality(stringValue, actualValue);
 
     processCommand();
@@ -627,7 +627,7 @@ function trim(s) {
 }
 
 function handleVerifyTextPresent(stringValue) {
-    allText = getText(getDoc().body);
+    allText = getCurrentPage().bodyText();
 
     if(allText == "") {
         setRowFailed("Page text not found", ERROR)
@@ -643,7 +643,7 @@ function handleVerifyTextPresent(stringValue) {
 }
 
 function handleVerifyElementPresent(target) {
-    var element = findElementByIdOrName(target);
+    var element = getCurrentPage().findIdentifiedElement(target);
 
     if(element != null)
         setRowPassed();
@@ -654,7 +654,7 @@ function handleVerifyElementPresent(target) {
 }
 
 function handleVerifyElementNotPresent(target) {
-    var element = findElementByIdOrName(target);
+    var element = getCurrentPage().findIdentifiedElement(target);
 
     if(element == null)
         setRowPassed();

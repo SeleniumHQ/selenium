@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function setUp() {
+    initialiseSelect()
+    initialiseTextbox()
+    initialiseCheckbox()
+    initialiseRadios()
+    pageBot = new PageBot(window);
+}
+
+function attachEventListeners(element, eventSink) {
+    element.onfocus = function() {eventSink.push('focus')}
+    element.onselect = function() {eventSink.push('select')}
+    element.onchange = function() {eventSink.push('change')}
+    element.onblur = function() {eventSink.push('blur')}
+}
+
+function initialiseSelect() {
+    theSelect = document.getElementById("theSelect")
+    theSelect.options[1].selected = true
+
+    theSelectEvents = new Array()
+    attachEventListeners(theSelect, theSelectEvents)
+
+    assertEquals("option2", theSelect.value)
+}
+
+function initialiseTextbox() {
+    theTextbox = document.getElementById("theTextbox")
+    theTextbox.value = "theTextbox"
+
+    textboxEvents = new Array()
+    attachEventListeners(theTextbox, textboxEvents)
+}
+
+function initialiseCheckbox() {
+    theCheckbox = document.getElementById("theCheckbox")
+    theCheckbox.checked = false
+    assertFalse(theCheckbox.checked)
+
+    checkboxEvents = new Array()
+    attachEventListeners(theCheckbox, checkboxEvents)
+}
+
+function initialiseRadios() {
+    theRadio1 = document.getElementById("theRadio1")
+    theRadio1.checked = true
+    assertTrue(theRadio1.checked)
+    radio1Events = new Array()
+    attachEventListeners(theRadio1, radio1Events)
+
+    theRadio2 = document.getElementById("theRadio2")
+    theRadio2.checked = false
+    assertFalse(theRadio2.checked)
+    radio2Events = new Array()
+    attachEventListeners(theRadio2, radio2Events)
+}
+
+function testSelectOptionWithLabelShouldSelectAndTriggerFocusChangeAndBlur() {
+    pageBot.selectOptionWithLabel(theSelect, "Third Option")
+
+    assertEquals("option3", theSelect.value)
+    assertEquals("focus,change,blur", theSelectEvents.join());
+}
+
+function testSelectAlreadySelectedOptionWithLabelShouldNotTriggerChange() {
+    pageBot.selectOptionWithLabel(theSelect, "Second Option")
+
+    assertEquals("option2", theSelect.value)
+    assertEquals("focus,blur", theSelectEvents.join())
+}
+
+function testReplaceTextInTextBoxShouldTriggerFocusSelectChangeBlur() {
+    pageBot.replaceText(theTextbox, "new text")
+    assertEquals("new text", theTextbox.value)
+
+    assertEquals("focus,select,change,blur", textboxEvents.join())
+}
+
+function TODO_testReplaceTextShouldNotTriggerSelectIfOriginallyEmpty() {
+    theTextbox.value = ""
+
+    pageBot.replaceText(theTextbox, "new text")
+
+    assertEquals("new text", theTextbox.value)
+    assertEquals("focus,change,blur", textboxEvents.join());
+}
+
+function testClickCheckboxShouldTriggerFocusChangeAndBlur() {
+    pageBot.clickElement(theCheckbox)
+
+    assertTrue(theCheckbox.checked)
+    assertEquals("focus,change,blur", checkboxEvents.join())
+}
+
+function testClickCheckboxShouldUncheckIfAlreadyChecked() {
+    theCheckbox.checked = true
+    pageBot.clickElement(theCheckbox)
+    assertFalse(theCheckbox.checked)
+}
+
+function testClickRadioShouldTriggerFocusChangeAndBlur() {
+    pageBot.clickElement(theRadio2)
+    assertFalse(theRadio1.checked)
+    assertTrue(theRadio2.checked)
+
+    assertEquals("", radio1Events.join());
+    assertEquals("focus,change,blur", radio2Events.join())
+}
+
+function testClickRadioShouldNotTriggerChangeIfAlreadySelected() {
+    assertTrue(theRadio1.checked)
+    pageBot.clickElement(theRadio1)
+    assertTrue(theRadio1.checked)
+
+    assertEquals("focus,blur", radio1Events.join())
+    assertEquals("", radio2Events.join())
+}
+</script>
+  </head>
+
+  <body>
+    <h1>Selenium Browserbot Tests</h1>
+
+    <form id="theForm" name="theForm">
+      <input name="theTextbox" id="theTextbox" type="text" value="theTextbox"/>
+      <input name="theCheckbox" id="theCheckbox" type="checkbox"/>
+      <input name="theRadio" id="theRadio1" type="radio" value="radio1"/><input name="theRadio" id="theRadio2" type="radio" value="radio2"/>
+      <select name="theSelect" id="theSelect">
+        <option value="option1">First Option</option>
+        <option value="option2" selected="true">Second Option</option>
+        <option value="option3">Third Option</option>
+      </select>
+    </form>
+  </body>
+</html>
