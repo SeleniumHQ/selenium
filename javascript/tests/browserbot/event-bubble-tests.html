@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function setUp() {
+    pageBot = new PageBot(window);
+
+    theForm = document.getElementById("theForm")
+    theTextbox = document.getElementById("theTextbox")
+}
+
+function testFocusEventNeverBubbles() {
+    var textboxFocus = false;
+    var formFocus = false;
+    theTextbox.onfocus = function() {textboxFocus = true};
+    theForm.onfocus = function() {formFocus = true};
+
+    pageBot.replaceText(theTextbox, 'foo1');
+
+    assertTrue(textboxFocus);
+    assertFalse(formFocus);
+}
+
+function testSelectEventCanBubbleInFirefoxButNotInIE() {
+    var textboxSelect = false;
+    var formSelect = false;
+    theTextbox.onselect = function() {textboxSelect = true};
+    theForm.onselect = function() {formSelect = true};
+
+    pageBot.replaceText(theTextbox, 'foo1');
+
+    assertTrue(textboxSelect);
+    if (isIE) {
+        assertFalse(formSelect);
+    } else {
+        assertTrue(formSelect);
+    }
+}
+
+function testChangeEventCanBubbleInFirefoxButNotInIE() {
+    var textboxChange = false;
+    var formChange = false;
+    theTextbox.onchange = function() {textboxChange = true};
+    theForm.onchange = function() {formChange = true};
+
+    pageBot.replaceText(theTextbox, 'foo2');
+
+    assertTrue(textboxChange);
+    if (isIE) {
+        assertFalse(formChange);
+    } else {
+        assertTrue(formChange);
+    }
+}
+
+function testClickEventAlwaysBubbles() {
+    var buttonClick = false;
+    var formClick = false;
+    var theButton = document.getElementById("theButton")
+    theButton.onclick = function() {buttonClick = true};
+    theForm.onclick = function() {formClick = true};
+
+    pageBot.clickElement(theButton);
+
+    assertTrue(buttonClick);
+    assertTrue(formClick);
+}
+</script>
+  </head>
+
+  <body>
+    <h1>Selenium Browserbot Tests</h1>
+
+    <form id="theForm" name="theForm">
+      <input name="theTextbox" id="theTextbox" type="text" value="theTextbox"/>
+      <input name="theButton" id="theButton" type="button" value="theButton"/>
+    </form>
+  </body>
+</html>
