@@ -27,6 +27,15 @@
             <fileset dir=".">
                 <include name="ruby/**"/>            
                 <include name="javascript/**"/>
+                <exclude name="javascript/TestRunner.html"/>            
+                <exclude name="javascript/jsmock/**"/>            
+                <exclude name="javascript/jsunit/**"/>            
+                <exclude name="javascript/jsunit-logs/**"/>
+                <exclude name="javascript/tests/**"/>            
+                <exclude name="javascript/*.py"/>            
+                <exclude name="javascript/*.bat"/>            
+                <exclude name="javascript/build.xml"/>            
+                <exclude name="javascript/**/web.xml"/>            
             </fileset>
         </zip>
 
