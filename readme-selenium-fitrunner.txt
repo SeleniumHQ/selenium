@@ -4,20 +4,20 @@ Selenium Functional Testing Tool
 
 To run a test suite with just a web browser (no server):
 
-    Open <selenium_home>/bin/TestRunner.html in your browser.
-    Example: file:///C:/selenium/bin/TestRunner.html
+    Open <selenium_home>/javascript/TestRunner.html in your browser.
+    Example: file:///C:/selenium/javascript/TestRunner.html
 
 
 To run a test suite with simple web server:
 
-    1) Launch <selenium_home>/bin/startWebServer.bat
+    1) Launch <selenium_home>/javascript/startWebServer.bat
         (An installation of Python is required. This works with 2.3.4, 
         but hasn't been tested with older versions, yet.)
 
     2) Open up your browser, then goto the URL: 
         http://localhost:8000/TestRunner.html    
         (If you don't want the web server to run on port 8000, modify
-        <selenium_home>\bin\tinyWebServer.py)
+        <selenium_home>\javascript\tinyWebServer.py)
     
 Supported Browsers:
     Microsoft Internet Explorer 6.0+
