@@ -1,33 +1,31 @@
-<project name="selenium" default="dist-zip">
-    <property name="version" value="0.1.3"/>
+<project name="selenium" default="dist">
+    <property name="version" value="0.2"/>
     <property name="website.root" value="../website/webapps/ROOT"/>
 
     <target name="publish-release" depends="publish-dist,publish-demos,publish-docs"/>
 
     <target name="dist">
         <delete dir="dist"/>
-        <mkdir dir="dist/selenium"/>
-        <copy todir="dist/selenium">
+        <mkdir dir="dist"/>
+        <zip zipfile="dist/selenium_v${version}-all-langs-src.zip">
             <fileset dir=".">
+                <exclude name="squeak/**"/>            
+                <exclude name="dotnet/**"/>            
+                <exclude name="python/**"/>            
                 <exclude name="**/*session.obj"/>
                 <exclude name="**/*.iws"/>
                 <exclude name="**/*.ipr"/>
                 <exclude name="**/*.iml"/>
-                <exclude name="dist"/>
-                <exclude name="dist/selenium*.zip"/>
+                <exclude name="**/dist/**"/>
                 <exclude name="**/target/**"/>
                 <exclude name="**/junittestcases*.properties"/>
                 <exclude name="readme-selenium-rpcrunner.txt"/>
             </fileset>
-        </copy>
+        </zip>
     </target>
 
-    <target name="dist-zip" depends="dist">
-        <zip basedir="dist" zipfile="dist/selenium_v${version}.zip"/>
-    </target>
-
-    <target name="publish-dist" depends="dist-zip">
-        <copy todir="${website.root}" file="dist/selenium_v${version}.zip"/>
+    <target name="publish-dist" depends="dist">
+        <copy todir="${website.root}" file="dist/selenium_v${version}-all-langs-src.zip"/>
     </target>
 
     <target name="publish-docs">
