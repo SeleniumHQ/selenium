@@ -65,8 +65,8 @@ function testShouldRemoveAlertWhenItIsRetreived() {
 }
 
 function testShouldReportAlertsFromMultiplePages() {
-    secondWindow = document.getElementById("frame").contentWindow;
-    secondPageBot = browserBot.wrapWindow(secondWindow);
+    var secondWindow = frames['aframe'];
+    var secondPageBot = browserBot.wrapWindow(secondWindow);
 
     window.alert("I am an alert in the first window");
     secondWindow.alert("I am an alert in the second window");
@@ -83,7 +83,7 @@ function testShouldReportAlertsFromMultiplePages() {
 
   <body>
     <h1>Selenium PageBot Alert Handling Tests</h1>
-    <iframe NAME="frame" ID="frame" SRC=""></iframe>
+    <iframe name="aframe" id="aframe" src="about:blank"></iframe>
     
   </body>
 </html>

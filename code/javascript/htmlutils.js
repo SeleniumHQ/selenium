@@ -102,3 +102,11 @@ function getFunctionName(aFunction) {
   }
   return 'anonymous';
 }
+
+function describe(object) {
+    var props = new Array();
+    for (var prop in object) {
+        props.push(prop);
+    }
+    return props.join('\n');
+}
