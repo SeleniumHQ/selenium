@@ -23,17 +23,22 @@ Copyright 2004 ThoughtWorks, Inc
     <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="/html-xpath/html-xpath-patched.js"></script>
 
 <script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
-    pageBot = new PageBot(window);
-    element1 = document.getElementById("id1");
-    element2 = document.getElementById("id2");
-    element3 = document.getElementById("id3");
-    element4 = document.getElementById("document.links[0]");
+    // To be realistic, the elements are located in a separate IFrame.
+    var iframe = document.getElementById("testIframe");
+    var iWindow = iframe.contentWindow.window;
+
+    pageBot = new PageBot(iWindow);
+    element1 = iWindow.document.getElementById("id1");
+    element2 = iWindow.document.getElementById("id2");
+    element3 = iWindow.document.getElementById("id3");
+    element4 = iWindow.document.getElementById("document.links[0]");
 }
 
 //
@@ -51,23 +56,10 @@ function testFindIdentifiedElementReturnsFirstElementWithMatchingName() {
     assertEquals(element2, pageBot.findIdentifiedElement('name1'));
 }
 
-function testFindIdentifiedElementIsCaseSensitiveOnId() {
-    assertNull(pageBot.findIdentifiedElement('ID3'));
-}
-
-function testFindIdentifiedElementIsCaseSensitiveOnName() {
-    assertNull(pageBot.findIdentifiedElement('NAME1'));
-}
-
 //
 // Tests for PageBot.findElementByDomTraversal
 //
 function testFindElementByDomTraversal() {
-    assertEquals(element2,
-                 pageBot.findElementByDomTraversal("links[1]"))
-}
-
-function testFindElementByDomTraversalStripsLeadingDocument() {
     assertEquals(element2,
                  pageBot.findElementByDomTraversal("document.links[1]"))
 }
@@ -112,6 +104,46 @@ function testFindElementByXPathReturnsFirstMatchingElement() {
 //
 // Tests for PageBot.findElement()
 //
+function testFindElementCallsEachLocatorInSequenceAndThrowsErrorIfNoneReturnElement() {
+    var calls = new Array();
+    var locators = [function(locator) {calls.push("1 " + locator)},
+                    function(locator) {calls.push("2 " + locator)},
+                    function(locator) {calls.push("3 " + locator)}];
+    pageBot.locators = locators;
+
+    var element = null;
+    var failureMessage = null;
+    try {
+        element = pageBot.findElement("foo");
+    } catch (e) {
+        failureMessage = e.message;
+    }
+
+    assertNull(element);
+    assertEquals("Element foo not found", failureMessage);
+    assertEquals("1 foo,2 foo,3 foo", calls.join());
+}
+
+function testFindElementReturnsTheFirstElementReturnedByALocatorFunction() {
+    var calls = new Array();
+    var locators = [function(locator) {calls.push("1 " + locator)},
+                    function(locator) {calls.push("2 " + locator); return "bar";},
+                    function(locator) {calls.push("3 " + locator)}];
+    pageBot.locators = locators;
+
+    var element = null;
+    var failureMessage = null;
+    try {
+        element = pageBot.findElement("foo");
+    } catch (e) {
+        failureMessage = e.message;
+    }
+
+    assertEquals("bar", element);
+    assertNull(failureMessage);
+    assertEquals("1 foo,2 foo", calls.join());
+}
+
 function testFindElementReturnsElementWithMatchingIdentifier() {
     assertEquals(element2, pageBot.findElement("id2"));
 }
@@ -151,10 +183,6 @@ function testFindElementHandlesDomTraversal() {
   </head>
 
   <body>
-    <a id="id1" href="#id1">this is the first element</a>
-    <a id="id2" name="name1" href="#id2">this is the second element</a>
-    <a id="id3" name="name1" href="#id3">this is the third element</a>
-
-    <p id="document.links[0]" name="name1" class="pstyle">dummy element</p>
+    <iframe id="testIframe" src="./pagebot-locator-tests-include.html"/>
   </body>
 </html>

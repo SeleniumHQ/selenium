@@ -61,8 +61,8 @@ BrowserBot = function(frame) {
     this.currentPage = null;
     this.currentWindowName = null;
     
-    this.recordedAlerts = new Array();    
-   
+    this.recordedAlerts = new Array();
+
 }
 
 BrowserBot.prototype.recordAlert = function(alert) {
@@ -163,28 +163,28 @@ PageBot = function(pageWindow, browserBot) {
     function modifyWindowToRecordAlerts(window, browserBot) {     
          window.alert = function(alert){browserBot.recordAlert(alert);};
     }
+
+    this.locators = new Array();
+    this.locators.push(this.findIdentifiedElement);
+    this.locators.push(this.findElementByDomTraversal);
+    this.locators.push(this.findElementByXPath);
 }
 
 /*
  * Finds an element on the current page, using various lookup protocols
  */
 PageBot.prototype.findElement = function(locator) {
-    // First try using id/name search
-    var element = this.findIdentifiedElement(locator);
-
-    // Next, if the locator starts with 'document.', try to use Dom traversal
-    if (element == null && locator.indexOf("document.") == 0) {
-        var domTraversal = locator.substr(9)
-        element = this.findElementByDomTraversal(domTraversal)
+    // Try the locators one at a time.
+    for (var i = 0; i < this.locators.length; i++) {
+        var locatorFunction = this.locators[i];
+        var element = locatorFunction.call(this, locator);
+        if (element != null) {
+            return element;
+        }
     }
 
-    // TODO: try xpath
-
-    if (element == null) {
-        throw new Error("Element " + locator + " not found");
-    }
-
-    return element;
+    // Element was not found by any locator function.
+    throw new Error("Element " + locator + " not found");
 }
 
 /*
@@ -193,26 +193,35 @@ PageBot.prototype.findElement = function(locator) {
  * search by name attribute if an element with the id isn't found.
  */
 PageBot.prototype.findIdentifiedElement = function(identifier) {
-    var element = this.currentDocument.getElementById(identifier);
-
-    if (element == null
-        && !isIE // IE checks this without asking
-        && document.evaluate // DOM3 XPath
-        )
-    {
-        var xpath = "//*[@name='" + identifier + "']";
-        element = document.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
+    // Since we try to get an id with _any_ string, we need to handle
+    // cases where this causes an exception.
+    try {
+        var element = this.currentDocument.getElementById(identifier);
+        if (element == null
+            && !isIE // IE checks this without asking
+            && document.evaluate )// DOM3 XPath
+        {
+             var xpath = "//*[@name='" + identifier + "']";
+             element = document.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
+        }
+    } catch (e) {
+        return null;
     }
 
     return element;
 }
 
+/**
+ * Finds an element using by evaluating the "document.*" string against the
+ * current document object. Dom expressions must begin with "document."
+ */
 PageBot.prototype.findElementByDomTraversal = function(domTraversal) {
-    // Trim the leading 'document'
-    if (domTraversal.indexOf("document.") == 0) {
-        domTraversal = domTraversal.substr(9);
+    if (domTraversal.indexOf("document.") != 0) {
+        return null;
     }
 
+    // Trim the leading 'document'
+    domTraversal = domTraversal.substr(9);
     var locatorScript = "this.currentDocument." + domTraversal;
     var element = eval(locatorScript);
 
@@ -223,16 +232,28 @@ PageBot.prototype.findElementByDomTraversal = function(domTraversal) {
     return element;
 }
 
+/**
+ * Finds an element identified by the xpath expression. Expressions _must_
+ * begin with "//".
+ */
 PageBot.prototype.findElementByXPath = function(xpath) {
     if (xpath.indexOf("//") != 0) {
         return null;
     }
 
-    if (!document.evaluate) {
-        return null;
+    // If the document doesn't support XPath, mod it with html-xpath.
+    // This only works for IE.
+    if (!this.currentDocument.evaluate) {
+        addXPathSupport(this.currentDocument);
     }
 
-    return document.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
+    // If we still don't have XPath bail.
+    // TODO implement subset of XPath for browsers without native support.
+    if (!this.currentDocument.evaluate) {
+        throw new Error("XPath not supported");
+    }
+
+    return this.currentDocument.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
 }
 
 /*
