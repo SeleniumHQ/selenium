@@ -14,9 +14,10 @@
 #
 require 'selenium'
 
-puts "Go to http://localhost:7896/selenium-driver/SeleneseRunner.html"
-
 selenium = Selenium::WebrickCommandProcessor.new.proxy
+
+browser = Selenium::WindowsIEBrowserLauncher.new
+browser.launch("http://localhost:7896/selenium-driver/SeleneseRunner.html")
 
 # Send some commands to the browser
 puts selenium.open('/test_click_page1.html')
@@ -35,3 +36,5 @@ end
 
 puts selenium.verifyElementPresent("link")
 puts selenium.testComplete()
+
+browser.close
