@@ -20,12 +20,11 @@ package com.thoughtworks.selenium.embedded.jetty;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
-import com.thoughtworks.selenium.launchers.WindowsIEBrowserLauncher;
 import junit.framework.TestCase;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
 
@@ -50,7 +49,7 @@ public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
         selenium.open("Apple");
         selenium.clickAndWait("Orange");
         selenium.setTextField("Pear", "Bartlet");
-        selenium.endOfRun();
+        selenium.testComplete();
         // throws Exceptions if not OK
     }
 }

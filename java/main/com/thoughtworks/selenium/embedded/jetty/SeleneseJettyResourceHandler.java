@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class SeleneseJettyResourceHandler extends ResourceHandler {
 
@@ -54,7 +54,7 @@ public class SeleneseJettyResourceHandler extends ResourceHandler {
     }
 
     public void handle(String s, String s1, HttpRequest req, HttpResponse res) throws HttpException, IOException {
-        res.setField(HttpFields.__ContentType, "text/plain");
+        res.setField(HttpFields.__ContentType, "text/plain");        
         OutputStream out = res.getOutputStream();
         ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
         Writer writer = new OutputStreamWriter(buf, StringUtil.__ISO_8859_1);

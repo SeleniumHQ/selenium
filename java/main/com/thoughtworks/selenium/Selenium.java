@@ -19,7 +19,7 @@ package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public interface Selenium extends Startable {
 
@@ -28,5 +28,5 @@ public interface Selenium extends Startable {
     void setTextField(String field, String value);
     void verifyText(String type, String text);
     void verifyLocation(String location);
-    void endOfRun();
+    void testComplete();
 }

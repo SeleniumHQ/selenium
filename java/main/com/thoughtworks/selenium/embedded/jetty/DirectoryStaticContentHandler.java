@@ -19,12 +19,17 @@ package com.thoughtworks.selenium.embedded.jetty;
 
 import org.mortbay.jetty.servlet.ServletHttpContext;
 import org.mortbay.http.handler.ResourceHandler;
+import org.mortbay.http.HttpRequest;
+import org.mortbay.http.HttpResponse;
+import org.mortbay.http.HttpException;
+import org.mortbay.http.HttpFields;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DirectoryStaticContentHandler implements StaticContentHandler {
     private File directory;
@@ -35,6 +40,11 @@ public class DirectoryStaticContentHandler implements StaticContentHandler {
 
     public void addStaticContent(ServletHttpContext context) {
         context.setResourceBase(directory.getAbsolutePath());
-        context.addHandler(new ResourceHandler());
+        context.addHandler(new ResourceHandler() {
+            public void handle(String s, String s1, HttpRequest req, HttpResponse res) throws HttpException, IOException {
+                res.setField("Expires", "0"); // never cached.
+                super.handle(s,s1,req,res);
+            }
+        });
     }
 }
