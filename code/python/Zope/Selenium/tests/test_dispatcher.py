@@ -16,19 +16,20 @@ class DispatcherTests(unittest.TestCase):
     ### addCommand test    
     def test_addCommand(self):
         dispatcher = Dispatcher()
-        getSize = dispatcher._v_commands.qsize        
-        self.assertEquals(0, getSize(), '_v_commands queue should be empty')  
+        size = len(dispatcher._commands)
+        self.assertEquals(0, size, '_commands queue should be empty')  
         
         test_command = '|open|http://localhost/||'              
         dispatcher.addCommand(test_command)
         
         # Now verify that the queue has one item 
-        self.assertEquals(1, getSize(), 
-                          '_v_commands queue should have size of 1')   
+        size = len(dispatcher._commands)
+        self.assertEquals(1, size, 
+                          '_commands queue should have size of 1')   
         
         # and check that we get out what we put in...
-        self.assertEquals(test_command, dispatcher._v_commands.get(),
-                          "received unexpected value when calling 'get()' on the queue")
+        self.assertEquals(test_command, dispatcher._commands.pop(0),
+                          "received unexpected value when calling 'pop(0)' on the queue")
 
     ### getCommand tests
     def test_getCommand(self):
@@ -49,7 +50,7 @@ class DispatcherTests(unittest.TestCase):
     ### command queue query test
     def test_getCommandQueueSize(self):
         dispatcher = Dispatcher()        
-        expected_size  = dispatcher._v_commands.qsize() 
+        expected_size  = len(dispatcher._commands)
         retrieved_size = dispatcher.getCommandQueueSize()  
         
         self.assertEquals(0, retrieved_size)
@@ -61,8 +62,9 @@ class DispatcherTests(unittest.TestCase):
     ### addResult test
     def test_addResult(self):
         dispatcher = Dispatcher()
-        getSize = dispatcher._v_results.qsize        
-        self.assertEquals(0, getSize(), '_v_results queue should be empty')  
+        getSize = lambda: len(dispatcher._results)
+        
+        self.assertEquals(0, getSize(), '_results queue should be empty')  
         
         # TODO: Find out what a 'real' sample result is.
         sample_result = expected_result = 'OK'              
@@ -70,17 +72,17 @@ class DispatcherTests(unittest.TestCase):
         
         # Now verify that the queue has one item 
         self.assertEquals(1, getSize(), 
-                          '_v_results queue should have size of 1')   
+                          '_results queue should have size of 1')   
         
         # and check that we get out what we put in...
-        self.assertEquals(expected_result, dispatcher._v_results.get(),
-                          "received unexpected value when calling 'get()' on the queue")
+        self.assertEquals(expected_result, dispatcher._results.pop(0),
+                          "received unexpected value when calling 'pop(0)' on the queue")
 
     ### getResult tests
     def test_getResult(self):
         dispatcher = Dispatcher()
         expected_result = "I'm a sample test result"
-        dispatcher._v_results.put(expected_result)    
+        dispatcher._results.append(expected_result)    
         retrieved_result = dispatcher.getResult()
         self.assertEquals(expected_result, retrieved_result)               
 
@@ -95,7 +97,7 @@ class DispatcherTests(unittest.TestCase):
     ### result queue query test
     def test_getResultQueueSize(self):
         dispatcher = Dispatcher()        
-        expected_size  = dispatcher._v_results.qsize() 
+        expected_size  = len(dispatcher._results)
         retrieved_size = dispatcher.getResultQueueSize()  
         
         self.assertEquals(0, retrieved_size)
