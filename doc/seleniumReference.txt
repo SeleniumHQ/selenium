@@ -102,10 +102,10 @@ Command Reference
 
         **examples:**
 
-            ====    =========   ==========
+            ======  =========   ==========
             select  dropDown    First Option
             select  dropDown    Australian Dollars
-            ====    =========   ==========
+            ======  =========   ==========
 
     **selectWindow**
         Selects a popup window.  Once a popup window has been selected, all commands go to that window.  To select the main window again, use "null" as the target.
@@ -246,7 +246,7 @@ Command Reference
 Variables
 -----------------
 
-    Selenium can handle simple variables.  A variable is stored with the storeVariable command.  Then, it can be used in the target or value column with the syntax: ${variableName}.
+    Selenium can handle simple variables.  A variable is stored with the storeValue command.  Then, it can be used in the target or value column with the syntax: ${variableName}.
 
     Example:
 
@@ -328,6 +328,7 @@ Continuous Integration
 
 ------------------
 
-:Author:            Paul Gross, Jason Huggins
+:Authors:           Paul Gross, Jason Huggins
 :Created Date:      08/23/2004
+:Modified Date:     11/04/2004
 :Created With:      reStructuredText: http://docutils.sourceforge.net/rst.html
