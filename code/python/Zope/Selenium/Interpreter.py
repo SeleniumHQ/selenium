@@ -32,7 +32,7 @@ class SeleniumInterpreter(Dispatcher):
         return self.webDriver(REQUEST)
     
 
-    def dispatchCommand(self, command, target, value=""):
+    def dispatchCommand(self, command, target="", value=""):
         command_string = translate(command, target, value)        
         return self.apiDriver(command_string)
 
