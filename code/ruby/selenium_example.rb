@@ -25,7 +25,13 @@ puts selenium.clickAndWait('link')
 puts selenium.verifyLocation('/test_click_page2.html')
 puts selenium.clickAndWait('previousPage')
 
-puts selenium.verifyText("link", "This is WRONG")
-puts selenium.verifyElementPresent("link")
+begin
+  puts selenium.verifyText("link", "This is WRONG") # should fail
+rescue SeleniumCommandError
+  puts 'expected error occurred'
+else
+  puts 'FAIL -- expected error not thrown'
+end
 
+puts selenium.verifyElementPresent("link")
 puts selenium.testComplete()
