@@ -110,4 +110,8 @@ class Dispatcher:
         """ Adds a command to the command queue, and gets a result 
         from the result queue."""
         self.addCommand(command_string)
-        return self.getResult()
+        # if test is complete, don't try retrieving a response from the browser.
+        if command_string.find('testComplete') >= 0:
+            return 'test complete'
+        else:
+            return self.getResult()
