@@ -9,6 +9,10 @@ function fail(message) {
     throw new Error(message);
 }
 
+SELENIUM_PROCESS_CONTINUE = 0;
+SELENIUM_PROCESS_ABORT = 1;
+SELENIUM_WAIT_FOR_RELOAD = 2;
+
 function Selenium(browserbot) {
     this.browserbot = browserbot;
     this.page = function() {return browserbot.getCurrentPage()};
@@ -27,7 +31,7 @@ function Selenium(browserbot) {
     this.clickElement = function(locator) {
         var element = self.page().findElement(locator);
         self.page().clickElement(element);
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /**
@@ -37,7 +41,7 @@ function Selenium(browserbot) {
     this.type = function(locator, newText) {
         var element = self.page().findElement(locator);
         self.page().replaceText(element, newText);
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /**
@@ -47,7 +51,7 @@ function Selenium(browserbot) {
     this.select = function(locator, optionText) {
         var element = self.page().findElement(locator);
         self.page().selectOptionWithLabel(element, optionText);
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /*
@@ -55,7 +59,7 @@ function Selenium(browserbot) {
      */
     this.open = function(newLocation) {
         self.browserbot.openLocation(newLocation);
-        return false;
+        return SELENIUM_WAIT_FOR_RELOAD;
     }
 
     /*
@@ -63,7 +67,7 @@ function Selenium(browserbot) {
      */
     this.selectWindow = function(windowName) {
         self.browserbot.selectWindow(windowName);
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /*
@@ -71,7 +75,7 @@ function Selenium(browserbot) {
      */
     this.verifyLocation = function(expectedLocation) {
         assertStringEquals(expectedLocation, self.page().location);
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /*
@@ -88,7 +92,7 @@ function Selenium(browserbot) {
         }
 
         assertStringEquals(expectedValue, actualValue);
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /*
@@ -98,7 +102,7 @@ function Selenium(browserbot) {
         var element = self.page().findElement(locator);
         var actualText = getText(element);
         assertStringEquals(expectedContent, actualText);
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /*
@@ -127,7 +131,7 @@ function Selenium(browserbot) {
             actualContent = getText(table.rows[row].cells[col]);
             assertStringEquals(expectedContent, actualContent);
         }
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /*
@@ -143,7 +147,7 @@ function Selenium(browserbot) {
     // alert(allText)
             fail("'" + expectedText + "' not found in page text.");
         }
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /*
@@ -151,7 +155,7 @@ function Selenium(browserbot) {
      */
     this.verifyElementPresent = function(locator) {
         self.page().findElement(locator);
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
 
     /*
@@ -162,7 +166,7 @@ function Selenium(browserbot) {
             self.page().findElement(locator);
         }
         catch (e) {
-            return true;
+            return SELENIUM_PROCESS_CONTINUE;
         }
         fail("Element " + locator + " found.");
     }

@@ -58,6 +58,10 @@ function getTestFrame(){
 	return document.getElementById('testFrame');
 }
 
+function loadAndRunIfAuto() {
+    loadSuiteFrame();
+}
+
 function loadSuiteFrame()
 {
         browserbot = new BrowserBot(document.getElementById('myiframe'));
@@ -149,10 +153,6 @@ function isAutomatedRun() {
     return false;
 }
 
-function getCellText(rowNumber, columnNumber) {
-    return getText(inputTableRows[rowNumber].cells[columnNumber]);
-}
-
 function resetMetrics() {
     numTestPasses = 0;
     numTestFailures = 0;
@@ -179,7 +179,8 @@ function startTest() {
 
     buildCommandHandlers();
 
-    processCommand();
+    testLoop = new TestLoop(inputTableRows.length);
+    testLoop.start();
 }
 
 function startTestSuite() {
@@ -200,8 +201,6 @@ function runNextTest() {
     // Scroll the suite frame down by 25 pixels once we get past the first cell.
     if(currentTestRow >= 1)
         getSuiteFrame().contentWindow.scrollBy(0,25);
-
-    removeLoadListener(getTestFrame(), processCommand);
 
     suiteTable = (getSuiteFrame().contentWindow.document.getElementsByTagName("table"))[0];
 
@@ -241,6 +240,10 @@ function runNextTest() {
         addLoadListener(getTestFrame(), startTest);
         getTestFrame().src = testLink.href;
     }
+}
+
+function setCellColor(tableRows, row, col, colorStr) {
+    tableRows[row].cells[col].bgColor = colorStr;
 }
 
 // Sets the results from a test into a hidden column on the suite table.  So,
@@ -354,79 +357,16 @@ function buildCommandHandlers() {
 }
 
 
-function processCommand(){
-    // Scroll the test frame down by 25 pixels once we get past the first 5 cells.
-    if(currentCommandRow >= 5)
-        getTestFrame().contentWindow.scrollBy(0,25);
-
-
-    // Make the previous row white
-    inputTableRows[currentCommandRow].bgColor = "white";
-
-	currentCommandRow++;
-
-    printMetrics();
-
-    // If we are done with this test, set the title bar as pass or fail, and
-    // then call back to runNextTest() to run the next test in the suite.
-    if(currentCommandRow >= inputTableRows.length) {
-
-        if(testFailed) {
-            setCellColor(inputTableRows, 0, 0, failColor);
-            numTestFailures += 1;
-        }
-        else {
-            setCellColor(inputTableRows, 0, 0, passColor);
-            numTestPasses += 1;
-        }
-
-        printMetrics();
-        runNextTest();
-    }
-
-    // Otherwise, run the next command in this test.
-    else {
-        // Make the current row blue
-        inputTableRows[currentCommandRow].bgColor = "#DEE7EC";
-
-        command = getCellText(currentCommandRow, 0);
-        target = replaceVariables(getCellText(currentCommandRow, 1));
-        value = replaceVariables(getCellText(currentCommandRow, 2));
-
-        handler = getHandler(command);
-
-        // TODO invert this horrible recursive thing...
-        if(handler == null) {
-            setRowFailed("Unknown command", ERROR);
-            processCommand();
-        }
-        else {
-            try {
-                var processNext = handler(target, value);
-                if (handler.type == "assert") {
-                    setRowPassed();
-                }
-                if (processNext) {
-                    processCommand();
-                }
-            } catch (e) {
-                setRowFailed(e.message, ERROR);
-                processCommand();
-            }
-        }
-    }
-}
-
 function getHandler(command) {
-    var action = actions[command];
-    if (action) {
-        action.type = "action";
-        return action;
+    var handler = actions[command];
+    if (handler) {
+        handler.type = "action";
+        return handler;
     }
-    var assert = asserts[command];
-    if (assert) {
-        assert.type = "assert";
-        return assert;
+    handler = asserts[command];
+    if (handler) {
+        handler.type = "assert";
+        return handler;
     }
     return null;
 }
@@ -452,18 +392,6 @@ function printMetrics() {
 // Puts a leading 0 on num if it is less than 10
 function pad (num) {
     return (num > 9) ? num : "0" + num;
-}
-
-// Find the element by id and returns it.  If it is not found, changes the
-// table to include an error message.
-function findElement(id) {
-    try {
-        return browserbot.getCurrentPage().findElement(id);
-    }
-    catch (e) {
-        setRowFailed(e.message, ERROR);
-        return null;
-    }
 }
 
 // Search through str and replace all variable references ${varName} with their
@@ -502,56 +430,162 @@ function handleClick(target, wait) {
     selenium.clickElement(target);
 
     if(wait == "nowait") {
-        return true;
+        return SELENIUM_PROCESS_CONTINUE;
     }
-    selenium.callOnNextPageLoad(processCommand);
-    return false;
+    selenium.callOnNextPageLoad(testLoop.continueCurrentTest);
+    return SELENIUM_WAIT_FOR_RELOAD;
 }
 
 function handleOpen(target) {
     selenium.open(target);
-    selenium.callOnNextPageLoad(processCommand);
-    return false;
+    selenium.callOnNextPageLoad(testLoop.continueCurrentTest);
+    return SELENIUM_WAIT_FOR_RELOAD;
 }
 
 function handlePause(waitTime) {
-    setTimeout("processCommand()", waitTime);
-    return false;
+    setTimeout("testLoop.continueCurrentTest()", waitTime);
+    return SELENIUM_WAIT_FOR_RELOAD;
 }
 
 // Reads the text of the page and stores it in a variable with the name of the target
 function handleStoreValue(target) {
     value = browserbot.getCurrentPage().bodyText();
     storedVars[target] = value;
-    return true;
+    return SELENIUM_PROCESS_CONTINUE;
 }
 
-function setRowPassed() {
+function TestLoop(commandCount) {
+    var self = this;
+    this.start = function() {
+        clearRowColours();
+        self.continueCurrentTest();
+    }
+
+    function clearRowColours() {
+        for (var i = 0; i <= inputTableRows.length - 1; i++) {
+            inputTableRows[i].bgColor = "white";
+        }
+    }
+
+    this.continueCurrentTest = function() {
+        processState = SELENIUM_PROCESS_CONTINUE;
+        while (currentCommandRow < inputTableRows.length - 1) {
+            currentCommandRow++;
+            processState = self.executeNextCommand();
+            if (processState == SELENIUM_WAIT_FOR_RELOAD) {
+                return; // Will re-enter this loop on reload.
+            }
+            if (processState == SELENIUM_PROCESS_ABORT) { // TODO remove this flag, use exception
+                break;
+            }
+        }
+
+        // Test is finished.
+        self.completeTest();
+        window.setTimeout("runNextTest()", 100);
+    }
+
+    this.executeNextCommand = function() {
+        //alert("executeNextCommand(" + commandIndex + ")");
+        // Make the current row blue
+        this.beginCommand();
+
+        var command = getCellText(currentCommandRow, 0);
+        var target = replaceVariables(getCellText(currentCommandRow, 1));
+        var value = replaceVariables(getCellText(currentCommandRow, 2));
+
+        handler = getHandler(command);
+
+        // TODO invert this horrible recursive thing...
+        if(handler == null) {
+            this.commandError("Unknown command", ERROR);
+            return SELENIUM_PROCESS_ABORT;
+        }
+        else {
+            try {
+                var processNext = handler(target, value);
+                if (handler.type == "assert") {
+                    this.assertionPassed();
+                } else {
+                    this.actionOK();
+                }
+
+                return processNext;
+            } catch (e) {
+                if (handler.type == "action") {
+                    this.commandError(e.message);
+                    return SELENIUM_PROCESS_ABORT;
+                } else {
+                    this.assertionFailed(e.message);
+                    return SELENIUM_PROCESS_CONTINUE;
+                }
+            }
+        }
+    }
+
+    function getCellText(rowNumber, columnNumber) {
+        return getText(inputTableRows[rowNumber].cells[columnNumber]);
+    }
+}
+
+TestLoop.prototype.beginCommand = function() {
+    // Make the current row blue
+    inputTableRows[currentCommandRow].bgColor = "#DEE7EC";
+
+    // Scroll the test frame down by 25 pixels once we get past the first 5 cells.
+    if(currentCommandRow >= 5)
+        getTestFrame().contentWindow.scrollBy(0,25);
+
+    printMetrics();
+}
+
+TestLoop.prototype.commandError = function(message) {
+    this.setRowFailed(message, ERROR);
+}
+
+TestLoop.prototype.actionOK = function(message) {
+    inputTableRows[currentCommandRow].bgColor = "white";
+}
+
+TestLoop.prototype.assertionPassed = function() {
+    this.setRowPassed(currentCommandRow);
+}
+
+TestLoop.prototype.assertionFailed = function(message) {
+    this.setRowFailed(message, FAILURE);
+}
+
+TestLoop.prototype.completeTest = function() {
+     if(testFailed) {
+         inputTableRows[0].bgColor = failColor;
+         numTestFailures += 1;
+     }
+     else {
+         inputTableRows[0].bgColor = passColor;
+         numTestPasses += 1;
+     }
+
+     printMetrics();
+}
+
+TestLoop.prototype.setRowPassed = function() {
     numCommandPasses += 1;
 
     // Set cell background to green
-    setCellColor(inputTableRows, currentCommandRow, 0, passColor);
-    setCellColor(inputTableRows, currentCommandRow, 1, passColor);
-    setCellColor(inputTableRows, currentCommandRow, 2, passColor);
+    inputTableRows[currentCommandRow].bgColor = passColor;
 }
 
-function setRowFailed(errorMsg, failureType) {
+TestLoop.prototype.setRowFailed = function(errorMsg, failureType) {
     if (failureType == ERROR)
         numCommandErrors += 1;
     else if (failureType == FAILURE)
         numCommandFailures += 1;
 
     // Set cell background to red
-    setCellColor(inputTableRows, currentCommandRow, 0, failColor);
-    setCellColor(inputTableRows, currentCommandRow, 1, failColor);
-    setCellColor(inputTableRows, currentCommandRow, 2, failColor);
+    inputTableRows[currentCommandRow].bgColor = failColor;
 
     // Set error message
     inputTableRows[currentCommandRow].cells[2].innerHTML = errorMsg;
     testFailed = true;
     suiteFailed = true;
-}
-
-function setCellColor(tableRows, row, col, colorStr) {
-    tableRows[row].cells[col].bgColor = colorStr;
 }
