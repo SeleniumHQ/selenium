@@ -8,10 +8,10 @@
    question, with the full question in the section body.
 
 This is a work in progress.  Please feel free to ask questions and/or
-provide answers; send email to the Selenium users email address at `selenium-users@thoughtworks.com`__.
+provide answers; send email to the Selenium users email address at `selenium-users@lists.public.thoughtworks.org`__.
 
 .. _let us know:
-__ mailto:selenium-users@thoughtworks.com
+__ mailto:selenium-users@lists.public.thoughtworks.org
 
 
 .. contents::
