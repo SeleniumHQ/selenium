@@ -128,10 +128,10 @@ function loadSuiteFrame(executionContext) {
     var testSuiteName = getQueryParameter("test");
 
     if (testSuiteName) {
-        addLoadListener(getSuiteFrame(), loadTestFrame);
+        addLoadListener(getSuiteFrame(), onloadTestSuite);
         getSuiteFrame().src = testSuiteName;
     } else {
-        loadTestFrame();
+        onloadTestSuite();
     }
 }
 
@@ -152,8 +152,8 @@ function getIframeDocument(iframe)
     }
 }
 
-function loadTestFrame() {
-    removeLoadListener(getSuiteFrame(), loadTestFrame);
+function onloadTestSuite() {
+    removeLoadListener(getSuiteFrame(), onloadTestSuite);
     suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
 
     // Add an onclick function to each link in the suite table
