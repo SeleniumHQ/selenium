@@ -4,5 +4,11 @@ OS: Windows XP
 Python 2.3.4 - http://python.org/2.3.4/
 Python win32all - http://starship.python.net/crew/mhammond/win32/Downloads.html
 Twisted 1.3.0 - http://twistedmatrix.com/products/download
+PyCrypto - pycrypto-2.0.win32-py2.3.exe - http://www.amk.ca/python/code/crypto.html
 Perl 5.8.6 - http://www.activestate.com/Products/Download/Download.plex?id=ActivePerl
+PAR-0.86 - http://par.perl.org
 CGIProxy - http://www.jmarshall.com/tools/cgiproxy/
+
+
+to do install PAR, first install Perl, then:
+c:>ppm install PAR
