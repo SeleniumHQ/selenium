@@ -42,9 +42,9 @@ list_of_files = getFiles(cgi_bin_dir) + getFiles(selenium_driver_dir)
 
 myname="Jason Huggins"
 myeddress="jrhuggins@thoughtworks.com"
-distname="selenium_server"
+distname="selenium_proxy_server"
 myfullname="Selenium Web Application Functional Testing Tool"
-distvers="0.2.0"
+distvers="0.3.0"
 dist_url="selenium.thoughtworks.com"
 
 from distutils.core import setup
