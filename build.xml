@@ -21,8 +21,4 @@
     <target name="dist-zip" depends="dist">
         <zip basedir="dist" zipfile="dist/selenium-${version}.zip"/>
     </target>
-    
-    <target name="cvsgrab">
-       <https://gforge.wazokazi.com/viewcvs/viewcvs.cgi/?cvsroot=selenium>
-    </target>
 </project>
