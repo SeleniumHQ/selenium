@@ -29,7 +29,7 @@
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td class="newshead" align="left">Latest News:</td>
+				<td class="newshead" align="left"><u>Latest News:</u></td>
 			</tr>			
 			<tr>
 				<td class="newstext" align="left">12.4.04<br>&nbsp;&nbsp;- Selenium v0.1.3 available for <a href="http://gforge.public.thoughtworks.org/project/showfiles.php?group_id=1028">download</a></td>
