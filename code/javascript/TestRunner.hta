@@ -15,7 +15,7 @@ Copyright 2004 ThoughtWorks, Inc
  limitations under the License.
 -->
 <head>
-  <HTA:APPLICATION ID="SeleniumTestRunner" 
+  <HTA:APPLICATION ID="SeleniumTestRunner"
     APPLICATIONNAME="Selenium" >
 
 <meta content="text/html; charset=ISO-8859-1"
@@ -28,12 +28,13 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
 </head>
 
-<body onLoad="javascript:loadSuiteFrame();">
-<iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="20%" border="0"  SRC="./tests/GoogleTestSuite.html"></iframe>
+<body onLoad="javascript:start();">
+<iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="20%" border="0"  SRC="./tests/TestSuite.html"></iframe>
 <div id="seleniumControlPanel">
 <div id="launchPanel">
     <b>Run:</b>
@@ -47,6 +48,12 @@ http-equiv="content-type">
     <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
     <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
     <button type="button" id="continueTest">Next/Continue</button>
+</div>
+
+<div id="runInNewWindow" style="position:absolute">
+    <form method="get">
+    <input type="submit" name="newWindow" value="true">Launch new window</input>
+    </form>
 </div>
 
 <table id="resultsPanel">

@@ -25,6 +25,7 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
@@ -41,14 +42,15 @@ var postResult = "OK";
 
 function runTest() {
     tableParser = new TableParser();
-
-    browserbot = new BrowserBot(document.getElementById('myiframe'));
+    var executionContext = new IFrameExecutionContext();
+    var testAppFrame = executionContext.loadFrame();
+    browserbot = new BrowserBot(testAppFrame, executionContext);
     selenium = new Selenium(browserbot);
 
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
-    testLoop = new TestLoop(commandFactory);
+    testLoop = new TestLoop(commandFactory, executionContext);
 
     testLoop.firstCommand = startup;
     testLoop.nextCommand = nextCommand;
@@ -163,7 +165,7 @@ Open Source From <a href="http://www.thoughtWorks.com">ThoughtWorks Inc</a>&nbsp
 .
 </div>
 </p>
-<iframe NAME="myiframe" ID="myiframe" style="float:right;margin-top: 10px;" height="80%;" width="80%" border="0" SRC=""></iframe>
+<iframe name="myiframe" id="myiframe" style="float:right;margin-top: 10px;" height="80%;" width="80%" border="0" src=""></iframe>
 </body>
 </html>
 

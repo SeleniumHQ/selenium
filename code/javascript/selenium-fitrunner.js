@@ -86,21 +86,24 @@ function loadAndRunIfAuto() {
     loadSuiteFrame();
 }
 
-function getQueryParameter(searchKey) {
-    var clauses = location.search.substr(1).split('&');
-    for (var i = 0; i < clauses.length; i++) {
-        var keyValuePair = clauses[i].split('=',2);
-        var key = unescape(keyValuePair[0]);
-        var value = unescape(keyValuePair[1]);
-        if (key == searchKey) return value;
+function getExecutionContext() {
+    if (isNewWinidow()) {
+        return getWindowExecutionContext();
+    } else {
+        return new IFrameExecutionContext();
     }
 }
 
-function loadSuiteFrame() {
-    var testAppFrame = document.getElementById('myiframe');
-    browserbot = new BrowserBot(testAppFrame);
+function start() {
+    loadSuiteFrame(getExecutionContext());
+}
+
+function loadSuiteFrame(executionContext) {
+    
+    var testAppFrame = executionContext.loadFrame();
+    browserbot = new BrowserBot(testAppFrame,executionContext);
     selenium = new Selenium(browserbot);
-    registerCommandHandlers()
+    registerCommandHandlers();
 
     document.getElementById("modeRun").onclick = setRunInterval;
     document.getElementById('modeWalk').onclick = setRunInterval;
@@ -115,8 +118,6 @@ function loadSuiteFrame() {
     } else {
         loadTestFrame();
     }
-
-    //testAppFrame.src = "http://selenium.thoughtworks.com";
 }
 
 function loadTestFrame() {
@@ -169,15 +170,23 @@ function addOnclick(suiteTable, rowNum) {
     };
 }
 
-function isAutomatedRun() {
+function isQueryParameterTrue(name) {
     myVars = location.search.substr(1).split('&');
-    for (var i =0;i < myVars.length; i++) {
-        nameVal = myVars[i].split('=')
-        if( nameVal[0] == "auto" && nameVal[1].toLowerCase() == "true" )
-            return true;
-    }
-
+        for (var i =0;i < myVars.length; i++) {
+            nameVal = myVars[i].split('=')
+            if( nameVal[0] == name && nameVal[1].toLowerCase() == "true" )
+                return true;
+        }
+    
     return false;
+}
+
+function isNewWindow() {
+    return isQueryParameterTrue("newWindow");
+}
+
+function isAutomatedRun() {
+   return isQueryParameterTrue("auto");
 }
 
 function resetMetrics() {
@@ -439,7 +448,7 @@ function registerCommandHandlers() {
 }
 
 function initialiseTestLoop() {
-    testLoop = new TestLoop(commandFactory);
+    testLoop = new TestLoop(commandFactory, getExecutionContext());
 
     testLoop.getCommandInterval = function() { return runInterval };
     testLoop.firstCommand = nextCommand;
