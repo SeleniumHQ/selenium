@@ -2,7 +2,7 @@
 
 	<!-- global properties -->
 	<property name="JSUnitHome" value="${basedir}/jsunit"/>
-	<property name="WebServerPort" value="8000"/> <!-- this must match the hardcoded value in the python webserver -->
+	<property name="WebServerPort" value="8000"/> <!-- this must match the hardcoded value in tinyWebServer.py -->
 		
     <path id="JSUnitClassPath">
         <fileset dir="${JSUnitHome}/java/lib">
