@@ -65,7 +65,7 @@ function runTest() {
    var xmlHttp = XmlHttp.create();
 
     try {
-        xmlHttp.open("GET", "driver?seleniumStart=true", false);
+        xmlHttp.open("GET", "driver.sel?seleniumStart=true", false);
         xmlHttp.send(null);
     } catch(e) {
         return null;
@@ -78,7 +78,7 @@ function runTest() {
     var xmlHttp = XmlHttp.create();
 
     try {
-        xmlHttp.open("GET", "driver?commandResult=" + postResult, false);
+        xmlHttp.open("GET", "driver.sel?commandResult=" + postResult, false);
         xmlHttp.send(null);
     } catch(e) {
         return null;

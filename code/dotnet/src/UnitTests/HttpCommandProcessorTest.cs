@@ -15,7 +15,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[Test]
 		public void ShouldCreateWithValidUrl()
 		{
-			string Url = "http://localhost/selenium/driver.sel";
+			string Url = "about:blank";
 			processor = new HttpCommandProcessor(Url);
 			Assert.AreEqual(Url, processor.Url);
 		}

@@ -26,6 +26,10 @@ namespace ThoughtWorks.Selenium.Core
 			this.url = url;
 		}
 
+		public HttpCommandProcessor() : this("http://localhost/selenium-driver/driver.sel")
+		{
+		}
+
 		public string DoCommand(string command, string argument1, string argument2)
 		{
 			ISeleneseCommand seleneseCommand = new DefaultSeleneseCommand(command, argument1, argument2);

@@ -3,7 +3,7 @@
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{42D1B587-9544-452f-8B76-4F2A65BC9BE5}"
+        ProjectGuid = "{42D1B587-9544-452F-8B76-4F2A65BC9BE5}"
     >
         <Build>
             <Settings
@@ -141,6 +141,11 @@
                 <File
                     RelPath = "CommonAssemblyInfo.cs"
                     Link = "..\CommonAssemblyInfo.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SeleniumIntegrationTest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -5,37 +5,41 @@ namespace ThoughtWorks.Selenium.BridgeWebApp
 {
 	public class SingleEntryBlockingQueue
 	{
-		private Queue queue = new Queue();
-		private ManualResetEvent mutex = new ManualResetEvent(false);
+		private Queue queue = Queue.Synchronized(new Queue());
 
 		public void Put(object o)
 		{
-			while (queue.Count > 0)
+			lock (this)
 			{
-				mutex.WaitOne();
-			}
+				while (queue.Count > 0)
+				{
+					Monitor.Wait(this);
+				}
 
-			mutex.Reset();
-			queue.Enqueue(o);
-			mutex.Set();
+				queue.Enqueue(o);
+				Monitor.PulseAll(this);
+			}
 		}
 
 		public object Get()
 		{
-			while (queue.Count == 0)
+			lock (this)
 			{
-				mutex.WaitOne();
+				while (queue.Count == 0)
+				{
+					Monitor.Wait(this);
+				}
+
+				return queue.Dequeue();
 			}
-			
-			mutex.Reset();
-			object value = queue.Dequeue();
-			mutex.Set();
-			return value;
 		}
 
 		public bool IsEmpty()
 		{
-			return queue.Count == 0;
+			lock (this)
+			{
+				return queue.Count == 0;
+			}
 		}
 	}
 }

@@ -146,40 +146,9 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
-                    RelPath = "htmlutils.js"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Readme.txt"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "SeleneseRunner.html"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "selenium.css"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "selenium-api.js"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "selenium-browserbot.js"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "selenium-commandhandlers.js"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "selenium-executionloop.js"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "selenium-fitrunner.js"
-                    BuildAction = "Content"
+                    RelPath = "SeleneseQueue.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
                 />
                 <File
                     RelPath = "SeleniumHandler.cs"
@@ -187,28 +156,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "selenium-logo.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "selenium-tableparser.js"
-                    BuildAction = "Content"
-                />
-                <File
                     RelPath = "SingleEntryBlockingQueue.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "TestRunner.html"
-                    BuildAction = "Content"
-                />
-                <File
                     RelPath = "Web.config"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "xmlextras.js"
                     BuildAction = "Content"
                 />
             </Include>

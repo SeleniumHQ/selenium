@@ -1,19 +1,13 @@
+using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Web;
-using ThoughtWorks.Selenium.Core;
 
 namespace ThoughtWorks.Selenium.BridgeWebApp
 {
 	public class SeleniumHandler : IHttpHandler
 	{
-		private SingleEntryBlockingQueue requestHolder;
-		private SingleEntryBlockingQueue resultHolder;
-
-		public SeleniumHandler()
-		{
-			requestHolder = new SingleEntryBlockingQueue();
-			resultHolder = new SingleEntryBlockingQueue();
-		}
+		private static string SELENESE_QUEUE_KEY = "SeleneseQueue";
 
 		public bool IsReusable
 		{
@@ -29,39 +23,32 @@ namespace ThoughtWorks.Selenium.BridgeWebApp
 
 			if (commandRequest != null)
 			{
-				returnValue = ProcessCommandRequestFromClient(DefaultSeleneseCommand.Parse(commandRequest).Command);
+				returnValue = GetOrCreateQueue(context).ProcessCommandRequestFromClient(commandRequest);
 			}
 			else if (commandResult != null || (seleniumStart != null && seleniumStart.Equals("true")))
 			{
-				returnValue = ProcessCommandResultFromSelenium(commandResult);
+				returnValue = GetOrCreateQueue(context).ProcessCommandResultFromSelenium(commandResult);
+			}
+			else
+			{
+				throw new ApplicationException("Invalid request received! No commandRequest or commandResult in request!");
 			}
 
 			byte[] output = Encoding.Default.GetBytes(returnValue);
 			context.Response.OutputStream.Write(output, 0, output.Length);
-			
+
 		}
 
-		private string ProcessCommandResultFromSelenium(string commandResult)
+		private SeleneseQueue GetOrCreateQueue(HttpContext context)
 		{
-			if (commandResult != null)
+			SeleneseQueue queue = (SeleneseQueue) context.Application.Get(SELENESE_QUEUE_KEY);
+			if (queue == null)
 			{
-				resultHolder.Put(commandResult);
+				queue = new SeleneseQueue();
+				context.Application.Add(SELENESE_QUEUE_KEY, queue);
 			}
-
-			return (string) requestHolder.Get();
-
+		
+			return queue;
 		}
-
-		public string ProcessCommandRequestFromClient(string command)
-		{
-			requestHolder.Put(command);
-			if (!command.Equals("testComplete"))
-			{
-				return (string) resultHolder.Get();
-			}
-			return "";
-
-		}
-
 	}
 }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Threading;
 using NUnit.Framework;
 using ThoughtWorks.Selenium.BridgeWebApp;
@@ -9,70 +8,38 @@ namespace ThoughtWorks.Selenium.UnitTests
 	public class SingleEntryBlockingQueueTest
 	{
 		private SingleEntryBlockingQueue queue;
-		private Stack stack;
 
 		[SetUp]
 		public void SetupTest()
 		{
 			queue = new SingleEntryBlockingQueue();
-			stack = new Stack();
+			Assert.IsTrue(queue.IsEmpty());
 		}
 
 		[Test]
-		public void ShouldNotBeAbleToDequeueBeforeEnqueue()
+		public void ShouldBeAbleToPutIntoAnEmptyQueue()
 		{
-			Thread enqueueThread1 = createThreadWithName("enqueueThread1", new ThreadStart(enqueue));
-			Thread dequeueThread1 = createThreadWithName("dequeueThread1", new ThreadStart(dequeue));
-			Thread dequeueThread2 = createThreadWithName("dequeueThread2", new ThreadStart(dequeue));
-			Thread dequeueThread3 = createThreadWithName("dequeueThread3", new ThreadStart(dequeue));
-
-			enqueueThread1.Start();
-			dequeueThread1.Start();
-			dequeueThread2.Start();
-			dequeueThread3.Start();
-
-			enqueueThread1.Join();
-			dequeueThread1.Join();
-			dequeueThread2.Join();
-			dequeueThread3.Join();
-
-			Assert.AreEqual("Dequeue", stack.Pop());
-			Assert.AreEqual("Enqueue", stack.Pop());
-			Assert.AreEqual("Dequeue", stack.Pop());
-			Assert.AreEqual("Enqueue", stack.Pop());
-			Assert.AreEqual("Dequeue", stack.Pop());
-			Assert.AreEqual("Enqueue", stack.Pop());
+			queue.Put("data");
+			Assert.IsFalse(queue.IsEmpty());
 		}
 
-		private Thread createThreadWithName(string name, ThreadStart entryPoint)
+		[Test]
+		public void ShouldNotBeAbleToGetFromAnEmptyQueue()
 		{
-			Thread thread = new Thread(new ThreadStart(entryPoint));
-			thread.Name = name;
-			return thread;
+			Thread getThread = new Thread(new ThreadStart(Get));
+			getThread.Start();
+
+			queue.Put("data");
+			getThread.Join();
+
+			Assert.IsTrue(queue.IsEmpty());
+
 		}
 
-		public void enqueue()
-		{
-			EnqueueAndPush("Enqueue");
-			EnqueueAndPush("Enqueue");
-			EnqueueAndPush("Enqueue");
-		}
-
-		private void EnqueueAndPush(string value)
-		{
-			queue.Put(value);
-			stack.Push(value);
-		}
-
-		public void dequeue()
-		{
-			DequeueAndPush("Dequeue");
-		}
-
-		private void DequeueAndPush(string value)
+		private void Get()
 		{
 			queue.Get();
-			stack.Push(value);
 		}
+
 	}
 }

@@ -25,7 +25,7 @@
 	<target name="dist" depends="compile, create-deployment-directory, create-selenium-zips" 
 		description="Create distributable files" />
 		
-	<target name="deploy-nant" depends="compile, create-deployment-directory, setup-nant-iis"
+	<target name="deploy-nant" depends="compile, create-deployment-directory, setup-nant-iis, create-test-app"
 		description="Deploys Selenium Bridge and sets up IIS to use the NAnt deployed version" />
 	
 	<target name="deploy-VS" depends="setup-vs-iis"
@@ -59,7 +59,12 @@
 			commandline="${unit.tests.dll} /xml:../${unit.tests.dll}-results.xml /nologo"/>
 	</target>
 	
-	<target name="run-integration-tests">
+	<target name="iis-reset">
+		<exec program="iisreset" />
+	</target>
+	
+	
+	<target name="run-integration-tests" depends="iis-reset">
 		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
 		<exec 
 			program="tools\nunit\nunit-console.exe" 
@@ -69,28 +74,50 @@
 
 	<target name="create-deployment-directory">
 		<mkdir dir="deployed" />
-		<copy todir="deployed">
+		<copy todir="deployed/BridgeWebApp">
 			<fileset basedir="src/BridgeWebApp">
-				<include name="**/*" />
-				<exclude name="bin" />
-				<exclude name="obj" />
-				<exclude name="bin/**" />
-				<exclude name="obj/**" />
-				<exclude name="*.user" />
-				<exclude name="*.resharperoptions" />
-				<exclude name="_Resharper*" />
-				<exclude name="_Resharper*/**" />
+				<include name="SeleneseRunner.html" />
+				<include name="web.config" />
+				<include name="global.asax*" />
+				
 			</fileset>
 		</copy>
-		<mkdir dir="deployed/bin"/>
-		<copy todir="deployed/bin">
-			<fileset basedir="build/BridgeWebApp">
-				<include name="**/*" />
-				<exclude name="**/*.incr" />
-				<exclude name="**/*.pdb" />
+		
+		<copy todir="deployed/BridgeWebApp/bin">
+			<fileset basedir="${nant.project.basedir}/build/BridgeWebApp">
+				<include name="*.dll" />
+			</fileset>
+		</copy>
+		
+		<copy todir="deployed/BridgeWebApp">
+			<fileset basedir="../javascript">
+				<include name="html-xpath/*.js" />
+				<include name="jsunit/app/jsUnitCore.js" />
+				
+				<include name="*.js" />
+				<include name="*.jpg" />
+				<include name="*.html" />
+				<exclude name="**/.svn/**" />
+				<exclude name="**/SeleneseRunner.html" />
 			</fileset>
 		</copy>
 	</target>
+	
+	<target name="create-test-app">
+		<property name="test_app.name" value="TestApp" />
+		<property name="test_app.dir" value="deployed/${test_app.name}" />
+		<mkdir dir="${test_app.dir}" />
+		<copy todir="${test_app.dir}">
+			<fileset basedir="../javascript/tests/html">
+				<include name="*.html" />
+			</fileset>
+		</copy>
+		
+		<property name="iis_vdir.Path" value="${nant.project.basedir}\${test_app.dir}" />
+		<property name="iis_vdir.VDirName" value="${test_app.name}" />
+		<call target="map-iis-vdir" />
+	</target>
+	
 
 	<target name="create-selenium-zips" >
 		<mkdir dir="build/dist/bin/API" />
