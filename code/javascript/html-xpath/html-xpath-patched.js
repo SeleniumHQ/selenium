@@ -17,10 +17,10 @@
 
 */
 
-/** PATCH TO ALLOW USE WITH DOCUMENTS FROM OTHER WINDOWS: 2004-11-24
+/** SELENIUM:PATCH TO ALLOW USE WITH DOCUMENTS FROM OTHER WINDOWS: 2004-11-24
     TODO resubmit this to http://sf.net/projects/html-xpath */
 function addXPathSupport(document) {
-/** END PATCH */
+/** END SELENIUM:PATCH */
 
 var isIe = /MSIE [56789]/.test(navigator.userAgent) && (navigator.platform == "Win32");
 
@@ -509,6 +509,9 @@ if (isIe)
 			if (!helper.dom)
 			{
 				var dom = new ActiveXObject("Msxml2.DOMDocument");
+/** SELENIUM:PATCH TO ALLOW PROVIDE FULL XPATH SUPPORT */
+				dom.setProperty("SelectionLanguage", "XPath");
+/** END SELENIUM:PATCH */
 				dom.async = false;
 				dom.resolveExternals = false;
 				loadDocument(dom, helper);
@@ -613,7 +616,7 @@ else
 		return this.resultType;
 	}
 }
-/** PATCH TO ALLOW USE WITH CONTAINED DOCUMENTS */
+/** SELENIUM:PATCH TO ALLOW USE WITH CONTAINED DOCUMENTS */
 }
-/** END PATCH */
+/** END SELENIUM:PATCH */
 
