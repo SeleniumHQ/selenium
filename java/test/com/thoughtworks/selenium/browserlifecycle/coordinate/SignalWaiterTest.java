@@ -25,9 +25,8 @@ import com.thoughtworks.selenium.browserlifecycle.coordinate.SignalWaiter;
 
 public class SignalWaiterTest extends MockObjectTestCase {
 
-	public void testShouldAddSelfAsListenerOnConstruction() {
+	public void testShouldAddSelfAsListenerOnInitialisation() {
 
-		// How can you do this with JMock?
 		
 		class MockAudible implements Audible {
 			private Listener _listener;
@@ -43,6 +42,7 @@ public class SignalWaiterTest extends MockObjectTestCase {
 
 		MockAudible audible = new MockAudible();
 		SignalWaiter waiter = new SignalWaiter(audible);
+		waiter.initialise();
 
 		assertSame("Should have registered self with audible", waiter, audible
 				.getListener());

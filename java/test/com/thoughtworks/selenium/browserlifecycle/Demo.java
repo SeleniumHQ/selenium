@@ -1,18 +1,18 @@
 /*
  * Copyright 2004 ThoughtWorks, Inc.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ *  
  */
 package com.thoughtworks.selenium.browserlifecycle;
 
@@ -22,10 +22,13 @@ import java.util.List;
 
 import com.thoughtworks.selenium.browserlifecycle.coordinate.Audible;
 import com.thoughtworks.selenium.browserlifecycle.coordinate.Listener;
-import com.thoughtworks.selenium.browserlifecycle.coordinate.SignalWaiterFactory;
+import com.thoughtworks.selenium.browserlifecycle.coordinate.SignalWaiter;
+import com.thoughtworks.selenium.browserlifecycle.coordinate.Waiter;
+import com.thoughtworks.selenium.browserlifecycle.session.BrowserSession;
 import com.thoughtworks.selenium.browserlifecycle.session.SequentialMultipleBrowserSession;
-import com.thoughtworks.selenium.browserlifecycle.session.SeleniumSessionFactory;
-import com.thoughtworks.selenium.browserlifecycle.window.WindowSpawner;
+import com.thoughtworks.selenium.browserlifecycle.session.StoppableBrowserSession;
+import com.thoughtworks.selenium.browserlifecycle.window.BrowserSpawner;
+import com.thoughtworks.selenium.browserlifecycle.window.SpecifiedPathBrowserSpawner;
 
 public class Demo {
 
@@ -61,30 +64,37 @@ public class Demo {
 		}
 
 	}
+	
 
 	public static void main(String[] args) throws LifeCycleException {
 
-		DemoServer server = new DemoServer();
-
 		long timeout = 10000;
 		String url = "http://www.google.com/search?q=Selenium";
-		String[] browsers = new String[] {
-				"c:\\program files\\Mozilla Firefox\\firefox.exe",
-				"c:\\program files\\internet explorer\\iexplore.exe" };
+		
+		DemoServer signalingServer = new DemoServer();
+  
+		BrowserSpawner firefoxSpawner = new SpecifiedPathBrowserSpawner(
+				"c:\\program files\\Mozilla Firefox\\firefox.exe");
+		BrowserSpawner ieSpawner = new SpecifiedPathBrowserSpawner(
+				"c:\\program files\\internet explorer\\iexplore.exe");
 
+		Waiter firefoxWaiter = new SignalWaiter(signalingServer);
+		Waiter ieWaiter = new SignalWaiter(signalingServer);
+		
+		BrowserSession firefoxSession = new StoppableBrowserSession(
+				firefoxSpawner, firefoxWaiter);
+		BrowserSession ieSession = new StoppableBrowserSession(ieSpawner,
+				ieWaiter);
 
-		WindowSpawner windowSpawner = new WindowSpawner();
-		SignalWaiterFactory waiterFactory = new SignalWaiterFactory(server);
+		BrowserSession[] sessions = new BrowserSession[] { firefoxSession,
+				ieSession };
+		BrowserSession multipleSession = new SequentialMultipleBrowserSession(
+				sessions);
 
-		SeleniumSessionFactory factory = new SeleniumSessionFactory(
-				windowSpawner, waiterFactory);
-		SequentialMultipleBrowserSession session = (SequentialMultipleBrowserSession) factory
-				.buildMultipleBrowserSession();
-
-		Thread serverThread = new Thread(server);
+		Thread serverThread = new Thread(signalingServer);
 		serverThread.start();
 
-		session.run(browsers, url, timeout);
+		multipleSession.run(url, timeout);
 
 		// Expect that this will result in :
 		//         - firefox window for 5 secs before it is killed by

@@ -18,21 +18,18 @@ package com.thoughtworks.selenium.browserlifecycle.session;
 
 import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 
-public class SequentialMultipleBrowserSession implements MultipleBrowserSession {
+public class SequentialMultipleBrowserSession implements BrowserSession {
 
-	SessionFactory _browserSessionFactory;
+	BrowserSession[] _browserSessions;
 
-	public SequentialMultipleBrowserSession(SessionFactory browserSessionFactory) {
-		_browserSessionFactory = browserSessionFactory;
+	public SequentialMultipleBrowserSession(BrowserSession[] browserSessions) {
+		_browserSessions = browserSessions;
 	}
 
-	public void run(String[] browserExecutables, String url,
-			long individualBrowserTimeout) throws LifeCycleException {
-		for (int i = 0; i < browserExecutables.length; i++) {
-			BrowserSession browserSession = (BrowserSession) _browserSessionFactory
-					.buildSingleBrowserSession();
-			browserSession.run(browserExecutables[i], url,
-					individualBrowserTimeout);
+	public void run(String url, long individualBrowserTimeout)
+			throws LifeCycleException {
+		for (int i = 0; i < _browserSessions.length; i++) {
+			_browserSessions[i].run(url, individualBrowserTimeout);
 		}
 
 	}

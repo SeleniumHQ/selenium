@@ -18,9 +18,17 @@ package com.thoughtworks.selenium.browserlifecycle.window;
 
 import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 
-public interface Spawner {
+public class SpecifiedPathBrowserSpawner implements BrowserSpawner {
+
+    private final String _browserPath;
+
+    public SpecifiedPathBrowserSpawner(String browserPath) {
+        _browserPath = browserPath;
+    }
 	
-	public Killable spawn(String executable, String argument)
-			throws LifeCycleException;
-	
+	public Killable spawn(String url)
+			throws LifeCycleException {
+		return new BrowserWindow(_browserPath, url);
+	}
+
 }

@@ -19,26 +19,27 @@ package com.thoughtworks.selenium.browserlifecycle.session;
 import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 import com.thoughtworks.selenium.browserlifecycle.coordinate.Waiter;
 import com.thoughtworks.selenium.browserlifecycle.window.Killable;
-import com.thoughtworks.selenium.browserlifecycle.window.Spawner;
+import com.thoughtworks.selenium.browserlifecycle.window.BrowserSpawner;
 
-class StoppableBrowserSession implements BrowserSession {
+public class StoppableBrowserSession implements BrowserSession {
 	
-	private Spawner _windowSpawner;
+	private BrowserSpawner _windowSpawner;
 	private Waiter _sessionWaiter;
 
-	public StoppableBrowserSession(Spawner windowSpawner, Waiter sessionWaiter) {
+	public StoppableBrowserSession(BrowserSpawner windowSpawner, Waiter sessionWaiter) {
 		_windowSpawner = windowSpawner;
 		_sessionWaiter = sessionWaiter;
 	}
 
-	public void run(String browserExecutable, String url, long timeout) throws LifeCycleException {
-		Killable window = startBrowser(browserExecutable, url);
+	public void run(String url, long timeout) throws LifeCycleException {
+		_sessionWaiter.initialise();
+		Killable window = startBrowser(url);
 		waitUntilSessionIsOver(timeout);
 		stopBrowser(window);
 	}
 
-	private Killable startBrowser(String browserExecutable, String url) throws LifeCycleException {
-		return _windowSpawner.spawn(browserExecutable, url);
+	private Killable startBrowser(String url) throws LifeCycleException {
+		return _windowSpawner.spawn(url);
 	}
 
 	private void waitUntilSessionIsOver(long timeout)

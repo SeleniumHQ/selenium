@@ -13,14 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *  
- */ 
+ */
 package com.thoughtworks.selenium.browserlifecycle.session;
 
 import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 
 public interface BrowserSession {
 
-	public void run(String browserExecutable, String url, long timeout)
-			throws LifeCycleException;
+	public void run(String url, long timeout) throws LifeCycleException;
 
 }
