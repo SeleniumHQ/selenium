@@ -45,7 +45,7 @@
         <pathelement location="${ant.home}/lib"/>
     </path>
 
-    <target name="all" depends="clean, init, checkstyle, compile, test, integration-test, report, jar"/>
+    <target name="all" depends="clean, init, compile, test, integration-test, checkstyle, report, jar"/>
 
     <target name="dist" depends="all">
 
@@ -170,48 +170,51 @@
     </target>
 	
      <!-- could be refactored -->
-    <target name="integration-test-mac" depends="compile-main">
+    <target name="integration-test-mac" depends="compile-main" if="isMac">
         
-        <echo>--> ${os.name}</echo>
-    	 <condition property="isMac">
-    	      <os family="mac" />
-    	 </condition>
+        <echo>Integration Tests for Embedded Web Container</echo>
+
+        <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
+            <classpath refid="instrumented.classpath"/>
+            <formatter type="xml"/>
+            <formatter type="plain"/>
+            <batchtest todir="${integration.test.logs.dir}">
+                <fileset dir="${integration.test.dir}">
+                    <include name="**/embedded/**/*Test.java"/>
+                    <exclude name="**/Win*"/>
+                	<exclude name="**/Lin*"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <fail unless="env.CATALINA_HOME">
+        Cannot run Outbedded Integration tests because environment variable CATALINA_HOME is not set.
+        Please set CATALINA_HOME to your Tomcat installation directory.
+        </fail>
+
+        <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
+
+        <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
+            <classpath refid="instrumented.classpath"/>
+            <formatter type="xml"/>
+            <formatter type="plain"/>
+            <batchtest todir="${integration.test.logs.dir}">
+                <fileset dir="${integration.test.dir}">
+                    <include name="**/outbedded/**/*Test.java"/>
+                    <exclude name="**/Win*"/>
+                	<exclude name="**/Lin*"/>
+                </fileset>
+            </batchtest>
+
+        </junit>
+
     </target>
 
-    <target name="integration-test-windows" depends="compile-main">
-
-        <echo>--> ${os.name}</echo>
-        <condition property="isWindows">
-            <os family="windows" />
-        </condition>
-    	
-    </target>
-	
-	<target name="integration-test-unix" depends="compile-main">
-
-	        <echo>--> ${os.name}</echo>
-		    <condition property="isUnix">
-		       <os family="unix" />
-		     </condition>
-    </target>
-	<!-- -->
-	
-	<target name="integration-test-os" depends="compile-main">
-        <echo>--> ${os.name}</echo>
-    	 <condition property="isMac">
-    	      <os family="mac" />
-    	 </condition>
-		
-        <condition property="isWindows">
-            <os family="windows" />
-        </condition>
-        	
-	    <condition property="isUnix">
-	       <os family="unix" />
-	     </condition>	
-	</target>
-	
-    <target name="integration-test" depends="compile-main, integration-test-os" >
+    <target name="integration-test-windows" depends="compile-main" if="ifWindows">
 
         <echo>Integration Tests for Embedded Web Container</echo>
 
@@ -223,12 +226,9 @@
             <formatter type="plain"/>
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
-                    <include name="**/*Test.java"/>
-                	<include name="**/*TestCase.java"/>
-                    <exclude name="**/outbedded/**"/>
-                	<exclude name="**/*Mac*Test.java" unless="isMac"/>
-                    <exclude name="**/*Win*Test.java" unless="isWindows"/>
-                	<exclude name="**/*Lin*Test.java" unless="isUnix"/>
+                    <include name="**/embedded/**/*Test.java"/>
+                    <exclude name="**/Mac*"/>
+                	<exclude name="**/Lin*"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -237,7 +237,7 @@
         Cannot run Outbedded Integration tests because environment variable CATALINA_HOME is not set.
         Please set CATALINA_HOME to your Tomcat installation directory.
         </fail>
-    	
+
         <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
@@ -248,17 +248,74 @@
             <formatter type="plain"/>
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
-                    <include name="**/*Test.java"/>
-                    <include name="**/*TestCase.java"/>
-                    <exclude name="**/embedded/**"/>
-                	<exclude name="**/*Mac*Test.java" unless="isMac"/>
-                	<exclude name="**/*Win*Test.java" unless="isWindows"/>
-                	<exclude name="**/*Lin*Test.java" unless="isUnix"/>
+                    <include name="**/outbedded/**/*Test.java"/>
+                    <exclude name="**/Mac*"/>
+                	<exclude name="**/Lin*"/>
                 </fileset>
             </batchtest>
-        	
+
+        </junit>
+    </target>
+	
+	<target name="integration-test-unix" depends="compile-main" if="isUnix" unless="isMac">
+
+        <echo>Integration Tests for Embedded Web Container</echo>
+
+        <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
+            <classpath refid="instrumented.classpath"/>
+            <formatter type="xml"/>
+            <formatter type="plain"/>
+            <batchtest todir="${integration.test.logs.dir}">
+                <fileset dir="${integration.test.dir}">
+                    <include name="**/outbedded/**/*Test.java"/>
+                    <exclude name="**/Win*"/>
+                	<exclude name="**/Mac*"/>
+                </fileset>
+            </batchtest>
         </junit>
 
+        <fail unless="env.CATALINA_HOME">
+        Cannot run Outbedded Integration tests because environment variable CATALINA_HOME is not set.
+        Please set CATALINA_HOME to your Tomcat installation directory.
+        </fail>
+
+        <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
+
+        <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
+            <classpath refid="instrumented.classpath"/>
+            <formatter type="xml"/>
+            <formatter type="plain"/>
+            <batchtest todir="${integration.test.logs.dir}">
+                <fileset dir="${integration.test.dir}">
+                    <include name="**/outbedded/**/*Test.java"/>
+                    <exclude name="**/Win*"/>
+                	<exclude name="**/Mac*"/>
+                </fileset>
+            </batchtest>
+
+        </junit>
+    </target>
+
+	<target name="integration-test-os-test">
+    	 <condition property="isMac">
+    	      <os family="mac" />
+    	 </condition>
+
+        <condition property="isWindows">
+            <os family="windows" />
+        </condition>
+        	
+	    <condition property="isUnix">
+	       <os family="unix" />
+	     </condition>	
+
+	</target>
+	
+    <target name="integration-test" depends="compile-main, integration-test-os-test, integration-test-unix, integration-test-mac, integration-test-windows" >
 
         <junitreport todir="${integration.test.reports.dir}">
             <fileset dir="${integration.test.logs.dir}">
@@ -267,6 +324,7 @@
             <report format="frames" todir="${integration.test.reports.dir}" styledir="${ant.home}/etc"/>
         </junitreport>
         <fail if="tests.failed">There were test failures</fail>
+
     </target>
 
     <target name="jar" depends="compile-main" description="Jar java classes">
