@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<!-- JsUnit -->
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Edward Hieatt code.
+   -
+   - The Initial Developer of the Original Code is
+   - Edward Hieatt, edward@jsunit.net.
+   - Portions created by the Initial Developer are Copyright (C) 2001
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   - Edward Hieatt, edward@jsunit.net (original author)
+   - Bob Clary, bc@bclary.comn
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="../css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript">
+// JsUnit Utility Tests
+function testTrim() {
+  assertEquals(null, trim(null));
+  assertEquals(null, trim(JSUNIT_UNDEFINED_VALUE));
+  assertEquals("", trim(""));
+  assertEquals("", trim("    "));
+  assertEquals("string", trim("string"));
+  assertEquals("str  ing", trim("str  ing"));
+  assertEquals("string", trim(" string   "));
+}
+
+function testIsBlank() {
+  assert(!isBlank("  string "));
+  assert(isBlank(""));
+  assert(isBlank("    "));
+}
+
+function testPushAndPop() {
+  //the functions push(anArray, anObject) and pop(anArray) exist because the JavaScript Array.push(anObject) and Array.pop() functions are not available in IE 5.0
+  var anArray=Array();
+  anArray[0]="element 0";
+  anArray[1]="element 1";
+  push(anArray, "element 2");
+  push(anArray, "element 3");
+
+  assertEquals("There should be 4 elements after 2 are pushed onto an array of size 2", 4, anArray.length);
+  assertEquals("element 0", anArray[0]);
+  assertEquals("element 1", anArray[1]);
+  assertEquals("element 2", anArray[2]);
+  assertEquals("element 3", anArray[3]);
+
+  pop(anArray);
+  assertEquals("Should be 3 elements after popping 1 from an array of size 4", 3, anArray.length);
+  assertEquals("element 0", anArray[0]);
+  assertEquals("element 1", anArray[1]);
+  assertEquals("element 2", anArray[2]);
+  pop(anArray);
+  pop(anArray);
+  pop(anArray);
+  assertEquals("Should be 0 elements after popping 3 from an array of size 3", 0, anArray.length);
+  pop(anArray);
+  assertEquals("Should be 0 elements after trying to pop an array of size 0", 0, anArray.length);
+}
+</script>
+  </head>
+
+  <body>
+    <h1>JsUnit Utility Tests</h1>
+
+    <p>This page contains tests for the utility functions
+    that JsUnit uses. To see them, take a look at the source.</p>
+  </body>
+</html>
+
