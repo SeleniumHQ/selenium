@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.launchers;
 
 import com.thoughtworks.selenium.BrowserLauncher;
+import com.thoughtworks.selenium.SeleniumException;
 
 import java.io.IOException;
 
@@ -29,7 +30,8 @@ public class MacOmniWebBrowserLauncher extends DestroyableRuntimeExecutingBrowse
 
 
     public MacOmniWebBrowserLauncher() {
-        super("/Applications/OmniWeb.app/Contents/MacOS/OmniWeb");
+        // This should work in some future version of OmniWeb apparently.
+        super("/Applications/OmniWeb.app/Contents/MacOS/OmniWeb -StartPage");
     }
 
 }
