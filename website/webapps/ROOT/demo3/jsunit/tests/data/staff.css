@@ -1,0 +1,36 @@
+staff 
+{ 
+  display: table; 
+  color: black; 
+  background-color: white; 
+  border: solid 1px black;
+}
+
+employee 
+{ 
+  display: table-row;
+  border: solid 1px black;
+  padding: 1px;
+}
+
+employeeId, name, position, salary, gender, address 
+{ 
+  display: table-cell; 
+  border: solid 1px black;
+  padding: 1px;
+}
+
+address[domestic="Yes"] 
+{ 
+  background-color: silver; 
+}
+
+address[street="Yes"]
+{
+  color: green;
+}
+
+address[street="No"]
+{
+  color: red;
+}
