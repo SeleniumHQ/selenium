@@ -23,23 +23,45 @@ import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
-public class SystemPropertiesBrowserLauncher implements BrowserLauncher {
+public class SystemPropertiesBrowserLauncher extends AbstractBrowserLauncher {
 
-    Runtime runtime = Runtime.getRuntime();
 
     private static final String browserPath = System.getProperty("selenium-browser-path");
+    private static final String osName = System.getProperty("os.name");
 
-    public void launch(String url) {
-        try {
-            String command = browserPath + " " + url;
-            runtime.exec(command);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not launch default browser.", e);
+    BrowserLauncher delegate;
+
+    public SystemPropertiesBrowserLauncher() {
+        if (browserPath != null && !browserPath.equals("")) {
+            delegate = new BrowserLauncher() {
+                public void launch(String url) {
+                    try {
+                        String command = browserPath + " " + url;
+                        exec(command);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Could not launch default browser.", e);
+                    }
+                }
+                public void close() {
+                }
+
+            };
+        } else if (osName != null && osName.startsWith("Windows")) {
+            delegate = new WindowsDefaultBrowserLauncher();
+        } else if (osName != null && osName.startsWith("Mac")) {
+            delegate = new MacDefaultBrowserLauncher();
+        } else {
+            delegate = new UnixDefaultBrowserLauncher();
         }
     }
 
+    public void launch(String url) {
+        delegate.launch(url);
+    }
+
     public void close() {
+        delegate.close();
     }
 }
