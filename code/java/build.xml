@@ -1,5 +1,5 @@
 <project name="selenium" default="all">
-    <property name="version" value="0.1.3-SNAPSHOT"/>
+    <property name="version" value="0.1.2"/>
 
     <property environment="env"/>
     <property name="ant.home" location="${env.ANT_HOME}"/>
@@ -46,6 +46,44 @@
     </path>
 
     <target name="all" depends="clean, init, checkstyle, compile, test, integration-test, report, jar"/>
+
+    <target name="dist" depends="all">
+
+        <mkdir dir="dist"/>    
+
+        <echo file="dist/readme.txt">Only some of these jars are necessary for you to run Selenium. Many are optional. Read the docs!</echo>
+
+        <zip destfile="dist/${ant.project.name}-${version}.zip">
+            <fileset dir="target">
+                <include name="${ant.project.name}-${version}.jar"/>            
+            </fileset>
+            <zipfileset dir="dist" prefix="lib">
+                <include name="readme.txt"/>            
+            </zipfileset>
+            <zipfileset dir="lib" prefix="lib">
+                <include name="*"/>
+                <exclude name="junit*"/>
+                <exclude name="jmock*"/>
+                <exclude name="ant*"/>
+            </zipfileset>
+            <zipfileset dir="../javascript/" prefix="browser-bot">
+                <exclude name="TestRunner.html"/>            
+                <exclude name="jsmock/**"/>            
+                <exclude name="jsunit/**"/>            
+                <exclude name="jsunit-logs/**"/>
+                <exclude name="tests/**"/>            
+                <exclude name="*.py"/>            
+                <exclude name="*.bat"/>            
+                <exclude name="build.xml"/>            
+                <exclude name="**/web.xml"/>            
+            </zipfileset>
+            <zipfileset dir="../javascript/Embedded-WEB-INF" prefix="browser-bot/WEB-INF">
+                <include name="web.xml"/>
+            </zipfileset>
+        </zip>
+        <delete file="dist/readme.txt"/>
+  
+    </target>
 
     <target name="clean">
         <delete dir="target"/>
