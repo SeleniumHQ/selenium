@@ -1,20 +1,20 @@
 /*
- * Copyright 2004 ThoughtWorks, Inc
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
- 
+* Copyright 2004 ThoughtWorks, Inc
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*
+*/
+
 passColor = "#cfffcf";
 failColor = "#ffcfcf";
 workingColor = "#DEE7EC";
@@ -103,7 +103,7 @@ function start() {
 }
 
 function loadSuiteFrame(executionContext) {
-    
+
     var testAppFrame = executionContext.loadFrame();
     browserbot = new BrowserBot(testAppFrame,executionContext);
     selenium = new Selenium(browserbot);
@@ -124,6 +124,13 @@ function loadSuiteFrame(executionContext) {
     }
 }
 
+function startSingleTest() {
+    removeLoadListener(getApplicationFrame(), startSingleTest);
+    var singleTestName = getQueryParameter("singletest");
+    addLoadListener(getTestFrame(), startTest);
+    getTestFrame().src = singleTestName;
+}
+
 function loadTestFrame() {
     removeLoadListener(getSuiteFrame(), loadTestFrame);
     suiteTable = getSuiteFrame().contentWindow.document.getElementsByTagName("table")[0];
@@ -133,14 +140,15 @@ function loadTestFrame() {
         addOnclick(suiteTable, rowNum);
     }
 
+
     if (isAutomatedRun()) {
         startTestSuite();
     } else if (getQueryParameter("autoURL")) {
-        
-        addLoadListener(getApplicationFrame(), startTestSuite);
-        
+
+        addLoadListener(getApplicationFrame(), startSingleTest);
+
         getApplicationFrame().src = unescape(getQueryParameter("autoURL"));
-        
+
     } else {
         testLink = suiteTable.rows[currentTestRow+1].cells[0].getElementsByTagName("a")[0];
         getTestFrame().src = testLink.href;
@@ -158,11 +166,11 @@ function addOnclick(suiteTable, rowNum) {
 
         // For mozilla-like browsers
         if(eventObj)
-            srcObj = eventObj.target;
+                srcObj = eventObj.target;
 
         // For IE-like browsers
         else if (getSuiteFrame().contentWindow.event)
-            srcObj = getSuiteFrame().contentWindow.event.srcElement;
+                srcObj = getSuiteFrame().contentWindow.event.srcElement;
 
         // The target row
         row = srcObj.parentNode.parentNode.rowIndex;
@@ -187,12 +195,12 @@ function isQueryParameterTrue(name) {
 
 function getQueryParameter(name) {
     myVars = location.search.substr(1).split('&');
-        for (var i =0;i < myVars.length; i++) {
-            nameVal = myVars[i].split('=');
-            if(nameVal[0] == name) {
-                return nameVal[1];
-            }
+    for (var i =0;i < myVars.length; i++) {
+        nameVal = myVars[i].split('=');
+        if(nameVal[0] == name) {
+            return nameVal[1];
         }
+    }
     return null;
 }
 
@@ -201,7 +209,7 @@ function isNewWindow() {
 }
 
 function isAutomatedRun() {
-   return isQueryParameterTrue("auto");
+    return isQueryParameterTrue("auto");
 }
 
 function resetMetrics() {
@@ -251,7 +259,7 @@ function startTestSuite() {
 
 function runNextTest() {
     if (!runAllTests)
-        return;
+            return;
 
     suiteTable = (getSuiteFrame().contentWindow.document.getElementsByTagName("table"))[0];
 
@@ -259,9 +267,9 @@ function runNextTest() {
     if(currentTestRow > 0) {
         // Make the previous row green or red depending if the test passed or failed
         if(testFailed)
-            setCellColor(suiteTable.rows, currentTestRow, 0, failColor);
+                setCellColor(suiteTable.rows, currentTestRow, 0, failColor);
         else
-            setCellColor(suiteTable.rows, currentTestRow, 0, passColor);
+                setCellColor(suiteTable.rows, currentTestRow, 0, passColor);
 
         // Set the results from the previous test run
         setResultsData(suiteTable, currentTestRow);
@@ -272,14 +280,14 @@ function runNextTest() {
     // If we are done with all of the tests, set the title bar as pass or fail
     if(currentTestRow >= suiteTable.rows.length) {
         if(suiteFailed)
-            setCellColor(suiteTable.rows, 0, 0, failColor);
+                setCellColor(suiteTable.rows, 0, 0, failColor);
         else
-            setCellColor(suiteTable.rows, 0, 0, passColor);
+                setCellColor(suiteTable.rows, 0, 0, passColor);
 
         // If this is an automated run (i.e., build script), then submit
         // the test results by posting to a form
         if (isAutomatedRun())
-            postTestResults(suiteFailed, suiteTable);
+                postTestResults(suiteFailed, suiteTable);
     }
 
     else {
@@ -288,7 +296,7 @@ function runNextTest() {
 
         testLink = suiteTable.rows[currentTestRow].cells[0].getElementsByTagName("a")[0];
         testLink.focus();
-        
+
         addLoadListener(getTestFrame(), startTest);
         getTestFrame().src = testLink.href;
     }
@@ -333,13 +341,13 @@ function setResultsData(suiteTable, row) {
 //      testTable.1 to testTable.N: the individual test tables
 //
 function postTestResults(suiteFailed, suiteTable) {
-    
+
     form = document.createElement("form");
     document.body.appendChild(form);
-    
+
     form.id = "resultsForm";
     form.method="post";
-        
+
     var resultsUrl = getQueryParameter("resultsUrl");
     if (!resultsUrl) {
         resultsUrl = "/postResults";
@@ -393,7 +401,7 @@ function postTestResults(suiteFailed, suiteTable) {
 
     form.submit();
     document.body.removeChild(form);
-    
+
 }
 
 function printMetrics() {
@@ -424,27 +432,27 @@ function pad (num) {
 function replaceVariables(str) {
 
      //handle the case of ${userid}.toUpper
-     pattern = /\$\{(\w+)\}\.(.+)/;
+    pattern = /\$\{(\w+)\}\.(.+)/;
 
-     var variableIndex = str;
-     var variableFunction='';
+    var variableIndex = str;
+    var variableFunction='';
 
-     if(pattern.test(str)) {
-         pieces = str.split('.');
+    if(pattern.test(str)) {
+        pieces = str.split('.');
 
-         variableIndex = pieces[0];
-         variableFunction = pieces[1];
+        variableIndex = pieces[0];
+        variableFunction = pieces[1];
     }
 
 
     regex = /\$\{(\w+)\}/g;
 
     var variableValue = variableIndex.replace(regex, function(match, word) {
-                                return storedVars[word];
-                              });
+        return storedVars[word];
+    });
 
     if( variableFunction == '')
-        return variableValue;
+            return variableValue;
     else
     {
         return eval("variableValue."+ eval("variableFunction") + "()" );
@@ -535,9 +543,9 @@ function setRowPassed() {
 
 function setRowFailed(errorMsg, failureType) {
     if (failureType == ERROR)
-        numCommandErrors += 1;
+            numCommandErrors += 1;
     else if (failureType == FAILURE)
-        numCommandFailures += 1;
+            numCommandFailures += 1;
 
     // Set cell background to red
     inputTableRows[currentCommandRow].bgColor = failColor;
@@ -550,16 +558,16 @@ function setRowFailed(errorMsg, failureType) {
 }
 
 function testComplete() {
-     if(testFailed) {
-         inputTableRows[0].bgColor = failColor;
-         numTestFailures += 1;
-     }
-     else {
-         inputTableRows[0].bgColor = passColor;
-         numTestPasses += 1;
-     }
+    if(testFailed) {
+        inputTableRows[0].bgColor = failColor;
+        numTestFailures += 1;
+    }
+    else {
+        inputTableRows[0].bgColor = passColor;
+        numTestPasses += 1;
+    }
 
-     printMetrics();
+    printMetrics();
 
     window.setTimeout("runNextTest()", 1);
 }
@@ -592,9 +600,9 @@ Selenium.prototype.doStoreText = function(target, varName) {
 };
 
 Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
-   
+
     this.doClick(target);
-    
+
     if(wait != "nowait") {
         return SELENIUM_PROCESS_WAIT;
     }

@@ -1,18 +1,18 @@
 /*
- * Copyright 2004 ThoughtWorks, Inc
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+* Copyright 2004 ThoughtWorks, Inc
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
 
 SELENIUM_PROCESS_WAIT = "wait";
 
@@ -68,12 +68,12 @@ function TestLoop(commandFactory, executionContext) {
         // Record the result so that we can continue the execution using window.setTimeout()
         this.lastCommandResult = result;
         if (result.processState == SELENIUM_PROCESS_WAIT) {
-           
+
             //executionContext.waitForPageLoad(this,selenium);
-            
+
             alert("wait"); // with this line commented in, it all works fine and dandy - just click through and it goes on its way
                            // run the test a few times, though, and then it goes bad.  ????
-            
+
             //delay(2000); //    I tried commenting this line in, but it seems to go ballistic
         } else {
             // Continue processing
@@ -85,16 +85,15 @@ function TestLoop(commandFactory, executionContext) {
         return TEST_CONTINUE;
     };
 
- function delay(millis) {
-   startMillis = new Date();
-   while (true) {
-     milli = new Date();
-     if (milli-startMillis > millis) {
-       break;
-     }
-   }
- }
-
+    function delay(millis) {
+        startMillis = new Date();
+        while (true) {
+            milli = new Date();
+            if (milli-startMillis > millis) {
+                break;
+            }
+        }
+    }
 
     this.kickoffNextCommandExecution = function() {
 
@@ -127,7 +126,7 @@ function TestLoop(commandFactory, executionContext) {
         // Record the result so that we can continue the execution using window.setTimeout()
         this.lastCommandResult = result;
         if (result.processState == SELENIUM_PROCESS_WAIT) {
-           
+
             executionContext.waitForPageLoad(this,selenium);
 
         } else {
@@ -140,8 +139,8 @@ function TestLoop(commandFactory, executionContext) {
     };
 
     /**
-     * Continues the command execution, after waiting for the specified delay.
-     */
+    * Continues the command execution, after waiting for the specified delay.
+    */
     this.continueCommandExecutionWithDelay = function() {
         // Get the interval to use for this command execution, using the pauseInterval is
         // specified. Reset the pause interval, since it's a one-off thing.
@@ -155,8 +154,8 @@ function TestLoop(commandFactory, executionContext) {
     };
 
     /**
-     * Finishes the execution of the previous command, and continues the test
-     */
+    * Finishes the execution of the previous command, and continues the test
+    */
     this.finishCommandExecution = function() {
         this.commandComplete(this.lastCommandResult);
         this.continueCurrentTest();
@@ -165,7 +164,7 @@ function TestLoop(commandFactory, executionContext) {
 
 /** The default is not to have any interval between commands. */
 TestLoop.prototype.getCommandInterval = function() {
-   return 0;
+    return 0;
 };
 
 TestLoop.prototype.firstCommand = noop;
