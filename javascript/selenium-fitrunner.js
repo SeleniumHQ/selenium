@@ -52,8 +52,9 @@ FAILURE = 1;
 
 runInterval = 0;
 
-function setRunInterval(radio) {
-    runInterval = radio.value;
+
+function setRunInterval() {
+    runInterval = this.value;
     var stepButton = document.getElementById("stepNext");
     if (runInterval == -1) {
         stepButton.style.visibility = '';
@@ -80,6 +81,10 @@ function loadSuiteFrame()
     browserbot = new BrowserBot(document.getElementById('myiframe'));
     selenium = new Selenium(browserbot);
     registerCommandHandlers()
+
+    document.getElementById("modeRun").onclick = setRunInterval;
+    document.getElementById('modeWalk').onclick = setRunInterval;
+    document.getElementById('modeStep').onclick = setRunInterval;
 
 	testSuiteName = getQueryStringTestName();
 
@@ -553,7 +558,6 @@ function registerCommandHandlers() {
     // These actions are overridden for fitrunner, as they still involve some FitRunner smarts,
     // because of the wait/nowait behaviour modification. We need a generic solution to this.
     commandFactory.registerAction("click", selenium.doClickWithOptionalWait);
-    commandFactory.registerAction("open", selenium.doOpenWithWait);
 }
 
 Selenium.prototype.doPause = function(waitTime) {
@@ -573,10 +577,5 @@ Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
     if(wait != "nowait") {
         return SELENIUM_PROCESS_WAIT;
     }
-}
-
-Selenium.prototype.doOpenWithWait = function(target) {
-    this.doOpen(target);
-    return SELENIUM_PROCESS_WAIT;
 }
 

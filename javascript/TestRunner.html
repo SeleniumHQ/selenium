@@ -14,9 +14,9 @@ http-equiv="content-type">
 
 <button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">run a single test</button>
 <button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">run all tests</button>
-<label><input id="modeRun" type="radio" name="runMode" value="0" onchange="setRunInterval(this);" checked="checked"/>Run</label>
-<label><input id="modeWalk" type="radio" name="runMode" value="300" onchange="setRunInterval(this);"/>Walk</label>
-<label><input id="modeStep" type="radio" name="runMode" value="-1" onchange="setRunInterval(this);"/>Step</label>
+<label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
+<label><input id="modeWalk" type="radio" name="runMode" value="300" />Walk</label>
+<label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
 <button type="button" id="stepNext" onClick="testLoop.continueCurrentTest()" style="visibility:hidden">Next</button>
 <p />
 
