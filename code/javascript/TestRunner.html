@@ -27,6 +27,7 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="domviewer.js"></script>
 
 
 </head>
@@ -38,6 +39,14 @@ http-equiv="content-type">
     <b>Run:</b>
     <button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">Selected test</button>
     <button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">All tests</button>
+    <button type="button" id="domViewer1" 
+        onClick="newRoot=document.getElementById('myiframe').contentWindow.document;window.open('domviewer.html');return false;" 
+        style="margin-top:10pt; cursor: pointer; cursor: hand">Dom Viewer in 
+        New Window</button>
+    <button type="button" id="domViewer2" onClick="loadDomViewer()" 
+        style="margin-top:10pt; cursor: pointer; cursor: hand">Dom Viewer in 
+        IFrame</button>   
+        
 </div>
 
 <div id="runSpeedPanel">
