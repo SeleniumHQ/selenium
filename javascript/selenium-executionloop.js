@@ -21,8 +21,6 @@ TEST_CONTINUE = false;
 
 function TestLoop(commandFactory) {
     this.commandFactory = commandFactory;
-    this.commandInterval = 0;
-    this.nextCommandInterval = this.commandInterval;
 
     var self = this;
 
@@ -85,14 +83,11 @@ function TestLoop(commandFactory) {
     this.continueCommandExecutionWithDelay = function() {
         // Get the interval to use for this command execution, using the pauseInterval is
         // specified. Reset the pause interval, since it's a one-off thing.
-        var interval = this.pauseInterval || this.commandInterval;
+        var interval = this.pauseInterval || this.getCommandInterval();
         this.pauseInterval = undefined;
 
         // Continue processing
-        if (interval < 0) {
-            // Interval < 0 means break the test at this point.
-            this.commandComplete(this.lastCommandResult);
-        } else {
+        if (interval >= 0) {
             window.setTimeout("testLoop.finishCommandExecution()", interval);
         }
     }
@@ -104,6 +99,11 @@ function TestLoop(commandFactory) {
         this.commandComplete(this.lastCommandResult);
         this.continueCurrentTest();
     }
+}
+
+/** The default is not to have any interval between commands. */
+TestLoop.prototype.getCommandInterval = function() {
+   return 0;
 }
 
 TestLoop.prototype.nextCommand = noop;

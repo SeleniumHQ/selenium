@@ -18,6 +18,82 @@ Copyright 2004 ThoughtWorks, Inc
 <meta content="text/html; charset=ISO-8859-1"
 http-equiv="content-type">
 <title>Selenium Functional Test Runner</title>
+<style>
+#seleniumControlPanel {
+    position: absolute;
+    top: 0px;
+    left: 25%;
+    height: 20%;
+    width: 75%;
+    background-color: white;
+    overflow: auto;
+    padding: 0px;
+    margin: 5px;
+    background: url(selenium-logo.jpg) no-repeat right;
+}
+#launchPanel {
+    position: absolute;
+    top: 10px;
+    left: 2%;
+    width: 10%;
+}
+#launchPanel button {
+    color: white;
+    background-color: green;
+    font-weight: bold;
+    font-size: 12px;
+}
+#runSpeedPanel {
+    position: absolute;
+    top: 10px;
+    left: 25%;
+    width: 15%;
+}
+#runSpeedPanel label {
+    display: block;
+}
+
+table#resultsPanel {
+    position: absolute;
+    top: 10px;
+    left: 40%;
+    width: 40%;
+    background-color: white;
+    border: solid 1px;
+    overflow: hidden;
+    height: 20%;
+}
+table#resultsPanel td {
+    padding:0px;
+    margin:0px;
+}
+table#resultsPanel th {
+    text-align: left;
+    font-weight: bold;
+    padding:0px;
+    margin:0px;
+}
+td#testRuns {
+    color: green;
+    font-weight: bold;
+}
+td#testFailures {
+    color: red;
+    font-weight: bold;
+}
+td#commandPasses {
+    color: green;
+    font-weight: bold;
+}
+td#commandFailures {
+    color: orange;
+    font-weight: bold;
+}
+td#commandErrors {
+    color: red;
+    font-weight: bold;
+}
+</style>
 
 <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
@@ -29,40 +105,28 @@ http-equiv="content-type">
 </head>
 
 <body onLoad="javascript:loadSuiteFrame();">
-
-<button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">run a single test</button>
-<button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">run all tests</button>
-<label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
-<label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
-<label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
-<button type="button" id="stepNext" onClick="testLoop.continueCurrentTest()" style="visibility:hidden">Next</button>
-<p />
-
-<iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="15%" border="0"  SRC="./tests/TestSuite.html"></iframe>
-
-<div style="position: absolute; top: 20px; left: 500px;">
-    <b>Elapsed Time:</b>&nbsp;&nbsp;<span id=elapsedTime>00:00</span>
+<iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="20%" border="0"  SRC="./tests/TestSuite.html"></iframe>
+<div id="seleniumControlPanel">
+<div id="launchPanel">
+    <button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">Run selected test</button><br/>
+    <button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">Run all tests</button>
 </div>
 
-<div style="position: absolute; top: 60px; left: 300px;">
-    <table>
-        <tr><td colspan="2" align="center"><b>Test Results</b></td></tr>
-        <tr>
-            <td style="width: 100px; height: 50px;" align="center">Passes:&nbsp;&nbsp;<span id=testRuns>0</span></td>
-            <td style="width: 100px; height: 50px;" align="center">Failures:&nbsp;&nbsp;<span id=testFailures>0</span></td>
-        </tr>
-    </table>
+<div id="runSpeedPanel">
+    <b>Run mode:</b>
+    <label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
+    <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
+    <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
+    <button type="button" id="continueTest">Next/Continue</button>
 </div>
 
-<div style="position: absolute; top: 60px; left: 600px;">
-    <table>
-        <tr><td colspan="3" align="center"><b>Command Results</b></td></tr>
-        <tr>
-            <td style="width: 100px; height: 50px;" align="center">Passes:&nbsp;&nbsp;<span id=commandPasses>0</span></td>
-            <td style="width: 100px; height: 50px;" align="center">Failures:&nbsp;&nbsp;<span id=commandFailures>0</span></td>
-            <td style="width: 100px; height: 50px;" align="center">Errors:&nbsp;&nbsp;<span id=commandErrors>0</span></td>
-        </tr>
-    </table>
+<table id="resultsPanel">
+    <tr><th>Elapsed Time:</th><td id="elapsedTime">00.00</td></tr>
+    <tr><th colspan="2">Test Results</th><th colspan="2">Command Results</th></tr>
+    <tr><td>Total run:</td><td id="testRuns">0</td><td>Passes:</td><td id="commandPasses">0</td></tr>
+    <tr><td>Failures:</td><td id="testFailures">0</td><td>Failures:</td><td id="commandFailures">0</td></tr>
+    <tr><td colspan="2"/><td>Errors:</td><td id="commandErrors">0</td></tr>
+</table>
 </div>
 
 <iframe NAME="testFrame" ID="testFrame" style="float:left;margin-top: 10px;" height="75%" width="32%" border="0"  SRC=""></iframe>

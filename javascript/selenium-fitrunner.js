@@ -71,13 +71,10 @@ runInterval = 0;
 
 function setRunInterval() {
     runInterval = this.value;
-    var stepButton = document.getElementById("stepNext");
-    if (runInterval == -1) {
-        stepButton.style.visibility = '';
-    }
-    else {
-        stepButton.style.visibility = 'hidden';
-    }
+}
+
+function continueCurrentTest() {
+    testLoop.finishCommandExecution()
 }
 
 function getSuiteFrame() {
@@ -100,6 +97,7 @@ function loadSuiteFrame() {
     document.getElementById("modeRun").onclick = setRunInterval;
     document.getElementById('modeWalk').onclick = setRunInterval;
     document.getElementById('modeStep').onclick = setRunInterval;
+    document.getElementById('continueTest').onclick = continueCurrentTest;
 
     testSuiteName = getQueryStringTestName();
 
@@ -432,8 +430,8 @@ function registerCommandHandlers() {
 
 function initialiseTestLoop() {
     testLoop = new TestLoop(commandFactory);
-    testLoop.commandInterval = runInterval;
 
+    testLoop.getCommandInterval = function() { return runInterval };
     testLoop.nextCommand = nextCommand;
     testLoop.commandStarted = commandStarted;
     testLoop.commandComplete = commandComplete;
