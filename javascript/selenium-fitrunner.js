@@ -64,8 +64,9 @@ function loadAndRunIfAuto() {
 
 function loadSuiteFrame()
 {
-        browserbot = new BrowserBot(document.getElementById('myiframe'));
-        selenium = new Selenium(browserbot);
+    browserbot = new BrowserBot(document.getElementById('myiframe'));
+    selenium = new Selenium(browserbot);
+    registerCommandHandlers()
 
 	testSuiteName = getQueryStringTestName();
 
@@ -177,9 +178,7 @@ function startTest() {
     testFailed = false;
     storedVars = new Object();
 
-    buildCommandHandlers();
-
-    testLoop = new TestLoop(inputTableRows.length);
+    testLoop = new TestLoop(commandFactory);
     testLoop.start();
 }
 
@@ -188,8 +187,6 @@ function startTestSuite() {
     currentTestRow = 0;
     runAllTests = true;
     suiteFailed = false;
-
-    buildCommandHandlers();
 
     runNextTest();
 }
@@ -329,48 +326,6 @@ function createInputField(name, value) {
     return input;
 }
 
-// Build the command handlers as a dictionary, so they can be looked up by the command
-function buildCommandHandlers() {
-    actions = new Object();
-    // These actions still involve some FitRunner smarts, because of the wait/nowait
-    // behaviour modification. We need a generic solution to this.
-    actions["click"] = handleClick;
-    actions["open"] = handleOpen;
-
-    // These actions delegate directly to Selenium
-    actions["type"] = selenium.type;
-    actions["selectWindow"] = selenium.selectWindow;
-    actions["select"] = selenium.select;
-
-    // These 2 are fitrunner specific, and don't involve the Selenium API
-    actions["storeValue"] = handleStoreValue;
-    actions["pause"] = handlePause;
-
-    asserts = new Object();
-    asserts["verifyValue"] = selenium.verifyValue;
-    asserts["verifyText"] = selenium.verifyText;
-    asserts["verifyLocation"] = selenium.verifyLocation;
-    asserts["verifyTextPresent"] = selenium.verifyTextPresent;
-    asserts["verifyTable"] = selenium.verifyTable;
-    asserts["verifyElementPresent"] = selenium.verifyElementPresent;
-    asserts["verifyElementNotPresent"] = selenium.verifyElementNotPresent;
-}
-
-
-function getHandler(command) {
-    var handler = actions[command];
-    if (handler) {
-        handler.type = "action";
-        return handler;
-    }
-    handler = asserts[command];
-    if (handler) {
-        handler.type = "assert";
-        return handler;
-    }
-    return null;
-}
-
 function printMetrics() {
     setText(document.getElementById("commandPasses"), numCommandPasses);
     setText(document.getElementById("commandFailures"), numCommandFailures);
@@ -454,8 +409,10 @@ function handleStoreValue(target) {
     return SELENIUM_PROCESS_CONTINUE;
 }
 
-function TestLoop(commandCount) {
+function TestLoop(commandFactory) {
+    this.commandFactory = commandFactory;
     var self = this;
+
     this.start = function() {
         clearRowColours();
         self.continueCurrentTest();
@@ -494,7 +451,7 @@ function TestLoop(commandCount) {
         var target = replaceVariables(getCellText(currentCommandRow, 1));
         var value = replaceVariables(getCellText(currentCommandRow, 2));
 
-        handler = getHandler(command);
+        handler = this.commandFactory.getCommandHandler(command);
 
         // TODO invert this horrible recursive thing...
         if(handler == null) {
@@ -588,4 +545,52 @@ TestLoop.prototype.setRowFailed = function(errorMsg, failureType) {
     inputTableRows[currentCommandRow].cells[2].innerHTML = errorMsg;
     testFailed = true;
     suiteFailed = true;
+}
+
+function CommandFactory() {
+    this.actions = {};
+    this.asserts = {};
+
+    this.registerAction = function(name, action) {
+        action.type = "action";
+        this.actions[name] = action;
+    }
+
+    this.registerAssert = function(name, assertion) {
+        assertion.type = "assert";
+        this.asserts[name] = assertion;
+    }
+
+    this.getCommandHandler = function(name) {
+        return this.actions[name] || this.asserts[name];
+    }
+}
+
+
+// Register all of the built-in command handlers with the CommandFactory.
+// TODO work out a way for people to register handlers without modifying the Selenium sources.
+function registerCommandHandlers() {
+    commandFactory = new CommandFactory();
+
+    // These actions still involve some FitRunner smarts, because of the wait/nowait
+    // behaviour modification. We need a generic solution to this.
+    commandFactory.registerAction("click", handleClick);
+    commandFactory.registerAction("open", handleOpen);
+
+    // These actions delegate directly to Selenium
+    commandFactory.registerAction("type", selenium.type);
+    commandFactory.registerAction("selectWindow", selenium.selectWindow);
+    commandFactory.registerAction("select", selenium.select);
+
+    // These 2 are fitrunner specific, and don't involve the Selenium API
+    commandFactory.registerAction("storeValue", handleStoreValue);
+    commandFactory.registerAction("pause", handlePause);
+
+    commandFactory.registerAssert("verifyValue", selenium.verifyValue);
+    commandFactory.registerAssert("verifyText", selenium.verifyText);
+    commandFactory.registerAssert("verifyLocation", selenium.verifyLocation);
+    commandFactory.registerAssert("verifyTextPresent", selenium.verifyTextPresent);
+    commandFactory.registerAssert("verifyTable", selenium.verifyTable);
+    commandFactory.registerAssert("verifyElementPresent", selenium.verifyElementPresent);
+    commandFactory.registerAssert("verifyElementNotPresent", selenium.verifyElementNotPresent);
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-fitrunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+    function testAssertsAreTypedAndAvailableAfterRegistrationInCommandFactory() {
+        var commandFactory = new CommandFactory();
+        commandFactory.registerAssert("assertFoo", {});
+
+        var myAssert = commandFactory.getCommandHandler("assertFoo");
+        assertNotNull(myAssert);
+        assertEquals("assert", myAssert.type);
+    }
+
+    function testActionsAreTypedAndAvailableAfterRegistrationInCommandFactory() {
+        var commandFactory = new CommandFactory();
+        commandFactory.registerAction("myAction", {});
+
+        var myAction = commandFactory.getCommandHandler("myAction");
+        assertNotNull(myAction);
+        assertEquals("action", myAction.type);
+    }
+
+
+    function TODO_testAssertsCanBeAccessedViaTheVerifyPrefix() {
+        var commandFactory = new CommandFactory();
+        commandFactory.registerAssert("assertFoo", {});
+
+        var myVerify = commandFactory.getCommandHandler("verifyFoo");
+        assertNotNull(myVerify);
+        assertEquals("assert", myVerify.type);
+    }
+
+    function TODO_testHaltOnViolationIsSetOnAssertBasedOnPrefix() {
+        var commandFactory = new CommandFactory();
+        commandFactory.registerAssert("assertFoo", {});
+
+        var myAssert = commandFactory.getCommandHandler("assertFoo");
+        assertTrue(myAssert.haltOnViolation);
+
+        var myVerify = commandFactory.getCommandHandler("verifyFoo");
+        assertFalse(myAssert.haltOnViolation);
+    }
+*/
+</script>
+  </head>
+
+  <body>
+    <h1>FitRunner component tests</h1>
+
+    <p>This page contains tests for different components in the FitRunner. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
+  </body>
+</html>
