@@ -19,10 +19,10 @@ import com.thoughtworks.selenium.utils.Assert;
 */
 
 /**
- * @version $Id: ProxyDetailsRemovalCommand.java,v 1.1 2004/11/11 12:19:47 mikemelia Exp $
+ * @version $Id: ProxyDetailsRemovalCommand.java,v 1.2 2004/11/13 05:43:00 ahelleso Exp $
  */
 public class ProxyDetailsRemovalCommand implements RequestModificationCommand {
-    private static final String REGEX = HTTPRequest.SELENIUM_REDIRECT_SERVER + HTTPRequest.SELENIUM_REDIRECT_DIR;
+    private static final String REGEX = SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER + SeleniumHTTPRequest.SELENIUM_REDIRECT_DIR;
 
     public void execute(HTTPRequest httpRequest) {
         Assert.assertIsTrue(httpRequest != null, "httpRequest can't be null");

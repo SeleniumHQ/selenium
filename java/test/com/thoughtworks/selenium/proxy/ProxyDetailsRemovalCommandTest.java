@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 */
 
 /**
- * @version $Id: ProxyDetailsRemovalCommandTest.java,v 1.1 2004/11/11 12:19:49 mikemelia Exp $
+ * @version $Id: ProxyDetailsRemovalCommandTest.java,v 1.2 2004/11/13 05:43:01 ahelleso Exp $
  */
 public class ProxyDetailsRemovalCommandTest extends TestCase {
     
@@ -29,7 +29,7 @@ public class ProxyDetailsRemovalCommandTest extends TestCase {
     
     public void testProxyDetailsRemovedFromUri() {
         String uri = "www.amazon.com/site/";
-        HTTPRequest httpRequest = new HTTPRequest("GET: " + HTTPRequest.SELENIUM_REDIRECT_URI +
+        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI +
                                                   uri + HTTPRequest.CRLF);
         ProxyDetailsRemovalCommand command = new ProxyDetailsRemovalCommand();
         command.execute(httpRequest);

@@ -22,19 +22,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * @version $Id: RequestInputStream.java,v 1.1 2004/11/13 04:46:57 ahelleso Exp $
+ * @version $Id: RequestInputStream.java,v 1.2 2004/11/13 05:43:00 ahelleso Exp $
  */
 public class RequestInputStream extends BufferedReader implements RequestInput {
     public RequestInputStream(InputStream inputStream) {
         super(new InputStreamReader(inputStream));
     }
 
-    public HTTPRequest readRequest() throws IOException {
+    public SeleniumHTTPRequest readRequest() throws IOException {
         StringBuffer content = new StringBuffer();
         String line = null;
         while ((line = readLine()) != null && line.length() > 0) {
             content.append(line + HTTPRequest.CRLF);
         }
-        return new HTTPRequest(content.toString());
+        return new SeleniumHTTPRequest(content.toString());
     }
 }

@@ -17,10 +17,10 @@ package com.thoughtworks.selenium.proxy;
 */
 
 /**
- * @version $Id: CreateHostCommand.java,v 1.1 2004/11/11 12:19:47 mikemelia Exp $
+ * @version $Id: CreateHostCommand.java,v 1.2 2004/11/13 05:43:00 ahelleso Exp $
  */
 public class CreateHostCommand implements RequestModificationCommand {
-    private static int start = HTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
+    private static int start = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
 
     public void execute(HTTPRequest httpRequest) {
         String uri = httpRequest.getUri();
@@ -32,7 +32,7 @@ public class CreateHostCommand implements RequestModificationCommand {
     }
 
     private String getHost(String uri) {
-        if (uri.startsWith(HTTPRequest.SELENIUM_REDIRECT_PROTOCOL)) {
+        if (uri.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL)) {
             int end = uri.indexOf('/', start);
             return (end == -1) ? uri.substring(start) : uri.substring(start, end);
         }

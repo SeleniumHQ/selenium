@@ -17,10 +17,10 @@ package com.thoughtworks.selenium.proxy;
 */
 
 /**
- * @version $Id: RemoveProxyFromRefererNameCommand.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
+ * @version $Id: RemoveProxyFromRefererNameCommand.java,v 1.3 2004/11/13 05:43:00 ahelleso Exp $
  */
 public class RemoveProxyFromRefererNameCommand implements RequestModificationCommand {
-    private final static String textToRemove = HTTPRequest.SELENIUM_REDIRECT_SERVER + HTTPRequest.SELENIUM_REDIRECT_DIR;
+    private final static String textToRemove = SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER + SeleniumHTTPRequest.SELENIUM_REDIRECT_DIR;
 
     public void execute(HTTPRequest httpRequest) {
         String referer = httpRequest.getHeaderField("Referer");

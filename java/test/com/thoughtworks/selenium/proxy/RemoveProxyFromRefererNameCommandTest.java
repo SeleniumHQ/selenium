@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 */
 
 /**
- * @version $Id: RemoveProxyFromRefererNameCommandTest.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
+ * @version $Id: RemoveProxyFromRefererNameCommandTest.java,v 1.3 2004/11/13 05:43:01 ahelleso Exp $
  */
 public class RemoveProxyFromRefererNameCommandTest extends TestCase {
     
@@ -29,9 +29,9 @@ public class RemoveProxyFromRefererNameCommandTest extends TestCase {
 
     public void testProxyRemovedFromReferer() {
         String server = "www.amazon.com/site/";
-        String expectedHost = HTTPRequest.SELENIUM_REDIRECT_PROTOCOL + server;
-        HTTPRequest httpRequest = new HTTPRequest("GET: " + HTTPRequest.SELENIUM_REDIRECT_URI + HTTPRequest.CRLF +
-                                                  "Referer: " + HTTPRequest.SELENIUM_REDIRECT_URI +
+        String expectedHost = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL + server;
+        SeleniumHTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI + HTTPRequest.CRLF +
+                                                  "Referer: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI +
                                                    server + HTTPRequest.CRLF );
         RemoveProxyFromRefererNameCommand command = new RemoveProxyFromRefererNameCommand();
         command.execute(httpRequest);

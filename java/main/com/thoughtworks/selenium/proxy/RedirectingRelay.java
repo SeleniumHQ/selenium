@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * @version $Id: RedirectingRelay.java,v 1.4 2004/11/13 05:33:36 ahelleso Exp $
+ * @version $Id: RedirectingRelay.java,v 1.5 2004/11/13 05:43:00 ahelleso Exp $
  */
 public class RedirectingRelay implements Relay {
     private static final Log LOG = LogFactory.getLog(RedirectingRelay.class);
@@ -46,7 +46,7 @@ public class RedirectingRelay implements Relay {
 
 
     public void relay() throws IOException {
-        HTTPRequest request = requestInput.readRequest();
+        SeleniumHTTPRequest request = requestInput.readRequest();
         if (!hasBeenRedirected(request.getUri())) {
             byte[] redirectMessage = redirectResponse(request).getBytes();
             responseStream.write(redirectMessage);
@@ -57,10 +57,10 @@ public class RedirectingRelay implements Relay {
     }
 
     private boolean hasBeenRedirected(String uri) {
-        return uri.startsWith(HTTPRequest.SELENIUM_REDIRECT_PROTOCOL + HTTPRequest.SELENIUM_REDIRECT_SERVER);
+        return uri.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL + SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER);
     }
 
-    private void sendToIntendedTarget(HTTPRequest request) {
+    private void sendToIntendedTarget(SeleniumHTTPRequest request) {
         requestModificationCommand.execute(request);
         String requestToDest = request.getRequest();
         LOG.debug("Writing\n" + requestToDest);
@@ -80,14 +80,14 @@ public class RedirectingRelay implements Relay {
     }
 
     private int getPort(int destinationPort, String destinationServer) {
-        if (proxyPort == null || destinationServer.startsWith(HTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
+        if (proxyPort == null || destinationServer.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
             return destinationPort;
         }
         return Integer.parseInt(proxyPort);
     }
 
     private String getServer(String destinationServer) {
-        if (proxy == null || destinationServer.startsWith(HTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
+        if (proxy == null || destinationServer.startsWith(SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVERNAME)) {
             return destinationServer;
         }
         return proxy;
@@ -111,7 +111,7 @@ public class RedirectingRelay implements Relay {
         final String protocol = request.getProtocol();
         final String uri = request.getUri();
         String response = protocol + " 302 Moved Temporarily\r\nLocation: " +
-                          HTTPRequest.SELENIUM_REDIRECT_URI  +
+                          SeleniumHTTPRequest.SELENIUM_REDIRECT_URI  +
                           uri.substring(MAGIC_NUMBER) + "\r\n";
         LOG.debug("Redirected Response\n" + response);
         return response;

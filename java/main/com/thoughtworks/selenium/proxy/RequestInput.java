@@ -19,8 +19,8 @@ import java.io.IOException;
 */
 
 /**
- * @version $Id: RequestInput.java,v 1.1 2004/11/13 04:46:57 ahelleso Exp $
+ * @version $Id: RequestInput.java,v 1.2 2004/11/13 05:43:00 ahelleso Exp $
  */
 public interface RequestInput {
-    public HTTPRequest readRequest() throws IOException;
+    public SeleniumHTTPRequest readRequest() throws IOException;
 }

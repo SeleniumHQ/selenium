@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 
 /**
- * @version $Id: RedirectingRelayTest.java,v 1.3 2004/11/13 05:33:36 ahelleso Exp $
+ * @version $Id: RedirectingRelayTest.java,v 1.4 2004/11/13 05:43:01 ahelleso Exp $
  */
 public class RedirectingRelayTest extends MockObjectTestCase {
 
@@ -38,7 +38,7 @@ public class RedirectingRelayTest extends MockObjectTestCase {
                 "Keep-Alive: 300\r\n" +
                 "Connection: keep-alive\r\n" +
                 "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z; session-id-time=1099900800; session-id=102-3724782-9228157";
-        HTTPRequest request = new HTTPRequest(requestString);
+        HTTPRequest request = new SeleniumHTTPRequest(requestString);
         requestInput.expects(once()).method("readRequest").withNoArguments().will(returnValue(request));
 
         String expectedResponse = "HTTP/1.1 302 Moved Temporarily\r\nLocation: http://localhost:9999/selenium/\r\n";
