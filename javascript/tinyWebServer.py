@@ -20,14 +20,19 @@
 import BaseHTTPServer
 import CGIHTTPServer
 import time
+import httplib
+import sys
 
 PORT = 8000
 
 class HTTPHandler(CGIHTTPServer.CGIHTTPRequestHandler):
     """
-    Simple Web Server that can handle query strings in a request URL.
+    Simple Web Server that can handle query strings in a request URL and can be stopped with a request
     
     """
+    
+    quitRequestReceived = False
+    
     def do_GET(self):
         # SimpleHTTPServer doesn't know how to handle query strings in 
         # 'GET' requests, so we're processing them here:
@@ -39,18 +44,25 @@ class HTTPHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         # Add a delay before serving up the slow-loading test page
         if self.path.find('test_slowloading_page') != -1:
             time.sleep(0.3)
-        
+              
         # Carry on with the rest of the processing...
         CGIHTTPServer.CGIHTTPRequestHandler.do_GET(self)  
-  
+
+    def do_QUIT(self):
+        self.send_response(200)
+        self.end_headers()
+        HTTPHandler.quitRequestReceived = True 
 
 if __name__ == '__main__':
-    server_address = ('', PORT)
-    httpd = BaseHTTPServer.HTTPServer(server_address, HTTPHandler)
-    print "serving at port", PORT
-    print "To run the entire JsUnit test suite, open"
-    print "  http://localhost:8000/jsunit/testRunner.html?testPage=http://localhost:8000/tests/JsUnitSuite.html&autoRun=true"
-    print "To run the acceptance test suite, open"
-    print "  http://localhost:8000/TestRunner.html"
-
-    httpd.serve_forever()
+        server_address = ('', PORT)
+    	httpd = BaseHTTPServer.HTTPServer(server_address, HTTPHandler)
+    
+    	print "serving at port", PORT
+    	print "To run the entire JsUnit test suite, open"
+    	print "  http://localhost:8000/jsunit/testRunner.html?testPage=http://localhost:8000/tests/JsUnitSuite.html&autoRun=true"
+    	print "To run the acceptance test suite, open"
+    	print "  http://localhost:8000/TestRunner.html"
+    
+    	while not HTTPHandler.quitRequestReceived :
+        	httpd.handle_request()	
+	
