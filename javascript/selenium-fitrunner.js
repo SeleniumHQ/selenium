@@ -334,7 +334,6 @@ function buildCommandHandlers() {
 
     commandHandlers["open"] = handleOpen;
     commandHandlers["click"] = handleClick;
-    commandHandlers["onclick"] = handleOnClick;
     commandHandlers["type"] = handleType;
     commandHandlers["selectWindow"] = handleSelectWindow;
     commandHandlers["storeValue"] = handleStoreValue;
@@ -396,13 +395,14 @@ function processCommand(){
             setRowFailed("Unknown command", ERROR);
             processCommand();
         }
-        else
+        else {
             try {
                 handler(target, value);
             } catch (e) {
                 setRowFailed(e.message, ERROR);
                 processCommand();
             }
+        }
     }
 }
 
@@ -479,16 +479,6 @@ function handleClick(target, wait) {
         processCommand();
     } else {
         selenium.clickElement(target, processCommand);
-    }
-}
-
-/* TODO write a test for this - it could be broken */
-function handleOnClick(target, wait) {
-    if(wait == "nowait") {
-        selenium.onclickElement(element);
-        processCommand();
-    } else {
-        selenium.onclickElement(element, processCommand);
     }
 }
 
