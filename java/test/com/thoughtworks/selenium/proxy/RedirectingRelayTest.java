@@ -19,20 +19,15 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 
 /**
- * @version $Id: RedirectingRelayTest.java,v 1.2 2004/11/13 04:46:58 ahelleso Exp $
+ * @version $Id: RedirectingRelayTest.java,v 1.3 2004/11/13 05:33:36 ahelleso Exp $
  */
 public class RedirectingRelayTest extends MockObjectTestCase {
 
-    private HTTPRequest request;
-
     public void testRedirectsForNonLocalHostTarget() throws IOException {
-        Mock mock = mock(RequestResponseStreamCommand.class);
-        RequestInput requestInput = (RequestInput) mock.proxy();
-        ResponseStream responseStream = (ResponseStream) mock.proxy();
-        RequestModificationCommand command = (RequestModificationCommand) mock.proxy();
-        
+        Mock requestInput = mock(RequestInput.class);
         String requestString = "GET / HTTP/1.1\r\n" +
                 "Host: www.amazon.com\r\n" +
                 "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1\r\n" +
@@ -43,16 +38,15 @@ public class RedirectingRelayTest extends MockObjectTestCase {
                 "Keep-Alive: 300\r\n" +
                 "Connection: keep-alive\r\n" +
                 "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z; session-id-time=1099900800; session-id=102-3724782-9228157";
-        request = new HTTPRequest(requestString);
+        HTTPRequest request = new HTTPRequest(requestString);
+        requestInput.expects(once()).method("readRequest").withNoArguments().will(returnValue(request));
 
-        String response = "HTTP/1.1 301 Moved Permanently\r\nLocation: http://localhost:9999/site/www.amazon.com\r\n";
-        mock.expects(once()).method("read").withNoArguments().will(returnValue(request));
-        mock.expects(once()).method("write").with(eq(response));
-        
-        RedirectingRelay relay = new RedirectingRelay(requestInput, responseStream, command);
+        String expectedResponse = "HTTP/1.1 302 Moved Temporarily\r\nLocation: http://localhost:9999/selenium/\r\n";
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        RedirectingRelay relay = new RedirectingRelay((RequestInput) requestInput.proxy(), out, null);
         relay.relay();
-    }
 
-    private interface RequestResponseStreamCommand extends RequestInput, ResponseStream, RequestModificationCommand {
+        assertEquals(expectedResponse, new String(out.toByteArray()));
     }
 }

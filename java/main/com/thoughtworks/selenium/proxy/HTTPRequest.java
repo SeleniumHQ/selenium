@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @version $Id: HTTPRequest.java,v 1.4 2004/11/13 05:00:09 ahelleso Exp $
+ * @version $Id: HTTPRequest.java,v 1.5 2004/11/13 05:33:36 ahelleso Exp $
  */
 public class HTTPRequest {
     public static final String SELENIUM_REDIRECT_SERVERNAME = "localhost";
@@ -49,8 +49,6 @@ public class HTTPRequest {
     private int destinationPort;
 
     public HTTPRequest(String request) {
-        Assert.assertIsTrue(request != null, "request can't be null");
-        LOG.debug("Request\n" + request);
         original = request;
         parse(request);
         headers.put("Proxy-Authorization", "Basic " + new sun.misc.BASE64Encoder().encode(auth.getBytes()));
