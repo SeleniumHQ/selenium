@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  * Selenium - http://localhost:9090/selenium-b-tests.html
  *
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class SeleniumIntegrationTest extends TestCase {
     public void testShouldStartServerAndCreateBrowser() {
@@ -27,7 +27,7 @@ public class SeleniumIntegrationTest extends TestCase {
         } catch (SeleniumException e) {
             assertEquals("bla.1.2 was hello", e.getMessage());
         } finally {
-            selenium.shutdown();
+//            selenium.shutdown();
         }
     }
 }
