@@ -350,7 +350,7 @@ function buildCommandHandlers() {
 
 function processCommand(){
     // TODO: write a test that breaks when this is removed
-    getCurrentPage().clearOnBeforeUnload();
+    browserbot.getCurrentPage().clearOnBeforeUnload();
 
     // Scroll the test frame down by 25 pixels once we get past the first 5 cells.
     if(currentCommandRow >= 5)
@@ -427,7 +427,7 @@ function pad (num) {
 // Find the element by id and returns it.  If it is not found, changes the
 // table to include an error message.
 function findElement(id) {
-    var element = getCurrentPage().findElement(id);
+    var element = browserbot.getCurrentPage().findElement(id);
 
     if(element == null) {
         setRowFailed("Element not found", ERROR);
@@ -477,10 +477,10 @@ function handleClick(target, wait) {
     }
 
     if(wait == "nowait") {
-        getCurrentPage().clickElement(element);
+        browserbot.getCurrentPage().clickElement(element);
         processCommand();
     } else {
-        getCurrentPage().clickElement(element, processCommand);
+        browserbot.getCurrentPage().clickElement(element, processCommand);
     }
 }
 
@@ -494,10 +494,10 @@ function handleOnClick(target, wait) {
     }
 
     if(wait == "nowait") {
-        getCurrentPage().onclickElement(element);
+        browserbot.getCurrentPage().onclickElement(element);
         processCommand();
     } else {
-        getCurrentPage().onclickElement(element, processCommand);
+        browserbot.getCurrentPage().onclickElement(element, processCommand);
     }
 }
 
@@ -505,18 +505,18 @@ function handleType(target, stringValue) {
     element = findElement(target);
 
     if(element != null) {
-        getCurrentPage().replaceText(element, stringValue);
+        browserbot.getCurrentPage().replaceText(element, stringValue);
     }
     processCommand();
 }
 
 function handleOpen(target) {
-    openLocation(target, processCommand);
+    browserbot.openLocation(target, processCommand);
 }
 
 function handleSelectWindow(target) {
     try {
-        selectWindow(target);
+        browserbot.selectWindow(target);
     } catch (e) {
         setRowFailed(e.message, ERROR);
     }
@@ -528,7 +528,7 @@ function handleSelect(target, stringValue) {
 	element = findElement(target);
 
 	if(element != null) {
-	    getCurrentPage().selectOptionWithLabel(element, stringValue);
+	    browserbot.getCurrentPage().selectOptionWithLabel(element, stringValue);
 	}
 	processCommand();
 }
@@ -539,13 +539,13 @@ function handlePause(waitTime) {
 
 // Reads the text of the page and stores it in a variable with the name of the target
 function handleStoreValue(target) {
-    value = getCurrentPage().bodyText();
+    value = browserbot.getCurrentPage().bodyText();
     storedVars[target] = value;
     processCommand();
 }
 
 function handleVerifyLocation(stringValue) {
-    actualValue = getCurrentPage().location;
+    actualValue = browserbot.getCurrentPage().location;
     checkEquality(stringValue, actualValue);
 
     processCommand();
@@ -627,7 +627,7 @@ function trim(s) {
 }
 
 function handleVerifyTextPresent(stringValue) {
-    allText = getCurrentPage().bodyText();
+    allText = browserbot.getCurrentPage().bodyText();
 
     if(allText == "") {
         setRowFailed("Page text not found", ERROR)
@@ -643,7 +643,7 @@ function handleVerifyTextPresent(stringValue) {
 }
 
 function handleVerifyElementPresent(target) {
-    var element = getCurrentPage().findElement(target);
+    var element = browserbot.getCurrentPage().findElement(target);
 
     if(element != null)
         setRowPassed();
@@ -654,7 +654,7 @@ function handleVerifyElementPresent(target) {
 }
 
 function handleVerifyElementNotPresent(target) {
-    var element = getCurrentPage().findElement(target);
+    var element = browserbot.getCurrentPage().findElement(target);
 
     if(element == null)
         setRowPassed();

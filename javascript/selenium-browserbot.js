@@ -11,9 +11,7 @@
 
 // The window to which the commands will be sent.  For example, to click on a
 // popup window, first select that window, and then do a normal click command.
-currentWindowName = null;
-
-currentPage = null;
+var browserbot = new BrowserBot();
 
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
@@ -46,7 +44,6 @@ function modifyWindow(windowObject) {
  * TODO: This could be more generic, but suffices for now.
  */
 function SelfRemovingLoadListener(fn) {
-    this.fn=fn;
     var self = this;
 
     this.invoke=function () {
@@ -54,54 +51,64 @@ function SelfRemovingLoadListener(fn) {
             fn();
         } finally {
             // we've moved to a new page - clear the current one
-            currentPage = null;
+            browserbot.currentPage = null;
             removeLoadListener(getIframe(), self.invoke);
         }
     }
-}
-
-function getContentWindow() {
-    return getIframe().contentWindow
 }
 
 function getIframe() {
     return document.getElementById('myiframe');
 }
 
-function selectWindow(target) {
+function BrowserBot() {
+    this.currentPage = null;
+    this.currentWindowName = null;
+}
+
+BrowserBot.prototype.getFrame = function() {
+    return getIframe();
+}
+
+BrowserBot.prototype.getContentWindow = function() {
+    return this.getFrame().contentWindow
+}
+
+BrowserBot.prototype.selectWindow = function(target) {
     // we've moved to a new page - clear the current one
-    currentPage = null;
+    this.currentPage = null;
 
     if(target == "null")
-        currentWindowName = null;
+        this.currentWindowName = null;
     else {
         // If window exists
-        if(eval("getContentWindow().window." + target))
-            currentWindowName = target;
+        if (this.getContentWindow().eval("window." + target))
+            this.currentWindowName = target;
         else
             throw new Error("Window does not exist");
     }
 }
 
-function openLocation(target, onloadCallback) {
+BrowserBot.prototype.openLocation = function(target, onloadCallback) {
     // We're moving to a new page - clear the current one
-    currentPage = null;
+    this.currentPage = null;
 
-    var el = new SelfRemovingLoadListener(onloadCallback);
-    addLoadListener(getIframe(), el.invoke);
-    getIframe().src = target;
+    if (onloadCallback) {
+        var el = new SelfRemovingLoadListener(onloadCallback);
+        addLoadListener(this.getFrame(), el.invoke);
+    }
+    this.getFrame().src = target;
 }
 
-function getCurrentPage() {
-    if (currentPage == null) {
-        var testWindow = getContentWindow()
-        if (currentWindowName != null) {
-	        commandStr = "getContentWindow().window." + currentWindowName;
-	        testWindow = eval(commandStr)
+BrowserBot.prototype.getCurrentPage = function() {
+    if (this.currentPage == null) {
+        var testWindow = this.getContentWindow().window;
+        if (this.currentWindowName != null) {
+	        testWindow = this.getContentWindow().window.eval(this.currentWindowName);
         }
-        currentPage = new PageBot(testWindow)
+        this.currentPage = new PageBot(testWindow)
     }
-    return currentPage;
+    return this.currentPage;
 }
 
 function PageBot(pageWindow) {
@@ -216,7 +223,7 @@ PageBot.prototype.clickElement = function(element, loadCallback) {
 
         // Prepend the window onto the javascript function.  This is very
         // hacky, but if we don't do this, the function can't be found.
-        eval("getContentWindow().window." + currentWindow + "."+array[1]);
+        eval("browserbot.getContentWindow().window." + currentWindow + "."+array[1]);
     }
     else {
 */

@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>BrowserBot tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+// Override the modifyWindow function for testing - eewww static methods...
+var modifyWindowCalled;
+function modifyWindow(windowObject) {
+    // Do nothing
+}
+
+function setUp() {
+    browserBot = new BrowserBot();
+
+    mockFrame = new String('mockFrame');
+    mockFrame.contentWindow = new String('mockContentWindow');
+    mockFrame.contentWindow.window = new String('mockWindow');
+    browserBot.getFrame = function() {return mockFrame};
+
+    browserBot.currentWindowName = 'originalWindowName';
+    browserBot.currentPage = 'originalPage';
+
+    modifyWindowCalled = false;
+}
+
+function testContentWindowIsRetrievedFromFrame() {
+    assertEquals(mockFrame.contentWindow, browserBot.getContentWindow());
+}
+
+function testPageAndCurrentWindowNameIsSetToNullWhenSelectWindowIsCalledWithNull() {
+    browserBot.selectWindow('null');
+
+    assertNull(browserBot.currentPage);
+    assertNull(browserBot.currentWindowName);
+}
+
+function testPageIsSetToNullAndCurrentWindowIsSetWhenSelectWindowIsCalledWithNonNull() {
+    // Make sure new window can be found
+    mockFrame.contentWindow.window.windowName = new String('anotherWindow');
+
+    browserBot.selectWindow('windowName');
+
+    assertNull(browserBot.currentPage);
+    assertEquals('windowName', browserBot.currentWindowName);
+}
+
+function testExceptionWhenSelectWindowIsCalledWithUnknownWindowName() {
+    try {
+        browserBot.selectWindow('notAwindow');
+        fail("Should have thrown exception");
+    }
+    catch (e) {
+        assertEquals("Window does not exist", e.message);
+    }
+}
+
+function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocation() {
+    browserBot.openLocation('myNewLocation');
+
+    assertNull(browserBot.currentPage);
+    assertEquals('myNewLocation', mockFrame.src);
+}
+
+function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIsNull() {
+    browserBot.currentWindowName = null;
+    browserBot.currentPage = null;
+
+    mockFrame.contentWindow.window.location = new String('location');
+    mockFrame.contentWindow.window.location.pathname = 'thelocation';
+    mockFrame.contentWindow.window.document = 'thedocument';
+
+    var pageBot = browserBot.getCurrentPage();
+    assertEquals(pageBot, browserBot.currentPage);
+
+    assertEquals(mockFrame.contentWindow.window, pageBot.currentWindow);
+    assertEquals('thedocument', pageBot.currentDocument);
+    assertEquals('thelocation', pageBot.location);
+}
+
+function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSet() {
+    browserBot.currentPage = null;
+
+    targetWindow = new String('anotherWindow');
+    targetWindow.location = new String('location');
+    mockFrame.contentWindow.window.windowName = targetWindow;
+
+    browserBot.currentWindowName = 'targetWindow';
+
+    var pageBot = browserBot.getCurrentPage();
+    assertEquals(targetWindow, pageBot.currentWindow);
+}
+</script>
+  </head>
+  <body>Selenium BrowserBot Tests</body>
+</html>
