@@ -1,5 +1,7 @@
 <project name="Selenium Javascript Build" default="run_jsunit_tests" basedir=".">
 
+    <property name="version" value="0.1.2"/>
+
     <!-- global properties -->
     <property name="JSUnitHome" value="${basedir}/jsunit"/>
     <property name="WebServerPort" value="8000"/> <!-- this must match the hardcoded value in tinyWebServer.py -->
@@ -64,5 +66,44 @@
 
     <!-- Public Targets -->
     <target name="run_jsunit_tests" description="Runs selenium JSUnit tests" depends="--run_jsunit_tests"/>
+
+    <target name="dist">
+
+        <mkdir dir="dist"/>    
+
+        <echo file="dist/readme.txt">Create a TestSuite.html page, and a number of test pages here. Read the docs!</echo>
+
+        <zip destfile="dist/selenium-${version}-inbrowser.zip">
+            <zipfileset dir="dist" prefix="tests/html">
+                <include name="readme.txt"/>            
+            </zipfileset>
+            <fileset dir=".">
+                <exclude name="dist/**"/>            
+                <exclude name="SeleneseRunner.html"/>            
+                <exclude name="jsmock/**"/>            
+                <exclude name="jsunit/**"/>            
+                <exclude name="jsunit-logs/**"/>
+                <exclude name="tests/**"/>            
+                <exclude name="build.xml"/>            
+                <exclude name="**/web.xml"/>            
+            </fileset>
+        </zip>
+
+        <zip destfile="dist/selenium-${version}-inbrowser-src.zip">
+            <fileset dir=".">
+                <exclude name="dist/**"/>            
+                <include name="**"/>
+            </fileset>
+        </zip>
+        <delete file="dist/readme.txt"/>
+  
+    </target>
+    <target name="publish-dist" depends="dist">
+    
+        <copy todir="../../website/webapps/ROOT" file="dist/selenium-${version}-inbrowser-src.zip"/>
+        <copy todir="../../website/webapps/ROOT" file="dist/selenium-${version}-inbrowser.zip"/>
+
+    </target>
+
 
 </project>
