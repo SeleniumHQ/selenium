@@ -153,6 +153,16 @@ function testClickSubmitShouldTriggerFocusClickAndBlur() {
 
     assertEquals("focus,click,blur", submitEvents.join())
 }
+
+function testClickShouldNotTriggerEventsPassedClickIfWindowIsClosed() {
+    theButton.onclick = function() {
+        buttonEvents.push('clickNclose');
+        pageBot.windowClosed = function() {return true};
+    }
+
+    pageBot.clickElement(theButton);
+    assertEquals("focus,clickNclose", buttonEvents.join());
+}
 </script>
   </head>
 
