@@ -29,7 +29,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
-    pageBot = new PageBot(window)
+    pageBot = createPageBot(window);
 }
 
 function testTitleProperty() {
@@ -37,7 +37,7 @@ function testTitleProperty() {
 }
 
 function testLocationProperty() {
-    assertEquals("/tests/browserbot/pagebot-property-tests.html", pageBot.location)
+    assertEquals("/tests/browserbot/pagebot-property-tests.html", pageBot.location);
 }
 
 function testBodyText() {

@@ -34,7 +34,7 @@ function setUp() {
     initialiseCheckbox()
     initialiseRadios()
     initialiseButtons()
-    pageBot = new PageBot(window);
+    pageBot = createPageBot(window);
 }
 
 function attachEventListeners(element, eventSink) {
