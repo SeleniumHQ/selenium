@@ -461,7 +461,9 @@ SetUp / TearDown
 Continuous Integration
 ----------------------
     
-    Selenium can be integrated with an automated build.  When the parameter "auto=true" is added to the URL, Selenium will run the entire suite of tests, and then post the results to the URL /postResults.  The fields of the post are:
+    Selenium can be integrated with an automated build.  When the parameter "auto=true" is added to the URL, Selenium will run the entire suite of tests, and then post the results to a handling URL.  The default URL is "/postResults", but an alternative handler location can be provided by specifying a "resultsUrl" parameter.
+
+    The fields of the post are:
 
         ==================  ======================================================================================================  
         Parameter           Description
@@ -496,5 +498,5 @@ Continuous Integration
 
 :Authors:           Paul Gross, Jason Huggins
 :Created Date:      08/23/2004
-:Modified Date:     11/04/2004
+:Modified Date:     28/01/2005
 :Created With:      reStructuredText: http://docutils.sourceforge.net/rst.html
