@@ -25,6 +25,10 @@ win32eventreactor.install()
 from twisted.internet import reactor
 from twisted.web import static, server, twcgi, script, xmlrpc, resource
 from twisted.internet import utils
+import os
+
+import Interpreter
+import Dispatcher
 
 class PerlScript(twcgi.FilteredScript):
     filter = 'c:/Perl/bin/perl.exe' # Points to the perl parser
@@ -33,7 +37,8 @@ def main():
     root = resource.Resource()
     
     # The proxy server (aka "The Funnel")
-    proxy = PerlScript("C:/MyStuff/projects/selenium-d/selenium-SVN-dev/code/python/twisted/cgi-bin/nph-proxy.cgi")
+    path = os.path.join(os.getcwd(),"cgi-bin","nph-proxy.cgi")
+    proxy = PerlScript(path)    
     root.putChild("AUT",proxy)        
     
     # The selenium javascript directory,driver web interface, and
