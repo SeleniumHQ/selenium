@@ -42,7 +42,7 @@ function modifyWindow(windowObject) {
  * calling app needing to worry about cleaning up afterward.
  * TODO: This could be more generic, but suffices for now.
  */
-function SelfRemovingLoadListener(fn) {
+function SelfRemovingLoadListener(fn, frame) {
     var self = this;
 
     this.invoke=function () {
@@ -51,13 +51,9 @@ function SelfRemovingLoadListener(fn) {
         } finally {
             // we've moved to a new page - clear the current one
             browserbot.currentPage = null;
-            removeLoadListener(getIframe(), self.invoke);
+            removeLoadListener(frame, self.invoke);
         }
     }
-}
-
-function getIframe() {
-    return document.getElementById('myiframe');
 }
 
 BrowserBot = function(frame) {
@@ -67,7 +63,7 @@ BrowserBot = function(frame) {
 }
 
 BrowserBot.prototype.getFrame = function() {
-    return getIframe();
+    return this.frame;
 }
 
 BrowserBot.prototype.getContentWindow = function() {
@@ -92,7 +88,7 @@ BrowserBot.prototype.openLocation = function(target, onloadCallback) {
     this.currentPage = null;
 
     if (onloadCallback) {
-        var el = new SelfRemovingLoadListener(onloadCallback);
+        var el = new SelfRemovingLoadListener(onloadCallback, this.frame);
         addLoadListener(this.getFrame(), el.invoke);
     }
     this.getFrame().src = target;
@@ -193,7 +189,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
 
 PageBot.prototype.clickElement = function(element, loadCallback) {
     if (loadCallback) {
-        var el = new SelfRemovingLoadListener(loadCallback);
+        var el = new SelfRemovingLoadListener(loadCallback, this.browserBot.getFrame());
         addLoadListener(this.browserBot.getFrame(), el.invoke);
     }
 
@@ -229,7 +225,7 @@ PageBot.prototype.clickElement = function(element, loadCallback) {
 
 PageBot.prototype.onclickElement = function(element, loadCallback) {
     if (loadCallback) {
-        var el = new SelfRemovingLoadListener(loadCallback);
+        var el = new SelfRemovingLoadListener(loadCallback, this.browserBot.getFrame());
         addLoadListener(this.browserBot.getFrame(), el.invoke);
     }
 
