@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @version $Id: HTTPRequest.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
+ * @version $Id: HTTPRequest.java,v 1.3 2004/11/13 04:46:57 ahelleso Exp $
  */
 public class HTTPRequest {
     public static final String SELENIUM_REDIRECT_SERVERNAME = "localhost";
@@ -37,13 +37,13 @@ public class HTTPRequest {
                                                        SELENIUM_REDIRECT_SERVER +
                                                        SELENIUM_REDIRECT_DIR;
     public static final String CRLF = "\r\n";
-    private static final Log LOG = LogFactory.getLog(DefaultRequestStream.class);
+    private static final Log LOG = LogFactory.getLog(RequestInputStream.class);
     private static final String auth = System.getProperties().get("http.proxy.user") + ":" +
                                        System.getProperties().get("http.proxy.password");
     private String method;
     private String uri;
     private String protocol;
-    private Map map = new HashMap();
+    private Map headers = new HashMap();
     private String original;
     private String destinationServer;
     private int destinationPort;
@@ -53,7 +53,7 @@ public class HTTPRequest {
         LOG.debug("Request\n" + request);
         original = request;
         parse(request);
-        map.put("Proxy-Authorization", "Basic " + new sun.misc.BASE64Encoder().encode(auth.getBytes()));
+        headers.put("Proxy-Authorization", "Basic " + new sun.misc.BASE64Encoder().encode(auth.getBytes()));
     }
 
     public String getDestinationServer() {
@@ -127,15 +127,15 @@ public class HTTPRequest {
     }
 
     public String getHeaderField(String fieldId) {
-        return (String) map.get(fieldId);
+        return (String) headers.get(fieldId);
     }
 
     public String getRequest() {
         StringBuffer buff = new StringBuffer(method);
         buff.append(" " + uri + " " + protocol + CRLF);
-        for (Iterator i = map.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = headers.keySet().iterator(); i.hasNext();) {
             String key =  (String) i.next();
-            buff.append(key + ": " + map.get(key) + CRLF);
+            buff.append(key + ": " + headers.get(key) + CRLF);
         }
         buff.append("\r\n");
         String request = String.valueOf(buff);
@@ -143,7 +143,7 @@ public class HTTPRequest {
     }
 
     public void setHost(String host) {
-        map.put("Host", host);
+        headers.put("Host", host);
     }
 
     public String getOriginal() {
@@ -151,6 +151,6 @@ public class HTTPRequest {
     }
 
     public void setHeaderField(String key, String value) {
-        map.put(key, value);
+        headers.put(key, value);
     }
 }

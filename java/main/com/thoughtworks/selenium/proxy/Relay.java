@@ -1,4 +1,7 @@
 package com.thoughtworks.selenium.proxy;
+
+import java.io.IOException;
+
 /*
   Copyright 2004 ThoughtWorks, Inc. 
   
@@ -16,8 +19,8 @@ package com.thoughtworks.selenium.proxy;
 */
 
 /**
- * @version $Id: Relay.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * @version $Id: Relay.java,v 1.2 2004/11/13 04:46:57 ahelleso Exp $
  */
 public interface Relay {
-    public void relay();
+    public void relay() throws IOException;
 }

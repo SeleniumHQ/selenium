@@ -18,13 +18,13 @@ package com.thoughtworks.selenium.proxy;
 import org.jmock.MockObjectTestCase;
 
 /**
- * @version $Id: ClientConnectionThreadTest.java,v 1.1 2004/11/11 12:19:48 mikemelia Exp $
+ * @version $Id: ClientConnectionThreadTest.java,v 1.2 2004/11/13 04:46:58 ahelleso Exp $
  */
 public class ClientConnectionThreadTest extends MockObjectTestCase {
     
     public void testRequestIsReadAndPassedToTheRelayAndTheResponseIsWrittenAndTheStreamsAreClosed() {
 //        Mock mock = mock(RequestResponseRelay.class);
-//        RequestStream requestStream = (RequestStream) mock.proxy();
+//        RequestInput requestStream = (RequestInput) mock.proxy();
 //        ResponseStream responseStream = (ResponseStream) mock.proxy();
 //        Relay relay = (Relay) mock.proxy();
 //
@@ -38,6 +38,6 @@ public class ClientConnectionThreadTest extends MockObjectTestCase {
 //        thread.run();
     }
     
-    private interface RequestResponseRelay extends RequestStream, ResponseStream, Relay {
+    private interface RequestResponseRelay extends RequestInput, ResponseStream, Relay {
     }
 }

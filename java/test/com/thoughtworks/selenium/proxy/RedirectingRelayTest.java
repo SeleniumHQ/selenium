@@ -18,16 +18,18 @@ package com.thoughtworks.selenium.proxy;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
+import java.io.IOException;
+
 /**
- * @version $Id: RedirectingRelayTest.java,v 1.1 2004/11/11 12:19:49 mikemelia Exp $
+ * @version $Id: RedirectingRelayTest.java,v 1.2 2004/11/13 04:46:58 ahelleso Exp $
  */
 public class RedirectingRelayTest extends MockObjectTestCase {
 
     private HTTPRequest request;
 
-    public void testRedirectsForNonLocalHostTarget() {
+    public void testRedirectsForNonLocalHostTarget() throws IOException {
         Mock mock = mock(RequestResponseStreamCommand.class);
-        RequestStream requestStream = (RequestStream) mock.proxy();
+        RequestInput requestInput = (RequestInput) mock.proxy();
         ResponseStream responseStream = (ResponseStream) mock.proxy();
         RequestModificationCommand command = (RequestModificationCommand) mock.proxy();
         
@@ -47,10 +49,10 @@ public class RedirectingRelayTest extends MockObjectTestCase {
         mock.expects(once()).method("read").withNoArguments().will(returnValue(request));
         mock.expects(once()).method("write").with(eq(response));
         
-        RedirectingRelay relay = new RedirectingRelay(requestStream, responseStream, command);
+        RedirectingRelay relay = new RedirectingRelay(requestInput, responseStream, command);
         relay.relay();
     }
 
-    private interface RequestResponseStreamCommand extends RequestStream, ResponseStream, RequestModificationCommand {
+    private interface RequestResponseStreamCommand extends RequestInput, ResponseStream, RequestModificationCommand {
     }
 }
