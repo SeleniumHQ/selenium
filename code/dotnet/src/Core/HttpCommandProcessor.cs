@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Threading;
 using Selenium;
 
 namespace ThoughtWorks.Selenium.Core
@@ -54,7 +55,9 @@ namespace ThoughtWorks.Selenium.Core
 
 		public virtual WebRequest CreateWebRequest(ISeleneseCommand command)
 		{
-			return WebRequest.Create(BuildCommandString(command.CommandString));
+			WebRequest request = WebRequest.Create(BuildCommandString(command.CommandString));
+			request.Timeout = Timeout.Infinite;
+			return request;
 		}
 
 		private string BuildCommandString(string commandString)
