@@ -28,15 +28,14 @@ public class SeleniumSessionFactory implements SessionFactory {
 		_windowSpawner = windowSpawner;
 		_waiterFactory = waiterFactory;
 
+	} 
+
+	public BrowserSession buildSingleBrowserSession() {
+		return new StoppableBrowserSession(_windowSpawner, _waiterFactory.getWaiter());
 	}
 
-	public Session buildSingleBrowserSession(String browserExecutable, String url) {
-		return new BrowserSession(_windowSpawner, _waiterFactory.getWaiter(),
-				browserExecutable, url);
-	}
 
-
-	public Session buildMultipleBrowserSession(String[] browserExecutables, String url) {
-		return new MultipleBrowserSession(this ,browserExecutables, url);
+	public MultipleBrowserSession buildMultipleBrowserSession() {
+		return new SequentialMultipleBrowserSession(this);
 	}
 }

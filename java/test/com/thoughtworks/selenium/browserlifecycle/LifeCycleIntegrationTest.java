@@ -22,7 +22,7 @@ import org.jmock.MockObjectTestCase;
 import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 import com.thoughtworks.selenium.browserlifecycle.coordinate.Waiter;
 import com.thoughtworks.selenium.browserlifecycle.coordinate.WaiterFactory;
-import com.thoughtworks.selenium.browserlifecycle.session.MultipleBrowserSession;
+import com.thoughtworks.selenium.browserlifecycle.session.SequentialMultipleBrowserSession;
 import com.thoughtworks.selenium.browserlifecycle.session.SeleniumSessionFactory;
 import com.thoughtworks.selenium.browserlifecycle.session.SessionFactory;
 import com.thoughtworks.selenium.browserlifecycle.window.Killable;
@@ -50,8 +50,8 @@ public class LifeCycleIntegrationTest extends MockObjectTestCase {
 		String browser2 = "browserTwo";
 		String[] browsers = new String[] { browser1, browser2 };
 
-		MultipleBrowserSession session = (MultipleBrowserSession) sessionFactory
-				.buildMultipleBrowserSession(browsers, url);
+		SequentialMultipleBrowserSession session = (SequentialMultipleBrowserSession) sessionFactory
+				.buildMultipleBrowserSession();
 
 		mockWaiterFactory.expects(once()).method("getWaiter").will(
 				returnValue(mockWaiter.proxy())).id("first waiter created");
@@ -84,7 +84,7 @@ public class LifeCycleIntegrationTest extends MockObjectTestCase {
 		mockWindow.expects(once()).method("die").after(mockWaiter,
 				"waiting for second window").id("second window killed");
 
-		session.run(timeout);
+		session.run(browsers, url, timeout);
 
 		mockSpawner.verify();
 		mockWindow.verify();

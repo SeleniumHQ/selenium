@@ -23,7 +23,7 @@ import java.util.List;
 import com.thoughtworks.selenium.browserlifecycle.coordinate.Audible;
 import com.thoughtworks.selenium.browserlifecycle.coordinate.Listener;
 import com.thoughtworks.selenium.browserlifecycle.coordinate.SignalWaiterFactory;
-import com.thoughtworks.selenium.browserlifecycle.session.MultipleBrowserSession;
+import com.thoughtworks.selenium.browserlifecycle.session.SequentialMultipleBrowserSession;
 import com.thoughtworks.selenium.browserlifecycle.session.SeleniumSessionFactory;
 import com.thoughtworks.selenium.browserlifecycle.window.WindowSpawner;
 
@@ -78,13 +78,13 @@ public class Demo {
 
 		SeleniumSessionFactory factory = new SeleniumSessionFactory(
 				windowSpawner, waiterFactory);
-		MultipleBrowserSession session = (MultipleBrowserSession) factory
-				.buildMultipleBrowserSession(browsers, url);
+		SequentialMultipleBrowserSession session = (SequentialMultipleBrowserSession) factory
+				.buildMultipleBrowserSession();
 
 		Thread serverThread = new Thread(server);
 		serverThread.start();
 
-		session.run(timeout);
+		session.run(browsers, url, timeout);
 
 		// Expect that this will result in :
 		//         - firefox window for 5 secs before it is killed by
