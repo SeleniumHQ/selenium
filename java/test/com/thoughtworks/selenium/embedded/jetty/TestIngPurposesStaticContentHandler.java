@@ -33,7 +33,7 @@ import java.io.Writer;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestIngPurposesStaticContentHandler implements StaticContentHandler {
 
@@ -88,24 +88,24 @@ public class TestIngPurposesStaticContentHandler implements StaticContentHandler
             " document.write('&nbsp;&nbsp;Request 1 rcvd : ' + command + '<br><br>')\n" +
             "\n" +
             " xmlHttp = XmlHttp.create();\n" +
-            " xmlHttp.open(\"GET\", \"driver?commandResult=open-done\",false);\n" +
+            " xmlHttp.open(\"GET\", \"driver?commandResult=OK\",false);\n" +
             " xmlHttp.send(null);\n" +
             " command = xmlHttp.responseText\n" +
-            " document.write('&nbsp;&nbsp;Request 2 sent : commandResult=open-done<br>')\n" +
+            " document.write('&nbsp;&nbsp;Request 2 sent : commandResult=OK<br>')\n" +
             " document.write('&nbsp;&nbsp;Request 2 rcvd : ' + command + '<br><br>')\n" +
             "\n" +
             " xmlHttp = XmlHttp.create();\n" +
-            " xmlHttp.open(\"GET\", \"driver?commandResult=clickAndWait-done\",false);\n" +
+            " xmlHttp.open(\"GET\", \"driver?commandResult=OK\",false);\n" +
             " xmlHttp.send(null);\n" +
             " command = xmlHttp.responseText\n" +
-            " document.write('&nbsp;&nbsp;Request 3 sent : commandResult=clickAndWait-done<br>')\n" +
+            " document.write('&nbsp;&nbsp;Request 3 sent : commandResult=OK<br>')\n" +
             " document.write('&nbsp;&nbsp;Request 3 rcvd : ' + command + '<br><br>')\n" +
             "\n" +
             " xmlHttp = XmlHttp.create();\n" +
-            " xmlHttp.open(\"GET\", \"driver?commandResult=setText-done\",false);\n" +
+            " xmlHttp.open(\"GET\", \"driver?commandResult=OK\",false);\n" +
             " xmlHttp.send(null);\n" +
             " command = xmlHttp.responseText\n" +
-            " document.write('&nbsp;&nbsp;Request 4 sent : commandResult=setText-done<br>')\n" +
+            " document.write('&nbsp;&nbsp;Request 4 sent : commandResult=OK<br>')\n" +
             " document.write('&nbsp;&nbsp;Request 4 rcvd : ' + command + '<br>')\n" +
             "\n" +
             "</script>\n" +

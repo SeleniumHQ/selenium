@@ -23,13 +23,13 @@ import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
     public void testOpenWorking() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
-        commandProcessor.expects(once()).method("doCommand").with(eq("open"), eq("123.com"), eq("")).will(returnValue("open-done"));
+        commandProcessor.expects(once()).method("doCommand").with(eq("open"), eq("123.com"), eq("")).will(returnValue("OK"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.open("123.com");
     }
@@ -49,7 +49,7 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
     public void testClickWorking() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
-        commandProcessor.expects(once()).method("doCommand").with(eq("clickAndWait"), eq("foobar"), eq("")).will(returnValue("clickAndWait-done"));
+        commandProcessor.expects(once()).method("doCommand").with(eq("clickAndWait"), eq("foobar"), eq("")).will(returnValue("OK"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.clickAndWait("foobar");
     }
@@ -68,7 +68,7 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
     public void testSetTextWorking() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
-        commandProcessor.expects(once()).method("doCommand").with(eq("setText"), eq("whatsit"), eq("something")).will(returnValue("setText-done"));
+        commandProcessor.expects(once()).method("doCommand").with(eq("setText"), eq("whatsit"), eq("something")).will(returnValue("OK"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         dftSelenium.setTextField("whatsit", "something");
     }

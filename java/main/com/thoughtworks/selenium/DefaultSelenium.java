@@ -24,7 +24,7 @@ import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class DefaultSelenium implements Selenium {
 
@@ -49,21 +49,21 @@ public class DefaultSelenium implements Selenium {
 
     public void open(String path) {
         String result = commandProcessor.doCommand("open", path, "");
-        if(!result.equals("open-done")) {
+        if(!result.equals("OK")) {
             throw new SeleniumException(result);
         };
     }
 
     public void clickAndWait(String field) {
         String result = commandProcessor.doCommand("clickAndWait", field, "");
-        if(!result.equals("clickAndWait-done")) {
+        if(!result.equals("OK")) {
             throw new SeleniumException(result);
         };
     }
 
     public void setTextField(String field, String value) {
         String result = commandProcessor.doCommand("setText", field, value);
-        if(!result.equals("setText-done")) {
+        if(!result.equals("OK")) {
             throw new SeleniumException(result);
         };
     }
