@@ -69,13 +69,16 @@ BrowserBot.prototype.openLocation = function(target, onloadCallback) {
 }
 
 BrowserBot.prototype.getCurrentPage = function() {
-    if (this.currentPage == null) {
+// TODO: Cache the currentPage
+// We currently don't do this as we have no way of telling when it becomes "stale" (eg we move to a new page, and pause).
+
+//    if (this.currentPage == null) {
         var testWindow = this.getContentWindow().window;
         if (this.currentWindowName != null) {
             testWindow = this.getTargetWindow(this.currentWindowName);
         }
         this.currentPage = new PageBot(testWindow, this)
-    }
+//    }
     return this.currentPage;
 }
 
