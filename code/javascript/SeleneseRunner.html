@@ -114,7 +114,7 @@ function runTest() {
 
  function commandComplete(result) {
     if (result.failed) {
-        postResult = "OK";
+        postResult = result.failureMessage;
         commandNode.title = result.failureMessage;
         commandNode.style.backgroundColor = failColor;
     } else if (result.passed) {
