@@ -634,6 +634,11 @@ Selenium.prototype.doStoreText = function(target, varName) {
     storedVars[varName] = getText(element);
 };
 
+Selenium.prototype.doSetVariable = function(varName, variableExpression) {
+    var value = eval(variableExpression);
+    storedVars[varName] = value;
+};
+
 Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
 
     this.doClick(target);
