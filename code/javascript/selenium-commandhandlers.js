@@ -1,19 +1,19 @@
 /*
- * Copyright 2004 ThoughtWorks, Inc
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+* Copyright 2004 ThoughtWorks, Inc
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*
+*/
 function CommandHandlerFactory() {
     this.actions = {};
     this.asserts = {};
@@ -117,7 +117,7 @@ function ActionHandler(action, wait) {
 ActionHandler.prototype = new CommandHandler;
 ActionHandler.prototype.execute = function(seleniumApi, command) {
     if ( seleniumApi.browserbot.hasAlerts() ) {
-       throw new Error("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
+        throw new Error("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
     }
     if ( seleniumApi.browserbot.hasConfirmations() ) {
         throw new Error("There was an unexpected Confirmation! [" + seleniumApi.browserbot.getNextConfirmation() + "]");
@@ -126,7 +126,7 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
     // If the handler didn't return a wait flag, check to see if the
     // handler was registered with the wait flag.
     if (processState == undefined && this.wait) {
-       processState = SELENIUM_PROCESS_WAIT;
+        processState = SELENIUM_PROCESS_WAIT;
     }
     return new CommandResult(processState);
 };
@@ -138,7 +138,7 @@ function AccessorHandler(accessor) {
 AccessorHandler.prototype = new CommandHandler;
 
 AccessorHandler.prototype.execute = function(seleniumApi, command) {
-	var returnValue = this.executor.call(seleniumApi, command.target, command.value);
+    var returnValue = this.executor.call(seleniumApi, command.target, command.value);
     var result = new CommandResult();
     result.result = returnValue;
     return result;

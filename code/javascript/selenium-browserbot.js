@@ -1,28 +1,28 @@
 /*
- * Copyright 2004 ThoughtWorks, Inc
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
- 
+* Copyright 2004 ThoughtWorks, Inc
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*
+*/
+
 /*
- * This script provides the Javascript API to drive the test application contained within
- * a Browser Window.
- * TODO:
- *    Add support for more events (keyboard and mouse)
- *    Allow to switch "user-entry" mode from mouse-based to keyboard-based, firing different
- *          events in different modes.
- */
+* This script provides the Javascript API to drive the test application contained within
+* a Browser Window.
+* TODO:
+*    Add support for more events (keyboard and mouse)
+*    Allow to switch "user-entry" mode from mouse-based to keyboard-based, firing different
+*          events in different modes.
+*/
 
 // The window to which the commands will be sent.  For example, to click on a
 // popup window, first select that window, and then do a normal click command.
@@ -34,12 +34,12 @@ var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent)
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
 /*
- * The 'invoke' method will call the required function, and then
- * remove itself from the window object. This allows a calling app
- * to provide a callback listener for the window load event, without the
- * calling app needing to worry about cleaning up afterward.
- * TODO: This could be more generic, but suffices for now.
- */
+* The 'invoke' method will call the required function, and then
+* remove itself from the window object. This allows a calling app
+* to provide a callback listener for the window load event, without the
+* calling app needing to worry about cleaning up afterward.
+* TODO: This could be more generic, but suffices for now.
+*/
 function SelfRemovingLoadListener(fn, frame) {
     var self = this;
 
@@ -59,16 +59,16 @@ BrowserBot = function(frame, executionContext) {
     this.executionContext = executionContext;
     this.currentPage = null;
     this.currentWindowName = null;
-    
-    this.modalDialogTestSuite = null;
+
+    this.modalDialogTest = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
     this.nextConfirmResult = true;
 
 };
 
-BrowserBot.prototype.doModalDialogTestSuite = function(testSuite) {
-    this.modalDialogTestSuite = testSuite;
+BrowserBot.prototype.doModalDialogTest = function(test) {
+    this.modalDialogTest = test;
 };
 
 BrowserBot.prototype.cancelNextConfirmation = function() {
@@ -76,17 +76,17 @@ BrowserBot.prototype.cancelNextConfirmation = function() {
 };
 
 BrowserBot.prototype.hasAlerts = function() {
-   return (this.recordedAlerts.length > 0) ;
+    return (this.recordedAlerts.length > 0) ;
 };
 
 BrowserBot.prototype.getNextAlert = function() {
-   return this.recordedAlerts.shift();
+    return this.recordedAlerts.shift();
 };
 
 BrowserBot.prototype.hasConfirmations = function() {
     return (this.recordedConfirmations.length > 0) ;
 };
- 
+
 BrowserBot.prototype.getNextConfirmation = function() {
     return this.recordedConfirmations.shift();
 };
@@ -98,7 +98,7 @@ BrowserBot.prototype.getFrame = function() {
 
 BrowserBot.prototype.getContentWindow = function() {
     return this.executionContext.getContentWindow(this.getFrame());
-   
+
 };
 
 BrowserBot.prototype.selectWindow = function(target) {
@@ -130,7 +130,7 @@ BrowserBot.prototype.getCurrentPage = function() {
         modifyWindowToClearPageCache(testWindow, this);
         this.currentPage =  new PageBot(testWindow);
     }
-    
+
     return this.currentPage;
 
     // private functions below - is there a better way?
@@ -139,10 +139,10 @@ BrowserBot.prototype.getCurrentPage = function() {
 
         // we will call the previous version of this method from within our own interception
         oldShowModalDialog = window.showModalDialog;
-        
+
         window.showModalDialog = function(url, args, features) {
-            var fullURL = "/TestRunner.html?test=" + escape(browserBot.modalDialogTestSuite) + "&autoURL=" + escape(url);
-            browserBot.modalDialogTestSuite = null;
+            var fullURL = "/TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url);
+            browserBot.modalDialogTest = null;
 
             var returnValue = oldShowModalDialog(fullURL, args, features);
             //window.open(fullURL);
@@ -159,22 +159,20 @@ BrowserBot.prototype.getCurrentPage = function() {
             return result;
         };
     }
-     
+
      function modifyWindowToClearPageCache(window, browserBot) {
         //SPIKE factor this better via TDD
         function clearPageCache() {
-          browserbot.currentPage = null;
+            browserbot.currentPage = null;
         }
 
-       if (window.addEventListener) {
-          testWindow.addEventListener("unload",clearPageCache, true);
-       }
-       else if (window.attachEvent) {
-          testWindow.attachEvent("onunload",clearPageCache);
-       }
+        if (window.addEventListener) {
+            testWindow.addEventListener("unload",clearPageCache, true);
+        } else if (window.attachEvent) {
+            testWindow.attachEvent("onunload",clearPageCache);
+        }
        // End SPIKE
-     }
-
+    }
 };
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
@@ -207,11 +205,11 @@ PageBot = function(pageWindow) {
 };
 
 /*
- * Finds an element on the current page, using various lookup protocols
- */
+* Finds an element on the current page, using various lookup protocols
+*/
 PageBot.prototype.findElement = function(locator) {
     var element = this.findElementInDocument(locator, this.currentDocument);
-    
+
     if (element != null) {
         return element;
     } else {
@@ -240,21 +238,21 @@ PageBot.prototype.findElementInDocument = function(locator, inDocument) {
 };
 
 /*
- * In IE, getElementById() also searches by name.
- * To provied consistent functionality with Firefox, we
- * search by name attribute if an element with the id isn't found.
- */
+* In IE, getElementById() also searches by name.
+* To provied consistent functionality with Firefox, we
+* search by name attribute if an element with the id isn't found.
+*/
 PageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
     // Since we try to get an id with _any_ string, we need to handle
     // cases where this causes an exception.
     try {
         var element = inDocument.getElementById(identifier);
         if (element == null
-            && !isIE // IE checks this without asking
-            && document.evaluate )// DOM3 XPath
+ && !isIE // IE checks this without asking
+ && document.evaluate )// DOM3 XPath
         {
-             var xpath = "//*[@name='" + identifier + "']";
-             element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+            var xpath = "//*[@name='" + identifier + "']";
+            element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
         }
     } catch (e) {
         return null;
@@ -264,9 +262,9 @@ PageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
 };
 
 /**
- * Finds an element using by evaluating the "document.*" string against the
- * current document object. Dom expressions must begin with "document."
- */
+* Finds an element using by evaluating the "document.*" string against the
+* current document object. Dom expressions must begin with "document."
+*/
 PageBot.prototype.findElementByDomTraversal = function(domTraversal, inDocument) {
     if (domTraversal.indexOf("document.") != 0) {
         return null;
@@ -278,16 +276,16 @@ PageBot.prototype.findElementByDomTraversal = function(domTraversal, inDocument)
     var element = eval(locatorScript);
 
     if (!element) {
-         return null;
+        return null;
     }
 
     return element;
 };
 
 /**
- * Finds an element identified by the xpath expression. Expressions _must_
- * begin with "//".
- */
+* Finds an element identified by the xpath expression. Expressions _must_
+* begin with "//".
+*/
 PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
     if (xpath.indexOf("//") != 0) {
         return null;
@@ -314,9 +312,9 @@ PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
 };
 
 /**
- * Returns an attribute based on an attribute locator. This is made up of an element locator
- * suffixed with @attribute-name.
- */
+* Returns an attribute based on an attribute locator. This is made up of an element locator
+* suffixed with @attribute-name.
+*/
 PageBot.prototype.findAttribute = function(locator) {
     // Split into locator + attributeName
     var attributePos = locator.lastIndexOf("@");
@@ -338,9 +336,9 @@ PageBot.prototype.findAttribute = function(locator) {
 };
 
 /*
- * Selects the first option with a matching label from the select box element
- * provided. If no matching element is found, nothing happens.
- */
+* Selects the first option with a matching label from the select box element
+* provided. If no matching element is found, nothing happens.
+*/
 PageBot.prototype.selectOptionWithLabel = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     for (var i = 0; i < element.options.length; i++) {
@@ -421,11 +419,11 @@ PageBot.prototype.getAllButtons = function() {
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
-            if (elements[i].type == 'button' || elements[i].type == 'submit' || elements[i].type == 'reset') {
-                    result += elements[i].id;
+        if (elements[i].type == 'button' || elements[i].type == 'submit' || elements[i].type == 'reset') {
+            result += elements[i].id;
 
-                    result += ',';
-            }
+            result += ',';
+        }
     }
 
     return result;
@@ -437,11 +435,11 @@ PageBot.prototype.getAllFields = function() {
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
-            if (elements[i].type == 'text') {
-                    result += elements[i].id;
+        if (elements[i].type == 'text') {
+            result += elements[i].id;
 
-                    result += ',';
-            }
+            result += ',';
+        }
     }
 
     return result;
@@ -452,9 +450,9 @@ PageBot.prototype.getAllLinks = function() {
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
-            result += elements[i].id;
+        result += elements[i].id;
 
-            result += ',';
+        result += ',';
     }
 
     return result;
@@ -462,7 +460,7 @@ PageBot.prototype.getAllLinks = function() {
 
 PageBot.prototype.setContext = function(strContext) {
      //set the current test title
-     context.innerHTML=strContext;
+    context.innerHTML=strContext;
 };
 
 
