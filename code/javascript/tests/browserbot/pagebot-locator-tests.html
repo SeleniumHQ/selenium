@@ -103,6 +103,21 @@ function testFindElementByXPathReturnsFirstMatchingElement() {
 }
 
 //
+// Tests for PageBot.findLink()
+//
+function testFindLinkReturnsNullIfLocatorIsNotLinkLocator() {
+    assertNull(pageBot.findLink('//NotALinkLocator', frameDocument));
+}
+
+function testFindLinkReturnsNullIfLinkNotPresent() {
+    assertNull(pageBot.findLink('link:No Such Link', frameDocument));
+}
+
+function testLinkElementReturnsLinkWithMatchingText() {
+    assertEquals(element3, pageBot.findLink('link:this is the third element', frameDocument));
+}
+
+//
 // Tests for PageBot.findElement()
 //
 function testFindElementCallsEachLocatorInSequenceAndThrowsErrorIfNoneReturnElement() {
@@ -155,6 +170,10 @@ function testFindElementReturnsMatchingName() {
 
 function testFindElementLooksForIdentifiedElementBeforeDomTraversal() {
     assertEquals(element4, pageBot.findElement("document.links[0]"));
+}
+
+function testFindElementHandlesLinkLocators() {
+    assertEquals(element3, pageBot.findElement('link:this is the third element'));
 }
 
 function testUnknownElementWithoutDomTraversal() {
