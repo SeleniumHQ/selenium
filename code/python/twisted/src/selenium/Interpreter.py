@@ -55,6 +55,10 @@ class SeleniumInterpreter(Dispatcher):
     def pause(self, duration): # is this needed for driven ?
         """ pause for a period of time in seconds """
         return self.dispatchCommand("pause", duration)
+
+    def select(self, field, value):
+        """ Select the option from the located select element."""
+        return self.dispatchCommand("select",field, value)
         
     def selectAndWait(self, field, value):
         """ select the target and wait for a page load event """

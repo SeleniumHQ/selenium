@@ -75,6 +75,9 @@ class XMLRPCinterface(xmlrpc.XMLRPC):
 
     def xmlrpc_pause(self, duration):
         return deferToThread(interpreter.pause, duration)
+
+    def xmlrpc_select(self, field, value):
+        return deferToThread(interpreter.select, field, value)
         
     def xmlrpc_selectAndWait(self, field, value):
         return deferToThread(interpreter.selectAndWait, field, value)
