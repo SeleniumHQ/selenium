@@ -24,7 +24,7 @@ import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class DefaultSelenium implements Selenium {
 
@@ -74,8 +74,8 @@ public class DefaultSelenium implements Selenium {
     public void verifyLocation(String location) {
     }
 
-    public void endOfRun() {
-        commandProcessor.doCommand("end", "", "");
+    public void testComplete() {
+        commandProcessor.doCommand("testComplete", "", "");
     }
 
     public void start() {

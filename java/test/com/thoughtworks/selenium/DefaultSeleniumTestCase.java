@@ -23,7 +23,7 @@ import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
@@ -86,11 +86,11 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
     }
 
-    public void testEndWorking() {
+    public void testTestCompleteWorking() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
-        commandProcessor.expects(once()).method("doCommand").with(eq("end"), eq(""), eq("")).will(returnValue(""));
+        commandProcessor.expects(once()).method("doCommand").with(eq("testComplete"), eq(""), eq("")).will(returnValue(""));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
-        dftSelenium.endOfRun();
+        dftSelenium.testComplete();
     }
 
 }

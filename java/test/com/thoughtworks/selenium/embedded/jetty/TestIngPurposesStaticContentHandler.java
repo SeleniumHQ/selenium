@@ -33,7 +33,7 @@ import java.io.Writer;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestIngPurposesStaticContentHandler implements StaticContentHandler {
 
@@ -45,10 +45,12 @@ public class TestIngPurposesStaticContentHandler implements StaticContentHandler
                 Writer writer = new OutputStreamWriter(buf, StringUtil.__ISO_8859_1);
                 if (req.getRequestLine().indexOf("SeleneseRunner.html") != -1) {
                     res.setField(HttpFields.__ContentType, "text/html");
+                    res.setField("Expires", "0"); // never cached.
                     writePage(writer, seleneseRunnerDotHtml, buf, out);
                     req.setHandled(true);
                 } else if (req.getRequestLine().indexOf("xmlextras.js") != -1) {
                     res.setField(HttpFields.__ContentType, "text/plain");
+                    res.setField("Expires", "0"); // never cached.                    
                     writePage(writer, xmlextrasDotJs, buf, out);
                     req.setHandled(true);
                 } else {
