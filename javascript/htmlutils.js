@@ -41,6 +41,19 @@ function triggerEvent(element, eventType, canBubble) {
     }
 }
 
+/* Fire a mouse event in a browser-compatible manner */
+function triggerMouseEvent(element, eventType, canBubble) {
+    canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
+    if (element.fireEvent) {
+		element.fireEvent('on' + eventType);
+    }
+    else {
+        var evt = document.createEvent('MouseEvents');
+        evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+        element.dispatchEvent(evt);
+    }
+}
+
 function removeLoadListener(element, command) {
     if (window.removeEventListener)
         element.removeEventListener("load", command, true);

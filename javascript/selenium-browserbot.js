@@ -13,26 +13,6 @@
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
 
-// Modify the DOM of the test container window - not sure if this is necessary.
-modifyWindow(window);
-
-//Required so "click" method can be sent to anchor ("A") tags in Mozilla
-function modifyWindow(windowObject) {
-    if (!isIE) {
-        windowObject.HTMLAnchorElement.prototype.click = function() {
-            var evt = this.ownerDocument.createEvent('MouseEvents');
-            evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-            this.dispatchEvent(evt);
-        }
-
-        windowObject.HTMLImageElement.prototype.mousedown = function() {
-            var evt = this.ownerDocument.createEvent('MouseEvents');
-            evt.initMouseEvent('mousedown', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-            this.dispatchEvent(evt);
-        }
-    }
-}
-
 /*
  * The 'invoke' method will call the required function, and then
  * remove itself from the window object. This allows a calling app
@@ -115,7 +95,6 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
 PageBot = function(pageWindow, browserBot) {
     this.currentWindow = pageWindow;
     this.browserBot = browserBot;
-    modifyWindow(pageWindow);
     this.currentDocument = pageWindow.document;
 
     this.location = pageWindow.location.pathname
@@ -215,40 +194,19 @@ PageBot.prototype.clickElement = function(element, loadCallback) {
 
     triggerEvent(element, 'focus', false);
 
-// DD REMOVED: This appears unnecessary in all of my testing.
-//         Could it be the relic of an earlier experiment?
-// If this is re-introduced, beware of bugs in the javascript parsing
-// 1) colons not handled
-// 2) multiple statements not handled
-// 3) whitespace not handled
-/*
-    // If this is a javascript call ("javascript:foo()"), pull out the
-    // function part and just call that.
-    if(element.toString().indexOf("javascript") == 0) {
-        array = element.toString().split(':');
-
-        // Prepend the window onto the javascript function.  This is very
-        // hacky, but if we don't do this, the function can't be found.
-        eval("browserbot.getContentWindow().window." + currentWindow + "."+array[1]);
+    var wasChecked = element.checked;
+    if (isIE) {
+        element.click();
     }
     else {
-*/
-    var wasChecked = element.checked;
-    if (!isIE) {
-        triggerEvent(element, 'click', true);
+        triggerMouseEvent(element, 'click', true);
     }
-    element.click();
+    // Onchange event is not triggered automatically in IE.
     if (isIE && isDefined(element.checked) && wasChecked != element.checked) {
         triggerEvent(element, 'change', true);
     }
 
     triggerEvent(element, 'blur', false);
-}
-
-PageBot.prototype.clearOnBeforeUnload = function() {
-    //For IE: even though the event was linked to the window, the event appears to be attached to the 'body' object in IE.
-    this.currentWindow.document.body.onbeforeunload = null;
-       this.currentWindow.onbeforeunload = null;
 }
 
 PageBot.prototype.bodyText = function() {

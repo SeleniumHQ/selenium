@@ -352,9 +352,6 @@ function buildCommandHandlers() {
 
 
 function processCommand(){
-    // TODO: write a test that breaks when this is removed
-    browserbot.getCurrentPage().clearOnBeforeUnload();
-
     // Scroll the test frame down by 25 pixels once we get past the first 5 cells.
     if(currentCommandRow >= 5)
         getTestFrame().contentWindow.scrollBy(0,25);

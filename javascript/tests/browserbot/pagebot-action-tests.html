@@ -114,20 +114,20 @@ function TODO_testReplaceTextShouldNotTriggerSelectIfOriginallyEmpty() {
 function testClickCheckboxShouldTriggerFocusClickChangeAndBlur() {
     pageBot.clickElement(theCheckbox)
 
-    assertTrue(theCheckbox.checked)
+    assertTrue("Checkbox should be checked", theCheckbox.checked)
     assertEquals("focus,click,change,blur", checkboxEvents.join())
 }
 
 function testClickCheckboxShouldUncheckIfAlreadyChecked() {
     theCheckbox.checked = true
     pageBot.clickElement(theCheckbox)
-    assertFalse(theCheckbox.checked)
+    assertFalse("Checkbox shouldn't be checked", theCheckbox.checked)
 }
 
 function testClickRadioShouldTriggerFocusClickChangeAndBlur() {
     pageBot.clickElement(theRadio2)
-    assertFalse(theRadio1.checked)
-    assertTrue(theRadio2.checked)
+    assertFalse("Radio1 shouldn't be checked", theRadio1.checked)
+    assertTrue("Radio should be checked", theRadio2.checked)
 
     assertEquals("", radio1Events.join());
     assertEquals("focus,click,change,blur", radio2Events.join())
@@ -136,7 +136,7 @@ function testClickRadioShouldTriggerFocusClickChangeAndBlur() {
 function testClickRadioShouldNotTriggerChangeIfAlreadySelected() {
     assertTrue(theRadio1.checked)
     pageBot.clickElement(theRadio1)
-    assertTrue(theRadio1.checked)
+    assertTrue("Radio1 should be checked", theRadio1.checked)
 
     assertEquals("focus,click,blur", radio1Events.join())
     assertEquals("", radio2Events.join())
