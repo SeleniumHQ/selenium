@@ -19,7 +19,7 @@ package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class SeleneseQueue {
 
@@ -27,7 +27,7 @@ public class SeleneseQueue {
     private SingleEntryAsyncQueue commandResultHolder = new SingleEntryAsyncQueue();
 
     public String doCommand(String command, String field, String value) {
-        commandHolder.put(new SeleneseCommand(command, field, value));
+        commandHolder.put(new DefaultSeleneseCommand(command, field, value));
         if (!command.equals("testComplete")) {
             return (String) commandResultHolder.get();
         } else {

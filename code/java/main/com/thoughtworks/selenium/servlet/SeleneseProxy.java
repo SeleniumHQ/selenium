@@ -19,6 +19,7 @@ package com.thoughtworks.selenium.servlet;
 
 import com.thoughtworks.selenium.SeleneseHandler;
 import com.thoughtworks.selenium.SeleneseCommand;
+import com.thoughtworks.selenium.DefaultSeleneseCommand;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -28,7 +29,7 @@ import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class SeleneseProxy implements SeleneseHandler {
 
@@ -55,7 +56,7 @@ public class SeleneseProxy implements SeleneseHandler {
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine = in.readLine();
             in.close();
-            return SeleneseCommand.parse(inputLine);
+            return DefaultSeleneseCommand.parse(inputLine);
         } catch (IOException e) {
             //TODO
         }
