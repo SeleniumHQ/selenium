@@ -116,9 +116,31 @@ BrowserBot.prototype.getCurrentPage = function() {
         if (this.currentWindowName != null) {
             testWindow = this.getTargetWindow(this.currentWindowName);
         }
-        this.currentPage = new PageBot(testWindow, this)
+        this.currentPage = this.wrapWindow(testWindow);
     }
     return this.currentPage;
+}
+
+BrowserBot.prototype.wrapWindow = function(testWindow) {
+    var browserbot = this;
+
+    testWindow.alert = function(alert){browserbot.recordAlert(alert);};
+
+    //SPIKE factor this better via TDD
+    function clearPageCache() {
+       browserbot.currentPage = null;
+    }
+
+    if (window.addEventListener) {
+        testWindow.addEventListener("unload",clearPageCache, true);
+    }
+    else if (window.attachEvent) {
+        testWindow.attachEvent("onunload",clearPageCache);
+    }
+    // End SPIKE
+
+    var pageBot = new PageBot(testWindow);
+    return pageBot;
 }
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
@@ -138,36 +160,17 @@ BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
 }
 
 
-PageBot = function(pageWindow, browserBot) {
+PageBot = function(pageWindow) {
     this.currentWindow = pageWindow;
-    this.browserBot = browserBot;
     this.currentDocument = pageWindow.document;
     this.location = pageWindow.location.pathname;
     this.title = function() {return this.currentDocument.title};
-
-    modifyWindowToRecordAlerts(pageWindow, browserBot);
-
-    //SPIKE factor this better via TDD
-    function clearPageCache() {
-       browserbot.currentPage = null;
-    }
-    
-    if (window.addEventListener) {
-        this.currentWindow.addEventListener("unload",clearPageCache, true);
-    }     
-    else if (window.attachEvent) {
-        this.currentWindow.attachEvent("onunload",clearPageCache);
-    } 
-    // End SPIKE
-    
-    function modifyWindowToRecordAlerts(window, browserBot) {     
-         window.alert = function(alert){browserBot.recordAlert(alert);};
-    }
 
     this.locators = new Array();
     this.locators.push(this.findIdentifiedElement);
     this.locators.push(this.findElementByDomTraversal);
     this.locators.push(this.findElementByXPath);
+
 }
 
 /*
