@@ -15,13 +15,13 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.b.SeleneseCommand;
+import com.thoughtworks.selenium.SeleneseCommand;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface SeleneseHandler {
     SeleneseCommand handleCommandResult(String commandReply);

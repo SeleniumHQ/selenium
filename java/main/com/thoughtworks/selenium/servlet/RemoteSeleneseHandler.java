@@ -15,16 +15,16 @@
  *
  */
 
-package com.thoughtworks.selenium.b.servlet;
+package com.thoughtworks.selenium.servlet;
 
-import com.thoughtworks.selenium.b.SeleneseCommand;
+import com.thoughtworks.selenium.SeleneseCommand;
 
 import java.rmi.RemoteException;
 import java.rmi.Remote;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface RemoteSeleneseHandler extends Remote {
 

@@ -15,11 +15,11 @@
  *
  */
 
-package com.thoughtworks.selenium.b.servlet;
+package com.thoughtworks.selenium.servlet;
 
-import com.thoughtworks.selenium.b.CommandProcessor;
-import com.thoughtworks.selenium.b.SeleneseQueue;
-import com.thoughtworks.selenium.b.SeleneseCommand;
+import com.thoughtworks.selenium.CommandProcessor;
+import com.thoughtworks.selenium.SeleneseQueue;
+import com.thoughtworks.selenium.SeleneseCommand;
 
 import java.rmi.RemoteException;
 import java.rmi.NotBoundException;
@@ -29,7 +29,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RmiCommandProcessor implements CommandProcessor {
 

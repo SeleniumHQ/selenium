@@ -15,7 +15,7 @@
  *
  */
 
-package com.thoughtworks.selenium.b.embedded.jetty;
+package com.thoughtworks.selenium.embedded.jetty;
 
 import junit.framework.TestCase;
 
@@ -26,12 +26,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Vector;
 
-import com.thoughtworks.selenium.b.embedded.jetty.JettyCommandProcessor;
-import com.thoughtworks.selenium.b.CommandProcessor;
+import com.thoughtworks.selenium.embedded.jetty.JettyCommandProcessor;
+import com.thoughtworks.selenium.CommandProcessor;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class JettySeleniumServerTestCase extends TestCase {
 

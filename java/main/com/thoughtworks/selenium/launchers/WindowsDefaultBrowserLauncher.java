@@ -15,15 +15,15 @@
  *
  */
 
-package com.thoughtworks.selenium.b.launchers;
+package com.thoughtworks.selenium.launchers;
 
-import com.thoughtworks.selenium.b.BrowserLauncher;
+import com.thoughtworks.selenium.BrowserLauncher;
 
 import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class WindowsDefaultBrowserLauncher implements BrowserLauncher {
 
