@@ -427,7 +427,7 @@ function pad (num) {
 // Find the element by id and returns it.  If it is not found, changes the
 // table to include an error message.
 function findElement(id) {
-    element = getDoc().getElementById(id);
+    var element = findElementByIdOrName(id);
 
     if(element == null) {
         setRowFailed("Element not found", ERROR);
