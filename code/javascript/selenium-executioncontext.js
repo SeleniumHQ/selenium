@@ -19,15 +19,15 @@ function IFrameExecutionContext() {
 
     this.loadFrame = function() {
         return document.getElementById('myiframe');
-    }
+    };
 
     this.open = function(target,frame) {
         frame.src = target;
-    }
+    };
 
     this.getContentWindow = function(frame) {
         return frame.contentWindow;
-    }
+    };
 
     this.waitForPageLoad = function(testloop,selenium) {
         // Since we're waiting for page to reload, we can't continue command execution
@@ -35,8 +35,8 @@ function IFrameExecutionContext() {
 
         // TODO there is a potential race condition by attaching a load listener after
         // the command has completed execution.
-        selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay()")});
-    }
+        selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay()");});
+    };
 }
 
 var windowExecutionContext;
@@ -52,26 +52,26 @@ function WindowExecutionContext() {
     this.externalWindow = null;
 
     this.loadFrame = function() {
-        var newWindow = window.open("about:blank", "_blank", "toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=400,left=250,top=250");
+        var newWindow = window.open("about:blank", "_blank", "toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=1024,height=740,left=250,top=250");
         newWindow.opener = window.frame;
         this.externalWindow = newWindow;
         return this.externalWindow;
-    }
+    };
 
     this.open = function(target,frame) {
         frame.location = target;
-    }
+    };
 
     this.getContentWindow = function(frame) {
         return frame;
-    }
+    };
 
     this.waitForPageLoad = function(testloop,selenium) {
         if(window.addEventListener) {
-            selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay();")});
+            selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay();");});
         } else {
             if(this.externalWindow != null) {
-                if(this.externalWindow.document.readyState != "complete" ) {
+                if(this.getValueWhenReady() != "complete" ) {
                     var localContext = this;
                     var localLoop = testloop;
                     var localSelenium = selenium;
@@ -81,5 +81,15 @@ function WindowExecutionContext() {
                 }
             }
         }
-    }
+    };
+
+    // this function became necessary for IE in a NEW WINDOW. the document.readyState was not ready to be accessed.
+    this.getValueWhenReady = function() {
+        while (true) {
+            try {
+                return this.externalWindow.document.readyState;
+            } catch (x) {
+            }
+        }
+    };
 }

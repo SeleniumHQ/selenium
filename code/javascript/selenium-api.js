@@ -17,14 +17,14 @@
 
 function Selenium(browserbot) {
     this.browserbot = browserbot;
-    this.page = function() {return browserbot.getCurrentPage()};
+    this.page = function() {return browserbot.getCurrentPage();};
 
     var self = this;
     this.callOnNextPageLoad = function(callback) {
         if (callback) {
             self.browserbot.callOnNextPageLoad(callback);
         }
-    }
+    };
 }
 
 /*
@@ -33,7 +33,7 @@ function Selenium(browserbot) {
  */
 Selenium.prototype.doModalDialogTestSuite = function(returnValue) {
     this.browserbot.doModalDialogTestSuite(returnValue);
-}
+};
 
 /*
  * Click on the located element, and attach a callback to notify
@@ -42,7 +42,7 @@ Selenium.prototype.doModalDialogTestSuite = function(returnValue) {
 Selenium.prototype.doClick = function(locator) {
     var element = this.page().findElement(locator);
     this.page().clickElement(element);
-}
+};
 
 /**
  * Overwrite the text in the located text element.
@@ -51,7 +51,7 @@ Selenium.prototype.doClick = function(locator) {
 Selenium.prototype.doType = function(locator, newText) {
     var element = this.page().findElement(locator);
     this.page().replaceText(element, newText);
-}
+};
 
 /**
  * Select the option by label from the located select element.
@@ -60,7 +60,7 @@ Selenium.prototype.doType = function(locator, newText) {
 Selenium.prototype.doSelect = function(locator, optionText) {
     var element = this.page().findElement(locator);
     this.page().selectOptionWithLabel(element, optionText);
-}
+};
 
 /*
  * Open the browser to a new location.
@@ -68,21 +68,21 @@ Selenium.prototype.doSelect = function(locator, optionText) {
 Selenium.prototype.doOpen = function(newLocation) {
     this.browserbot.openLocation(newLocation);
     return SELENIUM_PROCESS_WAIT;
-}
+};
 
 /*
  * Select the named window to be the active window.
  */
 Selenium.prototype.doSelectWindow = function(windowName) {
     this.browserbot.selectWindow(windowName);
-}
+};
 
 /*
  * Instruct Selenium to click Cancel on the next confirm dialog it encounters
  */
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
     this.browserbot.cancelNextConfirmation();
-}
+};
 
 /*
  *  Asserts that the supplied message was received as an alert
@@ -98,7 +98,7 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
     } else {
         fail("There were no alerts"); 
     }
- } 
+ };
 
   /*
   *  Asserts that the supplied message was received as a confirmation
@@ -114,21 +114,21 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
      } else {
          fail("There were no confirmations"); 
      }
-  } 
+  };
  
 /*
  * Verify the location of the current page.
  */
 Selenium.prototype.assertLocation = function(expectedLocation) {
     assertEquals(expectedLocation, this.page().location);
-}
+};
 
 /*
  * Verify the title of the current page.
  */
 Selenium.prototype.assertTitle = function(expectedTitle) {
     assertEquals(expectedTitle, this.page().title());
-}
+};
 
 /*
  * Verify the value of a form element.
@@ -137,7 +137,7 @@ Selenium.prototype.assertValue = function(locator, expectedValue) {
     var element = this.page().findElement(locator);
     var actualValue = getInputValue(element);
     assertEquals(expectedValue, actualValue.trim());
-}
+};
 
 /*
  * Verifies that the entire text of the page matches the expected content.
@@ -146,7 +146,7 @@ Selenium.prototype.assertText = function(locator, expectedContent) {
     var element = this.page().findElement(locator);
     var actualText = getText(element);
     assertEquals(expectedContent, actualText.trim());
-}
+};
 
 /*
  * Asserts that the text for a single cell within and HTML table matches the expected content.
@@ -155,7 +155,7 @@ Selenium.prototype.assertText = function(locator, expectedContent) {
 Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
     // This regular expression matches "tableName.row.column"
     // For example, "mytable.3.4"
-    pattern = /(.*)\.(\d)+\.(\d+)/
+    pattern = /(.*)\.(\d)+\.(\d+)/;
 
     if(!pattern.test(tableLocator)) {
         error("Invalid target format. Correct format is tableName.rowNum.columnNum");
@@ -174,7 +174,7 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
         actualContent = getText(table.rows[row].cells[col]);
         assertEquals(expectedContent, actualContent.trim());
     }
-}
+};
 
 /**
  * Verify the label of the option that is selected.
@@ -183,7 +183,7 @@ Selenium.prototype.assertSelected = function(target, expectedLabel) {
     var element = this.page().findElement(target);
     var selectedLabel = element.options[element.selectedIndex].text;
     assertEquals(expectedLabel, selectedLabel);
-}
+};
 
 /**
  * Verify the label of all of the options in the drop=down.
@@ -202,7 +202,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
         var expectedOption = expectedOptions[i].replace("\n", ",");
         assertEquals(expectedOption, option.text);
     }
-}
+};
 
 /**
  * Verify the value of an element attribute. The syntax for returning an element attribute
@@ -211,7 +211,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
 Selenium.prototype.assertAttribute = function(target, expected) {
     var attributeValue = this.page().findAttribute(target);
     assertEquals(expected, attributeValue);
-}
+};
 
 /*
  * Asserts that the specified text is present in the page content.
@@ -220,11 +220,11 @@ Selenium.prototype.assertTextPresent = function(expectedText) {
     var allText = this.page().bodyText();
 
     if(allText == "") {
-        error("Page text not found")
+        error("Page text not found");
     } else if(allText.indexOf(expectedText) == -1) {
         fail("'" + expectedText + "' not found in page text.");
     }
-}
+};
 
 /*
  * Asserts that the specified element can be found.
@@ -235,7 +235,7 @@ Selenium.prototype.assertElementPresent = function(locator) {
     } catch (e) {
         fail("Element " + locator + " not found.");
     }
-}
+};
 
 /*
  * Asserts that the specified element cannot be found.
@@ -248,7 +248,7 @@ Selenium.prototype.assertElementNotPresent = function(locator) {
         return;
     }
     fail("Element " + locator + " found.");
-}
+};
 
 /*
  * Asserts that the specified element is visible
@@ -263,7 +263,7 @@ Selenium.prototype.assertVisible = function(locator) {
     if (! this.isVisible(element)) {
         fail("Element " + locator + " not visible.");
     }
-}
+};
 
 /*
  * Asserts that the specified element is visible
@@ -278,13 +278,13 @@ Selenium.prototype.assertNotVisible = function(locator) {
     if (this.isVisible(element)) {
         fail("Element " + locator + " is visible.");
     }
-}
+};
 
 Selenium.prototype.isVisible = function(element) {
     var visibility = this.getEffectiveStyleProperty(element, "visibility");
     var isDisplayed = this.isDisplayed(element);
     return (visibility != "hidden" && isDisplayed);
-}
+};
 
 Selenium.prototype.getEffectiveStyleProperty = function(element, property) {
     var effectiveStyle = this.getEffectiveStyle(element);
@@ -293,7 +293,7 @@ Selenium.prototype.getEffectiveStyleProperty = function(element, property) {
         return this.getEffectiveStyleProperty(element.parentNode, property);
     }
     return propertyValue;
-}
+};
 
 Selenium.prototype.isDisplayed = function(element) {
     var display = this.getEffectiveStyleProperty(element, "display");
@@ -302,7 +302,7 @@ Selenium.prototype.isDisplayed = function(element) {
         return this.isDisplayed(element.parentNode);
     }
     return true;
-}
+};
 
 Selenium.prototype.getEffectiveStyle = function(element) {
     if (element.style == undefined) {
@@ -321,7 +321,7 @@ Selenium.prototype.getEffectiveStyle = function(element) {
         //   ... but it's good enough for "visibility"
     }
     throw new Error("cannot determine effective stylesheet in this browser");
-}
+};
 
 /**
  * Asserts that the specified element accepts user input visible
@@ -334,7 +334,7 @@ Selenium.prototype.assertEditable = function(locator) {
     if (element.disabled) {
         fail("Element " + locator + " is disabled.");
     }
-}
+};
 
 /**
  * Asserts that the specified element does not accept user input
@@ -347,32 +347,32 @@ Selenium.prototype.assertNotEditable = function(locator) {
     if (element.disabled == false) {
         fail("Element " + locator + " is editable.");
     }
-}
+};
 
  /*
   * Return all buttons on the screen.
   */
 Selenium.prototype.getAllButtons = function() {
         return this.page().getAllButtons();
-}
+};
 
  /*
   * Return all links on the screen.
   */
 Selenium.prototype.getAllLinks = function() {
         return this.page().getAllLinks();
-}
+};
 
  /*
   * Return all fields on the screen.
   */
 Selenium.prototype.getAllFields = function() {
         return this.page().getAllFields();
-}
+};
 
 /*
   * Set the context for the current Test
   */
 Selenium.prototype.doContext = function(context) {
         return this.page().setContext(context);
-}
+};

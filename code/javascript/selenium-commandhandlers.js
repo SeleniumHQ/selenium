@@ -24,27 +24,27 @@ function CommandHandlerFactory() {
     this.registerAction = function(name, action, wait) {
         var handler = new ActionHandler(action, wait);
         this.actions[name] = handler;
-    }
+    };
 
     this.registerAccessor = function(name, accessor) {
         var handler = new AccessorHandler(accessor);
         this.accessors[name] = handler;
-    }
+    };
 
     this.registerAssert = function(name, assertion, haltOnFailure) {
         var handler = new AssertHandler(assertion, haltOnFailure);
         this.asserts[name] = handler;
-    }
+    };
 
     this.getCommandHandler = function(name) {
         return this.actions[name] || this.accessors[name] || this.asserts[name] || null;
-    }
+    };
 
     this.registerAll = function(commandObject) {
         registerAllActions(commandObject);
         registerAllAsserts(commandObject);
         registerAllAccessors(commandObject);
-    }
+    };
 
     var registerAllActions = function(commandObject) {
         for (var functionName in commandObject) {
@@ -61,7 +61,7 @@ function CommandHandlerFactory() {
                 self.registerAction(waitActionName, action, true);
             }
         }
-    }
+    };
 
     var registerAllAsserts = function(commandObject) {
         for (var functionName in commandObject) {
@@ -78,7 +78,7 @@ function CommandHandlerFactory() {
                 self.registerAssert(verifyName, assert, false);
             }
         }
-    }
+    };
 
     var registerAllAccessors = function(commandObject) {
         for (var functionName in commandObject) {
@@ -87,7 +87,7 @@ function CommandHandlerFactory() {
                 self.registerAccessor(functionName, accessor);
             }
         }
-    }
+    };
 
     function toCamelCase(aString) {
         return aString.charAt(0).toLowerCase() + aString.substr(1);
@@ -105,7 +105,7 @@ function CommandHandler(type, haltOnFailure, executor) {
 
 CommandHandler.prototype.execute = function(seleniumApi, command) {
     return new CommandResult(this.executor.call(seleniumApi, command.target, command.value));
-}
+};
 
 function ActionHandler(action, wait) {
     this.base = CommandHandler;
@@ -122,14 +122,14 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
     if ( seleniumApi.browserbot.hasConfirmations() ) {
         throw new Error("There was an unexpected Confirmation! [" + seleniumApi.browserbot.getNextConfirmation() + "]");
     }
-    var processState = this.executor.call(seleniumApi, command.target, command.value)
+    var processState = this.executor.call(seleniumApi, command.target, command.value);
     // If the handler didn't return a wait flag, check to see if the
     // handler was registered with the wait flag.
     if (processState == undefined && this.wait) {
        processState = SELENIUM_PROCESS_WAIT;
     }
     return new CommandResult(processState);
-}
+};
 
 function AccessorHandler(accessor) {
     this.base = CommandHandler;
@@ -142,7 +142,7 @@ AccessorHandler.prototype.execute = function(seleniumApi, command) {
     var result = new CommandResult();
     result.result = returnValue;
     return result;
-}
+};
 
 function AssertHandler(assertion, haltOnFailure) {
     this.base = CommandHandler;
@@ -166,7 +166,7 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
         result.failureMessage = e.jsUnitMessage;
     }
     return result;
-}
+};
 
 function CommandResult(processState) {
     this.processState = processState;
