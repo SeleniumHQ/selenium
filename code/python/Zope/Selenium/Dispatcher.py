@@ -1,5 +1,5 @@
-from Queue import Queue, Empty
-
+from ZODB.PersistentList import PersistentList
+import time
 
 QUEUE_TIMEOUT = 5       # in seconds
 """ 
@@ -30,57 +30,91 @@ class Dispatcher:
     
     def __init__(self):
         self.QUEUE_TIMEOUT = QUEUE_TIMEOUT
-        self._v_commands = Queue()
-        self._v_results = Queue()
-        
-        # force an initialization of the queues by 
-        # putting and getting a dummy value
-        self._v_commands.put('')
-        self._v_commands.get('')        
-        self._v_results.put('')
-        self._v_results.get('')
+        self._commands = PersistentList()
+        self._results = PersistentList()
     
     def addCommand(self, command, REQUEST=None):
-        """ Add a command to the commands queue """
+        """ Add a command to the commands queue """  
         
-        # Reinitialize the queue if it's missing
-        if not hasattr(self,'_v_commands'):
-            self._v_commands = Queue()
+        self._commands.append(command)     
         
-        # Add the command
-        self._v_commands.put(command, block=True, timeout=self.QUEUE_TIMEOUT)
+        # super important to commit the change at this point...
+        # In some methods (like webDriver and apiDriver), there is a later call
+        # to '_p_jar.sync(), and that 
+        # call would 'roll-back' this action if we didn't commit here.
+        get_transaction().commit()        
         
         return 'Command added'
 
     def getCommand(self, REQUEST=None):
         """ Retreive a command from the commands queue """
-        try:
-            return self._v_commands.get(block=True, 
-                                         timeout=self.QUEUE_TIMEOUT)
-        except Empty:
-            return 'ERROR: Command queue was empty'
+        if len(self._commands) != 0:
+            response = self._commands.pop(0)
+        else:
+            # if the queue is empty wait to see if any commands are entered 
+            # until we're forced to time out the request.
+            elapsed_time = 0
+            step = .5   # in seconds
+            while elapsed_time <= QUEUE_TIMEOUT:
+                time.sleep(step)   #in seconds
+                elapsed_time += step
+                
+                # Syncronize with the ZODB in case of any recent updates
+                self._p_jar.sync()
+                try:
+                    response = self._commands.pop(0)
+                    break
+                except IndexError:
+                    response = 'ERROR: Command queue was empty' 
+                
+        return response        
 
     def getCommandQueueSize(self, REQUEST=None):
         """ Query the size of the commands queue """
-        return self._v_commands.qsize()
-        
+        size = len(self._commands)
+        return size
 
+
+        
     def addResult(self, result, REQUEST=None):
         """ Add a result to the results queue """
-        self._v_results.put(result)
+        
+        self._results.append(result)
+        
+        # super important to commit the change at this point...
+        # In some methods (like webDriver and apiDriver), there is a later call
+        # to '_p_jar.sync(), and that 
+        # call would 'roll-back' this action if we didn't commit here.        
+        get_transaction().commit()
+        
+        return 'Result added'
 
     def getResult(self, REQUEST=None):
         """ Retrieve a result from the results queue """
-        try:
-            return self._v_results.get(block=True,
-                                         timeout=self.QUEUE_TIMEOUT)
-        except Empty:
-            return 'ERROR: Result queue was empty'         
+        if len(self._results) != 0:
+            response = self._results.pop(0)
+        else:
+            # if the queue is empty wait to see if any results are entered 
+            # until we're forced to time out the request.
+            elapsed_time = 0
+            step = .5   # in seconds
+            while elapsed_time <= QUEUE_TIMEOUT:
+                time.sleep(step)   #in seconds
+                elapsed_time += step
+                
+                # Syncronize with the ZODB in case of any recent updates
+                self._p_jar.sync()
+                try:
+                    response = self._results.pop(0)
+                    break
+                except IndexError:
+                    response = 'ERROR: Result queue was empty' 
+                
+        return response        
 
     def getResultQueueSize(self, REQUEST=None):
-        """ Query the size of the results queue """
-        
-        size = self._v_results.qsize()        
+        """ Query the size of the results queue """        
+        size = len(self._results)
         return size
 
                                
@@ -93,16 +127,16 @@ class Dispatcher:
         """             
         if REQUEST:
             command_result = REQUEST.form.get('commandResult')
-            selenium_start = REQUEST.form.get('seleniumStart')
+            selenium_start = REQUEST.form.get('seleniumStart')            
             
             # If 'seleniumStart' is a parameter on the request, 
             # it means this is the first time hitting the driver,  
             # and therefore, there is no previous result to post to 
             # the results queue.            
-            if selenium_start == None:
+            if command_result:
                 self.addResult(command_result)
-            
-            return self.getCommand()            
+                                 
+            return self.getCommand()                        
         else:
             return "ERROR: Missing an HTTP REQUEST"       
             
