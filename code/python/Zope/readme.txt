@@ -2,23 +2,27 @@ Until an automated install script gets written... here's the manual process to i
 
 This has been tested with Plone 2.0.4.
 
-1) Copy the Selenium directory, which is inside the "Zope" folder (selenium/trunk/code/python/Zope/Selenium) to your Plone Products folder (<Plone_Instance_Home>/Products/).
+1) In a temp directory, do an anonymous SVN export of javascript and Zope directory (gets rid of SVN folders)
+   svn://selenium.codehaus.org/selenium/scm/trunk/code/javascript
+   svn://selenium.codehaus.org/selenium/scm/trunk/code/python/Zope
 
-2) Copy the contents of the Selenium javascript folder (not the folder itself, just the contents, including all files and all sub-folders (selenium/trunk/code/javascript/*) to <Plone_Instance_Home>/Products/Selenium/skins/selenium_javascript.
+2) Copy the contents of the javascript folder (not the folder itself, just the contents, including all files and all sub-folders (selenium/trunk/code/javascript/*) to Zope/Selenium/skins/selenium_javascript.
 
 3) Append ".dtml" to all *.html, *.js, and *.css files inside the selenium_javascript folder and all sub-folders
    Example: 
         Before: selenium_javascript/TestRunner.html
         After: selenium_javascript/TestRunner.html.dtml
 
-4) Use the Plone QuickInstaller to install the Plone product.
+4) Copy Selenium folder (temp/Zope/Selenium) to <Plone_Instance_Home>/Products/Selenium
+
+5) Use the Plone QuickInstaller to install the Plone product.
     a) Login to plone  as admin (not the Zope Management Interface (ZMI), but the Plone interface)
     b) Click preferences
     c) Click Add/Remove Products
     d) Select "Selenium", then click "install"
 
 
-5) The default Selenium self-tests should now be available at:
+6) The default Selenium self-tests should now be available at:
     http://localhost/TestRunner.html
 
     (the ".dtml" that we added to the file name gets dropped from the name when you call it from Plone)
