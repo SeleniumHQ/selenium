@@ -109,16 +109,12 @@ Also, please see the answer to the related question: "Why can't I script google.
 How do you create test tables?
 ------------------------------
 
-Question: *I don't think you are writing them in plain HTML (that's SO unreadable). 
-Probably the source is some form of simplified markup (Textile, Markdown 
-or RST).*
-
-Answer: Actually, the developers on the Selenium project use Mozilla Composer to 
+The developers on the Selenium project use Mozilla Composer to 
 create plain HTML text files for their tests.
 By default, Mozilla Composer writes very clean HTML without any extra, unnecessary markup.
 
 Future versions of Selenium may support RST (ReStructred Text), or wiki-table 
-syntax, natively. However, you are free use another format now, 
+syntax, natively. However, you are free to use another format now, 
 as long as you remember to generate the HTML files from your source files,
 either during your build process or dynamically at run-time.
 
