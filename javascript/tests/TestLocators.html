@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Locators</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Locators<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_locators.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Id/name location -->
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>id1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>name1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>id4</td>
+      <td></td>
+    </tr>
+
+    <!-- DOM Traversal location -->
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>document.links[1]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>document.links[3]</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -18,8 +18,12 @@ function setUp() {
     element1 = document.getElementById("id1");
     element2 = document.getElementById("id2");
     element3 = document.getElementById("id3");
+    element4 = document.getElementById("document.links[0]");
 }
 
+//
+// Tests for PageBot.findIdentifiedElement()
+//
 function testFindIdentifiedElementReturnsNullIfElementNotPresent() {
     assertNull(pageBot.findIdentifiedElement('noSuchElement'));
 }
@@ -39,12 +43,61 @@ function testFindIdentifiedElementIsCaseSensitiveOnId() {
 function testFindIdentifiedElementIsCaseSensitiveOnName() {
     assertNull(pageBot.findIdentifiedElement('NAME1'));
 }
+
+//
+// Tests for PageBot.findElementByDomTraversal
+//
+function testFindElementByDomTraversal() {
+    assertEquals(element2,
+                 pageBot.findElementByDomTraversal("links[1]"))
+}
+
+function testFindElementByDomTraversalStripsLeadingDocument() {
+    assertEquals(element2,
+                 pageBot.findElementByDomTraversal("document.links[1]"))
+}
+
+function testFindElementByDomTraversalReturnsNullForNoMatchingElement() {
+    assertNull(pageBot.findElementByDomTraversal("document.links[3]"))
+}
+
+function testFindElementByDomTraversalFailsWithInvalidDomString() {
+    try {
+        pageBot.findElementByDomTraversal("document.foo.bar");
+        fail("Should have thrown exception");
+    }
+    catch (e) {
+        // Expected
+    }
+}
+
+//
+// Tests for PageBot.findElement() - should this method actually be in the intermediary API?
+// TODO test these by mocking the delegate methods...
+//
+function testFindElementReturnsMatchingId() {
+    assertEquals(element3, pageBot.findElement('id3'))
+}
+
+function testFindElementReturnsMatchingName() {
+    assertEquals(element2, pageBot.findElement('name1'))
+}
+
+function testFindElementLooksForIdentifiedElementBeforeDomTraversal() {
+    assertEquals(element4, pageBot.findElement("document.links[0]"))
+}
+
+function testFindElementHandlesDomTraversal() {
+    assertEquals(element2, pageBot.findElement("document.links[1]"))
+}
 </script>
   </head>
 
   <body>
-    <p id="id1">this is the first element</p>
-    <p id="id2" name="name1">this is the second element</p>
-    <p id="id3" name="name1">this is the third element</p>
+    <a id="id1" href="#id1">this is the first element</a>
+    <a id="id2" name="name1" href="#id2">this is the second element</a>
+    <a id="id3" name="name1" href="#id3">this is the third element</a>
+
+    <p id="document.links[0]">dummy element</p>
   </body>
 </html>

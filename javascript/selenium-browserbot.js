@@ -113,6 +113,24 @@ function PageBot(pageWindow) {
 }
 
 /*
+ * Finds an element, using various lookup protocols
+ */
+PageBot.prototype.findElement = function(locator) {
+    // First try using id/name search
+    var element = this.findIdentifiedElement(locator)
+
+    // Next, if the locator starts with 'document.', try to use Dom traversal
+    if (element == null && locator.indexOf("document.") == 0) {
+        var domTraversal = locator.substr(9)
+        element = this.findElementByDomTraversal(domTraversal)
+    }
+
+    // TODO: try xpath
+
+    return element;
+}
+
+/*
  * In IE, getElementById() also searches by name.
  * To provied consistent functionality with Firefox, we
  * search by name attribute if an element with the id isn't found.
@@ -127,6 +145,22 @@ PageBot.prototype.findIdentifiedElement = function(identifier) {
     {
         var xpath = "//*[@name='" + identifier + "']";
         element = document.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
+    }
+
+    return element;
+}
+
+PageBot.prototype.findElementByDomTraversal = function(domTraversal) {
+    // Trim the leading 'document'
+    if (domTraversal.indexOf("document.") == 0) {
+        domTraversal = domTraversal.substr(9);
+    }
+
+    var locatorScript = "this.currentDocument." + domTraversal;
+    var element = eval(locatorScript);
+
+    if (!element) {
+         return null;
     }
 
     return element;
