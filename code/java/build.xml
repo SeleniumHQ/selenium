@@ -22,8 +22,8 @@
     <property name="instrumented.classes.dir" location="target/instrumented-classes" />
     <property name="test.classes.dir" location="target/test-classes" />
     <property name="integration.test.classes.dir" location="target/integration-test-classes" />
-
-    <path id="report.classpath">
+	<property name="igor" value="true"/>
+	<path id="report.classpath">
         <fileset dir="${report.lib.dir}"/>
     </path>
 
@@ -168,20 +168,50 @@
         </junitreport>
         <fail if="tests.failed">There were test failures</fail>
     </target>
-
+	
+     <!-- could be refactored -->
     <target name="integration-test-mac" depends="compile-main">
-
+        
         <echo>--> ${os.name}</echo>
-
+    	 <condition property="isMac">
+    	      <os family="mac" />
+    	 </condition>
     </target>
 
     <target name="integration-test-windows" depends="compile-main">
 
         <echo>--> ${os.name}</echo>
-
+        <condition property="isWindows">
+            <os family="windows" />
+        </condition>
+    	
     </target>
+	
+	<target name="integration-test-unix" depends="compile-main">
 
-    <target name="integration-test" depends="compile-main, integration-test-mac, integration-test-windows">
+	        <echo>--> ${os.name}</echo>
+		    <condition property="isUnix">
+		       <os family="unix" />
+		     </condition>
+    </target>
+	<!-- -->
+	
+	<target name="integration-test-os" depends="compile-main">
+        <echo>--> ${os.name}</echo>
+    	 <condition property="isMac">
+    	      <os family="mac" />
+    	 </condition>
+		
+        <condition property="isWindows">
+            <os family="windows" />
+        </condition>
+        	
+	    <condition property="isUnix">
+	       <os family="unix" />
+	     </condition>	
+	</target>
+	
+    <target name="integration-test" depends="compile-main, integration-test-os" >
 
         <echo>Integration Tests for Embedded Web Container</echo>
 
@@ -194,8 +224,11 @@
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
                     <include name="**/*Test.java"/>
-                    <include name="**/*TestCase.java"/>
+                	<include name="**/*TestCase.java"/>
                     <exclude name="**/outbedded/**"/>
+                	<exclude name="**/*Mac*Test.java" unless="isMac"/>
+                    <exclude name="**/*Win*Test.java" unless="isWindows"/>
+                	<exclude name="**/*Lin*Test.java" unless="isUnix"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -204,7 +237,7 @@
         Cannot run Outbedded Integration tests because environment variable CATALINA_HOME is not set.
         Please set CATALINA_HOME to your Tomcat installation directory.
         </fail>
-        
+    	
         <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
@@ -218,8 +251,12 @@
                     <include name="**/*Test.java"/>
                     <include name="**/*TestCase.java"/>
                     <exclude name="**/embedded/**"/>
+                	<exclude name="**/*Mac*Test.java" unless="isMac"/>
+                	<exclude name="**/*Win*Test.java" unless="isWindows"/>
+                	<exclude name="**/*Lin*Test.java" unless="isUnix"/>
                 </fileset>
             </batchtest>
+        	
         </junit>
 
 
@@ -305,5 +342,24 @@
         <taskdef name="report" classname="com.jcoverage.ant.CoverageReportTask" classpathref="report.classpath"/>
         <report srcdir="${main.dir}" destdir="${jcoverage.reports.dir}"/>
     </target>
+	
+	<target name="set">
+		<property name="mac.os" value="true"/>
+		<property name="win.os" value="true"/>
+	
+	</target>
+	<target name="cond" depends="set, cond-if"/>
 
+	<target name="cond-if" if="mac.os">
+	  <antcall target="cond-if-2"/>
+	</target>
+
+	<target name="cond-if-2" if="win.os">
+	  <antcall target="cond-if-3"/>
+	</target>
+
+	<target name="cond-if-3" unless="linux.os">
+	  <echo message="yes"/>
+	</target>
+	
 </project>
