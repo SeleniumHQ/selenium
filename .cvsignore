@@ -3,3 +3,5 @@ selenium.iws
 dist
 classes
 selenium.xml
+.project
+.classpath
