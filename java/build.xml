@@ -24,7 +24,7 @@
 <!--        <fail unless="browser">Specify -Dbrowser=firefox (or some other browser) on the command line when running the tests</fail> -->
         <echo>**************************************************</echo>
         <echo>Open a browser and point it to:</echo>
-        <echo>http://localhost:9090/jsunit/testRunner.html?testPage=http://localhost:9090/selenium-rpcrunner-tests.html&amp;autoRun=true</echo>
+        <echo>http://localhost:9090/jsunit/testRunner.html?testPage=http://localhost:9090/tests/xmlrpcrunner/xmlrpcrunner-tests.html&amp;autoRun=true</echo>
         <echo>**************************************************</echo>
         <junit dir="../javascript" fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
             <jvmarg value="-Dbrowser=${browser}"/>

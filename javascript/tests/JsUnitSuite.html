@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Selenium Browserbot Test Suite</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+    <script language="JavaScript" type="text/javascript" src="/jsunit/app/xbDebug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitTestSuite.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+    <script language="Javascript" type="text/javascript">
+       function suite() {
+           var testSuite = new jsUnitTestSuite();
+           testSuite.addTestPage("/tests/browserbot/suite.html");
+           testSuite.addTestPage("/tests/tableparser/tableparser-tests.html");
+           testSuite.addTestPage("/jsmock/mock-tests.html");
+           return testSuite;
+       }
+    </script>
+  </head>
+  <body>Selenium Complete Test Suite (except integration tests)</body>
+</html>

@@ -6,34 +6,29 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>JsUnit Utility Tests</title>
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
-<script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
-<script language="JavaScript" type="text/javascript" src="jsmock/mock.js"></script>
-<script language="JavaScript" type="text/javascript" src="jsolait/init.js"></script>
-<script language="JavaScript" type="text/javascript" src="jsolait/lib/xmlrpc.js"></script>
-<script language="JavaScript" type="text/javascript" src="jsolait/lib/xml.js"></script>
-<script language="JavaScript" type="text/javascript" src="jsolait/lib/urllib.js"></script>
-
-<script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-rpcrunner.js"></script>
-<script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-tableparser.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 ///////////////////// HTML TABLE PARSING /////////////////////
 
 function testShouldParseOneArgHtmlTableRowToJavascript() {
     var row = document.getElementsByTagName("table")[0].rows[1]
-    assertEquals("commandHandlers[\"click\"](\"someButton\")", new SeleniumB().createJavaScriptFromHtmlRow(row))
+    assertEquals("commandHandlers[\"click\"](\"someButton\")", new TableParser().createJavaScriptFromHtmlRow(row))
 }
 
 function testShouldParseTwoArgHtmlTableRowToJavascript() {
     var row = document.getElementsByTagName("table")[0].rows[2]
-    assertEquals("commandHandlers[\"verifyText\"](\"someButton\",\"Click me!\")", new SeleniumB().createJavaScriptFromHtmlRow(row))
+    assertEquals("commandHandlers[\"verifyText\"](\"someButton\",\"Click me!\")", new TableParser().createJavaScriptFromHtmlRow(row))
 }
 
 function testShouldFailWithBadWikiRowFormat() {
     var row = document.getElementsByTagName("table")[0].rows[3]
     try {
-        new SeleniumB().createJavaScriptFromHtmlRow(row)
+        new TableParser().createJavaScriptFromHtmlRow(row)
         fail("Should fail")
     } catch(expected) {
         assertEquals("Bad HTML row format. Rows must have 3 coumns, but had 4", expected.message)
@@ -44,18 +39,18 @@ function testShouldFailWithBadWikiRowFormat() {
 
 function testShouldParseOneArgWikiTableRowToJavascript() {
     var wikiRow = "| click | someButton ||"
-    assertEquals("commandHandlers[\"click\"](\"someButton\")", new SeleniumB().createJavaScriptFromWikiRow(wikiRow))
+    assertEquals("commandHandlers[\"click\"](\"someButton\")", new TableParser().createJavaScriptFromWikiRow(wikiRow))
 }
 
 function testShouldParseTwoArgWikiTableRowToJavascript() {
     var wikiRow = "| verifyText | someButton |Click me!|"
-    assertEquals("commandHandlers[\"verifyText\"](\"someButton\",\"Click me!\")", new SeleniumB().createJavaScriptFromWikiRow(wikiRow))
+    assertEquals("commandHandlers[\"verifyText\"](\"someButton\",\"Click me!\")", new TableParser().createJavaScriptFromWikiRow(wikiRow))
 }
 
 function testShouldFailWithBadWikiRowFormat() {
     var wikiRow = "| verifyText | someButton |Click me!||"
     try {
-        new SeleniumB().createJavaScriptFromWikiRow(wikiRow)
+        new TableParser().createJavaScriptFromWikiRow(wikiRow)
         fail("Should fail")
     } catch(expected) {
         assertEquals("Bad wiki row format:| verifyText | someButton |Click me!||", expected.message)
@@ -67,36 +62,17 @@ function testShouldLoopAndExecuteCommands() {
 
     wikiTableRows = new Mock()
     wikiTableRows.expects("getRow").returns(wikiRow)
-    new SeleniumB(wikiTableRows).loop()
+    new TableParser(wikiTableRows).loop()
 
     wikiTableRows.verify()
 }
-
-// TODO: separate into several JsUnit test suites.
-///////////////////// XML-RPC /////////////////////
-// WARNING! THIS IS AN INTEGRATION TEST. THE JAVA TESTS MUST
-// BE STARTED PRIOR TO RUNNING THIS TEST TO MAKE IT PASS.
-// JUST RUN
-// ant
-// FROM A SEPARATE CONSOLE
-//
-function testShouldBeAbleToGetWikiRowOverXmlRpc() {
-    selenium = new SeleniumB()
-
-    assertEquals("|open|/mypage||", selenium.getRow())
-    selenium.setResult("OK")
-
-    assertEquals("|verifyTable|bla.1.2|bonjour|", selenium.getRow())
-    selenium.setException("bla.1.2 was hello")
-}
-
 </script>
   </head>
 
   <body>
-    <h1>SeleniumB Tests</h1>
+    <h1>TableParser Tests</h1>
 
-    <p>This page contains tests for SeleniumB. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
+    <p>This page contains tests for TableParser. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
 
 <input id="someField"/>
 

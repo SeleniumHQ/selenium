@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsolait/init.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsolait/lib/xmlrpc.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsolait/lib/xml.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsolait/lib/urllib.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/selenium-xmlrpcrunner.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+///////////////////// XML-RPC /////////////////////
+// WARNING! THIS IS AN INTEGRATION TEST. THE JAVA TESTS MUST
+// BE STARTED PRIOR TO RUNNING THIS TEST TO MAKE IT PASS.
+// JUST CD TO THE JAVA FOLDER AND RUN
+// ant
+//
+function testShouldBeAbleToGetWikiRowOverXmlRpc() {
+    xmlRpcRunner = new XmlRpcRunner();
+    wikiRows = xmlRpcRunner.getWikiTableRows()
+
+    assertEquals("|open|/mypage||", wikiRows.getRow())
+    wikiRows.setResult("OK")
+
+    assertEquals("|verifyTable|bla.1.2|bonjour|", wikiRows.getRow())
+    wikiRows.setException("bla.1.2 was hello")
+}
+
+</script>
+  </head>
+
+  <body>
+    <h1>XmlRpcRunner Tests</h1>
+
+    <p>This page contains tests for XmlRpcRunner. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
+
+  </body>
+</html>

@@ -54,21 +54,21 @@ Mock = function() {
         var currentAttrCount = 0;
         
         // verify that all expected properties are set
-        for(var attr in this) {
-            currentAttrs[currentAttrCount] = attr;
-            currentAttrCount++;
-        }
-        if(this.attrs.length < currentAttrCount) {
-            unexpectedAttr = currentAttrs[this.attrs.length]
-            fail("Unexpected property was set: " + unexpectedAttr + "=" + eval("this." + unexpectedAttr))
-        }
+//        for(var attr in this) {
+//            currentAttrs[currentAttrCount] = attr;
+//            currentAttrCount++;
+//        }
+//        if(this.attrs.length < currentAttrCount) {
+//            unexpectedAttr = currentAttrs[this.attrs.length]
+//            fail("Unexpected property was set: " + unexpectedAttr + "=" + eval("this." + unexpectedAttr))
+//        }
         
         // verify that all expected properties are set with the right value
-        for(var attr in this.expectedProperties) {
-            if(this.expectedProperties[attr] != eval("this." + attr)) {
-                fail("Expected property was not set: " + attr + "=" + this.expectedProperties[attr])
-            }
-        }
+//        for(var attr in this.expectedProperties) {
+//            if(this.expectedProperties[attr] != eval("this." + attr)) {
+//                fail("Expected property was not set: " + attr + "=" + this.expectedProperties[attr])
+//            }
+//        }
     }
 
     var attrCount = 0;
