@@ -16,7 +16,7 @@ described <a
 but for our purposes, it constrains the way that a
 JavaScript in a browser may interoperate with other open frames and
 windows. In short, the Selenium JavaScript app must come from (or
-appear to) same origin as the AUT.<br>
+appear to) the same origin as the AUT.<br>
 <h2>The Driver</h2>
 The driver has a number of duties. These are typically.. <br>
 <ul>
@@ -82,16 +82,39 @@ manage queues for the outgoing commands and the (some time later)
 incoming responses.&nbsp; Java, until 1.5, did not have a blocking
 queue to make this easy. Most other languages did.<br>
 <h2><span style="font-weight: bold;">Selenese</span></h2>
-Selenese is the contrived (and mostly hidden) wire language that the
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td>Selenese is the contrived (and mostly hidden) wire language
+that the
 driver uses to speak to the browser-bot through the dynamic
-handler.&nbsp; It uses HTTP for its transport, and is quite
-simple.&nbsp; Responses come from the browser to the driver in a query
-string like commandResult=OK, and commands go from the driver to the
+handler. It uses HTTP for its transport, and is quite
+simple. <br>
+      <br>
+Responses come from the browser to the driver in a query
+string like&nbsp;&nbsp; <br>
+      <br>
+&nbsp; <span style="font-family: monospace;">commandResult=OK</span>, <br>
+      <br>
+Commands go from the driver to the
 browser-bot in a text/plain document:<br>
-<br>
-&nbsp;&nbsp;&nbsp; | open | /foo/bar.html | |<br>
-<br>
-This two way communication is of course invisible to the observer.<br>
+      <br>
+&nbsp; <span style="font-family: monospace;">| open | /foo/bar.html | |</span><br
+ style="font-family: monospace;">
+      <br>
+This two way communication is of course invisible to the observer.</td>
+      <td style="width: 30%; background-color: rgb(255, 153, 102);">The
+BrowserBot, by understanding Selenese, allows a process other than the
+browser itsself to direct events on the Application Under Test.&nbsp; <br>
+      <br>
+The Selenese language is simple enough to be commandable by any
+language that has an API that can handle HTTP requests. <br>
+      <br>
+Thus, Selenese allows many different open, free or closed license
+drivers to interoperate with the BrowserBot.</td>
+    </tr>
+  </tbody>
+</table>
 <h2>Choregraphy</h2>
 The driver cleary has some fairly heavy things to do.&nbsp; It is
 important for some robustness to be built into the design. For example
