@@ -25,7 +25,7 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision$
  */
-public class WindowsDefaultBrowserLauncher extends AbstractBrowserLauncher implements BrowserLauncher {
+public class WindowsDefaultBrowserLauncher extends RuntimeExecutingBrowserLauncher implements BrowserLauncher {
 
     public void launch(String url) {
         try {

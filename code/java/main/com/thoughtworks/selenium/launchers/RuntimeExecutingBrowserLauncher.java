@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision: 1.8 $
  */
-public abstract class AbstractBrowserLauncher implements BrowserLauncher {
+public abstract class RuntimeExecutingBrowserLauncher implements BrowserLauncher {
 
     protected Process process;
 

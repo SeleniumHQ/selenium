@@ -23,7 +23,7 @@ import com.thoughtworks.selenium.BrowserLauncher;
  * @author Paul Hammant
  * @version $Revision: 1.8 $
  */
-public class SystemDefaultBrowserLauncher extends AbstractBrowserLauncher {
+public class SystemDefaultBrowserLauncher extends RuntimeExecutingBrowserLauncher {
 
     private static final String osName = System.getProperty("os.name");
     protected BrowserLauncher delegate;

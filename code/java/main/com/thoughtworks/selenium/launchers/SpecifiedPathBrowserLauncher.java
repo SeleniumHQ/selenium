@@ -25,7 +25,7 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision$
  */
-public class SpecifiedPathBrowserLauncher extends AbstractBrowserLauncher {
+public class SpecifiedPathBrowserLauncher extends RuntimeExecutingBrowserLauncher {
 
     private final String browserPath;
 
