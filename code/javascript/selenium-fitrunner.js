@@ -74,6 +74,10 @@ function continueCurrentTest() {
     testLoop.finishCommandExecution()
 }
 
+function getApplicationFrame() {
+    return document.getElementById('myiframe');
+}
+
 function getSuiteFrame() {
     return document.getElementById('testSuiteFrame');
 }
@@ -129,9 +133,15 @@ function loadTestFrame() {
         addOnclick(suiteTable, rowNum);
     }
 
-    if (isAutomatedRun())
+    if (isAutomatedRun()) {
         startTestSuite();
-    else {
+    } else if (getQueryParameter("autoURL")) {
+        
+        addLoadListener(getApplicationFrame(), startTestSuite);
+        
+        getApplicationFrame().src = getQueryParameter("autoURL");
+        
+    } else {
         testLink = suiteTable.rows[currentTestRow+1].cells[0].getElementsByTagName("a")[0];
         getTestFrame().src = testLink.href;
     }

@@ -62,15 +62,15 @@ BrowserBot = function(frame, executionContext) {
     this.currentPage = null;
     this.currentWindowName = null;
     
-    this.modalDialogReturnValue = null;
+    this.modalDialogTestSuite = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
     this.nextConfirmResult = true;
 
 }
 
-BrowserBot.prototype.expectModalDialogAndReturn = function(returnValue) {
-    this.modalDialogReturnValue = returnValue;
+BrowserBot.prototype.doModalDialogTestSuite = function(testSuite) {
+    this.modalDialogTestSuite = testSuite;
 }
 
 BrowserBot.prototype.cancelNextConfirmation = function() {
@@ -139,49 +139,17 @@ BrowserBot.prototype.getCurrentPage = function() {
 
     function modifyWindowToRecordPopUpDialogs(window, browserBot) {
 
-    // Andy D. - I have modified this slightly since the last checkin.
-    // I wanted to explore the possibility of mocking these things out all together.
-    // I realise that this is not an ideal testing solution, but it might help the client to get SOMETHING rather than NOTHING
-
-
-    // Andy D. - This is where the modal dialog stuff starts
-    // in place of the modaldialog which causes our selenium thread to hang, we open a regular window,
-    // and then execute the commands against it, until it is closed.
-    // then we return the value that was most recently stored in window.returnValue (as far as I can determine,
-    // the average user of these things will go:  window.returnValue = bob; window.close();
-
+        // we will call the previous version of this method from within our own interception
+        oldShowModalDialog = window.showModalDialog;
+        
         window.showModalDialog = function(url, args, features) {
-            var returnValue = browserBot.modalDialogReturnValue;
-            browserBot.modalDialogReturnValue = null;
-            return returnValue;
-
-/*            // open a new window
-            var modalWindow = window.open(url, "modalDialog");
-
-            // change variables to point to the new window (but save references to the old ones)
-            var pushedFrame = browserBot.frame;
-            browserBot.frame = modalWindow;
-
-            var pushedPage = browserBot.currentPage;
-            browserBot.currentPage = null;
-
-            var pushedExecutionContext = browserBot.executionContext;
-            browserBot.executionContext = getWindowExecutionContext();
+            var fullURL = "/TestRunner.html?test=" + browserBot.modalDialogTestSuite + "&autoURL=" + url;
             
-            var localBrowserBot = browserBot;
-            
-            function modalClosed() {
-                // change variables back to the old references
-                localBrowserBot.executionContext = pushedExecutionContext;
-                localBrowserBot.currentPage = pushedPage;
-                localBrowserBot.frame = pushedFrame;
-            }
-
-            modalWindow.attachEvent("onunload", modalClosed);
-*/            
+            return oldShowModalDialog(fullURL, args, features);
         };
 
         window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
+
         window.confirm = function(message){
             browserBot.recordedConfirmations.push(message);
             var result = browserBot.nextConfirmResult;
@@ -204,7 +172,6 @@ BrowserBot.prototype.getCurrentPage = function() {
        }
        // End SPIKE
      }
-    
 
 }
 
