@@ -1,10 +1,3 @@
-package com.thoughtworks.selenium.proxy;
-
-import com.thoughtworks.selenium.utils.Assert;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
 /*
   Copyright 2004 ThoughtWorks, Inc.
 
@@ -21,8 +14,15 @@ import java.net.URISyntaxException;
   limitations under the License.
 */
 
+package com.thoughtworks.selenium.proxy;
+
+import com.thoughtworks.selenium.utils.Assert;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
 /**
- * @version $Id: SetupDestinationDetailsCommand.java,v 1.2 2004/11/13 05:43:01 ahelleso Exp $
+ * @version $Id: SetupDestinationDetailsCommand.java,v 1.3 2004/11/13 05:45:01 ahelleso Exp $
  */
 public class SetupDestinationDetailsCommand implements RequestModificationCommand {
     public void execute(HTTPRequest httpRequest) {
