@@ -219,9 +219,9 @@ PageBot.prototype.findElement = function(locator) {
     if (element != null) {
         return element;
     } else {
-        for (var i = 0; i < this.currentDocument.frames.length; i++) {
+        for (var i = 0; i < this.currentWindow.frames.length; i++) {
             //alert("looking for " + locator + " in " + this.currentDocument.frames[i].location.href);
-            element = this.findElementInDocument(locator, this.currentDocument.frames[i].document);
+            element = this.findElementInDocument(locator, this.currentWindow.frames[i].document);
             if (element != null) {
                 return element;
             }
@@ -254,8 +254,8 @@ PageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
     try {
         var element = inDocument.getElementById(identifier);
         if (element == null
- && !isIE // IE checks this without asking
- && document.evaluate )// DOM3 XPath
+            && !isIE // IE checks this without asking
+            && document.evaluate )// DOM3 XPath
         {
             var xpath = "//*[@name='" + identifier + "']";
             element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();

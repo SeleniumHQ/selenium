@@ -24,6 +24,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
 
 <script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
@@ -32,7 +33,7 @@ Copyright 2004 ThoughtWorks, Inc
 function setUp() {
    testFrame =  document.getElementById("frame");
    testWindow = testFrame.contentWindow;
-   browserBot = new BrowserBot(testFrame);
+   browserBot = new BrowserBot(testFrame, new IFrameExecutionContext(testFrame));
    browserBot.getCurrentPage();
 }
 

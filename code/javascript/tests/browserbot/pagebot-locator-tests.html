@@ -33,6 +33,7 @@ function setUp() {
     // To be realistic, the elements are located in a separate IFrame.
     var iframe = document.getElementById("testIframe");
     var iWindow = iframe.contentWindow.window;
+    frameDocument = iWindow.document;
 
     pageBot = new PageBot(iWindow);
     element1 = iWindow.document.getElementById("id1");
@@ -45,15 +46,15 @@ function setUp() {
 // Tests for PageBot.findIdentifiedElement()
 //
 function testFindIdentifiedElementReturnsNullIfElementNotPresent() {
-    assertNull(pageBot.findIdentifiedElement('noSuchElement'));
+    assertNull(pageBot.findIdentifiedElement('noSuchElement', frameDocument));
 }
 
 function testFindIdentifiedElementReturnsHtmlElementWithMatchingId() {
-    assertEquals(element3, pageBot.findIdentifiedElement('id3'));
+    assertEquals(element3, pageBot.findIdentifiedElement('id3', frameDocument));
 }
 
 function testFindIdentifiedElementReturnsFirstElementWithMatchingName() {
-    assertEquals(element2, pageBot.findIdentifiedElement('name1'));
+    assertEquals(element2, pageBot.findIdentifiedElement('name1', frameDocument));
 }
 
 //
@@ -61,16 +62,16 @@ function testFindIdentifiedElementReturnsFirstElementWithMatchingName() {
 //
 function testFindElementByDomTraversal() {
     assertEquals(element2,
-                 pageBot.findElementByDomTraversal("document.links[1]"))
+                 pageBot.findElementByDomTraversal("document.links[1]", frameDocument));
 }
 
 function testFindElementByDomTraversalReturnsNullForNoMatchingElement() {
-    assertNull(pageBot.findElementByDomTraversal("document.links[3]"))
+    assertNull(pageBot.findElementByDomTraversal("document.links[3]", frameDocument));
 }
 
 function testFindElementByDomTraversalFailsWithInvalidDomString() {
     try {
-        pageBot.findElementByDomTraversal("document.foo.bar");
+        pageBot.findElementByDomTraversal("document.foo.bar", frameDocument);
         fail("Should have thrown exception");
     }
     catch (e) {
@@ -83,22 +84,22 @@ function testFindElementByDomTraversalFailsWithInvalidDomString() {
 //
 function testFindElementByXPathWithTagNameOnly() {
     assertEquals(element4,
-                 pageBot.findElementByXPath("//p"));
+                 pageBot.findElementByXPath("//p", frameDocument));
 }
 
 function testFindElementByXPathWithAttributeOnly() {
     assertEquals(element4,
-                 pageBot.findElementByXPath("//*[@class='pstyle']"));
+                 pageBot.findElementByXPath("//*[@class='pstyle']", frameDocument));
 }
 
 function testFindElementByXPathWithTagNameAndAttribute() {
     assertEquals(element4,
-                 pageBot.findElementByXPath("//p[@name='name1']"));
+                 pageBot.findElementByXPath("//p[@name='name1']", frameDocument));
 }
 
 function testFindElementByXPathReturnsFirstMatchingElement() {
     assertEquals(element2,
-                 pageBot.findElementByXPath("//*[@name='name1']"));
+                 pageBot.findElementByXPath("//*[@name='name1']", frameDocument));
 }
 
 //
@@ -106,9 +107,9 @@ function testFindElementByXPathReturnsFirstMatchingElement() {
 //
 function testFindElementCallsEachLocatorInSequenceAndThrowsErrorIfNoneReturnElement() {
     var calls = new Array();
-    var locators = [function(locator) {calls.push("1 " + locator)},
-                    function(locator) {calls.push("2 " + locator)},
-                    function(locator) {calls.push("3 " + locator)}];
+    var locators = [function(locator) {calls.push("1 " + locator);},
+                    function(locator) {calls.push("2 " + locator);},
+                    function(locator) {calls.push("3 " + locator);}];
     pageBot.locators = locators;
 
     var element = null;
@@ -126,9 +127,9 @@ function testFindElementCallsEachLocatorInSequenceAndThrowsErrorIfNoneReturnElem
 
 function testFindElementReturnsTheFirstElementReturnedByALocatorFunction() {
     var calls = new Array();
-    var locators = [function(locator) {calls.push("1 " + locator)},
+    var locators = [function(locator) {calls.push("1 " + locator);},
                     function(locator) {calls.push("2 " + locator); return "bar";},
-                    function(locator) {calls.push("3 " + locator)}];
+                    function(locator) {calls.push("3 " + locator);}];
     pageBot.locators = locators;
 
     var element = null;
