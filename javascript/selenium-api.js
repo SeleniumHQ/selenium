@@ -14,9 +14,6 @@
  *  limitations under the License.
  *
  */
-SELENIUM_PROCESS_WAIT = "wait";
-SELENIUM_PROCESS_PAUSED = "paused";
-SELENIUM_PROCESS_COMPLETE = "complete";
 
 function Selenium(browserbot) {
     this.browserbot = browserbot;
