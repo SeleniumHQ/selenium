@@ -46,6 +46,8 @@ function KonquerorIFrameExecutionContext() {
     };
 
     this.open = function(target,frame) {
+        // Window doesn't fire onload event when setting src to the current value,
+        // so we set it to blank first.
         frame.src = "about:blank";
         frame.src = target;
     };
