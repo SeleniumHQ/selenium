@@ -1,0 +1,23 @@
+
+This has been tested with Plone 2.0.4.
+
+1) Copy the Selenium directory to your Plone Products folder (<Plone_Instance_Home>/Products/).
+
+2) Use the Plone QuickInstaller to install the Plone product.
+    a) Login to plone  as admin (not the Zope Management Interface (ZMI), but the Plone interface)
+    b) Click preferences
+    c) Click Add/Remove Products
+    d) Select "Selenium", then click "install"
+
+
+3) The default Selenium self-tests should now be available for you to run them at:
+    http://localhost/TestRunner.html
+
+    The TestRunner.html file is *really* stored here:
+    <Plone_Instance_Home>/Products/Selenium/skins/selenium_javascript/TestRunner.html.dtml
+
+    and it makes a reference to the TestSuite.html file located here:
+    <Plone_Instance_Home>/Products/Selenium/skins/selenium_javascript/tests/TestSuite.html.dtml
+
+    which refers to the actual tests located in the same folder:
+    <Plone_Instance_Home>/Products/Selenium/skins/selenium_javascript/tests/*
