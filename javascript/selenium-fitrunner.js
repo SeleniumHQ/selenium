@@ -177,8 +177,7 @@ function startTest() {
     testFailed = false;
     storedVars = new Object();
 
-    if(commandHandlers == null)
-        buildCommandHandlers();
+    buildCommandHandlers();
 
     processCommand();
 }
@@ -189,8 +188,7 @@ function startTestSuite() {
     runAllTests = true;
     suiteFailed = false;
 
-    if(commandHandlers == null)
-        buildCommandHandlers();
+    buildCommandHandlers();
 
     runNextTest();
 }
@@ -330,23 +328,29 @@ function createInputField(name, value) {
 
 // Build the command handlers as a dictionary, so they can be looked up by the command
 function buildCommandHandlers() {
-    commandHandlers = new Object();
+    actions = new Object();
+    // These actions still involve some FitRunner smarts, because of the wait/nowait
+    // behaviour modification. We need a generic solution to this.
+    actions["click"] = handleClick;
+    actions["open"] = handleOpen;
 
-    commandHandlers["open"] = handleOpen;
-    commandHandlers["click"] = handleClick;
-    commandHandlers["type"] = handleType;
-    commandHandlers["selectWindow"] = handleSelectWindow;
-    commandHandlers["storeValue"] = handleStoreValue;
-    commandHandlers["pause"] = handlePause;
-    commandHandlers["select"] = handleSelect;
+    // These actions delegate directly to Selenium
+    actions["type"] = selenium.type;
+    actions["selectWindow"] = selenium.selectWindow;
+    actions["select"] = selenium.select;
 
-    commandHandlers["verifyValue"] = handleVerifyValue;
-    commandHandlers["verifyText"] = handleVerifyText;
-    commandHandlers["verifyLocation"] = handleVerifyLocation;
-    commandHandlers["verifyTextPresent"] = handleVerifyTextPresent;
-    commandHandlers["verifyTable"] = handleVerifyTable;
-    commandHandlers["verifyElementPresent"] = handleVerifyElementPresent;
-    commandHandlers["verifyElementNotPresent"] = handleVerifyElementNotPresent;
+    // These 2 are fitrunner specific, and don't involve the Selenium API
+    actions["storeValue"] = handleStoreValue;
+    actions["pause"] = handlePause;
+
+    asserts = new Object();
+    asserts["verifyValue"] = selenium.verifyValue;
+    asserts["verifyText"] = selenium.verifyText;
+    asserts["verifyLocation"] = selenium.verifyLocation;
+    asserts["verifyTextPresent"] = selenium.verifyTextPresent;
+    asserts["verifyTable"] = selenium.verifyTable;
+    asserts["verifyElementPresent"] = selenium.verifyElementPresent;
+    asserts["verifyElementNotPresent"] = selenium.verifyElementNotPresent;
 }
 
 
@@ -389,21 +393,42 @@ function processCommand(){
         target = replaceVariables(getCellText(currentCommandRow, 1));
         value = replaceVariables(getCellText(currentCommandRow, 2));
 
-        handler = commandHandlers[command];
+        handler = getHandler(command);
 
+        // TODO invert this horrible recursive thing...
         if(handler == null) {
             setRowFailed("Unknown command", ERROR);
             processCommand();
         }
         else {
             try {
-                handler(target, value);
+                var processNext = handler(target, value);
+                if (handler.type == "assert") {
+                    setRowPassed();
+                }
+                if (processNext) {
+                    processCommand();
+                }
             } catch (e) {
                 setRowFailed(e.message, ERROR);
                 processCommand();
             }
         }
     }
+}
+
+function getHandler(command) {
+    var action = actions[command];
+    if (action) {
+        action.type = "action";
+        return action;
+    }
+    var assert = asserts[command];
+    if (assert) {
+        assert.type = "assert";
+        return assert;
+    }
+    return null;
 }
 
 function printMetrics() {
@@ -474,84 +499,31 @@ function replaceVariables(str) {
 }
 
 function handleClick(target, wait) {
-    if(wait == "nowait") {
-        selenium.clickElement(target);
-        processCommand();
-    } else {
-        selenium.clickElement(target, processCommand);
-    }
-}
+    selenium.clickElement(target);
 
-function handleType(target, stringValue) {
-    selenium.type(target, stringValue);
-    processCommand();
+    if(wait == "nowait") {
+        return true;
+    }
+    selenium.callOnNextPageLoad(processCommand);
+    return false;
 }
 
 function handleOpen(target) {
-    selenium.open(target, processCommand);
-}
-
-function handleSelectWindow(target) {
-    selenium.selectWindow(target);
-    processCommand();
-}
-
-function handleSelect(target, stringValue) {
-    selenium.select(target, stringValue);
-	processCommand();
+    selenium.open(target);
+    selenium.callOnNextPageLoad(processCommand);
+    return false;
 }
 
 function handlePause(waitTime) {
     setTimeout("processCommand()", waitTime);
+    return false;
 }
 
 // Reads the text of the page and stores it in a variable with the name of the target
 function handleStoreValue(target) {
     value = browserbot.getCurrentPage().bodyText();
     storedVars[target] = value;
-    processCommand();
-}
-
-function handleVerifyLocation(stringValue) {
-    selenium.verifyLocation(stringValue);
-    setRowPassed();
-    processCommand();
-}
-
-function handleVerifyValue(target, stringValue) {
-    selenium.verifyValue(target, stringValue);
-    setRowPassed();
-    processCommand();
-}
-
-function handleVerifyText(target, stringValue) {
-    selenium.verifyText(target, stringValue);
-    setRowPassed();
-    processCommand();
-}
-
-function handleVerifyTable(target, stringValue) {
-    selenium.verifyTable(target, stringValue);
-    setRowPassed();
-    processCommand();
-}
-
-function handleVerifyTextPresent(stringValue) {
-    selenium.verifyTextPresent(stringValue);
-    setRowPassed();
-    processCommand();
-}
-
-function handleVerifyElementPresent(target) {
-    selenium.verifyElementPresent(target);
-    setRowPassed();
-    processCommand();
-}
-
-function handleVerifyElementNotPresent(target) {
-    selenium.verifyElementNotPresent(target);
-    setRowPassed();
-    processCommand();
+    return true;
 }
 
 function setRowPassed() {
