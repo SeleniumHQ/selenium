@@ -40,6 +40,7 @@ class SeleniumInterpreter(Dispatcher):
     # Selenium Commands       
     #
     def chooseCancelOnNextConfirmation(self):
+        """ Instruct Selenium to click Cancel on the next confirm dialog it encounters. """
         return self.dispatchCommand("chooseCancelOnNextConfirmation")
         
     def click(self, target):
@@ -63,15 +64,19 @@ class SeleniumInterpreter(Dispatcher):
         return self.dispatchCommand("selectAndWait",field, value)
         
     def selectWindow(self, window):
+        """ Select the named window to be the active window. """
         return self.dispatchCommand("selectWindow", window)
         
     def setTextField(self, field, value):
+        """ Overwrite the text in the located text element. """
         return self.dispatchCommand("setTextField", field, value)
         
     def storeText(self, element, value):
+        """ """
         return self.dispatchCommand("storeText", element, value)
         
     def storeValue(self, field, value):
+        """ Stores the entire text of a page into a variable. """
         return self.dispatchCommand("storeValue", field, value)
         
     def testComplete(self):
@@ -79,47 +84,67 @@ class SeleniumInterpreter(Dispatcher):
         return self.dispatchCommand("testComplete")
         
     def type(self, field, value):
+        """ Overwrite the text in the located text element. """
         return self.dispatchCommand("type", field, value)
         
     def typeAndWait(self, field, value):
+        """ Overwrite the text in the located text element, 
+        and wait for a page load event."""
         return self.dispatchCommand("typeAndWait", field, value)
         
     def verifyAlert(self, alert):
+        """  Asserts that the supplied message was received as an alert. """
         return self.dispatchCommand("verifyAlert", alert)
         
     def verifyAttribute(self, element, value):
+        """  Verify the value of an element attribute. 
+        The syntax for returning an element attribute 
+        is <element-locator>@attribute-name. """
         return self.dispatchCommand("verifyAttribute", element, value)
         
     def verifyConfirmation(self, confirmation):
+        """ Asserts that the supplied message was received as a confirmation. """
         return self.dispatchCommand("verifyConfirmation", confirmation)
         
     def verifyElementNotPresent(self, type):
+        """ Asserts that the specified element cannot be found."""
         return self.dispatchCommand("verifyElementNotPresent", type)
         
     def verifyElementPresent(self, type):
+        """ Asserts that the specified element can be found. """
         return self.dispatchCommand("verifyElementPresent", type)
         
     def verifyLocation(self, location):
+        """ Verify the location of the current page. """
         return self.dispatchCommand("verifyLocation", location)
         
     def verifySelectOptions(self, field, values):
+        """ Verify the label of all of the options in the drop=down. """
         return self.dispatchCommand("verifySelectOptions", field, values)
         
     def verifySelected(self, field, value):
+        """ Verify the label of the option that is selected. """
         return self.dispatchCommand("verifySelected", field, value)
         
     def verifyTable(self, table, value):
+        """ Asserts that the text for a single cell within and HTML 
+        table matches the expected content.
+        The table locator syntax is table.row.column. """
         return self.dispatchCommand("verifyTable", table, value)
         
     def verifyText(self, type, text):
+        """ Verifies that the entire text of the page matches the expected content."""
         return self.dispatchCommand("verifyText", type, text)
         
     def verifyTextPresent(self, type, text):
+        """ Asserts that the specified text is present in the page content."""
         return self.dispatchCommand("verifyTextPresent", type, text)
 
     def verifyTitle(self, title):
+        """ Verify the title of the current page. """
         return self.dispatchCommand("verifyTitle", title)
         
     def verifyValue(self, field, value):
+        """ Verify the value of a form element. """
         return self.dispatchCommand("verifyValue", field, value)
             
