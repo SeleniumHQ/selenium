@@ -14,7 +14,7 @@ import java.io.IOException;
  * </pre>
  * There is no direct JUnit integration, but you can use this class from a JUnit test.
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class Selenium {
     private final String browserName;
@@ -39,13 +39,8 @@ public class Selenium {
     }
 
     private void launchBrowserWindow() {
-        com.Ostermiller.util.Browser.exec = new String[]{browserName};
-        com.Ostermiller.util.Browser.init();
-        try {
-            com.Ostermiller.util.Browser.displayURL(initialUrl);
-        } catch (IOException e) {
-            throw new SeleniumException("Couldn't launch " + browserName + ". Make sure it is on your PATH", e);
-        }
+        System.out.println("Open a browser and point it to");
+        System.out.println(initialUrl);
     }
 
     public void shutdown() {
