@@ -1,0 +1,17 @@
+Do SVN export of javascript directory (gets rid of SVN folders)
+Copy javascript folder contents to <selenium_check_out_dir>\trunk\code\python\twisted\src\selenium\selenium_driver
+
+Open command prompt:
+cd <selenium_check_out_dir>\trunk\code\python\twisted
+build.bat clean
+build.bat exe
+
+Run NSIS Script Wizard to create new script..
+    for now you have to do this manually to pick up any new files.
+    in the future, would be nice if a script can modify this script automatically
+
+build.bat installer
+
+
+
+
