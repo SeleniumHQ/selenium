@@ -62,11 +62,11 @@ public abstract class AbstractSeleneseServlet extends HttpServlet {
                 seleneseHandler = getRemoteSeleneseHandler(servletContext, writer);
             }
             if (seleneseHandler != null) {
-                writer.write(seleneseHandler.handleCommandResult(null).getCommandString());
+                writer.write(seleneseHandler.handleCommandResult(null).toString());
             }
         } else if (commandReply != null){
             SeleneseCommand command = handleCommand(servletContext, commandReply);
-            writer.write(command.getCommandString());
+            writer.write(command.toString());
             if (commandReply.equals("end")) {
                 endTests();
 
