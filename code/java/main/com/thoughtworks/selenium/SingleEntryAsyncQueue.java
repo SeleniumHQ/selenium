@@ -19,7 +19,7 @@ package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class SingleEntryAsyncQueue {
 
@@ -27,11 +27,16 @@ public class SingleEntryAsyncQueue {
     private boolean available;
 
     public synchronized Object get() {
+        int retries = 0;
         while (available == false) {
             try {
-                wait();
+                wait(1000 * 5);
             } catch (InterruptedException e) {
             }
+            if (available == false & retries > 5) {
+                throw new SeleniumCommandTimedOutException();
+            }
+            retries++;
         }
         available = false;
         return thing;

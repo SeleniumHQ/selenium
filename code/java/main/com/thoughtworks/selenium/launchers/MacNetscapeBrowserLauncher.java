@@ -29,7 +29,7 @@ public class MacNetscapeBrowserLauncher extends DestroyableRuntimeExecutingBrows
 
 
     public MacNetscapeBrowserLauncher() {
-        super("open -a /Applications/Netscape.app");
+        super("/Applications/Netscape.app/Contents/MacOS/mozilla-bin");
     }
 
 }
