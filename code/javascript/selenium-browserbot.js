@@ -359,6 +359,7 @@ PageBot.prototype.clickElement = function(element) {
     }
     else {
         // Add an event listener that detects if the default action has been prevented.
+        // (This is caused by a javascript onclick handler returning false)
         var preventDefault = false;
         element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault()}, false);
 
@@ -369,8 +370,14 @@ PageBot.prototype.clickElement = function(element) {
         // But in newer versions, we need to do it ourselves.
         var needsProgrammaticClick = (geckoVersion > '20041025');
         // Perform the link action if preventDefault was set.
-        if (needsProgrammaticClick && element.href  && !preventDefault) {
-            this.currentWindow.location.href = element.href;
+        if (needsProgrammaticClick && !preventDefault) {
+            // Try the element itself, as well as it's parent - this handles clicking images inside links.
+            if (element.href) {
+                this.currentWindow.location.href = element.href;
+            }
+            else if (element.parentNode.href) {
+                this.currentWindow.location.href = element.parentNode.href;
+            }
         }
     }
 
