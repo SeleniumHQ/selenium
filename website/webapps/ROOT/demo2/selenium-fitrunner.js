@@ -534,10 +534,23 @@ Selenium.prototype.doPause = function(waitTime) {
     testLoop.pauseInterval = waitTime;
 }
 
-// Reads the text of the page and stores it in a variable with the name of the target
-Selenium.prototype.doStoreValue = function(target) {
-    value = this.page().bodyText();
-    storedVars[target] = value;
+// Store the value of a form input in a variable
+Selenium.prototype.doStoreValue = function(target, varName) {
+    if (!varName) { 
+        // Backward compatibility mode: read the ENTIRE text of the page 
+        // and stores it in a variable with the name of the target
+        value = this.page().bodyText();
+        storedVars[target] = value;
+        return;
+    }
+    var element = this.page().findElement(target);
+    storedVars[varName] = getInputValue(element);
+}
+
+// Store the text of an element in a variable
+Selenium.prototype.doStoreText = function(target, varName) {
+    var element = this.page().findElement(target);
+    storedVars[varName] = getText(element);
 }
 
 Selenium.prototype.doClickWithOptionalWait = function(target, wait) {

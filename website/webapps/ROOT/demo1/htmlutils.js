@@ -19,14 +19,16 @@
 // make it possible to handle elements in a way that is 
 // compatible with both IE-like and Mozilla-like browsers
 
-String.prototype.trim = function() {
+function trim() {
   var result = this.replace( /^\s+/g, "" );// strip leading
   return result.replace( /\s+$/g, "" );// strip trailing
 }
+String.prototype.trim = trim;
 
-String.prototype.toCamelCase = function() {
+function toCamelCase() {
    return this.charAt(0).toLowerCase() + this.substr(1);
 }
+String.prototype.toCamelCase = toCamelCase;
 
 // Returns the text in this element
 function getText(element) {
@@ -47,6 +49,16 @@ function setText(element, text) {
     } else if(element.innerText) {
         element.innerText = text;
     }
+}
+
+// Get the value of an <input> element
+function getInputValue(inputElement) {
+    if (inputElement.type.toUpperCase() == 'CHECKBOX' || 
+        inputElement.type.toUpperCase() == 'RADIO') 
+    {
+        return (inputElement.checked ? 'on' : 'off');
+    }
+    return inputElement.value;
 }
 
 /* Fire an event in a browser-compatible manner */
@@ -99,4 +111,12 @@ function getFunctionName(aFunction) {
       return regexpResult[1];
   }
   return 'anonymous';
+}
+
+function describe(object) {
+    var props = new Array();
+    for (var prop in object) {
+        props.push(prop);
+    }
+    return props.join('\n');
 }

@@ -62,26 +62,31 @@ BrowserBot = function(frame) {
     this.currentWindowName = null;
     
     this.recordedAlerts = new Array();
+    this.recordedConfirmations = new Array();
+    this.nextConfirmResult = true;
 
 }
 
-BrowserBot.prototype.recordAlert = function(alert) {
-   this.recordedAlerts.push(alert);
+BrowserBot.prototype.cancelNextConfirmation = function() {
+    this.nextConfirmResult = false;
 }
 
-/*
- *  Indicates any alerts have been generated
- */
 BrowserBot.prototype.hasAlerts = function() {
    return (this.recordedAlerts.length > 0) ;
 }
 
-/*
- * Retreives the next alert
- */
 BrowserBot.prototype.getNextAlert = function() {
    return this.recordedAlerts.shift();
 }
+
+BrowserBot.prototype.hasConfirmations = function() {
+    return (this.recordedConfirmations.length > 0) ;
+}
+ 
+BrowserBot.prototype.getNextConfirmation = function() {
+    return this.recordedConfirmations.shift();
+}
+
 
 BrowserBot.prototype.getFrame = function() {
     return this.frame;
@@ -116,9 +121,41 @@ BrowserBot.prototype.getCurrentPage = function() {
         if (this.currentWindowName != null) {
             testWindow = this.getTargetWindow(this.currentWindowName);
         }
-        this.currentPage = new PageBot(testWindow, this)
+        modifyWindowToRecordPopUpDialogs(testWindow, this);
+        modifyWindowToClearPageCache(testWindow, this);
+        this.currentPage =  new PageBot(testWindow);
     }
+    
     return this.currentPage;
+
+     // private functions below - is there a better way?
+    
+     function modifyWindowToRecordPopUpDialogs(window, browserBot) {   
+          window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
+          window.confirm = function(message){
+                              browserBot.recordedConfirmations.push(message);
+                              var result = browserBot.nextConfirmResult;
+                              browserBot.nextConfirmResult = true;
+                              return result
+                           };
+     }
+     
+     function modifyWindowToClearPageCache(window, browserBot) {
+        //SPIKE factor this better via TDD
+        function clearPageCache() {
+          browserbot.currentPage = null;
+        }
+
+       if (window.addEventListener) {
+          testWindow.addEventListener("unload",clearPageCache, true);
+       }
+       else if (window.attachEvent) {
+          testWindow.attachEvent("onunload",clearPageCache);
+       }
+       // End SPIKE
+     }
+    
+
 }
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
@@ -138,36 +175,17 @@ BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
 }
 
 
-PageBot = function(pageWindow, browserBot) {
+PageBot = function(pageWindow) {
     this.currentWindow = pageWindow;
-    this.browserBot = browserBot;
     this.currentDocument = pageWindow.document;
     this.location = pageWindow.location.pathname;
     this.title = function() {return this.currentDocument.title};
-
-    modifyWindowToRecordAlerts(pageWindow, browserBot);
-
-    //SPIKE factor this better via TDD
-    function clearPageCache() {
-       browserbot.currentPage = null;
-    }
-    
-    if (window.addEventListener) {
-        this.currentWindow.addEventListener("unload",clearPageCache, true);
-    }     
-    else if (window.attachEvent) {
-        this.currentWindow.attachEvent("onunload",clearPageCache);
-    } 
-    // End SPIKE
-    
-    function modifyWindowToRecordAlerts(window, browserBot) {     
-         window.alert = function(alert){browserBot.recordAlert(alert);};
-    }
 
     this.locators = new Array();
     this.locators.push(this.findIdentifiedElement);
     this.locators.push(this.findElementByDomTraversal);
     this.locators.push(this.findElementByXPath);
+
 }
 
 /*
