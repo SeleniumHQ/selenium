@@ -25,9 +25,6 @@ font.pagetitle {
 .newstext {
 	FONT-SIZE: .75em; COLOR: grey
 }
-.rightbar {
-	PADDING-RIGHT: 5px; PADDING-LEFT: 79%; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 10px; POSITION: absolute;
-}
 #menu {
 	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; FONT-SIZE: smaller; BACKGROUND: #77302C; LEFT: 0px; PADDING-BOTTOM: 100px; MARGIN: 0px; WIDTH: 149px; COLOR: black; PADDING-TOP: 15px; POSITION: absolute; TOP: 0px
 }
