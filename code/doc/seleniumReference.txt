@@ -307,6 +307,13 @@ Selenium Checks
             assertTextPresent   You are now logged in.
             =================   ======================   =====
 
+    **verifyTextNotPresent / assertTextNotPresent**
+        Verifies that the specified text does not appears anywhere on the rendered page.
+        
+        **target:** The text that should not be present.
+        
+        **value:** *ignored*
+        
     **verifyElementPresent / assertElementPresent**
         Verifies that the specified element is somewhere on the page.
         
