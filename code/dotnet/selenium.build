@@ -16,15 +16,28 @@
 	<target name="unit-tests" depends="compile, run-unit-tests" 
 		description="Run Unit Tests" />
 	
-	<target name="dist" depends="compile, create-selenium-zips" 
+	<target name="dist" depends="compile, create-deployment-directory, create-selenium-zips" 
 		description="Create distributable files" />
+		
+	<target name="deploy-nant" depends="compile, create-deployment-directory, setup-nant-iis"
+		description="Deploys Selenium Bridge and sets up IIS to use the NAnt deployed version" />
 	
+	<target name="deploy-VS" depends="setup-nant-vs"
+		description="Sets up IIS to use the Visual Studio deployed Bridge" />
+		
+	<target name="undeploy"
+		description="Undeploys Selenium Bridge from IIS">
+		<echo message="Undeploy to be implemented" />
+	</target>
+
 	<target name="clean">
 		<!-- These mkdirs here to stop warnings -->
 		<mkdir dir="build" />
 		<mkdir dir="dist" />
+		<mkdir dir="deployed" />
 		<delete dir="build" failonerror="false"/>
 		<delete dir="dist" failonerror="false"/>
+		<delete dir="deployed" failonerror="false" />
 	</target>
 
 	<target name="compile">
@@ -39,23 +52,50 @@
 			workingdir="build\UnitTests" 
 			commandline="${unit.test.dll} /xml:../${unit.test.dll}-results.xml /nologo"/>
 	</target>
+	
+	<target name="create-deployment-directory">
+		<mkdir dir="deployed" />
+		<copy todir="deployed">
+			<fileset basedir="src/BridgeWebApp">
+				<include name="**/*" />
+				<exclude name="bin" />
+				<exclude name="obj" />
+				<exclude name="bin/**" />
+				<exclude name="obj/**" />
+				<exclude name="*.user" />
+				<exclude name="*.resharperoptions" />
+				<exclude name="_Resharper*" />
+				<exclude name="_Resharper*/**" />
+			</fileset>
+		</copy>
+		<mkdir dir="deployed/bin"/>
+		<copy todir="deployed/bin">
+			<fileset basedir="build/BridgeWebApp">
+				<include name="**/*" />
+				<exclude name="**/*.incr" />
+				<exclude name="**/*.pdb" />
+			</fileset>
+		</copy>
+	</target>
 
 	<target name="create-selenium-zips" >
-		<mkdir dir="build/dist/bin" />
-		<copy todir="build/dist/bin">
+		<mkdir dir="build/dist/bin/API" />
+		<copy todir="build/dist/bin/API">
 			<fileset basedir="build/Core">
 				<include name="*.dll" />
 				<include name="*.config" />
+				<exclude name="**/*.incr" />
+				<exclude name="**/*.pdb" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="build/dist/bin/BridgeWebApp" />
+		<copy todir="build/dist/bin/BridgeWebApp">
+			<fileset basedir="deployed">
+				<include name="**/*" />
 			</fileset>
 		</copy>
 		
-		<mkdir dir="dist" />
-		<zip zipfile="dist/Selenium.zip">
-			<fileset basedir="build/dist/bin">
-				<include name="**/*" />
-			</fileset>
-		</zip>
-
 		<mkdir dir="build/dist/source" />
 		<copy todir="build/dist/source">
 			<fileset basedir=".">
@@ -78,12 +118,26 @@
 		</copy>
 		
 		<mkdir dir="dist" />
+		<zip zipfile="dist/Selenium.zip">
+			<fileset basedir="build/dist/bin">
+				<include name="**/*" />
+			</fileset>
+		</zip>
 		<zip zipfile="dist/Selenium.source.zip">
 			<fileset basedir="build/dist/source">
 				<include name="**/*" />
 			</fileset>
 		</zip>
 	</target>
+	
+	<target name="setup-nant-iis">
+		<echo message="IIS to be implemented" />
+	</target>
+
+	<target name="setup-nant-vs">
+		<echo message="IIS to be implemented" />
+	</target>
+
 	
 	<target name="continuous-integration" depends="clean, continuous-integration-setup-versioning, all, continuous-integration-publish" />
 

@@ -1,8 +1,9 @@
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
+using Selenium;
 
-namespace Selenium.UnitTests
+namespace ThoughtWorks.Selenium.UnitTests
 {
 	/// <summary>
 	/// Summary description for DefaultBrowserLauncherTest.

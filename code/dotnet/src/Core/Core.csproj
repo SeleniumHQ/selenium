@@ -76,7 +76,7 @@
                     NoStdLib = "false"
                     NoWarn = ""
                     Optimize = "false"
-                    OutputPath = "..\..\build\core\"
+                    OutputPath = "..\..\build\Core\"
                     RegisterForComInterop = "false"
                     RemoveIntegerChecks = "false"
                     TreatWarningsAsErrors = "false"
@@ -115,7 +115,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DefaultSeleneseCommand.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DefaultSelenium.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "HttpCommandProcessor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -131,6 +141,11 @@
                 />
                 <File
                     RelPath = "InternetExplorerBrowserLauncher.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ISeleneseCommand.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

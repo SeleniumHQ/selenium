@@ -7,5 +7,13 @@ namespace Selenium
 	/// </summary>
 	public class SeleniumException : Exception
 	{
+		public SeleniumException()
+		{
+			
+		}
+
+		public SeleniumException(string message) : base(message)
+		{
+		}
 	}
 }
