@@ -35,6 +35,7 @@
             <formatter type="plain"/>
             <batchtest todir="target/test-logs">
                 <fileset dir="test">
+                    <include name="**/*Test.java"/>
                     <exclude name="com/thoughtworks/selenium/SeleniumIntegrationTest.java"/>
                 </fileset>
             </batchtest>
