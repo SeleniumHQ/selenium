@@ -28,4 +28,9 @@ if __name__ == '__main__':
     server_address = ('', PORT)
     httpd = BaseHTTPServer.HTTPServer(server_address, HTTPHandler)
     print "serving at port", PORT
+    print "To run the entire JsUnit test suite, open"
+    print "  http://localhost:8000/jsunit/testRunner.html?testPage=http://localhost:8000/tests/JsUnitSuite.html&autoRun=true"
+    print "To run the acceptance test suite, open"
+    print "  http://localhost:8000/TestRunner.html"
+
     httpd.serve_forever()

@@ -21,17 +21,17 @@ modifyWindow(window);
 //Required so "click" method can be sent to anchor ("A") tags in Mozilla
 function modifyWindow(windowObject) {
     if (!isIE) {
-	    windowObject.HTMLAnchorElement.prototype.click = function() {
-	        var evt = this.ownerDocument.createEvent('MouseEvents');
-	        evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-	        this.dispatchEvent(evt);
-	    }
+        windowObject.HTMLAnchorElement.prototype.click = function() {
+            var evt = this.ownerDocument.createEvent('MouseEvents');
+            evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+            this.dispatchEvent(evt);
+        }
 
-	    windowObject.HTMLImageElement.prototype.mousedown = function() {
-	                    var evt = this.ownerDocument.createEvent('MouseEvents');
-	                    evt.initMouseEvent('mousedown', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-	                    this.dispatchEvent(evt);
-	    }
+        windowObject.HTMLImageElement.prototype.mousedown = function() {
+            var evt = this.ownerDocument.createEvent('MouseEvents');
+            evt.initMouseEvent('mousedown', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+            this.dispatchEvent(evt);
+        }
     }
 }
 
@@ -60,7 +60,8 @@ function getIframe() {
     return document.getElementById('myiframe');
 }
 
-function BrowserBot() {
+BrowserBot = function(frame) {
+    this.frame = frame;
     this.currentPage = null;
     this.currentWindowName = null;
 }
@@ -103,7 +104,7 @@ BrowserBot.prototype.getCurrentPage = function() {
         if (this.currentWindowName != null) {
             testWindow = this.getTargetWindow(this.currentWindowName);
         }
-        this.currentPage = new PageBot(testWindow)
+        this.currentPage = new PageBot(testWindow, this)
     }
     return this.currentPage;
 }
@@ -117,8 +118,9 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
     return targetWindow;
 }
 
-function PageBot(pageWindow) {
+PageBot = function(pageWindow, browserBot) {
     this.currentWindow = pageWindow;
+    this.browserBot = browserBot;
     modifyWindow(pageWindow);
     this.currentDocument = pageWindow.document;
 
@@ -192,7 +194,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
 PageBot.prototype.clickElement = function(element, loadCallback) {
     if (loadCallback) {
         var el = new SelfRemovingLoadListener(loadCallback);
-        addLoadListener(getIframe(), el.invoke);
+        addLoadListener(this.browserBot.getFrame(), el.invoke);
     }
 
     triggerEvent(element, 'focus', false);
@@ -228,16 +230,16 @@ PageBot.prototype.clickElement = function(element, loadCallback) {
 PageBot.prototype.onclickElement = function(element, loadCallback) {
     if (loadCallback) {
         var el = new SelfRemovingLoadListener(loadCallback);
-        addLoadListener(getIframe(), el.invoke);
+        addLoadListener(this.browserBot.getFrame(), el.invoke);
     }
 
     element.click();
 }
 
 PageBot.prototype.clearOnBeforeUnload = function() {
-	//For IE: even though the event was linked to the window, the event appears to be attached to the 'body' object in IE.
+    //For IE: even though the event was linked to the window, the event appears to be attached to the 'body' object in IE.
     this.currentWindow.document.body.onbeforeunload = null;
-   	this.currentWindow.onbeforeunload = null;
+       this.currentWindow.onbeforeunload = null;
 }
 
 PageBot.prototype.bodyText = function() {
