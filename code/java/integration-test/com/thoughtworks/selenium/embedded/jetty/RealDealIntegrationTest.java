@@ -19,6 +19,7 @@ package com.thoughtworks.selenium.embedded.jetty;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.BrowserLauncher;
 import com.thoughtworks.selenium.launchers.SystemDefaultBrowserLauncher;
 import junit.framework.TestCase;
 
@@ -34,6 +35,20 @@ public class RealDealIntegrationTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        File codeRoot = getCodeRoot();
+        selenium = new DefaultSelenium(
+                new JettyCommandProcessor(new File(codeRoot, "javascript/tests/html"), DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
+                        new DirectoryStaticContentHandler(new File(codeRoot, "javascript"))),
+                getBrowserLauncher()
+        );
+        selenium.start();
+    }
+
+    protected BrowserLauncher getBrowserLauncher() {
+        return new SystemDefaultBrowserLauncher();
+    }
+
+    private File getCodeRoot() throws Exception {
         File codeRoot;
         String codeRootProperty = System.getProperty("code_root");
         if (codeRootProperty == null) {
@@ -44,12 +59,7 @@ public class RealDealIntegrationTest extends TestCase {
                 throw new Exception("'code_root' not a dir");
             }
         }
-        selenium = new DefaultSelenium(
-                new JettyCommandProcessor(new File(codeRoot, "javascript/tests/html"), DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
-                        new DirectoryStaticContentHandler(new File(codeRoot, "javascript"))),
-                new SystemDefaultBrowserLauncher()
-        );
-        selenium.start();
+        return codeRoot;
     }
 
     protected void tearDown() throws Exception {
