@@ -50,8 +50,8 @@ class FunctionalTestTool (Item, Persistent, Implicit, RoleManager):
         Item.manage_options + RoleManager.manage_options
         )
     
-    security.declarePublic('setUp')
-    def setUp(self, user_type=None, REQUEST=None):
+    security.declarePublic('setup')
+    def setup(self, user_type=None, REQUEST=None):
         """ Setup method to be called at the beginning of each functional test.
             Must be explicitly called from the test (not implicit, yet)
             

@@ -1,0 +1,36 @@
+Setup:
+
+    Manager Role User
+        http://localhost/selenium_ft_tool/setup?user_type=Manager
+
+        sample http response: 
+        'FTmanageruser7383'
+
+    Regular Member Role User:
+        http://localhost/selenium_ft_tool/setup
+        http://localhost/selenium_ft_tool/setup?user_type=Member
+        sample http response:
+        'FTuser1975'
+
+
+TearDown:
+
+    http://localhost/selenium_ft_tool/tearDown?user=FTuser5320
+    sample http response:
+    'tearDown complete'
+
+
+
+PostResults
+    http://localhost/TestRunner.html?&auto=true
+
+    Running the Plone Test Suite and posting results 
+    http://localhost:8090/Plone/TestRunner.html?test=PloneTestSuite.html&auto=true
+
+
+    Results will be posted to the server here:
+    <plone_instance_home>\Products\Selenium\skins\selenium_test_results
+
+    Files:
+    selenium-results-metadata-<browserName>.txt
+    selenium-results-<browser>.html
