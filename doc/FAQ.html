@@ -91,7 +91,7 @@ You could use a combination of proxying and URL rewriting in Apache to
 trick the browser into the thinking the application and the testing tool 
 are coming from the same domain.</p>
 <p>Another option is to run Selenium as an &quot;HTA&quot; application, or &quot;HTML
-Applications&quot; in Internet Explorer. HTA applications run in the security
+Application&quot; in Internet Explorer. HTA applications run in the security
 context of any trusted application on the client, so there is no cross-site
 scripting limitation. (You can find out more here:
 <a class="reference" href="http://msdn.microsoft.com/workshop/author/hta/overview/htaoverview.asp">http://msdn.microsoft.com/workshop/author/hta/overview/htaoverview.asp</a>) The
@@ -101,14 +101,11 @@ would be to write a XUL wrapper/extension.</p>
 </div>
 <div class="section" id="how-do-you-create-test-tables">
 <h2><a class="toc-backref" href="#id6" name="how-do-you-create-test-tables">1.4&nbsp;&nbsp;&nbsp;How do you create test tables?</a></h2>
-<p>Question: <em>I don't think you are writing them in plain HTML (that's SO unreadable). 
-Probably the source is some form of simplified markup (Textile, Markdown 
-or RST).</em></p>
-<p>Answer: Actually, the developers on the Selenium project use Mozilla Composer to 
+<p>The developers on the Selenium project use Mozilla Composer to 
 create plain HTML text files for their tests.
 By default, Mozilla Composer writes very clean HTML without any extra, unnecessary markup.</p>
 <p>Future versions of Selenium may support RST (ReStructred Text), or wiki-table 
-syntax, natively. However, you are free use another format now, 
+syntax, natively. However, you are free to use another format now, 
 as long as you remember to generate the HTML files from your source files,
 either during your build process or dynamically at run-time.</p>
 <table class="field-list" frame="void" rules="none">
