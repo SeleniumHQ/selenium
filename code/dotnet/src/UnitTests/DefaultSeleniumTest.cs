@@ -41,9 +41,17 @@ namespace ThoughtWorks.Selenium.UnitTests
 		}
 
 		[Test]
-		public void StartSeleniumShouldWork()
+		public void StartSeleniumShouldWorkWithDefaultURL()
 		{
 			mockLauncher.Expect("Launch", DefaultSelenium.SELENESE_RUNNER_URL);
+			selenium.Start();
+		}
+
+		[Test]
+		public void StartSeleniumShouldWorkWithSpecifiedURL()
+		{
+			selenium = new DefaultSelenium(processor, launcher, "myUrl");
+			mockLauncher.Expect("Launch", "myUrl");
 			selenium.Start();
 		}
 
