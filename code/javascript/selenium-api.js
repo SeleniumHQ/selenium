@@ -246,6 +246,19 @@ Selenium.prototype.assertTextPresent = function(expectedText) {
 };
 
 /*
+ * Asserts that the specified text is NOT present in the page content.
+ */
+Selenium.prototype.assertTextNotPresent = function(unexpectedText) {
+    var allText = this.page().bodyText();
+
+    if(allText == "") {
+        assert.fail("Page text not found");
+    } else if(allText.indexOf(unexpectedText) != -1) {
+        assert.fail("'" + unexpectedText + "' was found in page text.");
+    }
+};
+
+/*
  * Asserts that the specified element can be found.
  */
 Selenium.prototype.assertElementPresent = function(locator) {
