@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="default.css" type="text/css">
 </head>
 <body>
-<h1>Overview</h1>
+<h2>Overview</h2>
 This is where Selenium is deployed alongside the Application Under Test
 (<span style="font-weight: bold;">AUT</span>) in a web server.&nbsp;
 The component of Selenium that is deployed with the AUT is called the
@@ -60,7 +60,7 @@ a command refers to. Many commands require an Element Locator as the
 and "document.forms[0].element". These are described more clearly in
 the next section.</p>
 <div class="section" id="test-tables">
-<h1><a name="test-tables">Test Tables</a></h1>
+<h2><a name="test-tables">Test Tables</a></h2>
 <p>The test tables are simple html tables with 3 columns: command,
 target, value. Not all commands take a value, however. In this case
 either leave the column blank or use a &amp;nbsp; to make the table
@@ -100,7 +100,7 @@ a title or any other information.</p>
 </blockquote>
 </div>
 <div class="section" id="element-locators">
-<h1><a name="element-locators">Element Locators</a></h1>
+<h2><a name="element-locators">Element Locators</a></h2>
 <p>Element Locators allow Selenium to identify which HTML element a
 command refers to. There are several forms of Element Locators.</p>
 <p><strong>Identifier:</strong> locates an element based on the id or
@@ -146,7 +146,7 @@ expression. XPath locators <em>must</em> begin with "//".</p>
 </blockquote>
 </div>
 <div class="section" id="selenium-actions">
-<h1><a name="selenium-actions">Selenium Actions</a></h1>
+<h2><a name="selenium-actions">Selenium Actions</a></h2>
 <p>Actions tell Selenium to do something in the application. They
 generally represent something a user would do.</p>
 <p>Many <strong>Actions</strong> can be called with the "AndWait"
@@ -355,7 +355,7 @@ ${variableName}</p>
 </dl>
 </div>
 <div class="section" id="selenium-checks">
-<h1><a name="selenium-checks">Selenium Checks</a></h1>
+<h2><a name="selenium-checks">Selenium Checks</a></h2>
 <p>Checks are used to verify the state of the application. They can
 be used to check the value of a form field, the presense of some text,
 or the URL of the current page.</p>
@@ -663,7 +663,7 @@ as table.row.col.</p>
 </dl>
 </div>
 <div class="section" id="variables">
-<h1><a name="variables">Variables</a></h1>
+<h2><a name="variables">Variables</a></h2>
 <p>Selenium can handle simple variables. A variable is stored with
 the storeValue command. Then, it can be used in the target or value
 column with the syntax: ${variableName}.</p>
@@ -720,7 +720,7 @@ the function call to the variable reference.</p>
 </blockquote>
 </div>
 <div class="section" id="setup-teardown">
-<h1><a name="setup-teardown">SetUp / TearDown</a></h1>
+<h2><a name="setup-teardown">SetUp / TearDown</a></h2>
 <p>There are no setUp and tearDown commands in Selenium, but there is
 a way to handle these common testing operations. On the site being
 tested, create URLs for setUp and tearDown. Then, when the test runner
@@ -775,7 +775,7 @@ and deletes the user. Therefore, our tests look like this:</p>
 </blockquote>
 </div>
 <div class="section" id="continuous-integration">
-<h1><a name="continuous-integration">Continuous Integration</a></h1>
+<h2><a name="continuous-integration">Continuous Integration</a></h2>
 <p>Selenium can be integrated with an automated build. When the
 parameter "auto=true" is added to the URL, Selenium will run the entire
 suite of tests, and then post the results to the URL /postResults. The
