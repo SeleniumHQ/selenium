@@ -50,4 +50,7 @@ public interface Selenium extends Startable {
     void verifyTextPresent(String type, String text);
     void verifyTitle(String title);
     void verifyValue(String field, String value);
+	String[] getAllButtons();
+	String[] getAllLinks();
+	String[] getAllFields();
 }

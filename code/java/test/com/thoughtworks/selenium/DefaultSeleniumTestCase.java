@@ -467,4 +467,57 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
         }
     }
 
+	public void testGetAllButtonsReturnsArrayOfStrings() {
+		commandProcessor.expects(once()).method("doCommand").with(eq("getAllButtons"), eq(""), eq("")).will(returnValue("abutton,bbutton,"));
+		DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+		String[] result = dftSelenium.getAllButtons();
+
+		assertEquals(2, result.length);
+		assertEquals("abutton", result[0]);
+		assertEquals("bbutton", result[1]);
+	}
+
+	public void testGetAllButtonsHandlesNoButtons() {
+		commandProcessor.expects(once()).method("doCommand").with(eq("getAllButtons"), eq(""), eq("")).will(returnValue(""));
+		DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+		String[] result = dftSelenium.getAllButtons();
+
+		assertEquals(0, result.length);
+	}
+
+	public void testGetAllFieldsReturnsArrayOfStrings() {
+		commandProcessor.expects(once()).method("doCommand").with(eq("getAllFields"), eq(""), eq("")).will(returnValue("afield,bfield,"));
+		DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+		String[] result = dftSelenium.getAllFields();
+
+		assertEquals(2, result.length);
+		assertEquals("afield", result[0]);
+		assertEquals("bfield", result[1]);
+	}
+
+	public void testGetAllFieldsHandlesNoFields() {
+		commandProcessor.expects(once()).method("doCommand").with(eq("getAllFields"), eq(""), eq("")).will(returnValue(""));
+		DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+		String[] result = dftSelenium.getAllFields();
+
+		assertEquals(0, result.length);
+	}
+
+	public void testGetAllLinksReturnsArrayOfStrings() {
+		commandProcessor.expects(once()).method("doCommand").with(eq("getAllLinks"), eq(""), eq("")).will(returnValue("alink,blink,"));
+		DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+		String[] result = dftSelenium.getAllLinks();
+
+		assertEquals(2, result.length);
+		assertEquals("alink", result[0]);
+		assertEquals("blink", result[1]);
+	}
+
+	public void testGetAllLinksHandlesNoLinks() {
+		commandProcessor.expects(once()).method("doCommand").with(eq("getAllLinks"), eq(""), eq("")).will(returnValue(""));
+		DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
+		String[] result = dftSelenium.getAllLinks();
+
+		assertEquals(0, result.length);
+	}
 }

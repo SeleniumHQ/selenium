@@ -17,11 +17,12 @@
 
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.embedded.jetty.JettyCommandProcessor;
 import com.thoughtworks.selenium.embedded.jetty.DirectoryStaticContentHandler;
+import com.thoughtworks.selenium.embedded.jetty.JettyCommandProcessor;
 import com.thoughtworks.selenium.launchers.DefaultBrowserLauncher;
 
 import java.io.File;
+import java.util.StringTokenizer;
 
 /**
  * @author Paul Hammant
@@ -45,7 +46,7 @@ public class DefaultSelenium implements Selenium {
     }
 
     public DefaultSelenium(File webAppRoot) {
-        commandProcessor = new JettyCommandProcessor(webAppRoot, getContextName(), 
+        commandProcessor = new JettyCommandProcessor(webAppRoot, getContextName(),
                 new DirectoryStaticContentHandler(new File(DEFAULT_SELENIUM_CONTEXT)));
         launcher = new DefaultBrowserLauncher();
     }
@@ -243,6 +244,39 @@ public class DefaultSelenium implements Selenium {
         if (!result.equals("PASSED")) {
             throw new SeleniumException(result);
         }
+    }
+
+    public String[] getAllButtons() {
+        String stringResult = commandProcessor.doCommand("getAllButtons", "", "");
+
+        String[] result = extractDelimitedString(stringResult);
+
+        return result;
+    }
+
+    public String[] getAllLinks() {
+        String stringResult = commandProcessor.doCommand("getAllLinks", "", "");
+
+        String[] result = extractDelimitedString(stringResult);
+
+        return result;
+    }
+
+    public String[] getAllFields() {
+        String stringResult = commandProcessor.doCommand("getAllFields", "", "");
+
+        String[] result = extractDelimitedString(stringResult);
+
+        return result;
+    }
+
+    private String[] extractDelimitedString(String stringResult) {
+        StringTokenizer tokenizer = new StringTokenizer(stringResult, ",");
+        String[] result = new String[tokenizer.countTokens()];
+        for (int i = 0; tokenizer.hasMoreElements(); i++) {
+            result[i] = (String) tokenizer.nextToken();
+        }
+        return result;
     }
 
     public void start() {

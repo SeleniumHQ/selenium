@@ -137,6 +137,13 @@ function AccessorHandler(accessor) {
 }
 AccessorHandler.prototype = new CommandHandler;
 
+AccessorHandler.prototype.execute = function(seleniumApi, command) {
+	var returnValue = this.executor.call(seleniumApi, command.target, command.value);
+    var result = new CommandResult();
+    result.result = returnValue;
+    return result;
+}
+
 function AssertHandler(assertion, haltOnFailure) {
     this.base = CommandHandler;
     this.base("assert", haltOnFailure || false, assertion);
