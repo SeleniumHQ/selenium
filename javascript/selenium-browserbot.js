@@ -253,7 +253,36 @@ PageBot.prototype.findElementByXPath = function(xpath) {
         throw new Error("XPath not supported");
     }
 
+    // Trim any trailing "/": not valid xpath, and remains from attribute locator.
+    if (xpath.charAt(xpath.length - 1) == '/') {
+        xpath = xpath.slice(0, xpath.length - 1);
+    }
+
     return this.currentDocument.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
+}
+
+/**
+ * Returns an attribute based on an attribute locator. This is made up of an element locator
+ * suffixed with @attribute-name.
+ */
+PageBot.prototype.findAttribute = function(locator) {
+    // Split into locator + attributeName
+    var attributePos = locator.lastIndexOf("@");
+    var elementLocator = locator.slice(0, attributePos);
+    var attributeName = locator.slice(attributePos + 1);
+
+    // Find the element.
+    var element = this.findElement(elementLocator);
+
+    // Handle missing "class" attribute in IE.
+    if (isIE && attributeName == "class") {
+        attributeName = "className";
+    }
+
+    // Get the attribute value.
+    var attributeValue = element.getAttribute(attributeName);
+
+    return attributeValue ? attributeValue.toString() : null;
 }
 
 /*

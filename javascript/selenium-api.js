@@ -152,6 +152,43 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
     }
 }
 
+/**
+ * Verify the label of the option that is selected.
+ */
+Selenium.prototype.assertSelected = function(target, expectedLabel) {
+    var element = this.page().findElement(target);
+    var selectedLabel = element.options[element.selectedIndex].text;
+    assertEquals(expectedLabel, selectedLabel);
+}
+
+/**
+ * Verify the label of all of the options in the drop=down.
+ */
+Selenium.prototype.assertSelectOptions = function(target, options) {
+    // Handle escpaced commas, by substitutine newlines.
+    options = options.replace("\\,", "\n");
+	var expectedOptions = options.split(",");
+	var element = this.page().findElement(target);
+
+    assertEquals("wrong number of options", expectedOptions.length, element.options.length);
+
+    for (var i = 0; i < element.options.length; i++) {
+        var option = element.options[i];
+        // Put the escaped commas back in.
+        var expectedOption = expectedOptions[i].replace("\n", ",");
+        assertEquals(expectedOption, option.text);
+    }
+}
+
+/**
+ * Verify the value of an element attribute. The syntax for returning an element attribute
+ * is <element-locator>@attribute-name
+ */
+Selenium.prototype.assertAttribute = function(target, expected) {
+    var attributeValue = this.page().findAttribute(target);
+    assertEquals(expected, attributeValue);
+}
+
 /*
  * Asserts that the specified text is present in the page content.
  */
