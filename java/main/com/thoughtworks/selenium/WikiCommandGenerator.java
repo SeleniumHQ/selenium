@@ -22,7 +22,7 @@ import java.lang.reflect.Proxy;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class WikiCommandGenerator {
     private final CommandExecutor commandExecutor;
@@ -42,7 +42,6 @@ public class WikiCommandGenerator {
                     // handles the other cases
                     String arg2 = args.length == 2 ? args[1].toString() : "";
                     wikiRow = "|" + method.getName() + "|" + args[0] + "|" + arg2 + "|";
-                    return commandExecutor.execute(wikiRow);
                 }
                 return commandExecutor.execute(wikiRow);
             }

@@ -23,7 +23,7 @@ import junit.framework.TestCase;
  * Selenium - http://localhost:9090/selenium-b-tests.html
  *
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class SeleniumIntegrationTest extends TestCase {
     public void testShouldStartServerAndCreateBrowser() {
@@ -43,11 +43,26 @@ public class SeleniumIntegrationTest extends TestCase {
         }
     }
 
-    public void testTextboxEventsWithXmlRpc() {
+    public void testDriveTheBrowserWithXmlRpc() {
         String jsUnitUrl = "http://localhost:9090/RpcRunner.html";
         Selenium selenium = new Selenium(jsUnitUrl);
         Browser browser = selenium.getBrowser();
 
+        testClick(browser);
+        testTextboxEvents(browser);
+        testFailingVerification(browser);
+    }
+
+    private void testClick(Browser browser) {
+        browser.open("/tests/html/test_click_page1.html");
+        browser.verifyText("link", "Click here for next page");
+        browser.click("link");
+        browser.verifyLocation("/tests/html/test_click_page2.html");
+        browser.click("previousPage");
+        browser.verifyText("link", "Click here for next page");
+    }
+
+    private void testTextboxEvents(Browser browser) {
         browser.open("/tests/html/test_form_events.html");
         browser.verifyValue("theTextbox", "");
         browser.verifyValue("eventlog", "");
@@ -60,6 +75,19 @@ public class SeleniumIntegrationTest extends TestCase {
         browser.type("theTextbox", "changed value");
         browser.verifyValue("theTextbox", "changed value");
         browser.verifyValue("eventlog", "{focus(theTextbox)} {select(theTextbox)} {change(theTextbox)} {blur(theTextbox)}");
+    }
 
+    private void testFailingVerification(Browser browser) {
+
+        browser.open("/tests/html/test_verifications.html");
+        try {
+            browser.verifyValue("theText", "not the text value");
+            fail("verifyValue should have failed");
+        } catch (Exception e) {
+            // Expected
+            // TODO Make this work.
+//            assertEquals("Expected not the text value (string) but was the text value (string)",
+//                         e.getMessage());
+        }
     }
 }
