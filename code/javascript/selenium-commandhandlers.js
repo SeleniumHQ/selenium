@@ -119,6 +119,9 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
     if ( seleniumApi.browserbot.hasAlerts() ) {
        throw new Error("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
     }
+    if ( seleniumApi.browserbot.hasConfirmations() ) {
+        throw new Error("There was an unexpected Confirmation! [" + seleniumApi.browserbot.getNextConfirmation() + "]");
+    }
     var processState = this.executor.call(seleniumApi, command.target, command.value)
     // If the handler didn't return a wait flag, check to see if the
     // handler was registered with the wait flag.

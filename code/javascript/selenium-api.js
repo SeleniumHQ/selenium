@@ -85,6 +85,22 @@ Selenium.prototype.doSelectWindow = function(windowName) {
     }
  } 
 
+  /*
+  *  Asserts that the supplied message was received as a confirmation
+  */
+  Selenium.prototype.assertConfirmation = function(expectedConfirmation) {
+     if ( this.browserbot.hasConfirmations()) {
+         
+         receivedConfirmation = this.browserbot.getNextConfirmation();
+         if ( receivedConfirmation != expectedConfirmation ) {
+            fail("The confirmation message was [" + receivedConfirmation + "]");   
+         }
+                           
+     } else {
+         fail("There were no confirmations"); 
+     }
+  } 
+ 
 /*
  * Verify the location of the current page.
  */
