@@ -44,7 +44,7 @@ module Selenium
       "SeleneseInterpreter"
     end
 
-    def doCommand(commandString)
+    def do_command(commandString)
       timeout(@timeout) do
         result = nil
         Thread.new do
@@ -73,7 +73,7 @@ module Selenium
       value = args[1]
       command_string = "|#{method_name}|#{element_identifier}|#{value}|"
       #puts command_string
-      doCommand(command_string)
+      do_command(command_string)
     end
   end
 
