@@ -28,7 +28,7 @@ import java.io.OutputStream;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class FunnelRequestHandlerTest extends MockObjectTestCase {
     private OutputStream NULL_OUT = new ByteArrayOutputStream();
@@ -80,6 +80,31 @@ public class FunnelRequestHandlerTest extends MockObjectTestCase {
         client.expects(once()).method("request").with(same(clientRequest),
                 same(expectedClientResponse),
                 eq("www.google.com"),
+                isA(OutputStream.class)).isVoid();
+        new FunnelRequestHandler((Client) client.proxy(), NULL_OUT, NULL_OUT, debugServerRequest).handleRequest(clientRequest, expectedClientResponse);
+        expectedClientResponse.verify();
+        debugServerRequest.verify();
+    }
+
+    public void testShouldForwardRedirectedRequestUsingCookieToRemoveBeginningOfPath() throws IOException {
+        InputStream clientRequest = new ByteArrayInputStream(("" +
+                "GET http://127.0.0.1/www.thoughtworks.com/us HTTP/1.1\r\n" +
+                "Cookie: SELENIUM=www.thoughtworks.com\r\n" +
+                "Host: 127.0.0.1\r\n" +
+                "\r\n").getBytes());
+
+        MockOutputStream expectedClientResponse = new MockOutputStream("");
+        MockOutputStream debugServerRequest = new MockOutputStream("" +
+                "----- FUNNEL->SERVER REQUEST HEADERS -----\r\n" +
+                "GET /us HTTP/1.1\r\n" +
+                "Cookie: SELENIUM=www.thoughtworks.com\r\n" +
+                "Host: www.thoughtworks.com\r\n" +
+                "\r\n");
+        Mock client = mock(Client.class);
+
+        client.expects(once()).method("request").with(same(clientRequest),
+                same(expectedClientResponse),
+                eq("www.thoughtworks.com"),
                 isA(OutputStream.class)).isVoid();
         new FunnelRequestHandler((Client) client.proxy(), NULL_OUT, NULL_OUT, debugServerRequest).handleRequest(clientRequest, expectedClientResponse);
         expectedClientResponse.verify();

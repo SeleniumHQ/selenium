@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  *
  * @author Mike Melia
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class FunnelRequestHandler {
     // Host: foo.bar.com:88
@@ -117,8 +117,9 @@ public class FunnelRequestHandler {
 
             String host = null;
             if (hostFromSeleniumCookie != null) {
-                host = hostFromSeleniumCookie;
                 forwardRequestLine = requestLine.replaceFirst("http://127.0.0.1", "");
+                forwardRequestLine = forwardRequestLine.replaceFirst("/" + hostFromSeleniumCookie, "");
+                host = hostFromSeleniumCookie;
             } else {
                 forwardRequestLine = requestLine.replaceFirst("127.0.0.1/", "");
                 Matcher forwardRequestLineMatcher = REQUEST_LINE_PATTERN.matcher(forwardRequestLine);
