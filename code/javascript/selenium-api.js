@@ -119,9 +119,19 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
 /*
  * Verify the location of the current page.
  */
-Selenium.prototype.assertLocation = function(expectedLocation) {
+Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
     assertEquals(expectedLocation, this.page().location);
 };
+
+
+/*
+ * Verify the location of the current page ends with the expected location
+ */
+Selenium.prototype.assertLocation = function(expectedLocation) {
+    var docLocation = this.page().location.toString();
+    assertTrue(docLocation.length == docLocation.indexOf(expectedLocation) + expectedLocation.length);
+};
+
 
 /*
  * Verify the title of the current page.
