@@ -28,7 +28,9 @@
     </path>
 
     <path id="classpath">
-        <fileset dir="lib"/>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
         <pathelement location="${classes.dir}"/>
         <pathelement location="${test.classes.dir}"/>
         <pathelement location="${integration.test.classes.dir}"/>
