@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test storeValue</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test storeValue<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_open.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>storeValue</td>
+      <td>openPageText</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_store_value.html</td>
+      <td/>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${openPageText}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>This is a test of the open command.</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

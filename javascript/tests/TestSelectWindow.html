@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test SelectWindow</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test selectWindow<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_select_window.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>popupPage</td>
+      <td>nowait</td>
+    </tr>
+    <tr>
+      <td>pause</td>
+      <td>500</td>
+      <td/>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>myPopupWindow</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>/tests/html/test_select_window_popup.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>closePage</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>closePage</td>
+      <td>nowait</td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>null</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>/tests/html/test_select_window.html</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
