@@ -16,6 +16,7 @@
 
 SELENIUM_PROCESS_WAIT = "wait";
 
+starting_up  = true;
 TEST_FINISHED = true;
 TEST_CONTINUE = false;
 
@@ -38,7 +39,14 @@ function TestLoop(commandFactory) {
 
     this.kickoffNextCommandExecution = function() {
 
-        var command = this.nextCommand();
+        var command;
+        if (starting_up == true) {
+            command = this.firstCommand();
+            starting_up = false;
+        } else {
+            command = this.nextCommand();
+        }
+
         if (!command) return TEST_FINISHED;
 
         // Make the current row blue
@@ -105,6 +113,8 @@ function TestLoop(commandFactory) {
 TestLoop.prototype.getCommandInterval = function() {
    return 0;
 }
+
+TestLoop.prototype.firstCommand = noop;
 
 TestLoop.prototype.nextCommand = noop;
 

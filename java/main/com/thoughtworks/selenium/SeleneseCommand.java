@@ -19,11 +19,9 @@ package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class SeleneseCommand {
-
-    public static final String seleneseIntro = "Selenese: ";
 
     public SeleneseCommand(String command, String field, String value) {
         this.command = command;
@@ -36,15 +34,16 @@ public class SeleneseCommand {
     public final String value;
 
     public String toString() {
-        return seleneseIntro + command + "|" + field + "|" + value;
+        return "|" + command + "|" + field + "|" + value +"|";
     }
 
     public static SeleneseCommand parse(String inputLine) {
         int ix = inputLine.indexOf('|');
         int ix2 = inputLine.indexOf('|',ix+1);
-        String command = inputLine.substring(seleneseIntro.length(),ix-1);
+        int ix3 = inputLine.indexOf('|',ix2+1);
+        String command = inputLine.substring(1,ix);
         String field = inputLine.substring(ix + 1 ,ix2);
-        String value = inputLine.substring(ix2 + 1, inputLine.length());
+        String value = inputLine.substring(ix2 + 1, ix3);
         return new SeleneseCommand(command, field, value);
     }
 }

@@ -29,7 +29,7 @@ import java.util.Vector;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class JettyCommandProcessorTestCase extends TestCase {
 
@@ -71,7 +71,7 @@ public class JettyCommandProcessorTestCase extends TestCase {
         inputLine = in.readLine();
         in.close();
 
-        assertEquals("Selenese: Apple|Orange|Pear", inputLine.trim());
+        assertEquals("|Apple|Orange|Pear|", inputLine.trim());
 
         mockBrowser = new URL("http://localhost:8080/selenium-driver/driver?commandResult=ResultForFirstCall");
         conn = mockBrowser.openConnection();
@@ -79,7 +79,7 @@ public class JettyCommandProcessorTestCase extends TestCase {
         inputLine = in.readLine();
         in.close();
 
-        assertEquals("Selenese: Apple2|Orange2|Pear2", inputLine.trim());
+        assertEquals("|Apple2|Orange2|Pear2|", inputLine.trim());
 
         mockBrowser = new URL("http://localhost:8080/selenium-driver/driver?commandResult=ResultForSecondCall");
         conn = mockBrowser.openConnection();
@@ -87,7 +87,7 @@ public class JettyCommandProcessorTestCase extends TestCase {
         inputLine = in.readLine();
         in.close();
 
-        assertEquals("Selenese: Apple3|Orange3|Pear3", inputLine.trim());
+        assertEquals("|Apple3|Orange3|Pear3|", inputLine.trim());
 
         mockBrowser = new URL("http://localhost:8080/selenium-driver/driver?commandResult=ResultForThirdCall");
         conn = mockBrowser.openConnection();
@@ -96,7 +96,7 @@ public class JettyCommandProcessorTestCase extends TestCase {
         inputLine = in.readLine();
         in.close();
 
-        assertEquals("Selenese: End||", inputLine.trim());
+        assertEquals("|End|||", inputLine.trim());
 
         assertNotNull(result.get(0));
         //TODO these are offset by one...

@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DirectoryStaticContentHandler implements StaticContentHandler {
     private File directory;
@@ -42,7 +42,7 @@ public class DirectoryStaticContentHandler implements StaticContentHandler {
         context.setResourceBase(directory.getAbsolutePath());
         context.addHandler(new ResourceHandler() {
             public void handle(String s, String s1, HttpRequest req, HttpResponse res) throws HttpException, IOException {
-                res.setField("Expires", "0"); // never cached.
+                res.setField("Expires", "-1"); // never cached.
                 super.handle(s,s1,req,res);
             }
         });

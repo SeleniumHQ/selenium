@@ -49,6 +49,7 @@ function runSingleTest() {
     testLoop = new TestLoop(commandFactory);
     testLoop.commandInterval = 100;
 
+    testLoop.firstCommand = startup;
     testLoop.nextCommand = nextCommand;
     testLoop.commandStarted = commandStarted;
     testLoop.commandComplete = commandComplete;
@@ -59,6 +60,7 @@ function runSingleTest() {
  }
 
  function startup() {
+
    var xmlHttp = XmlHttp.create();
 
     try {
@@ -71,6 +73,7 @@ function runSingleTest() {
  }
 
  function nextCommand() {
+
     var xmlHttp = XmlHttp.create();
 
     try {

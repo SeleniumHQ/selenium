@@ -435,6 +435,7 @@ function initialiseTestLoop() {
     testLoop = new TestLoop(commandFactory);
 
     testLoop.getCommandInterval = function() { return runInterval };
+    testLoop.firstCommand = nextCommand;
     testLoop.nextCommand = nextCommand;
     testLoop.commandStarted = commandStarted;
     testLoop.commandComplete = commandComplete;
