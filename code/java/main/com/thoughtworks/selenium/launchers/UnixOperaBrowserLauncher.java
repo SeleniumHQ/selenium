@@ -17,19 +17,19 @@
 
 package com.thoughtworks.selenium.launchers;
 
-
 /**
- * @author Jez Humble
+ * @author Chris Read
  * @version $Revision$
  */
-public class UnixMozillaBrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
+public class UnixOperaBrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
-    public UnixMozillaBrowserLauncher() {
-        super("mozilla");
+    public UnixOperaBrowserLauncher() {
+        super("opera");
     }
 
+
     public static void main(String[] args) throws InterruptedException {
-        UnixMozillaBrowserLauncher launcher = new UnixMozillaBrowserLauncher();
+        UnixOperaBrowserLauncher launcher = new UnixOperaBrowserLauncher();
 
         launcher.launch("www.google.com");
         System.out.print("Browser called, sleeping...\n");

@@ -24,7 +24,7 @@ import com.thoughtworks.selenium.BrowserLauncher;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class WindowsIEBrowserLauncher implements BrowserLauncher {
 
