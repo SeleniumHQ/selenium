@@ -437,7 +437,7 @@ function printMetrics() {
     setText(document.getElementById("commandPasses"), numCommandPasses);
     setText(document.getElementById("commandFailures"), numCommandFailures);
     setText(document.getElementById("commandErrors"), numCommandErrors);
-    setText(document.getElementById("testRuns"), numTestPasses);
+    setText(document.getElementById("testRuns"), numTestPasses + numTestFailures);
     setText(document.getElementById("testFailures"), numTestFailures);
 
     currentTime = new Date().getTime();
