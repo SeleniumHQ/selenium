@@ -27,12 +27,13 @@ import java.util.regex.Pattern;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class FunnelResponseHandler {
     private static final int BLOCK_SIZE = 2048;
     private static final Pattern STATUS_CODE_PATTERN = Pattern.compile("HTTP/1\\..\\s([0-9]*).*", Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
     private static final Pattern CONTENT_LENGTH_PATTERN = Pattern.compile("Content-Length:\\s([0-9]*).*", Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
+    private static final Pattern LOCATION_PATTERN = Pattern.compile("(Location:\\s[a-z]*://)(.*)", Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
     private static final Pattern COOKIE_PATTERN = Pattern.compile("domain=([^;])");
 
     private final Relay relay;
@@ -75,13 +76,18 @@ public class FunnelResponseHandler {
 
             Matcher cookieMatcher = COOKIE_PATTERN.matcher(headerData);
             Matcher contentLengthMatcher = CONTENT_LENGTH_PATTERN.matcher(headerData);
+            Matcher locationMatcher = LOCATION_PATTERN.matcher(headerData);
 
             // Replace cookies' domain with our own
             if (cookieMatcher.find()) {
                 StringBuffer buffer = new StringBuffer();
                 cookieMatcher.appendReplacement(buffer, "domain=127.0.0.1");
                 headerData = buffer.toString().trim() + "\r\n";
-            } else if(contentLengthMatcher.matches()) {
+            } else if (locationMatcher.matches()) {
+                StringBuffer buffer = new StringBuffer();
+                locationMatcher.appendReplacement(buffer, "$1127.0.0.1/$2");
+                headerData = buffer.toString();
+            } else if (contentLengthMatcher.matches()) {
                 contentLength = Integer.parseInt(contentLengthMatcher.group(1));
             } else if("Connection: close".equalsIgnoreCase(headerData.trim())) {
                 closeConnection = true;

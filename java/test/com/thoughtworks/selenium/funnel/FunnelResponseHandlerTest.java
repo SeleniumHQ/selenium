@@ -25,7 +25,7 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class FunnelResponseHandlerTest extends MockObjectTestCase {
     private OutputStream NULL_OUT = new ByteArrayOutputStream();
@@ -66,7 +66,24 @@ public class FunnelResponseHandlerTest extends MockObjectTestCase {
                 "\r\n" +
                 "hello world");
         handler.handleResponse(serverResponse, expected, null);
+        expected.verify();
         assertFalse("Should not be closed by FunnelesponseHandler, but by Relay", serverResponse.isClosed());
         assertFalse("Should not be closed by FunnelesponseHandler, but by Relay", expected.isClosed());
+    }
+
+    public void testShouldForwardResponseWithRewrittenLocationHeader() throws IOException {
+        Mock relay = mock(Relay.class);
+        FunnelResponseHandler handler = new FunnelResponseHandler((Relay) relay.proxy(), NULL_OUT, NULL_OUT);
+        TestInputStream serverResponse = new TestInputStream("" +
+                "HTTP/1.1 302 Found\r\n" +
+                "Location: http://www.thoughtworks.com/us\r\n" +
+                "\r\n");
+
+        MockOutputStream expected = new MockOutputStream("" +
+                "HTTP/1.1 302 Found\r\n" +
+                "Location: http://127.0.0.1/www.thoughtworks.com/us\r\n" +
+                "\r\n");
+        handler.handleResponse(serverResponse, expected, null);
+        expected.verify();
     }
 }

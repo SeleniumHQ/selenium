@@ -28,7 +28,7 @@ import java.io.OutputStream;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class FunnelRequestHandlerTest extends MockObjectTestCase {
     private OutputStream NULL_OUT = new ByteArrayOutputStream();
@@ -77,8 +77,7 @@ public class FunnelRequestHandlerTest extends MockObjectTestCase {
                 "\r\n");
         Mock client = mock(Client.class);
 
-        client.expects(once()).method("request").with(
-                same(clientRequest),
+        client.expects(once()).method("request").with(same(clientRequest),
                 same(expectedClientResponse),
                 eq("www.google.com"),
                 isA(OutputStream.class)).isVoid();
