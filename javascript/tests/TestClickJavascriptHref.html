@@ -45,18 +45,6 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Click an image enclosed in a link -->
-    <tr>
-      <td>click</td>
-      <td>enclosedImage</td>
-      <td>nowait</td>
-    </tr>
-    <tr>
-      <td>verifyAlert</td>
-      <td>enclosedImage clicked</td>
-      <td>&nbsp;</td>
-    </tr>
-
     <!-- Click link with multiple javascript calls -->
     <tr>
       <td>click</td>
@@ -86,23 +74,41 @@ Copyright 2004 ThoughtWorks, Inc
       <td>nowait</td>
     </tr>
     <tr>
+      <td>verifyAlert</td>
+      <td>onclick</td>
+      <td/>
+    </tr>
+    <tr>
       <td>verifyTitle</td>
       <td>Click Page 1</td>
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Click a link where onclick returns false
+    <!-- Click a link where onclick returns false -->
     <tr>
       <td>click</td>
       <td>linkWithOnclickReturnsFalse</td>
       <td>nowait</td>
-    </tr> -->
-    <!-- Verify title, this will fail if an alert was raised.
+    </tr>
     <tr>
       <td>verifyTitle</td>
       <td>Click Page 1</td>
       <td>&nbsp;</td>
-    </tr> -->
+    </tr>
+    <!-- No alert should be raised. -->
+
+    <!-- TODO Click an image enclosed in a link -->
+    <tr>
+      <td>click</td>
+      <td>enclosedImage</td>
+      <td>nowait</td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>enclosedImage clicked</td>
+      <td>&nbsp;</td>
+    </tr>
+
   </tbody>
 </table>
 </body>

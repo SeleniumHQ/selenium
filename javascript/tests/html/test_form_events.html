@@ -49,6 +49,7 @@ function setupEventRecorders() {
     attachEventRecorders('theSelect');
     attachEventRecorders('theButton');
     attachEventRecorders('theSubmit');
+    attachEventRecorders('theLink');
 }
 
 // This functionality is only provided for manual clickety-click assessing of events.
@@ -75,6 +76,7 @@ function setupFormEventRecorders(enable) {
 <input name="theButton" id="theButton" type="button" value="A Button"/>
 <input name="theSubmit" id="theSubmit" type="submit" value="The Submit"/>
 </form>
+<a id="theLink" href="javascript:alert('link clicked');">The Link</a>
 
 <hr/>
 
