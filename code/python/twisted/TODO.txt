@@ -1,20 +1,29 @@
-1) Config or property file for default host port number
+* Finish Driven Selenium compatibility with Java and Ruby drivers.
 
-2) More sample scripts for using driven selenium
+* Config or property file for default host port number
 
-3) Use ActiveState's PerlApp to create exe version of CGIProxy
-	This removes the dependency of needing Perl installed.
+* More sample scripts for using driven XML-RPC selenium in python, ruby, perl
 
-4) Use Py2Exe to create exe version of selenium_server.py
-	This removes the dependency of needing Python installed
+* Use PerlApp or PAR to create exe version of CGIProxy
+  This removes the dependency of needing Perl installed.
 
-5) Use NSIS to create Windows installer of the above two exes.
-	Makes uses Selenium almost a "one-click install" application.
+DONE * Use Py2Exe to create exe version of selenium_server.py
+       This removes the dependency of needing Python installed
 
-6) Creating Linux, Mac "exes" and installers.
+DONE * Use NSIS to create Windows installer of the above two exes.
+       Makes Selenium almost a "one-click install" application.
 
-7) Adding client proxy server (aka "The Squid/Squirm Proxy")
+* Creating Linux, Mac "exes" and installers.
+
+* Adding client proxy server (aka "The Squid/Squirm Proxy")
 	Mentioned on the developer list. This is an alternative approach
 	to getting around the same-origin policy for testing remote
 	server.
+
+* Installable as NT servive
+    - provide links for:
+          - service config control panel
+          - register service
+          - remove service
+          - start/stop service 
 
