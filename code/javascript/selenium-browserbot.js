@@ -713,5 +713,10 @@ function isDefined(value) {
     return typeof(value) != undefined;
 }
 
+PageBot.prototype.goBack = function() {
+    this.currentWindow.history.back();
+}
 
-
+PageBot.prototype.goForward = function() {
+    this.currentWindow.history.forward();
+}

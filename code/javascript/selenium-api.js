@@ -87,6 +87,13 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
 };
 
 /*
+ * Simulate the browser back button
+ */
+Selenium.prototype.doGoBack = function() {
+    this.page().goBack();
+};
+
+/*
  *  Asserts that the supplied message was received as an alert
  */
  Selenium.prototype.assertAlert = function(expectedAlert) {
