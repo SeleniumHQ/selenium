@@ -60,7 +60,15 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Click a regular link with an absolute url -->
+    <!-- JRH 2004-02-23 removing testing of absoulte url
+     because the test isn't really testing an absolute url,
+     and it's breaking the test when Selenium is mounted anywhere else
+     besides root.
+     e.g. the test breaks when Selenium is mounted at:
+     http://localhost:8080/selenium/
+     but passes when Selenium is mounted at:
+     http://localhost:8080/
+    -- Click a regular link with an absolute url --
     <tr>
       <td>click</td>
       <td>absoluteLink</td>
@@ -76,6 +84,9 @@ Copyright 2004 ThoughtWorks, Inc
       <td>previousPage</td>
       <td>&nbsp;</td>
     </tr>
+
+    JRH end change
+    -->
 
     <!-- Click a link with an enclosed image -->
     <tr>
