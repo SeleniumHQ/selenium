@@ -6,6 +6,8 @@
 def translate(command, target, value=""):
     """ Translate an api call into selenese command. """
     result = "|%s|%s|%s|" % (command, target, value)
+    if command == 'testComplete':
+        result == "|testComplete|"
     return result
 
 from Dispatcher import Dispatcher

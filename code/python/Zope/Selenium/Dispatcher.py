@@ -173,4 +173,8 @@ class Dispatcher:
             command_string = REQUEST.form.get('command_string')
 
         self.addCommand(command_string)
-        return self.getResult()
+        # if test is complete, don't try retrieving a response from the browser.
+        if command_string.find('testComplete') >= 0:
+            return 'test complete'
+        else:
+            return self.getResult()
