@@ -1,0 +1,745 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NAnt.VisualCppTasks</name>
+    </assembly>
+    <members>
+        <member name="T:NAnt.VisualCpp.Tasks.McTask">
+            <summary>
+            Compiles messages using mc.exe, Microsoft's Win32 message compiler.
+            </summary>
+            <example>
+              <para>
+              Compile <c>text.mc</c> using the default options.
+              </para>
+              <code>
+                <![CDATA[
+            <mc mcfile="text.mc"/>
+                ]]>
+              </code>
+              <para>
+              Compile <c>text.mc</c>, passing a path to store the header, the rc 
+              file and some additonal options.
+              </para>
+              <code>
+                <![CDATA[
+            <mc mcfile="text.mc" headerpath=".\build" rcpath=".\build" options="-v -c -u"/>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.McTask.ExecuteTask">
+            <summary>
+            Compiles the sources.
+            </summary>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.McTask.NeedsCompiling(System.String)">
+            <summary>
+            Determine if source files need re-building.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.McTask.Options">
+            <summary>
+            Options to pass to the compiler.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.McTask.HeaderPath">
+            <summary>
+            Path to store header file. The default is the project base directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.McTask.RCPath">
+            <summary>
+            Path to store RC file. The default is the project base directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.McTask.McFile">
+            <summary>
+            Input filename.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.McTask.ProgramFileName">
+            <summary>
+            Gets the filename of the external program to start.
+            </summary>
+            <value>
+            The filename of the external program.
+            </value>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.McTask.ProgramArguments">
+            <summary>
+            Gets the command-line arguments for the external program.
+            </summary>
+            <value>
+            The command-line arguments for the external program.
+            </value>
+        </member>
+        <member name="T:NAnt.VisualCpp.Tasks.MidlTask">
+            <summary>
+            This tasks allows you to run MIDL.exe.
+            </summary>
+            <remarks>
+            <para>
+            This task only supports a small subset of the MIDL.EXE command line 
+            switches, but you can use the options element to specify any other
+            unsupported commands you want to specify.
+            </para>
+            </remarks>
+            <example>
+              <code>
+                <![CDATA[
+            <midl
+                env="win32"
+                Oi="cf"
+                tlb="${outputdir}\TempAtl.tlb"
+                header="${outputdir}\TempAtl.h"
+                iid="${outputdir}\TempAtl_i.c"
+                proxy="${outputdir}\TempAtl_p.c"
+                filename="TempAtl.idl"
+            >
+                <defines>
+                    <define name="_DEBUG"/>
+                    <define name="WIN32" value="1"/>
+                </defines>
+                <options>
+                    <option name="/mktyplib203"/>
+                    <option name="/error" value="allocation"/>
+                </options>
+            </midl>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.MidlTask.ExecuteTask">
+            <summary>
+            This is where the work is done.
+            </summary>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.MidlTask.NeedsCompiling">
+            <summary>
+            Check output files to see if we need rebuilding.
+            </summary>
+            <see langword="true" /> if a rebuild is needed; otherwise, 
+            <see langword="false" />.
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.MidlTask.NeedsCompiling(System.IO.FileInfo)">
+            <summary>
+            Check output files to see if we need rebuilding.
+            </summary>
+            <returns>
+            <see langword="true" /> if a rebuild is needed; otherwise, 
+            <see langword="false" />.
+            </returns>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.MidlTask.WriteResponseFile(System.IO.TextWriter)">
+            <summary>
+            Writes the response file for <c>midl.exe</c>.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Acf">
+            <summary>
+            The /acf switch allows the user to supply an
+            explicit ACF file name. The switch also
+            allows the use of different interface names in
+            the IDL and ACF files.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Align">
+            <summary>
+            The /align switch is functionally the same as the
+            MIDL /Zp option and is recognized by the MIDL compiler
+            solely for backward compatibility with MkTypLib.
+            </summary>
+            <remarks>The alignment value can be 1, 2, 4, or 8.</remarks>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.AppConfig">
+            <summary>
+            The /app_config switch selects application-configuration
+            mode, which allows you to use some ACF keywords in the
+            IDL file. With this MIDL compiler switch, you can omit
+            the ACF and specify an interface in a single IDL file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Char">
+            <summary>
+            The /char switch helps to ensure that the MIDL compiler
+            and C compiler operate together correctly for all char
+            and small types.
+            </summary>
+            <remarks>Can be one of signed | unsigned | ascii7 </remarks>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Client">
+            <summary>
+            The /client switch directs the MIDL compiler to generate
+            client-side C source files for an RPC interface
+            </summary>
+            <remarks>can be one of stub | none</remarks>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.CStub">
+            <summary>
+            The /cstub switch specifies the name of the client
+            stub file for an RPC interface.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.DllData">
+            <summary>
+            Specifies the file name for the generated dlldata file for a proxy
+            DLL. The default file name Dlldata.c is used if 
+            <see cref="P:NAnt.VisualCpp.Tasks.MidlTask.DllData"/> is not specified.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Env">
+            <summary>
+            The /env switch selects the
+            environment in which the application runs.
+            </summary>
+            <remarks>It can take the values win32 and win64</remarks>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Oi">
+            <summary>
+            The /Oi switch directs the MIDL compiler to
+            use a fully-interpreted marshaling method.
+            The /Oic and /Oicf switches provide additional
+            performance enhancements.
+            </summary>
+            <remarks>
+            If you specify the Oi attribute, you must set it to
+            one of the values:
+            - Oi=""
+            - Oi="c"
+            - Oi="f"
+            - Oi="cf"
+            </remarks>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Tlb">
+            <summary>
+            Specifies a file name for the type library generated by the MIDL 
+            compiler.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Header">
+            <summary>
+            Specifies the name of the header file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Iid">
+            <summary>
+            Specifies the name of the interface identifier file for a COM 
+            interface, overriding the default name obtained by adding _i.c 
+            to the IDL file name.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Proxy">
+            <summary>
+            Specifies the name of the interface proxy file for a COM interface.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Filename">
+            <summary>
+            Name of .IDL file to process.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Options">
+            <summary>
+            Additional options to pass to midl.exe.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Defines">
+            <summary>
+            Macro definitions to pass to mdil.exe.
+            Each entry will generate a /D
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.Undefines">
+            <summary>
+            Macro undefines (/U) to pass to mdil.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.IncludeDirs">
+            <summary>
+            The list of directories in which to search for include files.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.ProgramFileName">
+            <summary>
+            Filename of program to execute
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.MidlTask.ProgramArguments">
+            <summary>
+            Gets the command-line arguments for the external program.
+            </summary>
+            <value>
+            The command-line arguments for the external program.
+            </value>
+        </member>
+        <member name="T:NAnt.VisualCpp.Tasks.RcTask">
+            <summary>
+            Compiles resources using <c>rc.exe</c>, Microsoft's Win32 resource 
+            compiler.
+            </summary>
+            <example>
+              <para>
+              Compile <c>text.rc</c> to <c>text.res</c> using the default options.
+              </para>
+              <code>
+                <![CDATA[
+            <rc rcfile="text.rc" output="text.res" />
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Compile <c>text.rc</c>, passing an additional option.
+              </para>
+              <code>
+                <![CDATA[
+            <rc rcfile="text.rc" options="/r"/>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.RcTask.ExecuteTask">
+            <summary>
+            Compile the resource file
+            </summary>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.RcTask.NeedsCompiling">
+            <summary>
+            Determines if the resource need compiling.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.RcTask.Options">
+            <summary>
+            Options to pass to the compiler.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.RcTask.OutputFile">
+            <summary>
+            Output file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.RcTask.RcFile">
+            <summary>
+            The resource file to compile.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.RcTask.LangId">
+            <summary>
+            Default language ID.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.RcTask.IncludeDirs">
+            <summary>
+            The list of directories in which to search for include files.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.RcTask.Defines">
+            <summary>
+            Macro definitions to pass to rc.exe.
+            Each entry will generate a /d
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.RcTask.ProgramFileName">
+            <summary>
+            Filename of program to execute
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.RcTask.ProgramArguments">
+            <summary>
+            Arguments of program to execute
+            </summary>
+        </member>
+        <member name="T:NAnt.VisualCpp.Tasks.LinkTask">
+            <summary>
+            Links files using <c>link.exe</c>, Microsoft's Incremental Linker.
+            </summary>
+            <remarks>
+              <para>This task is intended for version 7.00.9466 of <c>link.exe</c>.</para>
+            </remarks>
+            <example>
+              <para>
+              Combine all object files in the current directory into <c>helloworld.exe</c>.
+              </para>
+              <code>
+                <![CDATA[
+            <link output="helloworld.exe">
+                <sources>
+                    <include name="*.obj" />
+                </sources>
+            </link>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.LinkTask.NeedsLinking">
+            <summary>
+            Determines if the output needs linking.
+            </summary>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.LinkTask.ExecuteTask">
+            <summary>
+            Links the sources.
+            </summary>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.LinkTask.QuoteArgumentValue(System.String)">
+            <summary>
+            Quotes an argument value and duplicates trailing backslahes.
+            </summary>
+            <param name="value">The argument value to quote.</param>
+            <returns>
+            The quotes argument value.
+            </returns>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.Options">
+            <summary>
+            Options to pass to the compiler.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.Debug">
+            <summary>
+            Create debugging information for the .exe file or DLL. The default is
+            <see langword="false" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.OutputFile">
+            <summary>
+            The output file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.ProgramDatabaseFile">
+            <summary>
+            A user-specified name for the program database (PDB) that the linker 
+            creates. The default file name for the PDB has the base name of the 
+            <see cref="P:NAnt.VisualCpp.Tasks.LinkTask.OutputFile"/> and the extension .pdb.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.Sources">
+            <summary>
+            The list of files to combine into the output file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.LibDirs">
+            <summary>
+            The list of additional library directories to search.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.Modules">
+            <summary>
+            Link the specified modules into this assembly.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.EmbeddedResources">
+            <summary>
+            Embed the specified resources into this assembly.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.ProgramFileName">
+            <summary>
+            Gets the filename of the external program to start.
+            </summary>
+            <value>The filename of the external program.</value>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LinkTask.ProgramArguments">
+            <summary>
+            Gets the command-line arguments for the external program.
+            </summary>
+            <value>
+            The command-line arguments for the external program.
+            </value>
+        </member>
+        <member name="T:NAnt.VisualCpp.Tasks.ClTask">
+            <summary>
+            Compiles C/C++ programs using <c>cl.exe</c>, Microsoft's C/C++ compiler.
+            </summary>
+            <remarks>
+              <para>This task is intended for version 13.00.9466 of <c>cl.exe</c>.</para>
+            </remarks>
+            <example>
+              <para>Compiles <c>helloworld.cpp</c> for the Common Language Runtime.</para>
+              <code>
+                <![CDATA[
+            <cl outputdir="build" options="/clr">
+                <sources>
+                    <include name="helloworld.cpp" />
+                </sources>
+            </cl>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.ClTask.IsPchfileUpToDate">
+            <summary>
+            Determines whether the precompiled header file is up-to-date.
+            </summary>
+            <returns>
+            <see langword="true" /> if no precompiled header file was specified;
+            otherwise, <see langword="false" />.
+            </returns>
+            <remarks>
+            In order to determine accurately whether the precompile header file
+            is up-to-date, we'd need scan all the header files that are pulled 
+            in. As this is not implemented right now, its safer to always
+            recompile.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.ClTask.NeedsCompiling">
+            <summary>
+            Determines if the sources need compiling.
+            </summary>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.ClTask.ExecuteTask">
+            <summary>
+            Compiles the sources.
+            </summary>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.ClTask.QuoteArgumentValue(System.String)">
+            <summary>
+            Quotes an argument value and duplicates trailing backslahes.
+            </summary>
+            <param name="value">The argument value to quote.</param>
+            <returns>
+            The quotes argument value.
+            </returns>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.OutputDir">
+            <summary>
+            Directory where all output files are placed.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.PchFile">
+            <summary>
+            Specifies the path and/or name of the generated precompiled header 
+            file - given either relative to <see cref="P:NAnt.VisualCpp.Tasks.ClTask.OutputDir"/> or as an 
+            absolute path. 
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.PchThroughFile">
+            <summary>
+            The path of the boundary file when generating/using the 
+            specified <see cref="P:NAnt.VisualCpp.Tasks.ClTask.PchFile"/>.  If a precompiled header file is
+            not specified then this attribute is ignored.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.PchMode">
+            <summary>
+            The mode in which the specified <see cref="P:NAnt.VisualCpp.Tasks.ClTask.PchFile"/> (if any) is
+            used. The default is <see cref="F:NAnt.VisualCpp.Tasks.ClTask.PrecompiledHeaderMode.Use"/>.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.ManagedExtensions">
+            <summary>
+            Specifies whether Managed Extensions for C++ should be enabled.
+            The default is <see langword="false" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.CharacterSet">
+            <summary>
+            Tells the compiler to use the specified character set.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.Options">
+            <summary>
+            Options to pass to the compiler.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.Sources">
+            <summary>
+            The list of files to compile.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.IncludeDirs">
+            <summary>
+            The list of directories in which to search for include files.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.MetaDataIncludeDirs">
+            <summary>
+            Directories that the compiler will search to resolve file references 
+            passed to the <c>#using</c> directive.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.ForcedUsingFiles">
+            <summary>
+            Specifies metadata files to reference in this compilation as an
+            alternative to passing a file name to <c>#using</c> in source code.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.Defines">
+            <summary>
+            Macro definitions to pass to cl.exe.
+            Each entry will generate a /D
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.Undefines">
+            <summary>
+            Macro undefines (/U) to pass to cl.exe.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.ObjectFile">
+            <summary>
+            A name to override the default object file name; can be either a file
+            or directory name. The default is the output directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.ProgramDatabaseFile">
+            <summary>
+            A name for the compiler-generated PDB file; can be either a file or 
+            directory name. The default is the output directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.ProgramFileName">
+            <summary>
+            Gets the filename of the external program to start.
+            </summary>
+            <value>The filename of the external program.</value>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.ClTask.ProgramArguments">
+            <summary>
+            Gets the command-line arguments for the external program.
+            </summary>
+            <value>
+            The command-line arguments for the external program.
+            </value>
+        </member>
+        <member name="T:NAnt.VisualCpp.Tasks.ClTask.PrecompiledHeaderMode">
+            <summary>
+            Defines the supported modes for the use of precompiled header files.
+            </summary>
+        </member>
+        <member name="F:NAnt.VisualCpp.Tasks.ClTask.PrecompiledHeaderMode.Create">
+            <summary>
+            Create a precompiled header file.
+            </summary>
+            <remarks>
+            For further information on the use of this option
+            see the Microsoft documentation on the C++ compiler flag /Yc.
+            </remarks>
+        </member>
+        <member name="F:NAnt.VisualCpp.Tasks.ClTask.PrecompiledHeaderMode.AutoCreate">
+            <summary>
+            Automatically create a precompiled header file if necessary.
+            </summary>
+            <remarks>
+            For further information on the use of this option
+            see the Microsoft documentation on the C++ compiler flag /YX.
+            </remarks>
+        </member>
+        <member name="F:NAnt.VisualCpp.Tasks.ClTask.PrecompiledHeaderMode.Use">
+            <summary>
+            Use a (previously generated) precompiled header file.
+            </summary>
+            <remarks>
+            For further information on the use of this option
+            see the Microsoft documentation on the C++ compiler flag /Yu.
+            </remarks>
+        </member>
+        <member name="T:NAnt.VisualCpp.Tasks.LibTask">
+            <summary>
+            Run <c>lib.exe</c>, Microsoft's Library Manager.
+            </summary>
+            <example>
+              <para>Create a library.</para>
+              <code>
+                <![CDATA[
+            <lib output="library.lib">
+                <sources>
+                    <include name="library.obj" />
+                </sources>
+            </lib>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.VisualCpp.Tasks.LibTask.ExecuteTask">
+            <summary>
+            Creates the library.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LibTask.Options">
+            <summary>
+            Options to pass to the compiler.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LibTask.OutputFile">
+            <summary>
+            The output file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LibTask.Sources">
+            <summary>
+            The list of files to combine into the output file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LibTask.LibDirs">
+            <summary>
+            The list of additional library directories to search.
+            </summary>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LibTask.ProgramFileName">
+            <summary>
+            Gets the filename of the external program to start.
+            </summary>
+            <value>The filename of the external program.</value>
+        </member>
+        <member name="P:NAnt.VisualCpp.Tasks.LibTask.ProgramArguments">
+            <summary>
+            Gets the command-line arguments for the external program.
+            </summary>
+            <value>
+            The command-line arguments for the external program.
+            </value>
+        </member>
+        <member name="T:NAnt.VisualCpp.Types.CharacterSet">
+            <summary>
+            Defines the character sets that can be used by the C++ compiler.
+            </summary>
+        </member>
+        <member name="F:NAnt.VisualCpp.Types.CharacterSet.NotSet">
+            <summary>
+            Have the compiler determine the character set.
+            </summary>
+        </member>
+        <member name="F:NAnt.VisualCpp.Types.CharacterSet.Unicode">
+            <summary>
+            Unicode character set.
+            </summary>
+        </member>
+        <member name="F:NAnt.VisualCpp.Types.CharacterSet.MultiByte">
+            <summary>
+            Multi-byte character set.
+            </summary>
+        </member>
+        <member name="T:NAnt.VisualCpp.Util.ArgumentUtils">
+            <summary>
+            Groups a set of useful <see cref="T:System.String"/> manipulation methods for
+            command-line arguments.
+            </summary>
+        </member>
+        <member name="M:NAnt.VisualCpp.Util.ArgumentUtils.DuplicateTrailingBackSlash(System.String)">
+            <summary>
+            Duplicates the trailing backslash.
+            </summary>
+            <param name="value">The input string to check and duplicate the trailing backslash if necessary.</param>
+            <returns>The result string after being processed.</returns>
+            <remarks>
+            Also duplicates trailing backslash in quoted value.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VisualCpp.Util.ArgumentUtils.FixTrailingBackSlash(System.String)">
+            <summary>
+            Fixes the trailing backslash. This function replaces the trailing double backslashes with
+            only one backslash. It also, removes the single trailing backslash.
+            </summary>
+            <param name="value">The input string.</param>
+            <returns>The result string after being processed.</returns>
+        </member>
+        <member name="M:NAnt.VisualCpp.Util.ArgumentUtils.CleanTrailingBackSlash(System.String)">
+            <summary>
+            Removes all the trailing backslashes from the input.
+            </summary>
+            <param name="value">The input string.</param>
+            <returns>The result string without trailing backslashes.</returns>
+        </member>
+    </members>
+</doc>
