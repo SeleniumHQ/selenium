@@ -33,11 +33,20 @@ Copyright 2004 ThoughtWorks, Inc
       <td>./tests/html/test_verifications.html</td>
       <td>&nbsp;</td>
     </tr>
-
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Expected location to end with '/tests/html/not_test_verifications.html' but was '/tests/html/test_verifications.html'</td>
+      <td/>
+    </tr>
     <tr>
       <td>verifyLocation</td>
       <td>/tests/html/not_test_verifications.html</td>
       <td></td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Expected 'not the text value' but was 'the text value'</td>
+      <td/>
     </tr>
     <tr>
       <td>verifyValue</td>
@@ -45,9 +54,19 @@ Copyright 2004 ThoughtWorks, Inc
       <td>not the text value</td>
     </tr>
     <tr>
+      <td>assertFailureOnNext</td>
+      <td>Expected 'not the hidden value' but was 'the hidden value'</td>
+      <td/>
+    </tr>
+    <tr>
       <td>verifyValue</td>
       <td>theHidden</td>
       <td>not the hidden value</td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Expected 'this is not the span' but was 'this is the span'</td>
+      <td/>
     </tr>
     <tr>
       <td>verifyText</td>
@@ -55,9 +74,19 @@ Copyright 2004 ThoughtWorks, Inc
       <td>this is not the span</td>
     </tr>
     <tr>
+      <td>assertFailureOnNext</td>
+      <td>'this is not the span' not found in page text.</td>
+      <td/>
+    </tr>
+    <tr>
       <td>verifyTextPresent</td>
       <td>this is not the span</td>
       <td></td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Element notTheSpan not found.</td>
+      <td/>
     </tr>
     <tr>
       <td>verifyElementPresent</td>
@@ -65,9 +94,19 @@ Copyright 2004 ThoughtWorks, Inc
       <td></td>
     </tr>
     <tr>
+      <td>assertFailureOnNext</td>
+      <td>Element theSpan found.</td>
+      <td/>
+    </tr>
+    <tr>
       <td>verifyElementNotPresent</td>
       <td>theSpan</td>
       <td></td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Expected 'a' but was 'c'</td>
+      <td/>
     </tr>
     <tr>
       <td>verifyTable</td>
@@ -75,14 +114,29 @@ Copyright 2004 ThoughtWorks, Inc
       <td>a</td>
     </tr>
     <tr>
+      <td>assertFailureOnNext</td>
+      <td>Expected 'third option' but was 'second option'</td>
+      <td/>
+    </tr>
+    <tr>
       <td>verifySelected</td>
       <td>theSelect</td>
       <td>third option</td>
     </tr>
     <tr>
+      <td>assertFailureOnNext</td>
+      <td>Wrong number of options. Expected '2' but was '3'</td>
+      <td/>
+    </tr>
+    <tr>
       <td>verifySelectOptions</td>
       <td>theSelect</td>
       <td>first\\,option,second option</td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Expected 'bar' but was 'foo'</td>
+      <td/>
     </tr>
     <tr>
       <td>verifyAttribute</td>
