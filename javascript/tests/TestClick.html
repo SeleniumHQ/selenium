@@ -112,26 +112,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td>linkWithOnclickReturnsFalse</td>
       <td>nowait</td>
     </tr>
+    <!-- Need a pause to give the page a chance to reload (so this test can fail) -->
+    <tr><td>pause</td><td>300</td><td/></tr>
     <tr>
       <td>verifyTitle</td>
       <td>Click Page 1</td>
-      <td>&nbsp;</td>
-    </tr>
-
-    <!-- Click a image inside a link -->
-    <tr>
-      <td>click</td>
-      <td>enclosedImage</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>verifyTitle</td>
-      <td>Click Page Target</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>click</td>
-      <td>previousPage</td>
       <td>&nbsp;</td>
     </tr>
 

@@ -29,6 +29,9 @@
 
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
+// Get the Gecko version as an 8 digit date. 
+var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
+var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
 
 
@@ -269,7 +272,20 @@ PageBot.prototype.clickElement = function(element) {
         element.click();
     }
     else {
+        // Add an event listener that detects if the default action has been prevented.
+        var preventDefault = false;
+        element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault()}, false);
+
+        // Trigger the click event.
         triggerMouseEvent(element, 'click', true);
+
+        // In FireFox < 1.0 Final, and Mozilla <= 1.7.3, just sending the click event is enough.
+        // But in newer versions, we need to do it ourselves.
+        var needsProgrammaticClick = (geckoVersion > '20041025');
+        // Perform the link action if preventDefault was set.
+        if (needsProgrammaticClick && element.href  && !preventDefault) {
+            this.currentWindow.location.href = element.href;
+        }
     }
 
     if (this.windowClosed()) {
