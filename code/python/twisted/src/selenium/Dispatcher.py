@@ -31,15 +31,10 @@ class Dispatcher:
         self.queue_timeout = QUEUE_TIMEOUT             
         self._commands = Queue()
         self._results = Queue()
-
-
-    def setTimeout(self,timeout):
-        """ Set the timeout period in seconds that a browser or driver should
-        wait before timing out"""
-        self.queue_timeout = timeout
-        return "Timeout set to %s seconds" % timeout
-            
-    
+   
+    #
+    # Command queue methods
+    #    
     def addCommand(self, command):
         """ Add a command to the commands queue """          
         self._commands.put(command, block=True, timeout=self.queue_timeout)   
@@ -55,8 +50,10 @@ class Dispatcher:
     def getCommandQueueSize(self):
         """ Query the size of the commands queue """
         return self._commands.qsize()
-
-        
+    
+    #
+    # Result queue methods
+    #        
     def addResult(self, result):
         """ Add a result to the results queue """        
         self._results.put(result)
@@ -74,9 +71,17 @@ class Dispatcher:
         size = self._results.qsize()        
         return size
 
-                               
+    #
+    # Misc. methods
+    #
+    def setTimeout(self,timeout):
+        """ Set the timeout period in seconds for requests 
+        from a web browser or driver """
+        self.queue_timeout = timeout
+        return "Timeout set to %s seconds" % timeout
+                                        
     def webDriver(self, request):
-        """" Gets a command from the command queue. Also, adds a result 
+        """" Get a command from the command queue. Also, add a result 
         to the result queue, unless the seleniumStart form paramter 
         (seleniumStart=true) is present.
         
