@@ -1,6 +1,6 @@
 <project name="selenium" default="all">
     <property name="version" value="0.1.3-SNAPSHOT"/>
-    
+
     <property environment="env"/>
     <property name="ant.home" location="${env.ANT_HOME}"/>
     <property name="reports.dir" location="target/reports" />
@@ -9,15 +9,19 @@
     <property name="simian.reports.dir" location="${reports.dir}/simian" />
     <property name="jcoverage.reports.dir" location="${reports.dir}/jcoverage" />
     <property name="test.reports.dir" location="${reports.dir}/tests" />
+    <property name="integration.test.reports.dir" location="${reports.dir}/integration-tests" />
     <property name="test.logs.dir" location="${test.reports.dir}/logs" />
+    <property name="integration.test.logs.dir" location="${integration.test.reports.dir}/logs" />
     <property name="main.dir" location="main" />
     <property name="test.dir" location="test" />
+    <property name="integration.test.dir" location="integration-test" />
     <property name="etc.dir" location="etc" />
     <property name="lib.dir" location="lib" />
     <property name="report.lib.dir" location="${lib.dir}/report" />
     <property name="classes.dir" location="target/classes" />
     <property name="instrumented.classes.dir" location="target/instrumented-classes" />
     <property name="test.classes.dir" location="target/test-classes" />
+    <property name="integration.test.classes.dir" location="target/integration-test-classes" />
 
     <path id="report.classpath">
         <fileset dir="${report.lib.dir}"/>
@@ -27,6 +31,7 @@
         <fileset dir="lib"/>
         <pathelement location="${classes.dir}"/>
         <pathelement location="${test.classes.dir}"/>
+        <pathelement location="${integration.test.classes.dir}"/>
         <pathelement location="${ant.home}/lib"/>
     </path>
 
@@ -34,10 +39,11 @@
         <fileset dir="lib"/>
         <pathelement location="${instrumented.classes.dir}"/>
         <pathelement location="${test.classes.dir}"/>
+        <pathelement location="${integration.test.classes.dir}"/>
         <pathelement location="${ant.home}/lib"/>
     </path>
 
-    <target name="all" depends="clean, init, compile, test, report, jar"/>
+    <target name="all" depends="clean, init, compile, test, integration-test, report, jar"/>
 
     <target name="clean">
         <delete dir="target"/>
@@ -51,7 +57,9 @@
         <mkdir dir="${simian.reports.dir}"/>
         <mkdir dir="${jcoverage.reports.dir}"/>
         <mkdir dir="${test.reports.dir}"/>
+        <mkdir dir="${integration.test.reports.dir}"/>
         <mkdir dir="${test.logs.dir}"/>
+        <mkdir dir="${integration.test.logs.dir}"/>
     </target>
 
     <target name="compile-main" description="Compile java source">
@@ -63,6 +71,11 @@
         <mkdir dir="${test.classes.dir}"/>
         <javac destdir="${test.classes.dir}" classpathref="classpath" debug="on">
             <src location="${test.dir}"/>
+        </javac>
+
+        <mkdir dir="${integration.test.classes.dir}"/>
+        <javac destdir="${integration.test.classes.dir}" classpathref="classpath" debug="on">
+            <src location="${integration.test.dir}"/>
         </javac>
     </target>
 
@@ -88,6 +101,28 @@
                 <exclude name="TEST-com.thoughtworks.selenium.SeleniumIntegrationTest.xml"/>
             </fileset>
             <report format="frames" todir="${test.reports.dir}" styledir="${ant.home}/etc"/>
+        </junitreport>
+        <fail if="tests.failed">There were test failures</fail>
+    </target>
+
+    <target name="integration-test" depends="compile-main">
+        <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <classpath refid="instrumented.classpath"/>
+            <formatter type="xml"/>
+            <formatter type="plain"/>
+            <batchtest todir="${integration.test.logs.dir}">
+                <fileset dir="${integration.test.dir}">
+                    <include name="**/*Test.java"/>
+                    <exclude name="**/RealDealIntegrationTest.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${integration.test.reports.dir}">
+            <fileset dir="${integration.test.logs.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${integration.test.reports.dir}" styledir="${ant.home}/etc"/>
         </junitreport>
         <fail if="tests.failed">There were test failures</fail>
     </target>
@@ -122,6 +157,7 @@
 
         <checkstyle config="${etc.dir}/checkstyle-tests.xml" failureProperty="checkstyle.failed" failonviolation="false">
             <fileset dir="${test.dir}" includes="**/*.java"/>
+            <fileset dir="${integration.test.dir}" includes="**/*.java"/>
             <formatter type="xml" tofile="${checkstyle-tests.reports.dir}/checkstyle-errors.xml"/>
         </checkstyle>
 
@@ -156,7 +192,7 @@
                 <exclude name="Acme/**"/>
             </fileset>
         </instrument>
-    </target> 
+    </target>
 
     <target name="-coverage-report" depends="test" description="Generate jCoverage report">
         <available file="jcoverage.ser" property="jcoverage.ser.available"/>

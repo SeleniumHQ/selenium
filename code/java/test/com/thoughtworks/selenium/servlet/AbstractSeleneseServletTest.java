@@ -132,7 +132,7 @@ public class AbstractSeleneseServletTest extends MockObjectTestCase {
         responseMock.expects(once()).method("getWriter").withNoArguments().will(returnValue(new PrintWriter(mockWriter, true)));
         servletContextMock.expects(once()).method("getAttribute").with(eq("remote-selenese-handler")).will(returnValue(seleneseHandler));
         seleneseHandlerMock.expects(once()).method("handleCommandResult").with(eq(null)).will(returnValue(seleneseCommand));
-        seleneseCommandMock.expects(once()).method("getCommandString").withNoArguments().will(returnValue(expectedResponse));
+        seleneseCommandMock.expects(once()).method("toString").withNoArguments().will(returnValue(expectedResponse));
 
         MockSeleneseServlet servlet = new MockSeleneseServlet();
         servlet.doGet(request, response);
@@ -155,7 +155,7 @@ public class AbstractSeleneseServletTest extends MockObjectTestCase {
         responseMock.expects(once()).method("getWriter").withNoArguments().will(returnValue(new PrintWriter(mockWriter, true)));
         servletContextMock.expects(once()).method("getAttribute").with(eq("remote-selenese-handler")).will(returnValue(null));
         seleneseHandlerMock.expects(once()).method("handleCommandResult").with(eq(null)).will(returnValue(seleneseCommand));
-        seleneseCommandMock.expects(once()).method("getCommandString").withNoArguments().will(returnValue(expectedResponse));
+        seleneseCommandMock.expects(once()).method("toString").withNoArguments().will(returnValue(expectedResponse));
 
         MockSeleneseServlet servlet = new MockSeleneseServlet(servletContext, mockWriter);
         servlet.doGet(request, response);
@@ -177,7 +177,7 @@ public class AbstractSeleneseServletTest extends MockObjectTestCase {
         mockWriter = new MockWriter(expectedOutput);
         responseMock.expects(once()).method("getWriter").withNoArguments().will(returnValue(new PrintWriter(mockWriter, true)));
 
-        seleneseCommandMock.expects(once()).method("getCommandString").withNoArguments().will(returnValue(expectedOutput));
+        seleneseCommandMock.expects(once()).method("toString").withNoArguments().will(returnValue(expectedOutput));
 
         MockSeleneseServlet servlet = new MockSeleneseServlet(servletContext, commandReply);
         servlet.doGet(request, response);
@@ -200,7 +200,7 @@ public class AbstractSeleneseServletTest extends MockObjectTestCase {
         mockWriter = new MockWriter(expectedOutput);
         responseMock.expects(once()).method("getWriter").withNoArguments().will(returnValue(new PrintWriter(mockWriter, true)));
 
-        seleneseCommandMock.expects(once()).method("getCommandString").withNoArguments().will(returnValue(expectedOutput));
+        seleneseCommandMock.expects(once()).method("toString").withNoArguments().will(returnValue(expectedOutput));
         servletContextMock.expects(once()).method("setAttribute").with(eq("remote-selenese-handler"), eq(null));
 
         MockSeleneseServlet servlet = new MockSeleneseServlet(servletContext, commandReply);
