@@ -22,7 +22,9 @@ Mock = function() {
             "  for(i = 0; i < arguments.length; i++) {\n" +
             "    assertEquals(this.expectedArgs[\"" + functionName + "\"][i], arguments[i]);\n" +
             "  };\n" +
-            "  return this.returnValues[\"" + functionName + "\"];\n" +
+            "  var returnValue = this.returnValues[\"" + functionName + "\"];\n" +
+            "  if (returnValue && returnValue.isMockError) { throw returnValue };\n" +
+            "  return returnValue;\n" +
             "}";
         eval(javascriptCode);
         // initially mark this function as "not yet executed"
@@ -85,6 +87,12 @@ Returner = function(mock, functionName) {
 
 Returner.prototype.returns = function(returnValue) {
     this.mock.returnValues[this.functionName] = returnValue;
+}
+
+Returner.prototype.andThrows = function(message) {
+    var error = new Error(message);
+    error.isMockError = true;
+    this.mock.returnValues[this.functionName] = error;
 }
 
 PropertySetter = function(mock, propertyName) {

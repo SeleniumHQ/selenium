@@ -116,6 +116,18 @@ function testCallingExpectedFunctionWithReturnShouldReturnValue() {
    myMock.verify()
 }
 
+function testCallingExpectedFunctionWithThrowsShouldThrowError() {
+   var myMock = new Mock();
+   myMock.expects("someMethod", "bar").andThrows("failure")
+   try {
+      myMock.someMethod("bar")
+   } catch (e) {
+      assertEquals("failure", e.message);
+      return
+   }
+   fail("Mock did not throw exception when required");
+}
+
 function testSettingExpectedPropertyShouldPass() {
    var myMock = new Mock()
    myMock.expectsProperty("foo", "bar")
