@@ -122,7 +122,7 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
  * Verify the location of the current page.
  */
 Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
-    assert.equals(expectedLocation, this.page().location);
+    this.assertMatches(expectedLocation, this.page().location);
 };
 
 
@@ -142,7 +142,7 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
  * Verify the title of the current page.
  */
 Selenium.prototype.assertTitle = function(expectedTitle) {
-    assert.equals(expectedTitle, this.page().title());
+    this.assertMatches(expectedTitle, this.page().title());
 };
 
 /*
@@ -151,7 +151,7 @@ Selenium.prototype.assertTitle = function(expectedTitle) {
 Selenium.prototype.assertValue = function(locator, expectedValue) {
     var element = this.page().findElement(locator);
     var actualValue = getInputValue(element);
-    assert.equals(expectedValue, actualValue.trim());
+    this.assertMatches(expectedValue, actualValue.trim());
 };
 
 /*
@@ -160,7 +160,7 @@ Selenium.prototype.assertValue = function(locator, expectedValue) {
 Selenium.prototype.assertText = function(locator, expectedContent) {
     var element = this.page().findElement(locator);
     var actualText = getText(element);
-    assert.equals(expectedContent, actualText.trim());
+    this.assertMatches(expectedContent, actualText.trim());
 };
 
 /*
@@ -191,7 +191,7 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
     }
     else {
         actualContent = getText(table.rows[row].cells[col]);
-        assert.equals(expectedContent, actualContent.trim());
+        this.assertMatches(expectedContent, actualContent.trim());
     }
 };
 
@@ -201,7 +201,7 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
 Selenium.prototype.assertSelected = function(target, expectedLabel) {
     var element = this.page().findElement(target);
     var selectedLabel = element.options[element.selectedIndex].text;
-    assert.equals(expectedLabel, selectedLabel);
+    this.assertMatches(expectedLabel, selectedLabel);
 };
 
 /**
@@ -219,7 +219,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
         var option = element.options[i];
         // Put the escaped commas back in.
         var expectedOption = expectedOptions[i].replace("\n", ",");
-        assert.equals(expectedOption, option.text);
+        this.assertMatches(expectedOption, option.text);
     }
 };
 
@@ -229,7 +229,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
  */
 Selenium.prototype.assertAttribute = function(target, expected) {
     var attributeValue = this.page().findAttribute(target);
-    assert.equals(expected, attributeValue);
+    this.assertMatches(expected, attributeValue);
 };
 
 /*
@@ -443,3 +443,40 @@ function AssertionFailedError(message) {
     this.failureMessage = message;
 }
 
+/*
+ * assertMatches(comment?, pattern, actual)
+ */
+Selenium.prototype.assertMatches = function() {
+    if (arguments.length == 2)
+    {
+        var comment = "";
+        var pattern = arguments[0];
+        var actual = arguments[1];
+    }
+    else {
+        var comment = arguments[0] + "; ";
+        var pattern = arguments[1];
+        var actual = arguments[2];
+    }
+
+    if (this.matches(pattern, actual)) {
+        return;
+    }
+
+    var errorMessage = comment + 
+        "Actual value '" + actual + "' did not match '" + pattern + "'";
+    assert.fail(errorMessage);
+};
+
+Selenium.prototype.globToRegexp = function(glob) {
+    var pattern = glob;
+    pattern = pattern.replace(/([.^$+(){}[\]\\|])/g, "\\$1");
+    pattern = pattern.replace(/\?/g, ".");
+    pattern = pattern.replace(/\*/g, ".*");
+    return "^" + pattern + "$";
+}
+
+Selenium.prototype.matches = function(pattern, actual) {
+    var regexp = new RegExp(this.globToRegexp(pattern));
+    return regexp.test(actual);
+}

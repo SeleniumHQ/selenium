@@ -18,13 +18,14 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Failing Assert</title>
+  <title>Test Glob Matching</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">Test Failing Assert</td>
+      <td rowspan="1" colspan="3">Test Glob Matching<br>
+      </td>
     </tr>
 
     <tr>
@@ -33,16 +34,38 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
+    <!-- check wildcard match -->
     <tr>
-      <td>assertErrorOnNext</td>
-      <td>Actual value 'the text value' did not match 'not the text value'</td>
-      <td/>
-    </tr>
-    <tr>
-      <td>assertValue</td>
+      <td>verifyValue</td>
       <td>theText</td>
-      <td>not the text value</td>
+      <td>*text*</td>
     </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theHidden</td>
+      <td>* hidden value</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>theSpan</td>
+      <td>* span</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>second *</td>
+    </tr>
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>theSelect</td>
+      <td>first*,second*,third*</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>theText@class</td>
+      <td>?oo</td>
+    </tr>
+
   </tbody>
 </table>
 </body>

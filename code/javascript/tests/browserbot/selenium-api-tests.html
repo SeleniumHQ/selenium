@@ -203,7 +203,7 @@ function testVerifyTableFailure() {
     mockPageBot.expects("findElement", "table").returns(getMockTable());
     assertCallFails("VerifyTable should have failed",
                     function() {selenium.assertTable("table.0.0", "bar");},
-                    "Expected 'bar' but was 'foo'");
+                    "Actual value 'foo' did not match 'bar'");
     verifyMocks();
 }
 
