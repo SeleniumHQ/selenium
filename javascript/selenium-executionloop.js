@@ -62,26 +62,32 @@ function TestLoop(commandFactory) {
         // Make the current row blue
         this.beginCommand(command);
 
+        // TODO the rest of this method is ugly - use exceptions and extract stuff.
         if(handler == null) {
             this.commandError("Unknown command", ERROR);
             return SELENIUM_PROCESS_COMPLETE;
         }
-        else {
-            try {
-                var processNext = handler.executor.call(selenium, command.target, command.value);
-                if (handler.type == "assert") {
-                    this.assertionPassed();
-                } else {
-                    this.actionOK();
-                }
 
-                return processNext;
-            } catch (e) {
-                if (e.isJsUnitException && handler.type == "assert") {
-                    this.assertionFailed(e.jsUnitMessage);
-                } else {
-                    this.commandError(e.message);
-                }
+        try {
+            var processNext = handler.executor.call(selenium, command.target, command.value);
+            // If the handler didn't return a wait flag, check to see if the
+            // handler was registered with the wait flag.
+            if (processNext == undefined && handler.wait) {
+               processNext = SELENIUM_PROCESS_WAIT;
+            }
+
+            if (handler.type == "assert") {
+                this.assertionPassed();
+            } else {
+                this.actionOK();
+            }
+
+            return processNext;
+        } catch (e) {
+            if (e.isJsUnitException && handler.type == "assert") {
+                this.assertionFailed(e.jsUnitMessage);
+            } else {
+                this.commandError(e.message);
             }
         }
     }

@@ -76,6 +76,17 @@ Copyright 2004 ThoughtWorks, Inc
         assertEquals("action2", commandFactory.getCommandHandler("anotherAction").executor);
     }
 
+    function testActionsAreRegisteredWithAndWaitSuffix() {
+        var actionSet = {doAnAction: "action1"};
+        var commandFactory = new CommandFactory();
+        commandFactory.registerAll(actionSet);
+
+        assertEquals("action1", commandFactory.getCommandHandler("anAction").executor);
+        assertEquals("action1", commandFactory.getCommandHandler("anActionAndWait").executor);
+        assertUndefined(commandFactory.getCommandHandler("anAction").wait);
+        assertTrue(commandFactory.getCommandHandler("anActionAndWait").wait);
+    }
+
     function testAllMethodsWithAssertPrefixAreRegisteredForAssertAndVerifyByRegisterAll() {
         var actionSet = {assertSomething: "assert1", assertSomeOtherThing: "assert2", assertionOther: "shouldn't register"};
         var commandFactory = new CommandFactory();

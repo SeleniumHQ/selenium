@@ -15,15 +15,11 @@ Copyright 2004 ThoughtWorks, Inc
 -->
 <html>
 <head>
-<title>Reload Page</title>
+<title>Slow Loading Page</title>
 <script type="text/javascript">
 </script>
 </head>
 <body>
-Selecting an option or changing text causes page to reload.
-<form action="./test_slowloading_page.html">
-<select name="theSelect" id="theSelect" onchange="this.form.submit();"><option value="">Empty Option</option><option value="option1">First Option</option><option value="option2">Second Option</option></select>
-<input name="theTextbox" id="theTextbox" onblur="this.form.submit();" value="initialValue"/>
-</form>
+<span id="theSpan">This is a dummy page.</span>
 </body>
 </html>
