@@ -56,8 +56,9 @@ function SelfRemovingLoadListener(fn, frame) {
     }
 }
 
-BrowserBot = function(frame) {
+BrowserBot = function(frame, executionContext) {
     this.frame = frame;
+    this.executionContext = executionContext;
     this.currentPage = null;
     this.currentWindowName = null;
     
@@ -93,7 +94,8 @@ BrowserBot.prototype.getFrame = function() {
 }
 
 BrowserBot.prototype.getContentWindow = function() {
-    return this.getFrame().contentWindow
+    return this.executionContext.getContentWindow(this.getFrame());
+   
 }
 
 BrowserBot.prototype.selectWindow = function(target) {
@@ -112,7 +114,7 @@ BrowserBot.prototype.openLocation = function(target, onloadCallback) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
     this.callOnNextPageLoad(onloadCallback);
-    this.getFrame().src = target;
+    this.executionContext.open(target,this.getFrame());
 }
 
 BrowserBot.prototype.getCurrentPage = function() {
@@ -170,7 +172,7 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
 BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
     if (onloadCallback) {
         var el = new SelfRemovingLoadListener(onloadCallback, this.frame);
-        addLoadListener(this.getFrame(), el.invoke);
+        addLoadListener(this.frame, el.invoke);
     }
 }
 
@@ -380,11 +382,11 @@ PageBot.prototype.getAllButtons = function() {
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
-    		if (elements[i].type == 'button' || elements[i].type == 'submit' || elements[i].type == 'reset') {
-    				result += elements[i].id;
+            if (elements[i].type == 'button' || elements[i].type == 'submit' || elements[i].type == 'reset') {
+                    result += elements[i].id;
 
-    				result += ',';
-    		}
+                    result += ',';
+            }
     }
 
     return result;
@@ -396,11 +398,11 @@ PageBot.prototype.getAllFields = function() {
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
-    		if (elements[i].type == 'text') {
-    				result += elements[i].id;
+            if (elements[i].type == 'text') {
+                    result += elements[i].id;
 
-    				result += ',';
-    		}
+                    result += ',';
+            }
     }
 
     return result;
@@ -411,9 +413,9 @@ PageBot.prototype.getAllLinks = function() {
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
-    		result += elements[i].id;
+            result += elements[i].id;
 
-    		result += ',';
+            result += ',';
     }
 
     return result;
