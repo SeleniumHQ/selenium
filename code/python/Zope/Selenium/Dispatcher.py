@@ -1,7 +1,7 @@
 from ZODB.PersistentList import PersistentList
 import time
 
-QUEUE_TIMEOUT = 5       # default timeout in seconds
+QUEUE_TIMEOUT = 15       # default timeout in seconds
 """ 
     How long a 'get' command will wait before timing out if a queue is empty.
 
@@ -35,7 +35,11 @@ class Dispatcher:
 
     #
     # Command queue methods
-    #  
+    #
+    def clearCommands(self):
+        del self._commands[:]
+        return 'Commands cleared'
+    
     def addCommand(self, command, REQUEST=None):
         """ Add a command to the commands queue """  
         
@@ -45,7 +49,7 @@ class Dispatcher:
         # In some methods (like webDriver and apiDriver), there is a later call
         # to '_p_jar.sync(), and that 
         # call would 'roll-back' this action if we didn't commit here.
-        get_transaction().commit()        
+        get_transaction().commit()
         
         return 'Command added'
 
@@ -65,7 +69,7 @@ class Dispatcher:
                 # Syncronize with the ZODB in case of any recent updates.
                 # If this is being run as a unit test, we won't have an
                 # attribute named "_p_jar" that we can sync()
-                if hasattr(self,'_p_jar'):
+                if not getattr(self,'_p_jar', None):
                     self._p_jar.sync()
                 
                 try:
@@ -84,7 +88,11 @@ class Dispatcher:
 
     #
     # Result queue methods
-    #             
+    #
+    def clearResults(self):
+        del self._results[:]
+        return 'Results cleared'
+        
     def addResult(self, result, REQUEST=None):
         """ Add a result to the results queue """
         
@@ -107,21 +115,23 @@ class Dispatcher:
             # until we're forced to time out the request.
             elapsed_time = 0
             step = .5   # in seconds
-            while elapsed_time <= self.queue_timeout:
+            while 1:
                 time.sleep(step)   #in seconds
                 elapsed_time += step
                 
                 # Syncronize with the ZODB in case of any recent updates.
                 # If this is being run as a unit test, we won't have an
                 # attribute named "_p_jar" that we can sync()
-                if hasattr(self,'_p_jar'):
+                if not getattr(self,'_p_jar', None):
                     self._p_jar.sync()
                     
                 try:
                     response = self._results.pop(0)
                     break
                 except IndexError:
-                    response = 'ERROR: Result queue was empty' 
+                    if elapsed_time >= self.queue_timeout:
+                        response = 'ERROR: Result queue was empty'
+                        break
                 
         return response        
 
@@ -141,13 +151,13 @@ class Dispatcher:
             
                                    
     def webDriver(self, REQUEST=None):
-        """" Gets a command from the command queue. Also, adds a result 
+        """ Gets a command from the command queue. Also, adds a result 
         to the result queue, unless the seleniumStart form paramter 
         (seleniumStart=true) is present.
         
         Note: this method is usually called from a web browser
         as "http://<server>/selenium-driver/driver"
-        """             
+        """
         if REQUEST:
             command_result = REQUEST.form.get('commandResult')
             selenium_start = REQUEST.form.get('seleniumStart')            
@@ -155,7 +165,9 @@ class Dispatcher:
             # If 'seleniumStart' is a parameter on the request, 
             # it means this is the first time hitting the driver,  
             # and therefore, there is no previous result to post to 
-            # the results queue.            
+            # the results queue.
+            if selenium_start:
+                self.clearResults()
             if command_result:
                 self.addResult(command_result)
                                  

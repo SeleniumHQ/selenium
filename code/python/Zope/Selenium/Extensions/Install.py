@@ -52,7 +52,8 @@ def setupSkins(self, out):
     except:
         out.write( '*** Unable to add directory views to portal_skins.\n')
     
-    installSubSkin(self, out, "selenium_javascript")     
+    installSubSkin(self, out, "selenium_javascript")
+    installSubSkin(self, out, "ftests_browser_driven") 
 
 def install(self):
     out=StringIO()

@@ -24,9 +24,11 @@ class ZSeleniumInterpreter(SeleniumInterpreter, Item, Persistent, Implicit, Role
     # Dispatcher methods - queue input/output
     security.declarePublic('driver')
     security.declarePublic('apiDriver')
+    security.declarePublic('clearCommands')
     security.declarePublic('addCommand')
     security.declarePublic('getCommand')
     security.declarePublic('getCommandQueueSize')
+    security.declarePublic('clearResults')
     security.declarePublic('addResult')
     security.declarePublic('getResult')
     security.declarePublic('getResultQueueSize')
