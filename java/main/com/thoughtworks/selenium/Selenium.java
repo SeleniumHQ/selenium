@@ -19,12 +19,14 @@ package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public interface Selenium extends Startable {
 
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
+    void open(String path);
+    void clickAndWait(String field);
+    void setTextField(String field, String value);
+    void verifyText(String type, String text);
+    void verifyLocation(String location);
     void endOfRun();
 }

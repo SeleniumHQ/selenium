@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
 
@@ -36,7 +36,7 @@ public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
         selenium = new DefaultSelenium(
                 new JettyCommandProcessor(null, DefaultSelenium.SELENIUM_CONTEXT,
                         new TestIngPurposesStaticContentHandler()),
-                new WindowsIEBrowserLauncher()
+                new WindowsDefaultBrowserLauncher()
         );
         selenium.start();
     }
@@ -47,12 +47,10 @@ public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
     }
 
     public void testWithJavaScript() {
-        boolean result1 = selenium.open("Apple");
-        boolean result2 = selenium.click("Orange");
-        boolean result3 = selenium.setTextField("Pear", "Bartlet");
+        selenium.open("Apple");
+        selenium.clickAndWait("Orange");
+        selenium.setTextField("Pear", "Bartlet");
         selenium.endOfRun();
-        assertEquals(true, result1);
-        assertEquals(true, result2);
-        assertEquals(true, result3);
+        // throws Exceptions if not OK
     }
 }

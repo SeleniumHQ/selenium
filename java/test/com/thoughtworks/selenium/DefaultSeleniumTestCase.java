@@ -23,7 +23,7 @@ import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
@@ -31,42 +31,59 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
         Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("open"), eq("123.com"), eq("")).will(returnValue("open-done"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
-        assertEquals(true, dftSelenium.open("123.com"));
+        dftSelenium.open("123.com");
     }
 
     public void testOpenFailing() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("open"), eq("123.com"), eq("")).will(returnValue("dfsdfasde"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
-        assertEquals(false, dftSelenium.open("123.com"));
+        try {
+            dftSelenium.open("123.com");
+            fail("should have barfed");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("dfsdfasde", e.getMessage());
+        }
     }
 
     public void testClickWorking() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
-        commandProcessor.expects(once()).method("doCommand").with(eq("click"), eq("foobar"), eq("")).will(returnValue("click-done"));
+        commandProcessor.expects(once()).method("doCommand").with(eq("clickAndWait"), eq("foobar"), eq("")).will(returnValue("clickAndWait-done"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
-        assertEquals(true, dftSelenium.click("foobar"));
+        dftSelenium.clickAndWait("foobar");
     }
 
     public void testClickFailing() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
-        commandProcessor.expects(once()).method("doCommand").with(eq("click"), eq("foobar"), eq("")).will(returnValue("dfg sfdg dd"));
+        commandProcessor.expects(once()).method("doCommand").with(eq("clickAndWait"), eq("foobar"), eq("")).will(returnValue("dfg sfdg dd"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
-        assertEquals(false, dftSelenium.click("foobar"));
+        try {
+            dftSelenium.clickAndWait("foobar");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("dfg sfdg dd", e.getMessage());
+        }
     }
 
     public void testSetTextWorking() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("setText"), eq("whatsit"), eq("something")).will(returnValue("setText-done"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
-        assertEquals(true, dftSelenium.setTextField("whatsit", "something"));
+        dftSelenium.setTextField("whatsit", "something");
     }
 
     public void testSetTextFailing() {
         Mock commandProcessor = new Mock(CommandProcessor.class);
         commandProcessor.expects(once()).method("doCommand").with(eq("setText"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
-        assertEquals(false, dftSelenium.setTextField("whatsit", "something"));
+        try {
+            dftSelenium.setTextField("whatsit", "something");
+        } catch (SeleniumException e) {
+            // expected
+            assertEquals("fgadfgadfgadfg fg", e.getMessage());
+        }
+
     }
 
     public void testEndWorking() {

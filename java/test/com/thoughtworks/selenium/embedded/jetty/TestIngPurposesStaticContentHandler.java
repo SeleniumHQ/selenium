@@ -33,7 +33,7 @@ import java.io.Writer;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestIngPurposesStaticContentHandler implements StaticContentHandler {
 
@@ -93,10 +93,10 @@ public class TestIngPurposesStaticContentHandler implements StaticContentHandler
             " document.write('&nbsp;&nbsp;Request 2 rcvd : ' + command + '<br><br>')\n" +
             "\n" +
             " xmlHttp = XmlHttp.create();\n" +
-            " xmlHttp.open(\"GET\", \"driver?commandResult=click-done\",false);\n" +
+            " xmlHttp.open(\"GET\", \"driver?commandResult=clickAndWait-done\",false);\n" +
             " xmlHttp.send(null);\n" +
             " command = xmlHttp.responseText\n" +
-            " document.write('&nbsp;&nbsp;Request 3 sent : commandResult=click-done<br>')\n" +
+            " document.write('&nbsp;&nbsp;Request 3 sent : commandResult=clickAndWait-done<br>')\n" +
             " document.write('&nbsp;&nbsp;Request 3 rcvd : ' + command + '<br><br>')\n" +
             "\n" +
             " xmlHttp = XmlHttp.create();\n" +
