@@ -1,3 +1,20 @@
+/*
+ * Copyright 2004 ThoughtWorks, Inc
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+ 
 passColor = "#cfffcf";
 failColor = "#ffcfcf";
 workingColor = "#DEE7EC";
@@ -50,29 +67,52 @@ currentTime = null;
 ERROR = 0;
 FAILURE = 1;
 
+runInterval = 0;
+
+function setRunInterval() {
+    runInterval = this.value;
+}
+
+function continueCurrentTest() {
+    testLoop.finishCommandExecution()
+}
+
 function getSuiteFrame() {
     return document.getElementById('testSuiteFrame');
 }
 
 function getTestFrame(){
-	return document.getElementById('testFrame');
+    return document.getElementById('testFrame');
 }
 
-function loadSuiteFrame()
-{
-	testSuiteName = getQueryStringTestName();
+function loadAndRunIfAuto() {
+    loadSuiteFrame();
+}
 
-	if( testSuiteName != "" ) {
+function loadSuiteFrame() {
+    var testAppFrame = document.getElementById('myiframe');
+    browserbot = new BrowserBot(testAppFrame);
+    selenium = new Selenium(browserbot);
+    registerCommandHandlers()
+
+    document.getElementById("modeRun").onclick = setRunInterval;
+    document.getElementById('modeWalk').onclick = setRunInterval;
+    document.getElementById('modeStep').onclick = setRunInterval;
+    document.getElementById('continueTest').onclick = continueCurrentTest;
+
+    testSuiteName = getQueryStringTestName();
+
+    if( testSuiteName != "" ) {
         addLoadListener(getSuiteFrame(), loadTestFrame);
-		getSuiteFrame().src = testSuiteName;
+        getSuiteFrame().src = testSuiteName;
+    } else {
+        loadTestFrame();
     }
-    else
-    	loadTestFrame();
 
+    //testAppFrame.src = "http://selenium.thoughtworks.com";
 }
 
-function loadTestFrame()
-{
+function loadTestFrame() {
     removeLoadListener(getSuiteFrame(), loadTestFrame);
     suiteTable = getSuiteFrame().contentWindow.document.getElementsByTagName("table")[0];
 
@@ -123,16 +163,15 @@ function addOnclick(suiteTable, rowNum) {
 }
 
 function getQueryStringTestName() {
-	testName = "";
-
-	myVars = location.search.substr(1).split('&');
-	for (var i =0;i < myVars.length; i++)
-	{
-		nameVal = myVars[i].split('=')
-		if( nameVal[0] == "test" )
-			testName="/" + nameVal[1];
-	}
-	return testName;
+    testName = "";
+    myVars = location.search.substr(1).split('&');
+    for (var i =0;i < myVars.length; i++) {
+        nameVal = myVars[i].split('=')
+        if( nameVal[0] == "test" ) {
+            testName="/" + nameVal[1];
+        }
+    }
+    return testName;
 }
 
 function isAutomatedRun() {
@@ -144,10 +183,6 @@ function isAutomatedRun() {
     }
 
     return false;
-}
-
-function getCellText(rowNumber, columnNumber) {
-    return getText(inputTableRows[rowNumber].cells[columnNumber]);
 }
 
 function resetMetrics() {
@@ -174,10 +209,16 @@ function startTest() {
     testFailed = false;
     storedVars = new Object();
 
-    if(commandHandlers == null)
-        buildCommandHandlers();
+    clearRowColours();
 
-    processCommand();
+    testLoop = initialiseTestLoop();
+    testLoop.start();
+}
+
+function clearRowColours() {
+    for (var i = 0; i <= inputTableRows.length - 1; i++) {
+        inputTableRows[i].bgColor = "white";
+    }
 }
 
 function startTestSuite() {
@@ -185,9 +226,6 @@ function startTestSuite() {
     currentTestRow = 0;
     runAllTests = true;
     suiteFailed = false;
-
-    if(commandHandlers == null)
-        buildCommandHandlers();
 
     runNextTest();
 }
@@ -199,8 +237,6 @@ function runNextTest() {
     // Scroll the suite frame down by 25 pixels once we get past the first cell.
     if(currentTestRow >= 1)
         getSuiteFrame().contentWindow.scrollBy(0,25);
-
-    removeLoadListener(getTestFrame(), processCommand);
 
     suiteTable = (getSuiteFrame().contentWindow.document.getElementsByTagName("table"))[0];
 
@@ -240,6 +276,10 @@ function runNextTest() {
         addLoadListener(getTestFrame(), startTest);
         getTestFrame().src = testLink.href;
     }
+}
+
+function setCellColor(tableRows, row, col, colorStr) {
+    tableRows[row].cells[col].bgColor = colorStr;
 }
 
 // Sets the results from a test into a hidden column on the suite table.  So,
@@ -325,82 +365,6 @@ function createInputField(name, value) {
     return input;
 }
 
-// Build the command handlers as a dictionary, so they can be looked up by the command
-function buildCommandHandlers() {
-    commandHandlers = new Object();
-
-    commandHandlers["open"] = handleOpen;
-    commandHandlers["click"] = handleClick;
-    commandHandlers["onclick"] = handleOnClick;
-    commandHandlers["type"] = handleType;
-    commandHandlers["selectWindow"] = handleSelectWindow;
-    commandHandlers["storeValue"] = handleStoreValue;
-    commandHandlers["pause"] = handlePause;
-    commandHandlers["select"] = handleSelect;
-
-    commandHandlers["verifyValue"] = handleVerifyValue;
-    commandHandlers["verifyText"] = handleVerifyText;
-    commandHandlers["verifyLocation"] = handleVerifyLocation;
-    commandHandlers["verifyTextPresent"] = handleVerifyTextPresent;
-    commandHandlers["verifyTable"] = handleVerifyTable;
-    commandHandlers["verifyElementPresent"] = handleVerifyElementPresent;
-    commandHandlers["verifyElementNotPresent"] = handleVerifyElementNotPresent;
-}
-
-
-function processCommand(){
-    // TODO: write a test that breaks when this is removed
-    clearOnBeforeUnload();
-
-    // Scroll the test frame down by 25 pixels once we get past the first 5 cells.
-    if(currentCommandRow >= 5)
-        getTestFrame().contentWindow.scrollBy(0,25);
-
-
-    // Make the previous row white
-    inputTableRows[currentCommandRow].bgColor = "white";
-
-	currentCommandRow++;
-
-    printMetrics();
-
-    // If we are done with this test, set the title bar as pass or fail, and
-    // then call back to runNextTest() to run the next test in the suite.
-    if(currentCommandRow >= inputTableRows.length) {
-
-        if(testFailed) {
-            setCellColor(inputTableRows, 0, 0, failColor);
-            numTestFailures += 1;
-        }
-        else {
-            setCellColor(inputTableRows, 0, 0, passColor);
-            numTestPasses += 1;
-        }
-
-        printMetrics();
-        runNextTest();
-    }
-
-    // Otherwise, run the next command in this test.
-    else {
-        // Make the current row blue
-        inputTableRows[currentCommandRow].bgColor = "#DEE7EC";
-
-        command = getCellText(currentCommandRow, 0);
-        target = replaceVariables(getCellText(currentCommandRow, 1));
-        value = replaceVariables(getCellText(currentCommandRow, 2));
-
-        handler = commandHandlers[command];
-
-        if(handler == null) {
-            setRowFailed("Unknown command", ERROR);
-            processCommand();
-        }
-        else
-            handler(target, value);
-    }
-}
-
 function printMetrics() {
     setText(document.getElementById("commandPasses"), numCommandPasses);
     setText(document.getElementById("commandFailures"), numCommandFailures);
@@ -424,18 +388,6 @@ function pad (num) {
     return (num > 9) ? num : "0" + num;
 }
 
-// Find the element by id and returns it.  If it is not found, changes the
-// table to include an error message.
-function findElement(id) {
-    var element = findElementByIdOrName(id);
-
-    if(element == null) {
-        setRowFailed("Element not found", ERROR);
-    }
-
-    return element;
-}
-
 // Search through str and replace all variable references ${varName} with their
 // value in storedVars.
 function replaceVariables(str) {
@@ -446,11 +398,11 @@ function replaceVariables(str) {
      var variableIndex = str;
      var variableFunction='';
 
-	 if(pattern.test(str)) {
-	         pieces = str.split('.');
+     if(pattern.test(str)) {
+         pieces = str.split('.');
 
-			 variableIndex = pieces[0];
-			 variableFunction = pieces[1];
+         variableIndex = pieces[0];
+         variableFunction = pieces[1];
     }
 
 
@@ -461,216 +413,86 @@ function replaceVariables(str) {
                               });
 
     if( variableFunction == '')
-    	return variableValue;
+        return variableValue;
     else
     {
-    	return eval("variableValue."+ eval("variableFunction") + "()" )
+        return eval("variableValue."+ eval("variableFunction") + "()" )
     }
 }
+    // Register all of the built-in command handlers with the CommandHandlerFactory.
+// TODO work out an easy way for people to register handlers without modifying the Selenium sources.
+function registerCommandHandlers() {
+    commandFactory = new CommandHandlerFactory();
+    commandFactory.registerAll(selenium);
 
-function handleClick(target, wait) {
-    element = findElement(target);
+    // These actions are overridden for fitrunner, as they still involve some FitRunner smarts,
+    // because of the wait/nowait behaviour modification. We need a generic solution to this.
+    commandFactory.registerAction("click", selenium.doClickWithOptionalWait);
 
-    if(element == null) {
-        processCommand();
-        return;
+}
+
+function initialiseTestLoop() {
+    testLoop = new TestLoop(commandFactory);
+
+    testLoop.getCommandInterval = function() { return runInterval };
+    testLoop.firstCommand = nextCommand;
+    testLoop.nextCommand = nextCommand;
+    testLoop.commandStarted = commandStarted;
+    testLoop.commandComplete = commandComplete;
+    testLoop.commandError = commandError;
+    testLoop.testComplete = testComplete;
+    return testLoop
+}
+
+function nextCommand() {
+    if (currentCommandRow >= inputTableRows.length - 1) {
+        return null;
     }
 
-    if(wait == "nowait") {
-        clickElement(element);
-        processCommand();
+    currentCommandRow++;
+
+    var commandName = getCellText(currentCommandRow, 0);
+    var target = replaceVariables(getCellText(currentCommandRow, 1));
+    var value = replaceVariables(getCellText(currentCommandRow, 2));
+
+    var command = new SeleniumCommand(commandName, target, value);
+    return command;
+}
+
+function commandStarted() {
+    // Make the current row blue
+    inputTableRows[currentCommandRow].bgColor = "#DEE7EC";
+
+    // Scroll the test frame down by 25 pixels once we get past the first 5 cells.
+    if(currentCommandRow >= 5)
+        getTestFrame().contentWindow.scrollBy(0,25);
+
+    printMetrics();
+}
+
+function commandComplete(result) {
+    if (result.failed) {
+        setRowFailed(result.failureMessage, FAILURE);
+    } else if (result.passed) {
+        setRowPassed();
     } else {
-        clickElement(element, processCommand);
+        setRowWhite();
     }
 }
 
-/* TODO write a test for this - it could be broken */
-function handleOnClick(target, wait) {
-    element = findElement(target);
-
-    if(element == null) {
-        processCommand();
-        return;
-    }
-
-    if(wait == "nowait") {
-        onclickElement(element);
-        processCommand();
-    } else {
-        onclickElement(element, processCommand);
-    }
+function commandError(errorMessage) {
+    setRowFailed(errorMessage, ERROR);
 }
 
-function handleType(target, stringValue) {
-    element = findElement(target);
-
-    if(element != null) {
-        replaceText(element, stringValue);
-    }
-    processCommand();
-}
-
-function handleOpen(target) {
-    openLocation(target, processCommand);
-}
-
-function handleSelectWindow(target) {
-    try {
-        selectWindow(target);
-    } catch (e) {
-        setRowFailed(e.message, ERROR);
-    }
-
-    processCommand();
-}
-
-function handleSelect(target, stringValue) {
-	element = findElement(target);
-
-	if(element != null) {
-	    selectOptionWithLabel(element, stringValue);
-	}
-	processCommand();
-}
-
-function handlePause(waitTime) {
-    setTimeout("processCommand()", waitTime);
-}
-
-// Reads the text of the page and stores it in a variable with the name of the target
-function handleStoreValue(target) {
-    value = getText(getDoc().body);
-    storedVars[target] = value;
-    processCommand();
-}
-
-function handleVerifyLocation(stringValue) {
-    actualValue = getDoc().location.pathname;
-    checkEquality(stringValue, actualValue);
-
-    processCommand();
-}
-
-function handleVerifyValue(target, stringValue) {
-    element = findElement(target);
-
-    if(element != null) {
-        if (element.type.toUpperCase() == 'CHECKBOX' || element.type.toUpperCase() == 'RADIO') {
-            actualValue = element.checked ? 'on' : 'off';
-        }
-        else {
-            actualValue = element.value;
-        }
-        checkEquality(stringValue, actualValue);
-    }
-
-    processCommand();
-}
-
-function handleVerifyText(target, stringValue) {
-    element = findElement(target);
-
-    if(element != null) {
-        actualValue = getText(element);
-        checkEquality(stringValue, actualValue);
-    }
-
-    processCommand();
-}
-
-function handleVerifyTable(target, stringValue) {
-    // This regular expression matches "tableName.row.column"
-    // For example, "mytable.3.4"
-    pattern = /(.*)\.(\d)+\.(\d+)/
-
-    if(!pattern.test(target)) {
-        setRowFailed("Invalid target format.  Correct format is tableName.rowNum.columnNum", ERROR);
-    }
-    else {
-        pieces = target.match(pattern);
-
-        tableName = pieces[1];
-        row = pieces[2];
-        col = pieces[3];
-
-        element = findElement(tableName);
-
-        if(element != null) {
-            if (row > element.rows.length || col > element.rows[row].cells.length)
-                setRowFailed("No such row or column in table", ERROR);
-            else {
-                actualValue = getText(element.rows[row].cells[col]);
-
-                checkEquality(stringValue, actualValue);
-            }
-        }
-    }
-
-    processCommand();
-}
-
-function checkEquality(expectedValue, actualValue) {
-    if(trim(expectedValue) == trim(actualValue))
-        setRowPassed();
-    else
-        setRowFailed("Expected: "+expectedValue + "<br/>Actual:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+actualValue, FAILURE);
-}
-
-function trim(s) {
-  while (s.substring(0,1) == ' ') {
-    s = s.substring(1,s.length);
-  }
-  while (s.substring(s.length-1,s.length) == ' ') {
-    s = s.substring(0,s.length-1);
-  }
-  return s;
-}
-
-function handleVerifyTextPresent(stringValue) {
-    allText = getText(getDoc().body);
-
-    if(allText == "") {
-        setRowFailed("Page text not found", ERROR)
-    } else if(allText.indexOf(stringValue) == -1) {
-// https://issues.wazokazi.com/browse/SEL-28
-// alert(allText)
-        setRowFailed("'" + stringValue + "' not found.", FAILURE);
-    } else {
-        setRowPassed();
-    }
-
-    processCommand();
-}
-
-function handleVerifyElementPresent(target) {
-    element = getDoc().getElementById(target);
-
-    if(element != null)
-        setRowPassed();
-    else
-        setRowFailed("Element " + target + " not found.", FAILURE);
-
-    processCommand();
-}
-
-function handleVerifyElementNotPresent(target) {
-    element = getDoc().getElementById(target);
-
-    if(element == null)
-        setRowPassed();
-    else
-        setRowFailed("Element " + target + " found.", FAILURE);
-
-    processCommand();
+function setRowWhite() {
+    inputTableRows[currentCommandRow].bgColor = "white";
 }
 
 function setRowPassed() {
     numCommandPasses += 1;
 
     // Set cell background to green
-    setCellColor(inputTableRows, currentCommandRow, 0, passColor);
-    setCellColor(inputTableRows, currentCommandRow, 1, passColor);
-    setCellColor(inputTableRows, currentCommandRow, 2, passColor);
+    inputTableRows[currentCommandRow].bgColor = passColor;
 }
 
 function setRowFailed(errorMsg, failureType) {
@@ -680,16 +502,53 @@ function setRowFailed(errorMsg, failureType) {
         numCommandFailures += 1;
 
     // Set cell background to red
-    setCellColor(inputTableRows, currentCommandRow, 0, failColor);
-    setCellColor(inputTableRows, currentCommandRow, 1, failColor);
-    setCellColor(inputTableRows, currentCommandRow, 2, failColor);
+    inputTableRows[currentCommandRow].bgColor = failColor;
 
     // Set error message
     inputTableRows[currentCommandRow].cells[2].innerHTML = errorMsg;
+    inputTableRows[currentCommandRow].title = errorMsg;
     testFailed = true;
     suiteFailed = true;
 }
 
-function setCellColor(tableRows, row, col, colorStr) {
-    tableRows[row].cells[col].bgColor = colorStr;
+function testComplete() {
+     if(testFailed) {
+         inputTableRows[0].bgColor = failColor;
+         numTestFailures += 1;
+     }
+     else {
+         inputTableRows[0].bgColor = passColor;
+         numTestPasses += 1;
+     }
+
+     printMetrics();
+
+    window.setTimeout("runNextTest()", 1);
 }
+
+function getCellText(rowNumber, columnNumber) {
+    return getText(inputTableRows[rowNumber].cells[columnNumber]);
+}
+
+Selenium.prototype.doPause = function(waitTime) {
+    testLoop.pauseInterval = waitTime;
+}
+
+// Reads the text of the page and stores it in a variable with the name of the target
+Selenium.prototype.doStoreValue = function(target) {
+    value = this.page().bodyText();
+    storedVars[target] = value;
+}
+
+Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
+   
+    this.doClick(target);
+    
+    if(wait != "nowait") {
+        return SELENIUM_PROCESS_WAIT;
+    }
+
+}
+
+
+
