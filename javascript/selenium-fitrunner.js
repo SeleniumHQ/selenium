@@ -61,7 +61,7 @@ function getTestFrame(){
 function loadSuiteFrame()
 {
         browserbot = new BrowserBot(document.getElementById('myiframe'));
-        testApp = new TestApp(browserbot);
+        selenium = new Selenium(browserbot);
 
 	testSuiteName = getQueryStringTestName();
 
@@ -436,7 +436,7 @@ function pad (num) {
 // table to include an error message.
 function findElement(id) {
     try {
-        return testApp.findElement(id);
+        return browserbot.getCurrentPage().findElement(id);
     }
     catch (e) {
         setRowFailed(e.message, ERROR);
@@ -478,39 +478,39 @@ function replaceVariables(str) {
 
 function handleClick(target, wait) {
     if(wait == "nowait") {
-        testApp.clickElement(target);
+        selenium.clickElement(target);
         processCommand();
     } else {
-        testApp.clickElement(target, processCommand);
+        selenium.clickElement(target, processCommand);
     }
 }
 
 /* TODO write a test for this - it could be broken */
 function handleOnClick(target, wait) {
     if(wait == "nowait") {
-        testApp.onclickElement(element);
+        selenium.onclickElement(element);
         processCommand();
     } else {
-        testApp.onclickElement(element, processCommand);
+        selenium.onclickElement(element, processCommand);
     }
 }
 
 function handleType(target, stringValue) {
-    testApp.type(target, stringValue);
+    selenium.type(target, stringValue);
     processCommand();
 }
 
 function handleOpen(target) {
-    testApp.open(target, processCommand);
+    selenium.open(target, processCommand);
 }
 
 function handleSelectWindow(target) {
-    testApp.selectWindow(target);
+    selenium.selectWindow(target);
     processCommand();
 }
 
 function handleSelect(target, stringValue) {
-    testApp.select(target, stringValue);
+    selenium.select(target, stringValue);
 	processCommand();
 }
 
@@ -625,7 +625,7 @@ function handleVerifyTextPresent(stringValue) {
 
 function handleVerifyElementPresent(target) {
     try {
-        testApp.findElement(target);
+        browserbot.getCurrentPage().findElement(target);
         setRowPassed();
     }
     catch (e) {
@@ -637,7 +637,7 @@ function handleVerifyElementPresent(target) {
 
 function handleVerifyElementNotPresent(target) {
     try {
-        element = testApp.findElement(target);
+        element = browserbot.getCurrentPage().findElement(target);
         setRowFailed("Element " + target + " found.", FAILURE);
     }
     catch (e) {

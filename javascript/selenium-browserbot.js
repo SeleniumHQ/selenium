@@ -5,8 +5,6 @@
  *    Add support for more events (keyboard and mouse)
  *    Allow to switch "user-entry" mode from mouse-based to keyboard-based, firing different
  *          events in different modes.
- *    Use prototypes to make this all a bit more OO. Maybe modify the underlying DOM of the
- *          TestApp to provided methods like HTMLTextInput.appendText() etc...
  */
 
 // The window to which the commands will be sent.  For example, to click on a
@@ -121,6 +119,28 @@ PageBot = function(pageWindow, browserBot) {
     this.currentDocument = pageWindow.document;
 
     this.location = pageWindow.location.pathname
+}
+
+/*
+ * Finds an element on the current page, using various lookup protocols
+ */
+PageBot.prototype.findElement = function(locator) {
+    // First try using id/name search
+    var element = this.findIdentifiedElement(locator);
+
+    // Next, if the locator starts with 'document.', try to use Dom traversal
+    if (element == null && locator.indexOf("document.") == 0) {
+        var domTraversal = locator.substr(9)
+        element = this.findElementByDomTraversal(domTraversal)
+    }
+
+    // TODO: try xpath
+
+    if (element == null) {
+        throw new Error("Element not found");
+    }
+
+    return element;
 }
 
 /*
