@@ -29,7 +29,7 @@ public class MacFirefoxBrowserLauncher extends DestroyableRuntimeExecutingBrowse
 
 
     public MacFirefoxBrowserLauncher() {
-        super("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
+        super("open -a /Applications/Firefox.app");
     }
 
 }

@@ -21,6 +21,8 @@ import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
+import java.net.InetAddress;
+
 /**
  * @author Paul Hammant
  * @version $Revision$
@@ -28,10 +30,13 @@ import org.jmock.MockObjectTestCase;
 public class DefaultSeleniumTestCase extends MockObjectTestCase {
 
     Mock commandProcessor;
+    private String machine;
 
     protected void setUp() throws Exception {
         super.setUp();
         commandProcessor = new Mock(CommandProcessor.class);
+        machine = InetAddress.getLocalHost().getHostName();
+        System.err.println("--> " + machine);
     }
 
     public void testOpenWorking() {

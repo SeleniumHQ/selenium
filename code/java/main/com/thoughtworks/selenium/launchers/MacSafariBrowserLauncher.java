@@ -19,29 +19,17 @@ package com.thoughtworks.selenium.launchers;
 
 import com.thoughtworks.selenium.BrowserLauncher;
 
+import java.io.IOException;
+
 /**
  * @author Paul Hammant
- * @version $Revision$
+ * @version $Revision: 193 $
  */
-public class DefaultBrowserLauncher implements BrowserLauncher {
+public class MacSafariBrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
-    BrowserLauncher delegate;
-    private static final String OS = System.getProperty("os.name").toLowerCase();
-    public DefaultBrowserLauncher() {
-        if (OS.startsWith("windows")) {
-            delegate = new WindowsDefaultBrowserLauncher();
-        } else if (OS.startsWith("mac")) {
-            delegate = new MacDefaultBrowserLauncher();
-        } else {
-            //TODO default for Linux ?
-        }
+
+    public MacSafariBrowserLauncher() {
+        super("open -a /Applications/Safari.app");
     }
 
-    public void launch(String url) {
-        delegate.launch(url);
-    }
-
-    public void close() {
-        delegate.close();
-    }
 }
