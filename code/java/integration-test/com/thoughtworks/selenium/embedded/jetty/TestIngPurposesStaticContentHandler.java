@@ -77,8 +77,8 @@ public class TestIngPurposesStaticContentHandler implements StaticContentHandler
             "  <script type=\"text/javascript\" src=\"xmlextras.js\"></script>\n" +
             "</head>\n" +
             "<body>\n" +
-            "Please igniore this page. It is not Selenium in action, " +
-            "it is a rudimentary test of Selenium's transport<br><br>" +
+            "<b>Please ignore this page. It is not Selenium in action, " +
+            "it is a rudimentary test of Selenium's transport</b><br><br>" +
             "Selenium { <br>\n" +
             "<script type=\"text/javascript\">\n" +
             " var xmlHttp = XmlHttp.create();\n" +
