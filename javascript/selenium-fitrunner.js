@@ -381,34 +381,6 @@ function replaceVariables(str) {
     }
 }
 
-function handleClick(target, wait) {
-    selenium.clickElement(target);
-
-    if(wait == "nowait") {
-        return SELENIUM_PROCESS_CONTINUE;
-    }
-    selenium.callOnNextPageLoad(testLoop.continueCurrentTest);
-    return SELENIUM_WAIT_FOR_RELOAD;
-}
-
-function handleOpen(target) {
-    selenium.open(target);
-    selenium.callOnNextPageLoad(testLoop.continueCurrentTest);
-    return SELENIUM_WAIT_FOR_RELOAD;
-}
-
-function handlePause(waitTime) {
-    setTimeout("testLoop.continueCurrentTest()", waitTime);
-    return SELENIUM_WAIT_FOR_RELOAD;
-}
-
-// Reads the text of the page and stores it in a variable with the name of the target
-function handleStoreValue(target) {
-    value = browserbot.getCurrentPage().bodyText();
-    storedVars[target] = value;
-    return SELENIUM_PROCESS_CONTINUE;
-}
-
 function TestLoop(commandFactory) {
     this.commandFactory = commandFactory;
     var self = this;
@@ -460,7 +432,7 @@ function TestLoop(commandFactory) {
         }
         else {
             try {
-                var processNext = handler(target, value);
+                var processNext = handler.executor.call(selenium, target, value);
                 if (handler.type == "assert") {
                     this.assertionPassed();
                 } else {
@@ -547,50 +519,43 @@ TestLoop.prototype.setRowFailed = function(errorMsg, failureType) {
     suiteFailed = true;
 }
 
-function CommandFactory() {
-    this.actions = {};
-    this.asserts = {};
-
-    this.registerAction = function(name, action) {
-        action.type = "action";
-        this.actions[name] = action;
-    }
-
-    this.registerAssert = function(name, assertion) {
-        assertion.type = "assert";
-        this.asserts[name] = assertion;
-    }
-
-    this.getCommandHandler = function(name) {
-        return this.actions[name] || this.asserts[name];
-    }
-}
-
-
 // Register all of the built-in command handlers with the CommandFactory.
-// TODO work out a way for people to register handlers without modifying the Selenium sources.
+// TODO work out an easy way for people to register handlers without modifying the Selenium sources.
 function registerCommandHandlers() {
     commandFactory = new CommandFactory();
+    commandFactory.registerAll(selenium);
 
-    // These actions still involve some FitRunner smarts, because of the wait/nowait
-    // behaviour modification. We need a generic solution to this.
-    commandFactory.registerAction("click", handleClick);
-    commandFactory.registerAction("open", handleOpen);
-
-    // These actions delegate directly to Selenium
-    commandFactory.registerAction("type", selenium.type);
-    commandFactory.registerAction("selectWindow", selenium.selectWindow);
-    commandFactory.registerAction("select", selenium.select);
-
-    // These 2 are fitrunner specific, and don't involve the Selenium API
-    commandFactory.registerAction("storeValue", handleStoreValue);
-    commandFactory.registerAction("pause", handlePause);
-
-    commandFactory.registerAssert("verifyValue", selenium.verifyValue);
-    commandFactory.registerAssert("verifyText", selenium.verifyText);
-    commandFactory.registerAssert("verifyLocation", selenium.verifyLocation);
-    commandFactory.registerAssert("verifyTextPresent", selenium.verifyTextPresent);
-    commandFactory.registerAssert("verifyTable", selenium.verifyTable);
-    commandFactory.registerAssert("verifyElementPresent", selenium.verifyElementPresent);
-    commandFactory.registerAssert("verifyElementNotPresent", selenium.verifyElementNotPresent);
+    // These actions are overridden for fitrunner, as they still involve some FitRunner smarts,
+    // because of the wait/nowait behaviour modification. We need a generic solution to this.
+    commandFactory.registerAction("click", selenium.doClickWithOptionalWait);
+    commandFactory.registerAction("open", selenium.doOpenWithWait);
 }
+
+Selenium.prototype.doPause = function(waitTime) {
+    setTimeout("testLoop.continueCurrentTest()", waitTime);
+    return SELENIUM_WAIT_FOR_RELOAD;
+}
+
+// Reads the text of the page and stores it in a variable with the name of the target
+Selenium.prototype.doStoreValue = function(target) {
+    value = this.page().bodyText();
+    storedVars[target] = value;
+    return SELENIUM_PROCESS_CONTINUE;
+}
+
+Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
+    this.doClick(target);
+
+    if(wait == "nowait") {
+        return SELENIUM_PROCESS_CONTINUE;
+    }
+    this.callOnNextPageLoad(testLoop.continueCurrentTest);
+    return SELENIUM_WAIT_FOR_RELOAD;
+}
+
+Selenium.prototype.doOpenWithWait = function(target) {
+    this.doOpen(target);
+    this.callOnNextPageLoad(testLoop.continueCurrentTest);
+    return SELENIUM_WAIT_FOR_RELOAD;
+}
+

@@ -7,6 +7,10 @@ String.prototype.trim = function() {
   return result.replace( /\s+$/g, "" );// strip trailing
 }
 
+String.prototype.toCamelCase = function() {
+   return this.charAt(0).toLowerCase() + this.substr(1);
+}
+
 // Returns the text in this element
 function getText(element) {
     text = "";
