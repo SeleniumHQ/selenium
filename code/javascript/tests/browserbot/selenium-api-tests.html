@@ -342,6 +342,11 @@ function testShouldPassIfdoVerifyConfirmationWithRightMessage() {
      verifyMocks(); 
 }
 
+function testShouldTellBroswerBotIfAskedToCancelNextConfirmation() {
+     mockBrowserBot.expects("cancelNextConfirmation"); 
+     selenium.doChooseCancelOnNextConfirmation();
+     verifyMocks(); 
+}
 
 function testVerifySelectedSuccess() {
     var mockTextControl = Object();

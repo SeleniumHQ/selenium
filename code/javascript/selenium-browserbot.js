@@ -63,7 +63,12 @@ BrowserBot = function(frame) {
     
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
+    this.nextConfirmResult = true;
 
+}
+
+BrowserBot.prototype.cancelNextConfirmation = function() {
+    this.nextConfirmResult = false;
 }
 
 BrowserBot.prototype.hasAlerts = function() {
@@ -127,7 +132,12 @@ BrowserBot.prototype.getCurrentPage = function() {
     
      function modifyWindowToRecordPopUpDialogs(window, browserBot) {   
           window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
-          window.confirm = function(message){browserBot.recordedConfirmations.push(message); return true;};
+          window.confirm = function(message){
+                              browserBot.recordedConfirmations.push(message);
+                              var result = browserBot.nextConfirmResult;
+                              browserBot.nextConfirmResult = true;
+                              return result
+                           };
      }
      
      function modifyWindowToClearPageCache(window, browserBot) {

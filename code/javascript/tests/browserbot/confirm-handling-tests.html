@@ -40,6 +40,17 @@ function testShouldConfirmConfirmationsByDefault() {
 	assertTrue( testWindow.confirm("Continue?"));
 }
 
+function testShouldCancelConfirmationIfPreviouslyInstructedTo() {
+   browserBot.cancelNextConfirmation();
+   assertFalse( testWindow.confirm("Continue?"));
+}
+
+function testShouldRevertToDefaultBehaviourAfterCancellingConfirmation() {
+   browserBot.cancelNextConfirmation();
+   testWindow.confirm("Continue?");
+   testShouldConfirmConfirmationsByDefault();
+}
+
 function testShouldNotReportAnyConfirmationsIfNoneHaveBeenGenerated() {
     assertFalse(browserBot.hasConfirmations());
     assertUndefined(browserBot.getNextConfirmation());

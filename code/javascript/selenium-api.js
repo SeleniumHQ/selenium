@@ -70,6 +70,13 @@ Selenium.prototype.doSelectWindow = function(windowName) {
 }
 
 /*
+ * Instruct Selenium to click Cancel on the next confirm dialog it encounters
+ */
+Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
+    this.browserbot.cancelNextConfirmation();
+}
+
+/*
  *  Asserts that the supplied message was received as an alert
  */
  Selenium.prototype.assertAlert = function(expectedAlert) {
