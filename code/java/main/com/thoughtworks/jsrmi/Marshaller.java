@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * back and forth to java objects.
  *
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class Marshaller {
     private final Map idsToObjects = new HashMap();
@@ -39,7 +39,7 @@ public class Marshaller {
     public Object unmarshal(String jsrmiObject) {
         Pattern jsrmiObjectPattern = Pattern.compile("__JsObject__.*__[0-9]*");
         Matcher matcher = jsrmiObjectPattern.matcher(jsrmiObject);
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             return lookup(jsrmiObject);
         } else {
             return jsrmiObject;
@@ -48,7 +48,7 @@ public class Marshaller {
 
     private JsObject lookup(String jsRmiReference) {
         JsObject jsObject = (JsObject) idsToObjects.get(jsRmiReference);
-        if(jsObject == null) {
+        if (jsObject == null) {
             jsObject = new JsObject(jsRmiReference, jsRmiInvoker);
             idsToObjects.put(jsRmiReference, jsObject);
         }

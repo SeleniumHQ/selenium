@@ -43,7 +43,7 @@
         <pathelement location="${ant.home}/lib"/>
     </path>
 
-    <target name="all" depends="clean, init, compile, test, integration-test, report, jar"/>
+    <target name="all" depends="clean, init, checkstyle, compile, test, integration-test, report, jar"/>
 
     <target name="clean">
         <delete dir="target"/>
@@ -131,10 +131,10 @@
         <jar basedir="target/classes" destfile="target/${ant.project.name}-${version}.jar"/>
     </target>
 
-    <target name="report" depends="-checkstyle,-checkstyle-tests,-simian,-coverage-report"/>
+    <target name="report" depends="-checkstyle-tests,-simian,-coverage-report"/>
 
     <!-- ================== Checkstyle target Definitions ======================= -->
-    <target name="-checkstyle" depends="init" description="Validate code against coding standards">
+    <target name="checkstyle" depends="init" description="Validate code against coding standards">
         <taskdef resource="checkstyletask.properties" classpathref="report.classpath"/>
 
         <checkstyle config="${etc.dir}/checkstyle-main.xml" failureProperty="checkstyle.failed" failonviolation="false">
@@ -149,7 +149,7 @@
                 out="${checkstyle.reports.dir}/checkstyle.html"
                 style="${etc.dir}/checkstyle-noframes.xsl"/>
 
-<!--        <fail if="checkstyle.failed" message="Checkstyle failed - see report for details"/>-->
+        <!--           <fail if="checkstyle.failed" message="Checkstyle failed - see report for details"/>-->
     </target>
 
     <target name="-checkstyle-tests" depends="init" description="Validate test code against coding standards">

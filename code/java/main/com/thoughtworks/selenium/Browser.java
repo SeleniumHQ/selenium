@@ -24,7 +24,7 @@ package com.thoughtworks.selenium;
  *
  * @see Selenium
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public interface Browser {
     String open(String url);

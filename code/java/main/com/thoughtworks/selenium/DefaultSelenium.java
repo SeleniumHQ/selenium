@@ -24,11 +24,11 @@ import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.10 $
+ * @version $Revision$
  */
 public class DefaultSelenium implements Selenium {
 
-    CommandProcessor commandProcessor;
+    private CommandProcessor commandProcessor;
     private BrowserLauncher launcher;
 
     public static final String DEFAULT_SELENIUM_CONTEXT = "selenium-driver";
@@ -50,37 +50,37 @@ public class DefaultSelenium implements Selenium {
 
     public void open(String path) {
         String result = commandProcessor.doCommand("open", path, "");
-        if(!result.equals("OK")) {
+        if (!result.equals("OK")) {
             throw new SeleniumException(result);
-        };
+        }
     }
 
     public void clickAndWait(String field) {
         String result = commandProcessor.doCommand("clickAndWait", field, "");
-        if(!result.equals("OK")) {
+        if (!result.equals("OK")) {
             throw new SeleniumException(result);
-        };
+        }
     }
 
     public void setTextField(String field, String value) {
         String result = commandProcessor.doCommand("setText", field, value);
-        if(!result.equals("OK")) {
+        if (!result.equals("OK")) {
             throw new SeleniumException(result);
-        };
+        }
     }
 
     public void verifyText(String type, String text) {
         String result = commandProcessor.doCommand("verifyText", type, text);
-        if(!result.equals("PASSED")) {
+        if (!result.equals("PASSED")) {
             throw new SeleniumException(result);
-        };
+        }
     }
 
     public void verifyLocation(String location) {
         String result = commandProcessor.doCommand("verifyLocation", location, "");
-        if(!result.equals("PASSED")) {
+        if (!result.equals("PASSED")) {
             throw new SeleniumException(result);
-        };
+        }
     }
 
     public void testComplete() {

@@ -19,8 +19,8 @@ package com.thoughtworks.selenium.browserlifecycle.window;
 import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 
 public interface BrowserSpawner {
-	
-	public Killable spawn(String url)
-			throws LifeCycleException;
-	
+
+    public Killable spawn(String url)
+            throws LifeCycleException;
+
 }

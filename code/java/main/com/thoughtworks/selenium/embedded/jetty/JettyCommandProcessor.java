@@ -17,77 +17,80 @@
 
 package com.thoughtworks.selenium.embedded.jetty;
 
+import com.thoughtworks.selenium.CommandProcessor;
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
 import org.mortbay.http.RequestLog;
-import org.mortbay.http.HttpContext;
-import org.mortbay.http.SocketListener;
-import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHttpContext;
-import org.mortbay.jetty.servlet.WebApplicationContext;
 import org.mortbay.util.InetAddrPort;
 import org.mortbay.util.MultiException;
 
 import java.io.File;
 import java.io.IOException;
 
-import com.thoughtworks.selenium.embedded.jetty.SeleneseJettyResourceHandler;
-import com.thoughtworks.selenium.CommandProcessor;
-
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class JettyCommandProcessor implements CommandProcessor {
 
     private Server server;
     private SeleneseJettyResourceHandler seleneseJettyResourceHandler;
-    private StaticContentHandler staticContentHandler;
+    private static final int PORT = 8080;
 
     public JettyCommandProcessor(File webAppRoot, String seleniumContext) {
         this(webAppRoot, seleniumContext, new NullStaticContentHandler());
     }
 
     public JettyCommandProcessor(File webAppRoot, String seleniumContext, StaticContentHandler staticContentHandler) {
-        this.staticContentHandler = staticContentHandler;
 
+        configureServer();
+        seleneseJettyResourceHandler = new SeleneseJettyResourceHandler();
+
+        ServletHttpContext context = (ServletHttpContext) server.getContext("localhost",
+                                                                            "/" + seleniumContext + "/*");
+
+        staticContentHandler.addStaticContent(context);
+        context.addHandler(seleneseJettyResourceHandler);
+        context.setContextPath("/" + seleniumContext + "/*");
+        server.addContext("locahost", context);
+        addServerApplication(webAppRoot);
+    }
+
+    private void addServerApplication(File webAppRoot) {
+        if (webAppRoot != null) {
+            try {
+                server.addWebApplication("localhost", "/", webAppRoot.getAbsolutePath());
+            } catch (IOException e) {
+                throw new RuntimeException("Exception instantiating Jetty", e);
+            }
+        }
+    }
+
+    private void configureServer() {
         server = new Server();
         try {
-            server.addListener(new InetAddrPort("localhost", 8080));
-            server.setRequestLog(new RequestLog() {
-                public void log(HttpRequest httpRequest, HttpResponse httpResponse, int i) {
-                    //System.out.println("--> [ req " + httpRequest.getRequestURL());
-                }
-
-                public void start() throws Exception {
-                }
-
-                public void stop() {
-                }
-
-                public boolean isStarted() {
-                    return false;
-                }
-            });
-
-            seleneseJettyResourceHandler = new SeleneseJettyResourceHandler();
-
-            ServletHttpContext context = (ServletHttpContext) server.getContext("localhost","/" + seleniumContext + "/*");
-
-            staticContentHandler.addStaticContent(context);
-            context.addHandler(seleneseJettyResourceHandler);
-            context.setContextPath("/" + seleniumContext + "/*");
-            server.addContext("locahost", context);
-            if (webAppRoot != null) {
-                server.addWebApplication("localhost","/",webAppRoot.getAbsolutePath());
-            }
+            server.addListener(new InetAddrPort("localhost", PORT));
         } catch (IOException e) {
             throw new RuntimeException("Exception instantiating Jetty", e);
         }
 
-    }
+        server.setRequestLog(new RequestLog() {
+            public void log(HttpRequest httpRequest, HttpResponse httpResponse, int i) {
+            }
 
+            public void start() throws Exception {
+            }
+
+            public void stop() {
+            }
+
+            public boolean isStarted() {
+                return false;
+            }
+        });
+    }
 
 
     public String doCommand(String command, String field, String value) {

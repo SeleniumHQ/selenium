@@ -20,15 +20,14 @@ import com.thoughtworks.selenium.browserlifecycle.LifeCycleException;
 
 public class SpecifiedPathBrowserSpawner implements BrowserSpawner {
 
-    private final String _browserPath;
+    private final String browserPath;
 
     public SpecifiedPathBrowserSpawner(String browserPath) {
-        _browserPath = browserPath;
+        this.browserPath = browserPath;
     }
-	
-	public Killable spawn(String url)
-			throws LifeCycleException {
-		return new BrowserWindow(_browserPath, url);
-	}
+
+    public Killable spawn(String url) throws LifeCycleException {
+        return new BrowserWindow(browserPath, url);
+    }
 
 }

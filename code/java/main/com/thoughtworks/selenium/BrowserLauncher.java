@@ -17,11 +17,9 @@
 
 package com.thoughtworks.selenium;
 
-import java.io.IOException;
-
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public interface BrowserLauncher {
     void launch(String url);
