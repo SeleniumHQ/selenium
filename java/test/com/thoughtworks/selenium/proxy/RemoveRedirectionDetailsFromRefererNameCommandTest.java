@@ -18,8 +18,10 @@ package com.thoughtworks.selenium.proxy;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
+
 /**
- * @version $Id: RemoveRedirectionDetailsFromRefererNameCommandTest.java,v 1.2 2004/11/15 18:35:02 ahelleso Exp $
+ * @version $Id: RemoveRedirectionDetailsFromRefererNameCommandTest.java,v 1.3 2004/11/15 23:37:53 ahelleso Exp $
  */
 public class RemoveRedirectionDetailsFromRefererNameCommandTest extends TestCase {
 
@@ -27,7 +29,7 @@ public class RemoveRedirectionDetailsFromRefererNameCommandTest extends TestCase
         assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveRedirectionDetailsFromRefererNameCommand.class));
     }
 
-    public void testProxyRemovedFromReferer() {
+    public void testProxyRemovedFromReferer() throws IOException {
         String server = "www.amazon.com/site/";
         String expectedHost = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL + server;
         HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI + HTTPRequest.CRLF +

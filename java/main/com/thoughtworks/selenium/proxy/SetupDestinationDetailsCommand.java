@@ -19,9 +19,6 @@ package com.thoughtworks.selenium.proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * @version $Id: SetupDestinationDetailsCommand.java,v 1.7 2004/11/15 18:35:01 ahelleso Exp $
- */
 public class SetupDestinationDetailsCommand implements RequestModificationCommand {
 
     private final String proxy = (String) System.getProperties().get("http.proxyHost");

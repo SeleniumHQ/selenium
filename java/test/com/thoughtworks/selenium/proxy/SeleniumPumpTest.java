@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @version $Id: SeleniumPumpTest.java,v 1.3 2004/11/15 21:19:21 ahelleso Exp $
+ * @version $Id: SeleniumPumpTest.java,v 1.4 2004/11/15 23:37:53 ahelleso Exp $
  */
 public class SeleniumPumpTest extends TestCase {
 
@@ -39,8 +39,8 @@ public class SeleniumPumpTest extends TestCase {
 
         InputStream excessResponse = new ByteArrayInputStream(excessData.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Pump pump = new SeleniumPump(excessResponse, out);
-        pump.pump();
+        Pump pump = new SeleniumPump();
+        pump.pump(excessResponse, out);
         String pumped = new String(out.toByteArray());
         assertEquals(data, pumped);
 
@@ -58,8 +58,8 @@ public class SeleniumPumpTest extends TestCase {
 
         InputStream response = new ByteArrayInputStream(data.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Pump pump = new SeleniumPump(response, out);
-        pump.pump();
+        Pump pump = new SeleniumPump();
+        pump.pump(response, out);
         String pumped = new String(out.toByteArray());
         assertEquals(data, pumped);
 

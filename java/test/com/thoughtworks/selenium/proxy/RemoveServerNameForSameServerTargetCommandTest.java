@@ -18,8 +18,10 @@ package com.thoughtworks.selenium.proxy;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
+
 /**
- * @version $Id: RemoveServerNameForSameServerTargetCommandTest.java,v 1.2 2004/11/15 18:35:02 ahelleso Exp $
+ * @version $Id: RemoveServerNameForSameServerTargetCommandTest.java,v 1.3 2004/11/15 23:37:53 ahelleso Exp $
  */
 public class RemoveServerNameForSameServerTargetCommandTest extends TestCase {
 
@@ -27,7 +29,7 @@ public class RemoveServerNameForSameServerTargetCommandTest extends TestCase {
         assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveServerNameForSameServerTargetCommand.class));
     }
 
-    public void testServerNameAndProtocolRemovedFromUrlIfLocalHost() {
+    public void testServerNameAndProtocolRemovedFromUrlIfLocalHost() throws IOException {
         String dir = "/site/";
         String host = "localhost:8000";
         String uri = host + dir;

@@ -17,16 +17,19 @@
 package com.thoughtworks.selenium.proxy;
 
 import com.thoughtworks.selenium.utils.Assert;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * @version $Id: SeleniumHTTPRequest.java,v 1.4 2004/11/15 18:35:01 ahelleso Exp $
- */
 public class SeleniumHTTPRequest implements HTTPRequest {
     public static final String SELENIUM_REDIRECT_SERVERNAME = "localhost";
     public static final String SELENIUM_REDIRECT_PORT = "9999";
@@ -39,19 +42,21 @@ public class SeleniumHTTPRequest implements HTTPRequest {
                                                        SELENIUM_REDIRECT_DIR;
     private static final String auth = System.getProperties().get("http.proxy.user") + ":" +
                                        System.getProperties().get("http.proxy.password");
-    private static final Log LOG = LogFactory.getLog(SeleniumHTTPRequest.class);
-    private String method;
     private String uri;
     private String protocol;
     private Map headers = new HashMap();
-    private String original;
     private String destinationServer;
     private int destinationPort;
 
-    public SeleniumHTTPRequest(String request) {
-        original = request;
-        LOG.debug("received\n" + original);
-        parse(request);
+    /**
+     * @deprecated Use {@link #SeleniumHTTPRequest(java.io.InputStream)}
+     */
+    public SeleniumHTTPRequest(String request) throws IOException {
+        this(new ByteArrayInputStream(request.getBytes()));
+    }
+
+    public SeleniumHTTPRequest(InputStream in) throws IOException {
+        parse(in);
         headers.put("Proxy-Authorization", "Basic " + new sun.misc.BASE64Encoder().encode(auth.getBytes()));
     }
 
@@ -71,17 +76,8 @@ public class SeleniumHTTPRequest implements HTTPRequest {
         this.destinationPort = destinationPort;
     }
 
-    public String getMethod() {
-        return method;
-    }
-
     public String getHost() {
         return getHeaderField("Host");
-    }
-
-    public void setMethod(String method) {
-        Assert.assertIsTrue(method != null, "method can't be null");
-        this.method = new String(method);
     }
 
     public String getUri() {
@@ -98,27 +94,34 @@ public class SeleniumHTTPRequest implements HTTPRequest {
     }
 
     public void setProtocol(String protocol) {
-        Assert.assertIsTrue(protocol != null, "protocol can't be null");
         this.protocol = protocol;
     }
 
-    private void parse(String request) {
-        String [] lines = request.split(CRLF);
-        parseFirstLine(lines[0]);
-        for (int i = 1; i < lines.length; ++i) {
-            parseLine(lines[i]);
+    private void parse(InputStream in) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        parseFirstLine(br);
+
+        String line = null;
+        // loop until the end of the header - \r\n
+        while((line = br.readLine()) != null) {
+            if(!"".equals(line)) {
+                parseHeaderLine(line);
+            } else {
+                break;
+            }
         }
     }
 
-    private void parseLine(String line) {
+    private void parseHeaderLine(String line) {
         String[] elements = line.split(": ");
-        setHeaderField(elements[0], elements[1]);
+        final String key = elements[0];
+        final String value = elements[1];
+        setHeaderField(key, value);
     }
 
-    private void parseFirstLine(String line) {
-        // TODO validate these elements
+    private void parseFirstLine(BufferedReader br) throws IOException {
+        String line = br.readLine();
         String[] elements = line.split(" ");
-        setMethod(elements[0]);
         setUri(elements[1]);
         if (elements.length > 2) {
             protocol = elements[2];
@@ -129,27 +132,32 @@ public class SeleniumHTTPRequest implements HTTPRequest {
         return (String) headers.get(fieldId);
     }
 
-    public String getRequest() {
-        StringBuffer buff = new StringBuffer(method);
-        buff.append(" " + uri + " " + protocol + CRLF);
+    public void writeTo(OutputStream out) throws IOException {
+        BufferedWriter sw = new BufferedWriter(new OutputStreamWriter(out));
+        // TODO: parse this
+        String method = "GET";
+        sw.write(method + " " + uri + " " + protocol + CRLF);
         for (Iterator i = headers.keySet().iterator(); i.hasNext();) {
             String key =  (String) i.next();
-            buff.append(key + ": " + headers.get(key) + CRLF);
+            sw.write(key);
+            sw.write(": ");
+            sw.write((String) headers.get(key));
+            sw.write(CRLF);
         }
-        buff.append(CRLF);
-        String request = String.valueOf(buff);
-        return request;
+        sw.write(CRLF);
+        sw.flush();
     }
 
     public void setHost(String host) {
         headers.put("Host", host);
     }
 
-    public String getOriginalRequest() {
-        return original;
-    }
-
     public void setHeaderField(String key, String value) {
         headers.put(key, value);
+    }
+
+    public boolean equals(Object o) {
+        SeleniumHTTPRequest other = (SeleniumHTTPRequest) o;
+        return headers.equals(other.headers);
     }
 }

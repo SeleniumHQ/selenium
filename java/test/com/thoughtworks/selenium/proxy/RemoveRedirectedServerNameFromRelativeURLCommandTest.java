@@ -18,12 +18,14 @@ package com.thoughtworks.selenium.proxy;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
+
 /**
- * @version $Id: RemoveRedirectedServerNameFromRelativeURLCommandTest.java,v 1.2 2004/11/15 18:35:02 ahelleso Exp $
+ * @version $Id: RemoveRedirectedServerNameFromRelativeURLCommandTest.java,v 1.3 2004/11/15 23:37:53 ahelleso Exp $
  */
 public class RemoveRedirectedServerNameFromRelativeURLCommandTest extends TestCase {
 
-    public void testRemovesRedirectedServerFronURL() {
+    public void testRemovesRedirectedServerFronURL() throws IOException {
         String relative = "/site/pic.gif";
         HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL +
                                                           SeleniumHTTPRequest.SELENIUM_REDIRECT_SERVER + relative +

@@ -17,27 +17,24 @@
 package com.thoughtworks.selenium.proxy;
 import junit.framework.TestCase;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 
 /**
- * @version $Id: SeleniumHTTPRequestTest.java,v 1.2 2004/11/15 18:35:02 ahelleso Exp $
+ * @version $Id: SeleniumHTTPRequestTest.java,v 1.3 2004/11/15 23:37:53 ahelleso Exp $
  */
 public class SeleniumHTTPRequestTest extends TestCase {
     // relying on defs found at http://www.w3.org/Protocols/HTTP/Request.html
-    public void testHandlesSimpleRequest() {
+    public void testHandlesSimpleRequest() throws IOException {
         String method = "GET";
         String uri = "http://www.google.com/";
         String request = method + " " + uri + "\r\n";
         HTTPRequest httpRequest = new SeleniumHTTPRequest(request);
-        assertEquals(method, httpRequest.getMethod());
         assertEquals(uri, httpRequest.getUri());
     }
 
-    public void testHandlesFullRequest() {
-        String method = "GET";
+    public void testHandlesFullRequest() throws IOException {
         String uri = "http://www.amazon.com/";
         String protocol = "HTTP/1.1";
         String host = "www.amazon.com";
@@ -54,14 +51,12 @@ public class SeleniumHTTPRequestTest extends TestCase {
                 "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z";
         String fullRequest = MessageFormat.format(request, new Object[] {uri, protocol, host, acceptEncoding});
         HTTPRequest httpRequest = new SeleniumHTTPRequest(fullRequest);
-        assertEquals(method, httpRequest.getMethod());
         assertEquals(uri, httpRequest.getUri());
         assertEquals(host, httpRequest.getHost());
         assertEquals(acceptEncoding, httpRequest.getHeaderField("Accept-Encoding"));
     }
 
-    public void testHandlesFullRequestWithPort() {
-        String method = "GET";
+    public void testHandlesFullRequestWithPort() throws IOException {
         String uri = "http://www.amazon.com:80//exec/obidos/subst/home/home.html";
         String protocol = "HTTP/1.1";
         String host = "www.amazon.com:80";
@@ -78,13 +73,12 @@ public class SeleniumHTTPRequestTest extends TestCase {
                 "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z";
         String fullRequest = MessageFormat.format(request, new Object[] {uri, protocol, host, acceptEncoding});
         HTTPRequest httpRequest = new SeleniumHTTPRequest(fullRequest);
-        assertEquals(method, httpRequest.getMethod());
         assertEquals(uri, httpRequest.getUri());
         assertEquals(host, httpRequest.getHost());
         assertEquals(acceptEncoding, httpRequest.getHeaderField("Accept-Encoding"));
     }
 
-    public void testReconstructsCorrectRequestWithAdditionalProxyAuthorizationField() {
+    public void testReconstructsCorrectRequestWithAdditionalProxyAuthorizationField() throws IOException {
         String request = "GET /dir/page HTTP/1.0\r\n" +
                 "Host: www.thoughtworks.com\r\n" +
                 "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1\r\n" +
@@ -97,24 +91,28 @@ public class SeleniumHTTPRequestTest extends TestCase {
                 "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z";
 
         HTTPRequest httpRequest = new SeleniumHTTPRequest(request);
-        String rebuiltRequest = httpRequest.getRequest();
-        assertTrue(rebuiltRequest.startsWith("GET /dir/page HTTP/1.0\r\n"));
-
-        assertContainsSame(request, rebuiltRequest);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        httpRequest.writeTo(out);
+        final String rebuiltRequest = new String(out.toByteArray());
+        assertTrue(rebuiltRequest.indexOf("Proxy-Authorization: ") != -1);
     }
 
-    private void assertContainsSame(String expectedRequest, String rebuiltRequest) {
-        List expectedList = getTextLinesAsList(expectedRequest);
-        List retrievedList = getTextLinesAsList(rebuiltRequest);
-// We can't expect the size to be the same - there might be additional headers in the rebuiltRequest (such as Proxy-Authorization)
-//        assertEquals(expectedList.size(), retrievedList.size());
-        for (Iterator i = expectedList.iterator(); i.hasNext();) {
-            assertTrue(retrievedList.contains(i.next()));
-        }
-    }
+    public void testShouldWriteIdenticalParsedRequest() throws IOException {
+        String request = "GET /dir/page HTTP/1.0\r\n" +
+                "Host: www.thoughtworks.com\r\n" +
+                "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1\r\n" +
+                "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\r\n" +
+                "Accept-Language: en-us,en;q=0.5\r\n" +
+                "Accept-Encoding: gzip,deflate\r\n" +
+                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n" +
+                "Keep-Alive: 300\r\n" +
+                "Connection: keep-alive\r\n" +
+                "Cookie: ubid-main=430-3192711-5866740; x-main=0Kg9EtBCc5sIT3F4SxI@rzDXq7fNqa0Z";
 
-    private List getTextLinesAsList(String text) {
-        String [] lines = text.split("\r\n");
-        return Arrays.asList(lines);
+        HTTPRequest httpRequest = new SeleniumHTTPRequest(request);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        httpRequest.writeTo(out);
+        HTTPRequest rebuiltRequest = new SeleniumHTTPRequest(new String(out.toByteArray()));
+        assertEquals(httpRequest, rebuiltRequest);
     }
 }

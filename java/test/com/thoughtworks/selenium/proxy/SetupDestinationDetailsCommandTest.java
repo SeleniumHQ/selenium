@@ -18,11 +18,12 @@ package com.thoughtworks.selenium.proxy;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
 /**
- * @version $Id: SetupDestinationDetailsCommandTest.java,v 1.6 2004/11/15 18:35:02 ahelleso Exp $
+ * @version $Id: SetupDestinationDetailsCommandTest.java,v 1.7 2004/11/15 23:37:53 ahelleso Exp $
  */
 public class SetupDestinationDetailsCommandTest extends TestCase {
     private Properties props;
@@ -31,7 +32,7 @@ public class SetupDestinationDetailsCommandTest extends TestCase {
         assertTrue(RequestModificationCommand.class.isAssignableFrom(SetupDestinationDetailsCommand.class));
     }
 
-    public void testSetsUpCorrectServerAndPortForNonPort80() throws URISyntaxException {
+    public void testSetsUpCorrectServerAndPortForNonPort80() throws URISyntaxException, IOException {
         String expectedServer = "localhost";
         int expectedPort = 8000;
         HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
@@ -42,7 +43,7 @@ public class SetupDestinationDetailsCommandTest extends TestCase {
         assertEquals(expectedPort, httpRequest.getDestinationPort());
     }
 
-    public void testSetsUpCorrectServerAndPortForDefaultPort() throws URISyntaxException {
+    public void testSetsUpCorrectServerAndPortForDefaultPort() throws URISyntaxException, IOException {
         String expectedServer = "localhost";
         int expectedPort = 80;
         HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: /site/ " + HTTPRequest.CRLF +
@@ -53,7 +54,7 @@ public class SetupDestinationDetailsCommandTest extends TestCase {
         assertEquals(expectedPort, httpRequest.getDestinationPort());
     }
 
-    public void testSetsUpCorrectServerAndPortIfProxySpecified() {
+    public void testSetsUpCorrectServerAndPortIfProxySpecified() throws IOException {
         String expectedServer = "corpproxy";
         int expectedPort = 8080;
 

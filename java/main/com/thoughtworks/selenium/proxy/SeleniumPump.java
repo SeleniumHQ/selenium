@@ -16,36 +16,27 @@
  */
 package com.thoughtworks.selenium.proxy;
 
-import com.thoughtworks.selenium.utils.Assert;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * @version $Id: SeleniumPump.java,v 1.3 2004/11/15 21:19:21 ahelleso Exp $
+ * This pump looks for a HTTP Content-Length header and limits the number of bytes
+ * pumped to its cvalue if it exists.
  */
 public class SeleniumPump implements Pump {
     public static final int BLOCK_SIZE = 2048;
-    private InputStream in;
-    private OutputStream out;
     private static final byte[] NEW_LINE = "\r\n".getBytes();
 
-    public SeleniumPump(InputStream in, OutputStream out) {
-        Assert.assertIsTrue(in != null, "in can't be null");
-        Assert.assertIsTrue(out != null, "out can't be null");
-        this.in = in;
-        this.out = out;
-    }
-
-    public void pump() throws IOException {
-        pumpStatusLine();
-        int contentLength = pumpHeader();
-        pumpBody(contentLength);
+    public void pump(InputStream in, OutputStream out) throws IOException {
+        LineInputStream lineInputStream = new LineInputStream(in);
+        pumpStatusLine(lineInputStream, out);
+        int contentLength = pumpHeader(lineInputStream, out);
+        pumpBody(contentLength, in, out);
         out.flush();
     }
 
-    private void pumpBody(int contentLength) throws IOException {
+    private void pumpBody(int contentLength, InputStream in, OutputStream out) throws IOException {
         boolean shouldRead = true;
         int totalBytesRead = 0;
         int bytesRead;
@@ -83,17 +74,16 @@ public class SeleniumPump implements Pump {
         return toRead;
     }
 
-    private void pumpStatusLine() throws IOException {
-        String statusLine = readLine(in);
+    private void pumpStatusLine(LineInputStream lineInputStream, OutputStream out) throws IOException {
+        String statusLine = lineInputStream.readLine();
         out.write(statusLine.getBytes());
-        out.write(NEW_LINE);
     }
 
-    private int pumpHeader() throws IOException {
+    private int pumpHeader(LineInputStream lineInputStream, OutputStream out) throws IOException {
         int contentLength = -1;
 
         String headerData = null;
-        while (!"".equals((headerData = readLine(in)))) {
+        while (!"\r\n".equals((headerData = lineInputStream.readLine()))) {
             int colonSpace = headerData.indexOf(": ");
             String key = headerData.substring(0, colonSpace);
             if(key.equalsIgnoreCase("content-length")) {
@@ -101,41 +91,8 @@ public class SeleniumPump implements Pump {
                 contentLength = Integer.parseInt(value);
             }
             out.write(headerData.getBytes());
-            out.write(NEW_LINE);
         }
         out.write(NEW_LINE);
         return contentLength;
     }
-
-    // reads a line of text from an InputStream.
-    // We can't use BufferedReader to do this, since we run the risk
-    // of it caching too much (we want to read the content after the header
-    // in a different place).
-    private String readLine(InputStream in) throws IOException {
-        StringBuffer data = new StringBuffer("");
-        int c;
-
-        // if we have nothing to read, just return null
-        in.mark(1);
-        if (in.read() == -1)
-            return null;
-        else
-            in.reset();
-        while ((c = in.read()) >= 0) {
-            // check for an end-of-line character
-            if ((c == 0) || (c == 10) || (c == 13))
-                break;
-            else
-                data.append((char) c);
-        }
-
-        // deal with the case where the end-of-line terminator is \r\n
-        if (c == 13) {
-            in.mark(1);
-            if (in.read() != 10)
-                in.reset();
-        }
-        return data.toString();
-    }
-
 }
