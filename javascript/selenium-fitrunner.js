@@ -69,7 +69,6 @@ FAILURE = 1;
 
 runInterval = 0;
 
-
 function setRunInterval() {
     runInterval = this.value;
     var stepButton = document.getElementById("stepNext");
@@ -82,20 +81,23 @@ function setRunInterval() {
 }
 
 function getSuiteFrame() {
-    return document.getElementById('testSuiteFrame');
+    return window.parent.document.getElementById('testSuiteFrame');
 }
 
 function getTestFrame(){
-	return document.getElementById('testFrame');
+    return window.parent.document.getElementById('testFrame');
+}
+
+function getApplicationFrame(){
+    return window.parent.document.getElementById('applicationFrame');
 }
 
 function loadAndRunIfAuto() {
     loadSuiteFrame();
 }
 
-function loadSuiteFrame()
-{
-    browserbot = new BrowserBot(document.getElementById('myiframe'));
+function loadSuiteFrame() {
+    browserbot = new BrowserBot(getApplicationFrame());
     selenium = new Selenium(browserbot);
     registerCommandHandlers()
 
@@ -103,24 +105,34 @@ function loadSuiteFrame()
     document.getElementById('modeWalk').onclick = setRunInterval;
     document.getElementById('modeStep').onclick = setRunInterval;
 
-	testSuiteName = getQueryStringTestName();
+    testSuiteName = getQueryStringTestName();
 
-	if( testSuiteName != "" ) {
-        addLoadListener(getSuiteFrame(), loadTestFrame);
-		getSuiteFrame().src = testSuiteName;
+    if( testSuiteName != "" ) {
+        addLoadListener(getSuiteFrame(), suiteFrameLoadHook);
+        getSuiteFrame().src = testSuiteName;
+    } else {
+        suiteFrameLoadHook();
     }
-    else
-    	loadTestFrame();
-
 }
 
-function loadTestFrame()
-{
-    removeLoadListener(getSuiteFrame(), loadTestFrame);
-    suiteTable = getSuiteFrame().contentWindow.document.getElementsByTagName("table")[0];
+function addStylesheetLink(doc, bodyClass) {
+    cssLink = doc.createElement("link");
+    cssLink.setAttribute("href", "http://localhost:8000/selenium.css");
+    cssLink.setAttribute("rel", "stylesheet");
+    cssLink.setAttribute("type", "text/css");
+    doc.getElementsByTagName("head")[0].appendChild(cssLink);
+    doc.body.className = bodyClass;
+}
 
+function suiteFrameLoadHook() {
+    removeLoadListener(getSuiteFrame(), suiteFrameLoadHook);
+
+    suiteDocument = getSuiteFrame().contentWindow.document;
+    addStylesheetLink(suiteDocument, "Suite");
+    
     // Add an onclick function to each link in the suite table
-    for(rowNum = 1;rowNum < suiteTable.rows.length; rowNum++) {
+    suiteTable = suiteDocument.getElementsByTagName("table")[0]
+    for (rowNum = 1;rowNum < suiteTable.rows.length; rowNum++) {
         addOnclick(suiteTable, rowNum);
     }
 
@@ -128,7 +140,7 @@ function loadTestFrame()
         startTestSuite();
     else {
         testLink = suiteTable.rows[currentTestRow+1].cells[0].getElementsByTagName("a")[0];
-        getTestFrame().src = testLink.href;
+        loadTest(testLink.href);
     }
 }
 
@@ -158,7 +170,7 @@ function addOnclick(suiteTable, rowNum) {
         }
         // Otherwise, just open up the fresh page.
         else {
-            getTestFrame().src = suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href;
+            loadTest(suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href);
         }
 
         return false;
@@ -166,16 +178,16 @@ function addOnclick(suiteTable, rowNum) {
 }
 
 function getQueryStringTestName() {
-	testName = "";
+    testName = "";
 
-	myVars = location.search.substr(1).split('&');
-	for (var i =0;i < myVars.length; i++)
-	{
-		nameVal = myVars[i].split('=')
-		if( nameVal[0] == "test" )
-			testName="/" + nameVal[1];
-	}
-	return testName;
+    myVars = location.search.substr(1).split('&');
+    for (var i =0;i < myVars.length; i++)
+    {
+        nameVal = myVars[i].split('=')
+        if( nameVal[0] == "test" )
+            testName="/" + nameVal[1];
+    }
+    return testName;
 }
 
 function isAutomatedRun() {
@@ -196,6 +208,18 @@ function resetMetrics() {
     numCommandFailures = 0;
     numCommandErrors = 0;
     startTime = new Date().getTime();
+}
+
+function loadTest(testSrc) {
+    addLoadListener(getTestFrame(), testFrameLoadHook);
+    getTestFrame().src = testSrc;
+}
+
+function testFrameLoadHook() {
+    removeLoadListener(getTestFrame(), testFrameLoadHook);
+    addStylesheetLink(getTestFrame().contentWindow.document, "Test");
+    var testDocument = getTestFrame().contentWindow.document;
+    var testTable = testDocument.getElementsByTagName("table")[0];
 }
 
 function runSingleTest() {
@@ -271,7 +295,7 @@ function runNextTest() {
         testLink = suiteTable.rows[currentTestRow].cells[0].getElementsByTagName("a")[0];
 
         addLoadListener(getTestFrame(), startTest);
-        getTestFrame().src = testLink.href;
+        loadTest(testLink.href);
     }
 }
 
@@ -395,11 +419,11 @@ function replaceVariables(str) {
      var variableIndex = str;
      var variableFunction='';
 
-	 if(pattern.test(str)) {
-	         pieces = str.split('.');
+     if(pattern.test(str)) {
+             pieces = str.split('.');
 
-			 variableIndex = pieces[0];
-			 variableFunction = pieces[1];
+             variableIndex = pieces[0];
+             variableFunction = pieces[1];
     }
 
 
@@ -410,10 +434,10 @@ function replaceVariables(str) {
                               });
 
     if( variableFunction == '')
-    	return variableValue;
+        return variableValue;
     else
     {
-    	return eval("variableValue."+ eval("variableFunction") + "()" )
+        return eval("variableValue."+ eval("variableFunction") + "()" )
     }
 }
 
