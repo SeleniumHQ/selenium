@@ -17,6 +17,7 @@
 
 package com.thoughtworks.selenium.embedded.jetty;
 
+import com.thoughtworks.selenium.CommandProcessor;
 import junit.framework.TestCase;
 
 import java.io.BufferedReader;
@@ -26,14 +27,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Vector;
 
-import com.thoughtworks.selenium.embedded.jetty.JettyCommandProcessor;
-import com.thoughtworks.selenium.CommandProcessor;
-
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
-public class JettySeleniumServerTestCase extends TestCase {
+public class JettyCommandProcessorTestCase extends TestCase {
 
     CommandProcessor selenium;
     private Vector result;
@@ -116,7 +114,7 @@ public class JettySeleniumServerTestCase extends TestCase {
     // this one is good cos you can *see* it.
     public static void main(String[] args) throws Exception {
 
-        JettySeleniumServerTestCase dstc = new JettySeleniumServerTestCase();
+        JettyCommandProcessorTestCase dstc = new JettyCommandProcessorTestCase();
 
         dstc.setUp();
 
