@@ -52,12 +52,10 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * @version $Id: RedirectingRelay.java,v 1.7 2004/11/14 06:25:52 mikemelia Exp $
+ * @version $Id: RedirectingRelay.java,v 1.8 2004/11/15 10:44:38 mikemelia Exp $
  */
 public class RedirectingRelay implements Relay {
     private static final Log LOG = LogFactory.getLog(RedirectingRelay.class);
-    private static final String proxy = (String) System.getProperties().get("http.proxyHost");
-    private static final String proxyPort = (String) System.getProperties().get("http.proxyPort");
     private static final int protocolLength = SeleniumHTTPRequest.SELENIUM_REDIRECT_PROTOCOL.length();
     private final RequestInput requestInput;
     private final OutputStream responseStream;
@@ -100,24 +98,11 @@ public class RedirectingRelay implements Relay {
             InputStream backStream = destinationSocket.getInputStream();
             destStream.write(requestToDest.getBytes());
             destStream.flush();
-            pump(backStream, responseStream);
+            Pump pump = new SeleniumPump(backStream, responseStream);
+            pump.pump();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void pump(InputStream in, OutputStream out) throws IOException {
-        int bytesRead = 0;
-        byte[] response = new byte[2048];
-        while (bytesRead > -1) {
-            bytesRead = in.read(response);
-            if (bytesRead > -1) {
-                LOG.debug("Waiting");
-                out.write(response);
-                LOG.debug("Number of bytes returned = " + bytesRead);
-            }
-        }
-        out.flush();
     }
 
     private String redirectResponse(HTTPRequest request) {

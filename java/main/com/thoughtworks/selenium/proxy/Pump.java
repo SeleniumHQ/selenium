@@ -43,45 +43,11 @@ DAMAGE.
 */
 package com.thoughtworks.selenium.proxy;
 
-import com.thoughtworks.selenium.utils.Assert;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
 
 /**
- * @version $Id: ClientConnectionThread.java,v 1.6 2004/11/15 10:44:38 mikemelia Exp $
+ * @version $Id: Pump.java,v 1.1 2004/11/15 10:44:38 mikemelia Exp $
  */
-public class ClientConnectionThread extends Thread implements ConnectionThread {
-    private final Socket socket;
-    private final RequestModificationCommand requestModificationCommand;
-
-    public ClientConnectionThread(Socket socket, RequestModificationCommand requestModificationCommand) {
-        Assert.assertIsTrue(socket != null, "socket can't be null");
-        Assert.assertIsTrue(requestModificationCommand != null, "requestModificationCommand can't be null");
-        this.socket = socket;
-        this.requestModificationCommand = requestModificationCommand;
-    }
-
-    /**
-     * @see Thread#run()
-     */
-    public void run() {
-        try {
-            InputStream inputStream = socket.getInputStream();
-            OutputStream outputStream = socket.getOutputStream();
-            Relay relay = new RedirectingRelay(new RequestInputStream(inputStream),
-                                               outputStream,
-                                               requestModificationCommand);
-            relay.relay();
-            outputStream.flush();
-            inputStream.close();
-            outputStream.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+public interface Pump {
+    void pump() throws IOException;
 }

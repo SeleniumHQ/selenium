@@ -43,45 +43,41 @@ DAMAGE.
 */
 package com.thoughtworks.selenium.proxy;
 
-import com.thoughtworks.selenium.utils.Assert;
+import junit.framework.TestCase;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
 
 /**
- * @version $Id: ClientConnectionThread.java,v 1.6 2004/11/15 10:44:38 mikemelia Exp $
+ * @version $Id: SeleniumPumpTest.java,v 1.1 2004/11/15 10:44:38 mikemelia Exp $
  */
-public class ClientConnectionThread extends Thread implements ConnectionThread {
-    private final Socket socket;
-    private final RequestModificationCommand requestModificationCommand;
+public class SeleniumPumpTest extends TestCase {
 
-    public ClientConnectionThread(Socket socket, RequestModificationCommand requestModificationCommand) {
-        Assert.assertIsTrue(socket != null, "socket can't be null");
-        Assert.assertIsTrue(requestModificationCommand != null, "requestModificationCommand can't be null");
-        this.socket = socket;
-        this.requestModificationCommand = requestModificationCommand;
+    public void testPumpsReceivedDataBackOut() throws IOException {
+        String jabber = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        ByteArrayInputStream in = new ByteArrayInputStream(jabber.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream(SeleniumPump.BLOCK_SIZE);
+
+        Pump pump = new SeleniumPump(in, out);
+        pump.pump();
+        assertEquals(jabber, out.toString());
     }
 
-    /**
-     * @see Thread#run()
-     */
-    public void run() {
-        try {
-            InputStream inputStream = socket.getInputStream();
-            OutputStream outputStream = socket.getOutputStream();
-            Relay relay = new RedirectingRelay(new RequestInputStream(inputStream),
-                                               outputStream,
-                                               requestModificationCommand);
-            relay.relay();
-            outputStream.flush();
-            inputStream.close();
-            outputStream.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void testMoreDataThanBlockSizePumped() throws IOException {
+        String jabber = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuffer buff = new StringBuffer(5000);
+        for (int i = 0; i < 100; ++i) {
+            buff.append(jabber);
         }
+        ByteArrayInputStream in = new ByteArrayInputStream(buff.toString().getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream(5000);
+
+        Pump pump = new SeleniumPump(in, out);
+        pump.pump();
+        assertEquals(2600, out.toString().length());
+    }
+
+    public void testOnlyPumpsContentLengthBytes() throws IOException {
     }
 }
