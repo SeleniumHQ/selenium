@@ -21,7 +21,7 @@ import com.thoughtworks.selenium.BrowserLauncher;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DefaultBrowserLauncher implements BrowserLauncher {
 
@@ -39,5 +39,9 @@ public class DefaultBrowserLauncher implements BrowserLauncher {
 
     public void launch(String url) {
         delegate.launch(url);
+    }
+
+    public void close() {
+        delegate.close();
     }
 }

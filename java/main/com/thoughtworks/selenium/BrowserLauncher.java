@@ -21,8 +21,9 @@ import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface BrowserLauncher {
     void launch(String url);
+    void close();
 }
