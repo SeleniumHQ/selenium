@@ -3,7 +3,7 @@
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Type Text Events in IE</title>
+  <title>Test Type Text Events</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
@@ -19,8 +19,8 @@
     </tr>
     <tr>
       <td>verifyValue</td>
-      <td>theTextbox</td>
-      <td>&nbsp;</td>
+      <td>theCheckbox</td>
+      <td>off</td>
     </tr>
     <tr>
       <td>verifyValue</td>
@@ -28,43 +28,42 @@
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Set the textbox value from blank -->
+    <!-- Check the checkbox (initially unchecked) -->
     <tr>
-      <td>type</td>
-      <td>theTextbox</td>
-      <td>first value</td>
+      <td>click</td>
+      <td>theCheckbox</td>
+      <td>nowait</td>
     </tr>
     <tr>
       <td>verifyValue</td>
-      <td>theTextbox</td>
-      <td>first value</td>
+      <td>theCheckbox</td>
+      <td>on</td>
     </tr>
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theTextbox)} {select(theTextbox)} {change(theTextbox)} {blur(theTextbox)}</td>
+      <td>{focus(theCheckbox)} {click(theCheckbox)} {change(theCheckbox)} {blur(theCheckbox)}</td>
     </tr>
-
-    <!-- Clear the event log, and change the value -->
+    <!-- Click the checkbox again, unchecking it -->
     <tr>
       <td>type</td>
       <td>eventlog</td>
       <td>&nbsp;</td>
     </tr>
     <tr>
-      <td>type</td>
-      <td>theTextbox</td>
-      <td>changed value</td>
+      <td>click</td>
+      <td>theCheckbox</td>
+      <td>nowait</td>
     </tr>
     <tr>
       <td>verifyValue</td>
-      <td>theTextbox</td>
-      <td>changed value</td>
+      <td>theCheckbox</td>
+      <td>off</td>
     </tr>
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theTextbox)} {select(theTextbox)} {change(theTextbox)} {blur(theTextbox)}</td>
+      <td>{focus(theCheckbox)} {click(theCheckbox)} {change(theCheckbox)} {blur(theCheckbox)}</td>
     </tr>
   </tbody>
 </table>
