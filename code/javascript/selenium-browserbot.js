@@ -62,26 +62,26 @@ BrowserBot = function(frame) {
     this.currentWindowName = null;
     
     this.recordedAlerts = new Array();
+    this.recordedConfirmations = new Array();
 
 }
 
-BrowserBot.prototype.recordAlert = function(alert) {
-   this.recordedAlerts.push(alert);
-}
-
-/*
- *  Indicates any alerts have been generated
- */
 BrowserBot.prototype.hasAlerts = function() {
    return (this.recordedAlerts.length > 0) ;
 }
 
-/*
- * Retreives the next alert
- */
 BrowserBot.prototype.getNextAlert = function() {
    return this.recordedAlerts.shift();
 }
+
+BrowserBot.prototype.hasConfirmations = function() {
+    return (this.recordedConfirmations.length > 0) ;
+}
+ 
+BrowserBot.prototype.getNextConfirmation = function() {
+    return this.recordedConfirmations.shift();
+}
+
 
 BrowserBot.prototype.getFrame = function() {
     return this.frame;
@@ -116,31 +116,36 @@ BrowserBot.prototype.getCurrentPage = function() {
         if (this.currentWindowName != null) {
             testWindow = this.getTargetWindow(this.currentWindowName);
         }
-        this.currentPage = this.wrapWindow(testWindow);
+        modifyWindowToRecordPopUpDialogs(testWindow, this);
+        modifyWindowToClearPageCache(testWindow, this);
+        this.currentPage =  new PageBot(testWindow);
     }
+    
     return this.currentPage;
-}
 
-BrowserBot.prototype.wrapWindow = function(testWindow) {
-    var browserbot = this;
+     // private functions below - is there a better way?
+    
+     function modifyWindowToRecordPopUpDialogs(window, browserBot) {   
+          window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
+          window.confirm = function(message){browserBot.recordedConfirmations.push(message); return true;};
+     }
+     
+     function modifyWindowToClearPageCache(window, browserBot) {
+        //SPIKE factor this better via TDD
+        function clearPageCache() {
+          browserbot.currentPage = null;
+        }
 
-    testWindow.alert = function(alert){browserbot.recordAlert(alert);};
+       if (window.addEventListener) {
+          testWindow.addEventListener("unload",clearPageCache, true);
+       }
+       else if (window.attachEvent) {
+          testWindow.attachEvent("onunload",clearPageCache);
+       }
+       // End SPIKE
+     }
+    
 
-    //SPIKE factor this better via TDD
-    function clearPageCache() {
-       browserbot.currentPage = null;
-    }
-
-    if (window.addEventListener) {
-        testWindow.addEventListener("unload",clearPageCache, true);
-    }
-    else if (window.attachEvent) {
-        testWindow.attachEvent("onunload",clearPageCache);
-    }
-    // End SPIKE
-
-    var pageBot = new PageBot(testWindow);
-    return pageBot;
 }
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {

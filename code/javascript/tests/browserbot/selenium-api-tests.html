@@ -306,6 +306,43 @@ function testShouldPassIfdoVerifyAlertWithRightMessage() {
     verifyMocks(); 
 }
 
+function testShouldFailIfTryToVerifyConfirmationWhenThereAreNone() {
+     mockBrowserBot.expects("hasConfirmations").returns(false);
+     
+     try {
+         selenium.assertConfirmation("A made up confirmation");
+         fail("verifyConfirmation should have failed");
+     } catch (e) {
+        assertEquals("There were no confirmations", e.jsUnitMessage);
+     }   
+     
+     verifyMocks(); 
+}
+ 
+function testShouldFailIfdoVerifyConfirmationWithWrongMessage() {
+      mockBrowserBot.expects("hasConfirmations").returns(true); 
+      mockBrowserBot.expects("getNextConfirmation").returns("The real confirmation");
+     
+     try {
+         selenium.assertConfirmation("The expected confirmation");
+         fail("verifyConfirmation should have failed");
+     } catch (e) {
+        assertEquals("The confirmation message was [The real confirmation]", e.jsUnitMessage);
+     }   
+     
+     verifyMocks(); 
+}
+
+function testShouldPassIfdoVerifyConfirmationWithRightMessage() {
+      mockBrowserBot.expects("hasConfirmations").returns(true); 
+      mockBrowserBot.expects("getNextConfirmation").returns("The real confirmation");
+ 
+     selenium.assertConfirmation("The real confirmation");
+     
+     verifyMocks(); 
+}
+
+
 function testVerifySelectedSuccess() {
     var mockTextControl = Object();
     mockTextControl.selectedIndex = 1;

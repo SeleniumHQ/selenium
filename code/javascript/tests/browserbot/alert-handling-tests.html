@@ -28,8 +28,10 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
-   browserBot = new BrowserBot();
-   pageBot = browserBot.wrapWindow(window);
+   testFrame =  document.getElementById("frame");
+   testWindow = testFrame.contentWindow;
+   browserBot = new BrowserBot(testFrame);
+   browserBot.getCurrentPage();
 }
 
 function testShouldNotReportAnyAlertsIfNoneHaveBeenGenerated() {
@@ -38,15 +40,15 @@ function testShouldNotReportAnyAlertsIfNoneHaveBeenGenerated() {
 }
 
 function testShouldReportSingleAlertIfGenerated() {
-    alert("Be Alert, Not Alarmed");
+    testWindow.alert("Be Alert, Not Alarmed");
     
     assertTrue(browserBot.hasAlerts());
     assertEquals("Be Alert, Not Alarmed", browserBot.getNextAlert());
 }
 
 function testShouldReportMultipleAlertsInOrderIfGenerated() {
-    alert("Warning: unfunny joke ahead");
-    alert("Be Alert, We need more Lerts");
+    testWindow.alert("Warning: unfunny joke ahead");
+    testWindow.alert("Be Alert, We need more Lerts");
     
     assertTrue(browserBot.hasAlerts());
     assertEquals("Warning: unfunny joke ahead", browserBot.getNextAlert());
@@ -56,7 +58,7 @@ function testShouldReportMultipleAlertsInOrderIfGenerated() {
 }
 
 function testShouldRemoveAlertWhenItIsRetreived() {
-    alert("Be Alert, Not Alarmed");
+    testWindow.alert("Be Alert, Not Alarmed");
     
     assertTrue(browserBot.hasAlerts());
     assertNotUndefined(browserBot.getNextAlert());
@@ -64,26 +66,13 @@ function testShouldRemoveAlertWhenItIsRetreived() {
     assertUndefined(browserBot.getNextAlert());
 }
 
-function testShouldReportAlertsFromMultiplePages() {
-    var secondWindow = frames['aframe'];
-    var secondPageBot = browserBot.wrapWindow(secondWindow);
-
-    window.alert("I am an alert in the first window");
-    secondWindow.alert("I am an alert in the second window");
- 
-    assertTrue(browserBot.hasAlerts());
-    assertEquals("I am an alert in the first window", browserBot.getNextAlert());
-    assertTrue(browserBot.hasAlerts());
-    assertEquals("I am an alert in the second window", browserBot.getNextAlert());
-    assertFalse(browserBot.hasAlerts());
-}
 
 </script>
   </head>
 
   <body>
     <h1>Selenium PageBot Alert Handling Tests</h1>
-    <iframe name="aframe" id="aframe" src="about:blank"></iframe>
+    <iframe NAME="frame" ID="frame" SRC=""></iframe>
     
   </body>
 </html>

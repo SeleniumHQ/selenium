@@ -34,6 +34,59 @@ function testCommandHandlerExecuteCallsTheExecutorFunction() {
 
     assertTrue(called);
 }
+
+ 
+function testShouldFailActionCommandsIfAlertPresent() {
+ 
+     mockBrowserBot = new Mock();
+ 
+     function MockSelenium() {
+        this.browserbot = mockBrowserBot;
+     }
+ 
+     mockBrowserBot.expects("hasAlerts").returns(true);
+     mockBrowserBot.expects("getNextAlert").returns("The Alert");
+     
+     var executorCalled = false;
+     var executor = function() { executorCalled = true;};
+     var handler = new ActionHandler(executor, false);
+     try {   
+        handler.execute(new MockSelenium(), "command");
+        fail("Command Should have failed");
+     } catch ( e ) {
+        assertNotEquals("Command Should have failed", e.jsUnitMessage);
+     }
+ 
+     assertFalse(executorCalled);
+     mockBrowserBot.verify();
+}
+ 
+function testShouldFailActionCommandsIfConfirmPresent() {
+ 
+     mockBrowserBot = new Mock();
+ 
+     function MockSelenium() {
+        this.browserbot = mockBrowserBot;
+     }
+ 
+     mockBrowserBot.expects("hasAlerts").returns(false);
+     mockBrowserBot.expects("hasConfirmations").returns(true);
+     mockBrowserBot.expects("getNextConfirmation").returns("The Confirmation");
+     
+     var executorCalled = false;
+     var executor = function() { executorCalled = true;};
+     var handler = new ActionHandler(executor, false);
+     try {   
+        handler.execute(new MockSelenium(), "command");
+        fail("Command Should have failed");
+     } catch ( e ) {
+        assertNotEquals("Command Should have failed", e.jsUnitMessage);
+     }
+ 
+     assertFalse(executorCalled);
+     mockBrowserBot.verify();
+}
+
 </script>
   </head>
 
