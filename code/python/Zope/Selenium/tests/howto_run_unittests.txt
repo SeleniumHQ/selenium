@@ -1,3 +1,19 @@
-1) change directory to InstanceHome\Products\Selenium\tests
-2) python.exe test_dispatcher.py
-3) python.exe test_interpreter.py
+This text is borrowed from CMFPlone/tests/README.txt:
+------------------------------------------------------
+Selenium unit tests depend on the ZopeTestCase package.
+
+How to run the unit tests:
+
+  Setup your enviroment variables and run the test modules:
+
+    - Set SOFTWARE_HOME to point to your Zope installation, e.g: /usr/lib/zope/lib/python
+
+    - If you use a zope instance setup set INSTANCE_HOME to your Zope instance, e.g: /var/lib/zope/instance/default
+
+    - Run single test: python test_dispatcher.py
+
+    - Run test-suite: python runalltests.py
+
+
+Example:
+C:\>"C:\Program Files\Plone 2\Python\python.exe" "C:\Program Files\Plone 2\Data\Products\Selenium\tests\runalltests.py"

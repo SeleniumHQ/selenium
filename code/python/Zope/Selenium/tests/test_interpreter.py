@@ -4,7 +4,7 @@ import unittest
 if __name__ == '__main__':
     sys.path.insert(0, '..')
 
-from Interpreter import SeleniumInterpreter, translate
+from Products.Selenium.Interpreter import SeleniumInterpreter, translate
 
 class REQUEST:
     """ a mock HTTP request object """
