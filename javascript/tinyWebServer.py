@@ -21,7 +21,7 @@ import BaseHTTPServer
 import CGIHTTPServer
 import time
 
-PORT = 8004
+PORT = 8000
 
 class HTTPHandler(CGIHTTPServer.CGIHTTPRequestHandler):
     """
