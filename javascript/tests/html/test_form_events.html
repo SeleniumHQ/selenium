@@ -21,6 +21,7 @@ function attachEventRecorders(elementId) {
     var element = document.getElementById(elementId);
     element.onfocus=recordEvent;
     element.onchange=recordEvent;
+    element.onclick=recordEvent;
     element.onselect=recordEvent;
     element.onblur=recordEvent;
 }
@@ -28,10 +29,23 @@ function attachEventRecorders(elementId) {
 function setupEventRecorders() {
     attachEventRecorders('theTextbox');
     attachEventRecorders('theCheckbox');
-    attachEventRecorders('theForm');
     attachEventRecorders('theRadio1');
     attachEventRecorders('theRadio2');
     attachEventRecorders('theSelect');
+    attachEventRecorders('theButton');
+    attachEventRecorders('theSubmit');
+}
+
+// This functionality is only provided for manual clickety-click assessing of events.
+// Not used in automated testing
+function setupFormEventRecorders(enable) {
+    var recorder = enable ? recordEvent : null;
+    var formElement = document.forms[0];
+    formElement.onfocus=recorder;
+    formElement.onchange=recorder;
+    formElement.onclick=recorder;
+    formElement.onselect=recorder;
+    formElement.onblur=recorder;
 }
 
 -->
@@ -43,6 +57,8 @@ function setupEventRecorders() {
 <input name="theCheckbox" id="theCheckbox" type="checkbox"/>
 <input name="theRadio" id="theRadio1" type="radio" value="radio1"/><input name="theRadio" id="theRadio2" type="radio" value="theRadio"/>
 <select name="theSelect" id="theSelect"><option value="">Empty Option</option><option value="option1">First Option</option><option value="option2">Second Option</option></select>
+<input name="theButton" id="theButton" type="button" value="A Button"/>
+<input name="theSubmit" id="theSubmit" type="submit" value="The Submit"/>
 </form>
 
 <hr/>
@@ -50,6 +66,7 @@ function setupEventRecorders() {
 <div>EventLog<br/>
 <textarea id="eventlog" rows="15" cols="80"></textarea><br/>
 Record events:<input type="checkbox" checked="checked" onclick="recording=this.checked;"/><br/>
+Record form events:<input type="checkbox" onclick="setupFormEventRecorders(this.checked);"/><br/>
 </div>
 </body>
 </html>
