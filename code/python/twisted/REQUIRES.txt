@@ -1,0 +1,8 @@
+Developed and tested with the following configuration:
+
+OS: Windows XP
+Python 2.3.4 - http://python.org/2.3.4/
+Python win32all - http://starship.python.net/crew/mhammond/win32/Downloads.html
+Twisted 1.3.0 - http://twistedmatrix.com/products/download
+Perl 5.8.6 - http://www.activestate.com/Products/Download/Download.plex?id=ActivePerl
+CGIProxy - http://www.jmarshall.com/tools/cgiproxy/
