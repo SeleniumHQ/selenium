@@ -1,20 +1,24 @@
-import sys
-import unittest
+#
+# Tests the Selenium command dispatcher
+#
 
+import os, sys
 if __name__ == '__main__':
-    sys.path.insert(0, '..')
+    execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Dispatcher import Dispatcher
+from Testing import ZopeTestCase
+from Testing.ZopeTestCase import base
+from Products.Selenium.Dispatcher import Dispatcher
 
 class REQUEST:
     """ a mock HTTP request object """
     form = {}
 
 
-class DispatcherTests(unittest.TestCase):
+class TestDispatcher(base.TestCase):
 
     ### addCommand test    
-    def test_addCommand(self):
+    def testAddCommand(self):
         dispatcher = Dispatcher()
         size = len(dispatcher._commands)
         self.assertEquals(0, size, '_commands queue should be empty')  
@@ -148,6 +152,12 @@ class DispatcherTests(unittest.TestCase):
     def test_apiDriver_with_empty_result_queue(self):
         self.fail('test not written yet')
 
+
+def test_suite():
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestDispatcher))
+    return suite
                           
 if __name__ == '__main__':
-    unittest.main()
+    framework()
