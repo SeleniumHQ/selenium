@@ -7,7 +7,7 @@
     <target name="dist">
         <delete dir="dist"/>
         <mkdir dir="dist"/>
-        <zip zipfile="dist/selenium_v${version}-all-langs-src.zip">
+        <zip zipfile="dist/selenium-${version}-all-langs-src.zip">
             <fileset dir=".">
                 <exclude name="squeak/**"/>            
                 <exclude name="dotnet/**"/>            
@@ -23,7 +23,7 @@
             </fileset>
         </zip>
 
-        <zip zipfile="dist/selenium_v${version}-ruby.zip">
+        <zip zipfile="dist/selenium-${version}-ruby.zip">
             <fileset dir=".">
                 <include name="ruby/**"/>            
                 <include name="javascript/**"/>
@@ -42,8 +42,8 @@
     </target>
 
     <target name="publish-dist" depends="dist">
-        <copy todir="${website.root}" file="dist/selenium_v${version}-all-langs-src.zip"/>
-        <copy todir="${website.root}" file="dist/selenium_v${version}-ruby.zip"/>
+        <copy todir="${website.root}" file="dist/selenium-${version}-all-langs-src.zip"/>
+        <copy todir="${website.root}" file="dist/selenium-${version}-ruby.zip"/>
 
     </target>
 
