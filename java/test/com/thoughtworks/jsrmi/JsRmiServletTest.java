@@ -3,17 +3,14 @@ package com.thoughtworks.jsrmi;
 import edu.emory.mathcs.util.concurrent.Exchanger;
 import edu.emory.mathcs.util.concurrent.Executors;
 import edu.emory.mathcs.util.concurrent.Future;
-import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class JsRmiServletTest extends MockObjectTestCase {
     public void testShould() {

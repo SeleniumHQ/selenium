@@ -15,14 +15,14 @@ package com.thoughtworks.selenium.proxy;
   limitations under the License. 
 */
 
+import com.thoughtworks.selenium.utils.Assert;
+
 import java.io.IOException;
 import java.net.Socket;
 
-import com.thoughtworks.selenium.utils.Assert;
-
 
 /**
- * @version $Id: ClientConnectionThread.java,v 1.3 2004/11/13 05:33:36 ahelleso Exp $
+ * @version $Id: ClientConnectionThread.java,v 1.4 2004/11/13 05:46:46 ahelleso Exp $
  */
 public class ClientConnectionThread extends Thread implements ConnectionThread {
     private final Socket socket;

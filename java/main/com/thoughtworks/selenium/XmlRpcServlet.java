@@ -3,8 +3,8 @@ package com.thoughtworks.selenium;
 import marquee.xmlrpc.XmlRpcParser;
 import marquee.xmlrpc.XmlRpcServer;
 import marquee.xmlrpc.util.ServerInputStream;
-import org.xml.sax.helpers.XMLReaderAdapter;
 import org.apache.crimson.parser.XMLReaderImpl;
+import org.xml.sax.helpers.XMLReaderAdapter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +15,7 @@ import java.io.OutputStream;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class XmlRpcServlet extends HttpServlet {
     private final XmlRpcServer server;

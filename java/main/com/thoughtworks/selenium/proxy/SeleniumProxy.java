@@ -15,15 +15,15 @@ package com.thoughtworks.selenium.proxy;
   limitations under the License.
 */
 
+import com.thoughtworks.selenium.utils.Assert;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.thoughtworks.selenium.utils.Assert;
-
 /**
  * @author <a href="mailto:mikemelia@thoughtworks.net">Mike Melia</a>
- * @version $Id: SeleniumProxy.java,v 1.2 2004/11/12 07:49:50 mikemelia Exp $
+ * @version $Id: SeleniumProxy.java,v 1.3 2004/11/13 05:46:46 ahelleso Exp $
  */
 public class SeleniumProxy
 {

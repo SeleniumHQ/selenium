@@ -15,14 +15,14 @@ package com.thoughtworks.selenium.proxy;
   limitations under the License. 
 */
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-
 import org.jmock.MockObjectTestCase;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
- * @version $Id: DefaultRequestStreamTest.java,v 1.2 2004/11/13 04:46:58 ahelleso Exp $
+ * @version $Id: DefaultRequestStreamTest.java,v 1.3 2004/11/13 05:46:47 ahelleso Exp $
  */
 public class DefaultRequestStreamTest extends MockObjectTestCase {
     

@@ -1,12 +1,12 @@
 package com.thoughtworks.selenium;
 
-import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class WikiCommandGenerator {
     private final CommandExecutor commandExecutor;

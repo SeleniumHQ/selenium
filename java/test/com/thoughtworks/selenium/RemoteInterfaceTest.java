@@ -1,12 +1,12 @@
 package com.thoughtworks.selenium;
 
-import org.jmock.MockObjectTestCase;
 import edu.emory.mathcs.util.concurrent.Exchanger;
 import edu.emory.mathcs.util.concurrent.Executors;
+import org.jmock.MockObjectTestCase;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RemoteInterfaceTest extends MockObjectTestCase {
     public void testShouldGetCommandFromExchanger() throws InterruptedException {

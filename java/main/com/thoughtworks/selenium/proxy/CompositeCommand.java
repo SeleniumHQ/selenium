@@ -15,14 +15,14 @@ package com.thoughtworks.selenium.proxy;
   limitations under the License. 
 */
 
+import com.thoughtworks.selenium.utils.Assert;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.thoughtworks.selenium.utils.Assert;
-
 /**
- * $Id: CompositeCommand.java,v 1.1 2004/11/11 12:19:47 mikemelia Exp $
+ * $Id: CompositeCommand.java,v 1.2 2004/11/13 05:46:46 ahelleso Exp $
  */
 public class CompositeCommand implements RequestModificationCommand {
     private final List components = new LinkedList();
