@@ -19,6 +19,7 @@ package com.thoughtworks.selenium.jwebunit;
 import java.io.PrintStream;
 
 import junit.framework.TestCase;
+import com.thoughtworks.selenium.Selenium;
 
 /**
  * Superclass for Junit TestCases which provides web application navigation and
@@ -35,19 +36,18 @@ public class WebTestCase extends TestCase implements WebTester {
 
     public WebTestCase(String name) {
         super(name);
-        tester = initializeWebTester();
     }
 
     public WebTestCase() {
-        tester = initializeWebTester();
     }
 
     /**
-     * Initializes a new instance of the web tester class.
+     * Initializes a new instance of the web tester delegate class.
      * Override if necessary to return subclass of WebTester.
      */
-    public WebTester initializeWebTester() {
-        return new DefaultWebTester();
+    public WebTester initializeWebTester(Selenium selenium) {
+        tester = new DefaultWebTester(selenium);
+        return tester;
     }
 
     protected WebTester getTester() {

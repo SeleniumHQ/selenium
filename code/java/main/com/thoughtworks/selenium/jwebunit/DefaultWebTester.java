@@ -16,6 +16,8 @@
  */
 package com.thoughtworks.selenium.jwebunit;
 
+import com.thoughtworks.selenium.Selenium;
+
 import java.io.PrintStream;
 
 /**
@@ -28,6 +30,12 @@ import java.io.PrintStream;
  *  @author Paul Hammant (Forked from JWebUnit @ SourceForge)
  */
 public class DefaultWebTester implements WebTester {
+
+    private Selenium selenium;
+
+    public DefaultWebTester(Selenium selenium) {
+        this.selenium = selenium;
+    }
 
     /**
      * Begin conversation at a url relative to the application root.
