@@ -19,11 +19,11 @@ package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
-public class SeleneseCommand {
+public class DefaultSeleneseCommand implements SeleneseCommand {
 
-    public SeleneseCommand(String command, String field, String value) {
+    public DefaultSeleneseCommand(String command, String field, String value) {
         this.command = command;
         this.field = field;
         this.value = value;
@@ -33,7 +33,7 @@ public class SeleneseCommand {
     public final String field;
     public final String value;
 
-    public String toString() {
+    public String getCommandString() {
         return "|" + command + "|" + field + "|" + value +"|";
     }
 
@@ -44,6 +44,6 @@ public class SeleneseCommand {
         String command = inputLine.substring(1,ix);
         String field = inputLine.substring(ix + 1 ,ix2);
         String value = inputLine.substring(ix2 + 1, ix3);
-        return new SeleneseCommand(command, field, value);
+        return new DefaultSeleneseCommand(command, field, value);
     }
 }

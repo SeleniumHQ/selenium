@@ -32,7 +32,7 @@ import java.io.Writer;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public abstract class AbstractSeleneseServlet extends HttpServlet {
 
@@ -62,12 +62,12 @@ public abstract class AbstractSeleneseServlet extends HttpServlet {
                 seleneseHandler = getRemoteSeleneseHandler(servletContext, writer);
             }
             if (seleneseHandler != null) {
-                writer.write(seleneseHandler.handleCommandResult(null).toString());
+                writer.write(seleneseHandler.handleCommandResult(null).getCommandString());
             }
         } else if (commandReply != null){
             SeleneseCommand command = handleCommand(servletContext, commandReply);
-            writer.write(command.toString());
-            if (command.command.equals("end")) {
+            writer.write(command.getCommandString());
+            if (commandReply.equals("end")) {
                 endTests();
 
                 servletContext.setAttribute("remote-selenese-handler", null);
