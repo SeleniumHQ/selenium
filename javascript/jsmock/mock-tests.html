@@ -76,7 +76,7 @@ function testCallingExpectedFunctionWithTooManyArgumentsShouldFail() {
    } catch(expected) {
      return
    }
-   fail("Should fail because all args weren't passed!")
+   fail("Should fail because too many args were passed!")
 }
 
 function testShouldCreateMockInstancesWithoutSideffects() {
@@ -91,7 +91,7 @@ function testShouldCreateMockInstancesWithoutSideffects() {
    } catch(expected) {
      return
    }
-   fail("Should fail because bar wasn't the expected arg!")
+   fail("Should fail because bar was called with the wrong method!")
 }
 
 function testCallingExpectedFunctionWithReturnShouldReturnValue() {
