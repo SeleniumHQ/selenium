@@ -1,6 +1,6 @@
 <project name="Selenium Javascript Build" default="run_jsunit_tests" basedir=".">
 
-    <property name="version" value="0.1.2"/>
+    <property name="version" value="0.2"/>
 
     <!-- global properties -->
     <property name="JSUnitHome" value="${basedir}/jsunit"/>
