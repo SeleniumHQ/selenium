@@ -15,16 +15,20 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium.b.servlet;
+
+import com.thoughtworks.selenium.b.SeleneseCommand;
+
+import java.rmi.RemoteException;
+import java.rmi.Remote;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  */
-public interface Selenium extends Startable {
+public interface RemoteSeleneseHandler extends Remote {
 
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
-    void endOfRun();
+    SeleneseCommand handleStart() throws RemoteException;
+    SeleneseCommand handleCommandResult(String commandResult) throws RemoteException;
+
 }

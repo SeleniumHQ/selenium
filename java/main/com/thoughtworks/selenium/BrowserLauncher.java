@@ -17,14 +17,12 @@
 
 package com.thoughtworks.selenium.b;
 
+import java.io.IOException;
+
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  */
-public interface Selenium extends Startable {
-
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
-    void endOfRun();
+public interface BrowserLauncher {
+    void launch(String url);
 }

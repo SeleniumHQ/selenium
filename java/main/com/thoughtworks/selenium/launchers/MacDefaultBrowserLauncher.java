@@ -15,16 +15,26 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium.b.launchers;
+
+import com.thoughtworks.selenium.b.BrowserLauncher;
+
+import java.io.IOException;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  */
-public interface Selenium extends Startable {
+public class MacDefaultBrowserLauncher implements BrowserLauncher {
 
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
-    void endOfRun();
+    Runtime runtime = Runtime.getRuntime();
+
+    public void launch(String url) {
+        try {
+            String command = "open " + url;
+            runtime.exec(command);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not launch default browser.", e);
+        }
+    }
 }

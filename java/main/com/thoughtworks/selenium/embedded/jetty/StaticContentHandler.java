@@ -15,16 +15,14 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium.b.embedded.jetty;
+
+import org.mortbay.jetty.servlet.ServletHttpContext;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  */
-public interface Selenium extends Startable {
-
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
-    void endOfRun();
+public interface StaticContentHandler {
+    void addStaticContent(ServletHttpContext context);
 }

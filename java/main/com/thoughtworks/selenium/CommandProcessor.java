@@ -19,12 +19,10 @@ package com.thoughtworks.selenium.b;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  */
-public interface Selenium extends Startable {
+public interface CommandProcessor extends Startable {
 
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
-    void endOfRun();
+    String doCommand(String command, String field, String value);
+
 }

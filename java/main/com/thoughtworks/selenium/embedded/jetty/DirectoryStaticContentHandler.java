@@ -15,16 +15,26 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium.b.embedded.jetty;
+
+import org.mortbay.jetty.servlet.ServletHttpContext;
+import org.mortbay.http.handler.ResourceHandler;
+
+import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  */
-public interface Selenium extends Startable {
+public class DirectoryStaticContentHandler implements StaticContentHandler {
+    private File directory;
 
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
-    void endOfRun();
+    public DirectoryStaticContentHandler(File directory) {
+        this.directory = directory;
+    }
+
+    public void addStaticContent(ServletHttpContext context) {
+        context.setResourceBase(directory.getAbsolutePath());
+        context.addHandler(new ResourceHandler());
+    }
 }

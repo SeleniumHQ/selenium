@@ -19,12 +19,34 @@ package com.thoughtworks.selenium.b;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  */
-public interface Selenium extends Startable {
+public class SingleEntryAsyncQueue {
 
-    boolean open(String path);
-    boolean click(String field);
-    boolean setTextField(String field, String value);
-    void endOfRun();
+    private Object thing;
+    private boolean available;
+
+    public synchronized Object get() {
+        while (available == false) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+            }
+        }
+        available = false;
+        return thing;
+    }
+
+    public synchronized void put(Object thing) {
+        while (available == true) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+            }
+        }
+        this.thing = thing;
+        available = true;
+        notifyAll();
+    }
+
 }
