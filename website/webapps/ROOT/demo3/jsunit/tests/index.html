@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- JsUnit -->
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Edward Hieatt code.
+   -
+   - The Initial Developer of the Original Code is
+   - Edward Hieatt, edward@jsunit.net.
+   - Portions created by the Initial Developer are Copyright (C) 2001
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   - Edward Hieatt, edward@jsunit.net (original author)
+   - Bob Clary, bc@bclary.comn
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <title>jsUnit Standard Tests</title>
+    <link rel="stylesheet" type="text/css" href="../css/jsUnitStyle.css">
+  </head>
+  <body>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" summary="jsUnit Information">
+        <tr>
+          <th align="left" valign="top"><h1>JsUnit Standard Tests</h1></th>
+
+          <td align="right" valign="top">
+           <a href="http://www.jsunit.net/" target="_blank">JsUnit Home</a><br>
+           <a href="mailto:edward@jsunit.net">edward@jsunit.net</a><br>
+           <a href="../licenses/index.html" target="blank">Licenses MPL1.1/GPL2/LGPL2.1</a> </td>
+        </tr>
+      </table>
+
+      <h2>Steps to run the jsUnit Standard Tests</h2>
+      <ol>
+        <li><a href="../testRunner.html" target="jsunit">Open JsUnit's testRunner.html</a></li>
+        <li>Copy / Paste the URL of the desired test into the filename input</li>
+        <li>Choose the run-time parameters for jsUnit</li>
+        <li>Click the <code>Run</code> button</li>
+      </ol>
+
+      <h2>Standard Tests using Auto-discovery</h2>
+
+      <p>
+      A Test Suite which runs internal tests of jsUnit using auto-discovery
+      of test names.
+      </p>
+
+      <p>
+      These tests use the ability of jsUnit to discover test names
+      which begin with 'test' and to automatically execute them. 
+      This is
+      not possible in all browsers. 
+      If your browser does not support
+      test auto-discovery, please use the other version of these tests
+      which expose the names of test functions through a function which
+      returns an array of test function names
+      </p>
+
+
+    <dl>
+      <dt><a href="jsUnitTestSuite.html">View jsUnitTestSuite.html</a></dt>
+      <dd>
+      <p>
+      An example Test Suite which executes the following tests JsUnit.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitAssertionTests.html">View jsUnitAssertionTests.html</a></dt>
+      <dd>
+      <p>
+      Tests for the JsUnit Assertion functions.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitSetUpTearDownTests.html">View jsUnitSetUpTearDownTests.html</a></dt>
+      <dd>
+      <p>
+      Tests for the JsUnit setUp and tearDown framework, including testing the order of the tests.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitUtilityTests.html">View jsUnitUtilityTests.html</a></dt>
+      <dd>
+      <p>
+      Tests for the utility functions and classes that the JsUnit framework uses. 
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitFrameworkUtilityTests.html">View jsUnitFrameworkUtilityTests.html</a></dt>
+      <dd>
+      <p>
+      Tests for the StackTrace functions in JsUnit framework uses. 
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitOnLoadTests.html">View jsUnitOnLoadTests.html</a></dt>
+      <dd>
+      <p>
+      Tests if an onload handler attached to the body tag can be tested.
+      </p>
+      </dd>
+    </dl>
+
+    <h2>setUpPages Tests using Auto-discovery</h2>
+    <dl>
+      <dt><a href="jsUnitTestSetUpPagesSuite.html">View jsUnitTestSetUpPagesSuite.html</a></dt>
+      <dd>
+      <p>
+      Tests jsUnit's ability to use the Document Loader functionality.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitTestSetUpPages.html">View jsUnitTestSetUpPages.html</a></dt>
+      <dd>
+      <p>
+      Tests basic asynchronous setUpPages. setUpPages allow you to perform additional, possibly
+      asynchronous setup processing before tests are run.
+      </p>
+      </dd>
+
+    </dl>
+
+    <h2>Standard Tests using Test Declaration</h2>
+      <p>
+      A Test Suite which runs internal tests of jsUnit using declared test names.
+      </p>
+
+      <p>
+      These tests use a function which returns an array of test function names
+      and may be supported by a larger range of browsers than the autodiscovery
+      form of the tests.
+      These tests use a function which returns an array of test function names
+      and may be supported by a larger range of browsers than the auto-discovery
+      form of the tests.
+      </p>
+
+    <dl>
+      <dt><a href="jsUnitDeclTestSuite.html">View jsUnitDeclTestSuite.html</a></dt>
+      <dd>
+      <p>
+      An example Test Suite which executes the following tests JsUnit.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitDeclAssertionTests.html">View jsUnitDeclAssertionTests.html</a></dt>
+      <dd>
+      <p>
+      Tests for the JsUnit Assertion functions.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitDeclSetUpTearDownTests.html">View jsUnitDeclSetUpTearDownTests.html</a></dt>
+      <dd>
+      <p>
+      Tests for the JsUnit setUp and tearDown framework, including testing the order of the tests.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitDeclUtilityTests.html">View jsUnitDeclUtilityTests.html</a></dt>
+      <dd>
+      <p>
+      Tests for the utility functions and classes that the JsUnit framework uses. 
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitDeclFrameworkUtilityTests.html">View jsUnitDeclFrameworkUtilityTests.html</a></dt>
+      <dd>
+      <p>
+      Tests for the StackTrace functions in JsUnit framework uses. 
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitDeclOnLoadTests.html">View jsUnitDeclOnLoadTests.html</a></dt>
+      <dd>
+      <p>
+      Tests if an onload handler attached to the body tag can be tested.
+      </p>
+      </dd>
+    </dl>
+
+    <h2>setUpPages Tests using Declaration</h2>
+    <dl>
+      <dt><a href="jsUnitDeclTestSetUpPagesSuite.html">View jsUnitDeclTestSetUpPagesSuite.html</a></dt>
+      <dd>
+      <p>
+      Tests jsUnit's ability to use the Document Loader functionality.
+      </p>
+      </dd>
+
+
+      <dt><a href="jsUnitDeclTestSetUpPages.html">View jsUnitDeclTestSetUpPages.html</a></dt>
+      <dd>
+      <p>
+      Tests basic asynchronous setUpPages. setUpPages allow you to perform additional, possibly
+      asynchronous setup processing before tests are run.
+      </p>
+      </dd>
+
+    </dl>
+
+    <h2>Additional Tests</h2>
+
+    <dl>
+      <dt><a href="jsUnitTestFailures.html">View jsUnitTestFailures.html</a></dt>
+      <dd>
+      <p>
+      Tests if failures are reported.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitTestLoadData.html">View jsUnitTestLoadData.html</a></dt>
+      <dd>
+      <p>
+      Tests loading documents asynchronously from the same domain as jsUnit
+      using the documentLoader with test auto-discovery.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitDeclTestLoadData.html">View jsUnitDeclTestLoadData.html</a></dt>
+      <dd>
+      <p>
+      Tests loading documents asynchronously from the same domain as jsUnit
+      using the documentLoader with test declaration.
+      </p>
+      </dd>
+
+      <dt><a href="jsUnitTestLoadStaff.html">View jsUnitTestLoadStaff.html</a></dt>
+      <dd>
+      <p>
+      Tests loading XML documents asynchronously from the same domain as
+      jsUnit using the documentLoader.
+      </p>
+      </dd>
+
+    </dl>
+
+
+  </body>
+</html>

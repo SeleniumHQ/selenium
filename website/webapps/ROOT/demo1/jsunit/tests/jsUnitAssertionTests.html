@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<!-- JsUnit -->
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Edward Hieatt code.
+   -
+   - The Initial Developer of the Original Code is
+   - Edward Hieatt, edward@jsunit.net.
+   - Portions created by the Initial Developer are Copyright (C) 2001
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   - Edward Hieatt, edward@jsunit.net (original author)
+   - Bob Clary, bc@bclary.comn
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <title>JsUnit Assertion Tests</title>
+    <link rel="stylesheet" type="text/css" href="../css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+// JsUnit Assertion Tests
+function testAssert() {
+  assert("true should be true", true);
+  assert(true);
+}
+
+function testAssertTrue() {
+  assertTrue("true should be true", true);
+  assertTrue(true);
+}
+
+function testAssertFalse() {
+  assertFalse("false should be false", false);
+  assertFalse(false);
+}
+
+function testAssertEquals() {
+  assertEquals("1 should equal 1", 1, 1);
+  assertEquals(1, 1);
+}
+
+function testAssertNotEquals() {
+  assertNotEquals("1 should not equal 2", 1, 2);
+  assertNotEquals(1, 2);
+}
+
+function testAssertNull() {
+  assertNull("null should be null", null);
+  assertNull(null);
+}
+
+function testAssertNotNull() {
+  assertNotNull("1 should not be null", 1);
+  assertNotNull(1);
+}
+
+function testAssertUndefined() {
+    var myVar;
+  assertUndefined("A declared but unassigned variable should have the undefined value", myVar);
+  assertUndefined(myVar);
+}
+
+function testAssertNotUndefined() {
+  assertNotUndefined("1 should not be undefined", 1);
+  assertNotUndefined(1);
+}
+
+function testAssertNaN() {
+  assertNaN("a string should not be a number", "string");
+  assertNaN("string");
+}
+
+function testAssertNotNaN() {
+  assertNotNaN("1 should not be not a number", 1);
+    assertNotNaN(1);
+}
+
+function testFail() {
+  var excep=null;
+    try {
+        fail("Failure message");
+    } catch (e) {
+    excep=e;
+    }
+  assertJsUnitException("fail(string) should throw a JsUnitException", excep);
+}
+
+function testTooFewArguments() {
+  var excep=null;
+  try {
+    assert();
+  } catch (e1) {
+    excep=e1;
+  }
+  assertNonJsUnitException("Calling an assertion function with too few arguments should throw an exception", excep);
+}
+
+function testTooManyArguments() {
+  var excep=null;
+  try {
+    assertEquals("A comment", true, true, true);
+  } catch (e2) {
+    excep=e2;
+  }
+  assertNonJsUnitException("Calling an assertion function with too many arguments should throw an exception", excep);
+}
+
+function testInvalidCommentArgumentType() {
+  var excep=null;
+  try {
+    assertNull(1, true);
+  } catch (e3) {
+    excep=e3;
+  }
+  assertNonJsUnitException("Calling an assertion function with a non-string comment should throw an exception", excep);
+}
+
+function testInvalidArgumentType() {
+  var excep=null;
+  try {
+        assert("string");
+    } catch (e) {
+    excep=e;
+  }
+  assertNonJsUnitException("Calling an assertion function with an invalid argument should throw an exception", excep);
+}
+
+function assertJsUnitException(comment, allegedJsUnitException) {
+  assertNotNull(comment, allegedJsUnitException);
+  assert(comment, allegedJsUnitException.isJsUnitException);
+  assertNotUndefined(comment, allegedJsUnitException.comment);
+}
+
+function assertNonJsUnitException(comment, allegedNonJsUnitException) {
+  assertNotNull(comment, allegedNonJsUnitException);
+  assertUndefined(comment, allegedNonJsUnitException.isJsUnitException);
+  assertNotUndefined(comment, allegedNonJsUnitException.description);
+}
+</script>
+  </head>
+
+  <body>
+    <h1>JsUnit Assertion Tests</h1>
+
+    <p>This page contains tests for the JsUnit Assertion
+    functions. To see them, take a look at the source.</p>
+  </body>
+</html>
+

@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- @author Edward Hieatt, edward@jsunit.net -->
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <title>JsUnit main-results.html</title>
+    <link rel="stylesheet" type="text/css" href="../css/jsUnitStyle.css">
+  </head>
+  <body>
+  	<script language="javascript" type="text/javascript">
+  	  var url="http://";
+  	  if (top.wasResultUrlSpecified()) {
+		  url += top.getSpecifiedResultUrl();
+  	  } else {
+	  	  var webserver=top.getWebserver();
+	  	  if (webserver==null)
+	  	  	webserver="localhost";
+	      url+=webserver;
+	      if (webserver.indexOf(":")==-1)
+	      	url+=":8080";
+	      url+="/jsunit/acceptor";
+   	  }
+  	  var formString = "<form name=\"resultsForm\" action=\""+url+"\" method=\"post\" target=\"_top\">";
+	  document.write(formString);
+  	</script>    
+      <input type="hidden" name="id">
+      <input type="hidden" name="userAgent">
+      <input type="hidden" name="JsUnitVersion">
+      <input type="hidden" name="time">
+      <input type="hidden" name="baseURL">
+      <select size="5" name="testCases" multiple></select>      
+    </form>
+    <script language="javascript" type="text/javascript">
+		function populateHeaderFields(id, userAgent, jsUnitVersion, baseURL) {
+	    	document.resultsForm.id.value=id;
+	    	document.resultsForm.userAgent.value=userAgent;
+	    	document.resultsForm.JsUnitVersion.value=jsUnitVersion;
+                document.resultsForm.baseURL.value = baseURL;
+		}
+		function submitResults() {
+		  var testCasesField = document.resultsForm.testCases;
+		  for (var i=0; i<testCasesField.length; i++) {
+			  testCasesField[i].selected=true;  
+		  }
+		  document.resultsForm.submit();
+		
+		}
+    </script>
+  </body>
+</html>
+
