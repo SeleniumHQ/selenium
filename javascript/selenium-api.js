@@ -249,8 +249,8 @@ function CommandHandler(type, haltOnFailure, executor) {
     this.executor = executor;
 }
 
-CommandHandler.prototype.execute = function(selenium, command) {
-    return new CommandResult(this.executor.call(selenium, command.target, command.value));
+CommandHandler.prototype.execute = function(seleniumApi, command) {
+    return new CommandResult(this.executor.call(seleniumApi, command.target, command.value));
 }
 
 function ActionHandler(action, wait) {
