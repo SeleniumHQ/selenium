@@ -15,16 +15,16 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.b.embedded.jetty.JettyCommandProcessor;
-import com.thoughtworks.selenium.b.launchers.WindowsDefaultBrowserLauncher;
+import com.thoughtworks.selenium.embedded.jetty.JettyCommandProcessor;
+import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 
 import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DefaultSelenium implements Selenium {
 

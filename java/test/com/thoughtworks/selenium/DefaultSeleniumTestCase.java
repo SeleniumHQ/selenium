@@ -15,15 +15,15 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium;
 
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
-import com.thoughtworks.selenium.b.launchers.WindowsDefaultBrowserLauncher;
+import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DefaultSeleniumTestCase extends MockObjectTestCase {
 

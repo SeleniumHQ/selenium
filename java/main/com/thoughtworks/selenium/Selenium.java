@@ -15,11 +15,11 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public interface Selenium extends Startable {
 

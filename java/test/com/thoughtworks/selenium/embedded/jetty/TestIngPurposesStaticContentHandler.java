@@ -15,7 +15,7 @@
  *
  */
 
-package com.thoughtworks.selenium.b.embedded.jetty;
+package com.thoughtworks.selenium.embedded.jetty;
 
 import org.mortbay.http.HttpException;
 import org.mortbay.http.HttpFields;
@@ -33,7 +33,7 @@ import java.io.Writer;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestIngPurposesStaticContentHandler implements StaticContentHandler {
 

@@ -15,19 +15,19 @@
  *
  */
 
-package com.thoughtworks.selenium.b.embedded.jetty;
+package com.thoughtworks.selenium.embedded.jetty;
 
 import junit.framework.TestCase;
 
 import java.io.File;
 
-import com.thoughtworks.selenium.b.launchers.WindowsDefaultBrowserLauncher;
-import com.thoughtworks.selenium.b.Selenium;
-import com.thoughtworks.selenium.b.DefaultSelenium;
+import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.DefaultSelenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
 
@@ -36,7 +36,7 @@ public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         selenium = new DefaultSelenium(
-                new JettyCommandProcessor(null, DefaultSelenium.SELENIUM_CONTEXT, 
+                new JettyCommandProcessor(null, DefaultSelenium.SELENIUM_CONTEXT,
                         new TestIngPurposesStaticContentHandler()),
                 new WindowsDefaultBrowserLauncher()
         );

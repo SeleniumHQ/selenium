@@ -15,11 +15,11 @@
  *
  */
 
-package com.thoughtworks.selenium.b;
+package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface CommandProcessor extends Startable {
 

@@ -15,7 +15,7 @@
  *
  */
 
-package com.thoughtworks.selenium.b.embedded.jetty;
+package com.thoughtworks.selenium.embedded.jetty;
 
 import org.mortbay.jetty.servlet.ServletHttpContext;
 import org.mortbay.http.handler.ResourceHandler;
@@ -24,7 +24,7 @@ import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DirectoryStaticContentHandler implements StaticContentHandler {
     private File directory;

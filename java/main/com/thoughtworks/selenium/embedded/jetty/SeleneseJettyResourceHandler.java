@@ -15,10 +15,10 @@
  *
  */
 
-package com.thoughtworks.selenium.b.embedded.jetty;
+package com.thoughtworks.selenium.embedded.jetty;
 
-import com.thoughtworks.selenium.b.SeleneseCommand;
-import com.thoughtworks.selenium.b.SeleneseQueue;
+import com.thoughtworks.selenium.SeleneseCommand;
+import com.thoughtworks.selenium.SeleneseQueue;
 import org.mortbay.http.HttpException;
 import org.mortbay.http.HttpFields;
 import org.mortbay.http.HttpRequest;
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class SeleneseJettyResourceHandler extends ResourceHandler {
 

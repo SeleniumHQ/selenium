@@ -15,7 +15,7 @@
  *
  */
 
-package com.thoughtworks.selenium.b.embedded.jetty;
+package com.thoughtworks.selenium.embedded.jetty;
 
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
@@ -29,12 +29,12 @@ import org.mortbay.util.MultiException;
 import java.io.File;
 import java.io.IOException;
 
-import com.thoughtworks.selenium.b.embedded.jetty.SeleneseJettyResourceHandler;
-import com.thoughtworks.selenium.b.CommandProcessor;
+import com.thoughtworks.selenium.embedded.jetty.SeleneseJettyResourceHandler;
+import com.thoughtworks.selenium.CommandProcessor;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class JettyCommandProcessor implements CommandProcessor {
 
