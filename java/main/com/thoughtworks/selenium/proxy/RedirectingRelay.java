@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * @version $Id: RedirectingRelay.java,v 1.9 2004/11/15 18:35:01 ahelleso Exp $
+ * @version $Id: RedirectingRelay.java,v 1.10 2004/11/15 23:37:52 ahelleso Exp $
  */
 public class RedirectingRelay implements Relay {
     private static final Log LOG = LogFactory.getLog(RedirectingRelay.class);
@@ -45,6 +45,8 @@ public class RedirectingRelay implements Relay {
 
     public void relay() throws IOException {
         HTTPRequest request = requestInput.readRequest();
+        System.out.println(request);
+        System.out.println("---------------");
         if (!hasBeenRedirected(request.getUri())) {
             byte[] redirectMessage = redirectResponse(request).getBytes();
             responseStream.write(redirectMessage);
@@ -60,19 +62,17 @@ public class RedirectingRelay implements Relay {
 
     private void sendToIntendedTarget(HTTPRequest request) {
         requestModificationCommand.execute(request);
-        String requestToDest = request.getRequest();
-        LOG.debug("Writing\n" + requestToDest);
         int port = request.getDestinationPort();
         String dest = request.getDestinationServer();
-        LOG.debug("Connecting to " + dest + " on " + port);
+        System.out.println("Connecting to " + dest + " on " + port);
         try {
             Socket destinationSocket = new Socket(dest, port);
             OutputStream destStream = destinationSocket.getOutputStream();
             InputStream backStream = destinationSocket.getInputStream();
-            destStream.write(requestToDest.getBytes());
+            request.writeTo(destStream);
             destStream.flush();
-            Pump pump = new SeleniumPump(backStream, responseStream);
-            pump.pump();
+            Pump pump = new SeleniumPump();
+            pump.pump(backStream, responseStream);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -18,8 +18,10 @@ package com.thoughtworks.selenium.proxy;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
+
 /**
- * @version $Id: RemoveRedirectionDetailsFromURICommandTest.java,v 1.2 2004/11/15 18:35:02 ahelleso Exp $
+ * @version $Id: RemoveRedirectionDetailsFromURICommandTest.java,v 1.3 2004/11/15 23:37:53 ahelleso Exp $
  */
 public class RemoveRedirectionDetailsFromURICommandTest extends TestCase {
 
@@ -27,7 +29,7 @@ public class RemoveRedirectionDetailsFromURICommandTest extends TestCase {
         assertTrue(RequestModificationCommand.class.isAssignableFrom(RemoveRedirectionDetailsFromURICommand.class));
     }
 
-    public void testProxyDetailsRemovedFromUri() {
+    public void testProxyDetailsRemovedFromUri() throws IOException {
         String uri = "www.amazon.com/site/";
         HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + SeleniumHTTPRequest.SELENIUM_REDIRECT_URI +
                                                   uri + HTTPRequest.CRLF);

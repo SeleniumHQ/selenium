@@ -16,21 +16,17 @@
  */
 package com.thoughtworks.selenium.proxy;
 
-import com.thoughtworks.selenium.utils.Assert;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * @version $Id: SeleniumProxy.java,v 1.6 2004/11/15 18:35:01 ahelleso Exp $
+ * @version $Id: SeleniumProxy.java,v 1.7 2004/11/15 23:37:52 ahelleso Exp $
  */
-public class SeleniumProxy
-{
+public class SeleniumProxy {
     private final ServerSocket serverSocket;
 
     public SeleniumProxy(ServerSocket serverSocket) {
-        Assert.assertIsTrue(serverSocket != null, "serverSocket can't be null");
         this.serverSocket = serverSocket;
     }
 

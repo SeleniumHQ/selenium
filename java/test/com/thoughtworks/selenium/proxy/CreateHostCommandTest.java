@@ -18,8 +18,10 @@ package com.thoughtworks.selenium.proxy;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
+
 /**
- * @version $Id: CreateHostCommandTest.java,v 1.6 2004/11/15 18:35:02 ahelleso Exp $
+ * @version $Id: CreateHostCommandTest.java,v 1.7 2004/11/15 23:37:53 ahelleso Exp $
  */
 public class CreateHostCommandTest extends TestCase {
 
@@ -27,7 +29,7 @@ public class CreateHostCommandTest extends TestCase {
         assertTrue(RequestModificationCommand.class.isAssignableFrom(CreateHostCommand.class));
     }
 
-    public void testHostMatchesTheURI() {
+    public void testHostMatchesTheURI() throws IOException {
         String dir = "/site/";
         String expectedHost = "www.amazon.com";
         String uri = expectedHost + dir;
@@ -37,7 +39,7 @@ public class CreateHostCommandTest extends TestCase {
         assertEquals(expectedHost, httpRequest.getHost());
     }
 
-    public void testHostSetupFromReferrerIfURIRelative() {
+    public void testHostSetupFromReferrerIfURIRelative() throws IOException {
         String dir = "/site/";
         String expectedHost = "www.amazon.com";
         HTTPRequest httpRequest = new SeleniumHTTPRequest("GET: " + dir + HTTPRequest.CRLF +

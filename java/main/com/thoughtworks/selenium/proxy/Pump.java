@@ -17,10 +17,9 @@
 package com.thoughtworks.selenium.proxy;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-/**
- * @version $Id: Pump.java,v 1.2 2004/11/15 18:35:00 ahelleso Exp $
- */
 public interface Pump {
-    void pump() throws IOException;
+    void pump(InputStream in, OutputStream out) throws IOException;
 }

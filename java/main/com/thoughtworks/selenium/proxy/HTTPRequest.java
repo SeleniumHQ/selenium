@@ -16,9 +16,12 @@
  */
 package com.thoughtworks.selenium.proxy;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public interface HTTPRequest {
     String CRLF = "\r\n";
@@ -31,11 +34,7 @@ public interface HTTPRequest {
 
     void setDestinationPort(int destinationPort);
 
-    String getMethod();
-
     String getHost();
-
-    void setMethod(String method);
 
     String getUri();
 
@@ -47,11 +46,9 @@ public interface HTTPRequest {
 
     String getHeaderField(String fieldId);
 
-    String getRequest();
+    void writeTo(OutputStream out) throws IOException;
 
     void setHost(String host);
-
-    String getOriginalRequest();
 
     void setHeaderField(String key, String value);
 }
