@@ -349,6 +349,34 @@ Selenium Checks
             assertTable   results.0.2   13
             ===========   ===========   =========
 
+    **verifyVisible / assertVisible**
+        Verifies that the specified element is both present *and* visible. An element can be rendered invisible by setting the CSS "visibility" property to "hidden", or the "display" property to "none", either for the element itself or one if its ancestors.
+        
+        **target:** The element that should be visible.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            =============   ========   =====
+            verifyVisible   postcode
+            assertVisible   postcode
+            =============   ========   =====
+
+    **verifyNotVisible / assertNotVisible**
+        Verifies that the specified element is not visible.  Elements that are simply not present are also considered invisible.
+        
+        **target:** The element that should not be visible.
+        
+        **value:** *ignored*
+        
+        **examples:**
+            
+            ================   ========   =====
+            verifyNotVisible   postcode
+            assertNotVisible   postcode
+            ================   ========   =====
+
 
 -----------------
 Variables
