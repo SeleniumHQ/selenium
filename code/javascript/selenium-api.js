@@ -198,8 +198,6 @@ Selenium.prototype.assertTextPresent = function(expectedText) {
     if(allText == "") {
         error("Page text not found")
     } else if(allText.indexOf(expectedText) == -1) {
-// https://issues.wazokazi.com/browse/SEL-28
-// alert(allText)
         fail("'" + expectedText + "' not found in page text.");
     }
 }

@@ -49,7 +49,6 @@ function runTest() {
     commandFactory.registerAll(selenium);
 
     testLoop = new TestLoop(commandFactory);
-    testLoop.commandInterval = 100;
 
     testLoop.firstCommand = startup;
     testLoop.nextCommand = nextCommand;

@@ -1,5 +1,8 @@
 <project name="selenium" default="dist-zip">
-    <property name="version" value="1.2.0"/>
+    <property name="version" value="0.1.3"/>
+    <property name="website.root" value="../website/webapps/ROOT"/>
+
+    <target name="publish-release" depends="publish-dist,publish-demos,publish-docs"/>
 
     <target name="dist">
         <delete dir="dist"/>
@@ -9,6 +12,7 @@
                 <exclude name="**/*session.obj"/>
                 <exclude name="**/*.iws"/>
                 <exclude name="**/*.ipr"/>
+                <exclude name="**/*.iml"/>
                 <exclude name="dist"/>
                 <exclude name="dist/selenium*.zip"/>
                 <exclude name="**/target/**"/>
@@ -18,6 +22,41 @@
     </target>
 
     <target name="dist-zip" depends="dist">
-        <zip basedir="dist" zipfile="dist/selenium-${version}.zip"/>
+        <zip basedir="dist" zipfile="dist/selenium_v${version}.zip"/>
     </target>
+
+    <target name="publish-dist" depends="dist-zip">
+        <copy todir="${website.root}" file="dist/selenium_v${version}.zip"/>
+    </target>
+
+    <target name="publish-docs">
+        <copy todir="${website.root}" overwrite="true">
+            <fileset dir="doc">
+                <include name="seleniumReference.html"/>
+                <include name="FAQ.html"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <target name="publish-demos">
+        <update-demo demo-dir="demo1"/>
+        <update-demo demo-dir="demo2"/>
+    </target>
+
+    <macrodef name="update-demo">
+        <attribute name="demo-dir"/>
+        <sequential>
+            <copy todir="${website.root}/@{demo-dir}" overwrite="true">
+                <fileset dir="javascript">
+                    <include name="*.js"/>
+                    <include name="*.html"/>
+                    <include name="*.css"/>
+                    <include name="*.jpg"/>
+                    <include name="jsunit/app/jsUnitCore.js"/>
+                    <include name="html-xpath/html-xpath-patched.js"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
 </project>
