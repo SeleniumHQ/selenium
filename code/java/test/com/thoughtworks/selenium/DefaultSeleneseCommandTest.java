@@ -25,12 +25,12 @@ public class DefaultSeleneseCommandTest extends TestCase {
 
     public void testProducesPipeSeparatedCommand() {
         SeleneseCommand command = new DefaultSeleneseCommand("first", "second", "third");
-        assertEquals("|first|second|third|", command.toString());
+        assertEquals("|first|second|third|", command.getCommandString());
     }
 
     public void testParseProducesCorrectCommand() {
         String expectedCommand = "|first|second|third|";
-        assertEquals(expectedCommand, DefaultSeleneseCommand.parse(expectedCommand).toString());
+        assertEquals(expectedCommand, DefaultSeleneseCommand.parse(expectedCommand).getCommandString());
     }
 
     public void testParseThrowsExceptionForIllegalInput() {

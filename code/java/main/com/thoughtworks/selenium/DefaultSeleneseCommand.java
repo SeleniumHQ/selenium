@@ -40,7 +40,7 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     public final String field;
     public final String value;
 
-    public String toString() {
+    public String getCommandString() {
         return "|" + command + "|" + field + "|" + value +"|";
     }
 
