@@ -90,7 +90,8 @@ function loadAndRunIfAuto() {
 }
 
 function loadSuiteFrame() {
-    browserbot = new BrowserBot(document.getElementById('myiframe'));
+    var testAppFrame = document.getElementById('myiframe');
+    browserbot = new BrowserBot(testAppFrame);
     selenium = new Selenium(browserbot);
     registerCommandHandlers()
 
@@ -107,6 +108,8 @@ function loadSuiteFrame() {
     } else {
         loadTestFrame();
     }
+
+    testAppFrame.src = "http://selenium.thoughtworks.com";
 }
 
 function loadTestFrame() {
@@ -502,6 +505,7 @@ function setRowFailed(errorMsg, failureType) {
 
     // Set error message
     inputTableRows[currentCommandRow].cells[2].innerHTML = errorMsg;
+    inputTableRows[currentCommandRow].title = errorMsg;
     testFailed = true;
     suiteFailed = true;
 }
