@@ -130,17 +130,64 @@ BrowserBot.prototype.getCurrentPage = function() {
     
     return this.currentPage;
 
-     // private functions below - is there a better way?
-    
-     function modifyWindowToRecordPopUpDialogs(window, browserBot) {   
-          window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
-          window.confirm = function(message){
-                              browserBot.recordedConfirmations.push(message);
-                              var result = browserBot.nextConfirmResult;
-                              browserBot.nextConfirmResult = true;
-                              return result
-                           };
-     }
+    // private functions below - is there a better way?
+
+    function modifyWindowToRecordPopUpDialogs(window, browserBot) {   
+
+    // Andy D. - This is where the modal dialog stuff starts
+    // in place of the modaldialog which causes our selenium thread to hang, we open a regular window,
+    // and then execute the commands against it, until it is closed.
+    // then we return the value that was most recently stored in window.returnValue (as far as I can determine,
+    // the average user of these things will go:  window.returnValue = bob; window.close();
+
+        window.showModalDialog = function(url, args, features) {
+            var modalWindow = window.open(url, "modalDialog");
+
+            value = "";
+            keepLooping = true;
+
+            function modalClosed() {
+                value = modalWindow.returnValue;
+                keepLooping = false;
+            }
+
+            modalWindow.attachEvent("onunload", modalClosed);
+
+            // change variables to point to the new window (but save references to the old ones)
+            var pushedFrame = browserBot.frame;
+            browserBot.frame = modalWindow;
+
+            var pushedPage = browserBot.currentPage;
+            browserBot.currentPage = null;
+
+            var pushedExecutionContext = browserBot.executionContext;
+            browserBot.executionContext = getWindowExecutionContext();
+            
+            while(keepLooping) {
+                // call next instruction
+                testLoop.kickoffOneCommandExecution();
+            }
+
+            // change variables back to the old references
+            browserBot.executionContext = pushedExecutionContext;
+            browserBot.currentPage = pushedPage;
+            browserBot.frame = pushedFrame;
+            
+            // tell the main loop to resume after a brief pause
+            testLoop.pauseInterval = 2000;
+            testLoop.continueCommandExecutionWithDelay();
+            
+            return value;
+        };
+
+        window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
+        window.confirm = function(message){
+            browserBot.recordedConfirmations.push(message);
+            var result = browserBot.nextConfirmResult;
+            browserBot.nextConfirmResult = true;
+            return result
+        };
+    }
      
      function modifyWindowToClearPageCache(window, browserBot) {
         //SPIKE factor this better via TDD
@@ -446,7 +493,7 @@ PageBot.prototype.getAllLinks = function() {
 
 PageBot.prototype.setContext = function(strContext) {
      //set the current test title
-	 context.innerHTML=strContext;
+     context.innerHTML=strContext;
 }
 
 
