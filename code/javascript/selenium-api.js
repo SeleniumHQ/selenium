@@ -242,6 +242,75 @@ Selenium.prototype.assertElementNotPresent = function(locator) {
     fail("Element " + locator + " found.");
 }
 
+/*
+ * Asserts that the specified element is visible
+ */
+Selenium.prototype.assertVisible = function(locator) {
+    var element;
+    try {
+        element = this.page().findElement(locator);
+    } catch (e) {
+        fail("Element " + locator + " not present.");
+    }
+    if (! this.isVisible(element)) {
+        fail("Element " + locator + " not visible.");
+    }
+}
+
+/*
+ * Asserts that the specified element is visible
+ */
+Selenium.prototype.assertNotVisible = function(locator) {
+    var element;
+    try {
+        element = this.page().findElement(locator);
+    } catch (e) {
+        return;
+    }
+    if (this.isVisible(element)) {
+        fail("Element " + locator + " is visible.");
+    }
+}
+
+Selenium.prototype.isVisible = function(element) {
+    var visibility = this.getEffectiveStyleProperty(element, "visibility");
+    var isDisplayed = this.isDisplayed(element);
+    return (visibility != "hidden" && isDisplayed);
+}
+
+Selenium.prototype.getEffectiveStyleProperty = function(element, property) {
+    var effectiveStyle = this.getEffectiveStyle(element);
+    var propertyValue = effectiveStyle[property];
+    if (propertyValue == 'inherit' && element.parentNode.style) {
+        return this.getEffectiveStyleProperty(element.parentNode, property);
+    }
+    return propertyValue;
+}
+
+Selenium.prototype.isDisplayed = function(element) {
+    var display = this.getEffectiveStyleProperty(element, "display");
+    if (display == "none") return false;
+    if (element.parentNode.style) {
+        return this.isDisplayed(element.parentNode);
+    }
+    return true;
+}
+
+Selenium.prototype.getEffectiveStyle = function(element) {
+    if (element.style == undefined) {
+        return undefined; // not a styled element
+    }
+    var window = this.browserbot.getContentWindow();
+    if (window.getComputedStyle) { 
+        // DOM-Level-2-CSS
+        return window.getComputedStyle(element, null);
+    }
+    if (element.currentStyle) {
+        // non-standard IE alternative
+        return element.currentStyle;
+    }
+    throw new Error("cannot determine effective stylesheet in this browser");
+}
 
  /*
   * Return all buttons on the screen.
