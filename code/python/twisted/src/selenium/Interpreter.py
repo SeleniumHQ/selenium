@@ -28,7 +28,6 @@ class SeleniumInterpreter(Dispatcher):
         """ expose dispatcher's webDriver method to web requests """
         return self.webDriver(request)
     
-
     def dispatchCommand(self, command, target, value=""):
         command_string = translate(command, target, value)        
         return self.apiDriver(command_string)
@@ -36,9 +35,8 @@ class SeleniumInterpreter(Dispatcher):
     #
     # Selenium Commands       
     #
-    def chooseCancelOnNextConfirmation():
-        """ pass """
-        pass
+    def chooseCancelOnNextConfirmation(self):
+        return self.dispatchCommand("chooseCancelOnNextConfirmation")
         
     def click(self, target):
         """ Click on the target """
@@ -54,89 +52,70 @@ class SeleniumInterpreter(Dispatcher):
         
     def pause(self, duration): # is this needed for driven ?
         """ pause for a period of time in seconds """
-        return self.dispatchCommand("pause")
+        return self.dispatchCommand("pause", duration)
         
     def selectAndWait(self, field, value):
         """ select the target and wait for a page load event """
-        return self.dispatchCommand("selectAndWait",field,value)
+        return self.dispatchCommand("selectAndWait",field, value)
         
-    def selectWindow(window):
-        """ pass """
-        pass
+    def selectWindow(self, window):
+        return self.dispatchCommand("selectWindow", window)
         
-    def setTextField(field, value):
-        """ pass """
-        pass
+    def setTextField(self, field, value):
+        return self.dispatchCommand("setTextField", field, value)
         
-    def storeText(element, value):
-        """ pass """
-        pass
+    def storeText(self, element, value):
+        return self.dispatchCommand("storeText", element, value)
         
-    def storeValue(field, value):
-        """ pass """
-        pass
+    def storeValue(self, field, value):
+        return self.dispatchCommand("storeValue", field, value)
         
     def testComplete(self):
         """ Tell the browser the test is complete """
         return self.dispatchCommand("testComplete")
         
-    def type(field, value):
-        """ pass """
-        pass
+    def type(self, field, value):
+        return self.dispatchCommand("type", field, value)
         
-    def typeAndWait(field, value):
-        """ pass """
-        pass
+    def typeAndWait(self, field, value):
+        return self.dispatchCommand("typeAndWait", field, value)
         
-    def verifyAlert(alert):
-        """ pass """
-        pass
+    def verifyAlert(self, alert):
+        return self.dispatchCommand("verifyAlert", alert)
         
-    def verifyAttribute(element, value):
-        """ pass """
-        pass
+    def verifyAttribute(self, element, value):
+        return self.dispatchCommand("verifyAttribute", element, value)
         
-    def verifyConfirmation(confirmation):
-        """ pass """
-        pass
+    def verifyConfirmation(self, confirmation):
+        return self.dispatchCommand("verifyConfirmation", confirmation)
         
-    def verifyElementNotPresent(type):
-        """ pass """
-        pass
+    def verifyElementNotPresent(self, type):
+        return self.dispatchCommand("verifyElementNotPresent", type)
         
-    def verifyElementPresent(type):
-        """ pass """
-        pass
+    def verifyElementPresent(self, type):
+        return self.dispatchCommand("verifyElementPresent", type)
         
-    def verifyLocation(location):
-        """ pass """
-        pass
+    def verifyLocation(self, location):
+        return self.dispatchCommand("verifyLocation", location)
         
-    def verifySelectOptions(field, values):
-        """ pass """
-        pass
+    def verifySelectOptions(self, field, values):
+        return self.dispatchCommand("verifySelectOptions", field, values)
         
-    def verifySelected(field, value):
-        """ pass """
-        pass
+    def verifySelected(self, field, value):
+        return self.dispatchCommand("verifySelected", field, value)
         
-    def verifyTable(table, value):
-        """ pass """
-        pass
+    def verifyTable(self, table, value):
+        return self.dispatchCommand("verifyTable", table, value)
         
-    def verifyText(type, text):
-        """ pass """
-        pass
+    def verifyText(self, type, text):
+        return self.dispatchCommand("verifyText", type, text)
         
-    def verifyTextPresent(type, text):
-        """ pass """
-        pass
+    def verifyTextPresent(self, type, text):
+        return self.dispatchCommand("verifyTextPresent", type, text)
+
+    def verifyTitle(self, title):
+        return self.dispatchCommand("verifyTitle", title)
         
-    def verifyTitle(title):
-        """ pass """
-        pass
-        
-    def verifyValue(field, value):
-        """ pass """
-        pass
+    def verifyValue(self, field, value):
+        return self.dispatchCommand("verifyValue", field, value)
             
