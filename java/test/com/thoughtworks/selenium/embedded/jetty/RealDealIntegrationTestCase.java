@@ -19,24 +19,25 @@ package com.thoughtworks.selenium.embedded.jetty;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.CommandProcessor;
-import com.thoughtworks.selenium.BrowserLauncher;
 import com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher;
+import com.thoughtworks.selenium.launchers.WindowsIEBrowserLauncher;
 import junit.framework.TestCase;
+
+import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  */
-public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
+public class RealDealIntegrationTestCase extends TestCase {
 
     Selenium selenium;
 
     protected void setUp() throws Exception {
         super.setUp();
-        selenium = new SeleneseTestingSelenium(
-                new JettyCommandProcessor(null, DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
-                        new TestIngPurposesStaticContentHandler()),
+        selenium = new DefaultSelenium(
+                new JettyCommandProcessor(new File("D:\\TW\\Selenium\\selenium\\javascript\\tests\\html"), DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
+                        new DirectoryStaticContentHandler(new File("D:\\TW\\Selenium\\selenium\\javascript"))),
                 new WindowsDefaultBrowserLauncher()
         );
         selenium.start();
@@ -48,20 +49,11 @@ public class InBrowserWithJavaScriptIntegrationTestCase extends TestCase {
     }
 
     public void testWithJavaScript() {
-        selenium.open("Apple");
-        selenium.clickAndWait("Orange");
-        selenium.setTextField("Pear", "Bartlet");
+        selenium.open("/test_click_page1.html");
+        selenium.verifyText("link", "Click here for next page");
+        selenium.clickAndWait("link");
+        selenium.verifyLocation("/test_click_page2.html");
+        selenium.clickAndWait("previousPage");
         selenium.testComplete();
-        // throws Exceptions if not OK
-    }
-
-    class SeleneseTestingSelenium extends DefaultSelenium {
-        public SeleneseTestingSelenium(CommandProcessor commandProcessor, BrowserLauncher launcher) {
-            super(commandProcessor, launcher);
-        }
-
-        protected String getTestRunnerPageName() {
-            return "SeleneseTests.html";
-        }
     }
 }

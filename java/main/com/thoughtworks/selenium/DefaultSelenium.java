@@ -24,13 +24,14 @@ import java.io.File;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class DefaultSelenium implements Selenium {
 
     CommandProcessor commandProcessor;
     private BrowserLauncher launcher;
-    public static final String SELENIUM_CONTEXT = "selenium-driver";
+
+    public static final String DEFAULT_SELENIUM_CONTEXT = "selenium-driver";
 
     public DefaultSelenium(CommandProcessor commandProcessor, BrowserLauncher launcher) {
         this.commandProcessor = commandProcessor;
@@ -38,12 +39,12 @@ public class DefaultSelenium implements Selenium {
     }
 
     public DefaultSelenium(File webAppRoot, BrowserLauncher launcher) {
-        commandProcessor = new JettyCommandProcessor(webAppRoot, SELENIUM_CONTEXT);
+        commandProcessor = new JettyCommandProcessor(webAppRoot, getContextName());
         this.launcher = launcher;
     }
 
     public DefaultSelenium(File webAppRoot) {
-        commandProcessor = new JettyCommandProcessor(webAppRoot, SELENIUM_CONTEXT);
+        commandProcessor = new JettyCommandProcessor(webAppRoot, getContextName());
         launcher = new DefaultBrowserLauncher();
     }
 
@@ -78,9 +79,17 @@ public class DefaultSelenium implements Selenium {
         commandProcessor.doCommand("testComplete", "", "");
     }
 
+    protected String getContextName() {
+        return DEFAULT_SELENIUM_CONTEXT;
+    }
+
+    protected String getTestRunnerPageName() {
+        return "SeleneseRunner.html";
+    }
+
     public void start() {
         commandProcessor.start();
-        launcher.launch("http://localhost:8080/" + SELENIUM_CONTEXT + "/SeleneseRunner.html");
+        launcher.launch("http://localhost:8080/" + getContextName() + "/" + getTestRunnerPageName());
     }
 
     public void stop() {

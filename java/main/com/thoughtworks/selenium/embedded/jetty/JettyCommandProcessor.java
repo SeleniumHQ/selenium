@@ -20,9 +20,12 @@ package com.thoughtworks.selenium.embedded.jetty;
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
 import org.mortbay.http.RequestLog;
+import org.mortbay.http.HttpContext;
+import org.mortbay.http.SocketListener;
 import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHttpContext;
+import org.mortbay.jetty.servlet.WebApplicationContext;
 import org.mortbay.util.InetAddrPort;
 import org.mortbay.util.MultiException;
 
@@ -34,7 +37,7 @@ import com.thoughtworks.selenium.CommandProcessor;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class JettyCommandProcessor implements CommandProcessor {
 
@@ -70,21 +73,21 @@ public class JettyCommandProcessor implements CommandProcessor {
 
             seleneseJettyResourceHandler = new SeleneseJettyResourceHandler();
 
-            ServletHttpContext context = new ServletHttpContext();
-            // context.addHandler(sha);
+            ServletHttpContext context = (ServletHttpContext) server.getContext("localhost","/" + seleniumContext + "/*");
 
             staticContentHandler.addStaticContent(context);
             context.addHandler(seleneseJettyResourceHandler);
             context.setContextPath("/" + seleniumContext + "/*");
-            server.addContext(context);
+            server.addContext("locahost", context);
             if (webAppRoot != null) {
-                server.addWebApplication("locahost", "/", webAppRoot.getAbsolutePath());
+                server.addWebApplication("localhost","/",webAppRoot.getAbsolutePath());
             }
         } catch (IOException e) {
             throw new RuntimeException("Exception instantiating Jetty", e);
         }
 
     }
+
 
 
     public String doCommand(String command, String field, String value) {

@@ -96,6 +96,8 @@ module Selenium
         # Only handle "GET" for now
         if "GET" == req.request_method
           command_result = req.query['commandResult']
+          selenium_start = req.query['seleniumStart']
+          #puts "--> #{command_result} #{selenium_start}" 
           @in_queue.push(command_result)
           get_reply = @out_queue.pop
           res.body = get_reply
