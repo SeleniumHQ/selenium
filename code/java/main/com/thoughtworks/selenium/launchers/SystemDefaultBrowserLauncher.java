@@ -38,7 +38,7 @@ public class SystemDefaultBrowserLauncher extends RuntimeExecutingBrowserLaunche
         } else if (osName != null && osName.startsWith("Mac")) {
             delegate = new MacDefaultBrowserLauncher();
         } else {
-            delegate = new UnixDefaultBrowserLauncher();
+            delegate = new UnixMozillaBrowserLauncher();
         }
     }
 
