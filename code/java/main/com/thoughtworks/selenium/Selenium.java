@@ -19,6 +19,7 @@ package com.thoughtworks.selenium;
 
 /**
  * @author Paul Hammant
+ * @author Aslak Hellesoy
  * @version $Revision$
  */
 public interface Selenium extends Startable {
