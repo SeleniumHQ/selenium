@@ -60,7 +60,7 @@ function TestLoop(commandFactory) {
         handler = this.commandFactory.getCommandHandler(command.command);
 
         // Make the current row blue
-        this.beginCommand();
+        this.beginCommand(command);
 
         if(handler == null) {
             this.commandError("Unknown command", ERROR);
@@ -86,23 +86,18 @@ function TestLoop(commandFactory) {
         }
     }
 }
-TestLoop.prototype.nextCommand = function(){};
+TestLoop.prototype.nextCommand = noop;
 
-TestLoop.prototype.beginCommand = function(){};
+TestLoop.prototype.beginCommand = noop;
 
-TestLoop.prototype.commandError = function(){};
+TestLoop.prototype.commandError = noop;
 
-TestLoop.prototype.actionOK = function(){};
+TestLoop.prototype.actionOK = noop;
 
-TestLoop.prototype.assertionPassed = function(){}
+TestLoop.prototype.assertionPassed = noop;
 
-TestLoop.prototype.assertionFailed = function(){};
+TestLoop.prototype.assertionFailed = noop;
 
 TestLoop.prototype.onTestComplete = function(){};
 
-
-function SeleniumCommand(command, target, value) {
-    this.command = command;
-    this.target = target;
-    this.value = value;
-}
+function noop() {};

@@ -23,14 +23,10 @@ import junit.framework.TestCase;
  * Selenium - http://localhost:9090/selenium-b-tests.html
  *
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class SeleniumIntegrationTest extends TestCase {
     public void testShouldStartServerAndCreateBrowser() {
-        String browserName = System.getProperty("browser");
-        if (browserName == null) {
-            fail("You must specify the browser name as a VM variable. Example: -Dbrowser=explorer");
-        }
         // TODO: don't point to JsUnit but to a web page with Selenium B loaded,
         // and let Selenium B be the driver on the client side instead of JsUnit.
         String jsUnitUrl = "http://localhost:9090/jsunit/testRunner.html?testPage=http://localhost:9090/tests/rpcrunner/rpcrunner-integration-tests.html&autoRun=true";
@@ -45,5 +41,25 @@ public class SeleniumIntegrationTest extends TestCase {
         } finally {
 //            selenium.shutdown();
         }
+    }
+
+    public void testTextboxEventsWithXmlRpc() {
+        String jsUnitUrl = "http://localhost:9090/RpcRunner.html";
+        Selenium selenium = new Selenium(jsUnitUrl);
+        Browser browser = selenium.getBrowser();
+
+        browser.open("/tests/html/test_form_events.html");
+        browser.verifyValue("theTextbox", "");
+        browser.verifyValue("eventlog", "");
+
+        browser.type("theTextbox", "first value");
+        browser.verifyValue("theTextbox", "first value");
+        browser.verifyValue("eventlog", "{focus(theTextbox)} {select(theTextbox)} {change(theTextbox)} {blur(theTextbox)}");
+
+        browser.type("eventlog", "");
+        browser.type("theTextbox", "changed value");
+        browser.verifyValue("theTextbox", "changed value");
+        browser.verifyValue("eventlog", "{focus(theTextbox)} {select(theTextbox)} {change(theTextbox)} {blur(theTextbox)}");
+
     }
 }

@@ -218,3 +218,9 @@ function CommandHandler(type, haltOnFailure, executor) {
     this.haltOnFailure = haltOnFailure;
     this.executor = executor;
 }
+
+function SeleniumCommand(command, target, value) {
+    this.command = command;
+    this.target = target;
+    this.value = value;
+}
