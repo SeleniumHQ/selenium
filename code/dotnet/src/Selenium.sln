@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "Integra
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples", "Examples\Examples.csproj", "{4C396705-4DE5-4292-A9F1-0E161F75A19A}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Build = Build
@@ -46,6 +50,12 @@ Global
 		{42D1B587-9544-452F-8B76-4F2A65BC9BE5}.Debug.Build.0 = Debug|.NET
 		{42D1B587-9544-452F-8B76-4F2A65BC9BE5}.Release.ActiveCfg = Release|.NET
 		{42D1B587-9544-452F-8B76-4F2A65BC9BE5}.Release.Build.0 = Release|.NET
+		{4C396705-4DE5-4292-A9F1-0E161F75A19A}.Build.ActiveCfg = Build|.NET
+		{4C396705-4DE5-4292-A9F1-0E161F75A19A}.Build.Build.0 = Build|.NET
+		{4C396705-4DE5-4292-A9F1-0E161F75A19A}.Debug.ActiveCfg = Debug|.NET
+		{4C396705-4DE5-4292-A9F1-0E161F75A19A}.Debug.Build.0 = Debug|.NET
+		{4C396705-4DE5-4292-A9F1-0E161F75A19A}.Release.ActiveCfg = Release|.NET
+		{4C396705-4DE5-4292-A9F1-0E161F75A19A}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
 		..\selenium.build = ..\selenium.build
