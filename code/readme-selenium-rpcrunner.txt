@@ -14,3 +14,5 @@ Prereqs:
 o JDK 1.4 installed
 o Ant 1.6.1 or later installed
 o Xalan and JUnit in $ANT_HOME/lib
+
+Bla bla bla
