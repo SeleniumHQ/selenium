@@ -29,7 +29,7 @@ Copyright 2004 ThoughtWorks, Inc
 
 function setUp() {
    browserBot = new BrowserBot();
-   pageBot = new PageBot(window, browserBot);
+   pageBot = browserBot.wrapWindow(window);
 }
 
 function testShouldNotReportAnyAlertsIfNoneHaveBeenGenerated() {
@@ -65,22 +65,18 @@ function testShouldRemoveAlertWhenItIsRetreived() {
 }
 
 function testShouldReportAlertsFromMultiplePages() {
+    secondWindow = document.getElementById("frame").contentWindow;
+    secondPageBot = browserBot.wrapWindow(secondWindow);
+
+    window.alert("I am an alert in the first window");
+    secondWindow.alert("I am an alert in the second window");
  
-     secondWindow = document.getElementById("frame").contentWindow;
-     secondPageBot = new PageBot(secondWindow, browserBot);
-     
-     window.alert("I am an alert in the first window");
-     secondWindow.alert("I am an alert in the second window");  
- 
-     assertTrue(browserBot.hasAlerts());
+    assertTrue(browserBot.hasAlerts());
     assertEquals("I am an alert in the first window", browserBot.getNextAlert());
     assertTrue(browserBot.hasAlerts());
     assertEquals("I am an alert in the second window", browserBot.getNextAlert());
     assertFalse(browserBot.hasAlerts());
- 
 }
-
-
 
 </script>
   </head>

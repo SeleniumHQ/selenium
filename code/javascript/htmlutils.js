@@ -19,14 +19,16 @@
 // make it possible to handle elements in a way that is 
 // compatible with both IE-like and Mozilla-like browsers
 
-String.prototype.trim = function() {
+function trim() {
   var result = this.replace( /^\s+/g, "" );// strip leading
   return result.replace( /\s+$/g, "" );// strip trailing
 }
+String.prototype.trim = trim;
 
-String.prototype.toCamelCase = function() {
+function toCamelCase() {
    return this.charAt(0).toLowerCase() + this.substr(1);
 }
+String.prototype.toCamelCase = toCamelCase;
 
 // Returns the text in this element
 function getText(element) {
