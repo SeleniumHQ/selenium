@@ -68,6 +68,7 @@ public class RealDealIntegrationTest extends TestCase {
     }
 
     public void testWithJavaScript() {
+        selenium.setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
         selenium.open("/test_click_page1.html");
         selenium.verifyText("link", "Click here for next page");
         String[] links = selenium.getAllLinks();
