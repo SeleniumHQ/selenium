@@ -87,7 +87,7 @@ function loadAndRunIfAuto() {
 }
 
 function getExecutionContext() {
-    if (isNewWinidow()) {
+    if (isNewWindow()) {
         return getWindowExecutionContext();
     } else {
         return new IFrameExecutionContext();
@@ -171,14 +171,19 @@ function addOnclick(suiteTable, rowNum) {
 }
 
 function isQueryParameterTrue(name) {
+    parameterValue = getQueryParameter(name);
+    return (parameterValue != null && parameterValue.toLowerCase() == "true");
+}
+
+function getQueryParameter(name) {
     myVars = location.search.substr(1).split('&');
         for (var i =0;i < myVars.length; i++) {
             nameVal = myVars[i].split('=')
-            if( nameVal[0] == name && nameVal[1].toLowerCase() == "true" )
-                return true;
+            if(nameVal[0] == name) {
+                return nameVal[1];
+            }
         }
-    
-    return false;
+    return null;
 }
 
 function isNewWindow() {
