@@ -12,12 +12,15 @@
 	<target name="all-clean" depends="clean, all"
 		description="Clean up, then do everything you might want to do on a developer workstation" />
 		
-	<target name="test" depends="unit-tests" 
+	<target name="test" depends="unit-tests, integration-tests" 
 		description="Run all tests"/>
 	
 	<target name="unit-tests" depends="compile, run-unit-tests" 
 		description="Run Unit Tests" />
 	
+	<target name="integration-tests" depends="compile, deploy-nant, run-integration-tests" 
+		description="Run Unit Tests" />
+
 	<target name="dist" depends="compile, create-deployment-directory, create-selenium-zips" 
 		description="Create distributable files" />
 		
@@ -48,13 +51,21 @@
 	</target>
 
 	<target name="run-unit-tests">
-		<property name="unit.test.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
+		<property name="unit.tests.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
 		<exec 
 			program="tools\nunit\nunit-console.exe" 
 			workingdir="build\UnitTests" 
-			commandline="${unit.test.dll} /xml:../${unit.test.dll}-results.xml /nologo"/>
+			commandline="${unit.tests.dll} /xml:../${unit.tests.dll}-results.xml /nologo"/>
 	</target>
 	
+	<target name="run-integration-tests">
+		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
+		<exec 
+			program="tools\nunit\nunit-console.exe" 
+			workingdir="build\IntegrationTests" 
+			commandline="${integration.tests.dll} /xml:../${integration.tests.dll}-results.xml /nologo"/>
+	</target>
+
 	<target name="create-deployment-directory">
 		<mkdir dir="deployed" />
 		<copy todir="deployed">
