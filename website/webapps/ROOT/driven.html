@@ -123,6 +123,9 @@ values);<br>
 &nbsp;&nbsp;&nbsp; void verifyValue(String field, String value);<br>
 <h2>Deployment Choices</h2>
 <h3>Embedded Web Server</h3>
+<p>
+<img alt="Picture of Browser and Driving process" src="Embedded.png"
+ style="width: 518px; height: 302px;" align="top"><br>
 The best way to deply the driven form of Selenium is where an embedded
 web server is used. With the Java version, this could be <a
  href="http://jetty.mortbay.com/jetty/index.html">Jetty</a> or <a
@@ -133,10 +136,20 @@ browser, a web server containing the AUT and some static pages for
 Selenium itself will be programmatically started and used to
 communicate selenese instructions to the browser.&nbsp; When the driver
 process is complete the web server will be programmatically stopped. <br>
+</p>
+<p style="color: rgb(255, 0, 0);">[ For release 0.2 - this is the only
+mode that really works. Those below will be fine for 0.3 and above ]<br>
+</p>
 <h3>Adjacent Web Server</h3>
+<img alt="diagram of adjacent config" src="Adjacent.png"
+ style="width: 534px; height: 572px;"><br>
+By adjacent we mean a process on the same machine as the driver. As
+such it would appear as localhost to browsers. <br>
+<br>
 For the .Net driver embedded is very unlikely as Internet Information
 Server is running in its own process. For the Java driver, this could
-simple be a necessary choice - The deployment target is WebLogic or
+simple be a necessary choice - i.e. the deployment target is WebLogic
+or
 WebSphere which are not too embeddable.&nbsp; <br>
 <br>
 In this scenario we suggest you deploy a small web-app alongside the
@@ -147,11 +160,8 @@ server supports it, it is best to copy a fresh version of the AUT to
 the underlying directory that the web-app is mapped to. We call the
 small web-app the selenese proxy. It does of course slow things down a
 fraction.<br>
-<h3>Remote Web Server</h3>
-This is where the AUT is running on a remote machine.&nbsp; <br>
-<br>
-<span style="font-weight: bold;">Selense-proxy</span><br
- style="font-weight: bold;">
+<span style="font-weight: bold;"><br>
+Selenese-proxy</span><br style="font-weight: bold;">
 <br>
 If you can deploy a copy of the selenese proxy to remote web server,
 and configure it to forward requests to your machine, then you can
@@ -161,9 +171,26 @@ that is configured to drive it. i.e. it would need to be reconfigured
 to be driven from elsewhere. The upside is that you can to a great
 extent mix and match your technologies to achieve this proxying (a Java
 driver could use a Python selenese-proxy script a web-app).<br>
+<h3>Nearby Web Server <br>
+</h3>
+This is where the AUT is running on a nearby testing stack or dedicated
+development box (not the developer's own workstation).<br>
 <br>
-<span style="font-weight: bold;">Funnel</span><br
- style="font-weight: bold;">
+To achieve this the selenese proxy needs to be deployed again, this
+time to that nearby machine. It will need to be reconfigured to
+indicate that selenese traffic is either forwarded to a particular
+machine.<span style="font-weight: bold;"><br>
+</span>
+<h3>Remote Web Server <br>
+</h3>
+This is where the AUT is running on a remote machine, which you have no
+control over.&nbsp; A good example would be www.google.com.&nbsp; It is
+worth pointing out that this is of more interest to hackers or data
+harvesters than testing professionals, as what self respecting
+development group would prevent you from deploying at least the
+Selenese Proxy webapp to a testing stack.<br>
+<span style="font-weight: bold;"><br>
+Funnel</span><br style="font-weight: bold;">
 <br>
 We are writing an application called the funnel that can help us
 overcome the <a
