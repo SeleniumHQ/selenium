@@ -155,15 +155,15 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
         var processState = this.executor.call(seleniumApi, command.target, command.value);
         result.passed = true;
     } catch (e) {
-        // If this is not a JsUnitException, or we should haltOnFailure, rethrow.
-        if (!e.isJsUnitException) {
+        // If this is not a AssertionFailedError, or we should haltOnFailure, rethrow.
+        if (!e.isAssertionFailedError) {
             throw e;
         }
         if (this.haltOnFailure) {
-            throw new Error(e.jsUnitMessage);
+            throw new Error(e.failureMessage);
         }
         result.failed = true;
-        result.failureMessage = e.jsUnitMessage;
+        result.failureMessage = e.failureMessage;
     }
     return result;
 };
