@@ -17,6 +17,7 @@
 package com.thoughtworks.selenium.proxy;
 
 import com.thoughtworks.selenium.utils.Assert;
+import com.thoughtworks.selenium.SeleniumException;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -159,5 +161,19 @@ public class SeleniumHTTPRequest implements HTTPRequest {
     public boolean equals(Object o) {
         SeleniumHTTPRequest other = (SeleniumHTTPRequest) o;
         return headers.equals(other.headers);
+    }
+
+    public int hashCode() {
+        return headers.hashCode();
+    }
+
+    public String toString() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            writeTo(out);
+            return new String(out.toByteArray());
+        } catch (IOException e) {
+            throw new SeleniumException(e);
+        }
     }
 }

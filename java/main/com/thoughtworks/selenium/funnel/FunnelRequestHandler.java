@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  *
  * @author Mike Melia
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class FunnelRequestHandler {
     // Host: foo.bar.com:88
@@ -43,7 +43,7 @@ public class FunnelRequestHandler {
     private static final Pattern REFERER_HEADER_PATTERN = Pattern.compile("Referer:\\shttp://127.0.0.1/([^\\/]*)(.*)", Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
     private static final Pattern COOKIE_HEADER_PATTERN = Pattern.compile("Cookie:.*SELENIUM=([^;]*).*", Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
     // GET http://www.google.com/ HTTP/1.1
-    private static final Pattern REQUEST_LINE_PATTERN = Pattern.compile("[A-Z]*\\s[a-z]*://127.0.0.1/([^\\/]*).*", Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
+    private static final Pattern REQUEST_LINE_PATTERN = Pattern.compile("([A-Z]*)\\s([a-z]*://)([^\\/]*)([^\\s]*)(.*)", Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
     private static final String DUMMY_REDIRECT_HOST = "127.0.0.1";
 
     private final Client client;
@@ -77,9 +77,13 @@ public class FunnelRequestHandler {
         String requestLine = lineInputStream.readLine();
         debugRequestHeaders.write(requestLine.getBytes());
 
+        Matcher requestLineMatcher = REQUEST_LINE_PATTERN.matcher(requestLine);
+        if (!requestLineMatcher.matches()) {
+            throw new IOException(requestLine + " doesn't match " + REQUEST_LINE_PATTERN.pattern());
+        }
+
         String referer = null;
         String hostFromHostHeader = null;
-        String hostFromRequestLine = null;
         String hostFromSeleniumCookie = null;
 
         String line = null;
@@ -116,12 +120,12 @@ public class FunnelRequestHandler {
                 host = hostFromSeleniumCookie;
                 forwardRequestLine = requestLine.replaceFirst("http://127.0.0.1", "");
             } else {
-                Matcher requestLineMatcher = REQUEST_LINE_PATTERN.matcher(requestLine);
-                if (requestLineMatcher.matches()) {
-                    hostFromRequestLine = requestLineMatcher.group(1);
-                    forwardRequestLine = requestLine.replaceFirst("127.0.0.1/", "");
-                    host = hostFromRequestLine;
+                forwardRequestLine = requestLine.replaceFirst("127.0.0.1/", "");
+                Matcher forwardRequestLineMatcher = REQUEST_LINE_PATTERN.matcher(forwardRequestLine);
+                if (!forwardRequestLineMatcher.matches()) {
+                    throw new IOException(requestLine + " doesn't match " + REQUEST_LINE_PATTERN.pattern());
                 }
+                host = forwardRequestLineMatcher.group(3);
             }
 
             serverRequestHeaders.write("Host: ".getBytes());
@@ -139,7 +143,11 @@ public class FunnelRequestHandler {
             // TODO: return false if hostFromHostHeader is different than previous request
             return true;
         } else {
-            redirect302(hostFromHostHeader, clientResponse);
+            StringBuffer buffer = new StringBuffer();
+            requestLineMatcher.appendReplacement(buffer, "$2127.0.0.1/$3$4");
+
+            String newRequestLine = buffer.toString();
+            redirect302(newRequestLine, clientResponse);
             return false;
         }
     }
@@ -155,7 +163,8 @@ public class FunnelRequestHandler {
         client.request(clientRequest, clientResponse, host, serverRequest);
     }
 
-    private void redirect302(String host, OutputStream response) throws IOException {
+    private void redirect302(String redirectUrl, OutputStream response) throws IOException {
+
         // We're telling the client that this resource must be retrieved from 127.0.0.1.
         // In reality nothing will ever be forwarded there - it is just a token that
         // we'll use to identify a previously redirected request. Remember - all requests
@@ -167,9 +176,9 @@ public class FunnelRequestHandler {
 
         responseContent.write("HTTP/1.x 302 Moved Temporarily\r\n".getBytes());
 
-        responseContent.write("Location: http://127.0.0.1/".getBytes());
-        responseContent.write(host.getBytes());
-        responseContent.write("/\r\n".getBytes());
+        responseContent.write("Location: ".getBytes());
+        responseContent.write(redirectUrl.getBytes());
+        responseContent.write("\r\n".getBytes());
 
         responseContent.write("\r\n".getBytes());
 

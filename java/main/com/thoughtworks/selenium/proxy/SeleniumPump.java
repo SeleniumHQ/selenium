@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * This pump looks for a HTTP Content-Length header and limits the number of bytes
+ * This handleRequest looks for a HTTP Content-Length header and limits the number of bytes
  * pumped to its cvalue if it exists.
  */
 public class SeleniumPump implements Pump {

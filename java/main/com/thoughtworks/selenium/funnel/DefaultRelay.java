@@ -22,7 +22,7 @@ import java.io.IOException;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DefaultRelay implements Relay {
     private final InputStream clientRequest;
@@ -38,6 +38,7 @@ public class DefaultRelay implements Relay {
     }
 
     public void close() throws IOException {
+        System.out.println("** Closing **");
         clientRequest.close();
         clientResponse.close();
         serverResponse.close();

@@ -25,7 +25,7 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class FunnelResponseHandlerTest extends MockObjectTestCase {
     private OutputStream NULL_OUT = new ByteArrayOutputStream();
@@ -66,7 +66,7 @@ public class FunnelResponseHandlerTest extends MockObjectTestCase {
                 "\r\n" +
                 "hello world");
         handler.handleResponse(serverResponse, expected, null);
-        assertTrue(serverResponse.isClosed());
-        assertTrue(expected.isClosed());
+        assertFalse("Should not be closed by FunnelesponseHandler, but by Relay", serverResponse.isClosed());
+        assertFalse("Should not be closed by FunnelesponseHandler, but by Relay", expected.isClosed());
     }
 }

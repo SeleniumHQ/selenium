@@ -28,7 +28,7 @@ import java.net.Socket;
 /**
  * @author Mike Melia
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class Funnel {
     // http://www.webelements.com/webelements/elements/text/Se/key.html
@@ -45,6 +45,19 @@ public class Funnel {
         this.debugClientResponse = debugClientResponse;
         this.debugServerRequest = debugServerRequest;
         this.debugServerResponse = debugServerResponse;
+        System.out.println("Funnel running on port " + port);
+        System.out.println("Configure your browser to use Funnel as a Proxy server:");
+        System.out.println();
+        System.out.println("Firefox: Tools->Options->General-Connection Settings->Manual proxy configuration" + port);
+        System.out.println("    HTTP Proxy: localhost");
+        System.out.println("    HTTP Proxy Port: " + port);
+        System.out.println("    No Proxy for: (make sure it's blank)");
+        System.out.println();
+        System.out.println("Internet Explorer: Tools->Internet Options->Connections->LAN Settings" + port);
+        System.out.println("    Check \"Use a proxy server for your LAN\"");
+        System.out.println("    Address: localhost");
+        System.out.println("    Port: " + port);
+        System.out.println("    Uncheck \"Bypass proxy server for local addresses\"");
     }
 
     public Funnel() {

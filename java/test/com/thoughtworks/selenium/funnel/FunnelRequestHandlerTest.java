@@ -28,12 +28,12 @@ import java.io.OutputStream;
 
 /**
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class FunnelRequestHandlerTest extends MockObjectTestCase {
     private OutputStream NULL_OUT = new ByteArrayOutputStream();
 
-    public void testShouldWrite302RedirectForInitialRequest() throws IOException {
+    public void testShouldWrite302RedirectForInitialRootRequest() throws IOException {
         InputStream clientRequest = new ByteArrayInputStream(("" +
                 "GET http://www.google.com/ HTTP/1.1\r\n" +
                 "Host: www.google.com\r\n" +
@@ -48,6 +48,21 @@ public class FunnelRequestHandlerTest extends MockObjectTestCase {
         expectedClientResponse.verify();
     }
 
+    public void testShouldWrite302RedirectForInitialRequestWithSubPath() throws IOException {
+        InputStream clientRequest = new ByteArrayInputStream(("" +
+                "GET http://www.thoughtworks.com/us HTTP/1.1\r\n" +
+                "Host: www.thoughtworks.com\r\n" +
+                "\r\n").getBytes());
+
+        MockOutputStream expectedClientResponse = new MockOutputStream("" +
+                "HTTP/1.x 302 Moved Temporarily\r\n" +
+                "Location: http://127.0.0.1/www.thoughtworks.com/us\r\n" +
+                "\r\n");
+        Mock client = mock(Client.class);
+        new FunnelRequestHandler((Client) client.proxy(), NULL_OUT, NULL_OUT, NULL_OUT).handleRequest(clientRequest, expectedClientResponse);
+        expectedClientResponse.verify();
+    }
+
     public void testShouldForwardRedirectedRequestUsingHostFromRequestLine() throws IOException {
         InputStream clientRequest = new ByteArrayInputStream(("" +
                 "GET http://127.0.0.1/www.google.com/ HTTP/1.1\r\n" +
@@ -55,19 +70,21 @@ public class FunnelRequestHandlerTest extends MockObjectTestCase {
                 "\r\n").getBytes());
 
         MockOutputStream expectedClientResponse = new MockOutputStream("");
-        Mock client = mock(Client.class);
-        Constraint expectedRequest = new StreamConstraint("" +
+        MockOutputStream debugServerRequest = new MockOutputStream("" +
+                "----- FUNNEL->SERVER REQUEST HEADERS -----\r\n" +
                 "GET http://www.google.com/ HTTP/1.1\r\n" +
                 "Host: www.google.com\r\n" +
                 "\r\n");
+        Mock client = mock(Client.class);
 
         client.expects(once()).method("request").with(
                 same(clientRequest),
                 same(expectedClientResponse),
                 eq("www.google.com"),
-                expectedRequest).isVoid();
-        new FunnelRequestHandler((Client) client.proxy(), NULL_OUT, NULL_OUT, NULL_OUT).handleRequest(clientRequest, expectedClientResponse);
+                isA(OutputStream.class)).isVoid();
+        new FunnelRequestHandler((Client) client.proxy(), NULL_OUT, NULL_OUT, debugServerRequest).handleRequest(clientRequest, expectedClientResponse);
         expectedClientResponse.verify();
+        debugServerRequest.verify();
     }
 
     public void testShouldForwardRedirectedRequestUsingHostFromCookie() throws IOException {
@@ -99,7 +116,7 @@ public class FunnelRequestHandlerTest extends MockObjectTestCase {
 
     private class StreamConstraint implements Constraint {
         private final String expected;
-        private String requestContent;
+        private String requestContent = "CONSTRAINT NOT CHECKED YET";
 
         public StreamConstraint(String expected) {
             this.expected = expected;
