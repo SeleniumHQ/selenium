@@ -39,6 +39,30 @@ function IFrameExecutionContext() {
     };
 }
 
+function KonquerorIFrameExecutionContext() {
+
+    this.loadFrame = function() {
+        return document.getElementById('myiframe');
+    };
+
+    this.open = function(target,frame) {
+        frame.src = target;
+    };
+
+    this.getContentWindow = function(frame) {
+        return document.frames['myiframe'];
+    };
+
+    this.waitForPageLoad = function(testloop,selenium) {
+        // Since we're waiting for page to reload, we can't continue command execution
+        // directly, we need use a page load listener.
+
+        // TODO there is a potential race condition by attaching a load listener after
+        // the command has completed execution.
+        selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay()");});
+    };
+}
+
 var windowExecutionContext;
 
 function getWindowExecutionContext() {

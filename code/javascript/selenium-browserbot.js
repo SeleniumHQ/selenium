@@ -144,8 +144,8 @@ BrowserBot.prototype.getCurrentPage = function() {
             // Get relative directory to where TestRunner.html lives
             // A risky assumption is that the user's TestRunner is named TestRunner.html
             var doc_location = document.location.toString();
-	    var end_of_base_ref = doc_location.indexOf('TestRunner.html')
-	    var base_ref = doc_location.substring(0,end_of_base_ref)
+            var end_of_base_ref = doc_location.indexOf('TestRunner.html');
+            var base_ref = doc_location.substring(0, end_of_base_ref);
 	    
             var fullURL = base_ref + "TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runInterval;
             browserBot.modalDialogTest = null;
@@ -254,11 +254,22 @@ PageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
     try {
         var element = inDocument.getElementById(identifier);
         if (element == null
-            && !isIE // IE checks this without asking
-            && document.evaluate )// DOM3 XPath
+            && !isIE) // IE checks this without asking
         {
-            var xpath = "//*[@name='" + identifier + "']";
-            element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+            if ( document.evaluate ) {// DOM3 XPath
+                var xpath = "//*[@name='" + identifier + "']";
+                element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+            }
+	    // Search through all elements for Konqueror/Safari
+            else if (document.all) {
+                for (var i = 0; i < inDocument.all.length; i++) {
+                    var testElement = inDocument.all[i];
+                    if (testElement.name && testElement.name === identifier) {
+                        element = testElement;
+                        break;
+                    }
+                }
+            }
         }
     } catch (e) {
         return null;
@@ -381,7 +392,9 @@ PageBot.prototype.clickElement = function(element) {
         // Add an event listener that detects if the default action has been prevented.
         // (This is caused by a javascript onclick handler returning false)
         var preventDefault = false;
-        element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
+        if (geckoVersion) {
+            element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
+        }
 
         // Trigger the click event.
         triggerMouseEvent(element, 'click', true);
