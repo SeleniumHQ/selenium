@@ -37,6 +37,7 @@ class ZSeleniumInterpreter(SeleniumInterpreter, Item, Persistent, Implicit, Role
     security.declarePublic('clickAndWait')
     security.declarePublic('open')
     security.declarePublic('pause')
+    security.declarePublic('select')
     security.declarePublic('selectAndWait')
     security.declarePublic('selectWindow')
     security.declarePublic('setTextField')
