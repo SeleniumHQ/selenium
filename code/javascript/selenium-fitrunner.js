@@ -71,7 +71,7 @@ function setRunInterval() {
 }
 
 function continueCurrentTest() {
-    testLoop.finishCommandExecution()
+    testLoop.finishCommandExecution();
 }
 
 function getApplicationFrame() {
@@ -139,7 +139,7 @@ function loadTestFrame() {
         
         addLoadListener(getApplicationFrame(), startTestSuite);
         
-        getApplicationFrame().src = getQueryParameter("autoURL");
+        getApplicationFrame().src = unescape(getQueryParameter("autoURL"));
         
     } else {
         testLink = suiteTable.rows[currentTestRow+1].cells[0].getElementsByTagName("a")[0];
@@ -188,7 +188,7 @@ function isQueryParameterTrue(name) {
 function getQueryParameter(name) {
     myVars = location.search.substr(1).split('&');
         for (var i =0;i < myVars.length; i++) {
-            nameVal = myVars[i].split('=')
+            nameVal = myVars[i].split('=');
             if(nameVal[0] == name) {
                 return nameVal[1];
             }
@@ -355,7 +355,7 @@ function postTestResults(suiteFailed, suiteTable) {
         input.name = name;
         input.value = value;
         this.appendChild(input);
-    }
+    };
 
     if (resultsUrlQueryString) {
         var clauses = resultsUrlQueryString.split('&');
@@ -424,7 +424,7 @@ function pad (num) {
 function replaceVariables(str) {
 
      //handle the case of ${userid}.toUpper
-     pattern = /\$\{(\w+)\}\.(.+)/
+     pattern = /\$\{(\w+)\}\.(.+)/;
 
      var variableIndex = str;
      var variableFunction='';
@@ -447,7 +447,7 @@ function replaceVariables(str) {
         return variableValue;
     else
     {
-        return eval("variableValue."+ eval("variableFunction") + "()" )
+        return eval("variableValue."+ eval("variableFunction") + "()" );
     }
 }
     // Register all of the built-in command handlers with the CommandHandlerFactory.
@@ -465,14 +465,14 @@ function registerCommandHandlers() {
 function initialiseTestLoop() {
     testLoop = new TestLoop(commandFactory, getExecutionContext());
 
-    testLoop.getCommandInterval = function() { return runInterval };
+    testLoop.getCommandInterval = function() { return runInterval; };
     testLoop.firstCommand = nextCommand;
     testLoop.nextCommand = nextCommand;
     testLoop.commandStarted = commandStarted;
     testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
     testLoop.testComplete = testComplete;
-    return testLoop
+    return testLoop;
 }
 
 function nextCommand() {
@@ -570,7 +570,7 @@ function getCellText(rowNumber, columnNumber) {
 
 Selenium.prototype.doPause = function(waitTime) {
     testLoop.pauseInterval = waitTime;
-}
+};
 
 // Store the value of a form input in a variable
 Selenium.prototype.doStoreValue = function(target, varName) {
@@ -583,13 +583,13 @@ Selenium.prototype.doStoreValue = function(target, varName) {
     }
     var element = this.page().findElement(target);
     storedVars[varName] = getInputValue(element);
-}
+};
 
 // Store the text of an element in a variable
 Selenium.prototype.doStoreText = function(target, varName) {
     var element = this.page().findElement(target);
     storedVars[varName] = getText(element);
-}
+};
 
 Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
    
@@ -599,4 +599,4 @@ Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
         return SELENIUM_PROCESS_WAIT;
     }
 
-}
+};

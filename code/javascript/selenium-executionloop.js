@@ -27,7 +27,7 @@ function TestLoop(commandFactory, executionContext) {
 
     this.start = function() {
         this.continueCurrentTest();
-    }
+    };
 
     this.continueCurrentTest = function() {
         var testStatus = this.kickoffNextCommandExecution();
@@ -35,7 +35,7 @@ function TestLoop(commandFactory, executionContext) {
         if (testStatus == TEST_FINISHED) {
             this.testComplete();
         }
-    }
+    };
 
     this.kickoffOneCommandExecution = function() {
 
@@ -83,7 +83,7 @@ function TestLoop(commandFactory, executionContext) {
 
         // Test is not finished.
         return TEST_CONTINUE;
-    }
+    };
 
  function delay(millis) {
    startMillis = new Date();
@@ -137,7 +137,7 @@ function TestLoop(commandFactory, executionContext) {
 
         // Test is not finished.
         return TEST_CONTINUE;
-    }
+    };
 
     /**
      * Continues the command execution, after waiting for the specified delay.
@@ -152,7 +152,7 @@ function TestLoop(commandFactory, executionContext) {
         if (interval >= 0) {
             window.setTimeout("testLoop.finishCommandExecution()", interval);
         }
-    }
+    };
 
     /**
      * Finishes the execution of the previous command, and continues the test
@@ -160,13 +160,13 @@ function TestLoop(commandFactory, executionContext) {
     this.finishCommandExecution = function() {
         this.commandComplete(this.lastCommandResult);
         this.continueCurrentTest();
-    }
+    };
 }
 
 /** The default is not to have any interval between commands. */
 TestLoop.prototype.getCommandInterval = function() {
    return 0;
-}
+};
 
 TestLoop.prototype.firstCommand = noop;
 

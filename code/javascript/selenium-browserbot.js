@@ -33,8 +33,6 @@ var isIE = (browserName =="Microsoft Internet Explorer");
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
-
-
 /*
  * The 'invoke' method will call the required function, and then
  * remove itself from the window object. This allows a calling app
@@ -53,7 +51,7 @@ function SelfRemovingLoadListener(fn, frame) {
         } finally {
             removeLoadListener(frame, self.invoke);
         }
-    }
+    };
 }
 
 BrowserBot = function(frame, executionContext) {
@@ -67,41 +65,41 @@ BrowserBot = function(frame, executionContext) {
     this.recordedConfirmations = new Array();
     this.nextConfirmResult = true;
 
-}
+};
 
 BrowserBot.prototype.doModalDialogTestSuite = function(testSuite) {
     this.modalDialogTestSuite = testSuite;
-}
+};
 
 BrowserBot.prototype.cancelNextConfirmation = function() {
     this.nextConfirmResult = false;
-}
+};
 
 BrowserBot.prototype.hasAlerts = function() {
    return (this.recordedAlerts.length > 0) ;
-}
+};
 
 BrowserBot.prototype.getNextAlert = function() {
    return this.recordedAlerts.shift();
-}
+};
 
 BrowserBot.prototype.hasConfirmations = function() {
     return (this.recordedConfirmations.length > 0) ;
-}
+};
  
 BrowserBot.prototype.getNextConfirmation = function() {
     return this.recordedConfirmations.shift();
-}
+};
 
 
 BrowserBot.prototype.getFrame = function() {
     return this.frame;
-}
+};
 
 BrowserBot.prototype.getContentWindow = function() {
     return this.executionContext.getContentWindow(this.getFrame());
    
-}
+};
 
 BrowserBot.prototype.selectWindow = function(target) {
     // we've moved to a new page - clear the current one
@@ -113,14 +111,14 @@ BrowserBot.prototype.selectWindow = function(target) {
             this.currentWindowName = target;
         }
     }
-}
+};
 
 BrowserBot.prototype.openLocation = function(target, onloadCallback) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
     this.callOnNextPageLoad(onloadCallback);
     this.executionContext.open(target,this.getFrame());
-}
+};
 
 BrowserBot.prototype.getCurrentPage = function() {
     if (this.currentPage == null) {
@@ -143,9 +141,13 @@ BrowserBot.prototype.getCurrentPage = function() {
         oldShowModalDialog = window.showModalDialog;
         
         window.showModalDialog = function(url, args, features) {
-            var fullURL = "/TestRunner.html?test=" + browserBot.modalDialogTestSuite + "&autoURL=" + url;
-            
-            return oldShowModalDialog(fullURL, args, features);
+            var fullURL = "/TestRunner.html?test=" + escape(browserBot.modalDialogTestSuite) + "&autoURL=" + escape(url);
+            browserBot.modalDialogTestSuite = null;
+
+            var returnValue = oldShowModalDialog(fullURL, args, features);
+            //window.open(fullURL);
+            //alert(returnValue);
+            return returnValue;
         };
 
         window.alert = function(alert){browserBot.recordedAlerts.push(alert);};
@@ -154,7 +156,7 @@ BrowserBot.prototype.getCurrentPage = function() {
             browserBot.recordedConfirmations.push(message);
             var result = browserBot.nextConfirmResult;
             browserBot.nextConfirmResult = true;
-            return result
+            return result;
         };
     }
      
@@ -173,7 +175,7 @@ BrowserBot.prototype.getCurrentPage = function() {
        // End SPIKE
      }
 
-}
+};
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
     var evalString = "this.getContentWindow().window." + windowName;
@@ -182,28 +184,27 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
         throw new Error("Window does not exist");
     }
     return targetWindow;
-}
+};
 
 BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
     if (onloadCallback) {
         var el = new SelfRemovingLoadListener(onloadCallback, this.frame);
         addLoadListener(this.frame, el.invoke);
     }
-}
+};
 
 
 PageBot = function(pageWindow) {
     this.currentWindow = pageWindow;
     this.currentDocument = pageWindow.document;
     this.location = pageWindow.location.pathname;
-    this.title = function() {return this.currentDocument.title};
+    this.title = function() {return this.currentDocument.title;};
 
     this.locators = new Array();
     this.locators.push(this.findIdentifiedElement);
     this.locators.push(this.findElementByDomTraversal);
     this.locators.push(this.findElementByXPath);
-
-}
+};
 
 /*
  * Finds an element on the current page, using various lookup protocols
@@ -225,7 +226,7 @@ PageBot.prototype.findElement = function(locator) {
 
     // Element was not found by any locator function.
     throw new Error("Element " + locator + " not found");
-}
+};
 
 PageBot.prototype.findElementInDocument = function(locator, inDocument) {
     // Try the locators one at a time.
@@ -236,7 +237,7 @@ PageBot.prototype.findElementInDocument = function(locator, inDocument) {
             return element;
         }
     }
-}
+};
 
 /*
  * In IE, getElementById() also searches by name.
@@ -260,7 +261,7 @@ PageBot.prototype.findIdentifiedElement = function(identifier, inDocument) {
     }
 
     return element;
-}
+};
 
 /**
  * Finds an element using by evaluating the "document.*" string against the
@@ -281,7 +282,7 @@ PageBot.prototype.findElementByDomTraversal = function(domTraversal, inDocument)
     }
 
     return element;
-}
+};
 
 /**
  * Finds an element identified by the xpath expression. Expressions _must_
@@ -310,7 +311,7 @@ PageBot.prototype.findElementByXPath = function(xpath, inDocument) {
     }
 
     return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
-}
+};
 
 /**
  * Returns an attribute based on an attribute locator. This is made up of an element locator
@@ -334,7 +335,7 @@ PageBot.prototype.findAttribute = function(locator) {
     var attributeValue = element.getAttribute(attributeName);
 
     return attributeValue ? attributeValue.toString() : null;
-}
+};
 
 /*
  * Selects the first option with a matching label from the select box element
@@ -352,7 +353,7 @@ PageBot.prototype.selectOptionWithLabel = function(element, stringValue) {
         }
     }
     triggerEvent(element, 'blur', false);
-}
+};
 
 PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
@@ -362,7 +363,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
         triggerEvent(element, 'change', true);
     }
     triggerEvent(element, 'blur', false);
-}
+};
 
 PageBot.prototype.clickElement = function(element) {
 
@@ -376,7 +377,7 @@ PageBot.prototype.clickElement = function(element) {
         // Add an event listener that detects if the default action has been prevented.
         // (This is caused by a javascript onclick handler returning false)
         var preventDefault = false;
-        element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault()}, false);
+        element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
 
         // Trigger the click event.
         triggerMouseEvent(element, 'click', true);
@@ -405,15 +406,15 @@ PageBot.prototype.clickElement = function(element) {
     }
 
     triggerEvent(element, 'blur', false);
-}
+};
 
 PageBot.prototype.windowClosed = function(element) {
     return this.currentWindow.closed;
-}
+};
 
 PageBot.prototype.bodyText = function() {
-    return getText(this.currentDocument.body)
-}
+    return getText(this.currentDocument.body);
+};
 
 PageBot.prototype.getAllButtons = function() {
     var elements = this.currentDocument.getElementsByTagName('input');
@@ -428,7 +429,7 @@ PageBot.prototype.getAllButtons = function() {
     }
 
     return result;
-}
+};
 
 
 PageBot.prototype.getAllFields = function() {
@@ -444,7 +445,7 @@ PageBot.prototype.getAllFields = function() {
     }
 
     return result;
-}
+};
 
 PageBot.prototype.getAllLinks = function() {
     var elements = this.currentDocument.getElementsByTagName('a');
@@ -457,12 +458,12 @@ PageBot.prototype.getAllLinks = function() {
     }
 
     return result;
-}
+};
 
 PageBot.prototype.setContext = function(strContext) {
      //set the current test title
      context.innerHTML=strContext;
-}
+};
 
 
 
