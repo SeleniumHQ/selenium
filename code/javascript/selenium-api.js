@@ -241,3 +241,25 @@ Selenium.prototype.assertElementNotPresent = function(locator) {
     }
     fail("Element " + locator + " found.");
 }
+
+
+ /*
+  * Return all buttons on the screen.
+  */
+Selenium.prototype.getAllButtons = function() {
+ 		return this.page().getAllButtons();
+}
+
+ /*
+  * Return all links on the screen.
+  */
+Selenium.prototype.getAllLinks = function() {
+ 		return this.page().getAllLinks();
+}
+
+ /*
+  * Return all fields on the screen.
+  */
+Selenium.prototype.getAllFields = function() {
+ 		return this.page().getAllFields();
+}
