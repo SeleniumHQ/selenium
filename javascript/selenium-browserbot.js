@@ -202,12 +202,20 @@ PageBot.prototype.clickElement = function(element) {
     else {
         triggerMouseEvent(element, 'click', true);
     }
+
+    if (this.windowClosed()) {
+        return;
+    }
     // Onchange event is not triggered automatically in IE.
     if (isIE && isDefined(element.checked) && wasChecked != element.checked) {
         triggerEvent(element, 'change', true);
     }
 
     triggerEvent(element, 'blur', false);
+}
+
+PageBot.prototype.windowClosed = function(element) {
+    return this.currentWindow.closed;
 }
 
 PageBot.prototype.bodyText = function() {
