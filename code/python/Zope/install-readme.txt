@@ -8,7 +8,8 @@ This has been tested with Plone 2.0.4.
 
 2) Copy the contents of the javascript folder (not the folder itself, just the contents, including all files and all sub-folders (selenium/trunk/code/javascript/*) to Zope/Selenium/skins/selenium_javascript.
 
-3) Append ".dtml" to all *.html, *.js, and *.css files inside the selenium_javascript folder and all sub-folders
+3) Append ".dtml" to all *.html, *.js, and *.css files inside the selenium_javascript folder and all sub-folders.
+   Look at the end of this file for a sample script to do the renaming.
    Example: 
         Before: selenium_javascript/TestRunner.html
         After: selenium_javascript/TestRunner.html.dtml
