@@ -33,7 +33,7 @@ import java.io.Writer;
 
 /**
  * @author Paul Hammant
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestIngPurposesStaticContentHandler implements StaticContentHandler {
 
@@ -43,9 +43,9 @@ public class TestIngPurposesStaticContentHandler implements StaticContentHandler
                 OutputStream out = res.getOutputStream();
                 ByteArrayOutputStream buf = new ByteArrayOutputStream(10000);
                 Writer writer = new OutputStreamWriter(buf, StringUtil.__ISO_8859_1);
-                if (req.getRequestLine().indexOf("Selenium.html") != -1) {
+                if (req.getRequestLine().indexOf("SeleneseRunner.html") != -1) {
                     res.setField(HttpFields.__ContentType, "text/html");
-                    writePage(writer, seleniumDotHtml, buf, out);
+                    writePage(writer, seleneseRunnerDotHtml, buf, out);
                     req.setHandled(true);
                 } else if (req.getRequestLine().indexOf("xmlextras.js") != -1) {
                     res.setField(HttpFields.__ContentType, "text/plain");
@@ -69,7 +69,7 @@ public class TestIngPurposesStaticContentHandler implements StaticContentHandler
         buf.writeTo(out);
     }
 
-    private static final String seleniumDotHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n" +
+    private static final String seleneseRunnerDotHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n" +
             "<html>\n" +
             "<head>\n" +
             "  <script type=\"text/javascript\" src=\"xmlextras.js\"></script>\n" +
