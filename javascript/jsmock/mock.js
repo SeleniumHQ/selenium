@@ -32,8 +32,14 @@ Mock = function() {
     }
     
     this.expectsProperty = function() {
-    	this.expectedProperties[arguments[0]] = arguments[1];
-        this.attrs[this.attrs.length] = "dummy";
+        var propertyName = arguments[0];
+        if(arguments.length == 2) {
+            expectedPropertyValue = arguments[1]
+            this.expectedProperties[propertyName] = expectedPropertyValue;
+            this.attrs[this.attrs.length] = "dummy";
+        } else {
+            return new PropertySetter(this, propertyName)
+        }
     }
 
     this.verify = function() {
@@ -79,4 +85,15 @@ Returner = function(mock, functionName) {
 
 Returner.prototype.returns = function(returnValue) {
     this.mock.returnValues[this.functionName] = returnValue;
+}
+
+PropertySetter = function(mock, propertyName) {
+    this.mock = mock;
+    this.propertyName = propertyName;
+}
+
+PropertySetter.prototype.returns = function(returnValue) {
+    var ref = new Object();
+    ref.value = returnValue;
+    eval("this.mock." + this.propertyName + "=ref.value");
 }
