@@ -39,6 +39,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td>storedHiddenValue</td>
     </tr>
     <tr>
+      <td>storeText</td>
+      <td>theSpan</td>
+      <td>storedSpanText</td>
+    </tr>
+    <tr>
       <td>open</td>
       <td>./tests/html/test_store_value.html</td>
       <td/>
@@ -53,27 +58,6 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theText</td>
       <td>the hidden value</td>
     </tr>
-
-    <tr>
-      <td>open</td>
-      <td>./tests/html/test_verifications.html</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>storeText</td>
-      <td>theSpan</td>
-      <td>storedSpanText</td>
-    </tr>
-    <tr>
-      <td>open</td>
-      <td>./tests/html/test_store_value.html</td>
-      <td/>
-    </tr>
-    <tr>
-      <td>verifyValue</td>
-      <td>theText</td>
-      <td>&nbsp;</td>
-    </tr>
     <tr>
       <td>type</td>
       <td>theText</td>
@@ -84,6 +68,17 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theText</td>
       <td>this is the span</td>
     </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>'${storedHiddenValue}'_'${storedSpanText}'</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>'the hidden value'_'this is the span'</td>
+    </tr>
+
 
     <!-- backward compatibility -->
     <tr>
