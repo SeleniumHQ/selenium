@@ -256,7 +256,7 @@ function startTest() {
         getTestFrame().contentWindow.scrollTo(0,0);
     }
     else {
-        document.frames['testFrame'].scrollTo(0,0);
+        frames['testFrame'].scrollTo(0,0);
     }
 
     inputTable = getIframeDocument(getTestFrame()).getElementsByTagName("table")[0];

@@ -116,7 +116,6 @@ BrowserBot.prototype.selectWindow = function(target) {
 BrowserBot.prototype.openLocation = function(target, onloadCallback) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
-    this.callOnNextPageLoad(onloadCallback);
     this.executionContext.open(target,this.getFrame());
 };
 

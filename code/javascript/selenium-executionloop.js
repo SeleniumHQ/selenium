@@ -35,65 +35,7 @@ function TestLoop(commandFactory, executionContext) {
         if (testStatus == TEST_FINISHED) {
             this.testComplete();
         }
-    };
-
-    this.kickoffOneCommandExecution = function() {
-
-        var command;
-        if (starting_up == true) {
-            command = this.firstCommand();
-            starting_up = false;
-        } else {
-            command = this.nextCommand();
-        }
-
-        if (!command) return TEST_FINISHED;
-
-        // Make the current row blue
-        this.commandStarted(command);
-
-        var result;
-        try {
-            var handler = this.commandFactory.getCommandHandler(command.command);
-            if(handler == null) {
-                throw new Error("Unknown command");
-            }
-
-            result = handler.execute(selenium, command);
-        } catch (e) {
-            this.commandError(e.message);
-            return TEST_FINISHED;
-        }
-
-        // Record the result so that we can continue the execution using window.setTimeout()
-        this.lastCommandResult = result;
-        if (result.processState == SELENIUM_PROCESS_WAIT) {
-
-            //executionContext.waitForPageLoad(this,selenium);
-
-            alert("wait"); // with this line commented in, it all works fine and dandy - just click through and it goes on its way
-                           // run the test a few times, though, and then it goes bad.  ????
-
-            //delay(2000); //    I tried commenting this line in, but it seems to go ballistic
-        } else {
-            // Continue processing
-            //this.continueCommandExecutionWithDelay();
-            //alert("continue");
-        }
-
-        // Test is not finished.
-        return TEST_CONTINUE;
-    };
-
-    function delay(millis) {
-        startMillis = new Date();
-        while (true) {
-            milli = new Date();
-            if (milli-startMillis > millis) {
-                break;
-            }
-        }
-    }
+        };
 
     this.kickoffNextCommandExecution = function() {
 
@@ -119,6 +61,12 @@ function TestLoop(commandFactory, executionContext) {
 
             result = handler.execute(selenium, command);
         } catch (e) {
+            // TODO: only throw typed errors from commands so that we can perform better error handling
+            // to differentiate between expected command errors and unexpected javascript errors.
+            if (e instanceof TypeError) {
+                // Not a command error.
+                throw e;
+            }
             this.commandError(e.message);
             return TEST_FINISHED;
         }
