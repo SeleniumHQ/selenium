@@ -389,11 +389,12 @@ IEPageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
 * begin with "link:".
 */
 PageBot.prototype.locateLinkByText = function(linkDescription, inDocument) {
-    if (linkDescription.indexOf("link:") != 0) {
+    var prefix = "link:";
+    if (linkDescription.indexOf(prefix) != 0) {
         return null;
     }
 
-    var linkText = linkDescription.substring(5);
+    var linkText = linkDescription.substring(prefix.length);
     return this.locateElementByXPath("//a[text()='" + linkText + "']", inDocument);
 };
 

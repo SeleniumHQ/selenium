@@ -18,30 +18,52 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Command Error</title>
+  <title>Test Click</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">Test Command Error (should fail)<br>
+      <td rowspan="1" colspan="3">!!!Should Fail!!! Tests for expectError and expectFailure commands<br>
       </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_click_page1.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- These tests should all fail, as they are checking the error checking commands. -->
+    <tr>
+      <td>verifyFailureOnNext</td>
+      <td>The next command succeeds</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>link</td>
+      <td>Click here for next page</td>
+    </tr>
+    <tr>
+      <td>verifyFailureOnNext</td>
+      <td>The wrong message</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>link</td>
+      <td>foo</td>
     </tr>
 
     <tr>
-      <td>open</td>
-      <td>./tests/html/test_verifications.html</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>assertErrorOnNext</td>
-      <td>Element notALink not found</td>
+      <td>verifyErrorOnNext</td>
+      <td>The wrong message</td>
       <td></td>
     </tr>
     <tr>
-      <td>click</td>
-      <td>notALink</td>
-      <td></td>
+      <td>verifyText</td>
+      <td>notAnElement</td>
+      <td>foo</td>
     </tr>
   </tbody>
 </table>

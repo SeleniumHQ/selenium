@@ -18,13 +18,13 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Failing Verifications</title>
+  <title>Test Failing Assert</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">Test Failing Verifications (all of these should fail)<br>
+      <td rowspan="1" colspan="3">Test Failing Assert (all of these should fail)<br>
       </td>
     </tr>
 
@@ -35,14 +35,14 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
 
     <tr>
+      <td>assertErrorOnNext</td>
+      <td>Expected 'not the text value' but was 'the text value'</td>
+      <td/>
+    </tr>
+    <tr>
       <td>assertValue</td>
       <td>theText</td>
       <td>not the text value</td>
-    </tr>
-    <tr>
-      <td>shouldNeverGetHere</td>
-      <td>becausePreviousCommandAborts</td>
-      <td></td>
     </tr>
   </tbody>
 </table>

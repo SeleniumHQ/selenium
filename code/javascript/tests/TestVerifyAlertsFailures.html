@@ -35,8 +35,13 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
    
     <tr>
+      <td>assertFailureOnNext</td>
+      <td>There were no alerts</td>
+      <td></td>
+    </tr>
+    <tr>
       <td>verifyAlert</td>
-      <td>This should fail - there are no alerts</td>
+      <td>noAlert</td>
       <td></td>
     </tr>
     
@@ -46,8 +51,13 @@ Copyright 2004 ThoughtWorks, Inc
       <td>nowait</td>
     </tr>
     <tr>
+      <td>assertFailureOnNext</td>
+      <td>The alert was [Store Below 494 degrees K!]</td>
+      <td></td>
+    </tr>
+    <tr>
       <td>verifyAlert</td>
-      <td>this should fail - wrong alert</td>
+      <td>wrongAlert</td>
       <td></td>
     </tr>
    
@@ -56,9 +66,19 @@ Copyright 2004 ThoughtWorks, Inc
       <td>twoAlerts</td>
       <td>nowait</td>
     </tr>
-     <tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>The alert was [Store Below 220 degrees C!]</td>
+      <td></td>
+    </tr>
+      <tr>
       <td>verifyAlert</td>
       <td>Store Below 429 degrees F!</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>The alert was [Store Below 429 degrees F!]</td>
       <td></td>
     </tr>
     <tr>
@@ -71,6 +91,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td>click</td>
       <td>oneAlert</td>
       <td>nowait</td>
+    </tr>
+    <tr>
+      <td>assertErrorOnNext</td>
+      <td>There was an unexpected Alert! [Store Below 494 degrees K!]</td>
+      <td></td>
     </tr>
     <tr>
       <td>open</td>

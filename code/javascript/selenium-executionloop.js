@@ -127,4 +127,87 @@ TestLoop.prototype.commandComplete = noop;
 
 TestLoop.prototype.testComplete = noop;
 
-function noop() {};
+function noop() {
+
+};
+
+/**
+ * A selenium command that tells selenium to expect a failure on the next command
+ * execution. This command temporarily installs a new CommandFactory, that generates
+ * CommandHandlers that expect a failure.
+ */
+Selenium.prototype.assertFailureOnNext = function(message) {
+    if (!message) {
+        throw new Error("Message must be provided");
+    }
+
+    var expectFailureCommandFactory =
+        new ExpectFailureCommandFactory(testLoop.commandFactory, message);
+    expectFailureCommandFactory.baseExecutor = executeCommandAndReturnFailureMessage;
+    testLoop.commandFactory = expectFailureCommandFactory;
+};
+
+/**
+ * A selenium command that tells selenium to expect a failure on the next command
+ * execution. This command temporarily installs a new CommandFactory, that generates
+ * CommandHandlers that expect a failure.
+ */
+Selenium.prototype.assertErrorOnNext = function(message) {
+    if (!message) {
+        throw new Error("Message must be provided");
+    }
+
+    var expectFailureCommandFactory =
+        new ExpectFailureCommandFactory(testLoop.commandFactory, message);
+    expectFailureCommandFactory.baseExecutor = executeCommandAndReturnErrorMessage;
+    testLoop.commandFactory = expectFailureCommandFactory;
+};
+
+function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessage) {
+    this.getCommandHandler = function(name) {
+        var baseHandler = originalCommandFactory.getCommandHandler(name);
+        var baseExecutor = this.baseExecutor;
+        var expectFailureCommand = {};
+        expectFailureCommand.execute = function() {
+            var baseFailureMessage = baseExecutor(baseHandler, arguments);
+            var result = new CommandResult();
+            if (!baseFailureMessage) {
+                result.failed = true;
+                result.failureMessage = "Command should have failed.";
+            }
+            else {
+                if (baseFailureMessage != expectedErrorMessage) {
+                    result.failed = true;
+                    result.failureMessage = "Expected failure message '" + expectedErrorMessage
+                                            + "' but was '" + baseFailureMessage + "'";
+                }
+                else {
+                    result.passed = true;
+                    result.result = baseFailureMessage;
+                }
+            }
+            testLoop.commandFactory = originalCommandFactory;
+            return result;
+        };
+        return expectFailureCommand;
+    };
+};
+
+function executeCommandAndReturnFailureMessage(baseHandler, originalArguments) {
+    var baseResult = baseHandler.execute.apply(baseHandler, originalArguments);
+    if (baseResult.passed) {
+        return null;
+    }
+    return baseResult.failureMessage;
+ };
+
+function executeCommandAndReturnErrorMessage(baseHandler, originalArguments) {
+    try {
+        baseHandler.execute.apply(baseHandler, originalArguments);
+        return null;
+    }
+    catch (expected) {
+        return expected.message;
+    }
+ };
+
