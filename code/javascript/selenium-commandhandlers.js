@@ -155,7 +155,9 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
             throw e;
         }
         if (this.haltOnFailure) {
-            throw new Error(e.failureMessage);
+            var error = new Error(e.failureMessage);
+            error.message = e.failureMessage;
+            throw error;
         }
         result.failed = true;
         result.failureMessage = e.failureMessage;
