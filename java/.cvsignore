@@ -2,3 +2,4 @@
 *.ipr
 target
 junittestcases*.properties
+jcoverage.ser

@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.1//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
+
+<!--
+    Checkstyle configuration for test source code.
+-->
+<module name="Checker">
+    <!-- Checks whether files end with a new line.                        -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+    <!-- TODO We need to investigate how to switch this on with out causing checkstyle to break. -->
+<!--    <module name="NewlineAtEndOfFile"/>  Commented out because really bad things started to happen-->
+
+    <module name="TreeWalker">
+
+        <!-- TODO - javadoc checks -->
+
+
+        <!-- Checks for Naming Conventions.                  -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+        <module name="AbstractClassName">
+            <property name="format" value="^Abstract.*$"/>
+            <property name="severity" value="warning"/>
+        </module>
+
+        <!-- Checks for Headers                                -->
+        <!-- See http://checkstyle.sf.net/config_header.html   -->
+         <module name="Header">
+             <property name="headerFile" value="${etc.dir}/classheader.txt"/>
+         </module>
+
+        <!-- Checks for imports                              -->
+        <!-- See http://checkstyle.sf.net/config_import.html -->
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <!--module name="FileLength">
+            <property name="severity" value="warning"/>
+        </module-->
+        <!--module name="LineLength">
+            <property name="max" value="120"/>
+            <property name="severity" value="warning"/>
+        </module-->
+        <module name="AnonInnerLength"/>
+        <!--module name="ParameterNumber">
+           <property name="max" value="5"/>
+            <property name="severity" value="warning"/>
+        </module-->
+
+        <!-- Checks for whitespace                               -->
+        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <module name="EmptyForIteratorPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="TabCharacter"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+
+        <!-- Modifier Checks                                    -->
+        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <module name="ModifierOrder"/>
+        <!--<module name="RedundantModifier"/>-->
+
+        <!-- Checks for blocks. You know, those {}'s         -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+        </module>
+        <module name="LeftCurly">
+            <property name="option" value="eol"/>
+        </module>
+        <module name="NeedBraces"/>
+        <module name="RightCurly">
+            <property name="option" value="alone"/>
+        </module>
+
+        <!-- Checks for common coding problems               -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <!-- <module name="AvoidInlineConditionals"/> -->
+        <module name="DoubleCheckedLocking"/>    <!-- MY FAVOURITE -->
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="HiddenField"/>
+        <module name="IllegalInstantiation"/>
+        <module name="IllegalToken">
+            <property name="tokens" value="POST_INC, POST_DEC"/>
+        </module>
+        <module name="IllegalType">
+            <property name="severity" value="warning"/>
+        </module>
+
+        <module name="InnerAssignment"/>
+        <!--<module name="MagicNumber">-->
+        <!--    <property name="ignoreNumbers" value="-1,0,1"/>-->
+        <!--</module>-->
+        <module name="MissingSwitchDefault"/>
+<!--        <module name="RedundantThrows"/>-->
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="ParameterAssignment"/>
+        <module name="NestedIfDepth"/>
+        <module name="NestedTryDepth"/>
+        <!--<module name="IllegalCatch"/>-->
+        <module name="JUnitTestCase"/>
+        <!--<module name="ReturnCount"/>-->
+        <module name="ExplicitInitialization">
+            <property name="severity" value="warning"/>
+        </module>
+<!--        <module name="au.com.redhillconsulting.jamaica.tools.checkstyle.NullPointerCheck">-->
+<!--            <property name="severity" value="warning"/>-->
+<!--        </module>-->
+<!--        <module name="au.com.redhillconsulting.jamaica.tools.checkstyle.GuardingIfCheck">-->
+<!--            <property name="severity" value="warning"/>-->
+<!--        </module>-->
+        <module name="au.com.redhillconsulting.jamaica.tools.checkstyle.ReturnFromCatchCheck">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="au.com.redhillconsulting.jamaica.tools.checkstyle.ReturnFromFinallyCheck">
+            <property name="severity" value="warning"/>
+        </module>
+<!--        <module name="au.com.redhillconsulting.jamaica.tools.checkstyle.FinalFieldCheck">-->
+<!--            <property name="severity" value="warning"/>-->
+<!--        </module>-->
+
+        <!-- Checks for class design                         -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="VisibilityModifier"/>
+        <module name="MutableException"/>
+
+        <!-- Miscellaneous other checks.                   -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <module name="ArrayTypeStyle"/>
+        <module name="GenericIllegalRegexp">
+            <property name="format" value="\s+$"/>
+            <property name="message" value="Line has trailing spaces."/>
+        </module>
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+
+    </module>
+
+</module>
