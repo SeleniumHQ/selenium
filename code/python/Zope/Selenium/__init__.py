@@ -3,10 +3,14 @@
 """
 
 from Products.CMFCore.DirectoryView import registerDirectory
+from Products.CMFCore import utils
 import ZInterpreter
+import FunctionalTestTool
 
 registerDirectory('skins', globals())
 selenium_globals = globals()          # Used only in the Extensions/Install.py script
+
+selenium_tools = ( FunctionalTestTool.FunctionalTestTool, ) 
 
 def initialize(context):
     context.registerClass(
@@ -15,4 +19,7 @@ def initialize(context):
                       ZInterpreter.manage_addZSeleniumInterpreter),
         icon='tool.gif'                       
         )
+    utils.ToolInit('Selenium Functional Test Tool', tools=selenium_tools, 
+                    product_name='Selenium', icon='tool.gif',  
+              ).initialize(context)
 

@@ -1,0 +1,7 @@
+numCommandErrors: 4
+result: failed
+numTestPasses: 20
+totalTime: 22
+numTestFailures: 8
+numCommandFailures: 32
+numCommandPasses: 126
