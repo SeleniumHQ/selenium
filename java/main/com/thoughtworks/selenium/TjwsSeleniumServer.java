@@ -24,8 +24,6 @@ import marquee.xmlrpc.handlers.ReflectiveInvocationHandler;
 
 import java.io.IOException;
 
-import com.thoughtworks.selenium.server.ProxyServlet;
-
 /**
  * This is the local web server for Selenium. It serves the following content:
  * <ul>
@@ -37,7 +35,7 @@ import com.thoughtworks.selenium.server.ProxyServlet;
  * </li>
  * </ul>
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TjwsSeleniumServer implements SeleniumServer {
     private class StoppableServe extends Serve {
@@ -67,8 +65,6 @@ public class TjwsSeleniumServer implements SeleniumServer {
                 webserver.serve();                
             }
         });
-
-        mountProxyServlet(webserver);
     }
 
     public void shutdown() {
@@ -90,9 +86,4 @@ public class TjwsSeleniumServer implements SeleniumServer {
         serve.addServlet("/xmlrpc", new XmlRpcServlet(xmlRpcServer));
         return xmlRpcServer;
     }
-
-    private void mountProxyServlet(Serve serve) {
-        serve.addServlet("/", new ProxyServlet(null));
-    }
-
 }
