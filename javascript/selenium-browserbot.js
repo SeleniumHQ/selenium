@@ -13,12 +13,12 @@
 // popup window, first select that window, and then do a normal click command.
 currentWindowName = null;
 
-currentDocument = null;
+currentPage = null;
 
 var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
 
-// Modify the DOM of the test frame window - not sure if this is necessary.
+// Modify the DOM of the test container window - not sure if this is necessary.
 modifyWindow(window);
 
 //Required so "click" method can be sent to anchor ("A") tags in Mozilla
@@ -39,50 +39,6 @@ function modifyWindow(windowObject) {
 }
 
 /*
- * In IE, getElementById() also searches by name.
- * To provied consistent functionality with Firefox, we
- * search by name attribute if an element with the id isn't found.
- */
-function findElementByIdOrName(idOrName) {
-    var element = getDoc().getElementById(idOrName);
-
-    if (element == null
-        && !isIE // IE checks this without asking
-        && document.evaluate // DOM3 XPath
-        )
-    {
-        var xpath = "//*[@name='" + idOrName + "']";
-        element = document.evaluate(xpath, getDoc(), null, 0, null).iterateNext();
-    }
-
-    return element;
-}
-
-function selectOptionWithLabel(element, stringValue) {
-    triggerEvent(element, 'focus', false);
-    for (var i = 0; i < element.options.length; i++) {
-        var option = element.options[i];
-        if (option.text == stringValue) {
-            if (!option.selected) {
-                option.selected = true;
-                triggerEvent(element, 'change', true);
-            }
-        }
-    }
-    triggerEvent(element, 'blur', false);
-}
-
-function replaceText(element, stringValue) {
-    triggerEvent(element, 'focus', false);
-    triggerEvent(element, 'select', true);
-    element.value=stringValue;
-    if (isIE) {
-        triggerEvent(element, 'change', true);
-    }
-    triggerEvent(element, 'blur', false);
-}
-
-/*
  * The 'invoke' method will call the required function, and then
  * remove itself from the window object. This allows a calling app
  * to provide a callback listener for the window load event, without the
@@ -97,13 +53,114 @@ function SelfRemovingLoadListener(fn) {
         try {
             fn();
         } finally {
-            currentDocument = null;
+            // we've moved to a new page - clear the current one
+            currentPage = null;
             removeLoadListener(getIframe(), self.invoke);
         }
     }
 }
 
-function clickElement(element, loadCallback) {
+function getContentWindow() {
+    return getIframe().contentWindow
+}
+
+function getIframe() {
+    return document.getElementById('myiframe');
+}
+
+function selectWindow(target) {
+    // we've moved to a new page - clear the current one
+    currentPage = null;
+
+    if(target == "null")
+        currentWindowName = null;
+    else {
+        // If window exists
+        if(eval("getContentWindow().window." + target))
+            currentWindowName = target;
+        else
+            throw new Error("Window does not exist");
+    }
+}
+
+function openLocation(target, onloadCallback) {
+    // We're moving to a new page - clear the current one
+    currentPage = null;
+
+    var el = new SelfRemovingLoadListener(onloadCallback);
+    addLoadListener(getIframe(), el.invoke);
+    getIframe().src = target;
+}
+
+function getCurrentPage() {
+    if (currentPage == null) {
+        var testWindow = getContentWindow()
+        if (currentWindowName != null) {
+	        commandStr = "getContentWindow().window." + currentWindowName;
+	        testWindow = eval(commandStr)
+        }
+        currentPage = new PageBot(testWindow)
+    }
+    return currentPage;
+}
+
+function PageBot(pageWindow) {
+    this.currentWindow = pageWindow;
+    modifyWindow(pageWindow);
+    this.currentDocument = pageWindow.document;
+
+    this.location = pageWindow.location.pathname
+}
+
+/*
+ * In IE, getElementById() also searches by name.
+ * To provied consistent functionality with Firefox, we
+ * search by name attribute if an element with the id isn't found.
+ */
+PageBot.prototype.findIdentifiedElement = function(identifier) {
+    var element = this.currentDocument.getElementById(identifier);
+
+    if (element == null
+        && !isIE // IE checks this without asking
+        && document.evaluate // DOM3 XPath
+        )
+    {
+        var xpath = "//*[@name='" + identifier + "']";
+        element = document.evaluate(xpath, this.currentDocument, null, 0, null).iterateNext();
+    }
+
+    return element;
+}
+
+/*
+ * Selects the first option with a matching label from the select box element
+ * provided. If no matching element is found, nothing happens.
+ */
+PageBot.prototype.selectOptionWithLabel = function(element, stringValue) {
+    triggerEvent(element, 'focus', false);
+    for (var i = 0; i < element.options.length; i++) {
+        var option = element.options[i];
+        if (option.text == stringValue) {
+            if (!option.selected) {
+                option.selected = true;
+                triggerEvent(element, 'change', true);
+            }
+        }
+    }
+    triggerEvent(element, 'blur', false);
+}
+
+PageBot.prototype.replaceText = function(element, stringValue) {
+    triggerEvent(element, 'focus', false);
+    triggerEvent(element, 'select', true);
+    element.value=stringValue;
+    if (isIE) {
+        triggerEvent(element, 'change', true);
+    }
+    triggerEvent(element, 'blur', false);
+}
+
+PageBot.prototype.clickElement = function(element, loadCallback) {
     if (loadCallback) {
         var el = new SelfRemovingLoadListener(loadCallback);
         addLoadListener(getIframe(), el.invoke);
@@ -113,6 +170,10 @@ function clickElement(element, loadCallback) {
 
 // DD REMOVED: This appears unnecessary in all of my testing.
 //         Could it be the relic of an earlier experiment?
+// If this is re-introduced, beware of bugs in the javascript parsing
+// 1) colons not handled
+// 2) multiple statements not handled
+// 3) whitespace not handled
 /*
     // If this is a javascript call ("javascript:foo()"), pull out the
     // function part and just call that.
@@ -135,7 +196,7 @@ function clickElement(element, loadCallback) {
     triggerEvent(element, 'blur', false);
 }
 
-function onclickElement(element, loadCallback) {
+PageBot.prototype.onclickElement = function(element, loadCallback) {
     if (loadCallback) {
         var el = new SelfRemovingLoadListener(loadCallback);
         addLoadListener(getIframe(), el.invoke);
@@ -144,59 +205,19 @@ function onclickElement(element, loadCallback) {
     element.click();
 }
 
+PageBot.prototype.clearOnBeforeUnload = function() {
+	//For IE: even though the event was linked to the window, the event appears to be attached to the 'body' object in IE.
+    this.currentWindow.document.body.onbeforeunload = null;
+   	this.currentWindow.onbeforeunload = null;
+}
+
+PageBot.prototype.bodyText = function() {
+    return getText(this.currentDocument.body)
+}
+
 function isDefined(value) {
     return typeof(value) != undefined;
 }
 
-function getContentWindow() {
-    return getIframe().contentWindow
-}
 
-function getIframe() {
-    return document.getElementById('myiframe');
-}
 
-function getDoc(){
-    // TODO this is getting ugly - refactor into a stateful Window wrapper
-    if(currentDocument == null) {
-        var testWindow = getContentWindow();
-        if (currentWindowName != null) {
-	        commandStr = "getContentWindow().window." + currentWindowName;
-	        testWindow = eval(commandStr);
-        }
-	    modifyWindow(testWindow);
-	    currentDocument = testWindow.document;
-    }
-
-    return currentDocument;
-}
-
-function selectWindow(target) {
-    // TODO this is getting ugly - refactor into a stateful Window wrapper
-    currentDocument = null;
-
-    if(target == "null")
-        currentWindowName = null;
-    else {
-        // If window exists
-        if(eval("getContentWindow().window." + target))
-            currentWindowName = target;
-        else
-            throw new Error("Window does not exist");
-    }
-}
-
-function openLocation(target, onloadCallback) {
-    // TODO this is getting ugly - refactor into a stateful Window wrapper
-    currentDocument = null;
-
-    var el = new SelfRemovingLoadListener(onloadCallback);
-    addLoadListener(getIframe(), el.invoke);
-    getIframe().src = target;
-}
-
-function clearOnBeforeUnload(){
-	//For IE: even though the event was linked to the window, the event appears to be attached to the 'body' object in IE.
-    getContentWindow().document.body.onbeforeunload = null;
-   	getContentWindow().onbeforeunload = null;
-}

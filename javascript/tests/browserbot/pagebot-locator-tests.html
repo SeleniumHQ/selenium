@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function setUp() {
+    pageBot = new PageBot(window);
+    element1 = document.getElementById("id1");
+    element2 = document.getElementById("id2");
+    element3 = document.getElementById("id3");
+}
+
+function testFindIdentifiedElementReturnsNullIfElementNotPresent() {
+    assertNull(pageBot.findIdentifiedElement('noSuchElement'));
+}
+
+function testFindIdentifiedElementReturnsHtmlElementWithMatchingId() {
+    assertEquals(element3, pageBot.findIdentifiedElement('id3'));
+}
+
+function testFindIdentifiedElementReturnsFirstElementWithMatchingName() {
+    assertEquals(element2, pageBot.findIdentifiedElement('name1'));
+}
+
+function testFindIdentifiedElementIsCaseSensitiveOnId() {
+    assertNull(pageBot.findIdentifiedElement('ID3'));
+}
+
+function testFindIdentifiedElementIsCaseSensitiveOnName() {
+    assertNull(pageBot.findIdentifiedElement('NAME1'));
+}
+</script>
+  </head>
+
+  <body>
+    <p id="id1">this is the first element</p>
+    <p id="id2" name="name1">this is the second element</p>
+    <p id="id3" name="name1">this is the third element</p>
+  </body>
+</html>

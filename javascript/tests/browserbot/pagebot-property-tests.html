@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function setUp() {
+    pageBot = new PageBot(window)
+}
+
+function testLocationProperty() {
+    assertEquals("/tests/browserbot/pagebot-property-tests.html", pageBot.location)
+}
+
+function testBodyText() {
+    assertEquals("Selenium Browserbot Tests", pageBot.bodyText());
+}
+</script>
+  </head>
+  <body>Selenium Browserbot Tests</body>
+</html>
