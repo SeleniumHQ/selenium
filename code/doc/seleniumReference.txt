@@ -1,6 +1,19 @@
-=======================
+-------------------------
 Selenium Reference
-=======================
+-------------------------
+
+    A **command** is what tells Selenium what to do. Selenium commands come in two 'flavors', **Actions** and **Assertions**.
+    Each command call is one line in the test table of the form:
+
+        ======= ====== =====
+        command target value
+        ======= ====== =====
+
+    **Actions** are commands that generally manipulate the state of the application. They do things like "click this link" and "select that option". If an Action fails, or has an error, the execution of the current test is stopped.
+
+    **Checks** verify the state of the application conforms to what is expected. Examples include "make sure the page title is X" and "check that this checkbox is checked". It is possible to tell Selenium to stop the test when an Assertion fails, or to simply record the failure and continue.
+
+    **Element Locators** tell Selenium which HTML element a command refers to. Many commands require an Element Locator as the "target" attribute. Examples of Element Locators include "elementId" and "document.forms[0].element". These are described more clearly in the next section.
 
 -----------
 Test Tables
@@ -21,17 +34,39 @@ Test Tables
         verifyText  name            John Smith
         ==========  ============    ==========
 
-
 -----------------
-Command Reference
+Element Locators
 -----------------
 
-    Each command call is one line in the test table of the form:
-        
-        ======= ====== =====
-        command target value
-        ======= ====== =====
+    Element Locators allow Selenium to identify which HTML element a command refers to. There are several forms of Element Locators.
 
+    **Identifier:** locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen. Otherwise, the first element with a matching *name* is chosen.
+
+    **DOM:** finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators *must* begin with "document.".
+
+    **XPath:** locates an element using a defined XPath expression. XPath locators *must* begin with "//".
+
+    Locator examples:
+
+        =============  ===================================
+        Locator Type   Example
+        -------------  -----------------------------------
+        Identifier     elementId
+        DOM            document.forms['myForm'].myDropdown
+        DOM            document.images[56]
+        XPath          //img[@alt='The image alt text']
+        XPath          //table[@id='table1']//tr[4]/td[2]
+        =============  ===================================
+
+
+----------------
+Selenium Actions
+----------------
+
+    Actions tell Selenium to do something in the application. They generally represent something a user would do.
+
+    Many **Actions** can be called with the "AndWait" suffix. This suffix tells Selenium that the action will cause the browser to make a call to the server, and that Selenium should wait for a new page to load.
+    The exceptions to this pattern are the "open" and "click" actions, which will both wait for a page to load by default.
 
     **open**
         Opens a URL in the test frame.  This accepts both relative and absolute URLs.
@@ -65,21 +100,7 @@ Command Reference
             click   someCheckbox        nowait
             =====   ==================  =====
 
-    **onclick**
-        Calls the onclick function of a link.  By default, this command waits for a new page to load before continuing.
-        
-        **target:** The id of the element with the onclick function call.
-        
-        **value** (*optional*) **:** nowait - Tells Selenium that it should not wait for a page to load before continuing.
-        
-        **examples:**
-            
-            =======   ==================  =====
-            onclick   someLink
-            onclick   linkWithJavascript  nowait
-            =======   ==================  =====
-
-    **type**
+    **type (typeAndWait)**
         Types (enters) text into an input field.  This works for text fields, combo boxes, check boxes, etc.
         
         **target:** The id of the element where the text should be typed.
@@ -88,24 +109,24 @@ Command Reference
         
         **examples:**
             
-            ====    =========   ==========
-            type    nameField   John Smith
-            type    drop-down   AUD
-            ====    =========   ==========
+            ===========    ==========================   ==========
+            type           nameField                    John Smith
+            typeAndWait    textBoxThatSubmitsOnChange   newValue
+            ===========    ==========================   ==========
 
-    **select**
-        Select an option from a drop-down, based on the option text.
+    **select (selectAndWait)**
+        Select an option from a drop-down, based on the option label.
 
-        **target:** The id of the element where the text should be typed.
+        **target:** The id of the drop-down.
 
         **value:** The label of the option to be selected.
 
         **examples:**
 
-            ======  =========   ==========
-            select  dropDown    First Option
-            select  dropDown    Australian Dollars
-            ======  =========   ==========
+            =============  ================   ==========
+            select         dropDown           First Option
+            selectAndWait  currencySelector   Australian Dollars
+            =============  ================   ==========
 
     **selectWindow**
         Selects a popup window.  Once a popup window has been selected, all commands go to that window.  To select the main window again, use "null" as the target.
@@ -121,20 +142,6 @@ Command Reference
             selectWindow    null
             ============    =============   =====
 
-    **storeValue**
-        Stores the text of a page into a variable.  This variable can later be accessed by using the syntax ${variableName}
-        
-        **target:** The variable to store into.
-        
-        **value:** *ignored*
-        
-        **examples:**
-            
-            ==========   =========  =========
-            storeValue   userID
-            type         userName   ${userID}
-            ==========   =========  =========
-
     **pause**
         Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.
         
@@ -149,7 +156,29 @@ Command Reference
             pause   2000    
             =====   ====  =====
 
-    **verifyLocation**
+    **storeValue**
+        Stores the entire text of a page into a variable.  This variable can later be accessed by using the syntax ${variableName}
+
+        **target:** The variable to store into.
+
+        **value:** *ignored*
+
+        **examples:**
+
+            ==========   =========  =========
+            storeValue   userID
+            type         userName   ${userID}
+            ==========   =========  =========
+
+---------------
+Selenium Checks
+---------------
+    Checks are used to verify the state of the application. They can be used to check the value of a form field, the presense of some text, or the URL of the current page.
+
+    All Selenium Checks can be used in 2 modes, "assert" and "verify". These behave identically, except that when an "assert" check fails, the test is aborted. When a "verify" check fails, the test will continue execution.
+    This allows a single "assert" to ensure that the application is on the correct page, followed by a bunch of "verify" checks to test form field values, labels, etc.
+
+    **verifyLocation / assertLocation**
         Verifies the location of the current page being tested.
         
         **target:** The expected relative location of the page.
@@ -160,10 +189,25 @@ Command Reference
             
             ==============   =======  =====
             verifyLocation   /mypage
+            assertLocation   /mypage
             ==============   =======  =====
 
-    **verifyValue**
-        Verifies the value of an input field (or anything else with a value parameter).
+    **verifyTitle / assertTitle**
+        Verifies the title of the current page.
+
+        **target:** The expected page title.
+
+        **value:** *ignored*
+
+        **examples:**
+
+            ===========   =======  =====
+            verifyTitle   My Page
+            assertTitle   My Page
+            ===========   =======  =====
+
+    **verifyValue / assertValue**
+        Verifies the value of an input field (or anything else with a value parameter). For checkbox/radio elements, the value will be "on" or "off" depending on whether the element is checked or not.
         
         **target:** The id of the element to verify.
         
@@ -171,11 +215,40 @@ Command Reference
         
         **examples:**
             
-            ===========   =========   ==========
-            verifyValue   nameField   John Smith
-            ===========   =========   ==========
+            ===========   ===========================   ==========
+            verifyValue   nameField                     John Smith
+            assertValue   document.forms[2].nameField   John Smith
+            ===========   ===========================   ==========
 
-    **verifyText**
+    **verifySelected / assertSelected**
+        Verifies the label of the selected option of a drop-down.
+
+        **target:** Locates the drop-down to verify.
+
+        **value:** The expected label of the selected option.
+
+        **examples:**
+
+            ==============   ===========================   ==========
+            verifySelected   dropdown2                     John Smith
+            assertSelected   document.forms[2].dropDown    John Smith
+            ==============   ===========================   ==========
+
+    **verifySelectOptions / assertSelectOptions**
+        Verifies the labels of all options in a drop-down against a comma-separated list. Commas in an expected option can be escaped as "\,".
+
+        **target:** Locates the drop-down to verify.
+
+        **value:** A comma-separated list of option labels.
+
+        **examples:**
+
+            ===================   ===========================   ====================
+            verifySelectOptions   dropdown2                     John Smith,Dave Bird
+            assertSelectOptions   document.forms[2].dropDown    Smith\\, J,Bird\\, D
+            ===================   ===========================   ====================
+
+    **verifyText / assertText**
         Verifies the text of an element.  This works for any element that contains text.  This command uses either the textContent (Mozilla-like browsers) or the innerText (IE-like browsers) of the element, which is the rendered text shown to the user.
         
         **target:** The id of the element to verify.
@@ -184,11 +257,27 @@ Command Reference
         
         **examples:**
             
-            ==========   =============   ==========
-            verifyText   statusMessage   Successful
-            ==========   =============   ==========
+            ==========   ====================   ==========
+            verifyText   statusMessage          Successful
+            assertText   //div[@id='foo']//h1   Successful
+            ==========   ====================   ==========
 
-    **verifyTextPresent**
+    **verifyAttribute / assertAttribute**
+        Verifies the value of an element attribute. An attribute is identified using the syntax <element-locator>@<attribute-name>. This works for all types of element locators.
+
+        **target:** A locator string of the format <element-locator>@<attribute-name>
+
+        **value:** The expected attribute value.
+
+        **examples:**
+
+            ===============   ======================   ==========
+            verifyAttribute   txt1@class               bigAndBold
+            assertAttribute   document.images[0]@alt   alt-text
+            verifyAttribute   //img[@id='foo']/@alt    alt-text
+            ===============   ======================   ==========
+
+    **verifyTextPresent / assertTextPresent**
         Verifies that the specified text appears somewhere on the rendered page shown to the user.
         
         **target:** The text that should be present.
@@ -199,9 +288,10 @@ Command Reference
             
             =================   ======================   =====
             verifyTextPresent   You are now logged in.
+            assertTextPresent   You are now logged in.
             =================   ======================   =====
 
-    **verifyElementPresent**
+    **verifyElementPresent / assertElementPresent**
         Verifies that the specified element is somewhere on the page.
         
         **target:** The element that should be present.
@@ -210,11 +300,12 @@ Command Reference
         
         **examples:**
             
-            ====================   =============   =====
-            verifyElementPresent   submitButton.
-            ====================   =============   =====
+            ====================   =================   =====
+            verifyElementPresent   submitButton
+            assertElementPresent   //img[@alt='foo']
+            ====================   =================   =====
 
-    **verifyElementNotPresent**
+    **verifyElementNotPresent / assertElementNotPresent**
         Verifies that the specified element is not on the page.
         
         **target:** The element that should not be present.
@@ -223,11 +314,12 @@ Command Reference
         
         **examples:**
             
-            =======================   =============   =====
-            verifyElementNotPresent   cancelButton.
-            =======================   =============   =====
+            =======================   ============   =====
+            verifyElementNotPresent   cancelButton
+            assertElementNotPresent   cancelButton
+            =======================   ============   =====
 
-    **verifyTable**
+    **verifyTable / assertTable**
         Verifies the text in a cell of a table. The correct syntax of the target is tableName.row.column, where row and column start at 0.
         
         **target:** The table, row, and column specified as table.row.col.
@@ -238,7 +330,7 @@ Command Reference
             
             ===========   ===========   =========
             verifyTable   myTable.1.6   Submitted
-            verifyTable   results.0.2   13
+            assertTable   results.0.2   13
             ===========   ===========   =========
 
 
