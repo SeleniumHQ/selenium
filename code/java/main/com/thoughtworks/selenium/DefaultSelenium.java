@@ -95,6 +95,154 @@ public class DefaultSelenium implements Selenium {
         return "SeleneseRunner.html";
     }
 
+    public void chooseCancelOnNextConfirmation() {
+        String result = commandProcessor.doCommand("chooseCancelOnNextConfirmation", "", "");
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void click(String field) {
+        String result = commandProcessor.doCommand("click", field, "");
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void pause(int duration) // is this needed for driven ?
+    {
+        String result = commandProcessor.doCommand("pause", "" + duration, "");
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void selectAndWait(String field, String value) {
+        String result = commandProcessor.doCommand("selectAndWait", field, value);
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void selectWindow(String window) {
+        String result = commandProcessor.doCommand("selectWindow", window, "");
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void storeText(String element, String value) {
+        String result = commandProcessor.doCommand("storeText", element, value);
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void storeValue(String field, String value) {
+        String result = commandProcessor.doCommand("storeValue", field, value);
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void type(String field, String value) {
+        String result = commandProcessor.doCommand("type", field, value);
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void typeAndWait(String field, String value) {
+        String result = commandProcessor.doCommand("typeAndWait", field, value);
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyAlert(String alert) {
+        String result = commandProcessor.doCommand("verifyAlert", alert, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyAttribute(String element, String value) {
+        String result = commandProcessor.doCommand("verifyAttribute", element, value);
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyConfirmation(String confirmation) {
+        String result = commandProcessor.doCommand("verifyConfirmation", confirmation, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyElementNotPresent(String type) {
+        String result = commandProcessor.doCommand("verifyElementNotPresent", type, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyElementPresent(String type) {
+        String result = commandProcessor.doCommand("verifyElementPresent", type, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifySelectOptions(String field, String[] values) {
+        String vals = "";
+        for (int i = 0; i < values.length; i++) {
+            vals = vals + values[i];
+            if (i + 1 < values.length) {
+                vals = vals + ",";
+            }
+        }
+        String result = commandProcessor.doCommand("verifySelectOptions", field, vals);
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifySelected(String field, String value) {
+        String result = commandProcessor.doCommand("verifySelected", field, value);
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyTable(String table, String value) {
+        String result = commandProcessor.doCommand("verifyTable", table, value);
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyTextPresent(String type, String text) {
+        String result = commandProcessor.doCommand("verifyTextPresent", type, text);
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyTitle(String title) {
+        String result = commandProcessor.doCommand("verifyTitle", title, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyValue(String field, String value) {
+        String result = commandProcessor.doCommand("verifyValue", field, value);
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
     public void start() {
         commandProcessor.start();
         launcher.launch("http://localhost:8080/" + getContextName() + "/" + getTestRunnerPageName());
@@ -104,4 +252,6 @@ public class DefaultSelenium implements Selenium {
         launcher.close();
         commandProcessor.stop();
     }
+
+
 }
