@@ -26,7 +26,9 @@
 	<UL id=menulist>
   		<LI><A href="index.html">home</A>
   		<LI><A href="download.html">download</A>
-  		<LI><A href="seleniumReference.html">reference</A>
+  		<LI><A href="usage.html">usage</A>
+  		<LI><A href="testrunner.html">&nbsp;&nbsp;test runner</A>
+  		<LI><A href="driven.html">&nbsp;&nbsp;driven</A>
   		<LI><A href="FAQ.html">faq</A>
   		<LI><A href="contact.html">contact</A>
   		<LI><A href="demos.html">demos</A>
