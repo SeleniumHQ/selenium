@@ -97,3 +97,7 @@ TABLE.documentation TD DL {
 TABLE.documentation TD DL DT {
 	FONT-WEIGHT: bold
 }
+
+H1.title {
+    display: none;
+}
