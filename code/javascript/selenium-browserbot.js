@@ -255,6 +255,34 @@ IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModif
     };
 };
 
+SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+    BrowserBot.prototype.modifyWindowToRecordPopUpDialogs(windowToModify, browserBot);
+
+    var originalOpen = windowToModify.open;
+    /*
+     * Safari seems to be broken, so that when we manually trigger the onclick method
+     * of a button/href, any window.open calls aren't resolved relative to the app location.
+     * So here we replace the open() method with one that does resolve the url correctly.
+     */
+    windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
+
+        if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/")) {
+            return originalOpen(url, windowName, windowFeatures, replaceFlag);
+        }
+
+        // Reduce the current path to the directory
+        var currentPath = windowToModify.location.pathname || "/";
+        currentPath = currentPath.replace(/\/[^\/]*$/, "/");
+
+        // Remove any leading "./" from the new url.
+        url = url.replace(/^\.\//, "");
+
+        newUrl = currentPath + url;
+
+        return originalOpen(newUrl, two);
+    };
+};
+
 PageBot = function(pageWindow) {
     if (pageWindow) {
         this.currentWindow = pageWindow;
@@ -494,7 +522,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
     element.value=stringValue;
-    if (isIE || isKonqueror) {
+    if (isIE || isKonqueror || isSafari) {
         triggerEvent(element, 'change', true);
     }
     triggerEvent(element, 'blur', false);
@@ -557,14 +585,14 @@ SafariPageBot.prototype.clickElement = function(element) {
 
     triggerEvent(element, 'focus', false);
 
+    var wasChecked = element.checked;
+    
     // For form element it is simple.
     if (element.click) {
-        alert('simple click');
         element.click();
     }
     // For links and other elements, event emulation is required.
     else {
-        alert('emulate click');
         triggerEvent(element, 'click', true);
 
         // Unfortunately, triggering the event doesn't seem to activate onclick handlers.
@@ -589,9 +617,14 @@ SafariPageBot.prototype.clickElement = function(element) {
                 // This is true for buttons outside of forms, and maybe others.
                 // Just ignore this case for now...
                 // TODO - work out if we need better handling here...
-                alert(describe(element));
+//                alert(describe(element));
             }
         }
+    }
+
+    // Onchange event is not triggered automatically in Safari.
+    if (isDefined(element.checked) && wasChecked != element.checked) {
+        triggerEvent(element, 'change', true);
     }
 
     if (this.windowClosed()) {
