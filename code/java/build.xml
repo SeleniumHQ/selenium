@@ -110,9 +110,11 @@
 
     <target name="integration-test" depends="compile-main">
 
+            <echo>foo.... ${env.CATALINA_HOME}</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
             <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
             <formatter type="plain"/>
