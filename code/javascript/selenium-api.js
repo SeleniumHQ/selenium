@@ -155,7 +155,7 @@ Selenium.prototype.assertValue = function(locator, expectedValue) {
 };
 
 /*
- * Verifies that the entire text of the page matches the expected content.
+ * Verifies that the text of the located element matches the expected content.
  */
 Selenium.prototype.assertText = function(locator, expectedContent) {
     var element = this.page().findElement(locator);

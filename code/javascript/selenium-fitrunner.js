@@ -198,7 +198,7 @@ function addOnclick(suiteTable, rowNum) {
 
         // If the row has a stored results table, use that
         if(suiteTable.rows[row].cells[1]) {
-            getTestFrame().contentWindow.document.body.innerHTML = getText(suiteTable.rows[row].cells[1]);
+            getIframeDocument(getTestFrame()).body.innerHTML = getText(suiteTable.rows[row].cells[1]);
         }
         // Otherwise, just open up the fresh page.
         else {
@@ -327,7 +327,8 @@ function runNextTest() {
         testLink.focus();
 
         addLoadListener(getTestFrame(), startTest);
-        getTestFrame().src = testLink.href;
+        getExecutionContext().open(testLink.href, getTestFrame());
+//        getTestFrame().src = testLink.href;
     }
 }
 
@@ -339,7 +340,7 @@ function setCellColor(tableRows, row, col, colorStr) {
 // for each tests, the second column is set to the HTML from the test table.
 function setResultsData(suiteTable, row) {
     // Create a text node of the test table
-    tableContents = suiteTable.ownerDocument.createTextNode(getTestFrame().contentWindow.document.body.innerHTML);
+    tableContents = suiteTable.ownerDocument.createTextNode(getIframeDocument(getTestFrame()).body.innerHTML);
 
     new_column = suiteTable.ownerDocument.createElement("td");
     new_column.appendChild(tableContents);

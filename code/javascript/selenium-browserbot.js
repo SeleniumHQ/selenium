@@ -395,7 +395,14 @@ PageBot.prototype.locateLinkByText = function(linkDescription, inDocument) {
     }
 
     var linkText = linkDescription.substring(prefix.length);
-    return this.locateElementByXPath("//a[text()='" + linkText + "']", inDocument);
+    var links = inDocument.getElementsByTagName('a');
+    for (var i = 0; i < links.length; i++) {
+        var element = links[i];
+        if (getText(element) == linkText) {
+            return element;
+        }
+    }
+    return null;
 };
 
 /**
