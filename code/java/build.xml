@@ -89,6 +89,7 @@
             <batchtest todir="${test.logs.dir}">
                 <fileset dir="${test.dir}">
                     <include name="**/*Test.java"/>
+                    <include name="**/*TestCase.java"/> 
                     <exclude name="com/thoughtworks/selenium/SeleniumIntegrationTest.java"/>
                 </fileset>
             </batchtest>
@@ -113,6 +114,7 @@
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
                     <include name="**/*Test.java"/>
+                    <include name="**/*TestCase.java"/> 
                     <exclude name="**/RealDealIntegrationTest.java"/>
                 </fileset>
             </batchtest>
