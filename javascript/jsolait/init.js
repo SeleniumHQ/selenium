@@ -217,7 +217,7 @@ Module("jsolait", "0.1.0", function(mod){
     ///base url for user modules.
     mod.baseURL=".";
     ///The URL where jsolait is installed.
-    mod.libURL ="./jsolait";
+    mod.libURL ="/jsolait";
     ///Collection of all loaded modules.(module cache)
     mod.modules = new Array();
     ///The URLs of there the modules, part of jsolait.

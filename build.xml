@@ -3,7 +3,7 @@
     <property name="version" value="1.2.0"/>
 
     <target name="dist">
-        <!--delete dir="dist"/-->
+        <delete dir="dist"/>
         <mkdir dir="dist/selenium"/>
         <copy todir="dist/selenium">
             <fileset dir=".">
@@ -20,5 +20,9 @@
 
     <target name="dist-zip" depends="dist">
         <zip basedir="dist" zipfile="dist/selenium-${version}.zip"/>
+    </target>
+    
+    <target name="cvsgrab">
+       <https://gforge.wazokazi.com/viewcvs/viewcvs.cgi/?cvsroot=selenium>
     </target>
 </project>
