@@ -53,12 +53,12 @@ function setText(element, text) {
 function triggerEvent(element, eventType, canBubble) {
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-		element.fireEvent('on' + eventType);
+        element.fireEvent('on' + eventType);
     }
     else {
-		var evt = document.createEvent('HTMLEvents');
-		evt.initEvent(eventType, canBubble, true);
-		element.dispatchEvent(evt);
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent(eventType, canBubble, true);
+        element.dispatchEvent(evt);
     }
 }
 
@@ -66,7 +66,7 @@ function triggerEvent(element, eventType, canBubble) {
 function triggerMouseEvent(element, eventType, canBubble) {
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-		element.fireEvent('on' + eventType);
+        element.fireEvent('on' + eventType);
     }
     else {
         var evt = document.createEvent('MouseEvents');
@@ -87,4 +87,16 @@ function addLoadListener(element, command) {
         element.addEventListener("load",command, true);
     else if (window.attachEvent)
         element.attachEvent("onload",command);
+}
+
+/**
+ * Override the broken getFunctionName() method from JsUnit
+ * This file must be loaded _after_ the jsunitCore.js
+ */
+function getFunctionName(aFunction) {
+  var regexpResult = aFunction.toString().match(/function (\w*)/);
+  if (regexpResult && regexpResult[1]) {
+      return regexpResult[1];
+  }
+  return 'anonymous';
 }
