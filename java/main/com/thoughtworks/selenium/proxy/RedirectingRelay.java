@@ -1,4 +1,3 @@
-package com.thoughtworks.selenium.proxy;
 /*
   Copyright 2004 ThoughtWorks, Inc.
 
@@ -14,31 +13,32 @@ package com.thoughtworks.selenium.proxy;
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+package com.thoughtworks.selenium.proxy;
 
-import com.thoughtworks.selenium.utils.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * @version $Id: RedirectingRelay.java,v 1.3 2004/11/13 04:46:57 ahelleso Exp $
+ * @version $Id: RedirectingRelay.java,v 1.4 2004/11/13 05:33:36 ahelleso Exp $
  */
 public class RedirectingRelay implements Relay {
     private static final Log LOG = LogFactory.getLog(RedirectingRelay.class);
     private static final String proxy = (String) System.getProperties().get("http.proxyHost");
     private static final String proxyPort = (String) System.getProperties().get("http.proxyPort");
     private final RequestInput requestInput;
-    private final ResponseStream responseStream;
+    private final OutputStream responseStream;
     private final RequestModificationCommand requestModificationCommand;
+    // TODO: what's this? (AH)
+    private static final int MAGIC_NUMBER = 1;
 
     public RedirectingRelay(RequestInput requestInput,
-                            ResponseStream responseStream,
+                            OutputStream responseStream,
                             RequestModificationCommand requestModificationCommand) {
-        Assert.assertIsTrue(requestInput != null, "requestInputcan't be null");
-        Assert.assertIsTrue(responseStream != null, "responseStream can't be null");
-        Assert.assertIsTrue(requestModificationCommand != null, "requestModificationCommand can't be null");
         this.requestInput = requestInput;
         this.responseStream = responseStream;
         this.requestModificationCommand = requestModificationCommand;
@@ -49,7 +49,7 @@ public class RedirectingRelay implements Relay {
         HTTPRequest request = requestInput.readRequest();
         if (!hasBeenRedirected(request.getUri())) {
             byte[] redirectMessage = redirectResponse(request).getBytes();
-            responseStream.write(redirectMessage, redirectMessage.length);
+            responseStream.write(redirectMessage);
             responseStream.flush();
         } else {
             sendToIntendedTarget(request);
@@ -73,7 +73,7 @@ public class RedirectingRelay implements Relay {
             InputStream backStream = destinationSocket.getInputStream();
             destStream.write(requestToDest.getBytes());
             destStream.flush();
-            getResponse(backStream, responseStream);
+            pump(backStream, responseStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,24 +93,26 @@ public class RedirectingRelay implements Relay {
         return proxy;
     }
 
-    private void getResponse(InputStream inputStream, ResponseStream clientOutputStream) throws IOException {
+    private void pump(InputStream in, OutputStream out) throws IOException {
         int bytesRead = 0;
         byte[] response = new byte[2048];
         while (bytesRead > -1) {
-            bytesRead = inputStream.read(response);
+            bytesRead = in.read(response);
             if (bytesRead > -1) {
                 LOG.debug("Waiting");
-                clientOutputStream.write(response, bytesRead);
+                out.write(response);
                 LOG.debug("Number of bytes returned = " + bytesRead);
             }
         }
-        clientOutputStream.flush();
+        out.flush();
     }
 
     private String redirectResponse(HTTPRequest request) {
-        String response = request.getProtocol() + " 302 Moved Temporarily\r\nLocation: " +
+        final String protocol = request.getProtocol();
+        final String uri = request.getUri();
+        String response = protocol + " 302 Moved Temporarily\r\nLocation: " +
                           HTTPRequest.SELENIUM_REDIRECT_URI  +
-                          request.getUri().substring(7) + "\r\n";
+                          uri.substring(MAGIC_NUMBER) + "\r\n";
         LOG.debug("Redirected Response\n" + response);
         return response;
     }
