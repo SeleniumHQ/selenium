@@ -1,0 +1,75 @@
+<html>
+<head>
+	<title>DOM Level 3 XPath Example</title>
+	<script language="javascript" type="text/javascript" src="html-xpath.js"></script>
+</head>
+<body>
+<div class="Test">
+	Test Node <span class="Number">1</span>
+</div>
+
+<span id="TestingGround">
+	<div class="SomeOtherClass">
+		<div class="Test" id="ContextNodeTest">
+			Test Node <span class="Number">2</span>
+			<p>Test Node <span class="Number">3</span>: Unclosed Paragraph tag
+			<div class="Test">
+				Test Node <span class="Number">4</span>: Nesting
+			</div>
+			<img src="rainbow.jpg" alt="Something I found in my backyard" width="100" height="200" alt="Test image" someOtherAttribute="someOtherValue" />
+			<img src="carnation.jpg" alt="Carnation" width="99" height="74">
+		</div>
+	</div>
+</span>
+
+<script language="javascript">
+
+	function showIterator(title, result)
+	{
+		var s = title;
+		var item;
+		while(item = result.iterateNext())
+		{
+			s += "<div class=\"XPathResultItem\">" + (item.nodeType == 1 ? item.innerHTML.replace(/</g, "&lt;").replace(/>/g, "&gt;") : item.nodeValue) + "</div>";
+		}
+		document.write(s);
+	}
+
+	// Evaluate 1
+	var result = document.evaluate("//div[@class='Test']", document, null, XPathResult.STRING_TYPE, null);
+	document.write("<h1>\"//div[@class='Test']\" as String</h1>" + result.getStringValue());
+	
+	// Evaluate 2
+	document.evaluate("//img[@width < 100]/@height", document, null, XPathResult.NUMBER_TYPE, result);
+	document.write("<h1>\"//img[@width < 100]/@height\" as Number</h1>" + result.getNumberValue());
+
+	// Evaluate 3
+	showIterator
+	(
+		"<h1>\"//div[@class='Test']\" in context of document</h1>", 
+		document.evaluate("//div[@class='Test']", document, null, XPathResult.ANY_TYPE, result)
+	);
+	
+	// Evaluate 4
+	showIterator
+	(
+		"<h1>\"div[@class='Test']\" in context of a specific node (id=\"ContextNodeTest\")</h1>", 
+		document.evaluate("div[@class='Test']", document.getElementById("ContextNodeTest"), null, XPathResult.ANY_TYPE, result)
+	);
+	
+	// Evaluate 5
+	showIterator
+	(
+		"<h1>\"//div/@class\": Retrieve Attribute Values</h1>", 
+		document.evaluate("//div/@class", document, null, 0, result)
+	);
+
+	// Evaluate 6
+	var result = document.evaluate("count(//span[@class='Number'])", document, null, XPathResult.NUMBER_TYPE, null);
+	document.write("<h1>\"count(//span[@class='Number'])\" as Number</h1>" + result.getNumberValue());
+	
+</script>
+
+
+</body>
+</html>

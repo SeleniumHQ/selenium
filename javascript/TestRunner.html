@@ -22,7 +22,7 @@ http-equiv="content-type">
 #seleniumControlPanel {
     position: absolute;
     top: 0px;
-    left: 25%;
+    left: 230px;
     height: 20%;
     width: 75%;
     background-color: white;
@@ -42,11 +42,12 @@ http-equiv="content-type">
     background-color: green;
     font-weight: bold;
     font-size: 12px;
+    display: block;
 }
 #runSpeedPanel {
     position: absolute;
     top: 10px;
-    left: 25%;
+    left: 20%;
     width: 15%;
 }
 #runSpeedPanel label {
@@ -56,7 +57,7 @@ http-equiv="content-type">
 table#resultsPanel {
     position: absolute;
     top: 10px;
-    left: 40%;
+    left: 38%;
     width: 40%;
     background-color: white;
     border: solid 1px;
@@ -96,6 +97,7 @@ td#commandErrors {
 </style>
 
 <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/html-xpath/html-xpath-patched.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
@@ -108,8 +110,9 @@ td#commandErrors {
 <iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="20%" border="0"  SRC="./tests/TestSuite.html"></iframe>
 <div id="seleniumControlPanel">
 <div id="launchPanel">
-    <button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">Run selected test</button><br/>
-    <button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">Run all tests</button>
+    <b>Run:</b>
+    <button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">Selected test</button>
+    <button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">All tests</button>
 </div>
 
 <div id="runSpeedPanel">

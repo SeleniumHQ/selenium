@@ -36,14 +36,14 @@ Copyright 2004 ThoughtWorks, Inc
 
     <!-- Id/name location -->
     <tr>
-      <td>verifyElementPresent</td>
+      <td>verifyText</td>
       <td>id1</td>
-      <td></td>
+      <td>this is the first element</td>
     </tr>
     <tr>
-      <td>verifyElementPresent</td>
+      <td>verifyText</td>
       <td>name1</td>
-      <td></td>
+      <td>this is the second element</td>
     </tr>
     <tr>
       <td>verifyElementNotPresent</td>
@@ -53,13 +53,40 @@ Copyright 2004 ThoughtWorks, Inc
 
     <!-- DOM Traversal location -->
     <tr>
-      <td>verifyElementPresent</td>
+      <td>verifyText</td>
       <td>document.links[1]</td>
-      <td></td>
+      <td>this is the second element</td>
     </tr>
     <tr>
       <td>verifyElementNotPresent</td>
       <td>document.links[3]</td>
+      <td></td>
+    </tr>
+
+    <!-- XPath location -->
+    <tr>
+      <td>verifyText</td>
+      <td>//a</td>
+      <td>this is the first element</td>
+    </tr>
+     <tr>
+       <td>verifyText</td>
+       <td>//*[@class='a2']</td>
+       <td>this is the second element</td>
+     </tr>
+     <tr>
+       <td>verifyText</td>
+       <td>//a[@class='a2']</td>
+       <td>this is the second element</td>
+     </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>//a[2]</td>
+      <td>this is the second element</td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>//a[@href='foo']</td>
       <td></td>
     </tr>
   </tbody>
