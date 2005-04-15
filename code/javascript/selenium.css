@@ -1,0 +1,125 @@
+
+/*---( Layout )---*/
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+td {
+    position: static;
+}
+
+tr {
+    vertical-align: top;
+}
+
+.layout {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+.layout td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: white;
+}
+
+/*---( Style )---*/
+
+body, html {
+    font-family: Verdana, Arial, sans-serif;
+}
+
+#seleniumPanel td {
+    border: 1px solid #333;
+}
+
+#controlPanel {
+    background: #eee;
+    overflow: auto;
+}
+
+#controlPanel td {
+    border: 0;
+}
+
+#controls {
+    color: inherit;
+    font-size: 75%;
+    width: 100%;
+}
+
+#controls td {
+    text-align: center;
+}
+
+#controls h1 {
+    margin-bottom: 1ex;
+    font-size: 130%;
+    font-weight: bold;
+    text-align: right;
+}
+
+#controls h1 a {
+    color: black;
+    text-decoration: none;
+}
+
+#controls h1 a:hover {
+    text-decoration: underline;
+}
+
+button, label {
+    cursor: pointer;
+}
+
+#stats {
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    font-size: 100%;
+    margin-top: 10px;
+}
+
+#stats th, #stats td {
+    text-align: left;
+    padding-left: 2px;
+}
+
+#stats th {
+    text-decoration: underline;
+}
+
+#stats td.count {
+    font-weight: bold;
+    text-align: right;
+}
+
+#testRuns {
+    color: green;
+}
+
+#testFailures {
+    color: red;
+}
+
+#commandPasses {
+    color: green;
+}
+
+#commandFailures {
+    color: orange;
+}
+
+#commandErrors {
+    color: red;
+}
