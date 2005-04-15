@@ -1,3 +1,5 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
 <!--
 Copyright 2004 ThoughtWorks, Inc
 
@@ -13,11 +15,11 @@ Copyright 2004 ThoughtWorks, Inc
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+
 <html>
 <head>
-<meta content="text/html; charset=ISO-8859-1"
-http-equiv="content-type">
-<link rel="stylesheet" type="text/css" href="selenium.css">
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+
 <title>Selenium Functional Test Runner</title>
 <script language="JavaScript" type="text/javascript" src="html-xpath/html-xpath-patched.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
@@ -29,42 +31,213 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="domviewer.js"></script>
 
+<style type="text/css">
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+td {
+    position: static;
+}
+
+tr {
+    vertical-align: top;
+}
+
+.layout {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+.layout td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: white;
+}
+
+/*---( Fonts and Colours )---*/
+
+body, html {
+    font-family: Verdana, Arial, sans-serif;
+}
+
+#seleniumPanel td {
+    border: 1px solid #333;
+}
+
+#controlPanel {
+    background: #eee;
+    overflow: auto;
+}
+
+#controlPanel td {
+    border: 0;
+}
+
+#controls {
+    color: inherit;
+    font-size: 75%;
+    width: 100%;
+}
+
+#controls td {
+    text-align: center;
+}
+
+#controls h1 {
+    margin-bottom: 1ex;
+    font-size: 130%;
+    font-weight: bold;
+    text-align: right;
+}
+
+#controls h1 a {
+    color: black;
+    text-decoration: none;
+}
+
+#controls h1 a:hover {
+    text-decoration: underline;
+}
+
+button, label {
+    cursor: pointer;
+}
+
+#stats {
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    font-size: 100%;
+    margin-top: 10px;
+}
+
+#stats th, #stats td {
+    text-align: left;
+    padding-left: 2px;
+}
+
+#stats th {
+    text-decoration: underline;
+}
+
+#stats td.count {
+    font-weight: bold;
+    text-align: right;
+}
+
+#testRuns {
+    color: green;
+}
+
+#testFailures {
+    color: red;
+}
+
+#commandPasses {
+    color: green;
+}
+
+#commandFailures {
+    color: orange;
+}
+
+#commandErrors {
+    color: red;
+}
+
+</style>
 
 </head>
-
-<body onLoad="javascript:start();">
-<iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="20%" border="0"  SRC="./tests/TestSuite.html"></iframe>
-<div id="seleniumControlPanel">
-<div id="launchPanel">
-    <b>Run:</b>
-    <button type="button" id="runTest" onClick="runSingleTest();">Selected test</button>
-    <button type="button" id="runSuite" onClick="startTestSuite();">All tests</button>
-    <button type="button" id="domViewer1" onClick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
-</div>
-
-<div id="runSpeedPanel">
-    <b>Run mode:</b>
-    <label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
-    <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
-    <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
-    <button type="button" id="continueTest" accesskey="n">Next/Continue</button>
-</div>
-
-<table id="resultsPanel">
-    <tr><th>Elapsed Time:</th><td id="elapsedTime">00.00</td></tr>
-    <tr><th colspan="2">Test Results</th><th colspan="2">Command Results</th></tr>
-    <tr><td>Total run:</td><td id="testRuns">0</td><td>Passes:</td><td id="commandPasses">0</td></tr>
-    <tr><td>Failures:</td><td id="testFailures">0</td><td>Failures:</td><td id="commandFailures">0</td></tr>
-    <tr><td colspan="2"/><td>Errors:</td><td id="commandErrors">0</td></tr>
-</table>
-</div>
-
-<iframe NAME="testFrame" ID="testFrame" style="float:left;margin-top: 10px;" height="75%" width="30%" border="0"  src="about:blank"></iframe>
-
-<iframe NAME="myiframe" ID="myiframe" style="float:right;margin-top: 10px;" height="75%;" width="68%" border="0"  src="testcard_F.gif"></iframe>
-
-<br>
-
+<body onload="start();">
+  <table class="layout">
+    <tr>
+      <td height="30%">
+        <table class="layout" id="seleniumPanel">
+          <tr>
+            <td width="25%"><iframe name="testSuiteFrame" id="testSuiteFrame" src="./tests/TestSuite.html"></iframe></td>
+            <td width="50%"><iframe name="testFrame" id="testFrame" src="about:blank"></iframe></td>
+            <td width="25%" id="controlPanel">
+              <table id="controls">
+                <tr>
+                  <td>
+                    <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <b>Run:</b>
+                    <button type="button" id="runTest" onclick="runSingleTest();"><em>Selected</em> Test</button>
+                    <button type="button" id="runSuite" onclick="startTestSuite();"><strong>All</strong> Tests</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <b>Mode:</b>
+                    <label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
+                    <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
+                    <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <button type="button" id="domViewer1" onClick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
+                    <button type="button" id="continueTest">Next/Continue</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <table id="stats" align="center">
+                      <tr>
+                        <td colspan="2" align="right">Elapsed:</td>
+                        <td id="elapsedTime" colspan="2">00.00</td>
+                      </tr>
+                      <tr>
+                        <th colspan="2">Tests</th>
+                        <th colspan="2">Commands</th>
+                      </tr>
+                      <tr>
+                        <td class="count" id="testRuns">0</td>
+                        <td>run</td>
+                        <td class="count" id="commandPasses">0</td>
+                        <td>passed</td>
+                      </tr>
+                      <tr>
+                        <td class="count" id="testFailures">0</td>
+                        <td>failed</td>
+                        <td class="count" id="commandFailures">0</td>
+                        <td>failed</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="count" id="commandErrors">0</td>
+                        <td>incomplete</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr> 
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3"><iframe name="myiframe" id="myiframe" src="testcard_F.gif "></iframe></td>
+    </tr>
+  </table>
 </body>
+
 </html>
 
