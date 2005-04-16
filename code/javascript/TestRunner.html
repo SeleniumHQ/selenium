@@ -39,16 +39,16 @@ Copyright 2004 ThoughtWorks, Inc
       <td height="30%">
         <table class="layout" id="seleniumPanel">
           <tr>
+            <th width="25%">Test Suite</th>
+            <th width="50%">Currently Selected or Running Test</th>
+            <th width="25%">TestRunner Dashboard</th>
+          </tr>
+          <tr>
             <td width="25%"><iframe name="testSuiteFrame" id="testSuiteFrame" src="./tests/TestSuite.html"></iframe></td>
             <td width="50%"><iframe name="testFrame" id="testFrame"></iframe></td>
             <td width="25%" id="controlPanel">
               <form>
               <table id="controls">
-                <tr>
-                  <td>
-                    <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
-                  </td>
-                </tr>
                 <tr>
                   <td>
                     <b>Run:</b>
@@ -79,29 +79,31 @@ Copyright 2004 ThoughtWorks, Inc
                       </tr>
                       <tr>
                         <th colspan="2">Tests</th>
-                        <th colspan="2">Commands</th>
+                        <th colspan="4">Commands</th>
                       </tr>
                       <tr>
                         <td class="count" id="testRuns">0</td>
-                        <td>run</td>
+                        <td>run, </td>
                         <td class="count" id="commandPasses">0</td>
-                        <td>passed</td>
+                        <td>passed, </td>
+                        <td class="count" id="commandErrors">0</td>
+                        <td>incomplete</td>
                       </tr>
                       <tr>
                         <td class="count" id="testFailures">0</td>
-                        <td>failed</td>
+                        <td>failed, </td>
                         <td class="count" id="commandFailures">0</td>
                         <td>failed</td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="count" id="commandErrors">0</td>
-                        <td>incomplete</td>
                       </tr>
                     </table>
                   </td>
                 </tr> 
+                <tr>
+                  <td>
+                    <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> by <a href="http://www.thoughtworks.com">ThoughtWorks, Inc</a></h1>
+                  </td>
+                </tr>
+
               </table>
               </form>
             </td>
