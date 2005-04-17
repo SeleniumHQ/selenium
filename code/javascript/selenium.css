@@ -129,9 +129,9 @@ button, label {
 }
 
 #commandFailures {
-    color: orange;
+    color: red;
 }
 
 #commandErrors {
-    color: red;
+    color: #f90;
 }
