@@ -40,16 +40,23 @@ body, html {
     font-family: Verdana, Arial, sans-serif;
 }
 
-#seleniumPanel td {
-    border: 1px solid #333;
+.selenium th, .selenium td {
+    border: 1px solid #999;
+}
+
+.header th {
+    background: #ccc;
+    padding: 0;
+    font-size: 90%;
 }
 
 #controlPanel {
+    padding: 5px;
     background: #eee;
     overflow: auto;
 }
 
-#controlPanel td {
+#controlPanel th, #controlPanel td {
     border: 0;
 }
 
@@ -63,19 +70,24 @@ body, html {
     text-align: center;
 }
 
-#controls h1 {
-    margin-bottom: 1ex;
+h1 {
+    margin: 0.2ex;
     font-size: 130%;
     font-weight: bold;
-    text-align: right;
 }
 
-#controls h1 a {
+h2 {
+    margin: 0.2ex;
+    font-size: 80%;
+    font-weight: normal;
+}
+
+.selenium a {
     color: black;
     text-decoration: none;
 }
 
-#controls h1 a:hover {
+.selenium a:hover {
     text-decoration: underline;
 }
 
