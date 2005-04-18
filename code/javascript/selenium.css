@@ -32,6 +32,7 @@ iframe {
     height: 100%;
     border: 0;
     background: white;
+    overflow: auto;
 }
 
 /*---( Style )---*/
@@ -44,7 +45,7 @@ body, html {
     border: 1px solid #999;
 }
 
-.header th {
+.header {
     background: #ccc;
     padding: 0;
     font-size: 90%;
@@ -56,17 +57,22 @@ body, html {
     overflow: auto;
 }
 
+#controlPanel table {
+    font-size: 75%;
+}
+
 #controlPanel th, #controlPanel td {
     border: 0;
 }
 
 #controls {
     color: inherit;
-    font-size: 75%;
     width: 100%;
 }
 
 #controls td {
+    margin: 1px;
+    padding: 1px;
     text-align: center;
 }
 
@@ -98,7 +104,6 @@ button, label {
 #stats {
     border-top: 1px solid #999;
     border-bottom: 1px solid #999;
-    font-size: 100%;
     margin-top: 10px;
 }
 
@@ -134,4 +139,10 @@ button, label {
 
 #commandErrors {
     color: #f90;
+}
+
+.splash {
+    border: 1px solid black;
+    padding: 20px;
+    background: #ccc;
 }
