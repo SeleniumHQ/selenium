@@ -38,38 +38,19 @@ Copyright 2004 ThoughtWorks, Inc
   <form action="">
     <table class="layout">
 
-      <!-- Headers -->
-
-      <tr class="selenium header">
-        <th width="25%" height="1%">Test Suite</th>
-        <th width="50%" height="1%">Current Test</th>
-        <th width="25%" height="1%" rowspan="2">
-          <table border="0" cellpadding="0" cellspacing="0">
-            <tr>
-              <td>
-                <img src="selenium-logo.png"/>
-              </td>
-              <td>
-                <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
-                <h2>by <a href="http://www.thoughtworks.com">ThoughtWorks</a> &amp; Friends</h2>
-              </td>
-            </tr>
-          </table>
-        </th>
-      </tr>
-
-      <!-- Suite, Test -->
+      <!-- Suite, Test, Control Panel -->
 
       <tr class="selenium">
         <td width="25%" height="30%" rowspan="2"><iframe name="testSuiteFrame" id="testSuiteFrame" src="./tests/TestSuite.html"></iframe></td>
         <td width="50%" height="30%" rowspan="2"><iframe name="testFrame" id="testFrame"></iframe></td>
+        <th width="25%" height="1" class="header">
+          <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
+        </th>
       </tr>
 
-      <!-- Control Panel -->
-      
       <tr class="selenium">
-        
         <td width="25%" height="30%" id="controlPanel">
+
           <table id="controls">
             <tr>
               <td>
@@ -92,37 +73,34 @@ Copyright 2004 ThoughtWorks, Inc
                 <button type="button" id="continueTest">Next/Continue</button>
               </td>
             </tr>
+          </table>
+
+          <table id="stats" align="center">
             <tr>
-              <td>
-                <table id="stats" align="center">
-                  <tr>
-                    <td colspan="2" align="right">Elapsed:</td>
-                    <td id="elapsedTime" colspan="2">00.00</td>
-                  </tr>
-                  <tr>
-                    <th colspan="2">Tests</th>
-                    <th colspan="2">Commands</th>
-                  </tr>
-                  <tr>
-                    <td class="count" id="testRuns">0</td>
-                    <td>run</td>
-                    <td class="count" id="commandPasses">0</td>
-                    <td>passed</td>
-                  </tr>
-                  <tr>
-                    <td class="count" id="testFailures">0</td>
-                    <td>failed</td>
-                    <td class="count" id="commandFailures">0</td>
-                    <td>failed</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2"></td>
-                    <td class="count" id="commandErrors">0</td>
-                    <td>incomplete</td>
-                  </tr>
-                </table>
-              </td>
-            </tr> 
+              <td colspan="2" align="right">Elapsed:</td>
+              <td id="elapsedTime" colspan="2">00.00</td>
+            </tr>
+            <tr>
+              <th colspan="2">Tests</th>
+              <th colspan="2">Commands</th>
+            </tr>
+            <tr>
+              <td class="count" id="testRuns">0</td>
+              <td>run</td>
+              <td class="count" id="commandPasses">0</td>
+              <td>passed</td>
+            </tr>
+            <tr>
+              <td class="count" id="testFailures">0</td>
+              <td>failed</td>
+              <td class="count" id="commandFailures">0</td>
+              <td>failed</td>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td class="count" id="commandErrors">0</td>
+              <td>incomplete</td>
+            </tr>
           </table>
           
         </td>
@@ -131,7 +109,7 @@ Copyright 2004 ThoughtWorks, Inc
       <!-- AUT -->
 
       <tr>
-        <td colspan="3" height="70%"><iframe name="myiframe" id="myiframe" src="testcard_F.gif "></iframe></td>
+        <td colspan="3" height="70%"><iframe name="myiframe" id="myiframe" src="TestRunner-splash.html"></iframe></td>
       </tr>
 
     </table>
