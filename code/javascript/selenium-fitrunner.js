@@ -604,6 +604,7 @@ function getCellText(rowNumber, columnNumber) {
 }
 
 Selenium.prototype.doPause = function(waitTime) {
+    selenium.callOnNextPageLoad(null);
     testLoop.pauseInterval = waitTime;
 };
 
