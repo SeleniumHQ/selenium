@@ -168,7 +168,7 @@ function onloadTestSuite() {
 
         addLoadListener(getApplicationFrame(), startSingleTest);
 
-        getApplicationFrame().src = unescape(getQueryParameter("autoURL"));
+        getApplicationFrame().src = getQueryParameter("autoURL");
 
     } else {
         testLink = suiteTable.rows[currentTestRow+1].cells[0].getElementsByTagName("a")[0];
@@ -214,12 +214,13 @@ function isQueryParameterTrue(name) {
     return (parameterValue != null && parameterValue.toLowerCase() == "true");
 }
 
-function getQueryParameter(name) {
-    myVars = location.search.substr(1).split('&');
-    for (var i =0;i < myVars.length; i++) {
-        nameVal = myVars[i].split('=');
-        if(nameVal[0] == name) {
-            return nameVal[1];
+function getQueryParameter(searchKey) {
+    var clauses = location.search.substr(1).split('&');
+    for (var i = 0; i < clauses.length; i++) {
+        var keyValuePair = clauses[i].split('=',2);
+        var key = unescape(keyValuePair[0]);
+        if (key == searchKey) {
+            return unescape(keyValuePair[1]);
         }
     }
     return null;
