@@ -14,6 +14,15 @@
  *  limitations under the License.
  *
  */
+
+var nextExecution;
+function executeNext() {
+    if (nextExecution) {
+        nextExecution();
+    }
+    nextExecution = null;
+}
+
 var assert = new Assert();
 function Selenium(browserbot) {
     this.browserbot = browserbot;
@@ -22,10 +31,10 @@ function Selenium(browserbot) {
     };
 
     var self = this;
+
     this.callOnNextPageLoad = function(callback) {
-        if (callback) {
-            self.browserbot.callOnNextPageLoad(callback);
-        }
+        nextExecution = callback;
+        self.browserbot.callOnNextPageLoad(executeNext);
     };
 }
 
@@ -481,9 +490,11 @@ Selenium.prototype.globToRegexp = function(glob) {
     pattern = pattern.replace(/\?/g, ".");
     pattern = pattern.replace(/\*/g, ".*");
     return "^" + pattern + "$";
-}
+};
 
 Selenium.prototype.matches = function(pattern, actual) {
     var regexp = new RegExp(this.globToRegexp(pattern));
-    return regexp.test(actual);
-}
+    // Work around Konqueror bug when matching empty strings.
+    var testString = '' + actual;
+    return regexp.test(testString);
+};

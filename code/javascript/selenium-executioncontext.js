@@ -45,7 +45,7 @@ function KonquerorIFrameExecutionContext() {
         return document.getElementById('myiframe');
     };
 
-    this.open = function(target,frame) {
+    this.open = function(target, frame) {
         // Window doesn't fire onload event when setting src to the current value,
         // so we set it to blank first.
         frame.src = "about:blank";

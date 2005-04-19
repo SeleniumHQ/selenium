@@ -42,27 +42,6 @@ var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
-/*
-* The 'invoke' method will call the required function, and then
-* remove itself from the window object. This allows a calling app
-* to provide a callback listener for the window load event, without the
-* calling app needing to worry about cleaning up afterward.
-* TODO: This could be more generic, but suffices for now.
-*/
-function SelfRemovingLoadListener(fn, frame) {
-    var self = this;
-
-    this.invoke=function () {
-        try {
-            // we've moved to a new page - clear the current one
-            browserbot.currentPage = null;
-            fn();
-        } finally {
-            removeLoadListener(frame, self.invoke);
-        }
-    };
-}
-
 function createBrowserBot(frame, executionContext) {
     if (isIE) {
         return new IEBrowserBot(frame, executionContext);
@@ -208,10 +187,7 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
 };
 
 BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
-    if (onloadCallback) {
-        var el = new SelfRemovingLoadListener(onloadCallback, this.frame);
-        addLoadListener(this.frame, el.invoke);
-    }
+    addLoadListener(this.frame, onloadCallback);
 };
 
 function MozillaBrowserBot(frame, executionContext) {
