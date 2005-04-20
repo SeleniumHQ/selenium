@@ -52,6 +52,8 @@ function TestLoop(commandFactory, executionContext) {
         // Make the current row blue
         this.commandStarted(command);
 
+        LOG.debug("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
+
         var result;
         try {
             var handler = this.commandFactory.getCommandHandler(command.command);
@@ -61,6 +63,7 @@ function TestLoop(commandFactory, executionContext) {
 
             result = handler.execute(selenium, command);
         } catch (e) {
+            LOG.error(e);
             // TODO: only throw typed errors from commands so that we can perform better error handling
             // to differentiate between expected command errors and unexpected javascript errors.
             if (e instanceof TypeError) {
