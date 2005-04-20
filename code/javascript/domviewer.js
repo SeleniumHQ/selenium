@@ -32,7 +32,6 @@ function displayDOM(root){
 	var str = "<html><head><title>DOM Viewerr</title><script type='text/javascript' src='domviewer.js'><!-- comments --> </script><link href='dom-styles/default.css' rel='stylesheet' type='text/css' /></head><body>";
 	str+="<table>";
 	str += treeTraversal(root,0);
-	alert(maxColumns);
 	// to make table columns work well.
 	str += "<tr>";
 	for (var i=0; i < maxColumns; i++) {
@@ -130,11 +129,35 @@ function getNodeContent(element) {
 		if (element.href != null && element.href != "") {
 		    href = " HREF(" + element.href + ")";
 		}
-		str+=" <b>"+ element.nodeName + id + name + value + href + "</b>";	
+		text ="";
+		if (element.text != null && element.text != "" && element.text != "undefined") {
+		    text = " #TEXT(" + trim(element.text) +")";
+		}
+		str+=" <b>"+ element.nodeName + id + name + value + href + text + "</b>";	
 		return str;
 
 }
 
+function trim(val) {
+        val2 = val.substring(0,20) + "                   ";
+        var spaceChr = String.fromCharCode(32);
+        var length = val2.length;
+        var retVal = "";
+        var ix = length -1;
+
+        while(ix > -1){
+            if(val2.charAt(ix) == spaceChr) {
+            } else {
+                retVal = val2.substring(0, ix +1);
+                break;
+            }
+            ix = ix-1;
+        }
+        if (val.length > 20) {
+            retVal += "...";
+        }
+        return retVal;
+}
 
 function hide(hlink){
 	var isHidden = false;
