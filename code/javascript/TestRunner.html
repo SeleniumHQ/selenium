@@ -32,6 +32,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="domviewer.js"></script>
 <link rel="stylesheet" type="text/css" href="selenium.css" />
@@ -106,7 +107,6 @@ Copyright 2004 ThoughtWorks, Inc
               <td>incomplete</td>
             </tr>
           </table>
-
         </td>
       </tr>
 
@@ -117,6 +117,15 @@ Copyright 2004 ThoughtWorks, Inc
       </tr>
     </form>
     </table>
+
+    <div id="logging-console">
+        <h1>Javascript Log Console (<a id="closeLog" href="javascript:LOG.hide()">Close</a> <a href="javascript:LOG.clear();LOG.hide();">Clear</a>)</h1>
+        <ul id="log-list"/>
+    </div>
+    <script language="javascript">
+        LOG = new Logger(LEVEL_WARN);
+        LOG.hide();
+    </script>
 </body>
 </html>
 

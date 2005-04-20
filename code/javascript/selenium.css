@@ -161,3 +161,27 @@ button, label {
     padding: 20px;
     background: #ccc;
 }
+
+/*---( Logging Console )---*/
+#logging-console {
+   background: #FFF;
+   padding: 5px;
+   border: 1px solid #888;
+   font-size: 10px;
+}
+
+#logging-console h1 {
+   font-weight: bold;
+}
+
+#logging-console ul {
+   list-style-type: none;
+   margin: 0px;
+   padding: 0px;
+   clear: both;
+}
+
+#logging-console ul li.error {
+	font-weight: bold;
+	color: red;
+}
