@@ -29,6 +29,7 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<link rel="stylesheet" type="text/css" href="selenium.css" />
 <script>
 passColor = "#cfffcf";
 failColor = "#ffcfcf";
@@ -109,7 +110,7 @@ function runTest() {
 
  function commandStarted(command) {
     commandNode = document.createElement("li");
-    commandNode.innerHTML = command.command;
+    commandNode.innerHTML = command.command + '(' + command.target + ', ' + command.value + ')';
     commandNode.style.backgroundColor = workingColor;
     document.getElementById("commandList").appendChild(commandNode);
  }
@@ -154,22 +155,29 @@ function runTest() {
 
 <body onLoad="runTest()">
 
-<h1>Selenium Functional Web Application Testing.</h1>
-Open Source From <a href="http://www.thoughtWorks.com">ThoughtWorks Inc</a>&nbsp;&nbsp;&nbsp;Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"><br>
-<br/>
-<form action="">
-<label id="context" name="context"></label>
-</form>
-<p>
-<div style="float:left;">
-<b>Command List</b><br/>
-(hover to see errors)
-<ul id="commandList">
-</ul>
-.
-</div>
-</p>
-<iframe name="myiframe" id="myiframe" style="float:right;margin-top: 10px;" height="80%;" width="80%" border="0" src=""></iframe>
+<table border="0">
+  <tr>
+    <td width="50%" height="30%">
+      <h1><a href="http://selenium.thoughtworks.com" >Selenium</a> Functional Testing for Web Apps</h1>
+      Open Source From <a href="http://www.thoughtworks.com">ThoughtWorks, Inc</a> and Friends&nbsp;&nbsp;&nbsp;
+      Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"><br>
+      <br/>
+      <form action="">
+        <label id="context" name="context"></label>
+      </form>
+    </td>
+    <td width="50%" height="30%">
+      <b>Command List</b><br/>
+      (hover to see errors)
+      <ul id="commandList"></ul>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" height="70%">
+      <iframe name="myiframe" id="myiframe" src=""></iframe>
+    </td>
+  </tr>
+</table>
 </body>
 </html>
 
