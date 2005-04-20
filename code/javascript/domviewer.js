@@ -94,7 +94,23 @@ function displayNode(element, level, isLink){
 			str+='<a onclick="hide(this);" href="javascript:void(this);">';
 			str+='<img src="'+MIN_SRC+'" />';
 		}
-		str+=" <b>"+ element.nodeName + " - ID:" + (element.id==""?"null":element.id)+"</b>";	
+		id ="";
+		if (element.id != null && element.id != "") {
+		    id = " ID(" + element.id +")";
+		}
+		name ="";
+		if (element.name != null && element.name != "") {
+		    name = " NAME(" + element.name + ")";
+		}
+		value ="";
+		if (element.value != null && element.value != "") {
+		    value = " VALUE(" + element.value + ")";
+		}
+		href ="";
+		if (element.href != null && element.href != "") {
+		    href = " HREF(" + element.href + ")";
+		}
+		str+=" <b>"+ element.nodeName + id + name + value + href + "</b>";	
 		if(isLink)
 			str+="</a></td></tr>";
 		return str;
