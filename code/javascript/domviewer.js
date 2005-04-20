@@ -3,6 +3,7 @@ var LEVEL = "level";
 var PLUS_SRC="dom-images/butplus.gif"
 var MIN_SRC="dom-images/butmin.gif"
 var newRoot;
+var maxColumns=1;
 
 function loadDomViewer(){
 	if(window.opener != null){
@@ -31,6 +32,13 @@ function displayDOM(root){
 	var str = "<html><head><title>DOM Viewerr</title><script type='text/javascript' src='domviewer.js'><!-- comments --> </script><link href='dom-styles/default.css' rel='stylesheet' type='text/css' /></head><body>";
 	str+="<table>";
 	str += treeTraversal(root,0);
+	alert(maxColumns);
+	// to make table columns work well.
+	str += "<tr>";
+	for (var i=0; i < maxColumns; i++) {
+	    str+= "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+	}
+	str += "</tr>";
 	str += "</table></body></html>";
 	return str;
 }
@@ -80,20 +88,32 @@ function treeTraversal(root, level){
 			str+=treeTraversal(element, level+1);	
 		}
 	}
-	return  str;
+	return str;
 }
 
 
-
 function displayNode(element, level, isLink){
+        nodeContent = getNodeContent(element);
+        columns = Math.round((nodeContent.length / 12) + 0.5);
+        if (columns + level > maxColumns) {
+            maxColumns = columns + level;
+        }
 		var str ="<tr class='"+LEVEL+level+"'>";
 		for (var i=0; i < level; i++)
 			str+= "<td> </td>";
-		str+="<td class='box"+" boxlevel"+level+"' >";
+		str+="<td colspan='"+ columns +"' class='box"+" boxlevel"+level+"' >";
 		if(isLink){
 			str+='<a onclick="hide(this);" href="javascript:void(this);">';
 			str+='<img src="'+MIN_SRC+'" />';
 		}
+        str += nodeContent;
+		if(isLink)
+			str+="</a></td></tr>";
+		return str;
+}
+
+function getNodeContent(element) {
+        str = "";
 		id ="";
 		if (element.id != null && element.id != "") {
 		    id = " ID(" + element.id +")";
@@ -111,10 +131,10 @@ function displayNode(element, level, isLink){
 		    href = " HREF(" + element.href + ")";
 		}
 		str+=" <b>"+ element.nodeName + id + name + value + href + "</b>";	
-		if(isLink)
-			str+="</a></td></tr>";
 		return str;
+
 }
+
 
 function hide(hlink){
 	var isHidden = false;
