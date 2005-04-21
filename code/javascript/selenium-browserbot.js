@@ -212,7 +212,13 @@ SafariBrowserBot.prototype = new BrowserBot;
  */
 SafariBrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
     this.currentPage = null;
-    addLoadListener(this.frame, onloadCallback);
+
+    try {
+        addLoadListener(this.frame, onloadCallback);
+    } catch (e) {
+        LOG.debug("Got on error adding LoadListener in BrowserBot.prototype.callOnNextPageLoad." +
+                  "This occurs on all subsequent calls in Safari");
+    }
 };
 
 function IEBrowserBot(frame, executionContext) {
