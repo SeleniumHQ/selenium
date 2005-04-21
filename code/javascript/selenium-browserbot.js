@@ -166,14 +166,15 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
 };
 
 BrowserBot.prototype.modifyWindowToClearPageCache = function(windowToModify, browserBot) {
-    var clearPageCache = function() {
+    var clearCachedPage = function() {
+        LOG.debug("UNLOAD: clearCachedPage()");
         browserbot.currentPage = null;
     };
 
     if (window.addEventListener) {
-        windowToModify.addEventListener("unload",clearPageCache, true);
+        windowToModify.addEventListener("unload", clearCachedPage, true);
     } else if (window.attachEvent) {
-        windowToModify.attachEvent("onunload",clearPageCache);
+        windowToModify.attachEvent("onunload", clearCachedPage);
     }
 };
 
@@ -204,6 +205,15 @@ function SafariBrowserBot(frame, executionContext) {
     BrowserBot.call(this, frame, executionContext);
 }
 SafariBrowserBot.prototype = new BrowserBot;
+
+/**
+ * Since Safari 1.3 doesn't trigger unload, we clear cached page as soon as
+ * we know that we're expecting a new page.
+ */
+SafariBrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
+    this.currentPage = null;
+    addLoadListener(this.frame, onloadCallback);
+};
 
 function IEBrowserBot(frame, executionContext) {
     BrowserBot.call(this, frame, executionContext);

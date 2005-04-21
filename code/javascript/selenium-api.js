@@ -17,6 +17,7 @@
 
 var nextExecution;
 function executeNext() {
+    LOG.debug("CODED - LOAD");
     if (nextExecution) {
         nextExecution();
     }
