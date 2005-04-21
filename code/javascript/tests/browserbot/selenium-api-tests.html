@@ -44,8 +44,9 @@ function verifyMocks() {
 }
 
 function testCallOnNextPageLoad() {
-    mockBrowserBot.expects("callOnNextPageLoad", "function");
+    mockBrowserBot.expects("callOnNextPageLoad", executeNext);
     selenium.callOnNextPageLoad("function");
+    assertEquals("function", nextExecution);
     verifyMocks();
 }
 
