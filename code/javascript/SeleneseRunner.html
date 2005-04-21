@@ -40,7 +40,10 @@ doneColor = "#FFFFCC";
 
 slowMode = false;
 
-var lastCommandNode = null;
+var cmd1 = document.createElement("div");
+var cmd2 = document.createElement("div");
+var cmd3 = document.createElement("div");
+var cmd4 = document.createElement("div");
 
 var postResult = "OK";
 
@@ -69,7 +72,12 @@ function runTest() {
 
  function startup() {
 
-   var xmlHttp = XmlHttp.create();
+    var xmlHttp = XmlHttp.create();
+   
+    document.getElementById("commandList").appendChild(cmd4);
+    document.getElementById("commandList").appendChild(cmd3);
+    document.getElementById("commandList").appendChild(cmd2);
+    document.getElementById("commandList").appendChild(cmd1);
 
     try {
         xmlHttp.open("GET", "driver?seleniumStart=true", false);
@@ -113,7 +121,7 @@ function runTest() {
  }
 
  function commandStarted(command) {
-    commandNode = document.createElement("p");
+    commandNode = document.createElement("div");
     innerHTML = command.command + '(';
     if (command.target != null && command.target != "") {
         innerHTML += command.target;
@@ -124,12 +132,18 @@ function runTest() {
     innerHTML += ")";
     commandNode.innerHTML = innerHTML;
     commandNode.style.backgroundColor = workingColor;
-    if (lastCommandNode == null) {
-        document.getElementById("commandList").appendChild(commandNode);
-    } else {
-        document.getElementById("commandList").replaceChild(commandNode, lastCommandNode);
-    }
-    lastCommandNode = commandNode;
+    document.getElementById("commandList").removeChild(cmd1);
+    document.getElementById("commandList").removeChild(cmd2);
+    document.getElementById("commandList").removeChild(cmd3);
+    document.getElementById("commandList").removeChild(cmd4);
+    cmd4 = cmd3;
+    cmd3 = cmd2;
+    cmd2 = cmd1;
+    cmd1 = commandNode;
+    document.getElementById("commandList").appendChild(cmd4);
+    document.getElementById("commandList").appendChild(cmd3);
+    document.getElementById("commandList").appendChild(cmd2);
+    document.getElementById("commandList").appendChild(cmd1);
  }
 
  function commandComplete(result) {
@@ -192,8 +206,8 @@ function runTest() {
       </form>
     </td>
     <td width="50%" height="30%">
-      <b>Last Command</b><br/>
-      <p id="commandList"></p>
+      <b>Last Four Commands</b><br/>
+      <div id="commandList"></div>
     </td>
   </tr>
   <tr>
