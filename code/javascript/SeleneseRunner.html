@@ -30,6 +30,7 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-domviewer.js"></script>
 <link rel="stylesheet" type="text/css" href="selenium.css" />
 <script>
 passColor = "#cfffcf";
@@ -180,6 +181,15 @@ function runTest() {
      }
    }
  }
+ 
+function getIframeDocument(iframe) {
+    if (iframe.contentDocument) {
+        return iframe.contentDocument;
+    }
+    else {
+        return iframe.contentWindow.document;
+    }
+}
 
 </script>
 </head>
@@ -197,7 +207,9 @@ function runTest() {
         <td>
           <h1><a href="http://selenium.thoughtworks.com" >Selenium</a> Functional Testing for Web Apps</h1>
           Open Source From <a href="http://www.thoughtworks.com">ThoughtWorks, Inc</a> and Friends
-          <br/>Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()">
+          <br/>Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"> 
+          <button type="button" id="domViewer1" onclick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
+
         </td>
       </tr>
       </table>
