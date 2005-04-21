@@ -94,12 +94,11 @@ function getExecutionContext() {
     if (isNewWindow()) {
         return getWindowExecutionContext();
     }
-    else if (getTestFrame().contentWindow)
-    {
-        return new IFrameExecutionContext();
+    else if (isSafari || isKonqueror) {
+        return new KonquerorIFrameExecutionContext();
     }
     else {
-        return new KonquerorIFrameExecutionContext();
+        return new IFrameExecutionContext();
     }
 }
 
