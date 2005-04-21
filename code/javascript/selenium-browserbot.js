@@ -217,7 +217,7 @@ SafariBrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
         addLoadListener(this.frame, onloadCallback);
     } catch (e) {
         LOG.debug("Got on error adding LoadListener in BrowserBot.prototype.callOnNextPageLoad." +
-                  "This occurs on all subsequent calls in Safari");
+                  "This occurs on the second and all subsequent calls in Safari");
     }
 };
 
