@@ -57,8 +57,19 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theCheckbox)} {click(theCheckbox)} {change(theCheckbox)} {blur(theCheckbox)}</td>
+      <td>{focus(theCheckbox)} * {blur(theCheckbox)}</td>
     </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>* {click(theCheckbox)} *</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>* {change(theCheckbox)} *</td>
+    </tr>
+
     <!-- Click the checkbox again, unchecking it -->
     <tr>
       <td>type</td>
@@ -78,7 +89,17 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theCheckbox)} {click(theCheckbox)} {change(theCheckbox)} {blur(theCheckbox)}</td>
+      <td>{focus(theCheckbox)} * {blur(theCheckbox)}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>* {click(theCheckbox)} *</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>* {change(theCheckbox)} *</td>
     </tr>
   </tbody>
 </table>

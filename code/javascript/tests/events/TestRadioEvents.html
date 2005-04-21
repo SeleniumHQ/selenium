@@ -67,8 +67,19 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theRadio1)} {click(theRadio1)} {change(theRadio1)} {blur(theRadio1)}</td>
+      <td>{focus(theRadio1)} * {blur(theRadio1)}</td>
     </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>* {click(theRadio1)} *</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>* {change(theRadio1)} *</td>
+    </tr>
+
     <!-- Click the other radio -->
     <tr>
       <td>type</td>
@@ -93,7 +104,17 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theRadio2)} {click(theRadio2)} {change(theRadio2)} {blur(theRadio2)}</td>
+      <td>{focus(theRadio2)} * {blur(theRadio2)}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>* {click(theRadio2)} *</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>* {change(theRadio2)} *</td>
     </tr>
 
     <!-- Click the same radio again, shouldn't trigger a change event -->
