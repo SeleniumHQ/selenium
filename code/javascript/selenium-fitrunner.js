@@ -197,7 +197,18 @@ function addOnclick(suiteTable, rowNum) {
 
         // If the row has a stored results table, use that
         if(suiteTable.rows[row].cells[1]) {
-            getIframeDocument(getTestFrame()).body.innerHTML = getText(suiteTable.rows[row].cells[1]);
+            var bodyElement = getIframeDocument(getTestFrame()).body;
+
+            // Create a div element to hold the results table.
+            var tableNode = getIframeDocument(getTestFrame()).createElement("div");
+            var resultsCell = suiteTable.rows[row].cells[1];
+            tableNode.innerHTML = resultsCell.innerHTML;
+
+            // Append this text node, and remove all the preceding nodes.
+            bodyElement.appendChild(tableNode);
+            while (bodyElement.firstChild != bodyElement.lastChild) {
+                bodyElement.removeChild(bodyElement.firstChild);
+            }
         }
         // Otherwise, just open up the fresh page.
         else {
@@ -328,7 +339,6 @@ function runNextTest() {
 
         addLoadListener(getTestFrame(), startTest);
         getExecutionContext().open(testLink.href, getTestFrame());
-//        getTestFrame().src = testLink.href;
     }
 }
 
@@ -340,10 +350,14 @@ function setCellColor(tableRows, row, col, colorStr) {
 // for each tests, the second column is set to the HTML from the test table.
 function setResultsData(suiteTable, row) {
     // Create a text node of the test table
-    tableContents = suiteTable.ownerDocument.createTextNode(getIframeDocument(getTestFrame()).body.innerHTML);
+    var resultTable = getIframeDocument(getTestFrame()).body.innerHTML;
+    if (!resultTable) return;
 
-    new_column = suiteTable.ownerDocument.createElement("td");
-    new_column.appendChild(tableContents);
+    var tableNode = suiteTable.ownerDocument.createElement("div");
+    tableNode.innerHTML = resultTable;
+
+    var new_column = suiteTable.ownerDocument.createElement("td");
+    new_column.appendChild(tableNode);
 
     // Set the column to be invisible
     new_column.style.cssText = "display: none;";
