@@ -505,9 +505,11 @@ PageBot.prototype.selectOptionWithLabel = function(element, stringValue) {
                 option.selected = true;
                 triggerEvent(element, 'change', true);
             }
+            triggerEvent(element, 'blur', false);
+            return;
         }
     }
-    triggerEvent(element, 'blur', false);
+    throw new Error("Option with label '" + stringValue + "' not found");
 };
 
 PageBot.prototype.replaceText = function(element, stringValue) {
