@@ -271,7 +271,7 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
 
         newUrl = currentPath + url;
 
-        return originalOpen(newUrl, two);
+        return originalOpen(newUrl, windowName, windowFeatures, replaceFlag);
     };
 };
 
