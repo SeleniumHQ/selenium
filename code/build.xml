@@ -1,5 +1,5 @@
 <project name="selenium" default="dist">
-    <property name="version" value="0.2"/>
+    <property name="version" value="0.3"/>
     <property name="website.root" value="../website/webapps/ROOT"/>
 
     <target name="publish-release" depends="publish-dist,publish-demos,publish-docs"/>
