@@ -609,7 +609,11 @@ SafariPageBot.prototype.clickElement = function(element) {
                 this.currentWindow.location.href = element.parentNode.href;
             } else {
                 // This is true for buttons outside of forms, and maybe others.
-                LOG.warn("Ignoring 'click' call for button outside form, or link without href." );
+                LOG.warn("Ignoring 'click' call for button outside form, or link without href."
+                        + "Using buttons without an enclosing form can cause wierd problems with URL resolution in Safari." );
+                // I implemented special handling for window.open, but unfortunately this behaviour is also displayed
+                // when we have a button without an enclosing form that sets document.location in the onclick handler.
+                // The solution is to always use an enclosing form for a button.
             }
         }
     }
