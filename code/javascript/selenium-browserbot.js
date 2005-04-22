@@ -592,7 +592,9 @@ SafariPageBot.prototype.clickElement = function(element) {
         // elements is not being called.
         var success = true;
         if (element.onclick) {
-            var onclickResult = element.onclick();
+            var evt = document.createEvent('HTMLEvents');
+            evt.initEvent('click', true, true);
+            var onclickResult = element.onclick(evt);
             if (onclickResult === false) {
                 success = false;
             }
@@ -607,9 +609,7 @@ SafariPageBot.prototype.clickElement = function(element) {
                 this.currentWindow.location.href = element.parentNode.href;
             } else {
                 // This is true for buttons outside of forms, and maybe others.
-                // Just ignore this case for now...
-                // TODO - work out if we need better handling here...
-//                alert(describe(element));
+                LOG.warn("Ignoring 'click' call for button outside form, or link without href." );
             }
         }
     }
@@ -707,8 +707,8 @@ function isDefined(value) {
 
 PageBot.prototype.goBack = function() {
     this.currentWindow.history.back();
-}
+};
 
 PageBot.prototype.goForward = function() {
     this.currentWindow.history.forward();
-}
+};
