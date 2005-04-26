@@ -32,10 +32,21 @@ Each command call is one line in the test table of the form:</p>
 <p><strong>Checks</strong> verify the state of the application conforms to what is expected. Examples include &quot;make sure the page title is X&quot; and &quot;check that this checkbox is checked&quot;. It is possible to tell Selenium to stop the test when an Assertion fails, or to simply record the failure and continue.</p>
 <p><strong>Element Locators</strong> tell Selenium which HTML element a command refers to. Many commands require an Element Locator as the &quot;target&quot; attribute. Examples of Element Locators include &quot;elementId&quot; and &quot;document.forms[0].element&quot;. These are described more clearly in the next section.</p>
 </blockquote>
-<div class="section" id="test-tables">
-<h1><a name="test-tables">Test Tables</a></h1>
+<div class="section" id="test-suites">
+<h1><a name="test-suites">Test Suites</a></h1>
 <blockquote>
-<p>The test tables are simple html tables with 3 columns: command, target, value.  Not all commands take a value, however.  In this case either leave the column blank or use a &amp;nbsp; to make the table look better.</p>
+<p>A test suite is represented by an HTML document containing a single-column table.  Each entry in the table should be a hyperlink to a test-case document.  The first row will be ignored by Selenium, so this can be used for a title, and is typically used to hold a title.</p>
+<p>By default Selenium will attempt to load the test-suite from &quot;tests/TestSuite.html&quot;.  An alternative test-suite source can be specified by appending a &quot;test&quot; parameter to the TestRunner.html URL, e.g.:</p>
+<pre class="literal-block">
+http://localhost:8000/TestRunner.html?test=AllTests.php
+</pre>
+<p>The &quot;test&quot; URL is interpreted relative to the location of TestRunner.html.</p>
+</blockquote>
+</div>
+<div class="section" id="test-cases">
+<h1><a name="test-cases">Test Cases</a></h1>
+<blockquote>
+<p>A test-case is represented by an HTML document, containing a table with 3 columns: <em>command</em>, <em>target</em>, <em>value</em>.  Not all commands take a value, however.  In this case either leave the column blank or use a &amp;nbsp; to make the table look better.</p>
 <p>The first row will be ignored by Selenium, so this can be used for a title or any other information.</p>
 <p>Example:</p>
 <blockquote>

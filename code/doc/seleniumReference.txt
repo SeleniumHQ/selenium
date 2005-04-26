@@ -16,10 +16,22 @@ Selenium Reference
     **Element Locators** tell Selenium which HTML element a command refers to. Many commands require an Element Locator as the "target" attribute. Examples of Element Locators include "elementId" and "document.forms[0].element". These are described more clearly in the next section.
 
 -----------
-Test Tables
+Test Suites
 -----------
 
-    The test tables are simple html tables with 3 columns: command, target, value.  Not all commands take a value, however.  In this case either leave the column blank or use a &nbsp; to make the table look better.
+    A test suite is represented by an HTML document containing a single-column table.  Each entry in the table should be a hyperlink to a test-case document.  The first row will be ignored by Selenium, so this can be used for a title, and is typically used to hold a title.
+
+    By default Selenium will attempt to load the test-suite from "tests/TestSuite.html".  An alternative test-suite source can be specified by appending a "test" parameter to the TestRunner.html URL, e.g.::
+
+        http://localhost:8000/TestRunner.html?test=AllTests.php
+
+    The "test" URL is interpreted relative to the location of TestRunner.html.
+
+----------
+Test Cases
+----------
+
+    A test-case is represented by an HTML document, containing a table with 3 columns: *command*, *target*, *value*.  Not all commands take a value, however.  In this case either leave the column blank or use a &nbsp; to make the table look better.
 
     The first row will be ignored by Selenium, so this can be used for a title or any other information.
 
