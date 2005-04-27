@@ -1,5 +1,5 @@
 <project name="selenium" default="all">
-    <property name="version" value="0.2"/>
+    <property name="version" value="0.3"/>
 
     <property environment="env"/>
     <property name="ant.home" location="${env.ANT_HOME}"/>
@@ -148,7 +148,7 @@
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
-            <formatter type="plain"/>
+            <formatter type="plain" usefile="false"/>
             <batchtest todir="${test.logs.dir}">
                 <fileset dir="${test.dir}">
                     <include name="**/*Test.java"/>
@@ -179,7 +179,7 @@
             <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
-            <formatter type="plain"/>
+            <formatter type="plain" usefile="false"/>
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
                     <include name="**/embedded/**/*Test.java"/>
