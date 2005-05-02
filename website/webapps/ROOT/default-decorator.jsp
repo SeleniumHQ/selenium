@@ -28,8 +28,11 @@
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
-			<td class="newshead" align="left"><u>Latest News:</u></td>
+			<td class="newshead" align="left"><u>Latest News:</u></td>			
 		</tr>
+		<tr>
+			<td class="newstext" align="left">05.02.05<br>&nbsp;&nbsp;- New <A href="http://selenium.thoughtworks.com/download.html">v.03 Downloads</a> available</td>
+		</tr>					
 		<tr>
 			<td class="newstext" align="left">01.24.05<br>&nbsp;&nbsp;- New <A href="http://selenium.thoughtworks.com/download.html">v.02 Downloads</a> available</td>
 		</tr>			
