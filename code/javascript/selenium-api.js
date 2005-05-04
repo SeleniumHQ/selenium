@@ -221,22 +221,26 @@ Selenium.prototype.assertSelected = function(target, expectedLabel) {
     this.assertMatches(expectedLabel, selectedLabel);
 };
 
+String.prototype.parseCSV = function() {
+    var values = this.replace(/\\,/g, "\n").split(",");
+    // Restore escaped commas
+    for (var i = 0; i < values.length; i++) {
+        values[i] = values[i].replace(/\n/g, ",").trim();
+    }
+    return values;
+};
+
 /**
  * Verify the label of all of the options in the drop=down.
  */
 Selenium.prototype.assertSelectOptions = function(target, options) {
-    // Handle escpaced commas, by substitutine newlines.
-    options = options.replace("\\,", "\n");
-    var expectedOptions = options.split(",");
     var element = this.page().findElement(target);
 
-    assert.equals("Wrong number of options.", expectedOptions.length, element.options.length);
+    var expectedOptionLabels = options.parseCSV();
+    assert.equals("Wrong number of options.", expectedOptionLabels.length, element.options.length);
 
     for (var i = 0; i < element.options.length; i++) {
-        var option = element.options[i];
-        // Put the escaped commas back in.
-        var expectedOption = expectedOptions[i].replace("\n", ",");
-        this.assertMatches(expectedOption, option.text);
+        this.assertMatches(expectedOptionLabels[i], element.options[i].text);
     }
 };
 
