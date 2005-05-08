@@ -47,7 +47,7 @@ public interface Selenium extends Startable {
     void verifySelected(String field, String value);
     void verifyTable(String table, String value);
     void verifyText(String type, String text);
-    void verifyTextPresent(String type, String text);
+    void verifyTextPresent(String text);
     void verifyTitle(String title);
     void verifyValue(String field, String value);
     void setContext(String context);

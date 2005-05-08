@@ -225,8 +225,8 @@ public class DefaultSelenium implements Selenium {
         }
     }
 
-    public void verifyTextPresent(String type, String text) {
-        String result = commandProcessor.doCommand("verifyTextPresent", type, text);
+    public void verifyTextPresent(String text) {
+        String result = commandProcessor.doCommand("verifyTextPresent", text, "");
         if (!result.equals("PASSED")) {
             throw new SeleniumException(result);
         }
