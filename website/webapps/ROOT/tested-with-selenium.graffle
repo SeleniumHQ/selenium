@@ -21,7 +21,7 @@
 	<array>
 		<dict>
 			<key>Bounds</key>
-			<string>{{74.5833, 90.7266}, {148.417, 17}}</string>
+			<string>{{72.5833, 89.7266}, {157.417, 19}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -31,14 +31,14 @@
 			<key>FontInfo</key>
 			<dict>
 				<key>Font</key>
-				<string>Helvetica</string>
+				<string>Helvetica-Oblique</string>
 				<key>Size</key>
-				<real>12</real>
+				<real>16</real>
 			</dict>
 			<key>HFlip</key>
 			<string>YES</string>
 			<key>ID</key>
-			<integer>11</integer>
+			<integer>19</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -63,14 +63,11 @@
 			<dict>
 				<key>Text</key>
 				<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica-Oblique;\f1\fswiss\fcharset77 Helvetica;\f2\fswiss\fcharset77 Helvetica-Bold;
-}
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Oblique;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\i\fs28 \cf1 tested
-\f1\i0  with 
-\f2\b selenium}</string>
+\f0\i\fs32 \cf1 tested with selenium}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -79,7 +76,7 @@
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>10</integer>
+			<integer>18</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -105,7 +102,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{48.1667, 90.7266}, {31.25, 19}}</string>
+			<string>{{48.1667, 90.7266}, {31.25, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -117,10 +114,10 @@
 				<key>Font</key>
 				<string>LucidaBlackletter</string>
 				<key>Size</key>
-				<real>18</real>
+				<real>15</real>
 			</dict>
 			<key>ID</key>
-			<integer>9</integer>
+			<integer>17</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -149,7 +146,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs28 \cf1 Se}</string>
+\f0\b\fs30 \cf1 Se}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -158,7 +155,7 @@
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>8</integer>
+			<integer>16</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -213,7 +210,7 @@
 	<key>MagnetsVisible</key>
 	<string>NO</string>
 	<key>ModificationDate</key>
-	<string>2005-05-07 19:36:53 -0500</string>
+	<string>2005-05-07 19:58:35 -0500</string>
 	<key>Modifier</key>
 	<string>Paul Hammant</string>
 	<key>Orientation</key>
