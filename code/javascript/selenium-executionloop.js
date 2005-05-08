@@ -58,7 +58,7 @@ function TestLoop(commandFactory, executionContext) {
         try {
             var handler = this.commandFactory.getCommandHandler(command.command);
             if(handler == null) {
-                throw new Error("Unknown command");
+                throw new Error("Unknown command: '" + command.command + "'");
             }
 
             result = handler.execute(selenium, command);
