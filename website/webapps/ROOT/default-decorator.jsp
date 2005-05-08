@@ -47,7 +47,7 @@
 		</tr>
 	</table>
 
-    <page:applyDecorator name="panel" page="/links.jsp"/>
+    <page:applyDecorator name="panel" page="/index.html"/>
 
 	<DIV class="content">
 		<font class="pagetitle"><decorator:title /></font>
