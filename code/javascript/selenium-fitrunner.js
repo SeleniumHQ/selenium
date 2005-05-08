@@ -435,7 +435,7 @@ function postTestResults(suiteFailed, suiteTable) {
         // If there is a second column, then add a new input
         if (suiteTable.rows[rowNum].cells.length > 1) {
             var resultCell = suiteTable.rows[rowNum].cells[1];
-            form.createHiddenField("testTable." + rowNum, getText(resultCell));
+            form.createHiddenField("testTable." + rowNum, resultCell.innerHTML);
             // remove the resultCell, so it's not included in the suite HTML
             resultCell.parentNode.removeChild(resultCell); 
         }
