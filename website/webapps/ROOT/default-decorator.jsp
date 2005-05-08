@@ -13,7 +13,7 @@
 	<table width="98%" border="0" cellpadding="0" cellspacing="0">
 		<tr>
  			<td><IMG ALT="Selenium" SRC="index_files/selenium3.jpg"></td>
-			<td align="right" valign="top"><a href="http://www.thoughtworks.com"><img src="index_files/Logo_trans_white.gif" width="100" 
+			<td align="right" valign="top"><a href="http://www.thoughtworks.com"><img src="index_files/Logo_trans_white.gif" width="100"
 			height="20" border="0" alt="ThoughtWorks Logo"/></a></td>
 		</tr>
 	</table>
@@ -28,14 +28,14 @@
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
-			<td class="newshead" align="left"><u>Latest News:</u></td>			
+			<td class="newshead" align="left"><u>Latest News:</u></td>
 		</tr>
 		<tr>
 			<td class="newstext" align="left">05.02.05<br>&nbsp;&nbsp;- New <A href="http://selenium.thoughtworks.com/download.html">v.03 Downloads</a> available</td>
-		</tr>					
+		</tr>
 		<tr>
 			<td class="newstext" align="left">01.24.05<br>&nbsp;&nbsp;- New <A href="http://selenium.thoughtworks.com/download.html">v.02 Downloads</a> available</td>
-		</tr>			
+		</tr>
 		<tr>
 			<td class="newstext" align="left">12.14.04<br>&nbsp;&nbsp;- FAQ's are now on <A href="http://confluence.public.thoughtworks.org/display/SEL/FAQ">Selenium Confluence</a></td>
 		</tr>
@@ -53,7 +53,17 @@
 		<font class="pagetitle"><decorator:title /></font>
 		<h6 class="pagetitle"></h6>
 		<p>
+<%
+if (request.getRequestURI().indexOf("/index.html") != -1) {
+%>
+        <page:applyDecorator name="panel" page="/home-page.html" />
+<%
+  } else {
+%>
 		<decorator:body />
+<%
+  }
+%>
 	</DIV>
 	<br>
 	<DIV class="smalltext">
