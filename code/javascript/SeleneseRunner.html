@@ -114,8 +114,8 @@ function runTest() {
         alert('could not get responseText: ' + e.message);
     }
 
-    if (command == "|testComplete|") {
-        alert('got test complete');
+    
+    if (command.substr(0,'|testComplete'.length)=='|testComplete') {
         return null;
     }
     return tableParser.createCommandFromWikiRow(command);
