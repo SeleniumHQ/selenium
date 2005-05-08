@@ -36,7 +36,6 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
         super.setUp();
         commandProcessor = new Mock(CommandProcessor.class);
         machine = InetAddress.getLocalHost().getHostName();
-        System.err.println("--> " + machine);
     }
 
     public void testOpenWorking() {
@@ -422,16 +421,16 @@ public class DefaultSeleniumTestCase extends MockObjectTestCase {
     }
 
     public void testVerifyTextPresentWorking() {
-        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTextPresent"), eq("whatsit"), eq("something")).will(returnValue("PASSED"));
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTextPresent"), eq("whatsit"), eq("")).will(returnValue("PASSED"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
-        dftSelenium.verifyTextPresent("whatsit", "something");
+        dftSelenium.verifyTextPresent("whatsit");
     }
 
     public void testVerifyTextPresentFailing() {
-        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTextPresent"), eq("whatsit"), eq("something")).will(returnValue("fgadfgadfgadfg fg"));
+        commandProcessor.expects(once()).method("doCommand").with(eq("verifyTextPresent"), eq("whatsit"), eq("")).will(returnValue("fgadfgadfgadfg fg"));
         DefaultSelenium dftSelenium = new DefaultSelenium((CommandProcessor) commandProcessor.proxy(), new WindowsDefaultBrowserLauncher());
         try {
-            dftSelenium.verifyTextPresent("whatsit", "something");
+            dftSelenium.verifyTextPresent("whatsit");
         } catch (SeleniumException e) {
             // expected
             assertEquals("fgadfgadfgadfg fg", e.getMessage());
