@@ -19,23 +19,27 @@ Copyright 2004 ThoughtWorks, Inc
 http-equiv="content-type">
 <link rel="stylesheet" type="text/css" href="selenium.css">
 <title>Selenium Functional Test Runner</title>
-<script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
-<script language="JavaScript" type="text/javascript" src="/html-xpath/html-xpath-patched.js"></script>
+<script language="JavaScript" type="text/javascript" src="html-xpath/html-xpath-patched.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="domviewer.js"></script>
+
+
 </head>
 
-<body onLoad="javascript:loadSuiteFrame();">
+<body onLoad="javascript:start();">
 <iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="20%" border="0"  SRC="./tests/TestSuite.html"></iframe>
 <div id="seleniumControlPanel">
 <div id="launchPanel">
     <b>Run:</b>
-    <button type="button" id="runTest" onClick="runSingleTest();" style="margin-top:10pt; cursor: pointer; cursor: hand">Selected test</button>
-    <button type="button" id="runSuite" onClick="startTestSuite();" style="margin-top:10pt; cursor: pointer; cursor: hand">All tests</button>
+    <button type="button" id="runTest" onClick="runSingleTest();">Selected test</button>
+    <button type="button" id="runSuite" onClick="startTestSuite();">All tests</button>
+    <button type="button" id="domViewer1" onClick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
 </div>
 
 <div id="runSpeedPanel">
@@ -43,7 +47,7 @@ http-equiv="content-type">
     <label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
     <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
     <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
-    <button type="button" id="continueTest">Next/Continue</button>
+    <button type="button" id="continueTest" accesskey="n">Next/Continue</button>
 </div>
 
 <table id="resultsPanel">

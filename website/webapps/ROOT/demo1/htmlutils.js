@@ -30,6 +30,11 @@ function toCamelCase() {
 }
 String.prototype.toCamelCase = toCamelCase;
 
+function startsWith(str) {
+    return this.indexOf(str) == 0;
+}
+String.prototype.startsWith = startsWith;
+
 // Returns the text in this element
 function getText(element) {
     text = "";
@@ -116,7 +121,7 @@ function getFunctionName(aFunction) {
 function describe(object) {
     var props = new Array();
     for (var prop in object) {
-        props.push(prop);
+        props.push(prop + " -> " + object[prop]);
     }
     return props.join('\n');
 }

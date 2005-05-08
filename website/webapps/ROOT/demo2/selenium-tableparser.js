@@ -16,35 +16,35 @@
  */
  
 TableParser = function(wikiTableRows) {
-    this.wikiTableRows = wikiTableRows
-}
+    this.wikiTableRows = wikiTableRows;
+};
 
 // Parses a Wiki table row into a SeleniumB Javascript expression
 TableParser.prototype.createCommandFromWikiRow = function(wikiRow) {
-    var tokens 
+    var tokens;
     if(tokens = wikiRow.trim().match(/^\|([^\|]*)\|([^\|]*)\|([^\|]*)\|$/m)) {
         var functionName = tokens[1].trim();
         var arg1 = tokens[2].trim();
         var arg2 = tokens[3].trim();
-        return new SeleniumCommand(functionName, arg1, arg2)
+        return new SeleniumCommand(functionName, arg1, arg2);
     } else {
-       throw new Error("Bad wiki row format:" + wikiRow)
+       throw new Error("Bad wiki row format:" + wikiRow);
     }
-}
+};
 
 // Parses a HTML table row into a SeleniumB Javascript expression
 TableParser.prototype.createCommandFromHtmlRow = function(row) {
     if(row.cells.length != 3) {
-       throw new Error("Bad HTML row format. Rows must have 3 coumns, but had " + row.cells.length)
+       throw new Error("Bad HTML row format. Rows must have 3 coumns, but had " + row.cells.length);
     }
-    var functionName = getText(row.cells[0])
-    var arg1 = getText(row.cells[1])
-    var arg2 = getText(row.cells[2])
-    return new SeleniumCommand(functionName, arg1, arg2)
-}
+    var functionName = getText(row.cells[0]);
+    var arg1 = getText(row.cells[1]);
+    var arg2 = getText(row.cells[2]);
+    return new SeleniumCommand(functionName, arg1, arg2);
+};
 
 TableParser.prototype.loop = function() {
-    row = this.wikiTableRows.getRow()
+    row = this.wikiTableRows.getRow();
     if (row == null) return null;
     return this.createCommandForRow(row);
-}
+};
