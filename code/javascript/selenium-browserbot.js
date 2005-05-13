@@ -361,31 +361,22 @@ IEPageBot.prototype.locateElementById = function(identifier, inDocument) {
  * the @id isn't found.
  */
 PageBot.prototype.locateElementById = function(identifier, inDocument) {
-    try {
-        var element = inDocument.getElementById(identifier);
-        if (element == null)
-        {
-            if ( document.evaluate ) {// DOM3 XPath
-                var xpath = "//*[@name='" + identifier + "']";
-                element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
-            }
-            // Search through all elements for Konqueror/Safari
-            else {
-                var allElements = inDocument.getElementsByTagName("*");
-                for (var i = 0; i < allElements.length; i++) {
-                    var testElement = allElements[i];
-                    if (testElement.name && testElement.name === identifier) {
-                        element = testElement;
-                        break;
-                    }
-                }
-            }
-        }
-    } catch (e) {
-        return null;
+
+    var elementById = inDocument.getElementById(identifier);
+    if (elementById != null) {
+        return elementById;
     }
 
-    return element;
+    // Try to match by @name
+    var allElements = inDocument.getElementsByTagName("*");
+    for (var i = 0; i < allElements.length; i++) {
+        var testElement = allElements[i];
+        if (testElement.name && testElement.name === identifier) {
+            return testElement;
+        }
+    }
+
+    return null;
 };
 
 /**
