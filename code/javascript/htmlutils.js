@@ -44,6 +44,9 @@ function getText(element) {
     } else if(element.innerText) {
         text = element.innerText;
     }
+    // Replace &nbsp; with a space
+    // TODO - should this be in the match() code instead?
+    text = text.replace(/\240/g, " ");
     return text.trim();
 }
 
