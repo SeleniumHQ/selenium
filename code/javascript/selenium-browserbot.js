@@ -281,13 +281,24 @@ PageBot = function(pageWindow) {
         this.currentDocument = pageWindow.document;
         this.location = pageWindow.location.pathname;
         this.title = function() {return this.currentDocument.title;};
+    }
 
-        // Register all locate* functions
-        this.locatorFunctions = new Array();
-        for (var f in this) {
-            if (typeof(this[f]) == 'function' && f.match(/^locate/)) {
-                this.locatorFunctions.push(this[f]);
+    // Register all locateElementBy* functions
+    // TODO - don't do this in the constructor - only needed once ever
+    this.locatorFunctions = new Array();
+    this.locators = {};
+    for (var functionName in this) {
+        var result = /^locateElementBy([A-Z].+)$/.exec(functionName);
+        if (result != null) {
+            var locatorFunction = this[functionName];
+            if (typeof(locatorFunction) != 'function') {
+                continue;
             }
+            // Use a specified prefix in preference to one generated from the function name
+            var locatorPrefix = locatorFunction.prefix || result[1].toLowerCase();
+
+            this.locatorFunctions.push(locatorFunction);
+            this.locators[locatorPrefix] = locatorFunction;
         }
     }
 };
@@ -345,29 +356,47 @@ PageBot.prototype.findElementInDocument = function(locator, inDocument) {
 };
 
 /**
- * In IE, getElementById() also searches by name.
+ * Find a locator based on a prefix.
  */
-IEPageBot.prototype.locateElementById = function(identifier, inDocument) {
-    try {
-        return inDocument.getElementById(identifier);
-    } catch (e) {
+PageBot.prototype.getLocator = function(prefix) {
+    return this.locators[prefix];
+};
+
+/**
+ * In non-IE browsers, getElementById() does not search by name.  Instead, we
+ * we search separately by id and name.
+ */
+PageBot.prototype.locateElementByIdentifier = function(identifier, inDocument) {
+    return PageBot.prototype.locateElementById(identifier, inDocument)
+            || PageBot.prototype.locateElementByName(identifier, inDocument)
+            || null;
+};
+
+/**
+ * In IE, getElementById() also searches by name - this is an optimisation for IE.
+ */
+IEPageBot.prototype.locateElementByIdentifer = function(identifier, inDocument) {
+    return inDocument.getElementById(identifier);
+};
+
+/**
+ * Find the element with id - can't rely on getElementById, coz it returns by name as well in IE..
+ */
+PageBot.prototype.locateElementById = function(identifier, inDocument) {
+    var element = inDocument.getElementById(identifier);
+    if (element && element.id === identifier) {
+        return element;
+    }
+    else {
         return null;
     }
 };
 
 /**
- * In other browsers, getElementById() does not search by name.  To provide
- * functionality consistent with IE, we search by @name if an element with
- * the @id isn't found.
+ * In regular browsers, getElementById() does not search by name.
+ * We search by @name using XPath, or by checking every element.
  */
-PageBot.prototype.locateElementById = function(identifier, inDocument) {
-
-    var elementById = inDocument.getElementById(identifier);
-    if (elementById != null) {
-        return elementById;
-    }
-
-    // Try to match by @name
+PageBot.prototype.locateElementByName = function(identifier, inDocument) {
     var allElements = inDocument.getElementsByTagName("*");
     for (var i = 0; i < allElements.length; i++) {
         var testElement = allElements[i];
@@ -375,7 +404,6 @@ PageBot.prototype.locateElementById = function(identifier, inDocument) {
             return testElement;
         }
     }
-
     return null;
 };
 
@@ -399,6 +427,7 @@ PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocumen
 
     return element;
 };
+PageBot.prototype.locateElementByDomTraversal.prefix = "dom";
 
 /**
 * Finds an element identified by the xpath expression. Expressions _must_
@@ -442,7 +471,7 @@ IEPageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
 * Finds a link element with text matching the expression supplied. Expressions must
 * begin with "link:".
 */
-PageBot.prototype.locateLinkByText = function(linkDescription, inDocument) {
+PageBot.prototype.locateElementByLinkText = function(linkDescription, inDocument) {
     var prefix = "link:";
     if (linkDescription.indexOf(prefix) != 0) {
         return null;
@@ -458,6 +487,7 @@ PageBot.prototype.locateLinkByText = function(linkDescription, inDocument) {
     }
     return null;
 };
+PageBot.prototype.locateElementByLinkText.prefix = "link";
 
 /**
 * Returns an attribute based on an attribute locator. This is made up of an element locator
