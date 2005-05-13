@@ -194,6 +194,15 @@ function testFindElementUsesRegisteredLocatorWithPrefixOnLocatorString() {
     assertEquals("foo", calls.join());
 }
 
+function testFindElementUsesImplicitLocatorWithUnknownPrefixOnLocatorString() {
+    var calls = new Array();
+    pageBot.implicitLocator = function(locator) { calls.push(locator); return "bar";};
+
+    element = pageBot.findElement("anotherlocator:foo");
+    assertEquals("bar", element);
+    assertEquals("anotherlocator:foo", calls.join());
+}
+
 function testFindElementReturnsElementWithMatchingIdentifier() {
     assertEquals(element2, pageBot.findElement("id2"));
 }

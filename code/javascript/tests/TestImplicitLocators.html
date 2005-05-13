@@ -24,7 +24,7 @@ Copyright 2004 ThoughtWorks, Inc
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">Test Locators<br>
+      <td rowspan="1" colspan="3">Test Implicit Locators<br>
       </td>
     </tr>
 
@@ -34,7 +34,6 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Id/name location -->
     <tr>
       <td>verifyText</td>
       <td>id1</td>
@@ -64,6 +63,18 @@ Copyright 2004 ThoughtWorks, Inc
       <td>verifyAttribute</td>
       <td>document.links[1]@class</td>
       <td>a2</td>
+    </tr>
+
+    <!-- Check that an unknown prefix is passed through -->
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>foo:bar</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>foo:bar@class</td>
+      <td>a4</td>
     </tr>
   </tbody>
 </table>
