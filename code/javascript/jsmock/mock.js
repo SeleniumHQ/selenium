@@ -48,18 +48,18 @@ Mock = function() {
         this.expectedInvocations[functionName] = false;
         this.attrs[this.attrs.length] = "dummy";
         return new Returner(this, functionName);
-    }
+    };
     
     this.expectsProperty = function() {
         var propertyName = arguments[0];
         if(arguments.length == 2) {
-            expectedPropertyValue = arguments[1]
+            expectedPropertyValue = arguments[1];
             this.expectedProperties[propertyName] = expectedPropertyValue;
             this.attrs[this.attrs.length] = "dummy";
         } else {
-            return new PropertySetter(this, propertyName)
+            return new PropertySetter(this, propertyName);
         }
-    }
+    };
 
     this.verify = function() {
         // loop over all expected invocations and see if they were called
@@ -69,7 +69,7 @@ Mock = function() {
                 fail("Expected function not called:" + functionName);
             }
         }
-        var currentAttrs = []
+        var currentAttrs = [];
         var currentAttrCount = 0;
         
         // verify that all expected properties are set
@@ -88,37 +88,37 @@ Mock = function() {
 //                fail("Expected property was not set: " + attr + "=" + this.expectedProperties[attr])
 //            }
 //        }
-    }
+    };
 
     var attrCount = 0;
     for(var attr in this) {
         this.attrs[attrCount] = attr;
         attrCount++;
     }
-}
+};
 
 Returner = function(mock, functionName) {
     this.mock = mock;
     this.functionName = functionName;
-}
+};
 
 Returner.prototype.returns = function(returnValue) {
     this.mock.returnValues[this.functionName] = returnValue;
-}
+};
 
 Returner.prototype.andThrows = function(message) {
     var error = new Error(message);
     error.isMockError = true;
     this.mock.returnValues[this.functionName] = error;
-}
+};
 
 PropertySetter = function(mock, propertyName) {
     this.mock = mock;
     this.propertyName = propertyName;
-}
+};
 
 PropertySetter.prototype.returns = function(returnValue) {
     var ref = new Object();
     ref.value = returnValue;
     eval("this.mock." + this.propertyName + "=ref.value");
-}
+};
