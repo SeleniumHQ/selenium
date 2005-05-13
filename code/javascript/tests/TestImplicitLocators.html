@@ -18,7 +18,7 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Locators</title>
+  <title>Test Implicit Locators</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
@@ -34,89 +34,37 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Id location -->
+    <!-- Id/name location -->
     <tr>
       <td>verifyText</td>
-      <td>id:id1</td>
+      <td>id1</td>
       <td>this is the first element</td>
     </tr>
     <tr>
-      <td>verifyElementNotPresent</td>
-      <td>id:name1</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>verifyElementNotPresent</td>
-      <td>id:id4</td>
-      <td></td>
-    </tr>
-    <tr>
       <td>verifyAttribute</td>
-      <td>id:id1@class</td>
+      <td>id1@class</td>
       <td>a1</td>
     </tr>
-
-    <!-- name location -->
     <tr>
       <td>verifyText</td>
-      <td>name:name1</td>
-      <td>this is the second element</td>
-    </tr>
-    <tr>
-      <td>verifyElementNotPresent</td>
-      <td>name:id1</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>verifyElementNotPresent</td>
-      <td>name:notAName</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>verifyAttribute</td>
-      <td>name:name1@class</td>
-      <td>a2</td>
-    </tr>
-
-    <!-- DOM Traversal location -->
-    <tr>
-      <td>verifyText</td>
-      <td>dom:document.links[1]</td>
+      <td>name1</td>
       <td>this is the second element</td>
     </tr>
     <tr>
       <td>verifyAttribute</td>
-      <td>dom:document.links[1]@class</td>
+      <td>name1@class</td>
       <td>a2</td>
     </tr>
     <tr>
-      <td>verifyElementNotPresent</td>
-      <td>dom:document.links[3]</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>verifyElementNotPresent</td>
-      <td>dom:foo</td>
-      <td></td>
-    </tr>
-
-    <!-- Link location -->
-    <tr>
-      <td>verifyElementPresent</td>
-      <td>link:this is the second element</td>
-      <td>a2</td>
+      <td>verifyText</td>
+      <td>document.links[1]</td>
+      <td>this is the second element</td>
     </tr>
     <tr>
       <td>verifyAttribute</td>
-      <td>link:this is the second element@class</td>
+      <td>document.links[1]@class</td>
       <td>a2</td>
     </tr>
-    <tr>
-      <td>verifyElementNotPresent</td>
-      <td>link:this is not an element</td>
-      <td></td>
-    </tr>
-
   </tbody>
 </table>
 </body>

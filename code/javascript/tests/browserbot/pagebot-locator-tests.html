@@ -149,23 +149,28 @@ function testLocateLinkReturnsNullIfLocatorIsNotLinkLocator() {
 }
 
 function testLocateLinkReturnsNullIfLinkNotPresent() {
-    assertNull(pageBot.getLocator('link')('link:No Such Link', frameDocument));
+    assertNull(pageBot.getLocator('link')('No Such Link', frameDocument));
 }
 
 function testLinkElementReturnsLinkWithMatchingText() {
-    assertEquals(element3, pageBot.getLocator('link')('link:this is the third element', frameDocument));
+    assertEquals(element3, pageBot.getLocator('link')('this is the third element', frameDocument));
 }
  
 //
 // Tests for PageBot.findElement()
 //
-function testFindElementCallsEachLocatorInSequenceAndThrowsErrorIfNoneReturnElement() {
+function testFindElementUsesImplicitLocatorIfNoPrefixOnLocatorString() {
     var calls = new Array();
-    pageBot.locatorFunctions = [
-        function(locator) {calls.push("1 " + locator);},
-        function(locator) {calls.push("2 " + locator);},
-        function(locator) {calls.push("3 " + locator);}
-    ];
+    pageBot.implicitLocator = function(locator) { calls.push(locator); return "bar";};
+
+    element = pageBot.findElement("foo");
+    assertEquals("bar", element);
+    assertEquals("foo", calls.join());
+}
+
+function testFindElementThrowsExceptionIfNoElementFound() {
+    var calls = new Array();
+    pageBot.implicitLocator = function(locator) { calls.push(locator); return null;};
 
     var element = null;
     var failureMessage = null;
@@ -177,28 +182,16 @@ function testFindElementCallsEachLocatorInSequenceAndThrowsErrorIfNoneReturnElem
 
     assertNull(element);
     assertEquals("Element foo not found", failureMessage);
-    assertEquals("1 foo,2 foo,3 foo", calls.join());
+    assertEquals("foo", calls.join());
 }
 
-function testFindElementReturnsTheFirstElementReturnedByALocatorFunction() {
+function testFindElementUsesRegisteredLocatorWithPrefixOnLocatorString() {
     var calls = new Array();
-    pageBot.locatorFunctions = [
-        function(locator) {calls.push("1 " + locator);},
-        function(locator) {calls.push("2 " + locator); return "bar";},
-        function(locator) {calls.push("3 " + locator);}
-    ];
+    pageBot.locators["anotherlocator"] = function(locator) { calls.push(locator); return "bar";};
 
-    var element = null;
-    var failureMessage = null;
-    try {
-        element = pageBot.findElement("foo");
-    } catch (e) {
-        failureMessage = e.message;
-    }
-
+    element = pageBot.findElement("anotherlocator:foo");
     assertEquals("bar", element);
-    assertNull(failureMessage);
-    assertEquals("1 foo,2 foo", calls.join());
+    assertEquals("foo", calls.join());
 }
 
 function testFindElementReturnsElementWithMatchingIdentifier() {

@@ -34,35 +34,47 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- XPath location -->
+    <!-- Implicit XPath location -->
     <tr>
       <td>verifyText</td>
       <td>//a</td>
       <td>this is the first element</td>
     </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>//a[contains(@href,'#id1')]/@class</td>
+      <td>a1</td>
+    </tr>
+
+    <!-- Explicit XPath location -->
+    <tr>
+      <td>verifyText</td>
+      <td>xpath://a</td>
+      <td>this is the first element</td>
+    </tr>
      <tr>
        <td>verifyText</td>
-       <td>//*[@class='a2']</td>
+       <td>xpath://*[@class='a2']</td>
        <td>this is the second element</td>
      </tr>
      <tr>
        <td>verifyText</td>
-       <td>//a[@class='a2']</td>
+       <td>xpath://a[@class='a2']</td>
        <td>this is the second element</td>
      </tr>
     <tr>
       <td>verifyText</td>
-      <td>//a[2]</td>
+      <td>xpath://a[2]</td>
       <td>this is the second element</td>
     </tr>
     <tr>
       <td>verifyElementNotPresent</td>
-      <td>//a[@href='foo']</td>
+      <td>xpath://a[@href='foo']</td>
       <td></td>
     </tr>
     <tr>
       <td>verifyAttribute</td>
-      <td>//a[contains(@href,'#id1')]/@class</td>
+      <td>xpath://a[contains(@href,'#id1')]/@class</td>
       <td>a1</td>
     </tr>
 
