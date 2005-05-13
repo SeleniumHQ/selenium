@@ -285,7 +285,6 @@ PageBot = function(pageWindow) {
 
     // Register all locateElementBy* functions
     // TODO - don't do this in the constructor - only needed once ever
-    this.locatorFunctions = new Array();
     this.locators = {};
     for (var functionName in this) {
         var result = /^locateElementBy([A-Z].+)$/.exec(functionName);
@@ -296,11 +295,26 @@ PageBot = function(pageWindow) {
             }
             // Use a specified prefix in preference to one generated from the function name
             var locatorPrefix = locatorFunction.prefix || result[1].toLowerCase();
-
-            this.locatorFunctions.push(locatorFunction);
             this.locators[locatorPrefix] = locatorFunction;
         }
     }
+
+
+    /**
+     * Find a locator based on a prefix.
+     */
+    this.getLocator = function(prefix) {
+        return this.locators[prefix];
+    };
+
+    /**
+     * The implicit locator, that is used when no prefix is supplied.
+     */
+    this.implicitLocator = function(locator, inDocument) {
+        return this.getLocator("identifier")(locator, inDocument)
+               || this.getLocator("dom")(locator, inDocument)
+               || this.getLocator("xpath")(locator, inDocument);
+    };
 };
 
 MozillaPageBot = function(pageWindow) {
@@ -327,13 +341,25 @@ IEPageBot.prototype = new PageBot();
 * Finds an element on the current page, using various lookup protocols
 */
 PageBot.prototype.findElement = function(locator) {
-    var element = this.findElementInDocument(locator, this.currentDocument);
+    var locatorFunction = this.implicitLocator;
+    var locatorString = locator;
 
+    // If there is a locator prefix, use the specified locator.
+    var result = locator.match(/^([a-z]+):(.+)/);
+    if (result) {
+        var prefix = result[1];
+        if (this.getLocator(prefix)) {
+            locatorFunction = this.getLocator(prefix);
+            locatorString = result[2];
+        }
+    }
+
+    var element = locatorFunction.call(this, locatorString, this.currentDocument);
     if (element != null) {
         return element;
     } else {
         for (var i = 0; i < this.currentWindow.frames.length; i++) {
-            element = this.findElementInDocument(locator, this.currentWindow.frames[i].document);
+            element = locatorFunction.call(this, locatorString, this.currentWindow.frames[i].document);
             if (element != null) {
                 return element;
             }
@@ -342,24 +368,6 @@ PageBot.prototype.findElement = function(locator) {
 
     // Element was not found by any locator function.
     throw new Error("Element " + locator + " not found");
-};
-
-PageBot.prototype.findElementInDocument = function(locator, inDocument) {
-    // Try the locatorFunctions one at a time.
-    for (var i = 0; i < this.locatorFunctions.length; i++) {
-        var locatorFunction = this.locatorFunctions[i];
-        var element = locatorFunction.call(this, locator, inDocument);
-        if (element != null) {
-            return element;
-        }
-    }
-};
-
-/**
- * Find a locator based on a prefix.
- */
-PageBot.prototype.getLocator = function(prefix) {
-    return this.locators[prefix];
 };
 
 /**
@@ -471,13 +479,7 @@ IEPageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
 * Finds a link element with text matching the expression supplied. Expressions must
 * begin with "link:".
 */
-PageBot.prototype.locateElementByLinkText = function(linkDescription, inDocument) {
-    var prefix = "link:";
-    if (linkDescription.indexOf(prefix) != 0) {
-        return null;
-    }
-
-    var linkText = linkDescription.substring(prefix.length);
+PageBot.prototype.locateElementByLinkText = function(linkText, inDocument) {
     var links = inDocument.getElementsByTagName('a');
     for (var i = 0; i < links.length; i++) {
         var element = links[i];
