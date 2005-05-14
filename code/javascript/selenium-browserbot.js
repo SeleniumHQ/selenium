@@ -311,9 +311,9 @@ PageBot = function(pageWindow) {
      * The implicit locator, that is used when no prefix is supplied.
      */
     this.implicitLocator = function(locator, inDocument) {
-        return this.getLocator("identifier")(locator, inDocument)
-               || this.getLocator("dom")(locator, inDocument)
-               || this.getLocator("xpath")(locator, inDocument);
+        return this.getLocator("identifier").call(this, locator, inDocument)
+               || this.getLocator("dom").call(this, locator, inDocument)
+               || this.getLocator("xpath").call(this, locator, inDocument);
     };
 };
 
@@ -463,7 +463,7 @@ PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
     // Handle //tag[@attr='value']
     var match = xpath.match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/); 
     if (match) {
-        return findElementByTagNameAndAttributeValue(
+        return this.findElementByTagNameAndAttributeValue(
             inDocument,
             match[1].toUpperCase(),
             match[2].toLowerCase(),
@@ -474,17 +474,17 @@ PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
     // Handle //tag[text()='value']
     var match = xpath.match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/); 
     if (match) {
-        return findElementByTagNameAndText(
+        return this.findElementByTagNameAndText(
             inDocument,
             match[1].toUpperCase(),
             match[2].slice(1, -1)
         );
     }
 
-    return findElementUsingFullXPath(xpath, inDocument);
+    return this.findElementUsingFullXPath(xpath, inDocument);
 };
 
-function findElementByTagNameAndAttributeValue(
+PageBot.prototype.findElementByTagNameAndAttributeValue = function(
     inDocument, tagName, attributeName, attributeValue
 ) {
     if (isIE && attributeName == "class") {
@@ -500,7 +500,9 @@ function findElementByTagNameAndAttributeValue(
     return null;
 };
 
-function findElementByTagNameAndText(inDocument, tagName, text) {
+PageBot.prototype.findElementByTagNameAndText = function(
+    inDocument, tagName, text
+) {
     var elements = inDocument.getElementsByTagName(tagName); 
     for (var i = 0; i < elements.length; i++) { 
         if (getText(elements[i]) == text) { 
@@ -510,7 +512,7 @@ function findElementByTagNameAndText(inDocument, tagName, text) {
     return null;
 };
 
-function findElementUsingFullXPath(xpath, inDocument) {
+PageBot.prototype.findElementUsingFullXPath = function(xpath, inDocument) {
     if (isIE && !inDocument.evaluate) {
         addXPathSupport(inDocument);
     }
