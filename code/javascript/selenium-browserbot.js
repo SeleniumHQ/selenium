@@ -442,8 +442,77 @@ PageBot.prototype.locateElementByDomTraversal.prefix = "dom";
 * begin with "//".
 */
 PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
-    if (xpath.indexOf("//") != 0) {
+    if (xpath.slice(0,2) != "//") {
         return null;
+    }
+
+    // Trim any trailing "/": not valid xpath, and remains from attribute
+    // locator.
+    if (xpath.charAt(xpath.length - 1) == '/') {
+        xpath = xpath.slice(0, -1);
+    }
+
+    // Handle //tag
+    var match = xpath.match(/^\/\/(\w+|\*)$/); 
+    if (match) {
+        var elements = inDocument.getElementsByTagName(match[1].toUpperCase()); 
+        if (elements == null) return null;
+        return elements[0];
+    }
+
+    // Handle //tag[@attr='value']
+    var match = xpath.match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/); 
+    if (match) {
+        return findElementByTagNameAndAttributeValue(
+            inDocument,
+            match[1].toUpperCase(),
+            match[2].toLowerCase(),
+            match[3].slice(1, -1)
+        );
+    }
+
+    // Handle //tag[text()='value']
+    var match = xpath.match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/); 
+    if (match) {
+        return findElementByTagNameAndText(
+            inDocument,
+            match[1].toUpperCase(),
+            match[2].slice(1, -1)
+        );
+    }
+
+    return findElementUsingFullXPath(xpath, inDocument);
+};
+
+function findElementByTagNameAndAttributeValue(
+    inDocument, tagName, attributeName, attributeValue
+) {
+    if (isIE && attributeName == "class") {
+        attributeName = "className";
+    }
+    var elements = inDocument.getElementsByTagName(tagName); 
+    for (var i = 0; i < elements.length; i++) { 
+        var elementAttr = elements[i].getAttribute(attributeName); 
+        if (elementAttr == attributeValue) { 
+            return elements[i]; 
+        } 
+    } 
+    return null;
+};
+
+function findElementByTagNameAndText(inDocument, tagName, text) {
+    var elements = inDocument.getElementsByTagName(tagName); 
+    for (var i = 0; i < elements.length; i++) { 
+        if (getText(elements[i]) == text) { 
+            return elements[i]; 
+        } 
+    } 
+    return null;
+};
+
+function findElementUsingFullXPath(xpath, inDocument) {
+    if (isIE && !inDocument.evaluate) {
+        addXPathSupport(inDocument);
     }
 
     // If don't have XPath bail.
@@ -452,27 +521,7 @@ PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
         throw new Error("XPath not supported");
     }
 
-    // Trim any trailing "/": not valid xpath, and remains from attribute locator.
-    if (xpath.charAt(xpath.length - 1) == '/') {
-        xpath = xpath.slice(0, xpath.length - 1);
-    }
-
     return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
-};
-
-/**
- * For IE, we implement XPath support using the html-xpath library.
- */
-IEPageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
-    if (xpath.indexOf("//") != 0) {
-        return null;
-    }
-
-    if (!inDocument.evaluate) {
-        addXPathSupport(inDocument);
-    }
-
-    return PageBot.prototype.locateElementByXPath(xpath, inDocument);
 };
 
 /**
