@@ -515,13 +515,19 @@ function findElementUsingFullXPath(xpath, inDocument) {
         addXPathSupport(inDocument);
     }
 
-    // If don't have XPath bail.
-    // TODO implement subset of XPath for browsers without native support.
-    if (!inDocument.evaluate) {
-        throw new Error("XPath not supported");
+    // Use document.evaluate() if it's available
+    if (inDocument.evaluate) {
+        return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
     }
 
-    return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+    // If not, fall back to slower JavaScript implementation
+    var context = new XPathContext();
+    context.expressionContextNode = inDocument;
+    var xpathResult = new XPathParser().parse(xpath).evaluate(context);
+    if (xpathResult && xpathResult.toArray) {
+        return xpathResult.toArray()[0];
+    }
+    return null;
 };
 
 /**
