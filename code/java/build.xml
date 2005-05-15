@@ -269,9 +269,9 @@
             <formatter type="plain"/>
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
-                    <include name="**/outbedded/**/*Test.java"/>
+                    <include name="**/embedded/**/*Test.java"/>
                     <exclude name="**/Win*"/>
-                	<exclude name="**/Mac*"/>
+                    <exclude name="**/Mac*"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -293,7 +293,7 @@
                 <fileset dir="${integration.test.dir}">
                     <include name="**/outbedded/**/*Test.java"/>
                     <exclude name="**/Win*"/>
-                	<exclude name="**/Mac*"/>
+               	    <exclude name="**/Mac*"/>
                 </fileset>
             </batchtest>
 
