@@ -109,6 +109,13 @@ function addLoadListener(element, command) {
         element.attachEvent("onload",command);
 }
 
+function addUnloadListener(element, command) {
+    if (window.addEventListener)
+        element.addEventListener("unload",command, true);
+    else if (window.attachEvent)
+        element.attachEvent("onunload",command);
+}
+
 /**
  * Override the broken getFunctionName() method from JsUnit
  * This file must be loaded _after_ the jsunitCore.js

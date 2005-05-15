@@ -25,7 +25,6 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
 
 <script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="/selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 function setUp() {
@@ -33,14 +32,10 @@ function setUp() {
     mockFrame.contentWindow = new String('mockContentWindow');
     mockFrame.contentWindow.window = new String('mockWindow');
 
-    browserBot = createBrowserBot(mockFrame, new IFrameExecutionContext(mockFrame));
+    browserBot = createBrowserBot(mockFrame);
 
     browserBot.currentWindowName = 'originalWindowName';
     browserBot.currentPage = 'originalPage';
-}
-
-function testContentWindowIsRetrievedFromFrame() {
-    assertEquals(mockFrame.contentWindow, browserBot.getContentWindow());
 }
 
 function testPageAndCurrentWindowNameIsSetToNullWhenSelectWindowIsCalledWithNull() {

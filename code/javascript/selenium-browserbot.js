@@ -42,19 +42,19 @@ var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
-function createBrowserBot(frame, executionContext) {
+function createBrowserBot(frame) {
     if (isIE) {
-        return new IEBrowserBot(frame, executionContext);
+        return new IEBrowserBot(frame);
     }
     else if (isKonqueror) {
-        return new KonquerorBrowserBot(frame, executionContext);
+        return new KonquerorBrowserBot(frame);
     }
     else if (isSafari) {
-        return new SafariBrowserBot(frame, executionContext);
+        return new SafariBrowserBot(frame);
     }
     else {
         // Use mozilla by default
-        return new MozillaBrowserBot(frame, executionContext);
+        return new MozillaBrowserBot(frame);
     }
 }
 
@@ -74,9 +74,8 @@ function createPageBot(windowObject) {
     }
 }
 
-BrowserBot = function(frame, executionContext) {
+BrowserBot = function(frame) {
     this.frame = frame;
-    this.executionContext = executionContext;
     this.currentPage = null;
     this.currentWindowName = null;
 
@@ -115,11 +114,6 @@ BrowserBot.prototype.getFrame = function() {
     return this.frame;
 };
 
-BrowserBot.prototype.getContentWindow = function() {
-    return this.executionContext.getContentWindow(this.getFrame());
-
-};
-
 BrowserBot.prototype.selectWindow = function(target) {
     // we've moved to a new page - clear the current one
     this.currentPage = null;
@@ -135,15 +129,15 @@ BrowserBot.prototype.selectWindow = function(target) {
 BrowserBot.prototype.openLocation = function(target, onloadCallback) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
-    this.executionContext.open(target,this.getFrame());
+    // Window doesn't fire onload event when setting src to the current value,
+    // so we set it to blank first.
+    this.getFrame().src = "about:blank";
+    this.getFrame().src = target;
 };
 
 BrowserBot.prototype.getCurrentPage = function() {
     if (this.currentPage == null) {
-        var testWindow = this.getContentWindow().window;
-        if (this.currentWindowName != null) {
-            testWindow = this.getTargetWindow(this.currentWindowName);
-        }
+        var testWindow = this.getCurrentWindow();
         this.modifyWindowToRecordPopUpDialogs(testWindow, this);
         this.modifyWindowToClearPageCache(testWindow, this);
         this.currentPage = createPageBot(testWindow);
@@ -178,6 +172,10 @@ BrowserBot.prototype.modifyWindowToClearPageCache = function(windowToModify, bro
     }
 };
 
+BrowserBot.prototype.getContentWindow = function() {
+    return this.getFrame().contentWindow || frames[this.getFrame().id];
+};
+
 BrowserBot.prototype.getTargetWindow = function(windowName) {
     var evalString = "this.getContentWindow().window." + windowName;
     var targetWindow = eval(evalString);
@@ -187,22 +185,89 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
     return targetWindow;
 };
 
-BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
-    addLoadListener(this.frame, onloadCallback);
+BrowserBot.prototype.getCurrentWindow = function() {
+    var testWindow = this.getContentWindow().window;
+    if (this.currentWindowName != null) {
+        testWindow = this.getTargetWindow(this.currentWindowName);
+    }
+    return testWindow;
 };
 
-function MozillaBrowserBot(frame, executionContext) {
-    BrowserBot.call(this, frame, executionContext);
+BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
+    if (this.currentWindowName == null) {
+        this.callOnFramePageTransition(onloadCallback, this.getFrame());
+    }
+    else {
+        this.callOnWindowPageTransition(onloadCallback, this.getCurrentWindow());
+    }
+};
+
+BrowserBot.prototype.callOnFramePageTransition = function(loadFunction, frameObject) {
+    try {
+        addLoadListener(frameObject, loadFunction);
+    } catch (e) {
+        LOG.debug("Got on error adding LoadListener in BrowserBot.prototype.callOnFramePageTransition." +
+                  "This occurs on the second and all subsequent calls in Safari");
+    }
+};
+
+BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
+    var unloadFunction = function() {
+        window.setTimeout(function() {addLoadListener(windowObject, loadFunction);}, 0);
+    };
+    addUnloadListener(windowObject, unloadFunction);
+};
+
+/**
+ * Handle the initial page load in a new popup window.
+ * TODO - something like this should allow us to wait for a new popup window - currently need to pause...
+ */
+//function callOnWindowInitialLoad(loadFunction, windowObject) {
+//    if (!(isSafari || isKonqueror)) {
+//        addLoadListener(windowObject, loadFunction);
+//    }
+//    else {
+//        this.pollForLoad(loadFunction, windowObject, windowObject.document);
+//    }
+//}
+
+function MozillaBrowserBot(frame) {
+    BrowserBot.call(this, frame);
 }
 MozillaBrowserBot.prototype = new BrowserBot;
 
-function KonquerorBrowserBot(frame, executionContext) {
-    BrowserBot.call(this, frame, executionContext);
+function KonquerorBrowserBot(frame) {
+    BrowserBot.call(this, frame);
 }
 KonquerorBrowserBot.prototype = new BrowserBot;
 
-function SafariBrowserBot(frame, executionContext) {
-    BrowserBot.call(this, frame, executionContext);
+KonquerorBrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
+    // Since the unload event doesn't fire in Safari 1.3, we start polling immediately
+    // This works in Konqueror as well
+    this.pollForLoad(loadFunction, windowObject, windowObject.document);
+};
+
+/**
+ * For Konqueror (and Safari), we can't catch the onload event for a separate window (as opposed to an IFrame)
+ * So we set up a polling timer that will keep checking the readyState of the document until it's complete.
+ * Since we might call this before the original page is unloaded, we check to see that the completed document
+ * is different from the original one.
+ */
+KonquerorBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument) {
+    var sameDoc = (originalDocument === windowObject.document);
+    var rs = windowObject.document.readyState;
+
+    if (!sameDoc && rs == 'complete') {
+        LOG.debug("poll: " + rs + " (" + sameDoc + ")");
+        loadFunction();
+        return;
+    }
+    var self = this;
+    window.setTimeout(function() {self.pollForLoad(loadFunction, windowObject, originalDocument);}, 100);
+};
+
+function SafariBrowserBot(frame) {
+    BrowserBot.call(this, frame);
 }
 SafariBrowserBot.prototype = new BrowserBot;
 
@@ -212,17 +277,14 @@ SafariBrowserBot.prototype = new BrowserBot;
  */
 SafariBrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
     this.currentPage = null;
-
-    try {
-        addLoadListener(this.frame, onloadCallback);
-    } catch (e) {
-        LOG.debug("Got on error adding LoadListener in BrowserBot.prototype.callOnNextPageLoad." +
-                  "This occurs on the second and all subsequent calls in Safari");
-    }
+    BrowserBot.prototype.callOnNextPageLoad.call(this, onloadCallback);
 };
 
-function IEBrowserBot(frame, executionContext) {
-    BrowserBot.call(this, frame, executionContext);
+SafariBrowserBot.prototype.callOnWindowPageTransition = KonquerorBrowserBot.prototype.callOnWindowPageTransition;
+SafariBrowserBot.prototype.pollForLoad = KonquerorBrowserBot.prototype.pollForLoad;
+
+function IEBrowserBot(frame) {
+    BrowserBot.call(this, frame);
 }
 IEBrowserBot.prototype = new BrowserBot;
 

@@ -24,14 +24,13 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
 
 <script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="/selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
    testFrame =  document.getElementById("frame");
    testWindow = testFrame.contentWindow;
-   browserBot = createBrowserBot(testFrame, new IFrameExecutionContext(testFrame));
+   browserBot = createBrowserBot(testFrame);
    browserBot.getCurrentPage();
 }
 

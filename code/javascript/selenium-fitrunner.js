@@ -90,26 +90,13 @@ function loadAndRunIfAuto() {
     loadSuiteFrame();
 }
 
-function getExecutionContext() {
-    if (isNewWindow()) {
-        return getWindowExecutionContext();
-    }
-    else if (isSafari || isKonqueror) {
-        return new KonquerorIFrameExecutionContext();
-    }
-    else {
-        return new IFrameExecutionContext();
-    }
-}
-
 function start() {
-    loadSuiteFrame(getExecutionContext());
+    loadSuiteFrame();
 }
 
-function loadSuiteFrame(executionContext) {
-
-    var testAppFrame = executionContext.loadFrame();
-    browserbot = createBrowserBot(testAppFrame,executionContext);
+function loadSuiteFrame() {
+    var testAppFrame = document.getElementById('myiframe');
+    browserbot = createBrowserBot(testAppFrame);
     selenium = new Selenium(browserbot);
     registerCommandHandlers();
 
@@ -337,8 +324,13 @@ function runNextTest() {
         testLink = suiteTable.rows[currentTestRow].cells[0].getElementsByTagName("a")[0];
         testLink.focus();
 
-        addLoadListener(getTestFrame(), startTest);
-        getExecutionContext().open(testLink.href, getTestFrame());
+        var testFrame = getTestFrame();
+        addLoadListener(testFrame, startTest);
+
+        // Window doesn't fire onload event when setting src to the current value,
+        // so we set it to blank first.
+        testFrame.src = "about:blank";
+        testFrame.src = testLink.href;
     }
 }
 
@@ -505,7 +497,7 @@ function registerCommandHandlers() {
 }
 
 function initialiseTestLoop() {
-    testLoop = new TestLoop(commandFactory, getExecutionContext());
+    testLoop = new TestLoop(commandFactory);
 
     testLoop.getCommandInterval = function() { return runInterval; };
     testLoop.firstCommand = nextCommand;

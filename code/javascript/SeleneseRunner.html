@@ -25,7 +25,6 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
@@ -52,15 +51,14 @@ var postResult = "OK";
 
 function runTest() {
     tableParser = new TableParser();
-    var executionContext = new IFrameExecutionContext();
-    var testAppFrame = executionContext.loadFrame();
-    browserbot = new BrowserBot(testAppFrame, executionContext);
+    var testAppFrame = document.getElementById('myiframe');
+    browserbot = new BrowserBot(testAppFrame);
     selenium = new Selenium(browserbot);
 
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
-    testLoop = new TestLoop(commandFactory, executionContext);
+    testLoop = new TestLoop(commandFactory);
 
     testLoop.firstCommand = startup;
     testLoop.nextCommand = nextCommand;
