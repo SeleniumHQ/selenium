@@ -20,7 +20,7 @@ starting_up  = true;
 TEST_FINISHED = true;
 TEST_CONTINUE = false;
 
-function TestLoop(commandFactory, executionContext) {
+function TestLoop(commandFactory) {
     this.commandFactory = commandFactory;
 
     var self = this;
@@ -77,8 +77,12 @@ function TestLoop(commandFactory, executionContext) {
         // Record the result so that we can continue the execution using window.setTimeout()
         this.lastCommandResult = result;
         if (result.processState == SELENIUM_PROCESS_WAIT) {
+            // Since we're waiting for page to reload, we can't continue command execution
+            // directly, we need use a page load listener.
 
-            executionContext.waitForPageLoad(this,selenium);
+            // TODO there is a potential race condition by attaching a load listener after
+            // the command has completed execution.
+            selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay()");});
 
         } else {
             // Continue processing
