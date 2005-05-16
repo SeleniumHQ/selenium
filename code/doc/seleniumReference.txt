@@ -52,24 +52,32 @@ Element Locators
 
     Element Locators allow Selenium to identify which HTML element a command refers to. There are several forms of Element Locators.
 
-    **Identifier:** locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen. Otherwise, the first element with a matching *name* is chosen.
+    **id:** locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen.
+        - id:TheElementId
 
-    **DOM:** finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators *must* begin with "document.".
+    **name:** locates an element based on the name attribute of the element. The first element with a matching *name* is chosen.
+        - name:TheElementName
 
-    **XPath:** locates an element using a defined XPath expression. XPath locators *must* begin with "//".
+    **identifier:** locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen. Otherwise, the first element with a matching *name* is chosen.
+        - name:TheElementName
 
-    Locator examples:
+    **dom:** finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators *must* begin with "document.".
+        - dom:document.forms['myForm'].myDropdown
+        - dom:document.images[56]
 
-        =============  ===================================
-        Locator Type   Example
-        -------------  -----------------------------------
-        Identifier     elementId
-        DOM            document.forms['myForm'].myDropdown
-        DOM            document.images[56]
-        XPath          //img[@alt='The image alt text']
-        XPath          //table[@id='table1']//tr[4]/td[2]
-        =============  ===================================
+    **xpath:** locates an element using a defined XPath expression. XPath locators *must* begin with "//".
+        - xpath://img[@alt='The image alt text']
+        - xpath://table[@id='table1']//tr[4]/td[2]
 
+    **link:** finds a link with the specified text.
+        - link:The link text
+
+
+    Without a locator prefix, a default set of locators will be used. The default set of locators is:
+
+    1. identifier
+    2. dom
+    3. xpath
 
 ----------------
 Selenium Actions
@@ -426,6 +434,68 @@ Selenium Checks
             assertNotEditable   userName
             =================   ===========   =====
 
+    **verifyAlert / assertAlert**
+        Verifies that a javascript alert was generated and that the text of the alert was as specified.
+        Alerts must be verified in the same order that they were generated.
+
+        Verifying an alert has the same effect as manually clicking OK.
+        If an alert is generated but you do not verify it, the next Selenium action will fail.
+
+        NOTE: under Selenium, javascript alerts will NOT pop up a visible alert dialog.
+
+        NOTE: Selenium does NOT support javascript alerts that are generated in a page's onload() event handler.
+        In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.
+
+        **target:** The expected text of the alert.
+
+        **value:** *ignored*
+
+        **examples:**
+
+            ==============   ====================  =====
+            verifyAlert      Invalid Phone Number
+            assertAlert      Invalid Phone Number
+            ==============   ====================  =====
+
+    **verifyConfirmation / assertConfirmation**
+        Verifies that a javascript confirmation dialog was generated and that
+        the text of the dialog was as specified.
+        Confirm dialogs must be verified in the same order that they were generated.
+
+        By default, the confirm function will return true, having the same effect as manually clicking OK.
+        This can be changed by prior execution of the **chooseCancelOnNextConfirmation** command (see below).
+        If an confirmation is generated but you do not verify it, the next Selenium action will fail.
+
+        NOTE: under Selenium, javascript confirmations will NOT pop up a visible dialog.
+
+        NOTE: Selenium does NOT support javascript confirmations that are generated in a page's onload() event handler.
+        In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.
+
+        **target:** The expected text of the alert.
+
+        **value:** *ignored*
+
+        **examples:**
+
+            ==================   ====================  =====
+            verifyConfirmation   Invalid Phone Number
+            assertAlert          Invalid Phone Number
+            ==================   ====================  =====
+
+    **chooseCancelOnNextConfirmation**
+        Instructs Selenium to click **Cancel** on the next javascript confirmation dialog to be raised.
+        By default, the confirm function will return true, having the same effect as manually clicking OK.
+        After running this command, the next confirmation will behave as if the user had clicked Cancel.
+
+        **target:** *ignored*
+
+        **value:** *ignored*
+
+        **examples:**
+
+            ==============================   =====  =====
+            chooseCancelOnNextConfirmation
+            ==============================   =====  =====
 
 -----------------
 Variables
