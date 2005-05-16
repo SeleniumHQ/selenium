@@ -97,13 +97,17 @@ function TestLoop(commandFactory) {
     * Continues the command execution, after waiting for the specified delay.
     */
     this.continueCommandExecutionWithDelay = function() {
-        // Get the interval to use for this command execution, using the pauseInterval is
+        // Get the interval to use for this command execution, using the pauseInterval as
         // specified. Reset the pause interval, since it's a one-off thing.
         var interval = this.pauseInterval || this.getCommandInterval();
         this.pauseInterval = undefined;
 
-        // Continue processing
-        if (interval >= 0) {
+        if (interval < 0) {
+            // Enable the "next/continue" button
+            this.waitingForNext();
+        }
+        else {
+            // Continue processing
             window.setTimeout("testLoop.finishCommandExecution()", interval);
         }
     };
@@ -133,6 +137,8 @@ TestLoop.prototype.commandError = noop;
 TestLoop.prototype.commandComplete = noop;
 
 TestLoop.prototype.testComplete = noop;
+
+TestLoop.prototype.waitingForNext = noop;
 
 function noop() {
 
