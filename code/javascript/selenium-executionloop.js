@@ -26,6 +26,7 @@ function TestLoop(commandFactory) {
     var self = this;
 
     this.start = function() {
+        selenium.reset();
         this.continueCurrentTest();
     };
 
@@ -35,7 +36,7 @@ function TestLoop(commandFactory) {
         if (testStatus == TEST_FINISHED) {
             this.testComplete();
         }
-        };
+    };
 
     this.kickoffNextCommandExecution = function() {
 

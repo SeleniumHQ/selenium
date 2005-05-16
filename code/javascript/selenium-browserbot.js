@@ -118,7 +118,7 @@ BrowserBot.prototype.selectWindow = function(target) {
     // we've moved to a new page - clear the current one
     this.currentPage = null;
     this.currentWindowName = null;
-    if (target != "null") {
+    if (target && target != "null") {
         // If window exists
         if (this.getTargetWindow(target)) {
             this.currentWindowName = target;
