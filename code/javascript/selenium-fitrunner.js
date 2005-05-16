@@ -67,7 +67,15 @@ FAILURE = 1;
 runInterval = 0;
 
 function setRunInterval() {
-    runInterval = this.value;
+    // Get the value of the checked runMode option.
+    // There should be a way of getting the value of the "group", but I don't know how.
+    var runModeOptions = document.forms['controlPanel'].runMode;
+    for (var i = 0; i < runModeOptions.length; i++) {
+        if (runModeOptions[i].checked) {
+            runInterval = runModeOptions[i].value;
+            break;
+        }
+    }
 }
 
 function continueCurrentTest() {
@@ -91,6 +99,7 @@ function loadAndRunIfAuto() {
 }
 
 function start() {
+    setRunInterval();
     loadSuiteFrame();
 }
 
