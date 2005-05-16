@@ -79,6 +79,7 @@ function setRunInterval() {
 }
 
 function continueCurrentTest() {
+    document.getElementById('continueTest').disabled = true;
     testLoop.finishCommandExecution();
 }
 
@@ -515,6 +516,9 @@ function initialiseTestLoop() {
     testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
     testLoop.testComplete = testComplete;
+    testLoop.waitingForNext = function() {
+        document.getElementById('continueTest').disabled = false;
+    };
     return testLoop;
 }
 
