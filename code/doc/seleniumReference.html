@@ -84,38 +84,46 @@ http://localhost:8000/TestRunner.html?test=AllTests.php
 <h1><a name="element-locators">Element Locators</a></h1>
 <blockquote>
 <p>Element Locators allow Selenium to identify which HTML element a command refers to. There are several forms of Element Locators.</p>
-<p><strong>Identifier:</strong> locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen. Otherwise, the first element with a matching <em>name</em> is chosen.</p>
-<p><strong>DOM:</strong> finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators <em>must</em> begin with &quot;document.&quot;.</p>
-<p><strong>XPath:</strong> locates an element using a defined XPath expression. XPath locators <em>must</em> begin with &quot;//&quot;.</p>
-<p>Locator examples:</p>
-<blockquote>
-<table border="1" class="table">
-<colgroup>
-<col width="27%" />
-<col width="73%" />
-</colgroup>
-<tbody valign="top">
-<tr><td>Locator Type</td>
-<td>Example</td>
-</tr>
-<tr><td>Identifier</td>
-<td>elementId</td>
-</tr>
-<tr><td>DOM</td>
-<td>document.forms['myForm'].myDropdown</td>
-</tr>
-<tr><td>DOM</td>
-<td>document.images[56]</td>
-</tr>
-<tr><td>XPath</td>
-<td>//img[&#64;alt='The image alt text']</td>
-</tr>
-<tr><td>XPath</td>
-<td>//table[&#64;id='table1']//tr[4]/td[2]</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
+<dl>
+<dt><strong>id:</strong> locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen.</dt>
+<dd><ul class="first last simple">
+<li>id:TheElementId</li>
+</ul>
+</dd>
+<dt><strong>name:</strong> locates an element based on the name attribute of the element. The first element with a matching <em>name</em> is chosen.</dt>
+<dd><ul class="first last simple">
+<li>name:TheElementName</li>
+</ul>
+</dd>
+<dt><strong>identifier:</strong> locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen. Otherwise, the first element with a matching <em>name</em> is chosen.</dt>
+<dd><ul class="first last simple">
+<li>name:TheElementName</li>
+</ul>
+</dd>
+<dt><strong>dom:</strong> finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators <em>must</em> begin with &quot;document.&quot;.</dt>
+<dd><ul class="first last simple">
+<li>dom:document.forms['myForm'].myDropdown</li>
+<li>dom:document.images[56]</li>
+</ul>
+</dd>
+<dt><strong>xpath:</strong> locates an element using a defined XPath expression. XPath locators <em>must</em> begin with &quot;//&quot;.</dt>
+<dd><ul class="first last simple">
+<li>xpath://img[&#64;alt='The image alt text']</li>
+<li>xpath://table[&#64;id='table1']//tr[4]/td[2]</li>
+</ul>
+</dd>
+<dt><strong>link:</strong> finds a link with the specified text.</dt>
+<dd><ul class="first last simple">
+<li>link:The link text</li>
+</ul>
+</dd>
+</dl>
+<p>Without a locator prefix, a default set of locators will be used. The default set of locators is:</p>
+<ol class="arabic simple">
+<li>identifier</li>
+<li>dom</li>
+<li>xpath</li>
+</ol>
 </blockquote>
 </div>
 <div class="section" id="selenium-actions">
@@ -726,6 +734,93 @@ an input element, or has been disabled.</p>
 </tr>
 <tr><td>assertNotEditable</td>
 <td>userName</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>verifyAlert / assertAlert</strong></dt>
+<dd><p class="first">Verifies that a javascript alert was generated and that the text of the alert was as specified.
+Alerts must be verified in the same order that they were generated.</p>
+<p>Verifying an alert has the same effect as manually clicking OK.
+If an alert is generated but you do not verify it, the next Selenium action will fail.</p>
+<p>NOTE: under Selenium, javascript alerts will NOT pop up a visible alert dialog.</p>
+<p>NOTE: Selenium does NOT support javascript alerts that are generated in a page's onload() event handler.
+In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.</p>
+<p><strong>target:</strong> The expected text of the alert.</p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="36%" />
+<col width="51%" />
+<col width="13%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>verifyAlert</td>
+<td>Invalid Phone Number</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>assertAlert</td>
+<td>Invalid Phone Number</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>verifyConfirmation / assertConfirmation</strong></dt>
+<dd><p class="first">Verifies that a javascript confirmation dialog was generated and that
+the text of the dialog was as specified.
+Confirm dialogs must be verified in the same order that they were generated.</p>
+<p>By default, the confirm function will return true, having the same effect as manually clicking OK.
+This can be changed by prior execution of the <strong>chooseCancelOnNextConfirmation</strong> command (see below).
+If an confirmation is generated but you do not verify it, the next Selenium action will fail.</p>
+<p>NOTE: under Selenium, javascript confirmations will NOT pop up a visible dialog.</p>
+<p>NOTE: Selenium does NOT support javascript confirmations that are generated in a page's onload() event handler.
+In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.</p>
+<p><strong>target:</strong> The expected text of the alert.</p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="42%" />
+<col width="47%" />
+<col width="12%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>verifyConfirmation</td>
+<td>Invalid Phone Number</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>assertAlert</td>
+<td>Invalid Phone Number</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>chooseCancelOnNextConfirmation</strong></dt>
+<dd><p class="first">Instructs Selenium to click <strong>Cancel</strong> on the next javascript confirmation dialog to be raised.
+By default, the confirm function will return true, having the same effect as manually clicking OK.
+After running this command, the next confirmation will behave as if the user had clicked Cancel.</p>
+<p><strong>target:</strong> <em>ignored</em></p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="75%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>chooseCancelOnNextConfirmation</td>
+<td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
