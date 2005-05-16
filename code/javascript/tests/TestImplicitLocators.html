@@ -64,18 +64,17 @@ Copyright 2004 ThoughtWorks, Inc
       <td>document.links[1]@class</td>
       <td>a2</td>
     </tr>
-
-    <!-- Check that an unknown prefix is passed through -->
-    <tr>
-      <td>verifyElementPresent</td>
-      <td>foo:bar</td>
-      <td></td>
-    </tr>
     <tr>
       <td>verifyAttribute</td>
-      <td>foo:bar@class</td>
-      <td>a4</td>
+      <td>//img[@alt='banner']/@src</td>
+      <td>banner.gif</td>
     </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>//body/a[2]</td>
+      <td>this is the second element</td>
+    </tr>
+
   </tbody>
 </table>
 </body>
