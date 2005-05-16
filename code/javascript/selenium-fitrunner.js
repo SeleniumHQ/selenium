@@ -543,21 +543,23 @@ function removeNbsp(value)
     return value.replace(/\240/g, "");
 }
 
-function focusOnElement(element) {
-    if (element.focus) {
-        element.focus();
+function scrollIntoView(element) {
+    if (element.scrollIntoView) {
+        element.scrollIntoView();
         return;
     }
+
+    // For Konqueror, we have to create a remove an element.
     var anchor = element.ownerDocument.createElement("a");
     anchor.innerHTML = "!CURSOR!";
     element.appendChild(anchor, element);
-    anchor.focus();
+//    anchor.focus();
     element.removeChild(anchor);
 }
 
 function commandStarted() {
     inputTableRows[currentCommandRow].bgColor = workingColor;
-    focusOnElement(inputTableRows[currentCommandRow].cells[0]);
+    scrollIntoView(inputTableRows[currentCommandRow].cells[0]);
     printMetrics();
 }
 
