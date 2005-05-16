@@ -40,6 +40,13 @@ function Selenium(browserbot) {
 }
 
 /*
+ * Reset the browserbot when an error occurs..
+ */
+Selenium.prototype.reset = function() {
+    this.browserbot.selectWindow("null");
+};
+
+/*
  * Click on the located element, and attach a callback to notify
  * when the page is reloaded.
  */
