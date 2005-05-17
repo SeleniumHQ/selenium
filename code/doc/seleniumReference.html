@@ -85,37 +85,61 @@ http://localhost:8000/TestRunner.html?test=AllTests.php
 <blockquote>
 <p>Element Locators allow Selenium to identify which HTML element a command refers to. There are several forms of Element Locators.</p>
 <dl>
-<dt><strong>id:</strong> locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen.</dt>
+<dt><strong>id</strong></dt>
+<dd><dl class="first last">
+<dt>locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen.</dt>
 <dd><ul class="first last simple">
-<li>id:TheElementId</li>
+<li>id=TheElementId</li>
 </ul>
 </dd>
-<dt><strong>name:</strong> locates an element based on the name attribute of the element. The first element with a matching <em>name</em> is chosen.</dt>
+</dl>
+</dd>
+<dt><strong>name</strong></dt>
+<dd><dl class="first last">
+<dt>locates an element based on the name attribute of the element. The first element with a matching <em>name</em> is chosen.</dt>
 <dd><ul class="first last simple">
-<li>name:TheElementName</li>
+<li>name=TheElementName</li>
 </ul>
 </dd>
-<dt><strong>identifier:</strong> locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen. Otherwise, the first element with a matching <em>name</em> is chosen.</dt>
+</dl>
+</dd>
+<dt><strong>identifier</strong></dt>
+<dd><dl class="first last">
+<dt>locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen. Otherwise, the first element with a matching <em>name</em> is chosen.</dt>
 <dd><ul class="first last simple">
-<li>name:TheElementName</li>
+<li>name=TheElementName</li>
 </ul>
 </dd>
-<dt><strong>dom:</strong> finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators <em>must</em> begin with &quot;document.&quot;.</dt>
+</dl>
+</dd>
+<dt><strong>dom</strong></dt>
+<dd><dl class="first last">
+<dt>finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators <em>must</em> begin with &quot;document.&quot;.</dt>
 <dd><ul class="first last simple">
-<li>dom:document.forms['myForm'].myDropdown</li>
-<li>dom:document.images[56]</li>
+<li>dom=document.forms['myForm'].myDropdown</li>
+<li>dom=document.images[56]</li>
 </ul>
 </dd>
-<dt><strong>xpath:</strong> locates an element using a defined XPath expression. XPath locators <em>must</em> begin with &quot;//&quot;.</dt>
+</dl>
+</dd>
+<dt><strong>xpath</strong></dt>
+<dd><dl class="first last">
+<dt>locates an element using a defined XPath expression. XPath locators <em>must</em> begin with &quot;//&quot;.</dt>
 <dd><ul class="first last simple">
-<li>xpath://img[&#64;alt='The image alt text']</li>
-<li>xpath://table[&#64;id='table1']//tr[4]/td[2]</li>
+<li>xpath=//img[&#64;alt='The image alt text']</li>
+<li>xpath=//table[&#64;id='table1']//tr[4]/td[2]</li>
 </ul>
 </dd>
-<dt><strong>link:</strong> finds a link with the specified text.</dt>
+</dl>
+</dd>
+<dt><strong>link</strong></dt>
+<dd><dl class="first last">
+<dt>finds a link with the specified text.</dt>
 <dd><ul class="first last simple">
-<li>link:The link text</li>
+<li>link=The link text</li>
 </ul>
+</dd>
+</dl>
 </dd>
 </dl>
 <p>Without a locator prefix, a default set of locators will be used. The default set of locators is:</p>
@@ -160,7 +184,8 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 </blockquote>
 </dd>
 <dt><strong>click (clickAndWait)</strong></dt>
-<dd><p class="first">Clicks on a link, button, checkbox or radio button.  If the click action causes a new page to load, use &quot;clickAndWait&quot;.</p>
+<dd><p class="first">Clicks on a link, button, checkbox or radio button.
+If the click action causes a new page to load (like a link usually does), use &quot;clickAndWait&quot;.</p>
 <p><strong>target:</strong> The id of the element that should be clicked.</p>
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>

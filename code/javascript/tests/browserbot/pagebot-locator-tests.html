@@ -179,7 +179,7 @@ function testFindElementWithLocatorPrefixUsesSpecifiedStrategy() {
     var calls = new Array();
     pageBot.locationStrategies["anotherlocator"] = function(locator) { calls.push(locator); return "bar";};
 
-    element = pageBot.findElement("anotherlocator:foo");
+    element = pageBot.findElement("anotherlocator=foo");
     assertEquals("bar", element);
     assertEquals("foo", calls.join());
 }
@@ -191,7 +191,7 @@ function testFindElementWithUnknownLocatorPrefixThrowsException() {
     var element = null;
     var failureMessage = null;
     try {
-        element = pageBot.findElement("bogus:foo");
+        element = pageBot.findElement("bogus=foo");
     } catch (e) {
         failureMessage = e.message;
     }
@@ -214,7 +214,7 @@ function testFindElementLooksForIdentifiedElementBeforeDomTraversal() {
 }
 
 function testFindElementHandlesLinkLocators() {
-    assertEquals(element3, pageBot.findElement('link:this is the third element'));
+    assertEquals(element3, pageBot.findElement('link=this is the third element'));
 }
 
 function testUnknownElementWithoutDomTraversal() {
