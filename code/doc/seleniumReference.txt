@@ -52,25 +52,31 @@ Element Locators
 
     Element Locators allow Selenium to identify which HTML element a command refers to. There are several forms of Element Locators.
 
-    **id:** locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen.
-        - id:TheElementId
+    **id**
+        locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen.
+            - id=TheElementId
 
-    **name:** locates an element based on the name attribute of the element. The first element with a matching *name* is chosen.
-        - name:TheElementName
+    **name**
+        locates an element based on the name attribute of the element. The first element with a matching *name* is chosen.
+            - name=TheElementName
 
-    **identifier:** locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen. Otherwise, the first element with a matching *name* is chosen.
-        - name:TheElementName
+    **identifier**
+        locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen. Otherwise, the first element with a matching *name* is chosen.
+            - name=TheElementName
 
-    **dom:** finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators *must* begin with "document.".
-        - dom:document.forms['myForm'].myDropdown
-        - dom:document.images[56]
+    **dom**
+        finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators *must* begin with "document.".
+            - dom=document.forms['myForm'].myDropdown
+            - dom=document.images[56]
 
-    **xpath:** locates an element using a defined XPath expression. XPath locators *must* begin with "//".
-        - xpath://img[@alt='The image alt text']
-        - xpath://table[@id='table1']//tr[4]/td[2]
+    **xpath**
+        locates an element using a defined XPath expression. XPath locators *must* begin with "//".
+            - xpath=//img[@alt='The image alt text']
+            - xpath=//table[@id='table1']//tr[4]/td[2]
 
-    **link:** finds a link with the specified text.
-        - link:The link text
+    **link**
+        finds a link with the specified text.
+            - link=The link text
 
 
     Without a locator prefix, a default set of locators will be used. The default set of locators is:

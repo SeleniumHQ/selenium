@@ -412,7 +412,7 @@ PageBot.prototype.findElement = function(locator) {
     var locatorString = locator;
     
     // If there is a locator prefix, use the specified strategy
-    var result = locator.match(/^([a-z]+):(.+)/);
+    var result = locator.match(/^([a-z]+)=(.+)/);
     if (result) {
         locatorType = result[1];
         locatorString = result[2];
