@@ -647,7 +647,7 @@ Selenium.prototype.doStoreText = function(target, varName) {
     storedVars[varName] = getText(element);
 };
 
-Selenium.prototype.doSetVariable = function(varName, variableExpression) {
+Selenium.prototype.doStore = function(varName, variableExpression) {
     var value = eval(variableExpression);
     storedVars[varName] = value;
 };
