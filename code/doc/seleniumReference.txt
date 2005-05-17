@@ -104,21 +104,21 @@ Selenium Actions
             open  http://localhost/
             ====  =================  =====
 
-    **click**
-        Clicks on a link, button, checkbox or radio button.  By default, this command waits for a new page to load before continuing.
+    **click (clickAndWait)**
+        Clicks on a link, button, checkbox or radio button.
+        If the click action causes a new page to load (like a link usually does), use "clickAndWait".
         
         **target:** The id of the element that should be clicked.
         
-        **value** (*optional*) **:** nowait - Tells Selenium that it should not wait for a page to load before continuing.
-        
+        **value:** *ignored*
+
         **examples:**
             
-            =====   ==================  =====
-            click   someLink
-            click   buttonA
-            click   linkWithJavascript  nowait
-            click   someCheckbox        nowait
-            =====   ==================  =====
+            ============   ==================  =====
+            click          aCheckbox
+            clickAndWait   submitButton
+            clickAndWait   anyLink
+            ============   ==================  =====
 
     **type (typeAndWait)**
         Types (enters) text into an input field.  This works for text fields, combo boxes, check boxes, etc.
@@ -175,6 +175,21 @@ Selenium Actions
             pause   5000
             pause   2000    
             =====   ====  =====
+
+    **store**
+
+        Stores the value of a javascript expression into a variable
+
+        **target:** The id of the input field.
+
+        **value:** The javascript expression to evaluate.
+
+        **examples:**
+
+            ==========   ==========  =========
+            store        userName    'text'
+            store        definition  'Pi ~= ' + (Math.round(Math.PI * 100) / 100)
+            ==========   ==========  =========
 
     **storeValue**
 

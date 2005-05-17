@@ -27,6 +27,24 @@ Copyright 2004 ThoughtWorks, Inc
       <td rowspan="1" colspan="3">Test AndWait commands for Reload<br>
       </td>
     </tr>
+    <!-- Link click -->
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_reload_onchange_page.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>clickAndWait</td>
+      <td>theLink</td>
+      <td></td>
+    </tr>
+    <!-- Page should reload -->
+    <tr>
+      <td>verifyTitle</td>
+      <td>Slow Loading Page</td>
+      <td></td>
+    </tr>
+
     <tr>
       <td>open</td>
       <td>./tests/html/test_reload_onchange_page.html</td>
@@ -55,21 +73,34 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theTextbox</td>
       <td>new value</td>
     </tr>
-    <!-- Page should reload -->
     <tr>
       <td>verifyTitle</td>
       <td>Slow Loading Page</td>
       <td></td>
     </tr>
 
-    <!-- Click with wait -->
+    <!-- Submit button -->
+    <tr>
+      <td>open</td>
+      <td>./tests/html/test_reload_onchange_page.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>clickAndWait</td>
+      <td>theSubmit</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Slow Loading Page</td>
+      <td></td>
+    </tr>
     <tr>
       <td>clickAndWait</td>
       <td>slowPage_reload</td>
       <td>&nbsp;</td>
     </tr>
-    <!-- Page should reload -->
-    <tr>
+   <tr>
       <td>verifyTitle</td>
       <td>Slow Loading Page</td>
       <td></td>

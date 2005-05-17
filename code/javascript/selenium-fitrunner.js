@@ -500,10 +500,6 @@ function registerCommandHandlers() {
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
-    // These actions are overridden for fitrunner, as they still involve some FitRunner smarts,
-    // because of the wait/nowait behaviour modification. We need a generic solution to this.
-    commandFactory.registerAction("click", selenium.doClickWithOptionalWait);
-
 }
 
 function initialiseTestLoop() {
@@ -650,14 +646,4 @@ Selenium.prototype.doStoreText = function(target, varName) {
 Selenium.prototype.doStore = function(varName, variableExpression) {
     var value = eval(variableExpression);
     storedVars[varName] = value;
-};
-
-Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
-
-    this.doClick(target);
-
-    if(wait != "nowait") {
-        return SELENIUM_PROCESS_WAIT;
-    }
-
 };

@@ -159,34 +159,30 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 </table>
 </blockquote>
 </dd>
-<dt><strong>click</strong></dt>
-<dd><p class="first">Clicks on a link, button, checkbox or radio button.  By default, this command waits for a new page to load before continuing.</p>
+<dt><strong>click (clickAndWait)</strong></dt>
+<dd><p class="first">Clicks on a link, button, checkbox or radio button.  If the click action causes a new page to load, use &quot;clickAndWait&quot;.</p>
 <p><strong>target:</strong> The id of the element that should be clicked.</p>
-<p><strong>value</strong> (<em>optional</em>) <strong>:</strong> nowait - Tells Selenium that it should not wait for a page to load before continuing.</p>
+<p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
 <table border="1" class="table">
 <colgroup>
-<col width="17%" />
-<col width="62%" />
-<col width="21%" />
+<col width="34%" />
+<col width="51%" />
+<col width="14%" />
 </colgroup>
 <tbody valign="top">
 <tr><td>click</td>
-<td>someLink</td>
+<td>aCheckbox</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>click</td>
-<td>buttonA</td>
+<tr><td>clickAndWait</td>
+<td>submitButton</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>click</td>
-<td>linkWithJavascript</td>
-<td>nowait</td>
-</tr>
-<tr><td>click</td>
-<td>someCheckbox</td>
-<td>nowait</td>
+<tr><td>clickAndWait</td>
+<td>anyLink</td>
+<td>&nbsp;</td>
 </tr>
 </tbody>
 </table>
@@ -293,6 +289,32 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 </blockquote>
 </dd>
 </dl>
+<p><strong>store</strong></p>
+<blockquote>
+<p>Stores the value of a javascript expression into a variable</p>
+<p><strong>target:</strong> The id of the input field.</p>
+<p><strong>value:</strong> The javascript expression to evaluate.</p>
+<p><strong>examples:</strong></p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="16%" />
+<col width="16%" />
+<col width="69%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>store</td>
+<td>userName</td>
+<td>'text'</td>
+</tr>
+<tr><td>store</td>
+<td>definition</td>
+<td>'Pi ~= ' + (Math.round(Math.PI * 100) / 100)</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
 <p><strong>storeValue</strong></p>
 <blockquote>
 <p>Stores the value of an input field into a variable.</p>
