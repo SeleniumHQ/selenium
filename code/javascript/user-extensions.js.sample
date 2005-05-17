@@ -1,12 +1,14 @@
 /*
- * This file contains a convenient location for adding extensions to Selenium, like
+ * By default, Selenium looks for a file called "user-extensions.js", and loads and javascript
+ * code found in that file. This file is a sample of what that file could look like.
+ *
+ * user-extensions.js provides a convenient location for adding extensions to Selenium, like
  * new actions, checks and locator-strategies.
- * By default, this file does not contain any code, allowing users to place their extension code
- * in a common location, removing the need to modify the Selenium sources, and hopefully assisting
+ * By default, this file does not exist. Users can create this file and place their extension code
+ * in this common location, removing the need to modify the Selenium sources, and hopefully assisting
  * with the upgrade process.
  */
 
-/*
 // The following examples try to give an indication of how Selenium can be extended with javascript.
 
 // All do* methods on the Selenium prototype are added as actions.
@@ -58,4 +60,3 @@ PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
     }
     return null;
 };
-*/
