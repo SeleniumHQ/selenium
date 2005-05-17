@@ -74,7 +74,6 @@
                     <include name="*.html"/>
                     <include name="*.css"/>
                     <include name="*.jpg"/>
-                    <include name="jsunit/app/jsUnitCore.js"/>
                     <include name="html-xpath/html-xpath-patched.js"/>
                 </fileset>
             </copy>
