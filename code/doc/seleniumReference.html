@@ -934,6 +934,97 @@ After running this command, the next confirmation will behave as if the user had
 </blockquote>
 </blockquote>
 </div>
+<div class="section" id="extending-selenium">
+<h1><a name="extending-selenium">Extending Selenium</a></h1>
+<blockquote>
+<p>It can be quite simple to extend Selenium, adding your own actions, checks and locator-strategies.
+This is done with javascript by adding methods to the Selenium object prototype, and the PageBot
+object prototype. On startup, Selenium will automatically look through methods on these prototypes,
+using name patterns to recognise which ones are actions, checks and locators.</p>
+<p>The following examples try to give an indication of how Selenium can be extended with javascript.</p>
+</blockquote>
+<dl>
+<dt><strong>Actions</strong></dt>
+<dd><p class="first">All <em>doFoo</em> methods on the Selenium prototype are added as actions. For each action <em>foo</em> there
+is also an action <em>fooAndWait</em> registered. An action method can take up to 2 parameters, which
+will be passed the second and third column values in the test.</p>
+<p class="last">Example: Add a &quot;typeRepeated&quot; action to Selenium, which types the text twice into a text box.</p>
+</dd>
+</dl>
+<pre class="literal-block">
+Selenium.prototype.doTypeRepeated = function(locator, text) {
+    // All locator-strategies are automatically handled by &quot;findElement&quot;
+    var element = this.page().findElement(locator);
+
+    // Create the text to type
+    var valueToType = text + text;
+
+    // Replace the element text with the new text
+    this.page().replaceText(element, valueToType);
+};
+</pre>
+<dl>
+<dt><strong>Checks</strong></dt>
+<dd><p class="first">All <em>assertFoo</em> methods on the Selenium prototype are added as checks. For each check <em>foo</em> there
+is an <em>assertFoo</em> and <em>verifyFoo</em> registered. An assert method can take up to 2 parameters, which
+will be passed the second and third column values in the test.</p>
+<p class="last">Example: Add a <em>valueRepeated</em> check, that makes sure that the element value
+consists of the supplied text repeated. The 2 commands that would be available in tests would be
+<em>assertValueRepeated</em> and <em>verifyValueRepeated</em>.</p>
+</dd>
+</dl>
+<pre class="literal-block">
+Selenium.prototype.assertValueRepeated = function(locator, text) {
+    // All locator-strategies are automatically handled by &quot;findElement&quot;
+    var element = this.page().findElement(locator);
+
+    // Create the text to verify
+    var expectedValue = text + text;
+
+    // Get the actual element value
+    var actualValue = element.value;
+
+    // Make sure the actual value matches the expected
+    this.assertMatches(expectedValue, actualValue);
+};
+</pre>
+<dl>
+<dt><strong>Locator Strategies</strong></dt>
+<dd><p class="first">All <em>locateElementByFoo</em> methods on the PageBot prototype are added as locator-strategies. A
+locator strategy takes 2 parameters, the first being the locator string (minus the prefix),
+and the second being the document in which to search.</p>
+<p class="last">Example: Add a &quot;valuerepeated=&quot; locator, that finds the first element a value attribute equal
+to the the supplied value repeated.</p>
+</dd>
+</dl>
+<pre class="literal-block">
+// The &quot;inDocument&quot; is a the document you are searching.
+PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
+    // Create the text to search for
+    var expectedValue = text + text;
+
+    // Loop through all elements, looking for ones that have a value === our expected value
+    var allElements = inDocument.getElementsByTagName(&quot;*&quot;);
+    for (var i = 0; i &lt; allElements.length; i++) {
+        var testElement = allElements[i];
+        if (testElement.value &amp;&amp; testElement.value === expectedValue) {
+            return testElement;
+        }
+    }
+    return null;
+};
+</pre>
+<dl>
+<dt><strong>user-extensions.js</strong></dt>
+<dd><p class="first">By default, Selenium looks for a file called &quot;user-extensions.js&quot;, and loads and javascript code
+found in that file. This file provides a convenient location for adding features to Selenium, without
+needing to modify the core Selenium sources.</p>
+<p class="last">In the standard distibution, this file does not exist. Users can create this file and place their
+extension code in this common location, removing the need to modify the Selenium sources,
+and hopefully assisting with the upgrade process.</p>
+</dd>
+</dl>
+</div>
 <div class="section" id="setup-teardown">
 <h1><a name="setup-teardown">SetUp / TearDown</a></h1>
 <blockquote>
