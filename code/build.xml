@@ -1,63 +1,115 @@
 <project name="selenium" default="dist">
-    <property name="version" value="0.3"/>
+    <property name="version" value="0.4.0"/>
     <property name="website.root" value="../website/webapps/ROOT"/>
 
-    <target name="publish-release" depends="publish-dist,publish-demos,publish-docs"/>
+    <target name="dist" depends="prepare-dist, dist-image-browserbot, dist-image-doc, dist-selenium, dist-ruby, dist-plone, dist-java"/>
 
-    <target name="dist">
+    <target name="prepare-dist">
+        <delete dir="dist-image"/>
         <delete dir="dist"/>
+        <mkdir dir="dist-image"/>
         <mkdir dir="dist"/>
-        <zip zipfile="dist/selenium-${version}-all-langs-src.zip">
-            <fileset dir=".">
-                <exclude name="squeak/**"/>            
-                <exclude name="dotnet/**"/>            
-                <exclude name="python/**"/>            
-                <exclude name="**/*session.obj"/>
-                <exclude name="**/*.iws"/>
-                <exclude name="**/*.ipr"/>
-                <exclude name="**/*.iml"/>
-                <exclude name="**/dist/**"/>
-                <exclude name="**/target/**"/>
-                <exclude name="**/junittestcases*.properties"/>
-                <exclude name="readme-selenium-rpcrunner.txt"/>
-            </fileset>
-        </zip>
-
-        <zip zipfile="dist/selenium-${version}-ruby.zip">
-            <fileset dir=".">
-                <include name="ruby/**"/>            
-                <include name="javascript/**"/>
-                <exclude name="javascript/TestRunner.html"/>            
-                <exclude name="javascript/jsmock/**"/>            
-                <exclude name="javascript/jsunit/**"/>            
-                <exclude name="javascript/jsunit-logs/**"/>
-                <exclude name="javascript/tests/**"/>            
-                <exclude name="javascript/*.py"/>            
-                <exclude name="javascript/*.bat"/>            
-                <exclude name="javascript/build.xml"/>            
-                <exclude name="javascript/**/web.xml"/>            
-            </fileset>
-            <zipfileset dir="../website/webapps/ROOT" prefix="docs">
-                <include name="**.html"/>
-                <include name="**.png"/>
-            </zipfileset>
-        </zip>
-
     </target>
 
-    <target name="publish-dist" depends="dist">
-        <copy todir="${website.root}" file="dist/selenium-${version}-all-langs-src.zip"/>
-        <copy todir="${website.root}" file="dist/selenium-${version}-ruby.zip"/>
+    <target name="dist-image-browserbot">
+        <copy todir="dist-image/browserbot">
+            <fileset dir="javascript">
+                <exclude name="Embedded-WEB-INF/**"/>
+                <exclude name="build.xml"/>
+                <exclude name="*.py"/>
+                <exclude name="*.bat"/>
+                <exclude name="*.graffle"/>
+                <exclude name="VERSION.txt"/>
+            </fileset>
+        </copy>
+        <copy file="dist-image/browserbot/TestRunner.html" tofile="dist-image/browserbot/TestRunner.hta"/>
+        <echo file="dist-image/browserbot/tests/readme.txt">Create a TestSuite.html page, and a number of test pages here. Read the docs!</echo>
+        <echo file="dist-image/browserbot/version.txt">${version}</echo>
     </target>
 
-    <target name="publish-docs">
-        <copy todir="${website.root}" overwrite="true">
+    <target name="dist-image-doc">
+        <copy todir="dist-image/doc">
             <fileset dir="doc">
-                <include name="seleniumReference.html"/>
-                <include name="FAQ.html"/>
+                <include name="*.html"/>
+            </fileset>
+            <fileset dir="${website.root}">
+                <include name="*.html"/>
+                <include name="images/*.png"/>
+                <exclude name="demos.html"/>
+                <exclude name="download.html"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="dist-selenium" depends="dist-image-browserbot, dist-image-doc">
+        <property name="selenium.release" value="selenium-${version}"/>
+        <zip zipfile="dist/${selenium.release}.zip" >
+            <zipfileset dir="dist-image/browserbot" prefix="${selenium.release}/selenium"/>
+            <zipfileset dir="dist-image/doc" prefix="${selenium.release}/doc"/>
+            <zipfileset file="doc/install-readme.txt" prefix="${selenium.release}"/>
+        </zip>
+    </target>
+
+    <target name="dist-ruby" depends="dist-image-browserbot, dist-image-doc">
+        <copy todir="dist-image/ruby">
+            <fileset dir="ruby">
+                <include name="*.rb"/>
+                <exclude name="readme.txt"/>
             </fileset>
         </copy>
 
+        <property name="ruby.release" value="selenium-${version}-ruby"/>
+        <zip zipfile="dist/${ruby.release}.zip">
+            <zipfileset dir="dist-image/browserbot" prefix="${ruby.release}/javascript"/>
+            <zipfileset dir="dist-image/doc" prefix="${ruby.release}/doc"/>
+            <zipfileset dir="dist-image/ruby" prefix="${ruby.release}/ruby"/>
+            <zipfileset file="ruby/readme.txt" prefix="${ruby.release}"/>
+        </zip>
+    </target>
+
+    <target name="dist-plone">
+        <copy todir="dist-image/python-plone">
+            <fileset dir="python/Zope">
+                <exclude name="**/.svn*"/>
+                <exclude name="**/VERSION.txt"/>
+                <exclude name="__init__.py"/>
+                <exclude name="install-readme.txt"/>
+            </fileset>
+        </copy>
+        <echo file="dist-image/python-plone/Selenium/VERSION.txt">${version}</echo>
+
+        <!-- Need to copy the browserbot code into the skins directory -->
+        <!-- HTML, CSS and Javascript files get an extra .dhtml suffix -->
+        <copy todir="dist-image/python-plone/Selenium/skins/selenium_javascript">
+            <fileset dir="dist-image/browserbot">
+                <include name="**/*.html"/>
+                <include name="**/*.css"/>
+                <include name="**/*.js"/>
+            </fileset>
+            <mapper type="glob" from="*" to="*.dhtml"/>
+        </copy>
+        <copy todir="dist-image/python-plone/Selenium/skins/selenium_javascript">
+            <fileset dir="dist-image/browserbot">
+                <exclude name="**/*.html"/>
+                <exclude name="**/*.css"/>
+                <exclude name="**/*.js"/>
+            </fileset>
+        </copy>
+
+        <property name="plone.release" value="selenium-${version}-python-plone"/>
+        <zip zipfile="dist/${plone.release}.zip">
+            <zipfileset dir="dist-image/doc" prefix="${plone.release}/doc"/>
+            <zipfileset dir="dist-image/python-plone" prefix="${plone.release}"/>
+        </zip>
+    </target>
+
+    <target name="dist-java">
+        <ant dir="java" target="dist">
+            <property name="code_root" value="."/>
+        </ant>
+        <copy todir="dist">
+            <fileset dir="java/dist"/>
+        </copy>
     </target>
 
     <target name="publish-demos">
