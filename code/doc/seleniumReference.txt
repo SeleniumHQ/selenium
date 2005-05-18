@@ -186,16 +186,16 @@ Selenium Actions
 
         Stores the value of a javascript expression into a variable
 
-        **target:** The id of the input field.
+        **target:** The literal value to store.
 
-        **value:** The javascript expression to evaluate.
+        **value:** Name of the variable to store the value into.
 
         **examples:**
 
-            ==========   ==========  =========
-            store        userName    'text'
-            store        definition  'Pi ~= ' + (Math.round(Math.PI * 100) / 100)
-            ==========   ==========  =========
+            ==========   ============================================   =========
+            store        'text'                                         userName
+            store        'Pi ~= ' + (Math.round(Math.PI * 100) / 100)   definition
+            ==========   ============================================   =========
 
     **storeValue**
 
