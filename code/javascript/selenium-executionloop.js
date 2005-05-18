@@ -62,6 +62,9 @@ function TestLoop(commandFactory) {
                 throw new Error("Unknown command: '" + command.command + "'");
             }
 
+            command.target = selenium.preprocessParameter(command.target);
+            command.value = selenium.preprocessParameter(command.value);
+
             result = handler.execute(selenium, command);
         } catch (e) {
             LOG.error(e);

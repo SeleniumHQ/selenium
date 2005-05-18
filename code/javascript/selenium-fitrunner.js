@@ -33,9 +33,6 @@ runAllTests = false;
 testFailed = false;
 suiteFailed = false;
 
-// Holds variables that are stored in a script
-storedVars = new Object();
-
 // Holds the handlers for each command.
 commandHandlers = null;
 
@@ -475,24 +472,6 @@ function pad (num) {
 }
 
 /*
- * Search through str and replace all variable references ${varName} with their
- * value in storedVars.
- */
-function replaceVariables(str) {
-    // We can't use a String.replace(regexp, replacementFunction) since this doesn't
-    // work in safari. So replace each match 1 at a time.
-    var stringResult = str;
-    var match;
-    while (match = stringResult.match(/\$\{(\w+)\}/)) {
-        var variable = match[0];
-        var name = match[1];
-        var replacement = storedVars[name];
-        stringResult = stringResult.replace(variable, replacement);
-    }
-    return stringResult;
-}
-
-/*
  * Register all of the built-in command handlers with the CommandHandlerFactory.
  * TODO work out an easy way for people to register handlers without modifying the Selenium sources.
  */
@@ -526,9 +505,8 @@ function nextCommand() {
     currentCommandRow++;
 
     var commandName = getCellText(currentCommandRow, 0);
-    var target = replaceVariables(getCellText(currentCommandRow, 1));
-    var value = replaceVariables(getCellText(currentCommandRow, 2));
-
+    var target = getCellText(currentCommandRow, 1);
+    var value = getCellText(currentCommandRow, 2);
 
     var command = new SeleniumCommand(commandName, target, removeNbsp(value));
     return command;
@@ -622,28 +600,4 @@ function getCellText(rowNumber, columnNumber) {
 Selenium.prototype.doPause = function(waitTime) {
     selenium.callOnNextPageLoad(null);
     testLoop.pauseInterval = waitTime;
-};
-
-// Store the value of a form input in a variable
-Selenium.prototype.doStoreValue = function(target, varName) {
-    if (!varName) { 
-        // Backward compatibility mode: read the ENTIRE text of the page 
-        // and stores it in a variable with the name of the target
-        value = this.page().bodyText();
-        storedVars[target] = value;
-        return;
-    }
-    var element = this.page().findElement(target);
-    storedVars[varName] = getInputValue(element);
-};
-
-// Store the text of an element in a variable
-Selenium.prototype.doStoreText = function(target, varName) {
-    var element = this.page().findElement(target);
-    storedVars[varName] = getText(element);
-};
-
-Selenium.prototype.doStore = function(varName, variableExpression) {
-    var value = eval(variableExpression);
-    storedVars[varName] = value;
 };

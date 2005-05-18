@@ -15,6 +15,8 @@
  *
  */
 
+storedVars = new Object();
+
 var nextExecution;
 function executeNext() {
     LOG.debug("CODED - LOAD");
@@ -43,6 +45,7 @@ function Selenium(browserbot) {
  * Reset the browserbot when an error occurs..
  */
 Selenium.prototype.reset = function() {
+    storedVars = new Object();
     this.browserbot.selectWindow("null");
 };
 
@@ -431,10 +434,77 @@ Selenium.prototype.getAllFields = function() {
 };
 
 /*
-  * Set the context for the current Test
-  */
+ * Set the context for the current Test
+ */
 Selenium.prototype.doContext = function(context) {
         return this.page().setContext(context);
+};
+
+/*
+ * Store the value of a form input in a variable
+ */
+Selenium.prototype.doStoreValue = function(target, varName) {
+    if (!varName) {
+        // Backward compatibility mode: read the ENTIRE text of the page
+        // and stores it in a variable with the name of the target
+        value = this.page().bodyText();
+        storedVars[target] = value;
+        return;
+    }
+    var element = this.page().findElement(target);
+    storedVars[varName] = getInputValue(element);
+};
+
+/*
+ * Store the text of an element in a variable
+ */
+Selenium.prototype.doStoreText = function(target, varName) {
+    var element = this.page().findElement(target);
+    storedVars[varName] = getText(element);
+};
+
+/*
+ * Store the result of a literal value
+ */
+Selenium.prototype.doStore = function(value, varName) {
+    storedVars[varName] = value;
+};
+
+/**
+ * Evaluate a parameter, performing javascript evaluation and variable substitution.
+ * If the string matches the pattern "javascript{ ... }", evaluate the string between the braces.
+ */
+Selenium.prototype.preprocessParameter = function(value) {
+    var match = value.match(/^javascript\{(.+)\}$/);
+    if (match && match[1]) {
+        return eval(match[1]).toString();
+    }
+    return this.replaceVariables(value);
+};
+
+/*
+ * Search through str and replace all variable references ${varName} with their
+ * value in storedVars.
+ */
+Selenium.prototype.replaceVariables = function(str) {
+    var stringResult = str;
+
+    // Find all of the matching variable references
+    var match = stringResult.match(/\$\{\w+\}/g);
+    if (!match) {
+        return stringResult;
+    }
+
+    // For each match, lookup the variable value, and replace if found
+    for (var i = 0; match && i < match.length; i++) {
+        var variable = match[i]; // The replacement variable, with ${}
+        var name = variable.substring(2, variable.length - 1); // The replacement variable without ${}
+        var replacement = storedVars[name];
+        if (replacement != undefined) {
+            stringResult = stringResult.replace(variable, replacement);
+        }
+    }
+    return stringResult;
 };
 
 function Assert() {
