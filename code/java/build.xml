@@ -1,5 +1,5 @@
 <project name="selenium" default="all">
-    <property name="version" value="0.3"/>
+    <property name="version" value="0.4"/>
 
     <property environment="env"/>
     <property name="ant.home" location="${env.ANT_HOME}"/>
@@ -23,6 +23,7 @@
     <property name="test.classes.dir" location="target/test-classes" />
     <property name="integration.test.classes.dir" location="target/integration-test-classes" />
 	<property name="igor" value="true"/>
+    <property name="code_root" value=".."/>
 	<path id="report.classpath">
         <fileset dir="${report.lib.dir}"/>
     </path>
@@ -46,27 +47,29 @@
     </path>
 
     <target name="all" depends="clean, init, compile, test, integration-test, checkstyle, report, jar"/>
+    <target name="make" depends="clean, init, compile, test, integration-test, jar"/>
 
-    <target name="dist" depends="all">
+    <target name="dist" depends="make">
 
-        <mkdir dir="dist"/>    
+        <mkdir dir="dist"/>
 
         <echo file="dist/readme.txt">Only some of these jars are necessary for you to run Selenium. Many are optional. Read the docs!</echo>
 
-        <zip destfile="dist/${ant.project.name}-${version}-java.zip">
-            <fileset dir="target">
-                <include name="${ant.project.name}-${version}.jar"/>            
-            </fileset>
-            <zipfileset dir="dist" prefix="lib">
+        <property name="java.release" value="${ant.project.name}-${version}-java"/>
+        <zip destfile="dist/${java.release}.zip">
+            <zipfileset dir="target" prefix="${java.release}">
+                <include name="${ant.project.name}-${version}.jar"/>
+            </zipfileset>
+            <zipfileset dir="dist" prefix="${java.release}/lib">
                 <include name="readme.txt"/>            
             </zipfileset>
-            <zipfileset dir="lib" prefix="lib">
+            <zipfileset dir="lib" prefix="${java.release}/lib">
                 <include name="*"/>
                 <exclude name="junit*"/>
                 <exclude name="jmock*"/>
                 <exclude name="ant*"/>
             </zipfileset>
-            <zipfileset dir="../javascript/" prefix="browser-bot">
+            <zipfileset dir="../javascript/" prefix="${java.release}/browser-bot">
                 <exclude name="TestRunner.html"/>            
                 <exclude name="jsmock/**"/>            
                 <exclude name="jsunit/**"/>            
@@ -77,26 +80,27 @@
                 <exclude name="build.xml"/>            
                 <exclude name="**/web.xml"/>            
             </zipfileset>
-            <zipfileset dir="../javascript/Embedded-WEB-INF" prefix="browser-bot/WEB-INF">
+            <zipfileset dir="../javascript/Embedded-WEB-INF" prefix="${java.release}/browser-bot/WEB-INF">
                 <include name="web.xml"/>
             </zipfileset>
-            <zipfileset dir="../../website/webapps/ROOT" prefix="docs">
+            <zipfileset dir="../../website/webapps/ROOT" prefix="${java.release}/docs">
                 <include name="*.html"/>
                 <include name="*.png"/>
             </zipfileset>
             <!-- a rename because copied docs are undecorated, index is not really an index -->
-            <zipfileset dir="../../website/webapps/ROOT" includes="links.jsp" fullpath="docs/TABLE-OF-CONTENTS.html"/>
+            <zipfileset dir="../../website/webapps/ROOT" includes="links.jsp" fullpath="${java.release}/docs/TABLE-OF-CONTENTS.html"/>
         </zip>
 
-        <zip destfile="dist/${ant.project.name}-${version}-java-src.zip">
-            <fileset dir="..">
+        <property name="java.src.release" value="${ant.project.name}-${version}-java-src"/>
+        <zip destfile="dist/${java.src.release}.zip">
+            <zipfileset dir=".." prefix="${java.src.release}">
                 <include name="java/**"/>
                 <exclude name="java/target/**"/>
                 <exclude name="java/dist/**"/>
-            </fileset>
-            <fileset dir="..">
+            </zipfileset>
+            <zipfileset dir=".." prefix="${java.src.release}">
                 <include name="javascript/**"/>
-            </fileset>
+            </zipfileset>
         </zip>
         <delete file="dist/readme.txt"/>
   
@@ -175,7 +179,7 @@
         <echo>Integration Tests for Embedded Jettu Web Container</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
-            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-Dcode_root=${code_root}"/>
             <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
@@ -197,7 +201,7 @@
         <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
-            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-Dcode_root=${code_root}"/>
             <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
@@ -219,7 +223,7 @@
         <echo>Integration Tests for Embedded Web Container</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
-            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-Dcode_root=${code_root}"/>
             <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
@@ -241,7 +245,7 @@
         <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
-            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-Dcode_root=${code_root}"/>
             <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
@@ -262,7 +266,7 @@
         <echo>Integration Tests for Embedded Web Container</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
-            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-Dcode_root=${code_root}"/>
             <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
@@ -284,7 +288,7 @@
         <echo>Integration Tests for Outbedded Web Container, including those that require Tomcat installed and CATALINA_HOME set.</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
-            <jvmarg value="-Dcode_root=.."/>
+            <jvmarg value="-Dcode_root=${code_root}"/>
             <jvmarg value="-DCATALINA_HOME=${env.CATALINA_HOME}"/>
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
