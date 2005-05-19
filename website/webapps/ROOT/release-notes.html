@@ -8,6 +8,28 @@
 </head>
 <body>
 Release information for different distributions of Selenium<br>
+<h2>Selenium 0.4.0</h2>
+May 20, 2005<br>
+<p style="font-weight: bold;">This release breaks backward compatibility in 3 ways:
+    <ol>
+        <li>The 'click' command now requires the 'AndWait' suffix in order to wait for a page to reload. The 'nowait' parameter is no longer supported.</li>
+        <li>The previously undocumented 'link:' locator is now specified as 'link=the link text'</li>
+        <li>The previously undocumented 'setVariable' command has been renamed to 'store', with slightly different semantics.</li>
+    </ol>
+</p>
+
+<dl>
+  <dt>Safari support</dt><dd>Most Selenium features now work in Safari!</dd>
+  <dt>Click command doesn't wait</dt><dd>Use 'clickAndWait' to wait for a page reload</dd>
+  <dt>Locator specificity</dt><dd>Can use prefixes ('id=', 'xpath=' etc) to specify exactly which locator strategy to use.</dd>
+  <dt>Better XPath support</dt><dd>Works in Konqueror, and is faster on other platforms.</dd>
+  <dt>Javascript parameters</dt><dd>All parameters can now take a javascript{...} syntax, constructing the parameter value from javascript.</dd>
+  <dt>Handle 'AndWait' commands in popup windows</dt><dd>This bug has been fixed</dd>
+  <dt>Bug fixes</dt><dd>Many broken things fixed.</dd>
+</dl>
+Full release notes available <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10120">here</a>.
+
+
 <h2>Selenium 0.3.0</h2>
 May 02, 2005<br>
 <ul>
