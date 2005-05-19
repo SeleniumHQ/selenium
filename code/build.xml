@@ -37,8 +37,15 @@
                 <include name="images/*.png"/>
                 <exclude name="demos.html"/>
                 <exclude name="download.html"/>
+                <exclude name="testrunner.html"/>
+                <exclude name="FAQ.html"/>
+                <exclude name="seleniumReference.html"/>
             </fileset>
         </copy>
+        <echo message="You must have 'rst2html.py' in your path"/>
+        <exec command="rst2html.py doc/seleniumReference.txt dist-image/doc/seleniumReference.html"/>
+        <exec command="rst2html.py doc/testRunner.txt dist-image/doc/testrunner.html"/>
+        <exec command="rst2html.py doc/FAQ.txt dist-image/doc/FAQ.html"/>
     </target>
 
     <target name="dist-selenium" depends="dist-image-browserbot, dist-image-doc">
@@ -112,6 +119,12 @@
         </copy>
     </target>
 
+    <target name="publish-docs" depends="dist-image-doc">
+        <copy todir="${website.root}" file="dist-image/doc/seleniumReference.html"/>
+        <copy todir="${website.root}" file="dist-image/doc/FAQ.html"/>
+        <copy todir="${website.root}" file="dist-image/doc/testrunner.html"/>
+    </target>
+
     <target name="publish-demos">
         <update-demo demo-dir="demo1"/>
         <update-demo demo-dir="demo2"/>
@@ -122,6 +135,8 @@
         <sequential>
             <copy todir="${website.root}/@{demo-dir}" overwrite="true">
                 <fileset dir="javascript">
+                    <include name="dom-images/*"/>
+                    <include name="dom-styles/*"/>
                     <include name="*.js"/>
                     <include name="*.html"/>
                     <include name="*.css"/>

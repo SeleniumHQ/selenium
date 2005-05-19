@@ -1,0 +1,99 @@
+=========================
+TestRunner Reference
+=========================
+-----------
+Test Suites
+-----------
+
+    A test suite is represented by an HTML document containing a single-column table.  Each entry in the table should be a hyperlink to a test-case document.  The first row will be ignored by Selenium, so this can be used for a title, and is typically used to hold a title.
+
+    By default Selenium will attempt to load the test-suite from "tests/TestSuite.html".  An alternative test-suite source can be specified by appending a "test" parameter to the TestRunner.html URL, e.g.::
+
+        http://localhost:8000/TestRunner.html?test=AllTests.php
+
+    The "test" URL is interpreted relative to the location of TestRunner.html.
+
+----------
+Test Cases
+----------
+
+    A test-case is represented by an HTML document, containing a table with 3 columns: *command*, *target*, *value*.  Not all commands take a value, however.  In this case either leave the column blank or use a &nbsp; to make the table look better.
+
+    The first row will be ignored by Selenium, so this can be used for a title or any other information.
+
+    Example:
+
+        ==========  ============    ==========
+        Simple Test Table
+        --------------------------------------
+        open        /mypage     
+        type        nameField       John Smith
+        click       submitButton    True
+        verifyText  name            John Smith
+        ==========  ============    ==========
+
+-----------------
+SetUp / TearDown
+-----------------
+
+    There are no setUp and tearDown commands in Selenium, but there is a way to handle these common testing operations.  On the site being tested, create URLs for setUp and tearDown.  Then, when the test runner opens these URLs, the server can do whatever setUp or tearDown is necessary.
+
+    Example:
+    
+        For the T&E project, we wanted the functional tests to run as a dummy user.  Therefore, we made a /setUpFT URL that would create a dummy user and write the userID to the page.  Then, we can store this value (using the command storeValue) and use it in the script.  Finally, we made a /tearDownFT URL which takes the dummy userID as a parameter and deletes the user.  Therefore, our tests look like this:
+
+        ==========   ============================   ==========
+        Setup and Teardown
+        ------------------------------------------------------
+        open         /setUpFT     
+        storeValue   userid
+        open         /login
+        type         userID                         ${userid}
+        click        submit
+        open         /tearDownFT?userid=${userid}
+        ==========   ============================   ==========
+
+
+----------------------
+Continuous Integration
+----------------------
+    
+    Selenium can be integrated with an automated build.  When the parameter "auto=true" is added to the URL, Selenium will run the entire suite of tests, and then post the results to a handling URL.  The default URL is "/postResults", but an alternative handler location can be provided by specifying a "resultsUrl" parameter.
+
+    The fields of the post are:
+
+        ==================  ======================================================================================================  
+        Parameter           Description
+        ==================  ======================================================================================================
+        result              the word "passed" or "failed" depending on whether the whole suite passed or at least one test failed.
+        totalTime           the time in seconds for the whole suite to run
+        numTestPasses       tht total number of tests which passed
+        numTestFailures     the total number of tests which failed.
+        numCommandPasses    the total number of commands which passed.
+        numCommandFailures  the total number of commands which failed.
+        numCommandErrors    the total number of commands which errored.
+        suite               the suite table, including the hidden column of test results
+        testTable.1         the first test table
+        testTable.2         the second test table
+        ...                 ...
+        testTable.N         The Nth test table
+        ==================  ======================================================================================================
+
+    Therefore, the steps for continuous integration are:
+        1. Create a servlet-type application at the url /postResults which can read the parameters above and write them to a file
+        2. Create a script which can start up a brower and send to to the URL: selenium?auto=true
+            - Generally, this can be done by merely calling the browser with the URL as an argument:
+                firefox.exe http://localhost/selenium?auto=true
+        3. Make your continuous build:
+            - Call the script from step 2, preferably using more than one browser
+            - Wait for it to finish, possibly by checking for the existence of the file(s) from step 1
+            - Parse these files to determine whether the build passed or failed
+            - Act accordingly (send emails, update a build web page, etc.)
+        
+
+------------------
+
+:Authors:           Paul Gross, Jason Huggins
+:Created Date:      08/23/2004
+:Modified Date:     28/01/2005
+:Created With:      reStructuredText: http://docutils.sourceforge.net/rst.html
