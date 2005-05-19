@@ -42,40 +42,19 @@ var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
-/*
-* The 'invoke' method will call the required function, and then
-* remove itself from the window object. This allows a calling app
-* to provide a callback listener for the window load event, without the
-* calling app needing to worry about cleaning up afterward.
-* TODO: This could be more generic, but suffices for now.
-*/
-function SelfRemovingLoadListener(fn, frame) {
-    var self = this;
-
-    this.invoke=function () {
-        try {
-            // we've moved to a new page - clear the current one
-            browserbot.currentPage = null;
-            fn();
-        } finally {
-            removeLoadListener(frame, self.invoke);
-        }
-    };
-}
-
-function createBrowserBot(frame, executionContext) {
+function createBrowserBot(frame) {
     if (isIE) {
-        return new IEBrowserBot(frame, executionContext);
+        return new IEBrowserBot(frame);
     }
     else if (isKonqueror) {
-        return new KonquerorBrowserBot(frame, executionContext);
+        return new KonquerorBrowserBot(frame);
     }
     else if (isSafari) {
-        return new SafariBrowserBot(frame, executionContext);
+        return new SafariBrowserBot(frame);
     }
     else {
         // Use mozilla by default
-        return new MozillaBrowserBot(frame, executionContext);
+        return new MozillaBrowserBot(frame);
     }
 }
 
@@ -95,9 +74,8 @@ function createPageBot(windowObject) {
     }
 }
 
-BrowserBot = function(frame, executionContext) {
+BrowserBot = function(frame) {
     this.frame = frame;
-    this.executionContext = executionContext;
     this.currentPage = null;
     this.currentWindowName = null;
 
@@ -136,16 +114,11 @@ BrowserBot.prototype.getFrame = function() {
     return this.frame;
 };
 
-BrowserBot.prototype.getContentWindow = function() {
-    return this.executionContext.getContentWindow(this.getFrame());
-
-};
-
 BrowserBot.prototype.selectWindow = function(target) {
     // we've moved to a new page - clear the current one
     this.currentPage = null;
     this.currentWindowName = null;
-    if (target != "null") {
+    if (target && target != "null") {
         // If window exists
         if (this.getTargetWindow(target)) {
             this.currentWindowName = target;
@@ -156,15 +129,15 @@ BrowserBot.prototype.selectWindow = function(target) {
 BrowserBot.prototype.openLocation = function(target, onloadCallback) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
-    this.executionContext.open(target,this.getFrame());
+    // Window doesn't fire onload event when setting src to the current value,
+    // so we set it to blank first.
+    this.getFrame().src = "about:blank";
+    this.getFrame().src = target;
 };
 
 BrowserBot.prototype.getCurrentPage = function() {
     if (this.currentPage == null) {
-        var testWindow = this.getContentWindow().window;
-        if (this.currentWindowName != null) {
-            testWindow = this.getTargetWindow(this.currentWindowName);
-        }
+        var testWindow = this.getCurrentWindow();
         this.modifyWindowToRecordPopUpDialogs(testWindow, this);
         this.modifyWindowToClearPageCache(testWindow, this);
         this.currentPage = createPageBot(testWindow);
@@ -187,15 +160,20 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
 };
 
 BrowserBot.prototype.modifyWindowToClearPageCache = function(windowToModify, browserBot) {
-    var clearPageCache = function() {
+    var clearCachedPage = function() {
+        LOG.debug("UNLOAD: clearCachedPage()");
         browserbot.currentPage = null;
     };
 
     if (window.addEventListener) {
-        windowToModify.addEventListener("unload",clearPageCache, true);
+        windowToModify.addEventListener("unload", clearCachedPage, true);
     } else if (window.attachEvent) {
-        windowToModify.attachEvent("onunload",clearPageCache);
+        windowToModify.attachEvent("onunload", clearCachedPage);
     }
+};
+
+BrowserBot.prototype.getContentWindow = function() {
+    return this.getFrame().contentWindow || frames[this.getFrame().id];
 };
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
@@ -207,30 +185,106 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
     return targetWindow;
 };
 
+BrowserBot.prototype.getCurrentWindow = function() {
+    var testWindow = this.getContentWindow().window;
+    if (this.currentWindowName != null) {
+        testWindow = this.getTargetWindow(this.currentWindowName);
+    }
+    return testWindow;
+};
+
 BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
-    if (onloadCallback) {
-        var el = new SelfRemovingLoadListener(onloadCallback, this.frame);
-        addLoadListener(this.frame, el.invoke);
+    if (this.currentWindowName == null) {
+        this.callOnFramePageTransition(onloadCallback, this.getFrame());
+    }
+    else {
+        this.callOnWindowPageTransition(onloadCallback, this.getCurrentWindow());
     }
 };
 
-function MozillaBrowserBot(frame, executionContext) {
-    BrowserBot.call(this, frame, executionContext);
+BrowserBot.prototype.callOnFramePageTransition = function(loadFunction, frameObject) {
+    try {
+        addLoadListener(frameObject, loadFunction);
+    } catch (e) {
+        LOG.debug("Got on error adding LoadListener in BrowserBot.prototype.callOnFramePageTransition." +
+                  "This occurs on the second and all subsequent calls in Safari");
+    }
+};
+
+BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
+    var unloadFunction = function() {
+        window.setTimeout(function() {addLoadListener(windowObject, loadFunction);}, 0);
+    };
+    addUnloadListener(windowObject, unloadFunction);
+};
+
+/**
+ * Handle the initial page load in a new popup window.
+ * TODO - something like this should allow us to wait for a new popup window - currently need to pause...
+ */
+//function callOnWindowInitialLoad(loadFunction, windowObject) {
+//    if (!(isSafari || isKonqueror)) {
+//        addLoadListener(windowObject, loadFunction);
+//    }
+//    else {
+//        this.pollForLoad(loadFunction, windowObject, windowObject.document);
+//    }
+//}
+
+function MozillaBrowserBot(frame) {
+    BrowserBot.call(this, frame);
 }
 MozillaBrowserBot.prototype = new BrowserBot;
 
-function KonquerorBrowserBot(frame, executionContext) {
-    BrowserBot.call(this, frame, executionContext);
+function KonquerorBrowserBot(frame) {
+    BrowserBot.call(this, frame);
 }
 KonquerorBrowserBot.prototype = new BrowserBot;
 
-function SafariBrowserBot(frame, executionContext) {
-    BrowserBot.call(this, frame, executionContext);
+KonquerorBrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
+    // Since the unload event doesn't fire in Safari 1.3, we start polling immediately
+    // This works in Konqueror as well
+    this.pollForLoad(loadFunction, windowObject, windowObject.document);
+};
+
+/**
+ * For Konqueror (and Safari), we can't catch the onload event for a separate window (as opposed to an IFrame)
+ * So we set up a polling timer that will keep checking the readyState of the document until it's complete.
+ * Since we might call this before the original page is unloaded, we check to see that the completed document
+ * is different from the original one.
+ */
+KonquerorBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument) {
+    var sameDoc = (originalDocument === windowObject.document);
+    var rs = windowObject.document.readyState;
+
+    if (!sameDoc && rs == 'complete') {
+        LOG.debug("poll: " + rs + " (" + sameDoc + ")");
+        loadFunction();
+        return;
+    }
+    var self = this;
+    window.setTimeout(function() {self.pollForLoad(loadFunction, windowObject, originalDocument);}, 100);
+};
+
+function SafariBrowserBot(frame) {
+    BrowserBot.call(this, frame);
 }
 SafariBrowserBot.prototype = new BrowserBot;
 
-function IEBrowserBot(frame, executionContext) {
-    BrowserBot.call(this, frame, executionContext);
+/**
+ * Since Safari 1.3 doesn't trigger unload, we clear cached page as soon as
+ * we know that we're expecting a new page.
+ */
+SafariBrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
+    this.currentPage = null;
+    BrowserBot.prototype.callOnNextPageLoad.call(this, onloadCallback);
+};
+
+SafariBrowserBot.prototype.callOnWindowPageTransition = KonquerorBrowserBot.prototype.callOnWindowPageTransition;
+SafariBrowserBot.prototype.pollForLoad = KonquerorBrowserBot.prototype.pollForLoad;
+
+function IEBrowserBot(frame) {
+    BrowserBot.call(this, frame);
 }
 IEBrowserBot.prototype = new BrowserBot;
 
@@ -279,7 +333,7 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
 
         newUrl = currentPath + url;
 
-        return originalOpen(newUrl, two);
+        return originalOpen(newUrl, windowName, windowFeatures, replaceFlag);
     };
 };
 
@@ -289,15 +343,45 @@ PageBot = function(pageWindow) {
         this.currentDocument = pageWindow.document;
         this.location = pageWindow.location.pathname;
         this.title = function() {return this.currentDocument.title;};
+    }
 
-        // Register all locate* functions
-        this.locatorFunctions = new Array();
-        for (var f in this) {
-            if (typeof(this[f]) == 'function' && f.match(/^locate/)) {
-                this.locatorFunctions.push(this[f]);
+    // Register all locateElementBy* functions
+    // TODO - don't do this in the constructor - only needed once ever
+    this.locationStrategies = {};
+    for (var functionName in this) {
+        var result = /^locateElementBy([A-Z].+)$/.exec(functionName);
+        if (result != null) {
+            var locatorFunction = this[functionName];
+            if (typeof(locatorFunction) != 'function') {
+                continue;
             }
+            // Use a specified prefix in preference to one generated from
+            // the function name
+            var locatorPrefix = locatorFunction.prefix || result[1].toLowerCase();
+            this.locationStrategies[locatorPrefix] = locatorFunction;
         }
     }
+
+    /**
+     * Find a locator based on a prefix.
+     */
+    this.findElementBy = function(locatorType, locator, inDocument) {
+        var locatorFunction = this.locationStrategies[locatorType];
+        if (! locatorFunction) {
+            throw new Error("Unrecognised locator type: '" + locatorType + "'");
+        }
+        return locatorFunction.call(this, locator, inDocument);
+    };
+
+    /**
+     * The implicit locator, that is used when no prefix is supplied.
+     */
+    this.locationStrategies['implicit'] = function(locator, inDocument) {
+        return this.locateElementByIdentifier(locator, inDocument)
+               || this.locateElementByDomTraversal(locator, inDocument)
+               || this.locateElementByXPath(locator, inDocument);
+    };
+    
 };
 
 MozillaPageBot = function(pageWindow) {
@@ -324,16 +408,24 @@ IEPageBot.prototype = new PageBot();
 * Finds an element on the current page, using various lookup protocols
 */
 PageBot.prototype.findElement = function(locator) {
-    var element = this.findElementInDocument(locator, this.currentDocument);
+    var locatorType = 'implicit';
+    var locatorString = locator;
+    
+    // If there is a locator prefix, use the specified strategy
+    var result = locator.match(/^([a-z]+)=(.+)/);
+    if (result) {
+        locatorType = result[1];
+        locatorString = result[2];
+    }
 
+    var element = this.findElementBy(locatorType, locatorString, this.currentDocument);
     if (element != null) {
         return element;
-    } else {
-        for (var i = 0; i < this.currentWindow.frames.length; i++) {
-            element = this.findElementInDocument(locator, this.currentWindow.frames[i].document);
-            if (element != null) {
-                return element;
-            }
+    }
+    for (var i = 0; i < this.currentWindow.frames.length; i++) {
+        element = this.findElementBy(locatorType, locatorString, this.currentWindow.frames[i].document);
+        if (element != null) {
+            return element;
         }
     }
 
@@ -341,59 +433,49 @@ PageBot.prototype.findElement = function(locator) {
     throw new Error("Element " + locator + " not found");
 };
 
-PageBot.prototype.findElementInDocument = function(locator, inDocument) {
-    // Try the locatorFunctions one at a time.
-    for (var i = 0; i < this.locatorFunctions.length; i++) {
-        var locatorFunction = this.locatorFunctions[i];
-        var element = locatorFunction.call(this, locator, inDocument);
-        if (element != null) {
-            return element;
-        }
-    }
-};
-
 /**
- * In IE, getElementById() also searches by name.
+ * In non-IE browsers, getElementById() does not search by name.  Instead, we
+ * we search separately by id and name.
  */
-IEPageBot.prototype.locateElementById = function(identifier, inDocument) {
-    try {
-        return inDocument.getElementById(identifier);
-    } catch (e) {
-        return null;
-    }
+PageBot.prototype.locateElementByIdentifier = function(identifier, inDocument) {
+    return PageBot.prototype.locateElementById(identifier, inDocument)
+            || PageBot.prototype.locateElementByName(identifier, inDocument)
+            || null;
 };
 
 /**
- * In other browsers, getElementById() does not search by name.  To provide
- * functionality consistent with IE, we search by @name if an element with
- * the @id isn't found.
+ * In IE, getElementById() also searches by name - this is an optimisation for IE.
+ */
+IEPageBot.prototype.locateElementByIdentifer = function(identifier, inDocument) {
+    return inDocument.getElementById(identifier);
+};
+
+/**
+ * Find the element with id - can't rely on getElementById, coz it returns by name as well in IE..
  */
 PageBot.prototype.locateElementById = function(identifier, inDocument) {
-    try {
-        var element = inDocument.getElementById(identifier);
-        if (element == null)
-        {
-            if ( document.evaluate ) {// DOM3 XPath
-                var xpath = "//*[@name='" + identifier + "']";
-                element = document.evaluate(xpath, inDocument, null, 0, null).iterateNext();
-            }
-            // Search through all elements for Konqueror/Safari
-            else {
-                var allElements = inDocument.getElementsByTagName("*");
-                for (var i = 0; i < allElements.length; i++) {
-                    var testElement = allElements[i];
-                    if (testElement.name && testElement.name === identifier) {
-                        element = testElement;
-                        break;
-                    }
-                }
-            }
-        }
-    } catch (e) {
+    var element = inDocument.getElementById(identifier);
+    if (element && element.id === identifier) {
+        return element;
+    }
+    else {
         return null;
     }
+};
 
-    return element;
+/**
+ * In regular browsers, getElementById() does not search by name.
+ * We search by @name using XPath, or by checking every element.
+ */
+PageBot.prototype.locateElementByName = function(identifier, inDocument) {
+    var allElements = inDocument.getElementsByTagName("*");
+    for (var i = 0; i < allElements.length; i++) {
+        var testElement = allElements[i];
+        if (testElement.name && testElement.name === identifier) {
+            return testElement;
+        }
+    }
+    return null;
 };
 
 /**
@@ -416,56 +498,108 @@ PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocumen
 
     return element;
 };
+PageBot.prototype.locateElementByDomTraversal.prefix = "dom";
 
 /**
 * Finds an element identified by the xpath expression. Expressions _must_
 * begin with "//".
 */
 PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
-    if (xpath.indexOf("//") != 0) {
+    if (xpath.slice(0,2) != "//") {
         return null;
     }
 
-    // If don't have XPath bail.
-    // TODO implement subset of XPath for browsers without native support.
-    if (!inDocument.evaluate) {
-        throw new Error("XPath not supported");
-    }
-
-    // Trim any trailing "/": not valid xpath, and remains from attribute locator.
+    // Trim any trailing "/": not valid xpath, and remains from attribute
+    // locator.
     if (xpath.charAt(xpath.length - 1) == '/') {
-        xpath = xpath.slice(0, xpath.length - 1);
+        xpath = xpath.slice(0, -1);
     }
 
-    return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+    // Handle //tag
+    var match = xpath.match(/^\/\/(\w+|\*)$/); 
+    if (match) {
+        var elements = inDocument.getElementsByTagName(match[1].toUpperCase()); 
+        if (elements == null) return null;
+        return elements[0];
+    }
+
+    // Handle //tag[@attr='value']
+    var match = xpath.match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/); 
+    if (match) {
+        return this.findElementByTagNameAndAttributeValue(
+            inDocument,
+            match[1].toUpperCase(),
+            match[2].toLowerCase(),
+            match[3].slice(1, -1)
+        );
+    }
+
+    // Handle //tag[text()='value']
+    var match = xpath.match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/); 
+    if (match) {
+        return this.findElementByTagNameAndText(
+            inDocument,
+            match[1].toUpperCase(),
+            match[2].slice(1, -1)
+        );
+    }
+
+    return this.findElementUsingFullXPath(xpath, inDocument);
 };
 
-/**
- * For IE, we implement XPath support using the html-xpath library.
- */
-IEPageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
-    if (xpath.indexOf("//") != 0) {
-        return null;
+PageBot.prototype.findElementByTagNameAndAttributeValue = function(
+    inDocument, tagName, attributeName, attributeValue
+) {
+    if (isIE && attributeName == "class") {
+        attributeName = "className";
     }
+    var elements = inDocument.getElementsByTagName(tagName); 
+    for (var i = 0; i < elements.length; i++) { 
+        var elementAttr = elements[i].getAttribute(attributeName); 
+        if (elementAttr == attributeValue) { 
+            return elements[i]; 
+        } 
+    } 
+    return null;
+};
 
-    if (!inDocument.evaluate) {
+PageBot.prototype.findElementByTagNameAndText = function(
+    inDocument, tagName, text
+) {
+    var elements = inDocument.getElementsByTagName(tagName); 
+    for (var i = 0; i < elements.length; i++) { 
+        if (getText(elements[i]) == text) { 
+            return elements[i]; 
+        } 
+    } 
+    return null;
+};
+
+PageBot.prototype.findElementUsingFullXPath = function(xpath, inDocument) {
+    if (isIE && !inDocument.evaluate) {
         addXPathSupport(inDocument);
     }
 
-    return PageBot.prototype.locateElementByXPath(xpath, inDocument);
+    // Use document.evaluate() if it's available
+    if (inDocument.evaluate) {
+        return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+    }
+
+    // If not, fall back to slower JavaScript implementation
+    var context = new XPathContext();
+    context.expressionContextNode = inDocument;
+    var xpathResult = new XPathParser().parse(xpath).evaluate(context);
+    if (xpathResult && xpathResult.toArray) {
+        return xpathResult.toArray()[0];
+    }
+    return null;
 };
 
 /**
 * Finds a link element with text matching the expression supplied. Expressions must
 * begin with "link:".
 */
-PageBot.prototype.locateLinkByText = function(linkDescription, inDocument) {
-    var prefix = "link:";
-    if (linkDescription.indexOf(prefix) != 0) {
-        return null;
-    }
-
-    var linkText = linkDescription.substring(prefix.length);
+PageBot.prototype.locateElementByLinkText = function(linkText, inDocument) {
     var links = inDocument.getElementsByTagName('a');
     for (var i = 0; i < links.length; i++) {
         var element = links[i];
@@ -475,6 +609,7 @@ PageBot.prototype.locateLinkByText = function(linkDescription, inDocument) {
     }
     return null;
 };
+PageBot.prototype.locateElementByLinkText.prefix = "link";
 
 /**
 * Returns an attribute based on an attribute locator. This is made up of an element locator
@@ -513,9 +648,11 @@ PageBot.prototype.selectOptionWithLabel = function(element, stringValue) {
                 option.selected = true;
                 triggerEvent(element, 'change', true);
             }
+            triggerEvent(element, 'blur', false);
+            return;
         }
     }
-    triggerEvent(element, 'blur', false);
+    throw new Error("Option with label '" + stringValue + "' not found");
 };
 
 PageBot.prototype.replaceText = function(element, stringValue) {
@@ -600,7 +737,9 @@ SafariPageBot.prototype.clickElement = function(element) {
         // elements is not being called.
         var success = true;
         if (element.onclick) {
-            var onclickResult = element.onclick();
+            var evt = document.createEvent('HTMLEvents');
+            evt.initEvent('click', true, true);
+            var onclickResult = element.onclick(evt);
             if (onclickResult === false) {
                 success = false;
             }
@@ -615,9 +754,11 @@ SafariPageBot.prototype.clickElement = function(element) {
                 this.currentWindow.location.href = element.parentNode.href;
             } else {
                 // This is true for buttons outside of forms, and maybe others.
-                // Just ignore this case for now...
-                // TODO - work out if we need better handling here...
-//                alert(describe(element));
+                LOG.warn("Ignoring 'click' call for button outside form, or link without href."
+                        + "Using buttons without an enclosing form can cause wierd problems with URL resolution in Safari." );
+                // I implemented special handling for window.open, but unfortunately this behaviour is also displayed
+                // when we have a button without an enclosing form that sets document.location in the onclick handler.
+                // The solution is to always use an enclosing form for a button.
             }
         }
     }
@@ -713,5 +854,10 @@ function isDefined(value) {
     return typeof(value) != undefined;
 }
 
+PageBot.prototype.goBack = function() {
+    this.currentWindow.history.back();
+};
 
-
+PageBot.prototype.goForward = function() {
+    this.currentWindow.history.forward();
+};

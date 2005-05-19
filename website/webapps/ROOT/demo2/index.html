@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Selenium starting points</title>
+<script language="Javascript">
+function fixUnitTestLink() {
+  baseurl = document.location + "";
+  baseurl = baseurl.replace(/[^\/]*$/, '');
+  jsunitLink = document.getElementById("unitTestLink");
+  jsunitLink['href'] = jsunitLink['href'].replace('BASEURL', baseurl);
+}
+</script>
+<style>
+li { margin-top: 6pt; }
+</style>
+</head>
+<body onload="fixUnitTestLink();">
+
+<h1>Selenium</h1>
+
+<p>
+<b>Acceptance tests:</b> These test-suites demonstrate/exercise the
+functionality of Selenium.
+</p>
+
+<ul>
+
+  <li>
+    <a href="TestRunner.html">Main TestSuite</a> - tests for all of the features that we consider core to Selenium
+  </li>
+  <li>
+    <a href="TestRunner.html?test=tests/TestSuite-InternetExplorer.html">Internet Explorer TestSuite</a> - tests for all core features, plus IE specific features
+  </li>
+  <li>
+    <a href="TestRunner.html?test=tests/TestSuite-Konqueror.html">Konqueror TestSuite</a> - tests that currently pass on Konqueror
+  </li>
+  <li>
+    <a href="TestRunner.html?test=tests/TestSuite-Safari.html">Safari TestSuite</a> - tests that currently pass on Safari
+  </li>
+  <li>
+    <a href="TestRunner.html?test=devtests/TestSuite.html"><i>devtests</i></a>
+    - experimental features
+  </li>
+  <li>
+    <a href="TestRunner.html?test=tests/ErrorCheckingTestSuite.html">Error Checking TestSuite</a> - tests for the error verification commands
+  </li>
+</ul>
+
+<p><b>Unit-tests:</b> Use JsUnit to test Selenium internals.</p>
+
+<ul>
+
+  <li>
+    <a id="unitTestLink" href="jsunit/testRunner.html?testPage=BASEURLtests/JsUnitSuite.html">BrowserBot unit-tests</a>
+    <br />
+  </li>
+  
+</ul>
+
+</body>
+</html>

@@ -44,6 +44,9 @@ function getText(element) {
     } else if(element.innerText) {
         text = element.innerText;
     }
+    // Replace &nbsp; with a space
+    // TODO - should this be in the match() code instead?
+    text = text.replace(/\240/g, " ");
     return text.trim();
 }
 
@@ -104,6 +107,13 @@ function addLoadListener(element, command) {
         element.addEventListener("load",command, true);
     else if (window.attachEvent)
         element.attachEvent("onload",command);
+}
+
+function addUnloadListener(element, command) {
+    if (window.addEventListener)
+        element.addEventListener("unload",command, true);
+    else if (window.attachEvent)
+        element.attachEvent("onunload",command);
 }
 
 /**
