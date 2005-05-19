@@ -31,7 +31,7 @@
 			<td class="newshead" align="left"><u>Latest News:</u></td>
 		</tr>
 		<tr>
-			<td class="newstext" align="left">May 20, 2005<br>&nbsp;&nbsp;- New <A href="http://selenium.thoughtworks.com/download.html">0.4 Downloads</a> available</td>
+			<td class="newstext" align="left">May 19, 2005<br>&nbsp;&nbsp;- New <A href="http://selenium.thoughtworks.com/download.html">0.4 Downloads</a> available</td>
 		</tr>
 		<tr>
 			<td class="newstext" align="left">May 2, 2005<br>&nbsp;&nbsp;- New <A href="http://selenium.thoughtworks.com/download.html">0.3 Downloads</a> available</td>
