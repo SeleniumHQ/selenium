@@ -14,6 +14,18 @@
  *  limitations under the License.
  *
  */
+
+storedVars = new Object();
+
+var nextExecution;
+function executeNext() {
+    LOG.debug("CODED - LOAD");
+    if (nextExecution) {
+        nextExecution();
+    }
+    nextExecution = null;
+}
+
 var assert = new Assert();
 function Selenium(browserbot) {
     this.browserbot = browserbot;
@@ -22,12 +34,20 @@ function Selenium(browserbot) {
     };
 
     var self = this;
+
     this.callOnNextPageLoad = function(callback) {
-        if (callback) {
-            self.browserbot.callOnNextPageLoad(callback);
-        }
+        nextExecution = callback;
+        self.browserbot.callOnNextPageLoad(executeNext);
     };
 }
+
+/*
+ * Reset the browserbot when an error occurs..
+ */
+Selenium.prototype.reset = function() {
+    storedVars = new Object();
+    this.browserbot.selectWindow("null");
+};
 
 /*
  * Click on the located element, and attach a callback to notify
@@ -84,6 +104,13 @@ Selenium.prototype.doSelectWindow = function(windowName) {
  */
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
     this.browserbot.cancelNextConfirmation();
+};
+
+/*
+ * Simulate the browser back button
+ */
+Selenium.prototype.doGoBack = function() {
+    this.page().goBack();
 };
 
 /*
@@ -204,22 +231,26 @@ Selenium.prototype.assertSelected = function(target, expectedLabel) {
     this.assertMatches(expectedLabel, selectedLabel);
 };
 
+String.prototype.parseCSV = function() {
+    var values = this.replace(/\\,/g, "\n").split(",");
+    // Restore escaped commas
+    for (var i = 0; i < values.length; i++) {
+        values[i] = values[i].replace(/\n/g, ",").trim();
+    }
+    return values;
+};
+
 /**
  * Verify the label of all of the options in the drop=down.
  */
 Selenium.prototype.assertSelectOptions = function(target, options) {
-    // Handle escpaced commas, by substitutine newlines.
-    options = options.replace("\\,", "\n");
-    var expectedOptions = options.split(",");
     var element = this.page().findElement(target);
 
-    assert.equals("Wrong number of options.", expectedOptions.length, element.options.length);
+    var expectedOptionLabels = options.parseCSV();
+    assert.equals("Wrong number of options.", expectedOptionLabels.length, element.options.length);
 
     for (var i = 0; i < element.options.length; i++) {
-        var option = element.options[i];
-        // Put the escaped commas back in.
-        var expectedOption = expectedOptions[i].replace("\n", ",");
-        this.assertMatches(expectedOption, option.text);
+        this.assertMatches(expectedOptionLabels[i], element.options[i].text);
     }
 };
 
@@ -403,10 +434,77 @@ Selenium.prototype.getAllFields = function() {
 };
 
 /*
-  * Set the context for the current Test
-  */
+ * Set the context for the current Test
+ */
 Selenium.prototype.doContext = function(context) {
         return this.page().setContext(context);
+};
+
+/*
+ * Store the value of a form input in a variable
+ */
+Selenium.prototype.doStoreValue = function(target, varName) {
+    if (!varName) {
+        // Backward compatibility mode: read the ENTIRE text of the page
+        // and stores it in a variable with the name of the target
+        value = this.page().bodyText();
+        storedVars[target] = value;
+        return;
+    }
+    var element = this.page().findElement(target);
+    storedVars[varName] = getInputValue(element);
+};
+
+/*
+ * Store the text of an element in a variable
+ */
+Selenium.prototype.doStoreText = function(target, varName) {
+    var element = this.page().findElement(target);
+    storedVars[varName] = getText(element);
+};
+
+/*
+ * Store the result of a literal value
+ */
+Selenium.prototype.doStore = function(value, varName) {
+    storedVars[varName] = value;
+};
+
+/**
+ * Evaluate a parameter, performing javascript evaluation and variable substitution.
+ * If the string matches the pattern "javascript{ ... }", evaluate the string between the braces.
+ */
+Selenium.prototype.preprocessParameter = function(value) {
+    var match = value.match(/^javascript\{(.+)\}$/);
+    if (match && match[1]) {
+        return eval(match[1]).toString();
+    }
+    return this.replaceVariables(value);
+};
+
+/*
+ * Search through str and replace all variable references ${varName} with their
+ * value in storedVars.
+ */
+Selenium.prototype.replaceVariables = function(str) {
+    var stringResult = str;
+
+    // Find all of the matching variable references
+    var match = stringResult.match(/\$\{\w+\}/g);
+    if (!match) {
+        return stringResult;
+    }
+
+    // For each match, lookup the variable value, and replace if found
+    for (var i = 0; match && i < match.length; i++) {
+        var variable = match[i]; // The replacement variable, with ${}
+        var name = variable.substring(2, variable.length - 1); // The replacement variable without ${}
+        var replacement = storedVars[name];
+        if (replacement != undefined) {
+            stringResult = stringResult.replace(variable, replacement);
+        }
+    }
+    return stringResult;
 };
 
 function Assert() {
@@ -474,9 +572,11 @@ Selenium.prototype.globToRegexp = function(glob) {
     pattern = pattern.replace(/\?/g, ".");
     pattern = pattern.replace(/\*/g, ".*");
     return "^" + pattern + "$";
-}
+};
 
 Selenium.prototype.matches = function(pattern, actual) {
     var regexp = new RegExp(this.globToRegexp(pattern));
-    return regexp.test(actual);
-}
+    // Work around Konqueror bug when matching empty strings.
+    var testString = '' + actual;
+    return regexp.test(testString);
+};

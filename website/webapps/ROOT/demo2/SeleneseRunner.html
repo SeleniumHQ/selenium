@@ -25,10 +25,14 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-domviewer.js"></script>
+<script language="JavaScript" type="text/javascript" src="xpath.js"></script>
+<script language="JavaScript" type="text/javascript" src="user-extensions.js"></script>
+<link rel="stylesheet" type="text/css" href="selenium.css" />
 <script>
 passColor = "#cfffcf";
 failColor = "#ffcfcf";
@@ -38,19 +42,24 @@ doneColor = "#FFFFCC";
 
 slowMode = false;
 
+var cmd1 = document.createElement("div");
+var cmd2 = document.createElement("div");
+var cmd3 = document.createElement("div");
+var cmd4 = document.createElement("div");
+
 var postResult = "OK";
+
 
 function runTest() {
     tableParser = new TableParser();
-    var executionContext = new IFrameExecutionContext();
-    var testAppFrame = executionContext.loadFrame();
-    browserbot = new BrowserBot(testAppFrame, executionContext);
+    var testAppFrame = document.getElementById('myiframe');
+    browserbot = new BrowserBot(testAppFrame);
     selenium = new Selenium(browserbot);
 
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
-    testLoop = new TestLoop(commandFactory, executionContext);
+    testLoop = new TestLoop(commandFactory);
 
     testLoop.firstCommand = startup;
     testLoop.nextCommand = nextCommand;
@@ -64,7 +73,12 @@ function runTest() {
 
  function startup() {
 
-   var xmlHttp = XmlHttp.create();
+    var xmlHttp = XmlHttp.create();
+   
+    document.getElementById("commandList").appendChild(cmd4);
+    document.getElementById("commandList").appendChild(cmd3);
+    document.getElementById("commandList").appendChild(cmd2);
+    document.getElementById("commandList").appendChild(cmd1);
 
     try {
         xmlHttp.open("GET", "driver?seleniumStart=true", false);
@@ -100,18 +114,37 @@ function runTest() {
         alert('could not get responseText: ' + e.message);
     }
 
-    if (command == "|testComplete|") {
-        alert('got test complete');
+    
+    if (command.substr(0,'|testComplete'.length)=='|testComplete') {
         return null;
     }
     return tableParser.createCommandFromWikiRow(command);
  }
 
  function commandStarted(command) {
-    commandNode = document.createElement("li");
-    commandNode.innerHTML = command.command;
+    commandNode = document.createElement("div");
+    innerHTML = command.command + '(';
+    if (command.target != null && command.target != "") {
+        innerHTML += command.target;
+        if (command.value != null && command.value != "") {
+            innerHTML += ', ' + command.value;
+        }
+    }
+    innerHTML += ")";
+    commandNode.innerHTML = innerHTML;
     commandNode.style.backgroundColor = workingColor;
-    document.getElementById("commandList").appendChild(commandNode);
+    document.getElementById("commandList").removeChild(cmd1);
+    document.getElementById("commandList").removeChild(cmd2);
+    document.getElementById("commandList").removeChild(cmd3);
+    document.getElementById("commandList").removeChild(cmd4);
+    cmd4 = cmd3;
+    cmd3 = cmd2;
+    cmd2 = cmd1;
+    cmd1 = commandNode;
+    document.getElementById("commandList").appendChild(cmd4);
+    document.getElementById("commandList").appendChild(cmd3);
+    document.getElementById("commandList").appendChild(cmd2);
+    document.getElementById("commandList").appendChild(cmd1);
  }
 
  function commandComplete(result) {
@@ -148,28 +181,67 @@ function runTest() {
      }
    }
  }
+ 
+function getIframeDocument(iframe) {
+    if (iframe.contentDocument) {
+        return iframe.contentDocument;
+    }
+    else {
+        return iframe.contentWindow.document;
+    }
+}
 
 </script>
 </head>
 
 <body onLoad="runTest()">
 
-<h1>Selenium Functional Web Application Testing.</h1>
-Open Source From <a href="http://www.thoughtWorks.com">ThoughtWorks Inc</a>&nbsp;&nbsp;&nbsp;Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"><br>
-<br/>
-<form action="">
-<label id="context" name="context"></label>
-</form>
-<p>
-<div style="float:left;">
-<b>Command List</b><br/>
-(hover to see errors)
-<ul id="commandList">
-</ul>
-.
-</div>
-</p>
-<iframe name="myiframe" id="myiframe" style="float:right;margin-top: 10px;" height="80%;" width="80%" border="0" src=""></iframe>
+<table border="1" style="height: 100%;">
+  <tr>
+    <td width="50%" height="30%">
+      <table>
+      <tr>
+        <td>
+          <img src="selenium-logo.png">
+        </td>
+        <td>
+          <h1><a href="http://selenium.thoughtworks.com" >Selenium</a> Functional Testing for Web Apps</h1>
+          Open Source From <a href="http://www.thoughtworks.com">ThoughtWorks, Inc</a> and Friends
+          <form action="">
+          <br/>Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"> 
+          <button type="button" id="domViewer1" onclick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
+          </form>
+
+        </td>
+      </tr>
+      </table>
+      <form action="">
+        <label id="context" name="context"></label>
+      </form>
+    </td>
+    <td width="50%" height="30%">
+      <b>Last Four Commands</b><br/>
+      <div id="commandList"></div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" height="70%">
+      <iframe name="myiframe" id="myiframe" src="" height="100%" width="100%"></iframe>
+    </td>
+  </tr>
+  <tr>
+     <td colspan="2">
+       <div id="logging-console">
+         <h1>Javascript Log Console (<a id="closeLog" href="javascript:LOG.hide()">Close</a> <a href="javascript:LOG.clear();LOG.hide();">Clear</a>)</h1>
+         <ul id="log-list"/>
+       </div>
+     </td>
+  </tr>
+</table>
+<script language="javascript">
+    LOG = new Logger(LEVEL_WARN);
+    LOG.hide();
+</script>
 </body>
 </html>
 

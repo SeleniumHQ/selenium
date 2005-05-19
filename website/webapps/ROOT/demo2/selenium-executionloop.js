@@ -20,12 +20,13 @@ starting_up  = true;
 TEST_FINISHED = true;
 TEST_CONTINUE = false;
 
-function TestLoop(commandFactory, executionContext) {
+function TestLoop(commandFactory) {
     this.commandFactory = commandFactory;
 
     var self = this;
 
     this.start = function() {
+        selenium.reset();
         this.continueCurrentTest();
     };
 
@@ -35,7 +36,7 @@ function TestLoop(commandFactory, executionContext) {
         if (testStatus == TEST_FINISHED) {
             this.testComplete();
         }
-        };
+    };
 
     this.kickoffNextCommandExecution = function() {
 
@@ -52,15 +53,21 @@ function TestLoop(commandFactory, executionContext) {
         // Make the current row blue
         this.commandStarted(command);
 
+        LOG.debug("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
+
         var result;
         try {
             var handler = this.commandFactory.getCommandHandler(command.command);
             if(handler == null) {
-                throw new Error("Unknown command");
+                throw new Error("Unknown command: '" + command.command + "'");
             }
+
+            command.target = selenium.preprocessParameter(command.target);
+            command.value = selenium.preprocessParameter(command.value);
 
             result = handler.execute(selenium, command);
         } catch (e) {
+            LOG.error(e);
             // TODO: only throw typed errors from commands so that we can perform better error handling
             // to differentiate between expected command errors and unexpected javascript errors.
             if (e instanceof TypeError) {
@@ -74,8 +81,12 @@ function TestLoop(commandFactory, executionContext) {
         // Record the result so that we can continue the execution using window.setTimeout()
         this.lastCommandResult = result;
         if (result.processState == SELENIUM_PROCESS_WAIT) {
+            // Since we're waiting for page to reload, we can't continue command execution
+            // directly, we need use a page load listener.
 
-            executionContext.waitForPageLoad(this,selenium);
+            // TODO there is a potential race condition by attaching a load listener after
+            // the command has completed execution.
+            selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay()");});
 
         } else {
             // Continue processing
@@ -90,13 +101,17 @@ function TestLoop(commandFactory, executionContext) {
     * Continues the command execution, after waiting for the specified delay.
     */
     this.continueCommandExecutionWithDelay = function() {
-        // Get the interval to use for this command execution, using the pauseInterval is
+        // Get the interval to use for this command execution, using the pauseInterval as
         // specified. Reset the pause interval, since it's a one-off thing.
         var interval = this.pauseInterval || this.getCommandInterval();
         this.pauseInterval = undefined;
 
-        // Continue processing
-        if (interval >= 0) {
+        if (interval < 0) {
+            // Enable the "next/continue" button
+            this.waitingForNext();
+        }
+        else {
+            // Continue processing
             window.setTimeout("testLoop.finishCommandExecution()", interval);
         }
     };
@@ -126,6 +141,8 @@ TestLoop.prototype.commandError = noop;
 TestLoop.prototype.commandComplete = noop;
 
 TestLoop.prototype.testComplete = noop;
+
+TestLoop.prototype.waitingForNext = noop;
 
 function noop() {
 

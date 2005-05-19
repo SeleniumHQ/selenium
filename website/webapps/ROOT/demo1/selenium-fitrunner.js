@@ -33,9 +33,6 @@ runAllTests = false;
 testFailed = false;
 suiteFailed = false;
 
-// Holds variables that are stored in a script
-storedVars = new Object();
-
 // Holds the handlers for each command.
 commandHandlers = null;
 
@@ -67,10 +64,19 @@ FAILURE = 1;
 runInterval = 0;
 
 function setRunInterval() {
-    runInterval = this.value;
+    // Get the value of the checked runMode option.
+    // There should be a way of getting the value of the "group", but I don't know how.
+    var runModeOptions = document.forms['controlPanel'].runMode;
+    for (var i = 0; i < runModeOptions.length; i++) {
+        if (runModeOptions[i].checked) {
+            runInterval = runModeOptions[i].value;
+            break;
+        }
+    }
 }
 
 function continueCurrentTest() {
+    document.getElementById('continueTest').disabled = true;
     testLoop.finishCommandExecution();
 }
 
@@ -90,27 +96,14 @@ function loadAndRunIfAuto() {
     loadSuiteFrame();
 }
 
-function getExecutionContext() {
-    if (isNewWindow()) {
-        return getWindowExecutionContext();
-    }
-    else if (getTestFrame().contentWindow)
-    {
-        return new IFrameExecutionContext();
-    }
-    else {
-        return new KonquerorIFrameExecutionContext();
-    }
-}
-
 function start() {
-    loadSuiteFrame(getExecutionContext());
+    setRunInterval();
+    loadSuiteFrame();
 }
 
-function loadSuiteFrame(executionContext) {
-
-    var testAppFrame = executionContext.loadFrame();
-    browserbot = createBrowserBot(testAppFrame,executionContext);
+function loadSuiteFrame() {
+    var testAppFrame = document.getElementById('myiframe');
+    browserbot = createBrowserBot(testAppFrame);
     selenium = new Selenium(browserbot);
     registerCommandHandlers();
 
@@ -168,7 +161,7 @@ function onloadTestSuite() {
 
         addLoadListener(getApplicationFrame(), startSingleTest);
 
-        getApplicationFrame().src = unescape(getQueryParameter("autoURL"));
+        getApplicationFrame().src = getQueryParameter("autoURL");
 
     } else {
         testLink = suiteTable.rows[currentTestRow+1].cells[0].getElementsByTagName("a")[0];
@@ -198,7 +191,18 @@ function addOnclick(suiteTable, rowNum) {
 
         // If the row has a stored results table, use that
         if(suiteTable.rows[row].cells[1]) {
-            getIframeDocument(getTestFrame()).body.innerHTML = getText(suiteTable.rows[row].cells[1]);
+            var bodyElement = getIframeDocument(getTestFrame()).body;
+
+            // Create a div element to hold the results table.
+            var tableNode = getIframeDocument(getTestFrame()).createElement("div");
+            var resultsCell = suiteTable.rows[row].cells[1];
+            tableNode.innerHTML = resultsCell.innerHTML;
+
+            // Append this text node, and remove all the preceding nodes.
+            bodyElement.appendChild(tableNode);
+            while (bodyElement.firstChild != bodyElement.lastChild) {
+                bodyElement.removeChild(bodyElement.firstChild);
+            }
         }
         // Otherwise, just open up the fresh page.
         else {
@@ -214,12 +218,13 @@ function isQueryParameterTrue(name) {
     return (parameterValue != null && parameterValue.toLowerCase() == "true");
 }
 
-function getQueryParameter(name) {
-    myVars = location.search.substr(1).split('&');
-    for (var i =0;i < myVars.length; i++) {
-        nameVal = myVars[i].split('=');
-        if(nameVal[0] == name) {
-            return nameVal[1];
+function getQueryParameter(searchKey) {
+    var clauses = location.search.substr(1).split('&');
+    for (var i = 0; i < clauses.length; i++) {
+        var keyValuePair = clauses[i].split('=',2);
+        var key = unescape(keyValuePair[0]);
+        if (key == searchKey) {
+            return unescape(keyValuePair[1]);
         }
     }
     return null;
@@ -326,9 +331,13 @@ function runNextTest() {
         testLink = suiteTable.rows[currentTestRow].cells[0].getElementsByTagName("a")[0];
         testLink.focus();
 
-        addLoadListener(getTestFrame(), startTest);
-        getExecutionContext().open(testLink.href, getTestFrame());
-//        getTestFrame().src = testLink.href;
+        var testFrame = getTestFrame();
+        addLoadListener(testFrame, startTest);
+
+        // Window doesn't fire onload event when setting src to the current value,
+        // so we set it to blank first.
+        testFrame.src = "about:blank";
+        testFrame.src = testLink.href;
     }
 }
 
@@ -340,10 +349,14 @@ function setCellColor(tableRows, row, col, colorStr) {
 // for each tests, the second column is set to the HTML from the test table.
 function setResultsData(suiteTable, row) {
     // Create a text node of the test table
-    tableContents = suiteTable.ownerDocument.createTextNode(getIframeDocument(getTestFrame()).body.innerHTML);
+    var resultTable = getIframeDocument(getTestFrame()).body.innerHTML;
+    if (!resultTable) return;
 
-    new_column = suiteTable.ownerDocument.createElement("td");
-    new_column.appendChild(tableContents);
+    var tableNode = suiteTable.ownerDocument.createElement("div");
+    tableNode.innerHTML = resultTable;
+
+    var new_column = suiteTable.ownerDocument.createElement("td");
+    new_column.appendChild(tableNode);
 
     // Set the column to be invisible
     new_column.style.cssText = "display: none;";
@@ -421,7 +434,7 @@ function postTestResults(suiteFailed, suiteTable) {
         // If there is a second column, then add a new input
         if (suiteTable.rows[rowNum].cells.length > 1) {
             var resultCell = suiteTable.rows[rowNum].cells[1];
-            form.createHiddenField("testTable." + rowNum, getText(resultCell));
+            form.createHiddenField("testTable." + rowNum, resultCell.innerHTML);
             // remove the resultCell, so it's not included in the suite HTML
             resultCell.parentNode.removeChild(resultCell); 
         }
@@ -459,24 +472,6 @@ function pad (num) {
 }
 
 /*
- * Search through str and replace all variable references ${varName} with their
- * value in storedVars.
- */
-function replaceVariables(str) {
-    // We can't use a String.replace(regexp, replacementFunction) since this doesn't
-    // work in safari. So replace each match 1 at a time.
-    var stringResult = str;
-    var match;
-    while (match = stringResult.match(/\$\{(\w+)\}/)) {
-        var variable = match[0];
-        var name = match[1];
-        var replacement = storedVars[name];
-        stringResult = stringResult.replace(variable, replacement);
-    }
-    return stringResult;
-}
-
-/*
  * Register all of the built-in command handlers with the CommandHandlerFactory.
  * TODO work out an easy way for people to register handlers without modifying the Selenium sources.
  */
@@ -484,14 +479,10 @@ function registerCommandHandlers() {
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
-    // These actions are overridden for fitrunner, as they still involve some FitRunner smarts,
-    // because of the wait/nowait behaviour modification. We need a generic solution to this.
-    commandFactory.registerAction("click", selenium.doClickWithOptionalWait);
-
 }
 
 function initialiseTestLoop() {
-    testLoop = new TestLoop(commandFactory, getExecutionContext());
+    testLoop = new TestLoop(commandFactory);
 
     testLoop.getCommandInterval = function() { return runInterval; };
     testLoop.firstCommand = nextCommand;
@@ -500,6 +491,9 @@ function initialiseTestLoop() {
     testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
     testLoop.testComplete = testComplete;
+    testLoop.waitingForNext = function() {
+        document.getElementById('continueTest').disabled = false;
+    };
     return testLoop;
 }
 
@@ -511,9 +505,8 @@ function nextCommand() {
     currentCommandRow++;
 
     var commandName = getCellText(currentCommandRow, 0);
-    var target = replaceVariables(getCellText(currentCommandRow, 1));
-    var value = replaceVariables(getCellText(currentCommandRow, 2));
-
+    var target = getCellText(currentCommandRow, 1);
+    var value = getCellText(currentCommandRow, 2);
 
     var command = new SeleniumCommand(commandName, target, removeNbsp(value));
     return command;
@@ -524,21 +517,23 @@ function removeNbsp(value)
     return value.replace(/\240/g, "");
 }
 
-function focusOnElement(element) {
-    if (element.focus) {
-        element.focus();
+function scrollIntoView(element) {
+    if (element.scrollIntoView) {
+        element.scrollIntoView();
         return;
     }
+
+    // For Konqueror, we have to create a remove an element.
     var anchor = element.ownerDocument.createElement("a");
     anchor.innerHTML = "!CURSOR!";
     element.appendChild(anchor, element);
-    anchor.focus();
+//    anchor.focus();
     element.removeChild(anchor);
 }
 
 function commandStarted() {
     inputTableRows[currentCommandRow].bgColor = workingColor;
-    focusOnElement(inputTableRows[currentCommandRow].cells[0]);
+    scrollIntoView(inputTableRows[currentCommandRow].cells[0]);
     printMetrics();
 }
 
@@ -603,39 +598,6 @@ function getCellText(rowNumber, columnNumber) {
 }
 
 Selenium.prototype.doPause = function(waitTime) {
+    selenium.callOnNextPageLoad(null);
     testLoop.pauseInterval = waitTime;
-};
-
-// Store the value of a form input in a variable
-Selenium.prototype.doStoreValue = function(target, varName) {
-    if (!varName) { 
-        // Backward compatibility mode: read the ENTIRE text of the page 
-        // and stores it in a variable with the name of the target
-        value = this.page().bodyText();
-        storedVars[target] = value;
-        return;
-    }
-    var element = this.page().findElement(target);
-    storedVars[varName] = getInputValue(element);
-};
-
-// Store the text of an element in a variable
-Selenium.prototype.doStoreText = function(target, varName) {
-    var element = this.page().findElement(target);
-    storedVars[varName] = getText(element);
-};
-
-Selenium.prototype.doSetVariable = function(varName, variableExpression) {
-    var value = eval(variableExpression);
-    storedVars[varName] = value;
-};
-
-Selenium.prototype.doClickWithOptionalWait = function(target, wait) {
-
-    this.doClick(target);
-
-    if(wait != "nowait") {
-        return SELENIUM_PROCESS_WAIT;
-    }
-
 };

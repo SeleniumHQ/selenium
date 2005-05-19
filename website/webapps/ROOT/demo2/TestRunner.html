@@ -1,3 +1,12 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<HTA:APPLICATION ID="SeleniumTestRunner" APPLICATIONNAME="Selenium" >
+<!-- the previous line is only relevant if you rename this
+     file to "TestRunner.hta" -->
+
+<!-- The copyright notice and other comments have been moved to after the HTA declaration,
+     to work-around a bug in IE on Win2K whereby the HTA application doesn't function correctly -->
 <!--
 Copyright 2004 ThoughtWorks, Inc
 
@@ -13,58 +22,110 @@ Copyright 2004 ThoughtWorks, Inc
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<html>
-<head>
-<meta content="text/html; charset=ISO-8859-1"
-http-equiv="content-type">
-<link rel="stylesheet" type="text/css" href="selenium.css">
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+
 <title>Selenium Functional Test Runner</title>
 <script language="JavaScript" type="text/javascript" src="html-xpath/html-xpath-patched.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-executioncontext.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
-<script language="JavaScript" type="text/javascript" src="domviewer.js"></script>
-
-
+<script language="JavaScript" type="text/javascript" src="selenium-domviewer.js"></script>
+<script language="JavaScript" type="text/javascript" src="xpath.js"></script>
+<script language="JavaScript" type="text/javascript" src="user-extensions.js"></script>
+<link rel="stylesheet" type="text/css" href="selenium.css" />
 </head>
 
-<body onLoad="javascript:start();">
-<iframe NAME="testSuiteFrame" ID="testSuiteFrame" width="220px;" height="20%" border="0"  SRC="./tests/TestSuite.html"></iframe>
-<div id="seleniumControlPanel">
-<div id="launchPanel">
-    <b>Run:</b>
-    <button type="button" id="runTest" onClick="runSingleTest();">Selected test</button>
-    <button type="button" id="runSuite" onClick="startTestSuite();">All tests</button>
-    <button type="button" id="domViewer1" onClick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
-</div>
+<body onload="start();">
 
-<div id="runSpeedPanel">
-    <b>Run mode:</b>
-    <label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
-    <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
-    <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
-    <button type="button" id="continueTest" accesskey="n">Next/Continue</button>
-</div>
+    <table class="layout">
+    <form action="" name="controlPanel">
 
-<table id="resultsPanel">
-    <tr><th>Elapsed Time:</th><td id="elapsedTime">00.00</td></tr>
-    <tr><th colspan="2">Test Results</th><th colspan="2">Command Results</th></tr>
-    <tr><td>Total run:</td><td id="testRuns">0</td><td>Passes:</td><td id="commandPasses">0</td></tr>
-    <tr><td>Failures:</td><td id="testFailures">0</td><td>Failures:</td><td id="commandFailures">0</td></tr>
-    <tr><td colspan="2"/><td>Errors:</td><td id="commandErrors">0</td></tr>
-</table>
-</div>
+      <!-- Suite, Test, Control Panel -->
 
-<iframe NAME="testFrame" ID="testFrame" style="float:left;margin-top: 10px;" height="75%" width="30%" border="0"  src="about:blank"></iframe>
+      <tr class="selenium">
+        <td width="25%" height="30%" rowspan="2"><iframe name="testSuiteFrame" id="testSuiteFrame" src="./tests/TestSuite.html"></iframe></td>
+        <td width="50%" height="30%" rowspan="2"><iframe name="testFrame" id="testFrame"></iframe></td>
+        <th width="25%" height="1" class="header">
+          <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
+        </th>
+      </tr>
 
-<iframe NAME="myiframe" ID="myiframe" style="float:right;margin-top: 10px;" height="75%;" width="68%" border="0"  src="about:blank"></iframe>
+      <tr class="selenium">
+        <td width="25%" height="30%" id="controlPanel">
 
-<br>
+          <table id="controls">
+            <tr>
+              <td>
+                <b>Run:</b>
+                <button type="button" id="runTest" onclick="runSingleTest();"><em>Selected</em> Test</button>
+                <button type="button" id="runSuite" onclick="startTestSuite();"><strong>All</strong> Tests</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b>Mode:</b>
+                <label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
+                <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
+                <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button type="button" id="domViewer1" onclick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
+                <button type="button" id="continueTest" disabled="disabled">Next/Continue</button>
+              </td>
+            </tr>
+          </table>
 
+          <table id="stats" align="center">
+            <tr>
+              <td colspan="2" align="right">Elapsed:</td>
+              <td id="elapsedTime" colspan="2">00.00</td>
+            </tr>
+            <tr>
+              <th colspan="2">Tests</th>
+              <th colspan="2">Commands</th>
+            </tr>
+            <tr>
+              <td class="count" id="testRuns">0</td>
+              <td>run</td>
+              <td class="count" id="commandPasses">0</td>
+              <td>passed</td>
+            </tr>
+            <tr>
+              <td class="count" id="testFailures">0</td>
+              <td>failed</td>
+              <td class="count" id="commandFailures">0</td>
+              <td>failed</td>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td class="count" id="commandErrors">0</td>
+              <td>incomplete</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- AUT -->
+
+      <tr>
+        <td colspan="3" height="70%"><iframe name="myiframe" id="myiframe" src="TestRunner-splash.html"></iframe></td>
+      </tr>
+    </form>
+    </table>
+
+    <div id="logging-console">
+        <h1>Javascript Log Console (<a id="closeLog" href="javascript:LOG.hide()">Close</a> <a href="javascript:LOG.clear();LOG.hide();">Clear</a>)</h1>
+        <ul id="log-list"/>
+    </div>
+    <script language="javascript">
+        LOG = new Logger(LEVEL_WARN);
+        LOG.hide();
+    </script>
 </body>
 </html>
-
