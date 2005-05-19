@@ -105,12 +105,7 @@
         <delete file="dist/readme.txt"/>
   
     </target>
-    <target name="publish-dist" depends="dist">
-    
-        <copy todir="../../website/webapps/ROOT" file="dist/selenium-${version}-java-src.zip"/>
-        <copy todir="../../website/webapps/ROOT" file="dist/selenium-${version}-java.zip"/>
 
-    </target>
     <target name="clean">
         <delete dir="target"/>
         <delete dir="dist"/>

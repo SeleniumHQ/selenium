@@ -126,6 +126,7 @@
                     <include name="*.html"/>
                     <include name="*.css"/>
                     <include name="*.jpg"/>
+                    <include name="*.png"/>
                     <include name="html-xpath/html-xpath-patched.js"/>
                 </fileset>
             </copy>
