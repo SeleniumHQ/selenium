@@ -54,6 +54,26 @@ Element Locators
     2. dom
     3. xpath
 
+------------------------
+Select Option Specifiers
+------------------------
+
+    Select Option Specifiers provide different ways of specifying options of an HTML Select element (e.g. for selecting a specific option, or for asserting that the selected option satisfies a specification).  There are several forms of Select Option Specifier.
+
+    **label**
+        matches options based on their labels, i.e. the visible text.  Does glob matching so that, for example, "fo*r" will match <option>foobar</option>.
+            - label=TheLabel
+
+    **value**
+        matches options based on their values.  Does glob matching so that, for example, "fo*r" will match <option value="foobar">Some option</option>.
+            - value=TheValue
+
+    **index**
+        matches an option based on its index (offset from zero).
+            - index=2
+
+    Without a prefix, the default is to only match on labels.
+
 ----------------
 Selenium Actions
 ----------------
@@ -110,17 +130,19 @@ Selenium Actions
             ===========    ==========================   ==========
 
     **select (selectAndWait)**
-        Select an option from a drop-down, based on the option label.
+        Select an option from a drop-down, based on a Select Option Specifier.
 
-        **target:** The id of the drop-down.
+        **target:** An Element Locator specifying an HTML Select element.
 
-        **value:** The label of the option to be selected.
+        **value:** An Option Specifier.  If more than one option matches (e.g. due to the use of globs like "f*b*", or due to more than one option having the same label or value), then the first option that matches is selected.
 
         **examples:**
 
             =============  ================   ==========
-            select         dropDown           First Option
-            selectAndWait  currencySelector   Australian Dollars
+            select         dropDown           Australian Dollars
+            select         dropDown           index=0
+            selectAndWait  currencySelector   value=AUD
+            selectAndWait  currencySelector   label=Aus*lian D*rs
             =============  ================   ==========
 
     **selectWindow**
@@ -247,17 +269,19 @@ Selenium Checks
             ===========   ===========================   ==========
 
     **verifySelected / assertSelected**
-        Verifies the label of the selected option of a drop-down.
+        Verifies that the selected option of a drop-down satisfies a specified Select Option Specifier.
 
         **target:** Locates the drop-down to verify.
 
-        **value:** The expected label of the selected option.
+        **value:** A Select Option Specifier that the selected option is expected to satisfy.
 
         **examples:**
 
             ==============   ===========================   ==========
             verifySelected   dropdown2                     John Smith
-            assertSelected   document.forms[2].dropDown    John Smith
+            verifySelected   dropdown2                     value=js*123
+            assertSelected   document.forms[2].dropDown    label=J* Smith
+            assertSelected   document.forms[2].dropDown    index=0
             ==============   ===========================   ==========
 
     **verifySelectOptions / assertSelectOptions**

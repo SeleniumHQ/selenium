@@ -636,23 +636,15 @@ PageBot.prototype.findAttribute = function(locator) {
 };
 
 /*
-* Selects the first option with a matching label from the select box element
-* provided. If no matching element is found, nothing happens.
+* Select the specified option and trigger the relevant events of the element.
 */
-PageBot.prototype.selectOptionWithLabel = function(element, stringValue) {
+PageBot.prototype.selectOption = function(element, option) {
     triggerEvent(element, 'focus', false);
-    for (var i = 0; i < element.options.length; i++) {
-        var option = element.options[i];
-        if (option.text == stringValue) {
-            if (!option.selected) {
-                option.selected = true;
-                triggerEvent(element, 'change', true);
-            }
-            triggerEvent(element, 'blur', false);
-            return;
-        }
+    if (!option.selected) {
+        option.selected = true;
+        triggerEvent(element, 'change', true);
     }
-    throw new Error("Option with label '" + stringValue + "' not found");
+    triggerEvent(element, 'blur', false);
 };
 
 PageBot.prototype.replaceText = function(element, stringValue) {
