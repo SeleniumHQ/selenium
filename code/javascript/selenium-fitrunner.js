@@ -519,7 +519,7 @@ function removeNbsp(value)
 
 function scrollIntoView(element) {
     if (element.scrollIntoView) {
-        element.scrollIntoView();
+        element.scrollIntoView(false);
         return;
     }
 
