@@ -68,11 +68,23 @@ function testType() {
 }
 
 function testSelect() {
-    mockPageBot.expects("findElement", "id").returns("selectElement");
-    mockPageBot.expects("selectOptionWithLabel", "selectElement", "option text");
+    var mockOptionLocatorFactory = new Mock();
+    selenium.optionLocatorFactory = mockOptionLocatorFactory;
+    var mockSelect = new Mock();
+    // The doSelect() method checks the options property exists as a way
+    // of ensuring that the element is a Select element.  Hence the following expectation.
+    mockSelect.expectsProperty("options").returns("some options");
+    mockPageBot.expects("findElement", "id").returns(mockSelect);
+    var mockOptionLocator = new Mock();
+    mockOptionLocatorFactory.expects("fromLocatorString", "Option One").returns(mockOptionLocator);
+    var option = new Object();
+    mockOptionLocator.expects("findOption", mockSelect).returns(option);
+    mockPageBot.expects("selectOption", mockSelect, option);
 
-
-    selenium.doSelect("id", "option text");
+    selenium.doSelect("id", "Option One");
+    mockOptionLocatorFactory.verify();
+    mockOptionLocator.verify();
+    mockSelect.verify();
     verifyMocks();
 }
 

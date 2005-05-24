@@ -28,27 +28,25 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="/selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript">
-function setUp() {
-    mockPageBot = new Mock();
 
-    mockBrowserBot = new Mock();
-    mockBrowserBot.getCurrentPage = function() { return mockPageBot; };
-
-    selenium = new Selenium(mockBrowserBot);
-    assertEquals(mockPageBot, selenium.page());
-}
-
-function verifyMocks() {
-    mockBrowserBot.verify();
-    mockPageBot.verify();
-}
 
 function testGlobToRegexp() {
-    assertEquals("^.*$", selenium.globToRegexp("*"));
-    assertEquals("^.$", selenium.globToRegexp("?"));
-    assertEquals("^a.*b$", selenium.globToRegexp("a*b"));
-    assertEquals("^\\.\\|\\^\\$\\(\\)\\[\\]\\{\\}$", selenium.globToRegexp(".|^$()[]{}"));
-    assertEquals("^.*/foo/bar.*$", selenium.globToRegexp("*/foo/bar*"));
+    var patternMatcher = new PatternMatcher();
+    assertEquals("^.*$", patternMatcher.globToRegexp("*"));
+    assertEquals("^.$", patternMatcher.globToRegexp("?"));
+    assertEquals("^a.*b$", patternMatcher.globToRegexp("a*b"));
+    assertEquals("^\\.\\|\\^\\$\\(\\)\\[\\]\\{\\}$", patternMatcher.globToRegexp(".|^$()[]{}"));
+    assertEquals("^.*/foo/bar.*$", patternMatcher.globToRegexp("*/foo/bar*"));
+}
+
+function testPatternMatcherMatchesSuccess() {
+    var patternMatcher = new PatternMatcher();
+    assertTrue(patternMatcher.matches("a*e", "apple"));
+}
+
+function testPatternMatcherMatchesFailure() {
+    var patternMatcher = new PatternMatcher();
+    assertFalse(patternMatcher.matches("a*z", "apple"));
 }
 
 </script>

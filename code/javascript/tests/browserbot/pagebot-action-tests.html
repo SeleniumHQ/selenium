@@ -96,15 +96,15 @@ function initialiseButtons() {
     attachEventListeners(theSubmit, submitEvents)
 }
 
-function testSelectOptionWithLabelShouldSelectAndTriggerFocusChangeAndBlur() {
-    pageBot.selectOptionWithLabel(theSelect, "Third Option")
+function testSelectOptionShouldSelectAndTriggerFocusChangeAndBlur() {
+    pageBot.selectOption(theSelect, theSelect.options[2])
 
     assertEquals("option3", theSelect.value)
     assertEquals("focus,change,blur", theSelectEvents.join());
 }
 
 function testSelectAlreadySelectedOptionWithLabelShouldNotTriggerChange() {
-    pageBot.selectOptionWithLabel(theSelect, "Second Option")
+    pageBot.selectOption(theSelect, theSelect.options[1])
 
     assertEquals("option2", theSelect.value)
     assertEquals("focus,blur", theSelectEvents.join())

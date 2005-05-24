@@ -29,6 +29,7 @@ function executeNext() {
 var assert = new Assert();
 function Selenium(browserbot) {
     this.browserbot = browserbot;
+    this.optionLocatorFactory = new OptionLocatorFactory();
     this.page = function() {
         return browserbot.getCurrentPage();
     };
@@ -76,12 +77,16 @@ Selenium.prototype.doType = function(locator, newText) {
 };
 
 /**
- * Select the option by label from the located select element.
- * TODO fail if it's not a select.
+ * Select the option from the located select element.
  */
-Selenium.prototype.doSelect = function(locator, optionText) {
+Selenium.prototype.doSelect = function(locator, optionLocator) {
     var element = this.page().findElement(locator);
-    this.page().selectOptionWithLabel(element, optionText);
+    if (!("options" in element)) {
+        throw new Error("Specified element is not a Select (has no options)");
+    }
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    var option = locator.findOption(element);
+    this.page().selectOption(element, option);
 };
 
 /*
@@ -149,7 +154,7 @@ Selenium.prototype.doGoBack = function() {
  * Verify the location of the current page.
  */
 Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
-    this.assertMatches(expectedLocation, this.page().location);
+    assert.assertMatches(expectedLocation, this.page().location);
 };
 
 
@@ -169,7 +174,7 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
  * Verify the title of the current page.
  */
 Selenium.prototype.assertTitle = function(expectedTitle) {
-    this.assertMatches(expectedTitle, this.page().title());
+    assert.assertMatches(expectedTitle, this.page().title());
 };
 
 /*
@@ -178,7 +183,7 @@ Selenium.prototype.assertTitle = function(expectedTitle) {
 Selenium.prototype.assertValue = function(locator, expectedValue) {
     var element = this.page().findElement(locator);
     var actualValue = getInputValue(element);
-    this.assertMatches(expectedValue, actualValue.trim());
+    assert.assertMatches(expectedValue, actualValue.trim());
 };
 
 /*
@@ -187,7 +192,7 @@ Selenium.prototype.assertValue = function(locator, expectedValue) {
 Selenium.prototype.assertText = function(locator, expectedContent) {
     var element = this.page().findElement(locator);
     var actualText = getText(element);
-    this.assertMatches(expectedContent, actualText.trim());
+    assert.assertMatches(expectedContent, actualText.trim());
 };
 
 /*
@@ -218,17 +223,17 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
     }
     else {
         actualContent = getText(table.rows[row].cells[col]);
-        this.assertMatches(expectedContent, actualContent.trim());
+        assert.assertMatches(expectedContent, actualContent.trim());
     }
 };
 
 /**
- * Verify the label of the option that is selected.
+ * Verify that the selected option satisfies the option locator.
  */
-Selenium.prototype.assertSelected = function(target, expectedLabel) {
+Selenium.prototype.assertSelected = function(target, optionLocator) {
     var element = this.page().findElement(target);
-    var selectedLabel = element.options[element.selectedIndex].text;
-    this.assertMatches(expectedLabel, selectedLabel);
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    locator.assertSelected(element);
 };
 
 String.prototype.parseCSV = function() {
@@ -250,7 +255,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
     assert.equals("Wrong number of options.", expectedOptionLabels.length, element.options.length);
 
     for (var i = 0; i < element.options.length; i++) {
-        this.assertMatches(expectedOptionLabels[i], element.options[i].text);
+        assert.assertMatches(expectedOptionLabels[i], element.options[i].text);
     }
 };
 
@@ -260,7 +265,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
  */
 Selenium.prototype.assertAttribute = function(target, expected) {
     var attributeValue = this.page().findAttribute(target);
-    this.assertMatches(expected, attributeValue);
+    assert.assertMatches(expected, attributeValue);
 };
 
 /*
@@ -508,8 +513,10 @@ Selenium.prototype.replaceVariables = function(str) {
 };
 
 function Assert() {
-    this.equals = function()
-    {
+    this.patternMatcher = new PatternMatcher();
+}
+
+Assert.prototype.equals = function() {
         if (arguments.length == 2)
         {
             var comment = "";
@@ -528,23 +535,16 @@ function Assert() {
         var errorMessage = comment + "Expected '" + expected + "' but was '" + actual + "'";
 
         throw new AssertionFailedError(errorMessage);
-    };
+};
 
-    this.fail = function(message)
-    {
+Assert.prototype.fail = function(message) {
         throw new AssertionFailedError(message);
-    };
-}
-
-function AssertionFailedError(message) {
-    this.isAssertionFailedError = true;
-    this.failureMessage = message;
-}
+};
 
 /*
  * assertMatches(comment?, pattern, actual)
  */
-Selenium.prototype.assertMatches = function() {
+Assert.prototype.assertMatches = function() {
     if (arguments.length == 2)
     {
         var comment = "";
@@ -557,7 +557,7 @@ Selenium.prototype.assertMatches = function() {
         var actual = arguments[2];
     }
 
-    if (this.matches(pattern, actual)) {
+    if (this.patternMatcher.matches(pattern, actual)) {
         return;
     }
 
@@ -566,17 +566,117 @@ Selenium.prototype.assertMatches = function() {
     assert.fail(errorMessage);
 };
 
-Selenium.prototype.globToRegexp = function(glob) {
-    var pattern = glob;
-    pattern = pattern.replace(/([.^$+(){}[\]\\|])/g, "\\$1");
-    pattern = pattern.replace(/\?/g, ".");
-    pattern = pattern.replace(/\*/g, ".*");
-    return "^" + pattern + "$";
-};
 
-Selenium.prototype.matches = function(pattern, actual) {
-    var regexp = new RegExp(this.globToRegexp(pattern));
-    // Work around Konqueror bug when matching empty strings.
-    var testString = '' + actual;
-    return regexp.test(testString);
-};
+function AssertionFailedError(message) {
+    this.isAssertionFailedError = true;
+    this.failureMessage = message;
+}
+
+function PatternMatcher() {
+    this.matches = function(pattern, actual) {
+        var regexp = new RegExp(this.globToRegexp(pattern));
+        // Work around Konqueror bug when matching empty strings.
+        var testString = '' + actual;
+        return regexp.test(testString);
+    };
+    this.globToRegexp = function(glob) {
+        var pattern = glob;
+        pattern = pattern.replace(/([.^$+(){}[\]\\|])/g, "\\$1");
+        pattern = pattern.replace(/\?/g, ".");
+        pattern = pattern.replace(/\*/g, ".*");
+        return "^" + pattern + "$";
+    };
+}
+
+/**
+ *  Factory for creating "Option Locators".
+ *  An OptionLocator is an object for dealing with Select options (e.g. for
+ *  finding a specified option, or asserting that the selected option of 
+ *  Select element matches some condition.
+ *  The type of locator returned by the factory depends on the locator string:
+ *     label=<exp>  (OptionLocatorByLabel)
+ *     value=<exp>  (OptionLocatorByValue)
+ *     index=<exp>  (OptionLocatorByIndex)
+ *     <exp> (default is OptionLocatorByLabel).
+ * TODO: This should be modified to allow the easy addition of new locator types
+ * without having to modify the fromLocatorString() method.
+ */
+function OptionLocatorFactory() {
+    this.fromLocatorString = function(locatorString) {
+        var locatorType = 'label';
+        var locatorValue = locatorString;
+        // If there is a locator prefix, use the specified strategy
+        var result = locatorString.match(/^([a-zA-Z]+)=(.*)/);
+        if (result) {
+            locatorType = result[1];
+            locatorValue = result[2];
+        }
+        if ('label' == locatorType) {
+            return new OptionLocatorByLabel(locatorValue);
+        } else if ('index' == locatorType) {
+            return new OptionLocatorByIndex(locatorValue);
+        } else if ('value' == locatorType) {
+            return new OptionLocatorByValue(locatorValue);
+        }
+        throw new Error("Unkown option locator type: " + locatorType);
+    };
+}
+
+/**
+ *  OptionLocator for options identified by their labels.
+ */
+function OptionLocatorByLabel(label) {
+    this.label = label;
+    this.patternMatcher = new PatternMatcher();
+    this.findOption = function(element) {
+        for (var i = 0; i < element.options.length; i++) {
+            if (this.patternMatcher.matches(this.label, element.options[i].text)) {
+                return element.options[i];
+            }
+        }
+        throw new Error("Option with label '" + this.label + "' not found");
+    }
+    this.assertSelected = function(element) {
+        var selectedLabel = element.options[element.selectedIndex].text;
+        assert.assertMatches(this.label, selectedLabel);
+    }
+}
+
+/**
+ *  OptionLocator for options identified by their values.
+ */
+function OptionLocatorByValue(value) {
+    this.value = value;
+    this.patternMatcher = new PatternMatcher();
+    this.findOption = function(element) {
+        for (var i = 0; i < element.options.length; i++) {
+            if (this.patternMatcher.matches(this.value, element.options[i].value)) {
+                return element.options[i];
+            }
+        }
+        throw new Error("Option with value '" + this.value + "' not found");
+    }
+    this.assertSelected = function(element) {
+        var selectedValue = element.options[element.selectedIndex].value;
+        assert.assertMatches(this.value, selectedValue);
+    }
+}
+
+/**
+ *  OptionLocator for options identified by their index.
+ */
+function OptionLocatorByIndex(index) {
+    this.index = Number(index);
+    if (isNaN(this.index) || this.index < 0) {
+        throw new Error("Illegal Index: " + index);
+    }
+    this.findOption = function(element) {
+        if (element.options.length <= this.index) {
+            throw new Error("Index out of range.  Only " + element.options.length + " options available");
+        }
+        return element.options[this.index];
+    }
+    this.assertSelected = function(element) {
+        assert.equals(this.index, element.selectedIndex);
+    }
+}
