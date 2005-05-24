@@ -213,7 +213,7 @@
 
     </target>
 
-    <target name="integration-test-windows" depends="compile-main" if="ifWindows">
+    <target name="integration-test-windows" depends="compile-main" if="isWindows">
 
         <echo>Integration Tests for Embedded Web Container</echo>
 
@@ -225,7 +225,7 @@
             <formatter type="plain"/>
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
-                    <include name="**/embedded/**/*Test.java"/>
+                    <include name="**/embedded/**/Real*Test.java"/>
                     <exclude name="**/Mac*"/>
                 	<exclude name="**/Lin*"/>
                 </fileset>
