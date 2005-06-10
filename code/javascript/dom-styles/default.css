@@ -6,6 +6,7 @@
 }
 
 img{
+    display: inline;
 	border: none;
 }
 
@@ -194,14 +195,6 @@ ul {
 
 .boxlevel20{
 	background: #87CEEB;
-}
-
-.boxlevel11{
-	background: #87CEFA;
-}
-
-.boxlevel12{
-	background: #4682B4;
 }
 
 .boxlevel21{
