@@ -173,6 +173,20 @@ Selenium Actions
             pause   2000    
             =====   ====  =====
 
+    **waitFor**
+        Waits for a specified input (e.g. a hidden field) to have a specified value.  Will succeed immediately if the input already has the value.  Is implemented by polling for the value.  Warning: can block indefinitely if the input never has the specified value.
+
+        **target:** The input field.
+        
+        **value:** The value the input field must have before continuing.
+        
+        **example:**
+            
+            =======   ================  ==========
+            waitFor   finishIndication  isfinished
+	    =======   ================  ==========
+
+
     **store**
 
         Stores the value of a javascript expression into a variable

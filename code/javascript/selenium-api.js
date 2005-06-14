@@ -475,6 +475,18 @@ Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
 
+
+/*
+ * Wait for the target to have the specified value by polling.
+ * The polling is done in TestLoop.kickoffNextCommandExecution()
+ */
+Selenium.prototype.doWaitFor = function (target, value) {
+    var e = this.page().findElement(target);
+    testLoop.waitForCondition = function () {
+        return (e.value == value);
+    };
+};
+
 /**
  * Evaluate a parameter, performing javascript evaluation and variable substitution.
  * If the string matches the pattern "javascript{ ... }", evaluate the string between the braces.
@@ -635,11 +647,12 @@ function OptionLocatorByLabel(label) {
             }
         }
         throw new Error("Option with label '" + this.label + "' not found");
-    }
+    };
+
     this.assertSelected = function(element) {
         var selectedLabel = element.options[element.selectedIndex].text;
         assert.assertMatches(this.label, selectedLabel);
-    }
+    };
 }
 
 /**
@@ -655,11 +668,12 @@ function OptionLocatorByValue(value) {
             }
         }
         throw new Error("Option with value '" + this.value + "' not found");
-    }
+    };
+
     this.assertSelected = function(element) {
         var selectedValue = element.options[element.selectedIndex].value;
         assert.assertMatches(this.value, selectedValue);
-    }
+    };
 }
 
 /**
@@ -670,13 +684,17 @@ function OptionLocatorByIndex(index) {
     if (isNaN(this.index) || this.index < 0) {
         throw new Error("Illegal Index: " + index);
     }
+
     this.findOption = function(element) {
         if (element.options.length <= this.index) {
             throw new Error("Index out of range.  Only " + element.options.length + " options available");
         }
         return element.options[this.index];
-    }
+    };
+
     this.assertSelected = function(element) {
         assert.equals(this.index, element.selectedIndex);
-    }
+    };
 }
+
+

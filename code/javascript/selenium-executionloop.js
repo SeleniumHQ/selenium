@@ -88,6 +88,8 @@ function TestLoop(commandFactory) {
             // the command has completed execution.
             selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay()");});
 
+        } else if (this.waitForCondition) {
+            this.pollUntilConditionIsTrue();
         } else {
             // Continue processing
             this.continueCommandExecutionWithDelay();
@@ -96,6 +98,19 @@ function TestLoop(commandFactory) {
         // Test is not finished.
         return TEST_CONTINUE;
     };
+
+    /**
+    * Busy wait for waitForCondition() to become true, and then continue command execution.
+    */
+    this.pollUntilConditionIsTrue = function () {
+        if (this.waitForCondition()) {
+            this.waitForCondition = null;
+            this.continueCommandExecutionWithDelay();
+        } else {
+            window.setTimeout("testLoop.pollUntilConditionIsTrue()", 10);
+        }
+    };
+
 
     /**
     * Continues the command execution, after waiting for the specified delay.
