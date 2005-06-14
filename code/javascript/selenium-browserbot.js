@@ -82,6 +82,7 @@ BrowserBot = function(frame) {
     this.modalDialogTest = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
+    this.openedWindows = {};
     this.nextConfirmResult = true;
 };
 
@@ -157,6 +158,15 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         browserBot.nextConfirmResult = true;
         return result;
     };
+
+    // Keep a reference to all popup windows by name
+    // note that in IE the "windowName" argument must be a valid javascript identifier, it seems.
+    var originalOpen = windowToModify.open;
+    windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
+        var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
+        browserbot.openedWindows[windowName] = openedWindow;
+        return openedWindow;
+    };
 };
 
 BrowserBot.prototype.modifyWindowToClearPageCache = function(windowToModify, browserBot) {
@@ -177,8 +187,13 @@ BrowserBot.prototype.getContentWindow = function() {
 };
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
-    var evalString = "this.getContentWindow().window." + windowName;
-    var targetWindow = eval(evalString);
+    LOG.debug("getTargetWindow(" + windowName + ")");
+    // First look in the map of opened windows
+    var targetWindow = this.openedWindows[windowName];
+    if (!targetWindow) {
+        var evalString = "this.getContentWindow().window." + windowName;
+        targetWindow = eval(evalString);
+    }
     if (!targetWindow) {
         throw new Error("Window does not exist");
     }
