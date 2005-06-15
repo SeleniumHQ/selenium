@@ -119,6 +119,14 @@ Selenium Actions
             clickAndWait   anyLink
             ============   ==================  =====
 
+        **note:**
+            Selenium will *always* automatically click on a popup dialog raised by the alert() or confirm()
+            methods. (The exception is those raised during 'onload', which are not yet handled by Selenium).
+            You *must* use [verify|assert]Alert or [verify|assert]Confirmation to tell Selenium that you expect the
+            popup dialog. You may use chooseCancelOnNextConfirmation to click 'cancel' on the next confirmation
+            dialog instead of clicking 'OK'.
+
+
     **type (typeAndWait)**
         Types (enters) text into an input field.  This works for text fields, combo boxes, check boxes, etc.
         
