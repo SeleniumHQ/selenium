@@ -92,7 +92,7 @@ function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIs
 
     assertEquals(mockFrame.contentWindow.window, pageBot.currentWindow);
     assertEquals('thedocument', pageBot.currentDocument);
-    assertEquals('thelocation', pageBot.location);
+    assertEquals(mockLocation, pageBot.location);
 
     mockLocation.verify();
 }

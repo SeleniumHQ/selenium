@@ -356,7 +356,7 @@ PageBot = function(pageWindow) {
     if (pageWindow) {
         this.currentWindow = pageWindow;
         this.currentDocument = pageWindow.document;
-        this.location = pageWindow.location.pathname;
+        this.location = pageWindow.location;
         this.title = function() {return this.currentDocument.title;};
     }
 
