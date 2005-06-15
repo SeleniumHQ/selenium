@@ -98,15 +98,25 @@ function testSelectWindow() {
 
 // Verify functions
 function testVerifyLocationSuccess() {
-    mockPageBot.expectsProperty("location").returns("foo");
-    selenium.assertLocation("foo");
+    var mockLocation = {pathname:'http://page/path', search:'?foo=bar'};
+    mockPageBot.expectsProperty("location").returns(mockLocation);
+    selenium.assertLocation("path");
+    selenium.assertLocation("page/path");
+    selenium.assertLocation("http://page/path");
+    selenium.assertLocation("page/path?foo=bar");
+    selenium.assertLocation("http://page/path?foo=bar");
     verifyMocks();
 }
 
 function testVerifyLocationFailed() {
-    mockPageBot.expectsProperty("location").returns("foo");
+    var mockLocation = {pathname:'http://page/path', search:'?foo=bar'};
+    mockPageBot.expectsProperty("location").returns(mockLocation);
     assertCallFails("Verify location should have failed",
                     function() {selenium.assertLocation("bar");});
+    assertCallFails("Verify location should have failed",
+                    function() {selenium.assertLocation("http://page/");});
+    assertCallFails("Verify location should have failed",
+                    function() {selenium.assertLocation("http://page/path?foo");});
     verifyMocks();
 }
 

@@ -143,14 +143,22 @@ Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
 
 
 /*
- * Verify the location of the current page ends with the expected location
+ * Verify the location of the current page ends with the expected location.
+ * If a querystring is provided, this is checked as well.
  */
 Selenium.prototype.assertLocation = function(expectedLocation) {
-    var docLocation = this.page().location.toString();
-    if (docLocation.length != docLocation.indexOf(expectedLocation) + expectedLocation.length)
-    {
-        assert.fail("Expected location to end with '" + expectedLocation
-             + "' but was '" + docLocation + "'");
+    var docLocation = this.page().location;
+    var searchPos = expectedLocation.lastIndexOf('?');
+
+    if (searchPos == -1) {
+        assert.assertMatches('*' + expectedLocation, docLocation.pathname);
+    }
+    else {
+        var expectedPath = expectedLocation.substring(0, searchPos);
+        assert.assertMatches('*' + expectedPath, docLocation.pathname);
+
+        var expectedQueryString = expectedLocation.substring(searchPos);
+        assert.equals(expectedQueryString, docLocation.search);
     }
 };
 
