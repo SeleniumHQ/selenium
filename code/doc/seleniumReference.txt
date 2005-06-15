@@ -68,6 +68,10 @@ Select Option Specifiers
         matches options based on their values.  Does glob matching so that, for example, "fo*r" will match <option value="foobar">Some option</option>.
             - value=TheValue
 
+    **id**
+        matches options based on their ids.  Does glob matching so that, for example, "opt*1" will match <option id="option1" value="foobar">Some option</option>.
+            - id=option1
+
     **index**
         matches an option based on its index (offset from zero).
             - index=2
