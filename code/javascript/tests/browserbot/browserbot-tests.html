@@ -25,14 +25,17 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
 
 <script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 function setUp() {
+    LOG = new DummyLogger();
     mockFrame = new String('mockFrame');
+
     mockFrame.contentWindow = new String('mockContentWindow');
     mockFrame.contentWindow.window = new String('mockWindow');
 
-    browserBot = createBrowserBot(mockFrame);
+    browserBot = new MozillaBrowserBot(mockFrame);
 
     browserBot.currentWindowName = 'originalWindowName';
     browserBot.currentPage = 'originalPage';
