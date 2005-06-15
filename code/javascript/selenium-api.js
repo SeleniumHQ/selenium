@@ -601,35 +601,51 @@ function PatternMatcher() {
  *     label=<exp>  (OptionLocatorByLabel)
  *     value=<exp>  (OptionLocatorByValue)
  *     index=<exp>  (OptionLocatorByIndex)
+ *     id=<exp>     (OptionLocatorById)
  *     <exp> (default is OptionLocatorByLabel).
- * TODO: This should be modified to allow the easy addition of new locator types
- * without having to modify the fromLocatorString() method.
  */
 function OptionLocatorFactory() {
-    this.fromLocatorString = function(locatorString) {
-        var locatorType = 'label';
-        var locatorValue = locatorString;
-        // If there is a locator prefix, use the specified strategy
-        var result = locatorString.match(/^([a-zA-Z]+)=(.*)/);
-        if (result) {
-            locatorType = result[1];
-            locatorValue = result[2];
-        }
-        if ('label' == locatorType) {
-            return new OptionLocatorByLabel(locatorValue);
-        } else if ('index' == locatorType) {
-            return new OptionLocatorByIndex(locatorValue);
-        } else if ('value' == locatorType) {
-            return new OptionLocatorByValue(locatorValue);
-        }
-        throw new Error("Unkown option locator type: " + locatorType);
-    };
 }
+
+OptionLocatorFactory.prototype.fromLocatorString = function(locatorString) {
+    var locatorType = 'label';
+    var locatorValue = locatorString;
+    // If there is a locator prefix, use the specified strategy
+    var result = locatorString.match(/^([a-zA-Z]+)=(.*)/);
+    if (result) {
+        locatorType = result[1];
+        locatorValue = result[2];
+    }
+    if (this.optionLocators == undefined) {
+        this.registerOptionLocators();
+    }
+    if (this.optionLocators[locatorType]) {
+        return new this.optionLocators[locatorType](locatorValue);
+    }
+    throw new Error("Unkown option locator type: " + locatorType);
+};
+
+/**
+ * To allow for easy extension, all of the option locators are found by
+ * searching for all methods of OptionLocatorFactory.prototype that start
+ * with "OptionLocatorBy".
+ * TODO: Consider using the term "Option Specifier" instead of "Option Locator".
+ */
+OptionLocatorFactory.prototype.registerOptionLocators = function() {
+    this.optionLocators={};
+    for (var functionName in this) {
+      var result = /OptionLocatorBy([A-Z].+)$/.exec(functionName);
+      if (result != null) {
+          var locatorName = result[1].toCamelCase();
+          this.optionLocators[locatorName] = this[functionName];
+      }
+    }
+};
 
 /**
  *  OptionLocator for options identified by their labels.
  */
-function OptionLocatorByLabel(label) {
+OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
     this.label = label;
     this.patternMatcher = new PatternMatcher();
     this.findOption = function(element) {
@@ -645,12 +661,12 @@ function OptionLocatorByLabel(label) {
         var selectedLabel = element.options[element.selectedIndex].text;
         assert.assertMatches(this.label, selectedLabel);
     };
-}
+};
 
 /**
  *  OptionLocator for options identified by their values.
  */
-function OptionLocatorByValue(value) {
+OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
     this.value = value;
     this.patternMatcher = new PatternMatcher();
     this.findOption = function(element) {
@@ -666,12 +682,12 @@ function OptionLocatorByValue(value) {
         var selectedValue = element.options[element.selectedIndex].value;
         assert.assertMatches(this.value, selectedValue);
     };
-}
+};
 
 /**
  *  OptionLocator for options identified by their index.
  */
-function OptionLocatorByIndex(index) {
+OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
     this.index = Number(index);
     if (isNaN(this.index) || this.index < 0) {
         throw new Error("Illegal Index: " + index);
@@ -687,6 +703,27 @@ function OptionLocatorByIndex(index) {
     this.assertSelected = function(element) {
         assert.equals(this.index, element.selectedIndex);
     };
-}
+};
+
+/**
+ *  OptionLocator for options identified by their id.
+ */
+OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
+    this.id = id;
+    this.patternMatcher = new PatternMatcher();
+    this.findOption = function(element) {
+        for (var i = 0; i < element.options.length; i++) {
+            if (this.patternMatcher.matches(this.id, element.options[i].id)) {
+                return element.options[i];
+            }
+        }
+        throw new Error("Option with id '" + this.id + "' not found");
+    };
+
+    this.assertSelected = function(element) {
+        var selectedId = element.options[element.selectedIndex].id;
+        assert.assertMatches(this.id, selectedId);
+    };
+};
 
 
