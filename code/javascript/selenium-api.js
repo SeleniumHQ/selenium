@@ -17,28 +17,12 @@
 
 storedVars = new Object();
 
-var nextExecution;
-function executeNext() {
-    LOG.debug("CODED - LOAD");
-    if (nextExecution) {
-        nextExecution();
-    }
-    nextExecution = null;
-}
-
 var assert = new Assert();
 function Selenium(browserbot) {
     this.browserbot = browserbot;
     this.optionLocatorFactory = new OptionLocatorFactory();
     this.page = function() {
         return browserbot.getCurrentPage();
-    };
-
-    var self = this;
-
-    this.callOnNextPageLoad = function(callback) {
-        nextExecution = callback;
-        self.browserbot.callOnNextPageLoad(executeNext);
     };
 }
 

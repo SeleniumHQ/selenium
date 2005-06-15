@@ -43,13 +43,6 @@ function verifyMocks() {
     mockPageBot.verify();
 }
 
-function testCallOnNextPageLoad() {
-    mockBrowserBot.expects("callOnNextPageLoad", executeNext);
-    selenium.callOnNextPageLoad("function");
-    assertEquals("function", nextExecution);
-    verifyMocks();
-}
-
 // Tests for Element actions
 function testClickElementWithoutCallback() {
     mockPageBot.expects("findElement", "id").returns("elementToClick");
