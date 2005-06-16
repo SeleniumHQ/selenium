@@ -578,7 +578,7 @@ Parameter construction and Variables
 
     Example:
         ==========   ================================================   ==========
-        store        javascript{'merchant' + (new Date()).getTime())}   merchantId
+        store        javascript{'merchant' + (new Date()).getTime()}    merchantId
         type         textElement                                        javascript{storedVars['merchantId'].toUpperCase()}
         ==========   ================================================   ==========
 
