@@ -201,17 +201,19 @@ Selenium Actions
 
     **store**
 
-        Stores the value of a javascript expression into a variable
+        Stores the value of a parameter into a variable
 
-        **target:** The literal value to store.
+        **target:** The value to store. This can be constructed using either variable substitution or
+                    javascript evaluation, as detailed in 'Parameter construction and Variables' (below).
 
         **value:** Name of the variable to store the value into.
 
         **examples:**
 
             ==========   ============================================   =========
-            store        'text'                                         userName
-            store        'Pi ~= ' + (Math.round(Math.PI * 100) / 100)   definition
+            store        Mr John Smith                                  fullname
+            store        ${title} ${firstname} ${surname}               fullname
+            store        javascript{Math.round(Math.PI * 100) / 100}    PI
             ==========   ============================================   =========
 
     **storeValue**
@@ -537,32 +539,48 @@ Selenium Checks
             chooseCancelOnNextConfirmation
             ==============================   =====  =====
 
------------------
-Variables
------------------
+------------------------------------
+Parameter construction and Variables
+------------------------------------
 
-    Selenium can handle simple variables.  A variable is stored with the storeValue or storeText commands.  Later, it can be used in the target or value column with the syntax: ${variableName}.
+    All Selenium command parameters can be constructed using both simple
+    variable substitution as well as full javascript. Both of these
+    mechanisms can access previously stored variables, but do so using
+    different syntax.
+
+    **Stored Variables**
+
+    The commands *store*, *storeValue* and *storeText* can be used to store a variable
+    value for later access. Internally, these variables are stored in a map called "storedVars",
+    with values keyed by the variable name. These commands are documented in the command reference.
+
+    **Variable substitution**
+
+    Variable substitution provides a simple way to include a previously stored variable in a
+    command parameter. This is a simple mechanism, by which the variable to substitute is indicated
+    by ${variableName}. Multiple variables can be substituted, and intermixed with static text.
 
     Example:
+        ==========   ====================       ==========
+        store        Mr                         title
+        storeValue   nameField                  surname
+        store        ${title} ${surname}        fullname
+        type         textElement                Full name is: ${fullname}
+        ==========   ====================       ==========
 
-        ==========   ====================   ==========
-        Variable Test
-        ----------------------------------------------
-        open         /page1     
-        storeValue   nameField              myVar
-        open         /page2
-        type         nameField              ${myVar}
-        open         /login?user=${myVar}
-        ==========   ====================   ==========
-    
-    Functions can also be applied to variables.  Just append a "." and the function call to the variable reference.
+    **Javascript evaluation**
+
+    Javascript evaluation provides the full power of javascript in constructing a command parameter.
+    To use this mechanism, the *entire* parameter value must be prefixed by
+    'javascript{' with a trailing '}'. The text inside the braces is evaluated as a javascript expression,
+    and can access previously stored variables using the *storedVars* map detailed above.
+    Note that variable substitution cannot be combined with javascript evaluation.
 
     Example:
-
-        ====   =========   ======================
-        type   nameField   ${myVar}.toUpperCase()
-        ====   =========   ======================
-
+        ==========   ================================================   ==========
+        store        javascript{'merchant' + (new Date()).getTime())}   merchantId
+        type         textElement                                        javascript{storedVars['merchantId'].toUpperCase()}
+        ==========   ================================================   ==========
 
 ------------------
 Extending Selenium
