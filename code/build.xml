@@ -1,5 +1,5 @@
 <project name="selenium" default="dist">
-    <property name="version" value="0.4.0"/>
+    <property name="version" value="0.5.0"/>
     <property name="website.root" value="../website/webapps/ROOT"/>
 
     <target name="dist" depends="prepare-dist, dist-image-browserbot, dist-image-doc, dist-selenium, dist-ruby, dist-plone, dist-java"/>
@@ -23,6 +23,7 @@
                 <exclude name="install-readme.txt"/>
             </fileset>
         </copy>
+        <copy file="javascript/tinyWebServer.py" todir="dist-image/browserbot/tests"/>
         <copy file="dist-image/browserbot/TestRunner.html" tofile="dist-image/browserbot/TestRunner.hta"/>
         <echo file="dist-image/browserbot/tests/readme.txt">Create a TestSuite.html page, and a number of test pages here. Read the docs!</echo>
         <echo file="dist-image/browserbot/version.txt">${version}</echo>
@@ -114,6 +115,7 @@
     <target name="dist-java">
         <ant dir="java" target="dist">
             <property name="code_root" value="."/>
+            <property name="version" value="${version}"/>
         </ant>
         <copy todir="dist">
             <fileset dir="java/dist"/>
