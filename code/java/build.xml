@@ -1,5 +1,5 @@
 <project name="selenium" default="all">
-    <property name="version" value="0.4"/>
+    <property name="version" value="unreleased"/>
 
     <property environment="env"/>
     <property name="ant.home" location="${env.ANT_HOME}"/>
