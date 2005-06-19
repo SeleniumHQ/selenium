@@ -1,35 +1,30 @@
 var HIDDEN="hidden";
 var LEVEL = "level";
-var PLUS_SRC="dom-images/butplus.gif"
-var MIN_SRC="dom-images/butmin.gif"
+var PLUS_SRC="dom-images/butplus.gif";
+var MIN_SRC="dom-images/butmin.gif";
 var newRoot;
 var maxColumns=1;
 
-function loadDomViewer(){
-	if(window.opener != null){
-		//Open in a new window. 
-		// Start with specified root object.
-		// It should be defined as a "newRoot" variable 
-		// in the tested page. Could be any element in 
-		// the DOM structure of the page that opened it.
-		// Default to document if no object is specified.
-		newRoot  = window.opener.newRoot;
-	
-		if (newRoot==null)
-			newRoot = window.opener.document;
-	
-		document.writeln(displayDOM(newRoot));
-		document.close();
-	}else{
-		newRoot = parent.document.all['myiframe'].contentWindow.document;
-		newRoot.writeln(displayDOM(newRoot));
-		newRoot.close();
-	}
+function loadDomViewer() {
+    // See if the rootDocument variable has been set on this window.
+    var rootDocument = window.rootDocument;
+
+    // If not look to the opener for an explicity rootDocument variable, otherwise, use the opener document
+    if (!rootDocument && window.opener) {
+        rootDocument = window.opener.rootDocument || window.opener.document;
+    }
+
+    if (rootDocument) {
+        document.body.innerHTML = displayDOM(rootDocument);
+    }
+    else {
+        document.body.innerHTML = "<b>Must specify rootDocument for window. This can be done by setting the rootDocument variable on this window, or on the opener window for a popup window.</b>";
+    }
 }
 
 
 function displayDOM(root){
-	var str = "<html><head><title>DOM Viewerr</title><script type='text/javascript' src='domviewer.js'><!-- comments --> </script><link href='dom-styles/default.css' rel='stylesheet' type='text/css' /></head><body>";
+	var str = "";
 	str+="<table>";
 	str += treeTraversal(root,0);
 	// to make table columns work well.
@@ -38,7 +33,7 @@ function displayDOM(root){
 	    str+= "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 	}
 	str += "</tr>";
-	str += "</table></body></html>";
+	str += "</table>";
 	return str;
 }
 
@@ -102,7 +97,7 @@ function displayNode(element, level, isLink){
 			str+= "<td> </td>";
 		str+="<td colspan='"+ columns +"' class='box"+" boxlevel"+level+"' >";
 		if(isLink){
-			str+='<a onclick="hide(this);" href="javascript:void(this);">';
+			str+='<a onclick="hide(this);return false;" href="javascript:void();">';
 			str+='<img src="'+MIN_SRC+'" />';
 		}
         str += nodeContent;
@@ -189,5 +184,6 @@ function hide(hlink){
 	}
 }
 
-
-
+function LOG(message) {
+    window.opener.LOG.warn(message);
+}

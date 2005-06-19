@@ -102,6 +102,51 @@ Each command call is one line in the test table of the form:</p>
 </ol>
 </blockquote>
 </div>
+<div class="section" id="select-option-specifiers">
+<h1><a name="select-option-specifiers">Select Option Specifiers</a></h1>
+<blockquote>
+<p>Select Option Specifiers provide different ways of specifying options of an HTML Select element (e.g. for selecting a specific option, or for asserting that the selected option satisfies a specification).  There are several forms of Select Option Specifier.</p>
+<dl>
+<dt><strong>label</strong></dt>
+<dd><dl class="first last">
+<dt>matches options based on their labels, i.e. the visible text.  Does glob matching so that, for example, &quot;fo*r&quot; will match &lt;option&gt;foobar&lt;/option&gt;.</dt>
+<dd><ul class="first last simple">
+<li>label=TheLabel</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt><strong>value</strong></dt>
+<dd><dl class="first last">
+<dt>matches options based on their values.  Does glob matching so that, for example, &quot;fo*r&quot; will match &lt;option value=&quot;foobar&quot;&gt;Some option&lt;/option&gt;.</dt>
+<dd><ul class="first last simple">
+<li>value=TheValue</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt><strong>id</strong></dt>
+<dd><dl class="first last">
+<dt>matches options based on their ids.  Does glob matching so that, for example, &quot;opt*1&quot; will match &lt;option id=&quot;option1&quot; value=&quot;foobar&quot;&gt;Some option&lt;/option&gt;.</dt>
+<dd><ul class="first last simple">
+<li>id=option1</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt><strong>index</strong></dt>
+<dd><dl class="first last">
+<dt>matches an option based on its index (offset from zero).</dt>
+<dd><ul class="first last simple">
+<li>index=2</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Without a prefix, the default is to only match on labels.</p>
+</blockquote>
+</div>
 <div class="section" id="selenium-actions">
 <h1><a name="selenium-actions">Selenium Actions</a></h1>
 <blockquote>
@@ -141,7 +186,7 @@ If the click action causes a new page to load (like a link usually does), use &q
 <p><strong>target:</strong> The id of the element that should be clicked.</p>
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="34%" />
@@ -164,6 +209,14 @@ If the click action causes a new page to load (like a link usually does), use &q
 </tbody>
 </table>
 </blockquote>
+<dl class="last">
+<dt><strong>note:</strong></dt>
+<dd>Selenium will <em>always</em> automatically click on a popup dialog raised by the alert() or confirm()
+methods. (The exception is those raised during 'onload', which are not yet handled by Selenium).
+You <em>must</em> use [verify|assert]Alert or [verify|assert]Confirmation to tell Selenium that you expect the
+popup dialog. You may use chooseCancelOnNextConfirmation to click 'cancel' on the next confirmation
+dialog instead of clicking 'OK'.</dd>
+</dl>
 </dd>
 <dt><strong>type (typeAndWait)</strong></dt>
 <dd><p class="first">Types (enters) text into an input field.  This works for text fields, combo boxes, check boxes, etc.</p>
@@ -191,25 +244,33 @@ If the click action causes a new page to load (like a link usually does), use &q
 </blockquote>
 </dd>
 <dt><strong>select (selectAndWait)</strong></dt>
-<dd><p class="first">Select an option from a drop-down, based on the option label.</p>
-<p><strong>target:</strong> The id of the drop-down.</p>
-<p><strong>value:</strong> The label of the option to be selected.</p>
+<dd><p class="first">Select an option from a drop-down, based on a Select Option Specifier.</p>
+<p><strong>target:</strong> An Element Locator specifying an HTML Select element.</p>
+<p><strong>value:</strong> An Option Specifier.  If more than one option matches (e.g. due to the use of globs like &quot;f*b*&quot;, or due to more than one option having the same label or value), then the first option that matches is selected.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
 <table border="1" class="table">
 <colgroup>
-<col width="28%" />
-<col width="34%" />
-<col width="38%" />
+<col width="27%" />
+<col width="33%" />
+<col width="40%" />
 </colgroup>
 <tbody valign="top">
 <tr><td>select</td>
 <td>dropDown</td>
-<td>First Option</td>
+<td>Australian Dollars</td>
+</tr>
+<tr><td>select</td>
+<td>dropDown</td>
+<td>index=0</td>
 </tr>
 <tr><td>selectAndWait</td>
 <td>currencySelector</td>
-<td>Australian Dollars</td>
+<td>value=AUD</td>
+</tr>
+<tr><td>selectAndWait</td>
+<td>currencySelector</td>
+<td>label=Aus*lian D*rs</td>
 </tr>
 </tbody>
 </table>
@@ -265,28 +326,123 @@ If the click action causes a new page to load (like a link usually does), use &q
 </table>
 </blockquote>
 </dd>
+<dt><strong>waitForValue</strong></dt>
+<dd><p class="first">Waits for a specified input (e.g. a hidden field) to have a specified value.  Will succeed immediately if the input already has the value.  Is implemented by polling for the value.  Warning: can block indefinitely if the input never has the specified value.</p>
+<p><strong>target:</strong> The input field.</p>
+<p><strong>value:</strong> The value the input field must have before continuing.</p>
+<p><strong>example:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="32%" />
+<col width="42%" />
+<col width="26%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>waitForValue</td>
+<td>finishIndication</td>
+<td>isfinished</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>goBack</strong></dt>
+<dd><p class="first">Simulates the user clicking the &quot;back&quot; button on their browser.</p>
+<p><strong>target:</strong> <em>ignored</em></p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="40%" />
+<col width="27%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>goBack</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>close</strong></dt>
+<dd><p class="first">Simulates the user clicking the &quot;close&quot; button in the titlebar of a popup window.</p>
+<p><strong>target:</strong> <em>ignored</em></p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="40%" />
+<col width="27%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>close</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
+<dt><strong>pause</strong></dt>
+<dd><p class="first">Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.</p>
+<p><strong>target:</strong> The number of milliseconds to pause.</p>
+<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>examples:</strong></p>
+<blockquote class="last">
+<table border="1" class="table">
+<colgroup>
+<col width="36%" />
+<col width="29%" />
+<col width="36%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>pause</td>
+<td>5000</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>pause</td>
+<td>2000</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</dd>
 </dl>
 <p><strong>store</strong></p>
 <blockquote>
-<p>Stores the value of a javascript expression into a variable</p>
-<p><strong>target:</strong> The literal value to store.</p>
+<p>Stores the value of a parameter into a variable</p>
+<dl>
+<dt><strong>target:</strong> The value to store. This can be constructed using either variable substitution or</dt>
+<dd>javascript evaluation, as detailed in 'Parameter construction and Variables' (below).</dd>
+</dl>
 <p><strong>value:</strong> Name of the variable to store the value into.</p>
 <p><strong>examples:</strong></p>
 <blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="16%" />
-<col width="69%" />
-<col width="16%" />
+<col width="70%" />
+<col width="14%" />
 </colgroup>
 <tbody valign="top">
 <tr><td>store</td>
-<td>'text'</td>
-<td>userName</td>
+<td>Mr John Smith</td>
+<td>fullname</td>
 </tr>
 <tr><td>store</td>
-<td>'Pi ~= ' + (Math.round(Math.PI * 100) / 100)</td>
-<td>definition</td>
+<td>${title} ${firstname} ${surname}</td>
+<td>fullname</td>
+</tr>
+<tr><td>store</td>
+<td>javascript{Math.round(Math.PI * 100) / 100}</td>
+<td>PI</td>
 </tr>
 </tbody>
 </table>
@@ -429,25 +585,33 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </blockquote>
 </dd>
 <dt><strong>verifySelected / assertSelected</strong></dt>
-<dd><p class="first">Verifies the label of the selected option of a drop-down.</p>
+<dd><p class="first">Verifies that the selected option of a drop-down satisfies a specified Select Option Specifier.</p>
 <p><strong>target:</strong> Locates the drop-down to verify.</p>
-<p><strong>value:</strong> The expected label of the selected option.</p>
+<p><strong>value:</strong> A Select Option Specifier that the selected option is expected to satisfy.</p>
 <p><strong>examples:</strong></p>
 <blockquote class="last">
 <table border="1" class="table">
 <colgroup>
-<col width="27%" />
-<col width="53%" />
-<col width="20%" />
+<col width="25%" />
+<col width="49%" />
+<col width="25%" />
 </colgroup>
 <tbody valign="top">
 <tr><td>verifySelected</td>
 <td>dropdown2</td>
 <td>John Smith</td>
 </tr>
+<tr><td>verifySelected</td>
+<td>dropdown2</td>
+<td>value=js*123</td>
+</tr>
 <tr><td>assertSelected</td>
 <td>document.forms[2].dropDown</td>
-<td>John Smith</td>
+<td>label=J* Smith</td>
+</tr>
+<tr><td>assertSelected</td>
+<td>document.forms[2].dropDown</td>
+<td>index=0</td>
 </tr>
 </tbody>
 </table>
@@ -829,61 +993,77 @@ After running this command, the next confirmation will behave as if the user had
 </dl>
 </blockquote>
 </div>
-<div class="section" id="variables">
-<h1><a name="variables">Variables</a></h1>
+<div class="section" id="parameter-construction-and-variables">
+<h1><a name="parameter-construction-and-variables">Parameter construction and Variables</a></h1>
 <blockquote>
-<p>Selenium can handle simple variables.  A variable is stored with the storeValue or storeText commands.  Later, it can be used in the target or value column with the syntax: ${variableName}.</p>
-<p>Example:</p>
-<blockquote>
-<table border="1" class="table">
+<p>All Selenium command parameters can be constructed using both simple
+variable substitution as well as full javascript. Both of these
+mechanisms can access previously stored variables, but do so using
+different syntax.</p>
+<p><strong>Stored Variables</strong></p>
+<p>The commands <em>store</em>, <em>storeValue</em> and <em>storeText</em> can be used to store a variable
+value for later access. Internally, these variables are stored in a map called &quot;storedVars&quot;,
+with values keyed by the variable name. These commands are documented in the command reference.</p>
+<p><strong>Variable substitution</strong></p>
+<p>Variable substitution provides a simple way to include a previously stored variable in a
+command parameter. This is a simple mechanism, by which the variable to substitute is indicated
+by ${variableName}. Multiple variables can be substituted, and intermixed with static text.</p>
+<dl>
+<dt>Example:</dt>
+<dd><table border="1" class="first last table">
 <colgroup>
-<col width="25%" />
-<col width="50%" />
-<col width="25%" />
+<col width="18%" />
+<col width="36%" />
+<col width="45%" />
 </colgroup>
 <tbody valign="top">
-<tr><td colspan="3">Variable Test</td>
-</tr>
-<tr><td>open</td>
-<td>/page1</td>
-<td>&nbsp;</td>
+<tr><td>store</td>
+<td>Mr</td>
+<td>title</td>
 </tr>
 <tr><td>storeValue</td>
 <td>nameField</td>
-<td>myVar</td>
+<td>surname</td>
 </tr>
-<tr><td>open</td>
-<td>/page2</td>
-<td>&nbsp;</td>
+<tr><td>store</td>
+<td>${title} ${surname}</td>
+<td>fullname</td>
 </tr>
 <tr><td>type</td>
-<td>nameField</td>
-<td>${myVar}</td>
-</tr>
-<tr><td>open</td>
-<td>/login?user=${myVar}</td>
-<td>&nbsp;</td>
+<td>textElement</td>
+<td>Full name is: ${fullname}</td>
 </tr>
 </tbody>
 </table>
-</blockquote>
-<p>Functions can also be applied to variables.  Just append a &quot;.&quot; and the function call to the variable reference.</p>
-<p>Example:</p>
-<blockquote>
-<table border="1" class="table">
+</dd>
+</dl>
+<p><strong>Javascript evaluation</strong></p>
+<p>Javascript evaluation provides the full power of javascript in constructing a command parameter.
+To use this mechanism, the <em>entire</em> parameter value must be prefixed by
+'javascript{' with a trailing '}'. The text inside the braces is evaluated as a javascript expression,
+and can access previously stored variables using the <em>storedVars</em> map detailed above.
+Note that variable substitution cannot be combined with javascript evaluation.</p>
+<dl>
+<dt>Example:</dt>
+<dd><table border="1" class="first last table">
 <colgroup>
-<col width="11%" />
-<col width="26%" />
-<col width="63%" />
+<col width="9%" />
+<col width="44%" />
+<col width="46%" />
 </colgroup>
 <tbody valign="top">
+<tr><td>store</td>
+<td>javascript{'merchant' + (new Date()).getTime()}</td>
+<td>merchantId</td>
+</tr>
 <tr><td>type</td>
-<td>nameField</td>
-<td>${myVar}.toUpperCase()</td>
+<td>textElement</td>
+<td>javascript{storedVars['merchantId'].toUpperCase()}</td>
 </tr>
 </tbody>
 </table>
-</blockquote>
+</dd>
+</dl>
 </blockquote>
 </div>
 <div class="section" id="extending-selenium">

@@ -17,27 +17,12 @@
 
 storedVars = new Object();
 
-var nextExecution;
-function executeNext() {
-    LOG.debug("CODED - LOAD");
-    if (nextExecution) {
-        nextExecution();
-    }
-    nextExecution = null;
-}
-
 var assert = new Assert();
 function Selenium(browserbot) {
     this.browserbot = browserbot;
+    this.optionLocatorFactory = new OptionLocatorFactory();
     this.page = function() {
         return browserbot.getCurrentPage();
-    };
-
-    var self = this;
-
-    this.callOnNextPageLoad = function(callback) {
-        nextExecution = callback;
-        self.browserbot.callOnNextPageLoad(executeNext);
     };
 }
 
@@ -76,12 +61,16 @@ Selenium.prototype.doType = function(locator, newText) {
 };
 
 /**
- * Select the option by label from the located select element.
- * TODO fail if it's not a select.
+ * Select the option from the located select element.
  */
-Selenium.prototype.doSelect = function(locator, optionText) {
+Selenium.prototype.doSelect = function(locator, optionLocator) {
     var element = this.page().findElement(locator);
-    this.page().selectOptionWithLabel(element, optionText);
+    if (!("options" in element)) {
+        throw new Error("Specified element is not a Select (has no options)");
+    }
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    var option = locator.findOption(element);
+    this.page().selectOption(element, option);
 };
 
 /*
@@ -111,6 +100,13 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
  */
 Selenium.prototype.doGoBack = function() {
     this.page().goBack();
+};
+
+/*
+ * Close the browser window or tab
+ */
+Selenium.prototype.doClose = function() {
+    this.page().close();
 };
 
 /*
@@ -149,19 +145,27 @@ Selenium.prototype.doGoBack = function() {
  * Verify the location of the current page.
  */
 Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
-    this.assertMatches(expectedLocation, this.page().location);
+    assert.assertMatches(expectedLocation, this.page().location);
 };
 
 
 /*
- * Verify the location of the current page ends with the expected location
+ * Verify the location of the current page ends with the expected location.
+ * If a querystring is provided, this is checked as well.
  */
 Selenium.prototype.assertLocation = function(expectedLocation) {
-    var docLocation = this.page().location.toString();
-    if (docLocation.length != docLocation.indexOf(expectedLocation) + expectedLocation.length)
-    {
-        assert.fail("Expected location to end with '" + expectedLocation
-             + "' but was '" + docLocation + "'");
+    var docLocation = this.page().location;
+    var searchPos = expectedLocation.lastIndexOf('?');
+
+    if (searchPos == -1) {
+        assert.assertMatches('*' + expectedLocation, docLocation.pathname);
+    }
+    else {
+        var expectedPath = expectedLocation.substring(0, searchPos);
+        assert.assertMatches('*' + expectedPath, docLocation.pathname);
+
+        var expectedQueryString = expectedLocation.substring(searchPos);
+        assert.equals(expectedQueryString, docLocation.search);
     }
 };
 
@@ -169,7 +173,7 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
  * Verify the title of the current page.
  */
 Selenium.prototype.assertTitle = function(expectedTitle) {
-    this.assertMatches(expectedTitle, this.page().title());
+    assert.assertMatches(expectedTitle, this.page().title());
 };
 
 /*
@@ -178,7 +182,7 @@ Selenium.prototype.assertTitle = function(expectedTitle) {
 Selenium.prototype.assertValue = function(locator, expectedValue) {
     var element = this.page().findElement(locator);
     var actualValue = getInputValue(element);
-    this.assertMatches(expectedValue, actualValue.trim());
+    assert.assertMatches(expectedValue, actualValue.trim());
 };
 
 /*
@@ -187,7 +191,7 @@ Selenium.prototype.assertValue = function(locator, expectedValue) {
 Selenium.prototype.assertText = function(locator, expectedContent) {
     var element = this.page().findElement(locator);
     var actualText = getText(element);
-    this.assertMatches(expectedContent, actualText.trim());
+    assert.assertMatches(expectedContent, actualText.trim());
 };
 
 /*
@@ -218,17 +222,17 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
     }
     else {
         actualContent = getText(table.rows[row].cells[col]);
-        this.assertMatches(expectedContent, actualContent.trim());
+        assert.assertMatches(expectedContent, actualContent.trim());
     }
 };
 
 /**
- * Verify the label of the option that is selected.
+ * Verify that the selected option satisfies the option locator.
  */
-Selenium.prototype.assertSelected = function(target, expectedLabel) {
+Selenium.prototype.assertSelected = function(target, optionLocator) {
     var element = this.page().findElement(target);
-    var selectedLabel = element.options[element.selectedIndex].text;
-    this.assertMatches(expectedLabel, selectedLabel);
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    locator.assertSelected(element);
 };
 
 String.prototype.parseCSV = function() {
@@ -250,7 +254,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
     assert.equals("Wrong number of options.", expectedOptionLabels.length, element.options.length);
 
     for (var i = 0; i < element.options.length; i++) {
-        this.assertMatches(expectedOptionLabels[i], element.options[i].text);
+        assert.assertMatches(expectedOptionLabels[i], element.options[i].text);
     }
 };
 
@@ -260,7 +264,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
  */
 Selenium.prototype.assertAttribute = function(target, expected) {
     var attributeValue = this.page().findAttribute(target);
-    this.assertMatches(expected, attributeValue);
+    assert.assertMatches(expected, attributeValue);
 };
 
 /*
@@ -470,6 +474,18 @@ Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
 
+
+/*
+ * Wait for the target to have the specified value by polling.
+ * The polling is done in TestLoop.kickoffNextCommandExecution()
+ */
+Selenium.prototype.doWaitForValue = function (target, value) {
+    var e = this.page().findElement(target);
+    testLoop.waitForCondition = function () {
+        return (e.value == value);
+    };
+};
+
 /**
  * Evaluate a parameter, performing javascript evaluation and variable substitution.
  * If the string matches the pattern "javascript{ ... }", evaluate the string between the braces.
@@ -508,8 +524,10 @@ Selenium.prototype.replaceVariables = function(str) {
 };
 
 function Assert() {
-    this.equals = function()
-    {
+    this.patternMatcher = new PatternMatcher();
+}
+
+Assert.prototype.equals = function() {
         if (arguments.length == 2)
         {
             var comment = "";
@@ -528,23 +546,16 @@ function Assert() {
         var errorMessage = comment + "Expected '" + expected + "' but was '" + actual + "'";
 
         throw new AssertionFailedError(errorMessage);
-    };
+};
 
-    this.fail = function(message)
-    {
+Assert.prototype.fail = function(message) {
         throw new AssertionFailedError(message);
-    };
-}
-
-function AssertionFailedError(message) {
-    this.isAssertionFailedError = true;
-    this.failureMessage = message;
-}
+};
 
 /*
  * assertMatches(comment?, pattern, actual)
  */
-Selenium.prototype.assertMatches = function() {
+Assert.prototype.assertMatches = function() {
     if (arguments.length == 2)
     {
         var comment = "";
@@ -557,7 +568,7 @@ Selenium.prototype.assertMatches = function() {
         var actual = arguments[2];
     }
 
-    if (this.matches(pattern, actual)) {
+    if (this.patternMatcher.matches(pattern, actual)) {
         return;
     }
 
@@ -566,17 +577,160 @@ Selenium.prototype.assertMatches = function() {
     assert.fail(errorMessage);
 };
 
-Selenium.prototype.globToRegexp = function(glob) {
-    var pattern = glob;
-    pattern = pattern.replace(/([.^$+(){}[\]\\|])/g, "\\$1");
-    pattern = pattern.replace(/\?/g, ".");
-    pattern = pattern.replace(/\*/g, ".*");
-    return "^" + pattern + "$";
+
+function AssertionFailedError(message) {
+    this.isAssertionFailedError = true;
+    this.failureMessage = message;
+}
+
+function PatternMatcher() {
+    this.matches = function(pattern, actual) {
+        var regexp = new RegExp(this.globToRegexp(pattern));
+        // Work around Konqueror bug when matching empty strings.
+        var testString = '' + actual;
+        return regexp.test(testString);
+    };
+    this.globToRegexp = function(glob) {
+        var pattern = glob;
+        pattern = pattern.replace(/([.^$+(){}[\]\\|])/g, "\\$1");
+        pattern = pattern.replace(/\?/g, ".");
+        pattern = pattern.replace(/\*/g, ".*");
+        return "^" + pattern + "$";
+    };
+}
+
+/**
+ *  Factory for creating "Option Locators".
+ *  An OptionLocator is an object for dealing with Select options (e.g. for
+ *  finding a specified option, or asserting that the selected option of 
+ *  Select element matches some condition.
+ *  The type of locator returned by the factory depends on the locator string:
+ *     label=<exp>  (OptionLocatorByLabel)
+ *     value=<exp>  (OptionLocatorByValue)
+ *     index=<exp>  (OptionLocatorByIndex)
+ *     id=<exp>     (OptionLocatorById)
+ *     <exp> (default is OptionLocatorByLabel).
+ */
+function OptionLocatorFactory() {
+}
+
+OptionLocatorFactory.prototype.fromLocatorString = function(locatorString) {
+    var locatorType = 'label';
+    var locatorValue = locatorString;
+    // If there is a locator prefix, use the specified strategy
+    var result = locatorString.match(/^([a-zA-Z]+)=(.*)/);
+    if (result) {
+        locatorType = result[1];
+        locatorValue = result[2];
+    }
+    if (this.optionLocators == undefined) {
+        this.registerOptionLocators();
+    }
+    if (this.optionLocators[locatorType]) {
+        return new this.optionLocators[locatorType](locatorValue);
+    }
+    throw new Error("Unkown option locator type: " + locatorType);
 };
 
-Selenium.prototype.matches = function(pattern, actual) {
-    var regexp = new RegExp(this.globToRegexp(pattern));
-    // Work around Konqueror bug when matching empty strings.
-    var testString = '' + actual;
-    return regexp.test(testString);
+/**
+ * To allow for easy extension, all of the option locators are found by
+ * searching for all methods of OptionLocatorFactory.prototype that start
+ * with "OptionLocatorBy".
+ * TODO: Consider using the term "Option Specifier" instead of "Option Locator".
+ */
+OptionLocatorFactory.prototype.registerOptionLocators = function() {
+    this.optionLocators={};
+    for (var functionName in this) {
+      var result = /OptionLocatorBy([A-Z].+)$/.exec(functionName);
+      if (result != null) {
+          var locatorName = result[1].toCamelCase();
+          this.optionLocators[locatorName] = this[functionName];
+      }
+    }
 };
+
+/**
+ *  OptionLocator for options identified by their labels.
+ */
+OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
+    this.label = label;
+    this.patternMatcher = new PatternMatcher();
+    this.findOption = function(element) {
+        for (var i = 0; i < element.options.length; i++) {
+            if (this.patternMatcher.matches(this.label, element.options[i].text)) {
+                return element.options[i];
+            }
+        }
+        throw new Error("Option with label '" + this.label + "' not found");
+    };
+
+    this.assertSelected = function(element) {
+        var selectedLabel = element.options[element.selectedIndex].text;
+        assert.assertMatches(this.label, selectedLabel);
+    };
+};
+
+/**
+ *  OptionLocator for options identified by their values.
+ */
+OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
+    this.value = value;
+    this.patternMatcher = new PatternMatcher();
+    this.findOption = function(element) {
+        for (var i = 0; i < element.options.length; i++) {
+            if (this.patternMatcher.matches(this.value, element.options[i].value)) {
+                return element.options[i];
+            }
+        }
+        throw new Error("Option with value '" + this.value + "' not found");
+    };
+
+    this.assertSelected = function(element) {
+        var selectedValue = element.options[element.selectedIndex].value;
+        assert.assertMatches(this.value, selectedValue);
+    };
+};
+
+/**
+ *  OptionLocator for options identified by their index.
+ */
+OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
+    this.index = Number(index);
+    if (isNaN(this.index) || this.index < 0) {
+        throw new Error("Illegal Index: " + index);
+    }
+
+    this.findOption = function(element) {
+        if (element.options.length <= this.index) {
+            throw new Error("Index out of range.  Only " + element.options.length + " options available");
+        }
+        return element.options[this.index];
+    };
+
+    this.assertSelected = function(element) {
+        assert.equals(this.index, element.selectedIndex);
+    };
+};
+
+/**
+ *  OptionLocator for options identified by their id.
+ */
+OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
+    this.id = id;
+    this.patternMatcher = new PatternMatcher();
+    this.findOption = function(element) {
+        for (var i = 0; i < element.options.length; i++) {
+            if (this.patternMatcher.matches(this.id, element.options[i].id)) {
+                return element.options[i];
+            }
+        }
+        throw new Error("Option with id '" + this.id + "' not found");
+    };
+
+    this.assertSelected = function(element) {
+        var selectedId = element.options[element.selectedIndex].id;
+        assert.assertMatches(this.id, selectedId);
+    };
+};
+
+

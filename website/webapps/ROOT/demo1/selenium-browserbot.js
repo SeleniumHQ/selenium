@@ -43,19 +43,24 @@ var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent)
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
 function createBrowserBot(frame) {
+    var browserbot;
     if (isIE) {
-        return new IEBrowserBot(frame);
+        browserbot = new IEBrowserBot(frame);
     }
     else if (isKonqueror) {
-        return new KonquerorBrowserBot(frame);
+        browserbot = new KonquerorBrowserBot(frame);
     }
     else if (isSafari) {
-        return new SafariBrowserBot(frame);
+        browserbot = new SafariBrowserBot(frame);
     }
     else {
         // Use mozilla by default
-        return new MozillaBrowserBot(frame);
+        browserbot = new MozillaBrowserBot(frame);
     }
+
+    // Modify the test IFrame so that page loads are detected.
+    addLoadListener(browserbot.getFrame(), browserbot.recordPageLoad);
+    return browserbot;
 }
 
 function createPageBot(windowObject) {
@@ -82,7 +87,20 @@ BrowserBot = function(frame) {
     this.modalDialogTest = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
+    this.openedWindows = {};
     this.nextConfirmResult = true;
+    this.newPageLoaded = false;
+
+    var self = this;
+    this.recordPageLoad = function() {
+        LOG.debug("Page load detected");
+        self.currentPage = null;
+        self.newPageLoaded = true;
+    };
+
+    this.isNewPageLoaded = function() {
+        return self.newPageLoaded;
+    };
 };
 
 BrowserBot.prototype.doModalDialogTest = function(test) {
@@ -126,21 +144,25 @@ BrowserBot.prototype.selectWindow = function(target) {
     }
 };
 
-BrowserBot.prototype.openLocation = function(target, onloadCallback) {
+BrowserBot.prototype.openLocation = function(target) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
-    // Window doesn't fire onload event when setting src to the current value,
-    // so we set it to blank first.
-    this.getFrame().src = "about:blank";
-    this.getFrame().src = target;
+    this.newPageLoaded = false;
+
+    this.setIFrameLocation(this.getFrame(), target);
+};
+
+BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
+    iframe.src = location;
 };
 
 BrowserBot.prototype.getCurrentPage = function() {
     if (this.currentPage == null) {
         var testWindow = this.getCurrentWindow();
         this.modifyWindowToRecordPopUpDialogs(testWindow, this);
-        this.modifyWindowToClearPageCache(testWindow, this);
+        this.modifySeparateTestWindowToDetectPageLoads(testWindow);
         this.currentPage = createPageBot(testWindow);
+        this.newPageLoaded = false;
     }
 
     return this.currentPage;
@@ -157,19 +179,43 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         browserBot.nextConfirmResult = true;
         return result;
     };
+
+    // Keep a reference to all popup windows by name
+    // note that in IE the "windowName" argument must be a valid javascript identifier, it seems.
+    var originalOpen = windowToModify.open;
+    windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
+        var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
+        browserbot.openedWindows[windowName] = openedWindow;
+        return openedWindow;
+    };
 };
 
-BrowserBot.prototype.modifyWindowToClearPageCache = function(windowToModify, browserBot) {
-    var clearCachedPage = function() {
-        LOG.debug("UNLOAD: clearCachedPage()");
-        browserbot.currentPage = null;
+/**
+ * The main IFrame has a single, long-lived onload handler that clears Browserbot.currentPage and sets the "newPageLoaded"
+ * flag. For separate windows, we need to attach a handler each time. This uses the "callOnWindowPageTransition" mechanism,
+ * which is implemented differently for different browsers.
+ */
+BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(windowToModify) {
+    if (this.currentWindowName != null) {
+        this.callOnWindowPageTransition(this.recordPageLoad, windowToModify);
+    }
+};
+
+/**
+ * Call the supplied function when a the current page unloads and a new one loads.
+ * This is done with an "unload" handler which attaches a "load" handler.
+ */
+BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
+    var attachLoadListener = function() {
+        if (windowObject && !windowObject.closed) {
+            addLoadListener(windowObject, loadFunction);
+        }
     };
 
-    if (window.addEventListener) {
-        windowToModify.addEventListener("unload", clearCachedPage, true);
-    } else if (window.attachEvent) {
-        windowToModify.attachEvent("onunload", clearCachedPage);
-    }
+    var unloadFunction = function() {
+        window.setTimeout(attachLoadListener, 0);
+    };
+    addUnloadListener(windowObject, unloadFunction);
 };
 
 BrowserBot.prototype.getContentWindow = function() {
@@ -177,8 +223,13 @@ BrowserBot.prototype.getContentWindow = function() {
 };
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
-    var evalString = "this.getContentWindow().window." + windowName;
-    var targetWindow = eval(evalString);
+    LOG.debug("getTargetWindow(" + windowName + ")");
+    // First look in the map of opened windows
+    var targetWindow = this.openedWindows[windowName];
+    if (!targetWindow) {
+        var evalString = "this.getContentWindow().window." + windowName;
+        targetWindow = eval(evalString);
+    }
     if (!targetWindow) {
         throw new Error("Window does not exist");
     }
@@ -193,44 +244,6 @@ BrowserBot.prototype.getCurrentWindow = function() {
     return testWindow;
 };
 
-BrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
-    if (this.currentWindowName == null) {
-        this.callOnFramePageTransition(onloadCallback, this.getFrame());
-    }
-    else {
-        this.callOnWindowPageTransition(onloadCallback, this.getCurrentWindow());
-    }
-};
-
-BrowserBot.prototype.callOnFramePageTransition = function(loadFunction, frameObject) {
-    try {
-        addLoadListener(frameObject, loadFunction);
-    } catch (e) {
-        LOG.debug("Got on error adding LoadListener in BrowserBot.prototype.callOnFramePageTransition." +
-                  "This occurs on the second and all subsequent calls in Safari");
-    }
-};
-
-BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
-    var unloadFunction = function() {
-        window.setTimeout(function() {addLoadListener(windowObject, loadFunction);}, 0);
-    };
-    addUnloadListener(windowObject, unloadFunction);
-};
-
-/**
- * Handle the initial page load in a new popup window.
- * TODO - something like this should allow us to wait for a new popup window - currently need to pause...
- */
-//function callOnWindowInitialLoad(loadFunction, windowObject) {
-//    if (!(isSafari || isKonqueror)) {
-//        addLoadListener(windowObject, loadFunction);
-//    }
-//    else {
-//        this.pollForLoad(loadFunction, windowObject, windowObject.document);
-//    }
-//}
-
 function MozillaBrowserBot(frame) {
     BrowserBot.call(this, frame);
 }
@@ -241,10 +254,24 @@ function KonquerorBrowserBot(frame) {
 }
 KonquerorBrowserBot.prototype = new BrowserBot;
 
+KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
+    // Window doesn't fire onload event when setting src to the current value,
+    // so we set it to blank first.
+    iframe.src = "about:blank";
+    iframe.src = location;
+};
+
+/**
+ * Call the supplied function when a the current page unloads and a new one loads.
+ * This is done by polling continuously until the document changes and is fully loaded.
+ */
 KonquerorBrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
     // Since the unload event doesn't fire in Safari 1.3, we start polling immediately
     // This works in Konqueror as well
-    this.pollForLoad(loadFunction, windowObject, windowObject.document);
+    if (windowObject && !windowObject.closed) {
+        LOG.debug("Starting pollForLoad");
+        this.pollForLoad(loadFunction, windowObject, windowObject.document);
+    }
 };
 
 /**
@@ -254,16 +281,21 @@ KonquerorBrowserBot.prototype.callOnWindowPageTransition = function(loadFunction
  * is different from the original one.
  */
 KonquerorBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument) {
+    if (windowObject.closed) {
+        return;
+    }
+
     var sameDoc = (originalDocument === windowObject.document);
     var rs = windowObject.document.readyState;
 
     if (!sameDoc && rs == 'complete') {
-        LOG.debug("poll: " + rs + " (" + sameDoc + ")");
+        LOG.debug("pollForLoad complete: " + rs + " (" + sameDoc + ")");
         loadFunction();
         return;
     }
     var self = this;
-    window.setTimeout(function() {self.pollForLoad(loadFunction, windowObject, originalDocument);}, 100);
+    LOG.debug("pollForLoad continue");
+    window.setTimeout(function() {self.pollForLoad(loadFunction, windowObject, originalDocument);}, 500);
 };
 
 function SafariBrowserBot(frame) {
@@ -271,15 +303,7 @@ function SafariBrowserBot(frame) {
 }
 SafariBrowserBot.prototype = new BrowserBot;
 
-/**
- * Since Safari 1.3 doesn't trigger unload, we clear cached page as soon as
- * we know that we're expecting a new page.
- */
-SafariBrowserBot.prototype.callOnNextPageLoad = function(onloadCallback) {
-    this.currentPage = null;
-    BrowserBot.prototype.callOnNextPageLoad.call(this, onloadCallback);
-};
-
+SafariBrowserBot.prototype.setIFrameLocation = KonquerorBrowserBot.prototype.setIFrameLocation;
 SafariBrowserBot.prototype.callOnWindowPageTransition = KonquerorBrowserBot.prototype.callOnWindowPageTransition;
 SafariBrowserBot.prototype.pollForLoad = KonquerorBrowserBot.prototype.pollForLoad;
 
@@ -341,7 +365,7 @@ PageBot = function(pageWindow) {
     if (pageWindow) {
         this.currentWindow = pageWindow;
         this.currentDocument = pageWindow.document;
-        this.location = pageWindow.location.pathname;
+        this.location = pageWindow.location;
         this.title = function() {return this.currentDocument.title;};
     }
 
@@ -636,23 +660,15 @@ PageBot.prototype.findAttribute = function(locator) {
 };
 
 /*
-* Selects the first option with a matching label from the select box element
-* provided. If no matching element is found, nothing happens.
+* Select the specified option and trigger the relevant events of the element.
 */
-PageBot.prototype.selectOptionWithLabel = function(element, stringValue) {
+PageBot.prototype.selectOption = function(element, option) {
     triggerEvent(element, 'focus', false);
-    for (var i = 0; i < element.options.length; i++) {
-        var option = element.options[i];
-        if (option.text == stringValue) {
-            if (!option.selected) {
-                option.selected = true;
-                triggerEvent(element, 'change', true);
-            }
-            triggerEvent(element, 'blur', false);
-            return;
-        }
+    if (!option.selected) {
+        option.selected = true;
+        triggerEvent(element, 'change', true);
     }
-    throw new Error("Option with label '" + stringValue + "' not found");
+    triggerEvent(element, 'blur', false);
 };
 
 PageBot.prototype.replaceText = function(element, stringValue) {
@@ -860,4 +876,8 @@ PageBot.prototype.goBack = function() {
 
 PageBot.prototype.goForward = function() {
     this.currentWindow.history.forward();
+};
+
+PageBot.prototype.close = function() {
+    this.currentWindow.close();
 };
