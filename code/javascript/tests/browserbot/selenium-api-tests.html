@@ -438,7 +438,7 @@ function testWaitForCreatesWaitForConditionOnTestLoop() {
 
     assertEquals(undefined, testLoop.waitForCondition);
 
-    selenium.doWaitFor("id", "newValue");
+    selenium.doWaitForValue("id", "newValue");
 
     assertNotEquals(undefined, testLoop.waitForCondition);
     assertFalse("Wait condition should not yet be true",

@@ -479,7 +479,7 @@ Selenium.prototype.doStore = function(value, varName) {
  * Wait for the target to have the specified value by polling.
  * The polling is done in TestLoop.kickoffNextCommandExecution()
  */
-Selenium.prototype.doWaitFor = function (target, value) {
+Selenium.prototype.doWaitForValue = function (target, value) {
     var e = this.page().findElement(target);
     testLoop.waitForCondition = function () {
         return (e.value == value);
