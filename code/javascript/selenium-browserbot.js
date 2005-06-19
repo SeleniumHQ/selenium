@@ -144,15 +144,16 @@ BrowserBot.prototype.selectWindow = function(target) {
     }
 };
 
-BrowserBot.prototype.openLocation = function(target, onloadCallback) {
+BrowserBot.prototype.openLocation = function(target) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
     this.newPageLoaded = false;
 
-    // Window doesn't fire onload event when setting src to the current value,
-    // so we set it to blank first.
-    this.getFrame().src = "about:blank";
-    this.getFrame().src = target;
+    this.setIFrameLocation(this.getFrame(), target);
+};
+
+BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
+    iframe.src = location;
 };
 
 BrowserBot.prototype.getCurrentPage = function() {
@@ -253,6 +254,13 @@ function KonquerorBrowserBot(frame) {
 }
 KonquerorBrowserBot.prototype = new BrowserBot;
 
+KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
+    // Window doesn't fire onload event when setting src to the current value,
+    // so we set it to blank first.
+    iframe.src = "about:blank";
+    iframe.src = location;
+};
+
 /**
  * Call the supplied function when a the current page unloads and a new one loads.
  * This is done by polling continuously until the document changes and is fully loaded.
@@ -295,6 +303,7 @@ function SafariBrowserBot(frame) {
 }
 SafariBrowserBot.prototype = new BrowserBot;
 
+SafariBrowserBot.prototype.setIFrameLocation = KonquerorBrowserBot.prototype.setIFrameLocation;
 SafariBrowserBot.prototype.callOnWindowPageTransition = KonquerorBrowserBot.prototype.callOnWindowPageTransition;
 SafariBrowserBot.prototype.pollForLoad = KonquerorBrowserBot.prototype.pollForLoad;
 
