@@ -103,6 +103,13 @@ Selenium.prototype.doGoBack = function() {
 };
 
 /*
+ * Close the browser window or tab
+ */
+Selenium.prototype.doClose = function() {
+    this.page().close();
+};
+
+/*
  *  Asserts that the supplied message was received as an alert
  */
  Selenium.prototype.assertAlert = function(expectedAlert) {
