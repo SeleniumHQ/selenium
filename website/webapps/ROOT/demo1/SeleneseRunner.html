@@ -29,9 +29,17 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="selenium-tableparser.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-domviewer.js"></script>
 <script language="JavaScript" type="text/javascript" src="xpath.js"></script>
 <script language="JavaScript" type="text/javascript" src="user-extensions.js"></script>
+<script language="JavaScript" type="text/javascript">
+    function openDomViewer() {
+        var autFrame = document.getElementById('myiframe');
+        var autFrameDocument = getIframeDocument(autFrame);
+        var domViewer = window.open('domviewer.html');
+        domViewer.rootDocument = autFrameDocument;
+        return false;
+    }
+</script>
 <link rel="stylesheet" type="text/css" href="selenium.css" />
 <script>
 passColor = "#cfffcf";
@@ -209,7 +217,7 @@ function getIframeDocument(iframe) {
           Open Source From <a href="http://www.thoughtworks.com">ThoughtWorks, Inc</a> and Friends
           <form action="">
           <br/>Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"> 
-          <button type="button" id="domViewer1" onclick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
+          <button type="button" id="domViewer1" onclick="openDomViewer();">View DOM</button>
           </form>
 
         </td>

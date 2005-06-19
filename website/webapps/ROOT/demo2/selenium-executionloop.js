@@ -81,13 +81,13 @@ function TestLoop(commandFactory) {
         // Record the result so that we can continue the execution using window.setTimeout()
         this.lastCommandResult = result;
         if (result.processState == SELENIUM_PROCESS_WAIT) {
-            // Since we're waiting for page to reload, we can't continue command execution
-            // directly, we need use a page load listener.
+            this.waitForCondition = function() {
+                return selenium.browserbot.isNewPageLoaded();
+            };
+        }
 
-            // TODO there is a potential race condition by attaching a load listener after
-            // the command has completed execution.
-            selenium.callOnNextPageLoad(function() {eval("testLoop.continueCommandExecutionWithDelay()");});
-
+        if (this.waitForCondition) {
+            this.pollUntilConditionIsTrue();
         } else {
             // Continue processing
             this.continueCommandExecutionWithDelay();
@@ -96,6 +96,19 @@ function TestLoop(commandFactory) {
         // Test is not finished.
         return TEST_CONTINUE;
     };
+
+    /**
+    * Busy wait for waitForCondition() to become true, and then continue command execution.
+    */
+    this.pollUntilConditionIsTrue = function () {
+        if (this.waitForCondition()) {
+            this.waitForCondition = null;
+            this.continueCommandExecutionWithDelay();
+        } else {
+            window.setTimeout("testLoop.pollUntilConditionIsTrue()", 10);
+        }
+    };
+
 
     /**
     * Continues the command execution, after waiting for the specified delay.
