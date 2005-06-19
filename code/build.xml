@@ -94,7 +94,7 @@
                 <include name="**/*.css"/>
                 <include name="**/*.js"/>
             </fileset>
-            <mapper type="glob" from="*" to="*.dhtml"/>
+            <mapper type="glob" from="*" to="*.dtml"/>
         </copy>
         <copy todir="dist-image/python-plone/Selenium/skins/selenium_javascript">
             <fileset dir="dist-image/browserbot">
