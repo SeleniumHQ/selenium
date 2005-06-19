@@ -877,3 +877,7 @@ PageBot.prototype.goBack = function() {
 PageBot.prototype.goForward = function() {
     this.currentWindow.history.forward();
 };
+
+PageBot.prototype.close = function() {
+    this.currentWindow.close();
+};
