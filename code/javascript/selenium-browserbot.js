@@ -231,7 +231,7 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
         targetWindow = eval(evalString);
     }
     if (!targetWindow) {
-        throw new Error("Window does not exist");
+        throw new SeleniumError("Window does not exist");
     }
     return targetWindow;
 };
@@ -392,7 +392,7 @@ PageBot = function(pageWindow) {
     this.findElementBy = function(locatorType, locator, inDocument) {
         var locatorFunction = this.locationStrategies[locatorType];
         if (! locatorFunction) {
-            throw new Error("Unrecognised locator type: '" + locatorType + "'");
+            throw new SeleniumError("Unrecognised locator type: '" + locatorType + "'");
         }
         return locatorFunction.call(this, locator, inDocument);
     };
@@ -454,7 +454,7 @@ PageBot.prototype.findElement = function(locator) {
     }
 
     // Element was not found by any locator function.
-    throw new Error("Element " + locator + " not found");
+    throw new SeleniumError("Element " + locator + " not found");
 };
 
 /**
@@ -880,4 +880,10 @@ PageBot.prototype.goForward = function() {
 
 PageBot.prototype.close = function() {
     this.currentWindow.close();
+};
+
+function SeleniumError(message) {
+    var error = new Error(message);
+    error.isSeleniumError = true;
+    return error;
 };

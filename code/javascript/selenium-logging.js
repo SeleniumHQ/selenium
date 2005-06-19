@@ -64,6 +64,11 @@ Logger.prototype.error = function(message) {
     }
 };
 
+Logger.prototype.exception = function(exception) {
+    var msg = "Unexpected Exception: " + describe(exception, ', ');
+    this.error(msg);
+};
+
 Logger.prototype.log = function(message, className) {
     var loggingNode = document.createElement('li');
     loggingNode.className = className;

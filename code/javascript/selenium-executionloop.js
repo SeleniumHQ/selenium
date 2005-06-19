@@ -67,14 +67,7 @@ function TestLoop(commandFactory) {
 
             result = handler.execute(selenium, command);
         } catch (e) {
-            LOG.error(e);
-            // TODO: only throw typed errors from commands so that we can perform better error handling
-            // to differentiate between expected command errors and unexpected javascript errors.
-            if (e instanceof TypeError) {
-                // Not a command error.
-                throw e;
-            }
-            this.commandError(e.message);
+            this.handleCommandError(e);
             return TEST_FINISHED;
         }
 
@@ -95,6 +88,20 @@ function TestLoop(commandFactory) {
 
         // Test is not finished.
         return TEST_CONTINUE;
+    };
+
+    this.handleCommandError = function(e) {
+       if (!e.isSeleniumError) {
+            LOG.exception(e);
+            var msg = "Selenium failure. Please report to selenium-devel@lists.public.thoughtworks.org, with details from the logs at the base of the page.";
+            if (e.message) {
+               msg += "  The error message is: " + e.message;
+            }
+            this.commandError(msg);
+        } else {
+            LOG.error(e.message);
+            this.commandError(e.message);
+        }
     };
 
     /**

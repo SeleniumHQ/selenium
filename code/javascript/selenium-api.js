@@ -66,7 +66,7 @@ Selenium.prototype.doType = function(locator, newText) {
 Selenium.prototype.doSelect = function(locator, optionLocator) {
     var element = this.page().findElement(locator);
     if (!("options" in element)) {
-        throw new Error("Specified element is not a Select (has no options)");
+        throw new SeleniumError("Specified element is not a Select (has no options)");
     }
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     var option = locator.findOption(element);
@@ -387,7 +387,7 @@ Selenium.prototype.getEffectiveStyle = function(element) {
         //   currentStyle is not identical to getComputedStyle()
         //   ... but it's good enough for "visibility"
     }
-    throw new Error("cannot determine effective stylesheet in this browser");
+    throw new SeleniumError("cannot determine effective stylesheet in this browser");
 };
 
 /**
@@ -629,7 +629,7 @@ OptionLocatorFactory.prototype.fromLocatorString = function(locatorString) {
     if (this.optionLocators[locatorType]) {
         return new this.optionLocators[locatorType](locatorValue);
     }
-    throw new Error("Unkown option locator type: " + locatorType);
+    throw new SeleniumError("Unkown option locator type: " + locatorType);
 };
 
 /**
@@ -661,7 +661,7 @@ OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
                 return element.options[i];
             }
         }
-        throw new Error("Option with label '" + this.label + "' not found");
+        throw new SeleniumError("Option with label '" + this.label + "' not found");
     };
 
     this.assertSelected = function(element) {
@@ -682,7 +682,7 @@ OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
                 return element.options[i];
             }
         }
-        throw new Error("Option with value '" + this.value + "' not found");
+        throw new SeleniumError("Option with value '" + this.value + "' not found");
     };
 
     this.assertSelected = function(element) {
@@ -697,12 +697,12 @@ OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
 OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
     this.index = Number(index);
     if (isNaN(this.index) || this.index < 0) {
-        throw new Error("Illegal Index: " + index);
+        throw new SeleniumError("Illegal Index: " + index);
     }
 
     this.findOption = function(element) {
         if (element.options.length <= this.index) {
-            throw new Error("Index out of range.  Only " + element.options.length + " options available");
+            throw new SeleniumError("Index out of range.  Only " + element.options.length + " options available");
         }
         return element.options[this.index];
     };
@@ -724,7 +724,7 @@ OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
                 return element.options[i];
             }
         }
-        throw new Error("Option with id '" + this.id + "' not found");
+        throw new SeleniumError("Option with id '" + this.id + "' not found");
     };
 
     this.assertSelected = function(element) {
