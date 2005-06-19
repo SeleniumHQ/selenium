@@ -334,10 +334,7 @@ function runNextTest() {
         var testFrame = getTestFrame();
         addLoadListener(testFrame, startTest);
 
-        // Window doesn't fire onload event when setting src to the current value,
-        // so we set it to blank first.
-        testFrame.src = "about:blank";
-        testFrame.src = testLink.href;
+        browserbot.setIFrameLocation(testFrame, testLink.href);
     }
 }
 
