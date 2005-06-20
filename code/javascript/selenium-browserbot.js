@@ -311,6 +311,8 @@ function IEBrowserBot(frame) {
     BrowserBot.call(this, frame);
 }
 IEBrowserBot.prototype = new BrowserBot;
+IEBrowserBot.prototype.callOnWindowPageTransition = KonquerorBrowserBot.prototype.callOnWindowPageTransition;
+IEBrowserBot.prototype.pollForLoad = KonquerorBrowserBot.prototype.pollForLoad;
 
 IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     BrowserBot.prototype.modifyWindowToRecordPopUpDialogs(windowToModify, browserBot);
@@ -796,17 +798,40 @@ IEPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'focus', false);
 
     var wasChecked = element.checked;
+
+    // Set a flag that records if the page will unload - this isn't always accurate, because
+    // <a href="javascript:alert('foo'):"> triggers the onbeforeunload event, even thought the page won't unload
+    var pageUnloading = false;
+    var pageUnloadDetector = function() {pageUnloading = true;};
+    this.currentWindow.attachEvent("onbeforeunload", pageUnloadDetector);
+
     element.click();
 
-    if (this.windowClosed()) {
-        return;
-    }
-    // Onchange event is not triggered automatically in IE.
-    if (isDefined(element.checked) && wasChecked != element.checked) {
-        triggerEvent(element, 'change', true);
-    }
+    // If the page is going to unload - still attempt to fire any subsequent events.
+    // However, we can't guarantee that the page won't unload half way through, so we need to handle exceptions.
+    try {
+        this.currentWindow.detachEvent("onbeforeunload", pageUnloadDetector);
 
-    triggerEvent(element, 'blur', false);
+        if (this.windowClosed()) {
+            return;
+        }
+
+        // Onchange event is not triggered automatically in IE.
+        if (isDefined(element.checked) && wasChecked != element.checked) {
+            triggerEvent(element, 'change', true);
+        }
+
+        triggerEvent(element, 'blur', false);
+    }
+    catch (e) {
+        // If the page is unloading, we may get a "Permission denied" or "Unspecified error".
+        // Just ignore it, because the document may have unloaded.
+        if (pageUnloading) {
+            LOG.warn("Caught exception when firing events on unloading page: " + e.message);
+            return;
+        }
+        throw e;
+    }
 };
 
 PageBot.prototype.windowClosed = function(element) {
