@@ -1,5 +1,5 @@
 <project name="selenium" default="dist">
-    <property name="version" value="0.5.0"/>
+    <property name="version" value="0.6.0-unreleased"/>
     <property name="website.root" value="../website/webapps/ROOT"/>
 
     <target name="dist" depends="prepare-dist, dist-image-browserbot, dist-image-doc, dist-selenium, dist-ruby, dist-plone, dist-java"/>
