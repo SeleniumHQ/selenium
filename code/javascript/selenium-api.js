@@ -524,7 +524,6 @@ Selenium.prototype.replaceVariables = function(str) {
 };
 
 function Assert() {
-    this.patternMatcher = new PatternMatcher();
 }
 
 Assert.prototype.equals = function() {
@@ -568,7 +567,7 @@ Assert.prototype.assertMatches = function() {
         var actual = arguments[2];
     }
 
-    if (this.patternMatcher.matches(pattern, actual)) {
+    if (new PatternMatcher(pattern).matches(actual)) {
         return;
     }
 
@@ -583,21 +582,30 @@ function AssertionFailedError(message) {
     this.failureMessage = message;
 }
 
-function PatternMatcher() {
-    this.matches = function(pattern, actual) {
-        var regexp = new RegExp(this.globToRegexp(pattern));
+function PatternMatcher(pattern) {
+    this.pattern = pattern;
+    this.matcher = new GlobMatcher(pattern);
+    this.matches = function(actual) {
         // Work around Konqueror bug when matching empty strings.
-        var testString = '' + actual;
-        return regexp.test(testString);
-    };
-    this.globToRegexp = function(glob) {
-        var pattern = glob;
-        pattern = pattern.replace(/([.^$+(){}[\]\\|])/g, "\\$1");
-        pattern = pattern.replace(/\?/g, ".");
-        pattern = pattern.replace(/\*/g, ".*");
-        return "^" + pattern + "$";
+        actual = '' + actual;
+        return this.matcher.matches(actual);
     };
 }
+
+function GlobMatcher(globPattern) {
+    this.regexp = new RegExp(this.regexpFromGlob(globPattern));
+    this.matches = function(actual) {
+        return this.regexp.test(actual);
+    };
+}
+
+GlobMatcher.prototype.regexpFromGlob = function(glob) {
+    var pattern = glob;
+    pattern = pattern.replace(/([.^$+(){}\[\]\\|])/g, "\\$1");
+    pattern = pattern.replace(/\?/g, ".");
+    pattern = pattern.replace(/\*/g, ".*");
+    return "^" + pattern + "$";
+};
 
 /**
  *  Factory for creating "Option Locators".
@@ -654,10 +662,10 @@ OptionLocatorFactory.prototype.registerOptionLocators = function() {
  */
 OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
     this.label = label;
-    this.patternMatcher = new PatternMatcher();
+    this.patternMatcher = new PatternMatcher(this.label);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(this.label, element.options[i].text)) {
+            if (this.patternMatcher.matches(element.options[i].text)) {
                 return element.options[i];
             }
         }
@@ -675,10 +683,10 @@ OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
  */
 OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
     this.value = value;
-    this.patternMatcher = new PatternMatcher();
+    this.patternMatcher = new PatternMatcher(this.value);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(this.value, element.options[i].value)) {
+            if (this.patternMatcher.matches(element.options[i].value)) {
                 return element.options[i];
             }
         }
@@ -717,10 +725,10 @@ OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
  */
 OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
     this.id = id;
-    this.patternMatcher = new PatternMatcher();
+    this.patternMatcher = new PatternMatcher(this.id);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(this.id, element.options[i].id)) {
+            if (this.patternMatcher.matches(element.options[i].id)) {
                 return element.options[i];
             }
         }

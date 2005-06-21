@@ -191,14 +191,16 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
 };
 
 /**
- * The main IFrame has a single, long-lived onload handler that clears Browserbot.currentPage and sets the "newPageLoaded"
- * flag. For separate windows, we need to attach a handler each time. This uses the "callOnWindowPageTransition" mechanism,
- * which is implemented differently for different browsers.
+ * The main IFrame has a single, long-lived onload handler that clears
+ * Browserbot.currentPage and sets the "newPageLoaded" flag. For separate
+ * windows, we need to attach a handler each time. This uses the
+ * "callOnWindowPageTransition" mechanism, which is implemented differently
+ * for different browsers.
  */
 BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(windowToModify) {
-    if (this.currentWindowName != null) {
+    //if (this.currentWindowName != null) {
         this.callOnWindowPageTransition(this.recordPageLoad, windowToModify);
-    }
+    //}
 };
 
 /**
