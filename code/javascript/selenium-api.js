@@ -584,27 +584,39 @@ function AssertionFailedError(message) {
 
 function PatternMatcher(pattern) {
     this.pattern = pattern;
-    this.matcher = new GlobMatcher(pattern);
     this.matches = function(actual) {
         // Work around Konqueror bug when matching empty strings.
         actual = '' + actual;
         return this.matcher.matches(actual);
     };
+
+    if (/^regexp:(.*)/.test(pattern)) {
+        this.matcher = new RegexpMatcher(RegExp.$1);
+    } else {
+        this.matcher = new GlobMatcher(pattern);
+    }
 }
 
-function GlobMatcher(globPattern) {
-    this.regexp = new RegExp(this.regexpFromGlob(globPattern));
-    this.matches = function(actual) {
-        return this.regexp.test(actual);
-    };
+function RegexpMatcher(regexpString) {
+    this.regexp = new RegExp(regexpString);
 }
+
+RegexpMatcher.prototype.matches = function(actual) {
+    return this.regexp.test(actual);
+};
+
+function GlobMatcher(globString) {
+    this.regexp = new RegExp(this.regexpFromGlob(globString));
+}
+
+GlobMatcher.prototype.matches = RegexpMatcher.prototype.matches;
 
 GlobMatcher.prototype.regexpFromGlob = function(glob) {
-    var pattern = glob;
-    pattern = pattern.replace(/([.^$+(){}\[\]\\|])/g, "\\$1");
-    pattern = pattern.replace(/\?/g, ".");
-    pattern = pattern.replace(/\*/g, ".*");
-    return "^" + pattern + "$";
+    var re = glob;
+    re = re.replace(/([.^$+(){}\[\]\\|])/g, "\\$1");
+    re = re.replace(/\?/g, ".");
+    re = re.replace(/\*/g, ".*");
+    return "^" + re + "$";
 };
 
 /**

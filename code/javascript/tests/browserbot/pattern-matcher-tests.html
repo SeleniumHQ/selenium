@@ -42,7 +42,7 @@ function testMatchUsingGlobByDefault() {
     assertFalse(new PatternMatcher("a*z").matches("apple"));
 }
 
-function NOTYET_testCanMatchUsingRegexp() {
+function testCanMatchUsingRegexp() {
     assertTrue(new PatternMatcher("regexp:pp").matches("apple"));
     assertFalse(new PatternMatcher("regexp:^pp").matches("apple"));
     assertTrue(new PatternMatcher("regexp:[a-z]$").matches("apple"));
