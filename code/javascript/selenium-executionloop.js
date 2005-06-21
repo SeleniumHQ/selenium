@@ -23,8 +23,6 @@ TEST_CONTINUE = false;
 function TestLoop(commandFactory) {
     this.commandFactory = commandFactory;
 
-    var self = this;
-
     this.start = function() {
         selenium.reset();
         this.continueCurrentTest();
@@ -50,7 +48,6 @@ function TestLoop(commandFactory) {
 
         if (!command) return TEST_FINISHED;
 
-        // Make the current row blue
         this.commandStarted(command);
 
         LOG.debug("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
@@ -71,7 +68,8 @@ function TestLoop(commandFactory) {
             return TEST_FINISHED;
         }
 
-        // Record the result so that we can continue the execution using window.setTimeout()
+        // Record the result so that we can continue the execution using
+        // window.setTimeout()
         this.lastCommandResult = result;
         if (result.processState == SELENIUM_PROCESS_WAIT) {
             this.waitForCondition = function() {
@@ -105,8 +103,9 @@ function TestLoop(commandFactory) {
     };
 
     /**
-    * Busy wait for waitForCondition() to become true, and then continue command execution.
-    */
+     * Busy wait for waitForCondition() to become true, and then continue
+     * command execution.
+     */
     this.pollUntilConditionIsTrue = function () {
         if (this.waitForCondition()) {
             this.waitForCondition = null;
@@ -118,8 +117,9 @@ function TestLoop(commandFactory) {
 
 
     /**
-    * Continues the command execution, after waiting for the specified delay.
-    */
+     * Continue the command execution, after waiting for the specified
+     * delay.
+     */
     this.continueCommandExecutionWithDelay = function() {
         // Get the interval to use for this command execution, using the pauseInterval as
         // specified. Reset the pause interval, since it's a one-off thing.
@@ -137,8 +137,8 @@ function TestLoop(commandFactory) {
     };
 
     /**
-    * Finishes the execution of the previous command, and continues the test
-    */
+     * Finish the execution of the previous command, and continue the test.
+     */
     this.finishCommandExecution = function() {
         this.commandComplete(this.lastCommandResult);
         this.continueCurrentTest();
@@ -169,8 +169,8 @@ function noop() {
 };
 
 /**
- * A selenium command that tells selenium to expect a failure on the next command
- * execution. This command temporarily installs a new CommandFactory, that generates
+ * Tell Selenium to expect a failure on the next command execution. This
+ * command temporarily installs a CommandFactory that generates
  * CommandHandlers that expect a failure.
  */
 Selenium.prototype.assertFailureOnNext = function(message) {
@@ -185,8 +185,8 @@ Selenium.prototype.assertFailureOnNext = function(message) {
 };
 
 /**
- * A selenium command that tells selenium to expect a failure on the next command
- * execution. This command temporarily installs a new CommandFactory, that generates
+ * Tell Selenium to expect an error on the next command execution. This
+ * command temporarily installs a CommandFactory that generates
  * CommandHandlers that expect a failure.
  */
 Selenium.prototype.assertErrorOnNext = function(message) {
