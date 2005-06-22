@@ -31,7 +31,8 @@ Element Locators
 
     **identifier**
         locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen. Otherwise, the first element with a matching *name* is chosen.
-            - name=TheElementName
+            - identifier=TheElementName
+            - identifier=TheElementId
 
     **dom**
         finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators *must* begin with "document.".
