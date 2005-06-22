@@ -30,11 +30,18 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function testRegexpFromGlob() {
-    assertEquals("^.*$", GlobMatcher.prototype.regexpFromGlob("*"));
-    assertEquals("^.$", GlobMatcher.prototype.regexpFromGlob("?"));
-    assertEquals("^a.*b$", GlobMatcher.prototype.regexpFromGlob("a*b"));
-    assertEquals("^\\.\\|\\^\\$\\(\\)\\[\\]\\{\\}$", GlobMatcher.prototype.regexpFromGlob(".|^$()[]{}"));
-    assertEquals("^.*/foo/bar.*$", GlobMatcher.prototype.regexpFromGlob("*/foo/bar*"));
+    var regexpFromGlob = 
+        PatternMatcher.GlobMatchStrategy.prototype.regexpFromGlob;
+    assertEquals("^.*$", regexpFromGlob("*"));
+    assertEquals("^.$", regexpFromGlob("?"));
+    assertEquals("^a.*b$", regexpFromGlob("a*b"));
+    assertEquals("^\\.\\|\\^\\$\\(\\)\\[\\]\\{\\}$", regexpFromGlob(".|^$()[]{}"));
+    assertEquals("^.*/foo/bar.*$", regexpFromGlob("*/foo/bar*"));
+}
+
+function testCanMatchUsingGlob() {
+    assertTrue(new PatternMatcher("glob:a*e").matches("apple"));
+    assertFalse(new PatternMatcher("glob:a*z").matches("apple"));
 }
 
 function testMatchUsingGlobByDefault() {
@@ -46,6 +53,12 @@ function testCanMatchUsingRegexp() {
     assertTrue(new PatternMatcher("regexp:pp").matches("apple"));
     assertFalse(new PatternMatcher("regexp:^pp").matches("apple"));
     assertTrue(new PatternMatcher("regexp:[a-z]$").matches("apple"));
+}
+
+function testCanDoExactMatch() {
+    assertTrue(new PatternMatcher("exact:abc").matches("abc"));
+    assertFalse(new PatternMatcher("exact:a*c").matches("abc"));
+    assertTrue(new PatternMatcher("exact:a*c").matches("a*c"));
 }
 
 </script>

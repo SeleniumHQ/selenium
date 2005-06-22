@@ -567,7 +567,7 @@ Assert.prototype.assertMatches = function() {
         var actual = arguments[2];
     }
 
-    if (new PatternMatcher(pattern).matches(actual)) {
+    if (PatternMatcher.matches(pattern, actual)) {
         return;
     }
 
@@ -582,41 +582,65 @@ function AssertionFailedError(message) {
     this.failureMessage = message;
 }
 
-function PatternMatcher(pattern) {
+PatternMatcher = function(pattern) {
     this.pattern = pattern;
-    this.matches = function(actual) {
-        // Work around Konqueror bug when matching empty strings.
-        actual = '' + actual;
-        return this.matcher.matches(actual);
-    };
-
-    if (/^regexp:(.*)/.test(pattern)) {
-        this.matcher = new RegexpMatcher(RegExp.$1);
-    } else {
-        this.matcher = new GlobMatcher(pattern);
+    var strategyName = 'glob'; // by default
+    if (/^([a-zA-Z]+):(.*)/.test(pattern)) {
+        strategyName = RegExp.$1;
+        pattern = RegExp.$2;
     }
-}
-
-function RegexpMatcher(regexpString) {
-    this.regexp = new RegExp(regexpString);
-}
-
-RegexpMatcher.prototype.matches = function(actual) {
-    return this.regexp.test(actual);
+    strategyClassName = strategyName.ucfirst() + 'MatchStrategy';
+    if (! PatternMatcher[strategyClassName]) {
+        throw new SeleniumError("cannot find PatternMatcher." + strategyClassName);
+    }
+    return new PatternMatcher[strategyClassName](pattern);
+};
+PatternMatcher.prototype.matches = function(actual) {
+    return this.strategy.matches('' + actual);
+    // Note: prepending an empty string avoids a Konqueror bug
 };
 
-function GlobMatcher(globString) {
+/**
+ * A "static" convenience method for easy matching
+ */
+PatternMatcher.matches = function(pattern, actual) {
+    return new PatternMatcher(pattern).matches(actual);
+};
+
+/**
+ * Match by regular expression, e.g. "regexp:^[0-9]+$"
+ */
+PatternMatcher.RegexpMatchStrategy = function(regexpString) {
+    this.regexp = new RegExp(regexpString);
+    this.matches = function(actual) {
+        return this.regexp.test(actual);
+    };
+};
+
+/**
+ * Match by "glob" pattern, e.g. "glob:one,two,*"
+ */
+PatternMatcher.GlobMatchStrategy = function(globString) {
     this.regexp = new RegExp(this.regexpFromGlob(globString));
-}
-
-GlobMatcher.prototype.matches = RegexpMatcher.prototype.matches;
-
-GlobMatcher.prototype.regexpFromGlob = function(glob) {
+};
+PatternMatcher.GlobMatchStrategy.prototype =
+    new PatternMatcher.RegexpMatchStrategy();
+PatternMatcher.GlobMatchStrategy.prototype.regexpFromGlob = function(glob) {
     var re = glob;
     re = re.replace(/([.^$+(){}\[\]\\|])/g, "\\$1");
     re = re.replace(/\?/g, ".");
     re = re.replace(/\*/g, ".*");
     return "^" + re + "$";
+};
+
+/**
+ * Exact matching, e.g. "exact:***"
+ */
+PatternMatcher.ExactMatchStrategy = function(expected) {
+    this.expected = expected;
+    this.matches = function(actual) {
+        return actual == this.expected;
+    };
 };
 
 /**
@@ -663,7 +687,7 @@ OptionLocatorFactory.prototype.registerOptionLocators = function() {
     for (var functionName in this) {
       var result = /OptionLocatorBy([A-Z].+)$/.exec(functionName);
       if (result != null) {
-          var locatorName = result[1].toCamelCase();
+          var locatorName = result[1].lcfirst();
           this.optionLocators[locatorName] = this[functionName];
       }
     }
@@ -674,10 +698,10 @@ OptionLocatorFactory.prototype.registerOptionLocators = function() {
  */
 OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
     this.label = label;
-    this.patternMatcher = new PatternMatcher(this.label);
+    this.labelMatcher = new PatternMatcher(this.label);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(element.options[i].text)) {
+            if (this.labelMatcher.matches(element.options[i].text)) {
                 return element.options[i];
             }
         }
@@ -695,10 +719,10 @@ OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
  */
 OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
     this.value = value;
-    this.patternMatcher = new PatternMatcher(this.value);
+    this.valueMatcher = new PatternMatcher(this.value);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(element.options[i].value)) {
+            if (this.valueMatcher.matches(element.options[i].value)) {
                 return element.options[i];
             }
         }
@@ -737,10 +761,10 @@ OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
  */
 OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
     this.id = id;
-    this.patternMatcher = new PatternMatcher(this.id);
+    this.idMatcher = new PatternMatcher(this.id);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(element.options[i].id)) {
+            if (this.idMatcher.matches(element.options[i].id)) {
                 return element.options[i];
             }
         }

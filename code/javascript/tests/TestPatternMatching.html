@@ -94,7 +94,28 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theText@class</td>
       <td>regexp:^f</td>
     </tr>
-    
+
+    <!-- check exact matching -->
+
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>exact:the text value</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>exact:second option</td>
+    </tr>
+
+    <!-- check a mixture of strategies -->
+
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>theSelect</td>
+      <td>regexp:^first,exact:second option,third*</td>
+    </tr>
+
   </tbody>
 </table>
 </body>
