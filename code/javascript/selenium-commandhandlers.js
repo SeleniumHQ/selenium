@@ -50,7 +50,7 @@ function CommandHandlerFactory() {
         for (var functionName in commandObject) {
             var result = /^do([A-Z].+)$/.exec(functionName);
             if (result != null) {
-                var actionName = toCamelCase(result[1]);
+                var actionName = result[1].lcfirst();
 
                 // Register the action without the wait flag.
                 var action = commandObject[functionName];
@@ -88,10 +88,6 @@ function CommandHandlerFactory() {
             }
         }
     };
-
-    function toCamelCase(aString) {
-        return aString.charAt(0).toLowerCase() + aString.substr(1);
-    }
 }
 
 

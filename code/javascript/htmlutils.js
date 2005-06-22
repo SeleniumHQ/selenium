@@ -19,21 +19,19 @@
 // make it possible to handle elements in a way that is 
 // compatible with both IE-like and Mozilla-like browsers
 
-function trim() {
+String.prototype.trim = function() {
   var result = this.replace( /^\s+/g, "" );// strip leading
   return result.replace( /\s+$/g, "" );// strip trailing
-}
-String.prototype.trim = trim;
-
-function toCamelCase() {
+};
+String.prototype.lcfirst = function() {
    return this.charAt(0).toLowerCase() + this.substr(1);
-}
-String.prototype.toCamelCase = toCamelCase;
-
-function startsWith(str) {
+};
+String.prototype.ucfirst = function() {
+   return this.charAt(0).toUpperCase() + this.substr(1);
+};
+String.prototype.startsWith = function(str) {
     return this.indexOf(str) == 0;
-}
-String.prototype.startsWith = startsWith;
+};
 
 // Returns the text in this element
 function getText(element) {
