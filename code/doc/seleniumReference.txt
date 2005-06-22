@@ -15,37 +15,35 @@ Selenium Reference
 
     **Element Locators** tell Selenium which HTML element a command refers to. Many commands require an Element Locator as the "target" attribute. Examples of Element Locators include "elementId" and "document.forms[0].element". These are described more clearly in the next section.
 
+    **Patterns** are used for various reasons, e.g. to specify the expected value of an input field, or identify a select option.  Selenium supports various types of pattern, including regular-expressions, all of which are described in more detail below.
+
 -----------------
 Element Locators
 -----------------
 
     Element Locators allow Selenium to identify which HTML element a command refers to. There are several forms of Element Locators.
 
-    **id**
-        locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen.
-            - id=TheElementId
+    **id=**\ *id*
+        Select the element with the specified @id attribute.
 
-    **name**
-        locates an element based on the name attribute of the element. The first element with a matching *name* is chosen.
-            - name=TheElementName
+    **name=**\ *name*
+        Select the first element with the specified @name attribute.
 
-    **identifier**
-        locates an element based on the id or name attribute of the element. If an element with a matching *id* is found, it is chosen. Otherwise, the first element with a matching *name* is chosen.
-            - identifier=TheElementName
-            - identifier=TheElementId
+    **identifier=**\ *id*
+        Select the element with the specified @id attribute.  If no match is found, select the first element whose @name attribute is *id*.
 
-    **dom**
-        finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators *must* begin with "document.".
+    **dom=**\ *javascriptExpression*
+        Find an element using JavaScript traversal of the HTML Document Object Model. DOM locators *must* begin with "document.".
             - dom=document.forms['myForm'].myDropdown
             - dom=document.images[56]
 
-    **xpath**
-        locates an element using a defined XPath expression. XPath locators *must* begin with "//".
+    **xpath=**\ *xpathExpression*
+        Locate an element using an XPath expression. XPath locators *must* begin with "//".
             - xpath=//img[@alt='The image alt text']
             - xpath=//table[@id='table1']//tr[4]/td[2]
 
-    **link**
-        finds a link with the specified text.
+    **link=**\ *text(pattern)*
+        Select the link (anchor) element which contains text matching the specified *pattern*.
             - link=The link text
 
 
@@ -61,23 +59,40 @@ Select Option Specifiers
 
     Select Option Specifiers provide different ways of specifying options of an HTML Select element (e.g. for selecting a specific option, or for asserting that the selected option satisfies a specification).  There are several forms of Select Option Specifier.
 
-    **label**
-        matches options based on their labels, i.e. the visible text.  Does glob matching so that, for example, "fo*r" will match <option>foobar</option>.
-            - label=TheLabel
+    **label=**\ *label(pattern)*
+        matches options based on their labels, i.e. the visible text. 
+            - label=regexp:^[Oo]ther
 
-    **value**
-        matches options based on their values.  Does glob matching so that, for example, "fo*r" will match <option value="foobar">Some option</option>.
-            - value=TheValue
+    **value=**\ *value(pattern)*
+        matches options based on their values. 
+            - value=other
 
-    **id**
-        matches options based on their ids.  Does glob matching so that, for example, "opt*1" will match <option id="option1" value="foobar">Some option</option>.
+    **id=**\ *id(pattern)*
+        matches options based on their ids. 
             - id=option1
 
-    **index**
+    **index=**\ *index(integer)*
         matches an option based on its index (offset from zero).
             - index=2
 
-    Without a prefix, the default is to only match on labels.
+    Without a prefix, the default behaviour is to only match on labels.
+
+------------------------
+String-match Patterns
+------------------------
+
+    Various Pattern syntaxes are available for matching string values:
+
+    **glob:**\ *pattern*
+        Match a string against a "glob" (aka "wildmat") pattern.  "Glob" is a kind of limited regular-expression syntax typically used in command-line shells.  In a glob pattern, "*" represents any sequence of characters, and "?" represents any single character.  Glob patterns match against the entire string.
+
+    **regexp:**\ *re*
+        Match a string using a regular-expression.  The full power of JavaScript regular-expressions is available.
+
+    **exact:**\ *string*
+        Match a string exactly, verbatim, without any of that fancy wildcard stuff.
+
+    If no pattern prefix is specified, Selenium assumes that it's a "glob" pattern.
 
 ----------------
 Selenium Actions
