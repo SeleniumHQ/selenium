@@ -628,8 +628,8 @@ PatternMatcher.GlobMatchStrategy.prototype =
 PatternMatcher.GlobMatchStrategy.prototype.regexpFromGlob = function(glob) {
     var re = glob;
     re = re.replace(/([.^$+(){}\[\]\\|])/g, "\\$1");
-    re = re.replace(/\?/g, ".");
-    re = re.replace(/\*/g, ".*");
+    re = re.replace(/\?/g, "[^]");
+    re = re.replace(/\*/g, "[^]*");
     return "^" + re + "$";
 };
 
