@@ -617,14 +617,16 @@ PatternMatcher.RegexpMatchStrategy = function(regexpString) {
  */
 PatternMatcher.GlobMatchStrategy = function(globString) {
     this.regexp = new RegExp(this.regexpFromGlob(globString));
+    this.matches = function(actual) {
+        // actual = actual.replace(/[\r\n]/g, ' ');
+        return this.regexp.test(actual);
+    };
 };
-PatternMatcher.GlobMatchStrategy.prototype =
-    new PatternMatcher.RegexpMatchStrategy();
 PatternMatcher.GlobMatchStrategy.prototype.regexpFromGlob = function(glob) {
     var re = glob;
     re = re.replace(/([.^$+(){}\[\]\\|])/g, "\\$1");
-    re = re.replace(/\?/g, "[^]");
-    re = re.replace(/\*/g, "[^]*");
+    re = re.replace(/\?/g, "(.|[\r\n])");
+    re = re.replace(/\*/g, "(.|[\r\n])*");
     return "^" + re + "$";
 };
 
