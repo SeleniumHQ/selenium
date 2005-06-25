@@ -110,36 +110,32 @@ Selenium.prototype.doClose = function() {
 };
 
 /*
- *  Asserts that the supplied message was received as an alert
+ * Asserts that the supplied message was received as an alert
  */
- Selenium.prototype.assertAlert = function(expectedAlert) {
-    if ( this.browserbot.hasAlerts()) {
-        
+Selenium.prototype.assertAlert = function(alertPattern) {
+    if (this.browserbot.hasAlerts()) {
         receivedAlert = this.browserbot.getNextAlert();
-        if ( receivedAlert != expectedAlert ) {
-           assert.fail("The alert was [" + receivedAlert + "]");
+        if (! PatternMatcher.matches(alertPattern, receivedAlert)) {
+            assert.fail("The alert was [" + receivedAlert + "]");
         }
-                          
     } else {
         assert.fail("There were no alerts");
     }
- };
+};
 
-  /*
-  *  Asserts that the supplied message was received as a confirmation
-  */
-  Selenium.prototype.assertConfirmation = function(expectedConfirmation) {
-     if ( this.browserbot.hasConfirmations()) {
-         
-         receivedConfirmation = this.browserbot.getNextConfirmation();
-         if ( receivedConfirmation != expectedConfirmation ) {
+/*
+ * Asserts that the supplied message was received as a confirmation
+ */
+Selenium.prototype.assertConfirmation = function(confirmationPattern) {
+    if (this.browserbot.hasConfirmations()) {
+        receivedConfirmation = this.browserbot.getNextConfirmation();
+        if (! PatternMatcher.matches(confirmationPattern, receivedConfirmation)) {
             assert.fail("The confirmation message was [" + receivedConfirmation + "]");
          }
-                           
-     } else {
-         assert.fail("There were no confirmations");
-     }
-  };
+    } else {
+        assert.fail("There were no confirmations");
+    }
+};
  
 /*
  * Verify the location of the current page.
@@ -147,7 +143,6 @@ Selenium.prototype.doClose = function() {
 Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
     assert.assertMatches(expectedLocation, this.page().location);
 };
-
 
 /*
  * Verify the location of the current page ends with the expected location.
@@ -593,11 +588,11 @@ PatternMatcher = function(pattern) {
     if (! PatternMatcher[strategyClassName]) {
         throw new SeleniumError("cannot find PatternMatcher." + strategyClassName);
     }
-    return new PatternMatcher[strategyClassName](pattern);
+    this.strategy = new PatternMatcher[strategyClassName](pattern);
 };
 PatternMatcher.prototype.matches = function(actual) {
-    return this.strategy.matches('' + actual);
-    // Note: prepending an empty string avoids a Konqueror bug
+    return this.strategy.matches(actual + '');
+    // Note: appending an empty string avoids a Konqueror bug
 };
 
 /**
