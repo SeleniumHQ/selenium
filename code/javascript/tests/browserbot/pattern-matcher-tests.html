@@ -32,11 +32,11 @@ Copyright 2004 ThoughtWorks, Inc
 function testRegexpFromGlob() {
     var regexpFromGlob = 
         PatternMatcher.GlobMatchStrategy.prototype.regexpFromGlob;
-    assertEquals("^[^]*$", regexpFromGlob("*"));
-    assertEquals("^[^]$", regexpFromGlob("?"));
-    assertEquals("^a[^]*b$", regexpFromGlob("a*b"));
+    assertEquals("^(.|[\r\n])*$", regexpFromGlob("*"));
+    assertEquals("^(.|[\r\n])$", regexpFromGlob("?"));
+    assertEquals("^a(.|[\r\n])*b$", regexpFromGlob("a*b"));
     assertEquals("^\\.\\|\\^\\$\\(\\)\\[\\]\\{\\}$", regexpFromGlob(".|^$()[]{}"));
-    assertEquals("^[^]*/foo/bar[^]*$", regexpFromGlob("*/foo/bar*"));
+    assertEquals("^(.|[\r\n])*/foo/bar(.|[\r\n])*$", regexpFromGlob("*/foo/bar*"));
 }
 
 function testCanMatchUsingGlob() {
