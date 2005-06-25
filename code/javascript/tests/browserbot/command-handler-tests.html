@@ -26,6 +26,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
+
 function testCommandHandlerExecuteCallsTheExecutorFunction() {
     var called = false;
     var executor = function() { called = true;};
@@ -54,7 +55,8 @@ function testShouldFailActionCommandsIfAlertPresent() {
         handler.execute(new MockSelenium(), "command");
         fail("Command Should have failed");
      } catch ( e ) {
-        assertNotEquals("Command Should have failed", e.jsUnitMessage);
+        assertTrue(e.isSeleniumError);
+        assertEquals("There was an unexpected Alert! [The Alert]", e.message);
      }
 
      assertFalse(executorCalled);
@@ -80,7 +82,8 @@ function testShouldFailActionCommandsIfConfirmPresent() {
         handler.execute(new MockSelenium(), "command");
         fail("Command Should have failed");
      } catch ( e ) {
-        assertNotEquals("Command Should have failed", e.jsUnitMessage);
+        assertTrue(e.isSeleniumError);
+        assertEquals("There was an unexpected Confirmation! [The Confirmation]", e.message);
      }
 
      assertFalse(executorCalled);

@@ -111,10 +111,10 @@ function ActionHandler(action, wait) {
 ActionHandler.prototype = new CommandHandler;
 ActionHandler.prototype.execute = function(seleniumApi, command) {
     if ( seleniumApi.browserbot.hasAlerts() ) {
-        throw new Error("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
+        throw new SeleniumCommandError("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
     }
     if ( seleniumApi.browserbot.hasConfirmations() ) {
-        throw new Error("There was an unexpected Confirmation! [" + seleniumApi.browserbot.getNextConfirmation() + "]");
+        throw new SeleniumCommandError("There was an unexpected Confirmation! [" + seleniumApi.browserbot.getNextConfirmation() + "]");
     }
     var processState = this.executor.call(seleniumApi, command.target, command.value);
     // If the handler didn't return a wait flag, check to see if the
@@ -151,7 +151,8 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
             throw e;
         }
         if (this.haltOnFailure) {
-            var error = new SeleniumError(e.failureMessage);
+            var error = new SeleniumCommandError(e.failureMessage);
+            // TODO: Surely this next line is redundant???
             error.message = e.failureMessage;
             throw error;
         }
@@ -171,3 +172,12 @@ function SeleniumCommand(command, target, value) {
     this.target = target;
     this.value = value;
 }
+
+// TODO: dkemp - This is the same as SeleniumError as defined in selenium-browserbot.js
+// I defined a new error simply to avoid creating a new dependency.
+// Need to revisit to avoid this duplication.
+function SeleniumCommandError(message) {
+    var error = new Error(message);
+    error.isSeleniumError = true;
+    return error;
+};
