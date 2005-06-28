@@ -463,6 +463,13 @@ Selenium.prototype.doStoreText = function(target, varName) {
 };
 
 /*
+ * Store the value of an element attribute in a variable
+ */
+Selenium.prototype.doStoreAttribute = function(target, varName) {
+    storedVars[varName] = this.page().findAttribute(target);
+};
+
+/*
  * Store the result of a literal value
  */
 Selenium.prototype.doStore = function(value, varName) {

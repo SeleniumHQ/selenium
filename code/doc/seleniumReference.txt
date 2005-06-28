@@ -302,6 +302,21 @@ Selenium Actions
             verifyValue   startDate     ${expectedStartDate}
             ===========   ===========   ====================
 
+    **storeAttribute**
+
+        Stores the value of an element attribute into a variable. 
+
+        **target:** A locator string of the format <element-locator>@<attribute-name>
+
+        **value:** Name of the variable to store the attribute value into.
+
+        **examples:**
+
+            ===============  ==============  ====================
+            storeAttribute   input1@\ class  classOfInput1
+            verifyAttribute  input2@\ class  ${classOfInput1}
+            ===============  ==============  ====================
+
 ---------------
 Selenium Checks
 ---------------
