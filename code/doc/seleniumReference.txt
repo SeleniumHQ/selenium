@@ -42,7 +42,7 @@ Element Locators
             - xpath=//img[@alt='The image alt text']
             - xpath=//table[@id='table1']//tr[4]/td[2]
 
-    **link=**\ *text(pattern)*
+    **link=**\ *textPattern*
         Select the link (anchor) element which contains text matching the specified *pattern*.
             - link=The link text
 
@@ -59,19 +59,19 @@ Select Option Specifiers
 
     Select Option Specifiers provide different ways of specifying options of an HTML Select element (e.g. for selecting a specific option, or for asserting that the selected option satisfies a specification).  There are several forms of Select Option Specifier.
 
-    **label=**\ *label(pattern)*
+    **label=**\ *labelPattern*
         matches options based on their labels, i.e. the visible text. 
             - label=regexp:^[Oo]ther
 
-    **value=**\ *value(pattern)*
+    **value=**\ *valuePattern*
         matches options based on their values. 
             - value=other
 
-    **id=**\ *id(pattern)*
+    **id=**\ *id*
         matches options based on their ids. 
             - id=option1
 
-    **index=**\ *index(integer)*
+    **index=**\ *index*
         matches an option based on its index (offset from zero).
             - index=2
 
@@ -86,7 +86,7 @@ String-match Patterns
     **glob:**\ *pattern*
         Match a string against a "glob" (aka "wildmat") pattern.  "Glob" is a kind of limited regular-expression syntax typically used in command-line shells.  In a glob pattern, "*" represents any sequence of characters, and "?" represents any single character.  Glob patterns match against the entire string.
 
-    **regexp:**\ *re*
+    **regexp:**\ *regexp*
         Match a string using a regular-expression.  The full power of JavaScript regular-expressions is available.
 
     **exact:**\ *string*
@@ -103,14 +103,11 @@ Selenium Actions
     Many **Actions** can be called with the "AndWait" suffix. This suffix tells Selenium that the action will cause the browser to make a call to the server, and that Selenium should wait for a new page to load.
     The exceptions to this pattern are the "open" and "click" actions, which will both wait for a page to load by default.
 
-    **open**
+    **open**\ ( *url* )
+
         Opens a URL in the test frame.  This accepts both relative and absolute URLs.
         
         *Note*: The URL must be on the same site as Selenium due to security restrictions in the browser (Cross Site Scripting).
-        
-        **target:** The URL to open.
-        
-        **value:** *ignored*
         
         **examples:**
             
@@ -119,14 +116,11 @@ Selenium Actions
             open  http://localhost/
             ====  =================  =====
 
-    **click (clickAndWait)**
+    **click**\ ( *elementLocator* )
+
         Clicks on a link, button, checkbox or radio button.
         If the click action causes a new page to load (like a link usually does), use "clickAndWait".
         
-        **target:** The id of the element that should be clicked.
-        
-        **value:** *ignored*
-
         **examples:**
             
             ============   ==================  =====
@@ -143,12 +137,11 @@ Selenium Actions
             dialog instead of clicking 'OK'.
 
 
-    **type (typeAndWait)**
-        Types (enters) text into an input field.  This works for text fields, combo boxes, check boxes, etc.
-        
-        **target:** The id of the element where the text should be typed.
-        
-        **value:** The text that will be typed, or the value of the option selected (not the visible text).
+    **type**\ ( *inputLocator*, *value* )
+
+        Sets the *value* of an input field, as though you typed it in.
+
+        Can also be used to set the value of combo boxes, check boxes, etc.  In these cases, *value* should be the value of the option selected, not the visible text.
         
         **examples:**
             
@@ -157,12 +150,9 @@ Selenium Actions
             typeAndWait    textBoxThatSubmitsOnChange   newValue
             ===========    ==========================   ==========
 
-    **select (selectAndWait)**
-        Select an option from a drop-down, based on a Select Option Specifier.
+    **select**\ ( *dropDownLocator*, *optionSpecifier* )
 
-        **target:** An Element Locator specifying an HTML Select element.
-
-        **value:** An Option Specifier.  If more than one option matches (e.g. due to the use of globs like "f*b*", or due to more than one option having the same label or value), then the first option that matches is selected.
+        Select an option from a drop-down, based on the *optionSpecifier*.  If more than one option matches the specifier (e.g. due to the use of globs like "f*b*", or due to more than one option having the same label or value), then the first matches is selected.
 
         **examples:**
 
@@ -173,7 +163,8 @@ Selenium Actions
             selectAndWait  currencySelector   label=Aus*lian D*rs
             =============  ================   ==========
 
-    **selectWindow**
+    **selectWindow**\ ( *windowId* )
+
         Selects a popup window.  Once a popup window has been selected, all commands go to that window.  To select the main window again, use "null" as the target.
         
         **target:** The id of the window to select.
@@ -187,40 +178,9 @@ Selenium Actions
             selectWindow    null
             ============    =============   =====
 
-    **pause**
-        Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.
-        
-        **target:** The number of milliseconds to pause.
-        
-        **value:** *ignored*
-        
-        **examples:**
-            
-            =====   ====  =====
-            pause   5000
-            pause   2000    
-            =====   ====  =====
+    **goBack**\ ()
 
-    **waitForValue**
-        Waits for a specified input (e.g. a hidden field) to have a specified value.  Will succeed immediately if the input already has the value.  Is implemented by polling for the value.  Warning: can block indefinitely if the input never has the specified value.
-
-        **target:** The input field.
-        
-        **value:** The value the input field must have before continuing.
-        
-        **example:**
-            
-            ============   ================  ==========
-            waitForValue   finishIndication  isfinished
-            ============   ================  ==========
-
-
-    **goBack**
         Simulates the user clicking the "back" button on their browser.
-
-        **target:** *ignored*
-
-        **value:** *ignored*
 
         **examples:**
 
@@ -228,12 +188,9 @@ Selenium Actions
             goBack
             ======   ====  =====
 
-    **close**
+    **close**\ ()
+
         Simulates the user clicking the "close" button in the titlebar of a popup window.
-
-        **target:** *ignored*
-
-        **value:** *ignored*
 
         **examples:**
 
@@ -241,10 +198,9 @@ Selenium Actions
             close
             ======   ====  =====
 
-    **pause**
-        Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.
+    **pause**\ ( *milliseconds* )
 
-        **target:** The number of milliseconds to pause.
+        Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.
 
         **value:** *ignored*
 
@@ -255,14 +211,19 @@ Selenium Actions
             pause   2000
             =====   ====  =====
 
-    **store**
+    **waitForValue**\ ( *inputLocator*, *value* )
 
-        Stores the value of a parameter into a variable
+        Waits for a specified input (e.g. a hidden field) to have a specified *value*.  Will succeed immediately if the input already has the value.  This is implemented by polling for the value.  Warning: can block indefinitely if the input never has the specified value.
 
-        **target:** The value to store. This can be constructed using either variable substitution or
-                    javascript evaluation, as detailed in 'Parameter construction and Variables' (below).
+        **example:**
+            
+            ============   ================  ==========
+            waitForValue   finishIndication  isfinished
+            ============   ================  ==========
 
-        **value:** Name of the variable to store the value into.
+    **store**\ ( *valueToStore*, *variableName* )
+
+        Stores a value into a variable.  The value can be constructed using either variable substitution or javascript evaluation, as detailed in 'Parameter construction and Variables' (below).
 
         **examples:**
 
@@ -272,13 +233,9 @@ Selenium Actions
             store        javascript{Math.round(Math.PI * 100) / 100}    PI
             ==========   ============================================   =========
 
-    **storeValue**
+    **storeValue**\ ( *inputLocator*, *variableName* )
 
         Stores the value of an input field into a variable. 
-
-        **target:** The id of the input field.
-
-        **value:** Name of the variable to store the field value into.
 
         **examples:**
 
@@ -287,13 +244,9 @@ Selenium Actions
             type         userName   ${userID}
             ==========   =========  =========
 
-    **storeText**
+    **storeText**\ ( *elementLocator*, *variableName* )
 
         Stores the text of an element into a variable. 
-
-        **target:** The id of the element.
-
-        **value:** Name of the variable to store the element text into.
 
         **examples:**
 
@@ -302,13 +255,9 @@ Selenium Actions
             verifyValue   startDate     ${expectedStartDate}
             ===========   ===========   ====================
 
-    **storeAttribute**
+    **storeAttribute**\ ( *elementLocator*\ @\ *attributeName*, *variableName* )
 
         Stores the value of an element attribute into a variable. 
-
-        **target:** A locator string of the format <element-locator>@<attribute-name>
-
-        **value:** Name of the variable to store the attribute value into.
 
         **examples:**
 
@@ -325,13 +274,8 @@ Selenium Checks
     All Selenium Checks can be used in 2 modes, "assert" and "verify". These behave identically, except that when an "assert" check fails, the test is aborted. When a "verify" check fails, the test will continue execution.
     This allows a single "assert" to ensure that the application is on the correct page, followed by a bunch of "verify" checks to test form field values, labels, etc.
 
-    **verifyLocation / assertLocation**
-        Verifies the location of the current page being tested.
-        
-        **target:** The expected relative location of the page.
-        
-        **value:** *ignored*
-        
+    **assertLocation**\ ( *relativeLocation* )
+
         **examples:**
             
             ==============   =======  =====
@@ -339,12 +283,9 @@ Selenium Checks
             assertLocation   /mypage
             ==============   =======  =====
 
-    **verifyTitle / assertTitle**
+    **assertTitle**\ ( *titlePattern* )
+
         Verifies the title of the current page.
-
-        **target:** The expected page title.
-
-        **value:** *ignored*
 
         **examples:**
 
@@ -353,12 +294,9 @@ Selenium Checks
             assertTitle   My Page
             ===========   =======  =====
 
-    **verifyValue / assertValue**
+    **assertValue**\ ( *inputLocator*, *valuePattern* )
+
         Verifies the value of an input field (or anything else with a value parameter). For checkbox/radio elements, the value will be "on" or "off" depending on whether the element is checked or not.
-        
-        **target:** The id of the element to verify.
-        
-        **value:** The expected value.
         
         **examples:**
             
@@ -367,12 +305,9 @@ Selenium Checks
             assertValue   document.forms[2].nameField   John Smith
             ===========   ===========================   ==========
 
-    **verifySelected / assertSelected**
-        Verifies that the selected option of a drop-down satisfies a specified Select Option Specifier.
+    **assertSelected**\ ( *selectLocator*, *optionSpecifier* )
 
-        **target:** Locates the drop-down to verify.
-
-        **value:** A Select Option Specifier that the selected option is expected to satisfy.
+        Verifies that the selected option of a drop-down satisfies the *optionSpecifier*.
 
         **examples:**
 
@@ -383,12 +318,9 @@ Selenium Checks
             assertSelected   document.forms[2].dropDown    index=0
             ==============   ===========================   ==========
 
-    **verifySelectOptions / assertSelectOptions**
+    **assertSelectOptions**\ ( *selectLocator*, *optionLabelList* )
+
         Verifies the labels of all options in a drop-down against a comma-separated list. Commas in an expected option can be escaped as "\,".
-
-        **target:** Locates the drop-down to verify.
-
-        **value:** A comma-separated list of option labels.
 
         **examples:**
 
@@ -397,12 +329,9 @@ Selenium Checks
             assertSelectOptions   document.forms[2].dropDown    Smith\\, J,Bird\\, D
             ===================   ===========================   ====================
 
-    **verifyText / assertText**
+    **assertText**\ ( *elementLocator*, *textPattern* )
+
         Verifies the text of an element.  This works for any element that contains text.  This command uses either the textContent (Mozilla-like browsers) or the innerText (IE-like browsers) of the element, which is the rendered text shown to the user.
-        
-        **target:** The id of the element to verify.
-        
-        **value:** The expected text.
         
         **examples:**
             
@@ -411,27 +340,21 @@ Selenium Checks
             assertText   //div[@id='foo']//h1   Successful
             ==========   ====================   ==========
 
-    **verifyAttribute / assertAttribute**
-        Verifies the value of an element attribute. An attribute is identified using the syntax <element-locator>@<attribute-name>. This works for all types of element locators.
+    **assertAttribute**\ ( *elementLocator*\ @\ *attributeName*, *valuePattern* )
 
-        **target:** A locator string of the format <element-locator>@<attribute-name>
-
-        **value:** The expected attribute value.
+        Verifies the value of an element attribute.
 
         **examples:**
 
             ===============   ======================   ==========
-            verifyAttribute   txt1@class               bigAndBold
+            verifyAttribute   txt1@\ class             bigAndBold
             assertAttribute   document.images[0]@alt   alt-text
             verifyAttribute   //img[@id='foo']/@alt    alt-text
             ===============   ======================   ==========
 
-    **verifyTextPresent / assertTextPresent**
+    **assertTextPresent**\ ( *text* )
+
         Verifies that the specified text appears somewhere on the rendered page shown to the user.
-        
-        **target:** The text that should be present.
-        
-        **value:** *ignored*
         
         **examples:**
             
@@ -440,19 +363,13 @@ Selenium Checks
             assertTextPresent   You are now logged in.
             =================   ======================   =====
 
-    **verifyTextNotPresent / assertTextNotPresent**
-        Verifies that the specified text does not appears anywhere on the rendered page.
+    **assertTextNotPresent**\ ( *text* )
+
+        Verifies that the specified text does NOT appear anywhere on the rendered page.
         
-        **target:** The text that should not be present.
-        
-        **value:** *ignored*
-        
-    **verifyElementPresent / assertElementPresent**
+    **assertElementPresent**\ ( *elementLocator* )
+
         Verifies that the specified element is somewhere on the page.
-        
-        **target:** The element that should be present.
-        
-        **value:** *ignored*
         
         **examples:**
             
@@ -461,12 +378,9 @@ Selenium Checks
             assertElementPresent   //img[@alt='foo']
             ====================   =================   =====
 
-    **verifyElementNotPresent / assertElementNotPresent**
-        Verifies that the specified element is not on the page.
-        
-        **target:** The element that should not be present.
-        
-        **value:** *ignored*
+    **assertElementNotPresent**\ ( *elementLocator* )
+
+        Verifies that the specified element is NOT on the page.
         
         **examples:**
             
@@ -475,12 +389,9 @@ Selenium Checks
             assertElementNotPresent   cancelButton
             =======================   ============   =====
 
-    **verifyTable / assertTable**
-        Verifies the text in a cell of a table. The correct syntax of the target is tableName.row.column, where row and column start at 0.
-        
-        **target:** The table, row, and column specified as table.row.col.
-        
-        **value:** The expected value of the cell.
+    **assertTable**\( *cellAddress*, *valuePattern* )
+
+        Verifies the text in a cell of a table. The *cellAddress* syntax *tableName.row.column*, where row and column start at 0.
         
         **examples:**
             
@@ -489,12 +400,9 @@ Selenium Checks
             assertTable   results.0.2   13
             ===========   ===========   =========
 
-    **verifyVisible / assertVisible**
+    **assertVisible**\ ( *elementLocator* )
+
         Verifies that the specified element is both present *and* visible. An element can be rendered invisible by setting the CSS "visibility" property to "hidden", or the "display" property to "none", either for the element itself or one if its ancestors.
-        
-        **target:** The element that should be visible.
-        
-        **value:** *ignored*
         
         **examples:**
             
@@ -503,12 +411,9 @@ Selenium Checks
             assertVisible   postcode
             =============   ========   =====
 
-    **verifyNotVisible / assertNotVisible**
-        Verifies that the specified element is not visible.  Elements that are simply not present are also considered invisible.
-        
-        **target:** The element that should not be visible.
-        
-        **value:** *ignored*
+    **assertNotVisible**\ ( *elementLocator* )
+
+        Verifies that the specified element is NOT visible.  Elements that are simply not present are also considered invisible.
         
         **examples:**
             
@@ -517,13 +422,9 @@ Selenium Checks
             assertNotVisible   postcode
             ================   ========   =====
 
-    **verifyEditable / assertEditable**
-        Verifies that the specified element is editable, ie. it's an input
-        element, and hasn't been disabled.
-        
-        **target:** The element that should be editable.
-        
-        **value:** *ignored*
+    **verifyEditable / assertEditable**\ ( *inputLocator* )
+
+        Verifies that the specified element is editable, ie. it's an input element, and hasn't been disabled.
         
         **examples:**
             
@@ -532,36 +433,19 @@ Selenium Checks
             assertEditable   colour
             ==============   ========   =====
 
-    **verifyNotEditable / assertNotEditable**
-        Verifies that the specified element is NOT editable, ie. it's NOT
-        an input element, or has been disabled.
-        
-        **target:** The element that should be read-only.
-        
-        **value:** *ignored*
-        
-        **examples:**
-            
-            =================   ===========   =====
-            verifyNotEditable   creditLimit
-            assertNotEditable   userName
-            =================   ===========   =====
+    **assertNotEditable**\ ( *inputLocator* )
 
-    **verifyAlert / assertAlert**
-        Verifies that a javascript alert was generated and that the text of the alert was as specified.
-        Alerts must be verified in the same order that they were generated.
+        Verifies that the specified element is NOT editable, ie. it's NOT an input element, or has been disabled.
 
-        Verifying an alert has the same effect as manually clicking OK.
-        If an alert is generated but you do not verify it, the next Selenium action will fail.
+    **assertAlert**\ ( *messagePattern* )
+
+        Verifies that a javascript alert with the specified message was generated.  Alerts must be verified in the same order that they were generated.
+
+        Verifying an alert has the same effect as manually clicking OK.  If an alert is generated but you do not verify it, the next Selenium action will fail.
 
         NOTE: under Selenium, javascript alerts will NOT pop up a visible alert dialog.
 
-        NOTE: Selenium does NOT support javascript alerts that are generated in a page's onload() event handler.
-        In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.
-
-        **target:** The expected text of the alert.
-
-        **value:** *ignored*
+        NOTE: Selenium does NOT support javascript alerts that are generated in a page's onload() event handler.  In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.
 
         **examples:**
 
@@ -570,39 +454,26 @@ Selenium Checks
             assertAlert      Invalid Phone Number
             ==============   ====================  =====
 
-    **verifyConfirmation / assertConfirmation**
-        Verifies that a javascript confirmation dialog was generated and that
-        the text of the dialog was as specified.
-        Confirm dialogs must be verified in the same order that they were generated.
+    **assertConfirmation**\ ( *messagePattern* )
 
-        By default, the confirm function will return true, having the same effect as manually clicking OK.
-        This can be changed by prior execution of the **chooseCancelOnNextConfirmation** command (see below).
-        If an confirmation is generated but you do not verify it, the next Selenium action will fail.
+        Verifies that a javascript confirmation dialog with the specified message was generated.  Like alerts, confirmations must be verified in the same order that they were generated.
+
+        By default, the confirm function will return true, having the same effect as manually clicking OK.  This can be changed by prior execution of the **chooseCancelOnNextConfirmation** command (see below).  If an confirmation is generated but you do not verify it, the next Selenium action will fail.
 
         NOTE: under Selenium, javascript confirmations will NOT pop up a visible dialog.
 
-        NOTE: Selenium does NOT support javascript confirmations that are generated in a page's onload() event handler.
-        In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.
-
-        **target:** The expected text of the alert.
-
-        **value:** *ignored*
+        NOTE: Selenium does NOT support javascript confirmations that are generated in a page's onload() event handler.  In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.
 
         **examples:**
 
             ==================   ====================  =====
-            verifyConfirmation   Invalid Phone Number
-            assertAlert          Invalid Phone Number
+            assertConfirmation   Remove this user?
+            verifyConfirmation   Are you sure?
             ==================   ====================  =====
 
-    **chooseCancelOnNextConfirmation**
-        Instructs Selenium to click **Cancel** on the next javascript confirmation dialog to be raised.
-        By default, the confirm function will return true, having the same effect as manually clicking OK.
-        After running this command, the next confirmation will behave as if the user had clicked Cancel.
+    **chooseCancelOnNextConfirmation**\ ()
 
-        **target:** *ignored*
-
-        **value:** *ignored*
+        Instructs Selenium to click **Cancel** on the next javascript confirmation dialog to be raised.  By default, the confirm function will return true, having the same effect as manually clicking OK.  After running this command, the next confirmation will behave as if the user had clicked Cancel.
 
         **examples:**
 
@@ -632,6 +503,7 @@ Parameter construction and Variables
     by ${variableName}. Multiple variables can be substituted, and intermixed with static text.
 
     Example:
+
         ==========   ====================       ==========
         store        Mr                         title
         storeValue   nameField                  surname
@@ -648,6 +520,7 @@ Parameter construction and Variables
     Note that variable substitution cannot be combined with javascript evaluation.
 
     Example:
+
         ==========   ================================================   ==========
         store        javascript{'merchant' + (new Date()).getTime()}    merchantId
         type         textElement                                        javascript{storedVars['merchantId'].toUpperCase()}
@@ -665,26 +538,28 @@ Extending Selenium
     The following examples try to give an indication of how Selenium can be extended with javascript.
 
 **Actions**
+
     All *doFoo* methods on the Selenium prototype are added as actions. For each action *foo* there
     is also an action *fooAndWait* registered. An action method can take up to 2 parameters, which
     will be passed the second and third column values in the test.
 
     Example: Add a "typeRepeated" action to Selenium, which types the text twice into a text box.
 
-::
-
-    Selenium.prototype.doTypeRepeated = function(locator, text) {
-        // All locator-strategies are automatically handled by "findElement"
-        var element = this.page().findElement(locator);
-
-        // Create the text to type
-        var valueToType = text + text;
-
-        // Replace the element text with the new text
-        this.page().replaceText(element, valueToType);
-    };
+    ::
+    
+        Selenium.prototype.doTypeRepeated = function(locator, text) {
+            // All locator-strategies are automatically handled by "findElement"
+            var element = this.page().findElement(locator);
+    
+            // Create the text to type
+            var valueToType = text + text;
+    
+            // Replace the element text with the new text
+            this.page().replaceText(element, valueToType);
+        };
 
 **Checks**
+
     All *assertFoo* methods on the Selenium prototype are added as checks. For each check *foo* there
     is an *assertFoo* and *verifyFoo* registered. An assert method can take up to 2 parameters, which
     will be passed the second and third column values in the test.
@@ -693,56 +568,52 @@ Extending Selenium
     consists of the supplied text repeated. The 2 commands that would be available in tests would be
     *assertValueRepeated* and *verifyValueRepeated*.
 
-::
-
-    Selenium.prototype.assertValueRepeated = function(locator, text) {
-        // All locator-strategies are automatically handled by "findElement"
-        var element = this.page().findElement(locator);
-
-        // Create the text to verify
-        var expectedValue = text + text;
-
-        // Get the actual element value
-        var actualValue = element.value;
-
-        // Make sure the actual value matches the expected
-        this.assertMatches(expectedValue, actualValue);
-    };
+    ::
+    
+        Selenium.prototype.assertValueRepeated = function(locator, text) {
+            // All locator-strategies are automatically handled by "findElement"
+            var element = this.page().findElement(locator);
+    
+            // Create the text to verify
+            var expectedValue = text + text;
+    
+            // Get the actual element value
+            var actualValue = element.value;
+    
+            // Make sure the actual value matches the expected
+            this.assertMatches(expectedValue, actualValue);
+        };
 
 **Locator Strategies**
-    All *locateElementByFoo* methods on the PageBot prototype are added as locator-strategies. A
-    locator strategy takes 2 parameters, the first being the locator string (minus the prefix),
-    and the second being the document in which to search.
 
-    Example: Add a "valuerepeated=" locator, that finds the first element a value attribute equal
-    to the the supplied value repeated.
+    All *locateElementByFoo* methods on the PageBot prototype are added as locator-strategies. A locator strategy takes 2 parameters, the first being the locator string (minus the prefix), and the second being the document in which to search.
 
-::
+    Example: Add a "valuerepeated=" locator, that finds the first element a value attribute equal to the the supplied value repeated.
 
-    // The "inDocument" is a the document you are searching.
-    PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
-        // Create the text to search for
-        var expectedValue = text + text;
-
-        // Loop through all elements, looking for ones that have a value === our expected value
-        var allElements = inDocument.getElementsByTagName("*");
-        for (var i = 0; i < allElements.length; i++) {
-            var testElement = allElements[i];
-            if (testElement.value && testElement.value === expectedValue) {
-                return testElement;
+    ::
+    
+        // The "inDocument" is a the document you are searching.
+        PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
+            // Create the text to search for
+            var expectedValue = text + text;
+    
+            // Loop through all elements, looking for ones that have 
+            // a value === our expected value
+            var allElements = inDocument.getElementsByTagName("*");
+            for (var i = 0; i < allElements.length; i++) {
+                var testElement = allElements[i];
+                if (testElement.value && testElement.value === expectedValue) {
+                    return testElement;
+                }
             }
-        }
-        return null;
-    };
+            return null;
+        };
 
 **user-extensions.js**
-    By default, Selenium looks for a file called "user-extensions.js", and loads and javascript code
-    found in that file. This file provides a convenient location for adding features to Selenium, without
-    needing to modify the core Selenium sources.
 
-    In the standard distibution, this file does not exist. Users can create this file and place their
-    extension code in this common location, removing the need to modify the Selenium sources,
-    and hopefully assisting with the upgrade process.
+    By default, Selenium looks for a file called "user-extensions.js", and loads the javascript code found in that file. This file provides a convenient location for adding features to Selenium, without needing to modify the core Selenium sources.
+
+    In the standard distibution, this file does not exist. Users can create this file and place their extension code in this common location, removing the need to modify the Selenium sources, and hopefully assisting with the upgrade process.
 
 ------------------
 
