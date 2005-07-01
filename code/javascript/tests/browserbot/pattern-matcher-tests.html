@@ -30,8 +30,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function testRegexpFromGlob() {
-    var regexpFromGlob = 
-        PatternMatcher.GlobMatchStrategy.prototype.regexpFromGlob;
+    var regexpFromGlob = PatternMatcher.regexpFromGlob;
     assertEquals("^(.|[\r\n])*$", regexpFromGlob("*"));
     assertEquals("^(.|[\r\n])$", regexpFromGlob("?"));
     assertEquals("^a(.|[\r\n])*b$", regexpFromGlob("a*b"));

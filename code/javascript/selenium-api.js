@@ -580,21 +580,29 @@ function AssertionFailedError(message) {
 }
 
 PatternMatcher = function(pattern) {
-    this.pattern = pattern;
-    var strategyName = 'glob'; // by default
-    if (/^([a-zA-Z]+):(.*)/.test(pattern)) {
-        strategyName = RegExp.$1;
-        pattern = RegExp.$2;
-    }
-    strategyClassName = strategyName.ucfirst() + 'MatchStrategy';
-    if (! PatternMatcher[strategyClassName]) {
-        throw new SeleniumError("cannot find PatternMatcher." + strategyClassName);
-    }
-    this.strategy = new PatternMatcher[strategyClassName](pattern);
+    this.selectStrategy(pattern);
 };
-PatternMatcher.prototype.matches = function(actual) {
-    return this.strategy.matches(actual + '');
-    // Note: appending an empty string avoids a Konqueror bug
+PatternMatcher.prototype = {
+    
+    selectStrategy: function(pattern) {
+        this.pattern = pattern;
+        var strategyName = 'glob'; // by default
+        if (/^([a-zA-Z]+):(.*)/.test(pattern)) {
+            strategyName = RegExp.$1;
+            pattern = RegExp.$2;
+        }
+        var matchStrategy = PatternMatcher.strategies[strategyName];
+        if (!matchStrategy) {
+            throw new SeleniumError("cannot find PatternMatcher.strategies." + strategyName);
+        }
+        this.matcher = new matchStrategy(pattern);
+    },
+    
+    matches: function(actual) {
+        return this.matcher.matches(actual + '');
+        // Note: appending an empty string avoids a Konqueror bug
+    }
+
 };
 
 /**
@@ -604,42 +612,46 @@ PatternMatcher.matches = function(pattern, actual) {
     return new PatternMatcher(pattern).matches(actual);
 };
 
-/**
- * Match by regular expression, e.g. "regexp:^[0-9]+$"
- */
-PatternMatcher.RegexpMatchStrategy = function(regexpString) {
-    this.regexp = new RegExp(regexpString);
-    this.matches = function(actual) {
-        return this.regexp.test(actual);
-    };
+PatternMatcher.strategies = {
+
+    /**
+     * Exact matching, e.g. "exact:***"
+     */
+    exact: function(expected) {
+        this.expected = expected;
+        this.matches = function(actual) {
+            return actual == this.expected;
+        };
+    },
+
+    /**
+     * Match by regular expression, e.g. "regexp:^[0-9]+$"
+     */
+    regexp: function(regexpString) {
+        this.regexp = new RegExp(regexpString);
+        this.matches = function(actual) {
+            return this.regexp.test(actual);
+        };
+    },
+
+    /**
+     * "glob" (aka "wildmat") patterns, e.g. "glob:one,two,*"
+     */
+    glob: function(globString) {
+        this.regexp = new RegExp(PatternMatcher.regexpFromGlob(globString));
+        this.matches = function(actual) {
+            return this.regexp.test(actual);
+        };
+    }
+    
 };
 
-/**
- * Match by "glob" pattern, e.g. "glob:one,two,*"
- */
-PatternMatcher.GlobMatchStrategy = function(globString) {
-    this.regexp = new RegExp(this.regexpFromGlob(globString));
-    this.matches = function(actual) {
-        // actual = actual.replace(/[\r\n]/g, ' ');
-        return this.regexp.test(actual);
-    };
-};
-PatternMatcher.GlobMatchStrategy.prototype.regexpFromGlob = function(glob) {
+PatternMatcher.regexpFromGlob = function(glob) {
     var re = glob;
     re = re.replace(/([.^$+(){}\[\]\\|])/g, "\\$1");
     re = re.replace(/\?/g, "(.|[\r\n])");
     re = re.replace(/\*/g, "(.|[\r\n])*");
     return "^" + re + "$";
-};
-
-/**
- * Exact matching, e.g. "exact:***"
- */
-PatternMatcher.ExactMatchStrategy = function(expected) {
-    this.expected = expected;
-    this.matches = function(actual) {
-        return actual == this.expected;
-    };
 };
 
 /**
