@@ -25,6 +25,10 @@ function Selenium(browserbot) {
     };
 }
 
+Selenium.createForFrame = function(frame) {
+    return new Selenium(BrowserBot.createForFrame(frame));
+};
+
 /*
  * Reset the browserbot when an error occurs..
  */

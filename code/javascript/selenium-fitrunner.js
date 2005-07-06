@@ -103,8 +103,7 @@ function start() {
 
 function loadSuiteFrame() {
     var testAppFrame = document.getElementById('myiframe');
-    browserbot = createBrowserBot(testAppFrame);
-    selenium = new Selenium(browserbot);
+    selenium = Selenium.createForFrame(testAppFrame);
     registerCommandHandlers();
 
     //set the runInterval if there is a queryParameter for it
@@ -334,7 +333,7 @@ function runNextTest() {
         var testFrame = getTestFrame();
         addLoadListener(testFrame, startTest);
 
-        browserbot.setIFrameLocation(testFrame, testLink.href);
+        selenium.browserbot.setIFrameLocation(testFrame, testLink.href);
     }
 }
 

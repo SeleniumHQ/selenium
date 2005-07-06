@@ -35,7 +35,7 @@ function setUp() {
     var iWindow = iframe.contentWindow.window;
     frameDocument = iWindow.document;
 
-    pageBot = createPageBot(iWindow);
+    pageBot = PageBot.createForWindow(iWindow);
     element1 = iWindow.document.getElementById("id1");
     element2 = iWindow.document.getElementById("id2");
     element3 = iWindow.document.getElementById("id3");
