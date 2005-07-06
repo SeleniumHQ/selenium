@@ -34,12 +34,12 @@ function setUp() {
    LOG = new DummyLogger();
    testFrame =  document.getElementById("frame");
    testWindow = testFrame.contentWindow;
-   browserBot = createBrowserBot(testFrame);
+   browserBot = BrowserBot.createForFrame(testFrame);
    browserBot.getCurrentPage();
 }
 
 function testShouldConfirmConfirmationsByDefault() {
-	assertTrue( testWindow.confirm("Continue?"));
+    assertTrue( testWindow.confirm("Continue?"));
 }
 
 function testShouldCancelConfirmationIfPreviouslyInstructedTo() {

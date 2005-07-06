@@ -42,43 +42,6 @@ var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
-function createBrowserBot(frame) {
-    var browserbot;
-    if (isIE) {
-        browserbot = new IEBrowserBot(frame);
-    }
-    else if (isKonqueror) {
-        browserbot = new KonquerorBrowserBot(frame);
-    }
-    else if (isSafari) {
-        browserbot = new SafariBrowserBot(frame);
-    }
-    else {
-        // Use mozilla by default
-        browserbot = new MozillaBrowserBot(frame);
-    }
-
-    // Modify the test IFrame so that page loads are detected.
-    addLoadListener(browserbot.getFrame(), browserbot.recordPageLoad);
-    return browserbot;
-}
-
-function createPageBot(windowObject) {
-    if (isIE) {
-        return new IEPageBot(windowObject);
-    }
-    else if (isKonqueror) {
-        return new KonquerorPageBot(windowObject);
-    }
-    else if (isSafari) {
-        return new SafariPageBot(windowObject);
-    }
-    else {
-        // Use mozilla by default
-        return new MozillaPageBot(windowObject);
-    }
-}
-
 BrowserBot = function(frame) {
     this.frame = frame;
     this.currentPage = null;
@@ -101,6 +64,27 @@ BrowserBot = function(frame) {
     this.isNewPageLoaded = function() {
         return self.newPageLoaded;
     };
+};
+
+BrowserBot.createForFrame = function(frame) {
+    var browserbot;
+    if (isIE) {
+        browserbot = new IEBrowserBot(frame);
+    }
+    else if (isKonqueror) {
+        browserbot = new KonquerorBrowserBot(frame);
+    }
+    else if (isSafari) {
+        browserbot = new SafariBrowserBot(frame);
+    }
+    else {
+        // Use mozilla by default
+        browserbot = new MozillaBrowserBot(frame);
+    }
+
+    // Modify the test IFrame so that page loads are detected.
+    addLoadListener(browserbot.getFrame(), browserbot.recordPageLoad);
+    return browserbot;
 };
 
 BrowserBot.prototype.doModalDialogTest = function(test) {
@@ -161,7 +145,7 @@ BrowserBot.prototype.getCurrentPage = function() {
         var testWindow = this.getCurrentWindow();
         this.modifyWindowToRecordPopUpDialogs(testWindow, this);
         this.modifySeparateTestWindowToDetectPageLoads(testWindow);
-        this.currentPage = createPageBot(testWindow);
+        this.currentPage = PageBot.createForWindow(testWindow);
         this.newPageLoaded = false;
     }
 
@@ -185,7 +169,7 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     var originalOpen = windowToModify.open;
     windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
         var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
-        browserbot.openedWindows[windowName] = openedWindow;
+        selenium.browserbot.openedWindows[windowName] = openedWindow;
         return openedWindow;
     };
 };
@@ -410,6 +394,22 @@ PageBot = function(pageWindow) {
                || this.locateElementByXPath(locator, inDocument);
     };
     
+};
+
+PageBot.createForWindow = function(windowObject) {
+    if (isIE) {
+        return new IEPageBot(windowObject);
+    }
+    else if (isKonqueror) {
+        return new KonquerorPageBot(windowObject);
+    }
+    else if (isSafari) {
+        return new SafariPageBot(windowObject);
+    }
+    else {
+        // Use mozilla by default
+        return new MozillaPageBot(windowObject);
+    }
 };
 
 MozillaPageBot = function(pageWindow) {

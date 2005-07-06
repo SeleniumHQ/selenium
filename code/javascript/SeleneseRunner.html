@@ -61,8 +61,7 @@ var postResult = "OK";
 function runTest() {
     tableParser = new TableParser();
     var testAppFrame = document.getElementById('myiframe');
-    browserbot = createBrowserBot(testAppFrame);
-    selenium = new Selenium(browserbot);
+    selenium = Selenium.createForFrame(testAppFrame);
 
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
