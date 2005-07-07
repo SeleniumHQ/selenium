@@ -202,14 +202,23 @@ Selenium Actions
 
         Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.
 
-        **value:** *ignored*
-
         **examples:**
 
             =====   ====  =====
             pause   5000
             pause   2000
             =====   ====  =====
+
+    **fireEvent**\ ( *elementLocator*, *eventName* )
+
+        Explicitly simulate an event, to trigger the corresponding "on\ *event*" handler.
+
+        **examples:**
+
+            =========   ===========  ========
+            fireEvent   textField    focus
+            fireEvent   dropDown     blur
+            =========   ===========  ========
 
     **waitForValue**\ ( *inputLocator*, *value* )
 
