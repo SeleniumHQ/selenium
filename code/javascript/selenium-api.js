@@ -113,6 +113,14 @@ Selenium.prototype.doClose = function() {
 };
 
 /*
+ * Explicitly fire an event
+ */
+Selenium.prototype.doFireEvent = function(locator, event) {
+    var element = this.page().findElement(locator);
+    triggerEvent(element, event, false);
+};
+
+/*
  * Asserts that the supplied message was received as an alert
  */
 Selenium.prototype.assertAlert = function(alertPattern) {
