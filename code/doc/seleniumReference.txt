@@ -21,7 +21,9 @@ Selenium Reference
 Element Locators
 -----------------
 
-    Element Locators allow Selenium to identify which HTML element a command refers to. There are several forms of Element Locators.
+    Element Locators allow Selenium to identify which HTML element a
+    command refers to.  We support the following strategies for locating
+    elements:
 
     **id=**\ *id*
         Select the element with the specified @id attribute.
@@ -47,11 +49,11 @@ Element Locators
             - link=The link text
 
 
-    Without a locator prefix, a default set of locators will be used. The default set of locators is:
+    Without a locator prefix, Selenium uses:
 
-    1. identifier
-    2. dom
-    3. xpath
+    * **dom**, for locators starting with "document."
+    * **xpath**, for locators starting with "//"
+    * **identifier**, otherwise
 
 ------------------------
 Select Option Specifiers

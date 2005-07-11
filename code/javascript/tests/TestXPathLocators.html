@@ -72,6 +72,7 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
 
     <!-- Implicit XPath location -->
+
     <tr>
       <td>verifyText</td>
       <td>//a</td>
@@ -81,6 +82,14 @@ Copyright 2004 ThoughtWorks, Inc
       <td>verifyAttribute</td>
       <td>//a[contains(@href,'#id1')]/@class</td>
       <td>a1</td>
+    </tr>
+
+    <!-- Funky XPath -->
+
+    <tr>
+      <td>verifyText</td>
+      <td>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</td>
+      <td>theCellText</td>
     </tr>
 
   </tbody>
