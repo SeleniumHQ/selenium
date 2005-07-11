@@ -389,9 +389,13 @@ PageBot = function(pageWindow) {
      * The implicit locator, that is used when no prefix is supplied.
      */
     this.locationStrategies['implicit'] = function(locator, inDocument) {
-        return this.locateElementByIdentifier(locator, inDocument)
-               || this.locateElementByDomTraversal(locator, inDocument)
-               || this.locateElementByXPath(locator, inDocument);
+        if (locator.startsWith('//')) {
+            return this.locateElementByXPath(locator, inDocument);
+        } 
+        if (locator.startsWith('document.')) {
+            return this.locateElementByDomTraversal(locator, inDocument);
+        }
+        return this.locateElementByIdentifier(locator, inDocument);
     };
     
 };
@@ -533,9 +537,6 @@ PageBot.prototype.locateElementByDomTraversal.prefix = "dom";
 * begin with "//".
 */
 PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
-    if (xpath.slice(0,2) != "//") {
-        return null;
-    }
 
     // Trim any trailing "/": not valid xpath, and remains from attribute
     // locator.
