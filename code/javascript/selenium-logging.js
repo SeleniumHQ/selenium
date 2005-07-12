@@ -19,75 +19,79 @@ var LEVEL_INFO = 1;
 var LEVEL_WARN = 2;
 var LEVEL_ERROR = 3;
 
-function Logger(logLevel) {
+var Logger = function(logLevel) {
     this.level = logLevel;
     this.logConsole = document.getElementById('logging-console');
     this.logList = document.getElementById('log-list');
     this.hide();
 }
+Logger.prototype = {
 
-Logger.prototype.show = function() {
-   this.logConsole.style.display = "";
-};
+    show: function() {
+        this.logConsole.style.display = "";
+    },
 
-Logger.prototype.hide = function() {
-   this.logConsole.style.display = "none";
-};
+    hide: function() {
+        this.logConsole.style.display = "none";
+    },
 
-Logger.prototype.clear = function() {
-    while (this.logList.hasChildNodes()) {
-        this.logList.removeChild(this.logList.firstChild);
+    clear: function() {
+        while (this.logList.hasChildNodes()) {
+            this.logList.removeChild(this.logList.firstChild);
+        }
+    },
+
+    debug: function(message) {
+        if (this.level <= LEVEL_DEBUG) {
+            this.log(message, "debug");
+        }
+    },
+
+    info: function(message) {
+        if (this.level <= LEVEL_INFO) {
+            this.log(message, "info");
+        }
+    },
+
+    warn: function(message) {
+        if (this.level <= LEVEL_WARN) {
+            this.log(message, "warn");
+        }
+    },
+
+    error: function(message) {
+        if (this.level <= LEVEL_ERROR) {
+            this.log(message, "error");
+        }
+    },
+
+    exception: function(exception) {
+        var msg = "Unexpected Exception: " + describe(exception, ', ');
+        this.error(msg);
+    },
+
+    log: function(message, className) {
+        var loggingNode = document.createElement('li');
+        loggingNode.className = className;
+        loggingNode.appendChild(document.createTextNode(message));
+        
+        this.logList.appendChild(loggingNode);
+        this.show();
     }
-};
-
-Logger.prototype.debug = function(message) {
-    if (this.level <= LEVEL_DEBUG) {
-        this.log(message, "debug");
-    }
-};
-
-Logger.prototype.info = function(message) {
-    if (this.level <= LEVEL_INFO) {
-        this.log(message, "info");
-    }
-};
-
-Logger.prototype.warn = function(message) {
-    if (this.level <= LEVEL_WARN) {
-        this.log(message, "warn");
-    }
-};
-
-Logger.prototype.error = function(message) {
-    if (this.level <= LEVEL_ERROR) {
-        this.log(message, "error");
-    }
-};
-
-Logger.prototype.exception = function(exception) {
-    var msg = "Unexpected Exception: " + describe(exception, ', ');
-    this.error(msg);
-};
-
-Logger.prototype.log = function(message, className) {
-    var loggingNode = document.createElement('li');
-    loggingNode.className = className;
-    loggingNode.appendChild(document.createTextNode(message));
-
-    this.logList.appendChild(loggingNode);
-    this.show();
+    
 };
 
 function noop() {};
 
-function DummyLogger() {
+var DummyLogger = function() {};
+DummyLogger.prototype = {
+    show: noop,
+    hide: noop,
+    clear: noop,
+    log: noop,
+    debug: noop,
+    info: noop,
+    warn: noop,
+    error: noop
 };
 
-DummyLogger.prototype.show = noop;
-DummyLogger.prototype.hide = noop;
-DummyLogger.prototype.clear = noop;
-DummyLogger.prototype.log = noop;
-DummyLogger.prototype.debug = noop;
-DummyLogger.prototype.info = noop;
-DummyLogger.prototype.warn = noop;
-DummyLogger.prototype.error = noop;
