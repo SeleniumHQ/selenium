@@ -66,11 +66,11 @@ Copyright 2004 ThoughtWorks, Inc
         <td width="25%" height="30%" id="controlPanel">
 
           <fieldset>
-            <legend>Run</legend>
+            <legend>Execute Tests</legend>
             
             <div>
-              <input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/><label for="modeRun">Fast</label>
-              <input id="modeWalk" type="radio" name="runMode" value="500" /><label for="modeWalk">Slow</label>
+              <input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/><label for="modeRun">Run</label>
+              <input id="modeWalk" type="radio" name="runMode" value="500" /><label for="modeWalk">Walk</label>
               <input id="modeStep" type="radio" name="runMode" value="-1" /><label for="modeStep">Step</label>
             </div>
             
@@ -143,8 +143,12 @@ Copyright 2004 ThoughtWorks, Inc
     </table>
 
     <div id="logging-console">
-        <h1>Javascript Log Console (<a id="closeLog" href="javascript:LOG.hide()">Close</a> <a href="javascript:LOG.clear();">Clear</a>)</h1>
-        <ul id="log-list"/>
+      <span style="float:right;">
+        <a href="javascript:LOG.clear();">Clear</a>
+        <a id="closeLog" href="javascript:LOG.hide()">Close</a> 
+      </span>
+      <h1>Selenium Log Console</h1> 
+      <ul id="log-list"/>
     </div>
     <script language="javascript">
         LOG = new Logger(LEVEL_WARN);
