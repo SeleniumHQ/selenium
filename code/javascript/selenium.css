@@ -170,12 +170,13 @@ button, label {
 
 #logging-console {
     position: absolute;
+    margin: 0px;
     bottom: 0;
     right: 0;
     height: 30%;
     width: 50%;
     overflow: auto;
-    background: #FFF;
+    background: #fff;
     padding: 0.5ex;
     border: 2px solid #888;
     font-size: 10px;
@@ -188,8 +189,12 @@ button, label {
 #logging-console ul {
     list-style-type: none;
     margin: 0px;
-    padding: 0px;
-    clear: both;
+    padding-left: 5px;
+}
+
+#logging-console ul li {
+    margin: 2px;
+    border-top: 1px solid #ccc;
 }
 
 #logging-console ul li.error {
