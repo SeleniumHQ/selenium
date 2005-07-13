@@ -487,7 +487,7 @@ function initialiseTestLoop() {
     testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
     testLoop.testComplete = testComplete;
-    testLoop.waitingForNext = function() {
+    testLoop.pause = function() {
         document.getElementById('continueTest').disabled = false;
     };
     return testLoop;
@@ -518,13 +518,8 @@ function scrollIntoView(element) {
         element.scrollIntoView(false);
         return;
     }
-
-    // For Konqueror, we have to create a remove an element.
-    var anchor = element.ownerDocument.createElement("a");
-    anchor.innerHTML = "!CURSOR!";
-    element.appendChild(anchor, element);
-//    anchor.focus();
-    element.removeChild(anchor);
+    // TODO: work out how to scroll browsers that don't support
+    // scrollIntoView (like Konqueror)
 }
 
 function commandStarted() {
