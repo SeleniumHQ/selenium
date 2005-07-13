@@ -74,8 +74,8 @@ Logger.prototype = {
         var loggingNode = document.createElement('li');
         loggingNode.className = className;
         loggingNode.appendChild(document.createTextNode(message));
-        
         this.logList.appendChild(loggingNode);
+        this.logConsole.scrollTop = loggingNode.offsetTop;
         this.show();
     }
     
