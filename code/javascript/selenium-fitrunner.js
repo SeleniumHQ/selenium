@@ -585,7 +585,11 @@ function testComplete() {
 }
 
 function getCellText(rowNumber, columnNumber) {
-    return getText(inputTableRows[rowNumber].cells[columnNumber]);
+    var cell = inputTableRows[rowNumber].cells[columnNumber];
+    if (! cell.cachedText) {
+        cell.cachedText = getText(cell);
+    }
+    return cell.cachedText;
 }
 
 Selenium.prototype.doPause = function(waitTime) {
