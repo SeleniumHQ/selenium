@@ -216,7 +216,18 @@ function getIframeDocument(iframe) {
           Open Source From <a href="http://www.thoughtworks.com">ThoughtWorks, Inc</a> and Friends
           <form action="">
           <br/>Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"> 
-          <button type="button" id="domViewer1" onclick="openDomViewer();">View DOM</button>
+
+          <fieldset>
+            <legend>Tools</legend>
+
+            <button type="button" id="domViewer1" onclick="openDomViewer();">
+              View DOM
+            </button>
+            <button type="button" onclick="LOG.show();">
+              Show Log
+            </button>
+          </fieldset>
+
           </form>
 
         </td>
@@ -236,19 +247,21 @@ function getIframeDocument(iframe) {
       <iframe name="myiframe" id="myiframe" src="" height="100%" width="100%"></iframe>
     </td>
   </tr>
-  <tr>
-     <td colspan="2">
-       <div id="logging-console">
-         <h1>Javascript Log Console (<a id="closeLog" href="javascript:LOG.hide()">Close</a> <a href="javascript:LOG.clear();LOG.hide();">Clear</a>)</h1>
-         <ul id="log-list"/>
-       </div>
-     </td>
-  </tr>
 </table>
+
+<div id="logging-console">
+  <span style="float:right;">
+    <a href="javascript:LOG.clear();">Clear</a>
+    <a id="closeLog" href="javascript:LOG.hide()">Close</a> 
+  </span>
+  <h1>Selenium Log Console</h1> 
+  <ul id="log-list"/>
+</div>
 <script language="javascript">
     LOG = new Logger(LEVEL_WARN);
     LOG.hide();
 </script>
+
 </body>
 </html>
 
