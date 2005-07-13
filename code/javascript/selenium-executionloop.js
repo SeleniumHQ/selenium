@@ -128,7 +128,7 @@ function TestLoop(commandFactory) {
 
         if (interval < 0) {
             // Enable the "next/continue" button
-            this.waitingForNext();
+            this.pause();
         }
         else {
             // Continue processing
@@ -162,7 +162,7 @@ TestLoop.prototype.commandComplete = noop;
 
 TestLoop.prototype.testComplete = noop;
 
-TestLoop.prototype.waitingForNext = noop;
+TestLoop.prototype.pause = noop;
 
 function noop() {
 
