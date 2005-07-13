@@ -90,7 +90,7 @@ body, html {
 }
 
 #controlPanel table {
-    font-size: inherit;
+    font-size: 100%;
 }
 
 #controlPanel th, #controlPanel td {
