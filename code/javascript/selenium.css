@@ -85,8 +85,6 @@ body, html {
 
 #controlPanel button {
     margin: 0.5ex;
-    padding: 1px;
-    border: 1px solid #ccc;
 }
 
 #controlPanel table {
