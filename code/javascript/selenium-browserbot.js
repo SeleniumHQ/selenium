@@ -632,7 +632,7 @@ PageBot.prototype.locateElementByLinkText = function(linkText, inDocument) {
     var links = inDocument.getElementsByTagName('a');
     for (var i = 0; i < links.length; i++) {
         var element = links[i];
-        if (getText(element) == linkText) {
+        if (PatternMatcher.matches(linkText, getText(element))) {
             return element;
         }
     }
