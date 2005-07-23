@@ -209,8 +209,9 @@ function testFindElementReturnsMatchingName() {
     assertEquals(element2, pageBot.findElement("name1"));
 }
 
-function testFindElementLooksForIdentifiedElementBeforeDomTraversal() {
-    assertEquals(element4, pageBot.findElement("document.links[0]"));
+function testFindElementTriesDomTraversalBeforeId() {
+    assertEquals(element1, pageBot.findElement("document.links[0]"));
+    assertEquals(element4, pageBot.findElement("id=document.links[0]"));
 }
 
 function testFindElementHandlesLinkLocators() {
