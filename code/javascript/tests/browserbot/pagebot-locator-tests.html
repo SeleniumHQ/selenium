@@ -145,6 +145,14 @@ function testLocateLinkReturnsNullIfLinkNotPresent() {
 function testLinkElementReturnsLinkWithMatchingText() {
     assertEquals(element3, pageBot.findElementBy('link','this is the third element', frameDocument));
 }
+
+function testLinkElementWithGlob() {
+    assertEquals(element3, pageBot.findElementBy('link','this * third element', frameDocument));
+}
+
+function testLinkElementWithRegex() {
+    assertEquals(element3, pageBot.findElementBy('link','regexp:this [aeiou]s the third element', frameDocument));
+}
  
 //
 // Tests for PageBot.findElement()
