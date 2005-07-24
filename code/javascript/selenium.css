@@ -167,17 +167,11 @@ button, label {
 /*---( Logging Console )---*/
 
 #logging-console {
-    position: absolute;
-    margin: 0px;
-    bottom: 0;
-    right: 0;
-    height: 30%;
-    width: 50%;
+    max-height: 30em;
     overflow: auto;
     background: #fff;
     padding: 0.5ex;
     border: 2px solid #888;
-    font-size: 10px;
 }
 
 #logging-console h1 {
