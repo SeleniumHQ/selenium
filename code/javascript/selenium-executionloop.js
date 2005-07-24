@@ -50,7 +50,7 @@ function TestLoop(commandFactory) {
 
         this.commandStarted(command);
 
-        LOG.debug("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
+        LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
 
         var result;
         try {
