@@ -167,29 +167,45 @@ button, label {
 /*---( Logging Console )---*/
 
 #logging-console {
-    max-height: 30em;
-    overflow: auto;
     background: #fff;
-    padding: 0.5ex;
-    border: 2px solid #888;
+    font-size: 75%;
 }
 
-#logging-console h1 {
-    font-weight: bold;
+#logging-console #banner {
+    display: block;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background: #ddd;
+    border-bottom: 1px solid #666;
+}
+
+#logging-console #logLevelChooser {
+    float: right;
+    margin: 3px;
 }
 
 #logging-console ul {
     list-style-type: none;
     margin: 0px;
+    margin-top: 3em;
     padding-left: 5px;
 }
 
-#logging-console ul li {
+#logging-console li {
     margin: 2px;
     border-top: 1px solid #ccc;
 }
 
-#logging-console ul li.error {
+#logging-console li.error {
     font-weight: bold;
     color: red;
+}
+
+#logging-console li.warn {
+    color: red;
+}
+
+#logging-console li.debug {
+    color: green;
 }

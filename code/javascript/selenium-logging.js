@@ -14,80 +14,71 @@
 *  limitations under the License.
 */
 
-var LEVEL_DEBUG = 0;
-var LEVEL_INFO = 1;
-var LEVEL_WARN = 2;
-var LEVEL_ERROR = 3;
-
-var Logger = function(logLevel) {
-    this.level = logLevel;
-    this.logConsole = document.getElementById('logging-console');
-    this.logList = document.getElementById('log-list');
-    this.hide();
+var Logger = function() {
+    this.logWindow = null;
 }
 Logger.prototype = {
 
+    getLogWindow: function() {
+        if (this.logWindow && this.logWindow.closed) {
+            this.logWindow = null;
+        }
+        return this.logWindow;
+    },
+    
+    openLogWindow: function() {
+        this.logWindow = window.open(
+            "SeleniumLog.html", "SeleniumLog",
+            "width=600,height=250,bottom=0,right=0,status,scrollbars,resizable"
+        );
+        return this.logWindow;
+    },
+    
     show: function() {
-        this.logConsole.style.display = "";
+        if (! this.getLogWindow()) {
+            this.openLogWindow();
+        }
     },
 
-    hide: function() {
-        this.logConsole.style.display = "none";
-    },
-
-    clear: function() {
-        while (this.logList.hasChildNodes()) {
-            this.logList.removeChild(this.logList.firstChild);
+    log: function(message, className) {
+        var logWindow = this.getLogWindow();
+        if (logWindow) {
+            if (logWindow.append) {
+                logWindow.append(message, className);
+            }
         }
     },
 
     debug: function(message) {
-        if (this.level <= LEVEL_DEBUG) {
-            this.log(message, "debug");
-        }
+        this.log(message, "debug");
     },
 
     info: function(message) {
-        if (this.level <= LEVEL_INFO) {
-            this.log(message, "info");
-        }
+        this.log(message, "info");
     },
 
     warn: function(message) {
-        if (this.level <= LEVEL_WARN) {
-            this.log(message, "warn");
-        }
+        this.log(message, "warn");
     },
 
     error: function(message) {
-        if (this.level <= LEVEL_ERROR) {
-            this.log(message, "error");
-        }
+        this.log(message, "error");
     },
 
     exception: function(exception) {
         var msg = "Unexpected Exception: " + describe(exception, ', ');
         this.error(msg);
-    },
-
-    log: function(message, className) {
-        var loggingNode = document.createElement('li');
-        loggingNode.className = className;
-        loggingNode.appendChild(document.createTextNode(message));
-        this.logList.appendChild(loggingNode);
-        this.logConsole.scrollTop = loggingNode.offsetTop;
-        this.show();
     }
-    
+
 };
+
+var LOG = new Logger();
 
 function noop() {};
 
 var DummyLogger = function() {};
 DummyLogger.prototype = {
     show: noop,
-    hide: noop,
-    clear: noop,
     log: noop,
     debug: noop,
     info: noop,
