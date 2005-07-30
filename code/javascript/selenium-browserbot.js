@@ -680,9 +680,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
     element.value=stringValue;
-    if (isIE || isKonqueror || isSafari) {
-        triggerEvent(element, 'change', true);
-    }
+    triggerEvent(element, 'change', true);
     triggerEvent(element, 'blur', false);
 };
 
