@@ -258,7 +258,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
     var element = this.page().findElement(target);
 
     var expectedOptionLabels = options.parseCSV();
-    Assert.equals("Wrong number of options.", expectedOptionLabels.length, element.options.length);
+    Assert.equals("Wrong number of options", expectedOptionLabels.length, element.options.length);
 
     for (var i = 0; i < element.options.length; i++) {
         Assert.matches(expectedOptionLabels[i], element.options[i].text);

@@ -219,66 +219,57 @@ var Assert = {
      * Assert.equals(comment?, expected, actual)
      */
     equals: function() {
-        if (arguments.length == 2) {
-            var comment = "";
-            var expected = arguments[0];
-            var actual = arguments[1];
-        } else {
-            var comment = arguments[0] + " ";
-            var expected = arguments[1];
-            var actual = arguments[2];
-        }
-        if (expected === actual) {
+        var args = new AssertionArguments(arguments);
+        if (args.expected === args.actual) {
             return;
         }
-        Assert.fail(comment + 
-                    "Expected '" + expected + 
-                    "' but was '" + actual + "'");
+        Assert.fail(args.comment + 
+                    "Expected '" + args.expected + 
+                    "' but was '" + args.actual + "'");
     },
 
     /*
      * Assert.matches(comment?, pattern, actual)
      */
     matches: function() {
-        if (arguments.length == 2) {
-            var comment = "";
-            var pattern = arguments[0];
-            var actual = arguments[1];
-        } else {
-            var comment = arguments[0] + "; ";
-            var pattern = arguments[1];
-            var actual = arguments[2];
-        }
-        if (PatternMatcher.matches(pattern, actual)) {
+        var args = new AssertionArguments(arguments);
+        if (PatternMatcher.matches(args.expected, args.actual)) {
             return;
         }
-        Assert.fail(comment + 
-                    "Actual value '" + actual + 
-                    "' did not match '" + pattern + "'");
+        Assert.fail(args.comment + 
+                    "Actual value '" + args.actual + 
+                    "' did not match '" + args.expected + "'");
     },
     
     /*
      * Assert.notMtches(comment?, pattern, actual)
      */
     notMatches: function() {
-        if (arguments.length == 2) {
-            var comment = "";
-            var pattern = arguments[0];
-            var actual = arguments[1];
-        } else {
-            var comment = arguments[0] + "; ";
-            var pattern = arguments[1];
-            var actual = arguments[2];
-        }
-        if (!PatternMatcher.matches(pattern, actual)) {
+        var args = new AssertionArguments(arguments);
+        if (!PatternMatcher.matches(args.expected, args.actual)) {
             return;
         }
-        Assert.fail(comment + 
-                    "Actual value '" + actual + 
-                    "' did match '" + pattern + "'");
+        Assert.fail(args.comment + 
+                    "Actual value '" + args.actual + 
+                    "' did match '" + args.expected + "'");
     }
-    
+
 };
+
+// Preprocess the arguments to allow for an optional comment.
+function AssertionArguments(args) {
+    if (args.length == 2) {
+        this.comment = "";
+        this.expected = args[0];
+        this.actual = args[1];
+    } else {
+        this.comment = args[0] + "; ";
+        this.expected = args[1];
+        this.actual = args[2];
+    }
+}
+
+
 
 function AssertionFailedError(message) {
     this.isAssertionFailedError = true;
