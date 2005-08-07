@@ -133,46 +133,24 @@ function testVerifyTitleFailed() {
     verifyMocks();
 }
 
-function testVerifyValueOfTextInputSuccess() {
+function testGetValueOfText() {
     var mockTextControl = Object();
     mockTextControl.type = "TEXT";
     mockTextControl.value = "the value";
     mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
-    selenium.assertValue("id", "the value");
+    assertEquals("the value", selenium.getValue("id"));
     verifyMocks();
 }
 
-function testVerifyValueOfTextInputFailure() {
-    var mockTextControl = Object();
-    mockTextControl.type = "TEXT";
-    mockTextControl.value = "the value";
-    mockPageBot.expects("findElement", "id").returns(mockTextControl);
-
-    assertCallFails("Verify value should have failed",
-                    function() { selenium.assertValue("id", "a different value"); });
-    verifyMocks();
-}
-
-function testVerifyValueOfCheckboxSuccess() {
+function testGetValueOfCheckbox() {
     var mockControl = Object();
     mockControl.type = "CHECKBOX";
     mockControl.value = "the value";
     mockControl.checked = true;
     mockPageBot.expects("findElement", "id").returns(mockControl);
 
-    selenium.assertValue("id", "on");
-    verifyMocks();
-}
-
-function testVerifyValueOfCheckboxFailure() {
-    var mockControl = Object();
-    mockControl.type = "CHECKBOX";
-    mockControl.value = "the value";
-    mockControl.checked = false;
-    mockPageBot.expects("findElement", "id").returns(mockControl);
-    assertCallFails("Verify value should have failed",
-                    function() {selenium.assertValue("id", "the value");});
+    assertEquals("on", selenium.getValue("id"));
     verifyMocks();
 }
 

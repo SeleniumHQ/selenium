@@ -35,6 +35,16 @@ function CommandHandlerFactory() {
         var handler = new AssertHandler(assertion, haltOnFailure);
         this.asserts[name] = handler;
     };
+    
+    this.registerAssertUsingAccessor = function(name, accessor, haltOnFailure) {
+    	var handler = new AssertUsingAccessorHandler(accessor, haltOnFailure);
+    	this.asserts[name] = handler;
+    }
+
+    this.registerNegativeAssertUsingAccessor = function(name, accessor, haltOnFailure) {
+    	var handler = new NegativeAssertUsingAccessorHandler(accessor, haltOnFailure);
+    	this.asserts[name] = handler;
+    }
 
     this.getCommandHandler = function(name) {
         return this.actions[name] || this.accessors[name] || this.asserts[name] || null;
@@ -80,14 +90,27 @@ function CommandHandlerFactory() {
         }
     };
 
+    // Methods of the form getFoo(target) result in commands:
+    // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
     var registerAllAccessors = function(commandObject) {
         for (var functionName in commandObject) {
-            if (/^get[A-Z].+$/.exec(functionName) != null) {
+            var match = /^get([A-Z].+)$/.exec(functionName);
+            if (match != null) {
                 var accessor = commandObject[functionName];
+                var baseName = match[1];
                 self.registerAccessor(functionName, accessor);
+                // Register an assert with the "assert" prefix, and halt on failure.
+                self.registerAssertUsingAccessor("assert" + baseName, accessor, true);
+                // Register a verify with the "verify" prefix, and do not halt on failure.
+                self.registerAssertUsingAccessor("verify" + baseName, accessor, false);
+                // Register an assertNot with the "assertNot" prefix, and halt on failure.
+                self.registerNegativeAssertUsingAccessor("assertNot"+baseName, accessor, true);
+                // Register a verifyNot with the "verifyNot" prefix, and do not halt on failure.
+                self.registerNegativeAssertUsingAccessor("verifyNot"+baseName, accessor, false);
             }
         }
     };
+    
 }
 
 
@@ -136,14 +159,19 @@ AccessorHandler.prototype.execute = function(seleniumApi, command) {
     return result;
 };
 
-function AssertHandler(assertion, haltOnFailure) {
+/**
+ * Abstract handler for assertions and verifications.
+ * Subclasses need to override executeAssertion() which in turn
+ * should throw an AssertFailedError if the assertion is to fail. 
+ */
+function AbstractAssertHandler(assertion, haltOnFailure) {
     CommandHandler.call(this, "assert", haltOnFailure || false, assertion);
 }
-AssertHandler.prototype = new CommandHandler;
-AssertHandler.prototype.execute = function(seleniumApi, command) {
+AbstractAssertHandler.prototype = new CommandHandler;
+AbstractAssertHandler.prototype.execute = function(seleniumApi, command) {
     var result = new CommandResult();
     try {
-        var processState = this.executor.call(seleniumApi, command.target, command.value);
+        this.executeAssertion(seleniumApi, command);
         result.passed = true;
     } catch (e) {
         // If this is not a AssertionFailedError, or we should haltOnFailure, rethrow.
@@ -152,14 +180,49 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
         }
         if (this.haltOnFailure) {
             var error = new SeleniumCommandError(e.failureMessage);
-            // TODO: Surely this next line is redundant???
-            error.message = e.failureMessage;
             throw error;
         }
         result.failed = true;
         result.failureMessage = e.failureMessage;
     }
     return result;
+};
+
+/**
+ * Simple assertion handler whose command is expected to do the actual assertion.
+ */
+function AssertHandler(assertion, haltOnFailure) {
+    CommandHandler.call(this, "assert", haltOnFailure || false, assertion);
+};
+AssertHandler.prototype = new AbstractAssertHandler;
+AssertHandler.prototype.executeAssertion = function(seleniumApi, command) {
+        this.executor.call(seleniumApi, command.target, command.value);
+};
+
+/**
+ * Assertion handler whose command is expected to be an accessor (i.e. getFoo()).
+ * that succeeds if the value returned by the accessor matches the command value. 
+ */
+function AssertUsingAccessorHandler(accessor, haltOnFailure) {
+    CommandHandler.call(this, "assert", haltOnFailure || false, accessor);
+};
+AssertUsingAccessorHandler.prototype = new AbstractAssertHandler;
+AssertUsingAccessorHandler.prototype.executeAssertion = function(seleniumApi, command) {
+        var actualValue = this.executor.call(seleniumApi, command.target);
+        Assert.matches(command.value, actualValue);
+};
+
+/**
+ * Assertion handler whose command is expected to be an accessor (i.e. getFoo()),
+ * that fails if the value returned by the accessor matches the command value.
+ */
+function NegativeAssertUsingAccessorHandler(accessor, haltOnFailure) {
+    CommandHandler.call(this, "assert", haltOnFailure || false, accessor);
+};
+NegativeAssertUsingAccessorHandler.prototype = new AbstractAssertHandler;
+NegativeAssertUsingAccessorHandler.prototype.executeAssertion = function(seleniumApi, command) {
+        var actualValue = this.executor.call(seleniumApi, command.target);
+        Assert.notMatches(command.value, actualValue);
 };
 
 function CommandResult(processState) {

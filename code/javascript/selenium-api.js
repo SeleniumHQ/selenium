@@ -182,14 +182,15 @@ Selenium.prototype.assertTitle = function(expectedTitle) {
     Assert.matches(expectedTitle, this.page().title());
 };
 
+
 /*
- * Verify the value of a form element.
+ * Get the (trimmed) value of a form element.
+ * This is used to generate assertValue, verifyValue, ...
  */
-Selenium.prototype.assertValue = function(locator, expectedValue) {
-    var element = this.page().findElement(locator);
-    var actualValue = getInputValue(element);
-    Assert.matches(expectedValue, actualValue.trim());
-};
+Selenium.prototype.getValue = function(locator) {
+	var element = this.page().findElement(locator)
+	return getInputValue(element).trim();
+}
 
 /*
  * Verifies that the text of the located element matches the expected content.
@@ -535,61 +536,6 @@ Selenium.prototype.replaceVariables = function(str) {
     }
     return stringResult;
 };
-
-var Assert = {
-
-    fail: function(message) {
-        throw new AssertionFailedError(message);
-    },
-
-    /*
-     * Assert.equals(comment?, expected, actual)
-     */
-    equals: function() {
-        if (arguments.length == 2) {
-            var comment = "";
-            var expected = arguments[0];
-            var actual = arguments[1];
-        } else {
-            var comment = arguments[0] + " ";
-            var expected = arguments[1];
-            var actual = arguments[2];
-        }
-        if (expected === actual) {
-            return;
-        }
-        Assert.fail(comment + 
-                    "Expected '" + expected + 
-                    "' but was '" + actual + "'");
-    },
-
-    /*
-     * Assert.matches(comment?, pattern, actual)
-     */
-    matches: function() {
-        if (arguments.length == 2) {
-            var comment = "";
-            var pattern = arguments[0];
-            var actual = arguments[1];
-        } else {
-            var comment = arguments[0] + "; ";
-            var pattern = arguments[1];
-            var actual = arguments[2];
-        }
-        if (PatternMatcher.matches(pattern, actual)) {
-            return;
-        }
-        Assert.fail(comment + 
-                    "Actual value '" + actual + 
-                    "' did not match '" + pattern + "'");
-    }
-    
-};
-
-function AssertionFailedError(message) {
-    this.isAssertionFailedError = true;
-    this.failureMessage = message;
-}
 
 
 /**

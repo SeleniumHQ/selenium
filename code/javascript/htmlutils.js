@@ -209,3 +209,78 @@ PatternMatcher.regexpFromGlob = function(glob) {
     return "^" + re + "$";
 };
 
+var Assert = {
+
+    fail: function(message) {
+        throw new AssertionFailedError(message);
+    },
+
+    /*
+     * Assert.equals(comment?, expected, actual)
+     */
+    equals: function() {
+        if (arguments.length == 2) {
+            var comment = "";
+            var expected = arguments[0];
+            var actual = arguments[1];
+        } else {
+            var comment = arguments[0] + " ";
+            var expected = arguments[1];
+            var actual = arguments[2];
+        }
+        if (expected === actual) {
+            return;
+        }
+        Assert.fail(comment + 
+                    "Expected '" + expected + 
+                    "' but was '" + actual + "'");
+    },
+
+    /*
+     * Assert.matches(comment?, pattern, actual)
+     */
+    matches: function() {
+        if (arguments.length == 2) {
+            var comment = "";
+            var pattern = arguments[0];
+            var actual = arguments[1];
+        } else {
+            var comment = arguments[0] + "; ";
+            var pattern = arguments[1];
+            var actual = arguments[2];
+        }
+        if (PatternMatcher.matches(pattern, actual)) {
+            return;
+        }
+        Assert.fail(comment + 
+                    "Actual value '" + actual + 
+                    "' did not match '" + pattern + "'");
+    },
+    
+    /*
+     * Assert.notMtches(comment?, pattern, actual)
+     */
+    notMatches: function() {
+        if (arguments.length == 2) {
+            var comment = "";
+            var pattern = arguments[0];
+            var actual = arguments[1];
+        } else {
+            var comment = arguments[0] + "; ";
+            var pattern = arguments[1];
+            var actual = arguments[2];
+        }
+        if (!PatternMatcher.matches(pattern, actual)) {
+            return;
+        }
+        Assert.fail(comment + 
+                    "Actual value '" + actual + 
+                    "' did match '" + pattern + "'");
+    }
+    
+};
+
+function AssertionFailedError(message) {
+    this.isAssertionFailedError = true;
+    this.failureMessage = message;
+}
