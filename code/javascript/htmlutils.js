@@ -275,3 +275,9 @@ function AssertionFailedError(message) {
     this.isAssertionFailedError = true;
     this.failureMessage = message;
 }
+
+function SeleniumError(message) {
+    var error = new Error(message);
+    error.isSeleniumError = true;
+    return error;
+};

@@ -154,21 +154,12 @@ function testGetValueOfCheckbox() {
     verifyMocks();
 }
 
-function testVerifyTextSuccess() {
+function testGetText() {
     var mockElement = new Object();
     mockElement.textContent = " foo ";
     mockPageBot.expects("findElement", "id").returns(mockElement);
-    selenium.assertText("id", "foo");
+    assertEquals("foo", selenium.getText("id"));
     verifyMocks();
-}
-
-function testVerifyTextFailed() {
-    var mockElement = new Object();
-    mockElement.textContent = " foo ";
-    mockPageBot.expects("findElement", "id").returns(mockElement);
-
-    assertCallFails("Verify text should have failed",
-                    function() {selenium.assertText("id", "bar");});
 }
 
 function getMockTable() {
@@ -187,41 +178,33 @@ function textCell(val) {
    return cell;
 }
 
-function testVerifyTableSuccess() {
+function testGetTableSuccess() {
     mockPageBot.expects("findElement", "table").returns(getMockTable());
-    selenium.assertTable("table.1.1", "buz");
+    assertEquals("buz", selenium.getTable("table.1.1"));
     verifyMocks();
 }
 
-function testVerifyTableFailure() {
-    mockPageBot.expects("findElement", "table").returns(getMockTable());
-    assertCallFails("VerifyTable should have failed",
-                    function() {selenium.assertTable("table.0.0", "bar");},
-                    "Actual value 'foo' did not match 'bar'");
-    verifyMocks();
-}
-
-function testVerifyTableInvalidLocator() {
-    assertCallFails("VerifyTable should have failed for invalid locator",
-                    function() {selenium.assertTable("foo", "bar");},
+function testGetTableInvalidLocator() {
+    assertCallErrors("VerifyTable should have failed for invalid locator",
+                    function() {selenium.getTable("foo");},
                     "Invalid target format. Correct format is tableName.rowNum.columnNum");
     verifyMocks();
 }
 
-function testVerifyTableNoSuchRow() {
+function testGetTableNoSuchRow() {
     var mockTable = getMockTable();
     mockPageBot.expects("findElement", "table").returns(mockTable);
     assertCallFails("VerifyTable should have failed for no such row",
-                    function() {selenium.assertTable("table.11.0", "bar");},
+                    function() {selenium.getTable("table.11.0", "bar");},
                     "Cannot access row 11 - table has 2 rows");
     verifyMocks();
 }
 
-function testVerifyTableNoSuchColumn() {
+function testGetTableNoSuchColumn() {
     var mockTable = getMockTable();
     mockPageBot.expects("findElement", "table").returns(mockTable);
     assertCallFails("VerifyTable should have failed for no such column",
-                    function() {selenium.assertTable("table.0.11", "bar");},
+                    function() {selenium.getTable("table.0.11", "bar");},
                     "Cannot access column 11 - table row has 2 columns");
     verifyMocks();
 }
@@ -400,10 +383,10 @@ function testVerifySelectOptionsWithCommasEscaped() {
     verifyMocks();
 }
 
-function testVerifyAttributeWithId() {
+function testGetAttributeWithId() {
     mockPageBot.expects("findAttribute", "id@attribute").returns("foo");
 
-    selenium.assertAttribute("id@attribute", "foo");
+    assertEquals("foo", selenium.getAttribute("id@attribute"));
     verifyMocks();
 }
 
@@ -435,6 +418,17 @@ function assertCallFails(message, theCall, expectedFailureMessage) {
         }
         if (expectedFailureMessage) {
             assertEquals(expectedFailureMessage, e.failureMessage);
+        }
+        return;
+    }
+    fail(message);
+}
+function assertCallErrors(message, theCall, expectedFailureMessage) {
+    try {
+        theCall();
+    } catch (e) {
+        if (expectedFailureMessage) {
+            assertEquals(expectedFailureMessage, e.message);
         }
         return;
     }
