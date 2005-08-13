@@ -192,26 +192,26 @@ Selenium.prototype.getValue = function(locator) {
 	return getInputValue(element).trim();
 }
 
-/*
- * Verifies that the text of the located element matches the expected content.
+/**
+ * Get the (trimmed) text of a form element.
+ * This is used to generate assertText, verifyText, ...
  */
-Selenium.prototype.assertText = function(locator, expectedContent) {
+Selenium.prototype.getText = function(locator) {
     var element = this.page().findElement(locator);
-    var actualText = getText(element);
-    Assert.matches(expectedContent, actualText.trim());
+    return getText(element).trim();
 };
 
 /*
- * Asserts that the text for a single cell within and HTML table matches the expected content.
+ * Return the text for a single cell within an HTML table.
  * The table locator syntax is table.row.column.
  */
-Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
+Selenium.prototype.getTable = function(tableLocator, expectedContent) {
     // This regular expression matches "tableName.row.column"
     // For example, "mytable.3.4"
     pattern = /(.*)\.(\d+)\.(\d+)/;
 
     if(!pattern.test(tableLocator)) {
-        Assert.fail("Invalid target format. Correct format is tableName.rowNum.columnNum");
+        throw new SeleniumError("Invalid target format. Correct format is tableName.rowNum.columnNum");
     }
 
     pieces = tableLocator.match(pattern);
@@ -229,7 +229,7 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
     }
     else {
         actualContent = getText(table.rows[row].cells[col]);
-        Assert.matches(expectedContent, actualContent.trim());
+        return actualContent.trim();
     }
 };
 
@@ -266,12 +266,11 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
 };
 
 /**
- * Verify the value of an element attribute. The syntax for returning an element attribute
- * is <element-locator>@attribute-name
+ * Get the value of an element attribute. The syntax for returning an element attribute
+ * is <element-locator>@attribute-name.  Used to generate assert, verify, assertNot...
  */
-Selenium.prototype.assertAttribute = function(target, expected) {
-    var attributeValue = this.page().findAttribute(target);
-    Assert.matches(expected, attributeValue);
+Selenium.prototype.getAttribute = function(target) {
+    return this.page().findAttribute(target).trim();
 };
 
 /*

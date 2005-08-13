@@ -907,9 +907,3 @@ PageBot.prototype.goForward = function() {
 PageBot.prototype.close = function() {
     this.currentWindow.close();
 };
-
-function SeleniumError(message) {
-    var error = new Error(message);
-    error.isSeleniumError = true;
-    return error;
-};
