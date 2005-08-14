@@ -205,7 +205,7 @@ Selenium.prototype.getText = function(locator) {
  * Return the text for a single cell within an HTML table.
  * The table locator syntax is table.row.column.
  */
-Selenium.prototype.getTable = function(tableLocator, expectedContent) {
+Selenium.prototype.getTable = function(tableLocator) {
     // This regular expression matches "tableName.row.column"
     // For example, "mytable.3.4"
     pattern = /(.*)\.(\d+)\.(\d+)/;
@@ -270,7 +270,7 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
  * is <element-locator>@attribute-name.  Used to generate assert, verify, assertNot...
  */
 Selenium.prototype.getAttribute = function(target) {
-    return this.page().findAttribute(target).trim();
+    return this.page().findAttribute(target);
 };
 
 /*
