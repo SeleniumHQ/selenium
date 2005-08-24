@@ -99,6 +99,13 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
 };
 
 /*
+ * Instruct Selenium what to answear on the next prompt dialog it encounters
+ */
+Selenium.prototype.doAnswerOnNextPrompt = function(answer) {
+    this.browserbot.setNextPromptResult(answer);
+};
+
+/*
  * Simulate the browser back button
  */
 Selenium.prototype.doGoBack = function() {
@@ -148,6 +155,20 @@ Selenium.prototype.assertConfirmation = function(confirmationPattern) {
     }
 };
  
+/*
+ * Asserts that the supplied message was received as a prompt
+ */
+Selenium.prototype.assertPrompt = function(promptPattern) {
+    if (this.browserbot.hasPrompts()) {
+        receivedPrompt = this.browserbot.getNextPrompt();
+        if (! PatternMatcher.matches(promptPattern, receivedPrompt)) {
+            Assert.fail("The prompt message was [" + receivedPrompt + "]");
+         }
+    } else {
+        Assert.fail("There were no prompts");
+    }
+};
+
 /*
  * Verify the location of the current page.
  */
