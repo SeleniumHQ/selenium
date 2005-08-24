@@ -50,8 +50,10 @@ BrowserBot = function(frame) {
     this.modalDialogTest = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
+    this.recordedPrompts = new Array();
     this.openedWindows = {};
     this.nextConfirmResult = true;
+    this.nextPromptResult = '';
     this.newPageLoaded = false;
 
     var self = this;
@@ -95,6 +97,10 @@ BrowserBot.prototype.cancelNextConfirmation = function() {
     this.nextConfirmResult = false;
 };
 
+BrowserBot.prototype.setNextPromptResult = function(result) {
+    this.nextPromptResult = result;
+};
+
 BrowserBot.prototype.hasAlerts = function() {
     return (this.recordedAlerts.length > 0) ;
 };
@@ -111,6 +117,13 @@ BrowserBot.prototype.getNextConfirmation = function() {
     return this.recordedConfirmations.shift();
 };
 
+BrowserBot.prototype.hasPrompts = function() {
+    return (this.recordedPrompts.length > 0) ;
+};
+
+BrowserBot.prototype.getNextPrompt = function() {
+    return this.recordedPrompts.shift();
+};
 
 BrowserBot.prototype.getFrame = function() {
     return this.frame;
@@ -161,6 +174,14 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         browserBot.recordedConfirmations.push(message);
         var result = browserBot.nextConfirmResult;
         browserBot.nextConfirmResult = true;
+        return result;
+    };
+
+    windowToModify.prompt = function(message) {
+        browserBot.recordedPrompts.push(message);
+        var result = !browserBot.nextConfirmResult ? null : browserBot.nextPromptResult;
+        browserBot.nextConfirmResult = true;
+        browserBot.nextPromptResult = '';
         return result;
     };
 
