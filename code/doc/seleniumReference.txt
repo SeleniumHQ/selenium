@@ -277,6 +277,26 @@ Selenium Actions
             verifyAttribute  input2@\ class  ${classOfInput1}
             ===============  ==============  ====================
 
+    **chooseCancelOnNextConfirmation**\ ()
+
+        Instructs Selenium to click **Cancel** on the next javascript confirmation dialog to be raised.  By default, the confirm function will return true, having the same effect as manually clicking OK.  After running this command, the next confirmation will behave as if the user had clicked Cancel.
+
+        **examples:**
+
+            ==============================   =====  =====
+            chooseCancelOnNextConfirmation
+            ==============================   =====  =====
+
+    **answerOnNextPrompt**\ ( *answerString* )
+
+        Instructs Selenium to return the specified *answerString* in response to the next prompt.
+
+        **examples:**
+
+            ==========================   =========  =====
+            answerOnNextPrompt           Kangaroo
+            ==========================   =========  =====
+
 ---------------
 Selenium Checks
 ---------------
@@ -469,7 +489,7 @@ Selenium Checks
 
         Verifies that a javascript confirmation dialog with the specified message was generated.  Like alerts, confirmations must be verified in the same order that they were generated.
 
-        By default, the confirm function will return true, having the same effect as manually clicking OK.  This can be changed by prior execution of the **chooseCancelOnNextConfirmation** command (see below).  If an confirmation is generated but you do not verify it, the next Selenium action will fail.
+        By default, the confirm function will return true, having the same effect as manually clicking OK.  This can be changed by prior execution of the **chooseCancelOnNextConfirmation** command (see above).  If an confirmation is generated but you do not verify it, the next Selenium action will fail.
 
         NOTE: under Selenium, javascript confirmations will NOT pop up a visible dialog.
 
@@ -482,15 +502,19 @@ Selenium Checks
             verifyConfirmation   Are you sure?
             ==================   ====================  =====
 
-    **chooseCancelOnNextConfirmation**\ ()
+    **assertPrompt**\ ( *messagePattern* )
 
-        Instructs Selenium to click **Cancel** on the next javascript confirmation dialog to be raised.  By default, the confirm function will return true, having the same effect as manually clicking OK.  After running this command, the next confirmation will behave as if the user had clicked Cancel.
+        Verifies that a javascript prompt dialog with the specified message was generated.  Like alerts, prompts must be verified in the same order that they were generated.
+
+        Successful handling of the prompt requires prior execution of the **answerOnNextPrompt** command (see above).  If a prompt is generated but you do not verify it, the next Selenium action will fail.
 
         **examples:**
 
-            ==============================   =====  =====
-            chooseCancelOnNextConfirmation
-            ==============================   =====  =====
+            ==================   =============================  =====
+            answerOnNextPrompt   Joe
+            click                id=delegate
+            verifyPrompt         Delegate to who?
+            ==================   =============================  =====
 
 ------------------------------------
 Parameter construction and Variables
