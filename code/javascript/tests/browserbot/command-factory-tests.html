@@ -128,15 +128,6 @@ function setUp() {
         mockMatcherHandlerResult.verify();
     };
     
-    function testAssertUsingMatcherHandlerWithPositiveResultDoesNotThrowExceptions() {
-        var mockMatcherHandlerResult = new Mock();
-        mockMatcherHandlerResult.expectsProperty("didMatch").returns(true);
-        var matcherHandler = function(seleniumApi, command) {return mockMatcherHandlerResult;};
-        var assertUsingMatcherHandler = new AssertUsingMatcherHandler(matcherHandler, true);
-        assertUsingMatcherHandler.executeAssertion("mockSeleniumApi", "command");
-        mockMatcherHandlerResult.verify();
-    };
-    
     function testAssertUsingMatcherHandlerWithNegativeResultThrowsException() {
         var mockMatcherHandlerResult = new Mock();
         mockMatcherHandlerResult.expectsProperty("didMatch").returns(false);
