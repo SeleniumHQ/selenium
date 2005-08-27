@@ -36,14 +36,9 @@ function CommandHandlerFactory() {
         this.asserts[name] = handler;
     };
     
-    this.registerAssertUsingAccessor = function(name, accessor, haltOnFailure) {
-    	var handler = new AssertUsingAccessorHandler(accessor, haltOnFailure);
-    	this.asserts[name] = handler;
-    }
-
-    this.registerNegativeAssertUsingAccessor = function(name, accessor, haltOnFailure) {
-    	var handler = new NegativeAssertUsingAccessorHandler(accessor, haltOnFailure);
-    	this.asserts[name] = handler;
+    self.registerAssertUsingMatcherHandler = function(name, matcherHandler, haltOnFailure) {
+        var handler = new AssertUsingMatcherHandler(matcherHandler, haltOnFailure);
+        this.asserts[name] = handler;
     }
 
     this.getCommandHandler = function(name) {
@@ -90,6 +85,46 @@ function CommandHandlerFactory() {
         }
     };
 
+    // Given an accessor function, return a function that matches against the command.value
+    // the value returned by the accessor when applied to a command.target.
+    // Used by commands that take a target and a value (e.g. assertValue | target | value)
+    this.createMatcherHandlerFromSingleArgAccessor = function(accessor) {
+        return function(seleniumApi, command) {
+            var accessorResult = accessor.call(seleniumApi, command.target);
+            if (PatternMatcher.matches(command.value, accessorResult)) {
+                return new MatcherHandlerResult(true, "Actual value '" + accessorResult + "' did match '" + command.value + "'");
+            } else {
+                return new MatcherHandlerResult(false, "Actual value '" + accessorResult + "' did not match '" + command.value + "'");
+            }
+        };
+    };
+    
+    // Given an accessor function, return a function that matches against the command.target
+    // the value returned by the (no-arg) accessor returns a value that matches against the command.target
+    // Used by commands that only take a target (e.g. assertTitle | target | &nbsp;)
+    this.createMatcherHandlerFromNoArgAccessor = function(accessor) {
+        return function(seleniumApi, command) {
+            var accessorResult = accessor.call(seleniumApi);
+            if (PatternMatcher.matches(command.target, accessorResult)) {
+                return new MatcherHandlerResult(true, "Actual value '" + accessorResult + "' did match '" + command.target + "'");
+            } else {
+                return new MatcherHandlerResult(false, "Actual value '" + accessorResult + "' did not match '" + command.target + "'");
+            }
+        };
+    };
+    
+    // Given a matcherHandler function, return a function that returns the same result
+    // as the matcherHandler, but with the result negated.
+    // Used to create assertNot and verifyNot commands (and soon hopefully waitForNot commands).
+    this.createMatcherHandlerNegator = function(matcherHandler) {
+        return function(seleniumApi, command) {
+            var result = matcherHandler(seleniumApi, command);
+            result.didMatch = ! result.didMatch;
+            return result;
+        };
+    };
+    
+
     // Methods of the form getFoo(target) result in commands:
     // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
     var registerAllAccessors = function(commandObject) {
@@ -99,20 +134,36 @@ function CommandHandlerFactory() {
                 var accessor = commandObject[functionName];
                 var baseName = match[1];
                 self.registerAccessor(functionName, accessor);
+                
+                if (accessor.length > 1) {
+                    continue;
+                }
+                var matcherHandler;
+                if (accessor.length == 1) {
+                    matcherHandler = self.createMatcherHandlerFromSingleArgAccessor(accessor);
+                } else {
+                    matcherHandler = self.createMatcherHandlerFromNoArgAccessor(accessor);
+                }
                 // Register an assert with the "assert" prefix, and halt on failure.
-                self.registerAssertUsingAccessor("assert" + baseName, accessor, true);
+                self.registerAssertUsingMatcherHandler("assert" + baseName, matcherHandler, true);
                 // Register a verify with the "verify" prefix, and do not halt on failure.
-                self.registerAssertUsingAccessor("verify" + baseName, accessor, false);
+                self.registerAssertUsingMatcherHandler("verify" + baseName, matcherHandler, false);
+                
+                var negativeMatcherHandler = self.createMatcherHandlerNegator(matcherHandler);
                 // Register an assertNot with the "assertNot" prefix, and halt on failure.
-                self.registerNegativeAssertUsingAccessor("assertNot"+baseName, accessor, true);
+                self.registerAssertUsingMatcherHandler("assertNot"+baseName, negativeMatcherHandler, true);
                 // Register a verifyNot with the "verifyNot" prefix, and do not halt on failure.
-                self.registerNegativeAssertUsingAccessor("verifyNot"+baseName, accessor, false);
+                self.registerAssertUsingMatcherHandler("verifyNot"+baseName, negativeMatcherHandler, false);
             }
         }
     };
     
 }
 
+function MatcherHandlerResult(didMatch, message) {
+    this.didMatch = didMatch;
+    this.message = message;
+}
 
 // NOTE: The CommandHandler is effectively an abstract base for ActionHandler,
 //      AccessorHandler and AssertHandler.
@@ -200,30 +251,19 @@ AssertHandler.prototype.executeAssertion = function(seleniumApi, command) {
 };
 
 /**
- * Assertion handler whose command is expected to be an accessor (i.e. getFoo()).
- * that succeeds if the value returned by the accessor matches the command value. 
+ * Assertion handler whose command is expected to be a matcher-handler
  */
-function AssertUsingAccessorHandler(accessor, haltOnFailure) {
-    CommandHandler.call(this, "assert", haltOnFailure || false, accessor);
+function AssertUsingMatcherHandler(matcherHandler, haltOnFailure) {
+    CommandHandler.call(this, "assert", haltOnFailure || false, matcherHandler);
 };
-AssertUsingAccessorHandler.prototype = new AbstractAssertHandler;
-AssertUsingAccessorHandler.prototype.executeAssertion = function(seleniumApi, command) {
-        var actualValue = this.executor.call(seleniumApi, command.target);
-        Assert.matches(command.value, actualValue);
+AssertUsingMatcherHandler.prototype = new AbstractAssertHandler;
+AssertUsingMatcherHandler.prototype.executeAssertion = function(seleniumApi, command) {
+        var matcherResult = this.executor(seleniumApi, command);
+        if (!matcherResult.didMatch) {
+            Assert.fail(matcherResult.message);
+        }
 };
 
-/**
- * Assertion handler whose command is expected to be an accessor (i.e. getFoo()),
- * that fails if the value returned by the accessor matches the command value.
- */
-function NegativeAssertUsingAccessorHandler(accessor, haltOnFailure) {
-    CommandHandler.call(this, "assert", haltOnFailure || false, accessor);
-};
-NegativeAssertUsingAccessorHandler.prototype = new AbstractAssertHandler;
-NegativeAssertUsingAccessorHandler.prototype.executeAssertion = function(seleniumApi, command) {
-        var actualValue = this.executor.call(seleniumApi, command.target);
-        Assert.notMatches(command.value, actualValue);
-};
 
 function CommandResult(processState) {
     this.processState = processState;

@@ -128,52 +128,40 @@ Selenium.prototype.doFireEvent = function(locator, event) {
 };
 
 /*
- * Asserts that the supplied message was received as an alert
+ * Get an alert message, or fail if there were no alerts.
  */
-Selenium.prototype.assertAlert = function(alertPattern) {
-    if (this.browserbot.hasAlerts()) {
-        receivedAlert = this.browserbot.getNextAlert();
-        if (! PatternMatcher.matches(alertPattern, receivedAlert)) {
-            Assert.fail("The alert was [" + receivedAlert + "]");
-        }
-    } else {
+Selenium.prototype.getAlert = function() {
+    if (!this.browserbot.hasAlerts()) {
         Assert.fail("There were no alerts");
     }
+    return this.browserbot.getNextAlert();
 };
 
 /*
- * Asserts that the supplied message was received as a confirmation
+ * Get a confirmation message, or fail if there were no confirmations.
  */
-Selenium.prototype.assertConfirmation = function(confirmationPattern) {
-    if (this.browserbot.hasConfirmations()) {
-        receivedConfirmation = this.browserbot.getNextConfirmation();
-        if (! PatternMatcher.matches(confirmationPattern, receivedConfirmation)) {
-            Assert.fail("The confirmation message was [" + receivedConfirmation + "]");
-         }
-    } else {
+Selenium.prototype.getConfirmation = function() {
+    if (!this.browserbot.hasConfirmations()) {
         Assert.fail("There were no confirmations");
     }
+    return this.browserbot.getNextConfirmation();
 };
  
 /*
- * Asserts that the supplied message was received as a prompt
+ * Get a prompt message, or fail if there were no prompts.
  */
-Selenium.prototype.assertPrompt = function(promptPattern) {
-    if (this.browserbot.hasPrompts()) {
-        receivedPrompt = this.browserbot.getNextPrompt();
-        if (! PatternMatcher.matches(promptPattern, receivedPrompt)) {
-            Assert.fail("The prompt message was [" + receivedPrompt + "]");
-         }
-    } else {
+Selenium.prototype.getPrompt = function() {
+    if (! this.browserbot.hasPrompts()) {
         Assert.fail("There were no prompts");
     }
+    return this.browserbot.getNextPrompt();
 };
 
 /*
- * Verify the location of the current page.
+ * Get the location of the current page.
  */
-Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
-    Assert.matches(expectedLocation, this.page().location);
+Selenium.prototype.getAbsoluteLocation = function() {
+    return this.page().location;
 };
 
 /*
@@ -197,10 +185,10 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
 };
 
 /*
- * Verify the title of the current page.
+ * Get the title of the current page.
  */
-Selenium.prototype.assertTitle = function(expectedTitle) {
-    Assert.matches(expectedTitle, this.page().title());
+Selenium.prototype.getTitle = function() {
+    return this.page().title();
 };
 
 
@@ -209,8 +197,8 @@ Selenium.prototype.assertTitle = function(expectedTitle) {
  * This is used to generate assertValue, verifyValue, ...
  */
 Selenium.prototype.getValue = function(locator) {
-	var element = this.page().findElement(locator)
-	return getInputValue(element).trim();
+    var element = this.page().findElement(locator)
+    return getInputValue(element).trim();
 }
 
 /**

@@ -18,14 +18,19 @@ Copyright 2004 ThoughtWorks, Inc
 -->
 <html>
   <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>JsUnit Utility Tests</title>
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="/selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript">
+
+function setUp() {
+    LOG = new DummyLogger();
+}
 
     function testNullIsReturnedForUnknownCommands() {
         var factory = new CommandHandlerFactory();
@@ -66,6 +71,93 @@ Copyright 2004 ThoughtWorks, Inc
         assertEquals("accessor", myAccessor.type);
     }
     
+    function testCreateMatcherHandlerFromSingleArgAccessorReturnsMatcherHandler() {
+        var factory = new CommandHandlerFactory();
+        var accessor = function(arg) {
+            assertEquals("target", arg);
+            return this.foo(); 
+        };
+        var matcherHandler = factory.createMatcherHandlerFromSingleArgAccessor(accessor);
+        var seleniumApi = {foo: function() { return "theValue";}};
+
+        var command = new SeleniumCommand(null, "target", "regexp:theV[aeiou]lue");
+        var result = matcherHandler(seleniumApi, command);
+        assertEquals("Actual value 'theValue' did match 'regexp:theV[aeiou]lue'", result.message);
+        assertTrue("Should have matched", result.didMatch);
+
+        command = new SeleniumCommand(null, "target", "betterNotMatch");
+        var result = matcherHandler(seleniumApi, command);
+        assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
+        assertFalse("Should not have matched", result.didMatch);
+    }
+    
+    function testCreateMatcherHandlerFromNoArgAccessorReturnsMatcherHandler() {
+        var factory = new CommandHandlerFactory();
+        var accessor = function() {
+            return this.foo(); 
+        };
+        var matcherHandler = factory.createMatcherHandlerFromNoArgAccessor(accessor);
+        var seleniumApi = {foo: function() { return "theValue";}};
+
+        var command = new SeleniumCommand(null, "theV*e", "");
+        var result = matcherHandler(seleniumApi, command);
+        assertEquals("Actual value 'theValue' did match 'theV*e'", result.message);
+        assertTrue("Should have matched", result.didMatch);
+
+        command = new SeleniumCommand(null, "betterNotMatch", "");
+        var result = matcherHandler(seleniumApi, command);
+        assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
+        assertFalse("Should not have matched", result.didMatch);
+    }
+    
+    function testNegateMatcherHandlerNegatesResult() {
+        var factory = new CommandHandlerFactory();
+        var matcherHandler = function(seleniumApi, command) {return new MatcherHandlerResult(true, "msg");};
+        var negatedMatcherHandler = factory.createMatcherHandlerNegator(matcherHandler);
+        var result = negatedMatcherHandler("seleniumApi", "command");
+        assertFalse("Result should have been negated", result.didMatch);
+        assertEquals("msg", result.message);
+    }
+
+    function testAssertUsingMatcherHandlerWithPositiveResultDoesNotThrowExceptions() {
+        var mockMatcherHandlerResult = new Mock();
+        mockMatcherHandlerResult.expectsProperty("didMatch").returns(true);
+        var matcherHandler = function(seleniumApi, command) {return mockMatcherHandlerResult;};
+        var assertUsingMatcherHandler = new AssertUsingMatcherHandler(matcherHandler, true);
+        assertUsingMatcherHandler.executeAssertion("mockSeleniumApi", "command");
+        mockMatcherHandlerResult.verify();
+    };
+    
+    function testAssertUsingMatcherHandlerWithPositiveResultDoesNotThrowExceptions() {
+        var mockMatcherHandlerResult = new Mock();
+        mockMatcherHandlerResult.expectsProperty("didMatch").returns(true);
+        var matcherHandler = function(seleniumApi, command) {return mockMatcherHandlerResult;};
+        var assertUsingMatcherHandler = new AssertUsingMatcherHandler(matcherHandler, true);
+        assertUsingMatcherHandler.executeAssertion("mockSeleniumApi", "command");
+        mockMatcherHandlerResult.verify();
+    };
+    
+    function testAssertUsingMatcherHandlerWithNegativeResultThrowsException() {
+        var mockMatcherHandlerResult = new Mock();
+        mockMatcherHandlerResult.expectsProperty("didMatch").returns(false);
+        mockMatcherHandlerResult.expectsProperty("message").returns("some message");
+        var matcherHandler = function(seleniumApi, command) {return mockMatcherHandlerResult;};
+        var assertUsingMatcherHandler = new AssertUsingMatcherHandler(matcherHandler, true);
+        try {
+            assertUsingMatcherHandler.executeAssertion("mockSeleniumApi", "command");
+        } catch (e) {
+            if (!e.isAssertionFailedError) {
+                throw e;
+            }
+            assertEquals("some message", e.failureMessage);
+            mockMatcherHandlerResult.verify();
+            return;
+        }
+        fail("Should have thrown an exception");
+    };
+    
+
+    
     function testAllMethodsWithGetPrefixAreRegisteredAsAccessorsByRegisterAll() {
         var actionSet = {getOne: "get1", getTwo: "get2", getdontGet: "another"};
         var factory = new CommandHandlerFactory();
@@ -91,8 +183,6 @@ Copyright 2004 ThoughtWorks, Inc
         assertNotNull(myAssert.executor);
         assertEquals("assert", myAssert.type);
         assertTrue(myAssert.haltOnFailure);
-        
-        myAssert.executor("blah", "blahfoo");
     }
     
     function testAllMethodsWithGetPrefixAreRegisteredAsVerifiesByRegisterAll() {
@@ -105,8 +195,6 @@ Copyright 2004 ThoughtWorks, Inc
         assertNotNull(myAssert.executor);
         assertEquals("assert", myAssert.type);
         assertFalse(myAssert.haltOnFailure);
-        
-        myAssert.executor("blah", "blahfoo");
     }
     
     function testAllMethodsWithGetPrefixAreRegisteredAsAssertNotsByRegisterAll() {
@@ -120,12 +208,12 @@ Copyright 2004 ThoughtWorks, Inc
         assertEquals("assert", myAssert.type);
         assertTrue(myAssert.haltOnFailure);
         try {
-	        myAssert.executor("blah", "blahfoo");
-	        fail("Should have thrown an exception");
-	    }
-	    catch (e) {
-	    	// Expected.
-	    }
+            myAssert.executor("blah", "blahfoo");
+            fail("Should have thrown an exception");
+        }
+        catch (e) {
+            // Expected.
+        }
     }
     
     function testAllMethodsWithGetPrefixAreRegisteredAsVerifyNotsByRegisterAll() {
@@ -139,12 +227,12 @@ Copyright 2004 ThoughtWorks, Inc
         assertEquals("assert", myAssert.type);
         assertFalse(myAssert.haltOnFailure);
         try {
-	        myAssert.executor("blah", "blahfoo");
-	        fail("Should have thrown an exception");
-	    }
-	    catch (e) {
-	    	// Expected.
-	    }
+            myAssert.executor("blah", "blahfoo");
+            fail("Should have thrown an exception");
+        }
+        catch (e) {
+            // Expected.
+        }
     }
     
 
