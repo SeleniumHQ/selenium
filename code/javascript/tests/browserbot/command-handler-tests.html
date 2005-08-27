@@ -18,7 +18,7 @@ Copyright 2004 ThoughtWorks, Inc
 -->
 <html>
   <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Test for the CommandHandler</title>
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
@@ -91,17 +91,17 @@ function testShouldFailActionCommandsIfConfirmPresent() {
 }
 
 function testAccessorHandlerShouldReturnResultInCommandResult() {
-		function MockSelenium() {
+        function MockSelenium() {
      }
 
-		var executorCalled = false;
-		var executor = function() { executorCalled = true; return "foo"; };
-		var handler = new AccessorHandler(executor, false);
+        var executorCalled = false;
+        var executor = function() { executorCalled = true; return "foo"; };
+        var handler = new AccessorHandler(executor, false);
 
-		result = handler.execute(new MockSelenium(), "command");
+        result = handler.execute(new MockSelenium(), "command");
 
-		assertTrue(executorCalled);
-		assertEquals("foo", result.result);
+        assertTrue(executorCalled);
+        assertEquals("foo", result.result);
 }
 
 </script>

@@ -120,16 +120,9 @@ function testVerifyLocationFailed() {
     verifyMocks();
 }
 
-function testVerifyTitleSuccess() {
+function testGetTitleReturnsTheTitle() {
     mockPageBot.expects("title").returns("foo");
-    selenium.assertTitle("foo");
-    verifyMocks();
-}
-
-function testVerifyTitleFailed() {
-    mockPageBot.expects("title").returns("foo");
-    assertCallFails("Verify title should have failed",
-                    function() {selenium.assertTitle("bar");});
+    assertEquals("foo", selenium.getTitle());
     verifyMocks();
 }
 
@@ -269,31 +262,21 @@ function testVerifyElementNotPresentFailure() {
     verifyMocks();
 }
 
-function testShouldFailIfTryToVerifyAlertWhenThereAreNone() {
+function testShouldFailIfTryToGetAlertWhenThereAreNone() {
     mockBrowserBot.expects("hasAlerts").returns(false);
 
-    assertCallFails("verifyAlert should have failed",
-                    function() {selenium.assertAlert("A made up alert."); },
+    assertCallFails("getAlert should have failed",
+                    function() {selenium.getAlert(); },
                     "There were no alerts");
 
     verifyMocks();
 }
 
-function testShouldFailIfdoVerifyAlertWithWrongMessage() {
+function testGetAlertReturnsNextAlert() {
     mockBrowserBot.expects("hasAlerts").returns(true);
     mockBrowserBot.expects("getNextAlert").returns("The real alert");
 
-    assertCallFails("verifyAlert should have failed",
-                    function() {selenium.assertAlert("The expected alert"); },
-                    "The alert was [The real alert]");
-    verifyMocks();
-}
-
-function testShouldPassIfdoVerifyAlertWithRightMessage() {
-    mockBrowserBot.expects("hasAlerts").returns(true);
-    mockBrowserBot.expects("getNextAlert").returns("The real alert");
-
-    selenium.assertAlert("The real alert");
+    assertEquals("The real alert", selenium.getAlert());
 
     verifyMocks();
 }
@@ -302,28 +285,17 @@ function testShouldFailIfTryToVerifyConfirmationWhenThereAreNone() {
     mockBrowserBot.expects("hasConfirmations").returns(false);
 
     assertCallFails("verifyConfirmation should have failed",
-                    function() {selenium.assertConfirmation("A made up confirmation");},
+                    function() {selenium.getConfirmation();},
                     "There were no confirmations");
 
     verifyMocks();
 }
 
-function testShouldFailIfdoVerifyConfirmationWithWrongMessage() {
-    mockBrowserBot.expects("hasConfirmations").returns(true);
-    mockBrowserBot.expects("getNextConfirmation").returns("The real confirmation");
-
-    assertCallFails("verifyConfirmation should have failed",
-                    function() {selenium.assertConfirmation("The expected confirmation");},
-                    "The confirmation message was [The real confirmation]");
-
-     verifyMocks();
-}
-
-function testShouldPassIfdoVerifyConfirmationWithRightMessage() {
+function testGetConfirmationReturnsNextConfirmation() {
       mockBrowserBot.expects("hasConfirmations").returns(true);
       mockBrowserBot.expects("getNextConfirmation").returns("The real confirmation");
 
-     selenium.assertConfirmation("The real confirmation");
+     assertEquals("The real confirmation", selenium.getConfirmation());
 
      verifyMocks();
 }
