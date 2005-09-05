@@ -213,7 +213,7 @@ function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessag
                 result.failureMessage = "Command should have failed.";
             }
             else {
-                if (baseFailureMessage != expectedErrorMessage) {
+                if (! PatternMatcher.matches(expectedErrorMessage, baseFailureMessage)) {
                     result.failed = true;
                     result.failureMessage = "Expected failure message '" + expectedErrorMessage
                                             + "' but was '" + baseFailureMessage + "'";
