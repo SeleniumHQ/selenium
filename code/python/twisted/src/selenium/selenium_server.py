@@ -17,10 +17,11 @@
     For taking 'Selenese' requests from Python, Ruby, Java, or .C# programs    
 """   
 
-# following two lines only needed on windows
-from twisted.internet import  win32eventreactor
-win32eventreactor.install()
+import sys
 
+if sys.platform == 'win32':
+    from twisted.internet import win32eventreactor
+    win32eventreactor.install()
 
 from twisted.internet import reactor
 from twisted.web import static, server, twcgi, script, xmlrpc, resource
@@ -35,7 +36,10 @@ def main():
     root = resource.Resource()
     
     # The proxy server (aka "The Funnel")
-    path = os.path.join(os.getcwd(),"cgi-bin","nph-proxy.exe")
+    if sys.platform == 'win32':
+        path = os.path.join(os.getcwd(),"cgi-bin","nph-proxy.exe")
+    else:
+        path = os.path.join(os.getcwd(),"cgi-bin","nph-proxy.cgi")
     proxy = twcgi.CGIScript(path)    
     root.putChild("AUT",proxy)        
     
