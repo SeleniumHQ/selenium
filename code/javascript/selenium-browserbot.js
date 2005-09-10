@@ -203,9 +203,9 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
  * for different browsers.
  */
 BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(windowToModify) {
-    //if (this.currentWindowName != null) {
+    if (this.currentWindowName != null) {
         this.callOnWindowPageTransition(this.recordPageLoad, windowToModify);
-    //}
+    }
 };
 
 /**
