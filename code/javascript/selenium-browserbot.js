@@ -58,7 +58,7 @@ BrowserBot = function(frame) {
 
     var self = this;
     this.recordPageLoad = function() {
-        LOG.debug("Page load detected");
+        LOG.debug("Page load detected, location=" + self.getCurrentWindow().location);
         self.currentPage = null;
         self.newPageLoaded = true;
     };
