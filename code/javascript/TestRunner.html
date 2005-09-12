@@ -40,8 +40,8 @@ Copyright 2004 ThoughtWorks, Inc
     function openDomViewer() {
         var autFrame = document.getElementById('myiframe');
         var autFrameDocument = getIframeDocument(autFrame);
+        this.rootDocument = autFrameDocument;
         var domViewer = window.open('domviewer.html');
-        domViewer.rootDocument = autFrameDocument;
         return false;
     }
 </script>
