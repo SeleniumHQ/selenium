@@ -236,7 +236,7 @@ function executeCommandAndReturnFailureMessage(baseHandler, originalArguments) {
         return null;
     }
     return baseResult.failureMessage;
- };
+};
 
 function executeCommandAndReturnErrorMessage(baseHandler, originalArguments) {
     try {
@@ -246,5 +246,5 @@ function executeCommandAndReturnErrorMessage(baseHandler, originalArguments) {
     catch (expected) {
         return expected.message;
     }
- };
+};
 
