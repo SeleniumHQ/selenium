@@ -14,75 +14,75 @@
 *  limitations under the License.
 */
 
-var LEVEL_DEBUG = 0;
-var LEVEL_INFO = 1;
-var LEVEL_WARN = 2;
-var LEVEL_ERROR = 3;
-
-function Logger(logLevel) {
-    this.level = logLevel;
-    this.logConsole = document.getElementById('logging-console');
-    this.logList = document.getElementById('log-list');
-    this.hide();
+var Logger = function() {
+    this.logWindow = null;
 }
+Logger.prototype = {
 
-Logger.prototype.show = function() {
-   this.logConsole.style.display = "";
-};
+    getLogWindow: function() {
+        if (this.logWindow && this.logWindow.closed) {
+            this.logWindow = null;
+        }
+        return this.logWindow;
+    },
+    
+    openLogWindow: function() {
+        this.logWindow = window.open(
+            "SeleniumLog.html", "SeleniumLog",
+            "width=600,height=250,bottom=0,right=0,status,scrollbars,resizable"
+        );
+        return this.logWindow;
+    },
+    
+    show: function() {
+        if (! this.getLogWindow()) {
+            this.openLogWindow();
+        }
+    },
 
-Logger.prototype.hide = function() {
-   this.logConsole.style.display = "none";
-};
+    log: function(message, className) {
+        var logWindow = this.getLogWindow();
+        if (logWindow) {
+            if (logWindow.append) {
+                logWindow.append(message, className);
+            }
+        }
+    },
 
-Logger.prototype.clear = function() {
-    while (this.logList.hasChildNodes()) {
-        this.logList.removeChild(this.logList.firstChild);
-    }
-};
-
-Logger.prototype.debug = function(message) {
-    if (this.level <= LEVEL_DEBUG) {
+    debug: function(message) {
         this.log(message, "debug");
-    }
-};
+    },
 
-Logger.prototype.info = function(message) {
-    if (this.level <= LEVEL_INFO) {
+    info: function(message) {
         this.log(message, "info");
-    }
-};
+    },
 
-Logger.prototype.warn = function(message) {
-    if (this.level <= LEVEL_WARN) {
+    warn: function(message) {
         this.log(message, "warn");
-    }
-};
+    },
 
-Logger.prototype.error = function(message) {
-    if (this.level <= LEVEL_ERROR) {
+    error: function(message) {
         this.log(message, "error");
+    },
+
+    exception: function(exception) {
+        var msg = "Unexpected Exception: " + describe(exception, ', ');
+        this.error(msg);
     }
+
 };
 
-Logger.prototype.log = function(message, className) {
-    var loggingNode = document.createElement('li');
-    loggingNode.className = className;
-    loggingNode.appendChild(document.createTextNode(message));
-
-    this.logList.appendChild(loggingNode);
-    this.show();
-};
+var LOG = new Logger();
 
 function noop() {};
 
-function DummyLogger() {
+var DummyLogger = function() {};
+DummyLogger.prototype = {
+    show: noop,
+    log: noop,
+    debug: noop,
+    info: noop,
+    warn: noop,
+    error: noop
 };
 
-DummyLogger.prototype.show = noop;
-DummyLogger.prototype.hide = noop;
-DummyLogger.prototype.clear = noop;
-DummyLogger.prototype.log = noop;
-DummyLogger.prototype.debug = noop;
-DummyLogger.prototype.info = noop;
-DummyLogger.prototype.warn = noop;
-DummyLogger.prototype.error = noop;

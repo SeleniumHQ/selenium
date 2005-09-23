@@ -19,12 +19,6 @@ font.pagetitle {
 .smalltext {
 	FONT-SIZE: .75em;
 }
-.newshead {
-	FONT-WEIGHT: bold; FONT-SIZE: smaller; COLOR: black
-}
-.newstext {
-	FONT-SIZE: .75em; COLOR: grey
-}
 #menu {
 	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; FONT-SIZE: smaller; BACKGROUND: #77302C; LEFT: 0px; PADDING-BOTTOM: 100px; MARGIN: 0px; WIDTH: 149px; COLOR: black; PADDING-TOP: 15px; POSITION: absolute; TOP: 0px
 }
@@ -102,6 +96,14 @@ TABLE.documentation TD DL {
 }
 TABLE.documentation TD DL DT {
 	FONT-WEIGHT: bold
+}
+
+table { 
+    border-collapse: collapse;
+}
+
+th, td { 
+    padding: 0.2em;
 }
 
 H1.title {

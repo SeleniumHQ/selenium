@@ -7,9 +7,30 @@
   <link href="index_files/selenium.css" type="text/css" rel="stylesheet">
 </head>
 <body>
-Release information for different distributions of Selenium<br>
+
+Release information for different distributions of Selenium
+
+<h2>Selenium 0.6.0</h2>
+
+September 24, 2005
+
+<dl>
+  <dt>pattern-matching</dt> <dd>Support for regular-expression and exact matching.  Allow patterns to be used to match alert and confirmation messages.</dd>
+  <dt>support for Javascript prompts</dt> <dd>Capture and verify prompt-messages, set up return values.</dd>
+  <dt>fireEvent command</dt> <dd>Allows arbitrary events to be raised.</dd>
+  <dt>logging</dt> <dd>New "pop up" log window.</dd>
+
+  <dt>error-handling</dt> <dd>Better handling and reporting of internal errors.</dd>
+  <dt>bug-fixes</dt> <dd>Various defects fixed.</dd>
+</dl>
+
+<p>
+See also: <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10150">JIRA release-summary</a>.
+</p>
+
 <h2>Selenium 0.5.0</h2>
-June 19, 2005<br>
+
+June 19, 2005
 
 <dl>
   <dt>"waitForValue" command</dt><dd>Tells Selenium to wait until an input element has a specified value.</dd>
@@ -20,10 +41,14 @@ June 19, 2005<br>
   <dt>selectWindow</dt><dd>Can now select windows that aren't assigned to a global variable</dd>
   <dt>TestRunner hanging</dt><dd>Fixed problem found in some IE installations</dd>
 </dl>
-Full release notes available <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10140">here</a>.
+
+<p>
+See also: <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10140">JIRA release-summary</a>.
 
 <h2>Selenium 0.4.0</h2>
-May 20, 2005<br>
+
+May 20, 2005
+
 <p style="font-weight: bold;">This release breaks backward compatibility in 3 ways:
     <ol>
         <li>The 'click' command now requires the 'AndWait' suffix in order to wait for a page to reload. The 'nowait' parameter is no longer supported.</li>
@@ -41,11 +66,14 @@ May 20, 2005<br>
   <dt>Handle 'AndWait' commands in popup windows</dt><dd>This bug has been fixed</dd>
   <dt>Bug fixes</dt><dd>Many broken things fixed.</dd>
 </dl>
-Full release notes available <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10120">here</a>.
 
+<p>
+See also: <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10120">JIRA release-summary</a>.
 
 <h2>Selenium 0.3.0</h2>
-May 02, 2005<br>
+
+May 2, 2005
+
 <ul>
   <li><span style="font-weight: bold;">Standalone server for testing remote sites</span><br></li>
   <li><span style="font-weight: bold;">Improved in-browser user interface</span></li>
@@ -55,7 +83,9 @@ May 02, 2005<br>
 
 
 <h2>Selenium 0.2</h2>
-Jan 20, 2005<br>
+
+Jan 20, 2005
+
 <ul>
   <li><span style="font-weight: bold;">Java and Ruby drivers</span><br>
   </li>

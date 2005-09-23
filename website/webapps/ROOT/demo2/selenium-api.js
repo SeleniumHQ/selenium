@@ -17,7 +17,6 @@
 
 storedVars = new Object();
 
-var assert = new Assert();
 function Selenium(browserbot) {
     this.browserbot = browserbot;
     this.optionLocatorFactory = new OptionLocatorFactory();
@@ -25,6 +24,10 @@ function Selenium(browserbot) {
         return browserbot.getCurrentPage();
     };
 }
+
+Selenium.createForFrame = function(frame) {
+    return new Selenium(BrowserBot.createForFrame(frame));
+};
 
 /*
  * Reset the browserbot when an error occurs..
@@ -66,7 +69,7 @@ Selenium.prototype.doType = function(locator, newText) {
 Selenium.prototype.doSelect = function(locator, optionLocator) {
     var element = this.page().findElement(locator);
     if (!("options" in element)) {
-        throw new Error("Specified element is not a Select (has no options)");
+        throw new SeleniumError("Specified element is not a Select (has no options)");
     }
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     var option = locator.findOption(element);
@@ -96,6 +99,13 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
 };
 
 /*
+ * Instruct Selenium what to answear on the next prompt dialog it encounters
+ */
+Selenium.prototype.doAnswerOnNextPrompt = function(answer) {
+    this.browserbot.setNextPromptResult(answer);
+};
+
+/*
  * Simulate the browser back button
  */
 Selenium.prototype.doGoBack = function() {
@@ -110,44 +120,49 @@ Selenium.prototype.doClose = function() {
 };
 
 /*
- *  Asserts that the supplied message was received as an alert
+ * Explicitly fire an event
  */
- Selenium.prototype.assertAlert = function(expectedAlert) {
-    if ( this.browserbot.hasAlerts()) {
-        
-        receivedAlert = this.browserbot.getNextAlert();
-        if ( receivedAlert != expectedAlert ) {
-           assert.fail("The alert was [" + receivedAlert + "]");
-        }
-                          
-    } else {
-        assert.fail("There were no alerts");
-    }
- };
-
-  /*
-  *  Asserts that the supplied message was received as a confirmation
-  */
-  Selenium.prototype.assertConfirmation = function(expectedConfirmation) {
-     if ( this.browserbot.hasConfirmations()) {
-         
-         receivedConfirmation = this.browserbot.getNextConfirmation();
-         if ( receivedConfirmation != expectedConfirmation ) {
-            assert.fail("The confirmation message was [" + receivedConfirmation + "]");
-         }
-                           
-     } else {
-         assert.fail("There were no confirmations");
-     }
-  };
- 
-/*
- * Verify the location of the current page.
- */
-Selenium.prototype.assertAbsoluteLocation = function(expectedLocation) {
-    assert.assertMatches(expectedLocation, this.page().location);
+Selenium.prototype.doFireEvent = function(locator, event) {
+    var element = this.page().findElement(locator);
+    triggerEvent(element, event, false);
 };
 
+/*
+ * Get an alert message, or fail if there were no alerts.
+ */
+Selenium.prototype.getAlert = function() {
+    if (!this.browserbot.hasAlerts()) {
+        Assert.fail("There were no alerts");
+    }
+    return this.browserbot.getNextAlert();
+};
+
+/*
+ * Get a confirmation message, or fail if there were no confirmations.
+ */
+Selenium.prototype.getConfirmation = function() {
+    if (!this.browserbot.hasConfirmations()) {
+        Assert.fail("There were no confirmations");
+    }
+    return this.browserbot.getNextConfirmation();
+};
+ 
+/*
+ * Get a prompt message, or fail if there were no prompts.
+ */
+Selenium.prototype.getPrompt = function() {
+    if (! this.browserbot.hasPrompts()) {
+        Assert.fail("There were no prompts");
+    }
+    return this.browserbot.getNextPrompt();
+};
+
+/*
+ * Get the location of the current page.
+ */
+Selenium.prototype.getAbsoluteLocation = function() {
+    return this.page().location;
+};
 
 /*
  * Verify the location of the current page ends with the expected location.
@@ -158,53 +173,54 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
     var searchPos = expectedLocation.lastIndexOf('?');
 
     if (searchPos == -1) {
-        assert.assertMatches('*' + expectedLocation, docLocation.pathname);
+        Assert.matches('*' + expectedLocation, docLocation.pathname);
     }
     else {
         var expectedPath = expectedLocation.substring(0, searchPos);
-        assert.assertMatches('*' + expectedPath, docLocation.pathname);
+        Assert.matches('*' + expectedPath, docLocation.pathname);
 
         var expectedQueryString = expectedLocation.substring(searchPos);
-        assert.equals(expectedQueryString, docLocation.search);
+        Assert.equals(expectedQueryString, docLocation.search);
     }
 };
 
 /*
- * Verify the title of the current page.
+ * Get the title of the current page.
  */
-Selenium.prototype.assertTitle = function(expectedTitle) {
-    assert.assertMatches(expectedTitle, this.page().title());
+Selenium.prototype.getTitle = function() {
+    return this.page().title();
 };
 
+
 /*
- * Verify the value of a form element.
+ * Get the (trimmed) value of a form element.
+ * This is used to generate assertValue, verifyValue, ...
  */
-Selenium.prototype.assertValue = function(locator, expectedValue) {
+Selenium.prototype.getValue = function(locator) {
+    var element = this.page().findElement(locator)
+    return getInputValue(element).trim();
+}
+
+/**
+ * Get the (trimmed) text of a form element.
+ * This is used to generate assertText, verifyText, ...
+ */
+Selenium.prototype.getText = function(locator) {
     var element = this.page().findElement(locator);
-    var actualValue = getInputValue(element);
-    assert.assertMatches(expectedValue, actualValue.trim());
+    return getText(element).trim();
 };
 
 /*
- * Verifies that the text of the located element matches the expected content.
- */
-Selenium.prototype.assertText = function(locator, expectedContent) {
-    var element = this.page().findElement(locator);
-    var actualText = getText(element);
-    assert.assertMatches(expectedContent, actualText.trim());
-};
-
-/*
- * Asserts that the text for a single cell within and HTML table matches the expected content.
+ * Return the text for a single cell within an HTML table.
  * The table locator syntax is table.row.column.
  */
-Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
+Selenium.prototype.getTable = function(tableLocator) {
     // This regular expression matches "tableName.row.column"
     // For example, "mytable.3.4"
     pattern = /(.*)\.(\d+)\.(\d+)/;
 
     if(!pattern.test(tableLocator)) {
-        assert.fail("Invalid target format. Correct format is tableName.rowNum.columnNum");
+        throw new SeleniumError("Invalid target format. Correct format is tableName.rowNum.columnNum");
     }
 
     pieces = tableLocator.match(pattern);
@@ -215,14 +231,14 @@ Selenium.prototype.assertTable = function(tableLocator, expectedContent) {
 
     var table = this.page().findElement(tableName);
     if (row > table.rows.length) {
-        assert.fail("Cannot access row " + row + " - table has " + table.rows.length + " rows");
+        Assert.fail("Cannot access row " + row + " - table has " + table.rows.length + " rows");
     }
     else if (col > table.rows[row].cells.length) {
-        assert.fail("Cannot access column " + col + " - table row has " + table.rows[row].cells.length + " columns");
+        Assert.fail("Cannot access column " + col + " - table row has " + table.rows[row].cells.length + " columns");
     }
     else {
         actualContent = getText(table.rows[row].cells[col]);
-        assert.assertMatches(expectedContent, actualContent.trim());
+        return actualContent.trim();
     }
 };
 
@@ -251,20 +267,19 @@ Selenium.prototype.assertSelectOptions = function(target, options) {
     var element = this.page().findElement(target);
 
     var expectedOptionLabels = options.parseCSV();
-    assert.equals("Wrong number of options.", expectedOptionLabels.length, element.options.length);
+    Assert.equals("Wrong number of options", expectedOptionLabels.length, element.options.length);
 
     for (var i = 0; i < element.options.length; i++) {
-        assert.assertMatches(expectedOptionLabels[i], element.options[i].text);
+        Assert.matches(expectedOptionLabels[i], element.options[i].text);
     }
 };
 
 /**
- * Verify the value of an element attribute. The syntax for returning an element attribute
- * is <element-locator>@attribute-name
+ * Get the value of an element attribute. The syntax for returning an element attribute
+ * is <element-locator>@attribute-name.  Used to generate assert, verify, assertNot...
  */
-Selenium.prototype.assertAttribute = function(target, expected) {
-    var attributeValue = this.page().findAttribute(target);
-    assert.assertMatches(expected, attributeValue);
+Selenium.prototype.getAttribute = function(target) {
+    return this.page().findAttribute(target);
 };
 
 /*
@@ -274,9 +289,9 @@ Selenium.prototype.assertTextPresent = function(expectedText) {
     var allText = this.page().bodyText();
 
     if(allText == "") {
-        assert.fail("Page text not found");
+        Assert.fail("Page text not found");
     } else if(allText.indexOf(expectedText) == -1) {
-        assert.fail("'" + expectedText + "' not found in page text.");
+        Assert.fail("'" + expectedText + "' not found in page text.");
     }
 };
 
@@ -287,9 +302,9 @@ Selenium.prototype.assertTextNotPresent = function(unexpectedText) {
     var allText = this.page().bodyText();
 
     if(allText == "") {
-        assert.fail("Page text not found");
+        Assert.fail("Page text not found");
     } else if(allText.indexOf(unexpectedText) != -1) {
-        assert.fail("'" + unexpectedText + "' was found in page text.");
+        Assert.fail("'" + unexpectedText + "' was found in page text.");
     }
 };
 
@@ -300,7 +315,7 @@ Selenium.prototype.assertElementPresent = function(locator) {
     try {
         this.page().findElement(locator);
     } catch (e) {
-        assert.fail("Element " + locator + " not found.");
+        Assert.fail("Element " + locator + " not found.");
     }
 };
 
@@ -314,7 +329,7 @@ Selenium.prototype.assertElementNotPresent = function(locator) {
     catch (e) {
         return;
     }
-    assert.fail("Element " + locator + " found.");
+    Assert.fail("Element " + locator + " found.");
 };
 
 /*
@@ -325,10 +340,10 @@ Selenium.prototype.assertVisible = function(locator) {
     try {
         element = this.page().findElement(locator);
     } catch (e) {
-        assert.fail("Element " + locator + " not present.");
+        Assert.fail("Element " + locator + " not present.");
     }
     if (! this.isVisible(element)) {
-        assert.fail("Element " + locator + " not visible.");
+        Assert.fail("Element " + locator + " not visible.");
     }
 };
 
@@ -343,7 +358,7 @@ Selenium.prototype.assertNotVisible = function(locator) {
         return;
     }
     if (this.isVisible(element)) {
-        assert.fail("Element " + locator + " is visible.");
+        Assert.fail("Element " + locator + " is visible.");
     }
 };
 
@@ -387,7 +402,7 @@ Selenium.prototype.getEffectiveStyle = function(element) {
         //   currentStyle is not identical to getComputedStyle()
         //   ... but it's good enough for "visibility"
     }
-    throw new Error("cannot determine effective stylesheet in this browser");
+    throw new SeleniumError("cannot determine effective stylesheet in this browser");
 };
 
 /**
@@ -396,10 +411,10 @@ Selenium.prototype.getEffectiveStyle = function(element) {
 Selenium.prototype.assertEditable = function(locator) {
     var element = this.page().findElement(locator);
     if (element.value == undefined) {
-        assert.fail("Element " + locator + " is not an input.");
+        Assert.fail("Element " + locator + " is not an input.");
     }
     if (element.disabled) {
-        assert.fail("Element " + locator + " is disabled.");
+        Assert.fail("Element " + locator + " is disabled.");
     }
 };
 
@@ -412,7 +427,7 @@ Selenium.prototype.assertNotEditable = function(locator) {
         return; // not an input
     }
     if (element.disabled == false) {
-        assert.fail("Element " + locator + " is editable.");
+        Assert.fail("Element " + locator + " is editable.");
     }
 };
 
@@ -465,6 +480,13 @@ Selenium.prototype.doStoreValue = function(target, varName) {
 Selenium.prototype.doStoreText = function(target, varName) {
     var element = this.page().findElement(target);
     storedVars[varName] = getText(element);
+};
+
+/*
+ * Store the value of an element attribute in a variable
+ */
+Selenium.prototype.doStoreAttribute = function(target, varName) {
+    storedVars[varName] = this.page().findAttribute(target);
 };
 
 /*
@@ -523,81 +545,6 @@ Selenium.prototype.replaceVariables = function(str) {
     return stringResult;
 };
 
-function Assert() {
-    this.patternMatcher = new PatternMatcher();
-}
-
-Assert.prototype.equals = function() {
-        if (arguments.length == 2)
-        {
-            var comment = "";
-            var expected = arguments[0];
-            var actual = arguments[1];
-        }
-        else {
-            var comment = arguments[0] + " ";
-            var expected = arguments[1];
-            var actual = arguments[2];
-        }
-
-        if (expected === actual) {
-            return;
-        }
-        var errorMessage = comment + "Expected '" + expected + "' but was '" + actual + "'";
-
-        throw new AssertionFailedError(errorMessage);
-};
-
-Assert.prototype.fail = function(message) {
-        throw new AssertionFailedError(message);
-};
-
-/*
- * assertMatches(comment?, pattern, actual)
- */
-Assert.prototype.assertMatches = function() {
-    if (arguments.length == 2)
-    {
-        var comment = "";
-        var pattern = arguments[0];
-        var actual = arguments[1];
-    }
-    else {
-        var comment = arguments[0] + "; ";
-        var pattern = arguments[1];
-        var actual = arguments[2];
-    }
-
-    if (this.patternMatcher.matches(pattern, actual)) {
-        return;
-    }
-
-    var errorMessage = comment + 
-        "Actual value '" + actual + "' did not match '" + pattern + "'";
-    assert.fail(errorMessage);
-};
-
-
-function AssertionFailedError(message) {
-    this.isAssertionFailedError = true;
-    this.failureMessage = message;
-}
-
-function PatternMatcher() {
-    this.matches = function(pattern, actual) {
-        var regexp = new RegExp(this.globToRegexp(pattern));
-        // Work around Konqueror bug when matching empty strings.
-        var testString = '' + actual;
-        return regexp.test(testString);
-    };
-    this.globToRegexp = function(glob) {
-        var pattern = glob;
-        pattern = pattern.replace(/([.^$+(){}[\]\\|])/g, "\\$1");
-        pattern = pattern.replace(/\?/g, ".");
-        pattern = pattern.replace(/\*/g, ".*");
-        return "^" + pattern + "$";
-    };
-}
 
 /**
  *  Factory for creating "Option Locators".
@@ -629,7 +576,7 @@ OptionLocatorFactory.prototype.fromLocatorString = function(locatorString) {
     if (this.optionLocators[locatorType]) {
         return new this.optionLocators[locatorType](locatorValue);
     }
-    throw new Error("Unkown option locator type: " + locatorType);
+    throw new SeleniumError("Unkown option locator type: " + locatorType);
 };
 
 /**
@@ -643,7 +590,7 @@ OptionLocatorFactory.prototype.registerOptionLocators = function() {
     for (var functionName in this) {
       var result = /OptionLocatorBy([A-Z].+)$/.exec(functionName);
       if (result != null) {
-          var locatorName = result[1].toCamelCase();
+          var locatorName = result[1].lcfirst();
           this.optionLocators[locatorName] = this[functionName];
       }
     }
@@ -654,19 +601,19 @@ OptionLocatorFactory.prototype.registerOptionLocators = function() {
  */
 OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
     this.label = label;
-    this.patternMatcher = new PatternMatcher();
+    this.labelMatcher = new PatternMatcher(this.label);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(this.label, element.options[i].text)) {
+            if (this.labelMatcher.matches(element.options[i].text)) {
                 return element.options[i];
             }
         }
-        throw new Error("Option with label '" + this.label + "' not found");
+        throw new SeleniumError("Option with label '" + this.label + "' not found");
     };
 
     this.assertSelected = function(element) {
         var selectedLabel = element.options[element.selectedIndex].text;
-        assert.assertMatches(this.label, selectedLabel);
+        Assert.matches(this.label, selectedLabel);
     };
 };
 
@@ -675,19 +622,19 @@ OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
  */
 OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
     this.value = value;
-    this.patternMatcher = new PatternMatcher();
+    this.valueMatcher = new PatternMatcher(this.value);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(this.value, element.options[i].value)) {
+            if (this.valueMatcher.matches(element.options[i].value)) {
                 return element.options[i];
             }
         }
-        throw new Error("Option with value '" + this.value + "' not found");
+        throw new SeleniumError("Option with value '" + this.value + "' not found");
     };
 
     this.assertSelected = function(element) {
         var selectedValue = element.options[element.selectedIndex].value;
-        assert.assertMatches(this.value, selectedValue);
+        Assert.matches(this.value, selectedValue);
     };
 };
 
@@ -697,18 +644,18 @@ OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
 OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
     this.index = Number(index);
     if (isNaN(this.index) || this.index < 0) {
-        throw new Error("Illegal Index: " + index);
+        throw new SeleniumError("Illegal Index: " + index);
     }
 
     this.findOption = function(element) {
         if (element.options.length <= this.index) {
-            throw new Error("Index out of range.  Only " + element.options.length + " options available");
+            throw new SeleniumError("Index out of range.  Only " + element.options.length + " options available");
         }
         return element.options[this.index];
     };
 
     this.assertSelected = function(element) {
-        assert.equals(this.index, element.selectedIndex);
+        Assert.equals(this.index, element.selectedIndex);
     };
 };
 
@@ -717,19 +664,19 @@ OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
  */
 OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
     this.id = id;
-    this.patternMatcher = new PatternMatcher();
+    this.idMatcher = new PatternMatcher(this.id);
     this.findOption = function(element) {
         for (var i = 0; i < element.options.length; i++) {
-            if (this.patternMatcher.matches(this.id, element.options[i].id)) {
+            if (this.idMatcher.matches(element.options[i].id)) {
                 return element.options[i];
             }
         }
-        throw new Error("Option with id '" + this.id + "' not found");
+        throw new SeleniumError("Option with id '" + this.id + "' not found");
     };
 
     this.assertSelected = function(element) {
         var selectedId = element.options[element.selectedIndex].id;
-        assert.assertMatches(this.id, selectedId);
+        Assert.matches(this.id, selectedId);
     };
 };
 
