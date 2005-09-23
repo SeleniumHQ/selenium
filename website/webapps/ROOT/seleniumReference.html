@@ -31,42 +31,24 @@ Each command call is one line in the test table of the form:</p>
 <p><strong>Actions</strong> are commands that generally manipulate the state of the application. They do things like &quot;click this link&quot; and &quot;select that option&quot;. If an Action fails, or has an error, the execution of the current test is stopped.</p>
 <p><strong>Checks</strong> verify the state of the application conforms to what is expected. Examples include &quot;make sure the page title is X&quot; and &quot;check that this checkbox is checked&quot;. It is possible to tell Selenium to stop the test when an Assertion fails, or to simply record the failure and continue.</p>
 <p><strong>Element Locators</strong> tell Selenium which HTML element a command refers to. Many commands require an Element Locator as the &quot;target&quot; attribute. Examples of Element Locators include &quot;elementId&quot; and &quot;document.forms[0].element&quot;. These are described more clearly in the next section.</p>
+<p><strong>Patterns</strong> are used for various reasons, e.g. to specify the expected value of an input field, or identify a select option.  Selenium supports various types of pattern, including regular-expressions, all of which are described in more detail below.</p>
 </blockquote>
 <div class="section" id="element-locators">
 <h1><a name="element-locators">Element Locators</a></h1>
 <blockquote>
-<p>Element Locators allow Selenium to identify which HTML element a command refers to. There are several forms of Element Locators.</p>
+<p>Element Locators allow Selenium to identify which HTML element a
+command refers to.  We support the following strategies for locating
+elements:</p>
 <dl>
-<dt><strong>id</strong></dt>
+<dt><strong>id=</strong><em>id</em></dt>
+<dd>Select the element with the specified &#64;id attribute.</dd>
+<dt><strong>name=</strong><em>name</em></dt>
+<dd>Select the first element with the specified &#64;name attribute.</dd>
+<dt><strong>identifier=</strong><em>id</em></dt>
+<dd>Select the element with the specified &#64;id attribute.  If no match is found, select the first element whose &#64;name attribute is <em>id</em>.</dd>
+<dt><strong>dom=</strong><em>javascriptExpression</em></dt>
 <dd><dl class="first last">
-<dt>locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen.</dt>
-<dd><ul class="first last simple">
-<li>id=TheElementId</li>
-</ul>
-</dd>
-</dl>
-</dd>
-<dt><strong>name</strong></dt>
-<dd><dl class="first last">
-<dt>locates an element based on the name attribute of the element. The first element with a matching <em>name</em> is chosen.</dt>
-<dd><ul class="first last simple">
-<li>name=TheElementName</li>
-</ul>
-</dd>
-</dl>
-</dd>
-<dt><strong>identifier</strong></dt>
-<dd><dl class="first last">
-<dt>locates an element based on the id or name attribute of the element. If an element with a matching <em>id</em> is found, it is chosen. Otherwise, the first element with a matching <em>name</em> is chosen.</dt>
-<dd><ul class="first last simple">
-<li>name=TheElementName</li>
-</ul>
-</dd>
-</dl>
-</dd>
-<dt><strong>dom</strong></dt>
-<dd><dl class="first last">
-<dt>finds an element using the built-in DOM traversal syntax of HTML. DOM Traversal locators <em>must</em> begin with &quot;document.&quot;.</dt>
+<dt>Find an element using JavaScript traversal of the HTML Document Object Model. DOM locators <em>must</em> begin with &quot;document.&quot;.</dt>
 <dd><ul class="first last simple">
 <li>dom=document.forms['myForm'].myDropdown</li>
 <li>dom=document.images[56]</li>
@@ -74,9 +56,9 @@ Each command call is one line in the test table of the form:</p>
 </dd>
 </dl>
 </dd>
-<dt><strong>xpath</strong></dt>
+<dt><strong>xpath=</strong><em>xpathExpression</em></dt>
 <dd><dl class="first last">
-<dt>locates an element using a defined XPath expression. XPath locators <em>must</em> begin with &quot;//&quot;.</dt>
+<dt>Locate an element using an XPath expression. XPath locators <em>must</em> begin with &quot;//&quot;.</dt>
 <dd><ul class="first last simple">
 <li>xpath=//img[&#64;alt='The image alt text']</li>
 <li>xpath=//table[&#64;id='table1']//tr[4]/td[2]</li>
@@ -84,9 +66,9 @@ Each command call is one line in the test table of the form:</p>
 </dd>
 </dl>
 </dd>
-<dt><strong>link</strong></dt>
+<dt><strong>link=</strong><em>textPattern</em></dt>
 <dd><dl class="first last">
-<dt>finds a link with the specified text.</dt>
+<dt>Select the link (anchor) element which contains text matching the specified <em>pattern</em>.</dt>
 <dd><ul class="first last simple">
 <li>link=The link text</li>
 </ul>
@@ -94,12 +76,12 @@ Each command call is one line in the test table of the form:</p>
 </dl>
 </dd>
 </dl>
-<p>Without a locator prefix, a default set of locators will be used. The default set of locators is:</p>
-<ol class="arabic simple">
-<li>identifier</li>
-<li>dom</li>
-<li>xpath</li>
-</ol>
+<p>Without a locator prefix, Selenium uses:</p>
+<ul class="simple">
+<li><strong>dom</strong>, for locators starting with &quot;document.&quot;</li>
+<li><strong>xpath</strong>, for locators starting with &quot;//&quot;</li>
+<li><strong>identifier</strong>, otherwise</li>
+</ul>
 </blockquote>
 </div>
 <div class="section" id="select-option-specifiers">
@@ -107,34 +89,34 @@ Each command call is one line in the test table of the form:</p>
 <blockquote>
 <p>Select Option Specifiers provide different ways of specifying options of an HTML Select element (e.g. for selecting a specific option, or for asserting that the selected option satisfies a specification).  There are several forms of Select Option Specifier.</p>
 <dl>
-<dt><strong>label</strong></dt>
+<dt><strong>label=</strong><em>labelPattern</em></dt>
 <dd><dl class="first last">
-<dt>matches options based on their labels, i.e. the visible text.  Does glob matching so that, for example, &quot;fo*r&quot; will match &lt;option&gt;foobar&lt;/option&gt;.</dt>
+<dt>matches options based on their labels, i.e. the visible text. </dt>
 <dd><ul class="first last simple">
-<li>label=TheLabel</li>
+<li>label=regexp:^[Oo]ther</li>
 </ul>
 </dd>
 </dl>
 </dd>
-<dt><strong>value</strong></dt>
+<dt><strong>value=</strong><em>valuePattern</em></dt>
 <dd><dl class="first last">
-<dt>matches options based on their values.  Does glob matching so that, for example, &quot;fo*r&quot; will match &lt;option value=&quot;foobar&quot;&gt;Some option&lt;/option&gt;.</dt>
+<dt>matches options based on their values. </dt>
 <dd><ul class="first last simple">
-<li>value=TheValue</li>
+<li>value=other</li>
 </ul>
 </dd>
 </dl>
 </dd>
-<dt><strong>id</strong></dt>
+<dt><strong>id=</strong><em>id</em></dt>
 <dd><dl class="first last">
-<dt>matches options based on their ids.  Does glob matching so that, for example, &quot;opt*1&quot; will match &lt;option id=&quot;option1&quot; value=&quot;foobar&quot;&gt;Some option&lt;/option&gt;.</dt>
+<dt>matches options based on their ids. </dt>
 <dd><ul class="first last simple">
 <li>id=option1</li>
 </ul>
 </dd>
 </dl>
 </dd>
-<dt><strong>index</strong></dt>
+<dt><strong>index=</strong><em>index</em></dt>
 <dd><dl class="first last">
 <dt>matches an option based on its index (offset from zero).</dt>
 <dd><ul class="first last simple">
@@ -144,7 +126,22 @@ Each command call is one line in the test table of the form:</p>
 </dl>
 </dd>
 </dl>
-<p>Without a prefix, the default is to only match on labels.</p>
+<p>Without a prefix, the default behaviour is to only match on labels.</p>
+</blockquote>
+</div>
+<div class="section" id="string-match-patterns">
+<h1><a name="string-match-patterns">String-match Patterns</a></h1>
+<blockquote>
+<p>Various Pattern syntaxes are available for matching string values:</p>
+<dl>
+<dt><strong>glob:</strong><em>pattern</em></dt>
+<dd>Match a string against a &quot;glob&quot; (aka &quot;wildmat&quot;) pattern.  &quot;Glob&quot; is a kind of limited regular-expression syntax typically used in command-line shells.  In a glob pattern, &quot;*&quot; represents any sequence of characters, and &quot;?&quot; represents any single character.  Glob patterns match against the entire string.</dd>
+<dt><strong>regexp:</strong><em>regexp</em></dt>
+<dd>Match a string using a regular-expression.  The full power of JavaScript regular-expressions is available.</dd>
+<dt><strong>exact:</strong><em>string</em></dt>
+<dd>Match a string exactly, verbatim, without any of that fancy wildcard stuff.</dd>
+</dl>
+<p>If no pattern prefix is specified, Selenium assumes that it's a &quot;glob&quot; pattern.</p>
 </blockquote>
 </div>
 <div class="section" id="selenium-actions">
@@ -153,14 +150,12 @@ Each command call is one line in the test table of the form:</p>
 <p>Actions tell Selenium to do something in the application. They generally represent something a user would do.</p>
 <p>Many <strong>Actions</strong> can be called with the &quot;AndWait&quot; suffix. This suffix tells Selenium that the action will cause the browser to make a call to the server, and that Selenium should wait for a new page to load.
 The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; actions, which will both wait for a page to load by default.</p>
-<dl>
-<dt><strong>open</strong></dt>
-<dd><p class="first">Opens a URL in the test frame.  This accepts both relative and absolute URLs.</p>
+<p><strong>open</strong>( <em>url</em> )</p>
+<blockquote>
+<p>Opens a URL in the test frame.  This accepts both relative and absolute URLs.</p>
 <p><em>Note</em>: The URL must be on the same site as Selenium due to security restrictions in the browser (Cross Site Scripting).</p>
-<p><strong>target:</strong> The URL to open.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="15%" />
@@ -179,12 +174,11 @@ The exceptions to this pattern are the &quot;open&quot; and &quot;click&quot; ac
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>click (clickAndWait)</strong></dt>
-<dd><p class="first">Clicks on a link, button, checkbox or radio button.
+</blockquote>
+<p><strong>click</strong>( <em>elementLocator</em> )</p>
+<blockquote>
+<p>Clicks on a link, button, checkbox or radio button.
 If the click action causes a new page to load (like a link usually does), use &quot;clickAndWait&quot;.</p>
-<p><strong>target:</strong> The id of the element that should be clicked.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
 <blockquote>
 <table border="1" class="table">
@@ -209,7 +203,7 @@ If the click action causes a new page to load (like a link usually does), use &q
 </tbody>
 </table>
 </blockquote>
-<dl class="last">
+<dl>
 <dt><strong>note:</strong></dt>
 <dd>Selenium will <em>always</em> automatically click on a popup dialog raised by the alert() or confirm()
 methods. (The exception is those raised during 'onload', which are not yet handled by Selenium).
@@ -217,13 +211,13 @@ You <em>must</em> use [verify|assert]Alert or [verify|assert]Confirmation to tel
 popup dialog. You may use chooseCancelOnNextConfirmation to click 'cancel' on the next confirmation
 dialog instead of clicking 'OK'.</dd>
 </dl>
-</dd>
-<dt><strong>type (typeAndWait)</strong></dt>
-<dd><p class="first">Types (enters) text into an input field.  This works for text fields, combo boxes, check boxes, etc.</p>
-<p><strong>target:</strong> The id of the element where the text should be typed.</p>
-<p><strong>value:</strong> The text that will be typed, or the value of the option selected (not the visible text).</p>
+</blockquote>
+<p><strong>type</strong>( <em>inputLocator</em>, <em>value</em> )</p>
+<blockquote>
+<p>Sets the <em>value</em> of an input field, as though you typed it in.</p>
+<p>Can also be used to set the value of combo boxes, check boxes, etc.  In these cases, <em>value</em> should be the value of the option selected, not the visible text.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="23%" />
@@ -242,13 +236,12 @@ dialog instead of clicking 'OK'.</dd>
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>select (selectAndWait)</strong></dt>
-<dd><p class="first">Select an option from a drop-down, based on a Select Option Specifier.</p>
-<p><strong>target:</strong> An Element Locator specifying an HTML Select element.</p>
-<p><strong>value:</strong> An Option Specifier.  If more than one option matches (e.g. due to the use of globs like &quot;f*b*&quot;, or due to more than one option having the same label or value), then the first option that matches is selected.</p>
+</blockquote>
+<p><strong>select</strong>( <em>dropDownLocator</em>, <em>optionSpecifier</em> )</p>
+<blockquote>
+<p>Select an option from a drop-down, based on the <em>optionSpecifier</em>.  If more than one option matches the specifier (e.g. due to the use of globs like &quot;f*b*&quot;, or due to more than one option having the same label or value), then the first matches is selected.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="27%" />
@@ -275,13 +268,14 @@ dialog instead of clicking 'OK'.</dd>
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>selectWindow</strong></dt>
-<dd><p class="first">Selects a popup window.  Once a popup window has been selected, all commands go to that window.  To select the main window again, use &quot;null&quot; as the target.</p>
+</blockquote>
+<p><strong>selectWindow</strong>( <em>windowId</em> )</p>
+<blockquote>
+<p>Selects a popup window.  Once a popup window has been selected, all commands go to that window.  To select the main window again, use &quot;null&quot; as the target.</p>
 <p><strong>target:</strong> The id of the window to select.</p>
 <p><strong>value:</strong> <em>ignored</em></p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="40%" />
@@ -300,59 +294,12 @@ dialog instead of clicking 'OK'.</dd>
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>pause</strong></dt>
-<dd><p class="first">Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.</p>
-<p><strong>target:</strong> The number of milliseconds to pause.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
-<p><strong>examples:</strong></p>
-<blockquote class="last">
-<table border="1" class="table">
-<colgroup>
-<col width="36%" />
-<col width="29%" />
-<col width="36%" />
-</colgroup>
-<tbody valign="top">
-<tr><td>pause</td>
-<td>5000</td>
-<td>&nbsp;</td>
-</tr>
-<tr><td>pause</td>
-<td>2000</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
 </blockquote>
-</dd>
-<dt><strong>waitForValue</strong></dt>
-<dd><p class="first">Waits for a specified input (e.g. a hidden field) to have a specified value.  Will succeed immediately if the input already has the value.  Is implemented by polling for the value.  Warning: can block indefinitely if the input never has the specified value.</p>
-<p><strong>target:</strong> The input field.</p>
-<p><strong>value:</strong> The value the input field must have before continuing.</p>
-<p><strong>example:</strong></p>
-<blockquote class="last">
-<table border="1" class="table">
-<colgroup>
-<col width="32%" />
-<col width="42%" />
-<col width="26%" />
-</colgroup>
-<tbody valign="top">
-<tr><td>waitForValue</td>
-<td>finishIndication</td>
-<td>isfinished</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
-</dd>
-<dt><strong>goBack</strong></dt>
-<dd><p class="first">Simulates the user clicking the &quot;back&quot; button on their browser.</p>
-<p><strong>target:</strong> <em>ignored</em></p>
-<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>goBack</strong>()</p>
+<blockquote>
+<p>Simulates the user clicking the &quot;back&quot; button on their browser.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="40%" />
@@ -367,13 +314,12 @@ dialog instead of clicking 'OK'.</dd>
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>close</strong></dt>
-<dd><p class="first">Simulates the user clicking the &quot;close&quot; button in the titlebar of a popup window.</p>
-<p><strong>target:</strong> <em>ignored</em></p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>close</strong>()</p>
+<blockquote>
+<p>Simulates the user clicking the &quot;close&quot; button in the titlebar of a popup window.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="40%" />
@@ -388,13 +334,12 @@ dialog instead of clicking 'OK'.</dd>
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>pause</strong></dt>
-<dd><p class="first">Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.</p>
-<p><strong>target:</strong> The number of milliseconds to pause.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>pause</strong>( <em>milliseconds</em> )</p>
+<blockquote>
+<p>Pauses the execution of the test script for a specified amount of time.  This is useful for debugging a script or pausing to wait for some server side action.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="36%" />
@@ -413,16 +358,54 @@ dialog instead of clicking 'OK'.</dd>
 </tbody>
 </table>
 </blockquote>
-</dd>
-</dl>
-<p><strong>store</strong></p>
+</blockquote>
+<p><strong>fireEvent</strong>( <em>elementLocator</em>, <em>eventName</em> )</p>
 <blockquote>
-<p>Stores the value of a parameter into a variable</p>
-<dl>
-<dt><strong>target:</strong> The value to store. This can be constructed using either variable substitution or</dt>
-<dd>javascript evaluation, as detailed in 'Parameter construction and Variables' (below).</dd>
-</dl>
-<p><strong>value:</strong> Name of the variable to store the value into.</p>
+<p>Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot; handler.</p>
+<p><strong>examples:</strong></p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="32%" />
+<col width="39%" />
+<col width="29%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>fireEvent</td>
+<td>textField</td>
+<td>focus</td>
+</tr>
+<tr><td>fireEvent</td>
+<td>dropDown</td>
+<td>blur</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
+<p><strong>waitForValue</strong>( <em>inputLocator</em>, <em>value</em> )</p>
+<blockquote>
+<p>Waits for a specified input (e.g. a hidden field) to have a specified <em>value</em>.  Will succeed immediately if the input already has the value.  This is implemented by polling for the value.  Warning: can block indefinitely if the input never has the specified value.</p>
+<p><strong>example:</strong></p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="32%" />
+<col width="42%" />
+<col width="26%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>waitForValue</td>
+<td>finishIndication</td>
+<td>isfinished</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
+<p><strong>store</strong>( <em>valueToStore</em>, <em>variableName</em> )</p>
+<blockquote>
+<p>Stores a value into a variable.  The value can be constructed using either variable substitution or javascript evaluation, as detailed in 'Parameter construction and Variables' (below).</p>
 <p><strong>examples:</strong></p>
 <blockquote>
 <table border="1" class="table">
@@ -448,11 +431,9 @@ dialog instead of clicking 'OK'.</dd>
 </table>
 </blockquote>
 </blockquote>
-<p><strong>storeValue</strong></p>
+<p><strong>storeValue</strong>( <em>inputLocator</em>, <em>variableName</em> )</p>
 <blockquote>
 <p>Stores the value of an input field into a variable.</p>
-<p><strong>target:</strong> The id of the input field.</p>
-<p><strong>value:</strong> Name of the variable to store the field value into.</p>
 <p><strong>examples:</strong></p>
 <blockquote>
 <table border="1" class="table">
@@ -474,11 +455,9 @@ dialog instead of clicking 'OK'.</dd>
 </table>
 </blockquote>
 </blockquote>
-<p><strong>storeText</strong></p>
+<p><strong>storeText</strong>( <em>elementLocator</em>, <em>variableName</em> )</p>
 <blockquote>
 <p>Stores the text of an element into a variable.</p>
-<p><strong>target:</strong> The id of the element.</p>
-<p><strong>value:</strong> Name of the variable to store the element text into.</p>
 <p><strong>examples:</strong></p>
 <blockquote>
 <table border="1" class="table">
@@ -500,6 +479,70 @@ dialog instead of clicking 'OK'.</dd>
 </table>
 </blockquote>
 </blockquote>
+<p><strong>storeAttribute</strong>( <em>elementLocator</em>&#64;<em>attributeName</em>, <em>variableName</em> )</p>
+<blockquote>
+<p>Stores the value of an element attribute into a variable.</p>
+<p><strong>examples:</strong></p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="31%" />
+<col width="29%" />
+<col width="41%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>storeAttribute</td>
+<td>input1&#64;class</td>
+<td>classOfInput1</td>
+</tr>
+<tr><td>verifyAttribute</td>
+<td>input2&#64;class</td>
+<td>${classOfInput1}</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
+<p><strong>chooseCancelOnNextConfirmation</strong>()</p>
+<blockquote>
+<p>Instructs Selenium to click <strong>Cancel</strong> on the next javascript confirmation dialog to be raised.  By default, the confirm function will return true, having the same effect as manually clicking OK.  After running this command, the next confirmation will behave as if the user had clicked Cancel.</p>
+<p><strong>examples:</strong></p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="75%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>chooseCancelOnNextConfirmation</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
+<p><strong>answerOnNextPrompt</strong>( <em>answerString</em> )</p>
+<blockquote>
+<p>Instructs Selenium to return the specified <em>answerString</em> in response to the next prompt.</p>
+<p><strong>examples:</strong></p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="65%" />
+<col width="23%" />
+<col width="13%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>answerOnNextPrompt</td>
+<td>Kangaroo</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
 </blockquote>
 </div>
 <div class="section" id="selenium-checks">
@@ -508,13 +551,10 @@ dialog instead of clicking 'OK'.</dd>
 <p>Checks are used to verify the state of the application. They can be used to check the value of a form field, the presense of some text, or the URL of the current page.</p>
 <p>All Selenium Checks can be used in 2 modes, &quot;assert&quot; and &quot;verify&quot;. These behave identically, except that when an &quot;assert&quot; check fails, the test is aborted. When a &quot;verify&quot; check fails, the test will continue execution.
 This allows a single &quot;assert&quot; to ensure that the application is on the correct page, followed by a bunch of &quot;verify&quot; checks to test form field values, labels, etc.</p>
-<dl>
-<dt><strong>verifyLocation / assertLocation</strong></dt>
-<dd><p class="first">Verifies the location of the current page being tested.</p>
-<p><strong>target:</strong> The expected relative location of the page.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+<p><strong>assertLocation</strong>( <em>relativeLocation</em> )</p>
+<blockquote>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="54%" />
@@ -533,13 +573,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyTitle / assertTitle</strong></dt>
-<dd><p class="first">Verifies the title of the current page.</p>
-<p><strong>target:</strong> The expected page title.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>assertTitle</strong>( <em>titlePattern</em> )</p>
+<blockquote>
+<p>Verifies the title of the current page.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="48%" />
@@ -558,13 +597,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyValue / assertValue</strong></dt>
-<dd><p class="first">Verifies the value of an input field (or anything else with a value parameter). For checkbox/radio elements, the value will be &quot;on&quot; or &quot;off&quot; depending on whether the element is checked or not.</p>
-<p><strong>target:</strong> The id of the element to verify.</p>
-<p><strong>value:</strong> The expected value.</p>
+</blockquote>
+<p><strong>assertValue</strong>( <em>inputLocator</em>, <em>valuePattern</em> )</p>
+<blockquote>
+<p>Verifies the value of an input field (or anything else with a value parameter). For checkbox/radio elements, the value will be &quot;on&quot; or &quot;off&quot; depending on whether the element is checked or not.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="23%" />
@@ -583,13 +621,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifySelected / assertSelected</strong></dt>
-<dd><p class="first">Verifies that the selected option of a drop-down satisfies a specified Select Option Specifier.</p>
-<p><strong>target:</strong> Locates the drop-down to verify.</p>
-<p><strong>value:</strong> A Select Option Specifier that the selected option is expected to satisfy.</p>
+</blockquote>
+<p><strong>assertSelected</strong>( <em>selectLocator</em>, <em>optionSpecifier</em> )</p>
+<blockquote>
+<p>Verifies that the selected option of a drop-down satisfies the <em>optionSpecifier</em>.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="25%" />
@@ -616,13 +653,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifySelectOptions / assertSelectOptions</strong></dt>
-<dd><p class="first">Verifies the labels of all options in a drop-down against a comma-separated list. Commas in an expected option can be escaped as &quot;,&quot;.</p>
-<p><strong>target:</strong> Locates the drop-down to verify.</p>
-<p><strong>value:</strong> A comma-separated list of option labels.</p>
+</blockquote>
+<p><strong>assertSelectOptions</strong>( <em>selectLocator</em>, <em>optionLabelList</em> )</p>
+<blockquote>
+<p>Verifies the labels of all options in a drop-down against a comma-separated list. Commas in an expected option can be escaped as &quot;,&quot;.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="29%" />
@@ -641,13 +677,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyText / assertText</strong></dt>
-<dd><p class="first">Verifies the text of an element.  This works for any element that contains text.  This command uses either the textContent (Mozilla-like browsers) or the innerText (IE-like browsers) of the element, which is the rendered text shown to the user.</p>
-<p><strong>target:</strong> The id of the element to verify.</p>
-<p><strong>value:</strong> The expected text.</p>
+</blockquote>
+<p><strong>assertText</strong>( <em>elementLocator</em>, <em>textPattern</em> )</p>
+<blockquote>
+<p>Verifies the text of an element.  This works for any element that contains text.  This command uses either the textContent (Mozilla-like browsers) or the innerText (IE-like browsers) of the element, which is the rendered text shown to the user.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="25%" />
@@ -666,13 +701,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyAttribute / assertAttribute</strong></dt>
-<dd><p class="first">Verifies the value of an element attribute. An attribute is identified using the syntax &lt;element-locator&gt;&#64;&lt;attribute-name&gt;. This works for all types of element locators.</p>
-<p><strong>target:</strong> A locator string of the format &lt;element-locator&gt;&#64;&lt;attribute-name&gt;</p>
-<p><strong>value:</strong> The expected attribute value.</p>
+</blockquote>
+<p><strong>assertAttribute</strong>( <em>elementLocator</em>&#64;<em>attributeName</em>, <em>valuePattern</em> )</p>
+<blockquote>
+<p>Verifies the value of an element attribute.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="32%" />
@@ -681,7 +715,7 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </colgroup>
 <tbody valign="top">
 <tr><td>verifyAttribute</td>
-<td><a class="reference" href="mailto:txt1&#64;class">txt1&#64;class</a></td>
+<td>txt1&#64;class</td>
 <td>bigAndBold</td>
 </tr>
 <tr><td>assertAttribute</td>
@@ -695,13 +729,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyTextPresent / assertTextPresent</strong></dt>
-<dd><p class="first">Verifies that the specified text appears somewhere on the rendered page shown to the user.</p>
-<p><strong>target:</strong> The text that should be present.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>assertTextPresent</strong>( <em>text</em> )</p>
+<blockquote>
+<p>Verifies that the specified text appears somewhere on the rendered page shown to the user.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="39%" />
@@ -720,18 +753,15 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyTextNotPresent / assertTextNotPresent</strong></dt>
-<dd><p class="first">Verifies that the specified text does not appears anywhere on the rendered page.</p>
-<p><strong>target:</strong> The text that should not be present.</p>
-<p class="last"><strong>value:</strong> <em>ignored</em></p>
-</dd>
-<dt><strong>verifyElementPresent / assertElementPresent</strong></dt>
-<dd><p class="first">Verifies that the specified element is somewhere on the page.</p>
-<p><strong>target:</strong> The element that should be present.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>assertTextNotPresent</strong>( <em>text</em> )</p>
+<blockquote>
+Verifies that the specified text does NOT appear anywhere on the rendered page.</blockquote>
+<p><strong>assertElementPresent</strong>( <em>elementLocator</em> )</p>
+<blockquote>
+<p>Verifies that the specified element is somewhere on the page.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="48%" />
@@ -750,13 +780,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyElementNotPresent / assertElementNotPresent</strong></dt>
-<dd><p class="first">Verifies that the specified element is not on the page.</p>
-<p><strong>target:</strong> The element that should not be present.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>assertElementNotPresent</strong>( <em>elementLocator</em> )</p>
+<blockquote>
+<p>Verifies that the specified element is NOT on the page.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="58%" />
@@ -775,13 +804,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyTable / assertTable</strong></dt>
-<dd><p class="first">Verifies the text in a cell of a table. The correct syntax of the target is tableName.row.column, where row and column start at 0.</p>
-<p><strong>target:</strong> The table, row, and column specified as table.row.col.</p>
-<p><strong>value:</strong> The expected value of the cell.</p>
+</blockquote>
+<p><strong>assertTable</strong>( <em>cellAddress</em>, <em>valuePattern</em> )</p>
+<blockquote>
+<p>Verifies the text in a cell of a table. The <em>cellAddress</em> syntax <em>tableName.row.column</em>, where row and column start at 0.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="35%" />
@@ -800,13 +828,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyVisible / assertVisible</strong></dt>
-<dd><p class="first">Verifies that the specified element is both present <em>and</em> visible. An element can be rendered invisible by setting the CSS &quot;visibility&quot; property to &quot;hidden&quot;, or the &quot;display&quot; property to &quot;none&quot;, either for the element itself or one if its ancestors.</p>
-<p><strong>target:</strong> The element that should be visible.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>assertVisible</strong>( <em>elementLocator</em> )</p>
+<blockquote>
+<p>Verifies that the specified element is both present <em>and</em> visible. An element can be rendered invisible by setting the CSS &quot;visibility&quot; property to &quot;hidden&quot;, or the &quot;display&quot; property to &quot;none&quot;, either for the element itself or one if its ancestors.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="50%" />
@@ -825,13 +852,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyNotVisible / assertNotVisible</strong></dt>
-<dd><p class="first">Verifies that the specified element is not visible.  Elements that are simply not present are also considered invisible.</p>
-<p><strong>target:</strong> The element that should not be visible.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>assertNotVisible</strong>( <em>elementLocator</em> )</p>
+<blockquote>
+<p>Verifies that the specified element is NOT visible.  Elements that are simply not present are also considered invisible.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="55%" />
@@ -850,14 +876,12 @@ This allows a single &quot;assert&quot; to ensure that the application is on the
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyEditable / assertEditable</strong></dt>
-<dd><p class="first">Verifies that the specified element is editable, ie. it's an input
-element, and hasn't been disabled.</p>
-<p><strong>target:</strong> The element that should be editable.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>verifyEditable / assertEditable</strong>( <em>inputLocator</em> )</p>
+<blockquote>
+<p>Verifies that the specified element is editable, ie. it's an input element, and hasn't been disabled.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="52%" />
@@ -876,45 +900,18 @@ element, and hasn't been disabled.</p>
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyNotEditable / assertNotEditable</strong></dt>
-<dd><p class="first">Verifies that the specified element is NOT editable, ie. it's NOT
-an input element, or has been disabled.</p>
-<p><strong>target:</strong> The element that should be read-only.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
-<p><strong>examples:</strong></p>
-<blockquote class="last">
-<table border="1" class="table">
-<colgroup>
-<col width="52%" />
-<col width="33%" />
-<col width="15%" />
-</colgroup>
-<tbody valign="top">
-<tr><td>verifyNotEditable</td>
-<td>creditLimit</td>
-<td>&nbsp;</td>
-</tr>
-<tr><td>assertNotEditable</td>
-<td>userName</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
 </blockquote>
-</dd>
-<dt><strong>verifyAlert / assertAlert</strong></dt>
-<dd><p class="first">Verifies that a javascript alert was generated and that the text of the alert was as specified.
-Alerts must be verified in the same order that they were generated.</p>
-<p>Verifying an alert has the same effect as manually clicking OK.
-If an alert is generated but you do not verify it, the next Selenium action will fail.</p>
+<p><strong>assertNotEditable</strong>( <em>inputLocator</em> )</p>
+<blockquote>
+Verifies that the specified element is NOT editable, ie. it's NOT an input element, or has been disabled.</blockquote>
+<p><strong>assertAlert</strong>( <em>messagePattern</em> )</p>
+<blockquote>
+<p>Verifies that a javascript alert with the specified message was generated.  Alerts must be verified in the same order that they were generated.</p>
+<p>Verifying an alert has the same effect as manually clicking OK.  If an alert is generated but you do not verify it, the next Selenium action will fail.</p>
 <p>NOTE: under Selenium, javascript alerts will NOT pop up a visible alert dialog.</p>
-<p>NOTE: Selenium does NOT support javascript alerts that are generated in a page's onload() event handler.
-In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.</p>
-<p><strong>target:</strong> The expected text of the alert.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+<p>NOTE: Selenium does NOT support javascript alerts that are generated in a page's onload() event handler.  In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="36%" />
@@ -933,21 +930,15 @@ In this case a visible dialog WILL be generated and Selenium will hang until you
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>verifyConfirmation / assertConfirmation</strong></dt>
-<dd><p class="first">Verifies that a javascript confirmation dialog was generated and that
-the text of the dialog was as specified.
-Confirm dialogs must be verified in the same order that they were generated.</p>
-<p>By default, the confirm function will return true, having the same effect as manually clicking OK.
-This can be changed by prior execution of the <strong>chooseCancelOnNextConfirmation</strong> command (see below).
-If an confirmation is generated but you do not verify it, the next Selenium action will fail.</p>
+</blockquote>
+<p><strong>assertConfirmation</strong>( <em>messagePattern</em> )</p>
+<blockquote>
+<p>Verifies that a javascript confirmation dialog with the specified message was generated.  Like alerts, confirmations must be verified in the same order that they were generated.</p>
+<p>By default, the confirm function will return true, having the same effect as manually clicking OK.  This can be changed by prior execution of the <strong>chooseCancelOnNextConfirmation</strong> command (see above).  If an confirmation is generated but you do not verify it, the next Selenium action will fail.</p>
 <p>NOTE: under Selenium, javascript confirmations will NOT pop up a visible dialog.</p>
-<p>NOTE: Selenium does NOT support javascript confirmations that are generated in a page's onload() event handler.
-In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.</p>
-<p><strong>target:</strong> The expected text of the alert.</p>
-<p><strong>value:</strong> <em>ignored</em></p>
+<p>NOTE: Selenium does NOT support javascript confirmations that are generated in a page's onload() event handler.  In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
 <col width="42%" />
@@ -955,42 +946,47 @@ In this case a visible dialog WILL be generated and Selenium will hang until you
 <col width="12%" />
 </colgroup>
 <tbody valign="top">
-<tr><td>verifyConfirmation</td>
-<td>Invalid Phone Number</td>
+<tr><td>assertConfirmation</td>
+<td>Remove this user?</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>assertAlert</td>
-<td>Invalid Phone Number</td>
+<tr><td>verifyConfirmation</td>
+<td>Are you sure?</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
 </table>
 </blockquote>
-</dd>
-<dt><strong>chooseCancelOnNextConfirmation</strong></dt>
-<dd><p class="first">Instructs Selenium to click <strong>Cancel</strong> on the next javascript confirmation dialog to be raised.
-By default, the confirm function will return true, having the same effect as manually clicking OK.
-After running this command, the next confirmation will behave as if the user had clicked Cancel.</p>
-<p><strong>target:</strong> <em>ignored</em></p>
-<p><strong>value:</strong> <em>ignored</em></p>
+</blockquote>
+<p><strong>assertPrompt</strong>( <em>messagePattern</em> )</p>
+<blockquote>
+<p>Verifies that a javascript prompt dialog with the specified message was generated.  Like alerts, prompts must be verified in the same order that they were generated.</p>
+<p>Successful handling of the prompt requires prior execution of the <strong>answerOnNextPrompt</strong> command (see above).  If a prompt is generated but you do not verify it, the next Selenium action will fail.</p>
 <p><strong>examples:</strong></p>
-<blockquote class="last">
+<blockquote>
 <table border="1" class="table">
 <colgroup>
-<col width="75%" />
-<col width="13%" />
-<col width="13%" />
+<col width="35%" />
+<col width="56%" />
+<col width="10%" />
 </colgroup>
 <tbody valign="top">
-<tr><td>chooseCancelOnNextConfirmation</td>
+<tr><td>answerOnNextPrompt</td>
+<td>Joe</td>
 <td>&nbsp;</td>
+</tr>
+<tr><td>click</td>
+<td>id=delegate</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>verifyPrompt</td>
+<td>Delegate to who?</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
 </table>
 </blockquote>
-</dd>
-</dl>
+</blockquote>
 </blockquote>
 </div>
 <div class="section" id="parameter-construction-and-variables">
@@ -1008,9 +1004,9 @@ with values keyed by the variable name. These commands are documented in the com
 <p>Variable substitution provides a simple way to include a previously stored variable in a
 command parameter. This is a simple mechanism, by which the variable to substitute is indicated
 by ${variableName}. Multiple variables can be substituted, and intermixed with static text.</p>
-<dl>
-<dt>Example:</dt>
-<dd><table border="1" class="first last table">
+<p>Example:</p>
+<blockquote>
+<table border="1" class="table">
 <colgroup>
 <col width="18%" />
 <col width="36%" />
@@ -1035,17 +1031,16 @@ by ${variableName}. Multiple variables can be substituted, and intermixed with s
 </tr>
 </tbody>
 </table>
-</dd>
-</dl>
+</blockquote>
 <p><strong>Javascript evaluation</strong></p>
 <p>Javascript evaluation provides the full power of javascript in constructing a command parameter.
 To use this mechanism, the <em>entire</em> parameter value must be prefixed by
 'javascript{' with a trailing '}'. The text inside the braces is evaluated as a javascript expression,
 and can access previously stored variables using the <em>storedVars</em> map detailed above.
 Note that variable substitution cannot be combined with javascript evaluation.</p>
-<dl>
-<dt>Example:</dt>
-<dd><table border="1" class="first last table">
+<p>Example:</p>
+<blockquote>
+<table border="1" class="table">
 <colgroup>
 <col width="9%" />
 <col width="44%" />
@@ -1062,8 +1057,7 @@ Note that variable substitution cannot be combined with javascript evaluation.</
 </tr>
 </tbody>
 </table>
-</dd>
-</dl>
+</blockquote>
 </blockquote>
 </div>
 <div class="section" id="extending-selenium">
@@ -1075,14 +1069,12 @@ object prototype. On startup, Selenium will automatically look through methods o
 using name patterns to recognise which ones are actions, checks and locators.</p>
 <p>The following examples try to give an indication of how Selenium can be extended with javascript.</p>
 </blockquote>
-<dl>
-<dt><strong>Actions</strong></dt>
-<dd><p class="first">All <em>doFoo</em> methods on the Selenium prototype are added as actions. For each action <em>foo</em> there
+<p><strong>Actions</strong></p>
+<blockquote>
+<p>All <em>doFoo</em> methods on the Selenium prototype are added as actions. For each action <em>foo</em> there
 is also an action <em>fooAndWait</em> registered. An action method can take up to 2 parameters, which
 will be passed the second and third column values in the test.</p>
-<p class="last">Example: Add a &quot;typeRepeated&quot; action to Selenium, which types the text twice into a text box.</p>
-</dd>
-</dl>
+<p>Example: Add a &quot;typeRepeated&quot; action to Selenium, which types the text twice into a text box.</p>
 <pre class="literal-block">
 Selenium.prototype.doTypeRepeated = function(locator, text) {
     // All locator-strategies are automatically handled by &quot;findElement&quot;
@@ -1095,16 +1087,15 @@ Selenium.prototype.doTypeRepeated = function(locator, text) {
     this.page().replaceText(element, valueToType);
 };
 </pre>
-<dl>
-<dt><strong>Checks</strong></dt>
-<dd><p class="first">All <em>assertFoo</em> methods on the Selenium prototype are added as checks. For each check <em>foo</em> there
+</blockquote>
+<p><strong>Checks</strong></p>
+<blockquote>
+<p>All <em>assertFoo</em> methods on the Selenium prototype are added as checks. For each check <em>foo</em> there
 is an <em>assertFoo</em> and <em>verifyFoo</em> registered. An assert method can take up to 2 parameters, which
 will be passed the second and third column values in the test.</p>
-<p class="last">Example: Add a <em>valueRepeated</em> check, that makes sure that the element value
+<p>Example: Add a <em>valueRepeated</em> check, that makes sure that the element value
 consists of the supplied text repeated. The 2 commands that would be available in tests would be
 <em>assertValueRepeated</em> and <em>verifyValueRepeated</em>.</p>
-</dd>
-</dl>
 <pre class="literal-block">
 Selenium.prototype.assertValueRepeated = function(locator, text) {
     // All locator-strategies are automatically handled by &quot;findElement&quot;
@@ -1120,22 +1111,19 @@ Selenium.prototype.assertValueRepeated = function(locator, text) {
     this.assertMatches(expectedValue, actualValue);
 };
 </pre>
-<dl>
-<dt><strong>Locator Strategies</strong></dt>
-<dd><p class="first">All <em>locateElementByFoo</em> methods on the PageBot prototype are added as locator-strategies. A
-locator strategy takes 2 parameters, the first being the locator string (minus the prefix),
-and the second being the document in which to search.</p>
-<p class="last">Example: Add a &quot;valuerepeated=&quot; locator, that finds the first element a value attribute equal
-to the the supplied value repeated.</p>
-</dd>
-</dl>
+</blockquote>
+<p><strong>Locator Strategies</strong></p>
+<blockquote>
+<p>All <em>locateElementByFoo</em> methods on the PageBot prototype are added as locator-strategies. A locator strategy takes 2 parameters, the first being the locator string (minus the prefix), and the second being the document in which to search.</p>
+<p>Example: Add a &quot;valuerepeated=&quot; locator, that finds the first element a value attribute equal to the the supplied value repeated.</p>
 <pre class="literal-block">
 // The &quot;inDocument&quot; is a the document you are searching.
 PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
     // Create the text to search for
     var expectedValue = text + text;
 
-    // Loop through all elements, looking for ones that have a value === our expected value
+    // Loop through all elements, looking for ones that have 
+    // a value === our expected value
     var allElements = inDocument.getElementsByTagName(&quot;*&quot;);
     for (var i = 0; i &lt; allElements.length; i++) {
         var testElement = allElements[i];
@@ -1146,16 +1134,12 @@ PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
     return null;
 };
 </pre>
-<dl>
-<dt><strong>user-extensions.js</strong></dt>
-<dd><p class="first">By default, Selenium looks for a file called &quot;user-extensions.js&quot;, and loads and javascript code
-found in that file. This file provides a convenient location for adding features to Selenium, without
-needing to modify the core Selenium sources.</p>
-<p class="last">In the standard distibution, this file does not exist. Users can create this file and place their
-extension code in this common location, removing the need to modify the Selenium sources,
-and hopefully assisting with the upgrade process.</p>
-</dd>
-</dl>
+</blockquote>
+<p><strong>user-extensions.js</strong></p>
+<blockquote>
+<p>By default, Selenium looks for a file called &quot;user-extensions.js&quot;, and loads the javascript code found in that file. This file provides a convenient location for adding features to Selenium, without needing to modify the core Selenium sources.</p>
+<p>In the standard distibution, this file does not exist. Users can create this file and place their extension code in this common location, removing the need to modify the Selenium sources, and hopefully assisting with the upgrade process.</p>
+</blockquote>
 <hr />
 <p>:</p>
 </div>

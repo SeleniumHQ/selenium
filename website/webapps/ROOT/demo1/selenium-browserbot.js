@@ -42,7 +42,33 @@ var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
 var geckoVersion = geckoResult == null ? null : geckoResult[1];
 
-function createBrowserBot(frame) {
+BrowserBot = function(frame) {
+    this.frame = frame;
+    this.currentPage = null;
+    this.currentWindowName = null;
+
+    this.modalDialogTest = null;
+    this.recordedAlerts = new Array();
+    this.recordedConfirmations = new Array();
+    this.recordedPrompts = new Array();
+    this.openedWindows = {};
+    this.nextConfirmResult = true;
+    this.nextPromptResult = '';
+    this.newPageLoaded = false;
+
+    var self = this;
+    this.recordPageLoad = function() {
+        LOG.debug("Page load detected, location=" + self.getCurrentWindow().location);
+        self.currentPage = null;
+        self.newPageLoaded = true;
+    };
+
+    this.isNewPageLoaded = function() {
+        return self.newPageLoaded;
+    };
+};
+
+BrowserBot.createForFrame = function(frame) {
     var browserbot;
     if (isIE) {
         browserbot = new IEBrowserBot(frame);
@@ -61,46 +87,6 @@ function createBrowserBot(frame) {
     // Modify the test IFrame so that page loads are detected.
     addLoadListener(browserbot.getFrame(), browserbot.recordPageLoad);
     return browserbot;
-}
-
-function createPageBot(windowObject) {
-    if (isIE) {
-        return new IEPageBot(windowObject);
-    }
-    else if (isKonqueror) {
-        return new KonquerorPageBot(windowObject);
-    }
-    else if (isSafari) {
-        return new SafariPageBot(windowObject);
-    }
-    else {
-        // Use mozilla by default
-        return new MozillaPageBot(windowObject);
-    }
-}
-
-BrowserBot = function(frame) {
-    this.frame = frame;
-    this.currentPage = null;
-    this.currentWindowName = null;
-
-    this.modalDialogTest = null;
-    this.recordedAlerts = new Array();
-    this.recordedConfirmations = new Array();
-    this.openedWindows = {};
-    this.nextConfirmResult = true;
-    this.newPageLoaded = false;
-
-    var self = this;
-    this.recordPageLoad = function() {
-        LOG.debug("Page load detected");
-        self.currentPage = null;
-        self.newPageLoaded = true;
-    };
-
-    this.isNewPageLoaded = function() {
-        return self.newPageLoaded;
-    };
 };
 
 BrowserBot.prototype.doModalDialogTest = function(test) {
@@ -109,6 +95,10 @@ BrowserBot.prototype.doModalDialogTest = function(test) {
 
 BrowserBot.prototype.cancelNextConfirmation = function() {
     this.nextConfirmResult = false;
+};
+
+BrowserBot.prototype.setNextPromptResult = function(result) {
+    this.nextPromptResult = result;
 };
 
 BrowserBot.prototype.hasAlerts = function() {
@@ -127,6 +117,13 @@ BrowserBot.prototype.getNextConfirmation = function() {
     return this.recordedConfirmations.shift();
 };
 
+BrowserBot.prototype.hasPrompts = function() {
+    return (this.recordedPrompts.length > 0) ;
+};
+
+BrowserBot.prototype.getNextPrompt = function() {
+    return this.recordedPrompts.shift();
+};
 
 BrowserBot.prototype.getFrame = function() {
     return this.frame;
@@ -161,7 +158,7 @@ BrowserBot.prototype.getCurrentPage = function() {
         var testWindow = this.getCurrentWindow();
         this.modifyWindowToRecordPopUpDialogs(testWindow, this);
         this.modifySeparateTestWindowToDetectPageLoads(testWindow);
-        this.currentPage = createPageBot(testWindow);
+        this.currentPage = PageBot.createForWindow(testWindow);
         this.newPageLoaded = false;
     }
 
@@ -180,20 +177,30 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         return result;
     };
 
+    windowToModify.prompt = function(message) {
+        browserBot.recordedPrompts.push(message);
+        var result = !browserBot.nextConfirmResult ? null : browserBot.nextPromptResult;
+        browserBot.nextConfirmResult = true;
+        browserBot.nextPromptResult = '';
+        return result;
+    };
+
     // Keep a reference to all popup windows by name
     // note that in IE the "windowName" argument must be a valid javascript identifier, it seems.
     var originalOpen = windowToModify.open;
     windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
         var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
-        browserbot.openedWindows[windowName] = openedWindow;
+        selenium.browserbot.openedWindows[windowName] = openedWindow;
         return openedWindow;
     };
 };
 
 /**
- * The main IFrame has a single, long-lived onload handler that clears Browserbot.currentPage and sets the "newPageLoaded"
- * flag. For separate windows, we need to attach a handler each time. This uses the "callOnWindowPageTransition" mechanism,
- * which is implemented differently for different browsers.
+ * The main IFrame has a single, long-lived onload handler that clears
+ * Browserbot.currentPage and sets the "newPageLoaded" flag. For separate
+ * windows, we need to attach a handler each time. This uses the
+ * "callOnWindowPageTransition" mechanism, which is implemented differently
+ * for different browsers.
  */
 BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(windowToModify) {
     if (this.currentWindowName != null) {
@@ -231,7 +238,7 @@ BrowserBot.prototype.getTargetWindow = function(windowName) {
         targetWindow = eval(evalString);
     }
     if (!targetWindow) {
-        throw new Error("Window does not exist");
+        throw new SeleniumError("Window does not exist");
     }
     return targetWindow;
 };
@@ -311,6 +318,8 @@ function IEBrowserBot(frame) {
     BrowserBot.call(this, frame);
 }
 IEBrowserBot.prototype = new BrowserBot;
+IEBrowserBot.prototype.callOnWindowPageTransition = KonquerorBrowserBot.prototype.callOnWindowPageTransition;
+IEBrowserBot.prototype.pollForLoad = KonquerorBrowserBot.prototype.pollForLoad;
 
 IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     BrowserBot.prototype.modifyWindowToRecordPopUpDialogs(windowToModify, browserBot);
@@ -392,7 +401,7 @@ PageBot = function(pageWindow) {
     this.findElementBy = function(locatorType, locator, inDocument) {
         var locatorFunction = this.locationStrategies[locatorType];
         if (! locatorFunction) {
-            throw new Error("Unrecognised locator type: '" + locatorType + "'");
+            throw new SeleniumError("Unrecognised locator type: '" + locatorType + "'");
         }
         return locatorFunction.call(this, locator, inDocument);
     };
@@ -401,11 +410,31 @@ PageBot = function(pageWindow) {
      * The implicit locator, that is used when no prefix is supplied.
      */
     this.locationStrategies['implicit'] = function(locator, inDocument) {
-        return this.locateElementByIdentifier(locator, inDocument)
-               || this.locateElementByDomTraversal(locator, inDocument)
-               || this.locateElementByXPath(locator, inDocument);
+        if (locator.startsWith('//')) {
+            return this.locateElementByXPath(locator, inDocument);
+        } 
+        if (locator.startsWith('document.')) {
+            return this.locateElementByDomTraversal(locator, inDocument);
+        }
+        return this.locateElementByIdentifier(locator, inDocument);
     };
     
+};
+
+PageBot.createForWindow = function(windowObject) {
+    if (isIE) {
+        return new IEPageBot(windowObject);
+    }
+    else if (isKonqueror) {
+        return new KonquerorPageBot(windowObject);
+    }
+    else if (isSafari) {
+        return new SafariPageBot(windowObject);
+    }
+    else {
+        // Use mozilla by default
+        return new MozillaPageBot(windowObject);
+    }
 };
 
 MozillaPageBot = function(pageWindow) {
@@ -436,9 +465,9 @@ PageBot.prototype.findElement = function(locator) {
     var locatorString = locator;
     
     // If there is a locator prefix, use the specified strategy
-    var result = locator.match(/^([a-z]+)=(.+)/);
+    var result = locator.match(/^([A-Za-z]+)=(.+)/);
     if (result) {
-        locatorType = result[1];
+        locatorType = result[1].toLowerCase();
         locatorString = result[2];
     }
 
@@ -454,7 +483,7 @@ PageBot.prototype.findElement = function(locator) {
     }
 
     // Element was not found by any locator function.
-    throw new Error("Element " + locator + " not found");
+    throw new SeleniumError("Element " + locator + " not found");
 };
 
 /**
@@ -529,9 +558,6 @@ PageBot.prototype.locateElementByDomTraversal.prefix = "dom";
 * begin with "//".
 */
 PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
-    if (xpath.slice(0,2) != "//") {
-        return null;
-    }
 
     // Trim any trailing "/": not valid xpath, and remains from attribute
     // locator.
@@ -627,7 +653,7 @@ PageBot.prototype.locateElementByLinkText = function(linkText, inDocument) {
     var links = inDocument.getElementsByTagName('a');
     for (var i = 0; i < links.length; i++) {
         var element = links[i];
-        if (getText(element) == linkText) {
+        if (PatternMatcher.matches(linkText, getText(element))) {
             return element;
         }
     }
@@ -675,9 +701,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
     element.value=stringValue;
-    if (isIE || isKonqueror || isSafari) {
-        triggerEvent(element, 'change', true);
-    }
+    triggerEvent(element, 'change', true);
     triggerEvent(element, 'blur', false);
 };
 
@@ -796,17 +820,40 @@ IEPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'focus', false);
 
     var wasChecked = element.checked;
+
+    // Set a flag that records if the page will unload - this isn't always accurate, because
+    // <a href="javascript:alert('foo'):"> triggers the onbeforeunload event, even thought the page won't unload
+    var pageUnloading = false;
+    var pageUnloadDetector = function() {pageUnloading = true;};
+    this.currentWindow.attachEvent("onbeforeunload", pageUnloadDetector);
+
     element.click();
 
-    if (this.windowClosed()) {
-        return;
-    }
-    // Onchange event is not triggered automatically in IE.
-    if (isDefined(element.checked) && wasChecked != element.checked) {
-        triggerEvent(element, 'change', true);
-    }
+    // If the page is going to unload - still attempt to fire any subsequent events.
+    // However, we can't guarantee that the page won't unload half way through, so we need to handle exceptions.
+    try {
+        this.currentWindow.detachEvent("onbeforeunload", pageUnloadDetector);
 
-    triggerEvent(element, 'blur', false);
+        if (this.windowClosed()) {
+            return;
+        }
+
+        // Onchange event is not triggered automatically in IE.
+        if (isDefined(element.checked) && wasChecked != element.checked) {
+            triggerEvent(element, 'change', true);
+        }
+
+        triggerEvent(element, 'blur', false);
+    }
+    catch (e) {
+        // If the page is unloading, we may get a "Permission denied" or "Unspecified error".
+        // Just ignore it, because the document may have unloaded.
+        if (pageUnloading) {
+            LOG.warn("Caught exception when firing events on unloading page: " + e.message);
+            return;
+        }
+        throw e;
+    }
 };
 
 PageBot.prototype.windowClosed = function(element) {

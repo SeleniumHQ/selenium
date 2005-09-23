@@ -103,8 +103,7 @@ function start() {
 
 function loadSuiteFrame() {
     var testAppFrame = document.getElementById('myiframe');
-    browserbot = createBrowserBot(testAppFrame);
-    selenium = new Selenium(browserbot);
+    selenium = Selenium.createForFrame(testAppFrame);
     registerCommandHandlers();
 
     //set the runInterval if there is a queryParameter for it
@@ -334,7 +333,7 @@ function runNextTest() {
         var testFrame = getTestFrame();
         addLoadListener(testFrame, startTest);
 
-        browserbot.setIFrameLocation(testFrame, testLink.href);
+        selenium.browserbot.setIFrameLocation(testFrame, testLink.href);
     }
 }
 
@@ -488,7 +487,7 @@ function initialiseTestLoop() {
     testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
     testLoop.testComplete = testComplete;
-    testLoop.waitingForNext = function() {
+    testLoop.pause = function() {
         document.getElementById('continueTest').disabled = false;
     };
     return testLoop;
@@ -519,13 +518,8 @@ function scrollIntoView(element) {
         element.scrollIntoView(false);
         return;
     }
-
-    // For Konqueror, we have to create a remove an element.
-    var anchor = element.ownerDocument.createElement("a");
-    anchor.innerHTML = "!CURSOR!";
-    element.appendChild(anchor, element);
-//    anchor.focus();
-    element.removeChild(anchor);
+    // TODO: work out how to scroll browsers that don't support
+    // scrollIntoView (like Konqueror)
 }
 
 function commandStarted() {
@@ -591,7 +585,11 @@ function testComplete() {
 }
 
 function getCellText(rowNumber, columnNumber) {
-    return getText(inputTableRows[rowNumber].cells[columnNumber]);
+    var cell = inputTableRows[rowNumber].cells[columnNumber];
+    if (! cell.cachedText) {
+        cell.cachedText = getText(cell);
+    }
+    return cell.cachedText;
 }
 
 Selenium.prototype.doPause = function(waitTime) {

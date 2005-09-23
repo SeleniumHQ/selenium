@@ -67,28 +67,32 @@ body, html {
 }
 
 #controlPanel {
-    padding: 5px;
+    padding: 0.5ex;
     background: #eee;
     overflow: auto;
+    font-size: 75%;
+    text-align: center;
+}
+
+#controlPanel fieldset {
+    margin: 0.3ex;
+    padding: 0.3ex;
+}
+
+#controlPanel fieldset legend {
+    color: black;
+}
+
+#controlPanel button {
+    margin: 0.5ex;
 }
 
 #controlPanel table {
-    font-size: 75%;
+    font-size: 100%;
 }
 
 #controlPanel th, #controlPanel td {
     border: 0;
-}
-
-#controls {
-    color: inherit;
-    width: 100%;
-}
-
-#controls td {
-    margin: 1px;
-    padding: 1px;
-    text-align: center;
 }
 
 h1 {
@@ -117,9 +121,7 @@ button, label {
 }
 
 #stats {
-    border-top: 1px solid #999;
-    border-bottom: 1px solid #999;
-    margin-top: 10px;
+    margin: 0.5em auto 0.5em auto;
 }
 
 #stats th, #stats td {
@@ -163,25 +165,47 @@ button, label {
 }
 
 /*---( Logging Console )---*/
+
 #logging-console {
-   background: #FFF;
-   padding: 5px;
-   border: 1px solid #888;
-   font-size: 10px;
+    background: #fff;
+    font-size: 75%;
 }
 
-#logging-console h1 {
-   font-weight: bold;
+#logging-console #banner {
+    display: block;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background: #ddd;
+    border-bottom: 1px solid #666;
+}
+
+#logging-console #logLevelChooser {
+    float: right;
+    margin: 3px;
 }
 
 #logging-console ul {
-   list-style-type: none;
-   margin: 0px;
-   padding: 0px;
-   clear: both;
+    list-style-type: none;
+    margin: 0px;
+    margin-top: 3em;
+    padding-left: 5px;
 }
 
-#logging-console ul li.error {
-	font-weight: bold;
-	color: red;
+#logging-console li {
+    margin: 2px;
+    border-top: 1px solid #ccc;
+}
+
+#logging-console li.error {
+    font-weight: bold;
+    color: red;
+}
+
+#logging-console li.warn {
+    color: red;
+}
+
+#logging-console li.debug {
+    color: green;
 }
