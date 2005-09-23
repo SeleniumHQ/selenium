@@ -1,17 +1,21 @@
 <project name="selenium" default="dist">
-    <property name="version" value="0.6.0-unreleased"/>
+
+    <property name="version" value="0.6.0"/>
     <property name="website.root" value="../website/webapps/ROOT"/>
 
-    <target name="dist" depends="prepare-dist, dist-image-browserbot, dist-image-doc, dist-selenium, dist-ruby, dist-plone, dist-java"/>
-
-    <target name="prepare-dist">
+    <target name="clean">
         <delete dir="dist-image"/>
         <delete dir="dist"/>
+    </target>
+
+    <target name="dist" depends="dist-image-browserbot, dist-image-doc, dist-selenium, dist-ruby, dist-plone, dist-java"/>
+
+    <target name="dist-dirs">
         <mkdir dir="dist-image"/>
         <mkdir dir="dist"/>
     </target>
 
-    <target name="dist-image-browserbot">
+    <target name="dist-image-browserbot" depends="dist-dirs">
         <copy todir="dist-image/browserbot">
             <fileset dir="javascript">
                 <exclude name="Embedded-WEB-INF/**"/>
@@ -29,7 +33,7 @@
         <echo file="dist-image/browserbot/version.txt">${version}</echo>
     </target>
 
-    <target name="dist-image-doc">
+    <target name="dist-image-doc" depends="dist-dirs">
         <copy todir="dist-image/doc">
             <fileset dir="doc">
                 <include name="*.html"/>
@@ -76,7 +80,7 @@
         </zip>
     </target>
 
-    <target name="dist-plone">
+    <target name="dist-plone" depends="dist-dirs">
         <copy todir="dist-image/python-plone">
             <fileset dir="python/Zope">
                 <exclude name="**/.svn*"/>
@@ -112,7 +116,7 @@
         </zip>
     </target>
 
-    <target name="dist-java">
+    <target name="dist-java" depends="dist-dirs">
         <ant dir="java" target="dist">
             <property name="code_root" value="."/>
             <property name="version" value="${version}"/>
