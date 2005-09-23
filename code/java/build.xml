@@ -1,4 +1,5 @@
 <project name="selenium" default="all">
+
     <property name="version" value="unreleased"/>
 
     <property environment="env"/>
@@ -46,10 +47,17 @@
         <pathelement location="${ant.home}/lib"/>
     </path>
 
-    <target name="all" depends="clean, init, compile, test, integration-test, checkstyle, report, jar"/>
-    <target name="make" depends="clean, init, compile, test, integration-test, jar"/>
+    <target name="build" 
+            description="build the software"
+            depends="init, compile, jar"/>
 
-    <target name="dist" depends="make">
+    <target name="all" 
+            description="default target"
+            depends="build, test, integration-test, report"/>
+    
+    <target name="dist" 
+            description="prepare the distribution"
+            depends="clean, build">
 
         <mkdir dir="dist"/>
 
@@ -124,7 +132,7 @@
         <mkdir dir="${integration.test.logs.dir}"/>
     </target>
 
-    <target name="compile-main" description="Compile java source">
+    <target name="compile" description="Compile java source">
         <mkdir dir="${classes.dir}"/>
         <javac destdir="${classes.dir}" classpathref="classpath" debug="on">
             <src location="${main.dir}"/>
@@ -141,9 +149,7 @@
         </javac>
     </target>
 
-    <target name="compile" depends="compile-main, -instrument-main"/>
-
-    <target name="test" depends="compile-main">
+    <target name="test" depends="jcoverage-instrument">
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
             <classpath refid="instrumented.classpath"/>
             <formatter type="xml"/>
@@ -169,7 +175,7 @@
     </target>
 	
      <!-- could be refactored -->
-    <target name="integration-test-mac" depends="compile-main" if="isMac">
+    <target name="integration-test-mac" depends="compile" if="isMac">
         
         <echo>Integration Tests for Embedded Jettu Web Container</echo>
 
@@ -213,7 +219,7 @@
 
     </target>
 
-    <target name="integration-test-windows" depends="compile-main" if="isWindows">
+    <target name="integration-test-windows" depends="compile" if="isWindows">
 
         <echo>Integration Tests for Embedded Web Container</echo>
 
@@ -256,7 +262,7 @@
         </junit>
     </target>
 	
-	<target name="integration-test-unix" depends="compile-main" if="isUnix" unless="isMac">
+	<target name="integration-test-unix" depends="compile" if="isUnix" unless="isMac">
 
         <echo>Integration Tests for Embedded Web Container</echo>
 
@@ -314,7 +320,7 @@
 
 	</target>
 	
-    <target name="integration-test" depends="compile-main, integration-test-os-test, integration-test-unix, integration-test-mac, integration-test-windows" >
+    <target name="integration-test" depends="compile, integration-test-os-test, integration-test-unix, integration-test-mac, integration-test-windows" >
 
         <junitreport todir="${integration.test.reports.dir}">
             <fileset dir="${integration.test.logs.dir}">
@@ -326,17 +332,28 @@
 
     </target>
 
-    <target name="jar" depends="compile-main" description="Jar java classes">
+    <target name="jar" depends="compile" description="Jar java classes">
         <jar basedir="target/classes" destfile="target/${ant.project.name}-${version}.jar"/>
     </target>
 
-    <target name="report" depends="-checkstyle-tests,-simian,-coverage-report"/>
+    <target name="report" 
+            description="generate code-quality reports"
+            depends="checkstyle, simian, jcoverage"/>
 
     <!-- ================== Checkstyle target Definitions ======================= -->
-    <target name="checkstyle" depends="init" description="Validate code against coding standards">
+
+    <target name="checkstyle" 
+            description="Validate code against coding standards"
+            depends="checkstyle-main, checkstyle-tests" />
+            
+    <target name="checkstyle-main" 
+            depends="init" >
+
         <taskdef resource="checkstyletask.properties" classpathref="report.classpath"/>
 
-        <checkstyle config="${etc.dir}/checkstyle-main.xml" failureProperty="checkstyle.failed" failonviolation="false">
+        <checkstyle config="${etc.dir}/checkstyle-main.xml" 
+                    failureProperty="checkstyle.failed" 
+                    failonviolation="false">
             <fileset dir="${main.dir}">
                 <exclude name="Acme/**"/>
                 <include name="**/*.java"/>
@@ -351,10 +368,14 @@
         <!--           <fail if="checkstyle.failed" message="Checkstyle failed - see report for details"/>-->
     </target>
 
-    <target name="-checkstyle-tests" depends="init" description="Validate test code against coding standards">
+    <target name="checkstyle-tests" 
+            depends="init">
+
         <taskdef resource="checkstyletask.properties" classpathref="report.classpath"/>
 
-        <checkstyle config="${etc.dir}/checkstyle-tests.xml" failureProperty="checkstyle.failed" failonviolation="false">
+        <checkstyle config="${etc.dir}/checkstyle-tests.xml" 
+                    failureProperty="checkstyle.failed" 
+                    failonviolation="false">
             <fileset dir="${test.dir}" includes="**/*.java"/>
             <fileset dir="${integration.test.dir}" includes="**/*.java"/>
             <formatter type="xml" tofile="${checkstyle-tests.reports.dir}/checkstyle-errors.xml"/>
@@ -368,7 +389,8 @@
     </target>
 
     <!-- ================== Simian target Definitions ======================= -->
-    <target name="-simian" depends="init"  description="Do code duplication analysis" >
+    <target name="simian" depends="init" 
+            description="Do code duplication analysis" >
         <taskdef resource="simiantask.properties" classpathref="report.classpath"/>
 
         <simian threshold="6" failOnDuplication="false">
@@ -384,7 +406,9 @@
     </target>
 
     <!-- ================== Coverage target Definitions ======================= -->
-    <target name="-instrument-main" description="Add JCoverage Instumentation">
+
+    <!-- Add JCoverage Instumentation -->
+    <target name="jcoverage-instrument" depends="compile">
         <taskdef name="instrument" classname="com.jcoverage.ant.InstrumentTask" classpathref="report.classpath"/>
         <instrument todir="${instrumented.classes.dir}" classpathref="report.classpath">
             <fileset dir="${classes.dir}">
@@ -393,30 +417,31 @@
         </instrument>
     </target>
 
-    <target name="-coverage-report" depends="test" description="Generate jCoverage report">
+    <target name="jcoverage" depends="test" description="Generate jCoverage report">
         <available file="jcoverage.ser" property="jcoverage.ser.available"/>
         <fail unless="jcoverage.ser.available" message="jcoverage.ser does not exist. The instrument task must be ran first."/>
         <taskdef name="report" classname="com.jcoverage.ant.CoverageReportTask" classpathref="report.classpath"/>
         <report srcdir="${main.dir}" destdir="${jcoverage.reports.dir}"/>
     </target>
 	
-	<target name="set">
-		<property name="mac.os" value="true"/>
-		<property name="win.os" value="true"/>
-	
-	</target>
-	<target name="cond" depends="set, cond-if"/>
+    <target name="set">
+        <property name="mac.os" value="true"/>
+        <property name="win.os" value="true"/>
+        
+    </target>
 
-	<target name="cond-if" if="mac.os">
-	  <antcall target="cond-if-2"/>
-	</target>
-
-	<target name="cond-if-2" if="win.os">
-	  <antcall target="cond-if-3"/>
-	</target>
-
-	<target name="cond-if-3" unless="linux.os">
-	  <echo message="yes"/>
-	</target>
+    <target name="cond" depends="set, cond-if"/>
+    
+    <target name="cond-if" if="mac.os">
+        <antcall target="cond-if-2"/>
+    </target>
+    
+    <target name="cond-if-2" if="win.os">
+        <antcall target="cond-if-3"/>
+    </target>
+    
+    <target name="cond-if-3" unless="linux.os">
+        <echo message="yes"/>
+    </target>
 	
 </project>
