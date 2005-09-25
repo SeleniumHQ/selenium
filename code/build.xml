@@ -1,6 +1,6 @@
 <project name="selenium" default="dist">
 
-    <property name="version" value="0.6.0"/>
+    <property name="version" value="0.7-SNAPSHOT"/>
     <property name="website.root" value="../website/webapps/ROOT"/>
 
     <target name="clean">
