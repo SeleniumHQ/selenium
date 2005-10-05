@@ -103,11 +103,13 @@ Selenium Actions
     Actions tell Selenium to do something in the application. They generally represent something a user would do.
 
     Many **Actions** can be called with the "AndWait" suffix. This suffix tells Selenium that the action will cause the browser to make a call to the server, and that Selenium should wait for a new page to load.
-    The exceptions to this pattern are the "open" and "click" actions, which will both wait for a page to load by default.
 
     **open**\ ( *url* )
 
         Opens a URL in the test frame.  This accepts both relative and absolute URLs.
+
+        The "open" command waits for the page to load before proceeding,
+        ie. the "AndWait" suffix is implicit.
         
         *Note*: The URL must be on the same site as Selenium due to security restrictions in the browser (Cross Site Scripting).
         
