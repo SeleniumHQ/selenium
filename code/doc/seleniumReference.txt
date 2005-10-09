@@ -304,8 +304,9 @@ Selenium Checks
 ---------------
     Checks are used to verify the state of the application. They can be used to check the value of a form field, the presense of some text, or the URL of the current page.
 
-    All Selenium Checks can be used in 2 modes, "assert" and "verify". These behave identically, except that when an "assert" check fails, the test is aborted. When a "verify" check fails, the test will continue execution.
-    This allows a single "assert" to ensure that the application is on the correct page, followed by a bunch of "verify" checks to test form field values, labels, etc.
+    All Selenium Checks can be used in 2 modes, "assert" and "verify". These behave identically, except that when an "assert" check fails, the test is aborted. When a "verify" check fails, the test will continue execution.  This allows a single "assert" to ensure that the application is on the correct page, followed by a bunch of "verify" checks to test form field values, labels, etc.
+
+    A growing number of checks have a negative version.  In most cases, except where indicated, if the positive check is of the form **assertX**, then the negative cases will be of the form **assertNotX**.
 
     **assertLocation**\ ( *relativeLocation* )
 
@@ -327,6 +328,10 @@ Selenium Checks
             assertTitle   My Page
             ===========   =======  =====
 
+    **assertNotTitle**\ ( *titlePattern* )
+
+        Verifies that the title of the current page does not match the specified pattern.
+
     **assertValue**\ ( *inputLocator*, *valuePattern* )
 
         Verifies the value of an input field (or anything else with a value parameter). For checkbox/radio elements, the value will be "on" or "off" depending on whether the element is checked or not.
@@ -337,6 +342,10 @@ Selenium Checks
             verifyValue   nameField                     John Smith
             assertValue   document.forms[2].nameField   John Smith
             ===========   ===========================   ==========
+
+    **assertNotValue**\ ( *inputLocator*, *valuePattern* )
+
+        Verifies the value of an input field does not match the specified pattern.
 
     **assertSelected**\ ( *selectLocator*, *optionSpecifier* )
 
@@ -373,6 +382,10 @@ Selenium Checks
             assertText   //div[@id='foo']//h1   Successful
             ==========   ====================   ==========
 
+    **assertNotText**\ ( *elementLocator*, *textPattern* )
+
+        Verifies that the text of an element does not match the specified pattern.
+
     **assertAttribute**\ ( *elementLocator*\ @\ *attributeName*, *valuePattern* )
 
         Verifies the value of an element attribute.
@@ -384,6 +397,10 @@ Selenium Checks
             assertAttribute   document.images[0]@alt   alt-text
             verifyAttribute   //img[@id='foo']/@alt    alt-text
             ===============   ======================   ==========
+
+    **assertNotAttribute**\ ( *elementLocator*\ @\ *attributeName*, *valuePattern* )
+
+        Verifies that the value of an element attribute does not match the specified pattern.
 
     **assertTextPresent**\ ( *text* )
 
@@ -432,6 +449,10 @@ Selenium Checks
             verifyTable   myTable.1.6   Submitted
             assertTable   results.0.2   13
             ===========   ===========   =========
+
+    **assertNotTable**\( *cellAddress*, *valuePattern* )
+
+        Verifies that the text in a cell of a table does not match the specified pattern.  Note that this will fail if the table cell does not exist.
 
     **assertVisible**\ ( *elementLocator* )
 
