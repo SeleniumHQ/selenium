@@ -36,7 +36,7 @@ function CommandHandlerFactory() {
         this.asserts[name] = handler;
     };
     
-    self.registerAssertUsingMatcherHandler = function(name, matcherHandler, haltOnFailure) {
+    this.registerAssertUsingMatcherHandler = function(name, matcherHandler, haltOnFailure) {
         var handler = new AssertUsingMatcherHandler(matcherHandler, haltOnFailure);
         this.asserts[name] = handler;
     }
@@ -124,6 +124,29 @@ function CommandHandlerFactory() {
         };
     };
     
+    // Register an assertion, a verification, a negative assertion,
+    // and a negative verification based on the specified accessor.
+    this.registerAssertionsBasedOnAccessor = function(accessor, baseName) {
+        if (accessor.length > 1) {
+            return;
+        }
+        var matcherHandler;
+        if (accessor.length == 1) {
+            matcherHandler = self.createMatcherHandlerFromSingleArgAccessor(accessor);
+        } else {
+            matcherHandler = self.createMatcherHandlerFromNoArgAccessor(accessor);
+        }
+        // Register an assert with the "assert" prefix, and halt on failure.
+        self.registerAssertUsingMatcherHandler("assert" + baseName, matcherHandler, true);
+        // Register a verify with the "verify" prefix, and do not halt on failure.
+        self.registerAssertUsingMatcherHandler("verify" + baseName, matcherHandler, false);
+        
+        var negativeMatcherHandler = self.createMatcherHandlerNegator(matcherHandler);
+        // Register an assertNot with the "assertNot" prefix, and halt on failure.
+        self.registerAssertUsingMatcherHandler("assertNot"+baseName, negativeMatcherHandler, true);
+        // Register a verifyNot with the "verifyNot" prefix, and do not halt on failure.
+        self.registerAssertUsingMatcherHandler("verifyNot"+baseName, negativeMatcherHandler, false);
+    };
 
     // Methods of the form getFoo(target) result in commands:
     // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
@@ -134,29 +157,11 @@ function CommandHandlerFactory() {
                 var accessor = commandObject[functionName];
                 var baseName = match[1];
                 self.registerAccessor(functionName, accessor);
-                
-                if (accessor.length > 1) {
-                    continue;
-                }
-                var matcherHandler;
-                if (accessor.length == 1) {
-                    matcherHandler = self.createMatcherHandlerFromSingleArgAccessor(accessor);
-                } else {
-                    matcherHandler = self.createMatcherHandlerFromNoArgAccessor(accessor);
-                }
-                // Register an assert with the "assert" prefix, and halt on failure.
-                self.registerAssertUsingMatcherHandler("assert" + baseName, matcherHandler, true);
-                // Register a verify with the "verify" prefix, and do not halt on failure.
-                self.registerAssertUsingMatcherHandler("verify" + baseName, matcherHandler, false);
-                
-                var negativeMatcherHandler = self.createMatcherHandlerNegator(matcherHandler);
-                // Register an assertNot with the "assertNot" prefix, and halt on failure.
-                self.registerAssertUsingMatcherHandler("assertNot"+baseName, negativeMatcherHandler, true);
-                // Register a verifyNot with the "verifyNot" prefix, and do not halt on failure.
-                self.registerAssertUsingMatcherHandler("verifyNot"+baseName, negativeMatcherHandler, false);
+                self.registerAssertionsBasedOnAccessor(accessor, baseName);
             }
         }
     };
+    
     
 }
 
