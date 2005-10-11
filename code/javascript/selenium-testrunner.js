@@ -15,16 +15,13 @@
 *
 */
 
-passColor = "#cfffcf";
-failColor = "#ffcfcf";
-workingColor = "#DEE7EC";
-
-// The current row in the list of commands (test script)
-currentCommandRow = 0;
-inputTableRows = null;
-
 // The current row in the list of tests (test suite)
-currentTestRow = 0;
+currentRowInSuite = 0;
+
+// Where are we at in the current test
+testTableRows = null;
+currentRowInTest = -1;
+currentCommandRow = null;
 
 // Whether or not the jsFT should run all tests in the suite
 runAllTests = false;
@@ -32,6 +29,12 @@ runAllTests = false;
 // Whether or not the current test has any errors;
 testFailed = false;
 suiteFailed = false;
+
+// Colors used to provide feedback
+passColor = "#ccffcc";
+doneColor = "#eeffee";
+failColor = "#ffcccc";
+workingColor = "#ffffcc";
 
 // Holds the handlers for each command.
 commandHandlers = null;
@@ -163,7 +166,7 @@ function onloadTestSuite() {
         getApplicationFrame().src = getQueryParameter("autoURL");
 
     } else {
-        testLink = suiteTable.rows[currentTestRow+1].cells[0].getElementsByTagName("a")[0];
+        testLink = suiteTable.rows[currentRowInSuite+1].cells[0].getElementsByTagName("a")[0];
         getTestFrame().src = testLink.href;
     }
 }
@@ -263,27 +266,29 @@ function startTest() {
         frames['testFrame'].scrollTo(0,0);
     }
 
-    inputTable = getIframeDocument(getTestFrame()).getElementsByTagName("table")[0];
-    inputTableRows = inputTable.rows;
-    currentCommandRow = 0;
+    testTable = getIframeDocument(getTestFrame()).getElementsByTagName("table")[0];
+    testTableRows = testTable.rows;
+    currentRowInTest = -1;
+    currentCommandRow = null;
+    
     testFailed = false;
     storedVars = new Object();
 
-    clearRowColours();
+    resetTestTable();
 
     testLoop = initialiseTestLoop();
     testLoop.start();
 }
 
-function clearRowColours() {
-    for (var i = 0; i <= inputTableRows.length - 1; i++) {
-        inputTableRows[i].bgColor = "white";
+function resetTestTable() {
+    for (var i = 0; i <= testTableRows.length - 1; i++) {
+        testTableRows[i].bgColor = "white";
     }
 }
 
 function startTestSuite() {
     resetMetrics();
-    currentTestRow = 0;
+    currentRowInSuite = 0;
     runAllTests = true;
     suiteFailed = false;
 
@@ -297,25 +302,27 @@ function runNextTest() {
     suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
 
     // Do not change the row color of the first row
-    if(currentTestRow > 0) {
-        // Make the previous row green or red depending if the test passed or failed
-        if(testFailed)
-                setCellColor(suiteTable.rows, currentTestRow, 0, failColor);
-        else
-                setCellColor(suiteTable.rows, currentTestRow, 0, passColor);
-
+    if (currentRowInSuite > 0) {
+        // Provide test-status feedback
+        if (testFailed) {
+            setCellColor(suiteTable.rows, currentRowInSuite, 0, failColor);
+        } else {
+            setCellColor(suiteTable.rows, currentRowInSuite, 0, passColor);
+        }
+    
         // Set the results from the previous test run
-        setResultsData(suiteTable, currentTestRow);
+        setResultsData(suiteTable, currentRowInSuite);
     }
 
-    currentTestRow++;
+    currentRowInSuite++;
 
     // If we are done with all of the tests, set the title bar as pass or fail
-    if(currentTestRow >= suiteTable.rows.length) {
-        if(suiteFailed)
-                setCellColor(suiteTable.rows, 0, 0, failColor);
-        else
-                setCellColor(suiteTable.rows, 0, 0, passColor);
+    if (currentRowInSuite >= suiteTable.rows.length) {
+        if (suiteFailed) {
+            setCellColor(suiteTable.rows, 0, 0, failColor);
+        } else {
+            setCellColor(suiteTable.rows, 0, 0, passColor);
+        }
 
         // If this is an automated run (i.e., build script), then submit
         // the test results by posting to a form
@@ -325,9 +332,9 @@ function runNextTest() {
 
     else {
         // Make the current row blue
-        setCellColor(suiteTable.rows, currentTestRow, 0, workingColor);
+        setCellColor(suiteTable.rows, currentRowInSuite, 0, workingColor);
 
-        testLink = suiteTable.rows[currentTestRow].cells[0].getElementsByTagName("a")[0];
+        testLink = suiteTable.rows[currentRowInSuite].cells[0].getElementsByTagName("a")[0];
         testLink.focus();
 
         var testFrame = getTestFrame();
@@ -493,23 +500,33 @@ function initialiseTestLoop() {
     return testLoop;
 }
 
-function nextCommand() {
-    if (currentCommandRow >= inputTableRows.length - 1) {
-        return null;
+function findNextCommandRow() {
+    // Return the next row with >= 3 cells
+    while (currentRowInTest < testTableRows.length - 1) {
+        currentRowInTest++;
+        currentCommandRow = testTableRows[currentRowInTest];
+        if (currentCommandRow.cells.length >= 3) {
+            return;
+        }
     }
-
-    currentCommandRow++;
-
-    var commandName = getCellText(currentCommandRow, 0);
-    var target = getCellText(currentCommandRow, 1);
-    var value = getCellText(currentCommandRow, 2);
-
-    var command = new SeleniumCommand(commandName, target, removeNbsp(value));
-    return command;
+    currentCommandRow = null;
 }
 
-function removeNbsp(value)
-{
+function nextCommand() {
+    findNextCommandRow();
+    if (currentCommandRow == null) {
+        return null;
+    }
+    var row = currentCommandRow;
+    if (! row.cachedValue) {
+        row.cachedValue = removeNbsp(getText(row.cells[2]));
+    }
+    return new SeleniumCommand(getText(row.cells[0]), 
+                               getText(row.cells[1]),
+                               row.cachedValue);
+}
+
+function removeNbsp(value) {
     return value.replace(/\240/g, "");
 }
 
@@ -523,73 +540,52 @@ function scrollIntoView(element) {
 }
 
 function commandStarted() {
-    inputTableRows[currentCommandRow].bgColor = workingColor;
-    scrollIntoView(inputTableRows[currentCommandRow].cells[0]);
+    currentCommandRow.bgColor = workingColor;
+    scrollIntoView(currentCommandRow.cells[0]);
     printMetrics();
 }
 
 function commandComplete(result) {
     if (result.failed) {
-        setRowFailed(result.failureMessage, FAILURE);
+        numCommandFailures += 1;
+        recordFailure(result.failureMessage);
     } else if (result.passed) {
-        setRowPassed();
+        numCommandPasses += 1;
+        currentCommandRow.bgColor = passColor;
     } else {
-        setRowWhite();
+        currentCommandRow.bgColor = doneColor;
     }
 }
 
 function commandError(errorMessage) {
-    setRowFailed(errorMessage, ERROR);
+    numCommandErrors += 1;
+    recordFailure(errorMessage);
 }
 
-function setRowWhite() {
-    inputTableRows[currentCommandRow].bgColor = "white";
-}
-
-function setRowPassed() {
-    numCommandPasses += 1;
-
-    // Set cell background to green
-    inputTableRows[currentCommandRow].bgColor = passColor;
-}
-
-function setRowFailed(errorMsg, failureType) {
-    if (failureType == ERROR)
-            numCommandErrors += 1;
-    else if (failureType == FAILURE)
-            numCommandFailures += 1;
-
+function recordFailure(errorMsg) {
     // Set cell background to red
-    inputTableRows[currentCommandRow].bgColor = failColor;
+    currentCommandRow.bgColor = failColor;
 
     // Set error message
-    inputTableRows[currentCommandRow].cells[2].innerHTML = errorMsg;
-    inputTableRows[currentCommandRow].title = errorMsg;
+    currentCommandRow.cells[2].innerHTML = errorMsg;
+    currentCommandRow.title = errorMsg;
     testFailed = true;
     suiteFailed = true;
 }
 
 function testComplete() {
     if(testFailed) {
-        inputTableRows[0].bgColor = failColor;
+        testTableRows[0].bgColor = failColor;
         numTestFailures += 1;
     }
     else {
-        inputTableRows[0].bgColor = passColor;
+        testTableRows[0].bgColor = passColor;
         numTestPasses += 1;
     }
 
     printMetrics();
 
     window.setTimeout("runNextTest()", 1);
-}
-
-function getCellText(rowNumber, columnNumber) {
-    var cell = inputTableRows[rowNumber].cells[columnNumber];
-    if (! cell.cachedText) {
-        cell.cachedText = getText(cell);
-    }
-    return cell.cachedText;
 }
 
 Selenium.prototype.doPause = function(waitTime) {
