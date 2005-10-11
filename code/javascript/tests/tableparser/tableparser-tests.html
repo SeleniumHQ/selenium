@@ -24,14 +24,9 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
 <script language="JavaScript" type="text/javascript" src="/selenium-commandhandlers.js"></script>
-<script language="JavaScript" type="text/javascript" src="/selenium-tableparser.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-seleneserunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
-
-///////////////////// HTML TABLE PARSING /////////////////////
-function setUp() {
-    tableParser = new TableParser();
-}
 
 function assertCommand(expectedName, expectedTarget, expectedValue, command) {
     assertEquals(expectedName, command.command);
@@ -39,46 +34,22 @@ function assertCommand(expectedName, expectedTarget, expectedValue, command) {
     assertEquals(expectedValue, command.value);
 }
 
-function testShouldParseOneArgHtmlTableRowToJavascript() {
-    var row = document.getElementsByTagName("table")[0].rows[1]
-    var command = tableParser.createCommandFromHtmlRow(row);
-    assertCommand("click", "someButton", "", command);
-}
-
-function testShouldParseTwoArgHtmlTableRowToJavascript() {
-    var row = document.getElementsByTagName("table")[0].rows[2]
-    var command = tableParser.createCommandFromHtmlRow(row);
-    assertCommand("verifyText", "someButton", "Click me!", command);
-}
-
-function testShouldFailWithBadWikiRowFormat() {
-    var row = document.getElementsByTagName("table")[0].rows[3]
-    try {
-        tableParser.createCommandFromHtmlRow(row)
-        fail("Should fail")
-    } catch(expected) {
-        assertEquals("Bad HTML row format. Rows must have 3 coumns, but had 4", expected.message)
-    }
-}
-
-///////////////////// WIKI TABLE PARSING /////////////////////
-
 function testShouldParseOneArgWikiTableRowToJavascript() {
     var wikiRow = "| click | someButton ||"
-    var command = tableParser.createCommandFromWikiRow(wikiRow);
+    var command = createCommandFromWikiRow(wikiRow);
     assertCommand("click", "someButton", "", command);
 }
 
 function testShouldParseTwoArgWikiTableRowToJavascript() {
     var wikiRow = "| verifyText | someButton |Click me!|"
-    var command = tableParser.createCommandFromWikiRow(wikiRow);
+    var command = createCommandFromWikiRow(wikiRow);
     assertCommand("verifyText", "someButton", "Click me!", command);
 }
 
 function testShouldFailWithBadWikiRowFormat() {
     var wikiRow = "| verifyText | someButton |Click me!||"
     try {
-        tableParser.createCommandFromWikiRow(wikiRow);
+        createCommandFromWikiRow(wikiRow);
         fail("Should fail")
     } catch(expected) {
         assertEquals("Bad wiki row format:| verifyText | someButton |Click me!||", expected.message)
@@ -89,34 +60,7 @@ function testShouldFailWithBadWikiRowFormat() {
 
   <body>
     <h1>TableParser Tests</h1>
-
-    <p>This page contains tests for TableParser. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
-
-<input id="someField"/>
-
-<table cellpadding="1" cellspacing="1" border="1">
-  <tbody>
-    <tr>
-      <td rowspan="1" colspan="3">Test Type<br>
-      </td>
-    </tr>
-    <tr>
-      <td>click</td>
-      <td>someButton</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>verifyText</td>
-      <td>someButton</td>
-      <td>Click me!</td>
-    </tr>
-    <tr>
-      <td>this</td>
-      <td>is</td>
-      <td>a bad</td>
-      <td>row</td>
-    </tr>
-  </tbody>
-</table>
+    <p>This page contains tests for SeleneseRunner command parsing.
   </body>
+
 </html>
