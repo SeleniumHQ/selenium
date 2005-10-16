@@ -591,3 +591,8 @@ function testComplete() {
 Selenium.prototype.doPause = function(waitTime) {
     testLoop.pauseInterval = waitTime;
 };
+
+Selenium.prototype.doBreak = function() {
+    document.getElementById('modeStep').checked = true;
+    runInterval = -1;
+};
