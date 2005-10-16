@@ -77,7 +77,7 @@ Select Option Specifiers
         matches an option based on its index (offset from zero).
             - index=2
 
-    Without a prefix, the default behaviour is to only match on labels.
+    Without a prefix, the default behaviour is to match on **label**.
 
 ------------------------
 String-match Patterns
@@ -132,14 +132,6 @@ Selenium Actions
             clickAndWait   submitButton
             clickAndWait   anyLink
             ============   ==================  =====
-
-        **note:**
-            Selenium will *always* automatically click on a popup dialog raised by the alert() or confirm()
-            methods. (The exception is those raised during 'onload', which are not yet handled by Selenium).
-            You *must* use [verify|assert]Alert or [verify|assert]Confirmation to tell Selenium that you expect the
-            popup dialog. You may use chooseCancelOnNextConfirmation to click 'cancel' on the next confirmation
-            dialog instead of clicking 'OK'.
-
 
     **type**\ ( *inputLocator*, *value* )
 
@@ -236,7 +228,7 @@ Selenium Actions
 
     **store**\ ( *valueToStore*, *variableName* )
 
-        Stores a value into a variable.  The value can be constructed using either variable substitution or javascript evaluation, as detailed in 'Parameter construction and Variables' (below).
+        Stores a value into a variable.  The value can be constructed using either variable substitution or JavaScript evaluation, as detailed in 'Parameter construction and Variables' (below).
 
         **examples:**
 
@@ -281,7 +273,10 @@ Selenium Actions
 
     **chooseCancelOnNextConfirmation**\ ()
 
-        Instructs Selenium to click **Cancel** on the next javascript confirmation dialog to be raised.  By default, the confirm function will return true, having the same effect as manually clicking OK.  After running this command, the next confirmation will behave as if the user had clicked Cancel.
+        By default, Selenium's overridden window.confirm() function will
+        return true, as if the user had manually clicked OK.  After running
+        this command, the next call to confirm() will return false, as if
+        the user had clicked Cancel.
 
         **examples:**
 
@@ -291,7 +286,8 @@ Selenium Actions
 
     **answerOnNextPrompt**\ ( *answerString* )
 
-        Instructs Selenium to return the specified *answerString* in response to the next prompt.
+        Instructs Selenium to return the specified *answerString* in
+        response to the next call to window.prompt().
 
         **examples:**
 
@@ -493,13 +489,12 @@ Selenium Checks
 
     **assertAlert**\ ( *messagePattern* )
 
-        Verifies that a javascript alert with the specified message was generated.  Alerts must be verified in the same order that they were generated.
+        Verifies that a JavaScript alert was generated, with the specified
+        message.
 
-        Verifying an alert has the same effect as manually clicking OK.  If an alert is generated but you do not verify it, the next Selenium action will fail.
-
-        NOTE: under Selenium, javascript alerts will NOT pop up a visible alert dialog.
-
-        NOTE: Selenium does NOT support javascript alerts that are generated in a page's onload() event handler.  In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.
+        If an alert is generated but you do not verify it, the next
+        Selenium action will fail.  Alerts must be verified in the order
+        that they were generated.
 
         **examples:**
 
@@ -510,14 +505,18 @@ Selenium Checks
 
     **assertConfirmation**\ ( *messagePattern* )
 
-        Verifies that a javascript confirmation dialog with the specified message was generated.  Like alerts, confirmations must be verified in the same order that they were generated.
+        Verifies that a JavaScript confirmation dialog was generated, with
+        the specified message.  
 
-        By default, the confirm function will return true, having the same effect as manually clicking OK.  This can be changed by prior execution of the **chooseCancelOnNextConfirmation** command (see above).  If an confirmation is generated but you do not verify it, the next Selenium action will fail.
+        By default, the confirm function will return true, having the same
+        effect as manually clicking OK.  This can be changed by prior
+        execution of the **chooseCancelOnNextConfirmation** command (see
+        above).
 
-        NOTE: under Selenium, javascript confirmations will NOT pop up a visible dialog.
-
-        NOTE: Selenium does NOT support javascript confirmations that are generated in a page's onload() event handler.  In this case a visible dialog WILL be generated and Selenium will hang until you manually click OK.
-
+        Like alerts, any unexpected confirmation will cause the test to
+        fail, and confirmations must be verified in the order that they
+        were generated.
+        
         **examples:**
 
             ==================   ====================  =====
@@ -527,10 +526,15 @@ Selenium Checks
 
     **assertPrompt**\ ( *messagePattern* )
 
-        Verifies that a javascript prompt dialog with the specified message was generated.  Like alerts, prompts must be verified in the same order that they were generated.
+        Verifies that a JavaScript prompt dialog was generated, with the
+        specified message.  
 
-        Successful handling of the prompt requires prior execution of the **answerOnNextPrompt** command (see above).  If a prompt is generated but you do not verify it, the next Selenium action will fail.
+        Successful handling of the prompt requires prior execution of the
+        **answerOnNextPrompt** command (see above).
 
+        Like alerts, unexpected prompts will cause the test to fail, and
+        they must be verified in the order that they were generated.
+        
         **examples:**
 
             ==================   =============================  =====
@@ -539,12 +543,32 @@ Selenium Checks
             verifyPrompt         Delegate to who?
             ==================   =============================  =====
 
+-------------------------------------------
+Handling of alert(), confirm() and prompt()
+-------------------------------------------
+
+    Selenium overrides the default implementations of the JavaScript
+    window.alert(), window.confirm() and window.prompt() functions,
+    enabling tests to simulate the actions of the user when these occur.
+    Under normal condition, no visible JavaScript dialog-box will appear.
+
+    If your application generates alerts, confirmations, or prompts, you
+    *must* use the assertAlert, assertConfirmation and assertPrompt checks
+    (or their "verify" equivalents) to handle them.  Any unhandled alerts
+    will result in the test failing.
+
+    *PROVISO:* Selenium is unable to handle alerts, confirmations, or
+    prompts raised during processing of the 'onload' event.  In such cases
+    a visible dialog-box WILL appear, and Selenium will hang until you
+    manually handle it.  This is an unfortunate restriction, but at this
+    time we have no solution.
+
 ------------------------------------
 Parameter construction and Variables
 ------------------------------------
 
     All Selenium command parameters can be constructed using both simple
-    variable substitution as well as full javascript. Both of these
+    variable substitution as well as full JavaScript. Both of these
     mechanisms can access previously stored variables, but do so using
     different syntax.
 
@@ -569,13 +593,13 @@ Parameter construction and Variables
         type         textElement                Full name is: ${fullname}
         ==========   ====================       ==========
 
-    **Javascript evaluation**
+    **JavaScript evaluation**
 
-    Javascript evaluation provides the full power of javascript in constructing a command parameter.
+    JavaScript evaluation provides the full power of JavaScript in constructing a command parameter.
     To use this mechanism, the *entire* parameter value must be prefixed by
-    'javascript{' with a trailing '}'. The text inside the braces is evaluated as a javascript expression,
+    'javascript{' with a trailing '}'. The text inside the braces is evaluated as a JavaScript expression,
     and can access previously stored variables using the *storedVars* map detailed above.
-    Note that variable substitution cannot be combined with javascript evaluation.
+    Note that variable substitution cannot be combined with JavaScript evaluation.
 
     Example:
 
@@ -589,11 +613,11 @@ Extending Selenium
 ------------------
 
     It can be quite simple to extend Selenium, adding your own actions, checks and locator-strategies.
-    This is done with javascript by adding methods to the Selenium object prototype, and the PageBot
+    This is done with JavaScript by adding methods to the Selenium object prototype, and the PageBot
     object prototype. On startup, Selenium will automatically look through methods on these prototypes,
     using name patterns to recognise which ones are actions, checks and locators.
 
-    The following examples try to give an indication of how Selenium can be extended with javascript.
+    The following examples try to give an indication of how Selenium can be extended with JavaScript.
 
 **Actions**
 
@@ -669,7 +693,7 @@ Extending Selenium
 
 **user-extensions.js**
 
-    By default, Selenium looks for a file called "user-extensions.js", and loads the javascript code found in that file. This file provides a convenient location for adding features to Selenium, without needing to modify the core Selenium sources.
+    By default, Selenium looks for a file called "user-extensions.js", and loads the JavaScript code found in that file. This file provides a convenient location for adding features to Selenium, without needing to modify the core Selenium sources.
 
     In the standard distibution, this file does not exist. Users can create this file and place their extension code in this common location, removing the need to modify the Selenium sources, and hopefully assisting with the upgrade process.
 
