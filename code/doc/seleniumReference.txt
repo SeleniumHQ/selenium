@@ -11,7 +11,7 @@ Selenium Reference
 
     **Actions** are commands that generally manipulate the state of the application. They do things like "click this link" and "select that option". If an Action fails, or has an error, the execution of the current test is stopped.
 
-    **Checks** verify the state of the application conforms to what is expected. Examples include "make sure the page title is X" and "check that this checkbox is checked". It is possible to tell Selenium to stop the test when an Assertion fails, or to simply record the failure and continue.
+    **Assertions** verify the state of the application conforms to what is expected. Examples include "make sure the page title is X" and "verify that this checkbox is checked". It is possible to tell Selenium to stop the test when an Assertion fails, or to simply record the failure and continue.
 
     **Element Locators** tell Selenium which HTML element a command refers to. Many commands require an Element Locator as the "target" attribute. Examples of Element Locators include "elementId" and "document.forms[0].element". These are described more clearly in the next section.
 
@@ -295,14 +295,15 @@ Selenium Actions
             answerOnNextPrompt           Kangaroo
             ==========================   =========  =====
 
----------------
-Selenium Checks
----------------
-    Checks are used to verify the state of the application. They can be used to check the value of a form field, the presense of some text, or the URL of the current page.
+-------------------
+Selenium Assertions
+-------------------
 
-    All Selenium Checks can be used in 2 modes, "assert" and "verify". These behave identically, except that when an "assert" check fails, the test is aborted. When a "verify" check fails, the test will continue execution.  This allows a single "assert" to ensure that the application is on the correct page, followed by a bunch of "verify" checks to test form field values, labels, etc.
+    Assertions are used to verify the state of the application. They can be used to check the value of a form field, the presense of some text, or the URL of the current page.
 
-    A growing number of checks have a negative version.  In most cases, except where indicated, if the positive check is of the form **assertX**, then the negative cases will be of the form **assertNotX**.
+    All Selenium assertions can be used in 2 modes, "assert" and "verify". These behave identically, except that when an "assert" fails, the test is aborted. When a "verify" fails, the test will continue execution.  This allows a single "assert" to ensure that the application is on the correct page, followed by a bunch of "verify" assertions to test form field values, labels, etc.
+
+    A growing number of assertions have a negative version.  In most cases, except where indicated, if the positive assertion is of the form **assertXYZ**, then the negative cases will be of the form **assertNotXYZ**.
 
     **assertLocation**\ ( *relativeLocation* )
 
@@ -553,9 +554,9 @@ Handling of alert(), confirm() and prompt()
     Under normal condition, no visible JavaScript dialog-box will appear.
 
     If your application generates alerts, confirmations, or prompts, you
-    *must* use the assertAlert, assertConfirmation and assertPrompt checks
-    (or their "verify" equivalents) to handle them.  Any unhandled alerts
-    will result in the test failing.
+    *must* use assertAlert, assertConfirmation and assertPrompt (or their
+    "verify" equivalents) to handle them.  Any unhandled alerts will result
+    in the test failing.
 
     *PROVISO:* Selenium is unable to handle alerts, confirmations, or
     prompts raised during processing of the 'onload' event.  In such cases
@@ -612,10 +613,10 @@ Parameter construction and Variables
 Extending Selenium
 ------------------
 
-    It can be quite simple to extend Selenium, adding your own actions, checks and locator-strategies.
+    It can be quite simple to extend Selenium, adding your own actions, assertions and locator-strategies.
     This is done with JavaScript by adding methods to the Selenium object prototype, and the PageBot
     object prototype. On startup, Selenium will automatically look through methods on these prototypes,
-    using name patterns to recognise which ones are actions, checks and locators.
+    using name patterns to recognise which ones are actions, assertions and locators.
 
     The following examples try to give an indication of how Selenium can be extended with JavaScript.
 
@@ -640,15 +641,17 @@ Extending Selenium
             this.page().replaceText(element, valueToType);
         };
 
-**Checks**
+**Assertions**
 
-    All *assertFoo* methods on the Selenium prototype are added as checks. For each check *foo* there
-    is an *assertFoo* and *verifyFoo* registered. An assert method can take up to 2 parameters, which
-    will be passed the second and third column values in the test.
+    All *assertFoo* methods on the Selenium prototype are added as
+    assertions. For each assertion *foo* there is an *assertFoo* and
+    *verifyFoo* registered. An assert method can take up to 2 parameters,
+    which will be passed the second and third column values in the test.
 
-    Example: Add a *valueRepeated* check, that makes sure that the element value
-    consists of the supplied text repeated. The 2 commands that would be available in tests would be
-    *assertValueRepeated* and *verifyValueRepeated*.
+    Example: Add a *valueRepeated* assertion, that makes sure that the
+    element value consists of the supplied text repeated. The 2 commands
+    that would be available in tests would be *assertValueRepeated* and
+    *verifyValueRepeated*.
 
     ::
     
@@ -663,7 +666,7 @@ Extending Selenium
             var actualValue = element.value;
     
             // Make sure the actual value matches the expected
-            this.assertMatches(expectedValue, actualValue);
+            Assert.matches(expectedValue, actualValue);
         };
 
 **Locator Strategies**
