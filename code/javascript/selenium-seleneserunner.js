@@ -28,7 +28,7 @@ var cmd2 = document.createElement("div");
 var cmd3 = document.createElement("div");
 var cmd4 = document.createElement("div");
 
-var postResult = "OK";
+var postResult = "START";
 
 function runTest() {
     var testAppFrame = document.getElementById('myiframe');
@@ -39,32 +39,18 @@ function runTest() {
 
     testLoop = new TestLoop(commandFactory);
 
-    testLoop.firstCommand = startup;
     testLoop.nextCommand = nextCommand;
     testLoop.commandStarted = commandStarted;
     testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
     testLoop.testComplete = function() {window.status = "Selenium Tests Complete, for this Test"};
 
-    testLoop.start();
-}
-
-function startup() {
-    
-    var xmlHttp = XmlHttp.create();
-    
     document.getElementById("commandList").appendChild(cmd4);
     document.getElementById("commandList").appendChild(cmd3);
     document.getElementById("commandList").appendChild(cmd2);
     document.getElementById("commandList").appendChild(cmd1);
 
-    try {
-        xmlHttp.open("GET", "driver?seleniumStart=true", false);
-        xmlHttp.send(null);
-    } catch(e) {
-        return null;
-    }
-    return extractCommand(xmlHttp);
+    testLoop.start();
 }
 
 function nextCommand() {
@@ -72,7 +58,12 @@ function nextCommand() {
     var xmlHttp = XmlHttp.create();
     
     try {
-        xmlHttp.open("GET", "driver?commandResult=" + postResult, false);
+        alert("postResult == " + postResult);
+        if (postResult == "START") {
+            xmlHttp.open("GET", "driver?seleniumStart=true", false);
+        } else {
+            xmlHttp.open("GET", "driver?commandResult=" + postResult, false);
+        }
         xmlHttp.send(null);
     } catch(e) {
         return null;
