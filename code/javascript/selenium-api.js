@@ -63,6 +63,28 @@ Selenium.prototype.doType = function(locator, newText) {
     this.page().replaceText(element, newText);
 };
 
+Selenium.prototype.findToggleButton = function(locator) {
+    var element = this.page().findElement(locator);
+    if (element.checked == null) {
+        Assert.fail("Element " + locator + " is not a toggle-button.");
+    }
+    return element;
+}
+
+/**
+ * Check a toggle-button.
+ */
+Selenium.prototype.doCheck = function(locator) {
+    this.findToggleButton(locator).checked = true;
+};
+
+/**
+ * Uncheck a toggle-button.
+ */
+Selenium.prototype.doUncheck = function(locator) {
+    this.findToggleButton(locator).checked = false;
+};
+
 /**
  * Select the option from the located select element.
  */
@@ -208,6 +230,29 @@ Selenium.prototype.getValue = function(locator) {
 Selenium.prototype.getText = function(locator) {
     var element = this.page().findElement(locator);
     return getText(element).trim();
+};
+
+/**
+ * Assert that a toggle-button is checked.
+ */
+Selenium.prototype.assertChecked = function(locator) {
+    var element = this.page().findElement(locator);
+    if (! element.checked) {
+        Assert.fail("Element " + locator + " is not checked.");
+    }
+};
+
+/**
+ * Assert that a toggle-button is NOT checked.
+ */
+Selenium.prototype.assertNotChecked = function(locator) {
+    var element = this.page().findElement(locator);
+    if (element.checked == null) {
+        Assert.fail("Element " + locator + " is not a toggle-button.");
+    }
+    if (element.checked) {
+        Assert.fail("Element " + locator + " is checked.");
+    }
 };
 
 /*
