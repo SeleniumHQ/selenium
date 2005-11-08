@@ -7,8 +7,32 @@
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
  * License. To view a copy of this license, visit
- * http://creativecommons.org/licenses/by-sa/2.0/ or send a letter to Creative
- * Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+ * 
+ *   http://creativecommons.org/licenses/by-sa/2.0/
+ *
+ * or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford,
+ * California 94305, USA.
+ *
+ * Revision 18: October 27, 2005
+ *   DOM 3 XPath support.  Caveats:
+ *     - namespace prefixes aren't resolved in XPathEvaluator.createExpression,
+ *       but in XPathExpression.evaluate.
+ *     - XPathResult.invalidIteratorState is not implemented.
+ *
+ * Revision 17: October 25, 2005
+ *   Some core XPath function fixes and a patch to avoid crashing certain
+ *   versions of MSXML in PathExpr.prototype.getOwnerElement, thanks to
+ *   Sébastien Cramatte <contact (at) zeninteractif.com>.
+ *
+ * Revision 16: September 22, 2005
+ *   Workarounds for some IE 5.5 deficiencies.
+ *   Fixed problem with prefix node tests on attribute nodes.
+ *
+ * Revision 15: May 21, 2005
+ *   Fixed problem with QName node tests on elements with an xmlns="...".
+ *
+ * Revision 14: May 19, 2005
+ *   Fixed QName node tests on attribute node regression.
  *
  * Revision 13: May 3, 2005
  *   Node tests are case insensitive now if working in an HTML DOM.
@@ -280,7 +304,8 @@ XPathParser.prototype.init = function() {
 		return new NodeTest(NodeTest.NAMETESTANY, undefined);
 	};
 	this.reduceActions[69] = function(rhs) {
-		return new NodeTest(NodeTest.NAMETESTPREFIXANY, rhs[0].substring(0, rhs[0].indexOf(":") - 1));
+		var prefix = rhs[0].substring(0, rhs[0].indexOf(":"));
+		return new NodeTest(NodeTest.NAMETESTPREFIXANY, prefix);
 	};
 	this.reduceActions[70] = function(rhs) {
 		return new NodeTest(NodeTest.NAMETESTQNAME, rhs[0]);
@@ -1165,8 +1190,11 @@ XPath.prototype.evaluate = function(c) {
 		if (doc.nodeType != 9 /*Node.DOCUMENT_NODE*/) {
 			doc = doc.ownerDocument;
 		}
-		c.caseInsensitive = doc.implementation == null
-			|| doc.implementation.hasFeature("HTML", "2.0");
+		try {
+			c.caseInsensitive = doc.implementation.hasFeature("HTML", "2.0");
+		} catch (e) {
+			c.caseInsensitive = true;
+		}
 	}
 	return this.expression.evaluate(c);
 };
@@ -1656,7 +1684,16 @@ PathExpr.prototype.evaluate = function(c) {
 				if (xpc.virtualRoot != null) {
 					nodes = [ xpc.virtualRoot ];
 				} else {
-					nodes = [ nodes[0].ownerDocument ];
+					if (nodes[0].ownerDocument == null) {
+						// IE 5.5 doesn't have ownerDocument?
+						var n = nodes[0];
+						while (n.parentNode != null) {
+							n = n.parentNode;
+						}
+						nodes = [ n ];
+					} else {
+						nodes = [ nodes[0].ownerDocument ];
+					}
 				}
 			} else {
 				nodes = [ nodes[0] ];
@@ -1952,8 +1989,11 @@ PathExpr.prototype.getOwnerElement = function(n) {
 		return n.ownerElement;
 	}
 	// DOM 1 Internet Explorer can use selectSingleNode (ironically)
-	if (n.selectSingleNode) {
-		return n.selectSingleNode("..");
+	try {
+		if (n.selectSingleNode) {
+			return n.selectSingleNode("..");
+		}
+	} catch (e) {
 	}
 	// Other DOM 1 implementations must use this egregious search
 	var doc = n.nodeType == 9 /*Node.DOCUMENT_NODE*/
@@ -2112,8 +2152,12 @@ NodeTest.prototype.toString = function() {
 			return "*";
 		case NodeTest.NAMETESTPREFIXANY:
 			return this.value + ":*";
+		case NodeTest.NAMETESTRESOLVEDANY:
+			return "{" + this.value + "}*";
 		case NodeTest.NAMETESTQNAME:
 			return this.value;
+		case NodeTest.NAMETESTRESOLVEDNAME:
+			return "{" + this.namespaceURI + "}" + this.value;
 		case NodeTest.COMMENT:
 			return "comment()";
 		case NodeTest.TEXT:
@@ -2134,27 +2178,35 @@ NodeTest.prototype.matches = function(n, xpc) {
 		case NodeTest.NAMETESTANY:
 			if (n.nodeType == 2 /*Node.ATTRIBUTE_NODE*/
 					|| n.nodeType == 1 /*Node.ELEMENT_NODE*/
-					|| n.nodeType == NodeTest.NAMESPACE_NODE) {
+					|| n.nodeType == XPathNamespace.XPATH_NAMESPACE_NODE) {
 				return true;
 			}
 			return false;
 		case NodeTest.NAMETESTPREFIXANY:
-			if ((n.nodeType == 2 /*Node.ATTRIBUTE_NODE*/ || n.nodeType == 1 /*Node.ELEMENT_NODE*/)
-					&& n.namespaceURI == xpc.namespaceResolver.getNamespace(this.value, xpc.expressionContextNode)) {
+			if ((n.nodeType == 2 /*Node.ATTRIBUTE_NODE*/ || n.nodeType == 1 /*Node.ELEMENT_NODE*/)) {
+                var ns = xpc.namespaceResolver.getNamespace(this.value, xpc.expressionContextNode)
+                if (ns == null) {
+                    throw new Error("Cannot resolve QName " + this.value);
+                }
 				return true;	
 			}
 			return false;
 		case NodeTest.NAMETESTQNAME:
 			if (n.nodeType == 2 /*Node.ATTRIBUTE_NODE*/
 					|| n.nodeType == 1 /*Node.ELEMENT_NODE*/
-					|| n.nodeType == NodeTest.NAMESPACE_NODE) {
+					|| n.nodeType == XPathNamespace.XPATH_NAMESPACE_NODE) {
 				var test = Utilities.resolveQName(this.value, xpc.namespaceResolver, xpc.expressionContextNode, false);
+                if (test[0] == null) {
+                    throw new Error("Cannot resolve QName " + this.value);
+                }
 				test[0] = String(test[0]);
+				test[1] = String(test[1]);
 				if (test[0] == "") {
 					test[0] = null;
 				}
-				var node = Utilities.resolveQName(n.nodeName, xpc.namespaceResolver, xpc.contextNode, true);
+				var node = Utilities.resolveQName(n.nodeName, xpc.namespaceResolver, n, true);
 				node[0] = String(node[0]);
+				node[1] = String(node[1]);
 				if (node[0] == "") {
 					node[0] = null;
 				}
@@ -2190,8 +2242,6 @@ NodeTest.COMMENT = 3;
 NodeTest.TEXT = 4;
 NodeTest.PI = 5;
 NodeTest.NODE = 6;
-
-NodeTest.NAMESPACE_NODE = 1024;
 
 // VariableReference /////////////////////////////////////////////////////////
 
@@ -2934,23 +2984,26 @@ XNodeSet.prototype.union = function(r) {
 	return ns;
 };
 
-// NamespaceNode /////////////////////////////////////////////////////////////
+// XPathNamespace ////////////////////////////////////////////////////////////
 
-NamespaceNode.prototype = new Object();
-NamespaceNode.prototype.constructor = NamespaceNode;
-NamespaceNode.superclass = Object.prototype;
+XPathNamespace.prototype = new Object();
+XPathNamespace.prototype.constructor = XPathNamespace;
+XPathNamespace.superclass = Object.prototype;
 
-function NamespaceNode(pre, ns, p) {
-	this.isNamespaceNode = true;
+function XPathNamespace(pre, ns, p) {
+	this.isXPathNamespace = true;
+	this.ownerDocument = p.ownerDocument;
+	this.nodeName = "#namespace";
 	this.prefix = pre;
-	this.namespace = ns;
-	this.parentNode = p;
 	this.localName = pre;
-	this.nodeType = NodeTest.NAMESPACE_NODE;
+	this.namespaceURI = ns;
+	this.nodeValue = ns;
+	this.ownerElement = p;
+	this.nodeType = XPathNamespace.XPATH_NAMESPACE_NODE;
 }
 
-NamespaceNode.prototype.toString = function() {
-	return "{ \"" + this.prefix + "\", \"" + this.namespace + "\" }";
+XPathNamespace.prototype.toString = function() {
+	return "{ \"" + this.prefix + "\", \"" + this.namespaceURI + "\" }";
 };
 
 // Operators /////////////////////////////////////////////////////////////////
@@ -3006,6 +3059,9 @@ VariableResolver.prototype.getVariable = function(vn, c) {
 	var parts = Utilities.splitQName(vn);
 	if (parts[0] != null) {
 		parts[0] = c.namespaceResolver.getNamespace(parts[0], c.expressionContextNode);
+        if (parts[0] == null) {
+            throw new Error("Cannot resolve QName " + fn);
+        }
 	}
 	return this.getVariableWithName(parts[0], parts[1], c.expressionContextNode);
 };
@@ -3062,6 +3118,9 @@ FunctionResolver.prototype.addFunction = function(ns, ln, f) {
 
 FunctionResolver.prototype.getFunction = function(fn, c) {
 	var parts = Utilities.resolveQName(fn, c.namespaceResolver, c.contextNode, false);
+    if (parts[0] == null) {
+        throw new Error("Cannot resolve QName " + fn);
+    }
 	return this.getFunctionWithName(parts[0], parts[1], c.contextNode);
 };
 
@@ -3086,6 +3145,8 @@ NamespaceResolver.prototype.getNamespace = function(prefix, n) {
 	}
 	if (n.nodeType == 9 /*Node.DOCUMENT_NODE*/) {
 		n = n.documentElement;
+	} else if (n.nodeType == 2 /*Node.ATTRIBUTE_NODE*/) {
+		n = PathExpr.prototype.getOwnerElement(n);
 	} else if (n.nodeType != 1 /*Node.ELEMENT_NODE*/) {
 		n = n.parentNode;
 	}
@@ -3096,7 +3157,7 @@ NamespaceResolver.prototype.getNamespace = function(prefix, n) {
 			var aname = a.nodeName;
 			if (aname == "xmlns" && prefix == ""
 					|| aname == "xmlns:" + prefix) {
-				return a.nodeValue;
+				return String(a.nodeValue);
 			}
 		}
 		n = n.parentNode;
@@ -3249,7 +3310,7 @@ Functions.startsWith = function() {
 	}
 	var s1 = arguments[1].evaluate(c).stringValue();
 	var s2 = arguments[2].evaluate(c).stringValue();
-	return new XBoolean(s1.substring(0, s2.length) == prefix);
+	return new XBoolean(s1.substring(0, s2.length) == s2);
 };
 
 Functions.contains = function() {
@@ -3303,9 +3364,9 @@ Functions.substring = function() {
 Functions.stringLength = function() {
 	var c = arguments[0];
 	var s;
-	if (arguments.length == 2) {
+	if (arguments.length == 1) {
 		s = XNodeSet.prototype.stringForNode(c.contextNode);
-	} else if (arguments.length == 3) {
+	} else if (arguments.length == 2) {
 		s = arguments[1].evaluate(c).stringValue();
 	} else {
 		throw new Error("Function string-length expects (string?)");
@@ -3908,3 +3969,201 @@ Utilities.getElementById = function(n, id) {
 	}
 	return null;
 };
+
+// XPathException ////////////////////////////////////////////////////////////
+
+XPathException.prototype = {};
+XPathException.prototype.constructor = XPathException;
+XPathException.superclass = Object.prototype;
+
+function XPathException(c, e) {
+	this.code = c;
+	this.exception = e;
+}
+
+XPathException.prototype.toString = function() {
+	var msg = this.exception ? ": " + this.exception.toString() : "";
+	switch (this.code) {
+		case XPathException.INVALID_EXPRESSION_ERR:
+			return "Invalid expression" + msg;
+		case XPathException.TYPE_ERR:
+			return "Type error" + msg;
+	}
+};
+
+XPathException.INVALID_EXPRESSION_ERR = 51;
+XPathException.TYPE_ERR = 52;
+
+// XPathExpression ///////////////////////////////////////////////////////////
+
+XPathExpression.prototype = {};
+XPathExpression.prototype.constructor = XPathExpression;
+XPathExpression.superclass = Object.prototype;
+
+function XPathExpression(e, r, p) {
+	this.xpath = p.parse(e);
+	this.context = new XPathContext();
+	this.context.namespaceResolver = new XPathNSResolverWrapper(r);
+}
+
+XPathExpression.prototype.evaluate = function(n, t, res) {
+	this.context.expressionContextNode = n;
+	var result = this.xpath.evaluate(this.context);
+	return new XPathResult(result, t);
+}
+
+// XPathNSResolverWrapper ////////////////////////////////////////////////////
+
+XPathNSResolverWrapper.prototype = {};
+XPathNSResolverWrapper.prototype.constructor = XPathNSResolverWrapper;
+XPathNSResolverWrapper.superclass = Object.prototype;
+
+function XPathNSResolverWrapper(r) {
+	this.xpathNSResolver = r;
+}
+
+XPathNSResolverWrapper.prototype.getNamespace = function(prefix, n) {
+    if (this.xpathNSResolver == null) {
+        return null;
+    }
+	return this.xpathNSResolver.lookupNamespaceURI(prefix);
+};
+
+// NodeXPathNSResolver ///////////////////////////////////////////////////////
+
+NodeXPathNSResolver.prototype = {};
+NodeXPathNSResolver.prototype.constructor = NodeXPathNSResolver;
+NodeXPathNSResolver.superclass = Object.prototype;
+
+function NodeXPathNSResolver(n) {
+	this.node = n;
+	this.namespaceResolver = new NamespaceResolver();
+}
+
+NodeXPathNSResolver.prototype.lookupNamespaceURI = function(prefix) {
+	return this.namespaceResolver.getNamespace(prefix, this.node);
+};
+
+// XPathResult ///////////////////////////////////////////////////////////////
+
+XPathResult.prototype = {};
+XPathResult.prototype.constructor = XPathResult;
+XPathResult.superclass = Object.prototype;
+
+function XPathResult(v, t) {
+	if (t == XPathResult.ANY_TYPE) {
+		if (v.constructor === XString) {
+			t = XPathResult.STRING_TYPE;
+		} else if (v.constructor === XNumber) {
+			t = XPathResult.NUMBER_TYPE;
+		} else if (v.constructor === XBoolean) {
+			t = XPathResult.BOOLEAN_TYPE;
+		} else if (v.constructor === XNodeSet) {
+			t = XPathResult.UNORDERED_NODE_ITERATOR_TYPE;
+		}
+	}
+	this.resultType = t;
+	switch (t) {
+		case XPathResult.NUMBER_TYPE:
+			this.numberValue = v.numberValue();
+			return;
+		case XPathResult.STRING_TYPE:
+			this.stringValue = v.stringValue();
+			return;
+		case XPathResult.BOOLEAN_TYPE:
+			this.booleanValue = v.booleanValue();
+			return;
+		case XPathResult.ANY_UNORDERED_NODE_TYPE:
+		case XPathResult.FIRST_UNORDERED_NODE_TYPE:
+			if (v.constructor === XNodeSet) {
+				this.singleNodeValue = v.first();
+				return;
+			}
+			break;
+		case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
+		case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
+			if (v.constructor === XNodeSet) {
+				this.invalidIteratorState = false;
+				this.nodes = v.toArray();
+				this.iteratorIndex = 0;
+				return;
+			}
+			break;
+		case XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
+		case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
+			if (v.constructor === XNodeSet) {
+				this.nodes = v.toArray();
+				this.snapshotLength = this.nodes.length;
+				return;
+			}
+			break;
+	}
+	throw new XPathException(XPathException.TYPE_ERR);
+};
+
+XPathResult.prototype.iterateNext = function() {
+	if (this.resultType != XPathResult.UNORDERED_NODE_ITERATOR_TYPE
+			&& this.resultType != XPathResult.ORDERED_NODE_ITERATOR_TYPE) {
+		throw new XPathException(XPathException.TYPE_ERR);
+	}
+	return this.nodes[this.iteratorIndex++];
+};
+
+XPathResult.prototype.snapshotItem = function(i) {
+	if (this.resultType != XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE
+			&& this.resultType != XPathResult.ORDERED_NODE_SNAPSHOT_TYPE) {
+		throw new XPathException(XPathException.TYPE_ERR);
+	}
+	return this.nodes[i];
+};
+
+XPathResult.ANY_TYPE = 0;
+XPathResult.NUMBER_TYPE = 1;
+XPathResult.STRING_TYPE = 2;
+XPathResult.BOOLEAN_TYPE = 3;
+XPathResult.UNORDERED_NODE_ITERATOR_TYPE = 4;
+XPathResult.ORDERED_NODE_ITERATOR_TYPE = 5;
+XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE = 6;
+XPathResult.ORDERED_NODE_SNAPSHOT_TYPE = 7;
+XPathResult.ANY_UNORDERED_NODE_TYPE = 8;
+XPathResult.FIRST_ORDERED_NODE_TYPE = 9;
+
+// DOM 3 XPath support ///////////////////////////////////////////////////////
+
+function installDOM3XPathSupport(doc, p) {
+	doc.createExpression = function(e, r) {
+		try {
+			return new XPathExpression(e, r, p);
+		} catch (e) {
+			throw new XPathException(XPathException.INVALID_EXPRESSION_ERR, e);
+		}
+	};
+	doc.createNSResolver = function(n) {
+		return new NodeXPathNSResolver(n);
+	};
+	doc.evaluate = function(e, cn, r, t, res) {
+		if (t < 0 || t > 9) {
+			throw { code: 0, toString: function() { return "Request type not supported"; } };
+		}
+        return doc.createExpression(e, r, p).evaluate(cn, t, res);
+	};
+};
+
+// ---------------------------------------------------------------------------
+
+// Install DOM 3 XPath support for the current document.
+try {
+	var shouldInstall = true;
+	try {
+		if (document.implementation
+				&& document.implementation.hasFeature
+				&& document.implementation.hasFeature("XPath", null)) {
+			shouldInstall = false;
+		}
+	} catch (e) {
+	}
+	if (shouldInstall) {
+		installDOM3XPathSupport(document, new XPathParser());
+	}
+} catch (e) {
+}
