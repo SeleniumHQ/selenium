@@ -180,9 +180,9 @@ Selenium Actions
 
         **examples:**
 
-            ======   ====  =====
-            goBack
-            ======   ====  =====
+            =============   ====  =====
+            goBackAndWait
+            =============   ====  =====
 
     **close**\ ()
 
