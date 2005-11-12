@@ -16,70 +16,92 @@
 
 SELENIUM_PROCESS_WAIT = "wait";
 
-TEST_FINISHED = true;
-TEST_CONTINUE = false;
-
 function TestLoop(commandFactory) {
+
     this.commandFactory = commandFactory;
 
     this.start = function() {
         selenium.reset();
-        this.continueCurrentTest();
+        this.continueTest();
     };
 
-    this.continueCurrentTest = function() {
-        var testStatus = this.kickoffNextCommandExecution();
-
-        if (testStatus == TEST_FINISHED) {
+    /**
+     * Select the next command and continue the test.
+     */
+    this.continueTest = function() {
+        if (! this.aborted) {
+            this.currentCommand = this.nextCommand();
+        }
+        if (this.currentCommand) {
+            // TODO: rename commandStarted to commandSelected, OR roll it into nextCommand
+            this.commandStarted(this.currentCommand);
+            this.resumeAfterDelay();
+        } else {
             this.testComplete();
         }
     };
+    
+    /**
+     * Pause, then execute the current command.
+     */
+    this.resumeAfterDelay = function() {
 
-    this.kickoffNextCommandExecution = function() {
+        // Get the command delay. If a pauseInterval is set, use it once
+        // and reset it.  Otherwise, use the defined command-interval.
+        var delay = this.pauseInterval || this.getCommandInterval();
+        this.pauseInterval = undefined;
 
-        var command = this.nextCommand();
-        if (!command) return TEST_FINISHED;
+        if (delay < 0) {
+            // Pause: enable the "next/continue" button
+            this.pause();
+        } else {
+            window.setTimeout("testLoop.resume()", delay);
+        }
+    };
 
-        this.commandStarted(command);
-
-        LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
-
-        var result;
+    /**
+     * Select the next command and continue the test.
+     */
+    this.resume = function() {
         try {
-            var handler = this.commandFactory.getCommandHandler(command.command);
-            if(handler == null) {
-                throw new Error("Unknown command: '" + command.command + "'");
-            }
-
-            command.target = selenium.preprocessParameter(command.target);
-            command.value = selenium.preprocessParameter(command.value);
-
-            result = handler.execute(selenium, command);
+            this.executeCurrentCommand();
+            this.continueTestWhenConditionIsTrue();
         } catch (e) {
             this.handleCommandError(e);
-            return TEST_FINISHED;
+            this.testComplete();
+            return;
         }
+    };
 
-        // Record the result so that we can continue the execution using
-        // window.setTimeout()
-        this.lastCommandResult = result;
+    /**
+     * Execute the current command.  
+     * 
+     * The return value, if not null, should be a function which will be
+     * used to determine when execution can continue.
+     */
+    this.executeCurrentCommand = function() {
+
+        var command = this.currentCommand;
+        LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
+        
+        var handler = this.commandFactory.getCommandHandler(command.command);
+        if (handler == null) {
+            throw new Error("Unknown command: '" + command.command + "'");
+        }
+        
+        command.target = selenium.preprocessParameter(command.target);
+        command.value = selenium.preprocessParameter(command.value);
+        var result = handler.execute(selenium, command);
+
+        this.commandComplete(result);
+
         if (result.processState == SELENIUM_PROCESS_WAIT) {
             this.waitForCondition = function() {
                 return selenium.browserbot.isNewPageLoaded();
             };
         }
-
-        if (this.waitForCondition) {
-            this.pollUntilConditionIsTrue();
-        } else {
-            // Continue processing
-            this.continueCommandExecutionWithDelay();
-        }
-
-        // Test is not finished.
-        return TEST_CONTINUE;
     };
-
+    
     this.handleCommandError = function(e) {
        if (!e.isSeleniumError) {
             LOG.exception(e);
@@ -95,46 +117,18 @@ function TestLoop(commandFactory) {
     };
 
     /**
-     * Busy wait for waitForCondition() to become true, and then continue
-     * command execution.
+     * Busy wait for waitForCondition() to become true, and then carry on
+     * with test.
      */
-    this.pollUntilConditionIsTrue = function () {
-        if (this.waitForCondition()) {
+    this.continueTestWhenConditionIsTrue = function () {
+        if (this.waitForCondition == null || this.waitForCondition()) {
             this.waitForCondition = null;
-            this.continueCommandExecutionWithDelay();
+            this.continueTest();
         } else {
-            window.setTimeout("testLoop.pollUntilConditionIsTrue()", 10);
+            window.setTimeout("testLoop.continueTestWhenConditionIsTrue()", 10);
         }
     };
 
-
-    /**
-     * Continue the command execution, after waiting for the specified
-     * delay.
-     */
-    this.continueCommandExecutionWithDelay = function() {
-        // Get the interval to use for this command execution, using the pauseInterval as
-        // specified. Reset the pause interval, since it's a one-off thing.
-        var interval = this.pauseInterval || this.getCommandInterval();
-        this.pauseInterval = undefined;
-
-        if (interval < 0) {
-            // Enable the "next/continue" button
-            this.pause();
-        }
-        else {
-            // Continue processing
-            window.setTimeout("testLoop.finishCommandExecution()", interval);
-        }
-    };
-
-    /**
-     * Finish the execution of the previous command, and continue the test.
-     */
-    this.finishCommandExecution = function() {
-        this.commandComplete(this.lastCommandResult);
-        this.continueCurrentTest();
-    };
 }
 
 /** The default is not to have any interval between commands. */

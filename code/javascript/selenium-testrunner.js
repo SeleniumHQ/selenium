@@ -80,7 +80,7 @@ function setRunInterval() {
 
 function continueCurrentTest() {
     document.getElementById('continueTest').disabled = true;
-    testLoop.finishCommandExecution();
+    testLoop.resume();
 }
 
 function getApplicationFrame() {
