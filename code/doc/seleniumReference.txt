@@ -2,6 +2,10 @@
 Selenium Reference
 =========================
 
+--------
+Concepts
+--------
+
     A **command** is what tells Selenium what to do. Selenium commands come in two 'flavors', **Actions** and **Assertions**.
     Each command call is one line in the test table of the form:
 
@@ -22,38 +26,73 @@ Element Locators
 -----------------
 
     Element Locators allow Selenium to identify which HTML element a
-    command refers to.  We support the following strategies for locating
+    command refers to.  The format of a locator is:
+
+        *locatorType*\ **=**\ *argument*
+
+    We support the following strategies for locating
     elements:
 
     **id=**\ *id*
+
         Select the element with the specified @id attribute.
-
+        
     **name=**\ *name*
-        Select the first element with the specified @name attribute.
 
+        Select the first element with the specified @name attribute. 
+            - username
+            - name=username
+
+        The name may optionally be following by one or more *element-filters*, separated from the name by whitespace.  If the *filterType* is not specified, **value** is assumed.
+            - name=flavour value=chocolate
+            
     **identifier=**\ *id*
-        Select the element with the specified @id attribute.  If no match is found, select the first element whose @name attribute is *id*.
 
+        Select the element with the specified @id attribute.  If no match is found, select the first element whose @name attribute is *id*.
+        
     **dom=**\ *javascriptExpression*
+
         Find an element using JavaScript traversal of the HTML Document Object Model. DOM locators *must* begin with "document.".
             - dom=document.forms['myForm'].myDropdown
             - dom=document.images[56]
 
     **xpath=**\ *xpathExpression*
+
         Locate an element using an XPath expression. XPath locators *must* begin with "//".
             - xpath=//img[@alt='The image alt text']
             - xpath=//table[@id='table1']//tr[4]/td[2]
 
     **link=**\ *textPattern*
+
         Select the link (anchor) element which contains text matching the specified *pattern*.
             - link=The link text
 
 
-    Without a locator prefix, Selenium uses:
+    If no *locatorType* is specified, Selenium uses:
 
     * **dom**, for locators starting with "document."
     * **xpath**, for locators starting with "//"
     * **identifier**, otherwise
+
+---------------
+Element Filters
+---------------
+
+    Element filters can be used with a locator to refine a list of candidate elements.  They are currently used only in the 'name' element-locator.
+
+    Filters look much like locators, ie.
+
+        *filterType*\ **=**\ *argument*
+
+    Supported element-filters are:
+
+    **value=**\ *valuePattern*
+
+        Matches elements based on their values.  This is particularly useful for refining a list of similarly-named toggle-buttons.
+
+    **index=**\ *index*
+
+        Selects a single element based on its position in the list offset from zero).
 
 ------------------------
 Select Option Specifiers
@@ -77,7 +116,7 @@ Select Option Specifiers
         matches an option based on its index (offset from zero).
             - index=2
 
-    Without a prefix, the default behaviour is to match on **label**.
+    If no optionSpecifierType prefix is provided, the default behaviour is to match on **label**.
 
 ------------------------
 String-match Patterns
@@ -158,6 +197,23 @@ Selenium Actions
             selectAndWait  currencySelector   value=AUD
             selectAndWait  currencySelector   label=Aus*lian D*rs
             =============  ================   ==========
+
+    **check**\ ( *toggleButtonLocator* )
+
+        Check a toggle-button (ie. a check-box or radio-button).  
+
+        Note: if addressing the toggle-button element by name, you'll need to append an element-filter (e.g. typically by value), since toggle-button groups consist of input-elements with the same name.
+
+        **examples:**
+
+            =============  ========================   ==========
+            check          name=flavour value=honey
+            check          flavour honey
+            =============  ========================   ==========
+
+    **uncheck**\ ( *toggleButtonLocator* )
+
+        Un-check a toggle-button.  
 
     **selectWindow**\ ( *windowId* )
 
@@ -367,6 +423,16 @@ Selenium Assertions
             verifySelectOptions   dropdown2                     John Smith,Dave Bird
             assertSelectOptions   document.forms[2].dropDown    Smith\\, J,Bird\\, D
             ===================   ===========================   ====================
+
+    **assertChecked**\ ( *toggleButtonLocator* )
+
+        Verifies that the specified toggle-button element is checked.
+
+        **examples:**
+            
+            =============  ========================   ==========
+            verifyChecked  flavour honey
+            =============  ========================   ==========
 
     **assertText**\ ( *elementLocator*, *textPattern* )
 
