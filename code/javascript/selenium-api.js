@@ -237,6 +237,9 @@ Selenium.prototype.getText = function(locator) {
  */
 Selenium.prototype.assertChecked = function(locator) {
     var element = this.page().findElement(locator);
+    if (element.checked == null) {
+        Assert.fail("Element " + locator + " is not a toggle-button.");
+    }
     if (! element.checked) {
         Assert.fail("Element " + locator + " is not checked.");
     }
