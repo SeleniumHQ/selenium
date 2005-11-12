@@ -517,16 +517,22 @@ PageBot.prototype.locateElementById = function(identifier, inDocument) {
 };
 
 /**
- * In regular browsers, getElementById() does not search by name.
- * We search by @name using XPath, or by checking every element.
+ * Find an element by name, refined by (optional) element-filter
+ * expressions.
  */
-PageBot.prototype.locateElementByName = function(identifier, inDocument) {
-    var allElements = inDocument.getElementsByTagName("*");
-    for (var i = 0; i < allElements.length; i++) {
-        var testElement = allElements[i];
-        if (testElement.name && testElement.name === identifier) {
-            return testElement;
-        }
+PageBot.prototype.locateElementByName = function(locator, document) {
+    var elements = document.getElementsByTagName("*");
+
+    var filters = locator.split(' ');
+    filters[0] = 'name=' + filters[0];
+
+    while (filters.length) {
+        var filter = filters.shift();
+        elements = this.selectElements(filter, elements, 'value');
+    }
+
+    if (elements.length > 0) {
+        return elements[0];
     }
     return null;
 };
@@ -928,3 +934,63 @@ PageBot.prototype.goForward = function() {
 PageBot.prototype.close = function() {
     this.currentWindow.close();
 };
+
+/**
+ * Refine a list of elements using a filter.
+ */
+PageBot.prototype.selectElementsBy = function(filterType, filter, elements) {
+    var filterFunction = PageBot.filterFunctions[filterType];
+    if (! filterFunction) {
+        throw new SeleniumError("Unrecognised element-filter type: '" + filterType + "'");
+    }
+
+    return filterFunction(filter, elements);
+};
+
+PageBot.filterFunctions = {}; 
+
+PageBot.filterFunctions.name = function(name, elements) {
+    var selectedElements = [];
+    for (var i = 0; i < elements.length; i++) {
+        if (elements[i].name === name) {
+            selectedElements.push(elements[i]);
+        }
+    }
+    return selectedElements;
+};
+
+PageBot.filterFunctions.value = function(value, elements) {
+    var selectedElements = [];
+    for (var i = 0; i < elements.length; i++) {
+        if (elements[i].value === value) {
+            selectedElements.push(elements[i]);
+        }
+    }
+    return selectedElements;
+};
+
+PageBot.filterFunctions.index = function(index, elements) {
+    index = Number(index);
+    if (isNaN(index) || index < 0) {
+        throw new SeleniumError("Illegal Index: " + index);
+    }
+    if (elements.length <= index) {
+        throw new SeleniumError("Index out of range: " + index);
+    }
+    return [elements[index]];
+};
+
+PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterType) {    
+
+    var filterType = (defaultFilterType || 'value');
+    
+    // If there is a filter prefix, use the specified strategy
+    var result = filterExpr.match(/^([A-Za-z]+)=(.+)/);
+    if (result) {
+        filterType = result[1].toLowerCase();
+        filterExpr = result[2];
+    }
+
+    return this.selectElementsBy(filterType, filterExpr, elements);
+};
+

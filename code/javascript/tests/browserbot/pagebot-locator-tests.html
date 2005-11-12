@@ -40,6 +40,10 @@ function setUp() {
     element2 = iWindow.document.getElementById("id2");
     element3 = iWindow.document.getElementById("id3");
     element4 = iWindow.document.getElementById("document.links[0]");
+
+    toggleA = iWindow.document.getElementById("toggle-a");
+    toggleB = iWindow.document.getElementById("toggle-b");
+    toggleC = iWindow.document.getElementById("toggle-c");
 }
 
 //
@@ -70,6 +74,19 @@ function testNameLocatorDoesNotReturnElementWithMatchingId() {
 
 function testNameLocatorReturnsElementWithMatchingName() {
     assertEquals(element2, pageBot.findElementBy('name','name1', frameDocument));
+}
+
+function testNameLocatorReturnsFirstMatch() {
+    assertEquals(toggleA, pageBot.findElementBy('name','toggle', frameDocument));
+}
+
+function testNameLocatorCanRefineSelectionByElementValue() {
+    assertEquals(toggleB, pageBot.findElementBy('name','toggle value=b', frameDocument));
+    assertEquals(toggleB, pageBot.findElementBy('name','toggle b', frameDocument));
+}
+
+function testNameLocatorCanRefineSelectionByIndex() {
+    assertEquals(toggleB, pageBot.findElementBy('name','toggle index=1', frameDocument));
 }
 
 //
