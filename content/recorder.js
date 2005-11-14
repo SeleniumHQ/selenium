@@ -1,0 +1,221 @@
+/*
+ * Copyright 2005 Shinya Kasatani
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+var log = new Log("Recorder");
+var recorder = this;
+
+function init() {
+	if (!this.recorderInitialized) {
+		log.info("initializing");
+		this.recorderInitialized = true;
+		this.options = new RecorderOptions();
+		this.options.load();
+		this.eventManager = new EventManager(this);
+		this.treeView = new TreeView(this, document, document.getElementById("commands"));
+		this.sourceView = new SourceView(this, document.getElementById("source"));
+		this.testCase = new TestCase();
+		this.toggleView = function(view) {
+			log.debug("toggle view");
+			if (this.view != null) {
+				this.view.onHide();
+			}
+			this.view = view;
+			this.view.testCase = this.testCase;
+			this.view.refresh();
+		};
+		this.toggleView(this.treeView);
+		log.info("initialized");
+	}
+}
+
+function isFocused(id) {
+  var focused = document.commandDispatcher.focusedElement;
+  if (focused) {
+	  return focused.getAttribute("id") == id;
+  } else {
+	  return false;
+  }
+}
+
+function loadTestCase() {
+	log.debug("loadTestCase");
+	try {
+		var testCase = new TestCase();
+		if (testCase.load(this.options)) {
+			this.testCase = testCase;
+			this.view.testCase = this.testCase;
+			this.view.refresh();
+			document.getElementById("filename").value = this.testCase.filename;
+		}
+	} catch (error) {
+		alert(error);
+	}
+}
+
+function tabSelected(id) {
+	if (this.testCase != null) {
+		log.debug("tabSelected: id=" + id);
+		if (id == 'sourceTab') {
+			this.toggleView(this.sourceView);
+		} else if (id == 'editorTab') {
+			this.toggleView(this.treeView);
+		}
+	}
+}
+
+function saveTestCase() {
+	if (this.testCase.save(this.options)) {
+		document.getElementById("filename").value = this.testCase.filename;
+	}
+}
+
+function saveNewTestCase() {
+	this.testCase.saveAsNew(this.options);
+	document.getElementById("filename").value = this.testCase.filename;
+}
+
+function startRecord() {
+	this.recordingEnabled = true;
+	init();
+	this.eventManager.startForAllBrowsers();
+}
+
+function startRecordFor(contentWindow) {
+	if (this.recordingEnabled) {
+		init();
+		this.eventManager.startForContentWindow(contentWindow);
+	}
+}
+
+function stopRecord() {
+	this.eventManager.stopForAllBrowsers();
+}
+
+function toggleRecordingEnabled(enabled) {
+	this.recordingEnabled = enabled;
+	if (enabled) {
+		startRecord();
+	} else {
+		stopRecord();
+	}
+}
+
+function onUnloadDocument(doc) {
+	if (this.unloadTimeoutID != null) {
+		clearTimeout(this.unloadTimeoutID);
+	}
+	this.unloadTimeoutID = setTimeout("appendAND_WAIT()", 100);
+}
+
+function recordVerifyTextPresent(text, window) {
+	addCommand("verifyTextPresent", text, '', window);
+}
+
+function recordVerifyTitle(window) {
+	addCommand("verifyTitle", window.document.title, '', window);
+}
+
+function recordOpen(window) {
+	var path = window.location.href;
+	var regexp = new RegExp(/^(\w+:\/\/[\w\.]+(:\d+)?)\/.*/);
+	var base = '';
+	var result = regexp.exec(path);
+	if (result) {
+		path = path.substr(result[1].length);
+		base = result[1] + '/';
+	}
+	addCommand("open", path, '', window);
+	if (!document.getElementById("baseURL").value) {
+		document.getElementById("baseURL").value = base;
+	}
+}
+
+function clear() {
+	if (this.testCase != null) {
+		if (confirm("Really clear the test?")) {
+			this.testCase.clear();
+			this.view.refresh();
+			log.debug("cleared");
+		}
+	}
+}
+
+function addCommand(command,target,value,window) {
+	log.debug("addCommand");
+	var windowName;
+	if (command != 'open' && this.testCase.commands.length == 0) {
+		recordOpen(window);
+	}
+	if (command != 'selectWindow' &&
+		this.lastWindow != null &&
+		window.name != this.lastWindow.name) {
+		windowName = window.name;
+		if (window.name == '') {
+			windowName = 'null';
+		}
+		addCommand('selectWindow', windowName, '', 0, window);
+	}
+	//resultBox.inputField.scrollTop = resultBox.inputField.scrollHeight - resultBox.inputField.clientHeight;
+	if (this.timeoutID != null) {
+		clearTimeout(this.timeoutID);
+	}
+	this.lastWindow = window;
+	this.lastCommandIndex = this.testCase.recordIndex;
+	this.testCase.commands.splice(this.lastCommandIndex, 0, new Command(command, target, value));
+	this.view.rowInserted(this.lastCommandIndex);
+	this.timeoutID = setTimeout("clearLastCommand()", 1000);
+	//updateSource();
+}
+
+function clearLastCommand() {
+	this.lastCommandIndex = null;
+}
+
+function appendAND_WAIT() {
+	var lastCommandIndex = this.lastCommandIndex;
+	if (lastCommandIndex == null) {
+		return;
+	}
+	this.lastCommandIndex = null;
+	this.testCase.commands[lastCommandIndex].command = this.testCase.commands[lastCommandIndex].command + "AndWait";
+	this.view.rowUpdated(lastCommandIndex);
+	//updateSource();
+}
+
+function openPreferences() {
+	window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome", null);
+}
+
+function playback() {
+	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	var window = wm.getMostRecentWindow('navigator:browser');
+	var contentWindow = window.getBrowser().contentWindow;
+	var appcontent = window.document.getElementById("appcontent");
+	this.seleniumStartPage = contentWindow.location.href;
+	this.seleniumWindow = contentWindow;
+	
+	// disable recording
+	document.getElementById("enableRecording").checked = false;
+	toggleRecordingEnabled(false);
+
+	contentWindow.location.href = 'chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
+		'&userExtensionsURL=' + this.options.userExtensionsURL +
+		'&baseURL=' + document.getElementById("baseURL").value;
+}
+
+function loadPlayerTest(e) {
+	e.innerHTML = this.testCase.getSource(OPTIONS, "Test Player");
+}

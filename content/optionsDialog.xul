@@ -1,0 +1,94 @@
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="selenium-ide.css" type="text/css"?>
+<!--
+Copyright 2005 Shinya Kasatani
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<dialog buttons="accept,cancel,extra2"
+	buttonlabelextra2="Reset Options"
+	id="selenium-ide-options"
+	ondialogaccept="saveOptions()"
+	ondialogextra2="loadDefaultOptions()"
+	onload="loadOptions()"
+	title="Selenium IDE Options"
+	width="500"
+	height="550"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/optionsDialog.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
+<tabbox flex="1">
+  <tabs orient="horizontal">
+    <tab label="General"/>
+    <tab label="Load"/>
+    <tab label="Save"/>
+  </tabs>
+  <tabpanels flex="1">
+    <tabpanel orient="vertical">
+      <description>Encoding for loading and saving files</description>
+      <hbox align="center">
+	<textbox id="encoding" multiline="false" oninput="testEncoding()"/>
+	<label id="encodingCheck" value="" class="error"/>
+      </hbox>
+      <separator class="thin"/>
+      
+      <description>Location for user-extensions.js</description>
+      <hbox align="center">
+	<textbox id="userExtensionsURL" multiline="false" flex="1"/>
+	<button label="Browse..." oncommand="chooseUserExtensionsURL()"/>
+      </hbox>
+      <separator class="thin"/>
+      
+      <description>Escape XML entities?</description>
+      <menulist id="escapeXmlEntities">
+	<menupopup>
+	  <menuitem label="always: &amp; &quot; &apos; &lt; &gt;" value="always"/>
+	  <menuitem label="partially: &lt; &gt;" value="partial"/>
+	  <menuitem label="never" value="never"/>
+	</menupopup>
+      </menulist>
+      <separator/>
+      <checkbox id="escapeDollar" label="Escape '${' as '\${' (useful for JSP 2.0)"/>
+    </tabpanel>
+    <tabpanel orient="vertical">
+      <description>Regular expression for each command entry</description>
+      <textbox id="commandLoadPattern" multiline="true" flex="1"/>
+      <separator class="thin"/>
+      
+      <description>Script to load command from the pattern</description>
+      <textbox id="commandLoadScript" multiline="true" flex="1"/>
+      <separator class="thin"/>
+      
+      <description>Regular expression for comments between commands</description>
+      <textbox id="commentLoadPattern" multiline="true" flex="1"/>
+      <separator class="thin"/>
+      
+      <description>Script to load comment from the pattern</description>
+      <textbox id="commentLoadScript" multiline="true" flex="1"/>
+    </tabpanel>
+    <tabpanel orient="vertical">
+      <description>Template for new test html file</description>
+      <textbox id="testTemplate" multiline="true" flex="1"/>
+      <separator class="thin"/>
+      
+      <description>Template for command entries in the test html file</description>
+      <textbox id="commandTemplate" multiline="true" flex="1"/>
+      <separator class="thin"/>
+      
+      <description>Template for comment entries in the test html file</description>
+      <textbox id="commentTemplate" multiline="true" flex="1"/>
+    </tabpanel>
+  </tabpanels>
+</tabbox>
+</dialog>

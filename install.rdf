@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+
+    <em:name>Selenium IDE</em:name>
+    <em:id>{a6fd85ed-e919-4a43-a5af-8da18bda539f}</em:id>
+    <em:version>0.1</em:version>
+    <em:description>Description of Selenium IDE goes here...</em:description>
+    <em:creator>OpenQA</em:creator>
+    <em:homepageURL>http://www.openqa.org/</em:homepageURL>
+    <em:optionsURL>chrome://selenium-ide/content/optionsDialog.xul</em:optionsURL>
+
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>1.0</em:minVersion>
+        <em:maxVersion>1.5.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication> 
+
+    <!-- 
+	 This em:file part is for Firefox 1.0 backward compatibility.
+	 For Firefox 1.5 and later, chrome.manifest file is used instead.
+      -->
+    <em:file>
+      <Description about="urn:mozilla:extension:file:selenium-ide.jar">
+        <em:package>content/</em:package>
+      </Description>
+    </em:file>
+
+  </Description>
+
+</RDF>

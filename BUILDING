@@ -1,0 +1,8 @@
+== Building Selenium IDE ==
+
+You will need Apache Ant, so download it from http://ant.apache.org/
+
+Copy build.properties.sample to build.properties,
+and set selenium.src to the Selenium source directory.
+
+Run ant and you will get build/seleniumrecorder.xpi.

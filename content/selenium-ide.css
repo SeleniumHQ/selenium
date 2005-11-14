@@ -1,0 +1,13 @@
+.error { 
+  color: #FF0000;
+}
+
+treechildren::-moz-tree-cell-text(comment)
+{
+  color: #AA33AA;
+}
+
+treechildren::-moz-tree-cell(recordIndex)
+{
+  border-top: 1px solid #008800;
+}

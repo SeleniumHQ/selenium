@@ -1,0 +1,3 @@
+# chrome.manifest for development
+content	selenium-ide	content/ xpcnativewrappers=no
+overlay	chrome://browser/content/browser.xul	chrome://selenium-ide/content/selenium-ide-overlay.xul

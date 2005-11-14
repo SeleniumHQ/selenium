@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+Copyright 2005 Shinya Kasatani
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<overlay id="selenium-ide-overlay" 
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-overlay.js"/>
+
+  <menupopup id="menu_ToolsPopup">
+    <menuitem label="Selenium IDE" oncommand="SeleniumIDE.openRecorder();" insertbefore="sanitizeSeparator,prefSep"/>
+  </menupopup>
+
+  <popup id="contentAreaContextMenu">
+    <menuseparator/>
+    <menu id="selenium-ide" label="Append Selenium Command" accesskey="l">
+      <menupopup onpopupshowing="if (event.target != this) return true; return SeleniumIDE.testRecorderPopup(this); ">
+	<menuitem id="selenium-ide-verifyTextPresent" oncommand="SeleniumIDE.recordVerifyTextPresent()" accesskey="v" disabled="true"/>
+	<menuitem id="selenium-ide-verifyTitle" oncommand="SeleniumIDE.recordVerifyTitle()" accesskey="t"/>
+	<menuitem id="selenium-ide-open" label="open current URL" oncommand="SeleniumIDE.recordOpen()" accesskey="o"/>
+      </menupopup>
+    </menu>
+  </popup>
+
+</overlay>

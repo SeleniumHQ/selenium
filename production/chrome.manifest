@@ -1,0 +1,3 @@
+# chrome.manifest to be used when packaged into xpi archive
+content	selenium-ide	jar:chrome/selenium-ide.jar!/content/ xpcnativewrappers=no
+overlay	chrome://browser/content/browser.xul	chrome://selenium-ide/content/selenium-ide-overlay.xul
