@@ -734,7 +734,7 @@ MozillaPageBot.prototype.clickElement = function(element) {
         if (element.href) {
             this.currentWindow.location.href = element.href;
         }
-        else if (element.parentNode.href) {
+        else if (element.parentNode && element.parentNode.href) {
             this.currentWindow.location.href = element.parentNode.href;
         }
     }
