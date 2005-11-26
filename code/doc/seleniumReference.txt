@@ -58,7 +58,7 @@ Element Locators
 
     **xpath=**\ *xpathExpression*
 
-        Locate an element using an XPath expression. XPath locators *must* begin with "//".
+        Locate an element using an XPath expression.
             - xpath=//img[@alt='The image alt text']
             - xpath=//table[@id='table1']//tr[4]/td[2]
 
