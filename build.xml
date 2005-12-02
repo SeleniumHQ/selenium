@@ -16,13 +16,16 @@
 
   <target name="import-selenium" description="Import Selenium source into the extension">
     <fail message="Please set selenium.src property in build.properties file." unless="selenium.src"/>
-    <copy todir="content">
-      <fileset dir="${selenium.src}">
-	<include name="selenium/*.*"/>
-	<exclude name="selenium/TestSuite.html"/>
-      </fileset>
-    </copy>
     <copy todir="content/selenium">
+      <fileset dir="${selenium.src}">
+	<include name="*.*"/>
+	<include name="dom-images/*.*"/>
+	<include name="dom-styles/*.*"/>
+	<include name="html-xpath/*.*"/>
+	<exclude name="TestSuite.html"/>
+	<exclude name="*.bat"/>
+	<exclude name="*.py"/>
+      </fileset>
       <fileset dir="content/selenium-src"/>
     </copy>
   </target>
