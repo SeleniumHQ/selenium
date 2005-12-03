@@ -75,6 +75,53 @@ function TreeView(recorder, document, tree) {
 
 	tree.addEventListener("keydown", this.onKeydown, true);
 	*/
+
+	function loadSeleniumCommands() {
+		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+			.getService(Components.interfaces.mozIJSSubScriptLoader);
+		var scope = new Object();
+		var actions = new Array();
+		var asserts = new Array();
+		var verifies = new Array();
+		
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-api.js', scope);
+		if (recorder.options.userExtensionsURL) {
+			subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, scope);
+		}
+
+		for (func in scope.Selenium.prototype) {
+			this.log.debug("func=" + func);
+			if (func.match(/^do[A-Z]/)) {
+				var action = func.substr(2,1).toLowerCase() + func.substr(3);
+				actions.push(action);
+			} else if (func.match(/^assert.+/)) {
+				asserts.push(func);
+				verifies.push("verify" + func.substr(6));
+			}
+		}
+
+		actions.push("openAndWait");
+		actions.push("clickAndWait");
+		actions.push("selectAndWait");
+		actions.push("typeAndWait");
+		
+		var menulist = this.document.getElementById("commandAction");
+		
+		function appendItemsToMenu(array) {
+			array.sort();
+			for (var i = 0; i < array.length; i++) {
+				menulist.appendItem(array[i], array[i]);
+			}
+		}
+
+		appendItemsToMenu(actions);
+		menulist.firstChild.appendChild(this.document.createElement("menuseparator"));
+		appendItemsToMenu(asserts);
+		menulist.firstChild.appendChild(this.document.createElement("menuseparator"));
+		appendItemsToMenu(verifies);
+	}
+	
+	loadSeleniumCommands();
 }
 
 TreeView.prototype = {

@@ -64,6 +64,9 @@ limitations under the License.
       <menuseparator/>
       <menuitem label="Clear All" oncommand="clear()"/>
     </popup>
+    <popup id="popupSeleniumCommands">
+      <menuitem label="Clear All" oncommand="clear()"/>
+    </popup>
   </popupset>
 
   <vbox flex="1">
@@ -103,7 +106,13 @@ limitations under the License.
 		<row align="center">
 		  <!-- do drop down that depends upon the element type -->
 		  <label control="commandAction" value="Command"/>
-		  <textbox disabled="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)"/>
+		  <!--
+		  <textbox disabled="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletepopup="popupSeleniumCommands" enablehistory="true"/>
+		  -->
+		  <menulist disabled="true" editable="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" oncommand="recorder.treeView.updateCurrentCommand('command', this.value)">
+		    <menupopup>
+		    </menupopup>
+		  </menulist>
 		</row>
 		<row align="center">
 		  <!-- show different options collected by the client. Allow user to override -->
