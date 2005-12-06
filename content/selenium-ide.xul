@@ -27,6 +27,7 @@ limitations under the License.
   onunload="stopRecord()">
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-logging.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-events.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
@@ -34,6 +35,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>
 
   <keyset>
     <key id="close-key" modifiers="accel" key="W" oncommand="window.close();"/>
@@ -136,6 +138,10 @@ limitations under the License.
       <label value="Base URL"/>
       <textbox id="baseURL" flex="1" tooltiptext="Base URL used for playing in embedded Selenium."/>
       <button label="Play" oncommand="playback()"/>
+    </hbox>
+    <hbox align="center">
+      <button label="Start" oncommand="seleniumDebugger.start();"/>
+      <button label="Log" oncommand="openLogWindow()"/>
     </hbox>
     <hbox align="center">
       <checkbox id="enableRecording" label="Enable recording" checked="true" oncommand="toggleRecordingEnabled(this.checked)"/>

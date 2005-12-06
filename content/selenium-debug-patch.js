@@ -1,9 +1,4 @@
-var userExtensionsURL = getQueryParameter("userExtensionsURL");
-var baseURL = getQueryParameter("baseURL");
-
-if (userExtensionsURL) {
-	document.write('<script src="' + userExtensionsURL + '" language="JavaScript" type="text/javascript"></script>');
-}
+var baseURL = this.getBaseURL();
 
 Selenium.prototype.real_doOpen = Selenium.prototype.doOpen;
 
@@ -20,3 +15,10 @@ Selenium.prototype.doOpen = function(newLocation) {
 	return this.real_doOpen(newLocation);
 };
 
+BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
+	if (iframe.src) {
+		iframe.src = location;
+	} else {
+		iframe.contentWindow.location.href = location;
+	}
+};

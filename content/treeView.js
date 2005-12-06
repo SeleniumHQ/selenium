@@ -328,6 +328,9 @@ TreeView.prototype = {
 		if (row == this.testCase.recordIndex) {
 			props.AppendElement(this.atomService.getAtom("recordIndex"));
 		}
+		if (row == this.testCase.debugIndex) {
+			props.AppendElement(this.atomService.getAtom("debugIndex"));
+		}
 	},
     getColumnProperties: function(colid, col, props) {},
 	cycleHeader: function(colID, elt) {}

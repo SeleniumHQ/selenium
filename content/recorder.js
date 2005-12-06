@@ -219,3 +219,12 @@ function playback() {
 function loadPlayerTest(e) {
 	e.innerHTML = this.testCase.getSource(OPTIONS, "Test Player");
 }
+
+function openLogWindow() {
+	if (!LOG.getLogWindow()) {
+		LOG.logWindow = window.open(
+            "chrome://selenium-ide/content/selenium/SeleniumLog.html", "SeleniumLog",
+            "chrome,width=600,height=250,bottom=0,right=0,status,scrollbars,resizable"
+		);
+	}
+}

@@ -11,3 +11,13 @@ treechildren::-moz-tree-cell(recordIndex)
 {
   border-top: 1px solid #008800;
 }
+
+treechildren::-moz-tree-cell(recordIndex)
+{
+  border-top: 1px solid #008800;
+}
+
+treechildren::-moz-tree-cell(debugIndex)
+{
+  background-color: #AAAAAA;
+}
