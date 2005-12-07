@@ -137,15 +137,23 @@ limitations under the License.
     <hbox align="center">
       <label value="Base URL"/>
       <textbox id="baseURL" flex="1" tooltiptext="Base URL used for playing in embedded Selenium."/>
-      <button label="Play" oncommand="playback()"/>
+    </hbox>
+    <hbox align="center">
+      <radiogroup id="runInterval" orient="horizontal">
+	<radio id="run" label="Run" selected="true" value="0"/>
+	<radio id="walk" label="Walk" value="500"/>
+	<radio id="step" label="Step" value="-1"/>
+      </radiogroup>
     </hbox>
     <hbox align="center">
       <button label="Start" oncommand="seleniumDebugger.start();"/>
-      <button label="Log" oncommand="openLogWindow()"/>
+      <button label="Continue" oncommand="seleniumDebugger.doContinue();"/>
+      <button label="Show Log" oncommand="openLogWindow()"/>
     </hbox>
     <hbox align="center">
       <checkbox id="enableRecording" label="Enable recording" checked="true" oncommand="toggleRecordingEnabled(this.checked)"/>
       <spacer flex="1"/>
+      <button label="Play with Selenium TestRunner" oncommand="playback()"/>
     </hbox>
   </vbox>
 
