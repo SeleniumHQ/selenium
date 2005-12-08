@@ -150,9 +150,9 @@ function EventManager(listener) {
 	}
 
 	function getLocator(window, e) {
-		var locatorDetectors = new Array(getVisibleLocator, 
+		var locatorDetectors = new Array(getIDLocator,
+										 getVisibleLocator, 
 										 getVisible2Locator,
-										 getIDLocator,
 										 getNameLocator);
 		var i = 0;
 		var xpathLevel = 0;
