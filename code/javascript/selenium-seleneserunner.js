@@ -58,7 +58,7 @@ function nextCommand() {
     var xmlHttp = XmlHttp.create();
     
     try {
-        alert("postResult == " + postResult);
+        //alert("postResult == " + postResult);
         if (postResult == "START") {
             xmlHttp.open("GET", "driver?seleniumStart=true", false);
         } else {
