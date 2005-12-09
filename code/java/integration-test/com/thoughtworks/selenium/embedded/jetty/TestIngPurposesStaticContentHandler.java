@@ -78,40 +78,43 @@ public class TestIngPurposesStaticContentHandler implements StaticContentHandler
             "</head>\n" +
             "<body>\n" +
             "<b>Please ignore this page. It is not Selenium in action, " +
-            "it is a rudimentary test of Selenium's transport</b><br><br>" +
-            "Selenium { <br>\n" +
+            "it is a rudimentary test of Selenium's transport. <br>" +
+            "Selenium doing real testing is coming up shortly.</b><br><br>" +
+            "For now though, get a glimpse of Selenium's reply/request command style that <br>" +
+            "is transported via remote scripting (AJAX) to the server that's driving the test:<br>" +
+            "<br><br>" +
+            "Selenium test commands .... <br><br><br>\n" +
             "<script type=\"text/javascript\">\n" +
             " var xmlHttp = XmlHttp.create();\n" +
             "\n" +
             " xmlHttp.open(\"GET\", \"driver?seleniumStart=true\", false);\n" +
             " xmlHttp.send(null);\n" +
             " command = xmlHttp.responseText\n" +
-            " document.write('&nbsp;&nbsp;Request 1 sent : seleniumStart=true<br>')\n" +
-            " document.write('&nbsp;&nbsp;Request 1 rcvd : ' + command + '<br><br>')\n" +
+            " document.write('&nbsp;&nbsp;Browser Response 0 sent : seleniumStart=true<br>')\n" +
+            " document.write('&nbsp;&nbsp;Driver Request 1 rcvd   : ' + command + '<br><br>')\n" +
             "\n" +
             " xmlHttp = XmlHttp.create();\n" +
             " xmlHttp.open(\"GET\", \"driver?commandResult=OK\",false);\n" +
             " xmlHttp.send(null);\n" +
             " command = xmlHttp.responseText\n" +
-            " document.write('&nbsp;&nbsp;Request 2 sent : commandResult=OK<br>')\n" +
-            " document.write('&nbsp;&nbsp;Request 2 rcvd : ' + command + '<br><br>')\n" +
+            " document.write('&nbsp;&nbsp;Browser Response 1 sent : commandResult=OK<br>')\n" +
+            " document.write('&nbsp;&nbsp;Driver Request 2 rcvd   : ' + command + '<br><br>')\n" +
             "\n" +
             " xmlHttp = XmlHttp.create();\n" +
             " xmlHttp.open(\"GET\", \"driver?commandResult=OK\",false);\n" +
             " xmlHttp.send(null);\n" +
             " command = xmlHttp.responseText\n" +
-            " document.write('&nbsp;&nbsp;Request 3 sent : commandResult=OK<br>')\n" +
-            " document.write('&nbsp;&nbsp;Request 3 rcvd : ' + command + '<br><br>')\n" +
+            " document.write('&nbsp;&nbsp;Browser Response 2 sent : commandResult=OK<br>')\n" +
+            " document.write('&nbsp;&nbsp;Driver Request 3 rcvd   : ' + command + '<br><br>')\n" +
             "\n" +
             " xmlHttp = XmlHttp.create();\n" +
             " xmlHttp.open(\"GET\", \"driver?commandResult=OK\",false);\n" +
             " xmlHttp.send(null);\n" +
             " command = xmlHttp.responseText\n" +
-            " document.write('&nbsp;&nbsp;Request 4 sent : commandResult=OK<br>')\n" +
-            " document.write('&nbsp;&nbsp;Request 4 rcvd : ' + command + '<br>')\n" +
+            " document.write('&nbsp;&nbsp;Browser Response 3 sent : commandResult=OK<br>')\n" +
+            " document.write('&nbsp;&nbsp;Driver Request 4 rcvd   : ' + command + '<br>')\n" +
             "\n" +
             "</script>\n" +
-            "}\n" +
             "</body>\n" +
             "</html>";
 
