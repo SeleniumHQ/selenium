@@ -61,6 +61,7 @@ function start() {
 		
 	testLoop.getCommandInterval = function() { return getInterval(); }
 	testLoop.nextCommand = function() {
+		recorder.view.rowUpdated(testCase.debugIndex);
 		if (++testCase.debugIndex >= testCase.commands.length) {
 			return null;
 		}
@@ -79,10 +80,24 @@ function start() {
 	testLoop.commandStarted = function() {
 		recorder.view.rowUpdated(testCase.debugIndex);
 	}
-	testLoop.commandComplete = testLoop.commandStarted;
-	testLoop.commandError = testLoop.commandStarted;
+	testLoop.commandComplete = function(result) {
+		if (result.failed) {
+			testCase.commands[testCase.debugIndex].result = 'failed';
+		} else if (result.passed) {
+			testCase.commands[testCase.debugIndex].result = 'passed';
+		} else {
+			testCase.commands[testCase.debugIndex].result = null;
+		}
+		recorder.view.rowUpdated(testCase.debugIndex);
+	}
+	testLoop.commandError = function() {
+		testCase.commands[testCase.debugIndex].result = 'failed';
+		recorder.view.rowUpdated(testCase.debugIndex);
+	}
 	testLoop.testComplete = function() {
 		testLoop = null;
+		testCase.debugIndex = -1;
+		recorder.view.rowUpdated(testCase.debugIndex);
 	}
 	testLoop.pause = function() {}
 

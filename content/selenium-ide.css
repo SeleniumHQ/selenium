@@ -12,12 +12,40 @@ treechildren::-moz-tree-cell(recordIndex)
   border-top: 1px solid #008800;
 }
 
-treechildren::-moz-tree-cell(recordIndex)
+treechildren::-moz-tree-row(commandFailed)
 {
-  border-top: 1px solid #008800;
+  background-color: #FF8888;
 }
 
-treechildren::-moz-tree-cell(debugIndex)
+treechildren::-moz-tree-row(commandPassed)
 {
-  background-color: #AAAAAA;
+  background-color: #88FFAA;
 }
+
+treechildren::-moz-tree-row(commandFailed, selected, focus)
+{
+  background-color: Highlight;
+}
+
+treechildren::-moz-tree-row(commandPassed, selected, focus)
+{
+  background-color: Highlight;
+}
+
+treechildren::-moz-tree-row(debugIndex)
+{
+  border: 1px solid #6688FF;
+}
+
+treechildren::-moz-tree-row(debugIndex, commandFailed)
+{
+  border: 1px solid #6688FF;
+  background-color: #FF8888;
+}
+
+treechildren::-moz-tree-row(debugIndex, commandPassed)
+{
+  border: 1px solid #6688FF;
+  background-color: #88FFAA;
+}
+

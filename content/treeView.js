@@ -316,6 +316,18 @@ TreeView.prototype = {
 		return null;
 	},
     getRowProperties: function(row, props) {
+		var command = this.getCommand(row);
+		if (row == this.testCase.debugIndex) {
+			props.AppendElement(this.atomService.getAtom("debugIndex"));
+		}
+		if (this.tree.currentIndex != row) {
+			if (command.result == 'passed') {
+				props.AppendElement(this.atomService.getAtom("commandPassed"));
+			}
+			if (command.result == 'failed') {
+				props.AppendElement(this.atomService.getAtom("commandFailed"));
+			}
+		}
 	},
     getCellProperties: function(row, col, props) {
 		var command = this.getCommand(row);
@@ -330,6 +342,14 @@ TreeView.prototype = {
 		}
 		if (row == this.testCase.debugIndex) {
 			props.AppendElement(this.atomService.getAtom("debugIndex"));
+		}
+		if (this.tree.currentIndex != row) {
+			if (command.result == 'passed') {
+				props.AppendElement(this.atomService.getAtom("commandPassed"));
+			}
+			if (command.result == 'failed') {
+				props.AppendElement(this.atomService.getAtom("commandFailed"));
+			}
 		}
 	},
     getColumnProperties: function(colid, col, props) {},
