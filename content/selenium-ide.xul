@@ -43,6 +43,7 @@ limitations under the License.
     <key id="cut-key" modifiers="accel" key="X" oncommand="recorder.treeView.cut();"/>
     <key id="paste-key" modifiers="accel" key="V" oncommand="recorder.treeView.paste();"/>
     <key id="delete-key" keycode="VK_DELETE" oncommand="recorder.treeView.deleteSelected();"/>
+    <key id="breakpoint-key" key="B" oncommand="recorder.treeView.breakpoint();"/>
   </keyset>
 
   <popupset>
@@ -65,6 +66,8 @@ limitations under the License.
       <menuitem label="Insert New Comment" oncommand="recorder.treeView.insertComment()"/>
       <menuseparator/>
       <menuitem label="Clear All" oncommand="clear()"/>
+      <menuseparator/>
+      <menuitem label="Toggle Breakpoint" oncommand="recorder.treeView.breakpoint()" key="breakpoint-key"/>
     </popup>
     <popup id="popupSeleniumCommands">
       <menuitem label="Clear All" oncommand="clear()"/>

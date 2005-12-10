@@ -20,17 +20,15 @@
 // using SubScript Loader.
 //
 
-var baseURL = recorder.document.getElementById("baseURL").value;
-
 Selenium.prototype.real_doOpen = Selenium.prototype.doOpen;
 
 Selenium.prototype.doOpen = function(newLocation) {
-	if (baseURL && newLocation) {
+	if (this.baseURL && newLocation) {
 		if (!newLocation.match(/^\w+:\/\//)) {
-			if (baseURL[baseURL.length - 1] == '/' && newLocation[0] == '/') {
-				newLocation = baseURL + newLocation.substr(1);
+			if (this.baseURL[this.baseURL.length - 1] == '/' && newLocation[0] == '/') {
+				newLocation = this.baseURL + newLocation.substr(1);
 			} else {
-				newLocation = baseURL + newLocation;
+				newLocation = this.baseURL + newLocation;
 			}
 		}
 	}
@@ -47,12 +45,13 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 
 testLoop = null;
 
-function start() {
+function start(baseURL) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
 	
 	selenium = Selenium.createForFrame(window.getBrowser());
 	selenium.browserbot.getCurrentPage();
+	selenium.baseURL = baseURL;
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
 	testCase.debugIndex = -1;

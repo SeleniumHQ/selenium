@@ -44,7 +44,7 @@ Debugger.prototype.start = function() {
 	toggleRecordingEnabled(false);
 
 	this.init();
-	this.runner.start();
+	this.runner.start(recorder.document.getElementById("baseURL").value);
 };
 
 Debugger.prototype.doContinue = function() {

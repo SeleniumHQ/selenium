@@ -174,8 +174,8 @@ function EventManager(listener) {
 					if (e == pageBot.findElement(locator)) {
 						return locator;
 					}
-				} catch (e) {
-					log.warn("findElement error: " + e);
+				} catch (error) {
+					log.warn("findElement error: " + error + ", node=" + e + ", locator=" + locator);
 					//break;
 				}
 			} else if (xpathLevel > 0) {
@@ -297,13 +297,15 @@ function EventManager(listener) {
 
 	function elementXPath(node, conditions) {
 		var i;
-		for (i = 0; i < node.attributes.length; i++) {
-			var att = node.attributes[i];
-			if (att.name == 'name' || att.name == 'value' ||
-				att.name == 'id' || att.name == 'style' ||
-				att.name == 'action' || att.name == 'onclick' ||
-				att.name == 'href') {
-				conditions['@' + att.name] = att.value;
+		if (node.attributes) {
+			for (i = 0; i < node.attributes.length; i++) {
+				var att = node.attributes[i];
+				if (att.name == 'name' || att.name == 'value' ||
+					att.name == 'id' || att.name == 'style' ||
+					att.name == 'action' || att.name == 'onclick' ||
+					att.name == 'href') {
+					conditions['@' + att.name] = att.value;
+				}
 			}
 		}
 		return node.nodeName.toLowerCase() + encodeConditions(conditions);

@@ -281,6 +281,13 @@ TreeView.prototype = {
 			this.selection.select(currentIndex);
 		}
 	},
+	breakpoint: function() {
+		if (this.tree.currentIndex >= 0) {
+			var command = this.getCommand(this.tree.currentIndex);
+			command.breakpoint = command.breakpoint ? null : true;
+			this.rowUpdated(this.tree.currentIndex);
+		}
+	},
 
 	//
 	// nsITreeView interfaces
