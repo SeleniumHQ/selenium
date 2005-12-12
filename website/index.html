@@ -1,30 +1,189 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
-
-<HTML>
+<html>
 <head>
   <title>Selenium</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=windows-1252">
+  <link href="index_files/selenium.css" type="text/css" rel="stylesheet">
 </head>
 <body>
-  <DIV id="menu">
-    <UL id="menulist">
-      <LI><A href="index.html">home</A></LI>
-      <LI><A href="download.html">download</A></LI>
-      <LI><A href="release-notes.html">&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;release&nbsp;notes</A></LI>
-      <LI><A href="usage.html">usage</A></LI>
-      <LI><A href="seleniumReference.html">&nbsp;&nbsp;&nbsp;&nbsp;- commands</A></LI>
-      <LI><A href="testrunner.html">&nbsp;&nbsp;&nbsp;&nbsp;- test runner</A></LI>
-      <LI><A href="driven.html">&nbsp;&nbsp;&nbsp;&nbsp;- driven</A></LI>
-      <LI><A href="developingdrivers.html">developing drivers</A></LI>
-      <LI><A href="contact.html">contact</A></LI>
-      <LI><A href="demos.html">demos</A></LI>
-      <LI><A href="http://confluence.public.thoughtworks.org/display/SEL">wiki</A></LI>
-      <LI><A href="http://confluence.public.thoughtworks.org/display/SEL/FAQ">faq</A></LI>
-    </UL>
-  </DIV>
+
+<fieldset>
+  <legend><b>News</b></legend>
+
+  <dl>
+    <dt>September 25, 2005</dt>
+    <dd>Selenium-0.6 is available 
+      (<a href="release-notes.html">release notes</a>)
+      - <a href="http://openqa.org/selenium/download.html">download now</a>
+    </dd>
+  </dl>
+            
+</fieldset>
+
+<p>
+<b>Selenium</b> is a test tool for web applications. Selenium tests run
+<b>directly in a browser</b>, just as real users do. And they run in
+Internet Explorer, Mozilla and Firefox on Windows, Linux, and Macintosh. No
+other test tool covers such a wide array of platforms.
+</p>
+
+<ul>
+  <li><span style="font-weight: bold;">Browser compatability testing.</span>
+Test your application to see if it works correctly on different
+browsers and operating systems. The same script can run on any Selenium
+platform.<br>
+  </li>
+  <li><span style="font-weight: bold;">System functional testing.</span>
+Create regression tests to verify application functionality and user
+acceptance.<br>
+  </li>
+</ul>
+<span style="font-weight: bold;"><span style="font-weight: bold;"></span></span>Selenium
+uses a unique mechanism which allows it to run on so multiple
+platforms. Installed with your application webserver, Selenium
+automatically deploys its JavaScript automation engine -- the Browser
+Bot -- to your browser when you point it at the Selenium install point
+on your webserver. Thus, you must have write access to the machine your
+web application server is running on to install Selenium.<br>
+<br>
+<div style="text-align: left; margin-right: 120px; margin-left: 80px;"><span
+ style="font-style: italic;">"Considering the simplicity of it, it is
+almost surprising that no one has thought of doing this previously. The
+framework is simple and the code is neat and very maintainable.
+Sometimes it takes a work of genius to find the uncomplicated solution
+to a potentially complicated problem.</span><span
+ style="font-style: italic;">" - </span>Antony Marcano<span
+ style="font-style: italic;"></span><span style="font-style: italic;"></span><br>
+<span style="font-style: italic;"></span></div>
+<div style="text-align: left; margin-right: 120px; margin-left: 120px;"><span
+ style="font-style: italic;"><br>
+</span></div>
+<div style="text-align: left; margin-right: 120px;">Selenium was
+developed by team
+of programmers and testers at
+ThoughtWorks (see below). It is
+open-source software and can
+be downloaded and used without charge. It is currently under active
+development by our team. Stay tuned for updates and further
+announcements.<br>
+</div>
+<br>
+ThoughtWorks is a leader in Agile development methods for enterprise
+software development. Selenium is designed specifically for the
+acceptance testing requirements of Agile teams. However, teams
+using more traditional development will also find it useful.<br>
+<h2>Platform and Browser Compatibility</h2>
+<div style="text-align: left; margin-left: 80px;">
+
+<table style="text-align: left;" border="1"
+ cellpadding="2" cellspacing="2" height="">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"></td>
+      <td style="vertical-align: top; font-weight: bold;">Windows</td>
+      <td style="vertical-align: top; font-weight: bold;">Mac OS X</td>
+      <td style="vertical-align: top; font-weight: bold;">Linux</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;">Internet Explorer</td>
+      <td style="vertical-align: top;">6.0</td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">not supported</span></td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">not available</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://www.mozilla.com/firefox/" id="id" title="title">Firefox</a></td>
+      <td style="vertical-align: top;">0.8+, 0.9+, 1.0+</td>
+      <td style="vertical-align: top;">0.8+, 0.9+, 1.0+</td>
+      <td style="vertical-align: top;">0.8+, 0.9+, 1.0+</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://www.mozilla.org/products/mozilla1.x/" id="id" title="title">Mozilla Suite</a></td>
+      <td style="vertical-align: top;">1.6+, 1.7+</td>
+      <td style="vertical-align: top;">1.6+, 1.7+</td>
+      <td style="vertical-align: top;">1.6+, 1.7+</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://www.apple.com/macosx/features/safari/" id="id" title="title">Safari</a></td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">not available</span></td>
+      <td style="vertical-align: top;">1.3+</td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">not available</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://browser.netscape.com/ns8/" id="id" title="title">Netscape Navigator</a></td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+    </tr>
+
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://www.opera.com/" id="id" title="title">Opera</a></td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://www.omnigroup.com/applications/omniweb/" id="id" title="title">OmniWeb</a></td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://www.konqueror.org/" id="id" title="title">Konqueror</a></td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://galeon.sourceforge.net/" id="id" title="title">Galeon</a></td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;"><a href="http://www.caminobrowser.org/" id="id" title="title">Camino</a></td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+      <td style="vertical-align: top;">?</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+<span style="font-weight: bold;"><br>
+</span>
+
+<h2>How does Selenium Work?</h2>
+Selenium uses JavaScript and Iframes to embed a test automation
+engine in your browser. This technique should work with any
+JavaScript-enabled browser. Because different browsers handle
+JavaScript somewhat differently, we usually have to tweak the engine to
+support a wide range of browsers on Windows, Mac OS X and Linux.
+
+<h2>Where did Selenium Come From?</h2>
+
+Selenium grew out of a testing framework that was
+developed to acceptance-test the functionality of <a
+ href="http://www.thoughtworks.com">ThoughtWorks'</a>
+web-based time &amp; expense reporting application.
+<i>Javascript Functional Test Runner</i> was written by
+Jason Huggins, Paul Gross and Jie Tina Wang, in 2004. 
+<p class="paragraph">Jason
+started demoing the test tool to various colleagues. Many were
+excited about its immediate and intuitive visual feedback, as well as
+its potential to grow as a reusable testing framework for other web
+applications.</p>
+<p>Many ThoughtWorks consultants and a growing number of <a href="friends.html">friends</a> 
+work on Selenium here at <a href="http://OpenQA.org">OpenQA.org</a> and there are hopes for it to become the
+multi-language, multi-platform defacto standard replacement for the likes of WinRunner in the web application space.</p>
+<p>ThoughtWorks is a leader in Agile development methods for enterprise
+software development. Selenium was designed specifically for the
+acceptance testing requirements of Agile teams. However, teams
+using older 'Waterfall' style methodologies may also find it useful.</p>
+<h2>Having Trouble?</h2>
+Check out our <a
+ href="http://wiki.openqa.org/display/SEL/FAQ">Frequently
+Asked Questions</a> page
+for more information.
 </body>
-</HTML>
-
-
-  <!-- Do not edit this page beyond its list of links current form -->
-  <!-- the real front page is home-page.html                       -->
-  <!-- which is rendered as index.html on the live website         -->
+</html>
