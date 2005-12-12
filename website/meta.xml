@@ -1,0 +1,33 @@
+<project>
+    <name>Selenium-IDE</name>
+    <jiraId>10070</jiraId>
+    <jiraName>SIDE</jiraName>
+    <confluenceName>SIDE</confluenceName>
+
+    <forums>
+        <usersId>1</usersId>
+        <devId>2</devId>
+    </forums>
+
+    <docs>
+        <url>index.html</url>
+    </docs>
+
+    <owners>
+        <person>
+            <name>Shinya Kasatani</name>
+            <email>kasatani@gmail.com</email>
+        </person>
+    </owners>
+
+    <!--<developers>-->
+        <!--<person>-->
+            <!--<name>Paul Hammant</name>-->
+            <!--<email>paul@thoughtworks.com</email>-->
+        <!--</person>-->
+    <!--</developers>-->
+
+    <releases>
+    </releases>
+
+</project>
