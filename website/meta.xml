@@ -1,0 +1,94 @@
+<project>
+    <name>Selenium</name>
+    <jiraId>10030</jiraId>
+    <jiraName>SEL</jiraName>
+    <confluenceName>SEL</confluenceName>
+
+    <forums>
+        <usersId>3</usersId>
+        <devId>4</devId>
+    </forums>
+
+    <evaluating>
+        <item>
+            <name>Release Notes</name>
+            <url>release-notes.html</url>
+        </item>
+    </evaluating>
+
+    <docs>
+        <url>index.html</url>
+        <items>
+            <item>
+                <name>Usage</name>
+                <url>usage.html</url>
+            </item>
+            <item>
+                <name>- commands</name>
+                <url>seleniumReference.html</url>
+            </item>
+            <item>
+                <name>- test runner</name>
+                <url>testrunner.html</url>
+            </item>
+            <item>
+                <name>- driven</name>
+                <url>driven.html</url>
+            </item>
+            <item>
+                <name>Developing Drivers</name>
+                <url>developingdrivers.html</url>
+            </item>
+            <item>
+                <name>Demos</name>
+                <url>demos.html</url>
+            </item>
+        </items>
+    </docs>
+
+    <owners>
+        <person>
+            <name>Paul Hammant</name>
+            <email>paul@thoughtworks.com</email>
+        </person>
+    </owners>
+
+    <!--<developers>-->
+        <!--<person>-->
+            <!--<name>Paul Hammant</name>-->
+            <!--<email>paul@thoughtworks.com</email>-->
+        <!--</person>-->
+    <!--</developers>-->
+
+    <releases>
+        <release>
+            <version>0.6</version>
+
+            <date>9/25/2005</date>
+            <jiraId>10150</jiraId>
+            <downloads>
+                <download>
+                    <url>http://gforge.public.thoughtworks.org/download.php/51/selenium-0.6.0.zip</url>
+                    <name>Full release</name>
+                </download>
+                <download>
+                    <url>http://gforge.public.thoughtworks.org/download.php/40/selenium-0.5.0-java-src.zip</url>
+                    <name>Source code for the Java language driver for Selenium</name>
+                </download>
+                <download>
+                    <url>http://gforge.public.thoughtworks.org/download.php/52/selenium-0.6.0-java.zip</url>
+                    <name>Binary for the Java language driver for Selenium. (Requires Ant, suggested Tomcat install too)</name>
+                </download>
+                <download>
+                    <url>http://gforge.public.thoughtworks.org/download.php/55/selenium-0.6.0-ruby.zip</url>
+                    <name>Ruby language driver for Selenium</name>
+                </download>
+                <download>
+                    <url>http://gforge.public.thoughtworks.org/download.php/54/selenium-0.6.0-python-plone.zip</url>
+                    <name>Selenium packaged as a Zope product for Plone</name>
+                </download>
+            </downloads>
+        </release>
+    </releases>
+
+</project>
