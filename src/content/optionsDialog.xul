@@ -60,6 +60,7 @@ limitations under the License.
       </menulist>
       <separator/>
       <checkbox id="escapeDollar" label="Escape '${' as '\${' (useful for JSP 2.0)"/>
+      <checkbox id="rememberBaseURL" label="Remember base URL"/>
     </tabpanel>
     <tabpanel orient="vertical">
       <description>Regular expression for each command entry</description>

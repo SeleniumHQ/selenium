@@ -36,18 +36,27 @@ function init() {
 			this.view.testCase = this.testCase;
 			this.view.refresh();
 		};
+		initOptions();
 		this.toggleView(this.treeView);
 		log.info("initialized");
 	}
 }
 
+function initOptions() {
+	if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null){
+		if (document.getElementById("baseURL").value == '') {
+			document.getElementById("baseURL").value = this.options.baseURL;
+		}
+	}
+}
+
 function isFocused(id) {
-  var focused = document.commandDispatcher.focusedElement;
-  if (focused) {
-	  return focused.getAttribute("id") == id;
-  } else {
-	  return false;
-  }
+	var focused = document.commandDispatcher.focusedElement;
+	if (focused) {
+		return focused.getAttribute("id") == id;
+	} else {
+		return false;
+	}
 }
 
 function loadTestCase() {
@@ -101,6 +110,10 @@ function startRecordFor(contentWindow) {
 }
 
 function stopRecord() {
+	if (this.options.rememberBaseURL == 'true'){
+		this.options.baseURL = document.getElementById("baseURL").value;
+		this.options.save('baseURL');
+	}
 	this.eventManager.stopForAllBrowsers();
 }
 

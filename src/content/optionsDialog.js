@@ -19,11 +19,14 @@ function saveOptions() {
 	var name;
 	for (name in OPTIONS) {
 		var e = document.getElementById(name);
-		options[name] = e.checked != undefined ? e.checked.toString() : e.value;
+		if (e != null) {
+			options[name] = e.checked != undefined ? e.checked.toString() : e.value;
+		}
 	}
 	var w = SeleniumIDE.getRecorderWindow();
 	if (w != null) {
 		w.options = options;
+		//w.initOptions();
 	}
 	options.save();
 	return true;
@@ -33,10 +36,12 @@ function loadFromOptions(options) {
 	var name;
 	for (name in OPTIONS) {
 		var e = document.getElementById(name);
-		if (e.checked != undefined) {
-			e.checked = options[name] == 'true';
-		} else {
-			e.value = options[name];
+		if (e != null) {
+			if (e.checked != undefined) {
+				e.checked = options[name] == 'true';
+			} else {
+				e.value = options[name];
+			}
 		}
 	}
 	testEncoding();

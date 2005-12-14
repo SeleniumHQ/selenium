@@ -66,6 +66,12 @@ const OPTIONS = {
 
 	escapeDollar:
 	"false",
+
+	rememberBaseURL:
+	"",
+
+	baseURL:
+	""
 };
 
 function RecorderOptions() {
@@ -82,7 +88,7 @@ RecorderOptions.prototype = {
 	},
 
 	setCharPref: function(name, value) {
-		this.branch.setCharPref(name, value);
+		this.branch.setCharPref(name, value != null ? value : '');
 	},
 
 	load: function() {
@@ -92,10 +98,14 @@ RecorderOptions.prototype = {
 		}
 	},
 
-	save: function() {
-		var name;
-		for (name in OPTIONS) {
-			this.setCharPref(name, this[name]);
+	save: function(prop_name) {
+		if (prop_name) {
+			this.setCharPref(prop_name, this[prop_name]);
+		} else {
+			var name;
+			for (name in OPTIONS) {
+				this.setCharPref(name, this[name]);
+			}
 		}
 	}
 };
