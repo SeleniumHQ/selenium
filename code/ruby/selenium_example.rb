@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 
 require 'seletest'
 require 'selenium'
@@ -14,4 +15,5 @@ class ExampleTest < Test::Unit::TestCase
         verify_element_present 'link'
 
     end
+
 end
