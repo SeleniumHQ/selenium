@@ -15,13 +15,17 @@
  */
 
 function Debugger() {
+	var self = this;
+	
 	this.init = function() {
 		if (this.runner != null) return;
 		
 		this.runner = new Object();
 		this.state = 'paused';
-		
+
+		recorder.testCaseListeners.push(function(testCase) { self.runner.testCase = testCase; });
 		this.runner.testCase = recorder.testCase;
+		
 		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 	    .getService(Components.interfaces.mozIJSSubScriptLoader);
 		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-logging.js', this.runner);

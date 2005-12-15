@@ -26,7 +26,15 @@ function init() {
 		this.eventManager = new EventManager(this);
 		this.treeView = new TreeView(this, document, document.getElementById("commands"));
 		this.sourceView = new SourceView(this, document.getElementById("source"));
-		this.testCase = new TestCase();
+		this.testCaseListeners = new Array();
+		this.setTestCase = function(testCase) {
+			this.testCase = testCase;
+			for (var i = 0; i < this.testCaseListeners.length; i++) {
+				this.testCaseListeners[i](this.testCase);
+			}
+		};
+		this.setTestCase(new TestCase());
+		this.testCaseListeners.push(function(testCase) { recorder.view.testCase = testCase });
 		this.toggleView = function(view) {
 			log.debug("toggle view");
 			if (this.view != null) {
@@ -59,13 +67,20 @@ function isFocused(id) {
 	}
 }
 
+function newTestCase() {
+	if (clear()) {
+		this.setTestCase(new TestCase());
+		this.view.refresh();
+		document.getElementById("filename").value = '';
+	}
+}
+
 function loadTestCase() {
 	log.debug("loadTestCase");
 	try {
 		var testCase = new TestCase();
 		if (testCase.load(this.options)) {
-			this.testCase = testCase;
-			this.view.testCase = this.testCase;
+			this.setTestCase(testCase);
 			this.view.refresh();
 			document.getElementById("filename").value = this.testCase.filename;
 		}
@@ -162,8 +177,10 @@ function clear() {
 			this.testCase.clear();
 			this.view.refresh();
 			log.debug("cleared");
+			return true;
 		}
 	}
+	return false;
 }
 
 function addCommand(command,target,value,window) {

@@ -97,6 +97,9 @@ function TreeView(recorder, document, tree) {
 			} else if (func.match(/^assert.+/)) {
 				asserts.push(func);
 				verifies.push("verify" + func.substr(6));
+			} else if (func.match(/^get.+/)) {
+				asserts.push("assert" + func.substr(3));
+				verifies.push("verify" + func.substr(3));
 			}
 		}
 

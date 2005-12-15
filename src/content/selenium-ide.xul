@@ -49,6 +49,7 @@ limitations under the License.
   <popupset>
     <!-- upper right options -->
     <popup id="fileMenu">
+      <menuitem label="New" oncommand="newTestCase();"/>
       <menuitem label="Open..." oncommand="loadTestCase();"/>
       <menuitem label="Save" oncommand="saveTestCase();"/>
       <menuitem label="Save As..." oncommand="saveNewTestCase();"/>
