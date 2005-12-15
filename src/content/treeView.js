@@ -331,6 +331,9 @@ TreeView.prototype = {
 			props.AppendElement(this.atomService.getAtom("debugIndex"));
 		}
 		if (this.tree.currentIndex != row) {
+			if (command.result == 'done') {
+				props.AppendElement(this.atomService.getAtom("commandDone"));
+			}
 			if (command.result == 'passed') {
 				props.AppendElement(this.atomService.getAtom("commandPassed"));
 			}
@@ -354,12 +357,18 @@ TreeView.prototype = {
 			props.AppendElement(this.atomService.getAtom("debugIndex"));
 		}
 		if (this.tree.currentIndex != row) {
+			if (command.result == 'done') {
+				props.AppendElement(this.atomService.getAtom("commandDone"));
+			}
 			if (command.result == 'passed') {
 				props.AppendElement(this.atomService.getAtom("commandPassed"));
 			}
 			if (command.result == 'failed') {
 				props.AppendElement(this.atomService.getAtom("commandFailed"));
 			}
+		}
+		if (0 == col.index && command.breakpoint) {
+			props.AppendElement(this.atomService.getAtom("breakpoint"));
 		}
 	},
     getColumnProperties: function(colid, col, props) {},

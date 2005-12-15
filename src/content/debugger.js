@@ -38,7 +38,11 @@ function Debugger() {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-runner.js', this.runner);
 
 		this.runner.getInterval = function() {
-			return document.getElementById("runInterval").selectedItem.value;
+			if (self.runner.testCase.commands[self.runner.testCase.debugIndex].breakpoint) {
+				return -1;
+			} else {
+				return document.getElementById("runInterval").selectedItem.value;
+			}
 		}
 	}
 }
@@ -56,7 +60,13 @@ Debugger.prototype.doContinue = function() {
 	toggleRecordingEnabled(false);
 
 	this.init();
-	this.runner.continueCurrentTest();
+	if (this.runner.resume) {
+		// Selenium 0.7
+		this.runner.resume();
+	} else {
+		// Selenium 0.6
+		this.runner.continueCurrentTest();
+	}
 };
 
 seleniumDebugger = new Debugger();

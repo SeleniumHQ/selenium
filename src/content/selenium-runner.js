@@ -55,6 +55,10 @@ function start(baseURL) {
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
 	testCase.debugIndex = -1;
+	for (var i = 0; i < testCase.commands.length; i++) {
+		delete testCase.commands[i].result;
+		recorder.view.rowUpdated(i);
+	}
 	
 	testLoop = new TestLoop(commandFactory);
 		
@@ -85,7 +89,7 @@ function start(baseURL) {
 		} else if (result.passed) {
 			testCase.commands[testCase.debugIndex].result = 'passed';
 		} else {
-			testCase.commands[testCase.debugIndex].result = null;
+			testCase.commands[testCase.debugIndex].result = 'done';
 		}
 		recorder.view.rowUpdated(testCase.debugIndex);
 	}
@@ -105,7 +109,13 @@ function start(baseURL) {
 
 function continueCurrentTest() {
 	if (testLoop != null) {
-		testLoop.finishCommandExecution();
+		if (testLoop.resume) {
+			// Selenium 0.7?
+			testLoop.resume();
+		} else {
+			// Selenium 0.6
+			testLoop.finishCommandExecution();
+		}
 	} else {
 		LOG.error("testLoop is null");
 	}
