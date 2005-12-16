@@ -43,6 +43,10 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 	}
 };
 
+Selenium.prototype.doPause = function(waitTime) {
+    testLoop.pauseInterval = waitTime;
+};
+
 testLoop = null;
 
 function start(baseURL) {

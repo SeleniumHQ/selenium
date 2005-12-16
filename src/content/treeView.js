@@ -107,6 +107,7 @@ function TreeView(recorder, document, tree) {
 		actions.push("clickAndWait");
 		actions.push("selectAndWait");
 		actions.push("typeAndWait");
+		actions.push("pause");
 		
 		var menulist = this.document.getElementById("commandAction");
 		
