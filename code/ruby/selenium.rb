@@ -66,13 +66,17 @@ module Selenium
       end
     end
     
+    alias old_type type
+    def type(*args)
+      method_missing("type", *args)
+    end
+
     # Reserved ruby methods (such as 'send') must be prefixed with '__'
     def method_missing(method, *args)
       method_name = translate_method_to_wire_command(method)
       element_identifier = args[0]
       value = args[1]
       command_string = "|#{method_name}|#{element_identifier}|#{value}|"
-      #puts command_string
       do_command(command_string)
     end
   end
@@ -85,9 +89,7 @@ module Selenium
   
   class WebrickCommandProcessor
     include WEBrick::HTMLUtils # escape mixin
-    
-    attr_accessor :proxy_server
-  
+      
     def initialize(port=7896, timeout=1000)
       @timeout = timeout
       @in_queue = Queue.new
@@ -100,11 +102,10 @@ module Selenium
         :AccessLog => {} #comment out to enable access logging
       )
 
-      # AUT
-      @rmi_server.mount("/", NonCachingFileHandler, "../javascript/tests/html")
+      if block_given?
+	      yield @rmi_server
+      end
 
-      # Selenium's static files and dynamic handler
-      @rmi_server.mount("/selenium-driver", NonCachingFileHandler, "../javascript")
       @rmi_server.mount_proc("/selenium-driver/driver") do |req, res|
         res["Cache-control"] = "no-cache"
         res["Pragma"] = "no-cache"
@@ -122,6 +123,10 @@ module Selenium
       end
 
       @rmi_server.start
+    end
+    
+    def close
+    	@rmi_server.shutdown
     end
     
     def proxy
@@ -189,7 +194,7 @@ module Selenium
   # Will use existing browser if available; won't close it regardless
   class WindowsDefaultBrowserLauncher
     def launch(url)
-      system('cmd /c start ' + url)
+      system('cmd /c start ' + url.gsub(/&/, "^&"))
     end
     def close; end
   end
