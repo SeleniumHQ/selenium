@@ -53,16 +53,34 @@ function runTest() {
     testLoop.start();
 }
 
-function nextCommand() {
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+}
 
+function buildDriverParams() {
+    var host = getQueryVariable("driverhost");
+    var port = getQueryVariable("driverport");
+    if (host != undefined && port != undefined) {
+        return "&driverhost=" + host + "&driverport=" + port;
+    } else {
+        return ""
+    }
+}
+
+function nextCommand() {
     var xmlHttp = XmlHttp.create();
-    
     try {
-        //alert("postResult == " + postResult);
         if (postResult == "START") {
-            xmlHttp.open("GET", "driver?seleniumStart=true", false);
+            xmlHttp.open("GET", "driver?seleniumStart=true" + buildDriverParams(), false);
         } else {
-            xmlHttp.open("GET", "driver?commandResult=" + postResult, false);
+            xmlHttp.open("GET", "driver?commandResult=" + postResult + buildDriverParams(), false);
         }
         xmlHttp.send(null);
     } catch(e) {
