@@ -72,7 +72,7 @@
                     <name>Full release</name>
                 </download>
                 <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/40/selenium-0.5.0-java-src.zip</url>
+                    <url>http://gforge.public.thoughtworks.org/download.php/53/selenium-0.6.0-java-src.zip</url>
                     <name>Source code for the Java language driver for Selenium</name>
                 </download>
                 <download>
