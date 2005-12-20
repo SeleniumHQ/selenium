@@ -90,7 +90,7 @@ function TreeView(recorder, document, tree) {
 		}
 
 		for (func in scope.Selenium.prototype) {
-			this.log.debug("func=" + func);
+			//this.log.debug("func=" + func);
 			if (func.match(/^do[A-Z]/)) {
 				var action = func.substr(2,1).toLowerCase() + func.substr(3);
 				actions.push(action);

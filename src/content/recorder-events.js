@@ -28,7 +28,7 @@ function EventManager(listener) {
 	}
 
 	this.startForContentWindow = function(contentWindow) {
-		forEachInput(new RegisterHandler(), contentWindow);
+		new RegisterHandler().handleWindow(contentWindow);
 	}
 
 	this.stopForAllBrowsers = function() {
@@ -36,6 +36,7 @@ function EventManager(listener) {
 	}
 
 	function forEachBrowser(handler) {
+		log.debug("forEachBrowser");
 		var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 		var e = wm.getEnumerator("navigator:browser");
 		var window;
@@ -43,81 +44,56 @@ function EventManager(listener) {
 		var i;
 		while (e.hasMoreElements()) {
 			window = e.getNext();
+			log.debug("window=" + window);
 			browsers = window.getBrowser().browsers;
 			for (i = 0; i < browsers.length; i++) {
+				log.debug("browser=" + browsers[i]);
 				handler.handleWindow(browsers[i].contentWindow);
-				forEachInput(handler, browsers[i].contentWindow);
 			}
 		}
 	}
 	
-	function forEachInput(handler, window) {
-		const documents = getDocuments(window, new Array());
-		for (var i = 0; i < documents.length; i++) {
-			if (handler.doHandleDocument(documents[i])) {
-				parseDocument(documents[i], handler, window);
+	function RegisterHandler(w) {
+	}
+
+	RegisterHandler.prototype.handleWindow = function(window) {
+		if (!window._Selenium_IDE_listeners) {
+			log.debug("registering event listeners");
+			
+			var listeners = {
+				change: function(event) {
+					var tagName = event.target.tagName.toLowerCase();
+					var type = event.target.type;
+					if ('select' == tagName) {
+						var label = event.target.options[event.target.selectedIndex].innerHTML;
+						var value = "label=" + label;
+						self.listener.addCommand("select", getLocator(window, event.target), value, window);
+					} else if ('text' == type || 'password' == type || 'file' == type) {
+						self.listener.addCommand("type", getLocator(window, event.target), event.target.value, window);
+					}
+				},
+
+				click: function(event) {
+					var tagName = event.target.tagName.toLowerCase();
+					var type = event.target.type;
+					if (event.target.hasAttribute("onclick") || event.target.hasAttribute("href") ||
+						(tagName == "input" && 
+						 (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox"))) {
+						self.listener.addCommand("click", getLocator(window, event.target), '', window);
+					}
+				}
 			}
-		}
-	}
-	
-	function parseDocument(doc, interceptor, window) {
-		findElement(doc, "input", function(e) {
-						if (e.type == 'text' || e.type == 'password') {
-							interceptor.handleListener("change", "type", e, window);
-						}
-						if (e.type == 'submit' || e.type == 'button' || e.type == 'image' ||
-							e.type == 'radio' || e.type == 'checkbox') {
-							interceptor.handleListener("click", "click", e, window);
-						}
-					});
-		findElement(doc, "textarea", function(e) {
-						interceptor.handleListener("change", "type", e, window);
-					});
-		findElement(doc, "select", function(e) {
-						interceptor.handleListener("change", "select", e, window);
-					});
-		findElement(doc, "a", function(e) {
-						if (e.href != null) {
-							interceptor.handleListener("click", "click", e, window);
-						}
-					});
-	}
-	
-	function findElement(doc, name, handler) {
-		var elements = doc.getElementsByTagName(name);
-		var e;
-		for (var i = 0; i < elements.length; i++) {
-			handler.apply(this, new Array(elements[i]));
-		}
-	}
-	
-	function RegisterHandler() {
-	}
-	
-	RegisterHandler.prototype.doHandleDocument = function(doc) {
-		if (!doc.registeredSeleniumIDE) {
-			doc.registeredSeleniumIDE = true;
+
+			for (name in listeners) {
+				window.addEventListener(name, listeners[name], false);
+			}
+			
+			window._Selenium_IDE_listeners = listeners;
+			
 			return true;
 		} else {
 			return false;
 		}
-	};
-	
-	RegisterHandler.prototype.handleWindow = function(window) {
-	};
-
-	RegisterHandler.prototype.handleListener = function(event, command, e, window) {
-		e._recorder_listener = function() {
-			var value = '';
-			if (command == 'select') {
-				var label = e.options[e.selectedIndex].innerHTML;
-				value = "label=" + label;
-			} else if (command == 'type') {
-				value = e.value;
-			}
-			self.listener.addCommand(command, getLocator(window, e), value, window);
-		};
-		e.addEventListener(event, e._recorder_listener, false);
 	};
 	
 	function DeregisterHandler() {
@@ -133,11 +109,16 @@ function EventManager(listener) {
 	};
 
 	DeregisterHandler.prototype.handleWindow = function(window) {
-		window._locator_pageBot = null;
-	};
-
-	DeregisterHandler.prototype.handleListener = function(event, command, e, window) {
-		e.removeEventListener(event, e._recorder_listener, false);
+		//window.removeEventListener(window, e._changeEventListener, false);
+		if (window._Selenium_IDE_listeners) {
+			log.debug("unregistering event listeners");
+			var listeners = window._Selenium_IDE_listeners;
+			for (name in listeners) {
+				window.removeEventListener(window, listeners[name], false);
+			}
+			delete window._Selenium_IDE_listeners;
+		}
+		delete window._locator_pageBot;
 	};
 
 	function getPageBot(window) {
@@ -150,10 +131,8 @@ function EventManager(listener) {
 	}
 
 	function getLocator(window, e) {
-		var locatorDetectors = new Array(getIDLocator,
-										 getVisibleLocator, 
-										 getVisible2Locator,
-										 getNameLocator);
+		var locatorDetectors = 
+			[getLinkLocator, getIDLocator, getNameLocator, getOptimizedXPathLocator];
 		var i = 0;
 		var xpathLevel = 0;
 		var maxLevel = 10;
@@ -227,33 +206,43 @@ function EventManager(listener) {
 		}
 	}
 
-	function getVisibleLocator(e) {
+	function getLinkLocator(e) {
+		if (e.nodeName == 'A') {
+			var text = e.textContent;
+			if (!text.match(/^\s*$/)) {
+				return "link=" + e.textContent;
+			}
+		}
+		return "";
+	}
+
+	function getIDLocator(e) {
+		if (e.id != '') {
+			return "id=" + e.id;
+		}
+		return '';
+	}
+
+	function getNameLocator(e) {
+		if (e.name != '') {
+			return e.name;
+		}
+		return '';
+	}
+	
+	function getOptimizedXPathLocator(e) {
 		var i;
 		if (e.nodeName == 'INPUT') {
 			if (e.type == 'button' || e.type == 'submit') {
 				return xpathLocator(e, 'type,value');
 			} else if (e.type == 'image' && e.alt != '') {
 				return xpathLocator(e, 'type,alt');
-			} else if ((e.type == 'text' || e.type == 'password') && e.name != '') {
-				return e.name;
 			} else if (e.type == 'checkbox' || e.type == 'radio') {
-				if (e.name != '' && e.value != '') {
-					return xpathLocator(e, 'name,value');
-				} else if (e.name != '') {
-					return e.name;
-				}
+				return xpathLocator(e, 'name,value');
 			} else {
 				return "//input[@type='" + e.type + "']";
 			}
-		} else if (e.nodeName == 'TEXTAREA') {
-			return e.name;
-		} else if (e.nodeName == 'SELECT') {
-			return e.name;
 		} else if (e.nodeName == 'A') {
-			var text = e.textContent;
-			if (!text.match(/^\s*$/)) {
-				return "link=" + e.textContent;
-			}
 			var nodeList = e.childNodes;
 			for (i = 0; i < nodeList.length; i++) {
 				var node = nodeList[i];
@@ -261,38 +250,12 @@ function EventManager(listener) {
 					return "//a[img/@alt='" + node.alt + "']";
 				}
 			}
-			//return "//a[@href='" + e.href + "']";
-		}
-		return "";
-	}
-
-	function getVisible2Locator(e) {
-		var i;
-		if (e.nodeName == 'A') {
 			var text = e.textContent;
 			if (!text.match(/^\s*$/)) {
 				return "//a[contains(text(),'" + text.replace(/^\s+/,'').replace(/\s+$/,'') + "')]";
 			}
 		}
 		return "";
-	}
-
-	function getNameLocator(e) {
-		var i;
-		if (e.nodeName == 'INPUT') {
-			if (e.name != '') {
-				return "name=" + e.name;
-			}
-		}
-		return "";
-	}
-
-	function getIDLocator(e) {
-		var i;
-		if (e.id != '') {
-			return "id=" + e.id;
-		}
-		return '';
 	}
 
 	function elementXPath(node, conditions) {
