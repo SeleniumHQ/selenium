@@ -28,7 +28,7 @@ function EventManager(listener) {
 	}
 
 	this.startForContentWindow = function(contentWindow) {
-		new RegisterHandler().handleWindow(contentWindow);
+		callForWindow(new RegisterHandler(), contentWindow);
 	}
 
 	this.stopForAllBrowsers = function() {
@@ -48,17 +48,40 @@ function EventManager(listener) {
 			browsers = window.getBrowser().browsers;
 			for (i = 0; i < browsers.length; i++) {
 				log.debug("browser=" + browsers[i]);
-				handler.handleWindow(browsers[i].contentWindow);
+				callForWindow(handler, browsers[i].contentWindow);
 			}
 		}
 	}
-	
+
+	function callForWindow(handler, contentWindow) {
+		var documents = getDocuments(contentWindow);
+		for (var i = 0; i < documents.length; i++) {
+			handler.handleDocument(documents[i], contentWindow);
+		}
+	}
+
 	function RegisterHandler(w) {
 	}
 
-	RegisterHandler.prototype.handleWindow = function(window) {
-		if (!window._Selenium_IDE_listeners) {
-			log.debug("registering event listeners");
+	RegisterHandler.prototype.handleDocument = function(document, window) {
+		if (!document._Selenium_IDE_listeners) {
+			log.debug("registering event listeners for " + document);
+			
+			function findClickableElement(e, window) {
+				var tagName = e.tagName.toLowerCase();
+				var type = e.type;
+				if (e.hasAttribute("onclick") || e.hasAttribute("href") ||
+					(tagName == "input" && 
+					 (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox"))) {
+					return e;
+				} else {
+					if (e.parentNode != null) {
+						return findClickableElement(e.parentNode, window);
+					} else {
+						return null;
+					}
+				}
+			}
 			
 			var listeners = {
 				change: function(event) {
@@ -70,25 +93,24 @@ function EventManager(listener) {
 						self.listener.addCommand("select", getLocator(window, event.target), value, window);
 					} else if ('text' == type || 'password' == type || 'file' == type) {
 						self.listener.addCommand("type", getLocator(window, event.target), event.target.value, window);
+					} else {
+						log.debug("ignoring change event: tagName=" + tagName);
 					}
 				},
 
 				click: function(event) {
-					var tagName = event.target.tagName.toLowerCase();
-					var type = event.target.type;
-					if (event.target.hasAttribute("onclick") || event.target.hasAttribute("href") ||
-						(tagName == "input" && 
-						 (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox"))) {
-						self.listener.addCommand("click", getLocator(window, event.target), '', window);
+					var clickable = findClickableElement(event.target);
+					if (clickable) {
+						self.listener.addCommand("click", getLocator(window, clickable), '', window);
 					}
-				}
+				},
 			}
 
 			for (name in listeners) {
-				window.addEventListener(name, listeners[name], false);
+				document.addEventListener(name, listeners[name], false);
 			}
 			
-			window._Selenium_IDE_listeners = listeners;
+			document._Selenium_IDE_listeners = listeners;
 			
 			return true;
 		} else {
@@ -99,24 +121,15 @@ function EventManager(listener) {
 	function DeregisterHandler() {
 	}
 	
-	DeregisterHandler.prototype.doHandleDocument = function(doc) {
-		if (doc.registeredSeleniumIDE) {
-			doc.registeredSeleniumIDE = false;
-			return true;
-		} else {
-			return false;
-		}
-	};
-
-	DeregisterHandler.prototype.handleWindow = function(window) {
+	DeregisterHandler.prototype.handleDocument = function(document, window) {
 		//window.removeEventListener(window, e._changeEventListener, false);
-		if (window._Selenium_IDE_listeners) {
+		if (document._Selenium_IDE_listeners) {
 			log.debug("unregistering event listeners");
-			var listeners = window._Selenium_IDE_listeners;
+			var listeners = document._Selenium_IDE_listeners;
 			for (name in listeners) {
-				window.removeEventListener(window, listeners[name], false);
+				document.removeEventListener(name, listeners[name], false);
 			}
-			delete window._Selenium_IDE_listeners;
+			delete document._Selenium_IDE_listeners;
 		}
 		delete window._locator_pageBot;
 	};

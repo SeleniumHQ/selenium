@@ -124,3 +124,23 @@ function continueCurrentTest() {
 		LOG.error("testLoop is null");
 	}
 }
+
+function showElement(locator) {
+	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	var window = wm.getMostRecentWindow('navigator:browser').getBrowser().contentWindow;
+	
+	var pageBot = window._test_pageBot;
+	if (pageBot == null) {
+		pageBot = PageBot.createForWindow(window);
+		window._test_pageBot = pageBot;
+	}
+
+	var e = pageBot.findElement(locator);
+	if (e) {
+		LOG.info("bg=" + e.style['background-color']);
+		e.style['background-color'] = 'red';
+		LOG.info("locator found: " + locator);
+	} else {
+		LOG.error("locator not found: " + locator);
+	}
+}

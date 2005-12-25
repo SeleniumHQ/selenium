@@ -42,3 +42,4 @@ SeleniumIDE.notifyUnloadToRecorder = function(doc) {
 		window.onUnloadDocument(doc);
 	}
 }
+

@@ -69,4 +69,9 @@ Debugger.prototype.doContinue = function() {
 	}
 };
 
+Debugger.prototype.showElement = function(locator) {
+	this.init();
+	this.runner.showElement(locator);
+}
+
 seleniumDebugger = new Debugger();

@@ -233,7 +233,6 @@ function playback() {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
 	var contentWindow = window.getBrowser().contentWindow;
-	var appcontent = window.document.getElementById("appcontent");
 	this.seleniumStartPage = contentWindow.location.href;
 	this.seleniumWindow = contentWindow;
 	
@@ -258,3 +257,4 @@ function openLogWindow() {
 		);
 	}
 }
+
