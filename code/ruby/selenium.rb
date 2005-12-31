@@ -158,43 +158,39 @@ module Selenium
     end
   end  
 
-  module SpecifiedPathBrowserLauncher
-    @@executable = nil
-    def initialize(executable = @@executable)
-      @executable = executable || raise("No executable specified")
+  class DefaultBrowserLauncher
+    def initialize
+      @launcher = determine_type.new
     end
-  end
     
-  class UnixSpecifiedPathBrowserLauncher
-    include SpecifiedPathBrowserLauncher
     def launch(url)
-      @pid = Process.fork{exec "#{@executable} #{url}"}
+      @launcher.launch(url)
     end
+    
     def close
-      Process.kill('SIGKILL', @pid)
+      @launcher.close
     end
-  end
-
-  class WindowsSpecifiedPathBrowserLauncher
-    include SpecifiedPathBrowserLauncher
-    def launch(url)
-      @thread = Thread.new{system("#{@executable} #{url}")}
-    end
-    def close; end # need to find a way
-  end
     
-  class WindowsSpecifiedPathBrowserLauncher2
-    include SpecifiedPathBrowserLauncher
-    def launch(url)
-      system("start #{@executable} #{url}")\
+  private  
+    def determine_type
+      if RUBY_PLATFORM =~ /darwin/
+        return OSXDefaultBrowserLauncher
+      else
+        return WindowsDefaultBrowserLauncher
+      end
     end
-    def close; end # need to find a way
   end
 
-  # Will use existing browser if available; won't close it regardless
   class WindowsDefaultBrowserLauncher
     def launch(url)
       system('cmd /c start ' + url.gsub(/&/, "^&"))
+    end
+    def close; end
+  end
+  
+  class OSXDefaultBrowserLauncher
+    def launch(url)
+      system('open ' + url.gsub(/&/, "\\\\&"))
     end
     def close; end
   end
