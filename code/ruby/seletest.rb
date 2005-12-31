@@ -14,7 +14,7 @@ class Test::Unit::TestCase
     	'selenium/javascript'
     end
     def driver_port
-    	7899
+    	7896
     end
     def driver_host
     	"localhost"
@@ -27,7 +27,7 @@ class Test::Unit::TestCase
         @selenium = @processor.proxy
 
 	# TODO: allow configurable, multi-browser execution
-        @browser = Selenium::WindowsDefaultBrowserLauncher.new
+        @browser = Selenium::DefaultBrowserLauncher.new
         
         host, port = server_info
         url = sprintf('http://%s:%s/%s/SeleneseRunner.html?driverhost=%s&driverport=%s', host, port, path_to_runner, driver_host, driver_port)
