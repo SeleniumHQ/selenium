@@ -68,6 +68,7 @@ function EventManager(listener) {
 			log.debug("registering event listeners for " + document);
 			
 			function findClickableElement(e, window) {
+				if (!e.tagName) return null;
 				var tagName = e.tagName.toLowerCase();
 				var type = e.type;
 				if (e.hasAttribute("onclick") || e.hasAttribute("href") ||
@@ -104,6 +105,10 @@ function EventManager(listener) {
 						self.listener.addCommand("click", getLocator(window, clickable), '', window);
 					}
 				},
+
+				mousedown: function(event) {
+					self.listener.clickedElement = event.target;
+				}
 			}
 
 			for (name in listeners) {

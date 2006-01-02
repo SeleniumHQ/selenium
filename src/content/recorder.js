@@ -58,15 +58,6 @@ function initOptions() {
 	}
 }
 
-function isFocused(id) {
-	var focused = document.commandDispatcher.focusedElement;
-	if (focused) {
-		return focused.getAttribute("id") == id;
-	} else {
-		return false;
-	}
-}
-
 function newTestCase() {
 	if (clear()) {
 		this.setTestCase(new TestCase());
@@ -146,14 +137,6 @@ function onUnloadDocument(doc) {
 		clearTimeout(this.unloadTimeoutID);
 	}
 	this.unloadTimeoutID = setTimeout("appendAND_WAIT()", 100);
-}
-
-function recordVerifyTextPresent(text, window) {
-	addCommand("verifyTextPresent", text, '', window);
-}
-
-function recordVerifyTitle(window) {
-	addCommand("verifyTitle", window.document.title, '', window);
 }
 
 function recordOpen(window) {

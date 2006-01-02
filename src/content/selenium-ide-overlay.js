@@ -18,65 +18,162 @@
 // overlay functions for the browser.
 //
 
-SeleniumIDE.recordVerifyTextPresent = function() {
-    var focusedWindow = document.commandDispatcher.focusedWindow;
-    var selection = String(focusedWindow.getSelection());
-	var window = SeleniumIDE.getRecorderWindow();
-	if (window && selection != '') {
-		window.recordVerifyTextPresent(selection, focusedWindow);
+SeleniumIDE.useAssert = true;
+
+SeleniumIDE.checks = {
+	open: function(window, element) {
+		var path = window.location.href;
+		var base = '';
+		var r = /^(\w+:\/\/[\w\.-]+(:\d+)?)\/.*/.exec(path);
+		if (r) {
+			path = path.substr(r[1].length);
+			base = r[1] + '/';
+		}
+		return {
+			command: "open",
+			target: path
+		};
+	},
+	textPresent: function(window, element) {
+		var result = { name: "TextPresent" };
+		var selection = String(window.getSelection());
+		if (selection) {
+			result.target = selection;
+		} else {
+			result.disabled = true;
+		}
+		return result;
+	},
+	title: function(window, element) {
+		var result = { name: "Title" };
+		if (window.document) {
+			result.target = window.document.title;
+		} else {
+			result.disabled = true;
+		}
+		return result;
+	},
+	table: function(window, element) {
+		var result = { name: "Table" };
+		if (element && element.tagName && 'td' == element.tagName.toLowerCase()) {
+			var parentTable = null;
+			var temp = element.parentNode;
+			while (temp != null) {
+				if (temp.tagName.toLowerCase() == 'table') {
+					parentTable = temp;
+					break;
+				}
+				temp = temp.parentNode;
+			}
+			if (parentTable == null) {
+				result.disabled = true;
+				result.target = "(Unavailable: Selection not a cell of a table)";
+			} else {
+				//first try to locate table by id and then by name
+				var tableName = parentTable.id;
+				if(!tableName) {
+					tableName = parentTable.name;
+				}
+				if(!tableName) {
+					result.disabled = true;
+					result.target = "(Unavailable: Table must have an id or name declared)";
+				} else {
+					result.target = tableName + '.' + element.parentNode.rowIndex + '.' + element.cellIndex;
+					result.value = element.innerHTML;
+				}
+			}
+		} else {
+			result.disabled = true;
+		}
+		return result;
 	}
 }
 
-SeleniumIDE.recordOpen = function() {
-    var focusedWindow = document.commandDispatcher.focusedWindow;
-	var window = SeleniumIDE.getRecorderWindow();
-	if (window) {
-		window.recordOpen(focusedWindow);
-	}
-}
-
-SeleniumIDE.recordVerifyTitle = function() {
-	var window = SeleniumIDE.getRecorderWindow();
-	if (window) {
-		window.recordVerifyTitle(document.commandDispatcher.focusedWindow);
-	}
-}
-
-SeleniumIDE.testRecorderPopup = function(popup) {
-	function $(id) {
-		return window.document.getElementById("selenium-ide-" + id);
-	}
-	var focusedWindow = document.commandDispatcher.focusedWindow;
-	var e;
-	
-	e = $("verifyTextPresent");
-	var selection = String(focusedWindow.getSelection());
-	if (selection) {
-		e.setAttribute('disabled', 'false');
-		e.label = 'verifyTextPresent "' + selection + '"';
+SeleniumIDE.getCheckCommand = function(menuitem) {
+	var focusedWindow = menuitem.ownerDocument.commandDispatcher.focusedWindow;
+	var recorder = SeleniumIDE.getRecorderWindow();
+	var r = /^selenium-ide-check-(.*)$/.exec(menuitem.id);
+	if (recorder && r && SeleniumIDE.checks[r[1]]) {
+		var command = SeleniumIDE.checks[r[1]](focusedWindow, recorder.clickedElement);
+		['name', 'target', 'value'].forEach(function(name) {
+												   if (command[name] == null) command[name] = '';
+											   });
+		if (!command.command)
+			command.command = (SeleniumIDE.useAssert ? 'assert' : 'verify') + command.name;
+		command.window = focusedWindow;
+		return command;
 	} else {
-		e.setAttribute('disabled', 'true');
-		e.label = 'verifyTextPresent';
+		return null;
 	}
+}
+
+SeleniumIDE.toggleCheckType = function() {
+	SeleniumIDE.useAssert = !SeleniumIDE.useAssert;
+}
+
+SeleniumIDE.appendCheck = function(event) {
+	var command;
+	if (null != (command = SeleniumIDE.getCheckCommand(event.target))) {
+		if (!command.disabled) {
+			SeleniumIDE.getRecorderWindow().addCommand(command.command, command.target, command.value, command.window);
+		}
+	}
+}
+
+SeleniumIDE.testRecorderPopup = function(event) {
+	if (event.target.id != "contentAreaContextMenu") return;
 	
-	e = $("verifyTitle");
-	e.label = 'verifyTitle "' + focusedWindow.document.title + '"';
-	
-	return true;
+	contextMenu = event.target;
+
+	function hideMenus(hidden) {
+		var len = contextMenu.childNodes.length;
+		for (var i = 0; i < len; i++) {
+			var item = contextMenu.childNodes[i];
+			if (item.id && /^selenium-ide-/.test(item.id)) {
+				item.hidden = hidden;
+			}
+		}
+	}
+
+	var recorder = SeleniumIDE.getRecorderWindow();
+	if (recorder) {
+		hideMenus(false);
+
+		var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
+		var len = contextMenu.childNodes.length;
+		for (var i = 0; i < len; i++) {
+			var item = contextMenu.childNodes[i];
+			var command;
+			if (null != (command = SeleniumIDE.getCheckCommand(item))) {
+				if (command.disabled) {
+					item.setAttribute('disabled', 'true');
+				} else {
+					item.setAttribute('disabled', 'false');
+				}
+				item.label = command.command + ' ' + command.target + ' ' + command.value;
+			}
+		}
+	} else {
+		hideMenus(true);
+	}
+}
+
+SeleniumIDE.onContentLoaded = function() {
+	SeleniumIDE.reloadRecorder(window.getBrowser().contentWindow);
+	var contextMenu = window.document.getElementById("contentAreaContextMenu");
+	if (contextMenu) {
+		contextMenu.addEventListener("popupshowing", SeleniumIDE.testRecorderPopup, false);
+		contextMenu.addEventListener("command", SeleniumIDE.appendCheck, false);
+	}
 }
 
 SeleniumIDE.initOverlay = function() {
 	var appcontent = window.document.getElementById("appcontent");
 	if (appcontent) {
-		if (!appcontent.recorderLoaded) {
-			appcontent.recorderLoaded = true;
-			appcontent.addEventListener("DOMContentLoaded", 
-										function() { SeleniumIDE.reloadRecorder(window.getBrowser().contentWindow) },
-										false);
-		}
+		appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.onContentLoaded, false);
 	}
 	window.addEventListener("beforeunload", function() { SeleniumIDE.notifyUnloadToRecorder(window.document) }, false);
+
 }
 
 SeleniumIDE.initOverlay();
-	

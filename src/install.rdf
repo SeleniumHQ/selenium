@@ -7,8 +7,8 @@
 
     <em:name>Selenium IDE</em:name>
     <em:id>{a6fd85ed-e919-4a43-a5af-8da18bda539f}</em:id>
-    <em:version>0.1</em:version>
-    <em:description>Description of Selenium IDE goes here...</em:description>
+    <em:version>0.6+</em:version>
+    <em:description>Record and edit Selenium tests</em:description>
     <em:creator>OpenQA</em:creator>
     <em:homepageURL>http://www.openqa.org/</em:homepageURL>
     <em:optionsURL>chrome://selenium-ide/content/optionsDialog.xul</em:optionsURL>
@@ -16,7 +16,7 @@
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>1.0</em:minVersion>
+        <em:minVersion>1.5</em:minVersion>
         <em:maxVersion>1.5.0.*</em:maxVersion>
       </Description>
     </em:targetApplication> 
