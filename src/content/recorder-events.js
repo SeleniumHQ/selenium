@@ -91,9 +91,9 @@ function EventManager(listener) {
 					if ('select' == tagName) {
 						var label = event.target.options[event.target.selectedIndex].innerHTML;
 						var value = "label=" + label;
-						self.listener.addCommand("select", getLocator(window, event.target), value, window);
+						self.listener.addCommand("select", self.getLocator(window, event.target), value, window);
 					} else if ('text' == type || 'password' == type || 'file' == type) {
-						self.listener.addCommand("type", getLocator(window, event.target), event.target.value, window);
+						self.listener.addCommand("type", self.getLocator(window, event.target), event.target.value, window);
 					} else {
 						log.debug("ignoring change event: tagName=" + tagName);
 					}
@@ -102,7 +102,7 @@ function EventManager(listener) {
 				click: function(event) {
 					var clickable = findClickableElement(event.target);
 					if (clickable) {
-						self.listener.addCommand("click", getLocator(window, clickable), '', window);
+						self.listener.addCommand("click", self.getLocator(window, clickable), '', window);
 					}
 				},
 
@@ -148,7 +148,7 @@ function EventManager(listener) {
 		return pageBot;
 	}
 
-	function getLocator(window, e) {
+	this.getLocator = function(window, e) {
 		var locatorDetectors = 
 			[getLinkLocator, getIDLocator, getNameLocator, getOptimizedXPathLocator];
 		var i = 0;

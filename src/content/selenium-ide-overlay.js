@@ -53,6 +53,24 @@ SeleniumIDE.checks = {
 		}
 		return result;
 	},
+	value: function(window, element) {
+		var result = { name: "Value" };
+		if (element && element.hasAttribute && element.tagName &&
+			('input' == element.tagName.toLowerCase() || element.hasAttribute("value"))) {
+			var locator = SeleniumIDE.getRecorderWindow().eventManager.getLocator(window, element);
+			result.target = locator;
+			var type = element.getAttribute("type");
+			if ('input' == element.tagName.toLowerCase() && 
+				(type == 'checkbox' || type == 'radio')) {
+				result.value = element.checked ? 'on' : 'off';
+			} else {
+				result.value = element.getAttribute('value');
+			}
+		} else {
+			result.disabled = true;
+		}
+		return result;
+	},
 	table: function(window, element) {
 		var result = { name: "Table" };
 		if (element && element.tagName && 'td' == element.tagName.toLowerCase()) {
@@ -71,10 +89,10 @@ SeleniumIDE.checks = {
 			} else {
 				//first try to locate table by id and then by name
 				var tableName = parentTable.id;
-				if(!tableName) {
+				if (!tableName) {
 					tableName = parentTable.name;
 				}
-				if(!tableName) {
+				if (!tableName) {
 					result.disabled = true;
 					result.target = "(Unavailable: Table must have an id or name declared)";
 				} else {
