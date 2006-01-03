@@ -102,20 +102,18 @@ function saveNewTestCase() {
 	document.getElementById("filename").value = this.testCase.filename;
 }
 
-function startRecord() {
+function loadRecorder() {
 	this.recordingEnabled = true;
 	init();
 	this.eventManager.startForAllBrowsers();
 }
 
-function startRecordFor(contentWindow) {
-	if (this.recordingEnabled) {
-		init();
-		this.eventManager.startForContentWindow(contentWindow);
-	}
+function loadRecorderFor(contentWindow) {
+	init();
+	this.eventManager.startForContentWindow(contentWindow);
 }
 
-function stopRecord() {
+function unloadRecorder() {
 	if (this.options.rememberBaseURL == 'true'){
 		this.options.baseURL = document.getElementById("baseURL").value;
 		this.options.save('baseURL');
@@ -125,11 +123,6 @@ function stopRecord() {
 
 function toggleRecordingEnabled(enabled) {
 	this.recordingEnabled = enabled;
-	if (enabled) {
-		startRecord();
-	} else {
-		stopRecord();
-	}
 }
 
 function onUnloadDocument(doc) {

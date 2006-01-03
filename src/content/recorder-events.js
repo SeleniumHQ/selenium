@@ -86,6 +86,8 @@ function EventManager(listener) {
 			
 			var listeners = {
 				change: function(event) {
+					if (!self.listener.recordingEnabled) return;
+					
 					var tagName = event.target.tagName.toLowerCase();
 					var type = event.target.type;
 					if ('select' == tagName) {
@@ -100,6 +102,8 @@ function EventManager(listener) {
 				},
 
 				click: function(event) {
+					if (!self.listener.recordingEnabled) return;
+					
 					var clickable = findClickableElement(event.target);
 					if (clickable) {
 						self.listener.addCommand("click", self.getLocator(window, clickable), '', window);

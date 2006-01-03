@@ -32,7 +32,7 @@ SeleniumIDE.getRecorderWindow = function() {
 SeleniumIDE.reloadRecorder = function(contentWindow) {
 	var window = SeleniumIDE.getRecorderWindow();
 	if (window != null) {
-		window.startRecordFor(contentWindow);
+		window.loadRecorderFor(contentWindow);
 	}
 }
 
