@@ -123,10 +123,10 @@ limitations under the License.
 		<row align="center">
 		  <!-- show different options collected by the client. Allow user to override -->
 		  <label control="commandTarget" value="Target"/>
-		  <textbox disabled="true" id="commandTarget" oninput="recorder.treeView.updateCurrentCommand('target', this.value)"/>
-		  <!--
-		  <button label="Find" oncommand="seleniumDebugger.showElement(document.getElementById('commandTarget').value)"/>
-		  -->
+		  <hbox flex="1">
+		    <textbox flex="1" disabled="true" id="commandTarget" oninput="recorder.treeView.updateCurrentCommand('target', this.value)"/>
+		    <button label="Find" oncommand="seleniumDebugger.showElement(document.getElementById('commandTarget').value)"/>
+		  </hbox>
 		</row>
 		<row align="center">
 		  <label control="commandValue" value="Value"/>

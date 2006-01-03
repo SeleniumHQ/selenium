@@ -140,6 +140,35 @@ function showElement(locator) {
 		LOG.info("bg=" + e.style['background-color']);
 		e.style['background-color'] = 'red';
 		LOG.info("locator found: " + locator);
+
+		var flasher = Components.classes["@mozilla.org/inspector/flasher;1"].createInstance()
+			.QueryInterface(Components.interfaces.inIFlasher);
+		flasher.color = "#88ff88";
+		flasher.thickness = 2;
+		flasher.invert = false;
+               
+		flasher.scrollElementIntoView(e);
+		flasher.drawElementOutline(e);
+
+		var flashIndex = 0;
+		
+		function animateFlasher() {
+			var timeout = 0;
+			if (flashIndex % 2 == 0) {
+				flasher.repaintElement(e);
+				timeout = 300;
+			} else {
+				flasher.drawElementOutline(e);
+				timeout = 300;
+			}
+			flashIndex++;
+			if (flashIndex < 3) {
+				recorder.setTimeout(animateFlasher, timeout);
+			}
+		}
+
+		recorder.setTimeout(animateFlasher, 300);
+
 	} else {
 		LOG.error("locator not found: " + locator);
 	}
