@@ -17,6 +17,8 @@
 var log = new Log("Recorder");
 var recorder = this;
 
+const DEFAULT_TITLE = "Selenium IDE";
+
 function init() {
 	if (!this.recorderInitialized) {
 		log.info("initializing");
@@ -62,7 +64,8 @@ function newTestCase() {
 	if (clear()) {
 		this.setTestCase(new TestCase());
 		this.view.refresh();
-		document.getElementById("filename").value = '';
+		//document.getElementById("filename").value = '';
+		document.title = DEFAULT_TITLE;
 	}
 }
 
@@ -73,11 +76,17 @@ function loadTestCase() {
 		if (testCase.load(this.options)) {
 			this.setTestCase(testCase);
 			this.view.refresh();
-			document.getElementById("filename").value = this.testCase.filename;
+			//document.getElementById("filename").value = this.testCase.filename;
+			//document.title = this.testCase.filename + " - " + DEFAULT_TITLE;
+			updateTitle();
 		}
 	} catch (error) {
 		alert(error);
 	}
+}
+
+function updateTitle() {
+	document.title = this.testCase.baseFilename + " - " + DEFAULT_TITLE;
 }
 
 function tabSelected(id) {
@@ -93,13 +102,15 @@ function tabSelected(id) {
 
 function saveTestCase() {
 	if (this.testCase.save(this.options)) {
-		document.getElementById("filename").value = this.testCase.filename;
+		//document.getElementById("filename").value = this.testCase.filename;
+		updateTitle();
 	}
 }
 
 function saveNewTestCase() {
 	this.testCase.saveAsNew(this.options);
-	document.getElementById("filename").value = this.testCase.filename;
+	//document.getElementById("filename").value = this.testCase.filename;
+	updateTitle();
 }
 
 function loadRecorder() {

@@ -301,6 +301,8 @@ TestCase.prototype.load = function(options) {
 	sis.close();
 	is.close();
 	this.filename = thefile.path;
+	this.baseFilename = thefile.leafName;
+	
 	return true;
 };
 
@@ -343,6 +345,7 @@ TestCase.prototype.saveAs = function(options, filename) {
 			outputStream.close();
 			this.log.info("saved " + file.path);
 			this.filename = file.path;
+			this.baseFilename = file.leafName;
 			return true;
 		} else {
 			return false;

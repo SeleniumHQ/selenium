@@ -75,11 +75,31 @@ limitations under the License.
     </popup>
   </popupset>
 
+  <toolbox>
+    <menubar id="menubar">
+      <menu id="file-menu" label="File">
+	<menupopup id="file-popup">
+	  <menuitem label="New" oncommand="newTestCase();"/>
+	  <menuitem label="Open..." oncommand="loadTestCase();"/>
+	  <menuitem label="Save" oncommand="saveTestCase();"/>
+	  <menuitem label="Save As..." oncommand="saveNewTestCase();"/>
+	</menupopup>
+      </menu>
+      <menu id="view-menu" label="Options">
+	<menupopup id="view-popup">
+	  <menuitem label="Options..." oncommand="openPreferences();" />
+	</menupopup>
+      </menu>
+    </menubar>
+  </toolbox>
+
   <vbox flex="1">
+    <!--
     <hbox align="center">
       <button label="File" oncommand="document.getElementById('fileMenu').showPopup(this, -1, -1, 'popup', 'bottomleft', 'topleft')" />
       <textbox id="filename" readonly="true" tooltiptext="Filename" flex="1"/>
     </hbox>
+    -->
     <tabbox flex="1">
       <tabs orient="horizontal" onselect="tabSelected(selectedItem.id)" id="viewTabs">
 	<tab id="editorTab" label="Editor"/>
