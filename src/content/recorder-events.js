@@ -94,7 +94,8 @@ function EventManager(listener) {
 						var label = event.target.options[event.target.selectedIndex].innerHTML;
 						var value = "label=" + label;
 						self.listener.addCommand("select", self.getLocator(window, event.target), value, window);
-					} else if ('text' == type || 'password' == type || 'file' == type) {
+					} else if (('input' == tagName && ('text' == type || 'password' == type || 'file' == type)) ||
+							   'textarea' == tagName) {
 						self.listener.addCommand("type", self.getLocator(window, event.target), event.target.value, window);
 					} else {
 						log.debug("ignoring change event: tagName=" + tagName);
