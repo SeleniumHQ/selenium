@@ -48,6 +48,39 @@ function init() {
 		};
 		initOptions();
 		this.toggleView(this.treeView);
+
+		var controller = {
+			supportsCommand : function(cmd) {
+				switch (cmd) {
+				case "cmd_close":
+				case "cmd_open":
+				case "cmd_save":
+					return true;
+				default:
+				return false;
+				}
+			},
+			isCommandEnabled : function(cmd){
+				switch (cmd) {
+				case "cmd_close":
+				case "cmd_open":
+				case "cmd_save":
+					return true;
+				default:
+				    return false;
+				}
+			},
+			doCommand : function(cmd) {
+				switch (cmd) {
+					case "cmd_close": window.close(); break;
+					case "cmd_save": saveTestCase(); break;
+					case "cmd_open": loadTestCase(); break;
+				}
+			},
+			onEvent : function(evt) {}
+		};
+		window.controllers.appendController(controller);
+		
 		log.info("initialized");
 	}
 }
@@ -212,7 +245,7 @@ function appendAND_WAIT() {
 	//updateSource();
 }
 
-function openPreferences() {
+function openSeleniumIDEPreferences() {
 	window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome", null);
 }
 

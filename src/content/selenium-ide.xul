@@ -1,6 +1,4 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
-<?xml-stylesheet href="selenium-ide.css" type="text/css"?>
 <!--
 Copyright 2005 Shinya Kasatani
 
@@ -16,6 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://selenium-ide/content/selenium-ide.css" type="text/css"?>
+<?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
+<?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
 <window title="Selenium IDE"
   id="selenium-ide"
   windowtype="global:selenium-ide"
@@ -25,6 +27,7 @@ limitations under the License.
   height="500"
   onload="loadRecorder()"
   onunload="unloadRecorder()">
+  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-logging.js"/>
@@ -37,31 +40,28 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>
 
+  <commandset id="editMenuCommands"/>
+  <commandset id="baseMenuCommandSet"/>
+  <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
+  <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
+  <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
+
+  <keyset id="editMenuKeys"/>
+
   <keyset>
-    <key id="close-key" modifiers="accel" key="W" oncommand="window.close();"/>
-    <key id="copy-key" modifiers="accel" key="C" oncommand="recorder.treeView.copy();"/>
-    <key id="cut-key" modifiers="accel" key="X" oncommand="recorder.treeView.cut();"/>
-    <key id="paste-key" modifiers="accel" key="V" oncommand="recorder.treeView.paste();"/>
-    <key id="delete-key" keycode="VK_DELETE" oncommand="recorder.treeView.deleteSelected();"/>
+    <key id="close-key" modifiers="accel" key="W" command="cmd_close"/>
+    <key id="save-key" modifiers="accel" key="S" command="cmd_save"/>
+    <key id="open-key" modifiers="accel" key="O" command="cmd_open"/>
     <key id="breakpoint-key" key="B" oncommand="recorder.treeView.breakpoint();"/>
   </keyset>
 
   <popupset>
-    <!-- upper right options -->
-    <popup id="fileMenu">
-      <menuitem label="New" oncommand="newTestCase();"/>
-      <menuitem label="Open..." oncommand="loadTestCase();"/>
-      <menuitem label="Save" oncommand="saveTestCase();"/>
-      <menuitem label="Save As..." oncommand="saveNewTestCase();"/>
-      <menuseparator/>
-      <menuitem label="Options..." oncommand="openPreferences();" />
-    </popup>
     <!-- popup menu on the tree view -->
     <popup id="treeContextMenu">
-      <menuitem label="Cut" oncommand="recorder.treeView.cut()" key="cut-key"/>
-      <menuitem label="Copy" oncommand="recorder.treeView.copy()" key="copy-key"/>
-      <menuitem label="Paste" oncommand="recorder.treeView.paste()" key="paste-key"/>
-      <menuitem label="Delete" oncommand="recorder.treeView.deleteSelected()" key="delete-key"/>
+      <menuitem label="Cut" command="cmd_cut" key="key_cut"/>
+      <menuitem label="Copy" command="cmd_copy" key="key_copy"/>
+      <menuitem label="Paste" command="cmd_paste" key="key_paste"/>
+      <menuitem label="Delete" command="cmd_delete" key="key_delete"/>
       <menuseparator/>
       <menuitem label="Insert New Command" oncommand="recorder.treeView.insertCommand()"/>
       <menuitem label="Insert New Comment" oncommand="recorder.treeView.insertComment()"/>
@@ -80,26 +80,37 @@ limitations under the License.
       <menu id="file-menu" label="File">
 	<menupopup id="file-popup">
 	  <menuitem label="New" oncommand="newTestCase();"/>
-	  <menuitem label="Open..." oncommand="loadTestCase();"/>
-	  <menuitem label="Save" oncommand="saveTestCase();"/>
+	  <menuitem label="Open..." command="cmd_open" key="open-key"/>
+	  <menuitem label="Save" command="cmd_save" key="save-key"/>
 	  <menuitem label="Save As..." oncommand="saveNewTestCase();"/>
+	  <menuitem label="Close" command="cmd_close" key="close-key"/>
+	</menupopup>
+      </menu>
+      <menu id="menu_edit">
+        <menupopup>
+          <menuitem id="menu_undo"/>
+          <menuitem id="menu_redo"/>
+	  <menuseparator/>
+          <menuitem id="menu_cut"/>
+          <menuitem id="menu_copy"/>
+          <menuitem id="menu_paste"/>
+          <menuitem id="menu_delete"/>
+          <menuseparator/>
+          <menuitem id="menu_selectAll"/>
 	</menupopup>
       </menu>
       <menu id="view-menu" label="Options">
 	<menupopup id="view-popup">
-	  <menuitem label="Options..." oncommand="openPreferences();" />
+	  <menuitem label="Options..." oncommand="openSeleniumIDEPreferences();" />
 	</menupopup>
       </menu>
+      <menu id="windowMenu"/>
+      <menu id="helpMenu"/>
+      <menupopup id="menu_ToolsPopup"/> <!-- for Mac -->
     </menubar>
   </toolbox>
 
   <vbox flex="1">
-    <!--
-    <hbox align="center">
-      <button label="File" oncommand="document.getElementById('fileMenu').showPopup(this, -1, -1, 'popup', 'bottomleft', 'topleft')" />
-      <textbox id="filename" readonly="true" tooltiptext="Filename" flex="1"/>
-    </hbox>
-    -->
     <tabbox flex="1">
       <tabs orient="horizontal" onselect="tabSelected(selectedItem.id)" id="viewTabs">
 	<tab id="editorTab" label="Editor"/>

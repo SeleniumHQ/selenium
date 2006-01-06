@@ -22,7 +22,44 @@ function TreeView(recorder, document, tree) {
 	this.document = document;
 	this.rowCount = 0;
 	var self = this;
-	
+
+	var controller = {
+		supportsCommand : function(cmd) {
+			switch (cmd) {
+			case "cmd_delete":
+			case "cmd_copy":
+			case "cmd_cut":
+			case "cmd_paste":
+			case "cmd_selectAll":
+				return true;
+			default:
+				return false;
+			}
+		},
+		isCommandEnabled : function(cmd){
+			switch (cmd) {
+			case "cmd_delete":
+			case "cmd_copy":
+			case "cmd_cut":
+			    return self.selection.getRangeCount() > 0;
+			case "cmd_paste":
+			    return self.clipboard != null;
+			default:
+				return false;
+			}
+		},
+		doCommand : function(cmd) {
+			switch (cmd) {
+			case "cmd_delete": self.deleteSelected(); break;
+			case "cmd_copy": self.copy(); break;
+			case "cmd_cut": self.cut(); break;
+			case "cmd_paste": self.paste(); break;
+			}
+		},
+		onEvent : function(evt) {}
+	};
+	this.tree.controllers.appendController(controller);
+
 	this.atomService = Components.classes["@mozilla.org/atom-service;1"].
 		getService(Components.interfaces.nsIAtomService);
 
@@ -48,6 +85,7 @@ function TreeView(recorder, document, tree) {
 		trans.setTransferData("text/unicode", str, text.length * 2);
 		clipboard.setData(trans, null, Components.interfaces.nsIClipboard.kGlobalClipboard);
 		this.clipboard = commands;
+		window.updateCommands('clipboard');
 	};
 
 	this.getCommandsFromClipboard = function() {
@@ -173,6 +211,7 @@ TreeView.prototype = {
 			this.setTextBox("commandValue", '', true);
 			this.currentCommand = null;
 		}
+		window.updateCommands('select');
 	},
 	selectRecordIndex: function(index) {
 		var oldRecordIndex = this.testCase.recordIndex;
