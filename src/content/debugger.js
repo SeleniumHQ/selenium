@@ -20,8 +20,8 @@ function Debugger() {
 	this.init = function() {
 		if (this.runner != null) return;
 		
+		this.paused = false;
 		this.runner = new Object();
-		this.state = 'paused';
 
 		recorder.testCaseListeners.push(function(testCase) { self.runner.testCase = testCase; });
 		this.runner.testCase = recorder.testCase;
@@ -40,6 +40,8 @@ function Debugger() {
 		this.runner.getInterval = function() {
 			if (self.runner.testCase.commands[self.runner.testCase.debugIndex].breakpoint) {
 				return -1;
+			} else if (self.paused) {
+				return -1;
 			} else {
 				return document.getElementById("runInterval").selectedItem.value;
 			}
@@ -48,18 +50,24 @@ function Debugger() {
 }
 
 Debugger.prototype.start = function() {
-	document.getElementById("enableRecording").checked = false;
+	document.getElementById("record-button").checked = false;
 	toggleRecordingEnabled(false);
 
 	this.init();
+	this.paused = false;
 	this.runner.start(recorder.document.getElementById("baseURL").value);
 };
 
-Debugger.prototype.doContinue = function() {
-	document.getElementById("enableRecording").checked = false;
+Debugger.prototype.pause = function() {
+	this.paused = true;
+}
+
+Debugger.prototype.doContinue = function(pause) {
+	document.getElementById("record-button").checked = false;
 	toggleRecordingEnabled(false);
 
 	this.init();
+	if (!pause) this.paused = false;
 	if (this.runner.resume) {
 		// Selenium 0.7
 		this.runner.resume();

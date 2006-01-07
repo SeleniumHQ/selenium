@@ -55,6 +55,9 @@ function init() {
 				case "cmd_close":
 				case "cmd_open":
 				case "cmd_save":
+				case "cmd_selenium_play":
+				case "cmd_selenium_pause":
+				case "cmd_selenium_step":
 					return true;
 				default:
 				return false;
@@ -66,23 +69,62 @@ function init() {
 				case "cmd_open":
 				case "cmd_save":
 					return true;
+				case "cmd_selenium_play":
+				    return self.state != 'playing';
+				case "cmd_selenium_pause":
+				    return self.state == 'playing' || self.state == 'paused';
+				case "cmd_selenium_step":
+				    return self.state == 'paused';
 				default:
 				    return false;
 				}
 			},
 			doCommand : function(cmd) {
 				switch (cmd) {
-					case "cmd_close": window.close(); break;
-					case "cmd_save": saveTestCase(); break;
-					case "cmd_open": loadTestCase(); break;
+				case "cmd_close": window.close(); break;
+				case "cmd_save": saveTestCase(); break;
+				case "cmd_open": loadTestCase(); break;
+				case "cmd_selenium_play": seleniumDebugger.start(); break;
+				case "cmd_selenium_pause": 
+				    if (self.state == 'paused') {
+						seleniumDebugger.doContinue();
+					} else {
+						seleniumDebugger.pause();
+					}
+				    break;
+				case "cmd_selenium_step":
+				    seleniumDebugger.doContinue(true);
+				    break;
+				default:
 				}
 			},
 			onEvent : function(evt) {}
 		};
 		window.controllers.appendController(controller);
 		
+		document.commandDispatcher.updateCommands("selenium-ide-state");
 		log.info("initialized");
 	}
+}
+
+function updateSeleniumCommands() {
+	["cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step"].
+		forEach(function(cmd) {
+					goUpdateCommand(cmd);
+				});
+}
+
+function afterInit() {
+}
+
+function setState(state) {
+	this.state = state;
+	if (state == 'paused') {
+		document.getElementById("pause-button").setAttribute("class", "icon resume");
+	} else {
+		document.getElementById("pause-button").setAttribute("class", "icon pause");
+	}
+	window.updateCommands("selenium-ide-state");
 }
 
 function initOptions() {
@@ -257,7 +299,7 @@ function playback() {
 	this.seleniumWindow = contentWindow;
 	
 	// disable recording
-	document.getElementById("enableRecording").checked = false;
+	document.getElementById("record-button").checked = false;
 	toggleRecordingEnabled(false);
 
 	contentWindow.location.href = 'chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 

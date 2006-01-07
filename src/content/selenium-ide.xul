@@ -14,7 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://global/content/xul.css" type="text/css"?>
 <?xml-stylesheet href="chrome://selenium-ide/content/selenium-ide.css" type="text/css"?>
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
 <?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
@@ -45,6 +46,14 @@ limitations under the License.
   <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
   <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
   <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
+  <!--
+  <commandset id="seleniumCommands">
+-->
+    <command id="cmd_selenium_play" oncommand="goDoCommand('cmd_selenium_play')"/>
+    <command id="cmd_selenium_pause" oncommand="goDoCommand('cmd_selenium_pause')"/>
+    <command id="cmd_selenium_step" oncommand="goDoCommand('cmd_selenium_step')"/>
+    <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="updateSeleniumCommands()"/>
+<!--</commandset>-->
 
   <keyset id="editMenuKeys"/>
 
@@ -108,6 +117,26 @@ limitations under the License.
       <menu id="helpMenu"/>
       <menupopup id="menu_ToolsPopup"/> <!-- for Mac -->
     </menubar>
+    <toolbar>
+      <hbox align="center" flex="1">
+	<label value="Base URL"/>
+	<textbox id="baseURL" flex="1" tooltiptext="Base URL used for playing in embedded Selenium."/>
+      </hbox>
+    </toolbar>
+    <toolbar>
+      <radiogroup id="runInterval" orient="horizontal">
+	<radio id="run" label="Run" selected="true" value="0"/>
+	<radio id="walk" label="Walk" value="500"/>
+	<radio id="step" label="Step" value="-1"/>
+      </radiogroup>
+      <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="Play from the beginning" command="cmd_selenium_play"/>
+      <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="Pause / Resume" command="cmd_selenium_pause"/>
+      <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="Step" command="cmd_selenium_step"/>
+      <toolbarseparator/>
+      <toolbarbutton id="testrunner-button" label="Play with Selenium TestRunner" class="icon" tooltiptext="Play with Selenium TestRunner" oncommand="playback()"/>
+      <toolbarspacer flex="1"/>
+      <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="Record" checked="true" onclick="this.checked = !this.checked" oncommand="toggleRecordingEnabled(this.checked)"/>
+    </toolbar>
   </toolbox>
 
   <vbox flex="1">
@@ -172,10 +201,7 @@ limitations under the License.
 	</tabpanel>
       </tabpanels>
     </tabbox>
-    <hbox align="center">
-      <label value="Base URL"/>
-      <textbox id="baseURL" flex="1" tooltiptext="Base URL used for playing in embedded Selenium."/>
-    </hbox>
+    <!--
     <hbox align="center">
       <radiogroup id="runInterval" orient="horizontal">
 	<radio id="run" label="Run" selected="true" value="0"/>
@@ -183,16 +209,21 @@ limitations under the License.
 	<radio id="step" label="Step" value="-1"/>
       </radiogroup>
     </hbox>
+    -->
+    <!--
     <hbox align="center">
       <button label="Start" oncommand="seleniumDebugger.start();"/>
       <button label="Continue" oncommand="seleniumDebugger.doContinue();"/>
       <button label="Show Log" oncommand="openLogWindow()"/>
     </hbox>
+    -->
+    <!--
     <hbox align="center">
       <checkbox id="enableRecording" label="Enable recording" checked="true" oncommand="toggleRecordingEnabled(this.checked)"/>
       <spacer flex="1"/>
       <button label="Play with Selenium TestRunner" oncommand="playback()"/>
     </hbox>
+    -->
   </vbox>
 
 </window>

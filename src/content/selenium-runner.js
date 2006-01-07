@@ -85,6 +85,7 @@ function start(baseURL) {
 		return new SeleniumCommand(command.command, command.target, command.value);
 	}
 	testLoop.commandStarted = function() {
+		recorder.setState("playing");
 		recorder.view.rowUpdated(testCase.debugIndex);
 	}
 	testLoop.commandComplete = function(result) {
@@ -102,11 +103,14 @@ function start(baseURL) {
 		recorder.view.rowUpdated(testCase.debugIndex);
 	}
 	testLoop.testComplete = function() {
+		recorder.setState(null);
 		testLoop = null;
 		testCase.debugIndex = -1;
 		recorder.view.rowUpdated(testCase.debugIndex);
 	}
-	testLoop.pause = function() {}
+	testLoop.pause = function() {
+		recorder.setState("paused");
+	}
 
 	testLoop.start();
 }

@@ -43,3 +43,45 @@ treechildren::-moz-tree-image(breakpoint)
   -moz-box-align: center;
 }
 
+toolbarbutton.icon {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+toolbarbutton:hover:not([disabled="true"]) { 
+  background-color: #aaaaaa;
+}
+
+toolbarbutton.icon:not([disabled="true"]) { 
+  list-style-image: url("icons/icons.png");
+}
+
+toolbarbutton.icon[disabled="true"] { 
+  list-style-image: url("icons/icons_disabled.png");
+}
+
+toolbarbutton.icon label {
+  display: none;
+}
+
+#play-button { 
+  -moz-image-region: rect(0px 16px 16px 0px);
+}
+.pause#pause-button { 
+  -moz-image-region: rect(0px 32px 16px 16px);
+}
+.resume#pause-button { 
+  -moz-image-region: rect(0px 80px 16px 64px);
+}
+#record-button:not([checked="true"]) { 
+  -moz-image-region: rect(0px 48px 16px 32px);
+}
+#record-button[checked="true"] {
+  -moz-image-region: rect(16px 48px 32px 32px);
+}
+#step-button { 
+  -moz-image-region: rect(0px 64px 16px 48px);
+}
+#testrunner-button { 
+  -moz-image-region: rect(0px 96px 16px 80px);
+}
