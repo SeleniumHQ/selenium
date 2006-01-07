@@ -55,6 +55,8 @@ public class SeleneseJettyResourceHandler extends ResourceHandler {
 
     public void handle(String s, String s1, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         res.setField(HttpFields.__ContentType, "text/plain");
+        setNoCacheHeaders(res); 
+        
         OutputStream out = res.getOutputStream();
         ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
         Writer writer = new OutputStreamWriter(buf, StringUtil.__ISO_8859_1);
@@ -74,5 +76,11 @@ public class SeleneseJettyResourceHandler extends ResourceHandler {
         } else {
             req.setHandled(false);
         }
+    }
+
+    private void setNoCacheHeaders(HttpResponse res) {
+        res.setField(HttpFields.__CacheControl, "no-cache");
+        res.setField(HttpFields.__Pragma, "no-cache");
+        res.setField(HttpFields.__Expires, "-1");
     }
 }
