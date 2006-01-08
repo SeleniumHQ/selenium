@@ -18,10 +18,8 @@
 // The current row in the list of tests (test suite)
 currentRowInSuite = 0;
 
-// Where are we at in the current test
-testTableRows = null;
-currentRowInTest = -1;
-currentCommandRow = null;
+// An object representing the current test
+currentTest = null;
 
 // Whether or not the jsFT should run all tests in the suite
 runAllTests = false;
@@ -266,29 +264,59 @@ function startTest() {
         frames['testFrame'].scrollTo(0,0);
     }
 
-    var testTable = getIframeDocument(getTestFrame()).getElementsByTagName("table")[0];
-    testTableRows = testTable.rows;
-    currentRowInTest = -1;
-    currentCommandRow = null;
+    currentTest = new HtmlTest(getIframeDocument(getTestFrame()));
     
     testFailed = false;
     storedVars = new Object();
-
-    resetTestTable();
 
     testLoop = initialiseTestLoop();
     testLoop.start();
 }
 
-function resetTestTable() {
-    for (var i = 0; i <= testTableRows.length - 1; i++) {
-        var row = testTableRows[i];
-        row.bgColor = "white";
-        if (row.cells[2] && row.cells[2].originalHTML) {
-            row.cells[2].innerHTML = row.cells[2].originalHTML
-        } 
-    }
+function HtmlTest(testDocument) {
+    this.init(testDocument);
 }
+
+HtmlTest.prototype = {
+
+    init: function(testDocument) {      
+        this.document = testDocument;  
+        this.document.bgColor = "";
+        this.currentRow = null;
+        this.commandRows = new Array();
+        this.headerRow = null;
+        var tables = this.document.getElementsByTagName("table");
+        for (var i = 0; i < tables.length; i++) {
+            var candidateRows = tables[i].rows;
+            for (var j = 0; j < candidateRows.length; j++) {
+                if (!this.headerRow) {
+                    this.headerRow = candidateRows[j];
+                }
+                if (candidateRows[j].cells.length >= 3) {
+                    this.addCommandRow(candidateRows[j]);
+                }
+            }
+        }
+    },
+    
+    addCommandRow: function(row) {            
+        if (row.cells[2] && row.cells[2].originalHTML) {
+            row.cells[2].innerHTML = row.cells[2].originalHTML;
+        } 
+        row.bgColor = "";
+        this.commandRows.push(row);
+    },
+    
+    nextCommand: function() {
+        if (this.commandRows.length > 0) {
+            this.currentRow = this.commandRows.shift();
+        } else {
+            this.currentRow = null;
+        }
+        return this.currentRow;
+    }
+
+};
 
 function startTestSuite() {
     resetMetrics();
@@ -503,24 +531,11 @@ function initialiseTestLoop() {
     return testLoop;
 }
 
-function findNextCommandRow() {
-    // Return the next row with >= 3 cells
-    while (currentRowInTest < testTableRows.length - 1) {
-        currentRowInTest++;
-        currentCommandRow = testTableRows[currentRowInTest];
-        if (currentCommandRow.cells.length >= 3) {
-            return;
-        }
-    }
-    currentCommandRow = null;
-}
-
 function nextCommand() {
-    findNextCommandRow();
-    if (currentCommandRow == null) {
+    var row = currentTest.nextCommand();
+    if (row == null) {
         return null;
     }
-    var row = currentCommandRow;
     row.cells[2].originalHTML = row.cells[2].innerHTML;
     return new SeleniumCommand(getText(row.cells[0]), 
                                getText(row.cells[1]),
@@ -541,8 +556,8 @@ function scrollIntoView(element) {
 }
 
 function commandStarted() {
-    currentCommandRow.bgColor = workingColor;
-    scrollIntoView(currentCommandRow.cells[0]);
+    currentTest.currentRow.bgColor = workingColor;
+    scrollIntoView(currentTest.currentRow.cells[0]);
     printMetrics();
 }
 
@@ -552,9 +567,9 @@ function commandComplete(result) {
         recordFailure(result.failureMessage);
     } else if (result.passed) {
         numCommandPasses += 1;
-        currentCommandRow.bgColor = passColor;
+        currentTest.currentRow.bgColor = passColor;
     } else {
-        currentCommandRow.bgColor = doneColor;
+        currentTest.currentRow.bgColor = doneColor;
     }
 }
 
@@ -564,26 +579,30 @@ function commandError(errorMessage) {
 }
 
 function recordFailure(errorMsg) {
+    LOG.warn("recordFailure: " + errorMsg);
     // Set cell background to red
-    currentCommandRow.bgColor = failColor;
+    currentTest.currentRow.bgColor = failColor;
 
     // Set error message
-    currentCommandRow.cells[2].innerHTML = errorMsg;
-    currentCommandRow.title = errorMsg;
+    currentTest.currentRow.cells[2].innerHTML = errorMsg;
+    currentTest.currentRow.title = errorMsg;
     testFailed = true;
     suiteFailed = true;
 }
 
 function testComplete() {
-    if(testFailed) {
-        testTableRows[0].bgColor = failColor;
+    var resultColor = passColor;
+    if (testFailed) {
+        resultColor = failColor;
         numTestFailures += 1;
-    }
-    else {
-        testTableRows[0].bgColor = passColor;
+    } else {
         numTestPasses += 1;
     }
 
+    if (currentTest.headerRow) {
+        currentTest.headerRow.bgColor = resultColor;
+    }
+    
     printMetrics();
 
     window.setTimeout("runNextTest()", 1);
