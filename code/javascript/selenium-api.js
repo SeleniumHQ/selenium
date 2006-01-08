@@ -98,6 +98,16 @@ Selenium.prototype.doSelect = function(locator, optionLocator) {
     this.page().selectOption(element, option);
 };
 
+/**
+ * Submit a form, without clicking a submit button.
+ */
+Selenium.prototype.doSubmit = function(formLocator) {
+    var form = this.page().findElement(formLocator);
+    if (!form.onsubmit || form.onsubmit()) {
+        form.submit();
+    }
+};
+
 /*
  * Open the browser to a new location.
  */

@@ -230,6 +230,16 @@ Selenium Actions
             selectWindow    null
             ============    =============   =====
 
+    **submit**\ ( *formLocator* )
+
+        Submit the specified form.  This is particularly useful for forms without submit buttons, e.g. single-input "Search" forms.
+
+        **examples:**
+
+            =============  ================   ==========
+            submit         searchForm         
+            =============  ================   ==========
+
     **goBack**\ ()
 
         Simulates the user clicking the "back" button on their browser.
