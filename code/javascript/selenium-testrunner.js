@@ -266,7 +266,7 @@ function startTest() {
         frames['testFrame'].scrollTo(0,0);
     }
 
-    testTable = getIframeDocument(getTestFrame()).getElementsByTagName("table")[0];
+    var testTable = getIframeDocument(getTestFrame()).getElementsByTagName("table")[0];
     testTableRows = testTable.rows;
     currentRowInTest = -1;
     currentCommandRow = null;
@@ -282,7 +282,11 @@ function startTest() {
 
 function resetTestTable() {
     for (var i = 0; i <= testTableRows.length - 1; i++) {
-        testTableRows[i].bgColor = "white";
+        var row = testTableRows[i];
+        row.bgColor = "white";
+        if (row.cells[2] && row.cells[2].originalHTML) {
+            row.cells[2].innerHTML = row.cells[2].originalHTML
+        } 
     }
 }
 
@@ -517,12 +521,10 @@ function nextCommand() {
         return null;
     }
     var row = currentCommandRow;
-    if (! row.cachedValue) {
-        row.cachedValue = removeNbsp(getText(row.cells[2]));
-    }
+    row.cells[2].originalHTML = row.cells[2].innerHTML;
     return new SeleniumCommand(getText(row.cells[0]), 
                                getText(row.cells[1]),
-                               row.cachedValue);
+                               getText(row.cells[2]));
 }
 
 function removeNbsp(value) {
