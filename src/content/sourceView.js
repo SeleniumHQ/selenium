@@ -26,6 +26,9 @@ function SourceView(recorder, textbox) {
 }
 
 SourceView.prototype = {
+	scrollToRow: function(index) {
+		// TODO
+	},
 	rowInserted: function(index) {
 		this.updateView();
 		this.textbox.inputField.scrollTop = this.textbox.inputField.scrollHeight - this.textbox.inputField.clientHeight;

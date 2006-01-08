@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+/*
+ * Code for running Selenium inside Selenium IDE window.
+ * This file should be read by the debugger using SubScript Loader.
+ */
+
 //
-// Code for running Selenium inside Selenium IDE window.
-// This file should be read every time the debugger starts running the test
-// using SubScript Loader.
+// Patches for Selenium functions
 //
 
 Selenium.prototype.real_doOpen = Selenium.prototype.doOpen;
@@ -47,6 +50,49 @@ Selenium.prototype.doPause = function(waitTime) {
     testLoop.pauseInterval = waitTime;
 };
 
+function Logger() {
+	var self = this;
+	var levels = ["log","debug","info","warn","error"];
+	
+	this.entries = [];
+	
+	levels.forEach(function(level) {
+					   self[level] = function(message) {
+						   self.log(message, level);
+					   }
+				   });
+	
+	this.observers = [];
+	
+	this.exception = function(exception) {
+        var msg = "Unexpected Exception: " + describe(exception, ', ');
+        this.error(msg);
+	}
+	
+	this.log = function(message, level) {
+		var entry = {
+			message: message,
+			level: level,
+			line: function() {
+				return '[' + this.level + '] ' + message + "\n";
+			}
+		};
+		this.entries.push(entry);
+		this.observers.forEach(function(o) { o.onAppendEntry(entry) });
+	}
+
+	this.clear = function() {
+		this.entries.splice(0, this.entries.length);
+		this.observers.forEach(function(o) { o.onClear() });
+	}
+}
+
+var LOG = new Logger();
+
+//
+// runner functions
+//
+
 testLoop = null;
 
 function start(baseURL) {
@@ -58,7 +104,7 @@ function start(baseURL) {
 	selenium.baseURL = baseURL;
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
-	testCase.debugIndex = -1;
+	testCase.debugContext.reset();
 	for (var i = 0; i < testCase.commands.length; i++) {
 		delete testCase.commands[i].result;
 		recorder.view.rowUpdated(i);
@@ -68,50 +114,43 @@ function start(baseURL) {
 		
 	testLoop.getCommandInterval = function() { return getInterval(); }
 	testLoop.nextCommand = function() {
-		recorder.view.rowUpdated(testCase.debugIndex);
-		if (++testCase.debugIndex >= testCase.commands.length) {
-			return null;
-		}
-		var command = testCase.commands[testCase.debugIndex];
+		if (testCase.debugContext.debugIndex >= 0)
+			recorder.view.rowUpdated(testCase.debugContext.debugIndex);
+		var command = testCase.debugContext.nextCommand();
+		if (command == null) return null;
 		return new SeleniumCommand(command.command, command.target, command.value);
 	}
-	testLoop.firstCommand = function() {
-		testCase.debugIndex = -1;
-		//testLoop.nextCommand.apply(this);
-		if (++testCase.debugIndex >= testCase.commands.length) {
-			return null;
-		}
-		var command = testCase.commands[testCase.debugIndex];
-		return new SeleniumCommand(command.command, command.target, command.value);
-	}
+	testLoop.firstCommand = testLoop.nextCommand; // Selenium <= 0.6 only
 	testLoop.commandStarted = function() {
 		recorder.setState("playing");
-		recorder.view.rowUpdated(testCase.debugIndex);
+		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
+		recorder.view.scrollToRow(testCase.debugContext.debugIndex);
 	}
 	testLoop.commandComplete = function(result) {
 		if (result.failed) {
-			testCase.commands[testCase.debugIndex].result = 'failed';
+			testCase.debugContext.currentCommand().result = 'failed';
 		} else if (result.passed) {
-			testCase.commands[testCase.debugIndex].result = 'passed';
+			testCase.debugContext.currentCommand().result = 'passed';
 		} else {
-			testCase.commands[testCase.debugIndex].result = 'done';
+			testCase.debugContext.currentCommand().result = 'done';
 		}
-		recorder.view.rowUpdated(testCase.debugIndex);
+		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
 	testLoop.commandError = function() {
-		testCase.commands[testCase.debugIndex].result = 'failed';
-		recorder.view.rowUpdated(testCase.debugIndex);
+		testCase.debugContext.currentCommand().result = 'failed';
+		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
 	testLoop.testComplete = function() {
 		recorder.setState(null);
 		testLoop = null;
-		testCase.debugIndex = -1;
-		recorder.view.rowUpdated(testCase.debugIndex);
+		testCase.debugContext.reset();
+		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
 	testLoop.pause = function() {
 		recorder.setState("paused");
 	}
 
+	testCase.debugContext.reset();
 	testLoop.start();
 }
 
@@ -141,9 +180,9 @@ function showElement(locator) {
 
 	var e = pageBot.findElement(locator);
 	if (e) {
-		LOG.info("bg=" + e.style['background-color']);
-		e.style['background-color'] = 'red';
-		LOG.info("locator found: " + locator);
+		//LOG.info("bg=" + e.style['background-color']);
+		//e.style['background-color'] = 'red';
+		//LOG.info("locator found: " + locator);
 
 		var flasher = Components.classes["@mozilla.org/inspector/flasher;1"].createInstance()
 			.QueryInterface(Components.interfaces.inIFlasher);

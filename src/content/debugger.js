@@ -35,10 +35,13 @@ function Debugger() {
 		}
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-commandhandlers.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-executionloop.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-browserbot.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-runner.js', this.runner);
 
+		this.logFrame = new LogFrame(this.runner.LOG);
+
 		this.runner.getInterval = function() {
-			if (self.runner.testCase.commands[self.runner.testCase.debugIndex].breakpoint) {
+			if (self.runner.testCase.debugContext.currentCommand().breakpoint) {
 				return -1;
 			} else if (self.paused) {
 				return -1;
@@ -80,6 +83,52 @@ Debugger.prototype.doContinue = function(pause) {
 Debugger.prototype.showElement = function(locator) {
 	this.init();
 	this.runner.showElement(locator);
+}
+
+Debugger.prototype.clearLog = function() {
+	if (this.runner)
+		this.runner.LOG.clear();
+}
+
+Debugger.prototype.reloadLog = function() {
+	if (this.logFrame)
+		this.logFrame.reload();
+}
+
+function LogFrame(log) {
+	this.log = log;
+	this.log.observers.push(this);
+	this.view = document.getElementById("logView");
+	this.filter = document.getElementById("logFilter");
+	this.viewDoc = this.view.contentDocument;
+	this.logElement = this.viewDoc.getElementById("log");
+}
+
+LogFrame.prototype.onClear = function() {
+	var nodes = this.logElement.childNodes;
+	var i;
+	for (i = nodes.length - 1; i >= 0; i--) {
+		this.logElement.removeChild(nodes[i]);
+	}
+}
+
+LogFrame.prototype.reload = function() {
+	var self = this;
+	this.onClear();
+	this.log.entries.forEach(function(entry) { self.onAppendEntry(entry); });
+}
+
+LogFrame.prototype.onAppendEntry = function(entry) {
+	var levels = { debug: 0, info: 1, warn: 2, error: 3 };
+	var entryValue = levels[entry.level];
+	var filterValue = this.filter.selectedItem.value;
+	if (filterValue <= entryValue) {
+		var newEntry = this.viewDoc.createElement('li');
+		newEntry.className = entry.level;
+		newEntry.appendChild(this.viewDoc.createTextNode(entry.line()));
+		this.logElement.appendChild(newEntry);
+		newEntry.scrollIntoView();
+	}
 }
 
 seleniumDebugger = new Debugger();

@@ -25,13 +25,13 @@ limitations under the License.
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   width="400"
-  height="500"
+  height="520"
   onload="loadRecorder()"
   onunload="unloadRecorder()">
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-logging.js"/>
+  <!--<script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-logging.js"/>-->
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-events.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
@@ -92,6 +92,7 @@ limitations under the License.
 	  <menuitem label="Open..." command="cmd_open" key="open-key"/>
 	  <menuitem label="Save" command="cmd_save" key="save-key"/>
 	  <menuitem label="Save As..." oncommand="saveNewTestCase();"/>
+	  <menuseparator/>
 	  <menuitem label="Close" command="cmd_close" key="close-key"/>
 	</menupopup>
       </menu>
@@ -140,7 +141,7 @@ limitations under the License.
   </toolbox>
 
   <vbox flex="1">
-    <tabbox flex="1">
+    <tabbox flex="3" height="300">
       <tabs orient="horizontal" onselect="tabSelected(selectedItem.id)" id="viewTabs">
 	<tab id="editorTab" label="Editor"/>
 	<tab id="sourceTab" label="Source"/>
@@ -217,6 +218,9 @@ limitations under the License.
       <button label="Show Log" oncommand="openLogWindow()"/>
     </hbox>
     -->
+    <splitter collapse="after">
+      <grippy/>
+    </splitter>
     <!--
     <hbox align="center">
       <checkbox id="enableRecording" label="Enable recording" checked="true" oncommand="toggleRecordingEnabled(this.checked)"/>
@@ -224,6 +228,24 @@ limitations under the License.
       <button label="Play with Selenium TestRunner" oncommand="playback()"/>
     </hbox>
     -->
+
+    <vbox id="logBox" flex="1" height="100">
+      <hbox id="logMenu" align="center">
+	<label id="logLabel" value="Log Console"/>
+	<spacer flex="1"/>
+	<menulist id="logFilter" oncommand="seleniumDebugger.reloadLog()">
+	  <menupopup>
+	    <menuitem label="Debug" value="0"/>
+	    <menuitem label="Info" value="1"/>
+	    <menuitem label="Warn" value="2"/>
+	    <menuitem label="Error" value="3"/>
+	  </menupopup>
+	</menulist>
+	<button id="logClear" label="Clear" oncommand="seleniumDebugger.clearLog()"/>
+      </hbox>
+      <iframe flex="1" id="logView" src="LogFrame.html">
+      </iframe>
+    </vbox>
   </vbox>
 
 </window>

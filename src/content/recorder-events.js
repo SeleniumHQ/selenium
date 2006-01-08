@@ -241,7 +241,7 @@ function EventManager(listener) {
 
 	function getIDLocator(e) {
 		if (e.id != '') {
-			return "id=" + e.id;
+			return e.id;
 		}
 		return '';
 	}

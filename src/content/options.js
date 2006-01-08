@@ -19,15 +19,15 @@ const OPTIONS = {
 	
 	commandLoadPattern:
 	"<tr>" +
-	"\\s*<td>([^<]*)</td>" +
-	"\\s*<td>([^<]*)</td>" +
-	"\\s*(<td>([^<]*)</td>|<td/>)" +
+	"\\s*<td>(.*?)</td>" +
+	"\\s*<td>(.*?)</td>" +
+	"\\s*(<td>(.*?)</td>|<td/>)" +
 	"\\s*</tr>\\s*",
 	
 	commandLoadScript:
 	"command.command = result[1];\n" +
 	"command.target = result[2];\n" +
-	"command.value = result[4];\n",
+	"command.value = result[4] || '';\n",
 
 	commentLoadPattern:
 	"<!--((.|\\s)*?)-->\\s*",

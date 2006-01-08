@@ -167,6 +167,9 @@ function TreeView(recorder, document, tree) {
 }
 
 TreeView.prototype = {
+	scrollToRow: function(index) {
+		this.treebox.ensureRowIsVisible(index);
+	},
 	rowInserted: function(index) {
 		this.log.debug("rowInserted: " + index);
 		this.treebox.rowCountChanged(index, 1);
@@ -367,7 +370,7 @@ TreeView.prototype = {
 	},
     getRowProperties: function(row, props) {
 		var command = this.getCommand(row);
-		if (row == this.testCase.debugIndex) {
+		if (row == this.testCase.debugContext.debugIndex) {
 			props.AppendElement(this.atomService.getAtom("debugIndex"));
 		}
 		if (this.tree.currentIndex != row) {
@@ -393,7 +396,7 @@ TreeView.prototype = {
 		if (row == this.testCase.recordIndex) {
 			props.AppendElement(this.atomService.getAtom("recordIndex"));
 		}
-		if (row == this.testCase.debugIndex) {
+		if (row == this.testCase.debugContext.debugIndex) {
 			props.AppendElement(this.atomService.getAtom("debugIndex"));
 		}
 		if (this.tree.currentIndex != row) {

@@ -43,6 +43,27 @@ treechildren::-moz-tree-image(breakpoint)
   -moz-box-align: center;
 }
 
+/*
+ * Log Console
+ */
+
+#logBox {
+  margin: 8px;
+  border: 1px solid #aaa;
+}
+
+#logMenu {
+  border-bottom: 1px solid #aaa;
+}
+
+#logLabel { 
+  font-weight: bold;
+}
+
+/*
+ * Toolbar icons
+ */
+
 toolbarbutton.icon {
   padding-left: 4px;
   padding-right: 4px;

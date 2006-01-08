@@ -77,6 +77,8 @@ function TestCase() {
 	
 	this.commands = new Commands(this);
 
+	var testCase = this;
+
 	this.decodeText = function(text, options) {
 		var escapeXml = options.escapeXmlEntities;
 		if (escapeXml == 'always' || escapeXml == 'partial') {
@@ -138,6 +140,26 @@ function TestCase() {
 			if (instanceOf(command[prop], String)) {
 				command[prop] = converter(command[prop], options);
 			}
+		}
+	}
+
+	this.debugContext = {
+		reset: function() {
+			this.debugIndex = -1;
+		},
+		
+		nextCommand: function() {
+			while (++this.debugIndex < testCase.commands.length) {
+				var command = testCase.commands[this.debugIndex];
+				if (command.type == 'command') {
+					return command;
+				}
+			}
+			return null;
+		},
+
+		currentCommand: function() {
+			return testCase.commands[this.debugIndex];
 		}
 	}
 }
