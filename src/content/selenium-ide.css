@@ -81,6 +81,10 @@ toolbarbutton.icon[disabled="true"] {
   list-style-image: url("icons/icons_disabled.png");
 }
 
+toolbarbutton.icon image {
+  margin-right: 0px;
+}
+
 toolbarbutton.icon label {
   display: none;
 }
