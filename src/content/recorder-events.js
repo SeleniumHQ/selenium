@@ -105,9 +105,11 @@ function EventManager(listener) {
 				click: function(event) {
 					if (!self.listener.recordingEnabled) return;
 					
-					var clickable = findClickableElement(event.target);
-					if (clickable) {
-						self.listener.addCommand("click", self.getLocator(window, clickable), '', window);
+					if (event.button == 0) {
+						var clickable = findClickableElement(event.target);
+						if (clickable) {
+							self.listener.addCommand("click", self.getLocator(window, clickable), '', window);
+						}
 					}
 				},
 
