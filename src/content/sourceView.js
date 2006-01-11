@@ -41,6 +41,10 @@ SourceView.prototype = {
 	},
 	updateTestCase: function(text) {
 		this.testCase.setSource(text, this.recorder.options);
+		if (this.recorder.view != this) {
+			// refresh view if another tab is selected
+			this.recorder.view.refresh();
+		}
 	},
 	onHide: function() {
 	}
