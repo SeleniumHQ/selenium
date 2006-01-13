@@ -50,6 +50,21 @@ Selenium.prototype.doPause = function(waitTime) {
     testLoop.pauseInterval = waitTime;
 };
 
+// Replace clickElement to prevent double-popup
+MozillaPageBot.prototype.clickElement = function(element) {
+    triggerEvent(element, 'focus', false);
+
+    // Trigger the click event.
+    triggerMouseEvent(element, 'click', true);
+
+    if (this.windowClosed()) {
+        return;
+    }
+
+    triggerEvent(element, 'blur', false);
+};
+
+
 function Logger() {
 	var self = this;
 	var levels = ["log","debug","info","warn","error"];
