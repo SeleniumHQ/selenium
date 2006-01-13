@@ -36,6 +36,7 @@ function init() {
 			}
 		};
 		this.setTestCase(new TestCase());
+		this.testManager = new TestManager(this);
 		this.testCaseListeners.push(function(testCase) { recorder.view.testCase = testCase });
 		this.toggleView = function(view) {
 			log.debug("toggle view");
@@ -147,8 +148,8 @@ function newTestCase() {
 function loadTestCase() {
 	log.debug("loadTestCase");
 	try {
-		var testCase = new TestCase();
-		if (testCase.load(this.options)) {
+		var testCase = null;
+		if (testCase = this.testManager.load()) {
 			this.setTestCase(testCase);
 			this.view.refresh();
 			//document.getElementById("filename").value = this.testCase.filename;
@@ -176,16 +177,17 @@ function tabSelected(id) {
 }
 
 function saveTestCase() {
-	if (this.testCase.save(this.options)) {
+	if (this.testManager.save(this.testCase)) {
 		//document.getElementById("filename").value = this.testCase.filename;
 		updateTitle();
 	}
 }
 
 function saveNewTestCase() {
-	this.testCase.saveAsNew(this.options);
-	//document.getElementById("filename").value = this.testCase.filename;
-	updateTitle();
+	if (this.testManager.saveAsNew(this.testCase)) {
+		//document.getElementById("filename").value = this.testCase.filename;
+		updateTitle();
+	}
 }
 
 function loadRecorder() {

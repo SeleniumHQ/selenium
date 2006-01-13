@@ -19,7 +19,8 @@ function SourceView(recorder, textbox) {
 	this.recorder = recorder;
 	this.updateView = function() {
 		var scrollTop = this.textbox.inputField.scrollTop;
-		this.textbox.value = this.testCase.getSource(this.recorder.options, "New Test");
+		//this.textbox.value = this.testCase.getSource(this.recorder.options, "New Test");
+		this.textbox.value = recorder.testManager.getSourceForTestCase(this.testCase);
 		this.textbox.inputField.scrollTop = scrollTop;
 		//log.debug("source=" + getSource());
 	};
