@@ -80,7 +80,7 @@ function TreeView(recorder, document, tree) {
 		var trans = createTransferable();
 		var str = createClipboardString();
 		trans.addDataFlavor("text/unicode");
-		var text = this.testCase.getSourceForCommands(commands, recorder.options);
+		var text = this.recorder.testManager.getSourceForCommands(commands);
 		str.data = text;
 		trans.setTransferData("text/unicode", str, text.length * 2);
 		clipboard.setData(trans, null, Components.interfaces.nsIClipboard.kGlobalClipboard);

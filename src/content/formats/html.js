@@ -128,7 +128,6 @@ function getSourceForCommand(commandObj, options) {
 	return text;
 }
 
-
 function getSourceForCommands(commands, options) {
 	var commandsText = '';
 	for (i = 0; i < commands.length; i++) {

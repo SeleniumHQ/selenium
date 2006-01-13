@@ -20,3 +20,17 @@ Selenium.prototype.doOpen = function(newLocation) {
 	return this.real_doOpen(newLocation);
 };
 
+// Replace clickElement to prevent double-popup
+MozillaPageBot.prototype.clickElement = function(element) {
+    triggerEvent(element, 'focus', false);
+
+    // Trigger the click event.
+    triggerMouseEvent(element, 'click', true);
+
+    if (this.windowClosed()) {
+        return;
+    }
+
+    triggerEvent(element, 'blur', false);
+};
+

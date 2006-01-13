@@ -25,16 +25,6 @@ function TestManager(app) {
  * INTERNAL METHODS
  */
 
-TestManager.prototype.getFormat = function() {
-	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-	.getService(Components.interfaces.mozIJSSubScriptLoader);
-	var scope = {};
-	//subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/ruby.js', scope);
-	subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/html.js', scope);
-	scope.log = this.log;
-	return scope;
-}
-
 TestManager.prototype.getUnicodeConverter = function() {
 	var unicodeConverter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 	//log.debug("setting encoding to " + this.getOptions().encoding);
@@ -49,6 +39,16 @@ TestManager.prototype.getUnicodeConverter = function() {
 /*
  * PUBLIC METHODS
  */
+
+TestManager.prototype.getFormat = function() {
+	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+	.getService(Components.interfaces.mozIJSSubScriptLoader);
+	var scope = {};
+	//subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/ruby.js', scope);
+	subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/html.js', scope);
+	scope.log = this.log;
+	return scope;
+}
 
 TestManager.prototype.save = function(testCase) {
 	return this.saveAs(testCase, testCase.filename);
@@ -102,6 +102,10 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 
 TestManager.prototype.getSourceForTestCase = function(testCase) {
 	return this.getFormat().save(testCase, this.getOptions(), null, true);
+}
+
+TestManager.prototype.getSourceForCommands = function(commands) {
+	return this.getFormat().getSourceForCommands(commands, this.getOptions());
 }
 
 TestManager.prototype.load = function() {

@@ -310,7 +310,7 @@ function playback() {
 }
 
 function loadPlayerTest(e) {
-	e.innerHTML = this.testCase.getSource(OPTIONS, "Test Player");
+	e.innerHTML = this.testManager.getFormat().save(this.testCase, OPTIONS, "Test Player");
 }
 
 function openLogWindow() {

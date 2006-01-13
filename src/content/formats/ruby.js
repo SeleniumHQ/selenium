@@ -40,6 +40,16 @@ function save(testCase, options, name, saveHeaderAndFooter) {
 	return commandsText;
 }
 
+function getSourceForCommands(commands, options) {
+	var commandsText = '';
+	for (i = 0; i < commands.length; i++) {
+		var text = getSourceForCommand(commands[i], options);
+		commandsText = commandsText + text;
+	}
+	return commandsText;
+}
+
+
 function getSourceForCommand(command, options) {
 	if (command.type == 'command') {
 		return "    " + command.command + " \"" + command.target + "\"" +
