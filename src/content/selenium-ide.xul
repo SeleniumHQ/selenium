@@ -113,6 +113,10 @@ limitations under the License.
       <menu id="view-menu" label="Options">
 	<menupopup id="view-popup">
 	  <menuitem label="Options..." oncommand="openSeleniumIDEPreferences();" />
+	  <menu label="Format">
+	    <menupopup id="popup_formats" onpopupshowing="populateFormatsPopup()" oncommand="selectFormatFromMenu()">
+	    </menupopup>
+	  </menu>
 	</menupopup>
       </menu>
       <menu id="windowMenu"/>

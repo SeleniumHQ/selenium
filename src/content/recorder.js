@@ -322,3 +322,34 @@ function openLogWindow() {
 	}
 }
 
+function populateFormatsPopup() {
+	var e = document.getElementById("popup_formats");
+	var i;
+	for (i = e.childNodes.length - 1; i >= 0; i--) {
+		e.removeChild(e.childNodes[i]);
+	}
+	var formats = this.testManager.formatInfos;
+	for (i = 0; i < formats.length; i++) {
+		var menuitem = document.createElement("menuitem");
+		//menuitem.label = formats[i].name;
+		menuitem.setAttribute("type", "radio");
+		menuitem.setAttribute("name", "formats");
+		menuitem.setAttribute("label", formats[i].name);
+		if (this.testManager.currentFormatInfo == formats[i]) {
+			menuitem.setAttribute("checked", true);
+		}
+		e.appendChild(menuitem);
+	}
+}
+
+function selectFormatFromMenu() {
+	var e = document.getElementById("popup_formats");
+	var i;
+	for (i = e.childNodes.length - 1; i >= 0; i--) {
+		var checked = e.childNodes[i].getAttribute("checked");
+		if (checked) {
+			this.testManager.selectFormat(e.childNodes[i].getAttribute("label"));
+			break;
+		}
+	}
+}

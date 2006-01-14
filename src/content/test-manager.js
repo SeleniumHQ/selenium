@@ -15,10 +15,27 @@
  */
 
 function TestManager(app) {
+	var self = this;
 	this.getOptions = function() {
 		return app.options;
 	}
 	this.log = new Log("TestManager");
+	
+	function InternalTestFormatInfo(name, file) {
+		this.name = name;
+		this.getFormat = function() {
+			const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+			.getService(Components.interfaces.mozIJSSubScriptLoader);
+			var format = {};
+			subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/' + file, format);
+			format.log = self.log;
+			return format;
+		}
+	}
+
+	this.formatInfos = [new InternalTestFormatInfo("HTML", "html.js"),
+					new InternalTestFormatInfo("Ruby", "ruby.js")];
+	this.currentFormatInfo = this.formatInfos[0];
 }
 
 /*
@@ -40,14 +57,18 @@ TestManager.prototype.getUnicodeConverter = function() {
  * PUBLIC METHODS
  */
 
+TestManager.prototype.selectFormat = function(name) {
+	for (var i = 0; i < this.formatInfos.length; i++) {
+		if (name == this.formatInfos[i].name) {
+			this.currentFormatInfo = this.formatInfos[i];
+			break;
+		}
+	}
+	throw "Format not found: " + name;
+}
+
 TestManager.prototype.getFormat = function() {
-	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-	.getService(Components.interfaces.mozIJSSubScriptLoader);
-	var scope = {};
-	//subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/ruby.js', scope);
-	subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/html.js', scope);
-	scope.log = this.log;
-	return scope;
+	return this.currentFormatInfo.getFormat();
 }
 
 TestManager.prototype.save = function(testCase) {
