@@ -43,6 +43,10 @@
                 <name>Demos</name>
                 <url>demos.html</url>
             </item>
+            <item>
+                <name>Wiki</name>
+                <url>http://wiki.openqa.org/display/SEL/Home</url>
+            </item>
         </items>
     </docs>
 
