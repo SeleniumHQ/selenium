@@ -112,10 +112,10 @@ function updateFormatOptions() {
 		for (name in this.format.options) {
 			var e = document.getElementById("options_" + name);
 			if (e) {
-				if (e.hasAttribute("checked")) {
-					this.options["formats." + formatInfo.id + "." + name] = e.checked ? 'true' : 'false';
+				if (e.checked != undefined) {
+					this.options["formats." + this.formatInfo.id + "." + name] = e.checked.toString();
 				} else {
-					this.options["formats." + formatInfo.id + "." + name] = e.value;
+					this.options["formats." + this.formatInfo.id + "." + name] = e.value;
 				}
 			}
 		}	
@@ -161,8 +161,11 @@ function updateFormatSelection() {
 		for (name in format.options) {
 			var e = document.getElementById("options_" + name);
 			if (e) {
-				var value = this.options["formats." + formatInfo.id + "." + name] || format.options[name];
-				if (e.hasAttribute("checked")) {
+				var value = this.options["formats." + formatInfo.id + "." + name];
+				if (value == null) {
+					value = format.options[name];
+				}
+				if (e.checked != undefined) {
 					e.checked = 'true' == value;
 				} else {
 					e.value = value;
