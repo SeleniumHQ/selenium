@@ -42,61 +42,14 @@ Comment.prototype.createCopy = function() {
 	return copy;
 };
 
-function Commands(testCase) {
-	this.testCase = testCase;
-}
-	
-Commands.prototype = new Array;
-
-Commands.prototype.push = function(command) {
-	Array.prototype.push.call(this, command);
-	this.testCase.recordIndex++;
-}
-
-Commands.prototype.splice = function(index, removeCount, command) {
-	if (command != null) {
-		Array.prototype.splice.call(this, index, removeCount, command);
-	} else {
-		Array.prototype.splice.call(this, index, removeCount);
-	}
-	if (index <= this.testCase.recordIndex) {
-		if (command != null) {
-			this.testCase.recordIndex++;
-		}
-		this.testCase.recordIndex -= removeCount;
-		if (this.testCase.recordIndex < index) {
-			this.testCase.recordIndex = index;
-		}
-	}
-}
-
 function TestCase() {
 	this.log = new Log("TestCase");
 	
 	this.recordIndex = 0;
 	
-	this.commands = new Commands(this);
+	this.setCommands([]);
 
 	var testCase = this;
-
-	this.decodeText = function(text, options) {
-		var escapeXml = options.escapeXmlEntities;
-		if (escapeXml == 'always' || escapeXml == 'partial') {
-			text = text.replace(/&lt;/g, '<');
-			text = text.replace(/&gt;/g, '>');
-		}
-		if (escapeXml == 'always') {
-			text = text.replace(/&apos;/g, "'");
-			text = text.replace(/&quot;/g, '"');
-			text = text.replace(/&amp;/g, '&');
-		}
-		if ('true' == options.escapeDollar) {
-			text = text.replace(/([^\\])\$\{/g, '$1$$$${'); // replace ${...} to $${...}
-			text = text.replace(/^\$\{/g, '$$$${'); // replace ${...} to $${...}
-			text = text.replace(/\\\$\{/g, '$${'); // replace \${...} to ${...}
-		}
-		return text;
-	}
 
 	this.debugContext = {
 		reset: function() {
@@ -119,6 +72,35 @@ function TestCase() {
 	}
 }
 
+TestCase.prototype.setCommands = function(commands) {
+	var self = this;
+
+	var _push = commands.push;
+	commands.push = function(command) {
+		_push.call(commands, command);
+		self.recordIndex++;
+	}
+
+	var _splice = commands.splice;
+	commands.splice = function(index, removeCount, command) {
+		if (command != null) {
+			_splice.call(commands, index, removeCount, command);
+		} else {
+			_splice.call(commands, index, removeCount);
+		}
+		if (index <= self.recordIndex) {
+			if (command != null) {
+				self.recordIndex++;
+		}
+		self.recordIndex -= removeCount;
+			if (self.recordIndex < index) {
+				self.recordIndex = index;
+			}
+		}
+	}
+
+	this.commands = commands;
+}
 
 TestCase.prototype.clear = function() {
 	var length = this.commands.length;

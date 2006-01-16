@@ -36,6 +36,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-events.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/test-manager.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>

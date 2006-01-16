@@ -23,8 +23,8 @@ function init() {
 	if (!this.recorderInitialized) {
 		log.info("initializing");
 		this.recorderInitialized = true;
-		this.options = new RecorderOptions();
-		this.options.load();
+		this.setOptions(optionsManager.load());
+		//this.options.load();
 		this.eventManager = new EventManager(this);
 		this.treeView = new TreeView(this, document, document.getElementById("commands"));
 		this.sourceView = new SourceView(this, document.getElementById("source"));
@@ -36,7 +36,6 @@ function init() {
 			}
 		};
 		this.setTestCase(new TestCase());
-		this.testManager = new TestManager(this);
 		this.testCaseListeners.push(function(testCase) { recorder.view.testCase = testCase });
 		this.toggleView = function(view) {
 			log.debug("toggle view");
@@ -128,6 +127,11 @@ function setState(state) {
 	window.updateCommands("selenium-ide-state");
 }
 
+function setOptions(options) {
+	this.options = options;
+	this.testManager = new TestManager(options);
+}
+
 function initOptions() {
 	if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null){
 		if (document.getElementById("baseURL").value == '') {
@@ -204,7 +208,8 @@ function loadRecorderFor(contentWindow) {
 function unloadRecorder() {
 	if (this.options.rememberBaseURL == 'true'){
 		this.options.baseURL = document.getElementById("baseURL").value;
-		this.options.save('baseURL');
+		optionsManager.save(this.options, 'baseURL');
+		//this.options.save('baseURL');
 	}
 	this.eventManager.stopForAllBrowsers();
 }
@@ -290,7 +295,7 @@ function appendAND_WAIT() {
 }
 
 function openSeleniumIDEPreferences() {
-	window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome", null);
+	window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome,modal,resizable", null);
 }
 
 function playback() {
@@ -310,7 +315,7 @@ function playback() {
 }
 
 function loadPlayerTest(e) {
-	e.innerHTML = this.testManager.getFormat().save(this.testCase, OPTIONS, "Test Player");
+	e.innerHTML = this.testManager.getFormat().format(this.testCase, OPTIONS, "Test Player");
 }
 
 function openLogWindow() {
@@ -335,7 +340,8 @@ function populateFormatsPopup() {
 		menuitem.setAttribute("type", "radio");
 		menuitem.setAttribute("name", "formats");
 		menuitem.setAttribute("label", formats[i].name);
-		if (this.testManager.currentFormatInfo == formats[i]) {
+		menuitem.setAttribute("value", formats[i].id);
+		if (this.testManager.currentFormatInfo.id == formats[i].id) {
 			menuitem.setAttribute("checked", true);
 		}
 		e.appendChild(menuitem);
@@ -347,8 +353,8 @@ function selectFormatFromMenu() {
 	var i;
 	for (i = e.childNodes.length - 1; i >= 0; i--) {
 		var checked = e.childNodes[i].getAttribute("checked");
-		if (checked) {
-			this.testManager.selectFormat(e.childNodes[i].getAttribute("label"));
+		if (checked == 'true') {
+			this.testManager.selectFormat(e.childNodes[i].getAttribute("value"));
 			break;
 		}
 	}

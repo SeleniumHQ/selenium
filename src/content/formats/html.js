@@ -1,4 +1,4 @@
-function decodeText(text, options) {
+function decodeText(text) {
 	var escapeXml = options.escapeXmlEntities;
 	if (escapeXml == 'always' || escapeXml == 'partial') {
 		text = text.replace(/&lt;/g, '<');
@@ -17,7 +17,7 @@ function decodeText(text, options) {
 	return text;
 }
 
-function encodeText(text, options) {
+function encodeText(text) {
 	var escapeXml = options.escapeXmlEntities;
 	if (escapeXml == 'always') {
 		// & -> &amp;
@@ -43,22 +43,21 @@ function encodeText(text, options) {
 	return text;
 }
 
-function convertText(command, converter, options) {
+function convertText(command, converter) {
 	for (prop in command) {
 		if (instanceOf(command[prop], String)) {
-			command[prop] = converter(command[prop], options);
+			command[prop] = converter(command[prop]);
 		}
 	}
 }
 
-function load(source, options) {
-	var testCase = new TestCase();
+function parse(testCase, source) {
 	var commandLoadPattern = options.commandLoadPattern;
 	var commandRegexp = new RegExp(commandLoadPattern, 'i');
 	var commentRegexp = new RegExp("^" + options.commentLoadPattern, 'i');
 	var doc = source;
 	var result;
-	var commands = new Commands(testCase);
+	var commands = [];
 	var command;
 	var first = true;
 	var i;
@@ -74,7 +73,7 @@ function load(source, options) {
 			//log.debug("result=" + result);
 			command = new Command();
 			eval(options.commandLoadScript);
-			convertText(command, decodeText, options);
+			convertText(command, decodeText);
 			commands.push(command);
 			doc = doc.substr(result[0].length);
 			if (first) {
@@ -100,20 +99,19 @@ function load(source, options) {
 		//log.debug("footer=" + this.footer);
 		//log.debug("commands.length=" + commands.length);
 		testCase.commands = commands;
-		return testCase;
 	} else {
 		throw "no command found";
 	}
 }
 
-function getSourceForCommand(commandObj, options) {
+function getSourceForCommand(commandObj) {
 	var command = null;
 	var comment = null;
 	var template = '';
 	if (commandObj.type == 'command') {
 		command = commandObj;
 		command = command.createCopy();
-		convertText(command, this.encodeText, options);
+		convertText(command, this.encodeText);
 		template = options.commandTemplate;
 	} else if (commandObj.type == 'comment') {
 		comment = commandObj;
@@ -128,23 +126,23 @@ function getSourceForCommand(commandObj, options) {
 	return text;
 }
 
-function getSourceForCommands(commands, options) {
+function formatCommands(commands) {
 	var commandsText = '';
 	for (i = 0; i < commands.length; i++) {
-		var text = getSourceForCommand(commands[i], options);
+		var text = getSourceForCommand(commands[i]);
 		commandsText = commandsText + text;
 	}
 	return commandsText;
 }
 
-function save(testCase, options, name, saveHeaderAndFooter) {
+function format(testCase, name, saveHeaderAndFooter) {
 	var text;
 	var commandsText = "";
 	var testText;
 	var i;
 	
 	for (i = 0; i < testCase.commands.length; i++) {
-		var text = getSourceForCommand(testCase.commands[i], options);
+		var text = getSourceForCommand(testCase.commands[i]);
 		commandsText = commandsText + text;
 	}
 	
@@ -168,3 +166,91 @@ function save(testCase, options, name, saveHeaderAndFooter) {
 	
 	return testText;
 }
+
+options = {
+	commandLoadPattern:
+	"<tr>" +
+	"\\s*<td>(.*?)</td>" +
+	"\\s*<td>(.*?)</td>" +
+	"\\s*(<td>(.*?)</td>|<td/>)" +
+	"\\s*</tr>\\s*",
+	
+	commandLoadScript:
+	"command.command = result[1];\n" +
+	"command.target = result[2];\n" +
+	"command.value = result[4] || '';\n",
+
+	commentLoadPattern:
+	"<!--((.|\\s)*?)-->\\s*",
+
+	commentLoadScript:
+	"comment.comment = result[1];\n",
+
+	testTemplate:
+	"<html>\n" +
+	"<head><title>${name}</title></head>\n" +
+	"<body>\n" +
+	'<table cellpadding="1" cellspacing="1" border="1">\n'+
+	'<thead>\n' +
+	'<tr><td rowspan="1" colspan="3">${name}</td></tr>\n' +
+	"</thead><tbody>\n" +
+	"${commands}\n" +
+	"</tbody></table>\n" +
+	"</body>\n" +
+	"</html>\n",
+
+	commandTemplate:
+	"<tr>\n" +
+	"\t<td>${command.command}</td>\n" +
+	"\t<td>${command.target}</td>\n" +
+	"\t<td>${command.value}</td>\n" +
+	"</tr>\n",
+
+	commentTemplate:
+	"<!--${comment.comment}-->\n",
+	
+	escapeXmlEntities:
+	"partial",
+
+	escapeDollar:
+	"false"
+};
+
+configForm = 
+	//'<tabbox flex="1"><tabs orient="horizontal"><tab label="Load"/><tab label="Save"/></tabs>' +
+	//'<tabpanels flex="1">' +
+	//'<tabpanel orient="vertical">' +
+	'<description>Regular expression for each command entry</description>' +
+	'<textbox id="options_commandLoadPattern" flex="1"/>' +
+	'<separator class="thin"/>' +
+	'<description>Script to load command from the pattern</description>' +
+	'<textbox id="options_commandLoadScript" multiline="true" flex="1" rows="2"/>' +
+	//'<separator class="thin"/>' +
+	//'<description>Regular expression for comments between commands</description>' +
+	//'<textbox id="options_commentLoadPattern" flex="1"/>' +
+	//'<separator class="thin"/>' +
+	//'<description>Script to load comment from the pattern</description>' +
+	//'<textbox id="options_commentLoadScript" multiline="true" flex="1" rows="2"/>' +
+	'<separator class="groove"/>' +
+	//'</vbox><vbox>' +
+	//'</tabpanel>' +
+	//'<tabpanel orient="vertical">' +
+	'<description>Template for new test html file</description>' +
+	'<textbox id="options_testTemplate" multiline="true" flex="1" rows="3"/>' +
+	'<separator class="thin"/>' +
+	'<description>Template for command entries in the test html file</description>' +
+	'<textbox id="options_commandTemplate" multiline="true" flex="1" rows="3"/>' +
+	'<separator class="groove"/>' +
+	'<hbox align="center"><description>Escape XML entities?</description>' +
+	'<menulist id="options_escapeXmlEntities">' +
+	'<menupopup>' +
+	'<menuitem label="always: &amp; &quot; &apos; &lt; &gt;" value="always"/>' +
+	'<menuitem label="partially: &lt; &gt;" value="partial"/>' +
+	'<menuitem label="never" value="never"/>' +
+	'</menupopup>' +
+	'</menulist></hbox>' +
+	'<checkbox id="options_escapeDollar" label="Escape \'${\' as \'\${\' (useful for JSP 2.0)"/>';
+	//'<separator class="thin"/>' +
+	//'<description>Template for comment entries in the test html file</description>' +
+	//'<textbox id="options_commentTemplate" multiline="true" flex="1"/>' +
+	//'</tabpanel></tabpanels></tabbox>';

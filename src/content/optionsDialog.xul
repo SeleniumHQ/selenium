@@ -1,5 +1,5 @@
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
-<?xml-stylesheet href="selenium-ide.css" type="text/css"?>
+<?xml-stylesheet href="optionsDialog.css" type="text/css"?>
 <!--
 Copyright 2005 Shinya Kasatani
 
@@ -23,16 +23,19 @@ limitations under the License.
 	onload="loadOptions()"
 	title="Selenium IDE Options"
 	width="500"
-	height="550"
+	height="570"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/optionsDialog.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/test-manager.js"/>
 <tabbox flex="1">
   <tabs orient="horizontal">
     <tab label="General"/>
-    <tab label="Load"/>
-    <tab label="Save"/>
+    <tab label="Formats"/>
   </tabs>
   <tabpanels flex="1">
     <tabpanel orient="vertical">
@@ -50,6 +53,7 @@ limitations under the License.
       </hbox>
       <separator class="thin"/>
       
+      <!--
       <description>Escape XML entities?</description>
       <menulist id="escapeXmlEntities">
 	<menupopup>
@@ -60,35 +64,23 @@ limitations under the License.
       </menulist>
       <separator/>
       <checkbox id="escapeDollar" label="Escape '${' as '\${' (useful for JSP 2.0)"/>
+      -->
       <checkbox id="rememberBaseURL" label="Remember base URL"/>
     </tabpanel>
     <tabpanel orient="vertical">
-      <description>Regular expression for each command entry</description>
-      <textbox id="commandLoadPattern" multiline="true" flex="1"/>
-      <separator class="thin"/>
-      
-      <description>Script to load command from the pattern</description>
-      <textbox id="commandLoadScript" multiline="true" flex="1"/>
-      <separator class="thin"/>
-      
-      <description>Regular expression for comments between commands</description>
-      <textbox id="commentLoadPattern" multiline="true" flex="1"/>
-      <separator class="thin"/>
-      
-      <description>Script to load comment from the pattern</description>
-      <textbox id="commentLoadScript" multiline="true" flex="1"/>
-    </tabpanel>
-    <tabpanel orient="vertical">
-      <description>Template for new test html file</description>
-      <textbox id="testTemplate" multiline="true" flex="1"/>
-      <separator class="thin"/>
-      
-      <description>Template for command entries in the test html file</description>
-      <textbox id="commandTemplate" multiline="true" flex="1"/>
-      <separator class="thin"/>
-      
-      <description>Template for comment entries in the test html file</description>
-      <textbox id="commentTemplate" multiline="true" flex="1"/>
+      <hbox flex="1">
+	<listbox id="format-list" onselect="updateFormatSelection()" width="100"/>
+	<vbox flex="1" width="300">
+	  <label id="format-name"/>
+	  <box id="format-config"/>
+	</vbox>
+      </hbox>
+      <hbox>
+	<button label="Add" oncommand="createNewFormat()"/>
+	<button id="rename-button" label="Rename" oncommand="renameFormat()"/>
+	<button id="delete-button" label="Delete" oncommand="deleteFormat()"/>
+	<button label="Source" oncommand="openFormatSource()"/>
+      </hbox>
     </tabpanel>
   </tabpanels>
 </tabbox>

@@ -17,56 +17,9 @@
 const OPTIONS = {
 	encoding: "UTF-8",
 	
-	commandLoadPattern:
-	"<tr>" +
-	"\\s*<td>(.*?)</td>" +
-	"\\s*<td>(.*?)</td>" +
-	"\\s*(<td>(.*?)</td>|<td/>)" +
-	"\\s*</tr>\\s*",
-	
-	commandLoadScript:
-	"command.command = result[1];\n" +
-	"command.target = result[2];\n" +
-	"command.value = result[4] || '';\n",
-
-	commentLoadPattern:
-	"<!--((.|\\s)*?)-->\\s*",
-
-	commentLoadScript:
-	"comment.comment = result[1];\n",
-
-	testTemplate:
-	"<html>\n" +
-	"<head><title>${name}</title></head>\n" +
-	"<body>\n" +
-	'<table cellpadding="1" cellspacing="1" border="1">\n'+
-	'<thead>\n' +
-	'<tr><td rowspan="1" colspan="3">${name}</td></tr>\n' +
-	"</thead><tbody>\n" +
-	"${commands}\n" +
-	"</tbody></table>\n" +
-	"</body>\n" +
-	"</html>\n",
-
-	commandTemplate:
-	"<tr>\n" +
-	"\t<td>${command.command}</td>\n" +
-	"\t<td>${command.target}</td>\n" +
-	"\t<td>${command.value}</td>\n" +
-	"</tr>\n",
-
-	commentTemplate:
-	"<!--${comment.comment}-->\n",
-	
 	userExtensionsURL:
 	"",
 	
-	escapeXmlEntities:
-	"partial",
-
-	escapeDollar:
-	"false",
-
 	rememberBaseURL:
 	"",
 
@@ -74,11 +27,12 @@ const OPTIONS = {
 	""
 };
 
-function RecorderOptions() {
-	this.branch = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
+function OptionsManager() {
 }
 
-RecorderOptions.prototype = {
+OptionsManager.prototype = {
+	branch: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide."),
+	
 	getCharPref: function(name, defaultValue) {
 		if (this.branch.prefHasUserValue(name)) {
 			return this.branch.getCharPref(name);
@@ -92,21 +46,29 @@ RecorderOptions.prototype = {
 	},
 
 	load: function() {
+		var options = {};
 		var name;
 		for (name in OPTIONS) {
-			this[name] = this.getCharPref(name, OPTIONS[name]);
+			options[name] = OPTIONS[name];
 		}
+		var names = this.branch.getChildList('', []);
+		for (var i = 0; i < names.length; i++) {
+			name = names[i];
+			options[name] = this.getCharPref(name, OPTIONS[name] || '');
+		}
+		return options;
 	},
 
-	save: function(prop_name) {
+	save: function(options, prop_name) {
 		if (prop_name) {
-			this.setCharPref(prop_name, this[prop_name]);
+			this.setCharPref(prop_name, options[prop_name]);
 		} else {
 			var name;
-			for (name in OPTIONS) {
-				this.setCharPref(name, this[name]);
+			for (name in options) {
+				this.setCharPref(name, options[name]);
 			}
 		}
 	}
 };
 
+var optionsManager = new OptionsManager();

@@ -14,28 +14,183 @@
  * limitations under the License.
  */
 
-function TestManager(app) {
-	var self = this;
-	this.getOptions = function() {
-		return app.options;
-	}
+function TestManager(options) {
+	this.options = options;
 	this.log = new Log("TestManager");
 	
-	function InternalTestFormatInfo(name, file) {
-		this.name = name;
-		this.getFormat = function() {
-			const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-			.getService(Components.interfaces.mozIJSSubScriptLoader);
-			var format = {};
-			subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/' + file, format);
-			format.log = self.log;
-			return format;
+	this.presetFormatInfos = [new InternalFormatInfo("default", "HTML", "html.js"),
+							  new InternalFormatInfo("ruby", "Ruby", "ruby.js")];
+	this.reloadFormats();
+	this.currentFormatInfo = this.formatInfos[0];
+}
+
+TestManager.loadUserFormats = function() {
+	var formatFile = FileUtils.getProfileDir();
+	formatFile.append("selenium-ide-formats");
+	formatFile.append("index.txt");
+	
+	if (!formatFile.exists()) {
+		return [];
+	}
+	var text = FileUtils.readFile(formatFile);
+	var conv = FileUtils.getUnicodeConverter('UTF-8');
+	text = conv.ConvertToUnicode(text);
+	var formats = [];
+	while (text.length > 0) {
+		var r = /^(\d+),(.*)\n?/.exec(text);
+		if (r) {
+			formats.push(new UserFormatInfo(r[1], r[2]));
+			text = text.substr(r[0].length);
+		} else {
+			break;
 		}
 	}
+	return formats;
+}
 
-	this.formatInfos = [new InternalTestFormatInfo("HTML", "html.js"),
-					new InternalTestFormatInfo("Ruby", "ruby.js")];
-	this.currentFormatInfo = this.formatInfos[0];
+TestManager.saveUserFormats = function(formats) {
+	var text = '';
+	for (var i = 0; i < formats.length; i++) {
+		text += formats[i].id + ',' + formats[i].name + "\n";
+	}
+	var conv = FileUtils.getUnicodeConverter('UTF-8');
+	text = conv.ConvertFromUnicode(text);
+	
+	var formatFile = FileUtils.getProfileDir();
+	formatFile.append("selenium-ide-formats");
+	formatFile.append("index.txt");
+	var stream = FileUtils.openFileOutputStream(formatFile);
+	stream.write(text, text.length);
+	var fin = conv.Finish();
+	if (fin.length > 0) {
+		stream.write(fin, fin.length);
+	}
+	stream.close();
+}
+
+TestManager.loadFormat = function(url) {
+	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+	  .getService(Components.interfaces.mozIJSSubScriptLoader);
+	var format = {};
+	format.options = {};
+	format.configForm = '';
+	subScriptLoader.loadSubScript(url, format);
+	format.log = new Log("Format");
+	if (format.configForm && format.configForm.length > 0) {
+		function copyElement(doc, element) {
+			var copy = doc.createElement(element.nodeName.toLowerCase());
+			var atts = element.attributes;
+			var i;
+			for (i = 0; atts != null && i < atts.length; i++) {
+				copy.setAttribute(atts[i].name, atts[i].value);
+			}
+			var childNodes = element.childNodes;
+			for (i = 0; i < childNodes.length; i++) {
+				if (childNodes[i].nodeType == 1) { // element
+					copy.appendChild(copyElement(doc, childNodes[i]));
+				} else if (childNodes[i].nodeType == 3) { // text
+					copy.appendChild(doc.createTextNode(childNodes[i].nodeValue));
+				}
+			}
+			return copy;
+		}
+			
+		format.createConfigForm = function(document) {
+			var xml = '<vbox id="format-config" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">' + format.configForm + '</vbox>';
+			var parser = new DOMParser();
+			var element = parser.parseFromString(xml, "text/xml").documentElement;
+			// If we directly return this element, "permission denied" exception occurs
+			// when the user clicks on the buttons or textboxes. I haven't figured out the reason, 
+			// but as a workaround I'll just re-create the element and make a deep copy.
+			return copyElement(document, element);
+		}
+	}
+	return format;
+}
+
+
+/**
+ * FormatInfo for preset formats
+ * @constructor
+ */
+function InternalFormatInfo(id, name, file) {
+	this.id = id;
+	this.name = name;
+	this.url = 'chrome://selenium-ide/content/formats/' + file;
+}
+
+InternalFormatInfo.prototype.getFormat = function() {
+	return TestManager.loadFormat(this.url);
+}
+
+InternalFormatInfo.prototype.getSource = function() {
+	return FileUtils.readURL(this.url);
+}
+
+
+/**
+ * FormatInfo created by users
+ * @constructor
+ */
+function UserFormatInfo(id, name) {
+	if (id && name) {
+		this.id = id;
+		this.name = name;
+	} else {
+		this.id = null;
+		this.name = '';
+	}
+}
+
+UserFormatInfo.prototype.save = function(source) {
+	var formatDir = FileUtils.getProfileDir();
+	formatDir.append("selenium-ide-formats");
+	if (!formatDir.exists()) {
+		formatDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
+	}
+	var formats = TestManager.loadUserFormats();
+	if (!this.id) {
+		var entries = formatDir.directoryEntries;
+		var max = 0;
+		while (entries.hasMoreElements()) {
+			var file = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			var r;
+			if ((r = /^(\d+)\.js$/.exec(file.leafName)) != null) {
+				var id = parseInt(r[1]);
+				if (id > max) max = id;
+			}
+		}
+		max++;
+		this.id = '' + max;
+		formats.push(this);
+	}
+	var formatFile = formatDir.clone();
+	formatFile.append(this.id + ".js");
+	var stream = FileUtils.openFileOutputStream(formatFile);
+	stream.write(source, source.length);
+	stream.close();
+
+	TestManager.saveUserFormats(formats);
+}
+
+UserFormatInfo.prototype.getFormatFile = function() {
+	var formatDir = FileUtils.getProfileDir();
+	formatDir.append("selenium-ide-formats");
+	var formatFile = formatDir.clone();
+	formatFile.append(this.id + ".js");
+	return formatFile;
+}
+
+UserFormatInfo.prototype.getFormat = function() {
+	return TestManager.loadFormat("file:" + this.getFormatFile().path);
+}
+
+UserFormatInfo.prototype.getSource = function() {
+	if (this.id) {
+		return FileUtils.readFile(this.getFormatFile());
+	} else {
+		return FileUtils.readURL('chrome://selenium-ide/content/formats/blank.js');
+	}
 }
 
 /*
@@ -43,32 +198,57 @@ function TestManager(app) {
  */
 
 TestManager.prototype.getUnicodeConverter = function() {
-	var unicodeConverter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-	//log.debug("setting encoding to " + this.getOptions().encoding);
-	try {
-		unicodeConverter.charset = this.getOptions().encoding;
-	} catch (error) {
-		alert("setting encoding failed: " + this.getOptions().encoding);
-	}
-	return unicodeConverter;
+	return FileUtils.getUnicodeConverter(this.options.encoding);
 }
 
 /*
  * PUBLIC METHODS
  */
 
-TestManager.prototype.selectFormat = function(name) {
+TestManager.prototype.reloadFormats = function() {
+	this.userFormatInfos = TestManager.loadUserFormats();
+	this.formatInfos = this.presetFormatInfos.concat(this.userFormatInfos);
+}
+
+TestManager.prototype.removeUserFormatAt = function(index) {
+	this.userFormatInfos.splice(index, 1);
+	this.formatInfos = this.presetFormatInfos.concat(this.userFormatInfos);
+}
+
+TestManager.prototype.saveFormats = function() {
+	TestManager.saveUserFormats(this.userFormatInfos);
+}
+
+TestManager.prototype.selectFormat = function(id) {
+	var info = this.findFormatInfo(id);
+	if (info) {
+		this.currentFormatInfo = info;
+	} else {
+		throw "Format not found: " + name;
+	}
+}
+
+TestManager.prototype.findFormatInfo = function(id) {
 	for (var i = 0; i < this.formatInfos.length; i++) {
-		if (name == this.formatInfos[i].name) {
-			this.currentFormatInfo = this.formatInfos[i];
-			break;
+		if (id == this.formatInfos[i].id) {
+			return this.formatInfos[i];
 		}
 	}
-	throw "Format not found: " + name;
+	return null;
 }
 
 TestManager.prototype.getFormat = function() {
-	return this.currentFormatInfo.getFormat();
+	var format = this.currentFormatInfo.getFormat();
+	if (!format.options) {
+		format.options = {};
+	}
+	for (name in this.options) {
+		var r = new RegExp('formats\.' + this.currentFormatInfo.id + '\.(.*)').exec(name);
+		if (r) {
+			format.options[r[1]] = this.options[name];
+		}
+	}
+	return format;
 }
 
 TestManager.prototype.save = function(testCase) {
@@ -101,7 +281,7 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 			var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
 			outputStream.init(file, 0x02 | 0x08 | 0x20, 440, 0);
 			var converter = this.getUnicodeConverter();
-			var text = converter.ConvertFromUnicode(this.getFormat().save(testCase, this.getOptions(), file.leafName.replace(/\.\w+$/,''), true));
+			var text = converter.ConvertFromUnicode(this.getFormat().format(testCase, file.leafName.replace(/\.\w+$/,''), true));
 			outputStream.write(text, text.length);
 			var fin = converter.Finish();
 			if (fin.length > 0) {
@@ -122,11 +302,19 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 };
 
 TestManager.prototype.getSourceForTestCase = function(testCase) {
-	return this.getFormat().save(testCase, this.getOptions(), null, true);
+	return this.getFormat().format(testCase, null, true);
 }
 
 TestManager.prototype.getSourceForCommands = function(commands) {
-	return this.getFormat().getSourceForCommands(commands, this.getOptions());
+	return this.getFormat().formatCommands(commands);
+}
+
+TestManager.prototype.setSource = function(testCase, source) {
+	try {
+		this.getFormat().parse(testCase, source);
+	} catch (err) {
+		alert("error: " + err);
+	}
 }
 
 TestManager.prototype.load = function() {
@@ -152,7 +340,8 @@ TestManager.prototype.load = function() {
 	    .createInstance( Components.interfaces.nsIScriptableInputStream );
 		sis.init(is);
 		var text = this.getUnicodeConverter().ConvertToUnicode(sis.read(sis.available()));
-		testCase = this.getFormat().load(text, this.getOptions());
+		var testCase = new TestCase();
+		this.getFormat().parse(testCase, text);
 		
 		sis.close();
 		is.close();
