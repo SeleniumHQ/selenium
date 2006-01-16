@@ -24,7 +24,7 @@ limitations under the License.
 	height="550"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/test-manager.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testManager.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/format-source-dialog.js"/>
   <vbox flex="1">
     <hbox id="name-box" align="center" hidden="true">

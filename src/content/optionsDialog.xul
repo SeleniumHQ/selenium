@@ -31,7 +31,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/test-manager.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testManager.js"/>
 <tabbox flex="1">
   <tabs orient="horizontal">
     <tab label="General"/>

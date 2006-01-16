@@ -39,7 +39,7 @@ treechildren::-moz-tree-row(commandFailed, selected, focus)
 
 treechildren::-moz-tree-image(breakpoint)
 {
-  list-style-image: url("breakpoint.png");
+  list-style-image: url("icons/breakpoint.png");
   -moz-box-align: center;
 }
 

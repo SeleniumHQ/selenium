@@ -33,11 +33,11 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
   <!--<script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-logging.js"/>-->
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-events.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/test-manager.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testManager.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
