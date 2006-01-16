@@ -99,6 +99,13 @@ TestCase.prototype.setCommands = function(commands) {
 		}
 	}
 
+	var _pop = commands.pop;
+	commands.pop = function() {
+		var command = commands[commands.length - 1];
+		commands.splice(commands.length - 1, 1);
+		return command;
+	}
+
 	this.commands = commands;
 }
 

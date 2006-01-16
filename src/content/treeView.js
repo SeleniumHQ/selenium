@@ -21,6 +21,8 @@ function TreeView(recorder, document, tree) {
 	this.tree = tree;
 	this.document = document;
 	this.rowCount = 0;
+	this.undoStack = [];
+	this.redoStack = [];
 	var self = this;
 
 	var controller = {
@@ -31,6 +33,8 @@ function TreeView(recorder, document, tree) {
 			case "cmd_cut":
 			case "cmd_paste":
 			case "cmd_selectAll":
+			case "cmd_undo":
+			case "cmd_redo":
 				return true;
 			default:
 				return false;
@@ -44,6 +48,10 @@ function TreeView(recorder, document, tree) {
 			    return self.selection.getRangeCount() > 0;
 			case "cmd_paste":
 			    return self.clipboard != null;
+			case "cmd_undo":
+			    return self.undoStack.length > 0;
+			case "cmd_redo":
+			    return self.redoStack.length > 0;
 			default:
 				return false;
 			}
@@ -54,6 +62,8 @@ function TreeView(recorder, document, tree) {
 			case "cmd_copy": self.copy(); break;
 			case "cmd_cut": self.cut(); break;
 			case "cmd_paste": self.paste(); break;
+			case "cmd_undo": self.undo(); break;
+			case "cmd_redo": self.redo(); break;
 			}
 		},
 		onEvent : function(evt) {}
@@ -167,6 +177,22 @@ function TreeView(recorder, document, tree) {
 }
 
 TreeView.prototype = {
+	/*
+	 * internal methods
+	 */
+	
+	/**
+	 * execute undoable action
+	 */
+	executeAction: function(action) {
+		this.undoStack.push(action);
+		this.redoStack.splice(0, this.redoStack.length);
+		action.execute();
+		window.updateCommands("undo");
+	},
+	/*
+	 * public methods
+	 */
 	scrollToRow: function(index) {
 		this.treebox.ensureRowIsVisible(index);
 	},
@@ -225,21 +251,7 @@ TreeView.prototype = {
 	// called when the user enters any text into the textbox
 	updateCurrentCommand: function(key, value) {
 		if (this.currentCommand != null) {
-			if (this.currentCommand.type == 'command') {
-				this.currentCommand[key] = value;
-			} else if (this.currentCommand.type == 'comment' && key == 'command') {
-				this.currentCommand['comment'] = value;
-			}
-			if (this.tree.currentIndex >= 0) {
-				this.treebox.invalidateRow(this.tree.currentIndex);
-			}
-			if (this.currentCommand == this.newCommand) {
-				this.testCase.commands.push(this.currentCommand);
-				this.newCommand = new Command();
-				this.treebox.rowCountChanged(this.rowCount, 1);
-				this.rowCount++;
-				this.log.debug("added new command");
-			}
+			this.executeAction(new TreeView.UpdateCommandAction(this, key, value));
 		}
 	},
 	onHide: function() {
@@ -256,29 +268,28 @@ TreeView.prototype = {
 		if (!this.treebox.focused) return;
 		var count = this.selection.getRangeCount();
 		if (count > 0) {
-			var copyCommands = new Array();
+			var copyCommands = [];
+			var deleteRanges = [];
 			var currentIndex = this.tree.currentIndex;
-			for (var i = count - 1; i >= 0; i--) {
+			for (var i = 0; i < count; i++) {
 				var start = new Object();
 				var end = new Object();
 				this.selection.getRangeAt(i, start, end);
-				for (var v = end.value; v >= start.value; v--) {
+				var deleteCommands = {start: start.value, commands:[]};
+				for (var v = start.value; v <= end.value; v++) {
 					var command = this.getCommand(v);
-					copyCommands.unshift(command.createCopy());
+					copyCommands.push(command.createCopy());
 					if (doDelete && command != this.newCommand) {
-						this.testCase.commands.splice(v, 1);
-						this.treebox.rowCountChanged(v, -1);
-						this.rowCount--;
-						if (v < currentIndex) currentIndex--;
+						deleteCommands.commands.push(command);
 					}
 				}
+				deleteRanges.push(deleteCommands);
 			}
 			if (copy) {
 				this.putCommandsToClipboard(copyCommands);
 			}
 			if (doDelete) {
-				if (currentIndex >= this.rowCount) currentIndex = this.rowCount - 1;
-				this.selection.select(currentIndex);
+				this.executeAction(new TreeView.DeleteCommandAction(this, deleteRanges));
 			}
 		}
 	},
@@ -332,6 +343,24 @@ TreeView.prototype = {
 			var command = this.getCommand(this.tree.currentIndex);
 			command.breakpoint = command.breakpoint ? null : true;
 			this.rowUpdated(this.tree.currentIndex);
+		}
+	},
+
+	undo: function() {
+		var action = this.undoStack.pop();
+		if (action != null) {
+			action.undo();
+			this.redoStack.push(action);
+			window.updateCommands("undo");
+		}
+	},
+
+	redo: function() {
+		var action = this.redoStack.pop();
+		if (action != null) {
+			action.execute();
+			this.undoStack.push(action);
+			window.updateCommands("undo");
 		}
 	},
 
@@ -417,4 +446,94 @@ TreeView.prototype = {
     getColumnProperties: function(colid, col, props) {},
 	cycleHeader: function(colID, elt) {}
 };
+
+TreeView.UpdateCommandAction = function(treeView, key, value) {
+	this.treeView = treeView;
+	this.command = treeView.currentCommand;
+	this.key = key;
+	this.value = value;
+	this.index = this.treeView.tree.currentIndex;
+	this.wasNewCommand = this.command == treeView.newCommand;
+}
+
+TreeView.UpdateCommandAction.prototype = {
+	execute: function() {
+		if (this.command.type == 'command') {
+			this.oldValue = this.command[this.key];
+			this.command[this.key] = this.value;
+		} else if (this.command.type == 'comment' && this.key == 'command') {
+			this.oldValue = this.command['comment'];
+			this.command['comment'] = this.value;
+		}
+		if (this.index >= 0) {
+			this.treeView.treebox.invalidateRow(this.index);
+		}
+		if (this.wasNewCommand) {
+			this.treeView.testCase.commands.push(this.command);
+			this.treeView.newCommand = new Command();
+			this.treeView.treebox.rowCountChanged(this.treeView.rowCount, 1);
+			this.treeView.rowCount++;
+			this.treeView.log.debug("added new command");
+		}
+	},
+	
+	undo: function() {
+		if (this.command.type == 'command') {
+			this.command[this.key] = this.oldValue;
+		} else if (this.command.type == 'comment' && this.key == 'command') {
+			this.command['comment'] = this.oldValue;
+		}
+		if (this.index >= 0) {
+			this.treeView.treebox.invalidateRow(this.index);
+		}
+		if (this.wasNewCommand) {
+			this.treeView.testCase.commands.pop();
+			this.treeView.newCommand = new Command();
+			this.treeView.treebox.rowCountChanged(this.treeView.rowCount - 1, -1);
+			this.treeView.rowCount--;
+			this.treeView.log.debug("removed new command");
+		}
+	}
+}
+
+TreeView.DeleteCommandAction = function(treeView, ranges) {
+	this.treeView = treeView;
+	this.ranges = ranges;
+}
+
+TreeView.DeleteCommandAction.prototype = {
+	execute: function() {
+		var currentIndex = this.treeView.tree.currentIndex;
+		for (var i = this.ranges.length - 1; i >= 0; i--) {
+			var range = this.ranges[i];
+			this.treeView.testCase.commands.splice(range.start, range.commands.length);
+			this.treeView.treebox.rowCountChanged(range.start, -range.commands.length);
+			this.treeView.rowCount -= range.commands.length;
+			if (range.start < currentIndex) {
+				currentIndex -= range.commands.length;
+				if (currentIndex < range.start) {
+					currentIndex = range.start;
+				}
+			}
+		}
+		if (currentIndex >= this.treeView.rowCount) currentIndex = this.treeView.rowCount - 1;
+		this.treeView.selection.select(currentIndex);
+	},
+
+	undo: function() {
+		var currentIndex = this.treeView.tree.currentIndex;
+		for (var i = 0; i < this.ranges.length; i++) {
+			var range = this.ranges[i];
+			for (var j = 0; j < range.commands.length; j++) {
+				this.treeView.testCase.commands.splice(range.start + j, 0, range.commands[j]);
+			}
+			this.treeView.treebox.rowCountChanged(range.start, range.commands.length);
+			this.treeView.rowCount += range.commands.length;
+			if (currentIndex <= range.start) {
+				currentIndex += range.commands.length;
+			}
+		}
+		this.treeView.selection.select(currentIndex);
+	}
+}
 
