@@ -24,9 +24,21 @@ function TestManager(options) {
 	this.currentFormatInfo = this.formatInfos[0];
 }
 
+TestManager.getFormatDir = function() {
+	var formatDir = FileUtils.getProfileDir();
+	formatDir.append("selenium-ide-scripts");
+	if (!formatDir.exists()) {
+		formatDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
+	}
+	formatDir.append("formats");
+	if (!formatDir.exists()) {
+		formatDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
+	}
+	return formatDir;
+}
+
 TestManager.loadUserFormats = function() {
-	var formatFile = FileUtils.getProfileDir();
-	formatFile.append("selenium-ide-formats");
+	var formatFile = TestManager.getFormatDir();
 	formatFile.append("index.txt");
 	
 	if (!formatFile.exists()) {
@@ -56,8 +68,7 @@ TestManager.saveUserFormats = function(formats) {
 	var conv = FileUtils.getUnicodeConverter('UTF-8');
 	text = conv.ConvertFromUnicode(text);
 	
-	var formatFile = FileUtils.getProfileDir();
-	formatFile.append("selenium-ide-formats");
+	var formatFile = TestManager.getFormatDir();
 	formatFile.append("index.txt");
 	var stream = FileUtils.openFileOutputStream(formatFile);
 	stream.write(text, text.length);
@@ -143,11 +154,7 @@ function UserFormatInfo(id, name) {
 }
 
 UserFormatInfo.prototype.save = function(source) {
-	var formatDir = FileUtils.getProfileDir();
-	formatDir.append("selenium-ide-formats");
-	if (!formatDir.exists()) {
-		formatDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
-	}
+	var formatDir = TestManager.getFormatDir();
 	var formats = TestManager.loadUserFormats();
 	if (!this.id) {
 		var entries = formatDir.directoryEntries;
@@ -174,8 +181,7 @@ UserFormatInfo.prototype.save = function(source) {
 }
 
 UserFormatInfo.prototype.getFormatFile = function() {
-	var formatDir = FileUtils.getProfileDir();
-	formatDir.append("selenium-ide-formats");
+	var formatDir = TestManager.getFormatDir();
 	var formatFile = formatDir.clone();
 	formatFile.append(this.id + ".js");
 	return formatFile;
