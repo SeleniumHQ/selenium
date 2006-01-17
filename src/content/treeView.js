@@ -305,10 +305,12 @@ TreeView.prototype = {
 			if (this.selection.getRangeCount() == 0) {
 				currentIndex = this.rowCount;
 			}
+			this.executeAction(new TreeView.PasteCommandAction(this, currentIndex, commands));
+			/*
 			for (var i = 0; i < commands.length; i++) {
 				var command = commands[i];
 				this.insertAt(currentIndex + i, command.createCopy());
-			}
+				}*/
 		}
 	},
 	insertAt: function(pos, command) {
@@ -525,7 +527,7 @@ TreeView.DeleteCommandAction.prototype = {
 		for (var i = 0; i < this.ranges.length; i++) {
 			var range = this.ranges[i];
 			for (var j = 0; j < range.commands.length; j++) {
-				this.treeView.testCase.commands.splice(range.start + j, 0, range.commands[j]);
+				this.treeView.testCase.commands.splice(range.start + j, 0, range.commands[j].createCopy());
 			}
 			this.treeView.treebox.rowCountChanged(range.start, range.commands.length);
 			this.treeView.rowCount += range.commands.length;
@@ -537,3 +539,39 @@ TreeView.DeleteCommandAction.prototype = {
 	}
 }
 
+TreeView.PasteCommandAction = function(treeView, index, commands) {
+	this.treeView = treeView;
+	this.index = index;
+	this.commands = commands;
+}
+
+TreeView.PasteCommandAction.prototype = {
+	execute: function() {
+		var currentIndex = this.treeView.tree.currentIndex;
+		for (var i = 0; i < this.commands.length; i++) {
+			this.treeView.testCase.commands.splice(this.index + i, 0, this.commands[i].createCopy());
+		}
+		this.treeView.treebox.rowCountChanged(this.index, this.commands.length);
+		this.treeView.rowCount += this.commands.length;
+		if (currentIndex <= this.index) {
+			currentIndex += this.commands.length;
+		}
+		this.treeView.selection.select(currentIndex);
+		this.treeView.treebox.ensureRowIsVisible(currentIndex);
+	},
+	
+	undo: function() {
+		var currentIndex = this.treeView.tree.currentIndex;
+		this.treeView.testCase.commands.splice(this.index, this.commands.length);
+		this.treeView.treebox.rowCountChanged(this.index, -this.commands.length);
+		this.treeView.rowCount -= this.commands.length;
+		if (this.index < currentIndex) {
+			currentIndex -= this.commands.length;
+			if (currentIndex < this.index) {
+				currentIndex = this.index;
+			}
+		}
+		this.treeView.selection.select(currentIndex);
+		this.treeView.treebox.ensureRowIsVisible(currentIndex);
+	}
+}
