@@ -92,7 +92,7 @@ function EventManager(listener) {
 					var type = event.target.type;
 					if ('select' == tagName) {
 						var label = event.target.options[event.target.selectedIndex].innerHTML;
-						var value = "label=" + label;
+						var value = "label=" + label.replace(/^\s*(.*?)\s*$/, "$1");
 						self.listener.addCommand("select", self.getLocator(window, event.target), value, window);
 					} else if (('input' == tagName && ('text' == type || 'password' == type || 'file' == type)) ||
 							   'textarea' == tagName) {
