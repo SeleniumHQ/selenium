@@ -1,0 +1,10 @@
+#include "nsISupportsArray.idl"
+#include "nsIAutoCompleteSearch.idl"
+
+interface nsISupportsArray;
+
+[scriptable, uuid(4791AF5F-AFBA-45A1-8204-47A135DF9591)]
+interface nsISeleniumAutoCompleteSearch : nsIAutoCompleteSearch
+{
+  void setSeleniumCommands(in nsISupportsArray commands);
+};

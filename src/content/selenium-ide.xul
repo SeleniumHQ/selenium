@@ -14,11 +14,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://global/content/xul.css" type="text/css"?>
 <?xml-stylesheet href="chrome://selenium-ide/content/selenium-ide.css" type="text/css"?>
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
 <?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
+
+<!DOCTYPE window [
+<!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
+%browserDTD;
+<!ENTITY % seleniumIdeDTD SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd">
+%seleniumIdeDTD;
+]>
+
 <window title="Selenium IDE"
   id="selenium-ide"
   windowtype="global:selenium-ide"
@@ -90,12 +99,12 @@ limitations under the License.
     <menubar id="menubar">
       <menu id="file-menu" label="File">
 	<menupopup id="file-popup">
-	  <menuitem label="New" oncommand="newTestCase();"/>
-	  <menuitem label="Open..." command="cmd_open" key="open-key"/>
-	  <menuitem label="Save" command="cmd_save" key="save-key"/>
-	  <menuitem label="Save As..." oncommand="saveNewTestCase();"/>
+	  <menuitem label="&newTestCmd.label;" oncommand="newTestCase();"/>
+	  <menuitem label="&openCmd.label;" command="cmd_open" key="open-key"/>
+	  <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key"/>
+	  <menuitem label="&saveTestAsCmd.label;" oncommand="saveNewTestCase();"/>
 	  <menuseparator/>
-	  <menuitem label="Close" command="cmd_close" key="close-key"/>
+	  <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key"/>
 	</menupopup>
       </menu>
       <menu id="menu_edit">
@@ -179,13 +188,17 @@ limitations under the License.
 		<row align="center">
 		  <!-- do drop down that depends upon the element type -->
 		  <label control="commandAction" value="Command"/>
+
+		  <textbox disabled="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-commands" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
 		  <!--
 		  <textbox disabled="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletepopup="popupSeleniumCommands" enablehistory="true"/>
 		  -->
-		  <menulist disabled="true" editable="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" oncommand="recorder.treeView.updateCurrentCommand('command', this.value)">
+		  <!--
+		  <menulist disabled="true" editable="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" oncommand="recorder.treeView.updateCurrentCommand('command', this.value);">
 		    <menupopup>
 		    </menupopup>
 		  </menulist>
+		  -->
 		</row>
 		<row align="center">
 		  <!-- show different options collected by the client. Allow user to override -->

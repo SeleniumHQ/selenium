@@ -34,6 +34,7 @@
     <zip destfile="${build}/chrome/${ant.project.name}.jar">
       <fileset dir=".">
 	<include name="content/**"/>
+	<include name="locale/**"/>
       </fileset>
     </zip>
   </target>
@@ -45,6 +46,8 @@
       </fileset>
       <fileset dir=".">
 	<include name="install.rdf"/>
+	<include name="components/**"/>
+	<exclude name="components/*.idl"/>
       </fileset>
       <fileset dir="production">
 	<include name="chrome.manifest"/>

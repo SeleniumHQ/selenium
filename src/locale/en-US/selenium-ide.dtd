@@ -1,0 +1,4 @@
+<!ENTITY newTestCmd.label "New Test">
+<!ENTITY openCmd.label "Open...">
+<!ENTITY saveTestCmd.label "Save Test">
+<!ENTITY saveTestAsCmd.label "Save Test As...">

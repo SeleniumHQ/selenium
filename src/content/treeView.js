@@ -156,21 +156,19 @@ function TreeView(recorder, document, tree) {
 		actions.push("selectAndWait");
 		actions.push("typeAndWait");
 		actions.push("pause");
-		
-		var menulist = this.document.getElementById("commandAction");
-		
-		function appendItemsToMenu(array) {
-			array.sort();
-			for (var i = 0; i < array.length; i++) {
-				menulist.appendItem(array[i], array[i]);
-			}
-		}
 
-		appendItemsToMenu(actions);
-		menulist.firstChild.appendChild(this.document.createElement("menuseparator"));
-		appendItemsToMenu(asserts);
-		menulist.firstChild.appendChild(this.document.createElement("menuseparator"));
-		appendItemsToMenu(verifies);
+		actions.sort();
+		asserts.sort();
+		verifies.sort();
+		var allCommands = actions.concat(asserts, verifies);
+		var array = Components.classes["@mozilla.org/supports-array;1"].createInstance(Components.interfaces.nsISupportsArray);
+		for (var i = 0; i < allCommands.length; i++) {
+			var string = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+			string.data = allCommands[i];
+			array.AppendElement(string);
+		}
+		var autocomplete = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-commands"].getService(Components.interfaces.nsISeleniumAutoCompleteSearch);
+		autocomplete.setSeleniumCommands(array);
 	}
 	
 	loadSeleniumCommands();
