@@ -1,0 +1,4 @@
+<!ENTITY options.encoding.description "Encoding for loading and saving files">
+<!ENTITY options.userExtensionsURL.description "Location for user-extensions.js">
+<!ENTITY options.rememberBaseURL.description "Remember base URL">
+<!ENTITY options.recordAssertTitle.description "Record assertTitle automatically">

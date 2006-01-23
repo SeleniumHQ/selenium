@@ -402,7 +402,7 @@ TreeView.prototype = {
 		if (row == this.testCase.debugContext.debugIndex) {
 			props.AppendElement(this.atomService.getAtom("debugIndex"));
 		}
-		if (this.tree.currentIndex != row) {
+		if (!this.selection.isSelected(row) && this.tree.currentIndex != row) {
 			if (command.result == 'done') {
 				props.AppendElement(this.atomService.getAtom("commandDone"));
 			}

@@ -40,7 +40,6 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
-  <!--<script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-logging.js"/>-->
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide.js"/>
@@ -122,8 +121,8 @@ limitations under the License.
       </menu>
       <menu id="view-menu" label="Options">
 	<menupopup id="view-popup">
-	  <menuitem label="Options..." oncommand="openSeleniumIDEPreferences();" />
-	  <menu label="Format">
+	  <menuitem label="&optionsCmd.label;" oncommand="openSeleniumIDEPreferences();" />
+	  <menu label="&formatCmd.label;">
 	    <menupopup id="popup_formats" onpopupshowing="populateFormatsPopup()" oncommand="selectFormatFromMenu()">
 	    </menupopup>
 	  </menu>
@@ -136,7 +135,7 @@ limitations under the License.
     <toolbar>
       <hbox align="center" flex="1">
 	<label value="Base URL"/>
-	<textbox id="baseURL" flex="1" tooltiptext="Base URL used for playing in embedded Selenium."/>
+	<textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
       </hbox>
     </toolbar>
     <toolbar>
@@ -190,15 +189,6 @@ limitations under the License.
 		  <label control="commandAction" value="Command"/>
 
 		  <textbox disabled="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-commands" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
-		  <!--
-		  <textbox disabled="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletepopup="popupSeleniumCommands" enablehistory="true"/>
-		  -->
-		  <!--
-		  <menulist disabled="true" editable="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" oncommand="recorder.treeView.updateCurrentCommand('command', this.value);">
-		    <menupopup>
-		    </menupopup>
-		  </menulist>
-		  -->
 		</row>
 		<row align="center">
 		  <!-- show different options collected by the client. Allow user to override -->

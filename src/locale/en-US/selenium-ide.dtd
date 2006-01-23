@@ -2,3 +2,7 @@
 <!ENTITY openCmd.label "Open...">
 <!ENTITY saveTestCmd.label "Save Test">
 <!ENTITY saveTestAsCmd.label "Save Test As...">
+<!ENTITY optionsCmd.label "Options...">
+<!ENTITY formatCmd.label "Format">
+
+<!ENTITY baseURLTextbox.tooltip "Base URL used for playing in embedded Selenium.">

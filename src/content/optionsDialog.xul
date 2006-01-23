@@ -15,6 +15,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+<!DOCTYPE window [
+<!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
+%browserDTD;
+<!ENTITY % optionsDTD SYSTEM "chrome://selenium-ide/locale/options.dtd">
+%optionsDTD;
+]>
 <dialog buttons="accept,cancel,extra2"
 	buttonlabelextra2="Reset Options"
 	id="selenium-ide-options"
@@ -39,33 +45,21 @@ limitations under the License.
   </tabs>
   <tabpanels flex="1">
     <tabpanel orient="vertical">
-      <description>Encoding for loading and saving files</description>
+      <description>&options.encoding.description;</description>
       <hbox align="center">
 	<textbox id="encoding" multiline="false" oninput="testEncoding()"/>
 	<label id="encodingCheck" value="" class="error"/>
       </hbox>
       <separator class="thin"/>
       
-      <description>Location for user-extensions.js</description>
+      <description>&options.userExtensionsURL.description;</description>
       <hbox align="center">
 	<textbox id="userExtensionsURL" multiline="false" flex="1"/>
 	<button label="Browse..." oncommand="chooseUserExtensionsURL()"/>
       </hbox>
       <separator class="thin"/>
-      
-      <!--
-      <description>Escape XML entities?</description>
-      <menulist id="escapeXmlEntities">
-	<menupopup>
-	  <menuitem label="always: &amp; &quot; &apos; &lt; &gt;" value="always"/>
-	  <menuitem label="partially: &lt; &gt;" value="partial"/>
-	  <menuitem label="never" value="never"/>
-	</menupopup>
-      </menulist>
-      <separator/>
-      <checkbox id="escapeDollar" label="Escape '${' as '\${' (useful for JSP 2.0)"/>
-      -->
-      <checkbox id="rememberBaseURL" label="Remember base URL"/>
+      <checkbox id="rememberBaseURL" label="&options.rememberBaseURL.description;"/>
+      <checkbox id="recordAssertTitle" label="&options.recordAssertTitle.description;"/>
     </tabpanel>
     <tabpanel orient="vertical">
       <hbox flex="1">

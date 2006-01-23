@@ -138,6 +138,13 @@ function initOptions() {
 			document.getElementById("baseURL").value = this.options.baseURL;
 		}
 	}
+	if (this.options.selectedFormat != null) {
+		try {
+			testManager.selectFormat(this.options.selectedFormat);
+		} catch (error) {
+			log.error("failed to select format: " + error);
+		}
+	}
 }
 
 function newTestCase() {
@@ -202,6 +209,9 @@ function loadRecorder() {
 
 function loadRecorderFor(contentWindow) {
 	init();
+	if (this.recordingEnabled) {
+		recordTitle(contentWindow);
+	}
 	this.eventManager.startForContentWindow(contentWindow);
 }
 
@@ -209,8 +219,10 @@ function unloadRecorder() {
 	if (this.options.rememberBaseURL == 'true'){
 		this.options.baseURL = document.getElementById("baseURL").value;
 		optionsManager.save(this.options, 'baseURL');
-		//this.options.save('baseURL');
 	}
+	this.options.selectedFormat = this.testManager.currentFormatInfo.id;
+	optionsManager.save(this.options, 'selectedFormat');
+	
 	this.eventManager.stopForAllBrowsers();
 }
 
@@ -223,6 +235,12 @@ function onUnloadDocument(doc) {
 		clearTimeout(this.unloadTimeoutID);
 	}
 	this.unloadTimeoutID = setTimeout("appendAND_WAIT()", 100);
+}
+
+function recordTitle(window) {
+	if (this.options.recordAssertTitle == 'true') {
+		addCommand("assertTitle", window.document.title, null, window);
+	}
 }
 
 function recordOpen(window) {
@@ -257,6 +275,7 @@ function addCommand(command,target,value,window) {
 	var windowName;
 	if (command != 'open' && this.testCase.commands.length == 0) {
 		recordOpen(window);
+		recordTitle(window);
 	}
 	if (command != 'selectWindow' &&
 		this.lastWindow != null &&

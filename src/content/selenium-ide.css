@@ -2,6 +2,9 @@
   color: #FF0000;
 }
 
+/*
+ * Tree View
+ */
 treechildren::-moz-tree-cell-text(comment)
 {
   color: #AA33AA;
@@ -32,10 +35,12 @@ treechildren::-moz-tree-row(debugIndex)
   background-color: #FFFFCC;
 }
 
-treechildren::-moz-tree-row(commandFailed, selected, focus)
+/*
+treechildren::-moz-tree-row(selected, focus)
 {
-  background-color: Highlight;
+  background-color: Highlight !important;
 }
+*/
 
 treechildren::-moz-tree-image(breakpoint)
 {

@@ -24,6 +24,9 @@ const OPTIONS = {
 	"",
 
 	baseURL:
+	"",
+
+	recordAssertTitle:
 	""
 };
 
