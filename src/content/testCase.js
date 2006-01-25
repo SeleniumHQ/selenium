@@ -48,6 +48,8 @@ function TestCase() {
 	this.recordIndex = 0;
 	
 	this.setCommands([]);
+	
+	this.modified = false;
 
 	var testCase = this;
 
@@ -79,6 +81,7 @@ TestCase.prototype.setCommands = function(commands) {
 	commands.push = function(command) {
 		_push.call(commands, command);
 		self.recordIndex++;
+		self.setModified();
 	}
 
 	var _splice = commands.splice;
@@ -97,19 +100,30 @@ TestCase.prototype.setCommands = function(commands) {
 				self.recordIndex = index;
 			}
 		}
+		self.setModified();
 	}
 
 	var _pop = commands.pop;
 	commands.pop = function() {
 		var command = commands[commands.length - 1];
 		commands.splice(commands.length - 1, 1);
+		self.setModified();
 		return command;
 	}
 
 	this.commands = commands;
+	this.setModified();
 }
 
 TestCase.prototype.clear = function() {
 	var length = this.commands.length;
 	this.commands.splice(0, this.commands.length);
+	this.setModified();
 };
+
+TestCase.prototype.setModified = function() {
+	this.modified = true;
+	if (recorder) {
+		recorder.updateTitle();
+	}
+}

@@ -81,7 +81,7 @@ function init() {
 			},
 			doCommand : function(cmd) {
 				switch (cmd) {
-				case "cmd_close": window.close(); break;
+				case "cmd_close": if (confirmClose()) { window.close(); } break;
 				case "cmd_save": saveTestCase(); break;
 				case "cmd_open": loadTestCase(); break;
 				case "cmd_selenium_play": seleniumDebugger.start(); break;
@@ -152,7 +152,8 @@ function newTestCase() {
 		this.setTestCase(new TestCase());
 		this.view.refresh();
 		//document.getElementById("filename").value = '';
-		document.title = DEFAULT_TITLE;
+		//document.title = DEFAULT_TITLE;
+		updateTitle();
 	}
 }
 
@@ -173,7 +174,16 @@ function loadTestCase() {
 }
 
 function updateTitle() {
-	document.title = this.testCase.baseFilename + " - " + DEFAULT_TITLE;
+	var title;
+	if (this.testCase && this.testCase.baseFilename) {
+		title = this.testCase.baseFilename + " - " + DEFAULT_TITLE;
+	} else {
+		title = DEFAULT_TITLE;
+	}
+	if (this.testCase && this.testCase.modified) {
+		title += " *";
+	}
+	document.title = title;
 }
 
 function tabSelected(id) {
@@ -191,6 +201,9 @@ function saveTestCase() {
 	if (this.testManager.save(this.testCase)) {
 		//document.getElementById("filename").value = this.testCase.filename;
 		updateTitle();
+		return true;
+	} else {
+		return false;
 	}
 }
 
@@ -213,6 +226,32 @@ function loadRecorderFor(contentWindow) {
 		recordTitle(contentWindow);
 	}
 	this.eventManager.startForContentWindow(contentWindow);
+}
+
+function confirmClose() {
+	if (this.testCase && this.testCase.modified) {
+		var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+			.getService(Components.interfaces.nsIPromptService);
+		
+		var flags = 
+			promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0 +
+			promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1 +
+			promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2;
+		
+		result = promptService.confirmEx(window, "Save test?",
+										 "Would you like to save the test?",
+										 flags, null, null, null, null, {});
+		
+		switch (result) {
+		case 0:
+			return saveTestCase();
+		case 1:
+			return false;
+		case 2:
+			return true;
+		}
+	}
+	return true;
 }
 
 function unloadRecorder() {
@@ -238,7 +277,7 @@ function onUnloadDocument(doc) {
 }
 
 function recordTitle(window) {
-	if (this.options.recordAssertTitle == 'true') {
+	if (this.options.recordAssertTitle == 'true' && this.testCase.commands.length > 0) {
 		addCommand("assertTitle", window.document.title, null, window);
 	}
 }

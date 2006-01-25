@@ -36,7 +36,8 @@ limitations under the License.
   width="400"
   height="520"
   onload="loadRecorder()"
-  onunload="unloadRecorder()">
+  onunload="unloadRecorder()"
+  onclose="return confirmClose()">
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
