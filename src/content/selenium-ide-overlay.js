@@ -176,8 +176,17 @@ SeleniumIDE.testRecorderPopup = function(event) {
 	}
 }
 
-SeleniumIDE.onContentLoaded = function() {
-	SeleniumIDE.reloadRecorder(window.getBrowser().contentWindow);
+SeleniumIDE.onContentLoaded = function(event) {
+	var isRootDocument = false;
+	var browsers = window.getBrowser().browsers;
+	for (var i = 0; i < browsers.length; i++) {
+		var cw = browsers[i].contentWindow;
+		if (cw && cw.document == event.target) {
+			isRootDocument = true;
+		}
+	}
+	SeleniumIDE.reloadRecorder(window.getBrowser().contentWindow, isRootDocument);
+	
 	var contextMenu = window.document.getElementById("contentAreaContextMenu");
 	if (contextMenu) {
 		contextMenu.addEventListener("popupshowing", SeleniumIDE.testRecorderPopup, false);

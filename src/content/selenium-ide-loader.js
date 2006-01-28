@@ -29,10 +29,10 @@ SeleniumIDE.getRecorderWindow = function() {
 	return wm.getMostRecentWindow('global:selenium-ide');
 }
 
-SeleniumIDE.reloadRecorder = function(contentWindow) {
+SeleniumIDE.reloadRecorder = function(contentWindow, isRootDocument) {
 	var window = SeleniumIDE.getRecorderWindow();
 	if (window != null) {
-		window.loadRecorderFor(contentWindow);
+		window.loadRecorderFor(contentWindow, isRootDocument);
 	}
 }
 

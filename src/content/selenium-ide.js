@@ -219,9 +219,9 @@ function loadRecorder() {
 	this.eventManager.startForAllBrowsers();
 }
 
-function loadRecorderFor(contentWindow) {
+function loadRecorderFor(contentWindow, isRootDocument) {
 	init();
-	if (this.recordingEnabled) {
+	if (this.recordingEnabled && isRootDocument) {
 		recordTitle(contentWindow);
 	}
 	this.eventManager.startForContentWindow(contentWindow);
