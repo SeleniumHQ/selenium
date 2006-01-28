@@ -27,7 +27,7 @@ const OPTIONS = {
 	"",
 
 	recordAssertTitle:
-	""
+	"true"
 };
 
 function OptionsManager() {
