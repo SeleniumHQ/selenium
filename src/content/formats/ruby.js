@@ -1,3 +1,7 @@
+/*
+ * An example format for editing Driven Ruby test.
+ */
+
 function parse(testCase, source) {
 	var commandLoadPattern = /^\s+([a-z0-9]+)\s+('.*?'|".*?")(\s*,\s*('.*?'|".*?")|)\s*$/i;
 	var doc = source;

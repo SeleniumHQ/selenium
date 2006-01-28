@@ -257,6 +257,10 @@ TestManager.prototype.getFormat = function() {
 	return format;
 }
 
+TestManager.prototype.getDefaultFormat = function() {
+	return this.findFormatInfo("default").getFormat();
+}
+
 TestManager.prototype.save = function(testCase) {
 	return this.saveAs(testCase, testCase.filename);
 };
@@ -309,7 +313,7 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 };
 
 TestManager.prototype.getSourceForTestCase = function(testCase) {
-	return this.getFormat().format(testCase, null, true);
+	return this.getFormat().format(testCase, "New Test", true);
 }
 
 TestManager.prototype.getSourceForCommands = function(commands) {

@@ -51,6 +51,12 @@ function convertText(command, converter) {
 	}
 }
 
+/**
+ * Parse source and update TestCase. Throw an exception if any error occurs.
+ *
+ * @param testCase TestCase to update
+ * @param source The source to parse
+ */
 function parse(testCase, source) {
 	var commandLoadPattern = options.commandLoadPattern;
 	var commandRegexp = new RegExp(commandLoadPattern, 'i');
@@ -126,6 +132,12 @@ function getSourceForCommand(commandObj) {
 	return text;
 }
 
+/**
+ * Format an array of commands to the snippet of source.
+ * Used to copy the source into the clipboard.
+ *
+ * @param The array of commands to sort.
+ */
 function formatCommands(commands) {
 	var commandsText = '';
 	for (i = 0; i < commands.length; i++) {
@@ -135,7 +147,15 @@ function formatCommands(commands) {
 	return commandsText;
 }
 
-function format(testCase, name, saveHeaderAndFooter) {
+/**
+ * Format TestCase and return the source.
+ *
+ * @param testCase TestCase to format
+ * @param name The name of the test case, if any. It may be used to embed title into the source.
+ * @param saveHeaderAndFooter true if the header and footer should be saved into the TestCase.
+ * @param useDefaultHeaderAndFooter Parameter used for only default format.
+ */
+function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) {
 	var text;
 	var commandsText = "";
 	var testText;
@@ -147,7 +167,7 @@ function format(testCase, name, saveHeaderAndFooter) {
 	}
 	
 	var testText;
-	if (testCase.header == null || testCase.footer == null) {
+	if (testCase.header == null || testCase.footer == null || useDefaultHeaderAndFooter) {
 		testText = options.testTemplate;
 		testText = testText.replace(/\$\{name\}/g, name);
 		var commandsIndex = testText.indexOf("${commands}");
@@ -167,6 +187,9 @@ function format(testCase, name, saveHeaderAndFooter) {
 	return testText;
 }
 
+/*
+ * Optional: The customizable option that can be used in format/parse functions.
+ */
 options = {
 	commandLoadPattern:
 	"<tr>" +
@@ -216,6 +239,9 @@ options = {
 	"false"
 };
 
+/*
+ * Optional: XUL XML String for the UI of the options dialog
+ */
 configForm = 
 	//'<tabbox flex="1"><tabs orient="horizontal"><tab label="Load"/><tab label="Save"/></tabs>' +
 	//'<tabpanels flex="1">' +

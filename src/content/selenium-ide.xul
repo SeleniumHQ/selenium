@@ -250,7 +250,7 @@ limitations under the License.
 	<menulist id="logFilter" oncommand="seleniumDebugger.reloadLog()">
 	  <menupopup>
 	    <menuitem label="Debug" value="0"/>
-	    <menuitem label="Info" value="1"/>
+	    <menuitem label="Info" value="1" selected="true"/>
 	    <menuitem label="Warn" value="2"/>
 	    <menuitem label="Error" value="3"/>
 	  </menupopup>
