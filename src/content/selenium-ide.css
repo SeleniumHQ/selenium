@@ -44,7 +44,15 @@ treechildren::-moz-tree-row(selected, focus)
 
 treechildren::-moz-tree-image(breakpoint)
 {
-  list-style-image: url("icons/breakpoint.png");
+  list-style-image: url("icons/treeView-icons.png");
+  -moz-image-region: rect(0px 24px 12px 12px);
+  -moz-box-align: center;
+}
+
+treechildren::-moz-tree-image(startpoint)
+{
+  list-style-image: url("icons/treeView-icons.png");
+  -moz-image-region: rect(0px 12px 12px 0px);
   -moz-box-align: center;
 }
 

@@ -148,7 +148,7 @@ function initOptions() {
 }
 
 function newTestCase() {
-	if (clear()) {
+	if (confirmClose()) {
 		this.setTestCase(new TestCase());
 		this.view.refresh();
 		//document.getElementById("filename").value = '';
@@ -200,7 +200,6 @@ function tabSelected(id) {
 function saveTestCase() {
 	if (this.testManager.save(this.testCase)) {
 		//document.getElementById("filename").value = this.testCase.filename;
-		updateTitle();
 		return true;
 	} else {
 		return false;

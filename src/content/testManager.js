@@ -297,6 +297,7 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 			this.log.info("saved " + file.path);
 			testCase.filename = file.path;
 			testCase.baseFilename = file.leafName;
+			testCase.clearModified();
 			return true;
 		} else {
 			return false;
@@ -318,6 +319,7 @@ TestManager.prototype.getSourceForCommands = function(commands) {
 TestManager.prototype.setSource = function(testCase, source) {
 	try {
 		this.getFormat().parse(testCase, source);
+		testCase.setModified();
 	} catch (err) {
 		alert("error: " + err);
 	}

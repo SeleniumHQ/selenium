@@ -35,6 +35,9 @@ function TreeView(recorder, document, tree) {
 			case "cmd_selectAll":
 			case "cmd_undo":
 			case "cmd_redo":
+			case "cmd_selenium_startpoint":
+			case "cmd_selenium_breakpoint":
+			case "cmd_selenium_exec_command":
 				return true;
 			default:
 				return false;
@@ -52,6 +55,12 @@ function TreeView(recorder, document, tree) {
 			    return self.undoStack.length > 0;
 			case "cmd_redo":
 			    return self.redoStack.length > 0;
+			case "cmd_selenium_startpoint":
+			    return self.selection.getRangeCount() > 0;
+			case "cmd_selenium_breakpoint":
+			    return self.selection.getRangeCount() > 0;
+			case "cmd_selenium_exec_command":
+			    return self.selection.getRangeCount() > 0;
 			default:
 				return false;
 			}
@@ -64,6 +73,9 @@ function TreeView(recorder, document, tree) {
 			case "cmd_paste": self.paste(); break;
 			case "cmd_undo": self.undo(); break;
 			case "cmd_redo": self.redo(); break;
+			case "cmd_selenium_breakpoint": self.setBreakpoint(); break;
+			case "cmd_selenium_startpoint": self.setStartPoint(); break;
+			case "cmd_selenium_exec_command": self.executeCurrentCommand(); break;
 			}
 		},
 		onEvent : function(evt) {}
@@ -338,11 +350,42 @@ TreeView.prototype = {
 			this.selection.select(currentIndex);
 		}
 	},
-	breakpoint: function() {
+	setBreakpoint: function() {
 		if (this.tree.currentIndex >= 0) {
 			var command = this.getCommand(this.tree.currentIndex);
 			command.breakpoint = command.breakpoint ? null : true;
+			if (command == this.testCase.startPoint) {
+				this.testCase.startPoint = null;
+			}
 			this.rowUpdated(this.tree.currentIndex);
+		}
+	},
+	setStartPoint: function() {
+		if (this.tree.currentIndex >= 0) {
+			var command = this.getCommand(this.tree.currentIndex);
+			var oldStartPoint = this.testCase.startPoint;
+			if (command.breakpoint) {
+				command.breakpoint = null;
+			}
+			if (oldStartPoint == command) {
+				// clear startpoint
+				this.testCase.startPoint = null;
+			} else {
+				this.testCase.startPoint = command;
+				this.rowUpdated(this.tree.currentIndex);
+			}
+			if (oldStartPoint) {
+				this.rowUpdated(this.testCase.commands.indexOf(oldStartPoint));
+			}
+		}
+	},
+	executeCurrentCommand: function() {
+		if (this.tree.currentIndex >= 0) {
+			var command = this.getCommand(this.tree.currentIndex);
+			if (this.newCommand != command && command.type == 'command') {
+				this.selection.clearSelection();
+				seleniumDebugger.executeCommand(command);
+			}
 		}
 	},
 
@@ -399,19 +442,15 @@ TreeView.prototype = {
 	},
     getRowProperties: function(row, props) {
 		var command = this.getCommand(row);
+		if (this.selection.isSelected(row)) return;
 		if (row == this.testCase.debugContext.debugIndex) {
 			props.AppendElement(this.atomService.getAtom("debugIndex"));
-		}
-		if (!this.selection.isSelected(row) && this.tree.currentIndex != row) {
-			if (command.result == 'done') {
-				props.AppendElement(this.atomService.getAtom("commandDone"));
-			}
-			if (command.result == 'passed') {
-				props.AppendElement(this.atomService.getAtom("commandPassed"));
-			}
-			if (command.result == 'failed') {
-				props.AppendElement(this.atomService.getAtom("commandFailed"));
-			}
+		} else if (command.result == 'done') {
+			props.AppendElement(this.atomService.getAtom("commandDone"));
+		} else if (command.result == 'passed') {
+			props.AppendElement(this.atomService.getAtom("commandPassed"));
+		} else if (command.result == 'failed') {
+			props.AppendElement(this.atomService.getAtom("commandFailed"));
 		}
 	},
     getCellProperties: function(row, col, props) {
@@ -425,22 +464,11 @@ TreeView.prototype = {
 		if (row == this.testCase.recordIndex) {
 			props.AppendElement(this.atomService.getAtom("recordIndex"));
 		}
-		if (row == this.testCase.debugContext.debugIndex) {
-			props.AppendElement(this.atomService.getAtom("debugIndex"));
-		}
-		if (this.tree.currentIndex != row) {
-			if (command.result == 'done') {
-				props.AppendElement(this.atomService.getAtom("commandDone"));
-			}
-			if (command.result == 'passed') {
-				props.AppendElement(this.atomService.getAtom("commandPassed"));
-			}
-			if (command.result == 'failed') {
-				props.AppendElement(this.atomService.getAtom("commandFailed"));
-			}
-		}
 		if (0 == col.index && command.breakpoint) {
 			props.AppendElement(this.atomService.getAtom("breakpoint"));
+		}
+		if (0 == col.index && this.testCase.startPoint == command) {
+			props.AppendElement(this.atomService.getAtom("startpoint"));
 		}
 	},
     getColumnProperties: function(colid, col, props) {},
@@ -475,6 +503,7 @@ TreeView.UpdateCommandAction.prototype = {
 			this.treeView.rowCount++;
 			this.treeView.log.debug("added new command");
 		}
+		this.treeView.testCase.setModified();
 	},
 	
 	undo: function() {

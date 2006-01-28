@@ -57,14 +57,13 @@ limitations under the License.
   <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
   <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
   <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
-  <!--
-  <commandset id="seleniumCommands">
--->
-    <command id="cmd_selenium_play" oncommand="goDoCommand('cmd_selenium_play')"/>
-    <command id="cmd_selenium_pause" oncommand="goDoCommand('cmd_selenium_pause')"/>
-    <command id="cmd_selenium_step" oncommand="goDoCommand('cmd_selenium_step')"/>
-    <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="updateSeleniumCommands()"/>
-<!--</commandset>-->
+  <command id="cmd_selenium_play" oncommand="goDoCommand('cmd_selenium_play')"/>
+  <command id="cmd_selenium_pause" oncommand="goDoCommand('cmd_selenium_pause')"/>
+  <command id="cmd_selenium_step" oncommand="goDoCommand('cmd_selenium_step')"/>
+  <command id="cmd_selenium_breakpoint" oncommand="goDoCommand('cmd_selenium_breakpoint')"/>
+  <command id="cmd_selenium_startpoint" oncommand="goDoCommand('cmd_selenium_startpoint')"/>
+  <command id="cmd_selenium_exec_command" oncommand="goDoCommand('cmd_selenium_exec_command')"/>
+  <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="updateSeleniumCommands()"/>
 
   <keyset id="editMenuKeys"/>
 
@@ -72,7 +71,9 @@ limitations under the License.
     <key id="close-key" modifiers="accel" key="W" command="cmd_close"/>
     <key id="save-key" modifiers="accel" key="S" command="cmd_save"/>
     <key id="open-key" modifiers="accel" key="O" command="cmd_open"/>
-    <key id="breakpoint-key" key="B" oncommand="recorder.treeView.breakpoint();"/>
+    <key id="breakpoint-key" key="B" command="cmd_selenium_breakpoint"/>
+    <key id="startpoint-key" key="S" command="cmd_selenium_startpoint"/>
+    <key id="exec-key" key="X" command="cmd_selenium_exec_command"/>
   </keyset>
 
   <popupset>
@@ -88,7 +89,9 @@ limitations under the License.
       <menuseparator/>
       <menuitem label="Clear All" oncommand="clear()"/>
       <menuseparator/>
-      <menuitem label="Toggle Breakpoint" oncommand="recorder.treeView.breakpoint()" key="breakpoint-key"/>
+      <menuitem label="Toggle Breakpoint" command="cmd_selenium_breakpoint" key="breakpoint-key"/>
+      <menuitem label="Set / Clear Start Point" command="cmd_selenium_startpoint" key="startpoint-key"/>
+      <menuitem label="Execute this command" command="cmd_selenium_exec_command" key="exec-key"/>
     </popup>
     <popup id="popupSeleniumCommands">
       <menuitem label="Clear All" oncommand="clear()"/>
@@ -145,7 +148,7 @@ limitations under the License.
 	<radio id="walk" label="Walk" value="500"/>
 	<radio id="step" label="Step" value="-1"/>
       </radiogroup>
-      <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="Play from the beginning" command="cmd_selenium_play"/>
+      <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="Play from the beginning or start point" command="cmd_selenium_play"/>
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="Pause / Resume" command="cmd_selenium_pause"/>
       <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="Step" command="cmd_selenium_step"/>
       <toolbarseparator/>
@@ -164,7 +167,8 @@ limitations under the License.
       <tabpanels flex="1">
 	<tabpanel orient="vertical">
 	  <tree id="commands" flex="1" enableColumnDrag="false" hidecolumnpicker="true"
-		context="treeContextMenu" onselect="recorder.treeView.selectCommand()">
+		context="treeContextMenu" onselect="recorder.treeView.selectCommand()"
+		ondblclick="goDoCommand('cmd_selenium_exec_command')">
 		<!--onfocus="recorder.treeView.focused=true" onblur="recorder.treeView.focused=false">-->
 	    <!--ondblclick="recorder.treeView.selectRecordIndex()">-->
 	    <treecols>

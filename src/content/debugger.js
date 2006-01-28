@@ -18,7 +18,10 @@ function Debugger() {
 	var self = this;
 	
 	this.init = function() {
-		if (this.runner != null) return;
+		if (this.runner != null) {
+			// already initialized
+			return;
+		}
 		
 		this.paused = false;
 		this.runner = new Object();
@@ -59,6 +62,14 @@ Debugger.prototype.start = function() {
 	this.init();
 	this.paused = false;
 	this.runner.start(recorder.document.getElementById("baseURL").value);
+};
+
+Debugger.prototype.executeCommand = function(command) {
+	document.getElementById("record-button").checked = false;
+	toggleRecordingEnabled(false);
+
+	this.init();
+	this.runner.executeCommand(recorder.document.getElementById("baseURL").value, command);
 };
 
 Debugger.prototype.pause = function() {

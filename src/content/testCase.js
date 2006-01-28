@@ -55,16 +55,24 @@ function TestCase() {
 
 	this.debugContext = {
 		reset: function() {
+			this.started = false;
 			this.debugIndex = -1;
 		},
 		
 		nextCommand: function() {
-			while (++this.debugIndex < testCase.commands.length) {
+			if (!this.started) {
+				this.started = true;
+				this.debugIndex = testCase.startPoint ? testCase.commands.indexOf(testCase.startPoint) : 0
+			} else {
+				this.debugIndex++;
+			}
+			for (; this.debugIndex < testCase.commands.length; this.debugIndex++) {
 				var command = testCase.commands[this.debugIndex];
 				if (command.type == 'command') {
 					return command;
 				}
 			}
+			this.reset();
 			return null;
 		},
 
@@ -123,6 +131,13 @@ TestCase.prototype.clear = function() {
 
 TestCase.prototype.setModified = function() {
 	this.modified = true;
+	if (recorder) {
+		recorder.updateTitle();
+	}
+}
+
+TestCase.prototype.clearModified = function() {
+	this.modified = false;
 	if (recorder) {
 		recorder.updateTitle();
 	}

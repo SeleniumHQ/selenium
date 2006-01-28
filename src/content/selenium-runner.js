@@ -109,8 +109,28 @@ var LOG = new Logger();
 //
 
 testLoop = null;
+stopping = false;
+
+function stopAndDo(func, arg1, arg2) {
+	if (testLoop && recorder.state != 'paused') {
+		LOG.debug("stopping...");
+		stopping = true;
+		setTimeout(func, 500, arg1, arg2);
+		return false;
+	}
+	stopping = false;
+	testLoop = null;
+	testCase.debugContext.reset();
+	for (var i = 0; i < testCase.commands.length; i++) {
+		delete testCase.commands[i].result;
+		recorder.view.rowUpdated(i);
+	}
+	return true;
+}
 
 function start(baseURL) {
+	if (!stopAndDo("start", baseURL)) return;
+	
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
 	
@@ -119,15 +139,10 @@ function start(baseURL) {
 	selenium.baseURL = baseURL;
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
-	testCase.debugContext.reset();
-	for (var i = 0; i < testCase.commands.length; i++) {
-		delete testCase.commands[i].result;
-		recorder.view.rowUpdated(i);
-	}
-	
+
 	testLoop = new TestLoop(commandFactory);
 		
-	testLoop.getCommandInterval = function() { return getInterval(); }
+	testLoop.getCommandInterval = function() { return stopping ? -1 : getInterval(); }
 	testLoop.nextCommand = function() {
 		if (testCase.debugContext.debugIndex >= 0)
 			recorder.view.rowUpdated(testCase.debugContext.debugIndex);
@@ -166,6 +181,63 @@ function start(baseURL) {
 	}
 
 	testCase.debugContext.reset();
+	testLoop.start();
+}
+
+function executeCommand(baseURL, command) {
+	if (!stopAndDo("executeCommand", baseURL, command)) return;
+
+	// TODO refactor with start()
+
+	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	var window = wm.getMostRecentWindow('navigator:browser');
+	
+	selenium = Selenium.createForFrame(window.getBrowser());
+	selenium.browserbot.getCurrentPage();
+	selenium.baseURL = baseURL;
+	commandFactory = new CommandHandlerFactory();
+	commandFactory.registerAll(selenium);
+	
+	testLoop = new TestLoop(commandFactory);
+		
+	testLoop.getCommandInterval = function() { return 0; }
+	var first = true;
+	testLoop.nextCommand = function() {
+		if (first) {
+			first = false;
+			testCase.debugContext.debugIndex = testCase.commands.indexOf(command);
+			return new SeleniumCommand(command.command, command.target, command.value);
+		} else {
+			return null;
+		}
+	}
+	testLoop.firstCommand = testLoop.nextCommand; // Selenium <= 0.6 only
+	testLoop.commandStarted = function() {
+		recorder.view.rowUpdated(testCase.commands.indexOf(command));
+	}
+	testLoop.commandComplete = function(result) {
+		if (result.failed) {
+			command.result = 'failed';
+		} else if (result.passed) {
+			command.result = 'passed';
+		} else {
+			command.result = 'done';
+		}
+		recorder.view.rowUpdated(testCase.commands.indexOf(command));
+	}
+	testLoop.commandError = function() {
+		command.result = 'failed';
+		recorder.view.rowUpdated(testCase.commands.indexOf(command));
+	}
+	testLoop.testComplete = function() {
+		testLoop = null;
+		testCase.debugContext.reset();
+		recorder.view.rowUpdated(testCase.commands.indexOf(command));
+	}
+	testLoop.pause = function() {
+		recorder.setState("paused");
+	}
+
 	testLoop.start();
 }
 
