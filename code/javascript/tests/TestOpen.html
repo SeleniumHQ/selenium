@@ -37,6 +37,17 @@ Copyright 2004 ThoughtWorks, Inc
       <td>/tests/html/test_open.html</td>
       <td>&nbsp;</td>
     </tr>
+    <!-- Should really split these verifications into their own test file.-->
+    <tr>
+      <td>verifyAbsoluteLocation</td>
+      <td>regexp:.*/tests/html/[Tt]est_open.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyNotAbsoluteLocation</td>
+      <td>*/foo.html</td>
+      <td>&nbsp;</td>
+    </tr>
     <tr>
       <td>verifyTextPresent</td>
       <td>This is a test of the open command.<br>

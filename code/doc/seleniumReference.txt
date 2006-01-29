@@ -380,6 +380,24 @@ Selenium Assertions
             assertLocation   /mypage
             ==============   =======  =====
 
+    **assertAbsoluteLocation**\ ( *locationPattern* )
+    
+    	Verifies the absolute URL of the current page matches the specified pattern.
+    	Note that if you want to include the leading "http:", then you will need
+    	to prefix it with "exact:" to avoid the "http" being interpreted as a pattern match strategy.
+
+        **examples:**
+            
+            ======================   =====================================================     =====
+            verifyAbsoluteLocation   exact:http://localhost:8000/tests/html/test_open.html
+            verifyAbsoluteLocation   glob:http://localhost:8000/\*/html/test_open.html
+            assertAbsoluteLocation   regexp:.\*/[Tt]ests/html/test_open.html
+            ======================   =====================================================     =====
+
+    **assertNotAbsoluteLocation**\ ( *locationPattern* )
+    
+    	Verifies that the absolute URL of the current page does not match the specified pattern.
+
     **assertTitle**\ ( *titlePattern* )
 
         Verifies the title of the current page.
