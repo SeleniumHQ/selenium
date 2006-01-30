@@ -1,0 +1,164 @@
+<!--
+  - Copyright (c) 2003-2005, Wiley & Sons, Joe Walnes,Ara Abrahamian,
+  - Mike Cannon-Brookes,Patrick A Lightbody
+  - All rights reserved.
+  -
+  - Redistribution and use in source and binary forms, with or without
+  - modification, are permitted provided that the following conditions are met:
+  -
+  -     * Redistributions of source code must retain the above copyright
+  - notice, this list of conditions and the following disclaimer.
+  -     * Redistributions in binary form must reproduce the above copyright
+  - notice, this list of conditions and the following disclaimer
+  - in the documentation and/or other materials provided with the distribution.
+  -     * Neither the name of the 'Wiley & Sons', 'Java Open Source
+  - Programming' nor the names of the authors may be used to endorse or
+  - promote products derived from this software without specific prior
+  - written permission.
+  -
+  - THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  - "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  - LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  - A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  - OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  - SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  - LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  - DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  - THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  - (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  - OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN" "http://www.opensymphony.com/xwork/xwork-1.0.dtd">
+
+<xwork>
+    <include file="webwork-default.xml"/>
+
+    <package name="default" extends="webwork-default">
+        <interceptors>
+            <interceptor-stack name="defaultComponentStack">
+                <interceptor-ref name="component"/>
+                <interceptor-ref name="model-driven"/>
+                <interceptor-ref name="validationWorkflowStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="defaultComponentStack"/>
+
+        <action name="login" class="org.petsoar.security.Login">
+            <result name="success" type="redirect">/</result>
+            <result name="error">login.jsp</result>
+        </action>
+
+        <action name="logout" class="org.petsoar.security.Logout">
+            <result name="success">logout.jsp</result>
+        </action>
+
+        <action name="signup" class="org.petsoar.security.Signup">
+            <result name="success" type="redirect">/</result>
+            <result name="input">signup.jsp</result>
+            <result name="error">signup.jsp</result>
+        </action>
+    </package>
+
+    <package name="inventory" extends="default" namespace="/inventory">
+        <action name="addpet" class="org.petsoar.actions.inventory.AddPet">
+            <result name="error">addpet.jsp</result>
+            <result name="input">addpet.jsp</result>
+            <result name="success" type="redirect">viewpet.action?id=${pet.id}</result>
+        </action>
+
+        <action name="viewpet" class="org.petsoar.actions.inventory.ViewPet">
+            <result name="error">viewpet.jsp</result>
+            <result name="success">viewpet.jsp</result>
+        </action>
+
+        <action name="editpetload" class="org.petsoar.actions.inventory.ViewPet">
+            <result name="error">viewpet.jsp</result>
+            <result name="success">editpet.jsp</result>
+        </action>
+
+        <action name="removepetload" class="org.petsoar.actions.inventory.ViewPet">
+            <result name="error">removepet.jsp</result>
+            <result name="success">removepet.jsp</result>
+        </action>
+
+        <action name="removepet" class="org.petsoar.actions.inventory.RemovePet">
+            <result name="error">removepet.jsp</result>
+            <result name="success" type="redirect">default.jsp</result>
+            <result name="cancel" type="redirect">viewpet.action?id=${pet.id}</result>
+        </action>
+
+        <action name="listpets" class="org.petsoar.actions.inventory.InventoryListPets">
+            <result name="success">listpets.jsp</result>
+        </action>
+
+        <action name="savepet" class="org.petsoar.actions.inventory.InventorySavePet">
+            <result name="success">listpets.action</result>
+            <result name="input">editpet.jsp</result>
+        </action>
+
+        <action name="listcategories" class="org.petsoar.actions.inventory.ListCategories">
+            <result name="success">listcategories.jsp</result>
+        </action>
+
+        <action name="listcategories-pet" class="org.petsoar.actions.inventory.ListCategories">
+            <result name="success">listcategories-pet.jsp</result>
+        </action>
+
+        <action name="addcategory" class="org.petsoar.actions.inventory.AddCategory">
+            <result name="success" type="redirect">listcategories.action?${(category.parent) == null ? '' : 'parentId=' + category.parent.id}</result>
+            <result name="input">addcategory.jsp</result>
+        </action>
+    </package>
+
+    <package name="storefront" extends="default" namespace="/storefront">
+        <action name="listpets" class="org.petsoar.actions.storefront.StoreFrontListPets">
+            <result name="success">listpets.jsp</result>
+        </action>
+
+        <action name="listcategories" class="org.petsoar.actions.storefront.StoreFrontListCategories">
+            <result name="success">listcategories.jsp</result>
+            <result name="error">listcategories.jsp</result>
+        </action>
+
+        <action name="viewpet" class="org.petsoar.actions.storefront.StoreFrontViewPet">
+            <result name="success">viewpet.jsp</result>
+            <result name="error">/errors/notfound.jsp</result>
+        </action>
+
+        <action name="search" class="org.petsoar.actions.storefront.StoreFrontSearch">
+            <result name="success">listpets.jsp</result>
+            <result name="input">listpets.jsp</result>
+        </action>
+    </package>
+
+    <package name="cart" extends="default" namespace="/cart">
+        <action name="addpet" class="org.petsoar.actions.cart.AddPetToShoppingCart">
+            <result name="success">add-success.jsp</result>
+            <result name="error">add-error.jsp</result>
+        </action>
+
+        <action name="removepet" class="org.petsoar.actions.cart.RemovePetFromShoppingCart">
+            <result name="success">remove-success.jsp</result>
+            <result name="error">remove-error.jsp</result>
+        </action>
+
+        <action name="list" class="org.petsoar.actions.cart.ListCart">
+            <result name="success">list.jsp</result>
+        </action>
+    </package>
+
+    <package name="order" extends="default" namespace="/order">
+        <action name="checkout" class="org.petsoar.actions.order.CheckOut">
+            <result name="success">vieworder.jsp</result>
+            <result name="error">/errors/notfound.jsp</result>
+        </action>
+
+        <action name="saveorder" class="org.petsoar.actions.order.SaveOrder">
+            <result name="success">ordersaved.jsp</result>
+            <result name="error">ordersaved.jsp</result>
+        </action>
+    </package>
+
+</xwork>

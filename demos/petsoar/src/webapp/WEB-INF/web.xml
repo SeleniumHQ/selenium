@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Copyright (c) 2003-2005, Wiley & Sons, Joe Walnes,Ara Abrahamian,
+  - Mike Cannon-Brookes,Patrick A Lightbody
+  - All rights reserved.
+  -
+  - Redistribution and use in source and binary forms, with or without
+  - modification, are permitted provided that the following conditions are met:
+  -
+  -     * Redistributions of source code must retain the above copyright
+  - notice, this list of conditions and the following disclaimer.
+  -     * Redistributions in binary form must reproduce the above copyright
+  - notice, this list of conditions and the following disclaimer
+  - in the documentation and/or other materials provided with the distribution.
+  -     * Neither the name of the 'Wiley & Sons', 'Java Open Source
+  - Programming' nor the names of the authors may be used to endorse or
+  - promote products derived from this software without specific prior
+  - written permission.
+  -
+  - THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  - "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  - LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  - A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  - OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  - SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  - LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  - DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  - THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  - (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  - OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/j2ee/dtds/web-app_2_3.dtd">
+
+<web-app>
+
+    <display-name>PetSoar</display-name>
+    <description>PetSoar Web App</description>
+
+    <filter>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>container</filter-name>
+        <filter-class>com.opensymphony.webwork.lifecycle.RequestLifecycleFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>security</filter-name>
+        <filter-class>org.petsoar.security.SecurityFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>login</filter-name>
+        <filter-class>org.petsoar.security.LoginFilter</filter-class>
+
+        <init-param>
+            <param-name>loginPage</param-name>
+            <param-value>/login.jsp</param-value>
+        </init-param>
+        <init-param>
+            <param-name>loginAction</param-name>
+            <param-value>/login.action</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ignoreExtensions</param-name>
+            <param-value>jpeg, gif, css</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>security</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>container</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>login</filter-name>
+        <url-pattern>/inventory/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>login</filter-name>
+        <url-pattern>/order/*</url-pattern>
+    </filter-mapping>
+
+
+    <listener>
+        <listener-class>com.opensymphony.webwork.lifecycle.ApplicationLifecycleListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.opensymphony.webwork.lifecycle.SessionLifecycleListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>com.opensymphony.webwork.dispatcher.ServletDispatcher</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>velocity</servlet-name>
+        <servlet-class>com.opensymphony.webwork.views.velocity.WebWorkVelocityServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.action</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>velocity</servlet-name>
+        <url-pattern>*.vm</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>default.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <taglib>
+        <taglib-uri>sitemesh-page</taglib-uri>
+        <taglib-location>/WEB-INF/lib/sitemesh-page.tld</taglib-location>
+    </taglib>
+
+    <taglib>
+        <taglib-uri>sitemesh-decorator</taglib-uri>
+        <taglib-location>/WEB-INF/lib/sitemesh-decorator.tld</taglib-location>
+    </taglib>
+
+    <taglib>
+        <taglib-uri>webwork</taglib-uri>
+        <taglib-location>/WEB-INF/lib/webwork-2.0.tld</taglib-location>
+    </taglib>
+
+    <taglib>
+        <taglib-uri>http://jsptags.com/tags/navigation/pager</taglib-uri>
+        <taglib-location>/WEB-INF/lib/pager-taglib.tld</taglib-location>
+    </taglib>
+
+</web-app>
