@@ -15,20 +15,15 @@ import java.sql.Statement;
 
 public class FooTestCase extends TestCase {
 
-    static JettyCommandProcessor jettyCommandProcessor;
     Selenium selenium;
     Connection conn;
 
     protected void setUp() throws Exception {
         super.setUp();
         File codeRoot = getCodeRoot();
-
-        if (jettyCommandProcessor == null) {
-            jettyCommandProcessor = new JettyCommandProcessor(new File(codeRoot, "war-for-selenium"), DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
-                        new DirectoryStaticContentHandler(new File(codeRoot, "war-for-selenium/selenium")));
-        }
         selenium = new DefaultSelenium(
-                        jettyCommandProcessor,
+                        new JettyCommandProcessor(new File(codeRoot, "war-for-selenium"), DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
+                                new DirectoryStaticContentHandler(new File(codeRoot, "war-for-selenium/selenium"))),
                         new SystemDefaultBrowserLauncher()
                 );
         selenium.start();
