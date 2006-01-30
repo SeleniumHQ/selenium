@@ -2,21 +2,25 @@
 
     <property file="build.properties"/>
 
-    <property name="src.java"     location="src/java"/>
-    <property name="src.test"     location="src/test"/>
-    <property name="src.config"   location="src/config"/>
-    <property name="src.webapp"   location="src/webapp"/>
+    <property name="src.java" location="src/java"/>
+    <property name="src.test" location="src/test"/>
+    <property name="src.config" location="src/config"/>
+    <property name="src.webapp" location="src/webapp"/>
 
-    <property name="build.dir"    location="build"/>
-    <property name="build.java"   location="build/java"/>
-    <property name="build.test"   location="build/test"/>
-    <property name="build.war"    location="build/petsoar.war"/>
+    <property name="build.dir" location="build"/>
+    <property name="build.java" location="build/java"/>
+    <property name="build.test" location="build/test"/>
+    <property name="build.war" location="build/petsoar.war"/>
 
     <property name="test.results" location="build/test-results"/>
 
     <path id="classpath.build">
-        <fileset dir="lib/runtime"/>
-        <fileset dir="lib/build"/>
+        <fileset dir="lib/runtime">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="lib/build">
+            <include name="*.jar"/>
+        </fileset>
     </path>
 
     <path id="classpath.runtime">
@@ -65,9 +69,32 @@
         </copy>
     </target>
 
+    <target name="selenium-import" description="Import Selenium from Paul's Selenium dir">
+
+        <copy todir="src/webapp/selenium">
+            <fileset dir="../../Selenium/trunk/code/javascript">
+                <exclude name="jsunit/**"/>
+                <exclude name="jsmock/**"/>
+                <exclude name="tests/**"/>
+                <exclude name="devtests/**"/>
+                <include name="**/*.css"/>
+                <include name="**/*.html"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.png"/>
+            </fileset>
+        </copy>
+
+        <copy todir="lib/build">
+            <fileset dir="../../Selenium/trunk/code/java/target/">
+                <include name="selenium-0.4.jar"/>
+            </fileset>
+        </copy>
+
+    </target>
+
     <target name="test" depends="update-schema" description="Run unit tests">
         <mkdir dir="${test.results}"/>
-        <junit haltonfailure="false" fork="true" failureproperty="tests.failed" >
+        <junit haltonfailure="false" fork="true" failureproperty="tests.failed">
             <sysproperty key="basedir" value="${test.results}"/>
             <formatter type="xml"/>
             <formatter type="plain"/>
@@ -81,6 +108,36 @@
         </junit>
 
         <fail if="tests.failed"/>
+    </target>
+
+    <target name="selenium-tests" depends="war" description=", import-data Run Selenese tests on site">
+
+        <mkdir dir="war-for-selenium"/>
+        <unzip src="${build.war}" dest="war-for-selenium"/>
+
+        <delete>
+            <fileset dir="war-for-selenium/WEB-INF" includes="**/hsqldb*"/>
+        </delete>
+
+        <mkdir dir="${build.test}"/>
+        <javac srcdir="src/s-test"
+               destdir="${build.test}"
+               classpathref="classpath.build"
+               classpath="${build.java}"
+               debug="true"/>
+
+
+        <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
+            <jvmarg value="-Dcode_root=."/>
+            <classpath>
+                <path refid="classpath.build"/>
+                <pathelement path="${build.java}"/>
+                <pathelement path="${build.test}"/>
+            </classpath>
+            <formatter type="xml"/>
+            <formatter type="plain" usefile="false"/>
+            <test name="com.paulhammant.petstore.AllTests" todir="${test.results}"/>
+        </junit>
     </target>
 
     <target name="war" depends="java, config" description="Create web-app WAR">
@@ -109,7 +166,9 @@
         <delete dir="${build.dir}"/>
         <delete dir="${src.webapp}/WEB-INF/tmp"/>
         <delete dir="${src.webapp}/WEB-INF/work"/>
+        <delete dir="${src.webapp}/build"/>
         <delete dir="index"/>
+        <delete dir="war-for-selenium"/>
         <delete>
             <fileset dir=".">
                 <include name="petsoardb.*"/>
@@ -126,7 +185,7 @@
             <operation type="INSERT" src="${db.testdata}" format="flat"/>
         </dbunit>
 
-		<!-- Create Lucene index files for the database data -->
+        <!-- Create Lucene index files for the database data -->
         <java fork="true"
               classname="org.petsoar.search.lucene.OfflineLuceneIndexer"
               classpathref="classpath.build"
@@ -154,11 +213,11 @@
     <target name="diagrams" depends="java" description="Generate diagrams of application">
         <mkdir dir="build/diagrams"/>
         <java fork="true"
-        	classname="org.jruby.Main"
-        	classpathref="classpath.build"
-        	classpath="${build.java}"
-        	dir="src/ruby">
-        	<arg value="diagrams.rb"/>
+              classname="org.jruby.Main"
+              classpathref="classpath.build"
+              classpath="${build.java}"
+              dir="src/ruby">
+            <arg value="diagrams.rb"/>
         </java>
 
         <echo message="Diagrams generated, take a look in build/diagrams"/>
