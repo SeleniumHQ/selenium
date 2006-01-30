@@ -178,7 +178,7 @@
      <!-- could be refactored -->
     <target name="integration-test-mac" depends="compile" if="isMac">
         
-        <echo>Integration Tests for Embedded Jettu Web Container</echo>
+        <echo>Integration Tests for Embedded Jetty Web Container</echo>
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
             <jvmarg value="-Dcode_root=${code_root}"/>
