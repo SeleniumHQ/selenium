@@ -47,7 +47,7 @@
         <ww:password label="'Password'" name="'password'" />
 
         <tr>
-            <td><input type="submit" value="Login"/></td>
+            <td><input type="submit" id="Login" value="Login"/></td>
             <td><a href="signup.jsp">Signup</a></td>
         </tr>
 </table>
