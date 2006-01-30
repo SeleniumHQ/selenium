@@ -38,6 +38,6 @@
     <body>
         You've just added <ww:property value="pet.name" />, he'll be happy to have a new home!
         <p>
-        <a href="<%= request.getContextPath() %>/cart/list.action">View your cart</a>.
+        <a id="viewCart" href="<%= request.getContextPath() %>/cart/list.action">View your cart</a>.
     </body>
 </html>
