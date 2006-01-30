@@ -179,6 +179,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/code/code.iml" filepath="$PROJECT_DIR$/code/code.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demos/petsoar/demos-petsoar.iml" filepath="$PROJECT_DIR$/demos/petsoar/demos-petsoar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/website/website.iml" filepath="$PROJECT_DIR$/website/website.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="false" project-jdk-name="1.4" />
