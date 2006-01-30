@@ -46,7 +46,7 @@
                 <ww:label label="'Price'" value="price" />
             </table>
 
-            <p><a href="listpets.action">View more pets</a> - <a href="<%= request.getContextPath() %>/cart/addpet.action?petId=<ww:property value="id"/>">Add to Cart</a></p>
+            <p><a href="listpets.action">View more pets</a> - <a id="addToCart" href="<%= request.getContextPath() %>/cart/addpet.action?petId=<ww:property value="id"/>">Add to Cart</a></p>
 
         </ww:push>
 
