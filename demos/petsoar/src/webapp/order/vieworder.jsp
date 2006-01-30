@@ -47,7 +47,7 @@
         <ww:iterator value="shoppingCart.pets">
             <tr>
                 <td>
-                    <a href="<%= request.getContextPath() %>/inventory/viewpet.action?id=<ww:property value="id"/>">
+                    <a id="pet-<ww:property value="name"/>" href="<%= request.getContextPath() %>/inventory/viewpet.action?id=<ww:property value="id"/>">
                         <ww:property value="type"/>
                     </a>
                 </td>
