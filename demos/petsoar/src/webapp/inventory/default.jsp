@@ -36,8 +36,8 @@
 </head>
 <body>
     <ul>
-        <li><a href="listpets.action">List pets</a></li>
-        <li><a href="listcategories.action">List categories</a></li>
+        <li><a href="listpets.action" id="ListPets">List pets</a></li>
+        <li><a href="listcategories.action" id="ListCategories">List categories</a></li>
     </ul>
 </body>
 </html>
