@@ -45,7 +45,7 @@
 
         <tr><td colspan="2"><hr/><td></tr>
 
-        <ww:select label="'Prefix'" name="name.prefix" list="{'Mr.', 'Mrs.', 'Dr.', 'Miss'}" />
+        <ww:select label="'Prefix'" name="'name.prefix'" list="{'Mr.', 'Mrs.', 'Dr.', 'Miss'}" />
         <ww:textfield label="'First Name'" name="'name.first'" />
         <ww:textfield label="'Middle Name'" name="'name.middle'" />
         <ww:textfield label="'Last Name'" name="'name.last'" />
@@ -61,7 +61,7 @@
         <tr><td colspan="2"><hr/><td></tr>
 
         <tr>
-            <td colspan="2"><input type="submit" value="Signup"/></td>
+            <td colspan="2"><input type="submit" id="Signup" value="Signup"/></td>
         </tr>
     </table>
 </form>
