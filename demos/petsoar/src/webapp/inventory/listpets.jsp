@@ -53,7 +53,7 @@
                     <ww:iterator value="pets">
                         <tr onmouseover="rowHover(this)" title="<ww:property value="description"/>" href="viewpet.action?id=<ww:property value="id"/>">
                             <td>
-                                <a href="viewpet.action?id=<ww:property value="id"/>">
+                                <a id="pet-<ww:property value="name"/>" href="viewpet.action?id=<ww:property value="id"/>">
                                     <ww:property value="name"/>
                                 </a>
                             </td>
@@ -67,7 +67,7 @@
 
             <p>
                 <a href="listpets.action">Refresh</a> &nbsp;
-                <a href="addpet.jsp">Add New Pet</a>
+                <a href="addpet.jsp" id="AddNewPet">Add New Pet</a>
             </p>
         </td>
         <td valign="top">
