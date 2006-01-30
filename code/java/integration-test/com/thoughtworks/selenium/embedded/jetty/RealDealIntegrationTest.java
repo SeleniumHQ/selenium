@@ -65,7 +65,6 @@ public class RealDealIntegrationTest extends TestCase {
     protected void tearDown() throws Exception {
         Thread.sleep(2 * 1000);
         selenium.stop();
-        System.out.println("Torn down.");
     }
 
     public void testWithJavaScript() {
