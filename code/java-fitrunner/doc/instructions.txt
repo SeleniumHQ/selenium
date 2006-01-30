@@ -1,0 +1,43 @@
+=====================================
+Automating Selenium from ANT scripts.
+=====================================
+
+1. Run the 'build-war' target in java-fitrunner/build.xml
+---------------------------------------------------------
+This will build the classes for the postResults Servlet and create a WAR with 
+these files and the required files from the Selenium javascript directory to be 
+deployed to the server.
+This will be called 'selenium-x.x.war' located in java-fitrunner/dist
+
+
+2. Run the 'build-war' target in java-fitrunner/example/build.xml
+-----------------------------------------------------------------
+This is an example project and build.xml that would be used in a normal project.
+The target will add the project test files to the selenium-x.x.war, picked
+up from the selenium distribution, and create a new war called 'deploy-me.war'
+located in 'java-fitrunner/example/dist'
+
+
+3. Deploy 'deploy-me.war' to your servlet engine 
+------------------------------------------------
+This will be specific to your servlet engine, or app server, so no script
+is provided.
+
+
+4. Run the 'build-selenium-runner-jar' target in java-fitrunner/build.xml
+-------------------------------------------------------------------------
+This will build the client jar 'selenium-runner.jar' located in 
+'java-fitrunner/dist' used to start the Selenium tests.
+
+
+5. Run the 'invoke-selenium-tests' target in java-fitrunner/example/build.xml
+-----------------------------------------------------------------------------
+The properties for the base-url and to indicate whether to display the 
+browser or not need to be passed in. e.g. :
+-Dtest.baseurl=http://localhost:8080/deploy-me 
+-Dtest.selenium.browser.visible=true
+
+This will reset the results, open a browser to run the tests, and capure the 
+results to java-fitrunner/example/logs/selenium-results.html
+
+If the tests fail, the browser will stay open and if they pass it will close.
