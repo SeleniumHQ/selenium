@@ -55,7 +55,7 @@
 				<ww:iterator value="pets">
 					<tr onmouseover="rowHover(this)" title="<ww:property value="description"/>" href="/storefront/viewpet.action?id=<ww:property value="id"/>">
 						<td>
-							<a href="/storefront/viewpet.action?id=<ww:property value="id"/>">
+							<a id="pet-<ww:property value="name"/>" href="/storefront/viewpet.action?id=<ww:property value="id"/>">
 								<ww:property value="name"/>
 							</a>
 						</td>
@@ -66,14 +66,14 @@
                             <ww:property value="price"/>
                         </td>
                         <td>
-                            <a href="removepet.action?petId=<ww:property value="id"/>">Del</a>
+                            <a id="del-<ww:property value="name"/>" href="removepet.action?petId=<ww:property value="id"/>">Del</a>
                         </td>
 					</tr>
 				</ww:iterator>
 			</table>
 
             <p>
-            <a href="<%= request.getContextPath() %>/order/checkout.action">Check out now...</a>
+            <a id="checkOut" href="<%= request.getContextPath() %>/order/checkout.action">Check out now...</a>
 		</ww:else>
 
         </td>
