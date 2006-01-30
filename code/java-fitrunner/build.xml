@@ -1,0 +1,88 @@
+<project name="Selenium Java FitRunner Build" default="build-war" basedir=".">
+
+    <property name="version" value="0.7-SNAPSHOT"/>
+	<property name="classes.dir" location="${basedir}/classes" />
+	<property name="lib.dir" location="${basedir}/lib" />
+	<property name="dist.dir" location="${basedir}/dist" />
+	<property name="fitrunner.dir" location="${basedir}/../javascript" />
+	
+	<path id="classpath">
+        <fileset dir="${basedir}/../java/lib">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${basedir}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+	<!-- TODO Run the tests before building the war -->
+    <target name="compile-selenium-classes">
+        <mkdir dir="${classes.dir}"/>
+        <javac debug="yes" destdir="${classes.dir}">
+            <src location="${basedir}/java/src"/>
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+	
+	<target name="build-selenium-results-jar" depends="compile-selenium-classes">
+        <mkdir dir="${dist.dir}"/>
+    	<jar jarfile="${dist.dir}/selenium-fitrunner-web.jar">
+            <fileset dir="${classes.dir}">
+	            <include name="com/thoughtworks/selenium/results/**"/>
+	            <exclude name="**/*Test.class"/>
+    		</fileset>
+            <manifest>
+               	<section name="selenium-fitrunner-web.jar">
+                	<attribute name="Version" value="${version}"/>
+	           	</section>
+           </manifest>        		
+        </jar>
+	</target>
+
+	<target name="build-selenium-runner-jar" depends="compile-selenium-classes">
+    	<jar jarfile="${dist.dir}/selenium-runner.jar">
+            <fileset dir="${classes.dir}">
+	            <include name="com/thoughtworks/selenium/runner/**"/>
+	            <include name="com/thoughtworks/selenium/launch/**"/>
+	            <exclude name="**/*Test.class"/>
+    		</fileset>
+            <manifest>
+               	<section name="selenium-runner.jar">
+                	<attribute name="Version" value="${version}"/>
+	           	</section>
+           </manifest>        		
+        </jar>
+	</target>
+
+    <target name="build-war" depends="build-selenium-results-jar">
+        <mkdir dir="dist"/>    
+
+        <war webxml="WEB-INF/web.xml" destfile="${dist.dir}/selenium-${version}.war">
+            <fileset dir="${fitrunner.dir}">
+                <exclude name="dist/**"/>            
+                <exclude name="SeleneseRunner.html"/>            
+                <exclude name="jsmock/**"/>            
+                <exclude name="jsunit/**"/>            
+                <exclude name="jsunit-logs/**"/>
+                <exclude name="tests/**"/>            
+                <exclude name="devtests/**"/>            
+                <exclude name="build.xml"/>            
+                <exclude name="**/web.xml"/>            
+            </fileset>
+        	<fileset dir="${basedir}">
+	            <include name="WEB-INF/**"/>            
+        	</fileset>
+            <lib dir="${dist.dir}">
+                <include name="selenium-fitrunner-web.jar"/>
+            </lib>
+            <lib dir="${lib.dir}">
+               	<include name="jstl.jar"/>
+               	<include name="junit-3.8.1.jar"/>            	
+               	<include name="standard.jar"/>
+               	<include name="ant.jar"/>            	            	
+               	<include name="optional.jar"/>            	
+            </lib>         	
+        </war>
+    </target>
+
+</project>

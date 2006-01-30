@@ -1,0 +1,59 @@
+<project name="Sample Selenium Build" default="build-war" basedir=".">
+
+	<property name="log.dir" location="${basedir}/logs" />
+	<property name="application" location="deploy-me" />
+
+    <path id="runner.classpath">
+		<fileset dir="${basedir}/../dist/" includes="**/selenium*.jar"/>
+		<fileset dir="${basedir}/../lib/" includes="**/*.jar"/>
+        <fileset dir="${basedir}/../../java/lib" includes="**/*.jar"/>
+        <fileset dir="${basedir}/../../java/lib" includes="**/*.dll"/>
+    </path>
+
+	<!-- TODO Change this to a task. Pass in the test directory, test suite and the war -->
+	<target name="build-war">
+		<mkdir dir="dist" />
+
+		<zip destfile="dist/deploy-me.war">
+			<zipfileset dir="../../javascript/tests" prefix="tests">
+				<exclude name="TestSuite.html"/>
+			</zipfileset>
+			<zipfileset dir="." prefix="tests">
+				<include name="TestSuite.html"/>
+			</zipfileset>
+			<zipgroupfileset dir="${basedir}/../dist" includes="selenium-0.7-SNAPSHOT.war" />
+		</zip>
+	</target>
+	
+	<target name="deploy-to-tomcat">
+		<copy file="dist/deploy-me.war" todir="c:/java/jakarta-tomcat-4.1.24/webapps" overwrite="true">
+		</copy>
+	</target>
+
+	<!-- TODO Change this to a task to configure the parameters -->
+	<target name="invoke-selenium-tests" description="Run the Selenium tests">
+		<mkdir dir="${log.dir}"/>
+		<delete file="${log.dir}/selenium-results.html"/>
+    	<java classname="com.thoughtworks.selenium.runner.SeleniumRunner" fork="true" failonerror="true">
+	        <classpath refid="runner.classpath"/>
+        	<sysproperty key="test.selenium.log.dir" value="${log.dir}"/>
+        	<sysproperty key="test.selenium.results" value="${test.baseurl}/postResults"/>
+    		<sysproperty key="test.selenium.runner" value ="${test.baseurl}/TestRunner.html?test=./tests/TestSuite.html&amp;auto=true"/>
+    		<sysproperty key="test.selenium.browser.visible" value ="${test.selenium.browser.visible}"/>
+    		<sysproperty key="test.selenium.maximum.poll.attempts" value ="240"/>
+    		<sysproperty key="java.library.path"  value="${basedir}/../../java/lib/"/>
+    	</java>
+	</target>
+	
+    <target name="test-report">
+        <junitreport todir="${log.dir}">
+            <fileset dir="${log.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${log.dir}/html"/>
+        </junitreport>
+    	<echo>Test report in ${log.dir}/html/index.html</echo>
+        <fail if="tests.failed" message="One or more tests failed. See the log file for details."/>
+    </target>
+	
+</project>

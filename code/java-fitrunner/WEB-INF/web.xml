@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<display-name>Selenium</display-name>
+
+	<distributable/>
+
+   	<servlet>
+    	<servlet-name>postResults</servlet-name>
+     	<servlet-class>com.thoughtworks.selenium.results.servlet.SeleniumResultsServlet</servlet-class>
+
+      	<load-on-startup>1</load-on-startup>
+   	</servlet>
+
+   	<servlet-mapping>
+      	<servlet-name>postResults</servlet-name>
+      	<url-pattern>/postResults</url-pattern>
+   	</servlet-mapping>
+
+   	<taglib>
+      	<taglib-uri>/WEB-INF/c.tld</taglib-uri>
+      	<taglib-location>/WEB-INF/c.tld</taglib-location>
+   	</taglib>
+</web-app>
