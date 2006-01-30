@@ -58,7 +58,7 @@
         <tr>
             <td bgcolor="#990066" height="20"><img src="<%=root%>/images/trans.gif" border="0" height="1" width="20"></td>
             <td rowspan="14" bgcolor="#FFFFFF"><img src="<%=root%>/images/trans.gif" border="0" height="1" width="1"></td>
-            <td bgcolor="#343466" width="129"><a class="navLink" href="<%=root%>/">&nbsp;PetSoar</a><br>
+            <td bgcolor="#343466" width="129"><a class="navLink" href="<%=root%>/" id="PetStore">&nbsp;PetStore</a><br>
             </td>
         </tr>
 
@@ -69,34 +69,36 @@
         <tr>
             <td bgcolor="#B6CBF8" height="20">&nbsp;</td>
             <td bgcolor="#9999CC" >
-                <span class="navLink"></span> <a class="navLink" href="<%=root%>/inventory/">&nbsp;Inventory</a><br>
+                <span class="navLink"></span> <a class="navLink" href="<%=root%>/inventory/" id="inventory">&nbsp;Inventory</a><br>
             </td>
         </tr>
         <tr>
             <td bgcolor="#B6CBF8" height="20">&nbsp;</td>
             <td bgcolor="#9999CC" >
-                <span class="navLink"></span> <a class="navLink" href="<%=root%>/storefront/listpets.action">&nbsp;Pets</a><br>
+                <span class="navLink"></span> <a class="navLink" href="<%=root%>/storefront/listpets.action" id="Pets">&nbsp;Pets</a><br>
             </td>
         </tr>
         <tr>
             <td bgcolor="#B6CBF8" height="20">&nbsp;</td>
             <td bgcolor="#9999CC" >
-                <span class="navLink"></span> <a class="navLink" href="<%=root%>/cart/list.action">&nbsp;Cart</a><br>
+                <span class="navLink"></span> <a id="viewCart" class="navLink" href="<%=root%>/cart/list.action">&nbsp;Cart</a><br>
             </td>
         </tr>
         <tr>
             <td bgcolor="#B6CBF8" height="20">&nbsp;</td>
             <td bgcolor="#9999CC" >
-                <span class="navLink"></span> <a class="navLink" href="<%=root%>/order/checkout.action">&nbsp;Check Out</a><br>
+                <span class="navLink"></span> <a id="checkOut" class="navLink" href="<%=root%>/order/checkout.action">&nbsp;Check Out</a><br>
             </td>
         </tr>
         <tr>
             <td bgcolor="#B6CBF8" height="20">&nbsp;</td>
-            <td bgcolor="#9999CC" >
+            <td bgcolor="#9999CC">
                 <form action="<%=root%>/storefront/search.action" method="get">
-                    <input name="query" border="0" type="text" value="" size="7"/>
+                    <input name="query" border="0" type="text" value="" size="5"/>
+				   <input type="submit" id="Submit" value="Submit"/>
                 </form>
             </td>
+		   <td input type="submit" id="Submit" value="Submit"/></td>
         </tr>
         <tr>
             <td><img src="<%=root%>/images/trans.gif" border="0" height="1" width="1"></td>
@@ -125,7 +127,7 @@
             <td bgcolor="#B6CBF8" height="20">&nbsp;</td>
             <td bgcolor="#9999CC" >
             <% if (request.getRemoteUser() != null) { %>
-                <a class="navLink" href="<%=root%>/logout.action">&nbsp;Logout</a><br>
+                <a class="navLink" href="<%=root%>/logout.action" id="Logout">&nbsp;Logout</a><br>
             <% } else { %>
                     <span class="navLink">
                     &nbsp;<a class="navLink" href="<%=root%>/login.jsp">Login</a> /
