@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- @author Edward Hieatt, edward@jsunit.net -->
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <title>JsUnit main-data.html</title>
+    <link rel="stylesheet" type="text/css" href="../css/jsUnitStyle.css">
+    <script language="JavaScript" type="text/javascript" src="jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+function  kickOffTests() {
+  //
+  //    Check if Init was called by onload handler
+  //      
+  if (typeof(top.testManager) == 'undefined') {
+     top.init();
+  }  
+
+
+  if (isBlank(top.testManager.getTestFileName())) {
+    alert('Please enter a file name.');
+    return;
+  }
+
+  top.testManager.setup();
+
+  top.testManager._currentSuite().addTestPage(top.testManager.resolveUserEnteredTestFileName());
+  top.tracer.initialize();
+
+  var traceLevel = document.forms.testRunnerForm.traceLevel;
+  if (traceLevel.value != '0')
+  {
+    var traceWindow = top.tracer._getTraceWindow();
+    if (traceWindow) {
+      traceWindow.focus();
+    }
+    else {
+      alert('Tracing requires popup windows which are blocked in your browser.\n\nPlease enable popups if you wish to use tracing.');
+    }
+  }
+
+  top.testManager.start();
+}
+    </script>
+  </head>
+
+  <body onload="document.testRunnerForm.testFileName.focus()">
+    <form name="testRunnerForm" action="">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" summary="jsUnit Information" bgcolor="#DDDDDD">
+        <tr>
+	  <td align="left" valign="top"><img src="../images/logo_jsunit.gif" alt="JSUnit Logo"></td>
+          <th nowrap align="left" valign="middle">
+          	JsUnit <script language="javascript">document.write(JSUNIT_VERSION);</script> TestRunner<br>
+          	<font size="-2"><i>Running on <script language="javascript" type="text/javascript">document.write(navigator.userAgent);</script></i></font>
+          </th>
+
+          <td nowrap align="right" valign="middle">
+           <a href="http://www.jsunit.net/" target="_blank">JsUnit Home</a><br>
+           <a href="mailto:edward@jsunit.net">edward@jsunit.net</a><br>
+        </tr>
+      </table>
+
+      <p>Enter the filename of the Test Page to be run:</p>
+
+      <table cellpadding="0" cellspacing="0" border="0" summary="Form for entering test case location">
+        <tr>
+          <td align="center" valign="middle">
+            <script language="JavaScript" type="text/javascript">
+              document.write(top.getDocumentProtocol());
+            </script>
+          </td>
+
+          <td nowrap align="center" valign="bottom">
+            &nbsp;
+            <script language="JavaScript" type="text/javascript">
+              if (top.getDocumentProtocol() == 'file:///' && !jsUnitGetParm('testpage'))
+              {
+                document.write('<input type="file" name="testFileName" size="60">');
+              }
+              else
+              {
+                var inputStr = '<input type="text" name="testFileName" size="60" ';
+                if (jsUnitGetParm('testpage'))
+                {
+                  inputStr += 'value="';
+                  if (
+                  	(top.getDocumentProtocol() == 'http://' || top.getDocumentProtocol() == 'https://') && 
+                  	jsUnitGetParm('testpage').indexOf('/') == 0)
+                  {
+                    inputStr += top.location.host;
+                  }
+                  inputStr += jsUnitGetParm('testpage');
+                  var testParms = top.jsUnitConstructTestParms();
+                  if (testParms!='') {
+                  	inputStr += '?';
+                  	inputStr += testParms;
+                  }
+                  inputStr += '"';
+                }
+                inputStr += '>';
+                document.write(inputStr);
+              }
+
+            </script>
+            <input type="button" name="runButton" value="Run" onclick="kickOffTests()">
+          </td>
+        </tr>
+      </table>
+      <hr>
+
+      <table cellpadding="0" cellspacing="0" border="0" summary="Choose Trace Level">
+        <tr>
+          <td nowrap>Trace level:</td>
+
+          <td><select name="traceLevel">
+            <option value="0" selected>
+              no tracing
+            </option>
+
+            <option value="1">
+              warning (lowest)
+            </option>
+
+            <option value="2">
+              info
+            </option>
+
+            <option value="3">
+              debug (highest)
+            </option>
+          </select> </td>
+
+          <td>&nbsp;&nbsp;&nbsp;</td>
+
+          <td><input type="checkbox" name="closeTraceWindowOnNewRun" checked></td>
+          <td nowrap>Close old trace window on new run</td>
+
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+          <td nowrap>Page load timeout:</td>
+          <td>&nbsp;
+            <script language="javascript" type="text/javascript">
+            document.write('<input type="text" size="2" name="timeout" value="'+top.jsUnitTestManager.TESTPAGE_WAIT_SEC+'">');
+            </script>
+          </td>
+
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+          <td nowrap>Setup page timeout:</td>
+          <td>&nbsp;
+            <script language="javascript" type="text/javascript">
+            document.write('<input type="text" size="2" name="setUpPageTimeout" value="'+top.jsUnitTestManager.SETUPPAGE_TIMEOUT+'">');
+            </script>
+          </td>
+        </tr>
+      </table>
+      <hr>
+    </form>
+  </body>
+</html>
