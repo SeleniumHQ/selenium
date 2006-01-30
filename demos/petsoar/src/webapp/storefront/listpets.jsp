@@ -59,7 +59,7 @@
 			<table class="form" width="100%">
 				<tr onmouseover="rowHover(this)" href="viewpet.action?id=<ww:property value="id"/>">
 					<th>
-						<a href="viewpet.action?id=<ww:property value="id"/>">
+						<a id="pet-<ww:property value="name"/>" href="viewpet.action?id=<ww:property value="id"/>">
 							<ww:property value="name"/>
 						</a> - <ww:property value="price"/>
 					</th>
