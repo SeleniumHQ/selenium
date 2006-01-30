@@ -136,7 +136,7 @@
             </classpath>
             <formatter type="xml"/>
             <formatter type="plain" usefile="false"/>
-            <test name="com.paulhammant.petstore.AllTests" todir="${test.results}"/>
+            <test name="com.thoughtworks.selenium.petsoar.AllTests" todir="${test.results}"/>
         </junit>
     </target>
 
