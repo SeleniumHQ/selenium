@@ -1,0 +1,66 @@
+<!--
+  - Copyright (c) 2003-2005, Wiley & Sons, Joe Walnes,Ara Abrahamian,
+  - Mike Cannon-Brookes,Patrick A Lightbody
+  - All rights reserved.
+  -
+  - Redistribution and use in source and binary forms, with or without
+  - modification, are permitted provided that the following conditions are met:
+  -
+  -     * Redistributions of source code must retain the above copyright
+  - notice, this list of conditions and the following disclaimer.
+  -     * Redistributions in binary form must reproduce the above copyright
+  - notice, this list of conditions and the following disclaimer
+  - in the documentation and/or other materials provided with the distribution.
+  -     * Neither the name of the 'Wiley & Sons', 'Java Open Source
+  - Programming' nor the names of the authors may be used to endorse or
+  - promote products derived from this software without specific prior
+  - written permission.
+  -
+  - THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  - "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  - LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  - A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  - OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  - SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  - LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  - DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  - THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  - (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  - OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<dataset>
+    <CATEGORIES CATID="11" NAME="Dogs" IMAGE="images/dogs.gif"/>
+    <CATEGORIES CATID="12" NAME="Cats" IMAGE="images/cats.gif"/>
+    <CATEGORIES CATID="13" NAME="Reptiles" IMAGE="images/reptiles.gif"/>
+    <CATEGORIES CATID="14" NAME="Birds" IMAGE="images/birds.gif"/>
+    <CATEGORIES CATID="15" NAME="Fish" IMAGE="images/fish.gif"/>
+
+    <!-- DOGS -->
+    <PETS PETID="111" NAME="St. Bernard" CATEGORY="11" DESCRIPTION="St. Bernard Male Dog" GENDER="Male" IMAGE="images/stbernard.gif" PERSONALITY="Powerful" PRICE="10.00" />
+    <PETS PETID="112" NAME="Poodle" CATEGORY="11" DESCRIPTION="Black Poodle" GENDER="Female" IMAGE="images/black_poodle.gif" PERSONALITY="Cute" PRICE="20.00" />
+    <PETS PETID="113" NAME="Rexio" CATEGORY="11" DESCRIPTION="Rexio" GENDER="Male" IMAGE="images/rex.gif" PERSONALITY="Smart" PRICE="50.00" />
+
+    <!-- CATS -->
+    <PETS PETID="211" NAME="Saimese" CATEGORY="12" DESCRIPTION="Baby Siamese Kitten" GENDER="Female" IMAGE="images/siamese.gif" PERSONALITY="Sneaky" PRICE="100.00" />
+    <PETS PETID="212" NAME="Alley Cat" CATEGORY="12" DESCRIPTION="This one is a mutt" GENDER="Male" IMAGE="images/alley_cat.gif" PERSONALITY="Street-wise" PRICE="3.00" />
+    <PETS PETID="213" NAME="Tiger" CATEGORY="12" DESCRIPTION="Big Cat!" GENDER="Male" IMAGE="images/tiger.gif" PERSONALITY="Ferocious" PRICE="50.0" />
+
+    <!-- REPTILES -->
+    <PETS PETID="311" NAME="Snake" CATEGORY="13" DESCRIPTION="Small garden snake" GENDER="Female" IMAGE="images/snake.gif" PERSONALITY="Snakes have no personality" PRICE="15.50" />
+    <PETS PETID="312" NAME="Lizard" CATEGORY="13" DESCRIPTION="Lizards lick their eyes" GENDER="Female" IMAGE="images/lizard.gif" PERSONALITY="Boring" PRICE="13.75" />
+    <PETS PETID="313" NAME="Komodo Dragon" CATEGORY="13" DESCRIPTION="This is one huge lizard" GENDER="Male" IMAGE="images/komodo.gif" PERSONALITY="King of the reptiles" PRICE="50.0" />
+
+    <!-- BIRDS -->
+    <PETS PETID="411" NAME="Parrot" CATEGORY="14" DESCRIPTION="Beautiful feathers" GENDER="Female" IMAGE="images/parrot.gif" PERSONALITY="Talks WAY too much" PRICE="399.99" />
+    <PETS PETID="412" NAME="Pigeon" CATEGORY="14" DESCRIPTION="Rats of the sky" GENDER="Male" IMAGE="images/pigeon.gif" PERSONALITY="Worst pet ever" PRICE="1.99" />
+    <PETS PETID="413" NAME="Seagull" CATEGORY="14" DESCRIPTION="An ordinary 'gull" GENDER="Female" IMAGE="images/seagull.gif" PERSONALITY="None" PRICE="37.00" />
+
+    <!-- FISH -->
+    <PETS PETID="511" NAME="Salmon" CATEGORY="15" DESCRIPTION="An adult salmon" GENDER="Male" IMAGE="images/salmon.gif" PERSONALITY="Jumpy" PRICE="15.25" />
+    <PETS PETID="512" NAME="Goldfish" CATEGORY="15" DESCRIPTION="A very small goldfish" GENDER="Male" IMAGE="images/goldfish.gif" PERSONALITY="Sweet" PRICE="3.99" />
+    <PETS PETID="513" NAME="Shark" CATEGORY="15" DESCRIPTION="A 15 foot shark" GENDER="Female" IMAGE="images/shark.gif" PERSONALITY="Ferocious" PRICE="999.99" />
+
+    <!-- USER -->
+    <USERS_TABLE USERNAME_COL="duke" PASSWORD_COL="duke" PREFIX="Sir" FIRST="Duke" MIDDLE="of" LAST="Java" STREET1="2 Java Way" STREET2="" CITY="San Jose" STATE="CA" ZIP="95126"/>
+</dataset>
