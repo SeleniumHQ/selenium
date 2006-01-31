@@ -77,6 +77,7 @@ public class RealDealIntegrationTest extends TestCase {
         selenium.clickAndWait("link");
         selenium.verifyLocation("/test_click_page2.html");
         selenium.clickAndWait("previousPage");
+        selenium.verifyLocation("/test_click_page1.html");
         selenium.testComplete();
     }
 
