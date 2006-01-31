@@ -10,9 +10,11 @@
     <property name="build.dir" location="build"/>
     <property name="build.java" location="build/java"/>
     <property name="build.test" location="build/test"/>
+    <property name="build.s-test" location="build/s-test"/>
     <property name="build.war" location="build/petsoar.war"/>
 
     <property name="test.results" location="build/test-results"/>
+    <property name="s-test.results" location="build/s-test-results"/>
 
     <path id="classpath.build">
         <fileset dir="lib/runtime">
@@ -120,9 +122,10 @@
             <fileset dir="war-for-selenium/WEB-INF" includes="**/hsqldb*"/>
         </delete>
 
-        <mkdir dir="${build.test}"/>
+        <mkdir dir="${build.s-test}"/>
+        <mkdir dir="${s-test.results}"/>
         <javac srcdir="src/s-test"
-               destdir="${build.test}"
+               destdir="${build.s-test}"
                classpathref="classpath.build"
                classpath="${build.java}"
                debug="true"/>
@@ -133,11 +136,11 @@
             <classpath>
                 <path refid="classpath.build"/>
                 <pathelement path="${build.java}"/>
-                <pathelement path="${build.test}"/>
+                <pathelement path="${build.s-test}"/>
             </classpath>
             <formatter type="xml"/>
             <formatter type="plain" usefile="false"/>
-            <test name="com.thoughtworks.selenium.petsoar.AllTests" todir="${test.results}"/>
+            <test name="com.thoughtworks.selenium.petsoar.AllTests" todir="${s-test.results}"/>
         </junit>
     </target>
 
