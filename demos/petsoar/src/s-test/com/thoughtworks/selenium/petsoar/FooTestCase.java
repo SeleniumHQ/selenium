@@ -20,10 +20,10 @@ public class FooTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        File codeRoot = getCodeRoot();
+        File petSoarRoot = getPetSoarRoot();
         selenium = new DefaultSelenium(
-                        new JettyCommandProcessor(new File(codeRoot, "war-for-selenium"), DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
-                                new DirectoryStaticContentHandler(new File(codeRoot, "war-for-selenium/selenium"))),
+                        new JettyCommandProcessor(new File(petSoarRoot, "war-for-selenium"), DefaultSelenium.DEFAULT_SELENIUM_CONTEXT,
+                                new DirectoryStaticContentHandler(new File(petSoarRoot, "war-for-selenium/selenium"))),
                         new SystemDefaultBrowserLauncher()
                 );
         selenium.start();
@@ -36,15 +36,15 @@ public class FooTestCase extends TestCase {
     }
 
 
-    private File getCodeRoot() throws Exception {
+    private File getPetSoarRoot() throws Exception {
         File codeRoot;
-        String codeRootProperty = System.getProperty("code_root");
+        String codeRootProperty = System.getProperty("petsoar_root");
         if (codeRootProperty == null) {
-            throw new Exception("'code_root' not specified");
+            throw new Exception("'petsoar_root' not specified");
         } else {
             codeRoot = new File(codeRootProperty);
             if (!codeRoot.exists()) {
-                throw new Exception("'code_root' not a dir");
+                throw new Exception("'petsoar_root' not a dir");
             }
         }
         return codeRoot;
