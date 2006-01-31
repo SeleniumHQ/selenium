@@ -98,6 +98,13 @@ public class DefaultSelenium implements Selenium {
         return "SeleneseRunner.html";
     }
 
+    public void answerOnNextPrompt(String value) {
+        String result = commandProcessor.doCommand("answerOnNextPrompt", value, "");
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
     public void chooseCancelOnNextConfirmation() {
         String result = commandProcessor.doCommand("chooseCancelOnNextConfirmation", "", "");
         if (!result.equals("OK")) {
@@ -112,9 +119,30 @@ public class DefaultSelenium implements Selenium {
         }
     }
 
+    public void fireEvent(String element, String event) {
+        String result = commandProcessor.doCommand("fireEvent", element, event);
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void goBack() {
+        String result = commandProcessor.doCommand("goBack", "", "");
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
     public void pause(int duration) // is this needed for driven ?
     {
         String result = commandProcessor.doCommand("pause", "" + duration, "");
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void select(String field, String value) {
+        String result = commandProcessor.doCommand("select", field, value);
         if (!result.equals("OK")) {
             throw new SeleniumException(result);
         }
@@ -129,6 +157,20 @@ public class DefaultSelenium implements Selenium {
 
     public void selectWindow(String window) {
         String result = commandProcessor.doCommand("selectWindow", window, "");
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void store(String field, String value) {
+        String result = commandProcessor.doCommand("store", field, value);
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void storeAttribute(String element, String value) {
+        String result = commandProcessor.doCommand("storeAttribute", element, value);
         if (!result.equals("OK")) {
             throw new SeleniumException(result);
         }
@@ -183,6 +225,20 @@ public class DefaultSelenium implements Selenium {
         }
     }
 
+    public void verifyEditable(String field) {
+        String result = commandProcessor.doCommand("verifyEditable", field, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyNotEditable(String field) {
+        String result = commandProcessor.doCommand("verifyNotEditable", field, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
     public void verifyElementNotPresent(String type) {
         String result = commandProcessor.doCommand("verifyElementNotPresent", type, "");
         if (!result.equals("PASSED")) {
@@ -192,6 +248,13 @@ public class DefaultSelenium implements Selenium {
 
     public void verifyElementPresent(String type) {
         String result = commandProcessor.doCommand("verifyElementPresent", type, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyPrompt(String text) {
+        String result = commandProcessor.doCommand("verifyPrompt", text, "");
         if (!result.equals("PASSED")) {
             throw new SeleniumException(result);
         }
@@ -232,6 +295,13 @@ public class DefaultSelenium implements Selenium {
         }
     }
 
+    public void verifyTextNotPresent(String text) {
+        String result = commandProcessor.doCommand("verifyTextNotPresent", text, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
     public void verifyTitle(String title) {
         String result = commandProcessor.doCommand("verifyTitle", title, "");
         if (!result.equals("PASSED")) {
@@ -241,6 +311,27 @@ public class DefaultSelenium implements Selenium {
 
     public void verifyValue(String field, String value) {
         String result = commandProcessor.doCommand("verifyValue", field, value);
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void waitForValue(String field, String value) {
+        String result = commandProcessor.doCommand("waitForValue", field, value);
+        if (!result.equals("OK")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyVisible(String element) {
+        String result = commandProcessor.doCommand("verifyVisible", element, "");
+        if (!result.equals("PASSED")) {
+            throw new SeleniumException(result);
+        }
+    }
+
+    public void verifyNotVisible(String element) {
+        String result = commandProcessor.doCommand("verifyNotVisible", element, "");
         if (!result.equals("PASSED")) {
             throw new SeleniumException(result);
         }
