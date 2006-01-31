@@ -3,15 +3,16 @@
     <system-property javax.xml.parsers.DocumentBuilderFactory="org.apache.xerces.jaxp.DocumentBuilderFactoryImpl"/>
     <system-property javax.xml.parsers.SAXParserFactory="org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
 
-    <java compiler="bin/jikes" compiler-args="-g"/>
+    <!--Java complier needs to be set based on your operating system-->
+	<java compiler="javac" compiler-args=""/>
     <http-server error-log='build/resin-error.log'>
         <doc-dir>src/webapp</doc-dir>
-        <http port="80"/>
+        <http port="8013"/>
 
         <host id=''>
             <web-app id='/'>
-                <work-dir>../../build/work</work-dir>
-                <temp-dir>../../build/tmp</temp-dir>
+                <work-dir>build/work</work-dir>
+                <temp-dir>build/tmp</temp-dir>
                 <cache-mapping url-pattern="/*" expires="2"/>
                 <class-update-interval>10000000000</class-update-interval>
                 <jsp jsp-update-interval="2s"/>
