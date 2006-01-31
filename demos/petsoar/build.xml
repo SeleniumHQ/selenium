@@ -69,10 +69,10 @@
         </copy>
     </target>
 
-    <target name="selenium-import" description="Import Selenium from Paul's Selenium dir">
+    <target name="selenium-import" description="Import Selenium from adjacent Selenium code dir">
 
         <copy todir="src/webapp/selenium">
-            <fileset dir="../../Selenium/trunk/code/javascript">
+            <fileset dir="../../code/javascript">
                 <exclude name="jsunit/**"/>
                 <exclude name="jsmock/**"/>
                 <exclude name="tests/**"/>
@@ -81,12 +81,13 @@
                 <include name="**/*.html"/>
                 <include name="**/*.jpg"/>
                 <include name="**/*.png"/>
+                <include name="**/*.js"/>
             </fileset>
         </copy>
 
         <copy todir="lib/build">
-            <fileset dir="../../Selenium/trunk/code/java/target/">
-                <include name="selenium-0.4.jar"/>
+            <fileset dir="../../code/java/target/">
+                <include name="selenium-unreleased.jar"/>
             </fileset>
         </copy>
 
@@ -110,7 +111,7 @@
         <fail if="tests.failed"/>
     </target>
 
-    <target name="selenium-tests" depends="war" description=", import-data Run Selenese tests on site">
+    <target name="selenium-tests" depends="war" description="Run Selenese tests on PetSoar site">
 
         <mkdir dir="war-for-selenium"/>
         <unzip src="${build.war}" dest="war-for-selenium"/>
@@ -150,7 +151,7 @@
         </war>
     </target>
 
-    <target name="all" depends="clean,test,war"/>
+    <target name="all" depends="clean, test, war, selenium-tests"/>
 
     <target name="resin" description="Run application in Resin">
         <java fork="true" classname="com.caucho.server.http.HttpServer">
