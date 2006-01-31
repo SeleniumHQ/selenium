@@ -28,6 +28,7 @@ import org.mortbay.util.MultiException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Paul Hammant
@@ -101,6 +102,12 @@ public class JettyCommandProcessor implements CommandProcessor {
         try {
             server.start();
         } catch (MultiException e) {
+            List excpts = e.getExceptions();
+            for (int i = 0; i < excpts.size(); i++) {
+                Exception exception = (Exception) excpts.get(i);
+                System.out.println("[Jetty MultiException] " + i + " : " + exception);
+            }
+
             throw new RuntimeException("Exception starting Jetty. Port blocked by another process?", e);
         }
     }
