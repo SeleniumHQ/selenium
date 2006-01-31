@@ -17,7 +17,11 @@ PetSoar Quick Start
 4) To import some data into database:
    - ant import-data
 
-5) Build the application:
+5) resin.xml must be updated to specify the path of Jikes
+   ex: for unix based - <java compiler="/usr/bin/jikes" compiler-args="-g"/>
+       for windows based - <java compiler="bin/jikes" compiler-args="-g"/> 
+
+6) Build the application:
    - ant resin
    Note: depending on the version of
          ant you are using, the resin
@@ -26,9 +30,9 @@ PetSoar Quick Start
          may need to kill the process
          manually.
 
-6) Go to http://localhost/
+7) Go to http://localhost:8099/
 
-7) Login is username "duke", password "duke"
+8) Login is username "duke", password "duke"
    or create a new account
 
 Type ant -projecthelp for more stuff.
