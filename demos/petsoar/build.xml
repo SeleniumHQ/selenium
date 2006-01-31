@@ -132,7 +132,7 @@
 
 
         <junit fork="yes" forkmode="once" printsummary="yes" failureproperty="tests.failed">
-            <jvmarg value="-Dcode_root=."/>
+            <jvmarg value="-Dpetsoar_root=."/>
             <classpath>
                 <path refid="classpath.build"/>
                 <pathelement path="${build.java}"/>
@@ -154,7 +154,7 @@
         </war>
     </target>
 
-    <target name="all" depends="clean, test, war, selenium-tests"/>
+    <target name="all" depends="clean, test, war, import-data, selenium-tests"/>
 
     <target name="resin" description="Run application in Resin">
         <java fork="true" classname="com.caucho.server.http.HttpServer">
