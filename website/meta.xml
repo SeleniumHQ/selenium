@@ -52,17 +52,34 @@
 
     <owners>
         <person>
-            <name>Paul Hammant</name>
-            <email>paul@thoughtworks.com</email>
+            <name>Darrell DeBoer</name>
+            <email>ddeboer at thoughtworks.net</email>
         </person>
+        <person>
+            <name>Paul Hammant</name>
+            <email>paul@hammant.org</email>
+        </person>
+        <person>
+            <name>Jason Huggins</name>
+            <email>JRHuggins at thoughtworks.COM</email>
+        </person>
+        <person>
+            <name>Mike Williams</name>
+            <email>mdub at dogbiscuit.org</email>
+        </person>
+
     </owners>
 
-    <!--<developers>-->
-        <!--<person>-->
-            <!--<name>Paul Hammant</name>-->
-            <!--<email>paul@thoughtworks.com</email>-->
-        <!--</person>-->
-    <!--</developers>-->
+    <developers>
+        <person>
+            <name>Darren Cotterill</name>
+            <email>darren.cotterill at gmail.com</email>
+        </person>
+        <person>
+            <name>Pat Lightbody</name>
+            <email>plightbo at gmail.com</email>
+        </person>
+    </developers>
 
     <releases>
         <release>
