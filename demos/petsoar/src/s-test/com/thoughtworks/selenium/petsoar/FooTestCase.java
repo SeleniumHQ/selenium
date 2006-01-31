@@ -109,7 +109,7 @@ public class FooTestCase extends TestCase {
 
     private void goToFrontPage() {
         selenium.open("/");
-        selenium.verifyTextPresent("Welcome to PetStore");
+        selenium.verifyTextPresent("Welcome to PetSoar!");
     }
 
     public void testPuttingAPetInTheCartAndOutAgain() {
