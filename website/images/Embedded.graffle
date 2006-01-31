@@ -85,7 +85,7 @@
 			<integer>16</integer>
 			<key>Points</key>
 			<array>
-				<string>{143.5, 126}</string>
+				<string>{143.5, 114}</string>
 				<string>{143.5, 144}</string>
 			</array>
 			<key>Style</key>
@@ -194,7 +194,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{80.5, 309}, {69, 28}}</string>
+			<string>{{80, 327}, {73, 56}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -236,14 +236,16 @@
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
 \f0\fs24 \cf0 Selenese \
-over HTTP}</string>
+commands \
+over HTTP \
+(text/plain)}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{187, 332}, {69, 28}}</string>
+			<string>{{192, 309}, {69, 42}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -285,7 +287,8 @@ over HTTP}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
 \f0\fs24 \cf0 HTML over\
-HTTP}</string>
+HTTP \
+(text/html)}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -302,7 +305,7 @@ HTTP}</string>
 			<integer>10</integer>
 			<key>Points</key>
 			<array>
-				<string>{164.893, 252}</string>
+				<string>{162.64, 243}</string>
 				<string>{216, 381}</string>
 				<string>{364.843, 216.371}</string>
 			</array>
@@ -340,8 +343,8 @@ HTTP}</string>
 			<integer>9</integer>
 			<key>Points</key>
 			<array>
-				<string>{106, 126}</string>
-				<string>{189, 405}</string>
+				<string>{106, 114}</string>
+				<string>{192, 405}</string>
 				<string>{378, 285.75}</string>
 			</array>
 			<key>Style</key>
@@ -370,7 +373,7 @@ HTTP}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{31, 72}, {225, 54}}</string>
+			<string>{{31, 72}, {225, 42}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -435,7 +438,7 @@ HTTP}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{31, 144}, {225, 108}}</string>
+			<string>{{31, 144}, {225, 99}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -505,8 +508,8 @@ HTTP}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs24 \cf0 AUT\
-webapp\
+\f0\fs24 \cf0 AUT webapp\
+hosted\
 in lightweight or embedded \
 web-server \
 }</string>
@@ -676,7 +679,7 @@ web-server \
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{162, 363}, {99, 54}}</string>
+			<string>{{153, 369}, {117, 81}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -729,7 +732,9 @@ web-server \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs24 \cf0 Same origin}</string>
+\f0\fs24 \cf0 Same origin\
+means\
+same host &amp; same port}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -9632,7 +9637,7 @@ web-server \
 		</dict>
 	</array>
 	<key>ModificationDate</key>
-	<string>2006-01-29 09:44:37 -0800</string>
+	<string>2006-01-31 03:13:59 -0800</string>
 	<key>Modifier</key>
 	<string>Paul Hammant</string>
 	<key>NotesVisible</key>
@@ -9692,7 +9697,7 @@ web-server \
 		<key>FitInWindow</key>
 		<false/>
 		<key>Frame</key>
-		<string>{{307, -157}, {685, 796}}</string>
+		<string>{{100, -49}, {685, 796}}</string>
 		<key>ShowRuler</key>
 		<false/>
 		<key>ShowStatusBar</key>
