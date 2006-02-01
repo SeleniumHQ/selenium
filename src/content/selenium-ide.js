@@ -277,6 +277,7 @@ function onUnloadDocument(doc) {
 
 function recordTitle(window) {
 	if (this.options.recordAssertTitle == 'true' && this.testCase.commands.length > 0) {
+		//setTimeout("addCommand", 200, "assertTitle", window.document.title, null, window);
 		addCommand("assertTitle", window.document.title, null, window);
 	}
 }
@@ -346,7 +347,12 @@ function appendAND_WAIT() {
 		return;
 	}
 	this.lastCommandIndex = null;
-	this.testCase.commands[lastCommandIndex].command = this.testCase.commands[lastCommandIndex].command + "AndWait";
+	var lastCommand = this.testCase.commands[lastCommandIndex];
+	if (lastCommand.type == 'command' && 
+		!lastCommand.command.match(/^assert/) &&
+		!lastCommand.command.match(/^verify/)) {
+		lastCommand.command = lastCommand.command + "AndWait";
+	}
 	this.view.rowUpdated(lastCommandIndex);
 	//updateSource();
 }
