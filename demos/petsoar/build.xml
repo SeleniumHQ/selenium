@@ -137,6 +137,7 @@
                 <path refid="classpath.build"/>
                 <pathelement path="${build.java}"/>
                 <pathelement path="${build.s-test}"/>
+                <pathelement path="${java.home}/../lib/tools.jar/"/>
             </classpath>
             <formatter type="xml"/>
             <formatter type="plain" usefile="false"/>
