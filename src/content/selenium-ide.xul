@@ -172,11 +172,11 @@ limitations under the License.
 		<!--onfocus="recorder.treeView.focused=true" onblur="recorder.treeView.focused=false">-->
 	    <!--ondblclick="recorder.treeView.selectRecordIndex()">-->
 	    <treecols>
-	      <treecol id="command" label="Command" flex="1"/>
+	      <treecol id="command" label="Command" flex="1" width="120"/>
 	      <splitter class="tree-splitter" />
-	      <treecol id="target" label="Target" flex="1"/>
+	      <treecol id="target" label="Target" flex="3" width="120"/>
 	      <splitter class="tree-splitter" />
-	      <treecol id="value" label="Value" flex="1"/>
+	      <treecol id="value" label="Value" flex="3" width="120"/>
 	    </treecols>
 	    <treechildren/>
 	  </tree>
