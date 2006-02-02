@@ -17,10 +17,10 @@
 
 */
 
-/** PATCH TO ALLOW USE WITH DOCUMENTS FROM OTHER WINDOWS: 2004-11-24
+/** SELENIUM:PATCH TO ALLOW USE WITH DOCUMENTS FROM OTHER WINDOWS: 2004-11-24
     TODO resubmit this to http://sf.net/projects/html-xpath */
 function addXPathSupport(document) {
-/** END PATCH */
+/** END SELENIUM:PATCH */
 
 var isIe = /MSIE [56789]/.test(navigator.userAgent) && (navigator.platform == "Win32");
 
@@ -509,6 +509,9 @@ if (isIe)
 			if (!helper.dom)
 			{
 				var dom = new ActiveXObject("Msxml2.DOMDocument");
+/** SELENIUM:PATCH TO ALLOW PROVIDE FULL XPATH SUPPORT */
+				dom.setProperty("SelectionLanguage", "XPath");
+/** END SELENIUM:PATCH */
 				dom.async = false;
 				dom.resolveExternals = false;
 				loadDocument(dom, helper);
@@ -533,11 +536,45 @@ if (isIe)
 		{
 			return loadNode(dom, dom, document.body, helper);
 		}
-		
+			
+
+/** SELENIUM:PATCH for loadNode() - see SEL-68 */
 		function loadNode(dom, domParentNode, node, helper)
 		{
-			if (node.nodeType == 3)
-			{			
+			// Bad node scenarios
+			// 1. If the node contains a /, it's broken HTML
+			// 2. If the node doesn't have a name (typically from broken HTML), the node can't be loaded
+			// 3. Node types we can't deal with
+			//
+			// In all scenarios, we just skip the node. We won't be able to
+			// query on these nodes, but they're broken anyway.
+			if (node.nodeName.indexOf("/") > -1
+			    || node.nodeName == ""
+			    || node.nodeName == "#document"
+			    || node.nodeName == "#document-fragment"
+			    || node.nodeName == "#cdata-section"
+			    || node.nodeName == "#xml-declaration"
+			    || node.nodeName == "#whitespace"
+			    || node.nodeName == "#significat-whitespace"
+			   )
+			{
+				return;
+			}
+			
+			// #comment is a <!-- comment -->, which must be created with createComment()
+			if (node.nodeName == "#comment")
+			{
+				try
+				{
+					domParentNode.appendChild(dom.createComment(node.nodeValue));
+				}
+				catch (ex)
+				{
+					// it's just a comment, we don't care
+				}
+			}
+			else if (node.nodeType == 3)
+			{
 				domParentNode.appendChild(dom.createTextNode(node.nodeValue));
 			}
 			else
@@ -557,6 +594,7 @@ if (isIe)
 				node.attachEvent("onpropertychange", onPropertyChangeEventHandler);
 			}
 		}
+/** END SELENIUM:PATCH */
 
 		function loadAttributes(dom, domParentNode, node)
 		{
@@ -564,7 +602,10 @@ if (isIe)
 			{
 				var attribute = node.attributes[i];
 				var attributeValue = attribute.nodeValue;
-				if (attributeValue && attribute.specified)
+				
+/** SELENIUM:PATCH for loadAttributes() - see SEL-176 */
+				if (attributeValue && (attribute.specified || attribute.nodeName == 'value'))
+/** END SELENIUM:PATCH */
 				{
 					var domAttribute = dom.createAttribute(attribute.nodeName);
 					domAttribute.value = attributeValue;
@@ -613,7 +654,7 @@ else
 		return this.resultType;
 	}
 }
-/** PATCH TO ALLOW USE WITH CONTAINED DOCUMENTS */
+/** SELENIUM:PATCH TO ALLOW USE WITH CONTAINED DOCUMENTS */
 }
-/** END PATCH */
+/** END SELENIUM:PATCH */
 

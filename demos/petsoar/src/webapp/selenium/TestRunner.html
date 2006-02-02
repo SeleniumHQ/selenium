@@ -25,18 +25,26 @@ Copyright 2004 ThoughtWorks, Inc
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
 
 <title>Selenium Functional Test Runner</title>
+<link rel="stylesheet" type="text/css" href="selenium.css" />
 <script language="JavaScript" type="text/javascript" src="html-xpath/html-xpath-patched.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-fitrunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-testrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-domviewer.js"></script>
 <script language="JavaScript" type="text/javascript" src="xpath.js"></script>
 <script language="JavaScript" type="text/javascript" src="user-extensions.js"></script>
-<link rel="stylesheet" type="text/css" href="selenium.css" />
+<script language="JavaScript" type="text/javascript">
+    function openDomViewer() {
+        var autFrame = document.getElementById('myiframe');
+        var autFrameDocument = getIframeDocument(autFrame);
+        this.rootDocument = autFrameDocument;
+        var domViewer = window.open('domviewer.html');
+        return false;
+    }
+</script>
 </head>
 
 <body onload="start();">
@@ -57,29 +65,31 @@ Copyright 2004 ThoughtWorks, Inc
       <tr class="selenium">
         <td width="25%" height="30%" id="controlPanel">
 
-          <table id="controls">
-            <tr>
-              <td>
-                <b>Run:</b>
-                <button type="button" id="runTest" onclick="runSingleTest();"><em>Selected</em> Test</button>
-                <button type="button" id="runSuite" onclick="startTestSuite();"><strong>All</strong> Tests</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b>Mode:</b>
-                <label><input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/>Run</label>
-                <label><input id="modeWalk" type="radio" name="runMode" value="500" />Walk</label>
-                <label><input id="modeStep" type="radio" name="runMode" value="-1" />Step</label>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button type="button" id="domViewer1" onclick="newRoot=getIframeDocument(getElementById('myiframe'));window.open('domviewer.html');return false;">View DOM</button>
-                <button type="button" id="continueTest" disabled="disabled">Next/Continue</button>
-              </td>
-            </tr>
-          </table>
+          <fieldset>
+            <legend>Execute Tests</legend>
+            
+            <div>
+              <input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/><label for="modeRun">Run</label>
+              <input id="modeWalk" type="radio" name="runMode" value="500" /><label for="modeWalk">Walk</label>
+              <input id="modeStep" type="radio" name="runMode" value="-1" /><label for="modeStep">Step</label>
+            </div>
+            
+            <div>
+              <button type="button" id="runSuite" onclick="startTestSuite();"
+                      title="Run the entire Test-Suite">
+                <strong>All</strong>
+              </button>
+              <button type="button" id="runTest" onclick="runSingleTest();"
+                      title="Run the current Test">
+                <em>Selected</em>
+              </button>
+              <button type="button" id="continueTest" disabled="disabled"
+                      title="Continue the Test">
+                Continue
+              </button>
+            </div>
+            
+          </fieldset>
 
           <table id="stats" align="center">
             <tr>
@@ -108,6 +118,19 @@ Copyright 2004 ThoughtWorks, Inc
               <td>incomplete</td>
             </tr>
           </table>
+
+          <fieldset>
+            <legend>Tools</legend>
+
+            <button type="button" id="domViewer1" onclick="openDomViewer();">
+              View DOM
+            </button>
+            <button type="button" onclick="LOG.show();">
+              Show Log
+            </button>
+
+          </fieldset>
+
         </td>
       </tr>
 
@@ -119,13 +142,5 @@ Copyright 2004 ThoughtWorks, Inc
     </form>
     </table>
 
-    <div id="logging-console">
-        <h1>Javascript Log Console (<a id="closeLog" href="javascript:LOG.hide()">Close</a> <a href="javascript:LOG.clear();LOG.hide();">Clear</a>)</h1>
-        <ul id="log-list"/>
-    </div>
-    <script language="javascript">
-        LOG = new Logger(LEVEL_WARN);
-        LOG.hide();
-    </script>
 </body>
 </html>
