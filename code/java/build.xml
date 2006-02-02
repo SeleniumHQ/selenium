@@ -46,6 +46,8 @@
         <pathelement location="${test.classes.dir}"/>
         <pathelement location="${integration.test.classes.dir}"/>
         <pathelement location="${ant.home}/lib"/>
+        <pathelement location="${java.home}/lib/tools.jar"/> <!-- Not needed for Mac, but harmless -->
+        <pathelement location="${java.home}/../lib/tools.jar"/> <!-- Not needed for Mac, but harmless -->
     </path>
 
     <target name="build" 
@@ -188,7 +190,7 @@
             <formatter type="plain" usefile="false"/>
             <batchtest todir="${integration.test.logs.dir}">
                 <fileset dir="${integration.test.dir}">
-                    <include name="**/embedded/**/*Test.java"/>
+                    <include name="**/embedded/**/MacFire*Test.java"/>
                     <exclude name="**/Win*"/>
                 	<exclude name="**/Lin*"/>
                 </fileset>
