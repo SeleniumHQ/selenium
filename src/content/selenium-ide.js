@@ -237,9 +237,9 @@ function confirmClose() {
 			promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1 +
 			promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2;
 		
-		result = promptService.confirmEx(window, "Save test?",
-										 "Would you like to save the test?",
-										 flags, null, null, null, null, {});
+		var result = promptService.confirmEx(window, "Save test?",
+											 "Would you like to save the test?",
+											 flags, null, null, null, null, {});
 		
 		switch (result) {
 		case 0:

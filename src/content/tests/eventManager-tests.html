@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Utility Tests</title>
+    <link rel="stylesheet" type="text/css" href="chrome://selenium-ide/content/selenium/jsunit/css/jsUnitStyle.css">
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium/jsunit/app/jsUnitCore.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/eventManager.js"></script>
+		<script type="text/javascript" src="eventManager-tests.js"></script>
+  </head>
+
+  <body onload="loadPageBot()">
+		<div id="test1">
+			<input type="button" name="foo" value="bar">
+			<input type="button" name="foo" value="bar" onclick="alert()">
+			<input type="button" name="foo" value="bar">
+		</div>
+		<div id="test2">
+			<div>
+				<a href="http://www.google.com/">Google</a>
+			</div>
+			<div>
+				<a href="http://www.yahoo.com/">
+					Yahoo
+				</a>
+			</div>
+			<div>
+				<a href="http://www.yahoo.com/">
+					<img src="test.png" alt="test">
+				</a>
+			</div>
+		</div>
+  </body>
+</html>

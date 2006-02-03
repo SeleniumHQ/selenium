@@ -89,6 +89,7 @@ function EventManager(listener) {
 					if (!self.listener.recordingEnabled) return;
 					
 					var tagName = event.target.tagName.toLowerCase();
+					log.debug("change event: tagName=" + tagName);
 					var type = event.target.type;
 					if ('select' == tagName) {
 						var label = event.target.options[event.target.selectedIndex].innerHTML;
@@ -146,33 +147,24 @@ function EventManager(listener) {
 		delete window._locator_pageBot;
 	};
 
-	function getPageBot(window) {
-		var pageBot = window._locator_pageBot;
-		if (pageBot == null) {
-			pageBot = PageBot.createForWindow(window);
-			window._locator_pageBot = pageBot;
-		}
-		return pageBot;
-	}
-
 	this.getLocator = function(window, e) {
 		var locatorDetectors = 
-			[getLinkLocator, getIDLocator, getNameLocator, getOptimizedXPathLocator];
+		  [this.getLinkLocator, 
+		   this.getIDLocator, 
+		   this.getNameLocator, 
+		   this.getLinkXPathLocator,
+		   this.getAttributesXPathLocator, 
+		   this.getPositionXPathLocator];
 		var i = 0;
 		var xpathLevel = 0;
 		var maxLevel = 10;
 		var locator;
-		var pageBot = getPageBot(window);
-		while (true) {
-			if (i < locatorDetectors.length) {
-				locator = locatorDetectors[i].call(this, e);
-				i++;
-			} else {
-				locator = getAbsoluteXPathLocator(e, xpathLevel);
-				xpathLevel++;
-			}
-			log.debug("locator=" + locator);
-			if (locator != '') {
+		var pageBot = this.getPageBot(window);
+		log.debug("getLocator for element " + e);
+		for (var i = 0; i < locatorDetectors.length; i++) {
+			locator = locatorDetectors[i].call(this, e, pageBot);
+			if (locator) {
+				log.debug("locator=" + locator);
 				// test the locator
 				try {
 					if (e == pageBot.findElement(locator)) {
@@ -180,154 +172,10 @@ function EventManager(listener) {
 					}
 				} catch (error) {
 					log.warn("findElement error: " + error + ", node=" + e + ", locator=" + locator);
-					//break;
 				}
-			} else if (xpathLevel > 0) {
-				break;
-			}
-			if (xpathLevel >= maxLevel) {
-				break;
 			}
 		}
 		return "LOCATOR_DETECTION_FAILED";
-	}
-
-	function xpathLocator(e, attributes) {
-		var att;
-		var locator = '//' + e.nodeName.toLowerCase() + '[';
-		var first = true;
-		var i;
-		var attributeArray = attributes.split(',');
-		for (i = 0; i < attributeArray.length; i++) {
-			att = attributeArray[i];
-			if (!first) locator += ' and ';
-			locator += '@' + att + "='" + e[att] + "'";
-			first = false;
-		}
-		locator += ']';
-		return locator;
-	}
-	
-
-	function encodeConditions(atts) {
-		var att;
-		var result = '';
-		var first = true;
-		var count = 0;
-		for (att in atts) {
-			if (!first) result += ' and ';
-			result += att + '=\"' + atts[att].replace(/\"/g, "&quot;") + '\"';
-			first = false;
-			count++;
-		}
-		if (result != '') {
-			if (count == 1 && atts['position()'] != null) {
-				return '[' + atts['position()'] + ']';
-			} else {
-				return '[' + result + ']';
-			}
-		} else {
-			return '';
-		}
-	}
-
-	function getLinkLocator(e) {
-		if (e.nodeName == 'A') {
-			var text = e.textContent;
-			if (!text.match(/^\s*$/)) {
-				return "link=" + e.textContent;
-			}
-		}
-		return "";
-	}
-
-	function getIDLocator(e) {
-		if (e.id != '') {
-			return e.id;
-		}
-		return '';
-	}
-
-	function getNameLocator(e) {
-		if (e.name != '') {
-			return e.name;
-		}
-		return '';
-	}
-	
-	function getOptimizedXPathLocator(e) {
-		var i;
-		if (e.nodeName == 'INPUT') {
-			if (e.type == 'button' || e.type == 'submit') {
-				return xpathLocator(e, 'type,value');
-			} else if (e.type == 'image' && e.alt != '') {
-				return xpathLocator(e, 'type,alt');
-			} else if (e.type == 'checkbox' || e.type == 'radio') {
-				return xpathLocator(e, 'name,value');
-			} else {
-				return "//input[@type='" + e.type + "']";
-			}
-		} else if (e.nodeName == 'A') {
-			var nodeList = e.childNodes;
-			for (i = 0; i < nodeList.length; i++) {
-				var node = nodeList[i];
-				if (node.nodeName == 'IMG' && node.alt != '') {
-					return "//a[img/@alt='" + node.alt + "']";
-				}
-			}
-			var text = e.textContent;
-			if (!text.match(/^\s*$/)) {
-				return "//a[contains(text(),'" + text.replace(/^\s+/,'').replace(/\s+$/,'') + "')]";
-			}
-		}
-		return "";
-	}
-
-	function elementXPath(node, conditions) {
-		var i;
-		if (node.attributes) {
-			for (i = 0; i < node.attributes.length; i++) {
-				var att = node.attributes[i];
-				if (att.name == 'name' || att.name == 'value' ||
-					att.name == 'id' || att.name == 'style' ||
-					att.name == 'action' || att.name == 'onclick' ||
-					att.name == 'href') {
-					conditions['@' + att.name] = att.value;
-				}
-			}
-		}
-		return node.nodeName.toLowerCase() + encodeConditions(conditions);
-	}
-
-	function getAbsoluteXPathLocator(e, level) {
-		var lastElementPath = elementXPath(e, new Object());
-		var prevPath = '';
-		var path = '/' + lastElementPath + prevPath;
-		var node = e;
-		var i, j;
-		for (i = 0; i < level; i++) {
-			var parent = node.parentNode;
-			//sr_debug("parent=" + parent);
-			if (parent == null) {
-				return "";
-			}
-			var conditions = new Object();
-			var childNodes = parent.getElementsByTagName(node.nodeName);
-			if (childNodes.length > 1) {
-				//sr_debug("childNodes.length=" + childNodes.length);
-				for (j = 0; j < childNodes.length; j++) {
-					if (childNodes[j] == node) {
-						conditions['position()'] = '' + (j + 1);
-						//sr_debug("position=" + j);
-					}
-				}
-			}
-			lastElementPath = elementXPath(node, conditions);
-			prevPath = '/' + lastElementPath + prevPath;
-			path = "/" + elementXPath(parent, new Object()) + prevPath;
-			node = parent;
-		}
-		return "/" + path;
 	}
 
 	function getDocuments(frame) {
@@ -345,4 +193,148 @@ function EventManager(listener) {
 		return browser;
 	}
 }
+
+EventManager.prototype = {
+	PREFERRED_ATTRIBUTES: ['id','name','value','type','action','href','onclick'],
+	
+	getPageBot: function(window) {
+		var pageBot = window._locator_pageBot;
+		if (pageBot == null) {
+			pageBot = PageBot.createForWindow(window);
+			window._locator_pageBot = pageBot;
+		}
+		return pageBot;
+	},
+	
+	attributesXPath: function(name, attNames, attributes) {
+		var locator = "//" + name + "[";
+		for (var i = 0; i < attNames.length; i++) {
+			if (i > 0) {
+				locator += " and ";
+			}
+			var name = attNames[i];
+			locator += '@' + name + "=\'" + attributes[name].replace(/\"/g, "&quot;") + "\'";
+		}
+		locator += "]";
+		return locator;
+	},
+	
+	getAttributesXPathLocator: function(e, pageBot) {
+		if (e.attributes) {
+			var atts = e.attributes;
+			var attsMap = {};
+			for (var i = 0; i < atts.length; i++) {
+				var att = atts[i];
+				attsMap[att.name] = att.value;
+			}
+			var names = [];
+			// try preferred attributes first
+			for (var i = 0; i < this.PREFERRED_ATTRIBUTES.length; i++) {
+				var name = this.PREFERRED_ATTRIBUTES[i];
+				if (attsMap[name] != null) {
+					names.push(name);
+					var locator = this.attributesXPath(e.nodeName.toLowerCase(), names, attsMap);
+					try {
+						if (e == pageBot.findElement(locator)) {
+							return locator;
+						}
+					} catch (error) {}
+				}
+			}
+			// Comment this out to try rest of attributes
+			/*
+			for (name in attsMap) {
+				if (names.indexOf(name) < 0) {
+					names.push(name);
+					var locator = this.attributesXPath(e.nodeName.toLowerCase(), names, attsMap);
+					try {
+						if (e == pageBot.findElement(locator)) {
+							return locator;
+						}
+					} catch (error) {}
+				}
+			}
+			*/
+		}
+		return null;
+	},
+
+	getPositionXPathLocator: function(e, pageBot) {
+		var path = '';
+		var current = e;
+		while (current != null) {
+			var currentPath = '/' + current.nodeName.toLowerCase();
+			if (current.parentNode != null) {
+				var childNodes = current.parentNode.childNodes;
+				var total = 0;
+				var index = -1;
+				for (var i = 0; i < childNodes.length; i++) {
+					var child = childNodes[i];
+					if (child.nodeName == current.nodeName) {
+						if (child == current) {
+							index = total;
+						}
+						total++;
+					}
+				}
+				if (total > 1 && index >= 0) {
+					currentPath += '[' + (index + 1) + ']';
+				}
+			}
+			path = currentPath + path;
+			var locator = '/' + path;
+			try {
+				if (e == pageBot.findElement(locator)) {
+					return locator;
+				}
+			} catch (error) {}
+			current = current.parentNode;
+		}
+		return null;
+	},
+
+	getLinkXPathLocator: function(e) {
+		if (e.nodeName == 'A') {
+			var nodeList = e.childNodes;
+			for (i = 0; i < nodeList.length; i++) {
+				var node = nodeList[i];
+				if (node.nodeName == 'IMG' && node.alt != '') {
+					return "//a[img/@alt='" + node.alt + "']";
+				}
+			}
+			var text = e.textContent;
+			if (!text.match(/^\s*$/)) {
+				return "//a[contains(text(),'" + text.replace(/^\s+/,'').replace(/\s+$/,'') + "')]";
+			}
+		}
+		return null;
+	},
+
+	getLinkLocator: function(e) {
+		if (e.nodeName == 'A') {
+			var text = e.textContent;
+			if (!text.match(/^\s*$/)) {
+				return "link=" + e.textContent;
+			}
+		}
+		return null;
+	},
+
+	getIDLocator: function(e) {
+		if (e.id) {
+			return e.id;
+		}
+		return null;
+	},
+
+	getNameLocator: function(e) {
+		if (e.name) {
+			return e.name;
+		}
+		return null;
+	}
+	
+
+}
+
 

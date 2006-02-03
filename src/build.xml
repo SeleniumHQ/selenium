@@ -22,6 +22,7 @@
 	<include name="dom-images/*.*"/>
 	<include name="dom-styles/*.*"/>
 	<include name="html-xpath/*.*"/>
+	<include name="jsunit/**"/>
 	<exclude name="TestSuite.html"/>
 	<exclude name="*.bat"/>
 	<exclude name="*.py"/>
