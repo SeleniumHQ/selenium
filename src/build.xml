@@ -26,6 +26,7 @@
 	<exclude name="TestSuite.html"/>
 	<exclude name="*.bat"/>
 	<exclude name="*.py"/>
+	<exclude name="jsunit/java/**"/>
       </fileset>
       <fileset dir="content/selenium-src"/>
     </copy>
