@@ -53,7 +53,7 @@ function parse(testCase, source) {
 	}
 }
 
-function format(testCase, name, saveHeaderAndFooter) {
+function format(testCase, name) {
 	var commandsText = "";
 	var i;
 	
@@ -66,10 +66,8 @@ function format(testCase, name, saveHeaderAndFooter) {
 		return testCase.header + commandsText + testCase.footer;
 	} else {
 		var text = options.testHeader + commandsText + options.testFooter;
-		if (saveHeaderAndFooter) {
-			testCase.header = options.testHeader;
-			testCase.footer = options.testFooter;
-		}
+		testCase.header = options.testHeader;
+		testCase.footer = options.testFooter;
 		return text;
 	}
 }

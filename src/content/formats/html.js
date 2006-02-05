@@ -149,6 +149,7 @@ function formatCommands(commands) {
 
 /**
  * Format TestCase and return the source.
+ * The 3rd and 4th parameters are used only in default HTML format.
  *
  * @param testCase TestCase to format
  * @param name The name of the test case, if any. It may be used to embed title into the source.

@@ -12,9 +12,8 @@ function parse(testCase, source) {
  *
  * @param testCase TestCase to format
  * @param name The name of the test case, if any. It may be used to embed title into the source.
- * @param saveHeaderAndFooter true if the header and footer should be saved into the TestCase.
  */
-function format(testCase, name, saveHeaderAndFooter) {
+function format(testCase, name) {
 }
 
 /**
