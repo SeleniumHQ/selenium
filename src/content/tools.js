@@ -16,9 +16,10 @@
 
 function Log(category) {
 	// DEBUG
-	var LOG_THRESHOLD = "DEBUG";
+	//var LOG_THRESHOLD = "DEBUG";
 	// RELEASE
-	//	var LOG_THRESHOLD = "WARN";
+	var LOG_THRESHOLD = "WARN";
+	// TODO: this variable should be configurable through option
 
 	var log = this;
 	var self = this;
