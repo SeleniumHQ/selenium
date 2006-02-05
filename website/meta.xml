@@ -53,7 +53,7 @@
             <downloads>
                 <download>
                     <url>http://www.openqa.org/selenium-ide/releases/selenium-ide-0.7-beta-1.xpi</url>
-                    <name>Firefox plugin</name>
+                    <name>Firefox extension (only for Firefox 1.5 and later)</name>
                 </download>
             </downloads>
         </release>
