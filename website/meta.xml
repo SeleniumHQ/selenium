@@ -1,5 +1,5 @@
 <project>
-    <name>Selenium-IDE</name>
+    <name>Selenium IDE</name>
     <jiraId>10070</jiraId>
     <jiraName>SIDE</jiraName>
     <confluenceName>SIDE</confluenceName>
@@ -9,8 +9,21 @@
         <devId>2</devId>
     </forums>
 
+    <evaluating>
+        <item>
+            <name>Recording a test (video)</name>
+            <url>http://wiki.openqa.org/display/SIDE/Recording+a+Test</url>
+        </item>
+    </evaluating>
+
     <docs>
         <url>index.html</url>
+		<items>
+            <item>
+                <name>Wiki</name>
+                <url>http://wiki.openqa.org/display/SIDE/Home</url>
+            </item>
+        </items>
     </docs>
 
     <owners>
@@ -28,6 +41,18 @@
     <!--</developers>-->
 
     <releases>
+        <release>
+            <version>0.7-beta-1</version>
+
+            <date>01/28/2006</date>
+            <jiraId>10200</jiraId>
+            <downloads>
+                <download>
+                    <url>http://www.openqa.org/selenium-ide/releases/selenium-ide-0.7-beta-1.xpi</url>
+                    <name>Firefox plugin</name>
+                </download>
+            </downloads>
+        </release>
     </releases>
 
 </project>
