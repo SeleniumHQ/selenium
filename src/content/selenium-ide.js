@@ -138,13 +138,6 @@ function initOptions() {
 			document.getElementById("baseURL").value = this.options.baseURL;
 		}
 	}
-	if (this.options.selectedFormat != null) {
-		try {
-			testManager.selectFormat(this.options.selectedFormat);
-		} catch (error) {
-			log.error("failed to select format: " + error);
-		}
-	}
 }
 
 function newTestCase() {

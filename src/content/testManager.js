@@ -21,7 +21,16 @@ function TestManager(options) {
 	this.presetFormatInfos = [new InternalFormatInfo("default", "HTML", "html.js"),
 							  new InternalFormatInfo("ruby", "Ruby", "ruby.js")];
 	this.reloadFormats();
-	this.currentFormatInfo = this.formatInfos[0];
+	if (options.selectedFormat != null) {
+		try {
+			this.selectFormat(options.selectedFormat);
+		} catch (error) {
+			log.error("failed to select format: " + error);
+		}
+	}
+	if (this.currentFormatInfo == null) {
+		this.currentFormatInfo = this.formatInfos[0];
+	}
 }
 
 TestManager.getFormatDir = function() {
