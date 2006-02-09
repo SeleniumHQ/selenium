@@ -22,13 +22,15 @@ function TestManager(options) {
 							  new InternalFormatInfo("ruby", "Ruby", "ruby.js")];
 	this.reloadFormats();
 	if (options.selectedFormat != null) {
+		this.log.debug("selecting format: " + options.selectedFormat);
 		try {
 			this.selectFormat(options.selectedFormat);
 		} catch (error) {
-			log.error("failed to select format: " + error);
+			this.log.error("failed to select format: " + error);
 		}
 	}
 	if (this.currentFormatInfo == null) {
+		this.log.debug("selecting default format");
 		this.currentFormatInfo = this.formatInfos[0];
 	}
 }

@@ -251,10 +251,13 @@ function unloadRecorder() {
 		this.options.baseURL = document.getElementById("baseURL").value;
 		optionsManager.save(this.options, 'baseURL');
 	}
-	this.options.selectedFormat = this.testManager.currentFormatInfo.id;
-	optionsManager.save(this.options, 'selectedFormat');
 	
 	this.eventManager.stopForAllBrowsers();
+}
+
+function saveSelectedFormat() {
+	this.options.selectedFormat = this.testManager.currentFormatInfo.id;
+	optionsManager.save(this.options, 'selectedFormat');
 }
 
 function toggleRecordingEnabled(enabled) {
@@ -411,6 +414,7 @@ function selectFormatFromMenu() {
 		var checked = e.childNodes[i].getAttribute("checked");
 		if (checked == 'true') {
 			this.testManager.selectFormat(e.childNodes[i].getAttribute("value"));
+			saveSelectedFormat();
 			break;
 		}
 	}

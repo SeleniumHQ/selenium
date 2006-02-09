@@ -34,7 +34,7 @@ function OptionsManager() {
 }
 
 OptionsManager.prototype = {
-	branch: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide."),
+	branch: getOptionsBranch(),
 	
 	getCharPref: function(name, defaultValue) {
 		if (this.branch.prefHasUserValue(name)) {

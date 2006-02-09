@@ -18,8 +18,10 @@ function Log(category) {
 	// DEBUG
 	//var LOG_THRESHOLD = "DEBUG";
 	// RELEASE
-	var LOG_THRESHOLD = "WARN";
+	//var LOG_THRESHOLD = "WARN";
 	// TODO: this variable should be configurable through option
+
+	var thresholdName = getOptionValue("internalLogThreshold", "INFO");
 
 	var log = this;
 	var self = this;
@@ -38,7 +40,7 @@ function Log(category) {
 	this.ERROR = new LogLevel(4, "ERROR");
 
 	this.log = function(level, msg) {
-		var threshold = this[LOG_THRESHOLD];
+		var threshold = this[thresholdName];
 		if (level.level >= threshold.level) {
 			var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
 				.getService(Components.interfaces.nsIConsoleService);
@@ -59,4 +61,15 @@ function instanceOf(object, constructor) {
 	return false;
 }
 
+function getOptionsBranch() {
+	return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
+}
 
+function getOptionValue(name, defaultValue) {
+	var branch = getOptionsBranch();
+	if (branch.prefHasUserValue(name)) {
+		return branch.getCharPref(name);
+	} else {
+		return defaultValue;
+	}
+}
