@@ -64,6 +64,15 @@ MozillaPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'blur', false);
 };
 
+// In Firefox 1.5, "load" event is not fired on cached pages, so we'll use "pageshow" instead.
+addLoadListener = function(element, command) {
+	element.addEventListener("pageshow", command, true);
+}
+// use "pagehide" instead of "unload".
+addUnloadListener = function(element, command) {
+	element.addEventListener("pagehide", command, true);
+}
+
 
 function Logger() {
 	var self = this;
@@ -167,10 +176,12 @@ function start(baseURL) {
 		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
 	testLoop.commandError = function() {
+		LOG.debug("commandError");
 		testCase.debugContext.currentCommand().result = 'failed';
 		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
 	testLoop.testComplete = function() {
+		LOG.debug("testComplete");
 		recorder.setState(null);
 		testLoop = null;
 		testCase.debugContext.reset();

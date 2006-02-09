@@ -149,11 +149,17 @@ function TreeView(recorder, document, tree) {
 			subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, scope);
 		}
 
+		var waitActions = 
+			['click', 'select', 'type', 'check', 'uncheck', 'fireEvent', 'goBack'];
+		
 		for (func in scope.Selenium.prototype) {
 			//this.log.debug("func=" + func);
 			if (func.match(/^do[A-Z]/)) {
 				var action = func.substr(2,1).toLowerCase() + func.substr(3);
 				actions.push(action);
+				if (waitActions.indexOf(action) >= 0) {
+					actions.push(action + "AndWait");
+				}
 			} else if (func.match(/^assert.+/)) {
 				asserts.push(func);
 				verifies.push("verify" + func.substr(6));
@@ -163,10 +169,6 @@ function TreeView(recorder, document, tree) {
 			}
 		}
 
-		actions.push("openAndWait");
-		actions.push("clickAndWait");
-		actions.push("selectAndWait");
-		actions.push("typeAndWait");
 		actions.push("pause");
 
 		actions.sort();
