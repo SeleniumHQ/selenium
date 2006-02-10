@@ -15,7 +15,9 @@
   <body onload="loadPageBot()">
 		<div id="test1">
 			<input type="button" name="foo" value="bar">
-			<input type="button" name="foo" value="bar" onclick="alert()">
+			<input type="button" name="foo" value="bar" onclick="alert('test')">
+			<input type="button" name="foo" value="bar" onclick="alert(&quot;test2&quot;)">
+			<input type="button" name="foo" value="bar" onclick="alert('test3', &quot;test4&quot;)">
 			<input type="button" name="foo" value="bar">
 		</div>
 		<div id="test2">

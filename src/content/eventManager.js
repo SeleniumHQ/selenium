@@ -197,6 +197,38 @@ function EventManager(listener) {
 EventManager.prototype = {
 	PREFERRED_ATTRIBUTES: ['id','name','value','type','action','href','onclick'],
 	
+	attributeValue: function(value) {
+		if (value.indexOf("'") < 0) {
+			return "'" + value + "'";
+		} else if (value.indexOf('"') < 0) {
+			return '"' + value + '"';
+		} else {
+			var result = 'concat(';
+			while (true) {
+				var apos = value.indexOf("'");
+				var quot = value.indexOf('"');
+				if (apos < 0) {
+					result += "'" + value + "'";
+					break;
+				} else if (quot < 0) {
+					result += '"' + value + '"';
+					break;
+				} else if (quot < apos) {
+					var part = value.substring(0, apos);
+					result += "'" + part + "'";
+					value = value.substring(part.length);
+				} else {
+					var part = value.substring(0, quot);
+					result += '"' + part + '"';
+					value = value.substring(part.length);
+				}
+				result += ',';
+			}
+			result += ')';
+			return result;
+		}
+	},
+	
 	getPageBot: function(window) {
 		var pageBot = window._locator_pageBot;
 		if (pageBot == null) {
@@ -213,7 +245,7 @@ EventManager.prototype = {
 				locator += " and ";
 			}
 			var name = attNames[i];
-			locator += '@' + name + "=\'" + attributes[name].replace(/\"/g, "&quot;") + "\'";
+			locator += '@' + name + "=" + this.attributeValue(attributes[name]);
 		}
 		locator += "]";
 		return locator;
@@ -299,7 +331,7 @@ EventManager.prototype = {
 			for (i = 0; i < nodeList.length; i++) {
 				var node = nodeList[i];
 				if (node.nodeName == 'IMG' && node.alt != '') {
-					return "//a[img/@alt='" + node.alt + "']";
+					return "//a[img/@alt=" + this.attributeValue(node.alt) + "]";
 				}
 			}
 			var text = e.textContent;

@@ -2,12 +2,21 @@ function setUp() {
 	this.eventManager = new EventManager(this);
 }
 
+function testAttributeValue() {
+	assertEquals("'abc'", this.eventManager.attributeValue('abc'));
+	assertEquals("'ab\"c'", this.eventManager.attributeValue('ab"c'));
+	assertEquals("\"ab'c\"", this.eventManager.attributeValue("ab'c"));
+	assertEquals('concat(\'He said, "Don\',"\'t do that.",\'".\')', this.eventManager.attributeValue('He said, "Don\'t do that.".'));
+}
+
 function testAttributesXPathLocator() {
 	var elements = document.getElementById("test1").getElementsByTagName("input");
 	var pageBot = eventManager.getPageBot(window);
 	assertEquals("//input[@name='foo']", eventManager.getAttributesXPathLocator(elements[0], pageBot));
-	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick='alert()']", eventManager.getAttributesXPathLocator(elements[1], pageBot));
-	assertNull(eventManager.getAttributesXPathLocator(elements[2], pageBot));
+	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick=\"alert(\'test\')\"]", eventManager.getAttributesXPathLocator(elements[1], pageBot));
+	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick=\'alert(\"test2\")\']", eventManager.getAttributesXPathLocator(elements[2], pageBot));
+	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick=concat(\"alert('test3'\, \",'\"test4\")')]", eventManager.getAttributesXPathLocator(elements[3], pageBot));
+	assertNull(eventManager.getAttributesXPathLocator(elements[4], pageBot));
 }
 
 function testPositionXPathLocator() {
