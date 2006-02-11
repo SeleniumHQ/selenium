@@ -15,6 +15,7 @@
  */
 
 function Debugger() {
+	this.log = new Log("Debugger");
 	var self = this;
 	
 	this.init = function() {
@@ -23,6 +24,7 @@ function Debugger() {
 			return;
 		}
 		
+		this.log.debug("init");
 		this.paused = false;
 		this.runner = new Object();
 
@@ -45,6 +47,7 @@ function Debugger() {
 
 		this.runner.getInterval = function() {
 			if (self.runner.testCase.debugContext.currentCommand().breakpoint) {
+				self.paused = true;
 				return -1;
 			} else if (self.paused) {
 				return -1;
@@ -58,6 +61,8 @@ function Debugger() {
 Debugger.prototype.start = function() {
 	document.getElementById("record-button").checked = false;
 	toggleRecordingEnabled(false);
+
+	this.log.debug("start");
 
 	this.init();
 	this.paused = false;
@@ -73,6 +78,7 @@ Debugger.prototype.executeCommand = function(command) {
 };
 
 Debugger.prototype.pause = function() {
+	this.log.debug("pause");
 	this.paused = true;
 }
 
@@ -80,6 +86,7 @@ Debugger.prototype.doContinue = function(pause) {
 	document.getElementById("record-button").checked = false;
 	toggleRecordingEnabled(false);
 
+	this.log.debug("doContinue: pause=" + pause);
 	this.init();
 	if (!pause) this.paused = false;
 	if (this.runner.resume) {
