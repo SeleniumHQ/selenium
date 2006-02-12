@@ -97,7 +97,7 @@ SeleniumIDE.checks = {
 					result.target = "(Unavailable: Table must have an id declared)";
 				} else {
 					result.target = tableName + '.' + element.parentNode.rowIndex + '.' + element.cellIndex;
-					result.value = SeleniumIDE.getRecorderWindow().exactMatchPattern(element.innerHTML);
+					result.value = SeleniumIDE.getRecorderWindow().exactMatchPattern(element.innerHTML.replace(/^\s*(.*?)\s*$/, "$1"));
 				}
 			}
 		} else {
