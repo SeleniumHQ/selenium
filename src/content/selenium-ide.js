@@ -104,6 +104,8 @@ function init() {
 		
 		document.commandDispatcher.updateCommands("selenium-ide-state");
 		log.info("initialized");
+
+		setTimeout("afterInit()", 500);
 	}
 }
 
@@ -115,6 +117,10 @@ function updateSeleniumCommands() {
 }
 
 function afterInit() {
+	if (this.errorMessage) {
+		window.alert(this.errorMessage);
+		delete this.errorMessage;
+	}
 }
 
 function setState(state) {
@@ -418,4 +424,9 @@ function selectFormatFromMenu() {
 			break;
 		}
 	}
+}
+
+function showAlert(message) {
+	this.errorMessage = message;
+	//	window.alert(message);
 }

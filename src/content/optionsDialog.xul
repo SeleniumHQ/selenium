@@ -53,6 +53,7 @@ limitations under the License.
       <separator class="thin"/>
       
       <description>&options.userExtensionsURL.description;</description>
+      <description>&options.userExtensionsURL.description2;</description>
       <hbox align="center">
 	<textbox id="userExtensionsURL" multiline="false" flex="1"/>
 	<button label="Browse..." oncommand="chooseUserExtensionsURL()"/>

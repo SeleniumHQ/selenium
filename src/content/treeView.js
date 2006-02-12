@@ -146,7 +146,11 @@ function TreeView(recorder, document, tree) {
 		
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-api.js', scope);
 		if (recorder.options.userExtensionsURL) {
-			subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, scope);
+			try {
+				subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, scope);
+			} catch (error) {
+				this.recorder.showAlert("Failed to load user-extensions.js!\nfile=" + recorder.options.userExtensionsURL + "\nerror=" + error);
+			}
 		}
 
 		var waitActions = 

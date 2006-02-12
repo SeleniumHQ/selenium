@@ -36,7 +36,11 @@ function Debugger() {
 		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-logging.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-api.js', this.runner);
 		if (recorder.options.userExtensionsURL) {
-			subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, this.runner);
+			try {
+				subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, this.runner);
+			} catch (error) {
+				this.log.error("error loading user-extensions.js: " + error);
+			}
 		}
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-commandhandlers.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-executionloop.js', this.runner);
