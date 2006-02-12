@@ -94,7 +94,7 @@ SeleniumIDE.checks = {
 				}
 				if (!tableName) {
 					result.disabled = true;
-					result.target = "(Unavailable: Table must have an id or name declared)";
+					result.target = "(Unavailable: Table must have an id declared)";
 				} else {
 					result.target = tableName + '.' + element.parentNode.rowIndex + '.' + element.cellIndex;
 					result.value = element.innerHTML;
