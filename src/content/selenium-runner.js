@@ -122,7 +122,7 @@ stopping = false;
 
 function stopAndDo(func, arg1, arg2) {
 	if (testLoop && recorder.state != 'paused') {
-		LOG.debug("stopping...");
+		LOG.debug("stopping... (state=" + recorder.state + ")");
 		stopping = true;
 		setTimeout(func, 500, arg1, arg2);
 		return false;

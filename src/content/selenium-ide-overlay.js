@@ -47,7 +47,7 @@ SeleniumIDE.checks = {
 	title: function(window, element) {
 		var result = { name: "Title" };
 		if (window.document) {
-			result.target = window.document.title;
+			result.target = SeleniumIDE.getRecorderWindow().exactMatchPattern(window.document.title);
 		} else {
 			result.disabled = true;
 		}
@@ -64,7 +64,7 @@ SeleniumIDE.checks = {
 				(type == 'checkbox' || type == 'radio')) {
 				result.value = element.checked ? 'on' : 'off';
 			} else {
-				result.value = element.getAttribute('value');
+				result.value = SeleniumIDE.getRecorderWindow().exactMatchPattern(element.getAttribute('value'));
 			}
 		} else {
 			result.disabled = true;
@@ -97,7 +97,7 @@ SeleniumIDE.checks = {
 					result.target = "(Unavailable: Table must have an id declared)";
 				} else {
 					result.target = tableName + '.' + element.parentNode.rowIndex + '.' + element.cellIndex;
-					result.value = element.innerHTML;
+					result.value = SeleniumIDE.getRecorderWindow().exactMatchPattern(element.innerHTML);
 				}
 			}
 		} else {
