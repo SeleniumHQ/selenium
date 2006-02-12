@@ -33,9 +33,21 @@ function testPositionXPathLocator() {
 
 function testLinkXPathLocator() {
 	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
-	assertEquals("//a[contains(text(),'Yahoo')]", eventManager.getLinkXPathLocator(yahoo, pageBot));
+	assertLocator("//a[contains(text(),'Yahoo')]", eventManager.getLinkXPathLocator(yahoo, pageBot), yahoo);
 	var yahoo2 = document.getElementById("test2").getElementsByTagName("a")[2];
-	assertEquals("//a[img/@alt='test']", eventManager.getLinkXPathLocator(yahoo2, pageBot));
+	assertLocator("//a[img/@alt='test']", eventManager.getLinkXPathLocator(yahoo2, pageBot), yahoo2);
+}
+
+function testLinkLocator() {
+	var google = document.getElementById("test2").getElementsByTagName("a")[0];
+	assertLocator("link=exact:Google:Google", eventManager.getLinkLocator(google, pageBot), google);
+	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
+	assertLocator("link=Yahoo", eventManager.getLinkLocator(yahoo, pageBot), yahoo);
+}
+
+function assertLocator(expected, locator, element) {
+	assertEquals(expected, locator);
+	assertEquals(pageBot.findElement(locator), element);
 }
 
 function loadPageBot() {

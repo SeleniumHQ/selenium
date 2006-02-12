@@ -277,14 +277,6 @@ function onUnloadDocument(doc) {
 	this.unloadTimeoutID = setTimeout("appendAND_WAIT()", 100);
 }
 
-function exactMatchPattern(string) {
-	if (string != null && (string.match(/^\w*:/) || string.indexOf('?') >= 0 || string.indexOf('*') >= 0)) {
-		return "exact:" + string;
-	} else {
-		return string;
-	}
-}
-
 function recordTitle(window) {
 	if (this.options.recordAssertTitle == 'true' && this.testCase.commands.length > 0) {
 		//setTimeout("addCommand", 200, "assertTitle", window.document.title, null, window);

@@ -73,3 +73,11 @@ function getOptionValue(name, defaultValue) {
 		return defaultValue;
 	}
 }
+
+function exactMatchPattern(string) {
+	if (string != null && (string.match(/^\w*:/) || string.indexOf('?') >= 0 || string.indexOf('*') >= 0)) {
+		return "exact:" + string;
+	} else {
+		return string;
+	}
+}

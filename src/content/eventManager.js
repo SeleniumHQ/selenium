@@ -346,7 +346,7 @@ EventManager.prototype = {
 		if (e.nodeName == 'A') {
 			var text = e.textContent;
 			if (!text.match(/^\s*$/)) {
-				return "link=" + e.textContent;
+				return "link=" + exactMatchPattern(text.replace(/^\s*(.*?)\s*$/, "$1"));
 			}
 		}
 		return null;
