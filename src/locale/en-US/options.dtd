@@ -1,4 +1,5 @@
 <!ENTITY options.encoding.description "Encoding for loading and saving files">
 <!ENTITY options.userExtensionsURL.description "Location for user-extensions.js">
+<!ENTITY options.userExtensionsURL.description2 "(Close and reopen Selenium IDE window to make changes effect)">
 <!ENTITY options.rememberBaseURL.description "Remember base URL">
 <!ENTITY options.recordAssertTitle.description "Record assertTitle automatically">
