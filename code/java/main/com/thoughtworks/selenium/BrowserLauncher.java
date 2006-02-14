@@ -18,10 +18,14 @@
 package com.thoughtworks.selenium;
 
 /**
+ * The launcher interface for classes that will start/stop the browser process.
+ * 
  * @author Paul Hammant
  * @version $Revision$
  */
 public interface BrowserLauncher {
+    /** Start the browser and navigate directly to the specified URL */
     void launch(String url);
+    /** Stop (kill) the browser process */
     void close();
 }

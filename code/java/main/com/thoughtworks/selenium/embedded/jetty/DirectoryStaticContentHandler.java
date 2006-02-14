@@ -27,16 +27,22 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Exposes a directory containing static content (eg HTML, images, JavaScript) in the Jetty server.
  * @author Paul Hammant
  * @version $Revision$
  */
 public class DirectoryStaticContentHandler implements StaticContentHandler {
     private File directory;
 
+    /**
+     * Specifies a directory to expose
+     * @param directory the directory containing static content (eg HTML, images, JavaScript) to be exposed
+     */
     public DirectoryStaticContentHandler(File directory) {
         this.directory = directory;
     }
 
+    /** Exposes the specified directory in the Jetty server */ 
     public void addStaticContent(ServletHttpContext context) {
         context.setResourceBase(directory.getAbsolutePath());
         context.addHandler(new ResourceHandler() {

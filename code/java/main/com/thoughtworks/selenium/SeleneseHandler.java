@@ -20,9 +20,23 @@ package com.thoughtworks.selenium;
 import com.thoughtworks.selenium.SeleneseCommand;
 
 /**
+ * Defines a <code>handleCommandResult</code> method that accepts a command reply,
+ * and retrieves the next command to run.
+ * 
+ * <p>If you implement this class, you are strongly encouraged to use the standard
+ * <code>SeleneseQueue</code> object to manage your command queue.</p>
+ *
+ * @see com.thoughtworks.selenium.SeleneseQueue
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public interface SeleneseHandler {
+    /**
+     * Accepts a command reply, and retrieves the next command to run.
+     * 
+     * 
+     * @param commandReply - the reply from the previous command, or null if this is the first command
+     * @return - the next command to run
+     */
     SeleneseCommand handleCommandResult(String commandReply);
 }

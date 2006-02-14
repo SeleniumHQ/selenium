@@ -30,6 +30,18 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 /**
+ * Handles command requests by sending Java Remote Method Invocation (RMI) requests to a RemoteSeleneseHandler
+ * (implemented by RmiCommandProcessor's RemoteSeleneseHandlerImpl).
+ * 
+ * <p><img src="http://www.openqa.org/selenium/images/rmiservlet.png"/></p>
+ * 
+ * <p>In this scenario, the browser initiates the first request to the SeleneseRMIProxyServlet,
+ * who in turn issues an RMI call to an RMI server running the Selenium RmiCommandProcessor.
+ * The output of the RMI call is the next command to run, which is sent back to the browser.
+ * </p>
+ *
+ * @see com.thoughtworks.selenium.servlet.RmiCommandProcessor
+ * @see com.thoughtworks.selenium.outbedded.CommandBridge
  * @author Paul Hammant
  * @version $Revision$
  */

@@ -24,16 +24,23 @@ import com.thoughtworks.selenium.SeleneseHandler;
 import java.rmi.RemoteException;
 
 /**
+ * A simple wrapper around an RMI <code>RemoteSeleneseHandler</code> object.
+ * @see com.thoughtworks.selenium.servlet.RemoteSeleneseHandler
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class RmiAdapterSeleneseHandler implements SeleneseHandler {
     private RemoteSeleneseHandler remoteSeleneseHandler;
 
+    /** Specifies the RemoteSeleneseHandler to use */
     public RmiAdapterSeleneseHandler(RemoteSeleneseHandler remoteSeleneseHandler) {
         this.remoteSeleneseHandler = remoteSeleneseHandler;
     }
 
+    /** Delegates to RemoteSeleneseHandler.handleCommandResult(String)
+     * @see RemoteSeleneseHandler#handleCommandResult(String)
+     * @see SeleneseHandler#handleCommandResult(String)
+     */
     public SeleneseCommand handleCommandResult(String commandReply) {
         try {
             return remoteSeleneseHandler.handleCommandResult(commandReply);

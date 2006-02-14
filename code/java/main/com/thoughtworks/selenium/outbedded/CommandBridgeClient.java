@@ -29,14 +29,15 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 /**
- * Sends and retrieves results of commands sent over HTTP to CommandBridge
- * Created 14:05:20 10-Jan-2005
+ * Sends and retrieves results of commands sent over HTTP to CommandBridge servlet.
+ * @see com.thoughtworks.selenium.outbedded.CommandBridge
  * @author Ben Griffiths, Jez Humble
  */
 public class CommandBridgeClient implements CommandProcessor {
 
     private String pathToServlet;
 
+    /** Specifies the URL to the CommandBridge servlet */
     public CommandBridgeClient(String pathToServlet) {
         this.pathToServlet = pathToServlet;
     }
@@ -46,12 +47,15 @@ public class CommandBridgeClient implements CommandProcessor {
         return executeCommandOnServlet(command.getCommandString());
     }
 
+    /** Does nothing */
     public void start() {
     }
 
+    /** Does nothing */
     public void stop() {
     }
 
+    /** Sends the specified command string to the bridge servlet */  
     public String executeCommandOnServlet(String command) {
         InputStream is = null;
         try {

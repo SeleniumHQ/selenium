@@ -23,6 +23,7 @@ import com.thoughtworks.selenium.SeleniumException;
 import java.io.IOException;
 
 /**
+ * "/Applications/OmniWeb.app/Contents/MacOS/OmniWeb -StartPage"
  * @author Paul Hammant
  * @version $Revision: 193 $
  */

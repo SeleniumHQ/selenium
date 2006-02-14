@@ -28,8 +28,11 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
+ * A Selenium command processor that handles requests over RMI.
+ * 
+ * @see com.thoughtworks.selenium.servlet.SeleneseRMIProxyServlet
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class RmiCommandProcessor implements CommandProcessor {
 
@@ -38,10 +41,12 @@ public class RmiCommandProcessor implements CommandProcessor {
 
     int port;
 
+    /** Specifies the port on which we'll start the RMI server */
     public RmiCommandProcessor(int port) {
         this.port = port;
     }
 
+    /** Uses default port 9876 */
     public RmiCommandProcessor() {
         port = 9876;
     }
@@ -50,6 +55,7 @@ public class RmiCommandProcessor implements CommandProcessor {
         return seleneseQueue.doCommand(command, field, value);
     }
 
+    /** Starts the RMI server */
     public void start() {
         try {
             registry = LocateRegistry.createRegistry(port);
@@ -59,6 +65,7 @@ public class RmiCommandProcessor implements CommandProcessor {
         }
     }
 
+    /** Stops the RMI server */
     public void stop() {
         try {
             registry.unbind(RemoteSeleneseHandler.class.getName());

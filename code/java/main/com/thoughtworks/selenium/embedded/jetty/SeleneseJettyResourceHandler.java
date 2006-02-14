@@ -34,6 +34,7 @@ import java.io.Writer;
 import java.util.List;
 
 /**
+ * The Jetty class that actually handles Selenese GET requests.
  * @author Paul Hammant
  * @version $Revision$
  */
@@ -41,6 +42,10 @@ public class SeleneseJettyResourceHandler extends ResourceHandler {
 
     private SeleneseQueue seleneseQueue = new SeleneseQueue();
 
+    /** Provides implementation for <code>JettyCommandProcessor.doCommand</code>
+     * 
+     * @see JettyCommandProcessor#doCommand(String, String, String)
+     */
     public String doCommand(String command, String field, String value) {
         return seleneseQueue.doCommand(command, field, value);
     }
@@ -53,6 +58,9 @@ public class SeleneseJettyResourceHandler extends ResourceHandler {
         return (String) parameterValues.get(0);
     }
 
+    /** Handles the Jetty request, by accepting the previous command's result (if any)
+     * and sending along the next command to run
+     */
     public void handle(String s, String s1, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         res.setField(HttpFields.__ContentType, "text/plain");
         setNoCacheHeaders(res); 

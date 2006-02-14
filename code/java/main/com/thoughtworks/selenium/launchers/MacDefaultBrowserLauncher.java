@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.BrowserLauncher;
 import java.io.IOException;
 
 /**
+ * "open"
  * @author Paul Hammant
  * @version $Revision$
  */

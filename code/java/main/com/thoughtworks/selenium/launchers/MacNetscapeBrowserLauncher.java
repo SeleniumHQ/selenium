@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.BrowserLauncher;
 import java.io.IOException;
 
 /**
+ * "/Applications/Netscape.app/Contents/MacOS/mozilla-bin"
  * @author Paul Hammant
  * @version $Revision: 193 $
  */

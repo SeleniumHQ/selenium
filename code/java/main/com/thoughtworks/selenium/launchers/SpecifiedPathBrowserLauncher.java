@@ -17,16 +17,17 @@
 
 package com.thoughtworks.selenium.launchers;
 
-import com.thoughtworks.selenium.BrowserLauncher;
-
-import java.io.IOException;
 
 /**
+ * An ultra-thin wrapper around <code>DestroyableRuntimeExecutingBrowserLauncher</code>
+ * 
+ * @see com.thoughtworks.selenium.launchers.DestroyableRuntimeExecutingBrowserLauncher
  * @author Paul Hammant
  * @version $Revision$
  */
 public class SpecifiedPathBrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
+    /** Specifies a command path to run */
     public SpecifiedPathBrowserLauncher(String browserPath) {
         super(browserPath);
     }

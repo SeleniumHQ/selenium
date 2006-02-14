@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.BrowserLauncher;
 import java.io.IOException;
 
 /**
+ * "/Applications/SeaMonkey.app/Contents/MacOS/seamonkey -P default"
  * @author Paul Hammant
  * @version $Revision: 193 $
  */

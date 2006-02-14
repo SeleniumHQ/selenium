@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.launchers;
 
 /**
+ * "konqueror"
  * @author Chris Read
  * @version $Revision$
  */

@@ -6,6 +6,7 @@ import com.thoughtworks.selenium.SeleniumException;
 import java.io.IOException;
 
 /**
+ * An abstract class to launch the specified command path
  * @author Paul Hammant
  * @version $Revision: 1.8 $
  */
@@ -14,6 +15,7 @@ public abstract class RuntimeExecutingBrowserLauncher implements BrowserLauncher
     protected Process process;
     private String commandPath;
 
+    /** Specifies a command path to run */
     protected RuntimeExecutingBrowserLauncher(String commandPath) {
         this.commandPath = commandPath;
     }

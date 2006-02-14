@@ -22,8 +22,7 @@ import com.thoughtworks.selenium.CommandProcessor;
 import java.io.File;
 
 /**
- * A servlet container to which selenium and app under test can be deployed
- * Created 15:51:15 10-Jan-2005
+ * An abstract class representing a servlet container to which selenium and app under test can be deployed
  * @author Ben Griffiths
  */
 public abstract class ServletContainer {
@@ -35,12 +34,24 @@ public abstract class ServletContainer {
     protected String driverPath = "driver";
     private static final String ROOT_CONTEXT = "";
 
+    /** Deploys the specified webapp at the specified context path
+     * 
+     * @param webAppRoot the root webapp that will be served
+     * @param contextpath the name of the virtual (context) directory
+     */
     public abstract void installWebApp(File webAppRoot, String contextpath);
 
+    /** Starts the servlet server and returns a CommandProcessor configured to
+     * send commands to the CommandBridge driver
+     * @return a CommandProcessor configured to
+     * send commands to the CommandBridge
+     */
     public abstract CommandProcessor start();
 
+    /** Stops the servlet server */
     public abstract void stop();
 
+    /** Constructs an URL pointing to the CommandBridge driver */
     protected String buildDriverURL() {
         return protocol + domain + ":" + port + "/" + seleniumContext + "/" + driverPath;
     }

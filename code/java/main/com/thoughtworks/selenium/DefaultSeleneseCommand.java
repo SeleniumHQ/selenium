@@ -20,6 +20,9 @@ package com.thoughtworks.selenium;
 import com.thoughtworks.selenium.utils.Assert;
 
 /**
+ * The default implementation of the SeleneseCommand interface
+ * 
+ * @see com.thoughtworks.selenium.SeleneseCommand
  * @author Paul Hammant
  * @version $Revision$
  */
@@ -44,6 +47,7 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         return "|" + command + "|" + field + "|" + value + "|";
     }
 
+    /** Factory method to create a SeleneseCommand from a wiki-style input string */
     public static SeleneseCommand parse(String inputLine) {
         Assert.assertIsTrue(inputLine != null, "inputLine can't be null");
         String[] values = inputLine.split("\\|");

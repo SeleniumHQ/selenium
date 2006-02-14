@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Constructs an embedded Jetty server to drive Selenium; <i>end users should primarily interact with this object</i>.
  * @author Paul Hammant
  * @version $Revision$
  */
@@ -40,10 +41,24 @@ public class JettyCommandProcessor implements CommandProcessor {
     private SeleneseJettyResourceHandler seleneseJettyResourceHandler;
     private static final int PORT = 8080;
 
+    /** 
+     * Specifies the webapp and context directory to expose, but exposes
+     * no static content
+     * @param webAppRoot the root webapp that will be served by Jetty
+     * @param seleniumContext the name of the virtual (context) directory 
+     */
     public JettyCommandProcessor(File webAppRoot, String seleniumContext) {
         this(webAppRoot, seleniumContext, new NullStaticContentHandler());
     }
 
+    /** 
+     * Specifies the webapp, context directory, and static content to be exposed
+     * @param webAppRoot the root webapp that will be served by Jetty
+     * @param seleniumContext the name of the virtual (context) directory 
+     * @param staticContentHandler the static content handler used to expose images and JavaScript using Jetty
+     * 
+     * @see StaticContentHandler interface and objects that implement it 
+     */
     public JettyCommandProcessor(File webAppRoot, String seleniumContext, StaticContentHandler staticContentHandler) {
 
         configureServer();
@@ -92,7 +107,6 @@ public class JettyCommandProcessor implements CommandProcessor {
             }
         });
     }
-
 
     public String doCommand(String command, String field, String value) {
         return seleneseJettyResourceHandler.doCommand(command, field, value);

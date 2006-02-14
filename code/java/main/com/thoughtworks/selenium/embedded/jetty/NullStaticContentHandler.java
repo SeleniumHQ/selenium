@@ -20,10 +20,12 @@ package com.thoughtworks.selenium.embedded.jetty;
 import org.mortbay.jetty.servlet.ServletHttpContext;
 
 /**
+ * A do-nothing stub that exposes no static content (eg HTML, images, JavaScript) in the Jetty server.
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class NullStaticContentHandler implements StaticContentHandler {
+    /** Does nothing! */
     public void addStaticContent(ServletHttpContext context) {
     }
 }

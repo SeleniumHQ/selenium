@@ -19,6 +19,7 @@ package com.thoughtworks.selenium.launchers;
 
 
 /**
+ * "mozilla"
  * @author Jez Humble
  * @version $Revision$
  */

@@ -17,8 +17,10 @@
 package com.thoughtworks.selenium;
 
 /**
+ * Thrown when a Selenium command fails.
+ * 
  * @author Aslak Helles&oslash;y
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class SeleniumException extends RuntimeException {
     public SeleniumException(String message) {
