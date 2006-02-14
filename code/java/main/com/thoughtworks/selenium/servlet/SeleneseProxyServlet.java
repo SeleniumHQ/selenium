@@ -24,6 +24,21 @@ import javax.servlet.ServletContext;
 import java.io.Writer;
 
 /**
+ * Handles command requests by passing them off to a remote Selenium Server.
+ * 
+ * <p>Unlike the outbedded <code>CommandBridge</code>, the SeleneseProxyServlet initiates
+ * HTTP requests to a remote Selenium server, acting as if it were the browser.</p>
+ * 
+ * <p><img src="http://www.openqa.org/selenium/images/proxyservlet.png"/></p>
+ * 
+ * <p>In this scenario, the browser initiates the first request to the SeleneseProxyServlet,
+ * who in turn issues a request to a remote Selenium Server (e.g. an embedded Jetty, an
+ * outbedded CommandBridge, or even another SeleneseProxyServlet).  The remote server's
+ * response is, in turn, written directly back to the browser.
+ * </p>
+ *
+ * @see com.thoughtworks.selenium.servlet.SeleneseProxy
+ * @see com.thoughtworks.selenium.outbedded.CommandBridge
  * @author Paul Hammant
  * @version $Revision$
  */

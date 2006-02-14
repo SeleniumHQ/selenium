@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.launchers;
 
 /**
+ * "netscape"
  * @author Chris Read
  * @version $Revision$
  */

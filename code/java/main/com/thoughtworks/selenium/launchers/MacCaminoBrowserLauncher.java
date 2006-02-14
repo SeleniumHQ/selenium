@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.BrowserLauncher;
 import java.io.IOException;
 
 /**
+ * "/Applications/Camino.app/Contents/MacOS/Camino -url"
  * @author Paul Hammant
  * @version $Revision: 193 $
  */

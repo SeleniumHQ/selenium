@@ -20,6 +20,11 @@ package com.thoughtworks.selenium.launchers;
 import com.thoughtworks.selenium.BrowserLauncher;
 
 /**
+ * Delegates launching the browser to the OS default browser launcher
+ * @see com.thoughtworks.selenium.launchers.WindowsDefaultBrowserLauncher
+ * @see com.thoughtworks.selenium.launchers.UnixDefaultBrowserLauncher
+ * @see com.thoughtworks.selenium.launchers.MacDefaultBrowserLauncher
+ * @see com.thoughtworks.selenium.launchers.DefaultBrowserLauncher 
  * @author Paul Hammant
  * @version $Revision: 1.8 $
  */

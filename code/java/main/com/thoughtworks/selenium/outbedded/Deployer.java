@@ -19,7 +19,6 @@ package com.thoughtworks.selenium.outbedded;
 
 /**
  * Deploys selenium and app under test to servlet container
- * Created 11:40:16 11-Jan-2005
  * @author Ben Griffiths, Jez Humble
 */
 public interface Deployer {

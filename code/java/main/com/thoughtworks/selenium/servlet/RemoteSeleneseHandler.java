@@ -23,12 +23,16 @@ import java.rmi.RemoteException;
 import java.rmi.Remote;
 
 /**
+ * An RMI object that can handle Selenese commands.
+ * 
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public interface RemoteSeleneseHandler extends Remote {
 
+    /** Retrieve the first Selenese command from the queue */
     SeleneseCommand handleStart() throws RemoteException;
+    /** Handle the previous Selenese response and retrieve the next Selenese command from the queue */
     SeleneseCommand handleCommandResult(String commandResult) throws RemoteException;
 
 }

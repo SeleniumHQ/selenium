@@ -22,6 +22,10 @@ import com.thoughtworks.selenium.BrowserLauncher;
 import java.io.IOException;
 
 /**
+ * Runs the browser launcher specified in the <code>selenium-browser-path</code> Java System property,
+ * or runs the SystemDefaultBrowserLauncher if no property was specified
+ * 
+ * @see System#getProperties()
  * @author Paul Hammant
  * @version $Revision$
  */

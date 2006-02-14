@@ -3,6 +3,10 @@ package com.thoughtworks.selenium.launchers;
 import com.thoughtworks.selenium.BrowserLauncher;
 
 /**
+ * This class launches the browser using <a href="http://jrex.mozdev.org/">JRex</a>,
+ * a Java Browser Component a set of API's for Embedding Mozilla Gecko within a
+ * Java Application.
+ * @deprecated This class does nothing, because its body is commented out.
  * @author Paul Hammant
  * @version $Revision: 1.8 $
  */

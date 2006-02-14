@@ -20,9 +20,14 @@ package com.thoughtworks.selenium.embedded.jetty;
 import org.mortbay.jetty.servlet.ServletHttpContext;
 
 /**
+ * Exposes static content (eg HTML, images, JavaScript) in the Jetty server.
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public interface StaticContentHandler {
+    /** 
+     * Exposes the static content in the specified virtual (context) directory
+     * @param context the virtual (context) directory at which the static content will appear on the web server
+     */
     void addStaticContent(ServletHttpContext context);
 }

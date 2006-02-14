@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.launchers;
 
 /**
+ * "firefox"
  * @author Chris Read
  * @version $Revision$
  */

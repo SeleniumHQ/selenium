@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.BrowserLauncher;
 import java.io.IOException;
 
 /**
+ * "open -a /Applications/Firefox.app"
  * @author Paul Hammant
  * @version $Revision: 193 $
  */

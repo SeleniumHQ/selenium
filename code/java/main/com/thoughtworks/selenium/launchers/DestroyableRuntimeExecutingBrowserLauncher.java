@@ -18,11 +18,13 @@
 package com.thoughtworks.selenium.launchers;
 
 /**
+ * Runs the specified command path to start the browser, and kills the process to quit.
  * @author Paul Hammant
  * @version $Revision: 189 $
  */
 public class DestroyableRuntimeExecutingBrowserLauncher extends RuntimeExecutingBrowserLauncher {
 
+    /** Specifies a command path to run */
     public DestroyableRuntimeExecutingBrowserLauncher(String commandPath) {
         super(commandPath);
     }

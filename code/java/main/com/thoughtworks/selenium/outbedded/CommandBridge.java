@@ -32,8 +32,29 @@ import com.thoughtworks.selenium.SeleneseCommand;
 import com.thoughtworks.selenium.SeleneseQueue;
 
 /**
- * Bridges HTTP commandRequests (presumably from external tests)
- * and HTTP commandResults (presumably from selenium javascript running in browser)
+ * <p>HTTPServlet that "Bridges" HTTP commandRequests (presumably from external tests)
+ * and HTTP commandResults (presumably from selenium javascript running in browser).</p>
+ * <p>Unlike the <code>SeleneseProxyServlet</code>, the CommandBridge does not
+ * <i>initiate</i> HTTP requests; instead, it waits for requests from the browser
+ * and from the <code>CommandBridgeClient</code>.</p>
+ * 
+ * <p><img src="http://www.openqa.org/selenium/images/bridge.png"/></p>
+ * 
+ * <p>In the first request, the CommandBridgeClient sends a command to the CommandBridge,
+ * adding the "commandResult" parameter to the HTTP request.
+ * In the second request, the browser asks the CommandBridge for a command to run.
+ * In the third request, the browser reports the results of the previous command and
+ * asks for the next command.  Only then does the CommandBridge reply to the
+ * first request from the CommandBridgeClient, reporting on the results of that
+ * command.</p>
+ * 
+ * <p><b>Note</b>: This is not the only way to run Selenium in an Adjacent web server.
+ * You can also use the <code>SeleneseProxyServlet</code> or <code>SeleneseRMIProxyServlet</code>
+ * to handle requests.
+ * 
+ * @see com.thoughtworks.selenium.outbedded.CommandBridgeClient
+ * @see com.thoughtworks.selenium.servlet.SeleneseProxyServlet
+ * @see com.thoughtworks.selenium.servlet.SeleneseRMIProxyServlet
  * @author Ben Griffiths, Jez Humble
  */
 public class CommandBridge extends HttpServlet {
@@ -44,6 +65,7 @@ public class CommandBridge extends HttpServlet {
     public void init() {
     }
 
+    /** Handles the HTTP request */
      public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         String commandRequest = request.getParameter("commandRequest");
         if (commandRequest == null) {

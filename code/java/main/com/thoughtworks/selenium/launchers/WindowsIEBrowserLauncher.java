@@ -23,6 +23,8 @@ import com.jacob.com.Variant;
 import com.thoughtworks.selenium.BrowserLauncher;
 
 /**
+ * Uses the <a href="http://danadler.com/jacob/">JACOB</a> Java-COM bridge to invoke
+ * the Microsoft COM InternetExplorer automation object using JNI.
  * @author Paul Hammant
  * @version $Revision$
  */
@@ -39,6 +41,7 @@ public class WindowsIEBrowserLauncher implements BrowserLauncher {
         Dispatch.call(ieObject, "Navigate", new Variant(url));
     }
 
+    /** Stops IE by sending a quit COM command; but if the browser is busy it may not notice! */ 
     public void close() {
         explorer.invoke("Quit", new Variant[]{});
     }

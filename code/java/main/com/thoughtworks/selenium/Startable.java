@@ -18,8 +18,9 @@
 package com.thoughtworks.selenium;
 
 /**
+ * Defines a class that can be started and stopped.
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public interface Startable {
     void start();

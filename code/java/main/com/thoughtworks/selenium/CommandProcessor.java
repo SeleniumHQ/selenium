@@ -18,11 +18,33 @@
 package com.thoughtworks.selenium;
 
 /**
+ * <p>Provides a <code>doCommand</code> method, which sends the command to the browser
+ * to be performed, normally by implementing some kind of server.</p>
+ *  
+ * <p>If you implement this class, you are strongly encouraged to use the standard
+ * <code>SeleneseQueue</code> object to manage your command queue.</p>
+ *
+ * @see com.thoughtworks.selenium.SeleneseQueue
+ *  
  * @author Paul Hammant
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public interface CommandProcessor extends Startable {
 
+    /** Send the specified Selenese command to the browser to be performed
+     * 
+     * @param command - the Selenese command verb
+     * @param field - the first Selenese argument (meaning depends on the verb)
+     * @param value - the second Selenese argument
+     * @return - the command result, defined by the Selenese JavaScript.  "getX" style
+     * commands may return data from the browser; other "doX" style commands may just
+     * return "OK" or an error message.
+     */
     String doCommand(String command, String field, String value);
 
+    /** Starts the server */
+    void start();
+
+    /** Stops the server */
+    void stop();
 }

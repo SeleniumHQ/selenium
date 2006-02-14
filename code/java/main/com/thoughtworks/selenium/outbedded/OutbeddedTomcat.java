@@ -32,12 +32,24 @@ import java.util.*;
 import com.thoughtworks.selenium.CommandProcessor;
 
 /**
- * Tomcat server started in external JVM by Cargo
+ * <p>Starts a Tomcat server in external JVM by Cargo, which creates a fully separate
+ * server.xml instance of Tomcat in the temp directory.</p> 
+ * 
+ * <p>Note that therefore OutbeddedTomcat does <i>not</i> deploy the specified webapp
+ * into the <i>existing</i> Tomcat installation, alongside the current default
+ * webapps.  Instead, it starts up its own private version of Tomcat containing
+ * only the specific webapps you have deployed.</p>
+ * 
  * @author Ben Griffiths
  */
 public class OutbeddedTomcat extends ServletContainer {
     private Container container;
 
+    /** Constructs a new Tomcat instance using the jars (but not the settings)
+     * found in the specified tomcatHome
+     * @param tomcatHome the absolute path of the CATALINA_HOME of Tomcat.  Jars should be in the 
+     * ./server/lib directory relative to this path.
+     */
     public OutbeddedTomcat(String tomcatHome) {
         container = new Tomcat5xContainer();
         container.setHomeDir(new File(tomcatHome));

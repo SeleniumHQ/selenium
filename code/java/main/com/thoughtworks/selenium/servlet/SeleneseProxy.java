@@ -28,6 +28,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 
 /**
+ * Provides the implementation of the <code>SeleneseProxyServlet</code>.
+ * 
+ * @see com.thoughtworks.selenium.servlet.SeleneseProxyServlet for details.
  * @author Paul Hammant
  * @version $Revision$
  */
@@ -36,11 +39,17 @@ public class SeleneseProxy implements SeleneseHandler {
     String host;
     int port;
 
+    /** Specifies the host/port of the remote Selenium server */
     public SeleneseProxy(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
+    /** Initiates a request to the remote Selenium Server on the browser's behalf.
+     * 
+     * @param commandResult - the reply from the previous command, or null if this is the first command
+     * @return - the next command to run
+     */
     public SeleneseCommand handleCommandResult(String commandResult) {
         String spec = "http://" + host + ":" + port + "/selenium-driver/driver?";
 

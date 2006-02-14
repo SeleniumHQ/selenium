@@ -25,6 +25,9 @@ import java.io.File;
 import java.util.StringTokenizer;
 
 /**
+ * The default implementation of the Selenium interface.
+ * 
+ * @see com.thoughtworks.selenium.Selenium
  * @author Paul Hammant
  * @version $Revision$
  */
@@ -35,16 +38,26 @@ public class DefaultSelenium implements Selenium {
 
     public static final String DEFAULT_SELENIUM_CONTEXT = "selenium-driver";
 
+    /** Launches commands using the specified command processor and browser launcher */
     public DefaultSelenium(CommandProcessor commandProcessor, BrowserLauncher launcher) {
         this.commandProcessor = commandProcessor;
         this.launcher = launcher;
     }
 
+    /** Launches commands using the specified browser launcher and the 
+     * JettyCommandProcessor serving the specified root directory. 
+     * @param webAppRoot the root webapp that will be served by Jetty
+     * @param launcher the browser launcher object to control the browser
+     */
     public DefaultSelenium(File webAppRoot, BrowserLauncher launcher) {
         commandProcessor = new JettyCommandProcessor(webAppRoot, getContextName());
         this.launcher = launcher;
     }
 
+    /** Launches commands using the default browser launcher and the 
+     * JettyCommandProcessor serving the specified root directory. 
+     * @param webAppRoot the root webapp that will be served by Jetty
+     */
     public DefaultSelenium(File webAppRoot) {
         commandProcessor = new JettyCommandProcessor(webAppRoot, getContextName(),
                 new DirectoryStaticContentHandler(new File(DEFAULT_SELENIUM_CONTEXT)));

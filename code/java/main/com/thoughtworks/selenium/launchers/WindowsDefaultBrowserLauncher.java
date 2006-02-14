@@ -22,12 +22,17 @@ import com.thoughtworks.selenium.BrowserLauncher;
 import java.io.IOException;
 
 /**
+ * Launches the specified URL using "cmd /c start <i>url</i>".
+ * 
+ * @deprecated The WindowsDefaultBrowserLauncher cannot close the browser once it is launched.
  * @author Paul Hammant
  * @version $Revision$
  */
 public class WindowsDefaultBrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher implements BrowserLauncher {
 
     public WindowsDefaultBrowserLauncher() {
+        // TODO DGF Fix this!
+        // Launching the browser this way means that we can't close it
         super("cmd /c start");
         
     }

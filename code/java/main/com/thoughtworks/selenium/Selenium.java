@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium;
 
 /**
+ * Defines an object that runs Selenium commands; end users should primarily interact with this object.
  * @author Paul Hammant
  * @author Aslak Hellesoy
  * @version $Revision$
@@ -40,6 +41,7 @@ public interface Selenium extends Startable {
     void storeAttribute(String element, String value);
     void storeText(String element, String value);
     void storeValue(String field, String value);
+    /** Instructs the browser that the test is complete and that no more driven commands will arrive */
     void testComplete();
     void type(String field, String value);
     void typeAndWait(String field, String value);
@@ -63,8 +65,17 @@ public interface Selenium extends Startable {
     void verifyValue(String field, String value);
     void verifyVisible(String element);
     void waitForValue(String field, String value);
+    /** Writes a message to the status bar and adds a note to the 
+     * browser-side log. Note that the browser-side logs will <i>not</i>
+     * be sent back to the server, and are invisible to the driver.
+     * @param context the message to be sent to the browser
+     */
     void setContext(String context);
 	String[] getAllButtons();
 	String[] getAllLinks();
 	String[] getAllFields();
+    /** Starts the command processor and launches the browser */
+    void start();
+    /** Kills the browser and stops the command processor */
+    void stop();
 }
