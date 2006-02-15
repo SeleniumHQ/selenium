@@ -46,14 +46,14 @@
 
     <releases>
         <release>
-            <version>0.7</version>
+            <version>0.7.1</version>
 
-            <date>02/05/2006</date>
-            <jiraId>10200</jiraId>
+            <date>02/15/2006</date>
+            <jiraId>10202</jiraId>
             <downloads>
                 <download>
-                    <url>http://www.openqa.org/selenium-ide/releases/selenium-ide-0.7.xpi</url>
-                    <name>Firefox extension (requires Firefox 1.5 or 1.5.0.*)</name>
+                  <url>http://www.openqa.org/selenium-ide/releases/selenium-ide-0.7.1.xpi</url>
+                  <name>Firefox extension (requires Firefox 1.5 or 1.5.0.*)</name>
                 </download>
             </downloads>
         </release>
