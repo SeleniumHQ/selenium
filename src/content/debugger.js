@@ -35,6 +35,9 @@ function Debugger() {
 	    .getService(Components.interfaces.mozIJSSubScriptLoader);
 		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-logging.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-api.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-commandhandlers.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-executionloop.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-browserbot.js', this.runner);
 		if (recorder.options.userExtensionsURL) {
 			try {
 				subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, this.runner);
@@ -42,9 +45,6 @@ function Debugger() {
 				this.log.error("error loading user-extensions.js: " + error);
 			}
 		}
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-commandhandlers.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-executionloop.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-browserbot.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-runner.js', this.runner);
 
 		this.logFrame = new LogFrame(this.runner.LOG);
