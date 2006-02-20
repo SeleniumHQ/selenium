@@ -15,12 +15,13 @@
  */
 
 function SourceView(recorder, textbox) {
+	this.log = new Log("SourceView");
 	this.textbox = textbox;
 	this.recorder = recorder;
 	this.updateView = function() {
 		var scrollTop = this.textbox.inputField.scrollTop;
 		//this.textbox.value = this.testCase.getSource(this.recorder.options, "New Test");
-		this.textbox.value = recorder.testManager.getSourceForTestCase(this.testCase);
+		this.textbox.value = this.lastValue = recorder.testManager.getSourceForTestCase(this.testCase);
 		this.textbox.inputField.scrollTop = scrollTop;
 		//log.debug("source=" + getSource());
 	};
@@ -37,14 +38,16 @@ SourceView.prototype = {
 	rowUpdated: function(index) {
 		this.updateView();
 	},
-	refresh: function(length) {
+	refresh: function() {
 		this.updateView();
 	},
-	updateTestCase: function(text) {
-		this.recorder.testManager.setSource(this.testCase, text);
-		if (this.recorder.view != this) {
-			// refresh view if another tab is selected
-			this.recorder.view.refresh();
+	// synchronize model from view
+	syncModel: function(force) {
+		if ((force || this.recorder.view == this) && this.lastValue != this.textbox.value) {
+			this.log.debug("syncModel");
+			this.recorder.testManager.setSource(this.testCase, this.textbox.value);
+		} else {
+			this.log.debug("skip syncModel");
 		}
 	},
 	onHide: function() {

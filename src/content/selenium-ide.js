@@ -42,7 +42,9 @@ function init() {
 			if (this.view != null) {
 				this.view.onHide();
 			}
+			var previous = this.view;
 			this.view = view;
+			if (previous) previous.syncModel(true);
 			this.view.testCase = this.testCase;
 			this.view.refresh();
 		};
@@ -197,6 +199,7 @@ function tabSelected(id) {
 }
 
 function saveTestCase() {
+	this.view.syncModel();
 	if (this.testManager.save(this.testCase)) {
 		//document.getElementById("filename").value = this.testCase.filename;
 		return true;
@@ -206,6 +209,7 @@ function saveTestCase() {
 }
 
 function saveNewTestCase() {
+	this.view.syncModel();
 	if (this.testManager.saveAsNew(this.testCase)) {
 		//document.getElementById("filename").value = this.testCase.filename;
 		updateTitle();

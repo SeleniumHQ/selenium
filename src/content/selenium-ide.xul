@@ -212,7 +212,7 @@ limitations under the License.
 	  </vbox>
 	</tabpanel>
 	<tabpanel orient="vertical">
-	  <textbox id="source" multiline="true" flex="1" onchange="recorder.sourceView.updateTestCase(this.value)"/>
+	  <textbox id="source" multiline="true" flex="1" onchange="recorder.sourceView.syncModel()"/>
 	</tabpanel>
       </tabpanels>
     </tabbox>

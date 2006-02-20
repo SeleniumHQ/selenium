@@ -234,6 +234,9 @@ TreeView.prototype = {
 		this.newCommand = new Command();
 		log.debug("refresh: new rowCount=" + this.rowCount);
 	},
+	// synchronize model from view
+	syncModel: function(force) {
+	},
 	// called when the command is selected in the tree view
 	selectCommand: function() {
 		if (this.tree.currentIndex >= 0) {
