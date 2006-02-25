@@ -1,0 +1,8 @@
+<!ENTITY newTestCmd.label "Nouveau test">
+<!ENTITY openCmd.label "Ouvrir...">
+<!ENTITY saveTestCmd.label "Sauver le test">
+<!ENTITY saveTestAsCmd.label "Sauver le test sous...">
+<!ENTITY optionsCmd.label "Options...">
+<!ENTITY formatCmd.label "Format">
+
+<!ENTITY baseURLTextbox.tooltip "URL racine utilis&#233;e pour l'ex&#233;cution dans Selenium embarqu&#233;.">

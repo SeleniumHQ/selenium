@@ -1,0 +1,5 @@
+<!ENTITY options.encoding.description "Format de codage pour le chargement et la sauvegarde de fichiers">
+<!ENTITY options.userExtensionsURL.description "R&#233;pertoire contenant user-extensions.js">
+<!ENTITY options.userExtensionsURL.description2 "(Fermez et r&#233;-ouvrez la fen&#234;tre de Selenium IDE pour que les chagements prennent effet.)">
+<!ENTITY options.rememberBaseURL.description "M&#233;moriser l'URL racine">
+<!ENTITY options.recordAssertTitle.description "Enregistrer assertTitle automatiquement">
