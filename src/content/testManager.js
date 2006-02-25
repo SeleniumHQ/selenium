@@ -263,6 +263,8 @@ TestManager.prototype.getFormat = function() {
 		var r = new RegExp('formats\.' + this.currentFormatInfo.id + '\.(.*)').exec(name);
 		if (r) {
 			format.options[r[1]] = this.options[name];
+		} else if (name.indexOf('.') < 0) {
+			format.options["global." + name] = this.options[name];
 		}
 	}
 	return format;

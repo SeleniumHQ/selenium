@@ -27,6 +27,7 @@ function saveOptions() {
 	if (w != null) {
 		w.setOptions(options);
 	}
+	
 	optionsManager.save(options);
 	return true;
 }
@@ -49,6 +50,14 @@ function loadFromOptions(options) {
 function loadDefaultOptions() {
 	if (confirm("Do you really want to load default settings?")) {
 		loadFromOptions(OPTIONS);
+		for (name in this.options) {
+			if (/^formats\./.test(name)) {
+				delete this.options[name]
+			}
+		}
+		if (this.format) {
+			showFormatDialog();
+		}
 	}
 }
 
@@ -129,7 +138,10 @@ function selectFormat(id) {
 
 function updateFormatSelection() {
 	this.updateFormatOptions();
+	this.showFormatDialog();
+}
 
+function showFormatDialog() {
 	var formatListBox = document.getElementById("format-list");
 	var formatId = formatListBox.selectedItem.value;
 	var formatInfo = this.testManager.findFormatInfo(formatId);

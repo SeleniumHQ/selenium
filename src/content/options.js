@@ -66,6 +66,7 @@ OptionsManager.prototype = {
 		if (prop_name) {
 			this.setCharPref(prop_name, options[prop_name]);
 		} else {
+			this.branch.deleteBranch("formats");
 			var name;
 			for (name in options) {
 				this.setCharPref(name, options[name]);

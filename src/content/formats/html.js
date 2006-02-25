@@ -171,6 +171,7 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
 	if (testCase.header == null || testCase.footer == null || useDefaultHeaderAndFooter) {
 		testText = options.testTemplate;
 		testText = testText.replace(/\$\{name\}/g, name);
+		testText = testText.replace(/\$\{encoding\}/g, options["global.encoding"]);
 		var commandsIndex = testText.indexOf("${commands}");
 		if (commandsIndex >= 0) {
 			var header = testText.substr(0, commandsIndex);
@@ -212,7 +213,10 @@ options = {
 
 	testTemplate:
 	"<html>\n" +
-	"<head><title>${name}</title></head>\n" +
+	"<head>\n" +
+	'<meta http-equiv="Content-Type" content="text/html; charset=${encoding}">\n' +
+	"<title>${name}</title>\n" +
+	"</head>\n" +
 	"<body>\n" +
 	'<table cellpadding="1" cellspacing="1" border="1">\n'+
 	'<thead>\n' +
