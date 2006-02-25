@@ -153,4 +153,4 @@ LogFrame.prototype.onAppendEntry = function(entry) {
 	}
 }
 
-seleniumDebugger = new Debugger();
+var seleniumDebugger = new Debugger();

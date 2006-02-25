@@ -244,8 +244,8 @@ EventManager.prototype = {
 			if (i > 0) {
 				locator += " and ";
 			}
-			var name = attNames[i];
-			locator += '@' + name + "=" + this.attributeValue(attributes[name]);
+			var attName = attNames[i];
+			locator += '@' + attName + "=" + this.attributeValue(attributes[attName]);
 		}
 		locator += "]";
 		return locator;

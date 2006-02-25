@@ -162,7 +162,7 @@ function loadTestCase() {
 	log.debug("loadTestCase");
 	try {
 		var testCase = null;
-		if (testCase = this.testManager.load()) {
+		if ((testCase = this.testManager.load()) != null) {
 			this.setTestCase(testCase);
 			this.view.refresh();
 			//document.getElementById("filename").value = this.testCase.filename;

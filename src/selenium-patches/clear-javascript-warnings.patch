@@ -1,0 +1,103 @@
+Index: selenium-browserbot.js
+===================================================================
+--- selenium-browserbot.js	(revision 731)
++++ selenium-browserbot.js	(working copy)
+@@ -42,7 +42,7 @@
+ var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
+ var geckoVersion = geckoResult == null ? null : geckoResult[1];
+ 
+-BrowserBot = function(frame) {
++var BrowserBot = function(frame) {
+     this.frame = frame;
+     this.currentPage = null;
+     this.currentWindowName = null;
+@@ -370,7 +370,7 @@
+     };
+ };
+ 
+-PageBot = function(pageWindow) {
++var PageBot = function(pageWindow) {
+     if (pageWindow) {
+         this.currentWindow = pageWindow;
+         this.currentDocument = pageWindow.document;
+@@ -437,22 +437,22 @@
+     }
+ };
+ 
+-MozillaPageBot = function(pageWindow) {
++var MozillaPageBot = function(pageWindow) {
+     PageBot.call(this, pageWindow);
+ };
+ MozillaPageBot.prototype = new PageBot();
+ 
+-KonquerorPageBot = function(pageWindow) {
++var KonquerorPageBot = function(pageWindow) {
+     PageBot.call(this, pageWindow);
+ };
+ KonquerorPageBot.prototype = new PageBot();
+ 
+-SafariPageBot = function(pageWindow) {
++var SafariPageBot = function(pageWindow) {
+     PageBot.call(this, pageWindow);
+ };
+ SafariPageBot.prototype = new PageBot();
+ 
+-IEPageBot = function(pageWindow) {
++var IEPageBot = function(pageWindow) {
+     PageBot.call(this, pageWindow);
+ };
+ IEPageBot.prototype = new PageBot();
+Index: selenium-api.js
+===================================================================
+--- selenium-api.js	(revision 731)
++++ selenium-api.js	(working copy)
+@@ -15,7 +15,7 @@
+  *
+  */
+ 
+-storedVars = new Object();
++var storedVars = new Object();
+ 
+ function Selenium(browserbot) {
+     this.browserbot = browserbot;
+@@ -88,8 +88,8 @@
+ /**
+  * Select the option from the located select element.
+  */
+-Selenium.prototype.doSelect = function(locator, optionLocator) {
+-    var element = this.page().findElement(locator);
++Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
++    var element = this.page().findElement(selectLocator);
+     if (!("options" in element)) {
+         throw new SeleniumError("Specified element is not a Select (has no options)");
+     }
+@@ -298,6 +298,7 @@
+         actualContent = getText(table.rows[row].cells[col]);
+         return actualContent.trim();
+     }
++	return null;
+ };
+ 
+ /**
+Index: htmlutils.js
+===================================================================
+--- htmlutils.js	(revision 731)
++++ htmlutils.js	(working copy)
+@@ -44,7 +44,7 @@
+     }
+     // Replace &nbsp; with a space
+     // TODO - should this be in the match() code instead?
+-    text = text.replace(/\240/g, " ");
++    text = text.replace(/\xA0/g, " ");
+     return text.trim();
+ }
+ 
+@@ -134,7 +134,7 @@
+     return props.join(delimiter || '\n');
+ }
+ 
+-PatternMatcher = function(pattern) {
++var PatternMatcher = function(pattern) {
+     this.selectStrategy(pattern);
+ };
+ PatternMatcher.prototype = {
