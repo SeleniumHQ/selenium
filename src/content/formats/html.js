@@ -1,10 +1,20 @@
 function decodeText(text) {
 	var escapeXml = options.escapeXmlEntities;
-	if (escapeXml == 'always' || escapeXml == 'partial') {
+	var r;
+	if (escapeXml == 'always' || escapeXml == 'partial' || escapeXml == 'html') {
 		text = text.replace(/&lt;/g, '<');
 		text = text.replace(/&gt;/g, '>');
 	}
-	if (escapeXml == 'always') {
+	if (escapeXml == 'html') {
+		text = text.replace(/&nbsp;/g, "\xA0");
+		text = text.replace(/&#(\d+);/g, function(str, p1) { 
+								 return String.fromCharCode(parseInt(p1));
+							 });
+		text = text.replace(/&#x([0-9a-f]+);/gi, function(str, p1) { 
+								 return String.fromCharCode(parseInt(p1, 16));
+							 });
+	}
+	if (escapeXml == 'always' || escapeXml == 'html') {
 		text = text.replace(/&apos;/g, "'");
 		text = text.replace(/&quot;/g, '"');
 		text = text.replace(/&amp;/g, '&');
@@ -30,6 +40,15 @@ function encodeText(text) {
 		text = text.replace(/%%tmp_entity%%(\w+)%%/g, '&$1;');
 		text = text.replace(/\'/g, '&apos;');
 		text = text.replace(/\"/g, '&quot;');
+	} else if (escapeXml == 'html') {
+		// & -> &
+		// ' -> '
+		// \xA0 -> &nbsp;
+		// &amp; -> &amp;amp;
+		// &quot; -> &amp;quot;
+		// &nbsp; -> &amp;nbsp;
+		text = text.replace(/&(\w+);/g, '&amp;$1;');
+		text = text.replace(/\xA0/g, '&nbsp;');
 	}
 	if (escapeXml == 'always' || escapeXml == 'partial') {
 		text = text.replace(/</g, '&lt;');
@@ -192,7 +211,7 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
 /*
  * Optional: The customizable option that can be used in format/parse functions.
  */
-options = {
+this.options = {
 	commandLoadPattern:
 	"<tr>" +
 	"\\s*<td>(.*?)</td>" +
@@ -247,7 +266,7 @@ options = {
 /*
  * Optional: XUL XML String for the UI of the options dialog
  */
-configForm = 
+this.configForm = 
 	//'<tabbox flex="1"><tabs orient="horizontal"><tab label="Load"/><tab label="Save"/></tabs>' +
 	//'<tabpanels flex="1">' +
 	//'<tabpanel orient="vertical">' +
