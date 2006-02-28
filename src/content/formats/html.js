@@ -47,7 +47,7 @@ function encodeText(text) {
 		// &amp; -> &amp;amp;
 		// &quot; -> &amp;quot;
 		// &nbsp; -> &amp;nbsp;
-		text = text.replace(/&(\w+);/g, '&amp;$1;');
+		text = text.replace(/&(nbsp|amp|quot|apos|lt|gt|\d+|x\d+);/g, '&amp;$1;');
 		text = text.replace(/\xA0/g, '&nbsp;');
 	}
 	if (escapeXml == 'always' || escapeXml == 'partial') {
@@ -257,7 +257,7 @@ this.options = {
 	"<!--${comment.comment}-->\n",
 	
 	escapeXmlEntities:
-	"partial",
+	"html",
 
 	escapeDollar:
 	"false"
@@ -291,11 +291,12 @@ this.configForm =
 	'<description>Template for command entries in the test html file</description>' +
 	'<textbox id="options_commandTemplate" multiline="true" flex="1" rows="3"/>' +
 	'<separator class="groove"/>' +
-	'<hbox align="center"><description>Escape XML entities?</description>' +
+	'<hbox align="center"><description>Escape XML / HTML entities?</description>' +
 	'<menulist id="options_escapeXmlEntities">' +
 	'<menupopup>' +
-	'<menuitem label="always: &amp; &quot; &apos; &lt; &gt;" value="always"/>' +
-	'<menuitem label="partially: &lt; &gt;" value="partial"/>' +
+	'<menuitem label="HTML" value="html"/>' +
+	'<menuitem label="XML - always: &amp; &quot; &apos; &lt; &gt;" value="always"/>' +
+	'<menuitem label="XML - partially: &lt; &gt;" value="partial"/>' +
 	'<menuitem label="never" value="never"/>' +
 	'</menupopup>' +
 	'</menulist></hbox>' +
