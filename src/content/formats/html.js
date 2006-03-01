@@ -47,7 +47,7 @@ function encodeText(text) {
 		// &amp; -> &amp;amp;
 		// &quot; -> &amp;quot;
 		// &nbsp; -> &amp;nbsp;
-		text = text.replace(/&(nbsp|amp|quot|apos|lt|gt|\d+|x\d+);/g, '&amp;$1;');
+		text = text.replace(/&(nbsp|amp|quot|apos|lt|gt|\d+|x\d+)(;|\W)/g, '&amp;$1$2');
 		text = text.replace(/\xA0/g, '&nbsp;');
 	}
 	if (escapeXml == 'always' || escapeXml == 'partial') {
