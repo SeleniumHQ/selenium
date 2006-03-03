@@ -56,15 +56,16 @@ SeleniumIDE.checks = {
 	value: function(window, element) {
 		var result = { name: "Value" };
 		if (element && element.hasAttribute && element.tagName &&
-			('input' == element.tagName.toLowerCase() || element.hasAttribute("value"))) {
-			var locator = SeleniumIDE.getRecorderWindow().eventManager.getLocator(window, element);
-			result.target = locator;
+			('input' == element.tagName.toLowerCase() || 
+			 'textarea' == element.tagName.toLowerCase() || 
+			 element.value)) {
+			result.target = SeleniumIDE.getRecorderWindow().eventManager.getLocator(window, element);
 			var type = element.getAttribute("type");
 			if ('input' == element.tagName.toLowerCase() && 
 				(type == 'checkbox' || type == 'radio')) {
 				result.value = element.checked ? 'on' : 'off';
 			} else {
-				result.value = SeleniumIDE.getRecorderWindow().exactMatchPattern(element.getAttribute('value'));
+				result.value = SeleniumIDE.getRecorderWindow().exactMatchPattern(element.value);
 			}
 		} else {
 			result.disabled = true;
