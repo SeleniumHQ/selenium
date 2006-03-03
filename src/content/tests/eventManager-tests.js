@@ -17,6 +17,16 @@ function testAttributesXPathLocator() {
 	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick=\'alert(\"test2\")\']", eventManager.getAttributesXPathLocator(elements[2], pageBot));
 	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick=concat(\"alert('test3'\, \",'\"test4\")')]", eventManager.getAttributesXPathLocator(elements[3], pageBot));
 	assertNull(eventManager.getAttributesXPathLocator(elements[4], pageBot));
+
+	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
+	assertNull(eventManager.getAttributesXPathLocator(yahoo, pageBot));
+}
+
+function testHrefXPathLocator() {
+	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
+	assertLocator("//a[@href='http://www.yahoo.com/']", eventManager.getHrefXPathLocator(yahoo, pageBot), yahoo);
+	var pathToTest = document.getElementById("test2").getElementsByTagName("a")[3];
+	assertLocator("//a[contains(@href, '/path/to/test.html')]", eventManager.getHrefXPathLocator(pathToTest, pageBot), pathToTest);
 }
 
 function testPositionXPathLocator() {

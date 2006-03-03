@@ -154,6 +154,7 @@ function EventManager(listener) {
 		   this.getNameLocator, 
 		   this.getLinkXPathLocator,
 		   this.getAttributesXPathLocator, 
+		   this.getHrefXPathLocator,
 		   this.getPositionXPathLocator];
 		var i = 0;
 		var xpathLevel = 0;
@@ -195,7 +196,7 @@ function EventManager(listener) {
 }
 
 EventManager.prototype = {
-	PREFERRED_ATTRIBUTES: ['id','name','value','type','action','href','onclick'],
+	PREFERRED_ATTRIBUTES: ['id','name','value','type','action','onclick'],
 	
 	attributeValue: function(value) {
 		if (value.indexOf("'") < 0) {
@@ -260,7 +261,7 @@ EventManager.prototype = {
 				attsMap[att.name] = att.value;
 			}
 			var names = [];
-			// try preferred attributes first
+			// try preferred attributes
 			for (var i = 0; i < this.PREFERRED_ATTRIBUTES.length; i++) {
 				var name = this.PREFERRED_ATTRIBUTES[i];
 				if (attsMap[name] != null) {
@@ -273,20 +274,19 @@ EventManager.prototype = {
 					} catch (error) {}
 				}
 			}
-			// Comment this out to try rest of attributes
-			/*
-			for (name in attsMap) {
-				if (names.indexOf(name) < 0) {
-					names.push(name);
-					var locator = this.attributesXPath(e.nodeName.toLowerCase(), names, attsMap);
-					try {
-						if (e == pageBot.findElement(locator)) {
-							return locator;
-						}
-					} catch (error) {}
-				}
+		}
+		return null;
+	},
+
+	getHrefXPathLocator: function(e, pageBot) {
+		if (e.attributes && e.hasAttribute("href")) {
+			href = e.getAttribute("href");
+			if (href.search(/^http?:\/\//) >= 0) {
+				return "//a[@href=" + this.attributeValue(href) + "]";
+			} else {
+				// use contains(), because in IE getAttribute("href") will return absolute path
+				return "//a[contains(@href, " + this.attributeValue(href) + ")]";
 			}
-			*/
 		}
 		return null;
 	},
