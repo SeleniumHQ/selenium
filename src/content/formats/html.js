@@ -190,7 +190,9 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
 	if (testCase.header == null || testCase.footer == null || useDefaultHeaderAndFooter) {
 		testText = options.testTemplate;
 		testText = testText.replace(/\$\{name\}/g, name);
-		testText = testText.replace(/\$\{encoding\}/g, options["global.encoding"]);
+		var encoding = options["global.encoding"];
+		if (!encoding) encoding = "UTF-8";
+		testText = testText.replace(/\$\{encoding\}/g, encoding);
 		var commandsIndex = testText.indexOf("${commands}");
 		if (commandsIndex >= 0) {
 			var header = testText.substr(0, commandsIndex);
