@@ -22,6 +22,10 @@ Copyright 2004 ThoughtWorks, Inc
   <input id="theField" value="oldValue"/>
   <br>
   <input type="button" name="theButton" onclick="javascript: changeFieldValue();"/>
+  <br>
+  <span id="theSpan">Some text</span>
+  <br>
+  <input type="button" name="theSpanButton" onclick="javascript: changeSpanText();"/>
 </form>
 </body>
 
@@ -29,6 +33,9 @@ Copyright 2004 ThoughtWorks, Inc
 <!--
 function changeFieldValue() {
   setTimeout("document.theForm.theField.value = 'newValue'", 500);
+}
+function changeSpanText() {
+  setTimeout("document.getElementById('theSpan').textContent = 'Some new text'", 500);
 }
 -->
 </script>
