@@ -143,6 +143,11 @@ Selenium Actions
 
     Many **Actions** can be called with the "AndWait" suffix. This suffix tells Selenium that the action will cause the browser to make a call to the server, and that Selenium should wait for a new page to load.
 
+    Many Actions have a "waitFor" prefix.
+    These commands wait for some condition to become true (can be useful for testing Ajax applications).
+    They will succeed immediately if the condition is already true.
+    However, they may also hang indefinitely if the conidition never becomes true.
+
     **open**\ ( *url* )
 
         Opens a URL in the test frame.  This accepts both relative and absolute URLs.
@@ -282,16 +287,6 @@ Selenium Actions
             fireEvent   dropDown     blur
             =========   ===========  ========
 
-    **waitForValue**\ ( *inputLocator*, *value* )
-
-        Waits for a specified input (e.g. a hidden field) to have a specified *value*.  Will succeed immediately if the input already has the value.  This is implemented by polling for the value.  Warning: can block indefinitely if the input never has the specified value.
-
-        **example:**
-            
-            ============   ================  ==========
-            waitForValue   finishIndication  isfinished
-            ============   ================  ==========
-
     **store**\ ( *valueToStore*, *variableName* )
 
         Stores a value into a variable.  The value can be constructed using either variable substitution or JavaScript evaluation, as detailed in 'Parameter construction and Variables' (below).
@@ -304,16 +299,110 @@ Selenium Actions
             store        javascript{Math.round(Math.PI * 100) / 100}    PI
             ==========   ============================================   =========
 
-    **storeValue**\ ( *inputLocator*, *variableName* )
+    **storeAbsoluteLocation**\ ( *variableName* )
 
-        Stores the value of an input field into a variable. 
+        Stores the currrent URL into a variable.
 
         **examples:**
 
-            ==========   =========  =========
-            storeValue   userName   userID
-            type         userName   ${userID}
-            ==========   =========  =========
+            =====================   =====
+            storeAbsoluteLocation   myvar
+            =====================   =====
+
+    **storeAlert**\ ( *variableName* )
+
+        Stores the text of an alert into a variable. The alert is also deemed to
+        have been processed (i.e. you do not need to verify it).
+        Note that Selenium cannot handle alerts that occur within
+        the onload event of a page.
+        
+        See also: assertAlert.
+
+        **examples:**
+
+            ================  ===========   ======================
+            click             id=next
+            storeAlert        myVar
+            verifyExpression  ${myVar}      Please enter your name
+            ================  ===========   ======================
+
+    **storeAttribute**\ ( *elementLocator*\ @\ *attributeName*, *variableName* )
+
+        Stores the value of an element attribute into a variable. 
+
+        **examples:**
+
+            ===============  ==============  ====================
+            storeAttribute   input1@\ class  classOfInput1
+            verifyAttribute  input2@\ class  ${classOfInput1}
+            ===============  ==============  ====================
+
+    **storeBodyText**\ ( *variableName* )
+
+        Stores the entire body text of the current page into a variable.
+
+        **examples:**
+
+            ===============  ========
+            storeBodyText    myVar
+            ===============  ========
+
+    **storeConfirmation**\ ( *variableName* )
+
+        Stores the text of a confirmation dialog into a variable.
+        The confirmation is also deemed to
+        have been processed (i.e. you do not need to verify it).
+
+        By default, the confirm function will return true, having the same
+        effect as manually clicking OK.  This can be changed by prior
+        execution of the **chooseCancelOnNextConfirmation** command (see
+        below).
+        
+        See also: assertConfirmation.
+
+        **examples:**
+
+            ==============================  ===========   ====================
+            chooseCancelOnNextConfirmation
+            click                           id=delete
+            storeConfirmation               myVar
+            verifyExpression                ${myVar}      Are you sure?
+            ==============================  ===========   ====================
+
+    **storeExpression**\ ( *valueToStore*, *variableName* )
+
+        This is identical to store\ ( *valueToStore*, *variableName* )
+        as described above.
+
+    **storePrompt**\ ( *variableName* )
+
+        Stores the wording of a javascript prompt into a variable.
+
+        Successful handling of the prompt requires prior execution of the
+        **answerOnNextPrompt** command (see below).
+
+        **examples:**
+
+            ==================   =============  =====================
+            answerOnNextPrompt   Joe
+            click                id=delegate
+            storePrompt          myVar
+            verifyExpression     ${myVar}       Delegate to who?
+            ==================   =============  =====================
+
+    **storeTable**\ ( *cellAddress*, *variableName* )
+
+        Stores the text of a table cell in a variable.
+        The *cellAddress* syntax *tableName.row.column*,
+        where row and column start at 0.
+        
+        **examples:**
+            
+            ===========   ===========   =========
+            storeTable    myTable.1.0   myVar
+            type          input1        ${myVar}
+            ===========   ===========   =========
+
 
     **storeText**\ ( *elementLocator*, *variableName* )
 
@@ -326,16 +415,205 @@ Selenium Actions
             verifyValue   startDate     ${expectedStartDate}
             ===========   ===========   ====================
 
-    **storeAttribute**\ ( *elementLocator*\ @\ *attributeName*, *variableName* )
+    **storeTitle**\ ( *variableName* )
 
-        Stores the value of an element attribute into a variable. 
+        Stores the title of the current page into a variable. 
 
         **examples:**
 
-            ===============  ==============  ====================
-            storeAttribute   input1@\ class  classOfInput1
-            verifyAttribute  input2@\ class  ${classOfInput1}
-            ===============  ==============  ====================
+            ===========   ===========   ====================
+            storeTitle    myVar
+            verifyText    heading       ${myVar}
+            ===========   ===========   ====================
+
+    **storeValue**\ ( *inputLocator*, *variableName* )
+
+        Stores the value of an input field into a variable.
+        NOTE: The old form of this which only took a variable and stored the entire page
+        is now deprecated in favour of storeBodyText.
+
+        **examples:**
+
+            ==========   =========  =========
+            storeValue   userName   userID
+            type         userName   ${userID}
+            ==========   =========  =========
+
+    **waitForAbsoluteLocation**\ ( *locationPattern* )
+
+        Waits for the URL of the current page to match the specified pattern.
+    	Note that if you want to include the leading "http:", then you will need
+    	to prefix it with "exact:" to avoid the "http" being interpreted as a pattern match strategy.
+
+        **example:**
+            
+            =======================   ================
+            waitForAbsoluteLocation   exact:http://localhost:8000/tests/html/test_open.html
+            waitForAbsoluteLocation   glob:http://localhost:8000/\*/html/test_open.html
+            waitForAbsoluteLocation   regexp:.\*/[Tt]ests/html/test_open.html
+            =======================   ================
+
+    **waitForNotAbsoluteLocation**\ ( *locationPattern* )
+
+        Waits for the URL of the current page to not match the specified pattern.
+
+
+    **waitForAlert**\ ( *messagePattern* )
+
+        Waits for a JavaScript alert with the specified pattern to be occur.
+        The alert is also deemed to have been processed (i.e. you do not need to verify it).
+        Note that Selenium cannot handle alerts that occur within the onload event of a page.
+        
+        See also: assertAlert.
+
+        **examples:**
+
+            ==============   ====================  =====
+            waitForAlert     Invalid Phone Number
+            waitForAlert     \*
+            ==============   ====================  =====
+
+    **waitForAttribute**\ ( *elementLocator*\ @\ *attributeName*, *valuePattern* )
+
+        Waits for the value of an element attribute to match the specified pattern.
+
+        **examples:**
+
+            ================   ======================   ==========
+            waitForAttribute   txt1@\ class             bigAndBold
+            waitForAttribute   document.images[0]@alt   alt-text
+            waitForAttribute   //img[@id='foo']/@alt    alt-text
+            ================   ======================   ==========
+
+    **waitForNotAttribute**\ ( *elementLocator*\ @\ *attributeName*, *valuePattern* )
+
+        Waits for the value of an element attribute to not match the specified pattern.
+
+
+    **waitForBodyText**\ ( *valuePattern* )
+
+        Waits for the text of the current page to have a specified *valuePattern*.
+
+        **example:**
+            
+            ===============   ================  ====
+            waitForBodyText   \*some text\*
+            ===============   ================  ====
+
+    **waitForNotBodyText**\ ( *valuePattern* )
+
+        Waits for the text of the current page to not have a specified *valuePattern*.
+
+
+    **waitForConfirmation**\ ( *messagePattern* )
+
+        Waits for a JavaScript confirmation dialog to be generated with
+        the specified message.  
+
+        By default, the confirm function will return true, having the same
+        effect as manually clicking OK.  This can be changed by prior
+        execution of the **chooseCancelOnNextConfirmation** command (see
+        below).
+
+        The confirmation is also deemed to have been processed (i.e. you do not need to verify it).
+        
+        Note that Selenium cannot handle confirmations that occur within the onload event of a page.
+         
+        See also: assertConfirmation.
+ 
+        **examples:**
+
+            ===================   ====================  =====
+            waitForConfirmation   Remove this user?
+            waitForConfirmation   \*
+            ===================   ====================  =====
+            
+    **waitForPrompt**\ ( *messagePattern* )
+
+        Waits for a JavaScript prompt dialog to occur with the
+        specified message.  
+
+        Successful handling of the prompt requires prior execution of the
+        **answerOnNextPrompt** command (see below).
+
+        The prompt is also deemed to
+        have been processed (i.e. you do not need to verify it).
+
+        Note that Selenium cannot handle prompts that occur within the onload event of a page.
+         
+        See also: assertPrompt.
+        
+        **examples:**
+
+            ==================   =============================  =====
+            answerOnNextPrompt   Joe
+            click                id=delegate
+            waitForPrompt        Delegate to who?
+            ==================   =============================  =====
+
+    **waitForTable**\( *cellAddress*, *valuePattern* )
+
+        Waits for the text in a cell of a table to match the specified pattern.
+        The *cellAddress* syntax *tableName.row.column*, where row and column start at 0.
+        
+        **examples:**
+            
+            ============   ===========   =========
+            waitForTable   myTable.1.6   active
+            waitForTable   myTable.1.6   glob:a*e
+            ============   ===========   =========
+
+    **waitForNotTable**\( *cellAddress*, *valuePattern* )
+
+        Waits for the text in a cell of a table to not match the specified pattern.
+
+    **waitForText**\ ( *elementLocator*, *textPattern* )
+
+        Waits for the text of an element to have the specified pattern..
+        This works for any element that contains text.
+        This command uses either the textContent (Mozilla-like browsers) or
+        the innerText (IE-like browsers) of the element, which is the rendered text shown to the user.
+        
+        **examples:**
+            
+            ===========   ====================   =======================
+            waitForText   statusMessage          Successful
+            waitForText   //div[@id='foo']//h1   regexp:[Ss]uccessful
+            ===========   ====================   =======================
+
+    **waitForNotText**\ ( *elementLocator*, *textPattern* )
+
+        Waits for the text of an element to not have the specified pattern..
+
+    **waitForTitle**\ ( *titlePattern* )
+
+        Waits for the page title to match the specified pattern.
+
+        **examples:**
+
+            ============   =======  =====
+            waitForTitle   My Page
+            ============   =======  =====
+
+    **waitForNotTitle**\ ( *titlePattern* )
+
+        Waits for the page title to not match the specified pattern.
+
+    **waitForValue**\ ( *inputLocator*, *valuePattern* )
+
+        Waits for a specified input to have a specified *valuePattern*.
+
+        **example:**
+            
+            ============   ================  ==========
+            waitForValue   finishIndication  isfinished
+            waitForValue   finishIndication  glob:is*ed
+            ============   ================  ==========
+
+    **waitForNotValue**\ ( *inputLocator*, *valuePattern* )
+
+        Waits for a specified input to not have a specified *valuePattern*.
+
 
     **chooseCancelOnNextConfirmation**\ ()
 
@@ -582,6 +860,23 @@ Selenium Assertions
 
         Verifies that the specified element is NOT editable, ie. it's NOT an input element, or has been disabled.
 
+    **verifyExpression / assertExpression**\ ( *expression*, *valuePattern* )
+
+        Verifies that an expression matches the specified pattern.
+        
+        **examples:**
+            
+            ================   ============================================   ===========
+            verifyExpression   ${title} ${firstname} ${surname}               ${fullname}
+            assertExpression   javascript{storedVars['var1'].toUpperCase()}   THE VALUE
+            assertExpression   javascript{selenium.getValue('theText')}       regexp:TH[Ee] VALUE
+            ================   ============================================   ===========
+
+    **verifyNotExpression / assertNotExpression**\ ( *expression*, *valuePattern* )
+
+        Verifies that an expression does not match the specified pattern.
+        
+
     **assertAlert**\ ( *messagePattern* )
 
         Verifies that a JavaScript alert was generated, with the specified
@@ -762,6 +1057,24 @@ Extending Selenium
             // Make sure the actual value matches the expected
             Assert.matches(expectedValue, actualValue);
         };
+
+**Using getFoo to generate storeFoo, assertFoo, assertNotFoo, waitForFoo and waitForNotFoo**
+
+    All *getFoo* methods on the Selenium prototype result in the availability
+    of storeFoo, assertFoo, assertNotFoo, verifyFoo, verifyNotFoo, waitForFoo, and waitForNotFoo commands.
+    
+    Example, add a getTextLength() method that makes the following commands available:
+    storeTextLength, assertTextLength, assertNotTextLength, verifyTextLength, verifyNotTextLength, waitForTextLength, and waitForNotTextLength commands.
+
+    ::
+    
+        Selenium.prototype.assertValueRepeated = function(locator, text) {
+            return this.getText(locator).length;
+        };
+
+    Also note that the *assertValueRepeated* method described above could have been implemented using
+    getValueRepeated, with the added benefit of also automatically getting assertNotValueRepeated, storeValueRepeated,
+    waitForValueRepeated and waitForNotValueRepeated.
 
 **Locator Strategies**
 
