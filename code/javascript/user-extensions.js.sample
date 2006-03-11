@@ -43,6 +43,15 @@ Selenium.prototype.assertValueRepeated = function(locator, text) {
     Assert.matches(expectedValue, actualValue);
 };
 
+// All get* methods on the Selenium prototype result in
+// store, assert, assertNot, verify, verifyNot, waitFor, and waitForNot commands.
+// E.g. add a getTextLength method that returns the length of the text
+// of a specified element.
+// Will result in support for storeTextLength, assertTextLength, etc.
+Selenium.prototype.getTextLength = function(locator) {
+	return this.getText(locator).length;
+};
+
 // All locateElementBy* methods are added as locator-strategies.
 // Eg add a "valuerepeated=" locator, that finds the first element with the supplied value, repeated.
 // The "inDocument" is a the document you are searching.
@@ -60,3 +69,5 @@ PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
     }
     return null;
 };
+
+
