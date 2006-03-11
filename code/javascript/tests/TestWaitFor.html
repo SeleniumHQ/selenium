@@ -63,7 +63,7 @@ First test waitForValue
 </table>
 
 <br>
-Now test waitForText
+Test waitForText
 
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
@@ -96,7 +96,24 @@ Now test waitForText
 </table>
 
 <br>
-Now test for waiting for something on a new page.
+Test waiting for an alert.
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>theAlertButton</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>waitForAlert</td>
+      <td>regexp:An [aeiou]lert</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+Test for waiting for something on a new page.
 
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
