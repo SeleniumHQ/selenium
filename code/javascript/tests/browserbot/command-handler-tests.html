@@ -27,15 +27,6 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-function testCommandHandlerExecuteCallsTheExecutorFunction() {
-    var called = false;
-    var executor = function() { called = true;};
-    var handler = new CommandHandler("name", false, executor);
-    handler.execute("selenium", "command");
-
-    assertTrue(called);
-}
-
 
 function testShouldFailActionCommandsIfAlertPresent() {
 

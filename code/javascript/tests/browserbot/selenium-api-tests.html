@@ -363,24 +363,6 @@ function testGetAttributeWithId() {
 }
 
 
-function testWaitForCreatesWaitForConditionOnTestLoop() {
-    var mockElement = new Object();
-    mockElement.value = "oldValue";
-    mockPageBot.expects("findElement", "id").returns(mockElement);
-    testLoop = new Object();
-
-    assertEquals(undefined, testLoop.waitForCondition);
-
-    selenium.doWaitForValue("id", "newValue");
-
-    assertNotEquals(undefined, testLoop.waitForCondition);
-    assertFalse("Wait condition should not yet be true",
-                 testLoop.waitForCondition());
-    mockElement.value = "newValue";
-    assertTrue( "Wait condition should now be true",
-               testLoop.waitForCondition());
-}
-
 function assertCallFails(message, theCall, expectedFailureMessage) {
     try {
         theCall();

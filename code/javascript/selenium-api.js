@@ -168,6 +168,7 @@ Selenium.prototype.getAlert = function() {
     }
     return this.browserbot.getNextAlert();
 };
+Selenium.prototype.getAlert.dontCheckAlertsAndConfirms = true;
 
 /*
  * Get a confirmation message, or fail if there were no confirmations.
@@ -178,6 +179,7 @@ Selenium.prototype.getConfirmation = function() {
     }
     return this.browserbot.getNextConfirmation();
 };
+Selenium.prototype.getConfirmation.dontCheckAlertsAndConfirms = true;
  
 /*
  * Get a prompt message, or fail if there were no prompts.
@@ -221,6 +223,15 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
  */
 Selenium.prototype.getTitle = function() {
     return this.page().title();
+};
+
+/*
+ * Get the entire text of the page.
+ * Note that various commands are generated from this, including
+ * assertBodyText, verifyBodyText, storeBodyText...
+ */
+Selenium.prototype.getBodyText = function() {
+    return this.page().bodyText();
 };
 
 
@@ -533,38 +544,23 @@ Selenium.prototype.doStoreValue = function(target, varName) {
 };
 
 /*
- * Store the text of an element in a variable
+ * Return the specified expression.  Is useful because of preprocessing.
+ * Used to generate commands like assertExpression and storeExpression.
+ * e.g. assertExpression | ${xyz} | foo
  */
-Selenium.prototype.doStoreText = function(target, varName) {
-    var element = this.page().findElement(target);
-    storedVars[varName] = getText(element);
-};
-
-/*
- * Store the value of an element attribute in a variable
- */
-Selenium.prototype.doStoreAttribute = function(target, varName) {
-    storedVars[varName] = this.page().findAttribute(target);
-};
+Selenium.prototype.getExpression = function(expression) {
+	return expression;
+}
 
 /*
  * Store the result of a literal value
+ * Is actually equivalent to doStoreExpression
  */
 Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
 
 
-/*
- * Wait for the target to have the specified value by polling.
- * The polling is done in TestLoop.kickoffNextCommandExecution()
- */
-Selenium.prototype.doWaitForValue = function (target, value) {
-    var e = this.page().findElement(target);
-    testLoop.waitForCondition = function () {
-        return (e.value == value);
-    };
-};
 
 /**
  * Evaluate a parameter, performing javascript evaluation and variable substitution.
