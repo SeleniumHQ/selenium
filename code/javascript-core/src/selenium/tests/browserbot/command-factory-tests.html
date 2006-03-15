@@ -36,6 +36,14 @@ function setUp() {
         var factory = new CommandHandlerFactory();
         assertNull(factory.getCommandHandler("unknown"));
     }
+    
+    function testActionHandlerConstructorWithNoValueForDontCheckAlerts() {
+    	var handler = new ActionHandler({}, false, this.someUndefinedProperty);
+    	assertTrue("Should be checking", handler.checkAlerts);
+    	assertEquals("action", handler.type);
+    	assertTrue("Should halt on failure", handler.haltOnFailure);
+    	assertUndefined("Should not be waiting", handler.wait);
+    };
 
     function testActionsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
         var factory = new CommandHandlerFactory();
@@ -71,83 +79,167 @@ function setUp() {
         assertEquals("accessor", myAccessor.type);
     }
     
-    function testCreateMatcherHandlerFromSingleArgAccessorReturnsMatcherHandler() {
+ 
+    function testCreatePredicateFromSingleArgAccessorReturnsDesiredPredicate() {
         var factory = new CommandHandlerFactory();
         var accessor = function(arg) {
             assertEquals("target", arg);
             return this.foo(); 
         };
-        var matcherHandler = factory.createMatcherHandlerFromSingleArgAccessor(accessor);
+        var predicate = factory.createPredicateFromSingleArgAccessor(accessor);
         var seleniumApi = {foo: function() { return "theValue";}};
 
-        var command = new SeleniumCommand(null, "target", "regexp:theV[aeiou]lue");
-        var result = matcherHandler(seleniumApi, command);
+        var result = predicate.call(seleniumApi, "target", "regexp:theV[aeiou]lue");
         assertEquals("Actual value 'theValue' did match 'regexp:theV[aeiou]lue'", result.message);
-        assertTrue("Should have matched", result.didMatch);
+        assertTrue("Should have matched", result.isTrue);
 
-        command = new SeleniumCommand(null, "target", "betterNotMatch");
-        var result = matcherHandler(seleniumApi, command);
+        var result = predicate.call(seleniumApi, "target", "betterNotMatch");
         assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
-        assertFalse("Should not have matched", result.didMatch);
+        assertFalse("Should not have matched", result.isTrue);
     }
     
-    function testCreateMatcherHandlerFromNoArgAccessorReturnsMatcherHandler() {
+    function testCreatePredicateFromNoArgAccessorReturnsDesiredPredicate() {
         var factory = new CommandHandlerFactory();
         var accessor = function() {
             return this.foo(); 
         };
-        var matcherHandler = factory.createMatcherHandlerFromNoArgAccessor(accessor);
+        var predicate = factory.createPredicateFromNoArgAccessor(accessor);
         var seleniumApi = {foo: function() { return "theValue";}};
 
-        var command = new SeleniumCommand(null, "theV*e", "");
-        var result = matcherHandler(seleniumApi, command);
+        var result = predicate.call(seleniumApi, "theV*e", "");
         assertEquals("Actual value 'theValue' did match 'theV*e'", result.message);
-        assertTrue("Should have matched", result.didMatch);
+        assertTrue("Should have matched", result.isTrue);
 
-        command = new SeleniumCommand(null, "betterNotMatch", "");
-        var result = matcherHandler(seleniumApi, command);
+        var result = predicate.call(seleniumApi, "betterNotMatch", "");
         assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
-        assertFalse("Should not have matched", result.didMatch);
+        assertFalse("Should not have matched", result.isTrue);
     }
     
-    function testNegateMatcherHandlerNegatesResult() {
+    function testCreatePredicateFromAccessorWhenNoArgs() {
         var factory = new CommandHandlerFactory();
-        var matcherHandler = function(seleniumApi, command) {return new MatcherHandlerResult(true, "msg");};
-        var negatedMatcherHandler = factory.createMatcherHandlerNegator(matcherHandler);
-        var result = negatedMatcherHandler("seleniumApi", "command");
-        assertFalse("Result should have been negated", result.didMatch);
-        assertEquals("msg", result.message);
-    }
-
-    function testAssertUsingMatcherHandlerWithPositiveResultDoesNotThrowExceptions() {
-        var mockMatcherHandlerResult = new Mock();
-        mockMatcherHandlerResult.expectsProperty("didMatch").returns(true);
-        var matcherHandler = function(seleniumApi, command) {return mockMatcherHandlerResult;};
-        var assertUsingMatcherHandler = new AssertUsingMatcherHandler(matcherHandler, true);
-        assertUsingMatcherHandler.executeAssertion("mockSeleniumApi", "command");
-        mockMatcherHandlerResult.verify();
+        // replace createPredicateFromNoArgAccessor() so we know it gets called.
+        factory.createPredicateFromNoArgAccessor = function(accessor) {
+        	return "predicate";
+        }
+        var accessor = function(){return 42;};
+        var predicate = factory.createPredicateFromAccessor(accessor);
+        assertEquals("predicate", predicate);
     };
     
-    function testAssertUsingMatcherHandlerWithNegativeResultThrowsException() {
-        var mockMatcherHandlerResult = new Mock();
-        mockMatcherHandlerResult.expectsProperty("didMatch").returns(false);
-        mockMatcherHandlerResult.expectsProperty("message").returns("some message");
-        var matcherHandler = function(seleniumApi, command) {return mockMatcherHandlerResult;};
-        var assertUsingMatcherHandler = new AssertUsingMatcherHandler(matcherHandler, true);
-        try {
-            assertUsingMatcherHandler.executeAssertion("mockSeleniumApi", "command");
-        } catch (e) {
+    function testCreatePredicateFromAccessorWhenOneArg() {
+        var factory = new CommandHandlerFactory();
+        // replace createPredicateFromOneArgAccessor() so we know it gets called.
+        factory.createPredicateFromSingleArgAccessor = function(accessor) {
+        	return "predicate";
+        }
+        var accessor = function(arg){return 42;};
+        var predicate = factory.createPredicateFromAccessor(accessor);
+        assertEquals("predicate", predicate);
+    };
+    
+    function testInvertPredicateReturnsDesiredPredicate() {
+        var factory = new CommandHandlerFactory();
+        var seleniumApi = {foo: function() { return true;}};
+        var predicate = function(target, value) {
+        	return new PredicateResult(this.foo(), "msg");
+        };
+        var invertedPredicate = factory.invertPredicate(predicate);
+        var result = invertedPredicate.call(seleniumApi, "target", "value");
+        assertFalse("Result should have been negated", result.isTrue);
+        assertEquals("msg", result.message);
+    };
+    
+
+    function testCreateAssertionFromPredicateForPositiveCase() {
+    	// Make sure that the method looks at the isTrue property of the result.
+        var mockPredicateResult = new Mock();
+        mockPredicateResult.expectsProperty("isTrue").returns(true);
+        
+        // Make sure that the executeAssertion method invokes the predicate in
+        // the context of the Selenium API.
+        var mockSeleniumApi = new Mock();
+        mockSeleniumApi.expects("foo");
+        
+        var predicate = function(target, value) {
+        	assertEquals("target", target);
+        	assertEquals("value", value);
+        	this.foo();
+        	return mockPredicateResult;
+        };
+        var factory = new CommandHandlerFactory();
+    	var assertion = factory.createAssertionFromPredicate(predicate);
+    	
+    	assertion.call(mockSeleniumApi, "target", "value");
+    	
+        mockPredicateResult.verify();
+        mockSeleniumApi.verify();    	
+    };
+
+	function testCreateAssertionFromPredicateForNegativeCase() {
+        var predicate = function(target, value) {
+        	return new PredicateResult(false, "message");
+        };
+        var factory = new CommandHandlerFactory();
+        var assertion = factory.createAssertionFromPredicate(predicate);
+
+		try {
+	        assertion.call("seleniumApi", "target", "value");
+	    } catch(e) {
             if (!e.isAssertionFailedError) {
                 throw e;
             }
-            assertEquals("some message", e.failureMessage);
-            mockMatcherHandlerResult.verify();
-            return;
-        }
+            assertEquals("message", e.failureMessage);
+	    	return;
+	    }
         fail("Should have thrown an exception");
+	};
+    
+    function testCreateWaitForActionFromPredicateSetsTestLoop() {
+    	// Make sure that the method looks at the isTrue property of the result.
+        var mockPredicateResult = new Mock();
+        mockPredicateResult.expectsProperty("isTrue").returns(true);
+        
+        // Make sure that the executeAssertion method invokes the predicate in
+        // the context of the Selenium API.
+        var mockSeleniumApi = new Mock();
+        mockSeleniumApi.expects("foo");
+        
+        var predicate = function(target, value) {
+        	assertEquals("target", target);
+        	assertEquals("value", value);
+        	this.foo();
+        	return mockPredicateResult;
+        };
+        var factory = new CommandHandlerFactory();
+    	var action = factory.createWaitForActionFromPredicate(predicate);
+    	
+    	// testLoop is normally set up by selenium api.
+    	testLoop = {};
+    	
+    	action.call(mockSeleniumApi, "target", "value");
+    	assertTrue(testLoop.waitForCondition());
+    	
+    	mockPredicateResult.verify();
+        mockSeleniumApi.verify();
     };
     
-
+    function testPredicateBasedWaitForActionReturnsFalseForExceptoins() {
+    	// We treat exceptions as meaning that the condition is not yet true.
+    	// Handy for things like waitForValue when the specified element
+    	// has yet to be created!
+        var predicate = function(target, value) {
+        	throw new Error("test exception");
+        };
+        var factory = new CommandHandlerFactory();
+    	var action = factory.createWaitForActionFromPredicate(predicate);
+    	
+    	// testLoop is normally set up by selenium api.
+    	testLoop = {};
+    	
+    	action.call("seleniumApi", "target", "value");
+    	assertFalse(testLoop.waitForCondition());
+    };
+    
     
     function testAllMethodsWithGetPrefixAreRegisteredAsAccessorsByRegisterAll() {
         var actionSet = {getOne: "get1", getTwo: "get2", getdontGet: "another"};
@@ -225,6 +317,49 @@ function setUp() {
             // Expected.
         }
     }
+    
+    // This object is normally declared in selenium-api.js
+    storedVars = new Object();
+    
+    function testAllMethodsWithGetPrefixAreRegisteredAsStoreCommandsByRegisterAll() {
+        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
+        var factory = new CommandHandlerFactory();
+        factory.registerAll(actionSet);
+
+        var storeCommand = factory.getCommandHandler("storeOne");
+        assertEquals(CommandHandler, storeCommand.constructor);
+        assertNotNull(storeCommand.executor);
+        assertEquals("action", storeCommand.type);
+        assertTrue(storeCommand.haltOnFailure);
+        storeCommand.executor.call("stubSeleniumApi", "mytarget", "myvar");
+        assertEquals("mytargetfoo", storedVars["myvar"]);
+    }
+    
+    
+    function testAllMethodsWithGetPrefixAreRegisteredAsWaitForCommandsByRegisterAll() {
+        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
+        var factory = new CommandHandlerFactory();
+        factory.registerAll(actionSet);
+
+        var command = factory.getCommandHandler("waitForOne");
+        assertEquals(CommandHandler, command.constructor);
+        assertNotNull(command.executor);
+        assertEquals("action", command.type);
+        assertTrue(command.haltOnFailure);
+    }
+    
+    function testAllMethodsWithGetPrefixAreRegisteredAsWaitForNotCommandsByRegisterAll() {
+        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
+        var factory = new CommandHandlerFactory();
+        factory.registerAll(actionSet);
+
+        var command = factory.getCommandHandler("waitForNotOne");
+        assertEquals(CommandHandler, command.constructor);
+        assertNotNull(command.executor);
+        assertEquals("action", command.type);
+        assertTrue(command.haltOnFailure);
+    }
+    
     
 
     function testHaltOnFailureDefaultsToFalseForAsserts() {

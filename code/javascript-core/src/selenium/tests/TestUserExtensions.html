@@ -75,6 +75,28 @@ Copyright 2004 ThoughtWorks, Inc
       <td>valuerepeated=Test</td>
       <td></td>
     </tr>
+    
+    <!-- Test getTextLength -->
+    <tr>
+      <td>storeTextLength</td>
+      <td>//h3</td>
+      <td>myVar</td>
+    </tr>
+    <tr>
+      <td>verifyTextLength</td>
+      <td>//h3</td>
+      <td>regexp:4[1-5]</td>
+    </tr>
+    <tr>
+      <td>waitForTextLength</td>
+      <td>//h3</td>
+      <td>${myVar}</td>
+    </tr>
+    <tr>
+      <td>verifyNotTextLength</td>
+      <td>//h3</td>
+      <td>46</td>
+    </tr>
   </tbody>
 </table>
 </body>
