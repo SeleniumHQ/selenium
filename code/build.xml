@@ -1,23 +1,28 @@
-<project name="selenium" default="dist">
+<project name="selenium" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
     <property name="version" value="0.7-SNAPSHOT"/>
-    <property name="website.root" value="../website/webapps/ROOT"/>
+    <condition property="website.root" value="${ant.file.selenium}/../../website">
+        <available file="${ant.file.selenium}/../../website"/>
+    </condition>
 
-    <target name="clean">
+	<target name="all" depends="test, dist" />
+
+    <target name="clean" depends="clean-dotnet">
         <delete dir="dist-image"/>
         <delete dir="dist"/>
     </target>
 
-    <target name="dist" depends="dist-image-browserbot, dist-image-doc, dist-selenium, dist-ruby, dist-plone, dist-java"/>
+    <target name="dist" depends="dist-image-browserbot, dist-image-doc, dist-selenium, dist-ruby, dist-python, dist-dotnet"/>
 
     <target name="dist-dirs">
         <mkdir dir="dist-image"/>
+        <mkdir dir="dist-image/doc"/>	<!-- needed when website.root is not set -->
         <mkdir dir="dist"/>
     </target>
 
     <target name="dist-image-browserbot" depends="dist-dirs">
         <copy todir="dist-image/browserbot">
-            <fileset dir="javascript">
+            <fileset dir="javascript-core/src/selenium">
                 <exclude name="Embedded-WEB-INF/**"/>
                 <exclude name="build.xml"/>
                 <exclude name="*.py"/>
@@ -26,14 +31,13 @@
                 <exclude name="VERSION.txt"/>
                 <exclude name="install-readme.txt"/>
             </fileset>
-        </copy>
-        <copy file="javascript/tinyWebServer.py" todir="dist-image/browserbot/tests"/>
+        </copy> 
         <copy file="dist-image/browserbot/TestRunner.html" tofile="dist-image/browserbot/TestRunner.hta"/>
         <echo file="dist-image/browserbot/tests/readme.txt">Create a TestSuite.html page, and a number of test pages here. Read the docs!</echo>
         <echo file="dist-image/browserbot/version.txt">${version}</echo>
     </target>
 
-    <target name="dist-image-doc" depends="dist-dirs">
+    <target name="dist-image-doc" depends="dist-dirs" if="website.root">
         <copy todir="dist-image/doc">
             <fileset dir="doc">
                 <include name="*.html"/>
@@ -44,26 +48,23 @@
                 <exclude name="demos.html"/>
                 <exclude name="download.html"/>
                 <exclude name="testrunner.html"/>
-                <exclude name="FAQ.html"/>
-                <exclude name="seleniumReference.html"/>
+                <!--<exclude name="FAQ.html"/>
+                <exclude name="seleniumReference.html"/>-->
             </fileset>
         </copy>
-        <echo message="You must have 'rst2html.py' executable in your path"/>
-        <exec command="rst2html.py doc/seleniumReference.txt dist-image/doc/seleniumReference.html"/>
-        <exec command="rst2html.py doc/testRunner.txt dist-image/doc/testrunner.html"/>
-        <exec command="rst2html.py doc/FAQ.txt dist-image/doc/FAQ.html"/>
+        <!-- TODO Put the Javadoc in there! -->
     </target>
 
     <target name="dist-selenium" depends="dist-image-browserbot, dist-image-doc">
-        <property name="selenium.release" value="selenium-${version}"/>
+        <property name="selenium.release" value="selenium-javascript-core-${version}"/>
         <zip zipfile="dist/${selenium.release}.zip" >
             <zipfileset dir="dist-image/browserbot" prefix="${selenium.release}/selenium"/>
             <zipfileset dir="dist-image/doc" prefix="${selenium.release}/doc"/>
-            <zipfileset file="javascript/install-readme.txt" prefix="${selenium.release}"/>
+            <zipfileset file="javascript-core/src/selenium/install-readme.txt" prefix="${selenium.release}"/>
         </zip>
     </target>
 
-    <target name="dist-ruby" depends="dist-image-browserbot, dist-image-doc">
+    <target name="dist-ruby" depends="dist-image-doc">
         <copy todir="dist-image/ruby">
             <fileset dir="ruby">
                 <include name="*.rb"/>
@@ -71,87 +72,102 @@
             </fileset>
         </copy>
 
-        <property name="ruby.release" value="selenium-${version}-ruby"/>
+        <property name="ruby.release" value="selenium-ruby-client-driver-${version}"/>
         <zip zipfile="dist/${ruby.release}.zip">
-            <zipfileset dir="dist-image/browserbot" prefix="${ruby.release}/javascript"/>
             <zipfileset dir="dist-image/doc" prefix="${ruby.release}/doc"/>
             <zipfileset dir="dist-image/ruby" prefix="${ruby.release}/ruby"/>
             <zipfileset file="ruby/readme.txt" prefix="${ruby.release}"/>
         </zip>
     </target>
 
-    <target name="dist-plone" depends="dist-dirs">
-        <copy todir="dist-image/python-plone">
-            <fileset dir="python/Zope">
-                <exclude name="**/.svn*"/>
-                <exclude name="**/VERSION.txt"/>
-                <exclude name="__init__.py"/>
-                <exclude name="install-readme.txt"/>
-            </fileset>
-        </copy>
-        <echo file="dist-image/python-plone/Selenium/VERSION.txt">${version}</echo>
-
-        <!-- Need to copy the browserbot code into the skins directory -->
-        <!-- HTML, CSS and Javascript files get an extra .dhtml suffix -->
-        <copy todir="dist-image/python-plone/Selenium/skins/selenium_javascript">
-            <fileset dir="dist-image/browserbot">
-                <include name="**/*.html"/>
-                <include name="**/*.css"/>
-                <include name="**/*.js"/>
-            </fileset>
-            <mapper type="glob" from="*" to="*.dtml"/>
-        </copy>
-        <copy todir="dist-image/python-plone/Selenium/skins/selenium_javascript">
-            <fileset dir="dist-image/browserbot">
-                <exclude name="**/*.html"/>
-                <exclude name="**/*.css"/>
-                <exclude name="**/*.js"/>
+	<target name="dist-python" depends="dist-image-doc">
+        <copy todir="dist-image/python">
+            <fileset dir="python/thin">
+                <include name="*.py"/>
+                <exclude name="readme.txt"/>
             </fileset>
         </copy>
 
-        <property name="plone.release" value="selenium-${version}-python-plone"/>
-        <zip zipfile="dist/${plone.release}.zip">
-            <zipfileset dir="dist-image/doc" prefix="${plone.release}/doc"/>
-            <zipfileset dir="dist-image/python-plone" prefix="${plone.release}"/>
+        <property name="python.release" value="selenium-python-client-driver-${version}"/>
+        <zip zipfile="dist/${python.release}.zip">
+            <zipfileset dir="dist-image/doc" prefix="${python.release}/doc"/>
+            <zipfileset dir="dist-image/python" prefix="${python.release}/python"/>
+            <zipfileset file="python/readme.txt" prefix="${python.release}"/>
         </zip>
     </target>
 
-    <target name="dist-java" depends="dist-dirs">
-        <ant dir="java" target="dist">
-            <property name="code_root" value="."/>
-            <property name="version" value="${version}"/>
-        </ant>
-        <copy todir="dist">
-            <fileset dir="java/dist"/>
-        </copy>
+	<target name="maven-tasks">
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
+			<classpath>
+				<pathelement location="maven-artifact-ant-2.0.2-dep.jar" />
+			</classpath>
+		</typedef>
+	</target>
+	
+	<target name="custom-repo" depends="maven-tasks" if="custom.maven.repo">
+		<presetdef name="mavendeps">
+			<maven:dependencies>
+				<localRepository location="${custom.maven.repo}" />
+			</maven:dependencies>
+		</presetdef>
+	</target>
+	
+	<target name="default-repo" depends="maven-tasks" unless="custom.maven.repo">
+		<presetdef name="mavendeps">
+			<maven:dependencies/>
+		</presetdef>
+	</target>
+
+    <target name="start-server" depends="custom-repo,default-repo">
+		<mavendeps pathId="selenium-server.classpath">
+			<!-- DGF Server bundles all of its dependencies, 
+			which are marked with the scope "provided", so this should
+			only give us selenium-server.jar -->
+			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server" version="1.0-SNAPSHOT" scope="runtime"/>
+		</mavendeps>
+		<pathconvert targetos="windows" property="selenium-server.jar" refid="selenium-server.classpath" />
+		<condition property="build.failed">
+			<contains string="${selenium-server.jar}" substring=";" />
+		</condition>
+		<fail if="build.failed" message="Maven gave us more than one Selenium Server jar: ${selenium-server.jar}" />
+		
+		<!-- Configurable server default firefox location; if this doesn't work, we'll just try to run it off the path -->
+		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
+		<java jar="${selenium-server.jar}" fork="true" spawn="true">
+			<sysproperty key="firefoxDefaultPath" file="${firefox.location}" />
+		</java>
+		<echo message="Starting: ${selenium-server.jar}" />
+    </target>
+    
+    <target name="stop-server">
+    	<get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?commandRequest=|shutDown|||" dest="result.txt" ignoreerrors="true" />
+    	<echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
+    </target>
+    
+    <target name="test" depends="test-ruby, test-dotnet, test-python"/>
+    
+    <target name="test-python">
+    	<echo message="python executable = ${python.executable}" />
+        <ant dir="python/thin" target="all"/>
+    </target>
+    
+    <target name="clean-dotnet">
+        <ant dir="dotnet" target="clean"/>
+    </target>
+        
+    <target name="test-dotnet">
+        <ant dir="dotnet" target="test"/>
+    </target>
+        
+    <target name="dist-dotnet">
+		<ant dir="dotnet" target="dist"/>
+		<copy todir="dist">
+			<fileset dir="dotnet/dist" />
+		</copy>
+	</target>
+	
+    <target name="test-ruby">
+        <ant dir="ruby" target="all"/>
     </target>
 
-    <target name="publish-docs">
-        <copy todir="${website.root}" file="dist-image/doc/seleniumReference.html"/>
-        <copy todir="${website.root}" file="dist-image/doc/FAQ.html"/>
-        <copy todir="${website.root}" file="dist-image/doc/testrunner.html"/>
-    </target>
-
-    <target name="publish-demos">
-        <update-demo demo-dir="demo1"/>
-        <update-demo demo-dir="demo2"/>
-    </target>
-
-    <macrodef name="update-demo">
-        <attribute name="demo-dir"/>
-        <sequential>
-            <copy todir="${website.root}/@{demo-dir}" overwrite="true">
-                <fileset dir="javascript">
-                    <include name="dom-images/*"/>
-                    <include name="dom-styles/*"/>
-                    <include name="*.js"/>
-                    <include name="*.html"/>
-                    <include name="*.css"/>
-                    <include name="*.jpg"/>
-                    <include name="*.png"/>
-                    <include name="html-xpath/html-xpath-patched.js"/>
-                </fileset>
-            </copy>
-        </sequential>
-    </macrodef>
 </project>
