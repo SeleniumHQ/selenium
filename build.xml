@@ -1,0 +1,58 @@
+<project name="selenium-top" default="all">
+<description>Builds Selenium from the top-level.  Start here!</description>
+	<target name="init">
+		<property environment="env" />
+		<property name="maven.home" value="${env.MAVEN_HOME}" /> <!-- override this if necessary -->
+		<property name="mvn.overrideable.settings" value="" />
+		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
+		<presetdef name="mvn">
+			<java classname="org.codehaus.classworlds.Launcher" fork="true" failonerror="true">
+				<!--<jvmarg value="-Xdebug"/>
+				<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"/>
+				<jvmarg value="-Xnoagent"/>
+				<jvmarg value="-Djava.compiler=NONE"/>-->
+				<classpath>
+					<fileset dir="${maven.home}/core/boot" includes="classworlds-*.jar" />
+				</classpath>
+				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
+				<sysproperty key="maven.home" value="${maven.home}" />
+				<arg value="-DfirefoxDefaultPath=${firefox.location}" />
+				<arg line="${mvn.overrideable.settings}" />
+			</java>
+		</presetdef>
+		<mvn outputproperty="ignore.output" failonerror="false" resultproperty="mvn.noargs.should.be.1" />
+		<condition property="build.failed">
+			<not><equals arg1="1" arg2="${mvn.noargs.should.be.1}" /></not>
+		</condition>
+		<fail if="build.failed" message="mvn is not appropriately failing on error...&#0010;You may be affected by maven bug 2127 http://jira.codehaus.org/browse/MNG-2127" />
+		<echo message="mvn appears to be able to fail on error" />
+		
+	</target>
+
+	<target name="maven" depends="init">
+		<!-- Bug in dependency-maven-plugin forces us to do this goofy stuff -->
+		<mvn>
+			<arg value="install" />
+			<arg value="-Dmaven.test.skip=true" />
+		</mvn>
+		<mvn dir="server">
+			<arg value="install" />
+			<arg value="-Dmaven.test.skip=true" />
+		</mvn>
+		<mvn>
+			<arg value="install" />
+		</mvn>
+	</target>
+
+	<target name="all" depends="init, maven">
+		<ant dir="code" target="all"/>
+	</target>
+
+	<target name="clean" depends="init">
+		<mvn>
+			<arg value="clean" />
+		</mvn>
+		<ant dir="code" target="clean"/>
+	</target>
+
+</project>
