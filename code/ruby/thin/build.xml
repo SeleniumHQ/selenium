@@ -1,13 +1,13 @@
 <project name="selenium" default="all">
     <target name="all">
-    	<ant dir=".." target="start-server" />
+    	<ant dir="../.." target="start-server" />
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="ruby.executable" value="ruby" />
         <!--<fail message="autofail ${ruby.executable}" />-->
         <exec executable="${ruby.executable}" resultproperty="result">
             <arg line="selenium_example.rb"/>
         </exec>
-        <ant dir=".." target="stop-server" />
+        <ant dir="../.." target="stop-server" />
         <condition property="build.failed">
         	<not><equals arg1="0" arg2="${result}" /></not>
         </condition>
