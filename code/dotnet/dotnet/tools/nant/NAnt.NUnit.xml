@@ -1,0 +1,353 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NAnt.NUnit</name>
+    </assembly>
+    <members>
+        <member name="T:NAnt.NUnit.Types.FormatterData">
+            <summary>
+            Carries data specified through the formatter element.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterData.Type">
+            <summary>
+            Gets or sets the type of the formatter.
+            </summary>
+            <value>The type of the formatter.</value>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterData.UseFile">
+            <summary>
+            Gets or sets a value indicating whether output should be persisted 
+            to a file. 
+            </summary>
+            <value>
+            <see langword="true" /> if output should be written to a file; otherwise, 
+            <see langword="false" />. The default is <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterData.Extension">
+            <summary>
+            Gets or sets the extension to append to the output filename.
+            </summary>
+            <value>The extension to append to the output filename.</value>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterData.OutputDirectory">
+            <summary>
+            Gets or sets the directory where the output file should be written 
+            to, if <see cref="P:NAnt.NUnit.Types.FormatterData.UseFile"/> is <see langword="true"/>.
+            </summary> 
+            <value>
+            The directory where the output file should be written to.
+            </value>
+        </member>
+        <member name="T:NAnt.NUnit.Types.FormatterDataCollection">
+            <summary>
+            Contains a strongly typed collection of <see cref="T:NAnt.NUnit.Types.FormatterData"/> objects.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit.Types.FormatterDataCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.#ctor(NAnt.NUnit.Types.FormatterDataCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit.Types.FormatterDataCollection"/> class
+            with the specified <see cref="T:NAnt.NUnit.Types.FormatterDataCollection"/> instance.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.#ctor(NAnt.NUnit.Types.FormatterData[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit.Types.FormatterDataCollection"/> class
+            with the specified array of <see cref="T:NAnt.NUnit.Types.FormatterData"/> instances.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.Add(NAnt.NUnit.Types.FormatterData)">
+            <summary>
+            Adds a <see cref="T:NAnt.NUnit.Types.FormatterData"/> to the end of the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterData"/> to be added to the end of the collection.</param> 
+            <returns>The position into which the new element was inserted.</returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.AddRange(NAnt.NUnit.Types.FormatterData[])">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.NUnit.Types.FormatterData"/> array to the end of the collection.
+            </summary>
+            <param name="items">The array of <see cref="T:NAnt.NUnit.Types.FormatterData"/> elements to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.AddRange(NAnt.NUnit.Types.FormatterDataCollection)">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.NUnit.Types.FormatterDataCollection"/> to the end of the collection.
+            </summary>
+            <param name="items">The <see cref="T:NAnt.NUnit.Types.FormatterDataCollection"/> to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.Contains(NAnt.NUnit.Types.FormatterData)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.NUnit.Types.FormatterData"/> is in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterData"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="item"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.CopyTo(NAnt.NUnit.Types.FormatterData[],System.Int32)">
+            <summary>
+            Copies the entire collection to a compatible one-dimensional array, starting at the specified index of the target array.        
+            </summary>
+            <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param> 
+            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.IndexOf(NAnt.NUnit.Types.FormatterData)">
+            <summary>
+            Retrieves the index of a specified <see cref="T:NAnt.NUnit.Types.FormatterData"/> object in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterData"/> object for which the index is returned.</param> 
+            <returns>
+            The index of the specified <see cref="T:NAnt.NUnit.Types.FormatterData"/>. If the <see cref="T:NAnt.NUnit.Types.FormatterData"/> is not currently a member of the collection, it returns -1.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.Insert(System.Int32,NAnt.NUnit.Types.FormatterData)">
+            <summary>
+            Inserts a <see cref="T:NAnt.NUnit.Types.FormatterData"/> into the collection at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterData"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:NAnt.NUnit.Types.FormatterDataEnumerator"/> for the entire collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataCollection.Remove(NAnt.NUnit.Types.FormatterData)">
+            <summary>
+            Removes a member from the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterData"/> to remove from the collection.</param>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterDataCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+        </member>
+        <member name="T:NAnt.NUnit.Types.FormatterDataEnumerator">
+            <summary>
+            Enumerates the <see cref="T:NAnt.NUnit.Types.FormatterData"/> elements of a <see cref="T:NAnt.NUnit.Types.FormatterDataCollection"/>.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataEnumerator.#ctor(NAnt.NUnit.Types.FormatterDataCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit.Types.FormatterDataEnumerator"/> class
+            with the specified <see cref="T:NAnt.NUnit.Types.FormatterDataCollection"/>.
+            </summary>
+            <param name="arguments">The collection that should be enumerated.</param>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            <see langword="true" /> if the enumerator was successfully advanced 
+            to the next element; <see langword="false" /> if the enumerator has 
+            passed the end of the collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterDataEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the 
+            first element in the collection.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterDataEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <returns>
+            The current element in the collection.
+            </returns>
+        </member>
+        <member name="T:NAnt.NUnit.Types.FormatterType">
+            <summary>
+            The built-in formatter types.
+            </summary>
+        </member>
+        <member name="F:NAnt.NUnit.Types.FormatterType.Plain">
+            <summary>
+            A plaintext formatter.
+            </summary>
+        </member>
+        <member name="F:NAnt.NUnit.Types.FormatterType.Xml">
+            <summary>
+            An XML formatter.
+            </summary>
+        </member>
+        <member name="T:NAnt.NUnit.Types.FormatterElement">
+            <summary>
+            Represents the FormatterElement of the NUnit task.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterElement.Type">
+            <summary>
+            Type of formatter.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterElement.Extension">
+            <summary>
+            Extension to append to the output filename.
+            </summary> 
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterElement.UseFile">
+            <summary>
+            Determines whether output should be persisted to a file. The default 
+            is <see langword="false" />.
+            </summary> 
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterElement.OutputDirectory">
+            <summary>
+            Specifies the directory where the output file should be written to,
+            if <see cref="P:NAnt.NUnit.Types.FormatterElement.UseFile"/> is <see langword="true"/>.  If not 
+            specified, the output file will be written to the directory where
+            the test module is located.
+            </summary> 
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterElement.Data">
+            <summary>
+            Gets the underlying <see cref="T:NAnt.NUnit.Types.FormatterData"/> for the element.
+            </summary>
+        </member>
+        <member name="T:NAnt.NUnit.Types.FormatterElementCollection">
+            <summary>
+            Contains a strongly typed collection of <see cref="T:NAnt.NUnit.Types.FormatterElement"/> objects.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit.Types.FormatterElementCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.#ctor(NAnt.NUnit.Types.FormatterElementCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit.Types.FormatterElementCollection"/> class
+            with the specified <see cref="T:NAnt.NUnit.Types.FormatterElementCollection"/> instance.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.#ctor(NAnt.NUnit.Types.FormatterElement[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit.Types.FormatterElementCollection"/> class
+            with the specified array of <see cref="T:NAnt.NUnit.Types.FormatterElement"/> instances.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.Add(NAnt.NUnit.Types.FormatterElement)">
+            <summary>
+            Adds a <see cref="T:NAnt.NUnit.Types.FormatterElement"/> to the end of the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterElement"/> to be added to the end of the collection.</param> 
+            <returns>The position into which the new element was inserted.</returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.AddRange(NAnt.NUnit.Types.FormatterElement[])">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.NUnit.Types.FormatterElement"/> array to the end of the collection.
+            </summary>
+            <param name="items">The array of <see cref="T:NAnt.NUnit.Types.FormatterElement"/> elements to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.AddRange(NAnt.NUnit.Types.FormatterElementCollection)">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.NUnit.Types.FormatterElementCollection"/> to the end of the collection.
+            </summary>
+            <param name="items">The <see cref="T:NAnt.NUnit.Types.FormatterElementCollection"/> to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.Contains(NAnt.NUnit.Types.FormatterElement)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.NUnit.Types.FormatterElement"/> is in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterElement"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="item"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.CopyTo(NAnt.NUnit.Types.FormatterElement[],System.Int32)">
+            <summary>
+            Copies the entire collection to a compatible one-dimensional array, starting at the specified index of the target array.        
+            </summary>
+            <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param> 
+            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.IndexOf(NAnt.NUnit.Types.FormatterElement)">
+            <summary>
+            Retrieves the index of a specified <see cref="T:NAnt.NUnit.Types.FormatterElement"/> object in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterElement"/> object for which the index is returned.</param> 
+            <returns>
+            The index of the specified <see cref="T:NAnt.NUnit.Types.FormatterElement"/>. If the <see cref="T:NAnt.NUnit.Types.FormatterElement"/> is not currently a member of the collection, it returns -1.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.Insert(System.Int32,NAnt.NUnit.Types.FormatterElement)">
+            <summary>
+            Inserts a <see cref="T:NAnt.NUnit.Types.FormatterElement"/> into the collection at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterElement"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:NAnt.NUnit.Types.FormatterElementEnumerator"/> for the entire collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementCollection.Remove(NAnt.NUnit.Types.FormatterElement)">
+            <summary>
+            Removes a member from the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.NUnit.Types.FormatterElement"/> to remove from the collection.</param>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterElementCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+        </member>
+        <member name="T:NAnt.NUnit.Types.FormatterElementEnumerator">
+            <summary>
+            Enumerates the <see cref="T:NAnt.NUnit.Types.FormatterElement"/> elements of a <see cref="T:NAnt.NUnit.Types.FormatterElementCollection"/>.
+            </summary>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementEnumerator.#ctor(NAnt.NUnit.Types.FormatterElementCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.NUnit.Types.FormatterElementEnumerator"/> class
+            with the specified <see cref="T:NAnt.NUnit.Types.FormatterElementCollection"/>.
+            </summary>
+            <param name="arguments">The collection that should be enumerated.</param>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            <see langword="true" /> if the enumerator was successfully advanced 
+            to the next element; <see langword="false" /> if the enumerator has 
+            passed the end of the collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.NUnit.Types.FormatterElementEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the 
+            first element in the collection.
+            </summary>
+        </member>
+        <member name="P:NAnt.NUnit.Types.FormatterElementEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <returns>
+            The current element in the collection.
+            </returns>
+        </member>
+    </members>
+</doc>
