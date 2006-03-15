@@ -181,6 +181,7 @@ Selenium.prototype.getAlert = function() {
     }
     return this.browserbot.getNextAlert();
 };
+Selenium.prototype.getAlert.dontCheckAlertsAndConfirms = true;
 
 /*
  * Get a confirmation message, or fail if there were no confirmations.
@@ -191,6 +192,7 @@ Selenium.prototype.getConfirmation = function() {
     }
     return this.browserbot.getNextConfirmation();
 };
+Selenium.prototype.getConfirmation.dontCheckAlertsAndConfirms = true;
  
 /*
  * Get a prompt message, or fail if there were no prompts.
@@ -234,6 +236,15 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
  */
 Selenium.prototype.getTitle = function() {
     return this.page().title();
+};
+
+/*
+ * Get the entire text of the page.
+ * Note that various commands are generated from this, including
+ * assertBodyText, verifyBodyText, storeBodyText...
+ */
+Selenium.prototype.getBodyText = function() {
+    return this.page().bodyText();
 };
 
 
@@ -550,8 +561,14 @@ Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
     return this.page().setContext(context, logLevelThreshold);
 };
 
-
-
+/*
+ * Return the specified expression.  Is useful because of preprocessing.
+ * Used to generate commands like assertExpression and storeExpression.
+ * e.g. assertExpression | ${xyz} | foo
+ */
+Selenium.prototype.getExpression = function(expression) {
+	return expression;
+}
 /*
  * Wait for the target to have the specified value by polling.
  * The polling is done in TestLoop.kickoffNextCommandExecution()

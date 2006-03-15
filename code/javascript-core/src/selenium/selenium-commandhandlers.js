@@ -21,8 +21,8 @@ function CommandHandlerFactory() {
 
     var self = this;
 
-    this.registerAction = function(name, action, wait) {
-        var handler = new ActionHandler(action, wait);
+    this.registerAction = function(name, action, wait, dontCheckAlertsAndConfirms) {
+        var handler = new ActionHandler(action, wait, dontCheckAlertsAndConfirms);
         this.actions[name] = handler;
     };
 
@@ -36,19 +36,14 @@ function CommandHandlerFactory() {
         this.asserts[name] = handler;
     };
     
-    this.registerAssertUsingMatcherHandler = function(name, matcherHandler, haltOnFailure) {
-        var handler = new AssertUsingMatcherHandler(matcherHandler, haltOnFailure);
-        this.asserts[name] = handler;
-    }
-
     this.getCommandHandler = function(name) {
         return this.actions[name] || this.accessors[name] || this.asserts[name] || null;
     };
 
     this.registerAll = function(commandObject) {
+        registerAllAccessors(commandObject);
         registerAllActions(commandObject);
         registerAllAsserts(commandObject);
-        registerAllAccessors(commandObject);
     };
 
     var registerAllActions = function(commandObject) {
@@ -59,15 +54,16 @@ function CommandHandlerFactory() {
 
                 // Register the action without the wait flag.
                 var action = commandObject[functionName];
-                self.registerAction(actionName, action, false);
+                self.registerAction(actionName, action, false, false);
 
                 // Register actionName + "AndWait" with the wait flag;
                 var waitActionName = actionName + "AndWait";
-                self.registerAction(waitActionName, action, true);
+                self.registerAction(waitActionName, action, true, false);
             }
         }
     };
 
+ 
     var registerAllAsserts = function(commandObject) {
         for (var functionName in commandObject) {
             var result = /^assert([A-Z].+)$/.exec(functionName);
@@ -85,43 +81,64 @@ function CommandHandlerFactory() {
         }
     };
 
-    // Given an accessor function, return a function that matches against the command.value
-    // the value returned by the accessor when applied to a command.target.
-    // Used by commands that take a target and a value (e.g. assertValue | target | value)
-    this.createMatcherHandlerFromSingleArgAccessor = function(accessor) {
-        return function(seleniumApi, command) {
-            var accessorResult = accessor.call(seleniumApi, command.target);
-            if (PatternMatcher.matches(command.value, accessorResult)) {
-                return new MatcherHandlerResult(true, "Actual value '" + accessorResult + "' did match '" + command.value + "'");
+    
+    // Given an accessor function getBlah(target),
+    // return a "predicate" equivalient to isBlah(target, value) that
+    // is true when the value returned by the accessor matches the specified value.
+    this.createPredicateFromSingleArgAccessor = function(accessor) {
+        return function(target, value) {
+            var accessorResult = accessor.call(this, target);
+            if (PatternMatcher.matches(value, accessorResult)) {
+                return new PredicateResult(true, "Actual value '" + accessorResult + "' did match '" + value + "'");
             } else {
-                return new MatcherHandlerResult(false, "Actual value '" + accessorResult + "' did not match '" + command.value + "'");
+                return new PredicateResult(false, "Actual value '" + accessorResult + "' did not match '" + value + "'");
             }
         };
     };
     
-    // Given an accessor function, return a function that matches against the command.target
-    // the value returned by the (no-arg) accessor returns a value that matches against the command.target
-    // Used by commands that only take a target (e.g. assertTitle | target | &nbsp;)
-    this.createMatcherHandlerFromNoArgAccessor = function(accessor) {
-        return function(seleniumApi, command) {
-            var accessorResult = accessor.call(seleniumApi);
-            if (PatternMatcher.matches(command.target, accessorResult)) {
-                return new MatcherHandlerResult(true, "Actual value '" + accessorResult + "' did match '" + command.target + "'");
+    // Given a (no-arg) accessor function getBlah(),
+    // return a "predicate" equivalient to isBlah(value) that
+    // is true when the value returned by the accessor matches the specified value.
+    this.createPredicateFromNoArgAccessor = function(accessor) {
+        return function(value) {
+            var accessorResult = accessor.call(this);
+            if (PatternMatcher.matches(value, accessorResult)) {
+                return new PredicateResult(true, "Actual value '" + accessorResult + "' did match '" + value + "'");
             } else {
-                return new MatcherHandlerResult(false, "Actual value '" + accessorResult + "' did not match '" + command.target + "'");
+                return new PredicateResult(false, "Actual value '" + accessorResult + "' did not match '" + value + "'");
             }
         };
     };
     
-    // Given a matcherHandler function, return a function that returns the same result
-    // as the matcherHandler, but with the result negated.
-    // Used to create assertNot and verifyNot commands (and soon hopefully waitForNot commands).
-    this.createMatcherHandlerNegator = function(matcherHandler) {
-        return function(seleniumApi, command) {
-            var result = matcherHandler(seleniumApi, command);
-            result.didMatch = ! result.didMatch;
+    // Given an accessor fuction getBlah([target])  (target is optional)
+    // return a predicate equivalent to isBlah([target,] value) that
+    // is true when the value returned by the accessor matches the specified value.
+    this.createPredicateFromAccessor = function(accessor) {
+		if (accessor.length == 0) {
+            return self.createPredicateFromNoArgAccessor(accessor);
+        }
+        return self.createPredicateFromSingleArgAccessor(accessor);
+    };
+    
+    // Given a predicate, return the negation of that predicate.
+    // Leaves the message unchanged.
+    // Used to create assertNot, verifyNot, and waitForNot commands.
+    this.invertPredicate = function(predicate) {
+        return function(target, value) {
+            var result = predicate.call(this, target, value);
+            result.isTrue = ! result.isTrue;
             return result;
         };
+    };
+    
+    // Convert an isBlahBlah(target, value) function into an assertBlahBlah(target, value) function.
+    this.createAssertionFromPredicate = function(predicate) {
+    	return function(target, value) {
+    		var result = predicate.call(this, target, value);
+    		if (!result.isTrue) {
+    			Assert.fail(result.message);
+    		}
+    	};
     };
     
     // Register an assertion, a verification, a negative assertion,
@@ -130,26 +147,74 @@ function CommandHandlerFactory() {
         if (accessor.length > 1) {
             return;
         }
-        var matcherHandler;
-        if (accessor.length == 1) {
-            matcherHandler = self.createMatcherHandlerFromSingleArgAccessor(accessor);
-        } else {
-            matcherHandler = self.createMatcherHandlerFromNoArgAccessor(accessor);
-        }
+        var predicate = self.createPredicateFromAccessor(accessor);
+        var assertion = self.createAssertionFromPredicate(predicate);
         // Register an assert with the "assert" prefix, and halt on failure.
-        self.registerAssertUsingMatcherHandler("assert" + baseName, matcherHandler, true);
+        self.registerAssert("assert" + baseName, assertion, true);
         // Register a verify with the "verify" prefix, and do not halt on failure.
-        self.registerAssertUsingMatcherHandler("verify" + baseName, matcherHandler, false);
+        self.registerAssert("verify" + baseName, assertion, false);
         
-        var negativeMatcherHandler = self.createMatcherHandlerNegator(matcherHandler);
+        var invertedPredicate = self.invertPredicate(predicate);
+        var negativeAssertion = self.createAssertionFromPredicate(invertedPredicate);
         // Register an assertNot with the "assertNot" prefix, and halt on failure.
-        self.registerAssertUsingMatcherHandler("assertNot"+baseName, negativeMatcherHandler, true);
+        self.registerAssert("assertNot"+baseName, negativeAssertion, true);
         // Register a verifyNot with the "verifyNot" prefix, and do not halt on failure.
-        self.registerAssertUsingMatcherHandler("verifyNot"+baseName, negativeMatcherHandler, false);
+        self.registerAssert("verifyNot"+baseName, negativeAssertion, false);
     };
-
+    
+    // Convert an isBlahBlah(target, value) function into a waitForBlahBlah(target, value) function.
+    this.createWaitForActionFromPredicate = function(predicate) {
+    	var action = function(target, value) {
+    		var seleniumApi = this;
+		    testLoop.waitForCondition = function () {
+		    	try {
+				    return predicate.call(seleniumApi, target, value).isTrue;
+				} catch (e) {
+					// Treat exceptions as meaning the condition is not yet met.
+					// Useful, for example, for waitForValue when the element has
+					// not even been created yet.
+					// TODO: possibly should rethrow some types of exception.
+					return false;
+				}
+		    };
+    	};
+    	return action;
+    };
+    
+    // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
+    this.registerWaitForCommandsBasedOnAccessor = function(accessor, baseName) {
+        if (accessor.length > 1) {
+            return;
+        }
+        var predicate = self.createPredicateFromAccessor(accessor);
+        var waitForAction = self.createWaitForActionFromPredicate(predicate);
+    	self.registerAction("waitFor"+baseName, waitForAction, false, accessor.dontCheckAlertsAndConfirms);
+        var invertedPredicate = self.invertPredicate(predicate);
+        var waitForNotAction = self.createWaitForActionFromPredicate(invertedPredicate);
+	   	self.registerAction("waitForNot"+baseName, waitForNotAction, false, accessor.dontCheckAlertsAndConfirms);
+	}
+	
+	// Register a storeBlahBlah based on the specified accessor.
+    this.registerStoreCommandBasedOnAccessor = function(accessor, baseName) {
+        if (accessor.length > 1) {
+            return;
+        }
+        var action;
+        if (accessor.length == 1) {
+	    	action = function(target, varName) {
+			    storedVars[varName] = accessor.call(this, target);
+	    	};
+	    } else {
+	    	action = function(varName) {
+			    storedVars[varName] = accessor.call(this);
+	    	};
+	    }
+    	self.registerAction("store"+baseName, action, false, accessor.dontCheckAlertsAndConfirms);
+    };
+        
     // Methods of the form getFoo(target) result in commands:
     // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
+    // storeFoo, waitForFoo, and waitForNotFoo.
     var registerAllAccessors = function(commandObject) {
         for (var functionName in commandObject) {
             var match = /^get([A-Z].+)$/.exec(functionName);
@@ -158,6 +223,8 @@ function CommandHandlerFactory() {
                 var baseName = match[1];
                 self.registerAccessor(functionName, accessor);
                 self.registerAssertionsBasedOnAccessor(accessor, baseName);
+                self.registerStoreCommandBasedOnAccessor(accessor, baseName);
+                self.registerWaitForCommandsBasedOnAccessor(accessor, baseName);
             }
         }
     };
@@ -165,36 +232,37 @@ function CommandHandlerFactory() {
     
 }
 
-function MatcherHandlerResult(didMatch, message) {
-    this.didMatch = didMatch;
+function PredicateResult(isTrue, message) {
+    this.isTrue = isTrue;
     this.message = message;
 }
 
-// NOTE: The CommandHandler is effectively an abstract base for ActionHandler,
-//      AccessorHandler and AssertHandler.
+// NOTE: The CommandHandler is effectively an abstract base for
+// various handlers including ActionHandler, AccessorHandler and AssertHandler.
+// Subclasses need to implement an execute(seleniumApi, command) function,
+// where seleniumApi is the Selenium object, and command a SeleniumCommand object.
 function CommandHandler(type, haltOnFailure, executor) {
     this.type = type;
     this.haltOnFailure = haltOnFailure;
     this.executor = executor;
 }
-CommandHandler.prototype.execute = function(seleniumApi, command) {
-    return new CommandResult(this.executor.call(seleniumApi, command.target, command.value));
-};
 
-function ActionHandler(action, wait) {
+// An ActionHandler is a command handler that executes the sepcified action,
+// possibly checking for alerts and confirmations (if checkAlerts is set), and
+// possibly waiting for a page load if wait is set.
+function ActionHandler(action, wait, dontCheckAlerts) {
     CommandHandler.call(this, "action", true, action);
     if (wait) {
         this.wait = true;
     }
+    // note that dontCheckAlerts could be undefined!!!
+    this.checkAlerts = (dontCheckAlerts) ? false : true;
 }
 ActionHandler.prototype = new CommandHandler;
 ActionHandler.prototype.execute = function(seleniumApi, command) {
-    if ( seleniumApi.browserbot.hasAlerts() ) {
-        throw new SeleniumCommandError("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
-    }
-    if ( seleniumApi.browserbot.hasConfirmations() ) {
-        throw new SeleniumCommandError("There was an unexpected Confirmation! [" + seleniumApi.browserbot.getNextConfirmation() + "]");
-    }
+	if (this.checkAlerts) {
+		this.checkForAlerts(seleniumApi);
+	}
     var processState = this.executor.call(seleniumApi, command.target, command.value);
     // If the handler didn't return a wait flag, check to see if the
     // handler was registered with the wait flag.
@@ -202,6 +270,14 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
         processState = SELENIUM_PROCESS_WAIT;
     }
     return new CommandResult(processState);
+};
+ActionHandler.prototype.checkForAlerts = function(seleniumApi) {
+    if ( seleniumApi.browserbot.hasAlerts() ) {
+        throw new SeleniumError("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
+    }
+    if ( seleniumApi.browserbot.hasConfirmations() ) {
+        throw new SeleniumError("There was an unexpected Confirmation! [" + seleniumApi.browserbot.getNextConfirmation() + "]");
+    }
 };
 
 function AccessorHandler(accessor) {
@@ -216,18 +292,16 @@ AccessorHandler.prototype.execute = function(seleniumApi, command) {
 };
 
 /**
- * Abstract handler for assertions and verifications.
- * Subclasses need to override executeAssertion() which in turn
- * should throw an AssertFailedError if the assertion is to fail. 
+ * Handler for assertions and verifications.
  */
-function AbstractAssertHandler(assertion, haltOnFailure) {
+function AssertHandler(assertion, haltOnFailure) {
     CommandHandler.call(this, "assert", haltOnFailure || false, assertion);
 }
-AbstractAssertHandler.prototype = new CommandHandler;
-AbstractAssertHandler.prototype.execute = function(seleniumApi, command) {
+AssertHandler.prototype = new CommandHandler;
+AssertHandler.prototype.execute = function(seleniumApi, command) {
     var result = new CommandResult();
     try {
-        this.executeAssertion(seleniumApi, command);
+        this.executor.call(seleniumApi, command.target, command.value);
         result.passed = true;
     } catch (e) {
         // If this is not a AssertionFailedError, or we should haltOnFailure, rethrow.
@@ -235,38 +309,13 @@ AbstractAssertHandler.prototype.execute = function(seleniumApi, command) {
             throw e;
         }
         if (this.haltOnFailure) {
-            var error = new SeleniumCommandError(e.failureMessage);
+            var error = new SeleniumError(e.failureMessage);
             throw error;
         }
         result.failed = true;
         result.failureMessage = e.failureMessage;
     }
     return result;
-};
-
-/**
- * Simple assertion handler whose command is expected to do the actual assertion.
- */
-function AssertHandler(assertion, haltOnFailure) {
-    CommandHandler.call(this, "assert", haltOnFailure || false, assertion);
-};
-AssertHandler.prototype = new AbstractAssertHandler;
-AssertHandler.prototype.executeAssertion = function(seleniumApi, command) {
-        this.executor.call(seleniumApi, command.target, command.value);
-};
-
-/**
- * Assertion handler whose command is expected to be a matcher-handler
- */
-function AssertUsingMatcherHandler(matcherHandler, haltOnFailure) {
-    CommandHandler.call(this, "assert", haltOnFailure || false, matcherHandler);
-};
-AssertUsingMatcherHandler.prototype = new AbstractAssertHandler;
-AssertUsingMatcherHandler.prototype.executeAssertion = function(seleniumApi, command) {
-        var matcherResult = this.executor(seleniumApi, command);
-        if (!matcherResult.didMatch) {
-            Assert.fail(matcherResult.message);
-        }
 };
 
 
@@ -280,12 +329,3 @@ function SeleniumCommand(command, target, value) {
     this.target = target;
     this.value = value;
 }
-
-// TODO: dkemp - This is the same as SeleniumError as defined in selenium-browserbot.js
-// I defined a new error simply to avoid creating a new dependency.
-// Need to revisit to avoid this duplication.
-function SeleniumCommandError(message) {
-    var error = new Error(message);
-    error.isSeleniumError = true;
-    return error;
-};

@@ -49,6 +49,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td>storedTextClass</td>
     </tr>
     <tr>
+        <td>storeTitle</td>
+    	<td>storedTitle</td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
       <td>store</td>
       <td>PLAIN TEXT</td>
       <td>textVariable</td>
@@ -114,6 +119,16 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theText</td>
       <td>Pi ~= 3.14</td>
     </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${storedTitle}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>theTitle</td>
+    </tr>
 
     <!-- Test multiple output variables in a single expression -->
     <tr>
@@ -138,6 +153,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td>openPageText</td>
       <td></td>
     </tr>
+    <tr> <!-- This new command should replace the old usage of storeValue -->
+      <td>storeBodyText</td>
+      <td>storedBodyText</td>
+      <td></td>
+    </tr>
     <tr>
       <td>open</td>
       <td>./tests/html/test_store_value.html</td>
@@ -156,6 +176,12 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
       <td>verifyValue</td>
       <td>theText</td>
+      <td>This is the entire text of the page.</td>
+    </tr>
+
+    <tr>
+      <td>verifyExpression</td>
+      <td>${storedBodyText}</td>
       <td>This is the entire text of the page.</td>
     </tr>
 

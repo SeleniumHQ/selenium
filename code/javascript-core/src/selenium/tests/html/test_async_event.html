@@ -21,7 +21,16 @@ Copyright 2004 ThoughtWorks, Inc
 <form name="theForm">
   <input id="theField" value="oldValue"/>
   <br>
-  <input type="button" name="theButton" onclick="javascript: changeFieldValue();"/>
+  <input type="button" name="theButton" value="Delayed Field Change" onclick="javascript: changeFieldValue();"/>
+  <br>
+  <br>
+  <span id="theSpan">Some text</span>
+  <br>
+  <br>
+  <input type="button" name="theSpanButton" value="Delayed Text Change" onclick="javascript: changeSpanText();"/>
+  <br>
+  <br>
+  <input type="button" name="theAlertButton" value="Delayed Alert"onclick="javascript: delayedAlert();"/>
 </form>
 </body>
 
@@ -29,6 +38,12 @@ Copyright 2004 ThoughtWorks, Inc
 <!--
 function changeFieldValue() {
   setTimeout("document.theForm.theField.value = 'newValue'", 500);
+}
+function changeSpanText() {
+  setTimeout("document.getElementById('theSpan').textContent = 'Some new text'", 500);
+}
+function delayedAlert() {
+  setTimeout("alert('An alert')", 500);
 }
 -->
 </script>
