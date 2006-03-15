@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>BrowserBot tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-logging.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+function setUp() {
+    LOG = new DummyLogger();
+    mockFrame = new String('mockFrame');
+
+    mockFrame.contentWindow = new String('mockContentWindow');
+    mockFrame.contentWindow.window = new String('mockWindow');
+
+    browserBot = new MozillaBrowserBot(mockFrame);
+
+    browserBot.currentWindowName = 'originalWindowName';
+    browserBot.currentPage = 'originalPage';
+}
+
+function testPageAndCurrentWindowNameIsSetToNullWhenSelectWindowIsCalledWithNull() {
+    browserBot.selectWindow('null');
+
+    assertNull(browserBot.currentPage);
+    assertNull(browserBot.currentWindowName);
+}
+
+function testPageIsSetToNullAndCurrentWindowIsSetWhenSelectWindowIsCalledWithNonNull() {
+    // Make sure new window can be found
+    mockFrame.contentWindow.window.windowName = new String('anotherWindow');
+
+    browserBot.selectWindow('windowName');
+
+    assertNull(browserBot.currentPage);
+    assertEquals('windowName', browserBot.currentWindowName);
+}
+
+function testExceptionWhenSelectWindowIsCalledWithUnknownWindowName() {
+    try {
+        browserBot.selectWindow('notAwindow');
+        fail("Should have thrown exception");
+    }
+    catch (e) {
+        assertEquals("Window does not exist", e.message);
+    }
+}
+
+function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocation() {
+    browserBot.openLocation('myNewLocation');
+
+    assertNull(browserBot.currentPage);
+    assertEquals('myNewLocation', mockFrame.src);
+}
+
+function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIsNull() {
+    browserBot.currentWindowName = null;
+    browserBot.currentPage = null;
+
+    var mockLocation = new Mock();
+    mockLocation.expectsProperty('pathname').returns('thelocation');
+
+    mockFrame.contentWindow.window.location = mockLocation;
+    mockFrame.contentWindow.window.document = 'thedocument';
+    mockFrame.contentWindow.window.addEventListener = function(){};
+    mockFrame.contentWindow.window.attachEvent = function(){};
+
+    var pageBot = browserBot.getCurrentPage();
+    assertEquals(pageBot, browserBot.currentPage);
+
+    assertEquals(mockFrame.contentWindow.window, pageBot.currentWindow);
+    assertEquals('thedocument', pageBot.currentDocument);
+    assertEquals(mockLocation, pageBot.location);
+
+    mockLocation.verify();
+}
+
+function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSet() {
+    browserBot.currentPage = null;
+
+    var mockLocation = new Mock();
+    mockLocation.expectsProperty('pathname').returns('thelocation');
+
+    targetWindow = new String('anotherWindow');
+    targetWindow.location = mockLocation;
+    targetWindow.addEventListener = function(){};
+    targetWindow.attachEvent = function(){};
+
+    mockFrame.contentWindow.window.targetWindow = targetWindow;
+
+    browserBot.currentWindowName = 'targetWindow';
+
+    var pageBot = browserBot.getCurrentPage();
+    assertEquals(targetWindow, pageBot.currentWindow);
+
+    mockLocation.verify();
+}
+</script>
+  </head>
+  <body>Selenium BrowserBot Tests</body>
+</html>

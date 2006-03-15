@@ -1,0 +1,109 @@
+<project name="Selenium Javascript Build" default="run_jsunit_tests" basedir=".">
+
+    <property name="version" value="0.2"/>
+
+    <!-- global properties -->
+    <property name="JSUnitHome" value="${basedir}/jsunit"/>
+    <property name="WebServerPort" value="8000"/> <!-- this must match the hardcoded value in tinyWebServer.py -->
+
+    <path id="JSUnitClassPath">
+        <fileset dir="${JSUnitHome}/java/lib">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${JSUnitHome}/java/bin">
+            <include name="jsunit.jar"/>
+        </fileset>
+    </path>
+
+
+    <!-- Private independant targets -->
+    <target name="-start_web_server">
+        <exec executable="startWebServer.bat" spawn="true"/>
+        <waitfor maxwaitunit="second" maxwait="5" timeoutproperty="webserver.timeout">
+            <http url="http://localhost:${WebServerPort}"/>
+        </waitfor>
+        <fail message="Timed out waiting for http://localhost:${WebServerPort}" if="webserver.timeout"/>
+    </target>
+
+    <target name="-stop_web_server" description="Stops a web server">
+        <exec executable="stopWebServer.bat"/>
+    </target>
+
+    <target name="-execute_jsunit_tests">
+
+        <property name="JSUnitServerPort" value="8080"/>
+
+        <!-- TODO : Make this locally configurable without needing to hack build.xml -->
+        <property name="browserFileNames" value="c:\program files\Mozilla Firefox\firefox.exe,c:\program files\internet explorer\iexplore.exe"/>
+
+        <property name="JSUnitSuitePath" value="/tests/jsUnitSuite.html"/>
+        <property name="JSUnitTestRunnerPath" value="/jsunit/testRunner.html"/>
+
+        <!-- TODO: Theres a lot of moving parts here!
+                 - The JSUnit testrunner and the tests themselves are served to the browser by the (python) webserver
+                 - The Browser communicates with the build via a JSUnit server running on jetty
+           - consolidate to one webserver?
+           - Get runner and tests from the filesystem instead?
+        -->
+        <property name="testUrl" value="http://localhost:${WebServerPort}${JSUnitTestRunnerPath}?testPage=http://localhost:${WebServerPort}${JSUnitSuitePath}&amp;autoRun=true&amp;submitresults=localhost:${JSUnitServerPort}/jsunit/acceptor"/>
+
+        <junit showoutput="true" failureproperty="JSUnitTestsFailed">
+            <classpath refid="JSUnitClassPath"/>
+            <sysproperty key="browserFileNames" value="${browserFileNames}"/>
+            <sysproperty key="url" value="${testUrl}"/>
+            <sysproperty key="port" value="${JSUnitServerPort}"/>
+            <sysproperty key="logsDirectory" value="jsunit-logs"/>
+            <test name="net.jsunit.StandaloneTest"/>
+        </junit>
+    </target>
+
+    <target name="-check_for_jsunit_failure">
+        <fail message="One or more JSUnit Tests Failed" if="JSUnitTestsFailed"/>
+    </target>
+
+    <!-- Dependancy Targets -->
+    <target name="--run_jsunit_tests" depends=" -start_web_server, -execute_jsunit_tests, -stop_web_server, -check_for_jsunit_failure"/>
+
+    <!-- Public Targets -->
+    <target name="run_jsunit_tests" description="Runs selenium JSUnit tests" depends="--run_jsunit_tests"/>
+
+    <target name="dist">
+
+        <mkdir dir="dist"/>    
+
+        <echo file="dist/readme.txt">Create a TestSuite.html page, and a number of test pages here. Read the docs!</echo>
+
+        <zip destfile="dist/selenium-${version}-inbrowser.zip">
+            <zipfileset dir="dist" prefix="tests/html">
+                <include name="readme.txt"/>            
+            </zipfileset>
+            <fileset dir=".">
+                <exclude name="dist/**"/>            
+                <exclude name="SeleneseRunner.html"/>            
+                <exclude name="jsmock/**"/>            
+                <exclude name="jsunit/**"/>            
+                <exclude name="jsunit-logs/**"/>
+                <exclude name="tests/**"/>            
+                <exclude name="build.xml"/>            
+                <exclude name="**/web.xml"/>            
+            </fileset>
+        </zip>
+
+        <zip destfile="dist/selenium-${version}-inbrowser-src.zip">
+            <fileset dir=".">
+                <exclude name="dist/**"/>            
+                <include name="**"/>
+            </fileset>
+        </zip>
+        <delete file="dist/readme.txt"/>
+  
+    </target>
+    <target name="publish-dist" depends="dist">
+    
+        <copy todir="../../website/webapps/ROOT" file="dist/selenium-${version}-inbrowser-src.zip"/>
+        <copy todir="../../website/webapps/ROOT" file="dist/selenium-${version}-inbrowser.zip"/>
+
+    </target>
+
+
+</project>

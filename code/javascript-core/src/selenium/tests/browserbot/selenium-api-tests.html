@@ -1,0 +1,412 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>BrowserBot tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript">
+function setUp() {
+    mockPageBot = new Mock();
+
+    mockBrowserBot = new Mock();
+    mockBrowserBot.getCurrentPage = function() { return mockPageBot; };
+
+    selenium = new Selenium(mockBrowserBot);
+    assertEquals(mockPageBot, selenium.page());
+}
+
+function verifyMocks() {
+    mockBrowserBot.verify();
+    mockPageBot.verify();
+}
+
+// Tests for Element actions
+function testClickElementWithoutCallback() {
+    mockPageBot.expects("findElement", "id").returns("elementToClick");
+    mockPageBot.expects("clickElement", "elementToClick");
+
+    selenium.doClick("id");
+    verifyMocks();
+}
+
+function testType() {
+    mockPageBot.expects("findElement", "id").returns("elementToType");
+    mockPageBot.expects("replaceText", "elementToType", "new text");
+
+    selenium.doType("id", "new text");
+    verifyMocks();
+}
+
+function testSelect() {
+    var mockOptionLocatorFactory = new Mock();
+    selenium.optionLocatorFactory = mockOptionLocatorFactory;
+    var mockSelect = new Mock();
+    // The doSelect() method checks the options property exists as a way
+    // of ensuring that the element is a Select element.  Hence the following expectation.
+    mockSelect.expectsProperty("options").returns("some options");
+    mockPageBot.expects("findElement", "id").returns(mockSelect);
+    var mockOptionLocator = new Mock();
+    mockOptionLocatorFactory.expects("fromLocatorString", "Option One").returns(mockOptionLocator);
+    var option = new Object();
+    mockOptionLocator.expects("findOption", mockSelect).returns(option);
+    mockPageBot.expects("selectOption", mockSelect, option);
+
+    selenium.doSelect("id", "Option One");
+    mockOptionLocatorFactory.verify();
+    mockOptionLocator.verify();
+    mockSelect.verify();
+    verifyMocks();
+}
+
+// Browser actions
+function testOpen() {
+    mockBrowserBot.expects("openLocation", "new/location");
+
+    selenium.doOpen("new/location");
+    verifyMocks();
+}
+
+function testSelectWindow() {
+    mockBrowserBot.expects("selectWindow", "windowName");
+
+    selenium.doSelectWindow("windowName");
+    verifyMocks();
+}
+
+// Verify functions
+function testVerifyLocationSuccess() {
+    var mockLocation = {pathname:'http://page/path', search:'?foo=bar'};
+    mockPageBot.expectsProperty("location").returns(mockLocation);
+    selenium.assertLocation("path");
+    selenium.assertLocation("page/path");
+    selenium.assertLocation("http://page/path");
+    selenium.assertLocation("page/path?foo=bar");
+    selenium.assertLocation("http://page/path?foo=bar");
+    verifyMocks();
+}
+
+function testVerifyLocationFailed() {
+    var mockLocation = {pathname:'http://page/path', search:'?foo=bar'};
+    mockPageBot.expectsProperty("location").returns(mockLocation);
+    assertCallFails("Verify location should have failed",
+                    function() {selenium.assertLocation("bar");});
+    assertCallFails("Verify location should have failed",
+                    function() {selenium.assertLocation("http://page/");});
+    assertCallFails("Verify location should have failed",
+                    function() {selenium.assertLocation("http://page/path?foo");});
+    verifyMocks();
+}
+
+function testGetTitleReturnsTheTitle() {
+    mockPageBot.expects("title").returns("foo");
+    assertEquals("foo", selenium.getTitle());
+    verifyMocks();
+}
+
+function testGetValueOfText() {
+    var mockTextControl = Object();
+    mockTextControl.type = "TEXT";
+    mockTextControl.value = "the value";
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    assertEquals("the value", selenium.getValue("id"));
+    verifyMocks();
+}
+
+function testGetValueOfCheckbox() {
+    var mockControl = Object();
+    mockControl.type = "CHECKBOX";
+    mockControl.value = "the value";
+    mockControl.checked = true;
+    mockPageBot.expects("findElement", "id").returns(mockControl);
+
+    assertEquals("on", selenium.getValue("id"));
+    verifyMocks();
+}
+
+function testGetText() {
+    var mockElement = new Object();
+    mockElement.textContent = " foo ";
+    mockPageBot.expects("findElement", "id").returns(mockElement);
+    assertEquals("foo", selenium.getText("id"));
+    verifyMocks();
+}
+
+function getMockTable() {
+    var mockTable = new Object();
+    var row1 = new Object();
+    row1.cells = [textCell("foo"), textCell("bar")];
+    var row2 = new Object();
+    row2.cells = [textCell("fuz"), textCell("buz")];
+    mockTable.rows = [row1, row2];
+    return mockTable;
+}
+
+function textCell(val) {
+   var cell = new Object();
+   cell.textContent = val;
+   return cell;
+}
+
+function testGetTableSuccess() {
+    mockPageBot.expects("findElement", "table").returns(getMockTable());
+    assertEquals("buz", selenium.getTable("table.1.1"));
+    verifyMocks();
+}
+
+function testGetTableInvalidLocator() {
+    assertCallErrors("VerifyTable should have failed for invalid locator",
+                    function() {selenium.getTable("foo");},
+                    "Invalid target format. Correct format is tableName.rowNum.columnNum");
+    verifyMocks();
+}
+
+function testGetTableNoSuchRow() {
+    var mockTable = getMockTable();
+    mockPageBot.expects("findElement", "table").returns(mockTable);
+    assertCallFails("VerifyTable should have failed for no such row",
+                    function() {selenium.getTable("table.11.0", "bar");},
+                    "Cannot access row 11 - table has 2 rows");
+    verifyMocks();
+}
+
+function testGetTableNoSuchColumn() {
+    var mockTable = getMockTable();
+    mockPageBot.expects("findElement", "table").returns(mockTable);
+    assertCallFails("VerifyTable should have failed for no such column",
+                    function() {selenium.getTable("table.0.11", "bar");},
+                    "Cannot access column 11 - table row has 2 columns");
+    verifyMocks();
+}
+
+function testVerifyTextPresentSuccess() {
+    mockPageBot.expects("bodyText").returns("this is some foo text");
+    selenium.assertTextPresent("foo");
+    verifyMocks();
+}
+
+function testVerifyTextPresentFailed() {
+    mockPageBot.expects("bodyText").returns("this is some foo text");
+
+    assertCallFails("Verify text should have failed",
+                    function() { selenium.assertTextPresent("bar");});
+    verifyMocks();
+}
+
+function testVerifyElementPresentSuccess() {
+    mockPageBot.expects("findElement", "id").returns("foo");
+    selenium.assertElementPresent("id");
+    verifyMocks();
+}
+
+function testVerifyElementPresentFailure() {
+    mockPageBot.expects("findElement", "id").andThrows("foo");
+
+    assertCallFails("VerifyElementPresent should have failed",
+                    function() {selenium.assertElementPresent("id");});
+    verifyMocks();
+}
+
+function testVerifyElementNotPresentSuccess() {
+    mockPageBot.expects("findElement", "id").andThrows("foo");
+    selenium.assertElementNotPresent("id");
+    verifyMocks();
+}
+
+function testGetAllButtonsShouldCallPageBot() {
+    mockPageBot.expects("getAllButtons").returns("foo");
+    selenium.getAllButtons();
+    verifyMocks();
+}
+
+function testGetAllFieldsShouldCallPageBot() {
+    mockPageBot.expects("getAllFields").returns("foo");
+    selenium.getAllFields();
+    verifyMocks();
+}
+
+function testGetAllLinksShouldCallPageBot() {
+    mockPageBot.expects("getAllLinks").returns("foo");
+    selenium.getAllLinks();
+    verifyMocks();
+}
+
+function testVerifyElementNotPresentFailure() {
+    mockPageBot.expects("findElement", "id").returns("foo");
+
+    assertCallFails("VerifyElementNotPresent should have failed",
+                    function() { selenium.assertElementNotPresent("id"); });
+    verifyMocks();
+}
+
+function testShouldFailIfTryToGetAlertWhenThereAreNone() {
+    mockBrowserBot.expects("hasAlerts").returns(false);
+
+    assertCallFails("getAlert should have failed",
+                    function() {selenium.getAlert(); },
+                    "There were no alerts");
+
+    verifyMocks();
+}
+
+function testGetAlertReturnsNextAlert() {
+    mockBrowserBot.expects("hasAlerts").returns(true);
+    mockBrowserBot.expects("getNextAlert").returns("The real alert");
+
+    assertEquals("The real alert", selenium.getAlert());
+
+    verifyMocks();
+}
+
+function testShouldFailIfTryToVerifyConfirmationWhenThereAreNone() {
+    mockBrowserBot.expects("hasConfirmations").returns(false);
+
+    assertCallFails("verifyConfirmation should have failed",
+                    function() {selenium.getConfirmation();},
+                    "There were no confirmations");
+
+    verifyMocks();
+}
+
+function testGetConfirmationReturnsNextConfirmation() {
+      mockBrowserBot.expects("hasConfirmations").returns(true);
+      mockBrowserBot.expects("getNextConfirmation").returns("The real confirmation");
+
+     assertEquals("The real confirmation", selenium.getConfirmation());
+
+     verifyMocks();
+}
+
+function testShouldTellBroswerBotIfAskedToCancelNextConfirmation() {
+     mockBrowserBot.expects("cancelNextConfirmation");
+     selenium.doChooseCancelOnNextConfirmation();
+     verifyMocks();
+}
+
+function testVerifySelectedSuccess() {
+    var mockTextControl = Object();
+    mockTextControl.selectedIndex = 1;
+    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    selenium.assertSelected("id", "option1");
+    verifyMocks();
+}
+
+function testVerifySelectedFailed() {
+    var mockTextControl = Object();
+    mockTextControl.selectedIndex = 1;
+    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    assertCallFails("Verify selected should have failed.",
+                    function() {selenium.assertSelected("id", "option2");});
+    verifyMocks();
+}
+
+function testVerifySelectOptionsSuccess() {
+    var mockTextControl = Object();
+    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    selenium.assertSelectOptions("id", "option0,option1,option2");
+    verifyMocks();
+}
+
+function testVerifySelectOptionsFailed() {
+    var mockTextControl = Object();
+    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    assertCallFails("Verify select options failed.",
+                    function() { selenium.assertSelectOptions("id", "option0"); });
+    verifyMocks();
+}
+
+function testVerifySelectOptionsWithCommasEscaped() {
+    var mockTextControl = Object();
+    mockTextControl.options = [{text: "option,0"},{text: "option.1"}];
+    mockPageBot.expects("findElement", "id").returns(mockTextControl);
+
+    selenium.assertSelectOptions("id", "option\\,0,option.1");
+    verifyMocks();
+}
+
+function testGetAttributeWithId() {
+    mockPageBot.expects("findAttribute", "id@attribute").returns("foo");
+
+    assertEquals("foo", selenium.getAttribute("id@attribute"));
+    verifyMocks();
+}
+
+
+function testWaitForCreatesWaitForConditionOnTestLoop() {
+    var mockElement = new Object();
+    mockElement.value = "oldValue";
+    mockPageBot.expects("findElement", "id").returns(mockElement);
+    testLoop = new Object();
+
+    assertEquals(undefined, testLoop.waitForCondition);
+
+    selenium.doWaitForValue("id", "newValue");
+
+    assertNotEquals(undefined, testLoop.waitForCondition);
+    assertFalse("Wait condition should not yet be true",
+                 testLoop.waitForCondition());
+    mockElement.value = "newValue";
+    assertTrue( "Wait condition should now be true",
+               testLoop.waitForCondition());
+}
+
+function assertCallFails(message, theCall, expectedFailureMessage) {
+    try {
+        theCall();
+    } catch (e) {
+        if (!e.isAssertionFailedError) {
+            throw e;
+        }
+        if (expectedFailureMessage) {
+            assertEquals(expectedFailureMessage, e.failureMessage);
+        }
+        return;
+    }
+    fail(message);
+}
+function assertCallErrors(message, theCall, expectedFailureMessage) {
+    try {
+        theCall();
+    } catch (e) {
+        if (expectedFailureMessage) {
+            assertEquals(expectedFailureMessage, e.message);
+        }
+        return;
+    }
+    fail(message);
+}
+</script>
+  </head>
+  <body>Selenium API Tests</body>
+</html>

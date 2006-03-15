@@ -1,0 +1,79 @@
+<html>
+
+<head>
+<title>Selenium Log Console</title>
+<link id="cssLink" rel="stylesheet" href="selenium.css" />
+
+</head>
+<body id="logging-console">
+
+<script language="JavaScript">
+
+var logLevels = {
+    debug: 0,
+    info: 1,
+    warn: 2,
+    error: 3
+};
+
+var logLevelThreshold = null;
+
+function getThresholdLevel() {
+    var buttons = document.getElementById('logLevelChooser').level;
+    for (var i = 0; i < buttons.length; i++) {
+        if (buttons[i].checked) {
+            return buttons[i].value;
+        }
+    }
+}
+
+function setThresholdLevel(logLevel) {
+    logLevelThreshold = logLevel;
+    var buttons = document.getElementById('logLevelChooser').level;
+    for (var i = 0; i < buttons.length; i++) {
+    	if (buttons[i].value==logLevel) {
+            buttons[i].checked = true;
+        }
+        else {
+            buttons[i].checked = false;
+        }
+    }
+}
+
+function append(message, logLevel) {
+    if (logLevelThreshold==null) {
+    	logLevelThreshold = getThresholdLevel();
+    }
+    if (logLevels[logLevel] < logLevels[logLevelThreshold]) {
+        return;
+    }
+    var log = document.getElementById('log');
+    var newEntry = document.createElement('li');
+    newEntry.className = logLevel;
+    newEntry.appendChild(document.createTextNode(message));
+    log.appendChild(newEntry);
+    if (newEntry.scrollIntoView) {
+        newEntry.scrollIntoView();
+    }
+}
+
+</script>
+
+<div id="banner">
+  <form id="logLevelChooser">
+      <input id="level-error" type="radio" name="level" 
+             value="error" /><label for="level-error">Error</label>
+      <input id="level-warn" type="radio" name="level"
+             value="warn" /><label for="level-warn">Warn</label>
+      <input id="level-info" type="radio" name="level" checked="yes"
+             value="info" /><label for="level-info">Info</label>
+      <input id="level-debug" type="radio" name="level" 
+             value="debug" /><label for="level-debug">Debug</label>
+  </form>
+  <h1>Selenium Log Console</h1>
+</div>
+
+<ul id="log"></ul>
+
+</body>
+</html>

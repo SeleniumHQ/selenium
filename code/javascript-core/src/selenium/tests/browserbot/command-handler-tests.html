@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Test for the CommandHandler</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="/selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function testCommandHandlerExecuteCallsTheExecutorFunction() {
+    var called = false;
+    var executor = function() { called = true;};
+    var handler = new CommandHandler("name", false, executor);
+    handler.execute("selenium", "command");
+
+    assertTrue(called);
+}
+
+
+function testShouldFailActionCommandsIfAlertPresent() {
+
+     mockBrowserBot = new Mock();
+
+     function MockSelenium() {
+        this.browserbot = mockBrowserBot;
+     }
+
+     mockBrowserBot.expects("hasAlerts").returns(true);
+     mockBrowserBot.expects("getNextAlert").returns("The Alert");
+
+     var executorCalled = false;
+     var executor = function() { executorCalled = true;};
+     var handler = new ActionHandler(executor, false);
+     try {
+        handler.execute(new MockSelenium(), "command");
+        fail("Command Should have failed");
+     } catch ( e ) {
+        assertTrue(e.isSeleniumError);
+        assertEquals("There was an unexpected Alert! [The Alert]", e.message);
+     }
+
+     assertFalse(executorCalled);
+     mockBrowserBot.verify();
+}
+
+function testShouldFailActionCommandsIfConfirmPresent() {
+
+     mockBrowserBot = new Mock();
+
+     function MockSelenium() {
+        this.browserbot = mockBrowserBot;
+     }
+
+     mockBrowserBot.expects("hasAlerts").returns(false);
+     mockBrowserBot.expects("hasConfirmations").returns(true);
+     mockBrowserBot.expects("getNextConfirmation").returns("The Confirmation");
+
+     var executorCalled = false;
+     var executor = function() { executorCalled = true;};
+     var handler = new ActionHandler(executor, false);
+     try {
+        handler.execute(new MockSelenium(), "command");
+        fail("Command Should have failed");
+     } catch ( e ) {
+        assertTrue(e.isSeleniumError);
+        assertEquals("There was an unexpected Confirmation! [The Confirmation]", e.message);
+     }
+
+     assertFalse(executorCalled);
+     mockBrowserBot.verify();
+}
+
+function testAccessorHandlerShouldReturnResultInCommandResult() {
+        function MockSelenium() {
+     }
+
+        var executorCalled = false;
+        var executor = function() { executorCalled = true; return "foo"; };
+        var handler = new AccessorHandler(executor, false);
+
+        result = handler.execute(new MockSelenium(), "command");
+
+        assertTrue(executorCalled);
+        assertEquals("foo", result.result);
+}
+
+</script>
+  </head>
+
+  <body>
+    <h1>CommandHandler component tests</h1>
+
+    <p>This page contains tests for different components in the CommandHandler. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
+  </body>
+</html>
