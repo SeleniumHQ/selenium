@@ -46,18 +46,18 @@
 
     <releases>
         <release>
-            <version>0.7.2-RC (Release Candidate)</version>
-            <date>04/03/2006</date>
+            <version>0.7.2</version>
+            <date>03/14/2006</date>
             <jiraId>10203</jiraId>
             <downloads>
                 <download>
-                  <url>http://www.openqa.org/selenium-ide/releases/selenium-ide-0.7.2-RC.xpi</url>
+                  <url>http://www.openqa.org/selenium-ide/releases/selenium-ide-0.7.2.xpi</url>
                   <name>Firefox extension (requires Firefox 1.5 or 1.5.0.*)</name>
                 </download>
             </downloads>
         </release>
         <release>
-            <version>0.7.1 (Stable)</version>
+            <version>0.7.1</version>
             <date>02/15/2006</date>
             <jiraId>10202</jiraId>
             <downloads>
