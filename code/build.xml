@@ -66,7 +66,7 @@
 
     <target name="dist-ruby" depends="dist-image-doc">
         <copy todir="dist-image/ruby">
-            <fileset dir="ruby">
+            <fileset dir="ruby/thin">
                 <include name="*.rb"/>
                 <exclude name="readme.txt"/>
             </fileset>
@@ -76,7 +76,7 @@
         <zip zipfile="dist/${ruby.release}.zip">
             <zipfileset dir="dist-image/doc" prefix="${ruby.release}/doc"/>
             <zipfileset dir="dist-image/ruby" prefix="${ruby.release}/ruby"/>
-            <zipfileset file="ruby/readme.txt" prefix="${ruby.release}"/>
+            <zipfileset file="ruby/thin/readme.txt" prefix="${ruby.release}"/>
         </zip>
     </target>
 
@@ -167,7 +167,7 @@
 	</target>
 	
     <target name="test-ruby">
-        <ant dir="ruby" target="all"/>
+        <ant dir="ruby/thin" target="all"/>
     </target>
 
 </project>
