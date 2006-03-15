@@ -1,0 +1,555 @@
+<?xml version="1.0"?>
+<project name="selenium-dotnet" default="test">
+
+	<property name="version" value="0.7-SNAPSHOT" />
+	<property name="iis_vdir.VDirName" value="Selenium-Driver" />
+	<property name="iis_vdir.applicationMapping" value=".sel" />
+
+	<macrodef name="solution">
+		<attribute name="configuration" />
+		<attribute name="solutionFile" />
+		<sequential>
+			<delete file="solutionbuild.log" failonerror="false" />
+			<echo taskname="vstudio" message="Building solution @{solutionFile}" />
+			<exec executable="devenv" resultproperty="build.result">
+				<arg value="/build"/>
+				<arg value="@{configuration}"/>
+				<arg value="@{solutionFile}" />
+				<arg value="/out" />
+				<arg value="solutionbuild.log" />
+			</exec>
+			<condition property="build.failed">
+				<not><equals arg1="0" arg2="${build.result}" /></not>
+			</condition>
+			<loadfile property="solutionbuild.log" srcfile="solutionbuild.log"/>
+			<echo taskname="vstudio" message="${solutionbuild.log}" />
+			<fail if="build.failed" message="Build failed!" />
+		</sequential>
+	</macrodef>
+
+	<!-- Targets should contain tasks OR dependencies, but NOT both.
+			Public targets should have a description -->
+
+    <target name="all" depends="test, dist" 
+		description="Do everything you might want to do on a developer workstation" />
+		
+	<target name="test" depends="unit-tests, run-integration-tests" 
+		description="Run all tests"/>
+	
+	<target name="unit-tests" depends="compile, run-unit-tests" 
+		description="Run Unit Tests" />
+	
+	<target name="integration-tests" depends="compile, deploy-nant, run-integration-tests" 
+		description="Run Unit Tests" />
+
+	<target name="dist" depends="compile, create-selenium-zips" 
+		description="Create distributable files" />
+		
+	<target name="deploy-nant" depends="compile, create-deployment-directory, setup-nant-iis, create-test-app"
+		description="Deploys Selenium Bridge and sets up IIS to use the NAnt deployed version" />
+	
+	<target name="deploy-VS" depends="setup-vs-iis"
+		description="Sets up IIS to use the Visual Studio deployed Bridge" />
+		
+	<target name="undeploy"
+		description="Undeploys Selenium Bridge from IIS">
+		<echo message="Undeploy to be implemented" />
+	</target>
+
+	<target name="clean">
+		<!-- These mkdirs here to stop warnings -->
+		<mkdir dir="build" />
+		<mkdir dir="dist" />
+		<mkdir dir="deployed" />
+		<delete dir="build" />
+		<delete dir="dist" />
+		<delete dir="deployed" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="build" />
+		<solution configuration="Build" solutionfile="src\Selenium.sln" />
+	</target>
+
+	<target name="run-unit-tests">
+		<property name="unit.tests.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
+		<exec failonerror="true"
+			executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe" 
+			dir="build\UnitTests">
+			<arg line="${unit.tests.dll} /xml:../${unit.tests.dll}-results.xml /nologo"/>
+		</exec>
+	</target>
+	
+	<target name="iis-reset">
+		<exec program="iisreset" />
+	</target>
+	
+	
+	<target name="run-integration-tests">
+		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
+		<ant dir=".." target="start-server" />
+		<exec resultproperty="integration.result"
+			executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe" 
+			dir="build\IntegrationTests" >
+			<arg line="${integration.tests.dll} /xml:../${integration.tests.dll}-results.xml /nologo"/>
+		</exec>
+		<ant dir=".." target="stop-server" />
+		<condition property="build.failed">
+        	<not><equals arg1="0" arg2="${integration.result}" /></not>
+        </condition>
+        <fail if="build.failed" message=".net integration tests failed!" />
+	</target>
+
+	<target name="create-deployment-directory">
+		<mkdir dir="deployed" />
+		<copy todir="deployed/BridgeWebApp">
+			<fileset basedir="src/BridgeWebApp">
+				<include name="*.html" />
+				<include name="*.hta" />
+				<include name="*.config" />
+				<include name="*.css" />
+				<include name="*.js" />
+				<include name="*.png" />
+				<include name="global.asax*" />
+				
+			</fileset>
+		</copy>
+		
+		<copy todir="deployed/BridgeWebApp/bin">
+			<fileset basedir="${nant.project.basedir}/build/BridgeWebApp">
+				<include name="*.dll" />
+			</fileset>
+		</copy>
+		
+		<copy todir="deployed/BridgeWebApp">
+			<fileset basedir="../javascript">
+				<include name="html-xpath/*.js" />
+				<include name="jsunit/app/jsUnitCore.js" />
+				
+				<include name="*.js" />
+				<include name="*.jpg" />
+				<exclude name="**/.svn/**" />
+				<exclude name="**/SeleneseRunner.html" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="create-test-app">
+		<property name="test_app.name" value="TestApp" />
+		<property name="test_app.dir" value="deployed/${test_app.name}" />
+		<mkdir dir="${test_app.dir}" />
+		<copy todir="${test_app.dir}">
+			<fileset basedir="../javascript/tests/html">
+				<include name="*.html" />
+			</fileset>
+		</copy>
+		
+		<property name="iis_vdir.Path" value="${nant.project.basedir}\${test_app.dir}" />
+		<property name="iis_vdir.VDirName" value="${test_app.name}" />
+		<call target="map-iis-vdir" />
+	</target>
+	
+
+	<target name="create-selenium-zips" >
+		<mkdir dir="build/dist/bin/API" />
+		<copy todir="build/dist/bin/API">
+			<fileset dir="build">
+				<include name="**/*.dll" />
+				<include name="**/*.pdb" />
+				<include name="**/*.config" />
+				<exclude name="BridgeWebApp/*" />
+				<exclude name="**/*.incr" />
+				<exclude name="dist/**" />
+			</fileset>
+		</copy>
+
+		<!-- dfabulich BridgeWebApp no longer needed
+		<mkdir dir="build/dist/bin/BridgeWebApp" />
+		<copy todir="build/dist/bin/BridgeWebApp">
+			<fileset basedir="deployed">
+				<include name="**/*" />
+			</fileset>
+		</copy>-->
+
+		<mkdir dir="build/dist/bin/docs" />
+		<copy todir="build/dist/bin/docs">
+			<fileset dir="../../website">
+				<include name="*.png" />
+				<include name="*.html" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="build/dist/source" />
+		<copy todir="build/dist/source">
+			<fileset dir=".">
+				<include name="**/*" />
+				<exclude name="build" />
+				<exclude name="build/**" />
+				<exclude name="dist" />
+				<exclude name="dist/**" />
+				<exclude name="src/BridgeWebApp/**" />
+				<exclude name="src/*/bin" />
+				<exclude name="src/*/obj" />
+				<exclude name="src/*/bin/**" />
+				<exclude name="src/*/obj/**" />
+				<exclude name="**/*.suo" />
+				<exclude name="**/*.user" />
+				<exclude name="**/*.resharperoptions" />
+				<exclude name="**/_Resharper*" />
+				<exclude name="**/_Resharper*/**" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="dist" />
+		<zip destfile="dist/selenium-dotnet-client-driver-${version}.zip">
+			<fileset dir="build/dist">
+				<include name="**/*" />
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="setup-nant-iis">
+		<property name="iis_vdir.Path" value="${nant.project.basedir}\deployed\BridgeWebApp" />
+		<call target="map-iis-vdir" />
+		<call target="setup-application-mapping" />
+	</target>
+
+	<target name="setup-vs-iis">
+		<property name="iis_vdir.Path" value="${nant.project.basedir}\src\BridgeWebApp" />
+		<call target="map-iis-vdir" />
+		<call target="setup-application-mapping" />
+	</target>
+
+	<target name="continuous-integration" depends="clean, continuous-integration-setup-versioning, all, continuous-integration-publish" />
+
+	<target name="continuous-integration-setup-versioning">
+		<ifnot test="${property::exists('ccnet.label')}">
+			<fail message="ccnet.label property not set, so can't create labelled distribution files" />
+		</ifnot>
+
+		<regex pattern="(?'major'\d+)_(?'minor'\d+)_(?'revision'\d+)_(?'build'\d+)" input="${ccnet.label}" />
+		<property name="build.number" value="${major}.${minor}.${revision}.${build}" />
+		<echo message="Build number: ${build.number}"/>
+	
+		<asminfo output="src/CommonAssemblyInfo.cs" language="CSharp">
+			<imports>
+				<import name="System.Reflection" />
+			</imports>
+			<attributes>
+				<attribute type="AssemblyVersionAttribute" value="${build.number}" />
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright © 2005 ThoughtWorks Inc." />
+				<attribute type="AssemblyCompanyAttribute" value="ThoughtWorks" />
+				<attribute type="AssemblyProductAttribute" value="Selenium" />
+			</attributes>
+		</asminfo>
+	</target>
+		
+	<target name="continuous-integration-publish">
+		<property name="publish.dir" value="D:\download-area\Selenium-Builds\${ccnet.label}" />
+		<mkdir dir="${publish.dir}" />
+		<copy todir="${publish.dir}">
+			<fileset basedir="dist">
+				<include name="*"/>
+			</fileset>
+		</copy>			
+	</target>
+	
+	<!-- Script targets start here -->
+
+	<target name="map-iis-vdir">
+		<ifnot test="${property::exists('iis_vdir.VDirName')}">
+			<fail message="iis_vdir.VDirName property not set, so can't Virtual Directory" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.Path')}">
+			<fail message="iis_vdir.Path property not set, so can't Virtual Directory" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.WebSite')}">
+			<property name="iis_vdir.WebSite" value="Default Web Site" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.RootDir')}">
+			<property name="iis_vdir.RootDir" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.chkRead')}">
+			<property name="iis_vdir.chkRead" value="true" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.chkWrite')}">
+			<property name="iis_vdir.chkWrite" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.chkExecute')}">
+			<property name="iis_vdir.chkExecute" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.chkScript')}">
+			<property name="iis_vdir.chkScript" value="true" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.chkAuth')}">
+			<property name="iis_vdir.chkAuth" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.webSiteNum')}">
+			<property name="iis_vdir.webSiteNum" value="1" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.serverName')}">
+			<property name="iis_vdir.serverName" value="localhost" />
+		</ifnot>
+		
+		<echo message="Creating Virtual Directory [${iis_vdir.VDirName}] at [${iis_vdir.Path}]" />
+		
+		<script language="C#">
+			<references>
+				<include name="System.DirectoryServices.dll" />
+			</references>
+			<imports>
+				<import name="System.DirectoryServices" />
+			</imports>
+			<code>
+				<![CDATA[
+					public static void ScriptMain(Project project)
+					{
+						System.Console.WriteLine(CreateVDir(
+							project.Properties["iis_vdir.WebSite"], 
+							project.Properties["iis_vdir.VDirName"], 
+							project.Properties["iis_vdir.Path"], 
+							bool.Parse(project.Properties["iis_vdir.RootDir"]), 
+							bool.Parse(project.Properties["iis_vdir.chkRead"]), 
+							bool.Parse(project.Properties["iis_vdir.chkWrite"]), 
+							bool.Parse(project.Properties["iis_vdir.chkExecute"]), 
+							bool.Parse(project.Properties["iis_vdir.chkScript"]), 
+							bool.Parse(project.Properties["iis_vdir.chkAuth"]), 
+							int.Parse(project.Properties["iis_vdir.webSiteNum"]), 
+							project.Properties["iis_vdir.serverName"]));
+					}
+
+					public static string CreateVDir(string  WebSite, string VDirName, string Path, bool  RootDir, 
+						bool chkRead,bool chkWrite, bool chkExecute, bool chkScript, bool chkAuth,
+						int webSiteNum, string serverName)
+					{
+						string sRet=String.Empty;
+					    try
+					    {
+						System.DirectoryServices.DirectoryEntry IISSchema;
+						System.DirectoryServices.DirectoryEntry IISAdmin;
+						System.DirectoryServices.DirectoryEntry VDir;
+						bool IISUnderNT;
+
+						//
+						// Determine version of IIS
+						//
+						IISSchema = new  System.DirectoryServices.DirectoryEntry("IIS://" +serverName + 
+							"/Schema/AppIsolated");
+						if  (IISSchema.Properties["Syntax"].Value.ToString().ToUpper() == "BOOLEAN")
+							IISUnderNT = true;
+						else
+							IISUnderNT = false;
+						IISSchema.Dispose();
+
+						//
+						// Get the admin object
+						//
+						IISAdmin = new  System.DirectoryServices.DirectoryEntry("IIS://" +serverName +
+							"/W3SVC/" + webSiteNum + "/Root");
+
+						//
+						// If we're not creating a root directory
+						//
+						if (!RootDir)
+						{
+							//
+							// If the virtual directory already exists then delete it
+							//
+			    
+							foreach(System.DirectoryServices.DirectoryEntry v in IISAdmin.Children)
+							{
+								if (v.Name == VDirName)
+								{
+									// Delete the specified virtual directory if it already exists
+									try
+									{
+										IISAdmin.Invoke("Delete", new string [] { v.SchemaClassName, VDirName });
+										IISAdmin.CommitChanges();
+									}
+									catch(Exception ex)
+									{
+										sRet+=ex.Message;
+									}
+								}
+							}
+						}  
+
+						//
+						// Create the virtual directory
+						//
+						if (!RootDir)
+						{
+							VDir = IISAdmin.Children.Add(VDirName, "IIsWebVirtualDir");
+						}
+						else
+						{
+							VDir = IISAdmin;
+						}
+
+						//
+						// Setup the VDir
+						//
+						VDir.Properties["AccessRead"][0] = chkRead;
+						VDir.Properties["AccessExecute"][0] = chkExecute;
+						VDir.Properties["AccessWrite"][0] = chkWrite;
+						VDir.Properties["AccessScript"][0] = chkScript;
+						VDir.Properties["AuthNTLM"][0] = chkAuth;
+						VDir.Properties["EnableDefaultDoc"][0] = true;
+						VDir.Properties["EnableDirBrowsing"][0] = false;
+						VDir.Properties["DefaultDoc"][0] = true;
+						VDir.Properties["Path"][0] = Path;
+
+						//
+						// NT doesn't support this property
+						//
+						if (!IISUnderNT)
+						{
+							VDir.Properties["AspEnableParentPaths"][0] = true;
+						}
+
+						//
+						// Set the changes  
+						//
+						VDir.CommitChanges();
+
+						//
+						// Make it a web application
+						//
+						if (IISUnderNT)
+						{
+							VDir.Invoke("AppCreate", false);
+						}
+						else
+						{
+							VDir.Invoke("AppCreate", 1);
+						}
+
+						sRet+= "VRoot " +VDirName + " created!";
+					    }
+ 					    catch(Exception ex)
+ 					    {
+ 						    string s = " operation aborted: " + ex.Message;
+ 						    System.Console.WriteLine(s);
+ 						    sRet+=s;
+ 					    }
+					    return sRet;
+					}
+					
+				]]>
+			</code>
+		</script>
+	</target>
+
+	<target name="setup-application-mapping">
+		<ifnot test="${property::exists('iis_vdir.VDirName')}">
+			<fail message="iis_vdir.VDirName property not set, so can't Virtual Directory" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.WebSite')}">
+			<property name="iis_vdir.WebSite" value="Default Web Site" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.RootDir')}">
+			<property name="iis_vdir.RootDir" value="false" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.webSiteNum')}">
+			<property name="iis_vdir.webSiteNum" value="1" />
+		</ifnot>
+
+		<ifnot test="${property::exists('iis_vdir.serverName')}">
+			<property name="iis_vdir.serverName" value="localhost" />
+		</ifnot>
+		
+		<ifnot test="${property::exists('iis_vdir.applicationMapping')}">
+			<fail message="iis_vdir.applicationMapping property not set, so can't set IIS Mapping" />
+		</ifnot>
+		
+		<echo message="Creating Virtual Directory [${iis_vdir.VDirName}] at [${iis_vdir.Path}]" />
+		
+		<script language="C#">
+			<references>
+				<include name="System.DirectoryServices.dll" />
+			</references>
+			<imports>
+				<import name="System.DirectoryServices" />
+			</imports>
+			<code>
+				<![CDATA[
+					public static void ScriptMain(Project project)
+					{
+						SetupApplicationMapping(
+							project.Properties["iis_vdir.WebSite"], 
+							project.Properties["iis_vdir.VDirName"], 
+							bool.Parse(project.Properties["iis_vdir.RootDir"]), 
+							int.Parse(project.Properties["iis_vdir.webSiteNum"]), 
+							project.Properties["iis_vdir.serverName"],
+							project.Properties["iis_vdir.applicationMapping"]
+							);
+					}
+
+					public static void SetupApplicationMapping(string  WebSite, string VDirName, bool  RootDir, int webSiteNum, string serverName, string applicationMapping)
+					{
+						System.DirectoryServices.DirectoryEntry IISAdmin;
+						System.DirectoryServices.DirectoryEntry VDir;
+
+						IISAdmin = new  System.DirectoryServices.DirectoryEntry("IIS://" +serverName + "/W3SVC/" + webSiteNum + "/Root");
+						VDir = IISAdmin;
+
+						if (!RootDir)
+						{
+							bool foundVDir = false;
+						    
+							foreach(System.DirectoryServices.DirectoryEntry v in IISAdmin.Children)
+							{
+								if (v.Name.Trim().Equals(VDirName.Trim()))
+								{
+									VDir = v;
+									foundVDir = true;
+								}
+							}
+							
+							if (! foundVDir)
+							{		
+								throw new Exception(string.Format("Cannot find virtual directory {0} on server {1}, site {2}", VDirName, serverName, webSiteNum));
+							}
+						}
+						else
+						{
+							VDir = IISAdmin;
+						}
+									
+						string aspxScriptMap = "";
+						foreach (string scriptMap in VDir.Properties["ScriptMaps"])
+						{
+							if (scriptMap.StartsWith(".aspx"))
+							{
+								aspxScriptMap = scriptMap;
+							}
+						}
+						if (aspxScriptMap == "")
+							throw new Exception("Cannot Find ASPX Application Mapping to Copy - do you have ASP.NET mapped to IIS?");
+									
+						string newScriptMap = aspxScriptMap.Replace(".aspx", applicationMapping);
+						
+						VDir.Properties["ScriptMaps"].Add(newScriptMap);
+						VDir.CommitChanges();
+					}
+		
+				]]>
+			</code>
+		</script>
+	</target>
+
+	<!-- Script targets end here -->
+</project>

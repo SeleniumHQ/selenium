@@ -1,0 +1,438 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NAnt.Win32Tasks</name>
+    </assembly>
+    <members>
+        <member name="T:NAnt.Win32.Tasks.ReadRegistryTask">
+            <summary>
+            Reads a value or set of values from the Windows Registry into one or 
+            more NAnt properties.
+            </summary>
+            <example>
+              <para>Read a single value from the registry.</para>
+              <code>
+                <![CDATA[
+            <readregistry property="sdkRoot" key="SOFTWARE\Microsoft\.NETFramework\sdkInstallRoot" hive="LocalMachine" />
+                ]]>
+              </code>
+              <para>Read all the registry values in a key.</para>
+              <code>
+                <![CDATA[
+            <readregistry prefix="dotNetFX" key="SOFTWARE\Microsoft\.NETFramework\sdkInstallRoot" hive="LocalMachine" />
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.ReadRegistryTask.ExecuteTask">
+            <summary>
+            read the specified registry value
+            </summary>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.ReadRegistryTask.LookupRegKey(System.String,Microsoft.Win32.RegistryHive[])">
+            <summary>
+            Returns the hive for a given key.
+            </summary>
+            <param name="key"></param>
+            <param name="registries"></param>
+            <returns>
+            The hive for a given key.
+            </returns>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.ReadRegistryTask.GetHiveKey(Microsoft.Win32.RegistryHive)">
+            <summary>
+            Returns the key for a given registry hive.
+            </summary>
+            <param name="hive">The registry hive to return the key for.</param>
+            <returns>
+            The key for a given registry hive.
+            </returns>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.ReadRegistryTask.PropertyName">
+            <summary>
+                <para>The property to set to the specified registry key value.</para>
+                <para>If this attribute is used then a single value will be read.</para>
+            </summary>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.ReadRegistryTask.PropertyPrefix">
+            <summary>
+                <para>The prefix to use for the specified registry key values.</para>
+                <para>If this attribute is used then all registry values will be read and stored as properties with this prefix.</para>
+            </summary>
+            <example>
+                <para>Registry values a, b, c will be turned into prefixa, prefixb, prefixc named properties</para>
+            </example>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.ReadRegistryTask.RegistryKey">
+            <summary>
+            The registry key to read, including the path.
+            </summary>
+            <example>
+            SOFTWARE\Microsoft\.NETFramework\sdkInstallRoot
+            </example>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.ReadRegistryTask.RegistryHiveName">
+            <summary>
+            Space separated list of registry hives to search for <see cref="P:NAnt.Win32.Tasks.ReadRegistryTask.RegistryKey"/>.
+            For a list of possible values, see <see cref="T:Microsoft.Win32.RegistryHive"/>. The 
+            default is <see cref="F:Microsoft.Win32.RegistryHive.LocalMachine"/>.
+            </summary>
+            <remarks>
+            <seealso cref="T:Microsoft.Win32.RegistryHive"/>
+            </remarks>
+        </member>
+        <member name="T:NAnt.Win32.Tasks.TlbImpTask">
+            <summary>
+            Imports a type library to a .NET assembly (wraps Microsoft's <c>tlbimp.exe</c>).
+            </summary>
+            <remarks>
+            <para>
+            This task lets you easily create interop assemblies.  By default, it will 
+            not reimport if the underlying COM TypeLib or reference has not changed.
+            </para>
+            <para>
+            <see href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</see>
+            </para>
+            </remarks>
+            <example>
+              <para>Import <c>LegacyCOM.dll</c> to <c>DotNetAssembly.dll</c>.</para>
+              <code>
+                <![CDATA[
+            <tlbimp typelib="LegacyCOM.dll" output="DotNetAssembly.dll" />
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.TlbImpTask.ExecuteTask">
+            <summary>
+            Imports the type library to a .NET assembly.
+            </summary>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.TlbImpTask.NeedsCompiling">
+            <summary>
+            Determines whether the type library needs to be imported again.
+            </summary>
+            <returns>
+            <see langword="true" /> if the type library needs to be imported; 
+            otherwise, <see langword="false" />.
+            </returns>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.OutputFile">
+            <summary>
+            Specifies the name of the output file.
+            </summary>
+            <value>
+            The name of the output file.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.Namespace">
+            <summary>
+            Specifies the namespace in which to produce the assembly.
+            </summary>
+            <value>
+            The namespace in which to produce the assembly.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.AsmVersion">
+            <summary>
+            Specifies the version number of the assembly to produce.
+            </summary>
+            <remarks>
+            <value>
+            The version number of the assembly to produce.
+            </value>
+            <para>
+            The version number should be in the format major.minor.build.revision.
+            </para>
+            <para>
+            <a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a>
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.DelaySign">
+            <summary>
+            Specifies whether the resulting assembly should be signed with a 
+            strong name using delayed signing. The default is <see langword="false" />.
+            </summary>
+            <value>
+            <see langword="true" /> if the resulting assembly should be signed 
+            with a strong name using delayed signing; otherwise, <see langword="false" />.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.Primary">
+            <summary>
+            Specifies whether a primary interop assembly should be produced for 
+            the specified type library. The default is <see langword="false" />.
+            </summary>
+            <value>
+            <see langword="true" /> if a primary interop assembly should be 
+            produced; otherwise, <see langword="false" />.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.PublicKeyFile">
+            <summary>
+            Specifies the file containing the public key to use to sign the 
+            resulting assembly.
+            </summary>
+            <value>
+            The file containing the public key to use to sign the resulting
+            assembly.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.KeyFile">
+            <summary>
+            Specifies the publisher's official public/private key pair with which 
+            the resulting assembly should be signed with a strong name.
+            </summary>
+            <value>
+            The keyfile to use to sign the resulting assembly with a strong name.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.KeyContainer">
+            <summary>
+            Specifies the key container in which the public/private key pair 
+            should be found that should be used to sign the resulting assembly
+            with a strong name.
+            </summary>
+            <value>
+            The key container containing a public/private key pair that should
+            be used to sign the resulting assembly.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.References">
+            <summary>
+            Specifies the assembly files to use to resolve references to types 
+            defined outside the current type library. 
+            </summary>
+            <value>
+            The assembly files to use to resolve references to types defined 
+            outside the current type library.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.StrictRef">
+            <summary>
+            Specifies whether a type library should not be imported if all 
+            references within the current assembly or the reference assemblies 
+            cannot be resolved. The default is <see langword="false" />.
+            </summary>
+            <value>
+            <see langword="true" /> if a type library should not be imported if 
+            all references cannot be resolved; otherwise, <see langword="false" />.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.SysArray">
+            <summary>
+            Specifies whether to import a COM style SafeArray as a managed 
+            <see cref="T:System.Array"/> class type. The default is <see langword="false"/>.
+            </summary>
+            <value>
+            <see langword="true"/> if a COM style SafeArray should be imported 
+            as a managed <see cref="T:System.Array"/> class type; otherwise, 
+            <see langword="false"/>.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.TypeLib">
+            <summary>
+            Specifies the source type library that gets passed to the type 
+            library importer.
+            </summary>
+            <value>
+            The source type library that gets passed to the type library 
+            importer.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.Unsafe">
+            <summary>
+            Specifies whether interfaces should be produced without .NET Framework 
+            security checks. The default is <see langword="false" />.
+            </summary>
+            <value>
+            <see langword="true" /> if interfaces without .NET Framework security 
+            checks should be produced; otherwise, <see langword="false" />.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.ProgramArguments">
+            <summary>
+            Gets the command line arguments for the external program.
+            </summary>
+            <value>
+            The command line arguments for the external program.
+            </value>
+        </member>
+        <member name="T:NAnt.Win32.Tasks.AxImpTask">
+            <summary>
+            Generates a Windows Forms Control that wraps ActiveX Controls defined 
+            in an OCX.
+            </summary>
+            <example>
+              <code>
+                <![CDATA[
+            <aximp ocx="MyControl.ocx" output="MyFormsControl.dll" />
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.AxImpTask.ExecuteTask">
+            <summary>
+            Import the ActiveX control.
+            </summary>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.AxImpTask.NeedsCompiling">
+            <summary>
+            Determines whether the assembly needs to be created again.
+            </summary>
+            <returns>
+            <see langword="true" /> if the assembly needs to be created again; 
+            otherwise, <see langword="false" />.
+            </returns>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.OcxFile">
+            <summary>
+            Filename of the .ocx file.
+            </summary>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.OutputFile">
+            <summary>
+            Filename of the generated assembly.
+            </summary>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.PublicKeyFile">
+            <summary>
+            Specifies the file containing the public key to use to sign the 
+            resulting assembly.
+            </summary>
+            <value>
+            The file containing the public key to use to sign the resulting
+            assembly.
+            </value>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.KeyFile">
+            <summary>
+            Specifies the publisher's official public/private key pair with which 
+            the resulting assembly should be signed with a strong name.
+            </summary>
+            <value>
+            The keyfile to use to sign the resulting assembly with a strong name.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.KeyContainer">
+            <summary>
+            Specifies the key container in which the public/private key pair 
+            should be found that should be used to sign the resulting assembly
+            with a strong name.
+            </summary>
+            <value>
+            The key container containing a public/private key pair that should
+            be used to sign the resulting assembly.
+            </value>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.DelaySign">
+            <summary>
+            Specifies to sign the resulting control using delayed signing.
+            </summary>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.GenerateSource">
+            <summary>
+            Determines whether C# source code for the Windows Form wrapper should 
+            be generated. The default is <see langword="false" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.RcwFile">
+            <summary>
+            Assembly to use for Runtime Callable Wrapper rather than generating 
+            new one. Only supported on .NET 1.1 or higher.
+            </summary>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.ProgramArguments">
+            <summary>
+            Gets the command-line arguments for the external program.
+            </summary>
+            <value>
+            The command-line arguments for the external program.
+            </value>
+        </member>
+        <member name="T:NAnt.Win32.Tasks.TlbExpTask">
+            <summary>
+            Exports a .NET assembly to a type library that can be used from unmanaged 
+            code (wraps Microsoft's <c>tlbexp.exe</c>).
+            </summary>
+            <remarks>
+              <para>
+              <see href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryexportertlbexpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</see>
+              </para>
+            </remarks>
+            <example>
+              <para>Export <c>DotNetAssembly.dll</c> to <c>LegacyCOM.dll</c>.</para>
+              <code>
+                <![CDATA[
+            <tlbexp assembly="DotNetAssembly.dll" output="LegacyCOM.dll" />
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.TlbExpTask.ExecuteTask">
+            <summary>
+            Exports the type library.
+            </summary>
+        </member>
+        <member name="M:NAnt.Win32.Tasks.TlbExpTask.NeedsCompiling">
+            <summary>
+            Determines whether the assembly needs to be exported to a type 
+            library again.
+            </summary>
+            <returns>
+            <see langword="true" /> if the assembly needs to be exported to a 
+            type library; otherwise, <see langword="false" />.
+            </returns>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbExpTask.AssemblyFile">
+            <summary>
+            Specifies the assembly for which to export a type library.
+            </summary>
+            <value>
+            The assembly for which to export a type library.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryexportertlbexpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbExpTask.OutputFile">
+            <summary>
+            Specifies the name of the type library file to generate.
+            </summary>
+            <value>
+            The name of the type library file to generate.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryexportertlbexpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbExpTask.NamesFile">
+            <summary>
+            Specifies the file used to determine capitalization of names in a 
+            type library.
+            </summary>
+            <value>
+            The file used to determine capitalization of names in a type library.
+            </value>
+            <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryexportertlbexpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbExpTask.ProgramArguments">
+            <summary>
+            Gets the command line arguments for the external program.
+            </summary>
+            <value>
+            The command line arguments for the external program.
+            </value>
+        </member>
+    </members>
+</doc>
