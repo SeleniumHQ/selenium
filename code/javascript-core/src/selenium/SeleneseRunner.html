@@ -1,0 +1,104 @@
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1"
+http-equiv="content-type">
+<title>Selenium Functional Test Runner</title>
+<link rel="stylesheet" type="text/css" href="selenium.css" />
+<script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="xmlextras.js"></script>
+<script language="JavaScript" type="text/javascript" src="html-xpath/html-xpath-patched.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-seleneserunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
+<script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="xpath.js"></script>
+<script language="JavaScript" type="text/javascript" src="user-extensions.js"></script>
+<script language="JavaScript" type="text/javascript">
+    function openDomViewer() {
+        var autFrame = document.getElementById('myiframe');
+        var autFrameDocument = getIframeDocument(autFrame);
+        var domViewer = window.open('domviewer.html');
+        domViewer.rootDocument = autFrameDocument;
+        return false;
+    }
+    
+    function cleanUp() {
+    	if (LOG != null) {
+		LOG.close();
+	}
+    }
+    
+</script>
+<script>
+</script>
+</head>
+
+<body onLoad="runTest()" onUnload="cleanUp()">
+
+<table border="1" style="height: 100%;">
+  <tr>
+    <td width="50%" height="30%">
+      <table>
+      <tr>
+        <td>
+          <img src="selenium-logo.png">
+        </td>
+        <td>
+          <h1><a href="http://selenium.thoughtworks.com" >Selenium</a> Functional Testing for Web Apps</h1>
+          Open Source From <a href="http://www.thoughtworks.com">ThoughtWorks, Inc</a> and Friends
+          <form action="">
+          <br/>Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"> 
+
+          <fieldset>
+            <legend>Tools</legend>
+
+            <button type="button" id="domViewer1" onclick="openDomViewer();">
+              View DOM
+            </button>
+            <button type="button" onclick="LOG.show();">
+              Show Log
+            </button>
+          </fieldset>
+
+          </form>
+
+        </td>
+      </tr>
+      </table>
+      <form action="">
+        <label id="context" name="context"></label>
+      </form>
+    </td>
+    <td width="50%" height="30%">
+      <b>Last Four Test Commands:</b><br/>
+      <div id="commandList"></div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" height="70%">
+      <iframe name="myiframe" id="myiframe" src="" height="100%" width="100%"></iframe>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
+

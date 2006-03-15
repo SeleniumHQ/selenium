@@ -1,0 +1,83 @@
+/* @author Edward Hieatt, edward@jsunit.net */
+
+body 
+{ 
+  margin-top: 0; 
+  margin-bottom: 0; 
+  font-family: Verdana, Arial, Helvetica, sans-serif; 
+  color: #000;
+  font-size: 0.8em; 
+  background-color: #fff;
+}
+
+td 
+{ 
+  padding: 0; 
+  margin: 0;
+}
+
+td img 
+{ 
+  padding: 0; 
+  margin: 0; 
+  vertical-align: baseline; 
+  display: block;
+}
+
+input 
+{ 
+}
+
+select 
+{ 
+}
+
+a:link, a:visited
+{
+  color : #00F;
+}
+
+a:hover 
+{
+  color : #F00;
+}
+
+.jsUnitDefault 
+{ 
+}
+
+h1, th
+{ 
+  font-size: 1.3em; 
+  font-weight: bold; 
+  color: #039;
+}
+
+h2
+{ 
+  font-weight: bold; 
+  color: #039;
+}
+
+h3
+{ 
+  font-weight: bold; 
+  color: #039; 
+  text-decoration: underline;
+}
+
+h4
+{ 
+  font-weight: bold; 
+  color: #039;
+}
+
+.jsUnitTestResultSuccess 
+{
+  color: #000;
+}
+
+.jsUnitTestResultNotSuccess 
+{
+  color: #F00;
+}

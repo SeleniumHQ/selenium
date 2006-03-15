@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsMock Tests</title>
+    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function testCallingExpectedFunctionShouldPass() {
+   var myMock = new Mock()
+   myMock.expects("aslak")
+   myMock.aslak()
+   myMock.verify()
+}
+
+function testAccessingExpectedPropertyShouldPass() {
+   var myMock = new Mock()
+   myMock.expectsProperty("hello").returns("world")
+   assertEquals("world", myMock.hello)
+}
+
+function testAccessingExpectedPropertyWithObjectShouldPass() {
+   var myMock = new Mock()
+   ob = [1,2]
+   myMock.expectsProperty("hello").returns(ob)
+   assertEquals(ob, myMock.hello)
+}
+
+function testCallingUnexpectedFunctionShouldFail() {
+   var myMock = new Mock()
+   try {
+     myMock.someMethod()
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because someMethod wasn't expected!")
+}
+
+function testNotCallingExpectedFunctionShouldFail() {
+   var myMock = new Mock()
+   myMock.expects("someMethod")
+   try {
+     myMock.verify()
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because someMethod wasn't called!")
+}
+
+function testCallingExpectedFunctionWithBadArgumentsShouldFail() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "foo")
+   try {
+     myMock.someMethod("bar")
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because bar wasn't the expected arg!")
+}
+
+function testCallingExpectedFunctionWithExpectedArgumentsShouldPass() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "foo")
+   myMock.expects("anotherMethod", "bar", "zap")
+   assertUndefined(myMock.someMethod("foo"))
+   assertUndefined(myMock.anotherMethod("bar", "zap"))
+}
+
+function testCallingExpectedFunctionWithTooFewArgumentsShouldFail() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "foo", "bar")
+   try {
+     myMock.someMethod("foo")
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because too few arguments were passed!")
+}
+
+function testCallingExpectedFunctionWithTooManyArgumentsShouldFail() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "foo")
+   try {
+     myMock.someMethod("foo", "bar")
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because too many arguments were passed!")
+}
+
+function testShouldCreateMockInstancesWithoutSideffects() {
+   var foo = new Mock()
+   var bar = new Mock()
+
+   foo.expects("foo")
+   bar.expects("bar")
+
+   try {
+     bar.foo()
+   } catch(expected) {
+     return
+   }
+   fail("Should fail because an unexpected bar was called!")
+}
+
+function testCallingExpectedFunctionWithReturnShouldReturnValue() {
+   var myMock = new Mock()
+   myMock.expects("someMethod", "bar").returns("foo")
+   myMock.expects("theOtherMethod", "zap", "ping", "pong").returns("bang")
+   assertEquals("foo", myMock.someMethod("bar"))
+   assertEquals("bang", myMock.theOtherMethod("zap", "ping", "pong"))
+   myMock.verify()
+}
+
+function testCallingExpectedFunctionWithThrowsShouldThrowError() {
+   var myMock = new Mock();
+   myMock.expects("someMethod", "bar").andThrows("failure")
+   try {
+      myMock.someMethod("bar")
+   } catch (e) {
+      assertEquals("failure", e.message);
+      return
+   }
+   fail("Mock did not throw exception when required");
+}
+
+function testSettingExpectedPropertyShouldPass() {
+   var myMock = new Mock()
+   myMock.expectsProperty("foo", "bar")
+   myMock.foo = "bar"
+   myMock.verify()
+}
+
+function TODO_testSettingUnexpectedPropertyShouldFail() {
+   var myMock = new Mock()
+   myMock.foo = "bar"
+
+   try {
+       myMock.verify()
+   } catch(expected) {
+       return
+   }
+   fail("Should fail because an unexpected property was set!")
+}
+
+function TODO_testShouldAllowExpectationOfSameFunctionWithDifferentArguments() {
+   var myMock = new Mock()
+   myMock.expects("aslak", "hello").returns("world")
+   myMock.expects("aslak", "bonjour").returns("monde")
+   assertEquals("world", myMock.aslak("hello"))
+   assertEquals("monde", myMock.aslak("bonjour"))
+   myMock.verify()
+}
+
+function TODO_testNotSettingExpectedPropertyShouldFail() {
+   var myMock = new Mock()
+   myMock.expectsProperty("foo", "bar")
+   try {
+       myMock.verify()
+   } catch(expected) {
+       return
+   }
+   fail("Should fail because an expected property was not set!")
+}
+
+function TODO_testSettingExpectedPropertyWithUnexpectedValueShouldFail() {
+   var myMock = new Mock()
+   myMock.expectsProperty("foo", "bar")
+   myMock.foo="zap"
+   try {
+       myMock.verify()
+   } catch(expected) {
+       return
+   }
+   fail("Should fail because an expected property was set with unexpected value!")
+}
+
+</script>
+  </head>
+
+  <body>
+    <h1>JsMock Tests</h1>
+
+    <p>This page contains tests for JsMock. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
+  </body>
+</html>

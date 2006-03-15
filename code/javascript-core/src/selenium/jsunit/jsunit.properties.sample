@@ -1,0 +1,26 @@
+#jsunit.properties is one way to specify the various properties used by the JsUnitServer
+#Its use is discouraged.
+#If you are running tests using the ant script build.xml, the properties are set in its targets.
+#If you are running JsUnit programmatically, use System.setProperty(String, String) to specify properties.
+
+#To use this file, rename it to jsunit.properties
+
+#browserFileNames is the list of browsers in which to run tests when StandaloneTest is invoked on this machine.  This is a mandatory property.
+#For example: browserFileNames=c:\\program files\\internet explorer\\iexplore.exe,c:\\program files\\netscape\\netscape7.1\\netscp.exe,C:\\Program Files\\Netscape\\Netscape7.01\\netscp.exe,C:\\Program Files\\Netscape\\Netscape6.2.3\\netscp6.exe,browserFileNames=c:\\MozillaFirebird\\MozillaFirebird.exe
+browserFileNames=c:\\program files\\internet explorer\\iexplore.exe,c:\\program files\\Mozilla Firefox\\firefox.exe
+
+#url is the URL (HTTP or file protocol) to open in the browser.  This is a mandatory property.
+#For example: url=file:///c:/jsunit/testRunner.html?testPage=c:\\jsunit\\tests\\jsUnitTestSuite.html&autoRun=true&submitresults=true
+url=file:///c:/jsunit/testRunner.html?testPage=c:\\jsunit\\tests\\jsUnitTestSuite.html&autoRun=true&submitresults=true
+
+#resourceBase is the directory that the JsUnitServer considers to be its document root.  It can be specified relative to the working directory.  If not specified, the working directory is assumed.  This is not a mandatory property.
+#For example, resourceBase=c:\\jsunit
+resourceBase=
+
+#logsDirectory is the directory in which the JsUnitServer stores the XML logs produced from a test run.  It can be specified relative to the working directory.  If not specified, the directory called "logs" inside resourceBase is assumed.  This is not a mandatory property.
+#For example, logsDirectory=c:\\jsunit\\java\logs
+logsDirectory=
+
+#port is the port on which the JsUnitServer runs.  If not specified, 8080 is assumed.  This is not a mandatory property.
+#For example, port=8080
+port=
