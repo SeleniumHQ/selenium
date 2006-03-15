@@ -1,0 +1,2800 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NAnt.VSNetTasks</name>
+    </assembly>
+    <members>
+        <member name="T:NAnt.VSNet.Tasks.SolutionTask">
+            <summary>
+            Compiles VS.NET solutions (or sets of projects), automatically determining 
+            project dependencies from inter-project references.
+            </summary>
+            <remarks>
+            <para>
+            This task support the following projects:
+            </para>
+            <list type="bullet">
+                <item>
+                    <description>Visual Basic .NET</description>
+                </item>
+                <item>
+                    <description>Visual C# .NET</description>
+                </item>
+                <item>
+                    <description>Visual J# .NET</description>
+                </item>
+                <item>
+                    <description>Visual C++ .NET</description>
+                </item>
+            </list>
+            <note>
+            Right now, only Microsoft Visual Studio .NET 2002 and 2003 solutions
+            and projects are supported.  Support for .NET Compact Framework projects
+            is also not available at this time.
+            </note>
+            <para>
+            The <see cref="T:NAnt.VSNet.Tasks.SolutionTask"/> also supports the model of referencing 
+            projects by their output filenames, rather than referencing them inside 
+            the solution.  It will automatically detect the existance of a file 
+            reference and convert it to a project reference.  For example, if project
+            "A" references the file in the release output directory of 
+            project "B", the <see cref="T:NAnt.VSNet.Tasks.SolutionTask"/> will automatically 
+            convert this to a project dependency on project "B" and will 
+            reference the appropriate configuration output directory at the final 
+            build time (ie: reference the debug version of "B" if the 
+            solution is built as debug).
+            </para>
+            <note>
+            The <see cref="T:NAnt.VSNet.Tasks.SolutionTask"/>  expects all project files to be valid
+            XML files.
+            </note>
+            <h3>Resx Files</h3>
+            <para>
+            When building a project for a down-level target framework, special care
+            should be given to resx files. Resx files (can) contain references to 
+            a specific version of CLR types, and as such are only upward compatible.
+            </para>
+            <para>
+            For example: if you want to be able to build a project both as a .NET 1.0 
+            and .NET 1.1 assembly, the resx files should only contain references to 
+            .NET 1.0 CLR types. Failure to do this may result in a <see cref="T:System.InvalidCastException"/>
+            failure at runtime on machines with only the .NET Framework 1.0 installed.
+            </para>
+            </remarks>
+            <example>
+              <para>
+              Compiles all of the projects in <c>test.sln</c>, in release mode, in 
+              the proper order.
+              </para>
+              <code>
+                <![CDATA[
+            <solution configuration="release" solutionfile="test.sln" />
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Compiles all of the projects in <c>projects.txt</c>, in the proper 
+              order.
+              </para>
+              <code>
+                <![CDATA[
+            <solution configuration="release">
+                <projects>
+                    <includesfile name="projects.txt" />
+               </projects>
+            </solution>
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Compiles projects A, B and C, using the output of project X as a 
+              reference.
+              </para>
+              <code>
+                <![CDATA[
+            <solution configuration="release">
+                <projects>
+                    <include name="A\A.csproj" />
+                    <include name="B\b.vbproj" />
+                    <include name="C\c.csproj" />
+                </projects>
+                <referenceprojects>
+                    <include name="X\x.csproj" />
+                </referenceprojects>
+            </solution>
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Compiles all of the projects in the solution except for project A.
+              </para>
+              <code>
+                <![CDATA[
+            <solution solutionfile="test.sln" configuration="release">
+                <excludeprojects>
+                    <include name="A\A.csproj" />
+                </excludeprojects>
+            </solution>
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Compiles all of the projects in the solution mapping the specific project at
+              http://localhost/A/A.csproj to c:\inetpub\wwwroot\A\A.csproj and any URLs under
+              http://localhost/B/[remainder] to c:\other\B\[remainder].  This allows the build 
+              to work without WebDAV.
+              </para>
+              <code>
+                <![CDATA[
+            <solution solutionfile="test.sln" configuration="release">
+                <webmap>
+                    <map url="http://localhost/A/A.csproj" path="c:\inetpub\wwwroot\A\A.csproj" />
+                    <map url="http://localhost/B" path="c:\other\B" />
+                </webmap>
+            </solution>
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Compiles all of the projects in the solution placing compiled outputs 
+              in <c>c:\temp</c>.</para>
+              <code>
+                <![CDATA[
+            <solution solutionfile="test.sln" configuration="release" outputdir="c:\temp" />
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.VSNet.Tasks.SolutionTask.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.Tasks.SolutionTask"/> class.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.Tasks.SolutionTask.ExpandMacro(System.String)">
+            <summary>
+            Expands the given macro.
+            </summary>
+            <param name="macro">The macro to expand.</param>
+            <returns>
+            The expanded macro or <see langword="null"/> if the macro is not
+            supported.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">The macro cannot be expanded.</exception>
+        </member>
+        <member name="M:NAnt.VSNet.Tasks.SolutionTask.BuildAssemblyFolders">
+            <summary>
+            Builds the list of folders that should be scanned for assembly 
+            references.
+            </summary>
+            <returns>
+            The list of folders that should be scanned for assembly references.
+            </returns>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.Projects">
+            <summary>
+            The projects to build.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.ReferenceProjects">
+            <summary>
+            The projects to scan, but not build.
+            </summary>
+            <remarks>
+            These projects are used to resolve project references and are 
+            generally external to the solution being built. References to 
+            these project's output files are converted to use the appropriate 
+            solution configuration at build time.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.SolutionFile">
+            <summary>
+            The name of the VS.NET solution file to build.
+            </summary>
+            <remarks>
+            <para>
+            The <see cref="P:NAnt.VSNet.Tasks.SolutionTask.Projects"/> can be used instead to supply a list 
+            of Visual Studio.NET projects that should be built.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.Configuration">
+            <summary>
+            The name of the solution configuration to build.
+            </summary>
+            <remarks>
+            <para>
+            Generally <c>release</c> or <c>debug</c>.  Not case-sensitive.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.OutputDir">
+            <summary>
+            The directory where compiled targets will be placed.  This
+            overrides path settings contained in the solution/project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.WebMaps">
+            <summary>
+            WebMap of URL's to project references.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.ExcludeProjects">
+            <summary>
+            Fileset of projects to exclude.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.AssemblyFolders">
+            <summary>
+            Set of folders where references are searched when not found in path 
+            from project file (HintPath).
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.IncludeVSFolders">
+            <summary>
+            Includes Visual Studio search folders in reference search path.
+            The default is <see langword="true" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.EnableWebDav">
+            <summary>
+            Allow the task to use WebDAV for retrieving/compiling the projects within solution.  Use of 
+            <see cref="T:NAnt.VSNet.Types.WebMap"/> is preferred over WebDAV.  The default is <see langword="false"/>.
+            </summary>
+            <remarks>
+                <para>WebDAV support requires permission changes to be made on your project server.  These changes may affect          
+                the security of the server and should not be applied to a public installation.</para>
+                <para>Consult your web server or the NAnt Wiki documentation for more information.</para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.Tasks.SolutionTask.AssemblyFolderList">
+            <summary>
+            Gets the list of folders to scan for assembly references.
+            </summary>
+            <value>
+            The list of folders to scan for assembly references.
+            </value>
+        </member>
+        <member name="T:NAnt.VSNet.Types.WebMap">
+            <summary>
+            Represents a single mapping from URL project path to physical project 
+            path.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Types.WebMap.Url">
+            <summary>
+            Specifies the URL of the project file, or a URL fragment to match.
+            </summary>
+            <value>
+            The URL of the project file or the URL fragment to match.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.Types.WebMap.Path">
+            <summary>
+            Specifies the actual path to the project file, or the path fragment 
+            to replace.
+            </summary>
+            <value>
+            The actual path to the project file or the path fragment to replace 
+            the URL fragment with.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.Types.WebMap.CaseSensitive">
+            <summary>
+            Specifies whether the mapping is case-sensitive or not.
+            </summary>
+            <value>
+            A boolean flag representing the case-sensitivity of the mapping.  Default is <see langword="true" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.Types.WebMap.IfDefined">
+            <summary>
+            Indicates if the URL of the project file should be mapped.
+            </summary>
+            <value>
+            <see langword="true" /> if the URL of the project file should be 
+            mapped; otherwise, <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.Types.WebMap.UnlessDefined">
+            <summary>
+            Indicates if the URL of the project file should not be mapped.
+            </summary>
+            <value>
+            <see langword="true" /> if the URL of the project file should not 
+            be mapped; otherwise, <see langword="false" />.
+            </value>
+        </member>
+        <member name="T:NAnt.VSNet.Types.WebMapCollection">
+            <summary>
+            Contains a strongly typed collection of <see cref="T:NAnt.VSNet.Types.WebMap"/> 
+            objects.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.Types.WebMapCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.#ctor(NAnt.VSNet.Types.WebMapCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.Types.WebMapCollection"/> class
+            with the specified <see cref="T:NAnt.VSNet.Types.WebMapCollection"/> instance.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.#ctor(NAnt.VSNet.Types.WebMap[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.Types.WebMapCollection"/> class
+            with the specified array of <see cref="T:NAnt.VSNet.Types.WebMap"/> instances.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.FindBestMatch(System.String)">
+            <summary>
+            Find the best matching <see cref="T:NAnt.VSNet.Types.WebMap"/> for the given Uri.
+            </summary>
+            <param name="uri">The value to match against the <see cref="T:NAnt.VSNet.Types.WebMap"/> objects in the collection.</param>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.Add(NAnt.VSNet.Types.WebMap)">
+            <summary>
+            Adds a <see cref="T:NAnt.VSNet.Types.WebMap"/> to the end of the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.VSNet.Types.WebMap"/> to be added to the end of the collection.</param> 
+            <returns>The position into which the new element was inserted.</returns>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.AddRange(NAnt.VSNet.Types.WebMap[])">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.VSNet.Types.WebMap"/> array to the end of the collection.
+            </summary>
+            <param name="items">The array of <see cref="T:NAnt.VSNet.Types.WebMap"/> elements to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.AddRange(NAnt.VSNet.Types.WebMapCollection)">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.VSNet.Types.WebMapCollection"/> to the end of the collection.
+            </summary>
+            <param name="items">The <see cref="T:NAnt.VSNet.Types.WebMapCollection"/> to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.Contains(NAnt.VSNet.Types.WebMap)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.VSNet.Types.WebMap"/> is in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.VSNet.Types.WebMap"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="item"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.Contains(System.String)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.VSNet.Types.WebMap"/> with the specified
+            value is in the collection.
+            </summary>
+            <param name="value">The argument value to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if a <see cref="T:NAnt.VSNet.Types.WebMap"/> with value 
+            <paramref name="value"/> is found in the collection; otherwise, 
+            <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.CopyTo(NAnt.VSNet.Types.WebMap[],System.Int32)">
+            <summary>
+            Copies the entire collection to a compatible one-dimensional array, starting at the specified index of the target array.        
+            </summary>
+            <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param> 
+            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.IndexOf(NAnt.VSNet.Types.WebMap)">
+            <summary>
+            Retrieves the index of a specified <see cref="T:NAnt.VSNet.Types.WebMap"/> object in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.VSNet.Types.WebMap"/> object for which the index is returned.</param> 
+            <returns>
+            The index of the specified <see cref="T:NAnt.VSNet.Types.WebMap"/>. If the <see cref="T:NAnt.VSNet.Types.WebMap"/> is not currently a member of the collection, it returns -1.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.Insert(System.Int32,NAnt.VSNet.Types.WebMap)">
+            <summary>
+            Inserts a <see cref="T:NAnt.VSNet.Types.WebMap"/> into the collection at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="item">The <see cref="T:NAnt.VSNet.Types.WebMap"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:NAnt.VSNet.Types.WebMapEnumerator"/> for the entire collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapCollection.Remove(NAnt.VSNet.Types.WebMap)">
+            <summary>
+            Removes a member from the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.VSNet.Types.WebMap"/> to remove from the collection.</param>
+        </member>
+        <member name="P:NAnt.VSNet.Types.WebMapCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+        </member>
+        <member name="P:NAnt.VSNet.Types.WebMapCollection.Item(System.String)">
+            <summary>
+            Gets the <see cref="T:NAnt.VSNet.Types.WebMap"/> with the specified value.
+            </summary>
+            <param name="value">The value of the <see cref="T:NAnt.VSNet.Types.WebMap"/> to get.</param>
+        </member>
+        <member name="T:NAnt.VSNet.Types.WebMapEnumerator">
+            <summary>
+            Enumerates the <see cref="T:NAnt.VSNet.Types.WebMap"/> elements of a <see cref="T:NAnt.VSNet.Types.WebMapCollection"/>.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapEnumerator.#ctor(NAnt.VSNet.Types.WebMapCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.Types.WebMapEnumerator"/> class
+            with the specified <see cref="T:NAnt.VSNet.Types.WebMapCollection"/>.
+            </summary>
+            <param name="arguments">The collection that should be enumerated.</param>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            <see langword="true" /> if the enumerator was successfully advanced 
+            to the next element; <see langword="false" /> if the enumerator has 
+            passed the end of the collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.Types.WebMapEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the 
+            first element in the collection.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Types.WebMapEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <returns>
+            The current element in the collection.
+            </returns>
+        </member>
+        <member name="T:NAnt.VSNet.Types.UseOfATL">
+            <summary>
+            Defines how the project is using the ATL library.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UseOfATL.NotUsing">
+            <summary>
+            Don't use ATL.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UseOfATL.Static">
+            <summary>
+            Use ATL in a Static Library.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UseOfATL.Shared">
+            <summary>
+            Use ATL in a Shared DLL.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.Types.UseOfMFC">
+            <summary>
+            Defines how the project is using the MFC library.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UseOfMFC.NotUsing">
+            <summary>
+            Don't use MFC.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UseOfMFC.Static">
+            <summary>
+            Use MFC in a Static Library.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UseOfMFC.Shared">
+            <summary>
+            Use MFC in a Shared DLL.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.Types.UsePrecompiledHeader">
+            <summary>
+            Indicates the possible ways in which precompiled header file use is 
+            specified in a Visual C++ project.
+            </summary>
+            <remarks>
+            The integer values assigned match those specified in the Visual C++ 
+            project file for each setting.
+            </remarks>>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UsePrecompiledHeader.Unspecified">
+            <summary>
+            Precompiled header file use not specified.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UsePrecompiledHeader.No">
+            <summary>
+            Don't use a precompiled header file.
+            </summary>
+            <remarks>
+            For further information on the use of this option
+            see the Microsoft documentation on the C++ compiler flag /Yc.
+            </remarks>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UsePrecompiledHeader.Create">
+            <summary>
+            Create precompiled header file.
+            </summary>
+            <remarks>
+            For further information on the use of this option
+            see the Microsoft documentation on the C++ compiler flag /Yc.
+            </remarks>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UsePrecompiledHeader.AutoCreate">
+            <summary>
+            Automatically create precompiled header file if necessary.
+            </summary>
+            <remarks>
+            For further information on the use of this option
+            see the Microsoft documentation on the C++ compiler flag /Yc.
+            </remarks>
+        </member>
+        <member name="F:NAnt.VSNet.Types.UsePrecompiledHeader.Use">
+            <summary>
+            Use a precompiled header file.
+            </summary>
+            <remarks>
+            For further information on the use of this option
+            see the Microsoft documentation on the C++ compiler flag /Yu.
+            </remarks>
+        </member>
+        <member name="T:NAnt.VSNet.Everett.Solution">
+            <summary>
+            Analyses Microsoft Visual Studio .NET 2003 (Everett) solution files.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.SolutionBase.GetProjectFileFromGuid(System.String)">
+            <summary>
+            Gets the project file of the project with the given unique identifier.
+            </summary>
+            <param name="projectGuid">The unique identifier of the project for which the project file should be retrieves.</param>
+            <returns>
+            The project file of the project with the given unique identifier.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">No project with unique identifier <paramref name="projectGuid"/> could be located.</exception>
+        </member>
+        <member name="M:NAnt.VSNet.SolutionBase.Log(NAnt.Core.Level,System.String)">
+            <summary>
+            Logs a message with the given priority.
+            </summary>
+            <param name="messageLevel">The message priority at which the specified message is to be logged.</param>
+            <param name="message">The message to be logged.</param>
+            <remarks>
+            The actual logging is delegated to the underlying task.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.SolutionBase.Log(NAnt.Core.Level,System.String,System.Object[])">
+            <summary>
+            Logs a message with the given priority.
+            </summary>
+            <param name="messageLevel">The message priority at which the specified message is to be logged.</param>
+            <param name="message">The message to log, containing zero or more format items.</param>
+            <param name="args">An <see cref="T:System.Object"/> array containing zero or more objects to format.</param>
+            <remarks>
+            The actual logging is delegated to the underlying task.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.SolutionBase.LoadProjects(NAnt.Core.Util.GacCache,NAnt.VSNet.ReferencesResolver)">
+            <summary>
+            Loads the projects from the file system and stores them in an 
+            instance variable.
+            </summary>
+            <param name="gacCache"><see cref="T:NAnt.Core.Util.GacCache"/> instance to use to determine whether an assembly is located in the Global Assembly Cache.</param>
+            <param name="refResolver"><see cref="T:NAnt.VSNet.ReferencesResolver"/> instance to use to determine location and references of assemblies.</param>
+            <exception cref="T:NAnt.Core.BuildException">A project GUID in the solution file does not match the actual GUID of the project in the project file.</exception>
+        </member>
+        <member name="M:NAnt.VSNet.SolutionBase.TranslateProjectPath(System.String,System.String)">
+            <summary>
+            Translates a project path, in the form of a relative file path or
+            a URL, to an absolute file path.
+            </summary>
+            <param name="solutionDir">The directory of the solution.</param>
+            <param name="projectPath">The project path to translate to an absolute file path.</param>
+            <returns>
+            The project path translated to an absolute file path.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.SolutionBase.FixProjectReferences(NAnt.VSNet.ProjectBase,System.String,System.Collections.Hashtable)">
+            <summary>
+            Converts assembly references to projects to project references, adding
+            a build dependency.
+            </summary>
+            <param name="project">The <see cref="T:NAnt.VSNet.ProjectBase"/> to analyze.</param>
+            <param name="config">The build configuration.</param>
+            <param name="builtProjects"><see cref="T:System.Collections.Hashtable"/> containing list of projects that have been built.</param>
+        </member>
+        <member name="T:NAnt.VSNet.Rainier.Solution">
+            <summary>
+            Analyses Microsoft Visual Studio .NET 2002 (Rainier) solution files.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.ReferenceBase.GetPrimaryOutputFile(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the output path of the reference, without taking the "copy local"
+            setting into consideration.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The full output path of the reference.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.ReferenceBase.GetOutputFiles(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the complete set of output files of the reference for the 
+            specified configuration.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The complete set of output files of the reference for the specified
+            configuration.
+            </returns>
+            <remarks>
+            The key of the case-insensitive <see cref="T:System.Collections.Hashtable"/> is the 
+            full path of the output file and the value is the path relative to
+            the output directory.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ReferenceBase.GetAssemblyReferences(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the complete set of assemblies that need to be referenced when
+            a project references this component.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The complete set of assemblies that need to be referenced when a 
+            project references this component.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.ReferenceBase.GetTimestamp(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the timestamp of the reference.
+            </summary>
+            <param name="config">The build configuration of the reference.</param>
+            <returns>
+            The timestamp of the reference.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.ReferenceBase.GetTimestamp(System.String)">
+            <summary>
+            Returns the date and time the specified file was last written to.
+            </summary>
+            <param name="fileName">The file for which to obtain write date and time information.</param>
+            <returns>
+            A <see cref="T:System.DateTime"/> structure set to the date and time that 
+            the specified file was last written to, or 
+            <see cref="F:System.DateTime.MaxValue"/> if the specified file does not
+            exist.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.ReferenceBase.Log(NAnt.Core.Level,System.String)">
+            <summary>
+            Logs a message with the given priority.
+            </summary>
+            <param name="messageLevel">The message priority at which the specified message is to be logged.</param>
+            <param name="message">The message to be logged.</param>
+            <remarks>
+            The actual logging is delegated to the underlying task.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ReferenceBase.Log(NAnt.Core.Level,System.String,System.Object[])">
+            <summary>
+            Logs a message with the given priority.
+            </summary>
+            <param name="messageLevel">The message priority at which the specified message is to be logged.</param>
+            <param name="message">The message to log, containing zero or more format items.</param>
+            <param name="args">An <see cref="T:System.Object"/> array containing zero or more objects to format.</param>
+            <remarks>
+            The actual logging is delegated to the underlying task.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ReferenceBase.CopyLocal">
+            <summary>
+            Gets a value indicating whether the output file(s) of this reference 
+            should be copied locally.
+            </summary>
+            <value>
+            <see langword="true" /> if the output file(s) of this reference 
+            should be copied locally; otherwise, <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ReferenceBase.IsSystem">
+            <summary>
+            Gets a value indicating whether this reference represents a system 
+            assembly.
+            </summary>
+            <value>
+            <see langword="true" /> if this reference represents a system 
+            assembly; otherwise, <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ReferenceBase.Parent">
+            <summary>
+            Gets the project in which the reference is defined.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectReferenceBase.GetPrimaryOutputFile(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the output path of the reference, without taking the "copy local"
+            setting into consideration.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The output path of the reference.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectReferenceBase.GetOutputFiles(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the complete set of output files for the referenced project.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The complete set of output files for the referenced project.
+            </returns>
+            <remarks>
+            The key of the case-insensitive <see cref="T:System.Collections.Hashtable"/> is the 
+            full path of the output file and the value is the path relative to
+            the output directory.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectReferenceBase.GetAssemblyReferences(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the complete set of assemblies that need to be referenced when
+            a project references this project.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The complete set of assemblies that need to be referenced when a 
+            project references this project.
+            </returns>
+            <remarks>
+            <para>
+            Apparently, there's some hack in VB.NET that allows a type to be used
+            that derives from a type in an assembly that is not referenced by the
+            project.
+            </para>
+            <para>
+            When building from the command line (using vbc), the following error
+            is reported "error BC30007: Reference required to assembly 'X' 
+            containing the base class 'X'. Add one to your project".
+            </para>
+            <para>
+            Somehow VB.NET can workaround this issue, without actually adding a
+            reference to that assembly. I verified this with both VS.NET 2003 and
+            VS.NET 2005.
+            </para>
+            <para>
+            For now, we have no other option than to return all assembly 
+            references of the referenced project if the parent is a VB.NET 
+            project.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectReferenceBase.GetTimestamp(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the timestamp of the reference.
+            </summary>
+            <param name="config">The build configuration of the reference.</param>
+            <returns>
+            The timestamp of the reference.
+            </returns>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectReferenceBase.CopyLocal">
+            <summary>
+            Gets a value indicating whether the output file(s) of this reference 
+            should be copied locally.
+            </summary>
+            <value>
+            <see langword="true" /> if the output file(s) of this reference 
+            should be copied locally; otherwise, <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectReferenceBase.IsSystem">
+            <summary>
+            Gets a value indicating whether this reference represents a system 
+            assembly.
+            </summary>
+            <value>
+            <see langword="false" /> as a project by itself can never be a
+            system assembly.
+            </value>
+        </member>
+        <member name="M:NAnt.VSNet.FileReferenceBase.GetAssemblyOutputFiles(System.String)">
+            <summary>
+            Gets the complete set of output files for the specified assembly.
+            </summary>
+            <param name="assemblyFile">The path of the assembly to get the output files for.</param>
+            <returns>
+            The complete set of output files for the reference.
+            </returns>
+            <remarks>
+            The key of the case-insensitive <see cref="T:System.Collections.Hashtable"/> is the 
+            full path of the output file and the value is the path relative to
+            the output directory.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.AssemblyReferenceBase.GetPrimaryOutputFile(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the path of the reference, without taking the "copy local"
+            setting into consideration.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The output path of the reference.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.AssemblyReferenceBase.GetOutputFiles(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the complete set of output files for the referenced project.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The complete set of output files for the referenced project.
+            </returns>
+            <remarks>
+            The key of the case-insensitive <see cref="T:System.Collections.Hashtable"/> is the 
+            full path of the output file and the value is the path relative to
+            the output directory.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.AssemblyReferenceBase.GetAssemblyReferences(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the complete set of assemblies that need to be referenced when
+            a project references this component.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The complete set of assemblies that need to be referenced when a 
+            project references this component.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.AssemblyReferenceBase.GetTimestamp(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the timestamp of the reference.
+            </summary>
+            <param name="config">The build configuration of the reference.</param>
+            <returns>
+            The timestamp of the reference.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.AssemblyReferenceBase.ResolveFromFolderList(System.Collections.Specialized.StringCollection,System.String)">
+            <summary>
+            Searches for the given file in all paths in <paramref name="folderList" />.
+            </summary>
+            <param name="folderList">The folders to search.</param>
+            <param name="fileName">The file to search for.</param>
+            <returns>
+            The path of the assembly if <paramref name="fileName" /> was found
+            in <paramref name="folderList" />; otherwise, <see langword="null" />.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.AssemblyReferenceBase.ResolveFromFramework(System.String)">
+            <summary>
+            Resolves an assembly reference in the framework assembly directory
+            of the target framework.
+            </summary>
+            <param name="fileName">The file to search for.</param>
+            <returns>
+            The full path of the assembly file if the assembly could be located 
+            in the framework assembly directory; otherwise, <see langword="null" />.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.AssemblyReferenceBase.ResolveFromRelativePath(System.String)">
+            <summary>
+            Resolves an assembly reference using a path relative to the project 
+            directory.
+            </summary>
+            <returns>
+            The full path of the assembly, or <see langword="null"/> if 
+            <paramref name="relativePath"/> is <see langword="null"/> or an
+            empty <see cref="T:System.String"/>.
+            </returns>
+        </member>
+        <member name="P:NAnt.VSNet.AssemblyReferenceBase.CopyLocal">
+            <summary>
+            Gets a value indicating whether the output file(s) of this reference 
+            should be copied locally.
+            </summary>
+            <value>
+            <see langword="true" /> if the output file(s) of this reference 
+            should be copied locally; otherwise, <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.AssemblyReferenceBase.IsSystem">
+            <summary>
+            Gets a value indicating whether this reference represents a system 
+            assembly.
+            </summary>
+            <value>
+            <see langword="true" /> if this reference represents a system 
+            assembly; otherwise, <see langword="false" />.
+            </value>
+        </member>
+        <member name="M:NAnt.VSNet.VcAssemblyReference.ResolveAssemblyReference">
+            <summary>
+            Resolves an assembly reference.
+            </summary>
+            <remarks>
+            TODO: still need to verify the order.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.VcAssemblyReference.EvaluateMacro(System.Text.RegularExpressions.Match)">
+            <summary>
+            Is called each time a regular expression match is found during a 
+            <see cref="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)"/> operation.
+            </summary>
+            <param name="m">The <see cref="T:System.Text.RegularExpressions.Match"/> resulting from a single regular expression match during a <see cref="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)"/>.</param>
+            <returns>
+            The expanded <see cref="T:System.Text.RegularExpressions.Match"/>.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">The macro is not supported.</exception>
+            <exception cref="T:System.NotImplementedException">Expansion of a given macro is not yet implemented.</exception>
+        </member>
+        <member name="P:NAnt.VSNet.VcAssemblyReference.Name">
+            <summary>
+            Gets the name of the referenced assembly.
+            </summary>
+            <value>
+            The name of the referenced assembly, or <see langword="null" /> if
+            the name could not be determined.
+            </value>
+        </member>
+        <member name="M:NAnt.VSNet.ConfigurationBase.#ctor(NAnt.VSNet.ProjectBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.ConfigurationBase"/> 
+            class with the given <see cref="T:NAnt.VSNet.ProjectBase"/>.
+            </summary>
+            <param name="project">The project of the configuration.</param>
+        </member>
+        <member name="M:NAnt.VSNet.ConfigurationBase.ExpandMacro(System.String)">
+            <summary>
+            Expands the given macro.
+            </summary>
+            <param name="macro">The macro to expand.</param>
+            <returns>
+            The expanded macro.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The macro is not supported.</para>
+              <para>-or-</para>
+              <para>The macro is not implemented.</para>
+              <para>-or-</para>
+              <para>The macro cannot be expanded.</para>
+            </exception>
+            <exception cref="T:System.NotImplementedException">
+              <para>Expansion of a given macro is not yet implemented.</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.ConfigurationBase.EvaluateMacro(System.Text.RegularExpressions.Match)">
+            <summary>
+            Is called each time a regular expression match is found during a 
+            <see cref="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)"/> operation.
+            </summary>
+            <param name="m">The <see cref="T:System.Text.RegularExpressions.Match"/> resulting from a single regular expression match during a <see cref="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)"/>.</param>
+            <returns>
+            The expanded <see cref="T:System.Text.RegularExpressions.Match"/>.
+            </returns>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.Project">
+            <summary>
+            Gets the project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.Name">
+            <summary>
+            Gets the name of the configuration.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.ObjectDir">
+            <summary>
+            Get the directory in which intermediate build output will be stored 
+            for this configuration.
+            </summary>
+            <remarks>
+            <para>
+            This is a directory relative to the project directory named 
+            <c>obj\&lt;configuration name&gt;</c>.
+            </para>
+            <para>
+            <c>.resx</c> and <c>.licx</c> files will only be recompiled if the
+            compiled resource files in the <see cref="P:NAnt.VSNet.ConfigurationBase.ObjectDir"/> are not 
+            uptodate.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.OutputDir">
+            <summary>
+            Gets the output directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.OutputPath">
+            <summary>
+            Gets the path for the output file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.BuildPath">
+            <summary>
+            Gets the path in which the output file will be created before its
+            copied to the actual output path.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.RelativeOutputDir">
+            <summary>
+            Get the path of the output directory relative to the project
+            directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.PlatformName">
+            <summary>
+            Gets the platform that the configuration targets.
+            </summary>
+            <value>
+            The platform targeted by the configuration.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationBase.ExtraOutputFiles">
+            <summary>
+            Gets the set of output files that is specific to the project
+            configuration.
+            </summary>
+            <value>
+            The set of output files that is specific to the project
+            configuration.
+            </value>
+            <remarks>
+            The key of the case-insensitive <see cref="T:System.Collections.Hashtable"/> is the 
+            full path of the output file and the value is the path relative to
+            the output directory.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationSettings.PlatformName">
+            <summary>
+            Gets the platform that the configuration targets.
+            </summary>
+            <value>
+            The platform targeted by the configuration.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ConfigurationSettings.BuildPath">
+            <summary>
+            Gets the path in which the output file will be created before its
+            copied to the actual output path.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.ProjectBase">
+            <summary>
+            Base class for all project classes.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.#ctor(System.Xml.XmlElement,NAnt.VSNet.Tasks.SolutionTask,System.CodeDom.Compiler.TempFileCollection,NAnt.Core.Util.GacCache,NAnt.VSNet.ReferencesResolver,System.IO.DirectoryInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.ProjectBase"/> class.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.GetOutputFiles(System.String)">
+            <summary>
+            Gets the complete set of output files for the project.
+            configuration.
+            </summary>
+            <value>
+            The complete set of output files for the project.
+            </value>
+            <remarks>
+            The key of the case-insensitive <see cref="T:System.Collections.Hashtable"/> is the 
+            full path of the output file and the value is the path relative to
+            the output directory.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.ExpandMacro(System.String)">
+            <summary>
+            Expands the given macro.
+            </summary>
+            <param name="macro">The macro to expand.</param>
+            <returns>
+            The expanded macro or <see langword="null" /> if the macro is not
+            supported.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.DetermineProductVersion(System.Xml.XmlElement)">
+            <summary>
+            Returns the Visual Studio product version of the specified project
+            XML fragment.
+            </summary>
+            <param name="docElement">XML fragment representing the project file.</param>
+            <returns>
+            The Visual Studio product version of the specified project XML 
+            file.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The product version could not be determined.</para>
+              <para>-or-</para>
+              <para>The product version is not supported.</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.VerifyProjectXml(System.Xml.XmlElement)">
+            <summary>
+            Verifies whether the specified XML fragment represents a valid project
+            that is supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project file.</param>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The XML fragment is not supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.</para>
+              <para>-or-</para>
+              <para>The XML fragment does not represent a valid project (for this <see cref="T:NAnt.VSNet.ProjectBase"/>).</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.Prepare(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Prepares the project for being built.
+            </summary>
+            <param name="config">The configuration in which the project will be built.</param>
+            <remarks>
+            The default implementation will ensure that none of the output files 
+            are marked read-only.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.CopyFile(System.IO.FileInfo,System.IO.FileInfo,NAnt.Core.Task)">
+            <summary>
+            Copies the specified file if the destination file does not exist, or
+            the source file has been modified since it was previously copied.
+            </summary>
+            <param name="srcFile">The file to copy.</param>
+            <param name="destFile">The destination file.</param>
+            <param name="parent">The <see cref="T:NAnt.Core.Task"/> in which context the operation will be performed.</param>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.Log(NAnt.Core.Level,System.String)">
+            <summary>
+            Logs a message with the given priority.
+            </summary>
+            <param name="messageLevel">The message priority at which the specified message is to be logged.</param>
+            <param name="message">The message to be logged.</param>
+            <remarks>
+            The actual logging is delegated to the underlying task.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectBase.Log(NAnt.Core.Level,System.String,System.Object[])">
+            <summary>
+            Logs a message with the given priority.
+            </summary>
+            <param name="messageLevel">The message priority at which the specified message is to be logged.</param>
+            <param name="message">The message to log, containing zero or more format items.</param>
+            <param name="args">An <see cref="T:System.Object"/> array containing zero or more objects to format.</param>
+            <remarks>
+            The actual logging is delegated to the underlying task.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.ProductVersion">
+            <summary>
+            Gets the Visual Studio product version of the project.
+            </summary>
+            <value>
+            The Visual Studio product version of the project.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.Name">
+            <summary>
+            Gets the name of the VS.NET project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.Type">
+            <summary>
+            Gets the type of the project.
+            </summary>
+            <value>
+            The type of the project.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.ProjectPath">
+            <summary>
+            Gets the path of the VS.NET project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.ProjectDirectory">
+            <summary>
+            Gets the directory containing the VS.NET project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.ObjectDir">
+            <summary>
+            Get the directory in which intermediate build output that is not 
+            specific to the build configuration will be stored.
+            </summary>
+            <remarks>
+            <para>
+            This is a directory relative to the project directory named 
+            <c>obj\</c>.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.Guid">
+            <summary>
+            Gets or sets the unique identifier of the VS.NET project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.ProjectConfigurations">
+            <summary>
+            Gets a case-insensitive list of project configurations.
+            </summary>
+            <remarks>
+            The key of the <see cref="T:System.Collections.Hashtable"/> is the name of the 
+            configuration and the value is a <see cref="T:NAnt.VSNet.ConfigurationBase"/>
+            instance.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.BuildConfigurations">
+            <summary>
+            Gets a list of project configurations that can be build.
+            </summary>
+            <remarks>
+            <para>
+            Project configurations that are not in this list do not need to be 
+            compiled (unless the project was not loaded through a solution file).
+            </para>
+            <para>
+            The key of the <see cref="T:System.Collections.Hashtable"/> is the name of the 
+            configuration and the value is a <see cref="T:NAnt.VSNet.ConfigurationBase"/>
+            instance.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.ExtraOutputFiles">
+            <summary>
+            Gets the extra set of output files for the project.
+            </summary>
+            <value>
+            The extra set of output files for the project.
+            </value>
+            <remarks>
+            The key of the case-insensitive <see cref="T:System.Collections.Hashtable"/> is the 
+            full path of the output file and the value is the path relative to
+            the output directory.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectBase.ProductVersionNumber">
+            <summary>
+            TODO: refactor this !!!
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.ManagedProjectBase.Prepare(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Prepares the project for being built.
+            </summary>
+            <param name="config">The configuration in which the project will be built.</param>
+            <remarks>
+            Ensures the configuration-level object directory exists and ensures 
+            that none of the output files are marked read-only.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ManagedProjectBase.GetProcessStartInfo(NAnt.VSNet.ConfigurationBase,System.String)">
+            <summary>
+            Returns a <see cref="T:System.Diagnostics.ProcessStartInfo"/> for launching the compiler
+            for this project.
+            </summary>
+            <param name="config">The configuration to build.</param>
+            <param name="responseFile">The response file for the compiler.</param>
+            <returns>
+            A <see cref="T:System.Diagnostics.ProcessStartInfo"/> for launching the compiler for 
+            this project.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.ManagedProjectBase.GetCultureSpecificResources">
+            <summary>
+            Returns <see cref="T:System.Collections.Hashtable"/> containing culture-specific resources.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Hashtable"/> containing culture-specific resources.
+            </returns>
+            <remarks>
+            The key of the <see cref="T:System.Collections.Hashtable"/> is <see cref="T:System.Globalization.CultureInfo"/>
+            and the value is an <see cref="T:System.Collections.ArrayList"/> containing a list of
+            <see cref="T:NAnt.VSNet.Resource"/> instances for that culture.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ManagedProjectBase.GetProductVersion(System.Xml.XmlNode)">
+            <summary>
+            Returns the Visual Studio product version of the specified project
+            XML fragment.
+            </summary>
+            <param name="projectNode">XML fragment representing the project to check.</param>
+            <returns>
+            The Visual Studio product version of the specified project XML 
+            fragment.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The product version could not be determined.</para>
+              <para>-or-</para>
+              <para>The product version is not supported.</para>
+            </exception>
+        </member>
+        <member name="F:NAnt.VSNet.ManagedProjectBase._sourceFiles">
+            <summary>
+            Holds a case-insensitive list of source files.
+            </summary>
+            <remarks>
+            The key of the <see cref="T:System.Collections.Hashtable"/> is the full path of the 
+            source file and the value is <see langword="null"/>.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ManagedProjectBase.IsWebProject">
+            <summary>
+            Gets a value indicating if this is a web project.
+            </summary>
+            <value>
+            <see langword="true" /> if this is a web project; otherwise,
+            <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ManagedProjectBase.Name">
+            <summary>
+            Gets the name of the VS.NET project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ManagedProjectBase.ProjectPath">
+            <summary>
+            Gets the path of the VS.NET project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ManagedProjectBase.ProjectDirectory">
+            <summary>
+            Gets the directory containing the VS.NET project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ManagedProjectBase.Guid">
+            <summary>
+            Gets or sets the unique identifier of the VS.NET project.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.VBProject.VerifyProjectXml(System.Xml.XmlElement)">
+            <summary>
+            Verifies whether the specified XML fragment represents a valid project
+            that is supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project file.</param>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The XML fragment is not supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.</para>
+              <para>-or-</para>
+              <para>The XML fragment does not represent a valid project (for this <see cref="T:NAnt.VSNet.ProjectBase"/>).</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.VBProject.DetermineProductVersion(System.Xml.XmlElement)">
+            <summary>
+            Returns the Visual Studio product version of the specified project
+            XML fragment.
+            </summary>
+            <param name="docElement">The document element of the project.</param>
+            <returns>
+            The Visual Studio product version of the specified project XML 
+            fragment.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The product version could not be determined.</para>
+              <para>-or-</para>
+              <para>The product version is not supported.</para>
+            </exception>
+            <remarks>
+            This method is called from the <see cref="T:NAnt.VSNet.ProjectBase"/> ctor, and
+            at that time we're not sure the XML that is passed in, is indeed a
+            valid Visual Basic project.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.VBProject.GetProcessStartInfo(NAnt.VSNet.ConfigurationBase,System.String)">
+            <summary>
+            Returns a <see cref="T:System.Diagnostics.ProcessStartInfo"/> for launching the compiler
+            for this project.
+            </summary>
+            <param name="config">The configuration to build.</param>
+            <param name="responseFile">The response file for the compiler.</param>
+            <returns>
+            A <see cref="T:System.Diagnostics.ProcessStartInfo"/> for launching the compiler for 
+            this project.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.VBProject.IsSupported(System.Xml.XmlElement)">
+            <summary>
+            Returns a value indicating whether the project represented by the
+            specified XML fragment is supported by <see cref="T:NAnt.VSNet.VBProject"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project to check.</param>
+            <returns>
+            <see langword="true"/> if <see cref="T:NAnt.VSNet.VBProject"/> supports the 
+            specified project; otherwise, <see langword="false"/>.
+            </returns>
+            <remarks>
+            <para>
+            A project is identified as as Visual Basic project, if the XML 
+            fragment at least has the following information:
+            </para>
+            <code>
+              <![CDATA[
+            <VisualStudioProject>
+                <VisualBasic
+                    ProductVersion="..."
+                    ....
+                >
+                    ...
+                </VisualBasic>
+            </VisualStudioProject>
+              ]]>
+            </code>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.VBProject.Type">
+            <summary>
+            Gets the type of the project.
+            </summary>
+            <value>
+            The type of the project.
+            </value>
+        </member>
+        <member name="M:NAnt.VSNet.WrapperReference.GetPrimaryOutputFile(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the path of the reference, without taking the "copy local"
+            setting into consideration.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The output path of the reference.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.WrapperReference.GetOutputFiles(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the complete set of output files for the referenced project.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The complete set of output files for the referenced project.
+            </returns>
+            <remarks>
+            The key of the case-insensitive <see cref="T:System.Collections.Hashtable"/> is the 
+            full path of the output file and the value is the path relative to
+            the output directory.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.WrapperReference.GetAssemblyReferences(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the complete set of assemblies that need to be referenced when
+            a project references this component.
+            </summary>
+            <param name="config">The project configuration.</param>
+            <returns>
+            The complete set of assemblies that need to be referenced when a 
+            project references this component.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.WrapperReference.GetTimestamp(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Gets the timestamp of the reference.
+            </summary>
+            <param name="config">The build configuration of the reference.</param>
+            <returns>
+            The timestamp of the reference.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.WrapperReference.Sync(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Removes wrapper assembly from build directory, if wrapper assembly 
+            no longer exists in output directory or is not in sync with build 
+            directory, to force rebuild.
+            </summary>
+            <param name="config">The project configuration.</param>
+        </member>
+        <member name="M:NAnt.VSNet.WrapperReference.ExtractTypeLibPath(System.String)">
+            <summary>
+            Extracts the path of the type library or the file containing the type 
+            libary.
+            </summary>
+            <remarks>
+            <para>
+            If the path refers to a DLL, then it is possible that the DLL
+            contains more than one type library resource.  The number of the 
+            resource is appended to the Win32 value.
+            </para>
+            <para>
+            We required the path to the DLL without the trailing resource 
+            identifier.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.WrapperReference.CopyLocal">
+            <summary>
+            Gets a value indicating whether the output file(s) of this reference 
+            should be copied locally.
+            </summary>
+            <value>
+            <see langword="false" /> if the reference wraps a Primary Interop 
+            Assembly; otherwise, <see langword="true" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.WrapperReference.Name">
+            <summary>
+            Gets the name of the referenced assembly.
+            </summary>
+            <value>
+            The name of the referenced assembly, or <see langword="null" /> if
+            the name could not be determined.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.WrapperReference.IsSystem">
+            <summary>
+            Gets a value indicating whether this reference represents a system 
+            assembly.
+            </summary>
+            <value>
+            <see langword="false" /> as none of the system assemblies are wrappers
+            or Primary Interop Assemblies anyway.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.WrapperReference.WrapperAssembly">
+            <summary>
+            Gets the path of the wrapper assembly.
+            </summary>
+            <value>
+            The path of the wrapper assembly.
+            </value>
+            <remarks>
+            The wrapper assembly is stored in the object directory of the 
+            project.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.WrapperReference.IsCreated">
+            <summary>
+            Gets a value indicating whether the wrapper assembly has already been
+            created.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.WrapperReference.PrimaryInteropAssembly">
+            <summary>
+            Gets the path of the Primary Interop Assembly.
+            </summary>
+            <value>
+            The path of the Primary Interop Assembly, or <see langword="null" />
+            if not available.
+            </value>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectSettings.GetOutputType(System.Xml.XmlElement)">
+            <summary>
+            Determines the output type of the project from its XML definition.
+            </summary>
+            <param name="settingsXml">The XML definition of the project settings.</param>
+            <returns>
+            The output type of the project.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>
+              The output type of the project is not set in the specified XML 
+              definition.
+              </para>
+              <para>-or-</para>
+              <para>
+              The output type of the project is not supported.
+              </para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectSettings.GetProjectGuid(System.String,System.Xml.XmlElement)">
+            <summary>
+            Gets the project GUID from the given <see cref="T:System.Xml.XmlElement"/> 
+            holding a <c>&lt;VisualStudioProject&gt;</c> node.
+            </summary>
+            <param name="projectFile">The path of the project file.</param>
+            <param name="elemRoot">The <c>&lt;VisualStudioProject&gt;</c> node from which the project GUID should be retrieved.</param>
+            <returns>
+            The project GUID from specified <c>&lt;VisualStudioProject&gt;</c> node.
+            </returns>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectSettings.ApplicationIcon">
+            <summary>
+            Gets the .ico file to use as application icon.
+            </summary>
+            <value>
+            The .ico file to use as application icon, or <see langword="null" /> 
+            if no application icon should be used.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectSettings.AssemblyOriginatorKeyFile">
+            <summary>
+            Gets the key file to use to sign ActiveX/COM wrappers.
+            </summary>
+            <value>
+            The path of the key file to use to sign ActiveX/COM wrappers, 
+            relative to the project root directory, or <see langword="null" />
+            if the wrapper assembly should not be signed.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectSettings.OutputType">
+            <summary>
+            Gets the output type of this project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectSettings.RunPostBuildEvent">
+            <summary>
+            Designates when the <see cref="P:NAnt.VSNet.ProjectSettings.PostBuildEvent"/> command line should
+            be run. Possible values are "OnBuildSuccess", "Always" or 
+            "OnOutputUpdated".
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectSettings.PreBuildEvent">
+            <summary>
+            Contains commands to be run before a build takes place.
+            </summary>
+            <remarks>
+            Valid commands are those in a .bat file. For more info see MSDN.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ProjectSettings.PostBuildEvent">
+            <summary>
+            Contains commands to be ran after a build has taken place.
+            </summary>
+            <remarks>
+            Valid commands are those in a .bat file. For more info see MSDN.
+            </remarks>
+        </member>
+        <member name="T:NAnt.VSNet.VcProject">
+            <summary>
+            Visual C++ project.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.VerifyProjectXml(System.Xml.XmlElement)">
+            <summary>
+            Verifies whether the specified XML fragment represents a valid project
+            that is supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project file.</param>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The XML fragment is not supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.</para>
+              <para>-or-</para>
+              <para>The XML fragment does not represent a valid project (for this <see cref="T:NAnt.VSNet.ProjectBase"/>).</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.DetermineProductVersion(System.Xml.XmlElement)">
+            <summary>
+            Returns the Visual Studio product version of the specified project
+            XML fragment.
+            </summary>
+            <param name="docElement">The document element of the project.</param>
+            <returns>
+            The Visual Studio product version of the specified project XML 
+            fragment.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The product version could not be determined.</para>
+              <para>-or-</para>
+              <para>The product version is not supported.</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.ExpandMacro(System.String)">
+            <summary>
+            Expands the given macro.
+            </summary>
+            <param name="macro">The macro to expand.</param>
+            <returns>
+            The expanded macro or <see langword="null" /> if the macro is not
+            supported.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.BuildResourceFiles(System.Collections.ArrayList,NAnt.VSNet.VcProjectConfiguration,NAnt.VSNet.VcConfigurationBase)">
+            <summary>
+            Build resource files for the given configuration.
+            </summary>
+            <param name="fileNames">The resource files to build.</param>
+            <param name="projectConfig">The project configuration.</param>
+            <param name="fileConfig">The build configuration.</param>
+            <remarks>
+            TODO: refactor this as we should always get only one element in the
+            <paramref name="fileNames" /> list. Each res file should be built
+            with its own file configuration.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.BuildIDLFiles(System.Collections.ArrayList,NAnt.VSNet.VcConfigurationBase)">
+            <summary>
+            Build Interface Definition Language files for the given
+            configuration.
+            </summary>
+            <param name="fileNames">The IDL files to build.</param>
+            <param name="fileConfig">The build configuration.</param>
+            <remarks>
+            TODO: refactor this as we should always get only one element in the
+            <paramref name="fileNames" /> list. Each IDL file should be built
+            with its own file configuration.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.MergeCompilerToolSetting(NAnt.VSNet.VcProjectConfiguration,NAnt.VSNet.VcConfigurationBase,System.String)">
+            <summary>
+            Merges the specified tool setting of <paramref name="projectConfig" /> 
+            with <paramref name="fileConfig" />.
+            </summary>
+            <remarks>
+            The merge is suppressed when the flag $(noinherit) is defined in
+            <paramref name="fileConfig" />.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.IsSupported(System.Xml.XmlElement)">
+            <summary>
+            Returns a value indicating whether the project represented by the
+            specified XML fragment is supported by <see cref="T:NAnt.VSNet.VcProject"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project to check.</param>
+            <returns>
+            <see langword="true"/> if <see cref="T:NAnt.VSNet.VcProject"/> supports the 
+            specified project; otherwise, <see langword="false"/>.
+            </returns>
+            <remarks>
+            <para>
+            A project is identified as as Visual C++ project, if the XML 
+            fragment at least has the following information:
+            </para>
+            <code>
+              <![CDATA[
+            <VisualStudioProject
+                ProjectType="Visual C++"
+                Version="..."
+                ...
+                >
+            </VisualStudioProject>
+              ]]>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.CleanPath(System.String)">
+            <summary>
+            Removes leading and trailing quotes from the specified path.
+            </summary>
+            <param name="path">The path to clean.</param>
+        </member>
+        <member name="M:NAnt.VSNet.VcProject.GetProductVersion(System.Xml.XmlElement)">
+            <summary>
+            Returns the Visual Studio product version of the specified project
+            XML fragment.
+            </summary>
+            <param name="docElement">XML fragment representing the project to check.</param>
+            <returns>
+            The Visual Studio product version of the specified project XML 
+            fragment.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The product version could not be determined.</para>
+              <para>-or-</para>
+              <para>The product version is not supported.</para>
+            </exception>
+        </member>
+        <member name="P:NAnt.VSNet.VcProject.Name">
+            <summary>
+            Gets the name of the Visual C++ project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcProject.Type">
+            <summary>
+            Gets the type of the project.
+            </summary>
+            <value>
+            The type of the project.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcProject.ProjectPath">
+            <summary>
+            Gets the path of the Visual C++ project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcProject.ProjectDirectory">
+            <summary>
+            Gets the directory containing the VS.NET project.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcProject.ObjectDir">
+            <summary>
+            Get the directory in which intermediate build output that is not 
+            specific to the build configuration will be stored.
+            </summary>
+            <remarks>
+            This is a directory relative to the project directory, 
+            named <c>temp\</c>.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.VcProject.Guid">
+            <summary>
+            Gets or sets the unique identifier of the Visual C++ project.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.ReferencesResolver.InitializeLifetimeService">
+            <summary>
+            Obtains a lifetime service object to control the lifetime policy for 
+            this instance.
+            </summary>
+            <returns>
+            An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease"/> used to control the lifetime 
+            policy for this instance. This is the current lifetime service object 
+            for this instance if one exists; otherwise, a new lifetime service 
+            object initialized with a lease that will never time out.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.ReferencesResolver.GetAssemblyFileName(System.String)">
+            <summary>
+            Gets the file name of the assembly with the given assembly name.
+            </summary>
+            <param name="assemblyName">The assembly name of the assembly of which the file name should be returned.</param>
+            <returns>
+            The file name of the assembly with the given assembly name.
+            </returns>
+        </member>
+        <member name="T:NAnt.VSNet.VcArgumentMap">
+            <summary>
+            A mapping from properties in the .vcproj file to command line arguments.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.VcArgumentMap.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.VcArgumentMap"/>
+            class.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.VcArgumentMap.GetArgument(System.String,System.String,NAnt.VSNet.VcArgumentMap.ArgGroup)">
+            <summary>
+            Gets the argument string corresponding with a configuration property 
+            named <paramref name="propName" /> with value <paramref name="propValue" />.
+            An ignore mask can be used to eliminate some arguments from the search.
+            </summary>
+            <param name="propName">The name of the configuration property.</param>
+            <param name="propValue">The value of the configuration property.</param>
+            <param name="useIgnoreGroup">Specify any groups that needs to be ignored.</param>
+            <returns>
+            The argument string corresponding with a configuration property 
+            named <paramref name="propName" /> with value <paramref name="propValue" />,
+            or <see langword="null" /> if no corresponding argument exists.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.VcArgumentMap.CreateCLArgumentMap">
+            <summary>
+            Creates a mapping between configuration properties for the Visual
+            C++ compiler and corresponding command-line arguments.
+            </summary>
+            <returns>
+            A mapping between configuration properties for the Visual C++
+            compiler and corresponding command-line arguments.
+            </returns>
+            <remarks>
+              <para>
+              The following configuration properties are processed by
+              <see cref="T:NAnt.VSNet.VcProject"/>:
+              </para>
+              <list type="table">
+                <listheader>
+                  <term>Category</term>
+                  <description>Property</description>
+                </listheader>
+                <item>
+                  <term>General</term>
+                  <description>Addtional Include Directories (/I[path])</description>
+                </item>
+                <item>
+                  <term>General</term>
+                  <description>Resolve #using References (/AI[path])</description>
+                </item>
+                <item>
+                  <term>Preprocessor</term>
+                  <description>Preprocessor Definitions (/D[macro])</description>
+                </item>
+                <item>
+                  <term>Code Generation</term>
+                  <description>Enable C++ Exceptions (/EHsc)</description>
+                </item>
+                <item>
+                  <term>Precompiled Headers</term>
+                  <description>Create/Use Precompiled Header</description>
+                </item>
+                <item>
+                  <term>Precompiled Headers</term>
+                  <description>Create/Use PCH Through File</description>
+                </item>
+                <item>
+                  <term>Precompiled Headers</term>
+                  <description>Precompiled Header File</description>
+                </item>
+                <item>
+                  <term>Output Files</term>
+                  <description>Assembler Output</description>
+                </item>
+                <item>
+                  <term>Output Files</term>
+                  <description>ASM List Location</description>
+                </item>
+                <item>
+                  <term>Browse Information</term>
+                  <description>Enable Browse Information</description>
+                </item>
+                <item>
+                  <term>Browse Information</term>
+                  <description>Browse File</description>
+                </item>
+                <item>
+                  <term>Advanced</term>
+                  <description>Force Includes (/FI[name])</description>
+                </item>
+                <item>
+                  <term>Advanced</term>
+                  <description>Force #using (/FU[name])</description>
+                </item>
+                <item>
+                  <term>Advanced</term>
+                  <description>Undefine Preprocessor Definitions (/U[macro])</description>
+                </item>
+              </list>
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.VcArgumentMap.CreateLinkerArgumentMap">
+            <summary>
+            Creates a mapping between configuration properties for the Visual
+            C++ linker and corresponding command-line arguments.
+            </summary>
+            <returns>
+            A mapping between configuration properties for the Visual C++
+            linker and corresponding command-line arguments.
+            </returns>
+            <remarks>
+              <para>
+              The following configuration properties are processed by
+              <see cref="T:NAnt.VSNet.VcProject"/>:
+              </para>
+              <list type="table">
+                <listheader>
+                  <term>Category</term>
+                  <description>Property</description>
+                </listheader>
+                <item>
+                  <term>General</term>
+                  <description>Output File (/OUT:[file])</description>
+                </item>
+                <item>
+                  <term>General</term>
+                  <description>Additional Library Directories (/LIBPATH:[dir])</description>
+                </item>
+                <item>
+                  <term>Input</term>
+                  <description>Additional Dependencies</description>
+                </item>
+                <item>
+                  <term>Input</term>
+                  <description>Add Module to Assembly (/ASSEMBLYMODULE:file)</description>
+                </item>
+                <item>
+                  <term>Input</term>
+                  <description>Embed Managed Resource File (/ASSEMBLYRESOURCE:file)</description>
+                </item>
+                <item>
+                  <term>Debugging</term>
+                  <description>Generate Debug Info (/DEBUG)</description>
+                </item>
+                <item>
+                  <term>Debugging</term>
+                  <description>Generate Program Database File (/PDB:name)</description>
+                </item>
+                <item>
+                  <term>Debugging</term>
+                  <description>Generate Map File (/MAP)</description>
+                </item>
+                <item>
+                  <term>Debugging</term>
+                  <description>Map File Name (/MAP:[filename])</description>
+                </item>
+                <item>
+                  <term>System</term>
+                  <description>Heap Reserve Size (/HEAP:reserve)</description>
+                </item>
+                <item>
+                  <term>System</term>
+                  <description>Heap Commit Size (/HEAP:reserve, commit)</description>
+                </item>
+                <item>
+                  <term>System</term>
+                  <description>Stack Reserve Size (/STACK:reserve)</description>
+                </item>
+                <item>
+                  <term>System</term>
+                  <description>Stack Commit Size (/STACK:reserve, commit)</description>
+                </item>
+              </list>
+              <para>
+              The following configuration properties are ignored:
+              </para>
+              <list type="table">
+                <listheader>
+                  <term>Category</term>
+                  <description>Property</description>
+                </listheader>
+                <item>
+                  <term>General</term>
+                  <description>Show Progress (/VERBOSE, /VERBOSE:LIB)</description>
+                </item>
+                <item>
+                  <term>General</term>
+                  <description>Suppress Startup Banner (/NOLOGO)</description>
+                </item>
+              </list>
+              <para>
+              Support for the following configuration properties still needs to
+              be implemented:
+              </para>
+              <list type="table">
+                <listheader>
+                  <term>Category</term>
+                  <description>Property</description>
+                </listheader>
+                <item>
+                  <term>General</term>
+                  <description>Ignore Import Library</description>
+                </item>
+                <item>
+                  <term>General</term>
+                  <description>Register Output</description>
+                </item>
+                <item>
+                  <term>Input</term>
+                  <description>Ignore Specific Library (/NODEFAULTLIB:[name, name, ...])</description>
+                </item>
+                <item>
+                  <term>Input</term>
+                  <description>Force Symbol References (/INCLUDE:[symbol])</description>
+                </item>
+                <item>
+                  <term>Input</term>
+                  <description>Delay Loaded DLLs (/DELAYLOAD:[dll_name])</description>
+                </item>
+                <item>
+                  <term>Embedded IDL</term>
+                  <description>MIDL Commands (/MIDL:[file])</description>
+                </item>
+              </list>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.VcArgumentMap.VcArgument.Name">
+            <summary>
+            Gets the name of the command-line argument.
+            </summary>
+            <value>
+            The name of the command-line argument.
+            </value>
+        </member>
+        <member name="T:NAnt.VSNet.VcArgumentMap.LinkerStringArgument">
+            <summary>
+            Represents a command-line arguments of which the trailing backslashes
+            in the value should be duplicated.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.VcArgumentMap.QuotedLinkerStringArgument">
+            <summary>
+            Represents a command-line argument of which the value should be
+            quoted, and of which trailing backslahes should be duplicated.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.VcArgumentMap.ArgGroup">
+            <summary>
+            Allow us to assign an argument to a specific group.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.VcArgumentMap.ArgGroup.Unassigned">
+            <summary>
+            The argument is not assigned to any group.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.VcArgumentMap.ArgGroup.OptiIgnoreGroup">
+            <summary>
+            The argument is ignored when the optimization level is set to 
+            <b>Minimum Size</b> (1) or <b>Maximum Size</b> (2).
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.Resource.Compile(NAnt.VSNet.ConfigurationSettings)">
+            <summary>
+            Compiles the resource file.
+            </summary>
+            <param name="config">A build configuration.</param>
+            <returns>
+            A <see cref="T:System.IO.FileInfo"/> representing the compiled resource file.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.Resource.GetCompiledResourceFile(NAnt.VSNet.ConfigurationSettings)">
+            <summary>
+            Returns a <see cref="T:System.IO.FileInfo"/> representing the compiled resource
+            file.
+            </summary>
+            <param name="config">A build configuration.</param>
+            <returns>
+            A <see cref="T:System.IO.FileInfo"/> representing the compiled resource file.
+            </returns>
+            <remarks>
+            Calling this method does not force compilation of the resource file.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.Resource.InputFile">
+            <summary>
+            Gets a <see cref="T:System.IO.FileInfo"/> representing the physical location
+            of the resource file.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.Resource.LogicalFile">
+            <summary>
+            Gets a <see cref="T:System.IO.FileInfo"/> representing the logical location
+            of the resource file in the project.
+            </summary>
+            <remarks>
+            When the resource file is not linked, this matches the
+            <see cref="P:NAnt.VSNet.Resource.InputFile"/>.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.ManagedAssemblyReference.ResolveAssemblyReference">
+            <summary>
+            <para>
+            Resolves an assembly reference.
+            </para>
+            </summary>
+            <remarks>
+            <para>
+            Visual Studio .NET uses the following search mechanism :
+            </para>
+            <list type="number">
+                <item>
+                    <term>
+                        The project directory.
+                    </term>
+                </item>
+                <item>
+                    <term>
+                        The directories specified in the "ReferencePath" property, 
+                        which is stored in the .USER file.
+                    </term>
+                </item>
+                <item>
+                    <term>
+                        The .NET Framework directory (see KB306149) 
+                    </term>
+                </item>
+                <item>
+                    <term>
+                        <para>
+                            The directories specified under the following registry 
+                            keys:
+                        </para>
+                        <list type="bullet">
+                            <item>
+                                <term>
+                                    HKLM\SOFTWARE\Microsoft\.NETFramework\AssemblyFolders
+                                </term>
+                            </item>
+                            <item>
+                                <term>
+                                    HKCU\SOFTWARE\Microsoft\.NETFramework\AssemblyFolders
+                                </term>
+                            </item>
+                            <item>
+                                <term>
+                                    HKLM\SOFTWARE\Microsoft\VisualStudio\&lt;major version&gt;.&lt;minor version&gt;\AssemblyFolders
+                                </term>
+                            </item>
+                            <item>
+                                <term>
+                                    HKCU\SOFTWARE\Microsoft\VisualStudio\&lt;major version&gt;.&lt;minor version&gt;\AssemblyFolders
+                                </term>
+                            </item>
+                        </list>
+                        <para>
+                            Future versions of Visual Studio .NET will also check 
+                            in:
+                        </para>
+                        <list type="bullet">
+                            <item>
+                                <term>
+                                    HKLM\SOFTWARE\Microsoft\.NETFramework\AssemblyFoldersEx
+                                </term>
+                            </item>
+                            <item>
+                                <term>
+                                    HKCU\SOFTWARE\Microsoft\.NETFramework\AssemblyFoldersEx
+                                </term>
+                            </item>
+                        </list>
+                    </term>
+                </item>
+                <item>
+                    <term>
+                        The HintPath.
+                    </term>
+                </item>
+            </list>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.ManagedAssemblyReference.Name">
+            <summary>
+            Gets the name of the referenced assembly.
+            </summary>
+            <value>
+            The name of the referenced assembly, or <see langword="null" /> if
+            the name could not be determined.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.ManagedAssemblyReference.AssemblyFoldersKey">
+            <summary>
+            Gets the Visual Studio .NET AssemblyFolders registry key matching
+            the current target framework.
+            </summary>
+            <value>
+            The Visual Studio .NET AssemblyFolders registry key matching the 
+            current target framework.
+            </value>
+            <exception cref="T:NAnt.Core.BuildException">The current target framework is not supported.</exception>
+            <remarks>
+            We use the target framework instead of the product version of the 
+            containing project file to determine what registry key to scan, as
+            we don't want to use assemblies meant for uplevel framework versions.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.CSharpProject.VerifyProjectXml(System.Xml.XmlElement)">
+            <summary>
+            Verifies whether the specified XML fragment represents a valid project
+            that is supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project file.</param>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The XML fragment is not supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.</para>
+              <para>-or-</para>
+              <para>The XML fragment does not represent a valid project (for this <see cref="T:NAnt.VSNet.ProjectBase"/>).</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.CSharpProject.DetermineProductVersion(System.Xml.XmlElement)">
+            <summary>
+            Returns the Visual Studio product version of the specified project
+            XML fragment.
+            </summary>
+            <param name="docElement">The document element of the project.</param>
+            <returns>
+            The Visual Studio product version of the specified project XML 
+            fragment.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The product version could not be determined.</para>
+              <para>-or-</para>
+              <para>The product version is not supported.</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.CSharpProject.GetProcessStartInfo(NAnt.VSNet.ConfigurationBase,System.String)">
+            <summary>
+            Returns a <see cref="T:System.Diagnostics.ProcessStartInfo"/> for launching the compiler
+            for this project.
+            </summary>
+            <param name="config">The configuration to build.</param>
+            <param name="responseFile">The response file for the compiler.</param>
+            <returns>
+            A <see cref="T:System.Diagnostics.ProcessStartInfo"/> for launching the compiler for 
+            this project.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.CSharpProject.IsSupported(System.Xml.XmlElement)">
+            <summary>
+            Returns a value indicating whether the project represented by the
+            specified XML fragment is supported by <see cref="T:NAnt.VSNet.CSharpProject"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project to check.</param>
+            <returns>
+            <see langword="true"/> if <see cref="T:NAnt.VSNet.CSharpProject"/> supports 
+            the specified project; otherwise, <see langword="false"/>.
+            </returns>
+            <remarks>
+            <para>
+            A project is identified as as C# project, if the XML fragment at 
+            least has the following information:
+            </para>
+            <code>
+              <![CDATA[
+            <VisualStudioProject>
+                <CSHARP
+                    ProductVersion="..."
+                    ....
+                >
+                    ...
+                </CSHARP>
+            </VisualStudioProject>
+              ]]>
+            </code>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.CSharpProject.Type">
+            <summary>
+            Gets the type of the project.
+            </summary>
+            <value>
+            The type of the project.
+            </value>
+        </member>
+        <member name="T:NAnt.VSNet.ManagedOutputType">
+            <summary>
+            Indentifies the different output types of a managed project.
+            </summary>
+            <remarks>
+            Visual Studio .NET does not support modules.
+            </remarks>
+        </member>
+        <member name="F:NAnt.VSNet.ManagedOutputType.Library">
+            <summary>
+            A class library. 
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ManagedOutputType.Executable">
+            <summary>
+            A console application.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ManagedOutputType.WindowsExecutable">
+            <summary>
+            A Windows program.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.JSharpProject.VerifyProjectXml(System.Xml.XmlElement)">
+            <summary>
+            Verifies whether the specified XML fragment represents a valid project
+            that is supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project file.</param>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The XML fragment is not supported by this <see cref="T:NAnt.VSNet.ProjectBase"/>.</para>
+              <para>-or-</para>
+              <para>The XML fragment does not represent a valid project (for this <see cref="T:NAnt.VSNet.ProjectBase"/>).</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.JSharpProject.DetermineProductVersion(System.Xml.XmlElement)">
+            <summary>
+            Returns the Visual Studio product version of the specified project
+            XML fragment.
+            </summary>
+            <param name="docElement">The document element of the project.</param>
+            <returns>
+            The Visual Studio product version of the specified project XML 
+            fragment.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The product version could not be determined.</para>
+              <para>-or-</para>
+              <para>The product version is not supported.</para>
+            </exception>
+        </member>
+        <member name="M:NAnt.VSNet.JSharpProject.Prepare(NAnt.VSNet.ConfigurationBase)">
+            <summary>
+            Prepares the project for being built.
+            </summary>
+            <param name="config">The configuration in which the project will be built.</param>
+            <remarks>
+            Ensures the configuration-level object directory exists and ensures
+            that none of the output files are marked read-only.
+            </remarks>
+        </member>
+        <member name="M:NAnt.VSNet.JSharpProject.GetProcessStartInfo(NAnt.VSNet.ConfigurationBase,System.String)">
+            <summary>
+            Returns a <see cref="T:System.Diagnostics.ProcessStartInfo"/> for launching the compiler
+            for this project.
+            </summary>
+            <param name="config">The configuration to build.</param>
+            <param name="responseFile">The response file for the compiler.</param>
+            <returns>
+            A <see cref="T:System.Diagnostics.ProcessStartInfo"/> for launching the compiler for
+            this project.
+            </returns>
+        </member>
+        <member name="M:NAnt.VSNet.JSharpProject.IsSupported(System.Xml.XmlElement)">
+            <summary>
+            Returns a value indicating whether the project represented by the
+            specified XML fragment is supported by <see cref="T:NAnt.VSNet.JSharpProject"/>.
+            </summary>
+            <param name="docElement">XML fragment representing the project to check.</param>
+            <returns>
+            <see langword="true"/> if <see cref="T:NAnt.VSNet.CSharpProject"/> supports
+            the specified project; otherwise, <see langword="false"/>.
+            </returns>
+            <remarks>
+            <para>
+            A project is identified as as J# project, if the XML fragment at
+            least has the following information:
+            </para>
+            <code>
+              <![CDATA[
+            <VisualStudioProject>
+                <JSHARP
+                    ProductVersion="..."
+                    ....
+                >
+                    ...
+                </JSHARP>
+            </VisualStudioProject>
+              ]]>
+            </code>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.JSharpProject.Type">
+            <summary>
+            Gets the type of the project.
+            </summary>
+            <value>
+            The type of the project.
+            </value>
+        </member>
+        <member name="T:NAnt.VSNet.VcProjectConfiguration">
+            <summary>
+            Represents a Visual C++ project configuration.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.VcConfigurationBase">
+            <summary>
+            A single build configuration for a Visual C++ project or for a specific
+            file in the project.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.VcConfigurationBase.ExpandMacro(System.String)">
+            <summary>
+            Expands the given macro.
+            </summary>
+            <param name="macro">The macro to expand.</param>
+            <returns>
+            The expanded macro.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The macro is not supported.</para>
+              <para>-or-</para>
+              <para>The macro is not implemented.</para>
+              <para>-or-</para>
+              <para>The macro cannot be expanded.</para>
+            </exception>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.ProjectDir">
+            <summary>
+            Gets the project directory.
+            </summary>
+            <value>
+            The project directory.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.IntermediateDir">
+            <summary>
+            Gets the intermediate directory, specified relative to project 
+            directory.
+            </summary>
+            <value>
+            The intermediate directory, specified relative to project directory.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.ReferencesPath">
+            <summary>
+            Gets a comma-separated list of directories to scan for assembly
+            references.
+            </summary>
+            <value>
+            A comma-separated list of directories to scan for assembly
+            references, or <see langword="null" /> if no additional directories
+            should scanned.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.OutputDir">
+            <summary>
+            Gets the output directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.OutputPath">
+            <summary>
+            Gets the path for the output file.
+            </summary>
+            <value>
+            The path for the output file, or <see langword="null" /> if there's
+            no output file for this configuration.
+            </value>
+            <remarks>
+            An NMake project does not necessarily have an output file.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.BuildPath">
+            <summary>
+            Gets the path in which the output file will be created before its
+            copied to the actual output path.
+            </summary>
+            <remarks>
+            For Visual C++ projects, the output file will be immediately
+            created in the output path.
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.Name">
+            <summary>
+            Gets the name of the configuration.
+            </summary>
+            <value>
+            The name of the configuration.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.PlatformName">
+            <summary>
+            Gets the platform that the configuration targets.
+            </summary>
+            <value>
+            The platform targeted by the configuration.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcConfigurationBase.FullName">
+            <summary>
+            Gets the name of the configuration, including the platform it
+            targets.
+            </summary>
+            <value>
+            Tthe name of the configuration, including the platform it targets.
+            </value>
+        </member>
+        <member name="M:NAnt.VSNet.VcProjectConfiguration.GetXmlAttributeValue(System.Xml.XmlNode,System.String)">
+            <summary>
+            Gets the value of the specified attribute from the specified node.
+            </summary>
+            <param name="xmlNode">The node of which the attribute value should be retrieved.</param>
+            <param name="attributeName">The attribute of which the value should be returned.</param>
+            <returns>
+            The value of the attribute with the specified name or <see langword="null" />
+            if the attribute does not exist or has no value.
+            </returns>
+        </member>
+        <member name="P:NAnt.VSNet.VcProjectConfiguration.CharacterSet">
+            <summary>
+            Tells the compiler which character set to use.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcProjectConfiguration.ManagedExtensions">
+            <summary>
+            Gets a value indicating whether Managed Extensions for C++ are 
+            enabled.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcProjectConfiguration.UseOfMFC">
+            <summary>
+            Gets a value indicating how MFC is used by the configuration.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcProjectConfiguration.UseOfATL">
+            <summary>
+            Gets a value indicating how ATL is used by the configuration.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcProjectConfiguration.ObjectDir">
+            <summary>
+            Get the directory in which intermediate build output will be stored 
+            for this configuration.
+            </summary>
+            <remarks>
+            <para>
+            This is a directory relative to the project directory named 
+            <c>obj\&lt;configuration name&gt;</c>.
+            </para>
+            <para>
+            <c>.resx</c> and <c>.licx</c> files will only be recompiled if the
+            compiled resource files in the <see cref="P:NAnt.VSNet.VcProjectConfiguration.ObjectDir"/> are not 
+            uptodate.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NAnt.VSNet.VcProjectConfiguration.RelativeOutputDir">
+            <summary>
+            Get the path of the output directory relative to the project
+            directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcProjectConfiguration.IntermediateDir">
+            <summary>
+            Gets the intermediate directory, specified relative to project 
+            directory.
+            </summary>
+            <value>
+            The intermediate directory, specified relative to project directory.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcProjectConfiguration.ReferencesPath">
+            <summary>
+            Gets a comma-separated list of directories to scan for assembly
+            references.
+            </summary>
+            <value>
+            A comma-separated list of directories to scan for assembly
+            references, or <see langword="null" /> if no additional directories
+            should scanned.
+            </value>
+        </member>
+        <member name="T:NAnt.VSNet.VcProjectConfiguration.ConfigurationType">
+            <summary>
+            The type of output for a given configuration.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.VcProjectConfiguration.ConfigurationType.Makefile">
+            <summary>
+            A Makefile.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.VcProjectConfiguration.ConfigurationType.Application">
+            <summary>
+            Application (.exe).
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.VcProjectConfiguration.ConfigurationType.DynamicLibrary">
+            <summary>
+            Dynamic Library (.dll).
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.VcProjectConfiguration.ConfigurationType.StaticLibrary">
+            <summary>
+            Static Library (.lib).
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.VcProjectConfiguration.ConfigurationType.Utility">
+            <summary>
+            Utility.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.VcFileConfiguration">
+            <summary>
+            Represents the configuration of a file.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.VcFileConfiguration.ExpandMacro(System.String)">
+            <summary>
+            Expands the given macro.
+            </summary>
+            <param name="macro">The macro to expand.</param>
+            <returns>
+            The expanded macro.
+            </returns>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The macro is not supported.</para>
+              <para>-or-</para>
+              <para>The macro is not implemented.</para>
+              <para>-or-</para>
+              <para>The macro cannot be expanded.</para>
+            </exception>
+        </member>
+        <member name="P:NAnt.VSNet.VcFileConfiguration.ExcludeFromBuild">
+            <summary>
+            Gets a value indication whether the file should be excluded from 
+            the build for this configuration.
+            </summary>
+            <value>
+            <see langword="true" /> if the file should be excluded from the 
+            build for this configuration; otherwise, <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcFileConfiguration.RelativePath">
+            <summary>
+            Gets the relative path of the file.
+            </summary>
+            <value>
+            The path of the file relative to the project directory.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcFileConfiguration.RelativeOutputDir">
+            <summary>
+            Get the path of the output directory relative to the project
+            directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.VSNet.VcFileConfiguration.IntermediateDir">
+            <summary>
+            Gets the intermediate directory, specified relative to project 
+            directory.
+            </summary>
+            <value>
+            The intermediate directory, specified relative to project directory.
+            </value>
+        </member>
+        <member name="P:NAnt.VSNet.VcFileConfiguration.ReferencesPath">
+            <summary>
+            Gets a comma-separated list of directories to scan for assembly
+            references.
+            </summary>
+            <value>
+            A comma-separated list of directories to scan for assembly
+            references, or <see langword="null" /> if no additional directories
+            should scanned.
+            </value>
+        </member>
+        <member name="T:NAnt.VSNet.SolutionFactory">
+            <summary>
+            Factory class for VS.NET solutions.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.SolutionFactory.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.SolutionFactory"/>
+            class.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.ProjectType">
+            <summary>
+            Specifies the type of the project.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ProjectType.VB">
+            <summary>
+            A Visual Basic.NET project.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ProjectType.CSharp">
+            <summary>
+            A Visual C# project.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ProjectType.VisualC">
+            <summary>
+            A Visual C++ project.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ProjectType.JSharp">
+            <summary>
+            A Visual J# project.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ProductVersion.Rainier">
+            <summary>
+            Visual Studio.NET 2002
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ProductVersion.Everett">
+            <summary>
+            Visual Studio.NET 2003
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.GenericSolution">
+            <summary>
+            Supports grouping of individual projects, and treating them as a solution.
+            </summary>
+        </member>
+        <member name="T:NAnt.VSNet.ProjectFactory">
+            <summary>
+            Factory class for VS.NET projects.
+            </summary>
+        </member>
+        <member name="M:NAnt.VSNet.ProjectFactory.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.VSNet.ProjectFactory"/>
+            class.
+            </summary>
+        </member>
+        <member name="F:NAnt.VSNet.ProjectFactory._cachedProjects">
+            <summary>
+            Holds a case-insensitive list of cached projects.
+            </summary>
+            <remarks>
+            The key of the <see cref="T:System.Collections.Hashtable"/> is the path of the project
+            file (for web projects this can be a URL) and the value is a 
+            <see cref="T:NAnt.Core.Project"/> instance.
+            </remarks>
+        </member>
+        <member name="F:NAnt.VSNet.ProjectFactory._cachedProjectGuids">
+            <summary>
+            Holds a case-insensitive list of cached project GUIDs.
+            </summary>
+            <remarks>
+            The key of the <see cref="T:System.Collections.Hashtable"/> is the path of the project
+            file (for web projects this can be a URL) and the value is the GUID
+            of the project.
+            </remarks>
+        </member>
+        <member name="F:NAnt.VSNet.ProjectFactory._cachedProjectXml">
+            <summary>
+            Holds a case-insensitive list of cached project GUIDs.
+            </summary>
+            <remarks>
+            The key of the <see cref="T:System.Collections.Hashtable"/> is the path of the project
+            file (for web projects this can be a URL) and the value is the Xml
+            of the project.
+            </remarks>
+        </member>
+    </members>
+</doc>

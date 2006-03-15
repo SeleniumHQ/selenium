@@ -1,0 +1,570 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NAnt.CompressionTasks</name>
+    </assembly>
+    <members>
+        <member name="T:NAnt.Compression.Tasks.UnZipTask">
+            <summary>
+            Extracts files from a zip file.
+            </summary>
+            <remarks>
+              <para>Uses <see href="http://www.icsharpcode.net/OpenSource/SharpZipLib/">#ziplib</see> (SharpZipLib), an open source Zip/GZip library written entirely in C#.</para>
+            </remarks>
+            <example>
+              <para>Extracts all the file from the zip, preserving the directory structure.</para>
+              <code>
+                <![CDATA[
+            <unzip zipfile="backup.zip"/>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.Compression.Tasks.UnZipTask.ExecuteTask">
+            <summary>
+            Extracts the files from the zip file.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Tasks.UnZipTask.ExtractFile(System.IO.Stream,System.String,System.DateTime)">
+            <summary>
+            Extracts a file entry from the specified stream.
+            </summary>
+            <param name="inputStream">The <see cref="T:System.IO.Stream"/> containing the compressed entry.</param>
+            <param name="entryName">The name of the entry including directory information.</param>
+            <param name="entryDate">The date of the entry.</param>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The destination directory for the entry could not be created.</para>
+              <para>-or-</para>
+              <para>The entry could not be extracted.</para>
+            </exception>
+            <remarks>
+            We cannot rely on the fact that the directory entry of a given file
+            is created before the file is extracted, so we should create the
+            directory if it doesn't yet exist.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Compression.Tasks.UnZipTask.ExtractDirectory(System.IO.Stream,System.String,System.DateTime)">
+            <summary>
+            Extracts a directory entry from the specified stream.
+            </summary>
+            <param name="inputStream">The <see cref="T:System.IO.Stream"/> containing the directory entry.</param>
+            <param name="entryName">The name of the directory entry.</param>
+            <param name="entryDate">The date of the entry.</param>
+            <exception cref="T:NAnt.Core.BuildException">
+              <para>The destination directory for the entry could not be created.</para>
+            </exception>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.UnZipTask.ZipFile">
+            <summary>
+            The archive file to expand.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.UnZipTask.ToDirectory">
+            <summary>
+            The directory where the expanded files should be stored. The 
+            default is the project base directory.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.UnZipTask.Overwrite">
+            <summary>
+            Overwrite files, even if they are newer than the corresponding 
+            entries in the archive. The default is <see langword="true" />.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Tasks.ZipTask">
+            <summary>
+            Creates a zip file from the specified filesets.
+            </summary>
+            <remarks>
+              <para>Uses <see href="http://www.icsharpcode.net/OpenSource/SharpZipLib/">#ziplib</see> (SharpZipLib), an open source Tar/Zip/GZip library written entirely in C#.</para>
+            </remarks>
+            <example>
+              <para>
+              Zip all files in <c>${build.dir}</c> and <c>${doc.dir}</c> into a file
+              called &quot;backup.zip&quot;.
+              </para>
+              <code>
+                <![CDATA[
+            <zip zipfile="backup.zip">
+                <fileset basedir="${bin.dir}" prefix="bin">
+                    <include name="**/*" />
+                </fileset>
+                <fileset basedir="${doc.dir}" prefix="doc">
+                    <include name="**/*" />
+                </fileset>
+            </zip>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.Compression.Tasks.ZipTask.ExecuteTask">
+            <summary>
+            Creates the zip file.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.ZipTask.ZipFile">
+            <summary>
+            The zip file to create.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.ZipTask.Comment">
+            <summary>
+            The comment for the file.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.ZipTask.Stamp">
+            <summary>
+            Date/time stamp for the files in the format MM/DD/YYYY HH:MM:SS.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.ZipTask.ZipLevel">
+            <summary>
+            Desired level of compression. Possible values are 0 (STORE only) 
+            to 9 (highest). The default is <c>6</c>.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.ZipTask.IncludeEmptyDirs">
+            <summary>
+            Include empty directories in the generated zip file. The default is
+            <see langword="false" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.ZipTask.ZipFileSets">
+            <summary>
+            The set of files to be included in the archive.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Tasks.TarTask">
+            <summary>
+            Creates a tar file from the specified filesets.
+            </summary>
+            <remarks>
+              <para>Uses <see href="http://www.icsharpcode.net/OpenSource/SharpZipLib/">#ziplib</see> (SharpZipLib), an open source Tar/Zip/GZip library written entirely in C#.</para>
+            </remarks>
+            <example>
+              <para>
+              Tar all files in <c>${build.dir}</c> and <c>${doc.dir}</c> into a file
+              called &quot;backup.tar.gz&quot;, and apply gzip compression to it.
+              </para>
+              <code>
+                <![CDATA[
+            <tar destfile="backup.tar.gz" compression="GZip">
+                <fileset basedir="${bin.dir}" prefix="bin">
+                    <include name="**/*" />
+                </fileset>
+                <fileset basedir="${doc.dir}" prefix="doc">
+                    <include name="**/*" />
+                </fileset>
+            </tar>
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.Compression.Tasks.TarTask.ExecuteTask">
+            <summary>
+            Creates the tar file.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.TarTask.DestFile">
+            <summary>
+            The tar file to create.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.TarTask.IncludeEmptyDirs">
+            <summary>
+            Include empty directories in the generated tar file. The default is
+            <see langword="false" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.TarTask.TarFileSets">
+            <summary>
+            The set of files to be included in the archive.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.TarTask.CompressionMethod">
+            <summary>
+            The compression method. The default is <see cref="F:NAnt.Compression.Tasks.TarCompressionMethod.None"/>.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Tasks.TarCompressionMethod">
+            <summary>
+            Specifies the compression methods supported by <see cref="T:NAnt.Compression.Tasks.TarTask"/>.
+            </summary>
+        </member>
+        <member name="F:NAnt.Compression.Tasks.TarCompressionMethod.None">
+            <summary>
+            No compression.
+            </summary>
+        </member>
+        <member name="F:NAnt.Compression.Tasks.TarCompressionMethod.GZip">
+            <summary>
+            GZIP compression.
+            </summary>
+        </member>
+        <member name="F:NAnt.Compression.Tasks.TarCompressionMethod.BZip2">
+            <summary>
+            BZIP2 compression.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Tasks.GUnzip">
+            <summary>
+            Expands a file packed using GZip compression.
+            </summary>
+            <example>
+              <para>Expands &quot;test.tar.gz&quot; to &quot;test2.tar&quot;.</para>
+              <code>
+                <![CDATA[
+            <gunzip src="test.tar.gz" dest="test.tar" />
+                ]]>
+              </code>
+            </example>
+        </member>
+        <member name="M:NAnt.Compression.Tasks.GUnzip.ExecuteTask">
+            <summary>
+            Extracts the file from the gzip archive.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.GUnzip.SrcFile">
+            <summary>
+            The file to expand.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Tasks.GUnzip.DestFile">
+            <summary>
+            The destination file.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Types.TarFileSet">
+            <summary>
+            A <see cref="T:NAnt.Compression.Types.TarFileSet"/> is a <see cref="T:NAnt.Core.Types.FileSet"/> with extra 
+            attributes useful in the context of the <see cref="T:NAnt.Compression.Tasks.TarTask"/>.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSet.FileMode">
+            <summary>
+            A 3 digit octal string, specify the user, group and other modes 
+            in the standard Unix fashion. Only applies to plain files. The 
+            default is <c>644</c>.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSet.DirMode">
+            <summary>
+            A 3 digit octal string, specify the user, group and other modes 
+            in the standard Unix fashion. Only applies to directories. The 
+            default is <c>755</c>.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSet.UserName">
+            <summary>
+            The username for the tar entry.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSet.Uid">
+            <summary>
+            The user identifier (UID) for the tar entry. 
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSet.GroupName">
+            <summary>
+            The groupname for the tar entry.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSet.Gid">
+            <summary>
+            The group identifier (GID) for the tar entry.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSet.Prefix">
+            <summary>
+            The top level directory prefix. If set, all file and directory paths 
+            in the fileset will have this value prepended. Can either be a single 
+            directory name or a "/" separated path.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Types.TarFileSetCollection">
+            <summary>
+            Contains a collection of <see cref="T:NAnt.Compression.Types.TarFileSet"/> elements.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Compression.Types.TarFileSetCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.#ctor(NAnt.Compression.Types.TarFileSetCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Compression.Types.TarFileSetCollection"/> class
+            with the specified <see cref="T:NAnt.Compression.Types.TarFileSetCollection"/> instance.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.#ctor(NAnt.Compression.Types.TarFileSet[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Compression.Types.TarFileSetCollection"/> class
+            with the specified array of <see cref="T:NAnt.Compression.Types.TarFileSet"/> instances.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.Add(NAnt.Compression.Types.TarFileSet)">
+            <summary>
+            Adds a <see cref="T:NAnt.Compression.Types.TarFileSet"/> to the end of the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.TarFileSet"/> to be added to the end of the collection.</param> 
+            <returns>The position into which the new element was inserted.</returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.AddRange(NAnt.Compression.Types.TarFileSet[])">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.Compression.Types.TarFileSet"/> array to the end of the collection.
+            </summary>
+            <param name="items">The array of <see cref="T:NAnt.Compression.Types.TarFileSet"/> elements to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.AddRange(NAnt.Compression.Types.TarFileSetCollection)">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.Compression.Types.TarFileSetCollection"/> to the end of the collection.
+            </summary>
+            <param name="items">The <see cref="T:NAnt.Compression.Types.TarFileSetCollection"/> to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.Contains(NAnt.Compression.Types.TarFileSet)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.Compression.Types.TarFileSet"/> is in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.TarFileSet"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="item"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.CopyTo(NAnt.Compression.Types.TarFileSet[],System.Int32)">
+            <summary>
+            Copies the entire collection to a compatible one-dimensional array, starting at the specified index of the target array.        
+            </summary>
+            <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param> 
+            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.IndexOf(NAnt.Compression.Types.TarFileSet)">
+            <summary>
+            Retrieves the index of a specified <see cref="T:NAnt.Compression.Types.TarFileSet"/> object in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.TarFileSet"/> object for which the index is returned.</param> 
+            <returns>
+            The index of the specified <see cref="T:NAnt.Compression.Types.TarFileSet"/>. If the <see cref="T:NAnt.Compression.Types.TarFileSet"/> is not currently a member of the collection, it returns -1.
+            </returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.Insert(System.Int32,NAnt.Compression.Types.TarFileSet)">
+            <summary>
+            Inserts a <see cref="T:NAnt.Compression.Types.TarFileSet"/> into the collection at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.TarFileSet"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:NAnt.Compression.Types.TarFileSetEnumerator"/> for the entire collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetCollection.Remove(NAnt.Compression.Types.TarFileSet)">
+            <summary>
+            Removes a member from the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.TarFileSet"/> to remove from the collection.</param>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSetCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSetCollection.FileCount">
+            <summary>
+            Get the total number of files that are represented by the 
+            filesets in this collection.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Types.TarFileSetEnumerator">
+            <summary>
+            Enumerates the <see cref="T:NAnt.Compression.Types.TarFileSet"/> elements of a <see cref="T:NAnt.Compression.Types.TarFileSetCollection"/>.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetEnumerator.#ctor(NAnt.Compression.Types.TarFileSetCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Compression.Types.TarFileSetEnumerator"/> class
+            with the specified <see cref="T:NAnt.Compression.Types.TarFileSetCollection"/>.
+            </summary>
+            <param name="TarFileSets">The collection that should be enumerated.</param>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            <see langword="true" /> if the enumerator was successfully advanced 
+            to the next element; <see langword="false" /> if the enumerator has 
+            passed the end of the collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.TarFileSetEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the 
+            first element in the collection.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.TarFileSetEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <returns>
+            The current element in the collection.
+            </returns>
+        </member>
+        <member name="T:NAnt.Compression.Types.ZipFileSet">
+            <summary>
+            A <see cref="T:NAnt.Compression.Types.ZipFileSet"/> is a <see cref="T:NAnt.Core.Types.FileSet"/> with extra 
+            attributes useful in the context of the <see cref="T:NAnt.Compression.Tasks.ZipTask"/>.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.ZipFileSet.Prefix">
+            <summary>
+            The top level directory prefix. If set, all file and directory paths 
+            in the fileset will have this value prepended. Can either be a single 
+            directory name or a "/" separated path.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Types.ZipFileSetCollection">
+            <summary>
+            Contains a collection of <see cref="T:NAnt.Compression.Types.ZipFileSet"/> elements.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Compression.Types.ZipFileSetCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.#ctor(NAnt.Compression.Types.ZipFileSetCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Compression.Types.ZipFileSetCollection"/> class
+            with the specified <see cref="T:NAnt.Compression.Types.ZipFileSetCollection"/> instance.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.#ctor(NAnt.Compression.Types.ZipFileSet[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Compression.Types.ZipFileSetCollection"/> class
+            with the specified array of <see cref="T:NAnt.Compression.Types.ZipFileSet"/> instances.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.Add(NAnt.Compression.Types.ZipFileSet)">
+            <summary>
+            Adds a <see cref="T:NAnt.Compression.Types.ZipFileSet"/> to the end of the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.ZipFileSet"/> to be added to the end of the collection.</param> 
+            <returns>The position into which the new element was inserted.</returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.AddRange(NAnt.Compression.Types.ZipFileSet[])">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.Compression.Types.ZipFileSet"/> array to the end of the collection.
+            </summary>
+            <param name="items">The array of <see cref="T:NAnt.Compression.Types.ZipFileSet"/> elements to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.AddRange(NAnt.Compression.Types.ZipFileSetCollection)">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.Compression.Types.ZipFileSetCollection"/> to the end of the collection.
+            </summary>
+            <param name="items">The <see cref="T:NAnt.Compression.Types.ZipFileSetCollection"/> to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.Contains(NAnt.Compression.Types.ZipFileSet)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.Compression.Types.ZipFileSet"/> is in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.ZipFileSet"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="item"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.CopyTo(NAnt.Compression.Types.ZipFileSet[],System.Int32)">
+            <summary>
+            Copies the entire collection to a compatible one-dimensional array, starting at the specified index of the target array.        
+            </summary>
+            <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param> 
+            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.IndexOf(NAnt.Compression.Types.ZipFileSet)">
+            <summary>
+            Retrieves the index of a specified <see cref="T:NAnt.Compression.Types.ZipFileSet"/> object in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.ZipFileSet"/> object for which the index is returned.</param> 
+            <returns>
+            The index of the specified <see cref="T:NAnt.Compression.Types.ZipFileSet"/>. If the <see cref="T:NAnt.Compression.Types.ZipFileSet"/> is not currently a member of the collection, it returns -1.
+            </returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.Insert(System.Int32,NAnt.Compression.Types.ZipFileSet)">
+            <summary>
+            Inserts a <see cref="T:NAnt.Compression.Types.ZipFileSet"/> into the collection at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.ZipFileSet"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:NAnt.Compression.Types.ZipFileSetEnumerator"/> for the entire collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetCollection.Remove(NAnt.Compression.Types.ZipFileSet)">
+            <summary>
+            Removes a member from the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Compression.Types.ZipFileSet"/> to remove from the collection.</param>
+        </member>
+        <member name="P:NAnt.Compression.Types.ZipFileSetCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+        </member>
+        <member name="P:NAnt.Compression.Types.ZipFileSetCollection.FileCount">
+            <summary>
+            Get the total number of files that are represented by the 
+            filesets in this collection.
+            </summary>
+        </member>
+        <member name="T:NAnt.Compression.Types.ZipFileSetEnumerator">
+            <summary>
+            Enumerates the <see cref="T:NAnt.Compression.Types.ZipFileSet"/> elements of a <see cref="T:NAnt.Compression.Types.ZipFileSetCollection"/>.
+            </summary>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetEnumerator.#ctor(NAnt.Compression.Types.ZipFileSetCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Compression.Types.ZipFileSetEnumerator"/> class
+            with the specified <see cref="T:NAnt.Compression.Types.ZipFileSetCollection"/>.
+            </summary>
+            <param name="ZipFileSets">The collection that should be enumerated.</param>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            <see langword="true" /> if the enumerator was successfully advanced 
+            to the next element; <see langword="false" /> if the enumerator has 
+            passed the end of the collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.Compression.Types.ZipFileSetEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the 
+            first element in the collection.
+            </summary>
+        </member>
+        <member name="P:NAnt.Compression.Types.ZipFileSetEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <returns>
+            The current element in the collection.
+            </returns>
+        </member>
+    </members>
+</doc>
