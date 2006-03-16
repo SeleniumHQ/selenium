@@ -6,8 +6,8 @@
   <name>Selenium</name>
   <packaging>pom</packaging>
   <modules>
-    <module>code/javascript-core</module>
+    <module>javascript-core</module>
     <module>server</module>
-    <module>code/java-client-driver</module>
+    <module>clients/java</module>
   </modules>
 </project>

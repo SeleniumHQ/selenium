@@ -1,7 +1,7 @@
-<project name="selenium" default="dist" xmlns:maven="urn:maven-artifact-ant">
+<project name="selenium-rc-clients" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
     <property name="version" value="0.7-SNAPSHOT"/>
-    <condition property="website.root" value="${ant.file.selenium}/../../website">
+    <condition property="website.root" value="${ant.file.selenium-rc-clients}/../../website">
         <available file="${ant.file.selenium}/../../website"/>
     </condition>
 
@@ -12,7 +12,7 @@
         <delete dir="dist"/>
     </target>
 
-    <target name="dist" depends="dist-image-browserbot, dist-image-doc, dist-selenium, dist-ruby, dist-python, dist-dotnet"/>
+    <target name="dist" depends="dist-image-doc, dist-dotnet, dist-ruby, dist-python"/>
 
     <target name="dist-dirs">
         <mkdir dir="dist-image"/>
@@ -20,28 +20,8 @@
         <mkdir dir="dist"/>
     </target>
 
-    <target name="dist-image-browserbot" depends="dist-dirs">
-        <copy todir="dist-image/browserbot">
-            <fileset dir="javascript-core/src/selenium">
-                <exclude name="Embedded-WEB-INF/**"/>
-                <exclude name="build.xml"/>
-                <exclude name="*.py"/>
-                <exclude name="*.bat"/>
-                <exclude name="*.graffle"/>
-                <exclude name="VERSION.txt"/>
-                <exclude name="install-readme.txt"/>
-            </fileset>
-        </copy> 
-        <copy file="dist-image/browserbot/TestRunner.html" tofile="dist-image/browserbot/TestRunner.hta"/>
-        <echo file="dist-image/browserbot/tests/readme.txt">Create a TestSuite.html page, and a number of test pages here. Read the docs!</echo>
-        <echo file="dist-image/browserbot/version.txt">${version}</echo>
-    </target>
-
     <target name="dist-image-doc" depends="dist-dirs" if="website.root">
         <copy todir="dist-image/doc">
-            <fileset dir="doc">
-                <include name="*.html"/>
-            </fileset>
             <fileset dir="${website.root}">
                 <include name="*.html"/>
                 <include name="images/*.png"/>
@@ -55,18 +35,9 @@
         <!-- TODO Put the Javadoc in there! -->
     </target>
 
-    <target name="dist-selenium" depends="dist-image-browserbot, dist-image-doc">
-        <property name="selenium.release" value="selenium-javascript-core-${version}"/>
-        <zip zipfile="dist/${selenium.release}.zip" >
-            <zipfileset dir="dist-image/browserbot" prefix="${selenium.release}/selenium"/>
-            <zipfileset dir="dist-image/doc" prefix="${selenium.release}/doc"/>
-            <zipfileset file="javascript-core/src/selenium/install-readme.txt" prefix="${selenium.release}"/>
-        </zip>
-    </target>
-
     <target name="dist-ruby" depends="dist-image-doc">
         <copy todir="dist-image/ruby">
-            <fileset dir="ruby/thin">
+            <fileset dir="ruby">
                 <include name="*.rb"/>
                 <exclude name="readme.txt"/>
             </fileset>
@@ -76,13 +47,13 @@
         <zip zipfile="dist/${ruby.release}.zip">
             <zipfileset dir="dist-image/doc" prefix="${ruby.release}/doc"/>
             <zipfileset dir="dist-image/ruby" prefix="${ruby.release}/ruby"/>
-            <zipfileset file="ruby/thin/readme.txt" prefix="${ruby.release}"/>
+            <zipfileset file="ruby/readme.txt" prefix="${ruby.release}"/>
         </zip>
     </target>
 
 	<target name="dist-python" depends="dist-image-doc">
         <copy todir="dist-image/python">
-            <fileset dir="python/thin">
+            <fileset dir="python">
                 <include name="*.py"/>
                 <exclude name="readme.txt"/>
             </fileset>
@@ -144,11 +115,11 @@
     	<echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
     </target>
     
-    <target name="test" depends="test-ruby, test-dotnet, test-python"/>
+    <target name="test" depends="test-dotnet, test-ruby, test-python"/>
     
     <target name="test-python">
     	<echo message="python executable = ${python.executable}" />
-        <ant dir="python/thin" target="all"/>
+        <ant dir="python" target="all"/>
     </target>
     
     <target name="clean-dotnet">
@@ -167,7 +138,7 @@
 	</target>
 	
     <target name="test-ruby">
-        <ant dir="ruby/thin" target="all"/>
+        <ant dir="ruby" target="all"/>
     </target>
 
 </project>

@@ -1,5 +1,5 @@
-<project name="selenium-top" default="all">
-<description>Builds Selenium from the top-level.  Start here!</description>
+<project name="selenium-rc-top" default="all">
+<description>Builds Selenium RC from the top-level.  Start here!</description>
 	<target name="init">
 		<property environment="env" />
 		<property name="maven.home" value="${env.MAVEN_HOME}" /> <!-- override this if necessary -->
@@ -29,7 +29,7 @@
 		
 	</target>
 
-	<target name="maven" depends="init">
+	<target name="maven" depends="init" description="Builds just the Maven stuff; worksaround Maven Bug MDEP-1">
 		<!-- Bug in dependency-maven-plugin forces us to do this goofy stuff -->
 		<mvn>
 			<arg value="install" />
@@ -44,15 +44,15 @@
 		</mvn>
 	</target>
 
-	<target name="all" depends="init, maven">
-		<ant dir="code" target="all"/>
+	<target name="all" depends="init, maven" description="Builds everything">
+		<ant dir="clients" target="all"/>
 	</target>
 
-	<target name="clean" depends="init">
+	<target name="clean" depends="init" description="Cleans everything">
 		<mvn>
 			<arg value="clean" />
 		</mvn>
-		<ant dir="code" target="clean"/>
+		<ant dir="clients" target="clean"/>
 	</target>
 
 </project>
