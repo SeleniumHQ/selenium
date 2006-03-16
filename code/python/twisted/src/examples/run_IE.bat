@@ -1,1 +1,0 @@
-"C:\Program Files\Internet Explorer\iexplore.exe" http://localhost:8080/selenium-driver/SeleneseRunner.html
