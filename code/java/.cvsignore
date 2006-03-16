@@ -1,5 +1,0 @@
-*.iws
-*.ipr
-target
-junittestcases*.properties
-jcoverage.ser
