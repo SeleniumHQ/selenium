@@ -148,9 +148,14 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         delete.execute();
     }
     
-    public static void main(String[] args) throws Exception {
-        FirefoxCustomProfileLauncherTest test = new FirefoxCustomProfileLauncherTest();
-        test.testFirefox();
+    public static void main(String[] args) throws IOException, InterruptedException {
+        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(SeleniumProxy.DEFAULT_PORT);
+        l.launch("http://www.google.com");
+        int seconds = 15;
+        System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
+        Thread.sleep(seconds * 1000);
+        l.close();
+        System.out.println("He's dead now, right?");
     }
     
     class AsyncExecute extends Execute {
