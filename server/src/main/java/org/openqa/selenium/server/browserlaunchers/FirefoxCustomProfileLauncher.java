@@ -111,10 +111,10 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
 
     public void close() {
         Exception taskKillException = null;
-        if (WindowsTaskKill.thisIsWindows()) {
+        if (WindowsUtils.thisIsWindows()) {
             try {
                 // try to kill with windows taskkill
-                WindowsTaskKill.kill(cmdarray);
+                WindowsUtils.kill(cmdarray);
             } catch (Exception e) {
                 taskKillException = e;
             }

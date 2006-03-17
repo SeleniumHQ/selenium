@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-public class WindowsTaskKill {
+public class WindowsUtils {
 
     private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
     private static String wmic = null;
@@ -42,7 +42,7 @@ public class WindowsTaskKill {
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
             System.out.println("Kills Windows processes by matching their command lines");
-            System.out.println("usage: " + WindowsTaskKill.class.getName() + " command arg1 arg2 ...");
+            System.out.println("usage: " + WindowsUtils.class.getName() + " command arg1 arg2 ...");
         }
         kill(args);
 
@@ -141,6 +141,9 @@ public class WindowsTaskKill {
         System.out.println("Reading Windows Process List...");
         exec.execute();
         System.out.println("Done, searching for processes to kill...");
+        // WMIC drops an ugly zero-length batch file; clean that up
+        File TempWmicBatchFile = new File("TempWmicBatchFile.bat");
+        if (TempWmicBatchFile.exists()) TempWmicBatchFile.delete();
         String output = p.getProperty("proclist");
         // TODO This would be faster if it used SAX instead of DOM
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(output.getBytes()));
@@ -171,7 +174,7 @@ public class WindowsTaskKill {
     
     public static Properties loadEnvironment() {
         if (env != null) return env;
-    	// DGF lifted directly from Ant's Property task
+        // DGF lifted directly from Ant's Property task
         env = new Properties();
         Vector osEnv = Execute.getProcEnvironment();
         for (Enumeration e = osEnv.elements(); e.hasMoreElements();) {
@@ -188,13 +191,13 @@ public class WindowsTaskKill {
     }
     
     public static String getExactPathEnvKey() {
-    	loadEnvironment();
-    	for (Iterator i = env.keySet().iterator(); i.hasNext();) {
-    		String key = (String) i.next();
-    		if (key.equalsIgnoreCase("PATH")) return key;
-    	}
-    	// They don't have a path???
-    	return "PATH";
+        loadEnvironment();
+        for (Iterator i = env.keySet().iterator(); i.hasNext();) {
+            String key = (String) i.next();
+            if (key.equalsIgnoreCase("PATH")) return key;
+        }
+        // They don't have a path???
+        return "PATH";
     }
     
     public static File findSystemRoot() {
@@ -212,7 +215,7 @@ public class WindowsTaskKill {
         if (wmic != null) return wmic;
         findWBEM();
         if (null != wbem) {
-        	File wmicExe = new File(findWBEM(), "wmic.exe");
+            File wmicExe = new File(findWBEM(), "wmic.exe");
             if (wmicExe.exists()) {
                 wmic = wmicExe.getAbsolutePath();
                 return wmic;
@@ -228,7 +231,7 @@ public class WindowsTaskKill {
         File systemRoot = findSystemRoot();
         wbem = new File(systemRoot, "system32/wbem");
         if (!wbem.exists()) {
-        	System.err.println("Couldn't find wbem!");
+            System.err.println("Couldn't find wbem!");
             return null;
         }
         return wbem;

@@ -8,11 +8,11 @@ import java.util.*;
 
 import junit.framework.*;
 
-public class WindowsTaskKillTest extends TestCase {
+public class WindowsUtilsTest extends TestCase {
 
     public void testLoadEnvironment() {
-        if (WindowsTaskKill.thisIsWindows()) {
-            Map p =WindowsTaskKill.loadEnvironment();
+        if (WindowsUtils.thisIsWindows()) {
+            Map p =WindowsUtils.loadEnvironment();
             assertFalse("Environment appears to be empty!", p.isEmpty());
 //            for (Iterator i = p.keySet().iterator(); i.hasNext();) {
 //                String key = (String) i.next();
@@ -21,13 +21,13 @@ public class WindowsTaskKillTest extends TestCase {
 //                System.out.print('=');
 //                System.out.println(value);
 //            }
-            assertNotNull("SystemRoot env var apparently not set on Windows!", WindowsTaskKill.findSystemRoot());   
+            assertNotNull("SystemRoot env var apparently not set on Windows!", WindowsUtils.findSystemRoot());   
         }
     }
     public void testWMIC() {
-        assertTrue("wmic should be found", "wmic" != WindowsTaskKill.findWMIC());
+        assertTrue("wmic should be found", "wmic" != WindowsUtils.findWMIC());
     }
     public void testTaskKill() {
-        assertTrue("taskkill should be found", "taskkill" != WindowsTaskKill.findTaskKill());
+        assertTrue("taskkill should be found", "taskkill" != WindowsUtils.findTaskKill());
     }
 }
