@@ -53,6 +53,8 @@ function testLinkLocator() {
 	assertLocator("link=exact:Google:Google", eventManager.getLinkLocator(google, pageBot), google);
 	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
 	assertLocator("link=Yahoo", eventManager.getLinkLocator(yahoo, pageBot), yahoo);
+	var yahooJP = document.getElementById("test2").getElementsByTagName("a")[4];
+	assertLocator("link=Yahoo Japan", eventManager.getLinkLocator(yahooJP, pageBot), yahooJP);
 }
 
 function assertLocator(expected, locator, element) {

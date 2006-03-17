@@ -154,7 +154,7 @@ function showFormatDialog() {
 	try {
 		var format = formatInfo.getFormat();
 	} catch (error) {
-		alert("an error occured: " + error);
+		alert("an error occured: " + error + ", file=" + formatInfo.getFormatFile().path);
 		var format = {};
 	}
 	var newConfigBox;
