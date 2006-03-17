@@ -30,4 +30,10 @@ public class WindowsUtilsTest extends TestCase {
     public void testTaskKill() {
         assertTrue("taskkill should be found", "taskkill" != WindowsUtils.findTaskKill());
     }
+    public void testReadRegistryValue() {
+        System.out.println(WindowsUtils.doesRegistryValueExist("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "AutoConfigURL"));
+        System.out.println(WindowsUtils.readBooleanRegistryValue("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "ProxyEnable"));
+        System.out.println(WindowsUtils.readIntRegistryValue("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "ProxyEnable"));
+        System.out.println(WindowsUtils.readStringRegistryValue("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "ProxyServer"));
+    }
 }

@@ -33,6 +33,7 @@ public class WindowsUtils {
     private static String wmic = null;
     private static File wbem = null;
     private static String taskkill = null;
+    private static String reg = null;
     private static Properties env = null;
     
     /**
@@ -48,6 +49,11 @@ public class WindowsUtils {
 
     }
 
+    /** Searches the process list for a process with the specified command line and kills it
+     * 
+     * @param cmdarray the array of command line arguments
+     * @throws Exception if something goes wrong while reading the process list or searching for your command line
+     */
     public static void kill(String[] cmdarray) throws Exception {
         StringBuffer pattern = new StringBuffer();
         File executable = new File(cmdarray[0]);
@@ -102,6 +108,7 @@ public class WindowsUtils {
         }
     }
 
+    /** Kills the specified process ID */
     private static void killPID(String processID) {
         Project p = new Project();
         ExecTask exec = new ExecTask();
@@ -126,6 +133,11 @@ public class WindowsUtils {
         }
     }
     
+    /** Returns a map of process IDs to command lines
+     * 
+     * @return a map of process IDs to command lines
+     * @throws Exception - if something goes wrong while reading the process list
+     */
     public static Map procMap() throws Exception {
         Project p = new Project();
         ExecTask exec = new ExecTask();
@@ -172,6 +184,10 @@ public class WindowsUtils {
         return processes;
     }
     
+    /** Returns the current process environment variables
+     * 
+     * @return the current process environment variables
+     */
     public static Properties loadEnvironment() {
         if (env != null) return env;
         // DGF lifted directly from Ant's Property task
@@ -190,6 +206,10 @@ public class WindowsUtils {
         return env;
     }
     
+    /** Retrieve the exact case-sensitive name of the "Path" environment variable,
+     * which may be any one of "PATH", "Path" or "path".
+     * @return the exact case-sensitive name of the "Path" environment variable
+     */
     public static String getExactPathEnvKey() {
         loadEnvironment();
         for (Iterator i = env.keySet().iterator(); i.hasNext();) {
@@ -200,6 +220,7 @@ public class WindowsUtils {
         return "PATH";
     }
     
+    /** Finds the system root directory, e.g. "c:\windows" or "c:\winnt" */
     public static File findSystemRoot() {
         Properties p = loadEnvironment();
         String systemRootPath = (String) p.get("SystemRoot");
@@ -210,7 +231,11 @@ public class WindowsUtils {
         if (!systemRoot.exists()) throw new RuntimeException("SystemRoot doesn't exist: " + systemRootPath);
         return systemRoot;
     }    
-        
+    
+    /** Finds WMIC.exe
+     * 
+     * @return the exact path to wmic.exe, or just the string "wmic" if it couldn't be found (in which case you can pass that to exec to try to run it from the path)
+     */
     public static String findWMIC() {
         if (wmic != null) return wmic;
         findWBEM();
@@ -226,6 +251,10 @@ public class WindowsUtils {
         return wmic;
     }
     
+    /** Finds the WBEM directory in the systemRoot directory
+     * 
+     * @return the WBEM directory, or <code>null</code> if it couldn't be found
+     */
     public static File findWBEM() {
         if (wbem != null) return wbem;
         File systemRoot = findSystemRoot();
@@ -237,6 +266,10 @@ public class WindowsUtils {
         return wbem;
     }
     
+    /** Finds taskkill.exe
+     * 
+     * @return the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found (in which case you can pass that to exec to try to run it from the path)
+     */
     public static String findTaskKill() {
         if (taskkill != null) return taskkill;
         File systemRoot = findSystemRoot();
@@ -250,6 +283,168 @@ public class WindowsUtils {
         return taskkill;
     }
     
+    /** Finds reg.exe
+     * 
+     * @return the exact path to reg.exe, or just the string "reg" if it couldn't be found (in which case you can pass that to exec to try to run it from the path)
+     */
+    public static String findReg() {
+        if (reg != null) return reg;
+        File systemRoot = findSystemRoot();
+        File regExe = new File(systemRoot, "system32/reg.exe");
+        if (regExe.exists()) {
+            reg = regExe.getAbsolutePath();
+            return reg;
+        }
+        System.err.println("Couldn't find reg! Hope it's on the path...");
+        reg = "reg";
+        return reg;
+    }
+    
+    public static String readStringRegistryValue(String keyPath, String valueName) {
+        String output = runRegQuery(keyPath, valueName);
+        Pattern pat = Pattern.compile(valueName + "    (REG_\\S+)    (.*)");
+        Matcher m = pat.matcher(output);
+        if (!m.find()) {
+            throw new RuntimeException("Output didn't look right: " + output);
+        }
+        String type = m.group(1);
+        if (!"REG_SZ".equals(type)) {
+            throw new RuntimeException(valueName + " was not a REG_SZ (String): " + type);
+        }
+        String value = m.group(2);
+        return value;
+    }
+    
+    public static int readIntRegistryValue(String keyPath, String valueName) {
+        String output = runRegQuery(keyPath, valueName);
+        Pattern pat = Pattern.compile(valueName + "    (REG_\\S+)    0x(.*)");
+        Matcher m = pat.matcher(output);
+        if (!m.find()) {
+            throw new RuntimeException("Output didn't look right: " + output);
+        }
+        String type = m.group(1);
+        if (!"REG_DWORD".equals(type)) {
+            throw new RuntimeException(valueName + " was not a REG_DWORD (int): " + type);
+        }
+        String hexValue = m.group(2);
+        int value = Integer.parseInt(hexValue, 16);
+        return value;
+    }
+    
+    public static boolean readBooleanRegistryValue(String keyPath, String valueName) {
+        String output = runRegQuery(keyPath, valueName);
+        Pattern pat = Pattern.compile(valueName + "    (REG_\\S+)    0x(.*)");
+        Matcher m = pat.matcher(output);
+        if (!m.find()) {
+            throw new RuntimeException("Output didn't look right: " + output);
+        }
+        String type = m.group(1);
+        if (!"REG_DWORD".equals(type)) {
+            throw new RuntimeException(valueName + " was not a REG_DWORD (int): " + type);
+        }
+        String hexValue = m.group(2);
+        int value = Integer.parseInt(hexValue, 16);
+        if (0 == value) return false;
+        if (1 == value) return true;
+        throw new RuntimeException(valueName + " was not either 0 or 1: " + value);
+    }
+    
+    public static boolean doesRegistryValueExist(String keyPath, String valueName) {
+        Project p = new Project();
+        ExecTask exec = new ExecTask();
+        exec.setProject(p);
+        exec.setTaskType("reg");
+        exec.setExecutable(findReg());
+        exec.setFailonerror(false);
+        exec.createArg().setValue("query");
+        exec.createArg().setValue(keyPath);
+        exec.createArg().setValue("/v");
+        exec.createArg().setValue(valueName);
+        exec.setOutputproperty("regout");
+        exec.setResultProperty("result");
+        exec.execute();
+        int result = Integer.parseInt(p.getProperty("result"));
+        if (0 == result) return true;
+        return false;
+    }
+    
+    public static void writeStringRegistryValue(String keyPath, String valueName, String data) {
+        Project p = new Project();
+        ExecTask exec = new ExecTask();
+        exec.setProject(p);
+        exec.setTaskType("reg");
+        exec.setExecutable(findReg());
+        exec.setFailonerror(true);
+        exec.createArg().setValue("add");
+        exec.createArg().setValue(keyPath);
+        exec.createArg().setValue("/v");
+        exec.createArg().setValue(valueName);
+        exec.createArg().setValue("/d");
+        exec.createArg().setValue(data);
+        exec.createArg().setValue("/f");
+        exec.execute();
+    }
+    
+    public static void writeIntRegistryValue(String keyPath, String valueName, int data) {
+        Project p = new Project();
+        ExecTask exec = new ExecTask();
+        exec.setProject(p);
+        exec.setTaskType("reg");
+        exec.setExecutable(findReg());
+        exec.setFailonerror(true);
+        exec.createArg().setValue("add");
+        exec.createArg().setValue(keyPath);
+        exec.createArg().setValue("/v");
+        exec.createArg().setValue(valueName);
+        exec.createArg().setValue("/t");
+        exec.createArg().setValue("REG_DWORD");
+        exec.createArg().setValue("/d");
+        exec.createArg().setValue(Integer.toString(data));
+        exec.createArg().setValue("/f");
+        exec.execute();
+    }
+    
+    public static void writeBooleanRegistryValue(String keyPath, String valueName, boolean data) {
+        writeIntRegistryValue(keyPath, valueName, data?1:0);
+    }
+    
+    public static void deleteRegistryValue(String keyPath, String valueName) {
+        Project p = new Project();
+        ExecTask exec = new ExecTask();
+        exec.setProject(p);
+        exec.setTaskType("reg");
+        exec.setExecutable(findReg());
+        exec.setFailonerror(true);
+        exec.createArg().setValue("delete");
+        exec.createArg().setValue(keyPath);
+        exec.createArg().setValue("/v");
+        exec.createArg().setValue(valueName);
+        exec.createArg().setValue("/f");
+        exec.execute();
+    }
+
+    /** Executes reg.exe to query the registry */
+    private static String runRegQuery(String keyPath, String valueName) {
+        Project p = new Project();
+        ExecTask exec = new ExecTask();
+        exec.setProject(p);
+        exec.setTaskType("reg");
+        exec.setExecutable(findReg());
+        exec.setFailonerror(true);
+        exec.createArg().setValue("query");
+        exec.createArg().setValue(keyPath);
+        exec.createArg().setValue("/v");
+        exec.createArg().setValue(valueName);
+        exec.setOutputproperty("regout");
+        exec.execute();
+        String output = p.getProperty("regout");
+        return output;
+    }
+    
+    /** Returns true if the current OS is MS Windows; false otherwise
+     * 
+     * @return true if the current OS is MS Windows; false otherwise
+     */
     public static boolean thisIsWindows() {
         return THIS_IS_WINDOWS;
     }

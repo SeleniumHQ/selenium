@@ -24,7 +24,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         server.start();
     }
     
-    public void testHTMLRunner() throws Exception {
+    public void testFirefoxHTMLRunner() throws Exception {
         String browser = "*firefox";
         String browserURL = "http://localhost:" + server.getPort();
         String testURL = "tests/ShortTestSuite.html";
@@ -35,9 +35,25 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         output.delete();
     }
     
-    public void testAgain() throws Exception {
+    public void testFirefoxAgain() throws Exception {
         // For safety's sake
-        testHTMLRunner();
+        testFirefoxHTMLRunner();
+    }
+    
+    public void testIExploreHTMLRunner() throws Exception {
+        String browser = "*iexplore";
+        String browserURL = "http://localhost:" + server.getPort();
+        String testURL = "tests/ShortTestSuite.html";
+        long timeout = 1000 * 60 * 10; // ten minutes
+        String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);
+        assertEquals("Tests didn't pass", "PASSED", result);
+        assertTrue(output.exists());
+        output.delete();
+    }
+    
+    public void testIExploreAgain() throws Exception {
+        // For safety's sake
+        testFirefoxHTMLRunner();
     }
     
     public void tearDown() throws Exception {
