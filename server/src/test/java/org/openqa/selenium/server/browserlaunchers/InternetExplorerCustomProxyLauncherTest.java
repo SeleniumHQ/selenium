@@ -8,7 +8,7 @@ import junit.framework.*;
 
 public class InternetExplorerCustomProxyLauncherTest extends TestCase {
     
-    public void XtestIE() throws Exception {
+    public void testIE() throws Exception {
         InternetExplorerCustomProxyLauncher.main(null);
     }
 }
