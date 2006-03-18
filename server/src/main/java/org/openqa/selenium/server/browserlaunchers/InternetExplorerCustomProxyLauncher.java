@@ -163,7 +163,7 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
     }
     
     public static void main(String[] args) throws IOException, InterruptedException {
-        InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumProxy.DEFAULT_PORT);
+        InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumServer.DEFAULT_PORT);
         l.launch("http://www.google.com/");
         int seconds = 5;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

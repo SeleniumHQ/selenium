@@ -12,14 +12,14 @@ import junit.framework.*;
 
 public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
 
-    SeleniumProxy server;
+    SeleniumServer server;
     HTMLLauncher launcher;
     HTMLTestResults results = null;
     File output;
     
     public void setUp() throws Exception {
         output = new File("results.html");
-        server = new SeleniumProxy(SeleniumProxy.DEFAULT_PORT);
+        server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
         launcher = new HTMLLauncher(server);
         server.start();
     }

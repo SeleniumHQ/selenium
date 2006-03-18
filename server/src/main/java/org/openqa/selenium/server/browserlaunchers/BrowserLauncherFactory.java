@@ -12,9 +12,9 @@ public class BrowserLauncherFactory {
 
     private static final Pattern FIREFOX_PATTERN = Pattern.compile("^\\*firefox( .*)?$");
     private static final Pattern IEXPLORE_PATTERN = Pattern.compile("^\\*iexplore( .*)?$");
-    SeleniumProxy server;
+    SeleniumServer server;
     
-    public BrowserLauncherFactory(SeleniumProxy server) {
+    public BrowserLauncherFactory(SeleniumServer server) {
         this.server = server;
     }
     

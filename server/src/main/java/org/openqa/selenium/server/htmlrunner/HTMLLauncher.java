@@ -11,10 +11,10 @@ import org.openqa.selenium.server.browserlaunchers.*;
 
 public class HTMLLauncher implements HTMLResultsListener {
 
-    private SeleniumProxy server;
+    private SeleniumServer server;
     private HTMLTestResults results;
     
-    public HTMLLauncher(SeleniumProxy server) {
+    public HTMLLauncher(SeleniumServer server) {
         this.server = server;
     }
     

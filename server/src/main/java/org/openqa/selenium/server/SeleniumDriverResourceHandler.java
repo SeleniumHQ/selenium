@@ -32,7 +32,7 @@ import org.openqa.selenium.server.htmlrunner.*;
  * 
  * Selenese Driven requests are described in detail in the class description for
  * <code>SeleniumProxy</code>
- * @see org.openqa.selenium.server.SeleniumProxy
+ * @see org.openqa.selenium.server.SeleniumServer
  * @author Paul Hammant
  * @version $Revision: 674 $
  */
@@ -40,9 +40,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     private final Map queues = new HashMap();
     private final Map launchers = new HashMap();
-    private SeleniumProxy server;
+    private SeleniumServer server;
     
-    public SeleniumDriverResourceHandler(SeleniumProxy server) {
+    public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
     }
     

@@ -148,7 +148,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     }
     
     public static void main(String[] args) throws IOException, InterruptedException {
-        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(SeleniumProxy.DEFAULT_PORT);
+        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(SeleniumServer.DEFAULT_PORT);
         l.launch("http://www.google.com");
         int seconds = 15;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

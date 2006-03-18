@@ -56,11 +56,30 @@ import java.util.*;
  * HTTP requests, so tests using <code>-interactive</code> mode will behave exactly like an external client driver.) 
  * </ol>
  * <p>There are some special commands that only work in the Selenium Server.  These commands are:
- * <ul><li><p><strong>getNewBrowserSession</strong>( <em>absoluteFilePathToBrowserExecutable</em>, <em>startURL</em> )</p>
+ * <ul><li><p><strong>getNewBrowserSession</strong>( <em>browserString</em>, <em>startURL</em> )</p>
  * <p>Creates a new "sessionId" number (based on the current time in milliseconds) and launches the browser specified in 
- * <i>absoluteFilePathToBrowserExecutable</i>, browsing directly to <i>startURL</i> + "/selenium-server/SeleneseRunner.html?sessionId=###" 
+ * <i>browserString</i>.  We will then browse directly to <i>startURL</i> + "/selenium-server/SeleneseRunner.html?sessionId=###" 
  * where "###" is the sessionId number. Only commands that are associated with the specified sessionId will be run by this browser.</p>
  * 
+ * <p><i>browserString</i> may be any one of the following:
+ * <ul>
+ * <li><code>*firefox [absolute path]</code> - Automatically launch a new Firefox process using a custom Firefox profile.
+ * This profile will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
+ * ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
+ * an absolute path to your firefox executable, or just say "*firefox".  If no absolute path is specified, we'll look for
+ * firefox.exe in a default location (normally c:\program files\mozilla firefox\firefox.exe), which you can override by
+ * setting the Java system property <code>firefoxDefaultPath</code> to the correct path to Firefox.</li>
+ * <li><code>*iexplore [absolute path]</code> - Automatically launch a new Internet Explorer process using custom Windows registry settings.
+ * This process will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
+ * ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
+ * an absolute path to your iexplore executable, or just say "*iexplore".  If no absolute path is specified, we'll look for
+ * iexplore.exe in a default location (normally c:\program files\internet explorer\iexplore.exe), which you can override by
+ * setting the Java system property <code>iexploreDefaultPath</code> to the correct path to Internet Explorer.</li>
+ * <li><code>/path/to/my/browser [other arguments]</code> - You may also simply specify the absolute path to your browser
+ * executable, or use a relative path to your executable (which we'll try to find on your path).  <b>Warning:</b> If you
+ * specify your own custom browser, it's up to you to configure it correctly.  At a minimum, you'll need to configure your
+ * browser to use the Selenium Server as a proxy, and disable all browser-specific prompting.
+ * </ul>
  * </li>
  * <li><p><strong>testComplete</strong>(  )</p>
  * <p>Kills the currently running browser and erases the old browser session.  If the current browser session was not
@@ -71,7 +90,7 @@ import java.util.*;
  * <p>Causes the server to shut itself down, killing itself and all running browsers along with it.</p>
  * </li>
  * </ul>
- * <p>Example:<blockquote><code>|getNewBrowserSession|c:\program files\internet explorer\iexplore.exe|http://www.google.com|
+ * <p>Example:<blockquote><code>|getNewBrowserSession|*firefox|http://www.google.com|
  * <br/>Got result: 1140738083345
  * <br/>|open|http://www.google.com||&sessionId=1140738083345
  * <br/>Got result: OK
@@ -90,7 +109,7 @@ import java.util.*;
  *  @author plightbo
  *
  */
-public class SeleniumProxy {
+public class SeleniumServer {
     
     private Server server;
     private SeleniumDriverResourceHandler driver;
@@ -127,7 +146,7 @@ public class SeleniumProxy {
         }
 
         SingleEntryAsyncQueue.setTimeout(timeout);
-        final SeleniumProxy seleniumProxy = new SeleniumProxy(port);
+        final SeleniumServer seleniumProxy = new SeleniumServer(port);
         Thread jetty = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -192,7 +211,7 @@ public class SeleniumProxy {
      * @param port - the port to start on
      * @throws Exception - you know, just in case
      */
-    public SeleniumProxy(int port) throws Exception {
+    public SeleniumServer(int port) throws Exception {
         this.port = port;
         server = new Server();
         SocketListener socketListener = new SocketListener();
