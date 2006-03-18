@@ -29,7 +29,7 @@ public class SingleEntryAsyncQueue {
 
     private LinkedList q = new LinkedList();
     private boolean waitingThreadsShouldThrow = false;
-    static private int timeout = 30;
+    static private int timeout = SeleniumServer.DEFAULT_TIMEOUT;
     
     class OwnerAndDataPair extends Object {
         private Object owner;
