@@ -42,7 +42,11 @@ public class SeleneseQueue {
      */
     public String doCommand(String command, String field, String value) {
         commandHolder.put(new DefaultSeleneseCommand(command, field, value));
-        return (String) commandResultHolder.get();
+        try {
+            return (String) commandResultHolder.get();
+        } catch (SeleniumCommandTimedOutException e) {
+            return "ERROR: Command timed out";
+        }
     }
 
     public String toString() {
