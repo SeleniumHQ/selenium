@@ -51,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.openqa.selenium.server.SeleniumProxy</mainClass>
+                            <mainClass>org.openqa.selenium.server.SeleniumServer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
