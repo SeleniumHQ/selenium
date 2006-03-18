@@ -3,6 +3,7 @@ package com.thoughtworks.selenium;
 import junit.framework.*;
 
 import org.openqa.selenium.server.*;
+import org.openqa.selenium.server.browserlaunchers.*;
 
 /**
  * A test of the Apache MyFaces JSF AJAX auto-suggest sandbox application at www.irian.at.
@@ -16,11 +17,23 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     DefaultSelenium selenium;
     
     protected void setUp() throws Exception {
-        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
-        selenium.start();
+        
     }
     
-    public void testAJAX() throws Throwable {
+    public void testAJAXFirefox() throws Throwable {
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
+        selenium.start();
+        ajaxTester();
+    }
+    
+    public void testAJAXIExplore() throws Throwable {
+        if (!WindowsUtils.thisIsWindows()) return;
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
+        selenium.start();
+        ajaxTester();
+    }
+    
+    public void ajaxTester() throws Throwable {
         selenium.open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
         selenium.verifyTextPresent("suggest");
         String elementID = "_idJsp0:_idJsp3";
@@ -51,6 +64,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     }
     
     public void tearDown() {
+        if (selenium == null) return;
         selenium.testComplete();
     }
 }
