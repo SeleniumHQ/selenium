@@ -51,14 +51,14 @@ public class ClientDriverSuite extends TestSuite{
      *
      */
     static class ClientDriverTestSetup extends TestSetup {
-        SeleniumProxy server;
+        SeleniumServer server;
         
         public ClientDriverTestSetup(Test test) {
             super(test);
         }
         
         public void setUp() throws Exception {
-            server = new SeleniumProxy(SeleniumProxy.DEFAULT_PORT);
+            server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
             server.start();
         }
         

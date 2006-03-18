@@ -13,16 +13,16 @@ import junit.framework.*;
 
 public class SeleniumAPITest extends TestCase {
 
-    SeleniumProxy server;
+    SeleniumServer server;
     Selenium selenium;
     Set driverMethodNames;
     
     protected void setUp() throws Exception {
         super.setUp();
-        server = new SeleniumProxy(SeleniumProxy.DEFAULT_PORT);
+        server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
         server.start();
         prepareDriverMethodNames();
-        selenium = new DefaultSelenium("localhost", SeleniumProxy.DEFAULT_PORT, "*firefox", "http://localhost:" + SeleniumProxy.DEFAULT_PORT);
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://localhost:" + SeleniumServer.DEFAULT_PORT);
         selenium.start();
     }
     

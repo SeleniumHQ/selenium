@@ -16,7 +16,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     DefaultSelenium selenium;
     
     protected void setUp() throws Exception {
-        selenium = new DefaultSelenium("localhost", SeleniumProxy.DEFAULT_PORT, "*firefox", "http://www.irian.at");
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
     }
     

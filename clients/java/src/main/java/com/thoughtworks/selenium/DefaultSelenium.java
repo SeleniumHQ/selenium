@@ -35,9 +35,29 @@ public class DefaultSelenium implements Selenium {
 
     /** Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
      * 
+     * <p><i>browserString</i> may be any one of the following:
+     * <ul>
+     * <li><code>*firefox [absolute path]</code> - Automatically launch a new Firefox process using a custom Firefox profile.
+     * This profile will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
+     * ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
+     * an absolute path to your firefox executable, or just say "*firefox".  If no absolute path is specified, we'll look for
+     * firefox.exe in a default location (normally c:\program files\mozilla firefox\firefox.exe), which you can override by
+     * setting the Java system property <code>firefoxDefaultPath</code> to the correct path to Firefox.</li>
+     * <li><code>*iexplore [absolute path]</code> - Automatically launch a new Internet Explorer process using custom Windows registry settings.
+     * This process will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
+     * ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
+     * an absolute path to your iexplore executable, or just say "*iexplore".  If no absolute path is specified, we'll look for
+     * iexplore.exe in a default location (normally c:\program files\internet explorer\iexplore.exe), which you can override by
+     * setting the Java system property <code>iexploreDefaultPath</code> to the correct path to Internet Explorer.</li>
+     * <li><code>/path/to/my/browser [other arguments]</code> - You may also simply specify the absolute path to your browser
+     * executable, or use a relative path to your executable (which we'll try to find on your path).  <b>Warning:</b> If you
+     * specify your own custom browser, it's up to you to configure it correctly.  At a minimum, you'll need to configure your
+     * browser to use the Selenium Server as a proxy, and disable all browser-specific prompting.
+     * </ul>
+     * 
      * @param serverHost - the host name on which the Selenium Server resides
      * @param serverPort - the port on which the Selenium Server is listening
-     * @param browserStartCommand - the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"
+     * @param browserString - the command string used to launch the browser, e.g. "*firefox", "*iexplore" or "c:\\program files\\internet explorer\\iexplore.exe"
      * @param browserURL - the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
      * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"
      */

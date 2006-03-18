@@ -31,7 +31,7 @@ public class RealDealIntegrationTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        selenium = new DefaultSelenium("localhost", SeleniumProxy.DEFAULT_PORT, "*firefox", "http://localhost:" + SeleniumProxy.DEFAULT_PORT);
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://localhost:" + SeleniumServer.DEFAULT_PORT);
         selenium.start();
     }
 
