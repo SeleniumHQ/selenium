@@ -9,6 +9,13 @@ import java.io.*;
 import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.browserlaunchers.*;
 
+/**
+ * Runs HTML Selenium test suites.
+ *  
+ * 
+ *  @author dfabulich
+ *
+ */
 public class HTMLLauncher implements HTMLResultsListener {
 
     private SeleniumServer server;
@@ -18,6 +25,16 @@ public class HTMLLauncher implements HTMLResultsListener {
         this.server = server;
     }
     
+    /** Launches a single HTML Selenium test suite.
+     * 
+     * @param browser - the browserString ("*firefox", "*iexplore" or an executable path)
+     * @param browserURL - the start URL for the browser
+     * @param HTMLSuite - the relative URL to the HTML suite
+     * @param outputFile - The file to which we'll output the HTML results
+     * @param timeout - the amount of time to wait for the browser to finish
+     * @return PASS or FAIL
+     * @throws IOException if we can't write the output file
+     */
     public String runHTMLSuite(String browser, String browserURL, String HTMLSuite, File outputFile, long timeout) throws IOException {
         server.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
@@ -37,19 +54,15 @@ public class HTMLLauncher implements HTMLResultsListener {
             throw new SeleniumCommandTimedOutException();
         }
         if (outputFile != null) {
-            handleResults(outputFile);
+            FileWriter fw = new FileWriter(outputFile);
+            results.write(fw);
+            fw.close();
         }
         
         return results.getResult().toUpperCase();
     }
     
-    public void handleResults(File output) throws IOException {
-        if (output == null) return;
-        FileWriter fw = new FileWriter(output);
-        results.write(fw);
-        fw.close();
-    }
-    
+    /** Accepts HTMLTestResults for later asynchronous handling */
     public void processResults(HTMLTestResults results) {
         this.results = results;
     }

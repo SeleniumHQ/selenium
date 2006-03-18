@@ -12,10 +12,16 @@ import org.mortbay.http.*;
 import org.mortbay.http.handler.*;
 import org.mortbay.util.*;
 
+/** Generates a test suite table designed to run a single Selenium test; to use it, point TestRunner.html to /singleTest/http://my.com/single/test.html
+ * 
+ *  @author dfabulich
+ *
+ */
 public class SingleTestSuiteResourceHandler extends ResourceHandler {
 
     private static final String HTML = "<html>\n<head>\n<title>{0} Suite</title>\n</head>\n<body>\n<table cellpadding=\"1\" cellspacing=\"1\" border=\"1\">\n<tbody>\n<tr><td><b>{0} Suite</b></td></tr>\n<tr><td><a href=\"{1}\">{0}</a></td></tr>\n</tbody>\n</table>\n</body>\n</html>";
     
+    /** Handles the HTTP request and generates the suite table */
     public void handle(String pathInContext, String pathParams,
             HttpRequest request, HttpResponse response) throws HttpException,
             IOException {
