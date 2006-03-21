@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.server;
 
+import java.net.*;
+
 /**
  * The default implementation of the SeleneseCommand interface
  * @author Paul Hammant
@@ -39,12 +41,12 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         this.value = value;
     }
 
-    public String getCommandString() {
-        return "|" + command + "|" + field + "|" + value + "|";
+    public String getCommandURLString() {
+        return "cmd=" + URLEncoder.encode(command) + "&1=" + URLEncoder.encode(field) + "&2=" + URLEncoder.encode(value);
     }
-
+    
     public String toString() {
-        return getCommandString();
+        return "|" + command + "|" + field + "|" + value + "|";
     }
 
     /** Factory method to create a SeleneseCommand from a wiki-style input string */

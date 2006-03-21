@@ -90,7 +90,7 @@ import java.util.*;
  * <p>Causes the server to shut itself down, killing itself and all running browsers along with it.</p>
  * </li>
  * </ul>
- * <p>Example:<blockquote><code>|getNewBrowserSession|*firefox|http://www.google.com|
+ * <p>Example:<blockquote><code>cmd=getNewBrowserSession&1=*firefox&2=http://www.google.com
  * <br/>Got result: 1140738083345
  * <br/>|open|http://www.google.com||&sessionId=1140738083345
  * <br/>Got result: OK
@@ -184,10 +184,10 @@ public class SeleniumServer {
                 if ("quit".equals(userInput)) {
                     System.out.println("Stopping...");
                     seleniumProxy.stop();
-                    break;
+                    System.exit(0);
                 }
 
-                final URL url = new URL("http://localhost:" + port + "/selenium-server/driver?commandRequest=" + userInput);
+                final URL url = new URL("http://localhost:" + port + "/selenium-server/driver?" + userInput);
                 Thread t = new Thread(new Runnable() {
                     public void run() {
                         try {

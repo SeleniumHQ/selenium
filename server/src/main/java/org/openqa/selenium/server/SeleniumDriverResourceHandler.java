@@ -69,7 +69,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         Writer writer = new OutputStreamWriter(buf, StringUtil.__ISO_8859_1);
         String seleniumStart = getParam(req, "seleniumStart");
         String commandResult = getParam(req, "commandResult");
-        String commandRequest = getParam(req, "commandRequest");
+        String cmd = getParam(req, "cmd");
         String sessionId = getParam(req, "sessionId");
 
         // If this is a browser requesting work for the first time...
@@ -80,7 +80,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             SeleneseCommand sc = queue.handleCommandResult(commandResult);
             //System.out.println("Sending next command: " + sc.getCommandString());
             writer.flush();
-            writer.write(sc.getCommandString());
+            writer.write(sc.toString());
             for (int pad = 998 - buf.size(); pad-- > 0;) {
                 writer.write(" ");
             }
@@ -89,52 +89,49 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             buf.writeTo(out);
 
             req.setHandled(true);
-        } else if (commandRequest != null) {
-            handleCommandRequest(req, res, commandRequest, sessionId);
+        } else if (cmd != null) {
+            handleCommandRequest(req, res, cmd, sessionId);
         } else {
             //System.out.println("Unexpected: " + req.getRequestURL() + "?" + req.getQuery());
             req.setHandled(false);
         }
     }
 
-    private void handleCommandRequest(HttpRequest req, HttpResponse res, String commandRequest, String sessionId) throws IOException {
+    private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) throws IOException {
         // If this a Driver Client sending a new command...
         res.setContentType("text/plain");
         hackRemoveConnectionCloseHeader(res);
-        String[] values = commandRequest.split("\\|");
-        String commandS = "";
-        String field = "";
-        String value = "";
-        if (values.length > 1) {
-            commandS = values[1];
+        
+        Vector values = new Vector();
+        
+        for (int i = 1; req.getParameter(Integer.toString(i)) != null; i++) {
+            values.add(req.getParameter(Integer.toString(i)));
         }
-
-        if (values.length > 2) {
-            field = values[2];
+        if (values.size() < 1) {
+            values.add("");
         }
-
-        if (values.length > 3) {
-            value = values[3];
+        if (values.size() < 2) {
+            values.add("");
         }
-
+        
         String results;
-        System.out.println("commandRequest = " + commandRequest);        
+        System.out.println("queryString = " + req.getQuery());        
         // handle special commands
-        if ("getNewBrowserSession".equals(commandS)) {
-            results = getNewBrowserSession(field, value);
-        } else if ("testComplete".equals(commandS)) {
+        if ("getNewBrowserSession".equals(cmd)) {
+            results = getNewBrowserSession((String)values.get(0), (String)values.get(1));
+        } else if ("testComplete".equals(cmd)) {
             BrowserLauncher launcher = getLauncher(sessionId);
             if (launcher == null) {
                 results = "ERROR: No launcher found for sessionId " + sessionId; 
             } else {
                 launcher.close();
                 // finally, if the command was testComplete, remove the queue
-                if ("testComplete".equals(commandS)) {
+                if ("testComplete".equals(cmd)) {
                     clearQueue(sessionId);
                 }
                 results = "OK";
             }
-        } else if ("shutDown".equals(commandS)) {
+        } else if ("shutDown".equals(cmd)) {
             try {
                 System.out.println("Shutdown command received");
                 res.getOutputStream().write("OK".getBytes());
@@ -146,32 +143,31 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 throw new RuntimeException(e);
             }
             
-        } else if ("addStaticContent".equals(commandS)) {
-            File dir = new File(field);
+        } else if ("addStaticContent".equals(cmd)) {
+            File dir = new File((String) values.get(0));
             if (dir.exists()) {
                 server.addNewStaticContent(dir);
                 results = "OK";
             } else {
                 results = "ERROR: dir does not exist - " + dir.getAbsolutePath();
             }
-        } else if ("runHTMLSuite".equals(commandS)) {
+        } else if ("runHTMLSuite".equals(cmd)) {
             HTMLLauncher launcher = new HTMLLauncher(server);
             File output = null;
-            if (values.length <= 4) {
-                // 0|1runHTMLSuite|2browser|3browserURL|4suiteURL = 5 elements, counting 0
+            if (values.size() < 3) {
                 results = "ERROR: Not enough arguments (browser, browserURL, suiteURL, [outputFile])";
             } else {
-                if (values.length > 5) {
-                    output = new File(values[5]);
+                if (values.size() > 3) {
+                    output = new File((String)values.get(3));
                 }
                 // TODO User Configurable timeout 
                 long timeout = 1000 * 60 * 30;
-                results = launcher.runHTMLSuite(field, value, values[4], output, timeout);
+                results = launcher.runHTMLSuite((String) values.get(0), (String) values.get(1), (String) values.get(2), output, timeout);
             }                
         } else {
 
             SeleneseQueue queue = getQueue(sessionId);
-            results = queue.doCommand(commandS, field, value);
+            results = queue.doCommand(cmd, (String)values.get(0), (String)values.get(1));
         }
         System.out.println("Got result: " + results);
         try {
