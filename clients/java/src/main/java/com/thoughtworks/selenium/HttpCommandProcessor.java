@@ -68,7 +68,7 @@ public class HttpCommandProcessor implements CommandProcessor {
 
     public String doCommand(String commandName, String field, String value) {
         DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandName,field,value);
-        return executeCommandOnServlet(command.getCommandString());
+        return executeCommandOnServlet(command.getCommandURLString());
     }
 
     /** Sends the specified command string to the bridge servlet */  
@@ -121,8 +121,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         StringBuffer sb = new StringBuffer();
         sb.append(servletUrl);
         sb.append("?");
-        sb.append("commandRequest=");
-        sb.append(URLEncoder.encode(command));
+        sb.append(command);
         if (sessionId != null) {
             sb.append("&sessionId=");
             sb.append(URLEncoder.encode(sessionId));

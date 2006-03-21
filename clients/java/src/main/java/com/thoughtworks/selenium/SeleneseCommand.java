@@ -21,6 +21,6 @@ package com.thoughtworks.selenium;
  * @version $Id: $
  */
 public interface SeleneseCommand {
-    /** Return the wiki-style string which will be sent to the browser */
-    String getCommandString();
+    /** Return the URL query string which will be sent to the browser */
+    String getCommandURLString();
 }
