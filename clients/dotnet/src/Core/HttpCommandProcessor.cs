@@ -67,7 +67,7 @@ namespace Selenium
 
 		private string BuildCommandString(string commandString)
 		{
-			string result = url + "?commandRequest=" + commandString;
+			string result = url + "?" + commandString;
 			if (sessionId != null)
 			{
 				result += "&sessionId=" + sessionId;

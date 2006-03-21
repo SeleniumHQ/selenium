@@ -17,7 +17,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 			string argument1 = "http://localhost";
 			string argument2 = "";
 			DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandString, argument1, argument2);
-			Assert.AreEqual("|" + commandString + "|" + argument1 + "|" + argument2 + "|", command.CommandString);
+			Assert.AreEqual("cmd=open&1=http://localhost&2=", command.CommandString);
 		}
 
 		[Test]

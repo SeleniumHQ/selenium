@@ -1,5 +1,5 @@
 using System;
-
+using System.Web;
 namespace Selenium
 {
 	/// <summary>
@@ -21,7 +21,7 @@ namespace Selenium
 
 		public string CommandString
 		{
-			get {return "|" + command + "|" + argument1 + "|" + argument2 + "|";}
+			get {return "cmd=" + HttpUtility.UrlPathEncode(command) + "&1=" + HttpUtility.UrlPathEncode(argument1) + "&2=" + HttpUtility.UrlPathEncode(argument2);}
 		}
 		
 		public string Command

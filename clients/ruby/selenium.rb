@@ -14,6 +14,7 @@
 #
 require 'net/http'
 require 'uri'
+require 'cgi'
 
 # -----------------
 # Original code by Aslak Hellesoy and Darren Hobbs
@@ -47,7 +48,7 @@ module Selenium
     def do_command(commandString)
       timeout(@timeout) do
         http = Net::HTTP.new(@server_host, @server_port)
-        get_string = '/selenium-server/driver/?commandRequest=' + commandString
+        get_string = '/selenium-server/driver/?' + commandString
         if @session_id != nil
           get_string = get_string + "&sessionId=" + @session_id.to_s
         end
@@ -68,13 +69,19 @@ module Selenium
       method_name = translate_method_to_wire_command(method)
       element_identifier = args[0]
       value = args[1]
-      command_string = "|#{method_name}|#{element_identifier}|#{value}|"
-      #print "command_string: " + command_string
+      if (element_identifier == nil)
+        element_identifier = ""
+      end
+      if (value == nil)
+        value = ""
+      end
+      command_string = "cmd=" + CGI::escape(method_name) + "&1=" + CGI::escape(element_identifier.to_s) + "&2=" + CGI::escape(value.to_s)
+      # print "command_string: " + command_string
       if method_name =~ /^get/
-      	return do_command(command_string)
+        return do_command(command_string)
       end
       if method_name =~ /^(verify|assert)/
-      	return do_verify(command_string)
+        return do_verify(command_string)
       end
       do_action(command_string)
     end

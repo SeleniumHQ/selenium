@@ -1,4 +1,5 @@
 import httplib
+import urllib
 
 class selenium_class:
 
@@ -20,10 +21,9 @@ class selenium_class:
 
 	def do_command(self, verb, arg1='', arg2=''):
 		conn = httplib.HTTPConnection(self.host, self.port)
-		commandString = '/selenium-server/driver/?commandRequest=|' + verb + '|' + str(arg1) + '|' + str(arg2) + '|'
+		commandString = '/selenium-server/driver/?cmd=' + urllib.quote_plus(verb) + '&1=' + urllib.quote_plus(str(arg1)) + '&2=' + urllib.quote_plus(str(arg2))
 		if (None != self.sessionId):
 			commandString = commandString + "&sessionId=" + str(self.sessionId)
-		#print 'do_command(' + verb + ',' + str(arg1) + ',' + str(arg2) + ') -> ' + commandString + '\n'
 		conn.request("GET", commandString)
 	
 		response = conn.getresponse()

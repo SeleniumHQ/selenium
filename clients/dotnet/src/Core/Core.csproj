@@ -99,6 +99,11 @@
                     AssemblyName = "System.Xml"
                     HintPath = "..\..\..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
                 />
+                <Reference
+                    Name = "system.web"
+                    AssemblyName = "system.web"
+                    HintPath = "..\..\..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\system.web.dll"
+                />
             </References>
         </Build>
         <Files>
