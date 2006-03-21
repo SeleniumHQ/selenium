@@ -111,7 +111,7 @@
     </target>
     
     <target name="stop-server">
-    	<get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?commandRequest=|shutDown|||" dest="result.txt" ignoreerrors="true" />
+    	<get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="result.txt" ignoreerrors="true" />
     	<echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
     </target>
     
