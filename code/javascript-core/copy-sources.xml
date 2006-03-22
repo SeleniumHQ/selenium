@@ -1,0 +1,21 @@
+<project name="core-copy-sources" default="copy-sources">
+	
+	<property name="javascript.maven.sources" location="${ant.file.core-copy-sources}/../src/selenium" />
+	
+	<target name="clean-sources">
+		<mkdir dir="${javascript.maven.sources}" />
+		<delete dir="${javascript.maven.sources}" />
+		<mkdir dir="${javascript.maven.sources}" />
+	</target>
+	<target name="copy-sources">
+		<property name="javascript.path" location="${ant.file.core-copy-sources}/../../javascript" />
+		<condition property="build.failed">
+			<not><available file="${javascript.path}" /></not>
+		</condition>
+		<fail if="build.failed" message="Couldn't find JavaScript: ${javascript.path}" />
+		<mkdir dir="${javascript.maven.sources}" />
+		<copy todir="${javascript.maven.sources}">
+			<fileset dir="${javascript.path}" />
+		</copy>
+	</target>
+</project>

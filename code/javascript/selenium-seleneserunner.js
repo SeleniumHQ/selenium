@@ -43,7 +43,13 @@ function runTest() {
     testLoop.commandStarted = commandStarted;
     testLoop.commandComplete = commandComplete;
     testLoop.commandError = commandError;
-    testLoop.testComplete = function() {window.status = "Selenium Tests Complete, for this Test"};
+    testLoop.requiresCallBack = true;
+    testLoop.testComplete = function() {
+    	window.status = "Selenium Tests Complete, for this Test"
+    	// Continue checking for new results
+    	testLoop.continueTest();
+    	postResult = "START";
+    };
 
     document.getElementById("commandList").appendChild(cmd4);
     document.getElementById("commandList").appendChild(cmd3);
@@ -65,29 +71,63 @@ function getQueryVariable(variable) {
 }
 
 function buildDriverParams() {
+    var params = "";
+
     var host = getQueryVariable("driverhost");
     var port = getQueryVariable("driverport");
     if (host != undefined && port != undefined) {
-        return "&driverhost=" + host + "&driverport=" + port;
-    } else {
-        return ""
+        params = params + "&driverhost=" + host + "&driverport=" + port;
     }
+
+    var sessionId = getQueryVariable("sessionId");
+    if (sessionId != undefined) {
+        params = params + "&sessionId=" + sessionId;
+    }
+
+    return params;
 }
 
+function preventBrowserCaching() {
+    var t = (new Date()).getTime();
+    return "&counterToMakeURsUniqueAndSoStopPageCachingInTheBrowser=" + t;
+}   
+
 function nextCommand() {
-    var xmlHttp = XmlHttp.create();
+    xmlHttp = XmlHttp.create();
     try {
+    	var url;
         if (postResult == "START") {
-            xmlHttp.open("GET", "driver?seleniumStart=true" + buildDriverParams(), false);
+        	url = "driver?seleniumStart=true" + buildDriverParams() + preventBrowserCaching();
         } else {
-            xmlHttp.open("GET", "driver?commandResult=" + postResult + buildDriverParams(), false);
+        	url = "driver?commandResult=" + postResult + buildDriverParams() + preventBrowserCaching();
         }
+        xmlHttp.open("GET", url, true);
+        xmlHttp.onreadystatechange=handleHttpResponse;
         xmlHttp.send(null);
     } catch(e) {
+       	var s = 'xmlHttp returned:\n'
+        for (key in e) {
+            s += "\t" + key + " -> " + e[key] + "\n"
+        }
+        LOG.error(s);
         return null;
     }
-    return extractCommand(xmlHttp);
+    return null;
 }
+
+ function handleHttpResponse() {
+ 	if (xmlHttp.readyState == 4) {
+ 		if (xmlHttp.status == 200) {
+ 			var command = extractCommand(xmlHttp);
+ 			testLoop.currentCommand = command;
+ 			testLoop.beginNextTest();
+ 		} else {
+ 			var s = 'xmlHttp returned: ' + xmlHttp.status + ": " + xmlHttp.statusText;
+ 			LOG.error(s);
+ 		}
+ 	}
+ }
+
 
 function extractCommand(xmlHttp) {
     if (slowMode) {
@@ -148,7 +188,7 @@ function commandComplete(result) {
 }
 
 function commandError(message) {
-    postResult = "ERROR";
+    postResult = "ERROR: " + message;
     commandNode.style.backgroundColor = errorColor;
     commandNode.title = message;
 }

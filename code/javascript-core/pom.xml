@@ -19,6 +19,36 @@
                 <!--<targetPath>/selenium</targetPath>-->
             </resource>
         </resources>
-        <plugins/>
+        <plugins>
+        	<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<ant antfile="copy-sources.xml" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>clean-sources</id>
+						<phase>clean</phase>
+						<configuration>
+							<tasks>
+								<ant antfile="copy-sources.xml" target="clean-sources" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+        </plugins>
     </build>
 </project>

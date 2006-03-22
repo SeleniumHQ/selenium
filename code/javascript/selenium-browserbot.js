@@ -37,6 +37,9 @@ var browserName=navigator.appName;
 var isIE = (browserName =="Microsoft Internet Explorer");
 var isKonqueror = (browserName == "Konqueror");
 var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
+var isFirefox = (navigator.userAgent.indexOf('Firefox') != -1);
+var isNetscape = !isFirefox && (navigator.appName == "Netscape");
+
 
 // Get the Gecko version as an 8 digit date.
 var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
@@ -914,9 +917,12 @@ PageBot.prototype.getAllLinks = function() {
     return result;
 };
 
-PageBot.prototype.setContext = function(strContext) {
+PageBot.prototype.setContext = function(strContext, logLevel) {
      //set the current test title
-    context.innerHTML=strContext;
+    document.getElementById("context").innerHTML=strContext;
+    if (logLevel!=null) {
+    	LOG.setLogLevelThreshold(logLevel); 
+    }
 };
 
 function isDefined(value) {
@@ -934,6 +940,116 @@ PageBot.prototype.goForward = function() {
 PageBot.prototype.close = function() {
     this.currentWindow.close();
 };
+
+/* FJH Key, Mouse events */
+MozillaPageBot.prototype.keypressElement = function(element, keycode) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the key event.
+    triggerKeyEvent(element, 'keypress', keycode, true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+//triggerEvent(element, 'blur', false);
+};
+MozillaPageBot.prototype.keydownElement = function(element, keycode) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the key event.
+    triggerKeyEvent(element, 'keydown', keycode, true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+//triggerEvent(element, 'blur', false);
+};
+
+IEPageBot.prototype.keypressElement = function(element, keycode) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the key event.
+    triggerKeyEvent(element, 'keypress', keycode, true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+//triggerEvent(element, 'blur', false);
+};
+IEPageBot.prototype.keydownElement = function(element, keycode) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the key event.
+    triggerKeyEvent(element, 'keydown', keycode, true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+//triggerEvent(element, 'blur', false);
+};
+
+MozillaPageBot.prototype.mouseoverElement = function(element) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the mouse event.
+    triggerMouseEvent(element, 'mouseover', true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+triggerEvent(element, 'blur', false);
+};
+MozillaPageBot.prototype.mousedownElement = function(element) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the mouse event.
+    triggerMouseEvent(element, 'mousedown', true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+triggerEvent(element, 'blur', false);
+};
+IEPageBot.prototype.mouseoverElement = function(element) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the mouse event.
+    triggerMouseEvent(element, 'mouseover', true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+triggerEvent(element, 'blur', false);
+};
+IEPageBot.prototype.mousedownElement = function(element) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the mouse event.
+    triggerMouseEvent(element, 'mousedown', true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+triggerEvent(element, 'blur', false);
+};
+
+/* END FJH */
 
 /**
  * Refine a list of elements using a filter.
@@ -993,4 +1109,3 @@ PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterT
 
     return this.selectElementsBy(filterType, filterExpr, elements);
 };
-

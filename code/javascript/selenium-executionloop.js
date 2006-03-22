@@ -32,14 +32,20 @@ function TestLoop(commandFactory) {
         if (! this.aborted) {
             this.currentCommand = this.nextCommand();
         }
-        if (this.currentCommand) {
+        if (! this.requiresCallBack) {
+        	this.beginNextTest();
+        } // otherwise, just finish and let the callback invoke beginNextTest()
+    };
+    
+    this.beginNextTest = function() {
+    	if (this.currentCommand) {
             // TODO: rename commandStarted to commandSelected, OR roll it into nextCommand
             this.commandStarted(this.currentCommand);
             this.resumeAfterDelay();
         } else {
             this.testComplete();
         }
-    };
+    }
     
     /**
      * Pause, then execute the current command.
@@ -118,15 +124,31 @@ function TestLoop(commandFactory) {
 
     /**
      * Busy wait for waitForCondition() to become true, and then carry on
-     * with test.
+     * with test.  Fail the current test if there's a timeout or an exception.
      */
     this.continueTestWhenConditionIsTrue = function () {
-        if (this.waitForCondition == null || this.waitForCondition()) {
-            this.waitForCondition = null;
-            this.continueTest();
-        } else {
-            window.setTimeout("testLoop.continueTestWhenConditionIsTrue()", 10);
-        }
+        try {
+            if (this.waitForCondition == null || this.waitForCondition()) {
+	            this.waitForCondition = null;
+	            this.waitForConditionStart = null;
+	            this.waitForConditionTimeout = null;
+	            this.continueTest();
+	        } else {
+	        	if (this.waitForConditionTimeout != null) {
+		        	var now = new Date();
+		        	if ((now - this.waitForConditionStart) > this.waitForConditionTimeout) {
+		        		throw new SeleniumError("Timed out after " + this.waitForConditionTimeout + "ms");
+		        	}
+		        }
+	            window.setTimeout("testLoop.continueTestWhenConditionIsTrue()", 10);
+	        }
+	    } catch (e) {
+	    	var lastResult = new CommandResult();
+    		lastResult.failed = true;
+    		lastResult.failureMessage = e.message;
+	    	this.commandComplete(lastResult);
+	    	this.testComplete();
+	    }
     };
 
 }

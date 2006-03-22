@@ -21,7 +21,7 @@ http-equiv="content-type">
 <link rel="stylesheet" type="text/css" href="selenium.css" />
 <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
 <script type="text/javascript" src="xmlextras.js"></script>
-
+<script language="JavaScript" type="text/javascript" src="html-xpath/html-xpath-patched.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
@@ -39,12 +39,19 @@ http-equiv="content-type">
         domViewer.rootDocument = autFrameDocument;
         return false;
     }
+    
+    function cleanUp() {
+    	if (LOG != null) {
+		LOG.close();
+	}
+    }
+    
 </script>
 <script>
 </script>
 </head>
 
-<body onLoad="runTest()">
+<body onLoad="runTest()" onUnload="cleanUp()">
 
 <table border="1" style="height: 100%;">
   <tr>

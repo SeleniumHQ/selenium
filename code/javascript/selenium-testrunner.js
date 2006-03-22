@@ -616,3 +616,48 @@ Selenium.prototype.doBreak = function() {
     document.getElementById('modeStep').checked = true;
     runInterval = -1;
 };
+
+/*
+ * Click on the located element, and attach a callback to notify
+ * when the page is reloaded.
+ */
+Selenium.prototype.doModalDialogTest = function(returnValue) {
+    this.browserbot.doModalDialogTest(returnValue);
+};
+
+/*
+ * Store the value of a form input in a variable
+ */
+Selenium.prototype.doStoreValue = function(target, varName) {
+    if (!varName) {
+        // Backward compatibility mode: read the ENTIRE text of the page
+        // and stores it in a variable with the name of the target
+        value = this.page().bodyText();
+        storedVars[target] = value;
+        return;
+    }
+    var element = this.page().findElement(target);
+    storedVars[varName] = getInputValue(element);
+};
+
+/*
+ * Store the text of an element in a variable
+ */
+Selenium.prototype.doStoreText = function(target, varName) {
+    var element = this.page().findElement(target);
+    storedVars[varName] = getText(element);
+};
+
+/*
+ * Store the value of an element attribute in a variable
+ */
+Selenium.prototype.doStoreAttribute = function(target, varName) {
+    storedVars[varName] = this.page().findAttribute(target);
+};
+
+/*
+ * Store the result of a literal value
+ */
+Selenium.prototype.doStore = function(value, varName) {
+    storedVars[varName] = value;
+};

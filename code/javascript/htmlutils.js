@@ -80,6 +80,22 @@ function triggerEvent(element, eventType, canBubble) {
     }
 }
 
+/* FJH Fire a key event in a browser-compatible manner */
+function triggerKeyEvent(element, eventType, keycode, canBubble) {
+    canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
+    if (element.fireEvent) {
+		keyEvent = parent.frames['myiframe'].document.createEventObject();
+		keyEvent.keyCode=keycode;
+		element.fireEvent('on' + eventType, keyEvent);
+    }
+    else {
+        var evt = document.createEvent('KeyEvents');
+        evt.initKeyEvent(eventType, true, true, window, false, false, false, false, keycode, keycode);
+        element.dispatchEvent(evt);
+    }
+}
+/* END FJH */
+
 /* Fire a mouse event in a browser-compatible manner */
 function triggerMouseEvent(element, eventType, canBubble) {
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
