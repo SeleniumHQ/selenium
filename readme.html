@@ -9,8 +9,9 @@ A short explanation about the directory structure of this project.<br>
 <pre>trunk/</pre>
 &nbsp;&nbsp;&nbsp; The root.  Contains a top-level Ant script that builds everything, as well as a top-level Maven POM that builds all the other Maven projects below (not everything is Maven-ized)<br>
 <pre>trunk/javascript-core/</pre>
-&nbsp;&nbsp;&nbsp; "Selenium Core", includes the JS libraries and HTML files.  It includes a Maven POM file so it can be repackaged for other Maven builds.<br>
-<b>Note that to run this Maven build, you first have to do your Maven build from /trunk.</b><br>
+&nbsp;&nbsp;&nbsp;Builds a Selenium Core Maven package by importing the JS libraries and HTML files.  It includes a Maven POM file so it can be repackaged for other Maven builds.<br>
+<b>Note 1: To run this Maven build, you first have to do your Maven build from /trunk.</b><br>
+<b>Note 2: This build requires a special property be set from the command line: "core.javascript.path", which should point to the Selenium Core JavaScript directory, e.g "-Dcore.javascript.path=C:\svn\selenium\trunk\code\javascript".</b><br>
 <pre>trunk/server/</pre>
 &nbsp;&nbsp;&nbsp; The source for the Selenium RC Server, which is only in Java, and requires Maven to build; depends on Core, and repackages it so other builds <i>won't</i> depend on Core.<br>
 <pre>trunk/clients/</pre>

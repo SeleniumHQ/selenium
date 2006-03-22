@@ -30,10 +30,12 @@
 	</target>
 
 	<target name="maven" depends="init" description="Builds just the Maven stuff; worksaround Maven Bug MDEP-1">
+		<fail unless="core.javascript.path" message="You must specify a path to the core javascript in the core.javascript.path property&#0010;e.g. -Dcore.javascript.path=C:\svn\selenium\trunk\code\javascript" />
 		<!-- Bug in dependency-maven-plugin forces us to do this goofy stuff -->
 		<mvn>
 			<arg value="install" />
 			<arg value="-Dmaven.test.skip=true" />
+			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
 		</mvn>
 		<mvn dir="server">
 			<arg value="install" />
@@ -41,6 +43,7 @@
 		</mvn>
 		<mvn>
 			<arg value="install" />
+			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
 		</mvn>
 	</target>
 
