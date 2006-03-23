@@ -199,7 +199,7 @@ UserFormatInfo.prototype.getFormatFile = function() {
 }
 
 UserFormatInfo.prototype.getFormat = function() {
-	return TestManager.loadFormat("file:" + this.getFormatFile().path);
+	return TestManager.loadFormat("file:" + encodeURI(this.getFormatFile().path));
 }
 
 UserFormatInfo.prototype.getSource = function() {
