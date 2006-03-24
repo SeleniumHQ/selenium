@@ -112,7 +112,7 @@ function chooseUserExtensionsURL() {
 	fp.appendFilters(nsIFilePicker.filterAll);
 	var res = fp.show();
 	if (res == nsIFilePicker.returnOK) {
-		document.getElementById("userExtensionsURL").value = "file:" + encodeURI(fp.file.path);
+		document.getElementById("userExtensionsURL").value = FileUtils.fileURI(fp.file);
 	}
 }
 

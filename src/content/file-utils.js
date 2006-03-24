@@ -65,5 +65,10 @@ var FileUtils = {
 		var content = stream.read(stream.available());
 		stream.close();
 		return content;
+	},
+
+	fileURI: function(file) {
+		return Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).
+		  newFileURI(file).spec;
 	}
 }
