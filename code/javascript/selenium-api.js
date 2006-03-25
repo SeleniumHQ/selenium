@@ -18,6 +18,98 @@
 storedVars = new Object();
 
 function Selenium(browserbot) {
+	/**
+	 * Defines an object that runs Selenium commands.
+	 * 
+	 * <h3><a name="locators"></a>Element Locators</h3>
+	 * <p>
+	 * Element Locators tell Selenium which HTML element a command refers to. Many
+	 * commands require an Element Locator as a parameter.
+	 * 
+	 * We support the following strategies for locating elements:
+	 * </p>
+	 * <blockquote>
+	 * <dl>
+	 * <dt><strong>identifier</strong>=<em>id</em></dt>
+	 * <dd>Select the element with the specified &#64;id attribute. If no match is
+	 * found, select the first element whose &#64;name attribute is <em>id</em>.
+	 * (This is normally the default; see below.)</dd>
+	 * <dt><strong>id</strong>=<em>id</em></dt>
+	 * <dd>Select the element with the specified &#64;id attribute.</dd>
+	 * 
+	 * <dt><strong>name</strong>=<em>name</em></dt>
+	 * <dd>Select the first element with the specified &#64;name attribute.</dd>
+	 * <dt><strong>dom</strong>=<em>javascriptExpression</em></dt>
+	 * 
+	 * <dd>
+	 * 
+	 * <dd>Find an element using JavaScript traversal of the HTML Document Object
+	 * Model. DOM locators <em>must</em> begin with &quot;document.&quot;.
+	 * <ul class="first last simple">
+	 * <li>dom=document.forms['myForm'].myDropdown</li>
+	 * <li>dom=document.images[56]</li>
+	 * </ul>
+	 * </dd>
+	 * 
+	 * </dd>
+	 * 
+	 * <dt><strong>xpath</strong>=<em>xpathExpression</em></dt>
+	 * <dd>Locate an element using an XPath expression. XPath locators
+	 * <em>must</em> begin with &quot;//&quot;.
+	 * <ul class="first last simple">
+	 * <li>xpath=//img[&#64;alt='The image alt text']</li>
+	 * <li>xpath=//table[&#64;id='table1']//tr[4]/td[2]</li>
+	 * 
+	 * </ul>
+	 * </dd>
+	 * <dt><strong>link</strong>=<em>textPattern</em></dt>
+	 * <dd>Select the link (anchor) element which contains text matching the
+	 * specified <em>pattern</em>.
+	 * <ul class="first last simple">
+	 * <li>link=The link text</li>
+	 * </ul>
+	 * 
+	 * </dd>
+	 * </dl>
+	 * </blockquote>
+	 * <p>
+	 * Without an explicit locator prefix, Selenium uses the following default
+	 * strategies:
+	 * </p>
+	 * 
+	 * <ul class="simple">
+	 * <li><strong>dom</strong>, for locators starting with &quot;document.&quot;</li>
+	 * <li><strong>xpath</strong>, for locators starting with &quot;//&quot;</li>
+	 * <li><strong>identifier</strong>, otherwise</li>
+	 * 
+	 * </ul>
+	 * <h3><a name="patterns"></a>String-match Patterns</h3>
+	 * 
+	 * <p>
+	 * Various Pattern syntaxes are available for matching string values:
+	 * </p>
+	 * <blockquote>
+	 * <dl>
+	 * <dt><strong>glob:</strong><em>pattern</em></dt>
+	 * <dd>Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a
+	 * kind of limited regular-expression syntax typically used in command-line
+	 * shells. In a glob pattern, "*" represents any sequence of characters, and "?"
+	 * represents any single character. Glob patterns match against the entire
+	 * string.</dd>
+	 * <dt><strong>regexp:</strong><em>regexp</em></dt>
+	 * <dd>Match a string using a regular-expression. The full power of JavaScript
+	 * regular-expressions is available.</dd>
+	 * <dt><strong>exact:</strong><em>string</em></dt>
+	 * 
+	 * <dd>Match a string exactly, verbatim, without any of that fancy wildcard
+	 * stuff.</dd>
+	 * </dl>
+	 * </blockquote>
+	 * <p>
+	 * If no pattern prefix is specified, Selenium assumes that it's a "glob"
+	 * pattern.
+	 * </p>
+	 */
     this.browserbot = browserbot;
     this.optionLocatorFactory = new OptionLocatorFactory();
     this.page = function() {
@@ -29,51 +121,82 @@ Selenium.createForFrame = function(frame) {
     return new Selenium(BrowserBot.createForFrame(frame));
 };
 
-/*
- * Reset the browserbot when an error occurs..
- */
 Selenium.prototype.reset = function() {
+	/**
+   * Clear out all stored variables and select the null (starting) window
+   */
     storedVars = new Object();
     this.browserbot.selectWindow("null");
 };
 
-/*
- * Click on the located element, and attach a callback to notify
- * when the page is reloaded.
- */
 Selenium.prototype.doClick = function(locator) {
+	/**
+   * Clicks on a link, button, checkbox or radio button. If the click action
+   * causes a new page to load (like a link usually does), call
+   * waitForPageToLoad.
+   * 
+   * @param locator an element locator
+   * 
+   */
     var element = this.page().findElement(locator);
     this.page().clickElement(element);
 };
 
-/*
- * FJH Key, Mouse event on the located element
- */
 Selenium.prototype.doKeyPress = function(locator, keycode) {
+	/**
+   * Simulates a user pressing and releasing a key.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @param keycode the numeric keycode of the key to be pressed, normally the
+   *            ASCII value of that key.
+   */
     var element = this.page().findElement(locator);
     this.page().keypressElement(element, keycode);
 };
 Selenium.prototype.doKeyDown = function(locator, keycode) {
+	/**
+   * Simulates a user pressing a key (without releasing it yet).
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @param keycode the numeric keycode of the key to be pressed, normally the
+   *            ASCII value of that key.
+   */
     var element = this.page().findElement(locator);
     this.page().keydownElement(element, keycode);
 };
 Selenium.prototype.doMouseOver = function(locator) {
+	/**
+   * Simulates a user hovering a mouse over the specified element.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
     var element = this.page().findElement(locator);
     this.page().mouseoverElement(element);
 };
 Selenium.prototype.doMouseDown = function(locator) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
     var element = this.page().findElement(locator);
     this.page().mousedownElement(element);
 };
-/* END FJH */
 
-/**
- * Overwrite the text in the located text element.
- * TODO fail if it can't be typed into.
- */
-Selenium.prototype.doType = function(locator, newText) {
+Selenium.prototype.doType = function(locator, value) {
+	/**
+   * Sets the value of an input field, as though you typed it in.
+   * 
+   * <p>Can also be used to set the value of combo boxes, check boxes, etc. In these cases,
+   * value should be the value of the option selected, not the visible text.</p>
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @param value the value to type
+   */
+		// TODO fail if it can't be typed into.
     var element = this.page().findElement(locator);
-    this.page().replaceText(element, newText);
+    this.page().replaceText(element, value);
 };
 
 Selenium.prototype.findToggleButton = function(locator) {
@@ -84,24 +207,73 @@ Selenium.prototype.findToggleButton = function(locator) {
     return element;
 }
 
-/**
- * Check a toggle-button.
- */
 Selenium.prototype.doCheck = function(locator) {
+	/**
+   * Check a toggle-button (checkbox/radio)
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
     this.findToggleButton(locator).checked = true;
 };
 
-/**
- * Uncheck a toggle-button.
- */
 Selenium.prototype.doUncheck = function(locator) {
+	/**
+   * Uncheck a toggle-button (checkbox/radio)
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
     this.findToggleButton(locator).checked = false;
 };
 
-/**
- * Select the option from the located select element.
- */
 Selenium.prototype.doSelect = function(locator, optionLocator) {
+	/**
+   * Select an option from a drop-down using an option locator.
+   * 
+   * <p>
+   * Option locators provide different ways of specifying options of an HTML
+   * Select element (e.g. for selecting a specific option, or for asserting
+   * that the selected option satisfies a specification). There are several
+   * forms of Select Option Locator.
+   * </p>
+   * <dl>
+   * <dt><strong>label</strong>=<em>labelPattern</em></dt>
+   * <dd>matches options based on their labels, i.e. the visible text. (This
+   * is the default.)
+   * <ul class="first last simple">
+   * <li>label=regexp:^[Oo]ther</li>
+   * </ul>
+   * </dd>
+   * <dt><strong>value</strong>=<em>valuePattern</em></dt>
+   * <dd>matches options based on their values.
+   * <ul class="first last simple">
+   * <li>value=other</li>
+   * </ul>
+   * 
+   * 
+   * </dd>
+   * <dt><strong>id</strong>=<em>id</em></dt>
+   * 
+   * <dd>matches options based on their ids.
+   * <ul class="first last simple">
+   * <li>id=option1</li>
+   * </ul>
+   * </dd>
+   * <dt><strong>index</strong>=<em>index</em></dt>
+   * <dd>matches an option based on its index (offset from zero).
+   * <ul class="first last simple">
+   * 
+   * <li>index=2</li>
+   * </ul>
+   * </dd>
+   * </dl>
+   * <p>
+   * Without a prefix, the default behaviour is to only match on labels.
+   * </p>
+   * 
+   * 
+   * @param locator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @param optionLocator an option locator (a label by default)
+   */
     var element = this.page().findElement(locator);
     if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
@@ -111,71 +283,114 @@ Selenium.prototype.doSelect = function(locator, optionLocator) {
     this.page().selectOption(element, option);
 };
 
-/**
- * Submit a form, without clicking a submit button.
- */
 Selenium.prototype.doSubmit = function(formLocator) {
+	/**
+   * Submit the specified form. This is particularly useful for forms without
+   * submit buttons, e.g. single-input "Search" forms.
+   * 
+   * @param formLocator an <a href="#locators">element locator</a> for the form you want to submit
+   */
     var form = this.page().findElement(formLocator);
     if (!form.onsubmit || form.onsubmit()) {
         form.submit();
     }
 };
 
-/*
- * Open the browser to a new location.
- */
-Selenium.prototype.doOpen = function(newLocation) {
-    this.browserbot.openLocation(newLocation);
+Selenium.prototype.doOpen = function(url) {
+	/**
+   * Opens an URL in the test frame. This accepts both relative and absolute
+   * URLs.
+   * 
+   * <em>Note</em>: The URL must be on the same domain as the runner HTML
+   * due to security restrictions in the browser (Same Origin Policy). If you
+   * need to open an URL on another domain, use the Selenium Server to start a
+   * new browser session on that domain.
+   * 
+   * @param url the URL to open; may be relative or absolute
+   */
+    this.browserbot.openLocation(url);
     return SELENIUM_PROCESS_WAIT;
 };
 
-/*
- * Select the named window to be the active window.
- */
-Selenium.prototype.doSelectWindow = function(windowName) {
-    this.browserbot.selectWindow(windowName);
+Selenium.prototype.doSelectWindow = function(windowID) {
+	/**
+   * Selects a popup window; once a popup window has been selected, all
+   * commands go to that window. To select the main window again, use "null"
+   * as the target.
+   * 
+   * @param windowID the JavaScript window ID of the window to select
+   */
+    this.browserbot.selectWindow(windowID);
 };
 
-/*
- * Instruct Selenium to click Cancel on the next confirm dialog it encounters
- */
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
+	/**
+   * Instructs Selenium to click "Cancel" on the next JavaScript confirmation
+   * dialog to be raised. By default, the confirm function will return true,
+   * having the same effect as manually clicking OK. After running this
+   * command, the next confirmation will behave as if the user had clicked
+   * Cancel.
+   * 
+   */
     this.browserbot.cancelNextConfirmation();
 };
 
-/*
- * Instruct Selenium what to answear on the next prompt dialog it encounters
- */
+
 Selenium.prototype.doAnswerOnNextPrompt = function(answer) {
+	/**
+   * Instructs Selenium to return the specified answer string in response to
+   * the next JavaScript prompt [window.prompt()].
+   * 
+   * 
+   * @param answer the answer to give in response to the prompt pop-up
+   */
     this.browserbot.setNextPromptResult(answer);
 };
 
-/*
- * Simulate the browser back button
- */
 Selenium.prototype.doGoBack = function() {
+    /**
+     * Simulates the user clicking the "back" button on their browser.
+     * 
+     */
     this.page().goBack();
 };
 
-/*
- * Close the browser window or tab
- */
 Selenium.prototype.doClose = function() {
+	/**
+   * Simulates the user clicking the "close" button in the titlebar of a popup
+   * window or tab.
+   */
     this.page().close();
 };
 
-/*
- * Explicitly fire an event
- */
 Selenium.prototype.doFireEvent = function(locator, event) {
+	/**
+   * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
+   * handler.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @param event the event name, e.g. "focus" or "blur"
+   */
     var element = this.page().findElement(locator);
     triggerEvent(element, event, false);
 };
 
-/*
- * Get an alert message, or fail if there were no alerts.
- */
 Selenium.prototype.getAlert = function() {
+	/**
+   * Retrieves the message of a javascript alert generated during the previous action, or fail if there were no alerts.
+   * 
+   * <p>Getting an alert has the same effect as manually clicking OK. If an
+   * alert is generated but you do not get/verify it, the next Selenium action
+   * will fail.</p>
+   * 
+   * <p>NOTE: under Selenium, javascript alerts will NOT pop up a visible alert
+   * dialog.</p>
+   * 
+   * <p>NOTE: Selenium does NOT support javascript alerts that are generated in a
+   * page's onload() event handler. In this case a visible dialog WILL be
+   * generated and Selenium will hang until someone manually clicks OK.</p>
+   * @return string The message of the most recent JavaScript alert
+   */
     if (!this.browserbot.hasAlerts()) {
         Assert.fail("There were no alerts");
     }
@@ -183,10 +398,32 @@ Selenium.prototype.getAlert = function() {
 };
 Selenium.prototype.getAlert.dontCheckAlertsAndConfirms = true;
 
-/*
- * Get a confirmation message, or fail if there were no confirmations.
- */
 Selenium.prototype.getConfirmation = function() {
+	/**
+   * Retrieves the message of a javascript confirmation dialog generated during
+   * the previous action.
+   * 
+   * <p>
+   * By default, the confirm function will return true, having the same effect
+   * as manually clicking OK. This can be changed by prior execution of the
+   * chooseCancelOnNextConfirmation command. If an confirmation is generated
+   * but you do not get/verify it, the next Selenium action will fail.
+   * </p>
+   * 
+   * <p>
+   * NOTE: under Selenium, javascript confirmations will NOT pop up a visible
+   * dialog.
+   * </p>
+   * 
+   * <p>
+   * NOTE: Selenium does NOT support javascript confirmations that are
+   * generated in a page's onload() event handler. In this case a visible
+   * dialog WILL be generated and Selenium will hang until you manually click
+   * OK.
+   * </p>
+   * 
+   * @return string the message of the most recent JavaScript confirmation dialog
+   */
     if (!this.browserbot.hasConfirmations()) {
         Assert.fail("There were no confirmations");
     }
@@ -194,28 +431,43 @@ Selenium.prototype.getConfirmation = function() {
 };
 Selenium.prototype.getConfirmation.dontCheckAlertsAndConfirms = true;
  
-/*
- * Get a prompt message, or fail if there were no prompts.
- */
 Selenium.prototype.getPrompt = function() {
+	/**
+   * Retrieves the message of a javascript question prompt dialog generated during
+   * the previous action.
+   * 
+   * <p>Successful handling of the prompt requires prior execution of the
+   * answerOnNextPrompt command. If a prompt is generated but you
+   * do not get/verify it, the next Selenium action will fail.</p>
+   * 
+   * <p>NOTE: under Selenium, javascript prompts will NOT pop up a visible
+   * dialog.</p>
+   * 
+   * <p>NOTE: Selenium does NOT support javascript prompts that are generated in a
+   * page's onload() event handler. In this case a visible dialog WILL be
+   * generated and Selenium will hang until someone manually clicks OK.</p>
+   * @return string the message of the most recent JavaScript question prompt
+   */
     if (! this.browserbot.hasPrompts()) {
         Assert.fail("There were no prompts");
     }
     return this.browserbot.getNextPrompt();
 };
 
-/*
- * Get the location of the current page.
- */
 Selenium.prototype.getAbsoluteLocation = function() {
+	/** Gets the absolute URL of the current page.
+   * 
+   * @return string the absolute URL of the current page
+   */
     return this.page().location;
 };
 
-/*
- * Verify the location of the current page ends with the expected location.
- * If a querystring is provided, this is checked as well.
- */
 Selenium.prototype.assertLocation = function(expectedLocation) {
+	/**
+   * Verify the location of the current page ends with the expected location.
+   * If an URL querystring is provided, this is checked as well.
+   * @param expectedLocation the location to match
+   */
     var docLocation = this.page().location;
     var searchPos = expectedLocation.lastIndexOf('?');
 
@@ -231,47 +483,63 @@ Selenium.prototype.assertLocation = function(expectedLocation) {
     }
 };
 
-/*
- * Get the title of the current page.
- */
 Selenium.prototype.getTitle = function() {
+	/** Gets the title of the current page.
+   * 
+   * @return string the title of the current page
+   */
     return this.page().title();
 };
 
-/*
- * Get the entire text of the page.
- * Note that various commands are generated from this, including
- * assertBodyText, verifyBodyText, storeBodyText...
- */
+
 Selenium.prototype.getBodyText = function() {
+	/**
+	 * Get the entire text of the page.
+	 * @return string the entire text of the page
+	 */
     return this.page().bodyText();
 };
 
 
-/*
- * Get the (trimmed) value of a form element.
- * This is used to generate assertValue, verifyValue, ...
- */
 Selenium.prototype.getValue = function(locator) {
+  /**
+   * Gets the (whitespace-trimmed) value of an input field (or anything else with a value parameter).
+   * For checkbox/radio elements, the value will be "on" or "off" depending on
+   * whether the element is checked or not.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @return string the element value, or "on/off" for checkbox/radio elements
+   */
     var element = this.page().findElement(locator)
     return getInputValue(element).trim();
 }
 
-/**
- * Get the (trimmed) text of a form element.
- * This is used to generate assertText, verifyText, ...
- */
 Selenium.prototype.getText = function(locator) {
+	/**
+   * Gets the text of an element. This works for any element that contains
+   * text. This command uses either the textContent (Mozilla-like browsers) or
+   * the innerText (IE-like browsers) of the element, which is the rendered
+   * text shown to the user.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @return string the text of the element
+   */
     var element = this.page().findElement(locator);
     return getText(element).trim();
 };
 
-/**
- * Add an eval verb to extend Selenium on-the-fly.
- * Add a getter so verifyEval and assertEval can be autogenerated,
- * and so drivers can extract information from the browser
- */
 Selenium.prototype.getEval = function(script) {
+	/** Gets the result of evaluating the specified JavaScript snippet.  The snippet may 
+   * have multiple lines, but only the result of the last line will be returned.
+   * 
+   * <p>Note that, by default, the snippet will be run in the runner's test window, not in the window
+   * of your application.  To get the window of your application, you can use
+   * the JavaScript snippet <code>selenium.browserbot.getCurrentWindow()</code>, and then
+   * run your JavaScript in there.</p>
+   * 
+   * @param script the JavaScript snippet to run
+   * @return string the results of evaluating the snippet
+   */
     try {
     	return eval(script);
     } catch (e) {
@@ -279,10 +547,12 @@ Selenium.prototype.getEval = function(script) {
     }
 };
 
-/**
- * Get whether a toggle-button is checked.  (used to generate verify/assertChecked)
- */
 Selenium.prototype.getChecked = function(locator) {
+	/**
+   * Get whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.
+   * @param locator an <a href="#locators">element locator</a> pointing to a checkbox or radio button
+   * @return string either "true" or "false" depending on whether the checkbox is checked
+   */
     var element = this.page().findElement(locator);
     if (element.checked == null) {
         throw new SeleniumError("Element " + locator + " is not a toggle-button.");
@@ -290,20 +560,23 @@ Selenium.prototype.getChecked = function(locator) {
     return element.checked;
 };
 
-/*
- * Return the text for a single cell within an HTML table.
- * The table locator syntax is table.row.column.
- */
-Selenium.prototype.getTable = function(tableLocator) {
+Selenium.prototype.getTable = function(tableCellAddress) {
+	/**
+   * Gets the text from a cell of a table. The cellAddress syntax
+   * tableLocator.row.column, where row and column start at 0.
+   * 
+   * @param tableCellAddress a cell address, e.g. "foo.1.4"
+   * @return string the text from the specified cell
+   */
     // This regular expression matches "tableName.row.column"
     // For example, "mytable.3.4"
     pattern = /(.*)\.(\d+)\.(\d+)/;
 
-    if(!pattern.test(tableLocator)) {
+    if(!pattern.test(tableCellAddress)) {
         throw new SeleniumError("Invalid target format. Correct format is tableName.rowNum.columnNum");
     }
 
-    pieces = tableLocator.match(pattern);
+    pieces = tableCellAddress.match(pattern);
 
     tableName = pieces[1];
     row = pieces[2];
@@ -322,21 +595,28 @@ Selenium.prototype.getTable = function(tableLocator) {
     }
 };
 
-/**
- * Verify that the selected option satisfies the option locator.
- */
-Selenium.prototype.assertSelected = function(target, optionLocator) {
-    var element = this.page().findElement(target);
+Selenium.prototype.assertSelected = function(locator, optionLocator) {
+	/**
+   * Verifies that the selected option of a drop-down satisfies the optionSpecifier.
+   * 
+   * <p>See the select command for more information about option locators.</p>
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
+   */
+    var element = this.page().findElement(locator);
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     locator.assertSelected(element);
 };
 
 
-/**
- * Get the labels of all of the options in the drop-down (generates assert/verifySelectOptions)
- */
-Selenium.prototype.getSelectOptions = function(target) {
-    var element = this.page().findElement(target);
+Selenium.prototype.getSelectOptions = function(locator) {
+	/** Gets all option labels in the specified select drop-down.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @return string[] an array of all option labels in the specified select drop-down
+   */
+    var element = this.page().findElement(locator);
 
 	var selectOptions = "";
 
@@ -349,44 +629,49 @@ Selenium.prototype.getSelectOptions = function(target) {
 };
 
 
-/**
- * Get the value of an element attribute. The syntax for returning an element attribute
- * is <element-locator>@attribute-name.  Used to generate assert, verify, assertNot...
- */
-Selenium.prototype.getAttribute = function(target) {
-    return this.page().findAttribute(target);
+Selenium.prototype.getAttribute = function(attributeLocator) {
+	/**
+   * Gets the value of an element attribute.
+   * @param attributeLocator an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
+   * @return string the value of the specified attribute
+   */
+    return this.page().findAttribute(attributeLocator);
 };
 
-/*
- * Asserts that the specified text is present in the page content.
- */
-Selenium.prototype.assertTextPresent = function(expectedText) {
+Selenium.prototype.assertTextPresent = function(pattern) {
+	/**
+   * Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.
+   * @param pattern a <a href="#patterns">pattern</a> to match with the text of the page
+   */
+   // TODO support patterns! this does literal matching right now
     var allText = this.page().bodyText();
 
     if(allText == "") {
         Assert.fail("Page text not found");
-    } else if(allText.indexOf(expectedText) == -1) {
-        Assert.fail("'" + expectedText + "' not found in page text.");
+    } else if(allText.indexOf(pattern) == -1) {
+        Assert.fail("'" + pattern + "' not found in page text.");
     }
 };
 
-/*
- * Asserts that the specified text is NOT present in the page content.
- */
-Selenium.prototype.assertTextNotPresent = function(unexpectedText) {
+Selenium.prototype.assertTextNotPresent = function(pattern) {
+	/**
+   * Verifies that the specified text pattern does NOT appear anywhere on the rendered page.
+   * @param pattern a <a href="#patterns">pattern</a> to match with the text of the page
+   */
     var allText = this.page().bodyText();
 
     if(allText == "") {
         Assert.fail("Page text not found");
-    } else if(allText.indexOf(unexpectedText) != -1) {
-        Assert.fail("'" + unexpectedText + "' was found in page text.");
+    } else if(allText.indexOf(pattern) != -1) {
+        Assert.fail("'" + pattern + "' was found in page text.");
     }
 };
 
-/*
- * Asserts that the specified element can be found.
- */
 Selenium.prototype.assertElementPresent = function(locator) {
+	/**
+   * Verifies that the specified element is somewhere on the page.
+   * @param locator an <a href="#locators">element locator</a>
+   */
     try {
         this.page().findElement(locator);
     } catch (e) {
@@ -394,10 +679,11 @@ Selenium.prototype.assertElementPresent = function(locator) {
     }
 };
 
-/*
- * Asserts that the specified element cannot be found.
- */
 Selenium.prototype.assertElementNotPresent = function(locator) {
+	/**
+   * Verifies that the specified element is NOT on the page.
+   * @param locator an <a href="#locators">element locator</a>
+   */
     try {
         this.page().findElement(locator);
     }
@@ -407,10 +693,15 @@ Selenium.prototype.assertElementNotPresent = function(locator) {
     Assert.fail("Element " + locator + " found.");
 };
 
-/*
- * Asserts that the specified element is visible
- */
 Selenium.prototype.assertVisible = function(locator) {
+	/**
+   * Verifies that the specified element is both present and visible. An
+   * element can be rendered invisible by setting the CSS "visibility"
+   * property to "hidden", or the "display" property to "none", either for the
+   * element itself or one if its ancestors.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
     var element;
     try {
         element = this.page().findElement(locator);
@@ -422,10 +713,13 @@ Selenium.prototype.assertVisible = function(locator) {
     }
 };
 
-/*
- * Asserts that the specified element is visible
- */
 Selenium.prototype.assertNotVisible = function(locator) {
+	/**
+   * Verifies that the specified element is NOT visible; elements that are
+   * simply not present are also considered invisible.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
     var element;
     try {
         element = this.page().findElement(locator);
@@ -480,10 +774,13 @@ Selenium.prototype.findEffectiveStyle = function(element) {
     throw new SeleniumError("cannot determine effective stylesheet in this browser");
 };
 
-/**
- * Asserts that the specified element accepts user input visible
- */
 Selenium.prototype.assertEditable = function(locator) {
+	/**
+   * Verifies that the specified element is editable, ie. it's an input
+   * element, and hasn't been disabled.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
     var element = this.page().findElement(locator);
     if (element.value == undefined) {
         Assert.fail("Element " + locator + " is not an input.");
@@ -493,10 +790,13 @@ Selenium.prototype.assertEditable = function(locator) {
     }
 };
 
-/**
- * Asserts that the specified element does not accept user input
- */
 Selenium.prototype.assertNotEditable = function(locator) {
+	/**
+   * Verifies that the specified element is NOT editable, ie. it's NOT an
+   * input element, or has been disabled.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
     var element = this.page().findElement(locator);
     if (element.value == undefined) {
         return; // not an input
@@ -506,74 +806,83 @@ Selenium.prototype.assertNotEditable = function(locator) {
     }
 };
 
- /*
-  * Return all buttons on the screen.
-  */
 Selenium.prototype.getAllButtons = function() {
-        return this.page().getAllButtons();
+	/** Returns the IDs of all buttons on the page.
+   * 
+   * <p>If a given button has no ID, it will appear as "" in this array.</p>
+   * 
+   * @return string[] the IDs of all buttons on the page
+   */
+   return this.page().getAllButtons();
 };
 
- /*
-  * Return all links on the screen.
-  */
 Selenium.prototype.getAllLinks = function() {
-        return this.page().getAllLinks();
+	/** Returns the IDs of all links on the page.
+   * 
+   * <p>If a given link has no ID, it will appear as "" in this array.</p>
+   * 
+   * @return string[] the IDs of all links on the page
+   */
+   return this.page().getAllLinks();
 };
 
-Selenium.prototype.getAllActions = function() {
-	var actionList = "";
-	for (var action in testLoop.commandFactory.actions) {
-		actionList += action + ",";
-	}
-	return actionList;
-}
-
-Selenium.prototype.getAllAccessors = function() {
-	var actionList = "";
-	for (var action in testLoop.commandFactory.accessors) {
-		actionList += action + ",";
-	}
-	return actionList;
-}
-
-Selenium.prototype.getAllAsserts = function() {
-	var actionList = "";
-	for (var action in testLoop.commandFactory.asserts) {
-		actionList += action + ",";
-	}
-	return actionList;
-}
-
- /*
-  * Return all fields on the screen.
-  */
 Selenium.prototype.getAllFields = function() {
-        return this.page().getAllFields();
+	/** Returns the IDs of all input fields on the page.
+   * 
+   * <p>If a given field has no ID, it will appear as "" in this array.</p>
+   * 
+   * @return string[] the IDs of all field on the page
+   */
+   return this.page().getAllFields();
 };
 
-/*
- * Set the context for the current Test
- */
 Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
+	/**
+   * Writes a message to the status bar and adds a note to the browser-side
+   * log.
+   * 
+   * <p>If logLevelThreshold is specified, set the threshold for logging
+   * to that level (debug, info, warn, error).</p>
+   * 
+   * <p>(Note that the browser-side logs will <i>not</i> be sent back to the
+   * server, and are invisible to the Client Driver.)</p>
+   * 
+   * @param context
+   *            the message to be sent to the browser
+   * @param logLevelThreshold one of "debug", "info", "warn", "error", sets the threshold for browser-side logging
+   */
     if  (logLevelThreshold==null || logLevelThreshold=="") {
     	return this.page().setContext(context);
     }
     return this.page().setContext(context, logLevelThreshold);
 };
 
-/*
- * Return the specified expression.  Is useful because of preprocessing.
- * Used to generate commands like assertExpression and storeExpression.
- * e.g. assertExpression | ${xyz} | foo
- */
 Selenium.prototype.getExpression = function(expression) {
+	/**
+	 * Return the specified expression.
+	 *
+	 * <p>This is useful because of JavaScript preprocessing.
+	 * It is used to generate commands like assertExpression and storeExpression.</p>
+	 * 
+	 * @param expression the value to return
+	 * @return string the value passed in
+	 */
 	return expression;
 }
 
-/*
- * Wait for the specified script to evaluate to true.
- */
 Selenium.prototype.doWaitForCondition = function(script, timeout) {
+	/**
+   * Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
+   * The snippet may have multiple lines, but only the result of the last line
+   * will be considered.
+   * 
+   * <p>Note that, by default, the snippet will be run in the runner's test window, not in the window
+   * of your application.  To get the window of your application, you can use
+   * the JavaScript snippet <code>selenium.browserbot.getCurrentWindow()</code>, and then
+   * run your JavaScript in there</p>
+   * @param script the JavaScript snippet to run
+   * @param timeout a timeout in milliseconds, after which this command will return with an error
+   */
     if (isNaN(timeout)) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
@@ -586,10 +895,19 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
     testLoop.waitForConditionTimeout = timeout;
 };
 
-/*
- * Wait for a new page to load.
- */
 Selenium.prototype.doWaitForPageToLoad = function(timeout) {
+	/**
+   * Waits for a new page to load.
+   * 
+   * <p>You can use this command instead of the "AndWait" suffixes, "clickAndWait", "selectAndWait", "typeAndWait" etc.
+   * (which are only available in the JS API).</p>
+   * 
+   * <p>Selenium constantly keeps track of new pages loading, and sets a "newPageLoaded"
+   * flag when it first notices a page load.  Running any other Selenium command after
+   * turns the flag to false.  Hence, if you want to wait for a page to load, you must
+   * wait immediately after a Selenium command that caused a page-load.</p>
+   * @param timeout a timeout in milliseconds, after which this command will return with an error
+   */
     this.doWaitForCondition("selenium.browserbot.isNewPageLoaded()", timeout);
 };
 
