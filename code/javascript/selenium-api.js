@@ -363,16 +363,16 @@ Selenium.prototype.doClose = function() {
     this.page().close();
 };
 
-Selenium.prototype.doFireEvent = function(locator, event) {
+Selenium.prototype.doFireEvent = function(locator, eventName) {
 	/**
    * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
    * handler.
    * 
    * @param locator an <a href="#locators">element locator</a>
-   * @param event the event name, e.g. "focus" or "blur"
+   * @param eventName the event name, e.g. "focus" or "blur"
    */
     var element = this.page().findElement(locator);
-    triggerEvent(element, event, false);
+    triggerEvent(element, eventName, false);
 };
 
 Selenium.prototype.getAlert = function() {
