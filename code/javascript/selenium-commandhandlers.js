@@ -321,7 +321,7 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
 
 function CommandResult(processState) {
     this.processState = processState;
-    this.result = "OK";
+    this.result = null;
 }
 
 function SeleniumCommand(command, target, value) {

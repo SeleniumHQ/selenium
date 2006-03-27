@@ -179,10 +179,14 @@ function commandComplete(result) {
         commandNode.title = result.failureMessage;
         commandNode.style.backgroundColor = failColor;
     } else if (result.passed) {
-        postResult = "PASSED";
+        postResult = "OK";
         commandNode.style.backgroundColor = passColor;
     } else {
-        postResult = result.result;
+    	if (result.result == null) {
+    		postResult = "OK";
+    	} else {
+    		postResult = "OK," + result.result;
+    	}
         commandNode.style.backgroundColor = doneColor;
     }
 }
