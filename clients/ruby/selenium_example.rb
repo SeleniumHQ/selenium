@@ -1,22 +1,26 @@
 #!/usr/bin/env ruby
 
-require 'seletest'
+require 'test/unit'
 require 'selenium'
 
 class ExampleTest < Test::Unit::TestCase
 
 	def setup
-		super
-	end
+        @selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://www.irian.at", 10000);
+        @selenium.start
+    end
+    
+    def teardown
+        @selenium.stop
+    end
 
     def test_something
-    	start "*firefox", "http://www.irian.at"
-        open "http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf"
-		verify_text_present "suggest"
-		type "_idJsp0:_idJsp3", "foo"
-		key_down "_idJsp0:_idJsp3", 120
-		key_press "_idJsp0:_idJsp3", 120
+        @selenium.open "http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf"
+		@selenium.assert_text_present "suggest"
+		@selenium.type "_idJsp0:_idJsp3", "foo"
+		@selenium.key_down "_idJsp0:_idJsp3", 120
+		@selenium.key_press "_idJsp0:_idJsp3", 120
 		sleep 2
-		verify_text_present "foo1"
+		@selenium.assert_text_present "foo1"
     end
 end

@@ -34,7 +34,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 		public void IISIntegrationTest()
 		{
 			selenium.Open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
-			selenium.VerifyTextPresent("suggest");
+			selenium.AssertTextPresent("suggest");
 			String elementID = "_idJsp0:_idJsp3";
 			selenium.Type(elementID, "foo");
 			// DGF On Mozilla a keyPress is needed, and types a letter.
@@ -47,11 +47,11 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 			String verificationText = null;
 			if (isIE) 
 			{
-				selenium.KeyDown(elementID, 120);
+				selenium.KeyDown(elementID, "120");
 			} 
 			else 
 			{
-				selenium.KeyPress(elementID, 120);
+				selenium.KeyPress(elementID, "120");
 			}
 			if (isNetscape) 
 			{
@@ -66,7 +66,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 				throw new Exception("which browser is this?");
 			}
 			Thread.Sleep(2000);
-			selenium.VerifyTextPresent(verificationText);
+			selenium.AssertTextPresent(verificationText);
 		}
 	}
 }

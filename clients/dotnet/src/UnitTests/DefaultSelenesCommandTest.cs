@@ -16,7 +16,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 			string commandString = "open";
 			string argument1 = "http://localhost";
 			string argument2 = "";
-			DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandString, argument1, argument2);
+			DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandString, new string[]{argument1, argument2});
 			Assert.AreEqual("cmd=open&1=http://localhost&2=", command.CommandString);
 		}
 
@@ -26,8 +26,8 @@ namespace ThoughtWorks.Selenium.UnitTests
 			string openCommand = "|setTextField|fieldName|fieldValue|";
 			DefaultSeleneseCommand command = DefaultSeleneseCommand.Parse(openCommand);
 			Assert.AreEqual("setTextField", command.Command);
-			Assert.AreEqual("fieldName", command.Argument1);
-			Assert.AreEqual("fieldValue", command.Argument2);
+			Assert.AreEqual("fieldName", command.Args[0]);
+			Assert.AreEqual("fieldValue", command.Args[1]);
 		}
 
 		[Test]

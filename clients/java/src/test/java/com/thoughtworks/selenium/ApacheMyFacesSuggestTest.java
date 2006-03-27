@@ -35,21 +35,21 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     public void ajaxTester() throws Throwable {
         selenium.open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
-        selenium.verifyTextPresent("suggest");
+        selenium.assertTextPresent("suggest");
         String elementID = "_idJsp0:_idJsp3";
         selenium.type(elementID, "foo");
         // DGF On Mozilla a keyPress is needed, and types a letter.
         // On IE6, a keyDown is needed, and no letter is typed. :-p
         // NS On firefox, keyPress needed, no letter typed.
         
-        boolean isIE = selenium.getEvalBool("isIE");
-        boolean isFirefox = selenium.getEvalBool("isFirefox");
-        boolean isNetscape = selenium.getEvalBool("isNetscape");
+        boolean isIE = "true".equals(selenium.getEval("isIE"));
+        boolean isFirefox = "true".equals(selenium.getEval("isFirefox"));
+        boolean isNetscape = "true".equals(selenium.getEval("isNetscape"));
         String verificationText = null;
         if (isIE) {
-            selenium.keyDown(elementID, 'x');
+            selenium.keyDown(elementID, Integer.toString('x'));
         } else {
-            selenium.keyPress(elementID, 'x');
+            selenium.keyPress(elementID, Integer.toString('x'));
         }
         if (isNetscape) {
             verificationText = "foox1";
@@ -60,11 +60,11 @@ public class ApacheMyFacesSuggestTest extends TestCase {
             fail("which browser is this?");
         }
         Thread.sleep(2000);
-        selenium.verifyTextPresent(verificationText);
+        selenium.assertTextPresent(verificationText);
     }
     
     public void tearDown() {
         if (selenium == null) return;
-        selenium.testComplete();
+        selenium.stop();
     }
 }

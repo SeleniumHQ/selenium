@@ -118,7 +118,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         System.out.println("queryString = " + req.getQuery());        
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
-            results = getNewBrowserSession((String)values.get(0), (String)values.get(1));
+            results = "OK," + getNewBrowserSession((String)values.get(0), (String)values.get(1));
         } else if ("testComplete".equals(cmd)) {
             BrowserLauncher launcher = getLauncher(sessionId);
             if (launcher == null) {

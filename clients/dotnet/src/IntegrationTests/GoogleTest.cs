@@ -26,13 +26,13 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 		public void GoogleSearch()
 		{
 			selenium.Open("http://www.google.com");
-			selenium.VerifyTitle("Google");
+			Assert.AreEqual("Google", selenium.GetTitle());
 			selenium.Type("q", "Selenium OpenQA");
-			selenium.VerifyValue("q", "Selenium OpenQA");
+			Assert.AreEqual("Selenium OpenQA", selenium.GetValue("q"));
 			selenium.Click("btnG");
-			selenium.WaitForPageToLoad(5000);
-			selenium.VerifyTextPresent("www.openqa.org");
-			selenium.VerifyTitle("Selenium OpenQA - Google Search");
+			selenium.WaitForPageToLoad("5000");
+			selenium.AssertTextPresent("www.openqa.org");
+			Assert.AreEqual("Selenium OpenQA - Google Search", selenium.GetTitle());
 		}
 	}
 }

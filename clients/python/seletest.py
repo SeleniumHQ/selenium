@@ -19,8 +19,8 @@ class seletest_class(unittest.TestCase):
 
 	def setUp(self):
 		print "Using selenium server at " + seletest.seleniumHost + ":" + seletest.seleniumPort
-		self.seleniumField = selenium.selenium_class(seleniumHost, seleniumPort)
-		self.seleniumField.start(browserStartCommand, browserURL)
+		self.seleniumField = selenium.selenium_class(seleniumHost, seleniumPort, browserStartCommand, browserURL)
+		self.seleniumField.start()
 
 	def tearDown(self):
 		self.seleniumField.stop()

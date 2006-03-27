@@ -43,16 +43,17 @@ public class RealDealIntegrationTest extends TestCase {
         selenium.setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java",
                 SeleniumLogLevels.DEBUG);
         selenium.open("/selenium-server/tests/html/test_click_page1.html");
-        selenium.verifyText("link", "Click here for next page");
+        assertTrue("link 'link' doesn't contain expected text", 
+                selenium.getText("link").indexOf("Click here for next page") != -1);
         String[] links = selenium.getAllLinks();
         assertTrue(links.length > 3);
         assertEquals("linkToAnchorOnThisPage", links[3]);
         selenium.click("link");
-        selenium.waitForPageToLoad(5000);
-        selenium.verifyLocation("/selenium-server/tests/html/test_click_page2.html");
+        selenium.waitForPageToLoad("5000");
+        selenium.assertLocation("/selenium-server/tests/html/test_click_page2.html");
         selenium.click("previousPage");
-        selenium.waitForPageToLoad(5000);
-        selenium.verifyLocation("/selenium-server/tests/html/test_click_page1.html");
+        selenium.waitForPageToLoad("5000");
+        selenium.assertLocation("/selenium-server/tests/html/test_click_page1.html");
     }
     
    public void testAgain() {
@@ -64,12 +65,20 @@ public class RealDealIntegrationTest extends TestCase {
         selenium.setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java",
                 SeleniumLogLevels.DEBUG);
         selenium.open("/selenium-server/tests/html/test_click_page1.html");
+        String badElementName = "This element doesn't exist, so Selenium should throw an exception";
         try {
-            selenium.verifyText("XXX", "This text doesn't even appear on the page!");
+            selenium.getText(badElementName);
             fail("No exception was thrown!");
         } catch (SeleniumException se) {
-           assertTrue("Exception message isn't as expected: " + se.getMessage(), se.getMessage().indexOf("XXX not found") != -1);
-       }
+           assertTrue("Exception message isn't as expected: " + se.getMessage(), se.getMessage().indexOf(badElementName + " not found") != -1);
+        }
+        
+        try {
+            selenium.assertTextPresent("Negative test: verify non-existent text");
+            fail("No exception was thrown!");
+        } catch (SeleniumException se) {
+           assertTrue("Exception message isn't as expected: " + se.getMessage(), se.getMessage().indexOf("Negative test") != -1);
+        }
    }
 
     public void testMinimal() {

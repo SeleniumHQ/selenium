@@ -1,64 +1,35 @@
-/*
- * Copyright 2004 ThoughtWorks, Inc.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
-
+// This file has been automatically generated via XSL
 package com.thoughtworks.selenium;
 
-import java.util.*;
-
-/**
- * The default implementation of the Selenium interface.
- * 
- * @see com.thoughtworks.selenium.Selenium
- * @author Paul Hammant
- * @version $Revision$
- */
 public class DefaultSelenium implements Selenium {
-    
+
     private CommandProcessor commandProcessor;
-    private String logLevel = null;
-
-    public static final String DEFAULT_SELENIUM_CONTEXT = "selenium";
-
     /** Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
      * 
-     * <p><i>browserString</i> may be any one of the following:
-     * <ul>
-     * <li><code>*firefox [absolute path]</code> - Automatically launch a new Firefox process using a custom Firefox profile.
+     * &lt;p&gt;&lt;i&gt;browserString&lt;/i&gt; may be any one of the following:
+     * &lt;ul&gt;
+     * &lt;li&gt;&lt;code&gt;*firefox [absolute path]&lt;/code&gt; - Automatically launch a new Firefox process using a custom Firefox profile.
      * This profile will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
      * ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
      * an absolute path to your firefox executable, or just say "*firefox".  If no absolute path is specified, we'll look for
      * firefox.exe in a default location (normally c:\program files\mozilla firefox\firefox.exe), which you can override by
-     * setting the Java system property <code>firefoxDefaultPath</code> to the correct path to Firefox.</li>
-     * <li><code>*iexplore [absolute path]</code> - Automatically launch a new Internet Explorer process using custom Windows registry settings.
+     * setting the Java system property &lt;code&gt;firefoxDefaultPath&lt;/code&gt; to the correct path to Firefox.&lt;/li&gt;
+     * &lt;li&gt;&lt;code&gt;*iexplore [absolute path]&lt;/code&gt; - Automatically launch a new Internet Explorer process using custom Windows registry settings.
      * This process will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
      * ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
      * an absolute path to your iexplore executable, or just say "*iexplore".  If no absolute path is specified, we'll look for
      * iexplore.exe in a default location (normally c:\program files\internet explorer\iexplore.exe), which you can override by
-     * setting the Java system property <code>iexploreDefaultPath</code> to the correct path to Internet Explorer.</li>
-     * <li><code>/path/to/my/browser [other arguments]</code> - You may also simply specify the absolute path to your browser
-     * executable, or use a relative path to your executable (which we'll try to find on your path).  <b>Warning:</b> If you
+     * setting the Java system property &lt;code&gt;iexploreDefaultPath&lt;/code&gt; to the correct path to Internet Explorer.&lt;/li&gt;
+     * &lt;li&gt;&lt;code&gt;/path/to/my/browser [other arguments]&lt;/code&gt; - You may also simply specify the absolute path to your browser
+     * executable, or use a relative path to your executable (which we'll try to find on your path).  &lt;b&gt;Warning:&lt;/b&gt; If you
      * specify your own custom browser, it's up to you to configure it correctly.  At a minimum, you'll need to configure your
      * browser to use the Selenium Server as a proxy, and disable all browser-specific prompting.
-     * </ul>
+     * &lt;/ul&gt;
      * 
-     * @param serverHost - the host name on which the Selenium Server resides
-     * @param serverPort - the port on which the Selenium Server is listening
-     * @param browserString - the command string used to launch the browser, e.g. "*firefox", "*iexplore" or "c:\\program files\\internet explorer\\iexplore.exe"
-     * @param browserURL - the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
+     * @param serverHost the host name on which the Selenium Server resides
+     * @param serverPort the port on which the Selenium Server is listening
+     * @param browserString the command string used to launch the browser, e.g. "*firefox", "*iexplore" or "c:\\program files\\internet explorer\\iexplore.exe"
+     * @param browserURL the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
      * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"
      */
     public DefaultSelenium(String serverHost, int serverPort, String browserStartCommand, String browserURL) {
@@ -68,282 +39,6 @@ public class DefaultSelenium implements Selenium {
     /** Uses an arbitrary CommandProcessor */
     public DefaultSelenium(CommandProcessor processor) {
         this.commandProcessor = processor;
-    }
-
-    public void open(String path) {
-        doCommandAndFailIfNotSuccess("open", path);
-    }
-
-    public void verifyText(String type, String text) {
-        doVerify("verifyText", type, text);
-    }
-
-    public void verifyLocation(String location) {
-        String result = commandProcessor.doCommand("verifyLocation", location, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void testComplete() {
-        commandProcessor.doCommand("testComplete", "", "");
-    }
-
-    protected String getContextName() {
-        return DEFAULT_SELENIUM_CONTEXT;
-    }
-
-    protected String getTestRunnerPageName() {
-        return "SeleneseRunner.html?counterToMakeURsUniqueAndSoStopPageCachingInTheBrowser=" + (new Date()).getTime();
-    }
-
-    public void answerOnNextPrompt(String value) {
-        String result = commandProcessor.doCommand("answerOnNextPrompt", value, "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void chooseCancelOnNextConfirmation() {
-        String result = commandProcessor.doCommand("chooseCancelOnNextConfirmation", "", "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void click(String field) {
-        String result = commandProcessor.doCommand("click", field, "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void fireEvent(String element, String event) {
-        String result = commandProcessor.doCommand("fireEvent", element, event);
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void goBack() {
-        String result = commandProcessor.doCommand("goBack", "", "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void select(String field, String value) {
-        String result = commandProcessor.doCommand("select", field, value);
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void selectWindow(String window) {
-        String result = commandProcessor.doCommand("selectWindow", window, "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void type(String field, String value) {
-        String result = commandProcessor.doCommand("type", field, value);
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void keyPress(String locator, int keycode) {
-        String result = commandProcessor.doCommand("keyPress", locator, Integer.toString(keycode));
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-    
-    public void keyDown(String locator, int keycode) {
-        String result = commandProcessor.doCommand("keyDown", locator, Integer.toString(keycode));
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-    
-    public void mouseOver(String locator) {
-        String result = commandProcessor.doCommand("mouseOver", locator, "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-    
-    public void mouseDown(String locator) {
-        String result = commandProcessor.doCommand("mouseDown", locator, "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-    
-    public void verifyAlert(String alert) {
-        String result = commandProcessor.doCommand("verifyAlert", alert, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyAttribute(String element, String attribute, String value) {
-        String result = commandProcessor.doCommand("verifyAttribute", element + "@" + attribute, value);
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyConfirmation(String confirmation) {
-        String result = commandProcessor.doCommand("verifyConfirmation", confirmation, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyEditable(String field) {
-        String result = commandProcessor.doCommand("verifyEditable", field, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyNotEditable(String field) {
-        String result = commandProcessor.doCommand("verifyNotEditable", field, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyElementNotPresent(String type) {
-        String result = commandProcessor.doCommand("verifyElementNotPresent", type, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyElementPresent(String type) {
-        String result = commandProcessor.doCommand("verifyElementPresent", type, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyPrompt(String text) {
-        String result = commandProcessor.doCommand("verifyPrompt", text, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifySelected(String field, String value) {
-        String result = commandProcessor.doCommand("verifySelected", field, value);
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyTable(String table, String value) {
-        String result = commandProcessor.doCommand("verifyTable", table, value);
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyTextPresent(String text) {
-        String result = commandProcessor.doCommand("verifyTextPresent", text, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyTextNotPresent(String text) {
-        String result = commandProcessor.doCommand("verifyTextNotPresent", text, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyTitle(String title) {
-        String result = commandProcessor.doCommand("verifyTitle", title, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyValue(String field, String value) {
-        String result = commandProcessor.doCommand("verifyValue", field, value);
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void waitForValue(String field, String value) {
-        String result = commandProcessor.doCommand("waitForValue", field, value);
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
-    }
-    
-    public void verifyVisible(String element) {
-        String result = commandProcessor.doCommand("verifyVisible", element, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-
-    public void verifyNotVisible(String element) {
-        String result = commandProcessor.doCommand("verifyNotVisible", element, "");
-        if (!result.equals("PASSED")) {
-            throw new SeleniumException(result);
-        }
-    }
-    
-    public void setContext(String context) {
-        setContext(context, "");   
-    }
-
-    public void setContext(String context, String logLevel) {
-        commandProcessor.doCommand("setContext", context, logLevel);
-    }
-
-    public String[] getAllButtons() {
-        String stringResult = commandProcessor.doCommand("getAllButtons", "", "");
-
-        String[] result = extractDelimitedString(stringResult);
-
-        return result;
-    }
-
-    public String[] getAllLinks() {
-        String stringResult = commandProcessor.doCommand("getAllLinks", "", "");
-
-        String[] result = extractDelimitedString(stringResult);
-
-        return result;
-    }
-
-    public String[] getAllFields() {
-        String stringResult = commandProcessor.doCommand("getAllFields", "", "");
-
-        String[] result = extractDelimitedString(stringResult);
-
-        return result;
-    }
-
-    private String[] extractDelimitedString(String stringResult) {
-        StringTokenizer tokenizer = new StringTokenizer(stringResult, ",");
-        String[] result = new String[tokenizer.countTokens()];
-        for (int i = 0; tokenizer.hasMoreElements(); i++) {
-            result[i] = tokenizer.nextToken();
-        }
-        return result;
-    }
-
-    public String getEval(String script) {
-        String stringResult = commandProcessor.doCommand("getEval", script, "");
-        return stringResult;
     }
     
     public void start() {
@@ -355,184 +50,192 @@ public class DefaultSelenium implements Selenium {
         commandProcessor.stop();
     }
 
-    public String getLogLevel() {
-        return logLevel;
+    public void click(String locator) {
+        commandProcessor.doCommand("click", new String[] {locator,});
     }
 
-    public boolean getEvalBool(String string) {
-        String eval = getEval(string);
-        boolean result = "true".equals(eval);
-        return result;
+    public void keyPress(String locator,String keycode) {
+        commandProcessor.doCommand("keyPress", new String[] {locator,keycode,});
     }
 
-    public String[] getAllActions() {
-        String stringResult = commandProcessor.doCommand("getAllActions", "", "");
-        String[] result = extractDelimitedString(stringResult);
-        return result;
+    public void keyDown(String locator,String keycode) {
+        commandProcessor.doCommand("keyDown", new String[] {locator,keycode,});
     }
 
-    public String[] getAllAccessors() {
-        String stringResult = commandProcessor.doCommand("getAllAccessors", "", "");
-        String[] result = extractDelimitedString(stringResult);
-        return result;
-    }
-    
-    public String[] getAllAsserts() {
-        String stringResult = commandProcessor.doCommand("getAllAsserts", "", "");
-        String[] result = extractDelimitedString(stringResult);
-        return result;
+    public void mouseOver(String locator) {
+        commandProcessor.doCommand("mouseOver", new String[] {locator,});
     }
 
-    public void check(String field) {
-        String result = commandProcessor.doCommand("check", field, "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
+    public void mouseDown(String locator) {
+        commandProcessor.doCommand("mouseDown", new String[] {locator,});
     }
 
-    public void close() {
-        String result = commandProcessor.doCommand("close", "", "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
+    public void type(String locator,String value) {
+        commandProcessor.doCommand("type", new String[] {locator,value,});
+    }
+
+    public void check(String locator) {
+        commandProcessor.doCommand("check", new String[] {locator,});
+    }
+
+    public void uncheck(String locator) {
+        commandProcessor.doCommand("uncheck", new String[] {locator,});
+    }
+
+    public void select(String locator,String optionLocator) {
+        commandProcessor.doCommand("select", new String[] {locator,optionLocator,});
     }
 
     public void submit(String formLocator) {
-        String result = commandProcessor.doCommand("submit", formLocator, "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
+        commandProcessor.doCommand("submit", new String[] {formLocator,});
     }
 
-    public void uncheck(String field) {
-        String result = commandProcessor.doCommand("uncheck", field, "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
+    public void open(String url) {
+        commandProcessor.doCommand("open", new String[] {url,});
     }
 
-    public void waitForCondition(String script, long timeout) {
-        String result = commandProcessor.doCommand("waitForCondition", script, Long.toString(timeout));
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
+    public void selectWindow(String windowID) {
+        commandProcessor.doCommand("selectWindow", new String[] {windowID,});
     }
 
-    public String getAttribute(String locator, String attribute) {
-        String result = commandProcessor.doCommand("getAttribute", locator + "@" + attribute, "");
-        return result;
+    public void chooseCancelOnNextConfirmation() {
+        commandProcessor.doCommand("chooseCancelOnNextConfirmation", new String[] {});
     }
 
-    public String getChecked(String locator) {
-        String result = commandProcessor.doCommand("getChecked", locator, "");
-        return result;
+    public void answerOnNextPrompt(String answer) {
+        commandProcessor.doCommand("answerOnNextPrompt", new String[] {answer,});
     }
 
-    public String getTable(String tableLocator) {
-        String result = commandProcessor.doCommand("getTable", tableLocator, "");
-        return result;
+    public void goBack() {
+        commandProcessor.doCommand("goBack", new String[] {});
     }
 
-    public String getText(String type) {
-        String result = commandProcessor.doCommand("getText", type, "");
-        return result;
+    public void close() {
+        commandProcessor.doCommand("close", new String[] {});
     }
 
-    public String getValue(String field) {
-        String result = commandProcessor.doCommand("getValue", field, "");
-        return result;
-    }
-
-    public String getTitle() {
-        String result = commandProcessor.doCommand("getTitle", "", "");
-        return result;
-    }
-
-    public String getAbsoluteLocation() {
-        String result = commandProcessor.doCommand("getAbsoluteLocation", "", "");
-        return result;
-    }
-
-    public String getPrompt() {
-        String result = commandProcessor.doCommand("getPrompt", "", "");
-        return result;
-    }
-
-    public String getConfirmation() {
-        String result = commandProcessor.doCommand("getConfirmation", "", "");
-        return result;
+    public void fireEvent(String locator,String event) {
+        commandProcessor.doCommand("fireEvent", new String[] {locator,event,});
     }
 
     public String getAlert() {
-        String result = commandProcessor.doCommand("getAlert", "", "");
-        return result;
+        return commandProcessor.getString("getAlert", new String[] {});
     }
 
-    public void waitForPageToLoad(long timeout) {
-        String result = commandProcessor.doCommand("waitForCondition", Long.toString(timeout), "");
-        if (!result.equals("OK")) {
-            throw new SeleniumException(result);
-        }
+    public String getConfirmation() {
+        return commandProcessor.getString("getConfirmation", new String[] {});
     }
-    
+
+    public String getPrompt() {
+        return commandProcessor.getString("getPrompt", new String[] {});
+    }
+
+    public String getAbsoluteLocation() {
+        return commandProcessor.getString("getAbsoluteLocation", new String[] {});
+    }
+
+    public void assertLocation(String expectedLocation) {
+        commandProcessor.doCommand("assertLocation", new String[] {expectedLocation,});
+    }
+
+    public String getTitle() {
+        return commandProcessor.getString("getTitle", new String[] {});
+    }
+
+    public String getBodyText() {
+        return commandProcessor.getString("getBodyText", new String[] {});
+    }
+
+    public String getValue(String locator) {
+        return commandProcessor.getString("getValue", new String[] {locator,});
+    }
+
+    public String getText(String locator) {
+        return commandProcessor.getString("getText", new String[] {locator,});
+    }
+
+    public String getEval(String script) {
+        return commandProcessor.getString("getEval", new String[] {script,});
+    }
+
+    public String getChecked(String locator) {
+        return commandProcessor.getString("getChecked", new String[] {locator,});
+    }
+
+    public String getTable(String tableCellAddress) {
+        return commandProcessor.getString("getTable", new String[] {tableCellAddress,});
+    }
+
+    public void assertSelected(String locator,String optionLocator) {
+        commandProcessor.doCommand("assertSelected", new String[] {locator,optionLocator,});
+    }
+
     public String[] getSelectOptions(String locator) {
-        String stringResult = commandProcessor.doCommand("getSelectOptions", locator, "");
-        String[] result = extractDelimitedString(stringResult);
-        return result;
+        return commandProcessor.getStringArray("getSelectOptions", new String[] {locator,});
     }
 
-    private String doGet(String command, String argument1, String argument2)
-    {
-        return commandProcessor.doCommand(command, argument1, argument2);
+    public String getAttribute(String attributeLocator) {
+        return commandProcessor.getString("getAttribute", new String[] {attributeLocator,});
     }
 
-    private String doGet(String command, String argument1)
-    {
-        return commandProcessor.doCommand(command, argument1, "");
+    public void assertTextPresent(String pattern) {
+        commandProcessor.doCommand("assertTextPresent", new String[] {pattern,});
     }
 
-    private String doGet(String command)
-    {
-        return commandProcessor.doCommand(command, "", "");
+    public void assertTextNotPresent(String pattern) {
+        commandProcessor.doCommand("assertTextNotPresent", new String[] {pattern,});
     }
 
-    private void doVerify(String command)
-    {
-        doCommandAndFailIfNotSuccess(command, "", "", "PASSED");
+    public void assertElementPresent(String locator) {
+        commandProcessor.doCommand("assertElementPresent", new String[] {locator,});
     }
 
-    private void doVerify(String command, String argument1)
-    {
-        doCommandAndFailIfNotSuccess(command, argument1, "", "PASSED");
+    public void assertElementNotPresent(String locator) {
+        commandProcessor.doCommand("assertElementNotPresent", new String[] {locator,});
     }
 
-    private void doVerify(String command, String argument1, String argument2)
-    {
-        doCommandAndFailIfNotSuccess(command, argument1, argument2, "PASSED");
+    public void assertVisible(String locator) {
+        commandProcessor.doCommand("assertVisible", new String[] {locator,});
     }
 
-    private void doCommandAndFailIfNotSuccess(String command)
-    {
-        doCommandAndFailIfNotSuccess(command, "", "", "OK");
+    public void assertNotVisible(String locator) {
+        commandProcessor.doCommand("assertNotVisible", new String[] {locator,});
     }
 
-    private void doCommandAndFailIfNotSuccess(String command, String argument1)
-    {
-        doCommandAndFailIfNotSuccess(command, argument1, "", "OK");
+    public void assertEditable(String locator) {
+        commandProcessor.doCommand("assertEditable", new String[] {locator,});
     }
 
-    private void doCommandAndFailIfNotSuccess(String command, String argument1, String argument2)
-    {
-        doCommandAndFailIfNotSuccess(command, argument1, argument2, "OK");
+    public void assertNotEditable(String locator) {
+        commandProcessor.doCommand("assertNotEditable", new String[] {locator,});
     }
-    
-    private void doCommandAndFailIfNotSuccess(String command, String argument1, String argument2, String expectedResult)
-    {
-        String actualResult = commandProcessor.doCommand(command, argument1, argument2);
-        if (!actualResult.equals(expectedResult))
-        {
-            throw new SeleniumException(actualResult);
-        }
+
+    public String[] getAllButtons() {
+        return commandProcessor.getStringArray("getAllButtons", new String[] {});
     }
-    
+
+    public String[] getAllLinks() {
+        return commandProcessor.getStringArray("getAllLinks", new String[] {});
+    }
+
+    public String[] getAllFields() {
+        return commandProcessor.getStringArray("getAllFields", new String[] {});
+    }
+
+    public void setContext(String context,String logLevelThreshold) {
+        commandProcessor.doCommand("setContext", new String[] {context,logLevelThreshold,});
+    }
+
+    public String getExpression(String expression) {
+        return commandProcessor.getString("getExpression", new String[] {expression,});
+    }
+
+    public void waitForCondition(String script,String timeout) {
+        commandProcessor.doCommand("waitForCondition", new String[] {script,timeout,});
+    }
+
+    public void waitForPageToLoad(String timeout) {
+        commandProcessor.doCommand("waitForPageToLoad", new String[] {timeout,});
+    }
+
 }

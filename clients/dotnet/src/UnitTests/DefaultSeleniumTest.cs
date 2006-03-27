@@ -1,5 +1,6 @@
 using NMock;
 using NUnit.Framework;
+using System;
 using Selenium;
 
 namespace ThoughtWorks.Selenium.UnitTests
@@ -44,7 +45,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[Test]
 		public void ChooseCancelOnNextConfirmationShouldWork()
 		{
-			mockProcessor.ExpectAndReturn("DoCommand", "OK", new string[]{"chooseCancelOnNextConfirmation", "", ""});
+			mockProcessor.ExpectAndReturn("DoCommand", "OK", new object[]{"chooseCancelOnNextConfirmation", new String[]{}});
 			selenium.ChooseCancelOnNextConfirmation();
 		}
 
@@ -52,7 +53,8 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[ExpectedException(typeof(SeleniumException))]
 		public void ChooseCancelOnNextConfirmationFailsIfResultIsNotOK()
 		{
-			mockProcessor.ExpectAndReturn("DoCommand", "Error", new string[]{"chooseCancelOnNextConfirmation", "", ""});
+			mockProcessor.ExpectAndThrow("DoCommand", new SeleniumException("Error"), 
+				new object[]{"chooseCancelOnNextConfirmation", new String[]{}});
 			selenium.ChooseCancelOnNextConfirmation();
 		}
 
@@ -60,7 +62,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 		public void ClickShouldWork()
 		{
 			string fieldname= "somefieldname";
-			mockProcessor.ExpectAndReturn("DoCommand", "OK", new string[] {"click", fieldname, ""});
+			mockProcessor.ExpectAndReturn("DoCommand", "OK", new object[] {"click", new string[]{fieldname}});
 			selenium.Click(fieldname);
 		}
 
@@ -71,7 +73,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 		{
 			string fieldname = "fieldname";
 
-			mockProcessor.ExpectAndReturn("DoCommand", "Error", new string[]{"click", fieldname, ""});
+			mockProcessor.ExpectAndThrow("DoCommand", new SeleniumException("Error"), new object[]{"click", new string[]{fieldname}});
 			selenium.Click(fieldname);
 		}
 
@@ -80,14 +82,16 @@ namespace ThoughtWorks.Selenium.UnitTests
 		{
 			string[] values = {"1","2","3","4","5","6"};
 			string fieldname = "fieldname";
-			mockProcessor.ExpectAndReturn("DoCommand","PASSED", new object[]{"verifySelectOptions", fieldname, "1,2,3,4,5,6"} );
-			selenium.VerifySelectOptions(fieldname, values);
+			mockProcessor.ExpectAndReturn("GetStringArray",new string[] {"1","2","3","4","5","6"}, new object[]{"getSelectOptions", new string[]{fieldname}} );
+			string[] actualResult = selenium.GetSelectOptions(fieldname);
+			Assert.AreEqual(new string[] {"1","2","3","4","5","6"}, actualResult);
 		}
 
 		[Test]
 		public void GetAllButtonsShouldWork()
 		{
-			mockProcessor.ExpectAndReturn("DoCommand", "1,2,3,4,5,6", new object[]{"getAllButtons", "", ""});
+			string[] values = {"1","2","3","4","5","6"};
+			mockProcessor.ExpectAndReturn("GetStringArray",new string[] {"1","2","3","4","5","6"}, new object[]{"getAllButtons", new string[]{}} );
 			string[] actualResult = selenium.GetAllButtons();
 			Assert.AreEqual(new string[] {"1","2","3","4","5","6"}, actualResult);
 		}
@@ -95,7 +99,8 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[Test]
 		public void GetAllLinksShouldWork()
 		{
-			mockProcessor.ExpectAndReturn("DoCommand", "1,2,3,4,5,6", new object[]{"getAllLinks", "", ""});
+			string[] values = {"1","2","3","4","5","6"};
+			mockProcessor.ExpectAndReturn("GetStringArray",new string[] {"1","2","3","4","5","6"}, new object[]{"getAllLinks", new string[]{}} );
 			string[] actualResult = selenium.GetAllLinks();
 			Assert.AreEqual(new string[] {"1","2","3","4","5","6"}, actualResult);
 		}
@@ -103,7 +108,8 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[Test]
 		public void GetAllFieldsShouldWork()
 		{
-			mockProcessor.ExpectAndReturn("DoCommand", "1,2,3,4,5,6", new object[]{"getAllFields", "", ""});
+			string[] values = {"1","2","3","4","5","6"};
+			mockProcessor.ExpectAndReturn("GetStringArray",new string[] {"1","2","3","4","5","6"}, new object[]{"getAllFields", new string[]{}} );
 			string[] actualResult = selenium.GetAllFields();
 			Assert.AreEqual(new string[] {"1","2","3","4","5","6"}, actualResult);
 		}

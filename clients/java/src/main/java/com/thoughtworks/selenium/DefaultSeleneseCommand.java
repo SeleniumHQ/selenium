@@ -33,22 +33,29 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     private static final int SECONDINDEX = 2;
     private static final int THIRDINDEX = 3;
     private final String command;
-    private final String field;
-    private final String value;
+    private final String[] args;
 
 
-    public DefaultSeleneseCommand(String command, String field, String value) {
+    public DefaultSeleneseCommand(String command, String[] args) {
         this.command = command;
-        this.field = field;
-        this.value = value;
+        this.args = args;
     }
 
     public String getCommandURLString() {
-        return "cmd=" + URLEncoder.encode(command) + "&1=" + URLEncoder.encode(field) + "&2=" + URLEncoder.encode(value);
+        StringBuffer sb = new StringBuffer("cmd=");
+        sb.append(URLEncoder.encode(command));
+        if (args == null) return sb.toString();
+        for (int i = 0; i < args.length; i++) {
+            sb.append('&');
+            sb.append(Integer.toString(i+1));
+            sb.append('=');
+            sb.append(URLEncoder.encode(args[i]));
+        }
+        return sb.toString();
     }
     
     public String toString() {
-        return "|" + command + "|" + field + "|" + value + "|";
+        return getCommandURLString();
     }
 
     /** Factory method to create a SeleneseCommand from a wiki-style input string */
@@ -58,6 +65,6 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         if (values.length != NUMARGSINCLUDINGBOUNDARIES) {
             throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
         }
-        return new DefaultSeleneseCommand(values[FIRSTINDEX], values[SECONDINDEX], values[THIRDINDEX]);
+        return new DefaultSeleneseCommand(values[FIRSTINDEX], new String[] {values[SECONDINDEX], values[THIRDINDEX]});
     }
 }

@@ -17,16 +17,11 @@
 
 package com.thoughtworks.selenium;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-
-import com.thoughtworks.selenium.CommandProcessor;
-import com.thoughtworks.selenium.DefaultSeleneseCommand;
-import com.thoughtworks.selenium.SeleniumException;
+import java.io.*;
+import java.net.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
 
 /**
  * Sends commands and retrieves results via HTTP.
@@ -38,7 +33,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     private String browserStartCommand;
     private String browserURL;
     private String sessionId;
-
+    
     /** Specifies a server host/port, a command to launch the browser, and a starting URL for the browser.
      * 
      * @param serverHost - the host name on which the Selenium Server resides
@@ -66,9 +61,16 @@ public class HttpCommandProcessor implements CommandProcessor {
         this.browserURL = browserURL;
     }
 
-    public String doCommand(String commandName, String field, String value) {
-        DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandName,field,value);
-        return executeCommandOnServlet(command.getCommandURLString());
+    public String doCommand(String commandName, String[] args) {
+        DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandName,args);
+        String result = executeCommandOnServlet(command.getCommandURLString());
+        if (result == null) {
+            throw new NullPointerException("Selenium Bug! result must not be null");
+        }
+        if (!result.startsWith("OK")) {
+            throw new SeleniumException(result);
+        }
+        return result;
     }
 
     /** Sends the specified command string to the bridge servlet */  
@@ -131,20 +133,99 @@ public class HttpCommandProcessor implements CommandProcessor {
     }
 
     public void start() {
-        String result = doCommand("getNewBrowserSession", browserStartCommand, browserURL);
-        long id;
-        try {
-            // If the result isn't a long, it's probably an error message
-            id = Long.parseLong(result);
-        } catch (NumberFormatException e) {
-            throw new SeleniumException(result);
-        }
-        sessionId = Long.toString(id);
+        String result = getString("getNewBrowserSession", new String[]{browserStartCommand, browserURL});
+        sessionId = result;
         
     }
 
     public void stop() {
-        doCommand("testComplete", "", "");
+        doCommand("testComplete", null);
         sessionId = null;
+    }
+
+    public String getString(String commandName, String[] args) {
+        return doCommand(commandName, args).substring(3); // skip "OK,"
+    }
+
+    public String[] getStringArray(String commandName, String[] args) {
+        String result = getString(commandName, args);
+        return parseCSV(result);
+    }
+
+    private static String[] parseCSV(String input) {
+        ArrayList output = new ArrayList();
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            switch (c) {
+                case ',':
+                    output.add(sb.toString());
+                    sb = new StringBuffer();
+                    continue;
+                case '\\':
+                    i++;
+                    c = input.charAt(i);
+                    // fall through to:
+                default:
+                    sb.append(c);
+            }  
+        }
+        output.add(sb.toString());
+        return (String[]) output.toArray(new String[0]);
+    }
+    
+    public Number getNumber(String commandName, String[] args) {
+        String result = getString(commandName, args);
+        Number n;
+        try {
+            n = NumberFormat.getInstance().parse(result);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return n;
+    }
+
+    public Number[] getNumberArray(String commandName, String[] args) {
+        String[] result = getStringArray(commandName, args);
+        Number[] n = new Number[result.length];
+        for (int i = 0; i < result.length; i++) {
+            try {
+                n[i] = NumberFormat.getInstance().parse(result[i]);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return n;
+    }
+
+    public boolean getBoolean(String commandName, String[] args) {
+        String result = getString(commandName, args);
+        boolean b;
+        if ("true".equals(result)) {
+            b = true;
+            return b;
+        }
+        if ("false".equals(result)) {
+            b = false;
+            return b;
+        }
+        throw new RuntimeException("result was neither 'true' nor 'false': " + result);
+    }
+
+    public boolean[] getBooleanArray(String commandName, String[] args) {
+        String[] result = getStringArray(commandName, args);
+        boolean[] b = new boolean[result.length];
+        for (int i = 0; i < result.length; i++) {
+            if ("true".equals(result)) {
+                b[i] = true;
+                continue;
+            }
+            if ("false".equals(result)) {
+                b[i] = false;
+                continue;
+            }
+            throw new RuntimeException("result was neither 'true' nor 'false': " + result);
+        }
+        return b;
     }
 }

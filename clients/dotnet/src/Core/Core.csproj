@@ -101,7 +101,7 @@
                 />
                 <Reference
                     Name = "system.web"
-                    AssemblyName = "system.web"
+                    AssemblyName = "System.Web"
                     HintPath = "..\..\..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\system.web.dll"
                 />
             </References>
@@ -136,11 +136,6 @@
                 />
                 <File
                     RelPath = "ICommandProcessor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IGeneratedSelenium.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

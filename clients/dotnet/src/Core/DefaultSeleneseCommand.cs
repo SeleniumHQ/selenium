@@ -1,5 +1,6 @@
 using System;
 using System.Web;
+using System.Text;
 namespace Selenium
 {
 	/// <summary>
@@ -8,20 +9,28 @@ namespace Selenium
 	public class DefaultSeleneseCommand : ISeleneseCommand
 	{
 		private static readonly string PARSE_ERROR_MESSAGE = "Command string must contain 4 pipe characters and should start with a '|'. Unable to parse command string";
-		private readonly string argument2;
-		private readonly string argument1;
+		private readonly string[] args;
 		private readonly string command;
 
-		public DefaultSeleneseCommand(string command, string argument1, string argument2)
+		public DefaultSeleneseCommand(string command, string[] args)
 		{
 			this.command = command;
-			this.argument1 = argument1;
-			this.argument2 = argument2;
+			this.args = args;
 		}
 
 		public string CommandString
 		{
-			get {return "cmd=" + HttpUtility.UrlPathEncode(command) + "&1=" + HttpUtility.UrlPathEncode(argument1) + "&2=" + HttpUtility.UrlPathEncode(argument2);}
+			get
+			{
+				StringBuilder sb = new StringBuilder("cmd=");
+				sb.Append(HttpUtility.UrlPathEncode(command));
+				if (args == null) return sb.ToString();
+				for (int i = 0; i < args.Length; i++)
+				{
+					sb.Append('&').Append((i+1).ToString()).Append('=').Append(HttpUtility.UrlPathEncode(args[i]));
+				}
+				return sb.ToString();
+			}
 		}
 		
 		public string Command
@@ -29,14 +38,9 @@ namespace Selenium
 			get { return command; }
 		}
 
-		public string Argument1
+		public string[] Args
 		{
-			get { return argument1; }
-		}
-
-		public string Argument2
-		{
-			get { return argument2; }
+			get { return args; }
 		}
 
 		public static DefaultSeleneseCommand Parse(string commandString)
@@ -53,7 +57,7 @@ namespace Selenium
 				throw new ArgumentException(PARSE_ERROR_MESSAGE + "'" + commandString + "'.");
 			}
 			
-			return new DefaultSeleneseCommand(commandArray[1], commandArray[2], commandArray[3]);
+			return new DefaultSeleneseCommand(commandArray[1], new String[] {commandArray[2], commandArray[3]});
 		}
 	}
 }

@@ -36,11 +36,18 @@ public interface CommandProcessor {
      * commands may return data from the browser; other "doX" style commands may just
      * return "OK" or an error message.
      */
-    String doCommand(String command, String field, String value);
+    String doCommand(String command, String[] args);
 
     /** Starts a new Selenium testing session */
     public void start();
     
     /** Ends the current Selenium testing session (normally killing the browser) */
     public void stop();
+
+    String getString(String string, String[] strings);
+    String[] getStringArray(String string, String[] strings);
+    Number getNumber(String string, String[] strings);
+    Number[] getNumberArray(String string, String[] strings);
+    boolean getBoolean(String string, String[] strings);
+    boolean[] getBooleanArray(String string, String[] strings);
 }

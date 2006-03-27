@@ -26,9 +26,9 @@ import java.util.*;
  * communications queues before an exception is thrown.
  * 
  * <p>Using the <code>-interactive</code> flag will start the server in Interactive mode.
- * In this mode you can type wiki-style Selenese commands on the command line (e.g. |open|http://www.yahoo.com||).
+ * In this mode you can type Selenese commands on the command line (e.g. cmd=open&1=http://www.yahoo.com).
  * You may also interactively specify commands to run on a particular "browser session" (see below) like this:
- * <blockquote><code>|open|http://www.yahoo.com||&sessionId=1234</code></blockquote></p>
+ * <blockquote><code>cmd=open&1=http://www.yahoo.com&sessionId=1234</code></blockquote></p>
  * 
  * <p>The server accepts three types of HTTP requests on its port:
  * 
@@ -92,11 +92,11 @@ import java.util.*;
  * </ul>
  * <p>Example:<blockquote><code>cmd=getNewBrowserSession&1=*firefox&2=http://www.google.com
  * <br/>Got result: 1140738083345
- * <br/>|open|http://www.google.com||&sessionId=1140738083345
+ * <br/>cmd=open&1=http://www.google.com&sessionId=1140738083345
  * <br/>Got result: OK
- * <br/>|type|q|hello world|&sessionId=1140738083345
+ * <br/>cmd=type&1=q&2=hello world&sessionId=1140738083345
  * <br/>Got result: OK
- * <br/>|testComplete|||&sessionId=1140738083345
+ * <br/>cmd=testComplete&sessionId=1140738083345
  * <br/>Got result: OK
  * </code></blockquote></p>
  * 
@@ -176,7 +176,7 @@ public class SeleniumServer {
         
         if (interactive) {
             Thread.sleep(500);
-            System.out.println("Entering interactive mode... type Selenium commands here (e.g: |open|http://www.yahoo.com||)");
+            System.out.println("Entering interactive mode... type Selenium commands here (e.g: cmd=open&1=http://www.yahoo.com)");
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String userInput;
 
