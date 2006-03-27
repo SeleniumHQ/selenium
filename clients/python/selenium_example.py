@@ -17,7 +17,6 @@ class ExampleTest(seletest.seletest_class):
 		selenium.assert_text_present("foo1")
 	
 	
-
-seletest.chooseSeleniumServer('localhost', 4444, "*firefox", "http://www.irian.at")
-suite = unittest.makeSuite(ExampleTest)
-unittest.TextTestRunner(verbosity=2).run(suite)
+if __name__ == "__main__":
+	seletest.chooseSeleniumServer('localhost', 4444, "*firefox", "http://www.irian.at")
+	unittest.main()

@@ -19,6 +19,6 @@ class ExampleTest(seletest.seletest_class):
 		selenium.wait_for_page_to_load(5000)
 		selenium.assert_location("/selenium-server/tests/html/test_click_page1.html")
 
-seletest.chooseSeleniumServer('localhost', 4444, "*firefox", "http://localhost:4444")
-suite = unittest.makeSuite(ExampleTest)
-unittest.TextTestRunner(verbosity=2).run(suite)
+if __name__ == "__main__":
+	seletest.chooseSeleniumServer('localhost', 4444, "*firefox", "http://localhost:4444")
+	unittest.main()
