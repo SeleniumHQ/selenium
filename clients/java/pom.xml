@@ -49,6 +49,54 @@
                 </execution>
               </executions>
             </plugin>
+            <plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<ant antfile="generate-sources.xml">
+									<property name="depend.maven.path" location="${project.testClasspathElements}" />
+									<property name="output.path" location="${project.build.directory}" />
+									<property name="maven.src.path" location="src/main/java/com/thoughtworks/selenium" />
+									<property name="skip.generation" value="${skip.generation}" />
+								</ant>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>clean-sources</id>
+						<phase>clean</phase>
+						<configuration>
+							<tasks>
+								<ant antfile="generate-sources.xml" target="clean-sources">
+									<property name="maven.src.path" location="src/main/java/com/thoughtworks/selenium" />
+								</ant>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>ant</groupId>
+						<artifactId>ant-nodeps</artifactId>
+						<version>1.6.5</version>
+					</dependency>
+					<dependency>
+			        	<groupId>ant</groupId>
+			        	<artifactId>ant-trax</artifactId>
+			        	<version>1.6.5</version>
+			        </dependency>
+				</dependencies>
+			</plugin>
         </plugins>
     </build>
     <dependencies>

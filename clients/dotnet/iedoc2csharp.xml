@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xslt [
+  <!--Used to control code intenting -->
+  <!ENTITY nl "&#xa;">
+  <!ENTITY tab "&#x9;">
+]>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+   
+<xsl:output method="text"/>
+<xsl:strip-space elements="*"/>
+<xsl:param name="mode" />
+
+<xsl:template match="/">
+	<xsl:text>// This file has been automatically generated via XSL&nl;</xsl:text>
+	<xsl:choose>
+		<xsl:when test="$mode='implementation'">
+			<xsl:apply-templates select="//top" mode="implementation"/>
+			<xsl:apply-templates select="//function" mode="implementation"/>
+		</xsl:when>
+		<xsl:when test="$mode='interface'">
+			<xsl:apply-templates select="//top" mode="interface"/>
+			<xsl:apply-templates select="//function" mode="interface"/>
+		</xsl:when>
+	</xsl:choose>
+	<xsl:text>&tab;}&nl;}</xsl:text>
+</xsl:template>
+
+<!--********************
+TOP 
+***************-->
+
+<xsl:template match="top" mode="interface">
+	<xsl:text>using System;&nl;</xsl:text>
+	<xsl:text>namespace Selenium&nl;{</xsl:text>
+	<xsl:text>&nl;&tab;/// </xsl:text>
+	<xsl:element name="summary">
+		<xsl:apply-templates>
+			<xsl:with-param name="replace-string">&nl;&tab;/// </xsl:with-param>
+		</xsl:apply-templates>
+		<xsl:text>&nl;&tab;/// </xsl:text>
+	</xsl:element>
+	<xsl:text disable-output-escaping="yes"><![CDATA[
+	public interface ISelenium
+	{
+		/// <summary>
+		/// Launches the browser with a new Selenium session
+		/// </summary>
+		void Start();
+		
+		/// <summary>
+		/// Ends the test session, killing the browser
+		/// </summary>
+		void Stop();
+		
+]]>		
+	</xsl:text>
+</xsl:template>
+
+<xsl:template match="top" mode="implementation">
+	<xsl:text>using System;&nl;</xsl:text>
+	<xsl:text>namespace Selenium&nl;{</xsl:text>
+	<xsl:text>&nl;&tab;/// </xsl:text>
+	<xsl:element name="summary">
+		<xsl:apply-templates>
+			<xsl:with-param name="replace-string">&nl;&tab;/// </xsl:with-param>
+		</xsl:apply-templates>
+		<xsl:text>&nl;&tab;/// </xsl:text>
+	</xsl:element>
+	<xsl:text disable-output-escaping="yes"><![CDATA[
+	// This file has been automatically generated using XSL
+	// This part of the file is hard-coded in the XSL
+	public class DefaultSelenium : ISelenium
+	{
+	
+		private ICommandProcessor commandProcessor;
+		/// <summary>
+		/// Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
+	    /// 
+	    /// <p><i>browserString</i> may be any one of the following:</p>
+	    /// <ul>
+	    /// <li><code>*firefox [absolute path]</code> - Automatically launch a new Firefox process using a custom Firefox profile.
+	    /// This profile will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
+	    /// ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
+	    /// an absolute path to your firefox executable, or just say "*firefox".  If no absolute path is specified, we'll look for
+	    /// firefox.exe in a default location (normally c:\program files\mozilla firefox\firefox.exe), which you can override by
+	    /// setting the Java system property <code>firefoxDefaultPath</code> to the correct path to Firefox.</li>
+	    /// <li><code>*iexplore [absolute path]</code> - Automatically launch a new Internet Explorer process using custom Windows registry settings.
+	    /// This process will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
+	    /// ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
+	    /// an absolute path to your iexplore executable, or just say "*iexplore".  If no absolute path is specified, we'll look for
+	    /// iexplore.exe in a default location (normally c:\program files\internet explorer\iexplore.exe), which you can override by
+	    /// setting the Java system property <code>iexploreDefaultPath</code> to the correct path to Internet Explorer.</li>
+	    /// <li><code>/path/to/my/browser [other arguments]</code> - You may also simply specify the absolute path to your browser
+	    /// executable, or use a relative path to your executable (which we'll try to find on your path).  <b>Warning:</b> If you
+	    /// specify your own custom browser, it's up to you to configure it correctly.  At a minimum, you'll need to configure your
+	    /// browser to use the Selenium Server as a proxy, and disable all browser-specific prompting.</li>
+	    /// </ul>
+	    /// </summary>
+	    /// 
+	    /// <param name="serverHost">the host name on which the Selenium Server resides</param>
+	    /// <param name="serverPort">the port on which the Selenium Server is listening</param>
+	    /// <param name="browserString">the command string used to launch the browser, e.g. "*firefox", "*iexplore" or "c:\\program files\\internet explorer\\iexplore.exe"</param>
+	    /// <param name="browserURL">the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
+	    /// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"</param>
+	    public DefaultSelenium(String serverHost, int serverPort, String browserString, String browserURL)
+	    {
+	        this.commandProcessor = new HttpCommandProcessor(serverHost, serverPort, browserString, browserURL);
+	    }
+	    
+	    /// <summary>
+	    /// Uses an arbitrary CommandProcessor
+	    /// </summary>
+	    public DefaultSelenium(ICommandProcessor processor)
+	    {
+	        this.commandProcessor = processor;
+	    }
+	    
+	    /// <summary>
+	    /// The command processor that handles all of our Selenium commands
+	    /// </summary>
+	    public ICommandProcessor Processor
+		{
+	        get { return this.commandProcessor; }
+		}
+		
+		/// <summary>
+		/// Starts a new Selenium testing session
+		/// </summary>
+		public void Start()
+		{
+			commandProcessor.Start();
+		}
+		
+		/// <summary>
+		/// Ends the current Selenium testing session (normally killing the browser)
+		/// </summary>
+		public void Stop()
+		{
+			commandProcessor.Stop();
+		}
+	    
+	    // From here on, everything in this file has been auto-generated
+]]>	    
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="comment">
+	<xsl:apply-templates>
+		<xsl:with-param name="replace-string">&nl;&tab;&tab;/// </xsl:with-param>
+	</xsl:apply-templates>
+</xsl:template>
+
+<!--****************
+FUNCTION
+******************-->
+
+<xsl:template match="function" mode="interface">
+	<!-- NDoc -->
+	<xsl:text>&nl;&tab;&tab;/// </xsl:text>
+	<xsl:element name="summary">
+		<xsl:apply-templates select="comment" />
+		<xsl:text>&nl;&tab;&tab;/// </xsl:text>
+	</xsl:element>
+	<xsl:apply-templates select="param" mode="comment" />
+	<xsl:apply-templates select="return" mode="comment" />
+	<xsl:text>&nl;&tab;&tab;</xsl:text>
+	<!-- Return type or void -->
+	<xsl:if test="count(./return) = 0">
+		<xsl:text>void </xsl:text>
+	</xsl:if>
+	<xsl:apply-templates select="return" mode="declaration" />
+	
+	<!-- Function name (capitalized for .NET) -->
+	<xsl:call-template name="capitalize">
+		<xsl:with-param name="funcName"><xsl:value-of select="@name" /></xsl:with-param>
+	</xsl:call-template>
+	
+	<!-- Params -->
+	<xsl:text>(</xsl:text>
+	<xsl:apply-templates select="param" mode="declaration" />
+	<xsl:text>);&nl;&nl;</xsl:text>
+</xsl:template>
+
+<xsl:template match="function" mode="implementation">
+	<xsl:text>&nl;&tab;&tab;/// </xsl:text>
+	<xsl:element name="summary">
+		<xsl:apply-templates select="comment" />
+		<xsl:text>&nl;&tab;&tab;/// </xsl:text>
+	</xsl:element>
+	<xsl:apply-templates select="param" mode="comment" />
+	<xsl:apply-templates select="return" mode="comment" />
+	<xsl:text>&nl;&tab;&tab;public </xsl:text>
+	<!-- Return type or void -->
+	<xsl:if test="count(./return) = 0">
+		<xsl:text>void </xsl:text>
+	</xsl:if>
+	<xsl:apply-templates select="return" mode="declaration" />
+	
+	<!-- Function name (capitalized for .NET) -->
+	<xsl:call-template name="capitalize">
+		<xsl:with-param name="funcName"><xsl:value-of select="@name" /></xsl:with-param>
+	</xsl:call-template>
+	
+	<!-- Params -->
+	<xsl:text>(</xsl:text>
+	<xsl:apply-templates select="param" mode="declaration" />
+	<xsl:text>)&nl;&tab;&tab;{&nl;&tab;&tab;&tab;</xsl:text>
+	
+	<!-- Return only if necessary -->
+	<xsl:if test="count(./return) = 0">
+		<xsl:text>commandProcessor.DoCommand</xsl:text>
+	</xsl:if>
+	<xsl:apply-templates select="return" mode="implementation" />
+	<xsl:text>("</xsl:text>
+	<xsl:value-of select="@name" />
+	<xsl:text>", new String[] {</xsl:text>
+	<xsl:apply-templates select="param" mode="implementation" />
+	<xsl:text>});&nl;&tab;&tab;}&nl;&nl;</xsl:text>
+</xsl:template>
+
+<xsl:template name="capitalize">
+	<xsl:param name="funcName" />
+	<!-- translate any lowercase letters to uppercase letters -->
+	<xsl:value-of select="translate(substring($funcName,1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')" />
+	<xsl:value-of select="substring($funcName,2)" />
+</xsl:template>
+
+<!--*****************
+RETURN
+*******************-->
+
+<!-- Generate the return type -->
+<xsl:template name="returntype">
+	<xsl:param name="type" />
+	<xsl:choose>
+		<xsl:when test="$type='string'">
+			<xsl:text>String</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='number'">
+			<xsl:text>Decimal</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='boolean'">
+			<xsl:text>bool</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='string[]'">
+			<xsl:text>String[]</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='number[]'">
+			<xsl:text>Double[]</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='boolean[]'">
+			<xsl:text>bool[]</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='map'">
+			<xsl:text>IDictionary</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='mixedarray'">
+			<xsl:text>JSONArray</xsl:text>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:text>FAIL</xsl:text>
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+<xsl:template name="procMethod">
+	<xsl:param name="type" />
+	<xsl:choose>
+		<xsl:when test="$type='string'">
+			<xsl:text>commandProcessor.GetString</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='number'">
+			<xsl:text>commandProcessor.GetNumber</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='boolean'">
+			<xsl:text>commandProcessor.GetBoolean</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='string[]'">
+			<xsl:text>commandProcessor.GetStringArray</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='number[]'">
+			<xsl:text>commandProcessor.GetNumberArray</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='boolean[]'">
+			<xsl:text>commandProcessor.GetBooleanArray</xsl:text>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:message terminate="yes">returntype is invalid: <xsl:value-of select="$type"/></xsl:message>
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+<!-- In the function implementation, add "return" keyword, casting to correct type -->
+<xsl:template match="return" mode="implementation">
+	<xsl:text>return </xsl:text>
+	<xsl:call-template name="procMethod">
+		<xsl:with-param name="type"><xsl:value-of select="@type" /></xsl:with-param>
+	</xsl:call-template>
+</xsl:template>
+
+<!-- In the NDoc, add the <returns> tag -->
+<xsl:template match="return" mode="comment">
+	<xsl:text>&nl;&tab;&tab;/// </xsl:text>
+	<xsl:element name="returns">
+		<xsl:apply-templates>
+			<xsl:with-param name="replace-string">&nl;&tab;&tab;/// </xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:element>
+</xsl:template>
+
+<!-- In the function declaration, specify the return type -->
+<xsl:template match="return" mode="declaration">
+	<xsl:call-template name="returntype">
+		<xsl:with-param name="type"><xsl:value-of select="@type" /></xsl:with-param>
+	</xsl:call-template>
+	<xsl:text> </xsl:text>
+</xsl:template>
+
+<!-- In the NDoc, add the <param> tag -->
+<xsl:template match="param" mode="comment">
+	<xsl:text>&nl;&tab;&tab;/// </xsl:text>
+	<xsl:element name="param">
+		<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+		<xsl:apply-templates>
+			<xsl:with-param name="replace-string">&nl;&tab;&tab;/// </xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:element>
+</xsl:template>
+
+<!-- In the function declaration, specify all String parameters -->
+<xsl:template match="param" mode="declaration">
+	<xsl:text>String </xsl:text>
+	<xsl:value-of select="@name" />
+	<xsl:if test="position() != last()">
+		<xsl:text>,</xsl:text>
+	</xsl:if>
+</xsl:template>
+
+<!-- In the function implementation, add String parameters to array -->
+<xsl:template match="param" mode="implementation">
+	<xsl:value-of select="@name" />
+	<xsl:text>,</xsl:text>
+</xsl:template>
+
+<xsl:template name="search-and-replace">
+     <xsl:param name="input"/>
+     <xsl:param name="search-string"/>
+     <xsl:param name="replace-string"/>
+     <xsl:choose>
+          <!-- See if the input contains the search string -->
+          <xsl:when test="$search-string and 
+                           contains($input,$search-string)">
+          <!-- If so, then concatenate the substring before the search
+          string to the replacement string and to the result of
+          recursively applying this template to the remaining substring.
+          -->
+               <xsl:value-of 
+                    select="substring-before($input,$search-string)"/>
+               <xsl:value-of select="$replace-string"/>
+               <xsl:call-template name="search-and-replace">
+                    <xsl:with-param name="input"
+                    select="substring-after($input,$search-string)"/>
+                    <xsl:with-param name="search-string" 
+                    select="$search-string"/>
+                    <xsl:with-param name="replace-string" 
+                        select="$replace-string"/>
+               </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+               <!-- There are no more occurrences of the search string so 
+               just return the current input string -->
+               <xsl:value-of select="$input"/>
+          </xsl:otherwise>
+     </xsl:choose>
+</xsl:template>
+
+<xsl:template match="node()|@*" >
+	<xsl:output method="html"/>
+	<xsl:param name="replace-string" />
+	<xsl:copy>
+		<xsl:apply-templates select="node()|@*">
+			<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:copy>
+</xsl:template>
+
+<xsl:template match="text()">
+	<xsl:param name="replace-string" />
+	<xsl:call-template name="search-and-replace">
+		<xsl:with-param name="input"><xsl:value-of select='.' /></xsl:with-param>
+		<xsl:with-param name="search-string"><xsl:text>&#xa;</xsl:text></xsl:with-param>
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+	</xsl:call-template>
+</xsl:template>
+
+
+</xsl:stylesheet>
+

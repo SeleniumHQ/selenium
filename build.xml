@@ -35,15 +35,20 @@
 		<mvn>
 			<arg value="install" />
 			<arg value="-Dmaven.test.skip=true" />
+			<arg value="-Dskip.generation=true" />
 			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
 		</mvn>
 		<mvn dir="server">
 			<arg value="install" />
 			<arg value="-Dmaven.test.skip=true" />
 		</mvn>
+		<mvn dir="clients/java">
+			<arg value="generate-sources" />
+		</mvn>
 		<mvn>
 			<arg value="install" />
 			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
+			<arg value="-Dskip.generation=true" />
 		</mvn>
 	</target>
 

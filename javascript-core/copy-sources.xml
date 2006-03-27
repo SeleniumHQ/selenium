@@ -1,4 +1,4 @@
-<project name="core-copy-sources" default="copy-sources">
+<project name="core-copy-sources" default="create-sources">
 	
 	<property name="javascript.maven.sources" location="${ant.file.core-copy-sources}/../src/selenium" />
 	
@@ -8,6 +8,7 @@
 		<mkdir dir="${javascript.maven.sources}" />
 	</target>
 	<target name="copy-sources">
+		<echoproperties destfile="c:\dan\scratch\mvnant.properties" />
 		<fail unless="core.javascript.path" message="You must specify a path to the core javascript in the core.javascript.path property" />
 		<property name="core.javascript.path" location="${ant.file.core-copy-sources}/../../javascript" />
 		<condition property="build.failed">
@@ -19,4 +20,13 @@
 			<fileset dir="${core.javascript.path}" />
 		</copy>
 	</target>
+	<target name="generate-xml">
+		<exec executable="cscript" dir="${javascript.maven.sources}" output="${javascript.maven.sources}/iedoc.xml" failonerror="true">
+			<arg value="/nologo"/>
+			<arg file="${javascript.maven.sources}/iedoc.js"/> 
+		</exec>
+		<xmlvalidate file="${javascript.maven.sources}/iedoc.xml" lenient="true"/>
+	</target>
+	
+	<target name="create-sources" depends="copy-sources,generate-xml"/>
 </project>

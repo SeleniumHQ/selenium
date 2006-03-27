@@ -4,7 +4,7 @@ using System.Text;
 namespace Selenium
 {
 	/// <summary>
-	/// Summary description for DefaultSeleneseCommand.
+	/// A representation of a single Selenese Command
 	/// </summary>
 	public class DefaultSeleneseCommand : ISeleneseCommand
 	{
@@ -12,12 +12,20 @@ namespace Selenium
 		private readonly string[] args;
 		private readonly string command;
 
+		/// <summary>
+		/// Creates a command with the specified arguments
+		/// </summary>
+		/// <param name="command">the name of the command to run</param>
+		/// <param name="args">its arguments (convert non-string arguments to strings)</param>
 		public DefaultSeleneseCommand(string command, string[] args)
 		{
 			this.command = command;
 			this.args = args;
 		}
 
+		/// <summary>
+		/// The string token that we'll send to the server
+		/// </summary>
 		public string CommandString
 		{
 			get
@@ -33,16 +41,27 @@ namespace Selenium
 			}
 		}
 		
+		/// <summary>
+		/// The name of the Selenium command verb
+		/// </summary>
 		public string Command
 		{
 			get { return command; }
 		}
 
+		/// <summary>
+		/// The array of arguments for this command
+		/// </summary>
 		public string[] Args
 		{
 			get { return args; }
 		}
 
+		/// <summary>
+		/// Parses a "wiki-style" command string, like this: |type|q|Hello World|
+		/// </summary>
+		/// <param name="commandString">a wiki-style command string to parse</param>
+		/// <returns>a Selenese Command object that implements the command string</returns>
 		public static DefaultSeleneseCommand Parse(string commandString)
 		{
 			if (commandString == null || commandString.Trim().Length == 0 || !commandString.StartsWith("|"))

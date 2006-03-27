@@ -1,5 +1,18 @@
 <project name="selenium" default="all">
-    <target name="all">
+    <target name="generate-sources">
+    	<ant dir=".." target="extract-xml"/>
+    	<xslt in="../iedoc.xml" out="selenium.rb" style="iedoc2ruby.xml"/>
+    </target>
+    <target name="doc" depends="generate-sources">
+    	<condition property="rdoc.executable" value="rdoc.bat">
+			<os family="windows" />
+		</condition>
+		<property name="rdoc.executable" value="rdoc" />
+		<exec executable="${rdoc.executable}" failonerror="true">
+			<arg value="selenium.rb" />
+		</exec>
+    </target>
+    <target name="all" depends="generate-sources, doc">
     	<ant dir=".." target="start-server" />
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="ruby.executable" value="ruby" />
@@ -12,5 +25,12 @@
         	<not><equals arg1="0" arg2="${result}" /></not>
         </condition>
         <fail if="build.failed" message="ruby tests failed!" />
+    </target>
+    <target name="clean">
+    	<delete>
+    		<fileset dir="." includes="selenium.rb" />
+    	</delete>
+    	<mkdir dir="doc" />
+    	<delete dir="doc" />
     </target>
 </project>

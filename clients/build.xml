@@ -7,9 +7,12 @@
 
 	<target name="all" depends="test, dist" />
 
-    <target name="clean" depends="clean-dotnet">
+    <target name="clean" depends="clean-dotnet, clean-python, clean-ruby">
         <delete dir="dist-image"/>
         <delete dir="dist"/>
+        <delete>
+        	<fileset dir="." includes="iedoc.xml" />
+        </delete>
     </target>
 
     <target name="dist" depends="dist-image-doc, dist-dotnet, dist-ruby, dist-python"/>
@@ -42,6 +45,10 @@
                 <exclude name="readme.txt"/>
             </fileset>
         </copy>
+        
+        <copy todir="dist-image/ruby/rdoc">
+            <fileset dir="ruby/doc"/>
+        </copy>
 
         <property name="ruby.release" value="selenium-ruby-client-driver-${version}"/>
         <zip zipfile="dist/${ruby.release}.zip">
@@ -57,6 +64,10 @@
                 <include name="*.py"/>
                 <exclude name="readme.txt"/>
             </fileset>
+        </copy>
+        
+        <copy todir="dist-image/python/pydoc">
+            <fileset dir="python/html"/>
         </copy>
 
         <property name="python.release" value="selenium-python-client-driver-${version}"/>
@@ -89,7 +100,7 @@
 		</presetdef>
 	</target>
 
-    <target name="start-server" depends="custom-repo,default-repo">
+    <target name="find-server" depends="custom-repo,default-repo">
 		<mavendeps pathId="selenium-server.classpath">
 			<!-- DGF Server bundles all of its dependencies, 
 			which are marked with the scope "provided", so this should
@@ -101,7 +112,9 @@
 			<contains string="${selenium-server.jar}" substring=";" />
 		</condition>
 		<fail if="build.failed" message="Maven gave us more than one Selenium Server jar: ${selenium-server.jar}" />
-		
+	</target>
+	
+	<target name="start-server" depends="find-server">
 		<!-- Configurable server default firefox location; if this doesn't work, we'll just try to run it off the path -->
 		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
 		<java jar="${selenium-server.jar}" fork="true" spawn="true">
@@ -110,12 +123,25 @@
 		<echo message="Starting: ${selenium-server.jar}" />
     </target>
     
+    <target name="extract-xml" depends="find-server">
+    	<property name="output.path" location="${basedir}" />
+    	<whichresource resource="/selenium/iedoc.xml" property="iedoc.url" classpath="${selenium-server.jar}"/>
+		<fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${selenium-server.jar}" />
+		<!--<echo message="iedoc.url = ${iedoc.url}" />-->
+		<get src="${iedoc.url}" dest="${output.path}/iedoc.xml" />
+		<property name="iedoc.xml" location="${output.path}/iedoc.xml" />
+    </target>
+    
     <target name="stop-server">
     	<get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="result.txt" ignoreerrors="true" />
     	<echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
     </target>
     
     <target name="test" depends="test-dotnet, test-ruby, test-python"/>
+    
+    <target name="clean-python">
+        <ant dir="python" target="clean"/>
+    </target>
     
     <target name="test-python">
     	<echo message="python executable = ${python.executable}" />
@@ -139,6 +165,10 @@
 	
     <target name="test-ruby">
         <ant dir="ruby" target="all"/>
+    </target>
+
+	<target name="clean-ruby">
+        <ant dir="ruby" target="clean"/>
     </target>
 
 </project>

@@ -69,7 +69,7 @@
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
                     DefineConstants = ""
-                    DocumentationFile = ""
+                    DocumentationFile = "BridgeWebApp.xml"
                     DebugSymbols = "true"
                     FileAlignment = "4096"
                     IncrementalBuild = "true"

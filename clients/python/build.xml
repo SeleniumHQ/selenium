@@ -1,5 +1,33 @@
 <project name="selenium" default="all">
-    <target name="all">
+	<target name="generate-sources">
+    	<ant dir=".." target="extract-xml"/>
+    	<xslt in="../iedoc.xml" out="selenium.py" style="iedoc2python.xml"/>
+    </target>
+    <target name="pydoc" depends="generate-sources" unless="use.epydoc">
+    	<property name="python.executable" value="python" />
+    	
+    	<exec executable="python" failonerror="true">
+    		<arg value="-m" />
+			<arg value="pydoc"/>
+			<arg value="-w" />
+			<arg value="selenium" />
+		</exec>
+		<mkdir dir="html"/>
+		<move file="selenium.html" todir="html" />
+    </target>
+    <target name="epydoc" depends="generate-sources" if="use.epydoc">
+    	<property name="python.executable" value="python" />
+    	<condition property="epydoc.script" value="c:\python24\Scripts\epydoc.py">
+			<os family="windows" />
+		</condition>
+		<property name="epydoc.script" value="epydoc" />
+		<exec executable="python" failonerror="true">
+			<arg file="${epydoc.script}"/>
+			<arg value="selenium.py" />
+		</exec>
+    </target>
+    <target name="doc" depends="pydoc,epydoc"/>
+    <target name="all" depends="generate-sources, doc">
     	<ant dir=".." target="start-server" />
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="python.executable" value="python" />
@@ -12,5 +40,12 @@
         	<not><equals arg1="0" arg2="${result}" /></not>
         </condition>
         <fail if="build.failed" message="python tests failed!" />
+    </target>
+    <target name="clean">
+    	<delete>
+    		<fileset dir="." includes="selenium.py" />
+    	</delete>
+    	<mkdir dir="html" />
+    	<delete dir="html" />
     </target>
 </project>

@@ -9,7 +9,7 @@ using Selenium;
 namespace Selenium
 {
 	/// <summary>
-	/// Summary description for DefaultCommandProcessor.
+	/// Sends commands and retrieves results via HTTP.
 	/// </summary>
 	public class HttpCommandProcessor : ICommandProcessor
 	{
@@ -18,11 +18,22 @@ namespace Selenium
 		private string browserStartCommand;
 		private string browserURL;
 		
+		/// <summary>
+		/// The server URL, to whom we send command requests
+		/// </summary>
 		public string Url
 		{
 			get { return url; }
 		}
 
+		/// <summary>
+		/// Specifies a server host/port, a command to launch the browser, and a starting URL for the browser.
+		/// </summary>
+		/// <param name="serverHost">the host name on which the Selenium Server resides</param>
+		/// <param name="serverPort">the port on which the Selenium Server is listening</param>
+		/// <param name="browserStartCommand">the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"</param>
+		/// <param name="browserURL">the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
+		/// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"</param>
 		public HttpCommandProcessor(string serverHost, int serverPort, string browserStartCommand, string browserURL) 
 		{
 			this.url = "http://" + serverHost + 
@@ -31,6 +42,13 @@ namespace Selenium
 			this.browserURL = browserURL;
 		}
 
+		/// <summary>
+		/// Specifies the URL to the server, a command to launch the browser, and a starting URL for the browser.
+		/// </summary>
+		/// <param name="serverURL">the URL of the Selenium Server Driver, e.g. "http://localhost:4444/selenium-server/driver/" (don't forget the final slash!)</param>
+		/// <param name="browserStartCommand">the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"</param>
+		/// <param name="browserURL">the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
+		/// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"</param>
 		public HttpCommandProcessor(string serverURL, string browserStartCommand, string browserURL) 
 		{
 			this.url = serverURL;
@@ -38,6 +56,13 @@ namespace Selenium
 			this.browserURL = browserURL;
 		}
 
+		/// <summary>
+		/// Send the specified Selenese command to the browser to be performed
+		/// </summary>
+		/// <param name="command">the Selenese command verb</param>
+		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <returns>the command result, defined by the Selenese JavaScript.  "getX" style
+		///		commands may return data from the browser</returns>
 		public string DoCommand(string command, string[] args)
 		{
 			ISeleneseCommand seleneseCommand = new DefaultSeleneseCommand(command, args);
@@ -57,6 +82,11 @@ namespace Selenium
 			}
 		}
 
+		/// <summary>
+		/// Retrieves the body of the HTTP response
+		/// </summary>
+		/// <param name="response">the response object to read</param>
+		/// <returns>the body of the HTTP response</returns>
 		public virtual string ReadResponse(HttpWebResponse response)
 		{
 			using (StreamReader reader = new StreamReader(response.GetResponseStream()))
@@ -65,6 +95,11 @@ namespace Selenium
 			}
 		}
 
+		/// <summary>
+		/// Builds an HTTP request based on the specified Selenese Command
+		/// </summary>
+		/// <param name="command">the command we'll send to the server</param>
+		/// <returns>an HTTP request, which will perform this command</returns>
 		public virtual WebRequest CreateWebRequest(ISeleneseCommand command)
 		{
 			WebRequest request = WebRequest.Create(BuildCommandString(command.CommandString));
@@ -82,6 +117,9 @@ namespace Selenium
 			return result;
 		}
 
+		/// <summary>
+		/// Creates a new browser session
+		/// </summary>
 		public void Start() 
 		{
 			string result = GetString("getNewBrowserSession", new String[] {browserStartCommand, browserURL});
@@ -89,17 +127,32 @@ namespace Selenium
         
 		}
 
+		/// <summary>
+		/// Stops the previous browser session, killing the browser
+		/// </summary>
 		public void Stop() 
 		{
 			DoCommand("testComplete", null);
 			sessionId = null;
 		}
 
+		/// <summary>
+		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// </summary>
+		/// <param name="commandName">the Selenese command verb</param>
+		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <returns>the result of running the accessor on the browser</returns>
 		public String GetString(String commandName, String[] args) 
 		{
 			return DoCommand(commandName, args).Substring(3); // skip "OK,"
 		}
 
+		/// <summary>
+		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// </summary>
+		/// <param name="commandName">the Selenese command verb</param>
+		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <returns>the result of running the accessor on the browser</returns>
 		public String[] GetStringArray(String commandName, String[] args)
 		{
 			String result = GetString(commandName, args);
@@ -138,6 +191,12 @@ namespace Selenium
 			return (String[]) output.ToArray(typeof(String));
 		}
 
+		/// <summary>
+		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// </summary>
+		/// <param name="commandName">the Selenese command verb</param>
+		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <returns>the result of running the accessor on the browser</returns>
 		public Decimal GetNumber(String commandName, String[] args)
 		{
 			String result = GetString(commandName, args);
@@ -145,6 +204,12 @@ namespace Selenium
 			return d;
 		}
 
+		/// <summary>
+		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// </summary>
+		/// <param name="commandName">the Selenese command verb</param>
+		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <returns>the result of running the accessor on the browser</returns>
 		public Decimal[] GetNumberArray(String commandName, String[] args)
 		{
 			String[] result = GetStringArray(commandName, args);
@@ -156,6 +221,12 @@ namespace Selenium
 			return d;
 		}
 
+		/// <summary>
+		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// </summary>
+		/// <param name="commandName">the Selenese command verb</param>
+		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <returns>the result of running the accessor on the browser</returns>
 		public bool GetBoolean(String commandName, String[] args)
 		{
 			String result = GetString(commandName, args);
@@ -173,6 +244,12 @@ namespace Selenium
 			throw new Exception("result was neither 'true' nor 'false': " + result);
 		}
 
+		/// <summary>
+		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// </summary>
+		/// <param name="commandName">the Selenese command verb</param>
+		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <returns>the result of running the accessor on the browser</returns>
 		public bool[] GetBooleanArray(String commandName, String[] args)
 		{
 			String[] result = GetStringArray(commandName, args);

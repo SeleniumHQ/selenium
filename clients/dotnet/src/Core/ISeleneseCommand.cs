@@ -5,6 +5,9 @@ namespace Selenium
 	/// </summary>
 	public interface ISeleneseCommand
 	{
+		/// <summary>
+		/// A string representation of this command
+		/// </summary>
 		string CommandString { get; }
 	}
 }

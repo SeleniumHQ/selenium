@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xslt [
+  <!--Used to control code intenting -->
+  <!ENTITY nl "&#xa;">
+  <!ENTITY tab "&#x9;">
+]>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+   
+<xsl:output method="text"/>
+<xsl:strip-space elements="*"/>
+<xsl:param name="mode" />
+
+<xsl:template match="/">
+	
+	<xsl:apply-templates select="//top" />
+	<xsl:apply-templates select="//function" />
+	<xsl:text disable-output-escaping="yes">
+	end
+
+end
+
+class SeleniumCommandError &lt; RuntimeError 
+end
+</xsl:text>
+</xsl:template>
+
+<!--********************
+TOP 
+***************-->
+
+<xsl:template match="top">
+	<xsl:text disable-output-escaping="yes">
+# Copyright 2004 ThoughtWorks, Inc
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+
+# -----------------
+# Original code by Aslak Hellesoy and Darren Hobbs
+# This file has been automatically generated via XSL
+# -----------------
+
+require 'net/http'
+require 'uri'
+require 'cgi'
+</xsl:text>
+	<xsl:apply-templates>
+		<xsl:with-param name="replace-string">&#xa;# </xsl:with-param>
+	</xsl:apply-templates>
+	<xsl:text disable-output-escaping="yes"><![CDATA[
+module Selenium
+
+	class SeleneseInterpreter
+		include Selenium
+	
+		def initialize(server_host, server_port, browserStartCommand, browserURL, timeout)
+			@server_host = server_host
+			@server_port = server_port
+			@browserStartCommand = browserStartCommand
+			@browserURL = browserURL
+			@timeout = timeout
+		end
+		
+		def to_s
+			"SeleneseInterpreter"
+		end
+
+		def start()
+			result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
+			@session_id = result
+		end
+		
+		def stop()
+			do_command("testComplete", [])
+			@session_id = nil
+		end
+
+		def do_command(verb, args)
+			timeout(@timeout) do
+				http = Net::HTTP.new(@server_host, @server_port)
+				command_string = '/selenium-server/driver/?cmd=' + CGI::escape(verb)
+				args.length.times do |i|
+					arg_num = (i+1).to_s
+					command_string = command_string + "&" + arg_num + "=" + CGI::escape(args[i].to_s)
+				end
+				if @session_id != nil
+					command_string = command_string + "&sessionId=" + @session_id.to_s
+				end
+				#print "Requesting --->" + command_string + "\n"
+				response, result = http.get(command_string)
+				#print "RESULT: " + result + "\n\n"
+				if (result[0..1] != "OK")
+					raise SeleniumCommandError, result
+				end
+				return result
+			end
+		end
+		
+		def get_string(verb, args)
+			result = do_command(verb, args)
+			return result[3..result.length]
+		end
+		
+		def get_string_array(verb, args)
+			csv = get_string(verb, args)
+			token = ""
+			tokens = []
+			csv.length.times do |i|
+				letter = csv[i,1]
+				if (letter == '\\')
+					i++
+					letter = csv[i,1]
+					token = token + letter
+				elsif (letter == ',')
+					tokens.push(token)
+					token = ""
+				else
+					token = token + letter
+				end
+			end
+			return tokens
+		end
+	
+		def get_number(verb, args)
+			# Is there something I need to do here?
+			return get_string(verb, args)
+		end
+		
+		def get_number_array(verb, args)
+			# Is there something I need to do here?
+			return get_string_array(verb, args)
+		end
+	
+		def get_boolean(verb, args)
+			boolstr = get_string(verb, args)
+			if ("true" == boolstr)
+				return true
+			end
+			if ("false" == boolstr)
+				return false
+			end
+			raise ValueError, "result is neither 'true' nor 'false': " + boolstr
+		end
+		
+		def get_boolean_array(verb, args)
+			boolarr = get_string_array(verb, args)
+			boolarr.length.times do |i|
+				if ("true" == boolstr)
+					boolarr[i] = true
+					next
+				end
+				if ("false" == boolstr)
+					boolarr[i] = false
+					next
+				end
+				raise ValueError, "result is neither 'true' nor 'false': " + boolarr[i]
+			end
+			return boolarr
+		end
+
+]]>
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="comment">
+	<xsl:text>&#xa;&#x9;&#x9;# </xsl:text>
+	<xsl:apply-templates>
+		<xsl:with-param name="replace-string">&#xa;&#x9;&#x9;# </xsl:with-param>
+	</xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="node()|@*" >
+	<xsl:output method="html"/>
+	<xsl:param name="replace-string" />
+	<xsl:copy>
+		<xsl:apply-templates select="node()|@*">
+			<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:copy>
+</xsl:template>
+
+<xsl:template match="text()">
+	<xsl:param name="replace-string" />
+	<xsl:call-template name="search-and-replace">
+		<xsl:with-param name="input"><xsl:value-of select='.' /></xsl:with-param>
+		<xsl:with-param name="search-string"><xsl:text>&#xa;</xsl:text></xsl:with-param>
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+	</xsl:call-template>
+</xsl:template>
+
+<xsl:template match="b|strong">
+	<xsl:param name="replace-string" />
+	<xsl:element name="b">
+		<xsl:apply-templates select="node()|@*">
+			<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:element>
+</xsl:template>
+
+<xsl:template match="code|tt">
+	<xsl:param name="replace-string" />
+	<xsl:element name="tt">
+		<xsl:apply-templates select="node()|@*">
+			<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:element>
+</xsl:template>
+
+<xsl:template match="em|i">
+	<xsl:param name="replace-string" />
+	<xsl:element name="em">
+		<xsl:apply-templates select="node()|@*">
+			<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:element>
+</xsl:template>
+
+<xsl:template match="h3">
+	<xsl:param name="replace-string" />
+	<xsl:text>===</xsl:text>
+	<xsl:apply-templates select="node()|@*">
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+	</xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="li">
+	<xsl:param name="replace-string" />
+	<xsl:choose>
+		<xsl:when test="local-name(..) = 'ul'">
+			<xsl:text>*&tab;</xsl:text>
+		</xsl:when>
+		<xsl:when test="local-name(..) = 'ol'">
+			<xsl:text><xsl:value-of select="position()"/>. </xsl:text>
+		</xsl:when>
+	</xsl:choose>
+	<xsl:apply-templates select="node()|@*">
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+	</xsl:apply-templates>
+	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+</xsl:template>
+
+<xsl:template match="ul|ol|dl">
+	<xsl:param name="replace-string" />
+	<xsl:apply-templates select="node()|@*">
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><!--<xsl:text>&tab;</xsl:text>--></xsl:with-param>
+	</xsl:apply-templates>
+	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+</xsl:template>
+
+<xsl:template match="p">
+	<xsl:param name="replace-string" />
+	<xsl:apply-templates select="node()|@*">
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+	</xsl:apply-templates>
+	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+</xsl:template>
+
+<xsl:template match="a|blockquote">
+	<xsl:param name="replace-string" />
+	<xsl:apply-templates select="node()|@*">
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+	</xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="dt">
+	<xsl:param name="replace-string" />
+	<xsl:text>*&tab;</xsl:text>
+	<xsl:apply-templates select="node()|@*">
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+	</xsl:apply-templates>
+	<xsl:text>::</xsl:text>
+</xsl:template>
+
+<xsl:template match="dd">
+	<xsl:param name="replace-string" />
+	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+	<xsl:text>&tab;</xsl:text>
+	<xsl:apply-templates select="node()|@*">
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><xsl:text>&tab;</xsl:text></xsl:with-param>
+	</xsl:apply-templates>
+	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+</xsl:template>
+
+<!--****************
+FUNCTION
+******************-->
+
+<xsl:template match="function">
+	<!-- Doc -->
+	<xsl:apply-templates select="comment" />
+	<xsl:apply-templates select="param" mode="comment" />
+	<xsl:text>&nl;&tab;&tab;def </xsl:text>
+	<xsl:call-template name="underscorify">
+		<xsl:with-param name="input"><xsl:value-of select="@name" /></xsl:with-param>
+	</xsl:call-template>
+	
+	<!-- Params -->
+	<xsl:text>(</xsl:text>
+	<xsl:apply-templates select="param" mode="declaration" />
+	<xsl:text>)&nl;&tab;&tab;&tab;</xsl:text>
+	
+	<xsl:if test="count(./return) = 0">
+		<xsl:text>do_command</xsl:text>
+	</xsl:if>
+	<xsl:apply-templates select="return" mode="implementation" />
+	<xsl:text>("</xsl:text>
+	<xsl:value-of select="@name" />
+	<xsl:text>", [</xsl:text>
+	<xsl:apply-templates select="param" mode="implementation" />
+	<xsl:text>])&nl;&tab;&tab;end&nl;&nl;</xsl:text>
+</xsl:template>
+
+<!--*****************
+RETURN
+*******************-->
+
+<xsl:template name="procMethod">
+	<xsl:param name="type" />
+	<xsl:choose>
+		<xsl:when test="$type='string'">
+			<xsl:text>get_string</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='number'">
+			<xsl:text>get_number</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='boolean'">
+			<xsl:text>get_boolean</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='string[]'">
+			<xsl:text>get_string_array</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='number[]'">
+			<xsl:text>get_number_array</xsl:text>
+		</xsl:when>
+		<xsl:when test="$type='boolean[]'">
+			<xsl:text>get_boolean_array</xsl:text>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:message terminate="yes">returntype is invalid: <xsl:value-of select="$type"/></xsl:message>
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+<!-- In the function implementation, add "return" keyword, casting to correct type -->
+<xsl:template match="return" mode="implementation">
+	<xsl:text>return </xsl:text>
+	<xsl:call-template name="procMethod">
+		<xsl:with-param name="type"><xsl:value-of select="@type" /></xsl:with-param>
+	</xsl:call-template>
+</xsl:template>
+
+<!-- In the RDoc, add the <returns> tag -->
+<xsl:template match="return" mode="comment">
+	<xsl:text>&nl;&tab;&tab;/// &lt;returns&gt;</xsl:text>
+	<xsl:call-template name="search-and-replace">
+		<xsl:with-param name="input"><xsl:value-of select="."/></xsl:with-param>
+		<xsl:with-param name="search-string"><xsl:text>&nl;</xsl:text></xsl:with-param>
+		<xsl:with-param name="replace-string">&nl;&tab;&tab;/// </xsl:with-param>
+	</xsl:call-template>
+	<xsl:text>&lt;/returns&gt;</xsl:text>
+</xsl:template>
+
+<!-- In the RDoc, add the <param> tag -->
+<xsl:template match="param" mode="comment">
+	<xsl:text>&#xa;&#x9;&#x9;# '</xsl:text>
+	<xsl:value-of select="@name" />
+	<xsl:text>' is </xsl:text>
+	<xsl:apply-templates />
+</xsl:template>
+
+<!-- In the function declaration, specify all String parameters -->
+<xsl:template match="param" mode="declaration">
+	<xsl:value-of select="@name" />
+	<xsl:if test="position() != last()">
+		<xsl:text>,</xsl:text>
+	</xsl:if>
+</xsl:template>
+
+<!-- In the function implementation, add String parameters to array -->
+<xsl:template match="param" mode="implementation">
+	<xsl:value-of select="@name" />
+	<xsl:text>,</xsl:text>
+</xsl:template>
+
+<xsl:template name="search-and-replace">
+     <xsl:param name="input"/>
+     <xsl:param name="search-string"/>
+     <xsl:param name="replace-string"/>
+     <xsl:choose>
+          <!-- See if the input contains the search string -->
+          <xsl:when test="$search-string and 
+                           contains($input,$search-string)">
+          <!-- If so, then concatenate the substring before the search
+          string to the replacement string and to the result of
+          recursively applying this template to the remaining substring.
+          -->
+               <xsl:value-of 
+                    select="substring-before($input,$search-string)"/>
+               <xsl:value-of select="$replace-string"/>
+               <xsl:call-template name="search-and-replace">
+                    <xsl:with-param name="input"
+                    select="substring-after($input,$search-string)"/>
+                    <xsl:with-param name="search-string" 
+                    select="$search-string"/>
+                    <xsl:with-param name="replace-string" 
+                        select="$replace-string"/>
+               </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+               <!-- There are no more occurrences of the search string so 
+               just return the current input string -->
+               <xsl:value-of select="$input"/>
+          </xsl:otherwise>
+     </xsl:choose>
+</xsl:template>
+
+<xsl:template name="underscorify">
+	<xsl:param name="input" />
+	<xsl:variable name="output"><xsl:value-of select="$input" /></xsl:variable>
+	<!-- for-each can't handle arbitrary sequences!  
+		variables can't be changed once defined!
+		Welcome to copy-and-paste land! -->
+	<xsl:variable name="outputa">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$output' /></xsl:with-param>
+			<xsl:with-param name="search-string">A</xsl:with-param>
+			<xsl:with-param name="replace-string">_a</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputb">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputa' /></xsl:with-param>
+			<xsl:with-param name="search-string">B</xsl:with-param>
+			<xsl:with-param name="replace-string">_b</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputc">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputb' /></xsl:with-param>
+			<xsl:with-param name="search-string">C</xsl:with-param>
+			<xsl:with-param name="replace-string">_c</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputd">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputc' /></xsl:with-param>
+			<xsl:with-param name="search-string">D</xsl:with-param>
+			<xsl:with-param name="replace-string">_d</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outpute">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputd' /></xsl:with-param>
+			<xsl:with-param name="search-string">E</xsl:with-param>
+			<xsl:with-param name="replace-string">_e</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputf">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outpute' /></xsl:with-param>
+			<xsl:with-param name="search-string">F</xsl:with-param>
+			<xsl:with-param name="replace-string">_f</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputg">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputf' /></xsl:with-param>
+			<xsl:with-param name="search-string">G</xsl:with-param>
+			<xsl:with-param name="replace-string">_g</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputh">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputg' /></xsl:with-param>
+			<xsl:with-param name="search-string">H</xsl:with-param>
+			<xsl:with-param name="replace-string">_h</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputi">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputh' /></xsl:with-param>
+			<xsl:with-param name="search-string">I</xsl:with-param>
+			<xsl:with-param name="replace-string">_i</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputj">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputi' /></xsl:with-param>
+			<xsl:with-param name="search-string">J</xsl:with-param>
+			<xsl:with-param name="replace-string">_j</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputk">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputj' /></xsl:with-param>
+			<xsl:with-param name="search-string">K</xsl:with-param>
+			<xsl:with-param name="replace-string">_k</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputl">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputk' /></xsl:with-param>
+			<xsl:with-param name="search-string">L</xsl:with-param>
+			<xsl:with-param name="replace-string">_l</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputm">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputl' /></xsl:with-param>
+			<xsl:with-param name="search-string">M</xsl:with-param>
+			<xsl:with-param name="replace-string">_m</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputn">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputm' /></xsl:with-param>
+			<xsl:with-param name="search-string">N</xsl:with-param>
+			<xsl:with-param name="replace-string">_n</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputo">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputn' /></xsl:with-param>
+			<xsl:with-param name="search-string">O</xsl:with-param>
+			<xsl:with-param name="replace-string">_o</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputp">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputo' /></xsl:with-param>
+			<xsl:with-param name="search-string">P</xsl:with-param>
+			<xsl:with-param name="replace-string">_p</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputq">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputp' /></xsl:with-param>
+			<xsl:with-param name="search-string">Q</xsl:with-param>
+			<xsl:with-param name="replace-string">_q</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputr">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputq' /></xsl:with-param>
+			<xsl:with-param name="search-string">R</xsl:with-param>
+			<xsl:with-param name="replace-string">_r</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputs">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputr' /></xsl:with-param>
+			<xsl:with-param name="search-string">S</xsl:with-param>
+			<xsl:with-param name="replace-string">_s</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputt">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputs' /></xsl:with-param>
+			<xsl:with-param name="search-string">T</xsl:with-param>
+			<xsl:with-param name="replace-string">_t</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputu">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputt' /></xsl:with-param>
+			<xsl:with-param name="search-string">U</xsl:with-param>
+			<xsl:with-param name="replace-string">_u</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputv">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputu' /></xsl:with-param>
+			<xsl:with-param name="search-string">V</xsl:with-param>
+			<xsl:with-param name="replace-string">_v</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputw">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputv' /></xsl:with-param>
+			<xsl:with-param name="search-string">W</xsl:with-param>
+			<xsl:with-param name="replace-string">_w</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputx">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputw' /></xsl:with-param>
+			<xsl:with-param name="search-string">X</xsl:with-param>
+			<xsl:with-param name="replace-string">_x</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputy">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputx' /></xsl:with-param>
+			<xsl:with-param name="search-string">Y</xsl:with-param>
+			<xsl:with-param name="replace-string">_y</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:variable name="outputz">
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input"><xsl:value-of select='$outputy' /></xsl:with-param>
+			<xsl:with-param name="search-string">Z</xsl:with-param>
+			<xsl:with-param name="replace-string">_z</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:value-of select="$outputz" />
+</xsl:template>
+
+
+</xsl:stylesheet>
+
