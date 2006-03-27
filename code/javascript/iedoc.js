@@ -66,9 +66,7 @@ function handleTags(name, args, comment) {
 		if (returnMatch) {
 			var returnType = returnMatch[1];
 			if (!returnType.match(/^(string|number|boolean)(\[\])?$/)) {
-				if (!returnType.match(/^(map|mixedarray)$/)) {
-					throw new Error("Comment error: " + name + " @return type " + returnType + " is invalid; must be one of: string, number, boolean, map, string[], number[], boolean[], mixedarray");
-				}
+				throw new Error("Comment error: " + name + " @return type " + returnType + " is invalid; must be one of: string, number, boolean, string[], number[], boolean[]");
 			}
 			var returnDesc = returnMatch[2];
 			if (returnDesc == null) {
