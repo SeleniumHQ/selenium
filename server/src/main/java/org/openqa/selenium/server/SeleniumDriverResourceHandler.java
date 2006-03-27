@@ -142,7 +142,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            
+        } else if ("isPostSupported".equals(cmd)) {
+            // We don't support POST
+            results = "OK,false";
         } else if ("addStaticContent".equals(cmd)) {
             File dir = new File((String) values.get(0));
             if (dir.exists()) {
