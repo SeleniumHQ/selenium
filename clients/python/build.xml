@@ -6,7 +6,7 @@
     <target name="pydoc" depends="generate-sources" unless="use.epydoc">
     	<property name="python.executable" value="python" />
     	
-    	<exec executable="python" failonerror="true">
+    	<exec executable="${python.executable}" failonerror="true">
     		<arg value="-m" />
 			<arg value="pydoc"/>
 			<arg value="-w" />
@@ -21,7 +21,7 @@
 			<os family="windows" />
 		</condition>
 		<property name="epydoc.script" value="epydoc" />
-		<exec executable="python" failonerror="true">
+		<exec executable="${python.executable}" failonerror="true">
 			<arg file="${epydoc.script}"/>
 			<arg value="selenium.py" />
 		</exec>
