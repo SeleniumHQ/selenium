@@ -5,10 +5,8 @@
     </target>
     <target name="pydoc" depends="generate-sources" unless="use.epydoc">
     	<property name="python.executable" value="python" />
-    	
     	<exec executable="${python.executable}" failonerror="true">
-    		<arg value="-m" />
-			<arg value="pydoc"/>
+			<arg value="mypydoc.py"/>
 			<arg value="-w" />
 			<arg value="selenium" />
 		</exec>
