@@ -30,8 +30,7 @@ public interface CommandProcessor {
     /** Send the specified Selenese command to the browser to be performed
      * 
      * @param command - the Selenese command verb
-     * @param field - the first Selenese argument (meaning depends on the verb)
-     * @param value - the second Selenese argument
+     * @param args - the arguments to the Selenese command (depends on the verb)
      * @return - the command result, defined by the Selenese JavaScript.  "getX" style
      * commands may return data from the browser; other "doX" style commands may just
      * return "OK" or an error message.
