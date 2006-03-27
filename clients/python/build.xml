@@ -27,7 +27,8 @@
 		</exec>
     </target>
     <target name="doc" depends="pydoc,epydoc"/>
-    <target name="all" depends="generate-sources, doc">
+    <target name="all" depends="generate-sources, test, doc"/>
+    <target name="test" depends="generate-sources">
     	<ant dir=".." target="start-server" />
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="python.executable" value="python" />

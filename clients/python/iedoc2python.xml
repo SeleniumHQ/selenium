@@ -6,7 +6,7 @@
 ]>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    
-<xsl:output method="text"/>
+<xsl:output method="html"/>
 <xsl:strip-space elements="*"/>
 <xsl:param name="mode" />
 
@@ -155,7 +155,6 @@ class selenium_class:
 </xsl:template>
 
 <xsl:template match="node()|@*" >
-	<xsl:output method="html"/>
 	<xsl:param name="replace-string" />
 	<xsl:copy>
 		<xsl:apply-templates select="node()|@*">

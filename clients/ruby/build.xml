@@ -12,7 +12,8 @@
 			<arg value="selenium.rb" />
 		</exec>
     </target>
-    <target name="all" depends="generate-sources, doc">
+    <target name="all" depends="generate-sources, test, doc"/>
+    <target name="test" depends="generate-sources">
     	<ant dir=".." target="start-server" />
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="ruby.executable" value="ruby" />
