@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NDoc.Documenter.Xml</name>
+    </assembly>
+    <members>
+        <member name="T:NDoc.Documenter.Xml.XmlDocumenter">
+            <summary>The XmlDocumenter class.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.Xml.XmlDocumenter.#ctor">
+            <summary>Initializes a new instance of the XmlDocumenter class.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.Xml.XmlDocumenter.Clear">
+            <summary>See IDocumenter.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.Xml.XmlDocumenter.Build(NDoc.Core.Project)">
+            <summary>See IDocumenter.</summary>
+        </member>
+        <member name="P:NDoc.Documenter.Xml.XmlDocumenter.MainOutputFile">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="T:NDoc.Documenter.Xml.XmlDocumenterConfig">
+            <summary>The XmlDocumenter config class.</summary>
+            <remarks>	
+            <para>
+            The XML Documenter is the simplest of the NDoc Documenters. It is primarily 
+            a development tool.
+            </para>
+            <para>
+            As part of the documentation compile process, NDoc merges the type information 
+            in the assemblies being documented with the code comment summary XML document that the
+            <a href="ms-help://MS.NETFrameworkSDKv1.1/cscomp/html/vcerrDocProcessDocumentationComments.htm">
+            /doc compiler option</a> emits. The XML Documenter allows you to save this merged 
+            set of data for curiosity&#39;s sake or debugging purposes. 
+            </para>
+            <para>
+            Used in conjunction with the <b>UseNDocXmlFile</b> setting, this is especially 
+            useful when you are working on your own documenters.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Documenter.Xml.XmlDocumenterConfig.#ctor">
+            <summary>Initializes a new instance of the XmlDocumenterConfig class.</summary>
+        </member>
+        <member name="P:NDoc.Documenter.Xml.XmlDocumenterConfig.OutputFile">
+            <summary>Gets or sets the OutputFile property.</summary>
+            <remarks>This is the path and filename of the file where 
+            the merged /doc output and reflection information will be written. This can be 
+            absolute or relative from the .ndoc project file.</remarks>
+        </member>
+    </members>
+</doc>

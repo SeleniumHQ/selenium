@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NDoc.ExtendedUI</name>
+    </assembly>
+    <members>
+        <member name="F:NDoc.ExtendedUI.ShellBrowseForFolderDialog.hwndOwner">
+             <summary> Handle to the owner window for the dialog box.  </summary>
+        </member>
+        <member name="F:NDoc.ExtendedUI.ShellBrowseForFolderDialog.RootType">
+            <summary> Select the root type </summary>
+        </member>
+        <member name="F:NDoc.ExtendedUI.ShellBrowseForFolderDialog.RootPath">
+            <summary> valid only if RootType is RootTypeOptions.ByPath </summary>
+        </member>
+        <member name="F:NDoc.ExtendedUI.ShellBrowseForFolderDialog.RootSpecialFolder">
+            <summary> valid only if RootType is RootTypeOptions.BySpecialFolder </summary>
+        </member>
+        <member name="F:NDoc.ExtendedUI.ShellBrowseForFolderDialog.Title">
+            <summary> 
+            Address of a null-terminated string that is displayed above the tree view control in the dialog box. 
+            </summary>
+        </member>
+        <member name="F:NDoc.ExtendedUI.ShellBrowseForFolderDialog.UserToken">
+            <summary> Token that can be used to represent a particular user. </summary>
+        </member>
+        <member name="P:NDoc.ExtendedUI.ShellBrowseForFolderDialog.DisplayName">
+            <summary> Address of a buffer to receive the display name of the folder selected by the user. </summary>
+        </member>
+        <member name="P:NDoc.ExtendedUI.ShellBrowseForFolderDialog.FullName">
+            <summary> Return the result of the dialog </summary>
+        </member>
+    </members>
+</doc>

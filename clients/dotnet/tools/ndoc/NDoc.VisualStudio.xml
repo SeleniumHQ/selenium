@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NDoc.VisualStudio</name>
+    </assembly>
+    <members>
+        <member name="T:NDoc.VisualStudio.Project">
+            <summary>
+            Represents a Visual Studio c# project file.
+            </summary>
+        </member>
+        <member name="M:NDoc.VisualStudio.Project.Read(System.String)">
+            <summary>Reads the project file from the specified path.</summary>
+            <param name="path">The path to the project file.</param>
+        </member>
+        <member name="M:NDoc.VisualStudio.Project.GetConfiguration(System.String)">
+            <summary>Gets the configuration with the specified name.</summary>
+            <param name="configName">A valid configuration name, usually "Debug" or "Release".</param>
+            <returns>A ProjectConfig object.</returns>
+        </member>
+        <member name="M:NDoc.VisualStudio.Project.GetRelativeOutputPathForConfiguration(System.String)">
+            <summary>Gets the relative path (from the solution directory) to the
+            assembly this project generates.</summary>
+            <param name="configName">A valid configuration name, usually "Debug" or "Release".</param>
+        </member>
+        <member name="M:NDoc.VisualStudio.Project.GetRelativePathToDocumentationFile(System.String)">
+            <summary>Gets the relative path (from the solution directory) to the
+            XML documentation this project generates.</summary>
+            <param name="configName">A valid configuration name, usually "Debug" or "Release".</param>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.Solution">
+            <summary>Gets the solution that contains this project.</summary>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.RelativePath">
+            <summary>Gets or sets the relative path (from the solution 
+            directory) to the project directory.</summary>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.ID">
+            <summary>Gets the GUID that identifies the project.</summary>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.Name">
+            <summary>Gets the name of the project.</summary>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.ProjectType">
+            <summary>Gets a string that represents the type of project.</summary>
+            <value>"Visual C++" or "C# Local"</value>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.AssemblyName">
+            <summary>Gets the name of the assembly this project generates.</summary>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.OutputType">
+            <summary>Gets the output type of the project.</summary>
+            <value>"Library", "Exe", or "WinExe"</value>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.OutputFile">
+            <summary>Gets the filename of the generated assembly.</summary>
+        </member>
+        <member name="P:NDoc.VisualStudio.Project.RootNamespace">
+            <summary>Gets the default namespace for the project.</summary>
+        </member>
+        <member name="T:NDoc.VisualStudio.ProjectConfig">
+            <summary>
+            ProjectConfig settings for Visual Studio C# projects.
+            </summary>
+        </member>
+        <member name="P:NDoc.VisualStudio.ProjectConfig.Name">
+            <summary>Gets the name of the configuration.</summary>
+            <remarks>This is usually "Debug" or "Release".</remarks>
+        </member>
+        <member name="P:NDoc.VisualStudio.ProjectConfig.OutputPath">
+            <summary>Gets the location of the output files (relative to the 
+            project directory) for this project's configuration.</summary>
+        </member>
+        <member name="P:NDoc.VisualStudio.ProjectConfig.DocumentationFile">
+            <summary>Gets the name of the file (relative to the project 
+            directory) into which documentation comments will be 
+            processed.</summary>
+        </member>
+        <member name="T:NDoc.VisualStudio.Solution">
+            <summary>
+            Represents a Visual Studio solution file.
+            </summary>
+            <remarks>
+            This class is used to read a Visual Studio solution file
+            </remarks>
+        </member>
+        <member name="M:NDoc.VisualStudio.Solution.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Solution class.
+            </summary>
+            <param name="slnPath">The Visual Studio solution file to parse.</param>
+        </member>
+        <member name="M:NDoc.VisualStudio.Solution.Read(System.String)">
+            <summary>Reads a .sln file.</summary>
+            <param name="path">The path to the .sln file.</param>
+        </member>
+        <member name="M:NDoc.VisualStudio.Solution.GetProjectConfigName(System.String,System.String)">
+            <summary>
+            Returns the specified project's configuration name based for 
+            a specific solution configuration.
+            </summary>
+            <param name="solutionConfig">A valid configuration name for the solution.</param>
+            <param name="projectId">A valid project guid.</param>
+            <returns>The project configuration name or null.</returns>
+            <remarks>The null value is returned when the parameters are invalid,
+            or if the project is not marked to be built under the specified
+            solution configuration.</remarks>
+        </member>
+        <member name="M:NDoc.VisualStudio.Solution.GetConfigurations">
+            <summary>
+            Get the solution's configurations.
+            </summary>
+            <returns>A collection of configuration names.</returns>
+        </member>
+        <member name="M:NDoc.VisualStudio.Solution.GetProject(System.Guid)">
+            <summary>Gets the project with the specified GUID.</summary>
+            <param name="id">The GUID used to identify the project in the .sln file.</param>
+            <returns>The project.</returns>
+        </member>
+        <member name="M:NDoc.VisualStudio.Solution.GetProject(System.String)">
+            <summary>Gets the project with the specified name.</summary>
+            <param name="name">The project name.</param>
+            <returns>The project.</returns>
+        </member>
+        <member name="M:NDoc.VisualStudio.Solution.GetProjects">
+            <summary>Allows you to enumerate (using foreach) over the 
+            solution's projects.</summary>
+            <returns>An enumerable list of projects.</returns>
+        </member>
+        <member name="P:NDoc.VisualStudio.Solution.Directory">
+            <summary>Gets the SolutionDirectory property.</summary>
+            <remarks>This is the directory that contains the VS.NET
+            solution file.</remarks>
+        </member>
+        <member name="P:NDoc.VisualStudio.Solution.Name">
+            <summary>Gets the SolutionName property.</summary>
+            <remarks>This is the name of the VS.NET solution file
+            without the .sln extension.</remarks>
+        </member>
+        <member name="P:NDoc.VisualStudio.Solution.ProjectCount">
+            <summary>Gets a count of the number of projects in the solution</summary>
+        </member>
+    </members>
+</doc>

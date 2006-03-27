@@ -1,0 +1,1452 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NDoc.Documenter.NativeHtmlHelp2</name>
+    </assembly>
+    <members>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxCompiler">
+            <summary>
+            Summary description for HxCompiler.
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxCompiler.#ctor">
+            <summary>
+            Creates new instnace of an HxCompiler
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxCompiler.Compile(System.IO.DirectoryInfo,System.String,System.Int16)">
+            <summary>
+            Compiles the Html Help 2 project
+            </summary>
+            <param name="projectRoot">The root locaion of the project inputs</param>
+            <param name="helpName">The name of the project</param>
+            <param name="langID">The language ID of the final help file</param>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxCompiler.CompilerStatus">
+            <summary>
+            Captures compilsation status from the HXComp process
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxCompiler.CompilerStatus.#ctor(System.String)">
+            <summary>
+            Creates a new instance of CompilerStatus
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxCompiler.CompilerStatus.CompileFailed">
+            <summary>
+            Indicates whether a fatal compilation error has occured
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxCompiler.CompilerStatus.ErrorMessage">
+            <summary>
+            If the compile failed this holds whatever error message was return by HxComp
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject">
+            <summary>
+            HxObject is the base class wrapper around the HTML Help v2 compiler
+            executables that ship with the HTML v2 SDK
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.#ctor(System.String)">
+            <summary>
+            Create a new instance of the HxObject class
+            </summary>
+            <param name="appName">The name of the executable that implements 
+            the functionality wrapped by an HxObject derived class</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.Execute(System.String,System.String)">
+            <summary>
+            Invokes the Hx executable (see <see cref="P:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.AppName"/>)
+            </summary>
+            <param name="arguments">The command line arguments to passed to the compiler</param>
+            <param name="workingDirectory">The working directory for the process</param>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.HxCompIsInstalled">
+            <summary>
+            Determines if the Html Help 2 compiler was found
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.HtmlHelp2CompilerPath">
+            <summary>
+            Returns the path to the Html Help 2 compiler
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.CompilerEXEPath">
+            <summary>
+            The full path and file name of the Hx executable file
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.AppName">
+            <summary>
+            The name of the executable that the class wraps
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.ProcessTimeout">
+            <summary>
+            The number of milliseconds to wait before timing out the process once Execute is called
+            see <see cref="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxObject.Execute(System.String,System.String)"/>
+            </summary>
+            <remarks>Can be overridden by derived classes to provide custom timeout intervals</remarks>
+            <value>600000</value>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxReg">
+            <summary>
+            Wraps the HxReg.exe help registry component
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxReg.#ctor">
+            <summary>
+            Create a new instance of a HxReg object
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxReg.UnregisterNamespace(System.String)">
+            <summary>
+            Removes a help namespace from the help registry
+            </summary>
+            <param name="helpNamespace">The help namespace to remove</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxReg.UnregisterTitle(System.String,System.String)">
+            <summary>
+            Removes a help title from the help registry
+            </summary>
+            <param name="helpNamespace">The help namespace that contains the title</param>
+            <param name="titleId">The id of the title to remove</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxReg.RegisterNamespace(System.String,System.IO.FileInfo,System.String)">
+            <summary>
+            Registers a help namespace
+            </summary>
+            <param name="helpNamespace">The ID of the namespace to register</param>
+            <param name="collectionFile">The collection (HxS or HxC) file</param>
+            <param name="description">Namespace description</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Compiler.HxReg.RegisterTitle(System.String,System.String,System.IO.FileInfo)">
+            <summary>
+            Register an HxS title with a help namespace
+            </summary>
+            <param name="helpNamespace">The namespace to register with</param>
+            <param name="titleID">The id of the new title</param>
+            <param name="hxsFile">The location of the HxS file</param>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.ManagedName">
+            <summary>
+            The ManagedName class represents a type, member or namespace name
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.ManagedName.#ctor(System.String)">
+            <summary>
+            Construct a new instnace of the class
+            </summary>
+            <param name="ns"><see cref="T:System.String"/> representing the name</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.ManagedName.ToString">
+            <summary>
+            Returns the fully specified managed name
+            </summary>
+            <returns>String representation of the name</returns>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.ManagedName.RootNamespace">
+            <summary>
+            The root namespace of the name
+            </summary>
+            <example>For System.Object, returns System</example>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.ManagedName.Parts">
+            <summary>
+            Returns a string array with each part of the name decomposed from least to most qualified
+            </summary>
+            <example>
+            For the name System.Runtime.InteropServices
+            Parts[0] = "System"
+            Parts[1] = "System.Runtime"
+            Parts[2] = "System.Runtime.InteropServices
+            </example>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.NamespaceMapper">
+            <summary>
+            NamespaceMapper allows managed namespaces to be asscoitated with html help namespaces
+            when creating XLinks in the compiled help
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.NamespaceMapper.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the NamespaceMapper class based on the specified map file
+            </summary>
+            <param name="path">Path to the map file</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.NamespaceMapper.MergeMaps(NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.NamespaceMapper)">
+            <summary>
+            Merges the specified map into this map
+            </summary>
+            <param name="mapper">The map to merge into this one</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.NamespaceMapper.Save(System.String)">
+            <summary>
+            Saves the map to disk
+            </summary>
+            <param name="path">The path and filename to save to</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.NamespaceMapper.SetSystemNamespace(System.String)">
+            <summary>
+            Sets the help namespace to use for system types
+            </summary>
+            <param name="systemHelpNamespace">The help namespace associates with system types</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.NamespaceMapper.LookupHelpNamespace(System.String)">
+            <summary>
+            Looks up the html help 2 namespace associated with the specified manage namesapce
+            </summary>
+            <param name="managedName">The managed name to query for (case sensitive)</param>
+            <returns>The best match for the managed namespace or an empty string if none is found</returns>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.ExternalHtmlProvider">
+            <summary>
+            Used as an extension object to the xslt processor to allow
+            retrieving user-provided raw html.
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.ExternalHtmlProvider.#ctor(System.String,System.String)">
+            <summary>
+            Contructs the ExternalHtmlProvider
+            </summary>
+            <param name="header">The Html to include in the header</param>
+            <param name="footer">The Html to include in the footer</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.ExternalHtmlProvider.SetFilename(System.String)">
+            <summary>
+            Set the filename of the current html file being generated
+            </summary>
+            <param name="fileName">The name of the HTML file</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.ExternalHtmlProvider.GetHeaderHtml(System.String)">
+            <summary>
+            Retrieves user-provided raw html to use as page headers.
+            </summary>
+            <param name="topicTitle">The title of the current topic.</param>
+            <returns></returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.ExternalHtmlProvider.GetFooterHtml(System.String,System.String,System.String)">
+            <summary>
+            Retrieves user-provided raw html to use as page footers.
+            </summary>
+            <param name="assemblyName">The name of the assembly for the current topic.</param>
+            <param name="assemblyVersion">The version of the assembly for the current topic.</param>
+            <param name="topicTitle">The title of the current topic.</param>
+            <returns></returns>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.FileEventArgs">
+            <summary>
+            EventArgs calss used by the HtmlFactory calss when new files are being added
+            </summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.Engine.FileEventArgs.File">
+            <summary>
+            The name of the file being added or inserted
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileEventArgs.#ctor(System.String)">
+            <summary>
+            Creates a new instnace of a FileEventArgs class
+            </summary>
+            <param name="file">The name of the file being added or inserted</param>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.WhichType">
+            <summary>
+            The types of code elemements that topics are generated for
+            </summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.Engine.WhichType.Class">
+            <summary>classes</summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.Engine.WhichType.Interface">
+            <summary>interfaces</summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.Engine.WhichType.Structure">
+            <summary>structs</summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.Engine.WhichType.Enumeration">
+            <summary>enumberations</summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.Engine.WhichType.Delegate">
+            <summary>delegates</summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.Engine.WhichType.Unknown">
+            <summary>error case</summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper">
+            <summary>
+            Provides methods for mapping type name to file names
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.#ctor(System.Xml.XmlNode)">
+            <summary>
+            
+            </summary>
+            <param name="xmlDocumentation"></param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetWhichType(System.Xml.XmlNode)">
+            <summary>
+            Determines what type of item a node described
+            </summary>
+            <param name="typeNode">The documantaion node</param>
+            <returns>An enumeration for the item type</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFileNameForNamespaceHierarchy(System.String)">
+            <summary>
+            Determines the filename for the namespace hierarchy topic
+            </summary>
+            <param name="namespaceName">The namespace</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForNamespace(System.String)">
+            <summary>
+            Determines the filename for a namespace topic
+            </summary>
+            <param name="namespaceName">The namespace</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForType(System.String)">
+            <summary>
+            Determines the filename for a type overview topic
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFileNameForTypeHierarchy(System.String)">
+            <summary>
+            Determines the filename for the type hierarchy topic
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForOverviewPage(System.String,System.String)">
+            <summary>
+            Determines the filename for an overview topic
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <param name="pageType">The type of overview page to generate</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForConstructor(System.String,System.Boolean)">
+            <summary>
+            Determines the filename for a constructor topic
+            </summary>
+            <param name="constructorID">The id of the constructor</param>
+            <param name="isStatic">Is it a static constructor</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForConstructor(System.String,System.Boolean,System.String)">
+            <summary>
+            Determines the filename for a constructor topic
+            </summary>
+            <param name="constructorID">The id of the constructor</param>
+            <param name="isStatic">Is it a static constructor</param>
+            <param name="overLoad">The overload of the constructor</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForField(System.String)">
+            <summary>
+            Gets the filename for a particular field topic
+            </summary>
+            <param name="fieldID"></param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForOperatorsOverloads(System.String,System.String)">
+            <summary>
+            Determines the filename for an operator overloads list topic
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <param name="opName">The name of the operator</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForEvent(System.String)">
+            <summary>
+            Gets the filename for a particular event topic
+            </summary>
+            <param name="eventID"></param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForPropertyOverloads(System.String,System.String)">
+            <summary>
+            Determines the filename for an property overloads list topic
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <param name="propertyName">The property name</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForMethodOverloads(System.String,System.String)">
+            <summary>
+            Determines the filename for a method overload list topic
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <param name="methodName">The name of the method</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFileNameForMemberOverload(System.String,System.String)">
+            <summary>
+            Gets the filename for a specific member overload
+            </summary>
+            <param name="methodID">The NDoc generated member id</param>
+            <param name="overload">The overload index of the member (can be empty string)</param>
+            <returns>The filename for the member topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.BaseNameFromTypeId(System.String)">
+            <summary>
+            Given a type id (including the T: prefix)
+            determines the Base name for the topic file
+            </summary>
+            <param name="typeID">The ndoc generated id of a type</param>
+            <returns>Topic's base name</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.BaseNameFromMemberId(System.String)">
+            <summary>
+            Given a fully qualified member id (including the prefix)
+            determines the Base name for the topic file
+            </summary>
+            <param name="memberID">The ndoc generated id of a type member</param>
+            <returns>Topic's base name</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.BuildFilenameCache(System.Xml.XmlNode)">
+            <summary>
+            Build Cache of filenames
+            </summary>
+            <param name="xmlDocumentation">NDoc generated XML Documentation</param>
+            <remarks>
+            <para>walk through the XML documentation and determine the filename for each relevant ID.</para>
+            <para>Ensure these filenames are unique, then save these filenames in a hashtable for later use.</para>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.CacheTypes(System.Xml.XmlNodeList)">
+            <summary>
+            Caches filesnames for a given list of types and their members
+            </summary>
+            <param name="types">list of type nodes to cache</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.CacheMembers(System.Xml.XmlNodeList,System.Xml.XmlNode)">
+            <summary>
+            Caches Filenames for a given list of members
+            </summary>
+            <param name="members">a list of member nodes to cache</param>
+            <param name="typeNode">the owning type's node</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetHashCodeForId(System.String)">
+            <summary>
+            Generate a HashCode for the given ID
+            </summary>
+            <param name="id">ID to hash</param>
+            <returns>A hash code as an 8 character string</returns>
+            <remarks>
+            This is based on the classic hash alogrithm attributed to
+            Dan Bernstein. It is used in cdb, Berkley DB, Perl, and pretty much
+            everywhere else.
+            <para>Surprise, surprise, it gives exactly the same results as
+            the .Net v1.1 String.GetHashCode() .......
+            </para>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForConstructor(System.Xml.XmlNode)">
+            <summary>
+            Determines the filename for a constructor topic
+            </summary>
+            <param name="constructorNode">The XmlNode representing the constructor</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForMethod(System.Xml.XmlNode)">
+            <summary>
+            Gets the filename for a particular method topic
+            </summary>
+            <param name="methodNode">XmlNode representing the method</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForOperator(System.Xml.XmlNode)">
+            <summary>
+            Gets the filename for a particular operator topic
+            </summary>
+            <param name="operatorNode">The XmlNode repsenting the operator</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.GetFilenameForProperty(System.Xml.XmlNode)">
+            <summary>
+            Gets the filename for a particular property topic
+            </summary>
+            <param name="propertyNode">XmlNode representing the property</param>
+            <returns>Topic Filename</returns>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper.Item(System.String)">
+            <summary>
+            Gets Filename from cache
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.TopicEventHandler">
+            <summary>
+            Deleagate for handling file events
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory">
+            <summary>
+            The Html factory orchestrates the transformation of the NDoc Xml into the
+            set of Html files that will be compiled into the help project
+            </summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.Arguments">
+            <summary>
+            Xslt arguments passed to each transformation context
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.#ctor(System.String,System.String,NDoc.Documenter.NativeHtmlHelp2.Engine.ExternalHtmlProvider,NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config)">
+            <summary>
+            Constructs a new instance of HtmlFactory
+            </summary>
+            <param name="tempFileName">NDoc generated temp xml file</param>
+            <param name="outputDirectory">The directory to write the Html files to</param>
+            <param name="htmlProvider">Object the provides additional Html content</param>
+            <param name="config"></param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.OnTopicStart(System.String)">
+            <summary>
+            Raises the <see cref="E:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.TopicStart"/> event
+            </summary>
+            <param name="fileName">File name of the topic being started</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.OnTopicEnd">
+            <summary>
+            Raises the <see cref="E:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.TopicEnd"/> event
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.OnAddFileToTopic(System.String)">
+            <summary>
+            Raises the <see cref="E:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.AddFileToTopic"/> event
+            </summary>
+            <param name="fileName">The file being added</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.LoadStylesheets(System.String)">
+            <summary>
+            loads and compiles all the stylesheets
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.SetNamespaceMap(System.String)">
+            <summary>
+            Sets the custom namespace map to use while constructing XLinks
+            </summary>
+            <param name="path">Path to the namespace map. (This file must confrom to NamespaceMap.xsd)</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.MakeHtml">
+            <summary>
+            Generates HTML for the NDoc XML
+            </summary>
+        </member>
+        <member name="E:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.TopicStart">
+            <summary>
+            Event raised when a topic is started
+            </summary>
+        </member>
+        <member name="E:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.TopicEnd">
+            <summary>
+            Event raises when a topic is closed
+            </summary>
+        </member>
+        <member name="E:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.AddFileToTopic">
+            <summary>
+            Event raised when a file is being added to a topic
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory.FilteringXmlTextReader">
+            <summary>
+            This custom reader is used to load the XmlDocument. It removes elements that are not required *before* 
+            they are loaded into memory, and hence lowers memory requirements significantly.
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.MethodHelper">
+            <summary>
+            Helper functions to get information about a method
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MethodHelper.#ctor">
+            <summary>No public constructor since this type only defines static methods...</summary>
+            <remarks>Empty private constructor stops C# creating a public default constructor.</remarks>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MethodHelper.IsMethodAlone(System.Xml.XmlNodeList,System.Int32[],System.Int32)">
+            <summary>
+            Determines if an overload exists
+            </summary>
+            <param name="methodNodes">The list of methods</param>
+            <param name="indexes">an array of indices</param>
+            <param name="index">The current index</param>
+            <returns>True if no overload exists</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MethodHelper.IsMethodFirstOverload(System.Xml.XmlNodeList,System.Int32[],System.Int32)">
+            <summary>
+            Determines if a method is the first overload
+            </summary>
+            <param name="methodNodes">Collection of method node</param>
+            <param name="indexes">an array of indices</param>
+            <param name="index">The current index</param>
+            <returns>True if the method is the first overload</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MethodHelper.IsMethodLastOverload(System.Xml.XmlNodeList,System.Int32[],System.Int32)">
+            <summary>
+            Determines if a method is the alst overload
+            </summary>
+            <param name="methodNodes"></param>
+            <param name="indexes">an array of indices</param>
+            <param name="index">The current index</param>
+            <returns>True if the method is the last overload</returns>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities">
+            <summary>
+            Provides an extension object for the xslt transformations.
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.#ctor(NDoc.Documenter.NativeHtmlHelp2.Engine.NamespaceMapping.NamespaceMapper,NDoc.Documenter.NativeHtmlHelp2.Engine.FileNameMapper)">
+            <summary>
+            Initializes a new instance of class MsdnXsltUtilities
+            </summary>
+            <param name="namespaceMapper">The namespace mapper used to look up XLink help namespace for foreign types</param>	
+            <param name="fileMapper">The mapper used to look up local filenames</param>	
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.ResetDescriptions">
+            <summary>
+            Resets the descriptions collections
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetNamespaceHRef(System.String)">
+            <summary>
+            Gets the href for a namespace topic
+            </summary>
+            <param name="namespaceName">The namespace name</param>
+            <returns>Relative HRef to the Topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetNamespaceHierarchyHRef(System.String)">
+            <summary>
+            Gets the Href for the namespace hierarchy topic
+            </summary>
+            <param name="namespaceName">The namespace name</param>
+            <returns>Relative HRef to the Topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetTypeHierarchyHRef(System.String)">
+            <summary>
+            Gets the Href for the type hierarchy topic
+            </summary>
+            <param name="typeName">The type name</param>
+            <returns>Relative HRef to the Topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetOverviewHRef(System.String,System.String)">
+            <summary>
+            Gets the href for an overview page
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <param name="pageType">The type of overview page to generate</param>
+            <returns>Relative HRef to the Topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetConstructorHRef(System.Xml.XPath.XPathNodeIterator)">
+            <summary>
+            Gets the href for a constructor
+            </summary>
+            <param name="xPathNode">The node selection for the contsructor</param>
+            <returns>Relative HRef to the Topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetMemberOverloadsHRef(System.String,System.String)">
+            <summary>
+            Get the href for a member overloads topic
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <param name="methodName">The name of the method</param>
+            <returns>Relative HRef to the Topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetMemberHRef(System.Xml.XPath.XPathNodeIterator)">
+            <summary>
+            Get the href for a member topic
+            </summary>
+            <param name="xPathNode">The member selection</param>
+            <returns>Relative HRef to the Topic</returns>			
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetInheritedMemberOverloadHRef(System.String,System.Xml.XPath.XPathNodeIterator)">
+            <summary>
+            Returns the topic href for a specific implementation of an inherited member
+            </summary>
+            <param name="targetMemberID">The id of the source member</param>
+            <param name="xPathNode">The current member being processed</param>
+            <returns>HRef of the inherited member topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetMemberOverloadHRef(System.Xml.XPath.XPathNodeIterator)">
+            <summary>
+            Returns the topic href for a specific implementation of a member
+            </summary>
+            <param name="xPathNode">The member being processed</param>
+            <returns>HRef of the member topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetInheritedMemberHRef(System.String,System.Xml.XPath.XPathNodeIterator)">
+            <summary>
+            Returns the topic href for an inherited member
+            </summary>
+            <param name="targetMemberID">The id of the source member</param>
+            <param name="xPathNode">The current member being processed</param>
+            <returns>HRef of the inherited member topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetMethodHRef(System.String,System.String)">
+            <summary>
+            Get the HRef for a local method topic
+            </summary>
+            <param name="typeID">The id of the containing type</param>
+            <param name="memberName"></param>
+            <returns>Relative HRef to the Topic</returns>			
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetPropertyHRef(System.String,System.String)">
+            <summary>
+            Get the HRef for a local property topic
+            </summary>
+            <param name="typeID">The id of the containing type</param>
+            <param name="propertyName">The property name</param>
+            <returns>Relative HRef to the Topic</returns>			
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetFieldHRef(System.String)">
+            <summary>
+            Get the HRef for a local field topic
+            </summary>
+            <param name="fieldID">The ID of the field</param>
+            <returns>Relative HRef to the Topic</returns>			
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetEventHRef(System.String)">
+            <summary>
+            Get the HRef for a local event topic
+            </summary>
+            <param name="eventID">The ID of the event</param>
+            <returns>Relative HRef to the Topic</returns>			
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetTypeHRef(System.String)">
+            <summary>
+            Gets the href for a local type topic
+            </summary>
+            <param name="typeID">The id of the type</param>
+            <returns>Relative HRef to the Topic</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetLocalHRef(System.String)">
+            <summary>
+            Returns an HRef for a CRef. This may be local or system
+            </summary>
+            <param name="cref">The local html filename for local topics or the assocaitave index for system topics</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetLocalCRef(System.String)">
+            <summary>
+            gets the filename for a local cref 
+            </summary>
+            <param name="cref">The cref to link to</param>
+            <returns>a filename</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetAIndex(System.String)">
+            <summary>
+            Determines the associative index for a cref
+            </summary>
+            <param name="cref">The cref to link to</param>
+            <returns>The associative index</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetHelpNamespace(System.String)">
+            <summary>
+            Finds the help namespace most closely mapped to the managed name
+            </summary>
+            <param name="managedName">The managed name to look up. This can be a namespace, type or member</param>
+            <returns>The help namespace or empty string if no match is found</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.GetName(System.String)">
+            <summary>
+            Returns a name for a CRef.
+            </summary>
+            <param name="cref">CRef for which the name will be looked up.</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.HasSimilarOverloads(System.String)">
+            <summary>
+            Looks up, whether a member has similar overloads, that have already been documented.
+            </summary>
+            <param name="description">A string describing this overload.</param>
+            <returns>true, if there has been a member with the same description.</returns>
+            <remarks>
+            <para>On the members pages overloads are cumulated. Instead of adding all overloads
+            to the members page, a link is added to the members page, that points
+            to an overloads page.</para>
+            <para>If for example one overload is public, while another one is protected,
+            we want both to appear on the members page. This is to make the search
+            for suitable members easier.</para>
+            <para>This leads us to the similarity of overloads. Two overloads are considered
+            similar, if they have the same name, declaring type, access (public, protected, ...)
+            and contract (static, non static). The description contains these four attributes
+            of the member. This means, that two members are similar, when they have the same
+            description.</para>
+            <para>Asking for the first time, if a member has similar overloads, will return false.
+            After that, if asking with the same description again, it will return true, so
+            the overload does not need to be added to the members page.</para>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.MsdnXsltUtilities.Replace(System.String,System.String,System.String)">
+            <summary>
+            Exposes <see cref="M:System.String.Replace(System.Char,System.Char)"/> to XSLT
+            </summary>
+            <param name="str">The string to search</param>
+            <param name="oldValue">The string to search for</param>
+            <param name="newValue">The string to replace</param>
+            <returns>A new string</returns>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.Engine.StyleSheetCollection">
+            <summary>
+            The collection of xslt stylesheets used to generate the Html
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.Engine.StyleSheetCollection.LoadStyleSheets(System.String)">
+            <summary>
+            Load the predefined set of xslt stylesheets into a dictionary
+            </summary>
+            <param name="extensibiltyStylesheet"></param>
+            <returns>The populated collection</returns>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.Engine.StyleSheetCollection.Item(System.String)">
+            <summary>
+            Return a named stylesheet from the collection
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionFile">
+            <summary>
+            Summary description for CollectionFile.
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile">
+            <summary>
+            Represents the contents of an Html Help 2 HxC project file
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile">
+            <summary>
+            HxFile is the base class for vaiors Html Help 2 project files 
+            that use Xml to store their data
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.CreateFrom(System.String)">
+            <summary>
+            Fetches the document element of the specified XML document
+            </summary>
+            <param name="templateFile">Path to the XML document</param>
+            <returns>The <see cref="P:System.Xml.XmlDocument.DocumentElement"/> of the XML document</returns>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.dataNode">
+            <summary>
+            The XmlNode that represents the project file's data
+            </summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.Name">
+            <summary>
+            The name of the file
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.#ctor(System.String,System.Xml.XmlNode)">
+            <summary>
+            Creates a new instance of the HxFile class
+            </summary>
+            <param name="name">The file's name</param>
+            <param name="node">The file's data</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.Save(System.String)">
+            <summary>
+            Save's the Xml to the specified location, using the FileName propery or the filename
+            </summary>
+            <param name="location">Folder name to save the file into</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.GetProperty(System.String)">
+            <summary>
+            Retrieves the value of the specified node
+            </summary>
+            <param name="xpath">The node to retrieve (relative to dataNode)</param>
+            <returns>The InnerText property of the node</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.SetProperty(System.String,System.Object)">
+            <summary>
+            Sets the value of the specified node
+            </summary>
+            <param name="xpath">The node to retrieve (relative to dataNode)</param>
+            <param name="value">The value to set (uses the ToString() method as the value)</param>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.LangId">
+            <summary>
+            Language identifier for the project
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile.FileName">
+            <summary>
+            The File name to use when saving
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.CreateFrom(System.String,System.String)">
+            <summary>
+            Creates a new instance of a ProjectFile based on a templae
+            </summary>
+            <param name="templateFile">The path to the template</param>
+            <param name="name">The name of the new file</param>
+            <returns>A new ProjectFile</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.#ctor(System.String,System.Xml.XmlNode)">
+            <summary>
+            Creates a new instance of the class
+            </summary>
+            <param name="name">The name of the file</param>
+            <param name="node"><see cref="T:System.Xml.XmlNode"/> representing the file data</param>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.FileName">
+            <summary>
+            <see cref="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile"/>.
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.Title">
+            <summary>
+            The project title
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.Copyright">
+            <summary>
+            Copyright text for the project
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.FileVersion">
+            <summary>
+            Help project version
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.BuildSeparateIndexFile">
+            <summary>
+            When true builds both an HxI and an HxS file. Otherwise the index is compiled into the HxS
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.CreateFullTextIndex">
+            <summary>
+            Indicates whether to creare a full text index while compiling the porject
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.StopWordFile">
+            <summary>
+            The name of the stop word list to include in the project. A stop word list
+            is a list of common words that will be ignored during full text searching
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.ProjectFile.TOCFile">
+            <summary>
+            The name of the table fo contents file for the project
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionFile.CreateFrom(System.String,System.String)">
+            <summary>
+            Creates a new instance of a CollectionFile based on a templae
+            </summary>
+            <param name="templateFile">The path to the template</param>
+            <param name="name">The name of the new file</param>
+            <returns>A new CollectionFile</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionFile.#ctor(System.String,System.Xml.XmlNode)">
+            <summary>
+            Creates a new instance of the class
+            </summary>
+            <param name="name">The name of the file</param>
+            <param name="node"><see cref="T:System.Xml.XmlNode"/> representing the file data</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionFile.AddKeywordIndex(System.String)">
+            <summary>
+            Adds a KeyWordIndexDef node to the collection file
+            </summary>
+            <param name="fileName">Name of the index def</param>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionTOCFile">
+            <summary>
+            Summary description for CollectionTOCFile.
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionTOCFile.CreateFrom(System.String,System.String)">
+            <summary>
+            Constructs a new instance of the CollectionTOCFile class
+            from the specified template
+            </summary>
+            <param name="templateFile">Path to the file template</param>
+            <param name="name">The name of the new file</param>
+            <returns>The new CollectionTOCFile</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionTOCFile.#ctor(System.String,System.Xml.XmlNode)">
+            <summary>
+            Creates a new instance of the class
+            </summary>
+            <param name="name">The name of the file</param>
+            <param name="node"><see cref="T:System.Xml.XmlNode"/> representing the file data</param>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionTOCFile.FileName">
+            <summary>
+            <see cref="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile"/>.
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionTOCFile.Title">
+            <summary>
+            The title displayed in the help browser
+            (Ignored if <see cref="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionTOCFile.Flat"/> is true
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionTOCFile.Flat">
+            <summary>
+            Will the collection TOC be falt in the help browser.
+            If false the TOC will be hierarchical
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.CollectionTOCFile.BaseUrl">
+            <summary>
+            The Url of the title that will be displayed by this TOC
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile">
+            <summary>
+            Summary description for H2RegFile.
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the class
+            </summary>
+            <param name="name">The name of the file that will be created</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.Save(System.String)">
+            <summary>
+            Saves the INI file to disk
+            </summary>
+            <param name="path">The full path without filename</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.SetDocSetFilter(System.String,System.String)">
+            <summary>
+            Sets a DocSet filter that will be installed with the collection
+            </summary>
+            <param name="name">The friendly name of the filter</param>
+            <param name="docSet">The DocSet query value</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.AddTitle(System.String,System.Int32,System.String)">
+            <summary>
+            Adds a title to the collection
+            </summary>
+            <param name="titleId">The id of the title</param>
+            <param name="titleLangId">The language id of the title</param>
+            <param name="titleFileName">The name of the HxS file containing the title</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.AddTitle(System.String,System.Int32,System.String,System.String)">
+            <summary>
+            Adds a title to the collection
+            </summary>
+            <param name="titleId">The id of the title</param>
+            <param name="titleLangId">The language id of the title</param>
+            <param name="titleFileName">The name of the HxS file containing the title</param>
+            <param name="indexFileName">The name of the HxI file containing the title's index</param>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.CollectionNamespace">
+            <summary>
+            The namespace of the collection being registered
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.PluginNamespace">
+            <summary>
+            The optional namespace of a collection to plug this collection into
+            (ms.vcc is the VS.NET namespace)
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.LangId">
+            <summary>
+            Language identifier for the collection
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.Description">
+            <summary>
+            Description of the help collection
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.H2RegFile.CollectionFileName">
+            <summary>
+            Filename of the HxC that describes the collection
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.IncludeFile">
+            <summary>
+            Class representing the Hx include file
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.IncludeFile.CreateFrom(System.String,System.String)">
+            <summary>
+            Creates a new instance of a IncludeFile based on a template
+            </summary>
+            <param name="templateFile">The path to the template</param>
+            <param name="name">The name of the new file</param>
+            <returns>A new IncludeFile file</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.IncludeFile.#ctor(System.String,System.Xml.XmlNode)">
+            <summary>
+            Creates a new instance of the class
+            </summary>
+            <param name="name">The name of the file</param>
+            <param name="node"><see cref="T:System.Xml.XmlNode"/> representing the file data</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.IncludeFile.AddDirectory(System.String)">
+            <summary>
+            Adds a directory to the include file (includes *.* in that directory)
+            </summary>
+            <param name="path">Relative path (from the include file) to the directory</param>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.IncludeFile.FileName">
+            <summary>
+            <see cref="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile"/>.
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.IndexFile">
+            <summary>
+            Summary description for IndexFile.
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.IndexFile.CreateFrom(System.String,System.String)">
+            <summary>
+            Constructs a new instance of the IndexFile class
+            from the specified template
+            </summary>
+            <param name="templateFile">Path to the file template</param>
+            <param name="name">The name of the new file</param>
+            <returns>The new IndexFile</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.IndexFile.#ctor(System.String,System.Xml.XmlNode)">
+            <summary>
+            Creates a new instance of the class
+            </summary>
+            <param name="name">The name of the file</param>
+            <param name="node"><see cref="T:System.Xml.XmlNode"/> representing the file data</param>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.IndexFile.FileName">
+            <summary>
+            <see cref="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile"/>.
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.NamedUrlFile">
+            <summary>
+            Class used for accessing the content of a named url index
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.NamedUrlFile.CreateFrom(System.String,System.String)">
+            <summary>
+            Creates a new instance of a NamedUrlFile based on a templae
+            </summary>
+            <param name="templateFile">The path to the template</param>
+            <param name="name">The name of the new file</param>
+            <returns>A new NamedUrl file</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.NamedUrlFile.#ctor(System.String,System.Xml.XmlNode)">
+            <summary>
+            Creates a new instance of the class
+            </summary>
+            <param name="name">The name of the file</param>
+            <param name="node"><see cref="T:System.Xml.XmlNode"/> representing the file data</param>		 
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.NamedUrlFile.IntroductionPage">
+            <summary>
+            HTML file that displays the Help About image.
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.NamedUrlFile.AboutPageIcon">
+            <summary>
+            Displays product information in Help About.
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.NamedUrlFile.AboutPageInfo">
+            <summary>
+            The url used for both the DefaultPage and the HomePage named urls
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.NamedUrlFile.EmptyIndexTerm">
+            <summary>
+            Displays when a user chooses a keyword index term that has subkeywords but is not directly associated with a topic itself.
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.NamedUrlFile.NavFailPage">
+            <summary>
+            Opens if a link to a topic or URL is broken.
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile">
+            <summary>
+            Calls used for accessing a table of contents file
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile.CreateFrom(System.String,System.String)">
+            <summary>
+            Creates a new instance of a TOCFile based on a templae
+            </summary>
+            <param name="templateFile">The path to the template</param>
+            <param name="name">The name of the new file</param>
+            <returns>A new toc file</returns>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile.#ctor(System.String,System.Xml.XmlNode)">
+            <summary>
+            Creates a new instance of the class
+            </summary>
+            <param name="name">The name of the file</param>
+            <param name="node"><see cref="T:System.Xml.XmlNode"/> representing the file data</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile.Open">
+            <summary>
+            Opens the tables of contents for writing
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile.OpenNode(System.String)">
+            <summary>
+            Starts a new node at the current context
+            </summary>
+            <param name="url">Url associated with the new node</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile.InsertNode(System.String)">
+            <summary>
+            Inserts a new node into the current context without starting a new context
+            </summary>
+            <param name="url">Url associated with the new node</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile.CloseNode">
+            <summary>
+            Closes the current context
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile.Close">
+            <summary>
+            Closes the table of contents and saves the file
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile.FileName">
+            <summary>
+            <see cref="T:NDoc.Documenter.NativeHtmlHelp2.HxProject.HxFile"/>.
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.TOCStyle">
+            <summary>
+            Specifies how the collection will be integrated with the help browser
+            </summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.TOCStyle.Flat">
+            <summary>
+            Each root topic in the TOC is appears at the plug in point
+            </summary>
+        </member>
+        <member name="F:NDoc.Documenter.NativeHtmlHelp2.TOCStyle.Hierarchical">
+            <summary>
+            Creates a root node in the browser at the plug in point
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config">
+            <summary>
+            Config settings for the native Html Help 2 Documenter
+            </summary>
+            <remarks>
+            <para></para>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.#ctor">
+            <summary>Initializes a new instance of the NativeHtmlHelp2Config class.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.HandleUnknownPropertyType(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.OutputDirectory">
+            <summary>Gets or sets the OutputDirectory property.</summary>
+            <remarks>The folder where the root of the HTML set will be located.
+            This can be absolute or relative from the .ndoc project file.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.HtmlHelpName">
+            <summary>Gets or sets the HtmlHelpName property.</summary>
+            <remarks>The HTML Help project file and the compiled HTML Help file
+            use this property plus the appropriate extension as names.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.Title">
+            <summary>Gets or sets the Title property.</summary>
+            <remarks>This is the title displayed at the top of every page.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.RegisterTitleWithNamespace">
+            <summary>
+            Gets or sets the RegisterTitleWithNamespace property
+            </summary>
+            <remarks>Should the compiled Html 2 title be registered on this 
+            machine after it is compiled. Good for testing. (If true CollectionNamespace is required)</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.CollectionNamespace">
+            <summary>
+            Gets or sets the CollectionNamespace property
+            </summary>
+            <remarks>The Html Help 2 registry namespace (avoid spaces). 
+            Used in conjunction with GenerateCollectionFiles and RegisterTitleWithNamespace</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.RegisterTitleAsCollection">
+            <summary>
+            Gets or sets the RegisterTitleAsCollection property
+            </summary>
+            <remarks>If true the HxS title will be registered as a collection (ignored if RegisterTitleWithNamespace is true)</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.GenerateCollectionFiles">
+            <summary>
+            Gets or sets the GenerateCollectionFiles property
+            </summary>
+            <remarks>If true creates collection files to contain the help title. 
+            These all the title to be plugged into the Visual Studio help namespace during deployment.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.PlugInNamespace">
+            <summary>
+            Gets or sets the PlugInNamespace property
+            </summary>
+            <remarks>If GenerateCollectionFiles is true, the resulting 
+            collection will be plugged into this namespace during deployment</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.CollectionTOCStyle">
+            <summary>
+            Gets or sets the CollectionTOCStyle property
+            </summary>
+            <remarks>Determines how the collection table of contents will appear in the help browser</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.LangID">
+            <summary>Gets or sets the LangID property</summary>
+            <remarks>The language ID of the locale used by the compiled helpfile</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.BuildSeparateIndexFile">
+            <summary>Gets or sets the BuildSeparateIndexFile property</summary>
+            <remarks>If true a seperate index file is generated, otherwise it is compiled into the HxS (recommended)</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.DocSetList">
+            <summary>Get's or sets the DocSetList property</summary>
+            <remarks>A comma-seperated list of DocSet filter identifiers in which topics in this title will included.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.Version">
+            <summary>Get's or sets the version property</summary>
+            <remarks>The version number for the help file (#.#.#.#)</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.CreateFullTextIndex">
+            <summary>Gets or sets the CreateFullTextIndex property</summary>
+            <remarks>If true creates a full text index for the help file</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.IncludeDefaultStopWordList">
+            <summary>Gets or sets the IncludeDefaultStopWordList property</summary>
+            <remarks>If true the default stop word list is compiled into the help file. 
+            (A stop word list is a list of words that will be ignored during a full text search)</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.UseHelpNamespaceMappingFile">
+            <summary>Gets or sets the UseHelpNamespaceMappingFile property.</summary>
+            <remarks>If the documentation includes references to types registered in a seperate html help 2 
+            namespace, supplying a mapping file allows XLinks to be created to topics within that namespace.
+            </remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.HeaderHtml">
+            <summary>Gets or sets the HeaderHtml property.</summary>
+            <remarks>Raw HTML that is used as a page header instead of the default blue banner. 
+            %FILE_NAME%\" is dynamically replaced by the name of the file for the current html page. 
+            %TOPIC_TITLE%\" is dynamically replaced by the title of the current page.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.FooterHtml">
+            <summary>Gets or sets the FooterHtml property.</summary>
+            <remarks>Raw HTML that is used as a page footer instead of the default footer.
+            %FILE_NAME% is dynamically replaced by the name of the file for the current html page. 
+            %ASSEMBLY_NAME% is dynamically replaced by the name of the assembly for the current page.
+            %ASSEMBLY_VERSION% is dynamically replaced by the version of the assembly for the current page.
+            %TOPIC_TITLE% is dynamically replaced by the title of the current page.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.IntroductionPage">
+            <summary>Gets or sets the IntroductionPage property</summary>
+            <remarks>An HTML page that will be dispayed when the root TOC node is selected.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.AboutPageInfo">
+            <summary>Gets or sets the AboutPageInfo property</summary>
+            <remarks>Displays product information in Help About.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.EmptyIndexTermPage">
+            <summary>Gets or sets the EmptyIndexTermPage property</summary>
+            <remarks>Displays when a user chooses a keyword index term that has 
+            subkeywords but is not directly associated with a topic itself.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.NavFailPage">
+            <summary>Gets or sets the NavFailPage property</summary>
+            <remarks>Page that opens if a link to a topic or URL is broken.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.AboutPageIconPage">
+            <summary>Gets or sets the AboutPageIconPage property</summary>
+            <remarks>HTML file that displays the Help About image.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.AdditionalContentResourceDirectory">
+            <summary>Gets or sets the AdditionalContentResourceDirectory property</summary>
+            <remarks>Directory that contains resources (images etc.) used by the additional content pages. 
+            This directory will be recursively compiled into the help file.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Config.ExtensibilityStylesheet">
+            <summary>Gets or sets the ExtensibilityStylesheet property</summary>
+            <remarks>Path to an xslt stylesheet that contains templates for documenting extensibility tags.</remarks>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Documenter">
+            <summary>Native Html Help 2 MSDN.Net documenter</summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Documenter.#ctor">
+            <summary>Initializes a new instance of the NativeHtmlHelp2Documenter class.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Documenter.Clear">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Documenter.CanBuild(NDoc.Core.Project,System.Boolean)">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Documenter.Build(NDoc.Core.Project)">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Documenter.View">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Documenter.DevelopmentStatus">
+            <summary>
+            The development status (alpha, beta, stable) of this documenter.
+            See <see cref="T:NDoc.Core.BaseDocumenter"/>
+            </summary>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Documenter.MainOutputFile">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Workspace">
+            <summary>
+            Manages the location of the documentation build process
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Workspace.#ctor(System.String)">
+            <summary>
+            Contructs a new instance of the NativeHtmlHelp2Workspace class
+            </summary>
+            <param name="rootDir">The location to create the workspace</param>
+        </member>
+        <member name="P:NDoc.Documenter.NativeHtmlHelp2.NativeHtmlHelp2Workspace.ContentLocationName">
+            <summary>
+            The name of the relative location (from the porject root) where content files are stored
+            </summary>
+        </member>
+        <member name="T:NDoc.Documenter.NativeHtmlHelp2.TOCBuilder">
+            <summary>
+            Orchestrates building the table of contents file base on HTMLFactory events
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.TOCBuilder.#ctor(NDoc.Documenter.NativeHtmlHelp2.HxProject.TOCFile,NDoc.Documenter.NativeHtmlHelp2.Engine.HtmlFactory)">
+            <summary>
+            Contruct a enw instance of the TOCBuilder class
+            </summary>
+            <param name="toc">The table of contents file to write to</param>
+            <param name="factory">The HTMLFactory creating each file to be added</param>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.TOCBuilder.Finalize">
+            <summary>
+            Finalizer
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.TOCBuilder.Dispose">
+            <summary>
+            Disposes the TOCBuilder instance
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.NativeHtmlHelp2.TOCBuilder.Dispose(System.Boolean)">
+            <summary>
+            Disposes the TOCBuilder instance
+            </summary>
+            <param name="disposing">Was this method called from the Dispsose() method</param>
+        </member>
+    </members>
+</doc>

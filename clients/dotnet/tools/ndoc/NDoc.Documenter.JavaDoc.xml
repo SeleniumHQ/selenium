@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NDoc.Documenter.JavaDoc</name>
+    </assembly>
+    <members>
+        <member name="T:NDoc.Documenter.JavaDoc.JavaDocDocumenter">
+            <summary>The JavaDoc documenter.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.JavaDoc.JavaDocDocumenter.#ctor">
+            <summary>Initializes a new instance of the JavaDocDocumenter class.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.JavaDoc.JavaDocDocumenter.Build(NDoc.Core.Project)">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.JavaDoc.JavaDocDocumenter.Clear">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.JavaDoc.JavaDocDocumenter.GetTransformFile(System.String)">
+            <summary>
+            Gets the cached transform file, based upon the specified name.  If the file does not 
+            exist, it is created and then cached.
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NDoc.Documenter.JavaDoc.JavaDocDocumenter.GetCachedXPathDocument">
+            <summary>
+            Gets the XPathDocument, but caches it and returns the cached value.
+            </summary>
+            <remarks>
+            <c>GetXPathDocument</c> can be very slow for large Assemblies, so this is 
+            designed to speed things up.  As long as the XPathDocument does not ever get 
+            changed internally by other transforms, this should just speed up the performance 
+            of the application.
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="P:NDoc.Documenter.JavaDoc.JavaDocDocumenter.MainOutputFile">
+            <summary>See <see cref="T:NDoc.Core.IDocumenter"/>.</summary>
+        </member>
+        <member name="T:NDoc.Documenter.JavaDoc.JavaDocDocumenterConfig">
+            <summary>The JavaDoc documenter config class.</summary>
+        </member>
+        <member name="M:NDoc.Documenter.JavaDoc.JavaDocDocumenterConfig.#ctor">
+            <summary>Initializes a new instance of the JavaDocDocumenterConfig class.</summary>
+            <remarks>
+            <para>The JavaDoc documenter is used to make a set of HTML documentation
+            similar in format and layout to the documentation created by Java's JavaDoc
+            technology.</para>
+            <para><i>Due to lack of interest this documenter is not under active development.</i>
+            If you are interested in updating this documenter please 
+            <a href="http://sourceforge.net/projects/ndoc/">contact one of NDoc's Admins</a>.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:NDoc.Documenter.JavaDoc.JavaDocDocumenterConfig.Title">
+            <summary>Gets or sets the Title property.</summary>
+            <remarks>The name of the JavaDoc project.</remarks>
+        </member>
+        <member name="P:NDoc.Documenter.JavaDoc.JavaDocDocumenterConfig.OutputDirectory">
+            <summary>Gets or sets the OutputDirectory property.</summary>
+            <remarks>The folder where the root of the HTML set will be located.
+            This can be absolute or relative from the .ndoc project file.</remarks>
+        </member>
+        <member name="T:NDoc.Documenter.JavaDoc.JavaDocWorkspace">
+            <summary>
+            Summary description for LatexWorkspace.
+            </summary>
+        </member>
+        <member name="M:NDoc.Documenter.JavaDoc.JavaDocWorkspace.#ctor(System.String)">
+            <summary>
+            Manages the location of the documentation build process
+            </summary>
+            <param name="rootDir">The location to create the workspace</param>
+        </member>
+    </members>
+</doc>

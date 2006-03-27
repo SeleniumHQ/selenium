@@ -1,0 +1,2532 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NDoc.Test</name>
+    </assembly>
+    <members>
+        <member name="T:NDoc.Test.Attributes.NamespaceDoc">
+            <summary>
+            Defining and using custom attributes
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Attributes.IsTestedAttribute">
+            <summary>
+            "IsTested" custom attribute class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Attributes.TestAttribute">
+            <summary>
+            "Author" custom attribute class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Attributes.AuthorAttribute">
+            <summary>
+            "Author" custom attribute class
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.Attributes.AuthorAttribute.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="P:NDoc.Test.Attributes.AuthorAttribute.Name">
+            <summary>
+            Name property of the Author attribute
+            </summary>
+        </member>
+        <member name="P:NDoc.Test.Attributes.AuthorAttribute.Version">
+            <summary>
+            "IsTested" Attribute applied onto a property.
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Attributes.Account">
+            <summary>
+            Class with the "Author" attribute
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.Attributes.Account.AddOrder(NDoc.Test.Attributes.Order)">
+            <summary>
+            Method with the "IsTested" attribute
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Attributes.Order">
+            <summary>
+            Class with 3 attributes:  Author(name="Jane Programmer", Version=2), IsTested and XmlType.
+            </summary>
+            <remarks>This class has the [Serializable] attribute.</remarks>
+        </member>
+        <member name="F:NDoc.Test.Attributes.Order.Number">
+            <summary>
+            Field with XmlElement attribute.
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.Attributes.Order.What">
+            <summary>
+            Another field with XmlElement attribute.
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.Attributes.Order.dummy">
+            <summary>
+            This field has the [NonSerialized] attribute.
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.EditorBrowsableAttr.NamespaceDoc">
+            <summary>
+            Various tests of the EditorBrowsable filtering
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.EditorBrowsableAttr.NotBrowsableClass">
+            <summary>This class is marked with EditorBrowsableState.Never.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.NotBrowsableClass.NotBrowsableClassMethod">
+            <summary>This method is defined in NotBrowsableClass.</summary>
+        </member>
+        <member name="T:NDoc.Test.EditorBrowsableAttr.BrowsableNotBrowsableClass">
+            <summary>This class is marked with EditorBrowsableState.Always,
+            but inherits from a class with EditorBrowsableState.Never.</summary>
+            <remarks>
+            <para>Links to NotBrowsableClass and its members should be disabled,
+            including in the namespace hierarchy.</para>
+            <para>Note that this illustrates a very bad usage of the 
+            EditorBrowsable attribute.</para>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableNotBrowsableClass.BrowsableNotBrowsableClassMethod">
+            <summary>This method is defined in BrowsableNotBrowsableClass.</summary>
+        </member>
+        <member name="T:NDoc.Test.EditorBrowsableAttr.BrowsableHandler">
+            <summary>This delegate is marked with EditorBrowsableState.Advanced</summary>
+        </member>
+        <member name="T:NDoc.Test.EditorBrowsableAttr.BrowsableClass">
+            <summary>This class is marked with EditorBrowsableState.Always. </summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.#ctor">
+            <summary>This member is marked as EditorBrowsableState.Always.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.#ctor(System.Int32)">
+            <summary>This member is marked as EditorBrowsableState.Advanced.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.#ctor(System.Boolean)">
+            <summary>This member is marked as EditorBrowsableState.Never.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.AlwaysMethod">
+            <summary>This member is marked as EditorBrowsableState.Always.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.AdvancedMethod">
+            <summary>This member is marked as EditorBrowsableState.Advanced.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.NeverMethod">
+            <summary>This member is marked as EditorBrowsableState.Never.</summary>
+        </member>
+        <member name="F:NDoc.Test.EditorBrowsableAttr.BrowsableClass.AlwaysField">
+            <summary>This member is marked as EditorBrowsableState.Always.</summary>
+        </member>
+        <member name="F:NDoc.Test.EditorBrowsableAttr.BrowsableClass.AdvancedField">
+            <summary>This member is marked as EditorBrowsableState.Advanced.</summary>
+        </member>
+        <member name="F:NDoc.Test.EditorBrowsableAttr.BrowsableClass.NeverField">
+            <summary>This member is marked as EditorBrowsableState.Never.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.op_Increment(NDoc.Test.EditorBrowsableAttr.BrowsableClass)">
+            <summary>This member is marked as EditorBrowsableState.Always.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.op_OnesComplement(NDoc.Test.EditorBrowsableAttr.BrowsableClass)">
+            <summary>This member is marked as EditorBrowsableState.Advanced.</summary>
+        </member>
+        <member name="M:NDoc.Test.EditorBrowsableAttr.BrowsableClass.op_Decrement(NDoc.Test.EditorBrowsableAttr.BrowsableClass)">
+            <summary>This member is marked as EditorBrowsableState.Never.</summary>
+        </member>
+        <member name="P:NDoc.Test.EditorBrowsableAttr.BrowsableClass.AlwaysProperty">
+            <summary>This member is marked as EditorBrowsableState.Always.</summary>
+        </member>
+        <member name="P:NDoc.Test.EditorBrowsableAttr.BrowsableClass.AdvancedProperty">
+            <summary>This member is marked as EditorBrowsableState.Advanced.</summary>
+        </member>
+        <member name="P:NDoc.Test.EditorBrowsableAttr.BrowsableClass.NeverProperty">
+            <summary>This member is marked as EditorBrowsableState.Never.</summary>
+        </member>
+        <member name="E:NDoc.Test.EditorBrowsableAttr.BrowsableClass.AlwaysEvent">
+            <summary>This member is marked as EditorBrowsableState.Always.</summary>
+        </member>
+        <member name="E:NDoc.Test.EditorBrowsableAttr.BrowsableClass.AdvancedEvent">
+            <summary>This member is marked as EditorBrowsableState.Advanced.</summary>
+        </member>
+        <member name="E:NDoc.Test.EditorBrowsableAttr.BrowsableClass.NeverEvent">
+            <summary>This member is marked as EditorBrowsableState.Never.</summary>
+        </member>
+        <member name="T:NDoc.Test.Extensibility.NamespaceDoc">
+            <summary>
+            This namespace is used to test the extensibility feature
+            see <a href="extend-ndoc.xslt"/>
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Extensibility.ABunchOfCustomTags">
+            <summary>
+            When processed by the VS.NET or MSDN documenters, using the stylesheet "extend-ndoc.xslt"
+            as the ExtensibilityStylesheet property will result in end-user defined tags
+            being displayed in the final help output topics
+            </summary>
+            <remarks>This is a test of an inline <null/> tag</remarks>
+            <custom>This is a custom tag</custom>
+            <mySeeAlso>This should appear in the "See Also" section</mySeeAlso>
+            <history><date>2004-10-01</date><user>ksd</user><scr>17482</scr>
+            Initial comment
+            </history>
+            <history><date>2004-10-02</date><user>ksd</user><scr>18212</scr>
+            Some adiitional comments
+            </history>
+        </member>
+        <member name="T:NDoc.Test.InternalStuff.NamespaceDoc">
+            <summary>
+            Items marked internal
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.NamespaceDoc">
+            <summary>
+            This is another example of namespace summary documentation,
+            when the UseNamespaceDocSummaries flag is set.
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.IInterfaceA">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.IInterfaceA.InheritedImplicitInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.IInterfaceB">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.IInterfaceB.InheritedExplicitInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.IInterfaceC">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.IInterfaceC.ImplicitInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.IInterfaceD">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.IInterfaceD.ExplicitInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.IInterfaceE">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.IInterfaceE.NewInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.IInterfaceF">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.IInterfaceF.InterfaceMethodOverride">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.NewBase">
+            <summary>
+            Base class used to test the new modifier. See <see cref="T:NDoc.Test.NewStuff.NewDerived"/>
+            for details. Members in this class are named to demonstrate syntax
+            in the derived class.
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewBase.NewConst">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewPropertySNOKOM(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewVirtualPropertySNOKOM(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewBase.NewMethodSNOKOM">
+            <summary>no comment</summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewBase.NewVirtualMethodSNOKOM">
+            <summary>no comment</summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewBase.NewField">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.OverrideMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewVirtualMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewMethodWithOverload(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewMethodWithOverload(System.Double)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewMethodWithOverload(System.Int64)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewMethodWithOverload(System.Int16)">
+            <summary>
+            public void NewMethodWithOverload(short h)
+            </summary>
+            <param name="h"></param>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewStaticMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.InheritedImplicitInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.NewInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewBase.InterfaceMethodOverride">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewBase.Item(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewBase.NewFieldSNOKOM">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewBase.NewProperty">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewBase.OverrideProperty">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewBase.NewVirtualProperty">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.NewBase.NewClass">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.NewDerived">
+            <summary>
+            This class provides new implementations for the base class members.
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewDerived.Const">
+            <summary>no comment</summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewDerived.NewConst">
+            <summary>no comment</summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewDerived.Field">
+            <summary>no comment</summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewDerived.NewField">
+            <summary>no comment</summary>
+        </member>
+        <member name="F:NDoc.Test.NewStuff.NewDerived.NewFieldSNOKOM">
+            <summary>
+            "Same Name Other Kind Of Member"
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.Method(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.VirtualMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.OverrideMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewVirtualMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewMethodSNOKOM(System.Int32)">
+            <summary>
+            "Same Name Other Kind Of Member"
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewVirtualMethodSNOKOM(System.Int32)">
+            <summary>
+            "Same Name Other Kind Of Member"
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewMethodWithOverload(System.String)">
+            <summary>
+            public void NewMethodWithOverload(string s)
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewMethodWithOverload(System.Int32)">
+            <summary>
+            new public void NewMethodWithOverload(int n)
+            </summary>
+            <param name="n"></param>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewMethodWithOverload(System.Object)">
+            <summary>
+            public virtual void NewMethodWithOverload(object o)
+            </summary>
+            <param name="o"></param>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewMethodWithOverload(System.Double)">
+            <summary>
+            public override void NewMethodWithOverload(double d)
+            </summary>
+            <param name="d"></param>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewMethodWithOverload(System.Int64)">
+            <summary>
+            new public virtual void NewMethodWithOverload(long l)
+            </summary>
+            <param name="l"></param>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewStaticMethod(System.Int32)">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.ImplicitInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.NewInterfaceMethod">
+            <summary>no comment</summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.NewDerived.InterfaceMethodOverride">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.Item(System.Int32)">
+            <summary>This indexer is new</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.Item(System.String)">
+            <summary>This indexer is an overload</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.Property">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.NewProperty">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.VirtualProperty">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.OverrideProperty">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.NewVirtualProperty">
+            <summary>no comment</summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.NewPropertySNOKOM">
+            <summary>
+            "Same Name Other Kind Of Member"
+            </summary>
+        </member>
+        <member name="P:NDoc.Test.NewStuff.NewDerived.NewVirtualPropertySNOKOM">
+            <summary>
+            "Same Name Other Kind Of Member"
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.NewDerived.NewClass">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.Base">
+            <summary>
+            Do you see F?
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.Base.F">
+            <summary>no comment</summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.Derived">
+            <summary>
+            Now F is gone (private)!
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.MoreDerived">
+            <summary>
+            Where is F?
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.NewStuff.SomeClass">
+            <summary>
+            Uses MoreDerived.F (actually Base.F)
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.NewStuff.SomeClass.G">
+            <summary>
+            Works, so MoreDerived.F is there, but where?
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.NamespaceDoc">
+            <summary>This namespace has tests for obsolete attribute.</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.ObsoleteClass">
+            <summary>Represents a class with obsolete attributes.</summary>
+            <obsolete>
+            <para>This is additional info for the user regarding the obsolete status of this class and any alternatives that exist.</para>
+            <para>These alternatives include links to <see cref="T:NDoc.Test.Obsolete.EventArgsOne">Another Class</see></para>
+            </obsolete>
+            <remarks>
+            <para>These are the remarks</para>
+            <para>This a link to <see cref="T:NDoc.Test.Class">Another Class</see></para>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.#ctor">
+            <overloads>
+            <summary>
+            overloads summary for constructor
+            </summary>
+            <remarks>This is the remarks for all the overloads of the contructors</remarks>
+            </overloads>
+            <summary>Initializes a new instance of the ObsoleteClass class with no param.</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.#ctor(System.Int32)">
+             <summary>Initializes a new instance of the Class ObsoleteClass with an integer.
+             <para>no message on ObsoleteAttribute</para> 
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.#ctor(System.String)">
+            <summary>Initializes a new instance of the Class ObsoleteClass with a string.</summary>
+            <obsolete><p>This is an obsolete message with html markup</p><p><font color='green'>hello</font></p></obsolete>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.#ctor(System.Double)">
+            <summary>Initializes a new instance of the Class ObsoleteClass with a double.</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>Initializes a new instance of the Class ObsoleteClass with 3 integers.</summary>
+            <param name="i1">This is the first integer parameter.
+            </param>
+            <param name="i2">This is the second integer parameter.</param>
+            <param name="i3">This is the third integer parameter.</param>
+            <remarks>
+            Yes, the <paramref name="i3"/> parameter is of type int.
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.#cctor">
+            <summary>
+            This is the static constructor.
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.Obsolete.ObsoleteClass.Field">
+            <summary>Holds an <c>int</c> value.</summary>
+        </member>
+        <member name="F:NDoc.Test.Obsolete.ObsoleteClass.ReadOnlyField">
+            <summary>Holds an read-only<c>int</c> value.</summary>
+        </member>
+        <member name="F:NDoc.Test.Obsolete.ObsoleteClass.StaticField">
+            <summary>Holds a static <c>int</c> value.</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.Method">
+            <summary>Executes some code Method().</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.Method(System.Int32,System.Int32,System.Int32)">
+            <summary>Executes some code Method(int i1, int i2, int i3).</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.StaticMethod(System.DayOfWeek)">
+            <summary>Executes some static code.</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.ParameterModifyers(System.Int32@,System.Int32@,System.Object[])">
+            <summary>Uses some parameter modifyers.</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.ParameterModifyers(System.Int32,System.Int32@,System.Int32@,System.Object[])">
+            <summary>An overload.</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.RaisesSomeEvents">
+            <summary>
+            Raises some events.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.op_LogicalNot(NDoc.Test.Obsolete.ObsoleteClass)">
+            <summary>This is my first operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Obsolete.ObsoleteClass.op_Explicit(System.Double)~NDoc.Test.Obsolete.ObsoleteClass">
+            <summary>This is an operator.</summary>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.ObsoleteClass.Property">
+            <summary>Gets a value.</summary>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.ObsoleteClass.StaticProperty">
+            <summary>Gets a static value.</summary>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.ObsoleteClass.Item(System.Int32)">
+            <overloads>
+            <summary>
+            <para>These are the indexers.</para>
+            </summary>
+            <remarks><para>This is the first para of the overload remarks</para><para>this is the second.</para></remarks>
+            </overloads>
+            <summary>This overloaded indexer accepts an int.</summary>
+            <param name="i">The int index.</param>
+            <value>Always returns 0.</value>
+            <remarks><para>This is the first para in the remarks</para><para>this is the second.</para></remarks>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.ObsoleteClass.Item(System.String)">
+            <summary>This overloaded indexer accepts a string.</summary>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.ObsoleteClass.Item(System.Int32,System.Int32,System.Int32)">
+            <summary>This overloaded indexer accepts three ints.</summary>
+        </member>
+        <member name="E:NDoc.Test.Obsolete.ObsoleteClass.Event">
+            <summary>This is a simple event that uses the Handler delegate.</summary>
+        </member>
+        <member name="E:NDoc.Test.Obsolete.ObsoleteClass._event">
+            <summary>A private event.</summary>
+        </member>
+        <member name="E:NDoc.Test.Obsolete.ObsoleteClass.AccessorsEvent">
+            <summary>This event uses the <b>add</b> and <b>remove</b> accessors.</summary>
+        </member>
+        <member name="E:NDoc.Test.Obsolete.ObsoleteClass.EventWithArgs">
+            <summary>This event has arguments.</summary>
+        </member>
+        <member name="E:NDoc.Test.Obsolete.ObsoleteClass.EventWithMoreArgs">
+            <summary>This event has more arguments.</summary>
+            <remarks>Check the links in the Event Data table...</remarks>
+        </member>
+        <member name="E:NDoc.Test.Obsolete.ObsoleteClass.ProtectedEvent">
+            <summary>This event is protected.</summary>
+        </member>
+        <member name="E:NDoc.Test.Obsolete.ObsoleteClass.StaticEvent">
+            <summary>static event</summary>
+        </member>
+        <member name="E:NDoc.Test.Obsolete.ObsoleteClass.MultiEvent">
+            <summary>An event with one property.</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.HandlerWithArgs">
+            <summary>This is a delegate with arguments used by Class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.HandlerWithMoreArgs">
+            <summary>This is a delegate with more arguments used by Class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.Handler">
+            <summary>This is a simple delegate used by Class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.MulticastHandler">
+            <summary>This is a multicast delegate. not obsolete..</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.EventArgsOne">
+            <summary>This event has one property.</summary>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.EventArgsOne.OneProperty">
+            <summary>This is a unique event argument property.</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.EventArgsTest">
+            <summary>This is an event arguments class.</summary>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.EventArgsTest.EventArgsTestProperty">
+            <summary>This is an event arguments property.</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.EventArgsDerived">
+            <summary>This is a derived event arguments class.</summary>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.EventArgsDerived.EventArgsDerivedProperty">
+            <summary>This event arguments property is declared in the derived class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.ObsoleteStruct">
+            <summary>This is a derived event arguments class.</summary>
+        </member>
+        <member name="P:NDoc.Test.Obsolete.ObsoleteStruct.ObsoleteStructProperty">
+            <summary>This is a property</summary>
+        </member>
+        <member name="T:NDoc.Test.Obsolete.Enum">
+            <summary>
+            This is an obsolete enum
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.Obsolete.Enum.entry">
+            <summary>
+            The only entry in the enum
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Operator.NamespaceDoc">
+            <summary>
+            Various permutations of operators
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Operator.OpOverloads">
+            <summary>This class contains some operators; some overloaded and some not.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.OpOverloads.op_Addition(NDoc.Test.Operator.OpOverloads,NDoc.Test.Operator.OpOverloads)">
+            <overloads>Addition Operator.</overloads>
+             <summary>Add OperatorOverloads to OperatorOverloads.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.OpOverloads.op_Addition(NDoc.Test.Operator.OpOverloads,System.Int32)">
+            <summary>Add int to OperatorOverloads.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.OpOverloads.op_Addition(NDoc.Test.Operator.OpOverloads,System.Double)">
+            <summary>double to OperatorOverloads.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.OpOverloads.op_Subtraction(NDoc.Test.Operator.OpOverloads,NDoc.Test.Operator.OpOverloads)">
+            <summary>Subtraction operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.OpOverloads.op_Subtraction(NDoc.Test.Operator.OpOverloads,System.Int32)">
+            <summary>Subtraction operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.OpOverloads.op_Subtraction(NDoc.Test.Operator.OpOverloads,System.Double)">
+            <summary>Subtraction operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.OpOverloads.op_Multiply(NDoc.Test.Operator.OpOverloads,NDoc.Test.Operator.OpOverloads)">
+            <summary>divide OperatorOverloads by OperatorOverloads.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.OpOverloads.op_Division(NDoc.Test.Operator.OpOverloads,NDoc.Test.Operator.OpOverloads)">
+            <summary>multiply OperatorOverloads with OperatorOverloads.</summary>
+        </member>
+        <member name="T:NDoc.Test.Operator.ConvExplicit">
+            <summary>This class contains various overloaded type conversions.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.ConvExplicit.op_Explicit(NDoc.Test.Operator.ConvExplicit)~System.Int32">
+            <summary>Explicit conversion to an int.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.ConvExplicit.op_Explicit(NDoc.Test.Operator.ConvExplicit)~System.Single">
+            <summary>Explicit conversion to an float.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.ConvExplicit.op_Explicit(NDoc.Test.Operator.ConvExplicit)~System.Double">
+            <summary>Explicit conversion to an double.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.ConvExplicit.op_Explicit(System.Double)~NDoc.Test.Operator.ConvExplicit">
+            <summary>Explicit conversion from a double.</summary>
+        </member>
+        <member name="T:NDoc.Test.Operator.ConvImplicit">
+            <summary>This class contains various overloaded type conversions.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.ConvImplicit.op_Implicit(NDoc.Test.Operator.ConvImplicit)~System.Int32">
+            <summary>Implicit conversion to an int.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.ConvImplicit.op_Implicit(NDoc.Test.Operator.ConvImplicit)~System.Single">
+            <summary>Implicit conversion to an float.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.ConvImplicit.op_Implicit(NDoc.Test.Operator.ConvImplicit)~System.Double">
+            <summary>Implicit conversion to an double.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.ConvImplicit.op_Implicit(System.Double)~NDoc.Test.Operator.ConvImplicit">
+            <summary>Implicit conversion from a double.</summary>
+        </member>
+        <member name="T:NDoc.Test.Operator.MixedOps">
+            <summary>This class contains various overloaded operators and type conversions.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Implicit(NDoc.Test.Operator.MixedOps)~System.String">
+            <summary>Implicit conversion to a string.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Implicit(NDoc.Test.Operator.MixedOps)~System.Int32">
+            <summary>Implicit conversion to an int.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Implicit(NDoc.Test.Operator.MixedOps)~System.Single">
+            <summary>Implicit conversion to an float.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Implicit(NDoc.Test.Operator.MixedOps)~System.Double">
+            <summary>Implicit conversion to an double.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Implicit(System.Double)~NDoc.Test.Operator.MixedOps">
+            <summary>Implicit conversion from a double.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Implicit(NDoc.Test.Operator.MixedOps)~System.Boolean">
+            <summary>Implicit conversion to a boolean.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Addition(NDoc.Test.Operator.MixedOps,NDoc.Test.Operator.MixedOps)">
+            <overloads>Addition Operator.</overloads>
+             <summary>Add OperatorOverloads to OperatorOverloads.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Addition(NDoc.Test.Operator.MixedOps,System.Int32)">
+            <summary>Add int to OperatorOverloads.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Addition(NDoc.Test.Operator.MixedOps,System.Double)">
+            <summary>double to OperatorOverloads.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Subtraction(NDoc.Test.Operator.MixedOps,NDoc.Test.Operator.MixedOps)">
+            <summary>Subtraction operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Subtraction(NDoc.Test.Operator.MixedOps,System.Int32)">
+            <summary>Subtraction operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_Subtraction(NDoc.Test.Operator.MixedOps,System.Double)">
+            <summary>Subtraction operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_GreaterThan(NDoc.Test.Operator.MixedOps,NDoc.Test.Operator.MixedOps)">
+            <summary>Greater-than operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_GreaterThan(NDoc.Test.Operator.MixedOps,System.Double)">
+            <summary>Greater-than operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_LessThan(NDoc.Test.Operator.MixedOps,NDoc.Test.Operator.MixedOps)">
+            <summary>Less-than operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.MixedOps.op_LessThan(NDoc.Test.Operator.MixedOps,System.Double)">
+            <summary>Less-than operator.</summary>
+        </member>
+        <member name="T:NDoc.Test.Operator.Operators">
+            <summary>This class contains all the overloadable operators.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_UnaryPlus(NDoc.Test.Operator.Operators)">
+            <summary>Unary plus operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_UnaryNegation(NDoc.Test.Operator.Operators)">
+            <summary>Unary minus operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_LogicalNot(NDoc.Test.Operator.Operators)">
+            <summary>Logical negation operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_OnesComplement(NDoc.Test.Operator.Operators)">
+            <summary>Bitwise complement operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Increment(NDoc.Test.Operator.Operators)">
+            <summary>Increment operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Decrement(NDoc.Test.Operator.Operators)">
+            <summary>Decrement operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_True(NDoc.Test.Operator.Operators)">
+            <summary>Definitely true operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_False(NDoc.Test.Operator.Operators)">
+            <summary>Definitely false operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Addition(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Addition operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Subtraction(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Subtraction operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Multiply(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Multiplication operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Division(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Division operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Modulus(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Remainder operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_BitwiseAnd(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>And operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_BitwiseOr(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Or operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_ExclusiveOr(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Exclusive-or operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_LeftShift(NDoc.Test.Operator.Operators,System.Int32)">
+            <summary>Left-shift operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_RightShift(NDoc.Test.Operator.Operators,System.Int32)">
+            <summary>Right-shift operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Equality(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Equality operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_Inequality(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Inequality operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.Equals(System.Object)">
+            <summary>Equals method.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.GetHashCode">
+            <summary>GetHashCode method.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_LessThan(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Less-than operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_GreaterThan(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Greater-than operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_LessThanOrEqual(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Less-than-or-equal operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.op_GreaterThanOrEqual(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>Greater-than-or-equal operator.</summary>
+        </member>
+        <member name="M:NDoc.Test.Operator.Operators.Multiply(NDoc.Test.Operator.Operators,NDoc.Test.Operator.Operators)">
+            <summary>A multiplication method.</summary>
+        </member>
+        <member name="T:NDoc.Test.Platforms.NamespaceDoc">
+            <summary>
+            The classes in the namespace demonstrate the various
+            way to specify platform support
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Platforms.ThisClassSupportsAllPlatforms">
+            <summary>
+            This class can run safely on all .NET compatible operating systems and frameworks
+            </summary>
+            <platform>
+               <os predefined="all" />
+               <frameworks>
+            		<mono>true</mono>
+            		<compact>true</compact>
+               </frameworks>  
+            </platform>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassSupportsAllPlatforms.ThisMethodShouldHaveTheSamePlatformAsTheClass">
+            <summary>
+            This method should display the same list of platforms as the containing class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Platforms.ThisClassSupportsAllOSButNotCFOrMono">
+            <summary>
+            This class can doesn't support the compact framework or Mono
+            </summary>
+            <platform>
+               <os predefined="all" />
+            </platform>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassSupportsAllOSButNotCFOrMono.ThisMethodShouldHaveTheSamePlatformAsTheClass">
+            <summary>
+            This method should display the same list of platforms as the containing class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Platforms.ThisClassSupportsAllOsAndCF">
+            <summary>
+            This class supports the CF and all OS's, but not Mono
+            </summary>
+            <platform>
+               <os predefined="all" />
+               <frameworks>
+            		<compact>true</compact>
+               </frameworks>  
+            </platform>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassSupportsAllOsAndCF.ThisMethodShouldHaveTheSamePlatformAsTheClass">
+            <summary>
+            This method should display the same list of platforms as the containing class
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassSupportsAllOsAndCF.ThisMethodDoesNotSupportTheCF">
+            <summary>
+            This method doesn't support the compact framework
+            </summary>
+            <platform>
+            	<frameworks>
+            		<compact>false</compact>
+            	</frameworks>
+            </platform>
+        </member>
+        <member name="T:NDoc.Test.Platforms.ThisClassSupportsAllOsAndMono">
+            <summary>
+            This class supports the Mono and all OS's, but not CF
+            </summary>
+            <platform>
+               <os predefined="all" />
+               <frameworks>
+            		<mono>true</mono>
+               </frameworks>
+            </platform>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassSupportsAllOsAndMono.ThisMethodShouldHaveTheSamePlatformAsTheClass">
+            <summary>
+            This method should display the same list of platforms as the containing class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Platforms.ThisClassNeedsNT5">
+            <summary>
+            This class can only run on an NT5 derived OS
+            </summary>
+            <platform>
+               <os predefined="nt5plus" />
+            </platform>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassNeedsNT5.ThisMethodShouldHaveTheSamePlatformAsTheClass">
+            <summary>
+            This method should display the same list of platforms as the containing class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Platforms.ThisClassNeedsAServerOS">
+            <summary>
+            This class needs an enterprise OS
+            </summary>
+            <platform>
+               <os predefined="enterprise" />
+            </platform>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassNeedsAServerOS.ThisMethodShouldHaveTheSamePlatformAsTheClass">
+            <summary>
+            This method should display the same list of platforms as the containing class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Platforms.ThisClassSupportsACustomPlatformList">
+            <summary>
+            This class supports a NT 5 and a custom list of platforms
+            </summary>
+            <platform>
+               <os predefined="nt5plus">MS-DOS 2.0</os>
+               <frameworks>
+            	<custom>DOS.NET Framework</custom>
+               </frameworks>
+            </platform>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassSupportsACustomPlatformList.ThisMethodShouldHaveTheSamePlatformAsTheClass">
+            <summary>
+            This method should display the same list of platforms as the containing class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Platforms.ThisClassHasNoSpecificPlatform">
+            <summary>
+            This class doesn't designate platform support and 
+            should use whatever setting is specified as the
+            project default
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.Platforms.ThisClassHasNoSpecificPlatform.ThisMethodShouldHaveTheProjectDefaultPlatofrmSupport">
+            <summary>
+            This method should display the same list of platforms as the containing class
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Preliminary.NamespaceDoc">
+            <summary>
+            Vaiorus uses of the &lt;preliminary/&gt; tag.
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Preliminary.Preliminary">
+            <summary>
+            This class is preliminary
+            </summary>
+            <preliminary/>
+        </member>
+        <member name="M:NDoc.Test.Preliminary.Preliminary.Member">
+            <summary>
+            This topic should have the preliminary message as well
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Preliminary.PreliminaryWithText">
+            <summary>
+            This class is preliminary and has custom text in the preliminary tag
+            </summary>
+            <preliminary>This documentation will change at a moment's notice</preliminary>
+        </member>
+        <member name="T:NDoc.Test.Preliminary.IPreliminary">
+            <summary>
+            This interface is preliminary
+            </summary>
+            <preliminary/>
+        </member>
+        <member name="M:NDoc.Test.Preliminary.IPreliminary.Method">
+            <summary>
+            do something
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.NamespaceDoc">
+            <summary>
+            <p>This documentation will show up as the summary of a class
+            <see cref="T:NDoc.Test.NamespaceDoc"/>, when the UseNamespaceDocSummaries
+            configuration flag is set to <see langword="false"/>. When
+            UseNamespaceDocSummaries is set to <see langword="true"/>,
+            the summary will show up as the summary of the <see cref="N:NDoc.Test"/>
+            namespace.</p>
+            <p>This allows you to reference other types from within the
+            summary documentation for the namespace, without having to use
+            fully qualified ids. E.g. the reference to <see cref="T:NDoc.Test.Class"/> is
+            created by using "&lt;see cref="Class"/&gt;" instead of
+            "&lt;see cref="T:NDoc.Test.Class"/&gt;" as you have to say using
+            the namespace summaries dialog.</p>
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Class">
+            <summary>Represents a normal class.</summary>
+            <remarks>Conceptualizing random endpoints in a access matrix
+            provides reach extentions enterprise wide. Respective divisions
+            historically insignificant, upscale trendlines in a management
+            inventory analysis survivabilty format.</remarks>
+        </member>
+        <member name="M:NDoc.Test.Class.#ctor">
+            <overloads>Initializes a new instance of the Class class.</overloads>
+            <summary>Initializes a new instance of the <see cref="T:NDoc.Test.Class"/> class with no param.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.#ctor(System.Int32)">
+            <summary>Initializes a new instance of the Class class with an integer.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.#ctor(System.String)">
+            <summary>Initializes a new instance of the Class class with a string.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.#ctor(System.Double)">
+            <summary>Initializes a new instance of the Class class with a double.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>Initializes a new instance of the Class class with 3 integers.</summary>
+            <param name="i1">This is the first integer parameter.
+            This is the first integer parameter. This is the first integer
+            parameter. This is the first integer parameter.</param>
+            <param name="i2">This is the second integer parameter.</param>
+            <param name="i3">This is the third integer parameter.</param>
+            <remarks>
+            Yes, the <paramref name="i3"/> parameter is of type int.
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Class.#cctor">
+            <summary>
+            This is the static constructor.
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.Class.Field">
+            <summary>Holds an <c>int</c> value.</summary>
+        </member>
+        <member name="F:NDoc.Test.Class.ReadOnlyField">
+            <summary>Holds an read-only<c>int</c> value.</summary>
+        </member>
+        <member name="F:NDoc.Test.Class.StaticField">
+            <summary>Holds a static <c>int</c> value.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.Method">
+            <summary>Executes some code.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.Method(System.Int32,System.Int32,System.Int32)">
+            <summary>Executes some code.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.StaticMethod">
+            <summary>Executes some static code.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.ParameterModifyers(System.Int32@,System.Int32@,System.Object[])">
+            <summary>Uses some parameter modifyers.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.ParameterModifyers(System.Int32,System.Int32@,System.Int32@,System.Object[])">
+            <summary>An overload.</summary>
+        </member>
+        <member name="M:NDoc.Test.Class.RaisesSomeEvents">
+            <summary>
+            Raises some events.
+            </summary>
+            <remarks><para>
+            Raises the <see cref="E:NDoc.Test.Class.Event"/> event when <see cref="M:NDoc.Test.Class.Method"/> is called,
+            if <see cref="F:NDoc.Test.Class.Field"/> is greater than 0.
+            </para><para>
+            The above paragraph is only intended to test crefs on different member types...
+            </para></remarks>
+            <event cref="E:NDoc.Test.Class.Event">Raised when something occurs.</event>
+            <event cref="E:NDoc.Test.Class.AccessorsEvent">Raised when it occurs...</event>
+            <event cref="E:NDoc.Test.Class.ProtectedEvent">Raised when something else occurs.</event>
+            <event cref="E:NDoc.Test.Class.EventWithArgs">Raised when it feels like it.</event>
+            <event cref="E:System.Diagnostics.EventLog.EntryWritten">Raised when an entry was written to the event log.</event>
+            <event cref="!:SomeUnknownEvent">Unknown.</event>
+            <event cref="E:NDoc.Test.Class.EventWithMoreArgs">Never raised?</event>
+            <event cref="E:NDoc.Test.Class.MultiEvent">Raised many times?</event>
+            <exception cref="T:System.Exception">
+            Some exception is thrown.
+            </exception>
+            <exception cref="T:NDoc.Test.MyException">
+            Some other exception may also be thrown.
+            </exception>
+            <exception cref="!:SomeUnknownException">Unknown.</exception>
+        </member>
+        <member name="M:NDoc.Test.Class.op_LogicalNot(NDoc.Test.Class)">
+            <summary>This is my first overloaded operator.</summary>
+            <remarks>Why do we have to declare them as static?</remarks>
+        </member>
+        <member name="P:NDoc.Test.Class.Property">
+            <summary>Gets a value of <see cref="P:NDoc.Test.Class.Property"/>.</summary>
+            <remarks>Gets a value of <see cref="P:NDoc.Test.Class.Item(System.Int32)"/>.</remarks>
+        </member>
+        <member name="P:NDoc.Test.Class.StaticProperty">
+            <summary>Gets a static value.</summary>
+        </member>
+        <member name="P:NDoc.Test.Class.Item(System.Int32)">
+            <summary>This overloaded indexer accepts an int.</summary>
+            <param name="i">The int index.</param>
+            <value>Always returns 0.</value>
+            <remarks>No comment.</remarks>
+        </member>
+        <member name="P:NDoc.Test.Class.Item(System.String)">
+            <summary>This overloaded indexer accepts a string.</summary>
+        </member>
+        <member name="P:NDoc.Test.Class.Item(System.Int32,System.Int32,System.Int32)">
+            <summary>This overloaded indexer accepts three ints.</summary>
+        </member>
+        <member name="E:NDoc.Test.Class.Event">
+            <summary>This is a simple event that uses the Handler delegate.</summary>
+        </member>
+        <member name="E:NDoc.Test.Class._event">
+            <summary>A private event.</summary>
+        </member>
+        <member name="E:NDoc.Test.Class.AccessorsEvent">
+            <summary>This event uses the <b>add</b> and <b>remove</b> accessors.</summary>
+        </member>
+        <member name="E:NDoc.Test.Class.EventWithArgs">
+            <summary>This event has arguments.</summary>
+        </member>
+        <member name="E:NDoc.Test.Class.EventWithMoreArgs">
+            <summary>This event has more arguments.</summary>
+            <remarks>Check the links in the Event Data table...</remarks>
+        </member>
+        <member name="E:NDoc.Test.Class.ProtectedEvent">
+            <summary>This event is protected.</summary>
+        </member>
+        <member name="E:NDoc.Test.Class.StaticEvent">
+            <summary>Can you do this?</summary>
+        </member>
+        <member name="E:NDoc.Test.Class.MultiEvent">
+            <summary>An event with one property.</summary>
+        </member>
+        <member name="T:NDoc.Test.EventArgsOne">
+            <summary>This event has one property.</summary>
+        </member>
+        <member name="P:NDoc.Test.EventArgsOne.OneProperty">
+            <summary>This is a unique event argument property.</summary>
+        </member>
+        <member name="T:NDoc.Test.EventArgsTest">
+            <summary>This is an event arguments class.</summary>
+        </member>
+        <member name="P:NDoc.Test.EventArgsTest.EventArgsTestProperty">
+            <summary>This is an event arguments property.</summary>
+        </member>
+        <member name="T:NDoc.Test.EventArgsDerived">
+            <summary>This is a derived event arguments class.</summary>
+        </member>
+        <member name="P:NDoc.Test.EventArgsDerived.EventArgsDerivedProperty">
+            <summary>This event arguments property is declared in the derived class.</summary>
+        </member>
+        <member name="T:NDoc.Test.HandlerWithArgs">
+            <summary>This is a delegate with arguments used by Class.</summary>
+        </member>
+        <member name="T:NDoc.Test.HandlerWithMoreArgs">
+            <summary>This is a delegate with more arguments used by Class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Handler">
+            <summary>This is a simple delegate used by Class.</summary>
+        </member>
+        <member name="T:NDoc.Test.MulticastHandler">
+            <summary>This is a multicast delegate.</summary>
+        </member>
+        <member name="T:NDoc.Test.Interface">
+            <summary>This is an interface.</summary>
+        </member>
+        <member name="M:NDoc.Test.Interface.InterfaceMethod">
+            <summary>This is a method in an interface.</summary>
+        </member>
+        <member name="P:NDoc.Test.Interface.InterfaceProperty">
+            <summary>This is a property in an interface.</summary>
+        </member>
+        <member name="E:NDoc.Test.Interface.InterfaceEvent">
+            <summary>This event is declared in an interface.</summary>
+        </member>
+        <member name="T:NDoc.Test.InterfaceInherited">
+            <summary>This interface inherits from another interface.</summary>
+        </member>
+        <member name="M:NDoc.Test.InterfaceInherited.OtherMethod">
+            <summary>This is another method declared in an inteface.</summary>
+        </member>
+        <member name="T:NDoc.Test.ImplementsInterface">
+            <summary>This class implements <see cref="T:NDoc.Test.Interface"/>.</summary>
+        </member>
+        <member name="M:NDoc.Test.ImplementsInterface.InterfaceMethod">
+            <summary>
+            InterfaceMethod.
+            </summary>
+        </member>
+        <member name="P:NDoc.Test.ImplementsInterface.InterfaceProperty">
+            <summary>
+            Gets the InterfaceProperty.
+            </summary>
+            <value></value>
+        </member>
+        <member name="E:NDoc.Test.ImplementsInterface.InterfaceEvent">
+            <summary>
+            InterfaceEvent
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.ImplementsInterfaceDerivedBase">
+            <summary>This class is derived from <see cref="T:NDoc.Test.Base"/> and implements <see cref="T:NDoc.Test.Interface"/>.</summary>
+        </member>
+        <member name="T:NDoc.Test.Base">
+            <summary>Represents a base class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Base.BaseMethod">
+            <summary>This method is declared in the Base class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Base.NewMethod">
+            <summary>This method is declared in the Base class without the "new" keyword.</summary>
+        </member>
+        <member name="M:NDoc.Test.Base.Overloaded(System.Int32)">
+            <summary>This method is declared in the Base class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Base.Overloaded(System.Byte)">
+            <summary>This method is declared in the Base class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Base.TwoVirtualOverloads(System.String)">
+            <summary>This virtual method is declared in the Base class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Base.TwoVirtualOverloads(System.Int32)">
+            <summary>This virtual method is declared in the Base class.</summary>
+        </member>
+        <member name="F:NDoc.Test.Base.BaseField">
+            <summary>This field is declared in the Base class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Base.StaticBaseMethod">
+            <summary>A static method in the Base class.</summary>
+            <remarks>This should not appear in derived classes.</remarks>
+        </member>
+        <member name="P:NDoc.Test.Base.BaseProperty">
+            <summary>This property is declared in the Base class.</summary>
+        </member>
+        <member name="E:NDoc.Test.Base.BaseEvent">
+            <summary>This event is declared in the Base class.</summary>
+        </member>
+        <member name="M:NDoc.Test.ImplementsInterfaceDerivedBase.InterfaceMethod">
+            <summary>
+            InterfaceMethod.
+            </summary>
+        </member>
+        <member name="P:NDoc.Test.ImplementsInterfaceDerivedBase.InterfaceProperty">
+            <summary>
+            Gets the InterfaceProperty.
+            </summary>
+            <value></value>
+        </member>
+        <member name="E:NDoc.Test.ImplementsInterfaceDerivedBase.InterfaceEvent">
+            <summary>
+            InterfaceEvent
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Interface1">
+            <summary>This is an empty interface.</summary>
+        </member>
+        <member name="T:NDoc.Test.Interface2">
+            <summary>This is also an empty interface.</summary>
+        </member>
+        <member name="T:NDoc.Test.ImplementsTwoInterfaces">
+            <summary>This class implements two empty interfaces.</summary>
+        </member>
+        <member name="T:NDoc.Test.Abstract">
+            <summary>Represents an abstract class.</summary>
+        </member>
+        <member name="E:NDoc.Test.Abstract.InterfaceEvent">
+            <summary>This event is decalred in the Abstract class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Derived">
+            <summary>Represents a derived class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Derived.DerivedMethod">
+            <summary>This method is declared in the Derived class.</summary>
+            <remarks>This is a reference to a parent member: <see cref="P:NDoc.Test.Base.BaseProperty"/></remarks>
+        </member>
+        <member name="M:NDoc.Test.Derived.NewMethod">
+            <summary>This method is declared in the Derived class with the "new" keyword.</summary>
+        </member>
+        <member name="M:NDoc.Test.Derived.Overloaded(System.String)">
+            <summary>This method is overloaded in the Derived class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Derived.Overloaded(System.Double)">
+            <summary>This method is also overloaded in the Derived class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Derived.Overloaded(System.Char)">
+            <summary>This method is also overloaded in the Derived class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Derived.Overloaded(NDoc.Test.Interface)">
+            <summary>This method is also overloaded in the Derived class.</summary>
+            <remarks>This method accepts a type declared in the same namespace.</remarks>
+        </member>
+        <member name="M:NDoc.Test.Derived.TwoVirtualOverloads(System.String)">
+            <summary>This method is overriden in the Derived class.</summary>
+            <remarks>Only one of the two overloads is overriden.</remarks>
+        </member>
+        <member name="M:NDoc.Test.Derived.StaticDerivedMethod">
+            <summary>A static method in the Derived class.</summary>
+            <remarks>This should not appear in derived classes.</remarks>
+        </member>
+        <member name="P:NDoc.Test.Derived.DerivedProperty">
+            <summary>This property is declared in the Derived class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Derived2">
+            <summary>Represents another derived class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Derived2.TwoVirtualOverloads(System.String)">
+            <summary>This method is overriden in the Derived class.</summary>
+            <remarks>Both overloads are overriden in this class.</remarks>
+        </member>
+        <member name="M:NDoc.Test.Derived2.TwoVirtualOverloads(System.Int32)">
+            <summary>This method is overriden in the Derived class.</summary>
+            <remarks>Both overloads are overriden in this class.</remarks>
+        </member>
+        <member name="M:NDoc.Test.Derived2.Overloaded(System.Object)">
+            <summary>
+            Add only one overload in Derived2 class.
+            </summary>
+        </member>
+        <member name="E:NDoc.Test.Derived2.EventInDerived">
+            <summary>
+            This event is declared in the Derived2 class.
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Outer">
+            <summary>Represents an outer class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Outer.GetInnerClassObject">
+            <summary>Function returning a public inner class oject.</summary>
+        </member>
+        <member name="M:NDoc.Test.Outer.TestInnerClassObject(NDoc.Test.Outer.Inner)">
+            <summary>Function with a public inner class oject parameter.</summary>
+        </member>
+        <member name="T:NDoc.Test.Outer.Inner">
+            <summary>Represents an inner class.</summary>
+            <remarks>These are some remarks.</remarks>
+        </member>
+        <member name="F:NDoc.Test.Outer.Inner.InnerField">
+            <summary>This is a field of the inner class.</summary>
+            <remarks>These are some remarks</remarks>
+        </member>
+        <member name="M:NDoc.Test.Outer.Inner.InnerMethod">
+            <summary>This is a method of the inner class.</summary>
+            <remarks>These are some remarks</remarks>
+        </member>
+        <member name="P:NDoc.Test.Outer.Inner.InnerProperty">
+            <summary>This is a property of the inner class.</summary>
+            <remarks>These are some remarks</remarks>
+        </member>
+        <member name="T:NDoc.Test.Outer.Inner.InnerInnerEnum">
+            <summary>This is an enumeration nested in a nested class.</summary>
+        </member>
+        <member name="F:NDoc.Test.Outer.Inner.InnerInnerEnum.Foo">
+            <summary>Foo</summary>
+        </member>
+        <member name="T:NDoc.Test.Outer.PrivateInner">
+            <summary>Represents a private inner class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Outer.InnerEnum">
+            <summary>This is a nested enumeration.</summary>
+        </member>
+        <member name="F:NDoc.Test.Outer.InnerEnum.Foo">
+            <summary>Foo</summary>
+        </member>
+        <member name="T:NDoc.Test.Outer.InnerInterface">
+            <summary>This is a nested interface.</summary>
+        </member>
+        <member name="T:NDoc.Test.Outer.InnerStruct">
+            <summary>This is a nested structure.</summary>
+        </member>
+        <member name="T:NDoc.Test.Outer.InnerDelegate">
+            <summary>This is a nested delegate.</summary>
+        </member>
+        <member name="T:NDoc.Test.Internal">
+            <summary>This is an internal class.</summary>
+        </member>
+        <member name="M:NDoc.Test.Internal.InternalMethod">
+            <summary>This method is declared in the Internal class.</summary>
+        </member>
+        <member name="T:NDoc.Test.Struct1">
+            <summary>This is the first struct.</summary>
+        </member>
+        <member name="F:NDoc.Test.Struct1.Field1">
+            <summary>This is the first field in the first struct.</summary>
+        </member>
+        <member name="F:NDoc.Test.Struct1.Field2">
+            <summary>This is the second field in the first struct.</summary>
+        </member>
+        <member name="M:NDoc.Test.Struct1.Method">
+            <summary>A method in a struct.</summary>
+        </member>
+        <member name="M:NDoc.Test.Struct1.StaticMethod">
+            <summary>A static method in a struct.</summary>
+        </member>
+        <member name="P:NDoc.Test.Struct1.Property">
+            <summary>A property in a struct.</summary>
+        </member>
+        <member name="T:NDoc.Test.Struct2">
+            <summary>This is the second struct.</summary>
+        </member>
+        <member name="T:NDoc.Test.Enum">
+            <summary>This is an enumeration.</summary>
+        </member>
+        <member name="F:NDoc.Test.Enum.Foo">
+            <summary>Represents Foo.</summary>
+        </member>
+        <member name="F:NDoc.Test.Enum.Bar">
+            <summary>Represents Bar.</summary>
+        </member>
+        <member name="F:NDoc.Test.Enum.Baz">
+            <summary>Represents Baz.</summary>
+        </member>
+        <member name="F:NDoc.Test.Enum.Quux">
+            <summary>Represents Quux.</summary>
+        </member>
+        <member name="T:NDoc.Test.EnumNonInt">
+            <summary>
+            This is an enum that is not the default <see cref="T:System.Int32"/> type.
+            It is an <see cref="T:System.Int16"/> type
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.EnumNonInt.entry">
+            <summary>
+            The only entry in the short enum
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.EnumFlags">
+            <summary>This is an enumeration with the FlagsAttribute.</summary>
+        </member>
+        <member name="F:NDoc.Test.EnumFlags.Foo">
+            <summary>Represents Foo.</summary>
+        </member>
+        <member name="F:NDoc.Test.EnumFlags.Bar">
+            <summary>Represents Bar.</summary>
+        </member>
+        <member name="F:NDoc.Test.EnumFlags.Baz">
+            <summary>Represents Baz.</summary>
+        </member>
+        <member name="F:NDoc.Test.EnumFlags.Quux">
+            <summary>Represents Quux.</summary>
+        </member>
+        <member name="T:NDoc.Test.See">
+            <summary>This class has lots of &lt;see&gt; elements in the remarks.</summary>
+            <remarks>See <see cref="T:NDoc.Test.Class"/>.
+            See <see cref="T:NDoc.Test.Interface"/>.
+            See <see cref="T:NDoc.Test.Struct1"/>.
+            See <see cref="M:NDoc.Test.Base.BaseMethod"/>.
+            See <see cref="M:NDoc.Test.Derived.DerivedMethod"/>.
+            See <see cref="T:NDoc.Test.Outer"/>.
+            See <see cref="T:NDoc.Test.Outer.Inner"/>.
+            See <see cref="T:NDoc.Test.Handler"/>.
+            See <see cref="T:NDoc.Test.Enum"/>.
+            See <see cref="F:NDoc.Test.Enum.Bar"/>.
+            See <see href="http://ndoc.sf.net/"/>.
+            See <see href="http://ndoc.sf.net/">NDOC</see>.
+            </remarks>
+        </member>
+        <member name="F:NDoc.Test.See.Field1">
+            <summary>
+            This field's documentation references <see cref="M:NDoc.Test.See.RefProp1"/>.
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.See.RefProp1">
+            <summary>
+            This method's documentation references <see cref="P:NDoc.Test.See.Prop1"/> and
+            <see cref="F:NDoc.Test.See.Field1"/>.
+            </summary>
+        </member>
+        <member name="P:NDoc.Test.See.Prop1">
+            <summary>
+            This properties' documentation references <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <remarks>
+            <para>This is a link to <see cref="P:NDoc.Test.See.Prop1"/>.</para>
+            <para>This is a labelled link to <see cref="P:NDoc.Test.See.Prop1">myself</see>.</para>
+            <para>This is a link to <see cref="T:NDoc.Test.See"/>.</para>
+            <para>This is a link to <see cref="T:NDoc.Test.SeeAlso"/>.</para>
+            <para>This is also a link to <see cref="T:NDoc.Test.See"/>. </para>
+            <para>This is also a link to <see cref="T:NDoc.Test.SeeAlso"/>. </para>
+            <para>This is an labelled link to <see cref="T:NDoc.Test.See">Test.See</see>.</para>
+            <para>This is an broken link to <see cref="!:something">something</see>.</para> 
+            <para>This is an broken labelled link to <see cref="!:something">something</see>.</para> 
+            </remarks>
+        </member>
+        <member name="T:NDoc.Test.SeeAlso">
+            <summary>This class has lots of &lt;seealso&gt; elements.</summary>
+            <remarks>NDoc adds a special form of the &lt;seealso&gt; element.
+            Instead of a cref attribute, you can specify a href attribute some text
+            content just like a normal HTML &lt;a&gt; element.</remarks>
+            <seealso href="http://ndoc.sf.net/">the ndoc homepage</seealso>
+            <seealso cref="T:NDoc.Test.Class"/>
+            <seealso cref="T:NDoc.Test.Interface"/>
+            <seealso cref="T:NDoc.Test.Struct1"/>
+            <seealso cref="M:NDoc.Test.Base.BaseMethod"/>
+            <seealso cref="M:NDoc.Test.Derived.DerivedMethod"/>
+            <seealso cref="T:NDoc.Test.Outer"/>
+            <seealso cref="T:NDoc.Test.Outer.Inner"/>
+            <seealso cref="T:NDoc.Test.Handler"/>
+            <seealso cref="T:NDoc.Test.Enum"/>
+            <seealso cref="F:NDoc.Test.Enum.Bar"/>
+            <seealso href="http://slashdot.org/">Slashdot</seealso>
+            <seealso cref="T:System.Object"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.AlsoSee">
+            <summary>This method has lots of &lt;seealso&gt; elements.</summary>
+            <seealso cref="T:NDoc.Test.Class"/>
+            <seealso cref="T:NDoc.Test.Interface"/>
+            <seealso cref="T:NDoc.Test.Struct1"/>
+            <seealso cref="M:NDoc.Test.Base.BaseMethod"/>
+            <seealso cref="M:NDoc.Test.Derived.DerivedMethod"/>
+            <seealso cref="T:NDoc.Test.Outer"/>
+            <seealso cref="T:NDoc.Test.Outer.Inner"/>
+            <seealso cref="T:NDoc.Test.Handler"/>
+            <seealso cref="T:NDoc.Test.Enum"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemClass">
+            <summary>&lt;seealso cref="System.Object"/&gt;</summary>
+            <seealso cref="T:System.Object"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemField">
+            <summary>&lt;seealso cref="System.String.Empty"/&gt;</summary>
+            <seealso cref="F:System.String.Empty"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemProperty">
+            <summary>&lt;seealso cref="System.String.Length"/&gt;</summary>
+            <seealso cref="P:System.String.Length"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemIndexer">
+            <summary>&lt;seealso cref="System.Collections.ArrayList.Item"/&gt;</summary>
+            <seealso cref="P:System.Collections.ArrayList.Item(System.Int32)"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemMethod">
+            <summary>&lt;seealso cref="System.Object.ToString"/&gt;</summary>
+            <seealso cref="M:System.Object.ToString"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemOverloadedMethod">
+            <summary>&lt;seealso cref="System.Object.ToString"/&gt;</summary>
+            <seealso cref="M:System.String.Equals(System.Object)"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemEvent">
+            <summary>&lt;seealso cref="System.Xml.XmlDocument.NodeChanged"/&gt;</summary>
+            <seealso cref="E:System.Xml.XmlDocument.NodeChanged"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemInterface">
+            <summary>&lt;seealso cref="System.IDisposable"/&gt;</summary>
+            <seealso cref="T:System.IDisposable"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemStructure">
+            <summary>&lt;seealso cref="System.DateTime"/&gt;</summary>
+            <seealso cref="T:System.DateTime"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemDelegate">
+            <summary>&lt;seealso cref="System.EventHandler"/&gt;</summary>
+            <seealso cref="T:System.EventHandler"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemEnumeration">
+            <summary>&lt;seealso cref="System.DayOfWeek"/&gt;</summary>
+            <seealso cref="T:System.DayOfWeek"/>
+        </member>
+        <member name="M:NDoc.Test.SeeAlso.SeeSystemNamespace">
+            <summary>&lt;seealso cref="System.IO"/&gt;</summary>
+            <seealso cref="N:System.IO"/>
+        </member>
+        <member name="T:NDoc.Test.Properties">
+            <summary>Represents a class containing properties.</summary>
+        </member>
+        <member name="P:NDoc.Test.Properties.GetterAndSetter">
+            <summary>This property has a getter and a setter.</summary>
+        </member>
+        <member name="P:NDoc.Test.Properties.GetterOnly">
+            <summary>This property has a getter only.</summary>
+        </member>
+        <member name="P:NDoc.Test.Properties.SetterOnly">
+            <summary>This property has a setter only.</summary>
+        </member>
+        <member name="P:NDoc.Test.Properties.AbstractProperty">
+            <summary>This property is abstract.</summary>
+        </member>
+        <member name="P:NDoc.Test.Properties.VirtualProperty">
+            <summary>This property is virtual.</summary>
+        </member>
+        <member name="P:NDoc.Test.Properties.Item(System.Int32)">
+            <summary>This is an overloaded indexer.</summary>
+            <remarks>This indexer accepts an int parameter.</remarks>
+        </member>
+        <member name="P:NDoc.Test.Properties.Item(System.String)">
+            <summary>This is an overloaded indexer.</summary>
+            <remarks>This indexer accepts a string parameter.</remarks>
+        </member>
+        <member name="T:NDoc.Test.Links">
+            <summary>Represents a class that has lots of links
+            in its documentation.</summary>
+        </member>
+        <member name="F:NDoc.Test.Links.IntField">
+            <summary>Holds an integer.</summary>
+        </member>
+        <member name="M:NDoc.Test.Links.VoidMethod">
+            <summary>Returns nothing.</summary>
+            <returns>Nada.</returns>
+        </member>
+        <member name="M:NDoc.Test.Links.IntMethod">
+            <summary>Returns an int.</summary>
+        </member>
+        <member name="M:NDoc.Test.Links.StringMethod">
+            <summary>Returns a string.</summary>
+        </member>
+        <member name="M:NDoc.Test.Links.LotsOfParams(System.Int32,System.String,System.Char,System.Double)">
+            <summary>This method accepts lots of parameters.</summary>
+            <param name="i">an integer</param>
+            <param name="s">a string</param>
+            <param name="c">a character</param>
+            <param name="d">a double</param>
+            <remarks>The <paramref name="i"/> param is an integer.
+            The <paramref name="s"/> param is a string.</remarks>
+        </member>
+        <member name="P:NDoc.Test.Links.IntProperty">
+            <summary>Gets or sets an integer.</summary>
+            <value>an integer</value>
+        </member>
+        <member name="T:NDoc.Test.Example">
+            <summary>This class contains some example code.</summary>
+            <example><code>
+            public class HelloWorld {
+            	static void Main() {
+            		System.Console.WriteLine("Hello, World!");
+            	}
+            }
+            </code></example>
+        </member>
+        <member name="T:NDoc.Test.Exceptions">
+            <summary>This class contains a method that throws exceptions.</summary>
+        </member>
+        <member name="M:NDoc.Test.Exceptions.Throw">
+            <summary>This method throws exceptions.</summary>
+            <exception cref="T:System.Exception">A generic exception.</exception>
+            <exception cref="T:System.ApplicationException">An application-specific exception.</exception>
+        </member>
+        <member name="T:NDoc.Test.Langword">
+            <summary>This class contains &lt;see langword=""&gt; elements in the remarks.</summary>
+            <remarks>The default style is <see langword="bold"/>.
+            But <see langword="null"/>, <see langword="sealed"/>,
+            <see langword="static"/>, <see langword="abstract"/>,
+            and <see langword="virtual"/> do more.</remarks>
+        </member>
+        <member name="T:NDoc.Test.Lists">
+            <summary>The remarks in this class contains examples of list elements.</summary>
+        </member>
+        <member name="M:NDoc.Test.Lists.BulletMethod">
+            <summary>BulletMethodSummary</summary>
+            <remarks>
+             <list type="bullet">
+              <item><description>Item One</description></item>
+              <item><description>Item Two</description></item>
+              <item><description>Item Three</description></item>
+             </list>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Lists.NumberMethod">
+            <summary>NumberMethodSummary</summary>
+            <remarks>
+             <list type="number">
+              <item><description>Item One</description></item>
+              <item><description>Item Two</description></item>
+              <item><description>Item Three</description></item>
+             </list>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Lists.TermMethod">
+            <summary>TermMethodSummary</summary>
+            <remarks>
+             <list type="bullet">
+              <item><term>Term One</term><description>Item One</description></item>
+              <item><term>Term Two</term><description>Item Two</description></item>
+              <item><term>Term Three</term><description>Item Three</description></item>
+             </list>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Lists.TableMethod">
+            <summary>TableMethodSummary</summary>
+            <remarks>
+            	<list type="table">
+            		<item><description>Cell One</description></item>
+            		<item><description>Cell Two</description></item>
+            		<item><description>Cell Three</description></item>
+            	</list>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Lists.TableWithHeaderMethod">
+            <summary>TableWithHeaderMethodSummary</summary>
+            <remarks>
+            	<list type="table">
+            		<listheader><description>Header</description></listheader>
+            		<item><description>Cell One</description></item>
+            		<item><description>Cell Two</description></item>
+            		<item><description>Cell Three</description></item>
+            	</list>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Lists.TwoColumnTableMethod">
+            <summary>TwoColumnTableMethodSummary</summary>
+            <remarks>
+            	<list type="table">
+            		<listheader>
+            			<term>Something</term>
+            			<description>Details</description>
+            		</listheader>
+            		<item>
+            			<term>Item 1</term>
+            			<description>This is the first item</description>
+            		</item>
+            		<item>
+            			<term>Item 2</term>
+            			<description>This is the second item</description>
+            		</item>
+            		<item>
+            			<term>Item 3</term>
+            			<description>This is the third item</description>
+            		</item>
+            	</list>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.Lists.DefinitionMethod">
+            <summary>DefinitionMethodSummary</summary>
+            <remarks>
+             <list type="definition">
+              <item><term>Term 1</term><description>Definition One</description></item>
+              <item><term>Term 2</term><description>Definition Two</description></item>
+              <item><term>Term 3</term><description>Definition Three</description></item>
+             </list>
+            </remarks>
+        </member>
+        <member name="T:NDoc.Test.Paragraphs">
+            <summary>This class has para elements in its remarks.</summary>
+            <remarks><para>This is the first paragraph.</para>
+            <para>This is the second paragraph.</para></remarks>
+        </member>
+        <member name="T:NDoc.Test.Permissions">
+            <summary>This class shows how permission elements are used.</summary>
+            <permission cref="T:System.Security.PermissionSet">to inherit from this class.</permission>
+        </member>
+        <member name="M:NDoc.Test.Permissions.#ctor">
+            <summary>This constructor has permissions.</summary>
+            <permission cref="T:System.Security.PermissionSet">to instanciate the <see cref="T:NDoc.Test.Permissions"/> class.</permission>
+        </member>
+        <member name="F:NDoc.Test.Permissions.RestrictedField">
+            <summary>This field has permissions.</summary>
+            <permission cref="T:System.Security.PermissionSet">to access this field.</permission>
+        </member>
+        <member name="M:NDoc.Test.Permissions.RestrictedMethod">
+            <summary>This method has permissions.</summary>
+            <permission cref="T:System.Security.PermissionSet">to execute this method.</permission>
+        </member>
+        <member name="P:NDoc.Test.Permissions.RestrictedProperty">
+            <summary>This property has permissions.</summary>
+            <permission cref="T:System.Security.PermissionSet">to access this property.</permission>
+        </member>
+        <member name="E:NDoc.Test.Permissions.RestrictedEvent">
+            <summary>This event has permissions.</summary>
+            <permission cref="T:System.Security.PermissionSet">to register with this event.</permission>
+        </member>
+        <member name="T:NDoc.Test.SealedClass">
+            <summary>This is a sealed class.</summary>
+        </member>
+        <member name="T:NDoc.Test.VisibilityTester">
+            <summary>This class covers all member visibilities.</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.#ctor">
+            <summary>Public constructor</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.PublicMethod">
+            <summary>Public method</summary>
+        </member>
+        <member name="F:NDoc.Test.VisibilityTester.publicField">
+            <summary>Public field</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.#ctor(System.Boolean)">
+            <summary>Protected constructor</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.ProtectedMethod">
+            <summary>Protected method</summary>
+        </member>
+        <member name="F:NDoc.Test.VisibilityTester.protectedField">
+            <summary>Protected field</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.#ctor(System.Int32)">
+            <summary>Private constructor</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.PrivateMethod">
+            <summary>Private method</summary>
+        </member>
+        <member name="F:NDoc.Test.VisibilityTester.privateField">
+            <summary>Private field</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.#ctor(System.Int16)">
+            <summary>Protected Internal constructor</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.ProtectedInternalMethod">
+            <summary>Protected Internal method</summary>
+        </member>
+        <member name="F:NDoc.Test.VisibilityTester.protectedInternalField">
+            <summary>Protected Internal field</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.#ctor(System.Int64)">
+            <summary>Internal constructor</summary>
+        </member>
+        <member name="M:NDoc.Test.VisibilityTester.InternalMethod">
+            <summary>Internal method</summary>
+        </member>
+        <member name="F:NDoc.Test.VisibilityTester.internalField">
+            <summary>Internal field</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.PublicReadOnlyProperty">
+            <summary>Public read-only property</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.PublicWriteOnlyProperty">
+            <summary>Public write-only property</summary>
+        </member>
+        <member name="E:NDoc.Test.VisibilityTester.PublicEvent">
+            <summary>Public event</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.ProtectedReadOnlyProperty">
+            <summary>Protected read-only property</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.ProtectedWriteOnlyProperty">
+            <summary>Protected write-only property</summary>
+        </member>
+        <member name="E:NDoc.Test.VisibilityTester.ProtectedEvent">
+            <summary>Protected event</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.PrivateReadOnlyProperty">
+            <summary>Private read-only property</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.PrivateWriteOnlyProperty">
+            <summary>Private write-only property</summary>
+        </member>
+        <member name="E:NDoc.Test.VisibilityTester.PrivateEvent">
+            <summary>Private event</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.ProtectedInternalReadOnlyProperty">
+            <summary>Protected Internal read-only property</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.ProtectedInternalWriteOnlyProperty">
+            <summary>Protected Internal write-only property</summary>
+        </member>
+        <member name="E:NDoc.Test.VisibilityTester.ProtectedInternalEvent">
+            <summary>Protected Internal event</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.InternalReadOnlyProperty">
+            <summary>Internal read-only property</summary>
+        </member>
+        <member name="P:NDoc.Test.VisibilityTester.InternalWriteOnlyProperty">
+            <summary>Internal write-only property</summary>
+        </member>
+        <member name="E:NDoc.Test.VisibilityTester.InternalEvent">
+            <summary>Internal event</summary>
+        </member>
+        <member name="T:NDoc.Test.MissingDocumentationBase">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.MissingDocumentationBase.SomeMethod(System.Int32,System.Boolean)">
+            <summary>
+            This one's documented!
+            </summary>
+            <param name="a">A param</param>
+            <param name="b">Anotner param</param>
+            <returns>returns something</returns>
+            <remarks><para>
+            This is a remark.
+            </para></remarks>
+        </member>
+        <member name="M:NDoc.Test.MissingDocumentationBase.SomeMethod(System.Int32,System.Int32)">
+            <summary>
+            This one's overloaded and documented!
+            </summary>
+            <param name="a">A param</param>
+            <param name="b">Anotner param</param>
+            <returns>returns something</returns>
+            <remarks><para>
+            This is a remark.
+            </para></remarks>
+        </member>
+        <member name="M:NDoc.Test.MissingDocumentationBase.MethodWithEmptyDoc(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+            <remarks> </remarks>
+        </member>
+        <member name="T:NDoc.Test.MissingDocumentationDerived">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.MyException">
+            <summary>
+            This is an exception.
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.MyException.#ctor(System.String)">
+            <summary>
+            This is a constructor for the exception.
+            </summary>
+            <param name="message">Message for this exception.</param>
+        </member>
+        <member name="T:NDoc.Test.CustomAttributes">
+            <summary>This class has custom attributes on it.</summary>
+        </member>
+        <member name="T:NDoc.Test.JustIndexer">
+            <summary>This class contains just an indexer so that we can see
+            if that's what causes the DefaultMemberAttribute attribute to appear.</summary>
+        </member>
+        <member name="P:NDoc.Test.JustIndexer.Item(System.Int32)">
+            <summary>Am I the default member?</summary>
+        </member>
+        <member name="T:NDoc.Test.LangAttributes">
+            <summary>The remarks contain some &lt;para> and &lt;code> elements with lang attributes.</summary>
+            <remarks>
+            	<para>This paragraph has no lang attribute.</para>
+            	<para lang="Visual Basic">This paragraph has a Visual Basic lang attribute.</para>
+            	<para lang="VB">This paragraph has a VB lang attribute.</para>
+            	<para lang="C#">This paragraph has a C# lang attribute.</para>
+            	<para lang="C++, JScript">This paragraph has a C++, JScript lang attribute.</para>
+            	<code lang="Visual Basic">
+            		' This is some Visual Basic code.
+            	</code>
+            	<code lang="VB">
+            		' This is some VB code.
+            	</code>
+            	<code lang="C#">
+            		// This is some C# code.
+            	</code>
+            	<code lang="C++, JScript">
+            		// This is either C++ or JScript code.
+            	</code>
+            </remarks>
+        </member>
+        <member name="T:NDoc.Test.IncludeExample">
+            <summary>This is an included summary.</summary><remarks>These are some included remarks.</remarks><example>
+			<para>This is an included example.</para>
+			<code>
+				Foo foo = new Foo();
+				foo.Bar();</code>
+			<para>This next example is not indented in the include file.</para>
+			<code>
+Foo foo = new Foo();
+foo.Bar();</code>
+		</example>
+        </member>
+        <member name="T:NDoc.Test.BothInstanceAndStaticOverloads">
+            <summary>This class has two methods with the same name but one is an instance method
+            and the other is static.</summary>
+        </member>
+        <member name="M:NDoc.Test.BothInstanceAndStaticOverloads.Foo">
+            <summary>This is the instance method.</summary>
+        </member>
+        <member name="M:NDoc.Test.BothInstanceAndStaticOverloads.Foo(System.Int32)">
+            <summary>This is the static method.</summary>
+        </member>
+        <member name="T:NDoc.Test.BothInstanceAndStaticOverloads2">
+            <summary>This class has two methods with the same name but one is an instance method
+            and the other is static.</summary>
+        </member>
+        <member name="M:NDoc.Test.BothInstanceAndStaticOverloads2.Foo">
+            <summary>This is the instance method.</summary>
+        </member>
+        <member name="M:NDoc.Test.BothInstanceAndStaticOverloads2.Foo(System.String)">
+            <summary>This is another instance method.</summary>
+        </member>
+        <member name="M:NDoc.Test.BothInstanceAndStaticOverloads2.Foo(System.Int32)">
+            <summary>This is the static method.</summary>
+        </member>
+        <member name="M:NDoc.Test.BothInstanceAndStaticOverloads2.Foo(System.Object)">
+            <summary>This is another static method.</summary>
+        </member>
+        <member name="T:NDoc.Test.fred">
+            <summary> this is fred </summary>
+        </member>
+        <member name="F:NDoc.Test.fred.valuea">
+            <summary>aaaa</summary>
+        </member>
+        <member name="F:NDoc.Test.fred.valueb">
+            <summary>bbbb</summary>
+        </member>
+        <member name="T:NDoc.Test.jjj">
+            <summary>this is jjj</summary>
+        </member>
+        <member name="M:NDoc.Test.jjj.#ctor(NDoc.Test.jjj.fred)">
+            <summary>jjj constructor</summary>
+            <remarks>jjj blah</remarks>
+            <param name="f">f blah</param>
+        </member>
+        <member name="M:NDoc.Test.jjj.mmm(NDoc.Test.jjj.fred)">
+            <summary>mmm method</summary>
+            <remarks>mmm blah</remarks>
+            <param name="f">f blah</param>
+        </member>
+        <member name="T:NDoc.Test.jjj.fred">
+            <summary> this is fred </summary>
+        </member>
+        <member name="F:NDoc.Test.jjj.fred.valuea">
+            <summary>aaaa</summary>
+        </member>
+        <member name="F:NDoc.Test.jjj.fred.valueb">
+            <summary>bbbb</summary>
+        </member>
+        <member name="T:NDoc.Test.EventWithException">
+            <summary>This class has an event that throws an exception.</summary>
+        </member>
+        <member name="E:NDoc.Test.EventWithException.ServiceRequest">
+            <exception cref="T:System.Exception">Thrown when... .</exception>
+        </member>
+        <member name="T:NDoc.Test.OverloadedWithNoParameters">
+            <summary>This class has a method that's overloaded where one of the
+            overloads doesn't have any parameters.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadedWithNoParameters.Method">
+            <summary>This is an overloaded method.</summary>
+            <remarks>This overload has no parameters.</remarks>
+        </member>
+        <member name="M:NDoc.Test.OverloadedWithNoParameters.Method(System.Int32)">
+            <summary>This is an overloaded method.</summary>
+            <remarks>This overload has one parameter.</remarks>
+        </member>
+        <member name="T:NDoc.Test.CRefToOverloadWithNoParameters">
+            <summary>This class wants to ref the method with no parameters
+            in the OverloadedWithNoParameters class.
+            See <see cref="M:NDoc.Test.OverloadedWithNoParameters.Method"/>
+            ("OverloadedWithNoParameters.Method").
+            See <see cref="M:NDoc.Test.OverloadedWithNoParameters.Method"/>
+            ("OverloadedWithNoParameters.Method()").
+            See <see cref="M:NDoc.Test.OverloadedWithNoParameters.Method(System.Int32)"/>
+            ("OverloadedWithNoParameters.Method(int)").
+            </summary>
+            <remarks>
+            The link to the method with parameters should point to that correct page.
+            </remarks>
+        </member>
+        <member name="T:NDoc.Test.ExplicitInterface">
+            <summary>Explicit interface test (public)</summary>
+        </member>
+        <member name="M:NDoc.Test.ExplicitInterface.ExplicitMethod">
+            <summary>Explicit method test</summary>
+        </member>
+        <member name="M:NDoc.Test.ExplicitInterface.ImplicitMethod">
+            <summary>Implicit method test</summary>
+        </member>
+        <member name="P:NDoc.Test.ExplicitInterface.ExplicitProperty">
+            <summary>Explicit method test</summary>
+        </member>
+        <member name="P:NDoc.Test.ExplicitInterface.ImplicitProperty">
+            <summary>Implicit method test</summary>
+        </member>
+        <member name="T:NDoc.Test.ExplicitInternalInterface">
+            <summary>Explicit interface test (internal)</summary>
+        </member>
+        <member name="M:NDoc.Test.ExplicitInternalInterface.ExplicitMethodOfInternalInterface">
+            <summary>Explicit method test</summary>
+        </member>
+        <member name="T:NDoc.Test.ExplicitImplementation">
+            <summary>Testing explicit interface implementations</summary>
+        </member>
+        <member name="M:NDoc.Test.ExplicitImplementation.NDoc#Test#ExplicitInterface#ExplicitMethod">
+            <summary>an explicitly implemented method</summary>
+        </member>
+        <member name="M:NDoc.Test.ExplicitImplementation.ImplicitMethod">
+            <summary>an implicitely implemented method</summary>
+        </member>
+        <member name="M:NDoc.Test.ExplicitImplementation.NDoc#Test#ExplicitInternalInterface#ExplicitMethodOfInternalInterface">
+            <summary>an explicitly implemented method of an internal interface</summary>
+        </member>
+        <member name="P:NDoc.Test.ExplicitImplementation.NDoc#Test#ExplicitInterface#ExplicitProperty">
+            <summary>an explicitly implemented property</summary>
+        </member>
+        <member name="P:NDoc.Test.ExplicitImplementation.ImplicitProperty">
+            <summary>an implicitely implemented property</summary>
+        </member>
+        <member name="T:NDoc.Test.OverloadsTag">
+            <summary>Test the new overloads tag.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.#ctor">
+            <overloads>This constructor is overloaded.</overloads>
+            
+            <summary>This overloaded constructor accepts no parameters.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.#ctor(System.Int32)">
+            <summary>This overloaded constructor accepts one int parameter.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.OverloadedMethod">
+            <overloads>
+            This method is overloaded.
+            </overloads>
+            
+            <summary>This overload accepts no parameters.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.OverloadedMethod(System.Int32)">
+            <summary>This overload accepts one int parameter.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.OverloadedMethod2">
+            <summary>This method is not overloaded and should not override
+            the OverloadedMethod(int i) page.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.FullDocOverloadedMethod">
+            <overloads>
+              <summary>This method is overloaded.</summary>
+              <remarks>
+            	<para>This remark should also appear.</para>
+                <note>This is a note.</note>
+              </remarks>
+              <example>
+                <para>This is some example code.</para>
+                <code>Foo.Bar.Baz.Quux();</code>
+              </example>
+            </overloads>
+            
+            <summary>This overload accepts no parameters.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.FullDocOverloadedMethod(System.Int32)">
+            <summary>This overload accepts one int parameter.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.FullDocOverloadedMethod(System.Int32,System.Int32)">
+            <summary>This overload accepts one int parameter.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.FullDocOverloadedMethod(System.Int32,System.Int32,System.Int32)">
+            <summary>This overload accepts one int parameter.</summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.op_Addition(NDoc.Test.OverloadsTag,NDoc.Test.OverloadsTag)">
+            <overloads>The Addition for <b>OverloadsTag</b>.</overloads>
+            
+            <summary>
+            Addition that takes two <b>OverloadsTag</b>.
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsTag.op_Addition(NDoc.Test.OverloadsTag,System.Int32)">
+            <summary>
+            Addition that takes an <b>OverloadsTag</b> and an <b>Int32</b>.
+            </summary>
+        </member>
+        <member name="P:NDoc.Test.OverloadsTag.Item(System.Int32)">
+            <overloads>This indexer is overloaded.</overloads>
+            
+            <summary>This overloaded indexer accepts one int parameter.</summary>
+        </member>
+        <member name="P:NDoc.Test.OverloadsTag.Item(System.String)">
+            <summary>This overloaded indexer accepts one string parameter.</summary>
+        </member>
+        <member name="T:NDoc.Test.NotesTest">
+            <summary>This class uses note elements on its members.</summary>
+        </member>
+        <member name="M:NDoc.Test.NotesTest.NoteInSummary">
+            <summary>
+              <para>This summary has a note.</para>
+              <note>This is a test of a note tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</note>
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.NotesTest.NoteInRemarks">
+            <summary>This method has a note in its remarks.</summary>
+            <remarks>
+              <para>These remarks have a note.</para>
+              <note>This is a test of a note tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</note>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.NotesTest.CautionNote">
+            <summary>This method has cautionary note in its remarks.</summary>
+            <remarks>
+              <para>These remarks have a cautionary note.</para>
+              <note type="caution">This is a test of a note tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</note>
+            </remarks>
+        </member>
+        <member name="M:NDoc.Test.NotesTest.NoteInRemarksColored">
+            <summary>This method has a note in its remarks.</summary>
+            <remarks>
+              <para>These remarks have a note.</para>
+              <note style="background-color:PaleGoldenrod;">This is a test of a note tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</note>
+            </remarks>
+        </member>
+        <member name="T:NDoc.Test.IndexerNotNamedItem">
+            <summary>This class has an indexer with a name other than Item.</summary>
+        </member>
+        <member name="P:NDoc.Test.IndexerNotNamedItem.MyItem(System.Int32)">
+            <summary>This indexer is not named Item.</summary>
+        </member>
+        <member name="T:NDoc.Test.PrivateClass">
+            <summary>This is a private class.</summary>
+        </member>
+        <member name="T:NDoc.Test.PrivateClass.PublicEnumInPrivateClass">
+            <summary>This is a public enum nested in a private class.</summary>
+            <remarks>This type should not appear when DocumentInternals is false.</remarks>
+        </member>
+        <member name="F:NDoc.Test.PrivateClass.PublicEnumInPrivateClass.Foo">
+            <summary>Foo</summary>
+        </member>
+        <member name="F:NDoc.Test.PrivateClass.PublicEnumInPrivateClass.Bar">
+            <summary>Bar</summary>
+        </member>
+        <member name="T:NDoc.Test.Matrix">
+            <summary>This class has a member that uses 2D rectangular arrays.</summary>
+        </member>
+        <member name="M:NDoc.Test.Matrix.Inverse2(System.Double[0:,0:])">
+            <summary>Returns the inverse of a matrix.</summary>
+            <param name="matrix">A matrix.</param>
+            <returns>The inverted matrix.</returns>
+        </member>
+        <member name="M:NDoc.Test.Matrix.Inverse3(System.Double[0:,0:,0:])">
+            <summary>Returns the inverse of a matrix.</summary>
+            <param name="matrix">A matrix.</param>
+            <returns>The inverted matrix.</returns>
+        </member>
+        <member name="T:NDoc.Test.PublicClassWithPrivateEnum">
+            <summary>This public class contains a private enum.</summary>
+        </member>
+        <member name="T:NDoc.Test.PublicClassWithPrivateEnum.PrivateEnum">
+            <summary>This is a private enum in a public class.</summary>
+        </member>
+        <member name="F:NDoc.Test.PublicClassWithPrivateEnum.PrivateEnum.Foo">
+            <summary>foo</summary>
+        </member>
+        <member name="T:NDoc.Test.RefToByteArrayTest">
+            <summary>This class has a method that accepts a ref to a byte array.</summary>
+        </member>
+        <member name="M:NDoc.Test.RefToByteArrayTest.RefToByteArray(System.Byte[]@)">
+            <summary>This method that accepts a ref to a byte array.</summary>
+            <param name="array">A ref to a byte array.</param>
+        </member>
+        <member name="T:NDoc.Test.PrivateImplementationDetails">
+            <summary>This class causes the &lt;PrivateImplementationDetails> 
+            class to appear in the compiled assembly.</summary>
+        </member>
+        <member name="T:NDoc.Test.LinkToEnumMember">
+            <summary>See <see cref="F:NDoc.Test.Enum.Foo"/>.</summary>
+            <remarks>The summary contains a cref to an enum member.</remarks>
+        </member>
+        <member name="T:NDoc.Test.SeeOverloadedStatic">
+            <summary>See <see cref="M:NDoc.Test.SeeOverloadedStatic.StaticOverload(System.Int32)"/>.</summary>
+        </member>
+        <member name="M:NDoc.Test.SeeOverloadedStatic.StaticOverload(System.Int32)">
+            <summary>Overload one.</summary>
+        </member>
+        <member name="M:NDoc.Test.SeeOverloadedStatic.StaticOverload(System.String)">
+            <summary>Overload two.</summary>
+        </member>
+        <member name="T:NDoc.Test.ConstFields">
+            <summary>This class contains constant fields.</summary>
+        </member>
+        <member name="F:NDoc.Test.ConstFields.ConstString">
+            <summary>This is a constant string.</summary>
+        </member>
+        <member name="F:NDoc.Test.ConstFields.ConstInt">
+            <summary>This is a constant int.</summary>
+        </member>
+        <member name="F:NDoc.Test.ConstFields.ConstDouble1">
+            <summary>This is a constant int.</summary>
+        </member>
+        <member name="F:NDoc.Test.ConstFields.ConstDouble2">
+            <summary>This is a constant int.</summary>
+        </member>
+        <member name="F:NDoc.Test.ConstFields.ConstEnum">
+            <summary>This is a constant enum.</summary>
+        </member>
+        <member name="F:NDoc.Test.ConstFields.ConstEnum2">
+            <summary>This is a constant with 2 enum flags.</summary>
+        </member>
+        <member name="F:NDoc.Test.ConstFields.ConstDecimal">
+            <summary>This is a constant decimal.</summary>
+        </member>
+        <member name="F:NDoc.Test.ConstFields.ConstDecimal2">
+            <summary>This is a constant decimal.</summary>
+        </member>
+        <member name="T:NDoc.Test.InheritedFields">
+            <summary>
+            A class that inherits fields from a System class.
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.InheritedFields.MyField">
+            <summary>
+            This field is added for comparison.
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.OverloadsWithDifferentAccess">
+            <summary>
+            Demonstrates overloads with different access.
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.OverloadsWithDifferentAccess.SomeMethod(System.Int32)">
+            <summary>
+            Public method with int param.
+            </summary>
+            <param name="index">Some int value</param>
+        </member>
+        <member name="M:NDoc.Test.OverloadsWithDifferentAccess.SomeMethod(System.String)">
+            <summary>
+            Protected method with string param.
+            </summary>
+            <param name="name">Some string value</param>
+        </member>
+        <member name="M:NDoc.Test.OverloadsWithDifferentAccess.SomeMethod(System.Double)">
+            <summary>
+            Public static method with double param.
+            </summary>
+            <param name="index">Some double value</param>
+        </member>
+        <member name="M:NDoc.Test.OverloadsWithDifferentAccess.SomeMethod(System.Type)">
+            <summary>
+            Protected static method with Type param.
+            </summary>
+            <param name="name">Some Type value</param>
+        </member>
+        <member name="T:NDoc.Test.VisibleClass">
+            <summary>
+            This class should be visible - it does not have an exclude tag
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.VisibleClass.VisibleField">
+            <summary>
+            This should be visible
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.VisibleClass.NotVisibleField">
+            <summary>
+            This should NOT be visible
+            </summary>
+            <exclude/>
+        </member>
+        <member name="F:NDoc.Test.VisibleClass.NotVisibleField2">
+            <summary>
+            This should NOT be visible
+            </summary>
+            <exclude />
+        </member>
+        <member name="M:NDoc.Test.VisibleClass.VisibleMethod">
+            <summary>
+            This should be visible
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NDoc.Test.VisibleClass.NotVisibleMethod">
+            <summary>
+            This should NOT be visible
+            </summary>
+            <returns></returns>
+            <exclude/>
+        </member>
+        <member name="M:NDoc.Test.VisibleClass.Overload1">
+            <overloads>There should only be two overloads visible</overloads>
+            <summary>
+            This should be visible
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NDoc.Test.VisibleClass.Overload1(System.Int32)">
+            <summary>
+            This should NOT be visible
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+            <exclude />
+        </member>
+        <member name="M:NDoc.Test.VisibleClass.Overload1(System.Int64)">
+            <summary>
+            This should be visible
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+        <member name="P:NDoc.Test.VisibleClass.VisibleProperty">
+            <summary>
+            This should be visible
+            </summary>
+        </member>
+        <member name="P:NDoc.Test.VisibleClass.NotVisibleProperty">
+            <summary>
+            This should NOT be visible
+            </summary>
+            <exclude />
+        </member>
+        <member name="T:NDoc.Test.NotVisibleClass">
+            <summary>
+            This class should NOT be visible - it has an exclude tag
+            </summary>
+            <exclude/>
+        </member>
+        <member name="F:NDoc.Test.NotVisibleClass.VisibleField">
+            <summary>
+            This should NOT be visible
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.HtmlTags">
+            <summary>
+            This class has html tags in the remarks
+            </summary>
+            <remarks>
+            <para><b>This text is surrounded by &lt;b&gt;</b></para>
+            <para><i>This text is surrounded by &lt;i&gt;</i></para>
+            <para><em>This text is surrounded by &lt;em&gt;</em></para>
+            <para><strong>This text is surrounded by &lt;strong&gt;</strong></para>
+            <para>this line has a break<br/>here</para>
+            <para align="center">this line is centered</para>
+            <para style="padding 2px;border:2px solid red;background-color:PaleGoldenrod">this has a red border and PaleGoldenrod background.</para>
+            </remarks>
+        </member>
+        <member name="T:NDoc.Test.EcmaBlocks">
+            <summary>
+            This class has ecma block tags in the remarks
+            </summary>
+            <remarks>
+            <block type="note">This is a test of an ECMA "note" block tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</block>
+            <block type="example">This is a test of an ECMA "example" block tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</block>
+            <block type="behaviors">This is a test of an ECMA "behaviors" block tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</block>
+            <block type="overrides">This is a test of an ECMA "overrides" block tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</block>
+            <block type="usage">This is a test of an ECMA "usage" block tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</block>
+            <block type="default">This is a test of an ECMA "default" block tag which has lots of text in it and so should, if we are lucky, wrap to more than one line. To ensure this, here is another extremely long sentence that is probably gramatically incorrect and may have terrible spelling, but who cares, it is long isn't it?</block>
+            </remarks>
+        </member>
+        <member name="T:NDoc.Test.ThreadSafety.NamespaceDoc">
+            <summary>
+            The classes in this namesapce test the various permuations
+            of threadsafety specification
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.ThreadSafety.ThreadSafe">
+            <summary>
+            This class is thread safe for everything
+            </summary>
+            <threadsafety static="true" instance="true">
+            <para>Here's some extra information about using this class across threads</para>
+            </threadsafety>
+        </member>
+        <member name="T:NDoc.Test.ThreadSafety.NotThreadSafe">
+            <summary>
+            This class is not thread safe
+            </summary>
+            <threadsafety static="false" instance="false">
+            <para>Here's some extra information about using this class across threads</para>
+            </threadsafety>
+        </member>
+        <member name="T:NDoc.Test.ThreadSafety.StaticSafeInstanceNot">
+            <summary>
+            This class is not thread safe
+            </summary>
+            <threadsafety static="true" instance="false">
+            <para>Here's some extra information about using this class across threads</para>
+            </threadsafety>
+        </member>
+        <member name="T:NDoc.Test.ThreadSafety.StaticNotInstanceSafe">
+            <summary>
+            This class is not thread safe
+            </summary>
+            <threadsafety static="false" instance="true">
+            <para>Here's some extra information about using this class across threads</para>
+            </threadsafety>
+        </member>
+        <member name="T:NDoc.Test.Unsafe.NamespaceDoc">
+            <summary>
+            The NDoc.Test.Unsafe namespace contains tests for types
+            that expose pointer types and are marked with the "unsafe" keyword
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Unsafe.IUnsafe">
+            <summary>
+            An interface with pointers in its method signatures
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.Unsafe.IUnsafe.GetIntPointer">
+            <summary>
+            Return a pointer to an Int32
+            </summary>
+            <returns>The pointer</returns>
+        </member>
+        <member name="T:NDoc.Test.Unsafe.UNSAFE">
+            <summary>
+            An unsafe struct with a member of type pointer
+            </summary>
+        </member>
+        <member name="F:NDoc.Test.Unsafe.UNSAFE.p">
+            <summary>
+            A pointer field
+            </summary>
+        </member>
+        <member name="T:NDoc.Test.Unsafe.ClassWithUnsafeMembers">
+            <summary>
+            This class has various mebers that are marked as unsafe and that return
+            pointers
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.Unsafe.ClassWithUnsafeMembers.#ctor(System.Int32*)">
+            <summary>
+            An unsafe constructor
+            </summary>
+            <param name="p">a pointer</param>
+        </member>
+        <member name="F:NDoc.Test.Unsafe.ClassWithUnsafeMembers.pointerField">
+            <summary>
+            A public pointer field
+            </summary>
+        </member>
+        <member name="M:NDoc.Test.Unsafe.ClassWithUnsafeMembers.PassAPointer(System.Int32*)">
+            <summary>
+            Pass an unsafe pointer as a paramater
+            </summary>
+            <param name="p">A pointer to an int32</param>
+        </member>
+        <member name="M:NDoc.Test.Unsafe.ClassWithUnsafeMembers.GetIntPointer">
+            <summary>
+            unsafe method return
+            </summary>
+            <returns>The address of an int32</returns>
+        </member>
+        <member name="P:NDoc.Test.Unsafe.ClassWithUnsafeMembers.PointerProperty">
+            <summary>
+            A property that is a pointer type
+            </summary>
+        </member>
+    </members>
+</doc>
