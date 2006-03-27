@@ -8,7 +8,6 @@
 		<mkdir dir="${javascript.maven.sources}" />
 	</target>
 	<target name="copy-sources">
-		<echoproperties destfile="c:\dan\scratch\mvnant.properties" />
 		<fail unless="core.javascript.path" message="You must specify a path to the core javascript in the core.javascript.path property" />
 		<property name="core.javascript.path" location="${ant.file.core-copy-sources}/../../javascript" />
 		<condition property="build.failed">
