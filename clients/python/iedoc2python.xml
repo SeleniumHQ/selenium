@@ -204,7 +204,7 @@ class selenium_class:
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
 	</xsl:apply-templates>
-	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+	<xsl:value-of select="$replace-string" />
 	<xsl:call-template name="dup">
 		<xsl:with-param name="input">~</xsl:with-param>
 		<xsl:with-param name="count"><xsl:value-of select="string-length()"/></xsl:with-param>
@@ -243,13 +243,13 @@ class selenium_class:
 			<xsl:text>*&tab;</xsl:text>
 		</xsl:when>
 		<xsl:when test="local-name(..) = 'ol'">
-			<xsl:text><xsl:value-of select="position()"/>. </xsl:text>
+			<xsl:value-of select="position()"/><xsl:text>. </xsl:text>
 		</xsl:when>
 	</xsl:choose>
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
 	</xsl:apply-templates>
-	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+	<xsl:value-of select="$replace-string" />
 </xsl:template>
 
 <xsl:template match="ul|ol|dl">
@@ -257,7 +257,7 @@ class selenium_class:
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><!--<xsl:text>&tab;</xsl:text>--></xsl:with-param>
 	</xsl:apply-templates>
-	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+	<xsl:value-of select="$replace-string" />
 </xsl:template>
 
 <xsl:template match="p">
@@ -265,7 +265,7 @@ class selenium_class:
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
 	</xsl:apply-templates>
-	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+	<xsl:value-of select="$replace-string" />
 </xsl:template>
 
 <xsl:template match="a|blockquote">
@@ -285,12 +285,12 @@ class selenium_class:
 
 <xsl:template match="dd">
 	<xsl:param name="replace-string" />
-	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+	<xsl:value-of select="$replace-string" />
 	<xsl:text>&tab;</xsl:text>
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><xsl:text>&tab;</xsl:text></xsl:with-param>
 	</xsl:apply-templates>
-	<xsl:text><xsl:value-of select="$replace-string" /></xsl:text>
+	<xsl:value-of select="$replace-string" />
 </xsl:template>
 
 <!--****************
