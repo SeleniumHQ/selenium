@@ -1,12 +1,12 @@
 <project>
-    <name>Selenium</name>
-    <jiraId>10030</jiraId>
-    <jiraName>SEL</jiraName>
-    <confluenceName>SEL</confluenceName>
+    <name>Selenium Remote Control</name>
+    <jiraId>10100</jiraId>
+    <jiraName>SRC</jiraName>
+    <confluenceName>SRC</confluenceName>
 
     <forums>
-        <usersId>3</usersId>
-        <devId>4</devId>
+        <usersId>13</usersId>
+        <devId>14</devId>
     </forums>
 
     <evaluating>
