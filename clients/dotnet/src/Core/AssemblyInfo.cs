@@ -4,6 +4,6 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly : AssemblyTitle("Selenium Core Library")]
+[assembly : AssemblyTitle("Selenium .NET Client Driver")]
 [assembly : AssemblyDescription("")]
 [assembly : AssemblyConfiguration("")]

@@ -11,6 +11,6 @@ using System.Reflection;
 //------------------------------------------------------------------------------
 
 [assembly: AssemblyVersionAttribute("0")]
-[assembly: AssemblyCopyrightAttribute("Copyright © 2005 ThoughtWorks Inc.")]
+[assembly: AssemblyCopyrightAttribute("Copyright © 2006 ThoughtWorks Inc.")]
 [assembly: AssemblyCompanyAttribute("ThoughtWorks")]
 [assembly: AssemblyProductAttribute("Selenium")]
