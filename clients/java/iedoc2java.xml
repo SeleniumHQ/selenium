@@ -6,7 +6,7 @@
 ]>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    
-<xsl:output method="text"/>
+<xsl:output method="html"/>
 <xsl:strip-space elements="*"/>
 <xsl:param name="mode" />
 
@@ -46,6 +46,7 @@ TOP
 <xsl:template match="top" mode="implementation">
 	<xsl:text>package com.thoughtworks.selenium;&nl;</xsl:text>
 	<xsl:text disable-output-escaping="yes"><![CDATA[
+/** The default implementation of the Selenium interface; <i>end users will primarily interact with this object.</i> */
 public class DefaultSelenium implements Selenium {
 
 	// This file has been automatically generated using XSL
