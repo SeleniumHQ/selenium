@@ -1,0 +1,1061 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>selenium.selenium_class</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="selenium-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <font size="-1"><b class="breadcrumbs">
+        <a href="selenium-module.html">Module&nbsp;selenium</a> ::
+        Class&nbsp;selenium_class
+      </b></font></br>
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[<a href="../private/selenium.selenium_class-class.html">show&nbsp;private</a>&nbsp;|&nbsp;hide&nbsp;private]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="selenium.selenium_class-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF CLASS DESCRIPTION =========== -->
+<h2 class="class">Class selenium_class</h2>
+
+<hr/>
+
+<p>Defines an object that runs Selenium commands.</p>
+<div class="section">
+<h1 class="heading"><a id="element-locators" name="element-locators">Element Locators</a></h1>
+<p>Element Locators tell Selenium which HTML element a command refers to. Many
+commands require an Element Locator as a parameter.</p>
+<p>We support the following strategies for locating elements:</p>
+<ul>
+<li><p class="first"><strong>identifier</strong>=<em>id</em>
+Select the element with the specified &#64;id attribute. If no match is
+found, select the first element whose &#64;name attribute is <em>id</em>.
+(This is normally the default; see below.)</p>
+</li>
+<li><p class="first"><strong>id</strong>=<em>id</em>
+Select the element with the specified &#64;id attribute.</p>
+</li>
+<li><p class="first"><strong>name</strong>=<em>name</em>
+Select the first element with the specified &#64;name attribute.</p>
+</li>
+<li><p class="first"><strong>dom</strong>=<em>javascriptExpression</em></p>
+<blockquote>
+<p>Find an element using JavaScript traversal of the HTML Document Object
+Model. DOM locators <em>must</em> begin with &quot;document.&quot;.
+*       dom=document.forms['myForm'].myDropdown
+*       dom=document.images[56]</p>
+</blockquote>
+</li>
+<li><p class="first"><strong>xpath</strong>=<em>xpathExpression</em>
+Locate an element using an XPath expression. XPath locators
+<em>must</em> begin with &quot;//&quot;.
+*       xpath=//img[&#64;alt='The image alt text']
+*       xpath=//table[&#64;id='table1']//tr[4]/td[2]</p>
+</li>
+<li><p class="first"><strong>link</strong>=<em>textPattern</em>
+Select the link (anchor) element which contains text matching the
+specified <em>pattern</em>.
+*       link=The link text</p>
+</li>
+</ul>
+<p>Without an explicit locator prefix, Selenium uses the following default
+strategies:</p>
+<ul class="rst-simple">
+<li><strong>dom</strong>, for locators starting with &quot;document.&quot;</li>
+<li><strong>xpath</strong>, for locators starting with &quot;//&quot;</li>
+<li><strong>identifier</strong>, otherwise</li>
+</ul>
+</div>
+<div class="section">
+<h1 class="heading"><a id="string-match-patterns" name="string-match-patterns">String-match Patterns</a></h1>
+<p>Various Pattern syntaxes are available for matching string values:</p>
+<ul class="rst-simple">
+<li><strong>glob:</strong><em>pattern</em>
+Match a string against a &quot;glob&quot; (aka &quot;wildmat&quot;) pattern. &quot;Glob&quot; is a
+kind of limited regular-expression syntax typically used in command-line
+shells. In a glob pattern, &quot;*&quot; represents any sequence of characters, and &quot;?&quot;
+represents any single character. Glob patterns match against the entire
+string.</li>
+<li><strong>regexp:</strong><em>regexp</em>
+Match a string using a regular-expression. The full power of JavaScript
+regular-expressions is available.</li>
+<li><strong>exact:</strong><em>string</em>
+Match a string exactly, verbatim, without any of that fancy wildcard
+stuff.</li>
+</ul>
+<p>If no pattern prefix is specified, Selenium assumes that it's a &quot;glob&quot;
+pattern.</p>
+</div>
+<hr/>
+
+
+<!-- =========== START OF METHOD SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Method Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="__init__"></a><span class="summary-sig"><span class="summary-sig-name">__init__</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>host</span>,
+          <span class=summary-sig-arg>port</span>,
+          <span class=summary-sig-arg>browserStartCommand</span>,
+          <span class=summary-sig-arg>browserURL</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#answer_on_next_prompt" class="summary-sig-name"><code>answer_on_next_prompt</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>answer</span>)</span></code>
+<br />
+Instructs Selenium to return the specified answer string in response to
+the next JavaScript prompt [window.prompt()].</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_editable" class="summary-sig-name"><code>assert_editable</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Verifies that the specified element is editable, ie.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_element_not_present" class="summary-sig-name"><code>assert_element_not_present</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Verifies that the specified element is NOT on the page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_element_present" class="summary-sig-name"><code>assert_element_present</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Verifies that the specified element is somewhere on the page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_location" class="summary-sig-name"><code>assert_location</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>expectedLocation</span>)</span></code>
+<br />
+Verify the location of the current page ends with the expected location.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_not_editable" class="summary-sig-name"><code>assert_not_editable</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Verifies that the specified element is NOT editable, ie.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_not_visible" class="summary-sig-name"><code>assert_not_visible</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Verifies that the specified element is NOT visible; elements that are
+simply not present are also considered invisible.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_selected" class="summary-sig-name"><code>assert_selected</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>,
+          <span class=summary-sig-arg>optionLocator</span>)</span></code>
+<br />
+Verifies that the selected option of a drop-down satisfies the optionSpecifier.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_text_not_present" class="summary-sig-name"><code>assert_text_not_present</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>pattern</span>)</span></code>
+<br />
+Verifies that the specified text pattern does NOT appear anywhere on the rendered page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_text_present" class="summary-sig-name"><code>assert_text_present</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>pattern</span>)</span></code>
+<br />
+Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#assert_visible" class="summary-sig-name"><code>assert_visible</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Verifies that the specified element is both present and visible.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#check" class="summary-sig-name"><code>check</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Check a toggle-button (checkbox/radio)</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#choose_cancel_on_next_confirmation" class="summary-sig-name"><code>choose_cancel_on_next_confirmation</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Instructs Selenium to click &quot;Cancel&quot; on the next JavaScript confirmation
+dialog to be raised.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#click" class="summary-sig-name"><code>click</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Clicks on a link, button, checkbox or radio button.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#close" class="summary-sig-name"><code>close</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Simulates the user clicking the &quot;close&quot; button in the titlebar of a popup
+window or tab.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="do_command"></a><span class="summary-sig"><span class="summary-sig-name">do_command</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>verb</span>,
+          <span class=summary-sig-arg>args</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#fire_event" class="summary-sig-name"><code>fire_event</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>,
+          <span class=summary-sig-arg>eventName</span>)</span></code>
+<br />
+Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
+handler.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_absolute_location" class="summary-sig-name"><code>get_absolute_location</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Gets the absolute URL of the current page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_alert" class="summary-sig-name"><code>get_alert</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Retrieves the message of a javascript alert generated during the previous action, or fail if there were no alerts.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_all_buttons" class="summary-sig-name"><code>get_all_buttons</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Returns the IDs of all buttons on the page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_all_fields" class="summary-sig-name"><code>get_all_fields</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Returns the IDs of all input fields on the page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_all_links" class="summary-sig-name"><code>get_all_links</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Returns the IDs of all links on the page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_attribute" class="summary-sig-name"><code>get_attribute</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>attributeLocator</span>)</span></code>
+<br />
+Gets the value of an element attribute.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_body_text" class="summary-sig-name"><code>get_body_text</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Get the entire text of the page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="get_boolean"></a><span class="summary-sig"><span class="summary-sig-name">get_boolean</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>verb</span>,
+          <span class=summary-sig-arg>args</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="get_boolean_array"></a><span class="summary-sig"><span class="summary-sig-name">get_boolean_array</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>verb</span>,
+          <span class=summary-sig-arg>args</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_checked" class="summary-sig-name"><code>get_checked</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Get whether a toggle-button (checkbox/radio) is checked.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_confirmation" class="summary-sig-name"><code>get_confirmation</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Retrieves the message of a javascript confirmation dialog generated during
+the previous action.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_eval" class="summary-sig-name"><code>get_eval</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>script</span>)</span></code>
+<br />
+Gets the result of evaluating the specified JavaScript snippet.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_expression" class="summary-sig-name"><code>get_expression</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>expression</span>)</span></code>
+<br />
+Return the specified expression.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="get_number"></a><span class="summary-sig"><span class="summary-sig-name">get_number</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>verb</span>,
+          <span class=summary-sig-arg>args</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="get_number_array"></a><span class="summary-sig"><span class="summary-sig-name">get_number_array</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>verb</span>,
+          <span class=summary-sig-arg>args</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_prompt" class="summary-sig-name"><code>get_prompt</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Retrieves the message of a javascript question prompt dialog generated during
+the previous action.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_select_options" class="summary-sig-name"><code>get_select_options</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Gets all option labels in the specified select drop-down.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="get_string"></a><span class="summary-sig"><span class="summary-sig-name">get_string</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>verb</span>,
+          <span class=summary-sig-arg>args</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="get_string_array"></a><span class="summary-sig"><span class="summary-sig-name">get_string_array</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>verb</span>,
+          <span class=summary-sig-arg>args</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_table" class="summary-sig-name"><code>get_table</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>tableCellAddress</span>)</span></code>
+<br />
+Gets the text from a cell of a table.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_text" class="summary-sig-name"><code>get_text</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Gets the text of an element.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_title" class="summary-sig-name"><code>get_title</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Gets the title of the current page.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#get_value" class="summary-sig-name"><code>get_value</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Gets the (whitespace-trimmed) value of an input field (or anything else with a value parameter).</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#go_back" class="summary-sig-name"><code>go_back</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Simulates the user clicking the &quot;back&quot; button on their browser.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#key_down" class="summary-sig-name"><code>key_down</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>,
+          <span class=summary-sig-arg>keycode</span>)</span></code>
+<br />
+Simulates a user pressing a key (without releasing it yet).</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#key_press" class="summary-sig-name"><code>key_press</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>,
+          <span class=summary-sig-arg>keycode</span>)</span></code>
+<br />
+Simulates a user pressing and releasing a key.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#mouse_down" class="summary-sig-name"><code>mouse_down</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#mouse_over" class="summary-sig-name"><code>mouse_over</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Simulates a user hovering a mouse over the specified element.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#open" class="summary-sig-name"><code>open</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>url</span>)</span></code>
+<br />
+Opens an URL in the test frame.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#select" class="summary-sig-name"><code>select</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>,
+          <span class=summary-sig-arg>optionLocator</span>)</span></code>
+<br />
+Select an option from a drop-down using an option locator.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#select_window" class="summary-sig-name"><code>select_window</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>windowID</span>)</span></code>
+<br />
+Selects a popup window; once a popup window has been selected, all
+commands go to that window.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#set_context" class="summary-sig-name"><code>set_context</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>context</span>,
+          <span class=summary-sig-arg>logLevelThreshold</span>)</span></code>
+<br />
+Writes a message to the status bar and adds a note to the browser-side
+log.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="start"></a><span class="summary-sig"><span class="summary-sig-name">start</span>(<span class=summary-sig-arg>self</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="stop"></a><span class="summary-sig"><span class="summary-sig-name">stop</span>(<span class=summary-sig-arg>self</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#submit" class="summary-sig-name"><code>submit</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>formLocator</span>)</span></code>
+<br />
+Submit the specified form.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#type" class="summary-sig-name"><code>type</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>,
+          <span class=summary-sig-arg>value</span>)</span></code>
+<br />
+Sets the value of an input field, as though you typed it in.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#uncheck" class="summary-sig-name"><code>uncheck</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>locator</span>)</span></code>
+<br />
+Uncheck a toggle-button (checkbox/radio)</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#wait_for_condition" class="summary-sig-name"><code>wait_for_condition</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>script</span>,
+          <span class=summary-sig-arg>timeout</span>)</span></code>
+<br />
+Runs the specified JavaScript snippet repeatedly until it evaluates to &quot;true&quot;.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="selenium.selenium_class-class.html#wait_for_page_to_load" class="summary-sig-name"><code>wait_for_page_to_load</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>timeout</span>)</span></code>
+<br />
+Waits for a new page to load.</td></tr>
+</table><br />
+
+
+<!-- =========== START OF METHOD DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Method Details</th></tr>
+</table>
+
+<a name="answer_on_next_prompt"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">answer_on_next_prompt</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>answer</span>)</span>
+  </h3>
+<p>Instructs Selenium to return the specified answer string in response to
+the next JavaScript prompt [window.prompt()].</p>
+<p>'answer' is the answer to give in response to the prompt pop-up</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_editable"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_editable</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Verifies that the specified element is editable, ie. it's an input
+element, and hasn't been disabled.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_element_not_present"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_element_not_present</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Verifies that the specified element is NOT on the page.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_element_present"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_element_present</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Verifies that the specified element is somewhere on the page.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_location"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_location</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>expectedLocation</span>)</span>
+  </h3>
+<p>Verify the location of the current page ends with the expected location.
+If an URL querystring is provided, this is checked as well.</p>
+<p>'expectedLocation' is the location to match</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_not_editable"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_not_editable</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Verifies that the specified element is NOT editable, ie. it's NOT an
+input element, or has been disabled.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_not_visible"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_not_visible</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Verifies that the specified element is NOT visible; elements that are
+simply not present are also considered invisible.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_selected"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_selected</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>,
+          <span class=sig-arg>optionLocator</span>)</span>
+  </h3>
+<p>Verifies that the selected option of a drop-down satisfies the optionSpecifier.</p>
+<p>See the select command for more information about option locators.</p>
+<p>'locator' is an element locator
+'optionLocator' is an option locator, typically just an option label (e.g. &quot;John Smith&quot;)</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_text_not_present"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_text_not_present</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>pattern</span>)</span>
+  </h3>
+<p>Verifies that the specified text pattern does NOT appear anywhere on the rendered page.</p>
+<p>'pattern' is a pattern to match with the text of the page</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_text_present"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_text_present</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>pattern</span>)</span>
+  </h3>
+<p>Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.</p>
+<p>'pattern' is a pattern to match with the text of the page</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="assert_visible"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">assert_visible</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Verifies that the specified element is both present and visible. An
+element can be rendered invisible by setting the CSS &quot;visibility&quot;
+property to &quot;hidden&quot;, or the &quot;display&quot; property to &quot;none&quot;, either for the
+element itself or one if its ancestors.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="check"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">check</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Check a toggle-button (checkbox/radio)</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="choose_cancel_on_next_confirmation"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">choose_cancel_on_next_confirmation</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Instructs Selenium to click &quot;Cancel&quot; on the next JavaScript confirmation
+dialog to be raised. By default, the confirm function will return true,
+having the same effect as manually clicking OK. After running this
+command, the next confirmation will behave as if the user had clicked
+Cancel.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="click"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">click</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Clicks on a link, button, checkbox or radio button. If the click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="close"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">close</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Simulates the user clicking the &quot;close&quot; button in the titlebar of a popup
+window or tab.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="fire_event"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">fire_event</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>,
+          <span class=sig-arg>eventName</span>)</span>
+  </h3>
+<p>Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
+handler.</p>
+<p>'locator' is an element locator
+'eventName' is the event name, e.g. &quot;focus&quot; or &quot;blur&quot;</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_absolute_location"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_absolute_location</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Gets the absolute URL of the current page.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_alert"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_alert</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Retrieves the message of a javascript alert generated during the previous action, or fail if there were no alerts.</p>
+<p>Getting an alert has the same effect as manually clicking OK. If an
+alert is generated but you do not get/verify it, the next Selenium action
+will fail.
+NOTE: under Selenium, javascript alerts will NOT pop up a visible alert
+dialog.
+NOTE: Selenium does NOT support javascript alerts that are generated in a
+page's onload() event handler. In this case a visible dialog WILL be
+generated and Selenium will hang until someone manually clicks OK.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_all_buttons"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_all_buttons</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Returns the IDs of all buttons on the page.</p>
+<p>If a given button has no ID, it will appear as &quot;&quot; in this array.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_all_fields"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_all_fields</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Returns the IDs of all input fields on the page.</p>
+<p>If a given field has no ID, it will appear as &quot;&quot; in this array.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_all_links"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_all_links</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Returns the IDs of all links on the page.</p>
+<p>If a given link has no ID, it will appear as &quot;&quot; in this array.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_attribute"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_attribute</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>attributeLocator</span>)</span>
+  </h3>
+<p>Gets the value of an element attribute.</p>
+<p>'attributeLocator' is an element locator followed by an</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_body_text"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_body_text</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Get the entire text of the page.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_checked"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_checked</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Get whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.</p>
+<p>'locator' is an element locator pointing to a checkbox or radio button</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_confirmation"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_confirmation</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Retrieves the message of a javascript confirmation dialog generated during
+the previous action.</p>
+<p>By default, the confirm function will return true, having the same effect
+as manually clicking OK. This can be changed by prior execution of the
+chooseCancelOnNextConfirmation command. If an confirmation is generated
+but you do not get/verify it, the next Selenium action will fail.</p>
+<p>NOTE: under Selenium, javascript confirmations will NOT pop up a visible
+dialog.</p>
+<p>NOTE: Selenium does NOT support javascript confirmations that are
+generated in a page's onload() event handler. In this case a visible
+dialog WILL be generated and Selenium will hang until you manually click
+OK.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_eval"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_eval</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>script</span>)</span>
+  </h3>
+<p>Gets the result of evaluating the specified JavaScript snippet.  The snippet may
+have multiple lines, but only the result of the last line will be returned.</p>
+<p>Note that, by default, the snippet will be run in the runner's test window, not in the window
+of your application.  To get the window of your application, you can use
+the JavaScript snippet <tt class="docutils literal"><span class="pre">selenium.browserbot.getCurrentWindow()</span></tt>, and then
+run your JavaScript in there.</p>
+<p>'script' is the JavaScript snippet to run</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_expression"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_expression</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>expression</span>)</span>
+  </h3>
+<p>Return the specified expression.</p>
+<p>This is useful because of JavaScript preprocessing.
+It is used to generate commands like assertExpression and storeExpression.</p>
+<p>'expression' is the value to return</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_prompt"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_prompt</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Retrieves the message of a javascript question prompt dialog generated during
+the previous action.</p>
+<p>Successful handling of the prompt requires prior execution of the
+answerOnNextPrompt command. If a prompt is generated but you
+do not get/verify it, the next Selenium action will fail.
+NOTE: under Selenium, javascript prompts will NOT pop up a visible
+dialog.
+NOTE: Selenium does NOT support javascript prompts that are generated in a
+page's onload() event handler. In this case a visible dialog WILL be
+generated and Selenium will hang until someone manually clicks OK.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_select_options"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_select_options</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Gets all option labels in the specified select drop-down.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_table"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_table</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>tableCellAddress</span>)</span>
+  </h3>
+<p>Gets the text from a cell of a table. The cellAddress syntax
+tableLocator.row.column, where row and column start at 0.</p>
+<p>'tableCellAddress' is a cell address, e.g. &quot;foo.1.4&quot;</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_text"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_text</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Gets the text of an element. This works for any element that contains
+text. This command uses either the textContent (Mozilla-like browsers) or
+the innerText (IE-like browsers) of the element, which is the rendered
+text shown to the user.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_title"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_title</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Gets the title of the current page.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="get_value"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">get_value</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Gets the (whitespace-trimmed) value of an input field (or anything else with a value parameter).
+For checkbox/radio elements, the value will be &quot;on&quot; or &quot;off&quot; depending on
+whether the element is checked or not.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="go_back"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">go_back</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+<p>Simulates the user clicking the &quot;back&quot; button on their browser.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="key_down"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">key_down</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>,
+          <span class=sig-arg>keycode</span>)</span>
+  </h3>
+<pre class="literalblock">
+Simulates a user pressing a key (without releasing it yet).
+
+
+'locator' is an element locator
+'keycode' is the numeric keycode of the key to be pressed, normally the
+            ASCII value of that key.
+</pre>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="key_press"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">key_press</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>,
+          <span class=sig-arg>keycode</span>)</span>
+  </h3>
+<pre class="literalblock">
+Simulates a user pressing and releasing a key.
+
+
+'locator' is an element locator
+'keycode' is the numeric keycode of the key to be pressed, normally the
+            ASCII value of that key.
+</pre>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="mouse_down"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">mouse_down</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="mouse_over"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">mouse_over</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Simulates a user hovering a mouse over the specified element.</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="open"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">open</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>url</span>)</span>
+  </h3>
+<p>Opens an URL in the test frame. This accepts both relative and absolute
+URLs.</p>
+<p><em>Note</em>: The URL must be on the same domain as the runner HTML
+due to security restrictions in the browser (Same Origin Policy). If you
+need to open an URL on another domain, use the Selenium Server to start a
+new browser session on that domain.</p>
+<p>'url' is the URL to open; may be relative or absolute</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="select"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">select</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>,
+          <span class=sig-arg>optionLocator</span>)</span>
+  </h3>
+<p>Select an option from a drop-down using an option locator.</p>
+<p>Option locators provide different ways of specifying options of an HTML
+Select element (e.g. for selecting a specific option, or for asserting
+that the selected option satisfies a specification). There are several
+forms of Select Option Locator.</p>
+<ul class="rst-simple">
+<li><strong>label</strong>=<em>labelPattern</em>
+matches options based on their labels, i.e. the visible text. (This
+is the default.)
+*       label=regexp:^[Oo]ther</li>
+<li><strong>value</strong>=<em>valuePattern</em>
+matches options based on their values.
+*       value=other</li>
+<li><strong>id</strong>=<em>id</em>
+matches options based on their ids.
+*       id=option1</li>
+<li><strong>index</strong>=<em>index</em>
+matches an option based on its index (offset from zero).
+*       index=2</li>
+</ul>
+<p>Without a prefix, the default behaviour is to only match on labels.</p>
+<p>'locator' is an element locator identifying a drop-down menu
+'optionLocator' is an option locator (a label by default)</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="select_window"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">select_window</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>windowID</span>)</span>
+  </h3>
+<p>Selects a popup window; once a popup window has been selected, all
+commands go to that window. To select the main window again, use &quot;null&quot;
+as the target.</p>
+<p>'windowID' is the JavaScript window ID of the window to select</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="set_context"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">set_context</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>context</span>,
+          <span class=sig-arg>logLevelThreshold</span>)</span>
+  </h3>
+<p>Writes a message to the status bar and adds a note to the browser-side
+log.</p>
+<p>If logLevelThreshold is specified, set the threshold for logging
+to that level (debug, info, warn, error).
+(Note that the browser-side logs will <em>not</em> be sent back to the
+server, and are invisible to the Client Driver.)</p>
+<p>'context' is the message to be sent to the browser
+'logLevelThreshold' is one of &quot;debug&quot;, &quot;info&quot;, &quot;warn&quot;, &quot;error&quot;, sets the threshold for browser-side logging</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="submit"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">submit</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>formLocator</span>)</span>
+  </h3>
+<p>Submit the specified form. This is particularly useful for forms without
+submit buttons, e.g. single-input &quot;Search&quot; forms.</p>
+<p>'formLocator' is an element locator for the form you want to submit</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="type"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">type</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>,
+          <span class=sig-arg>value</span>)</span>
+  </h3>
+<p>Sets the value of an input field, as though you typed it in.</p>
+<p>Can also be used to set the value of combo boxes, check boxes, etc. In these cases,
+value should be the value of the option selected, not the visible text.</p>
+<p>'locator' is an element locator
+'value' is the value to type</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="uncheck"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">uncheck</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>locator</span>)</span>
+  </h3>
+<p>Uncheck a toggle-button (checkbox/radio)</p>
+<p>'locator' is an element locator</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="wait_for_condition"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">wait_for_condition</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>script</span>,
+          <span class=sig-arg>timeout</span>)</span>
+  </h3>
+<p>Runs the specified JavaScript snippet repeatedly until it evaluates to &quot;true&quot;.
+The snippet may have multiple lines, but only the result of the last line
+will be considered.</p>
+<p>Note that, by default, the snippet will be run in the runner's test window, not in the window
+of your application.  To get the window of your application, you can use
+the JavaScript snippet <tt class="docutils literal"><span class="pre">selenium.browserbot.getCurrentWindow()</span></tt>, and then
+run your JavaScript in there</p>
+<p>'script' is the JavaScript snippet to run
+'timeout' is a timeout in milliseconds, after which this command will return with an error</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="wait_for_page_to_load"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">wait_for_page_to_load</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>timeout</span>)</span>
+  </h3>
+<p>Waits for a new page to load.</p>
+<p>You can use this command instead of the &quot;AndWait&quot; suffixes, &quot;clickAndWait&quot;, &quot;selectAndWait&quot;, &quot;typeAndWait&quot; etc.
+(which are only available in the JS API).
+Selenium constantly keeps track of new pages loading, and sets a &quot;newPageLoaded&quot;
+flag when it first notices a page load.  Running any other Selenium command after
+turns the flag to false.  Hence, if you want to wait for a page to load, you must
+wait immediately after a Selenium command that caused a page-load.</p>
+<p>'timeout' is a timeout in milliseconds, after which this command will return with an error</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+<br />
+
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="selenium-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.1 on Wed Mar 29 12:24:44 2006</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>

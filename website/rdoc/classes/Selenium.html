@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: Selenium</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">Selenium</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/selenium_rb.html">
+                selenium.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Defines an object that runs <a href="Selenium.html">Selenium</a> commands.
+</p>
+<h3>Element Locators</h3>
+<p>
+Element Locators tell <a href="Selenium.html">Selenium</a> which HTML
+element a command refers to. Many commands require an Element Locator as a
+parameter.
+</p>
+<p>
+We support the following strategies for locating elements:
+</p>
+<ul>
+<li><b>identifier</b>=<em>id</em>:: Select the element with the specified @id
+attribute. If no match is found, select the first element whose @name
+attribute is <em>id</em>. (This is normally the default; see below.)
+
+</li>
+<li><b>id</b>=<em>id</em>:: Select the element with the specified @id
+attribute.
+
+</li>
+<li><b>name</b>=<em>name</em>:: Select the first element with the specified
+@name attribute.
+
+</li>
+<li><b>dom</b>=<em>javascriptExpression</em>::
+
+<pre>
+        Find an element using JavaScript traversal of the HTML Document Object
+        Model. DOM locators &lt;em&gt;must&lt;/em&gt; begin with &quot;document.&quot;.
+        *   dom=document.forms['myForm'].myDropdown
+        *   dom=document.images[56]
+</pre>
+</li>
+<li><b>xpath</b>=<em>xpathExpression</em>:: Locate an element using an XPath
+expression. XPath locators <em>must</em> begin with &quot;//&quot;.
+
+<ul>
+<li>xpath=//img[@alt=&#8217;The image alt text&#8217;]
+
+</li>
+<li>xpath=//table[@id=&#8217;table1&#8217;]//tr[4]/td[2]
+
+</li>
+</ul>
+</li>
+<li><b>link</b>=<em>textPattern</em>:: Select the link (anchor) element which
+contains text matching the specified <em>pattern</em>.
+
+<ul>
+<li>link=The link text
+
+</li>
+</ul>
+</li>
+</ul>
+<p>
+Without an explicit locator prefix, <a href="Selenium.html">Selenium</a>
+uses the following default strategies:
+</p>
+<ul>
+<li><b>dom</b>, for locators starting with &quot;document.&quot;
+
+</li>
+<li><b>xpath</b>, for locators starting with &quot;//&quot;
+
+</li>
+<li><b>identifier</b>, otherwise
+
+</li>
+</ul>
+<h3>String-match Patterns</h3>
+<p>
+Various Pattern syntaxes are available for matching string values:
+</p>
+<ul>
+<li><b>glob:</b><em>pattern</em>:: Match a string against a &quot;glob&quot;
+(aka &quot;wildmat&quot;) pattern. &quot;Glob&quot; is a kind of limited
+regular-expression syntax typically used in command-line shells. In a glob
+pattern, &quot;*&quot; represents any sequence of characters, and
+&quot;?&quot; represents any single character. Glob patterns match against
+the entire string.
+
+</li>
+<li><b>regexp:</b><em>regexp</em>:: Match a string using a regular-expression.
+The full power of JavaScript regular-expressions is available.
+
+</li>
+<li><b>exact:</b><em>string</em>:: Match a string exactly, verbatim, without
+any of that fancy wildcard stuff.
+
+</li>
+</ul>
+<p>
+If no pattern prefix is specified, <a href="Selenium.html">Selenium</a>
+assumes that it&#8217;s a &quot;glob&quot; pattern.
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+    <div id="class-list">
+      <h3 class="section-bar">Classes and Modules</h3>
+
+      Class <a href="Selenium/SeleneseInterpreter.html" class="link">Selenium::SeleneseInterpreter</a><br />
+
+    </div>
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

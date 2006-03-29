@@ -1,0 +1,31 @@
+<html dir="LTR">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+    <title>DefaultSelenium Class</title>
+    <xml>
+    </xml>
+    <link rel="stylesheet" type="text/css" href="MSDN.css" />
+  </head>
+  <body id="bodyID" class="dtBODY">
+    <div id="nsbanner">
+      <div id="bannerrow1">
+        <table class="bannerparthead" cellspacing="0">
+          <tr id="hdr">
+            <td class="runninghead">An NDoc Documented Class Library</td>
+            <td class="product">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="TitleRow">
+        <h1 class="dtH1">DefaultSelenium Class</h1>
+      </div>
+    </div>
+    <div id="nstext"> Defines an object that runs Selenium commands. <h3><a name="locators"></a>Element Locators</h3><p> Element Locators tell Selenium which HTML element a command refers to. Many commands require an Element Locator as a parameter. We support the following strategies for locating elements: </p><blockquote><dl><dt><strong>identifier</strong>=<em>id</em></dt><dd>Select the element with the specified @id attribute. If no match is found, select the first element whose @name attribute is <em>id</em>. (This is normally the default; see below.)</dd><dt><strong>id</strong>=<em>id</em></dt><dd>Select the element with the specified @id attribute.</dd><dt><strong>name</strong>=<em>name</em></dt><dd>Select the first element with the specified @name attribute.</dd><dt><strong>dom</strong>=<em>javascriptExpression</em></dt><dd><dd>Find an element using JavaScript traversal of the HTML Document Object Model. DOM locators <em>must</em> begin with "document.". <ul class="first last simple"><li>dom=document.forms['myForm'].myDropdown</li><li>dom=document.images[56]</li></ul></dd></dd><dt><strong>xpath</strong>=<em>xpathExpression</em></dt><dd>Locate an element using an XPath expression. XPath locators <em>must</em> begin with "//". <ul class="first last simple"><li>xpath=//img[@alt='The image alt text']</li><li>xpath=//table[@id='table1']//tr[4]/td[2]</li></ul></dd><dt><strong>link</strong>=<em>textPattern</em></dt><dd>Select the link (anchor) element which contains text matching the specified <em>pattern</em>. <ul class="first last simple"><li>link=The link text</li></ul></dd></dl></blockquote><p> Without an explicit locator prefix, Selenium uses the following default strategies: </p><ul class="simple"><li><strong>dom</strong>, for locators starting with "document."</li><li><strong>xpath</strong>, for locators starting with "//"</li><li><strong>identifier</strong>, otherwise</li></ul><h3><a name="patterns"></a>String-match Patterns</h3><p> Various Pattern syntaxes are available for matching string values: </p><blockquote><dl><dt><strong>glob:</strong><em>pattern</em></dt><dd>Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a kind of limited regular-expression syntax typically used in command-line shells. In a glob pattern, "*" represents any sequence of characters, and "?" represents any single character. Glob patterns match against the entire string.</dd><dt><strong>regexp:</strong><em>regexp</em></dt><dd>Match a string using a regular-expression. The full power of JavaScript regular-expressions is available.</dd><dt><strong>exact:</strong><em>string</em></dt><dd>Match a string exactly, verbatim, without any of that fancy wildcard stuff.</dd></dl></blockquote><p> If no pattern prefix is specified, Selenium assumes that it's a "glob" pattern. </p>
+            <p>For a list of all members of this type, see <a href="Selenium.DefaultSeleniumMembers.html">DefaultSelenium Members</a>.</p><p><a href="ms-help://MS.NETFrameworkSDKv1.1/cpref/html/frlrfSystemObjectClassTopic.htm">System.Object</a><br />   <b>Selenium.DefaultSelenium</b></p><div class="syntax"><div>public class DefaultSelenium<b> : <a href="Selenium.ISelenium.html">ISelenium</a></b></div></div><H4 class="dtH4">Thread Safety</H4><P>Public static (<b>Shared</b> in Visual Basic) members of this type are 
+				safe for multithreaded operations. Instance members are <b>not</b> guaranteed to be 
+				thread-safe.</P><h4 class="dtH4">Requirements</h4><p><b>Namespace: </b><a href="Selenium.html">Selenium</a></p><p><b>Assembly: </b>ThoughtWorks.Selenium.Core (in ThoughtWorks.Selenium.Core.dll)
+					</p><h4 class="dtH4">See Also</h4><p><a href="Selenium.DefaultSeleniumMembers.html">DefaultSelenium Members</a> | <a href="Selenium.html">Selenium Namespace</a></p><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e" viewastext="true" style="display: none;"><param name="Keyword" value="DefaultSelenium class, about DefaultSelenium class"></param></object></div>
+  </body>
+</html>
