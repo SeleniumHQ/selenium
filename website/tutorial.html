@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Tutorial</title></head>
+
+<body>
+<p>This Selenium Remote Contrtol tutorial will teach you how to start the Selenium Server from the command line, and how to use the Server in interactive mode.  It assumes that you are familiar with running programs from the command line.</p>
+<hr/>
+<p>The Selenium Server is written in Java, and requires the Java Runtime Environment (JRE) in order to start.  You may already have it installed.  Try running this from the command line:</p>
+<blockquote><code> java -version</code></blockquote>
+<p>You should see a brief message telling you what version of Java is installed.  If you see an error message instead, you may need to install the <a href="http://www.java.com/en/download/manual.jsp">JRE</a>, or you may need to add it to your PATH environment variable.</p>
+<p>For this example, you'll also need to make sure that you have a supported browser installed.  If you're on Windows, you can just use Internet Explorer.  If you're on another operating system, try installing Firefox and adding the Firefox directory to your PATH environment variable.</p>
+<p>Once you've got Java installed and ready to go, you can start the Selenium Server from the command line like this:</p>
+<blockquote><code>java -jar selenium-server.jar -interactive</code></blockquote>
+<p>That will start the Selenium Server and allow you to type commands in the command window.  After a number of log messages, you should see the following message: </p>
+<blockquote><p><code>Entering interactive mode... type Selenium commands here (e.g: cmd=open&amp;1=http://www.yahoo.com)</code>&nbsp;</p>
+</blockquote><p>Let's begin by using Selenium Server to open up a browser.  If you're on Windows and want to run your Selenium commands using Internet Explorer, try typing this:</p>
+<blockquote>
+  <p><code> cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>*iexplore</strong>&amp;2=<strong>http://www.google.com</strong></code></p>
+</blockquote>
+<p>If you want to use Firefox, try this:</p>
+<blockquote>
+  <p><code> cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>*firefox</strong>&amp;2=<strong>http://www.google.com</strong></code></p>
+</blockquote>
+<p>You're running the &quot;getNewBrowserSession&quot; command, using the browser of your choice (*iexplore for Internet Explorer or *firefox for Firefox), starting at www.google.com. Typing commands in this window automatically fires off HTTP web requests to the Selenium Server, requesting work to be done.  (In non-interactive mode, you can use any automated tool you like to send these HTTP requests to the server, instead of typing them by hand.) When you press Enter, you'll see a message describing the request you just made:</p>
+<blockquote><code>---&gt; Requesting http://localhost:4444/selenium-server/driver?cmd=getNewBrowserSession&1=*firefox&2=http://www.google.com</code></blockquote>
+<p>If all goes well, you should see a new browser window starting with the browser of your choice.  Back in the Selenium Server command window, you should see the following message:</p>
+<blockquote>
+  <p><code> OK,1143670264928</code></p>
+</blockquote>
+<p>The first part of this message &quot;OK&quot; says that your request for work was successful.  The second part of this message, the number, is a Session ID.  The Session ID will be different every time you run the &quot;getNewBrowserSession&quot; command from the command line.</p>
+<p>Let's try some more commands; let's do a Google search!  We'll start by opening up the Google website.  Type this in the Selenium Server command window, replacing the Session ID below with the number you got when you ran &quot;getNewBrowserSession&quot;:</p>
+<blockquote>
+  <p> <code>cmd=<strong>open</strong>&amp;1=<strong>http://www.google.com</strong>&amp;sessionId=<em>1143670264928</em></code></p>
+</blockquote>
+<p>
+  When this command finishes, your browser window should reveal google.com in the lower frame.  Don't forget that you need to replace the Session ID above with your own personal Session ID, the one you got when you ran the &quot;getNewBrowserSession&quot; command.  (If you use the wrong Session ID, you won't see an error message; the Selenium Server will just sit there, waiting for some browser to come in and do its work.)</p>
+<p>Now that Google is open, let's try typing something in the search box.  Type this in the Selenium Server command window:</p>
+<blockquote>
+  <p><code> cmd=<strong>type</strong>&amp;1=q&amp;2=<strong>hello world</strong>&amp;sessionId=<em>1143670264928</em></code></p>
+</blockquote>
+<p>Again, don't forget to replace the Session ID with your own Session ID.  If all goes to plan, you should see &quot;hello world&quot; in the search box for your Google search.</p>
+<p>Now, let's do a search!</p>
+<blockquote>
+  <p><code>cmd=<strong>click</strong>&amp;1=<strong>btnG</strong>&amp;sessionId=<em>1143670264928</em></code> </p>
+</blockquote>
+<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers. </p>
+<p>For now, let's stop the browser we started.  Type this command in the Selenium Server command window:</p>
+<blockquote>
+  <p><code> cmd=<strong>testComplete</strong>&amp;sessionId=<em>1143670264928</em></code></p>
+</blockquote>
+<p>When this command finishes, your browser window should automatically close. To quit the Selenium Server, type &quot;quit&quot; or just press Ctrl-C. </p>
+<h2>The Same Origin Policy</h2>
+<p>As you were running your tests, you may have noticed that your browser started at the following URL:</p>
+<blockquote>
+  <p><code>http://www.google.com/selenium-server/SeleneseRunner.html?sessionId=<em>1143670728535</em> </code></p>
+</blockquote>
+<p>That's a rather unusual URL, because, of course, there is no such file available on www.google.com. If you open up your browser manually and browse to that URL, you'll get a 404 error. What's going on?</p>
+<p>The Selenium Server is attempting to circumvent a very difficult problem in JavaScript automated testing: normally, JavaScript you write yourself can't be run on google.com, due to a policy known as the <a href="http://www.mozilla.org/projects/security/components/same-origin.html">same origin policy</a>. (That write-up is from the Mozilla website, but all modern JavaScript browsers enforce this policy.) The same origin policy makes a lot of sense. Let's say you've got your browser window pointing at, let's say, your bank's website, but you also have another webpage open pointing to someone's blog. JavaScript is allowed to <em>read</em> values from web pages, as well as <em>change </em>data appearing on webpages you've loaded. A malicious blogger could read your bank data, or worse, rewrite your bank page to make it think it was saying something else. He could use this to trick you into giving him sensitive information. The Same Origin Policy states that JavaScript is only allowed to read/modify HTML from the <em>same origin</em> as its source.</p>
+<p>That creates a big problem for Selenium automated tests. If you wrote a .js file designed to test google.com, the same origin policy denies you the right to just run that .js file on google.com; instead, you'd have to somehow install that .js file <em>on google.com</em> in order to write automated tests against it. In the case of google.com we don't have the right to do this; but even if we did, it would be a hassle to do so. </p>
+<p>That's where the Selenium Server comes in. The Selenium Server is acting as a <em>client-configured proxy</em> for the browser that you automatically started with &quot;getNewBrowserSession&quot;. Specifically, it configures your browser to use the Selenium Server as a proxy in its browser preferences. </p>
+<p>A proxy normally <em>fetches </em>HTML pages on your behalf; if a page can't be found, it honestly reports that the page wasn't there. But the Selenium Server is a very different kind of proxy; when the browser requests a page through the proxy that contains &quot;/selenium-server/&quot; in its URL, the Selenium Server doesn't simply fetch the page from the remote server, but instead automatically returns its own page instead. That makes the browser think that the remote server itself actually contained the page in question, which allows us to &quot;inject&quot; arbitrary JavaScript into google.com without modifying google.com in any way at all.</p>
+<p>However, the solution isn't perfect. Try running your tests like this:</p>
+<blockquote>
+  <p><code>cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>*iexplore</strong>&amp;2=<strong>http://www.yahoo.com<br />
+  </strong></code><code>cmd=<strong>open</strong>&amp;1=<strong>http://www.google.com</strong>&amp;sessionId=<em>1143670264928</em></code> <br />
+    <code>cmd=<strong>type</strong>&amp;1=q&amp;2=<strong>hello world</strong>&amp;sessionId=<em>1143670264928</em></code></p>
+</blockquote>
+<p>In this case, the &quot;start URL&quot; was yahoo.com, so the browser opened to</p>
+<blockquote>
+  <p><code>http://<strong>www.yahoo.com</strong>/selenium-server/SeleneseRunner.html?sessionId=<em>1143670728535</em> </code></p>
+</blockquote>
+<p>and then we tried to open up google.com (which did work...) and type &quot;Hello World&quot; into the search box. But yahoo.com doesn't have the right to modify google.com, so that operation fails.</p>
+<p>All this means is that you have to choose your browser's start URL wisely: if you open up the browser to yahoo.com, you can't use it to test google.com, and vice versa.</p>
+<p>(A note for the future: we hope to have a slightly cooler solution for you in an upcoming release, allowing you to change a running browser session from one domain to another. The two domains still won't be able to talk to each other, but at least then you'll be able to switch back and forth easily. Most people won't need this functionality; if you're only testing one website at a time, you should be OK.)</p>
+<h2>Running without a Session ID - the &quot;null&quot; session</h2>
+<p>If you get annoyed with typing out your Session ID over-and-over, or if you want to try testing with another browser that we don't yet support, you can always just launch the browser yourself and browse to &quot;/selenium-server/SeleneseRunner.html&quot; yourself.</p>
+<p>In order to do this, you'll have to <em>manually</em> configure your browser to use the Selenium Server as a proxy. (Normally this just means opening your browser preferences and specifying &quot;localhost:4444&quot; as an HTTP proxy, but instructions for this can differ radically from browser to browser, so consult your browser's documentation for details.) </p>
+<p>If you just point straight at &quot;/selenium-server/SeleneseRunner.html&quot; you can send commands to that browser without specifying a Session ID. When no Session ID is specified, the Selenium Server uses the &quot;null&quot; session to communicate with any browser that comes to speak with it. Similarly, if you use a Session ID that isn't on record with the Selenium Server, no error message will be thrown; the Selenium Server will just wait patiently for some browser to come along and request work from that Session ID.</p>
+<p>You can even make up your own Session IDs, just by starting your browser while pointing to &quot;/selenium-server/SeleneseRunner.html?sessionId=foo&quot;. That will use the Session ID &quot;foo&quot; instead of some crazy long number. (Session IDs don't have to be numbers, though they usually are when the Selenium Server generates one.) Hence, if you use a Session ID that isn't on record with the Selenium Server, no error message will be thrown; the Selenium Server will just wait patiently for some browser to come along and request work from that Session ID.</p>
+<hr />
+<p>With that, you're ready to try out one of our Client Drivers. We have Client Drivers available in a variety of languages, allowing you to automatically submit HTTP requests to the Selenium Server and automate your browsing tasks. Click on one of them on the left to get more information about any particular Client Driver, or get information on how to write your own from scratch. </p>
+<p>Good luck!</p>
+</body>
+</html>
