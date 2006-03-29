@@ -17,35 +17,39 @@
     </evaluating>
 
     <docs>
-        <url>usage.html</url>
+        <url>tutorial.html</url>
         <items>
             <item>
-                <name>Usage</name>
-                <url>usage.html</url>
+                <name>Tutorial</name>
+                <url>tutorial.html</url>
             </item>
             <item>
-                <name>- commands</name>
-                <url>seleniumReference.html</url>
+                <name>Java</name>
+                <url>java.html</url>
             </item>
             <item>
-                <name>- test runner</name>
-                <url>testrunner.html</url>
+                <name>.NET</name>
+                <url>dotnet.html</url>
             </item>
             <item>
-                <name>- driven</name>
-                <url>driven.html</url>
+                <name>Python</name>
+                <url>python.html</url>
             </item>
             <item>
-                <name>Developing Drivers</name>
-                <url>developingdrivers.html</url>
+                <name>Ruby</name>
+                <url>ruby.html</url>
             </item>
             <item>
-                <name>Demos</name>
-                <url>demos.html</url>
+                <name>Developing Client Drivers</name>
+                <url>developingClientDrivers.html</url>
+            </item>
+            <item>
+            	<name>Server Command Line Options</name>
+            	<url>options.html</url>
             </item>
             <item>
                 <name>Wiki</name>
-                <url>http://wiki.openqa.org/display/SEL/Home</url>
+                <url>http://wiki.openqa.org/display/SRC/Home</url>
             </item>
         </items>
     </docs>

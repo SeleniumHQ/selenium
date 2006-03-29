@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Selenium Remote Control: Selenese HTML Tables</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<h1>Selenese HTML Tables</h1>
+
+<p>Selenese HTML Tables are normally tested using Selenium IDE or using Selenium Core by itself.  (The Selenium Server includes its own copy of Selenium Core.)  But there are a few ways you can use the Selenium Server with your Selenese HTML Tables.</p>
+
+
+<h2>Running Selenese Core Tests against an unmodified website</h2>
+
+<p>To run Selenium Core tests, they normally have to be installed on the server on which you want to test.  That means that you can't just write a Selenium Core test against google.com, because you'd need to install Selenium Core on google.com for those tests to work.</p>
+
+<p>The Selenium Server's client-configured proxy allows you to run your tests against any web site, by making the browser think that your tests are available at (for example) http://www.google.com/selenium-server/MyTestSuite.html.</p>
+
+<p>To use the Selenium Server as a proxy, run your tests like this:</p>
+
+<p><tt>&nbsp;&nbsp;&nbsp;java&nbsp;-jar&nbsp;selenium-server.jar&nbsp;-htmlSuite&nbsp;"*firefox"&nbsp;"http://www.google.com"&nbsp;"c:\absolute\path\to\my\HTMLSuite.html"&nbsp;"c:\absolute\path\to\my\results.html"&nbsp;-timeout&nbsp;30</tt></p>
+
+<p>(You can also use the -htmlSuite parameter with the -port and -timeout options, but it is incompatible with -interactive; you can't do both of those at once.)</p>
+
+<p>That will automatically launch your HTML suite and wait the specified number of seconds for the test to complete; if the test doesn't complete within that amount of time, the command will exit with a non-zero exit code and no results file will be generated.</p>
+
+<h2>Running Selenese Tests under Continuous Integration</h2>
+
+<p>If you just want to use the Selenium Server as a quick-and-dirty way to launch your HTML Selenese suites from the command line and generate results automatically, you can do that, too, just by following the instructions above.</p>
+
+<!--
+3) Converting your Selenese Tests into Java
+
+We have a tool that we use to automatically convert Selenese HTML tests into Java.  (We use this to automatically test the Selenium Server and Java Client Driver.)
+
+At the time of this writing (April 2006, Selenium 0.6) Selenese has no support for conditional "if" statements or looping "while" statements.  It also has no functionality to allow you to reuse testing code within other tests.
+
+If you need a more expressive language to write your tests, then you may benefit from using our tool to migrate your existing Selenium tests into Java.
+-->

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Selenium Remote Control: Ruby</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<h1>Using the Ruby Client Driver
+	
+<h3><a href="rdoc/index.html">RDoc reference</a> is available</h3>
+
+<p>First, make sure you've already started the Selenium Server separately in another process.  The Selenium Server should remain up and running throughout this process; you shouldn't need to start/stop it each time you use the Client Driver.  (Though, of course, if you need to start and stop the server, you certainly can, just by automatically starting it from the command line.)</p>
+
+<p>To use the Ruby Client Driver, just "require" or "load" selenium.rb in your Ruby script, and create a new Selenium::SeleneseInterpreter object.  You'll need to give it the hostname and port of the Selenium Server, the browser string to use with "getNewBrowserSession", and the base URL at which we'll start testing.  When you're ready to begin, run the "start" method on your SeleneseInterpreter object; when it's time to close the browser, use the "stop" method.</p>
+
+<p>The SeleneseInterpreter object is full of handy methods that handle your Selenium Commands.  If one of them has an error (or if an "assert" command fails) the method will raise a SeleniumCommandError with a handy error message, which you can wrap up in a "catch" block if you like.</p>
+
+<p>While we recommend that you use the Ruby Client Driver together with Ruby's <a href="http://www.ruby-doc.org/stdlib/libdoc/test/unit/rdoc/classes/Test/Unit.html">Test::Unit</a> unit testing framework, Test::Unit is not required; you can use the Ruby Client Driver with any program whatsoever to automate tasks in your browser.</p>
+
+<p>Examples: <a href="http://svn.openqa.org/fisheye/viewrep/selenium-rc/trunk/clients/ruby/selenium_example.rb">selenium_example.rb</a>, <a href="http://svn.openqa.org/fisheye/viewrep/selenium-rc/trunk/clients/ruby/selenium_real_deal.rb">selenium_real_deal.rb</a>.</p>
+
+</body></html>
+
+
