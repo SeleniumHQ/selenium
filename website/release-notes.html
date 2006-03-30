@@ -8,90 +8,17 @@
 </head>
 <body>
 
-Release information for different distributions of Selenium
+<h2>Selenium Remote Control 0.7.0</h2>
 
-<h2>Selenium 0.6.0</h2>
+<p>Selenium Remote Control 0.7.0 was the first official release
+of SRC as a separate project.  Previously, SRC was just a separate 
+mode of the "Selenium" project; at that time it was called "Driven" mode.
 
-September 24, 2005
+SRC 0.7.0 has added the notion of a Selenium Server to act as both
+a client-configured proxy for the browser (to resolve same-origin
+issues) and to stand between Client Drivers and the browser, to
+substantially simplify the process of writing Client Drivers in
+many languages.
 
-<dl>
-  <dt>pattern-matching</dt> <dd>Support for regular-expression and exact matching.  Allow patterns to be used to match alert and confirmation messages.</dd>
-  <dt>support for Javascript prompts</dt> <dd>Capture and verify prompt-messages, set up return values.</dd>
-  <dt>fireEvent command</dt> <dd>Allows arbitrary events to be raised.</dd>
-  <dt>logging</dt> <dd>New "pop up" log window.</dd>
-
-  <dt>error-handling</dt> <dd>Better handling and reporting of internal errors.</dd>
-  <dt>bug-fixes</dt> <dd>Various defects fixed.</dd>
-</dl>
-
-<p>
-See also: <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10150">JIRA release-summary</a>.
-</p>
-
-<h2>Selenium 0.5.0</h2>
-
-June 19, 2005
-
-<dl>
-  <dt>"waitForValue" command</dt><dd>Tells Selenium to wait until an input element has a specified value.</dd>
-  <dt>"close" command</dt><dd>Closes an open popup window</dd>
-  <dt>DOM Viewer</dt><dd>Now works in IE, show/hide works in all browsers</dd>
-  <dt>Option locators</dt><dd>Can now select options based on index, value or id, as well as label</dd>
-  <dt>verifyLocation</dt><dd>Now handles querystring in the url</dd>
-  <dt>selectWindow</dt><dd>Can now select windows that aren't assigned to a global variable</dd>
-  <dt>TestRunner hanging</dt><dd>Fixed problem found in some IE installations</dd>
-</dl>
-
-<p>
-See also: <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10140">JIRA release-summary</a>.
-
-<h2>Selenium 0.4.0</h2>
-
-May 20, 2005
-
-<p style="font-weight: bold;">This release breaks backward compatibility in 3 ways:
-    <ol>
-        <li>The 'click' command now requires the 'AndWait' suffix in order to wait for a page to reload. The 'nowait' parameter is no longer supported.</li>
-        <li>The previously undocumented 'link:' locator is now specified as 'link=the link text'</li>
-        <li>The previously undocumented 'setVariable' command has been renamed to 'store', with slightly different semantics.</li>
-    </ol>
-</p>
-
-<dl>
-  <dt>Safari support</dt><dd>Most Selenium features now work in Safari!</dd>
-  <dt>Click command doesn't wait</dt><dd>Use 'clickAndWait' to wait for a page reload</dd>
-  <dt>Locator specificity</dt><dd>Can use prefixes ('id=', 'xpath=' etc) to specify exactly which locator strategy to use.</dd>
-  <dt>Better XPath support</dt><dd>Works in Konqueror, and is faster on other platforms.</dd>
-  <dt>Javascript parameters</dt><dd>All parameters can now take a javascript{...} syntax, constructing the parameter value from javascript.</dd>
-  <dt>Handle 'AndWait' commands in popup windows</dt><dd>This bug has been fixed</dd>
-  <dt>Bug fixes</dt><dd>Many broken things fixed.</dd>
-</dl>
-
-<p>
-See also: <a href="http://jira.public.thoughtworks.org/secure/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10120">JIRA release-summary</a>.
-
-<h2>Selenium 0.3.0</h2>
-
-May 2, 2005
-
-<ul>
-  <li><span style="font-weight: bold;">Standalone server for testing remote sites</span><br></li>
-  <li><span style="font-weight: bold;">Improved in-browser user interface</span></li>
-  <li><span style="font-weight: bold;">Zope product plug-in for Plone Content Management System</span></li>
-  <li><span style="font-weight: bold;">Many, many bug fixes</span></li>
-</ul>
-
-
-<h2>Selenium 0.2</h2>
-
-Jan 20, 2005
-
-<ul>
-  <li><span style="font-weight: bold;">Java and Ruby drivers</span><br>
-  </li>
-  <li><span style="font-weight: bold;">Cross browser capability improved</span></li>
-</ul>
-<br>
-<br>
 </body>
 </html>

@@ -40,6 +40,10 @@
                 <url>ruby.html</url>
             </item>
             <item>
+            	<name>Selenese</name>
+            	<url>selenese.html</url>
+            </item>
+            <item>
                 <name>Developing Client Drivers</name>
                 <url>developingClientDrivers.html</url>
             </item>
@@ -65,7 +69,7 @@
     <developers>
         <person>
             <name>Nelson Sproul</name>
-            <email>darren.cotterill at gmail.com</email>
+            <email>nsproul at bea.com</email>
         </person>
         <person>
             <name>Pat Lightbody</name>
@@ -75,31 +79,16 @@
 
     <releases>
         <release>
-            <version>0.6</version>
+            <version>0.7.0</version>
 
-            <date>9/25/2005</date>
-            <jiraId>10150</jiraId>
+            <date>03/30/2006</date>
+            <jiraId>10220</jiraId>
             <downloads>
                 <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/51/selenium-0.6.0.zip</url>
+                    <url>http://www.openqa.org/selenium-remote-control-0.7.zip</url>
                     <name>Full release</name>
                 </download>
-                <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/53/selenium-0.6.0-java-src.zip</url>
-                    <name>Source code for the Java language driver for Selenium</name>
-                </download>
-                <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/52/selenium-0.6.0-java.zip</url>
-                    <name>Binary for the Java language driver for Selenium. (Requires Ant, suggested Tomcat install too)</name>
-                </download>
-                <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/55/selenium-0.6.0-ruby.zip</url>
-                    <name>Ruby language driver for Selenium</name>
-                </download>
-                <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/54/selenium-0.6.0-python-plone.zip</url>
-                    <name>Selenium packaged as a Zope product for Plone</name>
-                </download>
+                
             </downloads>
         </release>
     </releases>
