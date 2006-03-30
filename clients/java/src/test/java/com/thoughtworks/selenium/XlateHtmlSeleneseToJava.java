@@ -467,7 +467,22 @@ public class XlateHtmlSeleneseToJava {
         arg = arg.replaceFirst("^", "\"");
         arg = arg.replaceFirst("$", "\"");
         if (arg.startsWith("\"javascript{")) {
-            arg = arg.replaceFirst("^\"javascript\\{(.*)\\}\"$", "$1");
+            arg = arg.replaceFirst("^", "\"");
+            arg = arg.replaceFirst("$", "\"");
+            if (arg.startsWith("\"javascript{")) {
+                
+                // This subs for all ${foo}, but we don't want to sub if no var has
+                // been declared.  Lame, but established in Selenese as verified
+                // by TestJavascriptParameters.
+                // arg = arg.replaceFirst("^\"javascript\\{(.*)\\}\"$", "$1");
+                
+                String possibleVar = arg.replaceFirst(".*storedVars\\['(.*?)'\\].*", "$1");
+                if (declaredVariables.containsKey(possibleVar)) {
+                    arg = arg.replaceFirst("^\"javascript\\{(.*)\\}\"$", "$1");
+                }
+                arg = arg.replaceAll("storedVars\\['(.*?)'\\]", "\" + $1 + \"");
+                arg = "selenium.getEval(\"" + arg + "\")";
+            }
             arg = arg.replaceAll("storedVars\\['(.*?)'\\]", "\" + $1 + \"");
             arg = "selenium.getEval(\"" + arg + "\")";
         }

@@ -25,7 +25,7 @@ public class TestStore extends SeleneseTestCase
 
 		/* The expression for the 2nd parm used to be: javascript{'javascript' + 'Variable'}      For me to support this kind of thing, I would need to save "stored" variables in a       hash, since the names wouldn't be known at compile time.  I think this is not the      best translation; surely test writers will prefer that new variables in the native      language be instantiated.  So I'm changing the expression to a literal:  -ns */
 			// store|javascript{'Pi ~= ' + (Math.round(Math.PI * 100) / 100)}|javascriptVariable
-			String javascriptVariable = selenium.getEval("'Pi ~= ' + (Math.round(Math.PI * 100) / 100)");
+			String javascriptVariable = selenium.getEval(""javascript{'Pi ~= ' + (Math.round(Math.PI * 100) / 100)}"");
 			// open|./tests/html/test_store_value.html
 			selenium.open("./tests/html/test_store_value.html");
 			// type|theText|${storedHiddenValue}
