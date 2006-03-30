@@ -41,7 +41,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         BrowserLauncher launcher = blf.getBrowserLauncher(browser);
         launcher.launch(browserURL + "/selenium-server/TestRunner.html?auto=true&test=" + HTMLSuite);
         long now = System.currentTimeMillis();
-        long end = now + timeout;
+        long end = now + timeout * 1000;
         while (results == null && System.currentTimeMillis() < end) {
             try {
                 Thread.sleep(500);

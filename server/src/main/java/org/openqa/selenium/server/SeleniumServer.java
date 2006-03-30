@@ -147,6 +147,12 @@ public class SeleniumServer {
         int port = DEFAULT_PORT;
         int timeout= DEFAULT_TIMEOUT;
         boolean interactive = false;
+        
+        boolean htmlSuite = false;
+        String browserString = null; 
+        String startURL = null;
+        String suiteFilePath = null;
+        String resultFilePath = null;
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -156,10 +162,32 @@ public class SeleniumServer {
             else if ("-timeout".equals(arg)) {
                 timeout = Integer.parseInt(args[i + 1]);
             }
+            else if ("-htmlSuite".equals(arg)) {
+                try {
+                    browserString = args[++i];
+                    startURL = args[++i];
+                    suiteFilePath = args[++i];
+                    resultFilePath = args[++i];
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Not enough command line arguments for -htmlSuite");
+                    System.err.println("-htmlSuite requires you to specify:");
+                    System.err.println("* browserString (e.g. \"*firefox\")");
+                    System.err.println("* startURL (e.g. \"http://www.google.com\")");
+                    System.err.println("* suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\")");
+                    System.err.println("* resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\")");
+                    System.exit(1);
+                }
+                htmlSuite = true;
+            }
             else if ("-interactive".equals(arg)) {
                 timeout = Integer.MAX_VALUE;
                 interactive = true;
             }
+        }
+        
+        if (interactive && htmlSuite) {
+            System.err.println("You can't use -interactive and -htmlSuite on the same line!");
+            System.exit(1);
         }
 
         SingleEntryAsyncQueue.setTimeout(timeout);
@@ -190,6 +218,27 @@ public class SeleniumServer {
                 }
             }
         }));
+        
+        if (htmlSuite) {
+            String result = null;
+            try {
+                File suiteFile = new File(suiteFilePath);
+                seleniumProxy.addNewStaticContent(suiteFile.getParentFile());
+                String suiteURL = startURL + "/selenium-server/" + suiteFile.getName();
+                HTMLLauncher launcher = new HTMLLauncher(seleniumProxy);
+                result = launcher.runHTMLSuite(browserString, startURL, suiteURL, new File(resultFilePath), timeout);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            
+            if (!"PASS".equals(result)) {
+                System.err.println("Tests failed");
+                System.exit(1);
+            } else {
+                System.exit(0);
+            }
+        }
         
         if (interactive) {
             Thread.sleep(500);
