@@ -59,9 +59,15 @@ Copyright 2004 ThoughtWorks, Inc
       <td>textVariable</td>
     </tr>
     <tr>
+              <!-- The expression for the 2nd parm used to be: javascript{'javascript' + 'Variable'}
+      For me to support this kind of thing, I would need to save "stored" variables in a 
+      hash, since the names wouldn't be known at compile time.  I think this is not the
+      best translation; surely test writers will prefer that new variables in the native
+      language be instantiated.  So I'm changing the expression to a literal:  -ns  -->
+
       <td>store</td>
-      <td>javascript{'Pi ~= ' + (Math.round(Math.PI * 100) / 100)}</td>
-      <td>javascript{'javascript' + 'Variable'}</td>
+      <td>javascript{'Pi ~= ' + (Math.round(Math.PI * 100) / 100)}</td> 
+      <td>javascriptVariable</td>
     </tr>
 
     <tr>
