@@ -1,6 +1,6 @@
 <project name="selenium-rc-clients" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
-    <property name="version" value="0.7-SNAPSHOT"/>
+    <property name="version" value="0.7"/>
     <condition property="website.root" value="${ant.file.selenium-rc-clients}/../../website">
         <available file="${ant.file.selenium}/../../website"/>
     </condition>
@@ -15,66 +15,47 @@
         </delete>
     </target>
 
-    <target name="dist" depends="dist-image-doc, dist-dotnet, dist-ruby, dist-python"/>
+    <target name="dist" depends="dist-java, dist-dotnet, dist-ruby, dist-python">
+    	<property name="src.release" value="selenium-remote-control-${version}"/>
+    	<zip zipfile="dist/${src.release}.zip">
+    		<zipfileset dir="dist-image" prefix="${src.release}" />
+    	</zip>
+    </target>
 
     <target name="dist-dirs">
         <mkdir dir="dist-image"/>
-        <mkdir dir="dist-image/doc"/>	<!-- needed when website.root is not set -->
         <mkdir dir="dist"/>
     </target>
 
-    <target name="dist-image-doc" depends="dist-dirs" if="website.root">
-        <copy todir="dist-image/doc">
-            <fileset dir="${website.root}">
-                <include name="*.html"/>
-                <include name="images/*.png"/>
-                <exclude name="demos.html"/>
-                <exclude name="download.html"/>
-                <exclude name="testrunner.html"/>
-                <!--<exclude name="FAQ.html"/>
-                <exclude name="seleniumReference.html"/>-->
-            </fileset>
-        </copy>
-        <!-- TODO Put the Javadoc in there! -->
-    </target>
-
-    <target name="dist-ruby" depends="dist-image-doc">
+    <target name="dist-ruby" depends="dist-dirs">
         <copy todir="dist-image/ruby">
             <fileset dir="ruby">
                 <include name="*.rb"/>
-                <exclude name="readme.txt"/>
+                <include name="doc/**" />
             </fileset>
-        </copy>
-        
-        <copy todir="dist-image/ruby/rdoc">
-            <fileset dir="ruby/doc"/>
         </copy>
 
         <property name="ruby.release" value="selenium-ruby-client-driver-${version}"/>
         <zip zipfile="dist/${ruby.release}.zip">
-            <zipfileset dir="dist-image/doc" prefix="${ruby.release}/doc"/>
-            <zipfileset dir="dist-image/ruby" prefix="${ruby.release}/ruby"/>
-            <zipfileset file="ruby/readme.txt" prefix="${ruby.release}"/>
+            <zipfileset dir="dist-image/ruby" prefix="${ruby.release}"/>
         </zip>
     </target>
 
-	<target name="dist-python" depends="dist-image-doc">
+	<target name="dist-python" depends="dist-dirs">
         <copy todir="dist-image/python">
             <fileset dir="python">
                 <include name="*.py"/>
-                <exclude name="readme.txt"/>
+                <exclude name="mypydoc.py"/>
             </fileset>
         </copy>
         
-        <copy todir="dist-image/python/pydoc">
+        <copy todir="dist-image/python/doc">
             <fileset dir="python/html"/>
         </copy>
 
         <property name="python.release" value="selenium-python-client-driver-${version}"/>
         <zip zipfile="dist/${python.release}.zip">
-            <zipfileset dir="dist-image/doc" prefix="${python.release}/doc"/>
-            <zipfileset dir="dist-image/python" prefix="${python.release}/python"/>
-            <zipfileset file="python/readme.txt" prefix="${python.release}"/>
+            <zipfileset dir="dist-image/python" prefix="${python.release}"/>
         </zip>
     </target>
 
@@ -105,13 +86,27 @@
 			<!-- DGF Server bundles all of its dependencies, 
 			which are marked with the scope "provided", so this should
 			only give us selenium-server.jar -->
-			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server" version="1.0-SNAPSHOT" scope="runtime"/>
+			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server" version="${version}" scope="runtime"/>
 		</mavendeps>
 		<pathconvert targetos="windows" property="selenium-server.jar" refid="selenium-server.classpath" />
 		<condition property="build.failed">
 			<contains string="${selenium-server.jar}" substring=";" />
 		</condition>
 		<fail if="build.failed" message="Maven gave us more than one Selenium Server jar: ${selenium-server.jar}" />
+	</target>
+	
+	<target name="find-java-client" depends="custom-repo,default-repo">
+		<mavendeps pathId="selenium-java-client-driver.classpath">
+			<!-- DGF Server bundles all of its dependencies, 
+			which are marked with the scope "provided", so this should
+			only give us selenium-server.jar -->
+			<dependency groupId="org.openqa.selenium.client-drivers" artifactId="selenium-java-client-driver" version="${version}" scope="runtime"/>
+		</mavendeps>
+		<pathconvert targetos="windows" property="selenium-java-client-driver.jar" refid="selenium-java-client-driver.classpath" />
+		<condition property="build.failed">
+			<contains string="${selenium-java-client-driver.jar}" substring=";" />
+		</condition>
+		<fail if="build.failed" message="Maven gave us more than one Selenium Java Client Driver jar: ${selenium-java-client-driver.jar}" />
 	</target>
 	
 	<target name="start-server" depends="find-server">
@@ -156,11 +151,31 @@
         <ant dir="dotnet" target="test"/>
     </target>
         
-    <target name="dist-dotnet">
+    <target name="dist-dotnet" depends="dist-dirs">
 		<ant dir="dotnet" target="dist"/>
 		<copy todir="dist">
 			<fileset dir="dotnet/dist" />
 		</copy>
+		<mkdir dir="dist-image/dotnet" />
+		<copy todir="dist-image/dotnet">
+			<fileset dir="dotnet/build/dist" />
+		</copy>
+	</target>
+	
+	<target name="dist-java" depends="dist-dirs, find-server, find-java-client">
+		<mkdir dir="dist-image/server" />
+		<mkdir dir="dist-image/server/source" />
+		<mkdir dir="dist-image/server/doc" />
+		<copy file="${selenium-server.jar}" tofile="dist-image/server/selenium-server.jar" />
+		<unzip src="${selenium-server.jar}/../selenium-server-${version}-sources.jar" dest="dist-image/server/source" />
+		<unzip src="${selenium-server.jar}/../selenium-server-${version}-javadoc.jar" dest="dist-image/server/doc" />
+		
+		<mkdir dir="dist-image/java" />
+		<mkdir dir="dist-image/java/source" />
+		<mkdir dir="dist-image/java/doc" />
+		<copy file="${selenium-java-client-driver.jar}" tofile="dist-image/java/selenium-java-client-driver.jar" />
+		<unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-sources.jar" dest="dist-image/java/source" />
+		<unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-javadoc.jar" dest="dist-image/java/doc" />
 	</target>
 	
     <target name="test-ruby">

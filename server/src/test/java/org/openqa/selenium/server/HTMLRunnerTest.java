@@ -65,7 +65,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
     
     public void testIExploreAgain() throws Exception {
         // For safety's sake
-        testFirefoxHTMLRunner();
+        testIExploreHTMLRunner();
     }
     
     public void tearDown() throws Exception {

@@ -2,14 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
 	  	<groupId>org.openqa.selenium</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.7</version>
 		<artifactId>selenium</artifactId>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
     <groupId>org.openqa.selenium.client-drivers</groupId>
     <artifactId>selenium-java-client-driver</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.7</version>
     <name>Selenium Java Client Driver</name>
     <url>http://www.openqa.org/selenium</url>
     <build>
@@ -43,6 +43,19 @@
               <executions>
                 <execution>
                   <id>attach-javadocs</id>
+                  <goals>
+                    <goal>jar</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <inherited>true</inherited>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-source-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>attach-source</id>
                   <goals>
                     <goal>jar</goal>
                   </goals>
@@ -103,7 +116,7 @@
 		<dependency>
 			<groupId>org.openqa.selenium.server</groupId>
 		    <artifactId>selenium-server</artifactId>
-		    <version>1.0-SNAPSHOT</version>
+		    <version>0.7</version>
 		    <scope>test</scope>
 		</dependency>
         <dependency>
