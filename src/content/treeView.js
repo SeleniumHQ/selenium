@@ -206,6 +206,19 @@ TreeView.prototype = {
 		action.execute();
 		window.updateCommands("undo");
 	},
+
+	encodeText: function(text) {
+		text = text.replace(/\\/g, "\\\\");
+		text = text.replace(/\n/g, "\\n");
+		return text;
+	},
+
+	decodeText: function(text) {
+		text = text.replace(/\\n/g, "\n");
+		text = text.replace(/\\\\/g, "\\");
+		return text;
+	},
+
 	/*
 	 * public methods
 	 */
@@ -244,8 +257,8 @@ TreeView.prototype = {
 			this.currentCommand = command;
 			if (command.type == 'command') {
 				this.setTextBox("commandAction", command.command, false);
-				this.setTextBox("commandTarget", command.target, false);
-				this.setTextBox("commandValue", command.value, false);
+				this.setTextBox("commandTarget", this.encodeText(command.target), false);
+				this.setTextBox("commandValue", this.encodeText(command.value), false);
 			} else if (command.type == 'comment') {
 				this.setTextBox("commandAction", command.comment, false);
 				this.setTextBox("commandTarget", '', true);

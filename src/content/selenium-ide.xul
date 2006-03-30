@@ -199,13 +199,13 @@ limitations under the License.
 		  <!-- show different options collected by the client. Allow user to override -->
 		  <label control="commandTarget" value="Target"/>
 		  <hbox flex="1">
-		    <textbox flex="1" disabled="true" id="commandTarget" oninput="recorder.treeView.updateCurrentCommand('target', this.value)"/>
+		    <textbox flex="1" disabled="true" id="commandTarget" oninput="recorder.treeView.updateCurrentCommand('target', recorder.treeView.decodeText(this.value))"/>
 		    <button label="Find" oncommand="seleniumDebugger.showElement(document.getElementById('commandTarget').value)"/>
 		  </hbox>
 		</row>
 		<row align="center">
 		  <label control="commandValue" value="Value"/>
-		  <textbox disabled="true" id="commandValue" oninput="recorder.treeView.updateCurrentCommand('value', this.value)"/>
+		  <textbox disabled="true" id="commandValue" oninput="recorder.treeView.updateCurrentCommand('value', recorder.treeView.decodeText(this.value))"/>
 		</row>
 	      </rows>
 	    </grid>

@@ -88,6 +88,7 @@ function parse(testCase, source) {
 	var i;
 	//var vars = this.options.commandLoadVars;
 	while (true) {
+		log.debug("doc=" + doc + ", commandRegexp=" + commandRegexp);
 		if ((result = commandRegexp.exec(doc)) != null) {
 			if (first) {
 				// treat text before the first match as header
@@ -216,9 +217,9 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
 this.options = {
 	commandLoadPattern:
 	"<tr>" +
-	"\\s*<td>(.*?)</td>" +
-	"\\s*<td>(.*?)</td>" +
-	"\\s*(<td>(.*?)</td>|<td/>)" +
+	"\\s*<td>([\\d\\D]*?)</td>" +
+	"\\s*<td>([\\d\\D]*?)</td>" +
+	"\\s*(<td>([\\d\\D]*?)</td>|<td/>)" +
 	"\\s*</tr>\\s*",
 	
 	commandLoadScript:
@@ -227,7 +228,7 @@ this.options = {
 	"command.value = result[4] || '';\n",
 
 	commentLoadPattern:
-	"<!--((.|\\s)*?)-->\\s*",
+	"<!--([\\d\\D]*?)-->\\s*",
 
 	commentLoadScript:
 	"comment.comment = result[1];\n",
