@@ -75,18 +75,18 @@ TOP
 		<xsl:text>&nl;&tab;/// </xsl:text>
 	</xsl:element>
 	<xsl:text disable-output-escaping="yes"><![CDATA[
-&nl;	public interface ISelenium
-&nl;	{
-&nl;		/// <summary>
-&nl;		/// Launches the browser with a new Selenium session
-&nl;		/// </summary>
-&nl;		void Start();
-&nl;		
-&nl;		/// <summary>
-&nl;		/// Ends the test session, killing the browser
-&nl;		/// </summary>
-&nl;		void Stop();
-&nl;		
+THISISAFAKENEWLINE	public interface ISelenium
+THISISAFAKENEWLINE	{
+THISISAFAKENEWLINE		/// <summary>
+THISISAFAKENEWLINE		/// Launches the browser with a new Selenium session
+THISISAFAKENEWLINE		/// </summary>
+THISISAFAKENEWLINE		void Start();
+THISISAFAKENEWLINE		
+THISISAFAKENEWLINE		/// <summary>
+THISISAFAKENEWLINE		/// Ends the test session, killing the browser
+THISISAFAKENEWLINE		/// </summary>
+THISISAFAKENEWLINE		void Stop();
+THISISAFAKENEWLINE		
 ]]>		
 	</xsl:text>
 </xsl:template>
@@ -102,80 +102,80 @@ TOP
 		<xsl:text>&nl;&tab;/// </xsl:text>
 	</xsl:element>
 	<xsl:text disable-output-escaping="yes"><![CDATA[
-&nl;	// This file has been automatically generated using XSL
-&nl;	// This part of the file is hard-coded in the XSL
-&nl;	public class DefaultSelenium : ISelenium
-&nl;	{
-&nl;	
-&nl;		private ICommandProcessor commandProcessor;
-&nl;		/// <summary>
-&nl;		/// Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
-&nl;	    /// 
-&nl;	    /// <p><i>browserString</i> may be any one of the following:</p>
-&nl;	    /// <ul>
-&nl;	    /// <li><code>*firefox [absolute path]</code> - Automatically launch a new Firefox process using a custom Firefox profile.
-&nl;	    /// This profile will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
-&nl;	    /// ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
-&nl;	    /// an absolute path to your firefox executable, or just say "*firefox".  If no absolute path is specified, we'll look for
-&nl;	    /// firefox.exe in a default location (normally c:\program files\mozilla firefox\firefox.exe), which you can override by
-&nl;	    /// setting the Java system property <code>firefoxDefaultPath</code> to the correct path to Firefox.</li>
-&nl;	    /// <li><code>*iexplore [absolute path]</code> - Automatically launch a new Internet Explorer process using custom Windows registry settings.
-&nl;	    /// This process will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
-&nl;	    /// ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
-&nl;	    /// an absolute path to your iexplore executable, or just say "*iexplore".  If no absolute path is specified, we'll look for
-&nl;	    /// iexplore.exe in a default location (normally c:\program files\internet explorer\iexplore.exe), which you can override by
-&nl;	    /// setting the Java system property <code>iexploreDefaultPath</code> to the correct path to Internet Explorer.</li>
-&nl;	    /// <li><code>/path/to/my/browser [other arguments]</code> - You may also simply specify the absolute path to your browser
-&nl;	    /// executable, or use a relative path to your executable (which we'll try to find on your path).  <b>Warning:</b> If you
-&nl;	    /// specify your own custom browser, it's up to you to configure it correctly.  At a minimum, you'll need to configure your
-&nl;	    /// browser to use the Selenium Server as a proxy, and disable all browser-specific prompting.</li>
-&nl;	    /// </ul>
-&nl;	    /// </summary>
-&nl;	    /// 
-&nl;	    /// <param name="serverHost">the host name on which the Selenium Server resides</param>
-&nl;	    /// <param name="serverPort">the port on which the Selenium Server is listening</param>
-&nl;	    /// <param name="browserString">the command string used to launch the browser, e.g. "*firefox", "*iexplore" or "c:\\program files\\internet explorer\\iexplore.exe"</param>
-&nl;	    /// <param name="browserURL">the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
-&nl;	    /// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"</param>
-&nl;	    public DefaultSelenium(String serverHost, int serverPort, String browserString, String browserURL)
-&nl;	    {
-&nl;	        this.commandProcessor = new HttpCommandProcessor(serverHost, serverPort, browserString, browserURL);
-&nl;	    }
-&nl;	    
-&nl;	    /// <summary>
-&nl;	    /// Uses an arbitrary CommandProcessor
-&nl;	    /// </summary>
-&nl;	    public DefaultSelenium(ICommandProcessor processor)
-&nl;	    {
-&nl;	        this.commandProcessor = processor;
-&nl;	    }
-&nl;	    
-&nl;	    /// <summary>
-&nl;	    /// The command processor that handles all of our Selenium commands
-&nl;	    /// </summary>
-&nl;	    public ICommandProcessor Processor
-&nl;		{
-&nl;	        get { return this.commandProcessor; }
-&nl;		}
-&nl;		
-&nl;		/// <summary>
-&nl;		/// Starts a new Selenium testing session
-&nl;		/// </summary>
-&nl;		public void Start()
-&nl;		{
-&nl;			commandProcessor.Start();
-&nl;		}
-&nl;		
-&nl;		/// <summary>
-&nl;		/// Ends the current Selenium testing session (normally killing the browser)
-&nl;		/// </summary>
-&nl;		public void Stop()
-&nl;		{
-&nl;			commandProcessor.Stop();
-&nl;		}
-&nl;	    
-&nl;	    // From here on, everything in this file has been auto-generated
-&nl;]]>	    
+THISISAFAKENEWLINE	// This file has been automatically generated using XSL
+THISISAFAKENEWLINE	// This part of the file is hard-coded in the XSL
+THISISAFAKENEWLINE	public class DefaultSelenium : ISelenium
+THISISAFAKENEWLINE	{
+THISISAFAKENEWLINE	
+THISISAFAKENEWLINE		private ICommandProcessor commandProcessor;
+THISISAFAKENEWLINE		/// <summary>
+THISISAFAKENEWLINE		/// Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
+THISISAFAKENEWLINE	    /// 
+THISISAFAKENEWLINE	    /// <p><i>browserString</i> may be any one of the following:</p>
+THISISAFAKENEWLINE	    /// <ul>
+THISISAFAKENEWLINE	    /// <li><code>*firefox [absolute path]</code> - Automatically launch a new Firefox process using a custom Firefox profile.
+THISISAFAKENEWLINE	    /// This profile will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
+THISISAFAKENEWLINE	    /// ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
+THISISAFAKENEWLINE	    /// an absolute path to your firefox executable, or just say "*firefox".  If no absolute path is specified, we'll look for
+THISISAFAKENEWLINE	    /// firefox.exe in a default location (normally c:\program files\mozilla firefox\firefox.exe), which you can override by
+THISISAFAKENEWLINE	    /// setting the Java system property <code>firefoxDefaultPath</code> to the correct path to Firefox.</li>
+THISISAFAKENEWLINE	    /// <li><code>*iexplore [absolute path]</code> - Automatically launch a new Internet Explorer process using custom Windows registry settings.
+THISISAFAKENEWLINE	    /// This process will be automatically configured to use the Selenium Server as a proxy and to have all annoying prompts
+THISISAFAKENEWLINE	    /// ("save your password?" "forms are insecure" "make Firefox your default browser?" disabled.  You may optionally specify
+THISISAFAKENEWLINE	    /// an absolute path to your iexplore executable, or just say "*iexplore".  If no absolute path is specified, we'll look for
+THISISAFAKENEWLINE	    /// iexplore.exe in a default location (normally c:\program files\internet explorer\iexplore.exe), which you can override by
+THISISAFAKENEWLINE	    /// setting the Java system property <code>iexploreDefaultPath</code> to the correct path to Internet Explorer.</li>
+THISISAFAKENEWLINE	    /// <li><code>/path/to/my/browser [other arguments]</code> - You may also simply specify the absolute path to your browser
+THISISAFAKENEWLINE	    /// executable, or use a relative path to your executable (which we'll try to find on your path).  <b>Warning:</b> If you
+THISISAFAKENEWLINE	    /// specify your own custom browser, it's up to you to configure it correctly.  At a minimum, you'll need to configure your
+THISISAFAKENEWLINE	    /// browser to use the Selenium Server as a proxy, and disable all browser-specific prompting.</li>
+THISISAFAKENEWLINE	    /// </ul>
+THISISAFAKENEWLINE	    /// </summary>
+THISISAFAKENEWLINE	    /// 
+THISISAFAKENEWLINE	    /// <param name="serverHost">the host name on which the Selenium Server resides</param>
+THISISAFAKENEWLINE	    /// <param name="serverPort">the port on which the Selenium Server is listening</param>
+THISISAFAKENEWLINE	    /// <param name="browserString">the command string used to launch the browser, e.g. "*firefox", "*iexplore" or "c:\\program files\\internet explorer\\iexplore.exe"</param>
+THISISAFAKENEWLINE	    /// <param name="browserURL">the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
+THISISAFAKENEWLINE	    /// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"</param>
+THISISAFAKENEWLINE	    public DefaultSelenium(String serverHost, int serverPort, String browserString, String browserURL)
+THISISAFAKENEWLINE	    {
+THISISAFAKENEWLINE	        this.commandProcessor = new HttpCommandProcessor(serverHost, serverPort, browserString, browserURL);
+THISISAFAKENEWLINE	    }
+THISISAFAKENEWLINE	    
+THISISAFAKENEWLINE	    /// <summary>
+THISISAFAKENEWLINE	    /// Uses an arbitrary CommandProcessor
+THISISAFAKENEWLINE	    /// </summary>
+THISISAFAKENEWLINE	    public DefaultSelenium(ICommandProcessor processor)
+THISISAFAKENEWLINE	    {
+THISISAFAKENEWLINE	        this.commandProcessor = processor;
+THISISAFAKENEWLINE	    }
+THISISAFAKENEWLINE	    
+THISISAFAKENEWLINE	    /// <summary>
+THISISAFAKENEWLINE	    /// The command processor that handles all of our Selenium commands
+THISISAFAKENEWLINE	    /// </summary>
+THISISAFAKENEWLINE	    public ICommandProcessor Processor
+THISISAFAKENEWLINE		{
+THISISAFAKENEWLINE	        get { return this.commandProcessor; }
+THISISAFAKENEWLINE		}
+THISISAFAKENEWLINE		
+THISISAFAKENEWLINE		/// <summary>
+THISISAFAKENEWLINE		/// Starts a new Selenium testing session
+THISISAFAKENEWLINE		/// </summary>
+THISISAFAKENEWLINE		public void Start()
+THISISAFAKENEWLINE		{
+THISISAFAKENEWLINE			commandProcessor.Start();
+THISISAFAKENEWLINE		}
+THISISAFAKENEWLINE		
+THISISAFAKENEWLINE		/// <summary>
+THISISAFAKENEWLINE		/// Ends the current Selenium testing session (normally killing the browser)
+THISISAFAKENEWLINE		/// </summary>
+THISISAFAKENEWLINE		public void Stop()
+THISISAFAKENEWLINE		{
+THISISAFAKENEWLINE			commandProcessor.Stop();
+THISISAFAKENEWLINE		}
+THISISAFAKENEWLINE	    
+THISISAFAKENEWLINE	    // From here on, everything in this file has been auto-generated
+THISISAFAKENEWLINE]]>	    
 </xsl:text>
 </xsl:template>
 

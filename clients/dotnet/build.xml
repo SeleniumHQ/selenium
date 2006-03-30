@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="selenium-dotnet" default="test">
 
-	<property name="version" value="0.7-SNAPSHOT" />
+	<property name="version" value="0.7" />
 	<property name="iis_vdir.VDirName" value="Selenium-Driver" />
 	<property name="iis_vdir.applicationMapping" value=".sel" />
 
@@ -128,9 +128,9 @@
 
 
 	<target name="create-selenium-zips" depends="doc">
-		<mkdir dir="build/dist/bin/API" />
-		<copy todir="build/dist/bin/API">
-			<fileset dir="build">
+		<mkdir dir="build/dist" />
+		<copy todir="build/dist">
+			<fileset dir="build/Core">
 				<include name="**/*.dll" />
 				<include name="**/*.pdb" />
 				<include name="**/*.config" />
@@ -140,15 +140,8 @@
 			</fileset>
 		</copy>
 
-		<mkdir dir="build/dist/bin/docs" />
-		<copy todir="build/dist/bin/docs">
-			<fileset dir="../../website">
-				<include name="*.png" />
-				<include name="*.html" />
-			</fileset>
-		</copy>
-		
-		<copy file="build/ndoc/Documentation.chm" tofile="build/dist/bin/docs/Selenium.chm" />
+		<mkdir dir="build/dist/docs" />
+		<copy file="build/ndoc/Documentation.chm" tofile="build/dist/docs/Selenium.chm" />
 		
 		<mkdir dir="build/dist/source" />
 		<copy todir="build/dist/source">
@@ -172,10 +165,11 @@
 		</copy>
 		
 		<mkdir dir="dist" />
-		<zip destfile="dist/selenium-dotnet-client-driver-${version}.zip">
-			<fileset dir="build/dist">
+		<property name="dotnet.release" value="selenium-dotnet-client-driver-${version}" />
+		<zip destfile="dist/${dotnet.release}.zip">
+			<zipfileset dir="build/dist" prefix="${dotnet.release}">
 				<include name="**/*" />
-			</fileset>
+			</zipfileset>
 		</zip>
 	</target>
 	
