@@ -85,7 +85,7 @@
             <jiraId>10220</jiraId>
             <downloads>
                 <download>
-                    <url>http://www.openqa.org/selenium-remote-control-0.7.zip</url>
+                    <url>http://www.openqa.org/selenium-rc/download/selenium-remote-control-0.7.zip</url>
                     <name>Full release</name>
                 </download>
                 
