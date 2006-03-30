@@ -92,7 +92,7 @@ function TestLoop(commandFactory) {
         
         var handler = this.commandFactory.getCommandHandler(command.command);
         if (handler == null) {
-            throw new Error("Unknown command: '" + command.command + "'");
+            throw new SeleniumError("Unknown command: '" + command.command + "'");
         }
         
         command.target = selenium.preprocessParameter(command.target);
@@ -111,7 +111,7 @@ function TestLoop(commandFactory) {
     this.handleCommandError = function(e) {
        if (!e.isSeleniumError) {
             LOG.exception(e);
-            var msg = "Selenium failure. Please report to selenium-devel@lists.public.thoughtworks.org, with details from the logs at the base of the page.";
+            var msg = "Selenium failure. Please report to selenium-dev@openqa.org, with details from the logs at the base of the page.";
             if (e.message) {
                msg += "  The error message is: " + e.message;
             }
