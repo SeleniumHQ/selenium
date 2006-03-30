@@ -5,12 +5,16 @@
 <title>Tutorial</title></head>
 
 <body>
-<p>This Selenium Remote Contrtol tutorial will teach you how to start the Selenium Server from the command line, and how to use the Server in interactive mode.  It assumes that you are familiar with running programs from the command line.</p>
+<p>This Selenium Remote Contrtol tutorial will teach you how to start the Selenium Server from the command line, and how to use the Server in interactive mode.  It assumes that you are familiar with running programs from the command line.  At the end, we'll demonstrate how to write a simple test that does the same thing as what we did in interactive mode.</p>
 <hr/>
 <p>The Selenium Server is written in Java, and requires the Java Runtime Environment (JRE) in order to start.  You may already have it installed.  Try running this from the command line:</p>
 <blockquote><code> java -version</code></blockquote>
 <p>You should see a brief message telling you what version of Java is installed.  If you see an error message instead, you may need to install the <a href="http://www.java.com/en/download/manual.jsp">JRE</a>, or you may need to add it to your PATH environment variable.</p>
 <p>For this example, you'll also need to make sure that you have a supported browser installed.  If you're on Windows, you can just use Internet Explorer.  If you're on another operating system, try installing Firefox and adding the Firefox directory to your PATH environment variable.</p>
+
+<h2>Interactive Mode</h2>
+Selenium Server "interactive mode" is a way of rapidly prototyping tests that requires no coding whatsoever, so it's a good way to introduce new users to Selenium Remote Control.  In interactive mode, you type your commands one by one into the Selenium Server command window; this allows you to immediately see the results of running your command in a working browser, on-the-spot.  With that said, normally you'll be coding these tests in your favorite programming language, so the whole thing is completely automated.
+
 <p>Once you've got Java installed and ready to go, you can start the Selenium Server from the command line like this:</p>
 <blockquote><code>java -jar selenium-server.jar -interactive</code></blockquote>
 <p>That will start the Selenium Server and allow you to type commands in the command window.  After a number of log messages, you should see the following message: </p>
@@ -38,19 +42,152 @@
   When this command finishes, your browser window should reveal google.com in the lower frame.  Don't forget that you need to replace the Session ID above with your own personal Session ID, the one you got when you ran the &quot;getNewBrowserSession&quot; command.  (If you use the wrong Session ID, you won't see an error message; the Selenium Server will just sit there, waiting for some browser to come in and do its work.)</p>
 <p>Now that Google is open, let's try typing something in the search box.  Type this in the Selenium Server command window:</p>
 <blockquote>
-  <p><code> cmd=<strong>type</strong>&amp;1=q&amp;2=<strong>hello world</strong>&amp;sessionId=<em>1143670264928</em></code></p>
+  <p><code> cmd=<strong>type</strong>&amp;1=<strong>q</strong>&amp;2=<strong>hello world</strong>&amp;sessionId=<em>1143670264928</em></code></p>
 </blockquote>
 <p>Again, don't forget to replace the Session ID with your own Session ID.  If all goes to plan, you should see &quot;hello world&quot; in the search box for your Google search.</p>
 <p>Now, let's do a search!</p>
 <blockquote>
   <p><code>cmd=<strong>click</strong>&amp;1=<strong>btnG</strong>&amp;sessionId=<em>1143670264928</em></code> </p>
 </blockquote>
-<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers. </p>
-<p>For now, let's stop the browser we started.  Type this command in the Selenium Server command window:</p>
+<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers (<a href="java.html">Java</a>, <a href="dotnet.html">.NET</a>, <a href="python.html">Python</a> or <a href="ruby.html">Ruby</a>. </p>
+<p>The next thing we might want to do is read some information back out of the page... for example, let's retrieve the HTML title of the current page, like this:
+<blockquote>
+  <p><code> cmd=<strong>getTitle</strong>&amp;sessionId=<em>1143670264928</em></code></p>
+</blockquote>
+
+<p>The browser will return the title of the HTML page we've loaded, like this:</p>
+
+<blockquote>
+  <p><code>OK,hello world - Google Search</code></p>
+</blockquote>
+
+<p>That's enough Interactive Mode for now; let's move on to writing some code!  But before we go, let's stop the browser we started.  Type this command in the Selenium Server command window:</p>
 <blockquote>
   <p><code> cmd=<strong>testComplete</strong>&amp;sessionId=<em>1143670264928</em></code></p>
 </blockquote>
-<p>When this command finishes, your browser window should automatically close. To quit the Selenium Server, type &quot;quit&quot; or just press Ctrl-C. </p>
+<p>When this command finishes, your browser window should automatically close. To quit the Selenium Server, type &quot;quit&quot; or just press Ctrl-C. 
+</p>
+
+<h2>Programming a Selenium RC Test</h2>
+Now that you know how to run commands in interactive mode, let's code this test up!  Here's examples of writing the test we just wrote in four different programming languages:
+
+<h3><a href="#" onclick="document.getElementById('java').style.display='inline';return false;">(+) Java (JUnit)</a></h3>
+<pre id="java" style="display:none">
+import com.thoughtworks.selenium.*;
+import junit.framework.*;
+public class GoogleTest extends TestCase {
+	private Selenium sel;
+    public void setUp() {
+        sel = new DefaultSelenium("localhost",
+            4444, "*firefox", "http://www.google.com");
+        sel.start();
+    }
+    
+    public void testGoogle() {
+        sel.open("http://www.google.com");
+        sel.type("q", "hello world");
+        sel.click("btnG");
+        sel.waitForPageToLoad("5000");
+        assertEquals("hello world - Google Search", sel.getTitle());
+    }
+    
+    public void tearDown() {
+        sel.stop();
+    }
+}
+</pre>
+
+<h3><a href="#" onclick="document.getElementById('dotnet').style.display='inline';return false;">(+) C# (NUnit)</a></h3>
+
+<pre id="dotnet" style="display:none">
+using Selenium;
+using NUnit.Framework;
+namespace MyTests {
+    [TestFixture]
+    public class GoogleTest {
+        private ISelenium sel;
+        
+        [SetUp]
+        public void SetUp() {
+            sel = new DefaultSelenium("localhost",
+                4444, "*firefox", "http://www.google.com");
+            sel.Start();
+        }
+        
+        [Test]
+        public void testGoogle() {
+            sel.Open("http://www.google.com");
+            sel.Type("q", "hello world");
+            sel.Click("btnG");
+            sel.WaitForPageToLoad("5000");
+            Assert.AreEqual("hello world - Google Search", sel.GetTitle());
+        }
+        
+        [TearDown]
+        public void TearDown() {
+            sel.stop();
+        }
+    }
+}
+</pre>
+
+<h3><a href="#" onclick="document.getElementById('python').style.display='inline';return false;">(+) Python (unittest)</a></h3>
+
+<pre id="python" style="display:none">
+import unittest
+import selenium
+
+class GoogleTest(unittest.TestCase):
+    def setUp(self):
+        self.selenium = selenium.selenium_class("localhost", \
+            4444, "*firefox", "http://www.google.com")
+        self.selenium.start()
+        
+    def test_google(self):
+        sel = self.selenium
+        sel.open("http://www.google.com")
+        sel.type("q", "hello world")
+        sel.click("btnG")
+        sel.wait_for_page_to_load(5000)
+        self.assertEqual("hello world - Google Search", sel.get_title())
+    
+    def tearDown(self):
+        self.selenium.stop()
+
+if __name__ == "__main__":
+    unittest.main()
+
+</pre>
+
+<h3><a href="#" onclick="document.getElementById('ruby').style.display='inline';return false;">(+) Ruby (Test::Unit)</a></h3>
+
+<pre id="ruby" style="display:none">
+require 'test/unit'
+require 'selenium'
+
+class GoogleTest < Test::Unit::TestCase
+
+	def setup
+		@sel = Selenium::SeleneseInterpreter.new("localhost", 4444,
+			"*firefox", "http://www.google.com", 15000)
+		@sel.start
+	end
+		
+	def test_google
+		@sel.open("http://www.google.com")
+		@sel.type("q", "hello world")
+		@sel.click("btnG")
+		@sel.wait_for_page_to_load("5000")
+		assert_equal("hello world - Google Search", @sel.get_title())
+	end
+	
+	def teardown
+		@sel.stop
+	end
+end
+</pre></td></tr>
+</table>
+
 <h2>The Same Origin Policy</h2>
 <p>As you were running your tests, you may have noticed that your browser started at the following URL:</p>
 <blockquote>
