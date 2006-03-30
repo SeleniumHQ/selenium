@@ -168,7 +168,7 @@ limitations under the License.
 	<tabpanel orient="vertical">
 	  <tree id="commands" flex="1" enableColumnDrag="false" hidecolumnpicker="true"
 		context="treeContextMenu" onselect="recorder.treeView.selectCommand()"
-		ondblclick="goDoCommand('cmd_selenium_exec_command')">
+		ondblclick="goDoCommand('cmd_selenium_exec_command')" disableKeyNavigation="true">
 		<!--onfocus="recorder.treeView.focused=true" onblur="recorder.treeView.focused=false">-->
 	    <!--ondblclick="recorder.treeView.selectRecordIndex()">-->
 	    <treecols>
