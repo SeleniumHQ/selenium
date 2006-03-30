@@ -63,7 +63,7 @@ module Selenium
 	class SeleneseInterpreter
 		include Selenium
 	
-		def initialize(server_host, server_port, browserStartCommand, browserURL, timeout)
+		def initialize(server_host, server_port, browserStartCommand, browserURL, timeout=30000)
 			@server_host = server_host
 			@server_port = server_port
 			@browserStartCommand = browserStartCommand
