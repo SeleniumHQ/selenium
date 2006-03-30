@@ -125,8 +125,14 @@ public class DefaultSelenium implements Selenium {
     }
     
     public void start() {
-        commandProcessor.start();
-
+		try {
+            commandProcessor.start();
+        }
+        catch (Exception e) {
+            if (e.getMessage().indexOf("Connection refused: connect") != -1) {
+                throw new RuntimeException("Could not contact Selenium Server; have you started it?\n" + e.getMessage());
+            }
+        }
     }
 
     public void stop() {
