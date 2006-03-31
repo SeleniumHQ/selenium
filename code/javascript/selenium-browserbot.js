@@ -969,6 +969,20 @@ if (this.windowClosed()) {
 //triggerEvent(element, 'blur', false);
 };
 
+MozillaPageBot.prototype.keyupElement = function(element, keycode) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the key event.
+    triggerKeyEvent(element, 'keyup', keycode, true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+//triggerEvent(element, 'blur', false);
+};
+
 IEPageBot.prototype.keypressElement = function(element, keycode) {
 
 triggerEvent(element, 'focus', false);
@@ -988,6 +1002,20 @@ triggerEvent(element, 'focus', false);
 
 // Trigger the key event.
     triggerKeyEvent(element, 'keydown', keycode, true);
+
+if (this.windowClosed()) {
+        return;
+    }
+
+//triggerEvent(element, 'blur', false);
+};
+
+IEPageBot.prototype.keyupElement = function(element, keycode) {
+
+triggerEvent(element, 'focus', false);
+
+// Trigger the key event.
+    triggerKeyEvent(element, 'keyup', keycode, true);
 
 if (this.windowClosed()) {
         return;

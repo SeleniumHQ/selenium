@@ -164,6 +164,17 @@ Selenium.prototype.doKeyDown = function(locator, keycode) {
     var element = this.page().findElement(locator);
     this.page().keydownElement(element, keycode);
 };
+Selenium.prototype.doKeyUp = function(locator, keycode) {
+	/**
+   * Simulates a user releasing a key.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   * @param keycode the numeric keycode of the key to be released, normally the
+   *            ASCII value of that key.
+   */
+    var element = this.page().findElement(locator);
+    this.page().keyupElement(element, keycode);
+};
 Selenium.prototype.doMouseOver = function(locator) {
 	/**
    * Simulates a user hovering a mouse over the specified element.
