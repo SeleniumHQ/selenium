@@ -17,11 +17,15 @@
 
 package com.thoughtworks.selenium;
 
-import java.io.*;
-import java.net.*;
-import java.text.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
 
 /**
  * Sends commands and retrieves results via HTTP.

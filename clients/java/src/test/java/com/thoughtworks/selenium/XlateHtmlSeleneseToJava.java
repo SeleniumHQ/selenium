@@ -44,7 +44,7 @@ public class XlateHtmlSeleneseToJava {
                 String htmlSeleneseFileName = args[j];
                 generateJavaClassFromSeleneseHtml(htmlSeleneseFileName, javaSeleneseFileDirectoryName);
             }
-            //generateSuite(javaSeleneseFileDirectoryName);
+            generateSuite(javaSeleneseFileDirectoryName);
         }
     }
     
