@@ -8,8 +8,8 @@ public class TestType extends SeleneseTestCase
 {
    public void test() throws Throwable {
 		selenium.setContext("Test Type", "info");
-  
-/* Test Type       */
+
+/* Test Type */
 		// open|./tests/html/test_type_page1.html|
 		selenium.open("./tests/html/test_type_page1.html");
 		// verifyValue|username|
@@ -27,8 +27,8 @@ public class TestType extends SeleneseTestCase
 		// clickAndWait|submitButton|
 		selenium.click("submitButton");
 		selenium.waitForPageToLoad("60000");
-		// verifyTextPresent|Welcome, TestUser!      |
-		verifyTrue(this.getText().indexOf("Welcome, TestUser!      ")!=-1);
+		// verifyTextPresent|Welcome, TestUser!|
+		verifyTrue(this.getText().indexOf("Welcome, TestUser!")!=-1);
 
 		checkForVerificationErrors();
 	}

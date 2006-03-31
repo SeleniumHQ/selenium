@@ -50,6 +50,9 @@ public class XlateHtmlSeleneseToJava {
     
     
     private static void generateSuite(String javaSeleneseFileDirectoryName) throws IOException {
+        if (generatedJavaClassNames.size()==1) {
+            return; // this is a test run focusing on a single file, so a suite wouldn't be useful
+        }
         String beginning = "package com.thoughtworks.selenium.generated;\n" + 
         "\n" + 
         "import junit.framework.Test;\n" + 
@@ -141,6 +144,7 @@ public class XlateHtmlSeleneseToJava {
         StringBuffer java = new StringBuffer();
         
         String body = htmlSelenese.replaceAll("[\n]", "");
+        body = body.replaceAll("\\s*<", "<");
         body = body.replaceAll("</?em/?>", "");
         body = body.replaceAll("\r", "");
         body = body.replaceAll("</?[bi]/?>", "");
