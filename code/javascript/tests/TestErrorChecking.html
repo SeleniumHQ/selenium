@@ -33,20 +33,15 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- These tests should all fail, as they are checking the error checking commands. -->
-    <tr>
-      <td>verifyFailureOnNext</td>
-      <td>The next command succeeds</td>
-      <td></td>
-    </tr>
     <tr>
       <td>verifyText</td>
       <td>link</td>
       <td>Click here for next page</td>
     </tr>
+    <!-- These tests should all fail, as they are checking the error checking commands. -->
     <tr>
       <td>verifyFailureOnNext</td>
-      <td>The wrong message</td>
+      <td>Actual value 'Click here for next page' did not match 'foo'</td>
       <td></td>
     </tr>
     <tr>
@@ -57,7 +52,7 @@ Copyright 2004 ThoughtWorks, Inc
 
     <tr>
       <td>verifyErrorOnNext</td>
-      <td>The wrong message</td>
+      <td>Element notAnElement not found</td>
       <td></td>
     </tr>
     <tr>
