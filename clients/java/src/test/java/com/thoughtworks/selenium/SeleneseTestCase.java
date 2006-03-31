@@ -75,30 +75,38 @@ public class SeleneseTestCase extends TestCase {
     }
     
     public static void assertEquals(String s1, String s2) {
-        try {
-            if (s1.startsWith("regexp:")) {
-                String s1regexp = s1.replaceFirst("regexp:", ".*") + ".*";
-                if (!s2.matches(s1regexp)) {
-                    fail("expected " + s2 + " to match regexp " + s1);
-                }
+        assertTrue(seleniumEquals(s1, s2));
+    }
+    
+    public static boolean seleniumEquals(String s1, String s2) {
+        if (s1.startsWith("regexp:")) {
+            String s1regexp = s1.replaceFirst("regexp:", ".*") + ".*";
+            if (!s2.matches(s1regexp)) {
+                System.out.println("expected " + s2 + " to match regexp " + s1);
+                return false;                    
             }
-            else if (s1.startsWith("exact:")) {
-                String s1exact = s1.replaceFirst("exact:", "");
-                Assert.assertEquals(s1exact, s2);
-            }
-            else {
-                String s1glob = s1.replaceFirst("glob:", ".*")
-                        .replaceAll("\\*", ".*")
-                        .replaceAll("[\\]\\[\\$\\(\\).]", "\\\\$1")
-                        .replaceAll("\\.", "\\\\.")
-                        .replaceAll("\\?", ".") + ".*";
-                if (!s2.matches(s1glob)) {
-                    fail("expected " + s2 + " to match glob " + s1 + " (had transformed the glob into regexp:" + s1glob);
-                }
-            }
-        } catch (Exception e) {
-            verificationErrors.append(e);
+            return true;
         }
+        
+        if (s1.startsWith("exact:")) {
+            String s1exact = s1.replaceFirst("exact:", "");
+            if (!s1exact.equals(s2)) {
+                System.out.println("expected " + s2 + " to match " + s1);
+                return false;
+            }
+            return true;
+        }
+        
+        String s1glob = s1.replaceFirst("glob:", ".*")
+        .replaceAll("\\*", ".*")
+        .replaceAll("[\\]\\[\\$\\(\\).]", "\\\\$1")
+        .replaceAll("\\.", "\\\\.")
+        .replaceAll("\\?", ".") + ".*";
+        if (!s2.matches(s1glob)) {
+            System.out.println("expected " + s2 + " to match glob " + s1 + " (had transformed the glob into regexp:" + s1glob);
+            return false;
+        }
+        return true;
     }
     
     public static void verifyEquals(String[] s1, String[] s2) {

@@ -10,42 +10,33 @@ public class TestErrorChecking extends SeleneseTestCase
 		selenium.setContext("Test Click", "info");
   
 /* !!!Should Fail!!! Tests for expectError and expectFailure commands       */
-			// open|./tests/html/test_click_page1.html|
-			selenium.open("./tests/html/test_click_page1.html");
+		// open|./tests/html/test_click_page1.html|
+		selenium.open("./tests/html/test_click_page1.html");
+		// verifyText|link|Click here for next page
+		verifyEquals("Click here for next page", selenium.getText("link"));
 
 		/* These tests should all fail, as they are checking the error checking commands. */
 
-		boolean sawThrow6 = false;
+		boolean sawThrow7 = false;
 		try {
-						// assertText|link|Click here for next page
-			assertEquals("Click here for next page", selenium.getText("link"));
+					// assertText|link|foo
+		assertEquals("foo", selenium.getText("link"));
 		}
-		catch (Exception e) {
-			sawThrow6 = true;
+		catch (Throwable e) {
+			sawThrow7 = true;
 		}
-		verifyTrue(sawThrow6);
+		verifyTrue(sawThrow7);
 		
 
-		boolean sawThrow8 = false;
+		boolean sawThrow9 = false;
 		try {
-						// assertText|link|foo
-			assertEquals("foo", selenium.getText("link"));
+					// assertText|notAnElement|foo
+		assertEquals("foo", selenium.getText("notAnElement"));
 		}
-		catch (Exception e) {
-			sawThrow8 = true;
+		catch (Throwable e) {
+			sawThrow9 = true;
 		}
-		verifyTrue(sawThrow8);
-		
-
-		boolean sawThrow10 = false;
-		try {
-						// assertText|notAnElement|foo
-			assertEquals("foo", selenium.getText("notAnElement"));
-		}
-		catch (Exception e) {
-			sawThrow10 = true;
-		}
-		verifyTrue(sawThrow10);
+		verifyTrue(sawThrow9);
 		
 
 		checkForVerificationErrors();

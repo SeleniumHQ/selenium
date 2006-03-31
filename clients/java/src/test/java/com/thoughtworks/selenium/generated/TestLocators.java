@@ -10,19 +10,19 @@ public class TestLocators extends SeleneseTestCase
 		selenium.setContext("Test Locators", "info");
   
 /* Test Locators       */
-			// open|./tests/html/test_locators.html|
-			selenium.open("./tests/html/test_locators.html");
+		// open|./tests/html/test_locators.html|
+		selenium.open("./tests/html/test_locators.html");
 
 		/* Id location */
-			// verifyText|id=id1|this is the first element
-			verifyEquals("this is the first element", selenium.getText("id=id1"));
+		// verifyText|id=id1|this is the first element
+		verifyEquals("this is the first element", selenium.getText("id=id1"));
 
 		boolean sawThrow7 = false;
 		try {
 			// originally verifyElementNotPresent|id=name1|
 		selenium.assertElementNotPresent("id=name1");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow7 = true;
 		}
 		verifyFalse(sawThrow7);
@@ -33,24 +33,24 @@ public class TestLocators extends SeleneseTestCase
 			// originally verifyElementNotPresent|id=id4|
 		selenium.assertElementNotPresent("id=id4");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow8 = true;
 		}
 		verifyFalse(sawThrow8);
 		
-			// verifyAttribute|id=id1@class|a1
-			verifyEquals("a1", selenium.getAttribute("id=id1@class"));
+		// verifyAttribute|id=id1@class|a1
+		verifyEquals("a1", selenium.getAttribute("id=id1@class"));
 
 		/* name location */
-			// verifyText|name=name1|this is the second element
-			verifyEquals("this is the second element", selenium.getText("name=name1"));
+		// verifyText|name=name1|this is the second element
+		verifyEquals("this is the second element", selenium.getText("name=name1"));
 
 		boolean sawThrow13 = false;
 		try {
 			// originally verifyElementNotPresent|name=id1|
 		selenium.assertElementNotPresent("name=id1");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow13 = true;
 		}
 		verifyFalse(sawThrow13);
@@ -61,47 +61,47 @@ public class TestLocators extends SeleneseTestCase
 			// originally verifyElementNotPresent|name=notAName|
 		selenium.assertElementNotPresent("name=notAName");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow14 = true;
 		}
 		verifyFalse(sawThrow14);
 		
-			// verifyAttribute|name=name1@class|a2
-			verifyEquals("a2", selenium.getAttribute("name=name1@class"));
+		// verifyAttribute|name=name1@class|a2
+		verifyEquals("a2", selenium.getAttribute("name=name1@class"));
 
 		/* identifier location */
-			// verifyText|identifier=id1|this is the first element
-			verifyEquals("this is the first element", selenium.getText("identifier=id1"));
+		// verifyText|identifier=id1|this is the first element
+		verifyEquals("this is the first element", selenium.getText("identifier=id1"));
 
 		boolean sawThrow19 = false;
 		try {
 			// originally verifyElementNotPresent|identifier=id4|
 		selenium.assertElementNotPresent("identifier=id4");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow19 = true;
 		}
 		verifyFalse(sawThrow19);
 		
-			// verifyAttribute|identifier=id1@class|a1
-			verifyEquals("a1", selenium.getAttribute("identifier=id1@class"));
-			// verifyText|identifier=name1|this is the second element
-			verifyEquals("this is the second element", selenium.getText("identifier=name1"));
-			// verifyAttribute|identifier=name1@class|a2
-			verifyEquals("a2", selenium.getAttribute("identifier=name1@class"));
+		// verifyAttribute|identifier=id1@class|a1
+		verifyEquals("a1", selenium.getAttribute("identifier=id1@class"));
+		// verifyText|identifier=name1|this is the second element
+		verifyEquals("this is the second element", selenium.getText("identifier=name1"));
+		// verifyAttribute|identifier=name1@class|a2
+		verifyEquals("a2", selenium.getAttribute("identifier=name1@class"));
 
 		/* DOM Traversal location */
-			// verifyText|dom=document.links[1]|this is the second element
-			verifyEquals("this is the second element", selenium.getText("dom=document.links[1]"));
-			// verifyAttribute|dom=document.links[1]@class|a2
-			verifyEquals("a2", selenium.getAttribute("dom=document.links[1]@class"));
+		// verifyText|dom=document.links[1]|this is the second element
+		verifyEquals("this is the second element", selenium.getText("dom=document.links[1]"));
+		// verifyAttribute|dom=document.links[1]@class|a2
+		verifyEquals("a2", selenium.getAttribute("dom=document.links[1]@class"));
 
 		boolean sawThrow27 = false;
 		try {
 			// originally verifyElementNotPresent|dom=document.links[9]|
 		selenium.assertElementNotPresent("dom=document.links[9]");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow27 = true;
 		}
 		verifyFalse(sawThrow27);
@@ -112,7 +112,7 @@ public class TestLocators extends SeleneseTestCase
 			// originally verifyElementNotPresent|dom=foo|
 		selenium.assertElementNotPresent("dom=foo");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow28 = true;
 		}
 		verifyFalse(sawThrow28);
@@ -125,7 +125,7 @@ public class TestLocators extends SeleneseTestCase
 			// originally verifyElementPresent|link=this is the second element|a2
 		selenium.assertElementPresent("link=this is the second element");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow31 = true;
 		}
 		verifyFalse(sawThrow31);
@@ -136,7 +136,7 @@ public class TestLocators extends SeleneseTestCase
 			// originally verifyElementPresent|link=this * second element|a2
 		selenium.assertElementPresent("link=this * second element");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow32 = true;
 		}
 		verifyFalse(sawThrow32);
@@ -147,20 +147,20 @@ public class TestLocators extends SeleneseTestCase
 			// originally verifyElementPresent|link=regexp:this [aeiou]s the second element|a2
 		selenium.assertElementPresent("link=regexp:this [aeiou]s the second element");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow33 = true;
 		}
 		verifyFalse(sawThrow33);
 		
-			// verifyAttribute|link=this is the second element@class|a2
-			verifyEquals("a2", selenium.getAttribute("link=this is the second element@class"));
+		// verifyAttribute|link=this is the second element@class|a2
+		verifyEquals("a2", selenium.getAttribute("link=this is the second element@class"));
 
 		boolean sawThrow35 = false;
 		try {
 			// originally verifyElementNotPresent|link=this is not an element|
 		selenium.assertElementNotPresent("link=this is not an element");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow35 = true;
 		}
 		verifyFalse(sawThrow35);

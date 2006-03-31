@@ -10,15 +10,15 @@ public class TestVerifyEditable extends SeleneseTestCase
 		selenium.setContext("Test verifyEditable", "info");
   
 /* Test verifyEditable       */
-			// open|./tests/html/test_editable.html|
-			selenium.open("./tests/html/test_editable.html");
+		// open|./tests/html/test_editable.html|
+		selenium.open("./tests/html/test_editable.html");
 
 		boolean sawThrow4 = false;
 		try {
 			// originally verifyEditable|normal_text|
 		selenium.assertEditable("normal_text");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow4 = true;
 		}
 		verifyFalse(sawThrow4);
@@ -29,7 +29,7 @@ public class TestVerifyEditable extends SeleneseTestCase
 			// originally verifyEditable|normal_select|
 		selenium.assertEditable("normal_select");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow5 = true;
 		}
 		verifyFalse(sawThrow5);
@@ -40,7 +40,7 @@ public class TestVerifyEditable extends SeleneseTestCase
 			// originally verifyNotEditable|disabled_text|
 		selenium.assertNotEditable("disabled_text");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow6 = true;
 		}
 		verifyFalse(sawThrow6);
@@ -51,7 +51,7 @@ public class TestVerifyEditable extends SeleneseTestCase
 			// originally verifyNotEditable|disabled_select|
 		selenium.assertNotEditable("disabled_select");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow7 = true;
 		}
 		verifyFalse(sawThrow7);
@@ -62,7 +62,7 @@ public class TestVerifyEditable extends SeleneseTestCase
 			// originally verifyNotEditable|fake_input|
 		selenium.assertNotEditable("fake_input");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow8 = true;
 		}
 		verifyFalse(sawThrow8);

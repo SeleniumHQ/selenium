@@ -65,9 +65,11 @@ public class XlateHtmlSeleneseToJava {
         Iterator i = generatedJavaClassNames.iterator();
         while (i.hasNext()) {
             String generatedJavaClassName = (String) i.next();
-            middle.append("         suite.addTestSuite(")
-            .append(generatedJavaClassName)
-            .append(".class);\n");            
+            if (!generatedJavaClassName.equals("TestJavascriptParameters")){
+                middle.append("         suite.addTestSuite(")
+                .append(generatedJavaClassName)
+                .append(".class);\n");            
+            }
         }
         WriteFileContents(beginning + middle + ending, openFile(javaSeleneseFileDirectoryName + "/SeleneseSuite.java"));
     }
@@ -202,8 +204,37 @@ public class XlateHtmlSeleneseToJava {
         
         if (op.equals("typeRepeated")) {
             lines[j] = lines[j].replaceFirst("typeRepeated", "type");
-            XlateSeleneseStatement(java, lines, j);
-            XlateSeleneseStatement(java, lines, j);
+            op = tokens[0] = "type";
+            tokens[2] = tokens[2] + tokens[2];
+        }
+        if (op.startsWith("waitFor")) {
+            String conditionCkVarName = "sawCondition" + j;
+            java.append("\t\tboolean " + conditionCkVarName + " = false;"+ EOL)
+            .append("for (int second = 0; second < 60; second++) {" + EOL)
+            .append("\tif (");
+            lines[j] = lines[j].replaceFirst("waitFor", "assert");
+            StringBuffer testStatementSB = new StringBuffer();
+            XlateSeleneseStatement(testStatementSB, lines, j, false);
+            
+            String testStatement = testStatementSB.toString();
+            testStatement = testStatement.replaceAll("\t//.*", "");
+            testStatement = testStatement.replaceFirst("^\\s*", "");
+            if (testStatement.startsWith("assertTrue")) {
+                testStatement.replaceFirst("assertTrue", "");
+            }
+            else if (testStatement.startsWith("assertEquals")) {
+                testStatement = testStatement.replaceFirst("assertEquals", "seleniumEquals");
+            }
+            testStatement = testStatement.replaceFirst(";$", "");
+                
+            java.append(testStatement)            
+            .append(") {" + EOL)
+            .append("\t\t" + conditionCkVarName + " = true;"+ EOL)
+            .append("\t\tbreak;" + EOL)
+            .append("\t}" + EOL)
+            .append("\tpause(1000);" + EOL)
+            .append("}" + EOL)
+            .append("assertTrue(" + conditionCkVarName + ");" + EOL);
         }
         else if (op.matches(".*(Error|Failure)OnNext") || op.matches("verify(Element)?(Not)?(Editable|Visible|Present|Selected)")) {
             String throwCkVarName = "sawThrow" + j;
@@ -229,7 +260,7 @@ public class XlateHtmlSeleneseToJava {
             
             if (tryCatchAllowed) {
                 java.append(EOL + "}" + EOL            
-                        + "catch (Exception e) {" + EOL + "\t" 
+                        + "catch (Throwable e) {" + EOL + "\t" 
                         + "" + throwCkVarName + " = true;" + EOL
                         + "}" + EOL
                         + wrapper + (throwExpected ? "True" : "False") + "(" + throwCkVarName + ");" + EOL);
@@ -242,13 +273,14 @@ public class XlateHtmlSeleneseToJava {
     }
 
     private static String XlateSeleneseStatementTokens(String op, String[] tokens, String oldLine) {
-        String beginning = "\t\t\t// " + oldLine
+        String beginning = "\t\t// " + oldLine
         .replaceFirst(BEGIN_SELENESE, "")
         .replaceFirst(END_SELENESE, "")
-        .replaceAll(SELENESE_TOKEN_DIVIDER, "|") + EOL + "\t"; 
+        .replaceAll(SELENESE_TOKEN_DIVIDER, "|") + EOL; 
         
         String ending = ";";
         if (op.startsWith("waitFor")) {
+            beginning = EOL + "pause(5000);" + beginning;
             op = op.replaceFirst("waitFor", "assert");
             tokens[0] = tokens[0].replaceFirst("waitFor", "assert");
         }
@@ -467,22 +499,7 @@ public class XlateHtmlSeleneseToJava {
         arg = arg.replaceFirst("^", "\"");
         arg = arg.replaceFirst("$", "\"");
         if (arg.startsWith("\"javascript{")) {
-            arg = arg.replaceFirst("^", "\"");
-            arg = arg.replaceFirst("$", "\"");
-            if (arg.startsWith("\"javascript{")) {
-                
-                // This subs for all ${foo}, but we don't want to sub if no var has
-                // been declared.  Lame, but established in Selenese as verified
-                // by TestJavascriptParameters.
-                // arg = arg.replaceFirst("^\"javascript\\{(.*)\\}\"$", "$1");
-                
-                String possibleVar = arg.replaceFirst(".*storedVars\\['(.*?)'\\].*", "$1");
-                if (declaredVariables.containsKey(possibleVar)) {
-                    arg = arg.replaceFirst("^\"javascript\\{(.*)\\}\"$", "$1");
-                }
-                arg = arg.replaceAll("storedVars\\['(.*?)'\\]", "\" + $1 + \"");
-                arg = "selenium.getEval(\"" + arg + "\")";
-            }
+            arg = arg.replaceFirst("^\"javascript\\{(.*)\\}\"$", "$1");
             arg = arg.replaceAll("storedVars\\['(.*?)'\\]", "\" + $1 + \"");
             arg = "selenium.getEval(\"" + arg + "\")";
         }

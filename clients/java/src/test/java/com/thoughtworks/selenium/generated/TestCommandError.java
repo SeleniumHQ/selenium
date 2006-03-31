@@ -10,15 +10,15 @@ public class TestCommandError extends SeleneseTestCase
 		selenium.setContext("Test Command Error", "info");
   
 /* Test Command Error (should fail)       */
-			// open|./tests/html/test_verifications.html|
-			selenium.open("./tests/html/test_verifications.html");
+		// open|./tests/html/test_verifications.html|
+		selenium.open("./tests/html/test_verifications.html");
 
 		boolean sawThrow4 = false;
 		try {
-						// click|notALink|
-			selenium.click("notALink");
+					// click|notALink|
+		selenium.click("notALink");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow4 = true;
 		}
 		assertTrue(sawThrow4);
@@ -26,10 +26,10 @@ public class TestCommandError extends SeleneseTestCase
 
 		boolean sawThrow6 = false;
 		try {
-						// select|noSuchSelect|somelabel
-			selenium.select("noSuchSelect", "somelabel");
+					// select|noSuchSelect|somelabel
+		selenium.select("noSuchSelect", "somelabel");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow6 = true;
 		}
 		assertTrue(sawThrow6);
@@ -37,10 +37,10 @@ public class TestCommandError extends SeleneseTestCase
 
 		boolean sawThrow8 = false;
 		try {
-						// select|theSelect|label=noSuchLabel
-			selenium.select("theSelect", "label=noSuchLabel");
+					// select|theSelect|label=noSuchLabel
+		selenium.select("theSelect", "label=noSuchLabel");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow8 = true;
 		}
 		assertTrue(sawThrow8);
@@ -48,10 +48,10 @@ public class TestCommandError extends SeleneseTestCase
 
 		boolean sawThrow10 = false;
 		try {
-						// select|theText|label=noSuchLabel
-			selenium.select("theText", "label=noSuchLabel");
+					// select|theText|label=noSuchLabel
+		selenium.select("theText", "label=noSuchLabel");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow10 = true;
 		}
 		assertTrue(sawThrow10);

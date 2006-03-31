@@ -10,41 +10,41 @@ public class TestVerifyAlertsFailures extends SeleneseTestCase
 		selenium.setContext("Test Alert Verification", "info");
   
 /* Test Alert verifyment Failures       */
-			// open|./tests/html/test_verify_alert.html|
-			selenium.open("./tests/html/test_verify_alert.html");
+		// open|./tests/html/test_verify_alert.html|
+		selenium.open("./tests/html/test_verify_alert.html");
 
 		boolean sawThrow4 = false;
 		try {
-						// assertAlert|noAlert|
-			assertEquals("noAlert", selenium.getAlert());
+					// assertAlert|noAlert|
+		assertEquals("noAlert", selenium.getAlert());
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow4 = true;
 		}
 		verifyTrue(sawThrow4);
 		
-			// click|oneAlert|
-			selenium.click("oneAlert");
+		// click|oneAlert|
+		selenium.click("oneAlert");
 
 		boolean sawThrow7 = false;
 		try {
-						// assertAlert|wrongAlert|
-			assertEquals("wrongAlert", selenium.getAlert());
+					// assertAlert|wrongAlert|
+		assertEquals("wrongAlert", selenium.getAlert());
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow7 = true;
 		}
 		verifyTrue(sawThrow7);
 		
-			// click|twoAlerts|
-			selenium.click("twoAlerts");
+		// click|twoAlerts|
+		selenium.click("twoAlerts");
 
 		boolean sawThrow10 = false;
 		try {
-						// assertAlert|Store Below 429 degrees F!|
-			assertEquals("Store Below 429 degrees F!", selenium.getAlert());
+					// assertAlert|Store Below 429 degrees F!|
+		assertEquals("Store Below 429 degrees F!", selenium.getAlert());
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow10 = true;
 		}
 		verifyTrue(sawThrow10);
@@ -52,23 +52,23 @@ public class TestVerifyAlertsFailures extends SeleneseTestCase
 
 		boolean sawThrow12 = false;
 		try {
-						// assertAlert|Store Below 220 degrees C!|
-			assertEquals("Store Below 220 degrees C!", selenium.getAlert());
+					// assertAlert|Store Below 220 degrees C!|
+		assertEquals("Store Below 220 degrees C!", selenium.getAlert());
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow12 = true;
 		}
 		verifyTrue(sawThrow12);
 		
-			// click|oneAlert|
-			selenium.click("oneAlert");
+		// click|oneAlert|
+		selenium.click("oneAlert");
 
 		boolean sawThrow15 = false;
 		try {
-						// open|./tests/html/test_assert_alert.html|
-			selenium.open("./tests/html/test_assert_alert.html");
+					// open|./tests/html/test_assert_alert.html|
+		selenium.open("./tests/html/test_assert_alert.html");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow15 = true;
 		}
 		assertTrue(sawThrow15);

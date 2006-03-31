@@ -10,14 +10,14 @@ public class TestVerifyEditableFailures extends SeleneseTestCase
 		selenium.setContext("Test verifyEditable", "info");
   
 /* Test verifyEditable       */
-			// open|./tests/html/test_editable.html|
-			selenium.open("./tests/html/test_editable.html");
+		// open|./tests/html/test_editable.html|
+		selenium.open("./tests/html/test_editable.html");
 
 		boolean sawThrow4 = false;
 		try {
 			selenium.assertNotEditable("normal_text");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow4 = true;
 		}
 		verifyTrue(sawThrow4);
@@ -27,7 +27,7 @@ public class TestVerifyEditableFailures extends SeleneseTestCase
 		try {
 			selenium.assertNotEditable("normal_select");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow6 = true;
 		}
 		verifyTrue(sawThrow6);
@@ -37,7 +37,7 @@ public class TestVerifyEditableFailures extends SeleneseTestCase
 		try {
 			selenium.assertEditable("disabled_text");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow8 = true;
 		}
 		verifyTrue(sawThrow8);
@@ -47,7 +47,7 @@ public class TestVerifyEditableFailures extends SeleneseTestCase
 		try {
 			selenium.assertEditable("disabled_select");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow10 = true;
 		}
 		verifyTrue(sawThrow10);
@@ -57,7 +57,7 @@ public class TestVerifyEditableFailures extends SeleneseTestCase
 		try {
 			selenium.assertEditable("fake_input");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow12 = true;
 		}
 		verifyTrue(sawThrow12);

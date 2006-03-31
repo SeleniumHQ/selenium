@@ -10,19 +10,19 @@ public class TestProxy extends SeleneseTestCase
 		selenium.setContext("Test Proxy", "info");
   
 /* Test Proxy       */
-			// open|http://www.yahoo.com|/
-			selenium.open("http://www.yahoo.com");
-			// type|fp|Selenium
-			selenium.type("fp", "Selenium");
-			// clickAndWait|st|
-			selenium.click("st");
+		// open|http://www.yahoo.com|/
+		selenium.open("http://www.yahoo.com");
+		// type|fp|Selenium
+		selenium.type("fp", "Selenium");
+		// clickAndWait|st|
+		selenium.click("st");
 		selenium.waitForPageToLoad("60000");
-			// open|http://www.google.com|/
-			selenium.open("http://www.google.com");
-			// type|q|Selenium
-			selenium.type("q", "Selenium");
-			// clickAndWait|btnG|
-			selenium.click("btnG");
+		// open|http://www.google.com|/
+		selenium.open("http://www.google.com");
+		// type|q|Selenium
+		selenium.type("q", "Selenium");
+		// clickAndWait|btnG|
+		selenium.click("btnG");
 		selenium.waitForPageToLoad("60000");
 
 		checkForVerificationErrors();

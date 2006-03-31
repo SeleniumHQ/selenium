@@ -10,42 +10,42 @@ public class TestPause extends SeleneseTestCase
 		selenium.setContext("Test Select and Pause", "info");
   
 /* Test Select and Pause for Reload       */
-			// open|./tests/html/test_reload_onchange_page.html|
-			selenium.open("./tests/html/test_reload_onchange_page.html");
+		// open|./tests/html/test_reload_onchange_page.html|
+		selenium.open("./tests/html/test_reload_onchange_page.html");
 
 		/* Make sure we can pause even when the page doesn't change */
-			// pause|100|
-			pause(100);
-			// verifyTitle|Reload Page
-			verifyEquals("Reload Page", selenium.getTitle());
+		// pause|100|
+		pause(100);
+		// verifyTitle|Reload Page
+		verifyEquals("Reload Page", selenium.getTitle());
 
 		boolean sawThrow8 = false;
 		try {
 			// originally verifyElementPresent|theSelect|
 		selenium.assertElementPresent("theSelect");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow8 = true;
 		}
 		verifyFalse(sawThrow8);
 		
-			// select|theSelect|Second Option
-			selenium.select("theSelect", "Second Option");
+		// select|theSelect|Second Option
+		selenium.select("theSelect", "Second Option");
 
 		/* Make sure we can pause to wait for a page reload */
 
 		/* Must pause longer than the slow-loading page takes (100ms) */
-			// pause|1000|
-			pause(1000);
-			// verifyTitle|Slow Loading Page|
-			verifyEquals("Slow Loading Page", selenium.getTitle());
+		// pause|1000|
+		pause(1000);
+		// verifyTitle|Slow Loading Page|
+		verifyEquals("Slow Loading Page", selenium.getTitle());
 
 		boolean sawThrow16 = false;
 		try {
 			// originally verifyElementNotPresent|theSelect|
 		selenium.assertElementNotPresent("theSelect");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow16 = true;
 		}
 		verifyFalse(sawThrow16);
@@ -56,7 +56,7 @@ public class TestPause extends SeleneseTestCase
 			// originally verifyElementPresent|theSpan|
 		selenium.assertElementPresent("theSpan");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow17 = true;
 		}
 		verifyFalse(sawThrow17);

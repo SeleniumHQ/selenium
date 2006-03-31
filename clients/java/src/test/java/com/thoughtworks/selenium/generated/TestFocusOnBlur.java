@@ -10,14 +10,14 @@ public class TestFocusOnBlur extends SeleneseTestCase
 		selenium.setContext("Test Focus On Blur", "info");
   
 /* Test Focus On Blur       */
-			// open|./tests/html/test_focus_on_blur.html|
-			selenium.open("./tests/html/test_focus_on_blur.html");
-			// type|testInput|test
-			selenium.type("testInput", "test");
-			// verifyAlert|Bad value|
-			verifyEquals("Bad value", selenium.getAlert());
-			// type|testInput|somethingelse
-			selenium.type("testInput", "somethingelse");
+		// open|./tests/html/test_focus_on_blur.html|
+		selenium.open("./tests/html/test_focus_on_blur.html");
+		// type|testInput|test
+		selenium.type("testInput", "test");
+		// verifyAlert|Bad value|
+		verifyEquals("Bad value", selenium.getAlert());
+		// type|testInput|somethingelse
+		selenium.type("testInput", "somethingelse");
 
 		checkForVerificationErrors();
 	}

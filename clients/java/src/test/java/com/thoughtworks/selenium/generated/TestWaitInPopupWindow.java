@@ -10,36 +10,36 @@ public class TestWaitInPopupWindow extends SeleneseTestCase
 		selenium.setContext("Test SelectWindow", "info");
   
 /* Test selectWindow       */
-			// open|./tests/html/test_select_window.html|
-			selenium.open("./tests/html/test_select_window.html");
-			// click|popupPage|
-			selenium.click("popupPage");
-			// pause|500
-			pause(500);
-			// selectWindow|myPopupWindow|
-			selenium.selectWindow("myPopupWindow");
-			// verifyTitle|Select Window Popup|
-			verifyEquals("Select Window Popup", selenium.getTitle());
+		// open|./tests/html/test_select_window.html|
+		selenium.open("./tests/html/test_select_window.html");
+		// click|popupPage|
+		selenium.click("popupPage");
+		// pause|500
+		pause(500);
+		// selectWindow|myPopupWindow|
+		selenium.selectWindow("myPopupWindow");
+		// verifyTitle|Select Window Popup|
+		verifyEquals("Select Window Popup", selenium.getTitle());
 
 		/* Check page transitions in popup window */
 
 		/* quick loading page */
-			// clickAndWait|link=Click to load new page|
-			selenium.click("link=Click to load new page");
+		// clickAndWait|link=Click to load new page|
+		selenium.click("link=Click to load new page");
 		selenium.waitForPageToLoad("60000");
-			// verifyTitle|Reload Page|
-			verifyEquals("Reload Page", selenium.getTitle());
+		// verifyTitle|Reload Page|
+		verifyEquals("Reload Page", selenium.getTitle());
 
 		/* Slow loading page */
-			// clickAndWait|link=Click here|
-			selenium.click("link=Click here");
+		// clickAndWait|link=Click here|
+		selenium.click("link=Click here");
 		selenium.waitForPageToLoad("60000");
-			// verifyTitle|Slow Loading Page|
-			verifyEquals("Slow Loading Page", selenium.getTitle());
-			// close||
-			selenium.close();
-			// selectWindow|null|
-			selenium.selectWindow("null");
+		// verifyTitle|Slow Loading Page|
+		verifyEquals("Slow Loading Page", selenium.getTitle());
+		// close||
+		selenium.close();
+		// selectWindow|null|
+		selenium.selectWindow("null");
 
 		checkForVerificationErrors();
 	}

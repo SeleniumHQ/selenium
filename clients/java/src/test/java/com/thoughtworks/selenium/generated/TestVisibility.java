@@ -10,15 +10,15 @@ public class TestVisibility extends SeleneseTestCase
 		selenium.setContext("Test Visiblity", "info");
   
 /* Test Visiblity       */
-			// open|./tests/html/test_visibility.html|
-			selenium.open("./tests/html/test_visibility.html");
+		// open|./tests/html/test_visibility.html|
+		selenium.open("./tests/html/test_visibility.html");
 
 		boolean sawThrow4 = false;
 		try {
 			// originally verifyVisible|visibleParagraph|
 		selenium.assertVisible("visibleParagraph");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow4 = true;
 		}
 		verifyFalse(sawThrow4);
@@ -29,7 +29,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyNotVisible|hiddenParagraph|
 		selenium.assertNotVisible("hiddenParagraph");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow5 = true;
 		}
 		verifyFalse(sawThrow5);
@@ -40,7 +40,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyNotVisible|suppressedParagraph|
 		selenium.assertNotVisible("suppressedParagraph");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow6 = true;
 		}
 		verifyFalse(sawThrow6);
@@ -51,7 +51,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyNotVisible|classSuppressedParagraph|
 		selenium.assertNotVisible("classSuppressedParagraph");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow7 = true;
 		}
 		verifyFalse(sawThrow7);
@@ -62,7 +62,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyNotVisible|jsClassSuppressedParagraph|
 		selenium.assertNotVisible("jsClassSuppressedParagraph");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow8 = true;
 		}
 		verifyFalse(sawThrow8);
@@ -73,7 +73,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyNotVisible|hiddenSubElement|
 		selenium.assertNotVisible("hiddenSubElement");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow9 = true;
 		}
 		verifyFalse(sawThrow9);
@@ -84,7 +84,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyVisible|visibleSubElement|
 		selenium.assertVisible("visibleSubElement");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow10 = true;
 		}
 		verifyFalse(sawThrow10);
@@ -95,7 +95,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyNotVisible|suppressedSubElement|
 		selenium.assertNotVisible("suppressedSubElement");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow11 = true;
 		}
 		verifyFalse(sawThrow11);
@@ -106,7 +106,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyNotVisible|jsHiddenParagraph|
 		selenium.assertNotVisible("jsHiddenParagraph");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow12 = true;
 		}
 		verifyFalse(sawThrow12);
@@ -117,7 +117,7 @@ public class TestVisibility extends SeleneseTestCase
 			// originally verifyNotVisible|nonExistantElement|
 		selenium.assertNotVisible("nonExistantElement");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow13 = true;
 		}
 		verifyFalse(sawThrow13);

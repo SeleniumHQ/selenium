@@ -10,14 +10,14 @@ public class TestFailingVerifications extends SeleneseTestCase
 		selenium.setContext("Test Failing Verifications", "info");
   
 /* Test Failing Verifications */
-			// open|./tests/html/test_verifications.html|
-			selenium.open("./tests/html/test_verifications.html");
+		// open|./tests/html/test_verifications.html|
+		selenium.open("./tests/html/test_verifications.html");
 
 		boolean sawThrow4 = false;
 		try {
 			selenium.assertLocation("/tests/html/not_test_verifications.html");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow4 = true;
 		}
 		verifyTrue(sawThrow4);
@@ -25,10 +25,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow6 = false;
 		try {
-						// assertValue|theText|not the text value
-			assertEquals("not the text value", selenium.getValue("theText"));
+					// assertValue|theText|not the text value
+		assertEquals("not the text value", selenium.getValue("theText"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow6 = true;
 		}
 		verifyTrue(sawThrow6);
@@ -36,10 +36,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow8 = false;
 		try {
-						// assertNotValue|theText|the text value
-			assertNotEquals("the text value", selenium.getValue("theText"));
+					// assertNotValue|theText|the text value
+		assertNotEquals("the text value", selenium.getValue("theText"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow8 = true;
 		}
 		verifyTrue(sawThrow8);
@@ -47,10 +47,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow10 = false;
 		try {
-						// assertValue|theHidden|not the hidden value
-			assertEquals("not the hidden value", selenium.getValue("theHidden"));
+					// assertValue|theHidden|not the hidden value
+		assertEquals("not the hidden value", selenium.getValue("theHidden"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow10 = true;
 		}
 		verifyTrue(sawThrow10);
@@ -58,10 +58,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow12 = false;
 		try {
-						// assertText|theSpan|this is not the span
-			assertEquals("this is not the span", selenium.getText("theSpan"));
+					// assertText|theSpan|this is not the span
+		assertEquals("this is not the span", selenium.getText("theSpan"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow12 = true;
 		}
 		verifyTrue(sawThrow12);
@@ -69,10 +69,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow14 = false;
 		try {
-						// assertTextPresent|this is not the span|
-			assertTrue(this.getText().indexOf("this is not the span")!=-1);
+					// assertTextPresent|this is not the span|
+		assertTrue(this.getText().indexOf("this is not the span")!=-1);
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow14 = true;
 		}
 		verifyTrue(sawThrow14);
@@ -80,10 +80,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow16 = false;
 		try {
-						// assertTextNotPresent|this is the span|
-			assertFalse(this.getText().indexOf("this is the span")!=-1);
+					// assertTextNotPresent|this is the span|
+		assertFalse(this.getText().indexOf("this is the span")!=-1);
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow16 = true;
 		}
 		verifyTrue(sawThrow16);
@@ -93,7 +93,7 @@ public class TestFailingVerifications extends SeleneseTestCase
 		try {
 			selenium.assertElementPresent("notTheSpan");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow18 = true;
 		}
 		verifyTrue(sawThrow18);
@@ -103,7 +103,7 @@ public class TestFailingVerifications extends SeleneseTestCase
 		try {
 			selenium.assertElementNotPresent("theSpan");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow20 = true;
 		}
 		verifyTrue(sawThrow20);
@@ -111,10 +111,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow22 = false;
 		try {
-						// assertTable|theTable.1.0|a
-			assertEquals("a", selenium.getTable("theTable.1.0"));
+					// assertTable|theTable.1.0|a
+		assertEquals("a", selenium.getTable("theTable.1.0"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow22 = true;
 		}
 		verifyTrue(sawThrow22);
@@ -124,7 +124,7 @@ public class TestFailingVerifications extends SeleneseTestCase
 		try {
 			selenium.assertSelected("theSelect", "index=2");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow24 = true;
 		}
 		verifyTrue(sawThrow24);
@@ -134,7 +134,7 @@ public class TestFailingVerifications extends SeleneseTestCase
 		try {
 			selenium.assertSelected("theSelect", "value=opt*3");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow26 = true;
 		}
 		verifyTrue(sawThrow26);
@@ -144,7 +144,7 @@ public class TestFailingVerifications extends SeleneseTestCase
 		try {
 			selenium.assertSelected("theSelect", "third option");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow28 = true;
 		}
 		verifyTrue(sawThrow28);
@@ -153,10 +153,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 		boolean sawThrow30 = false;
 		try {
 			String[] tmp2 = {"first\\\\,option", "second option"};
-			// assertSelectOptions|theSelect|first\\\\,option,second option
-			assertEquals(tmp2, selenium.getSelectOptions("theSelect"));
+		// assertSelectOptions|theSelect|first\\\\,option,second option
+		assertEquals(tmp2, selenium.getSelectOptions("theSelect"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow30 = true;
 		}
 		verifyTrue(sawThrow30);
@@ -164,10 +164,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow32 = false;
 		try {
-						// assertAttribute|theText@class|bar
-			assertEquals("bar", selenium.getAttribute("theText@class"));
+					// assertAttribute|theText@class|bar
+		assertEquals("bar", selenium.getAttribute("theText@class"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow32 = true;
 		}
 		verifyTrue(sawThrow32);
@@ -175,10 +175,10 @@ public class TestFailingVerifications extends SeleneseTestCase
 
 		boolean sawThrow34 = false;
 		try {
-						// assertNotAttribute|theText@class|foo
-			assertNotEquals("foo", selenium.getAttribute("theText@class"));
+					// assertNotAttribute|theText@class|foo
+		assertNotEquals("foo", selenium.getAttribute("theText@class"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow34 = true;
 		}
 		verifyTrue(sawThrow34);

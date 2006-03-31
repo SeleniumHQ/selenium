@@ -10,15 +10,15 @@ public class TestFailingAssert extends SeleneseTestCase
 		selenium.setContext("Test Failing Assert", "info");
   
 /* Test Failing Assert */
-			// open|./tests/html/test_verifications.html|
-			selenium.open("./tests/html/test_verifications.html");
+		// open|./tests/html/test_verifications.html|
+		selenium.open("./tests/html/test_verifications.html");
 
 		boolean sawThrow4 = false;
 		try {
-						// assertValue|theText|not the text value
-			assertEquals("not the text value", selenium.getValue("theText"));
+					// assertValue|theText|not the text value
+		assertEquals("not the text value", selenium.getValue("theText"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow4 = true;
 		}
 		assertTrue(sawThrow4);
@@ -26,10 +26,10 @@ public class TestFailingAssert extends SeleneseTestCase
 
 		boolean sawThrow6 = false;
 		try {
-						// assertNotValue|theText|the text value
-			assertNotEquals("the text value", selenium.getValue("theText"));
+					// assertNotValue|theText|the text value
+		assertNotEquals("the text value", selenium.getValue("theText"));
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow6 = true;
 		}
 		assertTrue(sawThrow6);

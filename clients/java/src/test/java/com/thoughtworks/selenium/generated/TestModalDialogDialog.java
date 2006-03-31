@@ -17,13 +17,13 @@ selenium.assertLocation("/tests/html/test_modal_dialog_dialog.html");
 			// originally verifyElementPresent|close|
 		selenium.assertElementPresent("close");
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			sawThrow4 = true;
 		}
 		verifyFalse(sawThrow4);
 		
-			// click|close|
-			selenium.click("close");
+		// click|close|
+		selenium.click("close");
 
 		checkForVerificationErrors();
 	}
