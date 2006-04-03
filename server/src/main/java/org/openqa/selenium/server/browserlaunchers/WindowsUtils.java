@@ -232,6 +232,11 @@ public class WindowsUtils {
         return "PATH";
     }
     
+    public static String getPath() {
+        loadEnvironment();
+        return env.getProperty(getExactPathEnvKey());
+    }
+    
     /** Finds the system root directory, e.g. "c:\windows" or "c:\winnt" */
     public static File findSystemRoot() {
         Properties p = loadEnvironment();

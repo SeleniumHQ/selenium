@@ -17,7 +17,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
-import java.util.*;
 
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
@@ -34,21 +33,36 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
-    
-    public FirefoxCustomProfileLauncher() {
-        super(findBrowserLaunchLocation());
-    }
+
+    private static AsyncExecute exe = new AsyncExecute();
     
     public FirefoxCustomProfileLauncher(int port, String sessionId) {
-        super(findBrowserLaunchLocation());
-        this.port = port;
-        this.sessionId = sessionId;
+        this(port, sessionId, findBrowserLaunchLocation());
     }
     
     public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
         super(browserLaunchLocation);
         this.port = port;
         this.sessionId = sessionId;
+        // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
+        // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
+        exe.setEnvironment(new String[] {"MOZ_NO_REMOTE=1"});
+        if (!WindowsUtils.thisIsWindows()) {
+            // On unix, add command's directory to LD_LIBRARY_PATH
+            File firefoxBin = AsyncExecute.whichExec(commandPath);
+            if (firefoxBin == null) {
+                File execDirect = new File(commandPath);
+                if (execDirect.isAbsolute() && execDirect.exists()) firefoxBin = execDirect;
+            }
+            if (firefoxBin != null) {
+                // TODO other unix?
+                String libPath = WindowsUtils.loadEnvironment().getProperty("LD_LIBRARY_PATH");
+                exe.setEnvironment(new String[] {
+                    "MOZ_NO_REMOTE=1",
+                    "LD_LIBRARY_PATH="+libPath+":" + firefoxBin.getParent(),
+                });
+            }
+        }
     }
     
     private static String findBrowserLaunchLocation() {
@@ -57,6 +71,14 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
         } else {
+            if (!WindowsUtils.thisIsWindows()) {
+                // On unix, prefer firefoxBin if it's on the path
+                File firefoxBin = AsyncExecute.whichExec("firefox-bin");
+                if (firefoxBin != null) {
+                    return firefoxBin.getAbsolutePath();
+                }
+                
+            }
             // Hope it's on the path
             return "firefox";
         }
@@ -77,18 +99,17 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
              * that will immediately shut itself down. */
             System.out.println("Preparing Firefox profile...");
             
-            process = Runtime.getRuntime().exec(cmdarray);
+            exe.setCommandline(cmdarray);
+            exe.execute();
+            
             
             waitForFullProfileToBeCreated(20*1000);
             
             System.out.println("Launching Firefox...");
             cmdarray = new String[] {commandPath, "-profile", profilePath, url};
             
-            AsyncExecute exe = new AsyncExecute();
             exe.setCommandline(cmdarray);
-            exe.setEnvironment(new String[] {"MOZ_NO_REMOTE=1"});
-            // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
-            // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
+            
             process = exe.asyncSpawn();
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -18,10 +18,12 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
+import java.util.*;
 
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.taskdefs.condition.*;
+import org.apache.tools.ant.types.*;
 
 /** A handy wrapper around Ant's Execute class that can spawn a process
  * and return the process handle so you can close it yourself later
@@ -121,6 +123,26 @@ class AsyncExecute extends Execute {
                 this.t = t;
             }
         }
-        
+    }
+    
+    /** Searches the path for the specified executable
+     * 
+     * @param exec the executable name to search for
+     * @return the executable, or null if the executable could not be found
+     */
+    public static File whichExec(String exec) {
+        Path p = null;
+        String pathStr = WindowsUtils.getPath();
+        if (pathStr != null) p = new Path(new Project(), pathStr);
+        if (p != null) {
+            String[] dirs = p.list();
+            for (int i = 0; i < dirs.length; i++) {
+                File executableFile = new File(dirs[i], exec);
+                if (executableFile.exists()) {
+                    return executableFile;
+                }
+            }
+        }
+        return null;
     }
 }
