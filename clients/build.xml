@@ -174,6 +174,8 @@
 		<mkdir dir="dist-image/java/source" />
 		<mkdir dir="dist-image/java/doc" />
 		<copy file="${selenium-java-client-driver.jar}" tofile="dist-image/java/selenium-java-client-driver.jar" />
+		<copy file="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-tests.jar"
+			tofile="dist-image/java/selenium-java-client-driver-tests.jar" />
 		<unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-sources.jar" dest="dist-image/java/source" />
 		<unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-javadoc.jar" dest="dist-image/java/doc" />
 	</target>
