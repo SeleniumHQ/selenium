@@ -78,11 +78,9 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
             System.out.println("Preparing Firefox profile...");
             
             process = Runtime.getRuntime().exec(cmdarray);
-            try {
-                waitForFileLockToGoAway(20*1000, 500);
-            } catch (FileLockRemainedException e) {
-                throw new RuntimeException("Firefox refused shutdown while preparing a profile", e);
-            }
+            
+            waitForFullProfileToBeCreated(20*1000);
+            
             System.out.println("Launching Firefox...");
             cmdarray = new String[] {commandPath, "-profile", profilePath, url};
             
@@ -292,6 +290,30 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         }
         if (!lock.exists()) return true;
         return false;
+    }
+    
+    /** Wait for one of the Firefox-generated files to come into existence, then wait
+     * for Firefox to exit
+     * @param timeout the maximum amount of time to wait for the profile to be created
+     */
+    private void waitForFullProfileToBeCreated(long timeout) {
+        // This will be a characteristic file in the profile
+        File testFile = new File(customProfileDir, "extensions.ini");
+        long start = System.currentTimeMillis();
+        for (; System.currentTimeMillis() < start + timeout; ) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+            if (testFile.exists()) break;
+        }
+        if (!testFile.exists()) throw new RuntimeException("Timed out waiting for profile to be created!");
+        // wait the rest of the timeout for the file lock to go away
+        long subTimeout = timeout - (System.currentTimeMillis() - start);
+        try {
+            waitForFileLockToGoAway(subTimeout, 500);
+        } catch (FileLockRemainedException e) {
+            throw new RuntimeException("Firefox refused shutdown while preparing a profile", e);
+        }
     }
     
     public static void main(String[] args) throws Exception {
