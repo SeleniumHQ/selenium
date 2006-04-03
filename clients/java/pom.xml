@@ -2,14 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
 	  	<groupId>org.openqa.selenium</groupId>
-		<version>0.7</version>
+		<version>0.7.1</version>
 		<artifactId>selenium</artifactId>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
     <groupId>org.openqa.selenium.client-drivers</groupId>
     <artifactId>selenium-java-client-driver</artifactId>
     <packaging>jar</packaging>
-    <version>0.7</version>
+    <version>0.7.1</version>
     <name>Selenium Java Client Driver</name>
     <url>http://www.openqa.org/selenium</url>
     <build>
