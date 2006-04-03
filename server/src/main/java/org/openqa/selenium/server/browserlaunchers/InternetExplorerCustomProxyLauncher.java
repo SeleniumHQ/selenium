@@ -58,10 +58,9 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
         File defaultLocation = new File(defaultPath);
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
-        } else {
-            // Hope it's on the path
-            return "iexplore";
         }
+        // Hope it's on the path
+        return "iexplore";
     }
     
     public void launch(String url) {
@@ -172,7 +171,7 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
         delete.execute();
     }
     
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumServer.DEFAULT_PORT, "CUSTIE");
         l.launch("http://www.google.com/");
         int seconds = 5;
