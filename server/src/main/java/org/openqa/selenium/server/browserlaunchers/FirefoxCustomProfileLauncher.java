@@ -20,11 +20,13 @@ import java.io.*;
 
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
+import org.apache.tools.ant.taskdefs.condition.*;
 import org.openqa.selenium.server.*;
 
 public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
-    private static final String DEFAULT_LOCATION = "c:\\program files\\mozilla firefox\\firefox.exe"; 
+    private static final String DEFAULT_WINDOWS_LOCATION = "c:\\program files\\mozilla firefox\\firefox.exe"; 
+    private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
     
     private static boolean simple = false;
     
@@ -55,18 +57,32 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
                 if (execDirect.isAbsolute() && execDirect.exists()) firefoxBin = execDirect;
             }
             if (firefoxBin != null) {
-                // TODO other unix?
-                String libPath = WindowsUtils.loadEnvironment().getProperty("LD_LIBRARY_PATH");
+                String libPathKey = getLibPathKey();
+                String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
                 exe.setEnvironment(new String[] {
                     "MOZ_NO_REMOTE=1",
-                    "LD_LIBRARY_PATH="+libPath+":" + firefoxBin.getParent(),
+                    libPathKey+"="+libPath+":" + firefoxBin.getParent(),
                 });
             }
         }
     }
     
+    private static String getLibPathKey() {
+        if (WindowsUtils.thisIsWindows()) return WindowsUtils.getExactPathEnvKey();
+        if (Os.isFamily("mac")) return "DYLD_LIBRARY_PATH";
+        // TODO other linux?
+        return "LD_LIBRARY_PATH";
+    }
+    
     private static String findBrowserLaunchLocation() {
-        String defaultPath = System.getProperty("firefoxDefaultPath", DEFAULT_LOCATION);
+        String defaultPath = System.getProperty("firefoxDefaultPath");
+        if (defaultPath == null) {
+            if (WindowsUtils.thisIsWindows()) {
+                defaultPath = DEFAULT_WINDOWS_LOCATION;
+            } else {
+                defaultPath = DEFAULT_NONWINDOWS_LOCATION;
+            }
+        }
         File defaultLocation = new File(defaultPath);
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
