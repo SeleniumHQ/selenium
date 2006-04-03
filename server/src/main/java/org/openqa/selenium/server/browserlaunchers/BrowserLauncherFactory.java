@@ -30,24 +30,24 @@ public class BrowserLauncherFactory {
         this.server = server;
     }
     
-    public BrowserLauncher getBrowserLauncher(String browser) {
+    public BrowserLauncher getBrowserLauncher(String browser, String sessionId) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
         BrowserLauncher launcher;
         Matcher FirefoxMatcher = FIREFOX_PATTERN.matcher(browser);
         Matcher IExploreMatcher = IEXPLORE_PATTERN.matcher(browser);
         if (FirefoxMatcher.find()) {
             if (browser.equals("*firefox")) {
-                launcher = new FirefoxCustomProfileLauncher(server.getPort());
+                launcher = new FirefoxCustomProfileLauncher(server.getPort(), sessionId);
             } else {
                 String browserStartCommand = FirefoxMatcher.group(1).substring(1);
-                launcher = new FirefoxCustomProfileLauncher(server.getPort(), browserStartCommand);
+                launcher = new FirefoxCustomProfileLauncher(server.getPort(), sessionId, browserStartCommand);
             }
         } else if (IExploreMatcher.find()) {
             if (browser.equals("*iexplore")) {
-                launcher = new InternetExplorerCustomProxyLauncher(server.getPort());
+                launcher = new InternetExplorerCustomProxyLauncher(server.getPort(), sessionId);
             } else {
                 String browserStartCommand = IExploreMatcher.group(1).substring(1);
-                launcher = new InternetExplorerCustomProxyLauncher(server.getPort(), browserStartCommand);
+                launcher = new InternetExplorerCustomProxyLauncher(server.getPort(), sessionId, browserStartCommand);
             }
         } else {
             launcher = new DestroyableRuntimeExecutingBrowserLauncher(browser);

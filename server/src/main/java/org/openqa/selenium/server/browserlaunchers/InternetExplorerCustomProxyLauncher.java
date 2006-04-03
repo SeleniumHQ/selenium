@@ -30,7 +30,8 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
     private static final String REG_KEY_INTERNET_POLICIES = "HKCU\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings";
     private static final String REG_VALUE_AUTOPROXY_RESULT_CACHE = "EnableAutoproxyResultCache";
     
-    private int port = 8180; 
+    private int port = 8180;
+    private String sessionId;
     private File customProxyPACDir;
     private String[] cmdarray;
     private String oldAutoConfigURL = null;
@@ -40,14 +41,16 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
         super(findBrowserLaunchLocation());
     }
     
-    public InternetExplorerCustomProxyLauncher(int port) {
+    public InternetExplorerCustomProxyLauncher(int port, String sessionId) {
         super(findBrowserLaunchLocation());
         this.port = port;
+        this.sessionId = sessionId;
     }
     
-    public InternetExplorerCustomProxyLauncher(int port, String browserLaunchLocation) {
+    public InternetExplorerCustomProxyLauncher(int port, String sessionId, String browserLaunchLocation) {
         super(browserLaunchLocation);
         this.port = port;
+        this.sessionId = sessionId;
     }
     
     private static String findBrowserLaunchLocation() {
@@ -81,7 +84,7 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
     
 
     private void changeRegistrySettings() throws IOException {
-        customProxyPACDir = new File("customProfileDir");
+        customProxyPACDir = new File("customProfileDir" + sessionId);
         if (customProxyPACDir.exists()) {
             recursivelyDeleteDir(customProxyPACDir);
         }
@@ -137,7 +140,7 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
     
     public void close() {
         Exception taskKillException = null;
-        if (WindowsUtils.thisIsWindows()) {
+        if (false) {
             try {
                 // try to kill with windows taskkill
                 WindowsUtils.kill(cmdarray);
@@ -146,11 +149,6 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
             }
         }
         super.close();
-        /* Sleeping two seconds to give Windows time to
-         * notice that the cache files in the customProfileDir
-         * are now unlocked
-         */
-        try {Thread.sleep(2000);} catch (InterruptedException e) {}
         try {
             recursivelyDeleteDir(customProxyPACDir);
         } catch (RuntimeException e) {
@@ -175,7 +173,7 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
     }
     
     public static void main(String[] args) throws IOException, InterruptedException {
-        InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumServer.DEFAULT_PORT);
+        InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumServer.DEFAULT_PORT, "CUSTIE");
         l.launch("http://www.google.com/");
         int seconds = 5;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

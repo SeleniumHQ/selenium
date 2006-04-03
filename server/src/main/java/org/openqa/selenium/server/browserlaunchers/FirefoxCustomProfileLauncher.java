@@ -17,6 +17,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
+import java.util.*;
 
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
@@ -26,22 +27,28 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
 
     private static final String DEFAULT_LOCATION = "c:\\program files\\mozilla firefox\\firefox.exe"; 
     
-    private int port = 8180; 
+    private static boolean simple = false;
+    
+    private int port;
+    private String sessionId;
     private File customProfileDir;
     private String[] cmdarray;
+    private boolean closed = false;
     
     public FirefoxCustomProfileLauncher() {
         super(findBrowserLaunchLocation());
     }
     
-    public FirefoxCustomProfileLauncher(int port) {
+    public FirefoxCustomProfileLauncher(int port, String sessionId) {
         super(findBrowserLaunchLocation());
         this.port = port;
+        this.sessionId = sessionId;
     }
     
-    public FirefoxCustomProfileLauncher(int port, String browserLaunchLocation) {
+    public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
         super(browserLaunchLocation);
         this.port = port;
+        this.sessionId = sessionId;
     }
     
     private static String findBrowserLaunchLocation() {
@@ -59,6 +66,24 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         try {
             String profilePath = makeCustomProfile();
             
+            String chromeURL = "chrome://killff/content/kill.html";
+            
+            cmdarray = new String[] {commandPath, "-profile", profilePath, chromeURL};
+            
+            /* The first time we launch Firefox with an empty profile directory,
+             * Firefox will launch itself, populate the profile directory, then
+             * kill/relaunch itself, so our process handle goes out of date.
+             * So, the first time we launch Firefox, we'll start it up at an URL
+             * that will immediately shut itself down. */
+            System.out.println("Preparing Firefox profile...");
+            
+            process = Runtime.getRuntime().exec(cmdarray);
+            try {
+                waitForFileLockToGoAway(20*1000, 500);
+            } catch (FileLockRemainedException e) {
+                throw new RuntimeException("Firefox refused shutdown while preparing a profile", e);
+            }
+            System.out.println("Launching Firefox...");
             cmdarray = new String[] {commandPath, "-profile", profilePath, url};
             
             AsyncExecute exe = new AsyncExecute();
@@ -74,11 +99,13 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     
 
     private String makeCustomProfile() throws IOException {
-        customProfileDir = new File("customProfileDir");
+        customProfileDir = new File("customProfileDir" + sessionId);
         if (customProfileDir.exists()) {
             recursivelyDeleteDir(customProfileDir);
         }
         customProfileDir.mkdir();
+        
+        if (simple) return customProfileDir.getAbsolutePath();
         
         File proxyPAC = new File(customProfileDir, "proxy.pac");
         PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
@@ -87,6 +114,52 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         out.println("       return 'PROXY localhost:" + Integer.toString(port) + "; DIRECT'");
         out.println("   }");
         out.println("}");
+        out.close();
+        
+        File extensionDir = new File(customProfileDir, "extensions/{538F0036-F358-4f84-A764-89FB437166B4}");
+        extensionDir.mkdirs();
+        
+        File killHTML = new File(customProfileDir, "kill.html");
+        out = new PrintStream(new FileOutputStream(killHTML));
+        out.println("<html><body>Firefox should die immediately upon viewing this!  If you're reading this, there must be a bug!");
+        out.println("<script src=\"chrome://global/content/globalOverlay.js\"></script>");
+        out.println("");
+        out.println("<script>");
+        out.println("goQuitApplication();");
+        out.println("</script>  ");
+        out.println("</body></html>");
+        out.close();
+        
+        File installRDF = new File(extensionDir, "install.rdf");
+        out = new PrintStream(new FileOutputStream(installRDF));
+        out.println("<?xml version=\"1.0\"?>");
+        out.println("<RDF xmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
+        out.println("     xmlns:em=\"http://www.mozilla.org/2004/em-rdf#\">");
+        out.println("");
+        out.println("    <Description about=\"urn:mozilla:install-manifest\">");
+        out.println("        <em:id>{538F0036-F358-4f84-A764-89FB437166B4}</em:id>");
+        out.println("        <em:type>2</em:type>");
+        out.println("        <em:name>KillFF</em:name>");
+        out.println("        <em:version>1.0</em:version>");
+        out.println("        <em:description>Provides a chrome URL that can kill the browser</em:description>");
+        out.println("");
+        out.println("        <!-- Firefox -->");
+        out.println("        <em:targetApplication>");
+        out.println("            <Description>");
+        out.println("                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>");
+        out.println("                <em:minVersion>1.4.1</em:minVersion>");
+        out.println("                <em:maxVersion>1.6</em:maxVersion>");
+        out.println("            </Description>");
+        out.println("        </em:targetApplication>");
+        out.println("");
+        out.println("    </Description>");
+        out.println("</RDF>");
+        out.close();
+        
+        File chromeManifest = new File(extensionDir, "chrome.manifest");
+        out = new PrintStream(new FileOutputStream(chromeManifest));
+        out.print("content\tkillff\t");
+        out.println(killHTML.toURL());
         out.close();
         
         // TODO Do we want to make these preferences configurable somehow?
@@ -121,8 +194,11 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     }
 
     public void close() {
+        if (closed) return;
+        System.out.println("Killing Firefox...");
         Exception taskKillException = null;
-        if (WindowsUtils.thisIsWindows()) {
+        Exception fileLockException = null;
+        if (false) {
             try {
                 // try to kill with windows taskkill
                 WindowsUtils.kill(cmdarray);
@@ -130,27 +206,50 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
                 taskKillException = e;
             }
         }
-        super.close();
-        /* Sleeping two seconds to give Windows time to
-         * notice that the cache files in the customProfileDir
-         * are now unlocked
-         */
-        try {Thread.sleep(2000);} catch (InterruptedException e) {}
+        process.destroy();
+        int exitValue = AsyncExecute.waitForProcessDeath(process, 10000);
+        if (exitValue == 0) {
+            System.err.println("WARNING: Firefox seems to have ended on its own (did we kill the real browser???)");
+        }
         try {
-            recursivelyDeleteDir(customProfileDir);
+            waitForFileLockToGoAway(5*000, 500);
+        } catch (FileLockRemainedException e1) {
+            fileLockException = e1;
+        }
+        
+        
+        
+        try {
+            deleteTryTryAgain(customProfileDir, 6);
         } catch (RuntimeException e) {
-            if (taskKillException != null) {
+            if (taskKillException != null || fileLockException != null) {
                 e.printStackTrace();
                 System.err.print("Perhaps caused by: ");
-                taskKillException.printStackTrace();
+                if (taskKillException != null) taskKillException.printStackTrace();
+                if (fileLockException != null) fileLockException.printStackTrace();
                 throw new RuntimeException("Couldn't delete custom Firefox " +
                         "profile directory, presumably because task kill failed; " +
                         "see stderr!", e);
             }
             throw e;
         }
+        closed = true;
     }
     
+    private void deleteTryTryAgain(File dir, int tries) {
+        try {
+            recursivelyDeleteDir(dir);
+        } catch (BuildException e) {
+            if (tries > 0) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ex) {}
+                deleteTryTryAgain(dir, tries-1);
+            } else {
+                throw e;
+            }
+        }
+    }
     private void recursivelyDeleteDir(File f) {
         Delete delete = new Delete();
         delete.setProject(new Project());
@@ -159,14 +258,56 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         delete.execute();
     }
     
-    public static void main(String[] args) throws IOException, InterruptedException {
-        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(SeleniumServer.DEFAULT_PORT);
+    /** Firefox knows it's running by using a "parent.lock" file in
+     * the profile directory.  Wait for this file to go away (and stay gone)
+     * @param timeout max time to wait for the file to go away
+     * @param timeToWait minimum time to wait to make sure the file is gone
+     * @throws FileLockRemainedException 
+     */
+    private void waitForFileLockToGoAway(long timeout, long timeToWait) throws FileLockRemainedException {
+        File lock = new File(customProfileDir, "parent.lock");
+        for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeout; ) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+            if (!lock.exists() && makeSureFileLockRemainsGone(lock, timeToWait)) return;
+        }
+        if (lock.exists()) throw new FileLockRemainedException("Lock file still present! " + lock.getAbsolutePath());
+    }
+    
+    /** When initializing the profile, Firefox rapidly starts, stops, restarts and
+     * stops again; we need to wait a bit to make sure the file lock is really gone.
+     * @param lock the parent.lock file in the profile directory
+     * @param timeToWait minimum time to wait to see if the file shows back 
+     * up again. This is not a timeout; we will always wait this amount of time or more.
+     * @return true if the file stayed gone for the entire timeToWait; false if the 
+     * file exists (or came back)
+     */
+    private boolean makeSureFileLockRemainsGone(File lock, long timeToWait) {
+        for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeToWait; ) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+            if (lock.exists()) return false;
+        }
+        if (!lock.exists()) return true;
+        return false;
+    }
+    
+    public static void main(String[] args) throws Exception {
+        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUSTFF");
         l.launch("http://www.google.com");
         int seconds = 15;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
         Thread.sleep(seconds * 1000);
         l.close();
         System.out.println("He's dead now, right?");
+    }
+    
+    private class FileLockRemainedException extends Exception {
+        FileLockRemainedException(String message) {
+            super(message);
+        }
     }
     
 }

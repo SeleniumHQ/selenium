@@ -71,4 +71,56 @@ class AsyncExecute extends Execute {
         project.log("spawned process " + process.toString(), Project.MSG_VERBOSE);
         return process;
     }
+    
+    public static boolean isAlive(Process p) {
+        try {
+            p.exitValue();
+        } catch (IllegalThreadStateException e) {
+            return true;
+        }
+        return false;
+    }
+
+    public static int waitForProcessDeath(Process p, long timeout) {
+        ProcessWaiter pw = new ProcessWaiter(p);
+        Thread waiter = new Thread(pw);
+        waiter.start();
+        try {
+            waiter.join(timeout);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Bug? Main interrupted while waiting for process", e);
+        }
+        if (waiter.isAlive()) {
+            waiter.interrupt();
+        }
+        InterruptedException ie = pw.getException();
+        if (ie != null) {
+            throw new RuntimeException("Timeout waiting for process to die", ie);
+        }
+        return p.exitValue();
+        
+    }
+    
+    private static class ProcessWaiter implements Runnable {
+
+        private InterruptedException t;
+        private Process p;
+        
+        public InterruptedException getException() {
+            return t;
+        }
+        
+        public ProcessWaiter(Process p) {
+            this.p = p;
+        }
+        
+        public void run() {
+            try {
+                p.waitFor();
+            } catch (InterruptedException t) {
+                this.t = t;
+            }
+        }
+        
+    }
 }

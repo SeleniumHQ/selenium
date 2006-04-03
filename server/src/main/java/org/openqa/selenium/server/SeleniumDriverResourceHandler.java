@@ -116,6 +116,18 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         
         String results;
         System.out.println("queryString = " + req.getQuery());        
+        results = doCommand(cmd, values, sessionId, res);
+        try {
+            res.getOutputStream().write(results.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        req.setHandled(true);
+    }
+
+    public String doCommand(String cmd, Vector values, String sessionId, HttpResponse res) throws IOException {
+        String results;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
             results = "OK," + getNewBrowserSession((String)values.get(0), (String)values.get(1));
@@ -134,8 +146,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("shutDown".equals(cmd)) {
             try {
                 System.out.println("Shutdown command received");
-                res.getOutputStream().write("OK".getBytes());
-                res.commit();
+                if (res != null) {
+                    res.getOutputStream().write("OK".getBytes());
+                    res.commit();
+                }
                 Thread.sleep(3000);
                 System.exit(0);
                 results = null;
@@ -172,22 +186,15 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             results = queue.doCommand(cmd, (String)values.get(0), (String)values.get(1));
         }
         System.out.println("Got result: " + results);
-        try {
-            res.getOutputStream().write(results.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        req.setHandled(true);
+        return results;
     }
 
     private String getNewBrowserSession(String browser, String startURL) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
-        String sessionId;
+        String sessionId = Long.toString(System.currentTimeMillis());
         String results;
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser);
-        sessionId = Long.toString(System.currentTimeMillis());
+        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
         launcher.launch(startURL + "/selenium-server/SeleneseRunner.html?sessionId=" + sessionId);
         launchers.put(sessionId, launcher);
         SeleneseQueue queue = getQueue(sessionId);

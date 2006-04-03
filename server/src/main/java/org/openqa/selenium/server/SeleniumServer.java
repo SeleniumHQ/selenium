@@ -312,12 +312,20 @@ public class SeleniumServer {
         server.addContext(null, driverContext);
     }
 
+    public SeleniumServer() throws Exception {
+        this(SeleniumServer.DEFAULT_PORT);
+    }
+    
     public void addNewStaticContent(File directory) {
         staticContentHandler.addStaticContent(directory);
     }
     
     public void handleHTMLRunnerResults(HTMLResultsListener listener) {
         postResultsHandler.addListener(listener);
+    }
+    
+    public String doCommand(String cmd, Vector values, String sessionId) throws IOException {
+        return driver.doCommand(cmd, values, sessionId, null);
     }
     
     /** Starts the Jetty server */
