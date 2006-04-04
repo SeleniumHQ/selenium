@@ -91,7 +91,7 @@
     	<dependency>
     		<groupId>org.openqa.selenium.core</groupId>
 		    <artifactId>selenium-core</artifactId>
-		    <version>0.7</version>
+		    <version>0.7.1</version>
 		    <scope>provided</scope>
     	</dependency>
         <dependency>
