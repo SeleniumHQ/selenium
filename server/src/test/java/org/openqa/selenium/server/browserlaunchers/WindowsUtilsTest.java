@@ -46,7 +46,7 @@ public class WindowsUtilsTest extends TestCase {
         boolean autoConfigURLExists = WindowsUtils.doesRegistryValueExist("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "AutoConfigURL");
         System.out.println(autoConfigURLExists);
         if (autoConfigURLExists) {
-            System.out.println(WindowsUtils.readIntRegistryValue("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "AutoConfigURL"));
+            System.out.println(WindowsUtils.readStringRegistryValue("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "AutoConfigURL"));
         }
     }
 }
