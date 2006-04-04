@@ -13,25 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import seletest
-import unittest
-import time
-import sys
 
-class ExampleTest(seletest.seletest_class):
-	
-	def test_ajax_jsf(self):
-		print "selenium_example.py"
-		selenium = self.seleniumField
-		selenium.open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf")
-		selenium.assert_text_present("suggest")
-		selenium.type("_idJsp0:_idJsp3", "foo")
-		selenium.key_down("_idJsp0:_idJsp3", 120)
-		selenium.key_press("_idJsp0:_idJsp3", 120)
-		time.sleep(2)
-		selenium.assert_text_present("foo1")
-	
-	
+from selenium import selenium
+import unittest
+
+class TestGoogle(unittest.TestCase):
+    def setUp(self):
+        self.selenium = selenium("localhost", \
+            4444, "*firefox", "http://www.google.com")
+        self.selenium.start()
+        
+    def test_google(self):
+        sel = self.selenium
+        sel.open("http://www.google.com")
+        sel.type("q", "hello world")
+        sel.click("btnG")
+        sel.wait_for_page_to_load(5000)
+        self.assertEqual("hello world - Google Search", sel.get_title())
+    
+    def tearDown(self):
+        self.selenium.stop()
+
 if __name__ == "__main__":
-	seletest.chooseSeleniumServer('localhost', 4444, "*firefox", "http://www.irian.at")
-	unittest.main()
+    unittest.main()

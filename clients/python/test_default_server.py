@@ -1,0 +1,36 @@
+from selenium import selenium
+import unittest
+import sys, time
+
+class TestDefaultServer(unittest.TestCase):
+
+    seleniumHost = 'localhost'
+    seleniumPort = str(4444)
+    #browserStartCommand = "c:\\program files\\internet explorer\\iexplore.exe"
+    browserStartCommand = "*firefox"
+    browserURL = "http://localhost:4444"
+
+    def setUp(self):
+        print "Using selenium server at " + self.seleniumHost + ":" + self.seleniumPort
+        self.selenium = selenium(self.seleniumHost, self.seleniumPort, self.browserStartCommand, self.browserURL)
+        self.selenium.start()
+
+    def testLinks(self):
+        selenium = self.selenium
+        selenium.open("/selenium-server/tests/html/test_click_page1.html")
+        self.failUnless(selenium.get_text("link").find("Click here for next page") != -1, "link 'link' doesn't contain expected text")
+        links = selenium.get_all_links()
+        self.failUnless(len(links) > 3)
+        self.assertEqual("linkToAnchorOnThisPage", links[3])
+        selenium.click("link")
+        selenium.wait_for_page_to_load(5000)
+        selenium.assert_location("/selenium-server/tests/html/test_click_page2.html")
+        selenium.click("previousPage")
+        selenium.wait_for_page_to_load(5000)
+        selenium.assert_location("/selenium-server/tests/html/test_click_page1.html")
+
+    def tearDown(self):
+        self.selenium.stop()
+
+if __name__ == "__main__":
+    unittest.main()

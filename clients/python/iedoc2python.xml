@@ -62,7 +62,7 @@ import httplib
 import urllib
 import re
 
-class selenium_class:
+class selenium:
 	"""
 </xsl:text>
 	<xsl:apply-templates>
