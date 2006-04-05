@@ -25,10 +25,8 @@ import org.openqa.selenium.server.*;
 public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
     private static final String DEFAULT_LOCATION = "c:\\program files\\internet explorer\\iexplore.exe";
-    private static final String REG_KEY_INTERNET_SETTINGS = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings";
-    private static final String REG_VALUE_AUTOCONFIG_URL = "AutoConfigURL";
-    private static final String REG_KEY_INTERNET_POLICIES = "HKCU\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings";
-    private static final String REG_VALUE_AUTOPROXY_RESULT_CACHE = "EnableAutoproxyResultCache";
+    private static final String REG_KEY_AUTOCONFIG_URL = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL";
+    private static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
     
     private int port = 8180;
     private String sessionId;
@@ -99,23 +97,23 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
         out.close();
         
         
-        if (WindowsUtils.doesRegistryValueExist(REG_KEY_INTERNET_SETTINGS, REG_VALUE_AUTOCONFIG_URL)) {
-            oldAutoConfigURL = WindowsUtils.readStringRegistryValue(REG_KEY_INTERNET_SETTINGS, REG_VALUE_AUTOCONFIG_URL);
+        if (WindowsUtils.doesRegistryValueExist(REG_KEY_AUTOCONFIG_URL)) {
+            oldAutoConfigURL = WindowsUtils.readStringRegistryValue(REG_KEY_AUTOCONFIG_URL);
         }
         
         
         String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
-        WindowsUtils.writeStringRegistryValue(REG_KEY_INTERNET_SETTINGS, REG_VALUE_AUTOCONFIG_URL, newURL);
+        WindowsUtils.writeStringRegistryValue(REG_KEY_AUTOCONFIG_URL, newURL);
         
         // Disabling automatic proxy caching
         // http://support.microsoft.com/?kbid=271361
         // Otherwise, *all* requests will go through our proxy, rather than just */selenium-server/* requests
-        if (WindowsUtils.doesRegistryValueExist(REG_KEY_INTERNET_POLICIES, REG_VALUE_AUTOPROXY_RESULT_CACHE)) {
-            oldAutoProxyCache = new Boolean(WindowsUtils.readBooleanRegistryValue(REG_KEY_INTERNET_POLICIES, REG_VALUE_AUTOPROXY_RESULT_CACHE));
+        if (WindowsUtils.doesRegistryValueExist(REG_KEY_AUTOPROXY_RESULT_CACHE)) {
+            oldAutoProxyCache = new Boolean(WindowsUtils.readBooleanRegistryValue(REG_KEY_AUTOPROXY_RESULT_CACHE));
         } else {
             oldAutoProxyCache = null;
         }
-        WindowsUtils.writeBooleanRegistryValue(REG_KEY_INTERNET_POLICIES, REG_VALUE_AUTOPROXY_RESULT_CACHE, false);
+        WindowsUtils.writeBooleanRegistryValue(REG_KEY_AUTOPROXY_RESULT_CACHE, false);
         
         // TODO Do we want to make these preferences configurable somehow?
         // TODO Disable pop-up blocking?
@@ -125,15 +123,15 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
 
     public void restoreOldRegistrySettings() {
         if (null == oldAutoConfigURL) {
-            WindowsUtils.deleteRegistryValue(REG_KEY_INTERNET_SETTINGS, REG_VALUE_AUTOCONFIG_URL);
+            WindowsUtils.deleteRegistryValue(REG_KEY_AUTOCONFIG_URL);
         } else {
-            WindowsUtils.writeStringRegistryValue(REG_KEY_INTERNET_SETTINGS, REG_VALUE_AUTOCONFIG_URL, oldAutoConfigURL);
+            WindowsUtils.writeStringRegistryValue(REG_KEY_AUTOCONFIG_URL, oldAutoConfigURL);
         }
         
         if (null == oldAutoProxyCache) {
-            WindowsUtils.deleteRegistryValue(REG_KEY_INTERNET_POLICIES, REG_VALUE_AUTOPROXY_RESULT_CACHE);
+            WindowsUtils.deleteRegistryValue(REG_KEY_AUTOPROXY_RESULT_CACHE);
         } else {
-            WindowsUtils.writeBooleanRegistryValue(REG_KEY_INTERNET_POLICIES, REG_VALUE_AUTOPROXY_RESULT_CACHE, oldAutoProxyCache.booleanValue());
+            WindowsUtils.writeBooleanRegistryValue(REG_KEY_AUTOPROXY_RESULT_CACHE, oldAutoProxyCache.booleanValue());
         }
     }
     

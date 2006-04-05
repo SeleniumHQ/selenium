@@ -45,7 +45,9 @@ public class WindowsUtils {
     private static String wmic = null;
     private static File wbem = null;
     private static String taskkill = null;
-    private static String reg = null;
+    private static String reg = null; 
+    	//"C:\\NTRESKIT\\reg.exe";
+    private static Boolean regVersion1 = null;
     private static Properties env = null;
     
     /**
@@ -312,71 +314,114 @@ public class WindowsUtils {
             reg = regExe.getAbsolutePath();
             return reg;
         }
-        System.err.println("Couldn't find reg! Hope it's on the path...");
-        reg = "reg";
-        return reg;
+        regExe = new File("c:\\ntreskit");
+    	if (regExe.exists()) {
+            reg = regExe.getAbsolutePath();
+            return reg;
+        }
+        regExe = AsyncExecute.whichExec("reg.exe");
+        if (regExe != null && regExe.exists()) {
+        	reg = regExe.getAbsolutePath();
+        	return reg;
+        }
+    	System.err.println("OS Version: " + System.getProperty("os.version"));
+        throw new RuntimeException("Couldn't find reg.exe!\n" +
+			"Please download it from Microsoft and install it in a standard location.\n" +
+			"See here for details: http://wiki.openqa.org/display/SRC/Windows+Registry+Support");
     }
     
-    public static String readStringRegistryValue(String keyPath, String valueName) {
-        String output = runRegQuery(keyPath, valueName);
-        Pattern pat = Pattern.compile(valueName + "    (REG_\\S+)    (.*)");
+    public static boolean isRegExeVersion1() {
+    	if (regVersion1 != null) return regVersion1.booleanValue();
+    	Project p = new Project();
+        ExecTask exec = new ExecTask();
+        exec.setProject(p);
+        exec.setTaskType("reg");
+        exec.setExecutable(findReg());
+        exec.setFailonerror(false);
+        exec.createArg().setValue("/?");
+        exec.setOutputproperty("regout");
+        exec.setResultProperty("result");
+        exec.execute();
+        String output = p.getProperty("regout");
+        boolean version1 = output.indexOf("version 1.0") != -1;
+        regVersion1 = new Boolean(version1);
+        return version1;
+    }
+    
+    public static String readStringRegistryValue(String key) {
+        RegKeyValue r = new RegKeyValue(key);
+    	String output = runRegQuery(key);
+        Pattern pat;
+        if (isRegExeVersion1()) {
+        	pat = Pattern.compile("\\s*(REG_\\S+)\\s+\\Q" + r.value + "\\E\\s+(.*)");
+        } else {
+        	pat = Pattern.compile("\\Q" + r.value + "\\E\\s+(REG_\\S+)\\s+(.*)");
+        }
         Matcher m = pat.matcher(output);
         if (!m.find()) {
             throw new RuntimeException("Output didn't look right: " + output);
         }
         String type = m.group(1);
         if (!"REG_SZ".equals(type)) {
-            throw new RuntimeException(valueName + " was not a REG_SZ (String): " + type);
+            throw new RuntimeException(r.value + " was not a REG_SZ (String): " + type);
         }
         String value = m.group(2);
         return value;
     }
     
-    public static int readIntRegistryValue(String keyPath, String valueName) {
-        String output = runRegQuery(keyPath, valueName);
-        Pattern pat = Pattern.compile(valueName + "    (REG_\\S+)    0x(.*)");
+    public static int readIntRegistryValue(String key) {
+        RegKeyValue r = new RegKeyValue(key);
+    	String output = runRegQuery(key);
+        Pattern pat;
+        if (isRegExeVersion1()) {
+        	pat = Pattern.compile("\\s*(REG_\\S+)\\s+\\Q" + r.value + "\\E\\s+(.*)");
+        } else {
+        	pat = Pattern.compile("\\Q" + r.value + "\\E\\s+(REG_\\S+)\\s+0x(.*)");
+        }
+        
         Matcher m = pat.matcher(output);
         if (!m.find()) {
             throw new RuntimeException("Output didn't look right: " + output);
         }
         String type = m.group(1);
         if (!"REG_DWORD".equals(type)) {
-            throw new RuntimeException(valueName + " was not a REG_DWORD (int): " + type);
+            throw new RuntimeException(r.value + " was not a REG_DWORD (int): " + type);
         }
-        String hexValue = m.group(2);
-        int value = Integer.parseInt(hexValue, 16);
+        String strValue = m.group(2);
+        int value;
+        if (isRegExeVersion1()) {
+        	value = Integer.parseInt(strValue);
+        } else {
+        	value = Integer.parseInt(strValue, 16);
+        }
         return value;
     }
     
-    public static boolean readBooleanRegistryValue(String keyPath, String valueName) {
-        String output = runRegQuery(keyPath, valueName);
-        Pattern pat = Pattern.compile(valueName + "    (REG_\\S+)    0x(.*)");
-        Matcher m = pat.matcher(output);
-        if (!m.find()) {
-            throw new RuntimeException("Output didn't look right: " + output);
-        }
-        String type = m.group(1);
-        if (!"REG_DWORD".equals(type)) {
-            throw new RuntimeException(valueName + " was not a REG_DWORD (int): " + type);
-        }
-        String hexValue = m.group(2);
-        int value = Integer.parseInt(hexValue, 16);
+    public static boolean readBooleanRegistryValue(String key) {
+        RegKeyValue r = new RegKeyValue(key);
+    	int value = readIntRegistryValue(key);
         if (0 == value) return false;
         if (1 == value) return true;
-        throw new RuntimeException(valueName + " was not either 0 or 1: " + value);
+        throw new RuntimeException(r.value + " was not either 0 or 1: " + value);
     }
     
-    public static boolean doesRegistryValueExist(String keyPath, String valueName) {
-        Project p = new Project();
+    public static boolean doesRegistryValueExist(String key) {
+        
+    	Project p = new Project();
         ExecTask exec = new ExecTask();
         exec.setProject(p);
         exec.setTaskType("reg");
         exec.setExecutable(findReg());
         exec.setFailonerror(false);
         exec.createArg().setValue("query");
-        exec.createArg().setValue(keyPath);
-        exec.createArg().setValue("/v");
-        exec.createArg().setValue(valueName);
+        if (isRegExeVersion1()) {
+        	exec.createArg().setValue(key);
+        } else {
+        	RegKeyValue r = new RegKeyValue(key);
+            exec.createArg().setValue(r.key);
+            exec.createArg().setValue("/v");
+            exec.createArg().setValue(r.value);
+        }
         exec.setOutputproperty("regout");
         exec.setResultProperty("result");
         exec.execute();
@@ -385,7 +430,30 @@ public class WindowsUtils {
         return false;
     }
     
-    public static void writeStringRegistryValue(String keyPath, String valueName, String data) {
+    public static void writeStringRegistryValue(String key, String data) {
+        
+    	Project p = new Project();
+        ExecTask exec = new ExecTask();
+        exec.setProject(p);
+        exec.setTaskType("reg");
+        exec.setExecutable(findReg());
+        exec.setFailonerror(true);
+        exec.createArg().setValue("add");
+        if (isRegExeVersion1()) {
+        	exec.createArg().setValue(key + "=" + data);
+        } else {
+        	RegKeyValue r = new RegKeyValue(key);
+        	exec.createArg().setValue(r.key);
+            exec.createArg().setValue("/v");
+            exec.createArg().setValue(r.value);
+            exec.createArg().setValue("/d");
+            exec.createArg().setValue(data);
+            exec.createArg().setValue("/f");
+        }
+        exec.execute();
+    }
+    
+    public static void writeIntRegistryValue(String key, int data) {
         Project p = new Project();
         ExecTask exec = new ExecTask();
         exec.setProject(p);
@@ -393,55 +461,51 @@ public class WindowsUtils {
         exec.setExecutable(findReg());
         exec.setFailonerror(true);
         exec.createArg().setValue("add");
-        exec.createArg().setValue(keyPath);
-        exec.createArg().setValue("/v");
-        exec.createArg().setValue(valueName);
-        exec.createArg().setValue("/d");
-        exec.createArg().setValue(data);
-        exec.createArg().setValue("/f");
+        if (isRegExeVersion1()) {
+        	exec.createArg().setValue(key + "=" + Integer.toString(data));
+        	exec.createArg().setValue("REG_DWORD");
+        } else {
+        	RegKeyValue r = new RegKeyValue(key);
+        	exec.createArg().setValue(r.key);
+            exec.createArg().setValue("/v");
+            exec.createArg().setValue(r.value);
+            exec.createArg().setValue("/t");
+            exec.createArg().setValue("REG_DWORD");
+            exec.createArg().setValue("/d");
+            exec.createArg().setValue(Integer.toString(data));
+            exec.createArg().setValue("/f");
+        }
         exec.execute();
     }
     
-    public static void writeIntRegistryValue(String keyPath, String valueName, int data) {
+    public static void writeBooleanRegistryValue(String key, boolean data) {
+        writeIntRegistryValue(key, data?1:0);
+    }
+    
+    public static void deleteRegistryValue(String key) {
         Project p = new Project();
         ExecTask exec = new ExecTask();
         exec.setProject(p);
         exec.setTaskType("reg");
         exec.setExecutable(findReg());
         exec.setFailonerror(true);
-        exec.createArg().setValue("add");
-        exec.createArg().setValue(keyPath);
-        exec.createArg().setValue("/v");
-        exec.createArg().setValue(valueName);
-        exec.createArg().setValue("/t");
-        exec.createArg().setValue("REG_DWORD");
-        exec.createArg().setValue("/d");
-        exec.createArg().setValue(Integer.toString(data));
-        exec.createArg().setValue("/f");
-        exec.execute();
-    }
-    
-    public static void writeBooleanRegistryValue(String keyPath, String valueName, boolean data) {
-        writeIntRegistryValue(keyPath, valueName, data?1:0);
-    }
-    
-    public static void deleteRegistryValue(String keyPath, String valueName) {
-        Project p = new Project();
-        ExecTask exec = new ExecTask();
-        exec.setProject(p);
-        exec.setTaskType("reg");
-        exec.setExecutable(findReg());
-        exec.setFailonerror(true);
-        exec.createArg().setValue("delete");
-        exec.createArg().setValue(keyPath);
-        exec.createArg().setValue("/v");
-        exec.createArg().setValue(valueName);
-        exec.createArg().setValue("/f");
+        if (isRegExeVersion1()) {
+        	exec.createArg().setValue("delete");
+            exec.createArg().setValue(key);
+            exec.createArg().setValue("/FORCE");
+        } else {
+        	RegKeyValue r = new RegKeyValue(key);
+        	exec.createArg().setValue("delete");
+            exec.createArg().setValue(r.key);
+            exec.createArg().setValue("/v");
+            exec.createArg().setValue(r.value);
+            exec.createArg().setValue("/f");
+        }
         exec.execute();
     }
 
     /** Executes reg.exe to query the registry */
-    private static String runRegQuery(String keyPath, String valueName) {
+    private static String runRegQuery(String key) {
         Project p = new Project();
         ExecTask exec = new ExecTask();
         exec.setProject(p);
@@ -449,13 +513,28 @@ public class WindowsUtils {
         exec.setExecutable(findReg());
         exec.setFailonerror(true);
         exec.createArg().setValue("query");
-        exec.createArg().setValue(keyPath);
-        exec.createArg().setValue("/v");
-        exec.createArg().setValue(valueName);
+        if (isRegExeVersion1()) {
+        	exec.createArg().setValue(key);
+        } else {
+        	RegKeyValue r = new RegKeyValue(key);
+            exec.createArg().setValue(r.key);
+            exec.createArg().setValue("/v");
+            exec.createArg().setValue(r.value);
+        }
         exec.setOutputproperty("regout");
         exec.execute();
         String output = p.getProperty("regout");
         return output;
+    }
+    
+    private static class RegKeyValue {
+    	private String key;
+    	private String value;
+    	public RegKeyValue(String path) {
+    		int i = path.lastIndexOf('\\');
+    		key = path.substring(0,i);
+    		value = path.substring(i+1);
+    	}
     }
     
     /** Returns true if the current OS is MS Windows; false otherwise

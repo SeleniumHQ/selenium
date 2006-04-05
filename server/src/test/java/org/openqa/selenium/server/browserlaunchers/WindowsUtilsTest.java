@@ -43,13 +43,26 @@ public class WindowsUtilsTest extends TestCase {
         if (!WindowsUtils.thisIsWindows()) return;
         assertTrue("taskkill should be found", "taskkill" != WindowsUtils.findTaskKill());
     }
-    public void testReadRegistryValue() {
+    public void testRegistry() {
         if (!WindowsUtils.thisIsWindows()) return;
-        boolean autoConfigURLExists = WindowsUtils.doesRegistryValueExist("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "AutoConfigURL");
-        System.out.println(autoConfigURLExists);
-        if (autoConfigURLExists) {
-            System.out.println(WindowsUtils.readStringRegistryValue("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "AutoConfigURL"));
-        }
-        System.out.println(WindowsUtils.readStringRegistryValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentVersion"));
+        String keyCurrentVersion = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\CurrentVersion";
+        String keyProxyEnable = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
+        String keySeleniumFoo = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\foo";
+        assertTrue("Standard Windows reg key CurrentVersion doesn't exist", WindowsUtils.doesRegistryValueExist(keyCurrentVersion));
+        System.out.println("CurrentVersion: " + WindowsUtils.readStringRegistryValue(keyCurrentVersion));
+        assertTrue("Standard Windows reg key ProxyEnable doesn't exist", WindowsUtils.doesRegistryValueExist(keyProxyEnable));
+        System.out.println("ProxyEnable: " + WindowsUtils.readIntRegistryValue(keyProxyEnable));
+        WindowsUtils.writeStringRegistryValue(keySeleniumFoo, "bar");
+        assertEquals("Didn't set Foo string key correctly", "bar", WindowsUtils.readStringRegistryValue(keySeleniumFoo));
+        WindowsUtils.deleteRegistryValue(keySeleniumFoo);
+        assertFalse("Didn't delete Foo key correctly", WindowsUtils.doesRegistryValueExist(keySeleniumFoo));
+        WindowsUtils.writeBooleanRegistryValue(keySeleniumFoo, true);
+        assertTrue("Didn't set Foo boolean key correctly", WindowsUtils.readBooleanRegistryValue(keySeleniumFoo));
+        WindowsUtils.deleteRegistryValue(keySeleniumFoo);
+        assertFalse("Didn't delete Foo key correctly", WindowsUtils.doesRegistryValueExist(keySeleniumFoo));
+    }
+    public void testVersion1() {
+    	if (!WindowsUtils.thisIsWindows()) return;
+    	System.out.println("Version 1: " + WindowsUtils.isRegExeVersion1());
     }
 }
