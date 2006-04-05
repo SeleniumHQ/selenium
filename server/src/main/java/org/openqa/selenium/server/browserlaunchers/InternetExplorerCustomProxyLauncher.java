@@ -57,8 +57,12 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
         }
-        // Hope it's on the path
-        return "iexplore";
+        File iexploreEXE = AsyncExecute.whichExec("iexplore.exe");
+    	if (iexploreEXE != null) return iexploreEXE.getAbsolutePath();
+    	throw new RuntimeException("Internet Explorer couldn't be found in the path!\n" +
+    			"Please add the directory containing iexplore.exe to your PATH environment\n" +
+    			"variable, or explicitly specify a path to IE like this:\n" +
+    			"*firefox c:\\blah\\iexplore.exe");
     }
     
     public void launch(String url) {

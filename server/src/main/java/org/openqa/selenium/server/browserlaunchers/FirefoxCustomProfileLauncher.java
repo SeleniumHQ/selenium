@@ -87,16 +87,25 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
         } else {
-            if (!WindowsUtils.thisIsWindows()) {
+            if (WindowsUtils.thisIsWindows()) {
+            	File firefoxEXE = AsyncExecute.whichExec("firefox.exe");
+            	if (firefoxEXE != null) return firefoxEXE.getAbsolutePath();
+            	throw new RuntimeException("Firefox couldn't be found in the path!\n" +
+            			"Please add the directory containing firefox.exe to your PATH environment\n" +
+            			"variable, or explicitly specify a path to Firefox like this:\n" +
+            			"*firefox c:\\blah\\firefox.exe");
+            } else {
                 // On unix, prefer firefoxBin if it's on the path
                 File firefoxBin = AsyncExecute.whichExec("firefox-bin");
                 if (firefoxBin != null) {
                     return firefoxBin.getAbsolutePath();
                 }
-                
+                throw new RuntimeException("Firefox couldn't be found in the path!\n" +
+            			"Please add the directory containing 'firefox-bin' to your PATH environment\n" +
+            			"variable, or explicitly specify a path to Firefox like this:\n" +
+            			"*firefox /blah/blah/firefox-bin");
             }
-            // Hope it's on the path
-            return "firefox";
+            
         }
     }
     
