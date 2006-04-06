@@ -39,6 +39,7 @@ var isKonqueror = (browserName == "Konqueror");
 var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
 var isFirefox = (navigator.userAgent.indexOf('Firefox') != -1);
 var isNetscape = !isFirefox && (navigator.appName == "Netscape");
+var isOpera = (opera != null);
 
 
 // Get the Gecko version as an 8 digit date.

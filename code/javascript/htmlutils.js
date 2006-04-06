@@ -117,7 +117,7 @@ function removeLoadListener(element, command) {
 }
 
 function addLoadListener(element, command) {
-    if (window.addEventListener)
+    if (window.addEventListener && !isOpera)
         element.addEventListener("load",command, true);
     else if (window.attachEvent)
         element.attachEvent("onload",command);
