@@ -34,12 +34,12 @@
 // we can do this in a more "feature-centric" rather than "browser-centric" way.
 // TODO we should probably reuse an available browser-detection library
 var browserName=navigator.appName;
-var isIE = (browserName =="Microsoft Internet Explorer");
+var isOpera = (opera != null);
+var isIE = !isOpera && (browserName =="Microsoft Internet Explorer");
 var isKonqueror = (browserName == "Konqueror");
 var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
 var isFirefox = (navigator.userAgent.indexOf('Firefox') != -1);
-var isNetscape = !isFirefox && (navigator.appName == "Netscape");
-var isOpera = (opera != null);
+var isNetscape = !isOpera && !isFirefox && (navigator.appName == "Netscape");
 
 
 // Get the Gecko version as an 8 digit date.
@@ -74,6 +74,8 @@ BrowserBot = function(frame) {
 
 BrowserBot.createForFrame = function(frame) {
     var browserbot;
+    LOG.debug("browserName: " + browserName);
+    LOG.debug("userAgent: " + navigator.userAgent);
     if (isIE) {
         browserbot = new IEBrowserBot(frame);
     }
