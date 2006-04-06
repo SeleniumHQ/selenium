@@ -34,7 +34,7 @@
 // we can do this in a more "feature-centric" rather than "browser-centric" way.
 // TODO we should probably reuse an available browser-detection library
 var browserName=navigator.appName;
-var isOpera = (opera != null);
+var isOpera = (window.opera != null);
 var isIE = !isOpera && (browserName =="Microsoft Internet Explorer");
 var isKonqueror = (browserName == "Konqueror");
 var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
