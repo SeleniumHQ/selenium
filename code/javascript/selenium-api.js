@@ -646,7 +646,11 @@ Selenium.prototype.getAttribute = function(attributeLocator) {
    * @param attributeLocator an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
    * @return string the value of the specified attribute
    */
-    return this.page().findAttribute(attributeLocator);
+   var result = this.page().findAttribute(attributeLocator);
+   if (result == null) {
+   		throw new SeleniumError("Could not find element attribute: " + attributeLocator);
+	}
+    return result;
 };
 
 Selenium.prototype.assertTextPresent = function(pattern) {
