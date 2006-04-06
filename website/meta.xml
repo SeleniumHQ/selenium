@@ -78,6 +78,19 @@
     </developers>
 
     <releases>
+    	<release>
+            <version>0.7.1</version>
+
+            <date>04/06/2006</date>
+            <jiraId>10230</jiraId>
+            <downloads>
+                <download>
+                    <url>http://www.openqa.org/selenium-rc/download/selenium-remote-control-0.7.1.zip</url>
+                    <name>Full release</name>
+                </download>
+                
+            </downloads>
+        </release>
         <release>
             <version>0.7.0</version>
 

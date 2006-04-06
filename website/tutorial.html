@@ -10,7 +10,15 @@
 <p>The Selenium Server is written in Java, and requires the Java Runtime Environment (JRE) in order to start.  You may already have it installed.  Try running this from the command line:</p>
 <blockquote><code> java -version</code></blockquote>
 <p>You should see a brief message telling you what version of Java is installed.  If you see an error message instead, you may need to install the <a href="http://www.java.com/en/download/manual.jsp">JRE</a>, or you may need to add it to your PATH environment variable.</p>
-<p>For this example, you'll also need to make sure that you have a supported browser installed.  If you're on Windows, you can just use Internet Explorer.  If you're on another operating system, try installing Firefox and adding the Firefox directory to your PATH environment variable.</p>
+<p>For this example, you'll also need to make sure that you have a supported browser installed.
+	
+<ul>
+<li><b>Windows</b>: If you're on Windows XP or Windows 2003, you can just use Internet Explorer for this example, or install Mozilla Firefox.  If you're using Windows 2000, you'll need to <a href="http://wiki.openqa.org/display/SRC/Windows+Registry+Support">install reg.exe</a> in order to use Internet Explorer, but Firefox should work regardless.  We recommend (but do not require) that you add your browser executable to your PATH environment variable.  (If you do not explicitly add your browser's installation directory to the PATH, then you must install your browser in its standard location; Firefox's standard location is "c:\Program Files\Mozilla Firefox\firefox.exe"; Internet Explorer's standard location is "c:\Program Files\Internet Explorer\iexplore.exe".)</li>
+
+<li><b>Unix/Linux</b>:  For this tutorial, install Firefox and add the Firefox directory to your PATH environment variable.  Note that on Unix/Linux we'll be trying to invoke "firefox-bin" directly, so make sure <i>that</i> executable is on the path; also don't forget to add the Firefox libraries to your LD_LIBRARY_PATH.  If needed, we can invoke Firefox using a shell script (e.g. "firefox" or "run-mozilla.sh"), but in that case, we may not be able to stop Firefox until the server is shut down.</li>
+
+<li><b>Mac OS X</b>: On Mac OS X, it should be enough to install Firefox.app in your /Applications directory.  Note in order to control the browser accurately, we need to invoke the embedded Firefox executable (firefox-bin) directly in /Applications/Firefox.app/Contents/MacOS; if your browser isn't installed there, then you'll want to add the correct embedded location to your PATH environment variable as well as your DYLD_LIBRARY_PATH environment variable.
+</ul>
 
 <h2>Interactive Mode</h2>
 Selenium Server "interactive mode" is a way of rapidly prototyping tests that requires no coding whatsoever, so it's a good way to introduce new users to Selenium Remote Control.  In interactive mode, you type your commands one by one into the Selenium Server command window; this allows you to immediately see the results of running your command in a working browser, on-the-spot.  With that said, normally you'll be coding these tests in your favorite programming language, so the whole thing is completely automated.
@@ -49,7 +57,7 @@ Selenium Server "interactive mode" is a way of rapidly prototyping tests that re
 <blockquote>
   <p><code>cmd=<strong>click</strong>&amp;1=<strong>btnG</strong>&amp;sessionId=<em>1143670264928</em></code> </p>
 </blockquote>
-<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers (<a href="java.html">Java</a>, <a href="dotnet.html">.NET</a>, <a href="python.html">Python</a> or <a href="ruby.html">Ruby</a>. </p>
+<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers (<a href="java.html">Java</a>, <a href="dotnet.html">.NET</a>, <a href="python.html">Python</a> or <a href="ruby.html">Ruby</a>). </p>
 <p>The next thing we might want to do is read some information back out of the page... for example, let's retrieve the HTML title of the current page, like this:
 <blockquote>
   <p><code> cmd=<strong>getTitle</strong>&amp;sessionId=<em>1143670264928</em></code></p>
@@ -188,7 +196,7 @@ end
 </pre></td></tr>
 </table>
 
-<h2>The Same Origin Policy</h2>
+<h2><a name="sameorigin"/>The Same Origin Policy</h2>
 <p>As you were running your tests, you may have noticed that your browser started at the following URL:</p>
 <blockquote>
   <p><code>http://www.google.com/selenium-server/SeleneseRunner.html?sessionId=<em>1143670728535</em> </code></p>
@@ -198,6 +206,7 @@ end
 <p>That creates a big problem for Selenium automated tests. If you wrote a .js file designed to test google.com, the same origin policy denies you the right to just run that .js file on google.com; instead, you'd have to somehow install that .js file <em>on google.com</em> in order to write automated tests against it. In the case of google.com we don't have the right to do this; but even if we did, it would be a hassle to do so. </p>
 <p>That's where the Selenium Server comes in. The Selenium Server is acting as a <em>client-configured proxy</em> for the browser that you automatically started with &quot;getNewBrowserSession&quot;. Specifically, it configures your browser to use the Selenium Server as a proxy in its browser preferences. </p>
 <p>A proxy normally <em>fetches </em>HTML pages on your behalf; if a page can't be found, it honestly reports that the page wasn't there. But the Selenium Server is a very different kind of proxy; when the browser requests a page through the proxy that contains &quot;/selenium-server/&quot; in its URL, the Selenium Server doesn't simply fetch the page from the remote server, but instead automatically returns its own page instead. That makes the browser think that the remote server itself actually contained the page in question, which allows us to &quot;inject&quot; arbitrary JavaScript into google.com without modifying google.com in any way at all.</p>
+<p><img src="images/selenium-rc.png" /></p>
 <p>However, the solution isn't perfect. Try running your tests like this:</p>
 <blockquote>
   <p><code>cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>*iexplore</strong>&amp;2=<strong>http://www.yahoo.com<br />
@@ -211,11 +220,32 @@ end
 <p>and then we tried to open up google.com (which did work...) and type &quot;Hello World&quot; into the search box. But yahoo.com doesn't have the right to modify google.com, so that operation fails.</p>
 <p>All this means is that you have to choose your browser's start URL wisely: if you open up the browser to yahoo.com, you can't use it to test google.com, and vice versa.</p>
 <p>(A note for the future: we hope to have a slightly cooler solution for you in an upcoming release, allowing you to change a running browser session from one domain to another. The two domains still won't be able to talk to each other, but at least then you'll be able to switch back and forth easily. Most people won't need this functionality; if you're only testing one website at a time, you should be OK.)</p>
-<h2>Running without a Session ID - the &quot;null&quot; session</h2>
-<p>If you get annoyed with typing out your Session ID over-and-over, or if you want to try testing with another browser that we don't yet support, you can always just launch the browser yourself and browse to &quot;/selenium-server/SeleneseRunner.html&quot; yourself.</p>
-<p>In order to do this, you'll have to <em>manually</em> configure your browser to use the Selenium Server as a proxy. (Normally this just means opening your browser preferences and specifying &quot;localhost:4444&quot; as an HTTP proxy, but instructions for this can differ radically from browser to browser, so consult your browser's documentation for details.) </p>
-<p>If you just point straight at &quot;/selenium-server/SeleneseRunner.html&quot; you can send commands to that browser without specifying a Session ID. When no Session ID is specified, the Selenium Server uses the &quot;null&quot; session to communicate with any browser that comes to speak with it. Similarly, if you use a Session ID that isn't on record with the Selenium Server, no error message will be thrown; the Selenium Server will just wait patiently for some browser to come along and request work from that Session ID.</p>
+
+
+<h2><a name="otherbrowsers"/>Automatically Launching Other Browsers</h2>
+<p>Selenium Server can automatically launch/kill other browsers that we don't yet explicitly support.  (Most of the browsers on the "Should Work" supported list need to be launched in this way.)  When running your "getNewBrowserSession" command, just use the absolute path to your browser instead of a "special" browser string like "*firefox" or "*iexplore".</p>
+<blockquote>
+  <p><code> cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>c:\Program Files\Netscape\Netscape\Netscp.exe</strong>&amp;2=<strong>http://www.google.com</strong></code></p>
+</blockquote>
+
+<p>Note that when we launch the browser in this way, you'll have to <em>manually</em> configure your browser to use the Selenium Server as a proxy. (Normally this just means opening your browser preferences and specifying &quot;localhost:4444&quot; as an HTTP proxy, but instructions for this can differ radically from browser to browser, so consult your browser's documentation for details.)</p>
+
+<p>Also beware that Mozilla browsers can be a little fidgety about how they start and stop.  Avoid launching your browser using a shell script; always prefer to use the binary executable directly.  You may need to set the MOZ_NO_REMOTE environment variable to make Mozilla browsers behave a little more predictably.</p>
+
+<p>If you want to use one of the explicitly supported browsers but have installed it in an unusual location, you can tell us that by using the special browser string followed by the absolute path to the executable.</p>
+
+<blockquote>
+  <p><code> cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>*firefox c:\firefox\firefox.exe</strong>&amp;2=<strong>http://www.google.com</strong></code></p>
+</blockquote>
+
+That will automatically configure Firefox's proxy settings, but does not require us to add Firefox directly to the path.  (You can use this to test multiple different versions of Firefox installed in separate directories.)
+
+<h2><a name="nullsession"/>Running without a Session ID - the &quot;null&quot; session</h2>
+<p>If you get annoyed with typing out your Session ID over-and-over, or if you want to try manually testing with another browser that we don't yet officially support, you can always just launch the browser yourself and browse to &quot;/selenium-server/SeleneseRunner.html&quot; manually.  (Don't forget to set your proxy settings, as discussed in the previous section.)</p>
+<p>If you just point straight at &quot;/selenium-server/SeleneseRunner.html&quot; you can send commands to that browser without specifying a Session ID. When no Session ID is specified, the Selenium Server uses the &quot;null&quot; session to communicate with any browser that comes to speak with it.</p>
 <p>You can even make up your own Session IDs, just by starting your browser while pointing to &quot;/selenium-server/SeleneseRunner.html?sessionId=foo&quot;. That will use the Session ID &quot;foo&quot; instead of some crazy long number. (Session IDs don't have to be numbers, though they usually are when the Selenium Server generates one.) Hence, if you use a Session ID that isn't on record with the Selenium Server, no error message will be thrown; the Selenium Server will just wait patiently for some browser to come along and request work from that Session ID.</p>
+
+
 <hr />
 <p>With that, you're ready to try out one of our Client Drivers. We have Client Drivers available in a variety of languages, allowing you to automatically submit HTTP requests to the Selenium Server and automate your browsing tasks. Click on one of them on the left to get more information about any particular Client Driver, or get information on how to write your own from scratch. </p>
 <p>Good luck!</p>
