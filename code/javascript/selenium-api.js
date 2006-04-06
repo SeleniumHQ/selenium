@@ -906,6 +906,17 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
     testLoop.waitForConditionTimeout = timeout;
 };
 
+Selenium.prototype.doSetTimeout = function(timeout) {
+	/**
+	 * Specifies the amount of time that Selenium will wait for actions to complete.
+	 *
+	 * <p>Actions that require waiting include "open" and the "waitFor*" actions.</p>
+	 * The default timeout is 30 seconds.
+	 * @param timeout a timeout in milliseconds, after which the action will return with an error
+	 */
+	testLoop.waitForConditionTimeout = timeout;
+}
+
 Selenium.prototype.doWaitForPageToLoad = function(timeout) {
 	/**
    * Waits for a new page to load.

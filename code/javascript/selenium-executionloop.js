@@ -19,9 +19,11 @@ SELENIUM_PROCESS_WAIT = "wait";
 function TestLoop(commandFactory) {
 
     this.commandFactory = commandFactory;
+    this.waitForConditionTimeout = 30 * 1000; // 30 seconds
 
     this.start = function() {
         selenium.reset();
+        LOG.debug("testLoop.start()");
         this.continueTest();
     };
 
@@ -29,6 +31,7 @@ function TestLoop(commandFactory) {
      * Select the next command and continue the test.
      */
     this.continueTest = function() {
+    	LOG.debug("testLoop.continueTest() - acquire the next command");
         if (! this.aborted) {
             this.currentCommand = this.nextCommand();
         }
@@ -38,6 +41,7 @@ function TestLoop(commandFactory) {
     };
     
     this.beginNextTest = function() {
+    	LOG.debug("testLoop.beginNextTest()");
     	if (this.currentCommand) {
             // TODO: rename commandStarted to commandSelected, OR roll it into nextCommand
             this.commandStarted(this.currentCommand);
@@ -69,8 +73,10 @@ function TestLoop(commandFactory) {
      * Select the next command and continue the test.
      */
     this.resume = function() {
+    	LOG.debug("testLoop.resume() - actually execute");
         try {
             this.executeCurrentCommand();
+            this.waitForConditionStart = new Date().getTime();
             this.continueTestWhenConditionIsTrue();
         } catch (e) {
             this.handleCommandError(e);
@@ -97,12 +103,14 @@ function TestLoop(commandFactory) {
         
         command.target = selenium.preprocessParameter(command.target);
         command.value = selenium.preprocessParameter(command.value);
+        LOG.debug("Command found, going to execute " + command.command);
         var result = handler.execute(selenium, command);
-
+		LOG.debug("Command complete");
         this.commandComplete(result);
 
         if (result.processState == SELENIUM_PROCESS_WAIT) {
             this.waitForCondition = function() {
+            	LOG.debug("Checking condition: isNewPageLoaded?");
                 return selenium.browserbot.isNewPageLoaded();
             };
         }
@@ -127,13 +135,15 @@ function TestLoop(commandFactory) {
      * with test.  Fail the current test if there's a timeout or an exception.
      */
     this.continueTestWhenConditionIsTrue = function () {
+    	LOG.debug("testLoop.continueTestWhenConditionIsTrue()");
         try {
             if (this.waitForCondition == null || this.waitForCondition()) {
+            	LOG.debug("condition satisfied; let's continueTest()");
 	            this.waitForCondition = null;
 	            this.waitForConditionStart = null;
-	            this.waitForConditionTimeout = null;
 	            this.continueTest();
 	        } else {
+	        	LOG.debug("waitForCondition was false; keep waiting!");
 	        	if (this.waitForConditionTimeout != null) {
 		        	var now = new Date();
 		        	if ((now - this.waitForConditionStart) > this.waitForConditionTimeout) {
