@@ -659,7 +659,7 @@ Selenium.prototype.assertTextPresent = function(pattern) {
 
     if(allText == "") {
         Assert.fail("Page text not found");
-    } else if(allText.indexOf(pattern) == -1) {
+    } else if(PatternMatcher.matches(pattern, allText)) {
         Assert.fail("'" + pattern + "' not found in page text.");
     }
 };
