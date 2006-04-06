@@ -207,11 +207,14 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         out.close();
         
         // TODO Do we want to make these preferences configurable somehow?
-        // TODO Disable pop-up blocking?
         File prefsJS = new File(customProfileDir, "prefs.js");
         out = new PrintStream(new FileOutputStream(prefsJS));
         // Don't ask if we want to switch default browsers
         out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
+        
+        // Disable pop-up blocking
+        out.println("user_pref('browser.allowpopups', true);");
+        out.println("user_pref('dom.disable_open_during_load', false);");
         
         // Configure us as the local proxy
         out.println("user_pref('network.proxy.type', 2);");
