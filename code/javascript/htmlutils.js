@@ -44,7 +44,9 @@ function getText(element) {
     }
     // Replace &nbsp; with a space
     // TODO - should this be in the match() code instead?
-    text = text.replace(/\240/g, " ");
+    var pat = String.fromCharCode(160); // Opera doesn't like /\240/g
+   	var re = new RegExp(pat, "g");
+    text = text.replace(re, " ");
     return text.trim();
 }
 
