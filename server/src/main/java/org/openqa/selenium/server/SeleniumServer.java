@@ -22,7 +22,6 @@ import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.*;
 import org.mortbay.util.*;
-import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.htmlrunner.*;
 
 import java.io.*;
@@ -157,7 +156,16 @@ public class SeleniumServer {
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            if ("-port".equals(arg)) {
+            if ("-help".equals(arg)) {
+                System.err.println("Usage: java -jar selenium-server.jar [-port nnnn] [-timeout nnnn] [-interactive] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+                        "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
+                        "where:\n" +
+                        "the argument for timeout is an integer number of seconds before we should give up\n" +
+                        "the argument for port is the port number the selenium server should use (default 4444)\n" +
+                "-interactive puts you into interactive mode.  See the tutorial for more details");
+                System.exit(1);
+            }
+            else if ("-port".equals(arg)) {
                 port = Integer.parseInt(args[i + 1]);
             }
             else if ("-timeout".equals(arg)) {
