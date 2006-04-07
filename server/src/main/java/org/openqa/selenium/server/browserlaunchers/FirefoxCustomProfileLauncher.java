@@ -288,9 +288,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
             recursivelyDeleteDir(dir);
         } catch (BuildException e) {
             if (tries > 0) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {}
+                AsyncExecute.sleepTight(2000);
                 deleteTryTryAgain(dir, tries-1);
             } else {
                 throw e;
@@ -314,9 +312,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     private void waitForFileLockToGoAway(long timeout, long timeToWait) throws FileLockRemainedException {
         File lock = new File(customProfileDir, "parent.lock");
         for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeout; ) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {}
+            AsyncExecute.sleepTight(500);
             if (!lock.exists() && makeSureFileLockRemainsGone(lock, timeToWait)) return;
         }
         if (lock.exists()) throw new FileLockRemainedException("Lock file still present! " + lock.getAbsolutePath());
@@ -332,9 +328,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
      */
     private boolean makeSureFileLockRemainsGone(File lock, long timeToWait) {
         for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeToWait; ) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {}
+            AsyncExecute.sleepTight(500);
             if (lock.exists()) return false;
         }
         if (!lock.exists()) return true;
@@ -350,9 +344,8 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         File testFile = new File(customProfileDir, "extensions.ini");
         long start = System.currentTimeMillis();
         for (; System.currentTimeMillis() < start + timeout; ) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {}
+            
+            AsyncExecute.sleepTight(500);
             if (testFile.exists()) break;
         }
         if (!testFile.exists()) throw new RuntimeException("Timed out waiting for profile to be created!");
@@ -370,7 +363,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         l.launch("http://www.google.com");
         int seconds = 15;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
-        Thread.sleep(seconds * 1000);
+        AsyncExecute.sleepTight(seconds * 1000);
         l.close();
         System.out.println("He's dead now, right?");
     }

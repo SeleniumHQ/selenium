@@ -18,6 +18,7 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SingleEntryAsyncQueue;
+import org.openqa.selenium.server.browserlaunchers.*;
 
 import junit.framework.TestCase;
 
@@ -58,7 +59,7 @@ public class QueueTest extends TestCase {
                 assertTrue(exceptionSeen);
             }
         }.start();
-        sleepTight(300);    // give getter thread a chance to go wait on the queue
+        AsyncExecute.sleepTight(300);    // give getter thread a chance to go wait on the queue
         q.clear();
     }
     
@@ -85,7 +86,7 @@ public class QueueTest extends TestCase {
     public void testClearHungPutter() throws Exception {
         PuttingThread t = new PuttingThread(); 
         t.start();
-        sleepTight(1000);    // give getter thread a chance to go wait on the queue
+        AsyncExecute.sleepTight(1000);    // give getter thread a chance to go wait on the queue
         q.clear();
         t.join();
         assertEquals("ok", t.failureMessage);
@@ -112,7 +113,7 @@ public class QueueTest extends TestCase {
              while (q.size() <= j) {
                  System.out.println("main waiting on " +
                         (TEST_THREAD_COUNT-j) + " test threads to all call put()");
-                 sleepTight(500);
+                 AsyncExecute.sleepTight(500);
              }
         }
         
@@ -136,13 +137,5 @@ public class QueueTest extends TestCase {
         q.put("there");
         String s = (String) q.get();
         assertEquals("there", s);
-    }
-
-    private void sleepTight(int millisecs) {
-        try {
-            Thread.sleep(millisecs);
-        } catch (InterruptedException e) {
-            throw new RuntimeException("sleep interrupted...");
-        }
     }
 }

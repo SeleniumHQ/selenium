@@ -44,11 +44,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         long now = System.currentTimeMillis();
         long end = now + timeout * 1000;
         while (results == null && System.currentTimeMillis() < end) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            AsyncExecute.sleepTight(500);
         }
         launcher.close();
         if (results == null) {

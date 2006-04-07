@@ -22,6 +22,7 @@ import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.*;
 import org.mortbay.util.*;
+import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.htmlrunner.*;
 
 import java.io.*;
@@ -241,7 +242,7 @@ public class SeleniumServer {
         }
         
         if (interactive) {
-            Thread.sleep(500);
+            AsyncExecute.sleepTight(500);
             System.out.println("Entering interactive mode... type Selenium commands here (e.g: cmd=open&1=http://www.yahoo.com)");
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String userInput;

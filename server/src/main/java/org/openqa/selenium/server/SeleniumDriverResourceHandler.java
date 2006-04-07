@@ -144,18 +144,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 results = "OK";
             }
         } else if ("shutDown".equals(cmd)) {
-            try {
-                System.out.println("Shutdown command received");
-                if (res != null) {
-                    res.getOutputStream().write("OK".getBytes());
-                    res.commit();
-                }
-                Thread.sleep(3000);
-                System.exit(0);
-                results = null;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            System.out.println("Shutdown command received");
+            if (res != null) {
+                res.getOutputStream().write("OK".getBytes());
+                res.commit();
             }
+            AsyncExecute.sleepTight(3000);
+            System.exit(0);
+            results = null;
         } else if ("isPostSupported".equals(cmd)) {
             // We don't support POST
             results = "OK,false";

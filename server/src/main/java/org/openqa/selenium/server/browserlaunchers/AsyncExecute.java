@@ -30,13 +30,26 @@ import org.apache.tools.ant.types.*;
  *  @author dfabulich
  *
  */
-class AsyncExecute extends Execute {
+public class AsyncExecute extends Execute {
     File workingDirectory ;
     Project project;
     boolean useVMLauncher = true; 
     
     public AsyncExecute() {
         project = new Project();
+    }
+    
+    /** Sleeps without explicitly throwing an InterruptedException
+     * 
+     * @param timeout the amout of time to sleep
+     * @throws RuntimeException wrapping an InterruptedException if one gets thrown
+     */
+    public static void sleepTight(long timeout) {
+        try {
+            Thread.sleep(timeout);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     /**
@@ -51,12 +64,7 @@ class AsyncExecute extends Execute {
                                        getEnvironment(), workingDirectory,
                                        useVMLauncher);
         if (Os.isFamily("windows")) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                project.log("interruption in the sleep after having spawned a process",
-                    Project.MSG_VERBOSE);
-            }
+            AsyncExecute.sleepTight(1000);
         }
 
         OutputStream dummyOut = new OutputStream() {
