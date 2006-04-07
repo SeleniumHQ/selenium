@@ -658,13 +658,18 @@ Selenium.prototype.assertTextPresent = function(pattern) {
    * Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.
    * @param pattern a <a href="#patterns">pattern</a> to match with the text of the page
    */
-   // TODO support patterns! this does literal matching right now
     var allText = this.page().bodyText();
 
     if(allText == "") {
         Assert.fail("Page text not found");
-    } else if(PatternMatcher.matches(pattern, allText)) {
-        Assert.fail("'" + pattern + "' not found in page text.");
+    } else {
+    	var patternMatcher = new PatternMatcher(pattern);
+    	if (patternMatcher.matcher.constructor == PatternMatcher.strategies.glob) {
+    		patternMatcher.matcher = new PatternMatcher.strategies.glob("*" + pattern + "*");
+    	}
+    	if(!patternMatcher.matches(allText)) {
+        	Assert.fail("'" + pattern + "' not found in page text.");
+        }
     }
 };
 
