@@ -17,6 +17,8 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
@@ -85,7 +87,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         File defaultLocation = new File(defaultPath);
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
-        } else {
+        }
             if (WindowsUtils.thisIsWindows()) {
             	File firefoxEXE = AsyncExecute.whichExec("firefox.exe");
             	if (firefoxEXE != null) return firefoxEXE.getAbsolutePath();
@@ -93,7 +95,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
             			"Please add the directory containing firefox.exe to your PATH environment\n" +
             			"variable, or explicitly specify a path to Firefox like this:\n" +
             			"*firefox c:\\blah\\firefox.exe");
-            } else {
+        }
                 // On unix, prefer firefoxBin if it's on the path
                 File firefoxBin = AsyncExecute.whichExec("firefox-bin");
                 if (firefoxBin != null) {
@@ -105,7 +107,27 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
             			"*firefox /blah/blah/firefox-bin");
             }
             
+    static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
+    /**
+     * Generates an URL suitable for use in browsers, unlike Java's URLs, which choke
+     * on UNC paths.
+     * 
+     * <P>Java's URLs work in IE, but break in Mozilla.  Mozilla's team snobbily demanded
+     * that <I>all</I> file paths must have the empty authority (file:///), even for UNC file paths.
+     * On Mozilla \\socrates\build is therefore represented as file://///socrates/build.</P>  See
+     * Mozilla bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=66194">66194</A>. 
+     * @param path - the file path to convert to a browser URL
+     * @return a nice Mozilla-compatible file URL
+     */
+    private static String pathToBrowserURL(String path) {
+        if (path == null) return null;
+        String url = (new File(path)).toURI().toString();
+        Matcher m = JAVA_STYLE_UNC_URL.matcher(url);
+        if (m.find()) {
+            url = "file://///";
+            url += m.group(1);
         }
+        return url;
     }
     
     public void launch(String url) {
@@ -142,11 +164,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     
 
     private String makeCustomProfile() throws IOException {
-        customProfileDir = new File("customProfileDir" + sessionId);
-        if (customProfileDir.exists()) {
-            recursivelyDeleteDir(customProfileDir);
-        }
-        customProfileDir.mkdir();
+        createCustomProfileDir();
         
         if (simple) return customProfileDir.getAbsolutePath();
         
@@ -218,7 +236,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         // Configure us as the local proxy
         out.println("user_pref('network.proxy.type', 2);");
         out.println("user_pref('network.proxy.autoconfig_url', '" +
-                proxyPAC.toURL() + 
+                pathToBrowserURL(proxyPAC.getAbsolutePath()) + 
                 "');");
         
         // Disable security warnings
@@ -237,6 +255,16 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         out.println("user_pref('signon.rememberSignons', false);");
         out.close();
         return customProfileDir.getAbsolutePath();
+    }
+
+    private void createCustomProfileDir() {
+        File tmpDir = new File("/tmp");
+        String customProfileDirParent = ((tmpDir.exists() && tmpDir.isDirectory()) ? tmpDir.getAbsolutePath() : ".");
+        customProfileDir = new File(customProfileDirParent + "/customProfileDir" + sessionId);
+        if (customProfileDir.exists()) {
+            recursivelyDeleteDir(customProfileDir);
+        }
+        customProfileDir.mkdir();
     }
 
     public void close() {
