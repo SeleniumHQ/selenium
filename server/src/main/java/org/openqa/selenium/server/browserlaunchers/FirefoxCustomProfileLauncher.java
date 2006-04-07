@@ -25,7 +25,6 @@ import org.openqa.selenium.server.*;
 
 public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
-    private static final String DEFAULT_WINDOWS_LOCATION = "c:\\program files\\mozilla firefox\\firefox.exe"; 
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
     
     private static boolean simple = false;
@@ -78,7 +77,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         String defaultPath = System.getProperty("firefoxDefaultPath");
         if (defaultPath == null) {
             if (WindowsUtils.thisIsWindows()) {
-                defaultPath = DEFAULT_WINDOWS_LOCATION;
+                defaultPath = WindowsUtils.getProgramFilesPath() + "\\Mozilla Firefox\\firefox.exe";
             } else {
                 defaultPath = DEFAULT_NONWINDOWS_LOCATION;
             }

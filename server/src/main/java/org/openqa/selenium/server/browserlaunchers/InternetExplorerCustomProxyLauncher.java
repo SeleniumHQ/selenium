@@ -24,7 +24,6 @@ import org.openqa.selenium.server.*;
 
 public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
-    private static final String DEFAULT_LOCATION = "c:\\program files\\internet explorer\\iexplore.exe";
     private static final String REG_KEY_SELENIUM_FOLDER = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\";
     private static final String REG_KEY_BACKUP_READY = REG_KEY_SELENIUM_FOLDER + "BackupReady";
     private static final String REG_KEY_BACKUP_AUTOCONFIG_URL = REG_KEY_SELENIUM_FOLDER + "AutoConfigURL";
@@ -62,7 +61,10 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
     }
     
     private static String findBrowserLaunchLocation() {
-        String defaultPath = System.getProperty("internetExplorerDefaultPath", DEFAULT_LOCATION);
+        String defaultPath = System.getProperty("internetExplorerDefaultPath");
+        if (defaultPath == null) {
+            defaultPath = WindowsUtils.getProgramFilesPath() + "\\Internet Explorer\\iexplore.exe";
+        }
         File defaultLocation = new File(defaultPath);
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
