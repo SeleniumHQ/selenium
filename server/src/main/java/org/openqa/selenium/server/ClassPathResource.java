@@ -112,7 +112,7 @@ public class ClassPathResource extends Resource {
         return new String[0];
     }
 
-    public Resource addPath(String path) throws IOException, MalformedURLException {
-        return new ClassPathResource(this.path + "/" + path);
+    public Resource addPath(String pathParm) throws IOException, MalformedURLException {
+        return new ClassPathResource(this.path + "/" + pathParm);
     }
 }
