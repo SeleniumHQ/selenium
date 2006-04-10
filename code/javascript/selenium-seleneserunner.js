@@ -55,6 +55,9 @@ function runTest() {
     document.getElementById("commandList").appendChild(cmd3);
     document.getElementById("commandList").appendChild(cmd2);
     document.getElementById("commandList").appendChild(cmd1);
+    
+    var doContinue = getQueryVariable("continue");
+	if (doContinue != null) postResult = "OK";
 
     testLoop.start();
 }
@@ -68,6 +71,12 @@ function getQueryVariable(variable) {
             return pair[1];
         }
     }
+}
+
+function buildBaseUrl() {
+	var lastSlash = window.location.href.lastIndexOf('/');
+	var baseUrl = window.location.href.substring(0, lastSlash+1);
+	return baseUrl;
 }
 
 function buildDriverParams() {
@@ -95,12 +104,14 @@ function preventBrowserCaching() {
 function nextCommand() {
     xmlHttp = XmlHttp.create();
     try {
-    	var url;
+    	
+    	var url = buildBaseUrl();
         if (postResult == "START") {
-        	url = "driver?seleniumStart=true" + buildDriverParams() + preventBrowserCaching();
+        	url = url + "driver/?seleniumStart=true" + buildDriverParams() + preventBrowserCaching();
         } else {
-        	url = "driver?commandResult=" + postResult + buildDriverParams() + preventBrowserCaching();
+        	url = url + "driver/?commandResult=" + postResult + buildDriverParams() + preventBrowserCaching();
         }
+        LOG.debug("XMLHTTPRequesting " + url);
         xmlHttp.open("GET", url, true);
         xmlHttp.onreadystatechange=handleHttpResponse;
         xmlHttp.send(null);
@@ -124,7 +135,10 @@ function nextCommand() {
  		} else {
  			var s = 'xmlHttp returned: ' + xmlHttp.status + ": " + xmlHttp.statusText;
  			LOG.error(s);
+ 			testLoop.currentCommand = null;
+ 			setTimeout("testLoop.beginNextTest();", 2000);
  		}
+ 		
  	}
  }
 
@@ -175,6 +189,9 @@ function commandStarted(command) {
 
 function commandComplete(result) {
     if (result.failed) {
+    	if (postResult == "CONTINUATION") {
+    		testLoop.aborted = true;
+    	}
         postResult = result.failureMessage;
         commandNode.title = result.failureMessage;
         commandNode.style.backgroundColor = failColor;
