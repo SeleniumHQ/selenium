@@ -156,7 +156,7 @@ PatternMatcher = function(pattern) {
     this.selectStrategy(pattern);
 };
 PatternMatcher.prototype = {
-    
+
     selectStrategy: function(pattern) {
         this.pattern = pattern;
         var strategyName = 'glob'; // by default
@@ -168,9 +168,10 @@ PatternMatcher.prototype = {
         if (!matchStrategy) {
             throw new SeleniumError("cannot find PatternMatcher.strategies." + strategyName);
         }
+        this.strategy = matchStrategy;
         this.matcher = new matchStrategy(pattern);
     },
-    
+
     matches: function(actual) {
         return this.matcher.matches(actual + '');
         // Note: appending an empty string avoids a Konqueror bug

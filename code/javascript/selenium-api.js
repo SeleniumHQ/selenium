@@ -664,7 +664,7 @@ Selenium.prototype.assertTextPresent = function(pattern) {
         Assert.fail("Page text not found");
     } else {
     	var patternMatcher = new PatternMatcher(pattern);
-    	if (patternMatcher.matcher.constructor == PatternMatcher.strategies.glob) {
+        if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
     		patternMatcher.matcher = new PatternMatcher.strategies.glob("*" + pattern + "*");
     	}
     	if(!patternMatcher.matches(allText)) {
