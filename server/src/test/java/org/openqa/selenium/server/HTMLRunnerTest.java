@@ -72,7 +72,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         if (server != null) server.stop();
     }
 
-    public void processResults(HTMLTestResults results) {
-        this.results = results;
+    public void processResults(HTMLTestResults r) {
+        this.results = r;
     }
 }

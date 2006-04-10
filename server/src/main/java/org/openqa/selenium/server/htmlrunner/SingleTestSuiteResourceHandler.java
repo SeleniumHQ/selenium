@@ -5,7 +5,6 @@
 package org.openqa.selenium.server.htmlrunner;
 
 import java.io.*;
-import java.net.*;
 import java.text.*;
 
 import org.mortbay.http.*;

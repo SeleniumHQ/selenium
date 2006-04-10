@@ -7,9 +7,6 @@ package org.openqa.selenium.server.htmlrunner;
 import java.io.*;
 import java.util.*;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-
 import org.mortbay.http.*;
 import org.mortbay.util.*;
 
@@ -95,8 +92,8 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
         return context;
     }
 
-    public void initialize(HttpContext context) {
-        this.context = context;
+    public void initialize(HttpContext c) {
+        this.context = c;
         
     }
 

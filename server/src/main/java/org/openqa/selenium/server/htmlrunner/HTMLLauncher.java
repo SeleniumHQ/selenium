@@ -60,8 +60,8 @@ public class HTMLLauncher implements HTMLResultsListener {
     }
     
     /** Accepts HTMLTestResults for later asynchronous handling */
-    public void processResults(HTMLTestResults results) {
-        this.results = results;
+    public void processResults(HTMLTestResults resultsParm) {
+        this.results = resultsParm;
     }
 
     
