@@ -18,12 +18,34 @@ Copyright 2004 ThoughtWorks, Inc
 <meta content="text/html; charset=ISO-8859-1"
 http-equiv="content-type">
 <title>Test Suite</title>
+<script language="JavaScript" type="text/javascript">
+    var browserName=navigator.appName;
+    var isOpera = (window.opera != null);
+    var isIE = !isOpera && (browserName =="Microsoft Internet Explorer");
+    var isKonqueror = (browserName == "Konqueror");
+    var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
+    var isFirefox = (navigator.userAgent.indexOf('Firefox') != -1);
+    var isNetscape = !isOpera && !isFirefox && (navigator.appName == "Netscape");
 
+    function filterTestsForBrowser() {
+        var suiteTable = document.getElementById("suiteTable");
+//         Remove the last row
+        for(rowNum = 1; rowNum < suiteTable.rows.length; rowNum++)
+        {
+            var row = suiteTable.rows[rowNum];
+            var filterString = row.getAttribute("if");
+            if (filterString && !eval(filterString))
+            {
+                suiteTable.deleteRow(rowNum);
+            }
+        }
+    }
+</script>
 </head>
 
-<body>
+<body onload="filterTestsForBrowser()">
 
-<table     cellpadding="1"
+<table id="suiteTable"    cellpadding="1"
            cellspacing="1"
            border="1">
         <tbody>
@@ -48,7 +70,7 @@ http-equiv="content-type">
             <tr><td><a href="./TestLocators.html">TestLocators</a></td></tr>
             <tr><td><a href="./TestImplicitLocators.html">TestImplicitLocators</a></td></tr>
             <tr><td><a href="./TestXPathLocators.html">TestXPathLocators</a></td></tr>
-            <tr><td><a href="./TestGoBack.html">TestGoBack</a></td></tr>
+            <tr if="!(isKonqueror || isSafari)"><td><a href="./TestGoBack.html">TestGoBack</a></td></tr>
 
             <tr><td><a href="./TestComments.html">TestComments</a></td></tr>
             <tr><td><a href="./events/TestLinkEvents.html">TestLinkEvents</a></td></tr>
@@ -62,7 +84,7 @@ http-equiv="content-type">
             <tr><td><a href="./TestVerifyAlerts.html">TestVerifyAlerts</a></td></tr>
             <tr><td><a href="./TestConfirmations.html">TestVerifyConfirmations</a></td></tr>
             <tr><td><a href="./TestPrompting.html">TestVerifyPrompt</a></td></tr>
-            <tr><td><a href="./TestVisibility.html">TestVisibility</a></td></tr>
+            <tr if="!(isKonqueror || isSafari)"><td><a href="./TestVisibility.html">TestVisibility</a></td></tr>
             <tr><td><a href="./TestVerifyEditable.html">TestVerifyEditable</a></td></tr>
 
             <tr><td><a href="./TestFailingVerifications.html">TestFailingVerifications</a></td></tr>
@@ -70,8 +92,11 @@ http-equiv="content-type">
             <tr><td><a href="./TestCommandError.html">TestCommandError</a></td></tr>
             <tr><td><a href="./TestVerifyAlertsFailures.html">TestVerifyAlertsFailures</a></td></tr>
             <tr><td><a href="./TestVerifyConfirmationFailures.html">TestVerifyConfirmationFailures</a></td></tr>
-            <tr><td><a href="./TestVisibilityFailures.html">TestVisibilityFailures</a></td></tr>
+            <tr if="!(isKonqueror || isSafari)"><td><a href="./TestVisibilityFailures.html">TestVisibilityFailures</a></td></tr>
             <tr><td><a href="./TestVerifyEditableFailures.html">TestVerifyEditableFailures</a></td></tr>
+
+            <!-- These tests only work in Internet Explorer -->
+            <tr if="isIE"><td><a href="./TestModalDialog.html">TestModalDialog</a></td></tr>
         </tbody>
     </table>
 
