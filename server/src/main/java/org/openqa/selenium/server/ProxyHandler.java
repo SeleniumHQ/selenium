@@ -18,7 +18,6 @@ package org.openqa.selenium.server;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.http.*;
-import org.mortbay.http.HttpResponse.*;
 import org.mortbay.http.handler.AbstractHttpHandler;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
@@ -502,7 +501,7 @@ public class ProxyHandler extends AbstractHttpHandler {
      * Customize proxy Socket connection for CONNECT. Method to allow derived handlers to customize
      * the tunnel sockets.
      */
-    protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request, Socket socket) throws IOException {
+    protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request, Socket socket) {
     }
 
     /* ------------------------------------------------------------ */
@@ -510,7 +509,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     /**
      * Customize proxy URL connection. Method to allow derived handlers to customize the connection.
      */
-    protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request, URLConnection connection) throws IOException {
+    protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request, URLConnection connection) {
     }
 
     /* ------------------------------------------------------------ */

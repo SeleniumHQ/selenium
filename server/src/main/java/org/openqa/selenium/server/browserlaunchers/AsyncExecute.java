@@ -18,8 +18,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
-import java.util.*;
-
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.taskdefs.condition.*;
@@ -127,8 +125,8 @@ public class AsyncExecute extends Execute {
         public void run() {
             try {
                 p.waitFor();
-            } catch (InterruptedException t) {
-                this.t = t;
+            } catch (InterruptedException e) {
+                this.t = e;
             }
         }
     }
