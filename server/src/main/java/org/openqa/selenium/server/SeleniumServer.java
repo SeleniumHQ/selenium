@@ -20,8 +20,8 @@ package org.openqa.selenium.server;
 import org.mortbay.http.*;
 import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.*;
 import org.mortbay.util.*;
+import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.htmlrunner.*;
 
 import java.io.*;
