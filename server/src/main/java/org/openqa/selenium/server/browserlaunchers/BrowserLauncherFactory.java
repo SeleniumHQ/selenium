@@ -24,6 +24,7 @@ public class BrowserLauncherFactory {
 
     private static final Pattern FIREFOX_PATTERN = Pattern.compile("^\\*firefox( .*)?$");
     private static final Pattern IEXPLORE_PATTERN = Pattern.compile("^\\*iexplore( .*)?$");
+    private static final Pattern SAFARI_PATTERN = Pattern.compile("^\\*safari( .*)?$");
     SeleniumServer server;
     
     public BrowserLauncherFactory(SeleniumServer server) {
@@ -35,6 +36,7 @@ public class BrowserLauncherFactory {
         BrowserLauncher launcher;
         Matcher FirefoxMatcher = FIREFOX_PATTERN.matcher(browser);
         Matcher IExploreMatcher = IEXPLORE_PATTERN.matcher(browser);
+        Matcher SafariMatcher = SAFARI_PATTERN.matcher(browser);
         if (FirefoxMatcher.find()) {
             if (browser.equals("*firefox")) {
                 launcher = new FirefoxCustomProfileLauncher(server.getPort(), sessionId);
@@ -48,6 +50,13 @@ public class BrowserLauncherFactory {
             } else {
                 String browserStartCommand = IExploreMatcher.group(1).substring(1);
                 launcher = new InternetExplorerCustomProxyLauncher(server.getPort(), sessionId, browserStartCommand);
+            }
+        } else if (SafariMatcher.find()) {
+            if (browser.equals("*safari")) {
+                launcher = new SafariCustomProfileLauncher(server.getPort(), sessionId);
+            } else {
+                String browserStartCommand = SafariMatcher.group(1).substring(1);
+                launcher = new SafariCustomProfileLauncher(server.getPort(), sessionId, browserStartCommand);
             }
         } else {
             launcher = new DestroyableRuntimeExecutingBrowserLauncher(browser);

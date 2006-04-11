@@ -16,14 +16,15 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.taskdefs.condition.*;
-import org.openqa.selenium.server.*;
+import org.apache.tools.ant.taskdefs.condition.Os;
+import org.openqa.selenium.server.SeleniumServer;
 
 public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
@@ -164,24 +165,17 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     
 
     private String makeCustomProfile() throws IOException {
-        createCustomProfileDir();
+        customProfileDir = createCustomProfileDir(sessionId);
         
         if (simple) return customProfileDir.getAbsolutePath();
         
-        File proxyPAC = new File(customProfileDir, "proxy.pac");
-        PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
-        out.println("function FindProxyForURL(url, host) {");
-        out.println("   if(shExpMatch(url, '*/selenium-server/*')) {");
-        out.println("       return 'PROXY localhost:" + Integer.toString(port) + "; DIRECT'");
-        out.println("   }");
-        out.println("}");
-        out.close();
+        File proxyPAC = makeProxyPAC(customProfileDir, port);
         
         File extensionDir = new File(customProfileDir, "extensions/{538F0036-F358-4f84-A764-89FB437166B4}");
         extensionDir.mkdirs();
         
         File killHTML = new File(customProfileDir, "kill.html");
-        out = new PrintStream(new FileOutputStream(killHTML));
+        PrintStream out = new PrintStream(new FileOutputStream(killHTML));
         out.println("<html><body>Firefox should die immediately upon viewing this!  If you're reading this, there must be a bug!");
         out.println("<script src=\"chrome://global/content/globalOverlay.js\"></script>");
         out.println("");
@@ -257,16 +251,6 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         return customProfileDir.getAbsolutePath();
     }
 
-    private void createCustomProfileDir() {
-        File tmpDir = new File("/tmp");
-        String customProfileDirParent = ((tmpDir.exists() && tmpDir.isDirectory()) ? tmpDir.getAbsolutePath() : ".");
-        customProfileDir = new File(customProfileDirParent + "/customProfileDir" + sessionId);
-        if (customProfileDir.exists()) {
-            recursivelyDeleteDir(customProfileDir);
-        }
-        customProfileDir.mkdir();
-    }
-
     public void close() {
         if (closed) return;
         System.out.println("Killing Firefox...");
@@ -308,26 +292,6 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
             throw e;
         }
         closed = true;
-    }
-    
-    private void deleteTryTryAgain(File dir, int tries) {
-        try {
-            recursivelyDeleteDir(dir);
-        } catch (BuildException e) {
-            if (tries > 0) {
-                AsyncExecute.sleepTight(2000);
-                deleteTryTryAgain(dir, tries-1);
-            } else {
-                throw e;
-            }
-        }
-    }
-    private void recursivelyDeleteDir(File f) {
-        Delete delete = new Delete();
-        delete.setProject(new Project());
-        delete.setDir(customProfileDir);
-        delete.setFailOnError(true);
-        delete.execute();
     }
     
     /** Firefox knows it's running by using a "parent.lock" file in

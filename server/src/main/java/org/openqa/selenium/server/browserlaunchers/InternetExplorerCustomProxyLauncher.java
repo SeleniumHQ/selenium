@@ -16,11 +16,12 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
-import org.openqa.selenium.server.*;
+import org.openqa.selenium.server.SeleniumServer;
 
 public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
 
@@ -185,14 +186,6 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
             }
             throw e;
         }
-    }
-    
-    private void recursivelyDeleteDir(File f) {
-        Delete delete = new Delete();
-        delete.setProject(new Project());
-        delete.setDir(customProxyPACDir);
-        delete.setFailOnError(true);
-        delete.execute();
     }
     
     public static void main(String[] args) {
