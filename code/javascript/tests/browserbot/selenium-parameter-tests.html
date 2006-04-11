@@ -49,15 +49,15 @@ function testHandleSimpleStrings() {
 }
 
 function testSimpleVariableSubstitution() {
-    selenium.doStore('value', 'var');
-    selenium.doStore('another value', 'var2');
+    storedVars['var'] = 'value';
+    storedVars['var2'] = 'another value';
     assertEquals('_value_', selenium.preprocessParameter('_${var}_'));
     assertEquals('_value value_', selenium.preprocessParameter('_${var} ${var}_'));
     assertEquals('_value another value_', selenium.preprocessParameter('_${var} ${var2}_'));
 }
 
 function testUnkownVariableNotSubstituted() {
-    selenium.doStore('value', 'var');
+    storedVars['var'] = 'value';
     assertEquals('_${bar}_',
                  selenium.preprocessParameter('_${bar}_'));
     assertEquals('_${bar} value_',
@@ -76,7 +76,7 @@ function testVariableSubstitutionDoesntApplyForJavascriptParameters() {
 }
 
 function testCanAccessStoredVariablesFromJavascriptParameters() {
-    selenium.doStore('value', 'var');
+    storedVars['var'] = 'value';
     assertEquals(' value ', selenium.preprocessParameter('javascript{" " + storedVars["var"] + " "}'));
 }
 
