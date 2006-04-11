@@ -29,7 +29,8 @@ http-equiv="content-type">
 
     function filterTestsForBrowser() {
         var suiteTable = document.getElementById("suiteTable");
-//         Remove the last row
+        var skippedTests = document.getElementById("skippedTests");
+
         for(rowNum = 1; rowNum < suiteTable.rows.length; rowNum++)
         {
             var row = suiteTable.rows[rowNum];
@@ -37,6 +38,9 @@ http-equiv="content-type">
             if (filterString && !eval(filterString))
             {
                 suiteTable.deleteRow(rowNum);
+
+                var newRow = skippedTests.insertRow(skippedTests.rows.length);
+                newRow.innerHTML = row.innerHTML;
             }
         }
     }
@@ -97,6 +101,15 @@ http-equiv="content-type">
 
             <!-- These tests only work in Internet Explorer -->
             <tr if="isIE"><td><a href="./TestModalDialog.html">TestModalDialog</a></td></tr>
+        </tbody>
+    </table>
+
+    <em>Not supported in this browser</em>
+    <table id="skippedTests" cellpadding="1"
+           cellspacing="1"
+           border="1">
+        <tbody>
+            <tr><td><b>Skipped Tests</b></td></tr>
         </tbody>
     </table>
 

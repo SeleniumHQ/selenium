@@ -147,13 +147,18 @@ function getIframeDocument(iframe)
 
 function onloadTestSuite() {
     removeLoadListener(getSuiteFrame(), onloadTestSuite);
-    suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
 
-    // Add an onclick function to each link in the suite table
-    for(rowNum = 1;rowNum < suiteTable.rows.length; rowNum++) {
-        addOnclick(suiteTable, rowNum);
+    // Add an onclick function to each link in all suite tables
+    var allTables = getIframeDocument(getSuiteFrame()).getElementsByTagName("table");
+    for (var tableNum = 0; tableNum < allTables.length; tableNum++)
+    {
+        var skippedTable = allTables[tableNum];
+        for(rowNum = 1;rowNum < skippedTable.rows.length; rowNum++) {
+            addOnclick(skippedTable, rowNum);
+        }
     }
 
+    suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
 
     if (isAutomatedRun()) {
         startTestSuite();
@@ -265,7 +270,7 @@ function startTest() {
     }
 
     currentTest = new HtmlTest(getIframeDocument(getTestFrame()));
-    
+
     testFailed = false;
     storedVars = new Object();
 
@@ -279,8 +284,8 @@ function HtmlTest(testDocument) {
 
 HtmlTest.prototype = {
 
-    init: function(testDocument) {      
-        this.document = testDocument;  
+    init: function(testDocument) {
+        this.document = testDocument;
         this.document.bgColor = "";
         this.currentRow = null;
         this.commandRows = new Array();
@@ -298,15 +303,15 @@ HtmlTest.prototype = {
             }
         }
     },
-    
-    addCommandRow: function(row) {            
+
+    addCommandRow: function(row) {
         if (row.cells[2] && row.cells[2].originalHTML) {
             row.cells[2].innerHTML = row.cells[2].originalHTML;
-        } 
+        }
         row.bgColor = "";
         this.commandRows.push(row);
     },
-    
+
     nextCommand: function() {
         if (this.commandRows.length > 0) {
             this.currentRow = this.commandRows.shift();
@@ -341,7 +346,7 @@ function runNextTest() {
         } else {
             setCellColor(suiteTable.rows, currentRowInSuite, 0, passColor);
         }
-    
+
         // Set the results from the previous test run
         setResultsData(suiteTable, currentRowInSuite);
     }
