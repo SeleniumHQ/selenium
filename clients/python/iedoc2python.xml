@@ -326,6 +326,7 @@ FUNCTION
 	
 	<!-- PyDoc -->
 	<xsl:apply-templates select="comment" />
+	<xsl:text>&nl;&tab;&tab;</xsl:text>
 	<xsl:apply-templates select="param" mode="comment" />
 	<xsl:text>&nl;&tab;&tab;"""&nl;&tab;&tab;</xsl:text>
 	

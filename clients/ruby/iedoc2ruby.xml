@@ -297,6 +297,7 @@ FUNCTION
 <xsl:template match="function">
 	<!-- Doc -->
 	<xsl:apply-templates select="comment" />
+	<xsl:text>&#xa;&#x9;&#x9;#</xsl:text>
 	<xsl:apply-templates select="param" mode="comment" />
 	<xsl:text>&nl;&tab;&tab;def </xsl:text>
 	<xsl:call-template name="underscorify">
