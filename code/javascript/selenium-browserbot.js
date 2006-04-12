@@ -700,13 +700,59 @@ PageBot.prototype.findAttribute = function(locator) {
 /*
 * Select the specified option and trigger the relevant events of the element.
 */
-PageBot.prototype.selectOption = function(element, option) {
+PageBot.prototype.selectOption = function(element, optionToSelect) {
+    triggerEvent(element, 'focus', false);
+    var changed = false;
+    for (var i = 0; i < element.options.length; i++) {
+        var option = element.options[i];
+        if (option.selected && option != optionToSelect) {
+            option.selected = false;
+            changed = true;
+        }
+        else if (!option.selected && option == optionToSelect) {
+            option.selected = true;
+            changed = true;
+        }
+    }
+
+    if (changed) {
+        triggerEvent(element, 'change', true);
+    }
+    triggerEvent(element, 'blur', false);
+};
+
+/*
+* Select the specified option and trigger the relevant events of the element.
+*/
+PageBot.prototype.addSelection = function(element, option) {
+    this.checkMultiselect(element);
     triggerEvent(element, 'focus', false);
     if (!option.selected) {
         option.selected = true;
         triggerEvent(element, 'change', true);
     }
     triggerEvent(element, 'blur', false);
+};
+
+/*
+* Select the specified option and trigger the relevant events of the element.
+*/
+PageBot.prototype.removeSelection = function(element, option) {
+    this.checkMultiselect(element);
+    triggerEvent(element, 'focus', false);
+    if (option.selected) {
+        option.selected = false;
+        triggerEvent(element, 'change', true);
+    }
+    triggerEvent(element, 'blur', false);
+};
+
+PageBot.prototype.checkMultiselect = function(element) {
+    if (!element.multiple)
+    {
+        throw new SeleniumError("Not a multi-select");
+    }
+
 };
 
 PageBot.prototype.replaceText = function(element, stringValue) {

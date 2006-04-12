@@ -310,6 +310,43 @@ Selenium.prototype.doSelect = function(locator, optionLocator) {
     this.page().selectOption(element, option);
 };
 
+Selenium.prototype.doAddSelection = function(locator, optionLocator) {
+    /**
+   * Add a selection to the set of selected options in a multi-select element using an option locator.
+   *
+   * @see #doSelect for details of option locators
+   *
+   * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
+   * @param optionLocator an option locator (a label by default)
+   */
+    var element = this.page().findElement(locator);
+    if (!("options" in element)) {
+        throw new SeleniumError("Specified element is not a Select (has no options)");
+    }
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    var option = locator.findOption(element);
+    this.page().addSelection(element, option);
+};
+
+Selenium.prototype.doRemoveSelection = function(locator, optionLocator) {
+    /**
+   * Remove a selection from the set of selected options in a multi-select element using an option locator.
+   *
+   * @see #doSelect for details of option locators
+   *
+   * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
+   * @param optionLocator an option locator (a label by default)
+   */
+
+    var element = this.page().findElement(locator);
+    if (!("options" in element)) {
+        throw new SeleniumError("Specified element is not a Select (has no options)");
+    }
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    var option = locator.findOption(element);
+    this.page().removeSelection(element, option);
+};
+
 Selenium.prototype.doSubmit = function(formLocator) {
 	/**
    * Submit the specified form. This is particularly useful for forms without
@@ -621,9 +658,33 @@ Selenium.prototype.assertSelected = function(locator, optionLocator) {
    */
     var element = this.page().findElement(locator);
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    if (element.selectedIndex == -1)
+    {
+        Assert.fail("No option selected");
+    }
     locator.assertSelected(element);
 };
 
+Selenium.prototype.getSelectedOptions = function(locator) {
+    /** Gets all option labels for selected options in the specified select or multi-select element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @return string[] an array of all option labels in the specified select drop-down
+   */
+   var element = this.page().findElement(locator);
+
+	var selectedOptions = [];
+
+    for (var i = 0; i < element.options.length; i++) {
+        if (element.options[i].selected)
+        {
+            var option = element.options[i].text.replace(/,/g, "\\,");
+            selectedOptions.push(option);
+        }
+    }
+    return selectedOptions.join(",");
+
+}
 
 Selenium.prototype.getSelectOptions = function(locator) {
 	/** Gets all option labels in the specified select drop-down.
@@ -633,14 +694,14 @@ Selenium.prototype.getSelectOptions = function(locator) {
    */
     var element = this.page().findElement(locator);
 
-	var selectOptions = "";
+    var selectOptions = [];
 
     for (var i = 0; i < element.options.length; i++) {
     	var option = element.options[i].text.replace(/,/g, "\\,");
-    	selectOptions += option;
-    	if (i != element.options.length-1) selectOptions += ",";
+        selectOptions.push(option);
     }
-    return selectOptions;
+    
+    return selectOptions.join(",");
 };
 
 
