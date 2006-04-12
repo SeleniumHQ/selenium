@@ -142,6 +142,18 @@ Selenium.prototype.doClick = function(locator) {
     this.page().clickElement(element);
 };
 
+Selenium.prototype.doFireEvent = function(locator, eventName) {
+	/**
+   * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
+   * handler.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param eventName the event name, e.g. "focus" or "blur"
+   */
+    var element = this.page().findElement(locator);
+    triggerEvent(element, eventName, false);
+};
+
 Selenium.prototype.doKeyPress = function(locator, keycode) {
 	/**
    * Simulates a user pressing and releasing a key.
@@ -151,8 +163,9 @@ Selenium.prototype.doKeyPress = function(locator, keycode) {
    *            ASCII value of that key.
    */
     var element = this.page().findElement(locator);
-    this.page().keypressElement(element, keycode);
+    triggerKeyEvent(element, 'keypress', keycode, true);
 };
+
 Selenium.prototype.doKeyDown = function(locator, keycode) {
 	/**
    * Simulates a user pressing a key (without releasing it yet).
@@ -162,8 +175,9 @@ Selenium.prototype.doKeyDown = function(locator, keycode) {
    *            ASCII value of that key.
    */
     var element = this.page().findElement(locator);
-    this.page().keydownElement(element, keycode);
+    triggerKeyEvent(element, 'keydown', keycode, true);
 };
+
 Selenium.prototype.doKeyUp = function(locator, keycode) {
 	/**
    * Simulates a user releasing a key.
@@ -173,8 +187,9 @@ Selenium.prototype.doKeyUp = function(locator, keycode) {
    *            ASCII value of that key.
    */
     var element = this.page().findElement(locator);
-    this.page().keyupElement(element, keycode);
+    triggerKeyEvent(element, 'keyup', keycode, true);
 };
+
 Selenium.prototype.doMouseOver = function(locator) {
 	/**
    * Simulates a user hovering a mouse over the specified element.
@@ -182,8 +197,9 @@ Selenium.prototype.doMouseOver = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    */
     var element = this.page().findElement(locator);
-    this.page().mouseoverElement(element);
+    triggerMouseEvent(element, 'mouseover', true);
 };
+
 Selenium.prototype.doMouseDown = function(locator) {
 	/**
    * Simulates a user pressing the mouse button (without releasing it yet) on
@@ -192,7 +208,7 @@ Selenium.prototype.doMouseDown = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    */
     var element = this.page().findElement(locator);
-    this.page().mousedownElement(element);
+    triggerMouseEvent(element, 'mousedown', true);
 };
 
 Selenium.prototype.doType = function(locator, value) {
@@ -372,18 +388,6 @@ Selenium.prototype.doClose = function() {
    * window or tab.
    */
     this.page().close();
-};
-
-Selenium.prototype.doFireEvent = function(locator, eventName) {
-	/**
-   * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
-   * handler.
-   * 
-   * @param locator an <a href="#locators">element locator</a>
-   * @param eventName the event name, e.g. "focus" or "blur"
-   */
-    var element = this.page().findElement(locator);
-    triggerEvent(element, eventName, false);
 };
 
 Selenium.prototype.getAlert = function() {

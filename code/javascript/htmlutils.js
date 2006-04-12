@@ -82,7 +82,6 @@ function triggerEvent(element, eventType, canBubble) {
     }
 }
 
-/* FJH Fire a key event in a browser-compatible manner */
 function triggerKeyEvent(element, eventType, keycode, canBubble) {
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
@@ -96,7 +95,6 @@ function triggerKeyEvent(element, eventType, keycode, canBubble) {
         element.dispatchEvent(evt);
     }
 }
-/* END FJH */
 
 /* Fire a mouse event in a browser-compatible manner */
 function triggerMouseEvent(element, eventType, canBubble) {
@@ -106,7 +104,16 @@ function triggerMouseEvent(element, eventType, canBubble) {
     }
     else {
         var evt = document.createEvent('MouseEvents');
-        evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+        if (evt.initMouseEvent)
+        {
+            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null)
+        }
+        else
+        {
+            // Safari
+            // TODO we should be initialising other mouse-event related attributes here
+            evt.initEvent(eventType, canBubble, true);
+        }
         element.dispatchEvent(evt);
     }
 }

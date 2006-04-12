@@ -26,9 +26,14 @@ function recordEvent(e) {
     // Handle IE
 	if (!e) var e = window.event;
 	var targetString = this.id;
-	var eventMessage = '{' + e.type + '(' + targetString + ')} ';
-    log(eventMessage);
-    return true;
+	var eventMessage = '{' + e.type + '(' + targetString;
+	if (e.keyCode)
+	{
+	  eventMessage += ' - ' + e.keyCode;
+	}
+	eventMessage += ')} ';
+  log(eventMessage);
+  return true;
 }
 
 /** Attach recording event handlers to the element */
@@ -39,6 +44,11 @@ function attachEventRecorders(elementId) {
     element.onclick=recordEvent;
     element.onselect=recordEvent;
     element.onblur=recordEvent;
+    element.onmouseover=recordEvent;
+    element.onmousedown=recordEvent;
+    element.onkeydown=recordEvent;
+    element.onkeypress=recordEvent;
+    element.onkeyup=recordEvent;
 }
 
 function setupEventRecorders() {
