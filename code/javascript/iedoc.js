@@ -42,6 +42,8 @@ function handleTags(name, args, comment) {
 	}
 	var tagStart = comment.search(/@(param|return)/);
 	if (tagStart == -1) {
+		comment = comment.replace(/^[\s\r\n]*/, "");
+		comment = comment.replace(/[\s\r\n]*$/, "");
 		WScript.Echo("<comment>" + comment + "</comment>");
 		return;
 	}
@@ -81,6 +83,8 @@ function handleTags(name, args, comment) {
 		if ("" == argMap[args[i]]) throw new Error("Comment error: param " + args[i] + " has no description");
 		WScript.Echo("<param name=\"" + args[i] + "\">" + argMap[args[i]] + "</param>");
 	}
+	comment = comment.replace(/^[\s\r\n]*/, "");
+	comment = comment.replace(/[\s\r\n]*$/, "");
 	WScript.Echo("<comment>" + comment + "</comment>");
 }
 
