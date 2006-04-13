@@ -1,28 +1,41 @@
 <project name="selenium" default="generate-sources">
+	<target name="init">
+		<property environment="env" />
+		<property name="env.PERL5LIB" value="" />
+		<property name="perl.executable" value="perl" />
+		<presetdef name="perl">
+			<exec executable="${perl.executable}" failonerror="true">
+				<env key="PERL5LIB" value="${env.PERL5LIB}" />
+			</exec>
+		</presetdef>
+		<!-- <perl>
+			<arg value="-e" />
+			<arg value="print qq(@INC);" />
+		</perl>-->
+	</target>
 	<target name="generate-sources">
     	<ant dir=".." target="extract-xml"/>
     	<mkdir dir="WWW" />
     	<xslt in="../iedoc.xml" out="WWW/Selenium.pm" style="iedoc2perl.xml"/>
     </target>
-    <target name="doc" depends="generate-sources">
-    	<property name="perl.executable" value="perl" />
+    <target name="doc" depends="init, generate-sources">
     	<mkdir dir="html"/>
     	<property name="outfile" location="html/selenium.html" />
-    	<exec executable="${perl.executable}" failonerror="true">
+    	<perl>
 			<arg value="mypod2html.pl"/>
 			<arg value="--infile=WWW/Selenium.pm" />
 			<arg value="--outfile=${outfile}" />
-		</exec>
+		</perl>
     </target>
     <target name="all" depends="generate-sources, test, doc"/>
-    <target name="test" depends="generate-sources">
+    <target name="test" depends="init, generate-sources">
     	<ant dir=".." target="start-server" />
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="perl.executable" value="perl" />
         <!--<fail message="autofail ${perl.executable}" />-->
-        <exec executable="${perl.executable}" resultproperty="result">
+        <perl failonerror="false" resultproperty="result">
             <arg line="test_google.pl"/>
-        </exec>
+        </perl>
         <ant dir=".." target="stop-server" />
         <condition property="build.failed">
         	<not><equals arg1="0" arg2="${result}" /></not>

@@ -7,7 +7,7 @@
 
 	<target name="all" depends="test, dist" />
 
-    <target name="clean" depends="clean-dotnet, clean-python, clean-ruby">
+    <target name="clean" depends="clean-dotnet, clean-python, clean-ruby, clean-perl">
         <delete dir="dist-image"/>
         <delete dir="dist"/>
         <delete>
@@ -15,7 +15,7 @@
         </delete>
     </target>
 
-    <target name="dist" depends="dist-java, dist-dotnet, dist-ruby, dist-python">
+    <target name="dist" depends="dist-java, dist-dotnet, dist-ruby, dist-python, dist-perl">
     	<property name="src.release" value="selenium-remote-control-${version}"/>
     	<zip zipfile="dist/${src.release}.zip">
     		<zipfileset dir="dist-image" prefix="${src.release}" />
@@ -38,6 +38,22 @@
         <property name="ruby.release" value="selenium-ruby-client-driver-${version}"/>
         <zip zipfile="dist/${ruby.release}.zip">
             <zipfileset dir="dist-image/ruby" prefix="${ruby.release}"/>
+        </zip>
+    </target>
+
+	<target name="dist-perl" depends="dist-dirs">
+        <copy todir="dist-image/perl">
+            <fileset dir="perl">
+                <include name="*.pl"/>
+                <exclude name="mypod2html.pl" />
+                <include name="WWW/**"/>
+                <include name="html/**" />
+            </fileset>
+        </copy>
+
+        <property name="perl.release" value="selenium-perl-client-driver-${version}"/>
+        <zip zipfile="dist/${perl.release}.zip">
+            <zipfileset dir="dist-image/perl" prefix="${perl.release}"/>
         </zip>
     </target>
 
@@ -81,7 +97,7 @@
 		</presetdef>
 	</target>
 
-    <target name="find-server" depends="custom-repo,default-repo">
+    <target name="find-server" depends="custom-repo,default-repo" unless="${selenium-server.jar}">
 		<mavendeps pathId="selenium-server.classpath">
 			<!-- DGF Server bundles all of its dependencies, 
 			which are marked with the scope "provided", so this should
@@ -132,7 +148,7 @@
     	<echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
     </target>
     
-    <target name="test" depends="test-dotnet, test-ruby, test-python"/>
+    <target name="test" depends="test-dotnet, test-ruby, test-python, test-perl"/>
     
     <target name="clean-python">
         <ant dir="python" target="clean"/>
@@ -141,6 +157,15 @@
     <target name="test-python">
     	<echo message="python executable = ${python.executable}" />
         <ant dir="python" target="all"/>
+    </target>
+    
+    <target name="clean-perl">
+        <ant dir="perl" target="clean"/>
+    </target>
+    
+    <target name="test-perl">
+    	<echo message="perl executable = ${perl.executable}" />
+        <ant dir="perl" target="all"/>
     </target>
     
     <target name="clean-dotnet">
