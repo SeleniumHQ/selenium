@@ -31,7 +31,7 @@ http-equiv="content-type">
         var suiteTable = document.getElementById("suiteTable");
         var skippedTests = document.getElementById("skippedTests");
 
-        for(rowNum = 1; rowNum < suiteTable.rows.length; rowNum++)
+        for(rowNum = suiteTable.rows.length - 1; rowNum >= 0; rowNum--)
         {
             var row = suiteTable.rows[rowNum];
             var filterString = row.getAttribute("if");
@@ -39,7 +39,7 @@ http-equiv="content-type">
             {
                 suiteTable.deleteRow(rowNum);
 
-                var newRow = skippedTests.insertRow(skippedTests.rows.length);
+                var newRow = skippedTests.insertRow(1);
                 newRow.innerHTML = row.innerHTML;
             }
         }
@@ -49,7 +49,7 @@ http-equiv="content-type">
 
 <body onload="filterTestsForBrowser()">
 
-<table id="suiteTable"    cellpadding="1"
+    <table id="suiteTable"    cellpadding="1"
            cellspacing="1"
            border="1">
         <tbody>
@@ -68,8 +68,8 @@ http-equiv="content-type">
             <tr><td><a href="./TestPause.html">TestPause</a></td></tr>
             <tr><td><a href="./TestWait.html">TestWait</a></td></tr>
             <tr><td><a href="./TestWaitInPopupWindow.html">TestWaitInPopupWindow</a></td></tr>
-            <tr><td><a href="./TestWaitFor.html">TestWaitFor</a></td></tr>
-            <tr><td><a href="./TestWaitForNot.html">TestWaitForNot</a></td></tr>
+            <tr if="!(isKonqueror)"><td><a href="./TestWaitFor.html">TestWaitFor</a></td></tr>
+            <tr if="!(isKonqueror)"><td><a href="./TestWaitForNot.html">TestWaitForNot</a></td></tr>
             <tr><td><a href="./TestVerifications.html">TestVerifications</a></td></tr>
             <tr><td><a href="./TestPatternMatching.html">TestPatternMatching</a></td></tr>
             <tr><td><a href="./TestLocators.html">TestLocators</a></td></tr>
@@ -86,7 +86,7 @@ http-equiv="content-type">
             <tr><td><a href="./events/TestTextEvents.html">TestTextEvents</a></td></tr>
             <tr><td><a href="./events/TestFireEvents.html">TestFireEvents</a></td></tr>
             <tr><td><a href="./events/TestMouseEvents.html">TestMouseEvents</a></td></tr>
-            <tr if="!(isSafari)"><td><a href="./events/TestKeyEvents.html">TestKeyEvents</a></td></tr>
+            <tr if="!(isKonqueror || isSafari)"><td><a href="./events/TestKeyEvents.html">TestKeyEvents</a></td></tr>
             <tr><td><a href="./TestFocusOnBlur.html">TestFocusOnBlur</a></td></tr>
             <tr if="!(isSafari)"><td><a href="./TestVerifyAlerts.html">TestVerifyAlerts</a></td></tr>
             <tr><td><a href="./TestConfirmations.html">TestVerifyConfirmations</a></td></tr>
