@@ -99,6 +99,8 @@ TOP
 
 
 package WWW::Selenium;
+use LWP::UserAgent;
+use HTTP::Request;
 use URI::Escape;
 
 use strict;
@@ -192,7 +194,6 @@ sub do_command {
     #print "---> Requesting $fullurl\n";
     my $result;
     # We use the full version of LWP to make sure we issue an HTTP 1.1 request (SRC-25)
-    use LWP::UserAgent;
     my $ua = LWP::UserAgent->new;
 
     my $req = HTTP::Request->new(GET => $fullurl);
