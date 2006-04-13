@@ -32,6 +32,8 @@ function extractInitialComment(name, func) {
 	}
 	var comment = commentMatcher[1];
 	comment = comment.replace(/\n\s*\* ?/g, "\n");
+	comment = comment.replace(/^[\s\r\n]*/, "");
+	comment = comment.replace(/[\s\r\n]*$/, "");
 	return comment;
 }
 
@@ -101,10 +103,9 @@ var count = 0;
 WScript.Echo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 WScript.Echo("<apidoc>");
 
-WScript.Echo("<top>");
 var foo = Selenium;
-WScript.Echo(extractInitialComment("Selenium", foo));
-WScript.Echo("</top>");
+WScript.Echo("<top>" + extractInitialComment("Selenium", foo) + "</top>");
+
 
 for (var i in Selenium.prototype) {
 	//if (count > 1) break;
