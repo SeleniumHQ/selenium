@@ -53,7 +53,8 @@ TOP
 require 'net/http'
 require 'uri'
 require 'cgi'
-</xsl:text>
+
+# </xsl:text>
 	<xsl:apply-templates>
 		<xsl:with-param name="replace-string">&#xa;# </xsl:with-param>
 	</xsl:apply-templates>
