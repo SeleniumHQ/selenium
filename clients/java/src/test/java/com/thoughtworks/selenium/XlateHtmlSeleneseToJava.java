@@ -53,7 +53,7 @@ public class XlateHtmlSeleneseToJava {
         if (generatedJavaClassNames.size()==1) {
             return; // this is a test run focusing on a single file, so a suite wouldn't be useful
         }
-        String beginning = "package com.thoughtworks.selenium.generated;\n" + 
+        String beginning = "package com.thoughtworks.selenium.corebased;\n" + 
         "\n" + 
         "import junit.framework.Test;\n" + 
         "import junit.framework.TestSuite;\n" +
@@ -131,7 +131,7 @@ public class XlateHtmlSeleneseToJava {
     private static String XlateString(String base, String htmlSeleneseFileName, String htmlSelenese) {
         declaredVariables.clear();
         
-        String preamble = "package com.thoughtworks.selenium.generated;\n" + 
+        String preamble = "package com.thoughtworks.selenium.corebased;\n" + 
         "import com.thoughtworks.selenium.*;\n" +
         "/**\n" + 
         " * @author XlateHtmlSeleneseToJava\n" +

@@ -23,7 +23,7 @@ import junit.framework.*;
 import org.openqa.selenium.server.*;
 
 /**
- * @author Nelson Sproul (nelsons@plumtree.com) Mar 13-06
+ * @author Nelson Sproul (nsproul@bea.com) Mar 13-06
  */
 public class SeleneseTestCase extends TestCase {
 
@@ -32,7 +32,15 @@ public class SeleneseTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://localhost:" + SeleniumServer.DEFAULT_PORT);
+        this.setUp(null);
+    }
+
+    protected void setUp(String url) throws Exception {
+        super.setUp();
+        if (url==null) {
+            url = "http://localhost:" + SeleniumServer.DEFAULT_PORT;
+        }
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", url);
         selenium.start();
     }
 
