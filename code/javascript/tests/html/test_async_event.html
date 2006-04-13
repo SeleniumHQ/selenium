@@ -30,7 +30,7 @@ Copyright 2004 ThoughtWorks, Inc
   <input type="button" name="theSpanButton" value="Delayed Text Change" onclick="javascript: changeSpanText();"/>
   <br>
   <br>
-  <input type="button" name="theAlertButton" value="Delayed Alert"onclick="javascript: delayedAlert();"/>
+  <input type="button" name="theAlertButton" value="Delayed Alert" onclick="javascript: delayedAlert();"/>
 </form>
 </body>
 
@@ -40,7 +40,7 @@ function changeFieldValue() {
   setTimeout("document.theForm.theField.value = 'newValue'", 500);
 }
 function changeSpanText() {
-  setTimeout("document.getElementById('theSpan').textContent = 'Some new text'", 500);
+  setTimeout("document.getElementById('theSpan').innerHTML = 'Some new text'", 500);
 }
 function delayedAlert() {
   setTimeout("alert('An alert')", 500);
