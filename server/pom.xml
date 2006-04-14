@@ -9,7 +9,6 @@
     <groupId>org.openqa.selenium.server</groupId>
     <artifactId>selenium-server</artifactId>
     <packaging>jar</packaging>
-    <version>0.7.1</version>
     <name>Selenium Server</name>
     <url>http://www.openqa.org/selenium</url>
     <build>
@@ -45,6 +44,23 @@
                     </execution>
                 </executions>
             </plugin>
+		    <plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>assemble</id>
+						<phase>package</phase>
+						<goals>
+							<goal>assembly</goal>
+			        	</goals>
+			    	</execution>
+				</executions>
+				<configuration>
+					<descriptors>
+			  			<descriptor>src/main/assembly/dep.xml</descriptor>
+			  		</descriptors>
+				</configuration>
+			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -91,7 +107,7 @@
     	<dependency>
     		<groupId>org.openqa.selenium.core</groupId>
 		    <artifactId>selenium-core</artifactId>
-		    <version>0.7.1</version>
+		    <version>${project.version}</version>
 		    <scope>provided</scope>
     	</dependency>
         <dependency>

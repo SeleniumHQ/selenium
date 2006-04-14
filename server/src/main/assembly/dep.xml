@@ -1,0 +1,15 @@
+<assembly>
+  <!-- TODO: a jarjar format would be better -->
+  <id>dep</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <unpack>true</unpack>
+      <scope>compile</scope>
+    </dependencySet>
+  </dependencySets>
+</assembly>
