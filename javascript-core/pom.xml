@@ -9,7 +9,6 @@
     <groupId>org.openqa.selenium.core</groupId>
     <artifactId>selenium-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.7.1</version>
     <name>Selenium JavaScript Core</name>
     <url>http://www.openqa.org/selenium</url>
     <build>
