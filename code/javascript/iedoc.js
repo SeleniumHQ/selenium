@@ -93,7 +93,7 @@ function handleTags(name, args, comment) {
 
 
 var objFSO = WScript.CreateObject("Scripting.FileSystemObject")
-var scriptFile = objFSO.GetFile("selenium-api.js");
+var scriptFile = objFSO.GetFile("core\\scripts\\selenium-api.js");
 var scriptFileStream = scriptFile.OpenAsTextStream(/*ForReading*/1);
 
 eval(scriptFileStream.ReadAll());
