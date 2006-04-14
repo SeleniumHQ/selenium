@@ -1,7 +1,7 @@
 var HIDDEN="hidden";
 var LEVEL = "level";
-var PLUS_SRC="dom-images/butplus.gif";
-var MIN_SRC="dom-images/butmin.gif";
+var PLUS_SRC="butplus.gif";
+var MIN_SRC="butmin.gif";
 var newRoot;
 var maxColumns=1;
 
