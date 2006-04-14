@@ -20,12 +20,12 @@ Copyright 2004 ThoughtWorks, Inc
   <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>PageBot Property Tests</title>
-    <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
-<script language="JavaScript" type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
-<script language="JavaScript" type="text/javascript" src="/jsmock/mock.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../jsmock/mock.js"></script>
 
-<script language="JavaScript" type="text/javascript" src="/selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
@@ -37,7 +37,7 @@ function testTitleProperty() {
 }
 
 function testLocationProperty() {
-    assertEquals("/tests/browserbot/pagebot-property-tests.html", pageBot.location.pathname);
+  assertEquals(window.location.pathname, pageBot.location.pathname);
 }
 
 function testBodyText() {

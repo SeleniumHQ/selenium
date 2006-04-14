@@ -2,10 +2,16 @@
 <head>
 <title>Selenium starting points</title>
 <script language="Javascript">
-function fixUnitTestLink() {
+function fixUnitTestLinks()
+{
   baseurl = document.location + "";
   baseurl = baseurl.replace(/[^\/]*$/, '');
-  jsunitLink = document.getElementById("unitTestLink");
+  fixUnitTestLink("seleniumUnitTests", baseurl);
+  fixUnitTestLink("jsmockUnitTests", baseurl);
+}
+function fixUnitTestLink(elementId, baseurl)
+{
+  jsunitLink = document.getElementById(elementId);
   jsunitLink['href'] = jsunitLink['href'].replace('BASEURL', baseurl);
 }
 </script>
@@ -13,7 +19,7 @@ function fixUnitTestLink() {
 li { margin-top: 6pt; }
 </style>
 </head>
-<body onload="fixUnitTestLink();">
+<body onload="fixUnitTestLinks();">
 
 <h1>Selenium</h1>
 
@@ -40,10 +46,12 @@ functionality of Selenium.
 <ul>
 
   <li>
-    <a id="unitTestLink" href="jsunit/testRunner.html?testPage=BASEURLtests/JsUnitSuite.html">BrowserBot unit-tests</a>
-    <br />
+    <a id="seleniumUnitTests" href="jsunit/testRunner.html?testPage=BASEURLtests/browserbot/suite.html">Selenium BrowserBot unit-tests</a>
   </li>
-  
+  <li>
+    <a id="jsmockUnitTests" href="jsunit/testRunner.html?testPage=BASEURLjsmock/mock-tests.html">JsMock unit-tests</a>
+  </li>
+
 </ul>
 
 </body>
