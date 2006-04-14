@@ -7,6 +7,8 @@
  * By default, this file does not exist. Users can create this file and place their extension code
  * in this common location, removing the need to modify the Selenium sources, and hopefully assisting
  * with the upgrade process.
+ *
+ * You can find contributed extensions at http://wiki.openqa.org/display/SEL/Contributed%20User-Extensions
  */
 
 // The following examples try to give an indication of how Selenium can be extended with javascript.
