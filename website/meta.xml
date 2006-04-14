@@ -44,8 +44,8 @@
             	<url>selenese.html</url>
             </item>
             <item>
-                <name>Developing Client Drivers</name>
-                <url>developingClientDrivers.html</url>
+                <name>Building From Source</name>
+                <url>building.html</url>
             </item>
             <item>
             	<name>Server Command Line Options</name>
