@@ -189,11 +189,14 @@
 	
 	<target name="dist-java" depends="dist-dirs, find-server, find-java-client">
 		<mkdir dir="dist-image/server" />
-		<mkdir dir="dist-image/server/source" />
+		<mkdir dir="dist-image/server/source/src" />
 		<mkdir dir="dist-image/server/doc" />
 		<copy file="${selenium-server.jar}" tofile="dist-image/server/selenium-server.jar" />
-		<unzip src="${selenium-server.jar}/../selenium-server-${version}-sources.jar" dest="dist-image/server/source" />
+		<unzip src="${selenium-server.jar}/../selenium-server-${version}-sources.jar" dest="dist-image/server/source/src" />
+		<copy file="${selenium-server.jar}/../selenium-server-${version}-dep.jar" tofile="dist-image/server/source/selenium-server-dep.jar" />
 		<unzip src="${selenium-server.jar}/../selenium-server-${version}-javadoc.jar" dest="dist-image/server/doc" />
+		<copy file="${ant.file.selenium-rc-clients}/../../server/easymode/eclipse.project" tofile="dist-image/server/source/.project" />
+		<copy file="${ant.file.selenium-rc-clients}/../../server/easymode/eclipse.classpath" tofile="dist-image/server/source/.classpath" />
 		
 		<mkdir dir="dist-image/java" />
 		<mkdir dir="dist-image/java/source" />
