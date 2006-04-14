@@ -41,7 +41,7 @@
 		</path>
 		<pathconvert property="depend.classpath.output" refid="depend.classpath" />
 		<!--<echo message="depend.classpath.output = ${depend.classpath.output}" />-->
-		<whichresource resource="/selenium/iedoc.xml" property="iedoc.url" classpath="${depend.classpath.output}"/>
+		<whichresource resource="iedoc.xml" property="iedoc.url" classpath="${depend.classpath.output}"/>
 		<fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${depend.classpath.output}" />
 		<!--<echo message="iedoc.url = ${iedoc.url}" />-->
 		<get src="${iedoc.url}" dest="${output.path}/iedoc.xml" />

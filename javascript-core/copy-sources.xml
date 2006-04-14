@@ -1,6 +1,6 @@
 <project name="core-copy-sources" default="create-sources">
 	
-	<property name="javascript.maven.sources" location="${ant.file.core-copy-sources}/../src/selenium" />
+	<property name="javascript.maven.sources" location="${ant.file.core-copy-sources}/../src" />
 	
 	<target name="clean-sources">
 		<mkdir dir="${javascript.maven.sources}" />
@@ -14,6 +14,11 @@
 			<not><available file="${core.javascript.path}" /></not>
 		</condition>
 		<fail if="build.failed" message="Couldn't find JavaScript: ${core.javascript.path}" />
+		<property name="core.iedoc.js" location="${core.javascript.path}/iedoc.js" />
+		<condition property="build.failed">
+			<not><available file="${core.iedoc.js}" /></not>
+		</condition>
+		<fail if="build.failed" message="Couldn't find iedoc.js: ${core.iedoc.js}" />
 		<mkdir dir="${javascript.maven.sources}" />
 		<copy todir="${javascript.maven.sources}">
 			<fileset dir="${core.javascript.path}" />

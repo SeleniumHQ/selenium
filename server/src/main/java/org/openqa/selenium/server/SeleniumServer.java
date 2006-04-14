@@ -358,7 +358,7 @@ public class SeleniumServer {
 
         /** When resources are requested, fetch them from the classpath */
         protected Resource getResource(final String s) throws IOException {
-            Resource r = new ClassPathResource("/selenium" + s);
+            Resource r = new ClassPathResource("/core" + s);
             context.getResourceMetaData(r);
             if (!r.exists()) {
                 for (Iterator i = contentDirs.iterator(); i.hasNext();) {

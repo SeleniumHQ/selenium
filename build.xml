@@ -47,6 +47,12 @@
 		</mvn>
 	</target>
 
+	<target name="maven-skiptest-init">
+		<property name="mvn.overrideable.settings" value="-Dmaven.test.skip=true" />
+	</target>
+	
+	<target name="maven-skiptest" depends="maven-skiptest-init, maven" description="Builds the Maven stuff, skipping the automated tests" />
+
 	<target name="all" depends="init, maven" description="Builds everything">
 		<ant dir="clients" target="all"/>
 	</target>
