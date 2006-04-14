@@ -1,13 +1,13 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openqa.selenium</groupId>
-  <version>0.7.1</version>
+  <version>0.7.2</version>
   <artifactId>selenium</artifactId>
   <name>Selenium</name>
   <packaging>pom</packaging>
-  <modules>
+  <!--<modules>
     <module>javascript-core</module>
     <module>server</module>
     <module>clients/java</module>
-  </modules>
+  </modules>-->
 </project>

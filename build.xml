@@ -34,21 +34,16 @@
 		<!-- Bug in dependency-maven-plugin forces us to do this goofy stuff -->
 		<mvn>
 			<arg value="install" />
-			<arg value="-Dmaven.test.skip=true" />
-			<arg value="-Dskip.generation=true" />
+		</mvn>
+		<mvn dir="javascript-core">
+			<arg value="install" />
 			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
 		</mvn>
 		<mvn dir="server">
 			<arg value="install" />
-			<arg value="-Dmaven.test.skip=true" />
 		</mvn>
 		<mvn dir="clients/java">
-			<arg value="generate-sources" />
-		</mvn>
-		<mvn>
 			<arg value="install" />
-			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
-			<arg value="-Dskip.generation=true" />
 		</mvn>
 	</target>
 
@@ -56,10 +51,25 @@
 		<ant dir="clients" target="all"/>
 	</target>
 
-	<target name="clean" depends="init" description="Cleans everything">
+	<target name="maven-clean" depends="init">
 		<mvn>
+			<arg value="install" />
+		</mvn>
+		<echo taskname="mvn" message="dir=javascript-core" />
+		<mvn dir="javascript-core">
 			<arg value="clean" />
 		</mvn>
+		<echo taskname="mvn" message="dir=server" />
+		<mvn dir="server">
+			<arg value="clean" />
+		</mvn>
+		<echo taskname="mvn" message="dir=clients/java" />
+		<mvn dir="clients/java">
+			<arg value="clean" />
+		</mvn>
+	</target>
+
+	<target name="clean" depends="init, maven-clean" description="Cleans everything">
 		<ant dir="clients" target="clean"/>
 	</target>
 
