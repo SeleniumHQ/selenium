@@ -39,7 +39,7 @@ class TestAjaxJSF(unittest.TestCase):
         selenium.key_down("_idJsp0:_idJsp3", 120)
         selenium.key_press("_idJsp0:_idJsp3", 120)
         time.sleep(1)
-        selenium.assert_text_present("foo1")
+        selenium.assert_text_present("regexp:foox?1")
 
     def tearDown(self):
         self.selenium.stop()

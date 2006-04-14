@@ -37,6 +37,6 @@ class ExampleTest < Test::Unit::TestCase
 		@selenium.key_down "_idJsp0:_idJsp3", 120
 		@selenium.key_press "_idJsp0:_idJsp3", 120
 		sleep 2
-		@selenium.assert_text_present "foo1"
+		@selenium.assert_text_present "regexp:foox?1"
     end
 end
