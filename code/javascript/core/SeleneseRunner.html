@@ -20,22 +20,22 @@ http-equiv="content-type">
 <title>Selenium Functional Test Runner</title>
 <link rel="stylesheet" type="text/css" href="selenium.css" />
 <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
-<script type="text/javascript" src="xmlextras.js"></script>
-<script language="JavaScript" type="text/javascript" src="html-xpath/html-xpath-patched.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-api.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-commandhandlers.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-executionloop.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-seleneserunner.js"></script>
-<script language="JavaScript" type="text/javascript" src="selenium-logging.js"></script>
-<script language="JavaScript" type="text/javascript" src="htmlutils.js"></script>
-<script language="JavaScript" type="text/javascript" src="xpath.js"></script>
-<script language="JavaScript" type="text/javascript" src="user-extensions.js"></script>
+<script type="text/javascript" src="scripts/xmlextras.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/html-xpath-patched.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/selenium-browserbot.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/selenium-api.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/selenium-seleneserunner.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/selenium-logging.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/xpath.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/user-extensions.js"></script>
 <script language="JavaScript" type="text/javascript">
     function openDomViewer() {
         var autFrame = document.getElementById('myiframe');
         var autFrameDocument = getIframeDocument(autFrame);
-        var domViewer = window.open('domviewer.html');
+        var domViewer = window.open('domviewer/domviewer.html');
         domViewer.rootDocument = autFrameDocument;
         return false;
     }
