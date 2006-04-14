@@ -73,7 +73,7 @@ Maven version: 2.0.2
 
 <p>To build, start by pulling down the Selenium RC source from our <a href="http://www.openqa.org/selenium-rc/cvs.action">Selenium RC source repository</a> (http://svn.openqa.org/svn/selenium-rc/trunk).  You'll also need to pull down the Selenium Core source from the <a href="http://www.openqa.org/selenium/cvs.action">Selenium Core source repository</a> (http://svn.openqa.org/svn/selenium/trunk).</p>
 
-<p>Specifically, we'll need the Selenium Core code in /svn/selenium/trunk/code/javascript.  That's the <b>Core JavaScript Path</b>, which you'll have to specify manually in order to kick off your build.</p>
+<p>Specifically, we'll need the Selenium Core code in /svn/selenium/trunk/code/javascript.  That's the <b>Core JavaScript Path</b>, which you'll have to specify manually in order to kick off your build.  (Note that this should *not* be the code/javascript/core directory; we need the code/javascript directory, which contains iedoc.js.)</p>
 
 <p>From the selenium-rc-trunk directory, you should be able to kick off a build of everything in there from the command-line by typing <code>ant maven</code> and specifying the Core JavaScript Path like this:
 
