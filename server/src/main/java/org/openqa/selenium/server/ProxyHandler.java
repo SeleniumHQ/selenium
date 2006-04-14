@@ -279,7 +279,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                     String val = (String) vals.nextElement();
                     if (val != null) {
                         // don't proxy Referer headers if the referer is Selenium!
-                        if ("Referer".equals(hdr) && (-1 != val.indexOf("/selenium-server/SeleneseRunner.html"))) {
+                        if ("Referer".equals(hdr) && (-1 != val.indexOf("/selenium-server/core/SeleneseRunner.html"))) {
                             continue;
                         }
 

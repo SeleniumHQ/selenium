@@ -44,7 +44,7 @@ public class HttpCommandProcessor implements CommandProcessor {
      * @param serverPort - the port on which the Selenium Server is listening
      * @param browserStartCommand - the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"
      * @param browserURL - the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
-     * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"
+     * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/core/SeleneseRunner.html"
      */
     public HttpCommandProcessor(String serverHost, int serverPort, String browserStartCommand, String browserURL) {
         this.pathToServlet = "http://" + serverHost + 

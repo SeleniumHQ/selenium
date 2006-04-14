@@ -36,36 +36,34 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         server.start();
     }
     
-    public void testFirefoxHTMLRunner() throws Exception {
-        String browser = "*firefox";
+    public void runHTMLSuite(String browser) throws Exception {
         String browserURL = "http://localhost:" + server.getPort();
-        String testURL = "tests/ShortTestSuite.html";
+        String testURL = "../tests/ShortTestSuite.html";
         long timeout = 1000 * 60 * 10; // ten minutes
         String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);
         assertEquals("Tests didn't pass", "PASSED", result);
         assertTrue(output.exists());
         output.delete();
     }
+    
+    public void testFirefox() throws Exception{
+        runHTMLSuite("*firefox");
+    }
+    
+    
     
     public void testFirefoxAgain() throws Exception {
         // For safety's sake
-        testFirefoxHTMLRunner();
+        testFirefox();
     }
     
-    public void testIExploreHTMLRunner() throws Exception {
-        String browser = "*iexplore";
-        String browserURL = "http://localhost:" + server.getPort();
-        String testURL = "tests/ShortTestSuite.html";
-        long timeout = 1000 * 60 * 10; // ten minutes
-        String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);
-        assertEquals("Tests didn't pass", "PASSED", result);
-        assertTrue(output.exists());
-        output.delete();
+    public void testIExplore() throws Exception {
+        runHTMLSuite("*iexplore");
     }
     
     public void testIExploreAgain() throws Exception {
         // For safety's sake
-        testIExploreHTMLRunner();
+        testIExplore();
     }
     
     public void tearDown() throws Exception {

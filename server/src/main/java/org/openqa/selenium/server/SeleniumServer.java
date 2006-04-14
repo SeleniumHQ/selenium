@@ -241,7 +241,7 @@ public class SeleniumServer {
                 System.exit(1);
             }
             
-            if (!"PASS".equals(result)) {
+            if (!"PASSED".equals(result)) {
                 System.err.println("Tests failed");
                 System.exit(1);
             } else {
@@ -358,7 +358,7 @@ public class SeleniumServer {
 
         /** When resources are requested, fetch them from the classpath */
         protected Resource getResource(final String s) throws IOException {
-            Resource r = new ClassPathResource("/core" + s);
+            Resource r = new ClassPathResource(s);
             context.getResourceMetaData(r);
             if (!r.exists()) {
                 for (Iterator i = contentDirs.iterator(); i.hasNext();) {

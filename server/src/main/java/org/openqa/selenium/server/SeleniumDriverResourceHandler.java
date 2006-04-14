@@ -191,7 +191,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String results;
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
-        launcher.launch(startURL + "/selenium-server/SeleneseRunner.html?sessionId=" + sessionId);
+        launcher.launch(startURL + "/selenium-server/core/SeleneseRunner.html?sessionId=" + sessionId);
         launchers.put(sessionId, launcher);
         SeleneseQueue queue = getQueue(sessionId);
         queue.doCommand("setContext", sessionId, "");
