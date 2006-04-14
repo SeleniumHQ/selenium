@@ -16,7 +16,15 @@
       <entry name=".+\.(gif|png|jpeg|jpg)" />
     </resourceExtensions>
     <wildcardResourcePatterns>
-      <entry name="!?*.java" />
+      <entry name="?*.properties" />
+      <entry name="?*.xml" />
+      <entry name="?*.gif" />
+      <entry name="?*.png" />
+      <entry name="?*.jpeg" />
+      <entry name="?*.jpg" />
+      <entry name="?*.html" />
+      <entry name="?*.dtd" />
+      <entry name="?*.tld" />
     </wildcardResourcePatterns>
   </component>
   <component name="DataSourceManagerImpl" />
@@ -170,13 +178,12 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/selenium.iml" filepath="$PROJECT_DIR$/selenium.iml" />
-      <module fileurl="file://$PROJECT_DIR$/javascript-core/selenium-core.iml" filepath="$PROJECT_DIR$/javascript-core/selenium-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/clients/java/selenium-java-client-driver.iml" filepath="$PROJECT_DIR$/clients/java/selenium-java-client-driver.iml" />
-      <module fileurl="file://$PROJECT_DIR$/server/selenium-server.iml" filepath="$PROJECT_DIR$/server/selenium-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/code/code.iml" filepath="$PROJECT_DIR$/code/code.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demos/petsoar/demos-petsoar.iml" filepath="$PROJECT_DIR$/demos/petsoar/demos-petsoar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/website/website.iml" filepath="$PROJECT_DIR$/website/website.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" />
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="false" project-jdk-name="1.4" />
   <component name="RmicSettings">
     <option name="IS_EANABLED" value="false" />
     <option name="DEBUGGING_INFO" value="true" />
