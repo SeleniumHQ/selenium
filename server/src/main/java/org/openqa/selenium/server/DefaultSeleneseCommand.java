@@ -51,7 +51,7 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
 
     /** Factory method to create a SeleneseCommand from a wiki-style input string */
     public static SeleneseCommand parse(String inputLine) {
-        assert inputLine != null;
+        if (inputLine == null) throw new IllegalArgumentException("inputLine must not be null");
 
         String[] values = inputLine.split("\\|");
         if (values.length != NUMARGSINCLUDINGBOUNDARIES) {
