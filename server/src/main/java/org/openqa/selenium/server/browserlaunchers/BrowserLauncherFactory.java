@@ -16,6 +16,7 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import java.net.*;
 import java.util.regex.*;
 
 import org.openqa.selenium.server.*;
@@ -63,5 +64,12 @@ public class BrowserLauncherFactory {
             //launcher = new ManualPromptUserLauncher();
         }
         return launcher;
+    }
+    
+    /** Strips the specified URL so it only includes a protocal, hostname and port 
+     * @throws MalformedURLException */
+    public static String stripStartURL(String url) throws MalformedURLException {
+        URL u = new URL(url);
+        return u.getProtocol() + "://" + u.getAuthority();
     }
 }

@@ -19,6 +19,7 @@ package org.openqa.selenium.server;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.net.*;
 import java.util.*;
 
 import org.mortbay.http.*;
@@ -126,7 +127,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         req.setHandled(true);
     }
 
-    public String doCommand(String cmd, Vector values, String sessionId, HttpResponse res) throws IOException {
+    public String doCommand(String cmd, Vector values, String sessionId, HttpResponse res) {
         String results;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
@@ -146,8 +147,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("shutDown".equals(cmd)) {
             System.out.println("Shutdown command received");
             if (res != null) {
-                res.getOutputStream().write("OK".getBytes());
-                res.commit();
+                try {
+                    res.getOutputStream().write("OK".getBytes());
+                    res.commit();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
             AsyncExecute.sleepTight(3000);
             System.exit(0);
@@ -174,7 +179,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 // TODO User Configurable timeout 
                 long timeout = 1000 * 60 * 30;
-                results = launcher.runHTMLSuite((String) values.get(0), (String) values.get(1), (String) values.get(2), output, timeout);
+                try {
+                    results = launcher.runHTMLSuite((String) values.get(0), (String) values.get(1), (String) values.get(2), output, timeout);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    results = e.toString();
+                }
             }                
         } else {
 
@@ -191,7 +201,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String results;
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
-        launcher.launch(startURL + "/selenium-server/core/SeleneseRunner.html?sessionId=" + sessionId);
+        String url = null;
+        try {
+            url = BrowserLauncherFactory.stripStartURL(startURL);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return e.toString();
+        }
+        launcher.launch(url + "/selenium-server/core/SeleneseRunner.html?sessionId=" + sessionId);
         launchers.put(sessionId, launcher);
         SeleneseQueue queue = getQueue(sessionId);
         queue.doCommand("setContext", sessionId, "");
