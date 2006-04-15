@@ -451,7 +451,9 @@ public class WindowsUtils {
         exec.setProject(p);
         exec.setTaskType("reg");
         exec.setExecutable(findReg());
-        exec.setFailonerror(true);
+        exec.setFailonerror(false);
+        exec.setResultProperty("result");
+        exec.setOutputproperty("output");
         exec.createArg().setValue("add");
         if (isRegExeVersion1()) {
         	exec.createArg().setValue(key + "=" + data);
@@ -465,6 +467,11 @@ public class WindowsUtils {
             exec.createArg().setValue("/f");
         }
         exec.execute();
+        String result = p.getProperty("result");
+        String output = p.getProperty("output");
+        if (!"0".equals(result)) {
+            throw new RuntimeException("exec return code " + result + ": " + output);
+        }
     }
     
     public static void writeIntRegistryValue(String key, int data) {
@@ -473,7 +480,9 @@ public class WindowsUtils {
         exec.setProject(p);
         exec.setTaskType("reg");
         exec.setExecutable(findReg());
-        exec.setFailonerror(true);
+        exec.setFailonerror(false);
+        exec.setResultProperty("result");
+        exec.setOutputproperty("output");
         exec.createArg().setValue("add");
         if (isRegExeVersion1()) {
         	exec.createArg().setValue(key + "=" + Integer.toString(data));
@@ -490,6 +499,11 @@ public class WindowsUtils {
             exec.createArg().setValue("/f");
         }
         exec.execute();
+        String result = p.getProperty("result");
+        String output = p.getProperty("output");
+        if (!"0".equals(result)) {
+            throw new RuntimeException("exec return code " + result + ": " + output);
+        }
     }
     
     public static void writeBooleanRegistryValue(String key, boolean data) {
@@ -502,7 +516,9 @@ public class WindowsUtils {
         exec.setProject(p);
         exec.setTaskType("reg");
         exec.setExecutable(findReg());
-        exec.setFailonerror(true);
+        exec.setFailonerror(false);
+        exec.setResultProperty("result");
+        exec.setOutputproperty("output");
         if (isRegExeVersion1()) {
         	exec.createArg().setValue("delete");
             exec.createArg().setValue(key);
@@ -516,6 +532,11 @@ public class WindowsUtils {
             exec.createArg().setValue("/f");
         }
         exec.execute();
+        String result = p.getProperty("result");
+        String output = p.getProperty("output");
+        if (!"0".equals(result)) {
+            throw new RuntimeException("exec return code " + result + ": " + output);
+        }
     }
 
     /** Executes reg.exe to query the registry */
@@ -525,7 +546,9 @@ public class WindowsUtils {
         exec.setProject(p);
         exec.setTaskType("reg");
         exec.setExecutable(findReg());
-        exec.setFailonerror(true);
+        exec.setFailonerror(false);
+        exec.setResultProperty("result");
+        exec.setOutputproperty("output");
         exec.createArg().setValue("query");
         if (isRegExeVersion1()) {
         	exec.createArg().setValue(key);
