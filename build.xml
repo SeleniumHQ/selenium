@@ -35,13 +35,16 @@
 		<mvn>
 			<arg value="install" />
 		</mvn>
+		<echo taskname="mvn" message="dir=javascript-core" />
 		<mvn dir="javascript-core">
 			<arg value="install" />
 			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
 		</mvn>
+		<echo taskname="mvn" message="dir=server" />
 		<mvn dir="server">
 			<arg value="install" />
 		</mvn>
+		<echo taskname="mvn" message="dir=clients/java" />
 		<mvn dir="clients/java">
 			<arg value="install" />
 		</mvn>
