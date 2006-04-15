@@ -136,7 +136,7 @@
     
     <target name="extract-xml" depends="find-server">
     	<property name="output.path" location="${basedir}" />
-    	<whichresource resource="iedoc.xml" property="iedoc.url" classpath="${selenium-server.jar}"/>
+    	<whichresource resource="/core/iedoc.xml" property="iedoc.url" classpath="${selenium-server.jar}"/>
 		<fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${selenium-server.jar}" />
 		<!--<echo message="iedoc.url = ${iedoc.url}" />-->
 		<get src="${iedoc.url}" dest="${output.path}/iedoc.xml" />
