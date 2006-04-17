@@ -1012,7 +1012,7 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
  * If the string matches the pattern "javascript{ ... }", evaluate the string between the braces.
  */
 Selenium.prototype.preprocessParameter = function(value) {
-    var match = value.match(/^javascript\{(.+)\}$/);
+    var match = value.match(/^javascript\{((.|\r?\n)+)\}$/);
     if (match && match[1]) {
         return eval(match[1]).toString();
     }

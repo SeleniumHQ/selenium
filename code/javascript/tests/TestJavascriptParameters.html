@@ -59,6 +59,24 @@ Copyright 2004 ThoughtWorks, Inc
       <td>javascript{10 + 10 + 10 + 10 + 10}</td>
     </tr>
 
+    <!-- Check a complex expression -->
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>javascript{
+              function square(n) {
+                  return n * n;
+              };
+              '25 * 25 = ' + square(25);
+          }
+      </td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>25 * 25 = 625</td>
+    </tr>
+
     <!-- Demonstrate interation between variable substitution and javascript -->
     <tr>
       <td>store</td>
