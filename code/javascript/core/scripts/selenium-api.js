@@ -584,10 +584,14 @@ Selenium.prototype.getEval = function(script) {
 	/** Gets the result of evaluating the specified JavaScript snippet.  The snippet may 
    * have multiple lines, but only the result of the last line will be returned.
    * 
-   * <p>Note that, by default, the snippet will be run in the runner's test window, not in the window
-   * of your application.  To get the window of your application, you can use
-   * the JavaScript snippet <code>selenium.browserbot.getCurrentWindow()</code>, and then
-   * run your JavaScript in there.</p>
+   * <p>Note that, by default, the snippet will run in the context of the "selenium"
+   * object itself, so <code>this</code> will refer to the Selenium object, and <code>window</code> will
+   * refer to the top-level runner test window, not the window of your application.</p>
+   *
+   * <p>If you need a reference to the window of your application, you can refer
+   * to <code>this.browserbot.getCurrentWindow()</code> and if you need to use
+   * a locator to refer to a single element in your application page, you can
+   * use <code>this.page().findElement("foo")</code> where "foo" is your locator.</p>
    * 
    * @param script the JavaScript snippet to run
    * @return string the results of evaluating the snippet
