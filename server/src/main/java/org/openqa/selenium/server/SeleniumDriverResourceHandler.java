@@ -67,7 +67,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
         OutputStream out = res.getOutputStream();
         ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
-        Writer writer = new OutputStreamWriter(buf, StringUtil.__ISO_8859_1);
+        Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
         String seleniumStart = getParam(req, "seleniumStart");
         String commandResult = getParam(req, "commandResult");
         String cmd = getParam(req, "cmd");
@@ -119,14 +119,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         System.out.println("queryString = " + req.getQuery());        
         results = doCommand(cmd, values, sessionId, res);
         try {
-            res.getOutputStream().write(results.getBytes());
+            res.getOutputStream().write(results.getBytes("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
         
         req.setHandled(true);
     }
-
+    
     public String doCommand(String cmd, Vector values, String sessionId, HttpResponse res) {
         String results;
         // handle special commands

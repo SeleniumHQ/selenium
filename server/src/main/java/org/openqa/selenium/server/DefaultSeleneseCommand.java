@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.server;
 
+import java.io.*;
 import java.net.*;
 
 /**
@@ -42,7 +43,7 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     }
 
     public String getCommandURLString() {
-        return "cmd=" + URLEncoder.encode(command) + "&1=" + URLEncoder.encode(field) + "&2=" + URLEncoder.encode(value);
+        return "cmd=" + urlEncode(command) + "&1=" + urlEncode(field) + "&2=" + urlEncode(value);
     }
     
     public String toString() {
@@ -58,5 +59,19 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
             throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
         }
         return new DefaultSeleneseCommand(values[FIRSTINDEX], values[SECONDINDEX], values[THIRDINDEX]);
+    }
+    
+    /** Encodes the text as an URL using UTF-8.
+     * 
+     * @param text the text too encode
+     * @return the encoded URI string
+     * @see URLEncoder#encode(java.lang.String, java.lang.String)
+     */
+    public static String urlEncode(String text) {
+        try {
+            return URLEncoder.encode(text, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
