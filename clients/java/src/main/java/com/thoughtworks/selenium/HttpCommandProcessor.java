@@ -17,8 +17,7 @@
 
 package com.thoughtworks.selenium;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -98,8 +97,9 @@ public class HttpCommandProcessor implements CommandProcessor {
 
     private String stringContentsOfInputStream(InputStream is) throws IOException {
         StringBuffer sb = new StringBuffer();
+        InputStreamReader r = new InputStreamReader(is, "UTF-8");
         int c;
-        while ((c = is.read()) != -1) {
+        while ((c = r.read()) != -1) {
             sb.append((char) c);
         }
         return sb.toString();
@@ -130,7 +130,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         sb.append(command);
         if (sessionId != null) {
             sb.append("&sessionId=");
-            sb.append(URLEncoder.encode(sessionId));
+            sb.append(DefaultSeleneseCommand.urlEncode(sessionId));
         }
         URL result = new URL(sb.toString());
         return result;

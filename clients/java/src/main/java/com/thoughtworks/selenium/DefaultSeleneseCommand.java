@@ -17,6 +17,7 @@
 
 package com.thoughtworks.selenium;
 
+import java.io.*;
 import java.net.*;
 
 /**
@@ -43,13 +44,13 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
 
     public String getCommandURLString() {
         StringBuffer sb = new StringBuffer("cmd=");
-        sb.append(URLEncoder.encode(command));
+        sb.append(urlEncode(command));
         if (args == null) return sb.toString();
         for (int i = 0; i < args.length; i++) {
             sb.append('&');
             sb.append(Integer.toString(i+1));
             sb.append('=');
-            sb.append(URLEncoder.encode(args[i]));
+            sb.append(urlEncode(args[i]));
         }
         return sb.toString();
     }
@@ -66,5 +67,19 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
             throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
         }
         return new DefaultSeleneseCommand(values[FIRSTINDEX], new String[] {values[SECONDINDEX], values[THIRDINDEX]});
+    }
+    
+    /** Encodes the text as an URL using UTF-8.
+     * 
+     * @param text the text too encode
+     * @return the encoded URI string
+     * @see URLEncoder#encode(java.lang.String, java.lang.String)
+     */
+    public static String urlEncode(String text) {
+        try {
+            return URLEncoder.encode(text, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
