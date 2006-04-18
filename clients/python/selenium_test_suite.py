@@ -18,6 +18,7 @@ import unittest
 import test_ajax_jsf
 import test_default_server
 import test_google
+import test_i18n
 import sys
 
 def suite():
@@ -25,6 +26,7 @@ def suite():
         unittest.makeSuite(test_ajax_jsf.TestAjaxJSF),
         unittest.makeSuite(test_default_server.TestDefaultServer),
         unittest.makeSuite(test_google.TestGoogle),
+        unittest.makeSuite(test_i18n.TestI18n),
         ))
 
 if __name__ == "__main__":
