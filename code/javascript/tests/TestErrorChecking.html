@@ -24,9 +24,14 @@ Copyright 2004 ThoughtWorks, Inc
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
+  <p><em>This test should fail!</em></p>
+  <p>The following test script checks that when verifyFailureOnNext and verifyErrorOnNext are
+  used, the following command should fail and the verified error message must match the actual message.</p>
+  <p>If this functionality is working correctly, each of the following verifyText commands
+  should fail because the verifyFailure/Error doesn't match.</p>
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">!!!Should Fail!!! Tests for expectError and expectFailure commands<br>
+      <td rowspan="1" colspan="3">Tests for expectError and expectFailure commands<br>
       </td>
     </tr>
     <tr>
@@ -35,15 +40,20 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
+    <!-- These tests should all fail, as they are checking the error checking commands. -->
+    <tr>
+      <td>verifyFailureOnNext</td>
+      <td>The next command actually succeeds so this verify is wrong</td>
+      <td></td>
+    </tr>
     <tr>
       <td>verifyText</td>
       <td>link</td>
       <td>Click here for next page</td>
     </tr>
-    <!-- These tests should all fail, as they are checking the error checking commands. -->
     <tr>
       <td>verifyFailureOnNext</td>
-      <td>Actual value 'Click here for next page' did not match 'foo'</td>
+      <td>The next command does fail, but this is the wrong message</td>
       <td></td>
     </tr>
     <tr>
@@ -54,12 +64,32 @@ Copyright 2004 ThoughtWorks, Inc
 
     <tr>
       <td>verifyErrorOnNext</td>
-      <td>Element notAnElement not found</td>
+      <td>The next command actually succeeds so this verify is wrong</td>
       <td></td>
     </tr>
     <tr>
       <td>verifyText</td>
-      <td>notAnElement</td>
+      <td>link</td>
+      <td>Click here for next page</td>
+    </tr>
+    <tr>
+      <td>verifyErrorOnNext</td>
+      <td>The next command does error, but this is the wrong message</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>notAlink</td>
+      <td>foo</td>
+    </tr>
+    <tr>
+      <td>verifyErrorOnNext</td>
+      <td>The next command has a failure, not an error</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>link</td>
       <td>foo</td>
     </tr>
   </tbody>

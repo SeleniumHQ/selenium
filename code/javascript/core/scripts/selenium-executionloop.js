@@ -119,7 +119,7 @@ function TestLoop(commandFactory) {
     this.handleCommandError = function(e) {
        if (!e.isSeleniumError) {
             LOG.exception(e);
-            var msg = "Selenium failure. Please report to selenium-dev@openqa.org, with details from the logs at the base of the page.";
+            var msg = "Selenium failure. Please report to selenium-dev@openqa.org, with error details from the log window.";
             if (e.message) {
                msg += "  The error message is: " + e.message;
             }
@@ -195,7 +195,7 @@ Selenium.prototype.assertFailureOnNext = function(message) {
     }
 
     var expectFailureCommandFactory =
-        new ExpectFailureCommandFactory(testLoop.commandFactory, message);
+        new ExpectFailureCommandFactory(testLoop.commandFactory, message, "failure");
     expectFailureCommandFactory.baseExecutor = executeCommandAndReturnFailureMessage;
     testLoop.commandFactory = expectFailureCommandFactory;
 };
@@ -211,12 +211,12 @@ Selenium.prototype.assertErrorOnNext = function(message) {
     }
 
     var expectFailureCommandFactory =
-        new ExpectFailureCommandFactory(testLoop.commandFactory, message);
+        new ExpectFailureCommandFactory(testLoop.commandFactory, message, "error");
     expectFailureCommandFactory.baseExecutor = executeCommandAndReturnErrorMessage;
     testLoop.commandFactory = expectFailureCommandFactory;
 };
 
-function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessage) {
+function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessage, errorType) {
     this.getCommandHandler = function(name) {
         var baseHandler = originalCommandFactory.getCommandHandler(name);
         var baseExecutor = this.baseExecutor;
@@ -226,12 +226,12 @@ function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessag
             var result = new CommandResult();
             if (!baseFailureMessage) {
                 result.failed = true;
-                result.failureMessage = "Command should have failed.";
+                result.failureMessage = "Expected " + errorType + " did not occur.";
             }
             else {
                 if (! PatternMatcher.matches(expectedErrorMessage, baseFailureMessage)) {
                     result.failed = true;
-                    result.failureMessage = "Expected failure message '" + expectedErrorMessage
+                    result.failureMessage = "Expected " + errorType + " message '" + expectedErrorMessage
                                             + "' but was '" + baseFailureMessage + "'";
                 }
                 else {
