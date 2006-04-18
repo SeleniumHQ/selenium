@@ -109,7 +109,7 @@ function nextCommand() {
         if (postResult == "START") {
         	url = url + "driver/?seleniumStart=true" + buildDriverParams() + preventBrowserCaching();
         } else {
-        	url = url + "driver/?commandResult=" + postResult + buildDriverParams() + preventBrowserCaching();
+        	url = url + "driver/?commandResult=" + encodeURI(postResult) + buildDriverParams() + preventBrowserCaching();
         }
         LOG.debug("XMLHTTPRequesting " + url);
         xmlHttp.open("GET", url, true);
