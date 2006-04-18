@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="selenium-dotnet" default="test">
 
-	<property name="version" value="0.7.1" />
+	<property name="version" value="0.7.2" />
 	<property name="iis_vdir.VDirName" value="Selenium-Driver" />
 	<property name="iis_vdir.applicationMapping" value=".sel" />
 
