@@ -102,6 +102,7 @@ package WWW::Selenium;
 use LWP::UserAgent;
 use HTTP::Request;
 use URI::Escape;
+use Carp qw(croak);
 
 use strict;
 use warnings;
@@ -114,15 +115,19 @@ WWW::Selenium - Perl Client for the Selenium Remote Control test tool
 
     use WWW::Selenium;
     
-    my $sel = WWW::Selenium->new("localhost", 4444, "*iexplore", "http://www.google.com");
+    my $sel = WWW::Selenium->new( host => "localhost", 
+                                      port => 4444, 
+                                      browser => "*iexplore", 
+                                      browser_url => "http://www.google.com",
+                                    );
     
-    $sel->start();
-    $sel->open("http://www.google.com");
-    $sel->type("q", "hello world");
-    $sel->click("btnG");
-    $sel->wait_for_page_to_load(5000);
-    print $sel->get_title();
-    $sel->stop();
+    $sel->start;
+    $sel->open "http://www.google.com";
+    $sel->type "q", "hello world";
+    $sel->click "btnG";
+    $sel->wait_for_page_to_load 5000;
+    print $sel->get_title;
+    $sel->stop;
 
 =head1 DESCRIPTION
 
@@ -156,21 +161,23 @@ the Selenium Server.  (The Selenium Server is a Java application.)
 
 ### This part is hard-coded in the XSL
 sub new {
-    my ($class, $host, $port, $browser_start_command, $browser_url) = @_;
-    my $self = { };
-    bless $self, $class;
-
-    $self->{host} = $host;
-    $self->{port} = $port;
-    $self->{browser_start_command} = $browser_start_command;
-    $self->{browser_url} = $browser_url;
-    $self->{session_id} = undef;
+    my ($class, %args) = @_;
+    my $self = { # default args:
+                 host => 'localhost',
+                 port => 4444,
+                 browser_start_command => delete $args{browser} || '*firefox',
+                 %args,
+               };
+    croak 'browser_url is mandatory!' unless $self->{browser_url};
+    bless $self, $class or die "Can't bless $class: $!";
     return $self;
 }
 
 sub start {
     my $self = shift;
-    $self->{session_id} = $self->get_string("getNewBrowserSession", $self->{browser_start_command}, $self->{browser_url});
+    $self->{session_id} = $self->get_string("getNewBrowserSession", 
+                                            $self->{browser_start_command}, 
+                                            $self->{browser_url});
 }
 
 sub stop {
@@ -180,36 +187,34 @@ sub stop {
 }
 
 sub do_command {
-    my $self = shift;
-    my $command = shift;
+    my ($self, $command, @args) = @_;
     $command = uri_escape($command);
-    my @args = @_;
-    my $fullurl = "http://" . $self->{host}.":".$self->{port}."/selenium-server/driver/\?cmd=$command";
-    for (my $i = 0; $i < @args; $i++) {
-        $fullurl .= "&" . ($i+1) . "=" . uri_escape($args[$i]);
+    my $fullurl = "http://$self->{host}:$self->{port}/selenium-server/driver/"
+                  . "\?cmd=$command";
+    my $i = 1;
+    @args = grep defined, @args;
+    while (@args) {
+        $fullurl .= "&$i=" . uri_escape(shift @args);
+        $i++;
     }
-    if (defined($self->{session_id})) {
-        $fullurl .= '&sessionId=' . $self->{session_id};
+    if (defined $self->{session_id}) {
+        $fullurl .= "&sessionId=$self->{session_id}";
     }
-    #print "---> Requesting $fullurl\n";
-    my $result;
-    # We use the full version of LWP to make sure we issue an HTTP 1.1 request (SRC-25)
+    print "---> Requesting $fullurl\n" if $self->{verbose};
+
+    # We use the full version of LWP to make sure we issue an 
+    # HTTP 1.1 request (SRC-25)
     my $ua = LWP::UserAgent->new;
-
-    my $req = HTTP::Request->new(GET => $fullurl);
-
-    # send request
-    my $res = $ua->request($req);
-
-    # check the outcome
-    if ($res->is_success) {
-        $result = $res->content;
-        #print "Got result: $result\n";
+    my $response = $ua->request( HTTP::Request->new(GET => $fullurl) );
+    my $result;
+    if ($response->is_success) {
+        $result = $response->content;
+        print "Got result: $result\n" if $self->{verbose};
     }
     else {
-        die "Error: " . $res->status_line . "\n";
+        die "Error requesting $fullurl:\n" . $response->status_line . "\n";
     }
-    die $result if ($result !~ /^OK/);
+    die "Error requesting $fullurl:\n$result\n" unless $result =~ /^OK/;
     return $result;
 }
 
@@ -292,13 +297,37 @@ The following methods are available:
 
 =over
 
-=item $sel = WWW::Selenium-E<gt>new($host, $port, $browser_string, $browser_url)
+=item $sel = WWW::Selenium-E<gt>new( %args )
 
 Constructs a new C<WWW::Selenium> object, specifying a Selenium Server
 host/port, a command to launch the browser, and a starting URL for the
 browser.
 
-$browser_string may be any one of the following:
+Options:
+
+=over
+
+=item * C<host>
+
+host is the host name on which the Selenium Server resides.
+
+=item * C<port>
+
+port is the port on which the Selenium Server is listening.
+
+=item * C<browser_url>
+
+browser_url is the starting URL including just a domain name.  We'll
+start the browser pointing at the Selenium resources on this URL,
+e.g. "http://www.google.com" would send the browser to
+"http://www.google.com/selenium-server/SeleneseRunner.html"
+
+=item * C<browser> or C<browser_start_command>
+
+This is the command string used to launch the browser, e.g.
+"*firefox", "*iexplore" or "/usr/bin/firefox"
+
+This option may be any one of the following:
 
 =over
 
@@ -336,24 +365,13 @@ path to Internet Explorer.
 
 You may also simply specify the absolute path to your browser
 executable, or use a relative path to your executable (which we'll try
-to find on your path).  <b>Warning:</b> If you
+to find on your path).  B<Warning:> If you
 specify your own custom browser, it's up to you to configure it
 correctly.  At a minimum, you'll need to configure your
 browser to use the Selenium Server as a proxy, and disable all
 browser-specific prompting.
 
 =back
-
-$host is the host name on which the Selenium Server resides
-$port is the port on which the Selenium Server is listening
-$browser_string is the command string used to launch the browser, e.g.
-"*firefox", "*iexplore" or "c:\\program files\\internet
-explorer\\iexplore.exe"
-$browser_url is the starting URL including just a domain name.  We'll
-start the browser pointing at the Selenium resources on this URL,
-e.g. "http://www.google.com" would send the browser to
-"http://www.google.com/selenium-server/SeleneseRunner.html"
-
 
 =cut
 
