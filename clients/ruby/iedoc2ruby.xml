@@ -129,6 +129,7 @@ module Selenium
 					token = token + letter
 				end
 			end
+			tokens.push(token)
 			return tokens
 		end
 	

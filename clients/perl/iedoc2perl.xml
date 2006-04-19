@@ -238,6 +238,7 @@ sub get_string_array {
 			$token .= $char;
 		}
 	}
+	push (@tokens, $token);
 	return @tokens;
 }
 

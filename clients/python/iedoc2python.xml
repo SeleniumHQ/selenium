@@ -127,6 +127,7 @@ class selenium:
 				token = ""
 			else:
 				token = token + letter
+		tokens.append(token)
 		return tokens
 
 	def get_number(self, verb, args):
