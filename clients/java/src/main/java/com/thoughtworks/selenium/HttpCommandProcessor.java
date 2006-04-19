@@ -21,7 +21,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
