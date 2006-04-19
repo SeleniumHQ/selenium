@@ -98,7 +98,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
     }
 
-    private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) throws IOException {
+    private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
         // If this a Driver Client sending a new command...
         res.setContentType("text/plain");
         hackRemoveConnectionCloseHeader(res);

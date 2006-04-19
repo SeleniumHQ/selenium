@@ -333,7 +333,7 @@ public class SeleniumServer {
         postResultsHandler.addListener(listener);
     }
     
-    public String doCommand(String cmd, Vector values, String sessionId) throws IOException {
+    public String doCommand(String cmd, Vector values, String sessionId) {
         return driver.doCommand(cmd, values, sessionId, null);
     }
     
