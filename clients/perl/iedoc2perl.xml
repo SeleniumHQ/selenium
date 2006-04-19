@@ -2,7 +2,7 @@
 <!DOCTYPE xslt [
   <!--Used to control code intenting -->
   <!ENTITY nl "&#xa;">
-  <!ENTITY tab "&#x9;">
+  <!ENTITY tab "    ">
 ]>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!--
@@ -112,17 +112,17 @@ WWW::Selenium - Perl Client for the Selenium Remote Control test tool
 
 =head1 SYNOPSIS
 
-	use WWW::Selenium;
-	
-	my $sel = WWW::Selenium->new("localhost", 4444, "*iexplore", "http://www.google.com");
-	
-	$sel->start();
-	$sel->open("http://www.google.com");
-	$sel->type("q", "hello world");
-	$sel->click("btnG");
-	$sel->wait_for_page_to_load(5000);
-	print $sel->get_title();
-	$sel->stop();
+    use WWW::Selenium;
+    
+    my $sel = WWW::Selenium->new("localhost", 4444, "*iexplore", "http://www.google.com");
+    
+    $sel->start();
+    $sel->open("http://www.google.com");
+    $sel->type("q", "hello world");
+    $sel->click("btnG");
+    $sel->wait_for_page_to_load(5000);
+    print $sel->get_title();
+    $sel->stop();
 
 =head1 DESCRIPTION
 
@@ -147,10 +147,10 @@ the Selenium Server.  (The Selenium Server is a Java application.)
 =cut
 
 #]]></xsl:text><!-- Append this # so we can comment out the first line of the top description -->
-	<xsl:apply-templates>
-		<xsl:with-param name="replace-string"><xsl:text>&nl;</xsl:text></xsl:with-param>
-	</xsl:apply-templates>
-	<xsl:text disable-output-escaping="yes"><![CDATA[
+    <xsl:apply-templates>
+        <xsl:with-param name="replace-string"><xsl:text>&nl;</xsl:text></xsl:with-param>
+    </xsl:apply-templates>
+    <xsl:text disable-output-escaping="yes"><![CDATA[
 
 =cut
 
@@ -169,27 +169,27 @@ sub new {
 }
 
 sub start {
-	my $self = shift;
-	$self->{session_id} = $self->get_string("getNewBrowserSession", $self->{browser_start_command}, $self->{browser_url});
+    my $self = shift;
+    $self->{session_id} = $self->get_string("getNewBrowserSession", $self->{browser_start_command}, $self->{browser_url});
 }
 
 sub stop {
-	my $self = shift;
-	$self->do_command("testComplete");
-	$self->{session_id} = undef;
+    my $self = shift;
+    $self->do_command("testComplete");
+    $self->{session_id} = undef;
 }
 
 sub do_command {
-	my $self = shift;
-	my $command = shift;
-	$command = uri_escape($command);
-	my @args = @_;
+    my $self = shift;
+    my $command = shift;
+    $command = uri_escape($command);
+    my @args = @_;
     my $fullurl = "http://" . $self->{host}.":".$self->{port}."/selenium-server/driver/\?cmd=$command";
     for (my $i = 0; $i < @args; $i++) {
-    	$fullurl .= "&" . ($i+1) . "=" . uri_escape($args[$i]);
+        $fullurl .= "&" . ($i+1) . "=" . uri_escape($args[$i]);
     }
     if (defined($self->{session_id})) {
-    	$fullurl .= '&sessionId=' . $self->{session_id};
+        $fullurl .= '&sessionId=' . $self->{session_id};
     }
     #print "---> Requesting $fullurl\n";
     my $result;
@@ -214,76 +214,76 @@ sub do_command {
 }
 
 sub get_string {
-	my $self = shift;
-	my $result = $self->do_command(@_);
-	return substr($result, 3);
+    my $self = shift;
+    my $result = $self->do_command(@_);
+    return substr($result, 3);
 }
 
 sub get_string_array {
-	my $self = shift;
-	my $result = $self->get_string(@_);
-	my $token = "";
-	my @tokens = ();
-	my @chars = split(//, $result);
-	for (my $i = 0; $i < @chars; $i++) {
-		my $char = $chars[$i];
-		if ($char eq '\\') {
-			$i++;
-			$char = $chars[$i];
-			$token .= $char;
-		} elsif ($char eq ',') {
-			push (@tokens, $token);
-			$token = "";
-		} else {
-			$token .= $char;
-		}
-	}
-	push (@tokens, $token);
-	return @tokens;
+    my $self = shift;
+    my $result = $self->get_string(@_);
+    my $token = "";
+    my @tokens = ();
+    my @chars = split(//, $result);
+    for (my $i = 0; $i < @chars; $i++) {
+        my $char = $chars[$i];
+        if ($char eq '\\') {
+            $i++;
+            $char = $chars[$i];
+            $token .= $char;
+        } elsif ($char eq ',') {
+            push (@tokens, $token);
+            $token = "";
+        } else {
+            $token .= $char;
+        }
+    }
+    push (@tokens, $token);
+    return @tokens;
 }
 
 sub get_number {
-	my $self = shift;
-	my $result = $self->get_string(@_);
-	# Is there something else I need to do here?
-	return $result;
+    my $self = shift;
+    my $result = $self->get_string(@_);
+    # Is there something else I need to do here?
+    return $result;
 }
 
 sub get_number_array {
-	my $self = shift;
-	my @result = $self->get_string_array(@_);
-	# Is there something else I need to do here?
-	return @result;
+    my $self = shift;
+    my @result = $self->get_string_array(@_);
+    # Is there something else I need to do here?
+    return @result;
 }
 
 sub get_boolean {
-	my $self = shift;
-	my $result = $self->get_string(@_);
-	if ($result eq "true") {
-		return 1;
-	}
-	if ($result eq "false") {
-		return 0;
-	}
-	die "result is neither 'true' nor 'false': $result";
+    my $self = shift;
+    my $result = $self->get_string(@_);
+    if ($result eq "true") {
+        return 1;
+    }
+    if ($result eq "false") {
+        return 0;
+    }
+    die "result is neither 'true' nor 'false': $result";
 }
 
 sub get_boolean_array {
-	my $self = shift;
-	my @result = $self->get_string_array(@_);
-	my @boolarr = ();
-	for (my $i = 0; $i < @result; $i++) {
-		if ($result[$i] eq "true") {
-			push (@boolarr, 1);
-			next;
-		}
-		if ($result[$i] eq "false") {
-			push (@boolarr, 1);
-			next;
-		}
-		die "result is neither 'true' nor 'false': ". $result[$i];
-	}
-	return @boolarr;
+    my $self = shift;
+    my @result = $self->get_string_array(@_);
+    my @boolarr = ();
+    for (my $i = 0; $i < @result; $i++) {
+        if ($result[$i] eq "true") {
+            push (@boolarr, 1);
+            next;
+        }
+        if ($result[$i] eq "false") {
+            push (@boolarr, 1);
+            next;
+        }
+        die "result is neither 'true' nor 'false': ". $result[$i];
+    }
+    return @boolarr;
 }
 
 =head2 METHODS

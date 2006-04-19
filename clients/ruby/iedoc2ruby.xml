@@ -2,7 +2,7 @@
 <!DOCTYPE xslt [
   <!--Used to control code intenting -->
   <!ENTITY nl "&#xa;">
-  <!ENTITY tab "&#x9;">
+  <!ENTITY tab "    ">
 ]>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    
@@ -15,7 +15,7 @@
 	<xsl:apply-templates select="//top" />
 	<xsl:apply-templates select="//function" />
 	<xsl:text disable-output-escaping="yes">
-	end
+    end
 
 end
 
@@ -56,128 +56,128 @@ require 'cgi'
 
 # </xsl:text>
 	<xsl:apply-templates>
-		<xsl:with-param name="replace-string">&#xa;# </xsl:with-param>
+		<xsl:with-param name="replace-string">&nl;# </xsl:with-param>
 	</xsl:apply-templates>
 	<xsl:text disable-output-escaping="yes"><![CDATA[
 module Selenium
 
-	class SeleneseInterpreter
-		include Selenium
-	
-		def initialize(server_host, server_port, browserStartCommand, browserURL, timeout=30000)
-			@server_host = server_host
-			@server_port = server_port
-			@browserStartCommand = browserStartCommand
-			@browserURL = browserURL
-			@timeout = timeout
-		end
-		
-		def to_s
-			"SeleneseInterpreter"
-		end
+    class SeleneseInterpreter
+        include Selenium
+    
+        def initialize(server_host, server_port, browserStartCommand, browserURL, timeout=30000)
+            @server_host = server_host
+            @server_port = server_port
+            @browserStartCommand = browserStartCommand
+            @browserURL = browserURL
+            @timeout = timeout
+        end
+        
+        def to_s
+            "SeleneseInterpreter"
+        end
 
-		def start()
-			result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
-			@session_id = result
-		end
-		
-		def stop()
-			do_command("testComplete", [])
-			@session_id = nil
-		end
+        def start()
+            result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
+            @session_id = result
+        end
+        
+        def stop()
+            do_command("testComplete", [])
+            @session_id = nil
+        end
 
-		def do_command(verb, args)
-			timeout(@timeout) do
-				http = Net::HTTP.new(@server_host, @server_port)
-				command_string = '/selenium-server/driver/?cmd=' + CGI::escape(verb)
-				args.length.times do |i|
-					arg_num = (i+1).to_s
-					command_string = command_string + "&" + arg_num + "=" + CGI::escape(args[i].to_s)
-				end
-				if @session_id != nil
-					command_string = command_string + "&sessionId=" + @session_id.to_s
-				end
-				#print "Requesting --->" + command_string + "\n"
-				response, result = http.get(command_string)
-				#print "RESULT: " + result + "\n\n"
-				if (result[0..1] != "OK")
-					raise SeleniumCommandError, result
-				end
-				return result
-			end
-		end
-		
-		def get_string(verb, args)
-			result = do_command(verb, args)
-			return result[3..result.length]
-		end
-		
-		def get_string_array(verb, args)
-			csv = get_string(verb, args)
-			token = ""
-			tokens = []
-			csv.length.times do |i|
-				letter = csv[i,1]
-				if (letter == '\\')
-					i++
-					letter = csv[i,1]
-					token = token + letter
-				elsif (letter == ',')
-					tokens.push(token)
-					token = ""
-				else
-					token = token + letter
-				end
-			end
-			tokens.push(token)
-			return tokens
-		end
-	
-		def get_number(verb, args)
-			# Is there something I need to do here?
-			return get_string(verb, args)
-		end
-		
-		def get_number_array(verb, args)
-			# Is there something I need to do here?
-			return get_string_array(verb, args)
-		end
-	
-		def get_boolean(verb, args)
-			boolstr = get_string(verb, args)
-			if ("true" == boolstr)
-				return true
-			end
-			if ("false" == boolstr)
-				return false
-			end
-			raise ValueError, "result is neither 'true' nor 'false': " + boolstr
-		end
-		
-		def get_boolean_array(verb, args)
-			boolarr = get_string_array(verb, args)
-			boolarr.length.times do |i|
-				if ("true" == boolstr)
-					boolarr[i] = true
-					next
-				end
-				if ("false" == boolstr)
-					boolarr[i] = false
-					next
-				end
-				raise ValueError, "result is neither 'true' nor 'false': " + boolarr[i]
-			end
-			return boolarr
-		end
+        def do_command(verb, args)
+            timeout(@timeout) do
+                http = Net::HTTP.new(@server_host, @server_port)
+                command_string = '/selenium-server/driver/?cmd=' + CGI::escape(verb)
+                args.length.times do |i|
+                    arg_num = (i+1).to_s
+                    command_string = command_string + "&" + arg_num + "=" + CGI::escape(args[i].to_s)
+                end
+                if @session_id != nil
+                    command_string = command_string + "&sessionId=" + @session_id.to_s
+                end
+                #print "Requesting --->" + command_string + "\n"
+                response, result = http.get(command_string)
+                #print "RESULT: " + result + "\n\n"
+                if (result[0..1] != "OK")
+                    raise SeleniumCommandError, result
+                end
+                return result
+            end
+        end
+        
+        def get_string(verb, args)
+            result = do_command(verb, args)
+            return result[3..result.length]
+        end
+        
+        def get_string_array(verb, args)
+            csv = get_string(verb, args)
+            token = ""
+            tokens = []
+            csv.length.times do |i|
+                letter = csv[i,1]
+                if (letter == '\\')
+                    i++
+                    letter = csv[i,1]
+                    token = token + letter
+                elsif (letter == ',')
+                    tokens.push(token)
+                    token = ""
+                else
+                    token = token + letter
+                end
+            end
+            tokens.push(token)
+            return tokens
+        end
+    
+        def get_number(verb, args)
+            # Is there something I need to do here?
+            return get_string(verb, args)
+        end
+        
+        def get_number_array(verb, args)
+            # Is there something I need to do here?
+            return get_string_array(verb, args)
+        end
+    
+        def get_boolean(verb, args)
+            boolstr = get_string(verb, args)
+            if ("true" == boolstr)
+                return true
+            end
+            if ("false" == boolstr)
+                return false
+            end
+            raise ValueError, "result is neither 'true' nor 'false': " + boolstr
+        end
+        
+        def get_boolean_array(verb, args)
+            boolarr = get_string_array(verb, args)
+            boolarr.length.times do |i|
+                if ("true" == boolstr)
+                    boolarr[i] = true
+                    next
+                end
+                if ("false" == boolstr)
+                    boolarr[i] = false
+                    next
+                end
+                raise ValueError, "result is neither 'true' nor 'false': " + boolarr[i]
+            end
+            return boolarr
+        end
 
 ]]>
 </xsl:text>
 </xsl:template>
 
 <xsl:template match="comment">
-	<xsl:text>&#xa;&#x9;&#x9;# </xsl:text>
+	<xsl:text>&nl;&tab;&tab;# </xsl:text>
 	<xsl:apply-templates>
-		<xsl:with-param name="replace-string">&#xa;&#x9;&#x9;# </xsl:with-param>
+		<xsl:with-param name="replace-string">&nl;&tab;&tab;# </xsl:with-param>
 	</xsl:apply-templates>
 </xsl:template>
 
@@ -194,7 +194,7 @@ module Selenium
 	<xsl:param name="replace-string" />
 	<xsl:call-template name="search-and-replace">
 		<xsl:with-param name="input"><xsl:value-of select='.' /></xsl:with-param>
-		<xsl:with-param name="search-string"><xsl:text>&#xa;</xsl:text></xsl:with-param>
+		<xsl:with-param name="search-string"><xsl:text>&nl;</xsl:text></xsl:with-param>
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
 	</xsl:call-template>
 </xsl:template>
@@ -299,7 +299,7 @@ FUNCTION
 <xsl:template match="function">
 	<!-- Doc -->
 	<xsl:apply-templates select="comment" />
-	<xsl:text>&#xa;&#x9;&#x9;#</xsl:text>
+	<xsl:text>&nl;&tab;&tab;#</xsl:text>
 	<xsl:apply-templates select="param" mode="comment" />
 	<xsl:text>&nl;&tab;&tab;def </xsl:text>
 	<xsl:call-template name="underscorify">
@@ -374,7 +374,7 @@ RETURN
 
 <!-- In the RDoc, add the <param> tag -->
 <xsl:template match="param" mode="comment">
-	<xsl:text>&#xa;&#x9;&#x9;# '</xsl:text>
+	<xsl:text>&nl;&tab;&tab;# '</xsl:text>
 	<xsl:value-of select="@name" />
 	<xsl:text>' is </xsl:text>
 	<xsl:apply-templates />
