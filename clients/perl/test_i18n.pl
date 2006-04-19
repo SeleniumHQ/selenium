@@ -7,10 +7,12 @@ $sel = WWW::Selenium->new( host => "localhost",
                                     );
 $sel->start();
 $sel->open("/selenium-server/tests/html/test_i18n.html");
-$romance = "\xC3\xBC\xC3\xB6\xC3\xA4\xC3\x9C\xC3\x96\xC3\x84 \xC3\xA7\xC3\xA8\xC3\xA9 \xC2\xBF\xC3\xB1 \xC3\xA8\xC3\xA0\xC3\xB9\xC3\xB2";
-$korean = "\xEC\x97\xB4\xEC\x97\x90";
-$chinese = "\xE4\xB8\xAD\xE6\x96\x87";
-$japanese = "\xE3\x81\xBE\xE3\x81\xB7";
+
+$romance = "\x{00FC}\x{00F6}\x{00E4}\x{00DC}\x{00D6}\x{00C4} \x{00E7}\x{00E8}\x{00E9} \x{00BF}\x{00F1} \x{00E8}\x{00E0}\x{00F9}\x{00F2}";
+$korean = "\x{C5F4}\x{C5D0}";
+$chinese = "\x{4E2D}\x{6587}";
+$japanese = "\x{307E}\x{3077}";
+
 verify_text($romance, "romance");
 verify_text($korean, "korean");
 verify_text($chinese, "chinese");
@@ -26,6 +28,6 @@ sub verify_text {
 	if ($actual eq $expected) {
 		print "OK\n";
 	} else {
-		"not equal, expected <$expected> but was <$actual>\n";
+		print "not equal, expected <$expected> but was <$actual>\n";
 	}
 }

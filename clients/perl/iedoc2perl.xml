@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xslt [
   <!--Used to control code intenting -->
   <!ENTITY nl "&#xa;">
@@ -102,6 +102,7 @@ package WWW::Selenium;
 use LWP::UserAgent;
 use HTTP::Request;
 use URI::Escape;
+use Encode;
 use Carp qw(croak);
 
 use strict;
@@ -194,7 +195,7 @@ sub do_command {
     my $i = 1;
     @args = grep defined, @args;
     while (@args) {
-        $fullurl .= "&$i=" . uri_escape(shift @args);
+        $fullurl .= "&$i=" . URI::Escape::uri_escape_utf8(shift @args);
         $i++;
     }
     if (defined $self->{session_id}) {
@@ -214,6 +215,7 @@ sub do_command {
     else {
         die "Error requesting $fullurl:\n" . $response->status_line . "\n";
     }
+    $result = decode_utf8($result);
     die "Error requesting $fullurl:\n$result\n" unless $result =~ /^OK/;
     return $result;
 }
