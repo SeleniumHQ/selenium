@@ -63,7 +63,7 @@ public class XlateHtmlSeleneseToJava {
                 String children[] = dir.list();
                 for (int k = 0; k < children.length; k++) {
                     String fileName = children[k];
-                    if (fileName.indexOf(".htm")!=-1) {
+                    if (fileName.indexOf(".htm")!=-1 && fileName.indexOf("Suite")==-1) {
                         generateJavaClassFromSeleneseHtml(dirName + "/" + fileName, javaSeleneseFileDirectoryName);
                     }
                 }
