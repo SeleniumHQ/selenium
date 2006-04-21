@@ -39,17 +39,20 @@ public class XlateHtmlSeleneseToJava {
 
     private static boolean silentMode = false;
 
-
     public static void main(String[] args) throws IOException {
         boolean generateSuite = false;
         if (args.length < 2) {
             Usage("too few args");
             return;
         }
+        HashMap skipList = new HashMap();
         String javaSeleneseFileDirectoryName = args[0];
         for (int j = 1; j < args.length; j++) {
             if (args[j].equals("-silent")) {
                 silentMode  = true;
+            }
+            else if (args[j].equals("-skip")) {
+                skipList .put(args[++j], Boolean.TRUE);
             }
             else if (args[j].equals("-suite")) {
                 generateSuite = true;
@@ -63,7 +66,7 @@ public class XlateHtmlSeleneseToJava {
                 String children[] = dir.list();
                 for (int k = 0; k < children.length; k++) {
                     String fileName = children[k];
-                    if (fileName.indexOf(".htm")!=-1 && fileName.indexOf("Suite")==-1) {
+                    if (!skipList.containsKey(fileName) && fileName.indexOf(".htm")!=-1 && fileName.indexOf("Suite")==-1) {
                         generateJavaClassFromSeleneseHtml(dirName + "/" + fileName, javaSeleneseFileDirectoryName);
                     }
                 }

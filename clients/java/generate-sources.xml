@@ -19,11 +19,16 @@
 			</condition>
 		</fail>
 		<echo message="maven.src.path = ${maven.src.path}" />
-        <!--
         <mkdir  dir="${dir.java.tests.based.on.core.javascript}" />
         <java classname="com.thoughtworks.selenium.XlateHtmlSeleneseToJava">
             <arg value="${dir.java.tests.based.on.core.javascript}"/>
             <arg value="-silent"/>
+            <arg value="-skip"/>
+            <arg value="TestWaitForNot.html"/>
+            <arg value="-skip"/>
+            <arg value="TestErrorChecking.html"/>
+            <arg value="-skip"/>
+            <arg value="TestJavascriptParameters.html"/>
             <arg value="-dir"/>
             <arg value="${dir.core.javascript}"/>
             <classpath>
@@ -31,7 +36,6 @@
                 <pathelement path="${dir.test-classes}" />
             </classpath>
         </java>
-        -->
 		<xslt in="${iedoc.xml}" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="interface" />
 		</xslt>
