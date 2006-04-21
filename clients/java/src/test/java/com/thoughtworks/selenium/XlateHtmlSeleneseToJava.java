@@ -33,17 +33,47 @@ public class XlateHtmlSeleneseToJava {
     private static int varNameSeed = 1;
 
     private static String EOL = "\n\t\t";
-    
+
+    private static int timeOut = 5;
+    private static String domain;
+
+    private static boolean silentMode = false;
+
+
     public static void main(String[] args) throws IOException {
+        boolean generateSuite = false;
         if (args.length < 2) {
             Usage("too few args");
+            return;
         }
-        else {
-            String javaSeleneseFileDirectoryName = args[0];
-            for (int j = 1; j < args.length; j++) {
+        String javaSeleneseFileDirectoryName = args[0];
+        for (int j = 1; j < args.length; j++) {
+            if (args[j].equals("-silent")) {
+                silentMode  = true;
+            }
+            else if (args[j].equals("-suite")) {
+                generateSuite = true;
+            }
+            else if (args[j].equals("-dir")) {
+                String dirName = args[++j];
+                File dir = new File(dirName);
+                if (!dir.isDirectory()) {
+                    Usage("-dir must be followed by a directory");
+                }
+                String children[] = dir.list();
+                for (int k = 0; k < children.length; k++) {
+                    String fileName = children[k];
+                    if (fileName.indexOf(".htm")!=-1) {
+                        generateJavaClassFromSeleneseHtml(dirName + "/" + fileName, javaSeleneseFileDirectoryName);
+                    }
+                }
+            }
+            else {
                 String htmlSeleneseFileName = args[j];
                 generateJavaClassFromSeleneseHtml(htmlSeleneseFileName, javaSeleneseFileDirectoryName);
             }
+        }
+        if (generateSuite) {
             generateSuite(javaSeleneseFileDirectoryName);
         }
     }
@@ -115,7 +145,9 @@ public class XlateHtmlSeleneseToJava {
 
     private static void WriteFileContents(String s, File f) throws IOException {
         FileWriter output = new FileWriter(f);
-        System.out.println(">>>>" + s + "<<<<");
+        if (!silentMode) {
+            System.out.println(">>>>" + s + "<<<<");
+        }
         output.write(s);
         output.close();
     }
@@ -130,7 +162,7 @@ public class XlateHtmlSeleneseToJava {
     
     private static String XlateString(String base, String htmlSeleneseFileName, String htmlSelenese) {
         declaredVariables.clear();
-        
+        domain = null;
         String preamble = "package com.thoughtworks.selenium.corebased;\n" + 
         "import com.thoughtworks.selenium.*;\n" +
         "/**\n" + 
@@ -190,8 +222,12 @@ public class XlateHtmlSeleneseToJava {
             java.append("\n");
         }
         
+        String possibleSetup = (domain==null ? "" : "\tpublic void setUp() throws Exception {\n" + 
+                "\t\tsuper.setUp(\"" + domain + "\");\n" + 
+                "\t}\n");
+        
         System.out.println("-------------------------------------------------------------\n" + java);
-        String ending = "\n\t\tcheckForVerificationErrors();\n\t}\n}\n";
+        String ending = "\n\t\tcheckForVerificationErrors();\n\t}\n" + possibleSetup + "}\n";
                 return preamble + java.toString() + ending;
     }
 
@@ -239,6 +275,9 @@ public class XlateHtmlSeleneseToJava {
             .append("\tpause(1000);" + EOL)
             .append("}" + EOL)
             .append("assertTrue(" + conditionCkVarName + ");" + EOL);
+        }
+        else if (op.matches("setTimeout")) {
+            timeOut  = Integer.parseInt(tokens[1]);
         }
         else if (op.matches(".*(Error|Failure)OnNext") || op.matches("verify(Element)?(Not)?(Editable|Visible|Present|Selected)")) {
             String throwCkVarName = "sawThrow" + j;
@@ -289,7 +328,7 @@ public class XlateHtmlSeleneseToJava {
             tokens[0] = tokens[0].replaceFirst("waitFor", "assert");
         }
         if (op.endsWith("AndWait")) {
-            ending += EOL + "selenium.waitForPageToLoad(\"60000\");";
+            ending += EOL + "selenium.waitForPageToLoad(\"" + timeOut + "\");";
             op = op.replaceFirst("AndWait", "");
             tokens[0] = tokens[0].replaceFirst("AndWait", "");
         }
@@ -396,7 +435,7 @@ public class XlateHtmlSeleneseToJava {
                     || op.equals("modalDialogTest")) {
                 return "// skipped undocumented " + oldLine;
             }
-            else if (op.equals("SelectOptions")) {
+            else if (op.equals("SelectOptions") || op.equals("SelectedOptions")) {
                 String tmpArrayVarName = newTmpName();
                 beginning = declareAndInitArray(tmpArrayVarName, tokens[2]) + "\n" + beginning;
                 middle = tmpArrayVarName + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
@@ -417,6 +456,9 @@ public class XlateHtmlSeleneseToJava {
                ) {
             return "// skipped undocumented, unsupported op in " + oldLine;
         }
+        if (op.equals("open")) {
+            recordFirstDomain(tokens[1]);
+        }
         int expectedArgCount = 2;
         if (op.equals("open")
                 || op.equals("answerOnNextPrompt")
@@ -436,6 +478,20 @@ public class XlateHtmlSeleneseToJava {
         }
         return beginning + XlateSeleneseStatementDefault(expectedArgCount, "selenium", tokens) + ending;
     }
+
+    private static void recordFirstDomain(String urlToOpen) {
+        if (domain!=null) {
+            return;   // first domain already recorded, apparently
+        }
+        if (urlToOpen.indexOf("//")==-1) {
+            return;  // apparently no protocol, so I'm not sure how to find the domain
+        }
+        domain = urlToOpen.replaceFirst("://", ":::") // get those slashes out of the way, so I don't need to use (<?/)/[^/] 
+        .replaceFirst("/.*", "")
+        .replaceFirst("\\?.*", "")
+        .replaceFirst(":::", "://");  // put the slashes back
+    }
+
 
     private static String declareAndInitArray(String name, String commaSeparatedValue) {
         String DIVIDER = ">>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>><<";
@@ -536,7 +592,7 @@ public class XlateHtmlSeleneseToJava {
     
     
     private static void Usage(String errorMessage) {
-        System.err.println(errorMessage + "\nUsage: XlateHtmlSeleneseToJava [seleneseJavaFileNameDirectory] [seleneseHtmlFileName1 seleneseHtmlFileName2 ...] \n"
+        System.err.println(errorMessage + "\nUsage: XlateHtmlSeleneseToJava [-suite] [-silent] [seleneseJavaFileNameDirectory] [-dir seleneseHtmlDirName] [seleneseHtmlFileName1 seleneseHtmlFileName2 ...] \n"
                 + "e.g., XlateHtmlSeleneseToJava a/b/c x/y/z/seleneseTestCase.html" 
                 + "will take x/y/z/seleneseTestCase.html as its input and produce as its output an equivalent Java" 
                 + "class at a/b/c/seleneseTestCase.java.");

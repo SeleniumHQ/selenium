@@ -117,6 +117,13 @@ public class SeleneseTestCase extends TestCase {
         return true;
     }
     
+    public static boolean seleniumEquals(Object s1, Object s2) {
+        if (s1 instanceof String && s2 instanceof String) {
+            return seleniumEquals((String)s1, (String)s2);
+        }
+        return s1.equals(s2);
+    }
+    
     public static void verifyEquals(String[] s1, String[] s2) {
         verifyEquals(new Integer(s1.length), new Integer(s2.length));
         if (s1.length==s2.length) {

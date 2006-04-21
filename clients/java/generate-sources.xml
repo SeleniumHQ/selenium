@@ -1,12 +1,17 @@
 <project name="java-client-driver-generate-sources" default="generate-sources">
 	
 	<property name="javascript.maven.sources" location="${ant.file.java-client-driver-generate-sources}/../src/selenium" />
+	<property name="dir.java.tests.based.on.core.javascript" location="${maven.src.path}/../../../../../test/java/com/thoughtworks/selenium/corebased" />
+	<property name="dir.core.javascript" location="${maven.src.path}/../../../../../../../../../core/tests" />
+	<property name="dir.test-classes" location="${maven.src.path}/../../../../../../../../clients/java/target/test-classes" />
+	<property name="selenium-rc.jar" location="${maven.src.path}/../../../../../../../dist-image/server/selenium-server.jar" />
 	
 	<target name="clean-sources">
 		<delete file="${maven.src.path}/Selenium.java" />
 		<delete file="${maven.src.path}/DefaultSelenium.java" />
+		<delete dir="${dir.java.tests.based.on.core.javascript}" />
 	</target>
-	<target name="generate-sources" depends="extract-xml" unless="skip.generation.true">
+    <target name="generate-sources" depends="extract-xml" unless="skip.generation.true">
 		<fail unless="maven.src.path" message="maven.src.path was not set.  This ant script must be run from within Maven!" />
 		<fail message="maven.src.path could not be found: ${maven.src.path}">
 			<condition>
@@ -14,6 +19,17 @@
 			</condition>
 		</fail>
 		<echo message="maven.src.path = ${maven.src.path}" />
+        <mkdir  dir="${dir.java.tests.based.on.core.javascript}" />
+        <java classname="com.thoughtworks.selenium.XlateHtmlSeleneseToJava">
+            <arg value="${dir.java.tests.based.on.core.javascript}"/>
+            <arg value="-silent"/>
+            <arg value="-dir"/>
+            <arg value="${dir.core.javascript}"/>
+            <classpath>
+                <pathelement path="${selenium-rc.jar}" />
+                <pathelement path="${dir.test-classes}" />
+            </classpath>
+        </java>
 		<xslt in="${iedoc.xml}" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="interface" />
 		</xslt>
