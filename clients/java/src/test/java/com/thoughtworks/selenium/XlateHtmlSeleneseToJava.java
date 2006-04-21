@@ -192,13 +192,17 @@ public class XlateHtmlSeleneseToJava {
         body = body.replaceAll("</?tbody>", "");
         body = body.replaceAll("<tr><t[dh]\\s+(rowspan=\"1\"\\s+)?colspan=\"3\">([^<]+)</t[dh]></tr>", 
                 "\n/* $2 */\n");
-        System.out.println("-------------------------------------------------------------\n" + body);
+        if (!silentMode) {
+            System.out.println("-------------------------------------------------------------\n" + body);
+        }
         body = body.replaceAll("&nbsp;?", "");  // sic -- need to match test code's typos
         body = body.replaceAll("</table>.*?<table.*?>", "");
         body = body.replaceAll("</table>.*", "");
         body = body.replaceAll("</?tbody>", "");
         
-        System.out.println("-------------------------------------------------------------\n" + body);
+        if (!silentMode) {
+            System.out.println("-------------------------------------------------------------\n" + body);
+        }
 
         //      since I use <tr> to decide where to call the selenium object, make sure there's
         // no leading comment which would confuse matters:
@@ -211,7 +215,9 @@ public class XlateHtmlSeleneseToJava {
         body = body.replaceAll("</?td>", "");
         body = body.replaceAll("\\s*\\)", ")");
         body = body.replaceAll("<td/>", "");
-        System.out.println("-------------------------------------------------------------\n" + body);
+        if (!silentMode) {
+            System.out.println("-------------------------------------------------------------\n" + body);
+        }
         String lines[] = body.split("\n");
         for (int j = 0; j < lines.length;) {
             String line = lines[j];
@@ -229,7 +235,9 @@ public class XlateHtmlSeleneseToJava {
                 "\t\tsuper.setUp(\"" + domain + "\");\n" + 
                 "\t}\n");
         
-        System.out.println("-------------------------------------------------------------\n" + java);
+        if (!silentMode) {
+            System.out.println("-------------------------------------------------------------\n" + java);
+        }
         String ending = "\n\t\tcheckForVerificationErrors();\n\t}\n" + possibleSetup + "}\n";
                 return preamble + java.toString() + ending;
     }
