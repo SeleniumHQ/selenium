@@ -1,1 +1,0 @@
-To install Selenium for Plone into your Plone site, please read Selenium/INSTALL.txt

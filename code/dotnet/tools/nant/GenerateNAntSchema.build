@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<project name="GenerateNAntSchemaForVS.NET" default="genschema">
-    <property name="SchemaFile" value="C:\Program Files\Microsoft Visual Studio .NET 2003\Common7\Packages\schemas\xml\NAnt.xsd"/>
-    <target name="genschema">
-        <nantschema output="${SchemaFile}" target-ns="http://nant.sf.net/schemas/nant.xsd"/>
-    </target>
-</project>

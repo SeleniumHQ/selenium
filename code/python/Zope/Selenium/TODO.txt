@@ -1,8 +1,0 @@
-
-Need tests for:
-* Interpreter unit tests
-* Adding Selenium to Plone
-* Adding skin to Plone
-
-
-
