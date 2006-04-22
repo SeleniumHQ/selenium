@@ -1,1 +1,2 @@
-trunk (SVN/UNRELEASED)
+Version=@VERSION@
+Revision=@REVISION@

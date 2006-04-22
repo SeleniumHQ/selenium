@@ -20,9 +20,12 @@ http-equiv="content-type">
 <title>Select a Test Suite</title>
 </head>
 <body>
-<form onsubmit="document.location = document.forms[0].test.value; window.parent.setTimeout(window.parent.onloadTestSuite, 10); return false;">
-<P>Select an HTML test suite:</P>
-<input id="test" name="test" size="30" value="../tests/TestSuite.html"/> <input type="submit" value="go" />
+<form target="_top" action="TestRunner.html">
+<p>Select an HTML test suite:</p>
+<input id="test" name="test" size="30" value="../tests/TestSuite.html"/>
+<p>Auto-run <input type="checkbox" name="auto" value="true"/></p>
+<p>Results URL (only used for auto-run) <input name="resultsUrl" value="../postResults"/></p>
+<input type="submit" value="go"/>
 </form>
 </body>
 </html>

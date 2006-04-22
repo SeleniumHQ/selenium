@@ -1,37 +1,62 @@
 <project name="selenium" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
     <property name="version" value="0.7-SNAPSHOT"/>
-    
-	<target name="all" depends="install-jar, dist" />
 
-	<target name="clean">
-		<delete>
-			<fileset file="javascript/core/iedoc.xml" />
-		</delete>
-		<mkdir dir="dist" />
-		<delete dir="dist" />
-	</target>
+    <target name="all" depends="install-jar, dist"/>
 
-	<!-- TODO generate doc -->
-	
-	<target name="generate-xml">
-		<exec executable="cscript" dir="javascript" output="javascript/core/iedoc.xml" failonerror="true">
-			<arg value="/nologo"/>
-			<arg file="javascript/iedoc.js"/> 
-		</exec>
-		<xmlvalidate file="javascript/core/iedoc.xml" lenient="true"/>
-	</target>
+    <property name="dist.dir" location="dist"/>
+    <property name="image.dir" location="${dist.dir}/image"/>
 
-	<target name="generate-doc" depends="generate-xml">
-		<xslt in="javascript/core/iedoc.xml" out="javascript/reference.html" style="javascript/iedoc2html.xml"/>
-	</target>
+    <target name="clean">
+        <delete dir="${dist.dir}"/>
+    </target>
 
-	<target name="install-jar" depends="generate-doc, maven-tasks">
-		<mkdir dir="dist"/>
-		<jar destfile="dist/selenium-core.jar">
-			<fileset dir="javascript" />
-		</jar>
-		<echo file="maven.project"><![CDATA[
+    <target name="get-svn-revision">
+        <exec command="svnversion ." outputProperty="svn-revision" failIfExecutionFails="true"/>
+    </target>
+
+    <target name="copy-sources">
+        <property name="svn-revision" value="unknown-revision"/>
+        <copy todir="${image.dir}">
+            <fileset dir="javascript">
+                <exclude name="jsunit/intellij/**"/>
+                <exclude name="jsunit/java/**"/>
+                <exclude name="jsunit/tests/**"/>
+            </fileset>
+            <filterset>
+                <filter token="VERSION" value="${version}"/>
+                <filter token="REVISION" value="${svn-revision}"/>
+            </filterset>
+        </copy>
+    </target>
+
+    <target name="generate-xml">
+        <exec executable="cscript" dir="javascript" output="${image.dir}/core/iedoc.xml" failonerror="true">
+            <arg value="/nologo"/>
+            <arg file="javascript/iedoc.js"/>
+        </exec>
+        <xmlvalidate file="${image.dir}/core/iedoc.xml" lenient="true"/>
+    </target>
+
+    <target name="generate-doc" depends="generate-xml">
+        <xslt in="${image.dir}/core/iedoc.xml" out="${image.dir}/reference.html" style="javascript/iedoc2html.xml"/>
+    </target>
+
+    <target name="dist-image" depends="get-svn-revision, copy-sources, generate-doc"/>
+
+    <target name="dist" depends="dist-image">
+        <property name="selenium-core-release" value="selenium-core-${version}"/>
+        <zip destfile="${dist.dir}/${selenium-core-release}.zip">
+            <zipfileset dir="${image.dir}" prefix="${selenium-core-release}"/>
+        </zip>
+    </target>
+
+    <target name="install-jar" depends="dist-image, maven-tasks">
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="dist/selenium-core.jar">
+            <fileset dir="${image.dir}"/>
+        </jar>
+        <echo file="maven.project"><![CDATA[
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -43,43 +68,35 @@
     <url>http://www.openqa.org/selenium</url>
 </project>
 ]]>
-</echo>
-		<maven:pom id="maven.project" file="maven.project" />
-		<maveninst file="dist/selenium-core.jar">
-			<pom refid="maven.project" />
-		</maveninst>
-	</target>
-	
-    <target name="dist" depends="generate-doc">
-        <mkdir dir="dist"/>
-        <property name="selenium-core-release" value="selenium-core-${version}" />
-        <zip destfile="dist/${selenium-core-release}.zip">
-        	<zipfileset dir="javascript" prefix="${selenium-core-release}" />
-        </zip>
+        </echo>
+        <maven:pom id="maven.project" file="maven.project"/>
+        <maveninst file="dist/selenium-core.jar">
+            <pom refid="maven.project"/>
+        </maveninst>
     </target>
 
-    	<target name="maven-tasks-base">
-		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
-			<classpath>
-				<pathelement location="maven-artifact-ant-2.0.2-dep.jar" />
-			</classpath>
-		</typedef>
-	</target>
-	
-	<target name="custom-repo" depends="maven-tasks-base" if="custom.maven.repo">
-		<presetdef name="maveninst">
-			<maven:install>
-				<localRepository location="${custom.maven.repo}" />
-			</maven:install>
-		</presetdef>
-	</target>
-	
-	<target name="default-repo" depends="maven-tasks-base" unless="custom.maven.repo">
-		<presetdef name="maveninst">
-			<maven:install/>
-		</presetdef>
-	</target>
+    <target name="maven-tasks-base">
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
+            <classpath>
+                <pathelement location="maven-artifact-ant-2.0.2-dep.jar"/>
+            </classpath>
+        </typedef>
+    </target>
 
-	<target name="maven-tasks" depends="custom-repo, default-repo" />
+    <target name="custom-repo" depends="maven-tasks-base" if="custom.maven.repo">
+        <presetdef name="maveninst">
+            <maven:install>
+                <localRepository location="${custom.maven.repo}"/>
+            </maven:install>
+        </presetdef>
+    </target>
+
+    <target name="default-repo" depends="maven-tasks-base" unless="custom.maven.repo">
+        <presetdef name="maveninst">
+            <maven:install/>
+        </presetdef>
+    </target>
+
+    <target name="maven-tasks" depends="custom-repo, default-repo"/>
 
 </project>
