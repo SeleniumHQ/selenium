@@ -2,7 +2,7 @@
 
     <property name="version" value="0.7-SNAPSHOT"/>
     
-	<target name="all" depends="dist" />
+	<target name="all" depends="install-jar, dist" />
 
 	<target name="clean">
 		<delete>
@@ -22,7 +22,11 @@
 		<xmlvalidate file="javascript/core/iedoc.xml" lenient="true"/>
 	</target>
 
-	<target name="install-jar" depends="generate-xml, maven-tasks">
+	<target name="generate-doc" depends="generate-xml">
+		<xslt in="javascript/core/iedoc.xml" out="javascript/reference.html" style="javascript/iedoc2html.xml"/>
+	</target>
+
+	<target name="install-jar" depends="generate-doc, maven-tasks">
 		<mkdir dir="dist"/>
 		<jar destfile="dist/selenium-core.jar">
 			<fileset dir="javascript" />
@@ -46,7 +50,7 @@
 		</maveninst>
 	</target>
 	
-    <target name="dist" depends="generate-xml">
+    <target name="dist" depends="generate-doc">
         <mkdir dir="dist"/>
         <property name="selenium-core-release" value="selenium-core-${version}" />
         <zip destfile="dist/${selenium-core-release}.zip">
