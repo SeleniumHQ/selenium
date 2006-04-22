@@ -4,15 +4,21 @@
 
     <target name="all" depends="install-jar, dist"/>
 
-    <property name="dist.dir" location="dist"/>
-    <property name="image.dir" location="${dist.dir}/image"/>
+    <property name="resultshandler.path.prefix" value=""/>
+    <property name="svnversion.executable" value="svnverion"/>
+
+    <property name="build.dir" location="../build"/>
+    <property name="dist.dir" location="${build.dir}/dist"/>
+    <property name="image.dir" location="${build.dir}/image"/>
+    <property name="resultshandler.image.dir" location="${build.dir}/resultshandler"/>
 
     <target name="clean">
-        <delete dir="${dist.dir}"/>
+        <delete dir="${build.dir}"/>
     </target>
 
     <target name="get-svn-revision">
-        <exec command="svnversion ." outputProperty="svn-revision" failIfExecutionFails="true"/>
+        <exec executable="${svnversion.executable}" outputProperty="svn-revision" failIfExecutionFails="true"/>
+        <echo message="Got svn revision: ${svn-revision}"/>
     </target>
 
     <target name="copy-sources">
@@ -45,10 +51,44 @@
     <target name="dist-image" depends="get-svn-revision, copy-sources, generate-doc"/>
 
     <target name="dist" depends="dist-image">
+        <mkdir dir="${dist.dir}"/>
         <property name="selenium-core-release" value="selenium-core-${version}"/>
         <zip destfile="${dist.dir}/${selenium-core-release}.zip">
             <zipfileset dir="${image.dir}" prefix="${selenium-core-release}"/>
         </zip>
+    </target>
+
+    <target name="resultshandler-image" depends="get-svn-revision, copy-sources"
+            description="Creates a public test results handler image - this should be copied to an apache directory, preserving permissions.">
+        <echo>
+        Creating a public test results handler image for Selenium revision ${svn-revision} at
+            ${resultshandler.image.dir}.
+        This should be copied to an apache directory that is available via the URL "http://HOST${resultshandler.path.prefix}".
+        Permissions must be preserved in the copy.
+        </echo>
+        <!-- Copy the image -->
+        <copy todir="${resultshandler.image.dir}/selenium">
+            <fileset dir="${image.dir}"/>
+        </copy>
+
+        <!-- Copy the results handler files with correct permissions -->
+        <copy todir="${resultshandler.image.dir}">
+            <fileset dir="resultshandler"/>
+            <filterset>
+                <filter token="PATH_PREFIX" value="${resultshandler.path.prefix}"/>
+            </filterset>
+        </copy>
+        <chmod perm="755">
+            <fileset dir="${resultshandler.image.dir}">
+                <include name="**/*.rb"/>
+            </fileset>
+        </chmod>
+        <chmod perm="777">
+            <dirset dir="${resultshandler.image.dir}">
+                <include name="results"/>
+            </dirset>
+        </chmod>
+        <chmod file="${resultshandler.image.dir}/results/index.html" perm="666"/>
     </target>
 
     <target name="install-jar" depends="dist-image, maven-tasks">
