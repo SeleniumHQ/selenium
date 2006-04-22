@@ -261,6 +261,13 @@ public class SeleniumServer {
                     seleniumProxy.stop();
                     System.exit(0);
                 }
+                
+                if ("".equals(userInput)) continue;
+                
+                if (!userInput.startsWith("cmd=") && !userInput.startsWith("commandResult=")) {
+                    System.err.println("ERROR -  Invalid command: " + userInput);
+                    continue;
+                }
 
                 final URL url = new URL("http://localhost:" + port + "/selenium-server/driver?" + userInput);
                 Thread t = new Thread(new Runnable() {
