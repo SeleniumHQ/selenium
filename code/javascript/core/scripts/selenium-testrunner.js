@@ -459,6 +459,9 @@ function postTestResults(suiteFailed, suiteTable) {
         }
     }
 
+    form.createHiddenField("selenium.version", Selenium.version);
+    form.createHiddenField("selenium.revision", Selenium.revision);
+    
     form.createHiddenField("result", suiteFailed == true ? "failed" : "passed");
 
     form.createHiddenField("totalTime", Math.floor((currentTime - startTime) / 1000));

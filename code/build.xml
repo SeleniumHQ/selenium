@@ -90,7 +90,11 @@
                 <include name="results"/>
             </dirset>
         </chmod>
-        <chmod file="${resultshandler.image.dir}/results/index.html" perm="666"/>
+        <chmod perm="666">
+            <fileset dir="${resultshandler.image.dir}/results">
+                <include name="index.html"/>
+            </fileset>
+        </chmod>
     </target>
 
     <target name="install-jar" depends="dist-image, maven-tasks">
