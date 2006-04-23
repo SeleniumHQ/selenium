@@ -8,8 +8,8 @@ cgi = CGI.new
 result = "#{cgi['result']}".upcase
 version = cgi['selenium.version']
 revision = cgi['selenium.revision']
-timeString = Time.now.strftime("%Y%m%d%H%M%S")
-resultsFile = "#{timeString}_#{result}.html"
+completionTime = Time.now
+resultsFile = "#{completionTime.strftime("%Y%m%d%H%M%S")}#{completionTime.usec}_#{result}.html"
 
 File.open(RESULTS_DIR + resultsFile, "w") do |file|
   file.puts <<EOL
@@ -37,13 +37,20 @@ EOL
   file.chmod(0666)
 end
 
-indexFragment = RESULTS_DIR + "index.fragment.html"
-File.open(indexFragment, "a") do |file|
-  file.puts <<EOL
-<tr><td>#{revision}</td><td><a href="#{resultsFile}">#{result}</a></td><td>#{Time.now}</td><td>#{cgi.user_agent}</td></tr>
+resultsListFile = RESULTS_DIR + "results.list"
+File.open(resultsListFile, "a") do |file|
+    file.puts <<EOL
+resultsList.push({:revision => "#{revision}",
+                  :result => "#{result}",
+                  :file => "#{resultsFile}",
+                  :time => Time.at(#{completionTime.tv_sec}, #{completionTime.tv_usec}),
+                  :user_agent => "#{cgi.user_agent}"})
+
 EOL
-  file.chmod(0666)
 end
+
+resultsList = Array.new
+eval "#{IO.readlines(resultsListFile)}"
 
 indexFile = RESULTS_DIR + "index.html"
 File.open(indexFile, "w") do |file|
@@ -54,7 +61,17 @@ File.open(indexFile, "w") do |file|
 <table border="1">
 <tr><th>Revision</th><th>Result</th><th>Date</th><th>User Agent</th></tr>
 EOL
-  IO.foreach(indexFragment) { |line| file.puts line }
+
+  resultsList.each do |aResult|
+      file.puts <<EOL
+    <tr><td>#{aResult[:revision]}</td>
+        <td><a href="#{aResult[:file]}">#{aResult[:result]}</a></td>
+        <td>#{aResult[:time]}</td>
+        <td>#{aResult[:user_agent]}</td>
+    </tr>
+EOL
+  end
+
   file.puts <<EOL
 </table>
 </body>

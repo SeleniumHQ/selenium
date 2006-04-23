@@ -93,6 +93,7 @@
         <chmod perm="666">
             <fileset dir="${resultshandler.image.dir}/results">
                 <include name="index.html"/>
+                <include name="results.list"/>
             </fileset>
         </chmod>
     </target>
