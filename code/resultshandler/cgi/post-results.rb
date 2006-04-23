@@ -35,8 +35,7 @@ end
 #
 def create_test_result_file(result, cgi)
   File.open(RESULTS_DIR + result.file, "w") do |file|
-    file.puts
-<<EOL
+    file.puts <<EOL
 <html><head><title>Results</title></head>
 <body>
 <h1>Selenium test results</h1>
@@ -55,12 +54,12 @@ EOL
       file.puts cgi[key]
     end
 
-    file.puts
-<<EOL
-<body>
+    file.puts <<EOL
+</body>
+</html>
 EOL
-      file.chmod(0666)
-    end
+    file.chmod(0666)
+  end
 end
 
 #
