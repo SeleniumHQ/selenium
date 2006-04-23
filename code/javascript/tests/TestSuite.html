@@ -27,6 +27,9 @@ http-equiv="content-type">
     var isFirefox = (navigator.userAgent.indexOf('Firefox') != -1);
     var isNetscape = !isOpera && !isFirefox && (navigator.appName == "Netscape");
 
+    var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
+    var geckoVersion = geckoResult == null ? null : geckoResult[1];
+
     function filterTestsForBrowser() {
         var suiteTable = document.getElementById("suiteTable");
         var skippedTests = document.getElementById("skippedTests");
@@ -71,6 +74,7 @@ http-equiv="content-type">
             <tr><td><a href="./TestWaitFor.html">TestWaitFor</a></td></tr>
             <tr><td><a href="./TestWaitForNot.html">TestWaitForNot</a></td></tr>
             <tr><td><a href="./TestVerifications.html">TestVerifications</a></td></tr>
+            <tr if="!(geckoVersion && geckoVersion >= 20060308)"><td><a href="./TestTextContent.html">TestTextContent</a></td></tr>
             <tr><td><a href="./TestPatternMatching.html">TestPatternMatching</a></td></tr>
             <tr><td><a href="./TestLocators.html">TestLocators</a></td></tr>
             <tr><td><a href="./TestImplicitLocators.html">TestImplicitLocators</a></td></tr>
