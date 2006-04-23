@@ -6,6 +6,7 @@
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnverion"/>
+    <property name="ruby.executable" value="/usr/bin/ruby"/>
 
     <property name="build.dir" location="../build"/>
     <property name="dist.dir" location="${build.dir}/dist"/>
@@ -76,6 +77,7 @@
             <fileset dir="resultshandler"/>
             <filterset>
                 <filter token="PATH_PREFIX" value="${resultshandler.path.prefix}"/>
+                <filter token="RUBY" value="${ruby.executable}"/>
             </filterset>
         </copy>
         <chmod perm="755">

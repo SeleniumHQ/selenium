@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!@RUBY@
 require 'cgi'
 
 RESULTS_DIR = "../results/"
@@ -20,9 +20,6 @@ File.open(RESULTS_DIR + resultsFile, "w") do |file|
   <dt>Result</dt><dd><b>#{result}</b></dd>
 </dl>
 EOL
-cgi.params.each do |key, value|
-  file.puts key, " = ", value, "<br>"
-end
 
   file.puts cgi.params['suite']
 
