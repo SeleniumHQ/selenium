@@ -9,7 +9,7 @@ import junit.framework.*;
 
 import org.openqa.selenium.server.*;
 
-import com.thoughtworks.selenium.corebased.*;
+//import com.thoughtworks.selenium.corebased.*;
 
 /** The wrapper test suite for these tests, which spawns an in-process Selenium Server
  * for simple integration testing.
