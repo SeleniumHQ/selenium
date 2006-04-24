@@ -40,10 +40,12 @@ http-equiv="content-type">
             var filterString = row.getAttribute("unless");
             if (filterString && eval(filterString))
             {
-                suiteTable.deleteRow(rowNum);
+              var cellHTML = row.cells[0].innerHTML;
+              suiteTable.deleteRow(rowNum);
 
-                var newRow = skippedTests.insertRow(1);
-                newRow.innerHTML = row.innerHTML;
+              var newRow = skippedTests.insertRow(1);
+              var newCell = newRow.insertCell(0)
+              newCell.innerHTML = cellHTML;
             }
         }
     }
@@ -74,7 +76,8 @@ http-equiv="content-type">
             <tr><td><a href="./TestWaitFor.html">TestWaitFor</a></td></tr>
             <tr><td><a href="./TestWaitForNot.html">TestWaitForNot</a></td></tr>
             <tr><td><a href="./TestVerifications.html">TestVerifications</a></td></tr>
-            <tr unless="isIE || isKonqueror || isSafari || geckoVersion"><td><a href="./TestTextContent.html">TestTextContent</a></td></tr>
+            <tr unless="geckoVersion && geckoVersion >= 20060308"><td><a href="./TestTextNewlines.html">TestTextNewlines</a></td></tr>
+            <tr unless="isIE || isKonqueror || isSafari || geckoVersion"><td><a href="./TestTextWhitespace.html">TestTextWhitespace</a></td></tr>
             <tr><td><a href="./TestPatternMatching.html">TestPatternMatching</a></td></tr>
             <tr><td><a href="./TestLocators.html">TestLocators</a></td></tr>
             <tr><td><a href="./TestImplicitLocators.html">TestImplicitLocators</a></td></tr>
@@ -92,15 +95,11 @@ http-equiv="content-type">
             <tr><td><a href="./events/TestMouseEvents.html">TestMouseEvents</a></td></tr>
             <tr unless="isKonqueror || isSafari"><td><a href="./events/TestKeyEvents.html">TestKeyEvents</a></td></tr>
             <tr><td><a href="./TestFocusOnBlur.html">TestFocusOnBlur</a></td></tr>
-            <tr unless="isSafari"><td><a href="./TestVerifyAlerts.html">TestVerifyAlerts</a></td></tr>
-            <tr><td><a href="./TestVerifyAlertsFailures.html">TestVerifyAlertsFailures</a></td></tr>
-            <tr><td><a href="./TestConfirmations.html">TestVerifyConfirmations</a></td></tr>
-            <tr><td><a href="./TestVerifyConfirmationFailures.html">TestVerifyConfirmationFailures</a></td></tr>
-            <tr><td><a href="./TestPrompting.html">TestVerifyPrompt</a></td></tr>
+            <tr unless="isSafari"><td><a href="./TestAlerts.html">TestAlerts</a></td></tr>
+            <tr><td><a href="./TestConfirmations.html">TestConfirmations</a></td></tr>
+            <tr><td><a href="./TestPrompt.html">TestPrompt</a></td></tr>
             <tr unless="isKonqueror || isSafari"><td><a href="./TestVisibility.html">TestVisibility</a></td></tr>
-            <tr unless="isKonqueror || isSafari"><td><a href="./TestVisibilityFailures.html">TestVisibilityFailures</a></td></tr>
-            <tr><td><a href="./TestVerifyEditable.html">TestVerifyEditable</a></td></tr>
-            <tr><td><a href="./TestVerifyEditableFailures.html">TestVerifyEditableFailures</a></td></tr>
+            <tr><td><a href="./TestEditable.html">TestEditable</a></td></tr>
 
             <tr><td><a href="./TestFailingVerifications.html">TestFailingVerifications</a></td></tr>
             <tr><td><a href="./TestFailingAssert.html">TestFailingAssert</a></td></tr>

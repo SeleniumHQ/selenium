@@ -89,6 +89,80 @@ Copyright 2004 ThoughtWorks, Inc
       <td></td>
     </tr>
 
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_verify_alert.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>There were no alerts</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>noAlert</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td>click</td>
+      <td>oneAlert</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Actual value 'Store Below 494 degrees K!' did not match 'wrongAlert'</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>wrongAlert</td>
+      <td></td>
+    </tr>
+
+   <tr>
+      <td>click</td>
+      <td>twoAlerts</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Actual value 'Store Below 220 degrees C!' did not match 'Store Below 429 degrees F!'</td>
+      <td></td>
+    </tr>
+      <tr>
+      <td>verifyAlert</td>
+      <td>Store Below 429 degrees F!</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Actual value 'Store Below 429 degrees F!' did not match 'Store Below 220 degrees C!'</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>Store Below 220 degrees C!</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td>click</td>
+      <td>oneAlert</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>assertErrorOnNext</td>
+      <td>There was an unexpected Alert! [Store Below 494 degrees K!]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_verify_alert.html</td>
+      <td>&nbsp;</td>
+    </tr>
    
   </tbody>
 </table>

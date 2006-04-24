@@ -69,8 +69,59 @@ Copyright 2004 ThoughtWorks, Inc
       <td>Dummy Page</td>
       <td></td>
     </tr>
-    
-   
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_confirm.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>There were no confirmations</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyConfirmation</td>
+      <td>This should fail - there are no confirmations</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td>clickAndWait</td>
+      <td>confirmAndLeave</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Actual value 'You are about to go to a dummy page.' did not match 'this should fail - wrong confirmation'</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyConfirmation</td>
+      <td>this should fail - wrong confirmation</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_confirm.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>clickAndWait</td>
+      <td>confirmAndLeave</td>
+      <td></td>
+    </tr>
+      <tr>
+        <td>assertErrorOnNext</td>
+        <td>There was an unexpected Confirmation! [You are about to go to a dummy page.]</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>open</td>
+        <td>../tests/html/test_confirm.html</td>
+        <td>&nbsp;</td>
+      </tr>
+
   </tbody>
 </table>
 </body>
