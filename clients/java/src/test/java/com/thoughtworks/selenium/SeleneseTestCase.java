@@ -87,6 +87,11 @@ public class SeleneseTestCase extends TestCase {
     }
     
     public static boolean seleniumEquals(String s1, String s2) {
+        if (s2.startsWith("regexp:")) {
+            String tmp = s2;
+            s2 = s1;
+            s1 = tmp;
+        }
         if (s1.startsWith("regexp:")) {
             String s1regexp = s1.replaceFirst("regexp:", ".*") + ".*";
             if (!s2.matches(s1regexp)) {

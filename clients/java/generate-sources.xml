@@ -2,6 +2,7 @@
 	
 	<property name="javascript.maven.sources" location="${ant.file.java-client-driver-generate-sources}/../src/selenium" />
 	<property name="dir.java.tests.based.on.core.javascript" location="${maven.src.path}/../../../../../test/java/com/thoughtworks/selenium/corebased" />
+	<property name="dir.java.tests.based.on.core.javascript.later.modified.by.hand" location="${dir.java.tests.based.on.core.javascript}/../corebasedhandmodified" />
 	<property name="dir.core.javascript" location="${maven.src.path}/../../../../../../../../../core/tests" />
 	<property name="dir.test-classes" location="${maven.src.path}/../../../../../../../../clients/java/target/test-classes" />
 	<property name="selenium-rc.jar" location="${maven.src.path}/../../../../../../../dist-image/server/selenium-server.jar" />
@@ -38,6 +39,16 @@
             </classpath>
         </java>
         -->
+        
+        <copy todir="${dir.java.tests.based.on.core.javascript}">
+            <fileset dir="${dir.java.tests.based.on.core.javascript.later.modified.by.hand}">
+                <include name="**/*.java.txt"/>
+            </fileset>
+            <mapper>
+                <globmapper from="*.java.txt" to="*.java"/>
+            </mapper>
+        </copy>
+        
 		<xslt in="${iedoc.xml}" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="interface" />
 		</xslt>
