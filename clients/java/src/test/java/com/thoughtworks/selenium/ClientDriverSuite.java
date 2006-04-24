@@ -38,6 +38,7 @@ public class ClientDriverSuite extends TestSuite{
         ClientDriverSuite supersuite = new ClientDriverSuite();
         ClientDriverSuite suite = new ClientDriverSuite();
         suite.addTestSuite(ApacheMyFacesSuggestTest.class);
+        /*
         suite.addTestSuite(TestClick.class);
         suite.addTestSuite(TestCheckUncheck.class);
         suite.addTestSuite(TestClick.class);
@@ -63,6 +64,7 @@ public class ClientDriverSuite extends TestSuite{
         suite.addTestSuite(TestVerifyEditable.class);
         suite.addTestSuite(TestVerifyEditableFailures.class);
         suite.addTestSuite(TestVisibilityFailures.class);
+        */
         suite.addTestSuite(RealDealIntegrationTest.class);
         ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
         supersuite.addTest(setup);
