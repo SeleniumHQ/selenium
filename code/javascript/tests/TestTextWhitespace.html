@@ -22,9 +22,7 @@ Copyright 2004 ThoughtWorks, Inc
 </head>
 <body>
 <br>
-These three tests are 3 possible scenarios we could support - I like the first one where the
-text in the test table looks like what we see in the browser (multiple spaces are merged, but nbsp are not)
-
+Test for markup and newlines in text content.
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
@@ -39,21 +37,44 @@ text in the test table looks like what we see in the browser (multiple spaces ar
     </tr>
     <tr>
       <td>verifyText</td>
-      <td>spaces</td>
-      <td>exact:1 space|2 space|3 space|1 nbsp|2  nbsp|3   nbsp|2  space_nbsp|2  nbsp_space|3   space_nbsp_space|3   nbsp_space_nbsp</td>
+      <td>nonTextMarkup</td>
+      <td>
+      There is non-visible and visible markup here that doesn't change the text content
+      </td>
     </tr>
+    <!-- Match exactly the same space characters -->
     <tr>
       <td>verifyText</td>
       <td>spaces</td>
-      <td>exact:1 space|2  space|3   space|1 nbsp|2  nbsp|3   nbsp|2  space_nbsp|2  nbsp_space|3   space_nbsp_space|3   nbsp_space_nbsp</td>
+      <td>exact:1 space|2  space|3   space|1&nbsp;nbsp|2&nbsp;&nbsp;nbsp|3&nbsp;&nbsp;&nbsp;nbsp|2 &nbsp;space_nbsp|2&nbsp; nbsp_space|3 &nbsp; space_nbsp_space|3&nbsp; &nbsp;nbsp_space_nbsp</td>
     </tr>
-    <tr>
-      <td>verifyText</td>
-      <td>spaces</td>
-      <td>exact:1 space|2 space|3 space|1 nbsp|2&nbsp;&nbsp;nbsp|3&nbsp;&nbsp;&nbsp;nbsp|2&nbsp;&nbsp;space_nbsp|2&nbsp;&nbsp;nbsp_space|3&nbsp;&nbsp;&nbsp;space_nbsp_space|3&nbsp;&nbsp;&nbsp;nbsp_space_nbsp</td>
-    </tr>
+      <tr>
+        <td>verifyText</td>
+        <td>nonVisibleNewlines</td>
+        <td>non visible newlines between</td>
+      </tr>
+
+      <tr>
+        <td>verifyText</td>
+        <td>visibleNewlines</td>
+        <td>visible*newlines*between</td>
+      </tr>
+      <tr>
+        <td>verifyNotText</td>
+        <td>visibleNewlines</td>
+        <td>visible newlines between</td>
+      </tr>
+      <tr>
+        <td>verifyText</td>
+        <td>paragraphs</td>
+        <td>First paragraph*Second paragraph</td>
+      </tr>
+      <tr>
+        <td>verifyNotText</td>
+        <td>paragraphs</td>
+        <td>First paragraph Second paragraph</td>
+      </tr>
   </tbody>
 </table>
-
 </body>
 </html>

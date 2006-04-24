@@ -22,7 +22,9 @@ Copyright 2004 ThoughtWorks, Inc
 </head>
 <body>
 <br>
-Test for markup and newlines in text content.
+These three tests are 3 possible scenarios we could support - I like the first one where the
+text in the test table looks like what we see in the browser (multiple spaces are merged, but nbsp are not)
+
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
@@ -35,40 +37,26 @@ Test for markup and newlines in text content.
       <td>../tests/html/test_text_content.html</td>
       <td>&nbsp;</td>
     </tr>
+    <!-- Match the visible appearance of the text -->
     <tr>
       <td>verifyText</td>
-      <td>nonTextMarkup</td>
-      <td>
-      There is non-visible and visible markup here that doesn't change the text content
-      </td>
+      <td>spaces</td>
+      <td>exact:1 space|2 space|3 space|1 nbsp|2  nbsp|3   nbsp|2  space_nbsp|2  nbsp_space|3   space_nbsp_space|3   nbsp_space_nbsp</td>
     </tr>
-      <tr>
-        <td>verifyText</td>
-        <td>nonVisibleNewlines</td>
-        <td>non visible newlines between</td>
-      </tr>
-
-      <tr>
-        <td>verifyText</td>
-        <td>visibleNewlines</td>
-        <td>visible*newlines*between</td>
-      </tr>
-      <tr>
-        <td>verifyNotText</td>
-        <td>visibleNewlines</td>
-        <td>visible newlines between</td>
-      </tr>
-      <tr>
-        <td>verifyText</td>
-        <td>paragraphs</td>
-        <td>First paragraph*Second paragraph</td>
-      </tr>
-      <tr>
-        <td>verifyNotText</td>
-        <td>paragraphs</td>
-        <td>First paragraph Second paragraph</td>
-      </tr>
+    <!-- Match the same spaces with all &nbsp; replaced by " " -->
+    <tr>
+      <td>verifyText</td>
+      <td>spaces</td>
+      <td>exact:1 space|2  space|3   space|1 nbsp|2  nbsp|3   nbsp|2  space_nbsp|2  nbsp_space|3   space_nbsp_space|3   nbsp_space_nbsp</td>
+    </tr>
+    <!-- Match exactly the same space characters -->
+    <tr>
+      <td>verifyText</td>
+      <td>spaces</td>
+      <td>exact:1 space|2  space|3   space|1&nbsp;nbsp|2&nbsp;&nbsp;nbsp|3&nbsp;&nbsp;&nbsp;nbsp|2 &nbsp;space_nbsp|2&nbsp; nbsp_space|3 &nbsp; space_nbsp_space|3&nbsp; &nbsp;nbsp_space_nbsp</td>
+    </tr>
   </tbody>
 </table>
+
 </body>
 </html>

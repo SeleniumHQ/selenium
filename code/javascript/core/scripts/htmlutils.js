@@ -47,6 +47,13 @@ function getText(element) {
     var pat = String.fromCharCode(160); // Opera doesn't like /\240/g
    	var re = new RegExp(pat, "g");
     text = text.replace(re, " ");
+
+    // Make a simple attempt to convert non-visible newlines into spaces in Mozilla
+    if (element.textContent == element.innerHTML)
+    {
+        text = text.replace(/\n/g, " ");
+    }
+
     return text.trim();
 }
 
