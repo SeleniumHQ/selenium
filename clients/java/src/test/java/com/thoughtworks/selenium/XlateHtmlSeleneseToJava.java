@@ -120,7 +120,7 @@ public class XlateHtmlSeleneseToJava {
         
         generatedJavaClassNames.add(base);
         
-        System.out.println("Generating\n\t" + javaSeleneseFileName + "\nfrom\n\t" 
+        System.out.println("Generating test class " + base + " from\t" 
                 + htmlSeleneseFileName + "...");
         
         File htmlSeleneseFile = openFile(htmlSeleneseFileName);
@@ -174,7 +174,7 @@ public class XlateHtmlSeleneseToJava {
         " */\n" + 
         "public class " + base + " extends SeleneseTestCase\n" + 
         "{\n" + 
-        "   public void test() throws Throwable {\n\t\t";
+        "   public void " + makeTestName(base) + "() throws Throwable {\n\t\t";
         
         StringBuffer java = new StringBuffer();
         
@@ -240,6 +240,17 @@ public class XlateHtmlSeleneseToJava {
         }
         String ending = "\n\t\tcheckForVerificationErrors();\n\t}\n" + possibleSetup + "}\n";
                 return preamble + java.toString() + ending;
+    }
+
+
+    private static String makeTestName(String base) {
+        if (base.startsWith("test")) {
+            return base;
+        }
+        if (base.startsWith("Test")) {
+            return base.replaceFirst("Test", "test");
+        }
+        return "test" + base;
     }
 
 

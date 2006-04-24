@@ -40,7 +40,7 @@ public class SeleneseTestCase extends TestCase {
         if (url==null) {
             url = "http://localhost:" + SeleniumServer.DEFAULT_PORT;
         }
-        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", url);
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", url);
         selenium.start();
     }
 
