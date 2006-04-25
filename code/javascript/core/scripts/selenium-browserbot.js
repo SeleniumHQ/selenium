@@ -27,25 +27,6 @@
 // The window to which the commands will be sent.  For example, to click on a
 // popup window, first select that window, and then do a normal click command.
 
-
-// Although it's generally better web development practice not to use browser-detection
-// (feature detection is better), the subtle browser differences that Selenium has to
-// work around seem to make it necessary. Maybe as we learn more about what we need,
-// we can do this in a more "feature-centric" rather than "browser-centric" way.
-// TODO we should probably reuse an available browser-detection library
-var browserName=navigator.appName;
-var isOpera = (window.opera != null);
-var isIE = !isOpera && (browserName =="Microsoft Internet Explorer");
-var isKonqueror = (browserName == "Konqueror");
-var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
-var isFirefox = (navigator.userAgent.indexOf('Firefox') != -1);
-var isNetscape = !isOpera && !isFirefox && (navigator.appName == "Netscape");
-
-
-// Get the Gecko version as an 8 digit date.
-var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
-var geckoVersion = geckoResult == null ? null : geckoResult[1];
-
 BrowserBot = function(frame) {
     this.frame = frame;
     this.currentPage = null;
@@ -859,11 +840,6 @@ SafariPageBot.prototype.clickElement = function(element) {
                 // The solution is to always use an enclosing form for a button.
             }
         }
-    }
-
-    // Onchange event is not triggered automatically in Safari.
-    if (isDefined(element.checked) && wasChecked != element.checked) {
-        triggerEvent(element, 'change', true);
     }
 
     if (this.windowClosed()) {
