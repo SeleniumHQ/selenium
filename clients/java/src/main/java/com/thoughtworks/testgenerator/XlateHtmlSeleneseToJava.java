@@ -2,7 +2,7 @@
  * Created on Mar 12, 2006
  *
  */
-package com.thoughtworks.selenium;
+package com.thoughtworks.testgenerator;
 
 import java.io.File;
 import java.io.FileReader;
