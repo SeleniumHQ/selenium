@@ -162,7 +162,7 @@
 	    var actualValue = element.value;
 	
 	    // Make sure the actual value matches the expected
-	    this.assertMatches(expectedValue, actualValue);
+	    Assert.matches(expectedValue, actualValue);
 	};
 	</pre>
 	</blockquote>
