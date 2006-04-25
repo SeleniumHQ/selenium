@@ -1,83 +1,83 @@
-/* @author Edward Hieatt, edward@jsunit.net */
-
-body 
-{ 
-  margin-top: 0; 
-  margin-bottom: 0; 
-  font-family: Verdana, Arial, Helvetica, sans-serif; 
-  color: #000;
-  font-size: 0.8em; 
-  background-color: #fff;
+body {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #000;
+    font-size: 0.8em;
+    background-color: #fff;
 }
 
-td 
-{ 
-  padding: 0; 
-  margin: 0;
+a:link, a:visited {
+    color: #00F;
 }
 
-td img 
-{ 
-  padding: 0; 
-  margin: 0; 
-  vertical-align: baseline; 
-  display: block;
+a:hover {
+    color: #F00;
 }
 
-input 
-{ 
+h1 {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #039;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
-select 
-{ 
+h2 {
+    font-weight: bold;
+    color: #039;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
-a:link, a:visited
-{
-  color : #00F;
+h3 {
+    font-weight: bold;
+    color: #039;
+    text-decoration: underline;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
-a:hover 
-{
-  color : #F00;
+h4 {
+    font-weight: bold;
+    color: #039;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
-.jsUnitDefault 
-{ 
+.jsUnitTestResultSuccess {
+    color: #000;
 }
 
-h1, th
-{ 
-  font-size: 1.3em; 
-  font-weight: bold; 
-  color: #039;
+.jsUnitTestResultNotSuccess {
+    color: #F00;
 }
 
-h2
-{ 
-  font-weight: bold; 
-  color: #039;
+.unselectedTab {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    height: 26px;
+    background: #FFFFFF;
+    border-style: solid;
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
 }
 
-h3
-{ 
-  font-weight: bold; 
-  color: #039; 
-  text-decoration: underline;
+.selectedTab {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    height: 26px;
+    background: #DDDDDD;
+    font-weight: bold;
+    border-style: solid;
+    border-bottom-width: 0px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
 }
 
-h4
-{ 
-  font-weight: bold; 
-  color: #039;
-}
-
-.jsUnitTestResultSuccess 
-{
-  color: #000;
-}
-
-.jsUnitTestResultNotSuccess 
-{
-  color: #F00;
+.tabHeaderSeparator {
+    height: 26px;
+    background: #FFFFFF;
+    border-style: solid;
+    border-bottom-width: 1px;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
 }

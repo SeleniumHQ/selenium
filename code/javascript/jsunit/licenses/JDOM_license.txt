@@ -1,6 +1,6 @@
 /*-- 
 
- $Id: JDOM_license.txt,v 1.1 2004/11/03 22:17:56 jwang Exp $
+ $Id$
 
  Copyright (C) 2000-2003 Jason Hunter & Brett McLaughlin.
  All rights reserved.
