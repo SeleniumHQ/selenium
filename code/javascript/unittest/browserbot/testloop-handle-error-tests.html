@@ -58,7 +58,7 @@ Copyright 2004 ThoughtWorks, Inc
     function testSeleniumMalfunction() {
     	var error = new Error("Test Error");
         LOG.expects("exception", error);
-        commandErrorHandler.expects("handleError", "Selenium failure. Please report to selenium-dev@openqa.org, with details from the logs at the base of the page.  The error message is: Test Error");
+        commandErrorHandler.expects("handleError", "Selenium failure. Please report to selenium-dev@openqa.org, with error details from the log window.  The error message is: Test Error");
         testLoop.handleCommandError(error);    	
     };
 
