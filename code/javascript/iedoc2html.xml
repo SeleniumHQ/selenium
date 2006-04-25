@@ -6,16 +6,36 @@
 <xsl:template match="/">
 	<xsl:call-template name="header" />
 	<xsl:apply-templates select="//top" />
-	<h3>Selenium Actions</h3>
+	<xsl:call-template name="actionsHeader" />
 	<dl>
 	<xsl:apply-templates select="//function[not(return) and not(starts-with(@name, 'assert'))]" mode="action"/>
 	</dl>
-	<h3>Selenium Checks</h3>
+	<xsl:call-template name="assertionsHeader" />
 	<dl>
 	<xsl:apply-templates select="//function[starts-with(@name, 'assert')]" mode="action"/>
 	<xsl:apply-templates select="//function[return]" mode="check"/>
 	</dl>
 	<xsl:call-template name="footer" />
+</xsl:template>
+
+<xsl:template name="assertionsHeader">
+	<h3>Selenium Assertions</h3>
+	<p>Assertions are used to verify the state of the application. They can be used to check the value of a form field, the presense of some text, or the URL of the current page.</p>
+	<p>All Selenium assertions can be used in 2 modes, &quot;assert&quot; and &quot;verify&quot;. These behave identically, except that when an &quot;assert&quot; fails, the test is aborted. When a &quot;verify&quot; fails, the test will continue execution.  This allows a single &quot;assert&quot; to ensure that the application is on the correct page, followed by a bunch of &quot;verify&quot; assertions to test form field values, labels, etc.</p>
+	
+	<p>A growing number of assertions have a negative version.  In most cases, except where indicated, if the positive assertion is of the form <strong>assertXYZ</strong>, then the negative cases will be of the form <strong>assertNotXYZ</strong>.</p>
+</xsl:template>
+
+<xsl:template name="actionsHeader">
+	<h3>Selenium Actions</h3>
+	<p>Actions tell Selenium to do something in the application. They generally represent something a user would do.</p>
+	<p>Many <strong>Actions</strong> can be called with the &quot;AndWait&quot; suffix.
+	This suffix tells Selenium that the action will cause the browser to make a call to the server,
+	and that Selenium should wait for a new page to load.</p>
+	<p>Many Actions have a &quot;waitFor&quot; prefix.
+	These commands wait for some condition to become true (can be useful for testing Ajax applications).
+	They will succeed immediately if the condition is already true.
+	However, they may also hang indefinitely if the conidition never becomes true.</p>
 </xsl:template>
 
 <xsl:template name="header">
@@ -213,8 +233,22 @@
 			<xsl:apply-templates select="param" mode="declaration-check"/>
 			pattern
 		)
+		/
+			<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
+			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
+			<xsl:with-param name="replace-string">assertNot</xsl:with-param>
+		</xsl:call-template>
+		
+		(
+			<xsl:apply-templates select="param" mode="declaration-check"/>
+			pattern
+		)
 	</strong></dt>
 	<dd>
+		Asserts that the specified text pattern does (or does not) match the value returned by
+		<xsl:value-of select="@name" />
+		which:
 		<xsl:apply-templates select="comment" />
 		<p>Arguments:</p>
 		<ul>
