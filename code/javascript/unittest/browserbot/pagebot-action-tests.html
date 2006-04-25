@@ -131,7 +131,16 @@ function testClickCheckboxShouldTriggerFocusClickChangeAndBlur() {
     pageBot.clickElement(theCheckbox)
 
     assertTrue("Checkbox should be checked", theCheckbox.checked)
-    assertEquals("focus,click,change,blur", checkboxEvents.join())
+
+    // Emulate actual event order (varies per browser for manual click)
+    if (isSafari)
+    {
+      assertEquals("focus,change,click,blur", checkboxEvents.join())
+    }
+    else
+    {
+      assertEquals("focus,click,change,blur", checkboxEvents.join())
+    }
 }
 
 function testClickCheckboxShouldUncheckIfAlreadyChecked() {
@@ -146,7 +155,16 @@ function testClickRadioShouldTriggerFocusClickChangeAndBlur() {
     assertTrue("Radio should be checked", theRadio2.checked)
 
     assertEquals("", radio1Events.join());
-    assertEquals("focus,click,change,blur", radio2Events.join())
+
+    // Safari-real doesn't support change events on radio
+    if (isSafari)
+    {
+      assertEquals("focus,click,blur", radio2Events.join());
+    }
+    else
+    {
+      assertEquals("focus,click,change,blur", radio2Events.join())
+    }
 }
 
 function testClickRadioShouldNotTriggerChangeIfAlreadySelected() {
