@@ -393,7 +393,7 @@ public class XlateHtmlSeleneseToJava {
             if (op.equals("ElementPresent") || op.equals("ElementNotPresent")
                     || op.equals("Editable") || op.equals("NotEditable")
                     || op.equals("Visible") || op.equals("NotVisible")) {
-                assert beginning.indexOf("assert") != -1;  // because verify's will be picked off by the caller
+                //assert beginning.indexOf("assert") != -1;  // because verify's will be picked off by the caller
                 return "selenium.assert" + op + "(" + XlateSeleneseArgument(tokens[1]) + ");";
             }
             if (op.equals("Selected") || op.equals("NotSelected")) {
@@ -538,7 +538,7 @@ public class XlateHtmlSeleneseToJava {
         if (s.indexOf("Equals") != -1) {
             return s.replaceFirst("Equals", "NotEquals");
         }
-        assert s.indexOf("True") != -1;
+        //assert s.indexOf("True") != -1;
         return s.replaceFirst("True", "False");
     }
 
