@@ -294,7 +294,7 @@ Selenium.prototype.doSelect = function(locator, optionLocator) {
    * </dd>
    * </dl>
    * <p>
-   * Without a prefix, the default behaviour is to only match on labels.
+   * Without a prefix, the default behaviour is to match on <strong>label</strong>.
    * </p>
    * 
    * 
@@ -392,11 +392,10 @@ Selenium.prototype.doSelectWindow = function(windowID) {
 
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
 	/**
-   * Instructs Selenium to click "Cancel" on the next JavaScript confirmation
-   * dialog to be raised. By default, the confirm function will return true,
-   * having the same effect as manually clicking OK. After running this
-   * command, the next confirmation will behave as if the user had clicked
-   * Cancel.
+   * By default, Selenium's overridden window.confirm() function will
+   * return true, as if the user had manually clicked OK.  After running
+   * this command, the next call to confirm() will return false, as if
+   * the user had clicked Cancel.
    * 
    */
     this.browserbot.cancelNextConfirmation();
@@ -432,16 +431,16 @@ Selenium.prototype.doClose = function() {
 
 Selenium.prototype.getAlert = function() {
 	/**
-   * Retrieves the message of a javascript alert generated during the previous action, or fail if there were no alerts.
+   * Retrieves the message of a JavaScript alert generated during the previous action, or fail if there were no alerts.
    * 
    * <p>Getting an alert has the same effect as manually clicking OK. If an
    * alert is generated but you do not get/verify it, the next Selenium action
    * will fail.</p>
    * 
-   * <p>NOTE: under Selenium, javascript alerts will NOT pop up a visible alert
+   * <p>NOTE: under Selenium, JavaScript alerts will NOT pop up a visible alert
    * dialog.</p>
    * 
-   * <p>NOTE: Selenium does NOT support javascript alerts that are generated in a
+   * <p>NOTE: Selenium does NOT support JavaScript alerts that are generated in a
    * page's onload() event handler. In this case a visible dialog WILL be
    * generated and Selenium will hang until someone manually clicks OK.</p>
    * @return string The message of the most recent JavaScript alert
@@ -455,7 +454,7 @@ Selenium.prototype.getAlert.dontCheckAlertsAndConfirms = true;
 
 Selenium.prototype.getConfirmation = function() {
 	/**
-   * Retrieves the message of a javascript confirmation dialog generated during
+   * Retrieves the message of a JavaScript confirmation dialog generated during
    * the previous action.
    * 
    * <p>
@@ -466,12 +465,12 @@ Selenium.prototype.getConfirmation = function() {
    * </p>
    * 
    * <p>
-   * NOTE: under Selenium, javascript confirmations will NOT pop up a visible
+   * NOTE: under Selenium, JavaScript confirmations will NOT pop up a visible
    * dialog.
    * </p>
    * 
    * <p>
-   * NOTE: Selenium does NOT support javascript confirmations that are
+   * NOTE: Selenium does NOT support JavaScript confirmations that are
    * generated in a page's onload() event handler. In this case a visible
    * dialog WILL be generated and Selenium will hang until you manually click
    * OK.
@@ -488,17 +487,17 @@ Selenium.prototype.getConfirmation.dontCheckAlertsAndConfirms = true;
  
 Selenium.prototype.getPrompt = function() {
 	/**
-   * Retrieves the message of a javascript question prompt dialog generated during
+   * Retrieves the message of a JavaScript question prompt dialog generated during
    * the previous action.
    * 
    * <p>Successful handling of the prompt requires prior execution of the
    * answerOnNextPrompt command. If a prompt is generated but you
    * do not get/verify it, the next Selenium action will fail.</p>
    * 
-   * <p>NOTE: under Selenium, javascript prompts will NOT pop up a visible
+   * <p>NOTE: under Selenium, JavaScript prompts will NOT pop up a visible
    * dialog.</p>
    * 
-   * <p>NOTE: Selenium does NOT support javascript prompts that are generated in a
+   * <p>NOTE: Selenium does NOT support JavaScript prompts that are generated in a
    * page's onload() event handler. In this case a visible dialog WILL be
    * generated and Selenium will hang until someone manually clicks OK.</p>
    * @return string the message of the most recent JavaScript question prompt
@@ -1015,7 +1014,7 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
 };
 
 /**
- * Evaluate a parameter, performing javascript evaluation and variable substitution.
+ * Evaluate a parameter, performing JavaScript evaluation and variable substitution.
  * If the string matches the pattern "javascript{ ... }", evaluate the string between the braces.
  */
 Selenium.prototype.preprocessParameter = function(value) {
