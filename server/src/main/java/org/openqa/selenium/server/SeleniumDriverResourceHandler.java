@@ -27,6 +27,7 @@ import org.mortbay.http.handler.*;
 import org.mortbay.util.*;
 import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.htmlrunner.*;
+import org.openqa.selenium.server.util.IOUtils;
 
 /**
  * A Jetty handler that takes care of Selenese Driven requests.
@@ -42,11 +43,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private final Map queues = new HashMap();
     private final Map launchers = new HashMap();
     private SeleniumServer server;
-    
+
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
     }
-    
+
     /** Handy helper to retrieve the first parameter value matching the name
      * 
      * @param req - the Jetty HttpRequest
@@ -69,13 +70,16 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
         Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
         String seleniumStart = getParam(req, "seleniumStart");
-        String commandResult = getParam(req, "commandResult");
+        String method = req.getMethod();
         String cmd = getParam(req, "cmd");
         String sessionId = getParam(req, "sessionId");
 
         // If this is a browser requesting work for the first time...
-        if (commandResult != null || (seleniumStart != null && seleniumStart.equals("true"))) {
+        if ("POST".equalsIgnoreCase(method) || (seleniumStart != null && seleniumStart.equals("true"))) {
             //System.out.println("commandResult = " + commandResult);
+
+            InputStream is = req.getInputStream();
+            String commandResult = IOUtils.read(is);
 
             SeleneseQueue queue = getQueue(sessionId);
             SeleneseCommand sc = queue.handleCommandResult(commandResult);
@@ -102,9 +106,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         // If this a Driver Client sending a new command...
         res.setContentType("text/plain");
         hackRemoveConnectionCloseHeader(res);
-        
+
         Vector values = new Vector();
-        
+
         for (int i = 1; req.getParameter(Integer.toString(i)) != null; i++) {
             values.add(req.getParameter(Integer.toString(i)));
         }
@@ -114,19 +118,19 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         if (values.size() < 2) {
             values.add("");
         }
-        
+
         String results;
-        System.out.println("queryString = " + req.getQuery());        
+        System.out.println("queryString = " + req.getQuery());
         results = doCommand(cmd, values, sessionId, res);
         try {
             res.getOutputStream().write(results.getBytes("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         req.setHandled(true);
     }
-    
+
     public String doCommand(String cmd, Vector values, String sessionId, HttpResponse res) {
         String results;
         // handle special commands
@@ -135,7 +139,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("testComplete".equals(cmd)) {
             BrowserLauncher launcher = getLauncher(sessionId);
             if (launcher == null) {
-                results = "ERROR: No launcher found for sessionId " + sessionId; 
+                results = "ERROR: No launcher found for sessionId " + sessionId;
             } else {
                 launcher.close();
                 // finally, if the command was testComplete, remove the queue
@@ -185,7 +189,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     e.printStackTrace();
                     results = e.toString();
                 }
-            }                
+            }
         } else {
 
             SeleneseQueue queue = getQueue(sessionId);
@@ -264,7 +268,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             return (BrowserLauncher) launchers.get(sessionId);
         }
     }
-    
+
     /** Retrieves a SeleneseQueue for the specifed sessionId, creating a new one if there isn't one with that sessionId already */
     private SeleneseQueue getQueue(String sessionId) {
         synchronized (queues) {
@@ -284,7 +288,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             queues.remove(sessionId);
         }
     }
-    
+
     /** Kills all running browsers */
     public void stopAllBrowsers() {
         for (Iterator i = launchers.values().iterator(); i.hasNext();) {
