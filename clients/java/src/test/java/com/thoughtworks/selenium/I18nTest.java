@@ -30,12 +30,22 @@ public class I18nTest extends TestCase {
         public void setUp() throws Exception {
             //server = new SeleniumServer();
             //server.start();
-            sel = new DefaultSelenium("localhost", 8180, "*firefox", startUrl);
-            sel.start();
+            try {
+                sel = new DefaultSelenium("localhost", 8180, "*firefox",
+                        startUrl);
+                sel.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
         }
         
         public void tearDown() throws Exception {
-            sel.stop();
+            try {
+                sel.stop();
+            } catch (Exception e) {
+                throw e;
+            }
             //server.stop();
         }
         
@@ -67,6 +77,7 @@ public class I18nTest extends TestCase {
     }
 
     private void verifyText(String expected, String id) throws UnsupportedEncodingException {
+        System.out.println(getName());
         System.out.println(expected);
         sel.open(startUrl + "/selenium-server/tests/html/test_i18n.html");
         sel.assertTextPresent(expected);

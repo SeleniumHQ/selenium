@@ -35,14 +35,19 @@ public class ClientDriverSuite extends TestSuite{
      * @return a test suite containing tests to run
      */
 	public static Test suite() {
-        ClientDriverSuite supersuite = new ClientDriverSuite();
-        ClientDriverSuite suite = new ClientDriverSuite();
-        suite.addTest(I18nTest.suite());
-        suite.addTestSuite(ApacheMyFacesSuggestTest.class);
-        suite.addTestSuite(RealDealIntegrationTest.class);
-        ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
-        supersuite.addTest(setup);
-        return supersuite;
+        try {
+            ClientDriverSuite supersuite = new ClientDriverSuite();
+            ClientDriverSuite suite = new ClientDriverSuite();
+            suite.addTest(I18nTest.suite());
+            suite.addTestSuite(ApacheMyFacesSuggestTest.class);
+            suite.addTestSuite(RealDealIntegrationTest.class);
+            ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
+            supersuite.addTest(setup);
+            return supersuite;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     /** A TestSetup decorator that runs a super setUp and tearDown at the
@@ -61,12 +66,22 @@ static class ClientDriverTestSetup extends TestSetup {
     }
     
 	public void setUp() throws Exception {
-        server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
-        server.start();
+        try {
+            server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
+            server.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
     
         public void tearDown() throws Exception {
-            server.stop();
+            try {
+                server.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
         }
         
     }
