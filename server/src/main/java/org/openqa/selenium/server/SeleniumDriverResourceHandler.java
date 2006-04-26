@@ -80,6 +80,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
             InputStream is = req.getInputStream();
             String commandResult = IOUtils.read(is);
+            
+            if ("true".equals(seleniumStart)) {
+                commandResult = null;
+            }
 
             SeleneseQueue queue = getQueue(sessionId);
             SeleneseCommand sc = queue.handleCommandResult(commandResult);
