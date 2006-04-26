@@ -3,8 +3,7 @@
 	<property name="dir.java.tests.based.on.core.javascript" location="${maven.src.path}/../../../../../test/java/com/thoughtworks/selenium/corebased" />
 	<property name="dir.java.tests.based.on.core.javascript.later.modified.by.hand" location="${dir.java.tests.based.on.core.javascript}/../corebasedhandmodified" />
 	<property name="xlater.src.dir" location="${dir.java.tests.based.on.core.javascript}/../../../../../../main/java/com/thoughtworks/testgenerator" />
-	<property name="dir.core.javascript" location="${maven.src.path}/../../../../../../../../../core/tests" />
-	<property name="dir.test-classes" location="${maven.src.path}/../../../../../../../../clients/java/target/test-classes" />
+	
 	
 	<target name="clean-sources">
 		<delete file="${maven.src.path}/Selenium.java" />
@@ -18,13 +17,19 @@
 				<not><available file="${maven.src.path}" /></not>
 			</condition>
 		</fail>
+		<fail unless="core.javascript.path" message="You must specify a path to the core javascript in the core.javascript.path property" />
+		<condition property="build.failed">
+			<not><available file="${core.javascript.path}" /></not>
+		</condition>
+		<fail if="build.failed" message="Couldn't find JavaScript: ${core.javascript.path}" />
+		<property name="dir.core.tests" location="${core.javascript.path}/tests" />
 		<echo message="maven.src.path = ${maven.src.path}" />
         <mkdir  dir="${dir.java.tests.based.on.core.javascript}" />
-        <java classname="org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava">
+        <java classname="org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava" fork="true" failonerror="true">
             <arg value="${dir.java.tests.based.on.core.javascript}"/>
             <arg value="-silent"/>
             <arg value="-dir"/>
-            <arg value="${dir.core.javascript}"/>
+            <arg value="${dir.core.tests}"/>
             <classpath refid="depend.classpath"/>
         </java>
         
@@ -47,6 +52,7 @@
 	<target name="extract-xml" depends="maybe-skip-generation" unless="skip.generation.true">
 		<fail unless="output.path" message="output.path was not set.  This ant script must be run from within Maven!" />
 		<mkdir dir="${output.path}" />
+		<echo message="${depend.maven.path}" />
 		<echo message="${depend.maven.path}" file="${output.path}/path.txt" />
 		<loadfile property="depend.classpath.str" srcfile="${output.path}/path.txt">
 			<filterchain>

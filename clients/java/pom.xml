@@ -84,6 +84,7 @@
 							<tasks>
 								<ant antfile="generate-sources.xml">
 									<property name="depend.maven.path" location="${project.testClasspathElements}" />
+									<property name="core.javascript.path" location="${core.javascript.path}" />
 									<property name="output.path" location="${project.build.directory}" />
 									<property name="maven.src.path" location="src/main/java/com/thoughtworks/selenium" />
 									<property name="skip.generation" value="${skip.generation}" />
