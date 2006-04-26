@@ -153,6 +153,7 @@ public class SeleniumServer {
         String startURL = null;
         String suiteFilePath = null;
         String resultFilePath = null;
+        File userExtensions = null;
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -170,6 +171,13 @@ public class SeleniumServer {
             }
             else if ("-timeout".equals(arg)) {
                 timeout = Integer.parseInt(args[i + 1]);
+            }
+            else if ("-userExtensions".equals(arg)) {
+                userExtensions = new File(args[++i]);
+                if (!userExtensions.exists()) {
+                    System.err.println("User Extensions file doesn't exist: " + userExtensions.getAbsolutePath());
+                    System.exit(1);
+                }
             }
             else if ("-htmlSuite".equals(arg)) {
                 try {
@@ -227,6 +235,10 @@ public class SeleniumServer {
                 }
             }
         }));
+        
+        if (userExtensions != null) {
+            seleniumProxy.addNewStaticContent(userExtensions.getParentFile());
+        }
         
         if (htmlSuite) {
             String result = null;
@@ -374,6 +386,13 @@ public class SeleniumServer {
                     r = Resource.newResource(resFile.toURL());
                     context.getResourceMetaData(r);
                     if (r.exists()) break;
+                    // Throw in a hack to make it easier to install user extensions
+                    if ("user-extensions.js".equals(resFile.getName())) {
+                        resFile = new File(dir, "user-extensions.js");
+                        r = Resource.newResource(resFile.toURL());
+                        context.getResourceMetaData(r);
+                        if (r.exists()) break;
+                    }
                 }
             }
             return r;
