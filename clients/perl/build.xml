@@ -8,6 +8,16 @@
 				<env key="PERL5LIB" value="${env.PERL5LIB}" />
 			</exec>
 		</presetdef>
+		<!-- Cygwin make won't work with the auto-generated Makefile -->
+		<condition property="make.executable" value="nmake">
+			<os family="windows" />
+		</condition>
+		<property name="make.executable" value="make" />
+		<presetdef name="make">
+			<exec executable="${make.executable}" failonerror="true">
+				<env key="PERL5LIB" value="${env.PERL5LIB}" />
+			</exec>
+		</presetdef>
 		<!-- <perl>
 			<arg value="-e" />
 			<arg value="print qq(@INC);" />
@@ -32,16 +42,13 @@
     	<perl>
     		<arg value="Makefile.PL" />
     	</perl>
-    	<!-- Cygwin make won't work with the auto-generated Makefile -->
-    	<property name="make.executable" value="nmake" />
-    	<exec executable="${make.executable}" failonerror="true" />
+    	<make />
     </target>
     <target name="test" depends="init, make">
     	<ant dir=".." target="start-server" />
-        <!--  output="${tmp}/ruby_out.txt" -->
-        <exec executable="${make.executable}" failonerror="false" resultproperty="result">
+        <make failonerror="false" resultproperty="result">
         	<arg value="test" />
-        </exec>
+        </make>
         <ant dir=".." target="stop-server" />
         <condition property="build.failed">
         	<not><equals arg1="0" arg2="${result}" /></not>
