@@ -1,5 +1,16 @@
-use Test::More tests => 4;
 use Test::WWW::Selenium;
+
+use lib 't/lib';
+use SeleniumUtil qw(server_is_running);
+use Test::More;
+if (server_is_running) {
+    plan tests => 4;
+}
+else {
+    plan skip_all => "No selenium server found!";
+    exit 0;
+}
+
 
 $sel = Test::WWW::Selenium->new( host => "localhost", 
                                       port => 4444, 

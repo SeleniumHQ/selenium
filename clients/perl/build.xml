@@ -28,14 +28,20 @@
 		</perl>
     </target>
     <target name="all" depends="generate-sources, test, doc"/>
-    <target name="test" depends="init, generate-sources">
+    <target name="make" depends="init, generate-sources">
+    	<perl>
+    		<arg value="Makefile.PL" />
+    	</perl>
+    	<!-- Cygwin make won't work with the auto-generated Makefile -->
+    	<property name="make.executable" value="nmake" />
+    	<exec executable="${make.executable}" failonerror="true" />
+    </target>
+    <target name="test" depends="init, make">
     	<ant dir=".." target="start-server" />
         <!--  output="${tmp}/ruby_out.txt" -->
-        <property name="perl.executable" value="perl" />
-        <!--<fail message="autofail ${perl.executable}" />-->
-        <perl failonerror="false" resultproperty="result">
-            <arg line="test_google.pl"/>
-        </perl>
+        <exec executable="${make.executable}" failonerror="false" resultproperty="result">
+        	<arg value="test" />
+        </exec>
         <ant dir=".." target="stop-server" />
         <condition property="build.failed">
         	<not><equals arg1="0" arg2="${result}" /></not>
@@ -47,5 +53,7 @@
     	<delete dir="lib/WWW" />
     	<mkdir dir="html" />
     	<delete dir="html" />
+    	<mkdir dir="blib" />
+    	<delete dir="blib" />
     </target>
 </project>
