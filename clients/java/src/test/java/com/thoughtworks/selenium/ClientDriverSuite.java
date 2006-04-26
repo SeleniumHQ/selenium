@@ -9,7 +9,7 @@ import junit.framework.*;
 
 import org.openqa.selenium.server.*;
 
-//import com.thoughtworks.selenium.corebased.*;
+import com.thoughtworks.selenium.corebased.*;
 
 /** The wrapper test suite for these tests, which spawns an in-process Selenium Server
  * for simple integration testing.
@@ -41,6 +41,28 @@ public class ClientDriverSuite extends TestSuite{
             suite.addTest(I18nTest.suite());
             suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             suite.addTestSuite(RealDealIntegrationTest.class);
+            suite.addTestSuite(TestErrorChecking.class);
+            suite.addTestSuite(TestJavascriptParameters.class);
+            suite.addTestSuite(TestClick.class);
+            suite.addTestSuite(TestCheckUncheck.class);
+            suite.addTestSuite(TestClick.class);
+            suite.addTestSuite(TestXPathLocators.class);
+            suite.addTestSuite(TestClickJavascriptHref.class);
+            suite.addTestSuite(TestCommandError.class);
+            suite.addTestSuite(TestComments.class);
+            suite.addTestSuite(TestFailingAssert.class);
+            suite.addTestSuite(TestFailingVerifications.class);
+            suite.addTestSuite(TestFocusOnBlur.class);
+            suite.addTestSuite(TestGoBack.class);
+            suite.addTestSuite(TestImplicitLocators.class);
+            suite.addTestSuite(TestLocators.class);
+            suite.addTestSuite(TestOpen.class);
+            suite.addTestSuite(TestPatternMatching.class);
+            suite.addTestSuite(TestPause.class);
+            suite.addTestSuite(TestStore.class);
+            suite.addTestSuite(TestSubmit.class);
+            suite.addTestSuite(TestType.class);
+            suite.addTestSuite(TestVerifications.class);
             ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
             supersuite.addTest(setup);
             return supersuite;
