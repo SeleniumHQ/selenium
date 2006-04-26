@@ -30,11 +30,17 @@
     </target>
     <target name="doc" depends="init, generate-sources">
     	<mkdir dir="html"/>
-    	<property name="outfile" location="html/selenium.html" />
+    	<property name="outfile.www.selenium" location="html/WWW-Selenium.html" />
     	<perl>
 			<arg value="mypod2html.pl"/>
-			<arg value="--infile=WWW/Selenium.pm" />
-			<arg value="--outfile=${outfile}" />
+			<arg value="--infile=lib/WWW/Selenium.pm" />
+			<arg value="--outfile=${outfile.www.selenium}" />
+		</perl>
+		<property name="outfile.test.www.selenium" location="html/Test-WWW-Selenium.html" />
+    	<perl>
+			<arg value="mypod2html.pl"/>
+			<arg value="--infile=lib/Test/WWW/Selenium.pm" />
+			<arg value="--outfile=${outfile.test.www.selenium}" />
 		</perl>
     </target>
     <target name="all" depends="generate-sources, test, doc"/>

@@ -44,9 +44,13 @@
 	<target name="dist-perl" depends="dist-dirs">
         <copy todir="dist-image/perl">
             <fileset dir="perl">
-                <include name="*.pl"/>
+            	<include name="Makefile.PL"/>
+            	<include name="Changes"/>
+            	<include name="todo.txt"/>
+            	<include name="inc/**"/>
+            	<include name="lib/**"/>
+            	<include name="t/**"/>
                 <exclude name="mypod2html.pl" />
-                <include name="WWW/**"/>
                 <include name="html/**" />
             </fileset>
         </copy>
