@@ -109,12 +109,12 @@ function nextCommand() {
         if (postResult == "START") {
         	url = url + "driver/?seleniumStart=true" + buildDriverParams() + preventBrowserCaching();
         } else {
-        	url = url + "driver/?commandResult=" + encodeURI(postResult) + buildDriverParams() + preventBrowserCaching();
+        	url = url + "driver/?" + buildDriverParams() + preventBrowserCaching();
         }
         LOG.debug("XMLHTTPRequesting " + url);
-        xmlHttp.open("GET", url, true);
+        xmlHttp.open("POST", url, true);
         xmlHttp.onreadystatechange=handleHttpResponse;
-        xmlHttp.send(null);
+        xmlHttp.send(postResult);
     } catch(e) {
        	var s = 'xmlHttp returned:\n'
         for (key in e) {
@@ -249,3 +249,4 @@ function createCommandFromWikiRow(wikiRow) {
        throw new Error("Bad wiki row format:" + wikiRow);
     }
 }
+

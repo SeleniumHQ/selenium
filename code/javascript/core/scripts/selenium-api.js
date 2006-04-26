@@ -927,6 +927,16 @@ Selenium.prototype.getAllFields = function() {
    return this.page().getAllFields();
 };
 
+Selenium.prototype.getHtmlSource = function() {
+	/** Returns the entire HTML source between the opening and
+   * closing "html" tags.
+   *
+   * @return string the entire HTML source
+   */
+	return this.page().currentDocument.getElementsByTagName("html")[0].innerHTML;
+};
+
+
 Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
 	/**
    * Writes a message to the status bar and adds a note to the browser-side
