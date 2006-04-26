@@ -68,6 +68,7 @@ static class ClientDriverTestSetup extends TestSetup {
 	public void setUp() throws Exception {
         try {
             server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
+            System.out.println("Starting the Selenium Server as part of global setup...");
             server.start();
         } catch (Exception e) {
             e.printStackTrace();
