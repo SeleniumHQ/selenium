@@ -47,6 +47,7 @@
 		<echo taskname="mvn" message="dir=clients/java" />
 		<mvn dir="clients/java">
 			<arg value="install" />
+			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
 		</mvn>
 	</target>
 
