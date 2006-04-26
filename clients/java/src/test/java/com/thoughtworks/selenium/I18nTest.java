@@ -15,7 +15,7 @@ public class I18nTest extends TestCase {
     
     private static String startUrl = "http://localhost:4444";
     private static Selenium sel;
-    private static SeleniumServer server;
+    //private static SeleniumServer server;
     
     public static Test suite() {
         return new I18nTestSetup(new TestSuite(I18nTest.class));
@@ -28,15 +28,15 @@ public class I18nTest extends TestCase {
         }
         
         public void setUp() throws Exception {
-            server = new SeleniumServer();
-            server.start();
+            //server = new SeleniumServer();
+            //server.start();
             sel = new DefaultSelenium("localhost", 8180, "*firefox", startUrl);
             sel.start();
         }
         
         public void tearDown() throws Exception {
             sel.stop();
-            server.stop();
+            //server.stop();
         }
         
     }

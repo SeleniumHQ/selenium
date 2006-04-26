@@ -37,37 +37,8 @@ public class ClientDriverSuite extends TestSuite{
 	public static Test suite() {
         ClientDriverSuite supersuite = new ClientDriverSuite();
         ClientDriverSuite suite = new ClientDriverSuite();
+        suite.addTest(I18nTest.suite());
         suite.addTestSuite(ApacheMyFacesSuggestTest.class);
-        /*
-        suite.addTestSuite(TestErrorChecking.class);
-        suite.addTestSuite(TestJavascriptParameters.class);
-
-        suite.addTestSuite(TestClick.class);
-        suite.addTestSuite(TestCheckUncheck.class);
-        suite.addTestSuite(TestClick.class);
-        suite.addTestSuite(TestXPathLocators.class);
-        suite.addTestSuite(TestClickJavascriptHref.class);
-        suite.addTestSuite(TestCommandError.class);
-        suite.addTestSuite(TestComments.class);
-        suite.addTestSuite(TestFailingAssert.class);
-        suite.addTestSuite(TestFailingVerifications.class);
-        suite.addTestSuite(TestFocusOnBlur.class);
-        suite.addTestSuite(TestGoBack.class);
-        suite.addTestSuite(TestImplicitLocators.class);
-        suite.addTestSuite(TestVerifyAlertsFailures.class);
-        suite.addTestSuite(TestLocators.class);
-        suite.addTestSuite(TestOpen.class);
-        suite.addTestSuite(TestPatternMatching.class);
-        suite.addTestSuite(TestPause.class);
-        suite.addTestSuite(TestPrompting.class);
-        suite.addTestSuite(TestStore.class);
-        suite.addTestSuite(TestSubmit.class);
-        suite.addTestSuite(TestType.class);
-        suite.addTestSuite(TestVerifications.class);
-        suite.addTestSuite(TestVerifyEditable.class);
-        suite.addTestSuite(TestVerifyEditableFailures.class);
-        suite.addTestSuite(TestVisibilityFailures.class);
-        */
         suite.addTestSuite(RealDealIntegrationTest.class);
         ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
         supersuite.addTest(setup);
