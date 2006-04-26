@@ -13,7 +13,7 @@ import org.openqa.selenium.server.*;
 
 public class I18nTest extends TestCase {
     
-    private static String startUrl = "http://localhost:4444";
+    private static String startUrl = "http://localhost:" + SeleniumServer.DEFAULT_PORT;
     private static Selenium sel;
     //private static SeleniumServer server;
     
@@ -31,7 +31,7 @@ public class I18nTest extends TestCase {
             //server = new SeleniumServer();
             //server.start();
             try {
-                sel = new DefaultSelenium("localhost", 8180, "*firefox",
+                sel = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox",
                         startUrl);
                 sel.start();
             } catch (Exception e) {
