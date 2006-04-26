@@ -15,8 +15,8 @@
 	</target>
 	<target name="generate-sources">
     	<ant dir=".." target="extract-xml"/>
-    	<mkdir dir="WWW" />
-    	<xslt in="../iedoc.xml" out="WWW/Selenium.pm" style="iedoc2perl.xml"/>
+    	<mkdir dir="lib/WWW" />
+    	<xslt in="../iedoc.xml" out="lib/WWW/Selenium.pm" style="iedoc2perl.xml"/>
     </target>
     <target name="doc" depends="init, generate-sources">
     	<mkdir dir="html"/>
@@ -43,8 +43,8 @@
         <fail if="build.failed" message="perl tests failed!" />
     </target>
     <target name="clean">
-    	<mkdir dir="WWW" />
-    	<delete dir="WWW" />
+    	<mkdir dir="lib/WWW" />
+    	<delete dir="lib/WWW" />
     	<mkdir dir="html" />
     	<delete dir="html" />
     </target>
