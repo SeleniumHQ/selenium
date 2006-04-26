@@ -61,7 +61,7 @@ public class XlateHtmlSeleneseToJava {
                 String dirName = args[++j];
                 File dir = new File(dirName);
                 if (!dir.isDirectory()) {
-                    Usage("-dir must be followed by a directory");
+                    Usage("-dir is not a directory: " + dirName);
                 }
                 String children[] = dir.list();
                 for (int k = 0; k < children.length; k++) {
