@@ -75,6 +75,12 @@ public class I18nTest extends TestCase {
         String id = "japanese";
         verifyText(expected, id);
     }
+    
+    public void XXXtestDangerous() throws UnsupportedEncodingException {
+        String expected = "&%?\\+|,%*";
+        String id = "dangerous";
+        verifyText(expected, id);
+    }
 
     private void verifyText(String expected, String id) throws UnsupportedEncodingException {
         System.out.println(getName());
