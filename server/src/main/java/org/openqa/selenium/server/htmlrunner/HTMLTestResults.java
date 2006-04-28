@@ -132,11 +132,11 @@ public class HTMLTestResults {
                 numCommandPasses,
                 numCommandFailures,
                 numCommandErrors,
-                getDecodedTestSuite(),
+                suite,
         };
         out.write(MessageFormat.format(SUMMARY_HTML,parameters));
         parameters = new Object[1];
-        for (Iterator i = getDecodedTestTables().iterator(); i.hasNext();) {
+        for (Iterator i = testTables.iterator(); i.hasNext();) {
             String table = (String) i.next();
             parameters[0] = table;
             out.write(MessageFormat.format(SUITE_HTML, parameters));
