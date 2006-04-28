@@ -178,6 +178,10 @@ public class SeleniumServer {
                     System.err.println("User Extensions file doesn't exist: " + userExtensions.getAbsolutePath());
                     System.exit(1);
                 }
+                if (!"user-extensions.js".equals(userExtensions.getName())) {
+                    System.err.println("User extensions file MUST be called \"user-extensions.js\": " + userExtensions.getAbsolutePath());
+                    System.exit(1);
+                }
             }
             else if ("-htmlSuite".equals(arg)) {
                 try {
