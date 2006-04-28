@@ -29,10 +29,12 @@ class TestI18n(unittest.TestCase):
         korean = u"\uC5F4\uC5D0"
         chinese = u"\u4E2D\u6587"
         japanese = u"\u307E\u3077"
+        dangerous = "&%?\\+|,%*"
         self.verify_text("romance", romance)
         self.verify_text("korean", korean)
         self.verify_text("chinese", chinese)
         self.verify_text("japanese", japanese)
+        self.verify_text("dangerous", dangerous)
     
     def verify_text(self, id, expected):
         sel = self.selenium

@@ -47,10 +47,12 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 			String korean = "\uC5F4\uC5D0";
 			String chinese = "\u4E2D\u6587";
 			String japanese = "\u307E\u3077";
+			String dangerous = "&%?\\+|,%*";
 			VerifyText(romance, "romance");
 			VerifyText(korean, "korean");
 			VerifyText(chinese, "chinese");
 			VerifyText(japanese, "japanese");
+			VerifyText(dangerous, "dangerous");
 		}
 
 		public void VerifyText(String expected, String id)
