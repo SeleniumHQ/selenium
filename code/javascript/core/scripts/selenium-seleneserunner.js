@@ -158,7 +158,7 @@ function extractCommand(xmlHttp) {
         return null;
     }
 
-    return createCommandFromWikiRow(command);
+    return createCommandFromRequest(command);
 }
 
 function commandStarted(command) {
@@ -237,16 +237,28 @@ function getIframeDocument(iframe) {
     }
 }
 
-// Parses a Wiki table row into a Javascript expression
-function createCommandFromWikiRow(wikiRow) {
-    var tokens;
-    if(tokens = wikiRow.trim().match(/^\|([^\|]*)\|([^\|]*)\|([^\|]*)\|$/m)) {
-        var functionName = tokens[1].trim();
-        var arg1 = tokens[2].trim();
-        var arg2 = tokens[3].trim();
-        return new SeleniumCommand(functionName, arg1, arg2);
-    } else {
-       throw new Error("Bad wiki row format:" + wikiRow);
+// Parses a URI query string into a SeleniumCommand object
+function createCommandFromRequest(commandRequest) {
+	//decodeURIComponent doesn't strip plus signs
+	var processed = commandRequest.replace(/\+/g, "%20");
+	// strip trailing spaces
+	var processed = processed.replace(/\s+$/, "");
+    var vars = processed.split("&");
+    var cmdArgs = new Object();
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        cmdArgs[pair[0]] = pair[1];
     }
+    var cmd = cmdArgs['cmd'];
+    var arg1 = cmdArgs['1'];
+    if (null == arg1) arg1 = "";
+    arg1 = decodeURIComponent(arg1);
+    var arg2 = cmdArgs['2'];
+    if (null == arg2) arg2 = "";
+    arg2 = decodeURIComponent(arg2);
+    if (cmd == null) {
+    	throw new Error("Bad command request: " + commandRequest);
+    }
+    return new SeleniumCommand(cmd, arg1, arg2);
 }
 
