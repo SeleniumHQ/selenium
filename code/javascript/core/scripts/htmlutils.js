@@ -223,6 +223,25 @@ PatternMatcher.strategies = {
     },
 
     /**
+     * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*", 
+     * but don't require a perfect match; instead succeed if actual
+     * contains something that matches globString.
+     * Making this distinction is motivated by a bug in IE6 which 
+     * leads to the browser hanging if we implement *TextPresent tests 
+     * by just matching against a regular expression beginning and 
+     * ending with ".*".  The globcontains strategy allows us to satisfy 
+     * the functional needs of the *TextPresent ops more efficiently 
+     * and so avoid running into this IE6 freeze.
+     */
+    globContains: function(globString) {
+        this.regexp = new RegExp(PatternMatcher.regexpFromGlobContains(globString));
+        this.matches = function(actual) {
+            return this.regexp.test(actual);
+        };
+    },
+    
+
+    /**
      * "glob" (aka "wildmat") patterns, e.g. "glob:one,two,*"
      */
     glob: function(globString) {
@@ -234,12 +253,20 @@ PatternMatcher.strategies = {
     
 };
 
-PatternMatcher.regexpFromGlob = function(glob) {
+PatternMatcher.convertGlobMetaCharsToRegexpMetaChars = function(glob) {
     var re = glob;
     re = re.replace(/([.^$+(){}\[\]\\|])/g, "\\$1");
     re = re.replace(/\?/g, "(.|[\r\n])");
     re = re.replace(/\*/g, "(.|[\r\n])*");
-    return "^" + re + "$";
+    return re;
+};
+
+PatternMatcher.regexpFromGlobContains = function(globContains) {
+    return PatternMatcher.convertGlobMetaCharsToRegexpMetaChars(globContains);
+};
+
+PatternMatcher.regexpFromGlob = function(glob) {
+    return "^" + PatternMatcher.convertGlobMetaCharsToRegexpMetaChars(glob) + "$";
 };
 
 var Assert = {

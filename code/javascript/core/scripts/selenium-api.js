@@ -763,7 +763,7 @@ Selenium.prototype.assertTextPresent = function(pattern) {
     } else {
     	var patternMatcher = new PatternMatcher(pattern);
         if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
-    		patternMatcher.matcher = new PatternMatcher.strategies.glob("*" + pattern + "*");
+    		patternMatcher.matcher = new PatternMatcher.strategies.globContains(pattern);
     	}
     	if(!patternMatcher.matches(allText)) {
         	Assert.fail("'" + pattern + "' not found in page text.");
