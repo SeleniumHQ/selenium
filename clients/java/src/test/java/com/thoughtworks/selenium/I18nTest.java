@@ -76,7 +76,7 @@ public class I18nTest extends TestCase {
         verifyText(expected, id);
     }
     
-    public void XXXtestDangerous() throws UnsupportedEncodingException {
+    public void testDangerous() throws UnsupportedEncodingException {
         String expected = "&%?\\+|,%*";
         String id = "dangerous";
         verifyText(expected, id);
