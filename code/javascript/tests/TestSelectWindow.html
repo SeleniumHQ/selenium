@@ -38,9 +38,9 @@ Copyright 2004 ThoughtWorks, Inc
       <td></td>
     </tr>
     <tr>
-      <td>pause</td>
+      <td>waitForPopUp</td>
+      <td>myPopupWindow</td>
       <td>1000</td>
-      <td/>
     </tr>
     <tr>
       <td>selectWindow</td>
@@ -79,9 +79,9 @@ Copyright 2004 ThoughtWorks, Inc
       <td></td>
     </tr>
     <tr>
-      <td>pause</td>
+      <td>waitForPopUp</td>
+      <td>myNewWindow</td>
       <td>1000</td>
-      <td/>
     </tr>
     <tr>
       <td>selectWindow</td>
@@ -103,17 +103,19 @@ Copyright 2004 ThoughtWorks, Inc
       <td>null</td>
       <td>&nbsp;</td>
     </tr>
-
-    <!-- Select an anonymous window (one that isn't assigned to a variable) -->
+</table>
+<p>Select an anonymous window (one that isn't assigned to a variable)</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
     <tr>
       <td>click</td>
       <td>popupAnonymous</td>
       <td></td>
     </tr>
     <tr>
-      <td>pause</td>
+      <td>waitForPopUp</td>
+      <td>anonymouspopup</td>
       <td>1000</td>
-      <td/>
     </tr>
     <tr>
       <td>selectWindow</td>
@@ -130,8 +132,10 @@ Copyright 2004 ThoughtWorks, Inc
       <td>closePage</td>
       <td></td>
     </tr>
-    <!-- Leave the test in a selected window - the next test should begin in the main window -->
   </tbody>
 </table>
+
+<p>Leave the test in a selected window - the next test should begin in the main window</p>
+
 </body>
 </html>

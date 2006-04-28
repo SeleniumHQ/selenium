@@ -390,6 +390,33 @@ Selenium.prototype.doSelectWindow = function(windowID) {
     this.browserbot.selectWindow(windowID);
 };
 
+Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
+	/**
+	* Waits for a popup window to appear and load up.
+	*
+	* @param windowID the JavaScript window ID of the window that will appear
+	* @param timeout a timeout in milliseconds, after which the action will return with an error
+	*/
+	if (isNaN(timeout)) {
+    	throw new SeleniumError("Timeout is not a number: " + timeout);
+    }
+    
+    testLoop.waitForCondition = function () {
+        var targetWindow = selenium.browserbot.getTargetWindow(windowID);
+        if (!targetWindow) return false;
+        if (!targetWindow.location) return false;
+        if ("about:blank" == targetWindow.location) return false;
+        if (!targetWindow.document) return false;
+        if (!targetWindow.document.readyState) return true;
+        if ('complete' != targetWindow.document.readyState) return false;
+        return true;
+    };
+    
+    testLoop.waitForConditionStart = new Date().getTime();
+    testLoop.waitForConditionTimeout = timeout;
+	
+}
+
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
 	/**
    * By default, Selenium's overridden window.confirm() function will
