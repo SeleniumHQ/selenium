@@ -17,11 +17,21 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
 <title>Slow Loading Page</title>
 <script type="text/javascript">
+	function changeSpan() {
+		var span = document.getElementById("theSpan");
+		span.innerHTML = "Changed the text";
+	}
+	
+	function slowRefresh() {
+		window.setTimeout("window.location.reload(true);", 1000);
+	}
 </script>
 </head>
 <body>
 <img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
 <span id="theSpan">This is a slow-loading page.</span>
 <a id="slowPage_reload" href="./test_page.slow.html">Click to reload</a>
+<button id="changeSpan" onclick="changeSpan();">change span</button>
+<button id="slowRefresh" onclick="slowRefresh();">slow refresh</button>
 </body>
 </html>

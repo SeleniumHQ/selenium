@@ -40,15 +40,23 @@ BrowserBot = function(frame) {
     this.nextConfirmResult = true;
     this.nextPromptResult = '';
     this.newPageLoaded = false;
+    this.pageLoadError = null;
 
     var self = this;
     this.recordPageLoad = function() {
-        LOG.debug("Page load detected, location=" + self.getCurrentWindow().location);
+    	LOG.debug("Page load detected");
+        try {
+        	LOG.debug("Page load location=" + self.getCurrentWindow().location);
+        } catch (e) {
+        	self.pageLoadError = e;
+        	return;
+        }
         self.currentPage = null;
         self.newPageLoaded = true;
     };
 
     this.isNewPageLoaded = function() {
+    	if (this.pageLoadError) throw this.pageLoadError;
         return self.newPageLoaded;
     };
 };
@@ -197,20 +205,53 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
 
 /**
  * Call the supplied function when a the current page unloads and a new one loads.
- * This is done with an "unload" handler which attaches a "load" handler.
+ * This is done by polling continuously until the document changes and is fully loaded.
  */
 BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
-    var attachLoadListener = function() {
-        if (windowObject && !windowObject.closed) {
-            addLoadListener(windowObject, loadFunction);
-        }
-    };
-
-    var unloadFunction = function() {
-        window.setTimeout(attachLoadListener, 0);
-    };
-    addUnloadListener(windowObject, unloadFunction);
+    // Since the unload event doesn't fire in Safari 1.3, we start polling immediately
+    // This works in Konqueror as well
+    if (windowObject && !windowObject.closed) {
+        LOG.debug("Starting pollForLoad: " + windowObject.document.location);
+        this.pollForLoad(loadFunction, windowObject, windowObject.document.location, windowObject.document.location.href);
+    }
 };
+
+/**
+ * For Konqueror (and Safari), we can't catch the onload event for a separate window (as opposed to an IFrame)
+ * So we set up a polling timer that will keep checking the readyState of the document until it's complete.
+ * Since we might call this before the original page is unloaded, we check to see that the completed document
+ * is different from the original one.
+ */
+BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalLocation, originalHref) {
+    if (windowObject.closed) {
+        return;
+    }
+    
+    LOG.debug("pollForLoad original: " + originalHref);
+    try {
+    	
+	    var current = windowObject.document.location;
+	    var currentHref = current.href
+	    
+	    var sameLoc = (originalLocation === current);
+	    var sameHref = (originalHref === currentHref);
+	    var rs = windowObject.document.readyState;
+	
+		if (rs == null) rs = 'complete';
+	
+	    if (!(sameLoc && sameHref) && rs == 'complete') {
+	        LOG.debug("pollForLoad complete: " + rs + " (" + currentHref + ")");
+	        loadFunction();
+	        return;
+	    }
+	    var self = this;
+	    LOG.debug("pollForLoad continue: " + currentHref);
+	    window.setTimeout(function() {self.pollForLoad(loadFunction, windowObject, originalLocation, originalHref);}, 500);
+	} catch (e) {
+		this.pageLoadError = e;
+	}
+};
+
 
 BrowserBot.prototype.getContentWindow = function() {
     return this.getFrame().contentWindow || frames[this.getFrame().id];
@@ -255,42 +296,7 @@ KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
     iframe.src = location;
 };
 
-/**
- * Call the supplied function when a the current page unloads and a new one loads.
- * This is done by polling continuously until the document changes and is fully loaded.
- */
-KonquerorBrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
-    // Since the unload event doesn't fire in Safari 1.3, we start polling immediately
-    // This works in Konqueror as well
-    if (windowObject && !windowObject.closed) {
-        LOG.debug("Starting pollForLoad");
-        this.pollForLoad(loadFunction, windowObject, windowObject.document);
-    }
-};
 
-/**
- * For Konqueror (and Safari), we can't catch the onload event for a separate window (as opposed to an IFrame)
- * So we set up a polling timer that will keep checking the readyState of the document until it's complete.
- * Since we might call this before the original page is unloaded, we check to see that the completed document
- * is different from the original one.
- */
-KonquerorBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument) {
-    if (windowObject.closed) {
-        return;
-    }
-
-    var sameDoc = (originalDocument === windowObject.document);
-    var rs = windowObject.document.readyState;
-
-    if (!sameDoc && rs == 'complete') {
-        LOG.debug("pollForLoad complete: " + rs + " (" + sameDoc + ")");
-        loadFunction();
-        return;
-    }
-    var self = this;
-    LOG.debug("pollForLoad continue");
-    window.setTimeout(function() {self.pollForLoad(loadFunction, windowObject, originalDocument);}, 500);
-};
 
 function SafariBrowserBot(frame) {
     BrowserBot.call(this, frame);
@@ -962,6 +968,10 @@ PageBot.prototype.goForward = function() {
 
 PageBot.prototype.close = function() {
     this.currentWindow.close();
+};
+
+PageBot.prototype.refresh = function() {
+    this.currentWindow.location.reload(true);
 };
 
 /**

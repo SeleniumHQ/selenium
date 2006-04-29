@@ -479,6 +479,14 @@ Selenium.prototype.doGoBack = function() {
     this.page().goBack();
 };
 
+Selenium.prototype.doRefresh = function() {
+    /**
+     * Simulates the user clicking the "Refresh" button on their browser.
+     * 
+     */
+    this.page().refresh();
+};
+
 Selenium.prototype.doClose = function() {
 	/**
    * Simulates the user clicking the "close" button in the titlebar of a popup
