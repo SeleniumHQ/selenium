@@ -39,6 +39,8 @@ public class XlateHtmlSeleneseToJava {
 
     private static boolean silentMode = false;
 
+    private static boolean dontThrowOnTranslationDifficulties = false;
+
     public static void main(String[] args) throws IOException {
         boolean generateSuite = false;
         if (args.length < 2) {
@@ -52,7 +54,10 @@ public class XlateHtmlSeleneseToJava {
                 silentMode  = true;
             }
             else if (args[j].equals("-skip")) {
-                skipList .put(args[++j], Boolean.TRUE);
+                skipList.put(args[++j], Boolean.TRUE);
+            }
+            else if (args[j].equals("-dontThrowOnTranslationDifficulties")) {
+                dontThrowOnTranslationDifficulties = true;
             }
             else if (args[j].equals("-suite")) {
                 generateSuite = true;
@@ -447,7 +452,11 @@ public class XlateHtmlSeleneseToJava {
             }
             else if (op.equals("ErrorOnNext")
                     || op.equals("FailureOnNext")) {
-                throw new RuntimeException("these line-spanning ops should be handled by the caller: " + oldLine);
+                String t = "these line-spanning ops should be handled by the caller: " + oldLine;
+                if (dontThrowOnTranslationDifficulties ) {
+                    return "// " + t;
+                }
+                throw new RuntimeException(t);
             }
             else if (op.equals("Selected")
                     || op.equals("ValueRepeated")
@@ -463,7 +472,11 @@ public class XlateHtmlSeleneseToJava {
                 middle =  XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
             else {
-                throw new RuntimeException("unrecognized assert op " + op);
+                String t = "unrecognized assert op " + op;
+                if (dontThrowOnTranslationDifficulties) {
+                    return "// " + t;
+                }
+                throw new RuntimeException(t);
             }
             return beginning + middle + ending;
         }
