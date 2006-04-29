@@ -57,7 +57,7 @@ Test for markup and newlines in text content.
       <tr>
         <td>verifyText</td>
         <td>visibleNewlines</td>
-        <td>visible*newlines*between</td>
+        <td>regexp:visible\s*newlines\s*between</td>
       </tr>
       <tr>
         <td>verifyNotText</td>
@@ -76,8 +76,18 @@ Test for markup and newlines in text content.
       </tr>
     <tr>
       <td>verifyText</td>
+      <td>preformatted</td>
+      <td>preformatted*newline</td>
+    </tr>
+    <tr>
+      <td>verifyNotText</td>
+      <td>preformatted</td>
+      <td>preformatted newline</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
       <td>mixedMarkup</td>
-      <td>visible*newlines and markup and non-visible newlines and markup*With a paragraph too!*and text after</td>
+      <td>visible*newlines and markup and non-visible newlines and markup*With*a paragraph*and*pre*formatted*text</td>
     </tr>
   </tbody>
 </table>

@@ -24,6 +24,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
 
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-api.js"></script>
@@ -148,21 +149,10 @@ function testGetValueOfCheckbox() {
 }
 
 function testGetText() {
-    var mockElement = new Object();
-    mockElement.textContent = " foo ";
-    mockPageBot.expects("findElement", "id").returns(mockElement);
+    var element = document.getElementById("testGetText")
+    mockPageBot.expects("findElement", "id").returns(element);
     assertEquals("foo", selenium.getText("id"));
     verifyMocks();
-}
-
-function getMockTable() {
-    var mockTable = new Object();
-    var row1 = new Object();
-    row1.cells = [textCell("foo"), textCell("bar")];
-    var row2 = new Object();
-    row2.cells = [textCell("fuz"), textCell("buz")];
-    mockTable.rows = [row1, row2];
-    return mockTable;
 }
 
 function textCell(val) {
@@ -200,6 +190,10 @@ function testGetTableNoSuchColumn() {
                     function() {selenium.getTable("table.0.11", "bar");},
                     "Cannot access column 11 - table row has 2 columns");
     verifyMocks();
+}
+
+function getMockTable() {
+    return document.getElementById("test_table")
 }
 
 function testVerifyTextPresentSuccess() {
@@ -380,5 +374,12 @@ function assertCallErrors(message, theCall, expectedFailureMessage) {
 }
 </script>
   </head>
-  <body>Selenium API Tests</body>
+  <body>Selenium API Tests
+  <span id="testGetText"> foo </span>
+
+  <table id="test_table">
+    <tr><td>foo</td><td>bar</td></tr>
+    <tr><td>fuz</td><td>buz</td></tr>
+  </table>
+  </body>
 </html>

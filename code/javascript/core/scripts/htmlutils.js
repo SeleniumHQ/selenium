@@ -37,24 +37,99 @@ String.prototype.startsWith = function(str) {
 function getText(element) {
     text = "";
 
-    if(element.textContent) {
-        text = element.textContent;
-    } else if(element.innerText) {
+    if(element.textContent)
+    {
+        var dummyElement = element.cloneNode(true);
+        renderWhitespaceInTextContent(dummyElement);
+        text = dummyElement.textContent;
+    } else if(element.innerText)
+    {
         text = element.innerText;
     }
-    // Replace &nbsp; with a space
-    // TODO - should this be in the match() code instead?
-    var pat = String.fromCharCode(160); // Opera doesn't like /\240/g
-   	var re = new RegExp(pat, "g");
-    text = text.replace(re, " ");
 
-    // Make a simple attempt to convert non-visible newlines into spaces in Mozilla
-    if (element.textContent == element.innerHTML)
-    {
-        text = text.replace(/\n/g, " ");
-    }
+    text = normalizeNewlines(text);
+    text = normalizeSpaces(text);
 
     return text.trim();
+}
+
+function renderWhitespaceInTextContent(element) {
+    if (element.nodeType == Node.TEXT_NODE)
+    {
+        element.data = element.data.replace(/\n|\r/g, " ");
+        return;
+    }
+
+    // Don't modify PRE elements
+    if (element.tagName == "PRE")
+    {
+        return;
+    }
+
+    // Handle inline element that force newlines
+    if (tagIs(element, ["BR", "HR"]))
+    {
+        // Replace with a newline text element
+        element.parentNode.replaceChild(document.createTextNode("\n"), element)
+    }
+
+    for (var i = 0; i < element.childNodes.length; i++)
+    {
+        var child = element.childNodes.item(i)
+        renderWhitespaceInTextContent(child);
+    }
+
+    // Handle block elements that introduce newlines
+// -- From HTML spec:
+//<!ENTITY % block
+//     "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT |
+//      BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
+    if (tagIs(element, ["P", "DIV"]))
+    {
+        element.appendChild(document.createTextNode("\n"), element)
+    }
+}
+
+function tagIs(element, tags)
+{
+    var tag = element.tagName;
+    for (var i = 0; i < tags.length; i++)
+    {
+        if (tags[i] == tag)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Convert all newlines to \m
+ */
+function normalizeNewlines(text)
+{
+    return text.replace(/\r\n|\r/g, "\n");
+}
+
+/**
+ * Replace multiple sequential spaces with a single space, and then convert &nbsp; to space.
+ */
+function normalizeSpaces(text)
+{
+    // IE has already done this conversion, so doing it again will remove multiple nbsp
+    if (isIE)
+    {
+        return text;
+    }
+
+    // Replace multiple spaces with a single space
+    // TODO - this shouldn't occur inside PRE elements
+    text = text.replace(/\ +/g, " ");
+
+    // Replace &nbsp; with a space
+    var pat = String.fromCharCode(160); // Opera doesn't like /\240/g
+   	var re = new RegExp(pat, "g");
+    return text.replace(re, " ");
 }
 
 // Sets the text in this element
