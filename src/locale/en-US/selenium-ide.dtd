@@ -6,3 +6,4 @@
 <!ENTITY formatCmd.label "Format">
 
 <!ENTITY baseURLTextbox.tooltip "Base URL used for playing in embedded Selenium.">
+<!ENTITY selenium-ide.sidebar.title "Selenium IDE">

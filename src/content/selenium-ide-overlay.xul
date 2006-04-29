@@ -14,10 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+
+<!DOCTYPE overlay SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd"> 
+
 <overlay id="selenium-ide-overlay" 
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-overlay.js"/>
+
+  <menupopup id="viewSidebarMenu">
+    <menuitem observes="viewSeleniumIDESidebar" key="key_viewSeleniumIDESidebar" />
+  </menupopup>
 
   <menupopup id="menu_ToolsPopup">
     <menuitem label="Selenium IDE" oncommand="SeleniumIDE.openRecorder();" insertbefore="sanitizeSeparator,prefSep"/>
@@ -33,4 +40,19 @@ limitations under the License.
     <menuitem id="selenium-ide-check-value" accesskey="v"/>
   </popup>
 
+  <broadcasterset id="mainBroadcasterSet">
+    <broadcaster id="viewSeleniumIDESidebar"
+		 label="&selenium-ide.sidebar.title;"
+		 autoCheck="false"
+		 type="checkbox"
+		 group="sidebar"
+		 sidebarurl="chrome://selenium-ide/content/selenium-ide-sidebar.xul"
+		 sidebartitle="&selenium-ide.sidebar.title;"
+		 oncommand="toggleSidebar('viewSeleniumIDESidebar');" />
+  </broadcasterset>
+
+  <keyset id="mainKeyset">
+    <key id="key_viewSeleniumIDESidebar" command="viewSeleniumIDESidebar" 
+	 key="S" modifiers="alt,accel"/>
+  </keyset>
 </overlay>

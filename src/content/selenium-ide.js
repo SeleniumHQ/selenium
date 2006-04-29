@@ -53,6 +53,7 @@ function init() {
 
 		var controller = {
 			supportsCommand : function(cmd) {
+				//log.debug("supportsCommand");
 				switch (cmd) {
 				case "cmd_close":
 				case "cmd_open":
@@ -66,6 +67,7 @@ function init() {
 				}
 			},
 			isCommandEnabled : function(cmd){
+				//log.debug("isCommandEnabled");
 				switch (cmd) {
 				case "cmd_close":
 				case "cmd_open":
@@ -82,6 +84,7 @@ function init() {
 				}
 			},
 			doCommand : function(cmd) {
+				//log.debug("doCommand: " + cmd);
 				switch (cmd) {
 				case "cmd_close": if (confirmClose()) { window.close(); } break;
 				case "cmd_save": saveTestCase(); break;
@@ -102,7 +105,8 @@ function init() {
 			},
 			onEvent : function(evt) {}
 		};
-		window.controllers.appendController(controller);
+		//window.controllers.appendController(controller);
+		document.commandDispatcher.getControllers().appendController(controller);
 		
 		document.commandDispatcher.updateCommands("selenium-ide-state");
 		log.info("initialized");
@@ -112,6 +116,7 @@ function init() {
 }
 
 function updateSeleniumCommands() {
+	// log.debug("updateSeleniumCommands");
 	["cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step"].
 		forEach(function(cmd) {
 					goUpdateCommand(cmd);
@@ -279,6 +284,25 @@ function onUnloadDocument(doc) {
 		clearTimeout(this.unloadTimeoutID);
 	}
 	this.unloadTimeoutID = setTimeout("appendAND_WAIT()", 100);
+	
+	/*
+	if (this.lastWindow) {
+		log.debug("doc=" + doc);
+		var documents = this.eventManager.getDocuments(this.lastWindow);
+		var match = false;
+		for (var i = 0; i < documents.length; i++) {
+			log.debug("documents[i]=" + documents[i]);
+			if (doc == documents[i]) match = true;
+		}
+		if (match) {
+			log.debug("onUnloadDocument: set timer");
+			if (this.unloadTimeoutID != null) {
+				clearTimeout(this.unloadTimeoutID);
+			}
+			this.unloadTimeoutID = setTimeout("appendAND_WAIT()", 100);
+		}
+	}
+	*/
 }
 
 function recordTitle(window) {
@@ -289,6 +313,7 @@ function recordTitle(window) {
 }
 
 function recordOpen(window) {
+	if (!window.location) return;
 	var path = window.location.href;
 	var regexp = new RegExp(/^(\w+:\/\/[\w\.]+(:\d+)?)\/.*/);
 	var base = '';

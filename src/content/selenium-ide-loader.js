@@ -25,6 +25,17 @@ SeleniumIDE.openRecorder = function() {
 }
 
 SeleniumIDE.getRecorderWindow = function() {
+	if (document) {
+		var sidebarBox = document.getElementById('sidebar-box');
+		if (sidebarBox && !sidebarBox.hidden) {
+			var sidebar = document.getElementById('sidebar');
+			if (sidebar && sidebar.contentDocument) {
+				if ("chrome://selenium-ide/content/selenium-ide-sidebar.xul" == sidebar.contentDocument.documentURI) {
+					return sidebar.contentDocument.defaultView;
+				}
+			}
+		}
+	}
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	return wm.getMostRecentWindow('global:selenium-ide');
 }

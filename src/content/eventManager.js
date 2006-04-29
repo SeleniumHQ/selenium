@@ -54,7 +54,7 @@ function EventManager(listener) {
 	}
 
 	function callForWindow(handler, contentWindow) {
-		var documents = getDocuments(contentWindow);
+		var documents = self.getDocuments(contentWindow);
 		for (var i = 0; i < documents.length; i++) {
 			handler.handleDocument(documents[i], contentWindow);
 		}
@@ -179,16 +179,6 @@ function EventManager(listener) {
 		return "LOCATOR_DETECTION_FAILED";
 	}
 
-	function getDocuments(frame) {
-		var documents = new Array();
-		var frames = frame.frames;
-		documents.push(frame.document);
-		for (var i = 0; i < frames.length; i++) {
-			documents = documents.concat(getDocuments(frames[i]));
-		}
-		return documents;
-	}
-	
 	function getBrowser() {
 		var browser = opener.getBrowser();
 		return browser;
@@ -197,7 +187,17 @@ function EventManager(listener) {
 
 EventManager.prototype = {
 	PREFERRED_ATTRIBUTES: ['id','name','value','type','action','onclick'],
-	
+
+	getDocuments: function(frame) {
+		var documents = new Array();
+		var frames = frame.frames;
+		documents.push(frame.document);
+		for (var i = 0; i < frames.length; i++) {
+			documents = documents.concat(this.getDocuments(frames[i]));
+		}
+		return documents;
+	},
+
 	attributeValue: function(value) {
 		if (value.indexOf("'") < 0) {
 			return "'" + value + "'";
