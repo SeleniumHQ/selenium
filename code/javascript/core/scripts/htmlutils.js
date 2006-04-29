@@ -37,12 +37,17 @@ String.prototype.startsWith = function(str) {
 function getText(element) {
     text = "";
 
-    if(element.textContent)
+    if(isFirefox)
     {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.textContent;
-    } else if(element.innerText)
+    }
+    else if(element.textContent)
+    {
+        text = element.textContent;
+    }
+    else if(element.innerText)
     {
         text = element.innerText;
     }
@@ -54,6 +59,7 @@ function getText(element) {
 }
 
 function renderWhitespaceInTextContent(element) {
+    // Remove non-visible newlines in text nodes
     if (element.nodeType == Node.TEXT_NODE)
     {
         element.data = element.data.replace(/\n|\r/g, " ");
@@ -69,7 +75,7 @@ function renderWhitespaceInTextContent(element) {
     // Handle inline element that force newlines
     if (tagIs(element, ["BR", "HR"]))
     {
-        // Replace with a newline text element
+        // Replace this element with a newline text element
         element.parentNode.replaceChild(document.createTextNode("\n"), element)
     }
 

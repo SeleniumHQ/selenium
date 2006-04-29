@@ -209,7 +209,6 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
  */
 BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowObject) {
     // Since the unload event doesn't fire in Safari 1.3, we start polling immediately
-    // This works in Konqueror as well
     if (windowObject && !windowObject.closed) {
         LOG.debug("Starting pollForLoad: " + windowObject.document.location);
         this.pollForLoad(loadFunction, windowObject, windowObject.document.location, windowObject.document.location.href);
@@ -217,28 +216,27 @@ BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowO
 };
 
 /**
- * For Konqueror (and Safari), we can't catch the onload event for a separate window (as opposed to an IFrame)
- * So we set up a polling timer that will keep checking the readyState of the document until it's complete.
- * Since we might call this before the original page is unloaded, we check to see that the completed document
- * is different from the original one.
+ * Set up a polling timer that will keep checking the readyState of the document until it's complete.
+ * Since we might call this before the original page is unloaded, we first check to see that the current location
+ * or href is different from the original one.
  */
 BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalLocation, originalHref) {
     if (windowObject.closed) {
         return;
     }
-    
+
     LOG.debug("pollForLoad original: " + originalHref);
     try {
-    	
-	    var current = windowObject.document.location;
-	    var currentHref = current.href
-	    
-	    var sameLoc = (originalLocation === current);
+
+	    var currentLocation = windowObject.document.location;
+	    var currentHref = currentLocation.href
+
+	    var sameLoc = (originalLocation === currentLocation);
 	    var sameHref = (originalHref === currentHref);
 	    var rs = windowObject.document.readyState;
-	
+
 		if (rs == null) rs = 'complete';
-	
+
 	    if (!(sameLoc && sameHref) && rs == 'complete') {
 	        LOG.debug("pollForLoad complete: " + rs + " (" + currentHref + ")");
 	        loadFunction();
@@ -296,23 +294,17 @@ KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
     iframe.src = location;
 };
 
-
-
 function SafariBrowserBot(frame) {
     BrowserBot.call(this, frame);
 }
 SafariBrowserBot.prototype = new BrowserBot;
 
 SafariBrowserBot.prototype.setIFrameLocation = KonquerorBrowserBot.prototype.setIFrameLocation;
-SafariBrowserBot.prototype.callOnWindowPageTransition = KonquerorBrowserBot.prototype.callOnWindowPageTransition;
-SafariBrowserBot.prototype.pollForLoad = KonquerorBrowserBot.prototype.pollForLoad;
 
 function IEBrowserBot(frame) {
     BrowserBot.call(this, frame);
 }
 IEBrowserBot.prototype = new BrowserBot;
-IEBrowserBot.prototype.callOnWindowPageTransition = KonquerorBrowserBot.prototype.callOnWindowPageTransition;
-IEBrowserBot.prototype.pollForLoad = KonquerorBrowserBot.prototype.pollForLoad;
 
 IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     BrowserBot.prototype.modifyWindowToRecordPopUpDialogs(windowToModify, browserBot);
@@ -405,13 +397,13 @@ PageBot = function(pageWindow) {
     this.locationStrategies['implicit'] = function(locator, inDocument) {
         if (locator.startsWith('//')) {
             return this.locateElementByXPath(locator, inDocument);
-        } 
+        }
         if (locator.startsWith('document.')) {
             return this.locateElementByDomTraversal(locator, inDocument);
         }
         return this.locateElementByIdentifier(locator, inDocument);
     };
-    
+
 };
 
 PageBot.createForWindow = function(windowObject) {
@@ -456,7 +448,7 @@ IEPageBot.prototype = new PageBot();
 PageBot.prototype.findElement = function(locator) {
     var locatorType = 'implicit';
     var locatorString = locator;
-    
+
     // If there is a locator prefix, use the specified strategy
     var result = locator.match(/^([A-Za-z]+)=(.+)/);
     if (result) {
@@ -565,15 +557,15 @@ PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
     }
 
     // Handle //tag
-    var match = xpath.match(/^\/\/(\w+|\*)$/); 
+    var match = xpath.match(/^\/\/(\w+|\*)$/);
     if (match) {
-        var elements = inDocument.getElementsByTagName(match[1].toUpperCase()); 
+        var elements = inDocument.getElementsByTagName(match[1].toUpperCase());
         if (elements == null) return null;
         return elements[0];
     }
 
     // Handle //tag[@attr='value']
-    var match = xpath.match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/); 
+    var match = xpath.match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/);
     if (match) {
         return this.findElementByTagNameAndAttributeValue(
             inDocument,
@@ -584,7 +576,7 @@ PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
     }
 
     // Handle //tag[text()='value']
-    var match = xpath.match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/); 
+    var match = xpath.match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/);
     if (match) {
         return this.findElementByTagNameAndText(
             inDocument,
@@ -602,25 +594,25 @@ PageBot.prototype.findElementByTagNameAndAttributeValue = function(
     if (isIE && attributeName == "class") {
         attributeName = "className";
     }
-    var elements = inDocument.getElementsByTagName(tagName); 
-    for (var i = 0; i < elements.length; i++) { 
-        var elementAttr = elements[i].getAttribute(attributeName); 
-        if (elementAttr == attributeValue) { 
-            return elements[i]; 
-        } 
-    } 
+    var elements = inDocument.getElementsByTagName(tagName);
+    for (var i = 0; i < elements.length; i++) {
+        var elementAttr = elements[i].getAttribute(attributeName);
+        if (elementAttr == attributeValue) {
+            return elements[i];
+        }
+    }
     return null;
 };
 
 PageBot.prototype.findElementByTagNameAndText = function(
     inDocument, tagName, text
 ) {
-    var elements = inDocument.getElementsByTagName(tagName); 
-    for (var i = 0; i < elements.length; i++) { 
-        if (getText(elements[i]) == text) { 
-            return elements[i]; 
-        } 
-    } 
+    var elements = inDocument.getElementsByTagName(tagName);
+    for (var i = 0; i < elements.length; i++) {
+        if (getText(elements[i]) == text) {
+            return elements[i];
+        }
+    }
     return null;
 };
 
@@ -806,7 +798,7 @@ SafariPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'focus', false);
 
     var wasChecked = element.checked;
-    
+
     // For form element it is simple.
     if (element.click) {
         element.click();
@@ -950,7 +942,7 @@ PageBot.prototype.setContext = function(strContext, logLevel) {
      //set the current test title
     document.getElementById("context").innerHTML=strContext;
     if (logLevel!=null) {
-    	LOG.setLogLevelThreshold(logLevel); 
+    	LOG.setLogLevelThreshold(logLevel);
     }
 };
 
