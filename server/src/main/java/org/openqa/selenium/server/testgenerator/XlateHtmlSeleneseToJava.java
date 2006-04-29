@@ -492,6 +492,7 @@ public class XlateHtmlSeleneseToJava {
         }
         else if (op.equals("chooseCancelOnNextConfirmation")
                 || op.equals("close")
+                || op.equals("refresh")
                 || op.equals("goBack")) {
             expectedArgCount = 0;
         }
