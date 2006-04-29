@@ -269,7 +269,12 @@ public class XlateHtmlSeleneseToJava {
             op = tokens[0] = "type";
             tokens[2] = tokens[2] + tokens[2];
         }
-        if (op.startsWith("waitFor")) {
+        if (op.startsWith("waitFor")
+                && !op.equals("waitForCondition")
+                && !op.equals("waitForPopUp")
+                && !op.equals("waitForPageToLoad")
+           )
+        {
             String conditionCkVarName = "sawCondition" + j;
             java.append("\t\tboolean " + conditionCkVarName + " = false;"+ EOL)
             .append("for (int second = 0; second < 60; second++) {" + EOL)
@@ -347,11 +352,6 @@ public class XlateHtmlSeleneseToJava {
         .replaceAll(SELENESE_TOKEN_DIVIDER, "|") + EOL; 
         
         String ending = ";";
-        if (op.startsWith("waitFor")) {
-            beginning = EOL + "pause(5000);" + beginning;
-            op = op.replaceFirst("waitFor", "assert");
-            tokens[0] = tokens[0].replaceFirst("waitFor", "assert");
-        }
         if (op.endsWith("AndWait")) {
             ending += EOL + "selenium.waitForPageToLoad(\"" + timeOut + "\");";
             op = op.replaceFirst("AndWait", "");
@@ -451,7 +451,6 @@ public class XlateHtmlSeleneseToJava {
             }
             else if (op.equals("Selected")
                     || op.equals("ValueRepeated")
-                    || op.equals("PopUp")
                     || op.equals("modalDialogTest")) {
                 return "// skipped undocumented " + oldLine;
             }
