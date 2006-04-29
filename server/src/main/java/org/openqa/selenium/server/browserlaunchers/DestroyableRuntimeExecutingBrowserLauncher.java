@@ -44,7 +44,7 @@ public class DestroyableRuntimeExecutingBrowserLauncher extends RuntimeExecuting
     }
 
     protected File createCustomProfileDir(String sessionId) {
-        File tmpDir = new File("/tmp");
+        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         String customProfileDirParent = ((tmpDir.exists() && tmpDir.isDirectory()) ? tmpDir.getAbsolutePath() : ".");
         File customProfileDir = new File(customProfileDirParent + "/customProfileDir" + sessionId);
         if (customProfileDir.exists()) {
