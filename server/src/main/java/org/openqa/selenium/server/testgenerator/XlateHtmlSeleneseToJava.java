@@ -394,10 +394,11 @@ public class XlateHtmlSeleneseToJava {
             ending = ")" + ending;
             op = op.replaceFirst("assert|verify", "");
             if (op.equals("ElementPresent") || op.equals("ElementNotPresent")
+                    || op.equals("TextPresent") || op.equals("TextNotPresent")
                     || op.equals("Editable") || op.equals("NotEditable")
                     || op.equals("Visible") || op.equals("NotVisible")) {
                 //assert beginning.indexOf("assert") != -1;  // because verify's will be picked off by the caller
-                return "selenium.assert" + op + "(" + XlateSeleneseArgument(tokens[1]) + ");";
+                return "\t\tselenium.assert" + op + "(" + XlateSeleneseArgument(tokens[1]) + ");";
             }
             if (op.equals("Selected") || op.equals("NotSelected")) {
                 return "selenium.assert" + op + "(" + XlateSeleneseArgument(tokens[1]) + ", " + XlateSeleneseArgument(tokens[2]) + ");";
@@ -417,7 +418,7 @@ public class XlateHtmlSeleneseToJava {
                 middle = XlateSeleneseArgument(tokens[2]) + ", \"\" + selenium.getText(" + XlateSeleneseArgument(tokens[1]) + ").length()";
             }
             else if (op.equals("Location")) {
-                return "selenium.assertLocation(" + XlateSeleneseArgument(tokens[1]) + ");";
+                return "\t\tselenium.assertLocation(" + XlateSeleneseArgument(tokens[1]) + ");";
             }
             else if (op.equals("AbsoluteLocation")) {
                 middle = XlateSeleneseArgument(tokens[1]) + ", selenium.getAbsoluteLocation()";
@@ -440,13 +441,6 @@ public class XlateHtmlSeleneseToJava {
             else if (op.equals("Checked")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", selenium.getChecked(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
-            else if (op.equals("TextPresent") || op.equals("TextNotPresent")) {
-                beginning = beginning.replaceFirst("Equals", "True");
-                if (op.equals("TextNotPresent")) {
-                    beginning = invertAssertion(beginning);
-                }
-                middle = "this.getText().indexOf(" + XlateSeleneseArgument(tokens[1]) + ")!=-1";
-            }
             else if (op.equals("Expression")) {
                 middle = XlateSeleneseArgument(tokens[1]) + ", " + 
                 XlateSeleneseArgument(tokens[2]);
@@ -457,6 +451,7 @@ public class XlateHtmlSeleneseToJava {
             }
             else if (op.equals("Selected")
                     || op.equals("ValueRepeated")
+                    || op.equals("PopUp")
                     || op.equals("modalDialogTest")) {
                 return "// skipped undocumented " + oldLine;
             }
