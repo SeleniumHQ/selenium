@@ -744,6 +744,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'blur', false);
 };
 
+// TODO Opera uses this too - split out an Opera version so we don't need the isGecko check here
 MozillaPageBot.prototype.clickElement = function(element) {
 
     triggerEvent(element, 'focus', false);
@@ -751,18 +752,15 @@ MozillaPageBot.prototype.clickElement = function(element) {
     // Add an event listener that detects if the default action has been prevented.
     // (This is caused by a javascript onclick handler returning false)
     var preventDefault = false;
-    if (geckoVersion) {
+    if (isGecko) {
         element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
     }
 
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true);
 
-    // In FireFox < 1.0 Final, and Mozilla <= 1.7.3, just sending the click event is enough.
-    // But in newer versions, we need to do it ourselves.
-    var needsProgrammaticClick = (geckoVersion > '20041025');
     // Perform the link action if preventDefault was set.
-    if (needsProgrammaticClick && !preventDefault) {
+    if (isGecko && !preventDefault) {
         // Try the element itself, as well as it's parent - this handles clicking images inside links.
         if (element.href) {
             this.currentWindow.location.href = element.href;

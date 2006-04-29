@@ -26,8 +26,5 @@ var isIE = !isOpera && (browserName =="Microsoft Internet Explorer");
 var isKonqueror = (browserName == "Konqueror");
 var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
 var isFirefox = (navigator.userAgent.indexOf('Firefox') != -1);
+var isGecko = (navigator.userAgent.indexOf('Gecko') != -1);
 var isNetscape = !isOpera && !isFirefox && (navigator.appName == "Netscape");
-
-// Get the Gecko version as an 8 digit date.
-var geckoResult = /^Mozilla\/5\.0 .*Gecko\/(\d{8}).*$/.exec(navigator.userAgent);
-var geckoVersion = geckoResult == null ? null : geckoResult[1];
