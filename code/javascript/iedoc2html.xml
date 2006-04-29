@@ -19,7 +19,7 @@
 </xsl:template>
 
 <xsl:template name="assertionsHeader">
-	<h3>Selenium Assertions</h3>
+	<h2>Selenium Assertions</h2>
 	<p>Assertions are used to verify the state of the application. They can be used to check the value of a form field, the presense of some text, or the URL of the current page.</p>
 	<p>All Selenium assertions can be used in 2 modes, &quot;assert&quot; and &quot;verify&quot;. These behave identically, except that when an &quot;assert&quot; fails, the test is aborted. When a &quot;verify&quot; fails, the test will continue execution.  This allows a single &quot;assert&quot; to ensure that the application is on the correct page, followed by a bunch of &quot;verify&quot; assertions to test form field values, labels, etc.</p>
 	
@@ -27,7 +27,7 @@
 </xsl:template>
 
 <xsl:template name="actionsHeader">
-	<h3>Selenium Actions</h3>
+	<h2>Selenium Actions</h2>
 	<p>Actions tell Selenium to do something in the application. They generally represent something a user would do.</p>
 	<p>Many <strong>Actions</strong> can be called with the &quot;AndWait&quot; suffix.
 	This suffix tells Selenium that the action will cause the browser to make a call to the server,
@@ -39,7 +39,8 @@
 </xsl:template>
 
 <xsl:template name="header">
-	<h3>Selenium Reference</h3>
+	<h1>Selenium Reference</h1>
+	<h2>Concepts</h2>
 	<p>A <strong>command</strong> is what tells Selenium what to do. Selenium commands come in two 'flavors', <strong>Actions</strong> and <strong>Assertions</strong>.
 	Each command call is one line in the test table of the form:</p>
 	<blockquote>
@@ -64,7 +65,7 @@
 </xsl:template>
 
 <xsl:template name="footer">
-	<h3><a name="parameter-construction-and-variables">Parameter construction and Variables</a></h3>
+	<h2><a name="parameter-construction-and-variables">Parameter construction and Variables</a></h2>
 	<blockquote>
 	<p>All Selenium command parameters can be constructed using both simple
 	variable substitution as well as full javascript. Both of these
@@ -135,7 +136,7 @@
 	</blockquote>
 	
 	<div class="section" id="extending-selenium">
-	<h1><a name="extending-selenium">Extending Selenium</a></h1>
+	<h2><a name="extending-selenium">Extending Selenium</a></h2>
 	<blockquote>
 	<p>It can be quite simple to extend Selenium, adding your own actions, assertions and locator-strategies.
 	This is done with javascript by adding methods to the Selenium object prototype, and the PageBot

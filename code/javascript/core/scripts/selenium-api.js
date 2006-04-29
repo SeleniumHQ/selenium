@@ -23,9 +23,13 @@ function Selenium(browserbot) {
 	 * 
 	 * <h3><a name="locators"></a>Element Locators</h3>
 	 * <p>
-	 * Element Locators tell Selenium which HTML element a command refers to. Many
-	 * commands require an Element Locator as a parameter.
+	 * Element Locators tell Selenium which HTML element a command refers to.
+	 * The format of a locator is:</p>
+	 * <blockquote>
+	 * <em>locatorType</em><strong>=</strong><em>argument</em>
+	 * </blockquote>
 	 * 
+	 * <p>
 	 * We support the following strategies for locating elements:
 	 * </p>
 	 * <blockquote>
@@ -39,6 +43,17 @@ function Selenium(browserbot) {
 	 * 
 	 * <dt><strong>name</strong>=<em>name</em></dt>
 	 * <dd>Select the first element with the specified &#64;name attribute.</dd>
+	 * <dd><ul class="first last simple">
+	 * <li>username</li>
+	 * <li>name=username</li>
+	 * </ul>
+	 * </dd>
+	 * <dd>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace.  If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</dd>
+	 * 
+	 * <dd><ul class="first last simple">
+	 * <li>name=flavour value=chocolate</li>
+	 * </ul>
+	 * </dd>
 	 * <dt><strong>dom</strong>=<em>javascriptExpression</em></dt>
 	 * 
 	 * <dd>
@@ -81,8 +96,24 @@ function Selenium(browserbot) {
 	 * <li><strong>dom</strong>, for locators starting with &quot;document.&quot;</li>
 	 * <li><strong>xpath</strong>, for locators starting with &quot;//&quot;</li>
 	 * <li><strong>identifier</strong>, otherwise</li>
-	 * 
 	 * </ul>
+	 *
+	 * <h3><a name="element-filters">Element Filters</a></h3>
+	 * <blockquote>
+	 * <p>Element filters can be used with a locator to refine a list of candidate elements.  They are currently used only in the 'name' element-locator.</p>
+	 * <p>Filters look much like locators, ie.</p>
+	 * <blockquote>
+	 * <em>filterType</em><strong>=</strong><em>argument</em></blockquote>
+	 * 
+	 * <p>Supported element-filters are:</p>
+	 * <p><strong>value=</strong><em>valuePattern</em></p>
+	 * <blockquote>
+	 * Matches elements based on their values.  This is particularly useful for refining a list of similarly-named toggle-buttons.</blockquote>
+	 * <p><strong>index=</strong><em>index</em></p>
+	 * <blockquote>
+	 * Selects a single element based on its position in the list offset from zero).</blockquote>
+	 * </blockquote>
+	 *
 	 * <h3><a name="patterns"></a>String-match Patterns</h3>
 	 * 
 	 * <p>
@@ -294,7 +325,7 @@ Selenium.prototype.doSelect = function(locator, optionLocator) {
    * </dd>
    * </dl>
    * <p>
-   * Without a prefix, the default behaviour is to match on <strong>label</strong>.
+   * If no option locator prefix is provided, the default behaviour is to match on <strong>label</strong>.
    * </p>
    * 
    * 
