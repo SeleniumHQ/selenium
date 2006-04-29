@@ -28,6 +28,7 @@
         <java classname="org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava" fork="true" failonerror="true">
             <arg value="${dir.java.tests.based.on.core.javascript}"/>
             <arg value="-silent"/>
+            <arg value="-dontThrowOnTranslationDifficulties"/>
             <arg value="-dir"/>
             <arg value="${dir.core.tests}"/>
             <classpath refid="depend.classpath"/>
