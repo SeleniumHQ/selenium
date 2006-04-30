@@ -63,18 +63,19 @@ BrowserBot = function(frame) {
 
 BrowserBot.createForFrame = function(frame) {
     var browserbot;
-    LOG.debug("browserName: " + browserName);
+    LOG.debug("browserName: " + browserVersion.name);
     LOG.debug("userAgent: " + navigator.userAgent);
-    if (isIE) {
+    if (browserVersion.isIE) {
         browserbot = new IEBrowserBot(frame);
     }
-    else if (isKonqueror) {
+    else if (browserVersion.isKonqueror) {
         browserbot = new KonquerorBrowserBot(frame);
     }
-    else if (isSafari) {
+    else if (browserVersion.isSafari) {
         browserbot = new SafariBrowserBot(frame);
     }
     else {
+        LOG.info("Using MozillaBrowserBot")
         // Use mozilla by default
         browserbot = new MozillaBrowserBot(frame);
     }
@@ -407,16 +408,17 @@ PageBot = function(pageWindow) {
 };
 
 PageBot.createForWindow = function(windowObject) {
-    if (isIE) {
+    if (browserVersion.isIE) {
         return new IEPageBot(windowObject);
     }
-    else if (isKonqueror) {
+    else if (browserVersion.isKonqueror) {
         return new KonquerorPageBot(windowObject);
     }
-    else if (isSafari) {
+    else if (browserVersion.isSafari) {
         return new SafariPageBot(windowObject);
     }
     else {
+        LOG.info("Using MozillaPageBot")
         // Use mozilla by default
         return new MozillaPageBot(windowObject);
     }
@@ -591,7 +593,7 @@ PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
 PageBot.prototype.findElementByTagNameAndAttributeValue = function(
     inDocument, tagName, attributeName, attributeValue
 ) {
-    if (isIE && attributeName == "class") {
+    if (browserVersion.isIE && attributeName == "class") {
         attributeName = "className";
     }
     var elements = inDocument.getElementsByTagName(tagName);
@@ -617,7 +619,7 @@ PageBot.prototype.findElementByTagNameAndText = function(
 };
 
 PageBot.prototype.findElementUsingFullXPath = function(xpath, inDocument) {
-    if (isIE && !inDocument.evaluate) {
+    if (browserVersion.isIE && !inDocument.evaluate) {
         addXPathSupport(inDocument);
     }
 
@@ -666,7 +668,7 @@ PageBot.prototype.findAttribute = function(locator) {
     var element = this.findElement(elementLocator);
 
     // Handle missing "class" attribute in IE.
-    if (isIE && attributeName == "class") {
+    if (browserVersion.isIE && attributeName == "class") {
         attributeName = "className";
     }
 
@@ -750,7 +752,7 @@ MozillaPageBot.prototype.clickElement = function(element) {
     // Add an event listener that detects if the default action has been prevented.
     // (This is caused by a javascript onclick handler returning false)
     var preventDefault = false;
-    if (isGecko) {
+    if (browserVersion.isGecko) {
         element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
     }
 
@@ -758,7 +760,7 @@ MozillaPageBot.prototype.clickElement = function(element) {
     triggerMouseEvent(element, 'click', true);
 
     // Perform the link action if preventDefault was set.
-    if (isGecko && !preventDefault) {
+    if (browserVersion.isGecko && !preventDefault) {
         // Try the element itself, as well as it's parent - this handles clicking images inside links.
         if (element.href) {
             this.currentWindow.location.href = element.href;

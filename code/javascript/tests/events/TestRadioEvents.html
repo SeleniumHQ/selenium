@@ -77,12 +77,12 @@ Copyright 2004 ThoughtWorks, Inc
       <td>* {click(theRadio1)} *</td>
     </tr>
     <!-- Safari doesn't fire change events for radio buttons -->
-    <tr if="!isSafari">
+    <tr if="!browserVersion.isSafari">
       <td>verifyValue</td>
       <td>eventlog</td>
       <td>* {change(theRadio1)} *</td>
     </tr>
-    <tr if="isSafari">
+    <tr if="browserVersion.isSafari">
       <td>verifyNotValue</td>
       <td>eventlog</td>
       <td>* {change(theRadio1)} *</td>
@@ -120,12 +120,12 @@ Copyright 2004 ThoughtWorks, Inc
       <td>* {click(theRadio2)} *</td>
     </tr>
     <!-- Safari doesn't fire change events for radio buttons -->
-    <tr if="!isSafari">
+    <tr if="!browserVersion.isSafari">
       <td>verifyValue</td>
       <td>eventlog</td>
       <td>* {change(theRadio2)} *</td>
     </tr>
-    <tr if="isSafari">
+    <tr if="browserVersion.isSafari">
       <td>verifyNotValue</td>
       <td>eventlog</td>
       <td>* {change(theRadio2)} *</td>

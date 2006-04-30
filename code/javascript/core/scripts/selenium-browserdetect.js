@@ -19,12 +19,65 @@
 // (feature detection is better), the subtle browser differences that Selenium has to
 // work around seem to make it necessary. Maybe as we learn more about what we need,
 // we can do this in a more "feature-centric" rather than "browser-centric" way.
-// TODO we should probably reuse an available browser-detection library
-var browserName=navigator.appName;
-var isOpera = (window.opera != null);
-var isIE = !isOpera && (browserName =="Microsoft Internet Explorer");
-var isKonqueror = (browserName == "Konqueror");
-var isSafari = (navigator.userAgent.indexOf('Safari') != -1);
-var isFirefox = (navigator.userAgent.indexOf('Firefox') != -1);
-var isGecko = (navigator.userAgent.indexOf('Gecko') != -1);
-var isNetscape = !isOpera && !isFirefox && (navigator.appName == "Netscape");
+
+BrowserVersion = function() {
+    this.name = navigator.appName;
+
+    if (window.opera != null)
+    {
+        this.browser = BrowserVersion.OPERA;
+        this.isOpera = true;
+        return;
+    }
+
+    if (this.name == "Microsoft Internet Explorer")
+    {
+        this.browser = BrowserVersion.IE;
+        this.isIE = true;
+        return;
+    }
+
+    if (navigator.userAgent.indexOf('Safari') != -1)
+    {
+        this.browser = BrowserVersion.SAFARI;
+        this.isSafari = true;
+        this.khtml = true;
+        return;
+    }
+
+    if (navigator.userAgent.indexOf('Konqueror') != -1)
+    {
+        this.browser = BrowserVersion.KONQUEROR;
+        this.isKonqueror = true;
+        this.khtml = true;
+        return;
+    }
+
+    if (navigator.userAgent.indexOf('Firefox') != -1)
+    {
+        this.browser = BrowserVersion.FIREFOX;
+        this.isFirefox = true;
+        this.isGecko = true;
+        return;
+    }
+
+    if (navigator.userAgent.indexOf('Gecko') != -1)
+    {
+        this.browser = BrowserVersion.MOZILLA;
+        this.isMozilla = true;
+        this.isGecko = true;
+        return;
+    }
+
+    this.browser = BrowserVersion.UNKNOWN;
+}
+
+BrowserVersion.OPERA = "Opera";
+BrowserVersion.IE = "IE";
+BrowserVersion.KONQUEROR = "Konqueror";
+BrowserVersion.SAFARI = "Safari";
+BrowserVersion.FIREFOX = "Firefox";
+BrowserVersion.MOZILLA = "Mozilla";
+BrowserVersion.UNKNOWN = "Unknown";
+
+browserVersion = new BrowserVersion();

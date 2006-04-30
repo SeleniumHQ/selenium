@@ -71,7 +71,7 @@ http-equiv="content-type">
             <tr><td><a href="./TestLocators.html">TestLocators</a></td></tr>
             <tr><td><a href="./TestImplicitLocators.html">TestImplicitLocators</a></td></tr>
             <tr><td><a href="./TestXPathLocators.html">TestXPathLocators</a></td></tr>
-            <tr unless="isKonqueror || isSafari"><td><a href="./TestGoBack.html">TestGoBack</a></td></tr>
+            <tr unless="browserVersion.isKonqueror || browserVersion.isSafari"><td><a href="./TestGoBack.html">TestGoBack</a></td></tr>
             <tr><td><a href="./TestRefresh.html">TestRefresh</a></td></tr>
 
             <tr><td><a href="./TestComments.html">TestComments</a></td></tr>
@@ -83,12 +83,12 @@ http-equiv="content-type">
             <tr><td><a href="./events/TestTextEvents.html">TestTextEvents</a></td></tr>
             <tr><td><a href="./events/TestFireEvents.html">TestFireEvents</a></td></tr>
             <tr><td><a href="./events/TestMouseEvents.html">TestMouseEvents</a></td></tr>
-            <tr unless="isKonqueror || isSafari"><td><a href="./events/TestKeyEvents.html">TestKeyEvents</a></td></tr>
+            <tr unless="browserVersion.isKonqueror || browserVersion.isSafari"><td><a href="./events/TestKeyEvents.html">TestKeyEvents</a></td></tr>
             <tr><td><a href="./TestFocusOnBlur.html">TestFocusOnBlur</a></td></tr>
-            <tr unless="isSafari"><td><a href="./TestAlerts.html">TestAlerts</a></td></tr>
+            <tr unless="browserVersion.isSafari"><td><a href="./TestAlerts.html">TestAlerts</a></td></tr>
             <tr><td><a href="./TestConfirmations.html">TestConfirmations</a></td></tr>
             <tr><td><a href="./TestPrompt.html">TestPrompt</a></td></tr>
-            <tr unless="isKonqueror || isSafari"><td><a href="./TestVisibility.html">TestVisibility</a></td></tr>
+            <tr unless="browserVersion.isKonqueror || browserVersion.isSafari"><td><a href="./TestVisibility.html">TestVisibility</a></td></tr>
             <tr><td><a href="./TestEditable.html">TestEditable</a></td></tr>
 
             <tr><td><a href="./TestFailingVerifications.html">TestFailingVerifications</a></td></tr>
@@ -96,7 +96,7 @@ http-equiv="content-type">
             <tr><td><a href="./TestCommandError.html">TestCommandError</a></td></tr>
 
             <!-- These tests only work in Internet Explorer -->
-            <tr unless="!isIE"><td><a href="./TestModalDialog.html">TestModalDialog</a></td></tr>
+            <tr unless="!browserVersion.isIE"><td><a href="./TestModalDialog.html">TestModalDialog</a></td></tr>
         </tbody>
     </table>
 

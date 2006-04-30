@@ -133,7 +133,7 @@ function testClickCheckboxShouldTriggerFocusClickChangeAndBlur() {
     assertTrue("Checkbox should be checked", theCheckbox.checked)
 
     // Emulate actual event order (varies per browser for manual click)
-    if (isSafari)
+    if (browserVersion.isSafari)
     {
       assertEquals("focus,change,click,blur", checkboxEvents.join())
     }
@@ -157,7 +157,7 @@ function testClickRadioShouldTriggerFocusClickChangeAndBlur() {
     assertEquals("", radio1Events.join());
 
     // Safari-real doesn't support change events on radio
-    if (isSafari)
+    if (browserVersion.isSafari)
     {
       assertEquals("focus,click,blur", radio2Events.join());
     }

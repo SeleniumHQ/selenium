@@ -112,9 +112,12 @@ function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSe
     mockFrame.contentWindow.window.targetWindow = targetWindow;
 
     browserBot.currentWindowName = 'targetWindow';
+    var detectPageTransition = false;
+    browserBot.callOnWindowPageTransition = function() { detectPageTransition = true; };
 
     var pageBot = browserBot.getCurrentPage();
     assertEquals(targetWindow, pageBot.currentWindow);
+    assertTrue(detectPageTransition);
 
     mockLocation.verify();
 }

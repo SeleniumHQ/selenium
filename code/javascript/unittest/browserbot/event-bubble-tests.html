@@ -58,7 +58,7 @@ function testSelectEventCanBubbleInFirefoxButNotInIE() {
     pageBot.replaceText(theTextbox, 'foo1');
 
     assertTrue(textboxSelect);
-    if (isIE) {
+    if (browserVersion.isIE) {
         assertFalse(formSelect);
     } else {
         assertTrue(formSelect);
@@ -74,7 +74,7 @@ function testChangeEventCanBubbleInFirefoxButNotInIE() {
     pageBot.replaceText(theTextbox, 'foo2');
 
     assertTrue(textboxChange);
-    if (isIE) {
+    if (browserVersion.isIE) {
         assertFalse(formChange);
     } else {
         assertTrue(formChange);

@@ -37,7 +37,7 @@ String.prototype.startsWith = function(str) {
 function getText(element) {
     text = "";
 
-    if(isFirefox)
+    if(browserVersion.isFirefox)
     {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
@@ -123,7 +123,7 @@ function normalizeNewlines(text)
 function normalizeSpaces(text)
 {
     // IE has already done this conversion, so doing it again will remove multiple nbsp
-    if (isIE)
+    if (browserVersion.isIE)
     {
         return text;
     }
@@ -214,7 +214,7 @@ function removeLoadListener(element, command) {
 }
 
 function addLoadListener(element, command) {
-    if (window.addEventListener && !isOpera)
+    if (window.addEventListener && !browserVersion.isOpera)
         element.addEventListener("load",command, true);
     else if (window.attachEvent)
         element.attachEvent("onload",command);
