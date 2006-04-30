@@ -9,6 +9,13 @@
 	<xsl:call-template name="actionsHeader" />
 	<dl>
 	<xsl:apply-templates select="//function[not(return) and not(starts-with(@name, 'assert'))]" mode="action"/>
+	<p>
+		<b>
+			Note that the remaininging actions listed here are <em>store, waitFor</em> and <em>waitForNot</em> commands
+			that are available but not necessarily useful (e.g. 'waitForNotAlert' is not likely to be of any use).
+		</b>
+	</p>
+	<xsl:apply-templates select="//function[return]" mode="storeWaitForWaitForNot"/>
 	</dl>
 	<xsl:call-template name="assertionsHeader" />
 	<dl>
@@ -288,6 +295,58 @@
 	</strong></dt>
 	<dd>
 		Asserts that the specified text pattern does (or does not) match the value returned by
+		<xsl:value-of select="@name" />
+		which:
+		<xsl:apply-templates select="comment" />
+		<p>Arguments:</p>
+		<ul>
+			<xsl:apply-templates select="param" mode="comment" />
+			<li>pattern - a <a href="#patterns">pattern</a> to match with the retrieved result</li>
+		</ul>
+	</dd>
+	<br/>
+</xsl:template>
+
+<xsl:template match="function" mode="storeWaitForWaitForNot">
+	<dt><strong>
+		<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
+			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
+			<xsl:with-param name="replace-string">store</xsl:with-param>
+		</xsl:call-template>
+		
+		(
+			<xsl:apply-templates select="param" mode="declaration-check"/>
+			variableName
+		)
+		/
+			<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
+			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
+			<xsl:with-param name="replace-string">waitFor</xsl:with-param>
+		</xsl:call-template>
+		
+		(
+			<xsl:apply-templates select="param" mode="declaration-check"/>
+			pattern
+		)
+		/
+			<xsl:call-template name="search-and-replace">
+			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
+			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
+			<xsl:with-param name="replace-string">waitForNot</xsl:with-param>
+		</xsl:call-template>
+		
+		(
+			<xsl:apply-templates select="param" mode="declaration-check"/>
+			pattern
+		)
+	</strong></dt>
+	<dd>
+		Store into the specified variable /
+		wait until the specified text pattern matches /
+		wait until the specified text pattern does not match
+		the value returned by
 		<xsl:value-of select="@name" />
 		which:
 		<xsl:apply-templates select="comment" />
