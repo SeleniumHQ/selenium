@@ -187,6 +187,46 @@
 	};
 	</pre>
 	</blockquote>
+	<p><strong>Automatic availability of storeFoo, assertFoo, assertNotFoo, waitForFoo and waitForNotFoo for every getFoo</strong></p>
+	<blockquote>
+	<p>All <em>getFoo</em> methods on the Selenium prototype automatically result in the availability
+	of storeFoo, assertFoo, assertNotFoo, verifyFoo, verifyNotFoo, waitForFoo, and waitForNotFoo commands.</p>
+	<p>Example, add a getTextLength() method that makes the following commands available:
+	storeTextLength, assertTextLength, assertNotTextLength, verifyTextLength, verifyNotTextLength, waitForTextLength, and waitForNotTextLength commands.</p>
+	<pre class="literal-block">
+	Selenium.prototype.getTextLength = function(locator, text) {
+	    return this.getText(locator).length;
+	};
+	</pre>
+	
+	<p>Also note that the <em>assertValueRepeated</em> method described above could have been implemented using
+	getValueRepeated, with the added benefit of also automatically getting assertNotValueRepeated, storeValueRepeated,
+	waitForValueRepeated and waitForNotValueRepeated.</p>
+	</blockquote>
+	<p><strong>Locator Strategies</strong></p>
+	<blockquote>
+	<p>All <em>locateElementByFoo</em> methods on the PageBot prototype are added as locator-strategies. A locator strategy takes 2 parameters, the first being the locator string (minus the prefix), and the second being the document in which to search.</p>
+	<p>Example: Add a &quot;valuerepeated=&quot; locator, that finds the first element a value attribute equal to the the supplied value repeated.</p>
+	
+	<pre class="literal-block">
+	// The &quot;inDocument&quot; is a the document you are searching.
+	PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
+	    // Create the text to search for
+	    var expectedValue = text + text;
+	
+	    // Loop through all elements, looking for ones that have 
+	    // a value === our expected value
+	    var allElements = inDocument.getElementsByTagName(&quot;*&quot;);
+	    for (var i = 0; i &lt; allElements.length; i++) {
+	        var testElement = allElements[i];
+	        if (testElement.value &amp;&amp; testElement.value === expectedValue) {
+	            return testElement;
+	        }
+	    }
+	    return null;
+	};
+	</pre>
+	</blockquote>
 	<p><strong>Locator Strategies</strong></p>
 	<blockquote>
 	<p>All <em>locateElementByFoo</em> methods on the PageBot prototype are added as locator-strategies. A locator strategy takes 2 parameters, the first being the locator string (minus the prefix), and the second being the document in which to search.</p>
