@@ -69,8 +69,7 @@ function Selenium(browserbot) {
 	 * </dd>
 	 * 
 	 * <dt><strong>xpath</strong>=<em>xpathExpression</em></dt>
-	 * <dd>Locate an element using an XPath expression. XPath locators
-	 * <em>must</em> begin with &quot;//&quot;.
+	 * <dd>Locate an element using an XPath expression.
 	 * <ul class="first last simple">
 	 * <li>xpath=//img[&#64;alt='The image alt text']</li>
 	 * <li>xpath=//table[&#64;id='table1']//tr[4]/td[2]</li>
