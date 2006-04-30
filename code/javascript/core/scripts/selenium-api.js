@@ -110,7 +110,7 @@ function Selenium(browserbot) {
 	 * Matches elements based on their values.  This is particularly useful for refining a list of similarly-named toggle-buttons.</blockquote>
 	 * <p><strong>index=</strong><em>index</em></p>
 	 * <blockquote>
-	 * Selects a single element based on its position in the list offset from zero).</blockquote>
+	 * Selects a single element based on its position in the list (offset from zero).</blockquote>
 	 * </blockquote>
 	 *
 	 * <h3><a name="patterns"></a>String-match Patterns</h3>
@@ -613,7 +613,7 @@ Selenium.prototype.getTitle = function() {
 
 Selenium.prototype.getBodyText = function() {
 	/**
-	 * Get the entire text of the page.
+	 * Gets the entire text of the page.
 	 * @return string the entire text of the page
 	 */
     return this.page().bodyText();
@@ -672,7 +672,7 @@ Selenium.prototype.getEval = function(script) {
 
 Selenium.prototype.getChecked = function(locator) {
 	/**
-   * Get whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.
+   * Gets whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.
    * @param locator an <a href="#locators">element locator</a> pointing to a checkbox or radio button
    * @return string either "true" or "false" depending on whether the checkbox is checked
    */
@@ -1025,7 +1025,7 @@ Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
 
 Selenium.prototype.getExpression = function(expression) {
 	/**
-	 * Return the specified expression.
+	 * Returns the specified expression.
 	 *
 	 * <p>This is useful because of JavaScript preprocessing.
 	 * It is used to generate commands like assertExpression and storeExpression.</p>

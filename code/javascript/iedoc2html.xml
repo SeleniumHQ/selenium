@@ -11,8 +11,9 @@
 	<xsl:apply-templates select="//function[not(return) and not(starts-with(@name, 'assert'))]" mode="action"/>
 	<p>
 		<b>
-			Note that the remaininging actions listed here are <em>store, waitFor</em> and <em>waitForNot</em> commands
-			that are available but not necessarily useful (e.g. 'waitForNotAlert' is not likely to be of any use).
+			Note that the documentation below for the remaining actions has been automatically generated
+			and hence indescriminately includes both useful and some less useful commands
+			(e.g. 'waitForNotAlert' is not likely to be useful).
 		</b>
 	</p>
 	<xsl:apply-templates select="//function[return]" mode="storeWaitForWaitForNot"/>
@@ -42,7 +43,9 @@
 	<p>Many Actions have a &quot;waitFor&quot; prefix.
 	These commands wait for some condition to become true (can be useful for testing Ajax applications).
 	They will succeed immediately if the condition is already true.
-	However, they may also hang indefinitely if the conidition never becomes true.</p>
+	However, they will fail and halt the test if the condition does not become true within the current timeout setting
+	(see the <strong>setTimeout</strong> action below).
+	</p>
 </xsl:template>
 
 <xsl:template name="header">
@@ -78,7 +81,7 @@
 	variable substitution as well as full javascript. Both of these
 	mechanisms can access previously stored variables, but do so using
 	different syntax.</p>
-	<p><strong>Stored Variables</strong></p>
+	<p><a name="storedVars"></a><strong>Stored Variables</strong></p>
 	<p>The commands <em>store</em>, <em>storeValue</em> and <em>storeText</em> can be used to store a variable
 	value for later access. Internally, these variables are stored in a map called &quot;storedVars&quot;,
 	with values keyed by the variable name. These commands are documented in the command reference.</p>
@@ -353,7 +356,10 @@
 		<p>Arguments:</p>
 		<ul>
 			<xsl:apply-templates select="param" mode="comment" />
-			<li>pattern - a <a href="#patterns">pattern</a> to match with the retrieved result</li>
+			<li>pattern or variableName - 
+				a <a href="#patterns">pattern</a> to match with the retrieved result,
+				or the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+			</li>
 		</ul>
 	</dd>
 	<br/>
