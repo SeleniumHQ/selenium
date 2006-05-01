@@ -33,9 +33,12 @@ my $sel = Test::WWW::Selenium->new( host => "localhost",
                                     );
 $sel->open_ok("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
 $sel->assert_text_present_ok("suggest");
-$id = "_idJsp0:_idJsp3";
-$sel->type_ok($id, "foo");
-$sel->key_down_ok($id, 120);
-$sel->key_press_ok($id, 120);
-sleep 1;
-$sel->assert_text_present_ok("regexp:foox?1");
+#
+# disabled pending DOJO combobox trouble issue resolution
+#
+#$id = "_idJsp0:_idJsp3";
+#$sel->type_ok($id, "foo");
+#$sel->key_down_ok($id, 120);
+#$sel->key_press_ok($id, 120);
+#sleep 1;
+#$sel->assert_text_present_ok("regexp:foox?1");

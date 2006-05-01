@@ -51,6 +51,10 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 		{
 			selenium.Open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
 			selenium.AssertTextPresent("suggest");
+
+            /*
+ 			disabled pending DOJO combobox trouble issue resolution:
+
 			String elementID = "_idJsp0:_idJsp3";
 			selenium.Type(elementID, "foo");
 			// DGF On Mozilla a keyPress is needed, and types a letter.
@@ -62,6 +66,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 			selenium.KeyPress(elementID, "120");
 			Thread.Sleep(2000);
 			selenium.AssertTextPresent(verificationText);
+            */
 		}
 	}
 }
