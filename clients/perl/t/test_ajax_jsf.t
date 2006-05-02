@@ -18,6 +18,10 @@ use Test::WWW::Selenium;
 use lib 't/lib';
 use SeleniumUtil qw(server_is_running);
 use Test::More;
+
+plan skip_all => "Bug SRC-55!";
+exit 0;
+
 if (server_is_running) {
     plan tests => 6;
 }
