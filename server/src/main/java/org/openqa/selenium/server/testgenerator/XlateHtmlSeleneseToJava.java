@@ -283,7 +283,8 @@ public class XlateHtmlSeleneseToJava {
             String conditionCkVarName = "sawCondition" + j;
             java.append("\t\tboolean " + conditionCkVarName + " = false;"+ EOL)
             .append("for (int second = 0; second < 60; second++) {" + EOL)
-            .append("\tif (");
+            .append("\ttry {" + EOL)
+            .append("\t\tif (");
             lines[j] = lines[j].replaceFirst("waitFor", "assert");
             StringBuffer testStatementSB = new StringBuffer();
             XlateSeleneseStatement(testStatementSB, lines, j, false);
@@ -304,8 +305,11 @@ public class XlateHtmlSeleneseToJava {
                 
             java.append(testStatement)            
             .append(") {" + EOL)
-            .append("\t\t" + conditionCkVarName + " = true;"+ EOL)
-            .append("\t\tbreak;" + EOL)
+            .append("\t\t\t" + conditionCkVarName + " = true;"+ EOL)
+            .append("\t\t\tbreak;" + EOL)
+            .append("\t\t}" + EOL)
+            .append("\t}" + EOL)
+            .append("\tcatch (Exception ignore) {" + EOL)
             .append("\t}" + EOL)
             .append("\tpause(1000);" + EOL)
             .append("}" + EOL)
