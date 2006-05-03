@@ -414,6 +414,8 @@ function AssertionArguments(args) {
 
 function AssertionFailedError(message) {
     this.isAssertionFailedError = true;
+    this.isSeleniumError = true;
+    this.message = message;
     this.failureMessage = message;
 }
 
