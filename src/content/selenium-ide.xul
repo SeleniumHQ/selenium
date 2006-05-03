@@ -42,7 +42,11 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>
+<!--  <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>-->
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder-finders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>

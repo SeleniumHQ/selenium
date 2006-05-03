@@ -32,19 +32,18 @@ limitations under the License.
 
 <page title="Selenium IDE"
   id="selenium-ide-sidebar"
-  windowtype="global:selenium-ide"
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  width="400"
-  height="520"
-  onload="loadRecorder()"
-  onunload="unloadRecorder()"
-  onclose="return confirmClose()">
+  onload="loadRecorder(true)"
+  onunload="unloadRecorder(true)">
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder-finders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>

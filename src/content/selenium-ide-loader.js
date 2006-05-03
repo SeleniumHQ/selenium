@@ -40,10 +40,31 @@ SeleniumIDE.getRecorderWindow = function() {
 	return wm.getMostRecentWindow('global:selenium-ide');
 }
 
+SeleniumIDE.getEditors = function() {
+	var editors = [];
+	if (document) {
+		var sidebarBox = document.getElementById('sidebar-box');
+		if (sidebarBox && !sidebarBox.hidden) {
+			var sidebar = document.getElementById('sidebar');
+			if (sidebar && sidebar.contentDocument) {
+				if ("chrome://selenium-ide/content/selenium-ide-sidebar.xul" == sidebar.contentDocument.documentURI) {
+					editors.push(sidebar.contentDocument.defaultView);
+				}
+			}
+		}
+	}
+	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	var editor = wm.getMostRecentWindow('global:selenium-ide');
+	if (editor) {
+		editors.push(editor);
+	}
+	return editors;
+}
+
 SeleniumIDE.reloadRecorder = function(contentWindow, isRootDocument) {
-	var window = SeleniumIDE.getRecorderWindow();
-	if (window != null) {
-		window.loadRecorderFor(contentWindow, isRootDocument);
+	var editors = this.getEditors();
+	for (var i = 0; i < editors.length; i++) {
+		editors[i].loadRecorderFor(contentWindow, isRootDocument);
 	}
 }
 

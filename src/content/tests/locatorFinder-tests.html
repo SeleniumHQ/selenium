@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Selenium IDE Test</title>
+    <link rel="stylesheet" type="text/css" href="chrome://selenium-ide/content/selenium/jsunit/css/jsUnitStyle.css">
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium/jsunit/app/jsUnitCore.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/locatorFinder.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/locatorFinder-finders.js"></script>
+		<script type="text/javascript" src="locatorFinder-tests.js"></script>
+  </head>
+
+  <body onload="loadPageBot()">
+		<div id="test1">
+			<input type="button" name="foo" value="bar">
+			<input type="button" name="foo" value="bar" onclick="alert('test')">
+			<input type="button" name="foo" value="bar" onclick="alert(&quot;test2&quot;)">
+			<input type="button" name="foo" value="bar" onclick="alert('test3', &quot;test4&quot;)">
+			<input type="button" name="foo" value="bar">
+		</div>
+		<div id="test2">
+			<div>
+				<a href="http://www.google.com/">Google:Google</a>
+			</div>
+			<div>
+				<a href="http://www.yahoo.com/">
+					Yahoo
+				</a>
+			</div>
+			<div>
+				<a href="http://www.yahoo.com/">
+					<img src="test.png" alt="test">
+				</a>
+			</div>
+			<div>
+				<a href="/path/to/test.html">
+					<img src="test.png" alt="test">
+				</a>
+			</div>
+			<div>
+				<a href="http://www.yahoo.co.jp/">
+					Yahoo&nbsp;Japan
+				</a>
+			</div>
+		</div>
+  </body>
+</html>

@@ -25,7 +25,7 @@ function init() {
 		this.recorderInitialized = true;
 		this.setOptions(optionsManager.load());
 		//this.options.load();
-		this.eventManager = new EventManager(this);
+		//this.eventManager = new EventManager(this);
 		this.treeView = new TreeView(this, document, document.getElementById("commands"));
 		this.sourceView = new SourceView(this, document.getElementById("source"));
 		this.testCaseListeners = new Array();
@@ -221,10 +221,15 @@ function saveNewTestCase() {
 	}
 }
 
-function loadRecorder() {
+function loadRecorder(isSidebar) {
+	//this.log.debug("loadRecorder: window=" + window + ", getBrowser=" + window.getBrowser);
 	this.recordingEnabled = true;
 	init();
-	this.eventManager.startForAllBrowsers();
+	if (isSidebar) {
+		Recorder.registerForWindow(window.parent, this);
+	} else {
+		Recorder.registerAll(this);
+	}
 }
 
 function loadRecorderFor(contentWindow, isRootDocument) {
@@ -232,7 +237,7 @@ function loadRecorderFor(contentWindow, isRootDocument) {
 	if (this.recordingEnabled && isRootDocument) {
 		recordTitle(contentWindow);
 	}
-	this.eventManager.startForContentWindow(contentWindow);
+	Recorder.register(this, contentWindow);
 }
 
 function confirmClose() {
@@ -261,13 +266,18 @@ function confirmClose() {
 	return true;
 }
 
-function unloadRecorder() {
+function unloadRecorder(isSidebar) {
 	if (this.options.rememberBaseURL == 'true'){
 		this.options.baseURL = document.getElementById("baseURL").value;
 		optionsManager.save(this.options, 'baseURL');
 	}
 	
-	this.eventManager.stopForAllBrowsers();
+	if (isSidebar) {
+		//this.log.debug("deregister: window=" + window + ", getBrowser=" + window.getBrowser);
+		Recorder.deregisterForWindow(window.parent, this);
+	} else {
+		Recorder.deregisterAll(this);
+	}
 }
 
 function saveSelectedFormat() {
