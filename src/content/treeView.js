@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-function TreeView(recorder, document, tree) {
+function TreeView(editor, document, tree) {
 	this.log = new Log("TreeView");
-	this.recorder = recorder;
+	this.editor = editor;
 	tree.view = this;
 	this.tree = tree;
 	this.document = document;
@@ -102,7 +102,7 @@ function TreeView(recorder, document, tree) {
 		var trans = createTransferable();
 		var str = createClipboardString();
 		trans.addDataFlavor("text/unicode");
-		var text = this.recorder.testManager.getSourceForCommands(commands);
+		var text = this.editor.testManager.getSourceForCommands(commands);
 		str.data = text;
 		trans.setTransferData("text/unicode", str, text.length * 2);
 		clipboard.setData(trans, null, Components.interfaces.nsIClipboard.kGlobalClipboard);
@@ -145,11 +145,11 @@ function TreeView(recorder, document, tree) {
 		var verifies = new Array();
 		
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-api.js', scope);
-		if (recorder.options.userExtensionsURL) {
+		if (editor.options.userExtensionsURL) {
 			try {
-				subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, scope);
+				subScriptLoader.loadSubScript(editor.options.userExtensionsURL, scope);
 			} catch (error) {
-				this.editor.showAlert("Failed to load user-extensions.js!\nfile=" + recorder.options.userExtensionsURL + "\nerror=" + error);
+				this.editor.showAlert("Failed to load user-extensions.js!\nfile=" + editor.options.userExtensionsURL + "\nerror=" + error);
 			}
 		}
 

@@ -18,17 +18,19 @@
 // overlay functions for the browser.
 //
 
-SeleniumIDE.toggleCheckType = function() {
+SeleniumIDE.Overlay = {};
+
+SeleniumIDE.Overlay.toggleCheckType = function() {
 	var CheckBuilders = SeleniumIDE.Loader.getTopEditor().window.CheckBuilders;
 	CheckBuilders.useAssert = !CheckBuilders.useAssert;
 }
 
-SeleniumIDE.appendCheck = function(event) {
+SeleniumIDE.Overlay.appendCheck = function(event) {
 	var command = event.target._Selenium_IDE_command;
 	SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
 }
 
-SeleniumIDE.testRecorderPopup = function(event) {
+SeleniumIDE.Overlay.testRecorderPopup = function(event) {
 	if (event.target.id != "contentAreaContextMenu") return;
 	
 	contextMenu = event.target;
@@ -57,7 +59,7 @@ SeleniumIDE.testRecorderPopup = function(event) {
 	}
 }
 
-SeleniumIDE.onContentLoaded = function(event) {
+SeleniumIDE.Overlay.onContentLoaded = function(event) {
 	var isRootDocument = false;
 	var browsers = window.getBrowser().browsers;
 	for (var i = 0; i < browsers.length; i++) {
@@ -70,15 +72,15 @@ SeleniumIDE.onContentLoaded = function(event) {
 	
 	var contextMenu = window.document.getElementById("contentAreaContextMenu");
 	if (contextMenu) {
-		contextMenu.addEventListener("popupshowing", SeleniumIDE.testRecorderPopup, false);
-		contextMenu.addEventListener("command", SeleniumIDE.appendCheck, false);
+		contextMenu.addEventListener("popupshowing", SeleniumIDE.Overlay.testRecorderPopup, false);
+		contextMenu.addEventListener("command", SeleniumIDE.Overlay.appendCheck, false);
 	}
 }
 
-SeleniumIDE.initOverlay = function() {
+SeleniumIDE.Overlay.init = function() {
 	var appcontent = window.document.getElementById("appcontent");
 	if (appcontent) {
-		appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.onContentLoaded, false);
+		appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.Overlay.onContentLoaded, false);
 	}
 	window.addEventListener("beforeunload", 
 							function() {
@@ -88,4 +90,4 @@ SeleniumIDE.initOverlay = function() {
 							}, false);
 }
 
-SeleniumIDE.initOverlay();
+SeleniumIDE.Overlay.init();
