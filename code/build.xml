@@ -8,7 +8,7 @@
     <property name="svnversion.executable" value="svnversion"/>
     <property name="ruby.executable" value="/usr/bin/ruby"/>
 
-    <property name="build.dir" location="../build"/>
+    <property name="build.dir" location="build"/>
     <property name="dist.dir" location="${build.dir}/dist"/>
     <property name="image.dir" location="${build.dir}/image"/>
     <property name="resultshandler.image.dir" location="${build.dir}/resultshandler"/>
@@ -26,7 +26,7 @@
 
     <target name="copy-sources">
         <property name="svn-revision" value="unknown-revision"/>
-        <copy todir="${image.dir}">
+        <copy todir="${image.dir}" overwrite="true">
             <fileset dir="javascript">
                 <exclude name="jsunit/intellij/**"/>
                 <exclude name="jsunit/java/**"/>
@@ -102,17 +102,17 @@
 
     <target name="install-jar" depends="dist-image, maven-tasks">
         <mkdir dir="${dist.dir}"/>
-        <jar destfile="dist/selenium-core.jar">
+        <jar destfile="${dist.dir}/selenium-core.jar">
             <fileset dir="${image.dir}"/>
         </jar>
-        <mvn-install file="dist/selenium-core.jar" 
+        <mvn-install file="${dist.dir}/selenium-core.jar" 
             groupId="org.openqa.selenium.core" 
             artifactId="selenium-core"
         />
     </target>
 
     <target name="deploy-maven" depends="maven-tasks, install-jar">
-	    <mvn-deploy file="dist/selenium-core.jar" 
+	    <mvn-deploy file="${dist.dir}/selenium-core.jar" 
             groupId="org.openqa.selenium.core" 
             artifactId="selenium-core"
             repositoryId="openqa"
