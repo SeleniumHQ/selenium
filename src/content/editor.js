@@ -56,7 +56,7 @@ function Editor(window, isSidebar) {
 
 Editor.controller = {
 	supportsCommand : function(cmd) {
-		Editor.log.debug("supportsCommand");
+		//Editor.log.debug("supportsCommand");
 		switch (cmd) {
 		case "cmd_close":
 		case "cmd_open":

@@ -23,10 +23,9 @@ function saveOptions() {
 			options[name] = e.checked != undefined ? e.checked.toString() : e.value;
 		}
 	}
-	var w = SeleniumIDE.getRecorderWindow();
-	if (w != null) {
-		w.setOptions(options);
-	}
+	SeleniumIDE.Loader.getEditors().forEach(function(editor) {
+			editor.setOptions(options);
+		});
 	
 	optionsManager.save(options);
 	return true;
