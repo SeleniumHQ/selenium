@@ -33,6 +33,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder-finders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/checkBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testManager.js"/>

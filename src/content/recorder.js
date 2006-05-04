@@ -40,8 +40,8 @@ Recorder.prototype.attach = function() {
 						for (var i = 0; i < self.observers.length; i++) {
 							if (self.observers[i].recordingEnabled) recording = true;
 						}
-						if (recording) {
-							for (var i = 0; i < handlers.length; i++) {
+						for (var i = 0; i < handlers.length; i++) {
+							if (recording || handlers[i].alwaysRecord) {
 								handlers[i].call(self, event);
 							}
 						}
@@ -114,10 +114,11 @@ Recorder.prototype.deregister = function(observer) {
  * Class methods
  */
 
-Recorder.addHandler = function(name, eventName, handler) {
+Recorder.addHandler = function(name, eventName, handler, alwaysRecord) {
 	if (!this.eventHandlers[eventName]) {
 		this.eventHandlers[eventName] = [];
 	}
+	if (alwaysRecord) handler.alwaysRecord = true;
 	this.eventHandlers[eventName].push(handler);
 }
 
@@ -137,6 +138,10 @@ Recorder.deregister = function(observer, window) {
 	if (recorder) {
 		recorder.deregister(observer);
 	}
+}
+
+Recorder.get = function(window) {
+	return window._Selenium_IDE_Recorder;
 }
 
 Recorder.registerAll = function(observer) {

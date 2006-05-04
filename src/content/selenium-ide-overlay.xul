@@ -33,11 +33,13 @@ limitations under the License.
   <popup id="contentAreaContextMenu">
     <menuseparator id="selenium-ide-separator"/>
     <menuitem id="selenium-ide-toggle-check" oncommand="SeleniumIDE.toggleCheckType()" label="Toggle verify/assert"/>
+    <!--
     <menuitem id="selenium-ide-check-open" accesskey="o"/>
     <menuitem id="selenium-ide-check-textPresent" accesskey="p"/>
     <menuitem id="selenium-ide-check-title" accesskey="t"/>
     <menuitem id="selenium-ide-check-table" accesskey="b"/>
     <menuitem id="selenium-ide-check-value" accesskey="v"/>
+    -->
   </popup>
 
   <broadcasterset id="mainBroadcasterSet">

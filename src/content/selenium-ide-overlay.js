@@ -18,125 +18,14 @@
 // overlay functions for the browser.
 //
 
-SeleniumIDE.useAssert = true;
-
-SeleniumIDE.checks = {
-	open: function(window, element) {
-		var path = window.location.href;
-		var base = '';
-		var r = /^(\w+:\/\/[\w\.-]+(:\d+)?)\/.*/.exec(path);
-		if (r) {
-			path = path.substr(r[1].length);
-			base = r[1] + '/';
-		}
-		return {
-			command: "open",
-			target: path
-		};
-	},
-	textPresent: function(window, element) {
-		var result = { name: "TextPresent" };
-		var selection = String(window.getSelection());
-		if (selection) {
-			result.target = selection;
-		} else {
-			result.disabled = true;
-		}
-		return result;
-	},
-	title: function(window, element) {
-		var result = { name: "Title" };
-		if (window.document) {
-			result.target = SeleniumIDE.Loader.getTopEditor().exactMatchPattern(window.document.title);
-		} else {
-			result.disabled = true;
-		}
-		return result;
-	},
-	value: function(window, element) {
-		var result = { name: "Value" };
-		if (element && element.hasAttribute && element.tagName &&
-			('input' == element.tagName.toLowerCase() || 
-			 'textarea' == element.tagName.toLowerCase() || 
-			 element.value)) {
-			result.target = SeleniumIDE.Loader.getTopEditor().eventManager.getLocator(window, element);
-			var type = element.getAttribute("type");
-			if ('input' == element.tagName.toLowerCase() && 
-				(type == 'checkbox' || type == 'radio')) {
-				result.value = element.checked ? 'on' : 'off';
-			} else {
-				result.value = SeleniumIDE.Loader.getTopEditor().exactMatchPattern(element.value);
-			}
-		} else {
-			result.disabled = true;
-		}
-		return result;
-	},
-	table: function(window, element) {
-		var result = { name: "Table" };
-		if (element && element.tagName && 'td' == element.tagName.toLowerCase()) {
-			var parentTable = null;
-			var temp = element.parentNode;
-			while (temp != null) {
-				if (temp.tagName.toLowerCase() == 'table') {
-					parentTable = temp;
-					break;
-				}
-				temp = temp.parentNode;
-			}
-			if (parentTable == null) {
-				result.disabled = true;
-				result.target = "(Unavailable: Selection not a cell of a table)";
-			} else {
-				//first try to locate table by id and then by name
-				var tableName = parentTable.id;
-				if (!tableName) {
-					tableName = parentTable.name;
-				}
-				if (!tableName) {
-					result.disabled = true;
-					result.target = "(Unavailable: Table must have an id declared)";
-				} else {
-					result.target = tableName + '.' + element.parentNode.rowIndex + '.' + element.cellIndex;
-					result.value = SeleniumIDE.Loader.getTopEditor().exactMatchPattern(element.innerHTML.replace(/^\s*(.*?)\s*$/, "$1"));
-				}
-			}
-		} else {
-			result.disabled = true;
-		}
-		return result;
-	}
-}
-
-SeleniumIDE.getCheckCommand = function(menuitem) {
-	var focusedWindow = menuitem.ownerDocument.commandDispatcher.focusedWindow;
-	var recorder = SeleniumIDE.Loader.getTopEditor();
-	var r = /^selenium-ide-check-(.*)$/.exec(menuitem.id);
-	if (recorder && r && SeleniumIDE.checks[r[1]]) {
-		var command = SeleniumIDE.checks[r[1]](focusedWindow, recorder.clickedElement);
-		['name', 'target', 'value'].forEach(function(name) {
-												   if (command[name] == null) command[name] = '';
-											   });
-		if (!command.command)
-			command.command = (SeleniumIDE.useAssert ? 'assert' : 'verify') + command.name;
-		command.window = focusedWindow;
-		return command;
-	} else {
-		return null;
-	}
-}
-
 SeleniumIDE.toggleCheckType = function() {
-	SeleniumIDE.useAssert = !SeleniumIDE.useAssert;
+	var CheckBuilders = SeleniumIDE.Loader.getTopEditor().window.CheckBuilders;
+	CheckBuilders.useAssert = !CheckBuilders.useAssert;
 }
 
 SeleniumIDE.appendCheck = function(event) {
-	var command;
-	if (null != (command = SeleniumIDE.getCheckCommand(event.target))) {
-		if (!command.disabled) {
-			SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
-		}
-	}
+	var command = event.target._Selenium_IDE_command;
+	SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
 }
 
 SeleniumIDE.testRecorderPopup = function(event) {
@@ -144,36 +33,27 @@ SeleniumIDE.testRecorderPopup = function(event) {
 	
 	contextMenu = event.target;
 
-	function hideMenus(hidden) {
-		var len = contextMenu.childNodes.length;
-		for (var i = 0; i < len; i++) {
-			var item = contextMenu.childNodes[i];
-			if (item.id && /^selenium-ide-/.test(item.id)) {
-				item.hidden = hidden;
-			}
+	for (var i = contextMenu.childNodes.length - 1; i >= 0; i--) {
+		var item = contextMenu.childNodes[i];
+		if (item.id && /^selenium-ide-check-/.test(item.id)) {
+			contextMenu.removeChild(item);
 		}
 	}
-
+	
 	var recorder = SeleniumIDE.Loader.getTopEditor();
 	if (recorder) {
-		hideMenus(false);
-
-		var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
-		var len = contextMenu.childNodes.length;
-		for (var i = 0; i < len; i++) {
-			var item = contextMenu.childNodes[i];
-			var command;
-			if (null != (command = SeleniumIDE.getCheckCommand(item))) {
-				if (command.disabled) {
-					item.setAttribute('disabled', 'true');
-				} else {
-					item.setAttribute('disabled', 'false');
-				}
-				item.label = command.command + ' ' + command.target + ' ' + command.value;
-			}
+		var CheckBuilders = SeleniumIDE.Loader.getTopEditor().window.CheckBuilders;
+		for (var i = 0; i < CheckBuilders.builders.length; i++) {
+			var builder = CheckBuilders.builders[i];
+			var menuitem = document.createElement("menuitem");
+			var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
+			var command = CheckBuilders.callBuilder(builder, focusedWindow/*window.gBrowser.contentWindow*/);
+			menuitem.setAttribute("id", "selenium-ide-check-" + builder.name);
+			menuitem.setAttribute("disabled", command.disabled ? 'true' : 'false');
+			menuitem.setAttribute("label", command.command + ' ' + command.target + ' ' + command.value);
+			menuitem._Selenium_IDE_command = command;
+			contextMenu.appendChild(menuitem);
 		}
-	} else {
-		hideMenus(true);
 	}
 }
 

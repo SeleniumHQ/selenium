@@ -72,3 +72,6 @@ SeleniumIDE.Loader.notifyUnload = function(doc) {
 		});
 }
 
+SeleniumIDE.Loader.getRecorder = function(window) {
+	return window._Selenium_IDE_Recorder;
+}

@@ -23,7 +23,6 @@ Recorder.addHandler('type', 'change', function(event) {
 		}
 	});
 
-/*
 Recorder.addHandler('select', 'change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
 		if ('select' == tagName) {
@@ -32,7 +31,6 @@ Recorder.addHandler('select', 'change', function(event) {
 			this.record("select", this.findLocator(event.target), value);
 		}
 	});
-*/
 
 Recorder.addHandler('click', 'click', function(event) {
 		if (event.button == 0) {
@@ -60,6 +58,9 @@ Recorder.prototype.findClickableElement = function(e) {
 	}
 }
 
+Recorder.addHandler('clickedElement', 'mousedown', function(event) {
+		this.clickedElement = event.target;
+	}, true);
 //				mousedown: function(event) {
 //					self.listener.clickedElement = event.target;
 //				}
