@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-function Debugger() {
+function Debugger(editor) {
 	this.log = new Log("Debugger");
+	this.editor = editor;
 	var self = this;
 	
 	this.init = function() {
@@ -27,9 +28,10 @@ function Debugger() {
 		this.log.debug("init");
 		this.paused = false;
 		this.runner = new Object();
+		this.runner.editor = this.editor;
 
-		recorder.testCaseListeners.push(function(testCase) { self.runner.testCase = testCase; });
-		this.runner.testCase = recorder.testCase;
+		this.editor.testCaseListeners.push(function(testCase) { self.runner.testCase = testCase; });
+		this.runner.testCase = this.editor.testCase;
 		
 		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 	    .getService(Components.interfaces.mozIJSSubScriptLoader);
@@ -38,9 +40,9 @@ function Debugger() {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-commandhandlers.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-executionloop.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-browserbot.js', this.runner);
-		if (recorder.options.userExtensionsURL) {
+		if (this.editor.options.userExtensionsURL) {
 			try {
-				subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, this.runner);
+				subScriptLoader.loadSubScript(this.editor.options.userExtensionsURL, this.runner);
 			} catch (error) {
 				this.log.error("error loading user-extensions.js: " + error);
 			}
@@ -64,21 +66,21 @@ function Debugger() {
 
 Debugger.prototype.start = function() {
 	document.getElementById("record-button").checked = false;
-	toggleRecordingEnabled(false);
+	this.editor.toggleRecordingEnabled(false);
 
 	this.log.debug("start");
 
 	this.init();
 	this.paused = false;
-	this.runner.start(recorder.document.getElementById("baseURL").value);
+	this.runner.start(this.editor.getBaseURL());
 };
 
 Debugger.prototype.executeCommand = function(command) {
 	document.getElementById("record-button").checked = false;
-	toggleRecordingEnabled(false);
+	this.editor.toggleRecordingEnabled(false);
 
 	this.init();
-	this.runner.executeCommand(recorder.document.getElementById("baseURL").value, command);
+	this.runner.executeCommand(this.editor.getBaseURL(), command);
 };
 
 Debugger.prototype.pause = function() {
@@ -88,7 +90,7 @@ Debugger.prototype.pause = function() {
 
 Debugger.prototype.doContinue = function(pause) {
 	document.getElementById("record-button").checked = false;
-	toggleRecordingEnabled(false);
+	this.editor.toggleRecordingEnabled(false);
 
 	this.log.debug("doContinue: pause=" + pause);
 	this.init();
@@ -152,5 +154,3 @@ LogFrame.prototype.onAppendEntry = function(entry) {
 		newEntry.scrollIntoView();
 	}
 }
-
-var seleniumDebugger = new Debugger();

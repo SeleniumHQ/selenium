@@ -18,29 +18,24 @@
 // functions to call IDE from browser window.
 //
 
-var SeleniumIDE = new Object();
+var SeleniumIDE = {};
 
-SeleniumIDE.openRecorder = function() {
+SeleniumIDE.Loader = {};
+
+SeleniumIDE.Loader.openRecorder = function() {
 	toOpenWindowByType('global:selenium-ide','chrome://selenium-ide/content/selenium-ide.xul');
 }
 
-SeleniumIDE.getRecorderWindow = function() {
-	if (document) {
-		var sidebarBox = document.getElementById('sidebar-box');
-		if (sidebarBox && !sidebarBox.hidden) {
-			var sidebar = document.getElementById('sidebar');
-			if (sidebar && sidebar.contentDocument) {
-				if ("chrome://selenium-ide/content/selenium-ide-sidebar.xul" == sidebar.contentDocument.documentURI) {
-					return sidebar.contentDocument.defaultView;
-				}
-			}
-		}
+SeleniumIDE.Loader.getTopEditor = function() {
+	var editors = this.getEditors();
+	if (editors.length > 0) {
+		return editors[0];
+	} else {
+		return null;
 	}
-	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	return wm.getMostRecentWindow('global:selenium-ide');
 }
 
-SeleniumIDE.getEditors = function() {
+SeleniumIDE.Loader.getEditors = function() {
 	var editors = [];
 	if (document) {
 		var sidebarBox = document.getElementById('sidebar-box');
@@ -48,30 +43,32 @@ SeleniumIDE.getEditors = function() {
 			var sidebar = document.getElementById('sidebar');
 			if (sidebar && sidebar.contentDocument) {
 				if ("chrome://selenium-ide/content/selenium-ide-sidebar.xul" == sidebar.contentDocument.documentURI) {
-					editors.push(sidebar.contentDocument.defaultView);
+					var sidebarView = sidebar.contentDocument.defaultView;
+					if (sidebarView && sidebarView.editor) {
+						editors.push(sidebarView.editor);
+					}
 				}
 			}
 		}
 	}
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	var editor = wm.getMostRecentWindow('global:selenium-ide');
-	if (editor) {
-		editors.push(editor);
+	var editorWindow = wm.getMostRecentWindow('global:selenium-ide');
+	if (editorWindow && editorWindow.editor) {
+		editors.push(editorWindow.editor);
 	}
 	return editors;
 }
 
-SeleniumIDE.reloadRecorder = function(contentWindow, isRootDocument) {
+SeleniumIDE.Loader.reloadRecorder = function(contentWindow, isRootDocument) {
 	var editors = this.getEditors();
 	for (var i = 0; i < editors.length; i++) {
 		editors[i].loadRecorderFor(contentWindow, isRootDocument);
 	}
 }
 
-SeleniumIDE.notifyUnloadToRecorder = function(doc) {
-	var window = SeleniumIDE.getRecorderWindow();
-	if (window != null) {
-		window.onUnloadDocument(doc);
-	}
+SeleniumIDE.Loader.notifyUnload = function(doc) {
+	this.getEditors().forEach(function(editor) {
+			editor.onUnloadDocument(doc);
+		});
 }
 

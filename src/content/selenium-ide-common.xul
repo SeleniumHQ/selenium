@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!--
+Copyright 2005 Shinya Kasatani
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!DOCTYPE window [
+<!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
+%browserDTD;
+<!ENTITY % seleniumIdeDTD SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd">
+%seleniumIdeDTD;
+]>
+<overlay id="selenium-ide-common" 
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
+<!--  <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>-->
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder-finders.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testManager.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>
+
+  <commandset id="seleniumIDECommands">
+    <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
+    <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
+    <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
+    <command id="cmd_selenium_play" oncommand="goDoCommand('cmd_selenium_play')"/>
+    <command id="cmd_selenium_pause" oncommand="goDoCommand('cmd_selenium_pause')"/>
+    <command id="cmd_selenium_step" oncommand="goDoCommand('cmd_selenium_step')"/>
+    <command id="cmd_selenium_breakpoint" oncommand="goDoCommand('cmd_selenium_breakpoint')"/>
+    <command id="cmd_selenium_startpoint" oncommand="goDoCommand('cmd_selenium_startpoint')"/>
+    <command id="cmd_selenium_exec_command" oncommand="goDoCommand('cmd_selenium_exec_command')"/>
+  </commandset>
+<!--  <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="alert('commandupdate: window.editor=' + window.editor);if (window.editor) { editor.updateSeleniumCommands() }"/>-->
+  <commandset id="seleniumIDEUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="if (window.editor) { editor.updateSeleniumCommands() }"/>
+
+  <keyset id="seleniumIDEKeys">
+    <key id="close-key" modifiers="accel" key="W" command="cmd_close"/>
+    <key id="save-key" modifiers="accel" key="S" command="cmd_save"/>
+    <key id="open-key" modifiers="accel" key="O" command="cmd_open"/>
+    <key id="breakpoint-key" key="B" command="cmd_selenium_breakpoint"/>
+    <key id="startpoint-key" key="S" command="cmd_selenium_startpoint"/>
+    <key id="exec-key" key="X" command="cmd_selenium_exec_command"/>
+  </keyset>
+
+  <popupset id="seleniumIDEPopup">
+    <!-- popup menu on the tree view -->
+    <popup id="treeContextMenu">
+      <menuitem label="Cut" command="cmd_cut" key="key_cut"/>
+      <menuitem label="Copy" command="cmd_copy" key="key_copy"/>
+      <menuitem label="Paste" command="cmd_paste" key="key_paste"/>
+      <menuitem label="Delete" command="cmd_delete" key="key_delete"/>
+      <menuseparator/>
+      <menuitem label="Insert New Command" oncommand="editor.treeView.insertCommand()"/>
+      <menuitem label="Insert New Comment" oncommand="editor.treeView.insertComment()"/>
+      <menuseparator/>
+      <menuitem label="Clear All" oncommand="editor.clear()"/>
+      <menuseparator/>
+      <menuitem label="Toggle Breakpoint" command="cmd_selenium_breakpoint" key="breakpoint-key"/>
+      <menuitem label="Set / Clear Start Point" command="cmd_selenium_startpoint" key="startpoint-key"/>
+      <menuitem label="Execute this command" command="cmd_selenium_exec_command" key="exec-key"/>
+    </popup>
+    <popup id="popupSeleniumCommands">
+      <menuitem label="Clear All" oncommand="editor.clear()"/>
+    </popup>
+  </popupset>
+</overlay>

@@ -1,26 +1,19 @@
 <?xml version="1.0"?>
-
-<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
-
-  <Description about="urn:mozilla:install-manifest">
-
-    <em:name>Selenium IDE</em:name>
-    <em:id>{a6fd85ed-e919-4a43-a5af-8da18bda539f}</em:id>
-    <em:version>0.7.2</em:version>
-    <em:description>Record, edit and play Selenium tests</em:description>
-    <em:creator>Shinya Kasatani</em:creator>
-    <em:homepageURL>http://www.openqa.org/selenium-ide/</em:homepageURL>
-    <em:optionsURL>chrome://selenium-ide/content/optionsDialog.xul</em:optionsURL>
-
-    <em:targetApplication>
-      <Description>
-        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>1.5</em:minVersion>
-        <em:maxVersion>1.5.0.*</em:maxVersion>
-      </Description>
-    </em:targetApplication> 
-
-  </Description>
-
-</RDF>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$8MZop3"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.5"
+                   em:maxVersion="1.5.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:name="Selenium IDE"
+                   em:id="{a6fd85ed-e919-4a43-a5af-8da18bda539f}"
+                   em:version="0.7.2"
+                   em:description="Record, edit and play Selenium tests"
+                   em:creator="Shinya Kasatani"
+                   em:homepageURL="http://www.openqa.org/selenium-ide/"
+                   em:optionsURL="chrome://selenium-ide/content/optionsDialog.xul">
+    <em:targetApplication RDF:resource="rdf:#$8MZop3"/>
+  </RDF:Description>
+</RDF:RDF>

@@ -6,3 +6,10 @@ Copy build.properties.sample to build.properties,
 and set selenium.src to the Selenium source directory.
 
 Run ant and you will get build/seleniumrecorder.xpi.
+
+== Running unit tests ==
+
+You can run internal tests of Selenium IDE using JsUnit by visiting following URL:
+
+chrome://selenium-ide/content/tests/index.html
+

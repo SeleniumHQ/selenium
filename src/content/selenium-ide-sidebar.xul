@@ -18,10 +18,9 @@ limitations under the License.
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://global/content/xul.css" type="text/css"?>
 <?xml-stylesheet href="chrome://selenium-ide/content/selenium-ide.css" type="text/css"?>
-<!--
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
 <?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
--->
+<?xul-overlay href="chrome://selenium-ide/content/selenium-ide-common.xul"?>
 
 <!DOCTYPE page [
 <!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
@@ -34,79 +33,25 @@ limitations under the License.
   id="selenium-ide-sidebar"
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  onload="loadRecorder(true)"
-  onunload="unloadRecorder(true)">
-  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder-finders.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/testManager.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>
+  onload="new Editor(window, true)"
+  onunload="editor.unload()">
 
   <commandset id="editMenuCommands"/>
   <commandset id="baseMenuCommandSet"/>
-  <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
-  <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
-  <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
-  <command id="cmd_selenium_play" oncommand="goDoCommand('cmd_selenium_play')"/>
-  <command id="cmd_selenium_pause" oncommand="goDoCommand('cmd_selenium_pause')"/>
-  <command id="cmd_selenium_step" oncommand="goDoCommand('cmd_selenium_step')"/>
-  <command id="cmd_selenium_breakpoint" oncommand="goDoCommand('cmd_selenium_breakpoint')"/>
-  <command id="cmd_selenium_startpoint" oncommand="goDoCommand('cmd_selenium_startpoint')"/>
-  <command id="cmd_selenium_exec_command" oncommand="goDoCommand('cmd_selenium_exec_command')"/>
-  <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="updateSeleniumCommands()"/>
-
-  <keyset id="editMenuKeys"/>
-
-  <keyset>
-    <key id="close-key" modifiers="accel" key="W" command="cmd_close"/>
-    <key id="save-key" modifiers="accel" key="S" command="cmd_save"/>
-    <key id="open-key" modifiers="accel" key="O" command="cmd_open"/>
-    <key id="breakpoint-key" key="B" command="cmd_selenium_breakpoint"/>
-    <key id="startpoint-key" key="S" command="cmd_selenium_startpoint"/>
-    <key id="exec-key" key="X" command="cmd_selenium_exec_command"/>
-  </keyset>
-
-  <popupset>
-    <!-- popup menu on the tree view -->
-    <popup id="treeContextMenu">
-      <menuitem label="Cut" command="cmd_cut" key="key_cut"/>
-      <menuitem label="Copy" command="cmd_copy" key="key_copy"/>
-      <menuitem label="Paste" command="cmd_paste" key="key_paste"/>
-      <menuitem label="Delete" command="cmd_delete" key="key_delete"/>
-      <menuseparator/>
-      <menuitem label="Insert New Command" oncommand="recorder.treeView.insertCommand()"/>
-      <menuitem label="Insert New Comment" oncommand="recorder.treeView.insertComment()"/>
-      <menuseparator/>
-      <menuitem label="Clear All" oncommand="clear()"/>
-      <menuseparator/>
-      <menuitem label="Toggle Breakpoint" command="cmd_selenium_breakpoint" key="breakpoint-key"/>
-      <menuitem label="Set / Clear Start Point" command="cmd_selenium_startpoint" key="startpoint-key"/>
-      <menuitem label="Execute this command" command="cmd_selenium_exec_command" key="exec-key"/>
-    </popup>
-    <popup id="popupSeleniumCommands">
-      <menuitem label="Clear All" oncommand="clear()"/>
-    </popup>
-  </popupset>
+  <commandset id="seleniumIDECommands"/>
+  <commandset id="seleniumIDEUpdater"/>
+  <keyset id="editMenuKeys" />
+  <keyset id="seleniumIDEKeys" />
+  <popupset id="seleniumIDEPopup" />
 
   <toolbox>
     <menubar id="menubar">
       <menu id="file-menu" label="File">
 	<menupopup id="file-popup">
-	  <menuitem label="&newTestCmd.label;" oncommand="newTestCase();"/>
+	  <menuitem label="&newTestCmd.label;" oncommand="editor.newTestCase();"/>
 	  <menuitem label="&openCmd.label;" command="cmd_open" key="open-key"/>
 	  <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key"/>
-	  <menuitem label="&saveTestAsCmd.label;" oncommand="saveNewTestCase();"/>
+	  <menuitem label="&saveTestAsCmd.label;" oncommand="editor.saveNewTestCase();"/>
 	  <menuseparator/>
 	  <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key"/>
 	</menupopup>
@@ -126,16 +71,13 @@ limitations under the License.
       </menu>
       <menu id="view-menu" label="Options">
 	<menupopup id="view-popup">
-	  <menuitem label="&optionsCmd.label;" oncommand="openSeleniumIDEPreferences();" />
+	  <menuitem label="&optionsCmd.label;" oncommand="editor.openSeleniumIDEPreferences();" />
 	  <menu label="&formatCmd.label;">
-	    <menupopup id="popup_formats" onpopupshowing="populateFormatsPopup()" oncommand="selectFormatFromMenu()">
+	    <menupopup id="popup_formats" onpopupshowing="editor.populateFormatsPopup()" oncommand="editor.selectFormatFromMenu()">
 	    </menupopup>
 	  </menu>
 	</menupopup>
       </menu>
-      <menu id="windowMenu"/>
-      <menu id="helpMenu"/>
-      <menupopup id="menu_ToolsPopup"/> <!-- for Mac -->
     </menubar>
     <toolbar>
       <textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
@@ -145,9 +87,9 @@ limitations under the License.
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="Pause / Resume" command="cmd_selenium_pause"/>
       <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="Step" command="cmd_selenium_step"/>
       <toolbarseparator />
-      <toolbarbutton id="testrunner-button" label="Play with Selenium TestRunner" class="icon" tooltiptext="Play with Selenium TestRunner" oncommand="playback()"/>
+      <toolbarbutton id="testrunner-button" label="Play with Selenium TestRunner" class="icon" tooltiptext="Play with Selenium TestRunner" oncommand="editor.playback()"/>
       <toolbarseparator />
-      <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="Record" checked="true" onclick="this.checked = !this.checked" oncommand="toggleRecordingEnabled(this.checked)"/>
+      <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="Record" checked="true" onclick="this.checked = !this.checked" oncommand="editor.toggleRecordingEnabled(this.checked)"/>
     </toolbar>
     <toolbar>
       <radiogroup id="runInterval" orient="horizontal">
@@ -160,14 +102,14 @@ limitations under the License.
 
   <vbox flex="1">
     <tabbox flex="3" height="300">
-      <tabs orient="horizontal" onselect="tabSelected(selectedItem.id)" id="viewTabs">
+      <tabs orient="horizontal" onselect="if (window.editor) { editor.tabSelected(selectedItem.id) }" id="viewTabs">
 	<tab id="editorTab" label="Editor"/>
 	<tab id="sourceTab" label="Source"/>
       </tabs>
       <tabpanels flex="1">
 	<tabpanel orient="vertical">
 	  <tree id="commands" flex="1" enableColumnDrag="false" hidecolumnpicker="true"
-		context="treeContextMenu" onselect="recorder.treeView.selectCommand()"
+		context="treeContextMenu" onselect="editor.treeView.selectCommand()"
 		ondblclick="goDoCommand('cmd_selenium_exec_command')" disableKeyNavigation="true">
 		<!--onfocus="recorder.treeView.focused=true" onblur="recorder.treeView.focused=false">-->
 	    <!--ondblclick="recorder.treeView.selectRecordIndex()">-->
@@ -191,60 +133,34 @@ limitations under the License.
 		<row align="center">
 		  <!-- do drop down that depends upon the element type -->
 
-		  <textbox disabled="true" id="commandAction" oninput="recorder.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-commands" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
+		  <textbox disabled="true" id="commandAction" oninput="editor.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-commands" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
 		</row>
 		<row align="center">
 		  <!-- show different options collected by the client. Allow user to override -->
 		  <hbox flex="1">
-		    <textbox flex="1" disabled="true" id="commandTarget" oninput="recorder.treeView.updateCurrentCommand('target', recorder.treeView.decodeText(this.value))"/>
-		    <button label="Find" oncommand="seleniumDebugger.showElement(document.getElementById('commandTarget').value)"/>
+		    <textbox flex="1" disabled="true" id="commandTarget" oninput="editor.treeView.updateCurrentCommand('target', editor.treeView.decodeText(this.value))"/>
+		    <button label="Find" oncommand="editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
 		  </hbox>
 		</row>
 		<row align="center">
-		  <textbox disabled="true" id="commandValue" oninput="recorder.treeView.updateCurrentCommand('value', recorder.treeView.decodeText(this.value))"/>
+		  <textbox disabled="true" id="commandValue" oninput="editor.treeView.updateCurrentCommand('value', editor.treeView.decodeText(this.value))"/>
 		</row>
 	      </rows>
 	    </grid>
 	  </vbox>
 	</tabpanel>
 	<tabpanel orient="vertical">
-	  <textbox id="source" multiline="true" flex="1" onchange="recorder.sourceView.syncModel()"/>
+	  <textbox id="source" multiline="true" flex="1" onchange="editor.sourceView.syncModel()"/>
 	</tabpanel>
       </tabpanels>
     </tabbox>
-    <!--
-    <hbox align="center">
-      <radiogroup id="runInterval" orient="horizontal">
-	<radio id="run" label="Run" selected="true" value="0"/>
-	<radio id="walk" label="Walk" value="500"/>
-	<radio id="step" label="Step" value="-1"/>
-      </radiogroup>
-    </hbox>
-    -->
-    <!--
-    <hbox align="center">
-      <button label="Start" oncommand="seleniumDebugger.start();"/>
-      <button label="Continue" oncommand="seleniumDebugger.doContinue();"/>
-      <button label="Show Log" oncommand="openLogWindow()"/>
-    </hbox>
-    -->
     <splitter collapse="after">
       <grippy/>
     </splitter>
-    <!--
-    <hbox align="center">
-      <checkbox id="enableRecording" label="Enable recording" checked="true" oncommand="toggleRecordingEnabled(this.checked)"/>
-      <spacer flex="1"/>
-      <button label="Play with Selenium TestRunner" oncommand="playback()"/>
-    </hbox>
-    -->
 
     <vbox id="logBox" flex="1" height="100">
       <hbox id="logMenu" align="center">
-<!--	<label id="logLabel" value="Log Console"/>
-	<spacer flex="1"/>
--->
-	<menulist id="logFilter" oncommand="seleniumDebugger.reloadLog()">
+	<menulist id="logFilter" oncommand="editor.selDebugger.reloadLog()">
 	  <menupopup>
 	    <menuitem label="Debug" value="0"/>
 	    <menuitem label="Info" value="1" selected="true"/>
@@ -252,7 +168,7 @@ limitations under the License.
 	    <menuitem label="Error" value="3"/>
 	  </menupopup>
 	</menulist>
-	<button id="logClear" label="Clear" oncommand="seleniumDebugger.clearLog()"/>
+	<button id="logClear" label="Clear" oncommand="editor.selDebugger.clearLog()"/>
       </hbox>
       <iframe flex="1" id="logView" src="LogFrame.html">
       </iframe>

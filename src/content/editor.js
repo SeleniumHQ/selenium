@@ -14,217 +14,39 @@
  * limitations under the License.
  */
 
-var log = new Log("Recorder");
-var recorder = this;
-
-const DEFAULT_TITLE = "Selenium IDE";
-
-function init() {
-	if (!this.recorderInitialized) {
-		log.info("initializing");
-		this.recorderInitialized = true;
-		this.setOptions(optionsManager.load());
-		//this.options.load();
-		//this.eventManager = new EventManager(this);
-		this.treeView = new TreeView(this, document, document.getElementById("commands"));
-		this.sourceView = new SourceView(this, document.getElementById("source"));
-		this.testCaseListeners = new Array();
-		this.setTestCase = function(testCase) {
-			this.testCase = testCase;
-			for (var i = 0; i < this.testCaseListeners.length; i++) {
-				this.testCaseListeners[i](this.testCase);
-			}
-		};
-		this.setTestCase(new TestCase());
-		this.testCaseListeners.push(function(testCase) { recorder.view.testCase = testCase });
-		this.toggleView = function(view) {
-			log.debug("toggle view");
-			if (this.view != null) {
-				this.view.onHide();
-			}
-			var previous = this.view;
-			this.view = view;
-			if (previous) previous.syncModel(true);
-			this.view.testCase = this.testCase;
-			this.view.refresh();
-		};
-		initOptions();
-		this.toggleView(this.treeView);
-
-		var controller = {
-			supportsCommand : function(cmd) {
-				//log.debug("supportsCommand");
-				switch (cmd) {
-				case "cmd_close":
-				case "cmd_open":
-				case "cmd_save":
-				case "cmd_selenium_play":
-				case "cmd_selenium_pause":
-				case "cmd_selenium_step":
-					return true;
-				default:
-				return false;
-				}
-			},
-			isCommandEnabled : function(cmd){
-				//log.debug("isCommandEnabled");
-				switch (cmd) {
-				case "cmd_close":
-				case "cmd_open":
-				case "cmd_save":
-					return true;
-				case "cmd_selenium_play":
-				    return self.state != 'playing';
-				case "cmd_selenium_pause":
-				    return self.state == 'playing' || self.state == 'paused';
-				case "cmd_selenium_step":
-				    return self.state == 'paused';
-				default:
-				    return false;
-				}
-			},
-			doCommand : function(cmd) {
-				//log.debug("doCommand: " + cmd);
-				switch (cmd) {
-				case "cmd_close": if (confirmClose()) { window.close(); } break;
-				case "cmd_save": saveTestCase(); break;
-				case "cmd_open": loadTestCase(); break;
-				case "cmd_selenium_play": seleniumDebugger.start(); break;
-				case "cmd_selenium_pause": 
-				    if (self.state == 'paused') {
-						seleniumDebugger.doContinue();
-					} else {
-						seleniumDebugger.pause();
-					}
-				    break;
-				case "cmd_selenium_step":
-				    seleniumDebugger.doContinue(true);
-				    break;
-				default:
-				}
-			},
-			onEvent : function(evt) {}
-		};
-		//window.controllers.appendController(controller);
-		document.commandDispatcher.getControllers().appendController(controller);
-		
-		document.commandDispatcher.updateCommands("selenium-ide-state");
-		log.info("initialized");
-
-		setTimeout("afterInit()", 500);
-	}
-}
-
-function updateSeleniumCommands() {
-	// log.debug("updateSeleniumCommands");
-	["cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step"].
-		forEach(function(cmd) {
-					goUpdateCommand(cmd);
-				});
-}
-
-function afterInit() {
-	if (this.errorMessage) {
-		window.alert(this.errorMessage);
-		delete this.errorMessage;
-	}
-}
-
-function setState(state) {
-	this.state = state;
-	if (state == 'paused') {
-		document.getElementById("pause-button").setAttribute("class", "icon resume");
-	} else {
-		document.getElementById("pause-button").setAttribute("class", "icon pause");
-	}
-	window.updateCommands("selenium-ide-state");
-}
-
-function setOptions(options) {
-	this.options = options;
-	this.testManager = new TestManager(options);
-}
-
-function initOptions() {
-	if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null){
-		if (document.getElementById("baseURL").value == '') {
-			document.getElementById("baseURL").value = this.options.baseURL;
-		}
-	}
-}
-
-function newTestCase() {
-	if (confirmClose()) {
-		this.setTestCase(new TestCase());
-		this.view.refresh();
-		//document.getElementById("filename").value = '';
-		//document.title = DEFAULT_TITLE;
-		updateTitle();
-	}
-}
-
-function loadTestCase() {
-	log.debug("loadTestCase");
-	try {
-		var testCase = null;
-		if ((testCase = this.testManager.load()) != null) {
-			this.setTestCase(testCase);
-			this.view.refresh();
-			//document.getElementById("filename").value = this.testCase.filename;
-			//document.title = this.testCase.filename + " - " + DEFAULT_TITLE;
-			updateTitle();
-		}
-	} catch (error) {
-		alert(error);
-	}
-}
-
-function updateTitle() {
-	var title;
-	if (this.testCase && this.testCase.baseFilename) {
-		title = this.testCase.baseFilename + " - " + DEFAULT_TITLE;
-	} else {
-		title = DEFAULT_TITLE;
-	}
-	if (this.testCase && this.testCase.modified) {
-		title += " *";
-	}
-	document.title = title;
-}
-
-function tabSelected(id) {
-	if (this.testCase != null) {
-		log.debug("tabSelected: id=" + id);
-		if (id == 'sourceTab') {
-			this.toggleView(this.sourceView);
-		} else if (id == 'editorTab') {
-			this.toggleView(this.treeView);
-		}
-	}
-}
-
-function saveTestCase() {
-	this.view.syncModel();
-	if (this.testManager.save(this.testCase)) {
-		//document.getElementById("filename").value = this.testCase.filename;
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function saveNewTestCase() {
-	this.view.syncModel();
-	if (this.testManager.saveAsNew(this.testCase)) {
-		//document.getElementById("filename").value = this.testCase.filename;
-		updateTitle();
-	}
-}
-
-function loadRecorder(isSidebar) {
-	//this.log.debug("loadRecorder: window=" + window + ", getBrowser=" + window.getBrowser);
+function Editor(window, isSidebar) {
+	this.log.info("initializing");
+	this.window = window;
+	window.editor = this;
+	var editor = this;
+	this.isSidebar = isSidebar;
+	this.document = document;
 	this.recordingEnabled = true;
-	init();
+	this.setOptions(optionsManager.load());
+	this.treeView = new TreeView(this, document, document.getElementById("commands"));
+	this.sourceView = new SourceView(this, document.getElementById("source"));
+	this.testCaseListeners = new Array();
+	this.setTestCase(new TestCase());
+	var self = this;
+	this.testCaseListeners.push(function(testCase) { self.view.testCase = testCase });
+	this.initOptions();
+	this.toggleView(this.treeView);
+	
+	// "debugger" cannot be used since it is a reserved word in JS
+	this.selDebugger = new Debugger(this);
+	
+	//top.document.commandDispatcher.getControllers().appendController(Editor.controller);
+	//window.controllers.appendController(Editor.controller);
+	top.controllers.appendController(Editor.controller);
+
+	//window.controllers.appendController(controller);
+
+	top.document.commandDispatcher.updateCommands("selenium-ide-state");
+	
+	this.log.info("initialized");
+	
+	setTimeout("editor.showLoadErrors()", 500);
+	
 	if (isSidebar) {
 		Recorder.registerForWindow(window.parent, this);
 	} else {
@@ -232,18 +54,76 @@ function loadRecorder(isSidebar) {
 	}
 }
 
-function loadRecorderFor(contentWindow, isRootDocument) {
-	init();
-	if (this.recordingEnabled && isRootDocument) {
-		recordTitle(contentWindow);
+Editor.controller = {
+	supportsCommand : function(cmd) {
+		Editor.log.debug("supportsCommand");
+		switch (cmd) {
+		case "cmd_close":
+		case "cmd_open":
+		case "cmd_save":
+		case "cmd_selenium_play":
+		case "cmd_selenium_pause":
+		case "cmd_selenium_step":
+			return true;
+		default:
+			return false;
+		}
+	},
+	isCommandEnabled : function(cmd){
+		Editor.log.debug("isCommandEnabled");
+		switch (cmd) {
+		case "cmd_close":
+		case "cmd_open":
+		case "cmd_save":
+			return true;
+		case "cmd_selenium_play":
+			return editor.state != 'playing';
+		case "cmd_selenium_pause":
+			return editor.state == 'playing' || editor.state == 'paused';
+		case "cmd_selenium_step":
+			return editor.state == 'paused';
+		default:
+			return false;
+		}
+	},
+	doCommand : function(cmd) {
+		Editor.log.debug("doCommand: " + cmd);
+		switch (cmd) {
+		case "cmd_close": if (editor.confirmClose()) { window.close(); } break;
+		case "cmd_save": editor.saveTestCase(); break;
+		case "cmd_open": editor.loadTestCase(); break;
+		case "cmd_selenium_play":
+			editor.selDebugger.start();
+			break;
+		case "cmd_selenium_pause": 
+			if (editor.state == 'paused') {
+				editor.selDebugger.doContinue();
+			} else {
+				editor.selDebugger.pause();
+			}
+			break;
+		case "cmd_selenium_step":
+			editor.selDebugger.doContinue(true);
+			break;
+		default:
+		}
+	},
+	onEvent : function(evt) {}
+};
+
+Editor.prototype.showLoadErrors = function() {
+	if (this.errorMessage) {
+		window.alert(this.errorMessage);
+		delete this.errorMessage;
 	}
-	Recorder.register(this, contentWindow);
 }
 
-function confirmClose() {
+Editor.DEFAULT_TITLE = "Selenium IDE";
+
+Editor.prototype.confirmClose = function() {
 	if (this.testCase && this.testCase.modified) {
 		var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-			.getService(Components.interfaces.nsIPromptService);
+		    .getService(Components.interfaces.nsIPromptService);
 		
 		var flags = 
 			promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0 +
@@ -256,7 +136,7 @@ function confirmClose() {
 		
 		switch (result) {
 		case 0:
-			return saveTestCase();
+			return this.saveTestCase();
 		case 1:
 			return false;
 		case 2:
@@ -266,34 +146,146 @@ function confirmClose() {
 	return true;
 }
 
-function unloadRecorder(isSidebar) {
+
+Editor.prototype.log = Editor.log = new Log("Editor");
+
+Editor.prototype.unload = function() {
 	if (this.options.rememberBaseURL == 'true'){
 		this.options.baseURL = document.getElementById("baseURL").value;
 		optionsManager.save(this.options, 'baseURL');
 	}
 	
-	if (isSidebar) {
+	if (this.isSidebar) {
 		//this.log.debug("deregister: window=" + window + ", getBrowser=" + window.getBrowser);
 		Recorder.deregisterForWindow(window.parent, this);
 	} else {
 		Recorder.deregisterAll(this);
 	}
+
+	delete window.editor;
 }
 
-function saveSelectedFormat() {
+Editor.prototype.updateSeleniumCommands = function() {
+	this.log.debug("updateSeleniumCommands");
+	["cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step"].
+		forEach(function(cmd) {
+					goUpdateCommand(cmd);
+				});
+}
+
+Editor.prototype.setState = function(state) {
+	this.state = state;
+	if (state == 'paused') {
+		document.getElementById("pause-button").setAttribute("class", "icon resume");
+	} else {
+		document.getElementById("pause-button").setAttribute("class", "icon pause");
+	}
+	window.updateCommands("selenium-ide-state");
+}
+
+Editor.prototype.setOptions = function(options) {
+	this.options = options;
+	this.testManager = new TestManager(options);
+}
+
+Editor.prototype.initOptions = function() {
+	if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null){
+		if (document.getElementById("baseURL").value == '') {
+			document.getElementById("baseURL").value = this.options.baseURL;
+		}
+	}
+}
+
+Editor.prototype.newTestCase = function() {
+	if (this.confirmClose()) {
+		this.setTestCase(new TestCase());
+		this.view.refresh();
+		//document.getElementById("filename").value = '';
+		//document.title = DEFAULT_TITLE;
+		this.updateTitle();
+	}
+}
+
+Editor.prototype.loadTestCase = function() {
+	this.log.debug("loadTestCase");
+	try {
+		var testCase = null;
+		if ((testCase = this.testManager.load()) != null) {
+			
+			this.setTestCase(testCase);
+			this.view.refresh();
+			//document.getElementById("filename").value = this.testCase.filename;
+			//document.title = this.testCase.filename + " - " + DEFAULT_TITLE;
+			this.updateTitle();
+		}
+	} catch (error) {
+		alert(error);
+	}
+}
+
+Editor.prototype.updateTitle = function() {
+	var title;
+	if (this.testCase && this.testCase.baseFilename) {
+		title = this.testCase.baseFilename + " - " + Editor.DEFAULT_TITLE;
+	} else {
+		title = Editor.DEFAULT_TITLE;
+	}
+	if (this.testCase && this.testCase.modified) {
+		title += " *";
+	}
+	document.title = title;
+}
+
+Editor.prototype.tabSelected = function(id) {
+	if (this.testCase != null) {
+		this.log.debug("tabSelected: id=" + id);
+		if (id == 'sourceTab') {
+			this.toggleView(this.sourceView);
+		} else if (id == 'editorTab') {
+			this.toggleView(this.treeView);
+		}
+	}
+}
+
+Editor.prototype.saveTestCase = function() {
+	this.view.syncModel();
+	if (this.testManager.save(this.testCase)) {
+		//document.getElementById("filename").value = this.testCase.filename;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+Editor.prototype.saveNewTestCase = function() {
+	this.view.syncModel();
+	if (this.testManager.saveAsNew(this.testCase)) {
+		//document.getElementById("filename").value = this.testCase.filename;
+		this.updateTitle();
+	}
+}
+
+Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
+	if (this.recordingEnabled && isRootDocument) {
+		this.recordTitle(contentWindow);
+	}
+	Recorder.register(this, contentWindow);
+}
+
+Editor.prototype.saveSelectedFormat = function() {
 	this.options.selectedFormat = this.testManager.currentFormatInfo.id;
 	optionsManager.save(this.options, 'selectedFormat');
 }
 
-function toggleRecordingEnabled(enabled) {
+Editor.prototype.toggleRecordingEnabled = function(enabled) {
 	this.recordingEnabled = enabled;
 }
 
-function onUnloadDocument(doc) {
+Editor.prototype.onUnloadDocument = function(doc) {
 	if (this.unloadTimeoutID != null) {
 		clearTimeout(this.unloadTimeoutID);
 	}
-	this.unloadTimeoutID = setTimeout("appendAND_WAIT()", 100);
+	this.unloadTimeoutID = setTimeout("Editor.appendAND_WAIT()", 100);
 	
 	/*
 	if (this.lastWindow) {
@@ -315,14 +307,14 @@ function onUnloadDocument(doc) {
 	*/
 }
 
-function recordTitle(window) {
+Editor.prototype.recordTitle = function(window) {
 	if (this.options.recordAssertTitle == 'true' && this.testCase.commands.length > 0) {
 		//setTimeout("addCommand", 200, "assertTitle", window.document.title, null, window);
-		addCommand("assertTitle", exactMatchPattern(window.document.title), null, window);
+		this.addCommand("assertTitle", exactMatchPattern(window.document.title), null, window);
 	}
 }
 
-function recordOpen(window) {
+Editor.prototype.recordOpen = function(window) {
 	if (!window.location) return;
 	var path = window.location.href;
 	var regexp = new RegExp(/^(\w+:\/\/[\w\.]+(:\d+)?)\/.*/);
@@ -332,31 +324,31 @@ function recordOpen(window) {
 		path = path.substr(result[1].length);
 		base = result[1] + '/';
 	}
-	addCommand("open", path, '', window);
+	this.addCommand("open", path, '', window);
 	if (!document.getElementById("baseURL").value) {
 		document.getElementById("baseURL").value = base;
 	}
 }
 
-function clear() {
+Editor.prototype.clear = function() {
 	if (this.testCase != null) {
 		if (confirm("Really clear the test?")) {
 			this.testCase.clear();
 			this.view.refresh();
-			log.debug("cleared");
+			this.log.debug("cleared");
 			return true;
 		}
 	}
 	return false;
 }
 
-function addCommand(command,target,value,window) {
-	log.debug("addCommand");
+Editor.prototype.addCommand = function(command,target,value,window) {
+	this.log.debug("addCommand");
 	var windowName;
 	if (command != 'open' && this.testCase.commands.length == 0) {
-		recordOpen(window);
+		this.recordOpen(window);
 		//if (command != 'assertTitle' && command != 'verifyTitle') {
-			recordTitle(window);
+		this.recordTitle(window);
 			//}
 	}
 	if (command != 'selectWindow' &&
@@ -366,7 +358,7 @@ function addCommand(command,target,value,window) {
 		if (window.name == '') {
 			windowName = 'null';
 		}
-		addCommand('selectWindow', windowName, '', 0, window);
+		this.addCommand('selectWindow', windowName, '', 0, window);
 	}
 	//resultBox.inputField.scrollTop = resultBox.inputField.scrollHeight - resultBox.inputField.clientHeight;
 	if (this.timeoutID != null) {
@@ -376,35 +368,35 @@ function addCommand(command,target,value,window) {
 	this.lastCommandIndex = this.testCase.recordIndex;
 	this.testCase.commands.splice(this.lastCommandIndex, 0, new Command(command, target, value));
 	this.view.rowInserted(this.lastCommandIndex);
-	this.timeoutID = setTimeout("clearLastCommand()", 1000);
+	this.timeoutID = setTimeout("editor.clearLastCommand()", 1000);
 	//updateSource();
 }
 
-function clearLastCommand() {
+Editor.prototype.clearLastCommand = function() {
 	this.lastCommandIndex = null;
 }
 
-function appendAND_WAIT() {
-	var lastCommandIndex = this.lastCommandIndex;
+Editor.appendAND_WAIT = function() {
+	var lastCommandIndex = editor.lastCommandIndex;
 	if (lastCommandIndex == null) {
 		return;
 	}
-	this.lastCommandIndex = null;
-	var lastCommand = this.testCase.commands[lastCommandIndex];
+	editor.lastCommandIndex = null;
+	var lastCommand = editor.testCase.commands[lastCommandIndex];
 	if (lastCommand.type == 'command' && 
 		!lastCommand.command.match(/^assert/) &&
 		!lastCommand.command.match(/^verify/)) {
 		lastCommand.command = lastCommand.command + "AndWait";
 	}
-	this.view.rowUpdated(lastCommandIndex);
+	editor.view.rowUpdated(lastCommandIndex);
 	//updateSource();
 }
 
-function openSeleniumIDEPreferences() {
+Editor.prototype.openSeleniumIDEPreferences = function() {
 	window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome,modal,resizable", null);
 }
 
-function playback() {
+Editor.prototype.playback = function() {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
 	var contentWindow = window.getBrowser().contentWindow;
@@ -413,18 +405,18 @@ function playback() {
 	
 	// disable recording
 	document.getElementById("record-button").checked = false;
-	toggleRecordingEnabled(false);
+	this.toggleRecordingEnabled(false);
 
 	contentWindow.location.href = 'chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
 		'&userExtensionsURL=' + this.options.userExtensionsURL +
 		'&baseURL=' + document.getElementById("baseURL").value;
 }
 
-function loadPlayerTest(e) {
+Editor.prototype.loadPlayerTest = function(e) {
 	e.innerHTML = this.testManager.getDefaultFormat().format(this.testCase, "Test Player", false, true);
 }
 
-function openLogWindow() {
+Editor.prototype.openLogWindow = function() {
 	if (!LOG.getLogWindow()) {
 		LOG.logWindow = window.open(
             "chrome://selenium-ide/content/selenium/SeleniumLog.html", "SeleniumLog",
@@ -433,7 +425,7 @@ function openLogWindow() {
 	}
 }
 
-function populateFormatsPopup() {
+Editor.prototype.populateFormatsPopup = function() {
 	var e = document.getElementById("popup_formats");
 	var i;
 	for (i = e.childNodes.length - 1; i >= 0; i--) {
@@ -454,20 +446,43 @@ function populateFormatsPopup() {
 	}
 }
 
-function selectFormatFromMenu() {
+Editor.prototype.selectFormatFromMenu = function() {
 	var e = document.getElementById("popup_formats");
 	var i;
 	for (i = e.childNodes.length - 1; i >= 0; i--) {
 		var checked = e.childNodes[i].getAttribute("checked");
 		if (checked == 'true') {
 			this.testManager.selectFormat(e.childNodes[i].getAttribute("value"));
-			saveSelectedFormat();
+			this.saveSelectedFormat();
 			break;
 		}
 	}
 }
 
-function showAlert(message) {
+Editor.prototype.getBaseURL = function() {
+	return this.document.getElementById("baseURL").value;
+}
+
+Editor.prototype.setTestCase = function(testCase) {
+	this.testCase = testCase;
+	for (var i = 0; i < this.testCaseListeners.length; i++) {
+		this.testCaseListeners[i](this.testCase);
+	}
+}
+
+Editor.prototype.toggleView = function(view) {
+	this.log.debug("toggle view");
+	if (this.view != null) {
+		this.view.onHide();
+	}
+	var previous = this.view;
+	this.view = view;
+	if (previous) previous.syncModel(true);
+	this.view.testCase = this.testCase;
+	this.view.refresh();
+}
+
+Editor.prototype.showAlert = function(message) {
 	this.errorMessage = message;
 	//	window.alert(message);
 }

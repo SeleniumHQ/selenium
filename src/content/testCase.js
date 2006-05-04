@@ -131,14 +131,14 @@ TestCase.prototype.clear = function() {
 
 TestCase.prototype.setModified = function() {
 	this.modified = true;
-	if (recorder) {
-		recorder.updateTitle();
+	if (this.observer) {
+		this.observer.updateTitle();
 	}
 }
 
 TestCase.prototype.clearModified = function() {
 	this.modified = false;
-	if (recorder) {
-		recorder.updateTitle();
+	if (this.observer) {
+		this.observer.updateTitle();
 	}
 }

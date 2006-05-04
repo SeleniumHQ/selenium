@@ -35,6 +35,7 @@ Recorder.prototype.attach = function() {
 					var handlers = Recorder.eventHandlers[eventName];
 					this.log.debug('eventName=' + eventName + ' / handlers.length=' + handlers.length);
 					var listener = function(event) {
+						self.log.debug('listener: event=' + event);
 						var recording = false;
 						for (var i = 0; i < self.observers.length; i++) {
 							if (self.observers[i].recordingEnabled) recording = true;
@@ -76,7 +77,7 @@ Recorder.prototype.getDocuments = function(frame) {
 Recorder.prototype.forEachDocument = function(handler) {
 	var documents = this.getDocuments(this.window);
 	for (var i = 0; i < documents.length; i++) {
-		handler(documents[i]);
+		handler.call(this, documents[i]);
 	}
 }
 

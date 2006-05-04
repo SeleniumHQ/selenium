@@ -149,7 +149,7 @@ function TreeView(recorder, document, tree) {
 			try {
 				subScriptLoader.loadSubScript(recorder.options.userExtensionsURL, scope);
 			} catch (error) {
-				this.recorder.showAlert("Failed to load user-extensions.js!\nfile=" + recorder.options.userExtensionsURL + "\nerror=" + error);
+				this.editor.showAlert("Failed to load user-extensions.js!\nfile=" + recorder.options.userExtensionsURL + "\nerror=" + error);
 			}
 		}
 
@@ -236,7 +236,7 @@ TreeView.prototype = {
 		this.treebox.invalidateRow(index);
 	},
 	refresh: function() {
-		log.debug("refresh: old rowCount=" + this.rowCount);
+		this.log.debug("refresh: old rowCount=" + this.rowCount);
 		this.treebox.rowCountChanged(0, -this.rowCount);
 		var length = 0;
 		if (this.testCase != null) {
@@ -245,7 +245,7 @@ TreeView.prototype = {
 		this.treebox.rowCountChanged(0, length + 1);
 		this.rowCount = length + 1;
 		this.newCommand = new Command();
-		log.debug("refresh: new rowCount=" + this.rowCount);
+		this.log.debug("refresh: new rowCount=" + this.rowCount);
 	},
 	// synchronize model from view
 	syncModel: function(force) {
@@ -406,7 +406,7 @@ TreeView.prototype = {
 			var command = this.getCommand(this.tree.currentIndex);
 			if (this.newCommand != command && command.type == 'command') {
 				this.selection.clearSelection();
-				seleniumDebugger.executeCommand(command);
+				this.editor.selDebugger.executeCommand(command);
 			}
 		}
 	},
@@ -444,7 +444,7 @@ TreeView.prototype = {
 		}
     },
     setTree: function(treebox) {
-		log.debug("setTree: treebox=" + treebox);
+		this.log.debug("setTree: treebox=" + treebox);
 		this.treebox = treebox;
 	},
     isContainer: function(row) {

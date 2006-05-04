@@ -27,7 +27,7 @@ limitations under the License.
   </menupopup>
 
   <menupopup id="menu_ToolsPopup">
-    <menuitem label="Selenium IDE" oncommand="SeleniumIDE.openRecorder();" insertbefore="sanitizeSeparator,prefSep"/>
+    <menuitem label="Selenium IDE" oncommand="SeleniumIDE.Loader.openRecorder();" insertbefore="sanitizeSeparator,prefSep"/>
   </menupopup>
 
   <popup id="contentAreaContextMenu">

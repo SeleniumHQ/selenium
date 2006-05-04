@@ -47,7 +47,7 @@ SeleniumIDE.checks = {
 	title: function(window, element) {
 		var result = { name: "Title" };
 		if (window.document) {
-			result.target = SeleniumIDE.getRecorderWindow().exactMatchPattern(window.document.title);
+			result.target = SeleniumIDE.Loader.getTopEditor().exactMatchPattern(window.document.title);
 		} else {
 			result.disabled = true;
 		}
@@ -59,13 +59,13 @@ SeleniumIDE.checks = {
 			('input' == element.tagName.toLowerCase() || 
 			 'textarea' == element.tagName.toLowerCase() || 
 			 element.value)) {
-			result.target = SeleniumIDE.getRecorderWindow().eventManager.getLocator(window, element);
+			result.target = SeleniumIDE.Loader.getTopEditor().eventManager.getLocator(window, element);
 			var type = element.getAttribute("type");
 			if ('input' == element.tagName.toLowerCase() && 
 				(type == 'checkbox' || type == 'radio')) {
 				result.value = element.checked ? 'on' : 'off';
 			} else {
-				result.value = SeleniumIDE.getRecorderWindow().exactMatchPattern(element.value);
+				result.value = SeleniumIDE.Loader.getTopEditor().exactMatchPattern(element.value);
 			}
 		} else {
 			result.disabled = true;
@@ -98,7 +98,7 @@ SeleniumIDE.checks = {
 					result.target = "(Unavailable: Table must have an id declared)";
 				} else {
 					result.target = tableName + '.' + element.parentNode.rowIndex + '.' + element.cellIndex;
-					result.value = SeleniumIDE.getRecorderWindow().exactMatchPattern(element.innerHTML.replace(/^\s*(.*?)\s*$/, "$1"));
+					result.value = SeleniumIDE.Loader.getTopEditor().exactMatchPattern(element.innerHTML.replace(/^\s*(.*?)\s*$/, "$1"));
 				}
 			}
 		} else {
@@ -110,7 +110,7 @@ SeleniumIDE.checks = {
 
 SeleniumIDE.getCheckCommand = function(menuitem) {
 	var focusedWindow = menuitem.ownerDocument.commandDispatcher.focusedWindow;
-	var recorder = SeleniumIDE.getRecorderWindow();
+	var recorder = SeleniumIDE.Loader.getTopEditor();
 	var r = /^selenium-ide-check-(.*)$/.exec(menuitem.id);
 	if (recorder && r && SeleniumIDE.checks[r[1]]) {
 		var command = SeleniumIDE.checks[r[1]](focusedWindow, recorder.clickedElement);
@@ -134,7 +134,7 @@ SeleniumIDE.appendCheck = function(event) {
 	var command;
 	if (null != (command = SeleniumIDE.getCheckCommand(event.target))) {
 		if (!command.disabled) {
-			SeleniumIDE.getRecorderWindow().addCommand(command.command, command.target, command.value, command.window);
+			SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
 		}
 	}
 }
@@ -154,7 +154,7 @@ SeleniumIDE.testRecorderPopup = function(event) {
 		}
 	}
 
-	var recorder = SeleniumIDE.getRecorderWindow();
+	var recorder = SeleniumIDE.Loader.getTopEditor();
 	if (recorder) {
 		hideMenus(false);
 
@@ -186,7 +186,7 @@ SeleniumIDE.onContentLoaded = function(event) {
 			isRootDocument = true;
 		}
 	}
-	SeleniumIDE.reloadRecorder(window.getBrowser().contentWindow, isRootDocument);
+	SeleniumIDE.Loader.reloadRecorder(window.getBrowser().contentWindow, isRootDocument);
 	
 	var contextMenu = window.document.getElementById("contentAreaContextMenu");
 	if (contextMenu) {
@@ -200,8 +200,12 @@ SeleniumIDE.initOverlay = function() {
 	if (appcontent) {
 		appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.onContentLoaded, false);
 	}
-	window.addEventListener("beforeunload", function() { SeleniumIDE.notifyUnloadToRecorder(window.document) }, false);
-
+	window.addEventListener("beforeunload", 
+							function() {
+								SeleniumIDE.Loader.getEditors().forEach(function(editor) {
+										editor.onUnloadDocument(window.document);
+									});
+							}, false);
 }
 
 SeleniumIDE.initOverlay();

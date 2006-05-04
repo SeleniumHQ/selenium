@@ -121,8 +121,8 @@ testLoop = null;
 stopping = false;
 
 function stopAndDo(func, arg1, arg2) {
-	if (testLoop && recorder.state != 'paused') {
-		LOG.debug("stopping... (state=" + recorder.state + ")");
+	if (testLoop && editor.state != 'paused') {
+		LOG.debug("stopping... (state=" + editor.state + ")");
 		stopping = true;
 		setTimeout(func, 500, arg1, arg2);
 		return false;
@@ -132,7 +132,7 @@ function stopAndDo(func, arg1, arg2) {
 	testCase.debugContext.reset();
 	for (var i = 0; i < testCase.commands.length; i++) {
 		delete testCase.commands[i].result;
-		recorder.view.rowUpdated(i);
+		editor.view.rowUpdated(i);
 	}
 	return true;
 }
@@ -154,16 +154,16 @@ function start(baseURL) {
 	testLoop.getCommandInterval = function() { return stopping ? -1 : getInterval(); }
 	testLoop.nextCommand = function() {
 		if (testCase.debugContext.debugIndex >= 0)
-			recorder.view.rowUpdated(testCase.debugContext.debugIndex);
+			editor.view.rowUpdated(testCase.debugContext.debugIndex);
 		var command = testCase.debugContext.nextCommand();
 		if (command == null) return null;
 		return new SeleniumCommand(command.command, command.target, command.value);
 	}
 	testLoop.firstCommand = testLoop.nextCommand; // Selenium <= 0.6 only
 	testLoop.commandStarted = function() {
-		recorder.setState("playing");
-		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
-		recorder.view.scrollToRow(testCase.debugContext.debugIndex);
+		editor.setState("playing");
+		editor.view.rowUpdated(testCase.debugContext.debugIndex);
+		editor.view.scrollToRow(testCase.debugContext.debugIndex);
 	}
 	testLoop.commandComplete = function(result) {
 		if (result.failed) {
@@ -173,22 +173,22 @@ function start(baseURL) {
 		} else {
 			testCase.debugContext.currentCommand().result = 'done';
 		}
-		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
+		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
 	testLoop.commandError = function() {
 		LOG.debug("commandError");
 		testCase.debugContext.currentCommand().result = 'failed';
-		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
+		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
 	testLoop.testComplete = function() {
 		LOG.debug("testComplete");
-		recorder.setState(null);
+		editor.setState(null);
 		testLoop = null;
 		testCase.debugContext.reset();
-		recorder.view.rowUpdated(testCase.debugContext.debugIndex);
+		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
 	testLoop.pause = function() {
-		recorder.setState("paused");
+		editor.setState("paused");
 	}
 
 	testCase.debugContext.reset();
@@ -224,7 +224,7 @@ function executeCommand(baseURL, command) {
 	}
 	testLoop.firstCommand = testLoop.nextCommand; // Selenium <= 0.6 only
 	testLoop.commandStarted = function() {
-		recorder.view.rowUpdated(testCase.commands.indexOf(command));
+		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
 	testLoop.commandComplete = function(result) {
 		if (result.failed) {
@@ -234,19 +234,19 @@ function executeCommand(baseURL, command) {
 		} else {
 			command.result = 'done';
 		}
-		recorder.view.rowUpdated(testCase.commands.indexOf(command));
+		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
 	testLoop.commandError = function() {
 		command.result = 'failed';
-		recorder.view.rowUpdated(testCase.commands.indexOf(command));
+		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
 	testLoop.testComplete = function() {
 		testLoop = null;
 		testCase.debugContext.reset();
-		recorder.view.rowUpdated(testCase.commands.indexOf(command));
+		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
 	testLoop.pause = function() {
-		recorder.setState("paused");
+		editor.setState("paused");
 	}
 
 	testLoop.start();
@@ -304,11 +304,11 @@ function showElement(locator) {
 			}
 			flashIndex++;
 			if (flashIndex < 3) {
-				recorder.setTimeout(animateFlasher, timeout);
+				setTimeout(animateFlasher, timeout);
 			}
 		}
 
-		recorder.setTimeout(animateFlasher, 300);
+		setTimeout(animateFlasher, 300);
 
 	} else {
 		LOG.error("locator not found: " + locator);

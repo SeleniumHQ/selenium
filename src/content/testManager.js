@@ -356,7 +356,9 @@ TestManager.prototype.load = function() {
 	} else {
 		return null;
 	}
-
+	
+	this.log.debug("start loading: file=" + thefile);
+	
 	try {
 		var is = Components.classes["@mozilla.org/network/file-input-stream;1"]
 	    .createInstance( Components.interfaces.nsIFileInputStream );
