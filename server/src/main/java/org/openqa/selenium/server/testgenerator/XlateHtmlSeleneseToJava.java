@@ -34,7 +34,7 @@ public class XlateHtmlSeleneseToJava {
 
     private static String EOL = "\n\t\t";
 
-    private static int timeOut = 5;
+    private static int timeOut = 30000;
     private static String domain;
 
     private static boolean silentMode = false;
@@ -362,7 +362,13 @@ public class XlateHtmlSeleneseToJava {
         
         String ending = ";";
         if (op.endsWith("AndWait")) {
-            ending += EOL + "selenium.waitForPageToLoad(\"" + timeOut + "\");";
+            if (!op.startsWith("click")) {
+                // there are several test cases where a clickAndWait is used on a button which leads to an alert/
+                // confirmation being thrown up; this leads to an exception when it occurs while waitForPageToLoad
+                // is running.  I'm not sure if I am correct here, but I know the tests succeed if I do this.
+                // TODO: is this right?
+                ending += EOL + "selenium.waitForPageToLoad(\"" + timeOut + "\");";
+            }
             op = op.replaceFirst("AndWait", "");
             tokens[0] = tokens[0].replaceFirst("AndWait", "");
         }
@@ -469,7 +475,7 @@ public class XlateHtmlSeleneseToJava {
             }
             else if (op.equals("SelectOptions") || op.equals("SelectedOptions")) {
                 String tmpArrayVarName = newTmpName();
-                beginning = declareAndInitArray(tmpArrayVarName, tokens[2]) + "\n" + beginning;
+                beginning = "\t\t" + declareAndInitArray(tmpArrayVarName, tokens[2]) + "\n" + beginning;
                 middle = tmpArrayVarName + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
             else if (op.equals("Table")) {
@@ -531,9 +537,18 @@ public class XlateHtmlSeleneseToJava {
 
 
     private static String declareAndInitArray(String name, String commaSeparatedValue) {
-        String DIVIDER = ">>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>><<";
+        String DIVIDER = ">>>>>>>><<<<<>>>>>>";
         commaSeparatedValue = commaSeparatedValue.replaceAll("([^\\\\]),", "$1" + DIVIDER);
+        boolean trailingEmptyValue = false;
+        String BOGUS_EXTRA_VALUE_SO_SPLIT_WILL_ALLOCATE_FINAL_ENTRY = "dummy";
+        if (commaSeparatedValue.lastIndexOf(DIVIDER) == commaSeparatedValue.length() - DIVIDER.length()) {
+            trailingEmptyValue = true;
+            commaSeparatedValue += BOGUS_EXTRA_VALUE_SO_SPLIT_WILL_ALLOCATE_FINAL_ENTRY;
+        }
         String vals[] = commaSeparatedValue.split(DIVIDER);
+        if (trailingEmptyValue) {
+            vals[vals.length - 1] = "";
+        }
         String declaration = "String[] " + name + " = {";
         for (int j = 0; j < vals.length; j++) {
             if (j > 0) {
