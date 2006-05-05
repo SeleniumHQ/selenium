@@ -78,6 +78,14 @@ public class SeleneseTestCase extends TestCase {
             assertEquals((String)s1, (String)s2);
         }
         else {
+            if (s1 instanceof String[] && s2 instanceof String[]) {
+                
+                String[] sa1 = (String[]) s1;
+                String[] sa2 = (String[]) s2;
+                if (sa1.length!=sa2.length) {
+                    throw new AssertionFailedError("Expected " + sa1 + " but saw " + sa2);
+                }
+            }
             Assert.assertEquals(s1, s2);
         }
     }
@@ -129,15 +137,49 @@ public class SeleneseTestCase extends TestCase {
         return s1.equals(s2);
     }
     
-    public static void verifyEquals(String[] s1, String[] s2) {
-        verifyEquals(new Integer(s1.length), new Integer(s2.length));
-        if (s1.length==s2.length) {
-            for (int j = 0; j < s1.length; j++) {
-                verifyEquals(s1[j], s2[j]);
-            }
+    public static void assertEquals(String[] s1, String[] s2) {
+        String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(s1, s2);
+        if (comparisonDumpIfNotEqual!=null) {
+            throw new AssertionFailedError(comparisonDumpIfNotEqual);
         }
     }
     
+    public static void verifyEquals(String[] s1, String[] s2) {
+        String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(s1, s2);
+        if (comparisonDumpIfNotEqual!=null) {
+            verificationErrors.append(comparisonDumpIfNotEqual);
+        }
+    }
+    
+    private static String verifyEqualsAndReturnComparisonDumpIfNot(String[] s1, String[] s2) {
+        boolean misMatch = false;
+        if (s1.length != s2.length) {
+            misMatch = true;
+        }
+        for (int j = 0; j < s1.length; j++) {
+            if (!s1[j].equals(s2[j])) {
+                misMatch = true;
+                break;
+            }
+        }
+        if (misMatch) {
+            return "Expected " + stringArrayToString(s1) + " but saw " + stringArrayToString(s2);
+        }
+        return null;
+    }
+    
+    private static String stringArrayToString(String[] sa) {
+        StringBuffer sb = new StringBuffer("{");
+        for (int j = 0; j < sa.length; j++) {
+            sb.append(" ")
+            .append("\"")
+            .append(sa[j])
+            .append("\"");            
+        }
+        sb.append(" }");
+        return sb.toString();
+    }
+
     public static void verifyNotEquals(String s1, String s2) {
         try {
             assertNotEquals(s1, s2);
