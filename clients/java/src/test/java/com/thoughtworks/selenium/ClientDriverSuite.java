@@ -69,7 +69,7 @@ public class ClientDriverSuite extends TestSuite{
             suite.addTestSuite(TestPrompt.class);
 //            suite.addTestSuite(TestConfirmations.class);
 //            suite.addTestSuite(TestAlerts.class);
-            suite.addTestSuite(TestWaitInPopupWindow.class);
+//            suite.addTestSuite(TestWaitInPopupWindow.class);
 //            suite.addTestSuite(TestWaitFor.class);
             suite.addTestSuite(TestWaitForNot.class);
             ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
