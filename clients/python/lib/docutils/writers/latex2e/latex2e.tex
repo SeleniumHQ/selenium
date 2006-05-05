@@ -1,0 +1,74 @@
+% latex include file for docutils latex writer
+% --------------------------------------------
+%
+% CVS: $Id: latex2e.tex 4163 2005-12-09 04:21:34Z goodger $
+%
+% This is included at the end of the latex header in the generated file,
+% to allow overwriting defaults, although this could get hairy.
+% Generated files should process well standalone too, LaTeX might give a
+% message about a missing file.
+
+% donot indent first line of paragraph.
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 2pt minus 1pt}
+
+% sloppy
+% ------
+% Less strict (opposite to default fussy) space size between words. Therefore
+% less hyphenation.
+\sloppy
+
+% fonts
+% -----
+% times for pdf generation, gives smaller pdf files.
+%
+% But in standard postscript fonts: courier and times/helvetica do not fit.
+% Maybe use pslatex.
+\usepackage{times}
+
+% pagestyle
+% ---------
+% headings might put section titles in the page heading, but not if
+% the table of contents is done by docutils.
+% If pagestyle{headings} is used, \geometry{headheight=10pt,headsep=1pt}
+% should be set too.
+%\pagestyle{plain}
+%
+% or use fancyhdr (untested !)
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+%\addtolength{\headheight}{\\baselineskip}
+%\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+%\renewcommand{\subsectionmark}[1]{\markright{#1}}
+%\fancyhf{}
+%\fancyhead[LE,RO]{\\bfseries\\textsf{\Large\\thepage}}
+%\fancyhead[LO]{\\textsf{\\footnotesize\\rightmark}}
+%\fancyhead[RE]{\\textsc{\\textsf{\\footnotesize\leftmark}}}
+%\\fancyfoot[LE,RO]{\\bfseries\\textsf{\scriptsize Docutils}}
+%\fancyfoot[RE,LO]{\\textsf{\scriptsize\\today}}
+
+% geometry 
+% --------
+% = papersizes and margins
+%\geometry{a4paper,twoside,tmargin=1.5cm,
+%          headheight=1cm,headsep=0.75cm}
+
+% Do section number display
+% -------------------------
+%\makeatletter
+%\def\@seccntformat#1{}
+%\makeatother
+% no numbers in toc
+%\renewcommand{\numberline}[1]{}
+
+
+% change maketitle
+% ----------------
+%\renewcommand{\maketitle}{
+%  \begin{titlepage}
+%    \begin{center}
+%    \textsf{TITLE \@title} \\
+%       Date: \today
+%    \end{center}
+%  \end{titlepage}
+%}
