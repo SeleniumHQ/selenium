@@ -1,6 +1,6 @@
 <project name="selenium" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
-    <property name="version" value="0.7-SNAPSHOT"/>
+    <property name="version" value="0.7.0-SNAPSHOT"/>
 
     <target name="all" depends="install-jar, dist"/>
 
@@ -181,7 +181,7 @@
 		    <sequential>
 		        <property name="@{file}.location" location="@{file}" />
 		        <mvn>
-		            <arg value="install:install-file" />
+		            <arg value="deploy:deploy-file" />
 		            <arg value="-Dfile=${@{file}.location}" />
 		            <arg value="-DgroupId=@{groupId}" />
 		            <arg value="-DartifactId=@{artifactId}" />
