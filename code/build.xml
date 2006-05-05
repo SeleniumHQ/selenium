@@ -32,6 +32,17 @@
                 <exclude name="jsunit/java/**"/>
                 <exclude name="jsunit/tests/**"/>
             </fileset>
+            
+        </copy>
+        <copy todir="${image.dir}" overwrite="true">
+            <fileset dir="javascript">
+                <include name="**/*.js" />
+                <include name="**/*.txt" />
+                <include name="**/*.html" />
+                <exclude name="jsunit/intellij/**"/>
+                <exclude name="jsunit/java/**"/>
+                <exclude name="jsunit/tests/**"/>
+            </fileset>
             <filterset>
                 <filter token="VERSION" value="${version}"/>
                 <filter token="REVISION" value="${svn-revision}"/>
