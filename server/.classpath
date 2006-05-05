@@ -8,7 +8,7 @@
 	<classpathentry sourcepath="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-sources.jar" kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
 	<classpathentry sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar" kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar"/>
 	<classpathentry sourcepath="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar" kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar"/>
+	<classpathentry sourcepath="/CDRIVE/dan/scratch/jetty-src/jetty-5.1.10/src" kind="var" path="M2_REPO/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-core"/>
 	<classpathentry kind="output" path="eclipse"/>
 </classpath>

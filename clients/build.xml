@@ -1,6 +1,6 @@
 <project name="selenium-rc-clients" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
-    <property name="version" value="0.7.2"/>
+    <property name="version" value="0.7.2-SNAPSHOT"/>
     <condition property="website.root" value="${ant.file.selenium-rc-clients}/../../website">
         <available file="${ant.file.selenium}/../../website"/>
     </condition>
@@ -79,54 +79,64 @@
         </zip>
     </target>
 
-	<target name="maven-tasks">
+	<target name="maven-tasks-base">
 		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
 			<classpath>
 				<pathelement location="maven-artifact-ant-2.0.2-dep.jar" />
 			</classpath>
 		</typedef>
+		<maven:remoteRepository id="openqa" url="http://maven.openqa.org" />
 	</target>
 	
-	<target name="custom-repo" depends="maven-tasks" if="custom.maven.repo">
+	<target name="custom-repo" depends="maven-tasks-base" if="custom.maven.repo">
 		<presetdef name="mavendeps">
 			<maven:dependencies>
 				<localRepository location="${custom.maven.repo}" />
+				<remoteRepository refid="openqa" />
 			</maven:dependencies>
 		</presetdef>
 	</target>
 	
-	<target name="default-repo" depends="maven-tasks" unless="custom.maven.repo">
+	<target name="default-repo" depends="maven-tasks-base" unless="custom.maven.repo">
 		<presetdef name="mavendeps">
-			<maven:dependencies/>
+			<maven:dependencies>
+			    <remoteRepository refid="openqa" />
+			</maven:dependencies>
 		</presetdef>
 	</target>
 
-    <target name="find-server" depends="custom-repo,default-repo" unless="${selenium-server.jar}">
-		<mavendeps pathId="selenium-server.classpath">
-			<!-- DGF Server bundles all of its dependencies, 
-			which are marked with the scope "provided", so this should
-			only give us selenium-server.jar -->
-			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server" version="${version}" scope="runtime"/>
-		</mavendeps>
-		<pathconvert targetos="windows" property="selenium-server.jar" refid="selenium-server.classpath" />
-		<condition property="build.failed">
-			<contains string="${selenium-server.jar}" substring=";" />
-		</condition>
-		<fail if="build.failed" message="Maven gave us more than one Selenium Server jar: ${selenium-server.jar}" />
+	<target name="maven-tasks" depends="custom-repo,default-repo">
+		<macrodef name="find-maven-jar">
+			<attribute name="groupId" />
+			<attribute name="artifactId" />
+			<attribute name="version" default="${version}" />
+			<sequential>
+				<mavendeps pathId="@{artifactId}.classpath">
+					<dependency groupId="@{groupId}" artifactId="@{artifactId}" version="@{version}" scope="runtime"/>
+				</mavendeps>
+				<pathconvert targetos="windows" property="@{artifactId}.string" refid="@{artifactId}.classpath" />
+				<condition property="build.failed">
+					<contains string="${@{artifactId}.string}" substring=";" />
+				</condition>
+				<fail if="build.failed" message="Maven gave us more than one @{artifactId} jar: ${@{artifactId}.string}" />
+				<condition property="@{artifactId}.jar" value="${@{artifactId}.string}">
+				    <available file="${@{artifactId}.string}" />
+				</condition>
+				<property name="@{artifactId}.jar" location="${@{artifactId}.string}/../../@{version}/@{artifactId}-@{version}.jar" />
+				<condition property="build.failed">
+				    <not><available file="${@{artifactId}.jar}" /></not>
+				</condition>
+				<fail if="build.failed">Maven gave us a bad path to Selenium Server: ${@{artifactId}.jar}</fail>
+			</sequential>
+		</macrodef>
+	</target>
+
+    <target name="find-server" depends="maven-tasks" unless="${selenium-server.jar}">
+		<find-maven-jar groupId="org.openqa.selenium.server" artifactId="selenium-server" />
 	</target>
 	
-	<target name="find-java-client" depends="custom-repo,default-repo">
-		<mavendeps pathId="selenium-java-client-driver.classpath">
-			<!-- DGF Server bundles all of its dependencies, 
-			which are marked with the scope "provided", so this should
-			only give us selenium-server.jar -->
-			<dependency groupId="org.openqa.selenium.client-drivers" artifactId="selenium-java-client-driver" version="${version}" scope="runtime"/>
-		</mavendeps>
-		<pathconvert targetos="windows" property="selenium-java-client-driver.jar" refid="selenium-java-client-driver.classpath" />
-		<condition property="build.failed">
-			<contains string="${selenium-java-client-driver.jar}" substring=";" />
-		</condition>
-		<fail if="build.failed" message="Maven gave us more than one Selenium Java Client Driver jar: ${selenium-java-client-driver.jar}" />
+	<target name="find-java-client" depends="maven-tasks">
+		<find-maven-jar groupId="org.openqa.selenium.client-drivers" artifactId="selenium-java-client-driver" />
 	</target>
 	
 	<target name="start-server" depends="find-server">
@@ -193,25 +203,29 @@
 	
 	<target name="dist-java" depends="dist-dirs, find-server, find-java-client">
 		<mkdir dir="dist-image/server" />
-		<mkdir dir="dist-image/server/source/src" />
+		<mkdir dir="dist-image/server/source" />
 		<mkdir dir="dist-image/server/doc" />
 		<copy file="${selenium-server.jar}" tofile="dist-image/server/selenium-server.jar" />
-		<unzip src="${selenium-server.jar}/../selenium-server-${version}-sources.jar" dest="dist-image/server/source/src" />
-		<copy file="${selenium-server.jar}/../selenium-server-${version}-dep.jar" tofile="dist-image/server/source/selenium-server-dep.jar" />
+		<copy todir="dist-image/server/source/src">
+		    <fileset dir="../server/src" />
+		</copy>
 		<unzip src="${selenium-server.jar}/../selenium-server-${version}-javadoc.jar" dest="dist-image/server/doc" />
-		<copy file="${ant.file.selenium-rc-clients}/../../server/easymode/eclipse.project" tofile="dist-image/server/source/.project" />
-		<copy file="${ant.file.selenium-rc-clients}/../../server/easymode/eclipse.classpath" tofile="dist-image/server/source/.classpath" />
 		
 		<mkdir dir="dist-image/java" />
-		<mkdir dir="dist-image/java/source/src" />
+		<mkdir dir="dist-image/java/source" />
 		<mkdir dir="dist-image/java/doc" />
 		<copy file="${selenium-java-client-driver.jar}" tofile="dist-image/java/selenium-java-client-driver.jar" />
 		<copy file="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-tests.jar"
 			tofile="dist-image/java/selenium-java-client-driver-tests.jar" />
-		<unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-sources.jar" dest="dist-image/java/source/src" />
+		<copy todir="dist-image/java/source">
+		    <fileset dir="java/src" />
+		</copy>
 		<unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-javadoc.jar" dest="dist-image/java/doc" />
-		<copy file="java/easymode/eclipse.project" tofile="dist-image/java/source/.project" />
-		<copy file="java/easymode/eclipse.classpath" tofile="dist-image/java/source/.classpath" />
+		<copy file="${selenium-server.jar}" tofile="dist-image/java/source/test/selenium-server.jar" />
+		<copy file="java/easymode/main.project" tofile="dist-image/java/source/main/.project" />
+		<copy file="java/easymode/main.classpath" tofile="dist-image/java/source/main/.classpath" />
+		<copy file="java/easymode/test.project" tofile="dist-image/java/source/test/.project" />
+		<copy file="java/easymode/test.classpath" tofile="dist-image/java/source/test/.classpath" />
 	</target>
 	
     <target name="test-ruby">

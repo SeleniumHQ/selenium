@@ -3,6 +3,10 @@
 	<target name="init">
 		<property environment="env" />
 		<property name="maven.home" value="${env.MAVEN_HOME}" /> <!-- override this if necessary -->
+		<condition property="build.failed">
+		    <not><available file="${maven.home}" /></not>
+		</condition>
+		<fail if="build.failed" message="Couldn't find MAVEN_HOME.  (Did you set the MAVEN_HOME environment variable correctly?)&#xa;Maven Home: ${maven.home}" />
 		<property name="mvn.overrideable.settings" value="" />
 		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
 		<presetdef name="mvn">
@@ -29,25 +33,9 @@
 		
 	</target>
 
-	<target name="maven" depends="init" description="Builds just the Maven stuff; worksaround Maven Bug MDEP-1">
-		<fail unless="core.javascript.path" message="You must specify a path to the core javascript in the core.javascript.path property&#0010;e.g. -Dcore.javascript.path=C:\svn\selenium\trunk\code\javascript" />
-		<!-- Bug in dependency-maven-plugin forces us to do this goofy stuff -->
+	<target name="maven" depends="init" description="Builds just the Maven stuff">
 		<mvn>
 			<arg value="install" />
-		</mvn>
-		<echo taskname="mvn" message="dir=javascript-core" />
-		<mvn dir="javascript-core">
-			<arg value="install" />
-			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
-		</mvn>
-		<echo taskname="mvn" message="dir=server" />
-		<mvn dir="server">
-			<arg value="install" />
-		</mvn>
-		<echo taskname="mvn" message="dir=clients/java" />
-		<mvn dir="clients/java">
-			<arg value="install" />
-			<arg value="-Dcore.javascript.path=${core.javascript.path}" />
 		</mvn>
 	</target>
 
@@ -63,19 +51,20 @@
 
 	<target name="maven-clean" depends="init">
 		<mvn>
-			<arg value="install" />
-		</mvn>
-		<echo taskname="mvn" message="dir=javascript-core" />
-		<mvn dir="javascript-core">
 			<arg value="clean" />
 		</mvn>
-		<echo taskname="mvn" message="dir=server" />
-		<mvn dir="server">
-			<arg value="clean" />
+	</target>
+	
+	<target name="maven-deploy" depends="init">
+		<mvn>
+			<arg value="deploy" />
 		</mvn>
-		<echo taskname="mvn" message="dir=clients/java" />
-		<mvn dir="clients/java">
-			<arg value="clean" />
+	</target>
+	
+	<target name="maven-deploy-skiptest" depends="init">
+		<mvn>
+			<arg value="deploy" />
+			<arg value="-Dmaven.test.skip=true" />
 		</mvn>
 	</target>
 

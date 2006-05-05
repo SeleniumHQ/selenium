@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
 	  	<groupId>org.openqa.selenium</groupId>
-		<version>0.7.2</version>
+		<version>0.7.2-SNAPSHOT</version>
 		<artifactId>selenium</artifactId>
 	</parent>
     <groupId>org.openqa.selenium.server</groupId>
@@ -44,23 +44,6 @@
                     </execution>
                 </executions>
             </plugin>
-		    <plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>assemble</id>
-						<phase>package</phase>
-						<goals>
-							<goal>assembly</goal>
-			        	</goals>
-			    	</execution>
-				</executions>
-				<configuration>
-					<descriptors>
-			  			<descriptor>src/main/assembly/dep.xml</descriptor>
-			  		</descriptors>
-				</configuration>
-			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -107,7 +90,7 @@
     	<dependency>
     		<groupId>org.openqa.selenium.core</groupId>
 		    <artifactId>selenium-core</artifactId>
-		    <version>${project.version}</version>
+		    <version>0.7.0-SNAPSHOT</version>
 		    <scope>provided</scope>
     	</dependency>
         <dependency>

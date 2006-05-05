@@ -2,7 +2,6 @@
 	
 	<property name="dir.java.tests.based.on.core.javascript" location="${maven.src.path}/../../../../../test/java/com/thoughtworks/selenium/corebased" />
 	<property name="dir.java.tests.based.on.core.javascript.later.modified.by.hand" location="${dir.java.tests.based.on.core.javascript}/../corebasedhandmodified" />
-	<property name="xlater.src.dir" location="${dir.java.tests.based.on.core.javascript}/../../../../../../main/java/com/thoughtworks/testgenerator" />
 	
 	
 	<target name="clean-sources">
@@ -10,14 +9,10 @@
 		<delete file="${maven.src.path}/DefaultSelenium.java" />
         <delete dir="${dir.java.tests.based.on.core.javascript}" />
 	</target>
-    <target name="generate-sources" depends="extract-xml" unless="skip.generation.true">
-		<fail unless="maven.src.path" message="maven.src.path was not set.  This ant script must be run from within Maven!" />
-		<fail message="maven.src.path could not be found: ${maven.src.path}">
-			<condition>
-				<not><available file="${maven.src.path}" /></not>
-			</condition>
-		</fail>
-		<fail unless="core.javascript.path" message="You must specify a path to the core javascript in the core.javascript.path property" />
+	
+	<target name="generate-sources" depends="generate-client, generate-tests" />
+	
+    <target name="generate-tests" depends="extract-jar" unless="skip.generation.true">
 		<condition property="build.failed">
 			<not><available file="${core.javascript.path}" /></not>
 		</condition>
@@ -42,7 +37,9 @@
                 <globmapper from="*.java.txt" to="*.java"/>
             </mapper>
         </copy>
-        
+	</target>
+	
+	<target name="generate-client" depends="extract-jar" unless="skip.generation.true">
 		<xslt in="${iedoc.xml}" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="interface" />
 		</xslt>
@@ -50,8 +47,15 @@
 			<param name="mode" expression="implementation" />
 		</xslt>
 	</target>
-	<target name="extract-xml" depends="maybe-skip-generation" unless="skip.generation.true">
+	
+	<target name="extract-jar" depends="maybe-skip-generation" unless="skip.generation.true">
 		<fail unless="output.path" message="output.path was not set.  This ant script must be run from within Maven!" />
+		<fail unless="maven.src.path" message="maven.src.path was not set.  This ant script must be run from within Maven!" />
+		<fail message="maven.src.path could not be found: ${maven.src.path}">
+			<condition>
+				<not><available file="${maven.src.path}" /></not>
+			</condition>
+		</fail>
 		<mkdir dir="${output.path}" />
 		<echo message="${depend.maven.path}" />
 		<echo message="${depend.maven.path}" file="${output.path}/path.txt" />
@@ -73,9 +77,23 @@
 		<echo message="depend.classpath.output = ${depend.classpath.output}" />
 		<whichresource resource="/core/iedoc.xml" property="iedoc.url" classpath="${depend.classpath.output}"/>
 		<fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${depend.classpath.output}" />
-		<!--<echo message="iedoc.url = ${iedoc.url}" />-->
-		<get src="${iedoc.url}" dest="${output.path}/iedoc.xml" />
-		<property name="iedoc.xml" location="${output.path}/iedoc.xml" />
+		<echo message="${iedoc.url}" file="${output.path}/url.txt" />
+		<loadfile property="selenium-server.jar.file" srcfile="${output.path}/url.txt">
+			<filterchain>
+				<tokenfilter>
+					<replaceregex pattern="^jar:file:/(.*)!.*" replace="\1" />
+				</tokenfilter>
+				<tokenfilter>
+					<replaceregex pattern="%20" replace=" " flags="g" />
+				</tokenfilter>
+			</filterchain>
+		</loadfile>
+		<property name="selenium-server.jar" location="${selenium-server.jar.file}" />
+		<echo message="selenium-server.jar = ${selenium-server.jar}" />
+		<property name="core.javascript.path" location="${output.path}/selenium-server" />
+		<mkdir dir="${core.javascript.path}" />
+		<unzip src="${selenium-server.jar}" dest="${core.javascript.path}" />
+		<property name="iedoc.xml" location="${core.javascript.path}/core/iedoc.xml" />
 	</target>
 	
 	<target name="maybe-skip-generation" if="skip.generation">

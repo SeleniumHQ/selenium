@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
 	  	<groupId>org.openqa.selenium</groupId>
-		<version>0.7.2</version>
+		<version>0.7.2-SNAPSHOT</version>
 		<artifactId>selenium</artifactId>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -84,7 +84,6 @@
 							<tasks>
 								<ant antfile="generate-sources.xml">
 									<property name="depend.maven.path" location="${project.testClasspathElements}" />
-									<property name="core.javascript.path" location="${core.javascript.path}" />
 									<property name="output.path" location="${project.build.directory}" />
 									<property name="maven.src.path" location="src/main/java/com/thoughtworks/selenium" />
 									<property name="skip.generation" value="${skip.generation}" />

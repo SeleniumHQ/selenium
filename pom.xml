@@ -1,13 +1,26 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openqa.selenium</groupId>
-  <version>0.7.2</version>
+  <version>0.7.2-SNAPSHOT</version>
   <artifactId>selenium</artifactId>
   <name>Selenium</name>
   <packaging>pom</packaging>
-  <!--<modules>
-    <module>javascript-core</module>
+  <modules>
     <module>server</module>
     <module>clients/java</module>
-  </modules>-->
+  </modules>
+  <repositories>
+    <repository>
+      <id>openqa</id>
+      <name>OpenQA Maven Repository</name>
+      <url>http://maven.openqa.org</url>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <repository>
+      <id>openqa</id>
+      <name>OpenQA Maven Repository</name>
+      <url>scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs</url>
+    </repository>
+  </distributionManagement>
 </project>
