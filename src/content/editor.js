@@ -20,6 +20,7 @@ function Editor(window, isSidebar) {
 	window.editor = this;
 	var editor = this;
 	this.isSidebar = isSidebar;
+	this.recordFrameTitle = false;
 	this.document = document;
 	this.recordingEnabled = true;
 	this.setOptions(optionsManager.load());
@@ -70,7 +71,7 @@ Editor.controller = {
 		}
 	},
 	isCommandEnabled : function(cmd){
-		Editor.log.debug("isCommandEnabled");
+		//Editor.log.debug("isCommandEnabled");
 		switch (cmd) {
 		case "cmd_close":
 		case "cmd_open":
@@ -266,7 +267,8 @@ Editor.prototype.saveNewTestCase = function() {
 }
 
 Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
-	if (this.recordingEnabled && isRootDocument) {
+	this.log.debug("loadRecorderFor: " + contentWindow);
+	if (this.recordingEnabled && (isRootDocument || this.recordFrameTitle)) {
 		this.recordTitle(contentWindow);
 	}
 	Recorder.register(this, contentWindow);
@@ -282,10 +284,12 @@ Editor.prototype.toggleRecordingEnabled = function(enabled) {
 }
 
 Editor.prototype.onUnloadDocument = function(doc) {
-	if (this.unloadTimeoutID != null) {
-		clearTimeout(this.unloadTimeoutID);
+	if (doc.defaultView == this.lastWindow) {
+		if (this.unloadTimeoutID != null) {
+			clearTimeout(this.unloadTimeoutID);
+		}
+		this.unloadTimeoutID = setTimeout("Editor.appendAND_WAIT()", 100);
 	}
-	this.unloadTimeoutID = setTimeout("Editor.appendAND_WAIT()", 100);
 	
 	/*
 	if (this.lastWindow) {
@@ -330,9 +334,9 @@ Editor.prototype.recordOpen = function(window) {
 	}
 }
 
-Editor.prototype.clear = function() {
+Editor.prototype.clear = function(force) {
 	if (this.testCase != null) {
-		if (confirm("Really clear the test?")) {
+		if (force || confirm("Really clear the test?")) {
 			this.testCase.clear();
 			this.view.refresh();
 			this.log.debug("cleared");
@@ -404,8 +408,7 @@ Editor.prototype.playback = function() {
 	this.seleniumWindow = contentWindow;
 	
 	// disable recording
-	document.getElementById("record-button").checked = false;
-	this.toggleRecordingEnabled(false);
+	this.setRecordingEnabled(false);
 
 	contentWindow.location.href = 'chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
 		'&userExtensionsURL=' + this.options.userExtensionsURL +
@@ -485,4 +488,17 @@ Editor.prototype.toggleView = function(view) {
 Editor.prototype.showAlert = function(message) {
 	this.errorMessage = message;
 	//	window.alert(message);
+}
+
+Editor.prototype.setRecordingEnabled = function(enabled) {
+	document.getElementById("record-button").checked = enabled;
+	this.toggleRecordingEnabled(enabled);
+}
+
+/*
+ * Load default options.
+ * Used for self-testing Selenium IDE.
+ */
+Editor.prototype.loadDefaultOptions = function() {
+	this.setOptions(OPTIONS);
 }

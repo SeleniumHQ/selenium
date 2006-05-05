@@ -16,7 +16,7 @@
 
 function Recorder(window) {
 	this.log = Recorder.log;
-	this.locatorFinder = new LocatorFinder(window);
+	this.locatorBuilders = new LocatorBuilders(window);
 	this.window = window;
 	this.observers = [];
 	this.attach();
@@ -24,71 +24,103 @@ function Recorder(window) {
 
 Recorder.log = new Log("Recorder");
 
+Recorder.prototype.reattachWindowMethods = function() {
+	//this.log.debug("reattach");
+	if (!this.windowMethods) {
+		this.originalOpen = this.window.open;
+	}
+	this.windowMethods = {};
+	['alert', 'confirm', 'prompt', 'open'].forEach(function(method) {
+			this.windowMethods[method] = this.window[method];
+		}, this);
+	var self = this;
+	this.window.alert = function(alert) {
+		self.windowMethods['alert'].call(self.window, alert);
+		setTimeout(Recorder.record, 100, self, 'assertAlert', alert, null);
+	}
+	this.window.confirm = function(message) {
+		var result = self.windowMethods['confirm'].call(self.window, message);
+		if (!result) {
+			self.record('chooseCancelOnNextConfirmation');
+		}
+		setTimeout(Recorder.record, 100, self, 'assertConfirmation', message, null);
+		return result;
+	}
+	this.window.prompt = function(message) {
+		var result = self.windowMethods['prompt'].call(self.window, message);
+		self.record('answerOnNextPrompt', result);
+		setTimeout(Recorder.record, 100, self, 'assertPrompt', message, null);
+		return result;
+	}
+	this.window.open = function(url, windowName, windowFeatures, replaceFlag) {
+		if (self.openCalled) {
+			// stop the recursion called by modifyWindowToRecordPopUpDialogs
+			return self.originalOpen.call(self.window, url, windowName, windowFeatures, replaceFlag);
+		} else {
+			self.openCalled = true;
+			var result = self.windowMethods['open'].call(self.window, url, windowName, windowFeatures, replaceFlag);
+			self.openCalled = false;
+			setTimeout(Recorder.record, 100, self, 'waitForPopUp', windowName, null);
+			return result;
+		}
+	}
+}
+
 Recorder.prototype.attach = function() {
 	this.log.debug("attaching");
+	this.eventListeners = {};
+	this.reattachWindowMethods();
 	var self = this;
-	this.forEachDocument(function(doc) {
-			this.eventListeners = {};
-			for (eventName in Recorder.eventHandlers) {
-				// create new function so that the variables have new scope.
-				function register() {
-					var handlers = Recorder.eventHandlers[eventName];
-					this.log.debug('eventName=' + eventName + ' / handlers.length=' + handlers.length);
-					var listener = function(event) {
-						self.log.debug('listener: event=' + event);
-						var recording = false;
-						for (var i = 0; i < self.observers.length; i++) {
-							if (self.observers[i].recordingEnabled) recording = true;
-						}
-						for (var i = 0; i < handlers.length; i++) {
-							if (recording || handlers[i].alwaysRecord) {
-								handlers[i].call(self, event);
-							}
-						}
-					}
-					doc.addEventListener(eventName, listener, false);
-					this.eventListeners[eventName] = listener;
+	for (eventName in Recorder.eventHandlers) {
+		// create new function so that the variables have new scope.
+		function register() {
+			var handlers = Recorder.eventHandlers[eventName];
+			this.log.debug('eventName=' + eventName + ' / handlers.length=' + handlers.length);
+			var listener = function(event) {
+				self.log.debug('listener: event.type=' + event.type);
+				//self.log.debug('title=' + self.window.document.title);
+				var recording = false;
+				for (var i = 0; i < self.observers.length; i++) {
+					if (self.observers[i].recordingEnabled) recording = true;
 				}
-				register.call(this);
+				for (var i = 0; i < handlers.length; i++) {
+					if (recording || handlers[i].alwaysRecord) {
+						handlers[i].call(self, event);
+					}
+				}
 			}
-		});
+			this.window.document.addEventListener(eventName, listener, false);
+			this.eventListeners[eventName] = listener;
+		}
+		register.call(this);
+	}
 }
 
 Recorder.prototype.detach = function() {
 	this.log.debug("detaching");
-	this.forEachDocument(function(doc) {
-			for (eventName in this.eventListeners) {
-				doc.removeEventListener(eventName, this.eventListeners[eventName], false);
-			}
-			delete this.eventListeners;
-		});
+	for (eventName in this.eventListeners) {
+		this.window.document.removeEventListener(eventName, this.eventListeners[eventName], false);
+	}
+	delete this.eventListeners;
+	for (method in this.windowMethods) {
+		this.window[method] = this.windowMethods[method];
+	}
 }
 
-Recorder.prototype.getDocuments = function(frame) {
-	var documents = new Array();
-	var frames = frame.frames;
-	documents.push(frame.document);
-	for (var i = 0; i < frames.length; i++) {
-		documents = documents.concat(this.getDocuments(frames[i]));
-	}
-	return documents;
-}
-
-Recorder.prototype.forEachDocument = function(handler) {
-	var documents = this.getDocuments(this.window);
-	for (var i = 0; i < documents.length; i++) {
-		handler.call(this, documents[i]);
-	}
+Recorder.record = function(recorder, command, target, value) {
+	recorder.record(command, target, value);
 }
 
 Recorder.prototype.record = function(command, target, value) {
 	for (var i = 0; i < this.observers.length; i++) {
-		this.observers[i].addCommand(command, target, value, this.window);
+		if (this.observers[i].recordingEnabled) {
+			this.observers[i].addCommand(command, target, value, this.window);
+		}
 	}
 }
 
 Recorder.prototype.findLocator = function(element) {
-	return this.locatorFinder.find(element);
+	return this.locatorBuilders.build(element);
 }
 
 Recorder.prototype.deregister = function(observer) {
@@ -129,7 +161,7 @@ Recorder.register = function(observer, window) {
 		window._Selenium_IDE_Recorder = recorder;
 	}
 	recorder.observers.push(observer);
-	this.log.debug("observers.length=" + recorder.observers.length);
+	this.log.debug("register: observers.length=" + recorder.observers.length);
 	return recorder;
 }
 
@@ -137,6 +169,9 @@ Recorder.deregister = function(observer, window) {
 	var recorder = window._Selenium_IDE_Recorder;
 	if (recorder) {
 		recorder.deregister(observer);
+		this.log.debug("deregister: observers.length=" + recorder.observers.length);
+	} else {
+		this.log.warn("deregister: recorder not found");
 	}
 }
 
@@ -145,29 +180,39 @@ Recorder.get = function(window) {
 }
 
 Recorder.registerAll = function(observer) {
-	this.forEachTabInAllWindows(function(window) { Recorder.register(observer, window) });
+	Recorder.forEachWindow(function(window) {
+			Recorder.registerForWindow(window, observer);
+		});
 }
 
 Recorder.deregisterAll = function(observer) {
-	this.forEachTabInAllWindows(function(window) { Recorder.deregister(observer, window) });
+	Recorder.forEachWindow(function(window) {
+			Recorder.deregisterForWindow(window, observer);
+		});
 }
 
-Recorder.registerForWindow = function(w, observer) {
-	this.forEachTab(w, function(window) { Recorder.register(observer, window) });
+Recorder.registerForWindow = function(window, observer) {
+	Recorder.forEachTab(window, function(tab) {
+			Recorder.forEachFrame(tab, function(frame) {
+					Recorder.register(observer, frame);
+				})});
 }
 
-Recorder.deregisterForWindow = function(w, observer) {
-	this.forEachTab(w, function(window) { Recorder.deregister(observer, window) });
+Recorder.deregisterForWindow = function(window, observer) {
+	Recorder.forEachTab(window, function(tab) {
+			Recorder.forEachFrame(tab, function(frame) {
+					Recorder.deregister(observer, frame);
+				})});
 }
 
-Recorder.forEachTabInAllWindows = function(handler) {
+Recorder.forEachWindow = function(handler) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var e = wm.getEnumerator("navigator:browser");
 	var window;
 	while (e.hasMoreElements()) {
 		window = e.getNext();
 		this.log.debug("window=" + window);
-		this.forEachTab(window, handler);
+		handler(window);
 	}
 }
 
@@ -176,6 +221,14 @@ Recorder.forEachTab = function(window, handler) {
 	for (var i = 0; i < browsers.length; i++) {
 		this.log.debug("browser=" + browsers[i]);
 		handler(browsers[i].contentWindow);
+	}
+}
+
+Recorder.forEachFrame = function(window, handler) {
+	handler(window);
+	var frames = window.frames;
+	for (var i = 0; i < frames.length; i++) {
+		Recorder.forEachFrame(frames[i], handler);
 	}
 }
 

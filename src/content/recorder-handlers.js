@@ -58,9 +58,6 @@ Recorder.prototype.findClickableElement = function(e) {
 	}
 }
 
-Recorder.addHandler('clickedElement', 'mousedown', function(event) {
+Recorder.addHandler('rememberClickedElement', 'mousedown', function(event) {
 		this.clickedElement = event.target;
 	}, true);
-//				mousedown: function(event) {
-//					self.listener.clickedElement = event.target;
-//				}

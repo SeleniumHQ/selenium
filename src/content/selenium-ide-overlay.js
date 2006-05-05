@@ -68,7 +68,8 @@ SeleniumIDE.Overlay.onContentLoaded = function(event) {
 			isRootDocument = true;
 		}
 	}
-	SeleniumIDE.Loader.reloadRecorder(window.getBrowser().contentWindow, isRootDocument);
+	//SeleniumIDE.Loader.reloadRecorder(window.getBrowser().contentWindow, isRootDocument);
+	SeleniumIDE.Loader.reloadRecorder(event.target.defaultView, isRootDocument);
 	
 	var contextMenu = window.document.getElementById("contentAreaContextMenu");
 	if (contextMenu) {
@@ -83,9 +84,15 @@ SeleniumIDE.Overlay.init = function() {
 		appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.Overlay.onContentLoaded, false);
 	}
 	window.addEventListener("beforeunload", 
-							function() {
+							function(event) {
 								SeleniumIDE.Loader.getEditors().forEach(function(editor) {
-										editor.onUnloadDocument(window.document);
+										var doc;
+										if (event.target.nodeType == 9) { // DOCUMENT_NODE
+											doc = event.target;
+										} else {
+											doc = event.target.ownerDocument;
+										}
+										editor.onUnloadDocument(doc);
 									});
 							}, false);
 }

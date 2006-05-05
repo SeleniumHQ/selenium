@@ -14,10 +14,69 @@
  * limitations under the License.
  */
 
+function LocatorBuilders(window) {
+	this.window = window;
+	this.log = new Log("LocatorBuilders");
+}
+
+LocatorBuilders.prototype.pageBot = function() {
+	var pageBot = this.window._locator_pageBot;
+	if (pageBot == null) {
+		pageBot = PageBot.createForWindow(this.window);
+		this.window._locator_pageBot = pageBot;
+	}
+	return pageBot;
+}
+
+LocatorBuilders.prototype.buildWith = function(name, e) {
+	return LocatorBuilders.finderMap[name].call(this, e);
+}
+
+LocatorBuilders.prototype.build = function(e) {
+	var i = 0;
+	var xpathLevel = 0;
+	var maxLevel = 10;
+	var locator;
+	this.log.debug("getLocator for element " + e);
+	
+	for (var i = 0; i < LocatorBuilders.finderNames.length; i++) {
+		var finderName = LocatorBuilders.finderNames[i];
+		this.log.debug("trying " + finderName);
+		locator = this.buildWith(finderName, e);
+		if (locator) {
+			locator = new String(locator);
+			this.log.debug("locator=" + locator);
+			// test the locator
+			try {
+				if (e == this.pageBot().findElement(locator)) {
+					return locator;
+				}
+			} catch (error) {
+				this.log.warn("findElement error: " + error + ", node=" + e + ", locator=" + locator);
+			}
+		}
+	}
+	return "LOCATOR_DETECTION_FAILED";
+}
+
+/*
+ * Class methods
+ */
+
+LocatorBuilders.finderNames = [];
+LocatorBuilders.finderMap = {};
+
+LocatorBuilders.add = function(name, finder) {
+	this.finderNames.push(name);
+	this.finderMap[name] = finder;
+}
+
+
+
 /*
  * Utility function: Encode XPath attribute value.
  */
-LocatorFinder.prototype.attributeValue = function(value) {
+LocatorBuilders.prototype.attributeValue = function(value) {
 	if (value.indexOf("'") < 0) {
 		return "'" + value + "'";
 	} else if (value.indexOf('"') < 0) {
@@ -49,8 +108,11 @@ LocatorFinder.prototype.attributeValue = function(value) {
 	}
 }
 
+/*
+ * ===== builders =====
+ */
 
-LocatorFinder.addFinder('link', function(e) {
+LocatorBuilders.add('link', function(e) {
 		if (e.nodeName == 'A') {
 			var text = e.textContent;
 			if (!text.match(/^\s*$/)) {
@@ -60,24 +122,24 @@ LocatorFinder.addFinder('link', function(e) {
 		return null;
 	});
 
-LocatorFinder.addFinder('id', function(e) {
+LocatorBuilders.add('id', function(e) {
 		if (e.id) {
 			return e.id;
 		}
 		return null;
 	});
 
-LocatorFinder.addFinder('name', function(e) {
+LocatorBuilders.add('name', function(e) {
 		if (e.name) {
 			return e.name;
 		}
 		return null;
 	});
 
-LocatorFinder.addFinder('linkXPath', function(e) {
+LocatorBuilders.add('linkXPath', function(e) {
 		if (e.nodeName == 'A') {
 			var nodeList = e.childNodes;
-			for (i = 0; i < nodeList.length; i++) {
+			for (var i = 0; i < nodeList.length; i++) {
 				var node = nodeList[i];
 				if (node.nodeName == 'IMG' && node.alt != '') {
 					return "//a[img/@alt=" + this.attributeValue(node.alt) + "]";
@@ -91,7 +153,7 @@ LocatorFinder.addFinder('linkXPath', function(e) {
 		return null;
 	});
 
-LocatorFinder.addFinder('attributesXPath', function(e) {
+LocatorBuilders.add('attributesXPath', function(e) {
 		const PREFERRED_ATTRIBUTES = ['id','name','value','type','action','onclick'];
 		
 		function attributesXPath(name, attNames, attributes) {
@@ -132,7 +194,7 @@ LocatorFinder.addFinder('attributesXPath', function(e) {
 		return null;
 	});
 
-LocatorFinder.addFinder('hrefXPath', function(e) {
+LocatorBuilders.add('hrefXPath', function(e) {
 		if (e.attributes && e.hasAttribute("href")) {
 			href = e.getAttribute("href");
 			if (href.search(/^http?:\/\//) >= 0) {
@@ -145,7 +207,7 @@ LocatorFinder.addFinder('hrefXPath', function(e) {
 		return null;
 	});
 
-LocatorFinder.addFinder('positionXPath', function(e) {
+LocatorBuilders.add('positionXPath', function(e) {
 		this.log.debug("positionXPath: e=" + e);
 		var path = '';
 		var current = e;

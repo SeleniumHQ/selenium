@@ -144,7 +144,7 @@ function TreeView(editor, document, tree) {
 		var asserts = new Array();
 		var verifies = new Array();
 		
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-api.js', scope);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', scope);
 		if (editor.options.userExtensionsURL) {
 			try {
 				subScriptLoader.loadSubScript(editor.options.userExtensionsURL, scope);
@@ -226,7 +226,6 @@ TreeView.prototype = {
 		this.treebox.ensureRowIsVisible(index);
 	},
 	rowInserted: function(index) {
-		this.log.debug("rowInserted: " + index);
 		this.treebox.rowCountChanged(index, 1);
 		//this.treebox.scrollToRow(this.testCase.commands.length - 1);
 		this.rowCount++;

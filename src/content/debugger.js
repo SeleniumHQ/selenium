@@ -36,10 +36,10 @@ function Debugger(editor) {
 		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 	    .getService(Components.interfaces.mozIJSSubScriptLoader);
 		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-logging.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-api.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-commandhandlers.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-executionloop.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-browserbot.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-commandhandlers.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js', this.runner);
 		if (this.editor.options.userExtensionsURL) {
 			try {
 				subScriptLoader.loadSubScript(this.editor.options.userExtensionsURL, this.runner);

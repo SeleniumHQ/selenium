@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>TestClick</title>
+	</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">TestClick</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>chrome://selenium-ide/content/tests/functional/startRecording.html</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>chrome://selenium-ide/content/tests/functional/aut/search.html</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>hello</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>num</td>
+	<td>label=20</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Search']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>chrome://selenium-ide/content/tests/functional/verifyCommands.html#TestBasic.html</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>result</td>
+	<td>regexp:.+</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>result</td>
+	<td>Success</td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

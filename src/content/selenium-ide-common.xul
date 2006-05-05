@@ -25,13 +25,14 @@ limitations under the License.
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/htmlutils.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/selenium-browserbot.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-browserdetect.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/htmlutils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-logging.js"/>
 <!--  <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>-->
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorFinder-finders.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/checkBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>

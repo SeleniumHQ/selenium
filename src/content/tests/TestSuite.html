@@ -4,13 +4,13 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Selenium IDE Test Suite</title>
     <link rel="stylesheet" type="text/css" href="/jsunit/css/jsUnitStyle.css">
-		<script type="text/javascript" src="chrome://selenium-ide/content/selenium/jsunit/app/jsUnitCore.js"></script>
-		<script type="text/javascript" src="chrome://selenium-ide/content/selenium/jsunit/app/jsUnitTestSuite.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitTestSuite.js"></script>
     <script language="Javascript" type="text/javascript">
        function suite() {
            var testSuite = new top.jsUnitTestSuite();
            testSuite.addTestPage("chrome://selenium-ide/content/tests/editor-tests.html");
-           testSuite.addTestPage("chrome://selenium-ide/content/tests/locatorFinder-tests.html");
+           testSuite.addTestPage("chrome://selenium-ide/content/tests/locatorBuilders-tests.html");
            testSuite.addTestPage("chrome://selenium-ide/content/tests/html-format-tests.html");
            testSuite.addTestPage("chrome://selenium-ide/content/tests/recorder-tests.html");
            return testSuite;
