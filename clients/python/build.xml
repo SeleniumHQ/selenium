@@ -3,28 +3,27 @@
     	<ant dir=".." target="extract-xml"/>
     	<xslt in="../iedoc.xml" out="selenium.py" style="iedoc2python.xml"/>
     </target>
-    <target name="pydoc" depends="generate-sources" unless="use.epydoc">
+    <target name="pydoc" depends="generate-sources" if="use.pydoc">
     	<property name="python.executable" value="python" />
     	<exec executable="${python.executable}" failonerror="true">
 			<arg value="mypydoc.py"/>
 			<arg value="-w" />
 			<arg value="selenium" />
 		</exec>
-		<mkdir dir="html"/>
-		<move file="selenium.html" todir="html" />
+		<mkdir dir="doc"/>
+		<move file="selenium.html" todir="doc" />
     </target>
-    <target name="epydoc" depends="generate-sources" if="use.epydoc">
+    <target name="doc" depends="generate-sources, pydoc" unless="use.pydoc">
     	<property name="python.executable" value="python" />
-    	<condition property="epydoc.script" value="c:\python24\Scripts\epydoc.py">
-			<os family="windows" />
-		</condition>
-		<property name="epydoc.script" value="epydoc" />
+		<property name="epydoc.script" value="lib\myepydoc.py" />
 		<exec executable="${python.executable}" failonerror="true">
 			<arg file="${epydoc.script}"/>
 			<arg value="selenium.py" />
+			<arg value="-v" />
+			<arg value="-o" />
+			<arg file="doc" />
 		</exec>
     </target>
-    <target name="doc" depends="pydoc,epydoc"/>
     <target name="all" depends="generate-sources, test, doc"/>
     <target name="test" depends="generate-sources">
     	<ant dir=".." target="start-server" />
@@ -44,7 +43,7 @@
     	<delete>
     		<fileset dir="." includes="selenium.py" />
     	</delete>
-    	<mkdir dir="html" />
-    	<delete dir="html" />
+    	<mkdir dir="doc" />
+    	<delete dir="doc" />
     </target>
 </project>

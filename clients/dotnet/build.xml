@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <project name="selenium-dotnet" default="test">
 
-	<property name="version" value="0.7.2" />
 	<property name="iis_vdir.VDirName" value="Selenium-Driver" />
 	<property name="iis_vdir.applicationMapping" value=".sel" />
 
@@ -42,9 +41,6 @@
 	
 	<target name="integration-tests" depends="compile, run-integration-tests" 
 		description="Run Unit Tests" />
-
-	<target name="dist" depends="compile, create-selenium-zips" 
-		description="Create distributable files" />
 		
 	<target name="clean">
 		<!-- These mkdirs here to stop warnings -->
@@ -127,7 +123,7 @@
 	</target>
 
 
-	<target name="create-selenium-zips" depends="doc">
+	<target name="dist" depends="compile, doc" description="Create distributable files">
 		<mkdir dir="build/dist" />
 		<copy todir="build/dist">
 			<fileset dir="build/Core">
@@ -140,8 +136,39 @@
 			</fileset>
 		</copy>
 
-		<mkdir dir="build/dist/docs" />
-		<copy file="build/ndoc/Documentation.chm" tofile="build/dist/docs/Selenium.chm" />
+		<mkdir dir="build/dist/doc" />
+		<mkdir dir="build/dist/doc/html" />
+		<copy file="build/ndoc/Documentation.chm" tofile="build/dist/doc/Selenium.chm" />
+		<copy todir="build/dist/doc/html">
+			<fileset dir="build/ndoc">
+				<include name="*" />
+				<exclude name="Documentation.*" />
+			</fileset>
+		</copy>
+		<echo file="build/dist/doc/index.html"><![CDATA[
+<html><head>
+
+    <noscript>
+    <meta http-equiv="refresh" content="1; url=html/index.html">
+    </noscript>
+
+    <script>
+    <!--
+
+      if (window.location.replace)
+        window.location.replace('html/index.html')
+      else
+        window.location.href = "html/index.html"
+    // -->
+    </script>
+</head>
+<body>
+Redirecting to <a href="html/index.html">html/index.html</a>...
+</body>
+</html>
+]]>
+</echo>
+
 		
 		<mkdir dir="build/dist/source" />
 		<copy todir="build/dist/source">
@@ -164,13 +191,8 @@
 			</fileset>
 		</copy>
 		
-		<mkdir dir="dist" />
-		<property name="dotnet.release" value="selenium-dotnet-client-driver-${version}" />
-		<zip destfile="dist/${dotnet.release}.zip">
-			<zipfileset dir="build/dist" prefix="${dotnet.release}">
-				<include name="**/*" />
-			</zipfileset>
-		</zip>
+		<!-- generate the actual zips in ../build.xml -->
+		
 	</target>
 	
 

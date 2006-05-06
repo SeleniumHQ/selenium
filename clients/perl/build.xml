@@ -29,19 +29,28 @@
     	<xslt in="../iedoc.xml" out="lib/WWW/Selenium.pm" style="iedoc2perl.xml"/>
     </target>
     <target name="doc" depends="init, generate-sources">
-    	<mkdir dir="html"/>
-    	<property name="outfile.www.selenium" location="html/WWW-Selenium.html" />
+    	<mkdir dir="doc"/>
+    	<property name="outfile.www.selenium" location="doc/WWW-Selenium.html" />
     	<perl>
 			<arg value="mypod2html.pl"/>
 			<arg value="--infile=lib/WWW/Selenium.pm" />
 			<arg value="--outfile=${outfile.www.selenium}" />
 		</perl>
-		<property name="outfile.test.www.selenium" location="html/Test-WWW-Selenium.html" />
+		<property name="outfile.test.www.selenium" location="doc/Test-WWW-Selenium.html" />
     	<perl>
 			<arg value="mypod2html.pl"/>
 			<arg value="--infile=lib/Test/WWW/Selenium.pm" />
 			<arg value="--outfile=${outfile.test.www.selenium}" />
 		</perl>
+		<echo file="doc/index.html"><![CDATA[
+<html><head><title>Selenium RC PerlDoc</title></head>
+<body>
+<h1>Selenium RC PerlDoc</h1>
+<p><a href="WWW-Selenium.html">WWW::Selenium</a></p>
+<p><a href="Test-WWW-Selenium.html">Test::WWW::Selenium</a></p>
+</body></html>
+]]>
+</echo>
     </target>
     <target name="all" depends="generate-sources, test, doc"/>
     <target name="make" depends="init, generate-sources">
@@ -64,8 +73,8 @@
     <target name="clean">
     	<mkdir dir="lib/WWW" />
     	<delete dir="lib/WWW" />
-    	<mkdir dir="html" />
-    	<delete dir="html" />
+    	<mkdir dir="doc" />
+    	<delete dir="doc" />
     	<mkdir dir="blib" />
     	<delete dir="blib" />
     </target>

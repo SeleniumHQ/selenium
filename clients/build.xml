@@ -9,6 +9,7 @@
 
     <target name="clean" depends="clean-dotnet, clean-python, clean-ruby, clean-perl">
         <delete dir="dist-image"/>
+        <delete dir="dist-doc"/>
         <delete dir="dist"/>
         <delete>
         	<fileset dir="." includes="iedoc.xml" />
@@ -24,8 +25,26 @@
 
     <target name="dist-dirs">
         <mkdir dir="dist-image"/>
+        <mkdir dir="dist-doc"/>
         <mkdir dir="dist"/>
     </target>
+
+	<target name="dist-doc" depends="dist-java, dist-dotnet, dist-ruby, dist-python, dist-perl">
+	    <macrodef name="copy-doc">
+	    	<attribute name="dir" />
+	    	<sequential>
+			    <copy todir="dist-doc/@{dir}">
+			        <fileset dir="dist-image/@{dir}/doc" />
+			    </copy>
+			</sequential>
+		</macrodef>
+		<copy-doc dir="server" />
+		<copy-doc dir="java" />
+		<copy-doc dir="dotnet" />
+		<copy-doc dir="ruby" />
+		<copy-doc dir="python" />
+		<copy-doc dir="perl" />
+	</target>
 
     <target name="dist-ruby" depends="dist-dirs">
         <copy todir="dist-image/ruby">
@@ -51,7 +70,7 @@
             	<include name="lib/**"/>
             	<include name="t/**"/>
                 <exclude name="mypod2html.pl" />
-                <include name="html/**" />
+                <include name="doc/**" />
             </fileset>
         </copy>
 
@@ -66,11 +85,8 @@
             <fileset dir="python">
                 <include name="*.py"/>
                 <exclude name="mypydoc.py"/>
+                <include name="doc/**" />
             </fileset>
-        </copy>
-        
-        <copy todir="dist-image/python/doc">
-            <fileset dir="python/html"/>
         </copy>
 
         <property name="python.release" value="selenium-python-client-driver-${version}"/>
@@ -192,9 +208,12 @@
         
     <target name="dist-dotnet" depends="dist-dirs">
 		<ant dir="dotnet" target="dist"/>
-		<copy todir="dist">
-			<fileset dir="dotnet/dist" />
-		</copy>
+		<property name="dotnet.release" value="selenium-dotnet-client-driver-${version}" />
+		<zip destfile="dist/${dotnet.release}.zip">
+			<zipfileset dir="dotnet/build/dist" prefix="${dotnet.release}">
+				<include name="**/*" />
+			</zipfileset>
+		</zip>
 		<mkdir dir="dist-image/dotnet" />
 		<copy todir="dist-image/dotnet">
 			<fileset dir="dotnet/build/dist" />
