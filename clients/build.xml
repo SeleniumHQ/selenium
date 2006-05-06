@@ -16,7 +16,7 @@
         </delete>
     </target>
 
-    <target name="dist" depends="dist-java, dist-dotnet, dist-ruby, dist-python, dist-perl">
+    <target name="dist" depends="dist-java, dist-dotnet, dist-ruby, dist-python, dist-perl, dist-doc">
     	<property name="src.release" value="selenium-remote-control-${version}"/>
     	<zip zipfile="dist/${src.release}.zip">
     		<zipfileset dir="dist-image" prefix="${src.release}" />
