@@ -38,7 +38,7 @@ my $sel = Test::WWW::Selenium->new( host => "localhost",
 $sel->open_ok("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
 $sel->assert_text_present_ok("suggest");
 #
-# disabled pending DOJO combobox trouble issue resolution
+# disabled pending DOJO combobox trouble issue resolution (http://jira.openqa.org/browse/SRC-55)
 #
 #$id = "_idJsp0:_idJsp3";
 #$sel->type_ok($id, "foo");

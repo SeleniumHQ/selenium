@@ -53,7 +53,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 			selenium.AssertTextPresent("suggest");
 
             /*
- 			disabled pending DOJO combobox trouble issue resolution:
+              disabled pending DOJO combobox trouble issue resolution: (http://jira.openqa.org/browse/SRC-55)
 
 			String elementID = "_idJsp0:_idJsp3";
 			selenium.Type(elementID, "foo");

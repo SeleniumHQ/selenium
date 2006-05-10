@@ -37,7 +37,7 @@ class TestAjaxJSF(unittest.TestCase):
         selenium.assert_text_present("suggest")
         #
         #
-        # disabled pending DOJO combobox trouble issue resolution
+        # disabled pending DOJO combobox trouble issue resolution (http://jira.openqa.org/browse/SRC-55)
         #
         #selenium.type("_idJsp0:_idJsp3", "foo")
         #selenium.key_down("_idJsp0:_idJsp3", 120)
