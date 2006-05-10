@@ -25,27 +25,27 @@
                 <url>tutorial.html</url>
             </item>
             <item>
-                <name>Java</name>
+                <name>- Java</name>
                 <url>java.html</url>
             </item>
             <item>
-                <name>.NET</name>
+                <name>- .NET</name>
                 <url>dotnet.html</url>
             </item>
             <item>
-                <name>Perl</name>
+                <name>- Perl</name>
                 <url>perl.html</url>
             </item>
             <item>
-                <name>Python</name>
+                <name>- Python</name>
                 <url>python.html</url>
             </item>
             <item>
-                <name>Ruby</name>
+                <name>- Ruby</name>
                 <url>ruby.html</url>
             </item>
             <item>
-            	<name>Selenese</name>
+            	<name>- Selenese</name>
             	<url>selenese.html</url>
             </item>
             <item>
