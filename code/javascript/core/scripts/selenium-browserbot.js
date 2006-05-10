@@ -142,11 +142,15 @@ BrowserBot.prototype.openLocation = function(target) {
     this.currentPage = null;
     this.newPageLoaded = false;
 
-    this.setIFrameLocation(this.getFrame(), target);
+    this.setOpenLocation(target);
 };
 
 BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
     iframe.src = location;
+};
+
+BrowserBot.prototype.setOpenLocation = function(location) {
+    this.getCurrentWindow().location.href = location;
 };
 
 BrowserBot.prototype.getCurrentPage = function() {
@@ -293,6 +297,13 @@ KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
     // so we set it to blank first.
     iframe.src = "about:blank";
     iframe.src = location;
+};
+
+KonquerorBrowserBot.prototype.setOpenLocation = function(location) {
+    // Window doesn't fire onload event when setting src to the current value,
+    // so we set it to blank first.
+    this.getCurrentWindow().location.href = "about:blank";
+    this.getCurrentWindow().location.href = location;
 };
 
 function SafariBrowserBot(frame) {
