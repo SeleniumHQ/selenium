@@ -33,6 +33,10 @@
                 <url>dotnet.html</url>
             </item>
             <item>
+                <name>Perl</name>
+                <url>perl.html</url>
+            </item>
+            <item>
                 <name>Python</name>
                 <url>python.html</url>
             </item>
@@ -45,12 +49,12 @@
             	<url>selenese.html</url>
             </item>
             <item>
-                <name>Building From Source</name>
-                <url>building.html</url>
-            </item>
-            <item>
             	<name>Server Command Line Options</name>
             	<url>options.html</url>
+            </item>
+            <item>
+                <name>Developer's Guide</name>
+                <url>building.html</url>
             </item>
             <item>
                 <name>Wiki</name>
