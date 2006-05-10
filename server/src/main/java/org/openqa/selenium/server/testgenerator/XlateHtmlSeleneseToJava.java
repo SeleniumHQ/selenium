@@ -290,6 +290,11 @@ public class XlateHtmlSeleneseToJava {
             XlateSeleneseStatement(testStatementSB, lines, j, false);
             
             String testStatement = testStatementSB.toString();
+            if (testStatement.matches("^/\\*.*\\*/$")) {
+                // oops -- the translator returns a comment and when it cannot figure out how to translate something.
+                // a comment in this context will not do.  Arbitrarily add "false" so that the output will at least compile:
+                testStatement += " false";
+            }
             testStatement = testStatement.replaceAll("\t//.*", "");
             testStatement = testStatement.replaceFirst("^\\s*", "");
             if (testStatement.startsWith("assertTrue")) {
@@ -484,7 +489,7 @@ public class XlateHtmlSeleneseToJava {
             else {
                 String t = "unrecognized assert op " + op;
                 if (dontThrowOnTranslationDifficulties) {
-                    return "// " + t;
+                    return "/* " + t + " */";
                 }
                 throw new RuntimeException(t);
             }
