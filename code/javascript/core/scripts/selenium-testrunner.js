@@ -147,7 +147,7 @@ function getIframeDocument(iframe)
 
 function onloadTestSuite() {
     removeLoadListener(getSuiteFrame(), onloadTestSuite);
-
+    
     // Add an onclick function to each link in all suite tables
     var allTables = getIframeDocument(getSuiteFrame()).getElementsByTagName("table");
     for (var tableNum = 0; tableNum < allTables.length; tableNum++)
@@ -159,18 +159,20 @@ function onloadTestSuite() {
     }
 
     suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
+    if (suiteTable!=null) {
 
-    if (isAutomatedRun()) {
-        startTestSuite();
-    } else if (getQueryParameter("autoURL")) {
+        if (isAutomatedRun()) {
+	    startTestSuite();
+        } else if (getQueryParameter("autoURL")) {
 
-        addLoadListener(getApplicationFrame(), startSingleTest);
+            addLoadListener(getApplicationFrame(), startSingleTest);
 
-        getApplicationFrame().src = getQueryParameter("autoURL");
+	    getApplicationFrame().src = getQueryParameter("autoURL");
 
-    } else {
-        testLink = suiteTable.rows[currentRowInSuite+1].cells[0].getElementsByTagName("a")[0];
-        getTestFrame().src = testLink.href;
+	} else {
+            testLink = suiteTable.rows[currentRowInSuite+1].cells[0].getElementsByTagName("a")[0];
+            getTestFrame().src = testLink.href;
+        }
     }
 }
 
