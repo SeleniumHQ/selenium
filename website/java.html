@@ -16,7 +16,11 @@
 
 <p>The DefaultSelenium object is full of handy methods that handle your Selenium Commands.  If one of them has an error (or if an "assert" command fails) the method will throw an exception with a handy error message, which you can wrap up in a try/catch block if you like.</p>
 
-<p>While we recommend that you use the Java Client Driver together with <a href="http://www.junit.org/">JUnit</a>, the de facto standard for Java automated tests, JUnit is not required; you can use the Java Client Driver with any program whatsoever to automate tasks in your browser.</p>
+<p>While we recommend that you use the Java Client Driver together with a testing framework like <a href="http://www.junit.org/">JUnit</a> or <a href="http://testng.org/">TestNG</a>, a testing framework is not required; you can use the Java Client Driver with any program whatsoever to automate tasks in your browser.</p>
+
+<p>If you <i>do</i> run your tests in JUnit you may run into a common issue with organizing the tests: if you start your browser during setUp and then stop your browser during tearDown, you'll very likely be stopping and starting your browser dozens or even hundreds of times throughout the test run.  Furthermore, there's no easy way to configure JUnit to run the same test multiple times with different configurations (aka "data-driven" testing).  TestNG makes these tasks very easy, so you may prefer to use TestNG for that purpose.</p>
+
+<p>With that said, JUnit is the the de facto standard for Java automated tests.  If you want to use JUnit anyway, you'll probably want to look into using a <a href="http://www.cs.wm.edu/~noonan/junit/doc/faq/faq.htm#organize_3">global setUp and tearDown</a>.  Note that the JUnit team recommends that you not use TestSetup, because JUnit is a <i>unit</i> testing tool (for verifying your code in isolation) rather than an integration or functional testing tool (for verifying your code's compatibility with particular browsers).  Think about using TestNG instead.</p>
 
 <p>Examples: <a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/java/src/test/java/com/thoughtworks/selenium/ApacheMyFacesSuggestTest.java">ApacheMyFacesSuggestTest.java</a>, <a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/java/src/test/java/com/thoughtworks/selenium/RealDealIntegrationTest.java">RealDealIntegrationTest.java</a>.</p>
 
