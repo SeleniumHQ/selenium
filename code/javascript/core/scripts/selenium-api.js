@@ -494,6 +494,39 @@ Selenium.prototype.doClose = function() {
     this.page().close();
 };
 
+Selenium.prototype.isAlertPresent = function() {
+   /**
+   * Has an alert occurred?
+   * 
+   * <p>
+   * This function never throws an exception
+   * </p>
+   * @return boolean true if there is an alert
+   */
+    return this.browserbot.hasAlerts();
+};
+Selenium.prototype.isPromptPresent = function() {
+   /**
+   * Has a prompt occurred?
+   * 
+   * <p>
+   * This function never throws an exception
+   * </p>
+   * @return boolean true if there is a pending prompt
+   */
+    return this.browserbot.hasPrompts();
+};
+Selenium.prototype.isConfirmationPresent = function() {
+   /**
+   * Has confirm() been called?
+   * 
+   * <p>
+   * This function never throws an exception
+   * </p>
+   * @return boolean true if there is a pending confirmation
+   */
+    return this.browserbot.hasConfirmations();
+};
 Selenium.prototype.getAlert = function() {
 	/**
    * Retrieves the message of a JavaScript alert generated during the previous action, or fail if there were no alerts.

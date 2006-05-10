@@ -109,6 +109,20 @@ function CommandHandlerFactory() {
             }
         };
     };
+        
+    // Given a boolean accessor function isBlah(),
+    // return a "predicate" equivalient to isBlah() that
+    // returns an appropriate PredicateResult value.
+    this.createPredicateFromBooleanAccessor = function(accessor) {
+        return function(value) {
+            var accessorResult = accessor.call(this);
+            if (accessorResult) {
+                return new PredicateResult(true, "true");
+            } else {
+                return new PredicateResult(false, "false");
+            }
+        };
+    };
     
     // Given an accessor fuction getBlah([target])  (target is optional)
     // return a predicate equivalent to isBlah([target,] value) that
@@ -143,11 +157,13 @@ function CommandHandlerFactory() {
     
     // Register an assertion, a verification, a negative assertion,
     // and a negative verification based on the specified accessor.
-    this.registerAssertionsBasedOnAccessor = function(accessor, baseName) {
+    this.registerAssertionsBasedOnAccessor = function(accessor, baseName, predicate) {
         if (accessor.length > 1) {
             return;
         }
-        var predicate = self.createPredicateFromAccessor(accessor);
+        if (predicate==null) {
+            predicate = self.createPredicateFromAccessor(accessor);
+        }
         var assertion = self.createAssertionFromPredicate(predicate);
         // Register an assert with the "assert" prefix, and halt on failure.
         self.registerAssert("assert" + baseName, assertion, true);
@@ -156,11 +172,24 @@ function CommandHandlerFactory() {
         
         var invertedPredicate = self.invertPredicate(predicate);
         var negativeAssertion = self.createAssertionFromPredicate(invertedPredicate);
-        // Register an assertNot with the "assertNot" prefix, and halt on failure.
-        self.registerAssert("assertNot"+baseName, negativeAssertion, true);
-        // Register a verifyNot with the "verifyNot" prefix, and do not halt on failure.
-        self.registerAssert("verifyNot"+baseName, negativeAssertion, false);
+        
+        var result = /^(.*)Present$/.exec(baseName);
+        if (result==null) {
+            // Register an assertNot with the "assertNot" prefix, and halt on failure.
+            self.registerAssert("assertNot"+baseName, negativeAssertion, true);
+            // Register a verifyNot with the "verifyNot" prefix, and do not halt on failure.
+            self.registerAssert("verifyNot"+baseName, negativeAssertion, false);
+        }
+        else {
+            var invertedBaseName = result[1] + "NotPresent";
+        
+            // Register an assertNot ending w/ "NotPresent", and halt on failure.
+            self.registerAssert("assert"+invertedBaseName, negativeAssertion, true);
+            // Register an assertNot ending w/ "NotPresent", and do not halt on failure.
+            self.registerAssert("verify"+invertedBaseName, negativeAssertion, false);
+        }
     };
+    
     
     // Convert an isBlahBlah(target, value) function into a waitForBlahBlah(target, value) function.
     this.createWaitForActionFromPredicate = function(predicate) {
@@ -182,11 +211,13 @@ function CommandHandlerFactory() {
     };
     
     // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
-    this.registerWaitForCommandsBasedOnAccessor = function(accessor, baseName) {
+    this.registerWaitForCommandsBasedOnAccessor = function(accessor, baseName, predicate) {
         if (accessor.length > 1) {
             return;
         }
-        var predicate = self.createPredicateFromAccessor(accessor);
+        if (predicate==null) {
+            predicate = self.createPredicateFromAccessor(accessor);
+        }
         var waitForAction = self.createWaitForActionFromPredicate(predicate);
     	self.registerAction("waitFor"+baseName, waitForAction, false, accessor.dontCheckAlertsAndConfirms);
         var invertedPredicate = self.invertPredicate(predicate);
@@ -226,6 +257,16 @@ function CommandHandlerFactory() {
                 self.registerStoreCommandBasedOnAccessor(accessor, baseName);
                 self.registerWaitForCommandsBasedOnAccessor(accessor, baseName);
             }
+            var match = /^is([A-Z].+Present)$/.exec(functionName);
+            if (match != null) {
+                var accessor = commandObject[functionName];
+                var baseName = match[1];
+                var predicate = self.createPredicateFromBooleanAccessor(accessor);
+                self.registerAccessor(functionName, accessor);
+                self.registerAssertionsBasedOnAccessor(accessor, baseName, predicate);
+                self.registerStoreCommandBasedOnAccessor(accessor, baseName);
+                self.registerWaitForCommandsBasedOnAccessor(accessor, baseName, predicate);
+            }
         }
     };
     
@@ -260,9 +301,9 @@ function ActionHandler(action, wait, dontCheckAlerts) {
 }
 ActionHandler.prototype = new CommandHandler;
 ActionHandler.prototype.execute = function(seleniumApi, command) {
-	if (this.checkAlerts) {
-		this.checkForAlerts(seleniumApi);
-	}
+    if (this.checkAlerts && (null==/(Alert|Confirmation)(Not)?Present/.exec(command.command))) {
+	this.checkForAlerts(seleniumApi);
+    }
     var processState = this.executor.call(seleniumApi, command.target, command.value);
     // If the handler didn't return a wait flag, check to see if the
     // handler was registered with the wait flag.
