@@ -109,7 +109,7 @@ WScript.Echo("<top>" + extractInitialComment("Selenium", foo) + "</top>");
 
 for (var i in Selenium.prototype) {
 	//if (count > 1) break;
-	if (i.search(/^(do|get|assert)/)) continue;
+	if (i.search(/^(do|get|assert|is)/)) continue;
 	WScript.Echo("<function name=\"" + stripDoPrefix(i) + "\">");
 	var o = Selenium.prototype[i];
 	if (o.constructor == Function) {

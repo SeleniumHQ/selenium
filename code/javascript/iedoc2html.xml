@@ -1,57 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xslt [
+  <!--Used to control code intenting -->
+  <!ENTITY nbsp "&#xa0;">
+]>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:strip-space elements="*"/><xsl:output method="html"/>
 
+<!-- TOP LEVEL -->
 <xsl:template match="/">
 	<xsl:call-template name="header" />
 	<xsl:apply-templates select="//top" />
-	<xsl:call-template name="actionsHeader" />
+	<h2>Selenium Actions</h2>
 	<dl>
-	<xsl:apply-templates select="//function[not(return) and not(starts-with(@name, 'assert'))]" mode="action"/>
-	<p>
-		<b>
-			Note that the documentation below for the remaining actions has been automatically generated
-			and hence indescriminately includes both useful and some less useful commands
-			(e.g. 'waitForNotAlert' is not likely to be useful).
-		</b>
-	</p>
-	<xsl:apply-templates select="//function[return]" mode="storeWaitForWaitForNot"/>
+		<xsl:apply-templates select="//function[not(return) and not(starts-with(@name, 'assert'))]" mode="action"/>
 	</dl>
-	<xsl:call-template name="assertionsHeader" />
+	<h2>Selenium Accessors</h2>
 	<dl>
-	<xsl:apply-templates select="//function[starts-with(@name, 'assert')]" mode="action"/>
-	<xsl:apply-templates select="//function[return]" mode="check"/>
+		<xsl:apply-templates select="//function[starts-with(@name, 'assert')]" mode="action"/>
+		<xsl:apply-templates select="//function[return]" mode="accessor"/>
 	</dl>
 	<xsl:call-template name="footer" />
-</xsl:template>
-
-<xsl:template name="assertionsHeader">
-	<h2>Selenium Assertions</h2>
-	<p>Assertions are used to verify the state of the application. They can be used to check the value of a form field, the presense of some text, or the URL of the current page.</p>
-	<p>All Selenium assertions can be used in 2 modes, &quot;assert&quot; and &quot;verify&quot;. These behave identically, except that when an &quot;assert&quot; fails, the test is aborted. When a &quot;verify&quot; fails, the test will continue execution.  This allows a single &quot;assert&quot; to ensure that the application is on the correct page, followed by a bunch of &quot;verify&quot; assertions to test form field values, labels, etc.</p>
-	
-	<p>A growing number of assertions have a negative version.  In most cases, except where indicated, if the positive assertion is of the form <strong>assertXYZ</strong>, then the negative cases will be of the form <strong>assertNotXYZ</strong>.</p>
-</xsl:template>
-
-<xsl:template name="actionsHeader">
-	<h2>Selenium Actions</h2>
-	<p>Actions tell Selenium to do something in the application. They generally represent something a user would do.</p>
-	<p>Many <strong>Actions</strong> can be called with the &quot;AndWait&quot; suffix.
-	This suffix tells Selenium that the action will cause the browser to make a call to the server,
-	and that Selenium should wait for a new page to load.</p>
-	<p>Many Actions have a &quot;waitFor&quot; prefix.
-	These commands wait for some condition to become true (can be useful for testing Ajax applications).
-	They will succeed immediately if the condition is already true.
-	However, they will fail and halt the test if the condition does not become true within the current timeout setting
-	(see the <strong>setTimeout</strong> action below).
-	</p>
 </xsl:template>
 
 <xsl:template name="header">
 	<h1>Selenium Reference</h1>
 	<h2>Concepts</h2>
-	<p>A <strong>command</strong> is what tells Selenium what to do. Selenium commands come in two 'flavors', <strong>Actions</strong> and <strong>Assertions</strong>.
+	<p>A <strong>command</strong> is what tells Selenium what to do. Selenium commands come in three 'flavors': <strong>Actions</strong>, <strong>Accessors</strong> and <strong>Assertions</strong>.
 	Each command call is one line in the test table of the form:</p>
 	<blockquote>
 	<table border="1" class="table">
@@ -69,9 +44,24 @@
 	</table>
 	</blockquote>
 	<p><strong>Actions</strong> are commands that generally manipulate the state of the application. They do things like &quot;click this link&quot; and &quot;select that option&quot;. If an Action fails, or has an error, the execution of the current test is stopped.</p>
-	<p><strong>Assertions</strong> verify the state of the application conforms to what is expected. Examples include &quot;make sure the page title is X&quot; and &quot;verify that this checkbox is checked&quot;. It is possible to tell Selenium to stop the test when an Assertion fails, or to simply record the failure and continue.</p>
+	<p>Many Actions can be called with the &quot;AndWait&quot; suffix, e.g. "clickAndWait".
+	This suffix tells Selenium that the action will cause the browser to make a call to the server,
+	and that Selenium should wait for a new page to load.</p>
+	
+	<p><strong>Accessors</strong> examine the state of the application and store the results in variables, e.g. "storeTitle".  They are also used to automatically generate Assertions.</p>
+	<p><strong>Assertions</strong> are like Accessors, but they verify that the state of the application conforms to what is expected. Examples include &quot;make sure the page title is X&quot; and &quot;verify that this checkbox is checked&quot;.</p>
+	
+	<p>All Selenium Assertions can be used in 3 modes: &quot;assert&quot;, &quot;verify&quot;, and "waitFor". For example, you can "assertText", "verifyText" and "waitForText".  When an &quot;assert&quot; fails, the test is aborted. When a &quot;verify&quot; fails, the test will continue execution, logging the failure.  This allows a single &quot;assert&quot; to ensure that the application is on the correct page, followed by a bunch of &quot;verify&quot; assertions to test form field values, labels, etc.</p>
+	
+	<p>&quot;waitFor&quot; commands wait for some condition to become true (which can be useful for testing Ajax applications).
+	They will succeed immediately if the condition is already true.
+	However, they will fail and halt the test if the condition does not become true within the current timeout setting
+	(see the <strong>setTimeout</strong> action below).
+	</p>
 	<p><strong>Element Locators</strong> tell Selenium which HTML element a command refers to. Many commands require an Element Locator as the &quot;target&quot; attribute. Examples of Element Locators include &quot;elementId&quot; and &quot;document.forms[0].element&quot;. These are described more clearly in the next section.</p>
 	<p><strong>Patterns</strong> are used for various reasons, e.g. to specify the expected value of an input field, or identify a select option.  Selenium supports various types of pattern, including regular-expressions, all of which are described in more detail below.</p>
+	
+	
 </xsl:template>
 
 <xsl:template name="footer">
@@ -201,7 +191,7 @@
 	<blockquote>
 	<p>All <em>getFoo</em> methods on the Selenium prototype automatically result in the availability
 	of storeFoo, assertFoo, assertNotFoo, verifyFoo, verifyNotFoo, waitForFoo, and waitForNotFoo commands.</p>
-	<p>Example, add a getTextLength() method that makes the following commands available:
+	<p>Example, if you add a getTextLength() method, the following commands will automatically be available:
 	storeTextLength, assertTextLength, assertNotTextLength, verifyTextLength, verifyNotTextLength, waitForTextLength, and waitForNotTextLength commands.</p>
 	<pre class="literal-block">
 	Selenium.prototype.getTextLength = function(locator, text) {
@@ -268,99 +258,98 @@
 	</div>
 </xsl:template>
 
+<!-- Ignore the top comment in iedoc.xml; just process all of its children -->
 <xsl:template match="top">
 	<xsl:apply-templates />
 </xsl:template>
 
-<xsl:template match="function" mode="check">
+<!-- Print out store* and all of its related assertions -->
+<xsl:template match="function" mode="accessor">
 	<dt><strong>
-		<xsl:call-template name="search-and-replace">
-			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
-			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
-			<xsl:with-param name="replace-string">assert</xsl:with-param>
-		</xsl:call-template>
-		
-		(
-			<xsl:apply-templates select="param" mode="declaration-check"/>
-			pattern
-		)
-		/
-			<xsl:call-template name="search-and-replace">
-			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
-			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
-			<xsl:with-param name="replace-string">assertNot</xsl:with-param>
-		</xsl:call-template>
-		
-		(
-			<xsl:apply-templates select="param" mode="declaration-check"/>
-			pattern
-		)
-	</strong></dt>
-	<dd>
-		Asserts that the specified text pattern does (or does not) match the value returned by
-		<xsl:value-of select="@name" />
-		which:
-		<xsl:apply-templates select="comment" />
-		<p>Arguments:</p>
-		<ul>
-			<xsl:apply-templates select="param" mode="comment" />
-			<li>pattern - a <a href="#patterns">pattern</a> to match with the retrieved result</li>
-		</ul>
-	</dd>
-	<br/>
-</xsl:template>
-
-<xsl:template match="function" mode="storeWaitForWaitForNot">
-	<dt><strong>
-		<xsl:call-template name="search-and-replace">
-			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
-			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
-			<xsl:with-param name="replace-string">store</xsl:with-param>
+		<xsl:call-template name="accessor-rename">
+			<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+			<xsl:with-param name="prefix">store</xsl:with-param>
 		</xsl:call-template>
 		
 		(
 			<xsl:apply-templates select="param" mode="declaration-check"/>
 			variableName
 		)
-		/
-			<xsl:call-template name="search-and-replace">
-			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
-			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
-			<xsl:with-param name="replace-string">waitFor</xsl:with-param>
-		</xsl:call-template>
 		
-		(
-			<xsl:apply-templates select="param" mode="declaration-check"/>
-			pattern
-		)
-		/
-			<xsl:call-template name="search-and-replace">
-			<xsl:with-param name="input">&amp;nbsp;<xsl:value-of select="@name" /></xsl:with-param>
-			<xsl:with-param name="search-string">&amp;nbsp;get</xsl:with-param>
-			<xsl:with-param name="replace-string">waitForNot</xsl:with-param>
-		</xsl:call-template>
-		
-		(
-			<xsl:apply-templates select="param" mode="declaration-check"/>
-			pattern
-		)
 	</strong></dt>
 	<dd>
-		Store into the specified variable /
-		wait until the specified text pattern matches /
-		wait until the specified text pattern does not match
-		the value returned by
-		<xsl:value-of select="@name" />
-		which:
 		<xsl:apply-templates select="comment" />
 		<p>Arguments:</p>
 		<ul>
 			<xsl:apply-templates select="param" mode="comment" />
-			<li>pattern or variableName - 
-				a <a href="#patterns">pattern</a> to match with the retrieved result,
-				or the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+			<li>variableName - 
+				the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
 			</li>
 		</ul>
+		<p>Related Assertions, automatically generated:</p>
+		<ul>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">assert</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-check"/>
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">assertNot</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-check"/>
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">verify</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-check"/>
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">verifyNot</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-check"/>
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">waitFor</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-check"/>
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">waitForNot</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-check"/>
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+		</ul>
+			
 	</dd>
 	<br/>
 </xsl:template>
@@ -382,6 +371,7 @@
 	<br/>
 </xsl:template>
 
+<!-- In action mode, don't print out a comma after the last argument -->
 <xsl:template match="param" mode="declaration-action">
 	<xsl:value-of select="@name" />
 	<xsl:if test="position() != last()">
@@ -389,6 +379,7 @@
 	</xsl:if>
 </xsl:template>
 
+<!-- In accessor mode, always print out a comma, because we'll always append a final argument like variableName or pattern -->
 <xsl:template match="param" mode="declaration-check">
 	<xsl:value-of select="@name" />,
 </xsl:template>
@@ -401,11 +392,83 @@
 	</li>
 </xsl:template>
 
+<!-- When we encounter anything else, just copy it right on over! -->
 <xsl:template match="node()|@*" >
    <xsl:copy>
         <xsl:apply-templates select="node()|@*" />
    </xsl:copy>
 </xsl:template> 
+
+<!-- Take an accessor named getFoo or isFoo and replace it with a new prefix, e.g. storeFoo -->
+<xsl:template name="accessor-rename">
+	<xsl:param name="accessor"/>
+    <xsl:param name="prefix"/>
+    <xsl:variable name="spaced">&nbsp;<xsl:value-of select="$accessor" /></xsl:variable>
+    <xsl:choose>
+    	<!-- If the accessor ends with "Present" and the prefix ends with "Not", then a simple replacement
+    	would get something ungrammatical, like assertNotTextPresent.  Instead, negate the prefix (assertNot becomes assert)
+    	and negate the accessor (TextPresent becomes TextNotPresent), so the command generated is
+    	assertTextNotPresent, which is much prettier -->
+    	<xsl:when test="contains(concat($prefix,'&nbsp;'),'Not&nbsp;') and contains(concat($accessor,'&nbsp;'),'Present&nbsp;')">
+    		<!-- negate the prefix -->
+    		<xsl:variable name="negatedPrefix">
+				<xsl:call-template name="search-and-replace">
+					<xsl:with-param name="input"><xsl:value-of select='$prefix' />&nbsp;</xsl:with-param>
+					<xsl:with-param name="search-string">Not&nbsp;</xsl:with-param>
+					<xsl:with-param name="replace-string"></xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<!-- negate the accessor -->
+			<xsl:variable name="negatedAccessor">
+				<xsl:call-template name="search-and-replace">
+					<xsl:with-param name="input"><xsl:value-of select='$accessor' />&nbsp;</xsl:with-param>
+					<xsl:with-param name="search-string">Present&nbsp;</xsl:with-param>
+					<xsl:with-param name="replace-string">NotPresent</xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<!-- replace "get" with the negated prefix -->
+			<xsl:variable name="getReplaced">
+				<xsl:call-template name="search-and-replace">
+					<xsl:with-param name="input">&nbsp;<xsl:value-of select='$negatedAccessor' /></xsl:with-param>
+					<xsl:with-param name="search-string">&nbsp;get</xsl:with-param>
+					<xsl:with-param name="replace-string"><xsl:value-of select='$negatedPrefix' /></xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<!-- replace "is" with the negated prefix -->
+			<xsl:variable name="isReplaced">
+				<xsl:call-template name="search-and-replace">
+					<xsl:with-param name="input"><xsl:value-of select='$getReplaced' /></xsl:with-param>
+					<xsl:with-param name="search-string">&nbsp;is</xsl:with-param>
+					<xsl:with-param name="replace-string"><xsl:value-of select='$negatedPrefix' /></xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<!-- and print out the output -->
+			<xsl:value-of select="$isReplaced"/>
+    	</xsl:when>
+    	<xsl:otherwise>
+    		<!-- replace "get" with the prefix -->
+		    <xsl:variable name="getReplaced">
+				<xsl:call-template name="search-and-replace">
+					<xsl:with-param name="input">&nbsp;<xsl:value-of select='$accessor' /></xsl:with-param>
+					<xsl:with-param name="search-string">&nbsp;get</xsl:with-param>
+					<xsl:with-param name="replace-string"><xsl:value-of select='$prefix' /></xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<!-- replace "is" with the prefix -->
+			<xsl:variable name="isReplaced">
+				<xsl:call-template name="search-and-replace">
+					<xsl:with-param name="input"><xsl:value-of select='$getReplaced' /></xsl:with-param>
+					<xsl:with-param name="search-string">&nbsp;is</xsl:with-param>
+					<xsl:with-param name="replace-string"><xsl:value-of select='$prefix' /></xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<!-- and print out the output -->
+			<xsl:value-of select="$isReplaced"/>
+		</xsl:otherwise>
+	</xsl:choose>
+	
+</xsl:template>
+
 
 <xsl:template name="search-and-replace">
      <xsl:param name="input"/>

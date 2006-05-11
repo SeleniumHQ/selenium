@@ -614,24 +614,25 @@ Selenium.prototype.getAbsoluteLocation = function() {
     return this.page().location;
 };
 
-Selenium.prototype.assertLocation = function(expectedLocation) {
+Selenium.prototype.isLocation = function(expectedLocation) {
 	/**
    * Verify the location of the current page ends with the expected location.
    * If an URL querystring is provided, this is checked as well.
    * @param expectedLocation the location to match
+   * @return boolean true if the location matches, false otherwise
    */
     var docLocation = this.page().location;
     var searchPos = expectedLocation.lastIndexOf('?');
 
     if (searchPos == -1) {
-        Assert.matches('*' + expectedLocation, docLocation.pathname);
+    	return PatternMatcher.matches('*' + expectedLocation, docLocation.pathname)
     }
     else {
         var expectedPath = expectedLocation.substring(0, searchPos);
-        Assert.matches('*' + expectedPath, docLocation.pathname);
+        return PatternMatcher.matches('*' + expectedPath, docLocation.pathname)
 
         var expectedQueryString = expectedLocation.substring(searchPos);
-        Assert.equals(expectedQueryString, docLocation.search);
+        return PatternMatcher.matches(expectedQueryString, docLocation.search)
     }
 };
 
@@ -751,7 +752,7 @@ Selenium.prototype.getTable = function(tableCellAddress) {
     }
 };
 
-Selenium.prototype.assertSelected = function(locator, optionLocator) {
+Selenium.prototype.isSelected = function(locator, optionLocator) {
 	/**
    * Verifies that the selected option of a drop-down satisfies the optionSpecifier.
    * 
@@ -759,14 +760,15 @@ Selenium.prototype.assertSelected = function(locator, optionLocator) {
    * 
    * @param locator an <a href="#locators">element locator</a>
    * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
+   * @return boolean true if the selected option matches the locator, false otherwise
    */
     var element = this.page().findElement(locator);
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     if (element.selectedIndex == -1)
     {
-        Assert.fail("No option selected");
+        return false;
     }
-    locator.assertSelected(element);
+    return locator.isSelected(element);
 };
 
 Selenium.prototype.getSelectedOptions = function(locator) {
@@ -822,10 +824,11 @@ Selenium.prototype.getAttribute = function(attributeLocator) {
     return result;
 };
 
-Selenium.prototype.assertTextPresent = function(pattern) {
+Selenium.prototype.isTextPresent = function(pattern) {
 	/**
    * Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.
    * @param pattern a <a href="#patterns">pattern</a> to match with the text of the page
+   * @return boolean true if the pattern matches the text, false otherwise
    */
     var allText = this.page().bodyText();
 
@@ -836,94 +839,40 @@ Selenium.prototype.assertTextPresent = function(pattern) {
         if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
     		patternMatcher.matcher = new PatternMatcher.strategies.globContains(pattern);
     	}
-    	if(!patternMatcher.matches(allText)) {
-        	Assert.fail("'" + pattern + "' not found in page text.");
-        }
+    	return patternMatcher.matches(allText);
     }
 };
 
-Selenium.prototype.assertTextNotPresent = function(pattern) {
-	/**
-   * Verifies that the specified text pattern does NOT appear anywhere on the rendered page.
-   * @param pattern a <a href="#patterns">pattern</a> to match with the text of the page
-   */
-    var allText = this.page().bodyText();
-
-    if(allText == "") {
-        Assert.fail("Page text not found");
-    } else if(allText.indexOf(pattern) != -1) {
-        Assert.fail("'" + pattern + "' was found in page text.");
-    }
-};
-
-Selenium.prototype.assertElementPresent = function(locator) {
+Selenium.prototype.isElementPresent = function(locator) {
 	/**
    * Verifies that the specified element is somewhere on the page.
    * @param locator an <a href="#locators">element locator</a>
+   * @return boolean true if the element is present, false otherwise
    */
     try {
         this.page().findElement(locator);
     } catch (e) {
-        Assert.fail("Element " + locator + " not found.");
+        return false;
     }
+    return true;
 };
 
-Selenium.prototype.assertElementNotPresent = function(locator) {
+Selenium.prototype.isVisible = function(locator) {
 	/**
-   * Verifies that the specified element is NOT on the page.
-   * @param locator an <a href="#locators">element locator</a>
-   */
-    try {
-        this.page().findElement(locator);
-    }
-    catch (e) {
-        return;
-    }
-    Assert.fail("Element " + locator + " found.");
-};
-
-Selenium.prototype.assertVisible = function(locator) {
-	/**
-   * Verifies that the specified element is both present and visible. An
+   * Determines if the specified element is visible. An
    * element can be rendered invisible by setting the CSS "visibility"
    * property to "hidden", or the "display" property to "none", either for the
-   * element itself or one if its ancestors.
+   * element itself or one if its ancestors.  This method will fail if
+   * the element is not present.
    * 
    * @param locator an <a href="#locators">element locator</a>
+   * @return boolean true if the specified element is visible, false otherwise
    */
     var element;
-    try {
-        element = this.page().findElement(locator);
-    } catch (e) {
-        Assert.fail("Element " + locator + " not present.");
-    }
-    if (! this.isVisible(element)) {
-        Assert.fail("Element " + locator + " not visible.");
-    }
-};
-
-Selenium.prototype.assertNotVisible = function(locator) {
-	/**
-   * Verifies that the specified element is NOT visible; elements that are
-   * simply not present are also considered invisible.
-   * 
-   * @param locator an <a href="#locators">element locator</a>
-   */
-    var element;
-    try {
-        element = this.page().findElement(locator);
-    } catch (e) {
-        return;
-    }
-    if (this.isVisible(element)) {
-        Assert.fail("Element " + locator + " is visible.");
-    }
-};
-
-Selenium.prototype.isVisible = function(element) {
+    element = this.page().findElement(locator); 
     var visibility = this.findEffectiveStyleProperty(element, "visibility");
-    var isDisplayed = this.isDisplayed(element);
-    return (visibility != "hidden" && isDisplayed);
+    var _isDisplayed = this._isDisplayed(element);
+    return (visibility != "hidden" && _isDisplayed);
 };
 
 Selenium.prototype.findEffectiveStyleProperty = function(element, property) {
@@ -935,11 +884,11 @@ Selenium.prototype.findEffectiveStyleProperty = function(element, property) {
     return propertyValue;
 };
 
-Selenium.prototype.isDisplayed = function(element) {
+Selenium.prototype._isDisplayed = function(element) {
     var display = this.findEffectiveStyleProperty(element, "display");
     if (display == "none") return false;
     if (element.parentNode.style) {
-        return this.isDisplayed(element.parentNode);
+        return this._isDisplayed(element.parentNode);
     }
     return true;
 };
@@ -963,36 +912,19 @@ Selenium.prototype.findEffectiveStyle = function(element) {
     throw new SeleniumError("cannot determine effective stylesheet in this browser");
 };
 
-Selenium.prototype.assertEditable = function(locator) {
+Selenium.prototype.isEditable = function(locator) {
 	/**
-   * Verifies that the specified element is editable, ie. it's an input
-   * element, and hasn't been disabled.
+   * Determines whether the specified input element is editable, ie hasn't been disabled.
+   * This method will fail if the specified element isn't an input element.
    * 
    * @param locator an <a href="#locators">element locator</a>
+   * @return boolean true if the input element is editable, false otherwise
    */
     var element = this.page().findElement(locator);
     if (element.value == undefined) {
         Assert.fail("Element " + locator + " is not an input.");
     }
-    if (element.disabled) {
-        Assert.fail("Element " + locator + " is disabled.");
-    }
-};
-
-Selenium.prototype.assertNotEditable = function(locator) {
-	/**
-   * Verifies that the specified element is NOT editable, ie. it's NOT an
-   * input element, or has been disabled.
-   * 
-   * @param locator an <a href="#locators">element locator</a>
-   */
-    var element = this.page().findElement(locator);
-    if (element.value == undefined) {
-        return; // not an input
-    }
-    if (element.disabled == false) {
-        Assert.fail("Element " + locator + " is editable.");
-    }
+    return !element.disabled;
 };
 
 Selenium.prototype.getAllButtons = function() {
@@ -1224,9 +1156,9 @@ OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
         throw new SeleniumError("Option with label '" + this.label + "' not found");
     };
 
-    this.assertSelected = function(element) {
+    this.isSelected = function(element) {
         var selectedLabel = element.options[element.selectedIndex].text;
-        Assert.matches(this.label, selectedLabel);
+        return PatternMatcher.matches(this.label, selectedLabel)
     };
 };
 
@@ -1245,9 +1177,9 @@ OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
         throw new SeleniumError("Option with value '" + this.value + "' not found");
     };
 
-    this.assertSelected = function(element) {
+    this.isSelected = function(element) {
         var selectedValue = element.options[element.selectedIndex].value;
-        Assert.matches(this.value, selectedValue);
+        return PatternMatcher.matches(this.value, selectedValue)
     };
 };
 
@@ -1267,8 +1199,8 @@ OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
         return element.options[this.index];
     };
 
-    this.assertSelected = function(element) {
-        Assert.equals(this.index, element.selectedIndex);
+    this.isSelected = function(element) {
+    	return this.index == element.selectedIndex;
     };
 };
 
@@ -1287,9 +1219,9 @@ OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
         throw new SeleniumError("Option with id '" + this.id + "' not found");
     };
 
-    this.assertSelected = function(element) {
+    this.isSelected = function(element) {
         var selectedId = element.options[element.selectedIndex].id;
-        Assert.matches(this.id, selectedId);
+        return PatternMatcher.matches(this.id, selectedId)
     };
 };
 

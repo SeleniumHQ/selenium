@@ -114,8 +114,16 @@ function CommandHandlerFactory() {
     // return a "predicate" equivalient to isBlah() that
     // returns an appropriate PredicateResult value.
     this.createPredicateFromBooleanAccessor = function(accessor) {
-        return function(value) {
-            var accessorResult = accessor.call(this);
+        return function() {
+        	var accessorResult;
+        	if (arguments.length > 2) throw new SeleniumError("Too many arguments! " + arguments.length);
+        	if (arguments.length == 2) {
+            	accessorResult = accessor.call(this, arguments[0], arguments[1]);
+            } else if (arguments.length == 1) {
+            	accessorResult = accessor.call(this, arguments[0]);
+            } else {
+            	accessorResult = accessor.call(this);
+            }
             if (accessorResult) {
                 return new PredicateResult(true, "true");
             } else {
@@ -158,9 +166,6 @@ function CommandHandlerFactory() {
     // Register an assertion, a verification, a negative assertion,
     // and a negative verification based on the specified accessor.
     this.registerAssertionsBasedOnAccessor = function(accessor, baseName, predicate) {
-        if (accessor.length > 1) {
-            return;
-        }
         if (predicate==null) {
             predicate = self.createPredicateFromAccessor(accessor);
         }
@@ -212,9 +217,6 @@ function CommandHandlerFactory() {
     
     // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
     this.registerWaitForCommandsBasedOnAccessor = function(accessor, baseName, predicate) {
-        if (accessor.length > 1) {
-            return;
-        }
         if (predicate==null) {
             predicate = self.createPredicateFromAccessor(accessor);
         }
@@ -227,9 +229,6 @@ function CommandHandlerFactory() {
 	
 	// Register a storeBlahBlah based on the specified accessor.
     this.registerStoreCommandBasedOnAccessor = function(accessor, baseName) {
-        if (accessor.length > 1) {
-            return;
-        }
         var action;
         if (accessor.length == 1) {
 	    	action = function(target, varName) {
@@ -257,7 +256,7 @@ function CommandHandlerFactory() {
                 self.registerStoreCommandBasedOnAccessor(accessor, baseName);
                 self.registerWaitForCommandsBasedOnAccessor(accessor, baseName);
             }
-            var match = /^is([A-Z].+Present)$/.exec(functionName);
+            var match = /^is([A-Z].+)$/.exec(functionName);
             if (match != null) {
                 var accessor = commandObject[functionName];
                 var baseName = match[1];
