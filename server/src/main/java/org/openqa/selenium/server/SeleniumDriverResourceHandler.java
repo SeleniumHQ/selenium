@@ -27,7 +27,6 @@ import org.mortbay.http.handler.*;
 import org.mortbay.util.*;
 import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.htmlrunner.*;
-import org.openqa.selenium.server.util.IOUtils;
 
 /**
  * A Jetty handler that takes care of Selenese Driven requests.
