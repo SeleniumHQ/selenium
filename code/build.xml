@@ -56,7 +56,7 @@
             <arg file="javascript/iedoc.js"/>
         </exec>
         <xmlvalidate file="javascript/core/iedoc.xml" lenient="true"/>
-        <copy file="javascript/core/iedoc.xml" tofile="${image.dir}/javascript/core/iedoc.xml" overwrite="true"/>
+        <copy file="javascript/core/iedoc.xml" tofile="${image.dir}/core/iedoc.xml" overwrite="true"/>
     </target>
 
     <target name="generate-doc" depends="generate-xml">
