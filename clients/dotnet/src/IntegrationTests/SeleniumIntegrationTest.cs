@@ -50,7 +50,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 		public void IISIntegrationTest()
 		{
 			selenium.Open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
-			selenium.AssertTextPresent("suggest");
+			Assert.IsTrue(selenium.IsTextPresent("suggest"));
 
             /*
               disabled pending DOJO combobox trouble issue resolution: (http://jira.openqa.org/browse/SRC-55)
@@ -65,7 +65,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 			selenium.KeyDown(elementID, "120");
 			selenium.KeyPress(elementID, "120");
 			Thread.Sleep(2000);
-			selenium.AssertTextPresent(verificationText);
+			Assert.IsTrue(selenium.IsTextPresent(verificationText));
             */
 		}
 	}
