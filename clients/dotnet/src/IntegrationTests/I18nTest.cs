@@ -58,7 +58,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 		public void VerifyText(String expected, String id)
 		{
 			//Console.Out.WriteLine(expected);
-			selenium.AssertTextPresent(expected);
+			Assert.IsTrue(selenium.IsTextPresent(expected));
 			String actual = selenium.GetText(id);
 			Assert.AreEqual(expected, actual, id + " didn't match");
 		}

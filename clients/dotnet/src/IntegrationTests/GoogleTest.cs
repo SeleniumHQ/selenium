@@ -47,7 +47,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 			Assert.AreEqual("Selenium OpenQA", selenium.GetValue("q"));
 			selenium.Click("btnG");
 			selenium.WaitForPageToLoad("5000");
-			selenium.AssertTextPresent("www.openqa.org");
+			Assert.IsTrue(selenium.IsTextPresent("www.openqa.org"));
 			Assert.AreEqual("Selenium OpenQA - Google Search", selenium.GetTitle());
 		}
 	}
