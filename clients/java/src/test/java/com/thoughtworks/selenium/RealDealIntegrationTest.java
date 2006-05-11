@@ -74,9 +74,9 @@ public class RealDealIntegrationTest extends TestCase {
         }
         
         try {
-            assertTrue(selenium.isTextPresent("Negative test: verify non-existent text"));
+            assertTrue("Negative test", selenium.isTextPresent("Negative test: verify non-existent text"));
             fail("No exception was thrown!");
-        } catch (SeleniumException se) {
+        } catch (AssertionFailedError se) {
            assertTrue("Exception message isn't as expected: " + se.getMessage(), se.getMessage().indexOf("Negative test") != -1);
         }
    }
