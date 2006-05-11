@@ -50,7 +50,7 @@
         </copy>
     </target>
 
-    <target name="generate-xml">
+    <target name="generate-xml" depends="copy-sources">
         <exec executable="cscript" dir="javascript" output="${image.dir}/core/iedoc.xml" failonerror="true">
             <arg value="/nologo"/>
             <arg file="javascript/iedoc.js"/>
