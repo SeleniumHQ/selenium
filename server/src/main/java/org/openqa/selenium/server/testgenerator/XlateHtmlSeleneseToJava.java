@@ -4,12 +4,14 @@
  */
 package org.openqa.selenium.server.testgenerator;
 
-import java.io.*;
-import java.util.*;
-
-import javax.xml.parsers.*;
-
-import org.w3c.dom.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Given an HTML file containing a Selenese test case, generate equivalent Java code w/ calls
@@ -38,8 +40,6 @@ public class XlateHtmlSeleneseToJava {
     private static boolean silentMode = false;
 
     private static boolean dontThrowOnTranslationDifficulties = false;
-
-    private static Map funcTypes = null;
 
     public static void main(String[] args) throws IOException {
         boolean generateSuite = false;
@@ -160,14 +160,10 @@ public class XlateHtmlSeleneseToJava {
         output.close();
     }
     
-    protected static String possiblyDeclare(String variableName, String op) {
+    protected static String possiblyDeclare(boolean isBoolean, String variableName) {
         if (!declaredVariables.containsKey(variableName)) {
             declaredVariables.put(variableName, variableName);
-            if (opIsBoolean(op)) {
-                return "boolean " + variableName;
-            } else {
-                return "String " + variableName;
-            }
+            return (isBoolean ? "boolean" : "String") + " " + variableName;
         }
         return variableName;
     }
@@ -302,7 +298,7 @@ public class XlateHtmlSeleneseToJava {
             testStatement = testStatement.replaceAll("\t//.*", "");
             testStatement = testStatement.replaceFirst("^\\s*", "");
             if (testStatement.startsWith("assertTrue")) {
-                testStatement.replaceFirst("assertTrue", "");
+                testStatement = testStatement.replaceFirst("assertTrue", "");
             }
             else if (testStatement.startsWith("assertEquals")) {
                 testStatement = testStatement.replaceFirst("assertEquals", "seleniumEquals");
@@ -327,7 +323,7 @@ public class XlateHtmlSeleneseToJava {
         else if (op.matches("setTimeout")) {
             timeOut  = Integer.parseInt(tokens[1]);
         }
-        else if (op.matches(".*(Error|Failure)OnNext") ) {
+        else if (op.matches(".*(Error|Failure)OnNext") || op.matches("verify(Element)?(Not)?(Editable|Visible|Present|Selected)")) {
             String throwCkVarName = "sawThrow" + j;
             if (tryCatchAllowed) {
                 java.append(EOL + "boolean " + throwCkVarName + " = false;" + EOL + "try {" + EOL + "\t");
@@ -362,48 +358,6 @@ public class XlateHtmlSeleneseToJava {
         }
         return j+1;
     }
-    
-    private static void initializeFuncTypes() {
-        if (funcTypes != null) return;
-        funcTypes = new HashMap();
-        InputStream stream = XlateHtmlSeleneseToJava.class.getResourceAsStream("/core/iedoc.xml");
-        try {
-            Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
-            NodeList functions = d.getElementsByTagName("function");
-            for (int i = 0; i < functions.getLength(); i++) {
-                Element function = (Element) functions.item(i);
-                String funcName = function.getAttribute("name");
-                NodeList returnElements = function.getElementsByTagName("return");
-                if (returnElements.getLength() == 0) {
-                    funcTypes.put(funcName, void.class);
-                } else {
-                    Element ret = (Element) returnElements.item(0);
-                    String retType = ret.getAttribute("type");
-                    if ("boolean".equals(retType)) {
-                        funcTypes.put(funcName, boolean.class);
-                    } else if ("string".equals(retType)) {
-                        funcTypes.put(funcName, String.class);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    private static boolean opIsBoolean(String op) {
-        return (boolean.class.equals(getOpType(op)));
-    }
-    
-    private static Class getOpType(String op) {
-        initializeFuncTypes();
-        if (funcTypes.get(op) != null) return (Class) funcTypes.get(op);
-        String swappedOp = op.replaceFirst("store", "get");
-        if (funcTypes.get(swappedOp) != null) return (Class) funcTypes.get(swappedOp);
-        swappedOp = op.replaceFirst("store", "is");
-        if (funcTypes.get(swappedOp) != null) return (Class) funcTypes.get(swappedOp);
-        throw new RuntimeException("don't recognize op: " + op);
-    }
 
     private static String XlateSeleneseStatementTokens(String op, String[] tokens, String oldLine) {
         String beginning = "\t\t// " + oldLine
@@ -430,24 +384,25 @@ public class XlateHtmlSeleneseToJava {
             return beginning + "Integer " + tokens[2] + " = new Integer(selenium.getText(" + quote(tokens[1]) + ").length());";
         }
         if (op.equals("store")) {
-            return beginning + possiblyDeclare(tokens[2], op) + " = " + XlateSeleneseArgument(tokens[1]) + ";";
+            return beginning + possiblyDeclare(isBooleanOp(op), tokens[2]) + " = " + XlateSeleneseArgument(tokens[1]) + ";";
         }
         if (op.equals("storeAttribute")) {
-            return beginning + possiblyDeclare(tokens[2], op) + " = selenium.getAttribute(" + 
+            return beginning + possiblyDeclare(false, tokens[2]) + " = selenium.getAttribute(" + 
                     XlateSeleneseArgument(tokens[1]) + ");";
         }
         if (op.equals("storeBodyText")) {
-            return beginning + possiblyDeclare(tokens[1], op) + " = this.getText();";
+            return beginning + possiblyDeclare(false, tokens[1]) + " = this.getText();";
         }
         if (op.equals("storeValue")) {
             if (tokens[2].equals("")) {
-                return beginning + possiblyDeclare(tokens[1], op) + " = this.getText();";
+                return beginning + possiblyDeclare(false, tokens[1]) + " = this.getText();";
             }
-            return beginning + possiblyDeclare(tokens[2], op) + " = selenium.getValue(" + XlateSeleneseArgument(tokens[1]) + ");";
+            return beginning + possiblyDeclare(false, tokens[2]) + " = selenium.getValue(" + XlateSeleneseArgument(tokens[1]) + ");";
         }
         if (op.startsWith("store")) {
-            return beginning + possiblyDeclare(tokens[1], op) + " = " + (op.endsWith("NotPresent") ? "!" : "") + 
-                    "selenium." + (op.endsWith("Present") ? "is" : "get") + op.replaceFirst("store", "") + "();";
+            boolean isBoolean = isBooleanOp(op);
+            return beginning + possiblyDeclare(isBoolean, tokens[1]) + " = " + (op.endsWith("NotPresent") ? "!" : "") + 
+                    "selenium." + (isBoolean ? "is" : "get") + op.replaceFirst("store", "") + "();";
         }
         if (op.startsWith("verify") || op.startsWith("assert")) {
             String middle;
@@ -459,28 +414,22 @@ public class XlateHtmlSeleneseToJava {
             }
             ending = ")" + ending;
             op = op.replaceFirst("assert|verify", "");
-            if (op.equals("AlertPresent")
-                    || op.equals("PromptPresent")
-                    || op.equals("ConfirmationPresent")) {
-                return "\t\tassertTrue(selenium.is" + op + "());";
-            }
-            if (op.equals("AlertNotPresent")
-                    || op.equals("PromptNotPresent")
-                    || op.equals("ConfirmationNotPresent")) {
-                op = op.replaceFirst("Not", "");
-                return "\t\tassertFalse(selenium.is" + op + "());";
-            }
             if (op.equals("ElementPresent") || op.equals("ElementNotPresent")
                     || op.equals("TextPresent") || op.equals("TextNotPresent")
                     || op.equals("Editable") || op.equals("NotEditable")
                     || op.equals("Visible") || op.equals("NotVisible")) {
+                String possibleInversion = "";
+                if (op.indexOf("Not")!=-1) {
+                    possibleInversion = "!";
+                    op = op.replaceFirst("Not", "");
+                }
                 //assert beginning.indexOf("assert") != -1;  // because verify's will be picked off by the caller
-                return "\t\tselenium.assert" + op + "(" + XlateSeleneseArgument(tokens[1]) + ");";
+                return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "));";
             }
             if (op.equals("Selected") || op.equals("NotSelected")) {
-                return "selenium.assert" + op + "(" + XlateSeleneseArgument(tokens[1]) + ", " + XlateSeleneseArgument(tokens[2]) + ");";
+                return "\t\tassertTrue(selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + ", " + XlateSeleneseArgument(tokens[2]) + "));";
             }
-            if (op.startsWith("Not") || op.endsWith("NotPresent")) {
+            if (op.startsWith("Not")) {
                 beginning = invertAssertion(beginning);
                 op = op.replaceFirst("Not", "");
             }
@@ -495,7 +444,7 @@ public class XlateHtmlSeleneseToJava {
                 middle = XlateSeleneseArgument(tokens[2]) + ", \"\" + selenium.getText(" + XlateSeleneseArgument(tokens[1]) + ").length()";
             }
             else if (op.equals("Location")) {
-                return "\t\tselenium.assertLocation(" + XlateSeleneseArgument(tokens[1]) + ");";
+                return "\t\tassertTrue(selenium.isLocation(" + XlateSeleneseArgument(tokens[1]) + "));";
             }
             else if (op.equals("AbsoluteLocation")) {
                 middle = XlateSeleneseArgument(tokens[1]) + ", selenium.getAbsoluteLocation()";
@@ -544,7 +493,12 @@ public class XlateHtmlSeleneseToJava {
                 middle =  XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
             else {
-                middle = "selenium.is" + op + "()";
+                String possibleInversion = "";
+                if (op.indexOf("Not")!=-1) {
+                    possibleInversion = "!";
+                    op = op.replaceFirst("Not", "");
+                }
+                return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "());";
             }
             return beginning + middle + ending;
         }
@@ -579,6 +533,11 @@ public class XlateHtmlSeleneseToJava {
         }
         return beginning + XlateSeleneseStatementDefault(expectedArgCount, "selenium", tokens) + ending;
     }
+
+    private static boolean isBooleanOp(String op) {
+        return op.matches(".*(Present|Visible|Editable)$");
+    }
+
 
     private static void recordFirstDomain(String urlToOpen) {
         if (domain!=null) {
