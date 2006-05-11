@@ -390,10 +390,6 @@ public class XlateHtmlSeleneseToJava {
             return beginning + possiblyDeclare(tokens[2]) + " = selenium.getAttribute(" + 
                     XlateSeleneseArgument(tokens[1]) + ");";
         }
-        if (op.equals("storeTitle")
-                || op.equals("storeAlert")) {
-            return beginning + possiblyDeclare(tokens[1]) + " = selenium.get" + op.replaceFirst("store", "") + "();";
-        }
         if (op.equals("storeBodyText")) {
             return beginning + possiblyDeclare(tokens[1]) + " = this.getText();";
         }
@@ -402,6 +398,9 @@ public class XlateHtmlSeleneseToJava {
                 return beginning + possiblyDeclare(tokens[1]) + " = this.getText();";
             }
             return beginning + possiblyDeclare(tokens[2]) + " = selenium.getValue(" + XlateSeleneseArgument(tokens[1]) + ");";
+        }
+        if (op.startsWith("store")) {
+            return beginning + possiblyDeclare(tokens[1]) + " = selenium.get" + op.replaceFirst("store", "") + "();";
         }
         if (op.startsWith("verify") || op.startsWith("assert")) {
             String middle;
@@ -487,11 +486,7 @@ public class XlateHtmlSeleneseToJava {
                 middle =  XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
             else {
-                String t = "unrecognized assert op " + op;
-                if (dontThrowOnTranslationDifficulties) {
-                    return "/* " + t + " */";
-                }
-                throw new RuntimeException(t);
+                middle = "selenium.is" + op + "()";
             }
             return beginning + middle + ending;
         }
