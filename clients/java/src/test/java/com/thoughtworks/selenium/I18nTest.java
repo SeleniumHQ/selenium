@@ -86,7 +86,7 @@ public class I18nTest extends TestCase {
         System.out.println(getName());
         System.out.println(expected);
         sel.open(startUrl + "/selenium-server/tests/html/test_i18n.html");
-        sel.assertTextPresent(expected);
+        assertTrue(sel.isTextPresent(expected));
         String actual = sel.getText(id);
         byte[] result = actual.getBytes("UTF-8");
         for (int i = 0; i < result.length; i++) {

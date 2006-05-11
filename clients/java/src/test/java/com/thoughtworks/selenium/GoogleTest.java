@@ -25,7 +25,7 @@ public class GoogleTest extends TestCase
 		assertEquals("Selenium OpenQA", selenium.getValue("q"));
 		selenium.click("btnG");
 		selenium.waitForPageToLoad("5000");
-		selenium.assertTextPresent("openqa.org");
+        assertTrue(selenium.isTextPresent("openqa.org"));
 		assertEquals("Selenium OpenQA - Google Search", selenium.getTitle());
 	}
 	

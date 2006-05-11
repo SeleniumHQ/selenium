@@ -50,10 +50,10 @@ public class RealDealIntegrationTest extends TestCase {
         assertEquals("linkToAnchorOnThisPage", links[3]);
         selenium.click("link");
         selenium.waitForPageToLoad("5000");
-        selenium.assertLocation("/selenium-server/tests/html/test_click_page2.html");
+        assertTrue(selenium.isLocation("/selenium-server/tests/html/test_click_page2.html"));
         selenium.click("previousPage");
         selenium.waitForPageToLoad("5000");
-        selenium.assertLocation("/selenium-server/tests/html/test_click_page1.html");
+        assertTrue(selenium.isLocation("/selenium-server/tests/html/test_click_page1.html"));
     }
     
    public void testAgain() {
@@ -74,7 +74,7 @@ public class RealDealIntegrationTest extends TestCase {
         }
         
         try {
-            selenium.assertTextPresent("Negative test: verify non-existent text");
+            assertTrue(selenium.isTextPresent("Negative test: verify non-existent text"));
             fail("No exception was thrown!");
         } catch (SeleniumException se) {
            assertTrue("Exception message isn't as expected: " + se.getMessage(), se.getMessage().indexOf("Negative test") != -1);

@@ -35,7 +35,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     public void ajaxTester() throws Throwable {
         selenium.open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
-        selenium.assertTextPresent("suggest");
+        assertTrue(selenium.isTextPresent("suggest"));
         String elementID = "_idJsp0:_idJsp3";
         selenium.type(elementID, "foo");
         // DGF On Mozilla a keyPress is needed, and types a letter.
@@ -48,7 +48,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         selenium.keyDown(elementID, Integer.toString('x'));
         selenium.keyPress(elementID, Integer.toString('x'));
         Thread.sleep(2000);
-        selenium.assertTextPresent(verificationText);
+        assertTrue(selenium.isTextPresent(verificationText));
     }
     
     public void tearDown() {
