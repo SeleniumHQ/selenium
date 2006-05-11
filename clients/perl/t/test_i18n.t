@@ -4,7 +4,7 @@ use lib 't/lib';
 use SeleniumUtil qw(server_is_running);
 use Test::More;
 if (server_is_running) {
-    plan tests => 5;
+    plan tests => 10;
 }
 else {
     plan skip_all => "No selenium server found!";
@@ -34,6 +34,6 @@ verify_text($dangerous, "dangerous");
 sub verify_text {
 	my $expected = shift;
 	my $id = shift;
-	$sel->assert_text_present($expected);
+	$sel->is_text_present_ok($expected);
 	$sel->text_is($id, $expected);
 }

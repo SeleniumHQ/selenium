@@ -34,7 +34,7 @@ class TestAjaxJSF(unittest.TestCase):
     def testKeyPress(self):
         selenium = self.selenium
         selenium.open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf")
-        selenium.assert_text_present("suggest")
+        self.failUnless(selenium.is_text_present("suggest"))
         #
         #
         # disabled pending DOJO combobox trouble issue resolution (http://jira.openqa.org/browse/SRC-55)

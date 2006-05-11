@@ -19,7 +19,7 @@ use lib 't/lib';
 use SeleniumUtil qw(server_is_running);
 use Test::More;
 if (server_is_running) {
-    plan tests => 4;
+    plan tests => 6;
 }
 else {
     plan skip_all => "No selenium server found!";
@@ -39,7 +39,7 @@ ok(@links > 3);
 is($links[3], "linkToAnchorOnThisPage");
 $sel->click("link");
 $sel->wait_for_page_to_load(5000);
-$sel->assert_location("/selenium-server/tests/html/test_click_page2.html");
+$sel->is_location_ok("/selenium-server/tests/html/test_click_page2.html");
 $sel->click("previousPage");
 $sel->wait_for_page_to_load(5000);
-$sel->assert_location("/selenium-server/tests/html/test_click_page1.html");
+$sel->is_location_ok("/selenium-server/tests/html/test_click_page1.html");

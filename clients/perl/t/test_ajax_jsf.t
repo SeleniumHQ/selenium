@@ -36,7 +36,7 @@ my $sel = Test::WWW::Selenium->new( host => "localhost",
                                       browser_url => "http://www.irian.at",
                                     );
 $sel->open_ok("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
-$sel->assert_text_present_ok("suggest");
+$sel->is_text_present_ok("suggest");
 #
 # disabled pending DOJO combobox trouble issue resolution (http://jira.openqa.org/browse/SRC-55)
 #

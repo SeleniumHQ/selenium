@@ -32,7 +32,7 @@ class ExampleTest < Test::Unit::TestCase
 
     def test_something
         @selenium.open "http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf"
-		@selenium.assert_text_present "suggest"
+		assert(@selenium.is_text_present("suggest"))
 
 
 		#

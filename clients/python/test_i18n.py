@@ -38,7 +38,7 @@ class TestI18n(unittest.TestCase):
     
     def verify_text(self, id, expected):
         sel = self.selenium
-        sel.assert_text_present(expected)
+        self.failUnless(sel.is_text_present(expected))
         actual = sel.get_text(id)
         self.assertEqual(expected, actual)
     
