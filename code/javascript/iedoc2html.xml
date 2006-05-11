@@ -163,11 +163,12 @@
 	};
 	</pre>
 	</blockquote>
-	<p><strong>Assertions</strong></p>
+	<p><strong>Accessors/Assertions</strong></p>
 	<blockquote>
-	<p>All <em>assertFoo</em> methods on the Selenium prototype are added as assertions. For each assertion <em>foo</em> there
-	is an <em>assertFoo</em> and <em>verifyFoo</em> registered. An assert method can take up to 2 parameters, which
-	will be passed the second and third column values in the test.</p>
+	<p>All <em>getFoo</em> and <em>isFoo</em> methods on the Selenium prototype are added as accessors (storeFoo). For each accessor there
+	is an <em>assertFoo</em>, <em>verifyFoo</em> and <em>waitForFoo</em> registered. An assert method can take up to 2 parameters, which
+	will be passed the second and third column values in the test.  You can also define your own assertions literally
+	as simple "assert" methods, which will also auto-generate "verify" and "waitFor" commands.</p>
 	<p>Example: Add a <em>valueRepeated</em> assertion, that makes sure that the element value
 	consists of the supplied text repeated. The 2 commands that would be available in tests would be
 	<em>assertValueRepeated</em> and <em>verifyValueRepeated</em>.</p>
@@ -189,7 +190,7 @@
 	</blockquote>
 	<p><strong>Automatic availability of storeFoo, assertFoo, assertNotFoo, waitForFoo and waitForNotFoo for every getFoo</strong></p>
 	<blockquote>
-	<p>All <em>getFoo</em> methods on the Selenium prototype automatically result in the availability
+	<p>All <em>getFoo</em> and <em>isFoo</em> methods on the Selenium prototype automatically result in the availability
 	of storeFoo, assertFoo, assertNotFoo, verifyFoo, verifyNotFoo, waitForFoo, and waitForNotFoo commands.</p>
 	<p>Example, if you add a getTextLength() method, the following commands will automatically be available:
 	storeTextLength, assertTextLength, assertNotTextLength, verifyTextLength, verifyNotTextLength, waitForTextLength, and waitForNotTextLength commands.</p>
@@ -200,32 +201,8 @@
 	</pre>
 	
 	<p>Also note that the <em>assertValueRepeated</em> method described above could have been implemented using
-	getValueRepeated, with the added benefit of also automatically getting assertNotValueRepeated, storeValueRepeated,
+	isValueRepeated, with the added benefit of also automatically getting assertNotValueRepeated, storeValueRepeated,
 	waitForValueRepeated and waitForNotValueRepeated.</p>
-	</blockquote>
-	<p><strong>Locator Strategies</strong></p>
-	<blockquote>
-	<p>All <em>locateElementByFoo</em> methods on the PageBot prototype are added as locator-strategies. A locator strategy takes 2 parameters, the first being the locator string (minus the prefix), and the second being the document in which to search.</p>
-	<p>Example: Add a &quot;valuerepeated=&quot; locator, that finds the first element a value attribute equal to the the supplied value repeated.</p>
-	
-	<pre class="literal-block">
-	// The &quot;inDocument&quot; is a the document you are searching.
-	PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
-	    // Create the text to search for
-	    var expectedValue = text + text;
-	
-	    // Loop through all elements, looking for ones that have 
-	    // a value === our expected value
-	    var allElements = inDocument.getElementsByTagName(&quot;*&quot;);
-	    for (var i = 0; i &lt; allElements.length; i++) {
-	        var testElement = allElements[i];
-	        if (testElement.value &amp;&amp; testElement.value === expectedValue) {
-	            return testElement;
-	        }
-	    }
-	    return null;
-	};
-	</pre>
 	</blockquote>
 	<p><strong>Locator Strategies</strong></p>
 	<blockquote>
@@ -272,7 +249,7 @@
 		</xsl:call-template>
 		
 		(
-			<xsl:apply-templates select="param" mode="declaration-check"/>
+			<xsl:apply-templates select="param" mode="declaration-accessor"/>
 			variableName
 		)
 		
@@ -294,18 +271,22 @@
 					<xsl:with-param name="prefix">assert</xsl:with-param>
 				</xsl:call-template>
 				(
-					<xsl:apply-templates select="param" mode="declaration-check"/>
-					<a href="#patterns">pattern</a>
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
 				)
 			</li>
-			<li>
+			<li> 
 				<xsl:call-template name="accessor-rename">
 					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
 					<xsl:with-param name="prefix">assertNot</xsl:with-param>
 				</xsl:call-template>
 				(
-					<xsl:apply-templates select="param" mode="declaration-check"/>
-					<a href="#patterns">pattern</a>
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
 				)
 			</li>
 			<li>
@@ -314,8 +295,10 @@
 					<xsl:with-param name="prefix">verify</xsl:with-param>
 				</xsl:call-template>
 				(
-					<xsl:apply-templates select="param" mode="declaration-check"/>
-					<a href="#patterns">pattern</a>
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
 				)
 			</li>
 			<li>
@@ -324,8 +307,10 @@
 					<xsl:with-param name="prefix">verifyNot</xsl:with-param>
 				</xsl:call-template>
 				(
-					<xsl:apply-templates select="param" mode="declaration-check"/>
-					<a href="#patterns">pattern</a>
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
 				)
 			</li>
 			<li>
@@ -334,8 +319,10 @@
 					<xsl:with-param name="prefix">waitFor</xsl:with-param>
 				</xsl:call-template>
 				(
-					<xsl:apply-templates select="param" mode="declaration-check"/>
-					<a href="#patterns">pattern</a>
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
 				)
 			</li>
 			<li>
@@ -344,8 +331,10 @@
 					<xsl:with-param name="prefix">waitForNot</xsl:with-param>
 				</xsl:call-template>
 				(
-					<xsl:apply-templates select="param" mode="declaration-check"/>
-					<a href="#patterns">pattern</a>
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
 				)
 			</li>
 		</ul>
@@ -363,10 +352,12 @@
 	</strong></dt>
 	<dd>
 		<xsl:apply-templates select="comment" />
-		<p>Arguments:</p>
-		<ul>
-			<xsl:apply-templates select="param" mode="comment" />
-		</ul>
+		<xsl:if test="count(./param) > 0">
+			<p>Arguments:</p>
+			<ul>
+				<xsl:apply-templates select="param" mode="comment" />
+			</ul>
+		</xsl:if>
 	</dd>
 	<br/>
 </xsl:template>
@@ -379,9 +370,17 @@
 	</xsl:if>
 </xsl:template>
 
-<!-- In accessor mode, always print out a comma, because we'll always append a final argument like variableName or pattern -->
-<xsl:template match="param" mode="declaration-check">
+<!-- In accessor mode, always print out a comma, because we'll always append a final argument variableName -->
+<xsl:template match="param" mode="declaration-accessor">
 	<xsl:value-of select="@name" />,
+</xsl:template>
+
+<!-- In assertion mode, append a final pattern argument, unless the assertion is boolean, in which case no final argument -->
+<xsl:template match="param" mode="declaration-assertion">
+	<xsl:value-of select="@name" />
+	<xsl:if test="position() != last() or ../return/@type != 'boolean'">
+		<xsl:text>, </xsl:text>
+	</xsl:if>
 </xsl:template>
 
 <xsl:template match="param" mode="comment">
