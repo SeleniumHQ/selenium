@@ -79,7 +79,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             //System.out.println("commandResult = " + commandResult);
 
             InputStream is = req.getInputStream();
-            String commandResult = IOUtils.read(is);
+            StringBuffer sb = new StringBuffer();
+            InputStreamReader r = new InputStreamReader(is, "UTF-8");
+            int c;
+            while ((c = r.read()) != -1) {
+                sb.append((char) c);
+            }
+            String commandResult = sb.toString();
             
             if ("true".equals(seleniumStart)) {
                 commandResult = null;
