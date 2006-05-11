@@ -400,7 +400,8 @@ public class XlateHtmlSeleneseToJava {
             return beginning + possiblyDeclare(tokens[2]) + " = selenium.getValue(" + XlateSeleneseArgument(tokens[1]) + ");";
         }
         if (op.startsWith("store")) {
-            return beginning + possiblyDeclare(tokens[1]) + " = selenium.get" + op.replaceFirst("store", "") + "();";
+            return beginning + possiblyDeclare(tokens[1]) + " = " + (op.endsWith("NotPresent") ? "!" : "") + 
+                    "selenium." + (op.endsWith("Present") ? "is" : "get") + op.replaceFirst("store", "") + "();";
         }
         if (op.startsWith("verify") || op.startsWith("assert")) {
             String middle;
