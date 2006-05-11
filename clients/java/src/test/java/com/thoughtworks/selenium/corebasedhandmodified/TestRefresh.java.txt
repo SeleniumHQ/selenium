@@ -12,23 +12,23 @@ public class TestRefresh extends SeleneseTestCase
 /* Test Refresh */
 		// open|../tests/html/test_page.slow.html|
 		selenium.open("../tests/html/test_page.slow.html");
-		selenium.assertLocation("/tests/html/test_page.slow.html");
+		assertTrue(selenium.isLocation("/tests/html/test_page.slow.html"));
 		// verifyTitle|Slow Loading Page|
 		verifyEquals("Slow Loading Page", selenium.getTitle());
 		// click|changeSpan|
 		selenium.click("changeSpan");
-		selenium.assertTextPresent("Changed the text");
-		// refreshAndWait||
+        assertTrue(selenium.isTextPresent("Changed the text"));
+        // refreshAndWait||
 		selenium.refresh();
 		selenium.waitForPageToLoad("30000");
-		selenium.assertTextNotPresent("Changed the text");
+		assertFalse(selenium.isTextPresent("Changed the text"));
 		// click|changeSpan|
 		selenium.click("changeSpan");
-		selenium.assertTextPresent("Changed the text");
+		assertTrue(selenium.isTextPresent("Changed the text"));
 		// clickAndWait|slowRefresh|
 		selenium.click("slowRefresh");
         selenium.waitForPageToLoad("30000");
-		selenium.assertTextNotPresent("Changed the text");
+		assertFalse(selenium.isTextPresent("Changed the text"));
 
 		checkForVerificationErrors();
 	}
