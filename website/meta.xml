@@ -25,20 +25,8 @@
                 <url>usage.html</url>
             </item>
             <item>
-                <name>- commands</name>
-                <url>seleniumReference.html</url>
-            </item>
-            <item>
-                <name>- test runner</name>
-                <url>testrunner.html</url>
-            </item>
-            <item>
-                <name>- driven</name>
-                <url>driven.html</url>
-            </item>
-            <item>
-                <name>Developing Drivers</name>
-                <url>developingdrivers.html</url>
+                <name>Reference Guide</name>
+                <url>http://release.openqa.org/selenium-core/nightly/reference.html</url>
             </item>
             <item>
                 <name>Demos</name>
@@ -68,6 +56,10 @@
             <name>Mike Williams</name>
             <email>mdub at dogbiscuit.org</email>
         </person>
+        <person>
+            <name>Dan Fabulich</name>
+            <email>dfabulich at warpmail.net</email>
+        </person>
 
     </owners>
 
@@ -79,6 +71,10 @@
         <person>
             <name>Pat Lightbody</name>
             <email>plightbo at gmail.com</email>
+        </person>
+        <person>
+            <name>Nelson Sproul</name>
+            <email>nsproul at bea.com</email>
         </person>
     </developers>
 

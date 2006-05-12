@@ -2,8 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="generator"
- content="Docutils 0.3.6: http://docutils.sourceforge.net/">
   <title>Usage</title>
   <link rel="stylesheet" href="default.css" type="text/css">
 </head>
@@ -11,74 +9,198 @@
 <div class="document" id="selenium-reference">
 <div class="section" id="test-tables">
 <h2><a name="test-tables">Overview</a>&nbsp;</h2>
-This document details how Selenium can be deployed to test or script
+This document details how Selenium Core can be deployed to test or script
 web
 applications.<br>
 </div>
 <div class="section" id="command-reference">
-<h2><a name="test-tables">Modes of Operation</a></h2>
-Broadly speaking there are two modes of operation for Selenium
-TestRunner and Driven<br>
-<h3>TestRunner</h3>
-<img alt="standalone pic" src="images/SmallStandalone.png"
- style="width: 266px; height: 113px;"><br>
-<br>
-The TestRunner mode of operation for Selenium is where its HTML &amp;
-Javascript
-and the test suite are deployed alongside the Application Under Test
-(AUT) on a arbitrary web server. The test suite is coded as tables in a
-HTML page for each test.<br>
-<br>
-See <a href="testrunner.html">test runner documentation</a> for more
-information.<br>
-<h3>Driven</h3>
-<img alt="embedded pic" src="images/SmallEmbedded.png"
- style="width: 248px; height: 113px;">&nbsp; <br>
-Driven Selenium is where the browser is under the the control of a
-process on the same machine. That process is either a Java, .Net, Ruby
-or Python
-application and it is typically run in conjunction with a unit testing
-framework like JUnit or NUnit. Also possible, is a console application
-driving a browser interactively. <br>
-<br>
-The test script is one that would be recognisable to people adept with
-unit test frameworks :<br>
-<br>
-&nbsp; public void testOKClick() {<br>
-&nbsp;&nbsp;&nbsp; selenium.verifyTitle("First Page");<br>
-&nbsp;&nbsp;&nbsp; selenium.open("/TestPage.html");<br>
-&nbsp;&nbsp;&nbsp; selenium.click("OKButton");<br>
-&nbsp;&nbsp;&nbsp; selenium.verifyTitle("Another Page");<br>
-&nbsp; }<br>
-<br>
-The difference from normal unit testing is that as part of the startup,
-three major things have to happen:<br>
-<ol>
-  <li>The test framework needs to publish a fresh copy of the AUT.
-Selenium prefers to mount its own web server temporarily for the
-purposes of testing.</li>
-  <li>The test framework needs to publish the static Selenium's HTML
-pages and Javascript in an apparent directory
-on the same web server as (1).</li>
-  <li>The test framework needs to open a browser instance and point it
-to Selenium.html served in (2) above.</li>
+<h2><a name="getting-started">Getting Started</a></h2>
+<p>If this is your first time using a Selenium tool, you may not want to just use Selenium Core directly; one good way to get introduced to Selenium's features is to use <a href="http://www.openqa.org/selenium-ide/">Selenium IDE</a>, which embeds Selenium Core internally.  Download Selenium IDE and you'll get Selenium Core along with it.  Give it a spin!</p>
+
+<p>When you're done, you may want to consider more carefully <a href="http://wiki.openqa.org/pages/viewpage.action?pageId=763">Which Selenium Tool Should I Use?</a></p>
+
+<h2>Installing Selenium Core</h2>
+
+<p>To use Selenium Core, you need to make it available from the <i>same web server</i> as the application you want to test.  (This is a JavaScript security requirement.  If you can't/won't modify the webserver you want to test, Selenium Core may not be the right tool for you; you may just want to use Selenium IDE or Selenium RC instead.)</p>
+
+<p>Normally, this is as simple as extracting the Selenium Core zip file into the DocumentRoot, htdocs, or webroot of your webserver.  Then, try to open the TestRunner.html page on your website, which should be in the core/ directory.</p>
+
+<p>You'll be allowed to select a TestSuite; for now, just click "go" to open the default test suite.  If you installed all of the tests along with core, you should now see a list of tests to run.  Click on the "all" button to run them.  Note that some tests may fail if your browser blocks pop-ups, manages passwords, or does other helpful things that interfere with automation.  Be sure to turn these features off before running the tests!</p>
+
+<h2>Writing Your First Test Case</h2>
+
+<p>A test-case is represented by an HTML document written in "Selenese", containing a table with 3 columns, room enough for a <em>command</em> and two <em>arguments</em>.  
+(See the <a href="http://release.openqa.org/selenium-core/nightly/reference.html">Reference Guide</a> for a complete list of commands.)
+Not all commands take two arguments; in this case either leave the column blank or use a &amp;nbsp; to make the table look better.</p>
+<p>The first row will be ignored by Selenium, so this can be used for a title or any other information.</p>
+<p>Example:</p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="31%" />
+<col width="38%" />
+<col width="31%" />
+</colgroup>
+<tbody valign="top">
+<tr><td colspan="3">Simple Test Table</td>
+</tr>
+<tr><td>open</td>
+<td>/mypage</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>type</td>
+<td>nameField</td>
+<td>John Smith</td>
+</tr>
+<tr><td>click</td>
+<td>submitButton</td>
+<td>True</td>
+</tr>
+<tr><td>verifyText</td>
+<td>name</td>
+<td>John Smith</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
+</div>
+<div class="section" id="setup-teardown">
+<h2><a name="setup-teardown">SetUp / TearDown</a></h2>
+
+<p>There are no setUp and tearDown commands in Selenese, but there is a way to handle these common testing operations.  On the site being tested, create URLs for setUp and tearDown.  Then, when the test runner opens these URLs, the server can do whatever setUp or tearDown is necessary.</p>
+<p>Example:</p>
+<blockquote>
+<p>For the T&amp;E project, we wanted the functional tests to run as a dummy user.  Therefore, we made a /setUpFT URL that would create a dummy user and write the userID to the page.  Then, we can store this value (using the command storeValue) and use it in the script.  Finally, we made a /tearDownFT URL which takes the dummy userID as a parameter and deletes the user.  Therefore, our tests look like this:</p>
+<table border="1" class="table">
+<colgroup>
+<col width="21%" />
+<col width="58%" />
+<col width="21%" />
+</colgroup>
+<tbody valign="top">
+<tr><td colspan="3">Setup and Teardown</td>
+</tr>
+<tr><td>open</td>
+<td>/setUpFT</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>storeValue</td>
+<td>userid</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>open</td>
+<td>/login</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>type</td>
+<td>userID</td>
+<td>${userid}</td>
+</tr>
+<tr><td>click</td>
+<td>submit</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>open</td>
+<td>/tearDownFT?userid=${userid}</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+
+</div>
+<div class="section" id="continuous-integration">
+<h2><a name="continuous-integration">Continuous Integration</a></h2>
+<p>Selenium Core can be integrated with an automated build.  When the parameter &quot;auto=true&quot; is added to the URL, Selenium will run the entire suite of tests, and then POST the results to an URL of your choosing.  The default URL is &quot;/postResults&quot;, but an alternative handler location can be provided by specifying a &quot;resultsUrl&quot; parameter.</p>
+
+<p>That means that you're going to need some kind of web application to handle the POSTed test results and save them to disk.  You can write your own in a web-enabled language of your choosing (a simple servlet, ASP, JSP, Perl script, or whatever) or you can use the one that comes with <a href="http://www.openqa.org/selenium-rc/selenese.html">Selenium Remote Control</a>.
+
+<dl>
+<dt>If you do decide to write your own, the steps for Continuous Integration are:</dt>
+<dd><ol class="first last arabic">
+<li><p class="first">Create a servlet-type application at the url /postResults which can read the parameters below and write them to a file.</p>
+</li>
+<li><dl class="first">
+<dt>Create a script which can start up a brower and send to to the URL: selenium?auto=true</dt>
+<dd><ul class="first last">
+<li><dl class="first">
+<dt>Generally, this can be done by merely calling the browser with the URL as an argument:</dt>
+<dd><p class="first last">firefox.exe http://localhost/selenium?auto=true</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first">
+<dt>Make your continuous build:</dt>
+<dd><ul class="first last simple">
+<li>Call the script from step 2, preferably using more than one browser</li>
+<li>Wait for it to finish, possibly by checking for the existence of the file(s) from step 1</li>
+<li>Parse these files to determine whether the build passed or failed</li>
+<li>Act accordingly (send emails, update a build web page, etc.)</li>
+</ul>
+</dd>
+</dl>
+</li>
 </ol>
-As each of these is a fairly time consuming operation, it is best that
-all three of those happen in a one-time setup mode.&nbsp; As such, and
-even though these leverage a unit testing framework, this is definately
-for acceptance or functional rather than unit-testing.<br>
-<br>
-Some variations in the accesibility of the the webserver in question
-for testing purposes or its scriptablity mean a more complex setup is
-required:<br>
-<br>
-<img alt="Adjacent pic" src="images/SmallAdjacent.png"
- style="width: 239px; height: 229px;"><br>
-<br>
-See the <a href="driven.html">driven documentation</a> for more
-information.<br>
-<br>
-</div>
-</div>
+</dd>
+</dl>
+
+
+<p>The fields of the post are:</p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>result</td>
+<td>the word &quot;passed&quot; or &quot;failed&quot; depending on whether the whole suite passed or at least one test failed.</td>
+</tr>
+<tr><td>totalTime</td>
+<td>the time in seconds for the whole suite to run</td>
+</tr>
+<tr><td>numTestPasses</td>
+<td>tht total number of tests which passed</td>
+</tr>
+<tr><td>numTestFailures</td>
+<td>the total number of tests which failed.</td>
+</tr>
+<tr><td>numCommandPasses</td>
+<td>the total number of commands which passed.</td>
+</tr>
+<tr><td>numCommandFailures</td>
+<td>the total number of commands which failed.</td>
+</tr>
+<tr><td>numCommandErrors</td>
+<td>the total number of commands which errored.</td>
+</tr>
+<tr><td>suite</td>
+<td>the suite table, including the hidden column of test results</td>
+</tr>
+<tr><td>testTable.1</td>
+<td>the first test table</td>
+</tr>
+<tr><td>testTable.2</td>
+<td>the second test table</td>
+</tr>
+<tr><td>...</td>
+<td>...</td>
+</tr>
+<tr><td>testTable.N</td>
+<td>The Nth test table</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 </body>
 </html>
