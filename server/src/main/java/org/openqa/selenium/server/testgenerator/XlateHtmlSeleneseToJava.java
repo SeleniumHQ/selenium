@@ -4,14 +4,12 @@
  */
 package org.openqa.selenium.server.testgenerator;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
+
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
 
 /**
  * Given an HTML file containing a Selenese test case, generate equivalent Java code w/ calls
@@ -24,6 +22,8 @@ import java.util.Set;
 public class XlateHtmlSeleneseToJava {
     static Set generatedJavaClassNames = new HashSet();
     
+    private static Map funcTypes = null;
+
     static final String BEGIN_SELENESE = ">>>>>";
     static final String END_SELENESE   = "<<<<<";
     static final String SELENESE_TOKEN_DIVIDER = "//////";
@@ -86,6 +86,61 @@ public class XlateHtmlSeleneseToJava {
         }
     }
     
+    private static void initializeFuncTypes() {
+        if (funcTypes != null) return;
+        funcTypes = new HashMap();
+        InputStream stream = XlateHtmlSeleneseToJava.class.getResourceAsStream("/core/iedoc.xml");
+        if (stream==null) {
+            throw new RuntimeException("could not find /core/iedoc.xml on the class path");
+        }
+        try {
+            Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
+            NodeList functions = d.getElementsByTagName("function");
+            for (int i = 0; i < functions.getLength(); i++) {
+                Element function = (Element) functions.item(i);
+                String funcName = function.getAttribute("name");
+                NodeList returnElements = function.getElementsByTagName("return");
+                if (returnElements.getLength() == 0) {
+                    funcTypes.put(funcName, void.class);
+                } else {
+                    Element ret = (Element) returnElements.item(0);
+                    String retType = ret.getAttribute("type");
+                    if ("boolean".equals(retType)) {
+                        funcTypes.put(funcName, boolean.class);
+                    } else if ("string".equals(retType)) {
+                        funcTypes.put(funcName, String.class);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private static boolean isBoolean(String op) {
+        return (boolean.class.equals(getOpType(op)));
+    }
+    
+    private static Class getOpType(String op) {
+        initializeFuncTypes();
+        if (funcTypes.get(op) != null) {
+            return (Class) funcTypes.get(op);
+        }
+        String swappedOp = op.replaceFirst("store", "get");
+        if (funcTypes.get(swappedOp) != null) {
+            return (Class) funcTypes.get(swappedOp);
+        }
+        swappedOp = op.replaceFirst("store", "is");
+        if (funcTypes.get(swappedOp) != null) {
+            return (Class) funcTypes.get(swappedOp);
+        }
+        // if we get here, apparently op has no direct analog in Selenium.  So just look at the name and guess:
+        if (op.matches(".*(Present|Visible|Editable)$")) {
+            return boolean.class;
+        }
+        return String.class;
+    }
+
     
     private static void generateSuite(String javaSeleneseFileDirectoryName) throws IOException {
         if (generatedJavaClassNames.size()==1) {
@@ -360,6 +415,7 @@ public class XlateHtmlSeleneseToJava {
     }
 
     private static String XlateSeleneseStatementTokens(String op, String[] tokens, String oldLine) {
+        boolean isBoolean = isBoolean(op);
         String beginning = "\t\t// " + oldLine
         .replaceFirst(BEGIN_SELENESE, "")
         .replaceFirst(END_SELENESE, "")
@@ -384,7 +440,7 @@ public class XlateHtmlSeleneseToJava {
             return beginning + "Integer " + tokens[2] + " = new Integer(selenium.getText(" + quote(tokens[1]) + ").length());";
         }
         if (op.equals("store")) {
-            return beginning + possiblyDeclare(isBooleanOp(op), tokens[2]) + " = " + XlateSeleneseArgument(tokens[1]) + ";";
+            return beginning + possiblyDeclare(isBoolean, tokens[2]) + " = " + XlateSeleneseArgument(tokens[1]) + ";";
         }
         if (op.equals("storeAttribute")) {
             return beginning + possiblyDeclare(false, tokens[2]) + " = selenium.getAttribute(" + 
@@ -400,7 +456,6 @@ public class XlateHtmlSeleneseToJava {
             return beginning + possiblyDeclare(false, tokens[2]) + " = selenium.getValue(" + XlateSeleneseArgument(tokens[1]) + ");";
         }
         if (op.startsWith("store")) {
-            boolean isBoolean = isBooleanOp(op);
             return beginning + possiblyDeclare(isBoolean, tokens[1]) + " = " + (op.endsWith("NotPresent") ? "!" : "") + 
                     "selenium." + (isBoolean ? "is" : "get") + op.replaceFirst("store", "") + "();";
         }
@@ -533,11 +588,6 @@ public class XlateHtmlSeleneseToJava {
         }
         return beginning + XlateSeleneseStatementDefault(expectedArgCount, "selenium", tokens) + ending;
     }
-
-    private static boolean isBooleanOp(String op) {
-        return op.matches(".*(Present|Visible|Editable)$");
-    }
-
 
     private static void recordFirstDomain(String urlToOpen) {
         if (domain!=null) {
