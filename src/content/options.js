@@ -27,7 +27,10 @@ const OPTIONS = {
 	"",
 
 	recordAssertTitle:
-	"true"
+	"true",
+
+	timeout:
+	"10000"
 };
 
 function OptionsManager() {

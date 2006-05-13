@@ -294,7 +294,7 @@ Editor.prototype.onUnloadDocument = function(doc) {
 		if (this.unloadTimeoutID != null) {
 			clearTimeout(this.unloadTimeoutID);
 		}
-		this.unloadTimeoutID = setTimeout("Editor.appendAND_WAIT()", 100);
+		this.unloadTimeoutID = setTimeout("Editor.appendWaitForPageToLoad()", 10);
 	}
 }
 
@@ -364,7 +364,7 @@ Editor.prototype.clearLastCommand = function() {
 	this.lastCommandIndex = null;
 }
 
-Editor.appendAND_WAIT = function() {
+Editor.appendWaitForPageToLoad = function() {
 	var lastCommandIndex = editor.lastCommandIndex;
 	if (lastCommandIndex == null) {
 		return;
@@ -374,9 +374,13 @@ Editor.appendAND_WAIT = function() {
 	if (lastCommand.type == 'command' && 
 		!lastCommand.command.match(/^assert/) &&
 		!lastCommand.command.match(/^verify/)) {
-		lastCommand.command = lastCommand.command + "AndWait";
+		if (editor.testManager.getFormat().remoteControl) {
+			editor.addCommand("waitForPageToLoad", editor.options.timeout, null, editor.lastWindow);
+		} else {
+			lastCommand.command = lastCommand.command + "AndWait";
+			editor.view.rowUpdated(lastCommandIndex);
+		}
 	}
-	editor.view.rowUpdated(lastCommandIndex);
 	//updateSource();
 }
 

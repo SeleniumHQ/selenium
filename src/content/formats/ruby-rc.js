@@ -19,10 +19,13 @@ function formatCommand(command) {
 	if (command.type == 'command') {
 		line = indent() + 
 			options.prefix + 
-			underscore(command.command) + ' "' + 
-			escape(command.target) + '"';
-		if (command.value != null && command.value.length > 0) {
-			line += ', "' + escape(command.value) + '"';
+			underscore(command.command);
+		if ((command.target != null && command.target.length > 0)
+			|| (command.value != null && command.value.length > 0)) {
+			line += ' "' + escape(command.target) + '"';
+			if (command.value != null && command.value.length > 0) {
+				line += ', "' + escape(command.value) + '"';
+			}
 		}
 	}
 	return line;
