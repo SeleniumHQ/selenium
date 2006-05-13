@@ -81,3 +81,26 @@ function exactMatchPattern(string) {
 		return string;
 	}
 }
+
+function LineReader(text) {
+	this.text = text;
+}
+
+LineReader.prototype.read = function() {
+	if (this.text.length > 0) {
+		line = /.*(\r\n|\r|\n)?/.exec(this.text)[0];
+		this.text = this.text.substr(line.length);
+		line = line.replace(/\r?\n?$/, '');
+		return line;
+	} else {
+		return null;
+	}
+}
+
+var StringUtils = {};
+
+StringUtils.underscore = function(text) {
+	return text.replace(/[A-Z]/g, function(str) {
+			return '_' + str.toLowerCase();
+		});
+}

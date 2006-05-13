@@ -20,6 +20,8 @@
 
 SeleniumIDE.Overlay = {};
 
+SeleniumIDE.Overlay.NUM_RECENT_CHECKS = 8;
+
 SeleniumIDE.Overlay.toggleCheckType = function() {
 	var CheckBuilders = SeleniumIDE.Loader.getTopEditor().window.CheckBuilders;
 	CheckBuilders.useAssert = !CheckBuilders.useAssert;
@@ -27,36 +29,169 @@ SeleniumIDE.Overlay.toggleCheckType = function() {
 
 SeleniumIDE.Overlay.appendCheck = function(event) {
 	var command = event.target._Selenium_IDE_command;
+	if (command.command.match(/^store/)) {
+		command[command.valueInTarget ? 'target' : 'value'] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
+	}
 	SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
+	SeleniumIDE.Overlay.addRecentCheck(command.id);
+}
+
+SeleniumIDE.Overlay.getOptionsBranch = function() {
+	return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
+}
+
+SeleniumIDE.Overlay.getRecentChecks = function() {
+	var branch = this.getOptionsBranch();
+	if (branch.prefHasUserValue("recentChecks")) {
+		var recentChecks = branch.getCharPref("recentChecks");
+		return recentChecks.split(/,/);
+	} else {
+		return ['open', 'verifyTextPresent', 'verifyValue'];
+	}
+}
+
+SeleniumIDE.Overlay.getString = function(key) {
+    return window.document.getElementById("selenium-ide-strings").getString(key);
+}
+
+SeleniumIDE.Overlay.addRecentCheck = function(id) {
+	var checks = this.getRecentChecks();
+	var n = checks.indexOf(id);
+	if (n >= 0) {
+		checks.splice(n, 1);
+	}
+	checks.unshift(id);
+	if (checks.length > this.NUM_RECENT_CHECKS) {
+		checks.pop();
+	}
+	this.getOptionsBranch().setCharPref('recentChecks', checks.join(','));
 }
 
 SeleniumIDE.Overlay.testRecorderPopup = function(event) {
-	if (event.target.id != "contentAreaContextMenu") return;
-	
-	contextMenu = event.target;
+	var showAll;
+	if (event.target.id == "contentAreaContextMenu") {
+		showAll = false;
+	} else if (event.target.id == "selenium-ide-all-checks") {
+		showAll = true;
+	} else {
+		return;
+	}
+	var contextMenu = event.target;
+	var self = SeleniumIDE.Overlay;
 
+	// remove old menu
 	for (var i = contextMenu.childNodes.length - 1; i >= 0; i--) {
 		var item = contextMenu.childNodes[i];
-		if (item.id && /^selenium-ide-check-/.test(item.id)) {
+		if (item.id && /^selenium-ide-/.test(item.id)) {
 			contextMenu.removeChild(item);
 		}
 	}
-	
+
+	if (!showAll) {
+		contextMenu.appendChild(self.createMenuSeparator('recent'));
+	}
+
 	var recorder = SeleniumIDE.Loader.getTopEditor();
 	if (recorder) {
+		var branch = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
+		var recentChecks = self.getRecentChecks();
+		var menuitems;
+		var prefixList = ['noPrefix', 'assert', 'verify', 'waitFor', 'store'];
+
+		if (showAll) {
+			menuitems = {};
+			prefixList.forEach(function(prefix) {
+					menuitems[prefix] = [];
+				});
+		} else {
+			menuitems = [];
+		}
+
+		function items(prefix) {
+			return showAll ? menuitems[prefix] : menuitems;
+		}
+
 		var CheckBuilders = SeleniumIDE.Loader.getTopEditor().window.CheckBuilders;
 		for (var i = 0; i < CheckBuilders.builders.length; i++) {
 			var builder = CheckBuilders.builders[i];
-			var menuitem = document.createElement("menuitem");
 			var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
-			var command = CheckBuilders.callBuilder(builder, focusedWindow/*window.gBrowser.contentWindow*/);
-			menuitem.setAttribute("id", "selenium-ide-check-" + builder.name);
-			menuitem.setAttribute("disabled", command.disabled ? 'true' : 'false');
-			menuitem.setAttribute("label", command.command + ' ' + command.target + ' ' + command.value);
-			menuitem._Selenium_IDE_command = command;
-			contextMenu.appendChild(menuitem);
+			var command = CheckBuilders.callBuilder(builder, focusedWindow);
+
+			if (builder.noPrefix) {
+				command.id = command.name || command.command;
+				if (showAll || recentChecks.indexOf(command.id) >= 0) {
+					items('noPrefix').push(self.createCheckMenuItem((showAll ? 'all-' : ''), command));
+				}
+			} else {
+				prefixList.forEach(function(prefix) {
+						if ('noPrefix' == prefix) return;
+						var newCommand = {};
+						for (prop in command) {
+							newCommand[prop] = command[prop];
+						}
+						if (prefix == 'store') {
+							if (newCommand.valueInTarget) {
+								newCommand.target = '';
+							} else {
+								newCommand.value = '';
+							}
+						}
+						newCommand.command = prefix + newCommand.name;
+						newCommand.id = prefix + builder.name.replace(/^[a-z]/, function(str) { return str.toUpperCase() });
+						if (showAll || recentChecks.indexOf(newCommand.id) >= 0) {
+							items(prefix).push(self.createCheckMenuItem((showAll ? 'all-' : ''), newCommand));
+						}
+					});
+			}
+		}
+		if (showAll) {
+			var first = true;
+			prefixList.forEach(function(prefix) {
+					if (!first) {
+						contextMenu.appendChild(self.createMenuSeparator(prefix));
+					}
+					menuitems[prefix].forEach(function(item) {
+							contextMenu.appendChild(item);
+					});
+					first = false;
+				});
+		} else {
+			menuitems.forEach(function(item) {
+					contextMenu.appendChild(item);
+				});
 		}
 	}
+
+	if (!showAll) {
+		var menu = document.createElement("menu");
+		menu.setAttribute("id", "selenium-ide-all-checks-menu");
+		menu.setAttribute("label", self.getString("showAllChecks.label"));
+		var popup = document.createElement("menupopup");
+		popup.setAttribute("id", "selenium-ide-all-checks");
+		contextMenu.appendChild(menu);
+		menu.appendChild(popup);
+	}
+}
+
+SeleniumIDE.Overlay.createMenuSeparator = function(id) {
+	var menuitem = document.createElement("menuseparator");
+	menuitem.setAttribute("id", "selenium-ide-separator-" + id);
+	return menuitem;
+}
+
+SeleniumIDE.Overlay.createMenuSeparator = function(id) {
+	var menuitem = document.createElement("menuseparator");
+	menuitem.setAttribute("id", "selenium-ide-separator-" + id);
+	return menuitem;
+}
+
+SeleniumIDE.Overlay.createCheckMenuItem = function(idPrefix, command) {
+	var menuitem = document.createElement("menuitem");
+	menuitem.setAttribute("id", "selenium-ide-check-" + idPrefix + command.id);
+	menuitem.setAttribute("disabled", command.disabled ? 'true' : 'false');
+	menuitem.setAttribute("label", command.command + ' ' + command.target + ' ' + command.value);
+	menuitem._Selenium_IDE_command = command;
+	return menuitem;
 }
 
 SeleniumIDE.Overlay.onContentLoaded = function(event) {

@@ -2,10 +2,8 @@ var CheckBuilders = {};
 
 CheckBuilders.builders = [];
 
-CheckBuilders.useAssert = true;
-
-CheckBuilders.add = function(name, func) {
-	this.builders.push({name: name, builder: func});
+CheckBuilders.add = function(name, func, noPrefix) {
+	this.builders.push({name: name, builder: func, noPrefix: noPrefix});
 }
 
 CheckBuilders.getRecorder = function(window) {
@@ -17,8 +15,6 @@ CheckBuilders.callBuilder = function(builder, window) {
 	['name', 'target', 'value'].forEach(function(name) {
 			if (command[name] == null) command[name] = '';
 		});
-	if (!command.command)
-		command.command = (this.useAssert ? 'assert' : 'verify') + command.name;
 	command.window = window;
 	return command;
 }
@@ -39,7 +35,7 @@ CheckBuilders.add('open', function(window) {
 			command: "open",
 			target: path
 		};
-	});
+	}, true);
 
 CheckBuilders.add('textPresent', function(window) {
 		var result = { name: "TextPresent" };
@@ -56,6 +52,7 @@ CheckBuilders.add('title', function(window) {
 		var result = { name: "Title" };
 		if (window.document) {
 			result.target = exactMatchPattern(window.document.title);
+			result.valueInTarget = true;
 		} else {
 			result.disabled = true;
 		}

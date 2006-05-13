@@ -56,6 +56,10 @@ limitations under the License.
 	  <menuitem label="&openCmd.label;" command="cmd_open" key="open-key"/>
 	  <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key"/>
 	  <menuitem label="&saveTestAsCmd.label;" oncommand="editor.saveNewTestCase();"/>
+	  <menu label="&exportCmd.label;">
+	    <menupopup id="popup_export_formats" onpopupshowing="editor.populateExportFormatsPopup()">
+	    </menupopup>
+	  </menu>
 	  <menuseparator/>
 	  <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key"/>
 	</menupopup>
@@ -94,25 +98,25 @@ limitations under the License.
     </toolbar>
     <toolbar>
       <radiogroup id="runInterval" orient="horizontal">
-	<radio id="run" label="Run" selected="true" value="0"/>
-	<radio id="walk" label="Walk" value="500"/>
-	<radio id="step" label="Step" value="-1"/>
+	<radio id="run" label="&runRadio.label;" selected="true" value="0"/>
+	<radio id="walk" label="&walkRadio.label;" value="500"/>
+	<radio id="step" label="&stepRadio.label;" value="-1"/>
       </radiogroup>
-      <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="Play from the beginning or start point" command="cmd_selenium_play"/>
-      <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="Pause / Resume" command="cmd_selenium_pause"/>
-      <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="Step" command="cmd_selenium_step"/>
+      <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play"/>
+      <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
+      <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="&stepButton.tooltip;" command="cmd_selenium_step"/>
       <toolbarseparator/>
-      <toolbarbutton id="testrunner-button" label="Play with Selenium TestRunner" class="icon" tooltiptext="Play with Selenium TestRunner" oncommand="editor.playback()"/>
+      <toolbarbutton id="testrunner-button" label="&testrunnerButton.tooltip;" class="icon" tooltiptext="&testrunnerButton.tooltip;" oncommand="editor.playback()"/>
       <toolbarspacer flex="1"/>
-      <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="Record" checked="true" onclick="this.checked = !this.checked" oncommand="editor.toggleRecordingEnabled(this.checked)"/>
+      <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" onclick="this.checked = !this.checked" oncommand="editor.toggleRecordingEnabled(this.checked)"/>
     </toolbar>
   </toolbox>
 
   <vbox flex="1">
     <tabbox flex="3" height="300">
       <tabs orient="horizontal" onselect="if (window.editor) { editor.tabSelected(selectedItem.id) }" id="viewTabs">
-	<tab id="editorTab" label="Editor"/>
-	<tab id="sourceTab" label="Source"/>
+	<tab id="editorTab" label="&tableTab.label;" />
+	<tab id="sourceTab" label="&sourceTab.label;" />
       </tabs>
       <tabpanels flex="1">
 	<tabpanel orient="vertical">

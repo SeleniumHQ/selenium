@@ -18,13 +18,6 @@ function SourceView(recorder, textbox) {
 	this.log = new Log("SourceView");
 	this.textbox = textbox;
 	this.recorder = recorder;
-	this.updateView = function() {
-		var scrollTop = this.textbox.inputField.scrollTop;
-		//this.textbox.value = this.testCase.getSource(this.recorder.options, "New Test");
-		this.textbox.value = this.lastValue = recorder.testManager.getSourceForTestCase(this.testCase);
-		this.textbox.inputField.scrollTop = scrollTop;
-		//log.debug("source=" + getSource());
-	};
 }
 
 SourceView.prototype = {
@@ -54,3 +47,10 @@ SourceView.prototype = {
 	}
 };
 
+SourceView.prototype.updateView = function() {
+	var scrollTop = this.textbox.inputField.scrollTop;
+	//this.textbox.value = this.testCase.getSource(this.recorder.options, "New Test");
+	this.textbox.value = this.lastValue = this.recorder.testManager.getSourceForTestCase(this.testCase);
+	this.textbox.inputField.scrollTop = scrollTop;
+	//log.debug("source=" + getSource());
+}

@@ -18,7 +18,7 @@ function Editor(window, isSidebar) {
 	this.log.info("initializing");
 	this.window = window;
 	window.editor = this;
-	var editor = this;
+	var self = this;
 	this.isSidebar = isSidebar;
 	this.recordFrameTitle = false;
 	this.document = document;
@@ -27,11 +27,16 @@ function Editor(window, isSidebar) {
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
 	this.testCaseListeners = new Array();
+	this.testCaseListeners.push(function(testCase) {
+			if (self.view) {
+				self.view.testCase = testCase;
+			}
+			testCase.observer = self;
+		});
 	this.setTestCase(new TestCase());
-	var self = this;
-	this.testCaseListeners.push(function(testCase) { self.view.testCase = testCase });
 	this.initOptions();
-	this.toggleView(this.treeView);
+	//this.toggleView(this.treeView);
+	
 	
 	// "debugger" cannot be used since it is a reserved word in JS
 	this.selDebugger = new Debugger(this);
@@ -42,7 +47,8 @@ function Editor(window, isSidebar) {
 
 	//window.controllers.appendController(controller);
 
-	top.document.commandDispatcher.updateCommands("selenium-ide-state");
+	this.updateViewTabs();
+	//top.document.commandDispatcher.updateCommands("selenium-ide-state");
 	
 	this.log.info("initialized");
 	
@@ -78,11 +84,11 @@ Editor.controller = {
 		case "cmd_save":
 			return true;
 		case "cmd_selenium_play":
-			return editor.state != 'playing';
+		    return editor.testManager.getFormat().playable && editor.state != 'playing';
 		case "cmd_selenium_pause":
-			return editor.state == 'playing' || editor.state == 'paused';
+		    return editor.testManager.getFormat().playable && (editor.state == 'playing' || editor.state == 'paused');
 		case "cmd_selenium_step":
-			return editor.state == 'paused';
+			return editor.testManager.getFormat().playable && editor.state == 'paused';
 		default:
 			return false;
 		}
@@ -290,25 +296,6 @@ Editor.prototype.onUnloadDocument = function(doc) {
 		}
 		this.unloadTimeoutID = setTimeout("Editor.appendAND_WAIT()", 100);
 	}
-	
-	/*
-	if (this.lastWindow) {
-		log.debug("doc=" + doc);
-		var documents = this.eventManager.getDocuments(this.lastWindow);
-		var match = false;
-		for (var i = 0; i < documents.length; i++) {
-			log.debug("documents[i]=" + documents[i]);
-			if (doc == documents[i]) match = true;
-		}
-		if (match) {
-			log.debug("onUnloadDocument: set timer");
-			if (this.unloadTimeoutID != null) {
-				clearTimeout(this.unloadTimeoutID);
-			}
-			this.unloadTimeoutID = setTimeout("appendAND_WAIT()", 100);
-		}
-	}
-	*/
 }
 
 Editor.prototype.recordTitle = function(window) {
@@ -369,11 +356,8 @@ Editor.prototype.addCommand = function(command,target,value,window) {
 		clearTimeout(this.timeoutID);
 	}
 	this.lastWindow = window;
-	this.lastCommandIndex = this.testCase.recordIndex;
-	this.testCase.commands.splice(this.lastCommandIndex, 0, new Command(command, target, value));
-	this.view.rowInserted(this.lastCommandIndex);
-	this.timeoutID = setTimeout("editor.clearLastCommand()", 1000);
-	//updateSource();
+
+	this.testCase.recordCommand(new Command(command, target, value));
 }
 
 Editor.prototype.clearLastCommand = function() {
@@ -449,6 +433,36 @@ Editor.prototype.populateFormatsPopup = function() {
 	}
 }
 
+Editor.prototype.populateExportFormatsPopup = function() {
+	var e = document.getElementById("popup_export_formats");
+	var i;
+	for (i = e.childNodes.length - 1; i >= 0; i--) {
+		e.removeChild(e.childNodes[i]);
+	}
+	var formats = this.testManager.formatInfos;
+	for (i = 0; i < formats.length; i++) {
+		var menuitem = document.createElement("menuitem");
+		menuitem.setAttribute("label", formats[i].name);
+		menuitem.setAttribute("value", formats[i].id);
+		menuitem.setAttribute("command", "cmd_export");
+		e.appendChild(menuitem);
+	}
+}
+
+Editor.prototype.updateViewTabs = function() {
+	var editorTab = document.getElementById('editorTab');
+	var tabs = document.getElementById('viewTabs');
+	if (this.testManager.getFormat().playable) {
+		editorTab.collapsed = false;
+		this.toggleView(this.view || this.treeView);
+	} else {
+		tabs.selectedIndex = 1;
+		this.toggleView(this.sourceView);
+		editorTab.collapsed = true;
+	}
+	top.document.commandDispatcher.updateCommands("selenium-ide-state");
+}
+
 Editor.prototype.selectFormatFromMenu = function() {
 	var e = document.getElementById("popup_formats");
 	var i;
@@ -457,6 +471,7 @@ Editor.prototype.selectFormatFromMenu = function() {
 		if (checked == 'true') {
 			this.testManager.selectFormat(e.childNodes[i].getAttribute("value"));
 			this.saveSelectedFormat();
+			this.updateViewTabs();
 			break;
 		}
 	}
@@ -469,7 +484,7 @@ Editor.prototype.getBaseURL = function() {
 Editor.prototype.setTestCase = function(testCase) {
 	this.testCase = testCase;
 	for (var i = 0; i < this.testCaseListeners.length; i++) {
-		this.testCaseListeners[i](this.testCase);
+		this.testCaseListeners[i].call(this, this.testCase);
 	}
 }
 
@@ -501,4 +516,13 @@ Editor.prototype.setRecordingEnabled = function(enabled) {
  */
 Editor.prototype.loadDefaultOptions = function() {
 	this.setOptions(OPTIONS);
+}
+
+/*
+ * Called from testCase when command is recorded.
+ */
+Editor.prototype.rowInserted = function(index, command) {
+	this.lastCommandIndex = index;
+	this.view.rowInserted(index);
+	this.timeoutID = setTimeout("editor.clearLastCommand()", 1000);
 }

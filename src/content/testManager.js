@@ -16,10 +16,10 @@
 
 function TestManager(options) {
 	this.options = options;
-	this.log = new Log("TestManager");
 	
 	this.presetFormatInfos = [new InternalFormatInfo("default", "HTML", "html.js"),
-							  new InternalFormatInfo("ruby", "Ruby", "ruby.js")];
+							  new InternalFormatInfo("ruby", "Ruby (deprecated)", "ruby.js"),
+							  new InternalFormatInfo("ruby-rc", "Selenium RC - Ruby Client", "ruby-rc.js")];
 	this.reloadFormats();
 	if (options.selectedFormat != null) {
 		this.log.debug("selecting format: " + options.selectedFormat);
@@ -34,6 +34,8 @@ function TestManager(options) {
 		this.currentFormatInfo = this.formatInfos[0];
 	}
 }
+
+TestManager.log = TestManager.prototype.log = new Log('TestManager');
 
 TestManager.getFormatDir = function() {
 	var formatDir = FileUtils.getProfileDir();
@@ -96,8 +98,21 @@ TestManager.loadFormat = function(url) {
 	var format = {};
 	format.options = {};
 	format.configForm = '';
-	subScriptLoader.loadSubScript(url, format);
 	format.log = new Log("Format");
+	format.remoteControl = false;
+	for (prop in StringUtils) {
+		// copy functions from StringUtils
+		format[prop] = StringUtils[prop];
+	}
+	this.log.debug('loading format from ' + url);
+	subScriptLoader.loadSubScript(url, format);
+	if (format.formatCommand != null && format.format == null) {
+		this.log.debug('loading formatCommandOnlyAdapter');
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatCommandOnlyAdapter.js', format);
+		format.playable = false;
+	} else {
+		format.playable = true;
+	}
 	if (format.configForm && format.configForm.length > 0) {
 		function copyElement(doc, element) {
 			var copy = doc.createElement(element.nodeName.toLowerCase());
@@ -240,6 +255,7 @@ TestManager.prototype.selectFormat = function(id) {
 	var info = this.findFormatInfo(id);
 	if (info) {
 		this.currentFormatInfo = info;
+		this.currentFormatCache = null;
 	} else {
 		throw "Format not found: " + name;
 	}
@@ -255,6 +271,9 @@ TestManager.prototype.findFormatInfo = function(id) {
 }
 
 TestManager.prototype.getFormat = function() {
+	if (this.currentFormatCache) {
+		return this.currentFormatCache;
+	}
 	var format = this.currentFormatInfo.getFormat();
 	if (!format.options) {
 		format.options = {};
@@ -267,6 +286,7 @@ TestManager.prototype.getFormat = function() {
 			format.options["global." + name] = this.options[name];
 		}
 	}
+	this.currentFormatCache = format;
 	return format;
 }
 

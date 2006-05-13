@@ -15,7 +15,6 @@
  */
 
 function Command(command, target, value) {
-	this.type = "command";
 	this.command = command != null ? command : '';
 	this.target = target != null ? target : '';
 	this.value = value != null ? value : '';
@@ -29,10 +28,19 @@ Command.prototype.createCopy = function() {
 	return copy;
 };
 
+Command.prototype.type = 'command';
+
 function Comment(comment) {
-	this.type = "comment";
 	this.comment = comment != null ? comment : '';
 }
+
+Comment.prototype.type = 'comment';
+
+function Line(line) {
+	this.line = line;
+}
+
+Line.prototype.type = 'line';
 
 Comment.prototype.createCopy = function() {
 	var copy = new Comment();
@@ -140,5 +148,13 @@ TestCase.prototype.clearModified = function() {
 	this.modified = false;
 	if (this.observer) {
 		this.observer.updateTitle();
+	}
+}
+
+TestCase.prototype.recordCommand = function(command) {
+	var lastCommandIndex = this.recordIndex;
+	this.commands.splice(lastCommandIndex, 0, command);
+	if (this.observer) {
+		this.observer.rowInserted(lastCommandIndex, command);
 	}
 }

@@ -2,8 +2,19 @@
 <!ENTITY openCmd.label "Open...">
 <!ENTITY saveTestCmd.label "Save Test">
 <!ENTITY saveTestAsCmd.label "Save Test As...">
+<!ENTITY exportCmd.label "Export Test As...">
 <!ENTITY optionsCmd.label "Options...">
 <!ENTITY formatCmd.label "Format">
+<!ENTITY tableTab.label "Table">
+<!ENTITY sourceTab.label "Source">
+<!ENTITY runRadio.label "Run">
+<!ENTITY walkRadio.label "Walk">
+<!ENTITY stepRadio.label "Step">
+<!ENTITY playButton.tooltip "Play from the beginning or start point">
+<!ENTITY pauseButton.tooltip "Pause / Resume">
+<!ENTITY stepButton.tooltip "Step">
+<!ENTITY testrunnerButton.tooltip "Play with Selenium TestRunner">
+<!ENTITY recordButton.tooltip "Record">
+<!ENTITY baseURLTextbox.tooltip "Enter the URL of the website you are testing. Used for playing &quot;open&quot; command.">
 
-<!ENTITY baseURLTextbox.tooltip "Base URL used for playing in embedded Selenium.">
 <!ENTITY selenium-ide.sidebar.title "Selenium IDE">

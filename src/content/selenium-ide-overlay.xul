@@ -21,6 +21,9 @@ limitations under the License.
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-overlay.js"/>
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="selenium-ide-strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
+  </stringbundleset>
 
   <menupopup id="viewSidebarMenu">
     <menuitem observes="viewSeleniumIDESidebar" key="key_viewSeleniumIDESidebar" />
@@ -31,8 +34,11 @@ limitations under the License.
   </menupopup>
 
   <popup id="contentAreaContextMenu">
-    <menuseparator id="selenium-ide-separator"/>
-    <menuitem id="selenium-ide-toggle-check" oncommand="SeleniumIDE.Overlay.toggleCheckType()" label="Toggle verify/assert"/>
+    <!--
+    <menuseparator id="selenium-ide-separator" hidden="true"/>
+    <menuseparator id="selenium-ide-all-checks" hidden="true" label="&showAllChecks.label;"/>
+    -->
+    <!--<menuitem id="selenium-ide-toggle-check" oncommand="SeleniumIDE.Overlay.toggleCheckType()" label="Toggle verify/assert"/>-->
     <!--
     <menuitem id="selenium-ide-check-open" accesskey="o"/>
     <menuitem id="selenium-ide-check-textPresent" accesskey="p"/>

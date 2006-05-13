@@ -50,6 +50,20 @@ Selenium.prototype.doPause = function(waitTime) {
     testLoop.pauseInterval = waitTime;
 };
 
+// doStore* methods are copied from selenium-testrunner.js
+Selenium.prototype.doStoreText = function(target, varName) {
+    var element = this.page().findElement(target);
+    storedVars[varName] = getText(element);
+};
+
+Selenium.prototype.doStoreAttribute = function(target, varName) {
+    storedVars[varName] = this.page().findAttribute(target);
+};
+
+Selenium.prototype.doStore = function(value, varName) {
+    storedVars[varName] = value;
+};
+
 // Replace clickElement to prevent double-popup
 MozillaPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'focus', false);
