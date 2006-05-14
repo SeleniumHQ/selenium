@@ -73,6 +73,7 @@
 	</target>
 
 	<target name="test" depends="dist-image, checkWindows" if="thisIsWindows">
+		<echo message="Starting HTA tests..." />
 		<property name="results.file" location="${build.dir}/results.html" />
 		<delete file="${results.file}" />
 		<delete file="${results.file}" />
@@ -95,7 +96,8 @@
 				</tokenfilter>
 			</filterchain>
 		</loadfile>
-		<fail unless="tests.passed" message="Tests did not pass, see results file for details: ${results.file}" />
+		<fail unless="tests.passed" message="HTA Tests did not pass, see results file for details: ${results.file}" />
+		<echo message="HTA tests passed!" />
 	</target>
 
     <target name="dist" depends="dist-image">
