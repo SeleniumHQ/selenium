@@ -79,7 +79,20 @@
     </developers>
 
     <releases>
+    	<release>
+    		<version>0.7.0</version>
+
+            <date>5/14/2005</date>
+            <jiraId>10112</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.openqa.org/selenium-core/0.7.0/selenium-core-0.7.0.zip</url>
+                    <name>Full release</name>
+                </download>
+            </downloads>
+    	</release>
         <release>
+        	
             <version>0.6</version>
 
             <date>9/25/2005</date>
@@ -88,22 +101,6 @@
                 <download>
                     <url>http://gforge.public.thoughtworks.org/download.php/51/selenium-0.6.0.zip</url>
                     <name>Full release</name>
-                </download>
-                <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/53/selenium-0.6.0-java-src.zip</url>
-                    <name>Source code for the Java language driver for Selenium</name>
-                </download>
-                <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/52/selenium-0.6.0-java.zip</url>
-                    <name>Binary for the Java language driver for Selenium. (Requires Ant, suggested Tomcat install too)</name>
-                </download>
-                <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/55/selenium-0.6.0-ruby.zip</url>
-                    <name>Ruby language driver for Selenium</name>
-                </download>
-                <download>
-                    <url>http://gforge.public.thoughtworks.org/download.php/54/selenium-0.6.0-python-plone.zip</url>
-                    <name>Selenium packaged as a Zope product for Plone</name>
                 </download>
             </downloads>
         </release>
