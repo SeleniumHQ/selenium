@@ -980,7 +980,7 @@ PageBot.prototype.goForward = function() {
 };
 
 PageBot.prototype.close = function() {
-    this.currentWindow.close();
+    this.currentWindow.eval("window.close();");
 };
 
 PageBot.prototype.refresh = function() {
