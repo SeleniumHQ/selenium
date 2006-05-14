@@ -158,3 +158,13 @@ TestCase.prototype.recordCommand = function(command) {
 		this.observer.rowInserted(lastCommandIndex, command);
 	}
 }
+
+TestCase.prototype.checkTimestamp = function() {
+	if (this.file) {
+		if (this.lastModifiedTime < this.file.lastModifiedTime) {
+			this.lastModifiedTime = this.file.lastModifiedTime;
+			return true;
+		}
+	}
+	return false;
+}

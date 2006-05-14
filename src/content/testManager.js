@@ -332,6 +332,8 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 			}
 			outputStream.close();
 			this.log.info("saved " + file.path);
+			testCase.file = file;
+			testCase.lastModifiedTime = file.lastModifiedTime;
 			testCase.filename = file.path;
 			testCase.baseFilename = file.leafName;
 			testCase.clearModified();
@@ -363,8 +365,6 @@ TestManager.prototype.setSource = function(testCase, source) {
 }
 
 TestManager.prototype.load = function() {
-	var thefile;
-	
 	var nsIFilePicker = Components.interfaces.nsIFilePicker;
 	var fp = Components.classes["@mozilla.org/filepicker;1"]
 	    .createInstance(nsIFilePicker);
@@ -372,17 +372,19 @@ TestManager.prototype.load = function() {
 	fp.appendFilters(nsIFilePicker.filterHTML | nsIFilePicker.filterAll);
 	var res = fp.show();
 	if (res == nsIFilePicker.returnOK) {
-		thefile = fp.file;
+		return this.loadFile(fp.file);
 	} else {
 		return null;
 	}
-	
-	this.log.debug("start loading: file=" + thefile);
+}
+
+TestManager.prototype.loadFile = function(file) {
+	this.log.debug("start loading: file=" + file);
 	
 	try {
 		var is = Components.classes["@mozilla.org/network/file-input-stream;1"]
 	    .createInstance( Components.interfaces.nsIFileInputStream );
-		is.init(thefile, 0x01, 00004, null);
+		is.init(file, 0x01, 00004, null);
 		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
 	    .createInstance( Components.interfaces.nsIScriptableInputStream );
 		sis.init(is);
@@ -392,12 +394,14 @@ TestManager.prototype.load = function() {
 		
 		sis.close();
 		is.close();
-		testCase.filename = thefile.path;
-		testCase.baseFilename = thefile.leafName;
+		testCase.file = file;
+		testCase.lastModifiedTime = file.lastModifiedTime;
+		testCase.filename = file.path;
+		testCase.baseFilename = file.leafName;
 		
 		return testCase;
 	} catch (err) {
 		alert("error: " + err);
 		return null;
 	}
-};
+}

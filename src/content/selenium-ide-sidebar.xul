@@ -35,6 +35,7 @@ limitations under the License.
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   onload="new Editor(window, true)"
   onunload="editor.unload()">
+  <stringbundle id="strings" />
 
   <commandset id="editMenuCommands"/>
   <commandset id="baseMenuCommandSet"/>

@@ -39,7 +39,7 @@ limitations under the License.
   onload="new Editor(window, false)"
   onunload="editor.unload()"
   onclose="return editor.confirmClose()">
-
+  <stringbundle id="strings" />
   <commandset id="editMenuCommands"/>
   <commandset id="baseMenuCommandSet"/>
   <commandset id="seleniumIDECommands"/>

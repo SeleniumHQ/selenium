@@ -49,6 +49,8 @@ function Editor(window, isSidebar) {
 
 	this.updateViewTabs();
 	//top.document.commandDispatcher.updateCommands("selenium-ide-state");
+
+	document.addEventListener("focus", Editor.checkTimestamp, false);
 	
 	this.log.info("initialized");
 	
@@ -59,6 +61,23 @@ function Editor(window, isSidebar) {
 	} else {
 		Recorder.registerAll(this);
 	}
+}
+
+Editor.checkTimestamp = function() {
+	editor.log.debug('checkTimestamp');
+	if (editor.testCase.checkTimestamp()) {
+		if (window.confirm(Editor.getString('confirmReload'))) {
+			var testCase = editor.testManager.loadFile(editor.testCase.file);
+			if (testCase) {
+				editor.setTestCase(testCase);
+				editor.view.refresh();
+			}
+		}
+	}
+}
+
+Editor.getString = function(key) {
+    return document.getElementById("strings").getString(key);
 }
 
 Editor.controller = {
@@ -372,8 +391,7 @@ Editor.appendWaitForPageToLoad = function() {
 	editor.lastCommandIndex = null;
 	var lastCommand = editor.testCase.commands[lastCommandIndex];
 	if (lastCommand.type == 'command' && 
-		!lastCommand.command.match(/^assert/) &&
-		!lastCommand.command.match(/^verify/)) {
+		!lastCommand.command.match(/^(assert|verify|store)/)) {
 		if (editor.testManager.getFormat().remoteControl) {
 			editor.addCommand("waitForPageToLoad", editor.options.timeout, null, editor.lastWindow);
 		} else {
