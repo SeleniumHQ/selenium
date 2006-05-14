@@ -385,9 +385,15 @@ Selenium.prototype.doSubmit = function(formLocator) {
    * @param formLocator an <a href="#locators">element locator</a> for the form you want to submit
    */
     var form = this.page().findElement(formLocator);
-    if (!form.onsubmit || form.onsubmit()) {
+    var actuallySubmit = true;
+    if (form.onsubmit) {
+    	// apply this to the correct window so alerts are properly handled, even in IE HTA mode
+    	actuallySubmit = form.onsubmit.apply(this.browserbot.getContentWindow());
+    }
+    if (actuallySubmit) {
         form.submit();
     }
+    
 };
 
 Selenium.prototype.doOpen = function(url) {
@@ -622,14 +628,19 @@ Selenium.prototype.isLocation = function(expectedLocation) {
    * @return boolean true if the location matches, false otherwise
    */
     var docLocation = this.page().location;
+    var actualPath = docLocation.pathname;
+    if (docLocation.protocol == "file:") {
+    	// replace backslashes with forward slashes, so IE can run off the file system
+    	var actualPath = docLocation.pathname.replace(/\\/g, "/");
+    }
     var searchPos = expectedLocation.lastIndexOf('?');
 
     if (searchPos == -1) {
-    	return PatternMatcher.matches('*' + expectedLocation, docLocation.pathname)
+    	return PatternMatcher.matches('*' + expectedLocation, actualPath)
     }
     else {
         var expectedPath = expectedLocation.substring(0, searchPos);
-        return PatternMatcher.matches('*' + expectedPath, docLocation.pathname)
+        return PatternMatcher.matches('*' + expectedPath, actualPath)
 
         var expectedQueryString = expectedLocation.substring(searchPos);
         return PatternMatcher.matches(expectedQueryString, docLocation.search)

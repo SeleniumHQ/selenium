@@ -64,6 +64,8 @@ FAILURE = 1;
 
 runInterval = 0;
 
+queryString = null;
+
 function setRunInterval() {
     // Get the value of the checked runMode option.
     // There should be a way of getting the value of the "group", but I don't know how.
@@ -98,6 +100,7 @@ function loadAndRunIfAuto() {
 }
 
 function start() {
+	queryString = null;
     setRunInterval();
     loadSuiteFrame();
 }
@@ -225,8 +228,41 @@ function isQueryParameterTrue(name) {
     return (parameterValue != null && parameterValue.toLowerCase() == "true");
 }
 
+function getQueryString() {
+	if (queryString != null) return queryString;
+	if (browserVersion.isHTA) {
+		var args = extractArgs();
+		if (args.length < 2) return null;
+		queryString = args[1];
+		return queryString;
+	} else {
+		return location.search.substr(1);
+	}
+}
+
+function extractArgs() {
+	var str = SeleniumHTARunner.commandLine;
+	if (str == null || str == "") return new Array();
+    var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")\b(\S+)\b)/g);
+    // We either want non quote stuff ([^"]+) surrounded by quotes
+    // or we want to look-ahead, see that the next character isn't
+    // a quoted argument, and then grab all the non-space stuff
+    // this will return for the line: "foo" bar
+    // the results "\"foo\"" and "bar"
+
+    // So, let's unquote the quoted arguments:
+    var args = new Array;
+    for (var i = 0; i < matches.length; i++) {
+        args[i] = matches[i];
+        args[i] = args[i].replace(/^"(.*)"$/, "$1");
+    }
+    return args;
+}
+
 function getQueryParameter(searchKey) {
-    var clauses = location.search.substr(1).split('&');
+	var str = getQueryString();
+	if (str == null) return null;
+	var clauses = str.split('&');
     for (var i = 0; i < clauses.length; i++) {
         var keyValuePair = clauses[i].split('=',2);
         var key = unescape(keyValuePair[0]);
@@ -484,13 +520,46 @@ function postTestResults(suiteFailed, suiteTable) {
             resultCell.parentNode.removeChild(resultCell); 
         }
     }
+    
+    form.createHiddenField("numTestTotal", rowNum);
 
     // Add HTML for the suite itself
     form.createHiddenField("suite", suiteTable.parentNode.innerHTML);
 
-    form.submit();
+	if (isQueryParameterTrue("save")) {
+		saveToFile(resultsUrl, form);
+	} else {
+    	form.submit();
+    }
     document.body.removeChild(form);
+	if (isQueryParameterTrue("close")) {
+    	window.top.close();
+    }
+}
 
+function saveToFile(fileName, form) {
+	// This only works when run as an IE HTA
+	var inputs = new Object();
+	for (var i = 0; i < form.elements.length; i++) {
+		inputs[form.elements[i].name] = form.elements[i].value;
+	}
+	var objFSO = new ActiveXObject("Scripting.FileSystemObject")
+	var scriptFile = objFSO.CreateTextFile(fileName);
+	scriptFile.WriteLine("<html><body>\n<h1>Test suite results </h1>" +
+            "\n\n<table>\n<tr>\n<td>result:</td>\n<td>" + inputs["result"] + "</td>\n" +
+            "</tr>\n<tr>\n<td>totalTime:</td>\n<td>" + inputs["totalTime"] + "</td>\n</tr>\n" +
+            "<tr>\n<td>numTestPasses:</td>\n<td>" + inputs["numTestPasses"] + "</td>\n</tr>\n" +
+            "<tr>\n<td>numTestFailures:</td>\n<td>" + inputs["numTestFailures"] + "</td>\n</tr>\n" +
+            "<tr>\n<td>numCommandPasses:</td>\n<td>" + inputs["numCommandPasses"] + "</td>\n</tr>\n" +
+            "<tr>\n<td>numCommandFailures:</td>\n<td>" + inputs["numCommandFailures"] + "</td>\n</tr>\n" +
+            "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
+            "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr>");
+    var testNum = inputs["numTestTotal"];
+    for (var rowNum = 1; rowNum < testNum; rowNum++) {
+    	scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
+    }
+    scriptFile.WriteLine("</table></body></html>");
+    scriptFile.Close();
 }
 
 function printMetrics() {

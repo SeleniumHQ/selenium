@@ -226,7 +226,15 @@ BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowO
  * or href is different from the original one.
  */
 BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalLocation, originalHref) {
-    if (windowObject.closed) {
+    var windowClosed = true;
+    try {
+    	windowClosed = windowObject.closed;
+    } catch (e) {
+    	LOG.debug("exception detecting closed window (I guess it must be closed)");
+    	LOG.exception(e);
+    	// swallow exceptions which may occur in HTA mode when the window is closed
+    }
+    if (windowClosed) {
         return;
     }
 

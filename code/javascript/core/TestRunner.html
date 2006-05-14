@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
 <head>
-<HTA:APPLICATION ID="SeleniumTestRunner" APPLICATIONNAME="Selenium" >
+<HTA:APPLICATION ID="SeleniumHTARunner" APPLICATIONNAME="Selenium" >
 <!-- the previous line is only relevant if you rename this
      file to "TestRunner.hta" -->
 
@@ -57,8 +57,8 @@ Copyright 2004 ThoughtWorks, Inc
       <!-- Suite, Test, Control Panel -->
 
       <tr class="selenium">
-        <td width="25%" height="30%" rowspan="2"><iframe name="testSuiteFrame" id="testSuiteFrame" src="./TestPrompt.html"></iframe></td>
-        <td width="50%" height="30%" rowspan="2"><iframe name="testFrame" id="testFrame"></iframe></td>
+        <td width="25%" height="30%" rowspan="2"><iframe name="testSuiteFrame" id="testSuiteFrame" src="./TestPrompt.html" application="yes"></iframe></td>
+        <td width="50%" height="30%" rowspan="2"><iframe name="testFrame" id="testFrame" application="yes"></iframe></td>
         <th width="25%" height="1" class="header">
           <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
         </th>

@@ -2,7 +2,7 @@
 
     <property name="version" value="0.7.0-SNAPSHOT"/>
 
-    <target name="all" depends="install-jar, dist"/>
+    <target name="all" depends="install-jar, dist, test"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
@@ -48,6 +48,7 @@
                 <filter token="REVISION" value="${svn-revision}"/>
             </filterset>
         </copy>
+        <copy file="${image.dir}/core/TestRunner.html" tofile="${image.dir}/core/TestRunner.hta" />
     </target>
 
     <target name="generate-xml" depends="copy-sources">
@@ -64,6 +65,38 @@
     </target>
 
     <target name="dist-image" depends="get-svn-revision, copy-sources, generate-doc"/>
+
+	<target name="checkWindows">
+		<condition property="thisIsWindows">
+			<os family="windows" />
+		</condition>
+	</target>
+
+	<target name="test" depends="dist-image, checkWindows" if="thisIsWindows">
+		<property name="results.file" location="${build.dir}/results.html" />
+		<delete file="${results.file}" />
+		<delete file="${results.file}" />
+		<exec executable="cmd" failonerror="true" dir="${build.dir}" timeout="300000">
+			<arg value="/c" />
+			<!--<arg value="start" />
+			<arg value="/wait" />-->
+			<arg value="${image.dir}/core/TestRunner.hta" />
+			<arg value="&quot;test=../tests/TestSuite.html&amp;auto=true&amp;save=true&amp;resultsUrl=${results.file}&amp;close=true&quot;" />
+		</exec>
+		<condition property="build.failed">
+			<not><available file="${results.file}" /></not>
+		</condition>
+		<fail if="build.failed" message="Couldn't find results file: ${results.file}" />
+		<loadfile srcfile="${results.file}" property="tests.passed">
+			<filterchain>
+				<tokenfilter>
+					<filetokenizer />
+					<containsregex pattern="result:./td.\s*.td.passed./td." />
+				</tokenfilter>
+			</filterchain>
+		</loadfile>
+		<fail unless="tests.passed" message="Tests did not pass, see results file for details: ${results.file}" />
+	</target>
 
     <target name="dist" depends="dist-image">
         <mkdir dir="${dist.dir}"/>

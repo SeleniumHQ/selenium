@@ -34,6 +34,9 @@ BrowserVersion = function() {
     {
         this.browser = BrowserVersion.IE;
         this.isIE = true;
+        if (window.top.SeleniumHTARunner && window.top.document.location.pathname.match(/.hta$/i)) {
+        	this.isHTA = true;
+        }
         return;
     }
 
