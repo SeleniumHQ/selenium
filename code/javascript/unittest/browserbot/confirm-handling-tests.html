@@ -22,7 +22,7 @@ Copyright 2004 ThoughtWorks, Inc
     <link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-logging.js"></script>
+<script language="JavaScript" type="text/javascript" src="dummy-logging.js"></script>
 
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserbot.js"></script>
@@ -30,7 +30,6 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
-   LOG = new DummyLogger();
    testFrame =  document.getElementById("frame");
    testWindow = testFrame.contentWindow;
    browserBot = BrowserBot.createForFrame(testFrame);

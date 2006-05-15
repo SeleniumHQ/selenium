@@ -23,6 +23,8 @@ Copyright 2004 ThoughtWorks, Inc
     <link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="dummy-logging.js"></script>
+
 
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
@@ -97,27 +99,15 @@ function testSelectWindow() {
     verifyMocks();
 }
 
-// Verify functions
-function testVerifyLocationSuccess() {
+function testLocation() {
     var mockLocation = {pathname:'http://page/path', search:'?foo=bar'};
     mockPageBot.expectsProperty("location").returns(mockLocation);
-    selenium.assertLocation("path");
-    selenium.assertLocation("page/path");
-    selenium.assertLocation("http://page/path");
-    selenium.assertLocation("page/path?foo=bar");
-    selenium.assertLocation("http://page/path?foo=bar");
-    verifyMocks();
-}
 
-function testVerifyLocationFailed() {
-    var mockLocation = {pathname:'http://page/path', search:'?foo=bar'};
-    mockPageBot.expectsProperty("location").returns(mockLocation);
-    assertCallFails("Verify location should have failed",
-                    function() {selenium.assertLocation("bar");});
-    assertCallFails("Verify location should have failed",
-                    function() {selenium.assertLocation("http://page/");});
-    assertCallFails("Verify location should have failed",
-                    function() {selenium.assertLocation("http://page/path?foo");});
+    assertTrue(selenium.isLocation("path"));
+    assertTrue(selenium.isLocation("page/path"));
+    assertTrue(selenium.isLocation("http://page/path"));
+    assertTrue(selenium.isLocation("page/path?foo=bar"));
+    assertTrue(selenium.isLocation("http://page/path?foo=bar"));
     verifyMocks();
 }
 
@@ -196,37 +186,22 @@ function getMockTable() {
     return document.getElementById("test_table")
 }
 
-function testVerifyTextPresentSuccess() {
+function testTextPresent() {
     mockPageBot.expects("bodyText").returns("this is some foo text");
-    selenium.assertTextPresent("foo");
+    assertTrue(selenium.isTextPresent("foo"));
+    assertFalse(selenium.isTextPresent("bar"));
     verifyMocks();
 }
 
-function testVerifyTextPresentFailed() {
-    mockPageBot.expects("bodyText").returns("this is some foo text");
-
-    assertCallFails("Verify text should have failed",
-                    function() { selenium.assertTextPresent("bar");});
-    verifyMocks();
-}
-
-function testVerifyElementPresentSuccess() {
+function testElementPresent() {
     mockPageBot.expects("findElement", "id").returns("foo");
-    selenium.assertElementPresent("id");
+    assertTrue(selenium.isElementPresent("id"));
     verifyMocks();
 }
 
-function testVerifyElementPresentFailure() {
+function testElementNotPresent() {
     mockPageBot.expects("findElement", "id").andThrows("foo");
-
-    assertCallFails("VerifyElementPresent should have failed",
-                    function() {selenium.assertElementPresent("id");});
-    verifyMocks();
-}
-
-function testVerifyElementNotPresentSuccess() {
-    mockPageBot.expects("findElement", "id").andThrows("foo");
-    selenium.assertElementNotPresent("id");
+    assertFalse(selenium.isElementPresent("id"));
     verifyMocks();
 }
 
@@ -245,14 +220,6 @@ function testGetAllFieldsShouldCallPageBot() {
 function testGetAllLinksShouldCallPageBot() {
     mockPageBot.expects("getAllLinks").returns("foo");
     selenium.getAllLinks();
-    verifyMocks();
-}
-
-function testVerifyElementNotPresentFailure() {
-    mockPageBot.expects("findElement", "id").returns("foo");
-
-    assertCallFails("VerifyElementNotPresent should have failed",
-                    function() { selenium.assertElementNotPresent("id"); });
     verifyMocks();
 }
 
@@ -300,24 +267,14 @@ function testShouldTellBroswerBotIfAskedToCancelNextConfirmation() {
      verifyMocks();
 }
 
-function testVerifySelectedSuccess() {
+function testIsSelectedSuccess() {
     var mockTextControl = Object();
     mockTextControl.selectedIndex = 1;
     mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
     mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
-    selenium.assertSelected("id", "option1");
-    verifyMocks();
-}
-
-function testVerifySelectedFailed() {
-    var mockTextControl = Object();
-    mockTextControl.selectedIndex = 1;
-    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
-    mockPageBot.expects("findElement", "id").returns(mockTextControl);
-
-    assertCallFails("Verify selected should have failed.",
-                    function() {selenium.assertSelected("id", "option2");});
+    assertTrue(selenium.isSelected("id", "option1"));
+    assertFalse(selenium.isSelected("id", "option2"))
     verifyMocks();
 }
 
