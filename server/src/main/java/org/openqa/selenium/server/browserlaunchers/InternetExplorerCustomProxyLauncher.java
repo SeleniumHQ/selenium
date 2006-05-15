@@ -23,7 +23,7 @@ import java.io.PrintStream;
 
 import org.openqa.selenium.server.SeleniumServer;
 
-public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
+public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
 
     private static final String REG_KEY_SELENIUM_FOLDER = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\";
     private static final String REG_KEY_BACKUP_READY = REG_KEY_SELENIUM_FOLDER + "BackupReady";
@@ -44,19 +44,21 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
     private String sessionId;
     private File customProxyPACDir;
     private String[] cmdarray;
+    private String commandPath;
+    private Process process;
     
     public InternetExplorerCustomProxyLauncher() {
-        super(findBrowserLaunchLocation());
+        commandPath = findBrowserLaunchLocation();
     }
     
     public InternetExplorerCustomProxyLauncher(int port, String sessionId) {
-        super(findBrowserLaunchLocation());
+        commandPath = findBrowserLaunchLocation();
         this.port = port;
         this.sessionId = sessionId;
     }
     
     public InternetExplorerCustomProxyLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(browserLaunchLocation);
+        commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
     }
@@ -98,7 +100,7 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
     private void changeRegistrySettings() throws IOException {
         customProxyPACDir = new File("customProfileDir" + sessionId);
         if (customProxyPACDir.exists()) {
-            recursivelyDeleteDir(customProxyPACDir);
+            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
         }
         customProxyPACDir.mkdir();
         
@@ -172,9 +174,9 @@ public class InternetExplorerCustomProxyLauncher extends DestroyableRuntimeExecu
                 taskKillException = e;
             }
         }
-        super.close();
+        process.destroy();
         try {
-            recursivelyDeleteDir(customProxyPACDir);
+            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
         } catch (RuntimeException e) {
             if (taskKillException != null) {
                 e.printStackTrace();

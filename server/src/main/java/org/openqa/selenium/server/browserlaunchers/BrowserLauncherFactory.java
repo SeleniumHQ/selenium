@@ -16,69 +16,105 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import java.lang.reflect.*;
 import java.net.*;
 import java.util.regex.*;
 
 import org.openqa.selenium.server.*;
 
+/**
+ * Returns BrowserLaunchers based on simple strings given by the user
+ *  
+ * 
+ *  @author danielf
+ *
+ */
 public class BrowserLauncherFactory {
 
-    private static final Pattern FIREFOX_PATTERN = Pattern.compile("^\\*firefox( .*)?$");
-    private static final Pattern IEXPLORE_PATTERN = Pattern.compile("^\\*iexplore( .*)?$");
-    private static final Pattern SAFARI_PATTERN = Pattern.compile("^\\*safari( .*)?$");
-    private static final Pattern HTA_PATTERN = Pattern.compile("^\\*iehta( .*)?$");
+    private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*custom( .*)?$");
+    
+    private static final BrowserStringPair[] supportedBrowsers = new BrowserStringPair[] {
+        new BrowserStringPair("firefox", FirefoxCustomProfileLauncher.class),
+        new BrowserStringPair("iexplore", InternetExplorerCustomProxyLauncher.class),
+        new BrowserStringPair("safari", SafariCustomProfileLauncher.class),
+        new BrowserStringPair("iehta", HTABrowserLauncher.class),
+    };
+    
     SeleniumServer server;
     
     public BrowserLauncherFactory(SeleniumServer server) {
         this.server = server;
     }
     
+    /** Returns the browser given by the specified browser string
+     * 
+     * @param browser a browser string like "*firefox"
+     * @param sessionId the sessionId to launch
+     * @return the BrowserLauncher ready to launch
+     */
     public BrowserLauncher getBrowserLauncher(String browser, String sessionId) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
-        BrowserLauncher launcher;
-        Matcher FirefoxMatcher = FIREFOX_PATTERN.matcher(browser);
-        Matcher IExploreMatcher = IEXPLORE_PATTERN.matcher(browser);
-        Matcher SafariMatcher = SAFARI_PATTERN.matcher(browser);
-        Matcher HTAMatcher = HTA_PATTERN.matcher(browser);
-        if (FirefoxMatcher.find()) {
-            if (browser.equals("*firefox")) {
-                launcher = new FirefoxCustomProfileLauncher(server.getPort(), sessionId);
-            } else {
-                String browserStartCommand = FirefoxMatcher.group(1).substring(1);
-                launcher = new FirefoxCustomProfileLauncher(server.getPort(), sessionId, browserStartCommand);
+        for (int i = 0; i < supportedBrowsers.length; i++) {
+            BrowserStringPair pair = supportedBrowsers[i];
+            String name = pair.name;
+            Class c = pair.c;
+            Pattern pat = Pattern.compile("^\\*" + name + "( .*)?$");
+            Matcher mat = pat.matcher(browser);
+            if (mat.find()) {
+                String browserStartCommand;
+                if (browser.equals("*" + name)) {
+                    browserStartCommand = null;
+                } else {
+                    browserStartCommand = mat.group(1).substring(1);
+                }
+                return createBrowserLauncher(c, browserStartCommand, sessionId);
             }
-        } else if (IExploreMatcher.find()) {
-            if (browser.equals("*iexplore")) {
-                launcher = new InternetExplorerCustomProxyLauncher(server.getPort(), sessionId);
-            } else {
-                String browserStartCommand = IExploreMatcher.group(1).substring(1);
-                launcher = new InternetExplorerCustomProxyLauncher(server.getPort(), sessionId, browserStartCommand);
-            }
-        } else if (SafariMatcher.find()) {
-            if (browser.equals("*safari")) {
-                launcher = new SafariCustomProfileLauncher(server.getPort(), sessionId);
-            } else {
-                String browserStartCommand = SafariMatcher.group(1).substring(1);
-                launcher = new SafariCustomProfileLauncher(server.getPort(), sessionId, browserStartCommand);
-            }
-        } else if (HTAMatcher.find()) {
-            if (browser.equals("*iehta")) {
-                launcher = new HTABrowserLauncher(server.getPort(), sessionId);
-            } else {
-                String browserStartCommand = HTAMatcher.group(1).substring(1);
-                launcher = new HTABrowserLauncher(server.getPort(), sessionId, browserStartCommand);
-            }
-        } else {
-            launcher = new DestroyableRuntimeExecutingBrowserLauncher(browser);
-            //launcher = new ManualPromptUserLauncher();
         }
-        return launcher;
+        Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
+        if (CustomMatcher.find()) {
+            String browserStartCommand = CustomMatcher.group(1).substring(1);
+            return new DestroyableRuntimeExecutingBrowserLauncher(browserStartCommand);
+        }
+        throw browserNotSupported(browser);
     }
     
-    /** Strips the specified URL so it only includes a protocal, hostname and port 
-     * @throws MalformedURLException */
-    public static String stripStartURL(String url) throws MalformedURLException {
-        URL u = new URL(url);
-        return u.getProtocol() + "://" + u.getAuthority();
+    private RuntimeException browserNotSupported(String browser) {
+        StringBuffer errorMessage = new StringBuffer("Browser not supported: " + browser);
+        errorMessage.append('\n');
+        if (!browser.startsWith("*")) {
+            errorMessage.append("(Did you forget to add a *?)\n");
+        }
+        errorMessage.append('\n');
+        errorMessage.append("Supported browsers include:\n");
+        for (int i = 0; i < supportedBrowsers.length; i++) {
+            errorMessage.append("  *").append(supportedBrowsers[i].name).append('\n');
+        }
+        return new RuntimeException(errorMessage.toString());
     }
+    
+    private BrowserLauncher createBrowserLauncher(Class c, String browserStartCommand, String sessionId) {
+            try {
+                if (null == browserStartCommand) {
+                    Constructor ctor = c.getConstructor(new Class[]{int.class, String.class});
+                    Object[] args = new Object[] {new Integer(server.getPort()), sessionId};
+                    return (BrowserLauncher) ctor.newInstance(args);
+                } else {
+                    Constructor ctor = c.getConstructor(new Class[]{int.class, String.class, String.class});
+                    Object[] args = new Object[] {new Integer(server.getPort()), sessionId, browserStartCommand};
+                    return (BrowserLauncher) ctor.newInstance(args);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+    }
+    
+    private static class BrowserStringPair {
+        public String name;
+        public Class c;
+        public BrowserStringPair(String name, Class c) {
+            this.name = name;
+            this.c = c;
+        }
+    }
+
 }

@@ -216,7 +216,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
         String url = null;
         try {
-            url = BrowserLauncherFactory.stripStartURL(startURL);
+            url = LauncherUtils.stripStartURL(startURL);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return e.toString();

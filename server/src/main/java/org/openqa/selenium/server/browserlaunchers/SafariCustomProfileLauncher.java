@@ -25,7 +25,7 @@ import java.io.PrintStream;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.openqa.selenium.server.SeleniumServer;
 
-public class SafariCustomProfileLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
+public class SafariCustomProfileLauncher implements BrowserLauncher {
 
     private static final String DEFAULT_LOCATION = "/Applications/Safari.app/Contents/MacOS/Safari";
 
@@ -36,6 +36,8 @@ public class SafariCustomProfileLauncher extends DestroyableRuntimeExecutingBrow
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
+    private String commandPath;
+    private Process process;
 
     private static AsyncExecute exe = new AsyncExecute();
     
@@ -44,7 +46,7 @@ public class SafariCustomProfileLauncher extends DestroyableRuntimeExecutingBrow
     }
     
     public SafariCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(browserLaunchLocation);
+        commandPath = findBrowserLaunchLocation();
 //        this.port = port;
 //        this.sessionId = sessionId;
         if (!WindowsUtils.thisIsWindows()) {
@@ -62,7 +64,7 @@ public class SafariCustomProfileLauncher extends DestroyableRuntimeExecutingBrow
                 });
             }
         }
-        customProfileDir = createCustomProfileDir(sessionId);
+        customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
     }
     
     private static String getLibPathKey() {

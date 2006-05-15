@@ -17,14 +17,7 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Delete;
 
 /**
  * Runs the specified command path to start the browser, and kills the process to quit.
@@ -41,49 +34,5 @@ public class DestroyableRuntimeExecutingBrowserLauncher extends RuntimeExecuting
     /** Kills the process */
     public void close() {
         process.destroy();
-    }
-
-    protected File createCustomProfileDir(String sessionId) {
-        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-        String customProfileDirParent = ((tmpDir.exists() && tmpDir.isDirectory()) ? tmpDir.getAbsolutePath() : ".");
-        File customProfileDir = new File(customProfileDirParent + "/customProfileDir" + sessionId);
-        if (customProfileDir.exists()) {
-            recursivelyDeleteDir(customProfileDir);
-        }
-        customProfileDir.mkdir();
-        return customProfileDir;
-    }
-    
-    protected void recursivelyDeleteDir(File customProfileDir) {
-        Delete delete = new Delete();
-        delete.setProject(new Project());
-        delete.setDir(customProfileDir);
-        delete.setFailOnError(true);
-        delete.execute();
-    }
-    
-    protected void deleteTryTryAgain(File dir, int tries) {
-        try {
-            recursivelyDeleteDir(dir);
-        } catch (BuildException e) {
-            if (tries > 0) {
-                AsyncExecute.sleepTight(2000);
-                deleteTryTryAgain(dir, tries-1);
-            } else {
-                throw e;
-            }
-        }
-    }
-    
-    protected File makeProxyPAC(File parentDir, int port) throws FileNotFoundException {
-        File proxyPAC = new File(parentDir, "proxy.pac");
-        PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
-        out.println("function FindProxyForURL(url, host) {");
-        out.println("   if(shExpMatch(url, '*/selenium-server/*')) {");
-        out.println("       return 'PROXY localhost:" + Integer.toString(port) + "; DIRECT'");
-        out.println("   }");
-        out.println("}");
-        out.close();
-        return proxyPAC;
     }
 }

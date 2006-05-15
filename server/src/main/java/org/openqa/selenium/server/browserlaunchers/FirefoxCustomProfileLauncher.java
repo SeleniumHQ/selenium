@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.openqa.selenium.server.SeleniumServer;
 
-public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
+public class FirefoxCustomProfileLauncher implements BrowserLauncher {
 
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
     
@@ -37,6 +37,8 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
+    private String commandPath;
+    private Process process;
 
     private static AsyncExecute exe = new AsyncExecute();
     
@@ -45,7 +47,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     }
     
     public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(browserLaunchLocation);
+        commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
         // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
@@ -165,11 +167,11 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
     
 
     private String makeCustomProfile() throws IOException {
-        customProfileDir = createCustomProfileDir(sessionId);
+        customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
         
         if (simple) return customProfileDir.getAbsolutePath();
         
-        File proxyPAC = makeProxyPAC(customProfileDir, port);
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
         
         File extensionDir = new File(customProfileDir, "extensions/{538F0036-F358-4f84-A764-89FB437166B4}");
         extensionDir.mkdirs();
@@ -278,7 +280,7 @@ public class FirefoxCustomProfileLauncher extends DestroyableRuntimeExecutingBro
         
         
         try {
-            deleteTryTryAgain(customProfileDir, 6);
+            LauncherUtils.deleteTryTryAgain(customProfileDir, 6);
         } catch (RuntimeException e) {
             if (taskKillException != null || fileLockException != null) {
                 e.printStackTrace();

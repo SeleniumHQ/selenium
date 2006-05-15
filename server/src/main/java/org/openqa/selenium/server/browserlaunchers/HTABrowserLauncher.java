@@ -7,24 +7,26 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.io.*;
 import java.net.*;
 
-public class HTABrowserLauncher extends DestroyableRuntimeExecutingBrowserLauncher {
+public class HTABrowserLauncher implements BrowserLauncher {
 
     private int port;
     private String sessionId;
     private File dir;
+    private String commandPath;
+    private Process process;
 
     public HTABrowserLauncher() {
-        super(findBrowserLaunchLocation());
+        commandPath = findBrowserLaunchLocation();
     }
     
     public HTABrowserLauncher(int port, String sessionId) {
-        super(findBrowserLaunchLocation());
+        commandPath = findBrowserLaunchLocation();
         this.port = port;
         this.sessionId = sessionId;
     }
     
     public HTABrowserLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(browserLaunchLocation);
+        commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
     }
@@ -64,7 +66,7 @@ public class HTABrowserLauncher extends DestroyableRuntimeExecutingBrowserLaunch
     }
     
     private String createHTAFile() {
-        dir = createCustomProfileDir(sessionId);
+        dir = LauncherUtils.createCustomProfileDir(sessionId);
         InputStream input = HTABrowserLauncher.class.getResourceAsStream("/core/SeleneseRunner.html");
         BufferedReader br = new BufferedReader(new InputStreamReader(input));
         File hta = new File(dir, "SeleneseRunner.hta");
@@ -97,8 +99,8 @@ public class HTABrowserLauncher extends DestroyableRuntimeExecutingBrowserLaunch
     }
 
     public void close() {
-        super.close();
-        recursivelyDeleteDir(dir);
+        process.destroy();
+        LauncherUtils.recursivelyDeleteDir(dir);
     }
 
 }
