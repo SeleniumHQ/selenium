@@ -26,6 +26,7 @@ public class BrowserLauncherFactory {
     private static final Pattern FIREFOX_PATTERN = Pattern.compile("^\\*firefox( .*)?$");
     private static final Pattern IEXPLORE_PATTERN = Pattern.compile("^\\*iexplore( .*)?$");
     private static final Pattern SAFARI_PATTERN = Pattern.compile("^\\*safari( .*)?$");
+    private static final Pattern HTA_PATTERN = Pattern.compile("^\\*iehta( .*)?$");
     SeleniumServer server;
     
     public BrowserLauncherFactory(SeleniumServer server) {
@@ -38,6 +39,7 @@ public class BrowserLauncherFactory {
         Matcher FirefoxMatcher = FIREFOX_PATTERN.matcher(browser);
         Matcher IExploreMatcher = IEXPLORE_PATTERN.matcher(browser);
         Matcher SafariMatcher = SAFARI_PATTERN.matcher(browser);
+        Matcher HTAMatcher = HTA_PATTERN.matcher(browser);
         if (FirefoxMatcher.find()) {
             if (browser.equals("*firefox")) {
                 launcher = new FirefoxCustomProfileLauncher(server.getPort(), sessionId);
@@ -58,6 +60,13 @@ public class BrowserLauncherFactory {
             } else {
                 String browserStartCommand = SafariMatcher.group(1).substring(1);
                 launcher = new SafariCustomProfileLauncher(server.getPort(), sessionId, browserStartCommand);
+            }
+        } else if (HTAMatcher.find()) {
+            if (browser.equals("*iehta")) {
+                launcher = new HTABrowserLauncher(server.getPort(), sessionId);
+            } else {
+                String browserStartCommand = HTAMatcher.group(1).substring(1);
+                launcher = new HTABrowserLauncher(server.getPort(), sessionId, browserStartCommand);
             }
         } else {
             launcher = new DestroyableRuntimeExecutingBrowserLauncher(browser);
