@@ -243,7 +243,7 @@ function getQueryString() {
 function extractArgs() {
 	var str = SeleniumHTARunner.commandLine;
 	if (str == null || str == "") return new Array();
-    var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")\b(\S+)\b)/g);
+    var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")(\S+))/g);
     // We either want non quote stuff ([^"]+) surrounded by quotes
     // or we want to look-ahead, see that the next character isn't
     // a quoted argument, and then grab all the non-space stuff

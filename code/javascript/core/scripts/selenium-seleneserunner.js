@@ -30,6 +30,8 @@ var cmd4 = document.createElement("div");
 
 var postResult = "START";
 
+queryString = null;
+
 function runTest() {
     var testAppFrame = document.getElementById('myiframe');
     selenium = Selenium.createForFrame(testAppFrame);
@@ -62,8 +64,40 @@ function runTest() {
     testLoop.start();
 }
 
+function getQueryString() {
+	if (queryString != null) return queryString;
+	if (browserVersion.isHTA) {
+		var args = extractArgs();
+		if (args.length < 2) return null;
+		queryString = args[1];
+		return queryString;
+	} else {
+		return location.search.substr(1);
+	}
+}
+
+function extractArgs() {
+	var str = SeleniumHTARunner.commandLine;
+	if (str == null || str == "") return new Array();
+    var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")(\S+))/g);
+    // We either want non quote stuff ([^"]+) surrounded by quotes
+    // or we want to look-ahead, see that the next character isn't
+    // a quoted argument, and then grab all the non-space stuff
+    // this will return for the line: "foo" bar
+    // the results "\"foo\"" and "bar"
+
+    // So, let's unquote the quoted arguments:
+    var args = new Array;
+    for (var i = 0; i < matches.length; i++) {
+        args[i] = matches[i];
+        args[i] = args[i].replace(/^"(.*)"$/, "$1");
+    }
+    return args;
+}
+
 function getQueryVariable(variable) {
-    var query = window.location.search.substring(1);
+    var query = getQueryString();
+    if (query == null) return null;
     var vars = query.split("&");
     for (var i=0;i<vars.length;i++) {
         var pair = vars[i].split("=");
@@ -74,8 +108,10 @@ function getQueryVariable(variable) {
 }
 
 function buildBaseUrl() {
+	var baseUrl = getQueryVariable("baseUrl");
+	if (baseUrl != null) return baseUrl;
 	var lastSlash = window.location.href.lastIndexOf('/');
-	var baseUrl = window.location.href.substring(0, lastSlash+1);
+	baseUrl = window.location.href.substring(0, lastSlash+1);
 	return baseUrl;
 }
 
