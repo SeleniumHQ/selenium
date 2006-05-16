@@ -20,6 +20,7 @@
 				</classpath>
 				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
 				<sysproperty key="maven.home" value="${maven.home}" />
+				<arg value="-e" />
 				<arg value="-DfirefoxDefaultPath=${firefox.location}" />
 				<arg line="${mvn.overrideable.settings}" />
 			</java>
