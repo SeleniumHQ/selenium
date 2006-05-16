@@ -44,10 +44,10 @@ Selenium Server "interactive mode" is a way of rapidly prototyping tests that re
 <p>The first part of this message &quot;OK&quot; says that your request for work was successful.  The second part of this message, the number, is a Session ID.  The Session ID will be different every time you run the &quot;getNewBrowserSession&quot; command from the command line.</p>
 <p>Let's try some more commands; let's do a Google search!  We'll start by opening up the Google website.  Type this in the Selenium Server command window, replacing the Session ID below with the number you got when you ran &quot;getNewBrowserSession&quot;:</p>
 <blockquote>
-  <p> <code>cmd=<strong>open</strong>&amp;1=<strong>http://www.google.com</strong>&amp;sessionId=<em>1143670264928</em></code></p>
+  <p> <code>cmd=<strong>open</strong>&amp;1=<strong>http://www.google.com/webhp</strong>&amp;sessionId=<em>1143670264928</em></code></p>
 </blockquote>
 <p>
-  When this command finishes, your browser window should reveal google.com in the lower frame.  Don't forget that you need to replace the Session ID above with your own personal Session ID, the one you got when you ran the &quot;getNewBrowserSession&quot; command.  (If you use the wrong Session ID, you won't see an error message; the Selenium Server will just sit there, waiting for some browser to come in and do its work.)</p>
+When this command finishes, your browser window should reveal google.com in the lower frame.  (The <i>/webhp</i> sends us to a page Google maintains which is not subject to redirects to country-specific Google front ends, e.g., <i>www.google.fr</i>.)  Don't forget that you need to replace the Session ID above with your own personal Session ID, the one you got when you ran the &quot;getNewBrowserSession&quot; command.  (If you use the wrong Session ID, you won't see an error message; the Selenium Server will just sit there, waiting for some browser to come in and do its work.)</p>
 <p>Now that Google is open, let's try typing something in the search box.  Type this in the Selenium Server command window:</p>
 <blockquote>
   <p><code> cmd=<strong>type</strong>&amp;1=<strong>q</strong>&amp;2=<strong>hello world</strong>&amp;sessionId=<em>1143670264928</em></code></p>
@@ -92,7 +92,7 @@ public class GoogleTest extends TestCase {
     }
     
     public void testGoogle() {
-        sel.open("http://www.google.com");
+        sel.open("http://www.google.com/webhp");
         sel.type("q", "hello world");
         sel.click("btnG");
         sel.waitForPageToLoad("5000");
@@ -124,7 +124,7 @@ namespace MyTests {
         
         [Test]
         public void testGoogle() {
-            sel.Open("http://www.google.com");
+            sel.Open("http://www.google.com/webhp");
             sel.Type("q", "hello world");
             sel.Click("btnG");
             sel.WaitForPageToLoad("5000");
@@ -153,7 +153,7 @@ class GoogleTest(unittest.TestCase):
         
     def test_google(self):
         sel = self.selenium
-        sel.open("http://www.google.com")
+        sel.open("http://www.google.com/webhp")
         sel.type("q", "hello world")
         sel.click("btnG")
         sel.wait_for_page_to_load(5000)
@@ -182,7 +182,7 @@ class GoogleTest < Test::Unit::TestCase
 	end
 		
 	def test_google
-		@sel.open("http://www.google.com")
+		@sel.open("http://www.google.com/webhp")
 		@sel.type("q", "hello world")
 		@sel.click("btnG")
 		@sel.wait_for_page_to_load("5000")
