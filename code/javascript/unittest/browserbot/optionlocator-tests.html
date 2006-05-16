@@ -29,14 +29,14 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript">
 
+var mockSelect = new Object();
+var optionLocatorFactory = new OptionLocatorFactory();
 function setUp() {
-    mockSelect = new Object();
     mockSelect.options = [{text: "Option Zero", value: "option0"},
                           {text: "Option One",  value: "option1"},
                           {text: "Option Two",  value: "option2"},
                           {text: "",  value: ""}];
     mockSelect.selectedIndex = 1;
-    optionLocatorFactory = new OptionLocatorFactory();
 }
 
 function testSelectByIndexSuccess() {
@@ -77,55 +77,50 @@ function testSelectByValueFailure() {
         function() {locator.findOption(mockSelect);});
 }
 
-function testAssertSelectedByLabelSuccess() {
+function testIsSelectedByLabelSuccess() {
     var locator = optionLocatorFactory.fromLocatorString("label=Option One");
-    locator.assertSelected(mockSelect);
+    assertTrue(locator.isSelected(mockSelect));
 }
 
-function testAssertSelectedByLabelFailure() {
+function testIsSelectedByLabelFailure() {
     var locator = optionLocatorFactory.fromLocatorString("label=O*ion Two");
-    assertAssertionFails("assertSelect should have failed",
-                     function() {locator.assertSelected(mockSelect);});
+    assertFalse(locator.isSelected(mockSelect));
 }
 
-function testAssertSelectedByValueSuccess() {
+function testIsSelectedByValueSuccess() {
     var locator = optionLocatorFactory.fromLocatorString("value=opt*n1");
-    locator.assertSelected(mockSelect);
+    assertTrue(locator.isSelected(mockSelect));
 }
 
-function testAssertSelectedByValueFailure() {
+function testIsSelectedByValueFailure() {
     var locator = optionLocatorFactory.fromLocatorString("value=option2");
-    assertAssertionFails("assertSelect should have failed",
-                     function() {locator.assertSelected(mockSelect);});
+    assertFalse(locator.isSelected(mockSelect));
 }
 
-function testAssertSelectedByIndexSuccess() {
+function testIsSelectedByIndexSuccess() {
     var locator = optionLocatorFactory.fromLocatorString("index=1");
-    locator.assertSelected(mockSelect);
+    assertTrue(locator.isSelected(mockSelect));
 }
 
-function testAssertSelectedByIndexFailure() {
+function testIsSelectedByIndexFailure() {
     var locator = optionLocatorFactory.fromLocatorString("index=2");
-    assertAssertionFails("assertSelect should have failed",
-                     function() {locator.assertSelected(mockSelect);});
+    assertFalse(locator.isSelected(mockSelect));
 }
 
-function testAssertSelectedByEmptyLabelSuccess() {
+function testIsSelectedByEmptyLabelSuccess() {
     mockSelect.selectedIndex = 3;
     var locator = optionLocatorFactory.fromLocatorString("label=");
-    locator.assertSelected(mockSelect);
+    assertTrue(locator.isSelected(mockSelect));
 }
 
-function testAssertSelectedByEmptyLabelFailure() {
+function testIsSelectedByEmptyLabelFailure() {
     var locator = optionLocatorFactory.fromLocatorString("label=");
-    assertAssertionFails("assertSelect should have failed",
-                     function(){locator.assertSelected(mockSelect);});
+    assertFalse(locator.isSelected(mockSelect));
 }
 
-function testAssertSelectedWithIndexOutOfBounds() {
+function testIsSelectedWithIndexOutOfBounds() {
     var locator = optionLocatorFactory.fromLocatorString("index=" + mockSelect.options.length);
-    assertAssertionFails("assertSelect should have failed",
-                     function() {locator.assertSelected(mockSelect);});
+    assertFalse(locator.isSelected(mockSelect));
 }
 
 function testOptionLocatorWithBadLocatorType() {
@@ -145,7 +140,6 @@ function testOptionLocatorWithNegativeIndex() {
         "Should not be able to create a locator with a bad index.",
         function() {optionLocatorFactory.fromLocatorString("index=-100");});
 }
-
 
 function assertCallFails(message, theCall, expectedFailureMessage) {
     try {

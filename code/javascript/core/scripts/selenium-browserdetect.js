@@ -61,6 +61,11 @@ BrowserVersion = function() {
         this.browser = BrowserVersion.FIREFOX;
         this.isFirefox = true;
         this.isGecko = true;
+        var result = /.*Firefox\/([\d\.]+).*/.exec(navigator.userAgent);
+        if (result)
+        {
+            this.firefoxVersion = result[1];
+        }
         return;
     }
 
@@ -84,3 +89,4 @@ BrowserVersion.MOZILLA = "Mozilla";
 BrowserVersion.UNKNOWN = "Unknown";
 
 browserVersion = new BrowserVersion();
+

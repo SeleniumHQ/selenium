@@ -35,9 +35,9 @@ String.prototype.startsWith = function(str) {
 
 // Returns the text in this element
 function getText(element) {
-    text = "";
+    var text = "";
 
-    if(browserVersion.isFirefox)
+    if(browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5")
     {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
@@ -149,8 +149,8 @@ function setText(element, text) {
 
 // Get the value of an <input> element
 function getInputValue(inputElement) {
-    if (inputElement.type.toUpperCase() == 'CHECKBOX' || 
-        inputElement.type.toUpperCase() == 'RADIO') 
+    if (inputElement.type.toUpperCase() == 'CHECKBOX' ||
+        inputElement.type.toUpperCase() == 'RADIO')
     {
         return (inputElement.checked ? 'on' : 'off');
     }
@@ -304,14 +304,14 @@ PatternMatcher.strategies = {
     },
 
     /**
-     * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*", 
+     * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*",
      * but don't require a perfect match; instead succeed if actual
      * contains something that matches globString.
-     * Making this distinction is motivated by a bug in IE6 which 
-     * leads to the browser hanging if we implement *TextPresent tests 
-     * by just matching against a regular expression beginning and 
-     * ending with ".*".  The globcontains strategy allows us to satisfy 
-     * the functional needs of the *TextPresent ops more efficiently 
+     * Making this distinction is motivated by a bug in IE6 which
+     * leads to the browser hanging if we implement *TextPresent tests
+     * by just matching against a regular expression beginning and
+     * ending with ".*".  The globcontains strategy allows us to satisfy
+     * the functional needs of the *TextPresent ops more efficiently
      * and so avoid running into this IE6 freeze.
      */
     globContains: function(globString) {
@@ -320,7 +320,7 @@ PatternMatcher.strategies = {
             return this.regexp.test(actual);
         };
     },
-    
+
 
     /**
      * "glob" (aka "wildmat") patterns, e.g. "glob:one,two,*"
@@ -331,7 +331,7 @@ PatternMatcher.strategies = {
             return this.regexp.test(actual);
         };
     }
-    
+
 };
 
 PatternMatcher.convertGlobMetaCharsToRegexpMetaChars = function(glob) {
@@ -364,8 +364,8 @@ var Assert = {
         if (args.expected === args.actual) {
             return;
         }
-        Assert.fail(args.comment + 
-                    "Expected '" + args.expected + 
+        Assert.fail(args.comment +
+                    "Expected '" + args.expected +
                     "' but was '" + args.actual + "'");
     },
 
@@ -377,11 +377,11 @@ var Assert = {
         if (PatternMatcher.matches(args.expected, args.actual)) {
             return;
         }
-        Assert.fail(args.comment + 
-                    "Actual value '" + args.actual + 
+        Assert.fail(args.comment +
+                    "Actual value '" + args.actual +
                     "' did not match '" + args.expected + "'");
     },
-    
+
     /*
      * Assert.notMtches(comment?, pattern, actual)
      */
@@ -390,8 +390,8 @@ var Assert = {
         if (!PatternMatcher.matches(args.expected, args.actual)) {
             return;
         }
-        Assert.fail(args.comment + 
-                    "Actual value '" + args.actual + 
+        Assert.fail(args.comment +
+                    "Actual value '" + args.actual +
                     "' did match '" + args.expected + "'");
     }
 
