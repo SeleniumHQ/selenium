@@ -62,7 +62,7 @@ function renderWhitespaceInTextContent(element) {
     // Remove non-visible newlines in text nodes
     if (element.nodeType == Node.TEXT_NODE)
     {
-        element.data = element.data.replace(/\n|\r/g, " ");
+        element.data = element.data.replace(/\n|\r|\t/g, " ");
         return;
     }
 

@@ -31,6 +31,7 @@ Copyright 2004 ThoughtWorks, Inc
       assertTextContent("1 1 1", "one_space");
       assertTextContent("2 2  2", "two_spaces");
       assertTextContent("3 3   3  3   3", "three_spaces");
+      assertTextContent("1 tab2 tabs", "tabs");
     }
 
     function testNonTextMarkup()
@@ -79,6 +80,7 @@ Copyright 2004 ThoughtWorks, Inc
 <div id="one_space">1 1&nbsp;1</div>
 <div id="two_spaces">2  2&nbsp;&nbsp;2</div>
 <div id="three_spaces">3   3&nbsp;&nbsp;&nbsp;3  &nbsp;3 &nbsp;&nbsp;3</div>
+<div id="tabs">1	tab2		tabs</div>
 <div id="non_text_markup">
   There is <span>non-visible</span> and <a href="javascript:void()"><strong><em>visible</em></strong></a> markup here that <!-- comment -->doesn't change the text content
 </div>
