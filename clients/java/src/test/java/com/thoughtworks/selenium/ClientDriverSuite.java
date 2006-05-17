@@ -27,7 +27,7 @@ import com.thoughtworks.selenium.corebased.*;
  *  @author Dan Fabulich
  *
  */
-public class ClientDriverSuite extends TestSuite{
+public class ClientDriverSuite extends TestCase {
 
     /** Construct a test suite containing the other integration tests,
      * wrapping them up in a TestSetup object that will launch the Selenium
@@ -36,8 +36,11 @@ public class ClientDriverSuite extends TestSuite{
      */
 	public static Test suite() {
         try {
-            ClientDriverSuite supersuite = new ClientDriverSuite();
-            ClientDriverSuite suite = new ClientDriverSuite();
+            // TODO This class extends TestCase to workaround MSUREFIRE-113
+            // http://jira.codehaus.org/browse/MSUREFIRE-113
+            // Once that bug is fixed, this class should be a TestSuite, not a TestCase
+            TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
+            TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             suite.addTest(I18nTest.suite());
             //suite.addTestSuite(ApacheMyFacesSuggestTest.class);	disabled pending DOJO combobox trouble issue resolution (http://jira.openqa.org/browse/SRC-55)
             suite.addTestSuite(RealDealIntegrationTest.class);
