@@ -328,7 +328,7 @@ public class WindowsUtils {
             reg = regExe.getAbsolutePath();
             return reg;
         }
-        regExe = new File("c:\\ntreskit");
+        regExe = new File("c:\\ntreskit\\reg.exe");
     	if (regExe.exists()) {
             reg = regExe.getAbsolutePath();
             return reg;
@@ -454,10 +454,15 @@ public class WindowsUtils {
         exec.setFailonerror(false);
         exec.setResultProperty("result");
         exec.setOutputproperty("output");
-        exec.createArg().setValue("add");
         if (isRegExeVersion1()) {
+            if (doesRegistryValueExist(key)) {
+                exec.createArg().setValue("update");
+            } else {
+                exec.createArg().setValue("add");
+            }
         	exec.createArg().setValue(key + "=" + data);
         } else {
+            exec.createArg().setValue("add");
         	RegKeyValue r = new RegKeyValue(key);
         	exec.createArg().setValue(r.key);
             exec.createArg().setValue("/v");
@@ -483,11 +488,16 @@ public class WindowsUtils {
         exec.setFailonerror(false);
         exec.setResultProperty("result");
         exec.setOutputproperty("output");
-        exec.createArg().setValue("add");
         if (isRegExeVersion1()) {
+            if (doesRegistryValueExist(key)) {
+                exec.createArg().setValue("update");
+            } else {
+                exec.createArg().setValue("add");
+            }
         	exec.createArg().setValue(key + "=" + Integer.toString(data));
         	exec.createArg().setValue("REG_DWORD");
         } else {
+            exec.createArg().setValue("add");
         	RegKeyValue r = new RegKeyValue(key);
         	exec.createArg().setValue(r.key);
             exec.createArg().setValue("/v");

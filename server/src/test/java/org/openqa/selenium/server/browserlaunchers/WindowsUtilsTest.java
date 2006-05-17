@@ -17,11 +17,31 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.util.*;
+import java.util.regex.*;
 
 import junit.framework.*;
 
 public class WindowsUtilsTest extends TestCase {
 
+    int majorVersion;
+    int minorVersion;
+    Pattern WIN_OS_VERSION = Pattern.compile("^(\\d)+\\.(\\d)+$");
+    
+    public void setUp() {
+        if (!WindowsUtils.thisIsWindows()) return;
+        String osVersion = System.getProperty("os.version");
+        Matcher m = WIN_OS_VERSION.matcher(osVersion);
+        if (!m.find()) fail("osVersion doesn't look right: " + osVersion);
+        majorVersion = Integer.parseInt(m.group(1));
+        minorVersion = Integer.parseInt(m.group(2));
+    }
+    
+    private boolean isXpOrHigher() {
+        if (majorVersion < 5) return false;
+        if (minorVersion < 1) return false;
+        return true;
+    }
+    
     public void testLoadEnvironment() {
         if (!WindowsUtils.thisIsWindows()) return;
         Map p =WindowsUtils.loadEnvironment();
@@ -37,10 +57,12 @@ public class WindowsUtilsTest extends TestCase {
     }
     public void testWMIC() {
         if (!WindowsUtils.thisIsWindows()) return;
+        if (!isXpOrHigher()) return;
         assertTrue("wmic should be found", "wmic" != WindowsUtils.findWMIC());
     }
     public void testTaskKill() {
         if (!WindowsUtils.thisIsWindows()) return;
+        if (!isXpOrHigher()) return;
         assertTrue("taskkill should be found", "taskkill" != WindowsUtils.findTaskKill());
     }
     public void testRegistry() {
@@ -54,6 +76,8 @@ public class WindowsUtilsTest extends TestCase {
         System.out.println("ProxyEnable: " + WindowsUtils.readIntRegistryValue(keyProxyEnable));
         WindowsUtils.writeStringRegistryValue(keySeleniumFoo, "bar");
         assertEquals("Didn't set Foo string key correctly", "bar", WindowsUtils.readStringRegistryValue(keySeleniumFoo));
+        WindowsUtils.writeStringRegistryValue(keySeleniumFoo, "baz");
+        assertEquals("Didn't modify Foo string key correctly", "baz", WindowsUtils.readStringRegistryValue(keySeleniumFoo));
         WindowsUtils.deleteRegistryValue(keySeleniumFoo);
         assertFalse("Didn't delete Foo key correctly", WindowsUtils.doesRegistryValueExist(keySeleniumFoo));
         WindowsUtils.writeBooleanRegistryValue(keySeleniumFoo, true);
