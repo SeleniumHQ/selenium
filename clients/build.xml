@@ -225,6 +225,8 @@
 		<mkdir dir="dist-image/server/source" />
 		<mkdir dir="dist-image/server/doc" />
 		<copy file="${selenium-server.jar}" tofile="dist-image/server/selenium-server.jar" />
+		<copy file="${selenium-server.jar}/../selenium-server-${version}-tests.jar"
+			tofile="dist-image/server/selenium-server-tests.jar" />
 		<copy todir="dist-image/server/source/src">
 		    <fileset dir="../server/src" />
 		</copy>
