@@ -15,8 +15,8 @@ public class ServerTestSuite extends TestCase {
         TestSuite suite = new TestSuite(ServerTestSuite.class.getName());
         suite.addTestSuite(QueueTest.class);
         suite.addTestSuite(HTMLRunnerTest.class);
-        suite.addTestSuite(FirefoxCustomProfileLauncher.class);
-        suite.addTestSuite(InternetExplorerCustomProxyLauncher.class);
+        suite.addTestSuite(FirefoxCustomProfileLauncherTest.class);
+        suite.addTestSuite(InternetExplorerCustomProxyLauncherTest.class);
         suite.addTestSuite(WindowsUtilsTest.class);
         return suite;
     }
