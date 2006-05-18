@@ -41,11 +41,12 @@
                 </configuration>
             </plugin>
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <forkMode>never</forkMode>
-              </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes><include>**/ServerTestSuite.java</include></includes>
+                    <forkMode>never</forkMode>
+                </configuration>
             </plugin>
         </plugins>
     </build>
