@@ -20,31 +20,31 @@
 
 SeleniumIDE.Overlay = {};
 
-SeleniumIDE.Overlay.NUM_RECENT_CHECKS = 8;
-
-SeleniumIDE.Overlay.toggleCheckType = function() {
-	var CheckBuilders = SeleniumIDE.Loader.getTopEditor().window.CheckBuilders;
-	CheckBuilders.useAssert = !CheckBuilders.useAssert;
-}
+SeleniumIDE.Overlay.NUM_RECENT_COMMANDS = 8;
 
 SeleniumIDE.Overlay.appendCheck = function(event) {
 	var command = event.target._Selenium_IDE_command;
 	if (command.command.match(/^store/)) {
-		command[command.valueInTarget ? 'target' : 'value'] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
+		var valueProperty = 'value';
+		if (command.builder.accessorType == 'value') {
+			// store value in the second column
+			valueProperty = 'target';
+		}
+		command[valueProperty] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
 	}
 	SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
-	SeleniumIDE.Overlay.addRecentCheck(command.id);
+	SeleniumIDE.Overlay.addRecentCommand(command.command);
 }
 
 SeleniumIDE.Overlay.getOptionsBranch = function() {
 	return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
 }
 
-SeleniumIDE.Overlay.getRecentChecks = function() {
+SeleniumIDE.Overlay.getRecentCommands = function() {
 	var branch = this.getOptionsBranch();
-	if (branch.prefHasUserValue("recentChecks")) {
-		var recentChecks = branch.getCharPref("recentChecks");
-		return recentChecks.split(/,/);
+	if (branch.prefHasUserValue("recentCommands")) {
+		var recentCommands = branch.getCharPref("recentCommands");
+		return recentCommands.split(/,/);
 	} else {
 		return ['open', 'verifyTextPresent', 'verifyValue'];
 	}
@@ -54,17 +54,17 @@ SeleniumIDE.Overlay.getString = function(key) {
     return window.document.getElementById("selenium-ide-strings").getString(key);
 }
 
-SeleniumIDE.Overlay.addRecentCheck = function(id) {
-	var checks = this.getRecentChecks();
+SeleniumIDE.Overlay.addRecentCommand = function(id) {
+	var checks = this.getRecentCommands();
 	var n = checks.indexOf(id);
 	if (n >= 0) {
 		checks.splice(n, 1);
 	}
 	checks.unshift(id);
-	if (checks.length > this.NUM_RECENT_CHECKS) {
+	if (checks.length > this.NUM_RECENT_COMMANDS) {
 		checks.pop();
 	}
-	this.getOptionsBranch().setCharPref('recentChecks', checks.join(','));
+	this.getOptionsBranch().setCharPref('recentCommands', checks.join(','));
 }
 
 SeleniumIDE.Overlay.testRecorderPopup = function(event) {
@@ -87,16 +87,16 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
 		}
 	}
 
-	if (!showAll) {
-		contextMenu.appendChild(self.createMenuSeparator('recent'));
-	}
-
 	var recorder = SeleniumIDE.Loader.getTopEditor();
 	if (recorder) {
+		if (!showAll) {
+			contextMenu.appendChild(self.createMenuSeparator('recent'));
+		}
+		
 		var branch = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
-		var recentChecks = self.getRecentChecks();
+		var recentCommands = self.getRecentCommands();
 		var menuitems;
-		var prefixList = ['noPrefix', 'assert', 'verify', 'waitFor', 'store'];
+		var prefixList = ['action', 'assert', 'verify', 'waitFor', 'store'];
 
 		if (showAll) {
 			menuitems = {};
@@ -111,34 +111,37 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
 			return showAll ? menuitems[prefix] : menuitems;
 		}
 
-		var CheckBuilders = SeleniumIDE.Loader.getTopEditor().window.CheckBuilders;
-		for (var i = 0; i < CheckBuilders.builders.length; i++) {
-			var builder = CheckBuilders.builders[i];
+		var CommandBuilders = SeleniumIDE.Loader.getTopEditor().window.CommandBuilders;
+		for (var i = 0; i < CommandBuilders.builders.length; i++) {
+			var builder = CommandBuilders.builders[i];
 			var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
-			var command = CheckBuilders.callBuilder(builder, focusedWindow);
+			var command = CommandBuilders.callBuilder(builder, focusedWindow);
 
-			if (builder.noPrefix) {
-				command.id = command.name || command.command;
-				if (showAll || recentChecks.indexOf(command.id) >= 0) {
-					items('noPrefix').push(self.createCheckMenuItem((showAll ? 'all-' : ''), command));
+			if (builder.accessorType == 'action') {
+				command.builder = builder;
+				if (showAll || recentCommands.indexOf(command.command) >= 0) {
+					items('action').push(self.createCheckMenuItem((showAll ? 'all-' : ''), command));
 				}
 			} else {
 				prefixList.forEach(function(prefix) {
-						if ('noPrefix' == prefix) return;
+						if ('action' == prefix) return;
 						var newCommand = {};
 						for (prop in command) {
 							newCommand[prop] = command[prop];
 						}
 						if (prefix == 'store') {
-							if (newCommand.valueInTarget) {
+							switch (builder.accessorType) {
+							case 'boolean':
+							case 'value':
 								newCommand.target = '';
-							} else {
+							default:
 								newCommand.value = '';
 							}
 						}
-						newCommand.command = prefix + newCommand.name;
-						newCommand.id = prefix + builder.name.replace(/^[a-z]/, function(str) { return str.toUpperCase() });
-						if (showAll || recentChecks.indexOf(newCommand.id) >= 0) {
+						var accessor = newCommand.accessor.replace(/^[a-z]/, function(str) { return str.toUpperCase() });
+						newCommand.command = prefix + accessor;
+						newCommand.builder = builder;
+						if (showAll || recentCommands.indexOf(newCommand.command) >= 0) {
 							items(prefix).push(self.createCheckMenuItem((showAll ? 'all-' : ''), newCommand));
 						}
 					});
@@ -159,17 +162,14 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
 			menuitems.forEach(function(item) {
 					contextMenu.appendChild(item);
 				});
+			var menu = document.createElement("menu");
+			menu.setAttribute("id", "selenium-ide-all-checks-menu");
+			menu.setAttribute("label", self.getString("showAllChecks.label"));
+			var popup = document.createElement("menupopup");
+			popup.setAttribute("id", "selenium-ide-all-checks");
+			contextMenu.appendChild(menu);
+			menu.appendChild(popup);
 		}
-	}
-
-	if (!showAll) {
-		var menu = document.createElement("menu");
-		menu.setAttribute("id", "selenium-ide-all-checks-menu");
-		menu.setAttribute("label", self.getString("showAllChecks.label"));
-		var popup = document.createElement("menupopup");
-		popup.setAttribute("id", "selenium-ide-all-checks");
-		contextMenu.appendChild(menu);
-		menu.appendChild(popup);
 	}
 }
 
@@ -187,7 +187,7 @@ SeleniumIDE.Overlay.createMenuSeparator = function(id) {
 
 SeleniumIDE.Overlay.createCheckMenuItem = function(idPrefix, command) {
 	var menuitem = document.createElement("menuitem");
-	menuitem.setAttribute("id", "selenium-ide-check-" + idPrefix + command.id);
+	menuitem.setAttribute("id", "selenium-ide-check-" + idPrefix + command.command);
 	menuitem.setAttribute("disabled", command.disabled ? 'true' : 'false');
 	menuitem.setAttribute("label", command.command + ' ' + command.target + ' ' + command.value);
 	menuitem._Selenium_IDE_command = command;

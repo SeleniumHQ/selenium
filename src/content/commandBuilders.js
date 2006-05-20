@@ -1,16 +1,16 @@
-var CheckBuilders = {};
+var CommandBuilders = {};
 
-CheckBuilders.builders = [];
+CommandBuilders.builders = [];
 
-CheckBuilders.add = function(name, func, noPrefix) {
-	this.builders.push({name: name, builder: func, noPrefix: noPrefix});
+CommandBuilders.add = function(accessorType, func) {
+	this.builders.push({builder: func, accessorType: accessorType});
 }
 
-CheckBuilders.getRecorder = function(window) {
+CommandBuilders.getRecorder = function(window) {
 	return Recorder.get(window);
 }
 
-CheckBuilders.callBuilder = function(builder, window) {
+CommandBuilders.callBuilder = function(builder, window) {
 	var command = builder.builder.call(this, window);
 	['name', 'target', 'value'].forEach(function(name) {
 			if (command[name] == null) command[name] = '';
@@ -23,7 +23,7 @@ CheckBuilders.callBuilder = function(builder, window) {
  * add builders
  */
 
-CheckBuilders.add('open', function(window) {
+CommandBuilders.add('action', function(window) {
 		var path = window.location.href;
 		var base = '';
 		var r = /^(\w+:\/\/[\w\.-]+(:\d+)?)\/.*/.exec(path);
@@ -35,10 +35,10 @@ CheckBuilders.add('open', function(window) {
 			command: "open",
 			target: path
 		};
-	}, true);
+	});
 
-CheckBuilders.add('textPresent', function(window) {
-		var result = { name: "TextPresent" };
+CommandBuilders.add('boolean', function(window) {
+		var result = { accessor: "textPresent" };
 		var selection = String(window.getSelection());
 		if (selection) {
 			result.target = selection;
@@ -48,19 +48,18 @@ CheckBuilders.add('textPresent', function(window) {
 		return result;
 	});
 
-CheckBuilders.add('title', function(window) {
-		var result = { name: "Title" };
+CommandBuilders.add('value', function(window) {
+		var result = { accessor: "title" };
 		if (window.document) {
 			result.target = exactMatchPattern(window.document.title);
-			result.valueInTarget = true;
 		} else {
 			result.disabled = true;
 		}
 		return result;
 	});
-
-CheckBuilders.add('value', function(window) {
-		var result = { name: "Value" };
+/*
+CommandBuilders.add('target,value', function(window) {
+		var result = { accessor: "value" };
 		var element = this.getRecorder(window).clickedElement;
 		if (element && element.hasAttribute && element.tagName &&
 			('input' == element.tagName.toLowerCase() || 
@@ -79,10 +78,10 @@ CheckBuilders.add('value', function(window) {
 		}
 		return result;
 	});
-
-CheckBuilders.add('table', function(window) {
+*/
+CommandBuilders.add('target,value', function(window) {
 		var element = this.getRecorder(window).clickedElement;
-		var result = { name: "Table" };
+		var result = { accessor: "table" };
 		if (element && element.tagName && 'td' == element.tagName.toLowerCase()) {
 			var parentTable = null;
 			var temp = element.parentNode;

@@ -43,11 +43,10 @@ function loadFromOptions(options) {
 			}
 		}
 	}
-	testEncoding();
 }
 
 function loadDefaultOptions() {
-	if (confirm("Do you really want to load default settings?")) {
+	if (confirm(Message("options.confirmLoadDefaultOptions"))) {
 		loadFromOptions(OPTIONS);
 		for (name in this.options) {
 			if (/^formats\./.test(name)) {
@@ -83,35 +82,19 @@ function loadFormatList() {
 
 var encodingTestConverter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 
-function testEncoding() {
-	var element = document.getElementById("encoding");
-	var checkLabel = document.getElementById("encodingCheck");
-	var result = "";
-	try {
-		encodingTestConverter.charset = element.value;
-	} catch (error) {
-		result = "Invalid encoding.";
-	}
-	var encoding = element.value.toUpperCase();
-	if (encoding == 'UTF-16' || encoding == 'UTF-32') {
-		// Character encodings that contain null bytes are not supported.
-		// See http://developer.mozilla.org/en/docs/Reading_textual_data
-		// Let me know if there are other encodings.
-		result = element.value + " is currently not supported.";
-	}
-	checkLabel.value = result;
-	document.documentElement.getButton("accept").disabled = "" != result;
-}
-
-function chooseUserExtensionsURL() {
+function chooseFile(target) {
 	var nsIFilePicker = Components.interfaces.nsIFilePicker;
-	var fp = Components.classes["@mozilla.org/filepicker;1"]
-	    .createInstance(nsIFilePicker);
-	fp.init(window, "Select user-extensions.js file", nsIFilePicker.modeOpen);
+	var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+	fp.init(window, "Select extensions file", nsIFilePicker.modeOpen);
 	fp.appendFilters(nsIFilePicker.filterAll);
 	var res = fp.show();
 	if (res == nsIFilePicker.returnOK) {
-		document.getElementById("userExtensionsURL").value = FileUtils.fileURI(fp.file);
+		var e = document.getElementById(target);
+		if (e.value) {
+			e.value += ', ' + fp.file.path;
+		} else {
+			e.value = fp.file.path;
+		}
 	}
 }
 
@@ -250,3 +233,43 @@ function renameFormat() {
 		selectFormat(this.formatInfo.id);
 	}
 }
+
+function validate() {
+	var hasError = false;
+	for (var name in validations) {
+		var e = document.getElementById(name);
+		var result = validations[name](e.value);
+		document.getElementById(name + 'Error').value = result;
+		if (result) {
+			hasError = true;
+		}
+	}
+	document.documentElement.getButton("accept").disabled = hasError;
+}
+
+var validations = {
+	encoding: function(value) {
+		var result = "";
+		try {
+			encodingTestConverter.charset = value;
+		} catch (error) {
+			result = Message("error.invalidEncoding");
+		}
+		var encoding = value.toUpperCase();
+		if (encoding == 'UTF-16' || encoding == 'UTF-32') {
+			// Character encodings that contain null bytes are not supported.
+			// See http://developer.mozilla.org/en/docs/Reading_textual_data
+			// Let me know if there are other encodings.
+			result = Message("error.encodingNotSupported", value);
+		}
+		return result;
+	},
+
+	timeout: function(value) {
+		if (value.match(/^\d+$/)) {
+			return '';
+		} else {
+			return Message("error.timeoutNotNumber");
+		}
+	}
+};

@@ -104,3 +104,34 @@ StringUtils.underscore = function(text) {
 			return '_' + str.toLowerCase();
 		});
 }
+
+function Message(key, arg) {
+	var message = window.document.getElementById("strings").getString(key);
+	if (arg) {
+		message = message.replace(/%/, arg);
+	}
+	return message;
+}
+
+var ExtensionsLoader = {
+	getURLs: function(commaSeparatedPaths) {
+		var urls = [];
+		commaSeparatedPaths.split(/,/).forEach(function(path) {
+				path = path.replace(/^\s*/, '');
+				path = path.replace(/\s*$/, '');
+				if (!path.match(/^file:/)) {
+					path = FileUtils.fileURI(FileUtils.getFile(path));
+				}
+				urls.push(path);
+			});
+		return urls;
+	},
+	
+	loadSubScript: function(loader, paths, obj) {
+		this.getURLs(paths).forEach(function(url) {
+				if (url) {
+					loader.loadSubScript(url, obj);
+				}
+			});
+	}
+};

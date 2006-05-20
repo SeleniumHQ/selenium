@@ -2,7 +2,11 @@ var userExtensionsURL = getQueryParameter("userExtensionsURL");
 var baseURL = getQueryParameter("baseURL");
 
 if (userExtensionsURL) {
-	document.write('<script src="' + userExtensionsURL + '" language="JavaScript" type="text/javascript"></script>');
+	var urls = userExtensionsURL.split(/,/);
+	for (var i = 0; i < urls.length; i++) {
+		var url = urls[i];
+		document.write('<script src="' + url + '" language="JavaScript" type="text/javascript"></script>');
+	}
 }
 
 Selenium.prototype.real_doOpen = Selenium.prototype.doOpen;

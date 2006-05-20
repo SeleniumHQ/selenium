@@ -316,8 +316,7 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 				file = fp.file;
 			}
 		} else {
-			file = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
-			file.initWithPath(filename);
+			file = FileUtils.getFile(filename);
 		}
 		if (file != null) {
 			// save the directory so we can continue to load/save files from the current suite?

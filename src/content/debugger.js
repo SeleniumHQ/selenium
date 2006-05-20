@@ -42,7 +42,7 @@ function Debugger(editor) {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js', this.runner);
 		if (this.editor.options.userExtensionsURL) {
 			try {
-				subScriptLoader.loadSubScript(this.editor.options.userExtensionsURL, this.runner);
+				ExtensionsLoader.loadSubScript(subScriptLoader, this.editor.options.userExtensionsURL, this.runner);
 			} catch (error) {
 				this.log.error("error loading user-extensions.js: " + error);
 			}

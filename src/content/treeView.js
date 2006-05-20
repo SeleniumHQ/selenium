@@ -147,7 +147,7 @@ function TreeView(editor, document, tree) {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', scope);
 		if (editor.options.userExtensionsURL) {
 			try {
-				subScriptLoader.loadSubScript(editor.options.userExtensionsURL, scope);
+				ExtensionsLoader.loadSubScript(subScriptLoader, editor.options.userExtensionsURL, scope);
 			} catch (error) {
 				this.editor.showAlert("Failed to load user-extensions.js!\nfile=" + editor.options.userExtensionsURL + "\nerror=" + error);
 			}

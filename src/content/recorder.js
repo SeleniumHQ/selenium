@@ -147,7 +147,7 @@ Recorder.prototype.deregister = function(observer) {
  * Class methods
  */
 
-Recorder.addHandler = function(name, eventName, handler, alwaysRecord) {
+Recorder.addEventHandler = function(eventName, handler, alwaysRecord) {
 	if (!this.eventHandlers[eventName]) {
 		this.eventHandlers[eventName] = [];
 	}

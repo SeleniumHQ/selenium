@@ -34,7 +34,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/checkBuilders.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/commandBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testManager.js"/>
@@ -42,6 +42,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>
+  
   <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
 
   <commandset id="seleniumIDECommands">

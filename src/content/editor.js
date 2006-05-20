@@ -24,6 +24,7 @@ function Editor(window, isSidebar) {
 	this.document = document;
 	this.recordingEnabled = true;
 	this.setOptions(optionsManager.load());
+	this.loadExtensions();
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
 	this.testCaseListeners = new Array();
@@ -417,7 +418,7 @@ Editor.prototype.playback = function() {
 	this.setRecordingEnabled(false);
 
 	contentWindow.location.href = 'chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
-		'&userExtensionsURL=' + this.options.userExtensionsURL +
+		'&userExtensionsURL=' + ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',') +
 		'&baseURL=' + document.getElementById("baseURL").value;
 }
 
@@ -547,4 +548,13 @@ Editor.prototype.rowInserted = function(index, command) {
 	this.lastCommandIndex = index;
 	this.view.rowInserted(index);
 	this.timeoutID = setTimeout("editor.clearLastCommand()", 1000);
+}
+
+Editor.prototype.loadExtensions = function() {
+	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+	try {
+		ExtensionsLoader.loadSubScript(subScriptLoader, this.options.ideExtensionsPaths, window);
+	} catch (error) {
+		this.log.error("error loading Selenium IDE extensions: " + error);
+	}
 }

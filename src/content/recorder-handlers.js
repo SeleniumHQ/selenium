@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-Recorder.addHandler('type', 'change', function(event) {
+Recorder.addEventHandler('change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
 		var type = event.target.type;
 		if (('input' == tagName && ('text' == type || 'password' == type || 'file' == type)) ||
@@ -23,7 +23,7 @@ Recorder.addHandler('type', 'change', function(event) {
 		}
 	});
 
-Recorder.addHandler('select', 'change', function(event) {
+Recorder.addEventHandler('change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
 		if ('select' == tagName) {
 			var label = event.target.options[event.target.selectedIndex].innerHTML;
@@ -32,7 +32,7 @@ Recorder.addHandler('select', 'change', function(event) {
 		}
 	});
 
-Recorder.addHandler('click', 'click', function(event) {
+Recorder.addEventHandler('click', function(event) {
 		if (event.button == 0) {
 			var clickable = this.findClickableElement(event.target);
 			if (clickable) {
@@ -58,6 +58,7 @@ Recorder.prototype.findClickableElement = function(e) {
 	}
 }
 
-Recorder.addHandler('rememberClickedElement', 'mousedown', function(event) {
+// remember clicked element
+Recorder.addEventHandler('mousedown', function(event) {
 		this.clickedElement = event.target;
 	}, true);

@@ -16,8 +16,12 @@
 
 const OPTIONS = {
 	encoding: "UTF-8",
-	
+
+	// This should be called 'userExtensionsPaths', but it is left for backward compatibility.
 	userExtensionsURL:
+	"",
+
+	ideExtensionsPaths:
 	"",
 	
 	rememberBaseURL:

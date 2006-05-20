@@ -38,6 +38,8 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testManager.js"/>
+  <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
+  
 <tabbox flex="1">
   <tabs orient="horizontal">
     <tab label="General"/>
@@ -47,17 +49,32 @@ limitations under the License.
     <tabpanel orient="vertical">
       <description>&options.encoding.description;</description>
       <hbox align="center">
-	<textbox id="encoding" multiline="false" oninput="testEncoding()"/>
-	<label id="encodingCheck" value="" class="error"/>
+	<textbox id="encoding" multiline="false" oninput="validate()"/>
+	<label id="encodingError" value="" class="error"/>
       </hbox>
-      <separator class="thin"/>
       
-      <description>&options.userExtensionsURL.description;</description>
-      <description>&options.userExtensionsURL.description2;</description>
+      <separator class="thin"/>
+      <description>&options.timeout.description;</description>
+      <hbox align="center">
+	<textbox id="timeout" multiline="false" oninput="validate()"/>
+	<label id="timeoutError" value="" class="error"/>
+      </hbox>
+
+      <separator class="thin"/>
+      <description>&options.userExtensionsPaths.description;</description>
       <hbox align="center">
 	<textbox id="userExtensionsURL" multiline="false" flex="1"/>
-	<button label="Browse..." oncommand="chooseUserExtensionsURL()"/>
+	<button label="&options.browse;" oncommand="chooseFile('userExtensionsURL')"/>
       </hbox>
+
+      <separator class="thin"/>
+      <description>&options.ideExtensionsPaths.description;</description>
+      <hbox align="center">
+	<textbox id="ideExtensionsPaths" multiline="false" flex="1"/>
+	<button label="&options.browse;" oncommand="chooseFile('ideExtensionsPaths')"/>
+      </hbox>
+      <description class="tip">&options.extensions.tip;</description>
+
       <separator class="thin"/>
       <checkbox id="rememberBaseURL" label="&options.rememberBaseURL.description;"/>
       <checkbox id="recordAssertTitle" label="&options.recordAssertTitle.description;"/>

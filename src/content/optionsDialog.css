@@ -6,3 +6,11 @@
   border: 1px solid black;
   font-weight: bold;
 }
+
+.error { 
+  color: #EE0000;
+}
+
+.tip { 
+  color: #666;
+}
