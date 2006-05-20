@@ -16,7 +16,6 @@
 
 function Recorder(window) {
 	this.log = Recorder.log;
-	this.locatorBuilders = new LocatorBuilders(window);
 	this.window = window;
 	this.observers = [];
 	this.attach();
@@ -68,6 +67,7 @@ Recorder.prototype.reattachWindowMethods = function() {
 
 Recorder.prototype.attach = function() {
 	this.log.debug("attaching");
+	this.locatorBuilders = new LocatorBuilders(this.window);
 	this.eventListeners = {};
 	this.reattachWindowMethods();
 	var self = this;
@@ -98,6 +98,7 @@ Recorder.prototype.attach = function() {
 
 Recorder.prototype.detach = function() {
 	this.log.debug("detaching");
+	this.locatorBuilders.detach();
 	for (eventName in this.eventListeners) {
 		this.window.document.removeEventListener(eventName, this.eventListeners[eventName], false);
 	}

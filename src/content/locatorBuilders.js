@@ -19,6 +19,10 @@ function LocatorBuilders(window) {
 	this.log = new Log("LocatorBuilders");
 }
 
+LocatorBuilders.prototype.detach = function() {
+	delete this.window._locator_pageBot;
+}
+
 LocatorBuilders.prototype.pageBot = function() {
 	var pageBot = this.window._locator_pageBot;
 	if (pageBot == null) {
