@@ -55,7 +55,7 @@ function verifyCommands() {
 				}
 				if (recordedCommands.length <= recordedIndex || 
 					!sameCommand(command, recordedCommands[recordedIndex])) {
-					setResult('Failed: command is not same: index = ' + recordedIndex + ', i = ' + i);
+					setResult('Failed: command is not same: index = ' + recordedIndex + ', i = ' + i + ', command=' + command.command);
 					return;
 				}
 				recordedIndex++;

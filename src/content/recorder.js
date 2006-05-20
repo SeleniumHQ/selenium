@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+// avoid "change" event recorded twice
+PageBot.prototype.replaceText = function(element, stringValue) {
+    triggerEvent(element, 'focus', false);
+    triggerEvent(element, 'select', true);
+    element.value=stringValue;
+    //triggerEvent(element, 'change', true);
+    triggerEvent(element, 'blur', false);
+};
+
 function Recorder(window) {
 	this.log = Recorder.log;
 	this.window = window;

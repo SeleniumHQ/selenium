@@ -6,7 +6,7 @@ function testAttachAndDetach() {
 		recordingEnabled: true
 	};
 	var count = 0;
-	Recorder.addHandler('test', 'click', function(event) {
+	Recorder.addEventHandler('click', function(event) {
 			count++;
 		});
 	var recorder = Recorder.register(observer, window);
