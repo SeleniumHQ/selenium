@@ -39,7 +39,7 @@ http-equiv="content-type">
     function openDomViewer() {
         var autFrame = document.getElementById('myiframe');
         var autFrameDocument = getIframeDocument(autFrame);
-        var domViewer = window.open('domviewer/domviewer.html');
+        var domViewer = window.open(getDocumentBase(document) + 'domviewer/domviewer.html');
         domViewer.rootDocument = autFrameDocument;
         return false;
     }

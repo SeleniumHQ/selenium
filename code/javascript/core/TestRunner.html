@@ -1,5 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
+
 <head>
 <HTA:APPLICATION ID="SeleniumHTARunner" APPLICATIONNAME="Selenium" >
 <!-- the previous line is only relevant if you rename this
@@ -43,7 +43,7 @@ Copyright 2004 ThoughtWorks, Inc
         var autFrame = document.getElementById('myiframe');
         var autFrameDocument = getIframeDocument(autFrame);
         this.rootDocument = autFrameDocument;
-        var domViewer = window.open('domviewer/domviewer.html');
+        var domViewer = window.open(getDocumentBase(document) + 'domviewer/domviewer.html');
         return false;
     }
 </script>

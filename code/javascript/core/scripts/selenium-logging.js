@@ -48,7 +48,7 @@ Logger.prototype = {
     
     openLogWindow: function() {
         this.logWindow = window.open(
-            "SeleniumLog.html", "SeleniumLog",
+            getDocumentBase(document) + "SeleniumLog.html", "SeleniumLog",
             "width=600,height=250,bottom=0,right=0,status,scrollbars,resizable"
         );
         return this.logWindow;
@@ -75,7 +75,12 @@ Logger.prototype = {
 
     close: function(message) {
     	if (this.logWindow != null) {
-        	this.logWindow.close();
+        	try {
+        		this.logWindow.close();
+        	} catch (e) {
+        		// swallow exception
+        		// the window is probably closed if we get an exception here
+        	}
         	this.logWindow = null;
         }
     },

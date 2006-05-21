@@ -239,6 +239,14 @@ function getFunctionName(aFunction) {
   return 'anonymous';
 }
 
+function getDocumentBase(doc) {
+	var bases = document.getElementsByTagName("base");
+	if (bases && bases.length && bases[0].href) {
+		return bases[0].href;
+	}
+	return "";
+}
+
 function describe(object, delimiter) {
     var props = new Array();
     for (var prop in object) {
