@@ -16,17 +16,13 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.net.*;
+import java.util.regex.*;
 
-import org.apache.tools.ant.taskdefs.condition.Os;
-import org.openqa.selenium.server.SeleniumServer;
+import org.apache.tools.ant.taskdefs.condition.*;
 
-public class FirefoxCustomProfileLauncher implements BrowserLauncher {
+public class FirefoxChromeLauncher implements BrowserLauncher {
 
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
     
@@ -42,11 +38,11 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
 
     private static AsyncExecute exe = new AsyncExecute();
     
-    public FirefoxCustomProfileLauncher(int port, String sessionId) {
+    public FirefoxChromeLauncher(int port, String sessionId) {
         this(port, sessionId, findBrowserLaunchLocation());
     }
     
-    public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
+    public FirefoxChromeLauncher(int port, String sessionId, String browserLaunchLocation) {
         commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
@@ -133,8 +129,13 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
         return url;
     }
     
-    public void launch(String url) {
+    public void launch(String url, String htmlName) {
         try {
+            String query = LauncherUtils.getQueryString(url);
+            if (null == query) {
+                query = "";
+            }
+            query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
             String profilePath = makeCustomProfile();
             
             String chromeURL = "chrome://killff/content/kill.html";
@@ -151,12 +152,14 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
             exe.setCommandline(cmdarray);
             exe.execute();
             
-            
             waitForFullProfileToBeCreated(20*1000);
             
             System.out.println("Launching Firefox...");
-            cmdarray = new String[] {commandPath, "-profile", profilePath, url};
             
+            cmdarray = new String[] {commandPath, "-profile", profilePath, 
+                    "-chrome", "chrome://src/content/" + htmlName + "?" + query,
+            };
+            // TODO use the chrome URL as a home page!
             exe.setCommandline(cmdarray);
             
             process = exe.asyncSpawn();
@@ -173,6 +176,44 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
         
         File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
         
+        embedKillFirefoxExtension();
+        embedSeleniumExtension();
+        
+        // TODO Do we want to make these preferences configurable somehow?
+        File prefsJS = new File(customProfileDir, "prefs.js");
+        PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
+        // Don't ask if we want to switch default browsers
+        out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
+        
+        // Disable pop-up blocking
+        out.println("user_pref('browser.allowpopups', true);");
+        out.println("user_pref('dom.disable_open_during_load', false);");
+        
+        // Configure us as the local proxy
+        out.println("user_pref('network.proxy.type', 2);");
+        out.println("user_pref('network.proxy.autoconfig_url', '" +
+                pathToBrowserURL(proxyPAC.getAbsolutePath()) + 
+                "');");
+        
+        // Disable security warnings
+        out.println("user_pref('security.warn_submit_insecure', false);");
+        out.println("user_pref('security.warn_submit_insecure.show_once', false);");
+        out.println("user_pref('security.warn_entering_secure', false);");
+        out.println("user_pref('security.warn_entering_secure.show_once', false);");
+        out.println("user_pref('security.warn_entering_weak', false);");
+        out.println("user_pref('security.warn_entering_weak.show_once', false);");
+        out.println("user_pref('security.warn_leaving_secure', false);");
+        out.println("user_pref('security.warn_leaving_secure.show_once', false);");
+        out.println("user_pref('security.warn_viewing_mixed', false);");
+        out.println("user_pref('security.warn_viewing_mixed.show_once', false);");
+        
+        // Disable "do you want to remember this password?"
+        out.println("user_pref('signon.rememberSignons', false);");
+        out.close();
+        return customProfileDir.getAbsolutePath();
+    }
+
+    private void embedKillFirefoxExtension() throws FileNotFoundException, MalformedURLException {
         File extensionDir = new File(customProfileDir, "extensions/{538F0036-F358-4f84-A764-89FB437166B4}");
         extensionDir.mkdirs();
         
@@ -218,41 +259,53 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
         out.print("content\tkillff\t");
         out.println(killHTML.toURL());
         out.close();
-        
-        // TODO Do we want to make these preferences configurable somehow?
-        File prefsJS = new File(customProfileDir, "prefs.js");
-        out = new PrintStream(new FileOutputStream(prefsJS));
-        // Don't ask if we want to switch default browsers
-        out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
-        
-        // Disable pop-up blocking
-        out.println("user_pref('browser.allowpopups', true);");
-        out.println("user_pref('dom.disable_open_during_load', false);");
-        
-        // Configure us as the local proxy
-        out.println("user_pref('network.proxy.type', 2);");
-        out.println("user_pref('network.proxy.autoconfig_url', '" +
-                pathToBrowserURL(proxyPAC.getAbsolutePath()) + 
-                "');");
-        
-        // Disable security warnings
-        out.println("user_pref('security.warn_submit_insecure', false);");
-        out.println("user_pref('security.warn_submit_insecure.show_once', false);");
-        out.println("user_pref('security.warn_entering_secure', false);");
-        out.println("user_pref('security.warn_entering_secure.show_once', false);");
-        out.println("user_pref('security.warn_entering_weak', false);");
-        out.println("user_pref('security.warn_entering_weak.show_once', false);");
-        out.println("user_pref('security.warn_leaving_secure', false);");
-        out.println("user_pref('security.warn_leaving_secure.show_once', false);");
-        out.println("user_pref('security.warn_viewing_mixed', false);");
-        out.println("user_pref('security.warn_viewing_mixed.show_once', false);");
-        
-        // Disable "do you want to remember this password?"
-        out.println("user_pref('signon.rememberSignons', false);");
-        out.close();
-        return customProfileDir.getAbsolutePath();
     }
 
+    private void embedSeleniumExtension() throws FileNotFoundException, MalformedURLException {
+        String guid = "{503A0CD4-EDC8-489b-853B-19E0BAA8F0A4}";
+        File extensionDir = new File(customProfileDir, "extensions/"+guid);
+        File htmlDir = new File(extensionDir, "chrome");
+        htmlDir.mkdirs();
+        PrintStream out;
+        
+        LauncherUtils.extractHTAFile(htmlDir, port, "/core/TestRunner.html", "TestRunner.html");
+        LauncherUtils.extractHTAFile(htmlDir, port, "/core/SeleneseRunner.html", "SeleneseRunner.html");
+        
+        
+        File installRDF = new File(extensionDir, "install.rdf");
+        out = new PrintStream(new FileOutputStream(installRDF));
+        out.println("<?xml version=\"1.0\"?>");
+        out.println("<RDF xmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
+        out.println("     xmlns:em=\"http://www.mozilla.org/2004/em-rdf#\">");
+        out.println("");
+        out.println("    <Description about=\"urn:mozilla:install-manifest\">");
+        out.println("        <em:id>"+guid+"</em:id>");
+        out.println("        <em:type>2</em:type>");
+        out.println("        <em:name>Selenium RC Runner</em:name>");
+        out.println("        <em:version>1.0</em:version>");
+        out.println("        <em:description>Provides a chrome URL that can accept commands from Selenium Remote Control</em:description>");
+        out.println("");
+        out.println("        <!-- Firefox -->");
+        out.println("        <em:targetApplication>");
+        out.println("            <Description>");
+        out.println("                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>");
+        out.println("                <em:minVersion>1.4.1</em:minVersion>");
+        out.println("                <em:maxVersion>1.6</em:maxVersion>");
+        out.println("            </Description>");
+        out.println("        </em:targetApplication>");
+        out.println("");
+        out.println("    </Description>");
+        out.println("</RDF>");
+        out.close();
+        
+        File chromeManifest = new File(extensionDir, "chrome.manifest");
+        out = new PrintStream(new FileOutputStream(chromeManifest));
+        out.print("content\tsrc\t");
+        out.println(htmlDir.toURL());
+        out.close();
+    }
+
+    
     public void close() {
         if (closed) return;
         System.out.println("Killing Firefox...");
@@ -351,16 +404,6 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
         }
     }
     
-    public static void main(String[] args) throws Exception {
-        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUSTFF");
-        l.launch("http://www.google.com");
-        int seconds = 15;
-        System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
-        AsyncExecute.sleepTight(seconds * 1000);
-        l.close();
-        System.out.println("He's dead now, right?");
-    }
-    
     private class FileLockRemainedException extends Exception {
         FileLockRemainedException(String message) {
             super(message);
@@ -368,11 +411,13 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     }
     
     public void launchHTMLSuite(String suiteUrl, String browserURL) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl));
+        launch("http://localhost:" + port + 
+                "/selenium-server/core/TestRunner.html?auto=true&resultsUrl=http://localhost:" + port + 
+                "/selenium-server/postResults&test=" + suiteUrl, "TestRunner.html");
+        
     }
     
     public void launchRemoteSession(String browserURL) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId));
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId), "SeleneseRunner.html");
     }
-    
 }

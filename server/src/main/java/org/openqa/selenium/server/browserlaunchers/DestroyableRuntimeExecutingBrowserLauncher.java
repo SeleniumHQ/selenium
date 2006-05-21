@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
+import java.io.*;
+
 
 
 /**
@@ -24,15 +26,41 @@ package org.openqa.selenium.server.browserlaunchers;
  * @author Paul Hammant
  * @version $Revision: 189 $
  */
-public class DestroyableRuntimeExecutingBrowserLauncher extends RuntimeExecutingBrowserLauncher {
+public class DestroyableRuntimeExecutingBrowserLauncher implements BrowserLauncher {
+
+    protected Process process;
+    protected String commandPath;
+    protected String sessionId;
 
     /** Specifies a command path to run */
-    public DestroyableRuntimeExecutingBrowserLauncher(String commandPath) {
-        super(commandPath);
+    public DestroyableRuntimeExecutingBrowserLauncher(String commandPath, String sessionId) {
+        this.commandPath = commandPath;
+        this.sessionId = sessionId;
     }
 
     /** Kills the process */
     public void close() {
         process.destroy();
+    }
+
+    public void launch(String url) {
+        exec(commandPath + " " + url);
+    }
+    
+    public void launchHTMLSuite(String suiteUrl, String browserURL) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl));
+    }
+    
+    public void launchRemoteSession(String browserURL) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId));
+    }
+
+    protected void exec(String command) {
+    
+        try {
+            process = Runtime.getRuntime().exec(command);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

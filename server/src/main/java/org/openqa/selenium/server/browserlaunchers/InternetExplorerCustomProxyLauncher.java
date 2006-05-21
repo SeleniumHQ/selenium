@@ -271,4 +271,12 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
             WindowsUtils.writeIntRegistryValue(dest, data);
         }
     }
+    
+    public void launchHTMLSuite(String suiteUrl, String browserURL) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl));
+    }
+    
+    public void launchRemoteSession(String browserURL) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId));
+    }
 }

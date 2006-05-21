@@ -64,9 +64,55 @@ public class LauncherUtils {
 
     /** Strips the specified URL so it only includes a protocal, hostname and port 
      * @throws MalformedURLException */
-    public static String stripStartURL(String url) throws MalformedURLException {
-        URL u = new URL(url);
-        return u.getProtocol() + "://" + u.getAuthority();
+    public static String stripStartURL(String url) {
+        try {
+            URL u = new URL(url);
+            return u.getProtocol() + "://" + u.getAuthority();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected static String getQueryString(String url) {
+        try {
+            URL u = new URL(url);
+            String query = u.getQuery();
+            return query;
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl) {
+        String url = LauncherUtils.stripStartURL(browserURL);
+        return url + "/selenium-server/core/TestRunner.html?auto=true&resultsUrl=../postResults&test=" + suiteUrl;
+    }
+    
+    protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId) {
+        String url = LauncherUtils.stripStartURL(startURL);
+        return url + "/selenium-server/core/SeleneseRunner.html?sessionId=" + sessionId;
+    }
+
+    protected static File extractHTAFile(File dir, int port, String resourceFile, String outFile) {
+        InputStream input = HTABrowserLauncher.class.getResourceAsStream(resourceFile);
+        BufferedReader br = new BufferedReader(new InputStreamReader(input));
+        File hta = new File(dir, outFile);
+        try {
+            FileWriter fw = new FileWriter(hta);
+            String line = br.readLine();
+            fw.write(line);
+            fw.write('\n');
+            fw.write("<base href=\"http://localhost:" + port + "/selenium-server/core/\">");
+            while ((line = br.readLine()) != null) {
+                fw.write(line);
+                fw.write('\n');
+            }
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return hta;
     }
 
 }

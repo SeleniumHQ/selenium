@@ -25,7 +25,13 @@ package org.openqa.selenium.server.browserlaunchers;
  */
 public interface BrowserLauncher {
     /** Start the browser and navigate directly to the specified URL */
-    void launch(String url);
+    void launchRemoteSession(String url);
+    /** Start the browser in Selenese mode, auto-running the specified HTML suite
+     * 
+     * @param startURL the url within which to initiate the session (if needed)
+     * @param suiteUrl the url of the HTML suite to launch
+     */
+    void launchHTMLSuite(String startURL, String suiteUrl);
     /** Stop (kill) the browser process */
     void close();
 }

@@ -26,10 +26,24 @@ package org.openqa.selenium.server.browserlaunchers;
  */
 public class ManualPromptUserLauncher implements BrowserLauncher {
 
+    String sessionId;
+    
+    public ManualPromptUserLauncher(String sessionId) {
+        this.sessionId = sessionId;
+    }
+    
     /** Prints out a polite request on the console */
     public void launch(String url) {
         System.out.println("Hello!  This test run is now waiting for you to manually bring up a browser for testing:\nFrom this browser, request:\n" + url);
 
+    }
+    
+    public void launchHTMLSuite(String suiteUrl, String browserURL) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl));
+    }
+    
+    public void launchRemoteSession(String browserURL) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId));
     }
 
     public void close() {

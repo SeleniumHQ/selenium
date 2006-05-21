@@ -5,7 +5,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
-import java.net.*;
 
 public class HTABrowserLauncher implements BrowserLauncher {
 
@@ -48,13 +47,14 @@ public class HTABrowserLauncher implements BrowserLauncher {
                 "*mshta c:\\blah\\mshta.exe");
     }
 
-    public void launch(String url) {
-        String query = getQueryString(url);
+    private void launch(String url, String htaName) {
+        String query = LauncherUtils.getQueryString(url);
         if (null == query) {
             query = "";
         }
         query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
-        String hta = createHTAFile();
+        createHTAFiles();
+        String hta = (new File(dir, htaName)).getAbsolutePath();
         System.out.println("Launching Internet Explorer HTA...");
         AsyncExecute exe = new AsyncExecute();
         exe.setCommandline(new String[] {commandPath, hta, query});
@@ -65,42 +65,25 @@ public class HTABrowserLauncher implements BrowserLauncher {
         }
     }
     
-    private String createHTAFile() {
+    private void createHTAFiles() {
         dir = LauncherUtils.createCustomProfileDir(sessionId);
-        InputStream input = HTABrowserLauncher.class.getResourceAsStream("/core/SeleneseRunner.html");
-        BufferedReader br = new BufferedReader(new InputStreamReader(input));
-        File hta = new File(dir, "SeleneseRunner.hta");
-        try {
-            FileWriter fw = new FileWriter(hta);
-            String line = br.readLine();
-            fw.write(line);
-            fw.write('\n');
-            fw.write("<base href=\"http://localhost:" + port + "/selenium-server/core/\">");
-            while ((line = br.readLine()) != null) {
-                fw.write(line);
-                fw.write('\n');
-            }
-            fw.flush();
-            fw.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return hta.getAbsolutePath();
-    }
-    
-    private String getQueryString(String url) {
-        try {
-            URL u = new URL(url);
-            String query = u.getQuery();
-            return query;
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        LauncherUtils.extractHTAFile(dir, port, "/core/TestRunner.html", "TestRunner.hta");
+        LauncherUtils.extractHTAFile(dir, port, "/core/SeleneseRunner.html", "SeleneseRunner.hta");
     }
 
     public void close() {
         process.destroy();
         LauncherUtils.recursivelyDeleteDir(dir);
+    }
+    
+    public void launchHTMLSuite(String suiteUrl, String browserURL) {
+        throw new UnsupportedOperationException("HTA mode doesn't support running Selenium tests under Selenium RC.\n" +
+                "Just run the tests in HTA mode with Selenium Core!");
+        //launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl), "TestRunner.hta");
+    }
+    
+    public void launchRemoteSession(String browserURL) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId), "SeleneseRunner.hta");
     }
 
 }

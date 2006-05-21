@@ -30,7 +30,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
     File output;
     
     public void setUp() throws Exception {
-        output = new File("results.html");
+        output = new File(getName() + "-results.html");
         server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
         launcher = new HTMLLauncher(server);
         server.start();
@@ -38,12 +38,11 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
     
     public void runHTMLSuite(String browser) throws Exception {
         String browserURL = "http://localhost:" + server.getPort();
-        String testURL = "../tests/ShortTestSuite.html";
+        String testURL = browserURL + "/selenium-server/tests/TestSuite.html";
         long timeout = 1000 * 60 * 10; // ten minutes
         String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);
         assertEquals("Tests didn't pass", "PASSED", result);
         assertTrue(output.exists());
-        output.delete();
     }
     
     public void testFirefox() throws Exception{
@@ -52,19 +51,34 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
     
     
     
-    public void testFirefoxAgain() throws Exception {
+    /*public void testFirefoxAgain() throws Exception {
         // For safety's sake
         testFirefox();
-    }
+    }*/
     
     public void testIExplore() throws Exception {
         runHTMLSuite("*iexplore");
     }
     
-    public void testIExploreAgain() throws Exception {
+    public void XXXtestChrome() throws Exception {
+        // TODO incorporate Shinya's fixes from Selenium IDE
+        // This test should pass
+        runHTMLSuite("*chrome");
+    }
+    
+    public void testHTA() throws Exception {
+        try {
+            runHTMLSuite("*iehta");
+            fail("Didn't catch expected exception");
+        } catch (UnsupportedOperationException e) {
+            System.out.println("caught expected exception");
+        }
+    }
+    
+    /*public void testIExploreAgain() throws Exception {
         // For safety's sake
         testIExplore();
-    }
+    }*/
     
     public void tearDown() throws Exception {
         if (server != null) server.stop();

@@ -40,8 +40,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
         String sessionId = Long.toString(System.currentTimeMillis());
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
-        String url = LauncherUtils.stripStartURL(browserURL);
-        launcher.launch(url + "/selenium-server/core/TestRunner.html?auto=true&resultsUrl=../postResults&test=" + HTMLSuite);
+        launcher.launchHTMLSuite(HTMLSuite, browserURL);
         long now = System.currentTimeMillis();
         long end = now + timeout * 1000;
         while (results == null && System.currentTimeMillis() < end) {

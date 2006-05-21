@@ -32,7 +32,7 @@ public class SafariCustomProfileLauncher implements BrowserLauncher {
     private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
     
 //    private int port;
-//    private String sessionId;
+    private String sessionId;
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
@@ -48,7 +48,7 @@ public class SafariCustomProfileLauncher implements BrowserLauncher {
     public SafariCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
         commandPath = findBrowserLaunchLocation();
 //        this.port = port;
-//        this.sessionId = sessionId;
+        this.sessionId = sessionId;
         if (!WindowsUtils.thisIsWindows()) {
             // On unix, add command's directory to LD_LIBRARY_PATH
             File SafariBin = AsyncExecute.whichExec(commandPath);
@@ -150,5 +150,13 @@ public class SafariCustomProfileLauncher implements BrowserLauncher {
         AsyncExecute.sleepTight(seconds * 1000);
         l.close();
         System.out.println("He's dead now, right?");
+    }
+    
+    public void launchHTMLSuite(String suiteUrl, String browserURL) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl));
+    }
+    
+    public void launchRemoteSession(String browserURL) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId));
     }
 }

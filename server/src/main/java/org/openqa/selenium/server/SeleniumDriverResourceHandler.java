@@ -214,14 +214,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String results;
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
-        String url = null;
-        try {
-            url = LauncherUtils.stripStartURL(startURL);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return e.toString();
-        }
-        launcher.launch(url + "/selenium-server/core/SeleneseRunner.html?sessionId=" + sessionId);
+        launcher.launchRemoteSession(startURL);
         launchers.put(sessionId, launcher);
         SeleneseQueue queue = getQueue(sessionId);
         queue.doCommand("setContext", sessionId, "");

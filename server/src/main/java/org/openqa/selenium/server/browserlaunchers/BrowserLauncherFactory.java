@@ -17,7 +17,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.lang.reflect.*;
-import java.net.*;
 import java.util.regex.*;
 
 import org.openqa.selenium.server.*;
@@ -38,6 +37,7 @@ public class BrowserLauncherFactory {
         new BrowserStringPair("iexplore", InternetExplorerCustomProxyLauncher.class),
         new BrowserStringPair("safari", SafariCustomProfileLauncher.class),
         new BrowserStringPair("iehta", HTABrowserLauncher.class),
+        new BrowserStringPair("chrome", FirefoxChromeLauncher.class),
     };
     
     SeleniumServer server;
@@ -73,7 +73,7 @@ public class BrowserLauncherFactory {
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
         if (CustomMatcher.find()) {
             String browserStartCommand = CustomMatcher.group(1).substring(1);
-            return new DestroyableRuntimeExecutingBrowserLauncher(browserStartCommand);
+            return new DestroyableRuntimeExecutingBrowserLauncher(browserStartCommand, sessionId);
         }
         throw browserNotSupported(browser);
     }
