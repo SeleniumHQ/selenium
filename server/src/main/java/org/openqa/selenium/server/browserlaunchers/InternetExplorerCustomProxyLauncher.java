@@ -98,7 +98,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     
 
     private void changeRegistrySettings() throws IOException {
-        customProxyPACDir = new File("customProfileDir" + sessionId);
+        customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
         if (customProxyPACDir.exists()) {
             LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
         }
