@@ -6,3 +6,29 @@
 <!ENTITY formatCmd.label "Format">
 
 <!ENTITY baseURLTextbox.tooltip "URL racine utilis&#233;e pour l'ex&#233;cution dans Selenium embarqu&#233;.">
+
+<!ENTITY fileMenu.label "File">
+<!ENTITY optionsMenu.label "Options">
+
+<!ENTITY command.label "Command">
+<!ENTITY target.label "Target">
+<!ENTITY value.label "Value">
+<!ENTITY findTarget.label "Find">
+
+<!ENTITY logConsole.label "Log Console">
+<!ENTITY logFilter.debug.label "Debug">
+<!ENTITY logFilter.info.label "Info">
+<!ENTITY logFilter.warn.label "Warn">
+<!ENTITY logFilter.error.label "Error">
+<!ENTITY logClear.label "Clear">
+
+<!ENTITY contextMenu.cut.label "Cut">
+<!ENTITY contextMenu.copy.label "Copy">
+<!ENTITY contextMenu.paste.label "Paste">
+<!ENTITY contextMenu.delete.label "Delete">
+<!ENTITY contextMenu.insertCommand.label "Insert New Command">
+<!ENTITY contextMenu.insertComment.label "Insert New Comment">
+<!ENTITY contextMenu.clear.label "Clear All">
+<!ENTITY contextMenu.breakpoint.label "Toggle Breakpoint">
+<!ENTITY contextMenu.startpoint.label "Set / Clear Start Point">
+<!ENTITY contextMenu.execCommand.label "Execute this command">

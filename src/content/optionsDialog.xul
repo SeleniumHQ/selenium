@@ -22,7 +22,7 @@ limitations under the License.
 %optionsDTD;
 ]>
 <dialog buttons="accept,cancel,extra2"
-	buttonlabelextra2="Reset Options"
+	buttonlabelextra2="&options.resetOptions;"
 	id="selenium-ide-options"
 	ondialogaccept="saveOptions()"
 	ondialogextra2="loadDefaultOptions()"
@@ -42,8 +42,8 @@ limitations under the License.
   
 <tabbox flex="1">
   <tabs orient="horizontal">
-    <tab label="General"/>
-    <tab label="Formats"/>
+    <tab label="&options.general.label;"/>
+    <tab label="&options.formats.label;"/>
   </tabs>
   <tabpanels flex="1">
     <tabpanel orient="vertical">
@@ -88,10 +88,10 @@ limitations under the License.
 	</vbox>
       </hbox>
       <hbox>
-	<button label="Add" oncommand="createNewFormat()"/>
-	<button id="rename-button" label="Rename" oncommand="renameFormat()"/>
-	<button id="delete-button" label="Delete" oncommand="deleteFormat()"/>
-	<button label="Source" oncommand="openFormatSource()"/>
+	<button label="&options.formats.add-button.label;" oncommand="createNewFormat()"/>
+	<button id="rename-button" label="&options.formats.rename-button.label;" oncommand="renameFormat()"/>
+	<button id="delete-button" label="&options.formats.delete-button.label;" oncommand="deleteFormat()"/>
+	<button label="&options.formats.source-button.label;" oncommand="openFormatSource()"/>
       </hbox>
     </tabpanel>
   </tabpanels>

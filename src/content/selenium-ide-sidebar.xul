@@ -47,14 +47,14 @@ limitations under the License.
 
   <toolbox>
     <menubar id="menubar">
-      <menu id="file-menu" label="File">
+      <menu id="fileMenu" label="&fileMenu.label;" accesskey="F">
 	<menupopup id="file-popup">
-	  <menuitem label="&newTestCmd.label;" oncommand="editor.newTestCase();"/>
-	  <menuitem label="&openCmd.label;" command="cmd_open" key="open-key"/>
-	  <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key"/>
-	  <menuitem label="&saveTestAsCmd.label;" oncommand="editor.saveNewTestCase();"/>
+	  <menuitem label="&newTestCmd.label;" oncommand="editor.newTestCase();" accesskey="N"/>
+	  <menuitem label="&openCmd.label;" command="cmd_open" key="open-key" accesskey="O"/>
+	  <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key" accesskey="S"/>
+	  <menuitem label="&saveTestAsCmd.label;" oncommand="editor.saveNewTestCase();" accesskey="A"/>
 	  <menuseparator/>
-	  <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key"/>
+	  <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X"/>
 	</menupopup>
       </menu>
       <menu id="menu_edit">
@@ -70,10 +70,10 @@ limitations under the License.
           <menuitem id="menu_selectAll"/>
 	</menupopup>
       </menu>
-      <menu id="view-menu" label="Options">
-	<menupopup id="view-popup">
-	  <menuitem label="&optionsCmd.label;" oncommand="editor.openSeleniumIDEPreferences();" />
-	  <menu label="&formatCmd.label;">
+      <menu id="optionsMenu" label="&optionsMenu.label;" accesskey="O">
+	<menupopup id="options-popup">
+	  <menuitem label="&optionsCmd.label;" oncommand="editor.openSeleniumIDEPreferences();" accesskey="O"/>
+	  <menu label="&formatCmd.label;" accesskey="F">
 	    <menupopup id="popup_formats" onpopupshowing="editor.populateFormatsPopup()" oncommand="editor.selectFormatFromMenu()">
 	    </menupopup>
 	  </menu>
@@ -84,19 +84,19 @@ limitations under the License.
       <textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
     </toolbar>
     <toolbar>
-      <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="Play from the beginning or start point" command="cmd_selenium_play"/>
-      <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="Pause / Resume" command="cmd_selenium_pause"/>
-      <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="Step" command="cmd_selenium_step"/>
+      <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play"/>
+      <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
+      <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="&stepButton.tooltip;" command="cmd_selenium_step"/>
       <toolbarseparator />
-      <toolbarbutton id="testrunner-button" label="Play with Selenium TestRunner" class="icon" tooltiptext="Play with Selenium TestRunner" oncommand="editor.playback()"/>
+      <toolbarbutton id="testrunner-button" label="Play with Selenium TestRunner" class="icon" tooltiptext="&testrunnerButton.tooltip;" oncommand="editor.playback()"/>
       <toolbarseparator />
-      <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="Record" checked="true" onclick="this.checked = !this.checked" oncommand="editor.toggleRecordingEnabled(this.checked)"/>
+      <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" onclick="this.checked = !this.checked" oncommand="editor.toggleRecordingEnabled(this.checked)"/>
     </toolbar>
     <toolbar>
       <radiogroup id="runInterval" orient="horizontal">
-	<radio id="run" label="Run" selected="true" value="0"/>
-	<radio id="walk" label="Walk" value="500"/>
-	<radio id="step" label="Step" value="-1"/>
+	<radio id="run" label="&runRadio.label;" selected="true" value="0"/>
+	<radio id="walk" label="&walkRadio.label;" value="500"/>
+	<radio id="step" label="&stepRadio.label;" value="-1"/>
       </radiogroup>
     </toolbar>
   </toolbox>
@@ -104,8 +104,8 @@ limitations under the License.
   <vbox flex="1">
     <tabbox flex="3" height="300">
       <tabs orient="horizontal" onselect="if (window.editor) { editor.tabSelected(selectedItem.id) }" id="viewTabs">
-	<tab id="editorTab" label="Editor"/>
-	<tab id="sourceTab" label="Source"/>
+	<tab id="editorTab" label="&tableTab.label;" />
+	<tab id="sourceTab" label="&sourceTab.label;" />
       </tabs>
       <tabpanels flex="1">
 	<tabpanel orient="vertical">
@@ -115,11 +115,11 @@ limitations under the License.
 		<!--onfocus="recorder.treeView.focused=true" onblur="recorder.treeView.focused=false">-->
 	    <!--ondblclick="recorder.treeView.selectRecordIndex()">-->
 	    <treecols>
-	      <treecol id="command" label="Command" width="80"/>
+	      <treecol id="command" label="&command.label;" width="80"/>
 	      <splitter class="tree-splitter" />
-	      <treecol id="target" label="Target" flex="3" width="80"/>
+	      <treecol id="target" label="&target.label;" flex="3" width="80"/>
 	      <splitter class="tree-splitter" />
-	      <treecol id="value" label="Value" flex="3" width="80"/>
+	      <treecol id="value" label="&value.label;" flex="3" width="80"/>
 	    </treecols>
 	    <treechildren/>
 	  </tree>
@@ -140,7 +140,7 @@ limitations under the License.
 		  <!-- show different options collected by the client. Allow user to override -->
 		  <hbox flex="1">
 		    <textbox flex="1" disabled="true" id="commandTarget" oninput="editor.treeView.updateCurrentCommand('target', editor.treeView.decodeText(this.value))"/>
-		    <button label="Find" oncommand="editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
+		    <button label="&findTarget.label;" oncommand="editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
 		  </hbox>
 		</row>
 		<row align="center">
@@ -163,13 +163,13 @@ limitations under the License.
       <hbox id="logMenu" align="center">
 	<menulist id="logFilter" oncommand="editor.selDebugger.reloadLog()">
 	  <menupopup>
-	    <menuitem label="Debug" value="0"/>
-	    <menuitem label="Info" value="1" selected="true"/>
-	    <menuitem label="Warn" value="2"/>
-	    <menuitem label="Error" value="3"/>
+	    <menuitem label="&logFilter.debug.label;" value="0"/>
+	    <menuitem label="&logFilter.info.label;" value="1" selected="true"/>
+	    <menuitem label="&logFilter.warn.label;" value="2"/>
+	    <menuitem label="&logFilter.error.label;" value="3"/>
 	  </menupopup>
 	</menulist>
-	<button id="logClear" label="Clear" oncommand="editor.selDebugger.clearLog()"/>
+	<button id="logClear" label="&logClear.label;" oncommand="editor.selDebugger.clearLog()"/>
       </hbox>
       <iframe flex="1" id="logView" src="LogFrame.html">
       </iframe>

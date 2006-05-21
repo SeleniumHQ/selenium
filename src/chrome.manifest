@@ -3,3 +3,4 @@ content	selenium-ide	content/ xpcnativewrappers=no
 overlay	chrome://browser/content/browser.xul	chrome://selenium-ide/content/selenium-ide-overlay.xul
 locale selenium-ide en-US locale/en-US/
 locale selenium-ide fr-FR locale/fr-FR/
+locale selenium-ide ja-JP locale/ja-JP/

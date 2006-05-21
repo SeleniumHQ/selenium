@@ -3,3 +3,11 @@
 <!ENTITY options.userExtensionsURL.description2 "(Fermez et r&#233;-ouvrez la fen&#234;tre de Selenium IDE pour que les chagements prennent effet.)">
 <!ENTITY options.rememberBaseURL.description "M&#233;moriser l'URL racine">
 <!ENTITY options.recordAssertTitle.description "Enregistrer assertTitle automatiquement">
+
+<!ENTITY options.resetOptions "Reset Options">
+<!ENTITY options.general.label "General">
+<!ENTITY options.formats.label "Formats">
+<!ENTITY options.formats.add-button.label "Add">
+<!ENTITY options.formats.rename-button.label "Rename">
+<!ENTITY options.formats.delete-button.label "Delete">
+<!ENTITY options.formats.source-button.label "Source">

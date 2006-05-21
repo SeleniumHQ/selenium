@@ -1,0 +1,46 @@
+<!ENTITY newTestCmd.label "テストを新規作成">
+<!ENTITY openCmd.label "テストを開く...">
+<!ENTITY saveTestCmd.label "テストを保存">
+<!ENTITY saveTestAsCmd.label "テストに名前を付けて保存...">
+<!ENTITY exportCmd.label "テストのエクスポート...">
+<!ENTITY optionsCmd.label "設定...">
+<!ENTITY formatCmd.label "テストのフォーマット">
+<!ENTITY tableTab.label "表形式で編集">
+<!ENTITY sourceTab.label "ソース編集">
+<!ENTITY runRadio.label "実行">
+<!ENTITY walkRadio.label "ゆっくり実行">
+<!ENTITY stepRadio.label "1ステップずつ実行">
+<!ENTITY playButton.tooltip "はじめまたは開始位置から実行">
+<!ENTITY pauseButton.tooltip "一時停止/再開">
+<!ENTITY stepButton.tooltip "1ステップ実行">
+<!ENTITY testrunnerButton.tooltip "Selenium TestRunner で実行">
+<!ENTITY recordButton.tooltip "テストの記録">
+<!ENTITY baseURLTextbox.tooltip "テストを実施するWebサイトの URL を入力してください。&quot;open&quot; 命令の実行に使われます。">
+
+<!ENTITY selenium-ide.sidebar.title "Selenium IDE">
+
+<!ENTITY fileMenu.label "ファイル">
+<!ENTITY optionsMenu.label "オプション">
+
+<!ENTITY command.label "コマンド">
+<!ENTITY target.label "対象">
+<!ENTITY value.label "値">
+<!ENTITY findTarget.label "検索">
+
+<!ENTITY logConsole.label "ログコンソール">
+<!ENTITY logFilter.debug.label "デバッグ">
+<!ENTITY logFilter.info.label "情報">
+<!ENTITY logFilter.warn.label "警告">
+<!ENTITY logFilter.error.label "エラー">
+<!ENTITY logClear.label "すべて消去">
+
+<!ENTITY contextMenu.cut.label "切り取り">
+<!ENTITY contextMenu.copy.label "コピー">
+<!ENTITY contextMenu.paste.label "貼り付け">
+<!ENTITY contextMenu.delete.label "削除">
+<!ENTITY contextMenu.insertCommand.label "前行に命令を追加">
+<!ENTITY contextMenu.insertComment.label "前行にコメントを追加">
+<!ENTITY contextMenu.clear.label "すべて削除">
+<!ENTITY contextMenu.breakpoint.label "ブレークポイントの指定/解除">
+<!ENTITY contextMenu.startpoint.label "開始位置の指定/解除">
+<!ENTITY contextMenu.execCommand.label "この命令を実行">
