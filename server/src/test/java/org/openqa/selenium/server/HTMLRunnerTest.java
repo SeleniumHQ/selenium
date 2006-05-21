@@ -31,6 +31,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
     
     public void setUp() throws Exception {
         output = new File(getName() + "-results.html");
+        System.out.println("Will print results to " + output.getAbsolutePath());
         server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
         launcher = new HTMLLauncher(server);
         server.start();
@@ -41,8 +42,8 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         String testURL = browserURL + "/selenium-server/tests/TestSuite.html";
         long timeout = 1000 * 60 * 10; // ten minutes
         String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);
+        assertTrue("Results file doesn't exist: " + output.getAbsolutePath(), output.exists());
         assertEquals("Tests didn't pass", "PASSED", result);
-        assertTrue(output.exists());
     }
     
     public void testFirefox() throws Exception{
