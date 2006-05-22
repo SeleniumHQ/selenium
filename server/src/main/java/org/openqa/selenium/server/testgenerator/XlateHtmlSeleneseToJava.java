@@ -323,7 +323,7 @@ public class XlateHtmlSeleneseToJava {
         String splitTokens[] = line.replaceFirst(BEGIN_SELENESE, "").replaceFirst(END_SELENESE, "").split(SELENESE_TOKEN_DIVIDER);
         String tokens[] = getValuesOrBlankStrings(splitTokens);
         String op = tokens[0];                
-        
+  
         if (op.equals("typeRepeated")) {
             lines[j] = lines[j].replaceFirst("typeRepeated", "type");
             op = tokens[0] = "type";
@@ -422,6 +422,9 @@ public class XlateHtmlSeleneseToJava {
         .replaceAll(SELENESE_TOKEN_DIVIDER, "|") + EOL; 
         
         String ending = ";";
+        if (op.equals("echo")) {
+            return beginning.replaceFirst("\n", "") + ": op not meaningful from rc client";
+        }
         if (op.endsWith("AndWait")) {
             if (!op.startsWith("click")) {
                 // there are several test cases where a clickAndWait is used on a button which leads to an alert/
