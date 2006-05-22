@@ -65,10 +65,10 @@ Logger.prototype = {
         if (logWindow) {
             if (logWindow.append) {
             	if (this.pendingInfoMessage) {
- 		    logWindow.append(this.pendingInfoMessage, "info");
+ 		    logWindow.append("info: " + this.pendingInfoMessage, "info");
                     this.pendingInfoMessage = null;
                 }
-                logWindow.append(message, className);
+                logWindow.append(className + ": " + message, className);
             }
         }
     },
