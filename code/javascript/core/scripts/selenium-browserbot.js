@@ -216,6 +216,7 @@ BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowO
     // Since the unload event doesn't fire in Safari 1.3, we start polling immediately
     if (windowObject && !windowObject.closed) {
         LOG.debug("Starting pollForLoad: " + windowObject.document.location);
+        this.pollingForLoad = true;
         this.pollForLoad(loadFunction, windowObject, windowObject.document.location, windowObject.document.location.href);
     }
 };
@@ -234,7 +235,9 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
     	LOG.exception(e);
     	// swallow exceptions which may occur in HTA mode when the window is closed
     }
+    if (null == windowClosed) windowClosed = true;
     if (windowClosed) {
+    	this.pollingForLoad = false;
         return;
     }
 
@@ -253,12 +256,15 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
 	    if (!(sameLoc && sameHref) && rs == 'complete') {
 	        LOG.debug("pollForLoad complete: " + rs + " (" + currentHref + ")");
 	        loadFunction();
+	        this.pollingForLoad = false;
 	        return;
 	    }
 	    var self = this;
 	    LOG.debug("pollForLoad continue: " + currentHref);
 	    window.setTimeout(function() {self.pollForLoad(loadFunction, windowObject, originalLocation, originalHref);}, 500);
 	} catch (e) {
+		LOG.error("Exception during pollForLoad; this should get noticed soon!");
+		LOG.exception(e);
 		this.pageLoadError = e;
 	}
 };
@@ -973,6 +979,10 @@ function isDefined(value) {
 
 PageBot.prototype.goBack = function() {
     this.currentWindow.history.back();
+    if (browserVersion.isOpera && !selenium.browserbot.pollingForLoad) {
+    	// DGF On Opera, goBack doesn't re-trigger a load event, so we have to poll for it
+        selenium.browserbot.callOnWindowPageTransition(selenium.browserbot.recordPageLoad, this.currentWindow);
+    }
 };
 
 PageBot.prototype.goForward = function() {
