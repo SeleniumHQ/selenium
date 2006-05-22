@@ -410,5 +410,16 @@ public class SeleniumServer {
     public int getPort() {
         return port;
     }
+    
+    /** Exposes the internal Jetty server used by Selenium.
+     * This lets users add their own webapp to the Selenium Server jetty instance.
+     * It is also a minor violation of encapsulation principles (what if we stop
+     * using Jetty?) but life is too short to worry about such things.
+     * @return the internal Jetty server, pre-configured with the /selenium-server context as well as
+     * the proxy server on /
+     */
+    public Server getServer() {
+        return server;
+    }
 
 }
