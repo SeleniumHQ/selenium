@@ -189,8 +189,16 @@ function triggerKeyEvent(element, eventType, keycode, canBubble) {
 		element.fireEvent('on' + eventType, keyEvent);
     }
     else {
-        var evt = document.createEvent('KeyEvents');
-        evt.initKeyEvent(eventType, true, true, window, false, false, false, false, keycode, keycode);
+    	var evt;
+    	if( window.KeyEvent ) {
+			evt = document.createEvent('KeyEvents');
+			evt.initKeyEvent(eventType, true, true, window, false, false, false, false, keycode, keycode);
+		} else {
+			evt = document.createEvent('UIEvents');
+			evt.initUIEvent( eventType, true, true, window, 1 );
+			evt.keyCode = keycode;
+		}
+        
         element.dispatchEvent(evt);
     }
 }
