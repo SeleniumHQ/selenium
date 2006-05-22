@@ -37,6 +37,9 @@ BrowserVersion = function() {
         if (window.top.SeleniumHTARunner && window.top.document.location.pathname.match(/.hta$/i)) {
         	this.isHTA = true;
         }
+        if ("0" == navigator.appMinorVersion) {
+        	this.preSV1 = true;
+        }
         return;
     }
 
