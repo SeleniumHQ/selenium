@@ -86,7 +86,7 @@ public class DefaultSelenium implements Selenium {
 
 	// This file has been automatically generated using XSL
 	// This part of the file is hard-coded in the XSL
-	private CommandProcessor commandProcessor;
+	protected CommandProcessor commandProcessor;
 	/** Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
      * 
      * <p><i>browserString</i> may be any one of the following:

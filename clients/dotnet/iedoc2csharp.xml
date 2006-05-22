@@ -107,7 +107,7 @@ THISISAFAKENEWLINE	// This part of the file is hard-coded in the XSL
 THISISAFAKENEWLINE	public class DefaultSelenium : ISelenium
 THISISAFAKENEWLINE	{
 THISISAFAKENEWLINE	
-THISISAFAKENEWLINE		private ICommandProcessor commandProcessor;
+THISISAFAKENEWLINE		protected ICommandProcessor commandProcessor;
 THISISAFAKENEWLINE		/// <summary>
 THISISAFAKENEWLINE		/// Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
 THISISAFAKENEWLINE	    /// 
