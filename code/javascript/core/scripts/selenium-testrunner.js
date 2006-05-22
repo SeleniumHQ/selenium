@@ -740,3 +740,7 @@ Selenium.prototype.doStoreAttribute = function(target, varName) {
 Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
+
+Selenium.prototype.doEcho = function(msg) {
+	currentTest.currentRow.cells[2].innerHTML = msg;
+}
