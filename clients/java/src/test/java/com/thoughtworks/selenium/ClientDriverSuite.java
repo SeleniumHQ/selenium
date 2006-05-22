@@ -56,7 +56,7 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestFailingAssert.class);
             suite.addTestSuite(TestFailingVerifications.class);
             suite.addTestSuite(TestFocusOnBlur.class);
-            //suite.addTestSuite(TestGoBack.class);	pending http://jira.openqa.org/browse/SRC-52
+            suite.addTestSuite(TestGoBack.class);
             suite.addTestSuite(TestImplicitLocators.class);
             suite.addTestSuite(TestLocators.class);
             suite.addTestSuite(TestOpen.class);
