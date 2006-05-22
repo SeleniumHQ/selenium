@@ -2,33 +2,46 @@
 <!ENTITY openCmd.label "Ouvrir...">
 <!ENTITY saveTestCmd.label "Sauver le test">
 <!ENTITY saveTestAsCmd.label "Sauver le test sous...">
+<!ENTITY exportCmd.label "Exporter le Test sous...">
 <!ENTITY optionsCmd.label "Options...">
 <!ENTITY formatCmd.label "Format">
+<!ENTITY tableTab.label "Table">
+<!ENTITY sourceTab.label "Source">
+<!ENTITY runRadio.label "Lancer">
+<!ENTITY walkRadio.label "Pas-&#224;-pas">
+<!ENTITY stepRadio.label "Faire un pas">
+<!ENTITY playButton.tooltip "Lancer depuis le d&#233;but ou depuis le point de d&#233;part">
+<!ENTITY pauseButton.tooltip "Pause / Relance">
+<!ENTITY stepButton.tooltip "Faire un pas">
+<!ENTITY testrunnerButton.tooltip "Lancer avec Selenium TestRunner">
+<!ENTITY recordButton.tooltip "Enregistrer">
+<!ENTITY baseURLTextbox.tooltip "Saisissez l'URL du site que vous testez. Utilis&#233;e pour ex&#233;cuter la commande &quot;open&quot;.">
 
-<!ENTITY baseURLTextbox.tooltip "URL racine utilis&#233;e pour l'ex&#233;cution dans Selenium embarqu&#233;.">
+<!ENTITY selenium-ide.sidebar.title "Selenium IDE">
 
-<!ENTITY fileMenu.label "File">
+<!ENTITY fileMenu.label "Fichier">
 <!ENTITY optionsMenu.label "Options">
 
-<!ENTITY command.label "Command">
-<!ENTITY target.label "Target">
-<!ENTITY value.label "Value">
-<!ENTITY findTarget.label "Find">
+<!ENTITY command.label "Commande">
+<!ENTITY target.label "Cible">
+<!ENTITY value.label "Valeur">
+<!ENTITY findTarget.label "Rechercher">
 
-<!ENTITY logConsole.label "Log Console">
+<!ENTITY logConsole.label "Console de log">
 <!ENTITY logFilter.debug.label "Debug">
 <!ENTITY logFilter.info.label "Info">
 <!ENTITY logFilter.warn.label "Warn">
 <!ENTITY logFilter.error.label "Error">
-<!ENTITY logClear.label "Clear">
+<!ENTITY logClear.label "Vider">
 
-<!ENTITY contextMenu.cut.label "Cut">
-<!ENTITY contextMenu.copy.label "Copy">
-<!ENTITY contextMenu.paste.label "Paste">
-<!ENTITY contextMenu.delete.label "Delete">
-<!ENTITY contextMenu.insertCommand.label "Insert New Command">
-<!ENTITY contextMenu.insertComment.label "Insert New Comment">
-<!ENTITY contextMenu.clear.label "Clear All">
-<!ENTITY contextMenu.breakpoint.label "Toggle Breakpoint">
-<!ENTITY contextMenu.startpoint.label "Set / Clear Start Point">
-<!ENTITY contextMenu.execCommand.label "Execute this command">
+<!ENTITY contextMenu.cut.label "Coper">
+<!ENTITY contextMenu.copy.label "Copier">
+<!ENTITY contextMenu.paste.label "Coller">
+<!ENTITY contextMenu.delete.label "Effacer">
+<!ENTITY contextMenu.insertCommand.label "Ins&#233;rer une nouvelle commande">
+<!ENTITY contextMenu.insertComment.label "Ins&#233;rer un nouveau commentaire">
+<!ENTITY contextMenu.clear.label "Tout vider">
+<!ENTITY contextMenu.breakpoint.label "Ins&#233;rer / Retirer un point d'arr#234;t">
+<!ENTITY contextMenu.startpoint.label "D&#233;finir / Retirer le point de d&#233;part">
+<!ENTITY contextMenu.execCommand.label "Ex&#233;cuter cette commande">
+
