@@ -46,6 +46,7 @@ function getText(element) {
     	var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.innerText;
+        text = xmlDecode(text);
     }
     else if(element.textContent)
     {
@@ -147,6 +148,15 @@ function normalizeSpaces(text)
     var pat = String.fromCharCode(160); // Opera doesn't like /\240/g
    	var re = new RegExp(pat, "g");
     return text.replace(re, " ");
+}
+
+function xmlDecode(text) {
+	text = text.replace(/&quot;/g, '"');
+	text = text.replace(/&apos;/g, "'");
+	text = text.replace(/&lt;/g, "<");
+	text = text.replace(/&gt;/g, ">");
+	text = text.replace(/&amp;/g, "&");
+	return text;
 }
 
 // Sets the text in this element
