@@ -42,6 +42,10 @@ function getText(element) {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.textContent;
+    } else if (browserVersion.isOpera) {
+    	var dummyElement = element.cloneNode(true);
+        renderWhitespaceInTextContent(dummyElement);
+        text = dummyElement.innerText;
     }
     else if(element.textContent)
     {
@@ -65,6 +69,12 @@ function renderWhitespaceInTextContent(element) {
         element.data = element.data.replace(/\n|\r|\t/g, " ");
         return;
     }
+    
+    if (element.nodeType == Node.COMMENT_NODE)
+    {
+        element.data = "";
+        return;
+    }
 
     // Don't modify PRE elements
     if (element.tagName == "PRE")
@@ -76,7 +86,7 @@ function renderWhitespaceInTextContent(element) {
     if (tagIs(element, ["BR", "HR"]))
     {
         // Replace this element with a newline text element
-        element.parentNode.replaceChild(document.createTextNode("\n"), element)
+        element.parentNode.replaceChild(element.ownerDocument.createTextNode("\n"), element)
     }
 
     for (var i = 0; i < element.childNodes.length; i++)
@@ -92,8 +102,9 @@ function renderWhitespaceInTextContent(element) {
 //      BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
     if (tagIs(element, ["P", "DIV"]))
     {
-        element.appendChild(document.createTextNode("\n"), element)
+        element.appendChild(element.ownerDocument.createTextNode("\n"), element)
     }
+    
 }
 
 function tagIs(element, tags)
