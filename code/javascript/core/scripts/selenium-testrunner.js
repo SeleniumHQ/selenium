@@ -437,7 +437,7 @@ function setResultsData(suiteTable, row) {
     new_column.appendChild(tableNode);
 
     // Set the column to be invisible
-    new_column.style.cssText = "display: none;";
+    new_column.style.display = "none";
 
     // Add the invisible column
     suiteTable.rows[row].appendChild(new_column);

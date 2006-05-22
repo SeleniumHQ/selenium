@@ -49,7 +49,7 @@ Copyright 2004 ThoughtWorks, Inc
 </script>
 </head>
 
-<body onload="start();">
+<body onLoad="start();">
 
     <table class="layout">
     <form action="" name="controlPanel">
@@ -57,84 +57,90 @@ Copyright 2004 ThoughtWorks, Inc
       <!-- Suite, Test, Control Panel -->
 
       <tr class="selenium">
-        <td width="25%" height="30%" rowspan="2"><iframe name="testSuiteFrame" id="testSuiteFrame" src="./TestPrompt.html" application="yes"></iframe></td>
-        <td width="50%" height="30%" rowspan="2"><iframe name="testFrame" id="testFrame" application="yes"></iframe></td>
-        <th width="25%" height="1" class="header">
-          <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
-        </th>
-      </tr>
+        <td width="25%" height="30%" ><iframe name="testSuiteFrame" id="testSuiteFrame" src="./TestPrompt.html" application="yes"></iframe></td>
+        <td width="50%" height="30%" ><iframe name="testFrame" id="testFrame" application="yes"></iframe></td>
 
-      <tr class="selenium">
-        <td width="25%" height="30%" id="controlPanel">
-
-          <fieldset>
-            <legend>Execute Tests</legend>
-            
-            <div>
-              <input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/><label for="modeRun">Run</label>
-              <input id="modeWalk" type="radio" name="runMode" value="500" /><label for="modeWalk">Walk</label>
-              <input id="modeStep" type="radio" name="runMode" value="-1" /><label for="modeStep">Step</label>
-            </div>
-            
-            <div>
-              <button type="button" id="runSuite" onclick="startTestSuite();"
-                      title="Run the entire Test-Suite">
-                <strong>All</strong>
-              </button>
-              <button type="button" id="runTest" onclick="runSingleTest();"
-                      title="Run the current Test">
-                <em>Selected</em>
-              </button>
-              <button type="button" id="continueTest" disabled="disabled"
-                      title="Continue the Test">
-                Continue
-              </button>
-            </div>
-            
-          </fieldset>
-
-          <table id="stats" align="center">
-            <tr>
-              <td colspan="2" align="right">Elapsed:</td>
-              <td id="elapsedTime" colspan="2">00.00</td>
-            </tr>
-            <tr>
-              <th colspan="2">Tests</th>
-              <th colspan="2">Commands</th>
-            </tr>
-            <tr>
-              <td class="count" id="testRuns">0</td>
-              <td>run</td>
-              <td class="count" id="commandPasses">0</td>
-              <td>passed</td>
-            </tr>
-            <tr>
-              <td class="count" id="testFailures">0</td>
-              <td>failed</td>
-              <td class="count" id="commandFailures">0</td>
-              <td>failed</td>
-            </tr>
-            <tr>
-              <td colspan="2"></td>
-              <td class="count" id="commandErrors">0</td>
-              <td>incomplete</td>
-            </tr>
-          </table>
-
-          <fieldset>
-            <legend>Tools</legend>
-
-            <button type="button" id="domViewer1" onclick="openDomViewer();">
-              View DOM
-            </button>
-            <button type="button" onclick="LOG.show();">
-              Show Log
-            </button>
-
-          </fieldset>
-
-        </td>
-      </tr>
+		<td width="25%">        
+		<table class="layout">
+		  <tr class="selenium">
+			<th width="25%" height="1" class="header">
+			  <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
+			</th>
+		  </tr>
+		  <tr>
+			<td width="25%" height="30%" id="controlPanel">
+	
+			  <fieldset>
+				<legend>Execute Tests</legend>
+				
+				<div>
+				  <input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/><label for="modeRun">Run</label>
+				  <input id="modeWalk" type="radio" name="runMode" value="500" /><label for="modeWalk">Walk</label>
+				  <input id="modeStep" type="radio" name="runMode" value="-1" /><label for="modeStep">Step</label>
+				</div>
+				
+				<div>
+				  <button type="button" id="runSuite" onClick="startTestSuite();"
+						  title="Run the entire Test-Suite">
+					<strong>All</strong>
+				  </button>
+				  <button type="button" id="runTest" onClick="runSingleTest();"
+						  title="Run the current Test">
+					<em>Selected</em>
+				  </button>
+				  <button type="button" id="continueTest" disabled="disabled"
+						  title="Continue the Test">
+					Continue
+				  </button>
+				</div>
+				
+			  </fieldset>
+	
+			  <table id="stats" align="center">
+				<tr>
+				  <td colspan="2" align="right">Elapsed:</td>
+				  <td id="elapsedTime" colspan="2">00.00</td>
+				</tr>
+				<tr>
+				  <th colspan="2">Tests</th>
+				  <th colspan="2">Commands</th>
+				</tr>
+				<tr>
+				  <td class="count" id="testRuns">0</td>
+				  <td>run</td>
+				  <td class="count" id="commandPasses">0</td>
+				  <td>passed</td>
+				</tr>
+				<tr>
+				  <td class="count" id="testFailures">0</td>
+				  <td>failed</td>
+				  <td class="count" id="commandFailures">0</td>
+				  <td>failed</td>
+				</tr>
+				<tr>
+				  <td colspan="2"></td>
+				  <td class="count" id="commandErrors">0</td>
+				  <td>incomplete</td>
+				</tr>
+			  </table>
+	
+			  <fieldset>
+				<legend>Tools</legend>
+	
+				<button type="button" id="domViewer1" onClick="openDomViewer();">
+				  View DOM
+				</button>
+				<button type="button" onClick="LOG.show();">
+				  Show Log
+				</button>
+	
+			  </fieldset>
+	
+			</td>
+		  </tr>
+		  </table>
+		  </td>
+	  </tr>
 
       <!-- AUT -->
 
