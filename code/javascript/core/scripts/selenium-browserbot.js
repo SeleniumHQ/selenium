@@ -769,7 +769,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
     element.value=stringValue;
-    if (!this.isChrome()) {
+    if (!browserVersion.isChrome) {
         // In chrome URL, The change event is already fired by setting the value.
         triggerEvent(element, 'change', true);
     }
@@ -791,7 +791,7 @@ MozillaPageBot.prototype.clickElement = function(element) {
 
     // Perform the link action if preventDefault was set.
     // In chrome URL, the link action is already executed by triggerMouseEvent.
-    if (!this.isChrome() && !preventDefault) {
+    if (!browserVersion.isChrome && !preventDefault) {
         // Try the element itself, as well as it's parent - this handles clicking images inside links.
         if (element.href) {
             this.currentWindow.location.href = element.href;
@@ -1020,7 +1020,11 @@ PageBot.prototype.goForward = function() {
 };
 
 PageBot.prototype.close = function() {
-    this.currentWindow.eval("window.close();");
+	if (browserVersion.isChrome) {
+		this.currentWindow.close();
+	} else {
+	    this.currentWindow.eval("window.close();");
+	}
 };
 
 PageBot.prototype.refresh = function() {
@@ -1086,10 +1090,4 @@ PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterT
     return this.selectElementsBy(filterType, filterExpr, elements);
 };
 
-PageBot.prototype.isChrome = function() {
-    return false;
-};
 
-MozillaPageBot.prototype.isChrome = function() {
-    return this.location.href.startsWith("chrome://");
-};
