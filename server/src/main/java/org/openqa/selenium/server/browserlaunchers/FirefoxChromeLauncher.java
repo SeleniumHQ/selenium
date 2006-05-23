@@ -136,7 +136,8 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
                 query = "";
             }
             query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
-            String profilePath = makeCustomProfile();
+            String homePage = "chrome://src/content/" + htmlName + "?" + query;
+            String profilePath = makeCustomProfile(homePage);
             
             String chromeURL = "chrome://killff/content/kill.html";
             
@@ -156,10 +157,7 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
             
             System.out.println("Launching Firefox...");
             
-            cmdarray = new String[] {commandPath, "-profile", profilePath, 
-                    "-chrome", "chrome://src/content/" + htmlName + "?" + query,
-            };
-            // TODO use the chrome URL as a home page!
+            cmdarray = new String[] {commandPath, "-profile", profilePath};
             exe.setCommandline(cmdarray);
             
             process = exe.asyncSpawn();
@@ -169,7 +167,7 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
     }
     
 
-    private String makeCustomProfile() throws IOException {
+    private String makeCustomProfile(String homePage) throws IOException {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
         
         if (simple) return customProfileDir.getAbsolutePath();
@@ -184,6 +182,8 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
         // Don't ask if we want to switch default browsers
         out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
+        
+        out.println("user_pref('startup.homepage_override_url', '" + homePage + "');");
         
         // Disable pop-up blocking
         out.println("user_pref('browser.allowpopups', true);");

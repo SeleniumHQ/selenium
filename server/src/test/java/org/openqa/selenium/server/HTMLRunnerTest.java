@@ -61,7 +61,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         runHTMLSuite("*iexplore");
     }
     
-    public void XXXtestChrome() throws Exception {
+    public void testChrome() throws Exception {
         // TODO incorporate Shinya's fixes from Selenium IDE
         // This test should pass
         runHTMLSuite("*chrome");
