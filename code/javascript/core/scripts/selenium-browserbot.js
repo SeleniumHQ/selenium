@@ -652,21 +652,17 @@ PageBot.prototype.findElementByTagNameAndText = function(
 };
 
 PageBot.prototype.findElementUsingFullXPath = function(xpath, inDocument) {
-    if (browserVersion.isIE && !inDocument.evaluate) {
-        addXPathSupport(inDocument);
-    }
-
     // Use document.evaluate() if it's available
     if (inDocument.evaluate) {
         return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
     }
 
     // If not, fall back to slower JavaScript implementation
-    var context = new XPathContext();
-    context.expressionContextNode = inDocument;
-    var xpathResult = new XPathParser().parse(xpath).evaluate(context);
-    if (xpathResult && xpathResult.toArray) {
-        return xpathResult.toArray()[0];
+    var context = new ExprContext(inDocument);
+    var xpathObj = xpathParse(xpath);
+    var xpathResult = xpathObj.evaluate(context);
+    if (xpathResult && xpathResult.value) {
+        return xpathResult.value[0];
     }
     return null;
 };
