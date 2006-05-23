@@ -442,6 +442,9 @@ PageBot.createForWindow = function(windowObject) {
     else if (browserVersion.isSafari) {
         return new SafariPageBot(windowObject);
     }
+    else if (browserVersion.isOpera) {
+        return new OperaPageBot(windowObject);
+    }
     else {
         LOG.info("Using MozillaPageBot")
         // Use mozilla by default
@@ -468,6 +471,11 @@ IEPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
 };
 IEPageBot.prototype = new PageBot();
+
+OperaPageBot = function(pageWindow) {
+    PageBot.call(this, pageWindow);
+};
+OperaPageBot.prototype = new PageBot();
 
 /*
 * Finds an element on the current page, using various lookup protocols
@@ -769,7 +777,6 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'blur', false);
 };
 
-// TODO Opera uses this too - split out an Opera version so we don't need the isGecko check here
 MozillaPageBot.prototype.clickElement = function(element) {
 
     triggerEvent(element, 'focus', false);
@@ -777,15 +784,15 @@ MozillaPageBot.prototype.clickElement = function(element) {
     // Add an event listener that detects if the default action has been prevented.
     // (This is caused by a javascript onclick handler returning false)
     var preventDefault = false;
-    if (browserVersion.isGecko) {
-        element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
-    }
+    
+    element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
+    
 
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true);
 
     // Perform the link action if preventDefault was set.
-    if (browserVersion.isGecko && !preventDefault) {
+    if (!preventDefault) {
         // Try the element itself, as well as it's parent - this handles clicking images inside links.
         if (element.href) {
             this.currentWindow.location.href = element.href;
@@ -801,6 +808,30 @@ MozillaPageBot.prototype.clickElement = function(element) {
 
     triggerEvent(element, 'blur', false);
 };
+
+OperaPageBot.prototype.clickElement = function(element) {
+
+    triggerEvent(element, 'focus', false);
+
+    // Trigger the click event.
+    triggerMouseEvent(element, 'click', true);
+    
+    if (isDefined(element.checked)) {
+    	// In Opera, clicking won't check/uncheck
+    	if (element.type == "checkbox") {
+    		element.checked = !element.checked;
+    	} else {
+    		element.checked = true;
+    	}
+    }
+    
+    if (this.windowClosed()) {
+        return;
+    }
+
+    triggerEvent(element, 'blur', false);
+};
+
 
 KonquerorPageBot.prototype.clickElement = function(element) {
 
