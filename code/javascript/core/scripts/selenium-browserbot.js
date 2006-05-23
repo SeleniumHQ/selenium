@@ -773,7 +773,10 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
     element.value=stringValue;
-    triggerEvent(element, 'change', true);
+    if (!this.isChrome()) {
+        // In chrome URL, The change event is already fired by setting the value.
+        triggerEvent(element, 'change', true);
+    }
     triggerEvent(element, 'blur', false);
 };
 
@@ -787,12 +790,12 @@ MozillaPageBot.prototype.clickElement = function(element) {
     
     element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
     
-
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true);
 
     // Perform the link action if preventDefault was set.
-    if (!preventDefault) {
+    // In chrome URL, the link action is already executed by triggerMouseEvent.
+    if (!this.isChrome() && !preventDefault) {
         // Try the element itself, as well as it's parent - this handles clicking images inside links.
         if (element.href) {
             this.currentWindow.location.href = element.href;
@@ -1085,4 +1088,12 @@ PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterT
     }
 
     return this.selectElementsBy(filterType, filterExpr, elements);
+};
+
+PageBot.prototype.isChrome = function() {
+    return false;
+};
+
+MozillaPageBot.prototype.isChrome = function() {
+    return this.location.href.startsWith("chrome://");
 };
