@@ -978,6 +978,76 @@ Selenium.prototype.getHtmlSource = function() {
 	return this.page().currentDocument.getElementsByTagName("html")[0].innerHTML;
 };
 
+Selenium.prototype.doSetCursorPosition = function(locator, position) {
+	/**
+   * Moves the text cursor to the specified position in the given input element or textarea.
+   * This method will fail if the specified element isn't an input element or textarea.
+   * 
+   * @param locator an <a href="#locators">element locator</a> pointing to an input element or textarea
+   * @param position the numerical position of the cursor in the field; position should be 0 to move the position to the beginning of the field.  You can also set the cursor to -1 to move it to the end of the field.
+   */
+   var element = this.page().findElement(locator);
+    if (element.value == undefined) {
+        Assert.fail("Element " + locator + " is not an input.");
+    }
+    if (position == -1) {
+    	position = element.value.length;
+    }
+    
+   if( element.setSelectionRange && !browserVersion.isOpera) {
+   	element.focus();
+     element.setSelectionRange(/*start*/position,/*end*/position);
+   } 
+   else if( element.createTextRange ) {
+   		triggerEvent(element, 'focus', false);
+      var range = element.createTextRange();
+      range.collapse(true);
+      range.moveEnd('character',position);
+      range.moveStart('character',position);
+      range.select();
+   }
+}
+
+Selenium.prototype.getCursorPosition = function(locator) {
+	/**
+   * Retrieves the text cursor position in the given input element or textarea; beware, this may not work perfectly on all browsers.
+   * 
+   * <p>Specifically, if the cursor/selection has been cleared by JavaScript, this command will tend to
+   * return the position of the last location of the cursor, even though the cursor is now gone from the page.  This is filed as <a href="http://jira.openqa.org/browse/SEL-243">SEL-243</a>.</p>
+   * This method will fail if the specified element isn't an input element or textarea, or there is no cursor in the element.
+   * 
+   * @param locator an <a href="#locators">element locator</a> pointing to an input element or textarea
+   * @return number the numerical position of the cursor in the field
+   */
+   var element = this.page().findElement(locator);
+   var doc = this.page().currentDocument;
+   var win = this.browserbot.getCurrentWindow();
+	if( doc.selection && !browserVersion.isOpera){
+		
+		var selectRange = doc.selection.createRange().duplicate();
+		var elementRange = element.createTextRange();
+		selectRange.move("character",0);
+		elementRange.move("character",0);
+		var inRange1 = selectRange.inRange(elementRange);
+		var inRange2 = elementRange.inRange(selectRange);
+		try {
+			elementRange.setEndPoint("EndToEnd", selectRange);
+		} catch (e) {
+			Assert.fail("There is no cursor on this page!");
+		}
+		var answer = String(elementRange.text).replace(/\r/g,"").length;
+		return answer;
+	} else {
+		if (typeof(element.selectionStart) != undefined) {
+			if (win.getSelection && typeof(win.getSelection().rangeCount) != undefined && win.getSelection().rangeCount == 0) {
+				Assert.fail("There is no cursor on this page!");
+			}
+			return element.selectionStart;
+		} 
+	}
+	throw new Error("Couldn't detect cursor position on this browser!");
+}
+   
 
 Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
 	/**
