@@ -19,7 +19,6 @@ package org.openqa.selenium.server;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.net.*;
 import java.util.*;
 
 import org.mortbay.http.*;

@@ -99,11 +99,10 @@ public class BrowserLauncherFactory {
                     Constructor ctor = c.getConstructor(new Class[]{int.class, String.class});
                     Object[] args = new Object[] {new Integer(server.getPort()), sessionId};
                     return (BrowserLauncher) ctor.newInstance(args);
-                } else {
-                    Constructor ctor = c.getConstructor(new Class[]{int.class, String.class, String.class});
-                    Object[] args = new Object[] {new Integer(server.getPort()), sessionId, browserStartCommand};
-                    return (BrowserLauncher) ctor.newInstance(args);
                 }
+                Constructor ctor = c.getConstructor(new Class[]{int.class, String.class, String.class});
+                Object[] args = new Object[] {new Integer(server.getPort()), sessionId, browserStartCommand};
+                return (BrowserLauncher) ctor.newInstance(args);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
