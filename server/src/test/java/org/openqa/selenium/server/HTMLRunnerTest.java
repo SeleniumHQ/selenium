@@ -67,6 +67,10 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         runHTMLSuite("*chrome");
     }
     
+    public void XXXtestOpera() throws Exception {
+        runHTMLSuite("*opera");
+    }
+    
     public void testHTA() throws Exception {
         try {
             runHTMLSuite("*iehta");

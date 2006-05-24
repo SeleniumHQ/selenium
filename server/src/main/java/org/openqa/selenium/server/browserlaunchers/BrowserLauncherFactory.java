@@ -38,6 +38,7 @@ public class BrowserLauncherFactory {
         new BrowserStringPair("safari", SafariCustomProfileLauncher.class),
         new BrowserStringPair("iehta", HTABrowserLauncher.class),
         new BrowserStringPair("chrome", FirefoxChromeLauncher.class),
+        new BrowserStringPair("opera", OperaCustomProfileLauncher.class),
     };
     
     SeleniumServer server;
