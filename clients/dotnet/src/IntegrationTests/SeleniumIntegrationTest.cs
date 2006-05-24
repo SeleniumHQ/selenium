@@ -52,11 +52,9 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 			selenium.Open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
 			Assert.IsTrue(selenium.IsTextPresent("suggest"));
 
-            /*
-              disabled pending DOJO combobox trouble issue resolution: (http://jira.openqa.org/browse/SRC-55)
-
-			String elementID = "_idJsp0:_idJsp3";
+			String elementID = "document.forms[0].elements[2]";
 			selenium.Type(elementID, "foo");
+			selenium.SetCursorPosition(elementID, "-1");
 			// DGF On Mozilla a keyPress is needed, and types a letter.
 			// On IE6, a keyDown is needed, and no letter is typed. :-p
 			// NS On firefox, keyPress needed, no letter typed.
@@ -64,9 +62,10 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 			String verificationText = "regexp:foox?1";
 			selenium.KeyDown(elementID, "120");
 			selenium.KeyPress(elementID, "120");
+			selenium.KeyUp(elementID, "120");
 			Thread.Sleep(2000);
 			Assert.IsTrue(selenium.IsTextPresent(verificationText));
-            */
+            
 		}
 	}
 }

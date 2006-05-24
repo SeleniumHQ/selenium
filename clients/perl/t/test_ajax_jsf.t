@@ -19,11 +19,8 @@ use lib 't/lib';
 use SeleniumUtil qw(server_is_running);
 use Test::More;
 
-plan skip_all => "Bug SRC-55!";
-exit 0;
-
 if (server_is_running) {
-    plan tests => 6;
+    plan tests => 7;
 }
 else {
     plan skip_all => "No selenium server found!";
@@ -37,12 +34,10 @@ my $sel = Test::WWW::Selenium->new( host => "localhost",
                                     );
 $sel->open_ok("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
 $sel->is_text_present_ok("suggest");
-#
-# disabled pending DOJO combobox trouble issue resolution (http://jira.openqa.org/browse/SRC-55)
-#
-#$id = "_idJsp0:_idJsp3";
-#$sel->type_ok($id, "foo");
-#$sel->key_down_ok($id, 120);
-#$sel->key_press_ok($id, 120);
-#sleep 1;
-#$sel->assert_text_present_ok("regexp:foox?1");
+$id = "document.forms[0].elements[2]";
+$sel->type_ok($id, "foo");
+$sel->set_cursor_position_ok($id, -1);
+$sel->key_down_ok($id, 120);
+$sel->key_up_ok($id, 120);
+sleep 2;
+$sel->is_text_present_ok("regexp:foox?1");

@@ -26,6 +26,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         ajaxTester();
     }
     
+    // Not running this test in IE; Dojo has bugs!
     public void testAJAXIExplore() throws Throwable {
         if (!WindowsUtils.thisIsWindows()) return;
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
@@ -36,8 +37,10 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     public void ajaxTester() throws Throwable {
         selenium.open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
         assertTrue(selenium.isTextPresent("suggest"));
-        String elementID = "_idJsp0:_idJsp3";
+        String elementID = "document.forms[0].elements[2]";
+            //"//input[@id='' and @type='text']";
         selenium.type(elementID, "foo");
+        selenium.setCursorPosition(elementID, "-1");
         // DGF On Mozilla a keyPress is needed, and types a letter.
         // On IE6, a keyDown is needed, and no letter is typed. :-p
         // On firefox 1.0.6-1.5.0.1, keyPress needed, no letter typed;
@@ -46,7 +49,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         
         String verificationText = "regexp:foox?1";
         selenium.keyDown(elementID, Integer.toString('x'));
-        selenium.keyPress(elementID, Integer.toString('x'));
+        selenium.keyUp(elementID, Integer.toString('x'));
         Thread.sleep(2000);
         assertTrue(selenium.isTextPresent(verificationText));
     }

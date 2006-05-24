@@ -35,15 +35,14 @@ class TestAjaxJSF(unittest.TestCase):
         selenium = self.selenium
         selenium.open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf")
         self.failUnless(selenium.is_text_present("suggest"))
-        #
-        #
-        # disabled pending DOJO combobox trouble issue resolution (http://jira.openqa.org/browse/SRC-55)
-        #
-        #selenium.type("_idJsp0:_idJsp3", "foo")
-        #selenium.key_down("_idJsp0:_idJsp3", 120)
-        #selenium.key_press("_idJsp0:_idJsp3", 120)
-        #time.sleep(1)
-        #selenium.assert_text_present("regexp:foox?1")
+        
+        element_id = "document.forms[0].elements[2]"
+        selenium.type(element_id, "foo")
+        selenium.set_cursor_position(element_id, -1)
+        selenium.key_down(element_id, 120)
+        selenium.key_up(element_id, 120)
+        time.sleep(2)
+        self.failUnless(selenium.is_text_present("regexp:foox?1"))
 
     def tearDown(self):
         self.selenium.stop()

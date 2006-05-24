@@ -34,14 +34,12 @@ class ExampleTest < Test::Unit::TestCase
         @selenium.open "http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf"
 		assert(@selenium.is_text_present("suggest"))
 
-
-		#
-		# disabled pending DOJO combobox trouble issue resolution: (http://jira.openqa.org/browse/SRC-55)
-		#
-		#@selenium.type "_idJsp0:_idJsp3", "foo"
-		#@selenium.key_down "_idJsp0:_idJsp3", 120
-		#@selenium.key_press "_idJsp0:_idJsp3", 120
-		#sleep 2
-		#@selenium.assert_text_present "regexp:foox?1"
+		element_id = "document.forms[0].elements[2]"
+		@selenium.type element_id, "foo"
+		@selenium.set_cursor_position element_id, -1
+		@selenium.key_down element_id, 120
+		@selenium.key_up element_id, 120
+		sleep 2
+		assert(@selenium.is_text_present("regexp:foox?1"))
     end
 end
