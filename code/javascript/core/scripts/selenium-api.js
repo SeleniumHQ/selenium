@@ -328,7 +328,7 @@ Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
    * </p>
    * 
    * 
-   * @param locator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @param optionLocator an option locator (a label by default)
    */
     var element = this.page().findElement(selectLocator);
