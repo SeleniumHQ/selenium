@@ -217,7 +217,7 @@ BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowO
     if (windowObject && !windowObject.closed) {
         LOG.debug("Starting pollForLoad: " + windowObject.document.location);
         this.pollingForLoad = true;
-        this.pollForLoad(loadFunction, windowObject, windowObject.document.location, windowObject.document.location.href);
+        this.pollForLoad(loadFunction, windowObject, windowObject.location, windowObject.location.href);
     }
 };
 
@@ -244,7 +244,7 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
     LOG.debug("pollForLoad original: " + originalHref);
     try {
 
-	    var currentLocation = windowObject.document.location;
+	    var currentLocation = windowObject.location;
 	    var currentHref = currentLocation.href
 
 	    var sameLoc = (originalLocation === currentLocation);
