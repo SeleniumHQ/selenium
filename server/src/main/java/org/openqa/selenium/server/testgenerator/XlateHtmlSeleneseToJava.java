@@ -491,39 +491,27 @@ public class XlateHtmlSeleneseToJava {
                 beginning = invertAssertion(beginning);
                 op = op.replaceFirst("Not", "");
             }
-            if (op.equals("Attribute")) {
-                return beginning + XlateSeleneseArgument(tokens[2]) + ", selenium.getAttribute(" + 
-                XlateSeleneseArgument(tokens[1]) + "));";        
-            }
-            else if (op.equals("Text")) {
-                middle = XlateSeleneseArgument(tokens[2]) + ", selenium.getText(" + XlateSeleneseArgument(tokens[1]) + ")";
-            }
-            else if (op.equals("TextLength")) {
+            if (op.equals("TextLength")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", \"\" + selenium.getText(" + XlateSeleneseArgument(tokens[1]) + ").length()";
             }
             else if (op.equals("Location")) {
                 return "\t\tassertTrue(selenium.isLocation(" + XlateSeleneseArgument(tokens[1]) + "));";
             }
-            else if (op.equals("AbsoluteLocation")) {
-                middle = XlateSeleneseArgument(tokens[1]) + ", selenium.getAbsoluteLocation()";
+            else if (op.equals("Confirmation")
+                    || op.equals("AbsoluteLocation")
+                    || op.equals("Title")) {
+                middle = XlateSeleneseArgument(tokens[1]) + ", selenium.get" + op + "()";
             }
-            else if (op.equals("Title")) {
-                middle = XlateSeleneseArgument(tokens[1]) + ", selenium.getTitle()";
+            else if (op.equals("Value")
+                    || op.equals("Checked")
+                    || op.equals("CursorPosition")
+                    || op.equals("Attribute")
+                    || op.equals("Text")) {
+                middle = XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
-            else if (op.equals("Value")) {
-                middle = XlateSeleneseArgument(tokens[2]) + ", selenium.getValue(" + XlateSeleneseArgument(tokens[1]) + ")";
-            }
-            else if (op.equals("Alert")) {
-                middle = XlateSeleneseArgument(tokens[1]) + ", selenium.getAlert()";
-            }
-            else if (op.equals("Prompt")) {
-                middle = XlateSeleneseArgument(tokens[1]) + ", selenium.getPrompt()";
-            }
-            else if (op.equals("Confirmation")) {
-                middle = XlateSeleneseArgument(tokens[1]) + ", selenium.getConfirmation()";
-            }
-            else if (op.equals("Checked")) {
-                middle = XlateSeleneseArgument(tokens[2]) + ", selenium.getChecked(" + XlateSeleneseArgument(tokens[1]) + ")";
+            else if (op.equals("Alert")
+                    || op.equals("Prompt")) {
+                middle = XlateSeleneseArgument(tokens[1]) + ", selenium.get" + op + "()";
             }
             else if (op.equals("Expression")) {
                 middle = XlateSeleneseArgument(tokens[1]) + ", " + 
