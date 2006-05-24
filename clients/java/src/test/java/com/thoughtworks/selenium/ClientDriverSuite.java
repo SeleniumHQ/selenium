@@ -42,7 +42,7 @@ public class ClientDriverSuite extends TestCase {
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             suite.addTest(I18nTest.suite());
-            //suite.addTestSuite(ApacheMyFacesSuggestTest.class);	disabled pending DOJO combobox trouble issue resolution (http://jira.openqa.org/browse/SRC-55)
+            suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             suite.addTestSuite(RealDealIntegrationTest.class);
             suite.addTestSuite(TestErrorChecking.class);
             suite.addTestSuite(TestJavascriptParameters.class);
