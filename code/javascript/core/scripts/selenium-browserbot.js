@@ -27,7 +27,7 @@
 // The window to which the commands will be sent.  For example, to click on a
 // popup window, first select that window, and then do a normal click command.
 
-BrowserBot = function(frame) {
+var BrowserBot = function(frame) {
     this.frame = frame;
     this.currentPage = null;
     this.currentWindowName = null;
@@ -381,7 +381,7 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
     };
 };
 
-PageBot = function(pageWindow) {
+var PageBot = function(pageWindow) {
     if (pageWindow) {
         this.currentWindow = pageWindow;
         this.currentDocument = pageWindow.document;
@@ -452,22 +452,22 @@ PageBot.createForWindow = function(windowObject) {
     }
 };
 
-MozillaPageBot = function(pageWindow) {
+var MozillaPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
 };
 MozillaPageBot.prototype = new PageBot();
 
-KonquerorPageBot = function(pageWindow) {
+var KonquerorPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
 };
 KonquerorPageBot.prototype = new PageBot();
 
-SafariPageBot = function(pageWindow) {
+var SafariPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
 };
 SafariPageBot.prototype = new PageBot();
 
-IEPageBot = function(pageWindow) {
+var IEPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
 };
 IEPageBot.prototype = new PageBot();

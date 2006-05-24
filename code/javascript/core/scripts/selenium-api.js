@@ -15,7 +15,7 @@
  *
  */
 
-storedVars = new Object();
+var storedVars = new Object();
 
 function Selenium(browserbot) {
 	/**
@@ -282,7 +282,7 @@ Selenium.prototype.doUncheck = function(locator) {
     this.findToggleButton(locator).checked = false;
 };
 
-Selenium.prototype.doSelect = function(locator, optionLocator) {
+Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
 	/**
    * Select an option from a drop-down using an option locator.
    * 
@@ -331,7 +331,7 @@ Selenium.prototype.doSelect = function(locator, optionLocator) {
    * @param locator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @param optionLocator an option locator (a label by default)
    */
-    var element = this.page().findElement(locator);
+    var element = this.page().findElement(selectLocator);
     if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
     }
@@ -761,6 +761,7 @@ Selenium.prototype.getTable = function(tableCellAddress) {
         actualContent = getText(table.rows[row].cells[col]);
         return actualContent.trim();
     }
+	return null;
 };
 
 Selenium.prototype.isSelected = function(locator, optionLocator) {
