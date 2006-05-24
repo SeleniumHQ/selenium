@@ -410,7 +410,7 @@ var PageBot = function(pageWindow) {
      * Find a locator based on a prefix.
      */
     this.findElementBy = function(locatorType, locator, inDocument) {
-        var locatorFunction = this.locationStrategies[locatorType];
+        var locatorFunction = this.locationStrategies[locatorType];        
         if (! locatorFunction) {
             throw new SeleniumError("Unrecognised locator type: '" + locatorType + "'");
         }
@@ -1089,5 +1089,16 @@ PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterT
 
     return this.selectElementsBy(filterType, filterExpr, elements);
 };
+
+/**
+ * Find an element by class
+ */
+PageBot.prototype.locateElementByClass = function(locator, document) {
+    return Element.findFirstMatchingChild(document, 
+	    function(element) { 
+		    return element.className == locator
+		}
+    );
+}
 
 
