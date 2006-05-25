@@ -62,6 +62,7 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestOpen.class);
             suite.addTestSuite(TestPatternMatching.class);
             suite.addTestSuite(TestPause.class);
+            suite.addTestSuite(TestSelectWindow.class);
             suite.addTestSuite(TestStore.class);
             suite.addTestSuite(TestSubmit.class);
             suite.addTestSuite(TestType.class);
@@ -69,11 +70,11 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestWait.class);
             suite.addTestSuite(TestSelect.class);
             suite.addTestSuite(TestEditable.class);
-//            suite.addTestSuite(TestPrompt.class);
-//            suite.addTestSuite(TestConfirmations.class);
-//            suite.addTestSuite(TestAlerts.class);
-//            suite.addTestSuite(TestWaitInPopupWindow.class);
-//            suite.addTestSuite(TestWaitFor.class);
+            suite.addTestSuite(TestPrompt.class);
+            suite.addTestSuite(TestConfirmations.class);
+            suite.addTestSuite(TestAlerts.class);
+            suite.addTestSuite(TestWaitInPopupWindow.class);
+            suite.addTestSuite(TestWaitFor.class);
             suite.addTestSuite(TestWaitForNot.class);
             ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
             supersuite.addTest(setup);
