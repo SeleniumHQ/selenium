@@ -10,7 +10,7 @@
 <p>Selenese HTML Tables are normally tested using Selenium IDE or using Selenium Core by itself.  (The Selenium Server includes its own copy of Selenium Core.)  But there are a few ways you can use the Selenium Server with your Selenese HTML Tables.</p>
 
 
-<h2>Running Selenese Core Tests against an unmodified website</h2>
+<h3>Running Selenese Core Tests against an unmodified website</h3>
 
 <p>To run Selenium Core tests, they normally have to be installed on the server on which you want to test.  That means that you can't just write a Selenium Core test against google.com, because you'd need to install Selenium Core on google.com for those tests to work.</p>
 
@@ -24,16 +24,34 @@
 
 <p>That will automatically launch your HTML suite and wait the specified number of seconds for the test to complete; if the test doesn't complete within that amount of time, the command will exit with a non-zero exit code and no results file will be generated.</p>
 
-<h2>Running Selenese Tests under Continuous Integration</h2>
+<h3>Running Selenese Tests under Continuous Integration</h3>
 
 <p>If you just want to use the Selenium Server as a quick-and-dirty way to launch your HTML Selenese suites from the command line and generate results automatically, you can do that, too, just by following the instructions above.</p>
 
-<!--
-3) Converting your Selenese Tests into Java
+<h3> XlateHtmlSeleneseToJava: a translation tool to convert Selenese HTML tests to Java</h3>
 
-We have a tool that we use to automatically convert Selenese HTML tests into Java.  (We use this to automatically test the Selenium Server and Java Client Driver.)
-
-At the time of this writing (April 2006, Selenium 0.6) Selenese has no support for conditional "if" statements or looping "while" statements.  It also has no functionality to allow you to reuse testing code within other tests.
-
-If you need a more expressive language to write your tests, then you may benefit from using our tool to migrate your existing Selenium tests into Java.
--->
+We have a tool that we use to automatically convert Selenese HTML tests into Java.  
+<p>
+Selenese HTML tests have no support for conditional "if" statements or looping "while" statements.  There is also no way to reuse testing code within other tests.
+<p>
+If you need a more expressive language to write your tests, then you may benefit from using our tool to migrate your existing Selenium tests into Java.  Currently the selenium-rc nightly build uses this tool to convert most of the HTML tests into RC tests, which end up living in rc/clients/java/src/test/java/com/thoughtworks/selenium/corebased.  Interested parties can inspect the invocation of the translator in rc/clients/java/generate-sources.xml:23:
+<p>
+<code>
+	&lt;java classname="org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava" fork="true" failonerror="true"&gt;
+	&lt;arg value="${dir.java.tests.based.on.core.javascript}"/&gt;
+	&lt;arg value="-silent"/&gt;
+	&lt;arg value="-dontThrowOnTranslationDifficulties"/&gt;
+	&lt;arg value="-dir"/&gt;
+	&lt;arg value="${dir.core.tests}"/&gt;
+	&lt;classpath refid="depend.classpath"/&gt;
+	&lt;/java&gt;
+</code>
+<p>
+The dir argument tells it to translate everything within a directory. It is possible to also invoke it so as to translate a single class. Here's another sample invocation in bash:
+<p>
+<code>
+	cp="z:/shared/p4/Dev/selenium-rc_svn/trunk/rc/server/target/test-classes;z:/shared/p4/Dev/selenium-rc_svn/trunk/rc/server/eclipse;C:/Documents and Settings/nelsons/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar;C:/Documents and Settings/nelsons/.m2/repository/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar;C:/Documents and Settings/nelsons/.m2/repository/ant/ant/1.6.5/ant-1.6.5.jar;C:/Documents and Settings/nelsons/.m2/repository/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar;C:/Documents and Settings/nelsons/.m2/repository/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar;$HOME/shared/p4/Dev/selenium-rc_svn/trunk/core/bin"
+	java -ea -Dcode_root=. -classpath "$cp" org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava $HOME/shared/p4/Dev/selenium-rc_svn/trunk/rc/clients/java/src/test/java/com/thoughtworks/selenium/corebased $HOME/shared/p4/Dev/selenium-rc_svn/trunk/core/tests/TestSelect.html
+</code>
+<p>
+This example takes as its input $HOME/shared/p4/Dev/selenium-rc_svn/trunk/core/tests/TestSelect.html, and produces as its output $HOME/shared/p4/Dev/selenium-rc_svn/trunk/rc/clients/java/src/test/java/com/thoughtworks/selenium/corebased/TestSelect.java.
