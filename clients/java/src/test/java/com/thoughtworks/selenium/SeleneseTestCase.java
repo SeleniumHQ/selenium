@@ -120,8 +120,7 @@ public class SeleneseTestCase extends TestCase {
         
         String s1glob = s1.replaceFirst("glob:", ".*")
         .replaceAll("\\*", ".*")
-        .replaceAll("[\\]\\[\\$\\(\\).]", "\\\\$1")
-        .replaceAll("\\.", "\\\\.")
+        .replaceAll("([\\]\\[\\$\\(\\).])", "\\\\$1")
         .replaceAll("\\?", ".") + ".*";
         if (!s2.matches(s1glob)) {
             System.out.println("expected " + s2 + " to match glob " + s1 + " (had transformed the glob into regexp:" + s1glob);
