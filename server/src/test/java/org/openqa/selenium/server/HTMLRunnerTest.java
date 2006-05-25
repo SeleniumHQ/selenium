@@ -27,6 +27,8 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
     SeleniumServer server;
     HTMLLauncher launcher;
     HTMLTestResults results = null;
+    protected String suiteName = "TestSuite.html";
+    protected String browserURL; 
     File output;
     
     public void setUp() throws Exception {
@@ -35,11 +37,11 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
         launcher = new HTMLLauncher(server);
         server.start();
+        browserURL = "http://localhost:" + server.getPort();
     }
     
     public void runHTMLSuite(String browser) throws Exception {
-        String browserURL = "http://localhost:" + server.getPort();
-        String testURL = browserURL + "/selenium-server/tests/TestSuite.html";
+        String testURL = browserURL + "/selenium-server/tests/" + suiteName;
         long timeout = 1000 * 60 * 10; // ten minutes
         String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);
         assertTrue("Results file doesn't exist: " + output.getAbsolutePath(), output.exists());
@@ -67,7 +69,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         runHTMLSuite("*chrome");
     }
     
-    public void XXXtestOpera() throws Exception {
+    public void testOpera() throws Exception {
         runHTMLSuite("*opera");
     }
     
