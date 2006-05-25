@@ -612,39 +612,12 @@ Selenium.prototype.getPrompt = function() {
     return this.browserbot.getNextPrompt();
 };
 
-Selenium.prototype.getAbsoluteLocation = function() {
+Selenium.prototype.getLocation = function() {
 	/** Gets the absolute URL of the current page.
    * 
    * @return string the absolute URL of the current page
    */
     return this.page().location;
-};
-
-Selenium.prototype.isLocation = function(expectedLocation) {
-	/**
-   * Verify the location of the current page ends with the expected location.
-   * If an URL querystring is provided, this is checked as well.
-   * @param expectedLocation the location to match
-   * @return boolean true if the location matches, false otherwise
-   */
-    var docLocation = this.page().location;
-    var actualPath = docLocation.pathname;
-    if (docLocation.protocol == "file:") {
-    	// replace backslashes with forward slashes, so IE can run off the file system
-    	var actualPath = docLocation.pathname.replace(/\\/g, "/");
-    }
-    var searchPos = expectedLocation.lastIndexOf('?');
-
-    if (searchPos == -1) {
-    	return PatternMatcher.matches('*' + expectedLocation, actualPath)
-    }
-    else {
-        var expectedPath = expectedLocation.substring(0, searchPos);
-        return PatternMatcher.matches('*' + expectedPath, actualPath)
-
-        var expectedQueryString = expectedLocation.substring(searchPos);
-        return PatternMatcher.matches(expectedQueryString, docLocation.search)
-    }
 };
 
 Selenium.prototype.getTitle = function() {
@@ -715,7 +688,7 @@ Selenium.prototype.getEval = function(script) {
     }
 };
 
-Selenium.prototype.getChecked = function(locator) {
+Selenium.prototype.isChecked = function(locator) {
 	/**
    * Gets whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.
    * @param locator an <a href="#locators">element locator</a> pointing to a checkbox or radio button
