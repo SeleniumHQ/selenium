@@ -9,6 +9,7 @@
 		<fail if="build.failed" message="Couldn't find MAVEN_HOME.  (Did you set the MAVEN_HOME environment variable correctly?)&#xa;Maven Home: ${maven.home}" />
 		<property name="mvn.overrideable.settings" value="" />
 		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
+		<property name="opera.location" location="c:\program files\opera\opera.exe" />
 		<presetdef name="mvn">
 			<java classname="org.codehaus.classworlds.Launcher" fork="true" failonerror="true">
 				<!--<jvmarg value="-Xdebug"/>
@@ -22,6 +23,7 @@
 				<sysproperty key="maven.home" value="${maven.home}" />
 				<arg value="-e" />
 				<arg value="-DfirefoxDefaultPath=${firefox.location}" />
+				<arg value="-DoperaDefaultPath=${opera.location}" />
 				<arg line="${mvn.overrideable.settings}" />
 			</java>
 		</presetdef>

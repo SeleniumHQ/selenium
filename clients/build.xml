@@ -158,8 +158,10 @@
 	<target name="start-server" depends="find-server">
 		<!-- Configurable server default firefox location; if this doesn't work, we'll just try to run it off the path -->
 		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
+		<property name="opera.location" location="c:\program files\opera\opera.exe" />
 		<java jar="${selenium-server.jar}" fork="true" spawn="true">
 			<sysproperty key="firefoxDefaultPath" file="${firefox.location}" />
+			<sysproperty key="operaDefaultPath" file="${opera.location}" />
 		</java>
 		<echo message="Starting: ${selenium-server.jar}" />
     </target>
