@@ -36,9 +36,9 @@ public class ClientDriverSuite extends TestCase {
      */
 	public static Test suite() {
         try {
-            // TODO This class extends TestCase to workaround MSUREFIRE-113
+// TODO This class extends TestCase to workaround MSUREFIRE-113
             // http://jira.codehaus.org/browse/MSUREFIRE-113
-            // Once that bug is fixed, this class should be a TestSuite, not a TestCase
+// Once that bug is fixed, this class should be a TestSuite, not a TestCase
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             suite.addTest(I18nTest.suite());
@@ -73,6 +73,9 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestPrompt.class);
             suite.addTestSuite(TestConfirmations.class);
             suite.addTestSuite(TestAlerts.class);
+            suite.addTestSuite(TestRefresh.class);
+            suite.addTestSuite(TestVisibility.class);
+            suite.addTestSuite(TestMultiSelect.class);
             suite.addTestSuite(TestWaitInPopupWindow.class);
             suite.addTestSuite(TestWaitFor.class);
             suite.addTestSuite(TestWaitForNot.class);
