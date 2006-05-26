@@ -737,53 +737,155 @@ Selenium.prototype.getTable = function(tableCellAddress) {
 	return null;
 };
 
-Selenium.prototype.isSelected = function(locator, optionLocator) {
+Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
 	/**
    * Verifies that the selected option of a drop-down satisfies the optionSpecifier.
    * 
    * <p>See the select command for more information about option locators.</p>
    * 
-   * @param locator an <a href="#locators">element locator</a>
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
-   * @return boolean true if the selected option matches the locator, false otherwise
    */
-    var element = this.page().findElement(locator);
+    var element = this.page().findElement(selectLocator);
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     if (element.selectedIndex == -1)
     {
-        return false;
+        Assert.fail("No option selected");
     }
-    return locator.isSelected(element);
+    locator.assertSelected(element);
 };
 
-Selenium.prototype.getSelectedOptions = function(locator) {
-    /** Gets all option labels for selected options in the specified select or multi-select element.
+Selenium.prototype.getSelectedLabels = function(selectLocator) {
+    /** Gets all option labels (visible text) for selected options in the specified select or multi-select element.
    *
-   * @param locator an <a href="#locators">element locator</a>
-   * @return string[] an array of all option labels in the specified select drop-down
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return string[] an array of all selected option labels in the specified select drop-down
    */
+    return this.findSelectedOptionProperties(selectLocator, "text").join(",");
+}
+
+Selenium.prototype.getSelectedLabel = function(selectLocator) {
+    /** Gets option label (visible text) for selected option in the specified select element.
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return string the selected option label in the specified select drop-down
+   */
+    return this.findSelectedOptionProperty(selectLocator, "text");
+}
+
+Selenium.prototype.getSelectedValues = function(selectLocator) {
+    /** Gets all option values (value attributes) for selected options in the specified select or multi-select element.
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return string[] an array of all selected option values in the specified select drop-down
+   */
+    return this.findSelectedOptionProperties(selectLocator, "value").join(",");
+}
+
+Selenium.prototype.getSelectedValue = function(selectLocator) {
+    /** Gets option value (value attribute) for selected option in the specified select element.
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return string the selected option value in the specified select drop-down
+   */
+    return this.findSelectedOptionProperty(selectLocator, "value");
+}
+
+Selenium.prototype.getSelectedIndexes = function(selectLocator) {
+    /** Gets all option indexes (option number, starting at 0) for selected options in the specified select or multi-select element.
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return string[] an array of all selected option indexes in the specified select drop-down
+   */
+    return this.findSelectedOptionProperties(selectLocator, "index").join(",");
+}
+
+Selenium.prototype.getSelectedIndex = function(selectLocator) {
+    /** Gets option index (option number, starting at 0) for selected option in the specified select element.
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return string the selected option index in the specified select drop-down
+   */
+    return this.findSelectedOptionProperty(selectLocator, "index");
+}
+
+Selenium.prototype.getSelectedIds = function(selectLocator) {
+    /** Gets all option element IDs for selected options in the specified select or multi-select element.
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return string[] an array of all selected option IDs in the specified select drop-down
+   */
+    return this.findSelectedOptionProperties(selectLocator, "id").join(",");
+}
+
+Selenium.prototype.getSelectedId = function(selectLocator) {
+    /** Gets option element ID for selected option in the specified select element.
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return string the selected option ID in the specified select drop-down
+   */
+    return this.findSelectedOptionProperty(selectLocator, "id");
+}
+
+Selenium.prototype.isSomethingSelected = function(selectLocator) {
+    /** Determines whether some option in a drop-down menu is selected.
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @return boolean true if some option has been selected, false otherwise
+   */
+    var element = this.page().findElement(selectLocator);
+    if (!("options" in element)) {
+        throw new SeleniumError("Specified element is not a Select (has no options)");
+    }
+    
+    var selectedOptions = [];
+    
+    for (var i = 0; i < element.options.length; i++) {
+        if (element.options[i].selected)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+Selenium.prototype.findSelectedOptionProperties = function(locator, property) {
    var element = this.page().findElement(locator);
+   if (!("options" in element)) {
+        throw new SeleniumError("Specified element is not a Select (has no options)");
+    }
 
 	var selectedOptions = [];
 
     for (var i = 0; i < element.options.length; i++) {
         if (element.options[i].selected)
         {
-            var option = element.options[i].text.replace(/,/g, "\\,");
-            selectedOptions.push(option);
+            var propVal = element.options[i][property];
+            if (propVal.replace) {
+                propVal.replace(/,/g, "\\,");
+            }
+            selectedOptions.push(propVal);
         }
     }
-    return selectedOptions.join(",");
-
+    if (selectedOptions.length == 0) Assert.fail("No option selected");
+    return selectedOptions;
 }
 
-Selenium.prototype.getSelectOptions = function(locator) {
+Selenium.prototype.findSelectedOptionProperty = function(locator, property) {
+    var selectedOptions = this.findSelectedOptionProperties(locator, property);
+    if (selectedOptions.length > 1) {
+        Assert.fail("More than one selected option!");
+    }
+    return selectedOptions[0];
+}
+
+Selenium.prototype.getSelectOptions = function(selectLocator) {
 	/** Gets all option labels in the specified select drop-down.
    * 
-   * @param locator an <a href="#locators">element locator</a>
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @return string[] an array of all option labels in the specified select drop-down
    */
-    var element = this.page().findElement(locator);
+    var element = this.page().findElement(selectLocator);
 
     var selectOptions = [];
 
@@ -1211,9 +1313,9 @@ OptionLocatorFactory.prototype.OptionLocatorByLabel = function(label) {
         throw new SeleniumError("Option with label '" + this.label + "' not found");
     };
 
-    this.isSelected = function(element) {
+    this.assertSelected = function(element) {
         var selectedLabel = element.options[element.selectedIndex].text;
-        return PatternMatcher.matches(this.label, selectedLabel)
+        Assert.matches(this.label, selectedLabel)
     };
 };
 
@@ -1232,9 +1334,9 @@ OptionLocatorFactory.prototype.OptionLocatorByValue = function(value) {
         throw new SeleniumError("Option with value '" + this.value + "' not found");
     };
 
-    this.isSelected = function(element) {
+    this.assertSelected = function(element) {
         var selectedValue = element.options[element.selectedIndex].value;
-        return PatternMatcher.matches(this.value, selectedValue)
+        Assert.matches(this.value, selectedValue)
     };
 };
 
@@ -1254,8 +1356,8 @@ OptionLocatorFactory.prototype.OptionLocatorByIndex = function(index) {
         return element.options[this.index];
     };
 
-    this.isSelected = function(element) {
-    	return this.index == element.selectedIndex;
+    this.assertSelected = function(element) {
+    	Assert.equals(this.index, element.selectedIndex);
     };
 };
 
@@ -1274,9 +1376,9 @@ OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
         throw new SeleniumError("Option with id '" + this.id + "' not found");
     };
 
-    this.isSelected = function(element) {
+    this.assertSelected = function(element) {
         var selectedId = element.options[element.selectedIndex].id;
-        return PatternMatcher.matches(this.id, selectedId)
+        Assert.matches(this.id, selectedId)
     };
 };
 

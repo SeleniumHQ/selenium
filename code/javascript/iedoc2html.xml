@@ -17,7 +17,7 @@
 	</dl>
 	<h2>Selenium Accessors</h2>
 	<dl>
-		<xsl:apply-templates select="//function[starts-with(@name, 'assert')]" mode="action"/>
+		<xsl:apply-templates select="//function[starts-with(@name, 'assert')]" mode="assertion"/>
 		<xsl:apply-templates select="//function[return]" mode="accessor"/>
 	</dl>
 	<xsl:call-template name="footer" />
@@ -240,9 +240,91 @@
 	<xsl:apply-templates />
 </xsl:template>
 
+<!-- Print out assert* and all of its related assertions -->
+<xsl:template match="function" mode="assertion">
+	<dt><strong>
+		<xsl:value-of select="@name" />
+		(
+			<xsl:apply-templates select="param" mode="declaration-action"/>
+		)
+	</strong></dt>
+	<dd>
+		<xsl:apply-templates select="comment" />
+		<p>Arguments:</p>
+		<ul>
+			<xsl:apply-templates select="param" mode="comment" />
+		</ul>
+		<p>Related Assertions, automatically generated:</p>
+		<ul>
+			<li> 
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">assertNot</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">verify</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">verifyNot</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">waitFor</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
+				)
+			</li>
+			<li>
+				<xsl:call-template name="accessor-rename">
+					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="prefix">waitForNot</xsl:with-param>
+				</xsl:call-template>
+				(
+					<xsl:apply-templates select="param" mode="declaration-assertion"/>
+					<xsl:if test="./return/@type != 'boolean'">
+						<a href="#patterns">pattern</a>
+					</xsl:if>
+				)
+			</li>
+		</ul>
+			
+	</dd>
+	<br/>
+</xsl:template>
+
 <!-- Print out store* and all of its related assertions -->
 <xsl:template match="function" mode="accessor">
-	<dt><strong>
+    <dt><strong>
 		<xsl:call-template name="accessor-rename">
 			<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
 			<xsl:with-param name="prefix">store</xsl:with-param>
@@ -256,16 +338,16 @@
 	</strong></dt>
 	<dd>
 		<xsl:apply-templates select="comment" />
-		<p>Arguments:</p>
-		<ul>
-			<xsl:apply-templates select="param" mode="comment" />
-			<li>variableName - 
-				the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
-			</li>
-		</ul>
+		<xsl:if test="count(./param) > 0">
+			<p>Arguments:</p>
+			<ul>
+				<xsl:apply-templates select="param" mode="comment" />
+			</ul>
+		</xsl:if>
+		<xsl:apply-templates select="return" />
 		<p>Related Assertions, automatically generated:</p>
 		<ul>
-			<li>
+		    <li> 
 				<xsl:call-template name="accessor-rename">
 					<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
 					<xsl:with-param name="prefix">assert</xsl:with-param>
@@ -391,6 +473,10 @@
 	</li>
 </xsl:template>
 
+<xsl:template match="return">
+    <p><dl><dt>Returns: </dt><dd><xsl:apply-templates/></dd></dl></p>
+</xsl:template>
+
 <!-- When we encounter anything else, just copy it right on over! -->
 <xsl:template match="node()|@*" >
    <xsl:copy>
@@ -441,8 +527,16 @@
 					<xsl:with-param name="replace-string"><xsl:value-of select='$negatedPrefix' /></xsl:with-param>
 				</xsl:call-template>
 			</xsl:variable>
+			<!-- replace "assert" with the negated prefix -->
+			<xsl:variable name="assertReplaced">
+				<xsl:call-template name="search-and-replace">
+					<xsl:with-param name="input"><xsl:value-of select='$isReplaced' /></xsl:with-param>
+					<xsl:with-param name="search-string">&nbsp;assert</xsl:with-param>
+					<xsl:with-param name="replace-string"><xsl:value-of select='$negatedPrefix' /></xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
 			<!-- and print out the output -->
-			<xsl:value-of select="$isReplaced"/>
+			<xsl:value-of select="$assertReplaced"/>
     	</xsl:when>
     	<xsl:otherwise>
     		<!-- replace "get" with the prefix -->
@@ -461,8 +555,16 @@
 					<xsl:with-param name="replace-string"><xsl:value-of select='$prefix' /></xsl:with-param>
 				</xsl:call-template>
 			</xsl:variable>
+			<!-- replace "assert" with the prefix -->
+			<xsl:variable name="assertReplaced">
+				<xsl:call-template name="search-and-replace">
+					<xsl:with-param name="input"><xsl:value-of select='$isReplaced' /></xsl:with-param>
+					<xsl:with-param name="search-string">&nbsp;assert</xsl:with-param>
+					<xsl:with-param name="replace-string"><xsl:value-of select='$prefix' /></xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
 			<!-- and print out the output -->
-			<xsl:value-of select="$isReplaced"/>
+			<xsl:value-of select="$assertReplaced"/>
 		</xsl:otherwise>
 	</xsl:choose>
 	

@@ -33,22 +33,52 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
     <tr>
+      <td>assertSomethingSelected</td>
+      <td>theSelect</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
       <td>assertSelected</td>
       <td>theSelect</td>
       <td>Second Option</td>
     </tr>
+</tbody>
+</table>
 
+Index
 
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
     <tr>
       <td>select</td>
       <td>theSelect</td>
       <td>index=4</td>
     </tr>
     <tr>
-      <td>verifySelected</td>
+      <td>verifySelectedLabel</td>
       <td>theSelect</td>
       <td>Fifth Option</td>
     </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>index=4</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Fifth Option</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabels</td>
+      <td>theSelect</td>
+      <td>Fifth Option</td>
+    </tr>
+</tbody>
+</table>
+Label
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>    
 
     <tr>
       <td>select</td>
@@ -60,67 +90,116 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theSelect</td>
       <td>Third Option</td>
     </tr>
-
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>label=Third Option</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Third Option</td>
+    </tr>
     <tr>
       <td>select</td>
       <td>theSelect</td>
       <td>label=Fourth Option</td>
     </tr>
     <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Fourth Option</td>
+    </tr>
+    <tr>
       <td>verifySelected</td>
       <td>theSelect</td>
       <td>Fourth Option</td>
     </tr>
+</tbody>
+</table>
+Value
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
     <tr>
       <td>select</td>
       <td>theSelect</td>
       <td>value=option6</td>
     </tr>
     <tr>
-      <td>verifySelected</td>
+      <td>verifySelectedLabel</td>
       <td>theSelect</td>
       <td>Sixth Option</td>
     </tr>
-
+    <tr>
+      <td>verifySelectedValue</td>
+      <td>theSelect</td>
+      <td>option6</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>value=option6</td>
+    </tr>
     <tr>
       <td>select</td>
       <td>theSelect</td>
       <td>value=</td>
     </tr>
     <tr>
-      <td>verifySelected</td>
+      <td>verifySelectedLabel</td>
       <td>theSelect</td>
       <td>Empty Value Option</td>
     </tr>
+</tbody>
+</table>
 
+IDs
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
     <tr>
       <td>select</td>
       <td>theSelect</td>
       <td>id=o4</td>
     </tr>
     <tr>
-      <td>verifySelected</td>
+      <td>verifySelectedLabel</td>
       <td>theSelect</td>
       <td>Fourth Option</td>
     </tr>
+    <tr>
+      <td>verifySelectedId</td>
+      <td>theSelect</td>
+      <td>o4</td>
+    </tr>
+</tbody>
+</table>
 
+No text = Empty label
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
     <tr>
       <td>select</td>
       <td>theSelect</td>
       <td></td>
     </tr>
     <tr>
-      <td>verifySelected</td>
+      <td>verifySelectedLabel</td>
       <td>theSelect</td>
       <td></td>
     </tr>
     <tr>
-      <td>verifySelectedOptions</td>
+      <td>verifySelectedLabels</td>
       <td>theSelect</td>
       <td></td>
     </tr>
-
-    <!-- Select an option that doesn't exist -->
+</tbody>
+</table>
+Select an option that doesn't exist
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
     <tr>
       <td>assertErrorOnNext</td>
       <td>Option with label 'Not an option' not found</td>
@@ -131,8 +210,12 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theSelect</td>
       <td>Not an option</td>
     </tr>
-
-    <!-- Multi-select commands will not work -->
+</tbody>
+</table>
+Multi-select commands will not work
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
     <tr>
       <td>assertErrorOnNext</td>
       <td>Not a multi-select</td>
@@ -153,8 +236,12 @@ Copyright 2004 ThoughtWorks, Inc
       <td>theSelect</td>
       <td>Fourth Option</td>
     </tr>
-
-    <!-- assertSelectOptions -->
+</tbody>
+</table>
+assertSelectOptions
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
     <tr>
       <td>verifySelectOptions</td>
       <td>theSelect</td>
