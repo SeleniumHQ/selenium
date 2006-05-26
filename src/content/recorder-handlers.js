@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/*
+ * type
+ */
 Recorder.addEventHandler('change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
 		var type = event.target.type;
@@ -23,15 +26,71 @@ Recorder.addEventHandler('change', function(event) {
 		}
 	});
 
+/*
+ * select / addSelection / removeSelection
+ */
+Recorder.addEventHandler('focus', function(event) {
+		var tagName = event.target.nodeName.toLowerCase();
+		if ('select' == tagName && event.target.multiple) {
+			this.log.debug('remembering selections');
+			var options = event.target.options;
+			for (var i = 0; i < options.length; i++) {
+				if (options[i]._wasSelected == null) {
+					// is the focus was gained by mousedown event, _wasSelected would be already set
+					options[i]._wasSelected = options[i].selected;
+				}
+			}
+		}
+	}, { capture: true });
+
+Recorder.addEventHandler('mousedown', function(event) {
+		var tagName = event.target.nodeName.toLowerCase();
+		if ('option' == tagName) {
+			var parent = event.target.parentNode;
+			if (parent.multiple) {
+				this.log.debug('remembering selections');
+				var options = parent.options;
+				for (var i = 0; i < options.length; i++) {
+					options[i]._wasSelected = options[i].selected;
+				}
+			}
+		}
+	}, { capture: true });
+
 Recorder.addEventHandler('change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
 		if ('select' == tagName) {
-			var label = event.target.options[event.target.selectedIndex].innerHTML;
-			var value = "label=" + label.replace(/^\s*(.*?)\s*$/, "$1");
-			this.record("select", this.findLocator(event.target), value);
+			if (!event.target.multiple) {
+				var label = event.target.options[event.target.selectedIndex].innerHTML;
+				var value = "label=" + label.replace(/^\s*(.*?)\s*$/, "$1");
+				this.log.debug('selectedIndex=' + event.target.selectedIndex);
+				this.record("select", this.findLocator(event.target), value);
+			} else {
+				this.log.debug('change selection on select-multiple');
+				var options = event.target.options;
+				for (var i = 0; i < options.length; i++) {
+					this.log.debug('option=' + i + ', ' + options[i].selected);
+					if (options[i]._wasSelected == null) {
+						this.log.warn('_wasSelected was not recorded');
+					}
+					if (options[i]._wasSelected != options[i].selected) {
+						var label = options[i].innerHTML;
+						var value = "label=" + label.replace(/^\s*(.*?)\s*$/, "$1");
+						if (options[i].selected) {
+							this.record("addSelection", this.findLocator(event.target), value);
+						} else {
+							this.record("removeSelection", this.findLocator(event.target), value);
+						}
+						options[i]._wasSelected = options[i].selected;
+					}
+				}
+			}
 		}
 	});
 
+/*
+ * click
+ */
 Recorder.addEventHandler('click', function(event) {
 		if (event.button == 0) {
 			var clickable = this.findClickableElement(event.target);
@@ -61,4 +120,5 @@ Recorder.prototype.findClickableElement = function(e) {
 // remember clicked element
 Recorder.addEventHandler('mousedown', function(event) {
 		this.clickedElement = event.target;
-	}, true);
+	}, { alwaysRecord: true });
+

@@ -80,13 +80,22 @@ Recorder.prototype.attach = function() {
 	this.eventListeners = {};
 	this.reattachWindowMethods();
 	var self = this;
-	for (eventName in Recorder.eventHandlers) {
+	for (eventKey in Recorder.eventHandlers) {
+		var eventName;
+		var capture;
+		if (eventKey.match(/^C_/)) {
+			eventName = eventKey.substring(2);
+			capture = true;
+		} else {
+			eventName = eventKey;
+			capture = false;
+		}
 		// create new function so that the variables have new scope.
 		function register() {
-			var handlers = Recorder.eventHandlers[eventName];
+			var handlers = Recorder.eventHandlers[eventKey];
 			this.log.debug('eventName=' + eventName + ' / handlers.length=' + handlers.length);
 			var listener = function(event) {
-				self.log.debug('listener: event.type=' + event.type);
+				self.log.debug('listener: event.type=' + event.type + ', target=' + event.target);
 				//self.log.debug('title=' + self.window.document.title);
 				var recording = false;
 				for (var i = 0; i < self.observers.length; i++) {
@@ -98,7 +107,7 @@ Recorder.prototype.attach = function() {
 					}
 				}
 			}
-			this.window.document.addEventListener(eventName, listener, false);
+			this.window.document.addEventListener(eventName, listener, capture);
 			this.eventListeners[eventName] = listener;
 		}
 		register.call(this);
@@ -156,12 +165,14 @@ Recorder.prototype.deregister = function(observer) {
  * Class methods
  */
 
-Recorder.addEventHandler = function(eventName, handler, alwaysRecord) {
-	if (!this.eventHandlers[eventName]) {
-		this.eventHandlers[eventName] = [];
+Recorder.addEventHandler = function(eventName, handler, options) {
+	if (!options) options = {};
+	var key = options['capture'] ? ('C_' + eventName) : eventName;
+	if (!this.eventHandlers[key]) {
+		this.eventHandlers[key] = [];
 	}
-	if (alwaysRecord) handler.alwaysRecord = true;
-	this.eventHandlers[eventName].push(handler);
+	if (options['alwaysRecord']) handler.alwaysRecord = true;
+	this.eventHandlers[key].push(handler);
 }
 
 Recorder.register = function(observer, window) {

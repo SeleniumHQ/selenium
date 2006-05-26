@@ -547,7 +547,7 @@ Editor.prototype.loadDefaultOptions = function() {
 Editor.prototype.rowInserted = function(index, command) {
 	this.lastCommandIndex = index;
 	this.view.rowInserted(index);
-	this.timeoutID = setTimeout("editor.clearLastCommand()", 1000);
+	this.timeoutID = setTimeout("editor.clearLastCommand()", 200);
 }
 
 Editor.prototype.loadExtensions = function() {
