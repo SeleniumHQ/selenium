@@ -81,12 +81,6 @@
             <version>2.4</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.openqa.floyd</groupId>
-            <artifactId>floyd-jrex</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

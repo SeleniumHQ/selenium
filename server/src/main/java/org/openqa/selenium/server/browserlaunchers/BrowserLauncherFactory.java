@@ -39,7 +39,6 @@ public class BrowserLauncherFactory {
         new BrowserStringPair("iehta", HTABrowserLauncher.class),
         new BrowserStringPair("chrome", FirefoxChromeLauncher.class),
         new BrowserStringPair("opera", OperaCustomProfileLauncher.class),
-        new BrowserStringPair("floyd-jrex", FloydJRexLauncher.class),
     };
     
     SeleniumServer server;
