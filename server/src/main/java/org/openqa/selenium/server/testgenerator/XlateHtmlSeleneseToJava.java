@@ -427,10 +427,6 @@ public class XlateHtmlSeleneseToJava {
         }
         if (op.endsWith("AndWait")) {
             if (!op.startsWith("click")) {
-                // there are several test cases where a clickAndWait is used on a button which leads to an alert/
-                // confirmation being thrown up; this leads to an exception when it occurs while waitForPageToLoad
-                // is running.  I'm not sure if I am correct here, but I know the tests succeed if I do this.
-                // TODO: is this right?
                 ending += EOL + "selenium.waitForPageToLoad(\"" + timeOut + "\");";
             }
             op = op.replaceFirst("AndWait", "");
@@ -494,20 +490,19 @@ public class XlateHtmlSeleneseToJava {
             if (op.equals("TextLength")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", \"\" + selenium.getText(" + XlateSeleneseArgument(tokens[1]) + ").length()";
             }
-            else if (op.equals("Location")) {
-                return "\t\tassertTrue(selenium.isLocation(" + XlateSeleneseArgument(tokens[1]) + "));";
-            }
             else if (op.equals("Confirmation")
-                    || op.equals("AbsoluteLocation")
+                    || op.equals("Location")
                     || op.equals("Title")) {
                 middle = XlateSeleneseArgument(tokens[1]) + ", selenium.get" + op + "()";
             }
             else if (op.equals("Value")
-                    || op.equals("Checked")
                     || op.equals("CursorPosition")
                     || op.equals("Attribute")
                     || op.equals("Text")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
+            }
+            else if (op.equals("Checked")) {
+                middle = XlateSeleneseArgument(tokens[2]) + ", selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
             else if (op.equals("Alert")
                     || op.equals("Prompt")) {
