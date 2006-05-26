@@ -118,10 +118,10 @@ public class SeleneseTestCase extends TestCase {
             return true;
         }
         
-        String s1glob = s1.replaceFirst("glob:", ".*")
-        .replaceAll("\\*", ".*")
-        .replaceAll("([\\]\\[\\$\\(\\).])", "\\\\$1")
-        .replaceAll("\\?", ".") + ".*";
+        String s1glob = s1.replaceFirst("glob:", "");
+        s1glob = s1glob.replaceAll("\\*", ".*");
+        s1glob = s1glob.replaceAll("([\\]\\[\\\\{\\}$\\(\\).])", "\\\\$1");
+        s1glob = ".*" + s1glob.replaceAll("\\?", ".") + ".*";
         if (!s2.matches(s1glob)) {
             System.out.println("expected " + s2 + " to match glob " + s1 + " (had transformed the glob into regexp:" + s1glob);
             return false;
