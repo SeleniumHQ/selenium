@@ -106,33 +106,6 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
             
     static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
     static final Pattern JAVA_STYLE_LOCAL_URL = Pattern.compile("^file:/([A-Z]:/.*)$");
-    /**
-     * Generates an URL suitable for use in browsers, unlike Java's URLs, which choke
-     * on UNC paths.
-     * 
-     * <P>Java's URLs work in IE, but break in Mozilla.  Mozilla's team snobbily demanded
-     * that <I>all</I> file paths must have the empty authority (file:///), even for UNC file paths.
-     * On Mozilla \\socrates\build is therefore represented as file://///socrates/build.</P>  See
-     * Mozilla bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=66194">66194</A>. 
-     * @param path - the file path to convert to a browser URL
-     * @return a nice Mozilla-compatible file URL
-     */
-    private static String fileToBrowserURL(File f) {
-        if (f == null) return null;
-        String url = f.toURI().toString();
-        Matcher m = JAVA_STYLE_UNC_URL.matcher(url);
-        if (m.find()) {
-            url = "file://///";
-            url += m.group(1);
-        }
-        m = JAVA_STYLE_LOCAL_URL.matcher(url);
-        if (m.find()) {
-            url = "file:///";
-            url += m.group(1);
-        }
-        return url;
-    }
-    
     public void launch(String url) {
         try {
             File opera6ini = makeCustomProfile();
