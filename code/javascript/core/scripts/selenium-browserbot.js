@@ -1101,4 +1101,14 @@ PageBot.prototype.locateElementByClass = function(locator, document) {
     );
 }
 
+/**
+ * Find an element by alt
+ */
+PageBot.prototype.locateElementByAlt = function(locator, document) {
+    return Element.findFirstMatchingChild(document,
+	    function(element) {
+		    return element.alt == locator
+		}
+    );
+}
 
