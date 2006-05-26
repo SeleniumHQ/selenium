@@ -24,4 +24,10 @@ package org.openqa.selenium.server;
 public interface SeleneseCommand {
     /** Return the URL query string which will be sent to the browser */
     String getCommandURLString();
+
+    String getCommand();
+
+    String getField();
+
+    String getValue();
 }

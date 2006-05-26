@@ -45,7 +45,19 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     public String getCommandURLString() {
         return "cmd=" + urlEncode(command) + "&1=" + urlEncode(field) + "&2=" + urlEncode(value);
     }
-    
+
+    public String getCommand() {
+        return command;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
     public String toString() {
         return getCommandURLString();
     }

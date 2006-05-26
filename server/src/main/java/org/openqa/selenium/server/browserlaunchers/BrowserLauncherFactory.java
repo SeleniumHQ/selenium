@@ -39,6 +39,7 @@ public class BrowserLauncherFactory {
         new BrowserStringPair("iehta", HTABrowserLauncher.class),
         new BrowserStringPair("chrome", FirefoxChromeLauncher.class),
         new BrowserStringPair("opera", OperaCustomProfileLauncher.class),
+        new BrowserStringPair("floyd-jrex", FloydJRexLauncher.class),
     };
     
     SeleniumServer server;
@@ -51,9 +52,10 @@ public class BrowserLauncherFactory {
      * 
      * @param browser a browser string like "*firefox"
      * @param sessionId the sessionId to launch
+     * @param queue
      * @return the BrowserLauncher ready to launch
      */
-    public BrowserLauncher getBrowserLauncher(String browser, String sessionId) {
+    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, SeleneseQueue queue) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
         for (int i = 0; i < supportedBrowsers.length; i++) {
             BrowserStringPair pair = supportedBrowsers[i];
@@ -68,7 +70,7 @@ public class BrowserLauncherFactory {
                 } else {
                     browserStartCommand = mat.group(1).substring(1);
                 }
-                return createBrowserLauncher(c, browserStartCommand, sessionId);
+                return createBrowserLauncher(c, browserStartCommand, sessionId, queue);
             }
         }
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
@@ -93,21 +95,29 @@ public class BrowserLauncherFactory {
         return new RuntimeException(errorMessage.toString());
     }
     
-    private BrowserLauncher createBrowserLauncher(Class c, String browserStartCommand, String sessionId) {
+    private BrowserLauncher createBrowserLauncher(Class c, String browserStartCommand, String sessionId, SeleneseQueue queue) {
             try {
+                BrowserLauncher browserLauncher;
                 if (null == browserStartCommand) {
                     Constructor ctor = c.getConstructor(new Class[]{int.class, String.class});
                     Object[] args = new Object[] {new Integer(server.getPort()), sessionId};
-                    return (BrowserLauncher) ctor.newInstance(args);
+                    browserLauncher = (BrowserLauncher) ctor.newInstance(args);
+                } else {
+                    Constructor ctor = c.getConstructor(new Class[]{int.class, String.class, String.class});
+                    Object[] args = new Object[] {new Integer(server.getPort()), sessionId, browserStartCommand};
+                    browserLauncher = (BrowserLauncher) ctor.newInstance(args);
                 }
-                Constructor ctor = c.getConstructor(new Class[]{int.class, String.class, String.class});
-                Object[] args = new Object[] {new Integer(server.getPort()), sessionId, browserStartCommand};
-                return (BrowserLauncher) ctor.newInstance(args);
+
+                if (browserLauncher instanceof SeleneseQueueAware) {
+                    ((SeleneseQueueAware) browserLauncher).setSeleneseQueue(queue);
+                }
+
+                return browserLauncher;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
     }
-    
+
     private static class BrowserStringPair {
         public String name;
         public Class c;

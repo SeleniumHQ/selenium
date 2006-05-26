@@ -212,7 +212,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String sessionId = Long.toString(System.currentTimeMillis());
         String results;
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
+        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, getQueue(sessionId));
         launcher.launchRemoteSession(startURL);
         launchers.put(sessionId, launcher);
         SeleneseQueue queue = getQueue(sessionId);
