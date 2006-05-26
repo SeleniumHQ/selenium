@@ -16,11 +16,13 @@
 
   <body>
 		<div id="test1">
+			<form>
 			<input type="button" name="foo" value="bar">
 			<input type="button" name="foo" value="bar" onclick="alert('test')">
 			<input type="button" name="foo" value="bar" onclick="alert(&quot;test2&quot;)">
 			<input type="button" name="foo" value="bar" onclick="alert('test3', &quot;test4&quot;)">
 			<input type="button" name="foo" value="bar">
+			</form>
 		</div>
 		<div id="test2">
 			<div>
@@ -46,6 +48,17 @@
 					Yahoo&nbsp;Japan
 				</a>
 			</div>
+		</div>
+		<div id="test3">
+			<form>
+				<input type="button" name="foo1" value="bar">
+				<input type="button" name="a[0]" value="bar" onclick="alert('test')">
+			</form>
+			<form name="namedForm">
+				<input type="button" name="foo3" value="bar" onclick="alert(&quot;test2&quot;)">
+				<input type="radio" name="foo4" value="1">
+				<input type="radio" name="foo4" value="2">
+			</form>
 		</div>
   </body>
 </html>

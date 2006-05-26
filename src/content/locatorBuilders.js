@@ -51,16 +51,20 @@ LocatorBuilders.prototype.build = function(e) {
 			locator = new String(locator);
 			this.log.debug("locator=" + locator);
 			// test the locator
-			try {
-				if (e == this.pageBot().findElement(locator)) {
-					return locator;
-				}
-			} catch (error) {
-				this.log.warn("findElement error: " + error + ", node=" + e + ", locator=" + locator);
+			if (e == this.findElement(locator)) {
+				return locator;
 			}
 		}
 	}
 	return "LOCATOR_DETECTION_FAILED";
+}
+
+LocatorBuilders.prototype.findElement = function(locator) {
+	try {
+		return this.pageBot().findElement(locator);
+	} catch (error) {
+		this.log.debug("findElement failed: " + error + ", locator=" + locator);
+	}
 }
 
 /*
@@ -116,6 +120,13 @@ LocatorBuilders.prototype.attributeValue = function(value) {
  * ===== builders =====
  */
 
+LocatorBuilders.add('id', function(e) {
+		if (e.id) {
+			return e.id;
+		}
+		return null;
+	});
+
 LocatorBuilders.add('link', function(e) {
 		if (e.nodeName == 'A') {
 			var text = e.textContent;
@@ -126,16 +137,71 @@ LocatorBuilders.add('link', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('id', function(e) {
-		if (e.id) {
-			return e.id;
+LocatorBuilders.add('name', function(e) {
+		if (e.name) {
+			return e.name;
 		}
 		return null;
 	});
 
-LocatorBuilders.add('name', function(e) {
-		if (e.name) {
-			return e.name;
+/*
+ * This function is called from DOM locatorBuilders
+ */
+LocatorBuilders.prototype.findDomFormLocator = function(form) {
+	if (form.hasAttribute('name')) {
+		var name = form.getAttribute('name');
+		var locator = "document." + name;
+		if (this.findElement(locator) == form) {
+			return locator;
+		}
+		locator = "document.forms['" + name + "']";
+		if (this.findElement(locator) == form) {
+			return locator;
+		}
+	}
+	var forms = this.window.document.forms;
+	for (var i = 0; i < forms.length; i++) {
+		if (form == forms[i]) {
+			return "document.forms[" + i + "]";
+		}
+	}
+	return null;
+}
+
+LocatorBuilders.add('domFormElementName', function(e) {
+		if (e.form && e.name) {
+			var formLocator = this.findDomFormLocator(e.form);
+			var candidates = [formLocator + "." + e.name,
+							  formLocator + ".elements['" + e.name + "']"];
+			for (var c = 0; c < candidates.length; c++) {
+				var locator = candidates[c];
+				var found = this.findElement(locator);
+				if (found) {
+					if (found == e) {
+						return locator;
+					} else if (found instanceof NodeList) {
+						// multiple elements with same name
+						for (var i = 0; i < found.length; i++) {
+							if (found[i] == e) {
+								return locator + "[" + i + "]";
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	});
+
+LocatorBuilders.add('domFormElementIndex', function(e) {
+		if (e.form) {
+			var formLocator = this.findDomFormLocator(e.form);
+			var elements = e.form.elements;
+			for (var i = 0; i < elements.length; i++) {
+				if (elements[i] == e) {
+					return formLocator + ".elements[" + i + "]";
+				}
+			}
 		}
 		return null;
 	});
@@ -187,11 +253,9 @@ LocatorBuilders.add('attributesXPath', function(e) {
 				if (attsMap[name] != null) {
 					names.push(name);
 					var locator = attributesXPath.call(this, e.nodeName.toLowerCase(), names, attsMap);
-					try {
-						if (e == this.pageBot().findElement(locator)) {
-							return locator;
-						}
-					} catch (error) {}
+					if (e == this.findElement(locator)) {
+						return locator;
+					}
 				}
 			}
 		}
@@ -236,11 +300,9 @@ LocatorBuilders.add('positionXPath', function(e) {
 			}
 			path = currentPath + path;
 			var locator = '/' + path;
-			try {
-				if (e == this.pageBot().findElement(locator)) {
-					return locator;
-				}
-			} catch (error) {}
+			if (e == this.findElement(locator)) {
+				return locator;
+			}
 			current = current.parentNode;
 			this.log.debug("positionXPath: current=" + current);
 		}

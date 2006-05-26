@@ -21,6 +21,22 @@ function testAttributesXPathLocator() {
 	assertNull(builders.buildWith('attributesXPath', yahoo));
 }
 
+function testDomFormElementNameLocator() {
+	var elements = document.getElementById("test3").getElementsByTagName("input");
+	assertLocator("document.forms[1].foo1", builders.buildWith('domFormElementName', elements[0]), elements[0]);
+	assertLocator("document.forms[1].elements['a[0]']", builders.buildWith('domFormElementName', elements[1]), elements[1]);
+	assertLocator("document.namedForm.foo3", builders.buildWith('domFormElementName', elements[2]), elements[2]);
+	assertLocator("document.namedForm.foo4[0]", builders.buildWith('domFormElementName', elements[3]), elements[3]);
+	assertLocator("document.namedForm.foo4[1]", builders.buildWith('domFormElementName', elements[4]), elements[4]);
+}
+
+function testDomFormElementIndexLocator() {
+	var elements = document.getElementById("test3").getElementsByTagName("input");
+	assertLocator("document.forms[1].elements[0]", builders.buildWith('domFormElementIndex', elements[0]), elements[0]);
+	assertLocator("document.namedForm.elements[2]", builders.buildWith('domFormElementIndex', elements[4]), elements[4]);
+}
+
+
 function testHrefXPathLocator() {
 	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
 	assertLocator("//a[@href='http://www.yahoo.com/']", builders.buildWith('hrefXPath', yahoo), yahoo);
@@ -57,5 +73,6 @@ function testLinkLocator() {
 
 function assertLocator(expected, locator, element) {
 	assertEquals(expected, locator);
-	assertEquals(builders.pageBot().findElement(locator), element);
+	assertEquals(element, builders.pageBot().findElement(locator));
 }
+
