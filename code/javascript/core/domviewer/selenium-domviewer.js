@@ -106,6 +106,7 @@ function displayNode(element, level, isLink){
 }
 
 function getNodeContent(element) {
+
     str = "";
     id ="";
     if (element.id != null && element.id != "") {
@@ -123,17 +124,33 @@ function getNodeContent(element) {
     if (element.href != null && element.href != "") {
         href = " HREF(" + element.href + ")";
     }
+    clazz = "";
+    if (element.className != null && element.className != "") {
+        clazz = " CLASS(" + element.className + ")";
+    }
+    src = "";
+    if (element.src != null && element.src != "") {
+        src = " SRC(" + element.src + ")";
+    }
+    alt = "";
+    if (element.alt != null && element.alt != "") {
+        alt = " ALT(" + element.alt + ")";
+    }
+    type = "";
+    if (element.type != null && element.type != "") {
+        type = " TYPE(" + element.type + ")";
+    }
     text ="";
     if (element.text != null && element.text != "" && element.text != "undefined") {
         text = " #TEXT(" + trim(element.text) +")";
     }
-    str+=" <b>"+ element.nodeName + id + name + value + href + text + "</b>";	
+    str+=" <b>"+ element.nodeName + id + alt + type + clazz + name + value + href + src + text + "</b>";
     return str;
 
 }
 
 function trim(val) {
-    val2 = val.substring(0,20) + "                   ";
+    val2 = val.substring(0,40) + "                   ";
     var spaceChr = String.fromCharCode(32);
     var length = val2.length;
     var retVal = "";
@@ -147,7 +164,7 @@ function trim(val) {
         }
         ix = ix-1;
     }
-    if (val.length > 20) {
+    if (val.length > 40) {
         retVal += "...";
     }
     return retVal;
