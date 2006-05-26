@@ -12,7 +12,7 @@ public class TestRefresh extends SeleneseTestCase
 /* Test Refresh */
 		// open|../tests/html/test_page.slow.html|
 		selenium.open("../tests/html/test_page.slow.html");
-		assertTrue(selenium.isLocation("/tests/html/test_page.slow.html"));
+		assertEquals("/tests/html/test_page.slow.html", selenium.getLocation());
 		// verifyTitle|Slow Loading Page|
 		verifyEquals("Slow Loading Page", selenium.getTitle());
 		// click|changeSpan|
