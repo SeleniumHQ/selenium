@@ -25,7 +25,7 @@
 		</exec>
     </target>
     <target name="all" depends="generate-sources, test, doc"/>
-    <target name="test" depends="generate-sources">
+    <target name="test" depends="generate-sources" unless="skiptests">
     	<ant dir=".." target="start-server" />
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="python.executable" value="python" />

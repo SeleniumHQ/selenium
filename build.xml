@@ -10,6 +10,10 @@
 		<property name="mvn.overrideable.settings" value="" />
 		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
 		<property name="opera.location" location="c:\program files\opera\opera.exe" />
+		<condition property="mvn.skip.test.arg" value="-Dmaven.test.skip=true" >
+		    <isset property="skiptests" />
+		</condition>
+		<property name="mvn.skip.test.arg" value="" />
 		<presetdef name="mvn">
 			<java classname="org.codehaus.classworlds.Launcher" fork="true" failonerror="true">
 				<!--<jvmarg value="-Xdebug"/>
@@ -22,6 +26,7 @@
 				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
 				<sysproperty key="maven.home" value="${maven.home}" />
 				<arg value="-e" />
+				<arg value="${mvn.skip.test.arg}" />
 				<arg value="-DfirefoxDefaultPath=${firefox.location}" />
 				<arg value="-DoperaDefaultPath=${opera.location}" />
 				<arg line="${mvn.overrideable.settings}" />

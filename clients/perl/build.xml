@@ -59,7 +59,7 @@
     	</perl>
     	<make />
     </target>
-    <target name="test" depends="init, make">
+    <target name="test" depends="init, make" unless="skiptests">
     	<ant dir=".." target="start-server" />
         <make failonerror="false" resultproperty="result">
         	<arg value="test" />

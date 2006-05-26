@@ -93,7 +93,7 @@
 		<solution action="rebuild" configuration="Debug" solutionfile="src\Selenium.sln" />
 	</target>
 
-	<target name="run-unit-tests">
+	<target name="run-unit-tests" unless="skiptests">
 		<property name="unit.tests.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
 		<exec failonerror="true"
 			executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe" 
@@ -107,7 +107,7 @@
 	</target>
 	
 	
-	<target name="run-integration-tests">
+	<target name="run-integration-tests" unless="skiptests">
 		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
 		<ant dir=".." target="start-server" />
 		<exec resultproperty="integration.result"
