@@ -75,7 +75,7 @@ my %comparator = (
 # These commands don't require a locator
 # grep item lib/WWW/Selenium.pm | grep sel | grep \(\) | grep get
 my %no_locator = map { $_ => 1 }
-                qw(alert confirmation prompt absolute_location
+                qw(alert confirmation prompt location
                    title body_text all_buttons all_links all_fields);
 
 sub AUTOLOAD {

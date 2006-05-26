@@ -40,10 +40,10 @@ class TestDefaultServer(unittest.TestCase):
         self.assertEqual("linkToAnchorOnThisPage", links[3])
         selenium.click("link")
         selenium.wait_for_page_to_load(5000)
-        self.failUnless(selenium.is_location("/selenium-server/tests/html/test_click_page2.html"))
+        self.failUnless(selenium.get_location().endswith("/selenium-server/tests/html/test_click_page2.html"))
         selenium.click("previousPage")
         selenium.wait_for_page_to_load(5000)
-        self.failUnless(selenium.is_location("/selenium-server/tests/html/test_click_page1.html"))
+        self.failUnless(selenium.get_location().endswith("/selenium-server/tests/html/test_click_page1.html"))
 
     def tearDown(self):
         self.selenium.stop()
