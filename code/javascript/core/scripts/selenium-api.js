@@ -453,6 +453,8 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
 	
 }
 
+Selenium.prototype.doWaitForPopUp.dontCheckAlertsAndConfirms = true;
+
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
 	/**
    * By default, Selenium's overridden window.confirm() function will
@@ -1183,6 +1185,8 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
     testLoop.waitForConditionTimeout = timeout;
 };
 
+Selenium.prototype.doWaitForCondition.dontCheckAlertsAndConfirms = true;
+
 Selenium.prototype.doSetTimeout = function(timeout) {
 	/**
 	 * Specifies the amount of time that Selenium will wait for actions to complete.
@@ -1209,6 +1213,8 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
    */
     this.doWaitForCondition("selenium.browserbot.isNewPageLoaded()", timeout);
 };
+
+Selenium.prototype.doWaitForPageToLoad.dontCheckAlertsAndConfirms = true;
 
 /**
  * Evaluate a parameter, performing JavaScript evaluation and variable substitution.

@@ -54,11 +54,11 @@ function CommandHandlerFactory() {
 
                 // Register the action without the wait flag.
                 var action = commandObject[functionName];
-                self.registerAction(actionName, action, false, false);
+                self.registerAction(actionName, action, false, action.dontCheckAlertsAndConfirms);
 
                 // Register actionName + "AndWait" with the wait flag;
                 var waitActionName = actionName + "AndWait";
-                self.registerAction(waitActionName, action, true, false);
+                self.registerAction(waitActionName, action, true, action.dontCheckAlertsAndConfirms);
             }
         }
     };
@@ -221,10 +221,10 @@ function CommandHandlerFactory() {
             predicate = self.createPredicateFromAccessor(accessor);
         }
         var waitForAction = self.createWaitForActionFromPredicate(predicate);
-    	self.registerAction("waitFor"+baseName, waitForAction, false, accessor.dontCheckAlertsAndConfirms);
+    	self.registerAction("waitFor"+baseName, waitForAction, false, true);
         var invertedPredicate = self.invertPredicate(predicate);
         var waitForNotAction = self.createWaitForActionFromPredicate(invertedPredicate);
-	   	self.registerAction("waitForNot"+baseName, waitForNotAction, false, accessor.dontCheckAlertsAndConfirms);
+	   	self.registerAction("waitForNot"+baseName, waitForNotAction, false, true);
 	}
 	
 	// Register a storeBlahBlah based on the specified accessor.
