@@ -470,7 +470,7 @@ public class XlateHtmlSeleneseToJava {
             ending = ")" + ending;
             op = op.replaceFirst("assert|verify", "");
             if (op.equals("ElementPresent") || op.equals("ElementNotPresent")
-                    || op.equals("TextPresent") || op.equals("TextNotPresent")
+                    || op.equals("TextPresent") || op.equals("TextNotPresent") || op.equals("Selected")
                     || op.equals("Editable") || op.equals("NotEditable")
                     || op.equals("Visible") || op.equals("NotVisible")) {
                 String possibleInversion = "";
@@ -478,11 +478,14 @@ public class XlateHtmlSeleneseToJava {
                     possibleInversion = "!";
                     op = op.replaceFirst("Not", "");
                 }
-                //assert beginning.indexOf("assert") != -1;  // because verify's will be picked off by the caller
+                if (op.equals("Selected")) {
+                    if (!possibleInversion.equals("")) {
+                        return commentedSelenese + "// WARNING: no way to directly translate this statement" + EOL;
+                    }
+                    return "\t\t" + commentedSelenese + "selenium.assert" + op + "(" + XlateSeleneseArgument(tokens[1]) + ", " 
+                        + XlateSeleneseArgument(tokens[2]) + ");";
+                }
                 return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "));";
-            }
-            if (op.equals("Selected") || op.equals("NotSelected")) {
-                return "\t\tassertTrue(selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + ", " + XlateSeleneseArgument(tokens[2]) + "));";
             }
             if (op.startsWith("Not")) {
                 beginning = invertAssertion(beginning);
@@ -490,6 +493,9 @@ public class XlateHtmlSeleneseToJava {
             }
             if (op.equals("TextLength")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", \"\" + selenium.getText(" + XlateSeleneseArgument(tokens[1]) + ").length()";
+            }
+            else if (op.equals("SomethingSelected")) {
+                return commentedSelenese + "assertTrue(selenium.getSelectedIndexes(" + XlateSeleneseArgument(tokens[1]) + ").length != 0);";
             }
             else if (op.equals("Confirmation")
                     || op.equals("Location")
@@ -499,6 +505,7 @@ public class XlateHtmlSeleneseToJava {
             else if (op.equals("Value")
                     || op.equals("CursorPosition")
                     || op.equals("Attribute")
+                    || op.startsWith("Selected")
                     || op.equals("Text")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
@@ -521,12 +528,11 @@ public class XlateHtmlSeleneseToJava {
                 }
                 throw new RuntimeException(t);
             }
-            else if (op.equals("Selected")
-                    || op.equals("ValueRepeated")
+            else if (op.equals("ValueRepeated")
                     || op.equals("modalDialogTest")) {
                 return "// skipped undocumented " + oldLine;
             }
-            else if (op.equals("SelectOptions") || op.equals("SelectedOptions")) {
+            else if (op.matches("^Select.*s$")) {
                 String tmpArrayVarName = newTmpName();
                 beginning = "\t\t" + declareAndInitArray(tmpArrayVarName, tokens[2]) + "\n" + beginning;
                 middle = tmpArrayVarName + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
