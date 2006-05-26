@@ -416,10 +416,11 @@ public class XlateHtmlSeleneseToJava {
 
     private static String XlateSeleneseStatementTokens(String op, String[] tokens, String oldLine) {
         boolean isBoolean = isBoolean(op);
-        String beginning = "\t\t// " + oldLine
+        String commentedSelenese = "\t\t// " + oldLine
         .replaceFirst(BEGIN_SELENESE, "")
         .replaceFirst(END_SELENESE, "")
         .replaceAll(SELENESE_TOKEN_DIVIDER, "|") + EOL; 
+        String beginning = commentedSelenese;
         
         String ending = ";";
         if (op.equals("echo")) {
@@ -539,7 +540,7 @@ public class XlateHtmlSeleneseToJava {
                     possibleInversion = "!";
                     op = op.replaceFirst("Not", "");
                 }
-                return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "());";
+                return commentedSelenese + "assertTrue(" + possibleInversion + "selenium.is" + op + "());";
             }
             return beginning + middle + ending;
         }
