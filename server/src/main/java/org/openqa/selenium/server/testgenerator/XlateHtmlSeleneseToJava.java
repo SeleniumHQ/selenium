@@ -505,7 +505,7 @@ public class XlateHtmlSeleneseToJava {
             else if (op.equals("Value")
                     || op.equals("CursorPosition")
                     || op.equals("Attribute")
-                    || op.startsWith("Selected")
+                    || op.matches("^Select.*[^s]$")
                     || op.equals("Text")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
