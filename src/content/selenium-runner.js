@@ -157,7 +157,7 @@ function start(baseURL) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
 	
-	selenium = Selenium.createForFrame(window.getBrowser());
+	selenium = Selenium.createForFrame(window.getBrowser().selectedBrowser);
 	selenium.browserbot.getCurrentPage();
 	selenium.baseURL = baseURL;
 	commandFactory = new CommandHandlerFactory();
@@ -217,7 +217,7 @@ function executeCommand(baseURL, command) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
 	
-	selenium = Selenium.createForFrame(window.getBrowser());
+	selenium = Selenium.createForFrame(window.getBrowser().selectedBrowser);
 	selenium.browserbot.getCurrentPage();
 	selenium.baseURL = baseURL;
 	commandFactory = new CommandHandlerFactory();

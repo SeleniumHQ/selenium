@@ -300,7 +300,8 @@ Editor.prototype.saveNewTestCase = function() {
 
 Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 	this.log.debug("loadRecorderFor: " + contentWindow);
-	if (this.recordingEnabled && (isRootDocument || this.recordFrameTitle)) {
+	if (this.recordingEnabled && (isRootDocument || this.recordFrameTitle) &&
+		contentWindow == this.lastWindow) {
 		this.recordTitle(contentWindow);
 	}
 	Recorder.register(this, contentWindow);
