@@ -28,6 +28,55 @@ Command.prototype.createCopy = function() {
 	return copy;
 };
 
+Command.prototype.isAssertion = function() {
+	if (this.command) {
+		return this.command.match(/^(verify|assert)/);
+	} else {
+		return false;
+	}
+}
+
+Command.prototype.isStore = function() {
+	if (this.command) {
+		return this.command.match(/^store/);
+	} else {
+		return false;
+	}
+}
+
+Command.prototype.getRealValue = function() {
+	if (this.value) {
+		return this.value;
+	} else {
+		return this.target;
+	}
+}
+
+Command.prototype.getRealTarget = function() {
+	if (this.value) {
+		return this.target;
+	} else {
+		return null;
+	}
+}
+
+Command.prototype.getAccessor = function() {
+	var r = /^(assert|verify|store|waitFor)(.*)$/.exec(this.command);
+	if (r) {
+		var suffix = r[2];
+		if (this.getAPI().Selenium.prototype['is' + suffix]) {
+			return 'is' + suffix;
+		} else if (this.getAPI().Selenium.prototype['get' + suffix]) {
+			return 'get' + suffix;
+		}
+	}
+	return null;
+}
+
+Command.prototype.getAPI = function() {
+	return window.editor.seleniumAPI;
+}
+
 Command.prototype.type = 'command';
 
 function Comment(comment) {

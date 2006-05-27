@@ -131,7 +131,6 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
 						}
 						if (prefix == 'store') {
 							switch (builder.accessorType) {
-							case 'boolean':
 							case 'value':
 								newCommand.target = '';
 							default:

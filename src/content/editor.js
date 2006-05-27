@@ -25,6 +25,7 @@ function Editor(window, isSidebar) {
 	this.recordingEnabled = true;
 	this.setOptions(optionsManager.load());
 	this.loadExtensions();
+	this.loadSeleniumAPI();
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
 	this.testCaseListeners = new Array();
@@ -554,5 +555,21 @@ Editor.prototype.loadExtensions = function() {
 		ExtensionsLoader.loadSubScript(subScriptLoader, this.options.ideExtensionsPaths, window);
 	} catch (error) {
 		this.log.error("error loading Selenium IDE extensions: " + error);
+	}
+}
+
+Editor.prototype.loadSeleniumAPI = function() {
+	this.seleniumAPI = {};
+	
+	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+		.getService(Components.interfaces.mozIJSSubScriptLoader);
+	
+	subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.seleniumAPI);
+	if (this.options.userExtensionsURL) {
+		try {
+			ExtensionsLoader.loadSubScript(subScriptLoader, this.options.userExtensionsURL, this.seleniumAPI);
+		} catch (error) {
+			this.showAlert("Failed to load user-extensions.js!\nfiles=" + this.options.userExtensionsURL + "\nerror=" + error);
+		}
 	}
 }

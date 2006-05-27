@@ -138,26 +138,15 @@ function TreeView(editor, document, tree) {
 	*/
 
 	function loadSeleniumCommands() {
-		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-			.getService(Components.interfaces.mozIJSSubScriptLoader);
 		var scope = new Object();
 		var actions = new Array();
 		var asserts = new Array();
 		var verifies = new Array();
 		
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', scope);
-		if (editor.options.userExtensionsURL) {
-			try {
-				ExtensionsLoader.loadSubScript(subScriptLoader, editor.options.userExtensionsURL, scope);
-			} catch (error) {
-				this.editor.showAlert("Failed to load user-extensions.js!\nfile=" + editor.options.userExtensionsURL + "\nerror=" + error);
-			}
-		}
-
 		var waitActions = 
 			['click', 'select', 'type', 'check', 'uncheck', 'fireEvent', 'goBack'];
 		
-		for (func in scope.Selenium.prototype) {
+		for (func in this.editor.seleniumAPI.Selenium.prototype) {
 			//this.log.debug("func=" + func);
 			if (func.match(/^do[A-Z]/)) {
 				var action = func.substr(2,1).toLowerCase() + func.substr(3);
