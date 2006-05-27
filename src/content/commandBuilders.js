@@ -57,7 +57,7 @@ CommandBuilders.add('value', function(window) {
 		}
 		return result;
 	});
-/*
+
 CommandBuilders.add('target,value', function(window) {
 		var result = { accessor: "value" };
 		var element = this.getRecorder(window).clickedElement;
@@ -78,39 +78,38 @@ CommandBuilders.add('target,value', function(window) {
 		}
 		return result;
 	});
-*/
+
 CommandBuilders.add('target,value', function(window) {
 		var element = this.getRecorder(window).clickedElement;
-		var result = { accessor: "table" };
-		if (element && element.tagName && 'td' == element.tagName.toLowerCase()) {
-			var parentTable = null;
-			var temp = element.parentNode;
-			while (temp != null) {
-				if (temp.tagName.toLowerCase() == 'table') {
-					parentTable = temp;
-					break;
-				}
-				temp = temp.parentNode;
+		var result = { accessor: "table", disabled: true };
+		if (!element) return result;
+		while (true) {
+			var tagName = element.tagName.toLowerCase();
+			if (tagName == 'td' || tagName == 'th') {
+				break;
 			}
-			if (parentTable == null) {
-				result.disabled = true;
-				result.target = "(Unavailable: Selection not a cell of a table)";
+			if (element.parentNode && element.parentNode.tagName) {
+				element = element.parentNode;
 			} else {
-				//first try to locate table by id and then by name
-				var tableName = parentTable.id;
-				if (!tableName) {
-					tableName = parentTable.name;
-				}
-				if (!tableName) {
-					result.disabled = true;
-					result.target = "(Unavailable: Table must have an id declared)";
-				} else {
-					result.target = tableName + '.' + element.parentNode.rowIndex + '.' + element.cellIndex;
-					result.value = exactMatchPattern(element.innerHTML.replace(/^\s*(.*?)\s*$/, "$1"));
-				}
+				return result;
 			}
-		} else {
-			result.disabled = true;
+		}
+		var parentTable = null;
+		var temp = element.parentNode;
+		while (temp != null) {
+			if (temp.tagName.toLowerCase() == 'table') {
+				parentTable = temp;
+				break;
+			}
+			temp = temp.parentNode;
+		}
+		if (parentTable) {
+			var locator = this.getRecorder(window).findLocator(parentTable);
+			if (locator) {
+				result.target = locator + '.' + element.parentNode.rowIndex + '.' + element.cellIndex;
+				result.value = exactMatchPattern(getText(element));
+				result.disabled = false;
+			}
 		}
 		return result;
 	});
