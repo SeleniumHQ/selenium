@@ -21,6 +21,7 @@ function TreeView(editor, document, tree) {
 	this.tree = tree;
 	this.document = document;
 	this.rowCount = 0;
+	this.recordIndex = 0;
 	this.undoStack = [];
 	this.redoStack = [];
 	var self = this;
@@ -226,9 +227,13 @@ TreeView.prototype = {
 		this.treebox.ensureRowIsVisible(index);
 	},
 	rowInserted: function(index) {
+		this.log.debug("rowInserted: index=" + index);
 		this.treebox.rowCountChanged(index, 1);
-		//this.treebox.scrollToRow(this.testCase.commands.length - 1);
 		this.rowCount++;
+		//this.treebox.scrollToRow(this.testCase.commands.length - 1);
+		if (index >= this.recordIndex) {
+			this.recordIndex++;
+		}
 		this.treebox.ensureRowIsVisible(index);
 	},
 	rowUpdated: function(index) {
@@ -243,6 +248,9 @@ TreeView.prototype = {
 		}
 		this.treebox.rowCountChanged(0, length + 1);
 		this.rowCount = length + 1;
+		if (this.recordIndex > length) {
+			this.recordIndex = length;
+		}
 		this.newCommand = new Command();
 		this.log.debug("refresh: new rowCount=" + this.rowCount);
 	},
@@ -274,10 +282,10 @@ TreeView.prototype = {
 		window.updateCommands('select');
 	},
 	selectRecordIndex: function(index) {
-		var oldRecordIndex = this.testCase.recordIndex;
-		this.testCase.recordIndex = index;
+		var oldRecordIndex = this.recordIndex;
+		this.recordIndex = index;
 		this.rowUpdated(oldRecordIndex);
-		this.rowUpdated(this.testCase.recordIndex);
+		this.rowUpdated(this.recordIndex);
 	},
 	// called when the user enters any text into the textbox
 	updateCurrentCommand: function(key, value) {
@@ -290,6 +298,9 @@ TreeView.prototype = {
 		this.setTextBox("commandTarget", '', true);
 		this.setTextBox("commandValue", '', true);
 		this.currentCommand = null;
+	},
+	getRecordIndex: function() {
+		return this.recordIndex;
 	},
 	
 	//
@@ -482,7 +493,7 @@ TreeView.prototype = {
 		if (command == this.currentCommand) {
 			props.AppendElement(this.atomService.getAtom("currentCommand"));
 		}
-		if (row == this.testCase.recordIndex) {
+		if (row == this.recordIndex) {
 			props.AppendElement(this.atomService.getAtom("recordIndex"));
 		}
 		if (0 == col.index && command.breakpoint) {

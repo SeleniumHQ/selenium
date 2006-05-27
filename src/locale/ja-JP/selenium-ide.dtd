@@ -5,11 +5,11 @@
 <!ENTITY exportCmd.label "テストのエクスポート...">
 <!ENTITY optionsCmd.label "設定...">
 <!ENTITY formatCmd.label "テストのフォーマット">
-<!ENTITY tableTab.label "表形式で編集">
-<!ENTITY sourceTab.label "ソース編集">
-<!ENTITY runRadio.label "実行">
-<!ENTITY walkRadio.label "ゆっくり実行">
-<!ENTITY stepRadio.label "1ステップずつ実行">
+<!ENTITY tableTab.label "テーブル">
+<!ENTITY sourceTab.label "ソース">
+<!ENTITY runRadio.label "速く">
+<!ENTITY walkRadio.label "ゆっくり">
+<!ENTITY stepRadio.label "ステップ">
 <!ENTITY playButton.tooltip "はじめまたは開始位置から実行">
 <!ENTITY pauseButton.tooltip "一時停止/再開">
 <!ENTITY stepButton.tooltip "1ステップ実行">

@@ -32,7 +32,11 @@ function Editor(window, isSidebar) {
 			if (self.view) {
 				self.view.testCase = testCase;
 			}
-			testCase.observer = self;
+			testCase.observer = {
+				modifiedStateUpdated: function() {
+					self.updateTitle();
+				}
+			};
 		});
 	this.setTestCase(new TestCase());
 	this.initOptions();
@@ -314,7 +318,7 @@ Editor.prototype.onUnloadDocument = function(doc) {
 		if (this.unloadTimeoutID != null) {
 			clearTimeout(this.unloadTimeoutID);
 		}
-		this.unloadTimeoutID = setTimeout("Editor.appendWaitForPageToLoad()", 10);
+		this.unloadTimeoutID = setTimeout("Editor.appendWaitForPageToLoad()", 20);
 	}
 }
 
@@ -377,7 +381,10 @@ Editor.prototype.addCommand = function(command,target,value,window) {
 	}
 	this.lastWindow = window;
 
-	this.testCase.recordCommand(new Command(command, target, value));
+	this.lastCommandIndex = this.view.getRecordIndex();
+	this.testCase.commands.splice(this.lastCommandIndex, 0, new Command(command, target, value));
+	this.view.rowInserted(this.lastCommandIndex);
+	this.timeoutID = setTimeout("editor.clearLastCommand()", 300);
 }
 
 Editor.prototype.clearLastCommand = function() {
@@ -386,7 +393,7 @@ Editor.prototype.clearLastCommand = function() {
 
 Editor.appendWaitForPageToLoad = function() {
 	var lastCommandIndex = editor.lastCommandIndex;
-	if (lastCommandIndex == null) {
+	if (lastCommandIndex == null || lastCommandIndex >= editor.testCase.commands.length) {
 		return;
 	}
 	editor.lastCommandIndex = null;
@@ -539,15 +546,6 @@ Editor.prototype.setRecordingEnabled = function(enabled) {
  */
 Editor.prototype.loadDefaultOptions = function() {
 	this.setOptions(OPTIONS);
-}
-
-/*
- * Called from testCase when command is recorded.
- */
-Editor.prototype.rowInserted = function(index, command) {
-	this.lastCommandIndex = index;
-	this.view.rowInserted(index);
-	this.timeoutID = setTimeout("editor.clearLastCommand()", 200);
 }
 
 Editor.prototype.loadExtensions = function() {

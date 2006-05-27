@@ -14,19 +14,36 @@
  * limitations under the License.
  */
 
-function SourceView(recorder, textbox) {
+function SourceView(editor, textbox) {
 	this.log = new Log("SourceView");
 	this.textbox = textbox;
-	this.recorder = recorder;
+	this.editor = editor;
 }
 
 SourceView.prototype = {
 	scrollToRow: function(index) {
 		// TODO
 	},
-	rowInserted: function(index) {
+	rowInserted: function(rowIndex) {
 		this.updateView();
-		this.textbox.inputField.scrollTop = this.textbox.inputField.scrollHeight - this.textbox.inputField.clientHeight;
+		if (this.editor.testManager.getFormat().playable) {
+			this.textbox.setSelectionRange(this.lastValue.length, this.lastValue.length);
+			this.textbox.inputField.scrollTop = this.textbox.inputField.scrollHeight - this.textbox.inputField.clientHeight;
+		} else {
+			var value = this.lastValue;
+			var lineno = 0;
+			var index = 0;
+			while (true) {
+				if (lineno == rowIndex + 1) {
+					this.textbox.setSelectionRange(index, index);
+					break;
+				}
+				index = value.indexOf("\n", index);
+				if (index < 0) break;
+				index++;
+				lineno++;
+			}
+		}
 	},
 	rowUpdated: function(index) {
 		this.updateView();
@@ -36,21 +53,39 @@ SourceView.prototype = {
 	},
 	// synchronize model from view
 	syncModel: function(force) {
-		if ((force || this.recorder.view == this) && this.lastValue != this.textbox.value) {
+		if ((force || this.editor.view == this) && this.lastValue != this.textbox.value) {
 			this.log.debug("syncModel");
-			this.recorder.testManager.setSource(this.testCase, this.textbox.value);
+			this.editor.testManager.setSource(this.testCase, this.textbox.value);
 		} else {
 			this.log.debug("skip syncModel");
 		}
 	},
 	onHide: function() {
+	},
+	getRecordIndex: function() {
+		if (this.editor.testManager.getFormat().playable) {
+			return this.testCase.commands.length;
+		} else {
+			var value = this.lastValue;
+			var lineno = 0;
+			this.log.debug("selectionStart=" + this.textbox.selectionStart);
+			var cursor = this.textbox.selectionStart;
+			var index = 0;
+			while (true) {
+				index = value.indexOf("\n", index);
+				if (index < 0 || cursor <= index) break;
+				lineno++;
+				index++;
+			}
+			return lineno;
+		}
 	}
 };
 
 SourceView.prototype.updateView = function() {
 	var scrollTop = this.textbox.inputField.scrollTop;
-	//this.textbox.value = this.testCase.getSource(this.recorder.options, "New Test");
-	this.textbox.value = this.lastValue = this.recorder.testManager.getSourceForTestCase(this.testCase);
+	//this.textbox.value = this.testCase.getSource(this.editor.options, "New Test");
+	this.textbox.value = this.lastValue = this.editor.testManager.getSourceForTestCase(this.testCase);
 	this.textbox.inputField.scrollTop = scrollTop;
 	//log.debug("source=" + getSource());
 }

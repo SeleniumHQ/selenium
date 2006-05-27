@@ -53,8 +53,6 @@ Comment.prototype.createCopy = function() {
 function TestCase() {
 	this.log = new Log("TestCase");
 	
-	this.recordIndex = 0;
-	
 	this.setCommands([]);
 	
 	this.modified = false;
@@ -96,7 +94,6 @@ TestCase.prototype.setCommands = function(commands) {
 	var _push = commands.push;
 	commands.push = function(command) {
 		_push.call(commands, command);
-		self.recordIndex++;
 		self.setModified();
 	}
 
@@ -106,15 +103,6 @@ TestCase.prototype.setCommands = function(commands) {
 			_splice.call(commands, index, removeCount, command);
 		} else {
 			_splice.call(commands, index, removeCount);
-		}
-		if (index <= self.recordIndex) {
-			if (command != null) {
-				self.recordIndex++;
-		}
-		self.recordIndex -= removeCount;
-			if (self.recordIndex < index) {
-				self.recordIndex = index;
-			}
 		}
 		self.setModified();
 	}
@@ -140,22 +128,14 @@ TestCase.prototype.clear = function() {
 TestCase.prototype.setModified = function() {
 	this.modified = true;
 	if (this.observer) {
-		this.observer.updateTitle();
+		this.observer.modifiedStateUpdated();
 	}
 }
 
 TestCase.prototype.clearModified = function() {
 	this.modified = false;
 	if (this.observer) {
-		this.observer.updateTitle();
-	}
-}
-
-TestCase.prototype.recordCommand = function(command) {
-	var lastCommandIndex = this.recordIndex;
-	this.commands.splice(lastCommandIndex, 0, command);
-	if (this.observer) {
-		this.observer.rowInserted(lastCommandIndex, command);
+		this.observer.modifiedStateUpdated();
 	}
 }
 

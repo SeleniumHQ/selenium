@@ -29,6 +29,7 @@ function parse(testCase, source) {
  * @param name The name of the test case, if any. It may be used to embed title into the source.
  */
 function format(testCase, name) {
+	this.lastIndent = '';
 	var result = '';
 	for (var i = 0; i < testCase.commands.length; i++) {
 		var line;
@@ -38,8 +39,16 @@ function format(testCase, name) {
 		} else if (command.type == 'command') {
 			line = formatCommand(command);
 		}
+		var r = /^(\s*)/.exec(line);
+		if (r) {
+			this.lastIndent = r[1];
+		}
 		result += line + "\n";
 	}
 	return result;
+}
+
+function indent() {
+	return this.lastIndent;
 }
 

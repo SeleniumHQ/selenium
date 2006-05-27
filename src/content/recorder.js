@@ -74,6 +74,14 @@ Recorder.prototype.reattachWindowMethods = function() {
 	}
 }
 
+Recorder.prototype.parseEventKey = function(eventKey) {
+	if (eventKey.match(/^C_/)) {
+		return { eventName: eventKey.substring(2), capture: true };
+	} else {
+		return { eventName: eventKey, capture: false };
+	}
+}
+
 Recorder.prototype.attach = function() {
 	this.log.debug("attaching");
 	this.locatorBuilders = new LocatorBuilders(this.window);
@@ -81,19 +89,13 @@ Recorder.prototype.attach = function() {
 	this.reattachWindowMethods();
 	var self = this;
 	for (eventKey in Recorder.eventHandlers) {
-		var eventName;
-		var capture;
-		if (eventKey.match(/^C_/)) {
-			eventName = eventKey.substring(2);
-			capture = true;
-		} else {
-			eventName = eventKey;
-			capture = false;
-		}
+		var eventInfo = this.parseEventKey(eventKey);
+		var eventName = eventInfo.eventName;
+		var capture = eventInfo.capture;
 		// create new function so that the variables have new scope.
 		function register() {
 			var handlers = Recorder.eventHandlers[eventKey];
-			this.log.debug('eventName=' + eventName + ' / handlers.length=' + handlers.length);
+			//this.log.debug('eventName=' + eventName + ' / handlers.length=' + handlers.length);
 			var listener = function(event) {
 				self.log.debug('listener: event.type=' + event.type + ', target=' + event.target);
 				//self.log.debug('title=' + self.window.document.title);
@@ -108,7 +110,7 @@ Recorder.prototype.attach = function() {
 				}
 			}
 			this.window.document.addEventListener(eventName, listener, capture);
-			this.eventListeners[eventName] = listener;
+			this.eventListeners[eventKey] = listener;
 		}
 		register.call(this);
 	}
@@ -117,8 +119,10 @@ Recorder.prototype.attach = function() {
 Recorder.prototype.detach = function() {
 	this.log.debug("detaching");
 	this.locatorBuilders.detach();
-	for (eventName in this.eventListeners) {
-		this.window.document.removeEventListener(eventName, this.eventListeners[eventName], false);
+	for (eventKey in this.eventListeners) {
+		var eventInfo = this.parseEventKey(eventKey);
+		this.log.debug("removeEventListener: " + eventInfo.eventName + ", " + eventKey + ", " + eventInfo.capture);
+		this.window.document.removeEventListener(eventInfo.eventName, this.eventListeners[eventKey], eventInfo.capture);
 	}
 	delete this.eventListeners;
 	for (method in this.windowMethods) {

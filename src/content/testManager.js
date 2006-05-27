@@ -19,7 +19,7 @@ function TestManager(options) {
 	
 	this.presetFormatInfos = [new InternalFormatInfo("default", "HTML", "html.js"),
 							  new InternalFormatInfo("ruby", "Ruby (deprecated)", "ruby.js"),
-							  new InternalFormatInfo("ruby-rc", "Selenium RC - Ruby Client", "ruby-rc.js")];
+							  new InternalFormatInfo("ruby-rc", "Ruby - Selenium RC", "ruby-rc.js")];
 	this.reloadFormats();
 	if (options.selectedFormat != null) {
 		this.log.debug("selecting format: " + options.selectedFormat);

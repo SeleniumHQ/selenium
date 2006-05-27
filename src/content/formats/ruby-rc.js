@@ -10,16 +10,10 @@ function escape(text) {
 	return text;
 }
 
-function indent() {
-	return '  ';
-}
-
 function formatCommand(command) {
 	var line = '';
 	if (command.type == 'command') {
-		line = indent() + 
-			options.prefix + 
-			underscore(command.command);
+		line = indent() + options.prefix + underscore(command.command);
 		if ((command.target != null && command.target.length > 0)
 			|| (command.value != null && command.value.length > 0)) {
 			line += ' "' + escape(command.target) + '"';

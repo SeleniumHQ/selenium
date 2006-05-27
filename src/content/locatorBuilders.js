@@ -64,6 +64,7 @@ LocatorBuilders.prototype.findElement = function(locator) {
 		return this.pageBot().findElement(locator);
 	} catch (error) {
 		this.log.debug("findElement failed: " + error + ", locator=" + locator);
+		return null;
 	}
 }
 
