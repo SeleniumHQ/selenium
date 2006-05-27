@@ -94,7 +94,7 @@ limitations under the License.
     </menubar>
     <toolbar>
       <hbox align="center" flex="1">
-	<label value="Base URL"/>
+	<label value="&baseURL.label;"/>
 	<textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
       </hbox>
     </toolbar>
