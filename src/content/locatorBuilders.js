@@ -33,7 +33,7 @@ LocatorBuilders.prototype.pageBot = function() {
 }
 
 LocatorBuilders.prototype.buildWith = function(name, e) {
-	return LocatorBuilders.finderMap[name].call(this, e);
+	return LocatorBuilders.builderMap[name].call(this, e);
 }
 
 LocatorBuilders.prototype.build = function(e) {
@@ -43,8 +43,8 @@ LocatorBuilders.prototype.build = function(e) {
 	var locator;
 	this.log.debug("getLocator for element " + e);
 	
-	for (var i = 0; i < LocatorBuilders.finderNames.length; i++) {
-		var finderName = LocatorBuilders.finderNames[i];
+	for (var i = 0; i < LocatorBuilders.order.length; i++) {
+		var finderName = LocatorBuilders.order[i];
 		this.log.debug("trying " + finderName);
 		locator = this.buildWith(finderName, e);
 		if (locator) {
@@ -72,12 +72,12 @@ LocatorBuilders.prototype.findElement = function(locator) {
  * Class methods
  */
 
-LocatorBuilders.finderNames = [];
-LocatorBuilders.finderMap = {};
+LocatorBuilders.order = [];
+LocatorBuilders.builderMap = {};
 
 LocatorBuilders.add = function(name, finder) {
-	this.finderNames.push(name);
-	this.finderMap[name] = finder;
+	this.order.push(name);
+	this.builderMap[name] = finder;
 }
 
 
@@ -309,3 +309,6 @@ LocatorBuilders.add('positionXPath', function(e) {
 		}
 		return null;
 	});
+
+LocatorBuilders.order = ['id', 'link', 'name', 'domFormElementName', 'linkXPath', 'attributesXPath', 'hrefXPath', 'domFormElementIndex', 'positionXPath'];
+
