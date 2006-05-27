@@ -80,6 +80,19 @@ CommandBuilders.add('accessor', function(window) {
 	});
 
 CommandBuilders.add('accessor', function(window) {
+		var result = { accessor: "text" };
+		var element = this.getRecorder(window).clickedElement;
+		if (element) {
+			result.target = this.getRecorder(window).findLocator(element);
+			result.value = exactMatchPattern(getText(element));
+		} else {
+			result.disabled = true;
+		}
+		return result;
+	});
+
+
+CommandBuilders.add('accessor', function(window) {
 		var element = this.getRecorder(window).clickedElement;
 		var result = { accessor: "table", disabled: true };
 		if (!element) return result;
