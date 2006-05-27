@@ -28,22 +28,6 @@ Command.prototype.createCopy = function() {
 	return copy;
 };
 
-Command.prototype.isAssertion = function() {
-	if (this.command) {
-		return this.command.match(/^(verify|assert)/);
-	} else {
-		return false;
-	}
-}
-
-Command.prototype.isStore = function() {
-	if (this.command) {
-		return this.command.match(/^store/);
-	} else {
-		return false;
-	}
-}
-
 Command.prototype.getRealValue = function() {
 	if (this.value) {
 		return this.value;
