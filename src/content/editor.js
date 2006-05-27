@@ -193,6 +193,7 @@ Editor.prototype.unload = function() {
 	} else {
 		Recorder.deregisterAll(this);
 	}
+	top.controllers.removeController(Editor.controller);
 
 	delete window.editor;
 }

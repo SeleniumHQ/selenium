@@ -26,7 +26,7 @@ limitations under the License.
   </stringbundleset>
 
   <menupopup id="viewSidebarMenu">
-    <menuitem observes="viewSeleniumIDESidebar" key="key_viewSeleniumIDESidebar" />
+    <menuitem observes="viewSeleniumIDESidebar" />
   </menupopup>
 
   <menupopup id="menu_ToolsPopup">
@@ -47,8 +47,10 @@ limitations under the License.
 		 oncommand="toggleSidebar('viewSeleniumIDESidebar');" />
   </broadcasterset>
 
+  <!--
   <keyset id="mainKeyset">
     <key id="key_viewSeleniumIDESidebar" command="viewSeleniumIDESidebar" 
 	 key="S" modifiers="alt,accel"/>
   </keyset>
+  -->
 </overlay>
