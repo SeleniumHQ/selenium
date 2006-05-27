@@ -31,7 +31,7 @@ const OPTIONS = {
 	"",
 
 	recordAssertTitle:
-	"true",
+	"false",
 
 	timeout:
 	"10000"

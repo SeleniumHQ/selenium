@@ -25,12 +25,7 @@ SeleniumIDE.Overlay.NUM_RECENT_COMMANDS = 8;
 SeleniumIDE.Overlay.appendCheck = function(event) {
 	var command = event.target._Selenium_IDE_command;
 	if (command.command.match(/^store/)) {
-		var valueProperty = 'value';
-		if (command.builder.accessorType == 'value') {
-			// store value in the second column
-			valueProperty = 'target';
-		}
-		command[valueProperty] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
+		command[command.valueProperty] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
 	}
 	SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
 	SeleniumIDE.Overlay.addRecentCommand(command.command);
@@ -117,7 +112,7 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
 			var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
 			var command = CommandBuilders.callBuilder(builder, focusedWindow);
 
-			if (builder.accessorType == 'action') {
+			if (builder.commandType == 'action') {
 				command.builder = builder;
 				if (showAll || recentCommands.indexOf(command.command) >= 0) {
 					items('action').push(self.createCheckMenuItem((showAll ? 'all-' : ''), command));
@@ -130,11 +125,18 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
 							newCommand[prop] = command[prop];
 						}
 						if (prefix == 'store') {
-							switch (builder.accessorType) {
-							case 'value':
-								newCommand.target = '';
-							default:
-								newCommand.value = '';
+							if (newCommand.booleanAccessor) {
+								if (newCommand.target == null) {
+									newCommand.valueProperty = 'target';
+								} else {
+									newCommand.valueProperty = 'value';
+								}
+							} else {
+								if (newCommand.value == null) {
+									newCommand.valueProperty = 'target';
+								} else {
+									newCommand.valueProperty = 'value';
+								}
 							}
 						}
 						var accessor = newCommand.accessor.replace(/^[a-z]/, function(str) { return str.toUpperCase() });

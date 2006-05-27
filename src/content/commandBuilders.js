@@ -2,8 +2,8 @@ var CommandBuilders = {};
 
 CommandBuilders.builders = [];
 
-CommandBuilders.add = function(accessorType, func) {
-	this.builders.push({builder: func, accessorType: accessorType});
+CommandBuilders.add = function(commandType, func) {
+	this.builders.push({builder: func, commandType: commandType});
 }
 
 CommandBuilders.getRecorder = function(window) {
@@ -37,8 +37,8 @@ CommandBuilders.add('action', function(window) {
 		};
 	});
 
-CommandBuilders.add('boolean', function(window) {
-		var result = { accessor: "textPresent" };
+CommandBuilders.add('accessor', function(window) {
+		var result = { accessor: "textPresent", booleanAccessor: true };
 		var selection = String(window.getSelection());
 		if (selection) {
 			result.target = selection;
@@ -48,7 +48,7 @@ CommandBuilders.add('boolean', function(window) {
 		return result;
 	});
 
-CommandBuilders.add('value', function(window) {
+CommandBuilders.add('accessor', function(window) {
 		var result = { accessor: "title" };
 		if (window.document) {
 			result.target = exactMatchPattern(window.document.title);
@@ -58,7 +58,7 @@ CommandBuilders.add('value', function(window) {
 		return result;
 	});
 
-CommandBuilders.add('target,value', function(window) {
+CommandBuilders.add('accessor', function(window) {
 		var result = { accessor: "value" };
 		var element = this.getRecorder(window).clickedElement;
 		if (element && element.hasAttribute && element.tagName &&
@@ -79,7 +79,7 @@ CommandBuilders.add('target,value', function(window) {
 		return result;
 	});
 
-CommandBuilders.add('target,value', function(window) {
+CommandBuilders.add('accessor', function(window) {
 		var element = this.getRecorder(window).clickedElement;
 		var result = { accessor: "table", disabled: true };
 		if (!element) return result;
