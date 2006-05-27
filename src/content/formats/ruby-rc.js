@@ -5,8 +5,8 @@
  */
 
 function escape(text) {
-	text = text.replace(/\"/, '\"');
-	text = text.replace(/\n/, '\n');
+	text = text.replace(/\"/mg, '\\"');
+	text = text.replace(/\n/mg, '\\n');
 	return text;
 }
 
