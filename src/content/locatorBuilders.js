@@ -194,19 +194,6 @@ LocatorBuilders.add('domFormElementName', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('domFormElementIndex', function(e) {
-		if (e.form) {
-			var formLocator = this.findDomFormLocator(e.form);
-			var elements = e.form.elements;
-			for (var i = 0; i < elements.length; i++) {
-				if (elements[i] == e) {
-					return formLocator + ".elements[" + i + "]";
-				}
-			}
-		}
-		return null;
-	});
-
 LocatorBuilders.add('linkXPath', function(e) {
 		if (e.nodeName == 'A') {
 			var nodeList = e.childNodes;
@@ -276,6 +263,19 @@ LocatorBuilders.add('hrefXPath', function(e) {
 		return null;
 	});
 
+LocatorBuilders.add('domFormElementIndex', function(e) {
+		if (e.form) {
+			var formLocator = this.findDomFormLocator(e.form);
+			var elements = e.form.elements;
+			for (var i = 0; i < elements.length; i++) {
+				if (elements[i] == e) {
+					return formLocator + ".elements[" + i + "]";
+				}
+			}
+		}
+		return null;
+	});
+
 LocatorBuilders.add('positionXPath', function(e) {
 		this.log.debug("positionXPath: e=" + e);
 		var path = '';
@@ -310,5 +310,6 @@ LocatorBuilders.add('positionXPath', function(e) {
 		return null;
 	});
 
-LocatorBuilders.order = ['id', 'link', 'name', 'domFormElementName', 'linkXPath', 'attributesXPath', 'hrefXPath', 'domFormElementIndex', 'positionXPath'];
+// You can change the priority of builders by setting LocatorBuilders.order.
+//LocatorBuilders.order = ['id', 'link', 'name', 'domFormElementName', 'linkXPath', 'attributesXPath', 'hrefXPath', 'domFormElementIndex', 'positionXPath'];
 

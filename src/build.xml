@@ -20,17 +20,6 @@
     <copy todir="content/selenium">
       <fileset dir="${selenium.src}">
 	<include name="**"/>
-	<!--
-	<include name="*.*"/>
-	<include name="dom-images/*.*"/>
-	<include name="dom-styles/*.*"/>
-	<include name="html-xpath/*.*"/>
-	<include name="jsunit/**"/>
-	<exclude name="TestSuite.html"/>
-	<exclude name="*.bat"/>
-	<exclude name="*.py"/>
-	<exclude name="jsunit/java/**"/>
-	-->
       </fileset>
       <fileset dir="content/selenium-src"/>
     </copy>
