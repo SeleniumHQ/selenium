@@ -34,7 +34,7 @@ const OPTIONS = {
 	"false",
 
 	timeout:
-	"10000"
+	"30000"
 };
 
 function OptionsManager() {

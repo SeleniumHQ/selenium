@@ -16,7 +16,7 @@
 <!ENTITY testrunnerButton.tooltip "Selenium TestRunner で実行">
 <!ENTITY recordButton.tooltip "テストの記録">
 <!ENTITY baseURL.label "Base URL">
-<!ENTITY baseURLTextbox.tooltip "テストを実施するWebサイトの URL を入力してください。&quot;open&quot; 命令の実行に使われます。">
+<!ENTITY baseURLTextbox.tooltip "テストを実施するWebサイトの URL を入力してください。&quot;open&quot; コマンドの実行に使われます。">
 
 <!ENTITY selenium-ide.sidebar.title "Selenium IDE">
 
@@ -39,9 +39,9 @@
 <!ENTITY contextMenu.copy.label "コピー">
 <!ENTITY contextMenu.paste.label "貼り付け">
 <!ENTITY contextMenu.delete.label "削除">
-<!ENTITY contextMenu.insertCommand.label "前行に命令を追加">
-<!ENTITY contextMenu.insertComment.label "前行にコメントを追加">
+<!ENTITY contextMenu.insertCommand.label "コマンドを挿入">
+<!ENTITY contextMenu.insertComment.label "コメントを挿入">
 <!ENTITY contextMenu.clear.label "すべて削除">
 <!ENTITY contextMenu.breakpoint.label "ブレークポイントの指定/解除">
 <!ENTITY contextMenu.startpoint.label "開始位置の指定/解除">
-<!ENTITY contextMenu.execCommand.label "この命令を実行">
+<!ENTITY contextMenu.execCommand.label "このコマンドを実行">
