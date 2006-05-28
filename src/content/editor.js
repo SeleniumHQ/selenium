@@ -15,7 +15,7 @@
  */
 
 function Editor(window, isSidebar) {
-	this.log.info("initializing");
+	this.log.debug("initializing");
 	this.window = window;
 	window.editor = this;
 	var self = this;
@@ -553,10 +553,12 @@ Editor.prototype.loadDefaultOptions = function() {
 
 Editor.prototype.loadExtensions = function() {
 	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-	try {
-		ExtensionsLoader.loadSubScript(subScriptLoader, this.options.ideExtensionsPaths, window);
-	} catch (error) {
-		this.log.error("error loading Selenium IDE extensions: " + error);
+	if (this.options.ideExtensionsPaths) {
+		try {
+			ExtensionsLoader.loadSubScript(subScriptLoader, this.options.ideExtensionsPaths, window);
+		} catch (error) {
+			this.showAlert("error loading Selenium IDE extensions: " + error);
+		}
 	}
 }
 
