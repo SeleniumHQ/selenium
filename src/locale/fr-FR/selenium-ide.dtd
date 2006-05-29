@@ -5,6 +5,7 @@
 <!ENTITY exportCmd.label "Exporter le Test sous...">
 <!ENTITY optionsCmd.label "Options...">
 <!ENTITY formatCmd.label "Format">
+<!ENTITY clipboardFormatCmd.label "Clipboard Format">
 <!ENTITY tableTab.label "Table">
 <!ENTITY sourceTab.label "Source">
 <!ENTITY runRadio.label "Lancer">

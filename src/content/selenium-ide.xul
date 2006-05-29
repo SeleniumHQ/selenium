@@ -80,10 +80,14 @@ limitations under the License.
 	</menupopup>
       </menu>
       <menu id="optionsMenu" label="&optionsMenu.label;" accesskey="O">
-	<menupopup id="options-popup">
+	<menupopup id="options-popup" onpopupshowing="editor.onPopupOptions()">
 	  <menuitem label="&optionsCmd.label;" oncommand="editor.openSeleniumIDEPreferences();" accesskey="O"/>
 	  <menu label="&formatCmd.label;" accesskey="F">
-	    <menupopup id="popup_formats" onpopupshowing="editor.populateFormatsPopup()" oncommand="editor.selectFormatFromMenu()">
+	    <menupopup id="popup_formats" onpopupshowing="editor.populateFormatsPopup(this, editor.currentFormat)" oncommand="editor.setCurrentFormat(editor.formats.selectFormat(event.target.getAttribute('value')))">
+	    </menupopup>
+	  </menu>
+	  <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;">
+	    <menupopup id="popup_clipboard_formats" onpopupshowing="editor.populateFormatsPopup(this, editor.clipboardFormat)" oncommand="editor.setClipboardFormat(editor.formats.selectFormat(event.target.getAttribute('value')))">
 	    </menupopup>
 	  </menu>
 	</menupopup>

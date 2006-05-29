@@ -29,15 +29,42 @@ function parse(testCase, source) {
  * @param name The name of the test case, if any. It may be used to embed title into the source.
  */
 function format(testCase, name) {
+	return formatCommands(testCase.commands);
+}
+
+function filterForRemoteControl(originalCommands) {
+	if (this.remoteControl) {
+		var commands = [];
+		for (var i = 0; i < originalCommands.length; i++) {
+			var c = originalCommands[i];
+			if (c.type == 'command' && c.command.match(/AndWait$/)) {
+				var c1 = c.createCopy();
+				c1.command = c.command.replace(/AndWait$/, '');
+				commands.push(c1);
+				commands.push(new Command("waitForPageToLoad"));
+			} else {
+				commands.push(c);
+			}
+		}
+		return commands;
+	} else {
+		return originalCommands;
+	}
+}
+
+function formatCommands(commands) {
+	commands = filterForRemoteControl(commands);
 	this.lastIndent = '';
 	var result = '';
-	for (var i = 0; i < testCase.commands.length; i++) {
+	for (var i = 0; i < commands.length; i++) {
 		var line;
-		var command = testCase.commands[i];
+		var command = commands[i];
 		if (command.type == 'line') {
 			line = command.line;
 		} else if (command.type == 'command') {
 			line = formatCommand(command);
+		} else if (command.type == 'comment' && this.formatComment) {
+			line = formatComment(command);
 		}
 		var r = /^(\s*)/.exec(line);
 		if (r) {

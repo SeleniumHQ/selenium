@@ -69,6 +69,10 @@ function formatCommand(command) {
 	return line;
 }
 
+function formatComment(comment) {
+	return indent() + "#" + comment.comment;
+}
+
 this.options = {
 	prefix: "@selenium."
 };

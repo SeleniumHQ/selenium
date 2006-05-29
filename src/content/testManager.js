@@ -176,7 +176,7 @@ FormatCollection.prototype.selectFormat = function(id) {
 			return this.formats[0];
 		}
 	} else {
-		this.log.error("failed to select format: " + id);
+		//this.log.error("failed to select format: " + id);
 		return this.formats[0];
 	}
 }

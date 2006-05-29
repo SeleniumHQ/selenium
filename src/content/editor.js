@@ -219,7 +219,8 @@ Editor.prototype.setState = function(state) {
 Editor.prototype.setOptions = function(options) {
 	this.options = options;
 	this.formats = new FormatCollection(options);
-	this.currentFormat = this.formats.selectFormat(options.selectedFormat);
+	this.currentFormat = this.formats.selectFormat(options.selectedFormat || null);
+	this.clipboardFormat = this.formats.selectFormat(options.clipboardFormat || null);
 }
 
 Editor.prototype.initOptions = function() {
@@ -305,11 +306,6 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 		this.recordTitle(contentWindow);
 	}
 	Recorder.register(this, contentWindow);
-}
-
-Editor.prototype.saveSelectedFormat = function() {
-	this.options.selectedFormat = this.currentFormat.id;
-	optionsManager.save(this.options, 'selectedFormat');
 }
 
 Editor.prototype.toggleRecordingEnabled = function(enabled) {
@@ -445,8 +441,11 @@ Editor.prototype.openLogWindow = function() {
 	}
 }
 
-Editor.prototype.populateFormatsPopup = function() {
-	var e = document.getElementById("popup_formats");
+Editor.prototype.onPopupOptions = function() {
+	document.getElementById("clipboardFormatMenu").setAttribute("disabled", !editor.currentFormat.getFormatter().playable);
+}
+
+Editor.prototype.populateFormatsPopup = function(e, format) {
 	var i;
 	for (i = e.childNodes.length - 1; i >= 0; i--) {
 		e.removeChild(e.childNodes[i]);
@@ -459,30 +458,12 @@ Editor.prototype.populateFormatsPopup = function() {
 		menuitem.setAttribute("name", "formats");
 		menuitem.setAttribute("label", formats[i].name);
 		menuitem.setAttribute("value", formats[i].id);
-		if (this.currentFormat.id == formats[i].id) {
+		if (format.id == formats[i].id) {
 			menuitem.setAttribute("checked", true);
 		}
 		e.appendChild(menuitem);
 	}
 }
-
-/*
-Editor.prototype.populateExportFormatsPopup = function() {
-	var e = document.getElementById("popup_export_formats");
-	var i;
-	for (i = e.childNodes.length - 1; i >= 0; i--) {
-		e.removeChild(e.childNodes[i]);
-	}
-	var formats = this.formats.formatInfos;
-	for (i = 0; i < formats.length; i++) {
-		var menuitem = document.createElement("menuitem");
-		menuitem.setAttribute("label", formats[i].name);
-		menuitem.setAttribute("value", formats[i].id);
-		menuitem.setAttribute("command", "cmd_export");
-		e.appendChild(menuitem);
-	}
-}
-*/
 
 Editor.prototype.updateViewTabs = function() {
 	var editorTab = document.getElementById('editorTab');
@@ -498,18 +479,18 @@ Editor.prototype.updateViewTabs = function() {
 	top.document.commandDispatcher.updateCommands("selenium-ide-state");
 }
 
-Editor.prototype.selectFormatFromMenu = function() {
-	var e = document.getElementById("popup_formats");
-	var i;
-	for (i = e.childNodes.length - 1; i >= 0; i--) {
-		var checked = e.childNodes[i].getAttribute("checked");
-		if (checked == 'true') {
-			this.currentFormat = this.formats.selectFormat(e.childNodes[i].getAttribute("value"));
-			this.saveSelectedFormat();
-			this.updateViewTabs();
-			break;
-		}
-	}
+Editor.prototype.setCurrentFormat = function(format) {
+	this.currentFormat = format;
+	this.updateViewTabs();
+	this.options.selectedFormat = this.currentFormat.id;
+	optionsManager.save(this.options, 'selectedFormat');
+	this.setClipboardFormat(format);
+}
+
+Editor.prototype.setClipboardFormat = function(format) {
+	this.clipboardFormat = format;
+	this.options.clipboardFormat = this.clipboardFormat.id;
+	optionsManager.save(this.options, 'clipboardFormat');
 }
 
 Editor.prototype.getBaseURL = function() {

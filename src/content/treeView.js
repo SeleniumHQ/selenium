@@ -103,7 +103,7 @@ function TreeView(editor, document, tree) {
 		var trans = createTransferable();
 		var str = createClipboardString();
 		trans.addDataFlavor("text/unicode");
-		var text = this.editor.currentFormat.getSourceForCommands(commands);
+		var text = this.editor.clipboardFormat.getSourceForCommands(commands);
 		str.data = text;
 		trans.setTransferData("text/unicode", str, text.length * 2);
 		clipboard.setData(trans, null, Components.interfaces.nsIClipboard.kGlobalClipboard);

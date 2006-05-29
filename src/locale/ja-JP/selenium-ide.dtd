@@ -4,7 +4,8 @@
 <!ENTITY saveTestAsCmd.label "テストに名前を付けて保存...">
 <!ENTITY exportCmd.label "テストのエクスポート...">
 <!ENTITY optionsCmd.label "設定...">
-<!ENTITY formatCmd.label "テストのフォーマット">
+<!ENTITY formatCmd.label "フォーマット">
+<!ENTITY clipboardFormatCmd.label "クリップボードのフォーマット">
 <!ENTITY tableTab.label "テーブル">
 <!ENTITY sourceTab.label "ソース">
 <!ENTITY runRadio.label "速く">
