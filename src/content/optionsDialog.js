@@ -62,7 +62,7 @@ function loadDefaultOptions() {
 function loadOptions() {
 	var options = optionsManager.load();
 	loadFromOptions(options);
-	this.testManager = new TestManager(options);
+	this.formats = new FormatCollection(options);
 	this.options = options;
 
 	loadFormatList();
@@ -74,8 +74,8 @@ function loadFormatList() {
 	for (var i = list.getRowCount() - 1; i >= 0; i--) {
 		list.removeItemAt(i);
 	}
-	for (var i = 0; i < this.testManager.formatInfos.length; i++) {
-		var format = this.testManager.formatInfos[i];
+	for (var i = 0; i < this.formats.formats.length; i++) {
+		var format = this.formats.formats[i];
 		list.appendItem(format.name, format.id);
 	}
 }
@@ -125,16 +125,20 @@ function updateFormatSelection() {
 
 function showFormatDialog() {
 	var formatListBox = document.getElementById("format-list");
-	var formatId = formatListBox.selectedItem.value;
-	var formatInfo = this.testManager.findFormatInfo(formatId);
+	if (formatListBox.selectedItem) {
+		var formatId = formatListBox.selectedItem.value;
+	} else {
+		var formatId = 'default';
+	}
+	var formatInfo = this.formats.findFormat(formatId);
 	
 	document.getElementById("format-name").value = formatInfo.name;
-	document.getElementById("delete-button").disabled = formatInfo.save ? false : true;
-	document.getElementById("rename-button").disabled = formatInfo.save ? false : true;
+	document.getElementById("delete-button").disabled = formatInfo.saveFormat ? false : true;
+	document.getElementById("rename-button").disabled = formatInfo.saveFormat ? false : true;
 
 	var configBox = document.getElementById("format-config");
 	try {
-		var format = formatInfo.getFormat();
+		var format = formatInfo.loadFormatter();
 	} catch (error) {
 		alert("an error occured: " + error + ", file=" + formatInfo.getFormatFile().path);
 		var format = {};
@@ -190,10 +194,10 @@ function openFormatSource() {
 }
 
 function createNewFormat() {
-	var formatInfo = new UserFormatInfo();
+	var formatInfo = new UserFormat();
 	window.openDialog('chrome://selenium-ide/content/format-source-dialog.xul', 'options-format-source', 'chrome', formatInfo);
 	if (formatInfo.saved) {
-		this.testManager.reloadFormats();
+		this.formats.reloadFormats();
 		loadFormatList();
 		selectFormat(formatInfo.id);
 	}
@@ -209,7 +213,7 @@ function deleteFormat() {
 	}
 	var index = -1;
 	if (!this.formatInfo) return;
-	var formats = this.testManager.userFormatInfos;
+	var formats = this.formats.userFormats;
 	for (var i = 0; i < formats.length; i++) {
 		if (formats[i].id == this.formatInfo.id) {
 			index = i;
@@ -217,8 +221,8 @@ function deleteFormat() {
 		}
 	}
 	if (index >= 0) {
-		this.testManager.removeUserFormatAt(index);
-		this.testManager.saveFormats();
+		this.formats.removeUserFormatAt(index);
+		this.formats.saveFormats();
 		loadFormatList();
 		selectFormat("default");
 	}
@@ -228,7 +232,7 @@ function renameFormat() {
 	var name = prompt("Enter new name", this.formatInfo.name);
 	if (name) {
 		this.formatInfo.name = name;
-		this.testManager.saveFormats();
+		this.formats.saveFormats();
 		loadFormatList();
 		selectFormat(this.formatInfo.id);
 	}

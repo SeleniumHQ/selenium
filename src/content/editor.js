@@ -73,7 +73,7 @@ Editor.checkTimestamp = function() {
 	editor.log.debug('checkTimestamp');
 	if (editor.testCase.checkTimestamp()) {
 		if (window.confirm(Editor.getString('confirmReload'))) {
-			var testCase = editor.testManager.loadFile(editor.testCase.file);
+			var testCase = editor.currentFormat.loadFile(editor.testCase.file);
 			if (testCase) {
 				editor.setTestCase(testCase);
 				editor.view.refresh();
@@ -109,11 +109,11 @@ Editor.controller = {
 		case "cmd_save":
 			return true;
 		case "cmd_selenium_play":
-		    return editor.testManager.getFormat().playable && editor.state != 'playing';
+		    return editor.currentFormat.getFormatter().playable && editor.state != 'playing';
 		case "cmd_selenium_pause":
-		    return editor.testManager.getFormat().playable && (editor.state == 'playing' || editor.state == 'paused');
+		    return editor.currentFormat.getFormatter().playable && (editor.state == 'playing' || editor.state == 'paused');
 		case "cmd_selenium_step":
-			return editor.testManager.getFormat().playable && editor.state == 'paused';
+			return editor.currentFormat.getFormatter().playable && editor.state == 'paused';
 		default:
 			return false;
 		}
@@ -218,7 +218,8 @@ Editor.prototype.setState = function(state) {
 
 Editor.prototype.setOptions = function(options) {
 	this.options = options;
-	this.testManager = new TestManager(options);
+	this.formats = new FormatCollection(options);
+	this.currentFormat = this.formats.selectFormat(options.selectedFormat);
 }
 
 Editor.prototype.initOptions = function() {
@@ -243,8 +244,7 @@ Editor.prototype.loadTestCase = function() {
 	this.log.debug("loadTestCase");
 	try {
 		var testCase = null;
-		if ((testCase = this.testManager.load()) != null) {
-			
+		if ((testCase = this.currentFormat.load()) != null) {
 			this.setTestCase(testCase);
 			this.view.refresh();
 			//document.getElementById("filename").value = this.testCase.filename;
@@ -282,7 +282,7 @@ Editor.prototype.tabSelected = function(id) {
 
 Editor.prototype.saveTestCase = function() {
 	this.view.syncModel();
-	if (this.testManager.save(this.testCase)) {
+	if (this.currentFormat.save(this.testCase)) {
 		//document.getElementById("filename").value = this.testCase.filename;
 		return true;
 	} else {
@@ -292,7 +292,7 @@ Editor.prototype.saveTestCase = function() {
 
 Editor.prototype.saveNewTestCase = function() {
 	this.view.syncModel();
-	if (this.testManager.saveAsNew(this.testCase)) {
+	if (this.currentFormat.saveAsNew(this.testCase)) {
 		//document.getElementById("filename").value = this.testCase.filename;
 		this.updateTitle();
 	}
@@ -308,7 +308,7 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 }
 
 Editor.prototype.saveSelectedFormat = function() {
-	this.options.selectedFormat = this.testManager.currentFormatInfo.id;
+	this.options.selectedFormat = this.currentFormat.id;
 	optionsManager.save(this.options, 'selectedFormat');
 }
 
@@ -403,7 +403,7 @@ Editor.appendWaitForPageToLoad = function() {
 	var lastCommand = editor.testCase.commands[lastCommandIndex];
 	if (lastCommand.type == 'command' && 
 		!lastCommand.command.match(/^(assert|verify|store)/)) {
-		if (editor.testManager.getFormat().remoteControl) {
+		if (editor.currentFormat.getFormatter().remoteControl) {
 			editor.addCommand("waitForPageToLoad", editor.options.timeout, null, editor.lastWindow);
 		} else {
 			lastCommand.command = lastCommand.command + "AndWait";
@@ -433,7 +433,7 @@ Editor.prototype.playback = function() {
 }
 
 Editor.prototype.loadPlayerTest = function(e) {
-	e.innerHTML = this.testManager.getDefaultFormat().format(this.testCase, "Test Player", false, true);
+	e.innerHTML = this.formats.getDefaultFormat().getFormatter().format(this.testCase, "Test Player", false, true);
 }
 
 Editor.prototype.openLogWindow = function() {
@@ -451,7 +451,7 @@ Editor.prototype.populateFormatsPopup = function() {
 	for (i = e.childNodes.length - 1; i >= 0; i--) {
 		e.removeChild(e.childNodes[i]);
 	}
-	var formats = this.testManager.formatInfos;
+	var formats = this.formats.formats;
 	for (i = 0; i < formats.length; i++) {
 		var menuitem = document.createElement("menuitem");
 		//menuitem.label = formats[i].name;
@@ -459,20 +459,21 @@ Editor.prototype.populateFormatsPopup = function() {
 		menuitem.setAttribute("name", "formats");
 		menuitem.setAttribute("label", formats[i].name);
 		menuitem.setAttribute("value", formats[i].id);
-		if (this.testManager.currentFormatInfo.id == formats[i].id) {
+		if (this.currentFormat.id == formats[i].id) {
 			menuitem.setAttribute("checked", true);
 		}
 		e.appendChild(menuitem);
 	}
 }
 
+/*
 Editor.prototype.populateExportFormatsPopup = function() {
 	var e = document.getElementById("popup_export_formats");
 	var i;
 	for (i = e.childNodes.length - 1; i >= 0; i--) {
 		e.removeChild(e.childNodes[i]);
 	}
-	var formats = this.testManager.formatInfos;
+	var formats = this.formats.formatInfos;
 	for (i = 0; i < formats.length; i++) {
 		var menuitem = document.createElement("menuitem");
 		menuitem.setAttribute("label", formats[i].name);
@@ -481,11 +482,12 @@ Editor.prototype.populateExportFormatsPopup = function() {
 		e.appendChild(menuitem);
 	}
 }
+*/
 
 Editor.prototype.updateViewTabs = function() {
 	var editorTab = document.getElementById('editorTab');
 	var tabs = document.getElementById('viewTabs');
-	if (this.testManager.getFormat().playable) {
+	if (this.currentFormat.getFormatter().playable) {
 		editorTab.collapsed = false;
 		this.toggleView(this.view || this.treeView);
 	} else {
@@ -502,7 +504,7 @@ Editor.prototype.selectFormatFromMenu = function() {
 	for (i = e.childNodes.length - 1; i >= 0; i--) {
 		var checked = e.childNodes[i].getAttribute("checked");
 		if (checked == 'true') {
-			this.testManager.selectFormat(e.childNodes[i].getAttribute("value"));
+			this.currentFormat = this.formats.selectFormat(e.childNodes[i].getAttribute("value"));
 			this.saveSelectedFormat();
 			this.updateViewTabs();
 			break;

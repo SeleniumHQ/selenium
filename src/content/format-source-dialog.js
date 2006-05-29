@@ -19,7 +19,7 @@ function loadDialog() {
 	document.getElementById('format-name').value = this.formatInfo.name;
 	var sourceTextbox = document.getElementById('format-source');
 	sourceTextbox.value = this.formatInfo.getSource();
-	if (!this.formatInfo.save) {
+	if (!this.formatInfo.saveFormat) {
 		// preset format
 		sourceTextbox.readonly = true;
 		document.getElementById("note").hidden = false;
@@ -40,7 +40,7 @@ function saveDialog() {
 			return false;
 		}
 	}
-	this.formatInfo.save(document.getElementById('format-source').value);
+	this.formatInfo.saveFormat(document.getElementById('format-source').value);
 	this.formatInfo.saved = true;
 	return true;
 }

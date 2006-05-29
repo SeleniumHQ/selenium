@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-function TestManager(options) {
+/*
+ * FormatCollection: manages collection of formats.
+ */
+
+function FormatCollection(options) {
 	this.options = options;
 	
-	this.presetFormatInfos = [new InternalFormatInfo("default", "HTML", "html.js"),
-							  new InternalFormatInfo("ruby", "Ruby (deprecated)", "ruby.js"),
-							  new InternalFormatInfo("ruby-rc", "Ruby - Selenium RC", "ruby-rc.js")];
+	this.presetFormats = [new InternalFormat(options, "default", "HTML", "html.js"),
+						  new InternalFormat(options, "ruby", "Ruby (deprecated)", "ruby.js"),
+						  new InternalFormat(options, "ruby-rc", "Ruby - Selenium RC", "ruby-rc.js")];
 	this.reloadFormats();
+	/*
 	if (options.selectedFormat != null) {
 		this.log.debug("selecting format: " + options.selectedFormat);
 		try {
@@ -29,15 +34,16 @@ function TestManager(options) {
 			this.log.error("failed to select format: " + error);
 		}
 	}
-	if (this.currentFormatInfo == null) {
+	if (this.currentFormat == null) {
 		this.log.debug("selecting default format");
-		this.currentFormatInfo = this.formatInfos[0];
+		this.currentFormat = this.formats[0];
 	}
+	*/
 }
 
-TestManager.log = TestManager.prototype.log = new Log('TestManager');
+FormatCollection.log = FormatCollection.prototype.log = new Log('FormatCollection');
 
-TestManager.getFormatDir = function() {
+FormatCollection.getFormatDir = function() {
 	var formatDir = FileUtils.getProfileDir();
 	formatDir.append("selenium-ide-scripts");
 	if (!formatDir.exists()) {
@@ -50,8 +56,8 @@ TestManager.getFormatDir = function() {
 	return formatDir;
 }
 
-TestManager.loadUserFormats = function() {
-	var formatFile = TestManager.getFormatDir();
+FormatCollection.loadUserFormats = function(options) {
+	var formatFile = FormatCollection.getFormatDir();
 	formatFile.append("index.txt");
 	
 	if (!formatFile.exists()) {
@@ -64,7 +70,7 @@ TestManager.loadUserFormats = function() {
 	while (text.length > 0) {
 		var r = /^(\d+),(.*)\n?/.exec(text);
 		if (r) {
-			formats.push(new UserFormatInfo(r[1], r[2]));
+			formats.push(new UserFormat(options, r[1], r[2]));
 			text = text.substr(r[0].length);
 		} else {
 			break;
@@ -73,7 +79,7 @@ TestManager.loadUserFormats = function() {
 	return formats;
 }
 
-TestManager.saveUserFormats = function(formats) {
+FormatCollection.saveUserFormats = function(formats) {
 	var text = '';
 	for (var i = 0; i < formats.length; i++) {
 		text += formats[i].id + ',' + formats[i].name + "\n";
@@ -81,7 +87,7 @@ TestManager.saveUserFormats = function(formats) {
 	var conv = FileUtils.getUnicodeConverter('UTF-8');
 	text = conv.ConvertFromUnicode(text);
 	
-	var formatFile = TestManager.getFormatDir();
+	var formatFile = FormatCollection.getFormatDir();
 	formatFile.append("index.txt");
 	var stream = FileUtils.openFileOutputStream(formatFile);
 	stream.write(text, text.length);
@@ -92,7 +98,7 @@ TestManager.saveUserFormats = function(formats) {
 	stream.close();
 }
 
-TestManager.loadFormat = function(url) {
+FormatCollection.loadFormatter = function(url) {
 	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 	  .getService(Components.interfaces.mozIJSSubScriptLoader);
 	var format = {};
@@ -146,163 +152,86 @@ TestManager.loadFormat = function(url) {
 }
 
 
-/**
- * FormatInfo for preset formats
- * @constructor
- */
-function InternalFormatInfo(id, name, file) {
-	this.id = id;
-	this.name = name;
-	this.url = 'chrome://selenium-ide/content/formats/' + file;
+FormatCollection.prototype.reloadFormats = function() {
+	this.userFormats = FormatCollection.loadUserFormats(this.options);
+	this.formats = this.presetFormats.concat(this.userFormats);
 }
 
-InternalFormatInfo.prototype.getFormat = function() {
-	return TestManager.loadFormat(this.url);
+FormatCollection.prototype.removeUserFormatAt = function(index) {
+	this.userFormats.splice(index, 1);
+	this.formats = this.presetFormats.concat(this.userFormats);
 }
 
-InternalFormatInfo.prototype.getSource = function() {
-	return FileUtils.readURL(this.url);
+FormatCollection.prototype.saveFormats = function() {
+	FormatCollection.saveUserFormats(this.userFormats);
 }
 
-
-/**
- * FormatInfo created by users
- * @constructor
- */
-function UserFormatInfo(id, name) {
-	if (id && name) {
-		this.id = id;
-		this.name = name;
-	} else {
-		this.id = null;
-		this.name = '';
-	}
-}
-
-UserFormatInfo.prototype.save = function(source) {
-	var formatDir = TestManager.getFormatDir();
-	var formats = TestManager.loadUserFormats();
-	if (!this.id) {
-		var entries = formatDir.directoryEntries;
-		var max = 0;
-		while (entries.hasMoreElements()) {
-			var file = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
-			var r;
-			if ((r = /^(\d+)\.js$/.exec(file.leafName)) != null) {
-				var id = parseInt(r[1]);
-				if (id > max) max = id;
-			}
-		}
-		max++;
-		this.id = '' + max;
-		formats.push(this);
-	}
-	var formatFile = formatDir.clone();
-	formatFile.append(this.id + ".js");
-	var stream = FileUtils.openFileOutputStream(formatFile);
-	stream.write(source, source.length);
-	stream.close();
-
-	TestManager.saveUserFormats(formats);
-}
-
-UserFormatInfo.prototype.getFormatFile = function() {
-	var formatDir = TestManager.getFormatDir();
-	var formatFile = formatDir.clone();
-	formatFile.append(this.id + ".js");
-	return formatFile;
-}
-
-UserFormatInfo.prototype.getFormat = function() {
-	return TestManager.loadFormat(FileUtils.fileURI(this.getFormatFile()));
-}
-
-UserFormatInfo.prototype.getSource = function() {
-	if (this.id) {
-		return FileUtils.readFile(this.getFormatFile());
-	} else {
-		return FileUtils.readURL('chrome://selenium-ide/content/formats/blank.js');
-	}
-}
-
-/*
- * INTERNAL METHODS
- */
-
-TestManager.prototype.getUnicodeConverter = function() {
-	return FileUtils.getUnicodeConverter(this.options.encoding);
-}
-
-/*
- * PUBLIC METHODS
- */
-
-TestManager.prototype.reloadFormats = function() {
-	this.userFormatInfos = TestManager.loadUserFormats();
-	this.formatInfos = this.presetFormatInfos.concat(this.userFormatInfos);
-}
-
-TestManager.prototype.removeUserFormatAt = function(index) {
-	this.userFormatInfos.splice(index, 1);
-	this.formatInfos = this.presetFormatInfos.concat(this.userFormatInfos);
-}
-
-TestManager.prototype.saveFormats = function() {
-	TestManager.saveUserFormats(this.userFormatInfos);
-}
-
-TestManager.prototype.selectFormat = function(id) {
-	var info = this.findFormatInfo(id);
+FormatCollection.prototype.selectFormat = function(id) {
+	var info = this.findFormat(id);
 	if (info) {
-		this.currentFormatInfo = info;
-		this.currentFormatCache = null;
+		try {
+			return info;
+		} catch (error) {
+			this.log.error("failed to select format: " + id + ", error=" + error);
+			return this.formats[0];
+		}
 	} else {
-		throw "Format not found: " + name;
+		this.log.error("failed to select format: " + id);
+		return this.formats[0];
 	}
 }
 
-TestManager.prototype.findFormatInfo = function(id) {
-	for (var i = 0; i < this.formatInfos.length; i++) {
-		if (id == this.formatInfos[i].id) {
-			return this.formatInfos[i];
+FormatCollection.prototype.findFormat = function(id) {
+	for (var i = 0; i < this.formats.length; i++) {
+		if (id == this.formats[i].id) {
+			return this.formats[i];
 		}
 	}
 	return null;
 }
 
-TestManager.prototype.getFormat = function() {
-	if (this.currentFormatCache) {
-		return this.currentFormatCache;
-	}
-	var format = this.currentFormatInfo.getFormat();
-	if (!format.options) {
-		format.options = {};
-	}
-	for (name in this.options) {
-		var r = new RegExp('formats\.' + this.currentFormatInfo.id + '\.(.*)').exec(name);
-		if (r) {
-			format.options[r[1]] = this.options[name];
-		} else if (name.indexOf('.') < 0) {
-			format.options["global." + name] = this.options[name];
+FormatCollection.prototype.getDefaultFormat = function() {
+	return this.findFormat("default");
+}
+
+
+/*
+ * Format
+ */
+
+function Format() {
+}
+
+Format.prototype.log = Format.log = new Log('Format');
+
+Format.prototype.getUnicodeConverter = function() {
+	return FileUtils.getUnicodeConverter(this.options.encoding);
+}
+
+Format.prototype.getFormatter = function() {
+	if (!this.formatterCache) {
+		this.formatterCache = this.loadFormatter();
+		for (name in this.options) {
+			var r = new RegExp('formats\.' + this.id + '\.(.*)').exec(name);
+			if (r) {
+				this.formatterCache.options[r[1]] = this.options[name];
+			} else if (name.indexOf('.') < 0) {
+				this.formatterCache.options["global." + name] = this.options[name];
+			}
 		}
 	}
-	this.currentFormatCache = format;
-	return format;
+	return this.formatterCache;
 }
 
-TestManager.prototype.getDefaultFormat = function() {
-	return this.findFormatInfo("default").getFormat();
-}
-
-TestManager.prototype.save = function(testCase) {
+Format.prototype.save = function(testCase) {
 	return this.saveAs(testCase, testCase.filename);
 };
 
-TestManager.prototype.saveAsNew = function(testCase) {
+Format.prototype.saveAsNew = function(testCase) {
 	return this.saveAs(testCase, null);
 };
 
-TestManager.prototype.saveAs = function(testCase, filename) {
+Format.prototype.saveAs = function(testCase, filename) {
 	//log.debug("saveAs: filename=" + filename);
 	try {
 		var file = null;
@@ -323,7 +252,7 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 			var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
 			outputStream.init(file, 0x02 | 0x08 | 0x20, 440, 0);
 			var converter = this.getUnicodeConverter();
-			var text = converter.ConvertFromUnicode(this.getFormat().format(testCase, file.leafName.replace(/\.\w+$/,''), true));
+			var text = converter.ConvertFromUnicode(this.getFormatter().format(testCase, file.leafName.replace(/\.\w+$/,''), true));
 			outputStream.write(text, text.length);
 			var fin = converter.Finish();
 			if (fin.length > 0) {
@@ -346,24 +275,24 @@ TestManager.prototype.saveAs = function(testCase, filename) {
 	}
 };
 
-TestManager.prototype.getSourceForTestCase = function(testCase) {
-	return this.getFormat().format(testCase, "New Test", true);
+Format.prototype.getSourceForTestCase = function(testCase) {
+	return this.getFormatter().format(testCase, "New Test", true);
 }
 
-TestManager.prototype.getSourceForCommands = function(commands) {
-	return this.getFormat().formatCommands(commands);
+Format.prototype.getSourceForCommands = function(commands) {
+	return this.getFormatter().formatCommands(commands);
 }
 
-TestManager.prototype.setSource = function(testCase, source) {
+Format.prototype.setSource = function(testCase, source) {
 	try {
-		this.getFormat().parse(testCase, source);
+		this.getFormatter().parse(testCase, source);
 		testCase.setModified();
 	} catch (err) {
 		alert("error: " + err);
 	}
 }
 
-TestManager.prototype.load = function() {
+Format.prototype.load = function() {
 	var nsIFilePicker = Components.interfaces.nsIFilePicker;
 	var fp = Components.classes["@mozilla.org/filepicker;1"]
 	    .createInstance(nsIFilePicker);
@@ -377,7 +306,7 @@ TestManager.prototype.load = function() {
 	}
 }
 
-TestManager.prototype.loadFile = function(file) {
+Format.prototype.loadFile = function(file) {
 	this.log.debug("start loading: file=" + file);
 	
 	try {
@@ -389,7 +318,7 @@ TestManager.prototype.loadFile = function(file) {
 		sis.init(is);
 		var text = this.getUnicodeConverter().ConvertToUnicode(sis.read(sis.available()));
 		var testCase = new TestCase();
-		this.getFormat().parse(testCase, text);
+		this.getFormatter().parse(testCase, text);
 		
 		sis.close();
 		is.close();
@@ -404,3 +333,88 @@ TestManager.prototype.loadFile = function(file) {
 		return null;
 	}
 }
+
+
+/**
+ * Format for preset formats
+ */
+function InternalFormat(options, id, name, file) {
+	this.options = options;
+	this.id = id;
+	this.name = name;
+	this.url = 'chrome://selenium-ide/content/formats/' + file;
+}
+
+InternalFormat.prototype = new Format;
+
+InternalFormat.prototype.loadFormatter = function() {
+	return FormatCollection.loadFormatter(this.url);
+}
+
+InternalFormat.prototype.getSource = function() {
+	return FileUtils.readURL(this.url);
+}
+
+
+/**
+ * Format created by users
+ */
+function UserFormat(options, id, name) {
+	this.options = options;
+	if (id && name) {
+		this.id = id;
+		this.name = name;
+	} else {
+		this.id = null;
+		this.name = '';
+	}
+}
+
+UserFormat.prototype = new Format;
+
+UserFormat.prototype.saveFormat = function(source) {
+	var formatDir = FormatCollection.getFormatDir();
+	var formats = FormatCollection.loadUserFormats(this.options);
+	if (!this.id) {
+		var entries = formatDir.directoryEntries;
+		var max = 0;
+		while (entries.hasMoreElements()) {
+			var file = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			var r;
+			if ((r = /^(\d+)\.js$/.exec(file.leafName)) != null) {
+				var id = parseInt(r[1]);
+				if (id > max) max = id;
+			}
+		}
+		max++;
+		this.id = '' + max;
+		formats.push(this);
+	}
+	var formatFile = formatDir.clone();
+	formatFile.append(this.id + ".js");
+	var stream = FileUtils.openFileOutputStream(formatFile);
+	stream.write(source, source.length);
+	stream.close();
+
+	FormatCollection.saveUserFormats(formats);
+}
+
+UserFormat.prototype.getFormatFile = function() {
+	var formatDir = FormatCollection.getFormatDir();
+	var formatFile = formatDir.clone();
+	formatFile.append(this.id + ".js");
+	return formatFile;
+}
+
+UserFormat.prototype.loadFormatter = function() {
+	return FormatCollection.loadFormatter(FileUtils.fileURI(this.getFormatFile()));
+}
+
+UserFormat.prototype.getSource = function() {
+	if (this.id) {
+		return FileUtils.readFile(this.getFormatFile());
+	} else {
+		return FileUtils.readURL('chrome://selenium-ide/content/formats/blank.js');
+	}
+}
+

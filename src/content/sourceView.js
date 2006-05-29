@@ -26,7 +26,7 @@ SourceView.prototype = {
 	},
 	rowInserted: function(rowIndex) {
 		this.updateView();
-		if (this.editor.testManager.getFormat().playable) {
+		if (this.editor.currentFormat.getFormatter().playable) {
 			this.textbox.setSelectionRange(this.lastValue.length, this.lastValue.length);
 			this.textbox.inputField.scrollTop = this.textbox.inputField.scrollHeight - this.textbox.inputField.clientHeight;
 		} else {
@@ -55,7 +55,7 @@ SourceView.prototype = {
 	syncModel: function(force) {
 		if ((force || this.editor.view == this) && this.lastValue != this.textbox.value) {
 			this.log.debug("syncModel");
-			this.editor.testManager.setSource(this.testCase, this.textbox.value);
+			this.editor.currentFormat.setSource(this.testCase, this.textbox.value);
 		} else {
 			this.log.debug("skip syncModel");
 		}
@@ -63,7 +63,7 @@ SourceView.prototype = {
 	onHide: function() {
 	},
 	getRecordIndex: function() {
-		if (this.editor.testManager.getFormat().playable) {
+		if (this.editor.currentFormat.getFormatter().playable) {
 			return this.testCase.commands.length;
 		} else {
 			var value = this.lastValue;
@@ -85,7 +85,7 @@ SourceView.prototype = {
 SourceView.prototype.updateView = function() {
 	var scrollTop = this.textbox.inputField.scrollTop;
 	//this.textbox.value = this.testCase.getSource(this.editor.options, "New Test");
-	this.textbox.value = this.lastValue = this.editor.testManager.getSourceForTestCase(this.testCase);
+	this.textbox.value = this.lastValue = this.editor.currentFormat.getSourceForTestCase(this.testCase);
 	this.textbox.inputField.scrollTop = scrollTop;
 	//log.debug("source=" + getSource());
 }
