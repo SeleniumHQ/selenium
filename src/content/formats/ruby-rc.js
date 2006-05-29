@@ -70,7 +70,7 @@ function formatCommand(command) {
 }
 
 function formatComment(comment) {
-	return indent() + "#" + comment.comment;
+	return indent() + "# " + comment.comment;
 }
 
 this.options = {
