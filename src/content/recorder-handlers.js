@@ -89,13 +89,29 @@ Recorder.addEventHandler('change', function(event) {
 	});
 
 /*
- * click
+ * Save element locator for clicked element.
+ * This sets capture to true because some click handlers can remove DOM element,
+ * so we will record element locator earlier.
  */
 Recorder.addEventHandler('click', function(event) {
 		if (event.button == 0) {
 			var clickable = this.findClickableElement(event.target);
 			if (clickable) {
-				this.record("click", this.findLocator(clickable), '');
+				this.clickLocator = this.findLocator(clickable);
+			}
+		}
+	}, { capture: true });
+
+/*
+ * Record click event.
+ * This is done without setting capture to true, because confirmations
+ * (such as chooseCancelOnNextConfirmation) must be inserted before the click command.
+ */
+Recorder.addEventHandler('click', function(event) {
+		if (event.button == 0) {
+			if (this.clickLocator) {
+				this.record("click", this.clickLocator, '');
+				delete this.clickLocator;
 			}
 		}
 	});
@@ -117,8 +133,8 @@ Recorder.prototype.findClickableElement = function(e) {
 	}
 }
 
-// remember clicked element
+// remember clicked element to be used in CommandBuilders
 Recorder.addEventHandler('mousedown', function(event) {
 		this.clickedElement = event.target;
-	}, { alwaysRecord: true });
-
+		this.clickedElementLocator = this.findLocator(event.target);
+	}, { alwaysRecord: true, capture: true });

@@ -129,50 +129,38 @@ function TreeView(editor, document, tree) {
 		}
 	};
 
-	/*
-	this.onKeydown = function(event) {
-		self.log.debug("onKeydown");
-	};
-
-	tree.addEventListener("keydown", this.onKeydown, true);
-	*/
-
 	function loadSeleniumCommands() {
-		var scope = new Object();
-		var actions = new Array();
-		var asserts = new Array();
-		var verifies = new Array();
+		var commands = [];
 		
-		var waitActions = 
-			['click', 'select', 'type', 'check', 'uncheck', 'fireEvent', 'goBack'];
+		var nonWaitActions = ['open', 'selectWindow', 'chooseCancelOnNextConfirmation', 'answerOnNextPrompt', 'close', 'setContext', 'setTimeout'];
 		
 		for (func in this.editor.seleniumAPI.Selenium.prototype) {
 			//this.log.debug("func=" + func);
+			var r;
 			if (func.match(/^do[A-Z]/)) {
 				var action = func.substr(2,1).toLowerCase() + func.substr(3);
-				actions.push(action);
-				if (waitActions.indexOf(action) >= 0) {
-					actions.push(action + "AndWait");
+				commands.push(action);
+				if (!action.match(/^waitFor/) && nonWaitActions.indexOf(action) < 0) {
+					commands.push(action + "AndWait");
 				}
 			} else if (func.match(/^assert.+/)) {
-				asserts.push(func);
-				verifies.push("verify" + func.substr(6));
-			} else if (func.match(/^get.+/)) {
-				asserts.push("assert" + func.substr(3));
-				verifies.push("verify" + func.substr(3));
+				commands.push(func);
+				commands.push("verify" + func.substr(6));
+			} else if ((r = func.match(/^(get|is)(.+)$/))) {
+				commands.push("assert" + r[2]);
+				commands.push("verify" + r[2]);
+				commands.push("store" + r[2]);
+				commands.push("waitFor" + r[2]);
 			}
 		}
 
-		actions.push("pause");
+		commands.push("pause");
 
-		actions.sort();
-		asserts.sort();
-		verifies.sort();
-		var allCommands = actions.concat(asserts, verifies);
+		commands.sort();
 		var array = Components.classes["@mozilla.org/supports-array;1"].createInstance(Components.interfaces.nsISupportsArray);
-		for (var i = 0; i < allCommands.length; i++) {
+		for (var i = 0; i < commands.length; i++) {
 			var string = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-			string.data = allCommands[i];
+			string.data = commands[i];
 			array.AppendElement(string);
 		}
 		var autocomplete = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-commands"].getService(Components.interfaces.nsISeleniumAutoCompleteSearch);
