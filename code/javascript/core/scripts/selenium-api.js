@@ -684,7 +684,10 @@ Selenium.prototype.getEval = function(script) {
    * @return string the results of evaluating the snippet
    */
     try {
-    	return eval(script);
+    	var result = eval(script);
+    	// Selenium RC doesn't allow returning null
+    	if (null == result) return "null";
+    	return result;
     } catch (e) {
     	throw new SeleniumError("Threw an exception: " + e.message);
     }
