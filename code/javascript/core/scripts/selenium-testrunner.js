@@ -714,9 +714,10 @@ Selenium.prototype.XXXdoModalDialogTest = function(returnValue) {
     this.browserbot.doModalDialogTest(returnValue);
 };
 
-Selenium.prototype.doEcho = function(msg) {
+Selenium.prototype.doEcho = function(message) {
     /** Prints the specified message into the third table cell in your Selenese tables.
     * Useful for debugging.
+    * @param message the message to print
     */
-	currentTest.currentRow.cells[2].innerHTML = msg;
+	currentTest.currentRow.cells[2].innerHTML = message;
 }
