@@ -59,7 +59,12 @@ CommandBuilders.add('accessor', function(window) {
 		if (selection) {
 			result.target = selection;
 		} else {
-			result.disabled = true;
+			var element = this.getRecorder(window).clickedElement;
+			if (element) {
+				result.target = exactMatchPattern(getText(element));
+			} else {
+				result.disabled = true;
+			}
 		}
 		return result;
 	});
@@ -80,7 +85,7 @@ CommandBuilders.add('accessor', function(window) {
 		if (element && element.hasAttribute && element.tagName &&
 			('input' == element.tagName.toLowerCase() || 
 			 'textarea' == element.tagName.toLowerCase() || 
-			 element.value)) {
+			 (element.value && (element.value instanceof String)))) {
 			result.target = this.getRecorder(window).clickedElementLocator;
 			var type = element.getAttribute("type");
 			if ('input' == element.tagName.toLowerCase() && 
