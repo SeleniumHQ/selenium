@@ -1,5 +1,5 @@
 <!ENTITY options.encoding.description "Format de codage pour le chargement et la sauvegarde de fichiers">
-<!ENTITY options.timeout.description "Valur par d&#233;fault du timeout pour les commandes enregistr&#233;es">
+<!ENTITY options.timeout.description "Valeur par d&#233;fault du timeout pour les commandes enregistr&#233;es">
 <!ENTITY options.userExtensionsPaths.description "Extensions de Selenium Core (user-extensions.js)">
 <!ENTITY options.ideExtensionsPaths.description "Extensions de Selenium IDE">
 <!ENTITY options.extensions.tip "Astuces pour les extensions: Fermez et r&#233;-ouvrez la fen&#234;tre de Selenium IDE pour que les changements prennent effet. Vous pouvez sp&#233;cifier plusieurs fichiers s&#233;par&#233;s par des virgules.">
