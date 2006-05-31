@@ -240,6 +240,10 @@
 	<xsl:apply-templates />
 </xsl:template>
 
+<xsl:template match="comment">
+	<xsl:apply-templates />
+</xsl:template>
+
 <!-- Print out assert* and all of its related assertions -->
 <xsl:template match="function" mode="assertion">
 	<dt><strong>
