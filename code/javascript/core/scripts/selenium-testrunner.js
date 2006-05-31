@@ -688,12 +688,19 @@ function testComplete() {
 }
 
 Selenium.prototype.doPause = function(waitTime) {
+    /** Wait for the specified amount of time (in milliseconds)
+    * @param waitTime the amount of time to sleep (in milliseconds)
+    */
     testLoop.pauseInterval = waitTime;
 };
 
 Selenium.prototype.doPause.dontCheckAlertsAndConfirms = true;
 
 Selenium.prototype.doBreak = function() {
+    /** Halt the currently running test, and wait for the user to press the Continue button.
+    * This command is useful for debugging, but be careful when using it, because it will
+    * force automated tests to hang until a user intervenes manually.
+    */
     document.getElementById('modeStep').checked = true;
     runInterval = -1;
 };
@@ -702,47 +709,14 @@ Selenium.prototype.doBreak = function() {
  * Click on the located element, and attach a callback to notify
  * when the page is reloaded.
  */
-Selenium.prototype.doModalDialogTest = function(returnValue) {
+// DGF TODO this code has been broken for some time... what is it trying to accomplish?
+Selenium.prototype.XXXdoModalDialogTest = function(returnValue) {
     this.browserbot.doModalDialogTest(returnValue);
 };
 
-/*
- * Store the value of a form input in a variable
- */
-Selenium.prototype.doStoreValue = function(target, varName) {
-    if (!varName) {
-        // Backward compatibility mode: read the ENTIRE text of the page
-        // and stores it in a variable with the name of the target
-        value = this.page().bodyText();
-        storedVars[target] = value;
-        return;
-    }
-    var element = this.page().findElement(target);
-    storedVars[varName] = getInputValue(element);
-};
-
-/*
- * Store the text of an element in a variable
- */
-Selenium.prototype.doStoreText = function(target, varName) {
-    var element = this.page().findElement(target);
-    storedVars[varName] = getText(element);
-};
-
-/*
- * Store the value of an element attribute in a variable
- */
-Selenium.prototype.doStoreAttribute = function(target, varName) {
-    storedVars[varName] = this.page().findAttribute(target);
-};
-
-/*
- * Store the result of a literal value
- */
-Selenium.prototype.doStore = function(value, varName) {
-    storedVars[varName] = value;
-};
-
 Selenium.prototype.doEcho = function(msg) {
+    /** Prints the specified message into the third table cell in your Selenese tables.
+    * Useful for debugging.
+    */
 	currentTest.currentRow.cells[2].innerHTML = msg;
 }
