@@ -20,7 +20,7 @@
 // work around seem to make it necessary. Maybe as we learn more about what we need,
 // we can do this in a more "feature-centric" rather than "browser-centric" way.
 
-BrowserVersion = function() {
+var BrowserVersion = function() {
     this.name = navigator.appName;
 
     if (window.opera != null)
@@ -111,5 +111,5 @@ BrowserVersion.FIREFOX = "Firefox";
 BrowserVersion.MOZILLA = "Mozilla";
 BrowserVersion.UNKNOWN = "Unknown";
 
-browserVersion = new BrowserVersion();
+var browserVersion = new BrowserVersion();
 

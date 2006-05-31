@@ -472,7 +472,7 @@ var IEPageBot = function(pageWindow) {
 };
 IEPageBot.prototype = new PageBot();
 
-OperaPageBot = function(pageWindow) {
+var OperaPageBot = function(pageWindow) {
     PageBot.call(this, pageWindow);
 };
 OperaPageBot.prototype = new PageBot();
