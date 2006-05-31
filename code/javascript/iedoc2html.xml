@@ -13,12 +13,18 @@
 	<xsl:apply-templates select="//top" />
 	<h2>Selenium Actions</h2>
 	<dl>
-		<xsl:apply-templates select="//function[not(return) and not(starts-with(@name, 'assert'))]" mode="action"/>
+		<xsl:apply-templates select="//function[not(return) and not(starts-with(@name, 'assert'))]" mode="action">
+		    <xsl:sort select="@name" />
+		</xsl:apply-templates>
 	</dl>
 	<h2>Selenium Accessors</h2>
 	<dl>
-		<xsl:apply-templates select="//function[starts-with(@name, 'assert')]" mode="assertion"/>
-		<xsl:apply-templates select="//function[return]" mode="accessor"/>
+		<xsl:apply-templates select="//function[starts-with(@name, 'assert')]" mode="assertion">
+		    <xsl:sort select="@name" />
+		</xsl:apply-templates>
+		<xsl:apply-templates select="//function[return]" mode="accessor">
+		    <xsl:sort select="@name" />
+		</xsl:apply-templates>
 	</dl>
 	<xsl:call-template name="footer" />
 </xsl:template>
@@ -346,6 +352,9 @@
 			<p>Arguments:</p>
 			<ul>
 				<xsl:apply-templates select="param" mode="comment" />
+				<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
 			</ul>
 		</xsl:if>
 		<xsl:apply-templates select="return" />
