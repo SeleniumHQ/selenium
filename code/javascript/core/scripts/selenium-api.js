@@ -1155,7 +1155,7 @@ Selenium.prototype.getExpression = function(expression) {
 	 * Returns the specified expression.
 	 *
 	 * <p>This is useful because of JavaScript preprocessing.
-	 * It is used to generate commands like assertExpression and storeExpression.</p>
+	 * It is used to generate commands like assertExpression and waitForExpression.</p>
 	 * 
 	 * @param expression the value to return
 	 * @return string the value passed in

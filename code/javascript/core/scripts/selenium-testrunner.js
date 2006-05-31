@@ -705,6 +705,14 @@ Selenium.prototype.doBreak = function() {
     runInterval = -1;
 };
 
+Selenium.prototype.doStore = function(expression, variableName) {
+    /** This command is a synonym for storeExpression.
+    * @param expression the value to store
+    * @param variableName the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+    */
+    storedVars[variableName] = expression; 
+}
+
 /*
  * Click on the located element, and attach a callback to notify
  * when the page is reloaded.
