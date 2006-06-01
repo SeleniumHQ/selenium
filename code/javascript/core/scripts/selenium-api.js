@@ -826,11 +826,9 @@ Selenium.prototype.isSelected = function(selectLocator, optionLocator) {
    */
     var element = this.page().findElement(selectLocator);
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
-    if (element.selectedIndex == -1)
-    {
-        return false;
-    }
-    return true;
+    var option = locator.findOption(element);
+
+    return option.selected;
 };
 
 Selenium.prototype.isSomethingSelected = function(selectLocator) {
