@@ -470,7 +470,9 @@ public class XlateHtmlSeleneseToJava {
             ending = ")" + ending;
             op = op.replaceFirst("assert|verify", "");
             if (op.equals("ElementPresent") || op.equals("ElementNotPresent")
-                    || op.equals("TextPresent") || op.equals("TextNotPresent") || op.equals("Selected")
+                    || op.equals("TextPresent") || op.equals("TextNotPresent")
+                    || op.equals("Checked")     || op.equals("NotChecked")
+                    || op.equals("Selected")    || op.equals("NotSelected")
                     || op.equals("Editable") || op.equals("NotEditable")
                     || op.equals("Visible") || op.equals("NotVisible")) {
                 String possibleInversion = "";
@@ -479,11 +481,8 @@ public class XlateHtmlSeleneseToJava {
                     op = op.replaceFirst("Not", "");
                 }
                 if (op.equals("Selected")) {
-                    if (!possibleInversion.equals("")) {
-                        return commentedSelenese + "// WARNING: no way to directly translate this statement" + EOL;
-                    }
-                    return "\t\t" + commentedSelenese + "selenium.assert" + op + "(" + XlateSeleneseArgument(tokens[1]) + ", " 
-                        + XlateSeleneseArgument(tokens[2]) + ");";
+                    return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "," + 
+                        XlateSeleneseArgument(tokens[2]) + "));";
                 }
                 return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "));";
             }
@@ -508,9 +507,6 @@ public class XlateHtmlSeleneseToJava {
                     || op.matches("^Select.*[^s]$")
                     || op.equals("Text")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
-            }
-            else if (op.equals("Checked")) {
-                middle = XlateSeleneseArgument(tokens[2]) + ", selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
             else if (op.equals("Alert")
                     || op.equals("Prompt")) {
