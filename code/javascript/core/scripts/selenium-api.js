@@ -814,6 +814,24 @@ Selenium.prototype.getSelectedId = function(selectLocator) {
     return this.findSelectedOptionProperty(selectLocator, "id");
 }
 
+Selenium.prototype.isSelected = function(selectLocator, optionLocator) {
+	/**
+        * Determines whether the option matching 'optionLocator' in a drop-down menu 'selectLocator' is selected.
+   * 
+   * <p>See the select command for more information about option locators.</p>
+   * 
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
+   */
+    var element = this.page().findElement(selectLocator);
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    if (element.selectedIndex == -1)
+    {
+        return false;
+    }
+    return true;
+};
+
 Selenium.prototype.isSomethingSelected = function(selectLocator) {
     /** Determines whether some option in a drop-down menu is selected.
    *
