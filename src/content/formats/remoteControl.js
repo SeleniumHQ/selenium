@@ -6,15 +6,22 @@
 
 load('formatCommandOnlyAdapter.js');
 
+function not(expression) {
+	return expression.not();
+}
+
+function is(expression) {
+	return expression;
+}
+
 function formatCommand(command) {
 	var line = indent();
 	if (command.type == 'command') {
 		var accessor = command.getAccessor();
 		if (accessor) {
-			//var call = options.prefix + underscore(accessor);
-			var call = new CallSelenium(accessor);
+			var call = new CallSelenium(accessor.name);
 			call.args = [];
-			if (accessor.match(/^is/)) { // isXXX
+			if (accessor.name.match(/^is/)) { // isXXX
 				var variable = null;
 				if (command.command.match(/^store/)) {
 					// in store command, the value would be the name of the variable
@@ -33,22 +40,22 @@ function formatCommand(command) {
 					call.args.push(string(command.getRealValue()));
 				}
 				if (command.command.match(/^(verify|assert)/)) {
-					line += statement(assertTrue(call));
+					line += statement((accessor.negative ? assertFalse : assertTrue)(call));
 				} else if (command.command.match(/^store/)) {
 					line += statement(assignToVariable('boolean', variable, call));
 				} else if (command.command.match(/^waitFor/)) {
-					line += waitFor(call);
+					line += waitFor((accessor.negative ? not : is)(call));
 				}
 			} else { // getXXX
 				if (command.getRealTarget()) {
 					call.args.push(string(command.getRealTarget()));
 				}
 				if (command.command.match(/^(verify|assert)/)) {
-					line += statement(assertEquals(string(command.getRealValue()), call));
+					line += statement((accessor.negative ? assertNotEquals : assertEquals)(string(command.getRealValue()), call));
 				} else if (command.command.match(/^store/)) {
 					line += statement(assignToVariable('String', command.getRealValue(), call));
 				} else if (command.command.match(/^waitFor/)) {
-					line += waitFor(equals(string(command.getRealValue()), call));
+					line += waitFor((accessor.negative ? not : is)(equals(string(command.getRealValue()), call)));
 				}
 			}
 		} else {

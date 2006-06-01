@@ -49,9 +49,17 @@ Command.prototype.getAccessor = function() {
 	if (r) {
 		var suffix = r[2];
 		if (this.getAPI().Selenium.prototype['is' + suffix]) {
-			return 'is' + suffix;
+			return {name: 'is' + suffix};
 		} else if (this.getAPI().Selenium.prototype['get' + suffix]) {
-			return 'get' + suffix;
+			return {name: 'get' + suffix};
+		} else if ((r = /^(.*)NotPresent$/.exec(suffix)) != null) {
+			if (this.getAPI().Selenium.prototype['is' + r[1] + 'Present']) {
+				return {name: 'is' + r[1] + 'Present', negative: true};
+			}
+		} else if ((r = /^Not(.*)$/.exec(suffix)) != null) {
+			if (this.getAPI().Selenium.prototype['get' + r[1]]) {
+				return {name: 'get' + r[1], negative: true};
+			}
 		}
 	}
 	return null;

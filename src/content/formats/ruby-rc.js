@@ -8,20 +8,59 @@ function assertTrue(expression) {
 	return "assert " + expression.toString();
 }
 
+function assertFalse(expression) {
+	return "assert !" + expression.toString();
+}
+
 function assignToVariable(type, variable, expression) {
 	return variable + " = " + expression.toString();
 }
 
 function waitFor(expression) {
-	return "sleep 1 until " + expression.toString();
+	if (expression.negative) {
+		return "sleep 1 while " + expression.not().toString();
+	} else {
+		return "sleep 1 until " + expression.toString();
+	}
 }
 
 function equals(e1, e2) {
-	return e1.toString() + " == " + e2.toString();
+	return new Equals(e1, e2);
+}
+
+function Equals(e1, e2) {
+	this.e1 = e1;
+	this.e2 = e2;
+}
+
+Equals.prototype.toString = function() {
+	return this.e1.toString() + " == " + this.e2.toString();
+}
+
+Equals.prototype.not = function() {
+	return new NotEquals(this.e1, this.e2);
+}
+
+function NotEquals(e1, e2) {
+	this.e1 = e1;
+	this.e2 = e2;
+	this.negative = true;
+}
+
+NotEquals.prototype.toString = function() {
+	return this.e1.toString() + " != " + this.e2.toString();
+}
+
+NotEquals.prototype.not = function() {
+	return new Equals(this.e1, this.e2);
 }
 
 function assertEquals(e1, e2) {
 	return "assert_equal " + e1.toString() + ", " + e2.toString();
+}
+
+function assertNotEquals(e1, e2) {
+	return "assert_not_equal " + e1.toString() + ", " + e2.toString();
 }
 
 function string(value) {
@@ -40,8 +79,18 @@ function CallSelenium(message) {
 	this.args = [];
 }
 
+CallSelenium.prototype.not = function() {
+	var call = new CallSelenium(this.message);
+	call.args = this.args;
+	call.negative = !this.negative;
+	return call;
+}
+
 CallSelenium.prototype.toString = function() {
 	var result = '';
+	if (this.negative) {
+		result += '!';
+	}
 	if (options.receiver) {
 		result += options.receiver + '.';
 	}

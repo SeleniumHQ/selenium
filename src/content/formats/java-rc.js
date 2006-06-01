@@ -8,6 +8,10 @@ function assertTrue(expression) {
 	return "assertTrue(" + expression.toString() + ")";
 }
 
+function assertFalse(expression) {
+	return "assertFalse(" + expression.toString() + ")";
+}
+
 function assignToVariable(type, variable, expression) {
 	return type + " " + variable + " = " + expression.toString();
 }
@@ -42,8 +46,16 @@ NotEquals.prototype.toString = function() {
 	return "!" + this.e1.toString() + ".equals(" + this.e2.toString() + ")";
 }
 
+NotEquals.prototype.not = function() {
+	return new Equals(this.e1, this.e2);
+}
+
 function assertEquals(e1, e2) {
 	return "assertEquals(" + e1.toString() + ", " + e2.toString() + ")";
+}
+
+function assertNotEquals(e1, e2) {
+	return "assertNotEquals(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
 function string(value) {
@@ -64,13 +76,13 @@ function CallSelenium(message) {
 CallSelenium.prototype.not = function() {
 	var call = new CallSelenium(this.message);
 	call.args = this.args;
-	call.negate = true;
+	call.negative = !this.negative;
 	return call;
 }
 
 CallSelenium.prototype.toString = function() {
 	var result = '';
-	if (this.negate) {
+	if (this.negative) {
 		result += '!';
 	}
 	if (options.receiver) {
