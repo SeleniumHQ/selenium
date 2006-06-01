@@ -52,16 +52,13 @@ function saveCheck() {
 }
 
 function go() {
-	
+	if (!browserVersion.isHTA) return true;
 	var inputs = document.getElementsByTagName("input");
 	var queryString = "";
 	for (var i = 0; i < inputs.length; i++) {
 		var elem = inputs[i];
 		var name = elem.name;
 		var value = elem.value;
-		if (elem.checked) {
-			value = "true";
-		}
 		queryString += escape(name) + "=" + escape(value);
 		if (i < (inputs.length - 1)) {
 			queryString += "&";
@@ -78,7 +75,7 @@ function go() {
 <form id="prompt" target="_top" method="GET" onsubmit="return go();" action="TestRunner.html">
 <p>Select an HTML test suite:</p>
 <input id="test" name="test" size="30" value="../tests/TestSuite.html"/>
-<p><label for="auto">Auto-run </label><input id="auto" type="checkbox" name="auto" value="false" onclick="autoCheck();"/>
+<p><label for="auto">Auto-run </label><input id="auto" type="checkbox" name="auto" onclick="autoCheck();"/>
 <div id="auto-div" style="display: none">
 <label for="close" >Close afterwards </label><input id="close" type="checkbox" name="close" />
 <div id="save-div" style="display: none">

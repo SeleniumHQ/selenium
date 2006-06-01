@@ -225,7 +225,10 @@ function addOnclick(suiteTable, rowNum) {
 
 function isQueryParameterTrue(name) {
     parameterValue = getQueryParameter(name);
-    return (parameterValue != null && parameterValue.toLowerCase() == "true");
+    if (parameterValue == null) return false;
+    if (parameterValue.toLowerCase() == "true") return true;
+    if (parameterValue.toLowerCase() == "on") return true;
+    return false;
 }
 
 function getQueryString() {
