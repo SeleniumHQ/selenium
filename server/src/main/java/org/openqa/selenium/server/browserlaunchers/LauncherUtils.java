@@ -115,4 +115,18 @@ public class LauncherUtils {
         return hta;
     }
 
+    protected static void assertNotScriptFile(File f) {
+        try {
+            FileReader r = new FileReader(f);
+            char firstTwoChars[] = new char[2];
+            int charsRead = r.read(firstTwoChars);
+            if (charsRead != 2) return;
+            if (firstTwoChars[0] == '#' && firstTwoChars[1] == '!') {
+                throw new RuntimeException("File was a script file, not a real executable: " + f.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException (e);
+        }
+    }
+    
 }

@@ -61,6 +61,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
                 if (execDirect.isAbsolute() && execDirect.exists()) firefoxBin = execDirect;
             }
             if (firefoxBin != null) {
+                LauncherUtils.assertNotScriptFile(firefoxBin);
                 String libPathKey = getLibPathKey();
                 String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
                 exe.setEnvironment(new String[] {
