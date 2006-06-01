@@ -822,6 +822,7 @@ Selenium.prototype.isSelected = function(selectLocator, optionLocator) {
    * 
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
+   * @return boolean true if the option has been selected, false otherwise
    */
     var element = this.page().findElement(selectLocator);
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
