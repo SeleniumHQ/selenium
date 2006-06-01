@@ -481,8 +481,12 @@ public class XlateHtmlSeleneseToJava {
                     op = op.replaceFirst("Not", "");
                 }
                 if (op.equals("Selected")) {
-                    return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "," + 
-                        XlateSeleneseArgument(tokens[2]) + "));";
+                    if (tokens[2].equals("")) {
+                        return commentedSelenese + "fail(\"No option selected\");";
+                    }                    
+                    return "\t\tassertEquals(" + XlateSeleneseArgument(getSelectOptionLocatorValue(tokens[2])) + 
+                        ", selenium.getSelected" + getSelectGetterFlavor(tokens[2]) + "(" +
+                        XlateSeleneseArgument(tokens[1]) + "));";
                 }
                 return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "));";
             }
@@ -576,6 +580,23 @@ public class XlateHtmlSeleneseToJava {
             expectedArgCount = 0;
         }
         return beginning + XlateSeleneseStatementDefault(expectedArgCount, "selenium", tokens) + ending;
+    }
+
+    private static String getSelectOptionLocatorValue(String optionLocator) {
+        return optionLocator.replaceFirst(".*=", "");
+    }
+
+    private static String getSelectGetterFlavor(String optionLocator) {
+        String selectGetterFlavor;
+        selectGetterFlavor = optionLocator.replaceFirst("=.*", "");
+        selectGetterFlavor = selectGetterFlavor.replaceFirst("^(.)", selectGetterFlavor.substring(0, 1).toUpperCase());
+        if (!selectGetterFlavor.equals("Index") && 
+                !selectGetterFlavor.equals("Label") && 
+                !selectGetterFlavor.equals("Value") && 
+                !selectGetterFlavor.equals("Id")) {
+            selectGetterFlavor = "Label";
+        }
+        return selectGetterFlavor;
     }
 
     private static void recordFirstDomain(String urlToOpen) {
