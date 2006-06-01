@@ -59,6 +59,9 @@ function go() {
 		var elem = inputs[i];
 		var name = elem.name;
 		var value = elem.value;
+		if (elem.type == "checkbox") {
+		    value = elem.checked;
+		}
 		queryString += escape(name) + "=" + escape(value);
 		if (i < (inputs.length - 1)) {
 			queryString += "&";
