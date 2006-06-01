@@ -729,3 +729,21 @@ Selenium.prototype.doEcho = function(message) {
     */
 	currentTest.currentRow.cells[2].innerHTML = message;
 }
+
+Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
+	/**
+   * Verifies that the selected option of a drop-down satisfies the optionSpecifier.  <i>Note that this command is deprecated; you should use assertSelectedLabel, assertSelectedValue, assertSelectedIndex, or assertSelectedId instead.</i>
+   * 
+   * <p>See the select command for more information about option locators.</p>
+   * 
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
+   */
+    var element = this.page().findElement(selectLocator);
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    if (element.selectedIndex == -1)
+    {
+        Assert.fail("No option selected");
+    }
+    locator.assertSelected(element);
+};
