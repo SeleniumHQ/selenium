@@ -16,10 +16,15 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.lang.reflect.*;
-import java.util.regex.*;
+import org.openqa.selenium.server.SeleneseQueue;
+import org.openqa.selenium.server.SeleniumServer;
 
-import org.openqa.selenium.server.*;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Returns BrowserLaunchers based on simple strings given by the user
@@ -32,14 +37,16 @@ public class BrowserLauncherFactory {
 
     private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*custom( .*)?$");
     
-    private static final BrowserStringPair[] supportedBrowsers = new BrowserStringPair[] {
-        new BrowserStringPair("firefox", FirefoxCustomProfileLauncher.class),
-        new BrowserStringPair("iexplore", InternetExplorerCustomProxyLauncher.class),
-        new BrowserStringPair("safari", SafariCustomProfileLauncher.class),
-        new BrowserStringPair("iehta", HTABrowserLauncher.class),
-        new BrowserStringPair("chrome", FirefoxChromeLauncher.class),
-        new BrowserStringPair("opera", OperaCustomProfileLauncher.class),
-    };
+    private static final Map supportedBrowsers = new HashMap();
+
+    static {
+        supportedBrowsers.put("firefox", FirefoxCustomProfileLauncher.class);
+        supportedBrowsers.put("iexplore", InternetExplorerCustomProxyLauncher.class);
+        supportedBrowsers.put("safari", SafariCustomProfileLauncher.class);
+        supportedBrowsers.put("iehta", HTABrowserLauncher.class);
+        supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
+        supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
+    }
     
     SeleniumServer server;
     
@@ -56,10 +63,11 @@ public class BrowserLauncherFactory {
      */
     public BrowserLauncher getBrowserLauncher(String browser, String sessionId, SeleneseQueue queue) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
-        for (int i = 0; i < supportedBrowsers.length; i++) {
-            BrowserStringPair pair = supportedBrowsers[i];
-            String name = pair.name;
-            Class c = pair.c;
+
+        for (Iterator iterator = supportedBrowsers.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            String name = (String) entry.getKey();
+            Class c = (Class) entry.getValue();
             Pattern pat = Pattern.compile("^\\*" + name + "( .*)?$");
             Matcher mat = pat.matcher(browser);
             if (mat.find()) {
@@ -79,7 +87,11 @@ public class BrowserLauncherFactory {
         }
         throw browserNotSupported(browser);
     }
-    
+
+    public void addBrowserLauncher(String browser, Class clazz) {
+        supportedBrowsers.put(browser, clazz);
+    }
+
     private RuntimeException browserNotSupported(String browser) {
         StringBuffer errorMessage = new StringBuffer("Browser not supported: " + browser);
         errorMessage.append('\n');
@@ -88,12 +100,13 @@ public class BrowserLauncherFactory {
         }
         errorMessage.append('\n');
         errorMessage.append("Supported browsers include:\n");
-        for (int i = 0; i < supportedBrowsers.length; i++) {
-            errorMessage.append("  *").append(supportedBrowsers[i].name).append('\n');
+        for (Iterator iterator = supportedBrowsers.keySet().iterator(); iterator.hasNext();) {
+            String name = (String) iterator.next();
+            errorMessage.append("  *").append(name).append('\n');
         }
         return new RuntimeException(errorMessage.toString());
     }
-    
+
     private BrowserLauncher createBrowserLauncher(Class c, String browserStartCommand, String sessionId, SeleneseQueue queue) {
             try {
                 BrowserLauncher browserLauncher;
