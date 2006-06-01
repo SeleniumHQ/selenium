@@ -23,22 +23,9 @@ function FormatCollection(options) {
 	
 	this.presetFormats = [new InternalFormat(options, "default", "HTML", "html.js"),
 						  new InternalFormat(options, "ruby", "Ruby (deprecated)", "ruby.js"),
+						  new InternalFormat(options, "java-rc", "Java - Selenium RC", "java-rc.js"),
 						  new InternalFormat(options, "ruby-rc", "Ruby - Selenium RC", "ruby-rc.js")];
 	this.reloadFormats();
-	/*
-	if (options.selectedFormat != null) {
-		this.log.debug("selecting format: " + options.selectedFormat);
-		try {
-			this.selectFormat(options.selectedFormat);
-		} catch (error) {
-			this.log.error("failed to select format: " + error);
-		}
-	}
-	if (this.currentFormat == null) {
-		this.log.debug("selecting default format");
-		this.currentFormat = this.formats[0];
-	}
-	*/
 }
 
 FormatCollection.log = FormatCollection.prototype.log = new Log('FormatCollection');
@@ -105,20 +92,17 @@ FormatCollection.loadFormatter = function(url) {
 	format.options = {};
 	format.configForm = '';
 	format.log = new Log("Format");
+	format.playable = true;
 	format.remoteControl = false;
+	format.load = function(file) {
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/' + file, format);
+	}
 	for (prop in StringUtils) {
 		// copy functions from StringUtils
 		format[prop] = StringUtils[prop];
 	}
 	this.log.debug('loading format from ' + url);
 	subScriptLoader.loadSubScript(url, format);
-	if (format.formatCommand != null && format.format == null) {
-		this.log.debug('loading formatCommandOnlyAdapter');
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatCommandOnlyAdapter.js', format);
-		format.playable = false;
-	} else {
-		format.playable = true;
-	}
 	if (format.configForm && format.configForm.length > 0) {
 		function copyElement(doc, element) {
 			var copy = doc.createElement(element.nodeName.toLowerCase());

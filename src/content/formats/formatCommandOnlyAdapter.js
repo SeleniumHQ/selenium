@@ -76,6 +76,6 @@ function formatCommands(commands) {
 }
 
 function indent() {
-	return this.lastIndent;
+	return this.lastIndent || '';
 }
 

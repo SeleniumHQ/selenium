@@ -2,7 +2,7 @@
 	<body>
 		<ul>
 			<li><a href="#" onclick="alert('hello')">show alert</a></li>
-			<li><a href="#" onclick="confirm('Are you sure?')">show confirmation</a></li>
+			<li><a href="#" onclick="if (confirm('Are you sure?')) { window.location.href = 'search.html' }; return false;">show confirmation</a></li>
 			<li><a href="#" onclick="prompt('Input new name')">show prompt</a></li>
 		</ul>
 	</body>

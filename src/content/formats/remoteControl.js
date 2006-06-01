@@ -1,0 +1,70 @@
+/*
+ * An adapter that lets you use format() function with the format
+ * that only defines formatCommand() function.
+ *
+ */
+
+load('formatCommandOnlyAdapter.js');
+
+function formatCommand(command) {
+	var line = indent();
+	if (command.type == 'command') {
+		var accessor = command.getAccessor();
+		if (accessor) {
+			//var call = options.prefix + underscore(accessor);
+			var call = new CallSelenium(accessor);
+			call.args = [];
+			if (accessor.match(/^is/)) { // isXXX
+				var variable = null;
+				if (command.command.match(/^store/)) {
+					// in store command, the value would be the name of the variable
+					command = command.createCopy();
+					variable = command.getRealValue();
+					if (command.value) {
+						command.value = null;
+					} else {
+						command.target = null;
+					}
+				}
+				if (command.getRealValue()) {
+					if (command.getRealTarget()) {
+						call.args.push(string(command.getRealTarget()));
+					}
+					call.args.push(string(command.getRealValue()));
+				}
+				if (command.command.match(/^(verify|assert)/)) {
+					line += statement(assertTrue(call));
+				} else if (command.command.match(/^store/)) {
+					line += statement(assignToVariable('boolean', variable, call));
+				} else if (command.command.match(/^waitFor/)) {
+					line += waitFor(call);
+				}
+			} else { // getXXX
+				if (command.getRealTarget()) {
+					call.args.push(string(command.getRealTarget()));
+				}
+				if (command.command.match(/^(verify|assert)/)) {
+					line += statement(assertEquals(string(command.getRealValue()), call));
+				} else if (command.command.match(/^store/)) {
+					line += statement(assignToVariable('String', command.getRealValue(), call));
+				} else if (command.command.match(/^waitFor/)) {
+					line += waitFor(equals(string(command.getRealValue()), call));
+				}
+			}
+		} else {
+			var call = new CallSelenium(command.command);
+			if ((command.target != null && command.target.length > 0)
+				|| (command.value != null && command.value.length > 0)) {
+				call.args.push(string(command.target));
+				if (command.value != null && command.value.length > 0) {
+					call.args.push(string(command.value));
+				}
+			}
+			line += statement(call);
+		}
+	}
+	return line;
+}
+
+this.remoteControl = true;
+this.playable = false;
