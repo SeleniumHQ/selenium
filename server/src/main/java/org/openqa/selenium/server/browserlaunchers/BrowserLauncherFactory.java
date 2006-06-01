@@ -104,6 +104,7 @@ public class BrowserLauncherFactory {
             String name = (String) iterator.next();
             errorMessage.append("  *").append(name).append('\n');
         }
+        errorMessage.append("  *custom\n");
         return new RuntimeException(errorMessage.toString());
     }
 
