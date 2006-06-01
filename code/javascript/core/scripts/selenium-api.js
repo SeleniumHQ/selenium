@@ -697,7 +697,7 @@ Selenium.prototype.isChecked = function(locator) {
 	/**
    * Gets whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.
    * @param locator an <a href="#locators">element locator</a> pointing to a checkbox or radio button
-   * @return string either "true" or "false" depending on whether the checkbox is checked
+   * @return boolean true if the checkbox is checked, false otherwise
    */
     var element = this.page().findElement(locator);
     if (element.checked == null) {
