@@ -143,7 +143,7 @@ public class WindowsUtils {
         String output = p.getProperty("output");
         System.out.println(output);
         if (!"0".equals(result)) {
-            throw new RuntimeException("exec return code " + result + ": " + output);
+            throw new WindowsRegistryException("exec return code " + result + ": " + output);
         }
     }
     
@@ -339,7 +339,7 @@ public class WindowsUtils {
         	return reg;
         }
     	System.err.println("OS Version: " + System.getProperty("os.version"));
-        throw new RuntimeException("Couldn't find reg.exe!\n" +
+        throw new WindowsRegistryException("Couldn't find reg.exe!\n" +
 			"Please download it from Microsoft and install it in a standard location.\n" +
 			"See here for details: http://wiki.openqa.org/display/SRC/Windows+Registry+Support");
     }
@@ -373,11 +373,11 @@ public class WindowsUtils {
         }
         Matcher m = pat.matcher(output);
         if (!m.find()) {
-            throw new RuntimeException("Output didn't look right: " + output);
+            throw new WindowsRegistryException("Output didn't look right: " + output);
         }
         String type = m.group(1);
         if (!"REG_SZ".equals(type)) {
-            throw new RuntimeException(r.value + " was not a REG_SZ (String): " + type);
+            throw new WindowsRegistryException(r.value + " was not a REG_SZ (String): " + type);
         }
         String value = m.group(2);
         return value;
@@ -395,11 +395,11 @@ public class WindowsUtils {
         
         Matcher m = pat.matcher(output);
         if (!m.find()) {
-            throw new RuntimeException("Output didn't look right: " + output);
+            throw new WindowsRegistryException("Output didn't look right: " + output);
         }
         String type = m.group(1);
         if (!"REG_DWORD".equals(type)) {
-            throw new RuntimeException(r.value + " was not a REG_DWORD (int): " + type);
+            throw new WindowsRegistryException(r.value + " was not a REG_DWORD (int): " + type);
         }
         String strValue = m.group(2);
         int value;
@@ -416,7 +416,7 @@ public class WindowsUtils {
     	int value = readIntRegistryValue(key);
         if (0 == value) return false;
         if (1 == value) return true;
-        throw new RuntimeException(r.value + " was not either 0 or 1: " + value);
+        throw new WindowsRegistryException(r.value + " was not either 0 or 1: " + value);
     }
     
     public static boolean doesRegistryValueExist(String key) {
@@ -444,7 +444,7 @@ public class WindowsUtils {
         return false;
     }
     
-    public static void writeStringRegistryValue(String key, String data) {
+    public static void writeStringRegistryValue(String key, String data) throws WindowsRegistryException {
         
     	Project p = new Project();
         ExecTask exec = new ExecTask();
@@ -475,7 +475,7 @@ public class WindowsUtils {
         String result = p.getProperty("result");
         String output = p.getProperty("output");
         if (!"0".equals(result)) {
-            throw new RuntimeException("exec return code " + result + ": " + output);
+            throw new WindowsRegistryException("exec return code " + result + ": " + output);
         }
     }
     
@@ -512,7 +512,7 @@ public class WindowsUtils {
         String result = p.getProperty("result");
         String output = p.getProperty("output");
         if (!"0".equals(result)) {
-            throw new RuntimeException("exec return code " + result + ": " + output);
+            throw new WindowsRegistryException("exec return code " + result + ": " + output);
         }
     }
     
@@ -545,7 +545,7 @@ public class WindowsUtils {
         String result = p.getProperty("result");
         String output = p.getProperty("output");
         if (!"0".equals(result)) {
-            throw new RuntimeException("exec return code " + result + ": " + output);
+            throw new WindowsRegistryException("exec return code " + result + ": " + output);
         }
     }
 
@@ -590,5 +590,20 @@ public class WindowsUtils {
      */
     public static boolean thisIsWindows() {
         return THIS_IS_WINDOWS;
+    }
+    
+    static class WindowsRegistryException extends RuntimeException {
+        WindowsRegistryException(Exception e) {
+            super(generateMessage(), e);
+        }
+        
+        private static String generateMessage() {
+            return "Problem while managaging the registry, OS Version '" + 
+            System.getProperty("os.version") + "', regVersion1 = " + regVersion1;
+        }
+        
+        WindowsRegistryException(String message) {
+            this(new RuntimeException(message));
+        }
     }
 }
