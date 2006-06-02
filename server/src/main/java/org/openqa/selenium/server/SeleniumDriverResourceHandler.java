@@ -41,6 +41,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private final Map queues = new HashMap();
     private final Map launchers = new HashMap();
     private SeleniumServer server;
+    private Map domainsBySessionId = new HashMap();   
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
@@ -175,7 +176,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String results;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
-            results = "OK," + getNewBrowserSession((String)values.get(0), (String)values.get(1));
+            sessionId = getNewBrowserSession((String)values.get(0), (String)values.get(1));
+            setDomain(sessionId, (String)values.get(1));
+            results = "OK," + sessionId;
         } else if ("testComplete".equals(cmd)) {
             BrowserLauncher launcher = getLauncher(sessionId);
             if (launcher == null) {
@@ -231,12 +234,28 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
             }
         } else {
-
+            if ("open".equals(cmd)) {
+                warnIfApparentDomainChange(sessionId, (String)values.get(0)); 
+            }
             SeleneseQueue queue = getQueue(sessionId);
             results = queue.doCommand(cmd, (String)values.get(0), (String)values.get(1));
         }
         System.out.println("Got result: " + results);
         return results;
+    }
+
+    private void warnIfApparentDomainChange(String sessionId, String url) {
+        if (url.startsWith("http://")) {
+            String urlDomain = url.replaceFirst("^(http://[^/]+, url)/.*", "$1");
+            String domain = getDomain(sessionId);
+            if (domain==null) {
+                setDomain(sessionId, urlDomain);
+            }
+            else if (!url.startsWith(domain)) {
+                System.err.println("warning: you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
+                        + "this may lead to a 'Permission denied' from the browser (if it is not running as *iehta or *chrome)");
+            }
+        }
     }
 
     private String getNewBrowserSession(String browser, String startURL) {
@@ -335,5 +354,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         res.setField(HttpFields.__CacheControl, "no-cache");
         res.setField(HttpFields.__Pragma, "no-cache");
         res.setField(HttpFields.__Expires, "-1");
+    }
+
+    private void setDomain(String sessionId, String domain) {
+        domainsBySessionId.put(sessionId, domain);
+    }
+    
+    private String getDomain(String sessionId) {
+        return (String) domainsBySessionId.get(sessionId);
     }
 }
