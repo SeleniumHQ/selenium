@@ -130,14 +130,4 @@ public class BrowserLauncherFactory {
                 throw new RuntimeException(e);
             }
     }
-
-    private static class BrowserStringPair {
-        public String name;
-        public Class c;
-        public BrowserStringPair(String name, Class c) {
-            this.name = name;
-            this.c = c;
-        }
-    }
-
 }

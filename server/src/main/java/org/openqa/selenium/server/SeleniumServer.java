@@ -134,6 +134,9 @@ public class SeleniumServer {
     private HttpContext context;
     private StaticContentHandler staticContentHandler;
     private int port;
+    
+    private static boolean debugMode = false;
+    
     public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
 
@@ -158,16 +161,20 @@ public class SeleniumServer {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if ("-help".equals(arg)) {
-                System.err.println("Usage: java -jar selenium-server.jar [-port nnnn] [-timeout nnnn] [-interactive] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+                System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
                         "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
                         "where:\n" +
                         "the argument for timeout is an integer number of seconds before we should give up\n" +
                         "the argument for port is the port number the selenium server should use (default 4444)\n" +
-                "-interactive puts you into interactive mode.  See the tutorial for more details");
+                "-interactive puts you into interactive mode.  See the tutorial for more details" +
+                "-debug puts you into debug mode, with more trace information and diagnostics");
                 System.exit(1);
             }
             else if ("-port".equals(arg)) {
                 port = Integer.parseInt(args[i + 1]);
+            }
+            else if ("-debug".equals(arg)) {
+                SeleniumServer.setDebugMode(true);
             }
             else if ("-timeout".equals(arg)) {
                 timeout = Integer.parseInt(args[i + 1]);
@@ -211,13 +218,15 @@ public class SeleniumServer {
             System.exit(1);
         }
 
-        SingleEntryAsyncQueue.setTimeout(timeout);
+        SingleEntryAsyncQueue.setDefaultTimeout(timeout);
         final SeleniumServer seleniumProxy = new SeleniumServer(port);
         Thread jetty = new Thread(new Runnable() {
             public void run() {
                 try {
                     seleniumProxy.start();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
+                    System.err.println("jetty run exception seen:");
                     e.printStackTrace();
                 }
             }
@@ -235,6 +244,7 @@ public class SeleniumServer {
                     System.out.println("Shutting down...");
                     seleniumProxy.stop();
                 } catch (InterruptedException e) {
+                    System.err.println("run exception seen:");
                     e.printStackTrace();
                 }
             }
@@ -253,6 +263,7 @@ public class SeleniumServer {
                 HTMLLauncher launcher = new HTMLLauncher(seleniumProxy);
                 result = launcher.runHTMLSuite(browserString, startURL, suiteURL, new File(resultFilePath), timeout);
             } catch (Exception e) {
+                System.err.println("HTML suite exception seen:");
                 e.printStackTrace();
                 System.exit(1);
             }
@@ -294,7 +305,10 @@ public class SeleniumServer {
                             conn.connect();
                             conn.getContent();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            System.err.println(e.getMessage());
+                            if (SeleniumServer.isDebugMode()) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
@@ -420,6 +434,14 @@ public class SeleniumServer {
      */
     public Server getServer() {
         return server;
+    }
+
+    static public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    static public void setDebugMode(boolean debugMode) {
+        SeleniumServer.debugMode = debugMode;
     }
 
 }

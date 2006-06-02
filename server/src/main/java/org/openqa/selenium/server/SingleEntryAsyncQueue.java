@@ -29,7 +29,8 @@ public class SingleEntryAsyncQueue {
 
     private LinkedList q = new LinkedList();
     private boolean waitingThreadsShouldThrow = false;
-    static private int timeout = SeleniumServer.DEFAULT_TIMEOUT;
+    private static int defaultTimeout = SeleniumServer.DEFAULT_TIMEOUT;
+    private int timeout;
     
     class OwnerAndDataPair extends Object {
         private Object owner;
@@ -50,6 +51,10 @@ public class SingleEntryAsyncQueue {
         }
     }
     
+    public SingleEntryAsyncQueue() {
+        timeout = defaultTimeout;
+    }
+    
     public void clear() {
         this.waitingThreadsShouldThrow = true;
         if (q.isEmpty()) {
@@ -64,11 +69,11 @@ public class SingleEntryAsyncQueue {
         
     }
     
-    static public int getTimeout() {
-        return SingleEntryAsyncQueue.timeout;
+    public int getTimeout() {
+        return timeout;
     }
-    static public void setTimeout(int timeout) {
-        SingleEntryAsyncQueue.timeout = timeout;
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
     
     /**
@@ -131,6 +136,10 @@ public class SingleEntryAsyncQueue {
                 verifyThisQueueWasNotHungAndThenCleared("put");
             }
         }
+    }
+
+    public static void setDefaultTimeout(int defaultTimeout) {
+        SingleEntryAsyncQueue.defaultTimeout = defaultTimeout;        
     }
 
 }

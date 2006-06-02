@@ -60,7 +60,7 @@ public class DestroyableRuntimeExecutingBrowserLauncher implements BrowserLaunch
         try {
             process = Runtime.getRuntime().exec(command);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error starting browser by executing command " + command + ": " + e);
         }
     }
 }

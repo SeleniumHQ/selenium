@@ -93,7 +93,7 @@ public class QueueTest extends TestCase {
     }
     
     public void testGetFromEmptyQueue() throws Exception {
-        SingleEntryAsyncQueue.setTimeout(0);
+        q.setTimeout(0);
         boolean seleniumCommandTimedOutExceptionSeen = false;
         try {
             q.get();

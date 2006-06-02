@@ -27,9 +27,19 @@ package org.openqa.selenium.server;
  */
 public class SeleneseQueue {
 
-    private SingleEntryAsyncQueue commandHolder = new SingleEntryAsyncQueue();
-    private SingleEntryAsyncQueue commandResultHolder = new SingleEntryAsyncQueue();
+    private SingleEntryAsyncQueue commandHolder;
+    private SingleEntryAsyncQueue commandResultHolder;
 
+    public SeleneseQueue() {
+        commandResultHolder = new SingleEntryAsyncQueue(); 
+        commandHolder = new SingleEntryAsyncQueue();
+        //
+        // we are only concerned about the browser, and command queue timeouts will never be
+        // because of a browser problem, we should just set an infinite timeout threshold
+        // so as not to be bothered by spurious command queue timeouts (which occur simply
+        // because of routine selenium server inactivity).
+        commandHolder.setTimeout(Integer.MAX_VALUE);
+    }
     /** Schedules the specified command to be retrieved by the next call to
      * handle command result, and returns the result of that command.
      * 

@@ -61,53 +61,85 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
-        res.setField(HttpFields.__ContentType, "text/plain");
-        setNoCacheHeaders(res);
-
-        OutputStream out = res.getOutputStream();
-        ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
-        Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
-        String seleniumStart = getParam(req, "seleniumStart");
-        String method = req.getMethod();
-        String cmd = getParam(req, "cmd");
-        String sessionId = getParam(req, "sessionId");
-
-        // If this is a browser requesting work for the first time...
-        if ("POST".equalsIgnoreCase(method) || (seleniumStart != null && seleniumStart.equals("true"))) {
-            //System.out.println("commandResult = " + commandResult);
-
-            InputStream is = req.getInputStream();
-            StringBuffer sb = new StringBuffer();
-            InputStreamReader r = new InputStreamReader(is, "UTF-8");
-            int c;
-            while ((c = r.read()) != -1) {
-                sb.append((char) c);
-            }
-            String commandResult = sb.toString();
+        try {
+            res.setField(HttpFields.__ContentType, "text/plain");
+            setNoCacheHeaders(res);
             
-            if ("true".equals(seleniumStart)) {
-                commandResult = null;
+            OutputStream out = res.getOutputStream();
+            ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
+            Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
+            String seleniumStart = getParam(req, "seleniumStart");
+            String method = req.getMethod();
+            String cmd = getParam(req, "cmd");
+            String sessionId = getParam(req, "sessionId");
+            
+            // If this is a browser requesting work for the first time...
+            if ("POST".equalsIgnoreCase(method) || (seleniumStart != null && seleniumStart.equals("true"))) {
+                //System.out.println("commandResult = " + commandResult);
+                
+                InputStream is = req.getInputStream();
+                StringBuffer sb = new StringBuffer();
+                InputStreamReader r = new InputStreamReader(is, "UTF-8");
+                int c;
+                while ((c = r.read()) != -1) {
+                    sb.append((char) c);
+                }
+                String commandResult = sb.toString();
+                
+                if ("true".equals(seleniumStart)) {
+                    commandResult = null;
+                }
+                
+                SeleneseQueue queue = getQueue(sessionId);
+                SeleneseCommand sc = queue.handleCommandResult(commandResult);
+                //System.out.println("Sending next command: " + sc.getCommandString());
+                writer.flush();
+                writer.write(sc.toString());
+                for (int pad = 998 - buf.size(); pad-- > 0;) {
+                    writer.write(" ");
+                }
+                writer.write("\015\012");
+                writer.flush();
+                buf.writeTo(out);
+                
+                req.setHandled(true);
+            } else if (cmd != null) {
+                handleCommandRequest(req, res, cmd, sessionId);
+            } else {
+                //System.out.println("Unexpected: " + req.getRequestURL() + "?" + req.getQuery());
+                req.setHandled(false);
             }
-
-            SeleneseQueue queue = getQueue(sessionId);
-            SeleneseCommand sc = queue.handleCommandResult(commandResult);
-            //System.out.println("Sending next command: " + sc.getCommandString());
-            writer.flush();
-            writer.write(sc.toString());
-            for (int pad = 998 - buf.size(); pad-- > 0;) {
-                writer.write(" ");
-            }
-            writer.write("\015\012");
-            writer.flush();
-            buf.writeTo(out);
-
-            req.setHandled(true);
-        } else if (cmd != null) {
-            handleCommandRequest(req, res, cmd, sessionId);
-        } else {
-            //System.out.println("Unexpected: " + req.getRequestURL() + "?" + req.getQuery());
-            req.setHandled(false);
         }
+        catch (RuntimeException e) {
+            if (!SeleniumServer.isDebugMode()
+                    && looksLikeBrowserLaunchFailedBecauseFileNotFound(e)) {
+                String apparentFile = extractNameOfFileThatCouldntBeFound(e);
+                if (apparentFile!=null) {
+                    System.err.println("\n\nCould not start browser; it appears that " + apparentFile + " is missing or inaccessible");
+                }
+            }
+            throw e;
+         }
+    }
+
+    /** Try to extract the name of the file whose absence caused the exception
+     * 
+     * @param e - the exception
+     * @return the name of the file whose absence caused the exception
+     */
+	private String extractNameOfFileThatCouldntBeFound(Exception e) {
+        String s = e.getMessage();
+        if (s==null) {
+            return null;
+        }
+        // will only succeed on Windows -- perhaps I will make it work on other platforms later
+        return s.replaceFirst(".*CreateProcess: ", "").replaceFirst(" .*", "");
+    }
+
+	private boolean looksLikeBrowserLaunchFailedBecauseFileNotFound(Exception e) {
+        String s = e.getMessage();
+        // will only succeed on Windows -- perhaps I will make it work on other platforms later
+        return (s!=null) && s.matches("java.io.IOException: CreateProcess: .*error=3");
     }
 
     private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
