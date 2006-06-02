@@ -43,3 +43,20 @@ function testJavaRCFormat() {
 	assertEquals('while ("def".equals(selenium.getText("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
 	assertEquals('selenium.open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
 }
+
+function testCSharpRCFormat() {
+	var format = this.formats.findFormat("cs-rc");
+	var f = format.getFormatter();
+	assertEquals('Assert.IsTrue(selenium.IsTextPresent("hello"));', f.formatCommand(new Command('assertTextPresent', 'hello')));
+	assertEquals('Assert.IsFalse(selenium.IsTextPresent("hello"));', f.formatCommand(new Command('assertTextNotPresent', 'hello')));
+	assertEquals('Boolean abc = selenium.IsTextPresent("test");', f.formatCommand(new Command('storeTextPresent', 'test', 'abc')));
+	assertEquals('while (!selenium.IsTextPresent("test")) { Thread.Sleep(1000); }', f.formatCommand(new Command('waitForTextPresent', 'test')));
+	assertEquals('while (selenium.IsTextPresent("test")) { Thread.Sleep(1000); }', f.formatCommand(new Command('waitForTextNotPresent', 'test')));
+	assertEquals('Assert.AreEqual("def", selenium.GetText("abc"));', f.formatCommand(new Command('assertText', 'abc', 'def')));
+	assertEquals('Assert.AreEqual("abc", selenium.GetLocation());', f.formatCommand(new Command('assertLocation', 'abc')));
+	assertEquals('Assert.AreNotEqual("abc", selenium.GetLocation());', f.formatCommand(new Command('assertNotLocation', 'abc')));
+	assertEquals('String def = selenium.GetText("abc");', f.formatCommand(new Command('storeText', 'abc', 'def')));
+	assertEquals('while ("def" != selenium.GetText("abc")) { Thread.Sleep(1000); }', f.formatCommand(new Command('waitForText', 'abc', 'def')));
+	assertEquals('while ("def" == selenium.GetText("abc")) { Thread.Sleep(1000); }', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
+	assertEquals('selenium.Open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
+}

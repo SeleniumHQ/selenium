@@ -1,39 +1,43 @@
 /*
- * Format for Selenium Remote Control Java client.
+ * Format for Selenium Remote Control .NET (C#) client.
  */
 
 load('remoteControl.js');
 
+function capitalize(string) {
+	return string.replace(/^[a-z]/, function(str) { return str.toUpperCase(); });
+}
+
 function assertTrue(expression) {
-	return "assertTrue(" + expression.toString() + ")";
+	return "Assert.IsTrue(" + expression.toString() + ")";
 }
 
 function assertFalse(expression) {
-	return "assertFalse(" + expression.toString() + ")";
+	return "Assert.IsFalse(" + expression.toString() + ")";
 }
 
 function assignToVariable(type, variable, expression) {
-	return type + " " + variable + " = " + expression.toString();
+	return capitalize(type) + " " + variable + " = " + expression.toString();
 }
 
 function waitFor(expression) {
-	return "while (" + expression.not().toString() + ") { Thread.sleep(1000); }";
+	return "while (" + expression.not().toString() + ") { Thread.Sleep(1000); }";
 }
 
 Equals.prototype.toString = function() {
-	return this.e1.toString() + ".equals(" + this.e2.toString() + ")";
+	return this.e1.toString() + " == " + this.e2.toString();
 }
 
 NotEquals.prototype.toString = function() {
-	return "!" + this.e1.toString() + ".equals(" + this.e2.toString() + ")";
+	return this.e1.toString() + " != " + this.e2.toString();
 }
 
 function assertEquals(e1, e2) {
-	return "assertEquals(" + e1.toString() + ", " + e2.toString() + ")";
+	return "Assert.AreEqual(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
 function assertNotEquals(e1, e2) {
-	return "assertNotEquals(" + e1.toString() + ", " + e2.toString() + ")";
+	return "Assert.AreNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
 function statement(expression) {
@@ -41,7 +45,7 @@ function statement(expression) {
 }
 
 function CallSelenium(message) {
-	this.message = message;
+	this.message = capitalize(message);
 	this.args = [];
 }
 

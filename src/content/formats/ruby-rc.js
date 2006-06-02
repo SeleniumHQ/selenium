@@ -24,35 +24,12 @@ function waitFor(expression) {
 	}
 }
 
-function equals(e1, e2) {
-	return new Equals(e1, e2);
-}
-
-function Equals(e1, e2) {
-	this.e1 = e1;
-	this.e2 = e2;
-}
-
 Equals.prototype.toString = function() {
 	return this.e1.toString() + " == " + this.e2.toString();
 }
 
-Equals.prototype.not = function() {
-	return new NotEquals(this.e1, this.e2);
-}
-
-function NotEquals(e1, e2) {
-	this.e1 = e1;
-	this.e2 = e2;
-	this.negative = true;
-}
-
 NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " != " + this.e2.toString();
-}
-
-NotEquals.prototype.not = function() {
-	return new Equals(this.e1, this.e2);
 }
 
 function assertEquals(e1, e2) {
@@ -61,12 +38,6 @@ function assertEquals(e1, e2) {
 
 function assertNotEquals(e1, e2) {
 	return "assert_not_equal " + e1.toString() + ", " + e2.toString();
-}
-
-function string(value) {
-	value = value.replace(/\"/mg, '\\"');
-	value = value.replace(/\n/mg, '\\n');
-	return '"' + value + '"';
 }
 
 function statement(expression) {

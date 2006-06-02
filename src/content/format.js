@@ -24,6 +24,7 @@ function FormatCollection(options) {
 	this.presetFormats = [new InternalFormat(options, "default", "HTML", "html.js"),
 						  new InternalFormat(options, "ruby", "Ruby (deprecated)", "ruby.js"),
 						  new InternalFormat(options, "java-rc", "Java - Selenium RC", "java-rc.js"),
+						  new InternalFormat(options, "cs-rc", "C# - Selenium RC", "cs-rc.js"),
 						  new InternalFormat(options, "ruby-rc", "Ruby - Selenium RC", "ruby-rc.js")];
 	this.reloadFormats();
 }

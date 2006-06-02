@@ -14,6 +14,36 @@ function is(expression) {
 	return expression;
 }
 
+function equals(e1, e2) {
+	return new Equals(e1, e2);
+}
+
+function Equals(e1, e2) {
+	this.e1 = e1;
+	this.e2 = e2;
+}
+
+Equals.prototype.not = function() {
+	return new NotEquals(this.e1, this.e2);
+}
+
+function NotEquals(e1, e2) {
+	this.e1 = e1;
+	this.e2 = e2;
+	this.negative = true;
+}
+
+NotEquals.prototype.not = function() {
+	return new Equals(this.e1, this.e2);
+}
+
+function string(value) {
+	value = value.replace(/\"/mg, '\\"');
+	value = value.replace(/\n/mg, '\\n');
+	return '"' + value + '"';
+}
+
+
 function formatCommand(command) {
 	var line = indent();
 	if (command.type == 'command') {
