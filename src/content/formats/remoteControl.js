@@ -43,6 +43,18 @@ function string(value) {
 	return '"' + value + '"';
 }
 
+function CallSelenium(message) {
+	this.message = message;
+	this.args = [];
+}
+
+CallSelenium.prototype.not = function() {
+	var call = new CallSelenium(this.message);
+	call.args = this.args;
+	call.negative = !this.negative;
+	return call;
+}
+
 
 function formatCommand(command) {
 	var line = indent();

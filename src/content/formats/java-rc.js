@@ -40,18 +40,6 @@ function statement(expression) {
 	return expression.toString() + ';';
 }
 
-function CallSelenium(message) {
-	this.message = message;
-	this.args = [];
-}
-
-CallSelenium.prototype.not = function() {
-	var call = new CallSelenium(this.message);
-	call.args = this.args;
-	call.negative = !this.negative;
-	return call;
-}
-
 CallSelenium.prototype.toString = function() {
 	var result = '';
 	if (this.negative) {
@@ -81,6 +69,6 @@ this.options = {
 };
 
 this.configForm = 
-	'<description>Variable name of Selenium instance</description>' +
+	'<description>Variable for Selenium instance</description>' +
 	'<textbox id="options_receiver" />';
 

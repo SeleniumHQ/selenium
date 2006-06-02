@@ -27,6 +27,40 @@ function testRubyRCFormat() {
 	assertEquals('@selenium.open "http://www.google.com/"', f.formatCommand(new Command('open', 'http://www.google.com/')));
 }
 
+function testPerlRCFormat() {
+	var format = this.formats.findFormat("perl-rc");
+	var f = format.getFormatter();
+	assertEquals('$sel->is_text_present_ok("hello");', f.formatCommand(new Command('assertTextPresent', 'hello')));
+	assertEquals('ok(not $sel->is_text_present("hello"));', f.formatCommand(new Command('assertTextNotPresent', 'hello')));
+	assertEquals('$abc = $sel->is_text_present("test");', f.formatCommand(new Command('storeTextPresent', 'test', 'abc')));
+	assertEquals('sleep 1 until $sel->is_text_present("test");', f.formatCommand(new Command('waitForTextPresent', 'test')));
+	assertEquals('sleep 1 while $sel->is_text_present("test");', f.formatCommand(new Command('waitForTextNotPresent', 'test')));
+	assertEquals('$sel->text_is("abc[\\@id=\'\\$\'\]", "def");', f.formatCommand(new Command('assertText', 'abc[@id=\'$\']', 'def')));
+	assertEquals('$sel->location_is("abc");', f.formatCommand(new Command('assertLocation', 'abc')));
+	assertEquals('$sel->location_isnt("abc");', f.formatCommand(new Command('assertNotLocation', 'abc')));
+	assertEquals('$def = $sel->get_text("abc");', f.formatCommand(new Command('storeText', 'abc', 'def')));
+	assertEquals('sleep 1 until "def" eq $sel->get_text("abc");', f.formatCommand(new Command('waitForText', 'abc', 'def')));
+	assertEquals('sleep 1 while "def" eq $sel->get_text("abc");', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
+	assertEquals('$sel->open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
+}
+
+function testPythonRCFormat() {
+	var format = this.formats.findFormat("python-rc");
+	var f = format.getFormatter();
+	assertEquals('self.failUnless(sel.is_text_present("hello"))', f.formatCommand(new Command('assertTextPresent', 'hello')));
+	assertEquals('self.failIf(sel.is_text_present("hello"))', f.formatCommand(new Command('assertTextNotPresent', 'hello')));
+	assertEquals('abc = sel.is_text_present("test")', f.formatCommand(new Command('storeTextPresent', 'test', 'abc')));
+	assertEquals('while not sel.is_text_present("test"): time.sleep(1)', f.formatCommand(new Command('waitForTextPresent', 'test')));
+	assertEquals('while sel.is_text_present("test"): time.sleep(1)', f.formatCommand(new Command('waitForTextNotPresent', 'test')));
+	assertEquals('self.assertEqual("def", sel.get_text("abc"))', f.formatCommand(new Command('assertText', 'abc', 'def')));
+	assertEquals('self.assertEqual("abc", sel.get_location())', f.formatCommand(new Command('assertLocation', 'abc')));
+	assertEquals('self.assertNotEqual("abc", sel.get_location())', f.formatCommand(new Command('assertNotLocation', 'abc')));
+	assertEquals('def = sel.get_text("abc")', f.formatCommand(new Command('storeText', 'abc', 'def')));
+	assertEquals('while "def" != sel.get_text("abc"): time.sleep(1)', f.formatCommand(new Command('waitForText', 'abc', 'def')));
+	assertEquals('while u"あいうえお" == sel.get_text("abc"): time.sleep(1)', f.formatCommand(new Command('waitForNotText', 'abc', 'あいうえお')));
+	assertEquals('sel.open("http://www.google.com/")', f.formatCommand(new Command('open', 'http://www.google.com/')));
+}
+
 function testJavaRCFormat() {
 	var format = this.formats.findFormat("java-rc");
 	var f = format.getFormatter();

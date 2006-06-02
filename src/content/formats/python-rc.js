@@ -1,27 +1,35 @@
 /*
- * Format for Selenium Remote Control .NET (C#) client.
+ * Format for Selenium Remote Control Python client.
  */
 
 load('remoteControl.js');
 
-function capitalize(string) {
-	return string.replace(/^[a-z]/, function(str) { return str.toUpperCase(); });
+string = function(value) {
+	value = value.replace(/\"/mg, '\\"');
+	value = value.replace(/\n/mg, '\\n');
+	var unicode = false;
+	for (var i = 0; i < value.length; i++) {
+		if (value.charCodeAt(i) >= 128) {
+			unicode = true;
+		}
+	}
+	return (unicode ? 'u' : '') + '"' + value + '"';
 }
 
 function assertTrue(expression) {
-	return "Assert.IsTrue(" + expression.toString() + ")";
+	return "self.failUnless(" + expression.toString() + ")";
 }
 
 function assertFalse(expression) {
-	return "Assert.IsFalse(" + expression.toString() + ")";
+	return "self.failIf(" + expression.toString() + ")";
 }
 
 function assignToVariable(type, variable, expression) {
-	return capitalize(type) + " " + variable + " = " + expression.toString();
+	return variable + " = " + expression.toString();
 }
 
 function waitFor(expression) {
-	return "while (" + expression.not().toString() + ") { Thread.Sleep(1000); }";
+	return "while " + expression.not().toString() + ": time.sleep(1)";
 }
 
 Equals.prototype.toString = function() {
@@ -33,26 +41,26 @@ NotEquals.prototype.toString = function() {
 }
 
 function assertEquals(e1, e2) {
-	return "Assert.AreEqual(" + e1.toString() + ", " + e2.toString() + ")";
+	return "self.assertEqual(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
 function assertNotEquals(e1, e2) {
-	return "Assert.AreNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
+	return "self.assertNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
 function statement(expression) {
-	return expression.toString() + ';';
+	return expression.toString();
 }
 
 CallSelenium.prototype.toString = function() {
 	var result = '';
 	if (this.negative) {
-		result += '!';
+		result += 'not ';
 	}
 	if (options.receiver) {
 		result += options.receiver + '.';
 	}
-	result += capitalize(this.message);
+	result += underscore(this.message);
 	result += '(';
 	for (var i = 0; i < this.args.length; i++) {
 		result += this.args[i];
@@ -65,11 +73,11 @@ CallSelenium.prototype.toString = function() {
 }
 
 function formatComment(comment) {
-	return indent() + "// " + comment.comment;
+	return indent() + "# " + comment.comment;
 }
 
 this.options = {
-	receiver: "selenium"
+	receiver: "sel"
 };
 
 this.configForm = 

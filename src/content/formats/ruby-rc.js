@@ -45,18 +45,6 @@ function statement(expression) {
 	return expression.toString();
 }
 
-function CallSelenium(message) {
-	this.message = underscore(message);
-	this.args = [];
-}
-
-CallSelenium.prototype.not = function() {
-	var call = new CallSelenium(this.message);
-	call.args = this.args;
-	call.negative = !this.negative;
-	return call;
-}
-
 CallSelenium.prototype.toString = function() {
 	var result = '';
 	if (this.negative) {
@@ -65,7 +53,7 @@ CallSelenium.prototype.toString = function() {
 	if (options.receiver) {
 		result += options.receiver + '.';
 	}
-	result += this.message;
+	result += underscore(this.message);
 	if (!this.noBraces && this.args.length > 0) {
 		result += '(';
 	} else if (this.args.length > 0) {
@@ -92,6 +80,6 @@ this.options = {
 };
 
 this.configForm = 
-	'<description>Receiver for each command</description>' +
+	'<description>Variable for Selenium instance</description>' +
 	'<textbox id="options_receiver" />';
 
