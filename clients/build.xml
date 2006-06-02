@@ -1,6 +1,6 @@
 <project name="selenium-rc-clients" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
-    <property name="version" value="0.7.2-SNAPSHOT"/>
+    <property name="version" value="0.8.0"/>
     <condition property="website.root" value="${ant.file.selenium-rc-clients}/../../website">
         <available file="${ant.file.selenium}/../../website"/>
     </condition>
