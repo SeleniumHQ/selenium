@@ -161,13 +161,7 @@ public class SeleniumServer {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if ("-help".equals(arg)) {
-                System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
-                        "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
-                        "where:\n" +
-                        "the argument for timeout is an integer number of seconds before we should give up\n" +
-                        "the argument for port is the port number the selenium server should use (default 4444)\n" +
-                "-interactive puts you into interactive mode.  See the tutorial for more details" +
-                "-debug puts you into debug mode, with more trace information and diagnostics");
+                usage(null);
                 System.exit(1);
             }
             else if ("-port".equals(arg)) {
@@ -210,6 +204,13 @@ public class SeleniumServer {
             else if ("-interactive".equals(arg)) {
                 timeout = Integer.MAX_VALUE;
                 interactive = true;
+            }
+            else if (arg.startsWith("-D")) {
+                setSystemProperty(arg);
+            }
+            else {
+                usage("unrecognized argument " + arg);
+                System.exit(1);
             }
         }
         
@@ -317,6 +318,30 @@ public class SeleniumServer {
         }
 
         
+    }
+
+    private static void setSystemProperty(String arg) {
+        if (arg.indexOf('=')==-1) {
+            usage("poorly formatted Java property setting (I expect to see '=') " + arg);
+            System.exit(1);
+        }
+        String property = arg.replaceFirst("-D", "").replaceFirst("=.*", ""); 
+        String value    = arg.replaceFirst("[^=]*=", "");
+        System.err.println("Setting system property " + property + " to " + value);
+        System.setProperty(property, value);
+}
+
+    private static void usage(String msg) {
+        if (msg!=null) {
+            System.err.println(msg + ":");
+        }
+        System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+                "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
+                "where:\n" +
+                "the argument for timeout is an integer number of seconds before we should give up\n" +
+                "the argument for port is the port number the selenium server should use (default 4444)\n" +
+        "-interactive puts you into interactive mode.  See the tutorial for more details" +
+        "-debug puts you into debug mode, with more trace information and diagnostics");
     }
 
     /** Prepares a Jetty server with its HTTP handlers.
