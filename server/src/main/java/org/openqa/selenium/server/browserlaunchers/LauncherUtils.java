@@ -53,10 +53,22 @@ public class LauncherUtils {
     protected static File makeProxyPAC(File parentDir, int port) throws FileNotFoundException {
         File proxyPAC = new File(parentDir, "proxy.pac");
         PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
+        String defaultProxy = "DIRECT";
+        String configuredProxy = System.getProperty("http.proxyHost");
+        if (configuredProxy != null) {
+            defaultProxy = "PROXY " + configuredProxy;
+            String proxyPort = System.getProperty("http.proxyPort");
+            if (proxyPort != null) {
+                defaultProxy += ":" + proxyPort;
+            }
+        }
         out.println("function FindProxyForURL(url, host) {");
-        out.println("   if(shExpMatch(url, '*/selenium-server/*')) {");
-        out.println("       return 'PROXY localhost:" + Integer.toString(port) + "; DIRECT'");
-        out.println("   }");
+        out.println("    if(shExpMatch(url, '*/selenium-server/*')) {");
+        out.println("        return 'PROXY localhost:" + Integer.toString(port) + "; " +
+                defaultProxy + "';");
+        out.println("    } else {");
+        out.println("        return '" + defaultProxy + "';");
+        out.println("    }");
         out.println("}");
         out.close();
         return proxyPAC;

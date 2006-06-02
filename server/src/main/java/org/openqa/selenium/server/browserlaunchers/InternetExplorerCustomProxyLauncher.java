@@ -104,14 +104,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
         }
         customProxyPACDir.mkdir();
         
-        File proxyPAC = new File(customProxyPACDir, "proxy.pac");
-        PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
-        out.println("function FindProxyForURL(url, host) {");
-        out.println("   if(shExpMatch(url, '*/selenium-server/*')) {");
-        out.println("       return 'PROXY localhost:" + Integer.toString(port) + "; DIRECT'");
-        out.println("   }");
-        out.println("}");
-        out.close();
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port);
         
         backupRegistrySettings();
         
