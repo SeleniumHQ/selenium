@@ -96,6 +96,7 @@ Editor.controller = {
 		case "cmd_selenium_play":
 		case "cmd_selenium_pause":
 		case "cmd_selenium_step":
+		case "cmd_selenium_testrunner":
 			return true;
 		default:
 			return false;
@@ -108,6 +109,7 @@ Editor.controller = {
 		case "cmd_open":
 		case "cmd_save":
 			return true;
+		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
 		    return editor.currentFormat.getFormatter().playable && editor.state != 'playing';
 		case "cmd_selenium_pause":
@@ -136,6 +138,9 @@ Editor.controller = {
 			break;
 		case "cmd_selenium_step":
 			editor.selDebugger.doContinue(true);
+			break;
+		case "cmd_selenium_testrunner":
+			editor.playback();
 			break;
 		default:
 		}
@@ -200,7 +205,7 @@ Editor.prototype.unload = function() {
 
 Editor.prototype.updateSeleniumCommands = function() {
 	this.log.debug("updateSeleniumCommands");
-	["cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step"].
+	["cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step", "cmd_selenium_testrunner"].
 		forEach(function(cmd) {
 					goUpdateCommand(cmd);
 				});

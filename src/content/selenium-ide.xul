@@ -112,7 +112,7 @@ limitations under the License.
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
       <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="&stepButton.tooltip;" command="cmd_selenium_step"/>
       <toolbarseparator/>
-      <toolbarbutton id="testrunner-button" label="&testrunnerButton.tooltip;" class="icon" tooltiptext="&testrunnerButton.tooltip;" oncommand="editor.playback()"/>
+      <toolbarbutton id="testrunner-button" label="&testrunnerButton.tooltip;" class="icon" tooltiptext="&testrunnerButton.tooltip;" command="cmd_selenium_testrunner"/>
       <toolbarspacer flex="1"/>
       <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" onclick="this.checked = !this.checked" oncommand="editor.toggleRecordingEnabled(this.checked)"/>
     </toolbar>
