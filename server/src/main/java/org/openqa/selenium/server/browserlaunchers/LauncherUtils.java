@@ -66,8 +66,10 @@ public class LauncherUtils {
         out.println("    if(shExpMatch(url, '*/selenium-server/*')) {");
         out.println("        return 'PROXY localhost:" + Integer.toString(port) + "; " +
                 defaultProxy + "';");
-        out.println("    } else {");
-        out.println("        return '" + defaultProxy + "';");
+        if (configuredProxy != null) {
+            out.println("    } else {");
+            out.println("        return '" + defaultProxy + "';");
+        }
         out.println("    }");
         out.println("}");
         out.close();
