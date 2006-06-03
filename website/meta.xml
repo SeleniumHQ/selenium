@@ -47,12 +47,12 @@
 
     <releases>
         <release>
-            <version>0.8.0-beta</version>
-            <date>05/29/2006</date>
+            <version>0.8.0</version>
+            <date>06/03/2006</date>
             <jiraId>10201</jiraId>
             <downloads>
               <download>
-                <url>http://release.openqa.org/selenium-ide/0.8.0-beta/selenium-ide-0.8.0-beta.xpi</url>
+                <url>http://release.openqa.org/selenium-ide/0.8.0/selenium-ide-0.8.0.xpi</url>
                 <name>Firefox extension (requires Firefox 1.5 or 1.5.0.*)</name>
               </download>
             </downloads>
