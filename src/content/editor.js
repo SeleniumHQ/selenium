@@ -420,7 +420,7 @@ Editor.prototype.openSeleniumIDEPreferences = function() {
 }
 
 Editor.prototype.checkForTestRunner = function(contentWindow) {
-	if (this.loadTestRunner && contentWindow.location && contentWindow.loocation.href) {
+	if (this.loadTestRunner && contentWindow.location && contentWindow.location.href) {
 		var location = contentWindow.location.href;
 		var n = location.indexOf('?');
 		if (n >= 0) {
