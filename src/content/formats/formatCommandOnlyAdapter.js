@@ -41,7 +41,7 @@ function filterForRemoteControl(originalCommands) {
 				var c1 = c.createCopy();
 				c1.command = c.command.replace(/AndWait$/, '');
 				commands.push(c1);
-				commands.push(new Command("waitForPageToLoad"));
+				commands.push(new Command("waitForPageToLoad", options['global.timeout']));
 			} else {
 				commands.push(c);
 			}
