@@ -55,6 +55,7 @@ function assertNotEquals(expected, expression) {
 }
 
 function statement(expression) {
+	expression.suffix = "_ok";
 	return expression.toString() + ";";
 }
 

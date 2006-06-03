@@ -41,7 +41,7 @@ function testPerlRCFormat() {
 	assertEquals('$def = $sel->get_text("abc");', f.formatCommand(new Command('storeText', 'abc', 'def')));
 	assertEquals('sleep 1 until "def" eq $sel->get_text("abc");', f.formatCommand(new Command('waitForText', 'abc', 'def')));
 	assertEquals('sleep 1 while "def" eq $sel->get_text("abc");', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
-	assertEquals('$sel->open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
+	assertEquals('$sel->open_ok("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
 }
 
 function testPythonRCFormat() {
