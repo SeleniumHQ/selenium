@@ -3,40 +3,14 @@
 <head>
   <meta content="text/html; charset=UTF-8" http-equiv="content-type">
   <title>Test Open</title>
-	<script src="selenium-ide-loader.js" type="text/javascript"></script>
 	<script language="JavasSript" type="text/javascript">
 function loadTest(body) {
-  SeleniumIDE.Loader.getTopEditor().loadPlayerTest(document.getElementById("testTable"));
+  top.editor.loadPlayerTest(document.getElementById("testTable"));
 }
 	</script>
 </head>
 <body onload="loadTest(this)">
 	<div id="testTable">
 	</div>
-<!--
-<table cellpadding="1" cellspacing="1" border="1">
-  <tbody>
-    <tr>
-      <td rowspan="1" colspan="3">Test Open<br>
-      </td>
-    </tr>
-    <tr>
-      <td>open</td>
-      <td>http://www.google.com/</td>
-      <td>&nbsp;</td>
-    </tr>
-<tr>
-	<td>type</td>
-	<td>q</td>
-	<td>fdsfds</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//input[@type='submit']</td>
-	<td></td>
-</tr>
-  </tbody>
-</table>
--->
 </body>
 </html>

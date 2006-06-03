@@ -41,13 +41,16 @@ SeleniumIDE.Loader.getEditors = function() {
 		var sidebarBox = document.getElementById('sidebar-box');
 		if (sidebarBox && !sidebarBox.hidden) {
 			var sidebar = document.getElementById('sidebar');
-			if (sidebar && sidebar.contentDocument) {
-				if ("chrome://selenium-ide/content/selenium-ide-sidebar.xul" == sidebar.contentDocument.documentURI) {
-					var sidebarView = sidebar.contentDocument.defaultView;
-					if (sidebarView && sidebarView.editor) {
-						editors.push(sidebarView.editor);
+			try {
+				if (sidebar && sidebar.contentDocument) {
+					if ("chrome://selenium-ide/content/selenium-ide-sidebar.xul" == sidebar.contentDocument.documentURI) {
+						var sidebarView = sidebar.contentDocument.defaultView;
+						if (sidebarView && sidebarView.editor) {
+							editors.push(sidebarView.editor);
+						}
 					}
 				}
+			} catch (error) {
 			}
 		}
 	}

@@ -64,20 +64,6 @@ Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
 
-// Replace clickElement to prevent double-popup
-MozillaPageBot.prototype.clickElement = function(element) {
-    triggerEvent(element, 'focus', false);
-
-    // Trigger the click event.
-    triggerMouseEvent(element, 'click', true);
-
-    if (this.windowClosed()) {
-        return;
-    }
-
-    triggerEvent(element, 'blur', false);
-};
-
 // In Firefox 1.5, "load" event is not fired on cached pages, so we'll use "pageshow" instead.
 addLoadListener = function(element, command) {
 	element.addEventListener("pageshow", command, true);

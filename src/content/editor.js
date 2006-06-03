@@ -311,6 +311,7 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 		this.recordTitle(contentWindow);
 	}
 	Recorder.register(this, contentWindow);
+	this.checkForTestRunner(contentWindow);
 }
 
 Editor.prototype.toggleRecordingEnabled = function(enabled) {
@@ -418,6 +419,21 @@ Editor.prototype.openSeleniumIDEPreferences = function() {
 	window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome,modal,resizable", null);
 }
 
+Editor.prototype.checkForTestRunner = function(contentWindow) {
+	if (this.loadTestRunner && contentWindow.location && contentWindow.loocation.href) {
+		var location = contentWindow.location.href;
+		var n = location.indexOf('?');
+		if (n >= 0) {
+			location = location.substring(0, n);
+		}
+		if ('chrome://selenium-ide/content/PlayerTestSuite.html' == location) {
+			this.log.debug('setting editor to TestRunner window ' + contentWindow.top);
+			contentWindow.top.editor = this;
+			this.loadTestRunner = false;
+		}
+	}
+}
+
 Editor.prototype.playback = function() {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
@@ -428,9 +444,12 @@ Editor.prototype.playback = function() {
 	// disable recording
 	this.setRecordingEnabled(false);
 
+	this.loadTestRunner = true;
+	
 	contentWindow.location.href = 'chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
 		'&userExtensionsURL=' + ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',') +
-		'&baseURL=' + document.getElementById("baseURL").value;
+	    '&baseURL=' + document.getElementById("baseURL").value;
+	
 }
 
 Editor.prototype.loadPlayerTest = function(e) {
