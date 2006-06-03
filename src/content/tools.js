@@ -116,14 +116,16 @@ function Message(key, arg) {
 var ExtensionsLoader = {
 	getURLs: function(commaSeparatedPaths) {
 		var urls = [];
-		commaSeparatedPaths.split(/,/).forEach(function(path) {
-				path = path.replace(/^\s*/, '');
-				path = path.replace(/\s*$/, '');
-				if (!path.match(/^file:/)) {
-					path = FileUtils.fileURI(FileUtils.getFile(path));
-				}
-				urls.push(path);
-			});
+		if (commaSeparatedPaths) {
+			commaSeparatedPaths.split(/,/).forEach(function(path) {
+					path = path.replace(/^\s*/, '');
+					path = path.replace(/\s*$/, '');
+					if (!path.match(/^file:/)) {
+						path = FileUtils.fileURI(FileUtils.getFile(path));
+					}
+					urls.push(path);
+				});
+		}
 		return urls;
 	},
 	

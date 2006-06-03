@@ -203,6 +203,10 @@ Editor.prototype.unload = function() {
 	delete window.editor;
 }
 
+Editor.prototype.updateState = function() {
+	window.document.commandDispatcher.updateCommands("selenium-ide-state");
+}
+
 Editor.prototype.updateSeleniumCommands = function() {
 	this.log.debug("updateSeleniumCommands");
 	["cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step", "cmd_selenium_testrunner"].
@@ -218,7 +222,7 @@ Editor.prototype.setState = function(state) {
 	} else {
 		document.getElementById("pause-button").setAttribute("class", "icon pause");
 	}
-	window.updateCommands("selenium-ide-state");
+	this.updateState();
 }
 
 Editor.prototype.setOptions = function(options) {
@@ -500,8 +504,9 @@ Editor.prototype.updateViewTabs = function() {
 		this.toggleView(this.sourceView);
 		editorTab.collapsed = true;
 	}
-	top.document.commandDispatcher.updateCommands("selenium-ide-state");
+	this.updateState();
 }
+
 
 Editor.prototype.setCurrentFormat = function(format) {
 	this.currentFormat = format;
@@ -509,6 +514,7 @@ Editor.prototype.setCurrentFormat = function(format) {
 	this.options.selectedFormat = this.currentFormat.id;
 	optionsManager.save(this.options, 'selectedFormat');
 	this.setClipboardFormat(format);
+	this.updateState();
 }
 
 Editor.prototype.setClipboardFormat = function(format) {
