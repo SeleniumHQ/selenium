@@ -15,6 +15,10 @@
 
 <p><code>-htmlSuite</code>: automatically runs a single HTML suite and saves the results to a file.  See the <a href="selenese.html">Selenese</a> section for more information.</p>
 
+<p><code>-Dhttp.proxyHost</code> and <code>-Dhttp.proxyPort</code>: Selenium RC normally overrides your proxy server configuration, using the Selenium Server as a proxy.  Use these options if you need to use your own proxy together with the Selenium Server proxy.  (Note that these settings are new for Selenium 0.8.0, and may be a bit raw... use them with care, and report any issues to our user forums.)  Use the proxy settings like this:
+<blockquote>
+    <code>java -Dhttp.proxyHost=myproxy.com -Dhttp.proxyPort=1234 -jar selenium-server.jar</code>
+</blockquote>
 
 </body></html>
 

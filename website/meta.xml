@@ -25,6 +25,10 @@
                 <url>tutorial.html</url>
             </item>
             <item>
+                <name>Troubleshooting/FAQ</name>
+                <url>troubleshooting.html</url>
+            </item>
+            <item>
                 <name>- Java</name>
                 <url>java.html</url>
             </item>
@@ -83,6 +87,21 @@
     </developers>
 
     <releases>
+    
+        <release>
+            <version>0.8.0</version>
+
+            <date>06/02/2006</date>
+            <jiraId>10231</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.openqa.org/selenium-remote-control/0.8.0/selenium-remote-control-0.8.0.zip</url>
+                    <name>Major release</name>
+                </download>
+                
+            </downloads>
+        </release>
+        
     	<release>
             <version>0.7.1</version>
 
@@ -91,7 +110,7 @@
             <downloads>
                 <download>
                     <url>http://www.openqa.org/selenium-rc/download/selenium-remote-control-0.7.1.zip</url>
-                    <name>Full release</name>
+                    <name>Minor release</name>
                 </download>
                 
             </downloads>
@@ -104,7 +123,7 @@
             <downloads>
                 <download>
                     <url>http://www.openqa.org/selenium-rc/download/selenium-remote-control-0.7.zip</url>
-                    <name>Full release</name>
+                    <name>First release</name>
                 </download>
                 
             </downloads>

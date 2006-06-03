@@ -13,7 +13,7 @@
 <p>For this example, you'll also need to make sure that you have a supported browser installed.
 	
 <ul>
-<li><b>Windows</b>: If you're on Windows XP or Windows 2003, you can just use Internet Explorer for this example, or install Mozilla Firefox.  If you're using Windows 2000, you'll need to <a href="http://wiki.openqa.org/display/SRC/Windows+Registry+Support">install reg.exe</a> in order to use Internet Explorer, but Firefox should work regardless.  We recommend (but do not require) that you add your browser executable to your PATH environment variable.  (If you do not explicitly add your browser's installation directory to the PATH, then you must install your browser in its standard location; Firefox's standard location is "c:\Program Files\Mozilla Firefox\firefox.exe"; Internet Explorer's standard location is "c:\Program Files\Internet Explorer\iexplore.exe".)</li>
+<li><b>Windows</b>: If you're on Windows XP or Windows 2003, you can just use Internet Explorer for this example, or install Mozilla Firefox or Opera.  If you're using Windows 2000, you'll need to <a href="http://wiki.openqa.org/display/SRC/Windows+Registry+Support">install reg.exe</a> in order to use Internet Explorer, but Firefox should work regardless.  We recommend (but do not require) that you add your browser executable to your PATH environment variable.  (If you do not explicitly add your browser's installation directory to the PATH, then you must install your browser in its standard location; Firefox's standard location is "c:\Program Files\Mozilla Firefox\firefox.exe"; Internet Explorer's standard location is "c:\Program Files\Internet Explorer\iexplore.exe".)</li>
 
 <li><b>Unix/Linux</b>:  For this tutorial, install Firefox and add the Firefox directory to your PATH environment variable.  Note that on Unix/Linux we'll be trying to invoke "firefox-bin" directly, so make sure <i>that</i> executable is on the path; also don't forget to add the Firefox libraries to your LD_LIBRARY_PATH.  If needed, we can invoke Firefox using a shell script (e.g. "firefox" or "run-mozilla.sh"), but in that case, we may not be able to stop Firefox until the server is shut down.</li>
 
@@ -35,12 +35,16 @@ Selenium Server "interactive mode" is a way of rapidly prototyping tests that re
 <blockquote>
   <p><code> cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>*firefox</strong>&amp;2=<strong>http://www.google.com</strong></code></p>
 </blockquote>
-<p>You're running the &quot;getNewBrowserSession&quot; command, using the browser of your choice (*iexplore for Internet Explorer or *firefox for Firefox), starting at www.google.com. Typing commands in this window automatically fires off HTTP web requests to the Selenium Server, requesting work to be done.  (In non-interactive mode, you can use any automated tool you like to send these HTTP requests to the server, instead of typing them by hand.) When you press Enter, you'll see a message describing the request you just made:</p>
+
+<p>You're running the &quot;getNewBrowserSession&quot; command, using the browser of your choice (*iexplore for Internet Explorer, *firefox for Firefox, or *opera for Opera), starting at www.google.com. Typing commands in this window automatically fires off HTTP web requests to the Selenium Server, requesting work to be done.  (In non-interactive mode, you can use any automated tool you like to send these HTTP requests to the server, instead of typing them by hand.) When you press Enter, you'll see a message describing the request you just made:</p>
 <blockquote><code>---&gt; Requesting http://localhost:4444/selenium-server/driver?cmd=getNewBrowserSession&1=*firefox&2=http://www.google.com</code></blockquote>
 <p>If all goes well, you should see a new browser window starting with the browser of your choice.  Back in the Selenium Server command window, you should see the following message:</p>
 <blockquote>
   <p><code> OK,1143670264928</code></p>
 </blockquote>
+
+<p>(If this doesn't happen, you may need to take a look at our fine <a href="troubleshooting.html">Troubleshooting</a> guide.)</p>
+
 <p>The first part of this message &quot;OK&quot; says that your request for work was successful.  The second part of this message, the number, is a Session ID.  The Session ID will be different every time you run the &quot;getNewBrowserSession&quot; command from the command line.</p>
 <p>Let's try some more commands; let's do a Google search!  We'll start by opening up the Google website.  Type this in the Selenium Server command window, replacing the Session ID below with the number you got when you ran &quot;getNewBrowserSession&quot;:</p>
 <blockquote>
@@ -57,7 +61,7 @@ When this command finishes, your browser window should reveal google.com in the 
 <blockquote>
   <p><code>cmd=<strong>click</strong>&amp;1=<strong>btnG</strong>&amp;sessionId=<em>1143670264928</em></code> </p>
 </blockquote>
-<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers (<a href="java.html">Java</a>, <a href="dotnet.html">.NET</a>, <a href="python.html">Python</a> or <a href="ruby.html">Ruby</a>). </p>
+<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers (<a href="java.html">Java</a>, <a href="dotnet.html">.NET</a>, <a href="python.html">Perl</a>, <a href="python.html">Python</a> or <a href="ruby.html">Ruby</a>). </p>
 <p>The next thing we might want to do is read some information back out of the page... for example, let's retrieve the HTML title of the current page, like this:
 <blockquote>
   <p><code> cmd=<strong>getTitle</strong>&amp;sessionId=<em>1143670264928</em></code></p>
@@ -137,6 +141,29 @@ namespace MyTests {
         }
     }
 }
+</pre>
+
+<h3><a href="#" onclick="document.getElementById('perl').style.display='inline';return false;">(+) Perl (Test::More)</a></h3>
+
+<pre id="perl" style="display:none">
+use WWW::Selenium;
+use Test::More;
+
+plan tests => 1;
+
+my $sel = WWW::Selenium->new( host => "localhost", 
+                                      port => 4444, 
+                                      browser => "*firefox", 
+                                      browser_url => "http://www.google.com",
+                                    );
+$sel->start();
+$sel->open("http://www.google.com");
+$sel->type("q", "hello world");
+$sel->click("btnG");
+$sel->wait_for_page_to_load(5000);
+like($sel->get_title(), qr/Google Search/);
+$sel->stop();
+
 </pre>
 
 <h3><a href="#" onclick="document.getElementById('python').style.display='inline';return false;">(+) Python (unittest)</a></h3>
@@ -223,22 +250,32 @@ end
 
 
 <h2><a name="otherbrowsers"/>Automatically Launching Other Browsers</h2>
-<p>Selenium Server can automatically launch/kill other browsers that we don't yet explicitly support.  (Most of the browsers on the "Should Work" supported list need to be launched in this way.)  When running your "getNewBrowserSession" command, just use the absolute path to your browser instead of a "special" browser string like "*firefox" or "*iexplore".</p>
+<p>Selenium Server can automatically launch/kill other browsers that we don't yet explicitly support.  (Most of the browsers on the "Should Work" supported list need to be launched in this way.)  When running your "getNewBrowserSession" command, use the "*custom" browser launcher instead of "*firefox" or "*iexplore", specifying the absolute path to your browser.</p>
 <blockquote>
-  <p><code> cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>c:\Program Files\Netscape\Netscape\Netscp.exe</strong>&amp;2=<strong>http://www.google.com</strong></code></p>
+  <p><code> cmd=getNewBrowserSession&amp;1=<strong>*custom c:\Program Files\Netscape\Netscape\Netscp.exe</strong>&amp;2=http://www.google.com</code></p>
 </blockquote>
 
 <p>Note that when we launch the browser in this way, you'll have to <em>manually</em> configure your browser to use the Selenium Server as a proxy. (Normally this just means opening your browser preferences and specifying &quot;localhost:4444&quot; as an HTTP proxy, but instructions for this can differ radically from browser to browser, so consult your browser's documentation for details.)</p>
+
+<p>If you attempt to launch a *custom browser but don't configure the proxy correctly, you won't be able to get through even a simple Google test, because you'll get a 404 (File not found) error trying to access http://www.google.com/selenium-server/.  Remember, that directory doesn't really exist on Google.com; it only appears to exist when the proxy is properly configured.</p>
 
 <p>Also beware that Mozilla browsers can be a little fidgety about how they start and stop.  Avoid launching your browser using a shell script; always prefer to use the binary executable directly.  You may need to set the MOZ_NO_REMOTE environment variable to make Mozilla browsers behave a little more predictably.</p>
 
 <p>If you want to use one of the explicitly supported browsers but have installed it in an unusual location, you can tell us that by using the special browser string followed by the absolute path to the executable.</p>
 
 <blockquote>
-  <p><code> cmd=<strong>getNewBrowserSession</strong>&amp;1=<strong>*firefox c:\firefox\firefox.exe</strong>&amp;2=<strong>http://www.google.com</strong></code></p>
+  <p><code> cmd=getNewBrowserSession&amp;1=<strong>*firefox c:\firefox\firefox.exe</strong>&amp;2=http://www.google.com</code></p>
 </blockquote>
 
-That will automatically configure Firefox's proxy settings, but does not require us to add Firefox directly to the path.  (You can use this to test multiple different versions of Firefox installed in separate directories.)
+<p>That will automatically configure Firefox's proxy settings, but does not require you to add Firefox directly to the path.  (You can use this to test multiple different versions of Firefox installed in separate directories.)</p>
+
+<p>You can also use "*custom" to automatically launch a supported browser <i>without</i> configuring its proxy.  For example, you could launch Firefox like this:</p>
+
+<blockquote>
+  <p><code> cmd=getNewBrowserSession&amp;1=<strong>*custom c:\Program Files\Mozilla Firefox\firefox.exe</strong>&amp;2=http://www.google.com</code></p>
+</blockquote>
+
+<p>Again, note that you'll need to manually configure your proxy prior to launching Firefox in this way; otherwise you'll get a 404 error while following the steps in the tutorial.</p>
 
 <h2><a name="nullsession"/>Running without a Session ID - the &quot;null&quot; session</h2>
 <p>If you get annoyed with typing out your Session ID over-and-over, or if you want to try manually testing with another browser that we don't yet officially support, you can always just launch the browser yourself and browse to &quot;/selenium-server/SeleneseRunner.html&quot; manually.  (Don't forget to set your proxy settings, as discussed in the previous section.)</p>

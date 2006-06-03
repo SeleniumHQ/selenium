@@ -8,7 +8,19 @@
 </head>
 <body>
 
-<h2>Selenium Remote Control 0.7.1</h2>
+<h2>Selenium Remote Control 0.8.0</h2>
+
+<P>Don't be fooled by the version number; 0.8.0 is the next major release of Selenium Remote Control.</p>
+
+<P>0.8.0 includes numerous significant bug fixes and enhancements.  New features include a Perl RC Client Driver, a translator from Selenium Core Selenese HTML test tables into Java JUnit tests and Opera 8.54 support.</p>
+
+<P>We've also added experimental support for new browser launchers, "*chrome" and "*iehta" which, we hope, will one day eliminate the need for the Selenium Server proxy altogether, by running the Selenium JavaScript with elevated security privileges.  They're "experimental" because we're not 100% sure that they work, but many users have been enjoying them in the nightly snapshots for a while now, so you might want to give them a try.</p>
+
+<P>Additionally, the API for Selenium RC 0.8.0 has changed slightly; Selenium 0.8.0 is not 100% backwards compatible with tests written in Selenium 0.7.x.  The changes should be minor; the most notable change is that the API no longer includes assertion commands.  Instead of running assertTextPresent, now you'll run an "isTextPresent" command which will return true/false, allowing you to run your own assertion code in the language/test framework with which you're most comfortable.</p>
+
+<p>We do not anticipate having to break backwards compatibility again in the future; we waited a while for 0.8.0 to make sure we'd explored any additional changes we needed to make.</p>
+
+<h2>Selenium Remote Control 0.7.1 (April 6, 2006)</h2>
 
 0.7.1 is bug fix release to improve Firefox support on non-Windows 
 browsers and improve Internet Explorer support on various versions 
@@ -16,7 +28,7 @@ of Windows.  The support matrix has also been updated to be a bit
 more realistic; it was copied straight from Selenium Core, but
 we are now more explicit about what is and isn't supported.
 
-<h2>Selenium Remote Control 0.7.0</h2>
+<h2>Selenium Remote Control 0.7.0 (March 31, 2006)</h2>
 
 <p>Selenium Remote Control 0.7.0 was the first official release
 of SRC as a separate project.  Previously, SRC was just a separate 
