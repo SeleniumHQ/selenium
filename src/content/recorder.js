@@ -160,7 +160,8 @@ Recorder.prototype.deregister = function(observer) {
  * Class methods
  */
 
-Recorder.addEventHandler = function(eventName, handler, options) {
+Recorder.addEventHandler = function(handlerName, eventName, handler, options) {
+	handler.handlerName = handlerName;
 	if (!options) options = {};
 	var key = options['capture'] ? ('C_' + eventName) : eventName;
 	if (!this.eventHandlers[key]) {
@@ -168,6 +169,18 @@ Recorder.addEventHandler = function(eventName, handler, options) {
 	}
 	if (options['alwaysRecord']) handler.alwaysRecord = true;
 	this.eventHandlers[key].push(handler);
+}
+
+Recorder.removeEventHandler = function(handlerName) {
+	for (eventKey in this.eventHandlers) {
+		var handlers = this.eventHandlers[eventKey];
+		for (var i = 0; i < handlers.length; i++) {
+			if (handlers[i].handlerName == handlerName) {
+				handlers.splice(i, 1);
+				break;
+			}
+		}
+	}
 }
 
 Recorder.register = function(observer, window) {

@@ -17,7 +17,7 @@
 /*
  * type
  */
-Recorder.addEventHandler('change', function(event) {
+Recorder.addEventHandler('type', 'change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
 		var type = event.target.type;
 		if (('input' == tagName && ('text' == type || 'password' == type || 'file' == type)) ||
@@ -29,7 +29,7 @@ Recorder.addEventHandler('change', function(event) {
 /*
  * select / addSelection / removeSelection
  */
-Recorder.addEventHandler('focus', function(event) {
+Recorder.addEventHandler('selectFocus', 'focus', function(event) {
 		var tagName = event.target.nodeName.toLowerCase();
 		if ('select' == tagName && event.target.multiple) {
 			this.log.debug('remembering selections');
@@ -43,7 +43,7 @@ Recorder.addEventHandler('focus', function(event) {
 		}
 	}, { capture: true });
 
-Recorder.addEventHandler('mousedown', function(event) {
+Recorder.addEventHandler('selectMousedown', 'mousedown', function(event) {
 		var tagName = event.target.nodeName.toLowerCase();
 		if ('option' == tagName) {
 			var parent = event.target.parentNode;
@@ -57,7 +57,7 @@ Recorder.addEventHandler('mousedown', function(event) {
 		}
 	}, { capture: true });
 
-Recorder.addEventHandler('change', function(event) {
+Recorder.addEventHandler('select', 'change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
 		if ('select' == tagName) {
 			if (!event.target.multiple) {
@@ -93,7 +93,7 @@ Recorder.addEventHandler('change', function(event) {
  * This sets capture to true because some click handlers can remove DOM element,
  * so we will record element locator earlier.
  */
-Recorder.addEventHandler('click', function(event) {
+Recorder.addEventHandler('clickLocator', 'click', function(event) {
 		if (event.button == 0) {
 			var clickable = this.findClickableElement(event.target);
 			if (clickable) {
@@ -107,7 +107,7 @@ Recorder.addEventHandler('click', function(event) {
  * This is done without setting capture to true, because confirmations
  * (such as chooseCancelOnNextConfirmation) must be inserted before the click command.
  */
-Recorder.addEventHandler('click', function(event) {
+Recorder.addEventHandler('click', 'click', function(event) {
 		if (event.button == 0) {
 			if (this.clickLocator) {
 				this.record("click", this.clickLocator, '');
@@ -134,7 +134,9 @@ Recorder.prototype.findClickableElement = function(e) {
 }
 
 // remember clicked element to be used in CommandBuilders
-Recorder.addEventHandler('mousedown', function(event) {
+Recorder.addEventHandler('rememberClickedElement', 'mousedown', function(event) {
 		this.clickedElement = event.target;
 		this.clickedElementLocator = this.findLocator(event.target);
 	}, { alwaysRecord: true, capture: true });
+
+
