@@ -448,9 +448,7 @@ public class XlateHtmlSeleneseToJava {
             return beginning.replaceFirst("\n", "") + ": op not meaningful from rc client";
         }
         if (op.endsWith("AndWait")) {
-            if (!op.startsWith("click")) {
-                ending += EOL + "selenium.waitForPageToLoad(\"" + timeOut + "\");";
-            }
+            ending += EOL + "selenium.waitForPageToLoad(\"" + timeOut + "\");";
             op = op.replaceFirst("AndWait", "");
             tokens[0] = tokens[0].replaceFirst("AndWait", "");
         }
