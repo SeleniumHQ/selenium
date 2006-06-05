@@ -165,13 +165,13 @@ public class SeleniumServer {
                 System.exit(1);
             }
             else if ("-port".equals(arg)) {
-                port = Integer.parseInt(args[i + 1]);
+                port = Integer.parseInt(args[++i]);
             }
             else if ("-debug".equals(arg)) {
                 SeleniumServer.setDebugMode(true);
             }
             else if ("-timeout".equals(arg)) {
-                timeout = Integer.parseInt(args[i + 1]);
+                timeout = Integer.parseInt(args[++i]);
             }
             else if ("-userExtensions".equals(arg)) {
                 userExtensions = new File(args[++i]);
