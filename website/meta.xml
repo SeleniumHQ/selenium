@@ -89,13 +89,13 @@
     <releases>
     
         <release>
-            <version>0.8.0</version>
+            <version>0.8.1</version>
 
-            <date>06/02/2006</date>
-            <jiraId>10231</jiraId>
+            <date>06/05/2006</date>
+            <jiraId>10254</jiraId>
             <downloads>
                 <download>
-                    <url>http://release.openqa.org/selenium-remote-control/0.8.0/selenium-remote-control-0.8.0.zip</url>
+                    <url>http://release.openqa.org/selenium-remote-control/0.8.1/selenium-remote-control-0.8.1.zip</url>
                     <name>Major release</name>
                 </download>
                 
