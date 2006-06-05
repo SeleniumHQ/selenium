@@ -28,6 +28,9 @@ public class XlateHtmlSeleneseToJava {
     static final String END_SELENESE   = "<<<<<";
     static final String SELENESE_TOKEN_DIVIDER = "//////";
 
+    static final String DIR = "dir";
+    static final String FILE= "file";
+
     static HashMap declaredVariables = new HashMap();
 
     private static int varNameSeed = 1;
@@ -41,13 +44,16 @@ public class XlateHtmlSeleneseToJava {
 
     private static boolean dontThrowOnTranslationDifficulties = false;
 
+    private static String packageName = "com.thoughtworks.selenium.corebased";
+
     public static void main(String[] args) throws IOException {
-        boolean generateSuite = false;
         if (args.length < 2) {
             Usage("too few args");
             return;
         }
+        boolean generateSuite = false;
         HashMap skipList = new HashMap();
+        HashMap inputFileList = new HashMap();
         String javaSeleneseFileDirectoryName = args[0];
         for (int j = 1; j < args.length; j++) {
             if (args[j].equals("-silent")) {
@@ -59,11 +65,29 @@ public class XlateHtmlSeleneseToJava {
             else if (args[j].equals("-dontThrowOnTranslationDifficulties")) {
                 dontThrowOnTranslationDifficulties = true;
             }
+            else if (args[j].equals("-package")) {
+                packageName = args[++j];
+            }
             else if (args[j].equals("-suite")) {
                 generateSuite = true;
             }
             else if (args[j].equals("-dir")) {
                 String dirName = args[++j];
+                inputFileList.put(dirName, DIR);
+            }
+            else {
+                inputFileList.put(args[j], FILE);
+            }
+        }
+
+        for (Iterator it = inputFileList.keySet().iterator(); it.hasNext();) {
+            String s = (String) it.next();
+            if (FILE.equals(inputFileList.get(s))) {
+                String htmlSeleneseFileName = s;
+                generateJavaClassFromSeleneseHtml(htmlSeleneseFileName, javaSeleneseFileDirectoryName);
+            }
+            else if (DIR.equals(inputFileList.get(s))) {
+                String dirName = s;
                 File dir = new File(dirName);
                 if (!dir.isDirectory()) {
                     Usage("-dir is not a directory: " + dirName);
@@ -76,11 +100,8 @@ public class XlateHtmlSeleneseToJava {
                     }
                 }
             }
-            else {
-                String htmlSeleneseFileName = args[j];
-                generateJavaClassFromSeleneseHtml(htmlSeleneseFileName, javaSeleneseFileDirectoryName);
-            }
         }
+        
         if (generateSuite) {
             generateSuite(javaSeleneseFileDirectoryName);
         }
@@ -146,7 +167,7 @@ public class XlateHtmlSeleneseToJava {
         if (generatedJavaClassNames.size()==1) {
             return; // this is a test run focusing on a single file, so a suite wouldn't be useful
         }
-        String beginning = "package com.thoughtworks.selenium.corebased;\n" + 
+        String beginning = "package " + packageName  + ";\n" + 
         "\n" + 
         "import junit.framework.Test;\n" + 
         "import junit.framework.TestSuite;\n" +
@@ -226,7 +247,7 @@ public class XlateHtmlSeleneseToJava {
     private static String XlateString(String base, String htmlSeleneseFileName, String htmlSelenese) {
         declaredVariables.clear();
         domain = null;
-        String preamble = "package com.thoughtworks.selenium.corebased;\n" + 
+        String preamble = "package " + packageName  + ";\n" + 
         "import com.thoughtworks.selenium.*;\n" +
         "/**\n" + 
         " * @author XlateHtmlSeleneseToJava\n" +
@@ -721,7 +742,7 @@ public class XlateHtmlSeleneseToJava {
     
     
     private static void Usage(String errorMessage) {
-        System.err.println(errorMessage + "\nUsage: XlateHtmlSeleneseToJava [-suite] [-silent] [seleneseJavaFileNameDirectory] [-dir seleneseHtmlDirName] [seleneseHtmlFileName1 seleneseHtmlFileName2 ...] \n"
+        System.err.println(errorMessage + "\nUsage: XlateHtmlSeleneseToJava [-suite] [-silent] [seleneseJavaFileNameDirectory] [-package seleneseJavaPackage] [-dir seleneseHtmlDirName] [seleneseHtmlFileName1 seleneseHtmlFileName2 ...] \n"
                 + "e.g., XlateHtmlSeleneseToJava a/b/c x/y/z/seleneseTestCase.html" 
                 + "will take x/y/z/seleneseTestCase.html as its input and produce as its output an equivalent Java" 
                 + "class at a/b/c/seleneseTestCase.java.");
