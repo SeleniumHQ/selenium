@@ -87,7 +87,7 @@
     </developers>
 
     <releases>
-    
+        
         <release>
             <version>0.8.1</version>
 
@@ -97,6 +97,20 @@
                 <download>
                     <url>http://release.openqa.org/selenium-remote-control/0.8.1/selenium-remote-control-0.8.1.zip</url>
                     <name>Major release</name>
+                </download>
+                
+            </downloads>
+        </release>
+            
+        <release>
+            <version>0.8.0</version>
+
+            <date>06/02/2006</date>
+            <jiraId>10231</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.openqa.org/selenium-remote-control/0.8.0/selenium-remote-control-0.8.0.zip</url>
+                    <name>obsolete version -- use 0.8.1 instead</name>
                 </download>
                 
             </downloads>
