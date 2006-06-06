@@ -17,10 +17,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-
 import org.openqa.selenium.server.SeleniumServer;
 
 public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
