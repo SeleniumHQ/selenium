@@ -173,6 +173,8 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         
         if (simple) return customProfileDir.getAbsolutePath();
         
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
+        
         embedKillFirefoxExtension();
         embedSeleniumExtension();
         
@@ -187,6 +189,12 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         // Disable pop-up blocking
         out.println("user_pref('browser.allowpopups', true);");
         out.println("user_pref('dom.disable_open_during_load', false);");
+        
+        // Configure us as the local proxy
+        out.println("user_pref('network.proxy.type', 2);");
+        out.println("user_pref('network.proxy.autoconfig_url', '" +
+                pathToBrowserURL(proxyPAC.getAbsolutePath()) + 
+                "');");
         
         // Disable security warnings
         out.println("user_pref('security.warn_submit_insecure', false);");
