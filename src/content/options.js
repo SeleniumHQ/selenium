@@ -25,7 +25,7 @@ const OPTIONS = {
 	"",
 	
 	rememberBaseURL:
-	"",
+	"true",
 
 	baseURL:
 	"",

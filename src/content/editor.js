@@ -341,7 +341,7 @@ Editor.prototype.recordTitle = function(window) {
 Editor.prototype.recordOpen = function(window) {
 	if (!window.location) return;
 	var path = window.location.href;
-	var regexp = new RegExp(/^(\w+:\/\/[\w\.]+(:\d+)?)\/.*/);
+	var regexp = new RegExp(/^(\w+:\/\/[^/:]+(:\d+)?)\/.*/);
 	var base = '';
 	var result = regexp.exec(path);
 	if (result) {
@@ -349,7 +349,8 @@ Editor.prototype.recordOpen = function(window) {
 		base = result[1] + '/';
 	}
 	this.addCommand("open", path, '', window);
-	if (!document.getElementById("baseURL").value) {
+	if (!document.getElementById("baseURL").value ||
+		document.getElementById("baseURL").value.indexOf(base) < 0) {
 		document.getElementById("baseURL").value = base;
 	}
 }

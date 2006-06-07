@@ -26,8 +26,11 @@
 Selenium.prototype.real_doOpen = Selenium.prototype.doOpen;
 
 Selenium.prototype.doOpen = function(newLocation) {
-	if (this.baseURL && newLocation) {
+	if (newLocation) {
 		if (!newLocation.match(/^\w+:\/\//)) {
+			if (!this.baseURL) {
+				LOG.warn("Please set Base URL before running the test.");
+			}
 			if (this.baseURL[this.baseURL.length - 1] == '/' && newLocation[0] == '/') {
 				newLocation = this.baseURL + newLocation.substr(1);
 			} else {
