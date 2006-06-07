@@ -9,6 +9,7 @@
 
 <!-- TOP LEVEL -->
 <xsl:template match="/">
+    <html><head><title>Selenium Reference</title></head><body>
 	<xsl:call-template name="header" />
 	<xsl:apply-templates select="//top" />
 	<h2>Selenium Actions</h2>
@@ -27,6 +28,7 @@
 		</xsl:apply-templates>
 	</dl>
 	<xsl:call-template name="footer" />
+	</body></html>
 </xsl:template>
 
 <xsl:template name="header">
@@ -253,6 +255,11 @@
 <!-- Print out assert* and all of its related assertions -->
 <xsl:template match="function" mode="assertion">
 	<dt><strong>
+	    <a>
+	        <xsl:attribute name="name">
+	            <xsl:value-of select="@name" />
+	        </xsl:attribute>
+	    </a>
 		<xsl:value-of select="@name" />
 		(
 			<xsl:apply-templates select="param" mode="declaration-action"/>
@@ -335,6 +342,14 @@
 <!-- Print out store* and all of its related assertions -->
 <xsl:template match="function" mode="accessor">
     <dt><strong>
+        <a>
+	        <xsl:attribute name="name">
+	            <xsl:call-template name="accessor-rename">
+        			<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
+        			<xsl:with-param name="prefix">store</xsl:with-param>
+        		</xsl:call-template>
+	        </xsl:attribute>
+	    </a>
 		<xsl:call-template name="accessor-rename">
 			<xsl:with-param name="accessor"><xsl:value-of select="@name" /></xsl:with-param>
 			<xsl:with-param name="prefix">store</xsl:with-param>
@@ -440,6 +455,11 @@
 
 <xsl:template match="function" mode="action">
 	<dt><strong>
+	    <a>
+	        <xsl:attribute name="name">
+	            <xsl:value-of select="@name" />
+	        </xsl:attribute>
+	    </a>
 		<xsl:value-of select="@name" />
 		(
 			<xsl:apply-templates select="param" mode="declaration-action"/>
