@@ -128,8 +128,18 @@ public class XlateHtmlSeleneseToJava {
                     String retType = ret.getAttribute("type");
                     if ("boolean".equals(retType)) {
                         funcTypes.put(funcName, boolean.class);
-                    } else if ("string".equals(retType)) {
+                    }
+                    else if ("string".equals(retType)) {
                         funcTypes.put(funcName, String.class);
+                    }
+                    else if ("string[]".equals(retType)) {
+                        funcTypes.put(funcName, String[].class);
+                    }
+                    else if ("number".equals(retType)) {
+                        funcTypes.put(funcName, Integer.class);
+                    }
+                    else {
+                        throw new RuntimeException("could not resolve type " + retType);
                     }
                 }
             }
@@ -142,19 +152,23 @@ public class XlateHtmlSeleneseToJava {
         return (boolean.class.equals(getOpType(op)));
     }
     
-    private static Class getOpType(String op) {
+    private static Class getOpType(String opParm) {
         initializeFuncTypes();
+        String op = opParm;
+        op = op.replaceFirst("AndWait$", "");
+        op = op.replaceFirst("Not([A-Z])", "$1");
         if (funcTypes.get(op) != null) {
             return (Class) funcTypes.get(op);
         }
-        String swappedOp = op.replaceFirst("store", "get");
-        if (funcTypes.get(swappedOp) != null) {
-            return (Class) funcTypes.get(swappedOp);
+        op = op.replaceFirst("(assert|verify|store)", "get");
+        if (funcTypes.get(op) != null) {
+            return (Class) funcTypes.get(op);
         }
-        swappedOp = op.replaceFirst("store", "is");
-        if (funcTypes.get(swappedOp) != null) {
-            return (Class) funcTypes.get(swappedOp);
+        op = op.replaceFirst("get", "is");
+        if (funcTypes.get(op) != null) {
+            return (Class) funcTypes.get(op);
         }
+        System.out.println("could not find " + opParm + " (" + op + ")");
         // if we get here, apparently op has no direct analog in Selenium.  So just look at the name and guess:
         if (op.matches(".*(Present|Visible|Editable)$")) {
             return boolean.class;
