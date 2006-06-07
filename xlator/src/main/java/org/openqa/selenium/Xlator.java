@@ -19,45 +19,30 @@ public class Xlator
             // Initialize the standard objects (Object, Function, etc.)
             // This must be done before scripts can be executed. Returns
             // a scope object that we use in later calls.
-            Scriptable javaFormatterScope = cx.initStandardObjects();
+            Scriptable scope = cx.initStandardObjects();
 
-            Scriptable htmlFormatterScope = cx.initStandardObjects();
-            
-            loadJSSource(cx, htmlFormatterScope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\formats\\html.js");
-            loadJSSource(cx, htmlFormatterScope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\testCase.js");
-            loadJSSource(cx, htmlFormatterScope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\tools.js");
+            loadJSSource(cx, scope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\formats\\html.js");
+            loadJSSource(cx, scope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\testCase.js");
+            loadJSSource(cx, scope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\tools.js");
             
 //          add window.editor.seleniumAPI
-            Scriptable javaScopeSeleniumAPI = (Scriptable) cx.evaluateString(javaFormatterScope, "window = new Object(); window.editor = new Object(); window.editor.seleniumAPI = new Object();", "<JavaEval>", 1, null);
-            loadJSSource(cx, javaScopeSeleniumAPI, "C:\\svn\\selenium\\trunk\\code\\javascript\\core\\scripts\\selenium-api.js");
-            
-            Scriptable htmlScopeSeleniumAPI = (Scriptable) cx.evaluateString(htmlFormatterScope, "window = new Object(); window.editor = new Object(); window.editor.seleniumAPI = new Object();", "<JavaEval>", 1, null);
-            loadJSSource(cx, htmlScopeSeleniumAPI, "C:\\svn\\selenium\\trunk\\code\\javascript\\core\\scripts\\selenium-api.js");
-            
-            loadJSSource(cx, javaFormatterScope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\formats\\merged-java-rc.js");
-            loadJSSource(cx, javaFormatterScope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\testCase.js");
-            loadJSSource(cx, javaFormatterScope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\tools.js");
+            Scriptable seleniumAPI = (Scriptable) cx.evaluateString(scope, "window = new Object(); window.editor = new Object(); window.editor.seleniumAPI = new Object();", "<JavaEval>", 1, null);
+            loadJSSource(cx, seleniumAPI, "C:\\svn\\selenium\\trunk\\code\\javascript\\core\\scripts\\selenium-api.js");            
             
             String htmlSource = loadFile("C:\\svn\\selenium\\trunk\\code\\javascript\\tests\\TestClick.html");
             
             // add log.debug
-            cx.evaluateString(htmlFormatterScope, "log = new Object(); log.debug = function(msg) { }", "<JavaEval>", 1, null);
+            cx.evaluateString(scope, "log = new Object(); log.debug = function(msg) { }", "<JavaEval>", 1, null);
             
-            Function parse = getFunction(htmlFormatterScope, "parse");
-            Scriptable myTestCase = cx.newObject(htmlFormatterScope);
-            parse.call(cx, htmlFormatterScope, htmlFormatterScope, new Object[] {myTestCase, htmlSource});
+            Function parse = getFunction(scope, "parse");
+            Scriptable myTestCase = cx.newObject(scope);
+            parse.call(cx, scope, scope, new Object[] {myTestCase, htmlSource});
+
+            loadJSSource(cx, scope, "C:\\svn\\selenium-ide\\trunk\\src\\content\\formats\\merged-java-rc.js");
             
+            Function format = getFunction(scope, "format");
+            Object result = format.call(cx, scope, scope, new Object[] {myTestCase, "foo"});
             
-            
-//            ScriptableObject.defineClass(javaFormatterScope, JSSeleniumCommand.class);
-//            Object[] commandArgs = new Object[] {"type", "q", "hello world"};
-//            Scriptable myCommand = cx.newObject(javaFormatterScope, JSSeleniumCommand.class.getName(), commandArgs);
-            
-            Function format = getFunction(javaFormatterScope, "format");
-            Object result = format.call(cx, javaFormatterScope, javaFormatterScope, new Object[] {myTestCase, "foo"});
-            
-//            Function f = getFunction(javaFormatterScope, "formatCommands");
-//            Object result = f.call(cx, javaFormatterScope, javaFormatterScope, new Object[] {new Object[] {myCommand}});
             System.out.println(result);
 
         } finally {
