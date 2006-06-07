@@ -136,7 +136,7 @@ public class XlateHtmlSeleneseToJava {
                         funcTypes.put(funcName, String[].class);
                     }
                     else if ("number".equals(retType)) {
-                        funcTypes.put(funcName, Integer.class);
+                        funcTypes.put(funcName, Number.class);
                     }
                     else {
                         throw new RuntimeException("could not resolve type " + retType);
@@ -170,7 +170,11 @@ public class XlateHtmlSeleneseToJava {
         }
         System.out.println("could not find " + opParm + " (" + op + ")");
         // if we get here, apparently op has no direct analog in Selenium.  So just look at the name and guess:
-        if (op.matches(".*(Present|Visible|Editable)$")) {
+        if (op.matches(".*Length$")) {
+            return int.class;
+        }
+        if (op.matches(".*(Present|Visible|Editable)$")
+                || op.matches("^is.+")) {
             return boolean.class;
         }
         return String.class;
