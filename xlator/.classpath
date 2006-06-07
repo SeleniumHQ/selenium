@@ -5,5 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry sourcepath="/CDRIVE/Dan/scratch/rhino1_6R2/src" kind="var" path="M2_REPO/rhino/js/1.6R2/js-1.6R2.jar"/>
 	<classpathentry sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar" kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-ide"/>
 	<classpathentry kind="output" path="eclipse"/>
 </classpath>

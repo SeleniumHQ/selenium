@@ -11,6 +11,12 @@
   <url>http://selenium.openqa.org</url>
   <dependencies>
   	<dependency>
+      <groupId>org.openqa.selenium.core</groupId>
+      <artifactId>selenium-core</artifactId>
+      <version>0.7.1-SNAPSHOT</version>
+    </dependency>
+    <!-- DGF TODO depend on selenium-ide -->
+  	<dependency>
       <groupId>rhino</groupId>
       <artifactId>js</artifactId>
       <version>1.6R2</version>
