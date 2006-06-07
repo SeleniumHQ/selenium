@@ -1,0 +1,25 @@
+<?xml version="1.0"?><project>
+  <parent>
+    <artifactId>selenium</artifactId>
+    <groupId>org.openqa.selenium</groupId>
+    <version>0.8.2-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openqa.selenium</groupId>
+  <artifactId>selenium-xlator</artifactId>
+  <name>Selenium Translator</name>
+  <url>http://selenium.openqa.org</url>
+  <dependencies>
+  	<dependency>
+      <groupId>rhino</groupId>
+      <artifactId>js</artifactId>
+      <version>1.6R2</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
