@@ -15,7 +15,11 @@
       <artifactId>selenium-core</artifactId>
       <version>0.7.1-SNAPSHOT</version>
     </dependency>
-    <!-- DGF TODO depend on selenium-ide -->
+    <dependency>
+      <groupId>org.openqa.selenium.ide</groupId>
+      <artifactId>selenium-ide</artifactId>
+      <version>0.8.1-SNAPSHOT</version>
+    </dependency>
   	<dependency>
       <groupId>rhino</groupId>
       <artifactId>js</artifactId>
