@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <project name="selenium-ide" default="create-xpi">
-  <property file="build.properties"/>
+  <property file="build.properties" />
   <property name="build" value="build"/>
+  <property name="output.path" value="${build}/classes"/>
   
   <target name="prepare">
     <tstamp/>
@@ -15,30 +16,33 @@
     <delete dir="content/jsunit"/>
   </target>
 
+  <target name="copy-sources" if="output.path">
+    <copy todir="${output.path}">
+      <fileset dir=".">
+	<include name="content/**" />
+	<include name="locale/**" />
+      </fileset>
+    </copy>
+  </target>
+
   <target name="import-selenium" description="Import Selenium source into the extension">
-    <fail message="Please set selenium.src property in build.properties file." unless="selenium.src"/>
+    <fail message="Please set selenium.core.dir property in build.properties file." unless="selenium.core.dir"/>
     <copy todir="content/selenium">
-      <fileset dir="${selenium.src}">
+      <fileset dir="${selenium.core.dir}/core">
 	<include name="**"/>
       </fileset>
       <fileset dir="content/selenium-src"/>
     </copy>
-  </target>
-
-  <target name="import-jsunit" description="Import JsUnit source into the extension" if="jsunit.src">
     <copy todir="content/jsunit">
-      <fileset dir="${jsunit.src}">
+      <fileset dir="${selenium.core.dir}/jsunit">
 	<include name="**"/>
       </fileset>
     </copy>
   </target>
-
-  <target name="create-jar" depends="prepare,import-selenium,import-jsunit">
+  
+  <target name="create-jar" depends="prepare,import-selenium,copy-sources">
     <zip destfile="${build}/chrome/${ant.project.name}.jar">
-      <fileset dir=".">
-	<include name="content/**"/>
-	<include name="locale/**"/>
-      </fileset>
+      <fileset dir="${output.path}" />
     </zip>
   </target>
 

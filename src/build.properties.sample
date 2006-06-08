@@ -1,3 +1,1 @@
-selenium.src=${user.home}/work/openqa/selenium/code/javascript/core
-jsunit.src=${user.home}/work/openqa/selenium/code/javascript/jsunit
-
+selenium.core.dir=${user.home}/work/openqa/selenium/code/javascript

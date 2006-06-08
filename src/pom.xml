@@ -1,0 +1,66 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openqa.selenium.ide</groupId>
+  <version>0.8.1-SNAPSHOT</version>
+  <artifactId>selenium-ide</artifactId>
+  <name>Selenium IDE</name>
+  <url>http://www.openqa.org/selenium-ide</url>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>process-resources</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <ant antfile="build.xml" target="create-xpi">
+                  <property name="build" location="${project.build.directory}" />
+                  <property name="output.path" location="${project.build.outputDirectory}" />
+                  <property name="selenium.core.dir" location="${project.build.directory}/assembly/work/selenium-core-0.7.1-SNAPSHOT" />
+                </ant>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <configuration>
+              <tasks>
+                <ant antfile="build.xml" target="clean">
+                  <property name="build" location="${project.build.directory}" />
+                </ant>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.openqa.selenium.core</groupId>
+      <artifactId>selenium-core</artifactId>
+      <version>0.7.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+</project>

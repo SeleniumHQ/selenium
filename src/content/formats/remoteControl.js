@@ -6,6 +6,12 @@
 
 load('formatCommandOnlyAdapter.js');
 
+function underscore(text) {
+	return text.replace(/[A-Z]/g, function(str) {
+			return '_' + str.toLowerCase();
+		});
+}
+
 function not(expression) {
 	return expression.not();
 }
