@@ -88,7 +88,7 @@ public class BrowserLauncherFactory {
         throw browserNotSupported(browser);
     }
 
-    public void addBrowserLauncher(String browser, Class clazz) {
+    public static void addBrowserLauncher(String browser, Class clazz) {
         supportedBrowsers.put(browser, clazz);
     }
 
