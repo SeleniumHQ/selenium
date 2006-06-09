@@ -11,26 +11,27 @@ public class HTABrowserLauncher implements BrowserLauncher {
     private int port;
     private String sessionId;
     private File dir;
-    private String commandPath;
-    private Process process;
+    private String htaCommandPath;
+    private Process htaProcess;
+    private Process iexploreProcess;
 
     public HTABrowserLauncher() {
-        commandPath = findBrowserLaunchLocation();
+        htaCommandPath = findHTALaunchLocation();
     }
     
     public HTABrowserLauncher(int port, String sessionId) {
-        commandPath = findBrowserLaunchLocation();
+        htaCommandPath = findHTALaunchLocation();
         this.port = port;
         this.sessionId = sessionId;
     }
     
     public HTABrowserLauncher(int port, String sessionId, String browserLaunchLocation) {
-        commandPath = browserLaunchLocation;
+        htaCommandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
     }
     
-    private static String findBrowserLaunchLocation() {
+    private static String findHTALaunchLocation() {
         String defaultPath = System.getProperty("mshtaDefaultPath");
         if (defaultPath == null) {
             defaultPath = WindowsUtils.findSystemRoot() + "\\system32\\mshta.exe";
@@ -55,11 +56,19 @@ public class HTABrowserLauncher implements BrowserLauncher {
         query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
         createHTAFiles();
         String hta = (new File(dir, htaName)).getAbsolutePath();
-        System.out.println("Launching Internet Explorer HTA...");
+        System.out.println("Launching Embedded Internet Explorer...");
         AsyncExecute exe = new AsyncExecute();
-        exe.setCommandline(new String[] {commandPath, hta, query});
+        exe.setCommandline(new String[] {InternetExplorerCustomProxyLauncher.findBrowserLaunchLocation(), "-Embedding"});
         try {
-            process = exe.asyncSpawn();
+            iexploreProcess = exe.asyncSpawn();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Launching Internet Explorer HTA...");
+        AsyncExecute htaExe = new AsyncExecute();
+        htaExe.setCommandline(new String[] {htaCommandPath, hta, query});
+        try {
+            htaProcess = htaExe.asyncSpawn();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -72,7 +81,12 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
 
     public void close() {
-        process.destroy();
+        iexploreProcess.destroy();
+        int exitValue = AsyncExecute.waitForProcessDeath(iexploreProcess, 10000);
+        if (exitValue == 0) {
+            System.err.println("WARNING: Embedded iexplore seems to have ended on its own (did we kill the real browser???)");
+        }
+        htaProcess.destroy();
         LauncherUtils.recursivelyDeleteDir(dir);
     }
     

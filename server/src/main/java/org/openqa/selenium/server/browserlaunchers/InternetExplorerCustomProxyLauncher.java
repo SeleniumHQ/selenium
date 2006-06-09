@@ -60,7 +60,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
         this.sessionId = sessionId;
     }
     
-    private static String findBrowserLaunchLocation() {
+    protected static String findBrowserLaunchLocation() {
         String defaultPath = System.getProperty("internetExplorerDefaultPath");
         if (defaultPath == null) {
             defaultPath = WindowsUtils.getProgramFilesPath() + "\\Internet Explorer\\iexplore.exe";
