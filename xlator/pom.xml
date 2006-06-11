@@ -20,6 +20,12 @@
       <artifactId>selenium-ide</artifactId>
       <version>0.8.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+    <groupId>org.openqa.selenium.client-drivers</groupId>
+    <artifactId>selenium-java-client-driver</artifactId>
+    <version>0.8.2-SNAPSHOT</version>
+    <type>test-jar</type>
+    </dependency>
   	<dependency>
       <groupId>rhino</groupId>
       <artifactId>js</artifactId>

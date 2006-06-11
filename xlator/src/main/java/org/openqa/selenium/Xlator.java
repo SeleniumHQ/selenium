@@ -1,6 +1,9 @@
 package org.openqa.selenium;
 
 import java.io.*;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
 
 import org.mozilla.javascript.*;
 
@@ -44,7 +47,7 @@ public class Xlator
         }
     }
 
-    public static String xlateTestCase(String outputFormat, String htmlSource) throws IOException {
+    public static String xlateTestCase(String outputFormat, String htmlSource) throws Exception {
         Context cx = Context.enter();
         try {
             Scriptable scope = cx.initStandardObjects();
@@ -53,16 +56,22 @@ public class Xlator
             loadJSSource(cx, scope, "/content/tools.js");
             
 //          add window.editor.seleniumAPI
+			InputStream stream = Xlator.class.getResourceAsStream("/core/iedoc.xml");
+            Document apiDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
+			stream.close();
+			
+			Object wrappedAPIDoc = Context.javaToJS(apiDoc, scope);
+			Scriptable commandClass = (Scriptable) scope.get("Command", scope);
+			ScriptableObject.putProperty(commandClass, "apiDocument", wrappedAPIDoc);
+
             Scriptable seleniumAPI = (Scriptable) cx.evaluateString(scope, "window = new Object(); window.editor = new Object(); window.editor.seleniumAPI = new Object();", "<JavaEval>", 1, null);
             loadJSSource(cx, seleniumAPI, "/core/scripts/selenium-api.js");
             
             // add log.debug
-            cx.evaluateString(scope, "log = new Object(); log.debug = function(msg) { " +
-                    (LOG_LEVEL > 1 ? "java.lang.System.out.println('DEBUG: ' + msg); " : "") +
-                    "}", "<JavaEval>", 1, null);
+			cx.evaluateString(scope, "Log.write = function(msg) { java.lang.System.out.println(msg) }; log = new Log('format');", "<JavaEval>", 1, null);
             
             Function parse = getFunction(scope, "parse");
-            Scriptable myTestCase = cx.newObject(scope);
+            Scriptable myTestCase = cx.newObject(scope, "TestCase");
             parse.call(cx, scope, scope, new Object[] {myTestCase, htmlSource});
 
             Object wrappedResourceLoader = Context.javaToJS(new ResourceLoader(cx, scope), scope);
