@@ -44,25 +44,81 @@ Command.prototype.getRealTarget = function() {
 	}
 }
 
-Command.prototype.getAccessor = function() {
+Command.loadAPI = function() {
+	if (!this.functions) {
+		var document = this.apiDocument;
+		var functionElements = document.documentElement.getElementsByTagName("function");
+		var functions = {};
+		for (var i = 0; i < functionElements.length; i++) {
+			var element = functionElements.item(i);
+			var def = new CommandDefinition(String(element.attributes.getNamedItem('name').value));
+			var params = element.getElementsByTagName("param");
+			for (var j = 0; j < params.length; j++) {
+				var paramElement = params.item(j);
+				var param = {};
+				param.name = String(paramElement.attributes.getNamedItem('name').value);
+				def.params.push(param);
+			}
+			functions[def.name] = def;
+			if (def.name.match(/^(is|get)/)) {
+				def.isAccessor = true;
+				functions["!" + def.name] = def.negativeAccessor();
+			}
+		}
+		this.functions = functions;
+	}
+	return this.functions;
+}
+
+function CommandDefinition(name) {
+	this.name = name;
+	this.params = [];
+}
+
+CommandDefinition.prototype.negativeAccessor = function() {
+	var def = new CommandDefinition(this.name);
+	def.params = this.params;
+	def.isAccessor = true;
+	def.negative = true;
+	return def;
+}
+
+Command.prototype.getDefinition = function() {
+	var api = Command.loadAPI();
 	var r = /^(assert|verify|store|waitFor)(.*)$/.exec(this.command);
 	if (r) {
 		var suffix = r[2];
-		if (this.getAPI().Selenium.prototype['is' + suffix]) {
-			return {name: 'is' + suffix};
-		} else if (this.getAPI().Selenium.prototype['get' + suffix]) {
-			return {name: 'get' + suffix};
-		} else if ((r = /^(.*)NotPresent$/.exec(suffix)) != null) {
-			if (this.getAPI().Selenium.prototype['is' + r[1] + 'Present']) {
-				return {name: 'is' + r[1] + 'Present', negative: true};
-			}
+		var prefix = "";
+		if ((r = /^(.*)NotPresent$/.exec(suffix)) != null) {
+			suffix = r[1] + "Present";
+			prefix = "!";
 		} else if ((r = /^Not(.*)$/.exec(suffix)) != null) {
-			if (this.getAPI().Selenium.prototype['get' + r[1]]) {
-				return {name: 'get' + r[1], negative: true};
-			}
+			suffix = r[1];
+			prefix = "!";
 		}
+		var booleanAccessor = api[prefix + "is" + suffix];
+		if (booleanAccessor) {
+			return booleanAccessor;
+		}
+		var accessor = api[prefix + "get" + suffix];
+		if (accessor) {
+			return accessor;
+		}
+	} else {
+		return api[this.command];
 	}
 	return null;
+}
+
+Command.prototype.getParameterAt = function(index) {
+	switch (index) {
+	case 0:
+		return this.target;
+	case 1:
+		return this.value;
+	default:
+		return null;
+	}
 }
 
 Command.prototype.getAPI = function() {
@@ -93,6 +149,8 @@ Comment.prototype.createCopy = function() {
 
 function TestCase() {
 	this.log = new Log("TestCase");
+
+	this.formatLocalMap = {};
 	
 	this.setCommands([]);
 	
@@ -127,6 +185,16 @@ function TestCase() {
 			return testCase.commands[this.debugIndex];
 		}
 	}
+}
+
+// Store variables specific to each format in this hash.
+TestCase.prototype.formatLocal = function(formatName) {
+	var scope = this.formatLocalMap[formatName];
+	if (!scope) {
+		scope = {};
+		this.formatLocalMap[formatName] = scope;
+	}
+	return scope;
 }
 
 TestCase.prototype.setCommands = function(commands) {

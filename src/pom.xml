@@ -3,6 +3,7 @@
   <groupId>org.openqa.selenium.ide</groupId>
   <version>0.8.1-SNAPSHOT</version>
   <artifactId>selenium-ide</artifactId>
+  <packaging>jar</packaging>
   <name>Selenium IDE</name>
   <url>http://www.openqa.org/selenium-ide</url>
   <build>
@@ -55,7 +56,20 @@
       </plugin>
     </plugins>
   </build>
-  <packaging>jar</packaging>
+  <repositories>
+    <repository>
+      <id>openqa</id>
+      <name>OpenQA Maven Repository</name>
+      <url>http://maven.openqa.org</url>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <repository>
+      <id>openqa</id>
+      <name>OpenQA Maven Repository</name>
+      <url>scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs</url>
+    </repository>
+  </distributionManagement>
   <dependencies>
     <dependency>
       <groupId>org.openqa.selenium.core</groupId>

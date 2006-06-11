@@ -28,8 +28,27 @@ function parse(testCase, source) {
  * @param testCase TestCase to format
  * @param name The name of the test case, if any. It may be used to embed title into the source.
  */
-function format(testCase, name) {
-	return formatCommands(testCase.commands);
+function format(testCase, name, saveHeaderAndFooter) {
+	var result = '';
+	var header = testCase.formatLocal(this.name).header;
+	var footer = testCase.formatLocal(this.name).footer;
+
+	if (!header && this.formatHeader) {
+		header = formatHeader(testCase);
+	}
+	result += header;
+	if (saveHeaderAndFooter) {
+		testCase.formatLocal(this.name).header = header;
+	}
+	result += formatCommands(testCase.commands);
+	if (!footer && this.formatFooter) {
+		footer = formatFooter(testCase);
+	}
+	result += footer;
+	if (saveHeaderAndFooter) {
+		testCase.formatLocal(this.name).footer = footer;
+	}
+	return result;
 }
 
 function filterForRemoteControl(originalCommands) {

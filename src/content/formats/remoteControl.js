@@ -44,9 +44,13 @@ NotEquals.prototype.not = function() {
 }
 
 function string(value) {
-	value = value.replace(/\"/mg, '\\"');
-	value = value.replace(/\n/mg, '\\n');
-	return '"' + value + '"';
+	if (value != null) {
+		value = value.replace(/\"/mg, '\\"');
+		value = value.replace(/\n/mg, '\\n');
+		return '"' + value + '"';
+	} else {
+		return '""';
+	}
 }
 
 function CallSelenium(message) {
@@ -65,48 +69,38 @@ CallSelenium.prototype.not = function() {
 function formatCommand(command) {
 	var line = indent();
 	if (command.type == 'command') {
-		var accessor = command.getAccessor();
-		if (accessor) {
-			var call = new CallSelenium(accessor.name);
-			call.args = [];
-			if (accessor.name.match(/^is/)) { // isXXX
-				var variable = null;
-				if (command.command.match(/^store/)) {
-					// in store command, the value would be the name of the variable
-					command = command.createCopy();
-					variable = command.getRealValue();
-					if (command.value) {
-						command.value = null;
-					} else {
-						command.target = null;
-					}
-				}
-				if (command.getRealValue()) {
-					if (command.getRealTarget()) {
-						call.args.push(string(command.getRealTarget()));
-					}
-					call.args.push(string(command.getRealValue()));
-				}
+		var def = command.getDefinition();
+		if (def && def.isAccessor) {
+			var call = new CallSelenium(def.name);
+			for (var i = 0; i < def.params.length; i++) {
+				call.args.push(string(command.getParameterAt(i)));
+			}
+			var extraArg = command.getParameterAt(def.params.length)
+			if (def.name.match(/^is/)) { // isXXX
 				if (command.command.match(/^(verify|assert)/)) {
-					line += statement((accessor.negative ? assertFalse : assertTrue)(call));
+					line += statement((def.negative ? assertFalse : assertTrue)(call));
 				} else if (command.command.match(/^store/)) {
-					line += statement(assignToVariable('boolean', variable, call));
+					line += statement(assignToVariable('boolean', extraArg, call));
 				} else if (command.command.match(/^waitFor/)) {
-					line += waitFor((accessor.negative ? not : is)(call));
+					line += waitFor((def.negative ? not : is)(call));
 				}
 			} else { // getXXX
-				if (command.getRealTarget()) {
-					call.args.push(string(command.getRealTarget()));
-				}
 				if (command.command.match(/^(verify|assert)/)) {
-					line += statement((accessor.negative ? assertNotEquals : assertEquals)(string(command.getRealValue()), call));
+					line += statement((def.negative ? assertNotEquals : assertEquals)(string(extraArg), call));
 				} else if (command.command.match(/^store/)) {
-					line += statement(assignToVariable('String', command.getRealValue(), call));
+					line += statement(assignToVariable('String', extraArg, call));
 				} else if (command.command.match(/^waitFor/)) {
-					line += waitFor((accessor.negative ? not : is)(equals(string(command.getRealValue()), call)));
+					line += waitFor((def.negative ? not : is)(equals(string(extraArg), call)));
 				}
 			}
+		} else if (def) {
+			var call = new CallSelenium(def.name);
+			for (var i = 0; i < def.params.length; i++) {
+				call.args.push(string(command.getParameterAt(i)));
+			}
+			line += statement(call);
 		} else {
+			// TODO
 			var call = new CallSelenium(command.command);
 			if ((command.target != null && command.target.length > 0)
 				|| (command.value != null && command.value.length > 0)) {

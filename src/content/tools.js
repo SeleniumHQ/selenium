@@ -42,13 +42,17 @@ function Log(category) {
 	this.log = function(level, msg) {
 		var threshold = this[thresholdName];
 		if (level.level >= threshold.level) {
-			var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-				.getService(Components.interfaces.nsIConsoleService);
-			if (consoleService != null) {
-				consoleService.logStringMessage("Selenium IDE [" + level.name + "] " + 
-												self.category + ": " + msg);
-			}
+			Log.write("Selenium IDE [" + level.name + "] " + 
+					  self.category + ": " + msg);
 		}
+	}
+}
+
+Log.write = function(message) {
+	var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+		.getService(Components.interfaces.nsIConsoleService);
+	if (consoleService != null) {
+		consoleService.logStringMessage(message);
 	}
 }
 
@@ -62,12 +66,12 @@ function instanceOf(object, constructor) {
 }
 
 function getOptionsBranch() {
-	return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
+	return this.Components && Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
 }
 
 function getOptionValue(name, defaultValue) {
 	var branch = getOptionsBranch();
-	if (branch.prefHasUserValue(name)) {
+	if (branch && branch.prefHasUserValue(name)) {
 		return branch.getCharPref(name);
 	} else {
 		return defaultValue;

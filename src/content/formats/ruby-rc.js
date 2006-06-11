@@ -4,6 +4,8 @@
 
 load('remoteControl.js');
 
+this.name = "ruby-rc";
+
 function assertTrue(expression) {
 	return "assert " + expression.toString();
 }

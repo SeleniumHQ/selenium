@@ -4,6 +4,37 @@
 
 load('remoteControl.js');
 
+this.name = "java-rc";
+
+function formatHeader(testCase) {
+	var className = testCase.name;
+	if (!className) {
+		className = "NewTest";
+	}
+	var fullyQualifiedClassName = className;
+	if (testCase.javaPackageName) {
+		className = testCase.javaPackageName + "." + className;
+	}
+	var methodName = "test" + className;
+	methodName = methodName.replace(/Test$/, "");
+	var header = 
+		"import com.thoughtworks.selenium.*;\n" +
+		"\n" +
+        "public class " + fullyQualifiedClassName + " extends SeleneseTestCase {\n" + 
+        "\tpublic void " + methodName + "() throws Exception {\n";
+	this.lastIndent = "\t\t";
+	this.header = header;
+	return header;
+}
+
+function formatFooter(testCase) {
+	var footer = 
+		"\t}\n" +
+		"}\n";
+	this.footer = footer;
+	return footer;
+}
+
 function assertTrue(expression) {
 	return "assertTrue(" + expression.toString() + ")";
 }
