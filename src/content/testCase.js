@@ -104,10 +104,8 @@ Command.prototype.getDefinition = function() {
 		if (accessor) {
 			return accessor;
 		}
-	} else {
-		return api[this.command];
 	}
-	return null;
+	return api[this.command];
 }
 
 Command.prototype.getParameterAt = function(index) {

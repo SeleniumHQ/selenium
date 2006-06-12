@@ -78,6 +78,7 @@ function testJavaRCFormat() {
 	assertEquals('while (!"def".equals(selenium.getText("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForText', 'abc', 'def')));
 	assertEquals('while ("def".equals(selenium.getText("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
 	assertEquals('selenium.open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
+	assertEquals('selenium.waitForPageToLoad("30");', f.formatCommand(new Command('waitForPageToLoad', '30')));
 }
 
 function testCSharpRCFormat() {

@@ -99,6 +99,8 @@ function formatCommand(command) {
 				call.args.push(string(command.getParameterAt(i)));
 			}
 			line += statement(call);
+		} else if ('pause' == command.command) {
+			
 		} else {
 			// TODO
 			var call = new CallSelenium(command.command);
@@ -110,6 +112,7 @@ function formatCommand(command) {
 				}
 			}
 			line += statement(call);
+			line = formatComment(new Comment(line));
 		}
 	}
 	return line;
