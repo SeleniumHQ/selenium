@@ -99,8 +99,8 @@ function formatCommand(command) {
 				call.args.push(string(command.getParameterAt(i)));
 			}
 			line += statement(call);
-		} else if ('pause' == command.command) {
-			
+		} else if (this.pause && 'pause' == command.command) {
+			line += pause(command.target);
 		} else {
 			// TODO
 			var call = new CallSelenium(command.command);

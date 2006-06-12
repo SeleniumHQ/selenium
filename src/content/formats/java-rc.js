@@ -67,6 +67,10 @@ function assertNotEquals(e1, e2) {
 	return "assertNotEquals(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
+function pause(milliseconds) {
+	return "Thread.sleep(" + parseInt(milliseconds) + ");";
+}
+
 function statement(expression) {
 	return expression.toString() + ';';
 }

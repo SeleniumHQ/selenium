@@ -2,7 +2,7 @@ this.seleniumAPI = {};
 const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
 subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.seleniumAPI);
 var parser = new DOMParser();
-Command.apiDocument = parser.parseFromString(FileUtils.readURL("chrome://selenium-ide/content/selenium/iedoc-core.xml"), "text/xml");
+Command.apiDocument = parser.parseFromString(FileUtils.readURL("chrome://selenium-ide/content/selenium/iedoc.xml"), "text/xml");
 
 Command.prototype.getAPI = function() {
 	return seleniumAPI;
@@ -79,6 +79,7 @@ function testJavaRCFormat() {
 	assertEquals('while ("def".equals(selenium.getText("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
 	assertEquals('selenium.open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
 	assertEquals('selenium.waitForPageToLoad("30");', f.formatCommand(new Command('waitForPageToLoad', '30')));
+	assertEquals('Thread.sleep(1000);', f.formatCommand(new Command('pause', '1000')));
 }
 
 function testCSharpRCFormat() {
