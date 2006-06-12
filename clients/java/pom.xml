@@ -67,6 +67,11 @@
 			        	<artifactId>ant-trax</artifactId>
 			        	<version>1.6.5</version>
 			        </dependency>
+			        <!--<dependency>
+						<groupId>org.openqa.selenium</groupId>
+					    <artifactId>selenium-xlator</artifactId>
+					    <version>${project.version}</version>
+					</dependency>-->
 				</dependencies>
 			</plugin>
         </plugins>

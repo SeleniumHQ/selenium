@@ -39,6 +39,20 @@
         </copy>
 	</target>
 	
+	<target name="generate-tests2" depends="extract-jar" unless="skip.generation.true">
+		<condition property="build.failed">
+			<not><available file="${core.javascript.path}" /></not>
+		</condition>
+		<fail if="build.failed" message="Couldn't find JavaScript: ${core.javascript.path}" />
+		<property name="dir.core.tests" location="${core.javascript.path}/tests" />
+		<echo message="maven.src.path = ${maven.src.path}" />
+        <mkdir  dir="${dir.java.tests.based.on.core.javascript}" />
+        <typedef name="xlate" classname="org.openqa.selenium.XlatorTask" />
+        <xlate formatter="java-rc" destDir="${dir.java.tests.based.on.core.javascript}">
+        	<fileset dir="${dir.core.tests}" includes="*.html" excludes="*Suite*"/>
+        </xlate>
+	</target>
+	
 	<target name="generate-client" depends="extract-jar" unless="skip.generation.true">
 		<xslt in="${iedoc.xml}" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="interface" />
