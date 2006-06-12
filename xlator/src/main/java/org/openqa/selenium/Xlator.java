@@ -1,6 +1,7 @@
 package org.openqa.selenium;
 
 import java.io.*;
+
 import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
@@ -93,7 +94,7 @@ public class Xlator
         }
     }
     
-    private static String loadFile(File file) throws IOException {
+    static String loadFile(File file) throws IOException {
         Reader is = new FileReader(file);
         return readerToString(is);
     }

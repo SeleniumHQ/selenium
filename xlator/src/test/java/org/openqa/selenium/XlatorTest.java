@@ -31,13 +31,6 @@ public class XlatorTest
     public void testJava() throws Exception
     {
         String content = Xlator.xlateTestCase("java-rc", Xlator.loadResource("/tests/TestClick.html"));
-		// TODO we have to write it to appropriate directory
-		File dir = new File("target/generated-test");
-		dir.mkdirs();
-		File testFile = new File(dir, "NewTest.java");
-		Writer writer = new OutputStreamWriter(new FileOutputStream(testFile), "UTF-8");
-		writer.write(content);
-		writer.close();
     }
     
     public void testCsharp() throws Exception
