@@ -28,7 +28,7 @@ public class XlatorTest
         return new TestSuite( XlatorTest.class );
     }
 
-    public void testJava() throws IOException
+    public void testJava() throws Exception
     {
         String content = Xlator.xlateTestCase("java-rc", Xlator.loadResource("/tests/TestClick.html"));
 		// TODO we have to write it to appropriate directory
@@ -40,22 +40,22 @@ public class XlatorTest
 		writer.close();
     }
     
-    public void testCsharp() throws IOException
+    public void testCsharp() throws Exception
     {
         Xlator.xlateTestCase("cs-rc", Xlator.loadResource("/tests/TestClick.html"));
     }
     
-    public void testPerl() throws IOException
+    public void testPerl() throws Exception
     {
         Xlator.xlateTestCase("perl-rc", Xlator.loadResource("/tests/TestClick.html"));
     }
     
-    public void testRuby() throws IOException
+    public void testRuby() throws Exception
     {
         Xlator.xlateTestCase("ruby-rc", Xlator.loadResource("/tests/TestClick.html"));
     }
     
-    public void testPython() throws IOException
+    public void testPython() throws Exception
     {
         Xlator.xlateTestCase("python-rc", Xlator.loadResource("/tests/TestClick.html"));
     }
