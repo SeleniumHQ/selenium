@@ -7,6 +7,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>server</module>
+    <module>xlator</module>
     <module>clients/java</module>
   </modules>
   <repositories>
