@@ -78,11 +78,19 @@ public class SeleneseQueue {
      * @return - the next command to run
      */
     public SeleneseCommand handleCommandResult(String commandResult) {
-        // DGF If the command result is null, we must be starting the run
-        if (commandResult != null) {
-            commandResultHolder.put(commandResult);
+        if (commandResult == null) {
+        	throw new RuntimeException("null command result");
         }
+        commandResultHolder.put(commandResult);
         SeleneseCommand sc = (SeleneseCommand) commandHolder.get();
         return sc;
     }
+    
+    /**
+     * <p> Throw away a command reply.
+     *
+     */
+	public void discardCommandResult() {
+		commandResultHolder.get();
+	}
 }

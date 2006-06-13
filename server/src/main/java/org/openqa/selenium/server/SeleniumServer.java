@@ -136,6 +136,7 @@ public class SeleniumServer {
     private int port;
     
     private static boolean debugMode = false;
+    private static boolean proxyInjectionMode = false;
     
     public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
@@ -166,6 +167,10 @@ public class SeleniumServer {
             }
             else if ("-port".equals(arg)) {
                 port = Integer.parseInt(args[++i]);
+            }
+            else if ("-proxyInjectionMode".equals(arg)) {
+                proxyInjectionMode = true;
+                proxyInjectionSpeech();
             }
             else if ("-debug".equals(arg)) {
                 SeleniumServer.setDebugMode(true);
@@ -320,6 +325,29 @@ public class SeleniumServer {
         
     }
 
+    private static void proxyInjectionSpeech() {
+        System.out.println("The selenium server will execute in proxyInjection mode.  \r\n" + 
+                "\r\n" + 
+                "There are a couple of assumptions that this mode makes which make the selenium server less shareable than has historically been the case:\r\n" + 
+                "\r\n" + 
+                "-users never execute multiple browser sessions simultaneously\r\n" + 
+                "-either everyone wants proxyInjection mode, or else no one does\r\n" + 
+                "\r\n" + 
+                "If we decide that proxyInjection mode is worthwhile, then we will have to choose between the following options:\r\n" + 
+                "\r\n" + 
+                "-tell the community that it is not OK to run simultaneous multiple browser sessions\r\n" + 
+                "\r\n" + 
+                "   or\r\n" + 
+                "\r\n" + 
+                "-remove proxyInjection mode\'s assumption that the most recently allocated sessionId is the only valid one.\r\n" + 
+                "-determine when requests come into jetty whether they are associated with proxyInjection sessions, and only if they are performed injection of the proxyInjection JavaScript\r\n" + 
+                "\r\n" + 
+                "(Session IDs could be stored in cookies, alleviating the need to have a global reckoning " +
+                "of the \"current\" session ID.  This of course would mean that we would need to require that cookies be turned on.)" +
+                "" +
+                "At that time it will also make sense to implement browser launchers which configure the browser appropriately for this mode.");        
+    }
+
     private static void setSystemProperty(String arg) {
         if (arg.indexOf('=')==-1) {
             usage("poorly formatted Java property setting (I expect to see '=') " + arg);
@@ -359,6 +387,7 @@ public class SeleniumServer {
         HttpContext root = new HttpContext();
         root.setContextPath("/");
         ProxyHandler rootProxy = new ProxyHandler();
+        rootProxy.setSeleniumServer(this);
         root.addHandler(rootProxy);
         server.addContext(null, root);
 
@@ -467,6 +496,10 @@ public class SeleniumServer {
 
     static public void setDebugMode(boolean debugMode) {
         SeleniumServer.debugMode = debugMode;
+    }
+
+    public static boolean isProxyInjectionMode() {
+        return proxyInjectionMode;
     }
 
 }

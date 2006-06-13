@@ -41,6 +41,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private final Map queues = new HashMap();
     private final Map launchers = new HashMap();
     private SeleniumServer server;
+    private static String lastSessionId = null;
     private Map domainsBySessionId = new HashMap();   
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
@@ -65,7 +66,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         try {
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
-            
+
             OutputStream out = res.getOutputStream();
             ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
             Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
@@ -73,11 +74,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             String method = req.getMethod();
             String cmd = getParam(req, "cmd");
             String sessionId = getParam(req, "sessionId");
-            
+
             // If this is a browser requesting work for the first time...
             if ("POST".equalsIgnoreCase(method) || (seleniumStart != null && seleniumStart.equals("true"))) {
-                //System.out.println("commandResult = " + commandResult);
-                
                 InputStream is = req.getInputStream();
                 StringBuffer sb = new StringBuffer();
                 InputStreamReader r = new InputStreamReader(is, "UTF-8");
@@ -86,11 +85,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     sb.append((char) c);
                 }
                 String commandResult = sb.toString();
-                
+                System.out.println("Session " + sessionId + " sent result " + commandResult);
+
                 if ("true".equals(seleniumStart)) {
-                    commandResult = null;
+                    commandResult = "OK";	// assume a new page starting is okay
                 }
-                
+
                 SeleneseQueue queue = getQueue(sessionId);
                 SeleneseCommand sc = queue.handleCommandResult(commandResult);
                 //System.out.println("Sending next command: " + sc.getCommandString());
@@ -102,12 +102,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 writer.write("\015\012");
                 writer.flush();
                 buf.writeTo(out);
-                
+
                 req.setHandled(true);
             } else if (cmd != null) {
+                System.out.println(method + ": " + cmd);
                 handleCommandRequest(req, res, cmd, sessionId);
             } else {
-                //System.out.println("Unexpected: " + req.getRequestURL() + "?" + req.getQuery());
+                //System.out.println("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
                 req.setHandled(false);
             }
         }
@@ -120,7 +121,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
             }
             throw e;
-         }
+        }
     }
 
     /** Try to extract the name of the file whose absence caused the exception
@@ -128,7 +129,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * @param e - the exception
      * @return the name of the file whose absence caused the exception
      */
-	private String extractNameOfFileThatCouldntBeFound(Exception e) {
+    private String extractNameOfFileThatCouldntBeFound(Exception e) {
         String s = e.getMessage();
         if (s==null) {
             return null;
@@ -137,7 +138,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return s.replaceFirst(".*CreateProcess: ", "").replaceFirst(" .*", "");
     }
 
-	private boolean looksLikeBrowserLaunchFailedBecauseFileNotFound(Exception e) {
+    private boolean looksLikeBrowserLaunchFailedBecauseFileNotFound(Exception e) {
         String s = e.getMessage();
         // will only succeed on Windows -- perhaps I will make it work on other platforms later
         return (s!=null) && s.matches("java.io.IOException: CreateProcess: .*error=3");
@@ -224,7 +225,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 if (values.size() > 3) {
                     output = new File((String)values.get(3));
                 }
-                // TODO User Configurable timeout 
+                // TODO User Configurable timeout
                 long timeout = 1000 * 60 * 30;
                 try {
                     results = launcher.runHTMLSuite((String) values.get(0), (String) values.get(1), (String) values.get(2), output, timeout);
@@ -235,12 +236,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
         } else {
             if ("open".equals(cmd)) {
-                warnIfApparentDomainChange(sessionId, (String)values.get(0)); 
+                warnIfApparentDomainChange(sessionId, (String)values.get(0));
             }
             SeleneseQueue queue = getQueue(sessionId);
             results = queue.doCommand(cmd, (String)values.get(0), (String)values.get(1));
         }
-        System.out.println("Got result: " + results);
+        System.out.println("Got result: " + results + " on session " + sessionId);
         return results;
     }
 
@@ -261,15 +262,16 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private String getNewBrowserSession(String browser, String startURL) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
         String sessionId = Long.toString(System.currentTimeMillis());
-        String results;
+        setLastSessionId(sessionId); 
+        System.out.println("Allocated session " + sessionId + " for " + startURL);
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, getQueue(sessionId));
         launcher.launchRemoteSession(startURL);
         launchers.put(sessionId, launcher);
         SeleneseQueue queue = getQueue(sessionId);
+        queue.discardCommandResult();
         queue.doCommand("setContext", sessionId, "");
-        results = sessionId;
-        return results;
+        return sessionId;
     }
 
     /** Perl and Ruby hang forever when they see "Connection: close" in the HTTP headers.
@@ -359,8 +361,16 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private void setDomain(String sessionId, String domain) {
         domainsBySessionId.put(sessionId, domain);
     }
-    
+
     private String getDomain(String sessionId) {
         return (String) domainsBySessionId.get(sessionId);
+    }
+
+    public static String getLastSessionId() {
+        return lastSessionId;
+    }
+
+    private static synchronized void setLastSessionId(String sessionId) {
+        SeleniumDriverResourceHandler.lastSessionId = sessionId;
     }
 }

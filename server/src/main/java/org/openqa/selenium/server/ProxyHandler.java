@@ -23,13 +23,16 @@ import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
 import org.mortbay.util.URI;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.Integer;
 import java.net.*;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /* ------------------------------------------------------------ */
 
@@ -50,6 +53,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     protected Set _proxyHostsBlackList;
     protected int _tunnelTimeoutMs = 250;
     private boolean _anonymous = false;
+    private SeleniumServer seleniumServer;
     private transient boolean _chained = false;
 
     /* ------------------------------------------------------------ */
@@ -234,7 +238,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             }
 
             // is this URL a /selenium URL?
-            if (url.toString().indexOf("/selenium") != -1) {
+            if (url.toString().indexOf("/selenium") != -1) { 
                 request.setHandled(false);
                 return;
             }
@@ -244,7 +248,10 @@ public class ProxyHandler extends AbstractHttpHandler {
 
             URLConnection connection = url.openConnection();
             connection.setAllowUserInteraction(false);
-
+            
+            if (SeleniumServer.isProxyInjectionMode())
+                adjustRequestForProxyInjection(request, connection);
+          
             // Set method
             HttpURLConnection http = null;
             if (connection instanceof HttpURLConnection) {
@@ -288,7 +295,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                     }
                 }
             }
-
+ 
             // Proxy headers
             if (!_anonymous)
                 connection.setRequestProperty("Via", "1.1 (jetty)");
@@ -324,12 +331,16 @@ public class ProxyHandler extends AbstractHttpHandler {
 
             // handler status codes etc.
             int code;
+            boolean isKnownToBeHtml = false;
             if (http != null) {
                 proxy_in = http.getErrorStream();
 
                 code = http.getResponseCode();
                 response.setStatus(code);
                 response.setReason(http.getResponseMessage());
+                
+                String contentType = http.getHeaderField("Content-Type");
+                isKnownToBeHtml = ((contentType!=null) && "text/html".equals(contentType));
             }
 
             if (proxy_in == null) {
@@ -362,9 +373,14 @@ public class ProxyHandler extends AbstractHttpHandler {
 
             // Handled
             request.setHandled(true);
-            if (proxy_in != null)
-                IO.copy(proxy_in, response.getOutputStream());
-
+            if (proxy_in != null) {
+            	if (SeleniumServer.isProxyInjectionMode() && http.getResponseCode()==HttpURLConnection.HTTP_OK) {
+            		injectJavaScript(isKnownToBeHtml, response, proxy_in, response.getOutputStream());
+            	}
+            	else {
+            		IO.copy(proxy_in, response.getOutputStream());
+            	}
+            }
         }
         catch (Exception e) {
             log.warn(e.toString());
@@ -374,7 +390,84 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
     }
 
-    /* ------------------------------------------------------------ */
+	private void adjustRequestForProxyInjection(HttpRequest request, URLConnection connection) {
+		request.setState(HttpMessage.__MSG_EDITABLE);
+		if (request.containsField("If-Modified-Since")) {
+			// TODO: still need to disable caching?  I want to prevent 304s during this development phase where 
+			// I'm often changing the injection, and so need HTML caching to be absolutely defeated 
+			request.removeField("If-Modified-Since");
+			request.removeField("If-None-Match");            	
+			connection.setUseCaches(false);  // maybe I don't need the stuff above?
+		}
+		request.removeField("Accept-Encoding");	// js injection is hard w/ gzip'd data, so try to prevent it ahead of time
+		request.setState(HttpMessage.__MSG_RECEIVED);
+	}
+
+    private void injectJavaScript(boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
+		byte[] buf = new byte[1024];
+		int len = in.read(buf);
+		if (len == -1) {
+			return;
+		}
+		if (!isKnownToBeHtml) {
+			String data = new String(buf);
+			Pattern regexp = Pattern.compile("<\\s*(html|head|body|table)", 
+					Pattern.CASE_INSENSITIVE);	
+			isKnownToBeHtml = regexp.matcher(data).find(); 
+		}
+		String proxyHost = "localhost";
+		int proxyPort = seleniumServer.getPort();
+		String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
+		
+		if (isKnownToBeHtml) {
+			response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated 
+			
+			// TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for updates)
+			InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injection.html");//  new ClassPathResource("/core/scripts/injection.html")
+			out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+			jsIn.close();
+		}			
+		out.write(buf, 0, len);
+		IO.copy(in, out);
+			
+		if (isKnownToBeHtml) {
+//			 TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for each update)
+			InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injectionAtEOF.html");//  new ClassPathResource("/core/scripts/injection.html")
+			out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+			jsIn.close();
+		}
+	}
+    
+    private byte[] getJsWithSubstitutions(InputStream jsIn, String proxyHost, int proxyPort, String sessionId) throws IOException {
+    	if (jsIn.available()==0) {
+    		throw new RuntimeException("cannot read injected JavaScript stream");
+    	}
+    	byte[] buf = new byte[8192];
+    	StringBuffer sb = new StringBuffer();
+    	while(true) {
+    		int len = jsIn.read(buf);
+    		if (len <= 0) {
+    			break;
+    		}
+    		sb.append(new String(buf, 0, len, "UTF-8"));
+    	}
+    	
+    	if (sessionId==null) {
+    		sessionId = "uninitialized";
+    	}
+
+    	sessionId = "\"" + sessionId + "\"";
+    	
+    	
+    	String js = sb.toString(); 
+    	js = js.replaceAll("@PROXY_HOST@", proxyHost);
+    	js = js.replaceAll("@PROXY_PORT@", Integer.toString(proxyPort));
+    	js = js.replaceAll("@SESSION_ID@", sessionId);
+    	
+		return js.getBytes();	
+    }
+
+	/* ------------------------------------------------------------ */
     public void handleConnect(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
         URI uri = request.getURI();
 
@@ -602,5 +695,9 @@ public class ProxyHandler extends AbstractHttpHandler {
      */
     public void setAnonymous(boolean anonymous) {
         _anonymous = anonymous;
+    }
+
+    public void setSeleniumServer(SeleniumServer server) {
+        seleniumServer = server;
     }
 }
