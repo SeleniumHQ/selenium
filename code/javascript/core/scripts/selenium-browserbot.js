@@ -122,7 +122,11 @@ BrowserBot.prototype.getNextPrompt = function() {
 };
 
 BrowserBot.prototype.getFrame = function() {
-    return this.frame;
+    var f = this.frame;
+    if (f==null) {
+    	f = window;	// in case we aren't using frames
+    }
+    return f;
 };
 
 BrowserBot.prototype.selectWindow = function(target) {
@@ -997,7 +1001,10 @@ PageBot.prototype.getAllLinks = function() {
 
 PageBot.prototype.setContext = function(strContext, logLevel) {
      //set the current test title
-    document.getElementById("context").innerHTML=strContext;
+    var ctx = document.getElementById("context");
+    if (ctx != null) { 
+    	ctx.innerHTML=strContext;
+    }
     if (logLevel!=null) {
     	LOG.setLogLevelThreshold(logLevel);
     }

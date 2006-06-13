@@ -84,15 +84,27 @@ function continueCurrentTest() {
 }
 
 function getApplicationFrame() {
-    return document.getElementById('myiframe');
+    var f = document.getElementById('myiframe');
+    if (f==null) {
+    	f = top;	// proxyInjection mode does not set myiframe
+    }
+    return f;
 }
 
 function getSuiteFrame() {
-    return document.getElementById('testSuiteFrame');
+    var f = document.getElementById('testSuiteFrame');
+    if (f==null) {
+    	f = top;	// proxyInjection mode does not set myiframe
+    }
+    return f;
 }
 
 function getTestFrame(){
-    return document.getElementById('testFrame');
+    var f = document.getElementById('testFrame');
+    if (f==null) {
+    	f = top;	// proxyInjection mode does not set myiframe
+    }
+    return f;
 }
 
 function loadAndRunIfAuto() {
