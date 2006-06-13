@@ -1,12 +1,12 @@
 package org.openqa.selenium;
 
 import java.io.*;
+import java.util.*;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
-
 import org.mozilla.javascript.*;
+import org.w3c.dom.*;
 
 /**
  * Xlator
@@ -15,15 +15,24 @@ import org.mozilla.javascript.*;
 public class Xlator 
 {
     
-    private static int LOG_LEVEL = 1;
-    private static String _outputFormat;
-    private static File _testCaseHTML;
-    private static File _outputFile;
+    private static final String PROPERTY_PREFIX = "selenium.options.";
 
     public static void main( String[] args ) throws Exception
     {
-        parseArgs(args);
-        String output = xlateTestCase(_outputFormat, Xlator.loadFile(_testCaseHTML));
+        if (args.length < 2) {
+            System.err.println("usage: Xlator <formatter> <input.html> [output]\n" +
+                    "example: Xlator java-rc c:\\my\\TestFoo.html\n");
+            System.exit(1);
+        }
+        int i = 0;
+        String _outputFormat = args[i++];
+        File _testCaseHTML = new File(args[i++]);
+        File _outputFile = null;
+        if (args.length == 3) {
+            _outputFile = new File(args[i++]);
+        }
+        HashMap<String, String> options = extractOptions();
+        String output = xlateTestCase(_outputFormat, Xlator.loadFile(_testCaseHTML), options);
         if (_outputFile == null) {
             System.out.println(output);
         } else {
@@ -34,21 +43,19 @@ public class Xlator
         }
     }
     
-    private static void parseArgs(String[] args) {
-        if (args.length < 2) {
-            System.err.println("usage: Xlator <formatter> <input.html> [output]\n" +
-                    "example: Xlator java-rc c:\\my\\TestFoo.html\n");
-            System.exit(1);
+    public static HashMap<String, String> extractOptions() {
+        HashMap<String, String> options = new HashMap<String, String>();
+        for (Iterator i = System.getProperties().keySet().iterator(); i.hasNext();) {
+            String key = (String) i.next();
+            if (key.startsWith(PROPERTY_PREFIX)) {
+                String optionName = key.substring(PROPERTY_PREFIX.length());
+                options.put(optionName, System.getProperty(key));
+            }
         }
-        int i = 0;
-        _outputFormat = args[i++];
-        _testCaseHTML = new File(args[i++]);
-        if (args.length == 3) {
-            _outputFile = new File(args[i++]);
-        }
+        return options;
     }
-
-    public static String xlateTestCase(String outputFormat, String htmlSource) throws Exception {
+    
+    public static String xlateTestCase(String outputFormat, String htmlSource, HashMap<String, String> options) throws Exception {
         Context cx = Context.enter();
         try {
             Scriptable scope = cx.initStandardObjects();
@@ -70,6 +77,14 @@ public class Xlator
             
             // add log.debug
 			cx.evaluateString(scope, "Log.write = function(msg) { java.lang.System.out.println(msg) }; log = new Log('format');", "<JavaEval>", 1, null);
+            
+            if (options != null) {
+                for (Iterator<String> i = options.keySet().iterator(); i.hasNext();) {
+                    String optionName = i.next();
+                    Scriptable jsOptions = (Scriptable) scope.get("options", scope);
+                    ScriptableObject.putProperty(jsOptions, optionName, options.get(optionName));
+                }
+            }
             
             Function parse = getFunction(scope, "parse");
             Scriptable myTestCase = cx.newObject(scope, "TestCase");

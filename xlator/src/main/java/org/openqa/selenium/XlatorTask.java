@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.tools.ant.*;
+import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.*;
 import org.apache.tools.ant.util.*;
 
@@ -36,6 +37,7 @@ import org.apache.tools.ant.util.*;
 public class XlatorTask extends Task {
 
     private Vector<FileSet> _filesets = new Vector<FileSet>();
+    private HashMap<String, String> options = new HashMap<String, String>();
     private Mapper mapperElement;
     private File destDir;
     private FormatterType formatter;
@@ -56,6 +58,10 @@ public class XlatorTask extends Task {
 
     public void addFileSet(FileSet fs) {
         _filesets.addElement(fs);
+    }
+    
+    public void addConfiguredOption(Property p) {
+        options.put(p.getName(), p.getValue());
     }
     
     /**
@@ -131,7 +137,7 @@ public class XlatorTask extends Task {
             log("Reading " + input.getAbsolutePath(), Project.MSG_DEBUG);
             htmlSource = Xlator.loadFile(input);
             log("Translating", Project.MSG_DEBUG);
-            output = Xlator.xlateTestCase(formatter.getValue(), htmlSource);
+            output = Xlator.xlateTestCase(formatter.getValue(), htmlSource, options);
         } catch (Exception e) {
             throw new BuildException(e);
         }
