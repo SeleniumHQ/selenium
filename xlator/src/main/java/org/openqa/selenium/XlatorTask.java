@@ -137,7 +137,7 @@ public class XlatorTask extends Task {
             log("Reading " + input.getAbsolutePath(), Project.MSG_DEBUG);
             htmlSource = Xlator.loadFile(input);
             log("Translating", Project.MSG_DEBUG);
-            output = Xlator.xlateTestCase(formatter.getValue(), htmlSource, options);
+            output = Xlator.xlateTestCase(Xlator.extractTestName(input), formatter.getValue(), htmlSource, options);
         } catch (Exception e) {
             throw new BuildException(e);
         }

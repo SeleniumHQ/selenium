@@ -25,18 +25,19 @@ public class Xlator
             System.exit(1);
         }
         int i = 0;
-        String _outputFormat = args[i++];
-        File _testCaseHTML = new File(args[i++]);
-        File _outputFile = null;
+        String outputFormat = args[i++];
+        File testCaseHTML = new File(args[i++]);
+        File outputFile = null;
         if (args.length == 3) {
-            _outputFile = new File(args[i++]);
+            outputFile = new File(args[i++]);
         }
         HashMap<String, String> options = extractOptions();
-        String output = xlateTestCase(_outputFormat, Xlator.loadFile(_testCaseHTML), options);
-        if (_outputFile == null) {
+        String testName = extractTestName(testCaseHTML);
+        String output = xlateTestCase(testName, outputFormat, Xlator.loadFile(testCaseHTML), options);
+        if (outputFile == null) {
             System.out.println(output);
         } else {
-            FileWriter fw = new FileWriter(_outputFile);
+            FileWriter fw = new FileWriter(outputFile);
             fw.write(output);
             fw.flush();
             fw.close();
@@ -55,7 +56,13 @@ public class Xlator
         return options;
     }
     
-    public static String xlateTestCase(String outputFormat, String htmlSource, HashMap<String, String> options) throws Exception {
+    static String extractTestName(File testFile) {
+        int dotIndex = testFile.getName().indexOf('.');
+        if (dotIndex == -1) return testFile.getName();
+        return testFile.getName().substring(0, dotIndex);
+    }
+    
+    public static String xlateTestCase(String testName, String outputFormat, String htmlSource, HashMap<String, String> options) throws Exception {
         Context cx = Context.enter();
         try {
             Scriptable scope = cx.initStandardObjects();
@@ -89,6 +96,8 @@ public class Xlator
             Function parse = getFunction(scope, "parse");
             Scriptable myTestCase = cx.newObject(scope, "TestCase");
             parse.call(cx, scope, scope, new Object[] {myTestCase, htmlSource});
+            
+            ScriptableObject.putProperty(myTestCase, "name", testName);
 
             Object wrappedResourceLoader = Context.javaToJS(new ResourceLoader(cx, scope), scope);
             ScriptableObject.putProperty(scope, "resourceLoader", wrappedResourceLoader);

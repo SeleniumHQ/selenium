@@ -38,26 +38,26 @@ public class XlatorTest
 
     public void testJava() throws Exception
     {
-        String content = Xlator.xlateTestCase("java-rc", Xlator.loadResource("/tests/TestClick.html"), options);
+        String content = Xlator.xlateTestCase("TestClick", "java-rc", Xlator.loadResource("/tests/TestClick.html"), options);
     }
     
     public void testCsharp() throws Exception
     {
-        Xlator.xlateTestCase("cs-rc", Xlator.loadResource("/tests/TestClick.html"), options);
+        Xlator.xlateTestCase("TestClick", "cs-rc", Xlator.loadResource("/tests/TestClick.html"), options);
     }
     
     public void testPerl() throws Exception
     {
-        Xlator.xlateTestCase("perl-rc", Xlator.loadResource("/tests/TestClick.html"), options);
+        Xlator.xlateTestCase("TestClick", "perl-rc", Xlator.loadResource("/tests/TestClick.html"), options);
     }
     
     public void testRuby() throws Exception
     {
-        Xlator.xlateTestCase("ruby-rc", Xlator.loadResource("/tests/TestClick.html"), options);
+        Xlator.xlateTestCase("TestClick", "ruby-rc", Xlator.loadResource("/tests/TestClick.html"), options);
     }
     
     public void testPython() throws Exception
     {
-        Xlator.xlateTestCase("python-rc", Xlator.loadResource("/tests/TestClick.html"), options);
+        Xlator.xlateTestCase("TestClick", "python-rc", Xlator.loadResource("/tests/TestClick.html"), options);
     }
 }
