@@ -23,6 +23,7 @@ doneColor = "#FFFFCC";
 
 slowMode = false;
 
+var injectedSessionId;
 var cmd1 = document.createElement("div");
 var cmd2 = document.createElement("div");
 var cmd3 = document.createElement("div");
@@ -30,10 +31,13 @@ var cmd4 = document.createElement("div");
 
 var postResult = "START";
 
-queryString = null;
+var queryString = null;
 
 function runTest() {
     var testAppFrame = document.getElementById('myiframe');
+    if (testAppFrame==null) {
+    	testAppFrame = window;
+    }
     selenium = Selenium.createForFrame(testAppFrame);
 
     commandFactory = new CommandHandlerFactory();
@@ -53,10 +57,12 @@ function runTest() {
     	postResult = "START";
     };
 
-    document.getElementById("commandList").appendChild(cmd4);
-    document.getElementById("commandList").appendChild(cmd3);
-    document.getElementById("commandList").appendChild(cmd2);
-    document.getElementById("commandList").appendChild(cmd1);
+    if (document.getElementById("commandList") != null) {
+    	document.getElementById("commandList").appendChild(cmd4);
+        document.getElementById("commandList").appendChild(cmd3);
+        document.getElementById("commandList").appendChild(cmd2);
+        document.getElementById("commandList").appendChild(cmd1);
+    }
     
     var doContinue = getQueryVariable("continue");
 	if (doContinue != null) postResult = "OK";
@@ -109,10 +115,13 @@ function getQueryVariable(variable) {
 
 function buildBaseUrl() {
 	var baseUrl = getQueryVariable("baseUrl");
-	if (baseUrl != null) return baseUrl;
-	var lastSlash = window.location.href.lastIndexOf('/');
-	baseUrl = window.location.href.substring(0, lastSlash+1);
-	return baseUrl;
+        if (baseUrl != null) {
+        	return baseUrl;
+        }
+        var s=window.location.href
+        var slashPairOffset=s.indexOf("//") + "//".length
+        var pathSlashOffset=s.substring(slashPairOffset).indexOf("/")
+        return s.substring(0, slashPairOffset + pathSlashOffset) + "/selenium-server/core/";
 }
 
 function buildDriverParams() {
@@ -125,6 +134,9 @@ function buildDriverParams() {
     }
 
     var sessionId = getQueryVariable("sessionId");
+    if (sessionId == undefined) {
+    	sessionId = injectedSessionId;
+    }
     if (sessionId != undefined) {
         params = params + "&sessionId=" + sessionId;
     }
@@ -141,12 +153,12 @@ function nextCommand() {
     xmlHttp = XmlHttp.create();
     try {
     	
-    	var url = buildBaseUrl();
+    	var url = buildBaseUrl() + "driver/?"
         if (postResult == "START") {
-        	url = url + "driver/?seleniumStart=true" + buildDriverParams() + preventBrowserCaching();
-        } else {
-        	url = url + "driver/?" + buildDriverParams() + preventBrowserCaching();
+        	url += "seleniumStart=true"
         }
+        url += buildDriverParams() + preventBrowserCaching();
+        
         LOG.debug("XMLHTTPRequesting " + url);
         xmlHttp.open("POST", url, true);
         xmlHttp.onreadystatechange=handleHttpResponse;
@@ -209,18 +221,20 @@ function commandStarted(command) {
     innerHTML += ")";
     commandNode.innerHTML = innerHTML;
     commandNode.style.backgroundColor = workingColor;
-    document.getElementById("commandList").removeChild(cmd1);
-    document.getElementById("commandList").removeChild(cmd2);
-    document.getElementById("commandList").removeChild(cmd3);
-    document.getElementById("commandList").removeChild(cmd4);
-    cmd4 = cmd3;
-    cmd3 = cmd2;
-    cmd2 = cmd1;
-    cmd1 = commandNode;
-    document.getElementById("commandList").appendChild(cmd4);
-    document.getElementById("commandList").appendChild(cmd3);
-    document.getElementById("commandList").appendChild(cmd2);
-    document.getElementById("commandList").appendChild(cmd1);
+    if (document.getElementById("commandList") != null) {
+    	document.getElementById("commandList").removeChild(cmd1);
+        document.getElementById("commandList").removeChild(cmd2);
+        document.getElementById("commandList").removeChild(cmd3);
+        document.getElementById("commandList").removeChild(cmd4);
+        cmd4 = cmd3;
+        cmd3 = cmd2;
+        cmd2 = cmd1;
+        cmd1 = commandNode;
+        document.getElementById("commandList").appendChild(cmd4);
+        document.getElementById("commandList").appendChild(cmd3);
+        document.getElementById("commandList").appendChild(cmd2);
+        document.getElementById("commandList").appendChild(cmd1);
+    }
 }
 
 function commandComplete(result) {
