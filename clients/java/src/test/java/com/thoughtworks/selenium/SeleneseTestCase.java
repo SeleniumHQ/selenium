@@ -36,11 +36,15 @@ public class SeleneseTestCase extends TestCase {
     }
 
     protected void setUp(String url) throws Exception {
+        setUp(url, "*iexplore");
+    }
+    
+    protected void setUp(String url, String browserMode) throws Exception {
         super.setUp();
         if (url==null) {
             url = "http://localhost:" + SeleniumServer.DEFAULT_PORT;
         }
-        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", url);
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, browserMode, url);
         selenium.start();
     }
 
