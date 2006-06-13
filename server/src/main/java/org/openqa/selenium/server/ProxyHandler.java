@@ -249,7 +249,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             URLConnection connection = url.openConnection();
             connection.setAllowUserInteraction(false);
             
-            if (SeleniumServer.isProxyInjectionMode())
+            if (seleniumServer.isProxyInjectionMode())
                 adjustRequestForProxyInjection(request, connection);
           
             // Set method
@@ -374,7 +374,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             // Handled
             request.setHandled(true);
             if (proxy_in != null) {
-            	if (SeleniumServer.isProxyInjectionMode() && http.getResponseCode()==HttpURLConnection.HTTP_OK) {
+            	if (seleniumServer.isProxyInjectionMode() && http.getResponseCode()==HttpURLConnection.HTTP_OK) {
             		injectJavaScript(isKnownToBeHtml, response, proxy_in, response.getOutputStream());
             	}
             	else {
@@ -416,7 +416,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 			isKnownToBeHtml = regexp.matcher(data).find(); 
 		}
 		String proxyHost = "localhost";
-		int proxyPort = seleniumServer.getPort();
+		int proxyPort = seleniumServer.getProxyInjectionPort();
 		String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
 		
 		if (isKnownToBeHtml) {

@@ -136,8 +136,9 @@ public class SeleniumServer {
     private int port;
     
     private static boolean debugMode = false;
-    private static boolean proxyInjectionMode = false;
-    
+    private boolean proxyInjectionMode = false;
+    private int proxyInjectionPort = 0; 
+     
     public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
 
@@ -158,7 +159,9 @@ public class SeleniumServer {
         String suiteFilePath = null;
         String resultFilePath = null;
         File userExtensions = null;
-
+        boolean proxyInjectionMode = false;
+        int proxyInjectionPort = 0;
+        
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if ("-help".equals(arg)) {
@@ -171,6 +174,11 @@ public class SeleniumServer {
             else if ("-proxyInjectionMode".equals(arg)) {
                 proxyInjectionMode = true;
                 proxyInjectionSpeech();
+            }
+            else if ("-proxyInjectionPort".equals(arg)) {
+                // to facilitate tcptrace interception of interaction between 
+                // injected js and the selenium server
+                proxyInjectionPort = Integer.parseInt(args[++i]);
             }
             else if ("-debug".equals(arg)) {
                 SeleniumServer.setDebugMode(true);
@@ -218,6 +226,9 @@ public class SeleniumServer {
                 System.exit(1);
             }
         }
+        if (proxyInjectionPort==0) {
+            proxyInjectionPort = port;
+        }
         
         if (interactive && htmlSuite) {
             System.err.println("You can't use -interactive and -htmlSuite on the same line!");
@@ -226,6 +237,9 @@ public class SeleniumServer {
 
         SingleEntryAsyncQueue.setDefaultTimeout(timeout);
         final SeleniumServer seleniumProxy = new SeleniumServer(port);
+        seleniumProxy.setProxyInjectionMode(proxyInjectionMode);
+        seleniumProxy.setProxyInjectionPort(proxyInjectionPort);
+        
         Thread jetty = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -393,7 +407,7 @@ public class SeleniumServer {
 
         context = new HttpContext();
         context.setContextPath("/selenium-server");
-        staticContentHandler = new StaticContentHandler();
+        staticContentHandler = new StaticContentHandler(this);
         context.addHandler(staticContentHandler);
         server.addContext(null, context);
 
@@ -441,10 +455,20 @@ public class SeleniumServer {
     
     private class StaticContentHandler extends ResourceHandler {
         List contentDirs = new Vector();
+        private final SeleniumServer seleniumServer;
         
-        public void handle(String string, String string1, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
+        public StaticContentHandler(SeleniumServer seleniumServer) {
+            super();
+            this.seleniumServer = seleniumServer;
+        }
+        public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
             httpResponse.setField("Expires", "-1"); // never cached.
-            super.handle(string, string1, httpRequest, httpResponse);
+            if (pathInContext.equals("/core/SeleneseRunner.html") &&
+                    seleniumServer.isProxyInjectionMode()) {
+                pathInContext = pathInContext.replaceFirst("/core/SeleneseRunner.html", 
+                        "/core/InjectedSeleneseRunner.html");
+            }
+            super.handle(pathInContext, pathParams, httpRequest, httpResponse);
         }
 
         /** When resources are requested, fetch them from the classpath */
@@ -498,8 +522,20 @@ public class SeleniumServer {
         SeleniumServer.debugMode = debugMode;
     }
 
-    public static boolean isProxyInjectionMode() {
+    public boolean isProxyInjectionMode() {
         return proxyInjectionMode;
+    }
+
+    public int getProxyInjectionPort() {
+        return proxyInjectionPort;
+    }
+
+    public void setProxyInjectionPort(int proxyInjectionPort) {
+        this.proxyInjectionPort = proxyInjectionPort;
+    }
+
+    public void setProxyInjectionMode(boolean proxyInjectionMode) {
+        this.proxyInjectionMode = proxyInjectionMode;
     }
 
 }
