@@ -36,9 +36,21 @@ var queryString = null;
 function runTest() {
     var testAppFrame = document.getElementById('myiframe');
     if (testAppFrame==null) {
+    	// proxy injection mode
     	testAppFrame = window;
+        LOG.log = logToRc;
     }
+    else
+    {
+        LOG.logHook = logToRc;
+    }
+
     selenium = Selenium.createForFrame(testAppFrame);
+    
+    //sendToRC("hi world", "logLevel=" + "lsdkjfdsfk");
+    
+
+    window.selenium = selenium;
 
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
@@ -150,32 +162,35 @@ function preventBrowserCaching() {
 }   
 
 function nextCommand() {
+    var urlParms = (postResult == "START" ? "seleniumStart=true" : "");
+    sendToRC(postResult, urlParms);
+}
+
+function logToRc(message, logLevel) {
+    //sendToRC(message, "logLevel=" + logLevel);
+}
+
+function sendToRC(dataToBePosted, urlParms) {
     xmlHttp = XmlHttp.create();
-    try {
     	
-    	var url = buildBaseUrl() + "driver/?"
-        if (postResult == "START") {
-        	url += "seleniumStart=true"
-        }
-        url += buildDriverParams() + preventBrowserCaching();
-        
-        LOG.debug("XMLHTTPRequesting " + url);
-        xmlHttp.open("POST", url, true);
-        xmlHttp.onreadystatechange=handleHttpResponse;
-        xmlHttp.send(postResult);
-    } catch(e) {
-       	var s = 'xmlHttp returned:\n'
-        for (key in e) {
-            s += "\t" + key + " -> " + e[key] + "\n"
-        }
-        LOG.error(s);
-        return null;
+    var url = buildBaseUrl() + "driver/?"
+    if (urlParms) {
+    	url += urlParms;
     }
+    url += buildDriverParams() + preventBrowserCaching();
+             
+    xmlHttp.open("POST", url, true);
+    xmlHttp.onreadystatechange=handleHttpResponse;
+    xmlHttp.send(dataToBePosted);
+        
     return null;
 }
 
  function handleHttpResponse() {
  	if (xmlHttp.readyState == 4) {
+        	if (xmlHttp.responseText.match(/^\s*$/) != null) {
+               		return;
+                }
  		if (xmlHttp.status == 200) {
  			var command = extractCommand(xmlHttp);
  			testLoop.currentCommand = command;
