@@ -71,15 +71,14 @@ public class QueueTest extends TestCase {
                 q.put("xyz");   // this one will wait for q.size to be 1 before returning
             }
             catch (RuntimeException e) {
-                failureMessage = "ok";
-                System.out.println("Putting thread saw expected failure: " + e);
+                failureMessage = "Putting thread saw unexpected failure: " + e;
                 return;
             }
             catch (Throwable e) {
-                failureMessage = "got an unexpected exception: " + e;
+                failureMessage = "Putting thread saw unexpected throw: " + e;
                 return;
             }
-            failureMessage = "no exception for a putting thread on a queue that got cleared";
+            failureMessage = "ok";
         }
     };
     

@@ -59,6 +59,10 @@ public class SingleEntryAsyncQueue {
      * @throws SeleniumCommandTimedOutException if the timeout is exceeded. 
      */
     public synchronized Object get() {
+        if (done) {
+            throw new RuntimeException("get(" + this + ") on a retired queue");
+        }
+
         int retries = 0;
         while (q.isEmpty()) {
             if (q.isEmpty() & retries >= timeout) {
@@ -94,6 +98,9 @@ public class SingleEntryAsyncQueue {
      * @param obj - the thing to put in the queue
      */    
     public synchronized void put(Object thing) {
+        if (done) {
+            throw new RuntimeException("put(" + thing + ") on a retired queue");
+        }
         q.addLast(thing);
         notifyAll();
         synchronized(this) {
