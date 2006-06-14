@@ -49,6 +49,7 @@ function runTest() {
     if (debugMode=="false") {
     	debugMode = false;
     }
+    //persistAcrossPages("
     
     var testAppFrame = document.getElementById('myiframe');
     if (testAppFrame==null) {
@@ -177,6 +178,16 @@ function preventBrowserCaching() {
 function nextCommand() {
     var urlParms = (postResult == "START" ? "seleniumStart=true" : "");
     sendToRC(postResult, urlParms);
+}
+
+function persistAcrossPages(variableName) {
+    namesOfVariablesWhichPersistAcrossPageLoads[variableName] = true;
+}
+
+function gatherStateToPersist() {
+    for (key in namesOfVariablesWhichPersistAcrossPageLoads) {
+    	sendMessageToRClater("state: " + key + "='" + escape(eval(key)));
+    }
 }
 
 function sendMessageToRClater(message) {
