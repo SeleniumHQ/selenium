@@ -131,6 +131,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         
     }
 
+    /**
+     * extract the posted data from an incoming request, stripping away a piggybacked data
+     * 
+     * @param req
+     * @return a string containing the posted data (with piggybacked log info stripped)
+     * @throws IOException
+     */
     private String readPostedData(HttpRequest req) throws IOException {
         InputStream is = req.getInputStream();
         StringBuffer sb = new StringBuffer();
@@ -138,6 +145,27 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         int c;
         while ((c = r.read()) != -1) {
             sb.append((char) c);
+        }
+        String s = sb.toString();
+        String postedData = extractLogMessages(s);
+        return postedData;
+    }
+
+    private String extractLogMessages(String s) {
+        String logMessages = grep("logLevel=", s);
+        logMessages = logMessages.replaceAll("logLevel=", "\t");
+        System.out.println(logMessages);
+        return s.replaceAll("logLevel=.*\n", "");
+    }
+
+    private String grep(String pattern, String s) {
+        StringBuffer sb = new StringBuffer();
+        String[] lines = s.split("\n");
+        for (String line : lines) {
+            if (line.matches(".*" + pattern + ".*")) {
+                sb.append(line)
+                .append('\n');
+            }
         }
         return sb.toString();
     }

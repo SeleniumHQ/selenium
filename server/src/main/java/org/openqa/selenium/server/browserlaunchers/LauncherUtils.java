@@ -6,6 +6,7 @@ import java.net.*;
 
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
+import org.openqa.selenium.server.SeleniumServer;
 
 /**
  * Various static utility functions used to launch browsers
@@ -104,7 +105,7 @@ public class LauncherUtils {
     
     protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId) {
         String url = LauncherUtils.stripStartURL(startURL);
-        return url + "/selenium-server/core/SeleneseRunner.html?sessionId=" + sessionId;
+        return url + "/selenium-server/core/SeleneseRunner.html?sessionId=" + sessionId + "&debugMode=" + SeleniumServer.isDebugMode();
     }
 
     protected static File extractHTAFile(File dir, int port, String resourceFile, String outFile) {

@@ -437,10 +437,20 @@ public class ProxyHandler extends AbstractHttpHandler {
 //			 TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for each update)
 			InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injectionAtEOF.html");//  new ClassPathResource("/core/scripts/injection.html")
 			out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+            if (SeleniumServer.isDebugMode()) {
+                out.write(makeJsChunk("debugMode = true;"));
+            }
 			jsIn.close();
 		}
 	}
     
+    private byte[] makeJsChunk(String js) {
+        StringBuffer sb = new StringBuffer("\n<script language=\"JavaScript\">\n");
+        sb.append(js)
+        .append("\n</script>\n");
+        return sb.toString().getBytes();
+    }
+
     private byte[] getJsWithSubstitutions(InputStream jsIn, String proxyHost, int proxyPort, String sessionId) throws IOException {
     	if (jsIn.available()==0) {
     		throw new RuntimeException("cannot read injected JavaScript stream");
