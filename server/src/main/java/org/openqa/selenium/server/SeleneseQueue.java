@@ -85,12 +85,21 @@ public class SeleneseQueue {
         SeleneseCommand sc = (SeleneseCommand) commandHolder.get();
         return sc;
     }
-    
+
     /**
      * <p> Throw away a command reply.
      *
      */
-	public void discardCommandResult() {
-		commandResultHolder.get();
-	}
+    public void discardCommandResult() {
+        commandResultHolder.get();
+    }
+
+    /**
+     * <p> Empty queues, and thereby wake up any threads that are hanging around.
+     *
+     */
+    public void endOfLife() {
+        commandResultHolder.clear();
+        commandHolder.clear();
+    }
 }

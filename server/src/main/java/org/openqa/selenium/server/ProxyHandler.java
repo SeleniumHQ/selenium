@@ -340,7 +340,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                 response.setReason(http.getResponseMessage());
                 
                 String contentType = http.getHeaderField("Content-Type");
-                isKnownToBeHtml = ((contentType!=null) && "text/html".equals(contentType));
+                isKnownToBeHtml = ((contentType!=null) && "text/html".equals(contentType));                
             }
 
             if (proxy_in == null) {
@@ -356,7 +356,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             // clear response defaults.
             response.removeField(HttpFields.__Date);
             response.removeField(HttpFields.__Server);
-
+            
             // set response headers
             int h = 0;
             String hdr = connection.getHeaderFieldKey(h);
@@ -370,6 +370,9 @@ public class ProxyHandler extends AbstractHttpHandler {
             }
             if (!_anonymous)
                 response.setField("Via", "1.1 (jetty)");
+
+            response.removeField(HttpFields.__ETag); // possible cksum?  Stop caching...
+            response.removeField(HttpFields.__LastModified); // Stop caching...
 
             // Handled
             request.setHandled(true);

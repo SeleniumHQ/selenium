@@ -28,45 +28,20 @@ import java.util.LinkedList;
 public class SingleEntryAsyncQueue {
 
     private LinkedList q = new LinkedList();
-    private boolean waitingThreadsShouldThrow = false;
+    private boolean done = false;
     private static int defaultTimeout = SeleniumServer.DEFAULT_TIMEOUT;
     private int timeout;
-    
-    class OwnerAndDataPair extends Object {
-        private Object owner;
-        private Object data;
-            
-        public OwnerAndDataPair(Object ownerParm, Object dataParm) {
-            owner = ownerParm;
-            data = dataParm;
-        }
-        public Object getData() {
-            return data;
-        }
-        public Object getOwner() {
-            return owner;
-        }
-        public String toString() {
-            return "" + data + " (from " + owner + ")";
-        }
-    }
     
     public SingleEntryAsyncQueue() {
         timeout = defaultTimeout;
     }
     
     public void clear() {
-        this.waitingThreadsShouldThrow = true;
-        if (q.isEmpty()) {
-            q.add("dummy_to_wake_up_getting_thread____(if_there_is_one)");
-        }
-        else {
-            q.clear();
-        }
+        this.done = true;
+        q.clear();
         synchronized(this) {
             this.notifyAll();
         }
-        
     }
     
     public int getTimeout() {
@@ -94,21 +69,16 @@ public class SingleEntryAsyncQueue {
             } catch (InterruptedException e) {
                 continue;
             }
+            if (done) {
+                return null;
+            }
             retries++;
         }
-        verifyThisQueueWasNotHungAndThenCleared("get");
-        Object thing = ((OwnerAndDataPair) q.removeFirst()).getData();
+        Object thing = q.removeFirst();
         notifyAll();
         return thing;
     }
         
-    private void verifyThisQueueWasNotHungAndThenCleared(String methodCalled) {
-        if (waitingThreadsShouldThrow) {
-            throw new RuntimeException("called queue." +
-                    methodCalled + "() when queue.clear() called");
-        }        
-    }
-
     public int size() {
         return q.size();
     }
@@ -124,16 +94,17 @@ public class SingleEntryAsyncQueue {
      * @param obj - the thing to put in the queue
      */    
     public synchronized void put(Object thing) {
-        verifyThisQueueWasNotHungAndThenCleared("put");
-        q.addLast(new OwnerAndDataPair("owner stub", thing));
+        q.addLast(thing);
         notifyAll();
         synchronized(this) {
-            while (((OwnerAndDataPair) q.getFirst()).getData() != thing) {
+            while (q.getFirst() != thing) {
                 try {
-                    wait();
+                    wait(1000);
                 } catch (InterruptedException e) {
                 }
-                verifyThisQueueWasNotHungAndThenCleared("put");
+                if (done) {
+                    break;
+                }
             }
         }
     }

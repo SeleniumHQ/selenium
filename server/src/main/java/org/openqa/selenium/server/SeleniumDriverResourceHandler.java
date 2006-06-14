@@ -67,48 +67,38 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
 
-            OutputStream out = res.getOutputStream();
-            ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
-            Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
             String seleniumStart = getParam(req, "seleniumStart");
             String method = req.getMethod();
             String cmd = getParam(req, "cmd");
             String sessionId = getParam(req, "sessionId");
+            String logLevel = getParam(req, "logLevel");
 
             // If this is a browser requesting work for the first time...
             if ("POST".equalsIgnoreCase(method) || (seleniumStart != null && seleniumStart.equals("true"))) {
-                InputStream is = req.getInputStream();
-                StringBuffer sb = new StringBuffer();
-                InputStreamReader r = new InputStreamReader(is, "UTF-8");
-                int c;
-                while ((c = r.read()) != -1) {
-                    sb.append((char) c);
+                String postedData = readPostedData(req);
+                if (logLevel != null) {
+                    System.out.println("Session " + sessionId + " " + logLevel + ": " + postedData);
+                    respond(res, null);
+                    req.setHandled(true);
+                    return;
                 }
-                String commandResult = sb.toString();
-                System.out.println("Session " + sessionId + " sent result " + commandResult);
+                System.out.println("Session " + sessionId + " sent result " + postedData + " (seleniumStart=" + seleniumStart + ")");
 
                 if ("true".equals(seleniumStart)) {
-                    commandResult = "OK";	// assume a new page starting is okay
+                    postedData = "OK";	// assume a new page starting is okay
                 }
 
                 SeleneseQueue queue = getQueue(sessionId);
-                SeleneseCommand sc = queue.handleCommandResult(commandResult);
-                //System.out.println("Sending next command: " + sc.getCommandString());
-                writer.flush();
-                writer.write(sc.toString());
-                for (int pad = 998 - buf.size(); pad-- > 0;) {
-                    writer.write(" ");
+                SeleneseCommand sc = queue.handleCommandResult(postedData);
+                if (sc != null) {
+                    respond(res, sc);
                 }
-                writer.write("\015\012");
-                writer.flush();
-                buf.writeTo(out);
-
                 req.setHandled(true);
             } else if (cmd != null) {
                 System.out.println(method + ": " + cmd);
                 handleCommandRequest(req, res, cmd, sessionId);
             } else {
-                //System.out.println("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
+                System.out.println("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
                 req.setHandled(false);
             }
         }
@@ -122,6 +112,34 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
             throw e;
         }
+    }
+
+    private void respond(HttpResponse res, SeleneseCommand sc) throws IOException {
+        //System.out.println("Sending next command: " + sc.getCommandString());
+        ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
+        Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
+        if (sc!=null) {
+            writer.write(sc.toString());
+        }
+        for (int pad = 998 - buf.size(); pad-- > 0;) {
+            writer.write(" ");
+        }
+        writer.write("\015\012");
+        writer.close();
+        OutputStream out = res.getOutputStream();
+        buf.writeTo(out);
+        
+    }
+
+    private String readPostedData(HttpRequest req) throws IOException {
+        InputStream is = req.getInputStream();
+        StringBuffer sb = new StringBuffer();
+        InputStreamReader r = new InputStreamReader(is, "UTF-8");
+        int c;
+        while ((c = r.read()) != -1) {
+            sb.append((char) c);
+        }
+        return sb.toString();
     }
 
     /** Try to extract the name of the file whose absence caused the exception
@@ -339,7 +357,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     /** Deletes the specified SeleneseQueue */
     public void clearQueue(String sessionId) {
         synchronized(queues) {
-            queues.remove(sessionId);
+            SeleneseQueue queue = (SeleneseQueue) queues.get(sessionId);
+            if (queue!=null) {
+                queue.endOfLife();
+                queues.remove(sessionId);
+            }
         }
     }
 
