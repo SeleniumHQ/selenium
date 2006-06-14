@@ -30,10 +30,14 @@ var cmd3 = document.createElement("div");
 var cmd4 = document.createElement("div");
 
 var postResult = "START";
+var pendingMessagesToRC = "";
+var debugMode = null;
 
 var queryString = null;
 
 function runTest() {
+    debugMode = getQueryVariable("debugMode");
+    
     var testAppFrame = document.getElementById('myiframe');
     if (testAppFrame==null) {
     	// proxy injection mode
@@ -47,9 +51,6 @@ function runTest() {
 
     selenium = Selenium.createForFrame(testAppFrame);
     
-    //sendToRC("hi world", "logLevel=" + "lsdkjfdsfk");
-    
-
     window.selenium = selenium;
 
     commandFactory = new CommandHandlerFactory();
@@ -166,8 +167,22 @@ function nextCommand() {
     sendToRC(postResult, urlParms);
 }
 
+function sendMessageToRClater(message) {
+    pendingMessagesToRC = pendingMessagesToRC + message.replace(/[\n\r]/g, " ") + "\n";
+}
+
+function sendLogMessageToRClater(message, logLevel) {
+    sendMessageToRClater("logLevel=" + logLevel + ": " + message);
+}
+
 function logToRc(message, logLevel) {
+    // Uncommenting this code leads to an immediate transmission of individual log messages.  This seems ideal,
+    // but for reasons I don't understand, this leads to a hanging on the next web page transition.  If someone
+    // figures this out, then please educate me.
     //sendToRC(message, "logLevel=" + logLevel);
+    if (debugMode) {
+    	sendLogMessageToRClater(message, logLevel);
+    }
 }
 
 function sendToRC(dataToBePosted, urlParms) {
@@ -181,7 +196,7 @@ function sendToRC(dataToBePosted, urlParms) {
              
     xmlHttp.open("POST", url, true);
     xmlHttp.onreadystatechange=handleHttpResponse;
-    xmlHttp.send(dataToBePosted);
+    xmlHttp.send(pendingMessagesToRC + dataToBePosted);
         
     return null;
 }
