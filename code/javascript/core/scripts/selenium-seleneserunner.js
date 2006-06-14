@@ -35,8 +35,20 @@ var debugMode = null;
 
 var queryString = null;
 
+// For proxyInjection mode, we cannot rely on the selenium frames to keep track of
+// state.  There is only the test application page, and when it gets reloaded, local
+// JavaScript state is lost.  This causes problems for certain selenium capabilities which require remembering
+// state across page boundaries.  To overcome this problem, we keep track of the names
+// of variables which need to persist across pages.  With each communication to the selenium
+// server, we include the current values of these variables; the selenium server in turn
+// reminds the client-side by including the settings in the JavaScript injection:
+var namesOfVariablesWhichPersistAcrossPageLoads = new Object();
+
 function runTest() {
     debugMode = getQueryVariable("debugMode");
+    if (debugMode=="false") {
+    	debugMode = false;
+    }
     
     var testAppFrame = document.getElementById('myiframe');
     if (testAppFrame==null) {
