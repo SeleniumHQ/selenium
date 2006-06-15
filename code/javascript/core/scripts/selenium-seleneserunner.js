@@ -230,7 +230,7 @@ function sendToRC(dataToBePosted, urlParms) {
                		return;
                 }
  		if (xmlHttp.status == 200) {
- 			var command = extractCommand(xmlHttp);
+                	var command = extractCommand(xmlHttp);
  			testLoop.currentCommand = command;
  			testLoop.beginNextTest();
  		} else {
