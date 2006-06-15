@@ -136,8 +136,8 @@ public class SeleniumServer {
     private int port;
     
     private static boolean debugMode = false;
-    private boolean proxyInjectionMode = false;
-    private int proxyInjectionPort = 0; 
+    private static boolean proxyInjectionMode = false;
+    private static int proxyInjectionPort = 0; 
      
     public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
@@ -159,8 +159,8 @@ public class SeleniumServer {
         String suiteFilePath = null;
         String resultFilePath = null;
         File userExtensions = null;
-        boolean proxyInjectionMode = false;
-        int proxyInjectionPort = 0;
+        boolean proxyInjectionModeArg = false;
+        int proxyInjectionPortArg = 0;
         
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -172,13 +172,13 @@ public class SeleniumServer {
                 port = Integer.parseInt(args[++i]);
             }
             else if ("-proxyInjectionMode".equals(arg)) {
-                proxyInjectionMode = true;
+                proxyInjectionModeArg = true;
                 proxyInjectionSpeech();
             }
             else if ("-proxyInjectionPort".equals(arg)) {
                 // to facilitate tcptrace interception of interaction between 
                 // injected js and the selenium server
-                proxyInjectionPort = Integer.parseInt(args[++i]);
+                proxyInjectionPortArg = Integer.parseInt(args[++i]);
             }
             else if ("-debug".equals(arg)) {
                 SeleniumServer.setDebugMode(true);
@@ -226,8 +226,8 @@ public class SeleniumServer {
                 System.exit(1);
             }
         }
-        if (proxyInjectionPort==0) {
-            proxyInjectionPort = port;
+        if (proxyInjectionPortArg==0) {
+            proxyInjectionPortArg = port;
         }
         
         if (interactive && htmlSuite) {
@@ -237,8 +237,8 @@ public class SeleniumServer {
 
         SingleEntryAsyncQueue.setDefaultTimeout(timeout);
         final SeleniumServer seleniumProxy = new SeleniumServer(port);
-        seleniumProxy.setProxyInjectionMode(proxyInjectionMode);
-        seleniumProxy.setProxyInjectionPort(proxyInjectionPort);
+        seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
+        SeleniumServer.setProxyInjectionPort(proxyInjectionPortArg);
         
         Thread jetty = new Thread(new Runnable() {
             public void run() {
@@ -464,7 +464,7 @@ public class SeleniumServer {
         public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
             httpResponse.setField("Expires", "-1"); // never cached.
             if (pathInContext.equals("/core/SeleneseRunner.html") &&
-                    seleniumServer.isProxyInjectionMode()) {
+                    SeleniumServer.isProxyInjectionMode()) {
                 pathInContext = pathInContext.replaceFirst("/core/SeleneseRunner.html", 
                         "/core/InjectedSeleneseRunner.html");
             }
@@ -497,8 +497,31 @@ public class SeleniumServer {
         public void addStaticContent(File directory) {
             contentDirs.add(directory);
         }
+                
+        public void sendData(HttpRequest request,
+                HttpResponse response,
+                String pathInContext,
+                Resource resource,
+                boolean writeHeaders)
+        throws IOException
+        {
+            if (!SeleniumServer.isProxyInjectionMode()) {
+                super.sendData(request, response, pathInContext, resource, writeHeaders);
+            }
+            ResourceCache.ResourceMetaData metaData = (ResourceCache.ResourceMetaData)resource.getAssociate();
+            
+            String mimeType = metaData.getMimeType();
+            response.setContentType(mimeType);
+            if (resource.length() != -1)
+            {
+                response.setField(HttpFields.__ContentLength,metaData.getLength());
+            }    
+            boolean knownToBeHtml = (mimeType != null) && mimeType.equals("text/html"); 
+            InjectionHelper.injectJavaScript(seleniumServer, knownToBeHtml, response, resource.getInputStream(), response.getOutputStream());
+            request.setHandled(true);
+        }
     }
-
+    
     public int getPort() {
         return port;
     }
@@ -514,28 +537,28 @@ public class SeleniumServer {
         return server;
     }
 
-    static public boolean isDebugMode() {
-        return debugMode;
+    public static boolean isDebugMode() {
+        return SeleniumServer.debugMode;
     }
 
     static public void setDebugMode(boolean debugMode) {
         SeleniumServer.debugMode = debugMode;
     }
 
-    public boolean isProxyInjectionMode() {
+    public static boolean isProxyInjectionMode() {
         return proxyInjectionMode;
     }
 
-    public int getProxyInjectionPort() {
+    public static int getProxyInjectionPort() {
         return proxyInjectionPort;
     }
 
-    public void setProxyInjectionPort(int proxyInjectionPort) {
-        this.proxyInjectionPort = proxyInjectionPort;
+    public static void setProxyInjectionPort(int proxyInjectionPort) {
+        SeleniumServer.proxyInjectionPort = proxyInjectionPort;
     }
 
     public void setProxyInjectionMode(boolean proxyInjectionMode) {
-        this.proxyInjectionMode = proxyInjectionMode;
+        SeleniumServer.proxyInjectionMode = proxyInjectionMode;
     }
 
 }

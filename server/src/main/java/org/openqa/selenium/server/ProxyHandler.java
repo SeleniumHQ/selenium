@@ -16,23 +16,34 @@
 
 package org.openqa.selenium.server;
 
-import org.apache.commons.logging.Log;
-import org.mortbay.http.*;
-import org.mortbay.http.handler.AbstractHttpHandler;
-import org.mortbay.log.LogFactory;
-import org.mortbay.util.*;
-import org.mortbay.util.URI;
-
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.Integer;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.mortbay.http.HttpConnection;
+import org.mortbay.http.HttpException;
+import org.mortbay.http.HttpFields;
+import org.mortbay.http.HttpMessage;
+import org.mortbay.http.HttpRequest;
+import org.mortbay.http.HttpResponse;
+import org.mortbay.http.HttpTunnel;
+import org.mortbay.http.handler.AbstractHttpHandler;
+import org.mortbay.log.LogFactory;
+import org.mortbay.util.IO;
+import org.mortbay.util.InetAddrPort;
+import org.mortbay.util.LineInput;
+import org.mortbay.util.LogSupport;
+import org.mortbay.util.StringMap;
+import org.mortbay.util.URI;
 
 /* ------------------------------------------------------------ */
 
@@ -249,7 +260,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             URLConnection connection = url.openConnection();
             connection.setAllowUserInteraction(false);
             
-            if (seleniumServer.isProxyInjectionMode())
+            if (SeleniumServer.isProxyInjectionMode())
                 adjustRequestForProxyInjection(request, connection);
           
             // Set method
@@ -377,8 +388,8 @@ public class ProxyHandler extends AbstractHttpHandler {
             // Handled
             request.setHandled(true);
             if (proxy_in != null) {
-            	if (seleniumServer.isProxyInjectionMode() && http.getResponseCode()==HttpURLConnection.HTTP_OK) {
-            		injectJavaScript(isKnownToBeHtml, response, proxy_in, response.getOutputStream());
+            	if (SeleniumServer.isProxyInjectionMode() && http.getResponseCode()==HttpURLConnection.HTTP_OK) {
+            		InjectionHelper.injectJavaScript(seleniumServer, isKnownToBeHtml, response, proxy_in, response.getOutputStream());
             	}
             	else {
             		IO.copy(proxy_in, response.getOutputStream());
@@ -406,80 +417,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 		request.setState(HttpMessage.__MSG_RECEIVED);
 	}
 
-    private void injectJavaScript(boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
-		byte[] buf = new byte[1024];
-		int len = in.read(buf);
-		if (len == -1) {
-			return;
-		}
-		if (!isKnownToBeHtml) {
-			String data = new String(buf);
-			Pattern regexp = Pattern.compile("<\\s*(html|head|body|table)", 
-					Pattern.CASE_INSENSITIVE);	
-			isKnownToBeHtml = regexp.matcher(data).find(); 
-		}
-		String proxyHost = "localhost";
-		int proxyPort = seleniumServer.getProxyInjectionPort();
-		String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
-		
-		if (isKnownToBeHtml) {
-			response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated 
-			
-			// TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for updates)
-			InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injection.html");//  new ClassPathResource("/core/scripts/injection.html")
-			out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
-			jsIn.close();
-		}			
-		out.write(buf, 0, len);
-		IO.copy(in, out);
-			
-		if (isKnownToBeHtml) {
-//			 TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for each update)
-			InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injectionAtEOF.html");//  new ClassPathResource("/core/scripts/injection.html")
-			out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
-            if (SeleniumServer.isDebugMode()) {
-                out.write(makeJsChunk("debugMode = true;"));
-            }
-			jsIn.close();
-		}
-	}
     
-    private byte[] makeJsChunk(String js) {
-        StringBuffer sb = new StringBuffer("\n<script language=\"JavaScript\">\n");
-        sb.append(js)
-        .append("\n</script>\n");
-        return sb.toString().getBytes();
-    }
-
-    private byte[] getJsWithSubstitutions(InputStream jsIn, String proxyHost, int proxyPort, String sessionId) throws IOException {
-    	if (jsIn.available()==0) {
-    		throw new RuntimeException("cannot read injected JavaScript stream");
-    	}
-    	byte[] buf = new byte[8192];
-    	StringBuffer sb = new StringBuffer();
-    	while(true) {
-    		int len = jsIn.read(buf);
-    		if (len <= 0) {
-    			break;
-    		}
-    		sb.append(new String(buf, 0, len, "UTF-8"));
-    	}
-    	
-    	if (sessionId==null) {
-    		sessionId = "uninitialized";
-    	}
-
-    	sessionId = "\"" + sessionId + "\"";
-    	
-    	
-    	String js = sb.toString(); 
-    	js = js.replaceAll("@PROXY_HOST@", proxyHost);
-    	js = js.replaceAll("@PROXY_PORT@", Integer.toString(proxyPort));
-    	js = js.replaceAll("@SESSION_ID@", sessionId);
-    	
-		return js.getBytes();	
-    }
-
 	/* ------------------------------------------------------------ */
     public void handleConnect(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
         URI uri = request.getURI();
