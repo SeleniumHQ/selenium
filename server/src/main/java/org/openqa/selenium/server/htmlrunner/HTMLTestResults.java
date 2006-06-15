@@ -69,7 +69,7 @@ public class HTMLTestResults {
 
 
     public List getTestNames() {
-        List testNames = new LinkedList();
+        List<String> testNames = new LinkedList<String>();
         
         int testStartIndex = 0;
         int testEndIndex = 0;
@@ -156,7 +156,7 @@ public class HTMLTestResults {
         }
         
         public List decodeListOfStrings(List list) {
-            List decodedList = new LinkedList();
+            List<String> decodedList = new LinkedList<String>();
             
             for (Iterator i = list.iterator(); i.hasNext();) {
                 decodedList.add(decode((String) i.next()));

@@ -38,11 +38,11 @@ import org.openqa.selenium.server.htmlrunner.*;
  */
 public class SeleniumDriverResourceHandler extends ResourceHandler {
 
-    private final Map queues = new HashMap();
-    private final Map launchers = new HashMap();
+    private final Map<String, SeleneseQueue> queues = new HashMap<String, SeleneseQueue>();
+    private final Map<String, BrowserLauncher> launchers = new HashMap<String, BrowserLauncher>();
     private SeleniumServer server;
     private static String lastSessionId = null;
-    private Map domainsBySessionId = new HashMap();   
+    private Map<String, String> domainsBySessionId = new HashMap<String, String>();   
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
@@ -195,7 +195,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         res.setContentType("text/plain");
         hackRemoveConnectionCloseHeader(res);
 
-        Vector values = new Vector();
+        Vector<String> values = new Vector<String>();
 
         for (int i = 1; req.getParameter(Integer.toString(i)) != null; i++) {
             values.add(req.getParameter(Integer.toString(i)));
@@ -365,14 +365,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     /** Retrieves a launcher for the specified sessionId, or <code>null</code> if there is no such launcher. */
     private BrowserLauncher getLauncher(String sessionId) {
         synchronized (launchers) {
-            return (BrowserLauncher) launchers.get(sessionId);
+            return launchers.get(sessionId);
         }
     }
 
     /** Retrieves a SeleneseQueue for the specifed sessionId, creating a new one if there isn't one with that sessionId already */
     private SeleneseQueue getQueue(String sessionId) {
         synchronized (queues) {
-            SeleneseQueue queue = (SeleneseQueue) queues.get(sessionId);
+            SeleneseQueue queue = queues.get(sessionId);
             if (queue == null) {
                 queue = new SeleneseQueue();
                 queues.put(sessionId, queue);
@@ -385,7 +385,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     /** Deletes the specified SeleneseQueue */
     public void clearQueue(String sessionId) {
         synchronized(queues) {
-            SeleneseQueue queue = (SeleneseQueue) queues.get(sessionId);
+            SeleneseQueue queue = queues.get(sessionId);
             if (queue!=null) {
                 queue.endOfLife();
                 queues.remove(sessionId);
@@ -413,7 +413,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private String getDomain(String sessionId) {
-        return (String) domainsBySessionId.get(sessionId);
+        return domainsBySessionId.get(sessionId);
     }
 
     public static String getLastSessionId() {

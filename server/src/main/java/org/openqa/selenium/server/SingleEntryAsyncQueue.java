@@ -27,7 +27,7 @@ import java.util.LinkedList;
  */
 public class SingleEntryAsyncQueue {
 
-    private LinkedList q = new LinkedList();
+    private LinkedList<Object> q = new LinkedList<Object>();
     private boolean done = false;
     private static int defaultTimeout = SeleniumServer.DEFAULT_TIMEOUT;
     private int timeout;

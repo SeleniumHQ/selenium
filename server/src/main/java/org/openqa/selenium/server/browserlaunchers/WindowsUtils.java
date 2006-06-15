@@ -174,11 +174,11 @@ public class WindowsUtils {
         // TODO This would be faster if it used SAX instead of DOM
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(output.getBytes()));
         NodeList procList = doc.getElementsByTagName("INSTANCE");
-        Map processes = new HashMap();
+        Map<String, String> processes = new HashMap<String, String>();
         for (int i = 0; i < procList.getLength(); i++) {
             Element process = (Element) procList.item(i);
             NodeList propList = process.getElementsByTagName("PROPERTY");
-            Map procProps = new HashMap();
+            Map<String, Object> procProps = new HashMap<String, Object>();
             for (int j = 0; j < propList.getLength(); j++) {
                 Element property = (Element) propList.item(j);
                 String propName = property.getAttribute("NAME");

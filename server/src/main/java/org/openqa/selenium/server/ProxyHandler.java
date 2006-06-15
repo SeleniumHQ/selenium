@@ -60,8 +60,8 @@ import org.mortbay.util.URI;
 public class ProxyHandler extends AbstractHttpHandler {
     private static Log log = LogFactory.getLog(ProxyHandler.class);
 
-    protected Set _proxyHostsWhiteList;
-    protected Set _proxyHostsBlackList;
+    protected Set<String> _proxyHostsWhiteList;
+    protected Set<String> _proxyHostsBlackList;
     protected int _tunnelTimeoutMs = 250;
     private boolean _anonymous = false;
     private SeleniumServer seleniumServer;
@@ -118,16 +118,16 @@ public class ProxyHandler extends AbstractHttpHandler {
     /**
      * Set of allowed CONNECT ports.
      */
-    protected HashSet _allowedConnectPorts = new HashSet();
+    protected HashSet<Integer> _allowedConnectPorts = new HashSet<Integer>();
 
     {
-        _allowedConnectPorts.add(new Integer(80));
-        _allowedConnectPorts.add(new Integer(SeleniumServer.DEFAULT_PORT));
-        _allowedConnectPorts.add(new Integer(8000));
-        _allowedConnectPorts.add(new Integer(8080));
-        _allowedConnectPorts.add(new Integer(8888));
-        _allowedConnectPorts.add(new Integer(443));
-        _allowedConnectPorts.add(new Integer(8443));
+        _allowedConnectPorts.add(80);
+        _allowedConnectPorts.add(SeleniumServer.DEFAULT_PORT);
+        _allowedConnectPorts.add(8000);
+        _allowedConnectPorts.add(8080);
+        _allowedConnectPorts.add(8888);
+        _allowedConnectPorts.add(443);
+        _allowedConnectPorts.add(8443);
     }
 
 
@@ -152,7 +152,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             return new String[0];
 
         String[] hosts = new String[_proxyHostsWhiteList.size()];
-        hosts = (String[]) _proxyHostsWhiteList.toArray(hosts);
+        hosts = _proxyHostsWhiteList.toArray(hosts);
         return hosts;
     }
 
@@ -167,7 +167,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         if (hosts == null || hosts.length == 0)
             _proxyHostsWhiteList = null;
         else {
-            _proxyHostsWhiteList = new HashSet();
+            _proxyHostsWhiteList = new HashSet<String>();
             for (int i = 0; i < hosts.length; i++) {
                 String host = hosts[i];
                 if (host != null && host.trim().length() > 0)
@@ -188,7 +188,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             return new String[0];
 
         String[] hosts = new String[_proxyHostsBlackList.size()];
-        hosts = (String[]) _proxyHostsBlackList.toArray(hosts);
+        hosts = _proxyHostsBlackList.toArray(hosts);
         return hosts;
     }
 
@@ -203,7 +203,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         if (hosts == null || hosts.length == 0)
             _proxyHostsBlackList = null;
         else {
-            _proxyHostsBlackList = new HashSet();
+            _proxyHostsBlackList = new HashSet<String>();
             for (int i = 0; i < hosts.length; i++) {
                 String host = hosts[i];
                 if (host != null && host.trim().length() > 0)

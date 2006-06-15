@@ -37,7 +37,7 @@ public class BrowserLauncherFactory {
 
     private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*custom( .*)?$");
     
-    private static final Map supportedBrowsers = new HashMap();
+    private static final Map<String, Class> supportedBrowsers = new HashMap<String, Class>();
 
     static {
         supportedBrowsers.put("firefox", FirefoxCustomProfileLauncher.class);

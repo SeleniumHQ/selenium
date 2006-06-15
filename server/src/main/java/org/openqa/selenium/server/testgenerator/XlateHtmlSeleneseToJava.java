@@ -20,9 +20,9 @@ import org.w3c.dom.*;
  */
 
 public class XlateHtmlSeleneseToJava {
-    static Set generatedJavaClassNames = new HashSet();
+    static Set<String> generatedJavaClassNames = new HashSet<String>();
     
-    private static Map funcTypes = null;
+    private static Map<String, Class> funcTypes = null;
 
     static final String BEGIN_SELENESE = ">>>>>";
     static final String END_SELENESE   = "<<<<<";
@@ -31,7 +31,7 @@ public class XlateHtmlSeleneseToJava {
     static final String DIR = "dir";
     static final String FILE= "file";
 
-    static HashMap declaredVariables = new HashMap();
+    static HashMap<String, String> declaredVariables = new HashMap<String, String>();
 
     private static int varNameSeed = 1;
 
@@ -52,8 +52,8 @@ public class XlateHtmlSeleneseToJava {
             return;
         }
         boolean generateSuite = false;
-        HashMap skipList = new HashMap();
-        HashMap inputFileList = new HashMap();
+        HashMap<String, Boolean> skipList = new HashMap<String, Boolean>();
+        HashMap<String, String> inputFileList = new HashMap<String, String>();
         String javaSeleneseFileDirectoryName = args[0];
         for (int j = 1; j < args.length; j++) {
             if (args[j].equals("-silent")) {
@@ -109,7 +109,7 @@ public class XlateHtmlSeleneseToJava {
     
     private static void initializeFuncTypes() {
         if (funcTypes != null) return;
-        funcTypes = new HashMap();
+        funcTypes = new HashMap<String, Class>();
         InputStream stream = XlateHtmlSeleneseToJava.class.getResourceAsStream("/core/iedoc.xml");
         if (stream==null) {
             throw new RuntimeException("could not find /core/iedoc.xml on the class path");
@@ -158,15 +158,15 @@ public class XlateHtmlSeleneseToJava {
         op = op.replaceFirst("AndWait$", "");
         op = op.replaceFirst("Not([A-Z])", "$1");
         if (funcTypes.get(op) != null) {
-            return (Class) funcTypes.get(op);
+            return funcTypes.get(op);
         }
         op = op.replaceFirst("(assert|verify|store)", "get");
         if (funcTypes.get(op) != null) {
-            return (Class) funcTypes.get(op);
+            return funcTypes.get(op);
         }
         op = op.replaceFirst("get", "is");
         if (funcTypes.get(op) != null) {
-            return (Class) funcTypes.get(op);
+            return funcTypes.get(op);
         }
         System.out.println("could not find " + opParm + " (" + op + ")");
         // if we get here, apparently op has no direct analog in Selenium.  So just look at the name and guess:

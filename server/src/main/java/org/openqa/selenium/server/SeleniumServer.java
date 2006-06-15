@@ -454,7 +454,7 @@ public class SeleniumServer {
     }
     
     private class StaticContentHandler extends ResourceHandler {
-        List contentDirs = new Vector();
+        List<File> contentDirs = new Vector<File>();
         private final SeleniumServer seleniumServer;
         
         public StaticContentHandler(SeleniumServer seleniumServer) {

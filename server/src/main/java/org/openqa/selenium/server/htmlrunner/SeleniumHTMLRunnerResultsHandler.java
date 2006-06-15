@@ -21,11 +21,11 @@ import org.mortbay.util.*;
 public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
 
     HttpContext context;
-    List listeners;
+    List<HTMLResultsListener> listeners;
     boolean started = false;
     
     public SeleniumHTMLRunnerResultsHandler() {
-        listeners = new Vector();
+        listeners = new Vector<HTMLResultsListener>();
     }
     
     public void addListener(HTMLResultsListener listener) {
@@ -74,7 +74,7 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
     }
     
     private List createTestTables(HttpRequest request, int numTotalTests) {
-        List testTables = new LinkedList();
+        List<String> testTables = new LinkedList<String>();
         for (int i = 1; i <= numTotalTests; i++) {
             String testTable = request.getParameter("testTable." + i);
             //System.out.println("table " + i);
