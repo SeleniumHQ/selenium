@@ -77,8 +77,6 @@ public class InjectionHelper {
         
         
         String js = sb.toString(); 
-        js = js.replaceAll("@PROXY_HOST@", proxyHost);
-        js = js.replaceAll("@PROXY_PORT@", Integer.toString(proxyPort));
         js = js.replaceAll("@SESSION_ID@", sessionId);
         
         return js.getBytes();   
