@@ -71,14 +71,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             String method = req.getMethod();
             String cmd = getParam(req, "cmd");
             String sessionId = getParam(req, "sessionId");
-            String logLevel = getParam(req, "logLevel");
-
+            
             // If this is a browser requesting work for the first time...
             if ("POST".equalsIgnoreCase(method) || (seleniumStart != null && seleniumStart.equals("true"))) {
-                String postedData = readPostedData(req);
-                if (logLevel != null) {
-                    System.out.println("Session " + sessionId + " " + logLevel + ": " + postedData);
-                    respond(res, null);
+                String postedData = readPostedData(req, sessionId);
+                if (postedData == null || postedData.equals("")) {
+                    //respond(res, null);
+                    res.getOutputStream().write("\r\n\r\n".getBytes());
+                    //buf.writeTo(out);
                     req.setHandled(true);
                     return;
                 }
@@ -135,10 +135,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * extract the posted data from an incoming request, stripping away a piggybacked data
      * 
      * @param req
+     * @param sessionId 
      * @return a string containing the posted data (with piggybacked log info stripped)
      * @throws IOException
      */
-    private String readPostedData(HttpRequest req) throws IOException {
+    private String readPostedData(HttpRequest req, String sessionId) throws IOException {
         InputStream is = req.getInputStream();
         StringBuffer sb = new StringBuffer();
         InputStreamReader r = new InputStreamReader(is, "UTF-8");
@@ -147,25 +148,68 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             sb.append((char) c);
         }
         String s = sb.toString();
-        String postedData = extractLogMessages(s);
-        return postedData;
+        s = extractLogMessages(s);
+        s = extractJsState(sessionId, s);
+        return s;
     }
 
     private String extractLogMessages(String s) {
-        String logMessages = grep("logLevel=", s);
-        logMessages = logMessages.replaceAll("logLevel=", "\t");
-        System.out.println(logMessages);
-        return s.replaceAll("logLevel=.*\n", "");
+        String logMessages = grepStringsStartingWith("logLevel=", s);
+        if (logMessages==null) {
+            return s;
+        }
+        logMessages = "\t" + logMessages.replaceAll("\n", "\n\t");  // put a tab in front of all the messages
+        logMessages = logMessages.replaceFirst("\t$", "");
+        
+        System.out.print(logMessages);
+        return grepVStringsStartingWith("logLevel=", s);
     }
 
-    private String grep(String pattern, String s) {
-        StringBuffer sb = new StringBuffer();
+    private String grepVStringsStartingWith(String pattern, String s) {
+        return s.replaceAll(pattern + ".*\n", "");
+    }
+
+    private String extractJsState(String sessionId, String s) {
+        String jsInitializers = grepStringsStartingWith("state:", s);
+        if (jsInitializers==null) {
+            return s;
+        }
+        for (String jsInitializer : jsInitializers.split("\n")) {
+            String jsVarName = extractVarName(jsInitializer);
+            InjectionHelper.saveJsStateInitializer(sessionId, jsVarName, jsInitializer);
+        }
+        return grepVStringsStartingWith("state:", s);
+    }
+
+    private String extractVarName(String jsInitializer) {
+        int x = jsInitializer.indexOf('=');
+        if (x==-1) {
+            // apparently a method call, not an assignment
+            // for 'browserBot.recordedAlerts.push("lskdjf")',
+            // return 'browserBot.recordedAlerts':
+            x = jsInitializer.lastIndexOf('(');
+            if (x==-1) {
+                throw new RuntimeException("expected method call, saw " + jsInitializer);
+            }
+            x = jsInitializer.lastIndexOf('.', x-1);
+            if (x==-1) {
+                throw new RuntimeException("expected method call, saw " + jsInitializer);
+            }
+        }
+        return jsInitializer.substring(0, x);
+    }
+
+    private String grepStringsStartingWith(String pattern, String s) {
         String[] lines = s.split("\n");
+        StringBuffer sb = new StringBuffer();
         for (String line : lines) {
-            if (line.matches(".*" + pattern + ".*")) {
-                sb.append(line)
+            if (line.startsWith(pattern)) {
+                sb.append(line.substring(pattern.length()))
                 .append('\n');
             }
+        }
+        if (sb.length()==0) {
+            return null;
         }
         return sb.toString();
     }

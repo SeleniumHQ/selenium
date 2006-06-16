@@ -4,12 +4,39 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import org.mortbay.http.HttpResponse;
 import org.mortbay.util.IO;
 
 public class InjectionHelper {
+    private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
+    
+    public static void saveJsStateInitializer(String sessionId, String jsVarName, String jsStateInitializer) {
+        if (SeleniumServer.isDebugMode()) {
+            System.out.println("Saving JavaScript state for session " + sessionId + ": key=" + jsVarName + ": " + jsStateInitializer); 
+        }
+        if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
+            jsStateInitializersBySessionId.put(sessionId, new HashMap<String, String>());
+        }
+        HashMap<String, String> h = jsStateInitializersBySessionId.get(sessionId);
+        h.put(jsVarName, jsStateInitializer);
+    }
+    
+    public static String restoreJsStateInitializer(String sessionId) {
+        if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
+            return "";
+        }
+        HashMap<String, String> h = jsStateInitializersBySessionId.get(sessionId);
+        StringBuffer sb = new StringBuffer();
+        for (String key : h.keySet()) {
+            sb.append(h.get(key))
+            .append('\n');
+        }
+        return sb.toString();
+    }
+    
     public static void injectJavaScript(SeleniumServer seleniumServer, boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[1024];
         int len = in.read(buf);
@@ -32,6 +59,15 @@ public class InjectionHelper {
             // TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for updates)
             InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injection.html");//  new ClassPathResource("/core/scripts/injection.html")
             out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+            StringBuffer moreJs = new StringBuffer();
+            if (SeleniumServer.isDebugMode()) {
+                moreJs.append("debugMode = true;\n");
+            }
+            moreJs.append("function restoreSeleniumState() {\n")
+            .append(restoreJsStateInitializer(sessionId))
+            .append("}\n");
+            
+            out.write(makeJsChunk(moreJs.toString()));
             jsIn.close();
         }           
         out.write(buf, 0, len);
@@ -41,9 +77,6 @@ public class InjectionHelper {
 //           TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for each update)
             InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injectionAtEOF.html");//  new ClassPathResource("/core/scripts/injection.html")
             out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
-            if (SeleniumServer.isDebugMode()) {
-                out.write(makeJsChunk("debugMode = true;"));
-            }
             jsIn.close();
         }
     }
