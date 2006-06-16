@@ -85,14 +85,6 @@ public class Xlator
             // add log.debug
 			cx.evaluateString(scope, "Log.write = function(msg) { java.lang.System.out.println(msg) }; log = new Log('format');", "<JavaEval>", 1, null);
             
-            if (options != null) {
-                for (Iterator<String> i = options.keySet().iterator(); i.hasNext();) {
-                    String optionName = i.next();
-                    Scriptable jsOptions = (Scriptable) scope.get("options", scope);
-                    ScriptableObject.putProperty(jsOptions, optionName, options.get(optionName));
-                }
-            }
-            
             Function parse = getFunction(scope, "parse");
             Scriptable myTestCase = cx.newObject(scope, "TestCase");
             parse.call(cx, scope, scope, new Object[] {myTestCase, htmlSource});
@@ -106,6 +98,14 @@ public class Xlator
                     "}", "<JavaEval>", 1, null);
             
             loadJSSource(cx, scope, "/content/formats/" + outputFormat + ".js");
+            
+            if (options != null) {
+                for (Iterator<String> i = options.keySet().iterator(); i.hasNext();) {
+                    String optionName = i.next();
+                    Scriptable jsOptions = (Scriptable) scope.get("options", scope);
+                    ScriptableObject.putProperty(jsOptions, optionName, options.get(optionName));
+                }
+            }
             
             Function format = getFunction(scope, "format");
             Object result = format.call(cx, scope, scope, new Object[] {myTestCase, "foo"});
