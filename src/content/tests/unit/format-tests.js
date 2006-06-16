@@ -80,6 +80,7 @@ function testJavaRCFormat() {
 	assertEquals('selenium.open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
 	assertEquals('selenium.waitForPageToLoad("30");', f.formatCommand(new Command('waitForPageToLoad', '30')));
 	assertEquals('Thread.sleep(1000);', f.formatCommand(new Command('pause', '1000')));
+	assertEquals("// line 1\n// line 2", f.formatComment(new Comment("line 1\nline 2")));
 }
 
 function testCSharpRCFormat() {

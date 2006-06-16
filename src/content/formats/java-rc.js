@@ -11,16 +11,20 @@ function formatHeader(testCase) {
 	if (!className) {
 		className = "NewTest";
 	}
-	var fullyQualifiedClassName = className;
-	if (testCase.javaPackageName) {
-		className = testCase.javaPackageName + "." + className;
+	var formatLocal = testCase.formatLocal(this.name);
+	if (!formatLocal.packageName) {
+		formatLocal.packageName = options.packageName;
 	}
 	var methodName = "test" + className;
 	methodName = methodName.replace(/Test$/, "");
-	var header = 
+	var header = "";
+	if (formatLocal.packageName) {
+		header += "package " + formatLocal.packageName + ";\n\n";
+	}
+	header +=
 		"import com.thoughtworks.selenium.*;\n" +
 		"\n" +
-        "public class " + fullyQualifiedClassName + " extends SeleneseTestCase {\n" + 
+        "public class " + className + " extends SeleneseTestCase {\n" + 
         "\tpublic void " + methodName + "() throws Exception {\n";
 	this.lastIndent = "\t\t";
 	this.header = header;
@@ -75,6 +79,16 @@ function statement(expression) {
 	return expression.toString() + ';';
 }
 
+function array(value) {
+	var str = 'new String[] {';
+	for (var i = 0; i < value.length; i++) {
+		str += string(value[i]);
+		if (i < value.length - 1) str += ", ";
+	}
+	str += '}';
+	return str;
+}
+
 CallSelenium.prototype.toString = function() {
 	var result = '';
 	if (this.negative) {
@@ -96,7 +110,9 @@ CallSelenium.prototype.toString = function() {
 }
 
 function formatComment(comment) {
-	return indent() + "// " + comment.comment;
+	return comment.comment.replace(/.+/mg, function(str) {
+			return indent() + "// " + str;
+		});
 }
 
 this.options = {

@@ -52,6 +52,12 @@ Command.loadAPI = function() {
 		for (var i = 0; i < functionElements.length; i++) {
 			var element = functionElements.item(i);
 			var def = new CommandDefinition(String(element.attributes.getNamedItem('name').value));
+			var returns = element.getElementsByTagName("return");
+			if (returns.length > 0) {
+				var returnType = new String(returns.item(0).attributes.getNamedItem("type").value);
+				returnType = returnType.replace(/string/, "String");
+				def.returnType = returnType;
+			}
 			var params = element.getElementsByTagName("param");
 			for (var j = 0; j < params.length; j++) {
 				var paramElement = params.item(j);

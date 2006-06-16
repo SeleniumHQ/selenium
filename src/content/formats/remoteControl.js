@@ -45,7 +45,9 @@ NotEquals.prototype.not = function() {
 
 function string(value) {
 	if (value != null) {
+		value = value.replace(/\\/g, '\\\\');
 		value = value.replace(/\"/mg, '\\"');
+		value = value.replace(/\r/mg, '\\r');
 		value = value.replace(/\n/mg, '\\n');
 		return '"' + value + '"';
 	} else {
@@ -65,6 +67,13 @@ CallSelenium.prototype.not = function() {
 	return call;
 }
 
+function formatValue(type, value) {
+	if (type == 'String[]') {
+		return array(value.split(/,/));
+	} else {
+		return string(value);
+	}
+}
 
 function formatCommand(command) {
 	var line = indent();
@@ -86,9 +95,9 @@ function formatCommand(command) {
 				}
 			} else { // getXXX
 				if (command.command.match(/^(verify|assert)/)) {
-					line += statement((def.negative ? assertNotEquals : assertEquals)(string(extraArg), call));
+					line += statement((def.negative ? assertNotEquals : assertEquals)(formatValue(def.returnType, extraArg), call));
 				} else if (command.command.match(/^store/)) {
-					line += statement(assignToVariable('String', extraArg, call));
+					line += statement(assignToVariable(def.returnType, extraArg, call));
 				} else if (command.command.match(/^waitFor/)) {
 					line += waitFor((def.negative ? not : is)(equals(string(extraArg), call)));
 				}
