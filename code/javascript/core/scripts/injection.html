@@ -38,7 +38,7 @@ function relayToRC(name) {
 	sendToRC('state:' + serializeObject(name, object) + "\n");
 }
 
-function relayBotToRC(name) {
+BrowserBot.prototype.relayBotToRC = function(name) {
 	relayToRC("selenium." + name);
 }
 

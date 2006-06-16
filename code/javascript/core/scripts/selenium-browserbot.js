@@ -101,6 +101,8 @@ BrowserBot.prototype.hasAlerts = function() {
     return (this.recordedAlerts.length > 0) ;
 };
 
+BrowserBot.prototype.relayBotToRC = function() {} // override in injection.html
+
 BrowserBot.prototype.getNextAlert = function() {
     var t = this.recordedAlerts.shift();
     relayBotToRC("browserbot.recordedAlerts");
