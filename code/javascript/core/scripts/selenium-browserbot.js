@@ -102,7 +102,9 @@ BrowserBot.prototype.hasAlerts = function() {
 };
 
 BrowserBot.prototype.getNextAlert = function() {
-    return this.recordedAlerts.shift();
+    var t = this.recordedAlerts.shift();
+    relayBotToRC("browserbot.recordedAlerts");
+    return t;
 };
 
 BrowserBot.prototype.hasConfirmations = function() {
@@ -110,7 +112,9 @@ BrowserBot.prototype.hasConfirmations = function() {
 };
 
 BrowserBot.prototype.getNextConfirmation = function() {
-    return this.recordedConfirmations.shift();
+    var t = this.recordedConfirmations.shift();
+    relayBotToRC("browserbot.recordedConfirmations");
+    return t;
 };
 
 BrowserBot.prototype.hasPrompts = function() {
@@ -118,7 +122,9 @@ BrowserBot.prototype.hasPrompts = function() {
 };
 
 BrowserBot.prototype.getNextPrompt = function() {
-    return this.recordedPrompts.shift();
+    var t = this.recordedConfirmations.shift();
+    relayBotToRC("browserbot.recordedPrompts");
+    return t;
 };
 
 BrowserBot.prototype.getFrame = function() {
@@ -172,12 +178,14 @@ BrowserBot.prototype.getCurrentPage = function() {
 BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     windowToModify.alert = function(alert) {
         browserBot.recordedAlerts.push(alert);
+        relayBotToRC("browserbot.recordedAlerts");
     };
 
     windowToModify.confirm = function(message) {
         browserBot.recordedConfirmations.push(message);
         var result = browserBot.nextConfirmResult;
         browserBot.nextConfirmResult = true;
+        relayBotToRC("browserbot.recordedConfirmations");
         return result;
     };
 
@@ -186,6 +194,7 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         var result = !browserBot.nextConfirmResult ? null : browserBot.nextPromptResult;
         browserBot.nextConfirmResult = true;
         browserBot.nextPromptResult = '';
+        relayBotToRC("browserbot.recordedPrompts");
         return result;
     };
 
@@ -193,6 +202,7 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     // note that in IE the "windowName" argument must be a valid javascript identifier, it seems.
     var originalOpen = windowToModify.open;
     windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
+    debuggern
         var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
         selenium.browserbot.openedWindows[windowName] = openedWindow;
         return openedWindow;

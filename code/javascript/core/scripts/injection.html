@@ -1,4 +1,3 @@
-
 <script language="JavaScript" type="text/javascript" src="/selenium-server/jsunit/app/jsUnitCore.js"></script>
 <script type="text/javascript" src="/selenium-server/core/scripts/xmlextras.js"></script>
 <script language="JavaScript" type="text/javascript" src="/selenium-server/core/scripts/selenium-browserdetect.js"></script>
@@ -34,5 +33,13 @@ LOG.openLogWindow = function(message, className) {
 	// disable for now
 };
 
+function relayToRC(name) {
+	var object = eval(name);
+	sendToRC('state:' + serializeObject(name, object) + "\n");
+}
+
+function relayBotToRC(name) {
+	relayToRC("selenium." + name);
+}
 
 </script>

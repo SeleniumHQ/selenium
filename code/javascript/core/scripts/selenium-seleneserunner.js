@@ -32,25 +32,17 @@ var cmd4 = document.createElement("div");
 var postResult = "START";
 var pendingMessagesToRC = "";
 var debugMode = null;
-
+var relayToRC = null;	// override in injection.html
+var relayBotToRC = null;	// override in injection.html
 var queryString = null;
-
-// For proxyInjection mode, we cannot rely on the selenium frames to keep track of
-// state.  There is only the test application page, and when it gets reloaded, local
-// JavaScript state is lost.  This causes problems for certain selenium capabilities which require remembering
-// state across page boundaries.  To overcome this problem, we keep track of the names
-// of variables which need to persist across pages.  With each communication to the selenium
-// server, we include the current values of these variables; the selenium server in turn
-// reminds the client-side by including the settings in the JavaScript injection:
-var namesOfVariablesWhichPersistAcrossPageLoads = new Object();
+var xmlHttpForCommandsAndResults = null;
+var restoreSeleniumState = function(){}; // override in injection.html
 
 function runTest() {
     debugMode = getQueryVariable("debugMode");
     if (debugMode=="false") {
     	debugMode = false;
     }
-    //persistAcrossPages("
-    
     var testAppFrame = document.getElementById('myiframe');
     if (testAppFrame==null) {
     	// proxy injection mode
@@ -63,7 +55,7 @@ function runTest() {
     }
 
     selenium = Selenium.createForFrame(testAppFrame);
-    
+    restoreSeleniumState();
     window.selenium = selenium;
 
     commandFactory = new CommandHandlerFactory();
@@ -177,64 +169,79 @@ function preventBrowserCaching() {
 
 function nextCommand() {
     var urlParms = (postResult == "START" ? "seleniumStart=true" : "");
-    sendToRC(postResult, urlParms);
-}
-
-function persistAcrossPages(variableName) {
-    namesOfVariablesWhichPersistAcrossPageLoads[variableName] = true;
-}
-
-function gatherStateToPersist() {
-    for (key in namesOfVariablesWhichPersistAcrossPageLoads) {
-    	sendMessageToRClater("state: " + key + "='" + escape(eval(key)));
-    }
+    xmlHttpForCommandsAndResults = XmlHttp.create();
+    sendToRC(postResult, urlParms, handleHttpResponse, xmlHttpForCommandsAndResults);
 }
 
 function sendMessageToRClater(message) {
     pendingMessagesToRC = pendingMessagesToRC + message.replace(/[\n\r]/g, " ") + "\n";
 }
 
-function sendLogMessageToRClater(message, logLevel) {
-    sendMessageToRClater("logLevel=" + logLevel + ": " + message);
-}
-
 function logToRc(message, logLevel) {
-    // Uncommenting this code leads to an immediate transmission of individual log messages.  This seems ideal,
-    // but for reasons I don't understand, this leads to a hanging on the next web page transition.  If someone
-    // figures this out, then please educate me.
-    //sendToRC(message, "logLevel=" + logLevel);
     if (debugMode) {
-    	sendLogMessageToRClater(message, logLevel);
+        sendToRC("logLevel=" + logLevel + ":" + message + "\n");
     }
 }
 
-function sendToRC(dataToBePosted, urlParms) {
-    xmlHttp = XmlHttp.create();
-    	
+function isArray(x) {
+    return ((typeof x)=="object") && (x["length"]!=null);
+}
+
+function serializeString(name, s) {
+    return name + "=unescape(\"" + escape(s) + "\");";
+}
+
+function serializeObject(name, x)
+{
+    var s = '';
+
+    if (isArray(x))
+    {
+        s = name + "=new Array(); ";
+        var len = x["length"];
+        for (var j = 0; j<len; j++)
+        {
+            s += serializeString(name + "[" + j + "]", x[j]);
+        }
+    }
+    else if (typeof x == "string")
+    {
+        return serializeString(name, x);
+    }
+    else
+    {
+        throw "unrecognized object not encoded: " + name + "(" + x + ")";
+    }
+    return s;
+}
+
+function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject) {
+    if (xmlHttpObject==null) {
+ 	xmlHttpObject = XmlHttp.create();
+    }
     var url = buildBaseUrl() + "driver/?"
     if (urlParms) {
     	url += urlParms;
     }
+    if (callback==null) {
+    	callback = function(){};
+    }
     url += buildDriverParams() + preventBrowserCaching();
-             
-    xmlHttp.open("POST", url, true);
-    xmlHttp.onreadystatechange=handleHttpResponse;
-    xmlHttp.send(pendingMessagesToRC + dataToBePosted);
+    xmlHttpObject.open("POST", url, true);
+    xmlHttpObject.onreadystatechange = callback;
+    xmlHttpObject.send(pendingMessagesToRC + dataToBePosted);
         
     return null;
 }
 
  function handleHttpResponse() {
- 	if (xmlHttp.readyState == 4) {
-        	if (xmlHttp.responseText.match(/^\s*$/) != null) {
-               		return;
-                }
- 		if (xmlHttp.status == 200) {
-                	var command = extractCommand(xmlHttp);
+ 	if (xmlHttpForCommandsAndResults.readyState == 4) {
+ 		if (xmlHttpForCommandsAndResults.status == 200) {
+                	var command = extractCommand(xmlHttpForCommandsAndResults);
  			testLoop.currentCommand = command;
  			testLoop.beginNextTest();
  		} else {
- 			var s = 'xmlHttp returned: ' + xmlHttp.status + ": " + xmlHttp.statusText;
+ 			var s = 'xmlHttp returned: ' + xmlHttpForCommandsAndResults.status + ": " + xmlHttpForCommandsAndResults.statusText;
  			LOG.error(s);
  			testLoop.currentCommand = null;
  			setTimeout("testLoop.beginNextTest();", 2000);
