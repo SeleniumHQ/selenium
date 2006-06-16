@@ -101,7 +101,7 @@ BrowserBot.prototype.hasAlerts = function() {
     return (this.recordedAlerts.length > 0) ;
 };
 
-BrowserBot.prototype.relayBotToRC = function() {} // override in injection.html
+BrowserBot.prototype.relayBotToRC = function() {}; // override in injection.html
 
 BrowserBot.prototype.getNextAlert = function() {
     var t = this.recordedAlerts.shift();
@@ -124,7 +124,7 @@ BrowserBot.prototype.hasPrompts = function() {
 };
 
 BrowserBot.prototype.getNextPrompt = function() {
-    var t = this.recordedConfirmations.shift();
+    var t = this.recordedPrompts.shift();
     this.relayBotToRC("browserbot.recordedPrompts");
     return t;
 };
@@ -178,16 +178,17 @@ BrowserBot.prototype.getCurrentPage = function() {
 };
 
 BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+    var self = this;
     windowToModify.alert = function(alert) {
         browserBot.recordedAlerts.push(alert);
-        this.relayBotToRC("browserbot.recordedAlerts");
+        self.relayBotToRC("browserbot.recordedAlerts");
     };
 
     windowToModify.confirm = function(message) {
         browserBot.recordedConfirmations.push(message);
         var result = browserBot.nextConfirmResult;
         browserBot.nextConfirmResult = true;
-        this.relayBotToRC("browserbot.recordedConfirmations");
+        self.relayBotToRC("browserbot.recordedConfirmations");
         return result;
     };
 
@@ -196,7 +197,7 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         var result = !browserBot.nextConfirmResult ? null : browserBot.nextPromptResult;
         browserBot.nextConfirmResult = true;
         browserBot.nextPromptResult = '';
-        this.relayBotToRC("browserbot.recordedPrompts");
+        self.relayBotToRC("browserbot.recordedPrompts");
         return result;
     };
 
