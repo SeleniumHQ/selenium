@@ -92,7 +92,9 @@
 	    <property name="skiptests" value="true" />
 	</target>
 
-	<target name="test" depends="dist-image, shouldWeTest" if="shouldRunTests">
+    <target name="test" depends="dist-image, shouldWeTest, justtest" if="shouldRunTests"/>
+    
+	<target name="justtest">
 		<echo message="Starting HTA tests..." />
 		<property name="results.file" location="${build.dir}/results.html" />
 		<delete file="${results.file}" />
