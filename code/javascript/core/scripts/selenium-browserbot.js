@@ -202,7 +202,6 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     // note that in IE the "windowName" argument must be a valid javascript identifier, it seems.
     var originalOpen = windowToModify.open;
     windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
-    debuggern
         var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
         selenium.browserbot.openedWindows[windowName] = openedWindow;
         return openedWindow;
