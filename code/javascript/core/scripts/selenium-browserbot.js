@@ -101,8 +101,12 @@ BrowserBot.prototype.hasAlerts = function() {
     return (this.recordedAlerts.length > 0) ;
 };
 
+BrowserBot.prototype.relayBotToRC = function() {} // override in injection.html
+
 BrowserBot.prototype.getNextAlert = function() {
-    return this.recordedAlerts.shift();
+    var t = this.recordedAlerts.shift();
+    this.relayBotToRC("browserbot.recordedAlerts");
+    return t;
 };
 
 BrowserBot.prototype.hasConfirmations = function() {
@@ -110,7 +114,9 @@ BrowserBot.prototype.hasConfirmations = function() {
 };
 
 BrowserBot.prototype.getNextConfirmation = function() {
-    return this.recordedConfirmations.shift();
+    var t = this.recordedConfirmations.shift();
+    this.relayBotToRC("browserbot.recordedConfirmations");
+    return t;
 };
 
 BrowserBot.prototype.hasPrompts = function() {
@@ -118,7 +124,9 @@ BrowserBot.prototype.hasPrompts = function() {
 };
 
 BrowserBot.prototype.getNextPrompt = function() {
-    return this.recordedPrompts.shift();
+    var t = this.recordedConfirmations.shift();
+    this.relayBotToRC("browserbot.recordedPrompts");
+    return t;
 };
 
 BrowserBot.prototype.getFrame = function() {
@@ -172,12 +180,14 @@ BrowserBot.prototype.getCurrentPage = function() {
 BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     windowToModify.alert = function(alert) {
         browserBot.recordedAlerts.push(alert);
+        this.relayBotToRC("browserbot.recordedAlerts");
     };
 
     windowToModify.confirm = function(message) {
         browserBot.recordedConfirmations.push(message);
         var result = browserBot.nextConfirmResult;
         browserBot.nextConfirmResult = true;
+        this.relayBotToRC("browserbot.recordedConfirmations");
         return result;
     };
 
@@ -186,6 +196,7 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         var result = !browserBot.nextConfirmResult ? null : browserBot.nextPromptResult;
         browserBot.nextConfirmResult = true;
         browserBot.nextPromptResult = '';
+        this.relayBotToRC("browserbot.recordedPrompts");
         return result;
     };
 
