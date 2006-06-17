@@ -138,7 +138,7 @@ public class SeleniumServer {
     private static boolean debugMode = false;
     private static boolean proxyInjectionMode = false;
     private static int proxyInjectionPort = 0;
-    private static String defaultBrowser = null;
+    private static String defaultBrowser = null; 
      
     public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
