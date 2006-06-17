@@ -604,6 +604,7 @@ public class XlateHtmlSeleneseToJava {
                 || op.equals("click")
                 || op.equals("check")
                 || op.equals("selectWindow")
+                || op.equals("selectFrame")
                 || op.equals("submit")
                 || op.equals("uncheck")
                 || op.equals("answerOnNextPrompt")
