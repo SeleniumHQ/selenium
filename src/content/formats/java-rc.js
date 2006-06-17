@@ -52,7 +52,14 @@ function assignToVariable(type, variable, expression) {
 }
 
 function waitFor(expression) {
-	return "while (" + expression.not().toString() + ") { Thread.sleep(1000); }";
+	return "while (" + not(expression).toString() + ") { Thread.sleep(1000); }";
+}
+
+function assertOrVerifyFailure(line, isAssert) {
+	var message = '"expected failure"';
+	var failStatement = isAssert ? "fail(" + message  + ");" : 
+		"verificationErrors.append(" + message + ");";
+	return "try { " + line + " " + failStatement + " } catch (Throwable e) {}";
 }
 
 Equals.prototype.toString = function() {
@@ -61,6 +68,10 @@ Equals.prototype.toString = function() {
 
 NotEquals.prototype.toString = function() {
 	return "!" + this.e1.toString() + ".equals(" + this.e2.toString() + ")";
+}
+
+SeleniumEquals.prototype.toString = function() {
+	return "seleniumEquals(" + string(this.pattern) + ", " + this.expression + ")";
 }
 
 function assertEquals(e1, e2) {
@@ -73,6 +84,10 @@ function assertNotEquals(e1, e2) {
 
 function pause(milliseconds) {
 	return "Thread.sleep(" + parseInt(milliseconds) + ");";
+}
+
+function echo(message) {
+	return "System.out.println(" + xlateArgument(message) + ");";
 }
 
 function statement(expression) {

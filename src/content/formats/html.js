@@ -1,6 +1,7 @@
 function decodeText(text) {
 	var escapeXml = options.escapeXmlEntities;
 	var r;
+	text = text.replace(/<br\s*\\?>/i, "\n");
 	if (escapeXml == 'always' || escapeXml == 'partial' || escapeXml == 'html') {
 		text = text.replace(/&lt;/g, '<');
 		text = text.replace(/&gt;/g, '>');
@@ -24,6 +25,8 @@ function decodeText(text) {
 		text = text.replace(/^\$\{/g, '$$$${'); // replace ${...} to $${...}
 		text = text.replace(/\\\$\{/g, '$${'); // replace \${...} to ${...}
 	}
+	text = text.replace(/^\s+/, "");
+	text = text.replace(/\s+$/, "");
 	return text;
 }
 
@@ -217,7 +220,7 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
 this.options = {
 	commandLoadPattern:
 	"<tr>" +
-	"\\s*<td>([\\d\\D]*?)</td>" +
+	"\\s*<td>\\s*([\\w]*?)\\s*</td>" +
 	"\\s*<td>([\\d\\D]*?)</td>" +
 	"\\s*(<td>([\\d\\D]*?)</td>|<td/>)" +
 	"\\s*</tr>\\s*",

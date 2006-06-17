@@ -73,9 +73,12 @@ function testJavaRCFormat() {
 	assertEquals('while (selenium.isTextPresent("test")) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForTextNotPresent', 'test')));
 	assertEquals('assertEquals("def", selenium.getText("abc"));', f.formatCommand(new Command('assertText', 'abc', 'def')));
 	assertEquals('assertEquals("abc", selenium.getLocation());', f.formatCommand(new Command('assertLocation', 'abc')));
+	assertEquals('selenium.type("theText", selenium.getEval("\'abc\'"));', f.formatCommand(new Command('type', "theText", "javascript{'abc'}")));
+	assertEquals('assertEquals(new String[] {"", "abc", "ab,c"}, selenium.getSelectOptions("theSelect"));', f.formatCommand(new Command('assertSelectOptions', "theSelect", ",abc,ab\\,c")));
 	assertEquals('assertNotEquals("abc", selenium.getLocation());', f.formatCommand(new Command('assertNotLocation', 'abc')));
 	assertEquals('String def = selenium.getText("abc");', f.formatCommand(new Command('storeText', 'abc', 'def')));
 	assertEquals('while (!"def".equals(selenium.getText("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForText', 'abc', 'def')));
+	assertEquals('while (seleniumEquals("regexp:abc", selenium.getValue("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForNotValue', 'abc', 'regexp:abc')));
 	assertEquals('while ("def".equals(selenium.getText("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
 	assertEquals('selenium.open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
 	assertEquals('selenium.waitForPageToLoad("30");', f.formatCommand(new Command('waitForPageToLoad', '30')));

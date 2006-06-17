@@ -578,7 +578,7 @@ Editor.prototype.loadExtensions = function() {
 
 Editor.prototype.loadSeleniumAPI = function() {
 	var parser = new DOMParser();
-	var document = parser.parseFromString(FileUtils.readURL("chrome://selenium-ide/content/selenium/iedoc.xml"), "text/xml");
+	var document = parser.parseFromString(FileUtils.readURL("chrome://selenium-ide/content/selenium/iedoc-core.xml"), "text/xml");
 	Command.apiDocument = document;
 	
 	var functionElements = document.evaluate("//function", document, null, 0, null);

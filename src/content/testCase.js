@@ -70,7 +70,16 @@ Command.loadAPI = function() {
 				def.isAccessor = true;
 				functions["!" + def.name] = def.negativeAccessor();
 			}
+			if (def.name.match(/^assert/)) { // only assertSelected should match
+				var verifyDef = new CommandDefinition(def.name);
+				verifyDef.params = def.params;
+				functions["verify" + def.name.substring(6)] = verifyDef;
+			}
 		}
+		functions['assertFailureOnNext'] = new CommandDefinition('assertFailureOnNext');
+		functions['verifyFailureOnNext'] = new CommandDefinition('verifyFailureOnNext');
+		functions['assertErrorOnNext'] = new CommandDefinition('assertErrorOnNext');
+		functions['verifyErrorOnNext'] = new CommandDefinition('verifyErrorOnNext');
 		this.functions = functions;
 	}
 	return this.functions;
@@ -83,7 +92,9 @@ function CommandDefinition(name) {
 
 CommandDefinition.prototype.negativeAccessor = function() {
 	var def = new CommandDefinition(this.name);
-	def.params = this.params;
+	for (var name in this) {
+		def[name] = this[name];
+	}
 	def.isAccessor = true;
 	def.negative = true;
 	return def;

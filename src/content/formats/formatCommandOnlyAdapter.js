@@ -29,6 +29,7 @@ function parse(testCase, source) {
  * @param name The name of the test case, if any. It may be used to embed title into the source.
  */
 function format(testCase, name, saveHeaderAndFooter) {
+	this.log.info("formatting testCase: " + name);
 	var result = '';
 	var header = testCase.formatLocal(this.name).header;
 	var footer = testCase.formatLocal(this.name).footer;
@@ -60,7 +61,7 @@ function filterForRemoteControl(originalCommands) {
 				var c1 = c.createCopy();
 				c1.command = c.command.replace(/AndWait$/, '');
 				commands.push(c1);
-				commands.push(new Command("waitForPageToLoad", options['global.timeout']));
+				commands.push(new Command("waitForPageToLoad", options['global.timeout'] || "30000"));
 			} else {
 				commands.push(c);
 			}
@@ -73,7 +74,9 @@ function filterForRemoteControl(originalCommands) {
 
 function formatCommands(commands) {
 	commands = filterForRemoteControl(commands);
-	this.lastIndent = '';
+	if (this.lastIndent == null) {
+		this.lastIndent = '';
+	}
 	var result = '';
 	for (var i = 0; i < commands.length; i++) {
 		var line;
@@ -85,13 +88,19 @@ function formatCommands(commands) {
 		} else if (command.type == 'comment' && this.formatComment) {
 			line = formatComment(command);
 		}
-		var r = /^(\s*)/.exec(line);
-		if (r) {
-			this.lastIndent = r[1];
+		if (line != null) {
+			updateIndent(line);
+			result += line + "\n";
 		}
-		result += line + "\n";
 	}
 	return result;
+}
+
+function updateIndent(line) {
+	var r = /^(\s*)/.exec(line);
+	if (r) {
+		this.lastIndent = r[1];
+	}
 }
 
 function indent() {

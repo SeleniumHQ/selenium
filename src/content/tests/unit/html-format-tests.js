@@ -6,9 +6,9 @@ function testDecodeTextWithHtmlFormat() {
 	
 	assertEquals("abc", decodeText("abc"));
 
-	assertEquals("\xA0", decodeText("&#xA0;"));
-	assertEquals("\xA0", decodeText("&#160;"));
-	assertEquals("\xA0", decodeText("&nbsp;"));
+	assertEquals("'\xA0'", decodeText("'&#xA0;'"));
+	assertEquals("'\xA0'", decodeText("'&#160;'"));
+	assertEquals("'\xA0'", decodeText("'&nbsp;'"));
 
 	assertEquals("'abc'", decodeText("'abc'"));
 	assertEquals("&amp;", decodeText("&amp;amp;"));
