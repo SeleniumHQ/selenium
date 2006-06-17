@@ -95,7 +95,11 @@ public class XlateHtmlSeleneseToJava {
                 String children[] = dir.list();
                 for (int k = 0; k < children.length; k++) {
                     String fileName = children[k];
-                    if (!skipList.containsKey(fileName) && fileName.indexOf(".htm")!=-1 && fileName.indexOf("Suite")==-1) {
+                    System.out.println("ck " + fileName);
+                    if (skipList.containsKey(fileName)) {
+                        System.out.println("Skipping " + fileName);
+                    }
+                    else if (fileName.indexOf(".htm")!=-1 && fileName.indexOf("Suite")==-1) {
                         generateJavaClassFromSeleneseHtml(dirName + "/" + fileName, javaSeleneseFileDirectoryName);
                     }
                 }
@@ -597,6 +601,7 @@ public class XlateHtmlSeleneseToJava {
         }
         if (op.equals("open")) {
             recordFirstDomain(tokens[1]);
+            tokens[1] = possiblyAdjustOpenURL(tokens[1]);
         }
         int expectedArgCount = 2;
         if (op.equals("open")
@@ -618,6 +623,15 @@ public class XlateHtmlSeleneseToJava {
             expectedArgCount = 0;
         }
         return beginning + XlateSeleneseStatementDefault(expectedArgCount, "selenium", tokens) + ending;
+    }
+
+    private static String possiblyAdjustOpenURL(String url) {
+        if (url.startsWith("../tests/") && 
+                packageName.equals("com.thoughtworks.selenium.corebased")) {
+            System.out.println("Switching to absolute URLs for selenium core-based tests so as to avoid breaking proxy injection mode");
+            url = url.replaceFirst("^../", "/selenium-server/");
+        }
+        return url;
     }
 
     private static String getSelectOptionLocatorValue(String optionLocator) {
