@@ -95,7 +95,6 @@ public class XlateHtmlSeleneseToJava {
                 String children[] = dir.list();
                 for (int k = 0; k < children.length; k++) {
                     String fileName = children[k];
-                    System.out.println("ck " + fileName);
                     if (skipList.containsKey(fileName)) {
                         System.out.println("Skipping " + fileName);
                     }
