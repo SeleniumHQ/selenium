@@ -507,6 +507,7 @@ public class SeleniumServer {
         {
             if (!SeleniumServer.isProxyInjectionMode()) {
                 super.sendData(request, response, pathInContext, resource, writeHeaders);
+                return;
             }
             ResourceCache.ResourceMetaData metaData = (ResourceCache.ResourceMetaData)resource.getAssociate();
             
