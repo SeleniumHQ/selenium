@@ -71,7 +71,7 @@ public class Xlator
             loadJSSource(cx, scope, "/content/tools.js");
             
 //          add window.editor.seleniumAPI
-			InputStream stream = Xlator.class.getResourceAsStream("/core/iedoc.xml");
+			InputStream stream = Xlator.class.getResourceAsStream("/core/iedoc-core.xml");
             Document apiDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
 			stream.close();
 			
@@ -108,7 +108,7 @@ public class Xlator
             }
             
             Function format = getFunction(scope, "format");
-            Object result = format.call(cx, scope, scope, new Object[] {myTestCase, "foo"});
+            Object result = format.call(cx, scope, scope, new Object[] {myTestCase, testName});
             
             return (String) result;
 
