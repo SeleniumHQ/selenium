@@ -137,7 +137,8 @@ public class SeleniumServer {
     
     private static boolean debugMode = false;
     private static boolean proxyInjectionMode = false;
-    private static int proxyInjectionPort = 0; 
+    private static int proxyInjectionPort = 0;
+    private static String defaultBrowser = null;
      
     public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
@@ -167,6 +168,17 @@ public class SeleniumServer {
             if ("-help".equals(arg)) {
                 usage(null);
                 System.exit(1);
+            }
+            else if ("-defaultBrowser".equals(arg)) {
+                for (i++; i < args.length; i++) {
+                    if (SeleniumServer.defaultBrowser==null)
+                        SeleniumServer.defaultBrowser = "";
+                    else
+                        SeleniumServer.defaultBrowser += " ";
+                    SeleniumServer.defaultBrowser += args[i];
+                }
+                System.out.println("\"" + defaultBrowser + "\" will be used as the browser " +
+                        "mode for all sessions, no matter what is passed to getNewBrowserSession");
             }
             else if ("-port".equals(arg)) {
                 port = Integer.parseInt(args[++i]);
@@ -377,13 +389,14 @@ public class SeleniumServer {
         if (msg!=null) {
             System.err.println(msg + ":");
         }
-        System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+        System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive] [-defaultBrowser browserString] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
                 "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
                 "where:\n" +
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
-                "the argument for port is the port number the selenium server should use (default 4444)\n" +
-        "-interactive puts you into interactive mode.  See the tutorial for more details" +
-        "-debug puts you into debug mode, with more trace information and diagnostics");
+                "the argument for port is the port number the selenium server should use (default 4444)" +
+        "\n\t-interactive puts you into interactive mode.  See the tutorial for more details" +
+        "\n\t-defaultBrowser sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
+        "\n\t-debug puts you into debug mode, with more trace information and diagnostics");
     }
 
     /** Prepares a Jetty server with its HTTP handlers.
@@ -560,6 +573,10 @@ public class SeleniumServer {
 
     public void setProxyInjectionMode(boolean proxyInjectionMode) {
         SeleniumServer.proxyInjectionMode = proxyInjectionMode;
+    }
+
+    public static String getDefaultBrowser() {
+        return defaultBrowser;
     }
 
 }

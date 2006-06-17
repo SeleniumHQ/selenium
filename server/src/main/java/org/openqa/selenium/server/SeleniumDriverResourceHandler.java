@@ -350,6 +350,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private String getNewBrowserSession(String browser, String startURL) {
+        if (SeleniumServer.getDefaultBrowser()!=null) {
+            browser = SeleniumServer.getDefaultBrowser();
+        }
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
         String sessionId = Long.toString(System.currentTimeMillis());
         setLastSessionId(sessionId); 
