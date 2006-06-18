@@ -20,10 +20,14 @@ function assignToVariable(type, variable, expression) {
 
 function waitFor(expression) {
 	if (expression.negative) {
-		return "sleep 1 while " + expression.not().toString();
+		return "assert !60.times{|i| break unless (" + expression.not().toString() + " rescue true); sleep 1}"
 	} else {
-		return "sleep 1 until " + expression.toString();
+		return "assert !60.times{|i| break if (" + expression.toString() + " rescue false); sleep 1}"
 	}
+}
+
+function assertOrVerifyFailure(line, isAssert) {
+	return "assert_raise(Exception) { " + line + "}";
 }
 
 Equals.prototype.toString = function() {
@@ -34,7 +38,16 @@ NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " != " + this.e2.toString();
 }
 
+SeleniumEquals.prototype.toString = function() {
+	// TODO
+	return string(this.pattern.toString()) + " == " + this.expression.toString();
+}
+
 function assertEquals(e1, e2) {
+	return "assert_equal " + e1.toString() + ", " + e2.toString();
+}
+
+function verifyEquals(e1, e2) {
 	return "assert_equal " + e1.toString() + ", " + e2.toString();
 }
 
@@ -42,9 +55,31 @@ function assertNotEquals(e1, e2) {
 	return "assert_not_equal " + e1.toString() + ", " + e2.toString();
 }
 
+function verifyNotEquals(e1, e2) {
+	return "assert_not_equal " + e1.toString() + ", " + e2.toString();
+}
+
+function pause(milliseconds) {
+	return "sleep " + (parseInt(milliseconds) / 1000);
+}
+
+function echo(message) {
+	return "p " + xlateArgument(message);
+}
+
 function statement(expression) {
 	expression.noBraces = true;
 	return expression.toString();
+}
+
+function array(value) {
+	var str = '[';
+	for (var i = 0; i < value.length; i++) {
+		str += string(value[i]);
+		if (i < value.length - 1) str += ", ";
+	}
+	str += ']';
+	return str;
 }
 
 CallSelenium.prototype.toString = function() {
@@ -74,7 +109,9 @@ CallSelenium.prototype.toString = function() {
 }
 
 function formatComment(comment) {
-	return indent() + "# " + comment.comment;
+	return comment.comment.replace(/.+/mg, function(str) {
+			return indent() + "# " + str;
+		});
 }
 
 this.options = {

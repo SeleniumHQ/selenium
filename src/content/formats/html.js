@@ -66,10 +66,10 @@ function encodeText(text) {
 }
 
 function convertText(command, converter) {
-	for (prop in command) {
-		if (instanceOf(command[prop], String)) {
-			command[prop] = converter(command[prop]);
-		}
+	var props = ['command', 'target', 'value'];
+	for (var i = 0; i < props.length; i++) {
+		var prop = props[i];
+		command[prop] = converter(command[prop]);
 	}
 }
 
@@ -80,50 +80,50 @@ function convertText(command, converter) {
  * @param source The source to parse
  */
 function parse(testCase, source) {
-	var commandLoadPattern = options.commandLoadPattern;
-	var commandRegexp = new RegExp(commandLoadPattern, 'i');
-	var commentRegexp = new RegExp("^" + options.commentLoadPattern, 'i');
+	var commandRegexp = new RegExp(options.commandLoadPattern, 'i');
+	var commentRegexp = new RegExp(options.commentLoadPattern, 'i');
+	var commandOrCommentRegexp = new RegExp("((" + options.commandLoadPattern + ")|(" + options.commentLoadPattern + "))", 'ig');
 	var doc = source;
-	var result;
 	var commands = [];
-	var command;
-	var first = true;
-	var i;
-	//var vars = this.options.commandLoadVars;
+	var commandFound = false;
 	while (true) {
-		log.debug("doc=" + doc + ", commandRegexp=" + commandRegexp);
-		if ((result = commandRegexp.exec(doc)) != null) {
-			if (first) {
-				// treat text before the first match as header
-				i = doc.indexOf(result[0]);
-				testCase.header = doc.substr(0, i);
-				doc = doc.substr(i);
+		//log.debug("doc=" + doc + ", commandRegexp=" + commandRegexp);
+		var lastIndex = commandOrCommentRegexp.lastIndex;
+		var docResult = commandOrCommentRegexp.exec(doc);
+		if (docResult) {
+			if (docResult[2]) { // command
+				var command = new Command();
+				command.skip = docResult.index - lastIndex;
+				command.index = lastIndex;
+				var result = commandRegexp.exec(doc.substring(lastIndex));
+				eval(options.commandLoadScript);
+				convertText(command, decodeText);
+				commands.push(command);
+				if (!commandFound) {
+					// remove comments before the first command or comment
+					for (var i = commands.length - 1; i >= 0; i--) {
+						if (commands[i].skip > 0) {
+							commands.splice(0, i);
+							break;
+						}
+					}
+					testCase.header = doc.substr(0, commands[0].index);
+					commandFound = true;
+				}
+			} else { // comment
+				var comment = new Comment();
+				comment.skip = docResult.index - lastIndex;
+				comment.index = docResult.index;
+				var result = commentRegexp.exec(doc.substring(lastIndex));
+				eval(options.commentLoadScript);
+				commands.push(comment);
 			}
-			//log.debug("result=" + result);
-			command = new Command();
-			eval(options.commandLoadScript);
-			convertText(command, decodeText);
-			commands.push(command);
-			doc = doc.substr(result[0].length);
-			if (first) {
-				commandRegexp = new RegExp("^" + commandLoadPattern, 'i');
-			}
-			first = false;
-		} else if ((result = commentRegexp.exec(doc)) != null) {
-			if (first) {
-				// no command found, but found a comment
-				break;
-			}
-			var comment = new Comment();
-			eval(options.commentLoadScript);
-			commands.push(comment);
-			doc = doc.substr(result[0].length);
 		} else {
 			break;
 		}
 	}
 	if (commands.length > 0) {
-		testCase.footer = doc;
+		testCase.footer = doc.substring(commandOrCommentRegexp.lastIndex);
 		//log.debug("header=" + this.header);
 		//log.debug("footer=" + this.footer);
 		//log.debug("commands.length=" + commands.length);
@@ -220,15 +220,16 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
 this.options = {
 	commandLoadPattern:
 	"<tr>" +
+	"\\s*(<!--[\\d\\D]*?-->)?" +
 	"\\s*<td>\\s*([\\w]*?)\\s*</td>" +
 	"\\s*<td>([\\d\\D]*?)</td>" +
 	"\\s*(<td>([\\d\\D]*?)</td>|<td/>)" +
 	"\\s*</tr>\\s*",
 	
 	commandLoadScript:
-	"command.command = result[1];\n" +
-	"command.target = result[2];\n" +
-	"command.value = result[4] || '';\n",
+	"command.command = result[2];\n" +
+	"command.target = result[3];\n" +
+	"command.value = result[5] || '';\n",
 
 	commentLoadPattern:
 	"<!--([\\d\\D]*?)-->\\s*",

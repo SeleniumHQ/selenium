@@ -33,6 +33,7 @@ function formatHeader(testCase) {
 
 function formatFooter(testCase) {
 	var footer = 
+		"\t\tcheckForVerificationErrors();\n" +
 		"\t}\n" +
 		"}\n";
 	this.footer = footer;
@@ -52,7 +53,12 @@ function assignToVariable(type, variable, expression) {
 }
 
 function waitFor(expression) {
-	return "while (" + not(expression).toString() + ") { Thread.sleep(1000); }";
+	return "for (int second = 0;; second++) {\n" +
+		indent() + "\tif (second >= 60) fail(\"timeout\");\n" +
+		indent() + "\ttry { if (" + expression.toString() + ") break; } catch (Exception e) {}\n" +
+		indent() + "\tThread.sleep(1000);\n" +
+		indent() + "}\n";
+	//return "while (" + not(expression).toString() + ") { Thread.sleep(1000); }";
 }
 
 function assertOrVerifyFailure(line, isAssert) {
@@ -78,8 +84,16 @@ function assertEquals(e1, e2) {
 	return "assertEquals(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
+function verifyEquals(e1, e2) {
+	return "verifyEquals(" + e1.toString() + ", " + e2.toString() + ")";
+}
+
 function assertNotEquals(e1, e2) {
 	return "assertNotEquals(" + e1.toString() + ", " + e2.toString() + ")";
+}
+
+function verifyNotEquals(e1, e2) {
+	return "verifyNotEquals(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
 function pause(milliseconds) {

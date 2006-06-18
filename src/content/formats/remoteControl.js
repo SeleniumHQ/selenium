@@ -83,9 +83,34 @@ function xlateArgument(value) {
 	value = value.replace(/\s+$/, '');
 	var r;
 	if ((r = /^javascript\{([\d\D]*)\}$/.exec(value))) {
-		return new CallSelenium("getEval", [string(r[1])]);
-	} else if ((r = /^\$\{(.*)\}$/.exec(value)) && this.declaredVars && this.declaredVars[r[1]]) {
-		return r[1];
+		var js = r[1];
+		var parts = [];
+		var prefix = "";
+		var r2;
+		while ((r2 = /storedVars\['(.*?)'\]/.exec(js))) {
+			parts.push(string(prefix + js.substring(0, r2.index) + "'"));
+			parts.push(variableName(r2[1]));
+			js = js.substring(r2.index + r2[0].length);
+			prefix = "'";
+		}
+		parts.push(string(prefix + js));
+		return new CallSelenium("getEval", [concatString(parts)]);
+	} else if ((r = /\$\{/.exec(value))) {
+		var parts = [];
+		var regexp = /\$\{(.*?)\}/g;
+		var lastIndex = 0;
+		var r2;
+		while ((r2 = regexp.exec(value)) && this.declaredVars && this.declaredVars[r2[1]]) {
+			if (r2.index - lastIndex > 0) {
+				parts.push(string(value.substring(lastIndex, r2.index)));
+			}
+			parts.push(variableName(r2[1]));
+			lastIndex = regexp.lastIndex;
+		}
+		if (lastIndex < value.length) {
+			parts.push(string(value.substring(lastIndex, value.length)));
+		}
+		return concatString(parts);
 	} else {
 		return string(value);
 	}
@@ -98,14 +123,22 @@ function addDeclaredVar(variable) {
 	this.declaredVars[variable] = true;
 }
 
+function variableName(value) {
+	return value;
+}
+
+function concatString(array) {
+	return array.join(" + ");
+}
+
 function string(value) {
 	if (value != null) {
 		value = value.replace(/^\s+/, '');
 		value = value.replace(/\s+$/, '');
 		value = value.replace(/\\/g, '\\\\');
-		value = value.replace(/\"/mg, '\\"');
-		value = value.replace(/\r/mg, '\\r');
-		value = value.replace(/\n/mg, '\\n');
+		value = value.replace(/\"/g, '\\"');
+		value = value.replace(/\r/g, '\\r');
+		value = value.replace(/\n/g, '\\n');
 		return '"' + value + '"';
 	} else {
 		return '""';
@@ -128,7 +161,7 @@ CallSelenium.prototype.not = function() {
 	return call;
 }
 
-function formatValue(type, value) {
+function xlateValue(type, value) {
 	if (type == 'String[]') {
 		var start = 0;
 		var list = [];
@@ -168,7 +201,10 @@ function formatCommand(command) {
 				}
 			} else { // getXXX
 				if (command.command.match(/^(verify|assert)/)) {
-					line = statement((def.negative ? assertNotEquals : assertEquals)(formatValue(def.returnType, extraArg), call));
+					line = statement((command.command.match(/^verify/) ? 
+									  (def.negative ? verifyNotEquals : verifyEquals) :
+									  (def.negative ? assertNotEquals : assertEquals))
+									 (xlateValue(def.returnType, extraArg), call));
 				} else if (command.command.match(/^store/)) {
 					addDeclaredVar(extraArg);
 					line = statement(assignToVariable(def.returnType, extraArg, call));
@@ -206,7 +242,7 @@ function formatCommand(command) {
 			//TODO verify
 			var call = new CallSelenium("getSelected" + flavor);
 			call.args.push(xlateArgument(command.target));
-			line = statement(assertEquals(formatValue('String', value), call));
+			line = statement(assertEquals(xlateValue('String', value), call));
 		} else if (def) {
 			if (def.name.match(/^(assert|verify)(Error|Failure)OnNext$/)) {
 				this.assertFailureOnNext = def.name.match(/^assert/);
@@ -229,8 +265,7 @@ function formatCommand(command) {
 					call.args.push(string(command.value));
 				}
 			}
-			//line += statement(call);
-			line = formatComment(new Comment(line));
+			line = formatComment(new Comment(statement(call)));
 		}
 	}
 	if (line && (this.assertFailureOnNext || this.verifyFailureOnNext)) {

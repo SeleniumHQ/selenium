@@ -10,23 +10,55 @@ Command.prototype.getAPI = function() {
 
 function setUp() {
 	this.formats = new FormatCollection({});
+	this.commands = [];
+	this.commands.push(new Command('assertTextPresent', 'hello'));
+	this.commands.push(new Command('assertTextNotPresent', 'hello'));
+	this.commands.push(new Command('storeTextPresent', 'test', 'abc'));
+	this.commands.push(new Command('waitForTextPresent', 'test'));
+	this.commands.push(new Command('waitForTextNotPresent', 'test'));
+	this.commands.push(new Command('assertText', 'abc', 'def'));
+	this.commands.push(new Command('assertLocation', 'abc'));
+	this.commands.push(new Command('assertNotLocation', 'abc'));
+	this.commands.push(new Command('type', "theText", "javascript{'abc'}"));
+	this.commands.push(new Command('assertSelectOptions', "theSelect", ",abc,ab\\,c"));
+	this.commands.push(new Command('assertNotLocation', 'abc'));
+	this.commands.push(new Command('storeText', 'abc', 'def'));
+	this.commands.push(new Command('waitForText', 'abc', 'def'));
+	this.commands.push(new Command('waitForNotValue', 'abc', 'regexp:abc'));
+	this.commands.push(new Command('waitForNotText', 'abc', 'def'));
+	this.commands.push(new Command('open', 'http://www.google.com/'));
+	this.commands.push(new Command('waitForPageToLoad', '30000'));
+	this.commands.push(new Command('pause', '1000'));
+	this.commands.push(new Comment("line 1\nline 2"));
+}
+
+function nextCommand() {
+	return this.formatter.formatCommand(this.commands.shift());
 }
 
 function testRubyRCFormat() {
 	var format = this.formats.findFormat("ruby-rc");
 	var f = format.getFormatter();
-	assertEquals('assert @selenium.is_text_present("hello")', f.formatCommand(new Command('assertTextPresent', 'hello')));
-	assertEquals('assert !@selenium.is_text_present("hello")', f.formatCommand(new Command('assertTextNotPresent', 'hello')));
-	assertEquals('abc = @selenium.is_text_present("test")', f.formatCommand(new Command('storeTextPresent', 'test', 'abc')));
-	assertEquals('sleep 1 until @selenium.is_text_present("test")', f.formatCommand(new Command('waitForTextPresent', 'test')));
-	assertEquals('sleep 1 while @selenium.is_text_present("test")', f.formatCommand(new Command('waitForTextNotPresent', 'test')));
-	assertEquals('assert_equal "def", @selenium.get_text("abc")', f.formatCommand(new Command('assertText', 'abc', 'def')));
-	assertEquals('assert_equal "abc", @selenium.get_location', f.formatCommand(new Command('assertLocation', 'abc')));
-	assertEquals('assert_not_equal "abc", @selenium.get_location', f.formatCommand(new Command('assertNotLocation', 'abc')));
-	assertEquals('def = @selenium.get_text("abc")', f.formatCommand(new Command('storeText', 'abc', 'def')));
-	assertEquals('sleep 1 until "def" == @selenium.get_text("abc")', f.formatCommand(new Command('waitForText', 'abc', 'def')));
-	assertEquals('sleep 1 while "def" == @selenium.get_text("abc")', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
-	assertEquals('@selenium.open "http://www.google.com/"', f.formatCommand(new Command('open', 'http://www.google.com/')));
+	this.formatter = f;
+	assertEquals('assert @selenium.is_text_present("hello")', nextCommand());
+	assertEquals('assert !@selenium.is_text_present("hello")', nextCommand());
+	assertEquals('abc = @selenium.is_text_present("test")', nextCommand());
+	assertEquals('assert !60.times{|i| break if (@selenium.is_text_present("test") rescue false); sleep 1}', nextCommand());
+	assertEquals('assert !60.times{|i| break unless (@selenium.is_text_present("test") rescue true); sleep 1}', nextCommand());
+	assertEquals('assert_equal "def", @selenium.get_text("abc")', nextCommand());
+	assertEquals('assert_equal "abc", @selenium.get_location', nextCommand());
+	assertEquals('assert_not_equal "abc", @selenium.get_location', nextCommand());
+	assertEquals('@selenium.type "theText", @selenium.get_eval("\'abc\'")', nextCommand());
+	assertEquals('assert_equal ["", "abc", "ab,c"], @selenium.get_select_options("theSelect")', nextCommand());
+	assertEquals('assert_not_equal "abc", @selenium.get_location', nextCommand());
+	assertEquals('def = @selenium.get_text("abc")', nextCommand());
+	assertEquals('assert !60.times{|i| break if ("def" == @selenium.get_text("abc") rescue false); sleep 1}', nextCommand());
+	assertEquals('assert !60.times{|i| break unless ("regexp:abc" == @selenium.get_value("abc") rescue true); sleep 1}', nextCommand());
+	assertEquals('assert !60.times{|i| break unless ("def" == @selenium.get_text("abc") rescue true); sleep 1}', nextCommand());
+	assertEquals('@selenium.open "http://www.google.com/"', nextCommand());
+	assertEquals('@selenium.wait_for_page_to_load "30000"', nextCommand());
+	assertEquals('sleep 1', nextCommand());
+	assertEquals("# line 1\n# line 2", f.formatComment(this.commands.shift()));
 }
 
 function testPerlRCFormat() {
@@ -66,24 +98,26 @@ function testPythonRCFormat() {
 function testJavaRCFormat() {
 	var format = this.formats.findFormat("java-rc");
 	var f = format.getFormatter();
-	assertEquals('assertTrue(selenium.isTextPresent("hello"));', f.formatCommand(new Command('assertTextPresent', 'hello')));
-	assertEquals('assertFalse(selenium.isTextPresent("hello"));', f.formatCommand(new Command('assertTextNotPresent', 'hello')));
-	assertEquals('boolean abc = selenium.isTextPresent("test");', f.formatCommand(new Command('storeTextPresent', 'test', 'abc')));
-	assertEquals('while (!selenium.isTextPresent("test")) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForTextPresent', 'test')));
-	assertEquals('while (selenium.isTextPresent("test")) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForTextNotPresent', 'test')));
-	assertEquals('assertEquals("def", selenium.getText("abc"));', f.formatCommand(new Command('assertText', 'abc', 'def')));
-	assertEquals('assertEquals("abc", selenium.getLocation());', f.formatCommand(new Command('assertLocation', 'abc')));
-	assertEquals('selenium.type("theText", selenium.getEval("\'abc\'"));', f.formatCommand(new Command('type', "theText", "javascript{'abc'}")));
-	assertEquals('assertEquals(new String[] {"", "abc", "ab,c"}, selenium.getSelectOptions("theSelect"));', f.formatCommand(new Command('assertSelectOptions', "theSelect", ",abc,ab\\,c")));
-	assertEquals('assertNotEquals("abc", selenium.getLocation());', f.formatCommand(new Command('assertNotLocation', 'abc')));
-	assertEquals('String def = selenium.getText("abc");', f.formatCommand(new Command('storeText', 'abc', 'def')));
-	assertEquals('while (!"def".equals(selenium.getText("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForText', 'abc', 'def')));
-	assertEquals('while (seleniumEquals("regexp:abc", selenium.getValue("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForNotValue', 'abc', 'regexp:abc')));
-	assertEquals('while ("def".equals(selenium.getText("abc"))) { Thread.sleep(1000); }', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
-	assertEquals('selenium.open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
-	assertEquals('selenium.waitForPageToLoad("30");', f.formatCommand(new Command('waitForPageToLoad', '30')));
-	assertEquals('Thread.sleep(1000);', f.formatCommand(new Command('pause', '1000')));
-	assertEquals("// line 1\n// line 2", f.formatComment(new Comment("line 1\nline 2")));
+	this.formatter = f;
+	assertEquals('assertTrue(selenium.isTextPresent("hello"));', nextCommand());
+	assertEquals('assertFalse(selenium.isTextPresent("hello"));', nextCommand());
+	assertEquals('boolean abc = selenium.isTextPresent("test");', nextCommand());
+	assertTrue(nextCommand().indexOf('if (selenium.isTextPresent("test")) break; }') >= 0);
+	assertTrue(nextCommand().indexOf('if (!selenium.isTextPresent("test")) break; }') >= 0);
+	assertEquals('assertEquals("def", selenium.getText("abc"));', nextCommand());
+	assertEquals('assertEquals("abc", selenium.getLocation());', nextCommand());
+	assertEquals('assertNotEquals("abc", selenium.getLocation());', nextCommand());
+	assertEquals('selenium.type("theText", selenium.getEval("\'abc\'"));', nextCommand());
+	assertEquals('assertEquals(new String[] {"", "abc", "ab,c"}, selenium.getSelectOptions("theSelect"));', nextCommand());
+	assertEquals('assertNotEquals("abc", selenium.getLocation());', nextCommand());
+	assertEquals('String def = selenium.getText("abc");', nextCommand());
+	assertTrue(nextCommand().indexOf('if ("def".equals(selenium.getText("abc"))) break; }') >= 0);
+	assertTrue(nextCommand().indexOf('if (!seleniumEquals("regexp:abc", selenium.getValue("abc"))) break; }') >= 0);
+	assertTrue(nextCommand().indexOf('if (!"def".equals(selenium.getText("abc"))) break; }') >= 0);
+	assertEquals('selenium.open("http://www.google.com/");', nextCommand());
+	assertEquals('selenium.waitForPageToLoad("30000");', nextCommand());
+	assertEquals('Thread.sleep(1000);', nextCommand());
+	assertEquals("// line 1\n// line 2", f.formatComment(this.commands.shift()));
 }
 
 function testCSharpRCFormat() {

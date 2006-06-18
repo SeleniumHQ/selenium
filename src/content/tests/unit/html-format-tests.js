@@ -1,9 +1,9 @@
 function setUp() {
+	this.log = new Log("format");
+	options.escapeXmlEntities = "html";
 }
 
 function testDecodeTextWithHtmlFormat() {
-	options.escapeXmlEntities = "html";
-	
 	assertEquals("abc", decodeText("abc"));
 
 	assertEquals("'\xA0'", decodeText("'&#xA0;'"));
@@ -15,12 +15,34 @@ function testDecodeTextWithHtmlFormat() {
 	assertEquals("a=b&c=d", decodeText("a=b&c=d"));
 	assertEquals("&foobar;", decodeText("&foobar;"));
 }
+
 function testEncodeTextWithHtmlFormat() {
-	options.escapeXmlEntities = "html";
-	
 	assertEquals("&nbsp;", encodeText("\xA0"));
 	assertEquals("'abc'", encodeText("'abc'"));
 	assertEquals("&amp;amp;", encodeText("&amp;"));
 	assertEquals("a=b&c=d", encodeText("a=b&c=d"));
 	assertEquals("&foobar;", encodeText("&foobar;"));
+}
+
+function testParse() {
+	var source = FileUtils.readURL("chrome://selenium-ide/content/tests/unit/html/TestWaitInPopupWindow.html");
+	var testCase = new TestCase();
+	parse(testCase, source);
+	var commands = testCase.commands;
+	assertEquals(" open command ", commands.shift().comment);
+	assertEquals("open", commands.shift().command);
+	assertEquals("click", commands.shift().command);
+	assertEquals(" waitForPopUp command ", commands.shift().comment);
+	assertEquals("waitForPopUp", commands.shift().command);
+	assertEquals("selectWindow", commands.shift().command);
+	assertEquals("verifyTitle", commands.shift().command);
+	assertEquals("setTimeout", commands.shift().command);
+	assertEquals("clickAndWait", commands.shift().command);
+	assertEquals("verifyTitle", commands.shift().command);
+	assertEquals("setTimeout", commands.shift().command);
+	assertEquals("clickAndWait", commands.shift().command);
+	assertEquals("verifyTitle", commands.shift().command);
+	assertEquals("close", commands.shift().command);
+	assertEquals("selectWindow", commands.shift().command);
+	assertEquals(0, commands.length);
 }
