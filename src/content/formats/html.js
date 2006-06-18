@@ -86,9 +86,10 @@ function parse(testCase, source) {
 	var doc = source;
 	var commands = [];
 	var commandFound = false;
+	var lastIndex;
 	while (true) {
 		//log.debug("doc=" + doc + ", commandRegexp=" + commandRegexp);
-		var lastIndex = commandOrCommentRegexp.lastIndex;
+		lastIndex = commandOrCommentRegexp.lastIndex;
 		var docResult = commandOrCommentRegexp.exec(doc);
 		if (docResult) {
 			if (docResult[2]) { // command
@@ -123,9 +124,9 @@ function parse(testCase, source) {
 		}
 	}
 	if (commands.length > 0) {
-		testCase.footer = doc.substring(commandOrCommentRegexp.lastIndex);
-		//log.debug("header=" + this.header);
-		//log.debug("footer=" + this.footer);
+		testCase.footer = doc.substring(lastIndex);
+		log.debug("header=" + testCase.header);
+		log.debug("footer=" + testCase.footer);
 		//log.debug("commands.length=" + commands.length);
 		testCase.commands = commands;
 	} else {
