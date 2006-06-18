@@ -14,12 +14,16 @@ function parse(testCase, source) {
 	testCase.header = null;
 	testCase.footer = null;
 	var commands = [];
+
 	var reader = new LineReader(source);
 	var line;
 	while ((line = reader.read()) != null) {
 		commands.push(new Line(line));
 	}
 	testCase.commands = commands;
+	testCase.formatLocal(this.name).header = "";
+	testCase.formatLocal(this.name).footer = "";
+	testCase.formatLocal(this.name).frozenHeaderAndFooter = true;
 }
 
 /**
@@ -31,23 +35,27 @@ function parse(testCase, source) {
 function format(testCase, name, saveHeaderAndFooter) {
 	this.log.info("formatting testCase: " + name);
 	var result = '';
-	var header = testCase.formatLocal(this.name).header;
-	var footer = testCase.formatLocal(this.name).footer;
-
-	if (!header && this.formatHeader) {
+	var header = "";
+	var footer = "";
+	this.commandCharIndex = 0;
+	var frozen = testCase.formatLocal(this.name).frozenHeaderAndFooter;
+	if (frozen) {
+		header = testCase.formatLocal(this.name).header;
+		footer = testCase.formatLocal(this.name).footer;
+	} else if (this.formatHeader) {
 		header = formatHeader(testCase);
 	}
 	result += header;
-	if (saveHeaderAndFooter) {
-		testCase.formatLocal(this.name).header = header;
-	}
+	this.commandCharIndex = header.length;
+	testCase.formatLocal(this.name).header = header;
 	result += formatCommands(testCase.commands);
-	if (!footer && this.formatFooter) {
+	if (!frozen && this.formatFooter) {
 		footer = formatFooter(testCase);
 	}
 	result += footer;
+	testCase.formatLocal(this.name).footer = footer;
 	if (saveHeaderAndFooter) {
-		testCase.formatLocal(this.name).footer = footer;
+		testCase.formatLocal(this.name).frozenHeaderAndFooter = true;
 	}
 	return result;
 }
@@ -85,13 +93,18 @@ function formatCommands(commands) {
 			line = command.line;
 		} else if (command.type == 'command') {
 			line = formatCommand(command);
+			command.line = line;
 		} else if (command.type == 'comment' && this.formatComment) {
 			line = formatComment(command);
+			command.line = line;
 		}
+		line += "\n";
+		command.charIndex = this.commandCharIndex;
 		if (line != null) {
 			updateIndent(line);
-			result += line + "\n";
+			result += line;
 		}
+		this.commandCharIndex += line.length;
 	}
 	return result;
 }

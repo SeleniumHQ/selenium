@@ -24,7 +24,7 @@ function formatHeader(testCase) {
 	header +=
 		"import com.thoughtworks.selenium.*;\n" +
 		"\n" +
-        "public class " + className + " extends SeleneseTestCase {\n" + 
+        "public class " + className + " extends " + options.superClass + " {\n" + 
         "\tpublic void " + methodName + "() throws Exception {\n";
 	this.lastIndent = "\t\t";
 	this.header = header;
@@ -145,7 +145,9 @@ function formatComment(comment) {
 }
 
 this.options = {
-	receiver: "selenium"
+	receiver: "selenium",
+	packageName: "",
+	superClass: "SeleneseTestCase"
 };
 
 this.configForm = 

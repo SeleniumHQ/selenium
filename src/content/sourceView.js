@@ -30,6 +30,10 @@ SourceView.prototype = {
 			this.textbox.setSelectionRange(this.lastValue.length, this.lastValue.length);
 			this.textbox.inputField.scrollTop = this.textbox.inputField.scrollHeight - this.textbox.inputField.clientHeight;
 		} else {
+			var insertedCommand = this.testCase.commands[rowIndex];
+			var index = insertedCommand.charIndex + insertedCommand.line.length + 1;
+			this.textbox.setSelectionRange(index, index);
+			/*
 			var value = this.lastValue;
 			var lineno = 0;
 			var index = 0;
@@ -42,7 +46,7 @@ SourceView.prototype = {
 				if (index < 0) break;
 				index++;
 				lineno++;
-			}
+				}*/
 		}
 	},
 	rowUpdated: function(index) {
@@ -70,17 +74,38 @@ SourceView.prototype = {
 			var lineno = 0;
 			this.log.debug("selectionStart=" + this.textbox.selectionStart);
 			var cursor = this.textbox.selectionStart;
-			var index = 0;
-			while (true) {
-				index = value.indexOf("\n", index);
-				if (index < 0 || cursor <= index) break;
-				lineno++;
-				index++;
+			var lineno = this.countNewLine(value, cursor);
+			var recordIndex = 0;
+			var header = this.testCase.formatLocal(this.editor.currentFormat.getFormatter().name).header;
+			if (header) {
+				lineno -= this.countNewLine(header);
 			}
-			return lineno;
+			for (var i = 0; i < this.testCase.commands.length; i++) {
+				var command = this.testCase.commands[i];
+				if (command.line) {
+					lineno -= this.countNewLine(command.line) + 1;
+				}
+				recordIndex++;
+				if (lineno <= 0) {
+					return recordIndex;
+				}
+			}
+			return this.testCase.commands.length;
 		}
 	}
 };
+
+SourceView.prototype.countNewLine = function(value, cursor) {
+	var lineno = 0;
+	var index = 0;
+	while (true) {
+		index = value.indexOf("\n", index);
+		if (index < 0 || (cursor != null && cursor <= index)) break;
+		lineno++;
+		index++;
+	}
+	return lineno;
+}
 
 SourceView.prototype.updateView = function() {
 	var scrollTop = this.textbox.inputField.scrollTop;
