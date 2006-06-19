@@ -26,7 +26,7 @@ package org.openqa.selenium.server;
  * @version $Revision: 734 $
  */
 public class SeleneseQueue {
-
+    
     private SingleEntryAsyncQueue commandHolder;
     private SingleEntryAsyncQueue commandResultHolder;
 
@@ -51,12 +51,43 @@ public class SeleneseQueue {
      * return "OK" or an error message.
      */
     public String doCommand(String command, String field, String value) {
-        commandHolder.put(new DefaultSeleneseCommand(command, field, value));
+        if (!commandResultHolder.isEmpty()) {
+            if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
+                if (SeleniumServer.isDebugMode()) {
+                    // TODO: explain...
+                    System.out.println("Apparently a page load result preceding the command; will ignore it...");
+                }
+                queueGet("doCommand spotted early result, discard", commandResultHolder);
+            }
+            else {
+                throw new RuntimeException("unexpected result " + commandResultHolder.peek());
+            }
+        }
+        queuePut("commandHolder", commandHolder, new DefaultSeleneseCommand(command, field, value));
         try {
-            return (String) commandResultHolder.get();
+            return (String) queueGet("commandResultHolder", commandResultHolder);
         } catch (SeleniumCommandTimedOutException e) {
             return "ERROR: Command timed out";
         }
+    }
+
+    private Object queueGet(String caller, SingleEntryAsyncQueue q) {
+        if (SeleniumServer.isDebugMode()) {
+            System.out.println("\t" + caller + " queueGet() called...");
+        }
+        Object object = q.get();
+        
+        if (SeleniumServer.isDebugMode()) {
+            System.out.println("\t" + caller + " queueGet() -> " + object);
+        }
+        return object;
+    }
+
+    private void queuePut(String caller, SingleEntryAsyncQueue q, Object thing) {
+        if (SeleniumServer.isDebugMode()) {
+            System.out.println("\t" + caller + " queuePut(" + thing + ")");
+        }
+        q.put(thing);
     }
 
     public String toString() {
@@ -81,8 +112,8 @@ public class SeleneseQueue {
         if (commandResult == null) {
         	throw new RuntimeException("null command result");
         }
-        commandResultHolder.put(commandResult);
-        SeleneseCommand sc = (SeleneseCommand) commandHolder.get();
+        queuePut("commandResultHolder", commandResultHolder, commandResult);
+        SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder", commandHolder);
         return sc;
     }
 
@@ -91,7 +122,7 @@ public class SeleneseQueue {
      *
      */
     public void discardCommandResult() {
-        commandResultHolder.get();
+        queueGet("commandResultHolder discard", commandResultHolder);
     }
 
     /**

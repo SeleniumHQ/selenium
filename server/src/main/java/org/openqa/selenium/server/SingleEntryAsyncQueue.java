@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.server;
 
-import java.util.LinkedList;
 
 /**
  * <p>Provides a synchronizing queue that holds a single entry
@@ -27,7 +26,7 @@ import java.util.LinkedList;
  */
 public class SingleEntryAsyncQueue {
 
-    private LinkedList<Object> q = new LinkedList<Object>();
+    private Object thing = null;
     private boolean done = false;
     private static int defaultTimeout = SeleniumServer.DEFAULT_TIMEOUT;
     private int timeout;
@@ -38,7 +37,7 @@ public class SingleEntryAsyncQueue {
     
     public void clear() {
         this.done = true;
-        q.clear();
+        thing = null;
         synchronized(this) {
             this.notifyAll();
         }
@@ -64,8 +63,8 @@ public class SingleEntryAsyncQueue {
         }
 
         int retries = 0;
-        while (q.isEmpty()) {
-            if (q.isEmpty() & retries >= timeout) {
+        while (thing==null) {
+            if (thing==null & retries >= timeout) {
                 throw new SeleniumCommandTimedOutException();
             }
             try {
@@ -78,17 +77,35 @@ public class SingleEntryAsyncQueue {
             }
             retries++;
         }
-        Object thing = q.removeFirst();
+        Object t = thing;
+        thing = null;
         notifyAll();
+        return t;
+    }
+        
+    /**
+     * <p>Retrieves the item from the queue.</p>
+     * <p>If there's nothing in the queue right now, wait a period of time 
+     * for something to show up.</p> 
+     * @return the item in the queue
+     * @throws SeleniumCommandTimedOutException if the timeout is exceeded. 
+     */
+    public synchronized Object peek() {
+        if (done) {
+            throw new RuntimeException("peek(" + this + ") on a retired queue");
+        }
+        if (isEmpty()) {
+            throw new RuntimeException("peek() called on an empty queue");
+        }
         return thing;
     }
         
-    public int size() {
-        return q.size();
+    public boolean isEmpty() {
+        return thing==null;
     }
-    
+
     public String toString() {
-        return q.toString();
+        return thing.toString();
     }
 
     /**
@@ -97,22 +114,16 @@ public class SingleEntryAsyncQueue {
      * for that item to get picked up and removed from the queue. 
      * @param obj - the thing to put in the queue
      */    
-    public synchronized void put(Object thing) {
+    public synchronized void put(Object obj) {
         if (done) {
-            throw new RuntimeException("put(" + thing + ") on a retired queue");
+            throw new RuntimeException("put(" + obj + ") on a retired queue");
         }
-        q.addLast(thing);
-        notifyAll();
         synchronized(this) {
-            while (q.getFirst() != thing) {
-                try {
-                    wait(1000);
-                } catch (InterruptedException e) {
-                }
-                if (done) {
-                    break;
-                }
+            if (thing!=null) {
+                throw new SingleEntryAsyncQueueOverflow();
             }
+            thing = obj;
+            notifyAll();
         }
     }
 

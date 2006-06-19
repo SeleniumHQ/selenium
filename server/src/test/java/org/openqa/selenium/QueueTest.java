@@ -102,29 +102,7 @@ public class QueueTest extends TestCase {
         }
         assertEquals(true, seleniumCommandTimedOutExceptionSeen);
     }
-    
-    public void testMultipleThreadsOrdering() throws Exception {
-        int TEST_THREAD_COUNT = 3;
-        for (int j = 0; j < TEST_THREAD_COUNT; j++) {
-             QTestThread qt = new QTestThread();
-             qt.willPut("thread " + j);
-             qt.start();
-             while (q.size() <= j) {
-                 System.out.println("main waiting on " +
-                        (TEST_THREAD_COUNT-j) + " test threads to all call put()");
-                 AsyncExecute.sleepTight(500);
-             }
-        }
         
-        for (int threadNumber = 0; threadNumber < TEST_THREAD_COUNT; threadNumber++) {
-            assertEquals(TEST_THREAD_COUNT - threadNumber, q.size());
-            System.out.println("main thread reading q...");
-            String dataProducingThread = (String) q.get();
-            System.out.println("main thread read " + dataProducingThread);
-            assertEquals("thread " + threadNumber, dataProducingThread);
-        }
-    }
-    
     public void testTrivial() {
         q.put("hi");
         String s = (String) q.get();
