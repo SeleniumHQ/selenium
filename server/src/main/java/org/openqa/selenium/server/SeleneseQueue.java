@@ -56,8 +56,11 @@ public class SeleneseQueue {
                 if (SeleniumServer.isDebugMode()) {
                     // TODO: explain...
                     System.out.println("Apparently a page load result preceding the command; will ignore it...");
+                    System.out.println("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
                 }
                 queueGet("doCommand spotted early result, discard", commandResultHolder);
+                queuePut("put a dummy command to satisfy an orphaned waiting thread from a page which has been reloaded: commandHolder", 
+                        commandHolder, new DefaultSeleneseCommand("dummy command for a page which has been reloaded", "dummy", "dummy"));
             }
             else {
                 throw new RuntimeException("unexpected result " + commandResultHolder.peek());
