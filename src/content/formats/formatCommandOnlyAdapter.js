@@ -98,13 +98,13 @@ function formatCommands(commands) {
 			line = formatComment(command);
 			command.line = line;
 		}
-		line += "\n";
 		command.charIndex = this.commandCharIndex;
 		if (line != null) {
+			line += "\n";
 			updateIndent(line);
 			result += line;
+			this.commandCharIndex += line.length;
 		}
-		this.commandCharIndex += line.length;
 	}
 	return result;
 }
