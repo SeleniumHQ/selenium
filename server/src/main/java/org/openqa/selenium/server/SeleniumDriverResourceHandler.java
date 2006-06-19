@@ -82,7 +82,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     req.setHandled(true);
                     return;
                 }
-                System.out.println("Session " + sessionId + " sent result " + postedData + " (seleniumStart=" + seleniumStart + ")");
+                System.out.println("Session " + sessionId + " sent result " + postedData + 
+                        (seleniumStart==null ? "" : ("(seleniumStart=" + seleniumStart + ")")));
 
                 if ("true".equals(seleniumStart)) {
                     postedData = "OK";	// assume a new page starting is okay
@@ -315,8 +316,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 if (values.size() > 3) {
                     output = new File((String)values.get(3));
                 }
-                // TODO User Configurable timeout
-                long timeout = 1000 * 60 * 30;
+                long timeout = SeleniumServer.getTimeout();
                 try {
                     results = launcher.runHTMLSuite((String) values.get(0), (String) values.get(1), (String) values.get(2), output, timeout);
                 } catch (IOException e) {
@@ -386,10 +386,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 try {
                     _close.setBoolean(res.getHttpConnection(), false);
                 } catch (IllegalArgumentException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -399,10 +397,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 try {
                     _close.setBoolean(res.getHttpConnection(), true);
                 } catch (IllegalArgumentException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
