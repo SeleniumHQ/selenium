@@ -46,6 +46,7 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("iehta", HTABrowserLauncher.class);
         supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
         supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
+        supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
     }
     
     SeleniumServer server;

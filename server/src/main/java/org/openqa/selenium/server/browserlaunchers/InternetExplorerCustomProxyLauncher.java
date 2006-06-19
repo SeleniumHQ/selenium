@@ -18,24 +18,26 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.openqa.selenium.server.SeleniumServer;
 
 public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
 
-    private static final String REG_KEY_SELENIUM_FOLDER = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\";
-    private static final String REG_KEY_BACKUP_READY = REG_KEY_SELENIUM_FOLDER + "BackupReady";
-    private static final String REG_KEY_BACKUP_AUTOCONFIG_URL = REG_KEY_SELENIUM_FOLDER + "AutoConfigURL";
-    private static final String REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE = REG_KEY_SELENIUM_FOLDER + "EnableAutoproxyResultCache";
-    private static final String REG_KEY_BACKUP_POPUP_MGR = REG_KEY_SELENIUM_FOLDER + "PopupMgr";
-    private static final String REG_KEY_POPUP_MGR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr";
-    private static final String REG_KEY_AUTOCONFIG_URL = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL";
-    private static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
+    protected static final String REG_KEY_SELENIUM_FOLDER = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\";
+    protected static final String REG_KEY_BACKUP_READY = REG_KEY_SELENIUM_FOLDER + "BackupReady";
+    protected static final String REG_KEY_BACKUP_AUTOCONFIG_URL = REG_KEY_SELENIUM_FOLDER + "AutoConfigURL";
+    protected static final String REG_KEY_BACKUP_PROXY_ENABLE = REG_KEY_SELENIUM_FOLDER + "ProxyEnable";
+    protected static final String REG_KEY_BACKUP_PROXY_SERVER = REG_KEY_SELENIUM_FOLDER + "ProxyServer";
+    protected static final String REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE = REG_KEY_SELENIUM_FOLDER + "EnableAutoproxyResultCache";
+    protected static final String REG_KEY_BACKUP_POPUP_MGR = REG_KEY_SELENIUM_FOLDER + "PopupMgr";
+    protected static final String REG_KEY_POPUP_MGR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr";
+    protected static final String REG_KEY_AUTOCONFIG_URL = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL";
+    protected static final String REG_KEY_PROXY_ENABLE = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
+    protected static final String REG_KEY_PROXY_SERVER = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer";
+    protected static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
     
-    private static final RegKeyBackup[] keys = new RegKeyBackup[] {
-        new RegKeyBackup(REG_KEY_POPUP_MGR, REG_KEY_BACKUP_POPUP_MGR, String.class),
-        new RegKeyBackup(REG_KEY_AUTOCONFIG_URL, REG_KEY_BACKUP_AUTOCONFIG_URL, String.class),
-        new RegKeyBackup(REG_KEY_AUTOPROXY_RESULT_CACHE, REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE, boolean.class),
-    };
+    private static ArrayList<RegKeyBackup> keys = null;
     
     private int port = 8180;
     private String sessionId;
@@ -43,23 +45,42 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     private String[] cmdarray;
     private String commandPath;
     private Process process;
-    
-    public InternetExplorerCustomProxyLauncher() {
-        commandPath = findBrowserLaunchLocation();
-    }
+    protected boolean customPACappropriate = true;
     
     public InternetExplorerCustomProxyLauncher(int port, String sessionId) {
+        init();
         commandPath = findBrowserLaunchLocation();
         this.port = port;
         this.sessionId = sessionId;
     }
     
     public InternetExplorerCustomProxyLauncher(int port, String sessionId, String browserLaunchLocation) {
+        init();
         commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
-    }
+    }    
     
+    protected void init() {
+        if (!isStaticInitDone()) {
+            initStatic();
+        }
+    }
+
+    protected boolean isStaticInitDone() {
+        return keys!=null;
+    }
+    protected void initStatic() {
+        keys = new ArrayList<RegKeyBackup>();
+        addRegistryKeyToBackupList(REG_KEY_POPUP_MGR, REG_KEY_BACKUP_POPUP_MGR, String.class);
+        addRegistryKeyToBackupList(REG_KEY_AUTOCONFIG_URL, REG_KEY_BACKUP_AUTOCONFIG_URL, String.class);
+        addRegistryKeyToBackupList(REG_KEY_AUTOPROXY_RESULT_CACHE, REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE, boolean.class);
+    }
+
+    protected void addRegistryKeyToBackupList(String regKey, String backupRegKey, Class clazz) {
+        keys.add(new RegKeyBackup(regKey, backupRegKey, clazz));
+    }
+
     protected static String findBrowserLaunchLocation() {
         String defaultPath = System.getProperty("internetExplorerDefaultPath");
         if (defaultPath == null) {
@@ -79,6 +100,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     
     public void launch(String url) {
         try {
+            backupRegistrySettings();
             changeRegistrySettings();
             cmdarray = new String[] {commandPath, "-new", url};
             
@@ -94,21 +116,21 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     }
     
 
-    private void changeRegistrySettings() throws IOException {
-        customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
-        if (customProxyPACDir.exists()) {
-            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
+    protected void changeRegistrySettings() throws IOException {
+        if (customPACappropriate) {
+            customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
+            if (customProxyPACDir.exists()) {
+                LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
+            }
+            customProxyPACDir.mkdir();
+            
+            File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port);
+            
+            System.out.println("Modifying registry settings...");
+            
+            String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
+            WindowsUtils.writeStringRegistryValue(REG_KEY_AUTOCONFIG_URL, newURL);
         }
-        customProxyPACDir.mkdir();
-        
-        File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port);
-        
-        backupRegistrySettings();
-        
-        System.out.println("Modifying registry settings...");
-        
-        String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
-        WindowsUtils.writeStringRegistryValue(REG_KEY_AUTOCONFIG_URL, newURL);
         
         // Disabling automatic proxy caching
         // http://support.microsoft.com/?kbid=271361
@@ -128,8 +150,8 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
         // never got the chance to restore for some reason 
         if (backupIsReady()) return;
         System.out.println("Backing up registry settings...");
-        for (int i = 0; i < keys.length; i++) {
-            keys[i].backup();
+        for (RegKeyBackup key : keys) {
+            key.backup();
         }
         backupReady(true);
     }
@@ -138,8 +160,8 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
         // Backup really should be ready, but if not, skip it 
         if (!backupIsReady()) return;
         System.out.println("Restoring registry settings (won't affect running browsers)...");
-        for (int i = 0; i < keys.length; i++) {
-            keys[i].restore();
+        for (RegKeyBackup key : keys) {
+            key.restore();
         }
         backupReady(false);
     }
@@ -165,18 +187,20 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
             }
         }
         process.destroy();
-        try {
-            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
-        } catch (RuntimeException e) {
-            if (taskKillException != null) {
-                e.printStackTrace();
-                System.err.print("Perhaps caused by: ");
-                taskKillException.printStackTrace();
-                throw new RuntimeException("Couldn't delete custom IE " +
-                        "proxy directory, presumably because task kill failed; " +
-                        "see stderr!", e);
+        if (customPACappropriate) {
+            try {
+                LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
+            } catch (RuntimeException e) {
+                if (taskKillException != null) {
+                    e.printStackTrace();
+                    System.err.print("Perhaps caused by: ");
+                    taskKillException.printStackTrace();
+                    throw new RuntimeException("Couldn't delete custom IE " +
+                            "proxy directory, presumably because task kill failed; " +
+                            "see stderr!", e);
+                }
+                throw e;
             }
-            throw e;
         }
     }
     
