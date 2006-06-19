@@ -32,12 +32,24 @@ NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " != " + this.e2.toString();
 }
 
+SeleniumEquals.prototype.toString = function() {
+	return string(this.pattern) + " == " + this.expression;
+}
+
 function assertEquals(e1, e2) {
 	return "Assert.AreEqual(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
+function verifyEquals(expected, expression) {
+	return assertEquals(expected, expression);
+}
+
 function assertNotEquals(e1, e2) {
 	return "Assert.AreNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
+}
+
+function verifyNotEquals(expected, expression) {
+	return assertNotEquals(expected, expression);
 }
 
 function statement(expression) {

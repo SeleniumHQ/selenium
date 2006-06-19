@@ -40,6 +40,10 @@ NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " ne " + this.e2.toString();
 }
 
+SeleniumEquals.prototype.toString = function() {
+	return string(this.pattern) + " eq " + this.expression;
+}
+
 function assertEquals(expected, expression) {
 	expression.suffix = "_is";
 	expression.noGet = true;
@@ -47,11 +51,19 @@ function assertEquals(expected, expression) {
 	return expression.toString();
 }
 
+function verifyEquals(expected, expression) {
+	return assertEquals(expected, expression);
+}
+
 function assertNotEquals(expected, expression) {
 	expression.suffix = "_isnt";
 	expression.noGet = true;
 	expression.args.push(expected);
 	return expression.toString();
+}
+
+function verifyNotEquals(expected, expression) {
+	return assertNotEquals(expected, expression);
 }
 
 function statement(expression) {

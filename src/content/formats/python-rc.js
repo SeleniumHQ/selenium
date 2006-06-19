@@ -40,11 +40,23 @@ NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " != " + this.e2.toString();
 }
 
+SeleniumEquals.prototype.toString = function() {
+	return string(this.pattern) + " == " + this.expression;
+}
+
 function assertEquals(e1, e2) {
 	return "self.assertEqual(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
+function verifyEquals(e1, e2) {
+	return "self.assertEqual(" + e1.toString() + ", " + e2.toString() + ")";
+}
+
 function assertNotEquals(e1, e2) {
+	return "self.assertNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
+}
+
+function verifyNotEquals(e1, e2) {
 	return "self.assertNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
 }
 
