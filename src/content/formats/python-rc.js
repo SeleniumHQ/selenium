@@ -5,8 +5,8 @@
 load('remoteControl.js');
 
 string = function(value) {
-	value = value.replace(/\"/mg, '\\"');
-	value = value.replace(/\n/mg, '\\n');
+	value = value.replace(/\"/g, '\\"');
+	value = value.replace(/\n/g, '\\n');
 	var unicode = false;
 	for (var i = 0; i < value.length; i++) {
 		if (value.charCodeAt(i) >= 128) {
@@ -29,35 +29,45 @@ function assignToVariable(type, variable, expression) {
 }
 
 function waitFor(expression) {
-	return "while " + expression.not().toString() + ": time.sleep(1)";
+	return "while " + expression.invert().toString() + ": time.sleep(1)";
+}
+
+function assertOrVerifyFailure(line, isAssert) {
+	// TODO
+	return "assert_raise(Exception) { " + line + "}";
 }
 
 Equals.prototype.toString = function() {
 	return this.e1.toString() + " == " + this.e2.toString();
 }
 
+Equals.prototype.assert = function() {
+	return "self.assertEqual(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+}
+
+Equals.prototype.verify = Equals.prototype.assert;
+
 NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " != " + this.e2.toString();
 }
 
-SeleniumEquals.prototype.toString = function() {
-	return string(this.pattern) + " == " + this.expression;
+NotEquals.prototype.assert = function() {
+	return "self.assertNotEqual(" + this.e1.toString() + ", " + this.e2.toString() + ")";
 }
 
-function assertEquals(e1, e2) {
-	return "self.assertEqual(" + e1.toString() + ", " + e2.toString() + ")";
-}
+NotEquals.prototype.verify = NotEquals.prototype.assert;
 
-function verifyEquals(e1, e2) {
-	return "self.assertEqual(" + e1.toString() + ", " + e2.toString() + ")";
-}
-
-function assertNotEquals(e1, e2) {
-	return "self.assertNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
-}
-
-function verifyNotEquals(e1, e2) {
-	return "self.assertNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
+RegexpMatch.prototype.toString = function() {
+	var str = this.pattern;
+	if (str.match(/\"/) || str.match(/\n/)) {
+		str = str.replace(/\\/g, "\\\\");
+		str = str.replace(/\"/g, '\\"');
+		str = str.replace(/\n/g, '\\n');
+		return '"' + str + '"';
+	} else {
+		str = 'r"' + str + '"';
+	}
+	return "re.search(" + str + ", " + this.expression + ")";
 }
 
 function statement(expression) {

@@ -21,7 +21,7 @@ function assignToVariable(type, variable, expression) {
 }
 
 function waitFor(expression) {
-	return "while (" + expression.not().toString() + ") { Thread.Sleep(1000); }";
+	return "while (" + expression.invert().toString() + ") { Thread.Sleep(1000); }";
 }
 
 Equals.prototype.toString = function() {
@@ -32,24 +32,20 @@ NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " != " + this.e2.toString();
 }
 
-SeleniumEquals.prototype.toString = function() {
-	return string(this.pattern) + " == " + this.expression;
+Equals.prototype.assert = function() {
+	return "Assert.AreEqual(" + this.e1.toString() + ", " + this.e2.toString() + ")";
 }
 
-function assertEquals(e1, e2) {
-	return "Assert.AreEqual(" + e1.toString() + ", " + e2.toString() + ")";
+Equals.prototype.verify = Equals.prototype.assert;
+
+NotEquals.prototype.assert = function() {
+	return "Assert.AreNotEqual(" + this.e1.toString() + ", " + this.e2.toString() + ")";
 }
 
-function verifyEquals(expected, expression) {
-	return assertEquals(expected, expression);
-}
+NotEquals.prototype.verify = NotEquals.prototype.assert;
 
-function assertNotEquals(e1, e2) {
-	return "Assert.AreNotEqual(" + e1.toString() + ", " + e2.toString() + ")";
-}
-
-function verifyNotEquals(expected, expression) {
-	return assertNotEquals(expected, expression);
+RegexpMatch.prototype.toString = function() {
+	return "Regex.IsMatch(" + this.expression + ", " + string(this.pattern) + ")";
 }
 
 function statement(expression) {

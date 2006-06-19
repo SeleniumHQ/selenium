@@ -11,6 +11,7 @@ string = function(value) {
 	value = value.replace(/\$/mg, '\\$');
 	return '"' + value + '"';
 }
+
 function assertTrue(expression) {
 	expression.suffix = "_ok";
 	return expression.toString();
@@ -26,10 +27,15 @@ function assignToVariable(type, variable, expression) {
 
 function waitFor(expression) {
 	if (expression.negative) {
-		return "sleep 1 while " + expression.not().toString() + ";";
+		return "sleep 1 while " + expression.invert().toString() + ";";
 	} else {
 		return "sleep 1 until " + expression.toString() + ";";
 	}
+}
+
+function assertOrVerifyFailure(line, isAssert) {
+	// TODO
+	return "assert_raise(Exception) { " + line + "}";
 }
 
 Equals.prototype.toString = function() {
@@ -40,30 +46,32 @@ NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " ne " + this.e2.toString();
 }
 
-SeleniumEquals.prototype.toString = function() {
-	return string(this.pattern) + " eq " + this.expression;
-}
-
-function assertEquals(expected, expression) {
+Equals.prototype.assert = function() {
+	var expression = this.e2;
 	expression.suffix = "_is";
 	expression.noGet = true;
-	expression.args.push(expected);
+	expression.args.push(this.e1);
 	return expression.toString();
 }
 
-function verifyEquals(expected, expression) {
-	return assertEquals(expected, expression);
-}
+Equals.prototype.verify = Equals.prototype.assert;
 
-function assertNotEquals(expected, expression) {
+NotEquals.prototype.assert = function() {
+	var expression = this.e2;
 	expression.suffix = "_isnt";
 	expression.noGet = true;
-	expression.args.push(expected);
+	expression.args.push(this.e1);
 	return expression.toString();
 }
 
-function verifyNotEquals(expected, expression) {
-	return assertNotEquals(expected, expression);
+NotEquals.prototype.verify = NotEquals.prototype.assert;
+
+RegexpMatch.prototype.toString = function() {
+	return this.expression + " =~ /" + this.pattern.replace(/\//, "\\/") + "/";
+}
+
+RegexpNotMatch.prototype.toString = function() {
+	return notOperator() + "(" + RegexpMatch.prototype.toString.call(this) + ")";
 }
 
 function statement(expression) {

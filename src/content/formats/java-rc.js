@@ -23,6 +23,7 @@ function formatHeader(testCase) {
 	}
 	header +=
 		"import com.thoughtworks.selenium.*;\n" +
+		"import java.util.regex.Pattern;\n" +
 		"\n" +
         "public class " + className + " extends " + options.superClass + " {\n" + 
         "\tpublic void " + methodName + "() throws Exception {\n";
@@ -72,28 +73,28 @@ Equals.prototype.toString = function() {
 	return this.e1.toString() + ".equals(" + this.e2.toString() + ")";
 }
 
+Equals.prototype.assert = function() {
+	return "assertEquals(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+}
+
+Equals.prototype.verify = function() {
+	return "verifyEquals(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+}
+
 NotEquals.prototype.toString = function() {
 	return "!" + this.e1.toString() + ".equals(" + this.e2.toString() + ")";
 }
 
-SeleniumEquals.prototype.toString = function() {
-	return "seleniumEquals(" + string(this.pattern) + ", " + this.expression + ")";
+NotEquals.prototype.assert = function() {
+	return "assertNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ")";
 }
 
-function assertEquals(e1, e2) {
-	return "assertEquals(" + e1.toString() + ", " + e2.toString() + ")";
+NotEquals.prototype.verify = function() {
+	return "verifyNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ")";
 }
 
-function verifyEquals(e1, e2) {
-	return "verifyEquals(" + e1.toString() + ", " + e2.toString() + ")";
-}
-
-function assertNotEquals(e1, e2) {
-	return "assertNotEquals(" + e1.toString() + ", " + e2.toString() + ")";
-}
-
-function verifyNotEquals(e1, e2) {
-	return "verifyNotEquals(" + e1.toString() + ", " + e2.toString() + ")";
+RegexpMatch.prototype.toString = function() {
+	return "Pattern.compile(" + string(this.pattern) + ").matcher(" + this.expression + ").find()";
 }
 
 function pause(milliseconds) {

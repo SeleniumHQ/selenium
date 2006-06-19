@@ -17,8 +17,8 @@ function notOperator() {
 }
 
 function not(expression) {
-	if (expression.not) {
-		return expression.not();
+	if (expression.invert) {
+		return expression.invert();
 	} else {
 		return notOperator() + expression;
 	}
@@ -37,7 +37,7 @@ function Equals(e1, e2) {
 	this.e2 = e2;
 }
 
-Equals.prototype.not = function() {
+Equals.prototype.invert = function() {
 	return new NotEquals(this.e1, this.e2);
 }
 
@@ -47,35 +47,62 @@ function NotEquals(e1, e2) {
 	this.negative = true;
 }
 
-NotEquals.prototype.not = function() {
+NotEquals.prototype.invert = function() {
 	return new Equals(this.e1, this.e2);
 }
 
-function seleniumEquals(e1, e2) {
-	return new SeleniumEquals(e1, e2);
+function RegexpMatch(pattern, expression) {
+	this.pattern = pattern;
+	this.expression = expression;
 }
 
-function SeleniumEquals(e1, e2) {
-	this.pattern = e1;
-	this.expression = e2;
+RegexpMatch.prototype.invert = function() {
+	return new RegexpNotMatch(this.pattern, this.expression);
 }
 
-SeleniumEquals.prototype.not = function() {
-	return new NotSeleniumEquals(this.pattern, this.expression);
+RegexpMatch.prototype.assert = function() {
+	return assertTrue(this.toString());
 }
 
-function NotSeleniumEquals(e1, e2) {
-	this.pattern = e1;
-	this.expression = e2;
+RegexpMatch.prototype.verify = function() {
+	return assertTrue(this.toString());
+}
+
+function RegexpNotMatch(pattern, expression) {
+	this.pattern = pattern;
+	this.expression = expression;
 	this.negative = true;
 }
 
-NotSeleniumEquals.prototype.not = function() {
-	return new SeleniumEquals(this.pattern, this.expression);
+RegexpNotMatch.prototype.invert = function() {
+	return new RegexpMatch(this.pattern, this.expression);
 }
 
-NotSeleniumEquals.prototype.toString = function() {
-	return notOperator() + SeleniumEquals.prototype.toString.call(this);
+RegexpNotMatch.prototype.toString = function() {
+	return notOperator() + RegexpMatch.prototype.toString.call(this);
+}
+
+RegexpNotMatch.prototype.assert = function() {
+	return assertFalse(this.invert().toString());
+}
+
+RegexpNotMatch.prototype.verify = function() {
+	return assertFalse(this.invert().toString());
+}
+
+function seleniumEquals(type, pattern, expression) {
+	if (type == 'String' && pattern.match(/^regexp:/)) {
+		return new RegexpMatch(pattern.substring(7), expression);
+	} else if (type == 'String' && (pattern.match(/^glob:/) || pattern.match(/[\*\?]/))) {
+		pattern = pattern.replace(/^glob:/, '');
+		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).])/, "\\$1");
+		pattern = pattern.replace(/\?/, ".");
+		pattern = pattern.replace(/\*/, ".*");
+		return new RegexpMatch(pattern, expression);
+	} else {
+		pattern = pattern.replace(/^exact:/, '');
+		return new Equals(xlateValue(type, pattern), expression);
+	}
 }
 
 function xlateArgument(value) {
@@ -154,7 +181,7 @@ function CallSelenium(message, args) {
 	}
 }
 
-CallSelenium.prototype.not = function() {
+CallSelenium.prototype.invert = function() {
 	var call = new CallSelenium(this.message);
 	call.args = this.args;
 	call.negative = !this.negative;
@@ -201,26 +228,17 @@ function formatCommand(command) {
 				}
 			} else { // getXXX
 				if (command.command.match(/^(verify|assert)/)) {
-					line = statement((command.command.match(/^verify/) ? 
-									  (def.negative ? verifyNotEquals : verifyEquals) :
-									  (def.negative ? assertNotEquals : assertEquals))
-									 (xlateValue(def.returnType, extraArg), call));
+					var eq = seleniumEquals(def.returnType, extraArg, call);
+					if (def.negative) eq = eq.invert();
+					var method = command.command.match(/^verify/) ? 'verify' : 'assert';
+					line = statement(eq[method]());
 				} else if (command.command.match(/^store/)) {
 					addDeclaredVar(extraArg);
 					line = statement(assignToVariable(def.returnType, extraArg, call));
 				} else if (command.command.match(/^waitFor/)) {
-					var eq;
-					if ('String' == def.returnType && 
-						(extraArg.match(/^(glob|regexp):/) || extraArg.match(/[\*\?]/))) {
-						eq = seleniumEquals(extraArg, call);
-					} else {
-						var pattern = extraArg;
-						if (pattern.match(/^exact:/)) {
-							pattern = pattern.substring(6);
-						}
-						eq = equals(xlateArgument(extraArg), call);
-					}
-					line = waitFor((def.negative ? not : is)(eq));
+					var eq = seleniumEquals(def.returnType, extraArg, call);
+					if (def.negative) eq = eq.invert();
+					line = waitFor(eq);
 				}
 			}
 		} else if (this.pause && 'pause' == command.command) {
@@ -239,10 +257,11 @@ function formatCommand(command) {
 				flavor = r[1].replace(/^[a-z]/, function(str) { return str.toUpperCase() });
 				value = r[2];
 			}
-			//TODO verify
+			var method = command.command.match(/^verify/) ? 'verify' : 'assert';
 			var call = new CallSelenium("getSelected" + flavor);
 			call.args.push(xlateArgument(command.target));
-			line = statement(assertEquals(xlateValue('String', value), call));
+			var eq = new Equals(xlateValue('String', value), call);
+			line = statement(eq[method]());
 		} else if (def) {
 			if (def.name.match(/^(assert|verify)(Error|Failure)OnNext$/)) {
 				this.assertFailureOnNext = def.name.match(/^assert/);

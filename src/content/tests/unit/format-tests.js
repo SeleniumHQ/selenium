@@ -24,7 +24,7 @@ function setUp() {
 	this.commands.push(new Command('assertNotLocation', 'abc'));
 	this.commands.push(new Command('storeText', 'abc', 'def'));
 	this.commands.push(new Command('waitForText', 'abc', 'def'));
-	this.commands.push(new Command('waitForNotValue', 'abc', 'regexp:abc'));
+	this.commands.push(new Command('waitForNotValue', 'abc', 'regexp:foo.*'));
 	this.commands.push(new Command('waitForNotText', 'abc', 'def'));
 	this.commands.push(new Command('open', 'http://www.google.com/'));
 	this.commands.push(new Command('waitForPageToLoad', '30000'));
@@ -43,8 +43,8 @@ function testRubyRCFormat() {
 	assertEquals('assert @selenium.is_text_present("hello")', nextCommand());
 	assertEquals('assert !@selenium.is_text_present("hello")', nextCommand());
 	assertEquals('abc = @selenium.is_text_present("test")', nextCommand());
-	assertEquals('assert !60.times{|i| break if (@selenium.is_text_present("test") rescue false); sleep 1}', nextCommand());
-	assertEquals('assert !60.times{|i| break unless (@selenium.is_text_present("test") rescue true); sleep 1}', nextCommand());
+	assertEquals('assert !60.times{ break if (@selenium.is_text_present("test") rescue false); sleep 1 }', nextCommand());
+	assertEquals('assert !60.times{ break unless (@selenium.is_text_present("test") rescue true); sleep 1 }', nextCommand());
 	assertEquals('assert_equal "def", @selenium.get_text("abc")', nextCommand());
 	assertEquals('assert_equal "abc", @selenium.get_location', nextCommand());
 	assertEquals('assert_not_equal "abc", @selenium.get_location', nextCommand());
@@ -52,9 +52,9 @@ function testRubyRCFormat() {
 	assertEquals('assert_equal ["", "abc", "ab,c"], @selenium.get_select_options("theSelect")', nextCommand());
 	assertEquals('assert_not_equal "abc", @selenium.get_location', nextCommand());
 	assertEquals('def = @selenium.get_text("abc")', nextCommand());
-	assertEquals('assert !60.times{|i| break if ("def" == @selenium.get_text("abc") rescue false); sleep 1}', nextCommand());
-	assertEquals('assert !60.times{|i| break unless ("regexp:abc" == @selenium.get_value("abc") rescue true); sleep 1}', nextCommand());
-	assertEquals('assert !60.times{|i| break unless ("def" == @selenium.get_text("abc") rescue true); sleep 1}', nextCommand());
+	assertEquals('assert !60.times{ break if ("def" == @selenium.get_text("abc") rescue false); sleep 1 }', nextCommand());
+	assertEquals('assert !60.times{ break unless (/foo.*/ =~ @selenium.get_value("abc") rescue true); sleep 1 }', nextCommand());
+	assertEquals('assert !60.times{ break unless ("def" == @selenium.get_text("abc") rescue true); sleep 1 }', nextCommand());
 	assertEquals('@selenium.open "http://www.google.com/"', nextCommand());
 	assertEquals('@selenium.wait_for_page_to_load "30000"', nextCommand());
 	assertEquals('sleep 1', nextCommand());
@@ -112,7 +112,7 @@ function testJavaRCFormat() {
 	assertEquals('assertNotEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('String def = selenium.getText("abc");', nextCommand());
 	assertTrue(nextCommand().indexOf('if ("def".equals(selenium.getText("abc"))) break; }') >= 0);
-	assertTrue(nextCommand().indexOf('if (!seleniumEquals("regexp:abc", selenium.getValue("abc"))) break; }') >= 0);
+	assertTrue(nextCommand().indexOf('if (!Pattern.compile("foo.*").matcher(selenium.getValue("abc")).find()) break; }') >= 0);
 	assertTrue(nextCommand().indexOf('if (!"def".equals(selenium.getText("abc"))) break; }') >= 0);
 	assertEquals('selenium.open("http://www.google.com/");', nextCommand());
 	assertEquals('selenium.waitForPageToLoad("30000");', nextCommand());

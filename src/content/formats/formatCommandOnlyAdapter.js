@@ -87,7 +87,7 @@ function formatCommands(commands) {
 	}
 	var result = '';
 	for (var i = 0; i < commands.length; i++) {
-		var line;
+		var line = null;
 		var command = commands[i];
 		if (command.type == 'line') {
 			line = command.line;
@@ -100,8 +100,8 @@ function formatCommands(commands) {
 		}
 		command.charIndex = this.commandCharIndex;
 		if (line != null) {
-			line += "\n";
 			updateIndent(line);
+			line += "\n";
 			result += line;
 			this.commandCharIndex += line.length;
 		}
