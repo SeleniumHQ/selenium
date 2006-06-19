@@ -55,7 +55,7 @@ public class QueueTest extends TestCase {
            }
         }.start();
         AsyncExecute.sleepTight(300);    // give getter thread a chance to go wait on the queue
-        q.reset();
+        q.clear();
     }
     
     public void testGetFromEmptyQueue() throws Exception {
