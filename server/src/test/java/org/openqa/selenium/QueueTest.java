@@ -16,11 +16,11 @@
  */
 package org.openqa.selenium;
 
+import junit.framework.TestCase;
+
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SingleEntryAsyncQueue;
-import org.openqa.selenium.server.browserlaunchers.*;
-
-import junit.framework.TestCase;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 
 public class QueueTest extends TestCase {
     SingleEntryAsyncQueue q;
@@ -46,49 +46,16 @@ public class QueueTest extends TestCase {
     public void testClearHungGetter() throws Exception {
         new Thread() {
             public void run() {
-                boolean exceptionSeen = false;
                 try {
                     q.get();
-                }
-                catch (RuntimeException e) {
-                    exceptionSeen = true;
                 }
                 catch (Throwable e) {
                     fail("got an unexpected exception: " + e);
                 }
-                assertTrue(exceptionSeen);
-            }
+           }
         }.start();
         AsyncExecute.sleepTight(300);    // give getter thread a chance to go wait on the queue
-        q.clear();
-    }
-    
-    class PuttingThread extends Thread {
-        public String failureMessage = "not set yet";
-        public void run() {
-            try {
-                q.put("abc");   // this one executes and immediately returns
-                q.put("xyz");   // this one will wait for q.size to be 1 before returning
-            }
-            catch (RuntimeException e) {
-                failureMessage = "Putting thread saw unexpected failure: " + e;
-                return;
-            }
-            catch (Throwable e) {
-                failureMessage = "Putting thread saw unexpected throw: " + e;
-                return;
-            }
-            failureMessage = "ok";
-        }
-    };
-    
-    public void testClearHungPutter() throws Exception {
-        PuttingThread t = new PuttingThread(); 
-        t.start();
-        AsyncExecute.sleepTight(1000);    // give getter thread a chance to go wait on the queue
-        q.clear();
-        t.join();
-        assertEquals("ok", t.failureMessage);
+        q.reset();
     }
     
     public void testGetFromEmptyQueue() throws Exception {
