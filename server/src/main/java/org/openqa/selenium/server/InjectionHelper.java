@@ -1,6 +1,5 @@
 package org.openqa.selenium.server;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -56,8 +55,7 @@ public class InjectionHelper {
         if (isKnownToBeHtml) {
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated 
             
-            // TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for updates)
-            InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injection.html");//  new ClassPathResource("/core/scripts/injection.html")
+            InputStream jsIn = new ClassPathResource("/core/scripts/injection.html").getInputStream();
             out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
             StringBuffer moreJs = new StringBuffer();
             if (SeleniumServer.isDebugMode()) {
@@ -74,8 +72,7 @@ public class InjectionHelper {
         IO.copy(in, out);
             
         if (isKnownToBeHtml) {
-//           TODO: read these files as resources off of the class path (getting them off disk for now so I don't need to restart the server for each update)
-            InputStream jsIn = new FileInputStream("../../core/javascript/core/scripts/injectionAtEOF.html");//  new ClassPathResource("/core/scripts/injection.html")
+            InputStream jsIn = new ClassPathResource("/core/scripts/injectionAtEOF.html").getInputStream();
             out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
             jsIn.close();
         }
