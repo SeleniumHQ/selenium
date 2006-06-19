@@ -142,6 +142,7 @@ public class SeleniumServer {
      
     public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
+    public static int timeout= DEFAULT_TIMEOUT;
 
     /** Starts up the server on the specified port (or default if no port was specified)
      * and then starts interactive mode if specified.
@@ -151,7 +152,6 @@ public class SeleniumServer {
      */ 
     public static void main(String[] args) throws Exception {
         int port = DEFAULT_PORT;
-        int timeout= DEFAULT_TIMEOUT;
         boolean interactive = false;
         
         boolean htmlSuite = false;
@@ -185,7 +185,6 @@ public class SeleniumServer {
             }
             else if ("-proxyInjectionMode".equals(arg)) {
                 proxyInjectionModeArg = true;
-                proxyInjectionSpeech();
             }
             else if ("-proxyInjectionPort".equals(arg)) {
                 // to facilitate tcptrace interception of interaction between 
@@ -417,6 +416,13 @@ public class SeleniumServer {
         rootProxy.setSeleniumServer(this);
         root.addHandler(rootProxy);
         server.addContext(null, root);
+        
+        if (getDefaultBrowser()==null) {
+            SeleniumServer.setDefaultBrowser(System.getProperty("defaultBrowser"));
+        }
+        if (!isProxyInjectionMode() && System.getProperty("proxyInjectionMode")!=null) {
+            setProxyInjectionMode("true".equals(System.getProperty("proxyInjectionMode")));
+        }
 
         context = new HttpContext();
         context.setContextPath("/selenium-server");
@@ -572,6 +578,9 @@ public class SeleniumServer {
     }
 
     public void setProxyInjectionMode(boolean proxyInjectionMode) {
+        if (proxyInjectionMode) {
+            proxyInjectionSpeech();
+        }
         SeleniumServer.proxyInjectionMode = proxyInjectionMode;
     }
 
@@ -579,4 +588,11 @@ public class SeleniumServer {
         return defaultBrowser;
     }
 
+    public static int getTimeout() {
+        return timeout;
+    }
+
+    public static void setDefaultBrowser(String defaultBrowser) {
+        SeleniumServer.defaultBrowser = defaultBrowser;
+    }
 }
