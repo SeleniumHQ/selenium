@@ -37,7 +37,6 @@ public class SeleneseTestCase extends TestCase {
 
     protected void setUp(String url) throws Exception {
         setUp(url, "*iexplore");
-        //setUp(url, "*custom c:/PROGRA~1/INTERN~1/iexplore.exe");
     }
     
     protected void setUp(String url, String browserMode) throws Exception {
