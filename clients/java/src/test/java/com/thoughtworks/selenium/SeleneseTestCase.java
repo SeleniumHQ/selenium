@@ -75,11 +75,12 @@ public class SeleneseTestCase extends TestCase {
             verificationErrors.append(e);
         }
     }
-    
 
     public static void assertEquals(Object s1, Object s2) {
         if (s1 instanceof String && s2 instanceof String) {
             assertEquals((String)s1, (String)s2);
+        } else if (s1 instanceof String && s2 instanceof Number) {
+            assertEquals((String)s1, ((Number)s2).toString());
         }
         else {
             if (s1 instanceof String[] && s2 instanceof String[]) {
