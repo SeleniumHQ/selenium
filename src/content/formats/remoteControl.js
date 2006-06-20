@@ -95,9 +95,9 @@ function seleniumEquals(type, pattern, expression) {
 		return new RegexpMatch(pattern.substring(7), expression);
 	} else if (type == 'String' && (pattern.match(/^glob:/) || pattern.match(/[\*\?]/))) {
 		pattern = pattern.replace(/^glob:/, '');
-		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).])/, "\\$1");
-		pattern = pattern.replace(/\?/, ".");
-		pattern = pattern.replace(/\*/, ".*");
+		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).])/g, "\\$1");
+		pattern = pattern.replace(/\?/g, ".");
+		pattern = pattern.replace(/\*/g, ".*");
 		return new RegexpMatch(pattern, expression);
 	} else {
 		pattern = pattern.replace(/^exact:/, '');

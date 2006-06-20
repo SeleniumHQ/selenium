@@ -67,7 +67,7 @@ NotEquals.prototype.assert = function() {
 NotEquals.prototype.verify = NotEquals.prototype.assert;
 
 RegexpMatch.prototype.toString = function() {
-	return this.expression + " =~ /" + this.pattern.replace(/\//, "\\/") + "/";
+	return this.expression + " =~ /" + this.pattern.replace(/\//g, "\\/") + "/";
 }
 
 RegexpNotMatch.prototype.toString = function() {

@@ -6,6 +6,26 @@ load('remoteControl.js');
 
 this.name = "ruby-rc";
 
+function formatHeader(testCase) {
+	var className = testCase.name;
+	if (!className) {
+		className = "NewTest";
+	}
+	var formatLocal = testCase.formatLocal(this.name);
+	methodName = 'test_' + underscore(className.replace(/Test$/, "").replace(/^Test/, "").
+									  replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
+	var header = options.header.replace(/\$\{className\}/, className).
+		replace(/\$\{methodName\}/, methodName);
+	this.lastIndent = "\t\t";
+	this.header = header;
+	return header;
+}
+
+function formatFooter(testCase) {
+	this.footer = options.footer;
+	return footer;
+}
+
 function assertTrue(expression) {
 	return "assert " + expression.toString();
 }
@@ -27,7 +47,7 @@ function waitFor(expression) {
 }
 
 function assertOrVerifyFailure(line, isAssert) {
-	return "assert_raise(Exception) { " + line + "}";
+	return "assert_raise(Kernel) { " + line + "}";
 }
 
 Equals.prototype.toString = function() {
@@ -51,7 +71,7 @@ NotEquals.prototype.assert = function() {
 NotEquals.prototype.verify = NotEquals.prototype.assert;
 
 RegexpMatch.prototype.toString = function() {
-	return "/" + this.pattern.replace(/\//, "\\/") + "/ =~ " + this.expression;
+	return "/" + this.pattern.replace(/\//g, "\\/") + "/ =~ " + this.expression;
 }
 
 RegexpNotMatch.prototype.toString = function() {
@@ -114,7 +134,25 @@ function formatComment(comment) {
 }
 
 this.options = {
-	receiver: "@selenium"
+	receiver: "@selenium",
+	header: 
+		'require "selenium"\n' +
+		'require "test/unit"\n' +
+		'\n' +
+		'class ${className} < Test::Unit::TestCase\n' +
+		'\tdef setup\n' +
+		'\t\t@selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);\n' +
+		'\t\t@selenium.start\n' +
+		'\tend\n' +
+		'\t\n' +
+		'\tdef teardown\n' +
+		'\t\t@selenium.stop\n' +
+		'\tend\n' +
+		'\t\n' +
+		'\tdef ${methodName}\n',
+	footer:
+		"\tend\n" +
+		"end\n"
 };
 
 this.configForm = 
