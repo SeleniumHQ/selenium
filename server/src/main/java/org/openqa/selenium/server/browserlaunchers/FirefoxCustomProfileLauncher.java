@@ -40,6 +40,8 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     private String commandPath;
     private Process process;
 
+    protected boolean proxySeleniumTrafficOnly = true;
+
     private static AsyncExecute exe = new AsyncExecute();
     
     public FirefoxCustomProfileLauncher(int port, String sessionId) {
@@ -47,6 +49,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     }
     
     public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
+        init();
         commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
@@ -70,6 +73,9 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
                 });
             }
         }
+    }
+    
+    protected void init() {
     }
     
     private static String getLibPathKey() {
@@ -172,7 +178,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
         
         if (simple) return customProfileDir.getAbsolutePath();
         
-        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly );
         
         File extensionDir = new File(customProfileDir, "extensions/{538F0036-F358-4f84-A764-89FB437166B4}");
         extensionDir.mkdirs();

@@ -137,8 +137,20 @@ public class SeleniumServer {
     
     private static boolean debugMode = false;
     private static boolean proxyInjectionMode = false;
-    private static int proxyInjectionPort = 0;
-    private static String defaultBrowser = null; 
+    
+    // The following port is the one which drivers and browsers should use when they contact the selenium server.  
+    // Under normal circumstances, this port will be the same as the port which the selenium server listens on.    
+    // But if a developer wants to monitor traffic into and out of the selenium server, he can set this port from   
+    // the command line to be a different value and then use a tool like tcptrace to link this port with the   
+    // server listening port, thereby opening a window into the raw HTTP traffic.
+    // 
+    // For example, if the selenium server is invoked with  -portDriversShouldContact 4445, then traffic going   
+    // into the selenium server will be routed to port 4445, although the selenium server will still be listening   
+    // to the default port 4444.  At this point, you would open tcptrace to bridge the gap and be able to watch   
+    // all the data coming in and out:
+    private static int portDriversShouldContact = 0;
+    
+    private static String defaultBrowserString = null; 
      
     public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
@@ -161,7 +173,7 @@ public class SeleniumServer {
         String resultFilePath = null;
         File userExtensions = null;
         boolean proxyInjectionModeArg = false;
-        int proxyInjectionPortArg = 0;
+        int portDriversShouldContactArg = 0;
         
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -169,16 +181,16 @@ public class SeleniumServer {
                 usage(null);
                 System.exit(1);
             }
-            else if ("-defaultBrowser".equals(arg)) {
+            else if ("-defaultBrowserString".equals(arg)) {
                 for (i++; i < args.length; i++) {
-                    if (SeleniumServer.defaultBrowser==null)
-                        SeleniumServer.defaultBrowser = "";
+                    if (SeleniumServer.defaultBrowserString==null)
+                        SeleniumServer.defaultBrowserString = "";
                     else
-                        SeleniumServer.defaultBrowser += " ";
-                    SeleniumServer.defaultBrowser += args[i];
+                        SeleniumServer.defaultBrowserString += " ";
+                    SeleniumServer.defaultBrowserString += args[i];
                 }
-                System.out.println("\"" + defaultBrowser + "\" will be used as the browser " +
-                        "mode for all sessions, no matter what is passed to getNewBrowserSession");
+                System.out.println("\"" + defaultBrowserString + "\" will be used as the browser " +
+                        "mode for all sessions, no matter what is passed to getNewBrowserSession.");
             }
             else if ("-port".equals(arg)) {
                 port = Integer.parseInt(args[++i]);
@@ -186,10 +198,10 @@ public class SeleniumServer {
             else if ("-proxyInjectionMode".equals(arg)) {
                 proxyInjectionModeArg = true;
             }
-            else if ("-proxyInjectionPort".equals(arg)) {
+            else if ("-portDriversShouldContact".equals(arg)) {
                 // to facilitate tcptrace interception of interaction between 
                 // injected js and the selenium server
-                proxyInjectionPortArg = Integer.parseInt(args[++i]);
+                portDriversShouldContactArg = Integer.parseInt(args[++i]);
             }
             else if ("-debug".equals(arg)) {
                 SeleniumServer.setDebugMode(true);
@@ -237,8 +249,8 @@ public class SeleniumServer {
                 System.exit(1);
             }
         }
-        if (proxyInjectionPortArg==0) {
-            proxyInjectionPortArg = port;
+        if (portDriversShouldContactArg==0) {
+            portDriversShouldContactArg = port;
         }
         
         if (interactive && htmlSuite) {
@@ -249,7 +261,7 @@ public class SeleniumServer {
         SingleEntryAsyncQueue.setDefaultTimeout(timeout);
         final SeleniumServer seleniumProxy = new SeleniumServer(port);
         seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
-        SeleniumServer.setProxyInjectionPort(proxyInjectionPortArg);
+        SeleniumServer.setPortDriversShouldContact(portDriversShouldContactArg);
         
         Thread jetty = new Thread(new Runnable() {
             public void run() {
@@ -351,26 +363,7 @@ public class SeleniumServer {
     }
 
     private static void proxyInjectionSpeech() {
-        System.out.println("The selenium server will execute in proxyInjection mode.  \r\n" + 
-                "\r\n" + 
-                "There are a couple of assumptions that this mode makes which make the selenium server less shareable than has historically been the case:\r\n" + 
-                "\r\n" + 
-                "-users never execute multiple browser sessions simultaneously\r\n" + 
-                "-either everyone wants proxyInjection mode, or else no one does\r\n" + 
-                "\r\n" + 
-                "If we decide that proxyInjection mode is worthwhile, then we will have to choose between the following options:\r\n" + 
-                "\r\n" + 
-                "-tell the community that it is not OK to run simultaneous multiple browser sessions\r\n" + 
-                "\r\n" + 
-                "   or\r\n" + 
-                "\r\n" + 
-                "-remove proxyInjection mode\'s assumption that the most recently allocated sessionId is the only valid one.\r\n" + 
-                "-determine when requests come into jetty whether they are associated with proxyInjection sessions, and only if they are performed injection of the proxyInjection JavaScript\r\n" + 
-                "\r\n" + 
-                "(Session IDs could be stored in cookies, alleviating the need to have a global reckoning " +
-                "of the \"current\" session ID.  This of course would mean that we would need to require that cookies be turned on.)" +
-                "" +
-                "At that time it will also make sense to implement browser launchers which configure the browser appropriately for this mode.");        
+        System.out.println("The selenium server will execute in proxyInjection mode.");
     }
 
     private static void setSystemProperty(String arg) {
@@ -388,13 +381,13 @@ public class SeleniumServer {
         if (msg!=null) {
             System.err.println(msg + ":");
         }
-        System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive] [-defaultBrowser browserString] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+        System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive] [-defaultBrowserString browserString] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
                 "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
                 "where:\n" +
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
                 "the argument for port is the port number the selenium server should use (default 4444)" +
         "\n\t-interactive puts you into interactive mode.  See the tutorial for more details" +
-        "\n\t-defaultBrowser sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
+        "\n\t-defaultBrowserString (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
         "\n\t-debug puts you into debug mode, with more trace information and diagnostics");
     }
 
@@ -418,10 +411,10 @@ public class SeleniumServer {
         server.addContext(null, root);
         
         if (getDefaultBrowser()==null) {
-            SeleniumServer.setDefaultBrowser(System.getProperty("defaultBrowser"));
+            SeleniumServer.setDefaultBrowser(System.getProperty("selenium.defaultBrowserString"));
         }
-        if (!isProxyInjectionMode() && System.getProperty("proxyInjectionMode")!=null) {
-            setProxyInjectionMode("true".equals(System.getProperty("proxyInjectionMode")));
+        if (!isProxyInjectionMode() && System.getProperty("selenium.proxyInjectionMode")!=null) {
+            setProxyInjectionMode("true".equals(System.getProperty("selenium.proxyInjectionMode")));
         }
 
         context = new HttpContext();
@@ -569,12 +562,12 @@ public class SeleniumServer {
         return proxyInjectionMode;
     }
 
-    public static int getProxyInjectionPort() {
-        return proxyInjectionPort;
+    public static int getPortDriversShouldContact() {
+        return portDriversShouldContact;
     }
 
-    public static void setProxyInjectionPort(int proxyInjectionPort) {
-        SeleniumServer.proxyInjectionPort = proxyInjectionPort;
+    private static void setPortDriversShouldContact(int portDriversShouldContact) {
+        SeleniumServer.portDriversShouldContact = portDriversShouldContact;
     }
 
     public void setProxyInjectionMode(boolean proxyInjectionMode) {
@@ -585,14 +578,14 @@ public class SeleniumServer {
     }
 
     public static String getDefaultBrowser() {
-        return defaultBrowser;
+        return defaultBrowserString;
     }
 
     public static int getTimeout() {
         return timeout;
     }
 
-    public static void setDefaultBrowser(String defaultBrowser) {
-        SeleniumServer.defaultBrowser = defaultBrowser;
+    public static void setDefaultBrowser(String defaultBrowserString) {
+        SeleniumServer.defaultBrowserString = defaultBrowserString;
     }
 }

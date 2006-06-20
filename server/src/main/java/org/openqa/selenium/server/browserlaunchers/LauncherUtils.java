@@ -52,6 +52,15 @@ public class LauncherUtils {
      * containing "/selenium-server/"
      */
     protected static File makeProxyPAC(File parentDir, int port) throws FileNotFoundException {
+        return makeProxyPAC(parentDir, port, true);
+    }
+    
+    /** Generate a proxy.pac file, configuring a dynamic proxy.
+     * 
+     *  If proxySeleniumTrafficOnly is true, then the proxy applies only to URLs containing "/selenium-server/".
+     *  Otherwise the proxy applies to all URLs.
+     */
+    protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
         File proxyPAC = new File(parentDir, "proxy.pac");
         PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
         String defaultProxy = "DIRECT";
@@ -64,14 +73,18 @@ public class LauncherUtils {
             }
         }
         out.println("function FindProxyForURL(url, host) {");
-        out.println("    if(shExpMatch(url, '*/selenium-server/*')) {");
+        if (proxySeleniumTrafficOnly) {
+            out.println("    if(shExpMatch(url, '*/selenium-server/*')) {");
+        }
         out.println("        return 'PROXY localhost:" + Integer.toString(port) + "; " +
                 defaultProxy + "';");
         if (configuredProxy != null) {
             out.println("    } else {");
             out.println("        return '" + defaultProxy + "';");
         }
-        out.println("    }");
+        if (proxySeleniumTrafficOnly) { 
+            out.println("    }");
+        }
         out.println("}");
         out.close();
         return proxyPAC;

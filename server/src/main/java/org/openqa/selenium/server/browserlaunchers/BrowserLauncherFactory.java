@@ -47,6 +47,7 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
         supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
         supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
+        supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
     }
     
     SeleniumServer server;
@@ -118,7 +119,7 @@ public class BrowserLauncherFactory {
                     browserLauncher = (BrowserLauncher) ctor.newInstance(args);
                 } else {
                     Constructor ctor = c.getConstructor(new Class[]{int.class, String.class, String.class});
-                    Object[] args = new Object[] {new Integer(server.getPort()), sessionId, browserStartCommand};
+                    Object[] args = new Object[] {new Integer(SeleniumServer.getPortDriversShouldContact()), sessionId, browserStartCommand};
                     browserLauncher = (BrowserLauncher) ctor.newInstance(args);
                 }
 

@@ -49,7 +49,7 @@ public class InjectionHelper {
             isKnownToBeHtml = regexp.matcher(data).find(); 
         }
         String proxyHost = "localhost";
-        int proxyPort = SeleniumServer.getProxyInjectionPort();
+        int proxyPort = SeleniumServer.getPortDriversShouldContact();
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
         
         if (isKnownToBeHtml) {

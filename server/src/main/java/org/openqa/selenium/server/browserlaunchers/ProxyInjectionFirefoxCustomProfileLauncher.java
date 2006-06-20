@@ -1,17 +1,32 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+/**
+ * launcher for Firefox under proxy injection mode
+ * 
+ * In proxy injection mode, the selenium server is a proxy for all traffic from the browser, 
+ * not just traffic going to selenium-server URLs.  The incoming HTML is modified 
+ * to include selenium's JavaScript, which then controls the test page from within (as 
+ * opposed to controlling the test page from a different window, as selenium remote 
+ * control normally does).
+ * 
+ * @author nelsons
+ *
+ */
 public class ProxyInjectionFirefoxCustomProfileLauncher extends
         FirefoxCustomProfileLauncher {
 
     public ProxyInjectionFirefoxCustomProfileLauncher(int port, String sessionId) {
         super(port, sessionId);
-        throw new RuntimeException("not implemented");
     }
 
     public ProxyInjectionFirefoxCustomProfileLauncher(int port,
             String sessionId, String browserLaunchLocation) {
         super(port, sessionId, browserLaunchLocation);
-        throw new RuntimeException("not implemented");
     }
 
+    @Override
+    protected void init() {
+        super.init();
+        proxySeleniumTrafficOnly = false;
+    }
 }

@@ -344,7 +344,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
             else if (!url.startsWith(domain)) {
                 System.err.println("warning: you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
-                        + "this may lead to a 'Permission denied' from the browser (if it is not running as *iehta or *chrome)");
+                                   + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
+                                   + "or alternatively the selenium server is running in proxy injection mode)");
             }
         }
     }
