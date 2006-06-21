@@ -24,6 +24,9 @@ function assertFalse(expression) {
 	return "self.failIf(" + expression.toString() + ")";
 }
 
+var verifyTrue = assertTrue;
+var verifyFalse = assertFalse;
+
 function assignToVariable(type, variable, expression) {
 	return variable + " = " + expression.toString();
 }

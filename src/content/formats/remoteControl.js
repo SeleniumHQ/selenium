@@ -65,7 +65,7 @@ RegexpMatch.prototype.assert = function() {
 }
 
 RegexpMatch.prototype.verify = function() {
-	return assertTrue(this.toString());
+	return verifyTrue(this.toString());
 }
 
 function RegexpNotMatch(pattern, expression) {
@@ -87,7 +87,7 @@ RegexpNotMatch.prototype.assert = function() {
 }
 
 RegexpNotMatch.prototype.verify = function() {
-	return assertFalse(this.invert().toString());
+	return verifyFalse(this.invert().toString());
 }
 
 function seleniumEquals(type, pattern, expression) {
@@ -96,8 +96,8 @@ function seleniumEquals(type, pattern, expression) {
 	} else if (type == 'String' && (pattern.match(/^glob:/) || pattern.match(/[\*\?]/))) {
 		pattern = pattern.replace(/^glob:/, '');
 		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).])/g, "\\$1");
-		pattern = pattern.replace(/\?/g, ".");
-		pattern = pattern.replace(/\*/g, ".*");
+		pattern = pattern.replace(/\?/g, "(.|[\r\n])");
+		pattern = pattern.replace(/\*/g, "(.|[\r\n])*");
 		return new RegexpMatch(pattern, expression);
 	} else {
 		pattern = pattern.replace(/^exact:/, '');

@@ -45,8 +45,16 @@ function assertTrue(expression) {
 	return "assertTrue(" + expression.toString() + ")";
 }
 
+function verifyTrue(expression) {
+	return "verifyTrue(" + expression.toString() + ")";
+}
+
 function assertFalse(expression) {
 	return "assertFalse(" + expression.toString() + ")";
+}
+
+function verifyFalse(expression) {
+	return "verifyFalse(" + expression.toString() + ")";
 }
 
 function assignToVariable(type, variable, expression) {

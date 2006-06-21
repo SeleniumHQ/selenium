@@ -34,6 +34,9 @@ function assertFalse(expression) {
 	return "assert !" + expression.toString();
 }
 
+var verifyTrue = assertTrue;
+var verifyFalse = assertFalse;
+
 function assignToVariable(type, variable, expression) {
 	return variable + " = " + expression.toString();
 }

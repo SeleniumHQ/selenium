@@ -21,6 +21,9 @@ function assertFalse(expression) {
 	return "ok(not " + expression.toString() + ")";
 }
 
+var verifyTrue = assertTrue;
+var verifyFalse = assertFalse;
+
 function assignToVariable(type, variable, expression) {
 	return "$" + variable + " = " + expression.toString();
 }

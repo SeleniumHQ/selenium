@@ -16,6 +16,9 @@ function assertFalse(expression) {
 	return "Assert.IsFalse(" + expression.toString() + ")";
 }
 
+var verifyTrue = assertTrue;
+var verifyFalse = assertFalse;
+
 function assignToVariable(type, variable, expression) {
 	return capitalize(type) + " " + variable + " = " + expression.toString();
 }
