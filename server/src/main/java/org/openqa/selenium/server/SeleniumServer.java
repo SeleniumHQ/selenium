@@ -450,10 +450,6 @@ public class SeleniumServer {
         postResultsHandler.addListener(listener);
     }
     
-    public String doCommand(String cmd, Vector values, String sessionId) {
-        return driver.doCommand(cmd, values, sessionId, null);
-    }
-    
     /** Starts the Jetty server */
     public void start() throws Exception {
         server.start();
