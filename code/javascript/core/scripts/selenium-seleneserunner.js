@@ -168,7 +168,10 @@ function preventBrowserCaching() {
 }   
 
 function nextCommand() {
-    var urlParms = (postResult == "START" ? "seleniumStart=true" : "");
+    var urlParms = "";
+    if (postResult == "START") {
+    	urlParms += "seleniumStart=true";
+    }
     xmlHttpForCommandsAndResults = XmlHttp.create();
     sendToRC(postResult, urlParms, handleHttpResponse, xmlHttpForCommandsAndResults);
 }
@@ -223,6 +226,8 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject) {
     if (urlParms) {
     	url += urlParms;
     }
+    url += "&frameAddress=" + makeAddressToMyFrame();
+    
     if (callback==null) {
     	callback = function(){};
     }
@@ -372,3 +377,27 @@ function createCommandFromRequest(commandRequest) {
     return new SeleniumCommand(cmd, arg1, arg2);
 }
 
+// construct a JavaScript expression which leads to my frame (i.e., the frame containing the window
+// in which this code is operating)
+function makeAddressToMyFrame(w, frameNavigationalJSexpression)
+{
+    if (w==null)
+    {
+        w=top;
+        frameNavigationalJSexpression = "top";
+    }
+         
+    if (w==window)
+    {
+        return frameNavigationalJSexpression;
+    }
+    for (var j = 0; j < w.frames.length; j++)
+    {
+        var t = makeAddressToMyFrame(w.frames[j], frameNavigationalJSexpression + ".frames[" + j + "]");
+        if (t!=null)
+        {
+            return t;
+        }
+    }
+    return null;
+}
