@@ -426,6 +426,20 @@ Selenium.prototype.doSelectWindow = function(windowID) {
     this.browserbot.selectWindow(windowID);
 };
 
+Selenium.prototype.doSelectFrame = function(locator) {
+	/**
+	* Selects a frame within the current window.  (You may invoke this command
+	* multiple times to select nested frames.)  To select the parent frame, use
+	* "relative=parent" as a locator; to select the top frame, use "relative=top".
+	*
+	* <p>You may also use a DOM expression to identify the frame you want directly,
+	* like this: <code>dom=frames["main"].frames["subframe"]</code></p>
+	*
+	* @param locator an <a href="#locators">element locator</a> identifying a frame or iframe
+	*/
+	this.browserbot.selectFrame(locator);
+};
+
 Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
 	/**
 	* Waits for a popup window to appear and load up.
