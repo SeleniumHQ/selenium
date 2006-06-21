@@ -51,7 +51,7 @@ public class SeleneseTestCase extends TestCase {
     public void verifyTrue(boolean b) {
         try {
             assertTrue(b);
-        } catch (Exception e) {
+        } catch (AssertionFailedError e) {
             verificationErrors.append(e);
         }
     }
@@ -59,7 +59,7 @@ public class SeleneseTestCase extends TestCase {
     public void verifyFalse(boolean b) {
         try {
             assertFalse(b);
-        } catch (Exception e) {
+        } catch (AssertionFailedError e) {
             verificationErrors.append(e);
         }
     }
@@ -71,7 +71,7 @@ public class SeleneseTestCase extends TestCase {
     public static void verifyEquals(Object s1, Object s2) {
         try {
             assertEquals(s1, s2);
-        } catch (Exception e) {
+        } catch (AssertionFailedError e) {
             verificationErrors.append(e);
         }
     }
@@ -125,8 +125,8 @@ public class SeleneseTestCase extends TestCase {
         
         String s1glob = s1.replaceFirst("glob:", "");
         s1glob = s1glob.replaceAll("([\\]\\[\\\\{\\}$\\(\\).])", "\\\\$1");
-        s1glob = s1glob.replaceAll("\\*", ".*");
-        s1glob = "(.|[\r\n])*" + s1glob.replaceAll("\\?", ".") + "(.|[\r\n])*";
+        s1glob = s1glob.replaceAll("\\*", "(.|[\r\n])*");
+        s1glob = "(.|[\r\n])*" + s1glob.replaceAll("\\?", "(.|[\r\n])") + "(.|[\r\n])*";
         if (!s2.matches(s1glob)) {
             System.out.println("expected \"" + s2 + "\" to match glob \"" + s1 + "\" (had transformed the glob into regexp \"" + s1glob + "\"");
             return false;
@@ -187,7 +187,7 @@ public class SeleneseTestCase extends TestCase {
     public static void verifyNotEquals(String s1, String s2) {
         try {
             assertNotEquals(s1, s2);
-        } catch (Exception e) {
+        } catch (AssertionFailedError e) {
             verificationErrors.append(e);
         }
     }
