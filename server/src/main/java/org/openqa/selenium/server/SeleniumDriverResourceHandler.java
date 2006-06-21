@@ -128,13 +128,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         StringBuffer sb = new StringBuffer();
         sb.append("Session " + sessionId + " sent result " + postedData);
         if (frameAddress==null) {
-            System.out.println("lksdjf");
+            System.out.println("frameAddress was null; setting it to top");
+            frameAddress = "top";
         }
         if (!frameAddress.equals("top")) {
-            sb.append(" (from frame " + frameAddress + ")");
+            sb.append(" from frame " + frameAddress);
         }
         if (seleniumStart!=null) {
-            sb.append(", seleniumStart=" + seleniumStart + ")");
+            sb.append(" seleniumStart=" + seleniumStart);
         }
         System.out.println(sb.toString());
     }
@@ -165,6 +166,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * @throws IOException
      */
     private String readPostedData(HttpRequest req, String sessionId) throws IOException {
+        if (SeleniumServer.isDebugMode()) {
+            System.out.println("Got " + req.getRequestURL() + "?" + req.getQuery());
+        }
         InputStream is = req.getInputStream();
         StringBuffer sb = new StringBuffer();
         InputStreamReader r = new InputStreamReader(is, "UTF-8");
