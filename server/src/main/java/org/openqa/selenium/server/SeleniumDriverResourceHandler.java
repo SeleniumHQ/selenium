@@ -37,8 +37,19 @@ import org.openqa.selenium.server.htmlrunner.*;
  * @version $Revision: 674 $
  */
 public class SeleniumDriverResourceHandler extends ResourceHandler {
-
-    private final Map<String, SeleneseQueue> queues = new HashMap<String, SeleneseQueue>();
+    /**
+     * sessionId -> (frameAddress -> SeleneseQueue)
+     * The frameAddress is a JavaScript expression addressing the frame associated with the SeleneseQueue.
+     * Note that if we are not in proxy injection mode, frameAddress will always be "top".
+     */  
+    private final Map<String, HashMap<String, SeleneseQueue>> queues = new HashMap<String, HashMap<String, SeleneseQueue>>();
+    /**
+     * sessionId -> frameAddress
+     * The frameAddress is a JavaScript expression addressing the frame associated with the SeleneseQueue.
+     * Note that if we are not in proxy injection mode, frameAddress will always be "top".
+     */  
+    private final Map<String, String> sessionIdToFrameAddress = new HashMap<String, String>();
+    
     private final Map<String, BrowserLauncher> launchers = new HashMap<String, BrowserLauncher>();
     private SeleniumServer server;
     private static String lastSessionId = null;
@@ -67,6 +78,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
 
+            String frameAddress = getParam(req, "frameAddress");
             String seleniumStart = getParam(req, "seleniumStart");
             String method = req.getMethod();
             String cmd = getParam(req, "cmd");
@@ -76,20 +88,17 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             if ("POST".equalsIgnoreCase(method) || (seleniumStart != null && seleniumStart.equals("true"))) {
                 String postedData = readPostedData(req, sessionId);
                 if (postedData == null || postedData.equals("")) {
-                    //respond(res, null);
                     res.getOutputStream().write("\r\n\r\n".getBytes());
-                    //buf.writeTo(out);
                     req.setHandled(true);
                     return;
                 }
-                System.out.println("Session " + sessionId + " sent result " + postedData + 
-                        (seleniumStart==null ? "" : ("(seleniumStart=" + seleniumStart + ")")));
+                logPostedData(frameAddress, seleniumStart, sessionId, postedData);
 
                 if ("true".equals(seleniumStart)) {
                     postedData = "OK";	// assume a new page starting is okay
                 }
 
-                SeleneseQueue queue = getQueue(sessionId);
+                SeleneseQueue queue = getQueue(sessionId, frameAddress);
                 SeleneseCommand sc = queue.handleCommandResult(postedData);
                 if (sc != null) {
                     respond(res, sc);
@@ -113,6 +122,21 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
             throw e;
         }
+    }
+
+    private void logPostedData(String frameAddress, String seleniumStart, String sessionId, String postedData) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Session " + sessionId + " sent result " + postedData);
+        if (frameAddress==null) {
+            System.out.println("lksdjf");
+        }
+        if (!frameAddress.equals("top")) {
+            sb.append(" (from frame " + frameAddress + ")");
+        }
+        if (seleniumStart!=null) {
+            sb.append(", seleniumStart=" + seleniumStart + ")");
+        }
+        System.out.println(sb.toString());
     }
 
     private void respond(HttpResponse res, SeleneseCommand sc) throws IOException {
@@ -359,10 +383,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         setLastSessionId(sessionId); 
         System.out.println("Allocated session " + sessionId + " for " + startURL);
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, getQueue(sessionId));
+        SeleneseQueue queue = getQueue(sessionId);
+        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, queue);
         launcher.launchRemoteSession(startURL);
         launchers.put(sessionId, launcher);
-        SeleneseQueue queue = getQueue(sessionId);
         queue.discardCommandResult();
         queue.doCommand("setContext", sessionId, "");
         return sessionId;
@@ -413,15 +437,33 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
     }
 
-    /** Retrieves a SeleneseQueue for the specifed sessionId, creating a new one if there isn't one with that sessionId already */
+    /** Retrieves a SeleneseQueue for the specifed sessionId, creating a new one if there isn't one with that sessionId already 
+     */
     private SeleneseQueue getQueue(String sessionId) {
+        return getQueue(sessionId, getCurrentFrameAddress(sessionId));
+    }
+    
+    private String getCurrentFrameAddress(String sessionId) {
+        String frameAddress = sessionIdToFrameAddress.get(sessionId);
+        if (frameAddress==null) {
+            frameAddress = "top";
+            sessionIdToFrameAddress.put(sessionId, frameAddress);
+        }
+        return frameAddress;
+    }
+
+    private SeleneseQueue getQueue(String sessionId, String frameAddress) {
         synchronized (queues) {
-            SeleneseQueue queue = queues.get(sessionId);
+            HashMap<String, SeleneseQueue> frameAddressToQueue = queues.get(sessionId);
+            if (frameAddressToQueue==null) {
+                frameAddressToQueue = new HashMap<String, SeleneseQueue>();
+                queues.put(sessionId, frameAddressToQueue);
+            }
+            SeleneseQueue queue = frameAddressToQueue.get(frameAddress);
             if (queue == null) {
                 queue = new SeleneseQueue();
-                queues.put(sessionId, queue);
+                frameAddressToQueue.put(frameAddress, queue);
             }
-
             return queue;
         }
     }
@@ -429,11 +471,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     /** Deletes the specified SeleneseQueue */
     public void clearQueue(String sessionId) {
         synchronized(queues) {
-            SeleneseQueue queue = queues.get(sessionId);
-            if (queue!=null) {
+            HashMap<String, SeleneseQueue> frameAddressToQueue = queues.get(sessionId);
+            assert frameAddressToQueue != null;
+            for (SeleneseQueue queue : frameAddressToQueue.values()) {
                 queue.endOfLife();
-                queues.remove(sessionId);
             }
+            queues.remove(sessionId);
         }
     }
 
