@@ -446,7 +446,7 @@ Selenium.prototype.doIsFrame = function(current, locator) {
 	*
         * <p>This is useful in proxy injection mode, where this code runs in every
         * browser frame and window, and sometimes the selenium server needs to identify
-        * the "current" frame.
+        * the "current" frame.</p>
 	*
         * @param current starting frame
         * @param locator new frame (which might be relative to the current one)
