@@ -440,6 +440,21 @@ Selenium.prototype.doSelectFrame = function(locator) {
 	this.browserbot.selectFrame(locator);
 };
 
+Selenium.prototype.doIsFrame = function(current, locator) {
+	/**
+        * Determine whether current/locator identify the frame containing this running code.
+	*
+        * <p>This is useful in proxy injection mode, where this code runs in every
+        * browser frame and window, and sometimes the selenium server needs to identify
+        * the "current" frame.
+	*
+        * @param current starting frame
+        * @param locator new frame (which might be relative to the current one)
+        * @return boolean true if the new frame is this code's window
+	*/
+        return this.browserbot.isFrame(current, locator);
+};
+
 Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
 	/**
 	* Waits for a popup window to appear and load up.

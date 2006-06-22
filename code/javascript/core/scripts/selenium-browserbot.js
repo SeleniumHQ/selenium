@@ -174,6 +174,10 @@ BrowserBot.prototype.selectFrame = function(target) {
 	this.currentPage = null;
 };
 
+BrowserBot.prototype.isFrame = function(current, target) {
+	return true;
+};
+
 BrowserBot.prototype.openLocation = function(target) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
