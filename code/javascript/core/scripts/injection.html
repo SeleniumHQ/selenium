@@ -42,4 +42,14 @@ BrowserBot.prototype.relayBotToRC = function(name) {
 	relayToRC("selenium." + name);
 }
 
+injectedSessionId = @SESSION_ID@;
+
+function piRunTest(oldOnLoadRoutine) {
+debugger
+	if (oldOnLoadRoutine) {
+		eval(oldOnLoadRoutine);
+	}
+        runTest();
+}
+
 </script>

@@ -174,32 +174,36 @@ BrowserBot.prototype.selectFrame = function(target) {
 	this.currentPage = null;
 };
 
-BrowserBot.prototype.isFrame = function(current, target) {
-	var w;
+BrowserBot.prototype.isFrame = function(currentFrameString, target) {
+	var t;
+        try {
+        	eval("t=" + currentFrameString + "." + target);
+        } catch (e) {
+        }
+        if (t!=null) {
+        	if (t.window==window) {
+                	return true;
+                }
+                return false;
+        }
+        var currentFrame;
+        eval("currentFrame=" + currentFrameString);
 	if (target == "relative=up") {
-        	eval("w=" + current + ".parent");
-                return (w==window);
-	} else if (target == "relative=top") {
-		eval("w=" + current + ".top");
-                return (w==window);
-	} else {
-		var frame = this.getCurrentPage().findElement(target);
-		if (frame == null) {
-			throw new SeleniumError("Not found: " + target);
-		}
-		// now, did they give us a frame or a frame ELEMENT?
-		if (frame.contentWindow) {
-			// this must be a frame element
-			this.currentWindow = frame.contentWindow;
-		} else if (frame.document) {
-			// must be an actual window frame
-			this.currentWindow = frame;
-		} else {
-			// neither
-			throw new SeleniumError("Not a frame: " + target);
-		}
+        	if (currentFrame.window.parent==window) {
+                	return true;
+                }
+                return false;
+        } 
+        if (target == "relative=top") {
+        	if (currentFrame.window.top==window) {
+                	return true;
+                }
+                return false;
 	}
-	this.currentPage = null;
+        if (window.name==target && currentFrame.window==window.parent) {
+        	return true;
+        }
+        return false;
 };
 
 BrowserBot.prototype.openLocation = function(target) {
@@ -1183,4 +1187,3 @@ PageBot.prototype.locateElementByAlt = function(locator, document) {
 		}
     );
 }
-
