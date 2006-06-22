@@ -26,13 +26,12 @@ package org.openqa.selenium.server;
  * @version $Revision: 734 $
  */
 public class SeleneseQueue {
-    
     private SingleEntryAsyncQueue commandHolder;
-    private SingleEntryAsyncQueue commandResultHolder;
+    private SingleEntryAsyncQueue commandResultHolder; 
 
     public SeleneseQueue() {
-        commandResultHolder = new SingleEntryAsyncQueue(); 
         commandHolder = new SingleEntryAsyncQueue();
+        commandResultHolder = new SingleEntryAsyncQueue();
         //
         // we are only concerned about the browser, and command queue timeouts will never be
         // because of a browser problem, we should just set an infinite timeout threshold
@@ -40,6 +39,7 @@ public class SeleneseQueue {
         // because of routine selenium server inactivity).
         commandHolder.setTimeout(Integer.MAX_VALUE);
     }
+        
     /** Schedules the specified command to be retrieved by the next call to
      * handle command result, and returns the result of that command.
      * 
@@ -55,7 +55,7 @@ public class SeleneseQueue {
             if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
                 if (SeleniumServer.isDebugMode()) {
                     // TODO: explain...
-                    System.out.println("Apparently a page load result preceding the command; will ignore it...");
+                    System.out.println("Apparently a page load result preceded the command; will ignore it...");
                     System.out.println("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
                 }
                 queueGet("doCommand spotted early result, discard", commandResultHolder);
