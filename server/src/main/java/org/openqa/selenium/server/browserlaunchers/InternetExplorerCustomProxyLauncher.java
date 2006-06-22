@@ -117,7 +117,12 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     
 
     protected void changeRegistrySettings() throws IOException {
-        if (customPACappropriate) {
+        if (!customPACappropriate) {
+            if (WindowsUtils.doesRegistryValueExist(REG_KEY_AUTOCONFIG_URL)) {
+                WindowsUtils.deleteRegistryValue(REG_KEY_AUTOCONFIG_URL);
+            }
+        }
+        else {
             customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
             if (customProxyPACDir.exists()) {
                 LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
