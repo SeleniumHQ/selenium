@@ -138,6 +138,8 @@ public class SeleniumServer {
     private static boolean debugMode = false;
     private static boolean proxyInjectionMode = false;
     
+    public static final int DEFAULT_PORT = 4444;
+
     // The following port is the one which drivers and browsers should use when they contact the selenium server.  
     // Under normal circumstances, this port will be the same as the port which the selenium server listens on.    
     // But if a developer wants to monitor traffic into and out of the selenium server, he can set this port from   
@@ -148,11 +150,10 @@ public class SeleniumServer {
     // into the selenium server will be routed to port 4445, although the selenium server will still be listening   
     // to the default port 4444.  At this point, you would open tcptrace to bridge the gap and be able to watch   
     // all the data coming in and out:
-    private static int portDriversShouldContact = 0;
+    private static int portDriversShouldContact = DEFAULT_PORT;
     
     private static String defaultBrowserString = null; 
      
-    public static final int DEFAULT_PORT = 4444;
     public static final int DEFAULT_TIMEOUT= (30 * 60);
     public static int timeout= DEFAULT_TIMEOUT;
 

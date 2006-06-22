@@ -115,7 +115,12 @@ public class SeleneseQueue {
         if (commandResult == null) {
         	throw new RuntimeException("null command result");
         }
-        queuePut("commandResultHolder", commandResultHolder, commandResult);
+        if (commandResultHolder.isWaitingForAnObject()) {
+            // This logic is to account for the case where in proxy injection mode, it is possible 
+            // that a page reloads without having been explicitly asked to do so (e.g., an event 
+            // in one frame causes reloads in others).  In this case, the result is discarded.
+            queuePut("commandResultHolder", commandResultHolder, commandResult);
+        }
         SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder", commandHolder);
         return sc;
     }

@@ -30,6 +30,7 @@ public class SingleEntryAsyncQueue {
     private boolean done = false;
     private static int defaultTimeout = SeleniumServer.DEFAULT_TIMEOUT;
     private int timeout;
+    private boolean isWaitingForAnObject = false;
     
     public SingleEntryAsyncQueue() {
         timeout = defaultTimeout;
@@ -63,21 +64,28 @@ public class SingleEntryAsyncQueue {
         }
 
         int retries = 0;
-        while (thing==null) {
-            if (thing==null & retries >= timeout) {
-                throw new SeleniumCommandTimedOutException();
+        isWaitingForAnObject = true;
+        Object t = null;
+        try {
+            while (thing==null) {
+                if (thing==null & retries >= timeout) {
+                    throw new SeleniumCommandTimedOutException();
+                }
+                try {
+                    wait(1000);
+                } catch (InterruptedException e) {
+                    continue;
+                }
+                if (done) {                
+                    return null;
+                }
+                retries++;
             }
-            try {
-                wait(1000);
-            } catch (InterruptedException e) {
-                continue;
-            }
-            if (done) {
-                return null;
-            }
-            retries++;
+            t = thing;
         }
-        Object t = thing;
+        finally {
+            isWaitingForAnObject = false;
+        }
         thing = null;
         notifyAll();
         return t;
@@ -129,6 +137,10 @@ public class SingleEntryAsyncQueue {
 
     public static void setDefaultTimeout(int defaultTimeout) {
         SingleEntryAsyncQueue.defaultTimeout = defaultTimeout;        
+    }
+
+    public boolean isWaitingForAnObject() {
+        return isWaitingForAnObject ;
     }
 
 }

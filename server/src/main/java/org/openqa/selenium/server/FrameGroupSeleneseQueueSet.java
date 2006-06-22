@@ -18,7 +18,7 @@ package org.openqa.selenium.server;
 
 
     import java.util.HashMap;
-    import java.util.Map;
+import java.util.Map;
 
     /**
      * <p>Manages a set of SeleneseQueues corresponding to a set of frames in a single browser session.</p>
@@ -69,8 +69,8 @@ package org.openqa.selenium.server;
                     }
                 }
                 if (!newFrameFound) {
-                    throw new RuntimeException("starting from frame " + currentFrameAddress 
-                            + ", could not find frame " + selectFrameArgument);
+                    return "ERROR: starting from frame " + currentFrameAddress 
+                            + ", could not find frame " + selectFrameArgument;
                 }
             }
             return q.doCommand(command, field, value);
@@ -81,10 +81,16 @@ package org.openqa.selenium.server;
          * 
          * 
          * @param commandResult - the reply from the previous command, or null
+         * @param frameAddress - frame from which the reply came
          * @return - the next command to run
          */
-        public SeleneseCommand handleCommandResult(String commandResult) {
-            return q.handleCommandResult(commandResult);
+        public SeleneseCommand handleCommandResult(String commandResult, String frameAddress) {
+            SeleneseQueue queue = frameAddressToSeleneseQueue.get(frameAddress);
+            if (queue==null) {
+                queue = new SeleneseQueue();
+                frameAddressToSeleneseQueue.put(frameAddress, queue);
+            }
+            return queue.handleCommandResult(commandResult);
         }
 
         /**

@@ -86,8 +86,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     postedData = "OK";	// assume a new page starting is okay
                 }
 
-                FrameGroupSeleneseQueueSet queue = getQueueSet(sessionId);
-                SeleneseCommand sc = queue.handleCommandResult(postedData);
+                FrameGroupSeleneseQueueSet queueSet = getQueueSet(sessionId);
+                SeleneseCommand sc = queueSet.handleCommandResult(postedData, frameAddress);
                 if (sc != null) {
                     respond(res, sc);
                 }
@@ -95,7 +95,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             } else if (cmd != null) {
                 System.out.println(method + ": " + cmd);
                 handleCommandRequest(req, res, cmd, sessionId);
-            } else {
+            } else if (-1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js")){
+                // ignore failure to find selenium-server/core/scripts/user-extensions.js...
+            }
+            else {
                 System.out.println("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
                 req.setHandled(false);
             }
@@ -154,9 +157,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * @throws IOException
      */
 	private String readPostedData(HttpRequest req, String sessionId) throws IOException {
-        if (SeleniumServer.isDebugMode()) {
-            System.out.println("Got " + req.getRequestURL() + "?" + req.getQuery());
-        }
         InputStream is = req.getInputStream();
         StringBuffer sb = new StringBuffer();
         InputStreamReader r = new InputStreamReader(is, "UTF-8");
