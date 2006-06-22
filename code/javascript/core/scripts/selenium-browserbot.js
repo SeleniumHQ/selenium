@@ -175,7 +175,31 @@ BrowserBot.prototype.selectFrame = function(target) {
 };
 
 BrowserBot.prototype.isFrame = function(current, target) {
-	return true;
+	var w;
+	if (target == "relative=up") {
+        	eval("w=" + current + ".parent");
+                return (w==window);
+	} else if (target == "relative=top") {
+		eval("w=" + current + ".top");
+                return (w==window);
+	} else {
+		var frame = this.getCurrentPage().findElement(target);
+		if (frame == null) {
+			throw new SeleniumError("Not found: " + target);
+		}
+		// now, did they give us a frame or a frame ELEMENT?
+		if (frame.contentWindow) {
+			// this must be a frame element
+			this.currentWindow = frame.contentWindow;
+		} else if (frame.document) {
+			// must be an actual window frame
+			this.currentWindow = frame;
+		} else {
+			// neither
+			throw new SeleniumError("Not a frame: " + target);
+		}
+	}
+	this.currentPage = null;
 };
 
 BrowserBot.prototype.openLocation = function(target) {
