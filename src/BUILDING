@@ -1,15 +1,16 @@
 == Building Selenium IDE ==
 
-You will need Apache Ant, so download it from http://ant.apache.org/
+You'll need Maven 2.0.x.
+You can download it from http://maven.apache.org/
 
-Copy build.properties.sample to build.properties,
-and set selenium.src to the Selenium source directory.
+Run 
+"mvn package"
+from the current directory. Do not include quotes.
 
-Run ant and you will get build/seleniumrecorder.xpi.
+You'll get selenium-ide.xpi under the target directory, and you'll be able to install the extension by dropping it into your Firefox.
 
-== Running unit tests ==
+== Running unit and functional tests ==
 
-You can run internal tests of Selenium IDE using JsUnit by visiting following URL:
+You can run internal tests of Selenium IDE using JsUnit and Selenium by visiting following URL:
 
 chrome://selenium-ide/content/tests/index.html
-
