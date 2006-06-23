@@ -440,7 +440,7 @@ Selenium.prototype.doSelectFrame = function(locator) {
 	this.browserbot.selectFrame(locator);
 };
 
-Selenium.prototype.doIsFrame = function(current, locator) {
+Selenium.prototype.isFrame = function(currentFrameString, locator) {
 	/**
         * Determine whether current/locator identify the frame containing this running code.
 	*
@@ -448,11 +448,39 @@ Selenium.prototype.doIsFrame = function(current, locator) {
         * browser frame and window, and sometimes the selenium server needs to identify
         * the "current" frame.</p>
 	*
-        * @param current starting frame
+        * @param currentFrameString starting frame
         * @param locator new frame (which might be relative to the current one)
         * @return boolean true if the new frame is this code's window
 	*/
-        return this.browserbot.isFrame(current, locator);
+ 	var t;
+        try {
+        	eval("t=" + currentFrameString + "." + target);
+        } catch (e) {
+        }
+        if (t!=null) {
+        	if (t.window==window) {
+                	return true;
+                }
+                return false;
+        }
+        var currentFrame;
+        eval("currentFrame=" + currentFrameString);
+	if (target == "relative=up") {
+        	if (currentFrame.window.parent==window) {
+                	return true;
+                }
+                return false;
+        } 
+        if (target == "relative=top") {
+        	if (currentFrame.window.top==window) {
+                	return true;
+                }
+                return false;
+	}
+        if (window.name==target && currentFrame.window==window.parent) {
+        	return true;
+        }
+        return false;
 };
 
 Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {

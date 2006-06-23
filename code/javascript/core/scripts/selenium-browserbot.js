@@ -174,38 +174,6 @@ BrowserBot.prototype.selectFrame = function(target) {
 	this.currentPage = null;
 };
 
-BrowserBot.prototype.isFrame = function(currentFrameString, target) {
-	var t;
-        try {
-        	eval("t=" + currentFrameString + "." + target);
-        } catch (e) {
-        }
-        if (t!=null) {
-        	if (t.window==window) {
-                	return true;
-                }
-                return false;
-        }
-        var currentFrame;
-        eval("currentFrame=" + currentFrameString);
-	if (target == "relative=up") {
-        	if (currentFrame.window.parent==window) {
-                	return true;
-                }
-                return false;
-        } 
-        if (target == "relative=top") {
-        	if (currentFrame.window.top==window) {
-                	return true;
-                }
-                return false;
-	}
-        if (window.name==target && currentFrame.window==window.parent) {
-        	return true;
-        }
-        return false;
-};
-
 BrowserBot.prototype.openLocation = function(target) {
     // We're moving to a new page - clear the current one
     this.currentPage = null;
