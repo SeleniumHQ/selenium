@@ -33,11 +33,17 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetE
         super.changeRegistrySettings();
         WindowsUtils.writeBooleanRegistryValue(REG_KEY_PROXY_ENABLE, true);
         WindowsUtils.writeStringRegistryValue(REG_KEY_PROXY_SERVER, "127.0.0.1:" + SeleniumServer.getPortDriversShouldContact());
+
+        // need at least 1 xmlHttp connection per frame/window
+        WindowsUtils.writeIntRegistryValue(REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, 256);
+        WindowsUtils.writeIntRegistryValue(REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, 256);
     }
     
     protected void initStatic() {
         super.initStatic();
         addRegistryKeyToBackupList(REG_KEY_PROXY_ENABLE, REG_KEY_BACKUP_PROXY_ENABLE, boolean.class);
         addRegistryKeyToBackupList(REG_KEY_PROXY_SERVER, REG_KEY_BACKUP_PROXY_SERVER, String.class);
+        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR, Integer.class);
+        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR, Integer.class);        
     }
 }

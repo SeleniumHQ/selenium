@@ -27,6 +27,8 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     protected static final String REG_KEY_SELENIUM_FOLDER = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\";
     protected static final String REG_KEY_BACKUP_READY = REG_KEY_SELENIUM_FOLDER + "BackupReady";
     protected static final String REG_KEY_BACKUP_AUTOCONFIG_URL = REG_KEY_SELENIUM_FOLDER + "AutoConfigURL";
+    protected static final String REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR = REG_KEY_SELENIUM_FOLDER + "MaxConnectionsPer1_0Server";
+    protected static final String REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR = REG_KEY_SELENIUM_FOLDER + "MaxConnectionsPerServer";
     protected static final String REG_KEY_BACKUP_PROXY_ENABLE = REG_KEY_SELENIUM_FOLDER + "ProxyEnable";
     protected static final String REG_KEY_BACKUP_PROXY_SERVER = REG_KEY_SELENIUM_FOLDER + "ProxyServer";
     protected static final String REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE = REG_KEY_SELENIUM_FOLDER + "EnableAutoproxyResultCache";
@@ -34,6 +36,8 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     protected static final String REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE = REG_KEY_SELENIUM_FOLDER + "MimeExclusionListForCache";
     protected static final String REG_KEY_POPUP_MGR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr";
     protected static final String REG_KEY_AUTOCONFIG_URL = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL";
+    protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPer1_0Server";
+    protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPerServer";
     protected static final String REG_KEY_PROXY_ENABLE = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
     protected static final String REG_KEY_PROXY_SERVER = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer";
     protected static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
