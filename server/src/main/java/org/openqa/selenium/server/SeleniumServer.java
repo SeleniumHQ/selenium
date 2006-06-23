@@ -563,8 +563,8 @@ public class SeleniumServer {
         return portDriversShouldContact;
     }
 
-    private static void setPortDriversShouldContact(int portDriversShouldContact) {
-        SeleniumServer.portDriversShouldContact = portDriversShouldContact;
+    private static void setPortDriversShouldContact(int port) {
+        SeleniumServer.portDriversShouldContact = port;
     }
 
     public void setProxyInjectionMode(boolean proxyInjectionMode) {
