@@ -53,27 +53,28 @@ import java.util.Map;
          * return "OK" or an error message.
          */
         public String doCommand(String command, String field, String value) {
-            if (command.equals("selectFrame")) {
-                String selectFrameArgument = field;
-                for (SeleneseQueue frameQ : frameAddressToSeleneseQueue.values()) {
-                    frameQ.doCommand("isFrame", currentFrameAddress, selectFrameArgument);
-                }
-                boolean newFrameFound = false;
-                for (String frameAddress : frameAddressToSeleneseQueue.keySet()) {
-                    SeleneseQueue frameQ = frameAddressToSeleneseQueue.get(frameAddress);
-                    String frameMatchBooleanString = frameQ.doCommand("isFrame", currentFrameAddress, selectFrameArgument);
-                    if ("true".equals(frameMatchBooleanString)) {
-                        selectFrame(frameAddress);
-                        newFrameFound = true;
-                        break;
-                    }
-                }
-                if (!newFrameFound) {
-                    return "ERROR: starting from frame " + currentFrameAddress 
-                            + ", could not find frame " + selectFrameArgument;
+            if (!command.equals("selectFrame")) {
+                return q.doCommand(command, field, value);
+            }
+            String selectFrameArgument = field;
+            for (SeleneseQueue frameQ : frameAddressToSeleneseQueue.values()) {
+                frameQ.doCommand("isFrame", currentFrameAddress, selectFrameArgument);
+            }
+            boolean newFrameFound = false;
+            for (String frameAddress : frameAddressToSeleneseQueue.keySet()) {
+                SeleneseQueue frameQ = frameAddressToSeleneseQueue.get(frameAddress);
+                String frameMatchBooleanString = frameQ.doCommand("isFrame", currentFrameAddress, selectFrameArgument);
+                if ("OK,true".equals(frameMatchBooleanString)) {
+                    selectFrame(frameAddress);
+                    newFrameFound = true;
+                    break;
                 }
             }
-            return q.doCommand(command, field, value);
+            if (!newFrameFound) {
+                return "ERROR: starting from frame " + currentFrameAddress 
+                + ", could not find frame " + selectFrameArgument;
+            }
+            return "OK";
         }
 
         /**
