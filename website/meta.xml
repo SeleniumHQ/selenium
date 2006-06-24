@@ -5,8 +5,8 @@
     <confluenceName>SIDE</confluenceName>
 
     <forums>
-        <usersId>1</usersId>
-        <devId>2</devId>
+        <usersId>2</usersId>
+        <devId>1</devId>
         <jiraId>19</jiraId>
     </forums>
 
