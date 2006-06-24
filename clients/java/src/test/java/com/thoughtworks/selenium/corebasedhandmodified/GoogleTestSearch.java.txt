@@ -13,7 +13,7 @@ public class GoogleTestSearch extends SeleneseTestCase
 		// open|http://www.google.com|
 		selenium.open("http://www.google.com");
 		// verifyTitle|Google|
-		verifyEquals("Google", selenium.getTitle());
+		verifyEquals("*Google", selenium.getTitle());
 		// type|q|Selenium OpenQA
 		selenium.type("q", "Selenium OpenQA");
 		// verifyValue|q|Selenium OpenQA
@@ -23,7 +23,7 @@ public class GoogleTestSearch extends SeleneseTestCase
 		selenium.waitForPageToLoad("30000");
 		assertTrue(selenium.isTextPresent("openqa.org"));
 		// verifyTitle|Selenium OpenQA - Google Search|
-		verifyEquals("Selenium OpenQA - Google Search", selenium.getTitle());
+		verifyEquals("*Selenium OpenQA - Google Search", selenium.getTitle());
 
 		checkForVerificationErrors();
 	}

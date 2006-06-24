@@ -25,13 +25,13 @@ public class TestWaitInPopupWindow extends SeleneseTestCase
 		selenium.click("link=Click to load new page");
 		selenium.waitForPageToLoad("30000");
 		// verifyTitle|Reload Page|
-		verifyEquals("Reload Page", selenium.getTitle());
+		verifyEquals("*Reload Page", selenium.getTitle());
 
 		// clickAndWait|link=Click here|
 		selenium.click("link=Click here");
         selenium.waitForPageToLoad("30000");
 		// verifyTitle|Slow Loading Page|
-		verifyEquals("Slow Loading Page", selenium.getTitle());
+		verifyEquals("*Slow Loading Page", selenium.getTitle());
 		// close||
 		selenium.close();
 		// selectWindow|null|
