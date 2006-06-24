@@ -28,6 +28,7 @@ import java.util.Map;
     public class FrameGroupSeleneseQueueSet {
         private String currentFrameAddress;
         private Map<String, SeleneseQueue> frameAddressToSeleneseQueue = new HashMap<String, SeleneseQueue>();
+        private Map<String, Boolean> frameAddressToJustLoaded = new HashMap<String, Boolean>();
         private SeleneseQueue q;
         
         public FrameGroupSeleneseQueueSet() {
@@ -53,28 +54,34 @@ import java.util.Map;
          * return "OK" or an error message.
          */
         public String doCommand(String command, String field, String value) {
-            if (!command.equals("selectFrame")) {
-                return q.doCommand(command, field, value);
-            }
-            String selectFrameArgument = field;
-            for (SeleneseQueue frameQ : frameAddressToSeleneseQueue.values()) {
-                frameQ.doCommand("isFrame", currentFrameAddress, selectFrameArgument);
-            }
-            boolean newFrameFound = false;
-            for (String frameAddress : frameAddressToSeleneseQueue.keySet()) {
-                SeleneseQueue frameQ = frameAddressToSeleneseQueue.get(frameAddress);
-                String frameMatchBooleanString = frameQ.doCommand("isFrame", currentFrameAddress, selectFrameArgument);
-                if ("OK,true".equals(frameMatchBooleanString)) {
-                    selectFrame(frameAddress);
-                    newFrameFound = true;
-                    break;
+            if (SeleniumServer.isProxyInjectionMode() && command.equals("selectFrame")) {
+                String selectFrameArgument = field;
+                // could speed this up by doing them all simultaneously...
+                for (SeleneseQueue frameQ : frameAddressToSeleneseQueue.values()) {
+                    frameQ.doCommand("isFrame", currentFrameAddress, selectFrameArgument);
                 }
+                boolean newFrameFound = false;
+                for (String frameAddress : frameAddressToSeleneseQueue.keySet()) {
+                    SeleneseQueue frameQ = frameAddressToSeleneseQueue.get(frameAddress);
+                    String frameMatchBooleanString = frameQ.doCommand("isFrame", currentFrameAddress, selectFrameArgument);
+                    if ("OK,true".equals(frameMatchBooleanString)) {
+                        selectFrame(frameAddress);
+                        newFrameFound = true;
+                        break;
+                    }
+                }
+                if (!newFrameFound) {
+                    return "ERROR: starting from frame " + currentFrameAddress 
+                    + ", could not find frame " + selectFrameArgument;
+                }
+                return "OK";
             }
-            if (!newFrameFound) {
-                return "ERROR: starting from frame " + currentFrameAddress 
-                + ", could not find frame " + selectFrameArgument;
+            if (SeleniumServer.isProxyInjectionMode()
+                    && command.equals("waitForPageToLoad")
+                    && justLoaded(currentFrameAddress)) {
+                return "OK";
             }
-            return "OK";
+            return q.doCommand(command, field, value);
         }
 
         /**
@@ -114,5 +121,18 @@ import java.util.Map;
 
         public SeleneseQueue getCurrentQueue() {
             return q;
+        }
+
+        public boolean justLoaded(String frameAddress) {
+            return (frameAddressToJustLoaded.containsKey(frameAddress));
+        }
+        
+        public void markWhetherJustLoaded(String frameAddress, boolean justLoaded) {
+            if (justLoaded) {
+                frameAddressToJustLoaded.put(frameAddress, true);
+            }
+            else {
+                frameAddressToJustLoaded.remove(frameAddress);
+            }
         }
     }
