@@ -82,11 +82,15 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 logPostedData(frameAddress, seleniumStart, sessionId, postedData);
 
+                FrameGroupSeleneseQueueSet queueSet = getQueueSet(sessionId);
                 if ("true".equals(seleniumStart)) {
                     postedData = "OK";	// assume a new page starting is okay
+                    queueSet.markWhetherJustLoaded(frameAddress, true);
+                }
+                else {
+                    queueSet.markWhetherJustLoaded(frameAddress, false);
                 }
 
-                FrameGroupSeleneseQueueSet queueSet = getQueueSet(sessionId);
                 SeleneseCommand sc = queueSet.handleCommandResult(postedData, frameAddress);
                 if (sc != null) {
                     respond(res, sc);
