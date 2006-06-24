@@ -126,7 +126,8 @@ public class SeleneseTestCase extends TestCase {
         String s1glob = s1.replaceFirst("glob:", "");
         s1glob = s1glob.replaceAll("([\\]\\[\\\\{\\}$\\(\\).])", "\\\\$1");
         s1glob = s1glob.replaceAll("\\*", "(.|[\r\n])*");
-        s1glob = "(.|[\r\n])*" + s1glob.replaceAll("\\?", "(.|[\r\n])") + "(.|[\r\n])*";
+//        s1glob = "(.|[\r\n])*" + s1glob.replaceAll("\\?", "(.|[\r\n])") + "(.|[\r\n])*";
+        s1glob = s1glob.replaceAll("\\?", "(.|[\r\n])");
         if (!s2.matches(s1glob)) {
             System.out.println("expected \"" + s2 + "\" to match glob \"" + s1 + "\" (had transformed the glob into regexp \"" + s1glob + "\"");
             return false;
@@ -161,7 +162,7 @@ public class SeleneseTestCase extends TestCase {
             misMatch = true;
         }
         for (int j = 0; j < s1.length; j++) {
-            if (!s1[j].equals(s2[j])) {
+            if (!seleniumEquals(s1[j], s2[j])) {
                 misMatch = true;
                 break;
             }
