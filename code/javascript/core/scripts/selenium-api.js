@@ -452,6 +452,11 @@ Selenium.prototype.isFrame = function(currentFrameString, target) {
         * @param target new frame (which might be relative to the current one)
         * @return boolean true if the new frame is this code's window
 	*/
+        var isDom = false;
+        if (target.indexOf("dom=")==0) {
+    		target = target.substr(4);
+                isDom = true;
+	}
  	var t;
         try {
         	eval("t=" + currentFrameString + "." + target);
@@ -463,6 +468,9 @@ Selenium.prototype.isFrame = function(currentFrameString, target) {
                 }
                 return false;
         }
+        if (isDom) {
+                return false;
+        }        
         var currentFrame;
         eval("currentFrame=" + currentFrameString);
 	if (target == "relative=up") {
