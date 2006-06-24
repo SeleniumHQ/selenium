@@ -43,7 +43,7 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetE
         super.initStatic();
         addRegistryKeyToBackupList(REG_KEY_PROXY_ENABLE, REG_KEY_BACKUP_PROXY_ENABLE, boolean.class);
         addRegistryKeyToBackupList(REG_KEY_PROXY_SERVER, REG_KEY_BACKUP_PROXY_SERVER, String.class);
-        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR, Integer.class);
-        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR, Integer.class);        
+        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR, int.class);
+        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR, int.class);        
     }
 }
