@@ -9,11 +9,11 @@ function capitalize(string) {
 }
 
 function assertTrue(expression) {
-	return "Assert.IsTrue(" + expression.toString() + ")";
+	return "Assert.IsTrue(" + expression.toString() + ");";
 }
 
 function assertFalse(expression) {
-	return "Assert.IsFalse(" + expression.toString() + ")";
+	return "Assert.IsFalse(" + expression.toString() + ");";
 }
 
 var verifyTrue = assertTrue;
@@ -36,13 +36,13 @@ NotEquals.prototype.toString = function() {
 }
 
 Equals.prototype.assert = function() {
-	return "Assert.AreEqual(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+	return "Assert.AreEqual(" + this.e1.toString() + ", " + this.e2.toString() + ");";
 }
 
 Equals.prototype.verify = Equals.prototype.assert;
 
 NotEquals.prototype.assert = function() {
-	return "Assert.AreNotEqual(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+	return "Assert.AreNotEqual(" + this.e1.toString() + ", " + this.e2.toString() + ");";
 }
 
 NotEquals.prototype.verify = NotEquals.prototype.assert;
@@ -76,7 +76,9 @@ CallSelenium.prototype.toString = function() {
 }
 
 function formatComment(comment) {
-	return indent() + "// " + comment.comment;
+	return comment.comment.replace(/.+/mg, function(str) {
+			return "// " + str;
+		});
 }
 
 this.options = {

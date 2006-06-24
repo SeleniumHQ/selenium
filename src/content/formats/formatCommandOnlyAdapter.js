@@ -80,6 +80,12 @@ function filterForRemoteControl(originalCommands) {
 	}
 }
 
+function addIndent(lines) {
+	return lines.replace(/.+/mg, function(str) {
+			return indent() + str;
+		});
+}
+
 function formatCommands(commands) {
 	commands = filterForRemoteControl(commands);
 	if (this.lastIndent == null) {
@@ -93,9 +99,11 @@ function formatCommands(commands) {
 			line = command.line;
 		} else if (command.type == 'command') {
 			line = formatCommand(command);
+			if (line != null) line = addIndent(line);
 			command.line = line;
 		} else if (command.type == 'comment' && this.formatComment) {
 			line = formatComment(command);
+			if (line != null) line = addIndent(line);
 			command.line = line;
 		}
 		command.charIndex = this.commandCharIndex;

@@ -132,7 +132,7 @@ CallSelenium.prototype.toString = function() {
 
 function formatComment(comment) {
 	return comment.comment.replace(/.+/mg, function(str) {
-			return indent() + "# " + str;
+			return "# " + str;
 		});
 }
 

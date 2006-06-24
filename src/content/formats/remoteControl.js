@@ -16,18 +16,6 @@ function notOperator() {
 	return "!";
 }
 
-function not(expression) {
-	if (expression.invert) {
-		return expression.invert();
-	} else {
-		return notOperator() + expression;
-	}
-}
-
-function is(expression) {
-	return expression;
-}
-
 function equals(e1, e2) {
 	return new Equals(e1, e2);
 }
@@ -49,6 +37,11 @@ function NotEquals(e1, e2) {
 
 NotEquals.prototype.invert = function() {
 	return new Equals(this.e1, this.e2);
+}
+
+function EqualsArray(expression) {
+	this.expression = expression;
+	this.conditions = [];
 }
 
 function RegexpMatch(pattern, expression) {
@@ -91,7 +84,28 @@ RegexpNotMatch.prototype.verify = function() {
 }
 
 function seleniumEquals(type, pattern, expression) {
-	if (type == 'String' && pattern.match(/^regexp:/)) {
+	if (type == 'String[]') {
+		var matcher = 'exact';
+		var r;
+		if ((r = pattern.match(/^(regexp|glob|exact):/))) {
+			matcher = r[1];
+			pattern = pattern.substring(r[0].length);
+		} else if (pattern.match(/[\*\?]/)) {
+			matcher = 'glob';
+		}
+		var separateEquals = this.useSeparateEqualsForArray || 'exact' != matcher;
+		var list = parseArray(pattern);
+		if (separateEquals) {
+			var result = new EqualsArray(expression);
+			result.conditions.push(new Equals(list.length, result.length()));
+			for (var i = 0; i < list.length; i++) {
+				result.conditions.push(seleniumEquals('String', matcher + ':' + list[i], result.item(i)));
+			}
+			return result;
+		} else {
+			return new Equals(xlateValue(type, pattern), expression);
+		}
+	} else if (type == 'String' && pattern.match(/^regexp:/)) {
 		return new RegexpMatch(pattern.substring(7), expression);
 	} else if (type == 'String' && (pattern.match(/^glob:/) || pattern.match(/[\*\?]/))) {
 		pattern = pattern.replace(/^glob:/, '');
@@ -150,6 +164,16 @@ function addDeclaredVar(variable) {
 	this.declaredVars[variable] = true;
 }
 
+function newVariable(prefix, index) {
+	if (index == null) index = 1;
+	if (this.declaredVars && this.declaredVars[prefix + index]) {
+		return newVariable(prefix, index + 1);
+	} else {
+		addDeclaredVar(prefix + index);
+		return prefix + index;
+	}
+}
+
 function variableName(value) {
 	return value;
 }
@@ -166,6 +190,7 @@ function string(value) {
 		value = value.replace(/\"/g, '\\"');
 		value = value.replace(/\r/g, '\\r');
 		value = value.replace(/\n/g, '\\n');
+		value = value.replace(/\xA0/g, ' ');
 		return '"' + value + '"';
 	} else {
 		return '""';
@@ -188,20 +213,28 @@ CallSelenium.prototype.invert = function() {
 	return call;
 }
 
+function xlateArrayElement(value) {
+	return value.replace(/\\(.)/g, "$1");
+}
+
+function parseArray(value) {
+	var start = 0;
+	var list = [];
+	for (var i = 0; i < value.length; i++) {
+		if (value.charAt(i) == ',') {
+			list.push(xlateArrayElement(value.substring(start, i)));
+			start = i + 1;
+		} else if (value.charAt(i) == '\\') {
+			i++;
+		}
+	}
+	list.push(xlateArrayElement(value.substring(start, value.length)));
+	return list;
+}
+
 function xlateValue(type, value) {
 	if (type == 'String[]') {
-		var start = 0;
-		var list = [];
-		for (var i = 0; i < value.length; i++) {
-			if (value.charAt(i) == ',') {
-				list.push(value.substring(start, i).replace(/\\(.)/, "$1"));
-				start = i + 1;
-			} else if (value.charAt(i) == '\\') {
-				i++;
-			}
-		}
-		list.push(value.substring(start, value.length).replace(/\\(.)/, "$1"));
-		return array(list);
+		return array(parseArray(value));
 	} else {
 		return xlateArgument(value);
 	}
@@ -218,20 +251,23 @@ function formatCommand(command) {
 			}
 			var extraArg = command.getParameterAt(def.params.length)
 			if (def.name.match(/^is/)) { // isXXX
-				if (command.command.match(/^(verify|assert)/)) {
-					line = statement((def.negative ? assertFalse : assertTrue)(call));
+				if (command.command.match(/^assert/) ||
+					(this.assertOrVerifyFailureOnNext && command.command.match(/^verify/))) {
+					line = (def.negative ? assertFalse : assertTrue)(call);
+				} else if (command.command.match(/^verify/)) {
+					line = (def.negative ? verifyFalse : verifyTrue)(call);
 				} else if (command.command.match(/^store/)) {
 					addDeclaredVar(extraArg);
 					line = statement(assignToVariable('boolean', extraArg, call));
 				} else if (command.command.match(/^waitFor/)) {
-					line = waitFor((def.negative ? not : is)(call));
+					line = waitFor(def.negative ? call.invert() : call);
 				}
 			} else { // getXXX
 				if (command.command.match(/^(verify|assert)/)) {
 					var eq = seleniumEquals(def.returnType, extraArg, call);
 					if (def.negative) eq = eq.invert();
-					var method = command.command.match(/^verify/) ? 'verify' : 'assert';
-					line = statement(eq[method]());
+					var method = (!this.assertOrVerifyFailureOnNext && command.command.match(/^verify/)) ? 'verify' : 'assert';
+					line = eq[method]();
 				} else if (command.command.match(/^store/)) {
 					addDeclaredVar(extraArg);
 					line = statement(assignToVariable(def.returnType, extraArg, call));
@@ -257,13 +293,14 @@ function formatCommand(command) {
 				flavor = r[1].replace(/^[a-z]/, function(str) { return str.toUpperCase() });
 				value = r[2];
 			}
-			var method = command.command.match(/^verify/) ? 'verify' : 'assert';
+			var method = (!this.assertOrVerifyFailureOnNext && command.command.match(/^verify/)) ? 'verify' : 'assert';
 			var call = new CallSelenium("getSelected" + flavor);
 			call.args.push(xlateArgument(command.target));
 			var eq = new Equals(xlateValue('String', value), call);
 			line = statement(eq[method]());
 		} else if (def) {
 			if (def.name.match(/^(assert|verify)(Error|Failure)OnNext$/)) {
+				this.assertOrVerifyFailureOnNext = true;
 				this.assertFailureOnNext = def.name.match(/^assert/);
 				this.verifyFailureOnNext = def.name.match(/^verify/);
 			} else {
@@ -287,16 +324,13 @@ function formatCommand(command) {
 			line = formatComment(new Comment(statement(call)));
 		}
 	}
-	if (line && (this.assertFailureOnNext || this.verifyFailureOnNext)) {
+	if (line && this.assertOrVerifyFailureOnNext) {
 		line = assertOrVerifyFailure(line, this.assertFailureOnNext);
+		this.assertOrVerifyFailureOnNext = false;
 		this.assertFailureOnNext = false;
 		this.verifyFailureOnNext = false;
 	}
-	if (line) {
-		return indent() + line;
-	} else {
-		return null;
-	}
+	return line;
 }
 
 this.remoteControl = true;

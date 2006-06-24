@@ -98,7 +98,9 @@ CallSelenium.prototype.toString = function() {
 }
 
 function formatComment(comment) {
-	return indent() + "# " + comment.comment;
+	return comment.comment.replace(/.+/mg, function(str) {
+			return "# " + str;
+		});
 }
 
 this.options = {

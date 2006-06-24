@@ -5,6 +5,7 @@
 load('remoteControl.js');
 
 this.name = "java-rc";
+this.useSeparateEqualsForArray = true;
 
 function formatHeader(testCase) {
 	var className = testCase.name;
@@ -15,8 +16,10 @@ function formatHeader(testCase) {
 	if (!formatLocal.packageName) {
 		formatLocal.packageName = options.packageName;
 	}
-	var methodName = "test" + className;
+	var methodName = className;
 	methodName = methodName.replace(/Test$/, "");
+	methodName = methodName.replace(/^Test/, "");
+	methodName = "test" + methodName;
 	var header = "";
 	if (formatLocal.packageName) {
 		header += "package " + formatLocal.packageName + ";\n\n";
@@ -42,19 +45,21 @@ function formatFooter(testCase) {
 }
 
 function assertTrue(expression) {
-	return "assertTrue(" + expression.toString() + ")";
+	return "assertTrue(" + expression.toString() + ");";
 }
 
 function verifyTrue(expression) {
-	return "verifyTrue(" + expression.toString() + ")";
+	//return "verifyTrue(" + expression.toString() + ");";
+	return "assertTrue(" + expression.toString() + ");";
 }
 
 function assertFalse(expression) {
-	return "assertFalse(" + expression.toString() + ")";
+	return "assertFalse(" + expression.toString() + ");";
 }
 
 function verifyFalse(expression) {
-	return "verifyFalse(" + expression.toString() + ")";
+	//return "verifyFalse(" + expression.toString() + ");";
+	return "assertFalse(" + expression.toString() + ");";
 }
 
 function assignToVariable(type, variable, expression) {
@@ -63,10 +68,11 @@ function assignToVariable(type, variable, expression) {
 
 function waitFor(expression) {
 	return "for (int second = 0;; second++) {\n" +
-		indent() + "\tif (second >= 60) fail(\"timeout\");\n" +
-		indent() + "\ttry { if (" + expression.toString() + ") break; } catch (Exception e) {}\n" +
-		indent() + "\tThread.sleep(1000);\n" +
-		indent() + "}\n";
+		"\tif (second >= 60) fail(\"timeout\");\n" +
+		"\ttry { " + (expression.setup ? expression.setup() + " " : "") +
+		"if (" + expression.toString() + ") break; } catch (Exception e) {}\n" +
+		"\tThread.sleep(1000);\n" +
+		"}\n";
 	//return "while (" + not(expression).toString() + ") { Thread.sleep(1000); }";
 }
 
@@ -82,11 +88,12 @@ Equals.prototype.toString = function() {
 }
 
 Equals.prototype.assert = function() {
-	return "assertEquals(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+	return "assertEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
 }
 
 Equals.prototype.verify = function() {
-	return "verifyEquals(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+	return this.assert();
+	//	return "verifyEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
 }
 
 NotEquals.prototype.toString = function() {
@@ -94,15 +101,60 @@ NotEquals.prototype.toString = function() {
 }
 
 NotEquals.prototype.assert = function() {
-	return "assertNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+	return "assertNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
 }
 
 NotEquals.prototype.verify = function() {
-	return "verifyNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ")";
+	return "verifyNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
 }
 
 RegexpMatch.prototype.toString = function() {
 	return "Pattern.compile(" + string(this.pattern) + ").matcher(" + this.expression + ").find()";
+}
+
+EqualsArray.prototype.length = function() {
+	var self = this;
+	return {
+		toString: function(index) {
+			return self.variableName + ".length";
+		}
+	}
+}
+
+EqualsArray.prototype.item = function(index) {
+	var self = this;
+	return {
+		index: index,
+		toString: function(index) {
+			return self.variableName + "[" + this.index + "]";
+		}
+	}
+}
+
+EqualsArray.prototype.setup = function(unique) {
+	this.variableName = unique ? newVariable("array") : "array";
+	return statement(assignToVariable("String[]", this.variableName, this.expression));
+}
+
+EqualsArray.prototype.toString = function() {
+	return this.conditions.join(" && ");
+}
+
+EqualsArray.prototype.assertOrVerify = function(method) {
+	var str = this.setup(true);
+	for (var i = 0; i < this.conditions.length; i++) {
+		str += "\n";
+		str += this.conditions[i][method]();
+	}
+	return str;
+}
+
+EqualsArray.prototype.assert = function() {
+	return this.assertOrVerify('assert');
+}
+
+EqualsArray.prototype.verify = function() {
+	return this.assertOrVerify('verify');
 }
 
 function pause(milliseconds) {
@@ -149,7 +201,7 @@ CallSelenium.prototype.toString = function() {
 
 function formatComment(comment) {
 	return comment.comment.replace(/.+/mg, function(str) {
-			return indent() + "// " + str;
+			return "// " + str;
 		});
 }
 

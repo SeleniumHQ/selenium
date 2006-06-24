@@ -108,7 +108,11 @@ function testJavaRCFormat() {
 	assertEquals('assertEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('assertNotEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('selenium.type("theText", selenium.getEval("\'abc\'"));', nextCommand());
-	assertEquals('assertEquals(new String[] {"", "abc", "ab,c"}, selenium.getSelectOptions("theSelect"));', nextCommand());
+	assertEquals('String[] array1 = selenium.getSelectOptions("theSelect");\n' +
+				 'assertEquals(3, array1.length);\n' +
+				 'assertEquals("", array1[0]);\n' +
+				 'assertEquals("abc", array1[1]);\n' +
+				 'assertEquals("ab,c", array1[2]);', nextCommand());
 	assertEquals('assertNotEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('String def = selenium.getText("abc");', nextCommand());
 	assertTrue(nextCommand().indexOf('if ("def".equals(selenium.getText("abc"))) break; }') >= 0);

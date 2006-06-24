@@ -14,6 +14,7 @@ function decodeText(text) {
 		text = text.replace(/&#x([0-9a-f]+);/gi, function(str, p1) { 
 								 return String.fromCharCode(parseInt(p1, 16));
 							 });
+		text = text.replace(/ +/g, " "); // truncate multiple spaces to single space
 	}
 	if (escapeXml == 'always' || escapeXml == 'html') {
 		text = text.replace(/&apos;/g, "'");
@@ -52,6 +53,13 @@ function encodeText(text) {
 		// &nbsp; -> &amp;nbsp;
 		text = text.replace(/&(nbsp|amp|quot|apos|lt|gt|\d+|x\d+)(;|\W)/g, '&amp;$1$2');
 		text = text.replace(/\xA0/g, '&nbsp;');
+		text = text.replace(/ {2,}/g, function(str) {
+				var result = '';
+				for (var i = 0; i < str.length; i++) {
+					result += '&nbsp;';
+				}
+				return result;
+			}); // convert multiple spaces to nbsp
 	}
 	if (escapeXml == 'always' || escapeXml == 'partial') {
 		text = text.replace(/</g, '&lt;');

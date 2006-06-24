@@ -14,11 +14,11 @@ string = function(value) {
 
 function assertTrue(expression) {
 	expression.suffix = "_ok";
-	return expression.toString();
+	return expression.toString() + ";";
 }
 
 function assertFalse(expression) {
-	return "ok(not " + expression.toString() + ")";
+	return "ok(not " + expression.toString() + ");";
 }
 
 var verifyTrue = assertTrue;
@@ -54,7 +54,7 @@ Equals.prototype.assert = function() {
 	expression.suffix = "_is";
 	expression.noGet = true;
 	expression.args.push(this.e1);
-	return expression.toString();
+	return expression.toString() + ";";
 }
 
 Equals.prototype.verify = Equals.prototype.assert;
@@ -64,7 +64,7 @@ NotEquals.prototype.assert = function() {
 	expression.suffix = "_isnt";
 	expression.noGet = true;
 	expression.args.push(this.e1);
-	return expression.toString();
+	return expression.toString() + ";";
 }
 
 NotEquals.prototype.verify = NotEquals.prototype.assert;
@@ -110,7 +110,9 @@ CallSelenium.prototype.toString = function() {
 }
 
 function formatComment(comment) {
-	return indent() + "# " + comment.comment;
+	return comment.comment.replace(/.+/mg, function(str) {
+			return "# " + str;
+		});
 }
 
 this.options = {
