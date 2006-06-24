@@ -19,7 +19,7 @@ public class TestWaitInPopupWindow extends SeleneseTestCase
 		// selectWindow|myPopupWindow|
 		selenium.selectWindow("myPopupWindow");
 		// verifyTitle|Select Window Popup|
-		verifyEquals("Select Window Popup", selenium.getTitle());
+		verifyEquals("*Select Window Popup", selenium.getTitle());
 
 		// clickAndWait|link=Click to load new page|
 		selenium.click("link=Click to load new page");
