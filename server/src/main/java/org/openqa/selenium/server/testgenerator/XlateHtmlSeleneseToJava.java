@@ -667,6 +667,10 @@ public class XlateHtmlSeleneseToJava {
     private static String declareAndInitArray(String name, String commaSeparatedValue) {
         String DIVIDER = ">>>>>>>><<<<<>>>>>>";
         commaSeparatedValue = commaSeparatedValue.replaceAll("([^\\\\]),", "$1" + DIVIDER);
+        
+        // run twice because the pattern can overlap
+        commaSeparatedValue = commaSeparatedValue.replaceAll("([^\\\\])\\\\\\\\,", "$1,");
+        commaSeparatedValue = commaSeparatedValue.replaceAll("([^\\\\])\\\\\\\\,", "$1,");
         boolean trailingEmptyValue = false;
         String BOGUS_EXTRA_VALUE_SO_SPLIT_WILL_ALLOCATE_FINAL_ENTRY = "dummy";
         if (commaSeparatedValue.lastIndexOf(DIVIDER) == commaSeparatedValue.length() - DIVIDER.length()) {
