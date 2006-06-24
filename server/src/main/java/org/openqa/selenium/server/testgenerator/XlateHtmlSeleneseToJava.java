@@ -541,9 +541,11 @@ public class XlateHtmlSeleneseToJava {
                 return commentedSelenese + "assertTrue(selenium.getSelectedIndexes(" + XlateSeleneseArgument(tokens[1]) + ").length != 0);";
             }
             else if (op.equals("Confirmation")
-                    || op.equals("Location")
-                    || op.equals("Title")) {
+                    || op.equals("Location")) {
                 middle = XlateSeleneseArgument(tokens[1]) + ", selenium.get" + op + "()";
+            }
+            else if (op.equals("Title")) {
+                middle = XlateSeleneseArgument("*" + tokens[1]) + ", selenium.get" + op + "()";
             }
             else if (op.equals("Value")
                     || op.equals("CursorPosition")
