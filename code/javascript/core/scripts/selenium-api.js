@@ -449,7 +449,7 @@ Selenium.prototype.isFrame = function(currentFrameString, target) {
         * the "current" frame.</p>
 	*
         * @param currentFrameString starting frame
-        * @param locator new frame (which might be relative to the current one)
+        * @param target new frame (which might be relative to the current one)
         * @return boolean true if the new frame is this code's window
 	*/
  	var t;
@@ -964,7 +964,9 @@ Selenium.prototype.isTextPresent = function(pattern) {
     var allText = this.page().bodyText();
 
     if(allText == "") {
-        Assert.fail("Page text not found");
+    	// used to assert that allText wasn't empty, but in fact it will be empty if we are in a frameset;
+        // so don't throw an error:
+        return false;
     } else {
     	var patternMatcher = new PatternMatcher(pattern);
         if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
