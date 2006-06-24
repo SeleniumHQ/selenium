@@ -5,7 +5,9 @@
 load('remoteControl.js');
 
 string = function(value) {
+	value = value.replace(/\\/g, '\\\\');
 	value = value.replace(/\"/g, '\\"');
+	value = value.replace(/\r/g, '\\r');
 	value = value.replace(/\n/g, '\\n');
 	var unicode = false;
 	for (var i = 0; i < value.length; i++) {

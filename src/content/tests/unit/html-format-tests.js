@@ -6,9 +6,9 @@ function setUp() {
 function testDecodeTextWithHtmlFormat() {
 	assertEquals("abc", decodeText("abc"));
 
-	assertEquals("'\xA0'", decodeText("'&#xA0;'"));
-	assertEquals("'\xA0'", decodeText("'&#160;'"));
-	assertEquals("'\xA0'", decodeText("'&nbsp;'"));
+	assertEquals("' '", decodeText("'&#xA0;'"));
+	assertEquals("' '", decodeText("'&#160;'"));
+	assertEquals("' '", decodeText("'&nbsp;'"));
 
 	assertEquals("'abc'", decodeText("'abc'"));
 	assertEquals("&amp;", decodeText("&amp;amp;"));
@@ -18,6 +18,8 @@ function testDecodeTextWithHtmlFormat() {
 
 function testEncodeTextWithHtmlFormat() {
 	assertEquals("&nbsp;", encodeText("\xA0"));
+	assertEquals(" ", encodeText(" "));
+	assertEquals("&nbsp;&nbsp;", encodeText("  "));
 	assertEquals("'abc'", encodeText("'abc'"));
 	assertEquals("&amp;amp;", encodeText("&amp;"));
 	assertEquals("a=b&c=d", encodeText("a=b&c=d"));

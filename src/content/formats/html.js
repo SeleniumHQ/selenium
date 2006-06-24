@@ -15,6 +15,7 @@ function decodeText(text) {
 								 return String.fromCharCode(parseInt(p1, 16));
 							 });
 		text = text.replace(/ +/g, " "); // truncate multiple spaces to single space
+		text = text.replace(/\xA0/g, " ");
 	}
 	if (escapeXml == 'always' || escapeXml == 'html') {
 		text = text.replace(/&apos;/g, "'");

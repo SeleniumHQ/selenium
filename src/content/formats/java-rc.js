@@ -110,48 +110,11 @@ RegexpMatch.prototype.toString = function() {
 }
 
 EqualsArray.prototype.length = function() {
-	var self = this;
-	return {
-		toString: function(index) {
-			return self.variableName + ".length";
-		}
-	}
+	return this.variableName + ".length";
 }
 
 EqualsArray.prototype.item = function(index) {
-	var self = this;
-	return {
-		index: index,
-		toString: function(index) {
-			return self.variableName + "[" + this.index + "]";
-		}
-	}
-}
-
-EqualsArray.prototype.setup = function(unique) {
-	this.variableName = unique ? newVariable("array") : "array";
-	return statement(assignToVariable("String[]", this.variableName, this.expression));
-}
-
-EqualsArray.prototype.toString = function() {
-	return this.conditions.join(" && ");
-}
-
-EqualsArray.prototype.assertOrVerify = function(method) {
-	var str = this.setup(true);
-	for (var i = 0; i < this.conditions.length; i++) {
-		str += "\n";
-		str += this.conditions[i][method]();
-	}
-	return str;
-}
-
-EqualsArray.prototype.assert = function() {
-	return this.assertOrVerify('assert');
-}
-
-EqualsArray.prototype.verify = function() {
-	return this.assertOrVerify('verify');
+	return this.variableName + "[" + index + "]";
 }
 
 function pause(milliseconds) {

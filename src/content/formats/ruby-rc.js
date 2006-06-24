@@ -14,8 +14,8 @@ function formatHeader(testCase) {
 	var formatLocal = testCase.formatLocal(this.name);
 	methodName = 'test_' + underscore(className.replace(/Test$/, "").replace(/^Test/, "").
 									  replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
-	var header = options.header.replace(/\$\{className\}/, className).
-		replace(/\$\{methodName\}/, methodName);
+	var header = options.header.replace(/\$\{className\}/g, className).
+		replace(/\$\{methodName\}/g, methodName);
 	this.lastIndent = "\t\t";
 	this.header = header;
 	return header;
@@ -31,7 +31,7 @@ function assertTrue(expression) {
 }
 
 function assertFalse(expression) {
-	return "assert !" + expression.toString();
+	return "assert " + expression.invert().toString();
 }
 
 var verifyTrue = assertTrue;
@@ -78,7 +78,17 @@ RegexpMatch.prototype.toString = function() {
 }
 
 RegexpNotMatch.prototype.toString = function() {
-	return notOperator() + "(" + RegexpMatch.prototype.toString.call(this) + ")";
+	return "/" + this.pattern.replace(/\//g, "\\/") + "/ !~ " + this.expression;
+}
+
+EqualsArray.useUniqueVariableForAssertion = false;
+
+EqualsArray.prototype.length = function() {
+	return this.variableName + ".size";
+}
+
+EqualsArray.prototype.item = function(index) {
+	return this.variableName + "[" + index + "]";
 }
 
 function pause(milliseconds) {
@@ -144,12 +154,17 @@ this.options = {
 		'\n' +
 		'class ${className} < Test::Unit::TestCase\n' +
 		'\tdef setup\n' +
-		'\t\t@selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);\n' +
-		'\t\t@selenium.start\n' +
+		'\t\tif $selenium\n' +
+		'\t\t\t@selenium = $selenium\n' +
+		'\t\telse\n' +
+		'\t\t\t@selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);\n' +
+		'\t\t\t@selenium.start\n' +
+		'\t\tend\n' +
+		'\t\t@selenium.set_context("${methodName}", "info")\n' +
 		'\tend\n' +
 		'\t\n' +
 		'\tdef teardown\n' +
-		'\t\t@selenium.stop\n' +
+		'\t\t@selenium.stop unless $selenium\n' +
 		'\tend\n' +
 		'\t\n' +
 		'\tdef ${methodName}\n',

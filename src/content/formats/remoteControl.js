@@ -39,11 +39,6 @@ NotEquals.prototype.invert = function() {
 	return new Equals(this.e1, this.e2);
 }
 
-function EqualsArray(expression) {
-	this.expression = expression;
-	this.conditions = [];
-}
-
 function RegexpMatch(pattern, expression) {
 	this.pattern = pattern;
 	this.expression = expression;
@@ -76,12 +71,46 @@ RegexpNotMatch.prototype.toString = function() {
 }
 
 RegexpNotMatch.prototype.assert = function() {
-	return assertFalse(this.invert().toString());
+	return assertFalse(this.invert());
 }
 
 RegexpNotMatch.prototype.verify = function() {
-	return verifyFalse(this.invert().toString());
+	return verifyFalse(this.invert());
 }
+
+function EqualsArray(expression) {
+	this.expression = expression;
+	this.conditions = [];
+}
+
+EqualsArray.prototype.setup = function(unique) {
+	this.variableName = unique ? newVariable("array") : "array";
+	return statement(assignToVariable("String[]", this.variableName, this.expression));
+}
+
+EqualsArray.prototype.toString = function() {
+	return this.conditions.join(" && ");
+}
+
+EqualsArray.useUniqueVariableForAssertion = true;
+
+EqualsArray.prototype.assertOrVerify = function(method) {
+	var str = this.setup(EqualsArray.useUniqueVariableForAssertion);
+	for (var i = 0; i < this.conditions.length; i++) {
+		str += "\n";
+		str += this.conditions[i][method]();
+	}
+	return str;
+}
+
+EqualsArray.prototype.assert = function() {
+	return this.assertOrVerify('assert');
+}
+
+EqualsArray.prototype.verify = function() {
+	return this.assertOrVerify('verify');
+}
+
 
 function seleniumEquals(type, pattern, expression) {
 	if (type == 'String[]') {
@@ -97,9 +126,10 @@ function seleniumEquals(type, pattern, expression) {
 		var list = parseArray(pattern);
 		if (separateEquals) {
 			var result = new EqualsArray(expression);
-			result.conditions.push(new Equals(list.length, result.length()));
+			result.conditions.push(new Equals(list.length, { toString: function() { return result.length() }}));
 			for (var i = 0; i < list.length; i++) {
-				result.conditions.push(seleniumEquals('String', matcher + ':' + list[i], result.item(i)));
+				result.conditions.push(seleniumEquals('String', matcher + ':' + list[i], 
+													  { index: i, toString: function() { return result.item(this.index) }}));
 			}
 			return result;
 		} else {
@@ -110,8 +140,8 @@ function seleniumEquals(type, pattern, expression) {
 	} else if (type == 'String' && (pattern.match(/^glob:/) || pattern.match(/[\*\?]/))) {
 		pattern = pattern.replace(/^glob:/, '');
 		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).])/g, "\\$1");
-		pattern = pattern.replace(/\?/g, "(.|[\r\n])");
-		pattern = pattern.replace(/\*/g, "(.|[\r\n])*");
+		pattern = pattern.replace(/\?/g, "[\\s\\S]");
+		pattern = pattern.replace(/\*/g, "[\\s\\S]*");
 		return new RegexpMatch(pattern, expression);
 	} else {
 		pattern = pattern.replace(/^exact:/, '');
@@ -184,13 +214,12 @@ function concatString(array) {
 
 function string(value) {
 	if (value != null) {
-		value = value.replace(/^\s+/, '');
-		value = value.replace(/\s+$/, '');
+		//value = value.replace(/^\s+/, '');
+		//value = value.replace(/\s+$/, '');
 		value = value.replace(/\\/g, '\\\\');
 		value = value.replace(/\"/g, '\\"');
 		value = value.replace(/\r/g, '\\r');
 		value = value.replace(/\n/g, '\\n');
-		value = value.replace(/\xA0/g, ' ');
 		return '"' + value + '"';
 	} else {
 		return '""';
@@ -296,7 +325,7 @@ function formatCommand(command) {
 			var method = (!this.assertOrVerifyFailureOnNext && command.command.match(/^verify/)) ? 'verify' : 'assert';
 			var call = new CallSelenium("getSelected" + flavor);
 			call.args.push(xlateArgument(command.target));
-			var eq = new Equals(xlateValue('String', value), call);
+			var eq = seleniumEquals('String', value, call);
 			line = statement(eq[method]());
 		} else if (def) {
 			if (def.name.match(/^(assert|verify)(Error|Failure)OnNext$/)) {
