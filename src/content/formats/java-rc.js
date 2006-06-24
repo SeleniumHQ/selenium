@@ -49,8 +49,7 @@ function assertTrue(expression) {
 }
 
 function verifyTrue(expression) {
-	//return "verifyTrue(" + expression.toString() + ");";
-	return "assertTrue(" + expression.toString() + ");";
+	return "verifyTrue(" + expression.toString() + ");";
 }
 
 function assertFalse(expression) {
@@ -58,8 +57,7 @@ function assertFalse(expression) {
 }
 
 function verifyFalse(expression) {
-	//return "verifyFalse(" + expression.toString() + ");";
-	return "assertFalse(" + expression.toString() + ");";
+	return "verifyFalse(" + expression.toString() + ");";
 }
 
 function assignToVariable(type, variable, expression) {
@@ -92,8 +90,7 @@ Equals.prototype.assert = function() {
 }
 
 Equals.prototype.verify = function() {
-	return this.assert();
-	//	return "verifyEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
+	return "verifyEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
 }
 
 NotEquals.prototype.toString = function() {
