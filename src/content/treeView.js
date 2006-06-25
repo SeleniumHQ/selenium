@@ -260,6 +260,11 @@ TreeView.prototype = {
 			}
 
 			this.selectRecordIndex(this.tree.currentIndex);
+
+			var def = command.getDefinition();
+			if (def) {
+				this.editor.showReference(def.getReference());
+			}
 		} else {
 			this.setTextBox("commandAction", '', true);
 			this.setTextBox("commandTarget", '', true);

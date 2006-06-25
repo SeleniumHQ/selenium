@@ -44,6 +44,25 @@ Command.prototype.getRealTarget = function() {
 	}
 }
 
+Command.innerHTML = function(element) {
+	var html = "";
+	var nodes = element.childNodes;
+	for (var i = 0; i < nodes.length; i++) {
+		var node = nodes[i];
+		switch (node.nodeType) {
+		case 1: // ELEMENT_NODE
+			html += "<" + node.nodeName + ">";
+			html += this.innerHTML(node);
+			html += "</" + node.nodeName + ">";
+			break;
+		case 3: // TEXT_NODE
+			html += node.data;
+			break;
+		}
+	}
+	return html;
+}
+
 Command.loadAPI = function() {
 	if (!this.functions) {
 		var document = this.apiDocument;
@@ -57,6 +76,10 @@ Command.loadAPI = function() {
 				var returnType = new String(returns.item(0).attributes.getNamedItem("type").value);
 				returnType = returnType.replace(/string/, "String");
 				def.returnType = returnType;
+			}
+			var comments = element.getElementsByTagName("comment");
+			if (comments.length > 0) {
+				def.comment = this.innerHTML(comments.item(0));
 			}
 			var params = element.getElementsByTagName("param");
 			for (var j = 0; j < params.length; j++) {
@@ -90,6 +113,19 @@ function CommandDefinition(name) {
 	this.params = [];
 }
 
+CommandDefinition.prototype.getReference = function() {
+	var ref = "<dt><strong>" + this.name + "(";
+	for (var i = 0; i < this.params.length; i++) {
+		ref += this.params[i].name;
+		if (i < this.params.length - 1) {
+			ref += ", ";
+		}
+	}
+	ref += ")</strong></dt>";
+	ref += "<dd>" + this.comment + "</dd>";
+	return ref;
+}
+
 CommandDefinition.prototype.negativeAccessor = function() {
 	var def = new CommandDefinition(this.name);
 	for (var name in this) {
@@ -101,6 +137,7 @@ CommandDefinition.prototype.negativeAccessor = function() {
 }
 
 Command.prototype.getDefinition = function() {
+	if (this.command == null) return null;
 	var api = Command.loadAPI();
 	var r = /^(assert|verify|store|waitFor)(.*)$/.exec(this.command);
 	if (r) {

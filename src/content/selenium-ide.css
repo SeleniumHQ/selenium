@@ -69,9 +69,15 @@ treechildren::-moz-tree-image(startpoint)
   border-bottom: 1px solid #aaa;
 }
 
+.selected-console-tab { 
+  font-weight: bold;
+}
+
+/*
 #logLabel { 
   font-weight: bold;
 }
+*/
 
 /*
  * Toolbar icons

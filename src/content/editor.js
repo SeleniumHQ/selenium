@@ -16,6 +16,7 @@
 
 function Editor(window, isSidebar) {
 	this.log.debug("initializing");
+	this.lastConsole = "log";
 	this.window = window;
 	window.editor = this;
 	var self = this;
@@ -596,4 +597,27 @@ Editor.prototype.loadSeleniumAPI = function() {
 			this.showAlert("Failed to load user-extensions.js!\nfiles=" + this.options.userExtensionsURL + "\nerror=" + error);
 		}
 	}
+}
+
+
+Editor.prototype.switchConsole = function(name) {
+	if (this.lastConsole == name) return;
+	
+	document.getElementById(this.lastConsole + "Label").setAttribute("class", "");
+	document.getElementById(this.lastConsole + "View").hidden = true;
+	document.getElementById(name + "View").hidden = false;
+	document.getElementById(name + "Label").setAttribute("class", "selected-console-tab");
+	
+	if ("log" == name) {
+		document.getElementById("logButtons").hidden = false;
+	} else {
+		document.getElementById("logButtons").hidden = true;
+	}
+	
+	this.lastConsole = name;
+}
+
+Editor.prototype.showReference = function(content) {
+	this.switchConsole("help");
+	document.getElementById("helpView").contentDocument.body.innerHTML = content;
 }
