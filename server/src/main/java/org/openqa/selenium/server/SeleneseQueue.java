@@ -27,9 +27,11 @@ package org.openqa.selenium.server;
  */
 public class SeleneseQueue {
     private SingleEntryAsyncQueue commandHolder;
-    private SingleEntryAsyncQueue commandResultHolder; 
+    private SingleEntryAsyncQueue commandResultHolder;
+    private String sessionId; 
 
-    public SeleneseQueue() {
+    public SeleneseQueue(String sessionId) {
+        this.sessionId = sessionId;
         commandHolder = new SingleEntryAsyncQueue();
         commandResultHolder = new SingleEntryAsyncQueue();
         //
@@ -66,7 +68,8 @@ public class SeleneseQueue {
                 throw new RuntimeException("unexpected result " + commandResultHolder.peek());
             }
         }
-        queuePut("commandHolder", commandHolder, new DefaultSeleneseCommand(command, field, value));
+        queuePut("commandHolder", commandHolder, 
+                new DefaultSeleneseCommand(command, field, value, InjectionHelper.restoreJsStateInitializer(sessionId)));
         try {
             return (String) queueGet("commandResultHolder", commandResultHolder);
         } catch (SeleniumCommandTimedOutException e) {

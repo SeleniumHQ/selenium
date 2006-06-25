@@ -34,12 +34,20 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     private final String command;
     private final String field;
     private final String value;
-
+    private final String piggybackedJavaScript;
 
     public DefaultSeleneseCommand(String command, String field, String value) {
         this.command = command;
         this.field = field;
         this.value = value;
+        this.piggybackedJavaScript = null;
+    }
+
+    public DefaultSeleneseCommand(String command, String field, String value, String piggybackedJavaScript) {
+        this.command = command;
+        this.field = field;
+        this.value = value;
+        this.piggybackedJavaScript = piggybackedJavaScript;
     }
 
     public String getCommandURLString() {
@@ -59,7 +67,10 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     }
 
     public String toString() {
-        return getCommandURLString();
+        if (piggybackedJavaScript==null) {
+            return getCommandURLString();
+        }
+        return getCommandURLString() + "\n" + getPiggybackedJavaScript();
     }
 
     /** Factory method to create a SeleneseCommand from a wiki-style input string */
@@ -85,5 +96,9 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getPiggybackedJavaScript() {
+        return piggybackedJavaScript;
     }
 }

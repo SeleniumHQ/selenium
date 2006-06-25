@@ -30,4 +30,7 @@ public interface SeleneseCommand {
     String getField();
 
     String getValue();
+
+    // DOCTODO
+    String getPiggybackedJavaScript();
 }

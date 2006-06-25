@@ -439,7 +439,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         synchronized (queueSets) {
             FrameGroupSeleneseQueueSet queue = queueSets.get(sessionId);
             if (queue == null) {
-                queue = new FrameGroupSeleneseQueueSet();
+                queue = new FrameGroupSeleneseQueueSet(sessionId);
                 queueSets.put(sessionId, queue);
             }
             return queue;

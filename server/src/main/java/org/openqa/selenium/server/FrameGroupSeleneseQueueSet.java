@@ -17,7 +17,7 @@ package org.openqa.selenium.server;
      */
 
 
-    import java.util.HashMap;
+import java.util.HashMap;
 import java.util.Map;
 
     /**
@@ -30,15 +30,17 @@ import java.util.Map;
         private Map<String, SeleneseQueue> frameAddressToSeleneseQueue = new HashMap<String, SeleneseQueue>();
         private Map<String, Boolean> frameAddressToJustLoaded = new HashMap<String, Boolean>();
         private SeleneseQueue q;
+        private final String sessionId;
         
-        public FrameGroupSeleneseQueueSet() {
+        public FrameGroupSeleneseQueueSet(String sessionId) {
+            this.sessionId = sessionId;
             selectFrame("top"); 
         }
         
         public void selectFrame(String frameAddress) {
             currentFrameAddress = frameAddress;
             if (!frameAddressToSeleneseQueue.containsKey(currentFrameAddress)) {
-                frameAddressToSeleneseQueue.put(currentFrameAddress, new SeleneseQueue());
+                frameAddressToSeleneseQueue.put(currentFrameAddress, new SeleneseQueue(sessionId));
             }
             q = frameAddressToSeleneseQueue.get(currentFrameAddress);
         }
@@ -95,7 +97,7 @@ import java.util.Map;
         public SeleneseCommand handleCommandResult(String commandResult, String frameAddress) {
             SeleneseQueue queue = frameAddressToSeleneseQueue.get(frameAddress);
             if (queue==null) {
-                queue = new SeleneseQueue();
+                queue = new SeleneseQueue(sessionId);
                 frameAddressToSeleneseQueue.put(frameAddress, queue);
             }
             return queue.handleCommandResult(commandResult);
