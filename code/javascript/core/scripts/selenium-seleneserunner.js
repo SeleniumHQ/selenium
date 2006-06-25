@@ -263,7 +263,16 @@ function extractCommand(xmlHttp) {
 
     var command;
     try {
-        command = xmlHttp.responseText;
+        var re = new RegExp("^(.*?)\n(.*)");
+        if (re.exec(xmlHttp.responseText)) {
+            command = RegExp.$1;
+            var rest = RegExp.$2;
+            // DOCTODO:
+            eval(rest);
+        }
+        else {
+            command = xmlHttp.responseText;
+        }
     } catch (e) {
         alert('could not get responseText: ' + e.message);
     }
