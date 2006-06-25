@@ -577,27 +577,12 @@ Editor.prototype.loadExtensions = function() {
 }
 
 Editor.prototype.loadSeleniumAPI = function() {
+	// load API document
 	var parser = new DOMParser();
 	var document = parser.parseFromString(FileUtils.readURL("chrome://selenium-ide/content/selenium/iedoc-core.xml"), "text/xml");
 	Command.apiDocument = document;
 	
-	var functionElements = document.evaluate("//function", document, null, 0, null);
-	var functions = [];
-	var element;
-	while ((element = functionElements.iterateNext()) != null) {
-		var func = {};
-		func.name = element.attributes['name'].value;
-		func.params = [];
-		var params = element.getElementsByTagName("param");
-		for (var i = 0; i < params.length; i++) {
-			var paramElement = params[i];
-			var param = {};
-			param.name = paramElement.attributes['name'].value;
-			func.params.push(param);
-		}
-		functions.push(func);
-	}
-	
+	// load functions
 	this.seleniumAPI = {};
 	
 	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]

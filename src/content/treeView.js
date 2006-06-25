@@ -147,10 +147,20 @@ function TreeView(editor, document, tree) {
 				commands.push(func);
 				commands.push("verify" + func.substr(6));
 			} else if ((r = func.match(/^(get|is)(.+)$/))) {
-				commands.push("assert" + r[2]);
-				commands.push("verify" + r[2]);
-				commands.push("store" + r[2]);
-				commands.push("waitFor" + r[2]);
+				var base = r[2];
+				commands.push("assert" + base);
+				commands.push("verify" + base);
+				commands.push("store" + base);
+				commands.push("waitFor" + base);
+				var r2;
+				if ((r = func.match(/^is(.*)Present$/))) {
+					base = r[1];
+					commands.push("assert" + base + "NotPresent");
+					commands.push("verify" + base + "NotPresent");
+				} else {
+					commands.push("assertNot" + base);
+					commands.push("verifyNot" + base);
+				}
 			}
 		}
 
