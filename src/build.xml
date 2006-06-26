@@ -33,6 +33,11 @@
       </fileset>
       <fileset dir="content/selenium-src"/>
     </copy>
+    <copy todir="content/selenium">
+      <fileset dir="${selenium.core.dir}">
+	<include name="reference.html"/>
+      </fileset>
+    </copy>
     <copy todir="content/jsunit">
       <fileset dir="${selenium.core.dir}/jsunit">
 	<include name="**"/>

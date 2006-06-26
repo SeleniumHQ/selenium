@@ -263,7 +263,8 @@ TreeView.prototype = {
 
 			var def = command.getDefinition();
 			if (def) {
-				this.editor.showReference(def.getReference());
+				// this.editor.showReference(def.getReference());
+				this.editor.showReference(def.name);
 			}
 		} else {
 			this.setTextBox("commandAction", '', true);

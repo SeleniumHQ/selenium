@@ -27,6 +27,7 @@ function Editor(window, isSidebar) {
 	this.setOptions(optionsManager.load());
 	this.loadExtensions();
 	this.loadSeleniumAPI();
+	this.selectDefaultReference();
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
 	this.testCaseListeners = new Array();
@@ -617,7 +618,42 @@ Editor.prototype.switchConsole = function(name) {
 	this.lastConsole = name;
 }
 
-Editor.prototype.showReference = function(content) {
+Editor.prototype.showReference = function(name) {
 	this.switchConsole("help");
-	document.getElementById("helpView").contentDocument.body.innerHTML = content;
+	this.log.debug("showReference: " + name);
+	this.reference.show(document.getElementById("helpView"), name);
 }
+
+function HTMLReference(name, description, url) {
+	this.name = name;
+	this.description = description;
+	this.url = url;
+}
+
+HTMLReference.prototype.load = function(frame) {
+	var self = this;
+	frame.addEventListener("load", 
+						   function() {
+							   if (self.selectedFunction) self.show(frame, self.selectedFunction);
+						   }, 
+						   true);
+	frame.setAttribute("src", this.url);
+}
+
+
+HTMLReference.prototype.show = function(frame, func) {
+	Editor.log.debug("show: " + frame);
+	func = func.replace(/^(get|is)/, "store");
+	this.selectedFunction = func;
+	frame.contentWindow.location.hash = func;
+}
+
+Editor.references = [];
+
+Editor.prototype.selectDefaultReference = function() {
+	this.reference = Editor.references[0];
+	this.reference.load(document.getElementById("helpView"));
+}
+
+Editor.references.push(new HTMLReference("Internal HTML", "Reference HTML contained in Selenium IDE", "chrome://selenium-ide/content/selenium/reference.html"));
+//Editor.references.push(new HTMLReference("Japanese", "Reference HTML contained in Selenium IDE", "http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29"));

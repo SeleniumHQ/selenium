@@ -138,8 +138,9 @@ CommandDefinition.prototype.negativeAccessor = function() {
 
 Command.prototype.getDefinition = function() {
 	if (this.command == null) return null;
+	var commandName = this.command.replace(/AndWait$/, '');
 	var api = Command.loadAPI();
-	var r = /^(assert|verify|store|waitFor)(.*)$/.exec(this.command);
+	var r = /^(assert|verify|store|waitFor)(.*)$/.exec(commandName);
 	if (r) {
 		var suffix = r[2];
 		var prefix = "";
@@ -159,7 +160,7 @@ Command.prototype.getDefinition = function() {
 			return accessor;
 		}
 	}
-	return api[this.command];
+	return api[commandName];
 }
 
 Command.prototype.getParameterAt = function(index) {
