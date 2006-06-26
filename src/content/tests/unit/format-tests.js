@@ -18,6 +18,7 @@ function setUp() {
 	this.commands.push(new Command('waitForTextPresent', 'test'));
 	this.commands.push(new Command('waitForTextNotPresent', 'test'));
 	this.commands.push(new Command('assertText', 'abc', 'def'));
+	this.commands.push(new Command('assertText', 'abc', 'def*'));
 	this.commands.push(new Command('assertLocation', 'abc'));
 	this.commands.push(new Command('assertNotLocation', 'abc'));
 	this.commands.push(new Command('type', "theText", "javascript{'abc'}"));
@@ -48,6 +49,7 @@ function testRubyRCFormat() {
 	assertEquals('assert !60.times{ break if (@selenium.is_text_present("test") rescue false); sleep 1 }', nextCommand());
 	assertEquals('assert !60.times{ break unless (@selenium.is_text_present("test") rescue true); sleep 1 }', nextCommand());
 	assertEquals('assert_equal "def", @selenium.get_text("abc")', nextCommand());
+	assertEquals('assert /^def(.|[\\r\\n])*$/ =~ @selenium.get_text("abc")', nextCommand());
 	assertEquals('assert_equal "abc", @selenium.get_location', nextCommand());
 	assertEquals('assert_not_equal "abc", @selenium.get_location', nextCommand());
 	assertEquals('@selenium.type "theText", @selenium.get_eval("\'abc\'")', nextCommand());
@@ -108,6 +110,7 @@ function testJavaRCFormat() {
 	assertTrue(nextCommand().indexOf('if (selenium.isTextPresent("test")) break; }') >= 0);
 	assertTrue(nextCommand().indexOf('if (!selenium.isTextPresent("test")) break; }') >= 0);
 	assertEquals('assertEquals("def", selenium.getText("abc"));', nextCommand());
+	assertEquals('assertTrue(selenium.getText("abc").matches("^def(.|[\\\\r\\\\n])*$"));', nextCommand());
 	assertEquals('assertEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('assertNotEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('selenium.type("theText", selenium.getEval("\'abc\'"));', nextCommand());

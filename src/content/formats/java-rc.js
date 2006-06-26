@@ -106,7 +106,11 @@ NotEquals.prototype.verify = function() {
 }
 
 RegexpMatch.prototype.toString = function() {
-	return "Pattern.compile(" + string(this.pattern) + ").matcher(" + this.expression + ").find()";
+	if (this.pattern.match(/^\^/) && this.pattern.match(/\$$/)) {
+		return this.expression + ".matches(" + string(this.pattern) + ")";
+	} else {
+		return "Pattern.compile(" + string(this.pattern) + ").matcher(" + this.expression + ").find()";
+	}
 }
 
 EqualsArray.prototype.length = function() {

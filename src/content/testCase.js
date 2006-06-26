@@ -48,7 +48,7 @@ Command.innerHTML = function(element) {
 	var html = "";
 	var nodes = element.childNodes;
 	for (var i = 0; i < nodes.length; i++) {
-		var node = nodes[i];
+		var node = nodes.item(i);
 		switch (node.nodeType) {
 		case 1: // ELEMENT_NODE
 			html += "<" + node.nodeName + ">";

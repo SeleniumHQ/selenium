@@ -142,7 +142,7 @@ function seleniumEquals(type, pattern, expression) {
 		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).])/g, "\\$1");
 		pattern = pattern.replace(/\?/g, "[\\s\\S]");
 		pattern = pattern.replace(/\*/g, "[\\s\\S]*");
-		return new RegexpMatch(pattern, expression);
+		return new RegexpMatch("^" + pattern + "$", expression);
 	} else {
 		pattern = pattern.replace(/^exact:/, '');
 		return new Equals(xlateValue(type, pattern), expression);
