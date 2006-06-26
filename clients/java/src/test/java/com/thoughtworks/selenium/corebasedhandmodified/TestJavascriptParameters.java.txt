@@ -8,6 +8,7 @@ import com.thoughtworks.selenium.*;
 public class TestJavascriptParameters extends SeleneseTestCase
 {
 	public void test() throws Throwable {
+        	try {
 		selenium.setContext("Test javascript evaluation of parameters*", "info");
 
 /* Test javascript evaluation of parameters       */
@@ -40,5 +41,9 @@ public class TestJavascriptParameters extends SeleneseTestCase
 		verifyEquals(selenium.getEval("selenium.getValue('theText')"), "regexp:TH[Ee] VALUE");
 
 		checkForVerificationErrors();
+            }
+            finally {
+            	resetVerificationErrors();
+            }
 	}
 }

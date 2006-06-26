@@ -211,6 +211,11 @@ public class SeleneseTestCase extends TestCase {
     
     public void checkForVerificationErrors() {
         assertEquals("", verificationErrors.toString());
+        clearVerificationErrors();
+    }
+
+    public void clearVerificationErrors() {
+        verificationErrors = new StringBuffer();
     }
     
     protected void tearDown() throws Exception {

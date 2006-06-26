@@ -7,6 +7,7 @@ import com.thoughtworks.selenium.*;
 public class TestErrorChecking extends SeleneseTestCase
 {
    public void test() throws Throwable {
+   	try {
 		selenium.setContext("Test Click", "info");
   
 /* !!!Should Fail!!! Tests for expectError and expectFailure commands       */
@@ -40,5 +41,9 @@ public class TestErrorChecking extends SeleneseTestCase
 		
 
 		checkForVerificationErrors();
+            }
+            finally {
+            	resetVerificationErrors();
+            }
 	}
 }

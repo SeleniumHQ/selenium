@@ -7,6 +7,7 @@ import com.thoughtworks.selenium.*;
 public class GoogleTestSearch extends SeleneseTestCase
 {
    public void testGoogleTestSearch() throws Throwable {
+   	try {
 		selenium.setContext("Test Open", "info");
 
 /* Google Test Search */
@@ -26,6 +27,10 @@ public class GoogleTestSearch extends SeleneseTestCase
 		verifyEquals("*Selenium OpenQA - Google Search", selenium.getTitle());
 
 		checkForVerificationErrors();
+            }
+            finally {
+            	resetVerificationErrors();
+            }
 	}
 	public void setUp() throws Exception {
 		super.setUp("http://www.google.com");

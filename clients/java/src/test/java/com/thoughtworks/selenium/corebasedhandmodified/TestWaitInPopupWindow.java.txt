@@ -7,6 +7,7 @@ import com.thoughtworks.selenium.*;
 public class TestWaitInPopupWindow extends SeleneseTestCase
 {
    public void testWaitInPopupWindow() throws Throwable {
+   	try {
 		selenium.setContext("Test SelectWindow", "info");
 
 /* Test selectWindow */
@@ -38,5 +39,9 @@ public class TestWaitInPopupWindow extends SeleneseTestCase
 		selenium.selectWindow("null");
 
 		checkForVerificationErrors();
+            }
+            finally {
+            	resetVerificationErrors();
+            }
 	}
 }
