@@ -43,7 +43,7 @@ public class TestErrorChecking extends SeleneseTestCase
 		checkForVerificationErrors();
             }
             finally {
-            	resetVerificationErrors();
+            	clearVerificationErrors();
             }
 	}
 }

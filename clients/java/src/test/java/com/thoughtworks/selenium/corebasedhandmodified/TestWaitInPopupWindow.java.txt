@@ -41,7 +41,7 @@ public class TestWaitInPopupWindow extends SeleneseTestCase
 		checkForVerificationErrors();
             }
             finally {
-            	resetVerificationErrors();
+            	clearVerificationErrors();
             }
 	}
 }
