@@ -35,7 +35,8 @@ public class XlateHtmlSeleneseToJava {
 
     private static int varNameSeed = 1;
 
-    private static String EOL = "\n\t\t";
+    private static String BOL = "\t\t\t";
+    private static String EOL = "\n" + BOL;
 
     private static int timeOut = 30000;
     private static String domain;
@@ -276,7 +277,7 @@ public class XlateHtmlSeleneseToJava {
         " */\n" + 
         "public class " + base + " extends SeleneseTestCase\n" + 
         "{\n" + 
-        "   public void " + makeTestName(base) + "() throws Throwable {\n\t\t";
+        "   public void " + makeTestName(base) + "() throws Throwable {\n\t\ttry {\n\t\t\t";
         
         StringBuffer java = new StringBuffer();
         
@@ -340,7 +341,7 @@ public class XlateHtmlSeleneseToJava {
         if (!silentMode) {
             System.out.println("-------------------------------------------------------------\n" + java);
         }
-        String ending = "\n\t\tcheckForVerificationErrors();\n\t}\n" + possibleSetup + "}\n";
+        String ending = "\n\t\t\tcheckForVerificationErrors();\n\t\t}\n\t\tfinally {\n\t\t\tclearVerificationErrors();\n\t\t}\n\t}\n" + possibleSetup + "}\n";
                 return preamble + java.toString() + ending;
     }
 
@@ -378,7 +379,7 @@ public class XlateHtmlSeleneseToJava {
            )
         {
             String conditionCkVarName = "sawCondition" + j;
-            java.append("\t\tboolean " + conditionCkVarName + " = false;"+ EOL)
+            java.append("\t\t\tboolean " + conditionCkVarName + " = false;"+ EOL)
             .append("for (int second = 0; second < 60; second++) {" + EOL)
             .append("\ttry {" + EOL)
             .append("\t\tif (");
@@ -458,7 +459,7 @@ public class XlateHtmlSeleneseToJava {
 
     private static String XlateSeleneseStatementTokens(String op, String[] tokens, String oldLine) {
         boolean isBoolean = isBoolean(op);
-        String commentedSelenese = "\t\t// " + oldLine
+        String commentedSelenese = "\t\t\t// " + oldLine
         .replaceFirst(BEGIN_SELENESE, "")
         .replaceFirst(END_SELENESE, "")
         .replaceAll(SELENESE_TOKEN_DIVIDER, "|") + EOL; 
@@ -524,11 +525,11 @@ public class XlateHtmlSeleneseToJava {
                     if (tokens[2].equals("")) {
                         return commentedSelenese + "fail(\"No option selected\");";
                     }                    
-                    return "\t\tassertEquals(" + XlateSeleneseArgument(getSelectOptionLocatorValue(tokens[2])) + 
+                    return "\t\t\tassertEquals(" + XlateSeleneseArgument(getSelectOptionLocatorValue(tokens[2])) + 
                         ", selenium.getSelected" + getSelectGetterFlavor(tokens[2]) + "(" +
                         XlateSeleneseArgument(tokens[1]) + "));";
                 }
-                return "\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "));";
+                return "\t\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "));";
             }
             if (op.startsWith("Not")) {
                 beginning = invertAssertion(beginning);
@@ -576,7 +577,7 @@ public class XlateHtmlSeleneseToJava {
             }
             else if (op.matches("^Select.*s$")) {
                 String tmpArrayVarName = newTmpName();
-                beginning = "\t\t" + declareAndInitArray(tmpArrayVarName, tokens[2]) + "\n" + beginning;
+                beginning = BOL + declareAndInitArray(tmpArrayVarName, tokens[2]) + "\n" + beginning;
                 middle = tmpArrayVarName + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
             else if (op.equals("Table")) {
