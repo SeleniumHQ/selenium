@@ -36,9 +36,8 @@ var relayToRC = null;	// override in injection.html
 var relayBotToRC = null;	// override in injection.html
 var queryString = null;
 var xmlHttpForCommandsAndResults = null;
-var restoreSeleniumState = function(){}; // override in injection.html
 var proxyInjectionMode;
-var uniqueId = 'selenium' + new Date().getTime();
+var uniqueId = 'selenium' + Math.random();
 
 function runTest() {
     var testAppFrame = document.getElementById('myiframe');
@@ -55,7 +54,6 @@ function runTest() {
     }
 
     selenium = Selenium.createForFrame(testAppFrame);
-    restoreSeleniumState();
     window.selenium = selenium;
 
     commandFactory = new CommandHandlerFactory();
@@ -177,6 +175,7 @@ function nextCommand() {
     pendingMessagesToRC = "";
 }
 
+// TODO: remove this and pendingMessagesToRC -- unused
 function sendMessageToRCwithNextResult(message) {
     pendingMessagesToRC = pendingMessagesToRC + message.replace(/[\n\r]/g, " ") + "\n";
 }
@@ -210,7 +209,7 @@ function serializeObject(name, x)
     }
     else if (typeof x == "string")
     {
-        return serializeString(name, x);
+        s = serializeString(name, x);
     }
     else
     {
@@ -219,7 +218,10 @@ function serializeObject(name, x)
     return s;
 }
 
-function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject) {
+function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
+    if (async==null) {
+    	async = true;
+    }
     if (xmlHttpObject==null) {
  	xmlHttpObject = XmlHttp.create();
     }
@@ -234,7 +236,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject) {
     	callback = function(){};
     }
     url += buildDriverParams() + preventBrowserCaching();
-    xmlHttpObject.open("POST", url, true);
+    xmlHttpObject.open("POST", url, async);
     xmlHttpObject.onreadystatechange = callback;
     xmlHttpObject.send(dataToBePosted);
     return null;
@@ -264,12 +266,14 @@ function extractCommand(xmlHttp) {
 
     var command;
     try {
-        var re = new RegExp("^(.*?)\n(.*)");
+        var re = new RegExp("^(.*?)\n((.|[\r\n])*)");
         if (re.exec(xmlHttp.responseText)) {
             command = RegExp.$1;
             var rest = RegExp.$2;
-            // DOCTODO:
-            eval(rest);
+            rest = rest.trim();
+            if (rest) {
+            	eval(rest);
+            }
         }
         else {
             command = xmlHttp.responseText;

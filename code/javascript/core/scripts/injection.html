@@ -35,7 +35,10 @@ LOG.openLogWindow = function(message, className) {
 
 function relayToRC(name) {
 	var object = eval(name);
-	sendMessageToRCwithNextResult('state:' + serializeObject(name, object) + "\n");
+        var s = 'state:' + serializeObject(name, object) + "\n";
+        sendToRC(s);
+        // if we find that messages are being lost, we could send them synchronously (shudder):
+        //sendToRC(s, null, null, null, false);
 }
 
 BrowserBot.prototype.relayBotToRC = function(name) {
