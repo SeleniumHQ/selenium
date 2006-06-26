@@ -1263,7 +1263,11 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
    * wait immediately after a Selenium command that caused a page-load.</p>
    * @param timeout a timeout in milliseconds, after which this command will return with an error
    */
-    this.doWaitForCondition("selenium.browserbot.isNewPageLoaded()", timeout);
+   if (proxyInjectionMode) {
+   	// in pi-mode, the test and the harness share the window; thus if we are executing this code, then we have loaded
+   } else {
+    	this.doWaitForCondition("selenium.browserbot.isNewPageLoaded()", timeout);
+   }
 };
 
 Selenium.prototype.doWaitForPageToLoad.dontCheckAlertsAndConfirms = true;

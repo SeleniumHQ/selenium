@@ -35,7 +35,7 @@ LOG.openLogWindow = function(message, className) {
 
 function relayToRC(name) {
 	var object = eval(name);
-	sendToRC('state:' + serializeObject(name, object) + "\n");
+	sendMessageToRCwithNextResult('state:' + serializeObject(name, object) + "\n");
 }
 
 BrowserBot.prototype.relayBotToRC = function(name) {

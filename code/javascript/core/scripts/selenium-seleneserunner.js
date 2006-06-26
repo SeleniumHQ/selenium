@@ -31,26 +31,26 @@ var cmd4 = document.createElement("div");
 
 var postResult = "START";
 var pendingMessagesToRC = "";
-var debugMode = null;
+var debugMode = false;
 var relayToRC = null;	// override in injection.html
 var relayBotToRC = null;	// override in injection.html
 var queryString = null;
 var xmlHttpForCommandsAndResults = null;
 var restoreSeleniumState = function(){}; // override in injection.html
+var proxyInjectionMode;
+var uniqueId = 'selenium' + new Date().getTime();
 
 function runTest() {
-    debugMode = getQueryVariable("debugMode");
-    if (debugMode=="false") {
-    	debugMode = false;
-    }
     var testAppFrame = document.getElementById('myiframe');
+     
     if (testAppFrame==null) {
-    	// proxy injection mode
+        proxyInjectionMode = true;
     	testAppFrame = window;
         LOG.log = logToRc;
     }
     else
     {
+        proxyInjectionMode = false;
         LOG.logHook = logToRc;
     }
 
@@ -173,10 +173,11 @@ function nextCommand() {
     	urlParms += "seleniumStart=true";
     }
     xmlHttpForCommandsAndResults = XmlHttp.create();
-    sendToRC(postResult, urlParms, handleHttpResponse, xmlHttpForCommandsAndResults);
+    sendToRC(pendingMessagesToRC + postResult, urlParms, handleHttpResponse, xmlHttpForCommandsAndResults);
+    pendingMessagesToRC = "";
 }
 
-function sendMessageToRClater(message) {
+function sendMessageToRCwithNextResult(message) {
     pendingMessagesToRC = pendingMessagesToRC + message.replace(/[\n\r]/g, " ") + "\n";
 }
 
@@ -227,6 +228,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject) {
     	url += urlParms;
     }
     url += "&frameAddress=" + makeAddressToMyFrame();
+    url += "&uniqueId=" + uniqueId;
     
     if (callback==null) {
     	callback = function(){};
@@ -234,8 +236,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject) {
     url += buildDriverParams() + preventBrowserCaching();
     xmlHttpObject.open("POST", url, true);
     xmlHttpObject.onreadystatechange = callback;
-    xmlHttpObject.send(pendingMessagesToRC + dataToBePosted);
-        
+    xmlHttpObject.send(dataToBePosted);
     return null;
 }
 
