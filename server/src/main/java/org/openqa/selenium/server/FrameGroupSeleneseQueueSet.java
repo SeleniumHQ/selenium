@@ -79,9 +79,19 @@ import java.util.Map;
                 return "OK";
             }
             if (SeleniumServer.isProxyInjectionMode()
-                    && command.equals("waitForPageToLoad")
-                    && justLoaded(currentFrameAddress)) {
-                return "OK";
+                    && command.equals("waitForPageToLoad")) {
+                if (justLoaded(currentFrameAddress)) {
+                    System.out.println("Not requesting waitForPageToLoad since just loaded "
+                        + currentFrameAddress);
+                    markWhetherJustLoaded(currentFrameAddress, false); // only do this trick once
+                    return "OK";
+                }
+                String result = q.waitForResult();
+                if (justLoaded(currentFrameAddress)) { // happened during waitForResult call
+                    markWhetherJustLoaded(currentFrameAddress, false); // reset this recordkeeping
+                    return result;
+                }
+                return "ERROR: unexpected result " + result + " when load was expected";
             }
             return q.doCommand(command, field, value);
         }
@@ -92,14 +102,16 @@ import java.util.Map;
          * 
          * @param commandResult - the reply from the previous command, or null
          * @param frameAddress - frame from which the reply came
+         * @param uniqueId 
          * @return - the next command to run
          */
-        public SeleneseCommand handleCommandResult(String commandResult, String frameAddress) {
+        public SeleneseCommand handleCommandResult(String commandResult, String frameAddress, String uniqueId) {
             SeleneseQueue queue = frameAddressToSeleneseQueue.get(frameAddress);
             if (queue==null) {
                 queue = new SeleneseQueue(sessionId);
                 frameAddressToSeleneseQueue.put(frameAddress, queue);
             }
+            queue.setUniqueId(uniqueId);
             return queue.handleCommandResult(commandResult);
         }
 
@@ -130,11 +142,16 @@ import java.util.Map;
         }
         
         public void markWhetherJustLoaded(String frameAddress, boolean justLoaded) {
-            if (justLoaded) {
-                frameAddressToJustLoaded.put(frameAddress, true);
-            }
-            else {
-                frameAddressToJustLoaded.remove(frameAddress);
+            boolean oldState = justLoaded(frameAddress);
+            if (oldState!=justLoaded) {
+                if (justLoaded) {
+                    System.out.println(frameAddress + " marked as just loaded");
+                    frameAddressToJustLoaded.put(frameAddress, true);
+                }
+                else {
+                    System.out.println(frameAddress + " marked as NOT just loaded");
+                    frameAddressToJustLoaded.remove(frameAddress);
+                }
             }
         }
     }

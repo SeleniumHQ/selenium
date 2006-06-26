@@ -47,7 +47,12 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         this.command = command;
         this.field = field;
         this.value = value;
-        this.piggybackedJavaScript = piggybackedJavaScript;
+        if (piggybackedJavaScript!=null && !"".equals(piggybackedJavaScript)) {
+            this.piggybackedJavaScript = piggybackedJavaScript;
+        }
+        else {
+            this.piggybackedJavaScript = null;
+        }
     }
 
     public String getCommandURLString() {

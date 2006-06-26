@@ -17,15 +17,32 @@
 
 package org.openqa.selenium.server;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
-import org.mortbay.http.*;
-import org.mortbay.http.handler.*;
-import org.mortbay.util.*;
-import org.openqa.selenium.server.browserlaunchers.*;
-import org.openqa.selenium.server.htmlrunner.*;
+import org.mortbay.http.HttpConnection;
+import org.mortbay.http.HttpException;
+import org.mortbay.http.HttpFields;
+import org.mortbay.http.HttpRequest;
+import org.mortbay.http.HttpResponse;
+import org.mortbay.http.handler.ResourceHandler;
+import org.mortbay.util.StringUtil;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 
 /**
  * A Jetty handler that takes care of Selenese Driven requests.
@@ -67,6 +84,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             setNoCacheHeaders(res);
 
             String frameAddress = getParam(req, "frameAddress");
+            String uniqueId = getParam(req, "uniqueId");
             String seleniumStart = getParam(req, "seleniumStart");
             String method = req.getMethod();
             String cmd = getParam(req, "cmd");
@@ -74,13 +92,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
             // If this is a browser requesting work for the first time...
             if ("POST".equalsIgnoreCase(method) || (seleniumStart != null && seleniumStart.equals("true"))) {
-                String postedData = readPostedData(req, sessionId);
+                String postedData = readPostedData(req, sessionId, uniqueId);
                 if (postedData == null || postedData.equals("")) {
                     res.getOutputStream().write("\r\n\r\n".getBytes());
                     req.setHandled(true);
                     return;
                 }
-                logPostedData(frameAddress, seleniumStart, sessionId, postedData);
+                logPostedData(frameAddress, seleniumStart, sessionId, postedData, uniqueId);
 
                 FrameGroupSeleneseQueueSet queueSet = getQueueSet(sessionId);
                 if ("true".equals(seleniumStart)) {
@@ -91,7 +109,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     queueSet.markWhetherJustLoaded(frameAddress, false);
                 }
 
-                SeleneseCommand sc = queueSet.handleCommandResult(postedData, frameAddress);
+                SeleneseCommand sc = queueSet.handleCommandResult(postedData, frameAddress, uniqueId);
                 if (sc != null) {
                     respond(res, sc);
                 }
@@ -119,9 +137,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
     }
 
-	private void logPostedData(String frameAddress, String seleniumStart, String sessionId, String postedData) {
+	private void logPostedData(String frameAddress, String seleniumStart, String sessionId, String postedData, String uniqueId) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Session " + sessionId + " sent result " + postedData);
+        sb.append("Browser " + sessionId + "/" + uniqueId + " posted " + postedData);
         if (frameAddress==null) {
             System.out.println("frameAddress was null; setting it to top");
             frameAddress = "top";
@@ -136,7 +154,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
 	private void respond(HttpResponse res, SeleneseCommand sc) throws IOException {
-        //System.out.println("Sending next command: " + sc.getCommandString());
         ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
         Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
         if (sc!=null) {
@@ -157,10 +174,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      *
      * @param req
      * @param sessionId
+     * @param uniqueId 
      * @return a string containing the posted data (with piggybacked log info stripped)
      * @throws IOException
      */
-	private String readPostedData(HttpRequest req, String sessionId) throws IOException {
+	private String readPostedData(HttpRequest req, String sessionId, String uniqueId) throws IOException {
         InputStream is = req.getInputStream();
         StringBuffer sb = new StringBuffer();
         InputStreamReader r = new InputStreamReader(is, "UTF-8");
@@ -170,7 +188,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
         String s = sb.toString();
         s = extractLogMessages(s);
-        s = extractJsState(sessionId, s);
+        s = extractJsState(sessionId, uniqueId, s);
         return s;
     }
 
@@ -190,14 +208,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return s.replaceAll(pattern + ".*\n", "");
     }
 
-    private String extractJsState(String sessionId, String s) {
+    private String extractJsState(String sessionId, String uniqueId, String s) {
         String jsInitializers = grepStringsStartingWith("state:", s);
         if (jsInitializers==null) {
             return s;
         }
         for (String jsInitializer : jsInitializers.split("\n")) {
             String jsVarName = extractVarName(jsInitializer);
-            InjectionHelper.saveJsStateInitializer(sessionId, jsVarName, jsInitializer);
+            InjectionHelper.saveJsStateInitializer(sessionId, uniqueId, jsVarName, jsInitializer);
         }
         return grepVStringsStartingWith("state:", s);
     }

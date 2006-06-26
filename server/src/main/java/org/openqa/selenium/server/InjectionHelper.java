@@ -15,9 +15,9 @@ import org.mortbay.util.IO;
 public class InjectionHelper {
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
     
-    public static void saveJsStateInitializer(String sessionId, String jsVarName, String jsStateInitializer) {
+    public static void saveJsStateInitializer(String sessionId, String uniqueId, String jsVarName, String jsStateInitializer) {
         if (SeleniumServer.isDebugMode()) {
-            System.out.println("Saving JavaScript state for session " + sessionId + ": key=" + jsVarName + ": " + jsStateInitializer); 
+            System.out.println("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
         }
         if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
             jsStateInitializersBySessionId.put(sessionId, new HashMap<String, String>());
@@ -31,10 +31,17 @@ public class InjectionHelper {
             return "";
         }
         HashMap<String, String> h = jsStateInitializersBySessionId.get(sessionId);
+        if (h.isEmpty()) {
+            return "";
+        }
         StringBuffer sb = new StringBuffer();
-        for (String key : h.keySet()) {
-            sb.append(h.get(key))
+        for (String jsVarName: h.keySet()) {
+            String jsStateInitializer = h.get(jsVarName);
+            sb.append(jsStateInitializer)
             .append('\n');
+            if (SeleniumServer.isDebugMode()) {
+                System.out.println("Restoring JavaScript state for session " + sessionId + ": key=" + jsVarName + ": " + jsStateInitializer); 
+            }
         }
         return sb.toString();
     }
@@ -75,6 +82,8 @@ public class InjectionHelper {
             
             InputStream jsIn = new ClassPathResource("/core/scripts/injection.html").getInputStream();
             out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+            jsIn.close();
+
             StringBuffer moreJs = new StringBuffer();
             if (SeleniumServer.isDebugMode()) {
                 moreJs.append("debugMode = true;\n");
@@ -83,7 +92,7 @@ public class InjectionHelper {
             .append(restoreJsStateInitializer(sessionId))
             .append("}\n");
             
-            jsIn.close();
+            out.write(makeJsChunk(moreJs.toString()));
             out.write(data.getBytes());
         }           
         IO.copy(in, out);
@@ -129,12 +138,12 @@ public class InjectionHelper {
         return data;
     }
 
-//    private static byte[] makeJsChunk(String js) {
-//        StringBuffer sb = new StringBuffer("\n<script language=\"JavaScript\">\n");
-//        sb.append(js)
-//        .append("\n</script>\n");
-//        return sb.toString().getBytes();
-//    }
+    private static byte[] makeJsChunk(String js) {
+        StringBuffer sb = new StringBuffer("\n<script language=\"JavaScript\">\n");
+        sb.append(js)
+        .append("\n</script>\n");
+        return sb.toString().getBytes();
+    }
 
     private static byte[] getJsWithSubstitutions(InputStream jsIn, String proxyHost, int proxyPort, String sessionId) throws IOException {
         if (jsIn.available()==0) {

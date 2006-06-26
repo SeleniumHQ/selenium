@@ -30,18 +30,25 @@ public class SingleEntryAsyncQueue {
     private boolean done = false;
     private static int defaultTimeout = SeleniumServer.DEFAULT_TIMEOUT;
     private int timeout;
-    private boolean isWaitingForAnObject = false;
+    private boolean hasBlockedGetter = false;
     
     public SingleEntryAsyncQueue() {
         timeout = defaultTimeout;
     }
     
+    /**
+     * clear contents and tell any waiting threads to go away.
+     */
     public void clear() {
-        this.done = true;
         thing = null;
-        synchronized(this) {
-            this.notifyAll();
+        while (hasBlockedGetter) {
+            this.done = true;
+            synchronized(this) {
+                this.notifyAll();
+            }
+            Thread.yield();
         }
+        this.done = false;
     }
     
     public int getTimeout() {
@@ -64,7 +71,7 @@ public class SingleEntryAsyncQueue {
         }
 
         int retries = 0;
-        isWaitingForAnObject = true;
+        hasBlockedGetter = true;
         Object t = null;
         try {
             while (thing==null) {
@@ -84,7 +91,7 @@ public class SingleEntryAsyncQueue {
             t = thing;
         }
         finally {
-            isWaitingForAnObject = false;
+            hasBlockedGetter = false;
         }
         thing = null;
         notifyAll();
@@ -139,8 +146,8 @@ public class SingleEntryAsyncQueue {
         SingleEntryAsyncQueue.defaultTimeout = defaultTimeout;        
     }
 
-    public boolean isWaitingForAnObject() {
-        return isWaitingForAnObject ;
+    public boolean hasBlockedGetter() {
+        return hasBlockedGetter ;
     }
 
 }

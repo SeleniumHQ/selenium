@@ -28,7 +28,9 @@ package org.openqa.selenium.server;
 public class SeleneseQueue {
     private SingleEntryAsyncQueue commandHolder;
     private SingleEntryAsyncQueue commandResultHolder;
-    private String sessionId; 
+    private String sessionId;
+    private String uniqueId;
+    private boolean slowMode; 
 
     public SeleneseQueue(String sessionId) {
         this.sessionId = sessionId;
@@ -40,6 +42,8 @@ public class SeleneseQueue {
         // so as not to be bothered by spurious command queue timeouts (which occur simply
         // because of routine selenium server inactivity).
         commandHolder.setTimeout(Integer.MAX_VALUE);
+        
+        slowMode = (System.getProperty("selenium.slowMode")!=null) && "true".equals(System.getProperty("selenium.slowMode"));
     }
         
     /** Schedules the specified command to be retrieved by the next call to
@@ -53,6 +57,14 @@ public class SeleneseQueue {
      * return "OK" or an error message.
      */
     public String doCommand(String command, String field, String value) {
+        if (slowMode) {
+            System.out.println("    Slow mode in effect: sleep 1 second...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+            System.out.println("    ...done");
+        }
         if (!commandResultHolder.isEmpty()) {
             if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
                 if (SeleniumServer.isDebugMode()) {
@@ -68,6 +80,10 @@ public class SeleneseQueue {
                 throw new RuntimeException("unexpected result " + commandResultHolder.peek());
             }
         }
+        if (!commandHolder.isEmpty()) {
+            throw new RuntimeException("unexpected command " + commandResultHolder.peek() 
+                    + " in place before new command " + command + " could be added.");
+        }
         queuePut("commandHolder", commandHolder, 
                 new DefaultSeleneseCommand(command, field, value, InjectionHelper.restoreJsStateInitializer(sessionId)));
         try {
@@ -81,10 +97,16 @@ public class SeleneseQueue {
         if (SeleniumServer.isDebugMode()) {
             System.out.println("\t" + caller + " queueGet() called...");
         }
+        boolean clearedEarlierThread = false;
+        if (q.hasBlockedGetter()) {
+            q.clear();
+            clearedEarlierThread = true;
+        }
         Object object = q.get();
         
         if (SeleniumServer.isDebugMode()) {
-            System.out.println("\t" + caller + " queueGet() -> " + object);
+            System.out.println("\t" + caller + " queueGet() -> " + object 
+                    + (clearedEarlierThread ? " (after superceding other blocked thread)" : ""));
         }
         return object;
     }
@@ -118,13 +140,18 @@ public class SeleneseQueue {
         if (commandResult == null) {
         	throw new RuntimeException("null command result");
         }
-        if (commandResultHolder.isWaitingForAnObject()) {
+        if (!commandResultHolder.hasBlockedGetter()) {
             // This logic is to account for the case where in proxy injection mode, it is possible 
             // that a page reloads without having been explicitly asked to do so (e.g., an event 
-            // in one frame causes reloads in others).  In this case, the result is discarded.
-            queuePut("commandResultHolder", commandResultHolder, commandResult);
+            // in one frame causes reloads in others).
+            if (SeleniumServer.isDebugMode()) {
+                System.out.println("Ignoring result which no one is waiting for.");
+            }
         }
-        SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder", commandHolder);
+        else {
+            queuePut("commandResultHolder from " + uniqueId, commandResultHolder, commandResult);
+        }
+        SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder " + uniqueId, commandHolder);
         return sc;
     }
 
@@ -143,5 +170,17 @@ public class SeleneseQueue {
     public void endOfLife() {
         commandResultHolder.clear();
         commandHolder.clear();
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public String waitForResult() {
+        return (String) queueGet("waitForResult commandResultHolder", commandResultHolder);
     }
 }
