@@ -85,7 +85,7 @@ public class SeleneseQueue {
                     + " in place before new command " + command + " could be added.");
         }
         queuePut("commandHolder", commandHolder, 
-                new DefaultSeleneseCommand(command, field, value, InjectionHelper.restoreJsStateInitializer(sessionId)));
+                new DefaultSeleneseCommand(command, field, value, InjectionHelper.restoreJsStateInitializer(sessionId, uniqueId)));
         try {
             return (String) queueGet("commandResultHolder", commandResultHolder);
         } catch (SeleniumCommandTimedOutException e) {

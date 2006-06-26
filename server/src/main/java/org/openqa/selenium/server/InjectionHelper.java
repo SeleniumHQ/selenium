@@ -23,10 +23,15 @@ public class InjectionHelper {
             jsStateInitializersBySessionId.put(sessionId, new HashMap<String, String>());
         }
         HashMap<String, String> h = jsStateInitializersBySessionId.get(sessionId);
-        h.put(jsVarName, jsStateInitializer);
+        StringBuffer sb = new StringBuffer("if (uniqueId!='");
+        sb.append(uniqueId)
+            .append("') {")
+            .append(jsStateInitializer)
+            .append("}");
+        h.put(jsVarName, sb.toString());
     }
     
-    public static String restoreJsStateInitializer(String sessionId) {
+    public static String restoreJsStateInitializer(String sessionId, String uniqueId) {
         if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
             return "";
         }
@@ -40,7 +45,8 @@ public class InjectionHelper {
             sb.append(jsStateInitializer)
             .append('\n');
             if (SeleniumServer.isDebugMode()) {
-                System.out.println("Restoring JavaScript state for session " + sessionId + ": key=" + jsVarName + ": " + jsStateInitializer); 
+                System.out.println("Restoring JavaScript state for session " + sessionId + "/" + uniqueId 
+                        + ": key=" + jsVarName + ": " + jsStateInitializer); 
             }
         }
         return sb.toString();
@@ -88,9 +94,6 @@ public class InjectionHelper {
             if (SeleniumServer.isDebugMode()) {
                 moreJs.append("debugMode = true;\n");
             }
-            moreJs.append("function restoreSeleniumState() {\n")
-            .append(restoreJsStateInitializer(sessionId))
-            .append("}\n");
             
             out.write(makeJsChunk(moreJs.toString()));
             out.write(data.getBytes());
