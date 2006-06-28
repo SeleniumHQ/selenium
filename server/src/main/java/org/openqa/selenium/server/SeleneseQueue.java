@@ -245,4 +245,8 @@ public class SeleneseQueue {
     public void setLocalFrameAddress(String localFrameAddress) {
         this.localFrameAddress = localFrameAddress;
     }
+
+    public SingleEntryAsyncQueue getCommandResultHolder() {
+        return commandResultHolder;
+    }
 }
