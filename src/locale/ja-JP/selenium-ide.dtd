@@ -34,7 +34,7 @@
 <!ENTITY logFilter.info.label "情報">
 <!ENTITY logFilter.warn.label "警告">
 <!ENTITY logFilter.error.label "エラー">
-<!ENTITY logClear.label "すべて消去">
+<!ENTITY logClear.label "消去">
 
 <!ENTITY contextMenu.cut.label "切り取り">
 <!ENTITY contextMenu.copy.label "コピー">

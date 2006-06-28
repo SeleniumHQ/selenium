@@ -198,7 +198,7 @@ limitations under the License.
 	<button id="logClear" label="&logClear.label;" oncommand="editor.selDebugger.clearLog()"/>
 	</hbox>
       </hbox>
-      <iframe flex="1" id="logView" src="LogFrame.html">
+      <iframe flex="1" id="logView" src="LogFrame.html" onload="editor.selDebugger.logFrame.refresh()">
       </iframe>
       <iframe flex="1" id="helpView" hidden="true">
       </iframe>

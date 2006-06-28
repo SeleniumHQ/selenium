@@ -49,7 +49,7 @@ function Debugger(editor) {
 		}
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-runner.js', this.runner);
 
-		this.logFrame = new LogFrame(this.runner.LOG);
+		this.logFrame = new LogFrame(this.runner.LOG, this.editor);
 
 		this.runner.getInterval = function() {
 			if (self.runner.testCase.debugContext.currentCommand().breakpoint) {
@@ -119,38 +119,53 @@ Debugger.prototype.reloadLog = function() {
 		this.logFrame.reload();
 }
 
-function LogFrame(log) {
+function LogFrame(log, editor) {
 	this.log = log;
 	this.log.observers.push(this);
 	this.view = document.getElementById("logView");
 	this.filter = document.getElementById("logFilter");
-	this.viewDoc = this.view.contentDocument;
-	this.logElement = this.viewDoc.getElementById("log");
+	this.editor = editor;
+}
+
+LogFrame.prototype.getLogElement = function() {
+	return this.view.contentDocument.getElementById("log");
+}
+
+LogFrame.prototype.isHidden = function() {
+	return this.view.hidden || this.getLogElement() == null;
 }
 
 LogFrame.prototype.onClear = function() {
-	var nodes = this.logElement.childNodes;
-	var i;
-	for (i = nodes.length - 1; i >= 0; i--) {
-		this.logElement.removeChild(nodes[i]);
+	if (!this.isHidden()) {
+		var nodes = this.getLogElement().childNodes;
+		var i;
+		for (i = nodes.length - 1; i >= 0; i--) {
+			this.getLogElement().removeChild(nodes[i]);
+		}
 	}
 }
 
 LogFrame.prototype.reload = function() {
-	var self = this;
-	this.onClear();
-	this.log.entries.forEach(function(entry) { self.onAppendEntry(entry); });
+	if (!this.isHidden()) {
+		var self = this;
+		this.onClear();
+		this.log.entries.forEach(function(entry) { self.onAppendEntry(entry); });
+	}
 }
 
 LogFrame.prototype.onAppendEntry = function(entry) {
-	var levels = { debug: 0, info: 1, warn: 2, error: 3 };
-	var entryValue = levels[entry.level];
-	var filterValue = this.filter.selectedItem.value;
-	if (filterValue <= entryValue) {
-		var newEntry = this.viewDoc.createElement('li');
-		newEntry.className = entry.level;
-		newEntry.appendChild(this.viewDoc.createTextNode(entry.line()));
-		this.logElement.appendChild(newEntry);
-		newEntry.scrollIntoView();
+	if (!this.isHidden()) {
+		var levels = { debug: 0, info: 1, warn: 2, error: 3 };
+		var entryValue = levels[entry.level];
+		var filterValue = this.filter.selectedItem.value;
+		if (filterValue <= entryValue) {
+			var newEntry = this.view.contentDocument.createElement('li');
+			newEntry.className = entry.level;
+			newEntry.appendChild(this.view.contentDocument.createTextNode(entry.line()));
+			this.getLogElement().appendChild(newEntry);
+			newEntry.scrollIntoView();
+		}
+	} else {
+		this.editor.switchConsole("log");
 	}
 }

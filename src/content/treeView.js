@@ -260,12 +260,7 @@ TreeView.prototype = {
 			}
 
 			this.selectRecordIndex(this.tree.currentIndex);
-
-			var def = command.getDefinition();
-			if (def) {
-				// this.editor.showReference(def.getReference());
-				this.editor.showReference(def.name);
-			}
+			this.editor.showReference(command);
 		} else {
 			this.setTextBox("commandAction", '', true);
 			this.setTextBox("commandTarget", '', true);
@@ -284,6 +279,7 @@ TreeView.prototype = {
 	updateCurrentCommand: function(key, value) {
 		if (this.currentCommand != null) {
 			this.executeAction(new TreeView.UpdateCommandAction(this, key, value));
+			this.editor.showReference(this.currentCommand);
 		}
 	},
 	onHide: function() {

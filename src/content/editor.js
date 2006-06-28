@@ -48,6 +48,7 @@ function Editor(window, isSidebar) {
 	
 	// "debugger" cannot be used since it is a reserved word in JS
 	this.selDebugger = new Debugger(this);
+	this.initLog();
 	
 	//top.document.commandDispatcher.getControllers().appendController(Editor.controller);
 	//window.controllers.appendController(Editor.controller);
@@ -605,7 +606,9 @@ Editor.prototype.switchConsole = function(name) {
 	if (this.lastConsole == name) return;
 	
 	document.getElementById(this.lastConsole + "Label").setAttribute("class", "");
+	//document.getElementById(this.lastConsole + "View").setAttribute("style", "display: none");
 	document.getElementById(this.lastConsole + "View").hidden = true;
+	//document.getElementById(name + "View").setAttribute("style", "display: inline");
 	document.getElementById(name + "View").hidden = false;
 	document.getElementById(name + "Label").setAttribute("class", "selected-console-tab");
 	
@@ -618,15 +621,48 @@ Editor.prototype.switchConsole = function(name) {
 	this.lastConsole = name;
 }
 
-Editor.prototype.showReference = function(name) {
-	this.switchConsole("help");
-	this.log.debug("showReference: " + name);
-	this.reference.show(document.getElementById("helpView"), name);
+Editor.prototype.showReference = function(command) {
+	var def = command.getDefinition();
+	if (def) {
+		this.switchConsole("help");
+		this.log.debug("showReference: " + def.name);
+		this.reference.show(document.getElementById("helpView"), def);
+	}
 }
 
-function HTMLReference(name, description, url) {
+Editor.prototype.initLog = function() {
+	var self = this;
+	var frame = document.getElementById("logView");
+	frame.addEventListener("load", 
+						   function() {
+							   if (self.selDebugger.logFrame) {
+								   self.selDebugger.logFrame.reload();
+							   }
+						   }, 
+						   true);
+}
+
+function GeneratedReference(name) {
 	this.name = name;
-	this.description = description;
+}
+
+GeneratedReference.prototype.load = function(frame) {
+	var self = this;
+	frame.addEventListener("load", 
+						   function() {
+							   if (self.selectedDefinition) self.show(frame, self.selectedDefinition);
+						   }, 
+						   true);
+}
+
+GeneratedReference.prototype.show = function(frame, def) {
+	this.selectedDefinition = def;
+	Editor.log.debug("show: " + frame);
+	frame.contentDocument.body.innerHTML = def.getReference();
+}
+
+function HTMLReference(name, url) {
+	this.name = name;
 	this.url = url;
 }
 
@@ -634,17 +670,17 @@ HTMLReference.prototype.load = function(frame) {
 	var self = this;
 	frame.addEventListener("load", 
 						   function() {
-							   if (self.selectedFunction) self.show(frame, self.selectedFunction);
+							   if (self.selectedDefinition) self.show(frame, self.selectedDefinition);
 						   }, 
 						   true);
 	frame.setAttribute("src", this.url);
 }
 
 
-HTMLReference.prototype.show = function(frame, func) {
+HTMLReference.prototype.show = function(frame, def) {
 	Editor.log.debug("show: " + frame);
-	func = func.replace(/^(get|is)/, "store");
-	this.selectedFunction = func;
+	var func = def.name.replace(/^(get|is)/, "store");
+	this.selectedDefinition = def;
 	frame.contentWindow.location.hash = func;
 }
 
@@ -655,5 +691,6 @@ Editor.prototype.selectDefaultReference = function() {
 	this.reference.load(document.getElementById("helpView"));
 }
 
-Editor.references.push(new HTMLReference("Internal HTML", "Reference HTML contained in Selenium IDE", "chrome://selenium-ide/content/selenium/reference.html"));
+Editor.references.push(new GeneratedReference("Generated"));
+Editor.references.push(new HTMLReference("Internal HTML", "chrome://selenium-ide/content/selenium/reference.html"));
 //Editor.references.push(new HTMLReference("Japanese", "Reference HTML contained in Selenium IDE", "http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29"));
