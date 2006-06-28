@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>Manages a set of SeleneseQueues corresponding to a set of frames in a single browser session.</p>
+ * <p>Manages sets of SeleneseQueues corresponding to windows and frames in a single browser session.</p>
  * 
  * @author nelsons
  */
@@ -48,10 +48,30 @@ public class FrameGroupSeleneseQueueSet {
     private Map<FrameAddress, SeleneseQueue> frameAddressToSeleneseQueue = new HashMap<FrameAddress, SeleneseQueue>();
     
     private Map<FrameAddress, Boolean> frameAddressToJustLoaded = new HashMap<FrameAddress, Boolean>();
+    /**
+     * A unique string denoting a session with a browser.  In most cases this session begins with the
+     * selenium server configuring and starting a browser process, and ends with a selenium server killing 
+     * that process.
+     */
     private final String sessionId;
+    
     public static final String DEFAULT_LOCAL_FRAME_ADDRESS = "top";
+    /**
+     * Each user-visible window group has a selenium window name.  The name of the initial browser window is "".
+     * Even if the page reloads, the JavaScript is able to determine that it is this initial window because
+     * window.opener==null.  Any window for whom window.opener!=null is a "pop-up".
+     */
     public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
-    public static final String SELENIUM_WINDOW_NAME_UNKNOWN = "?";
+    /**
+     * Each user-visible window group has a selenium window name.  The name of the initial browser window is "".
+     * Even if the page reloads, the JavaScript is able to determined that it is this initial window because
+     * window.opener==null.  Any window for whom window.opener!=null is a "pop-up".  
+     * 
+     * When a pop-up reloads, it can see that it is not in the initial window.  It will not know which window
+     * it is until selenium tells it as part of the information sent with the next command.  Until that
+     * happens, use this placeholder for the unknown name.
+     */
+    public static final String SELENIUM_WINDOW_NAME_UNKNOWN_POPUP = "?";
     
     public FrameGroupSeleneseQueueSet(String sessionId) {
         this.sessionId = sessionId;
@@ -175,9 +195,16 @@ public class FrameGroupSeleneseQueueSet {
      */
     public SeleneseCommand handleCommandResult(String commandResult, FrameAddress frameAddress, String uniqueId) {
         synchronized(this) {
-            if (frameAddress.getWindowName().equals(SELENIUM_WINDOW_NAME_UNKNOWN)) {
+            if (frameAddress.getWindowName().equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP)) {
                 for (FrameAddress f : frameAddressToSeleneseQueue.keySet()) {
-                    // TODO: explain
+                    // the situation being handled here: a pop-up window has either just loaded or reloaded, and therefore
+                    // doesn't know its name.  It uses SELENIUM_WINDOW_NAME_UNKNOWN_POPUP as a placeholder.
+                    // Meanwhile, on the selenium server-side, a thread is waiting for this result.
+                    //
+                    // To determine if this has happened, we cycle through all of the SeleneseQueue objects,
+                    // looking for ones with a matching local frame address (e.g., top.frames[1]), is also a
+                    // pop-up, and which has a thread waiting on a result.  If all of these conditions hold,
+                    // then we figure this queue is the one that we want:
                     if (f.getLocalFrameAddress().equals(frameAddress.getLocalFrameAddress())
                             && !f.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)
                             && frameAddressToSeleneseQueue.get(f).getCommandResultHolder().hasBlockedGetter()) {
@@ -259,7 +286,7 @@ public class FrameGroupSeleneseQueueSet {
     }
     
     public static synchronized FrameAddress findFrameAddress(String seleniumWindowName, String localFrameAddress, boolean justLoaded) {
-        if (seleniumWindowName.equals(SELENIUM_WINDOW_NAME_UNKNOWN) && justLoaded && expectedNewWindowName!=null) {
+        if (seleniumWindowName.equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP) && justLoaded && expectedNewWindowName!=null) {
             seleniumWindowName = expectedNewWindowName;
             expectedNewWindowName = null;
         }

@@ -78,7 +78,10 @@ public class SeleneseQueue {
         if (!commandResultHolder.isEmpty()) {
             if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
                 if (SeleniumServer.isDebugMode()) {
-                    // TODO: explain...
+                    // In proxy injection mode, a single command could cause multiple pages to
+                    // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
+                    // relationship between commands and results can go out of whack.  To avoid this, we
+                    // discard results for which no thread is waiting:
                     System.out.println("Apparently a page load result preceded the command; will ignore it...");
                     System.out.println("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
                 }
