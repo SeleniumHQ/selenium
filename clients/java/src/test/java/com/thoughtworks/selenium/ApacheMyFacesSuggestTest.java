@@ -16,12 +16,16 @@ public class ApacheMyFacesSuggestTest extends TestCase {
 
     DefaultSelenium selenium;
     
+    boolean isProxyInjectionMode = System.getProperty("selenium.proxyInjectionMode")!=null
+    && System.getProperty("selenium.proxyInjectionMode").equals("true");
+
+    
     protected void setUp() throws Exception {
     }
     
     public void testAJAXFirefox() throws Throwable {
-        if (!SeleniumServer.isProxyInjectionMode()) {
-            fail("there are known problems with name conflicts for these tests");
+        if (isProxyInjectionMode) {
+            fail("there are known problems with name conflicts for these tests which hang the browser");
         }
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
@@ -30,8 +34,8 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     // Not running this test in IE; Dojo has bugs!
     public void testAJAXIExplore() throws Throwable {
-        if (!SeleniumServer.isProxyInjectionMode()) {
-            fail("there are known problems with name conflicts for these tests");
+        if (isProxyInjectionMode) {
+            fail("there are known problems with name conflicts for these tests which hang the browser");
         }
         if (!WindowsUtils.thisIsWindows()) return;
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");

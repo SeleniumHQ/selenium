@@ -44,13 +44,11 @@ public class ClientDriverSuite extends TestCase {
 // Once that bug is fixed, this class should be a TestSuite, not a TestCase
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
+            suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             if (isProxyInjectionMode) {
                 suite.addTestSuite(TestFramesClick.class);
                 suite.addTestSuite(TestFramesOpen.class);
                 suite.addTestSuite(TestFramesNested.class);
-            }
-            else {
-                suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             }
             suite.addTest(I18nTest.suite());
             suite.addTestSuite(RealDealIntegrationTest.class);
