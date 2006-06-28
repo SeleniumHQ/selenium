@@ -301,12 +301,23 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         req.setHandled(true);
     }
 
-    public String doCommand(String cmd, Vector values, String sessionId, HttpResponse res) {
+    public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
         String results;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
-            sessionId = getNewBrowserSession((String)values.get(0), (String)values.get(1));
-            setDomain(sessionId, (String)values.get(1));
+            String browserString = values.get(0);
+            if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
+                System.out.println("WARNING: running in proxy injection mode, but you used a *iexplore browser string; this is " +
+                        "almost surely inappropriate, so I'm changing it to *piiexplore...");
+                browserString = "*piiexplore";
+            }
+            else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
+                System.out.println("WARNING: running in proxy injection mode, but you used a *firefox browser string; this is " +
+                        "almost surely inappropriate, so I'm changing it to *pifirefox...");
+                browserString = "*pifirefox";
+            }
+            sessionId = getNewBrowserSession(browserString, values.get(1));
+            setDomain(sessionId, values.get(1));
             results = "OK," + sessionId;
         } else if ("testComplete".equals(cmd)) {
             BrowserLauncher launcher = getLauncher(sessionId);
@@ -337,7 +348,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             // We don't support POST
             results = "OK,false";
         } else if ("addStaticContent".equals(cmd)) {
-            File dir = new File((String) values.get(0));
+            File dir = new File( values.get(0));
             if (dir.exists()) {
                 server.addNewStaticContent(dir);
                 results = "OK";
@@ -351,11 +362,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 results = "ERROR: Not enough arguments (browser, browserURL, suiteURL, [outputFile])";
             } else {
                 if (values.size() > 3) {
-                    output = new File((String)values.get(3));
+                    output = new File(values.get(3));
                 }
                 long timeout = SeleniumServer.getTimeout();
                 try {
-                    results = launcher.runHTMLSuite((String) values.get(0), (String) values.get(1), (String) values.get(2), output, timeout);
+                    results = launcher.runHTMLSuite( values.get(0),  values.get(1),  values.get(2), output, timeout);
                 } catch (IOException e) {
                     e.printStackTrace();
                     results = e.toString();
@@ -363,10 +374,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
         } else {
             if ("open".equals(cmd)) {
-                warnIfApparentDomainChange(sessionId, (String)values.get(0));
+                warnIfApparentDomainChange(sessionId, values.get(0));
             }
             FrameGroupSeleneseQueueSet queue = getQueueSet(sessionId);
-            results = queue.doCommand(cmd, (String)values.get(0), (String)values.get(1));
+            results = queue.doCommand(cmd, values.get(0), values.get(1));
         }
         System.out.println("Got result: " + results + " on session " + sessionId);
         return results;
