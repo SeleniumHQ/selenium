@@ -37,7 +37,7 @@ var relayBotToRC = null;	// override in injection.html
 var queryString = null;
 var xmlHttpForCommandsAndResults = null;
 var proxyInjectionMode;
-var uniqueId = 'selenium' + Math.random();
+var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
 function runTest() {
     var testAppFrame = document.getElementById('myiframe');
@@ -181,8 +181,11 @@ function sendMessageToRCwithNextResult(message) {
 }
 
 function logToRc(message, logLevel) {
+    if (logLevel==null) {
+    	logLevel = "debug";
+    }
     if (debugMode) {
-        sendToRC("logLevel=" + logLevel + ":" + message + "\n");
+        //sendToRC("logLevel=" + logLevel + ":" + message + "\n");
     }
 }
 
@@ -229,7 +232,8 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     if (urlParms) {
     	url += urlParms;
     }
-    url += "&frameAddress=" + makeAddressToMyFrame();
+    url += "&localFrameAddress=" + makeAddressToMyFrame();
+    url += "&seleniumWindowName=" + getSeleniumWindowName();
     url += "&uniqueId=" + uniqueId;
     
     if (callback==null) {
@@ -389,6 +393,26 @@ function createCommandFromRequest(commandRequest) {
     	throw new Error("Bad command request: " + commandRequest);
     }
     return new SeleniumCommand(cmd, arg1, arg2);
+}
+
+// Return the name of the current window in the selenium recordkeeping.
+// 
+// In selenium, the additional widow has no name.
+// 
+// Additional pop-ups are associated with names given by the argument to the routine waitForPopUp.
+// 
+// I try to arrange for widows which are opened in such manner to track their own names using the top-level property 
+// seleniumWindowName, but it is possible that this property will not be available (if the widow has just reloaded
+// itself).  In this case, return "?".
+// 
+function getSeleniumWindowName() {
+	if (window.opener==null) {
+        	return "";
+        } 
+        if (window["seleniumWindowName"]==null) {
+        	return "?";
+        } 
+        return window["seleniumWindowName"];
 }
 
 // construct a JavaScript expression which leads to my frame (i.e., the frame containing the window
