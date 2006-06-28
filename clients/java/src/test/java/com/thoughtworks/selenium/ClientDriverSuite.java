@@ -35,13 +35,23 @@ public class ClientDriverSuite extends TestCase {
      * @return a test suite containing tests to run
      */
 	public static Test suite() {
+        boolean isProxyInjectionMode = System.getProperty("selenium.proxyInjectionMode")!=null
+            && System.getProperty("selenium.proxyInjectionMode").equals("true");
+        
         try {
 // TODO This class extends TestCase to workaround MSUREFIRE-113
             // http://jira.codehaus.org/browse/MSUREFIRE-113
 // Once that bug is fixed, this class should be a TestSuite, not a TestCase
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
-            suite.addTestSuite(ApacheMyFacesSuggestTest.class);
+            if (isProxyInjectionMode) {
+                suite.addTestSuite(TestFramesClick.class);
+                suite.addTestSuite(TestFramesOpen.class);
+                suite.addTestSuite(TestFramesNested.class);
+            }
+            else {
+                suite.addTestSuite(ApacheMyFacesSuggestTest.class);
+            }
             suite.addTest(I18nTest.suite());
             suite.addTestSuite(RealDealIntegrationTest.class);
             suite.addTestSuite(TestErrorChecking.class);

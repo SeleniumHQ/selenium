@@ -17,10 +17,12 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     DefaultSelenium selenium;
     
     protected void setUp() throws Exception {
-        
     }
     
     public void testAJAXFirefox() throws Throwable {
+        if (!SeleniumServer.isProxyInjectionMode()) {
+            fail("there are known problems with name conflicts for these tests");
+        }
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
         ajaxTester();
@@ -28,6 +30,9 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     // Not running this test in IE; Dojo has bugs!
     public void testAJAXIExplore() throws Throwable {
+        if (!SeleniumServer.isProxyInjectionMode()) {
+            fail("there are known problems with name conflicts for these tests");
+        }
         if (!WindowsUtils.thisIsWindows()) return;
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
         selenium.start();
