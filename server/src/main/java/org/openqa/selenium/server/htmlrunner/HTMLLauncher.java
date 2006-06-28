@@ -38,7 +38,7 @@ public class HTMLLauncher implements HTMLResultsListener {
     public String runHTMLSuite(String browser, String browserURL, String HTMLSuite, File outputFile, long timeout) throws IOException {
         server.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
-        String sessionId = Long.toString(System.currentTimeMillis());
+        String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, null);
         launcher.launchHTMLSuite(HTMLSuite, browserURL);
         long now = System.currentTimeMillis();

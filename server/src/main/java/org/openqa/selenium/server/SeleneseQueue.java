@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.server;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * <p>Schedules and coordinates commands to be run.</p>
  * 
@@ -30,7 +33,14 @@ public class SeleneseQueue {
     private SingleEntryAsyncQueue commandResultHolder;
     private String sessionId;
     private String uniqueId;
-    private boolean slowMode; 
+    private boolean slowMode;
+    private String localFrameAddress = null;
+    private String seleniumWindowName = null; 
+
+    public SeleneseQueue(String sessionId, String seleniumWindowName) {
+        this(sessionId);
+        this.seleniumWindowName = seleniumWindowName;
+    }
 
     public SeleneseQueue(String sessionId) {
         this.sessionId = sessionId;
@@ -85,12 +95,26 @@ public class SeleneseQueue {
                     + " in place before new command " + command + " could be added.");
         }
         queuePut("commandHolder", commandHolder, 
-                new DefaultSeleneseCommand(command, field, value, InjectionHelper.restoreJsStateInitializer(sessionId, uniqueId)));
+                new DefaultSeleneseCommand(command, field, value, makeJavaScript()));
         try {
             return (String) queueGet("commandResultHolder", commandResultHolder);
         } catch (SeleniumCommandTimedOutException e) {
             return "ERROR: Command timed out";
         }
+    }
+
+    private String makeJavaScript() {
+        StringBuffer sb = new StringBuffer(InjectionHelper.restoreJsStateInitializer(sessionId, uniqueId));
+        if (seleniumWindowName !=null && !"".equals(seleniumWindowName)) {
+            sb.append("window['seleniumWindowName']=unescape('");
+            try {
+                sb.append(URLEncoder.encode(seleniumWindowName, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("URLEncoder failed: " + e);
+            }
+            sb.append("');");
+        }
+        return sb.toString();
     }
 
     private Object queueGet(String caller, SingleEntryAsyncQueue q) {
@@ -149,10 +173,24 @@ public class SeleneseQueue {
             }
         }
         else {
-            queuePut("commandResultHolder from " + uniqueId, commandResultHolder, commandResult);
+            queuePut("commandResultHolder from " + getIdentification(), commandResultHolder, commandResult);
         }
         SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder " + uniqueId, commandHolder);
         return sc;
+    }
+
+    private String getIdentification() {
+        StringBuffer sb = new StringBuffer();
+        if (seleniumWindowName!=null) {
+            sb.append(seleniumWindowName)
+            .append(":");
+        }
+        if (localFrameAddress!=null) {
+            sb.append(localFrameAddress)
+            .append(".");
+        }
+        sb.append(uniqueId);
+        return sb.toString();
     }
 
     /**
@@ -182,5 +220,29 @@ public class SeleneseQueue {
 
     public String waitForResult() {
         return (String) queueGet("waitForResult commandResultHolder", commandResultHolder);
+    }
+    
+    public String waitForResult(int timeout) {
+        int oldTimeout = commandResultHolder.getTimeout();
+        commandResultHolder.setTimeout(timeout);
+        String result = waitForResult();
+        commandResultHolder.setTimeout(oldTimeout);
+        return result;
+    }
+
+    public String getSeleniumWindowName() {
+        return seleniumWindowName;
+    }
+
+    public void setSeleniumWindowName(String seleniumWindowName) {
+        this.seleniumWindowName = seleniumWindowName;
+    }
+
+    public String getLocalFrameAddress() {
+        return localFrameAddress;
+    }
+
+    public void setLocalFrameAddress(String localFrameAddress) {
+        this.localFrameAddress = localFrameAddress;
     }
 }
