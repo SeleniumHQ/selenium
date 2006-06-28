@@ -185,7 +185,7 @@ function logToRc(message, logLevel) {
     	logLevel = "debug";
     }
     if (debugMode) {
-        //sendToRC("logLevel=" + logLevel + ":" + message + "\n");
+        sendToRC("logLevel=" + logLevel + ":" + message + "\n");
     }
 }
 
