@@ -30,7 +30,6 @@ var cmd3 = document.createElement("div");
 var cmd4 = document.createElement("div");
 
 var postResult = "START";
-var pendingMessagesToRC = "";
 var debugMode = false;
 var relayToRC = null;	// override in injection.html
 var relayBotToRC = null;	// override in injection.html
@@ -171,13 +170,7 @@ function nextCommand() {
     	urlParms += "seleniumStart=true";
     }
     xmlHttpForCommandsAndResults = XmlHttp.create();
-    sendToRC(pendingMessagesToRC + postResult, urlParms, handleHttpResponse, xmlHttpForCommandsAndResults);
-    pendingMessagesToRC = "";
-}
-
-// TODO: remove this and pendingMessagesToRC -- unused
-function sendMessageToRCwithNextResult(message) {
-    pendingMessagesToRC = pendingMessagesToRC + message.replace(/[\n\r]/g, " ") + "\n";
+    sendToRC(postResult, urlParms, handleHttpResponse, xmlHttpForCommandsAndResults);
 }
 
 function logToRc(message, logLevel) {
