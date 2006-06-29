@@ -32,7 +32,6 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         ajaxTester();
     }
     
-    // Not running this test in IE; Dojo has bugs!
     public void testAJAXIExplore() throws Throwable {
         if (isProxyInjectionMode) {
             fail("there are known problems with name conflicts for these tests which hang the browser");
