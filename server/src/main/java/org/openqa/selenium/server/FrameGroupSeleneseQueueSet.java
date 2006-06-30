@@ -136,11 +136,15 @@ public class FrameGroupSeleneseQueueSet {
                 for (FrameAddress frameAddress : frameAddressToSeleneseQueue.keySet()) {
                     if (frameAddress.getWindowName().equals(currentSeleniumWindowName)) {
                         SeleneseQueue frameQ = frameAddressToSeleneseQueue.get(frameAddress);
-                        String frameMatchBooleanString = frameQ.doCommand("isFrame", currentLocalFrameAddress, arg);
+                        String frameMatchBooleanString = frameQ.doCommand("getWhetherThisFrameMatchFrameExpression", currentLocalFrameAddress, arg);
                         if ("OK,true".equals(frameMatchBooleanString)) {
                             setCurrentFrameAddress(frameAddress);
                             newFrameFound = true;
                             break;
+                        }
+                        else if (!"OK,false".equals(frameMatchBooleanString)) {
+                            throw new RuntimeException("unexpected return " + frameMatchBooleanString
+                                    + " from frame search");                            
                         }
                     }
                 }
