@@ -257,6 +257,10 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
  }
 
 
+function setSeleniumWindowName(seleniumWindowName) {
+	selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
+}
+
 function extractCommand(xmlHttp) {
     if (slowMode) {
         delay(2000);
