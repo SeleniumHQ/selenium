@@ -31,6 +31,9 @@ public interface SeleneseCommand {
 
     String getValue();
 
-    // DOCTODO
+    // In proxy injection mode, the selenium JavaScript cannot maintain its own state because it is
+    // part of the test application window, and therefore can and will be reloaded at any time.
+    // Therefore some state is maintained on the selenium server, and is sent along with each
+    // command.  This state is kept in the following field:
     String getPiggybackedJavaScript();
 }

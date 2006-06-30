@@ -56,7 +56,7 @@ public class InjectionHelper {
         return sb.toString();
     }
     
-    public static void injectJavaScript(SeleniumServer seleniumServer, boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
+	public static void injectJavaScript(SeleniumServer seleniumServer, boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[8192];
         int len = in.read(buf);
         if (len == -1) {
@@ -64,8 +64,8 @@ public class InjectionHelper {
         }
         String data = new String(buf, 0, len);
         if (!isKnownToBeHtml) {
-            Pattern regexp = Pattern.compile("<\\s*(html|frameset|head|body|table)", 
-                    Pattern.CASE_INSENSITIVE);  
+            Pattern regexp = Pattern.compile("<\\s*(html|frameset|head|body|table)",
+                                             Pattern.CASE_INSENSITIVE);
             isKnownToBeHtml = regexp.matcher(data).find();
         }
         boolean isFrameSet = false;
@@ -73,12 +73,12 @@ public class InjectionHelper {
             out.write(buf, 0, len);
         }
         else {
-            Pattern regexp = Pattern.compile("<\\s*frameset", 
-                     Pattern.CASE_INSENSITIVE);  
+            Pattern regexp = Pattern.compile("<\\s*frameset",
+                                             Pattern.CASE_INSENSITIVE);
             isFrameSet = regexp.matcher(data).find();
             if (isFrameSet) {
                 // JavaScript inserted at the end of an HTML file is executed on load *unless*
-                // the file is a frame set.  In that case, only by means of the onload hook can 
+                // the file is a frame set.  In that case, only by means of the onload hook can
                 // we execute.
                 data = usurpOnUnloadHook(data, "runTest");
             }
@@ -86,10 +86,10 @@ public class InjectionHelper {
         String proxyHost = "localhost";
         int proxyPort = SeleniumServer.getPortDriversShouldContact();
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
-        
+
         if (isKnownToBeHtml) {
-            response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated 
-            
+            response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
+
             String injectionHtml = isFrameSet ? "/core/scripts/injection.html" : "/core/scripts/injection_iframe.html";
             InputStream jsIn = new ClassPathResource(injectionHtml).getInputStream();
             if (isFrameSet) {
@@ -97,7 +97,15 @@ public class InjectionHelper {
             }
             out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
             if (isFrameSet) {
-                // TODO: explain why different
+                // Some background on the code below: broadly speaking, how we inject the JavaScript
+                // when running in proxy injection mode depends on whether we are in a frame set file or not.
+                //
+                // In regular HTML files, the selenium JavaScript is injected into an iframe called "selenium"
+                // in order to reduce its impact on the JavaScript environment (through namespace pollution,
+                // etc.).  So in regular HTML files, we need to look at the parent of the current window when we want
+                // a handle to, e.g., the application window.
+                //
+                // In frame set files, JavaScript inserted at EOF will be ignored, so everything must go into the head.
                 out.write(setSomeJsVars(sessionId));
             }
             jsIn.close();
