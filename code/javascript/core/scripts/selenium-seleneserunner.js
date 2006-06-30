@@ -404,7 +404,7 @@ function createCommandFromRequest(commandRequest) {
 // itself).  In this case, return "?".
 // 
 function getSeleniumWindowName() {
-	var w = selenium.browserbot.getCurrentWindow();
+	var w = (proxyInjectionMode ? selenium.browserbot.getCurrentWindow() : window);
 	if (w.opener==null) {
         	return "";
         } 
