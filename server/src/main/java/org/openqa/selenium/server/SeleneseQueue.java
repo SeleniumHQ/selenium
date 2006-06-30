@@ -108,13 +108,13 @@ public class SeleneseQueue {
     private String makeJavaScript() {
         StringBuffer sb = new StringBuffer(InjectionHelper.restoreJsStateInitializer(sessionId, uniqueId));
         if (frameAddress!=null && !frameAddress.getWindowName().equals(FrameGroupSeleneseQueueSet.DEFAULT_SELENIUM_WINDOW_NAME)) {
-            sb.append("window['seleniumWindowName']=unescape('");
+            sb.append("setSeleniumWindowName(unescape('");
             try {
                 sb.append(URLEncoder.encode(frameAddress.getWindowName(), "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException("URLEncoder failed: " + e);
             }
-            sb.append("');");
+            sb.append("'));");
         }
         return sb.toString();
     }

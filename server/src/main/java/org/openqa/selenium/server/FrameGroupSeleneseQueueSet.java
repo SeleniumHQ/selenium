@@ -96,6 +96,7 @@ public class FrameGroupSeleneseQueueSet {
     public SeleneseQueue getSeleneseQueue(FrameAddress frameAddress) {
         synchronized(frameAddressToSeleneseQueue) {
             if (!frameAddressToSeleneseQueue.containsKey(frameAddress)) {
+                
                 if (SeleniumServer.isDebugMode()) {
                     System.out.println("---------allocating new SeleneseQueue for " + frameAddress);
                 }
@@ -124,7 +125,7 @@ public class FrameGroupSeleneseQueueSet {
      * commands may return data from the browser; other "doX" style commands may just
      * return "OK" or an error message.
      */
-    public String doCommand(String command, String arg, String value) {
+	public String doCommand(String command, String arg, String value) {
         if (SeleniumServer.isProxyInjectionMode()) {
             if (command.equals("selectFrame")) {
                 if ("".equals(arg)) {
@@ -133,7 +134,7 @@ public class FrameGroupSeleneseQueueSet {
                 }
                 boolean newFrameFound = false;
                 for (FrameAddress frameAddress : frameAddressToSeleneseQueue.keySet()) {
-                    if (frameAddress.getWindowName().equals(currentSeleniumWindowName)) {                        
+                    if (frameAddress.getWindowName().equals(currentSeleniumWindowName)) {
                         SeleneseQueue frameQ = frameAddressToSeleneseQueue.get(frameAddress);
                         String frameMatchBooleanString = frameQ.doCommand("isFrame", currentLocalFrameAddress, arg);
                         if ("OK,true".equals(frameMatchBooleanString)) {
@@ -144,9 +145,9 @@ public class FrameGroupSeleneseQueueSet {
                     }
                 }
                 if (!newFrameFound) {
-                    return "ERROR: starting from frame " + currentFrameAddress 
-                    + ", could not find frame " + arg;
-                }                
+                    return "ERROR: starting from frame " + currentFrameAddress
+                        + ", could not find frame " + arg;
+                }
                 return "OK";
             }
             if (command.equals("selectWindow")) {
@@ -159,7 +160,7 @@ public class FrameGroupSeleneseQueueSet {
             if (command.equals("waitForPageToLoad")) {
                 if (justLoaded(currentFrameAddress)) {
                     System.out.println("Not requesting waitForPageToLoad since just loaded "
-                            + currentFrameAddress);
+                                       + currentFrameAddress);
                     markWhetherJustLoaded(currentFrameAddress, false); // only do this trick once
                     return "OK";
                 }
@@ -176,10 +177,8 @@ public class FrameGroupSeleneseQueueSet {
     private String waitForPopUp(String seleniumWindowName, int timeout) {
         setExpectedNewWindowName(seleniumWindowName);
         selectWindow(seleniumWindowName);
-        synchronized(this) {
-            if (justLoaded(currentFrameAddress)) {
-                return "OK";  // since no one who was waiting when this window arrived, its result was discarded
-            }
+        if (justLoaded(currentFrameAddress)) {
+            return "OK";  // since no one who was waiting when this window arrived, its result was discarded
         }
         return getSeleneseQueue().waitForResult(timeout);
     }
@@ -194,27 +193,33 @@ public class FrameGroupSeleneseQueueSet {
      * @return - the next command to run
      */
     public SeleneseCommand handleCommandResult(String commandResult, FrameAddress frameAddress, String uniqueId) {
-        synchronized(this) {
-            if (frameAddress.getWindowName().equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP)) {
-                for (FrameAddress f : frameAddressToSeleneseQueue.keySet()) {
-                    // the situation being handled here: a pop-up window has either just loaded or reloaded, and therefore
-                    // doesn't know its name.  It uses SELENIUM_WINDOW_NAME_UNKNOWN_POPUP as a placeholder.
-                    // Meanwhile, on the selenium server-side, a thread is waiting for this result.
-                    //
-                    // To determine if this has happened, we cycle through all of the SeleneseQueue objects,
-                    // looking for ones with a matching local frame address (e.g., top.frames[1]), is also a
-                    // pop-up, and which has a thread waiting on a result.  If all of these conditions hold,
-                    // then we figure this queue is the one that we want:
-                    if (f.getLocalFrameAddress().equals(frameAddress.getLocalFrameAddress())
-                            && !f.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)
-                            && frameAddressToSeleneseQueue.get(f).getCommandResultHolder().hasBlockedGetter()) {
-                        frameAddress = f;
-                        break;
+        SeleneseQueue queue;
+        if (!SeleniumServer.isProxyInjectionMode()) {
+            queue = getSeleneseQueue();
+        }
+        else {
+            synchronized(this) {
+                if (frameAddress.getWindowName().equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP)) {
+                    for (FrameAddress f : frameAddressToSeleneseQueue.keySet()) {
+                        // the situation being handled here: a pop-up window has either just loaded or reloaded, and therefore
+                        // doesn't know its name.  It uses SELENIUM_WINDOW_NAME_UNKNOWN_POPUP as a placeholder.
+                        // Meanwhile, on the selenium server-side, a thread is waiting for this result.
+                        //
+                        // To determine if this has happened, we cycle through all of the SeleneseQueue objects,
+                        // looking for ones with a matching local frame address (e.g., top.frames[1]), is also a
+                        // pop-up, and which has a thread waiting on a result.  If all of these conditions hold,
+                        // then we figure this queue is the one that we want:
+                        if (f.getLocalFrameAddress().equals(frameAddress.getLocalFrameAddress())
+                                && !f.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)
+                                && frameAddressToSeleneseQueue.get(f).getCommandResultHolder().hasBlockedGetter()) {
+                            frameAddress = f;
+                            break;
+                        }
                     }
                 }
             }
+            queue = getSeleneseQueue(frameAddress);
         }
-        SeleneseQueue queue = getSeleneseQueue(frameAddress);
         queue.setUniqueId(uniqueId);
         return queue.handleCommandResult(commandResult);
     }
@@ -267,15 +272,11 @@ public class FrameGroupSeleneseQueueSet {
         return currentSeleniumWindowName;
     }
     
-    public void setCurrentSeleniumWindowName(String seleniumWindowName) {
-        this.setCurrentFrameAddress(new FrameAddress(seleniumWindowName, DEFAULT_LOCAL_FRAME_ADDRESS));             
-    }
-    
     public FrameAddress getCurrentFrameAddress() {
         return currentFrameAddress;
     }
     
-    public void setCurrentFrameAddress(FrameAddress frameAddress) {
+    private void setCurrentFrameAddress(FrameAddress frameAddress) {
         this.currentFrameAddress = frameAddress;
         this.currentSeleniumWindowName = frameAddress.getWindowName();
         this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
