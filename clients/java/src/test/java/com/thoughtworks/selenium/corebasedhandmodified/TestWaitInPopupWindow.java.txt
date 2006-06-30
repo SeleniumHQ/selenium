@@ -12,7 +12,7 @@ public class TestWaitInPopupWindow extends SeleneseTestCase
 
 /* Test selectWindow */
 		// open|../tests/html/test_select_window.html|
-		selenium.open("../tests/html/test_select_window.html");
+		selenium.open("/selenium-server/tests/html/test_select_window.html");
 		// click|popupPage|
 		selenium.click("popupPage");
 		// waitForPopUp|myPopupWindow|500

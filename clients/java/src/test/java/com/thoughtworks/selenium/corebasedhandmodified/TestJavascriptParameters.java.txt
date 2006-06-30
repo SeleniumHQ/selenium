@@ -13,7 +13,7 @@ public class TestJavascriptParameters extends SeleneseTestCase
 
 /* Test javascript evaluation of parameters       */
 		// open|./tests/html/test_store_value.html
-		selenium.open("../tests/html/test_store_value.html");
+		selenium.open("/selenium-server/tests/html/test_store_value.html");
 		// type|theText|javascript{[1,2,3,4,5].join(':')}
 		selenium.type("theText", selenium.getEval("[1,2,3,4,5].join(':')"));
 		// verifyValue|theText|1:2:3:4:5
