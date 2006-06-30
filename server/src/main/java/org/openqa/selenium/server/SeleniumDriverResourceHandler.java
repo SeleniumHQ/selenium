@@ -142,7 +142,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
 	private void logPostedData(FrameAddress frameAddress, boolean justLoaded, String sessionId, String postedData, String uniqueId) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Browser " + sessionId + "/" + uniqueId + " posted " + postedData);
+        sb.append("Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + postedData);
         if (!frameAddress.isDefault()) {
             sb.append(" from " + frameAddress);
         }
@@ -403,7 +403,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             browser = SeleniumServer.getDefaultBrowser(); 
         }
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
-        String sessionId = Long.toString(System.currentTimeMillis());
+        String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
         setLastSessionId(sessionId); 
         System.out.println("Allocated session " + sessionId + " for " + startURL);
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);

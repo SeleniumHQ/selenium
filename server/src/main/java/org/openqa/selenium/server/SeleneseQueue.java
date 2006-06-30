@@ -34,12 +34,11 @@ public class SeleneseQueue {
     private String sessionId;
     private String uniqueId;
     private boolean slowMode;
-    private String localFrameAddress = null;
-    private String seleniumWindowName = null; 
+    private FrameAddress frameAddress = null;
 
-    public SeleneseQueue(String sessionId, String seleniumWindowName) {
+    public SeleneseQueue(String sessionId, FrameAddress frameAddress) {
         this(sessionId);
-        this.seleniumWindowName = seleniumWindowName;
+        this.frameAddress  = frameAddress;
     }
 
     public SeleneseQueue(String sessionId) {
@@ -108,10 +107,10 @@ public class SeleneseQueue {
 
     private String makeJavaScript() {
         StringBuffer sb = new StringBuffer(InjectionHelper.restoreJsStateInitializer(sessionId, uniqueId));
-        if (seleniumWindowName !=null && !"".equals(seleniumWindowName)) {
+        if (frameAddress!=null && !frameAddress.getWindowName().equals(FrameGroupSeleneseQueueSet.DEFAULT_SELENIUM_WINDOW_NAME)) {
             sb.append("window['seleniumWindowName']=unescape('");
             try {
-                sb.append(URLEncoder.encode(seleniumWindowName, "UTF-8"));
+                sb.append(URLEncoder.encode(frameAddress.getWindowName(), "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException("URLEncoder failed: " + e);
             }
@@ -121,28 +120,36 @@ public class SeleneseQueue {
     }
 
     private Object queueGet(String caller, SingleEntryAsyncQueue q) {
-        if (SeleniumServer.isDebugMode()) {
-            System.out.println("\t" + caller + " queueGet() called...");
-        }
         boolean clearedEarlierThread = false;
         if (q.hasBlockedGetter()) {
             q.clear();
             clearedEarlierThread = true;
         }
+        String hdr = "\t" + getIdentification(caller) + " queueGet() ";
+        if (SeleniumServer.isDebugMode()) {
+            System.out.println(hdr + "called"
+                    + (clearedEarlierThread ? " (superceding other blocked thread)" : ""));
+        }
         Object object = q.get();
         
         if (SeleniumServer.isDebugMode()) {
-            System.out.println("\t" + caller + " queueGet() -> " + object 
-                    + (clearedEarlierThread ? " (after superceding other blocked thread)" : ""));
+            System.out.println(hdr + "-> " + object); 
         }
         return object;
     }
 
     private void queuePut(String caller, SingleEntryAsyncQueue q, Object thing) {
+        String hdr = "\t" + getIdentification(caller) + " queuePut";
         if (SeleniumServer.isDebugMode()) {
-            System.out.println("\t" + caller + " queuePut(" + thing + ")");
+            System.out.println(hdr + "(" + thing + ")");
         }
-        q.put(thing);
+        try {
+            q.put(thing);
+        }
+        catch (SingleEntryAsyncQueueOverflow e) {
+            System.out.println(hdr + " caused " + e);
+            throw e;
+        }
     }
 
     public String toString() {
@@ -171,28 +178,33 @@ public class SeleneseQueue {
             // This logic is to account for the case where in proxy injection mode, it is possible 
             // that a page reloads without having been explicitly asked to do so (e.g., an event 
             // in one frame causes reloads in others).
-            if (SeleniumServer.isDebugMode()) {
-                System.out.println("Ignoring result which no one is waiting for.");
+            if (commandResult.equals("OK")) {
+                if (SeleniumServer.isDebugMode()) {
+                    System.out.println("Ignoring result which no one is waiting for.");
+                }
+            }
+            else if (commandResult.startsWith("OK")) {
+                // since the result includes a value, this is clearly not from a page which has just loaded.
+                // Apparently there is some confusion among the queues
+                throw new RuntimeException(getIdentification("commandResultHolder") + " unexpected");
             }
         }
         else {
-            queuePut("commandResultHolder from " + getIdentification(), commandResultHolder, commandResult);
+            queuePut("commandResultHolder", commandResultHolder, commandResult);
         }
-        SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder " + uniqueId, commandHolder);
+        SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder", commandHolder);
         return sc;
     }
 
-    private String getIdentification() {
+    private String getIdentification(String caller) {
         StringBuffer sb = new StringBuffer();
-        if (seleniumWindowName!=null) {
-            sb.append(seleniumWindowName)
-            .append(":");
+        if (frameAddress!=null) {
+            sb.append(frameAddress)
+                .append(' ');
         }
-        if (localFrameAddress!=null) {
-            sb.append(localFrameAddress)
-            .append(".");
-        }
-        sb.append(uniqueId);
+        sb.append(caller)
+            .append(' ')
+            .append(uniqueId);
         return sb.toString();
     }
 
@@ -231,22 +243,6 @@ public class SeleneseQueue {
         String result = waitForResult();
         commandResultHolder.setTimeout(oldTimeout);
         return result;
-    }
-
-    public String getSeleniumWindowName() {
-        return seleniumWindowName;
-    }
-
-    public void setSeleniumWindowName(String seleniumWindowName) {
-        this.seleniumWindowName = seleniumWindowName;
-    }
-
-    public String getLocalFrameAddress() {
-        return localFrameAddress;
-    }
-
-    public void setLocalFrameAddress(String localFrameAddress) {
-        this.localFrameAddress = localFrameAddress;
     }
 
     public SingleEntryAsyncQueue getCommandResultHolder() {

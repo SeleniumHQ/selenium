@@ -135,7 +135,7 @@ public class SingleEntryAsyncQueue {
         }
         synchronized(this) {
             if (thing!=null) {
-                throw new SingleEntryAsyncQueueOverflow();
+                throw new SingleEntryAsyncQueueOverflow(obj, thing);
             }
             thing = obj;
             notifyAll();

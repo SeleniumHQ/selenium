@@ -97,13 +97,13 @@ public class FrameGroupSeleneseQueueSet {
         synchronized(frameAddressToSeleneseQueue) {
             if (!frameAddressToSeleneseQueue.containsKey(frameAddress)) {
                 if (SeleniumServer.isDebugMode()) {
-                    System.out.println("---------allocating new SeleneseQueue for " + frameAddress + ".");
+                    System.out.println("---------allocating new SeleneseQueue for " + frameAddress);
                 }
-                frameAddressToSeleneseQueue.put(frameAddress, new SeleneseQueue(sessionId, currentSeleniumWindowName));
+                frameAddressToSeleneseQueue.put(frameAddress, new SeleneseQueue(sessionId, frameAddress));
             }
             else {
                 if (SeleniumServer.isDebugMode()) {
-                    System.out.println("---------retrieving SeleneseQueue for " + frameAddress + ".");
+                    System.out.println("---------retrieving SeleneseQueue for " + frameAddress);
                 }
             }
         }

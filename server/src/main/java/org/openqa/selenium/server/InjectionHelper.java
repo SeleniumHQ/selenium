@@ -86,16 +86,17 @@ public class InjectionHelper {
         if (isKnownToBeHtml) {
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated 
             
-            InputStream jsIn = new ClassPathResource("/core/scripts/injection.html").getInputStream();
-            out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
-            jsIn.close();
-
-            StringBuffer moreJs = new StringBuffer();
-            if (SeleniumServer.isDebugMode()) {
-                moreJs.append("debugMode = true;\n");
+            String injectionHtml = isFrameSet ? "/core/scripts/injection.html" : "/core/scripts/injection_iframe.html";
+            InputStream jsIn = new ClassPathResource(injectionHtml).getInputStream();
+            if (isFrameSet) {
+                out.write(makeJsChunk("var isFrameset = true;\n"));
             }
-            
-            out.write(makeJsChunk(moreJs.toString()));
+            out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+            if (isFrameSet) {
+                // TODO: explain why different
+                out.write(setSomeJsVars(sessionId));
+            }
+            jsIn.close();
             out.write(data.getBytes());
         }           
         IO.copy(in, out);
@@ -103,10 +104,22 @@ public class InjectionHelper {
         if (isKnownToBeHtml && !isFrameSet) {
             InputStream jsIn = new ClassPathResource("/core/scripts/injectionAtEOF.html").getInputStream();
             out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+            out.write(setSomeJsVars(sessionId));
             jsIn.close();
         }
     }
     
+    private static byte[] setSomeJsVars(String sessionId) {
+        StringBuffer moreJs = new StringBuffer();
+        if (SeleniumServer.isDebugMode()) {
+            moreJs.append("debugMode = true;\n");
+        }
+        moreJs.append("injectedSessionId = ")
+            .append(sessionId)
+            .append(";\n");
+        return makeJsChunk(moreJs.toString());
+    }
+
     private static String usurpOnUnloadHook(String data, String string) {
         Pattern framesetAreaRegexp = Pattern.compile("(<\\s*frameset.*?>)", Pattern.CASE_INSENSITIVE);
         Matcher framesetMatcher = framesetAreaRegexp.matcher(data);
@@ -114,7 +127,7 @@ public class InjectionHelper {
             System.out.println("WARNING: looked like a frameset, but couldn't retrieve the frameset area");
             return data;
         }
-        String onloadRoutine = "piRunTest()";
+        String onloadRoutine = "selenium_frameRunTest()";
         String frameSetText = framesetMatcher.group(1);
         Pattern onloadRegexp = Pattern.compile("onload='(.*?)'", Pattern.CASE_INSENSITIVE);
         Matcher onloadMatcher = onloadRegexp.matcher(frameSetText);
@@ -131,7 +144,7 @@ public class InjectionHelper {
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException("could not handle " + oldOnloadRoutine + ": " + e);
             }
-            onloadRoutine = "piRunTest(unescape('" + escapedOldOnloadRoutine  + "'))";
+            onloadRoutine = "selenium_frameRunTest(unescape('" + escapedOldOnloadRoutine  + "'))";
         }
         
         // either there was no existing onload, or it's been stripped out
