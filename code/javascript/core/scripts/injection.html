@@ -16,16 +16,20 @@
 <script language="JavaScript" type="text/javascript" src="/selenium-server/core/scripts/user-extensions.js"></script>
 <script language="JavaScript">
     
+    // TODOC
 BrowserBot.prototype.getContentWindow = function() {
-    return window;
+    if (window["isFrameset"] != null) return window;
+    return window.parent;
 };
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
-    return window;
+    if (window["isFrameset"] != null) return window;
+    return window.parent;
 };
 
 BrowserBot.prototype.getCurrentWindow = function() {
-    return window;
+    if (window["isFrameset"] != null) return window;
+    return window.parent;
 };
 
 LOG.openLogWindow = function(message, className) {
@@ -44,17 +48,10 @@ BrowserBot.prototype.relayBotToRC = function(name) {
 	relayToRC("selenium." + name);
 }
 
-injectedSessionId = @SESSION_ID@;
-
-function piRunTest(oldOnLoadRoutine) {
+function selenium_frameRunTest(oldOnLoadRoutine) {
 	if (oldOnLoadRoutine) {
 		eval(oldOnLoadRoutine);
 	}
         runTest();
 }
-
-onunload=function() { 
-	LOG.log("onunload", "debug"); 
-}
-
 </script>

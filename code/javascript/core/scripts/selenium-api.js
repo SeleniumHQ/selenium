@@ -440,8 +440,25 @@ Selenium.prototype.doSelectFrame = function(locator) {
 	this.browserbot.selectFrame(locator);
 };
 
+Selenium.prototype.doesThisFrameMatchFrameExpression = function(currentFrameString, target) {
+	/**
+        * Determine whether current/locator identify the frame containing this running code.
+	*
+        * <p>This is useful in proxy injection mode, where this code runs in every
+        * browser frame and window, and sometimes the selenium server needs to identify
+        * the "current" frame.</p>
+	*
+        * @param currentFrameString starting frame
+        * @param target new frame (which might be relative to the current one)
+        * @return boolean true if the new frame is this code's window
+	*/
+        // TODO: copy guts from isFrame below
+        return false;
+};
+
 Selenium.prototype.isFrame = function(currentFrameString, target) {
 	/**
+        * TODO: remove this (replaced by doesThisFrameMatchFrameExpression)
         * Determine whether current/locator identify the frame containing this running code.
 	*
         * <p>This is useful in proxy injection mode, where this code runs in every
@@ -462,8 +479,9 @@ Selenium.prototype.isFrame = function(currentFrameString, target) {
         	eval("t=" + currentFrameString + "." + target);
         } catch (e) {
         }
+        var autWindow = this.browserbot.getCurrentWindow();
         if (t!=null) {
-        	if (t.window==window) {
+        	if (t.window==autWindow) {
                 	return true;
                 }
                 return false;
@@ -474,18 +492,18 @@ Selenium.prototype.isFrame = function(currentFrameString, target) {
         var currentFrame;
         eval("currentFrame=" + currentFrameString);
 	if (target == "relative=up") {
-        	if (currentFrame.window.parent==window) {
+        	if (currentFrame.window.parent==autWindow) {
                 	return true;
                 }
                 return false;
         } 
         if (target == "relative=top") {
-        	if (currentFrame.window.top==window) {
+        	if (currentFrame.window.top==autWindow) {
                 	return true;
                 }
                 return false;
 	}
-        if (window.name==target && currentFrame.window==window.parent) {
+        if (autWindow.name==target && currentFrame.window==autWindow.parent) {
         	return true;
         }
         return false;

@@ -1,5 +1,13 @@
 
 
 <script language="JavaScript">
-    runTest();
+    var autOnload=onload;
+
+    onload=function(){
+    	if (autOnload!=undefined) {    		
+        	autOnload();
+        }
+        selenium.window.injectedSessionId = @SESSION_ID@;
+        selenium.window.runTest();
+    }
 </script>

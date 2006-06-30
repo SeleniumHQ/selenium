@@ -35,7 +35,7 @@ var relayToRC = null;	// override in injection.html
 var relayBotToRC = null;	// override in injection.html
 var queryString = null;
 var xmlHttpForCommandsAndResults = null;
-var proxyInjectionMode;
+var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
 function runTest() {
@@ -44,7 +44,6 @@ function runTest() {
     if (testAppFrame==null) {
         proxyInjectionMode = true;
     	testAppFrame = window;
-        LOG.log = logToRc;
     }
     else
     {
@@ -53,6 +52,9 @@ function runTest() {
     }
 
     selenium = Selenium.createForFrame(testAppFrame);
+    if (proxyInjectionMode) {
+        LOG.log = logToRc;
+    }
     window.selenium = selenium;
 
     commandFactory = new CommandHandlerFactory();
@@ -93,7 +95,7 @@ function getQueryString() {
 		queryString = args[1];
 		return queryString;
 	} else {
-		return location.search.substr(1);
+		return top.location.search.substr(1);
 	}
 }
 
@@ -155,7 +157,6 @@ function buildDriverParams() {
     if (sessionId != undefined) {
         params = params + "&sessionId=" + sessionId;
     }
-
     return params;
 }
 
@@ -225,7 +226,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     if (urlParms) {
     	url += urlParms;
     }
-    url += "&localFrameAddress=" + makeAddressToMyFrame();
+    url += "&localFrameAddress=" + (proxyInjectionMode ? makeAddressToAUTFrame() : "top");
     url += "&seleniumWindowName=" + getSeleniumWindowName();
     url += "&uniqueId=" + uniqueId;
     
@@ -399,18 +400,19 @@ function createCommandFromRequest(commandRequest) {
 // itself).  In this case, return "?".
 // 
 function getSeleniumWindowName() {
-	if (window.opener==null) {
+	var w = selenium.browserbot.getCurrentWindow();
+	if (w.opener==null) {
         	return "";
         } 
-        if (window["seleniumWindowName"]==null) {
+        if (w["seleniumWindowName"]==null) {
         	return "?";
         } 
-        return window["seleniumWindowName"];
+        return w["seleniumWindowName"];
 }
 
 // construct a JavaScript expression which leads to my frame (i.e., the frame containing the window
 // in which this code is operating)
-function makeAddressToMyFrame(w, frameNavigationalJSexpression)
+function makeAddressToAUTFrame(w, frameNavigationalJSexpression)
 {
     if (w==null)
     {
@@ -418,13 +420,13 @@ function makeAddressToMyFrame(w, frameNavigationalJSexpression)
         frameNavigationalJSexpression = "top";
     }
          
-    if (w==window)
+    if (w==selenium.browserbot.getCurrentWindow())
     {
         return frameNavigationalJSexpression;
     }
     for (var j = 0; j < w.frames.length; j++)
     {
-        var t = makeAddressToMyFrame(w.frames[j], frameNavigationalJSexpression + ".frames[" + j + "]");
+        var t = makeAddressToAUTFrame(w.frames[j], frameNavigationalJSexpression + ".frames[" + j + "]");
         if (t!=null)
         {
             return t;
