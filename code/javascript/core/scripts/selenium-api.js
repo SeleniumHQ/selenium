@@ -437,28 +437,11 @@ Selenium.prototype.doSelectFrame = function(locator) {
 	*
 	* @param locator an <a href="#locators">element locator</a> identifying a frame or iframe
 	*/
-	this.browserbot.selectFrame(locator);
+        // unimplemented for now
 };
 
 Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFrameString, target) {
 	/**
-        * Determine whether current/locator identify the frame containing this running code.
-	*
-        * <p>This is useful in proxy injection mode, where this code runs in every
-        * browser frame and window, and sometimes the selenium server needs to identify
-        * the "current" frame.</p>
-	*
-        * @param currentFrameString starting frame
-        * @param target new frame (which might be relative to the current one)
-        * @return boolean true if the new frame is this code's window
-	*/
-        // TODO: copy guts from isFrame below
-        return false;
-};
-
-Selenium.prototype.isFrame = function(currentFrameString, target) {
-	/**
-        * TODO: remove this (replaced by doesThisFrameMatchFrameExpression)
         * Determine whether current/locator identify the frame containing this running code.
 	*
         * <p>This is useful in proxy injection mode, where this code runs in every
