@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +16,8 @@ import org.mortbay.util.IO;
 
 public class InjectionHelper {
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
+    private static HashMap<String, String> userContentTransformations = new HashMap<String, String>();
+    private static List<String> userJsInjectionFiles = new LinkedList<String>(); 
     
     public static void saveJsStateInitializer(String sessionId, String uniqueId, String jsVarName, String jsStateInitializer) {
         if (SeleniumServer.isDebugMode()) {
@@ -186,5 +190,13 @@ public class InjectionHelper {
         js = js.replaceAll("@SESSION_ID@", sessionId);
         
         return js.getBytes();   
+    }
+
+    public static void addUserContentTransformation(String before, String after ) {
+        userContentTransformations.put(before, after);
+    }
+    
+    public static void addUserJsInjectionFile(String fileName) {
+        userJsInjectionFiles.add(fileName);
     }
 }
