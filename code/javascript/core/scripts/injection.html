@@ -16,7 +16,20 @@
 <script language="JavaScript" type="text/javascript" src="/selenium-server/core/scripts/user-extensions.js"></script>
 <script language="JavaScript">
     
-    // TODOC
+
+// Some background on the code below: broadly speaking, where we are relative to other windows
+// when running in proxy injection mode depends on whether we are in a frame set file or not.
+// 
+// In regular HTML files, the selenium JavaScript is injected into an iframe called "selenium"
+// in order to reduce its impact on the JavaScript environment (through namespace pollution,
+// etc.).  So in regular HTML files, we need to look at the parent of the current window when we want
+// a handle to, e.g., the application window.
+// 
+// In frame set files, we can't use an iframe, so we put the JavaScript in the head element and share
+// the window with the frame set.  So in this case, we need to look at the current window, not the
+// parent when looking for, e.g., the application window.  (TODO: Perhaps I should have just 
+// assigned a regular frame for selenium?)
+// 
 BrowserBot.prototype.getContentWindow = function() {
     if (window["isFrameset"] != null) return window;
     return window.parent;

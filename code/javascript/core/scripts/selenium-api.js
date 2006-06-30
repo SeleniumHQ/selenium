@@ -446,7 +446,9 @@ Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFra
 	*
         * <p>This is useful in proxy injection mode, where this code runs in every
         * browser frame and window, and sometimes the selenium server needs to identify
-        * the "current" frame.</p>
+        * the "current" frame.  In this case, when the test calls selectFrame, this 
+        * routine is called for each frame to figure out which one has been selected.  
+        * The selected frame will return true, while all others will return false.</p>
 	*
         * @param currentFrameString starting frame
         * @param target new frame (which might be relative to the current one)
