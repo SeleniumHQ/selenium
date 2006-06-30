@@ -18,6 +18,7 @@ Copyright 2004 ThoughtWorks, Inc
 <meta content="text/html; charset=ISO-8859-1"
 http-equiv="content-type">
 <title>Test Suite</title>
+<link rel="stylesheet" type="text/css" href="../core/selenium.css" />
 <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript">
     function filterTestsForBrowser() {
@@ -46,7 +47,8 @@ http-equiv="content-type">
 
     <table id="suiteTable"    cellpadding="1"
            cellspacing="1"
-           border="1">
+           border="1"
+           class="selenium">
         <tbody>
             <tr><td><b>Test Suite</b></td></tr>
             <tr><td><a href="./TestBrowserVersion.html">TestBrowserVersion</a></td></tr>
@@ -99,10 +101,12 @@ http-equiv="content-type">
         </tbody>
     </table>
 
+    <br />
     <em>Not supported in this browser</em>
     <table id="skippedTests" cellpadding="1"
            cellspacing="1"
-           border="1">
+           border="1"
+           class="selenium">
         <tbody>
             <tr><td><b>Skipped Tests</b></td></tr>
         </tbody>
