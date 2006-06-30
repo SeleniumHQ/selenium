@@ -321,8 +321,13 @@ function startTest() {
     else {
         frames['testFrame'].scrollTo(0,0);
     }
-
-    currentTest = new HtmlTest(getIframeDocument(getTestFrame()));
+   
+   
+    if (getIframeDocument(getTestFrame()).getElementById('se-js-table'))  // selenium script in javascript
+        currentTest = new SeleniumTest(getIframeDocument(getTestFrame()),true);
+    else
+        currentTest = new SeleniumTest(getIframeDocument(getTestFrame()),false);
+    
 
     testFailed = false;
     storedVars = new Object();
@@ -331,18 +336,44 @@ function startTest() {
     testLoop.start();
 }
 
-function HtmlTest(testDocument) {
-    this.init(testDocument);
+get_new_rows = function() { 
+    var row_array = new Array(); 
+    for (var i = 0; i < new_block.length; i++) { 
+
+        var new_source = (new_block[i][0].tokenizer.source.slice(new_block[i][0].start, 
+                                                                 new_block[i][0].end)); 
+                 
+        var row =  '<td style="display:none;" class="js">getEval</td>' +
+                   '<td style="display:none;">currentTest.doNextCommand()</td>' +
+                   '<td style="white-space: pre;">' + new_source + '</td>' + 
+                   '<td></td>'
+                   
+        row_array.push(row); 
+    };
+    return row_array
+};
+
+function SeleniumTest(testDocument, isJavaScript) {
+    this.init(testDocument, isJavaScript);
 }
 
-HtmlTest.prototype = {
+SeleniumTest.prototype = {
 
-    init: function(testDocument) {
+    init: function(testDocument, isJavaScript) {
+        this.isJavaScript = isJavaScript
+        se = selenium;
+        global.se = selenium;
         this.document = testDocument;
         this.document.bgColor = "";
         this.currentRow = null;
+        this.currentRowIndex = 0;
         this.commandRows = new Array();
         this.headerRow = null;
+
+        // used for selenium tests in javascript
+        this.currentItem = null;        
+        this.commandAgenda = new Array(); 
+
         var tables = this.document.getElementsByTagName("table");
         for (var i = 0; i < tables.length; i++) {
             var candidateRows = tables[i].rows;
@@ -355,7 +386,18 @@ HtmlTest.prototype = {
                 }
             }
         }
-    },
+        
+        if (isJavaScript) {                       
+            var script = this.document.getElementById('sejs')  // the script source
+            var fname = 'Selenium JavaScript';
+            parse_result = parse(script.innerHTML, fname, 0); 
+
+            var x2 = new ExecutionContext(GLOBAL_CODE);
+            ExecutionContext.current = x2;
+    
+            execute(parse_result,x2)                    
+        }        
+    },    
 
     addCommandRow: function(row) {
         if (row.cells[2] && row.cells[2].originalHTML) {
@@ -367,14 +409,43 @@ HtmlTest.prototype = {
 
     nextCommand: function() {
         if (this.commandRows.length > 0) {
-            this.currentRow = this.commandRows.shift();
+            this.currentRow = this.commandRows.shift();            
+            if (this.isJavaScript) {
+                this.currentItem = agenda.pop();
+                this.currentRowIndex++;
+            }            
         } else {
             this.currentRow = null;
+            this.currentItem = null;
         }
         return this.currentRow;
-    }
+    },
+    
+    doNextCommand: function() {
+        var _n = this.currentItem[0]; 
+        var _x = this.currentItem[1]; 
 
+        new_block = new Array()    
+        execute(_n, _x);
+        if (new_block.length > 0) {
+            var the_table = this.document.getElementById("se-js-table")
+            var loc = this.currentRowIndex
+            var new_rows = get_new_rows()
+            
+            // make the new statements visible on screen...
+            for (var i=0; i<new_rows.length; i++) {
+                the_table.insertRow(loc+1);
+                the_table.rows[loc+1].innerHTML = new_rows[i];
+                this.commandRows.unshift(the_table.rows[loc+1])
+            }
+            
+        }
+    }
+    
 };
+
+
+
 
 function startTestSuite() {
     resetMetrics();

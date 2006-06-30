@@ -1266,9 +1266,13 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
    * wait immediately after a Selenium command that caused a page-load.</p>
    * @param timeout a timeout in milliseconds, after which this command will return with an error
    */
-   if (proxyInjectionMode) {
-   	// in pi-mode, the test and the harness share the window; thus if we are executing this code, then we have loaded
-   } else {
+   try {
+    // in pi-mode, the test and the harness share the window; thus if we are executing this code, then we have loaded
+    
+    // JRH - changed this from an if/else to try/except block because I was getting an error in Firefox saying:
+    // "ReferenceError on line 1: exists is not defined"
+    (proxyInjectionMode)   	
+   } catch (e) {
     	this.doWaitForCondition("selenium.browserbot.isNewPageLoaded()", timeout);
    }
 };
