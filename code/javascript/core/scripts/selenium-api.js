@@ -440,7 +440,7 @@ Selenium.prototype.doSelectFrame = function(locator) {
 	this.browserbot.selectFrame(locator);
 };
 
-Selenium.prototype.doesThisFrameMatchFrameExpression = function(currentFrameString, target) {
+Selenium.prototype.doDoesThisFrameMatchFrameExpression = function(currentFrameString, target) {
 	/**
         * Determine whether current/locator identify the frame containing this running code.
 	*
