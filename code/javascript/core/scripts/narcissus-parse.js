@@ -222,7 +222,7 @@ Array.prototype.top = function() {
     return this.length && this[this.length-1]; 
 }
 
-function Node(t, type) {
+function NarcNode(t, type) {
     var token = t.token();
     if (token) {
         this.type = type || token.type;
@@ -239,8 +239,8 @@ function Node(t, type) {
         this.push(arguments[i]);
 }
 
-var Np = Node.prototype = new Array();
-Np.constructor = Node;
+var Np = NarcNode.prototype = new Array();
+Np.constructor = NarcNode;
 Np.$length = 0;
 Np.toSource = Object.prototype.toSource;
 
@@ -256,7 +256,7 @@ Np.push = function (kid) {
     //debug('length after => '+this.$length);
 }
 
-Node.indentLevel = 0;
+NarcNode.indentLevel = 0;
 
 function tokenstr(tt) {
     var t = tokens[tt];
@@ -271,11 +271,11 @@ Np.toString = function () {
     }
     a.sort(function (a,b) { return (a.id < b.id) ? -1 : 1; });
     INDENTATION = "    ";
-    var n = ++Node.indentLevel;
+    var n = ++NarcNode.indentLevel;
     var s = "{\n" + INDENTATION.repeat(n) + "type: " + tokenstr(this.type);
     for (i = 0; i < a.length; i++)
         s += ",\n" + INDENTATION.repeat(n) + a[i].id + ": " + a[i].value;
-    n = --Node.indentLevel;
+    n = --NarcNode.indentLevel;
     s += "\n" + INDENTATION.repeat(n) + "}";
     return s;
 }
@@ -303,7 +303,7 @@ function nest(t, x, node, func, end) {
 }
 
 function Statements(t, x) {
-    var n = new Node(t, BLOCK);
+    var n = new NarcNode(t, BLOCK);
     x.stmtStack.push(n);
     while (!t.done() && t.peek() != RIGHT_CURLY)
         n.push(Statement(t, x));
@@ -338,7 +338,7 @@ function Statement(t, x) {
         return n;
 
       case IF:
-        n = new Node(t);
+        n = new NarcNode(t);
         n.condition = ParenExpression(t, x);
         x.stmtStack.push(n);
         n.thenPart = Statement(t, x);
@@ -347,7 +347,7 @@ function Statement(t, x) {
         return n;
 
       case SWITCH:
-        n = new Node(t);
+        n = new NarcNode(t);
         t.mustMatch(LEFT_PAREN);
         n.discriminant = Expression(t, x);
         t.mustMatch(RIGHT_PAREN);
@@ -362,7 +362,7 @@ function Statement(t, x) {
                     throw t.newSyntaxError("More than one switch default");
                 // FALL THROUGH
               case CASE:
-                n2 = new Node(t);
+                n2 = new NarcNode(t);
                 if (tt == DEFAULT)
                     n.defaultIndex = n.cases.length;
                 else
@@ -372,7 +372,7 @@ function Statement(t, x) {
                 throw t.newSyntaxError("Invalid switch case");
             }
             t.mustMatch(COLON);
-            n2.statements = new Node(t, BLOCK);
+            n2.statements = new NarcNode(t, BLOCK);
             while ((tt=t.peek()) != CASE && tt != DEFAULT && tt != RIGHT_CURLY)
                 n2.statements.push(Statement(t, x));
             n.cases.push(n2);
@@ -381,7 +381,7 @@ function Statement(t, x) {
         return n;
 
       case FOR:
-        n = new Node(t);
+        n = new NarcNode(t);
         n.isLoop = true;
         t.mustMatch(LEFT_PAREN);
         if ((tt = t.peek()) != SEMICOLON) {
@@ -422,14 +422,14 @@ function Statement(t, x) {
         return n;
 
       case WHILE:
-        n = new Node(t);
+        n = new NarcNode(t);
         n.isLoop = true;
         n.condition = ParenExpression(t, x);
         n.body = nest(t, x, n, Statement);
         return n;
 
       case DO:
-        n = new Node(t);
+        n = new NarcNode(t);
         n.isLoop = true;
         n.body = nest(t, x, n, Statement, WHILE);
         n.condition = ParenExpression(t, x);
@@ -444,7 +444,7 @@ function Statement(t, x) {
 
       case BREAK:
       case CONTINUE:
-        n = new Node(t);
+        n = new NarcNode(t);
         if (t.peekOnSameLine() == IDENTIFIER) {
             t.get();
             n.label = t.token().value;
@@ -470,11 +470,11 @@ function Statement(t, x) {
         break;
 
       case TRY:
-        n = new Node(t);
+        n = new NarcNode(t);
         n.tryBlock = Block(t, x);
         n.catchClauses = [];
         while (t.match(CATCH)) {
-            n2 = new Node(t);
+            n2 = new NarcNode(t);
             t.mustMatch(LEFT_PAREN);
             n2.varName = t.mustMatch(IDENTIFIER).value;
             if (t.match(IF)) {
@@ -501,21 +501,21 @@ function Statement(t, x) {
         throw t.newSyntaxError(tokens[tt] + " without preceding try");
 
       case THROW:
-        n = new Node(t);
+        n = new NarcNode(t);
         n.exception = Expression(t, x);
         break;
 
       case RETURN:
         if (!x.inFunction)
             throw t.newSyntaxError("Invalid return");
-        n = new Node(t);
+        n = new NarcNode(t);
         tt = t.peekOnSameLine();
         if (tt != END && tt != NEWLINE && tt != SEMICOLON && tt != RIGHT_CURLY)
             n.value = Expression(t, x);
         break;
 
       case WITH:
-        n = new Node(t);
+        n = new NarcNode(t);
         n.object = ParenExpression(t, x);
         n.body = nest(t, x, n, Statement);
         return n;
@@ -526,17 +526,17 @@ function Statement(t, x) {
         break;
 
       case DEBUGGER:
-        n = new Node(t);
+        n = new NarcNode(t);
         break;
 
       case REQUIRE:
-        n = new Node(t);
+        n = new NarcNode(t);
         n.classPath = ParenExpression(t, x);
         break;
 
       case NEWLINE:
       case SEMICOLON:
-        n = new Node(t, SEMICOLON);
+        n = new NarcNode(t, SEMICOLON);
         n.expression = null;
         return n;
 
@@ -549,13 +549,13 @@ function Statement(t, x) {
                     throw t.newSyntaxError("Duplicate label");
             }
             t.get();
-            n = new Node(t, LABEL);
+            n = new NarcNode(t, LABEL);
             n.label = label;
             n.statement = nest(t, x, n, Statement);
             return n;
         }
 
-        n = new Node(t, SEMICOLON);
+        n = new NarcNode(t, SEMICOLON);
         t.unget();
         n.expression = Expression(t, x);
         n.end = n.expression.end;
@@ -572,7 +572,7 @@ function Statement(t, x) {
 }
 
 function FunctionDefinition(t, x, requireName, functionForm) {
-    var f = new Node(t);
+    var f = new NarcNode(t);
     if (f.type != FUNCTION)
         f.type = (f.value == "get") ? GETTER : SETTER;
     if (t.match(IDENTIFIER)) {
@@ -607,10 +607,10 @@ function FunctionDefinition(t, x, requireName, functionForm) {
 }
 
 function Variables(t, x) {
-    var n = new Node(t);
+    var n = new NarcNode(t);
     do {
         t.mustMatch(IDENTIFIER);
-        var n2 = new Node(t);
+        var n2 = new NarcNode(t);
         n2.name = n2.value;
         if (t.match(ASSIGN)) {
             if (t.token().assignOp)
@@ -749,7 +749,7 @@ loop:
                 n.type = CONDITIONAL;
                 --x.hookLevel;
             } else {
-                operators.push(new Node(t));
+                operators.push(new NarcNode(t));
                 if (tt == ASSIGN)
                     operands.top().assignOp = t.token().assignOp;
                 else
@@ -789,9 +789,9 @@ loop:
                 reduce();
             if (tt == DOT) {
                 t.mustMatch(IDENTIFIER);
-                operands.push(new Node(t, DOT, operands.pop(), new Node(t)));
+                operands.push(new NarcNode(t, DOT, operands.pop(), new NarcNode(t)));
             } else {
-                operators.push(new Node(t));
+                operators.push(new NarcNode(t));
                 t.scanOperand = true;
             }
             break;
@@ -801,17 +801,17 @@ loop:
           case NEW:
             if (!t.scanOperand)
                 break loop;
-            operators.push(new Node(t));
+            operators.push(new NarcNode(t));
             break;
 
           case INCREMENT: case DECREMENT:
             if (t.scanOperand) {
-                operators.push(new Node(t));  // prefix increment or decrement
+                operators.push(new NarcNode(t));  // prefix increment or decrement
             } else {
                 // Use >, not >=, so postfix has higher precedence than prefix.
                 while (operators.length && opPrecedence[operators.top().type] > opPrecedence[tt])
                     reduce();
-                n = new Node(t, tt, operands.pop());
+                n = new NarcNode(t, tt, operands.pop());
                 n.postfix = true;
                 operands.push(n);
             }
@@ -828,7 +828,7 @@ loop:
           case IDENTIFIER: case NUMBER: case STRING: case REGEXP:
             if (!t.scanOperand)
                 break loop;
-            operands.push(new Node(t));
+            operands.push(new NarcNode(t));
             t.scanOperand = false;
             break;
 
@@ -836,7 +836,7 @@ loop:
             if (t.scanOperand) {
                 // Array initialiser.  Parse using recursive descent, as the
                 // sub-grammar here is not an operator grammar.
-                n = new Node(t, ARRAY_INIT);
+                n = new NarcNode(t, ARRAY_INIT);
                 while ((tt = t.peek()) != RIGHT_BRACKET) {
                     if (tt == COMMA) {
                         t.get();
@@ -852,7 +852,7 @@ loop:
                 t.scanOperand = false;
             } else {
                 // Property indexing operator.
-                operators.push(new Node(t, INDEX));
+                operators.push(new NarcNode(t, INDEX));
                 t.scanOperand = true;
                 ++x.bracketLevel;
             }
@@ -872,7 +872,7 @@ loop:
             // Object initialiser.  As for array initialisers (see above),
             // parse using recursive descent.
             ++x.curlyLevel;
-            n = new Node(t, OBJECT_INIT);
+            n = new NarcNode(t, OBJECT_INIT);
           object_init:
             if (!t.match(RIGHT_CURLY)) {
                 do {
@@ -887,7 +887,7 @@ loop:
                           case IDENTIFIER:
                           case NUMBER:
                           case STRING:
-                            id = new Node(t);
+                            id = new NarcNode(t);
                             break;
                           case RIGHT_CURLY:
                             if (x.ecmaStrictMode)
@@ -897,7 +897,7 @@ loop:
                             throw t.newSyntaxError("Invalid property name");
                         }
                         t.mustMatch(COLON);
-                        n.push(new Node(t, PROPERTY_INIT, id,
+                        n.push(new NarcNode(t, PROPERTY_INIT, id,
                                         Expression(t, x, COMMA)));
                     }
                 } while (t.match(COMMA));
@@ -915,7 +915,7 @@ loop:
 
           case LEFT_PAREN:
             if (t.scanOperand) {
-                operators.push(new Node(t, GROUP));
+                operators.push(new NarcNode(t, GROUP));
             } else {
                 while (operators.length && opPrecedence[operators.top().type] > opPrecedence[NEW])
                     reduce();
@@ -930,8 +930,8 @@ loop:
                         --operators.length;
                         n.push(operands.pop());
                     } else {
-                        n = new Node(t, CALL, operands.pop(),
-                                     new Node(t, LIST));
+                        n = new NarcNode(t, CALL, operands.pop(),
+                                     new NarcNode(t, LIST));
                     }
                     operands.push(n);
                     t.scanOperand = false;
@@ -940,7 +940,7 @@ loop:
                 if (n.type == NEW)
                     n.type = NEW_WITH_ARGS;
                 else
-                    operators.push(new Node(t, CALL));
+                    operators.push(new NarcNode(t, CALL));
             }
             ++x.parenLevel;
             break;
@@ -955,7 +955,7 @@ loop:
             if (tt != GROUP) {
                 n = operands.top();
                 if (n[1].type != COMMA)
-                    n[1] = new Node(t, LIST, n[1]);
+                    n[1] = new NarcNode(t, LIST, n[1]);
                 else
                     n[1].type = LIST;
             }
