@@ -1,6 +1,7 @@
 package org.openqa.selenium.server;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -119,6 +120,11 @@ public class InjectionHelper {
             out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
             out.write(setSomeJsVars(sessionId));
             jsIn.close();
+            
+            for (String filename : userJsInjectionFiles) {
+                jsIn = new FileInputStream(filename);
+                IO.copy(jsIn, out);
+            }
         }
     }
     
