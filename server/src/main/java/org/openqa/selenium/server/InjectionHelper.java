@@ -1,6 +1,5 @@
 package org.openqa.selenium.server;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -201,26 +200,11 @@ public class InjectionHelper {
         return js.getBytes();   
     }
 
-    public static boolean addUserContentTransformation(String before, String after ) {
+    public static void addUserContentTransformation(String before, String after ) {
         userContentTransformations.put(before, after);
-        return true;
     }
     
-    public static boolean addUserJsInjectionFile(String fileName) {
-        File f = new File(fileName);
-        if (!f.canRead()) {
-            System.out.println("Error: cannot read user JavaScript injection file " + fileName);
-            return false;
-        }
+    public static void addUserJsInjectionFile(String fileName) {
         userJsInjectionFiles.add(fileName);
-        return true;
-    }
-
-    public static boolean userContentTransformationsExist() {
-        return !userContentTransformations.isEmpty();
-    }
-
-    public static boolean userJsInjectionsExist() {
-        return !userJsInjectionFiles.isEmpty();
     }
 }
