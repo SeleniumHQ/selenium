@@ -89,7 +89,10 @@ public class InjectionHelper {
         int proxyPort = SeleniumServer.getPortDriversShouldContact();
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
 
-        if (isKnownToBeHtml) {
+        if (!isKnownToBeHtml) {
+            IO.copy(in, out);
+        }
+        else {
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
 
             String injectionHtml = isFrameSet ? "/core/scripts/injection.html" : "/core/scripts/injection_iframe.html";
@@ -111,23 +114,38 @@ public class InjectionHelper {
                 out.write(setSomeJsVars(sessionId));
             }
             jsIn.close();
-            out.write(data.getBytes());
-        }           
-        IO.copy(in, out);
-            
-        if (isKnownToBeHtml && !isFrameSet) {
-            InputStream jsIn = new ClassPathResource("/core/scripts/injectionAtEOF.html").getInputStream();
-            out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
-            out.write(setSomeJsVars(sessionId));
-            jsIn.close();
-            
-            for (String filename : userJsInjectionFiles) {
-                jsIn = new FileInputStream(filename);
-                IO.copy(jsIn, out);
+            writeDataWithUserTransformations(data, in, out);
+            if (!isFrameSet) {
+                jsIn = new ClassPathResource("/core/scripts/injectionAtEOF.html").getInputStream();
+                out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+                out.write(setSomeJsVars(sessionId));
+                jsIn.close();
+                
+                for (String filename : userJsInjectionFiles) {
+                    jsIn = new FileInputStream(filename);
+                    IO.copy(jsIn, out); 
+                }
             }
         }
     }
-    
+            
+    private static void writeDataWithUserTransformations(String data, InputStream in, OutputStream out) throws IOException {
+        byte[] buf = new byte[8192];
+        while (true) {
+            for (String beforeRegexp : userContentTransformations.keySet()) {
+                String after = userContentTransformations.get(beforeRegexp);
+                data = data.replaceAll(beforeRegexp, after);
+            }
+            
+            out.write(data.getBytes());
+            int len = in.read(buf);
+            if (len == -1) {
+                return;
+            }
+            data = new String(buf, 0, len);
+        }
+    }
+
     private static byte[] setSomeJsVars(String sessionId) {
         StringBuffer moreJs = new StringBuffer();
         if (SeleniumServer.isDebugMode()) {
