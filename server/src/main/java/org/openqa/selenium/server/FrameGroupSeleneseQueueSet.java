@@ -18,7 +18,11 @@ package org.openqa.selenium.server;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>Manages sets of SeleneseQueues corresponding to windows and frames in a single browser session.</p>
@@ -54,6 +58,11 @@ public class FrameGroupSeleneseQueueSet {
      * that process.
      */
     private final String sessionId;
+    /**
+     * Queues which will not be used anymore, but which cannot be immediately
+     * destroyed because their corresponding windows may still be listening.
+     */
+    private Set<SeleneseQueue> orphanedQueues = new HashSet<SeleneseQueue>();
     
     public static final String DEFAULT_LOCAL_FRAME_ADDRESS = "top";
     /**
@@ -79,14 +88,19 @@ public class FrameGroupSeleneseQueueSet {
     }
     
     private void selectWindow(String seleniumWindowName) {
-        if ("null".equals(seleniumWindowName)) {
-            // this results from only working with strings over the wire for Selenese
-            currentSeleniumWindowName = DEFAULT_SELENIUM_WINDOW_NAME;
+        if (!SeleniumServer.isProxyInjectionMode()) {
+            doCommand("selectWindow", seleniumWindowName, "");
         }
         else {
-            currentSeleniumWindowName = seleniumWindowName;
+            if ("null".equals(seleniumWindowName)) {
+                // this results from only working with strings over the wire for Selenese
+                currentSeleniumWindowName = DEFAULT_SELENIUM_WINDOW_NAME;
+            }
+            else {
+                currentSeleniumWindowName = seleniumWindowName;
+            }
+            selectFrame(DEFAULT_LOCAL_FRAME_ADDRESS);   
         }
-        selectFrame(DEFAULT_LOCAL_FRAME_ADDRESS);            
     }
     
     public SeleneseQueue getSeleneseQueue() {
@@ -254,11 +268,15 @@ public class FrameGroupSeleneseQueueSet {
         boolean oldState = justLoaded(frameAddress);
         if (oldState!=justLoaded) {
             if (justLoaded) {
-                System.out.println(frameAddress + " marked as just loaded");
+                if (SeleniumServer.isDebugMode()) {
+                    System.out.println(frameAddress + " marked as just loaded");
+                }
                 frameAddressToJustLoaded.put(frameAddress, true);
             }
             else {
-                System.out.println(frameAddress + " marked as NOT just loaded");
+                if (SeleniumServer.isDebugMode()) {
+                    System.out.println(frameAddress + " marked as NOT just loaded");
+                }
                 frameAddressToJustLoaded.remove(frameAddress);
             }
         }
@@ -304,5 +322,51 @@ public class FrameGroupSeleneseQueueSet {
 
     public static void setExpectedNewWindowName(String expectedNewWindowName) {
         FrameGroupSeleneseQueueSet.expectedNewWindowName = expectedNewWindowName;
+    }
+
+    /**
+     * TODO: someone should call this
+     */
+    public void garbageCollectOrphans() {
+        /**
+         * The list of orphaned queues was assembled in the browser session 
+         * preceding the current one.  At this point it is safe to get rid 
+         * of them; their windows must have long since being destroyed.
+         */
+        for (SeleneseQueue q : orphanedQueues) {
+            q.endOfLife();
+        }
+        orphanedQueues.clear();
+    }
+    
+    public void reset() {
+        if (SeleniumServer.isProxyInjectionMode()) {
+            // shut down all but the primary top level connection
+            List<FrameAddress> newOrphans = new LinkedList<FrameAddress>(); 
+            for (FrameAddress frameAddress : frameAddressToSeleneseQueue.keySet()) {
+                if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)
+                        && frameAddress.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)) {
+                    continue;
+                }
+                selectWindow(frameAddress.getWindowName());
+                selectFrame(frameAddress.getLocalFrameAddress());
+                SeleneseQueue q = getSeleneseQueue();
+                if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
+                    if (SeleniumServer.isDebugMode()) {
+                        System.out.println("Trying to close " + frameAddress);
+                    }
+                    q.doCommandWithoutWaitingForAResponse("getEval", "selenium.browserbot.getCurrentWindow().close()", "");
+                }
+                orphanedQueues.add(q);
+                newOrphans.add(frameAddress);
+            }
+            for (FrameAddress frameAddress : newOrphans) {
+                frameAddressToSeleneseQueue.remove(frameAddress);
+            }
+        }
+        selectWindow(DEFAULT_SELENIUM_WINDOW_NAME);
+        String defaultUrl = "http://localhost:" + SeleniumServer.getPortDriversShouldContact()
+                + "/selenium-server/core/InjectedSeleneseRunner.html";
+        doCommand("open", defaultUrl, ""); // will close out subframes
     }
 }

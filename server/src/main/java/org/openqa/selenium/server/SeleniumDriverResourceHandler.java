@@ -58,7 +58,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private final Map<String, BrowserLauncher> launchers = new HashMap<String, BrowserLauncher>();
     private SeleniumServer server;
     private static String lastSessionId = null;
-    private Map<String, String> domainsBySessionId = new HashMap<String, String>();   
+    private Map<String, String> domainsBySessionId = new HashMap<String, String>();
+    private Map<String, String> unusedBrowserSessions = new HashMap<String, String>();
+    private Map<String, String> sessionIdsToBrowserStrings = new HashMap<String, String>();
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
@@ -290,7 +292,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
 
         String results;
-        System.out.println("queryString = " + req.getQuery());
+        if (SeleniumServer.isDebugMode()) {
+            System.out.println("queryString = " + req.getQuery());
+        }
         results = doCommand(cmd, values, sessionId, res);
         try {
             res.getOutputStream().write(results.getBytes("UTF-8"));
@@ -306,44 +310,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
             String browserString = values.get(0);
-            if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
-                System.out.println("WARNING: running in proxy injection mode, but you used a *iexplore browser string; this is " +
-                        "almost surely inappropriate, so I'm changing it to *piiexplore...");
-                browserString = "*piiexplore";
-            }
-            else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
-                System.out.println("WARNING: running in proxy injection mode, but you used a *firefox browser string; this is " +
-                        "almost surely inappropriate, so I'm changing it to *pifirefox...");
-                browserString = "*pifirefox";
-            }
             sessionId = getNewBrowserSession(browserString, values.get(1));
             setDomain(sessionId, values.get(1));
             results = "OK," + sessionId;
         } else if ("testComplete".equals(cmd)) {
-            BrowserLauncher launcher = getLauncher(sessionId);
-            if (launcher == null) {
-                results = "ERROR: No launcher found for sessionId " + sessionId;
-            } else {
-                launcher.close();
-                // finally, if the command was testComplete, remove the queue
-                if ("testComplete".equals(cmd)) {
-                    clearQueueSet(sessionId);
-                }
-                results = "OK";
-            }
+            results = endBrowserSession(sessionId, SeleniumServer.reusingBrowserSessions());
         } else if ("shutDown".equals(cmd)) {
-            System.out.println("Shutdown command received");
-            if (res != null) {
-                try {
-                    res.getOutputStream().write("OK".getBytes());
-                    res.commit();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            AsyncExecute.sleepTight(3000);
-            System.exit(0);
             results = null;
+            shutDown(res);
         } else if ("isPostSupported".equals(cmd)) {
             // We don't support POST
             results = "OK,false";
@@ -383,6 +357,40 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return results;
     }
 
+    private void shutDown(HttpResponse res) {
+        System.out.println("Shutdown command received");
+        
+        for (String sessionId : unusedBrowserSessions.values()) {
+            endBrowserSession(sessionId, false);
+        }
+        
+        if (res != null) {
+            try {
+                res.getOutputStream().write("OK".getBytes());
+                res.commit();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        AsyncExecute.sleepTight(3000);
+        System.exit(0);
+    }
+
+    private String endBrowserSession(String sessionId, boolean cacheUnused) {
+        if (cacheUnused) {
+            addUnusedBrowserSession(sessionId);
+        }
+        else {
+            BrowserLauncher launcher = getLauncher(sessionId);
+            if (launcher == null) {
+                return "ERROR: No launcher found for sessionId " + sessionId;
+            } 
+            launcher.close();
+            clearQueueSet(sessionId);
+        }
+        return "OK";
+    }
+
     private void warnIfApparentDomainChange(String sessionId, String url) {
         if (url.startsWith("http://")) {
             String urlDomain = url.replaceFirst("^(http://[^/]+, url)/.*", "$1");
@@ -398,22 +406,51 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
     }
 
-    private String getNewBrowserSession(String browser, String startURL) {
+    private String getNewBrowserSession(String browserString, String startURL) {
         if (SeleniumServer.getDefaultBrowser()!=null) {
-            browser = SeleniumServer.getDefaultBrowser(); 
+            browserString = SeleniumServer.getDefaultBrowser(); 
         }
-        if (browser == null) throw new IllegalArgumentException("browser may not be null");
-        String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
+        if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
+            System.out.println("WARNING: running in proxy injection mode, but you used a *iexplore browser string; this is " +
+                    "almost surely inappropriate, so I'm changing it to *piiexplore...");
+            browserString = "*piiexplore";
+        }
+        else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
+            System.out.println("WARNING: running in proxy injection mode, but you used a *firefox browser string; this is " +
+                    "almost surely inappropriate, so I'm changing it to *pifirefox...");
+            browserString = "*pifirefox";
+        }
+        if (browserString == null) {
+            throw new IllegalArgumentException("browser string may not be null");
+        }
+        String sessionId = getUnusedBrowserSession(browserString);
+        SeleneseQueue queue;
+        if (sessionId != null) {
+            queue = getQueueSet(sessionId).getSeleneseQueue();
+        }
+        else {
+            sessionId = Long.toString(System.currentTimeMillis() % 1000000);
+            BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
+            queue = getQueueSet(sessionId).getSeleneseQueue();
+            BrowserLauncher launcher = blf.getBrowserLauncher(browserString, sessionId, queue);
+            launcher.launchRemoteSession(startURL);
+            queue.discardCommandResult();
+            launchers.put(sessionId, launcher);
+            sessionIdsToBrowserStrings.put(sessionId, browserString);
+        }
         setLastSessionId(sessionId); 
         System.out.println("Allocated session " + sessionId + " for " + startURL);
-        BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
-        SeleneseQueue queue = getQueueSet(sessionId).getSeleneseQueue();
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, queue);
-        launcher.launchRemoteSession(startURL);
-        launchers.put(sessionId, launcher);
-        queue.discardCommandResult();
         queue.doCommand("setContext", sessionId, "");
         return sessionId;
+    }
+
+    private String getUnusedBrowserSession(String browserString) {
+        return unusedBrowserSessions.remove(browserString);
+    }
+
+    private void addUnusedBrowserSession(String sessionId) {
+        getQueueSet(sessionId).reset();
+        unusedBrowserSessions.put(sessionIdsToBrowserStrings.get(sessionId), sessionId);
     }
 
     /** Perl and Ruby hang forever when they see "Connection: close" in the HTTP headers.
@@ -465,12 +502,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      */
     private FrameGroupSeleneseQueueSet getQueueSet(String sessionId) {
         synchronized (queueSets) {
-            FrameGroupSeleneseQueueSet queue = queueSets.get(sessionId);
-            if (queue == null) {
-                queue = new FrameGroupSeleneseQueueSet(sessionId);
-                queueSets.put(sessionId, queue);
+            FrameGroupSeleneseQueueSet queueSet = queueSets.get(sessionId);
+            if (queueSet == null) {
+                queueSet = new FrameGroupSeleneseQueueSet(sessionId);
+                queueSets.put(sessionId, queueSet);
             }
-            return queue;
+            return queueSet;
         }
     }
 

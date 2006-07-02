@@ -156,6 +156,7 @@ public class SeleniumServer {
      
     public static final int DEFAULT_TIMEOUT= (30 * 60);
     public static int timeout= DEFAULT_TIMEOUT;
+    private static Boolean reusingBrowserSessions = null;
 
     /** Starts up the server on the specified port (or default if no port was specified)
      * and then starts interactive mode if specified.
@@ -203,6 +204,12 @@ public class SeleniumServer {
                 // to facilitate tcptrace interception of interaction between 
                 // injected js and the selenium server
                 portDriversShouldContactArg = Integer.parseInt(getArg(args, ++i));
+            }
+            else if ("-noBrowserSessionReuse".equals(arg)) {
+                SeleniumServer.reusingBrowserSessions = Boolean.FALSE;
+            }
+            else if ("-browserSessionReuse".equals(arg)) {
+                SeleniumServer.reusingBrowserSessions = Boolean.TRUE;
             }
             else if ("-debug".equals(arg)) {
                 SeleniumServer.setDebugMode(true);
@@ -265,25 +272,9 @@ public class SeleniumServer {
         if (portDriversShouldContactArg==0) {
             portDriversShouldContactArg = port;
         }
-        
-        if (interactive && htmlSuite) {
-            System.err.println("You can't use -interactive and -htmlSuite on the same line!");
-            System.exit(1);
-        }
-
-        SingleEntryAsyncQueue.setDefaultTimeout(timeout);
         final SeleniumServer seleniumProxy = new SeleniumServer(port);
-        seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
-        SeleniumServer.setPortDriversShouldContact(portDriversShouldContactArg);
-        
-        if (!isProxyInjectionMode() && 
-                (InjectionHelper.userContentTransformationsExist() ||
-                 InjectionHelper.userJsInjectionsExist())) {
-            usage("-userJsInjection and -userContentTransformation are only " +
-                    "valid in combination with -proxyInjectionMode");
-            System.exit(1);
-        }
-        
+        checkArgsSanity(port, interactive, htmlSuite, 
+                proxyInjectionModeArg, portDriversShouldContactArg, seleniumProxy);
         Thread jetty = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -378,9 +369,35 @@ public class SeleniumServer {
                 });
                 t.start();
             }
+        }        
+    }
+
+    private static void checkArgsSanity(int port, boolean interactive, boolean htmlSuite, boolean proxyInjectionModeArg, int portDriversShouldContactArg, SeleniumServer seleniumProxy) throws Exception {
+        if (interactive && htmlSuite) {
+            System.err.println("You can't use -interactive and -htmlSuite on the same line!");
+            System.exit(1);
         }
 
+        SingleEntryAsyncQueue.setDefaultTimeout(timeout);
+        seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
+        SeleniumServer.setPortDriversShouldContact(portDriversShouldContactArg);
         
+        if (!isProxyInjectionMode() && 
+                (InjectionHelper.userContentTransformationsExist() ||
+                 InjectionHelper.userJsInjectionsExist())) {
+            usage("-userJsInjection and -userContentTransformation are only " +
+                    "valid in combination with -proxyInjectionMode");
+            System.exit(1);
+        }
+        if (!isProxyInjectionMode() && reusingBrowserSessions()) {
+            usage("-reusingBrowserSessions only valid in combination with -proxyInjectionMode" +
+                    " (because of the need for multiple domain support, which only -proxyInjectionMode" +
+                    " provides).");
+            System.exit(1);
+        }
+        if (reusingBrowserSessions()) {
+            System.out.println("Will recycle browser sessions when possible.");
+        }
     }
 
     private static String getArg(String[] args, int i) {
@@ -411,13 +428,14 @@ public class SeleniumServer {
             System.err.println(msg + ":");
         }
         System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive]" +
-                " [-defaultBrowserString browserString] [-proxyInjectionMode [-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+                " [-defaultBrowserString browserString] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
                 "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
                 "where:\n" +
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
                 "the argument for port is the port number the selenium server should use (default 4444)" +
         "\n\t-interactive puts you into interactive mode.  See the tutorial for more details" +
         "\n\t-defaultBrowserString (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
+        "\n\t-browserSessionReuse stops re-initialization and spawning of the browser between tests" +
         "\n\t-debug puts you into debug mode, with more trace information and diagnostics" +
         "\n\t-proxyInjectionMode puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
         "\n\t\tfor all content going to the test application.  Under this mode, multiple domains can be visited, and the " +
@@ -468,6 +486,9 @@ public class SeleniumServer {
         }
         if (!isProxyInjectionMode() && System.getProperty("selenium.proxyInjectionMode")!=null) {
             setProxyInjectionMode("true".equals(System.getProperty("selenium.proxyInjectionMode")));
+        }
+        if (!isDebugMode() && System.getProperty("selenium.debugMode")!=null) {
+            setDebugMode("true".equals(System.getProperty("selenium.debugMode")));
         }
 
         context = new HttpContext();
@@ -636,5 +657,17 @@ public class SeleniumServer {
 
     public static void setDefaultBrowser(String defaultBrowserString) {
         SeleniumServer.defaultBrowserString = defaultBrowserString;
+    }
+    
+    public static boolean reusingBrowserSessions() {
+        if (reusingBrowserSessions==null) {
+            if (isProxyInjectionMode()) {
+                reusingBrowserSessions = Boolean.TRUE; // default in pi mode
+            }        
+            else {
+                reusingBrowserSessions = Boolean.FALSE; // default in non-pi mode
+            }        
+        }
+        return reusingBrowserSessions;
     }
 }

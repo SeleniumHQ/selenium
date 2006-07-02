@@ -18,10 +18,18 @@ import org.mortbay.util.IO;
 
 public class InjectionHelper {
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
+    private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
+    
     private static HashMap<String, String> userContentTransformations = new HashMap<String, String>();
     private static List<String> userJsInjectionFiles = new LinkedList<String>(); 
     
     public static void saveJsStateInitializer(String sessionId, String uniqueId, String jsVarName, String jsStateInitializer) {
+        // when a new uniqueId is seen for a given sessionId, that means the page has 
+        // reloaded and the old state should be discarded
+        if (sessionIdToUniqueId.containsKey(sessionId) && !sessionIdToUniqueId.get(sessionId).equals(uniqueId)) {
+            jsStateInitializersBySessionId.remove(sessionId);
+            sessionIdToUniqueId.put(sessionId, uniqueId);
+        }
         if (SeleniumServer.isDebugMode()) {
             System.out.println("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
         }

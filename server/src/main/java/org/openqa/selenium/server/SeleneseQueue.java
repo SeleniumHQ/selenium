@@ -66,6 +66,15 @@ public class SeleneseQueue {
      * return "OK" or an error message.
      */
     public String doCommand(String command, String field, String value) {
+        doCommandWithoutWaitingForAResponse(command, field, value);
+        try {
+            return (String) queueGet("commandResultHolder", commandResultHolder);
+        } catch (SeleniumCommandTimedOutException e) {
+            return "ERROR: Command timed out";
+        }
+    }
+
+    public void doCommandWithoutWaitingForAResponse(String command, String field, String value) {
         if (slowMode) {
             System.out.println("    Slow mode in effect: sleep 1 second...");
             try {
@@ -74,35 +83,34 @@ public class SeleneseQueue {
             }
             System.out.println("    ...done");
         }
-        if (!commandResultHolder.isEmpty()) {
-            if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
-                if (SeleniumServer.isDebugMode()) {
-                    // In proxy injection mode, a single command could cause multiple pages to
-                    // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
-                    // relationship between commands and results can go out of whack.  To avoid this, we
-                    // discard results for which no thread is waiting:
-                    System.out.println("Apparently a page load result preceded the command; will ignore it...");
-                    System.out.println("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
+        synchronized(commandResultHolder) {
+            if (!commandResultHolder.isEmpty()) {
+                if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
+                    if (SeleniumServer.isDebugMode()) {
+                        // In proxy injection mode, a single command could cause multiple pages to
+                        // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
+                        // relationship between commands and results can go out of whack.  To avoid this, we
+                        // discard results for which no thread is waiting:
+                        System.out.println("Apparently a page load result preceded the command; will ignore it...");
+                        System.out.println("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
+                    }
+                    queueGet("doCommand spotted early result, discard", commandResultHolder);
+                    queuePut("put a dummy command to satisfy an orphaned waiting thread from a page which has been reloaded: commandHolder", 
+                            commandHolder, new DefaultSeleneseCommand("dummy command for a page which has been reloaded", "dummy", "dummy"));
                 }
-                queueGet("doCommand spotted early result, discard", commandResultHolder);
-                queuePut("put a dummy command to satisfy an orphaned waiting thread from a page which has been reloaded: commandHolder", 
-                        commandHolder, new DefaultSeleneseCommand("dummy command for a page which has been reloaded", "dummy", "dummy"));
-            }
-            else {
-                throw new RuntimeException("unexpected result " + commandResultHolder.peek());
+                else {
+                    throw new RuntimeException("unexpected result " + commandResultHolder.peek());
+                }
             }
         }
-        if (!commandHolder.isEmpty()) {
-            throw new RuntimeException("unexpected command " + commandResultHolder.peek() 
-                    + " in place before new command " + command + " could be added.");
+        synchronized(commandHolder) {
+            if (!commandHolder.isEmpty()) {
+                throw new RuntimeException("unexpected command " + commandHolder.peek() 
+                        + " in place before new command " + command + " could be added.");
+            }
         }
         queuePut("commandHolder", commandHolder, 
                 new DefaultSeleneseCommand(command, field, value, makeJavaScript()));
-        try {
-            return (String) queueGet("commandResultHolder", commandResultHolder);
-        } catch (SeleniumCommandTimedOutException e) {
-            return "ERROR: Command timed out";
-        }
     }
 
     private String makeJavaScript() {
@@ -186,7 +194,8 @@ public class SeleneseQueue {
             else if (commandResult.startsWith("OK")) {
                 // since the result includes a value, this is clearly not from a page which has just loaded.
                 // Apparently there is some confusion among the queues
-                throw new RuntimeException(getIdentification("commandResultHolder") + " unexpected");
+                throw new RuntimeException(getIdentification("commandResultHolder") 
+                        + " unexpected value " + commandResult);
             }
         }
         else {
