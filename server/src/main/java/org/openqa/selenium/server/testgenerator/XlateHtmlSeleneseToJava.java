@@ -281,6 +281,10 @@ public class XlateHtmlSeleneseToJava {
         
         StringBuffer java = new StringBuffer();
         
+        if (htmlSelenese.indexOf("/core/scripts/narcissus-parse.js\"></script>")!=-1) {
+            throw new RuntimeException("no support for translating narcissus JavaScript-based tests");
+        }
+        
         String body = htmlSelenese.replaceAll("[\n]", "");
         body = body.replaceAll("\\s*<", "<");
         body = body.replaceAll("</?em/?>", "");
