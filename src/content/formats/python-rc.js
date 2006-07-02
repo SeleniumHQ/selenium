@@ -4,6 +4,29 @@
 
 load('remoteControl.js');
 
+this.name = "python-rc";
+
+function formatHeader(testCase) {
+	var className = testCase.name;
+	if (!className) {
+		className = "NewTest";
+	}
+	var formatLocal = testCase.formatLocal(this.name);
+	methodName = 'test_' + underscore(className.replace(/Test$/, "").replace(/^Test/, "").
+									  replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
+	var header = options.header.replace(/\$\{className\}/g, className).
+		replace(/\$\{methodName\}/g, methodName);
+	this.lastIndent = "        ";
+	formatLocal.header = header;
+	return formatLocal.header;
+}
+
+function formatFooter(testCase) {
+	var formatLocal = testCase.formatLocal(this.name);
+	formatLocal.footer = options.footer;
+	return formatLocal.footer;
+}
+
 string = function(value) {
 	value = value.replace(/\\/g, '\\\\');
 	value = value.replace(/\"/g, '\\"');
@@ -106,7 +129,25 @@ function formatComment(comment) {
 }
 
 this.options = {
-	receiver: "sel"
+	receiver: "sel",
+	header:
+	'from selenium import selenium\n' +
+	'import unittest\n' +
+	'\n' +
+	'class ${className}(unittest.TestCase):\n' +
+	'    def setUp(self):\n' +
+	'        self.selenium = selenium("localhost", 4444, "*firefox", "http://localhost:4444")\n' +
+	'        self.selenium.start()\n' +
+	'    \n' +
+	'    def ${methodName}(self):\n' +
+	'        sel = self.selenium\n',
+	footer:
+	'    \n' +
+	'    def tearDown(self):\n' +
+	'        self.selenium.stop()\n' +
+	'\n' +
+	'if __name__ == "__main__":\n' +
+	'    unittest.main()\n'
 };
 
 this.configForm = 

@@ -16,14 +16,15 @@ function formatHeader(testCase) {
 									  replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
 	var header = options.header.replace(/\$\{className\}/g, className).
 		replace(/\$\{methodName\}/g, methodName);
-	this.lastIndent = "\t\t";
-	this.header = header;
-	return header;
+	this.lastIndent = "    ";
+	formatLocal.header = header;
+	return formatLocal.header;
 }
 
 function formatFooter(testCase) {
-	this.footer = options.footer;
-	return footer;
+	var formatLocal = testCase.formatLocal(this.name);
+	formatLocal.footer = options.footer;
+	return formatLocal.footer;
 }
 
 function assertTrue(expression) {
@@ -153,23 +154,23 @@ this.options = {
 		'require "test/unit"\n' +
 		'\n' +
 		'class ${className} < Test::Unit::TestCase\n' +
-		'\tdef setup\n' +
-		'\t\tif $selenium\n' +
-		'\t\t\t@selenium = $selenium\n' +
-		'\t\telse\n' +
-		'\t\t\t@selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);\n' +
-		'\t\t\t@selenium.start\n' +
-		'\t\tend\n' +
-		'\t\t@selenium.set_context("${methodName}", "info")\n' +
-		'\tend\n' +
-		'\t\n' +
-		'\tdef teardown\n' +
-		'\t\t@selenium.stop unless $selenium\n' +
-		'\tend\n' +
-		'\t\n' +
-		'\tdef ${methodName}\n',
+		'  def setup\n' +
+		'    if $selenium\n' +
+		'      @selenium = $selenium\n' +
+		'    else\n' +
+		'      @selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);\n' +
+		'      @selenium.start\n' +
+		'    end\n' +
+		'    @selenium.set_context("${methodName}", "info")\n' +
+		'  end\n' +
+		'  \n' +
+		'  def teardown\n' +
+		'    @selenium.stop unless $selenium\n' +
+		'  end\n' +
+		'  \n' +
+		'  def ${methodName}\n',
 	footer:
-		"\tend\n" +
+		"  end\n" +
 		"end\n"
 };
 
