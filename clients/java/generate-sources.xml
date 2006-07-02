@@ -26,6 +26,18 @@
             <arg value="-dontThrowOnTranslationDifficulties"/>
             <arg value="-dir"/>
             <arg value="${dir.core.tests}"/>
+            
+            <arg value="-skip"/>
+            <arg value="TestJS-for-loops.html"/>
+            
+            
+            <arg value="-skip"/>
+            <arg value="TestJS-functions.html"/>
+            
+            
+            <arg value="-skip"/>
+            <arg value="TestJS-if-then-else.html"/>
+            
             <classpath refid="depend.classpath"/>
         </java>
         
