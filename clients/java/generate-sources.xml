@@ -38,6 +38,9 @@
             <arg value="-skip"/>
             <arg value="TestJS-if-then-else.html"/>
             
+            <arg value="-skip"/>
+            <arg value="TestOpen_SSV_syntax.html"/>
+            
             <classpath refid="depend.classpath"/>
         </java>
         
