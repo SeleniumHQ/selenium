@@ -18,16 +18,16 @@
 
 <script id="sejs" type="text/se+js" onload="jsparse(document);">
 
-var _url = "/tests/html/show_message.html?msg="
+var _url = "../tests/html/show_message.html?msg="
 
 
 // You can refactor common code into functions...
 puts = function(i) {
-    se.doOpen(_url+'This_was_called_from_inside_a_function')
+    se.doOpen(_url+i)
     se.doWaitForPageToLoad(5000)
 };
 
-puts ('hello,world')
+puts ('This_was_printed_from_inside_a_function')
 
 // define and call in one line
 one_liner = function() { se.doOpen(_url+'Neat!'); se.doWaitForPageToLoad(5000); }()
