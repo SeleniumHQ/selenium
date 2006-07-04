@@ -48,6 +48,7 @@
     <releases>
         <release>
             <version>0.8.0</version>
+            <description>Includes Selenium Core 0.7.1-SNAPSHOT (revision 1065)</description>
             <date>06/03/2006</date>
             <jiraId>10201</jiraId>
             <downloads>
@@ -59,6 +60,7 @@
         </release>
         <release>
             <version>0.7.2</version>
+            <description>Includes Selenium 0.6.0</description>
             <date>03/14/2006</date>
             <jiraId>10203</jiraId>
             <downloads>
