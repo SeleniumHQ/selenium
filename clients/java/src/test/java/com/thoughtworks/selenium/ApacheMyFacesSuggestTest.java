@@ -16,26 +16,16 @@ public class ApacheMyFacesSuggestTest extends TestCase {
 
     DefaultSelenium selenium;
     
-    boolean isProxyInjectionMode = System.getProperty("selenium.proxyInjectionMode")!=null
-    && System.getProperty("selenium.proxyInjectionMode").equals("true");
-
-    
     protected void setUp() throws Exception {
     }
     
-    public void testAJAXFirefox() throws Throwable {
-        if (isProxyInjectionMode) {
-            fail("there are known problems with name conflicts for these tests which hang the browser");
-        }
+    public void xtestAJAXFirefox() throws Throwable {
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
         ajaxTester();
     }
     
     public void testAJAXIExplore() throws Throwable {
-        if (isProxyInjectionMode) {
-            fail("there are known problems with name conflicts for these tests which hang the browser");
-        }
         if (!WindowsUtils.thisIsWindows()) return;
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
         selenium.start();

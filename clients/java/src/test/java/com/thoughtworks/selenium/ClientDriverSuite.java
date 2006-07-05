@@ -44,8 +44,11 @@ public class ClientDriverSuite extends TestCase {
 // Once that bug is fixed, this class should be a TestSuite, not a TestCase
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
-            suite.addTestSuite(ApacheMyFacesSuggestTest.class);
-            if (isProxyInjectionMode) {
+            if (!isProxyInjectionMode) {
+                // doesn't work -- see http://jira.openqa.org/browse/SRC-100
+                suite.addTestSuite(ApacheMyFacesSuggestTest.class);
+            }
+            else {
                 suite.addTestSuite(TestFramesClick.class);
                 suite.addTestSuite(TestFramesOpen.class);
                 suite.addTestSuite(TestFramesNested.class);
