@@ -29,9 +29,9 @@ Copyright 2004 ThoughtWorks, Inc
 <script type="text/javascript" src="scripts/narcissus-defs.js"></script>
 <script type="text/javascript" src="scripts/narcissus-parse.js"></script>
 <script type="text/javascript" src="scripts/narcissus-exec.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype-1.4.0.js"></script>    
 <script language="JavaScript" type="text/javascript" src="scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype-1.4.0.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/find_matching_child.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/selenium-commandhandlers.js"></script>
@@ -66,7 +66,7 @@ Copyright 2004 ThoughtWorks, Inc
         <td width="25%" height="30%" ><iframe name="testSuiteFrame" id="testSuiteFrame" src="./TestPrompt.html" application="yes"></iframe></td>
         <td width="50%" height="30%" ><iframe name="testFrame" id="testFrame" application="yes"></iframe></td>
 
-		<td width="25%">        
+		<td width="25%">
 		<table class="layout">
 		  <tr class="selenium">
 			<th width="25%" height="1" class="header">
@@ -75,16 +75,16 @@ Copyright 2004 ThoughtWorks, Inc
 		  </tr>
 		  <tr>
 			<td width="25%" height="30%" id="controlPanel">
-	
+
 			  <fieldset>
 				<legend>Execute Tests</legend>
-				
+
 				<div>
 				  <input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/><label for="modeRun">Run</label>
 				  <input id="modeWalk" type="radio" name="runMode" value="500" /><label for="modeWalk">Walk</label>
 				  <input id="modeStep" type="radio" name="runMode" value="-1" /><label for="modeStep">Step</label>
 				</div>
-				
+
 				<div>
 				  <button type="button" id="runSuite" onClick="startTestSuite();"
 						  title="Run the entire Test-Suite">
@@ -99,9 +99,14 @@ Copyright 2004 ThoughtWorks, Inc
 					Continue
 				  </button>
 				</div>
-				
+
+                <div>
+                    <input id="highlightOption" type="checkbox" name="highlightOption" value="0"/>
+                    <label for="highlightOption"> Highlight Element </label>
+                </div>
+
 			  </fieldset>
-	
+
 			  <table id="stats" align="center">
 				<tr>
 				  <td colspan="2" align="right">Elapsed:</td>
@@ -129,19 +134,19 @@ Copyright 2004 ThoughtWorks, Inc
 				  <td>incomplete</td>
 				</tr>
 			  </table>
-	
+
 			  <fieldset>
 				<legend>Tools</legend>
-	
+
 				<button type="button" id="domViewer1" onClick="openDomViewer();">
 				  View DOM
 				</button>
 				<button type="button" onClick="LOG.show();">
 				  Show Log
 				</button>
-	
+
 			  </fieldset>
-	
+
 			</td>
 		  </tr>
 		  </table>

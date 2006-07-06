@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 
 <!--
 Copyright 2004 ThoughtWorks, Inc
@@ -17,10 +17,10 @@ Copyright 2004 ThoughtWorks, Inc
  limitations under the License.
 -->
 <html>
-  <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>JsUnit Utility Tests</title>
-    <link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Utility Tests</title>
+<link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
 <script language="JavaScript" type="text/javascript" src="dummy-logging.js"></script>
@@ -33,12 +33,14 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
+
     // To be realistic, the elements are located in a separate IFrame.
     var iframe = document.getElementById("testIframe");
     var iWindow = iframe.contentWindow.window;
     frameDocument = iWindow.document;
 
     pageBot = PageBot.createForWindow(iWindow);
+    pageBot.setHighlightElement(false);
     element1 = iWindow.document.getElementById("id1");
     element2 = iWindow.document.getElementById("id2");
     element3 = iWindow.document.getElementById("id3");
@@ -49,62 +51,90 @@ function setUp() {
     toggleC = iWindow.document.getElementById("toggle-c");
 }
 
+function testShouldNotHighlightFoundElementIfHighlightFlagNotSetted() {
+    pageBot.setHighlightElement(false);
+    Effect = new Mock();
+    pageBot.findElement('id1');
+    Effect.verify();
+}
+
+
+function testShouldBeAbleToHighlightFoundElement() {
+    pageBot.setHighlightElement(true);
+    Effect = new Mock();
+    Effect.expects("highlight", element1);
+    pageBot.findElement('id1');
+    Effect.verify();
+}
+
+function testShouldNotTryToHightlightIfNoElementFound() {
+    pageBot.setHighlightElement(true);
+    Effect = new Mock();
+    try {
+        pageBot.findElement('IDontExist');
+        fail("Should have failed for element not found");
+    } catch(e) {
+        //expects
+    }
+    Effect.verify();
+}
+
 //
 // Tests for "id" locator
 //
 function testIdLocatorReturnsNullIfElementNotPresent() {
-    assertNull(pageBot.findElementBy('id','noSuchElement', frameDocument));
+    assertNull(pageBot.findElementBy('id', 'noSuchElement', frameDocument));
 }
 
 function testIdLocatorReturnsElementWithMatchingId() {
-    assertEquals(element3, pageBot.findElementBy('id','id3', frameDocument));
+    assertEquals(element3, pageBot.findElementBy('id', 'id3', frameDocument));
 }
 
 function testIdLocatorDoesNotReturnElementWithMatchingName() {
-    assertNull(pageBot.findElementBy('id','name1', frameDocument));
+    assertNull(pageBot.findElementBy('id', 'name1', frameDocument));
 }
 
 //
 // Tests for "name" locator
 //
 function testNameLocatorReturnsNullIfElementNotPresent() {
-    assertNull(pageBot.findElementBy('name','noSuchElement', frameDocument));
+    assertNull(pageBot.findElementBy('name', 'noSuchElement', frameDocument));
 }
 
 function testNameLocatorDoesNotReturnElementWithMatchingId() {
-    assertNull(pageBot.findElementBy('name','id2', frameDocument));
+    assertNull(pageBot.findElementBy('name', 'id2', frameDocument));
 }
 
 function testNameLocatorReturnsElementWithMatchingName() {
-    assertEquals(element2, pageBot.findElementBy('name','name1', frameDocument));
+    assertEquals(element2, pageBot.findElementBy('name', 'name1', frameDocument));
 }
 
 function testNameLocatorReturnsFirstMatch() {
-    assertEquals(toggleA, pageBot.findElementBy('name','toggle', frameDocument));
+    assertEquals(toggleA, pageBot.findElementBy('name', 'toggle', frameDocument));
 }
 
 function testNameLocatorCanRefineSelectionByElementValue() {
-    assertEquals(toggleB, pageBot.findElementBy('name','toggle value=b', frameDocument));
-    assertEquals(toggleB, pageBot.findElementBy('name','toggle b', frameDocument));
+    assertEquals(toggleB, pageBot.findElementBy('name', 'toggle value=b', frameDocument));
+    assertEquals(toggleB, pageBot.findElementBy('name', 'toggle b', frameDocument));
 }
 
 function testNameLocatorCanRefineSelectionByIndex() {
-    assertEquals(toggleB, pageBot.findElementBy('name','toggle index=1', frameDocument));
+    assertEquals(toggleB, pageBot.findElementBy('name', 'toggle index=1', frameDocument));
 }
 
 //
 // Tests for "identifier" locator
 //
 function testIdentifierLocatorReturnsNullIfElementNotPresent() {
-    assertNull(pageBot.findElementBy('identifier','noSuchElement', frameDocument));
+    assertNull(pageBot.findElementBy('identifier', 'noSuchElement', frameDocument));
 }
 
 function testIdentifierLocatorReturnsHtmlElementWithMatchingId() {
-    assertEquals(element3, pageBot.findElementBy('identifier','id3', frameDocument));
+    assertEquals(element3, pageBot.findElementBy('identifier', 'id3', frameDocument));
 }
 
 function testIdentifierLocatorReturnsFirstElementWithMatchingName() {
-    assertEquals(element2, pageBot.findElementBy('identifier','name1', frameDocument));
+    assertEquals(element2, pageBot.findElementBy('identifier', 'name1', frameDocument));
 }
 
 //
@@ -112,7 +142,7 @@ function testIdentifierLocatorReturnsFirstElementWithMatchingName() {
 //
 function testLocateElementByDomTraversal() {
     assertEquals(element2,
-                 pageBot.findElementBy('dom',"document.links[1]", frameDocument));
+            pageBot.findElementBy('dom', "document.links[1]", frameDocument));
 }
 
 function testLocateElementByDomTraversalReturnsNullForNoMatchingElement() {
@@ -120,7 +150,7 @@ function testLocateElementByDomTraversalReturnsNullForNoMatchingElement() {
 
 function testLocateElementByDomTraversalFailsWithInvalidDomString() {
     try {
-        pageBot.findElementBy('dom',"document.foo.bar", frameDocument);
+        pageBot.findElementBy('dom', "document.foo.bar", frameDocument);
         fail("Should have thrown exception");
     }
     catch (e) {
@@ -133,53 +163,56 @@ function testLocateElementByDomTraversalFailsWithInvalidDomString() {
 //
 function testLocateElementByXPathWithTagNameOnly() {
     assertEquals(element4,
-                 pageBot.findElementBy('xpath',"//p", frameDocument));
+            pageBot.findElementBy('xpath', "//p", frameDocument));
 }
 
 function testLocateElementByXPathWithAttributeOnly() {
     assertEquals(element4,
-                 pageBot.findElementBy('xpath',"//*[@class='pstyle']", frameDocument));
+            pageBot.findElementBy('xpath', "//*[@class='pstyle']", frameDocument));
 }
 
 function testLocateElementByXPathWithTagNameAndAttribute() {
     assertEquals(element4,
-                 pageBot.findElementBy('xpath',"//p[@name='name1']", frameDocument));
+            pageBot.findElementBy('xpath', "//p[@name='name1']", frameDocument));
 }
 
 function testLocateElementByXPathReturnsFirstMatchingElement() {
     assertEquals(element2,
-                 pageBot.findElementBy('xpath',"//*[@name='name1']", frameDocument));
+            pageBot.findElementBy('xpath', "//*[@name='name1']", frameDocument));
 }
 
 //
 // Tests for "link" locator
 //
 function testLocateLinkReturnsNullIfLocatorIsNotLinkLocator() {
-    assertNull(pageBot.findElementBy('link','//NotALinkLocator', frameDocument));
+    assertNull(pageBot.findElementBy('link', '//NotALinkLocator', frameDocument));
 }
 
 function testLocateLinkReturnsNullIfLinkNotPresent() {
-    assertNull(pageBot.findElementBy('link','No Such Link', frameDocument));
+    assertNull(pageBot.findElementBy('link', 'No Such Link', frameDocument));
 }
 
 function testLinkElementReturnsLinkWithMatchingText() {
-    assertEquals(element3, pageBot.findElementBy('link','this is the third element', frameDocument));
+    assertEquals(element3, pageBot.findElementBy('link', 'this is the third element', frameDocument));
 }
 
 function testLinkElementWithGlob() {
-    assertEquals(element3, pageBot.findElementBy('link','this * third element', frameDocument));
+    assertEquals(element3, pageBot.findElementBy('link', 'this * third element', frameDocument));
 }
 
 function testLinkElementWithRegex() {
-    assertEquals(element3, pageBot.findElementBy('link','regexp:this [aeiou]s the third element', frameDocument));
+    assertEquals(element3, pageBot.findElementBy('link', 'regexp:this [aeiou]s the third element', frameDocument));
 }
- 
+
 //
 // Tests for PageBot.findElement()
 //
 function testFindElementWithNoLocatorPrefixUsesImplicitStrategy() {
     var calls = new Array();
-    pageBot.locationStrategies['implicit'] = function(locator) { calls.push(locator); return "bar";};
+    pageBot.locationStrategies['implicit'] = function(locator) {
+        calls.push(locator);
+        return "bar";
+    };
 
     var element = pageBot.findElement("foo");
     assertEquals("bar", element);
@@ -188,7 +221,10 @@ function testFindElementWithNoLocatorPrefixUsesImplicitStrategy() {
 
 function testFindElementThrowsExceptionIfNoElementFound() {
     var calls = new Array();
-    pageBot.locationStrategies['implicit'] = function(locator) { calls.push(locator); return null;};
+    pageBot.locationStrategies['implicit'] = function(locator) {
+        calls.push(locator);
+        return null;
+    };
 
     var element = null;
     var failureMessage = null;
@@ -205,7 +241,10 @@ function testFindElementThrowsExceptionIfNoElementFound() {
 
 function testFindElementWithLocatorPrefixUsesSpecifiedStrategy() {
     var calls = new Array();
-    pageBot.locationStrategies["anotherlocator"] = function(locator) { calls.push(locator); return "bar";};
+    pageBot.locationStrategies["anotherlocator"] = function(locator) {
+        calls.push(locator);
+        return "bar";
+    };
 
     element = pageBot.findElement("anotherlocator=foo");
     assertEquals("bar", element);
@@ -214,7 +253,10 @@ function testFindElementWithLocatorPrefixUsesSpecifiedStrategy() {
 
 function testFindElementWithUnknownLocatorPrefixThrowsException() {
     var calls = new Array();
-    pageBot.locationStrategies['implicit'] = function(locator) { calls.push(locator); return "bar";};
+    pageBot.locationStrategies['implicit'] = function(locator) {
+        calls.push(locator);
+        return "bar";
+    };
 
     var element = null;
     var failureMessage = null;
@@ -223,7 +265,7 @@ function testFindElementWithUnknownLocatorPrefixThrowsException() {
     } catch (e) {
         failureMessage = e.message;
     }
-        
+
     assertNull(element);
     assertEquals("Unrecognised locator type: 'bogus'", failureMessage);
     assertEquals("", calls.join());
@@ -270,9 +312,9 @@ function testFindElementHandlesDomTraversal() {
     assertEquals(element3, pageBot.findElement("document.links[2]"));
 }
 </script>
-  </head>
+</head>
 
-  <body>
-    <iframe id="testIframe" src="./pagebot-locator-tests-include.html"/>
-  </body>
+<body>
+<iframe id="testIframe" src="./pagebot-locator-tests-include.html"/>
+</body>
 </html>

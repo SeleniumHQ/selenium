@@ -14,9 +14,9 @@
  *  limitations under the License.
  *
  */
- 
+
 // This script contains some HTML utility functions that
-// make it possible to handle elements in a way that is 
+// make it possible to handle elements in a way that is
 // compatible with both IE-like and Mozilla-like browsers
 
 String.prototype.trim = function() {
@@ -70,7 +70,7 @@ function renderWhitespaceInTextContent(element) {
         element.data = element.data.replace(/\n|\r|\t/g, " ");
         return;
     }
-    
+
     if (element.nodeType == Node.COMMENT_NODE)
     {
         element.data = "";
@@ -105,7 +105,7 @@ function renderWhitespaceInTextContent(element) {
     {
         element.appendChild(element.ownerDocument.createTextNode("\n"), element)
     }
-    
+
 }
 
 function tagIs(element, tags)
@@ -212,7 +212,7 @@ function triggerKeyEvent(element, eventType, keycode, canBubble) {
 			evt.initUIEvent( eventType, true, true, window, 1 );
 			evt.keyCode = keycode;
 		}
-        
+
         element.dispatchEvent(evt);
     }
 }
@@ -465,3 +465,20 @@ function SeleniumError(message) {
     error.isSeleniumError = true;
     return error;
 };
+
+
+var Effect = new Object();
+
+Object.extend(Effect, {
+    highlight : function(element) {
+        var highLightColor = "yellow";
+        var originalColor = Element.getStyle(element, "background-color");
+        Element.setStyle(element, {"background-color" : highLightColor});
+        window.setTimeout(function() {
+            Element.setStyle(element, {"background-color" : originalColor});
+        }, 300);
+    }
+});
+
+
+

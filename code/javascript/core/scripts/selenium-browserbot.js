@@ -42,6 +42,7 @@ var BrowserBot = function(frame) {
     this.newPageLoaded = false;
     this.pageLoadError = null;
 
+
     var self = this;
     this.recordPageLoad = function() {
     	LOG.debug("Page load detected");
@@ -451,7 +452,7 @@ var PageBot = function(pageWindow) {
      * Find a locator based on a prefix.
      */
     this.findElementBy = function(locatorType, locator, inDocument) {
-        var locatorFunction = this.locationStrategies[locatorType];        
+        var locatorFunction = this.locationStrategies[locatorType];
         if (! locatorFunction) {
             throw new SeleniumError("Unrecognised locator type: '" + locatorType + "'");
         }
@@ -534,18 +535,32 @@ PageBot.prototype.findElement = function(locator) {
 
     var element = this.findElementBy(locatorType, locatorString, this.currentDocument);
     if (element != null) {
-        return element;
+        return this.highlight(element);
     }
     for (var i = 0; i < this.currentWindow.frames.length; i++) {
         element = this.findElementBy(locatorType, locatorString, this.currentWindow.frames[i].document);
         if (element != null) {
-            return element;
+            return this.highlight(element);
         }
     }
 
     // Element was not found by any locator function.
     throw new SeleniumError("Element " + locator + " not found");
 };
+
+PageBot.prototype.highlight = function (element) {
+    if (shouldHighlightLocatedElement) {
+        Effect.highlight(element);
+    }
+    return element;
+}
+
+// as a static variable.
+var shouldHighlightLocatedElement = false;
+
+PageBot.prototype.setHighlightElement = function (shouldHighlight) {
+    shouldHighlightLocatedElement = shouldHighlight;
+}
 
 /**
  * In non-IE browsers, getElementById() does not search by name.  Instead, we
@@ -824,9 +839,9 @@ MozillaPageBot.prototype.clickElement = function(element) {
     // Add an event listener that detects if the default action has been prevented.
     // (This is caused by a javascript onclick handler returning false)
     var preventDefault = false;
-    
+
     element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
-    
+
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true);
 
@@ -855,7 +870,7 @@ OperaPageBot.prototype.clickElement = function(element) {
 
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true);
-    
+
     if (isDefined(element.checked)) {
     	// In Opera, clicking won't check/uncheck
     	if (element.type == "checkbox") {
@@ -864,7 +879,7 @@ OperaPageBot.prototype.clickElement = function(element) {
     		element.checked = true;
     	}
     }
-    
+
     if (this.windowClosed()) {
         return;
     }
@@ -1039,7 +1054,7 @@ PageBot.prototype.getAllLinks = function() {
 PageBot.prototype.setContext = function(strContext, logLevel) {
      //set the current test title
     var ctx = document.getElementById("context");
-    if (ctx != null) { 
+    if (ctx != null) {
     	ctx.innerHTML=strContext;
     }
     if (logLevel!=null) {
@@ -1087,7 +1102,7 @@ PageBot.prototype.selectElementsBy = function(filterType, filter, elements) {
     return filterFunction(filter, elements);
 };
 
-PageBot.filterFunctions = {}; 
+PageBot.filterFunctions = {};
 
 PageBot.filterFunctions.name = function(name, elements) {
     var selectedElements = [];
@@ -1120,10 +1135,10 @@ PageBot.filterFunctions.index = function(index, elements) {
     return [elements[index]];
 };
 
-PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterType) {    
+PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterType) {
 
     var filterType = (defaultFilterType || 'value');
-    
+
     // If there is a filter prefix, use the specified strategy
     var result = filterExpr.match(/^([A-Za-z]+)=(.+)/);
     if (result) {
@@ -1138,8 +1153,8 @@ PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterT
  * Find an element by class
  */
 PageBot.prototype.locateElementByClass = function(locator, document) {
-    return Element.findFirstMatchingChild(document, 
-	    function(element) { 
+    return Element.findFirstMatchingChild(document,
+	    function(element) {
 		    return element.className == locator
 		}
     );
@@ -1155,3 +1170,5 @@ PageBot.prototype.locateElementByAlt = function(locator, document) {
 		}
     );
 }
+
+

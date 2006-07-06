@@ -34,11 +34,13 @@ Copyright 2004 ThoughtWorks, Inc
 
 function setUp() {
     pageBot = PageBot.createForWindow(window);
+    pageBot.setHighlightElement(false);
     element1 = document.getElementById("id1");
     element2 = document.getElementById("id2");
     element3 = document.getElementById("id3");
     element4 = document.getElementById("document.links[0]");
 }
+
 
 //
 // Tests for finding attribute with id.
