@@ -79,48 +79,68 @@ function testSelectByValueFailure() {
 
 function testIsSelectedByLabelSuccess() {
     var locator = optionLocatorFactory.fromLocatorString("label=Option One");
-    assertTrue(locator.isSelected(mockSelect));
+    locator.assertSelected(mockSelect);
 }
 
 function testIsSelectedByLabelFailure() {
     var locator = optionLocatorFactory.fromLocatorString("label=O*ion Two");
-    assertFalse(locator.isSelected(mockSelect));
+    try {
+    	locator.assertSelected(mockSelect);
+		fail();
+    }
+    catch (e){}
 }
 
 function testIsSelectedByValueSuccess() {
     var locator = optionLocatorFactory.fromLocatorString("value=opt*n1");
-    assertTrue(locator.isSelected(mockSelect));
+    locator.assertSelected(mockSelect);
 }
 
 function testIsSelectedByValueFailure() {
     var locator = optionLocatorFactory.fromLocatorString("value=option2");
-    assertFalse(locator.isSelected(mockSelect));
+    try {
+    	locator.assertSelected(mockSelect);
+		fail();
+    }
+    catch (e){}
 }
 
 function testIsSelectedByIndexSuccess() {
     var locator = optionLocatorFactory.fromLocatorString("index=1");
-    assertTrue(locator.isSelected(mockSelect));
+    locator.assertSelected(mockSelect);
 }
 
 function testIsSelectedByIndexFailure() {
     var locator = optionLocatorFactory.fromLocatorString("index=2");
-    assertFalse(locator.isSelected(mockSelect));
+    try {
+    	locator.assertSelected(mockSelect);
+		fail();
+    }
+    catch (e){}
 }
 
 function testIsSelectedByEmptyLabelSuccess() {
     mockSelect.selectedIndex = 3;
     var locator = optionLocatorFactory.fromLocatorString("label=");
-    assertTrue(locator.isSelected(mockSelect));
+    locator.assertSelected(mockSelect);
 }
 
 function testIsSelectedByEmptyLabelFailure() {
     var locator = optionLocatorFactory.fromLocatorString("label=");
-    assertFalse(locator.isSelected(mockSelect));
+    try {
+    	locator.assertSelected(mockSelect);
+		fail();
+    }
+    catch (e){}
 }
 
 function testIsSelectedWithIndexOutOfBounds() {
     var locator = optionLocatorFactory.fromLocatorString("index=" + mockSelect.options.length);
-    assertFalse(locator.isSelected(mockSelect));
+    try {
+    	locator.assertSelected(mockSelect);
+		fail();
+    }
+    catch (e){}
 }
 
 function testOptionLocatorWithBadLocatorType() {

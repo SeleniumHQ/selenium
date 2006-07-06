@@ -99,15 +99,13 @@ function testSelectWindow() {
     verifyMocks();
 }
 
-function testLocation() {
-    var mockLocation = {pathname:'http://page/path', search:'?foo=bar'};
-    mockPageBot.expectsProperty("location").returns(mockLocation);
+function testGetLocation() {
+    mockPageBot.expectsProperty("location").returns("http://page/path?foo=bar");
 
-    assertTrue(selenium.isLocation("path"));
-    assertTrue(selenium.isLocation("page/path"));
-    assertTrue(selenium.isLocation("http://page/path"));
-    assertTrue(selenium.isLocation("page/path?foo=bar"));
-    assertTrue(selenium.isLocation("http://page/path?foo=bar"));
+    assertTrue(selenium.getLocation().indexOf("path") > 0);
+    assertTrue(selenium.getLocation().indexOf("page/path") > 0);
+    assertTrue(selenium.getLocation().indexOf("http://page/path?foo=bar") > -1);
+
     verifyMocks();
 }
 
@@ -270,12 +268,23 @@ function testShouldTellBroswerBotIfAskedToCancelNextConfirmation() {
 function testIsSelectedSuccess() {
     var mockTextControl = Object();
     mockTextControl.selectedIndex = 1;
-    mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
-    mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
-    assertTrue(selenium.isSelected("id", "option1"));
-    assertFalse(selenium.isSelected("id", "option2"))
+    mockTextControl.options = [{text: "option0"},{text: "option1", selected:true},{text: "option2"}];
+    mockPageBot.expects("findElement", "id=option1").returns(mockTextControl);
+    assertTrue(selenium.isSomethingSelected("id=option1"));
     verifyMocks();
+
+    mockPageBot.expects("findElement", "id=option2").returns({});
+    try {
+        selenium.isSomethingSelected("id=option2");
+        fail();
+    }
+    catch (e)
+    {
+        // pass
+    }
+    verifyMocks();
+
 }
 
 function testGetSelectOptions() {

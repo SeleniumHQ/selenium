@@ -69,11 +69,15 @@ function testExceptionWhenSelectWindowIsCalledWithUnknownWindowName() {
     }
 }
 
-function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocation() {
+function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocationWhenThereIsNoCurrentWindow() {
+    browserBot.currentWindowName = null;
+    mockFrame.contentWindow.window.location = {
+        href:""
+    };
     browserBot.openLocation('myNewLocation');
 
     assertNull(browserBot.currentPage);
-    assertEquals('myNewLocation', mockFrame.src);
+    assertEquals('myNewLocation', mockFrame.contentWindow.window.location.href);
 }
 
 function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIsNull() {
