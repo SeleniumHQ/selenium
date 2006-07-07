@@ -1,13 +1,19 @@
-
-
 <script language="JavaScript">
-    var autOnload=window["onload"];
+    {
+	    function seleniumOnLoad() {
+            	selenium.window.injectedSessionId = @SESSION_ID@;
+                selenium.window.runTest();
+            }
 
-    onload=function(){
-    	if (autOnload!=undefined) {    		
-        	autOnload();
-        }
-        selenium.window.injectedSessionId = @SESSION_ID@;
-        selenium.window.runTest();
+            if (window.addEventListener){
+            	window.addEventListener("load", seleniumOnLoad, false);
+            } else if (window.attachEvent){
+            	window.attachEvent("onload", seleniumOnLoad);
+            } else if (window["onload"] != null) {
+            	// This is not ideal because the AUT could change the onload 
+                // handler at any time, and if that happens, our guy will never be called:
+            	window["preSeleniumOnload"] = window.onload;
+                window.onload = seleniumOnLoad;
+            }
     }
 </script>
