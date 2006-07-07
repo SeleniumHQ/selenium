@@ -94,7 +94,9 @@ function getQueryString() {
 		if (args.length < 2) return null;
 		queryString = args[1];
 		return queryString;
-	} else {
+        } else if (proxyInjectionMode) {
+        	return selenium.browserbot.getCurrentWindow().location.search.substr(1);
+    	} else {
 		return top.location.search.substr(1);
 	}
 }
