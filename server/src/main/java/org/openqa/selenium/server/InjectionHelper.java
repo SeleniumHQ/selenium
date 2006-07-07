@@ -67,18 +67,24 @@ public class InjectionHelper {
     }
     
 	public static void injectJavaScript(SeleniumServer seleniumServer, boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
-        byte[] buf = new byte[8192];
-        int len = in.read(buf);
+	    int len = 8192;
+        byte[] buf = new byte[len];
+        len = readStream(in, buf, len);
         if (len == -1) {
             return;
         }
         String data = new String(buf, 0, len);
         if (!isKnownToBeHtml) {
-            Pattern regexp = Pattern.compile("<\\s*(html|frameset|head|body|table)",
+            Pattern regexp = Pattern.compile("<\\s*(html|frameset|head|body)",
                                              Pattern.CASE_INSENSITIVE);
             isKnownToBeHtml = regexp.matcher(data).find();
         }
         boolean isFrameSet = false;
+        String url = response.getHttpRequest().getRequestURL().toString();
+        if (SeleniumServer.getDebugURL().equals(url)) {
+            System.out.println("debug URL seen");
+        }
+       
         if (!isKnownToBeHtml) {
             out.write(buf, 0, len);
         }
@@ -97,10 +103,17 @@ public class InjectionHelper {
         int proxyPort = SeleniumServer.getPortDriversShouldContact();
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
 
+        
+        if (SeleniumServer.isDebugMode()) {
+            System.out.println(url + " (InjectionHelper looking)");
+        }
         if (!isKnownToBeHtml) {
             IO.copy(in, out);
         }
         else {
+            if (SeleniumServer.isDebugMode()) {
+                System.out.println("injecting...");
+            }
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
 
             String injectionHtml = isFrameSet ? "/core/scripts/injection.html" : "/core/scripts/injection_iframe.html";
@@ -137,6 +150,27 @@ public class InjectionHelper {
         }
     }
             
+    /**
+     * read bufLen bytes into buf (unless EOF is seen first) from in.
+     * @param in
+     * @param buf
+     * @param bufLen
+     * @return number of bytes read
+     * @throws IOException
+     */
+    private static int readStream(InputStream in, byte[] buf, int bufLen) throws IOException {
+        int offset = 0;
+        do {
+            int bytesRead = in.read(buf, offset, bufLen - offset);
+            if (bytesRead==-1) {
+                break;
+            }
+            offset += bytesRead;
+        } while (offset < bufLen);
+        int bytesReadTotal = offset;
+        return bytesReadTotal;
+    }
+
     private static void writeDataWithUserTransformations(String data, InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[8192];
         while (true) {
