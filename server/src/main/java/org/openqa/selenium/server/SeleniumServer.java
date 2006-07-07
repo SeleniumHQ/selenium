@@ -135,6 +135,7 @@ public class SeleniumServer {
     private StaticContentHandler staticContentHandler;
     private int port;
     
+    private static String debugURL = "";  // add special tracing for debug when this URL is requested
     private static boolean debugMode = false;
     private static boolean proxyInjectionMode = false;
     
@@ -213,6 +214,9 @@ public class SeleniumServer {
             }
             else if ("-debug".equals(arg)) {
                 SeleniumServer.setDebugMode(true);
+            }
+            else if ("-debugURL".equals(arg)) {
+                debugURL = getArg(args, ++i);
             }
             else if ("-timeout".equals(arg)) {
                 timeout = Integer.parseInt(getArg(args, ++i));
@@ -661,13 +665,17 @@ public class SeleniumServer {
     
     public static boolean reusingBrowserSessions() {
         if (reusingBrowserSessions==null) {
-            if (isProxyInjectionMode()) {
-                reusingBrowserSessions = Boolean.TRUE; // default in pi mode
-            }        
-            else {
+//            if (isProxyInjectionMode()) {     turn off this default until we are stable.  Too many variables spoils the soup.
+//                reusingBrowserSessions = Boolean.TRUE; // default in pi mode
+//            }        
+//            else {
                 reusingBrowserSessions = Boolean.FALSE; // default in non-pi mode
-            }        
+//            }        
         }
         return reusingBrowserSessions;
+    }
+
+    public static String getDebugURL() {
+        return debugURL;
     }
 }
