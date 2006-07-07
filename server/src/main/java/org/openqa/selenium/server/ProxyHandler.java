@@ -388,7 +388,9 @@ public class ProxyHandler extends AbstractHttpHandler {
             // Handled
             request.setHandled(true);
             if (proxy_in != null) {
-            	if (SeleniumServer.isProxyInjectionMode() && http.getResponseCode()==HttpURLConnection.HTTP_OK) {
+            	if (SeleniumServer.isProxyInjectionMode() 
+                        && http.getResponseCode()==HttpURLConnection.HTTP_OK
+                        && !request.getPath().endsWith(".dll")) {   // ebay dll contains HTML snippets which fool InjectionHelper.  -nas
             		InjectionHelper.injectJavaScript(seleniumServer, isKnownToBeHtml, response, proxy_in, response.getOutputStream());
             	}
             	else {
