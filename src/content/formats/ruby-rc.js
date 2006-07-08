@@ -35,8 +35,21 @@ function assertFalse(expression) {
 	return "assert " + expression.invert().toString();
 }
 
-var verifyTrue = assertTrue;
-var verifyFalse = assertFalse;
+function verify(statement) {
+	return "begin\n" +
+		indent(1) + statement + "\n" +
+		"rescue Test::Unit::AssertionFailedError\n" +
+		indent(1) + "@verification_errors << $!\n" + 
+		"end";
+}
+
+function verifyTrue(expression) {
+	return verify(assertTrue(expression));
+}
+
+function verifyFalse(expression) {
+	return verify(assertFalse(expression));
+}
 
 function assignToVariable(type, variable, expression) {
 	return variable + " = " + expression.toString();
@@ -62,7 +75,9 @@ Equals.prototype.assert = function() {
 	return "assert_equal " + this.e1.toString() + ", " + this.e2.toString();
 }
 
-Equals.prototype.verify = Equals.prototype.assert;
+Equals.prototype.verify = function() {
+	return verify(this.assert());
+}
 
 NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " != " + this.e2.toString();
@@ -72,7 +87,9 @@ NotEquals.prototype.assert = function() {
 	return "assert_not_equal " + this.e1.toString() + ", " + this.e2.toString();
 }
 
-NotEquals.prototype.verify = NotEquals.prototype.assert;
+NotEquals.prototype.verify = function() {
+	return verify(this.assert());
+}
 
 RegexpMatch.prototype.toString = function() {
 	return "/" + this.pattern.replace(/\//g, "\\/") + "/ =~ " + this.expression;
@@ -155,6 +172,7 @@ this.options = {
 		'\n' +
 		'class ${className} < Test::Unit::TestCase\n' +
 		'  def setup\n' +
+		'    @verification_errors = []\n' +
 		'    if $selenium\n' +
 		'      @selenium = $selenium\n' +
 		'    else\n' +
@@ -166,15 +184,33 @@ this.options = {
 		'  \n' +
 		'  def teardown\n' +
 		'    @selenium.stop unless $selenium\n' +
+		'    assert_equal [], @verification_errors\n' +
 		'  end\n' +
 		'  \n' +
 		'  def ${methodName}\n',
 	footer:
 		"  end\n" +
-		"end\n"
+		"end\n",
+	indent: "2"
 };
 
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
-	'<textbox id="options_receiver" />';
+	'<textbox id="options_receiver" />' +
+	'<description>Header</description>' +
+	'<textbox id="options_header" multiline="true" flex="1" rows="4"/>' +
+	'<description>Footer</description>' +
+	'<textbox id="options_footer" multiline="true" flex="1" rows="4"/>' +
+	'<description>Indent</description>' +
+	'<menulist id="options_indent"><menupopup>' +
+	'<menuitem label="Tab" value="tab"/>' +
+	'<menuitem label="1 space" value="1"/>' +
+	'<menuitem label="2 spaces" value="2"/>' +
+	'<menuitem label="3 spaces" value="3"/>' +
+	'<menuitem label="4 spaces" value="4"/>' +
+	'<menuitem label="5 spaces" value="5"/>' +
+	'<menuitem label="6 spaces" value="6"/>' +
+	'<menuitem label="7 spaces" value="7"/>' +
+	'<menuitem label="8 spaces" value="8"/>' +
+	'</menupopup></menulist>';
 

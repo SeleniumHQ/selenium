@@ -53,8 +53,18 @@ function assertFalse(expression) {
 	return "self.failIf(" + expression.toString() + ")";
 }
 
-var verifyTrue = assertTrue;
-var verifyFalse = assertFalse;
+function verify(statement) {
+	return "try: " + statement + "\n" +
+		"except AssertionError, e: self.verificationErrors.append(str(e))";
+}
+
+function verifyTrue(expression) {
+	return verify(assertTrue(expression));
+}
+
+function verifyFalse(expression) {
+	return verify(assertFalse(expression));
+}
 
 function assignToVariable(type, variable, expression) {
 	return variable + " = " + expression.toString();
@@ -83,7 +93,9 @@ Equals.prototype.assert = function() {
 	return "self.assertEqual(" + this.e1.toString() + ", " + this.e2.toString() + ")";
 }
 
-Equals.prototype.verify = Equals.prototype.assert;
+Equals.prototype.verify = function() {
+	return verify(this.assert());
+}
 
 NotEquals.prototype.toString = function() {
 	return this.e1.toString() + " != " + this.e2.toString();
@@ -93,7 +105,9 @@ NotEquals.prototype.assert = function() {
 	return "self.assertNotEqual(" + this.e1.toString() + ", " + this.e2.toString() + ")";
 }
 
-NotEquals.prototype.verify = NotEquals.prototype.assert;
+NotEquals.prototype.verify = function() {
+	return verify(this.assert());
+}
 
 RegexpMatch.prototype.toString = function() {
 	var str = this.pattern;
@@ -172,6 +186,7 @@ this.options = {
 	'\n' +
 	'class ${className}(unittest.TestCase):\n' +
 	'    def setUp(self):\n' +
+	'        self.verificationErrors = []\n' +
 	'        self.selenium = selenium("localhost", 4444, "*firefox", "http://localhost:4444")\n' +
 	'        self.selenium.start()\n' +
 	'    \n' +
@@ -181,6 +196,7 @@ this.options = {
 	'    \n' +
 	'    def tearDown(self):\n' +
 	'        self.selenium.stop()\n' +
+	'        self.assertEqual([], self.verificationErrors)\n' +
 	'\n' +
 	'if __name__ == "__main__":\n' +
 	'    unittest.main()\n',
