@@ -19,7 +19,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     protected void setUp() throws Exception {
     }
     
-    public void xtestAJAXFirefox() throws Throwable {
+    public void testAJAXFirefox() throws Throwable {
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
         ajaxTester();
