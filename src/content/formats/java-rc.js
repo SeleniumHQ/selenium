@@ -114,7 +114,7 @@ RegexpMatch.prototype.toString = function() {
 }
 
 EqualsArray.prototype.length = function() {
-	return this.variableName + ".length";
+	return "len(" + this.variableName + ")";
 }
 
 EqualsArray.prototype.item = function(index) {

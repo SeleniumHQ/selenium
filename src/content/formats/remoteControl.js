@@ -6,6 +6,22 @@
 
 load('formatCommandOnlyAdapter.js');
 
+function indents(num) {
+	function repeat(c, n) {
+		var str = "";
+		for (var i = 0; i < n; i++) {
+			str += c;
+		}
+		return str;
+	}
+	var indent = options.indent;
+	if ('tab' == indent) {
+		return repeat("\t", num);
+	} else {
+		return repeat(" ", num * parseInt(options.indent));
+	}
+}
+
 function underscore(text) {
 	return text.replace(/[A-Z]/g, function(str) {
 			return '_' + str.toLowerCase();
@@ -364,3 +380,4 @@ function formatCommand(command) {
 
 this.remoteControl = true;
 this.playable = false;
+

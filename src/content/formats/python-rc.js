@@ -16,7 +16,7 @@ function formatHeader(testCase) {
 									  replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
 	var header = options.header.replace(/\$\{className\}/g, className).
 		replace(/\$\{methodName\}/g, methodName);
-	this.lastIndent = "        ";
+	this.lastIndent = indents(2);
 	formatLocal.header = header;
 	return formatLocal.header;
 }
@@ -25,6 +25,10 @@ function formatFooter(testCase) {
 	var formatLocal = testCase.formatLocal(this.name);
 	formatLocal.footer = options.footer;
 	return formatLocal.footer;
+}
+
+notOperator = function() {
+	return "not ";
 }
 
 string = function(value) {
@@ -57,12 +61,18 @@ function assignToVariable(type, variable, expression) {
 }
 
 function waitFor(expression) {
-	return "while " + expression.invert().toString() + ": time.sleep(1)";
+	return "for i in range(60):\n" +
+		indents(1) + "try:\n" +
+        indents(2) + "if " + expression.toString() + ": break\n" +
+		indents(1) + "except: pass\n" +
+		indents(1) + 'time.sleep(1)\n' +
+        'else: self.fail("time out")';
 }
 
 function assertOrVerifyFailure(line, isAssert) {
-	// TODO
-	return "assert_raise(Exception) { " + line + "}";
+	return "try: " + line + "\n" +
+		"except: pass\n" +
+		'else: self.fail("expected failure")';
 }
 
 Equals.prototype.toString = function() {
@@ -98,8 +108,34 @@ RegexpMatch.prototype.toString = function() {
 	return "re.search(" + str + ", " + this.expression + ")";
 }
 
+EqualsArray.prototype.length = function() {
+	return "len(" + this.variableName + ")";
+}
+
+EqualsArray.prototype.item = function(index) {
+	return this.variableName + "[" + index + "]";
+}
+
+function pause(milliseconds) {
+	return "time.sleep(" + (parseInt(milliseconds) / 1000) + ");";
+}
+
+function echo(message) {
+	return "print(" + xlateArgument(message) + ")"
+}
+
 function statement(expression) {
 	return expression.toString();
+}
+
+function array(value) {
+	var str = '[';
+	for (var i = 0; i < value.length; i++) {
+		str += string(value[i]);
+		if (i < value.length - 1) str += ", ";
+	}
+	str += ']';
+	return str;
 }
 
 CallSelenium.prototype.toString = function() {
@@ -132,7 +168,7 @@ this.options = {
 	receiver: "sel",
 	header:
 	'from selenium import selenium\n' +
-	'import unittest\n' +
+	'import unittest, time, re\n' +
 	'\n' +
 	'class ${className}(unittest.TestCase):\n' +
 	'    def setUp(self):\n' +
@@ -147,10 +183,27 @@ this.options = {
 	'        self.selenium.stop()\n' +
 	'\n' +
 	'if __name__ == "__main__":\n' +
-	'    unittest.main()\n'
+	'    unittest.main()\n',
+    indent:	'4'
 };
 
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
-	'<textbox id="options_receiver" />';
+	'<textbox id="options_receiver" />' +
+	'<description>Header</description>' +
+	'<textbox id="options_header" multiline="true" flex="1" rows="4"/>' +
+	'<description>Footer</description>' +
+	'<textbox id="options_footer" multiline="true" flex="1" rows="4"/>' +
+	'<description>Indent</description>' +
+	'<menulist id="options_indent"><menupopup>' +
+	'<menuitem label="Tab" value="tab"/>' +
+	'<menuitem label="1 space" value="1"/>' +
+	'<menuitem label="2 spaces" value="2"/>' +
+	'<menuitem label="3 spaces" value="3"/>' +
+	'<menuitem label="4 spaces" value="4"/>' +
+	'<menuitem label="5 spaces" value="5"/>' +
+	'<menuitem label="6 spaces" value="6"/>' +
+	'<menuitem label="7 spaces" value="7"/>' +
+	'<menuitem label="8 spaces" value="8"/>' +
+	'</menupopup></menulist>';
 
