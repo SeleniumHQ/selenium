@@ -5,12 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mortbay.http.HttpResponse;
@@ -20,7 +17,7 @@ public class InjectionHelper {
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
     private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
     
-    private static HashMap<String, String> userContentTransformations = new HashMap<String, String>();
+    private static HashMap<String, String> contentTransformations = new HashMap<String, String>();
     private static List<String> userJsInjectionFiles = new LinkedList<String>(); 
     
     public static void saveJsStateInitializer(String sessionId, String uniqueId, String jsVarName, String jsStateInitializer) {
@@ -66,8 +63,64 @@ public class InjectionHelper {
         return sb.toString();
     }
     
-	public static void injectJavaScript(SeleniumServer seleniumServer, boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
-	    int len = 8192;
+    /**
+     * re-read selenium js.  Don't maintain it indefinitely for now since then we would need to
+     * restart the server to see changes.  Once the selenium js is firm, this should change.
+     * @throws IOException 
+     *
+     */
+    public static void init() {
+        String key = "__SELENIUM_JS__";
+        
+        StringBuffer sb = new StringBuffer();
+        try {
+            appendFileContent(sb, "/jsunit/app/jsUnitCore.js");
+            appendFileContent(sb, "/core/scripts/xmlextras.js");
+            appendFileContent(sb, "/core/scripts/selenium-browserdetect.js");
+            appendFileContent(sb, "/core/scripts/selenium-browserbot.js");
+            appendFileContent(sb, "/core/scripts/prototype-1.4.0.js ");
+            appendFileContent(sb, "/core/scripts/find_matching_child.js ");
+            appendFileContent(sb, "/core/scripts/selenium-api.js");
+            appendFileContent(sb, "/core/scripts/selenium-commandhandlers.js");
+            appendFileContent(sb, "/core/scripts/selenium-executionloop.js");
+            appendFileContent(sb, "/core/scripts/selenium-seleneserunner.js");
+            appendFileContent(sb, "/core/scripts/selenium-logging.js");
+            appendFileContent(sb, "/core/scripts/htmlutils.js");
+            appendFileContent(sb, "/core/xpath/misc.js");
+            appendFileContent(sb, "/core/xpath/dom.js");
+            appendFileContent(sb, "/core/xpath/xpath.js");
+            appendFileContent(sb, "/core/scripts/user-extensions.js");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        contentTransformations.put(key, sb.toString());
+    }
+    
+	private static void appendFileContent(StringBuffer sb, String url) throws IOException {
+        InputStream in = new ClassPathResource(url).getInputStream();
+        if (in==null) {
+            if (!url.endsWith("user-extensions.js")) {
+                throw new RuntimeException("couldn't find " + url);
+            }
+        }
+        else {
+            byte[] buf = new byte[8192];
+            while (true) {
+                int len = in.read(buf, 0, 8192);
+                if (len==-1) {
+                    break;
+                }
+                sb.append(new String(buf, 0, len));
+            }
+        }
+    }
+
+    public static void injectJavaScript(SeleniumServer seleniumServer, boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
+	    if (!contentTransformations.containsKey("__SELENIUM_JS__")) {
+	        init();   
+        }
+        
+        int len = 8192;
         byte[] buf = new byte[len];
         len = readStream(in, buf, len);
         if (len == -1) {
@@ -79,7 +132,6 @@ public class InjectionHelper {
                                              Pattern.CASE_INSENSITIVE);
             isKnownToBeHtml = regexp.matcher(data).find();
         }
-        boolean isFrameSet = false;
         String url = response.getHttpRequest().getRequestURL().toString();
         if (SeleniumServer.getDebugURL().equals(url)) {
             System.out.println("debug URL seen");
@@ -88,21 +140,7 @@ public class InjectionHelper {
         if (!isKnownToBeHtml) {
             out.write(buf, 0, len);
         }
-        else {
-            Pattern regexp = Pattern.compile("<\\s*frameset",
-                                             Pattern.CASE_INSENSITIVE);
-            isFrameSet = regexp.matcher(data).find();
-            if (isFrameSet) {
-                // JavaScript inserted at the end of an HTML file is executed on load *unless*
-                // the file is a frame set.  In that case, only by means of the onload hook can
-                // we execute.
-                data = usurpOnUnloadHook(data, "runTest");
-            }
-        }
-        String proxyHost = "localhost";
-        int proxyPort = SeleniumServer.getPortDriversShouldContact();
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
-
         
         if (SeleniumServer.isDebugMode()) {
             System.out.println(url + " (InjectionHelper looking)");
@@ -115,38 +153,23 @@ public class InjectionHelper {
                 System.out.println("injecting...");
             }
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
-
-            String injectionHtml = isFrameSet ? "/core/scripts/injection.html" : "/core/scripts/injection_iframe.html";
+            boolean seleniumInSameWindow = true;
+            String injectionHtml = seleniumInSameWindow ? "/core/scripts/injection.html" : "/core/scripts/injection_iframe.html";
             InputStream jsIn = new ClassPathResource(injectionHtml).getInputStream();
-            if (isFrameSet) {
-                out.write(makeJsChunk("var isFrameset = true;\n"));
+            if (seleniumInSameWindow) {
+                out.write(makeJsChunk("var seleniumInSameWindow = true;\n"));
             }
-            out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
-            if (isFrameSet) {
-                // Some background on the code below: broadly speaking, how we inject the JavaScript
-                // when running in proxy injection mode depends on whether we are in a frame set file or not.
-                //
-                // In regular HTML files, the selenium JavaScript is injected into an iframe called "selenium"
-                // in order to reduce its impact on the JavaScript environment (through namespace pollution,
-                // etc.).  So in regular HTML files, we need to look at the parent of the current window when we want
-                // a handle to, e.g., the application window.
-                //
-                // In frame set files, JavaScript inserted at EOF will be ignored, so everything must go into the head.
-                out.write(setSomeJsVars(sessionId));
-            }
+            contentTransformations.put("@SESSION_ID@", sessionId);
+            writeDataWithUserTransformations("", jsIn, out);
             jsIn.close();
-            writeDataWithUserTransformations(data, in, out);
-            if (!isFrameSet) {
-                jsIn = new ClassPathResource("/core/scripts/injectionAtEOF.html").getInputStream();
-                out.write(getJsWithSubstitutions(jsIn, proxyHost, proxyPort, sessionId));
+            if (seleniumInSameWindow) {
                 out.write(setSomeJsVars(sessionId));
-                jsIn.close();
-                
-                for (String filename : userJsInjectionFiles) {
-                    jsIn = new FileInputStream(filename);
-                    IO.copy(jsIn, out); 
-                }
             }
+            for (String filename : userJsInjectionFiles) {
+                jsIn = new FileInputStream(filename);
+                IO.copy(jsIn, out); 
+            }
+            writeDataWithUserTransformations(data, in, out);
         }
     }
             
@@ -174,11 +197,19 @@ public class InjectionHelper {
     private static void writeDataWithUserTransformations(String data, InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[8192];
         while (true) {
-            for (String beforeRegexp : userContentTransformations.keySet()) {
-                String after = userContentTransformations.get(beforeRegexp);
-                data = data.replaceAll(beforeRegexp, after);
+            for (String beforeRegexp : contentTransformations.keySet()) {
+                String after = contentTransformations.get(beforeRegexp);
+                try {
+                    data = data.replaceAll(beforeRegexp, after);
+                }
+                catch (IllegalArgumentException e) {
+                    // bad regexp or bad back ref in the 'after'.  
+                    // Do a straight substitution instead.
+                    // (This logic needed for injection.html's __SELENIUM_JS__
+                    // replacement to work.)
+                    data = data.replace(beforeRegexp, after);       
+                }
             }
-            
             out.write(data.getBytes());
             int len = in.read(buf);
             if (len == -1) {
@@ -199,39 +230,40 @@ public class InjectionHelper {
         return makeJsChunk(moreJs.toString());
     }
 
-    private static String usurpOnUnloadHook(String data, String string) {
-        Pattern framesetAreaRegexp = Pattern.compile("(<\\s*frameset.*?>)", Pattern.CASE_INSENSITIVE);
-        Matcher framesetMatcher = framesetAreaRegexp.matcher(data);
-        if (!framesetMatcher.find()) {
-            System.out.println("WARNING: looked like a frameset, but couldn't retrieve the frameset area");
-            return data;
-        }
-        String onloadRoutine = "selenium_frameRunTest()";
-        String frameSetText = framesetMatcher.group(1);
-        Pattern onloadRegexp = Pattern.compile("onload='(.*?)'", Pattern.CASE_INSENSITIVE);
-        Matcher onloadMatcher = onloadRegexp.matcher(frameSetText);
-        if (!onloadMatcher.find()) {
-            onloadRegexp = Pattern.compile("onload=\"(.*?)\"", Pattern.CASE_INSENSITIVE); // try double quotes
-            onloadMatcher = onloadRegexp.matcher(frameSetText);
-        }
-        if (onloadMatcher.find()) {
-            String oldOnloadRoutine = onloadMatcher.group(1);
-            frameSetText = onloadMatcher.replaceFirst("");
-            String escapedOldOnloadRoutine = null;
-            try {
-                escapedOldOnloadRoutine = URLEncoder.encode(oldOnloadRoutine, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("could not handle " + oldOnloadRoutine + ": " + e);
-            }
-            onloadRoutine = "selenium_frameRunTest(unescape('" + escapedOldOnloadRoutine  + "'))";
-        }
-        
-        // either there was no existing onload, or it's been stripped out
-        Pattern framesetTagRegexp = Pattern.compile("<\\s*frameset", Pattern.CASE_INSENSITIVE);
-        frameSetText = framesetTagRegexp.matcher(frameSetText).replaceFirst("<frameset onload=\"" + onloadRoutine + "\"");
-        data = framesetMatcher.replaceFirst(frameSetText);
-        return data;
-    }
+    // This logic may be useful on some browsers which don't support load listeners.
+//    private static String usurpOnUnloadHook(String data, String string) {
+//        Pattern framesetAreaRegexp = Pattern.compile("(<\\s*frameset.*?>)", Pattern.CASE_INSENSITIVE);
+//        Matcher framesetMatcher = framesetAreaRegexp.matcher(data);
+//        if (!framesetMatcher.find()) {
+//            System.out.println("WARNING: looked like a frameset, but couldn't retrieve the frameset area");
+//            return data;
+//        }
+//        String onloadRoutine = "selenium_frameRunTest()";
+//        String frameSetText = framesetMatcher.group(1);
+//        Pattern onloadRegexp = Pattern.compile("onload='(.*?)'", Pattern.CASE_INSENSITIVE);
+//        Matcher onloadMatcher = onloadRegexp.matcher(frameSetText);
+//        if (!onloadMatcher.find()) {
+//            onloadRegexp = Pattern.compile("onload=\"(.*?)\"", Pattern.CASE_INSENSITIVE); // try double quotes
+//            onloadMatcher = onloadRegexp.matcher(frameSetText);
+//        }
+//        if (onloadMatcher.find()) {
+//            String oldOnloadRoutine = onloadMatcher.group(1);
+//            frameSetText = onloadMatcher.replaceFirst("");
+//            String escapedOldOnloadRoutine = null;
+//            try {
+//                escapedOldOnloadRoutine = URLEncoder.encode(oldOnloadRoutine, "UTF-8");
+//            } catch (UnsupportedEncodingException e) {
+//                throw new RuntimeException("could not handle " + oldOnloadRoutine + ": " + e);
+//            }
+//            onloadRoutine = "selenium_frameRunTest(unescape('" + escapedOldOnloadRoutine  + "'))";
+//        }
+//        
+//        // either there was no existing onload, or it's been stripped out
+//        Pattern framesetTagRegexp = Pattern.compile("<\\s*frameset", Pattern.CASE_INSENSITIVE);
+//        frameSetText = framesetTagRegexp.matcher(frameSetText).replaceFirst("<frameset onload=\"" + onloadRoutine + "\"");
+//        data = framesetMatcher.replaceFirst(frameSetText);
+//        return data;
+//    }
 
     private static byte[] makeJsChunk(String js) {
         StringBuffer sb = new StringBuffer("\n<script language=\"JavaScript\">\n");
@@ -240,35 +272,8 @@ public class InjectionHelper {
         return sb.toString().getBytes();
     }
 
-    private static byte[] getJsWithSubstitutions(InputStream jsIn, String proxyHost, int proxyPort, String sessionId) throws IOException {
-        if (jsIn.available()==0) {
-            throw new RuntimeException("cannot read injected JavaScript stream");
-        }
-        byte[] buf = new byte[8192];
-        StringBuffer sb = new StringBuffer();
-        while(true) {
-            int len = jsIn.read(buf);
-            if (len <= 0) {
-                break;
-            }
-            sb.append(new String(buf, 0, len, "UTF-8"));
-        }
-        
-        if (sessionId==null) {
-            sessionId = "uninitialized";
-        }
-
-        sessionId = "\"" + sessionId + "\"";
-        
-        
-        String js = sb.toString(); 
-        js = js.replaceAll("@SESSION_ID@", sessionId);
-        
-        return js.getBytes();   
-    }
-
     public static boolean addUserContentTransformation(String before, String after ) {
-        userContentTransformations.put(before, after);
+        contentTransformations.put(before, after);
         return true;
     }
     
@@ -283,7 +288,7 @@ public class InjectionHelper {
     }
 
     public static boolean userContentTransformationsExist() {
-        return !userContentTransformations.isEmpty();
+        return !contentTransformations.isEmpty();
     }
 
     public static boolean userJsInjectionsExist() {

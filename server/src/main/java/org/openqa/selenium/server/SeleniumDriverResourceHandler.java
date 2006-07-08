@@ -420,25 +420,29 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     "almost surely inappropriate, so I'm changing it to *pifirefox...");
             browserString = "*pifirefox";
         }
+        if (SeleniumServer.isProxyInjectionMode()) {
+            InjectionHelper.init();
+        }
         if (browserString == null) {
             throw new IllegalArgumentException("browser string may not be null");
         }
         String sessionId = getUnusedBrowserSession(browserString);
         SeleneseQueue queue;
         if (sessionId != null) {
+            setLastSessionId(sessionId); 
             queue = getQueueSet(sessionId).getSeleneseQueue();
         }
         else {
             sessionId = Long.toString(System.currentTimeMillis() % 1000000);
+            setLastSessionId(sessionId); 
             BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
             queue = getQueueSet(sessionId).getSeleneseQueue();
             BrowserLauncher launcher = blf.getBrowserLauncher(browserString, sessionId, queue);
-            launcher.launchRemoteSession(startURL);
-            queue.discardCommandResult();
             launchers.put(sessionId, launcher);
             sessionIdsToBrowserStrings.put(sessionId, browserString);
+            launcher.launchRemoteSession(startURL);
+            queue.discardCommandResult();
         }
-        setLastSessionId(sessionId); 
         System.out.println("Allocated session " + sessionId + " for " + startURL);
         queue.doCommand("setContext", sessionId, "");
         return sessionId;
