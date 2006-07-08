@@ -32,7 +32,6 @@ var cmd4 = document.createElement("div");
 var postResult = "START";
 var debugMode = false;
 var relayToRC = null;	// override in injection.html
-var relayBotToRC = null;	// override in injection.html
 var queryString = null;
 var xmlHttpForCommandsAndResults = null;
 var proxyInjectionMode = false;
@@ -216,6 +215,9 @@ function serializeObject(name, x)
     }
     return s;
 }
+
+function relayBotToRC(s) {}
+
 
 function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     if (async==null) {

@@ -168,6 +168,9 @@ TestLoop.prototype.getCommandInterval = function() {
     return 0;
 };
 
+function noop() { 
+};
+
 TestLoop.prototype.nextCommand = noop;
 
 TestLoop.prototype.commandStarted = noop;
@@ -179,10 +182,6 @@ TestLoop.prototype.commandComplete = noop;
 TestLoop.prototype.testComplete = noop;
 
 TestLoop.prototype.pause = noop;
-
-function noop() {
-
-};
 
 /**
  * Tell Selenium to expect a failure on the next command execution. This
