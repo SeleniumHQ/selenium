@@ -131,7 +131,7 @@ EqualsArray.prototype.item = function(index) {
 }
 
 function pause(milliseconds) {
-	return "time.sleep(" + (parseInt(milliseconds) / 1000) + ");";
+	return "time.sleep(" + (parseInt(milliseconds) / 1000) + ")";
 }
 
 function echo(message) {

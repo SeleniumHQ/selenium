@@ -16,7 +16,7 @@ function formatHeader(testCase) {
 									  replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
 	var header = options.header.replace(/\$\{className\}/g, className).
 		replace(/\$\{methodName\}/g, methodName);
-	this.lastIndent = "    ";
+	this.lastIndent = indents(2);
 	formatLocal.header = header;
 	return formatLocal.header;
 }
