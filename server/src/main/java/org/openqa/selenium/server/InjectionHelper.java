@@ -78,8 +78,8 @@ public class InjectionHelper {
             appendFileContent(sb, "/core/scripts/xmlextras.js");
             appendFileContent(sb, "/core/scripts/selenium-browserdetect.js");
             appendFileContent(sb, "/core/scripts/selenium-browserbot.js");
-            appendFileContent(sb, "/core/scripts/prototype-1.4.0.js ");
-            appendFileContent(sb, "/core/scripts/find_matching_child.js ");
+            appendFileContent(sb, "/core/scripts/prototype-1.4.0.js");
+            appendFileContent(sb, "/core/scripts/find_matching_child.js");
             appendFileContent(sb, "/core/scripts/selenium-api.js");
             appendFileContent(sb, "/core/scripts/selenium-commandhandlers.js");
             appendFileContent(sb, "/core/scripts/selenium-executionloop.js");
