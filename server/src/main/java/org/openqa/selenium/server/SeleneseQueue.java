@@ -35,6 +35,7 @@ public class SeleneseQueue {
     private String uniqueId;
     private boolean slowMode;
     private FrameAddress frameAddress = null;
+    private boolean resultExpected = false;
 
     public SeleneseQueue(String sessionId, FrameAddress frameAddress) {
         this(sessionId);
@@ -66,11 +67,15 @@ public class SeleneseQueue {
      * return "OK" or an error message.
      */
     public String doCommand(String command, String field, String value) {
+        resultExpected = true;
         doCommandWithoutWaitingForAResponse(command, field, value);
         try {
             return (String) queueGet("commandResultHolder", commandResultHolder);
         } catch (SeleniumCommandTimedOutException e) {
             return "ERROR: Command timed out";
+        }
+        finally {
+            resultExpected = false;
         }
     }
 
@@ -94,9 +99,11 @@ public class SeleneseQueue {
                         System.out.println("Apparently a page load result preceded the command; will ignore it...");
                         System.out.println("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
                     }
+                    setResultExpected(true);
                     queueGet("doCommand spotted early result, discard", commandResultHolder);
                     queuePut("put a dummy command to satisfy an orphaned waiting thread from a page which has been reloaded: commandHolder", 
                             commandHolder, new DefaultSeleneseCommand("dummy command for a page which has been reloaded", "dummy", "dummy"));
+                    setResultExpected(false);
                 }
                 else {
                     throw new RuntimeException("unexpected result " + commandResultHolder.peek());
@@ -182,13 +189,16 @@ public class SeleneseQueue {
         if (commandResult == null) {
         	throw new RuntimeException("null command result");
         }
-        if (!commandResultHolder.hasBlockedGetter()) {
+        if (!resultExpected ) {
+            if (commandResultHolder.hasBlockedGetter()) {
+                throw new RuntimeException("blocked getter for " + this + " but !resultExpected");
+            }
             // This logic is to account for the case where in proxy injection mode, it is possible 
             // that a page reloads without having been explicitly asked to do so (e.g., an event 
             // in one frame causes reloads in others).
             if (commandResult.equals("OK")) {
                 if (SeleniumServer.isDebugMode()) {
-                    System.out.println("Ignoring result which no one is waiting for.");
+                    System.out.println("Ignoring page load no one is waiting for.");
                 }
             }
             else if (commandResult.startsWith("OK")) {
@@ -222,7 +232,9 @@ public class SeleneseQueue {
      *
      */
     public void discardCommandResult() {
+        resultExpected = true;
         queueGet("commandResultHolder discard", commandResultHolder);
+        resultExpected = false;
     }
 
     /**
@@ -243,7 +255,13 @@ public class SeleneseQueue {
     }
 
     public String waitForResult() {
-        return (String) queueGet("waitForResult commandResultHolder", commandResultHolder);
+        try {
+            setResultExpected(true);            
+            return (String) queueGet("waitForResult commandResultHolder", commandResultHolder);
+        }
+        finally {
+            setResultExpected(false);
+        }
     }
     
     public String waitForResult(int timeout) {
@@ -256,5 +274,9 @@ public class SeleneseQueue {
 
     public SingleEntryAsyncQueue getCommandResultHolder() {
         return commandResultHolder;
+    }
+
+    public void setResultExpected(boolean resultExpected) {
+        this.resultExpected = resultExpected;
     }
 }
