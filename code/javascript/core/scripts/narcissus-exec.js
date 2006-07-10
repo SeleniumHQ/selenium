@@ -259,7 +259,8 @@ function toObject(v, r, rn) {
 }
 
 function execute(n, x) {
-    new_block = new Array();
+    if (!this.new_block)
+        new_block = new Array();
     //alert (n)
     var a, f, i, j, r, s, t, u, v;
     switch (n.type) {
@@ -545,8 +546,9 @@ function execute(n, x) {
             var the_end = n.end
             var the_statement = parse_result.tokenizer.source.slice(the_start,the_end)
             //global.debug.document.body.innerHTML += ('<pre>&gt;&gt;&gt; <b>' + the_statement + '</b></pre>')
-            
+            LOG.info('>>>' + the_statement)
             x.result = getValue(execute(n.expression, x));   
+            //if (x.result)
             //global.debug.document.body.innerHTML += ( '<pre>&gt;&gt;&gt; ' + x.result + '</pre>')
             
         break;

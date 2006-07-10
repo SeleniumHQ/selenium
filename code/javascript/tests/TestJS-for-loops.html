@@ -17,16 +17,20 @@
 </head>
 <body onload="jsparse(document);">
 
-<script id="sejs" type="text/se+js" onload="jsparse(document);">
+<script id="sejs" type="text/se+js">
 
 _url = "../tests//html/show_message.html?msg="
 
-for (var _i=0;_i<2;_i++) {
+
+for (var _i=0;_i<25;_i++) {
     se.doOpen(_url+_i)
+    se.doWaitForPageToLoad(5000)
 }
 
-se.doOpen(_url+'')
-se.doOpen(_url+'')
+se.doOpen(_url+'the')
+se.doWaitForPageToLoad(5000)
+se.doOpen(_url+'end')
+se.doWaitForPageToLoad(5000)
 
 </script>
 
