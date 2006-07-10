@@ -630,6 +630,10 @@ public class SeleniumServer {
 
     static public void setDebugMode(boolean debugMode) {
         SeleniumServer.debugMode = debugMode;
+        if (debugMode) {
+            System.out.println("Selenium server running in debug mode.");
+            System.err.println("Standard error test.");
+        }
     }
 
     public static boolean isProxyInjectionMode() {
