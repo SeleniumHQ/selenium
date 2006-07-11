@@ -61,7 +61,7 @@ function TestLoop(commandFactory) {
         var delay = this.pauseInterval || this.getCommandInterval();
         this.pauseInterval = undefined;
 
-        if (delay < 0) {
+        if (this.currentCommand.stopOnThisCommand || delay < 0) {
             // Pause: enable the "next/continue" button
             this.pause();
         } else {

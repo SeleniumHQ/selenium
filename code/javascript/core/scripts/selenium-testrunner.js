@@ -165,6 +165,7 @@ function getIframeDocument(iframe)
 
 function onloadTestSuite() {
     removeLoadListener(getSuiteFrame(), onloadTestSuite);
+    addLoadListener(getTestFrame(), addBreakpointSupport);
 
     // Add an onclick function to each link in all suite tables
     var allTables = getIframeDocument(getSuiteFrame()).getElementsByTagName("table");
@@ -228,6 +229,8 @@ function addOnclick(suiteTable, rowNum) {
             while (bodyElement.firstChild != bodyElement.lastChild) {
                 bodyElement.removeChild(bodyElement.firstChild);
             }
+
+            addBreakpointSupport();
         }
         // Otherwise, just open up the fresh page.
         else {
@@ -237,6 +240,32 @@ function addOnclick(suiteTable, rowNum) {
         return false;
     };
 }
+
+function addBreakpointSupport() {
+    var testDocument = getIframeDocument(getTestFrame());
+    var tables = testDocument.getElementsByTagName("table");
+    for (var i = 0; i < tables.length; i++) {
+        var candidateRows = tables[i].rows;
+        for (var j = 1; j < candidateRows.length; j++) {
+            Element.setStyle(candidateRows[j], {"cursor" : "pointer"});
+            Event.observe(candidateRows[j], 'click', getBreakpointEventHandler(candidateRows[j]), false);
+        }
+    }
+}
+
+function getBreakpointEventHandler(commandRow) {
+    return function() {
+        if (commandRow.stopOnThisCommand == undefined) {
+            commandRow.stopOnThisCommand = true;
+            commandRow.beforeBackgroundColor = Element.getStyle(commandRow, "backgroundColor");
+            Element.setStyle(commandRow, {"background-color" : "#cccccc"});
+        } else {
+            delete commandRow.stopOnThisCommand;
+            Element.setStyle(commandRow, {"background-color" : commandRow.beforeBackgroundColor});
+        }
+    }
+}
+
 
 function isQueryParameterTrue(name) {
     parameterValue = getQueryParameter(name);
@@ -708,7 +737,8 @@ function nextCommand() {
     row.cells[2].originalHTML = row.cells[2].innerHTML;
     return new SeleniumCommand(getText(row.cells[0]),
                                getText(row.cells[1]),
-                               getText(row.cells[2]));
+                               getText(row.cells[2]),
+                               row.stopOnThisCommand);
 }
 
 function removeNbsp(value) {

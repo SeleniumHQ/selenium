@@ -364,8 +364,9 @@ function CommandResult(processState) {
     this.result = null;
 }
 
-function SeleniumCommand(command, target, value) {
+function SeleniumCommand(command, target, value, stopOnThisCommand) {
     this.command = command;
     this.target = target;
     this.value = value;
+    this.stopOnThisCommand = stopOnThisCommand;
 }
