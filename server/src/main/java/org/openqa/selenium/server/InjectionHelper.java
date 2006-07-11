@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mortbay.http.HttpResponse;
@@ -128,9 +129,12 @@ public class InjectionHelper {
         }
         String data = new String(buf, 0, len);
         if (!isKnownToBeHtml) {
-            Pattern regexp = Pattern.compile("<\\s*(html|frameset|head|body)",
-                                             Pattern.CASE_INSENSITIVE);
-            isKnownToBeHtml = regexp.matcher(data).find();
+            Pattern regexp = Pattern.compile("<\\s*meta([^>]*?content-type[^>]*?)>", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = regexp.matcher(data);
+            if (matcher.find()) {
+                String metaTag = matcher.group();
+                isKnownToBeHtml = (metaTag.indexOf("text/html")!=-1); 
+            }
         }
         String url = response.getHttpRequest().getRequestURL().toString();
         if (SeleniumServer.getDebugURL().equals(url)) {
