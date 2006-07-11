@@ -44,12 +44,8 @@ public class ClientDriverSuite extends TestCase {
 // Once that bug is fixed, this class should be a TestSuite, not a TestCase
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
-            if (!isProxyInjectionMode) {
-                // doesn't work in proxy injection mode -- see http://jira.openqa.org/browse/SRC-100:
-                // disable for all, temporarily, while irian is down.
-                //suite.addTestSuite(ApacheMyFacesSuggestTest.class);
-            }
-            else {
+            suite.addTestSuite(ApacheMyFacesSuggestTest.class);
+            if (isProxyInjectionMode) {
 //              once frames support is added to the main trunk, we will be able to run the following in non-proxy injection mode:
                 suite.addTestSuite(TestFramesClick.class);
                 suite.addTestSuite(TestFramesOpen.class);
