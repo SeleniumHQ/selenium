@@ -61,6 +61,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private Map<String, String> domainsBySessionId = new HashMap<String, String>();
     private Map<String, String> unusedBrowserSessions = new HashMap<String, String>();
     private Map<String, String> sessionIdsToBrowserStrings = new HashMap<String, String>();
+    private StringBuffer logMessagesBuffer = new StringBuffer();
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
@@ -200,7 +201,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
         logMessages = "\t" + logMessages.replaceAll("\n", "\n\t");  // put a tab in front of all the messages
         logMessages = logMessages.replaceFirst("\t$", "");
-        
+        logMessagesBuffer.append(logMessages);
         System.out.print(logMessages);
         return grepVStringsStartingWith("logLevel=", s);
     }
@@ -313,6 +314,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             sessionId = getNewBrowserSession(browserString, values.get(1));
             setDomain(sessionId, values.get(1));
             results = "OK," + sessionId;
+        } else if ("getLogMessages".equals(cmd)) {
+            results = logMessagesBuffer.toString();
+            logMessagesBuffer.setLength(0);
         } else if ("testComplete".equals(cmd)) {
             results = endBrowserSession(sessionId, SeleniumServer.reusingBrowserSessions());
         } else if ("shutDown".equals(cmd)) {
