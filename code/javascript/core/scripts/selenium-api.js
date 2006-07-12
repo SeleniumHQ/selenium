@@ -447,11 +447,11 @@ Selenium.prototype.getLogMessages = function() {
         * <p>This is a placeholder intended to make the code generator make this API
         * available to clients.  The selenium server will intercept this call, however, 
         * and return its recordkeeping of log messages since the last call to this API.
-        * Thus this code in JavaScript will never be called.
+        * Thus this code in JavaScript will never be called.</p>
         * 
-        * The reason I opted for a servercentric solution is to be able to support
+        * <p>The reason I opted for a servercentric solution is to be able to support
         * multiple frames served from different domains, which would break a
-        * centralized JavaScript logging mechanism under some conditions.
+        * centralized JavaScript logging mechanism under some conditions.</p>
 	*
         * @return string all log messages seen since the last call to this API
 	*/
