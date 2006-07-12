@@ -1101,6 +1101,23 @@ Selenium.prototype.getAllFields = function() {
    return this.page().getAllFields();
 };
 
+Selenium.prototype.getAllWindowIds = function() {
+  /** Returns the IDs of all windows that the browser knows about.
+   * 
+   * @return string[] the IDs of all windows that the browser knows about.
+   */
+   return null; // not implemented yet
+};
+
+
+Selenium.prototype.getAllWindowNames = function() {
+  /** Returns the names of all windows that the browser knows about.
+   * 
+   * @return string[] the names of all windows that the browser knows about.
+   */
+   return null; // not implemented yet
+};
+
 Selenium.prototype.getHtmlSource = function() {
 	/** Returns the entire HTML source between the opening and
    * closing "html" tags.
@@ -1456,7 +1473,7 @@ Selenium.prototype.doPause = function(waitTime) {
 
 Selenium.prototype.doPause.dontCheckAlertsAndConfirms = true;
 
-Selenium.prototype.doBreak = function() {
+Selenium.prototype.doBreakUntilContinue = function() {
     /** Halt the currently running test, and wait for the user to press the Continue button.
     * This command is useful for debugging, but be careful when using it, because it will
     * force automated tests to hang until a user intervenes manually.
