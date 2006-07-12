@@ -505,7 +505,7 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
     
-    testLoop.waitForCondition = function () {
+    currentTest.waitForCondition = function () {
         var targetWindow = selenium.browserbot.getTargetWindow(windowID);
         if (!targetWindow) return false;
         if (!targetWindow.location) return false;
@@ -516,8 +516,8 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
         return true;
     };
     
-    testLoop.waitForConditionStart = new Date().getTime();
-    testLoop.waitForConditionTimeout = timeout;
+    currentTest.waitForConditionStart = new Date().getTime();
+    currentTest.waitForConditionTimeout = timeout;
 	
 }
 
@@ -1232,12 +1232,12 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
     
-    testLoop.waitForCondition = function () {
+    currentTest.waitForCondition = function () {
         return eval(script);
     };
     
-    testLoop.waitForConditionStart = new Date().getTime();
-    testLoop.waitForConditionTimeout = timeout;
+    currentTest.waitForConditionStart = new Date().getTime();
+    currentTest.waitForConditionTimeout = timeout;
 };
 
 Selenium.prototype.doWaitForCondition.dontCheckAlertsAndConfirms = true;
@@ -1250,7 +1250,7 @@ Selenium.prototype.doSetTimeout = function(timeout) {
 	 * The default timeout is 30 seconds.
 	 * @param timeout a timeout in milliseconds, after which the action will return with an error
 	 */
-	testLoop.waitForConditionTimeout = timeout;
+	currentTest.waitForConditionTimeout = timeout;
 }
 
 Selenium.prototype.doWaitForPageToLoad = function(timeout) {
@@ -1447,3 +1447,63 @@ OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
 };
 
 
+Selenium.prototype.doPause = function(waitTime) {
+    /** Wait for the specified amount of time (in milliseconds)
+    * @param waitTime the amount of time to sleep (in milliseconds)
+    */
+    currentTest.pauseInterval = waitTime;
+};
+
+Selenium.prototype.doPause.dontCheckAlertsAndConfirms = true;
+
+Selenium.prototype.doBreak = function() {
+    /** Halt the currently running test, and wait for the user to press the Continue button.
+    * This command is useful for debugging, but be careful when using it, because it will
+    * force automated tests to hang until a user intervenes manually.
+    */
+    document.getElementById('modeStep').checked = true;
+    runInterval = -1;
+};
+
+Selenium.prototype.doStore = function(expression, variableName) {
+    /** This command is a synonym for storeExpression.
+    * @param expression the value to store
+    * @param variableName the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+    */
+    storedVars[variableName] = expression;
+}
+
+/*
+ * Click on the located element, and attach a callback to notify
+ * when the page is reloaded.
+ */
+// DGF TODO this code has been broken for some time... what is it trying to accomplish?
+Selenium.prototype.XXXdoModalDialogTest = function(returnValue) {
+    this.browserbot.doModalDialogTest(returnValue);
+};
+
+Selenium.prototype.doEcho = function(message) {
+    /** Prints the specified message into the third table cell in your Selenese tables.
+    * Useful for debugging.
+    * @param message the message to print
+    */
+	currentTest.currentRow.cells[2].innerHTML = message;
+}
+
+Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
+	/**
+   * Verifies that the selected option of a drop-down satisfies the optionSpecifier.  <i>Note that this command is deprecated; you should use assertSelectedLabel, assertSelectedValue, assertSelectedIndex, or assertSelectedId instead.</i>
+   *
+   * <p>See the select command for more information about option locators.</p>
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
+   */
+    var element = this.page().findElement(selectLocator);
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    if (element.selectedIndex == -1)
+    {
+        Assert.fail("No option selected");
+    }
+    locator.assertSelected(element);
+};

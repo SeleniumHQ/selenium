@@ -64,7 +64,6 @@
             <arg value="/nologo"/>
             <arg file="javascript/iedoc.js"/>
             <arg file="javascript/core/scripts/selenium-api.js" />
-            <arg file="javascript/core/scripts/selenium-testrunner.js" />
         </exec>
         <xmlvalidate file="javascript/core/iedoc-core.xml" lenient="true"/>
         <copy file="javascript/core/iedoc-core.xml" tofile="${image.dir}/core/iedoc-core.xml" overwrite="true"/>

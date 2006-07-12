@@ -23,22 +23,25 @@ Copyright 2004 ThoughtWorks, Inc
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/prototype-1.4.0.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
 <script language="JavaScript" type="text/javascript">
     function setUp() {
         commandFactory = new Mock();
         LOG = new Mock();
         selenium = new Selenium();
-        testLoop = new TestLoop(commandFactory);
+        global = new Object();
+        seleniumTest = new TestRunner(document, false, commandFactory);
         // We want to verify that testLoop.commandError() function is called appropriately
         // by testLoop.handleCommandError()
-        commandErrorHandler = new Mock();        
-        testLoop.commandError = function(message) {
+        commandErrorHandler = new Mock();
+        seleniumTest.commandError = function(message) {
         	commandErrorHandler.handleError(message);
         };
     };
@@ -53,14 +56,14 @@ Copyright 2004 ThoughtWorks, Inc
         var error = new SeleniumError("Test Error");
         LOG.expects("error", "Test Error");
         commandErrorHandler.expects("handleError", "Test Error");
-        testLoop.handleCommandError(error);
+        seleniumTest._handleCommandError(error);
     };
-    
+
     function testSeleniumMalfunction() {
     	var error = new Error("Test Error");
         LOG.expects("exception", error);
         commandErrorHandler.expects("handleError", "Selenium failure. Please report to selenium-dev@openqa.org, with error details from the log window.  The error message is: Test Error");
-        testLoop.handleCommandError(error);    	
+        seleniumTest._handleCommandError(error);
     };
 
   </script>
@@ -68,7 +71,7 @@ Copyright 2004 ThoughtWorks, Inc
 
   <body>
     <p>
-    This page contains tests for the selenium-executionloop : handleCommandError()
+    This page contains tests for the SeleniumTest : handleCommandError()
     To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html
     </p>
   </body>

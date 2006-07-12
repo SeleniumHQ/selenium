@@ -1,3 +1,9 @@
+// for parsing selenium-testrunner.js correctly, the better way is not to put selenium api in selenium-testrunner.js
+document = new Object()
+window = new Object()
+navigator = new Object()
+TestLoop = new Object()
+Object.extend = function(){}
 
 function stripDoPrefix(name) {
 	if ("do" == name.substring(0, 2)) {

@@ -196,7 +196,7 @@ function setUp() {
         fail("Should have thrown an exception");
 	};
     
-    function testCreateWaitForActionFromPredicateSetsTestLoop() {
+    function testCreateWaitForActionFromPredicateSetsCurrentTest() {
     	// Make sure that the method looks at the isTrue property of the result.
         var mockPredicateResult = new Mock();
         mockPredicateResult.expectsProperty("isTrue").returns(true);
@@ -216,10 +216,10 @@ function setUp() {
     	var action = factory.createWaitForActionFromPredicate(predicate);
     	
     	// testLoop is normally set up by selenium api.
-    	testLoop = {};
+    	currentTest = {};
     	
     	action.call(mockSeleniumApi, "target", "value");
-    	assertTrue(testLoop.waitForCondition());
+    	assertTrue(currentTest.waitForCondition());
     	
     	mockPredicateResult.verify();
         mockSeleniumApi.verify();
@@ -236,10 +236,10 @@ function setUp() {
     	var action = factory.createWaitForActionFromPredicate(predicate);
     	
     	// testLoop is normally set up by selenium api.
-    	testLoop = {};
+    	currentTest = {};
     	
     	action.call("seleniumApi", "target", "value");
-    	assertFalse(testLoop.waitForCondition());
+    	assertFalse(currentTest.waitForCondition());
     };
     
     

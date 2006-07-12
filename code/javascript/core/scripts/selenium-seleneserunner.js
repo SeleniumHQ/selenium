@@ -33,13 +33,12 @@ var postResult = "START";
 var debugMode = false;
 var relayToRC = null;	// override in injection.html
 var queryString = null;
-var xmlHttpForCommandsAndResults = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
 function runTest() {
     var testAppFrame = document.getElementById('myiframe');
-     
+
     if (testAppFrame==null) {
         proxyInjectionMode = true;
     	testAppFrame = window;
@@ -59,19 +58,7 @@ function runTest() {
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
-    testLoop = new TestLoop(commandFactory);
-
-    testLoop.nextCommand = nextCommand;
-    testLoop.commandStarted = commandStarted;
-    testLoop.commandComplete = commandComplete;
-    testLoop.commandError = commandError;
-    testLoop.requiresCallBack = true;
-    testLoop.testComplete = function() {
-    	window.status = "Selenium Tests Complete, for this Test"
-    	// Continue checking for new results
-    	testLoop.continueTest();
-    	postResult = "START";
-    };
+    currentTest = new SeleneseRunner(commandFactory);
 
     if (document.getElementById("commandList") != null) {
     	document.getElementById("commandList").appendChild(cmd4);
@@ -79,11 +66,11 @@ function runTest() {
         document.getElementById("commandList").appendChild(cmd2);
         document.getElementById("commandList").appendChild(cmd1);
     }
-    
+
     var doContinue = getQueryVariable("continue");
 	if (doContinue != null) postResult = "OK";
 
-    testLoop.start();
+    currentTest.start();
 }
 
 function getQueryString() {
@@ -142,39 +129,6 @@ function buildBaseUrl() {
         return s.substring(0, slashPairOffset + pathSlashOffset) + "/selenium-server/core/";
 }
 
-function buildDriverParams() {
-    var params = "";
-
-    var host = getQueryVariable("driverhost");
-    var port = getQueryVariable("driverport");
-    if (host != undefined && port != undefined) {
-        params = params + "&driverhost=" + host + "&driverport=" + port;
-    }
-
-    var sessionId = getQueryVariable("sessionId");
-    if (sessionId == undefined) {
-    	sessionId = injectedSessionId;
-    }
-    if (sessionId != undefined) {
-        params = params + "&sessionId=" + sessionId;
-    }
-    return params;
-}
-
-function preventBrowserCaching() {
-    var t = (new Date()).getTime();
-    return "&counterToMakeURsUniqueAndSoStopPageCachingInTheBrowser=" + t;
-}   
-
-function nextCommand() {
-    var urlParms = "";
-    if (postResult == "START") {
-    	urlParms += "seleniumStart=true";
-    }
-    xmlHttpForCommandsAndResults = XmlHttp.create();
-    sendToRC(postResult, urlParms, handleHttpResponse, xmlHttpForCommandsAndResults);
-}
-
 function logToRc(message, logLevel) {
     if (logLevel==null) {
     	logLevel = "debug";
@@ -218,6 +172,188 @@ function serializeObject(name, x)
 
 function relayBotToRC(s) {}
 
+function setSeleniumWindowName(seleniumWindowName) {
+	selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
+}
+
+function slowClicked() {
+    slowMode = !slowMode;
+}
+
+function getIframeDocument(iframe) {
+    if (iframe.contentDocument) {
+        return iframe.contentDocument;
+    }
+    else {
+        return iframe.contentWindow.document;
+    }
+}
+
+SeleneseRunner = Class.create();
+Object.extend(SeleneseRunner.prototype, new TestLoop());
+Object.extend(SeleneseRunner.prototype, {
+    initialize : function(commandFactory) {
+        this.commandFactory = commandFactory;
+        this.requiresCallBack = true;
+        this.commandNode = null;
+        this.xmlHttpForCommandsAndResults = null;
+    },
+
+    nextCommand : function() {
+        var urlParms = "";
+        if (postResult == "START") {
+            urlParms += "seleniumStart=true";
+        }
+        this.xmlHttpForCommandsAndResults = XmlHttp.create();
+        sendToRC(postResult, urlParms, this._HandleHttpResponse.bind(this), this.xmlHttpForCommandsAndResults);
+    },
+
+    commandStarted : function(command) {
+        this.commandNode = document.createElement("div");
+        var innerHTML = command.command + '(';
+        if (command.target != null && command.target != "") {
+            innerHTML += command.target;
+            if (command.value != null && command.value != "") {
+                innerHTML += ', ' + command.value;
+            }
+        }
+        innerHTML += ")";
+        this.commandNode.innerHTML = innerHTML;
+        this.commandNode.style.backgroundColor = workingColor;
+        if (document.getElementById("commandList") != null) {
+            document.getElementById("commandList").removeChild(cmd1);
+            document.getElementById("commandList").removeChild(cmd2);
+            document.getElementById("commandList").removeChild(cmd3);
+            document.getElementById("commandList").removeChild(cmd4);
+            cmd4 = cmd3;
+            cmd3 = cmd2;
+            cmd2 = cmd1;
+            cmd1 = this.commandNode;
+            document.getElementById("commandList").appendChild(cmd4);
+            document.getElementById("commandList").appendChild(cmd3);
+            document.getElementById("commandList").appendChild(cmd2);
+            document.getElementById("commandList").appendChild(cmd1);
+        }
+    },
+
+    commandComplete : function(result) {
+
+        if (result.failed) {
+            if (postResult == "CONTINUATION") {
+                currentTest.aborted = true;
+            }
+            postResult = result.failureMessage;
+            this.commandNode.title = result.failureMessage;
+            this.commandNode.style.backgroundColor = failColor;
+        } else if (result.passed) {
+            postResult = "OK";
+            this.commandNode.style.backgroundColor = passColor;
+        } else {
+            if (result.result == null) {
+                postResult = "OK";
+            } else {
+                postResult = "OK," + result.result;
+            }
+            this.commandNode.style.backgroundColor = doneColor;
+        }
+    },
+
+    commandError : function(message) {
+        postResult = "ERROR: " + message;
+        this.commandNode.style.backgroundColor = errorColor;
+        this.commandNode.title = message;
+    },
+
+    testComplete : function() {
+        window.status = "Selenium Tests Complete, for this Test"
+        // Continue checking for new results
+        this.continueTest();
+        postResult = "START";
+    },
+
+    _HandleHttpResponse : function() {
+        if (this.xmlHttpForCommandsAndResults.readyState == 4) {
+            if (this.xmlHttpForCommandsAndResults.status == 200) {
+                var command = this._extractCommand(this.xmlHttpForCommandsAndResults);
+                this.currentCommand = command;
+                this.beginNextTest();
+            } else {
+                var s = 'xmlHttp returned: ' + this.xmlHttpForCommandsAndResults.status + ": " + this.xmlHttpForCommandsAndResults.statusText;
+                LOG.error(s);
+                this.currentCommand = null;
+                setTimeout(this.beginNextTest.bind(this), 2000);
+            }
+
+        }
+    },
+
+    _extractCommand : function(xmlHttp) {
+        if (slowMode) {
+            this._delay(2000);
+        }
+
+        var command;
+        try {
+            var re = new RegExp("^(.*?)\n((.|[\r\n])*)");
+            if (re.exec(xmlHttp.responseText)) {
+                command = RegExp.$1;
+                var rest = RegExp.$2;
+                rest = rest.trim();
+                if (rest) {
+                    eval(rest);
+                }
+            }
+            else {
+                command = xmlHttp.responseText;
+            }
+        } catch (e) {
+            alert('could not get responseText: ' + e.message);
+        }
+        if (command.substr(0, '|testComplete'.length) == '|testComplete') {
+            return null;
+        }
+
+        return this._createCommandFromRequest(command);
+    },
+
+
+    _delay : function(millis) {
+        var startMillis = new Date();
+        while (true) {
+            milli = new Date();
+            if (milli - startMillis > millis) {
+                break;
+            }
+        }
+    },
+
+// Parses a URI query string into a SeleniumCommand object
+    _createCommandFromRequest : function(commandRequest) {
+        //decodeURIComponent doesn't strip plus signs
+        var processed = commandRequest.replace(/\+/g, "%20");
+        // strip trailing spaces
+        var processed = processed.replace(/\s+$/, "");
+        var vars = processed.split("&");
+        var cmdArgs = new Object();
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            cmdArgs[pair[0]] = pair[1];
+        }
+        var cmd = cmdArgs['cmd'];
+        var arg1 = cmdArgs['1'];
+        if (null == arg1) arg1 = "";
+        arg1 = decodeURIComponent(arg1);
+        var arg2 = cmdArgs['2'];
+        if (null == arg2) arg2 = "";
+        arg2 = decodeURIComponent(arg2);
+        if (cmd == null) {
+            throw new Error("Bad command request: " + commandRequest);
+        }
+        return new SeleniumCommand(cmd, arg1, arg2);
+    }
+
+})
+
 
 function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     if (async==null) {
@@ -233,7 +369,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     url += "&localFrameAddress=" + (proxyInjectionMode ? makeAddressToAUTFrame() : "top");
     url += "&seleniumWindowName=" + getSeleniumWindowName();
     url += "&uniqueId=" + uniqueId;
-    
+
     if (callback==null) {
     	callback = function(){};
     }
@@ -244,177 +380,48 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     return null;
 }
 
- function handleHttpResponse() {
- 	if (xmlHttpForCommandsAndResults.readyState == 4) {
- 		if (xmlHttpForCommandsAndResults.status == 200) {
-                	var command = extractCommand(xmlHttpForCommandsAndResults);
- 			testLoop.currentCommand = command;
- 			testLoop.beginNextTest();
- 		} else {
- 			var s = 'xmlHttp returned: ' + xmlHttpForCommandsAndResults.status + ": " + xmlHttpForCommandsAndResults.statusText;
- 			LOG.error(s);
- 			testLoop.currentCommand = null;
- 			setTimeout("testLoop.beginNextTest();", 2000);
- 		}
- 		
- 	}
- }
+function buildDriverParams() {
+    var params = "";
 
+    var host = getQueryVariable("driverhost");
+    var port = getQueryVariable("driverport");
+    if (host != undefined && port != undefined) {
+        params = params + "&driverhost=" + host + "&driverport=" + port;
+    }
 
-function setSeleniumWindowName(seleniumWindowName) {
-	selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
+    var sessionId = getQueryVariable("sessionId");
+    if (sessionId == undefined) {
+    	sessionId = injectedSessionId;
+    }
+    if (sessionId != undefined) {
+        params = params + "&sessionId=" + sessionId;
+    }
+    return params;
 }
 
-function extractCommand(xmlHttp) {
-    if (slowMode) {
-        delay(2000);
-    }
-
-    var command;
-    try {
-        var re = new RegExp("^(.*?)\n((.|[\r\n])*)");
-        if (re.exec(xmlHttp.responseText)) {
-            command = RegExp.$1;
-            var rest = RegExp.$2;
-            rest = rest.trim();
-            if (rest) {
-            	eval(rest);
-            }
-        }
-        else {
-            command = xmlHttp.responseText;
-        }
-    } catch (e) {
-        alert('could not get responseText: ' + e.message);
-    }
-    if (command.substr(0,'|testComplete'.length)=='|testComplete') {
-        return null;
-    }
-
-    return createCommandFromRequest(command);
-}
-
-function commandStarted(command) {
-    commandNode = document.createElement("div");
-    innerHTML = command.command + '(';
-    if (command.target != null && command.target != "") {
-        innerHTML += command.target;
-        if (command.value != null && command.value != "") {
-            innerHTML += ', ' + command.value;
-        }
-    }
-    innerHTML += ")";
-    commandNode.innerHTML = innerHTML;
-    commandNode.style.backgroundColor = workingColor;
-    if (document.getElementById("commandList") != null) {
-    	document.getElementById("commandList").removeChild(cmd1);
-        document.getElementById("commandList").removeChild(cmd2);
-        document.getElementById("commandList").removeChild(cmd3);
-        document.getElementById("commandList").removeChild(cmd4);
-        cmd4 = cmd3;
-        cmd3 = cmd2;
-        cmd2 = cmd1;
-        cmd1 = commandNode;
-        document.getElementById("commandList").appendChild(cmd4);
-        document.getElementById("commandList").appendChild(cmd3);
-        document.getElementById("commandList").appendChild(cmd2);
-        document.getElementById("commandList").appendChild(cmd1);
-    }
-}
-
-function commandComplete(result) {
-    if (result.failed) {
-    	if (postResult == "CONTINUATION") {
-    		testLoop.aborted = true;
-    	}
-        postResult = result.failureMessage;
-        commandNode.title = result.failureMessage;
-        commandNode.style.backgroundColor = failColor;
-    } else if (result.passed) {
-        postResult = "OK";
-        commandNode.style.backgroundColor = passColor;
-    } else {
-    	if (result.result == null) {
-    		postResult = "OK";
-    	} else {
-    		postResult = "OK," + result.result;
-    	}
-        commandNode.style.backgroundColor = doneColor;
-    }
-}
-
-function commandError(message) {
-    postResult = "ERROR: " + message;
-    commandNode.style.backgroundColor = errorColor;
-    commandNode.title = message;
-}
-
-function slowClicked() {
-    slowMode = !slowMode;
-}
-
-function delay(millis) {
-    startMillis = new Date();
-    while (true) {
-        milli = new Date();
-        if (milli-startMillis > millis) {
-            break;
-        }
-    }
-}
-
-function getIframeDocument(iframe) {
-    if (iframe.contentDocument) {
-        return iframe.contentDocument;
-    }
-    else {
-        return iframe.contentWindow.document;
-    }
-}
-
-// Parses a URI query string into a SeleniumCommand object
-function createCommandFromRequest(commandRequest) {
-	//decodeURIComponent doesn't strip plus signs
-	var processed = commandRequest.replace(/\+/g, "%20");
-	// strip trailing spaces
-	var processed = processed.replace(/\s+$/, "");
-    var vars = processed.split("&");
-    var cmdArgs = new Object();
-    for (var i=0;i<vars.length;i++) {
-        var pair = vars[i].split("=");
-        cmdArgs[pair[0]] = pair[1];
-    }
-    var cmd = cmdArgs['cmd'];
-    var arg1 = cmdArgs['1'];
-    if (null == arg1) arg1 = "";
-    arg1 = decodeURIComponent(arg1);
-    var arg2 = cmdArgs['2'];
-    if (null == arg2) arg2 = "";
-    arg2 = decodeURIComponent(arg2);
-    if (cmd == null) {
-    	throw new Error("Bad command request: " + commandRequest);
-    }
-    return new SeleniumCommand(cmd, arg1, arg2);
+function preventBrowserCaching() {
+    var t = (new Date()).getTime();
+    return "&counterToMakeURsUniqueAndSoStopPageCachingInTheBrowser=" + t;
 }
 
 // Return the name of the current window in the selenium recordkeeping.
-// 
+//
 // In selenium, the additional widow has no name.
-// 
+//
 // Additional pop-ups are associated with names given by the argument to the routine waitForPopUp.
-// 
-// I try to arrange for widows which are opened in such manner to track their own names using the top-level property 
+//
+// I try to arrange for widows which are opened in such manner to track their own names using the top-level property
 // seleniumWindowName, but it is possible that this property will not be available (if the widow has just reloaded
 // itself).  In this case, return "?".
-// 
+//
 function getSeleniumWindowName() {
 	var w = (proxyInjectionMode ? selenium.browserbot.getCurrentWindow() : window);
 	if (w.opener==null) {
         	return "";
-        } 
+        }
         if (w["seleniumWindowName"]==null) {
         	return "?";
-        } 
+        }
         return w["seleniumWindowName"];
 }
 
@@ -427,7 +434,7 @@ function makeAddressToAUTFrame(w, frameNavigationalJSexpression)
         w=top;
         frameNavigationalJSexpression = "top";
     }
-         
+
     if (w==selenium.browserbot.getCurrentWindow())
     {
         return frameNavigationalJSexpression;

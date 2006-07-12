@@ -17,44 +17,45 @@
 SELENIUM_PROCESS_WAIT = "wait";
 
 function TestLoop(commandFactory) {
-
     this.commandFactory = commandFactory;
-    this.waitForConditionTimeout = 30 * 1000; // 30 seconds
+}
 
-    this.start = function() {
+TestLoop.prototype = {
+/** The default is not to have any interval between commands. */
+    start : function() {
         selenium.reset();
-        LOG.debug("testLoop.start()");
+        LOG.debug("currentTest.start()");
         this.continueTest();
-    };
+    },
 
-    /**
-     * Select the next command and continue the test.
-     */
-    this.continueTest = function() {
-    	LOG.debug("testLoop.continueTest() - acquire the next command");
+/**
+ * Select the next command and continue the test.
+ */
+    continueTest : function() {
+        LOG.debug("currentTest.continueTest() - acquire the next command");
         if (! this.aborted) {
             this.currentCommand = this.nextCommand();
         }
         if (! this.requiresCallBack) {
-        	this.beginNextTest();
+            this.beginNextTest();
         } // otherwise, just finish and let the callback invoke beginNextTest()
-    };
-    
-    this.beginNextTest = function() {
-    	LOG.debug("testLoop.beginNextTest()");
-    	if (this.currentCommand) {
+    },
+
+    beginNextTest : function() {
+        LOG.debug("currentTest.beginNextTest()");
+        if (this.currentCommand) {
             // TODO: rename commandStarted to commandSelected, OR roll it into nextCommand
             this.commandStarted(this.currentCommand);
-            this.resumeAfterDelay();
+            this._resumeAfterDelay();
         } else {
             this.testComplete();
         }
-    }
-    
-    /**
-     * Pause, then execute the current command.
-     */
-    this.resumeAfterDelay = function() {
+    },
+
+/**
+ * Pause, then execute the current command.
+ */
+    _resumeAfterDelay : function() {
 
         // Get the command delay. If a pauseInterval is set, use it once
         // and reset it.  Otherwise, use the defined command-interval.
@@ -65,123 +66,117 @@ function TestLoop(commandFactory) {
             // Pause: enable the "next/continue" button
             this.pause();
         } else {
-            window.setTimeout("testLoop.resume()", delay);
+            window.setTimeout(this.resume.bind(this), delay);
         }
-    };
+    },
 
-    /**
-     * Select the next command and continue the test.
-     */
-    this.resume = function() {
-    	LOG.debug("testLoop.resume() - actually execute");
+/**
+ * Select the next command and continue the test.
+ */
+    resume : function() {
+        LOG.debug("currentTest.resume() - actually execute");
         try {
-            this.executeCurrentCommand();
+            this._executeCurrentCommand();
             this.waitForConditionStart = new Date().getTime();
             this.continueTestWhenConditionIsTrue();
         } catch (e) {
-            this.handleCommandError(e);
+            this._handleCommandError(e);
             this.testComplete();
             return;
         }
-    };
+    },
 
-    /**
-     * Execute the current command.  
-     * 
-     * The return value, if not null, should be a function which will be
-     * used to determine when execution can continue.
-     */
-    this.executeCurrentCommand = function() {
+/**
+ * Execute the current command.
+ *
+ * The return value, if not null, should be a function which will be
+ * used to determine when execution can continue.
+ */
+    _executeCurrentCommand : function() {
 
         var command = this.currentCommand;
         LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
-        
+
         var handler = this.commandFactory.getCommandHandler(command.command);
         if (handler == null) {
             throw new SeleniumError("Unknown command: '" + command.command + "'");
         }
-        
+
         command.target = selenium.preprocessParameter(command.target);
         command.value = selenium.preprocessParameter(command.value);
         LOG.debug("Command found, going to execute " + command.command);
         var result = handler.execute(selenium, command);
-		LOG.debug("Command complete");
+        LOG.debug("Command complete");
         this.commandComplete(result);
 
         if (result.processState == SELENIUM_PROCESS_WAIT) {
             this.waitForCondition = function() {
-            	LOG.debug("Checking condition: isNewPageLoaded?");
+                LOG.debug("Checking condition: isNewPageLoaded?");
                 return selenium.browserbot.isNewPageLoaded();
             };
         }
-    };
-    
-    this.handleCommandError = function(e) {
-       if (!e.isSeleniumError) {
+    },
+
+    _handleCommandError : function(e) {
+        if (!e.isSeleniumError) {
             LOG.exception(e);
             var msg = "Selenium failure. Please report to selenium-dev@openqa.org, with error details from the log window.";
             if (e.message) {
-               msg += "  The error message is: " + e.message;
+                msg += "  The error message is: " + e.message;
             }
             this.commandError(msg);
         } else {
             LOG.error(e.message);
             this.commandError(e.message);
         }
-    };
+    },
 
-    /**
-     * Busy wait for waitForCondition() to become true, and then carry on
-     * with test.  Fail the current test if there's a timeout or an exception.
-     */
-    this.continueTestWhenConditionIsTrue = function () {
-    	LOG.debug("testLoop.continueTestWhenConditionIsTrue()");
+/**
+ * Busy wait for waitForCondition() to become true, and then carry on
+ * with test.  Fail the current test if there's a timeout or an exception.
+ */
+    continueTestWhenConditionIsTrue : function () {
+        LOG.debug("currentTest.continueTestWhenConditionIsTrue()");
         try {
             if (this.waitForCondition == null || this.waitForCondition()) {
-            	LOG.debug("condition satisfied; let's continueTest()");
-	            this.waitForCondition = null;
-	            this.waitForConditionStart = null;
-	            this.continueTest();
-	        } else {
-	        	LOG.debug("waitForCondition was false; keep waiting!");
-	        	if (this.waitForConditionTimeout != null) {
-		        	var now = new Date();
-		        	if ((now - this.waitForConditionStart) > this.waitForConditionTimeout) {
-		        		throw new SeleniumError("Timed out after " + this.waitForConditionTimeout + "ms");
-		        	}
-		        }
-	            window.setTimeout("testLoop.continueTestWhenConditionIsTrue()", 10);
-	        }
-	    } catch (e) {
-	    	var lastResult = new CommandResult();
-    		lastResult.failed = true;
-    		lastResult.failureMessage = e.message;
-	    	this.commandComplete(lastResult);
-	    	this.testComplete();
-	    }
-    };
+                LOG.debug("condition satisfied; let's continueTest()");
+                this.waitForCondition = null;
+                this.waitForConditionStart = null;
+                this.continueTest();
+            } else {
+                LOG.debug("waitForCondition was false; keep waiting!");
+                if (this.waitForConditionTimeout != null) {
+                    var now = new Date();
+                    if ((now - this.waitForConditionStart) > this.waitForConditionTimeout) {
+                        throw new SeleniumError("Timed out after " + this.waitForConditionTimeout + "ms");
+                    }
+                }
+                window.setTimeout(this.continueTestWhenConditionIsTrue.bind(this), 10);
+            }
+        } catch (e) {
+            var lastResult = new CommandResult();
+            lastResult.failed = true;
+            lastResult.failureMessage = e.message;
+            this.commandComplete(lastResult);
+            this.testComplete();
+        }
+    },
+
+    pause : function() {
+
+    },
+
+    nextCommand : function() {},
+    commandStarted : function() {},
+    commandComplete : function() {},
+    commandError : function() {},
+    testComplete : function() {},
+
+    getCommandInterval : function() {
+        return 0;
+    }
 
 }
-
-/** The default is not to have any interval between commands. */
-TestLoop.prototype.getCommandInterval = function() {
-    return 0;
-};
-
-function noop() { 
-};
-
-TestLoop.prototype.nextCommand = noop;
-
-TestLoop.prototype.commandStarted = noop;
-
-TestLoop.prototype.commandError = noop;
-
-TestLoop.prototype.commandComplete = noop;
-
-TestLoop.prototype.testComplete = noop;
-
-TestLoop.prototype.pause = noop;
 
 /**
  * Tell Selenium to expect a failure on the next command execution. This
@@ -194,9 +189,9 @@ Selenium.prototype.assertFailureOnNext = function(message) {
     }
 
     var expectFailureCommandFactory =
-        new ExpectFailureCommandFactory(testLoop.commandFactory, message, "failure");
+        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "failure");
     expectFailureCommandFactory.baseExecutor = executeCommandAndReturnFailureMessage;
-    testLoop.commandFactory = expectFailureCommandFactory;
+    currentTest.commandFactory = expectFailureCommandFactory;
 };
 
 /**
@@ -210,9 +205,9 @@ Selenium.prototype.assertErrorOnNext = function(message) {
     }
 
     var expectFailureCommandFactory =
-        new ExpectFailureCommandFactory(testLoop.commandFactory, message, "error");
+        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "error");
     expectFailureCommandFactory.baseExecutor = executeCommandAndReturnErrorMessage;
-    testLoop.commandFactory = expectFailureCommandFactory;
+    currentTest.commandFactory = expectFailureCommandFactory;
 };
 
 function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessage, errorType) {
@@ -238,7 +233,7 @@ function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessag
                     result.result = baseFailureMessage;
                 }
             }
-            testLoop.commandFactory = originalCommandFactory;
+            currentTest.commandFactory = originalCommandFactory;
             return result;
         };
         return expectFailureCommand;

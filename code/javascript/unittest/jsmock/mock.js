@@ -19,7 +19,7 @@
 //
 // Original code by Aslak Hellesoy and Ji Wang
 
-Mock = function() {
+var Mock = function() {
     this.expectedInvocations = {};
     this.expectedArgs = {};
     this.returnValues = {};

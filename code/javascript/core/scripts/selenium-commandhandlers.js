@@ -200,7 +200,7 @@ function CommandHandlerFactory() {
     this.createWaitForActionFromPredicate = function(predicate) {
     	var action = function(target, value) {
     		var seleniumApi = this;
-		    testLoop.waitForCondition = function () {
+		    currentTest.waitForCondition = function () {
 		    	try {
 				    return predicate.call(seleniumApi, target, value).isTrue;
 				} catch (e) {
