@@ -132,7 +132,7 @@ public class DomainTourTest extends TestCase
         selenium.open("http://www.daqi.com");
         selenium.open("http://www.daum.net");
 //      fails due to erroneous extra injection into sd (an empty document)
-        //selenium.open("http://www.delicio.us");
+        selenium.open("http://www.delicio.us");
         selenium.open("http://www.dell.com");
         selenium.open("http://www.deviantart.com");
         selenium.open("http://www.digg.com");
