@@ -992,6 +992,7 @@ IEPageBot.prototype.clickElement = function(element) {
         // If the page is unloading, we may get a "Permission denied" or "Unspecified error".
         // Just ignore it, because the document may have unloaded.
         if (pageUnloading) {
+            LOG.logHook = function(){};
             LOG.warn("Caught exception when firing events on unloading page: " + e.message);
             return;
         }

@@ -46,13 +46,18 @@ function runTest() {
     else
     {
         proxyInjectionMode = false;
-        LOG.logHook = logToRc;
     }
-
+    
     selenium = Selenium.createForFrame(testAppFrame);
+    if (!debugMode) {
+    	debugMode = getQueryVariable("debugMode");
+    }
     if (proxyInjectionMode) {
         LOG.log = logToRc;
     }
+    else if (debugMode) {
+    	LOG.logHook = logToRc;
+    } 
     window.selenium = selenium;
 
     commandFactory = new CommandHandlerFactory();
@@ -134,7 +139,7 @@ function logToRc(message, logLevel) {
     	logLevel = "debug";
     }
     if (debugMode) {
-        sendToRC("logLevel=" + logLevel + ":" + message + "\n");
+ 	sendToRC("logLevel=" + logLevel + ":" + message + "\n");
     }
 }
 

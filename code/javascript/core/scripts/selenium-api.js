@@ -440,6 +440,25 @@ Selenium.prototype.doSelectFrame = function(locator) {
         // unimplemented for now
 };
 
+Selenium.prototype.getLogMessages = function() {
+	/**
+        * Return the contents of the log.
+	*
+        * <p>This is a placeholder intended to make the code generator make this API
+        * available to clients.  The selenium server will intercept this call, however, 
+        * and return its recordkeeping of log messages since the last call to this API.
+        * Thus this code in JavaScript will never be called.
+        * 
+        * The reason I opted for a servercentric solution is to be able to support
+        * multiple frames served from different domains, which would break a
+        * centralized JavaScript logging mechanism under some conditions.
+	*
+        * @return string all log messages seen since the last call to this API
+	*/
+        return "getLogMessages should be implemented in the selenium server";
+};
+
+
 Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFrameString, target) {
 	/**
         * Determine whether current/locator identify the frame containing this running code.
