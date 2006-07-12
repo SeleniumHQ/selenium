@@ -23,6 +23,9 @@ public class GoogleTest extends TestCase
 		assertEquals("Google", selenium.getTitle());
 		selenium.type("q", "Selenium OpenQA");
 		assertEquals("Selenium OpenQA", selenium.getValue("q"));
+//        String s = selenium.getLogMessages();
+//        assertTrue(s + " should contain type")
+//        System.out.println(s);
 		selenium.click("btnG");
 		selenium.waitForPageToLoad("5000");
         assertTrue(selenium.isTextPresent("openqa.org"));
