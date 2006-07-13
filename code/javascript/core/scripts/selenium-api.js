@@ -1147,6 +1147,16 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
    return attributes;
 };
 
+Selenium.prototype.dragdrop = function(locator, xyCommaDelimitedOffset) {
+   /** Drags an element a certain distance and then drops it
+   * 
+   * @param xyCommaDelimitedOffset offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
+   * @param locator an element locator
+   */
+   var element = this.page().findElement(locator);
+   // not implemented yet
+};
+
 Selenium.prototype.getAllWindowIds = function() {
   /** Returns the IDs of all windows that the browser knows about.
    * 
