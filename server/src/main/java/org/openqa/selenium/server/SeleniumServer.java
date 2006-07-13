@@ -20,14 +20,19 @@ package org.openqa.selenium.server;
 import org.mortbay.http.*;
 import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.jetty.Server;
-import org.mortbay.util.*;
-import org.openqa.selenium.server.browserlaunchers.*;
-import org.openqa.selenium.server.htmlrunner.*;
+import org.mortbay.util.Resource;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
+import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
+import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
+import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive Selenese commands
@@ -341,6 +346,8 @@ public class SeleniumServer {
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String userInput;
 
+            final String[] lastSessionId = new String[]{""};
+
             while ((userInput = stdIn.readLine()) != null) {
                 if ("quit".equals(userInput)) {
                     System.out.println("Stopping...");
@@ -355,6 +362,11 @@ public class SeleniumServer {
                     continue;
                 }
 
+                final boolean newBrowserSession = userInput.indexOf("getNewBrowserSession") != -1;
+                if (userInput.indexOf("sessionId") == -1 && !newBrowserSession) {
+                    userInput = userInput + "&sessionId=" + lastSessionId[0];
+                }
+
                 final URL url = new URL("http://localhost:" + port + "/selenium-server/driver?" + userInput);
                 Thread t = new Thread(new Runnable() {
                     public void run() {
@@ -362,7 +374,22 @@ public class SeleniumServer {
                             System.out.println("---> Requesting " + url.toString());
                             URLConnection conn = url.openConnection();
                             conn.connect();
-                            conn.getContent();
+                            InputStream is = conn.getInputStream();
+                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                            byte[] buffer = new byte[2048];
+                            int length = -1;
+                            while ((length = is.read(buffer)) != -1) {
+                                out.write(buffer, 0, length);
+                            }
+                            is.close();
+
+                            String output = out.toString();
+
+                            if (newBrowserSession) {
+                                if (output.startsWith("OK,")) {
+                                    lastSessionId[0] = output.substring(3);
+                                }
+                            }
                         } catch (IOException e) {
                             System.err.println(e.getMessage());
                             if (SeleniumServer.isDebugMode()) {
