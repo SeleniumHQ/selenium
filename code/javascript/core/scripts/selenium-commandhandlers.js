@@ -35,18 +35,40 @@ function CommandHandlerFactory() {
         var handler = new AssertHandler(assertion, haltOnFailure);
         this.asserts[name] = handler;
     };
-    
+
     this.getCommandHandler = function(name) {
         return this.actions[name] || this.accessors[name] || this.asserts[name] || null;
     };
 
-    this.registerAll = function(commandObject) {
-        registerAllAccessors(commandObject);
-        registerAllActions(commandObject);
-        registerAllAsserts(commandObject);
+
+    // Methods of the form getFoo(target) result in commands:
+    // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
+    // storeFoo, waitForFoo, and waitForNotFoo.
+    var _registerAllAccessors = function(commandObject) {
+        for (var functionName in commandObject) {
+            var matchForGetter = /^get([A-Z].+)$/.exec(functionName);
+            if (matchForGetter != null) {
+                var accessor = commandObject[functionName];
+                var baseName = matchForGetter[1];
+                self.registerAccessor(functionName, accessor);
+                self.registerAssertionsBasedOnAccessor(accessor, baseName);
+                self.registerStoreCommandBasedOnAccessor(accessor, baseName);
+                self.registerWaitForCommandsBasedOnAccessor(accessor, baseName);
+            }
+            var matchForIs = /^is([A-Z].+)$/.exec(functionName);
+            if (matchForIs != null) {
+                var accessor = commandObject[functionName];
+                var baseName = matchForIs[1];
+                var predicate = self.createPredicateFromBooleanAccessor(accessor);
+                self.registerAccessor(functionName, accessor);
+                self.registerAssertionsBasedOnAccessor(accessor, baseName, predicate);
+                self.registerStoreCommandBasedOnAccessor(accessor, baseName);
+                self.registerWaitForCommandsBasedOnAccessor(accessor, baseName, predicate);
+            }
+        }
     };
 
-    var registerAllActions = function(commandObject) {
+    var _registerAllActions = function(commandObject) {
         for (var functionName in commandObject) {
             var result = /^do([A-Z].+)$/.exec(functionName);
             if (result != null) {
@@ -63,8 +85,8 @@ function CommandHandlerFactory() {
         }
     };
 
- 
-    var registerAllAsserts = function(commandObject) {
+
+    var _registerAllAsserts = function(commandObject) {
         for (var functionName in commandObject) {
             var result = /^assert([A-Z].+)$/.exec(functionName);
             if (result != null) {
@@ -81,7 +103,13 @@ function CommandHandlerFactory() {
         }
     };
 
-    
+
+    this.registerAll = function(commandObject) {
+        _registerAllAccessors(commandObject);
+        _registerAllActions(commandObject);
+        _registerAllAsserts(commandObject);
+    };
+
     // Given an accessor function getBlah(target),
     // return a "predicate" equivalient to isBlah(target, value) that
     // is true when the value returned by the accessor matches the specified value.
@@ -95,7 +123,7 @@ function CommandHandlerFactory() {
             }
         };
     };
-    
+
     // Given a (no-arg) accessor function getBlah(),
     // return a "predicate" equivalient to isBlah(value) that
     // is true when the value returned by the accessor matches the specified value.
@@ -109,7 +137,7 @@ function CommandHandlerFactory() {
             }
         };
     };
-        
+
     // Given a boolean accessor function isBlah(),
     // return a "predicate" equivalient to isBlah() that
     // returns an appropriate PredicateResult value.
@@ -131,7 +159,7 @@ function CommandHandlerFactory() {
             }
         };
     };
-    
+
     // Given an accessor fuction getBlah([target])  (target is optional)
     // return a predicate equivalent to isBlah([target,] value) that
     // is true when the value returned by the accessor matches the specified value.
@@ -141,7 +169,7 @@ function CommandHandlerFactory() {
         }
         return self.createPredicateFromSingleArgAccessor(accessor);
     };
-    
+
     // Given a predicate, return the negation of that predicate.
     // Leaves the message unchanged.
     // Used to create assertNot, verifyNot, and waitForNot commands.
@@ -152,7 +180,7 @@ function CommandHandlerFactory() {
             return result;
         };
     };
-    
+
     // Convert an isBlahBlah(target, value) function into an assertBlahBlah(target, value) function.
     this.createAssertionFromPredicate = function(predicate) {
     	return function(target, value) {
@@ -162,40 +190,32 @@ function CommandHandlerFactory() {
     		}
     	};
     };
-    
+
+
+    var _negtiveName = function(baseName) {
+        var matchResult = /^(.*)Present$/.exec(baseName);
+        if (matchResult != null) {
+            return matchResult[1] + "NotPresent";
+        }
+        return "Not" + baseName;
+    };
+
     // Register an assertion, a verification, a negative assertion,
     // and a negative verification based on the specified accessor.
     this.registerAssertionsBasedOnAccessor = function(accessor, baseName, predicate) {
-        if (predicate==null) {
+        if (predicate == null) {
             predicate = self.createPredicateFromAccessor(accessor);
         }
         var assertion = self.createAssertionFromPredicate(predicate);
-        // Register an assert with the "assert" prefix, and halt on failure.
         self.registerAssert("assert" + baseName, assertion, true);
-        // Register a verify with the "verify" prefix, and do not halt on failure.
         self.registerAssert("verify" + baseName, assertion, false);
-        
+
         var invertedPredicate = self.invertPredicate(predicate);
         var negativeAssertion = self.createAssertionFromPredicate(invertedPredicate);
-        
-        var result = /^(.*)Present$/.exec(baseName);
-        if (result==null) {
-            // Register an assertNot with the "assertNot" prefix, and halt on failure.
-            self.registerAssert("assertNot"+baseName, negativeAssertion, true);
-            // Register a verifyNot with the "verifyNot" prefix, and do not halt on failure.
-            self.registerAssert("verifyNot"+baseName, negativeAssertion, false);
-        }
-        else {
-            var invertedBaseName = result[1] + "NotPresent";
-        
-            // Register an assertNot ending w/ "NotPresent", and halt on failure.
-            self.registerAssert("assert"+invertedBaseName, negativeAssertion, true);
-            // Register an assertNot ending w/ "NotPresent", and do not halt on failure.
-            self.registerAssert("verify"+invertedBaseName, negativeAssertion, false);
-        }
+        self.registerAssert("assert" + _negtiveName(baseName), negativeAssertion, true);
+        self.registerAssert("verify" + _negtiveName(baseName), negativeAssertion, false);
     };
-    
-    
+
     // Convert an isBlahBlah(target, value) function into a waitForBlahBlah(target, value) function.
     this.createWaitForActionFromPredicate = function(predicate) {
     	var action = function(target, value) {
@@ -214,7 +234,7 @@ function CommandHandlerFactory() {
     	};
     	return action;
     };
-    
+
     // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
     this.registerWaitForCommandsBasedOnAccessor = function(accessor, baseName, predicate) {
         if (predicate==null) {
@@ -224,9 +244,12 @@ function CommandHandlerFactory() {
     	self.registerAction("waitFor"+baseName, waitForAction, false, true);
         var invertedPredicate = self.invertPredicate(predicate);
         var waitForNotAction = self.createWaitForActionFromPredicate(invertedPredicate);
-	   	self.registerAction("waitForNot"+baseName, waitForNotAction, false, true);
-	}
-	
+	   	self.registerAction("waitFor"+_negtiveName(baseName), waitForNotAction, false, true);
+        //TODO decide remove "waitForNot.*Present" action name or not
+        //for the back compatiblity issues we still make waitForNot.*Present availble
+        self.registerAction("waitForNot"+baseName, waitForNotAction, false, true);
+    }
+
 	// Register a storeBlahBlah based on the specified accessor.
     this.registerStoreCommandBasedOnAccessor = function(accessor, baseName) {
         var action;
@@ -241,35 +264,7 @@ function CommandHandlerFactory() {
 	    }
     	self.registerAction("store"+baseName, action, false, accessor.dontCheckAlertsAndConfirms);
     };
-        
-    // Methods of the form getFoo(target) result in commands:
-    // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
-    // storeFoo, waitForFoo, and waitForNotFoo.
-    var registerAllAccessors = function(commandObject) {
-        for (var functionName in commandObject) {
-            var match = /^get([A-Z].+)$/.exec(functionName);
-            if (match != null) {
-                var accessor = commandObject[functionName];
-                var baseName = match[1];
-                self.registerAccessor(functionName, accessor);
-                self.registerAssertionsBasedOnAccessor(accessor, baseName);
-                self.registerStoreCommandBasedOnAccessor(accessor, baseName);
-                self.registerWaitForCommandsBasedOnAccessor(accessor, baseName);
-            }
-            var match = /^is([A-Z].+)$/.exec(functionName);
-            if (match != null) {
-                var accessor = commandObject[functionName];
-                var baseName = match[1];
-                var predicate = self.createPredicateFromBooleanAccessor(accessor);
-                self.registerAccessor(functionName, accessor);
-                self.registerAssertionsBasedOnAccessor(accessor, baseName, predicate);
-                self.registerStoreCommandBasedOnAccessor(accessor, baseName);
-                self.registerWaitForCommandsBasedOnAccessor(accessor, baseName, predicate);
-            }
-        }
-    };
-    
-    
+
 }
 
 function PredicateResult(isTrue, message) {
