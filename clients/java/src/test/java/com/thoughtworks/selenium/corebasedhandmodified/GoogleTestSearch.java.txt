@@ -12,7 +12,7 @@ public class GoogleTestSearch extends SeleneseTestCase
 
 /* Google Test Search */
 		// open|http://www.google.com|
-		selenium.open("http://www.google.com");
+		selenium.open("http://www.google.com/webhp");
 		// verifyTitle|Google|
 		verifyEquals("*Google", selenium.getTitle());
 		// type|q|Selenium OpenQA
