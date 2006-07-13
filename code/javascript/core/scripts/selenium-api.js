@@ -1124,6 +1124,8 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
   /** Returns every instance of some attribute from all known windows.
    * 
    * <p>Null values are treated like empty strings in this array.</p>
+   *
+   * @param attributeName name of an attribute on windows
    * 
    * @return string[] the set of values of this attribute from all known windows.
    */
