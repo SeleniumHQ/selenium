@@ -20,11 +20,19 @@ public class GoogleTest extends TestCase
    
    public void testGoogleTestSearch() throws Throwable {
 		selenium.open("http://www.google.com/webhp");
+        String[] windowNames = selenium.getAllWindowNames();
+        for (String windowName : windowNames) {
+            System.out.println("Window Name: " + windowName);
+        }
+        String[] windowIds = selenium.getAllWindowIds();
+        for (String windowId : windowIds) {
+            System.out.println("Window Id: " + windowId);
+        }
 		assertEquals("Google", selenium.getTitle());
 		selenium.type("q", "Selenium OpenQA");
 		assertEquals("Selenium OpenQA", selenium.getValue("q"));
         String s = selenium.getLogMessages();
-        System.out.println(s);
+        System.out.println("The log messages are the following:\n" + s);
 		selenium.click("btnG");
 		selenium.waitForPageToLoad("5000");
         assertTrue(selenium.isTextPresent("openqa.org"));
