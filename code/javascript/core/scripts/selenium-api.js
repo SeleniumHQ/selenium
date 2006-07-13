@@ -1147,14 +1147,22 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
    return attributes;
 };
 
-Selenium.prototype.dragdrop = function(locator, xyCommaDelimitedOffset) {
+Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
    /** Drags an element a certain distance and then drops it
    * 
    * @param xyCommaDelimitedOffset offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    * @param locator an element locator
    */
    var element = this.page().findElement(locator);
-   // not implemented yet
+   var xyCommaDelimitedOffsetString = xyCommaDelimitedOffset.toString();
+   xyCommaDelimitedOffsetString = xyCommaDelimitedOffsetString.replace("+", "");
+   var regexpResult = xyCommaDelimitedOffsetString.match(/(.*),(.*)/);
+   if (!regexpResult || !regexpResult[1] || !regexpResult[2]) {
+   	throw new SeleniumError("could not understand xyCommaDelimitedOffset " + xyCommaDelimitedOffset);
+   }
+   var xOffset = regexpResult[1];
+   var yOffset = regexpResult[2];
+   // not implemented yet    
 };
 
 Selenium.prototype.getAllWindowIds = function() {
