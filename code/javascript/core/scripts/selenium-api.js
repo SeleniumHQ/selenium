@@ -1120,21 +1120,47 @@ Selenium.prototype.getAllFields = function() {
    return this.page().getAllFields();
 };
 
+Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
+   var attributes = new Array();
+   var testAppParentOfAllWindows;
+   if (this.browserbot.getCurrentWindow().opener!=null) {
+   	testAppParentOfAllWindows = this.browserbot.getCurrentWindow().opener;
+   }
+   else {
+   	testAppParentOfAllWindows = this.browserbot.getCurrentWindow();
+   }
+
+   attributes.push(eval("testAppParentOfAllWindows." + attributeName));
+   var selenium = testAppParentOfAllWindows.selenium==null ? testAppParentOfAllWindows.parent.selenium : testAppParentOfAllWindows.selenium;
+   for (windowName in selenium.browserbot.openedWindows)
+   {
+       attributes.push(eval("selenium.browserbot.openedWindows[windowName]." + attributeName));
+   }
+   return attributes;
+};
+
 Selenium.prototype.getAllWindowIds = function() {
   /** Returns the IDs of all windows that the browser knows about.
    * 
    * @return string[] the IDs of all windows that the browser knows about.
    */
-   return null; // not implemented yet
+   return this.getAttributeFromAllWindows("id");
 };
-
 
 Selenium.prototype.getAllWindowNames = function() {
   /** Returns the names of all windows that the browser knows about.
    * 
    * @return string[] the names of all windows that the browser knows about.
    */
-   return null; // not implemented yet
+   return this.getAttributeFromAllWindows("name");
+};
+
+Selenium.prototype.getAllWindowTitles = function() {
+  /** Returns the titles of all windows that the browser knows about.
+   * 
+   * @return string[] the titles of all windows that the browser knows about.
+   */
+   return this.getAttributeFromAllWindows("document.title");
 };
 
 Selenium.prototype.getHtmlSource = function() {
