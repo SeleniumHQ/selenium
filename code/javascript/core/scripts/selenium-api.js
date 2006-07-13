@@ -1121,6 +1121,12 @@ Selenium.prototype.getAllFields = function() {
 };
 
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
+  /** Returns every instance of some attribute from all known windows.
+   * 
+   * <p>Null values are treated like empty strings in this array.</p>
+   * 
+   * @return string[] the set of values of this attribute from all known windows.
+   */
    var attributes = new Array();
    var testAppParentOfAllWindows;
    if (this.browserbot.getCurrentWindow().opener!=null) {
