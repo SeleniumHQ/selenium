@@ -315,7 +315,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             setDomain(sessionId, values.get(1));
             results = "OK," + sessionId;
         } else if ("getLogMessages".equals(cmd)) {
-            results = logMessagesBuffer.toString();
+            results = "OK," + logMessagesBuffer.toString();
             logMessagesBuffer.setLength(0);
         } else if ("testComplete".equals(cmd)) {
             results = endBrowserSession(sessionId, SeleniumServer.reusingBrowserSessions());
