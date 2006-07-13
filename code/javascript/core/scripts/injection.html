@@ -51,12 +51,12 @@ function selenium_frameRunTest(oldOnLoadRoutine) {
 	if (oldOnLoadRoutine) {
 		eval(oldOnLoadRoutine);
 	}
-        runTest();
+        runSeleniumTest();
 }
 
 function seleniumOnLoad() {
     	injectedSessionId = @SESSION_ID@;
-        runTest();
+        runSeleniumTest();
 }
 
 if (window.addEventListener) {

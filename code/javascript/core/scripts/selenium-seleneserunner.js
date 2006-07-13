@@ -36,7 +36,7 @@ var queryString = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
-function runTest() {
+function runSeleniumTest() {
     var testAppFrame = document.getElementById('myiframe');
 
     if (testAppFrame==null) {
@@ -47,7 +47,7 @@ function runTest() {
     {
         proxyInjectionMode = false;
     }
-    
+
     selenium = Selenium.createForFrame(testAppFrame);
     if (!debugMode) {
     	debugMode = getQueryVariable("debugMode");
@@ -57,7 +57,7 @@ function runTest() {
     }
     else if (debugMode) {
     	LOG.logHook = logToRc;
-    } 
+    }
     window.selenium = selenium;
 
     commandFactory = new CommandHandlerFactory();
