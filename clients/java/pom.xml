@@ -18,6 +18,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <includes>
+						<include>**/ClientDriverPISuite.java</include>
 						<include>**/ClientDriverSuite.java</include>
                     </includes>
                     <forkMode>never</forkMode>
