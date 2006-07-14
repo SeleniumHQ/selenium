@@ -352,7 +352,9 @@ public class ProxyHandler extends AbstractHttpHandler {
                 
                 String contentType = http.getContentType();
                 System.out.println("Content-Type is: " + contentType);
-                isKnownToBeHtml = ((contentType!=null) && "text/html".equals(contentType));
+                if (contentType != null) {
+                    isKnownToBeHtml = contentType.startsWith("text/html");
+                }
             }
 
             if (proxy_in == null) {
