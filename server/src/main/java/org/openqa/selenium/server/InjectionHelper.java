@@ -121,7 +121,7 @@ public class InjectionHelper {
 	        init();   
         }
         
-        int len = 8192;
+        int len = 102400;
         byte[] buf = new byte[len];
         len = readStream(in, buf, len);
         if (len == -1) {
@@ -129,11 +129,9 @@ public class InjectionHelper {
         }
         String data = new String(buf, 0, len);
         if (!isKnownToBeHtml) {
-            Pattern regexp = Pattern.compile("<\\s*meta([^>]*?\"content-type\"[^>]*?)>", Pattern.CASE_INSENSITIVE);
-            Matcher matcher = regexp.matcher(data);
-            if (matcher.find()) {
-                String metaTag = matcher.group();
-                isKnownToBeHtml = (metaTag.indexOf("text/html")!=-1); 
+            isKnownToBeHtml = match("<\\s*meta([^>]*?\"content-type\"[^>]*?)>", data, isKnownToBeHtml);
+            if (!isKnownToBeHtml) {
+                isKnownToBeHtml = match("<html>", data, isKnownToBeHtml);
             }
         }
         String url = response.getHttpRequest().getRequestURL().toString();
@@ -176,7 +174,17 @@ public class InjectionHelper {
             writeDataWithUserTransformations(data, in, out);
         }
     }
-            
+
+    private static boolean match(String regex, String data, boolean isKnownToBeHtml) {
+        Pattern regexp = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = regexp.matcher(data);
+        if (matcher.find()) {
+            String metaTag = matcher.group();
+            isKnownToBeHtml = (metaTag.indexOf("text/html")!=-1);
+        }
+        return isKnownToBeHtml;
+    }
+
     /**
      * read bufLen bytes into buf (unless EOF is seen first) from in.
      * @param in
