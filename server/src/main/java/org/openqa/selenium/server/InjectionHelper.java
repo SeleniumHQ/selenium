@@ -129,7 +129,7 @@ public class InjectionHelper {
         }
         String data = new String(buf, 0, len);
         if (!isKnownToBeHtml) {
-            Pattern regexp = Pattern.compile("<\\s*meta([^>]*?content-type[^>]*?)>", Pattern.CASE_INSENSITIVE);
+            Pattern regexp = Pattern.compile("<\\s*meta([^>]*?\"content-type\"[^>]*?)>", Pattern.CASE_INSENSITIVE);
             Matcher matcher = regexp.matcher(data);
             if (matcher.find()) {
                 String metaTag = matcher.group();
