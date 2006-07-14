@@ -131,7 +131,7 @@ public class InjectionHelper {
         if (!isKnownToBeHtml) {
             isKnownToBeHtml = match("<\\s*meta([^>]*?\"content-type\"[^>]*?)>", data, isKnownToBeHtml);
             if (!isKnownToBeHtml) {
-                isKnownToBeHtml = match("<html>", data, isKnownToBeHtml);
+                isKnownToBeHtml = match("<html", data, isKnownToBeHtml);
             }
         }
         String url = response.getHttpRequest().getRequestURL().toString();
