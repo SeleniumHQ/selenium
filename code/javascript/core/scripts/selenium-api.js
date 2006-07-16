@@ -1165,6 +1165,14 @@ Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
    // not implemented yet    
 };
 
+Selenium.prototype.doWindowFocus = function(windowName) {
+/** Gives focus to a window
+   * 
+   * @windowName name of the window to be given focus
+   */
+   // not implemented yet    
+};
+
 Selenium.prototype.getAllWindowIds = function() {
   /** Returns the IDs of all windows that the browser knows about.
    * 
