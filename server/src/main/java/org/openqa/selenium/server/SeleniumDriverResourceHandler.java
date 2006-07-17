@@ -298,7 +298,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
         results = doCommand(cmd, values, sessionId, res);
         try {
-            res.getOutputStream().write(results.getBytes("UTF-8"));
+            if (results!=null) {
+                res.getOutputStream().write(results.getBytes("UTF-8"));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
