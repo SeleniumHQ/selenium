@@ -1111,7 +1111,7 @@ Selenium.prototype.getAllLinks = function() {
 };
 
 Selenium.prototype.getAllFields = function() {
-	/** Returns the IDs of all input fields on the page.
+  /** Returns the IDs of all input fields on the page.
    * 
    * <p>If a given field has no ID, it will appear as "" in this array.</p>
    * 
@@ -1120,7 +1120,13 @@ Selenium.prototype.getAllFields = function() {
    return this.page().getAllFields();
 };
 
-Selenium.prototype.getTestAppParentOfAllWindows = function() {
+Selenium.prototype._getTestAppParentOfAllWindows = function() {
+  /** Returns the IDs of all input fields on the page.
+   * 
+   * <p>If a given field has no ID, it will appear as "" in this array.</p>
+   * 
+   * @return string[] the IDs of all field on the page
+   */
    var testAppParentOfAllWindows;
    if (this.browserbot.getCurrentWindow().opener!=null) {
    	return this.browserbot.getCurrentWindow().opener;
@@ -1132,14 +1138,11 @@ Selenium.prototype.getTestAppParentOfAllWindows = function() {
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
   /** Returns every instance of some attribute from all known windows.
    * 
-   * <p>Null values are treated like empty strings in this array.</p>
-   *
-   * @param attributeName name of an attribute on windows
-   * 
+   * @param attributeName name of an attribute on the windows
    * @return string[] the set of values of this attribute from all known windows.
    */
    var attributes = new Array();
-   var testAppParentOfAllWindows = this.getTestAppParentOfAllWindows();
+   var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
    attributes.push(eval("testAppParentOfAllWindows." + attributeName));
    var selenium = testAppParentOfAllWindows.selenium==null ? testAppParentOfAllWindows.parent.selenium : testAppParentOfAllWindows.selenium;
    for (windowName in selenium.browserbot.openedWindows)
@@ -1150,7 +1153,7 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
 };
 
 Selenium.prototype.findWindow = function(soughtAfterWindowName) {
-   var testAppParentOfAllWindows = this.getTestAppParentOfAllWindows();
+   var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
    if (soughtAfterWindowName=="" || testAppParentOfAllWindows.name==soughtAfterWindowName) {
    	return testAppParentOfAllWindows;
    } 
