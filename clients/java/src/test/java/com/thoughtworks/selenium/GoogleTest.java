@@ -28,7 +28,11 @@ public class GoogleTest extends TestCase
         for (String windowId : windowIds) {
             System.out.println("Window Id: " + windowId);
         }
-		assertEquals("Google", selenium.getTitle());
+        String[] windowTitles = selenium.getAllWindowTitles();
+        for (String windowTitle : windowTitles) {
+            System.out.println("Window Title: " + windowTitle);
+        }
+        assertEquals("Google", selenium.getTitle());
 		selenium.type("q", "Selenium OpenQA");
 		assertEquals("Selenium OpenQA", selenium.getValue("q"));
         String s = selenium.getLogMessages();
