@@ -4,6 +4,24 @@
 
 load('remoteControl.js');
 
+this.name = "perl-rc";
+
+function useSeparateEqualsForArray() {
+	return true;
+}
+
+var originalFormatCommands = formatCommands;
+formatCommands = function(commands) {
+	this.tests = 0;
+	var lines = originalFormatCommands(commands);
+	if (this.tests == 0) {
+		lines += addIndent("pass;\n");
+	}
+	return lines;
+}
+
+var formatter = this;
+
 function formatHeader(testCase) {
 	var formatLocal = testCase.formatLocal(this.name);
 	var header = options.header;
@@ -19,20 +37,49 @@ function formatFooter(testCase) {
 }
 
 string = function(value) {
-	value = value.replace(/\"/mg, '\\"');
-	value = value.replace(/\n/mg, '\\n');
-	value = value.replace(/@/mg, '\\@');
-	value = value.replace(/\$/mg, '\\$');
-	return '"' + value + '"';
+	if (value != null) {
+		value = value.replace(/\\/g, '\\\\');
+		value = value.replace(/\"/g, '\\"');
+		value = value.replace(/\r/g, '\\r');
+		value = value.replace(/\n/g, '\\n');
+		value = value.replace(/@/g, '\\@');
+		value = value.replace(/\$/g, '\\$');
+		return '"' + value + '"';
+	} else {
+		return '""';
+	}
 }
 
+variableName = function(value) {
+	return "$" + value;
+}
+
+concatString = function(array) {
+	return array.join(" . ");
+}
+
+
 function assertTrue(expression) {
-	expression.suffix = "_ok";
-	return expression.toString() + ";";
+	if (formatter.assertOrVerifyFailureOnNext) {
+		return expression.toString() + " or die;";
+	} else {
+		formatter.tests++;
+		if (expression.assertable) {
+			expression.suffix = "_ok";
+			return expression.toString() + ";";
+		} else {
+			return "ok(" + expression.toString() + ");";
+		}
+	}
 }
 
 function assertFalse(expression) {
-	return "ok(not " + expression.toString() + ");";
+	if (formatter.assertOrVerifyFailureOnNext) {
+		return expression.toString() + " and die;";
+	} else {
+		formatter.tests++;
+		return "ok(not " + expression.toString() + ");";
+	}
 }
 
 var verifyTrue = assertTrue;
@@ -47,16 +94,17 @@ function assignToVariable(type, variable, expression) {
 }
 
 function waitFor(expression) {
-	if (expression.negative) {
-		return "sleep 1 while " + expression.invert().toString() + ";";
-	} else {
-		return "sleep 1 until " + expression.toString() + ";";
-	}
+	return "WAIT: {\n" +
+		indents(1) + "for (1..60) {\n" +
+		indents(2) + "if (eval { " + expression.toString() + " }) { pass; last WAIT }\n" +
+		indents(2) + "sleep(1);\n" +
+		indents(1) + "}\n" +
+		indents(1) + 'fail("timeout");\n' +
+		"}";
 }
 
 function assertOrVerifyFailure(line, isAssert) {
-	// TODO
-	return "assert_raise(Exception) { " + line + "}";
+	return 'dies_ok { ' + line + ' };';
 }
 
 Equals.prototype.toString = function() {
@@ -68,28 +116,38 @@ NotEquals.prototype.toString = function() {
 }
 
 Equals.prototype.assert = function() {
-	if (!this.e2.args) {
-		return "is(" + this.e1 + ", " + this.e2 + ");";
+	if (formatter.assertOrVerifyFailureOnNext) {
+		return assertTrue(this);
 	} else {
-		var expression = this.e2;
-		expression.suffix = "_is";
-		expression.noGet = true;
-		expression.args.push(this.e1);
-		return expression.toString() + ";";
+		formatter.tests++;
+		if (!this.e2.args) {
+			return "is(" + this.e1 + ", " + this.e2 + ");";
+		} else {
+			var expression = this.e2;
+			expression.suffix = "_is";
+			expression.noGet = true;
+			expression.args.push(this.e1);
+			return expression.toString() + ";";
+		}
 	}
 }
 
 Equals.prototype.verify = Equals.prototype.assert;
 
 NotEquals.prototype.assert = function() {
-	if (!this.e2.args) {
-		return "isnt(" + this.e1 + ", " + this.e2 + ");";
+	if (formatter.assertOrVerifyFailureOnNext) {
+		return assertTrue(this);
 	} else {
-		var expression = this.e2;
-		expression.suffix = "_isnt";
-		expression.noGet = true;
-		expression.args.push(this.e1);
-		return expression.toString() + ";";
+		if (!this.e2.args) {
+			return "isnt(" + this.e1 + ", " + this.e2 + ");";
+		} else {
+			formatter.tests++;
+			var expression = this.e2;
+			expression.suffix = "_isnt";
+			expression.noGet = true;
+			expression.args.push(this.e1);
+			return expression.toString() + ";";
+		}
 	}
 }
 
@@ -102,8 +160,6 @@ RegexpMatch.prototype.toString = function() {
 RegexpNotMatch.prototype.toString = function() {
 	return notOperator() + "(" + RegexpMatch.prototype.toString.call(this) + ")";
 }
-
-EqualsArray.useUniqueVariableForAssertion = false;
 
 EqualsArray.prototype.length = function() {
 	return "@" + this.variableName;
@@ -118,11 +174,14 @@ function pause(milliseconds) {
 }
 
 function echo(message) {
-	return "print(" + xlateArgument(message) + ");"
+	return "print(" + xlateArgument(message) + ' . "\n");'
 }
 
 function statement(expression) {
-	expression.suffix = "_ok";
+	if (!formatter.assertOrVerifyFailureOnNext) {
+		formatter.tests++;
+		expression.suffix = "_ok";
+	}
 	return expression.toString() + ";";
 }
 
@@ -135,6 +194,8 @@ function array(value) {
 	str += ')';
 	return str;
 }
+
+CallSelenium.prototype.assertable = true;
 
 CallSelenium.prototype.toString = function() {
 	var result = '';
@@ -174,9 +235,10 @@ this.options = {
 	header: 
 		'use strict;\n' +
 		'use warnings;\n' +
-		'use Test::WWW::Selenium;\n' +
 		'use Time::HiRes qw(sleep);\n' +
+		'use Test::WWW::Selenium;\n' +
 		'use Test::More "no_plan";\n' +
+		'use Test::Exception;\n' +
 		'\n' +
 		'my $sel = Test::WWW::Selenium->new( host => "localhost", \n' +
 		'                                    port => 4444, \n' +

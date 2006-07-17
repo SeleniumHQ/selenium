@@ -5,7 +5,10 @@
 load('remoteControl.js');
 
 this.name = "java-rc";
-this.useSeparateEqualsForArray = true;
+
+function useSeparateEqualsForArray() {
+	return true;
+}
 
 function formatHeader(testCase) {
 	var className = testCase.name;

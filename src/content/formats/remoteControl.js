@@ -138,7 +138,7 @@ function seleniumEquals(type, pattern, expression) {
 		} else if (pattern.match(/[\*\?]/)) {
 			matcher = 'glob';
 		}
-		var separateEquals = this.useSeparateEqualsForArray || 'exact' != matcher;
+		var separateEquals = 'exact' != matcher || (this.useSeparateEqualsForArray && this.useSeparateEqualsForArray());
 		var list = parseArray(pattern);
 		if (separateEquals) {
 			var result = new EqualsArray(expression);
