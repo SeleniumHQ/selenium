@@ -260,7 +260,7 @@ function getBreakpointEventHandler(commandRow) {
             commandRow.beforeBackgroundColor = Element.getStyle(commandRow, "backgroundColor");
             Element.setStyle(commandRow, {"background-color" : "#cccccc"});
         } else {
-            delete commandRow.stopOnThisCommand;
+            commandRow.stopOnThisCommand = undefined;
             Element.setStyle(commandRow, {"background-color" : commandRow.beforeBackgroundColor});
         }
     }
