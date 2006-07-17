@@ -47,17 +47,17 @@ var BrowserBot = function(frame) {
     this.recordPageLoad = function() {
     	LOG.debug("Page load detected");
         try {
-            LOG.debug("Page load location=" + self.getCurrentWindow().location);
+        	LOG.debug("Page load location=" + self.getCurrentWindow().location);
         } catch (e) {
-            self.pageLoadError = e;
-            return;
+        	self.pageLoadError = e;
+        	return;
         }
         self.currentPage = null;
         self.newPageLoaded = true;
     };
 
     this.isNewPageLoaded = function() {
-        if (this.pageLoadError) throw this.pageLoadError;
+    	if (this.pageLoadError) throw this.pageLoadError;
         return self.newPageLoaded;
     };
 };
@@ -99,12 +99,10 @@ BrowserBot.prototype.setNextPromptResult = function(result) {
 };
 
 BrowserBot.prototype.hasAlerts = function() {
-    return (this.recordedAlerts.length > 0);
+    return (this.recordedAlerts.length > 0) ;
 };
 
-BrowserBot.prototype.relayBotToRC = function() {
-};
-// override in injection.html
+BrowserBot.prototype.relayBotToRC = function() {}; // override in injection.html
 
 BrowserBot.prototype.getNextAlert = function() {
     var t = this.recordedAlerts.shift();
@@ -113,7 +111,7 @@ BrowserBot.prototype.getNextAlert = function() {
 };
 
 BrowserBot.prototype.hasConfirmations = function() {
-    return (this.recordedConfirmations.length > 0);
+    return (this.recordedConfirmations.length > 0) ;
 };
 
 BrowserBot.prototype.getNextConfirmation = function() {
@@ -123,7 +121,7 @@ BrowserBot.prototype.getNextConfirmation = function() {
 };
 
 BrowserBot.prototype.hasPrompts = function() {
-    return (this.recordedPrompts.length > 0);
+    return (this.recordedPrompts.length > 0) ;
 };
 
 BrowserBot.prototype.getNextPrompt = function() {
@@ -134,9 +132,8 @@ BrowserBot.prototype.getNextPrompt = function() {
 
 BrowserBot.prototype.getFrame = function() {
     var f = this.frame;
-    if (f == null) {
-        f = window;
-        // in case we aren't using frames
+    if (f==null) {
+    	f = window;	// in case we aren't using frames
     }
     return f;
 };
@@ -154,28 +151,28 @@ BrowserBot.prototype.selectWindow = function(target) {
 };
 
 BrowserBot.prototype.selectFrame = function(target) {
-    if (target == "relative=up") {
-        this.currentWindow = this.getCurrentWindow().parent;
-    } else if (target == "relative=top") {
-        this.currentWindow = this.getCurrentWindow().top;
-    } else {
-        var frame = this.getCurrentPage().findElement(target);
-        if (frame == null) {
-            throw new SeleniumError("Not found: " + target);
-        }
-        // now, did they give us a frame or a frame ELEMENT?
-        if (frame.contentWindow) {
-            // this must be a frame element
-            this.currentWindow = frame.contentWindow;
-        } else if (frame.document) {
-            // must be an actual window frame
-            this.currentWindow = frame;
-        } else {
-            // neither
-            throw new SeleniumError("Not a frame: " + target);
-        }
-    }
-    this.currentPage = null;
+	if (target == "relative=up") {
+		this.currentWindow = this.getCurrentWindow().parent;
+	} else if (target == "relative=top") {
+		this.currentWindow = this.getCurrentWindow().top;
+	} else {
+		var frame = this.getCurrentPage().findElement(target);
+		if (frame == null) {
+			throw new SeleniumError("Not found: " + target);
+		}
+		// now, did they give us a frame or a frame ELEMENT?
+		if (frame.contentWindow) {
+			// this must be a frame element
+			this.currentWindow = frame.contentWindow;
+		} else if (frame.document) {
+			// must be an actual window frame
+			this.currentWindow = frame;
+		} else {
+			// neither
+			throw new SeleniumError("Not a frame: " + target);
+		}
+	}
+	this.currentPage = null;
 };
 
 BrowserBot.prototype.openLocation = function(target) {
@@ -274,46 +271,44 @@ BrowserBot.prototype.callOnWindowPageTransition = function(loadFunction, windowO
 BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalLocation, originalHref) {
     var windowClosed = true;
     try {
-        windowClosed = windowObject.closed;
+    	windowClosed = windowObject.closed;
     } catch (e) {
-        LOG.debug("exception detecting closed window (I guess it must be closed)");
-        LOG.exception(e);
-        // swallow exceptions which may occur in HTA mode when the window is closed
+    	LOG.debug("exception detecting closed window (I guess it must be closed)");
+    	LOG.exception(e);
+    	// swallow exceptions which may occur in HTA mode when the window is closed
     }
     if (null == windowClosed) windowClosed = true;
     if (windowClosed) {
-        this.pollingForLoad = false;
+    	this.pollingForLoad = false;
         return;
     }
 
     LOG.debug("pollForLoad original: " + originalHref);
     try {
 
-        var currentLocation = windowObject.location;
-        var currentHref = currentLocation.href
+	    var currentLocation = windowObject.location;
+	    var currentHref = currentLocation.href
 
-        var sameLoc = (originalLocation === currentLocation);
-        var sameHref = (originalHref === currentHref);
-        var rs = windowObject.document.readyState;
+	    var sameLoc = (originalLocation === currentLocation);
+	    var sameHref = (originalHref === currentHref);
+	    var rs = windowObject.document.readyState;
 
-        if (rs == null) rs = 'complete';
+		if (rs == null) rs = 'complete';
 
-        if (!(sameLoc && sameHref) && rs == 'complete') {
-            LOG.debug("pollForLoad complete: " + rs + " (" + currentHref + ")");
-            loadFunction();
-            this.pollingForLoad = false;
-            return;
-        }
-        var self = this;
-        LOG.debug("pollForLoad continue: " + currentHref);
-        window.setTimeout(function() {
-            self.pollForLoad(loadFunction, windowObject, originalLocation, originalHref);
-        }, 500);
-    } catch (e) {
-        LOG.error("Exception during pollForLoad; this should get noticed soon!");
-        LOG.exception(e);
-        this.pageLoadError = e;
-    }
+	    if (!(sameLoc && sameHref) && rs == 'complete') {
+	        LOG.debug("pollForLoad complete: " + rs + " (" + currentHref + ")");
+	        loadFunction();
+	        this.pollingForLoad = false;
+	        return;
+	    }
+	    var self = this;
+	    LOG.debug("pollForLoad continue: " + currentHref);
+	    window.setTimeout(function() {self.pollForLoad(loadFunction, windowObject, originalLocation, originalHref);}, 500);
+	} catch (e) {
+		LOG.error("Exception during pollForLoad; this should get noticed soon!");
+		LOG.exception(e);
+		this.pageLoadError = e;
+	}
 };
 
 
@@ -433,9 +428,7 @@ var PageBot = function(pageWindow) {
         this.currentWindow = pageWindow;
         this.currentDocument = pageWindow.document;
         this.location = pageWindow.location;
-        this.title = function() {
-            return this.currentDocument.title;
-        };
+        this.title = function() {return this.currentDocument.title;};
     }
 
     // Register all locateElementBy* functions
@@ -621,9 +614,9 @@ PageBot.prototype.locateElementByName = function(locator, document) {
 };
 
 /**
- * Finds an element using by evaluating the "document.*" string against the
- * current document object. Dom expressions must begin with "document."
- */
+* Finds an element using by evaluating the "document.*" string against the
+* current document object. Dom expressions must begin with "document."
+*/
 PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument) {
     if (domTraversal.indexOf("document.") != 0) {
         return null;
@@ -643,9 +636,9 @@ PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocumen
 PageBot.prototype.locateElementByDomTraversal.prefix = "dom";
 
 /**
- * Finds an element identified by the xpath expression. Expressions _must_
- * begin with "//".
- */
+* Finds an element identified by the xpath expression. Expressions _must_
+* begin with "//".
+*/
 PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
 
     // Trim any trailing "/": not valid xpath, and remains from attribute
@@ -665,30 +658,30 @@ PageBot.prototype.locateElementByXPath = function(xpath, inDocument) {
     // Handle //tag[@attr='value']
     var match = xpath.match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/);
     if (match) {
-        return this._findElementByTagNameAndAttributeValue(
-                inDocument,
-                match[1].toUpperCase(),
-                match[2].toLowerCase(),
-                match[3].slice(1, -1)
-                );
+        return this.findElementByTagNameAndAttributeValue(
+            inDocument,
+            match[1].toUpperCase(),
+            match[2].toLowerCase(),
+            match[3].slice(1, -1)
+        );
     }
 
     // Handle //tag[text()='value']
     var match = xpath.match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/);
     if (match) {
-        return this._findElementByTagNameAndText(
-                inDocument,
-                match[1].toUpperCase(),
-                match[2].slice(1, -1)
-                );
+        return this.findElementByTagNameAndText(
+            inDocument,
+            match[1].toUpperCase(),
+            match[2].slice(1, -1)
+        );
     }
 
-    return this._findElementUsingFullXPath(xpath, inDocument);
+    return this.findElementUsingFullXPath(xpath, inDocument);
 };
 
-PageBot.prototype._findElementByTagNameAndAttributeValue = function(
-        inDocument, tagName, attributeName, attributeValue
-        ) {
+PageBot.prototype.findElementByTagNameAndAttributeValue = function(
+    inDocument, tagName, attributeName, attributeValue
+) {
     if (browserVersion.isIE && attributeName == "class") {
         attributeName = "className";
     }
@@ -702,9 +695,9 @@ PageBot.prototype._findElementByTagNameAndAttributeValue = function(
     return null;
 };
 
-PageBot.prototype._findElementByTagNameAndText = function(
-        inDocument, tagName, text
-        ) {
+PageBot.prototype.findElementByTagNameAndText = function(
+    inDocument, tagName, text
+) {
     var elements = inDocument.getElementsByTagName(tagName);
     for (var i = 0; i < elements.length; i++) {
         if (getText(elements[i]) == text) {
@@ -714,7 +707,7 @@ PageBot.prototype._findElementByTagNameAndText = function(
     return null;
 };
 
-PageBot.prototype._findElementUsingFullXPath = function(xpath, inDocument) {
+PageBot.prototype.findElementUsingFullXPath = function(xpath, inDocument) {
     // Use document.evaluate() if it's available
     if (inDocument.evaluate) {
         return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
@@ -731,9 +724,9 @@ PageBot.prototype._findElementUsingFullXPath = function(xpath, inDocument) {
 };
 
 /**
- * Finds a link element with text matching the expression supplied. Expressions must
- * begin with "link:".
- */
+* Finds a link element with text matching the expression supplied. Expressions must
+* begin with "link:".
+*/
 PageBot.prototype.locateElementByLinkText = function(linkText, inDocument) {
     var links = inDocument.getElementsByTagName('a');
     for (var i = 0; i < links.length; i++) {
@@ -747,9 +740,9 @@ PageBot.prototype.locateElementByLinkText = function(linkText, inDocument) {
 PageBot.prototype.locateElementByLinkText.prefix = "link";
 
 /**
- * Returns an attribute based on an attribute locator. This is made up of an element locator
- * suffixed with @attribute-name.
- */
+* Returns an attribute based on an attribute locator. This is made up of an element locator
+* suffixed with @attribute-name.
+*/
 PageBot.prototype.findAttribute = function(locator) {
     // Split into locator + attributeName
     var attributePos = locator.lastIndexOf("@");
@@ -831,7 +824,7 @@ PageBot.prototype.checkMultiselect = function(element) {
 PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
-    element.value = stringValue;
+    element.value=stringValue;
     if (!browserVersion.isChrome) {
         // In chrome URL, The change event is already fired by setting the value.
         triggerEvent(element, 'change', true);
@@ -847,9 +840,7 @@ MozillaPageBot.prototype.clickElement = function(element) {
     // (This is caused by a javascript onclick handler returning false)
     var preventDefault = false;
 
-    element.addEventListener("click", function(evt) {
-        preventDefault = evt.getPreventDefault();
-    }, false);
+    element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
 
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true);
@@ -881,12 +872,12 @@ OperaPageBot.prototype.clickElement = function(element) {
     triggerMouseEvent(element, 'click', true);
 
     if (isDefined(element.checked)) {
-        // In Opera, clicking won't check/uncheck
-        if (element.type == "checkbox") {
-            element.checked = !element.checked;
-        } else {
-            element.checked = true;
-        }
+    	// In Opera, clicking won't check/uncheck
+    	if (element.type == "checkbox") {
+    		element.checked = !element.checked;
+    	} else {
+    		element.checked = true;
+    	}
     }
 
     if (this.windowClosed()) {
@@ -952,7 +943,7 @@ SafariPageBot.prototype.clickElement = function(element) {
             } else {
                 // This is true for buttons outside of forms, and maybe others.
                 LOG.warn("Ignoring 'click' call for button outside form, or link without href."
-                        + "Using buttons without an enclosing form can cause wierd problems with URL resolution in Safari.");
+                        + "Using buttons without an enclosing form can cause wierd problems with URL resolution in Safari." );
                 // I implemented special handling for window.open, but unfortunately this behaviour is also displayed
                 // when we have a button without an enclosing form that sets document.location in the onclick handler.
                 // The solution is to always use an enclosing form for a button.
@@ -976,9 +967,7 @@ IEPageBot.prototype.clickElement = function(element) {
     // Set a flag that records if the page will unload - this isn't always accurate, because
     // <a href="javascript:alert('foo'):"> triggers the onbeforeunload event, even thought the page won't unload
     var pageUnloading = false;
-    var pageUnloadDetector = function() {
-        pageUnloading = true;
-    };
+    var pageUnloadDetector = function() {pageUnloading = true;};
     this.currentWindow.attachEvent("onbeforeunload", pageUnloadDetector);
 
     element.click();
@@ -1003,8 +992,7 @@ IEPageBot.prototype.clickElement = function(element) {
         // If the page is unloading, we may get a "Permission denied" or "Unspecified error".
         // Just ignore it, because the document may have unloaded.
         if (pageUnloading) {
-            LOG.logHook = function() {
-            };
+            LOG.logHook = function(){};
             LOG.warn("Caught exception when firing events on unloading page: " + e.message);
             return;
         }
@@ -1065,13 +1053,13 @@ PageBot.prototype.getAllLinks = function() {
 };
 
 PageBot.prototype.setContext = function(strContext, logLevel) {
-    //set the current test title
+     //set the current test title
     var ctx = document.getElementById("context");
     if (ctx != null) {
-        ctx.innerHTML = strContext;
+    	ctx.innerHTML=strContext;
     }
-    if (logLevel != null) {
-        LOG.setLogLevelThreshold(logLevel);
+    if (logLevel!=null) {
+    	LOG.setLogLevelThreshold(logLevel);
     }
 };
 
@@ -1082,7 +1070,7 @@ function isDefined(value) {
 PageBot.prototype.goBack = function() {
     this.currentWindow.history.back();
     if (browserVersion.isOpera && !selenium.browserbot.pollingForLoad) {
-        // DGF On Opera, goBack doesn't re-trigger a load event, so we have to poll for it
+    	// DGF On Opera, goBack doesn't re-trigger a load event, so we have to poll for it
         selenium.browserbot.callOnWindowPageTransition(selenium.browserbot.recordPageLoad, this.currentWindow);
     }
 };
@@ -1092,11 +1080,11 @@ PageBot.prototype.goForward = function() {
 };
 
 PageBot.prototype.close = function() {
-    if (browserVersion.isChrome) {
-        this.currentWindow.close();
-    } else {
-        this.currentWindow.eval("window.close();");
-    }
+	if (browserVersion.isChrome) {
+		this.currentWindow.close();
+	} else {
+	    this.currentWindow.eval("window.close();");
+	}
 };
 
 PageBot.prototype.refresh = function() {
@@ -1167,10 +1155,10 @@ PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterT
  */
 PageBot.prototype.locateElementByClass = function(locator, document) {
     return Element.findFirstMatchingChild(document,
-            function(element) {
-                return element.className == locator
-            }
-            );
+	    function(element) {
+		    return element.className == locator
+		}
+    );
 }
 
 /**
@@ -1178,18 +1166,10 @@ PageBot.prototype.locateElementByClass = function(locator, document) {
  */
 PageBot.prototype.locateElementByAlt = function(locator, document) {
     return Element.findFirstMatchingChild(document,
-            function(element) {
-                return element.alt == locator
-            }
-            );
+	    function(element) {
+		    return element.alt == locator
+		}
+    );
 }
 
-/**
- * Find an element by css selector
- */
-PageBot.prototype.locateElementByCss = function(locator, document) {
-    var elements = cssQuery(locator, document);
-    if (elements.length != 0)
-        return elements[0];
-    return null;
-}
+
