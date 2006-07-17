@@ -33,6 +33,7 @@ SourceView.prototype = {
 			var insertedCommand = this.testCase.commands[rowIndex];
 			var index = insertedCommand.charIndex + insertedCommand.line.length + 1;
 			this.textbox.setSelectionRange(index, index);
+			this.scrollToCursorPosition();
 			/*
 			var value = this.lastValue;
 			var lineno = 0;
@@ -47,6 +48,19 @@ SourceView.prototype = {
 				index++;
 				lineno++;
 				}*/
+		}
+	},
+	scrollToCursorPosition: function() {
+		var start = this.textbox.selectionStart;
+		var lines = this.textbox.value.split(/\n/).length + 1;
+		var offset = this.textbox.value.substring(0, start).split(/\n/).length;
+		var yPos = this.textbox.inputField.scrollHeight * offset / lines;
+		var lineHeight = this.textbox.inputField.scrollHeight / lines;
+		var scrollTop = this.textbox.inputField.scrollTop;
+		if (yPos < scrollTop) {
+			this.textbox.inputField.scrollTop = yPos;
+		} else if (scrollTop + this.textbox.inputField.clientHeight - lineHeight < yPos) {
+			this.textbox.inputField.scrollTop = yPos + this.textbox.inputField.clientHeight - lineHeight;
 		}
 	},
 	rowUpdated: function(index) {
@@ -70,41 +84,16 @@ SourceView.prototype = {
 		if (this.editor.currentFormat.getFormatter().playable) {
 			return this.testCase.commands.length;
 		} else {
-			var value = this.lastValue;
-			var lineno = 0;
-			this.log.debug("selectionStart=" + this.textbox.selectionStart);
-			var cursor = this.textbox.selectionStart;
-			var lineno = this.countNewLine(value, cursor);
-			var recordIndex = 0;
-			var header = this.testCase.formatLocal(this.editor.currentFormat.getFormatter().name).header;
-			if (header) {
-				lineno -= this.countNewLine(header);
-			}
-			for (var i = 0; i < this.testCase.commands.length; i++) {
-				var command = this.testCase.commands[i];
-				if (command.line) {
-					lineno -= this.countNewLine(command.line) + 1;
-				}
-				recordIndex++;
-				if (lineno <= 0) {
-					return recordIndex;
-				}
-			}
-			return this.testCase.commands.length;
+			return this.testCase.getCommandIndexByTextIndex(this.lastValue, this.textbox.selectionStart, this.editor.currentFormat.getFormatter());
 		}
 	}
 };
 
 SourceView.prototype.countNewLine = function(value, cursor) {
-	var lineno = 0;
-	var index = 0;
-	while (true) {
-		index = value.indexOf("\n", index);
-		if (index < 0 || (cursor != null && cursor <= index)) break;
-		lineno++;
-		index++;
+	if (cursor != null) {
+		value = value.substring(0, cursor);
 	}
-	return lineno;
+	return value.split(/\n/).length;
 }
 
 SourceView.prototype.updateView = function() {

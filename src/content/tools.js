@@ -92,7 +92,7 @@ function LineReader(text) {
 
 LineReader.prototype.read = function() {
 	if (this.text.length > 0) {
-		line = /.*(\r\n|\r|\n)?/.exec(this.text)[0];
+		var line = /.*(\r\n|\r|\n)?/.exec(this.text)[0];
 		this.text = this.text.substr(line.length);
 		line = line.replace(/\r?\n?$/, '');
 		return line;

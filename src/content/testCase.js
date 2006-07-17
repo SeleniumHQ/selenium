@@ -310,3 +310,25 @@ TestCase.prototype.checkTimestamp = function() {
 	}
 	return false;
 }
+
+TestCase.prototype.getCommandIndexByTextIndex = function(text, index, formatter) {
+	this.log.debug("getCommandIndexByTextIndex: index=" + index);
+	var lineno = text.substring(0, index).split(/\n/).length - 1;
+	var header = this.formatLocal(formatter.name).header;
+	this.log.debug("lineno=" + lineno + ", header=" + header);
+	if (header) {
+		lineno -= header.split(/\n/).length - 1;
+	}
+	this.log.debug("this.commands.length=" + this.commands.length);
+	for (var i = 0; i < this.commands.length; i++) {
+		this.log.debug("lineno=" + lineno + ", i=" + i);
+		if (lineno <= 0) {
+			return i;
+		}
+		var command = this.commands[i];
+		if (command.line != null) {
+			lineno -= command.line.split(/\n/).length;
+		}
+	}
+	return this.commands.length;
+}

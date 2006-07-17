@@ -174,7 +174,7 @@ function pause(milliseconds) {
 }
 
 function echo(message) {
-	return "print(" + xlateArgument(message) + ' . "\n");'
+	return "print(" + xlateArgument(message) + ' . "\\n");'
 }
 
 function statement(expression) {

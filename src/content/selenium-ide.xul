@@ -172,7 +172,7 @@ limitations under the License.
 	  </vbox>
 	</tabpanel>
 	<tabpanel orient="vertical">
-	  <textbox id="source" multiline="true" flex="1" onchange="editor.sourceView.syncModel()"/>
+	  <textbox id="source" multiline="true" flex="1" onchange="editor.sourceView.syncModel()" wrap="off"/>
 	</tabpanel>
       </tabpanels>
     </tabbox>

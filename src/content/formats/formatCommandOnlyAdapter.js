@@ -109,7 +109,7 @@ function formatCommands(commands) {
 		command.charIndex = this.commandCharIndex;
 		if (line != null) {
 			updateIndent(line);
-			line += "\n";
+			line = line + "\n";
 			result += line;
 			this.commandCharIndex += line.length;
 		}
