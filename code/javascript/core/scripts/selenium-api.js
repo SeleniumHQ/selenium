@@ -1189,7 +1189,6 @@ Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
    }
    var xOffset = regexpResult[1];
    var yOffset = regexpResult[2];
-   debugger
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {
