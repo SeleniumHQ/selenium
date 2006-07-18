@@ -32,7 +32,9 @@ applications.<br>
 <p>A test-case is represented by an HTML document written in "Selenese", containing a table with 3 columns, room enough for a <em>command</em> and two <em>arguments</em>.  
 (See the <a href="http://release.openqa.org/selenium-core/nightly/reference.html">Reference Guide</a> for a complete list of commands.)
 Not all commands take two arguments; in this case either leave the column blank or use a &amp;nbsp; to make the table look better.</p>
-<p>The first row will be ignored by Selenium, so this can be used for a title or any other information.</p>
+
+<p>Any rows with fewer than 3 columns will be ignored by Selenium, so can be used for comments.</p>
+
 <p>Example:</p>
 <blockquote>
 <table border="1" class="table">
@@ -42,7 +44,7 @@ Not all commands take two arguments; in this case either leave the column blank 
 <col width="31%" />
 </colgroup>
 <tbody valign="top">
-<tr><td colspan="3">Simple Test Table</td>
+<tr><td colspan="3">MyTest</td>
 </tr>
 <tr><td>open</td>
 <td>/mypage</td>
@@ -65,52 +67,44 @@ Not all commands take two arguments; in this case either leave the column blank 
 </blockquote>
 </blockquote>
 
+<h2>Adding your Test to the Test Suite</h2>
+ 
 <p>
-Test cases should be inserted into certain test suite and can be run. For an
-instance of test suite, refer to ${SELENIUM_HOME}/tests/TestSuite.html .
-Basically it's just about link test case pages into a table like following:
+Make your new test case available by linking to it from the TestSuite; for example:
+</p>
+
 <pre>
     &lt;table id="suiteTable" cellpadding="1" cellspacing="1" border="1">
-	   &lt;tbody>
-	   &lt;tr>&lt;td>&lt;b>Test Suite &lt;/b> &lt;/td> &lt;/tr>
-           &lt;tr>&lt;td>&lt;a href="./TestOpen.html">TestOpen &lt;/a>&lt;/td>&lt;/tr>
-	   &lt;tr>&lt;td>&lt;a href="./TestClick.html">TestClick &lt;/a>&lt;/td>&lt;/tr>
-	   &lt;/tbody>	
-     &lt;/table>
+        &lt;tbody>
+        &lt;tr>&lt;td>&lt;b>Test Suite &lt;/b> &lt;/td> &lt;/tr>
+        <b>&lt;tr>&lt;td>&lt;a href="MyTest.html">MyTest&lt;/a>&lt;/td>&lt;/tr></b>
+        ...etc...
+        &lt;/tbody>
+    &lt;/table>
 </pre>
 
+<p>For an instance of a test suite, see
+<code>${SELENIUM_HOME}/tests/TestSuite.html</code>.</p>
 
 </p>
 </div>
 
-
-
 <div class="section" id="run-your-testcase">
-	<h2><a name="run-your-testcase">Run Your Testcase</a></h2>
-	<p>Once your wrote a testcase, you can run it using
-	"TestRunner.html". You can find it at ${SELENIUM_HOME}/core/TestRunner.html.
-	
-	<p>There is a simple way to run a testcase: put it to
-	${SELENIUM_HOME}/tests and add the test file link to
-	${SELENIUM_HOME}/tests/TestSuite.html.Then run it using the url
-	file://${SELENIUM_HOME}/core/TestRunner.html?test=../tests/TestSuite.html.
-	You should have this screen after it launched. 
-	
-	<p><img	src="images/start_on_testsuit.JPG"></img>
-	
-	<p>Now you can run all test cases by click the "All" button on the
-	right side. Also you can click the title of test case to select and run
-	them one by one.
+    <h2><a name="run-your-testcase">Run your Test Case</a></h2>
+    <p>Next, open the Selenium Core "TestRunner"
+    (<code>${SELENIUM_HOME}/core/TestRunner.html</code>).  You should see
+    something like the following screen. </p>
+    
+    <p><img src="images/start_on_testsuit.JPG"></img>
+    
+    <p>Locate the name of your test case in the Suite Panel (top left). Clicking on it should cause Selenium to load your test into the Test Panel (top center).  Now you can run the test by clicking the "Selected" button in the control area.</p>
 
-	<p> Control your test running by the Test Runner Panel.
-	
-	<p><img src="images/test_runner_frame.jpg"></img>
+    <p>Alternatively, click the "All" button to run the entire test suite.</p>
+
+    <p>The Control Panel allows you to control how tests are executed.</p>
+    
+    <p><img src="images/test_runner_frame.jpg"></img>
 </div>
-
-
-
-
-
 
 <div class="section" id="setup-teardown">
 <h2><a name="setup-teardown">SetUp / TearDown</a></h2>
