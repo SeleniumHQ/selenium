@@ -52,14 +52,6 @@
     </target>
 
     <target name="generate-xml" depends="copy-sources">
-        <exec executable="cscript" dir="javascript" output="javascript/core/iedoc.xml" failonerror="true">
-            <arg value="/nologo"/>
-            <arg file="javascript/iedoc.js"/>
-            <arg file="javascript/core/scripts/selenium-api.js" />
-        </exec>
-        <xmlvalidate file="javascript/core/iedoc.xml" lenient="true"/>
-        <copy file="javascript/core/iedoc.xml" tofile="${image.dir}/core/iedoc.xml" overwrite="true"/>
-        
         <exec executable="cscript" dir="javascript" output="javascript/core/iedoc-core.xml" failonerror="true">
             <arg value="/nologo"/>
             <arg file="javascript/iedoc.js"/>

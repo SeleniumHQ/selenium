@@ -84,6 +84,15 @@ function Selenium(browserbot) {
 	 * </ul>
 	 * 
 	 * </dd>
+	 *
+	 * <dt><strong>css</strong>=<em>cssSelectorSyntax</em></dt>
+	 * <dd>Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
+	 * <ul class="first last simple">
+	 * <li>css=a[href="#id3"]</li>
+	 * <li>css=span#firstChild + span</li>
+	 * </ul>
+	 * </dd>
+	 * <dd>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </dd>
 	 * </dl>
 	 * </blockquote>
 	 * <p>
