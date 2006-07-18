@@ -84,15 +84,6 @@ function Selenium(browserbot) {
 	 * </ul>
 	 * 
 	 * </dd>
-	 *
-	 * <dt><strong>css</strong>=<em>cssSelectorSyntax</em></dt>
-	 * <dd>Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
-	 * <ul class="first last simple">
-	 * <li>css=a[href="#id3"]</li>
-	 * <li>css=span#firstChild + span</li>
-	 * </ul>
-	 * </dd>
-	 * <dd>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </dd>
 	 * </dl>
 	 * </blockquote>
 	 * <p>
@@ -1120,7 +1111,7 @@ Selenium.prototype.getAllLinks = function() {
 };
 
 Selenium.prototype.getAllFields = function() {
-	/** Returns the IDs of all input fields on the page.
+  /** Returns the IDs of all input fields on the page.
    * 
    * <p>If a given field has no ID, it will appear as "" in this array.</p>
    * 
@@ -1129,24 +1120,29 @@ Selenium.prototype.getAllFields = function() {
    return this.page().getAllFields();
 };
 
+Selenium.prototype._getTestAppParentOfAllWindows = function() {
+  /** Returns the IDs of all input fields on the page.
+   * 
+   * <p>If a given field has no ID, it will appear as "" in this array.</p>
+   * 
+   * @return string[] the IDs of all field on the page
+   */
+   var testAppParentOfAllWindows;
+   if (this.browserbot.getCurrentWindow().opener!=null) {
+   	return this.browserbot.getCurrentWindow().opener;
+   }
+   return testAppParentOfAllWindows = this.browserbot.getCurrentWindow();
+};
+
+
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
   /** Returns every instance of some attribute from all known windows.
    * 
-   * <p>Null values are treated like empty strings in this array.</p>
-   *
-   * @param attributeName name of an attribute on windows
-   * 
+   * @param attributeName name of an attribute on the windows
    * @return string[] the set of values of this attribute from all known windows.
    */
    var attributes = new Array();
-   var testAppParentOfAllWindows;
-   if (this.browserbot.getCurrentWindow().opener!=null) {
-   	testAppParentOfAllWindows = this.browserbot.getCurrentWindow().opener;
-   }
-   else {
-   	testAppParentOfAllWindows = this.browserbot.getCurrentWindow();
-   }
-
+   var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
    attributes.push(eval("testAppParentOfAllWindows." + attributeName));
    var selenium = testAppParentOfAllWindows.selenium==null ? testAppParentOfAllWindows.parent.selenium : testAppParentOfAllWindows.selenium;
    for (windowName in selenium.browserbot.openedWindows)
@@ -1154,6 +1150,20 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
        attributes.push(eval("selenium.browserbot.openedWindows[windowName]." + attributeName));
    }
    return attributes;
+};
+
+Selenium.prototype.findWindow = function(soughtAfterWindowName) {
+   var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
+   if (soughtAfterWindowName=="" || testAppParentOfAllWindows.name==soughtAfterWindowName) {
+   	return testAppParentOfAllWindows;
+   } 
+   for (windowName in selenium.browserbot.openedWindows)
+   {
+	if (windowName==soughtAfterWindowName) {
+   		return selenium.browserbot.openedWindows[windowName];
+        } 
+   }
+   throw "could not find window " + windowName;
 };
 
 Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
@@ -1171,9 +1181,7 @@ Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
    }
    var xOffset = regexpResult[1];
    var yOffset = regexpResult[2];
-   // not implemented yet    
-   element.offsetLeft += xOffset;
-   element.offsetLeftTop += yOffset;
+   debugger
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {
@@ -1181,7 +1189,21 @@ Selenium.prototype.doWindowFocus = function(windowName) {
    * 
    * @windowName name of the window to be given focus
    */
-   // not implemented yet    
+   this.findWindow(windowName).focus();
+};
+
+
+Selenium.prototype.doWindowMaximize = function(windowName) {
+/** Resize window to take up the entire screen
+   * 
+   * @windowName name of the window to be enlarged
+   */
+   var window = this.findWindow(windowName);
+   if (window!=null && window.screen) {
+   	window.moveTo(0,0);
+        window.outerHeight = screen.availHeight;
+        window.outerWidth = screen.availWidth;
+   }
 };
 
 Selenium.prototype.getAllWindowIds = function() {
@@ -1552,6 +1574,3 @@ OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
         Assert.matches(this.id, selectedId)
     };
 };
-
-
-
