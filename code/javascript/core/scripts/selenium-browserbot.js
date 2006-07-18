@@ -839,24 +839,20 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'blur', false);
 };
 
-MozillaPageBot.prototype.clickElement = function(element) {
+MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
     // Add an event listener that detects if the default action has been prevented.
     // (This is caused by a javascript onclick handler returning false)
     var preventDefault = false;
-
-    element.addEventListener("click", function(evt) {
-        preventDefault = evt.getPreventDefault();
-    }, false);
+    element.addEventListener("click", function(evt) {preventDefault = evt.getPreventDefault();}, false);
 
     // Trigger the click event.
-    triggerMouseEvent(element, 'click', true);
+    triggerMouseEvent(element, 'click', true, clientX, clientY);
 
     // Perform the link action if preventDefault was set.
-    // In chrome URL, the link action is already executed by triggerMouseEvent.
-    if (!browserVersion.isChrome && !preventDefault) {
+    if (!preventDefault) {
         // Try the element itself, as well as it's parent - this handles clicking images inside links.
         if (element.href) {
             this.currentWindow.location.href = element.href;
@@ -877,17 +873,12 @@ OperaPageBot.prototype.clickElement = function(element) {
 
     triggerEvent(element, 'focus', false);
 
-    // Trigger the click event.
-    triggerMouseEvent(element, 'click', true);
+    // Add an event listener that detects if the default action has been prevented.
+    // (This is caused by a javascript onclick handler returning false)
+    var preventDefault = false;
 
-    if (isDefined(element.checked)) {
-        // In Opera, clicking won't check/uncheck
-        if (element.type == "checkbox") {
-            element.checked = !element.checked;
-        } else {
-            element.checked = true;
-        }
-    }
+    // Trigger the click event.
+    triggerMouseEvent(element, 'click', true, clientX, clientY);
 
     if (this.windowClosed()) {
         return;
@@ -896,8 +887,7 @@ OperaPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'blur', false);
 };
 
-
-KonquerorPageBot.prototype.clickElement = function(element) {
+KonquerorPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -905,7 +895,7 @@ KonquerorPageBot.prototype.clickElement = function(element) {
         element.click();
     }
     else {
-        triggerMouseEvent(element, 'click', true);
+        triggerMouseEvent(element, 'click', true, clientX, clientY);
     }
 
     if (this.windowClosed()) {
@@ -915,7 +905,7 @@ KonquerorPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'blur', false);
 };
 
-SafariPageBot.prototype.clickElement = function(element) {
+SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -927,7 +917,7 @@ SafariPageBot.prototype.clickElement = function(element) {
     }
     // For links and other elements, event emulation is required.
     else {
-        triggerMouseEvent(element, 'click', true);
+        triggerMouseEvent(element, 'click', true, clientX, clientY);
 
         // Unfortunately, triggering the event doesn't seem to activate onclick handlers.
         // We currently call onclick for the link, but I'm guessing that the onclick for containing
@@ -967,7 +957,7 @@ SafariPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'blur', false);
 };
 
-IEPageBot.prototype.clickElement = function(element) {
+IEPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -977,7 +967,7 @@ IEPageBot.prototype.clickElement = function(element) {
     // <a href="javascript:alert('foo'):"> triggers the onbeforeunload event, even thought the page won't unload
     var pageUnloading = false;
     var pageUnloadDetector = function() {
-        pageUnloading = true;
+	pageUnloading = true;
     };
     this.currentWindow.attachEvent("onbeforeunload", pageUnloadDetector);
 

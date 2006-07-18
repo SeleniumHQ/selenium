@@ -168,17 +168,20 @@ Selenium.prototype.reset = function() {
     this.browserbot.selectWindow("null");
 };
 
-Selenium.prototype.doClick = function(locator) {
+Selenium.prototype.doClick = function(locator, coordString) {
 	/**
    * Clicks on a link, button, checkbox or radio button. If the click action
    * causes a new page to load (like a link usually does), call
    * waitForPageToLoad.
-   * 
+   *
    * @param locator an element locator
-   * 
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   *
    */
     var element = this.page().findElement(locator);
-    this.page().clickElement(element);
+    var clientXY = getClientXY(element, coordString)
+    this.page().clickElement(element, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doFireEvent = function(locator, eventName) {
@@ -229,6 +232,35 @@ Selenium.prototype.doKeyUp = function(locator, keycode) {
     triggerKeyEvent(element, 'keyup', keycode, true);
 };
 
+function getElementOffset(element) {
+  var valueT = 0, valueL = 0;
+  do {
+    valueT += element.offsetTop  || 0;
+    valueL += element.offsetLeft || 0;
+    element = element.offsetParent;
+  } while (element);
+  return [valueL, valueT];
+}
+
+function getClientXY(element, coordString) {
+   // Parse coordString
+   var coords = null
+   if (coordString) {
+      coords = coordString.split(/,/)
+      var x = Number(coords[0])
+      var y = Number(coords[1])
+   }
+   else {
+    coords = [0,0]
+   }
+  
+   // Get position of element
+   var offset = getElementOffset(element)
+  
+   // Return 2 item array with clientX and clientY
+   return [offset[0] + x, offset[1] + y]
+}  
+
 Selenium.prototype.doMouseOver = function(locator) {
 	/**
    * Simulates a user hovering a mouse over the specified element.
@@ -239,15 +271,51 @@ Selenium.prototype.doMouseOver = function(locator) {
     triggerMouseEvent(element, 'mouseover', true);
 };
 
-Selenium.prototype.doMouseDown = function(locator) {
+
+Selenium.prototype.doMouseDown = function(locator, coordString) {
 	/**
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
    */
     var element = this.page().findElement(locator);
-    triggerMouseEvent(element, 'mousedown', true);
+    var clientXY = getClientXY(element, coordString)
+  
+    triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
+};
+
+Selenium.prototype.doMouseUp = function(locator, coordString) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   */
+    var element = this.page().findElement(locator);
+    var clientXY = getClientXY(element, coordString)
+  
+    triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
+};
+
+Selenium.prototype.doMouseMove = function(locator, coordString) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   */
+  
+    var element = this.page().findElement(locator);
+    var clientXY = getClientXY(element, coordString)
+  
+    triggerMouseEvent(element, 'mousemove', true, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doType = function(locator, value) {
@@ -1264,10 +1332,10 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
     
    if( element.setSelectionRange && !browserVersion.isOpera) {
    	element.focus();
-     element.setSelectionRange(/*start*/position,/*end*/position);
+        element.setSelectionRange(/*start*/position,/*end*/position);
    } 
    else if( element.createTextRange ) {
-   		triggerEvent(element, 'focus', false);
+      triggerEvent(element, 'focus', false);
       var range = element.createTextRange();
       range.collapse(true);
       range.moveEnd('character',position);
