@@ -16,13 +16,16 @@ Copyright 2006 ThoughtWorks, Inc
 -->
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html">
-<body>
+<body lang="en">
+    <p>this is the first element in the document</p>
     <img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
     <a id="id1" href="#id1" class="a1">this is the first element</a>
     <!-- DO NOT DELETE THIS COMMENT: see SEL-68 -->
     <a id="id2" name="name1" href="#id2" class="a2" alt="foo">this is the&nbsp;<b>second</b> <span selenium:foo="bar">element</span></a>
     <a id="id3" name="name1" href="#id3" class="a3">this is the third element</a>
     <a id="foo:bar" href="#id3" class="a4">this is the fourth element</a>
+    <a class="class1 class2 class3">this is the fifth element</a>
+    <a lang="en-cn-something">this is the sixth element</a>
 	<input type="radio" name="name2" value="yes">	<input type="radio" name="name2" value="no">
     
     <table class="stylee">
@@ -32,5 +35,36 @@ Copyright 2006 ThoughtWorks, Inc
         </tr>
     </table>
 
+    <div id="linkPseudoTest"><a href="#">link pseudo test</a></div>
+    <div id="combinatorTest">this is the parent. <span id="firstChild">this is a child <a>and grandson</a></span>, <span>another child</span>, <span>last child<span></span></span></div>
+
+    <div id="css3test">
+        <a name="foobar">foobar</a>
+        <a name="barfoo">barfoo</a>
+        <a name="foozoobar">foozoobar</a>
+    </div>
+
+    <div id="onlyChild"><span>only child</span></div>
+    <span></span>
+
+    <input type="text" name="enabled" value="enabled">
+    <input type="text" name="disabled" value="disabled" disabled="true">
+    <input type="checkbox" name="checked" value="checked" checked="true">
+
+    <div id="structuralPseudo">
+        <span>span1</span>
+        <span>span2</span>
+        <span>span3</span>
+        <span>span4</span>
+        <div>div1</div>
+        <div>div2</div>
+        <div>div3</div>
+        <div>div4</div>
+    </div>
+
+    <div id="targetTest">
+        <span name="target">target</span>
+        <a href="#target">referreing URI</a>
+    </div>
 </body>
 </html>
