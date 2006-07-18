@@ -495,10 +495,11 @@ public class SeleniumServer {
     }
 
     /** Prepares a Jetty server with its HTTP handlers.
-     * @param port - the port to start on
-     * @throws Exception - you know, just in case
+     * @param port the port to start on
+     * @param slowResources should the webserver return static resources more slowly?  (Note that this will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML tests.)
+     * @throws Exception you know, just in case
      */
-    public SeleniumServer(int port) throws Exception {
+    public SeleniumServer(int port, boolean slowResources) throws Exception {
         this.port = port;
         server = new Server();
         SocketListener socketListener = new SocketListener();
@@ -525,7 +526,7 @@ public class SeleniumServer {
 
         context = new HttpContext();
         context.setContextPath("/selenium-server");
-        staticContentHandler = new StaticContentHandler(this);
+        staticContentHandler = new StaticContentHandler(this, slowResources);
         context.addHandler(staticContentHandler);
         server.addContext(null, context);
 
@@ -544,8 +545,16 @@ public class SeleniumServer {
         server.addContext(null, driverContext);
     }
 
+    public SeleniumServer(int port) throws Exception {
+        this(port, slowResourceProperty());
+    }
+    
     public SeleniumServer() throws Exception {
-        this(SeleniumServer.DEFAULT_PORT);
+        this(SeleniumServer.DEFAULT_PORT, slowResourceProperty());
+    }
+    
+    private static boolean slowResourceProperty() {
+        return ("true".equals(System.getProperty("slowResources")));
     }
     
     public void addNewStaticContent(File directory) {
@@ -570,10 +579,12 @@ public class SeleniumServer {
     private class StaticContentHandler extends ResourceHandler {
         List<File> contentDirs = new Vector<File>();
         private final SeleniumServer seleniumServer;
+        private final boolean slowResources;
         
-        public StaticContentHandler(SeleniumServer seleniumServer) {
+        public StaticContentHandler(SeleniumServer seleniumServer, boolean slowResources) {
             super();
             this.seleniumServer = seleniumServer;
+            this.slowResources = slowResources;
         }
         public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
             httpResponse.setField("Expires", "-1"); // never cached.
@@ -587,7 +598,7 @@ public class SeleniumServer {
 
         /** When resources are requested, fetch them from the classpath */
         protected Resource getResource(final String s) throws IOException {
-            Resource r = new ClassPathResource(s);
+            Resource r = new ClassPathResource(s, slowResources);
             context.getResourceMetaData(r);
             if (!r.exists()) {
                 for (Iterator i = contentDirs.iterator(); i.hasNext();) {

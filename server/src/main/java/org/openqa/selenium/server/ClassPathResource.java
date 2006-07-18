@@ -31,9 +31,26 @@ public class ClassPathResource extends Resource {
     String path;
     ByteArrayOutputStream os;
 
-    /** Specifies the classpath path containing the resource */
     public ClassPathResource(String path) {
+        this(path, false);
+    }
+    
+    /** Specifies the classpath path containing the resource */
+    public ClassPathResource(String path, boolean slowResources) {
         this.path = path;
+        
+        if (slowResources) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+            if (path != null && path.endsWith("slow.html")) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
 
         InputStream is = ClassPathResource.class.getResourceAsStream(path);
         if (is != null) {
