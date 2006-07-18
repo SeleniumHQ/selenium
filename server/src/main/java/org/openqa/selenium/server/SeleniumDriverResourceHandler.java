@@ -297,12 +297,15 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             System.out.println("queryString = " + req.getQuery());
         }
         results = doCommand(cmd, values, sessionId, res);
-        try {
-            if (results!=null) {
+
+        // under some conditions, the results variable will be null 
+        // (cf http://forums.openqa.org/thread.jspa?threadID=2955&messageID=8085#8085 for an example of this)
+        if (results!=null) {
+            try {
                 res.getOutputStream().write(results.getBytes("UTF-8"));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         req.setHandled(true);

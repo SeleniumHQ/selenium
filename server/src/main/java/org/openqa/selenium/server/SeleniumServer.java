@@ -281,6 +281,7 @@ public class SeleniumServer {
         if (portDriversShouldContactArg==0) {
             portDriversShouldContactArg = port;
         }
+        System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "10000000"); // default max is 200k
         final SeleniumServer seleniumProxy = new SeleniumServer(port);
         checkArgsSanity(port, interactive, htmlSuite, 
                 proxyInjectionModeArg, portDriversShouldContactArg, seleniumProxy);
