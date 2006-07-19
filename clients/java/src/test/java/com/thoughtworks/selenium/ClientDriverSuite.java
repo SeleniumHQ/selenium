@@ -44,8 +44,7 @@ public class ClientDriverSuite extends TestCase {
 // Once that bug is fixed, this class should be a TestSuite, not a TestCase
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
-            // irian down -- restore later
-            //suite.addTestSuite(ApacheMyFacesSuggestTest.class);
+            suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             if (isProxyInjectionMode) {
 //              once frames support is added to the main trunk, we will be able to run the following in non-proxy injection mode:
                 suite.addTestSuite(TestFramesClick.class);
