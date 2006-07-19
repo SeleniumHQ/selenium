@@ -1308,8 +1308,17 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
    var movementX = Number(movements[0]);
    var movementY = Number(movements[1]);
    
-   var clientFinishX = clientStartX + movementX;
-   var clientFinishY = clientStartY + movementY;
+   var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
+   var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
+   
+   if (window!=null && window.screen) {
+   	if (clientFinishX > screen.availWidth) {
+        	clientFinishX = screen.availWidth;
+        }
+   	if (clientFinishY > screen.availHeight) {
+        	clientFinishY = screen.availHeight;
+        }
+   }
    
    var movementXincrement = (movementX > 0) ? 1 : -1;
    var movementYincrement = (movementY > 0) ? 1 : -1;
@@ -1317,7 +1326,7 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
    triggerMouseEvent(element, 'mousedown', true, clientStartX, clientStartY);
    var clientX = clientStartX;
    var clientY = clientStartY;
-   while ((clientX != clientFinishX) && (clientY != clientFinishY)) {
+   while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
    	if (clientX != clientFinishX) {
    		clientX += movementXincrement;
         }
@@ -1325,8 +1334,8 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
    		clientY += movementYincrement;
         }
         triggerMouseEvent(element, 'mousemove', true, clientX, clientY);
-   } 
-   triggerMouseEvent(element, 'mouseup',   true, clientFinishX, clientFinishY);
+    }
+    triggerMouseEvent(element, 'mouseup',   true, clientFinishX, clientFinishY);
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {

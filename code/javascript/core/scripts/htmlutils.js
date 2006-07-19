@@ -218,16 +218,35 @@ function triggerKeyEvent(element, eventType, keycode, canBubble) {
 }
 
 /* Fire a mouse event in a browser-compatible manner */
-function triggerMouseEvent(element, eventType, canBubble) {
+function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
+    clientX = clientX ? clientX : 0;
+    clientY = clientY ? clientY : 0;
+    
+    // TODO: set these attributes -- they don't seem to be needed by the initial test cases, but that could change...
+    var screenX = 0;
+    var screenY = 0;
+    
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-        element.fireEvent('on' + eventType);
+    	var ieEvent = document.createEventObject();
+        ieEvent.detail = 0;
+        ieEvent.screenX = screenX;
+        ieEvent.screenY = screenY;
+        ieEvent.clientX = clientX;
+        ieEvent.clientY = clientY;
+        ieEvent.ctrlKey = false;
+        ieEvent.altKey = false;
+        ieEvent.shiftKey = false;
+        ieEvent.metaKey = false;
+        ieEvent.button = 0;
+        ieEvent.relatedTarget = null;
+  	element.fireEvent('on' + eventType, ieEvent);
     }
     else {
         var evt = document.createEvent('MouseEvents');
         if (evt.initMouseEvent)
         {
-            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null)
+            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, false, false, false, false, 0, null)
         }
         else
         {

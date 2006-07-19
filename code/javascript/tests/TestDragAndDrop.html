@@ -26,23 +26,28 @@ Copyright 2004 ThoughtWorks, Inc
 <tr><td rowspan="1" colspan="3">TestDragDrop</td></tr>
 <tr>
 	<td>open</td>
-	<td>../tests/html/slider_aspx.htm</td>
+	<td>../tests/html/slider/example.html</td>
 	<td></td>
 </tr>
 <tr>
-    	<td>assertValue</td>
-    	<td>id=slider1_Text</td>
-    	<td>0.00</td>
-</tr>
-<tr>
 	<td>dragdrop</td>
-	<td>id=slider1_Overlay</td>
+	<td>id=slider01</td>
 	<td>800,0</td>
 </tr>
 <tr>
     	<td>assertValue</td>
-    	<td>id=slider1_Text</td>
-    	<td>1.00</td>
+    	<td>id=output1</td>
+    	<td>20</td>
+</tr>
+<tr>
+	<td>dragdrop</td>
+	<td>id=slider01</td>
+	<td>-800,0</td>
+</tr>
+<tr>
+    	<td>assertValue</td>
+    	<td>id=output1</td>
+    	<td>0</td>
 </tr>
 </tbody></table>
 </body>
