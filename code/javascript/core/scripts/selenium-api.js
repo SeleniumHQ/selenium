@@ -1290,7 +1290,7 @@ Selenium.prototype.findWindow = function(soughtAfterWindowName) {
 Selenium.prototype.doDragdrop = function(locator, movementsString) {
    /** Drags an element a certain distance and then drops it
    * 
-   * @param movementString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
+   * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    * @param locator an element locator
    */
    var element = this.page().findElement(locator);
