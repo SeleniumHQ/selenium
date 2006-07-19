@@ -297,8 +297,12 @@ PatternMatcher.prototype = {
         this.pattern = pattern;
         var strategyName = 'glob'; // by default
         if (/^([a-z-]+):(.*)/.test(pattern)) {
-            strategyName = RegExp.$1;
-            pattern = RegExp.$2;
+            var possibleNewStrategyName = RegExp.$1;
+            var possibleNewPattern = RegExp.$2;
+            if (PatternMatcher.strategies[possibleNewStrategyName]) {
+            	strategyName = possibleNewStrategyName;
+                pattern = possibleNewPattern;
+            }
         }
         var matchStrategy = PatternMatcher.strategies[strategyName];
         if (!matchStrategy) {

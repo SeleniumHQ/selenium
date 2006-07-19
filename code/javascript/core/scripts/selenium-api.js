@@ -1121,7 +1121,13 @@ Selenium.prototype.isTextPresent = function(pattern) {
         return false;
     } else {
     	var patternMatcher = new PatternMatcher(pattern);
+        if (patternMatcher.strategy == PatternMatcher.strategies.exact) {
+        	pattern = pattern.replace(/^exact:/, "");
+        	return new String(allText).indexOf(pattern) != -1;
+    	}
+        
         if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
+        	pattern = pattern.replace(/^glob:/, "");
     		patternMatcher.matcher = new PatternMatcher.strategies.globContains(pattern);
     	}
     	return patternMatcher.matches(allText);
