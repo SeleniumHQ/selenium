@@ -32,6 +32,8 @@ public class GoogleTest extends TestCase
         for (String windowTitle : windowTitles) {
             System.out.println("Window Title: " + windowTitle);
         }
+        selenium.windowFocus("");
+        selenium.windowMaximize("");
         assertEquals("Google", selenium.getTitle());
 		selenium.type("q", "Selenium OpenQA");
 		assertEquals("Selenium OpenQA", selenium.getValue("q"));
