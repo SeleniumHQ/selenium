@@ -897,7 +897,7 @@ OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
 };
 
 
-KonquerorPageBot.prototype.clickElement = function(element) {
+KonquerorPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 

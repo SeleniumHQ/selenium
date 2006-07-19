@@ -173,12 +173,27 @@ Selenium.prototype.doClick = function(locator) {
    * Clicks on a link, button, checkbox or radio button. If the click action
    * causes a new page to load (like a link usually does), call
    * waitForPageToLoad.
-   * 
+   *
    * @param locator an element locator
-   * 
+   *
+   */
+   this.doClickAt(locator, null);
+};
+
+Selenium.prototype.doClickAt = function(locator, coordString) {
+	/**
+   * Clicks on a link, button, checkbox or radio button. If the click action
+   * causes a new page to load (like a link usually does), call
+   * waitForPageToLoad.
+   *
+   * @param locator an element locator
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   *
    */
     var element = this.page().findElement(locator);
-    this.page().clickElement(element);
+    var clientXY = getClientXY(element, coordString)
+    this.page().clickElement(element, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doFireEvent = function(locator, eventName) {
@@ -269,15 +284,81 @@ Selenium.prototype.doMouseOver = function(locator) {
     triggerMouseEvent(element, 'mouseover', true);
 };
 
+
 Selenium.prototype.doMouseDown = function(locator) {
 	/**
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    */
+   this.doMouseDownAt(locator, null);
+};
+
+Selenium.prototype.doMouseDownAt = function(locator, coordString) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   */
     var element = this.page().findElement(locator);
-    triggerMouseEvent(element, 'mousedown', true);
+    var clientXY = getClientXY(element, coordString)
+  
+    triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
+};
+
+Selenium.prototype.doMouseUp = function(locator) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   */
+   this.doMouseUpAt(locator, null);
+};
+
+Selenium.prototype.doMouseUpAt = function(locator, coordString) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   */
+    var element = this.page().findElement(locator);
+    var clientXY = getClientXY(element, coordString)
+  
+    triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
+};
+
+Selenium.prototype.doMouseMove = function(locator) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   */
+   this.doMouseMoveAt(locator, null);
+};
+
+Selenium.prototype.doMouseMoveAt = function(locator, coordString) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   */
+  
+    var element = this.page().findElement(locator);
+    var clientXY = getClientXY(element, coordString)
+  
+    triggerMouseEvent(element, 'mousemove', true, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doType = function(locator, value) {
@@ -1219,6 +1300,7 @@ Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
    }
    var xOffset = regexpResult[1];
    var yOffset = regexpResult[2];
+   throw new SeleniumError("not implemented");
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {
