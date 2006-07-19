@@ -24,17 +24,21 @@ var recording = true;
 /* Records an event in the events textarea */
 function recordEvent(e) {
     if (!recording) return;
-    // Handle IE
-	if (!e) var e = window.event;
-	var targetString = this.id;
-	var eventMessage = '{' + e.type + '(' + targetString;
-	if (e.keyCode)
-	{
-	  eventMessage += ' - ' + e.keyCode;
-	}
-	eventMessage += ')} ';
-  log(eventMessage);
-  return true;
+    
+    if (!e) e = window.event; // Handle IE
+    var eventMessage;
+    if (!e) {
+    	eventMessage = "{ No window.event is defined, which is expected that if this is a selenium-generated mouse event created by createEventObject under IE }";
+    }
+    else {
+    	eventMessage = '{' + e.type + '(' + this.id;
+    	if (e.keyCode) {
+        	eventMessage += ' - ' + e.keyCode;
+        }
+        eventMessage += ')} ';
+    }
+    log(eventMessage);
+    return true;
 }
 
 /** Attach recording event handlers to the element */

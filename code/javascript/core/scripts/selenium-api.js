@@ -177,7 +177,8 @@ Selenium.prototype.doClick = function(locator) {
    * @param locator an element locator
    *
    */
-   this.doClickAt(locator, null);
+   var element = this.page().findElement(locator);
+   this.page().clickElement(element);
 };
 
 Selenium.prototype.doClickAt = function(locator, coordString) {
@@ -294,7 +295,8 @@ Selenium.prototype.doMouseDown = function(locator) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-   this.doMouseDownAt(locator, null);
+   var element = this.page().findElement(locator);
+   triggerMouseEvent(element, 'mousedown', true);
 };
 
 Selenium.prototype.doMouseDownAt = function(locator, coordString) {
@@ -319,7 +321,8 @@ Selenium.prototype.doMouseUp = function(locator) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-   this.doMouseUpAt(locator, null);
+   var element = this.page().findElement(locator);
+   triggerMouseEvent(element, 'mouseup', true);
 };
 
 Selenium.prototype.doMouseUpAt = function(locator, coordString) {
@@ -344,7 +347,8 @@ Selenium.prototype.doMouseMove = function(locator) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-   this.doMouseMoveAt(locator, null);
+   var element = this.page().findElement(locator);
+   triggerMouseEvent(element, 'mousemove', true);
 };
 
 Selenium.prototype.doMouseMoveAt = function(locator, coordString) {

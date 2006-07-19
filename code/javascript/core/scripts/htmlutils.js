@@ -228,19 +228,41 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
     
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-    	var ieEvent = document.createEventObject();
-        ieEvent.detail = 0;
-        ieEvent.screenX = screenX;
-        ieEvent.screenY = screenY;
-        ieEvent.clientX = clientX;
-        ieEvent.clientY = clientY;
-        ieEvent.ctrlKey = false;
-        ieEvent.altKey = false;
-        ieEvent.shiftKey = false;
-        ieEvent.metaKey = false;
-        ieEvent.button = 0;
-        ieEvent.relatedTarget = null;
-  	element.fireEvent('on' + eventType, ieEvent);
+    	if (!screenX && !screenY && !clientX && !clientY) {
+        	element.fireEvent('on' + eventType);
+        }
+        else {
+        	var ieEvent = document.createEventObject();
+                ieEvent.detail = 0;
+                ieEvent.screenX = screenX;
+                ieEvent.screenY = screenY;
+                ieEvent.clientX = clientX;
+                ieEvent.clientY = clientY;
+                ieEvent.ctrlKey = false;
+                ieEvent.altKey = false;
+                ieEvent.shiftKey = false;
+                ieEvent.metaKey = false;
+                ieEvent.button = 0;
+                ieEvent.relatedTarget = null;
+                         
+                // when we go this route, window.event is never set to contain the event we have just created.
+                // ideally we could just slide it in as follows in the try-block below, but this normally
+                // doesn't work.  This is why I try to avoid this code path, which is only required if we need to 
+                // set attributes on the event (e.g., clientX).
+                try {
+        	        window.event = ieEvent;
+                }
+                catch(e) {
+        		// getting an "Object does not support this action or property" error.  Save the event the way
+                        // for future reference.
+                        // TODO: is there a way to update window.event?
+                         
+                        // The following is pointless -- for some reason the event handler cannot see this property,
+                        // so I may as well comment out this assignment:
+                        //window["selenium_triggerMouseEvent"] = ieEvent;
+                }
+                element.fireEvent('on' + eventType, ieEvent);
+        }
     }
     else {
         var evt = document.createEvent('MouseEvents');
