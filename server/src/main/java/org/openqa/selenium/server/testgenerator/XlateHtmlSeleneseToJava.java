@@ -619,6 +619,7 @@ public class XlateHtmlSeleneseToJava {
                 || op.equals("submit")
                 || op.equals("uncheck")
                 || op.equals("answerOnNextPrompt")
+                || op.startsWith("window")
                 ) {
             expectedArgCount = 1;
         }
