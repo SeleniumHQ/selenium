@@ -258,13 +258,15 @@ function getElementOffset(element) {
 function getClientXY(element, coordString) {
    // Parse coordString
    var coords = null;
+   var x;
+   var y;
    if (coordString) {
       coords = coordString.split(/,/);
-      var x = Number(coords[0]);
-      var y = Number(coords[1]);
+      x = Number(coords[0]);
+      y = Number(coords[1]);
    }
    else {
-    coords = [0,0];
+      x = y = 0;
    }
   
    // Get position of element
@@ -1285,22 +1287,40 @@ Selenium.prototype.findWindow = function(soughtAfterWindowName) {
    throw "could not find window " + windowName;
 };
 
-Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
+Selenium.prototype.doDragdrop = function(locator, movementsString) {
    /** Drags an element a certain distance and then drops it
    * 
-   * @param xyCommaDelimitedOffset offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
+   * @param movementString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    * @param locator an element locator
    */
    var element = this.page().findElement(locator);
-   var xyCommaDelimitedOffsetString = xyCommaDelimitedOffset.toString();
-   xyCommaDelimitedOffsetString = xyCommaDelimitedOffsetString.replace("+", "");
-   var regexpResult = xyCommaDelimitedOffsetString.match(/(.*),(.*)/);
-   if (!regexpResult || !regexpResult[1] || !regexpResult[2]) {
-   	throw new SeleniumError("could not understand xyCommaDelimitedOffset " + xyCommaDelimitedOffset);
-   }
-   var xOffset = regexpResult[1];
-   var yOffset = regexpResult[2];
-   throw new SeleniumError("not implemented");
+   var clientStartXY = getClientXY(element)
+   var clientStartX = clientStartXY[0];
+   var clientStartY = clientStartXY[1];
+
+   var movements = movementsString.split(/,/);
+   var movementX = Number(movements[0]);
+   var movementY = Number(movements[1]);
+   
+   var clientFinishX = clientStartX + movementX;
+   var clientFinishY = clientStartY + movementY;
+   
+   var movementXincrement = (movementX > 0) ? 1 : -1;
+   var movementYincrement = (movementY > 0) ? 1 : -1;
+   
+   triggerMouseEvent(element, 'mousedown', true, clientStartX, clientStartY);
+   var clientX = clientStartX;
+   var clientY = clientStartY;
+   while ((clientX != clientFinishX) && (clientY != clientFinishY)) {
+   	if (clientX != clientFinishX) {
+   		clientX += movementXincrement;
+        }
+   	if (clientY != clientFinishY) {
+   		clientY += movementYincrement;
+        }
+        triggerMouseEvent(element, 'mousemove', true, clientX, clientY);
+   } 
+   triggerMouseEvent(element, 'mouseup',   true, clientFinishX, clientFinishY);
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {
