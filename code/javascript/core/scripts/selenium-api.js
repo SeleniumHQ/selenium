@@ -168,7 +168,19 @@ Selenium.prototype.reset = function() {
     this.browserbot.selectWindow("null");
 };
 
-Selenium.prototype.doClick = function(locator, coordString) {
+Selenium.prototype.doClick = function(locator) {
+	/**
+   * Clicks on a link, button, checkbox or radio button. If the click action
+   * causes a new page to load (like a link usually does), call
+   * waitForPageToLoad.
+   *
+   * @param locator an element locator
+   *
+   */
+   this.doClickAt(locator, null);
+};
+
+Selenium.prototype.doClickAt = function(locator, coordString) {
 	/**
    * Clicks on a link, button, checkbox or radio button. If the click action
    * causes a new page to load (like a link usually does), call
@@ -272,7 +284,17 @@ Selenium.prototype.doMouseOver = function(locator) {
 };
 
 
-Selenium.prototype.doMouseDown = function(locator, coordString) {
+Selenium.prototype.doMouseDown = function(locator) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   */
+   this.doMouseDownAt(locator, null);
+};
+
+Selenium.prototype.doMouseDownAt = function(locator, coordString) {
 	/**
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
@@ -287,7 +309,17 @@ Selenium.prototype.doMouseDown = function(locator, coordString) {
     triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
 };
 
-Selenium.prototype.doMouseUp = function(locator, coordString) {
+Selenium.prototype.doMouseUp = function(locator) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   */
+   this.doMouseUpAt(locator, null);
+};
+
+Selenium.prototype.doMouseUpAt = function(locator, coordString) {
 	/**
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
@@ -302,7 +334,17 @@ Selenium.prototype.doMouseUp = function(locator, coordString) {
     triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
 };
 
-Selenium.prototype.doMouseMove = function(locator, coordString) {
+Selenium.prototype.doMouseMove = function(locator) {
+	/**
+   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   */
+   this.doMouseMoveAt(locator, null);
+};
+
+Selenium.prototype.doMouseMoveAt = function(locator, coordString) {
 	/**
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
@@ -1257,6 +1299,7 @@ Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
    }
    var xOffset = regexpResult[1];
    var yOffset = regexpResult[2];
+   throw new SeleniumError("not implemented");
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {
