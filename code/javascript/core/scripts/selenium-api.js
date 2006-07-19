@@ -1194,7 +1194,7 @@ Selenium.prototype.doDragdrop = function(locator, xyCommaDelimitedOffset) {
 Selenium.prototype.doWindowFocus = function(windowName) {
 /** Gives focus to a window
    * 
-   * @windowName name of the window to be given focus
+   * @param windowName name of the window to be given focus
    */
    this.findWindow(windowName).focus();
 };
@@ -1203,7 +1203,7 @@ Selenium.prototype.doWindowFocus = function(windowName) {
 Selenium.prototype.doWindowMaximize = function(windowName) {
 /** Resize window to take up the entire screen
    * 
-   * @windowName name of the window to be enlarged
+   * @param windowName name of the window to be enlarged
    */
    var window = this.findWindow(windowName);
    if (window!=null && window.screen) {
