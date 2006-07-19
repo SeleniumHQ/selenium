@@ -230,7 +230,8 @@ Selenium.prototype.doKeyUp = function(locator, keycode) {
 };
 
 function getElementOffset(element) {
-  var valueT = 0, valueL = 0;
+  var valueT = 0;
+  var valueL = 0;
   do {
     valueT += element.offsetTop  || 0;
     valueL += element.offsetLeft || 0;
@@ -241,21 +242,21 @@ function getElementOffset(element) {
 
 function getClientXY(element, coordString) {
    // Parse coordString
-   var coords = null
+   var coords = null;
    if (coordString) {
-      coords = coordString.split(/,/)
-      var x = Number(coords[0])
-      var y = Number(coords[1])
+      coords = coordString.split(/,/);
+      var x = Number(coords[0]);
+      var y = Number(coords[1]);
    }
    else {
-    coords = [0,0]
+    coords = [0,0];
    }
   
    // Get position of element
-   var offset = getElementOffset(element)
+   var offset = getElementOffset(element);
   
    // Return 2 item array with clientX and clientY
-   return [offset[0] + x, offset[1] + y]
+   return [offset[0] + x, offset[1] + y];
 }  
 
 Selenium.prototype.doMouseOver = function(locator) {

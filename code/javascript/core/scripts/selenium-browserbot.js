@@ -873,7 +873,7 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     triggerEvent(element, 'blur', false);
 };
 
-OperaPageBot.prototype.clickElement = function(element) {
+OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
