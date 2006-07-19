@@ -839,7 +839,7 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'blur', false);
 };
 
-MozillaPageBot.prototype.clickElement = function(element) {
+MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -852,7 +852,7 @@ MozillaPageBot.prototype.clickElement = function(element) {
     }, false);
 
     // Trigger the click event.
-    triggerMouseEvent(element, 'click', true);
+    triggerMouseEvent(element, 'click', true, clientX, clientY);
 
     // Perform the link action if preventDefault was set.
     // In chrome URL, the link action is already executed by triggerMouseEvent.
@@ -878,7 +878,7 @@ OperaPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'focus', false);
 
     // Trigger the click event.
-    triggerMouseEvent(element, 'click', true);
+    triggerMouseEvent(element, 'click', true, clientX, clientY);
 
     if (isDefined(element.checked)) {
         // In Opera, clicking won't check/uncheck
@@ -905,7 +905,7 @@ KonquerorPageBot.prototype.clickElement = function(element) {
         element.click();
     }
     else {
-        triggerMouseEvent(element, 'click', true);
+        triggerMouseEvent(element, 'click', true, clientX, clientY);
     }
 
     if (this.windowClosed()) {
@@ -915,7 +915,7 @@ KonquerorPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'blur', false);
 };
 
-SafariPageBot.prototype.clickElement = function(element) {
+SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -927,7 +927,7 @@ SafariPageBot.prototype.clickElement = function(element) {
     }
     // For links and other elements, event emulation is required.
     else {
-        triggerMouseEvent(element, 'click', true);
+        triggerMouseEvent(element, 'click', true, clientX, clientY);
 
         // Unfortunately, triggering the event doesn't seem to activate onclick handlers.
         // We currently call onclick for the link, but I'm guessing that the onclick for containing
@@ -967,7 +967,7 @@ SafariPageBot.prototype.clickElement = function(element) {
     triggerEvent(element, 'blur', false);
 };
 
-IEPageBot.prototype.clickElement = function(element) {
+IEPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 

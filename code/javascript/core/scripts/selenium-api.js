@@ -229,6 +229,35 @@ Selenium.prototype.doKeyUp = function(locator, keycode) {
     triggerKeyEvent(element, 'keyup', keycode, true);
 };
 
+function getElementOffset(element) {
+  var valueT = 0, valueL = 0;
+  do {
+    valueT += element.offsetTop  || 0;
+    valueL += element.offsetLeft || 0;
+    element = element.offsetParent;
+  } while (element);
+  return [valueL, valueT];
+}
+
+function getClientXY(element, coordString) {
+   // Parse coordString
+   var coords = null
+   if (coordString) {
+      coords = coordString.split(/,/)
+      var x = Number(coords[0])
+      var y = Number(coords[1])
+   }
+   else {
+    coords = [0,0]
+   }
+  
+   // Get position of element
+   var offset = getElementOffset(element)
+  
+   // Return 2 item array with clientX and clientY
+   return [offset[0] + x, offset[1] + y]
+}  
+
 Selenium.prototype.doMouseOver = function(locator) {
 	/**
    * Simulates a user hovering a mouse over the specified element.
@@ -1264,10 +1293,10 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
     
    if( element.setSelectionRange && !browserVersion.isOpera) {
    	element.focus();
-     element.setSelectionRange(/*start*/position,/*end*/position);
+        element.setSelectionRange(/*start*/position,/*end*/position);
    } 
    else if( element.createTextRange ) {
-   		triggerEvent(element, 'focus', false);
+      triggerEvent(element, 'focus', false);
       var range = element.createTextRange();
       range.collapse(true);
       range.moveEnd('character',position);
