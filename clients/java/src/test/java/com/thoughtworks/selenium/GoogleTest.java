@@ -41,7 +41,11 @@ public class GoogleTest extends TestCase
         System.out.println("The log messages are the following:\n" + s);
 		selenium.click("btnG");
 		selenium.waitForPageToLoad("5000");
-        assertTrue(selenium.isTextPresent("openqa.org"));
+		
+		assertTrue(selenium.isTextPresent("glob:http://www.openqa.org"));
+		assertTrue(selenium.isTextPresent("exact:http://www.openqa.org"));
+		assertTrue(selenium.isTextPresent("regexp:http://www.openqa.org"));
+		assertTrue(selenium.isTextPresent("http://www.openqa.org"));
 		assertEquals("Selenium OpenQA - Google Search", selenium.getTitle());
 	}
 	
