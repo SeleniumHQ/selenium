@@ -81,12 +81,12 @@ public class SeleneseQueue {
 
     public void doCommandWithoutWaitingForAResponse(String command, String field, String value) {
         if (slowMode) {
-            System.out.println("    Slow mode in effect: sleep 1 second...");
+            SeleniumServer.log("    Slow mode in effect: sleep 1 second...");
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
             }
-            System.out.println("    ...done");
+            SeleniumServer.log("    ...done");
         }
         synchronized(commandResultHolder) {
             if (!commandResultHolder.isEmpty()) {
@@ -96,8 +96,8 @@ public class SeleneseQueue {
                         // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
                         // relationship between commands and results can go out of whack.  To avoid this, we
                         // discard results for which no thread is waiting:
-                        System.out.println("Apparently a page load result preceded the command; will ignore it...");
-                        System.out.println("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
+                        SeleniumServer.log("Apparently a page load result preceded the command; will ignore it...");
+                        SeleniumServer.log("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
                     }
                     setResultExpected(true);
                     queueGet("doCommand spotted early result, discard", commandResultHolder);
@@ -142,13 +142,13 @@ public class SeleneseQueue {
         }
         String hdr = "\t" + getIdentification(caller) + " queueGet() ";
         if (SeleniumServer.isDebugMode()) {
-            System.out.println(hdr + "called"
+            SeleniumServer.log(hdr + "called"
                     + (clearedEarlierThread ? " (superceding other blocked thread)" : ""));
         }
         Object object = q.get();
         
         if (SeleniumServer.isDebugMode()) {
-            System.out.println(hdr + "-> " + object); 
+            SeleniumServer.log(hdr + "-> " + object); 
         }
         return object;
     }
@@ -156,13 +156,13 @@ public class SeleneseQueue {
     private void queuePut(String caller, SingleEntryAsyncQueue q, Object thing) {
         String hdr = "\t" + getIdentification(caller) + " queuePut";
         if (SeleniumServer.isDebugMode()) {
-            System.out.println(hdr + "(" + thing + ")");
+            SeleniumServer.log(hdr + "(" + thing + ")");
         }
         try {
             q.put(thing);
         }
         catch (SingleEntryAsyncQueueOverflow e) {
-            System.out.println(hdr + " caused " + e);
+            SeleniumServer.log(hdr + " caused " + e);
             throw e;
         }
     }
@@ -198,7 +198,7 @@ public class SeleneseQueue {
             // in one frame causes reloads in others).
             if (commandResult.equals("OK")) {
                 if (SeleniumServer.isDebugMode()) {
-                    System.out.println("Ignoring page load no one is waiting for.");
+                    SeleniumServer.log("Ignoring page load no one is waiting for.");
                 }
             }
             else if (commandResult.startsWith("OK")) {

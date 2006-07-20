@@ -112,13 +112,13 @@ public class FrameGroupSeleneseQueueSet {
             if (!frameAddressToSeleneseQueue.containsKey(frameAddress)) {
                 
                 if (SeleniumServer.isDebugMode()) {
-                    System.out.println("---------allocating new SeleneseQueue for " + frameAddress);
+                    SeleniumServer.log("---------allocating new SeleneseQueue for " + frameAddress);
                 }
                 frameAddressToSeleneseQueue.put(frameAddress, new SeleneseQueue(sessionId, frameAddress));
             }
             else {
                 if (SeleniumServer.isDebugMode()) {
-                    System.out.println("---------retrieving SeleneseQueue for " + frameAddress);
+                    SeleniumServer.log("---------retrieving SeleneseQueue for " + frameAddress);
                 }
             }
         }
@@ -177,7 +177,7 @@ public class FrameGroupSeleneseQueueSet {
             }
             if (command.equals("waitForPageToLoad")) {
                 if (justLoaded(currentFrameAddress)) {
-                    System.out.println("Not requesting waitForPageToLoad since just loaded "
+                    SeleniumServer.log("Not requesting waitForPageToLoad since just loaded "
                                        + currentFrameAddress);
                     markWhetherJustLoaded(currentFrameAddress, false); // only do this trick once
                     return "OK";
@@ -269,13 +269,13 @@ public class FrameGroupSeleneseQueueSet {
         if (oldState!=justLoaded) {
             if (justLoaded) {
                 if (SeleniumServer.isDebugMode()) {
-                    System.out.println(frameAddress + " marked as just loaded");
+                    SeleniumServer.log(frameAddress + " marked as just loaded");
                 }
                 frameAddressToJustLoaded.put(frameAddress, true);
             }
             else {
                 if (SeleniumServer.isDebugMode()) {
-                    System.out.println(frameAddress + " marked as NOT just loaded");
+                    SeleniumServer.log(frameAddress + " marked as NOT just loaded");
                 }
                 frameAddressToJustLoaded.remove(frameAddress);
             }
@@ -304,7 +304,7 @@ public class FrameGroupSeleneseQueueSet {
         this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
         
         if (SeleniumServer.isDebugMode()) {
-            System.out.println("Current frame address set to " + currentFrameAddress + ".");
+            SeleniumServer.log("Current frame address set to " + currentFrameAddress + ".");
         }
     }
     
@@ -353,7 +353,7 @@ public class FrameGroupSeleneseQueueSet {
                 SeleneseQueue q = getSeleneseQueue();
                 if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
                     if (SeleniumServer.isDebugMode()) {
-                        System.out.println("Trying to close " + frameAddress);
+                        SeleniumServer.log("Trying to close " + frameAddress);
                     }
                     q.doCommandWithoutWaitingForAResponse("getEval", "selenium.browserbot.getCurrentWindow().close()", "");
                 }

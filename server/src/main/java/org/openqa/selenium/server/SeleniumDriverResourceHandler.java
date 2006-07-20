@@ -120,14 +120,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 req.setHandled(true);
             } else if (cmd != null) {
-                System.out.println(method + ": " + cmd);
+                SeleniumServer.log(method + ": " + cmd);
                 handleCommandRequest(req, res, cmd, sessionId);
             } else if (-1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js") 
                     || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")){
                 // ignore failure to find these items...
             }
             else {
-                System.out.println("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
+                SeleniumServer.log("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
                 req.setHandled(false);
             }
         }
@@ -152,7 +152,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         if (justLoaded) {
             sb.append(" NEW");
         }
-        System.out.println(sb.toString());
+        SeleniumServer.log(sb.toString());
     }
 
 	private void respond(HttpResponse res, SeleneseCommand sc) throws IOException {
@@ -202,7 +202,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         logMessages = "\t" + logMessages.replaceAll("\n", "\n\t");  // put a tab in front of all the messages
         logMessages = logMessages.replaceFirst("\t$", "");
         logMessagesBuffer.append(logMessages);
-        System.out.print(logMessages);
+        SeleniumServer.log(logMessages);
         return grepVStringsStartingWith("logLevel=", s);
     }
 
@@ -294,7 +294,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
         String results;
         if (SeleniumServer.isDebugMode()) {
-            System.out.println("queryString = " + req.getQuery());
+            SeleniumServer.log("queryString = " + req.getQuery());
         }
         results = doCommand(cmd, values, sessionId, res);
 
@@ -362,12 +362,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             FrameGroupSeleneseQueueSet queue = getQueueSet(sessionId);
             results = queue.doCommand(cmd, values.get(0), values.get(1));
         }
-        System.out.println("Got result: " + results + " on session " + sessionId);
+        SeleniumServer.log("Got result: " + results + " on session " + sessionId);
         return results;
     }
 
     private void shutDown(HttpResponse res) {
-        System.out.println("Shutdown command received");
+        SeleniumServer.log("Shutdown command received");
         
         for (String sessionId : unusedBrowserSessions.values()) {
             endBrowserSession(sessionId, false);
@@ -420,12 +420,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             browserString = SeleniumServer.getDefaultBrowser(); 
         }
         if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
-            System.out.println("WARNING: running in proxy injection mode, but you used a *iexplore browser string; this is " +
+            SeleniumServer.log("WARNING: running in proxy injection mode, but you used a *iexplore browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *piiexplore...");
             browserString = "*piiexplore";
         }
         else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
-            System.out.println("WARNING: running in proxy injection mode, but you used a *firefox browser string; this is " +
+            SeleniumServer.log("WARNING: running in proxy injection mode, but you used a *firefox browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *pifirefox...");
             browserString = "*pifirefox";
         }
@@ -452,7 +452,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             launcher.launchRemoteSession(startURL);
             queue.discardCommandResult();
         }
-        System.out.println("Allocated session " + sessionId + " for " + startURL);
+        SeleniumServer.log("Allocated session " + sessionId + " for " + startURL);
         queue.doCommand("setContext", sessionId, "");
         return sessionId;
     }

@@ -157,7 +157,7 @@ public class SeleniumServer {
     // to the default port 4444.  At this point, you would open tcptrace to bridge the gap and be able to watch   
     // all the data coming in and out:
     private static int portDriversShouldContact = DEFAULT_PORT;
-    
+    private static PrintStream logOut = null;
     private static String defaultBrowserString = null; 
      
     public static final int DEFAULT_TIMEOUT= (30 * 60);
@@ -197,8 +197,11 @@ public class SeleniumServer {
                         SeleniumServer.defaultBrowserString += " ";
                     SeleniumServer.defaultBrowserString += args[i];
                 }
-                System.out.println("\"" + defaultBrowserString + "\" will be used as the browser " +
+                SeleniumServer.log("\"" + defaultBrowserString + "\" will be used as the browser " +
                         "mode for all sessions, no matter what is passed to getNewBrowserSession.");
+            }
+            else if ("-log".equals(arg)) {
+                logOut = new PrintStream(getArg(args, ++i));
             }
             else if ("-port".equals(arg)) {
                 port = Integer.parseInt(getArg(args, ++i));
@@ -372,7 +375,7 @@ public class SeleniumServer {
                 Thread t = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            System.out.println("---> Requesting " + url.toString());
+                            SeleniumServer.log("---> Requesting " + url.toString());
                             URLConnection conn = url.openConnection();
                             conn.connect();
                             InputStream is = conn.getInputStream();
@@ -428,7 +431,7 @@ public class SeleniumServer {
             System.exit(1);
         }
         if (reusingBrowserSessions()) {
-            System.out.println("Will recycle browser sessions when possible.");
+            SeleniumServer.log("Will recycle browser sessions when possible.");
         }
     }
 
@@ -441,7 +444,7 @@ public class SeleniumServer {
     }
 
     private static void proxyInjectionSpeech() {
-        System.out.println("The selenium server will execute in proxyInjection mode.");
+        SeleniumServer.log("The selenium server will execute in proxyInjection mode.");
     }
 
     private static void setSystemProperty(String arg) {
@@ -460,7 +463,7 @@ public class SeleniumServer {
             System.err.println(msg + ":");
         }
         System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive]" +
-                " [-defaultBrowserString browserString] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+                " [-defaultBrowserString browserString] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
                 "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
                 "where:\n" +
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
@@ -670,7 +673,7 @@ public class SeleniumServer {
     static public void setDebugMode(boolean debugMode) {
         SeleniumServer.debugMode = debugMode;
         if (debugMode) {
-            System.out.println("Selenium server running in debug mode.");
+            SeleniumServer.log("Selenium server running in debug mode.");
             System.err.println("Standard error test.");
         }
     }
@@ -720,5 +723,10 @@ public class SeleniumServer {
 
     public static String getDebugURL() {
         return debugURL;
+    }
+
+    public static void log(String logMessages) {
+        PrintStream out = (logOut!=null) ? logOut : System.out;
+        out.print(logMessages);
     }
 }

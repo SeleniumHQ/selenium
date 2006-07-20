@@ -351,7 +351,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                 response.setReason(http.getResponseMessage());
                 
                 String contentType = http.getContentType();
-                System.out.println("Content-Type is: " + contentType);
+                SeleniumServer.log("Content-Type is: " + contentType);
                 if (contentType != null) {
                     isKnownToBeHtml = contentType.startsWith("text/html");
                 }

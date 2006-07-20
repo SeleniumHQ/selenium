@@ -29,7 +29,7 @@ public class InjectionHelper {
             sessionIdToUniqueId.put(sessionId, uniqueId);
         }
         if (SeleniumServer.isDebugMode()) {
-            System.out.println("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
+            SeleniumServer.log("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
         }
         if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
             jsStateInitializersBySessionId.put(sessionId, new HashMap<String, String>());
@@ -57,7 +57,7 @@ public class InjectionHelper {
             sb.append(jsStateInitializer)
             .append('\n');
             if (SeleniumServer.isDebugMode()) {
-                System.out.println("Restoring JavaScript state for session " + sessionId + "/" + uniqueId 
+                SeleniumServer.log("Restoring JavaScript state for session " + sessionId + "/" + uniqueId 
                         + ": key=" + jsVarName + ": " + jsStateInitializer); 
             }
         }
@@ -145,14 +145,14 @@ public class InjectionHelper {
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
         
         if (SeleniumServer.isDebugMode()) {
-            System.out.println(url + " (InjectionHelper looking)");
+            SeleniumServer.log(url + " (InjectionHelper looking)");
         }
         if (!isKnownToBeHtml) {
             IO.copy(in, out);
         }
         else {
             if (SeleniumServer.isDebugMode()) {
-                System.out.println("injecting...");
+                SeleniumServer.log("injecting...");
             }
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
             boolean seleniumInSameWindow = true;
