@@ -309,6 +309,12 @@ public class FrameGroupSeleneseQueueSet {
     }
     
     public static synchronized FrameAddress findFrameAddress(String seleniumWindowName, String localFrameAddress, boolean justLoaded) {
+        if (seleniumWindowName==null) {
+            // we are talking to a version of selenium core which isn't telling us the
+            // seleniumWindowName.  Set it to the default, which will be right most of
+            // the time.
+            seleniumWindowName = DEFAULT_SELENIUM_WINDOW_NAME;
+        }
         if (seleniumWindowName.equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP) && justLoaded && expectedNewWindowName!=null) {
             seleniumWindowName = expectedNewWindowName;
             expectedNewWindowName = null;

@@ -9,8 +9,8 @@ public class FrameAddress {
     private String localFrameAddress;
 
     public FrameAddress(String windowName, String localFrameAddress) {
-        this.windowName = windowName;
-        this.localFrameAddress = localFrameAddress;
+        this.windowName = (windowName!=null) ? windowName : FrameGroupSeleneseQueueSet.DEFAULT_SELENIUM_WINDOW_NAME;
+        this.localFrameAddress = (localFrameAddress!=null) ? localFrameAddress : FrameGroupSeleneseQueueSet.DEFAULT_LOCAL_FRAME_ADDRESS;
     }
 
     @Override
