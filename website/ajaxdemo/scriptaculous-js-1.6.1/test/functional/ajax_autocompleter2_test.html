@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Autocompleter functional test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../lib/prototype.js" type="text/javascript"></script>
+  <script src="../../src/scriptaculous.js" type="text/javascript"></script>
+  <script src="../../src/unittest.js" type="text/javascript"></script>
+  <style type="text/css" media="screen">
+    .selected { background-color: #888; }
+  </style>
+</head>
+<body>
+<h1>script.aculo.us Autocompleter functional test file</h1>
+
+
+
+This is an incremental Ajax autocompleter. Type something, then type a comma, than type more.<br/>
+Autocompleter ac1: <input type="text" id="ac1" autocomplete="off"/>
+<div id="ac1update" style="display:none;border:1px solid black;background-color:white;position:relative;"></div>
+
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+  new Ajax.Autocompleter('ac1','ac1update','_autocomplete_result.html', { tokens: ','} );
+// ]]>
+</script>
+
+<br/><br/>
+Non-incremental Ajax autocompleter.<br/>
+Autocompleter ac2: <input id="ac2" type="text" autocomplete="off"/>
+<div id="ac2update" style="display:none;border:1px solid black;background-color:white;"></div>
+
+
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+  new Ajax.Autocompleter('ac2','ac2update','_autocomplete_result.html');
+// ]]>
+</script>
+
+<br/><br/>
+Non-incremental Ajax autocompleter.<br/>
+Autocompleter ac3: <input id="ac3" type="text" autocomplete="off"/>
+<div id="ac3update" style="display:none;border:1px solid black;background-color:white;"></div>
+
+
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+  new Ajax.Autocompleter('ac3','ac3update','_autocomplete_result.html');
+// ]]>
+</script>
+
+<br/><br/>
+
+Local incremental array autocompleter ac4<br/> with full-search. Type 'Jac', hit enter a few <br/>times, type 'gne'.<br/> <textarea rows=5 cols=40 id="ac4" autocomplete="off"></textarea>
+<div id="ac4update" style="display:none;border:1px solid black;background-color:white;"></div>
+
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+  new Autocompleter.Local('ac4','ac4update',
+  new Array("John Jackson", "", "Jack Johnson", "", "Jane Agnews"), { tokens: new Array(',','\n'), fullSearch: true, partialSearch: true });
+// ]]>
+</script>
+<br /><br /><br />
+<br /><br /><br />
+<div id="debug" style="font-size:11px;"></div>
+
+</body>
+</html>

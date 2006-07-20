@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+    <title>Text effects tests</title>
+    <script type="text/javascript" src="../../lib/prototype.js"></script> 
+    <script type="text/javascript" src="../../src/scriptaculous.js"></script>
+    <style>
+      div#many_test span { font-size:40pt; color: white; background:black; width:100px; float:left; position: relative; }
+    </style>
+</head>    
+<body>
+  <h1 id="h1_text" style="font:20pt Lucida Grande;color:#fff;text-align:center;background-color:#482;">
+    Maybe this is useful? <img src="icon.png" alt="blah"/> Dunno...
+  </h1>
+  <a href="#" onclick="Effect.multiple('h1_text', Effect.Appear, {speed:0.05, afterFinishInternal:function(){}}); return false;">Appear</a> |
+    <a href="#" onclick="Effect.multiple('h1_text', Effect.Fade, {speed:0.05, afterFinishInternal:function(){}}); return false;">Fade</a> |
+    <a href="#" onclick="Effect.multiple('h1_text', Effect.DropOut, {speed:0.07, afterFinishInternal:function(){}}); return false;">DropOut</a> |
+    <a href="#" onclick="alert($('h1_text').innerHTML); return false;">show H1 innerHTML</a>
+  <p>
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  <p id="p_text" style="font:12px Verdana;color:red;font-weight:bold;">THIS IS A WARNING!</p>
+  <p>
+  <a href="#" onclick="Effect.multiple('p_text', Effect.Appear, {speed:0.05, afterFinishInternal:function(){}}); return false;">Appear</a> |
+    <a href="#" onclick="Effect.multiple('p_text', Effect.Fade, {speed:0.05, afterFinishInternal:function(){}}); return false;">Fade</a> |
+    <a href="#" onclick="Effect.multiple('p_text', Effect.DropOut, {speed:0.07, afterFinishInternal:function(){}}); return false;">DropOut</a>
+  </p>
+  
+  <div id="many_test" style="height:50px;">1234567890ABCDEFG</div>
+  <div style="clear:both;"> </div>
+  
+  <a href="#" onclick="Effect.multiple('many_test', Effect.Appear,  {speed:0.5, duration:3.0, afterFinishInternal:function(){}}); return false;">Appear</a> |
+  <a href="#" onclick="Effect.multiple('many_test', Effect.Fade, {speed:0.05, afterFinishInternal:function(){}}); return false;">Fade</a> |
+  <a href="#" onclick="Effect.multiple($('many_test').childNodes, Effect.DropOut, {speed:0.07, afterFinishInternal:function(){}}); return false;">DropOut</a> |
+   <a href="#" onclick="Effect.multiple($('many_test').childNodes, Effect.Highlight, {speed:0.07, afterFinishInternal:function(){}}); return false;">Highlight</a> |
+  <a href="#" onclick="Effect.multiple($('many_test').childNodes, Effect.BlindDown, {speed:0.15, afterFinishInternal:function(){}}); return false;">BlindDown</a>
+  
+  <script type="text/javascript" language="javascript">
+  // <![CDATA[
+    Effect.tagifyText('h1_text');
+    Effect.tagifyText('p_text');
+    Effect.tagifyText('many_test');
+  // ]]>
+  </script>
+  
+  <br/><br/>
+  
+  <a href="#" onclick="Effect.multiple(document.getElementsByTagName('span'), Effect.Fade, {speed:0.04, afterFinishInternal:function(){}}); return false;">Fade all spans on page</a>
+  <p id="debug"> <p>
+
+</body>
+</html>

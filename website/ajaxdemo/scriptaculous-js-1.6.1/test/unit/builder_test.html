@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../lib/prototype.js" type="text/javascript"></script>
+  <script src="../../src/scriptaculous.js" type="text/javascript"></script>
+  <script src="../../src/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+</head>
+<body>
+<h1>script.aculo.us Builder unit test file</h1>
+<p>
+  Tests for Builder.
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<div id="result"></div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  new Test.Unit.Runner({
+
+    setup: function() {
+      $('result').innerHTML = '';
+    },
+
+    testBuilderBasics: function() { with(this) {
+      var element = Builder.node('div');
+      assertEqual('DIV', element.nodeName);
+
+      var element = Builder.node('div',{id:'mydiv'})
+      assertEqual('mydiv', element.id);
+            
+      var element = Builder.node('div',{id:'mydiv',className:'one two'})
+      assertEqual('mydiv', element.id);
+      assertEqual('one two', element.className);
+      
+      var element = Builder.node('span','text 123 <blah>');
+      assertEqual('SPAN', element.nodeName);
+      assertEqual('text 123 &lt;blah&gt;', element.innerHTML);
+      
+      var element = Builder.node('span',123);
+      assertEqual('SPAN', element.nodeName);
+      assertEqual('123', element.innerHTML);
+      
+      var element = Builder.node('span',['test']);
+      assertEqual('SPAN', element.nodeName);
+      assertEqual('test', element.innerHTML);
+      
+      var element = Builder.node('span',['test',123]);
+      assertEqual('SPAN', element.nodeName);
+      assertEqual('test123', element.innerHTML);
+      
+      var element = Builder.node('span',{},['test',123]);
+      assertEqual('SPAN', element.nodeName);
+      assertEqual('test123', element.innerHTML);
+      
+      var element = Builder.node('span',{id:'myspan'},['test',123]);
+      assertEqual('SPAN', element.nodeName);
+      assertEqual('myspan', element.id);
+      assertEqual('test123', element.innerHTML);
+      
+      var element = Builder.node('div',[1,2,[3],[[[4],5],6],7,8,[[[[9]]],0]]);
+      assertEqual('1234567890',element.innerHTML);
+      
+      var element = Builder.node('div',[1,'2',['3'],[[[4],'5'],6],7,'8',[[[['9']]],0]]);
+      assertEqual('1234567890',element.innerHTML);
+      
+      var element = Builder.node('div',{id:'mydiv'},[1,2,[3],[[[4],5],6],7,8,[[[[9]]],0]]);
+      assertEqual('1234567890',element.innerHTML);
+      
+      var element = Builder.node('div',{id:'mydiv'},[1,'2',['3'],[[[4],'5'],6],7,'8',[[[['9']]],0]]);
+      assertEqual('1234567890',element.innerHTML);
+      assertEqual(10, element.childNodes.length);
+            
+    }},
+    
+    testBuilderAllXHTMLTags: function() { with(this) {
+      var XHTML_TAGS = [
+        'a','abbr','acronym','address','applet','area',
+        'b','bdo','big','blockquote','br','button',
+        'caption','cite','code','col','colgroup',
+        'dd','del','dfn','div','dl','dt',
+        'em',
+        'fieldset','form',
+        'h1','h2','h3','h4','h5','h6','hr',
+        'i','iframe','img','input','ins',
+        'kbd',
+        'label','legend','li',
+        'map',
+        'object','ol','optgroup','option',
+        'p','param','pre',
+        'q',
+        'samp','script','select','small','span','strong','style','sub','sup',
+        'table','tbody','td','textarea','tfoot','th','thead','tr','tt',
+        'ul','var']
+        
+      XHTML_TAGS.each(function(tag) {
+        try {
+          var element = Builder.node(tag);
+          assertNotNull(element, 'Tag "'+tag+'" expected, but was null.');
+          assertEqual(tag.toUpperCase(), element.nodeName);
+        
+          var element = Builder.node(tag,{id:'tag_'+tag+'_test_id'});
+          assertEqual(tag.toUpperCase(), element.nodeName);
+          assertEqual('tag_'+tag+'_test_id', element.id, 'Setting id attribute for "'+tag+'" failed!');
+        } catch(e) {
+          assert(false, 'Error while creating node of type '+tag+'. Note: Firefox bug in 1.0.X on option and optgroup, fixed in 1.5b1. Internet Explorer 6 doesn\'t support the ABBR tag and has no standard DOM implementation for tables.');
+        }
+      });
+    }},
+    
+    // special case, because requires workarounds on IE and Firefox < 1.5
+    testBuilderOptionTag: function() { with(this) {
+      assertEqual('', Builder.node('option').innerHTML);
+      assertEqual('test', Builder.node('option','test').innerHTML);
+      assertEqual('', Builder.node('option',{className:'test'}).innerHTML);
+      assertEqual('test', Builder.node('option',{className:'test'},'test').innerHTML);
+      assertEqual('test', Builder.node('option',{},'test').innerHTML);
+      
+      var selectElement = Builder.node('select');
+      var optionElement = Builder.node('option',{className:'test',id:'option_123'},123);
+      selectElement.appendChild(optionElement);
+      document.body.appendChild(selectElement);
+      assertEqual('123', $('option_123').innerHTML);
+    }},
+    
+    testBuilderContatenation: function() { with(this) {
+      var element = Builder.node('div', [Builder.node('span')]);
+      assertEqual('DIV', element.nodeName);
+      assertEqual(1, element.childNodes.length);
+      assertEqual('SPAN', element.firstChild.nodeName);
+      
+      var element = Builder.node('div', [Builder.node('span'),'text']);
+      assertEqual(2, element.childNodes.length);
+      assertEqual(0, element.firstChild.childNodes.length);
+      assertEqual('DIV', element.nodeName);
+      assertEqual('SPAN', element.firstChild.nodeName);
+      assertEqual(3, element.firstChild.nextSibling.nodeType);
+      
+      var element = Builder.node('div', [Builder.node('span',[Builder.node('strong','blah')]),'text']);
+      assertEqual(2, element.childNodes.length);
+      assertEqual(1, element.firstChild.childNodes.length);
+      assertEqual('DIV', element.nodeName);
+      assertEqual('SPAN', element.firstChild.nodeName);
+      assertEqual('STRONG', element.firstChild.firstChild.nodeName);
+      assertEqual('blah', element.firstChild.firstChild.innerHTML);
+      assertEqual(3, element.firstChild.nextSibling.nodeType);
+    }},
+  
+    testBuilderComplexExample: function() { with(this) {      
+      var element = Builder.node('div',{id:'ghosttrain'},[
+        Builder.node('div',{style:'font-size: 11px; font-weight: bold;'},[
+          Builder.node('h1','Ghost Train'),
+          "testtext", 2, 3, 4,
+          Builder.node('ul',[
+            Builder.node('li',{onclick:'alert(\'test\')'},'click me')
+          ]),
+        ]),
+      ]);
+      assertEqual('DIV', element.nodeName);
+      
+      $('result').appendChild(element);
+      
+      // browsers aren't sure about upper and lower case on elements
+      assertEqual('<div id="ghosttrain"><div style="font-size: 11px; font-weight: bold;"><h1>ghost train</h1>testtext234<ul><li onclick="alert(\'test\')">click me</li></ul></div></div>', $('result').innerHTML.toLowerCase());
+    }}
+
+    //testBuilderStyle: function() { with(this) {
+    //  var element = Builder.node('div',{id:'styletest','style':{'display':'block','position':'absolute'}});
+    //  $('result').appendChild(element);
+    //  assertEqual('styletest', element.id);
+    //  assertEqual('block', element.style.display);
+    //  assertEqual('absolute', element.style.position);
+    //}}
+
+  });
+// ]]>
+</script>
+</body>
+</html>

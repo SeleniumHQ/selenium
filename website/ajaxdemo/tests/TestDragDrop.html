@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <meta content="text/html; charset=ISO-8859-1"
+          http-equiv="content-type">
+    <title>Test Drap Drop</title>
+</head>
+
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+        <tr>
+            <td rowspan="1" colspan="3">Test Drap Drop<br>
+            </td>
+        </tr>
+        <tr>
+            <td>open</td>
+            <td>../ajaxdemo/scriptaculous-js-1.6.1/test/functional/dragdrop_test.html</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>css=#thelist_4 + li</td>
+            <td>one</td>
+        </tr>
+        <tr>
+            <td>dragdrop</td>
+            <td>css=#thelist_4</td>
+            <td>0, +10</td>
+        </tr>
+        <tr>
+            <td>waitForCondition</td>
+            <td>Element.getStyle(selenium.browserbot.getCurrentWindow().document.getElementById('thelist_4'), 'opacity') > 0.9</td>
+            <td>5000</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>css=#thelist_4 + li</td>
+            <td>one</td>
+        </tr>
+        <tr>
+            <td>dragdrop</td>
+            <td>css=#thelist_4</td>
+            <td>0, +150</td>
+        </tr>
+        <tr>
+            <td>waitForCondition</td>
+            <td>Element.getStyle(selenium.browserbot.getCurrentWindow().document.getElementById('thelist_4'), 'opacity') > 0.9</td>
+            <td>5000</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>css=#thelist_1 + li</td>
+            <td>Hey there! I'm absolutely positioned</td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>

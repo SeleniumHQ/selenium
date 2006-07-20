@@ -1,0 +1,152 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+    <title>Text effects tests</title>
+    <script type="text/javascript" src="../../lib/prototype.js"></script> 
+    <script type="text/javascript" src="../../src/scriptaculous.js"></script>
+</head>    
+<body>
+
+  <h1>Sliders</h1>
+  
+  <h2>Standard horizontal slider</h2>
+  
+  <div id="track1" style="width:200px;background-color:#aaa;height:5px;">
+    <div id="handle1" style="width:5px;height:10px;background-color:#f00;"> </div>
+  </div>
+  
+  <p id="debug1"> </p>
+  
+  <h2>Vertical slider</h2>
+  
+  <div id="track2" style="height:100px;background-color:#aaa;width:5px;">
+    <div id="handle2" style="width:10px;height:5px;background-color:#f00;"> </div>
+  </div>
+  
+  <p id="debug2"> </p>
+  
+  <h2>Slider with predefined values [2,4,6,8] and a non-default range [2,15]</h2>
+  
+  <div id="track3" style="width:200px;background-color:#aaa;height:5px;">
+    <div id="handle3" style="width:5px;height:10px;background-color:#f00;"> </div>
+  </div>
+  
+  <p id="debug3"> </p>
+  
+  <h2>Slider with multiple handles</h2>
+  
+  <div id="track4" style="width:200px;background-color:#aaa;height:5px;position:relative;">
+    <div id="handle4-1" style="position:absolute;top:0;left:0;width:5px;height:10px;background-color:#f00;"> </div>
+    <div id="handle4-2" style="position:absolute;top:0;left:0;width:5px;height:10px;background-color:#0f0;"> </div>
+    <div id="handle4-3" style="position:absolute;top:0;left:0;width:5px;height:10px;background-color:#00f;"> </div>
+  </div>
+  
+  <p id="debug4"> </p>
+  
+  <h2>Slider with multiple handles and predefined values</h2>
+  
+  <div id="track5" style="width:200px;background-color:#aaa;height:5px;position:relative;">
+    <div id="handle5-1" style="opacity:0.5;position:absolute;top:0;left:0;width:5px;height:10px;background-color:#f00;"> </div>
+    <div id="handle5-2" style="opacity:0.5;position:absolute;top:0;left:0;width:5px;height:10px;background-color:#0f0;"> </div>
+    <div id="handle5-3" style="opacity:0.5;position:absolute;top:0;left:0;width:5px;height:10px;background-color:#00f;"> </div>
+  </div>
+  
+  <p id="debug5"> </p>
+  
+  <h2>Slider with multiple handles, external controls, handles are restricted (can't be moved prior/after adjacent handles)</h2>
+  
+  <div id="track6" style="width:200px;background-color:#aaa;height:5px;position:relative;">
+    <div id="handle6-1" style="position:absolute;top:0;left:0;width:5px;height:10px;background-color:#f00;"> </div>
+    <div id="handle6-2" style="position:absolute;top:0;left:0;width:5px;height:10px;background-color:#0f0;"> </div>
+  </div>
+  
+  <br/><br/>
+  <a href="#" onclick="slider6.setValueBy(-0.1);return false;">&lt;--</a>
+  <a href="#" onclick="slider6.setValueBy(0.1);return false;">--&gt;</a>
+  
+  <p id="debug6"> </p>
+  
+  <h2>Fun with spans</h2>
+  
+  <style>
+    #track7 div.handle {
+      background-color:#aaa;
+      color:#444;
+      top:0;
+      left:0;
+      position:absolute;
+      z-index:2;
+      height:100px;
+      font-size:20px;
+    }
+    #track7 div.handle.selected {
+      background-color:#444;
+      color:#fff;
+    }
+  </style>
+  
+  <div id="track7" style="width:300px;background-color:#cbf;height:50px;position:relative;z-index:0;">
+    <div id="handle7-1" class="handle">1</div>
+    <div id="handle7-2" class="handle">2</div>
+    <div id="handle7-3" class="handle">3</div>
+
+    <div id="span7-1" style="top:0;left:0;position:absolute;background-color:#000;height:50px;z-index:1;"> </div>
+    <div id="span7-2" style="top:0;left:0;position:absolute;background-color:#444;height:50px;z-index:1;"> </div>
+
+    <div id="span7-start" style="top:0;left:0;position:absolute;background-color:#f00;height:50px;z-index:1;"> </div>
+    <div id="span7-end" style="top:0;left:0;position:absolute;background-color:#00f;height:50px;z-index:1;"> </div>
+  </div>
+  
+  <br/><br/><br/><br/>
+  
+  <h2>Slider with span and [1,10] range (test for #3731)</h2>
+  
+  <div id="zoom-track" style="width:300px;background-color:#aaa;height:20px;position:relative;z-index:0;">
+    <div id="zoom-handle-1" style="position:absolute;background-color:#f00;height:20px;z-index:2">!</div>
+    <div id="zoom-handle-2" style="position:absolute;background-color:#0f0;height:20px;z-index:2">!</div>
+    <div id="zoom-track-selected" style="position:absolute;background-color:#00f;height:20px;z-index:1"> </div>
+  </div>
+  
+  
+  <!-- FIXME: add more demos here -->
+  
+  <script type="text/javascript">
+  // <![CDATA[
+    new Control.Slider('handle1','track1',{
+      sliderValue:0.5,
+      onSlide:function(v){$('debug1').innerHTML='slide: '+v},
+      onChange:function(v){$('debug1').innerHTML='changed! '+v}});
+    new Control.Slider('handle2','track2',{axis:'vertical',
+        onSlide:function(v){$('debug2').innerHTML='slide: '+v},
+        onChange:function(v){$('debug2').innerHTML='changed! '+v}});
+    new Control.Slider('handle3','track3',{values:[2,4,6,8],range:$R(2,15),
+        onSlide:function(v){$('debug3').innerHTML='slide: '+v},
+        onChange:function(v){$('debug3').innerHTML='changed! '+v}});
+    new Control.Slider(['handle4-1','handle4-2','handle4-3'],'track4',{
+        onSlide:function(v){$('debug4').innerHTML='slide: '+v.inspect()},
+        onChange:function(v){$('debug4').innerHTML='changed! '+v.inspect()}});
+    new Control.Slider(['handle5-1','handle5-2','handle5-3'],'track5',{values:[0,0.2,0.4,0.6,0.8],
+        onSlide:function(v){$('debug5').innerHTML='slide: '+v.inspect()},
+        onChange:function(v){$('debug5').innerHTML='changed! '+v.inspect()}});
+    var slider6 = new Control.Slider(['handle6-1','handle6-2'],'track6',{
+        sliderValue:[0.3, 0.8],
+        restricted:true,
+        onSlide:function(v){$('debug6').innerHTML='slide: '+v.inspect()},
+        onChange:function(v){$('debug6').innerHTML='changed! '+v.inspect()}});
+    new Control.Slider(['handle7-1','handle7-2','handle7-3'], 'track7',
+        { spans:['span7-1','span7-2'],
+          startSpan:'span7-start',
+          endSpan:'span7-end',
+          range:$R(0,300) });
+    new Control.Slider(
+      ['zoom-handle-1','zoom-handle-2'],'zoom-track',{
+        sliderValue:[1,10], range:$R(1,10),
+        values:[1,2,3,4,5,6,7,8,9,10],
+        restricted:true,
+        spans:['zoom-track-selected'] });
+  // ]]>
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>script.aculo.us Drag and drop functional test file</title>
+<script src="../../lib/prototype.js" type="text/javascript"></script>
+<script src="../../src/scriptaculous.js" type="text/javascript"></script>
+<script src="../../src/unittest.js" type="text/javascript"></script>
+</head>
+<style>
+  div.hoverclass123 {
+    border:1px solid red;
+  }
+</style>
+<body>
+
+<h1>script.aculo.us Drag and drop functional test file</h1>
+
+<h2>w/o hoverclass</h2>
+
+<div id="cart" class="cart" style="text-align:center;height:50px;padding:10px;background-color:#fba">
+### DROP HERE ###
+</div>
+
+<script type="text/javascript">Droppables.add('cart', {onDrop:function(element,dropon){alert('w/o hoverclass, should be \'product_id\':' + encodeURIComponent(element.id) + ', dropon should be \'cart\':' + dropon.id)}})</script>
+
+<br/>
+
+<img alt="Product2" id="product_id" src="icon.png" /> &lt;-- drag this!
+
+<script type="text/javascript">new Draggable('product_id', {revert:true})</script>
+
+<h2>w/ hoverclass</h2>
+
+
+<div id="carth" class="cart" style="text-align:center;height:50px;padding:10px;background-color:#fba">
+### DROP HERE ###
+</div>
+
+<script type="text/javascript">Droppables.add('carth', {hoverclass:'hoverclass123',onDrop:function(element, dropon, event){alert('w/ hoverclass: should be \'product_id\':' + encodeURIComponent(element.id) + ', dropon should be \'carth\':' + dropon.id)}})</script>
+
+
+</body>
+</html>

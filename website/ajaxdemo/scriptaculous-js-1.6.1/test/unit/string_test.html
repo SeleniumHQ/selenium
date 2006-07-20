@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../lib/prototype.js" type="text/javascript"></script>
+  <script src="../../src/scriptaculous.js" type="text/javascript"></script>
+  <script src="../../src/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+</head>
+<body>
+<h1>script.aculo.us Unit test file</h1>
+<p>
+  Tests for String.prototype extensions
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  new Test.Unit.Runner({
+
+    testStringCamelize: function() { with(this) {
+      assertEqual('className','class-name'.camelize());
+      assertEqual('className','class-name'.camelize());
+      assertEqual('classNameTest','class-name-test'.camelize());
+      assertEqual('classNameTest','className-test'.camelize());
+      assertEqual('classNameTest','class-nameTest'.camelize());
+      assertEqual('class','class'.camelize());
+    }},
+
+    testStringStripTags: function() { with(this) {
+      assertEqual('ablubbcdef!!!!g','a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g'.stripTags());
+    }},
+    
+    testStringEscapeHTML: function() { with(this) {
+      assertEqual('a&lt;a href="blah"&gt;blub&lt;/a&gt;b&lt;span&gt;&lt;div&gt;&lt;/div&gt;&lt;/span&gt;cdef&lt;strong&gt;!!!!&lt;/strong&gt;g',
+                  'a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g'.escapeHTML());
+    }},
+    
+    testStringUnescapeHTML: function() { with(this) {
+      assertEqual('a<a href="blah">blub</a>b<span><div></div></span>cdef<strong>!!!!</strong>g',
+        'a&lt;a href="blah"&gt;blub&lt;/a&gt;b&lt;span&gt;&lt;div&gt;&lt;/div&gt;&lt;/span&gt;cdef&lt;strong&gt;!!!!&lt;/strong&gt;g'.unescapeHTML());
+    }},
+    
+    testParseQueryString: function() { with(this) {
+      assertEqual(null, "".parseQuery()['a']);
+      assertEqual(null, "?".parseQuery()['a']);
+      assertEqual('b', "?a=b".parseQuery()['a']);
+      assertEqual('b', "a=b".parseQuery()['a']);
+      assertEqual('b', "?a=b&c=d".parseQuery()['a']);
+      assertEqual('d', "?a=b&c=d".parseQuery()['c']);
+    }},
+    
+    testStringParseColor: function() { with(this) {
+      assertEqual('#000000', "#000000".parseColor());
+      assertEqual('#000000', "rgb(0,0,0)".parseColor());
+      assertEqual('#000000', "rgb(0, 0, 0)".parseColor());
+      assertEqual('#000000', "#000".parseColor());
+
+      assertEqual('#1', "#1".parseColor());
+      assertEqual('#12', "#12".parseColor());
+      assertEqual('#112233', "#123".parseColor());
+      assertEqual('#1234', "#1234".parseColor());
+      assertEqual('#12345', "#12345".parseColor());
+      assertEqual('#123456', "#123456".parseColor());
+      
+      assertEqual('#abcdef', "#aBcDeF".parseColor());
+      assertEqual('#aabbcc', "#aBc".parseColor());
+      
+      assertEqual('white', "white".parseColor());
+      assertEqual('#123456', "#123456".parseColor('#000000'));  // default to #000000 if not parseable
+      assertEqual('#000000', "white".parseColor('#000000'));  // default to #000000 if not parseable
+            
+      assertEqual('#ffffff', "rgb(255,255,255)".parseColor());
+      assertEqual('#ff0000', "rgb(255,0,0)".parseColor());
+      assertEqual('#00ff00', "rgb(0,255,0)".parseColor());
+      assertEqual('#0000ff', "rgb(0,0,255)".parseColor());
+    }}
+
+  });
+  
+// ]]>
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+body, div, p, h1, h2, h3, ul, ol, span, a, table, td, form, img, li {
+  font-family: sans-serif;
+}
+
+body {
+  font-size:0.8em;
+}
+
+#log {
+  padding-bottom: 1em;
+  border-bottom: 2px solid #000;
+  margin-bottom: 2em;
+}
+
+#logsummary {
+  margin-bottom: 1em;
+  padding: 1ex;
+  border: 1px solid #000;
+  font-weight: bold;
+}
+
+#logtable {
+  width:100%;
+  border-collapse: collapse;
+  border: 1px dotted #666;
+}
+
+#logtable td, #logtable th {
+  text-align: left;
+  padding: 3px 8px;
+  border: 1px dotted #666;
+}
+
+#logtable .passed {
+  background-color: #cfc;
+}
+
+#logtable .failed, #logtable .error {
+  background-color: #fcc;
+}

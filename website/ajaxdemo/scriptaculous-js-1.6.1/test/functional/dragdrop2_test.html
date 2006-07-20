@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Drag and drop functional test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../lib/prototype.js" type="text/javascript"></script>
+  <script src="../../src/scriptaculous.js" type="text/javascript"></script>
+  <script src="../../src/unittest.js" type="text/javascript"></script>
+  <style type="text/css" media="screen">
+    #thelist li { background: green; margin:5px; padding: 30px; }
+    #thelist2 li { background: #ffb; margin:2px; padding: 2px; }
+  </style>
+</head>
+<body>
+<h1>script.aculo.us Drag and drop functional test file</h1>
+
+<h2>Draggables/Droppables</h2>
+
+<div id="revertbox1" class="box1" style="z-index:1000;width:150px;height:150px;background:#bbf;">
+  <span id="handle1">drag here</span><br/>
+  <input type="checkbox" id="shouldrevert1"/> Revert?
+</div>
+
+<div id="revertbox2" class="box" style="z-index:1000;width:150px;height:150px;background:#bbf;">
+  <span id="handle2">drag here</span><br/>
+  <input type="checkbox" id="shouldrevert2"/> Revert?
+</div>
+
+<div id="droptarget1" style="width:200px;height:200px;background-color:#eee;">accepts first box</div>
+<div id="droptarget2" style="width:200px;height:200px;background-color:#eee;">accepts second box</div>
+
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+  new Draggable('revertbox1',{scroll:window,handle:'handle1',revert:function(element){return ($('shouldrevert1').checked)}});
+  new Draggable('revertbox2',{handle:'handle2',revert:function(element){return ($('shouldrevert2').checked)}});
+  Droppables.add('droptarget1',{accept:['box1','otherstuff'],onDrop:function(){alert('drop!')}});
+  Droppables.add('droptarget2',{accept:'box',onDrop:function(){alert('drop!')}});
+// ]]>
+</script>
+
+
+</body>
+</html>

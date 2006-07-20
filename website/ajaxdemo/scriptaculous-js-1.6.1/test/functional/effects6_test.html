@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Effects functional test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../lib/prototype.js" type="text/javascript"></script>
+  <script src="../../src/scriptaculous.js" type="text/javascript"></script>
+  <script src="../../src/unittest.js" type="text/javascript"></script>
+</head>
+<body>
+<h1>script.aculo.us Fade/Appear effect functional test</h1>
+<p>Note: these tests use the browser default CSS style rules.</p>
+
+<h2>DIV</h2>
+<div id="test_div">TEST</div>
+<a href="#" onclick="Effect.Fade('test_div'); return false;">Effect.Fade</a> | 
+<a href="#" onclick="Effect.Appear('test_div'); return false;">Effect.Appear</a>
+
+<h2>SPAN</h2>
+<span id="test_span">TEST</span><br/>
+<a href="#" onclick="Effect.Fade('test_span'); return false;">Effect.Fade</a> | 
+<a href="#" onclick="Effect.Appear('test_span'); return false;">Effect.Appear</a>
+
+<h2>P</h2>
+<p id="test_p">TEST</p><br/>
+<a href="#" onclick="Effect.Fade('test_p'); return false;">Effect.Fade</a> | 
+<a href="#" onclick="Effect.Appear('test_p'); return false;">Effect.Appear</a>
+
+<h2>IMG</h2>
+<img id="test_img" src="icon.png" alt="test image" /><br/>
+<a href="#" onclick="Effect.Fade('test_img'); return false;">Effect.Fade</a> | 
+<a href="#" onclick="Effect.Appear('test_img'); return false;">Effect.Appear</a>
+
+
+<hr/>
+
+<p style="color:red;">The following elements are not supported with Fade/Appear on all browsers!</p>
+
+<h2>TABLE</h2>
+<table id="test_table"><tbody><tr><td>TEST</td></tr></tbody></table>
+<a href="#" onclick="Effect.Fade('test_table'); return false;">Effect.Fade</a> | 
+<a href="#" onclick="Effect.Appear('test_table'); return false;">Effect.Appear</a>
+
+<h2>TBODY</h2>
+<table><tbody id="test_tbody"><tr><td>TEST</td></tr></tbody></table>
+<a href="#" onclick="Effect.Fade('test_tbody'); return false;">Effect.Fade</a> | 
+<a href="#" onclick="Effect.Appear('test_tbody'); return false;">Effect.Appear</a>
+
+<h2>TR</h2>
+<table><tbody><tr id="test_tr"><td>TEST</td></tr></tbody></table>
+<a href="#" onclick="Effect.Fade('test_tr'); return false;">Effect.Fade</a> | 
+<a href="#" onclick="Effect.Appear('test_tr'); return false;">Effect.Appear</a>
+
+<h2>TD</h2>
+<table><tbody><tr><td id="test_td">TEST</td></tr></tbody></table>
+<a href="#" onclick="Effect.Fade('test_td'); return false;">Effect.Fade</a> | 
+<a href="#" onclick="Effect.Appear('test_td'); return false;">Effect.Appear</a>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Effects functional test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../lib/prototype.js" type="text/javascript"></script>
+  <script src="../../src/scriptaculous.js" type="text/javascript"></script>
+  <style type="text/css" media="screen">
+  /* <![CDATA[ */
+    div.demo { font-size: 70pt; float: left }
+    div#info { font: 10px/11px Tahoma, Arial, sans-serif; }
+  /* ]]> */
+  </style>
+  <script type="text/javascript" language="javascript" charset="utf-8">
+  // <![CDATA[
+  function startDemo() {
+    $$('div.demo').each( function(d) {
+      d.visualEffect(
+      ['fade','appear','blind_up','blind_down','puff','switch_off','drop_out','shake',
+       'slide_up','slide_down','pulsate','squish','fold','grow','shrink'][Math.round(Math.random()*14)],
+       { duration:0.5+Math.random()*5, delay: Math.random()*3 });
+    });
+    $('info').update(
+      Effect.Queues.get('global').collect( function(e) {
+        return e.inspect().escapeHTML()
+      }).join('<br/>'));
+  }
+  // ]]>
+  </script>
+</head>
+<body>
+<h1>Random effects demo</h1>
+<a href="#" onclick="startDemo(); return false;">Start...</a> | 
+<a href="#" onclick="$('info').toggle(); return false">Show/hide log</a>
+
+<div class="demo" style="background-color:#f00"><div> 
+DIV1
+</div></div>
+
+<div class="demo" style="background-color:#ff0"><div> 
+DIV2
+</div></div>
+
+<div class="demo" style="background-color:#0f0"><div> 
+DIV3
+</div></div>
+
+<div class="demo" style="background-color:#0ff"><div> 
+DIV4
+</div></div>
+
+<div class="demo" style="background-color:#f00"><div> 
+DIV5
+</div></div>
+
+<div class="demo" style="background-color:#ff0"><div> 
+DIV6
+</div></div>
+
+<div class="demo" style="background-color:#f00"><div> 
+DIV7
+</div></div>
+
+<div class="demo" style="background-color:#ff0"><div> 
+DIV8
+</div></div>
+
+<div class="demo" style="background-color:#0f0"><div> 
+DIV9
+</div></div>
+
+<div id="info" style="clear:both; display:none"> </div>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../lib/prototype.js" type="text/javascript"></script>
+  <script src="../../src/scriptaculous.js" type="text/javascript"></script>
+  <script src="../../src/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+</head>
+<body>
+<h1>script.aculo.us Unit test file</h1>
+<p>
+  Tests for the Ajax.InPlaceEditor.
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<h1 id="tobeedited">To be edited</h1>
+<a id="tobeeditedEditControl" href="#">edit</a>
+
+<div id="tobeeditedMultiLine">First line<br/>Second line<br/>Third line</div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  new Test.Unit.Runner({
+
+    setup: function() { with(this) {
+      inPlaceEditor = new Ajax.InPlaceEditor($('tobeedited'), '_ajax_inplaceeditor_result.html', {
+        externalControl: $('tobeeditedEditControl'),
+        ajaxOptions: {method: 'get'} //override so we can use a static for the result
+      });
+      inPlaceEditorMultiLine = new Ajax.InPlaceEditor($('tobeeditedMultiLine'), '_ajax_inplaceeditor_result.html', {
+        ajaxOptions: {method: 'get'} //override so we can use a static for the result
+      });
+    }},
+
+    teardown: function() { with(this) {
+      inPlaceEditor.dispose();
+    }},
+
+    // Integration test, tests the entire cycle
+    testInPlaceEditor: function() { with(this) {
+      Event.simulateMouse('tobeedited','click');
+      assertHidden($('tobeedited'));
+      assertNotNull(document.forms[0]);
+      assertEqual("cancel", document.forms[0].lastChild.innerHTML);
+      assertVisible(document.forms[0]);
+
+      Event.simulateMouse(document.forms[0].lastChild,'click');
+      assertNull(document.forms[0]);
+      assertVisible($('tobeedited'));
+      assertEqual("transparent", Element.getStyle('tobeedited','background-color'));
+
+      Event.simulateMouse('tobeedited','mouseover');
+      Event.simulateMouse('tobeedited','click');
+
+      assertEqual("INPUT", document.forms[0].firstChild.tagName);
+      assertEqual("To be edited", document.forms[0].firstChild.value);
+      assertEqual("INPUT", document.forms[0].childNodes[1].tagName);
+      assertEqual("submit", document.forms[0].childNodes[1].type);
+      assertEqual("To be edited", document.forms[0].firstChild.value);
+      assert(Element.hasClassName(document.forms[0], 'inplaceeditor-form'),
+        "form doesn't have proper class: " + document.forms[0].className);
+
+      Event.simulateMouse(document.forms[0].childNodes[1],'click');
+
+      assertVisible($('tobeedited'));
+      assertEqual("Saving...", $('tobeedited').innerHTML);
+      assertEqual("transparent", Element.getStyle('tobeedited','background-color'));
+      assert(Element.hasClassName($('tobeedited'), 'inplaceeditor-saving'),
+        "doesn't have saving class");
+
+      wait(1000, function() {
+        assertEqual("Server received: To be edited", $('tobeedited').innerHTML);
+        assertNull(document.forms[0]);
+        assertVisible($('tobeedited'));
+        assert(!Element.hasClassName($('tobeedited'), 'inplaceeditor-saving'));
+      });
+    }},
+
+    testHovering: function() { with(this) {
+      Event.simulateMouse('tobeedited','mouseover');
+      assertEqual("rgb(255, 255, 153)", Element.getStyle('tobeedited','background-color'));
+
+      Event.simulateMouse('tobeedited','mouseout');
+      wait(1100, function() {
+        assertEqual("transparent", Element.getStyle('tobeedited','background-color'),
+          "should be transparent after mouse leaves element");
+
+        Event.simulateMouse('tobeedited','click');
+      })
+    }},
+
+    testLoadsTextFromServer: function() { with(this) {
+      inPlaceEditor.options.loadTextURL = '_ajax_inplaceeditor_text.html';
+      inPlaceEditor.enterEditMode();
+      assertEqual('Loading...', inPlaceEditor.form.value.value);
+      assert(inPlaceEditor.form.value.disabled);
+      assert(Element.hasClassName(inPlaceEditor.form, 'inplaceeditor-loading'));
+      wait(1000, function() {
+        assertEqual('Text from server', inPlaceEditor.form.value.value);
+        assert(!inPlaceEditor.form.value.disabled);
+      });
+    }},
+
+    testDisposesProperly: function() { with(this) {
+      assertEqual("transparent", Element.getStyle('tobeedited','background-color'));
+      inPlaceEditor.dispose();
+      assertEqual("transparent", Element.getStyle('tobeedited','background-color'));
+      assertVisible($('tobeedited'));
+      Event.simulateMouse('tobeedited','click');
+      assertVisible($('tobeedited'));
+    }},
+
+    testUsesTextAreaWhenMoreThanOneRows: function() { with(this) {
+      inPlaceEditor.options.rows = 5;
+      inPlaceEditor.enterEditMode();
+      assertEqual("TEXTAREA", document.forms[0].firstChild.tagName);
+      assertEqual("BR", document.forms[0].childNodes[1].tagName);
+    }},
+
+    testCanSpecifyAllTextsThroughOptions: function() { with(this) {
+       // swedish translation ;-)
+      inPlaceEditor.options.okText = "spara";
+      inPlaceEditor.options.cancelText = "avbryt";
+      inPlaceEditor.options.savingText = "Sparar...";
+      inPlaceEditor.enterEditMode();
+      assertEqual("spara", document.forms[0].lastChild.previousSibling.value);
+      assertEqual("avbryt", document.forms[0].lastChild.innerHTML);
+      inPlaceEditor.showSaving();
+      assertEqual("Sparar...", $('tobeedited').innerHTML);
+    }},
+
+    testCanSpecifyFormIdThroughOptions: function() { with(this) {
+      inPlaceEditor.enterEditMode();
+      // default form id
+      assertEqual("tobeedited-inplaceeditor", document.forms[0].id);
+      inPlaceEditor.leaveEditMode();
+      inPlaceEditor.options.formId = "myFormId";
+      inPlaceEditor.enterEditMode();
+      assertEqual("myFormId", document.forms[0].id);
+    }},
+
+    testCantEditWhileSaving: function() { with(this) {
+      inPlaceEditor.onLoading();
+      Event.simulateMouse('tobeedited','mouseover');
+      assertEqual("transparent", Element.getStyle('tobeedited','background-color'));
+      Event.simulateMouse('tobeedited','click');
+      assertVisible($('tobeedited'));
+    }},
+
+    testCallbackFunctionGetsCalled: function() { with(this) {
+      called = false;
+      inPlaceEditor.options.callback = function(form) {
+        called = true;
+      }
+      Event.simulateMouse('tobeedited','click');
+      Event.simulateMouse(document.forms[0].childNodes[1],'click');
+      assert(called, "callback was not called");
+    }},
+
+    testCanUseExternalElementToGoIntoEditMode: function() { with(this) {
+      Event.simulateMouse('tobeeditedEditControl','click');
+      assertNotNull(document.forms[0], "external control didn't work");
+      // doesn't work if you click it again while in edit mode
+      Event.simulateMouse('tobeeditedEditControl','click');
+      assertNull(document.forms[1], "external control created two forms");
+      assertNotVisible($('tobeeditedEditControl'));
+      Event.simulateMouse(document.forms[0].childNodes[2],'click');
+      assertVisible($('tobeeditedEditControl'));
+    }},
+
+    testHasLineBreaksDetectsHTMLLineBreaks: function() { with(this) {
+      assert(inPlaceEditorMultiLine.hasHTMLLineBreaks("Line 1<br/>Line 2"));
+      assert(inPlaceEditorMultiLine.hasHTMLLineBreaks("Line 1<br>Line 2"));
+      assert(inPlaceEditorMultiLine.hasHTMLLineBreaks("<p>Line 1</p>Line 2"));
+      assert(inPlaceEditorMultiLine.hasHTMLLineBreaks("Line 1<BR/>Line 2"));
+      assert(inPlaceEditorMultiLine.hasHTMLLineBreaks("Line 1<BR>Line 2"));
+      assert(inPlaceEditorMultiLine.hasHTMLLineBreaks("<P>Line 1</P>Line 2"));
+      assert(inPlaceEditorMultiLine.hasHTMLLineBreaks("<P>Line 1<P>Line 2"));
+      assert(!inPlaceEditorMultiLine.hasHTMLLineBreaks("One line"));
+    }},
+
+    testConvertsHTMLLineBreaksIntoNewLines: function() { with(this) {
+      assertEqual("Line 1\nLine 2", inPlaceEditorMultiLine.convertHTMLLineBreaks("Line 1<br/>Line 2"));
+      assertEqual("Line 1\nLine 2", inPlaceEditorMultiLine.convertHTMLLineBreaks("Line 1<br>Line 2"));
+      // <p> not supported (too hard)
+      //assertEqual("Line 1\nLine 2", inPlaceEditorMultiLine.convertHTMLLineBreaks("<p>Line 1</p>Line 2"));
+      assertEqual("Line 1\nLine 2", inPlaceEditorMultiLine.convertHTMLLineBreaks("Line 1<BR/>Line 2"));
+      assertEqual("Line 1\nLine 2", inPlaceEditorMultiLine.convertHTMLLineBreaks("Line 1<BR>Line 2"));
+      // <p> not supported (too hard)
+      //assertEqual("Line 1\nLine 2", inPlaceEditorMultiLine.convertHTMLLineBreaks("<P>Line 1</P>Line 2"));
+      // unclosed <P>s not supported yet
+      //assertEqual("Line 1\nLine 2", inPlaceEditorMultiLine.convertHTMLLineBreaks("<P>Line 1<P>Line 2"));
+      // <p> not supported (too hard)
+      //assertEqual("Line 1\nLine 2\nLine 3\nLine 4", inPlaceEditorMultiLine.convertHTMLLineBreaks("<P>Line 1</P>Line 2<br>Line 3<p>Line 4</P>"));
+      assertEqual("One line", inPlaceEditorMultiLine.convertHTMLLineBreaks("One line"));
+    }},
+
+    testConvertsParagraphsAndBRsIntoLineBreaks: function() { with(this) {
+      inPlaceEditorMultiLine.enterEditMode();
+      assertEqual("TEXTAREA", document.forms[0].firstChild.tagName);
+      assertEqual("First line\nSecond line\nThird line", document.forms[0].firstChild.value)
+      // doesn't automatically determine size yet
+      //assertEqual(3, document.forms[0].firstChild.rows);
+    }}
+
+  });
+// ]]>
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../lib/prototype.js" type="text/javascript"></script>
+  <script src="../../src/scriptaculous.js" type="text/javascript"></script>
+  <script src="../../src/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+  <style type="text/css" media="screen">
+  /* <![CDATA[ */
+    #testcss1 { font-size:11px; color: #f00; }
+    #testcss2 { font-size:12px; color: #0f0; display: none; }
+  /* ]]> */
+  </style>
+</head>
+<body>
+<h1>script.aculo.us Unit test file</h1>
+<p>
+  This is a preliminary version mostly for testing the unittest library.
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<!-- Test elements follow -->
+<div id="test_1" class="a bbbbbbbbbbbb cccccccccc dddd"> </div>
+
+<div id="test_2"> <span> </span> 
+
+
+
+<div><div></div> </div><span> </span>
+</div>
+
+<ul id="tlist"><li id="tlist_1">x1</li><li id="tlist_2">x2</li></ul>
+<ul id="tlist2"><li class="a" id="tlist2_1">x1</li><li id="tlist2_2">x2</li></ul>
+
+<div id="testmoveby" style="background-color:#333;width:100px;">XXXX</div>
+
+<div id="testcss1">testcss1<span id="testcss1_span" style="display:none;">blah</span></div><div id="testcss2">testcss1</div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  new Test.Unit.Runner({
+    
+    testInspect: function() { with(this) {
+      assertEqual("'[object Object]' #object: {}",
+        Test.Unit.inspect({}));
+      assertEqual("'[object Object]' #object: {}",
+        Test.Unit.inspect({x:function(){}}));
+      assertEqual("'[object Object]' #object: {x => \"test\"}",
+        Test.Unit.inspect({x:"test"}));
+      assertEqual("'[object Object]' #object: {x => \"test\", y => 123}",
+        Test.Unit.inspect({x:"test",y:123}));
+      assertEqual("'[object Object]' #object: {x => [object Object]}",
+        Test.Unit.inspect({x:{}}));
+      assertEqual("'[object Object]' #object: {x => \"test\", y => [object Object]}",
+        Test.Unit.inspect({x:"test",y:{}}));
+      assertEqual("'[object Object]' #object: {x => \"test\", y => [object Object]}",
+        Test.Unit.inspect({x:"test",y:{z:"test",blah:{}}}));
+    }},
+    
+    testAssertEqual: function() { with(this) {
+      assertEqual(0, 0);
+      assertEqual(0, 0, "test");
+      
+      assertEqual("a", "a");
+      assertEqual("a", "a", "test");
+      
+      assertNotEqual(0, 1);
+      assertNotEqual("a","b");
+      assertNotEqual({},{});
+      assertNotEqual([],[]);
+      assertNotEqual([],{});
+    }},
+    
+    testAssertInstanceOf: function() { with(this) {
+      assertInstanceOf(Effect.Opacity, new Effect.Opacity('testcss1',{sync:true}));
+      assertNotInstanceOf(String, new Effect.Opacity('testcss1',{sync:true}));
+      
+      // note: fails with firefox 1.0.X (bug, fixed in Deer Park)
+      assertNotInstanceOf(Effect.Parallel, new Effect.Opacity('testcss1',{sync:true}), "(note: fails with firefox 1.0.X, fixed in Deer Park)");   
+    }},
+  
+    testAssertVisible: function() { with(this) {
+      assertVisible('testcss1');
+      assertNotVisible('testcss1_span');
+      assertNotVisible('testcss2', "Due to a Safari bug, this test fails in Safari.");
+      
+      Element.hide('testcss1');
+      assertNotVisible('testcss1');
+      assertNotVisible('testcss1_span');
+      Element.show('testcss1');
+      assertVisible('testcss1');
+      assertNotVisible('testcss1_span');
+      
+      Element.show('testcss1_span');
+      assertVisible('testcss1_span');
+      Element.hide('testcss1');
+      assertNotVisible('testcss1_span'); // hidden by parent
+    }}
+      
+  }, "testlog");
+// ]]>
+</script>
+</body>
+</html>
