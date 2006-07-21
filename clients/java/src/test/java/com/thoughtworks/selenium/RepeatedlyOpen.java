@@ -6,7 +6,7 @@ public class RepeatedlyOpen extends SeleneseTestCase {
         try {
             while(true) {
                 selenium.open("/selenium-server/tests/html/test_open.html");
-                selenium.open("/selenium-server/tests/html/test_page_slow.html");
+                selenium.open("/selenium-server/tests/html/test_page.slow.html");
             }
         }
         catch (Exception e) {
