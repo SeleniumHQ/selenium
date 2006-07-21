@@ -268,7 +268,7 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
         var evt = document.createEvent('MouseEvents');
         if (evt.initMouseEvent)
         {
-            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, false, false, false, false, 0, null)
+            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, false, false, false, false, 1, null)
         }
         else
         {
