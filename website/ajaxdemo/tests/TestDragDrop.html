@@ -25,14 +25,15 @@
         </tr>
         <tr>
             <td>dragdrop</td>
-            <td>css=#thelist_4</td>
-            <td>0, +10</td>
+            <td>id=thelist_1</td>
+            <td>0, 10</td>
         </tr>
         <tr>
-            <td>waitForCondition</td>
-            <td>Element.getStyle(selenium.browserbot.getCurrentWindow().document.getElementById('thelist_4'), 'opacity') > 0.9</td>
-            <td>5000</td>
+            <td>dragdrop</td>
+            <td>id=thelist_4</td>
+            <td>0, 10</td>
         </tr>
+
         <tr>
             <td>verifyText</td>
             <td>css=#thelist_4 + li</td>
@@ -40,14 +41,10 @@
         </tr>
         <tr>
             <td>dragdrop</td>
-            <td>css=#thelist_4</td>
-            <td>0, +150</td>
+            <td>id=thelist_4</td>
+            <td>0, 150</td>
         </tr>
-        <tr>
-            <td>waitForCondition</td>
-            <td>Element.getStyle(selenium.browserbot.getCurrentWindow().document.getElementById('thelist_4'), 'opacity') > 0.9</td>
-            <td>5000</td>
-        </tr>
+
         <tr>
             <td>verifyText</td>
             <td>css=#thelist_1 + li</td>
