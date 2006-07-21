@@ -727,6 +727,11 @@ public class SeleniumServer {
 
     public static void log(String logMessages) {
         PrintStream out = (logOut!=null) ? logOut : System.out;
-        out.print(logMessages);
+        if (logMessages.endsWith("\n")) {
+            out.print(logMessages);
+        }
+        else {
+            out.println(logMessages);
+        }
     }
 }
