@@ -242,7 +242,7 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
                 ieEvent.altKey = false;
                 ieEvent.shiftKey = false;
                 ieEvent.metaKey = false;
-                ieEvent.button = 0;
+                ieEvent.button = 1;
                 ieEvent.relatedTarget = null;
                          
                 // when we go this route, window.event is never set to contain the event we have just created.
