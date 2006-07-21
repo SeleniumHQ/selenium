@@ -5,9 +5,4 @@
   <artifactId>selenium</artifactId>
   <name>Selenium</name>
   <packaging>pom</packaging>
-  <modules>
-    <module>code/javascript-core</module>
-    <module>server</module>
-    <module>code/java-client-driver</module>
-  </modules>
 </project>
