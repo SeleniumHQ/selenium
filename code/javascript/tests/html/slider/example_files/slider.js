@@ -18,7 +18,7 @@ function setSliderByClientX(slider, clientX) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function sliderClick(e) {
 	var el=sliderFromEvent(e);
-    if (!el) return;
+	if (!el) return;
 
 	setSliderByClientX(el, e.clientX);
 }
@@ -35,9 +35,8 @@ function sliderMouseMove(e) {
 function sliderFromEvent(e) {
 	if (!e && window.event) e=window.event;
 	if (!e) return false;
-    if (!isLeftButton(e)) return false;
 
-    var el;
+	var el;
 	if (e.target) el=e.target;
 	if (e.srcElement) el=e.srcElement;
 
@@ -47,11 +46,6 @@ function sliderFromEvent(e) {
 
 	return el;
 }
-
-function isLeftButton(e) {
-    return (((e.which) && (e.which == 1)) || ((e.button) && (e.button == 1)));
-}
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function attachSliderEvents() {
 	var divs=document.getElementsByTagName('div');
