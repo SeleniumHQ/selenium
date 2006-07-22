@@ -287,6 +287,15 @@ Selenium.prototype.doMouseOver = function(locator) {
     triggerMouseEvent(element, 'mouseover', true);
 };
 
+Selenium.prototype.doMouseOut = function(locator) {
+   /**
+   * Simulates a user moving the mouse pointer away from the specified element.
+   * 
+   * @param locator an <a href="#locators">element locator</a>
+   */
+    var element = this.page().findElement(locator);
+    triggerMouseEvent(element, 'mouseout', true);
+};
 
 Selenium.prototype.doMouseDown = function(locator) {
 	/**
