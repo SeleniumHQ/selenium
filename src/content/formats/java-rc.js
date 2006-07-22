@@ -10,41 +10,8 @@ function useSeparateEqualsForArray() {
 	return true;
 }
 
-function formatHeader(testCase) {
-	var className = testCase.name;
-	if (!className) {
-		className = "NewTest";
-	}
-	var formatLocal = testCase.formatLocal(this.name);
-	if (!formatLocal.packageName) {
-		formatLocal.packageName = options.packageName;
-	}
-	var methodName = className;
-	methodName = methodName.replace(/Test$/, "");
-	methodName = methodName.replace(/^Test/, "");
-	methodName = "test" + methodName;
-	var header = "";
-	if (formatLocal.packageName) {
-		header += "package " + formatLocal.packageName + ";\n\n";
-	}
-	header +=
-		"import com.thoughtworks.selenium.*;\n" +
-		"import java.util.regex.Pattern;\n" +
-		"\n" +
-        "public class " + className + " extends " + options.superClass + " {\n" + 
-        "\tpublic void " + methodName + "() throws Exception {\n";
-	this.lastIndent = "\t\t";
-	this.header = header;
-	return header;
-}
-
-function formatFooter(testCase) {
-	var footer = 
-		"\t\tcheckForVerificationErrors();\n" +
-		"\t}\n" +
-		"}\n";
-	this.footer = footer;
-	return footer;
+function testMethodName(testName) {
+	return "test" + capitalize(testName);
 }
 
 function assertTrue(expression) {
@@ -117,7 +84,7 @@ RegexpMatch.prototype.toString = function() {
 }
 
 EqualsArray.prototype.length = function() {
-	return "len(" + this.variableName + ")";
+	return this.variableName + ".length";
 }
 
 EqualsArray.prototype.item = function(index) {
@@ -174,9 +141,25 @@ function formatComment(comment) {
 
 this.options = {
 	receiver: "selenium",
-	packageName: "",
-	superClass: "SeleneseTestCase"
+	packageName: "com.example.tests",
+	superClass: "SeleneseTestCase",
+    indent:	'tab',
+    initialIndents:	'2'
 };
+
+options.header =
+	"package ${packageName};\n" +
+	"\n" +
+	"import com.thoughtworks.selenium.*;\n" +
+	"import java.util.regex.Pattern;\n" +
+	"\n" +
+    "public class ${className} extends ${superClass} {\n" + 
+    "\tpublic void ${methodName}() throws Exception {\n";
+
+options.footer =
+	"\t\tcheckForVerificationErrors();\n" +
+	"\t}\n" +
+	"}\n";
 
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +

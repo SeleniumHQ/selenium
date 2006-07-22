@@ -6,6 +6,28 @@
 
 load('formatCommandOnlyAdapter.js');
 
+function formatHeader(testCase) {
+	var className = testCase.name;
+	if (!className) {
+		className = "NewTest";
+	}
+	var formatLocal = testCase.formatLocal(this.name);
+	methodName = testMethodName(className.replace(/Test$/, "").replace(/^Test/, "").
+								replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
+	var header = options.header.replace(/\$\{className\}/g, className).
+		replace(/\$\{methodName\}/g, methodName).
+		replace(/\$\{([a-zA-Z0-9_]+)\}/g, function(str, name) { return options[name] });
+	this.lastIndent = indents(parseInt(options.initialIndents));
+	formatLocal.header = header;
+	return formatLocal.header;
+}
+
+function formatFooter(testCase) {
+	var formatLocal = testCase.formatLocal(this.name);
+	formatLocal.footer = options.footer;
+	return formatLocal.footer;
+}
+
 function indents(num) {
 	function repeat(c, n) {
 		var str = "";
@@ -20,6 +42,10 @@ function indents(num) {
 	} else {
 		return repeat(" ", num * parseInt(options.indent));
 	}
+}
+
+function capitalize(string) {
+	return string.replace(/^[a-z]/, function(str) { return str.toUpperCase(); });
 }
 
 function underscore(text) {

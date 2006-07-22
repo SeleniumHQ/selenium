@@ -6,25 +6,8 @@ load('remoteControl.js');
 
 this.name = "ruby-rc";
 
-function formatHeader(testCase) {
-	var className = testCase.name;
-	if (!className) {
-		className = "NewTest";
-	}
-	var formatLocal = testCase.formatLocal(this.name);
-	methodName = 'test_' + underscore(className.replace(/Test$/, "").replace(/^Test/, "").
-									  replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
-	var header = options.header.replace(/\$\{className\}/g, className).
-		replace(/\$\{methodName\}/g, methodName);
-	this.lastIndent = indents(2);
-	formatLocal.header = header;
-	return formatLocal.header;
-}
-
-function formatFooter(testCase) {
-	var formatLocal = testCase.formatLocal(this.name);
-	formatLocal.footer = options.footer;
-	return formatLocal.footer;
+function testMethodName(testName) {
+	return "test_" + underscore(testName);
 }
 
 function assertTrue(expression) {
@@ -191,7 +174,8 @@ this.options = {
 	footer:
 		"  end\n" +
 		"end\n",
-	indent: "2"
+	indent: "2",
+	initialIndents: "2"
 };
 
 this.configForm = 

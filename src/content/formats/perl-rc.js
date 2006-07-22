@@ -10,6 +10,11 @@ function useSeparateEqualsForArray() {
 	return true;
 }
 
+// method name will not be used in this format
+function testMethodName(testName) {
+	return testName;
+}
+
 var originalFormatCommands = formatCommands;
 formatCommands = function(commands) {
 	this.tests = 0;
@@ -21,20 +26,6 @@ formatCommands = function(commands) {
 }
 
 var formatter = this;
-
-function formatHeader(testCase) {
-	var formatLocal = testCase.formatLocal(this.name);
-	var header = options.header;
-	this.lastIndent = "";
-	formatLocal.header = header;
-	return formatLocal.header;
-}
-
-function formatFooter(testCase) {
-	var formatLocal = testCase.formatLocal(this.name);
-	formatLocal.footer = options.footer;
-	return formatLocal.footer;
-}
 
 string = function(value) {
 	if (value != null) {
@@ -246,7 +237,8 @@ this.options = {
 		'                                    browser_url => "http://localhost:4444" );\n' +
 		'\n',
 	footer: "",
-	indent: "4"
+	indent: "4",
+	initialIndents: '0'
 };
 
 this.configForm = 
