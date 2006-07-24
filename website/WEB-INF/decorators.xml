@@ -6,6 +6,10 @@
 
         <decorator name="panel" page="/panel-decorator.jsp"/>
 
-        <decorator name="none"><pattern>/demo*/*</pattern></decorator>
+        <decorator name="none">
+            <pattern>/demo*/*</pattern>
+            <pattern>/selenium/*</pattern>
+            <pattern>/ajaxdemo/*</pattern>
+        </decorator>
 
 </decorators>
