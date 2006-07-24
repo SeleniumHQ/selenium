@@ -1448,8 +1448,42 @@ Selenium.prototype.getElementPositionLeft = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number of pixels from the edge of the frame.
    */
-   var element = this.page().findElement(locator);
-   throw new SeleniumError("not implemented");
+	var element = this.page().findElement(locator);
+	var x = elm.offsetLeft;      
+	var elmParent = elm.offsetParent; 
+
+	while (elmParent != null)
+	{                                        
+		if(document.all)            
+		{
+			if( (elmParent.tagName != "TABLE") && (elmParent.tagName != "BODY") )
+			{                                   
+				x += elmParent.clientLeft; 
+			}
+		}
+		else // Netscape/DOM
+		{
+			if(elmParent.tagName == "TABLE")  
+			{                                  
+				var parentBorder = parseInt(elmParent.border);
+				if(isNaN(parentBorder))     
+				{                            
+					var parentFrame = elmParent.getAttribute('frame');
+					if(parentFrame != null)    
+					{
+						x += 1;  
+					}
+				}
+				else if(parentBorder > 0)  
+				{
+					x += parentBorder; 
+				}
+			}
+		}
+		x += elmParent.offsetLeft;
+		elmParent = elmParent.offsetParent; 
+	}
+	return x;
 };
 
 Selenium.prototype.getElementPositionTop = function(locator) {
@@ -1459,8 +1493,54 @@ Selenium.prototype.getElementPositionTop = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number of pixels from the edge of the frame.
    */
-   var element = this.page().findElement(locator);
-   throw new SeleniumError("not implemented");
+	var elm = this.page().findElement(locator);
+   	var y = 0;         
+
+   	while (elm != null)
+	{                                        
+		if(document.all)  
+		{
+			if( (elm.tagName != "TABLE") && (elm.tagName != "BODY") )
+			{                                  
+			y += elm.clientTop;
+			}
+		}
+		else // Netscape/DOM
+		{
+			if(elm.tagName == "TABLE") 
+			{    
+			var parentBorder = parseInt(elm.border);
+			if(isNaN(parentBorder))   
+			{               
+				var parentFrame = elm.getAttribute('frame');
+				if(parentFrame != null) 
+				{
+					y += 1;  
+				}
+			}
+			else if(parentBorder > 0)   
+			{
+				y += parentBorder;
+			}
+			}
+		}
+		y += elm.offsetTop;  
+
+			// Netscape can get confused in some cases, such that the height of the parent is smaller
+			// than that of the element (which it shouldn't really be). If this is the case, we need to
+			// exclude this element, since it will result in too large a 'top' return value.
+			if (elm.offsetParent && elm.offsetParent.offsetHeight && elm.offsetParent.offsetHeight < elm.offsetHeight)
+			{
+				// skip the parent that's too small
+				elm = elm.offsetParent.offsetParent; 
+			}
+			else
+			{    
+			// Next up...
+			elm = elm.offsetParent; 
+		}
+   	}    
+	return y;
 };
 
 Selenium.prototype.getElementWidth = function(locator) {
@@ -1468,10 +1548,10 @@ Selenium.prototype.getElementWidth = function(locator) {
    * Retrieves the width of an element
    * 
    * @param locator an <a href="#locators">element locator</a> pointing to an element
-   * @return width of an element in pixels
+   * @return number width of an element in pixels
    */
-   var element = this.page().findElement(locator);
-   throw new SeleniumError("not implemented");
+   var elm = this.page().findElement(locator);
+   return elm.offsetWidth;
 };
 
 Selenium.prototype.getElementHeight = function(locator) {
@@ -1479,10 +1559,10 @@ Selenium.prototype.getElementHeight = function(locator) {
    * Retrieves the height of an element
    * 
    * @param locator an <a href="#locators">element locator</a> pointing to an element
-   * @return height of an element in pixels
+   * @return number height of an element in pixels
    */
-   var element = this.page().findElement(locator);
-   throw new SeleniumError("not implemented");
+   var elm = this.page().findElement(locator);
+   return elm.offsetHeight;
 };
 
 Selenium.prototype.getCursorPosition = function(locator) {
