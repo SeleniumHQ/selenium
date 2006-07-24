@@ -1294,15 +1294,21 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
 
 Selenium.prototype.findWindow = function(soughtAfterWindowName) {
    var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
-   if (PatternMatcher.matches(soughtAfterWindowName, testAppParentOfAllWindows.name)) {
+   
+   if (PatternMatcher.matches(soughtAfterWindowName, testAppParentOfAllWindows.name)
+   	// If we are not in proxy injection mode, then the top-level test window will be named myiframe.
+        // But as far as the interface goes, we are expected to match a blank string to this window.
+        // So make a special case so that in this logic will work:
+   ||  PatternMatcher.matches(soughtAfterWindowName, "")) {
    	return testAppParentOfAllWindows;
    }
+   
    for (windowName in selenium.browserbot.openedWindows) {
    	if (PatternMatcher.matches(soughtAfterWindowName, windowName)) {
         	return selenium.browserbot.openedWindows[windowName];
         }
    }
-   throw "could not find window " + soughtAfterWindowName;
+   throw new SeleniumError("could not find window " + soughtAfterWindowName);
 };
 
 Selenium.prototype.doDragdrop = function(locator, movementsString) {
