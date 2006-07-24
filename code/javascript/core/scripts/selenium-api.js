@@ -1294,16 +1294,15 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
 
 Selenium.prototype.findWindow = function(soughtAfterWindowName) {
    var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
-   if (soughtAfterWindowName=="" || testAppParentOfAllWindows.name==soughtAfterWindowName) {
+   if (PatternMatcher.matches(soughtAfterWindowName, testAppParentOfAllWindows.name)) {
    	return testAppParentOfAllWindows;
-   } 
-   for (windowName in selenium.browserbot.openedWindows)
-   {
-	if (windowName==soughtAfterWindowName) {
-   		return selenium.browserbot.openedWindows[windowName];
-        } 
    }
-   throw "could not find window " + windowName;
+   for (windowName in selenium.browserbot.openedWindows) {
+   	if (PatternMatcher.matches(soughtAfterWindowName, windowName)) {
+        	return selenium.browserbot.openedWindows[windowName];
+        }
+   }
+   throw "could not find window " + soughtAfterWindowName;
 };
 
 Selenium.prototype.doDragdrop = function(locator, movementsString) {
