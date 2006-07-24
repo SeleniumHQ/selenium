@@ -34,6 +34,8 @@ public class GoogleTest extends TestCase
         }
         selenium.windowFocus("");
         selenium.windowMaximize("");
+        selenium.windowMaximize("regexp:");
+        selenium.windowMaximize("regexp:.*");
         assertEquals("Google", selenium.getTitle());
 		selenium.type("q", "Selenium OpenQA");
 		assertEquals("Selenium OpenQA", selenium.getValue("q"));
