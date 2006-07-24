@@ -1441,6 +1441,50 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
    }
 }
 
+Selenium.prototype.getElementPositionLeft = function(locator) {
+   /**
+   * Retrieves the horizontal position of an element
+   * 
+   * @param locator an <a href="#locators">element locator</a> pointing to an element
+   * @return number of pixels from the edge of the frame.
+   */
+   var element = this.page().findElement(locator);
+   throw new SeleniumError("not implemented");
+};
+
+Selenium.prototype.getElementPositionTop = function(locator) {
+   /**
+   * Retrieves the vertical position of an element
+   * 
+   * @param locator an <a href="#locators">element locator</a> pointing to an element
+   * @return number of pixels from the edge of the frame.
+   */
+   var element = this.page().findElement(locator);
+   throw new SeleniumError("not implemented");
+};
+
+Selenium.prototype.getElementWidth = function(locator) {
+   /**
+   * Retrieves the width of an element
+   * 
+   * @param locator an <a href="#locators">element locator</a> pointing to an element
+   * @return width of an element in pixels
+   */
+   var element = this.page().findElement(locator);
+   throw new SeleniumError("not implemented");
+};
+
+Selenium.prototype.getElementHeight = function(locator) {
+   /**
+   * Retrieves the height of an element
+   * 
+   * @param locator an <a href="#locators">element locator</a> pointing to an element
+   * @return height of an element in pixels
+   */
+   var element = this.page().findElement(locator);
+   throw new SeleniumError("not implemented");
+};
+
 Selenium.prototype.getCursorPosition = function(locator) {
 	/**
    * Retrieves the text cursor position in the given input element or textarea; beware, this may not work perfectly on all browsers.
