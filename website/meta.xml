@@ -18,15 +18,11 @@
     </evaluating>
 
     <docs>
-        <url>usage.html</url>
+        <url>documentation.html</url>
         <items>
             <item>
-                <name>Usage</name>
-                <url>usage.html</url>
-            </item>
-            <item>
-                <name>Reference Guide</name>
-                <url>http://release.openqa.org/selenium-core/nightly/reference.html</url>
+                <name>FAQ</name>
+                <url>http://wiki.openqa.org/display/SEL/Selenium+Core+FAQ</url>
             </item>
             <item>
                 <name>Demos</name>
