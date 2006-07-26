@@ -362,7 +362,7 @@ public class SeleniumServer {
                 if ("".equals(userInput)) continue;
                 
                 if (!userInput.startsWith("cmd=") && !userInput.startsWith("commandResult=")) {
-                    System.err.println("ERROR -  Invalid command: " + userInput);
+                    System.err.println("ERROR -  Invalid command: \"" + userInput + "\"");
                     continue;
                 }
 
