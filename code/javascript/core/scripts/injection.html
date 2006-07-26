@@ -1,8 +1,6 @@
 <script language="JavaScript">
     if (window["selenium_has_been_loaded_into_this_window"]==null)
     {
-    window["selenium_has_been_loaded_into_this_window"] = true;
-    
 __SELENIUM_JS__    
 
 // Some background on the code below: broadly speaking, where we are relative to other windows
@@ -56,6 +54,7 @@ function selenium_frameRunTest(oldOnLoadRoutine) {
 
 function seleniumOnLoad() {
     	injectedSessionId = @SESSION_ID@;
+        window["selenium_has_been_loaded_into_this_window"] = true;
         runSeleniumTest();
 }
 

@@ -1449,26 +1449,26 @@ Selenium.prototype.getElementPositionLeft = function(locator) {
    * @return number of pixels from the edge of the frame.
    */
 	var element = this.page().findElement(locator);
-	var x = elm.offsetLeft;      
-	var elmParent = elm.offsetParent; 
+	var x = element.offsetLeft;      
+	var elementParent = element.offsetParent; 
 
-	while (elmParent != null)
+	while (elementParent != null)
 	{                                        
 		if(document.all)            
 		{
-			if( (elmParent.tagName != "TABLE") && (elmParent.tagName != "BODY") )
+			if( (elementParent.tagName != "TABLE") && (elementParent.tagName != "BODY") )
 			{                                   
-				x += elmParent.clientLeft; 
+				x += elementParent.clientLeft; 
 			}
 		}
 		else // Netscape/DOM
 		{
-			if(elmParent.tagName == "TABLE")  
+			if(elementParent.tagName == "TABLE")  
 			{                                  
-				var parentBorder = parseInt(elmParent.border);
+				var parentBorder = parseInt(elementParent.border);
 				if(isNaN(parentBorder))     
 				{                            
-					var parentFrame = elmParent.getAttribute('frame');
+					var parentFrame = elementParent.getAttribute('frame');
 					if(parentFrame != null)    
 					{
 						x += 1;  
@@ -1480,8 +1480,8 @@ Selenium.prototype.getElementPositionLeft = function(locator) {
 				}
 			}
 		}
-		x += elmParent.offsetLeft;
-		elmParent = elmParent.offsetParent; 
+		x += elementParent.offsetLeft;
+		elementParent = elementParent.offsetParent; 
 	}
 	return x;
 };
@@ -1493,26 +1493,26 @@ Selenium.prototype.getElementPositionTop = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number of pixels from the edge of the frame.
    */
-	var elm = this.page().findElement(locator);
+	var element = this.page().findElement(locator);
    	var y = 0;         
 
-   	while (elm != null)
+   	while (element != null)
 	{                                        
 		if(document.all)  
 		{
-			if( (elm.tagName != "TABLE") && (elm.tagName != "BODY") )
+			if( (element.tagName != "TABLE") && (element.tagName != "BODY") )
 			{                                  
-			y += elm.clientTop;
+			y += element.clientTop;
 			}
 		}
 		else // Netscape/DOM
 		{
-			if(elm.tagName == "TABLE") 
+			if(element.tagName == "TABLE") 
 			{    
-			var parentBorder = parseInt(elm.border);
+			var parentBorder = parseInt(element.border);
 			if(isNaN(parentBorder))   
 			{               
-				var parentFrame = elm.getAttribute('frame');
+				var parentFrame = element.getAttribute('frame');
 				if(parentFrame != null) 
 				{
 					y += 1;  
@@ -1524,20 +1524,20 @@ Selenium.prototype.getElementPositionTop = function(locator) {
 			}
 			}
 		}
-		y += elm.offsetTop;  
+		y += element.offsetTop;  
 
 			// Netscape can get confused in some cases, such that the height of the parent is smaller
 			// than that of the element (which it shouldn't really be). If this is the case, we need to
 			// exclude this element, since it will result in too large a 'top' return value.
-			if (elm.offsetParent && elm.offsetParent.offsetHeight && elm.offsetParent.offsetHeight < elm.offsetHeight)
+			if (element.offsetParent && element.offsetParent.offsetHeight && element.offsetParent.offsetHeight < element.offsetHeight)
 			{
 				// skip the parent that's too small
-				elm = elm.offsetParent.offsetParent; 
+				element = element.offsetParent.offsetParent; 
 			}
 			else
 			{    
 			// Next up...
-			elm = elm.offsetParent; 
+			element = element.offsetParent; 
 		}
    	}    
 	return y;
@@ -1550,8 +1550,8 @@ Selenium.prototype.getElementWidth = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number width of an element in pixels
    */
-   var elm = this.page().findElement(locator);
-   return elm.offsetWidth;
+   var element = this.page().findElement(locator);
+   return element.offsetWidth;
 };
 
 Selenium.prototype.getElementHeight = function(locator) {
@@ -1561,8 +1561,8 @@ Selenium.prototype.getElementHeight = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number height of an element in pixels
    */
-   var elm = this.page().findElement(locator);
-   return elm.offsetHeight;
+   var element = this.page().findElement(locator);
+   return element.offsetHeight;
 };
 
 Selenium.prototype.getCursorPosition = function(locator) {
