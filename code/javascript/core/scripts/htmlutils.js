@@ -253,13 +253,12 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
         	        window.event = ieEvent;
                 }
                 catch(e) {
-        		// getting an "Object does not support this action or property" error.  Save the event the way
+        		// getting an "Object does not support this action or property" error.  Save the event away
                         // for future reference.
                         // TODO: is there a way to update window.event?
                          
-                        // The following is pointless -- for some reason the event handler cannot see this property,
-                        // so I may as well comment out this assignment:
-                        //window["selenium_triggerMouseEvent"] = ieEvent;
+                        // work around for http://jira.openqa.org/browse/SEL-280 -- make the event available somewhere:
+                        selenium.browserbot.getCurrentWindow().selenium_event = ieEvent;
                 }
                 element.fireEvent('on' + eventType, ieEvent);
         }
