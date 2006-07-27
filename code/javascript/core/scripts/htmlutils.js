@@ -525,4 +525,11 @@ Object.extend(Effect, {
 });
 
 
-
+// for use from vs.2003 debugger
+function objToString(obj) {
+	var s = "";
+        for (key in obj) {
+    	    s += key + "->" + obj[key] + "\n";
+        }
+        return s;
+}
