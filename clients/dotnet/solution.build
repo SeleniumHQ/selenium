@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="selenium-client-dotnet" default="compile" basedir=".">
+
+   <target name="compile">
+      <solution configuration="debug" 
+                solutionfile="src/Selenium.sln" />
+   </target>
+
+</project>

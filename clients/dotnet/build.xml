@@ -4,29 +4,6 @@
 	<property name="iis_vdir.VDirName" value="Selenium-Driver" />
 	<property name="iis_vdir.applicationMapping" value=".sel" />
 
-	<macrodef name="solution">
-		<attribute name="configuration" default="Debug" />
-		<attribute name="action" default="build" />
-		<attribute name="solutionFile" />
-		<sequential>
-			<delete file="solutionbuild.log" failonerror="false" />
-			<echo taskname="vstudio" message="@{action}ing solution @{solutionFile}" />
-			<exec executable="devenv" resultproperty="build.result">
-				<arg value="/@{action}"/>
-				<arg value="@{configuration}"/>
-				<arg value="@{solutionFile}" />
-				<arg value="/out" />
-				<arg value="solutionbuild.log" />
-			</exec>
-			<condition property="build.failed">
-				<not><equals arg1="0" arg2="${build.result}" /></not>
-			</condition>
-			<loadfile property="@{action}.solutionbuild.log" srcfile="solutionbuild.log"/>
-			<echo taskname="vstudio" message="${@{action}.solutionbuild.log}" />
-			<fail if="build.failed" message="Build failed!" />
-		</sequential>
-	</macrodef>
-
 	<!-- Targets should contain tasks OR dependencies, but NOT both.
 			Public targets should have a description -->
 
@@ -44,7 +21,11 @@
 		
 	<target name="clean">
 		<!-- These mkdirs here to stop warnings -->
-		<solution action="clean" solutionfile="src\Selenium.sln" />
+		<!-- can nant execute clean against a solution? -->
+		<delete dir="src/Core/obj" />
+		<delete dir="src/IntegrationTests/obj" />
+		<delete dir="src/UnitTests/obj" />
+
 		<mkdir dir="build" />
 		<mkdir dir="dist" />
 		<mkdir dir="deployed" />
@@ -90,7 +71,7 @@
 
 	<target name="compile" depends="generate-sources">
 		<mkdir dir="build" />
-		<solution action="rebuild" configuration="Debug" solutionfile="src\Selenium.sln" />
+		<exec executable="${ant.file.selenium-dotnet}/../tools/nant/nant" failonerror="yes"/>
 	</target>
 
 	<target name="run-unit-tests" unless="skiptests">

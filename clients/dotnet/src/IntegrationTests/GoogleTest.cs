@@ -41,7 +41,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 		[Test]
 		public void GoogleSearch()
 		{
-			selenium.Open("http://www.google.com");
+			selenium.Open("http://www.google.com/webhp");
 			Assert.AreEqual("Google", selenium.GetTitle());
 			selenium.Type("q", "Selenium OpenQA");
 			Assert.AreEqual("Selenium OpenQA", selenium.GetValue("q"));
