@@ -2,7 +2,7 @@
 
     <property name="version" value="0.7.1-SNAPSHOT"/>
 
-    <target name="all" depends="install-jar, dist, test"/>
+    <target name="all" depends="clean, install-jar, dist, test"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
@@ -12,6 +12,7 @@
     <property name="dist.dir" location="${build.dir}/dist"/>
     <property name="image.dir" location="${build.dir}/image"/>
     <property name="resultshandler.image.dir" location="${build.dir}/resultshandler"/>
+    <property name="docs.generation.dir" location="javascript/doctool"/>
 
     <target name="clean">
         <delete dir="${build.dir}"/>
@@ -52,25 +53,18 @@
     </target>
 
     <target name="generate-xml" depends="copy-sources">
-        <exec executable="cscript" dir="javascript" output="javascript/core/iedoc.xml" failonerror="true">
-            <arg value="/nologo"/>
-            <arg file="javascript/iedoc.js"/>
+        <java jar="${docs.generation.dir}/js.jar" output="${image.dir}/doc.xml" failonerror="true" fork="true">
+            <arg file="${docs.generation.dir}/doc.js"/>
             <arg file="javascript/core/scripts/selenium-api.js" />
-        </exec>
-        <xmlvalidate file="javascript/core/iedoc.xml" lenient="true"/>
-        <copy file="javascript/core/iedoc.xml" tofile="${image.dir}/core/iedoc.xml" overwrite="true"/>
-        
-        <exec executable="cscript" dir="javascript" output="javascript/core/iedoc-core.xml" failonerror="true">
-            <arg value="/nologo"/>
-            <arg file="javascript/iedoc.js"/>
-            <arg file="javascript/core/scripts/selenium-api.js" />
-        </exec>
-        <xmlvalidate file="javascript/core/iedoc-core.xml" lenient="true"/>
-        <copy file="javascript/core/iedoc-core.xml" tofile="${image.dir}/core/iedoc-core.xml" overwrite="true"/>
+        </java>
+        <xmlvalidate file="${image.dir}/doc.xml" lenient="true"/>
+        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/doc-core.xml" overwrite="true"/>
+        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc-core.xml" overwrite="true"/>
+        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc.xml" overwrite="true"/>
     </target>
 
     <target name="generate-doc" depends="generate-xml">
-        <xslt in="${image.dir}/core/iedoc-core.xml" out="${image.dir}/reference.html" style="javascript/iedoc2html.xml"/>
+        <xslt in="${image.dir}/doc-core.xml" out="${image.dir}/reference.html" style="${docs.generation.dir}/doc2html.xml"/>
     </target>
 
     <target name="dist-image" depends="get-svn-revision, copy-sources, generate-doc"/>
