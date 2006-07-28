@@ -1,128 +1,132 @@
 <?xml version="1.0"?>
 <project name="selenium-dotnet" default="test">
 
-    <property name="iis_vdir.VDirName" value="Selenium-Driver"/>
-    <property name="iis_vdir.applicationMapping" value=".sel"/>
+	<property name="iis_vdir.VDirName" value="Selenium-Driver" />
+	<property name="iis_vdir.applicationMapping" value=".sel" />
 
-    <!-- Targets should contain tasks OR dependencies, but NOT both.
-             Public targets should have a description -->
+	<!-- Targets should contain tasks OR dependencies, but NOT both.
+			Public targets should have a description -->
 
-    <target name="all" depends="clean, test, dist"
-            description="Do everything you might want to do on a developer workstation"/>
+    <target name="all" depends="test, dist" 
+		description="Do everything you might want to do on a developer workstation" />
+		
+	<target name="test" depends="unit-tests, run-integration-tests" 
+		description="Run all tests"/>
+	
+	<target name="unit-tests" depends="compile, run-unit-tests" 
+		description="Run Unit Tests" />
+	
+	<target name="integration-tests" depends="compile, run-integration-tests" 
+		description="Run Unit Tests" />
+		
+	<target name="clean">
+		<!-- These mkdirs here to stop warnings -->
+		<!-- can nant execute clean against a solution? -->
+		<delete dir="src/Core/obj" />
+		<delete dir="src/IntegrationTests/obj" />
+		<delete dir="src/UnitTests/obj" />
 
-    <target name="test" depends="unit-tests, run-integration-tests"
-            description="Run all tests"/>
+		<mkdir dir="build" />
+		<mkdir dir="dist" />
+		<mkdir dir="deployed" />
+		<delete dir="build" />
+		<delete dir="dist" />
+		<delete dir="deployed" />
+		<delete>
+			<fileset file="src/Core/Core.xml" />
+			<fileset file="src/UnitTests/UnitTests.xml" />
+			<fileset file="src/IntegrationTests/IntegrationTests.xml" />
+		</delete>
+		<delete>
+			<fileset dir="src/Core" includes="ISelenium.cs,DefaultSelenium.cs" />
+		</delete>
+	</target>
 
-    <target name="unit-tests" depends="compile, run-unit-tests"
-            description="Run Unit Tests"/>
+	<target name="doc">
+		<mkdir dir="build/ndoc" />
+		<property name="ndoc.console" location="tools\ndoc\NDocConsole.exe" />
+		<property name="ndoc.outdir" location="build\ndoc" />
+		<property name="ndoc.core.dll" location="build\Core\ThoughtWorks.Selenium.Core.dll" />
+		<property name="ndoc.core.xml" location="build\Core\Core.xml" />
+		<exec executable="${ndoc.console}" dir="build">
+			<arg value="-OutputDirectory=${ndoc.outdir}" />
+			<arg value="${ndoc.core.dll},${ndoc.core.xml}" />
+		</exec>
+	</target>
 
-    <target name="integration-tests" depends="compile, run-integration-tests"
-            description="Run Unit Tests"/>
-
-    <target name="clean">
-        <!-- These mkdirs here to stop warnings -->
-        <mkdir dir="build"/>
-        <mkdir dir="dist"/>
-        <mkdir dir="deployed"/>
-        <delete dir="build"/>
-        <delete dir="dist"/>
-        <delete dir="deployed"/>
-        <delete>
-            <fileset file="src/Core/Core.xml"/>
-            <fileset file="src/UnitTests/UnitTests.xml"/>
-            <fileset file="src/IntegrationTests/IntegrationTests.xml"/>
-        </delete>
-        <delete>
-            <fileset dir="src/Core" includes="ISelenium.cs,DefaultSelenium.cs"/>
-        </delete>
+	<target name="generate-sources">
+		<mkdir dir="build" />
+    	<ant dir=".." target="extract-xml"/>
+    	<xslt in="../iedoc.xml" out="src/Core/ISelenium.cs" style="iedoc2csharp.xml">
+			<param name="mode" expression="interface" />
+		</xslt>
+		<replaceregexp file="src/Core/ISelenium.cs" match="(&#xa;|&#xd;)" replace="" flags="g" />
+		<replaceregexp file="src/Core/ISelenium.cs" match="THISISAFAKENEWLINE" replace="&#xd;&#xa;" flags="g" />
+		<xslt in="../iedoc.xml" out="src/Core/DefaultSelenium.cs" style="iedoc2csharp.xml">
+			<param name="mode" expression="implementation" />
+		</xslt>
+		<replaceregexp file="src/Core/DefaultSelenium.cs" match="(&#xa;|&#xd;)" replace="" flags="g" />
+		<replaceregexp file="src/Core/DefaultSelenium.cs" match="THISISAFAKENEWLINE" replace="&#xd;&#xa;" flags="g" />
     </target>
 
-    <target name="doc">
-        <mkdir dir="build/ndoc"/>
-        <property name="ndoc.console" location="tools\ndoc\NDocConsole.exe"/>
-        <property name="ndoc.outdir" location="build\ndoc"/>
-        <property name="ndoc.core.dll" location="build\ThoughtWorks.Selenium.Core.dll"/>
-        <property name="ndoc.core.xml" location="build\Core.xml"/>
-        <exec executable="${ndoc.console}" dir="build">
-            <arg value="-OutputDirectory=${ndoc.outdir}"/>
-            <arg value="${ndoc.core.dll},${ndoc.core.xml}"/>
-        </exec>
-    </target>
+	<target name="compile" depends="generate-sources">
+		<mkdir dir="build" />
+		<exec executable="${ant.file.selenium-dotnet}/../tools/nant/nant" failonerror="yes"/>
+	</target>
 
-    <target name="generate-sources">
-        <mkdir dir="build"/>
-        <ant dir=".." target="extract-xml"/>
-        <xslt in="../iedoc.xml" out="src/Core/ISelenium.cs" style="iedoc2csharp.xml">
-            <param name="mode" expression="interface"/>
-        </xslt>
-        <replaceregexp file="src/Core/ISelenium.cs" match="(&#xa;|&#xd;)" replace="" flags="g"/>
-        <replaceregexp file="src/Core/ISelenium.cs" match="THISISAFAKENEWLINE" replace="&#xd;&#xa;" flags="g"/>
-        <xslt in="../iedoc.xml" out="src/Core/DefaultSelenium.cs" style="iedoc2csharp.xml">
-            <param name="mode" expression="implementation"/>
-        </xslt>
-        <replaceregexp file="src/Core/DefaultSelenium.cs" match="(&#xa;|&#xd;)" replace="" flags="g"/>
-        <replaceregexp file="src/Core/DefaultSelenium.cs" match="THISISAFAKENEWLINE" replace="&#xd;&#xa;" flags="g"/>
-    </target>
-
-    <target name="compile" depends="generate-sources">
-        <mkdir dir="build"/>
-        <exec executable="${ant.file.selenium-dotnet}/../tools/nant/nant" failonerror="yes">
-            <arg value="-t:mono-1.0" />
-        </exec>
-    </target>
-
-    <target name="run-unit-tests" unless="skiptests">
-        <property name="unit.tests.dll" value="ThoughtWorks.Selenium.UnitTests.dll"/>
-        <exec failonerror="true"
-              executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe"
-              dir="build">
-            <arg line="${unit.tests.dll} /xml:../${unit.tests.dll}-results.xml /nologo"/>
-        </exec>
-    </target>
-
-    <target name="iis-reset">
-        <exec program="iisreset"/>
-    </target>
-
-
-    <target name="run-integration-tests" unless="skiptests">
-        <property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll"/>
-        <ant dir=".." target="start-server"/>
-        <exec resultproperty="integration.result"
-              executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe"
-              dir="build">
-            <arg line="${integration.tests.dll} /xml:../${integration.tests.dll}-results.xml /nologo"/>
-        </exec>
-        <ant dir=".." target="stop-server"/>
-        <condition property="build.failed">
-            <not>
-                <equals arg1="0" arg2="${integration.result}"/>
-            </not>
+	<target name="run-unit-tests" unless="skiptests">
+		<property name="unit.tests.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
+		<exec failonerror="true"
+			executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe" 
+			dir="build\UnitTests">
+			<arg line="${unit.tests.dll} /xml:../${unit.tests.dll}-results.xml /nologo"/>
+		</exec>
+	</target>
+	
+	<target name="iis-reset">
+		<exec program="iisreset" />
+	</target>
+	
+	
+	<target name="run-integration-tests" unless="skiptests">
+		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
+		<ant dir=".." target="start-server" />
+		<exec resultproperty="integration.result"
+			executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe" 
+			dir="build\IntegrationTests" >
+			<arg line="${integration.tests.dll} /xml:../${integration.tests.dll}-results.xml /nologo"/>
+		</exec>
+		<ant dir=".." target="stop-server" />
+		<condition property="build.failed">
+        	<not><equals arg1="0" arg2="${integration.result}" /></not>
         </condition>
-        <fail if="build.failed" message=".net integration tests failed!"/>
-    </target>
+        <fail if="build.failed" message=".net integration tests failed!" />
+	</target>
 
 
-    <target name="dist" depends="compile, doc" description="Create distributable files">
-        <mkdir dir="build/dist"/>
-        <copy todir="build/dist">
-            <fileset dir="build">
-                <include name="ThoughtWorks.Selenium.Core.dll"/>
-                <include name="ThoughtWorks.Selenium.Core.pdb"/>
-                <include name="**/*.config"/>
-            </fileset>
-        </copy>
+	<target name="dist" depends="compile, doc" description="Create distributable files">
+		<mkdir dir="build/dist" />
+		<copy todir="build/dist">
+			<fileset dir="build/Core">
+				<include name="**/*.dll" />
+				<include name="**/*.pdb" />
+				<include name="**/*.config" />
+				<exclude name="BridgeWebApp/*" />
+				<exclude name="**/*.incr" />
+				<exclude name="dist/**" />
+			</fileset>
+		</copy>
 
-        <mkdir dir="build/dist/doc"/>
-        <mkdir dir="build/dist/doc/html"/>
-        <copy file="build/ndoc/Documentation.chm" tofile="build/dist/doc/Selenium.chm"/>
-        <copy todir="build/dist/doc/html">
-            <fileset dir="build/ndoc">
-                <include name="*"/>
-                <exclude name="Documentation.*"/>
-            </fileset>
-        </copy>
-        <echo file="build/dist/doc/index.html"><![CDATA[
+		<mkdir dir="build/dist/doc" />
+		<mkdir dir="build/dist/doc/html" />
+		<copy file="build/ndoc/Documentation.chm" tofile="build/dist/doc/Selenium.chm" />
+		<copy todir="build/dist/doc/html">
+			<fileset dir="build/ndoc">
+				<include name="*" />
+				<exclude name="Documentation.*" />
+			</fileset>
+		</copy>
+		<echo file="build/dist/doc/index.html"><![CDATA[
 <html><head>
 
     <noscript>
@@ -144,33 +148,33 @@ Redirecting to <a href="html/index.html">html/index.html</a>...
 </body>
 </html>
 ]]>
-        </echo>
+</echo>
 
-
-        <mkdir dir="build/dist/source"/>
-        <copy todir="build/dist/source">
-            <fileset dir=".">
-                <include name="**/*"/>
-                <exclude name="build"/>
-                <exclude name="build/**"/>
-                <exclude name="dist"/>
-                <exclude name="dist/**"/>
-                <exclude name="src/BridgeWebApp/**"/>
-                <exclude name="src/*/bin"/>
-                <exclude name="src/*/obj"/>
-                <exclude name="src/*/bin/**"/>
-                <exclude name="src/*/obj/**"/>
-                <exclude name="**/*.suo"/>
-                <exclude name="**/*.user"/>
-                <exclude name="**/*.resharperoptions"/>
-                <exclude name="**/_Resharper*"/>
-                <exclude name="**/_Resharper*/**"/>
-            </fileset>
-        </copy>
-
-        <!-- generate the actual zips in ../build.xml -->
-
-    </target>
-
+		
+		<mkdir dir="build/dist/source" />
+		<copy todir="build/dist/source">
+			<fileset dir=".">
+				<include name="**/*" />
+				<exclude name="build" />
+				<exclude name="build/**" />
+				<exclude name="dist" />
+				<exclude name="dist/**" />
+				<exclude name="src/BridgeWebApp/**" />
+				<exclude name="src/*/bin" />
+				<exclude name="src/*/obj" />
+				<exclude name="src/*/bin/**" />
+				<exclude name="src/*/obj/**" />
+				<exclude name="**/*.suo" />
+				<exclude name="**/*.user" />
+				<exclude name="**/*.resharperoptions" />
+				<exclude name="**/_Resharper*" />
+				<exclude name="**/_Resharper*/**" />
+			</fileset>
+		</copy>
+		
+		<!-- generate the actual zips in ../build.xml -->
+		
+	</target>
+	
 
 </project>
