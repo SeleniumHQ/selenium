@@ -245,17 +245,6 @@ Selenium.prototype.doKeyUp = function(locator, keycode) {
     triggerKeyEvent(element, 'keyup', keycode, true);
 };
 
-function getElementOffset(element) {
-  var valueT = 0;
-  var valueL = 0;
-  do {
-    valueT += element.offsetTop  || 0;
-    valueL += element.offsetLeft || 0;
-    element = element.offsetParent;
-  } while (element);
-  return [valueL, valueT];
-}
-
 function getClientXY(element, coordString) {
    // Parse coordString
    var coords = null;
@@ -270,11 +259,9 @@ function getClientXY(element, coordString) {
       x = y = 0;
    }
   
-   // Get position of element
-   var offset = getElementOffset(element);
-  
+   // Get position of element,
    // Return 2 item array with clientX and clientY
-   return [offset[0] + x, offset[1] + y];
+   return [Selenium.prototype.getElementPositionLeft(element) + x, Selenium.prototype.getElementPositionTop(element) + y];
 }  
 
 Selenium.prototype.doMouseOver = function(locator) {
@@ -1329,15 +1316,6 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
    var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
    var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
    
-   if (window!=null && window.screen) {
-   	if (clientFinishX > screen.availWidth) {
-        	clientFinishX = screen.availWidth;
-        }
-   	if (clientFinishY > screen.availHeight) {
-        	clientFinishY = screen.availHeight;
-        }
-   }
-   
    var movementXincrement = (movementX > 0) ? 1 : -1;
    var movementYincrement = (movementY > 0) ? 1 : -1;
    
@@ -1445,10 +1423,16 @@ Selenium.prototype.getElementPositionLeft = function(locator) {
    /**
    * Retrieves the horizontal position of an element
    * 
-   * @param locator an <a href="#locators">element locator</a> pointing to an element
+   * @param locator an <a href="#locators">element locator</a> pointing to an element OR an element itself
    * @return number of pixels from the edge of the frame.
    */
-	var element = this.page().findElement(locator);
+   	var element;
+        if ("string"==typeof locator) {
+        	element = this.page().findElement(locator);
+        }
+        else {
+        	element = locator;
+        }
 	var x = element.offsetLeft;      
 	var elementParent = element.offsetParent; 
 
@@ -1490,10 +1474,17 @@ Selenium.prototype.getElementPositionTop = function(locator) {
    /**
    * Retrieves the vertical position of an element
    * 
-   * @param locator an <a href="#locators">element locator</a> pointing to an element
+   * @param locator an <a href="#locators">element locator</a> pointing to an element OR an element itself
    * @return number of pixels from the edge of the frame.
    */
-	var element = this.page().findElement(locator);
+   	var element;
+        if ("string"==typeof locator) {
+        	element = this.page().findElement(locator);
+        }
+        else {
+        	element = locator;
+        }
+   
    	var y = 0;         
 
    	while (element != null)

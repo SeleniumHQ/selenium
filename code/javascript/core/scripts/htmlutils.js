@@ -529,7 +529,9 @@ Object.extend(Effect, {
 function objToString(obj) {
 	var s = "";
         for (key in obj) {
-    	    s += key + "->" + obj[key] + "\n";
+        	var line = key + "->" + obj[key];
+                line.replace("\n", " ");
+    	    	s += line + "\n";
         }
         return s;
 }
