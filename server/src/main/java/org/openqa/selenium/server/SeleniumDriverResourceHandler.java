@@ -449,6 +449,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             BrowserLauncher launcher = blf.getBrowserLauncher(browserString, sessionId, queue);
             launchers.put(sessionId, launcher);
             sessionIdsToBrowserStrings.put(sessionId, browserString);
+            
+            queue.setResultExpected(true); // keep initial load result for call to discardCommandResult below
             launcher.launchRemoteSession(startURL);
             queue.discardCommandResult();
         }
