@@ -120,7 +120,7 @@ public class SingleEntryAsyncQueue {
     }
 
     public String toString() {
-        return thing.toString();
+        return thing==null ? "null" : thing.toString();
     }
 
     /**
