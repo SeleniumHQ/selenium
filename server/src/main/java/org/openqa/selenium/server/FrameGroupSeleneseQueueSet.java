@@ -243,14 +243,6 @@ public class FrameGroupSeleneseQueueSet {
     }
     
     /**
-     * <p> Throw away a command reply.
-     *
-     */
-    public void discardCommandResult() {
-        getSeleneseQueue().discardCommandResult();
-    }
-    
-    /**
      * <p> Empty queues, and thereby wake up any threads that are hanging around.
      *
      */
