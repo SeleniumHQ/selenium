@@ -55,10 +55,10 @@
 		<property name="ndoc.outdir" location="build/ndoc" />
 		<property name="ndoc.core.dll" location="build/ThoughtWorks.Selenium.Core.dll" />
 		<property name="ndoc.core.xml" location="build/Core.xml" />
-		<exec executable="${ndoc.console}" dir="build">
-			<arg value="-OutputDirectory=${ndoc.outdir}" />
-			<arg value="${ndoc.core.dll},${ndoc.core.xml}" />
-		</exec>
+		<exec command="${dotnet.runtime} ${ndoc.console} 
+			-OutputDirectory=${ndoc.outdir}
+			-OutputTarget=Web 
+			${ndoc.core.dll},${ndoc.core.xml}" />
 	</target>
 
 	<target name="generate-sources">
@@ -78,15 +78,16 @@
 
 	<target name="compile" depends="generate-sources">
 		<mkdir dir="build" />
-		<exec command="${dotnet.runtime} ${basedir}/tools/nant/NAnt.exe" failonerror="yes">
-		</exec>
+		<exec command="${dotnet.runtime} ${basedir}/tools/nant/NAnt.exe" failonerror="yes" />
 	</target>
 
 	<target name="run-unit-tests" unless="skiptests">
 		<property name="unit.tests.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
-		<exec failonerror="true" command="${dotnet.runtime} ${basedir}/tools/nunit/nunit-console.exe build/${unit.tests.dll}
-				/xml:${unit.tests.dll}-results.xml /nologo"> 
-		</exec>
+		<exec failonerror="true" 
+		      command="${dotnet.runtime} 
+				${basedir}/tools/nunit/nunit-console.exe 
+				build/${unit.tests.dll}
+				/xml:${unit.tests.dll}-results.xml /nologo"/> 
 	</target>
 	
 	<target name="iis-reset">
@@ -98,13 +99,15 @@
 		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
 		<ant dir=".." target="start-server" /> 
 		<exec resultproperty="integration.result"
-		command="${dotnet.runtime} ${basedir}/tools/nunit/nunit-console.exe build/${integration.tests.dll} /xml:${integration.tests.dll}-results.xml /nologo" >
-		</exec>
+		      command="${dotnet.runtime} 
+				${basedir}/tools/nunit/nunit-console.exe 
+				build/${integration.tests.dll} 
+				/xml:${integration.tests.dll}-results.xml /nologo" />
 		<ant dir=".." target="stop-server" />
 		<condition property="build.failed">
         	<not><equals arg1="0" arg2="${integration.result}" /></not>
-        </condition>
-        <fail if="build.failed" message=".net integration tests failed!" />
+        	</condition>
+        	<fail if="build.failed" message=".net integration tests failed!" />
 	</target>
 
 
@@ -123,11 +126,9 @@
 
 		<mkdir dir="build/dist/doc" />
 		<mkdir dir="build/dist/doc/html" />
-		<copy file="build/ndoc/Documentation.chm" tofile="build/dist/doc/Selenium.chm" />
 		<copy todir="build/dist/doc/html">
 			<fileset dir="build/ndoc">
 				<include name="*" />
-				<exclude name="Documentation.*" />
 			</fileset>
 		</copy>
 		<echo file="build/dist/doc/index.html"><![CDATA[
