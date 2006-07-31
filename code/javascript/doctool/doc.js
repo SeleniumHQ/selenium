@@ -83,15 +83,20 @@ function handleTags(name, args, comment) {
     print("<comment>" + comment + "</comment>\n");
 }
 
+function getFileContentOfSeleniumAPIFile(filename) {
+    importPackage(java.io);
 
-importPackage(java.io);
-
-var apiJsFile = new BufferedReader(new FileReader(arguments[0]));
-var content;
-var line;
-while ((line = apiJsFile.readLine()) != null) {
-    content += line + '\n';
+    var apiJsFile = new BufferedReader(new FileReader(filename));
+    var content;
+    var line;
+    while ((line = apiJsFile.readLine()) != null) {
+        content += line + '\n';
+    }
+    apiJsFile.close();
+    return content;
 }
+
+var content = getFileContentOfSeleniumAPIFile(arguments[0]);
 
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 print("<apidoc>\n");
@@ -113,8 +118,7 @@ while ((result = commandPattern.exec(content)) != null) {
     print("</function>\n");
 }
 
-
 print("</apidoc>");
 
-apiJsFile.close();
+
 

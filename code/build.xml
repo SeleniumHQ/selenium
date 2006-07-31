@@ -58,13 +58,11 @@
             <arg file="javascript/core/scripts/selenium-api.js" />
         </java>
         <xmlvalidate file="${image.dir}/doc.xml" lenient="true"/>
-        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/doc-core.xml" overwrite="true"/>
-        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc-core.xml" overwrite="true"/>
         <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc.xml" overwrite="true"/>
     </target>
 
     <target name="generate-doc" depends="generate-xml">
-        <xslt in="${image.dir}/doc-core.xml" out="${image.dir}/reference.html" style="${docs.generation.dir}/doc2html.xml"/>
+        <xslt in="${image.dir}/doc.xml" out="${image.dir}/reference.html" style="${docs.generation.dir}/doc2html.xml"/>
     </target>
 
     <target name="dist-image" depends="get-svn-revision, copy-sources, generate-doc"/>
