@@ -78,13 +78,13 @@
 
 	<target name="compile" depends="generate-sources">
 		<mkdir dir="build" />
-		<exec command="${dotnet.runtime} tools/nant/NAnt.exe" failonerror="yes">
+		<exec command="${dotnet.runtime} ${basedir}/tools/nant/NAnt.exe" failonerror="yes">
 		</exec>
 	</target>
 
 	<target name="run-unit-tests" unless="skiptests">
 		<property name="unit.tests.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
-		<exec failonerror="true" command="${dotnet.runtime} tools/nunit/nunit-console.exe build/${unit.tests.dll}
+		<exec failonerror="true" command="${dotnet.runtime} ${basedir}/tools/nunit/nunit-console.exe build/${unit.tests.dll}
 				/xml:${unit.tests.dll}-results.xml /nologo"> 
 		</exec>
 	</target>
@@ -98,7 +98,7 @@
 		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
 		<ant dir=".." target="start-server" /> 
 		<exec resultproperty="integration.result"
-		command="${dotnet.runtime} tools/nunit/nunit-console.exe build/${integration.tests.dll} /xml:${integration.tests.dll}-results.xml /nologo" >
+		command="${dotnet.runtime} ${basedir}/tools/nunit/nunit-console.exe build/${integration.tests.dll} /xml:${integration.tests.dll}-results.xml /nologo" >
 		</exec>
 		<ant dir=".." target="stop-server" />
 		<condition property="build.failed">
