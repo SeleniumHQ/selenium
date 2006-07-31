@@ -48,11 +48,11 @@ namespace Selenium
 			get
 			{
 				StringBuilder sb = new StringBuilder("cmd=");
-				sb.Append(HttpUtility.UrlPathEncode(command));
+				sb.Append(HttpUtility.UrlEncode(command));
 				if (args == null) return sb.ToString();
 				for (int i = 0; i < args.Length; i++)
 				{
-					sb.Append('&').Append((i+1).ToString()).Append('=').Append(HttpUtility.UrlPathEncode(args[i]));
+					sb.Append('&').Append((i+1).ToString()).Append('=').Append(HttpUtility.UrlEncode(args[i]));
 				}
 				return sb.ToString();
 			}
