@@ -33,7 +33,10 @@ public class GoogleTest extends TestCase
             System.out.println("Window Title: " + windowTitle);
         }
         selenium.windowFocus("");
-        selenium.windowMaximize("");
+        selenium.windowMaximize("title=Google");
+        selenium.windowMaximize("title=exact:Google");
+        selenium.windowMaximize("title=regexp:Google");
+        selenium.windowMaximize("title=glob:Google");
         selenium.windowMaximize("regexp:");
         selenium.windowMaximize("regexp:.*");
         assertEquals("Google", selenium.getTitle());
