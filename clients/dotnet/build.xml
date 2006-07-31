@@ -53,8 +53,8 @@
 		<mkdir dir="build/ndoc" />
 		<property name="ndoc.console" location="tools/ndoc/NDocConsole.exe" />
 		<property name="ndoc.outdir" location="build/ndoc" />
-		<property name="ndoc.core.dll" location="build/Core/ThoughtWorks.Selenium.Core.dll" />
-		<property name="ndoc.core.xml" location="build/Core/Core.xml" />
+		<property name="ndoc.core.dll" location="build/ThoughtWorks.Selenium.Core.dll" />
+		<property name="ndoc.core.xml" location="build/Core.xml" />
 		<exec executable="${ndoc.console}" dir="build">
 			<arg value="-OutputDirectory=${ndoc.outdir}" />
 			<arg value="${ndoc.core.dll},${ndoc.core.xml}" />
