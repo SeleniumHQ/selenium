@@ -1,13 +1,20 @@
 <?xml version="1.0"?>
-<project name="selenium-dotnet" default="test">
+<project name="selenium-dotnet" default="test" basedir=".">
 
 	<property name="iis_vdir.VDirName" value="Selenium-Driver" />
 	<property name="iis_vdir.applicationMapping" value=".sel" />
 
+	<condition property="dotnet.runtime" value="cli">
+		<os family="unix" />
+	</condition>
+ 	<condition property="dotnet.runtime" value="">
+                <os family="windows" />
+        </condition>
+	
 	<!-- Targets should contain tasks OR dependencies, but NOT both.
 			Public targets should have a description -->
 
-    <target name="all" depends="test, dist" 
+        <target name="all" depends="test, dist" 
 		description="Do everything you might want to do on a developer workstation" />
 		
 	<target name="test" depends="unit-tests, run-integration-tests" 
@@ -44,10 +51,10 @@
 
 	<target name="doc">
 		<mkdir dir="build/ndoc" />
-		<property name="ndoc.console" location="tools\ndoc\NDocConsole.exe" />
-		<property name="ndoc.outdir" location="build\ndoc" />
-		<property name="ndoc.core.dll" location="build\Core\ThoughtWorks.Selenium.Core.dll" />
-		<property name="ndoc.core.xml" location="build\Core\Core.xml" />
+		<property name="ndoc.console" location="tools/ndoc/NDocConsole.exe" />
+		<property name="ndoc.outdir" location="build/ndoc" />
+		<property name="ndoc.core.dll" location="build/Core/ThoughtWorks.Selenium.Core.dll" />
+		<property name="ndoc.core.xml" location="build/Core/Core.xml" />
 		<exec executable="${ndoc.console}" dir="build">
 			<arg value="-OutputDirectory=${ndoc.outdir}" />
 			<arg value="${ndoc.core.dll},${ndoc.core.xml}" />
@@ -71,15 +78,14 @@
 
 	<target name="compile" depends="generate-sources">
 		<mkdir dir="build" />
-		<exec executable="${ant.file.selenium-dotnet}/../tools/nant/nant" failonerror="yes"/>
+		<exec command="${dotnet.runtime} tools/nant/NAnt.exe" failonerror="yes">
+		</exec>
 	</target>
 
 	<target name="run-unit-tests" unless="skiptests">
 		<property name="unit.tests.dll" value="ThoughtWorks.Selenium.UnitTests.dll" />
-		<exec failonerror="true"
-			executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe" 
-			dir="build\UnitTests">
-			<arg line="${unit.tests.dll} /xml:../${unit.tests.dll}-results.xml /nologo"/>
+		<exec failonerror="true" command="${dotnet.runtime} tools/nunit/nunit-console.exe build/${unit.tests.dll}
+				/xml:${unit.tests.dll}-results.xml /nologo"> 
 		</exec>
 	</target>
 	
@@ -90,11 +96,9 @@
 	
 	<target name="run-integration-tests" unless="skiptests">
 		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
-		<ant dir=".." target="start-server" />
+		<ant dir=".." target="start-server" /> 
 		<exec resultproperty="integration.result"
-			executable="${ant.file.selenium-dotnet}\..\tools\nunit\nunit-console.exe" 
-			dir="build\IntegrationTests" >
-			<arg line="${integration.tests.dll} /xml:../${integration.tests.dll}-results.xml /nologo"/>
+		command="${dotnet.runtime} tools/nunit/nunit-console.exe build/${integration.tests.dll} /xml:${integration.tests.dll}-results.xml /nologo" >
 		</exec>
 		<ant dir=".." target="stop-server" />
 		<condition property="build.failed">
@@ -107,7 +111,7 @@
 	<target name="dist" depends="compile, doc" description="Create distributable files">
 		<mkdir dir="build/dist" />
 		<copy todir="build/dist">
-			<fileset dir="build/Core">
+			<fileset dir="build">
 				<include name="**/*.dll" />
 				<include name="**/*.pdb" />
 				<include name="**/*.config" />

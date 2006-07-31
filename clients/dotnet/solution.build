@@ -1,7 +1,81 @@
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0"  encoding="utf-8" ?>
 <project name="selenium-client-dotnet" default="compile" basedir=".">
-   <target name="compile">
-      <solution configuration="debug" 
-                solutionfile="src/Selenium.sln" />
-   </target>
+    <target name="compile-sln">
+        <solution configuration="debug"
+                  solutionfile="src/Selenium.sln" />
+    </target>
+    <target name="compile"
+            depends="init,compile-core, compile-bridge-web-app, compile-unit-tests, compile-integration-tests"/>
+
+    <target name="compile-bridge-web-app">
+        <csc target="library" output="build/ThoughtWorks.Selenium.BridgeWebApp.dll" debug="true">
+            <sources>
+                <include name="src/BridgeWebApp/*.cs"/>
+            </sources>
+            <references>
+                <include name="System.dll"/>
+                <include name="System.Data.dll"/>
+                <include name="System.Xml.dll"/>
+                <include name="System.Web.dll"/>
+                <include name="lib/*.dll"/>
+                <include name="build/*.dll"/>
+            </references>
+        </csc>
+    </target>
+
+    <target name="compile-core">
+        <csc target="library" output="build/ThoughtWorks.Selenium.Core.dll" debug="true" doc="build/Core.xml">
+            <sources>
+                <include name="src/Core/*.cs"/>
+            </sources>
+            <references>
+                <include name="System.dll"/>
+                <include name="System.Data.dll"/>
+                <include name="System.Xml.dll"/>
+                <include name="System.Web.dll"/>
+                <include name="build/*.dll"/>
+            </references>
+        </csc>
+    </target>
+
+
+    <target name="compile-unit-tests">
+        <csc target="library" output="build/ThoughtWorks.Selenium.UnitTests.dll" debug="true">
+            <sources>
+                <include name="src/UnitTests/*.cs"/>
+            </sources>
+            <references>
+                <include name="System.dll"/>
+                <include name="System.Data.dll"/>
+                <include name="System.Xml.dll"/>
+                <include name="System.Web.dll"/>
+                <include name="lib/nunit.*.dll"/>
+                <include name="lib/nmock.dll"/>
+                <include name="build/*.dll"/>
+            </references>
+        </csc>
+    </target>
+
+    <target name="compile-integration-tests">
+        <csc target="library" output="build/ThoughtWorks.Selenium.IntegrationTests.dll" debug="true">
+            <sources>
+                <include name="src/IntegrationTests/*.cs"/>
+            </sources>
+            <references>
+                <include name="System.dll"/>
+                <include name="System.Data.dll"/>
+                <include name="System.Xml.dll"/>
+                <include name="System.Web.dll"/>
+                <include name="lib/nunit.*.dll"/>
+                <include name="build/*.dll"/>
+            </references>
+        </csc>
+    </target>
+    <target name="init">
+        <copy todir="build">
+            <fileset basedir="lib">
+                <include name="*.dll"/>
+            </fileset>
+        </copy>
+    </target>
 </project>

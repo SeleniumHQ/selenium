@@ -48,7 +48,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[Test]
 		public void InstantiateSeleniumShouldWork()
 		{
-			Assert.AreEqual(processor, selenium.Processor);
+			Assert.AreSame(processor, selenium.Processor);
 		}
 
 		[Test]

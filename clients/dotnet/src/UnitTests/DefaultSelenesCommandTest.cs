@@ -15,6 +15,7 @@
  *
  */
 using System;
+using System.Web;
 using NUnit.Framework;
 using Selenium;
 
@@ -33,7 +34,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 			string argument1 = "http://localhost";
 			string argument2 = "";
 			DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandString, new string[]{argument1, argument2});
-			Assert.AreEqual("cmd=open&1=http://localhost&2=", command.CommandString);
+			Assert.AreEqual("cmd=open&1=http%3a%2f%2flocalhost&2=", command.CommandString);
 		}
 
 		[Test]
