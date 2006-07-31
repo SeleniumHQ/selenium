@@ -1279,23 +1279,34 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
    return attributes;
 };
 
-Selenium.prototype.findWindow = function(soughtAfterWindowName) {
+Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
    var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
-   
-   if (PatternMatcher.matches(soughtAfterWindowName, testAppParentOfAllWindows.name)
-   	// If we are not in proxy injection mode, then the top-level test window will be named myiframe.
-        // But as far as the interface goes, we are expected to match a blank string to this window.
-        // So make a special case so that in this logic will work:
-   ||  PatternMatcher.matches(soughtAfterWindowName, "")) {
-   	return testAppParentOfAllWindows;
+   var targetPropertyName = "name";
+   if (soughtAfterWindowPropertyValue.match("^title=")) {
+   	targetPropertyName = "document.title";
+        soughtAfterWindowPropertyValue = soughtAfterWindowPropertyValue.replace(/^title=/, "");
    }
-   
-   for (windowName in selenium.browserbot.openedWindows) {
-   	if (PatternMatcher.matches(soughtAfterWindowName, windowName)) {
-        	return selenium.browserbot.openedWindows[windowName];
+   else {
+   	// matching "name":
+   	// If we are not in proxy injection mode, then the top-level test window will be named myiframe.
+        // But as far as the interface goes, we are expected to match a blank string to this window, if 
+        // we are searching with respect to the widow name.
+        // So make a special case so that this logic will work:
+        if (PatternMatcher.matches(soughtAfterWindowPropertyValue, "")) {
+   		return testAppParentOfAllWindows;
         }
    }
-   throw new SeleniumError("could not find window " + soughtAfterWindowName);
+   
+   if (PatternMatcher.matches(soughtAfterWindowPropertyValue, eval("testAppParentOfAllWindows." + targetPropertyName))) {
+   	return testAppParentOfAllWindows;
+   }
+   for (windowName in selenium.browserbot.openedWindows) {
+   	var openedWindow = selenium.browserbot.openedWindows[windowName];
+   	if (PatternMatcher.matches(soughtAfterWindowPropertyValue, eval("openedWindow." + targetPropertyName))) {
+        	return openedWindow;
+        }
+   }
+   throw new SeleniumError("could not find window with property " + targetPropertyName + " matching " + soughtAfterWindowPropertyValue);
 };
 
 Selenium.prototype.doDragdrop = function(locator, movementsString) {
