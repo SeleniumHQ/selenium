@@ -179,11 +179,17 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         embedSeleniumExtension();
         
         // TODO Do we want to make these preferences configurable somehow?
+//      TODO: there is redundancy between these settings in the settings in FirefoxChromeLauncher.  
+        // Those settings should be combined into a single location.
+        
         File prefsJS = new File(customProfileDir, "prefs.js");
         PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
         // Don't ask if we want to switch default browsers
         out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
         
+        // suppress authentication confirmations
+        out.println("user_pref('network.http.phishy-userpass-length', 255);");
+
         out.println("user_pref('startup.homepage_override_url', '" + homePage + "');");
         
         // Disable pop-up blocking

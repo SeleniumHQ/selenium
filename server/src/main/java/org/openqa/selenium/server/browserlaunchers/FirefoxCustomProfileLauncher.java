@@ -227,10 +227,15 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
         out.close();
         
         // TODO Do we want to make these preferences configurable somehow?
+        // TODO: there is redundancy between these settings in the settings in FirefoxChromeLauncher.  
+        // Those settings should be combined into a single location.
         File prefsJS = new File(customProfileDir, "prefs.js");
         out = new PrintStream(new FileOutputStream(prefsJS));
         // Don't ask if we want to switch default browsers
         out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
+
+        // suppress authentication confirmations
+        out.println("user_pref('network.http.phishy-userpass-length', 255);");
         
         // Disable pop-up blocking
         out.println("user_pref('browser.allowpopups', true);");
