@@ -30,6 +30,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     protected static final String REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR = REG_KEY_SELENIUM_FOLDER + "MaxConnectionsPer1_0Server";
     protected static final String REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR = REG_KEY_SELENIUM_FOLDER + "MaxConnectionsPerServer";
     protected static final String REG_KEY_BACKUP_PROXY_ENABLE = REG_KEY_SELENIUM_FOLDER + "ProxyEnable";
+    protected static final String REG_KEY_BACKUP_PROXY_OVERRIDE = REG_KEY_SELENIUM_FOLDER + "ProxyOverride";
     protected static final String REG_KEY_BACKUP_PROXY_SERVER = REG_KEY_SELENIUM_FOLDER + "ProxyServer";
     protected static final String REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE = REG_KEY_SELENIUM_FOLDER + "EnableAutoproxyResultCache";
     protected static final String REG_KEY_BACKUP_POPUP_MGR = REG_KEY_SELENIUM_FOLDER + "PopupMgr";
@@ -39,6 +40,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPer1_0Server";
     protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPerServer";
     protected static final String REG_KEY_PROXY_ENABLE = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
+    protected static final String REG_KEY_PROXY_OVERRIDE = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyOverride";
     protected static final String REG_KEY_PROXY_SERVER = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer";
     protected static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
     protected static final String REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache";
@@ -154,6 +156,10 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
 
         // Disable pop-up blocking
         WindowsUtils.writeStringRegistryValue(REG_KEY_POPUP_MGR, "no");
+        
+        if (WindowsUtils.doesRegistryValueExist(REG_KEY_PROXY_OVERRIDE)) {
+            WindowsUtils.deleteRegistryValue(REG_KEY_PROXY_OVERRIDE);
+        }
         
         // TODO Do we want to make these preferences configurable somehow?
         // TODO Disable security warnings
