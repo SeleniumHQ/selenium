@@ -59,6 +59,7 @@
         </java>
         <xmlvalidate file="${image.dir}/doc.xml" lenient="true"/>
         <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc.xml" overwrite="true"/>
+        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc-core.xml" overwrite="true"/>
     </target>
 
     <target name="generate-doc" depends="generate-xml">
