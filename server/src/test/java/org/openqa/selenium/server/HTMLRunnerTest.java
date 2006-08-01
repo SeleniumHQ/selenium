@@ -19,6 +19,7 @@ package org.openqa.selenium.server;
 import java.io.*;
 
 import org.openqa.selenium.server.htmlrunner.*;
+import org.mortbay.http.HttpRequest;
 
 import junit.framework.*;
 
@@ -34,6 +35,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
     public void setUp() throws Exception {
         output = new File(getName() + "-results.html");
         System.out.println("Will print results to " + output.getAbsolutePath());
+        HttpRequest.__maxFormContentSize = 400000;
         server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
         launcher = new HTMLLauncher(server);
         server.start();
