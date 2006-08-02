@@ -187,6 +187,9 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
    * causes a new page to load (like a link usually does), call
    * waitForPageToLoad.
    *
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * get null event arguments.  Read the bug for more details, including a workaround.
+   *
    * @param locator an element locator
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
@@ -300,6 +303,9 @@ Selenium.prototype.doMouseDownAt = function(locator, coordString) {
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
    *
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * get null event arguments.  Read the bug for more details, including a workaround.
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
@@ -326,6 +332,9 @@ Selenium.prototype.doMouseUpAt = function(locator, coordString) {
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
    *
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * get null event arguments.  Read the bug for more details, including a workaround.
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
@@ -351,6 +360,9 @@ Selenium.prototype.doMouseMoveAt = function(locator, coordString) {
 	/**
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
+   *
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
@@ -550,7 +562,8 @@ Selenium.prototype.doSelectWindow = function(windowID) {
 
 Selenium.prototype.doSelectFrame = function(locator) {
 	/**
-	* Selects a frame within the current window.  (You may invoke this command
+        * NOT IMPLEMENTED YET: 
+        * Selects a frame within the current window.  (You may invoke this command
 	* multiple times to select nested frames.)  To select the parent frame, use
 	* "relative=parent" as a locator; to select the top frame, use "relative=top".
 	*
@@ -559,7 +572,7 @@ Selenium.prototype.doSelectFrame = function(locator) {
 	*
 	* @param locator an <a href="#locators">element locator</a> identifying a frame or iframe
 	*/
-        // unimplemented for now
+        throw new SeleniumError("NOT IMPLEMENTED YET");
 };
 
 Selenium.prototype.getLogMessages = function() {
@@ -1097,6 +1110,10 @@ Selenium.prototype.getSelectOptions = function(selectLocator) {
 Selenium.prototype.getAttribute = function(attributeLocator) {
 	/**
    * Gets the value of an element attribute.
+   *
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * get null event arguments.  Read the bug for more details, including a workaround.
+   *
    * @param attributeLocator an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
    * @return string the value of the specified attribute
    */
@@ -1311,6 +1328,8 @@ Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
 
 Selenium.prototype.doDragdrop = function(locator, movementsString) {
    /** Drags an element a certain distance and then drops it
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * get null event arguments.  Read the bug for more details, including a workaround.
    * 
    * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    * @param locator an element locator
