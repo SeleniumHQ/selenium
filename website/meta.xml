@@ -20,6 +20,14 @@
     <docs>
         <url>documentation.html</url>
         <items>
+        	<item>
+                <name>Usage</name>
+                <url>usage.html</url>
+            </item>
+            <item>
+                <name>Reference</name>
+                <url>http://release.openqa.org/selenium-core/0.7.1/reference.html</url>
+            </item>
             <item>
                 <name>FAQ</name>
                 <url>http://wiki.openqa.org/display/SEL/Selenium+Core+FAQ</url>
@@ -72,9 +80,33 @@
             <name>Nelson Sproul</name>
             <email>nsproul at bea.com</email>
         </person>
+        <person>
+        	<name>Huang Liang</name>
+        	<email>lhuang at thoughtworks.com</email>
+        </person>
+        <person>
+        	<name>Pengchao Wang</name>
+        	<email>pwang at thoughtworks.com</email>
+        </person>
+        <person>
+        	<name>Jie Xiong</name>
+        	<email>jxiong at thoughtworks.com</email>
+        </person>
     </developers>
 
     <releases>
+    	<release>
+    		<version>0.7.1</version>
+
+            <date>8/03/2006</date>
+            <jiraId>10240</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.openqa.org/selenium-core/0.7.1/selenium-core-0.7.1.zip</url>
+                    <name>Full release</name>
+                </download>
+            </downloads>
+    	</release>
     	<release>
     		<version>0.7.0</version>
 
