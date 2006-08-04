@@ -19,7 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.server.SeleneseQueue;
 import org.openqa.selenium.server.SeleniumServer;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -128,6 +128,8 @@ public class BrowserLauncherFactory {
                 }
 
                 return browserLauncher;
+	    } catch (InvocationTargetException e) {
+		throw new RuntimeException("failed to contruct launcher for "+browserStartCommand +"for"+  e.getTargetException());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
