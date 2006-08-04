@@ -51,6 +51,37 @@ Copyright 2004 ThoughtWorks, Inc
             assertObjectEquals([highlightColor, previousColor], colorsChanged);
         }
 
+        function testgetKeyCodeFromKeySequenceShouldReturnCorrectAsciiCodeOfInputKeySequence() {
+            assertObjectEquals(119, getKeyCodeFromKeySequence("w"));
+            assertObjectEquals(119, getKeyCodeFromKeySequence("\\119"));
+            assertObjectEquals(92, getKeyCodeFromKeySequence("\\"));
+            assertObjectEquals(92, getKeyCodeFromKeySequence("\\92"));
+            assertObjectEquals(55, getKeyCodeFromKeySequence("7"));
+            assertObjectEquals(55, getKeyCodeFromKeySequence("\\55"));
+        }
+
+        function testgetKeyCodeFromKeySequenceShouldBackwardCompatibleFor2Or3DigitAsciiCodes() {
+            assertObjectEquals(119, getKeyCodeFromKeySequence("119"));
+            assertObjectEquals(92, getKeyCodeFromKeySequence("92"));
+            assertObjectEquals(55, getKeyCodeFromKeySequence("55"));
+        }
+
+        function testgetKeyCodeFromKeySequenceShouldFailOnIncorrectInput() {
+            checkKeySequence("");
+            checkKeySequence("\\a");
+            checkKeySequence("\\1234");
+            checkKeySequence("ab");
+        }
+
+        function checkKeySequence(input) {
+            try {
+                getKeyCodeFromKeySequence(input);
+                fail("exception expected");
+            } catch (e) {
+                assertTrue(e.isSeleniumError);
+                assertEquals("invalid keySequence", e.message);
+            }
+        }
     </script>
 </head>
 

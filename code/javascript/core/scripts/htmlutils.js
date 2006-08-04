@@ -20,14 +20,16 @@
 // compatible with both IE-like and Mozilla-like browsers
 
 String.prototype.trim = function() {
-  var result = this.replace( /^\s+/g, "" );// strip leading
-  return result.replace( /\s+$/g, "" );// strip trailing
+    var result = this.replace(/^\s+/g, "");
+    // strip leading
+    return result.replace(/\s+$/g, "");
+    // strip trailing
 };
 String.prototype.lcfirst = function() {
-   return this.charAt(0).toLowerCase() + this.substr(1);
+    return this.charAt(0).toLowerCase() + this.substr(1);
 };
 String.prototype.ucfirst = function() {
-   return this.charAt(0).toUpperCase() + this.substr(1);
+    return this.charAt(0).toUpperCase() + this.substr(1);
 };
 String.prototype.startsWith = function(str) {
     return this.indexOf(str) == 0;
@@ -37,22 +39,22 @@ String.prototype.startsWith = function(str) {
 function getText(element) {
     var text = "";
 
-    if(browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5")
+    if (browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5")
     {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.textContent;
     } else if (browserVersion.isOpera) {
-    	var dummyElement = element.cloneNode(true);
+        var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.innerText;
         text = xmlDecode(text);
     }
-    else if(element.textContent)
+    else if (element.textContent)
     {
         text = element.textContent;
     }
-    else if(element.innerText)
+    else if (element.innerText)
     {
         text = element.innerText;
     }
@@ -97,10 +99,10 @@ function renderWhitespaceInTextContent(element) {
     }
 
     // Handle block elements that introduce newlines
-// -- From HTML spec:
-//<!ENTITY % block
-//     "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT |
-//      BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
+    // -- From HTML spec:
+    //<!ENTITY % block
+    //     "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT |
+    //      BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
     if (tagIs(element, ["P", "DIV"]))
     {
         element.appendChild(element.ownerDocument.createTextNode("\n"), element)
@@ -145,25 +147,26 @@ function normalizeSpaces(text)
     text = text.replace(/\ +/g, " ");
 
     // Replace &nbsp; with a space
-    var pat = String.fromCharCode(160); // Opera doesn't like /\240/g
-   	var re = new RegExp(pat, "g");
+    var pat = String.fromCharCode(160);
+    // Opera doesn't like /\240/g
+    var re = new RegExp(pat, "g");
     return text.replace(re, " ");
 }
 
 function xmlDecode(text) {
-	text = text.replace(/&quot;/g, '"');
-	text = text.replace(/&apos;/g, "'");
-	text = text.replace(/&lt;/g, "<");
-	text = text.replace(/&gt;/g, ">");
-	text = text.replace(/&amp;/g, "&");
-	return text;
+    text = text.replace(/&quot;/g, '"');
+    text = text.replace(/&apos;/g, "'");
+    text = text.replace(/&lt;/g, "<");
+    text = text.replace(/&gt;/g, ">");
+    text = text.replace(/&amp;/g, "&");
+    return text;
 }
 
 // Sets the text in this element
 function setText(element, text) {
-    if(element.textContent) {
+    if (element.textContent) {
         element.textContent = text;
-    } else if(element.innerText) {
+    } else if (element.innerText) {
         element.innerText = text;
     }
 }
@@ -191,27 +194,46 @@ function triggerEvent(element, eventType, canBubble) {
     }
 }
 
-function triggerKeyEvent(element, eventType, keycode, canBubble) {
+function getKeyCodeFromKeySequence(keySequence) {
+    var match = /^\\(\d{1,3})$/.exec(keySequence);
+    if (match != null) {
+        return match[1];
+    }
+    match = /^.$/.exec(keySequence);
+    if (match != null) {
+        return match[0].charCodeAt(0);
+    }
+    // this is for backward compatibility with existing tests
+    // 1 digit ascii codes will break however because they are used for the digit chars
+    match = /^\d{2,3}$/.exec(keySequence);
+    if (match != null) {
+        return match[0];
+    }
+    throw SeleniumError("invalid keySequence");
+}
+
+function triggerKeyEvent(element, eventType, keySequence, canBubble) {
+    var keycode = getKeyCodeFromKeySequence(keySequence);
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-    		var w = parent.frames['myiframe']
-                if (w==null) {
-                	w = window;
-                }
-		keyEvent = w.document.createEventObject();
-		keyEvent.keyCode=keycode;
-		element.fireEvent('on' + eventType, keyEvent);
+        var w = parent.frames['myiframe']
+        if (w == null) {
+            w = window;
+        }
+        keyEvent = w.document.createEventObject();
+        keyEvent.keyCode = keycode;
+        element.fireEvent('on' + eventType, keyEvent);
     }
     else {
-    	var evt;
-    	if( window.KeyEvent ) {
-			evt = document.createEvent('KeyEvents');
-			evt.initKeyEvent(eventType, true, true, window, false, false, false, false, keycode, keycode);
-		} else {
-			evt = document.createEvent('UIEvents');
-			evt.initUIEvent( eventType, true, true, window, 1 );
-			evt.keyCode = keycode;
-		}
+        var evt;
+        if (window.KeyEvent) {
+            evt = document.createEvent('KeyEvents');
+            evt.initKeyEvent(eventType, true, true, window, false, false, false, false, keycode, keycode);
+        } else {
+            evt = document.createEvent('UIEvents');
+            evt.initUIEvent(eventType, true, true, window, 1);
+            evt.keyCode = keycode;
+        }
 
         element.dispatchEvent(evt);
     }
@@ -221,46 +243,46 @@ function triggerKeyEvent(element, eventType, keycode, canBubble) {
 function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
     clientX = clientX ? clientX : 0;
     clientY = clientY ? clientY : 0;
-    
+
     // TODO: set these attributes -- they don't seem to be needed by the initial test cases, but that could change...
     var screenX = 0;
     var screenY = 0;
-    
+
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-    	if (!screenX && !screenY && !clientX && !clientY) {
-        	element.fireEvent('on' + eventType);
+        if (!screenX && !screenY && !clientX && !clientY) {
+            element.fireEvent('on' + eventType);
         }
         else {
-        	var ieEvent = document.createEventObject();
-                ieEvent.detail = 0;
-                ieEvent.screenX = screenX;
-                ieEvent.screenY = screenY;
-                ieEvent.clientX = clientX;
-                ieEvent.clientY = clientY;
-                ieEvent.ctrlKey = false;
-                ieEvent.altKey = false;
-                ieEvent.shiftKey = false;
-                ieEvent.metaKey = false;
-                ieEvent.button = 0;
-                ieEvent.relatedTarget = null;
-                         
-                // when we go this route, window.event is never set to contain the event we have just created.
-                // ideally we could just slide it in as follows in the try-block below, but this normally
-                // doesn't work.  This is why I try to avoid this code path, which is only required if we need to 
-                // set attributes on the event (e.g., clientX).
-                try {
-        	        window.event = ieEvent;
-                }
-                catch(e) {
-        		// getting an "Object does not support this action or property" error.  Save the event away
-                        // for future reference.
-                        // TODO: is there a way to update window.event?
-                         
-                        // work around for http://jira.openqa.org/browse/SEL-280 -- make the event available somewhere:
-                        selenium.browserbot.getCurrentWindow().selenium_event = ieEvent;
-                }
-                element.fireEvent('on' + eventType, ieEvent);
+            var ieEvent = document.createEventObject();
+            ieEvent.detail = 0;
+            ieEvent.screenX = screenX;
+            ieEvent.screenY = screenY;
+            ieEvent.clientX = clientX;
+            ieEvent.clientY = clientY;
+            ieEvent.ctrlKey = false;
+            ieEvent.altKey = false;
+            ieEvent.shiftKey = false;
+            ieEvent.metaKey = false;
+            ieEvent.button = 1;
+            ieEvent.relatedTarget = null;
+
+            // when we go this route, window.event is never set to contain the event we have just created.
+            // ideally we could just slide it in as follows in the try-block below, but this normally
+            // doesn't work.  This is why I try to avoid this code path, which is only required if we need to
+            // set attributes on the event (e.g., clientX).
+            try {
+                window.event = ieEvent;
+            }
+            catch(e) {
+                // getting an "Object does not support this action or property" error.  Save the event away
+                // for future reference.
+                // TODO: is there a way to update window.event?
+
+                // work around for http://jira.openqa.org/browse/SEL-280 -- make the event available somewhere:
+                selenium.browserbot.getCurrentWindow().selenium_event = ieEvent;
+            }
+            element.fireEvent('on' + eventType, ieEvent);
         }
     }
     else {
@@ -288,16 +310,16 @@ function removeLoadListener(element, command) {
 
 function addLoadListener(element, command) {
     if (window.addEventListener && !browserVersion.isOpera)
-        element.addEventListener("load",command, true);
+        element.addEventListener("load", command, true);
     else if (window.attachEvent)
-        element.attachEvent("onload",command);
+        element.attachEvent("onload", command);
 }
 
 function addUnloadListener(element, command) {
     if (window.addEventListener)
-        element.addEventListener("unload",command, true);
+        element.addEventListener("unload", command, true);
     else if (window.attachEvent)
-        element.attachEvent("onunload",command);
+        element.attachEvent("onunload", command);
 }
 
 /**
@@ -305,19 +327,19 @@ function addUnloadListener(element, command) {
  * This file must be loaded _after_ the jsunitCore.js
  */
 function getFunctionName(aFunction) {
-  var regexpResult = aFunction.toString().match(/function (\w*)/);
-  if (regexpResult && regexpResult[1]) {
-      return regexpResult[1];
-  }
-  return 'anonymous';
+    var regexpResult = aFunction.toString().match(/function (\w*)/);
+    if (regexpResult && regexpResult[1]) {
+        return regexpResult[1];
+    }
+    return 'anonymous';
 }
 
 function getDocumentBase(doc) {
-	var bases = document.getElementsByTagName("base");
-	if (bases && bases.length && bases[0].href) {
-		return bases[0].href;
-	}
-	return "";
+    var bases = document.getElementsByTagName("base");
+    if (bases && bases.length && bases[0].href) {
+        return bases[0].href;
+    }
+    return "";
 }
 
 function describe(object, delimiter) {
@@ -335,12 +357,13 @@ PatternMatcher.prototype = {
 
     selectStrategy: function(pattern) {
         this.pattern = pattern;
-        var strategyName = 'glob'; // by default
+        var strategyName = 'glob';
+        // by default
         if (/^([a-z-]+):(.*)/.test(pattern)) {
             var possibleNewStrategyName = RegExp.$1;
             var possibleNewPattern = RegExp.$2;
             if (PatternMatcher.strategies[possibleNewStrategyName]) {
-            	strategyName = possibleNewStrategyName;
+                strategyName = possibleNewStrategyName;
                 pattern = possibleNewPattern;
             }
         }
@@ -368,9 +391,9 @@ PatternMatcher.matches = function(pattern, actual) {
 
 PatternMatcher.strategies = {
 
-    /**
-     * Exact matching, e.g. "exact:***"
-     */
+/**
+ * Exact matching, e.g. "exact:***"
+ */
     exact: function(expected) {
         this.expected = expected;
         this.matches = function(actual) {
@@ -378,9 +401,9 @@ PatternMatcher.strategies = {
         };
     },
 
-    /**
-     * Match by regular expression, e.g. "regexp:^[0-9]+$"
-     */
+/**
+ * Match by regular expression, e.g. "regexp:^[0-9]+$"
+ */
     regexp: function(regexpString) {
         this.regexp = new RegExp(regexpString);
         this.matches = function(actual) {
@@ -388,17 +411,17 @@ PatternMatcher.strategies = {
         };
     },
 
-    /**
-     * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*",
-     * but don't require a perfect match; instead succeed if actual
-     * contains something that matches globString.
-     * Making this distinction is motivated by a bug in IE6 which
-     * leads to the browser hanging if we implement *TextPresent tests
-     * by just matching against a regular expression beginning and
-     * ending with ".*".  The globcontains strategy allows us to satisfy
-     * the functional needs of the *TextPresent ops more efficiently
-     * and so avoid running into this IE6 freeze.
-     */
+/**
+ * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*",
+ * but don't require a perfect match; instead succeed if actual
+ * contains something that matches globString.
+ * Making this distinction is motivated by a bug in IE6 which
+ * leads to the browser hanging if we implement *TextPresent tests
+ * by just matching against a regular expression beginning and
+ * ending with ".*".  The globcontains strategy allows us to satisfy
+ * the functional needs of the *TextPresent ops more efficiently
+ * and so avoid running into this IE6 freeze.
+ */
     globContains: function(globString) {
         this.regexp = new RegExp(PatternMatcher.regexpFromGlobContains(globString));
         this.matches = function(actual) {
@@ -407,9 +430,9 @@ PatternMatcher.strategies = {
     },
 
 
-    /**
-     * "glob" (aka "wildmat") patterns, e.g. "glob:one,two,*"
-     */
+/**
+ * "glob" (aka "wildmat") patterns, e.g. "glob:one,two,*"
+ */
     glob: function(globString) {
         this.regexp = new RegExp(PatternMatcher.regexpFromGlob(globString));
         this.matches = function(actual) {
@@ -441,9 +464,9 @@ var Assert = {
         throw new AssertionFailedError(message);
     },
 
-    /*
-     * Assert.equals(comment?, expected, actual)
-     */
+/*
+* Assert.equals(comment?, expected, actual)
+*/
     equals: function() {
         var args = new AssertionArguments(arguments);
         if (args.expected === args.actual) {
@@ -454,9 +477,9 @@ var Assert = {
                     "' but was '" + args.actual + "'");
     },
 
-    /*
-     * Assert.matches(comment?, pattern, actual)
-     */
+/*
+* Assert.matches(comment?, pattern, actual)
+*/
     matches: function() {
         var args = new AssertionArguments(arguments);
         if (PatternMatcher.matches(args.expected, args.actual)) {
@@ -467,9 +490,9 @@ var Assert = {
                     "' did not match '" + args.expected + "'");
     },
 
-    /*
-     * Assert.notMtches(comment?, pattern, actual)
-     */
+/*
+* Assert.notMtches(comment?, pattern, actual)
+*/
     notMatches: function() {
         var args = new AssertionArguments(arguments);
         if (!PatternMatcher.matches(args.expected, args.actual)) {
@@ -496,7 +519,6 @@ function AssertionArguments(args) {
 }
 
 
-
 function AssertionFailedError(message) {
     this.isAssertionFailedError = true;
     this.isSeleniumError = true;
@@ -508,7 +530,8 @@ function SeleniumError(message) {
     var error = new Error(message);
     error.isSeleniumError = true;
     return error;
-};
+}
+;
 
 
 var Effect = new Object();
@@ -527,11 +550,11 @@ Object.extend(Effect, {
 
 // for use from vs.2003 debugger
 function objToString(obj) {
-	var s = "";
-        for (key in obj) {
-        	var line = key + "->" + obj[key];
-                line.replace("\n", " ");
-    	    	s += line + "\n";
-        }
-        return s;
+    var s = "";
+    for (key in obj) {
+        var line = key + "->" + obj[key];
+        line.replace("\n", " ");
+        s += line + "\n";
+    }
+    return s;
 }

@@ -212,40 +212,43 @@ Selenium.prototype.doFireEvent = function(locator, eventName) {
     triggerEvent(element, eventName, false);
 };
 
-Selenium.prototype.doKeyPress = function(locator, keycode) {
+Selenium.prototype.doKeyPress = function(locator, keySequence) {
 	/**
    * Simulates a user pressing and releasing a key.
    * 
    * @param locator an <a href="#locators">element locator</a>
-   * @param keycode the numeric keycode of the key to be pressed, normally the
-   *            ASCII value of that key.
+   * @param keySequence Either be a string("\" followed by the numeric keycode
+   *  of the key to be pressed, normally the ASCII value of that key), or a single
+   *  character. For example: "w", "\119".
    */
     var element = this.page().findElement(locator);
-    triggerKeyEvent(element, 'keypress', keycode, true);
+    triggerKeyEvent(element, 'keypress', keySequence, true);
 };
 
-Selenium.prototype.doKeyDown = function(locator, keycode) {
+Selenium.prototype.doKeyDown = function(locator, keySequence) {
 	/**
    * Simulates a user pressing a key (without releasing it yet).
    * 
    * @param locator an <a href="#locators">element locator</a>
-   * @param keycode the numeric keycode of the key to be pressed, normally the
-   *            ASCII value of that key.
+   * @param keySequence Either be a string("\" followed by the numeric keycode
+   *  of the key to be pressed, normally the ASCII value of that key), or a single
+   *  character. For example: "w", "\119".
    */
     var element = this.page().findElement(locator);
-    triggerKeyEvent(element, 'keydown', keycode, true);
+    triggerKeyEvent(element, 'keydown', keySequence, true);
 };
 
-Selenium.prototype.doKeyUp = function(locator, keycode) {
+Selenium.prototype.doKeyUp = function(locator, keySequence) {
 	/**
    * Simulates a user releasing a key.
    * 
    * @param locator an <a href="#locators">element locator</a>
-   * @param keycode the numeric keycode of the key to be released, normally the
-   *            ASCII value of that key.
+   * @param keySequence Either be a string("\" followed by the numeric keycode
+   *  of the key to be pressed, normally the ASCII value of that key), or a single
+   *  character. For example: "w", "\119".
    */
     var element = this.page().findElement(locator);
-    triggerKeyEvent(element, 'keyup', keycode, true);
+    triggerKeyEvent(element, 'keyup', keySequence, true);
 };
 
 function getClientXY(element, coordString) {
