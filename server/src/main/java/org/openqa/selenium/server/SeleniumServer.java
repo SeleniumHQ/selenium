@@ -506,6 +506,7 @@ public class SeleniumServer {
         this.port = port;
         server = new Server();
         SocketListener socketListener = new SocketListener();
+	socketListener.setMaxIdleTimeMs(60000);
         socketListener.setPort(port);
         server.addListener(socketListener);
 
