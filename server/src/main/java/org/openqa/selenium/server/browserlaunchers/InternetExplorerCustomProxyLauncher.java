@@ -106,22 +106,23 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     			"variable, or explicitly specify a path to IE like this:\n" +
     			"*iexplore c:\\blah\\iexplore.exe");
     }
-    
+
     public void launch(String url) {
-        try {
-            backupRegistrySettings();
-            changeRegistrySettings();
-            cmdarray = new String[] {commandPath, "-new", url};
-            
-            System.out.println("Launching Internet Explorer...");
-            AsyncExecute exe = new AsyncExecute();
-            exe.setCommandline(cmdarray);
-            process = exe.asyncSpawn();
-            
-            
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    try {
+	    if(WindowsUtils.thisIsWindows()){
+		    backupRegistrySettings();
+		    changeRegistrySettings();
+		    cmdarray = new String[] {commandPath, "-new", url};
+	    } else {
+		    cmdarray = new String[] {commandPath, url};
+	    }
+	    System.out.println("Launching Internet Explorer...");
+	    AsyncExecute exe = new AsyncExecute();
+	    exe.setCommandline(cmdarray);
+	    process = exe.asyncSpawn();
+	    } catch (IOException e) {
+		    throw new RuntimeException(e);
+	    }
     }
     
 
@@ -198,7 +199,9 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     
     public void close() {
         Exception taskKillException = null;
-        restoreRegistrySettings();
+	if(WindowsUtils.thisIsWindows()){
+		restoreRegistrySettings();
+	}
         if (false) {
             try {
                 // try to kill with windows taskkill
