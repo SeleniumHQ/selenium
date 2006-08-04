@@ -1,6 +1,15 @@
 <project name="selenium-rc-clients" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
     <property name="version" value="0.8.2-SNAPSHOT"/>
+
+    <condition property="property.file.name" value="build.windows.properties">
+	    <os family="windows" />
+    </condition>
+    <condition property="property.file.name" value="build.unix.properties">
+	    <os family="unix" />
+    </condition>
+    <property file="../${property.file.name}" />
+
     <condition property="website.root" value="${ant.file.selenium-rc-clients}/../../website">
         <available file="${ant.file.selenium}/../../website"/>
     </condition>
@@ -157,8 +166,9 @@
 	
 	<target name="start-server" depends="find-server">
 		<!-- Configurable server default firefox location; if this doesn't work, we'll just try to run it off the path -->
-		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
-		<property name="opera.location" location="c:\program files\opera\opera.exe" />
+		<echo message="starting server...."/>
+		<echo message="firefox.location = ${firefox.location}"/>
+		<echo message="opera.location = ${opera.location}"/>
 		<java jar="${selenium-server.jar}" fork="true" spawn="true">
 			<sysproperty key="firefoxDefaultPath" file="${firefox.location}" />
 			<sysproperty key="operaDefaultPath" file="${opera.location}" />
