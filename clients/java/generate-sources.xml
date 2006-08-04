@@ -110,7 +110,7 @@
 		<loadfile property="selenium-server.jar.file" srcfile="${output.path}/url.txt">
 			<filterchain>
 				<tokenfilter>
-					<replaceregex pattern="^jar:file:/(.*)!.*" replace="\1" />
+					<replaceregex pattern="^jar:file:(.*)!.*" replace="\1" />
 				</tokenfilter>
 				<tokenfilter>
 					<replaceregex pattern="%20" replace=" " flags="g" />
