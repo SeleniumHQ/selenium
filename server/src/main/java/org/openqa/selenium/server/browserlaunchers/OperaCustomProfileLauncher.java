@@ -161,6 +161,9 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
         out.println("");
         out.println("[State]");
         out.println("Run=0");
+
+	// Accept License (unix only)
+	out.println("Accept License=1");
         
         out.println("[User Prefs]");
         // Put our Opera profile in the custom profile dir
@@ -176,6 +179,9 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
         out.println("Show Default Browser Dialog=0");
         // Don't open any pages on startup (except for command line URL)
         out.println("Startup Type=4");
+
+	// Don't tell us KDE detected (unix only)
+	out.println("Has Shown KDE Shortcut Message=1");
         
         out.println("[Install]");
         out.println("HELLO=NO");
