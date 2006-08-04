@@ -8,12 +8,22 @@
 		</condition>
 		<fail if="build.failed" message="Couldn't find MAVEN_HOME.  (Did you set the MAVEN_HOME environment variable correctly?)&#xa;Maven Home: ${maven.home}" />
 		<property name="mvn.overrideable.settings" value="" />
-		<property name="firefox.location" location="c:\program files\mozilla firefox\firefox.exe" />
-		<property name="opera.location" location="c:\program files\opera\opera.exe" />
+
+		<condition property="property.file.name" value="build.windows.properties">
+			<os family="windows" />
+		</condition>
+
+		<condition property="property.file.name" value="build.unix.properties">
+                        <os family="unix" />
+                </condition>
+
+		<property file="${property.file.name}" />
+
 		<condition property="mvn.skip.test.arg" value="-Dmaven.test.skip=true" >
 		    <isset property="skiptests" />
 		</condition>
-		<property name="mvn.skip.test.arg" value="" />
+
+		<property name="mvn.skip.test.arg" value="-Dmaven.test.skip=false " />
 		<presetdef name="mvn">
 			<java classname="org.codehaus.classworlds.Launcher" fork="true" failonerror="true">
 				<!--<jvmarg value="-Xdebug"/>
@@ -25,10 +35,11 @@
 				</classpath>
 				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
 				<sysproperty key="maven.home" value="${maven.home}" />
-				<arg value="-e" />
 				<arg value="${mvn.skip.test.arg}" />
 				<arg value="-DfirefoxDefaultPath=${firefox.location}" />
 				<arg value="-DoperaDefaultPath=${opera.location}" />
+				<arg value="-DinternetExplorerDefaultPath=${ie.location}" />
+				<arg value="-DmshtaDefaultPath=${mshta.location}" />
 				<arg line="${mvn.overrideable.settings}" />
 			</java>
 		</presetdef>
