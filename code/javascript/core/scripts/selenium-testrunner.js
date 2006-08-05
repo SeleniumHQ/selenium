@@ -245,10 +245,12 @@ function addBreakpointSupport() {
     var testDocument = getIframeDocument(getTestFrame());
     var tables = testDocument.getElementsByTagName("table");
     for (var i = 0; i < tables.length; i++) {
-        var candidateRows = tables[i].rows;
-        for (var j = 1; j < candidateRows.length; j++) {
-            Element.setStyle(candidateRows[j], {"cursor" : "pointer"});
-            Event.observe(candidateRows[j], 'click', getBreakpointEventHandler(candidateRows[j]), false);
+        var rows = tables[i].rows;
+        for (var j = 0; j < rows.length; j++) {
+            if (isCommandRow(rows[j])) {
+                Element.setStyle(rows[j], {"cursor" : "pointer"});
+                Event.observe(rows[j], 'click', getBreakpointEventHandler(rows[j]), false);
+            }
         }
     }
 }
@@ -649,6 +651,9 @@ function setHighlightOption() {
     selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
 }
 
+function isCommandRow(row) {
+    return row.cells.length >= 3;
+}
 
 var TestRunner = Class.create();
 Object.extend(TestRunner.prototype, new TestLoop());
@@ -680,7 +685,7 @@ Object.extend(TestRunner.prototype, {
                 if (!this.headerRow) {
                     this.headerRow = candidateRows[j];
                 }
-                if (candidateRows[j].cells.length >= 3) {
+                if (isCommandRow(candidateRows[j])) {
                     this._addCommandRow(candidateRows[j]);
                 }
             }
