@@ -4,3 +4,5 @@ overlay	chrome://browser/content/browser.xul	chrome://selenium-ide/content/selen
 locale selenium-ide en-US jar:chrome/selenium-ide.jar!/locale/en-US/
 locale selenium-ide fr-FR jar:chrome/selenium-ide.jar!/locale/fr-FR/
 locale selenium-ide ja-JP jar:chrome/selenium-ide.jar!/locale/ja-JP/
+locale selenium-ide pt-BR jar:chrome/selenium-ide.jar!/locale/pt-BR/
+skin selenium-ide classic/1.0 jar:chrome/selenium-ide.jar!/skin/classic/

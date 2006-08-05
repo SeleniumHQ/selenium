@@ -1,5 +1,5 @@
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
-<?xml-stylesheet href="selenium-ide.css" type="text/css"?>
+<?xml-stylesheet href="chrome://selenium-ide/skin/selenium-ide.css" type="text/css"?>
 <!--
 Copyright 2005 Shinya Kasatani
 

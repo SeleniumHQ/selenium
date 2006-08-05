@@ -17,7 +17,7 @@ limitations under the License.
 
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://global/content/xul.css" type="text/css"?>
-<?xml-stylesheet href="chrome://selenium-ide/content/selenium-ide.css" type="text/css"?>
+<?xml-stylesheet href="chrome://selenium-ide/skin/selenium-ide.css" type="text/css"?>
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
 <?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
 <?xul-overlay href="chrome://selenium-ide/content/selenium-ide-common.xul"?>
