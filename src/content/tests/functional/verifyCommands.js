@@ -55,7 +55,7 @@ function verifyCommands() {
 				}
 				if (recordedCommands.length <= recordedIndex || 
 					!sameCommand(command, recordedCommands[recordedIndex])) {
-					setResult('Failed: command is not same: index = ' + recordedIndex + ', i = ' + i + ', command=' + command.command);
+					setResult('Failed: command is not same: recordedIndex = ' + recordedIndex + ', sourceIndex = ' + i + ', recorded=' + dumpCommand(recordedCommands[recordedIndex]) + ', source=' + dumpCommand(command));
 					return;
 				}
 				recordedIndex++;
@@ -67,6 +67,10 @@ function verifyCommands() {
 	} else {
 		setResult('Success');
 	}
+}
+
+function dumpCommand(command) {
+	return "|" + command.command + "|" + command.target + "|" + command.value + "|";
 }
 
 function sameCommand(c1, c2) {

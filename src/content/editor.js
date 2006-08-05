@@ -344,7 +344,7 @@ Editor.prototype.recordTitle = function(window) {
 Editor.prototype.recordOpen = function(window) {
 	if (!window.location) return;
 	var path = window.location.href;
-	var regexp = new RegExp(/^(\w+:\/\/[^/:]+(:\d+)?)\/.*/);
+	var regexp = new RegExp(/^(https?:\/\/[^/:]+(:\d+)?)\/.*/);
 	var base = '';
 	var result = regexp.exec(path);
 	if (result) {
