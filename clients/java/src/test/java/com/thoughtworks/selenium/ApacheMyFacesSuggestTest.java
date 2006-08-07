@@ -22,17 +22,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     public void testAJAXFirefox() throws Throwable {
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
-        ajaxTester();
-    }
-    
-    public void testAJAXIExplore() throws Throwable {
-        if (!WindowsUtils.thisIsWindows()) return;
-        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
-        selenium.start();
-        ajaxTester();
-    }
-    
-    public void ajaxTester() throws Throwable {
+
 		String inputId = "ac4";
 		String updateId = "ac4update";
 
@@ -47,7 +37,28 @@ public class ApacheMyFacesSuggestTest extends TestCase {
 		Thread.sleep(500);
 		assertEquals("Jane Agnews", selenium.getValue(inputId));
     }
+    
+    public void testAJAXIExplore() throws Throwable {
+        if (!WindowsUtils.thisIsWindows()) return;
+        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
+        selenium.start();
 
+		String inputId = "ac4";
+		String updateId = "ac4update";
+
+        selenium.open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");
+		selenium.type(inputId, "J");
+		selenium.keyDown(inputId, "\\74");
+		Thread.sleep(500);
+		selenium.type(inputId, "Jan");
+		selenium.keyDown(inputId, "\\110");
+		Thread.sleep(500);
+		assertEquals("Jane Agnews", selenium.getText(updateId));
+		selenium.keyDown(inputId, "\\13");
+		Thread.sleep(500);
+		assertEquals("Jane Agnews", selenium.getValue(inputId));
+    }
+    
 	public void tearDown() {
         if (selenium == null) return;
         selenium.stop();
