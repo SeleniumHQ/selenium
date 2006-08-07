@@ -31,15 +31,18 @@ class ExampleTest < Test::Unit::TestCase
     end
 
     def test_something
-        @selenium.open "http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf"
-		assert(@selenium.is_text_present("suggest"))
+	input_id = 'ac4'
+	update_id = 'ac4update'
 
-		element_id = "document.forms[0].elements[2]"
-		@selenium.type element_id, "foo"
-		@selenium.set_cursor_position element_id, -1
-		@selenium.key_down element_id, 120
-		@selenium.key_up element_id, 120
-		sleep 2
-		assert(@selenium.is_text_present("regexp:foox?1"))
+	@selenium.open "http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html"
+	@selenium.key_press input_id, 74
+	sleep 0.5
+	@selenium.key_press input_id, 97
+	@selenium.key_press input_id, 110
+	sleep 0.5
+	assert_equal('Jane Agnews', @selenium.get_text(update_id))
+	@selenium.key_press input_id, '\9'
+	sleep 0.5
+	assert_equal('Jane Agnews', @selenium.get_value(input_id))
     end
 end

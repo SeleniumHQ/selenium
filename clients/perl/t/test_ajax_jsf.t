@@ -20,7 +20,7 @@ use SeleniumUtil qw(server_is_running);
 use Test::More;
 
 if (server_is_running) {
-    plan tests => 7;
+    plan tests => 3;
 }
 else {
     plan skip_all => "No selenium server found!";
@@ -32,12 +32,16 @@ my $sel = Test::WWW::Selenium->new( host => "localhost",
                                       browser => "*firefox", 
                                       browser_url => "http://www.irian.at",
                                     );
-$sel->open_ok("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
-$sel->is_text_present_ok("suggest");
-$id = "document.forms[0].elements[2]";
-$sel->type_ok($id, "foo");
-$sel->set_cursor_position_ok($id, -1);
-$sel->key_down_ok($id, 120);
-$sel->key_up_ok($id, 120);
-sleep 2;
-$sel->is_text_present_ok("regexp:foox?1");
+my $input_id = 'ac4';
+my $update_id = 'ac4update';
+$sel->open_ok("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");
+$sel->key_press($input_id, 74);
+sleep 1;
+$sel->key_press($input_id, 97);
+$sel->key_press($input_id, 110);
+sleep 1;
+# how to assert text/value of input field?
+$sel->is_text_present_ok("Jane Agnews");
+$sel->key_press($input_id, "\\9");
+sleep 1;
+$sel->is_text_present_ok("Jane Agnews");

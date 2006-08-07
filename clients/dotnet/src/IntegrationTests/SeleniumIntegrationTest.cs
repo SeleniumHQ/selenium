@@ -49,23 +49,19 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 		[Test]
 		public void IISIntegrationTest()
 		{
-			selenium.Open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
-			Assert.IsTrue(selenium.IsTextPresent("suggest"));
+			String inputId = "ac4";
+			String updateId = "ac4update";
 
-			String elementID = "document.forms[0].elements[2]";
-			selenium.Type(elementID, "foo");
-			selenium.SetCursorPosition(elementID, "-1");
-			// DGF On Mozilla a keyPress is needed, and types a letter.
-			// On IE6, a keyDown is needed, and no letter is typed. :-p
-			// NS On firefox, keyPress needed, no letter typed.
-        
-			String verificationText = "regexp:foox?1";
-			selenium.KeyDown(elementID, "120");
-			selenium.KeyPress(elementID, "120");
-			selenium.KeyUp(elementID, "120");
-			Thread.Sleep(2000);
-			Assert.IsTrue(selenium.IsTextPresent(verificationText));
-            
+			selenium.Open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");
+			selenium.KeyPress(inputId, "\\74");
+			Thread.Sleep(500);
+			selenium.KeyPress(inputId, "\\97");
+			selenium.KeyPress(inputId, "\\110");
+			Thread.Sleep(500);
+			Assert.AreEqual("Jane Agnews", selenium.GetText(updateId));
+			selenium.KeyPress(inputId, "\\9");
+			Thread.Sleep(500);
+			Assert.AreEqual("Jane Agnews", selenium.GetValue(inputId));
 		}
 	}
 }
