@@ -33,26 +33,22 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     }
     
     public void ajaxTester() throws Throwable {
-        selenium.open("http://www.irian.at/myfaces-sandbox/inputSuggestAjax.jsf");
-        assertTrue(selenium.isTextPresent("suggest"));
-        String elementID = "document.forms[0].elements[2]";
-            //"//input[@id='' and @type='text']";
-        selenium.type(elementID, "foo");
-        selenium.setCursorPosition(elementID, "-1");
-        // DGF On Mozilla a keyPress is needed, and types a letter.
-        // On IE6, a keyDown is needed, and no letter is typed. :-p
-        // On firefox 1.0.6-1.5.0.1, keyPress needed, no letter typed;
-        // On firefox 1.5.0.2 (and higher), keyPress needed, letter typed
-        // That's due to Firefox bug 303713 https://bugzilla.mozilla.org/show_bug.cgi?id=303713
-        
-        String verificationText = "regexp:foox?1";
-        selenium.keyDown(elementID, Integer.toString('x'));
-        selenium.keyUp(elementID, Integer.toString('x'));
-        Thread.sleep(2000);
-        assertTrue(selenium.isTextPresent(verificationText));
+		String inputId = "ac4";
+		String updateId = "ac4update";
+
+        selenium.open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");
+		selenium.keyPress(inputId, "\\74");
+		Thread.sleep(500);
+		selenium.keyPress(inputId, "\\97");
+		selenium.keyPress(inputId, "\\110");
+		Thread.sleep(500);
+		assertEquals("Jane Agnews", selenium.getText(updateId));
+		selenium.keyPress(inputId, "\\9");
+		Thread.sleep(500);
+		assertEquals("Jane Agnews", selenium.getValue(inputId));
     }
-    
-    public void tearDown() {
+
+	public void tearDown() {
         if (selenium == null) return;
         selenium.stop();
     }
