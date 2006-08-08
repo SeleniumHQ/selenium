@@ -587,6 +587,12 @@ public class XlateHtmlSeleneseToJava {
             else if (op.equals("Table")) {
                 middle =  XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
+            else if (op.equals("ElementIndex")) {
+                middle =  XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
+            }
+            else if (op.equals("Ordered")) {
+                middle =  true + ", selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + ", " + XlateSeleneseArgument(tokens[2]) + ")";
+            }
             else {
                 String possibleInversion = "";
                 if (op.indexOf("Not")!=-1) {

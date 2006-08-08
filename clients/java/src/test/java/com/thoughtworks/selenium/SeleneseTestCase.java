@@ -100,7 +100,7 @@ public class SeleneseTestCase extends TestCase {
     }
     
     public static boolean seleniumEquals(String s1, String s2) {
-        if (s2.startsWith("regexp:")) {
+        if (s2.startsWith("regexp:") || s2.startsWith("regex:")) {
             String tmp = s2;
             s2 = s1;
             s1 = tmp;
@@ -110,6 +110,14 @@ public class SeleneseTestCase extends TestCase {
             if (!s2.matches(s1regexp)) {
                 System.out.println("expected " + s2 + " to match regexp " + s1);
                 return false;                    
+            }
+            return true;
+        }
+        if (s1.startsWith("regex:")) {
+            String s1regexp = s1.replaceFirst("regex:", ".*") + ".*";
+            if (!s2.matches(s1regexp)) {
+                System.out.println("expected " + s2 + " to match regexp " + s1);
+                return false;
             }
             return true;
         }
@@ -124,7 +132,8 @@ public class SeleneseTestCase extends TestCase {
         }
         
         String s1glob = s1.replaceFirst("glob:", "");
-        s1glob = s1glob.replaceAll("([\\]\\[\\\\{\\}$\\(\\)\\|\\^\\+.])", "\\\\$1");
+        s1glob = s1glob.replaceAll("([\\]\\[\\\\{\\}$\\(\\)\\|\\^\\+.])", "\\\\$1");
+
         s1glob = s1glob.replaceAll("\\*", "(.|[\r\n])*");
         s1glob = s1glob.replaceAll("\\?", "(.|[\r\n])");
         if (!s2.matches(s1glob)) {
@@ -184,7 +193,7 @@ public class SeleneseTestCase extends TestCase {
         return sb.toString();
     }
 
-    public static void verifyNotEquals(String s1, String s2) {
+    public static void verifyNotEquals(Object s1, Object s2) {
         try {
             assertNotEquals(s1, s2);
         } catch (AssertionFailedError e) {
