@@ -186,6 +186,7 @@ function getMockTable() {
 
 function testTextPresent() {
     mockPageBot.expects("bodyText").returns("this is some foo text");
+    mockPageBot.expects("bodyText").returns("this is some foo text");
     assertTrue(selenium.isTextPresent("foo"));
     assertFalse(selenium.isTextPresent("bar"));
     verifyMocks();
