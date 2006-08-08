@@ -1452,6 +1452,53 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
    }
 }
 
+Selenium.prototype.getElementIndex = function(locator) {
+    /**
+     * Get the relative index of an element to its parent (starting from 0). The comment node and empty text node
+     * will be ignored.
+     *
+     * @param locator an <a href="#locators">element locator</a> pointing to an element
+     * @return number of relative index of the element to its parent (starting from 0)
+     */
+    var element = this.page().findElement(locator);
+    var previousSibling;
+    var index = 0;
+    while ((previousSibling = element.previousSibling) != null) {
+        if (!this._isCommentOrEmptyTextNode(previousSibling)) {
+            index++;
+        }
+        element = previousSibling;
+    }
+    return index;
+}
+
+Selenium.prototype.isOrdered = function(locator1, locator2) {
+    /**
+     * Check if these two elements have same parent and are ordered. Two same elements will 
+     * not be considered ordered.
+     *
+     * @param locator1 an <a href="#locators">element locator</a> pointing to the first element
+     * @param locator2 an <a href="#locators">element locator</a> pointing to the second element
+     * @return boolean true if two elements are ordered and have same parent, false otherwise
+     */
+    var element1 = this.page().findElement(locator1);
+    var element2 = this.page().findElement(locator2);
+    if (element1 === element2) return false;
+
+    var previousSibling;
+    while ((previousSibling = element2.previousSibling) != null) {
+        if (previousSibling === element1) {
+            return true;
+        }
+        element2 = previousSibling;
+    }
+    return false;
+}
+
+Selenium.prototype._isCommentOrEmptyTextNode = function(node) {
+    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\t\n\r ]/.test(node.data)));
+}
+
 Selenium.prototype.getElementPositionLeft = function(locator) {
    /**
    * Retrieves the horizontal position of an element
