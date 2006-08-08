@@ -19,12 +19,12 @@
 	<condition property="browserFileNames" value="c:\program files\internet explorer\iexplore.exe,c:\program files\Mozilla Firefox\firefox.exe">
 		<os family="windows" />
 	</condition>
-	<condition property="browserFileNames" value="/var/spool/cruisecontrol/bin/ie6,/usr/lib/firefox/firefox-bin">
+	<condition property="browserFileNames" value="/usr/bin/firefox">
 		<os family="unix" />
 	</condition>
 	<property name="testRunnerLocation" location="javascript/jsunit/testRunner.html" />
 	<property name="testSuiteLocation" location="javascript/unittest/browserbot/suite.html" />
-    <property name="browserBotTestUrl" value="file:///${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=true"/>
+    <property name="browserBotTestUrl" value="file://${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=true"/>
     <property name="port" value=""/>
     <property name="resourceBase" value=""/>
     <property name="logsDirectory" value=""/>
