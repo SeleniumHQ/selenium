@@ -2,20 +2,42 @@
 
     <property name="version" value="0.7.2-SNAPSHOT"/>
 
-    <target name="all" depends="clean, install-jar, dist, test"/>
+    <target name="all" depends="clean, browser_bot_tests, install-jar, dist"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
     <property name="ruby.executable" value="/usr/bin/ruby"/>
 
     <property name="build.dir" location="build"/>
+	<property name="logs.dir" location="logs" />
     <property name="dist.dir" location="${build.dir}/dist"/>
     <property name="image.dir" location="${build.dir}/image"/>
     <property name="resultshandler.image.dir" location="${build.dir}/resultshandler"/>
     <property name="docs.generation.dir" location="javascript/doctool"/>
 
+	<!-- for jsunit integration -->
+	<condition property="browserFileNames" value="c:\program files\internet explorer\iexplore.exe,c:\program files\Mozilla Firefox\firefox.exe">
+		<os family="windows" />
+	</condition>
+	<condition property="browserFileNames" value="/var/spool/cruisecontrol/bin/ie6,/usr/lib/firefox/firefox-bin">
+		<os family="unix" />
+	</condition>
+	<property name="testRunnerLocation" location="javascript/jsunit/testRunner.html" />
+	<property name="testSuiteLocation" location="javascript/unittest/browserbot/suite.html" />
+    <property name="browserBotTestUrl" value="file:///${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=true"/>
+    <property name="port" value=""/>
+    <property name="resourceBase" value=""/>
+    <property name="logsDirectory" value=""/>
+    <path id="classpath">
+        <fileset dir="java/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+
     <target name="clean">
         <delete dir="${build.dir}"/>
+		<delete dir="${logs.dir}"/>
     </target>
 
     <target name="get-svn-revision">
@@ -254,5 +276,18 @@
 		    </sequential>
 		</macrodef>
     </target>
+
+    <target name="browser_bot_tests" description="Runs JsUnit tests on the local machine as configured by the url and browserfilenames properties">
+        <junit showoutput="true" haltonerror="true" haltonfailure="true">
+            <classpath refid="classpath"/>
+            <sysproperty key="browserFileNames" value="${browserFileNames}"/>
+            <sysproperty key="url" value="${browserBotTestUrl}"/>
+            <sysproperty key="port" value="${port}"/>
+            <sysproperty key="resourceBase" value="${resourceBase}"/>
+            <sysproperty key="logsDirectory" value="${logsDirectory}"/>
+            <test name="net.jsunit.StandaloneTest"/>
+        </junit>
+    </target>
+
 
 </project>
