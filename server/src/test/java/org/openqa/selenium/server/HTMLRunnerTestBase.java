@@ -23,7 +23,7 @@ import org.mortbay.http.HttpRequest;
 
 import junit.framework.*;
 
-public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
+public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResultsListener {
 
     SeleniumServer server;
     HTMLLauncher launcher;
@@ -42,7 +42,7 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         browserURL = "http://localhost:" + server.getPort();
     }
     
-    public void runHTMLSuite(String browser) throws Exception {
+    protected void runHTMLSuite(String browser) throws Exception {
         String testURL = browserURL + "/selenium-server/tests/" + suiteName;
         long timeout = 1000 * 60 * 10; // ten minutes
         String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);
@@ -50,44 +50,6 @@ public class HTMLRunnerTest extends TestCase implements HTMLResultsListener {
         assertEquals("Tests didn't pass", "PASSED", result);
     }
     
-    public void testFirefox() throws Exception{
-        runHTMLSuite("*firefox");
-    }
-    
-    
-    
-    /*public void testFirefoxAgain() throws Exception {
-        // For safety's sake
-        testFirefox();
-    }*/
-    
-    public void testIExplore() throws Exception {
-        runHTMLSuite("*iexplore");
-    }
-    
-    public void testChrome() throws Exception {
-        // TODO incorporate Shinya's fixes from Selenium IDE
-        // This test should pass
-        runHTMLSuite("*chrome");
-    }
-    
-    public void testOpera() throws Exception {
-        runHTMLSuite("*opera");
-    }
-    
-    public void testHTA() throws Exception {
-        try {
-            runHTMLSuite("*iehta");
-            fail("Didn't catch expected exception");
-        } catch (UnsupportedOperationException e) {
-            System.out.println("caught expected exception");
-        }
-    }
-    
-    /*public void testIExploreAgain() throws Exception {
-        // For safety's sake
-        testIExplore();
-    }*/
     
     public void tearDown() throws Exception {
         if (server != null) server.stop();

@@ -9,12 +9,17 @@ import org.openqa.selenium.server.browserlaunchers.*;
 
 import junit.framework.*;
 
+
 public class ServerTestSuite extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite(ServerTestSuite.class.getName());
         suite.addTestSuite(QueueTest.class);
-        suite.addTestSuite(HTMLRunnerTest.class);
+        if(WindowsUtils.thisIsWindows()){
+            suite.addTestSuite(WindowsHTMLRunnerTest.class);
+        } else {
+            suite.addTestSuite(LinuxHTMLRunnerTest.class);
+        }
         suite.addTestSuite(WindowsUtilsTest.class);
         return suite;
     }
