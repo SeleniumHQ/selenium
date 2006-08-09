@@ -1,0 +1,63 @@
+require 'rake'
+require 'javascripttest'
+require 'zip/zip'
+
+CURRENT_VERSION = "0.7.2-SNAPSHOT"
+SELENIUM_ARTIFACT_FILENAME= "build/dist/Selenium-Core-#{CURRENT_VERSION}.zip"
+SELENIUM_JAR_FILENAME = "build/dist/Selenium-Core.jar"
+
+desc "Default Task"
+task :default => [ :clean,  :dist ]
+
+desc "Clean"
+task :clean do 
+  rm_rf 'build'
+  rm_rf 'logs'
+end
+
+desc "Copy files to build/image"
+require 'pathname'
+
+class Dir
+  def copy_to(dest_dir, excludes)
+    src_dir = Pathname.new(self.path)
+    dest_dir = Pathname.new(dest_dir)
+    FileList["#{src_dir}/**/*"].each do |src|
+      next if File.directory?(src)
+      next if src =~ excludes
+      dest = dest_dir + Pathname.new(src).relative_path_from(src_dir)
+      mkdir_p dest.dirname.to_s
+      puts "COPYING #{src} => #{dest}"
+      cp(src, dest)
+    end
+  end
+end
+
+task :image do
+  Dir.new('javascript').copy_to('build/image', /\/.svn\//)
+end
+
+desc "Distribute artifacts" 
+task :dist => [:image] do
+  mkdir_p 'build/dist'
+  Zip::ZipFile::open(SELENIUM_ARTIFACT_FILENAME, true) do |zf|
+    Dir['{build/image}/**/*'].each do |f| 
+      zf.add(f.gsub(/build\/image\//, ''), f)
+    end
+  end
+  cp SELENIUM_ARTIFACT_FILENAME, SELENIUM_JAR_FILENAME
+  exec "mvn.bat install:install-file -DgroupId=org.openqa.selenium.core -DartifactId=selenium-core -Dversion=#{CURRENT_VERSION} -Dpackaging=jar -Dfile=#{SELENIUM_JAR_FILENAME}"
+  puts "OVER"
+end
+
+desc "Runs all the jsunit tests and collects the results"
+JavaScriptTestTask.new(:test) do |t|
+  host = "http://localhost:8889"
+  timestamp = "%.6f" % Time.now.to_f
+  jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=#{host}/javascript/unittest/browserbot/suite.html&submitResults=#{host}/results&t=#{timestamp}" 
+  functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=#{host}/results&t=#{timestamp}"
+  t.mount("/javascript")
+  t.run jsunit_tests
+  t.run functional_tests 
+  t.browser(Firefox)
+end
