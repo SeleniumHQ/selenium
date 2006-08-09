@@ -24,6 +24,7 @@ public class GoogleTest extends TestCase
         for (String windowName : windowNames) {
             System.out.println("Window Name: " + windowName);
         }
+        selenium.selectWindow(null);
         String[] windowIds = selenium.getAllWindowIds();
         for (String windowId : windowIds) {
             System.out.println("Window Id: " + windowId);

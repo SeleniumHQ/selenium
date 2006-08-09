@@ -40,6 +40,12 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     public DefaultSeleneseCommand(String command, String[] args) {
         this.command = command;
         this.args = args;
+        if ("selectWindow".equals(command) && args[0]==null) {
+            // hackylicious I know, but what a dorky interface!  Users naturally give us too much credit, and submit a null argument
+            // instead of a string "null".  Our code elsewhere assumes that all arguments are non-null, so
+            // I fix this up here in order to avoid trouble later:
+            args[0] = "null";
+        }
     }
 
     public String getCommandURLString() {
