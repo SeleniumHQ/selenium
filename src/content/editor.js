@@ -311,6 +311,11 @@ Editor.prototype.saveNewTestCase = function() {
 	}
 }
 
+Editor.prototype.exportTestCaseWithFormat = function(format) {
+	this.view.syncModel();
+	format.saveAsNew(this.testCase.createCopy());
+}
+
 Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 	this.log.debug("loadRecorderFor: " + contentWindow);
 	if (this.recordingEnabled && (isRootDocument || this.recordFrameTitle) &&
@@ -490,7 +495,7 @@ Editor.prototype.populateFormatsPopup = function(e, format) {
 		menuitem.setAttribute("name", "formats");
 		menuitem.setAttribute("label", formats[i].name);
 		menuitem.setAttribute("value", formats[i].id);
-		if (format.id == formats[i].id) {
+		if (format && format.id == formats[i].id) {
 			menuitem.setAttribute("checked", true);
 		}
 		e.appendChild(menuitem);

@@ -240,6 +240,16 @@ function TestCase() {
 	}
 }
 
+// Create a shallow copy of testcase
+TestCase.prototype.createCopy = function() {
+	var copy = new TestCase();
+	for (prop in this) {
+		copy[prop] = this[prop];
+	}
+	return copy;
+};
+
+
 // Store variables specific to each format in this hash.
 TestCase.prototype.formatLocal = function(formatName) {
 	var scope = this.formatLocalMap[formatName];

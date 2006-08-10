@@ -35,6 +35,7 @@
 <!ENTITY logFilter.warn.label "Warn">
 <!ENTITY logFilter.error.label "Error">
 <!ENTITY logClear.label "Clear">
+<!ENTITY reference.label "Reference">
 
 <!ENTITY contextMenu.cut.label "Cut">
 <!ENTITY contextMenu.copy.label "Copy">
