@@ -13,6 +13,7 @@ desc "Clean"
 task :clean do 
   rm_rf 'build'
   rm_rf 'logs'
+  mkdir_p 'logs'
 end
 
 desc "Copy files to build/image"
@@ -57,7 +58,7 @@ JavaScriptTestTask.new(:test) do |t|
   jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=#{host}/javascript/unittest/browserbot/suite.html&submitResults=#{host}/results&t=#{timestamp}" 
   functional_tests="/javascript/core/TestRunner.html?close=true&auto=true&test=../tests/TestSuite.html&resultsUrl=#{host}/seleniumResults&t=#{timestamp}"
   t.mount("/javascript")
-#  t.run jsunit_tests
+  t.run jsunit_tests
   t.run functional_tests 
   t.browser(Firefox)
 end

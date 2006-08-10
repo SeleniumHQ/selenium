@@ -151,27 +151,24 @@ class JavaScriptTestTask < ::Rake::TaskLib
     @server = WEBrick::HTTPServer.new(:Port => @port) # TODO: make port configurable
     @server.mount_proc("/results") do |req, res|
       @queue.push(req.query['time'].to_s)
-      xml = JsUnitResultParser.new().to_xml(req.body.to_s)
-      File.open("JsUnitResults.xml", File::CREAT|File::RDWR) do |f|
-        f << xml
-      end
-      res.body += xml
+      res.body += parse_result(req, JsUnitResultParser.new, "logs/JsUnitResults.xml")
     end
     
     @server.mount_proc("/seleniumResults") do |req, res|
       @queue.push(req.query['result'].to_s)
-      parser = SeleniumResultParser.new
-      xml = parser.to_xml(req)
-      html = parser.to_html(req)
-      File.open("SeleniumResults.xml", File::CREAT|File::RDWR) do |f|
-        f << xml
-      end
-      res.body += html
+      res.body += parse_result(req, SeleniumResultParser.new, "logs/SeleniumResults.xml")
     end
-    
     
     yield self if block_given?
     define
+  end
+  
+  def parse_result(req, parser, log_file)
+      xml = parser.to_xml(req)
+      File.open(log_file, File::CREAT|File::RDWR) do |f|
+        f << xml
+      end
+      parser.to_html(req)
   end
   
   def define

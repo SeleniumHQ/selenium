@@ -4,7 +4,9 @@ require "selenium_result_parser"
 class JsUnitResultParserTest < Test::Unit::TestCase
   def setup
     @parser = JsUnitResultParser.new
-    @request_body = "id=&userAgent=Mozilla%2F5.0+%28Windows%3B+U%3B+Windows+NT+5.1%3B+en-US%3B+rv%3A1.8.0.6%29+Gecko%2F20060728+Firefox%2F1.5.0.6&jsUnitVersion=2.2&time=9.704&url=http%3A%2F%2Flocalhost%3A8889%2Fjavascript%2Funittest%2Fbrowserbot%2Fsuite.html%3Ft%253D1155175664.828000&cacheBuster=1155175675875&testCases=http%3A%2F%2Flocalhost%3A8889%2Fjavascript%2Funittest%2Fbrowserbot%2Falert-handling-tests.html%3AtestShouldRemoveAlertWhenItIsRetreived%7C0%7CS%7C%7C&testCases=http%3A%2F%2Flocalhost%3A8889%2Fjavascript%2Funittest%2Fbrowserbot%2Falert-handling-tests.html%3AtestShouldReportMultipleAlertsInOrderIfGenerated%7C0%7CS%7C%7C&testCases=http%3A%2F%2Flocalhost%3A8889%2Fjavascript%2Funittest%2Fbrowserbot%2Falert-handling-tests.html%3AtestShouldReportSingleAlertIfGenerated%7C0%7CS%7C%7C"
+    request_body = "id=&userAgent=Mozilla%2F5.0+%28Windows%3B+U%3B+Windows+NT+5.1%3B+en-US%3B+rv%3A1.8.0.6%29+Gecko%2F20060728+Firefox%2F1.5.0.6&jsUnitVersion=2.2&time=9.704&url=http%3A%2F%2Flocalhost%3A8889%2Fjavascript%2Funittest%2Fbrowserbot%2Fsuite.html%3Ft%253D1155175664.828000&cacheBuster=1155175675875&testCases=http%3A%2F%2Flocalhost%3A8889%2Fjavascript%2Funittest%2Fbrowserbot%2Falert-handling-tests.html%3AtestShouldRemoveAlertWhenItIsRetreived%7C0%7CS%7C%7C&testCases=http%3A%2F%2Flocalhost%3A8889%2Fjavascript%2Funittest%2Fbrowserbot%2Falert-handling-tests.html%3AtestShouldReportMultipleAlertsInOrderIfGenerated%7C0%7CS%7C%7C&testCases=http%3A%2F%2Flocalhost%3A8889%2Fjavascript%2Funittest%2Fbrowserbot%2Falert-handling-tests.html%3AtestShouldReportSingleAlertIfGenerated%7C0%7CS%7C%7C"
+    @req = RequestStub.new(request_body)
+    @expected_result = ["http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldRemoveAlertWhenItIsRetreived|0|S||", "http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldReportMultipleAlertsInOrderIfGenerated|0|S||", "http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldReportSingleAlertIfGenerated|0|S||"]
   end
   
   def test_smoke
@@ -13,18 +15,17 @@ class JsUnitResultParserTest < Test::Unit::TestCase
   
   def test_should_parse_multiple_test_cases_from_request_body
     expected_result = ["http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldRemoveAlertWhenItIsRetreived|0|S||", "http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldReportMultipleAlertsInOrderIfGenerated|0|S||", "http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldReportSingleAlertIfGenerated|0|S||"]
-    test_cases = @parser.parse(@request_body)
+    test_cases = @parser.parse(@req.body)
     assert_equal(3, test_cases.size)
-    assert_equal(expected_result, test_cases)
+    assert_equal(@expected_result, test_cases)
   end
   
   def test_should_generate_junit_report_from_request_body
     expected_result = ["http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldRemoveAlertWhenItIsRetreived|0|S||", "http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldReportMultipleAlertsInOrderIfGenerated|0|S||", "http://localhost:8889/javascript/unittest/browserbot/alert-handling-tests.html:testShouldReportSingleAlertIfGenerated|0|S||"]
-    xml = @parser.to_xml(@request_body)
-    expected_result.each do |url|
+    xml = @parser.to_xml(@req)
+    @expected_result.each do |url|
       assert(xml.include?(url))
     end
-#    puts xml
   end
 end
 
@@ -53,6 +54,10 @@ end
 class RequestStub
   def initialize(request_body)
     @request_body = request_body
+  end
+
+  def body
+    @request_body
   end
 
   def query 

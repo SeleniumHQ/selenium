@@ -8,8 +8,8 @@ class JsUnitResultParser
     strings
   end
   
-  def to_xml(body)
-    test_cases = parse(body)
+  def to_xml(req)
+    test_cases = parse(req.body)
     xml = Builder::XmlMarkup.new
     xml.testsuite(:name => "JsUnitTests", :tests => test_cases.size) do
       test_cases.each do |test_case|
@@ -17,4 +17,6 @@ class JsUnitResultParser
       end
     end
   end
+  
+  alias to_html to_xml
 end
