@@ -39,7 +39,7 @@ class Firefox < Browser
   
   def visit(url)
     applescript('tell application "Firefox" to Get URL "' + url + '"') if macos? 
-    system("#{@path} #{url}") if windows? 
+    system("#{@path} -new-window #{url}") if windows? 
     system("firefox #{url}") if linux?
   end
   
@@ -138,7 +138,8 @@ class ::WEBrick::BasicLog
 end
 
 class JavaScriptTestTask < ::Rake::TaskLib
-  
+  require "resultshandler/jsunit_result_parser"
+  require "resultshandler/selenium_result_parser"
   def initialize(name=:test)
     @name = name
     @tests = []
@@ -149,9 +150,26 @@ class JavaScriptTestTask < ::Rake::TaskLib
     
     @server = WEBrick::HTTPServer.new(:Port => @port) # TODO: make port configurable
     @server.mount_proc("/results") do |req, res|
-      @queue.push(req.query['result'])
-      res.body = "OK"
+      @queue.push(req.query['time'].to_s)
+      xml = JsUnitResultParser.new().to_xml(req.body.to_s)
+      File.open("JsUnitResults.xml", File::CREAT|File::RDWR) do |f|
+        f << xml
+      end
+      res.body += xml
     end
+    
+    @server.mount_proc("/seleniumResults") do |req, res|
+      @queue.push(req.query['result'].to_s)
+      parser = SeleniumResultParser.new
+      xml = parser.to_xml(req)
+      html = parser.to_html(req)
+      File.open("SeleniumResults.xml", File::CREAT|File::RDWR) do |f|
+        f << xml
+      end
+      res.body += html
+    end
+    
+    
     yield self if block_given?
     define
   end
