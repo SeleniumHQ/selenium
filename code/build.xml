@@ -2,7 +2,8 @@
 
     <property name="version" value="0.7.2-SNAPSHOT"/>
 
-    <target name="all" depends="clean, browser_bot_tests, install-jar, dist"/>
+    <target name="all" depends="clean, install-jar, dist"/>
+    <target name="all-with-tests" depends="clean, browser_bot_tests, install-jar, dist"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
