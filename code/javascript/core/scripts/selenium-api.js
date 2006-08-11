@@ -1807,6 +1807,53 @@ Selenium.prototype.replaceVariables = function(str) {
     return stringResult;
 };
 
+Selenium.prototype.getCookie = function() {
+    /**
+     * Return all cookies of the current page under test.
+     *
+     * @return string of all cookies of the current page under test
+     */
+    var doc = this.page().currentDocument;
+    return doc.cookie;
+};
+
+Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
+    /**
+     * Create a new cookie whose path and domain are same with those of current page
+     * under test, unless you specified a path for this cookie explicitly.
+     *
+     * @param nameValuePair name and value of the cookie in a format "name=value"
+     * @param optionsString options for the cookie. Currently supported options include 'path' and 'max_age'.
+     *      the optionsString's format is "path=/path/, max_age=60". The order of options are irrelevant, the unit
+     *      of the value of 'max_age' is second.
+     */
+    var results = /[^\s=\[\]\(\),"\/\?@:;]+=[^\s=\[\]\(\),"\/\?@:;]*/.test(nameValuePair);
+    if (!results) {
+        throw new SeleniumError("Invalid parameter.");
+    }
+    var cookie = nameValuePair.trim();
+    results = /max_age=(\d+)/.exec(optionsString);
+    if (results) {
+        var expireDateInMilliseconds = (new Date()).getTime() + results[1] * 1000;
+        cookie += "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    }
+    results = /path=([^\s,]+)[,]?/.exec(optionsString);
+    if (results) {
+        cookie += "; path=" + results[1];
+    }
+    this.page().currentDocument.cookie = cookie;
+}
+
+Selenium.prototype.doDeleteCookie = function(name,path) {
+    /**
+     * Delete a named cookie with specified path.
+     *
+     * @param name the name of the cookie to be deleted
+     * @param path the path property of the cookie to be deleted
+     */
+    this.page().currentDocument.cookie = name.trim() + "=irrelevant; path=" + path.trim() + "; expires=" + (new Date()).toGMTString();
+}
+
 
 /**
  *  Factory for creating "Option Locators".

@@ -1,168 +1,183 @@
 <html>
 
 <head>
-<HTA:APPLICATION ID="SeleniumHTARunner" APPLICATIONNAME="Selenium" >
-<!-- the previous line is only relevant if you rename this
+    <HTA:APPLICATION ID="SeleniumHTARunner" APPLICATIONNAME="Selenium">
+        <!-- the previous line is only relevant if you rename this
      file to "TestRunner.hta" -->
 
-<!-- The copyright notice and other comments have been moved to after the HTA declaration,
-     to work-around a bug in IE on Win2K whereby the HTA application doesn't function correctly -->
-<!--
-Copyright 2004 ThoughtWorks, Inc
+        <!-- The copyright notice and other comments have been moved to after the HTA declaration,
+to work-around a bug in IE on Win2K whereby the HTA application doesn't function correctly -->
+        <!--
+        Copyright 2004 ThoughtWorks, Inc
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+         Licensed under the Apache License, Version 2.0 (the "License");
+         you may not use this file except in compliance with the License.
+         You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+             http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
--->
-<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+         Unless required by applicable law or agreed to in writing, software
+         distributed under the License is distributed on an "AS IS" BASIS,
+         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+         See the License for the specific language governing permissions and
+         limitations under the License.
+        -->
+        <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"/>
 
-<title>Selenium Functional Test Runner</title>
-<link rel="stylesheet" type="text/css" href="selenium.css" />
-<script type="text/javascript" src="scripts/narcissus-defs.js"></script>
-<script type="text/javascript" src="scripts/narcissus-parse.js"></script>
-<script type="text/javascript" src="scripts/narcissus-exec.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype-1.4.0.js"></script>
-<script language="JavaScript" type="text/javascript" src="lib/cssQuery.js"></script>
-<script language="JavaScript" type="text/javascript" src="lib/cssQuery-standard.js"></script>
-<script language="JavaScript" type="text/javascript" src="lib/cssQuery-level2.js"></script>
-<script language="JavaScript" type="text/javascript" src="lib/cssQuery-level3.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-browserdetect.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/find_matching_child.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-api.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-commandhandlers.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-executionloop.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-testrunner.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-logging.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-version.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/htmlutils.js"></script>
-<script language="JavaScript" type="text/javascript" src="xpath/misc.js"></script>
-<script language="JavaScript" type="text/javascript" src="xpath/dom.js"></script>
-<script language="JavaScript" type="text/javascript" src="xpath/xpath.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/user-extensions.js"></script>
-<script language="JavaScript" type="text/javascript">
-    function openDomViewer() {
-        var autFrame = document.getElementById('myiframe');
-        var autFrameDocument = getIframeDocument(autFrame);
-        this.rootDocument = autFrameDocument;
-        var domViewer = window.open(getDocumentBase(document) + 'domviewer/domviewer.html');
-        return false;
-    }
-</script>
+        <title>Selenium Functional Test Runner</title>
+        <link rel="stylesheet" type="text/css" href="selenium.css"/>
+        <script type="text/javascript" src="scripts/narcissus-defs.js"></script>
+        <script type="text/javascript" src="scripts/narcissus-parse.js"></script>
+        <script type="text/javascript" src="scripts/narcissus-exec.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/prototype-1.4.0.js"></script>
+        <script language="JavaScript" type="text/javascript" src="lib/cssQuery.js"></script>
+        <script language="JavaScript" type="text/javascript" src="lib/cssQuery-standard.js"></script>
+        <script language="JavaScript" type="text/javascript" src="lib/cssQuery-level2.js"></script>
+        <script language="JavaScript" type="text/javascript" src="lib/cssQuery-level3.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-browserdetect.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-browserbot.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/find_matching_child.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-api.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-commandhandlers.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-executionloop.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-testrunner.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-logging.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-version.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/htmlutils.js"></script>
+        <script language="JavaScript" type="text/javascript" src="xpath/misc.js"></script>
+        <script language="JavaScript" type="text/javascript" src="xpath/dom.js"></script>
+        <script language="JavaScript" type="text/javascript" src="xpath/xpath.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/user-extensions.js"></script>
+        <script language="JavaScript" type="text/javascript">
+            function openDomViewer() {
+                var autFrame = document.getElementById('myiframe');
+                var autFrameDocument = getIframeDocument(autFrame);
+                this.rootDocument = autFrameDocument;
+                var domViewer = window.open(getDocumentBase(document) + 'domviewer/domviewer.html');
+                return false;
+            }
+        </script>
 </head>
 
 <body onLoad="start();">
-    <table class="layout">
-    <form action="" name="controlPanel">
+<table class="layout">
+<form action="" name="controlPanel">
 
-      <!-- Suite, Test, Control Panel -->
+<!-- Suite, Test, Control Panel -->
 
-      <tr class="selenium">
-        <td width="25%" height="30%" ><iframe name="testSuiteFrame" id="testSuiteFrame" src="./TestPrompt.html" application="yes"></iframe></td>
-        <td width="50%" height="30%" ><iframe name="testFrame" id="testFrame" application="yes"></iframe></td>
+<tr class="selenium">
+    <td width="25%" height="30%">
+        <iframe name="testSuiteFrame" id="testSuiteFrame" src="./TestPrompt.html" application="yes"></iframe>
+    </td>
+    <td width="50%" height="30%">
+        <iframe name="testFrame" id="testFrame" application="yes"></iframe>
+    </td>
 
-		<td width="25%">
-		<table class="layout">
-		  <tr class="selenium">
-			<th width="25%" height="1" class="header">
-			  <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner</h1>
-			</th>
-		  </tr>
-		  <tr>
-			<td width="25%" height="30%" id="controlPanel">
+    <td width="25%">
+        <table class="layout">
+            <tr class="selenium">
+                <th width="25%" height="1" class="header">
+                    <h1><a href="http://selenium.thoughtworks.com" title="The Selenium Project">Selenium</a> TestRunner
+                    </h1>
+                </th>
+            </tr>
+            <tr>
+                <td width="25%" height="30%" id="controlPanel">
 
-			  <fieldset>
-				<legend>Execute Tests</legend>
+                    <fieldset>
+                        <legend>Execute Tests</legend>
 
-				<div>
-				  <input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/><label for="modeRun">Run</label>
-				  <input id="modeWalk" type="radio" name="runMode" value="500" /><label for="modeWalk">Walk</label>
-				  <input id="modeStep" type="radio" name="runMode" value="-1" /><label for="modeStep">Step</label>
-				</div>
+                        <div>
+                            <input id="modeRun" type="radio" name="runMode" value="0" checked="checked"/><label
+                                for="modeRun">Run</label>
+                            <input id="modeWalk" type="radio" name="runMode" value="500"/><label
+                                for="modeWalk">Walk</label>
+                        </div>
 
-				<div>
-				  <button type="button" id="runSuite" onClick="startTestSuite();"
-						  title="Run the entire Test-Suite">
-					<strong>All</strong>
-				  </button>
-				  <button type="button" id="runSeleniumTest" onClick="runSingleTest();"
-						  title="Run the current Test">
-					<em>Selected</em>
-				  </button>
-				  <button type="button" id="continueTest" disabled="disabled"
-						  title="Continue the Test">
-					Continue
-				  </button>
-				</div>
+                        <div>
+                            <button type="button" id="runSuite" onClick="startTestSuite();"
+                                    title="Run the entire Test-Suite">
+                                <strong>All</strong>
+                            </button>
+                            <button type="button" id="runSeleniumTest" onClick="runSingleTest();"
+                                    title="Run the current Test">
+                                <em>Selected</em>
+                            </button>
+                            <button type="button" id="pauseTest" onClick="pauseCurrentTest();" disabled="disabled"
+                                    title="Pause the current Test">
+                                Pause
+                            </button>
+                            <button type="button" id="stepTest" onClick="stepCurrentTest()" disabled="disabled"
+                                    title="Step the Test">
+                                Step
+                            </button>
+                        </div>
 
-                <div>
-                    <input id="highlightOption" type="checkbox" name="highlightOption" value="0"/>
-                    <label for="highlightOption">Highlight elements</label>
-                </div>
+                        <div class="executionOptions">
+                            <input id="runAllRestTests" type="checkbox" name="runAllRestTests"/>
+                            <label for="runAllRestTests">Run the rest of tests from here</label><br>
 
-			  </fieldset>
+                            <input id="highlightOption" type="checkbox" name="highlightOption" value="0"/>
+                            <label for="highlightOption">Highlight elements</label>
+                        </div>
 
-			  <table id="stats" align="center">
-				<tr>
-				  <td colspan="2" align="right">Elapsed:</td>
-				  <td id="elapsedTime" colspan="2">00.00</td>
-				</tr>
-				<tr>
-				  <th colspan="2">Tests</th>
-				  <th colspan="2">Commands</th>
-				</tr>
-				<tr>
-				  <td class="count" id="testRuns">0</td>
-				  <td>run</td>
-				  <td class="count" id="commandPasses">0</td>
-				  <td>passed</td>
-				</tr>
-				<tr>
-				  <td class="count" id="testFailures">0</td>
-				  <td>failed</td>
-				  <td class="count" id="commandFailures">0</td>
-				  <td>failed</td>
-				</tr>
-				<tr>
-				  <td colspan="2"></td>
-				  <td class="count" id="commandErrors">0</td>
-				  <td>incomplete</td>
-				</tr>
-			  </table>
+                    </fieldset>
 
-			  <fieldset>
-				<legend>Tools</legend>
+                    <table id="stats" align="center">
+                        <tr>
+                            <td colspan="2" align="right">Elapsed:</td>
+                            <td id="elapsedTime" colspan="2">00.00</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Tests</th>
+                            <th colspan="2">Commands</th>
+                        </tr>
+                        <tr>
+                            <td class="count" id="testRuns">0</td>
+                            <td>run</td>
+                            <td class="count" id="commandPasses">0</td>
+                            <td>passed</td>
+                        </tr>
+                        <tr>
+                            <td class="count" id="testFailures">0</td>
+                            <td>failed</td>
+                            <td class="count" id="commandFailures">0</td>
+                            <td>failed</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td class="count" id="commandErrors">0</td>
+                            <td>incomplete</td>
+                        </tr>
+                    </table>
 
-				<button type="button" id="domViewer1" onClick="openDomViewer();">
-				  View DOM
-				</button>
-				<button type="button" onClick="LOG.show();">
-				  Show Log
-				</button>
+                    <fieldset>
+                        <legend>Tools</legend>
 
-			  </fieldset>
+                        <button type="button" id="domViewer1" onClick="openDomViewer();">
+                            View DOM
+                        </button>
+                        <button type="button" onClick="LOG.show();">
+                            Show Log
+                        </button>
 
-			</td>
-		  </tr>
-		  </table>
-		  </td>
-	  </tr>
+                    </fieldset>
 
-      <!-- AUT -->
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
 
-      <tr>
-        <td colspan="3" height="70%"><iframe name="myiframe" id="myiframe" src="TestRunner-splash.html"></iframe></td>
-      </tr>
-    </form>
-    </table>
+<!-- AUT -->
+
+<tr>
+    <td colspan="3" height="70%">
+        <iframe name="myiframe" id="myiframe" src="TestRunner-splash.html"></iframe>
+    </td>
+</tr>
+</form>
+</table>
 
 </body>
 </html>

@@ -73,7 +73,7 @@ function testCallingTooManyExpectedFunctionShouldFail() {
         myMock.someMethod();
         myMock.someMethod();
         myMock.verify()
-        fail("Should fail because someMethod was called twice!")
+        fail("Should fail because someMethod was called more than once!")
     } catch(expected) {
         // pass
     }

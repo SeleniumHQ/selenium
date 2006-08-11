@@ -162,10 +162,7 @@ TestLoop.prototype = {
         }
     },
 
-    pause : function() {
-
-    },
-
+    pause : function() {},
     nextCommand : function() {},
     commandStarted : function() {},
     commandComplete : function() {},

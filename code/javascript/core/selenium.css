@@ -235,3 +235,16 @@ table.selenium td {
    border-color: gray gray gray gray;
    -moz-border-radius: 0px 0px 0px 0px;
 }
+
+div.executionOptions {
+    padding-left: 3em;
+}
+
+div.executionOptions label, div.executionOptions input {
+	display: block;
+	float: left;
+}
+
+div.executionOptions br {
+	clear: left;
+}

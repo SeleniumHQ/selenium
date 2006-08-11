@@ -78,31 +78,30 @@ function setRunInterval() {
     }
 }
 
-function continueCurrentTest() {
-    document.getElementById('continueTest').disabled = true;
-    currentTest.resume();
-}
 
 function getApplicationFrame() {
     var f = document.getElementById('myiframe');
-    if (f==null) {
-    	f = top;	// proxyInjection mode does not set myiframe
+    if (f == null) {
+        f = top;
+        // proxyInjection mode does not set myiframe
     }
     return f;
 }
 
 function getSuiteFrame() {
     var f = document.getElementById('testSuiteFrame');
-    if (f==null) {
-    	f = top;	// proxyInjection mode does not set myiframe
+    if (f == null) {
+        f = top;
+        // proxyInjection mode does not set myiframe
     }
     return f;
 }
 
-function getTestFrame(){
+function getTestFrame() {
     var f = document.getElementById('testFrame');
-    if (f==null) {
-    	f = top;	// proxyInjection mode does not set myiframe
+    if (f == null) {
+        f = top;
+        // proxyInjection mode does not set myiframe
     }
     return f;
 }
@@ -112,7 +111,7 @@ function loadAndRunIfAuto() {
 }
 
 function start() {
-	queryString = null;
+    queryString = null;
     setRunInterval();
     loadSuiteFrame();
 }
@@ -130,9 +129,6 @@ function loadSuiteFrame() {
 
     document.getElementById("modeRun").onclick = setRunInterval;
     document.getElementById('modeWalk').onclick = setRunInterval;
-    document.getElementById('modeStep').onclick = setRunInterval;
-    document.getElementById('continueTest').onclick = continueCurrentTest;
-
 
     document.getElementById("highlightOption").checked = getQueryParameter("highlight")
 
@@ -172,24 +168,24 @@ function onloadTestSuite() {
     for (var tableNum = 0; tableNum < allTables.length; tableNum++)
     {
         var skippedTable = allTables[tableNum];
-        for(rowNum = 1;rowNum < skippedTable.rows.length; rowNum++) {
+        for (rowNum = 1; rowNum < skippedTable.rows.length; rowNum++) {
             addOnclick(skippedTable, rowNum);
         }
     }
 
     suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
-    if (suiteTable!=null) {
+    if (suiteTable != null) {
 
         if (isAutomatedRun()) {
-	    startTestSuite();
+            startTestSuite();
         } else if (getQueryParameter("autoURL")) {
 
             addLoadListener(getApplicationFrame(), startSingleTest);
 
-	    getApplicationFrame().src = getQueryParameter("autoURL");
+            getApplicationFrame().src = getQueryParameter("autoURL");
 
-	} else {
-            testLink = suiteTable.rows[currentRowInSuite+1].cells[0].getElementsByTagName("a")[0];
+        } else {
+            testLink = suiteTable.rows[currentRowInSuite + 1].cells[0].getElementsByTagName("a")[0];
             getTestFrame().src = testLink.href;
         }
     }
@@ -205,18 +201,19 @@ function addOnclick(suiteTable, rowNum) {
         srcObj = null;
 
         // For mozilla-like browsers
-        if(eventObj)
-                srcObj = eventObj.target;
+        if (eventObj)
+            srcObj = eventObj.target;
 
         // For IE-like browsers
         else if (getSuiteFrame().contentWindow.event)
-                srcObj = getSuiteFrame().contentWindow.event.srcElement;
+            srcObj = getSuiteFrame().contentWindow.event.srcElement;
 
         // The target row (the event source is not consistently reported by browsers)
         row = srcObj.parentNode.parentNode.rowIndex || srcObj.parentNode.parentNode.parentNode.rowIndex;
+        currentRowInSuite = row;
 
         // If the row has a stored results table, use that
-        if(suiteTable.rows[row].cells[1]) {
+        if (suiteTable.rows[row].cells[1]) {
             var bodyElement = getIframeDocument(getTestFrame()).body;
 
             // Create a div element to hold the results table.
@@ -278,20 +275,20 @@ function isQueryParameterTrue(name) {
 }
 
 function getQueryString() {
-	if (queryString != null) return queryString;
-	if (browserVersion.isHTA) {
-		var args = extractArgs();
-		if (args.length < 2) return null;
-		queryString = args[1];
-		return queryString;
-	} else {
-		return location.search.substr(1);
-	}
+    if (queryString != null) return queryString;
+    if (browserVersion.isHTA) {
+        var args = extractArgs();
+        if (args.length < 2) return null;
+        queryString = args[1];
+        return queryString;
+    } else {
+        return location.search.substr(1);
+    }
 }
 
 function extractArgs() {
-	var str = SeleniumHTARunner.commandLine;
-	if (str == null || str == "") return new Array();
+    var str = SeleniumHTARunner.commandLine;
+    if (str == null || str == "") return new Array();
     var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")(\S+))/g);
     // We either want non quote stuff ([^"]+) surrounded by quotes
     // or we want to look-ahead, see that the next character isn't
@@ -309,11 +306,11 @@ function extractArgs() {
 }
 
 function getQueryParameter(searchKey) {
-	var str = getQueryString();
-	if (str == null) return null;
-	var clauses = str.split('&');
+    var str = getQueryString();
+    if (str == null) return null;
+    var clauses = str.split('&');
     for (var i = 0; i < clauses.length; i++) {
-        var keyValuePair = clauses[i].split('=',2);
+        var keyValuePair = clauses[i].split('=', 2);
         var key = unescape(keyValuePair[0]);
         if (key == searchKey) {
             return unescape(keyValuePair[1]);
@@ -345,23 +342,39 @@ function runSingleTest() {
     startTest();
 }
 
+function pauseCurrentTest() {
+    runInterval = -1;
+}
+
+function continueCurrentTest() {
+    setRunInterval();
+    currentTest.resume();
+
+    document.getElementById('pauseTest').innerHTML = "Pause";
+    document.getElementById('pauseTest').onclick = pauseCurrentTest;
+}
+
+function stepCurrentTest() {
+    currentTest.resume();
+}
+
 function startTest() {
     removeLoadListener(getTestFrame(), startTest);
     setHighlightOption();
 
     // Scroll to the top of the test frame
     if (getTestFrame().contentWindow) {
-        getTestFrame().contentWindow.scrollTo(0,0);
+        getTestFrame().contentWindow.scrollTo(0, 0);
     }
     else {
-        frames['testFrame'].scrollTo(0,0);
+        frames['testFrame'].scrollTo(0, 0);
     }
 
 
     if (getIframeDocument(getTestFrame()).getElementById('se-js-table'))  // selenium script in javascript
-        currentTest = new TestRunner(getIframeDocument(getTestFrame()),true,commandFactory);
+        currentTest = new TestRunner(getIframeDocument(getTestFrame()), true, commandFactory);
     else
-        currentTest = new TestRunner(getIframeDocument(getTestFrame()),false,commandFactory);
+        currentTest = new TestRunner(getIframeDocument(getTestFrame()), false, commandFactory);
 
 
     testFailed = false;
@@ -375,15 +388,16 @@ get_new_rows = function() {
     for (var i = 0; i < new_block.length; i++) {
 
         var new_source = (new_block[i][0].tokenizer.source.slice(new_block[i][0].start,
-                                                                 new_block[i][0].end));
+                new_block[i][0].end));
 
-        var row =  '<td style="display:none;" class="js">getEval</td>' +
-                   '<td style="display:none;">currentTest.doNextCommand()</td>' +
-                   '<td style="white-space: pre;">' + new_source + '</td>' +
-                   '<td></td>'
+        var row = '<td style="display:none;" class="js">getEval</td>' +
+                  '<td style="display:none;">currentTest.doNextCommand()</td>' +
+                  '<td style="white-space: pre;">' + new_source + '</td>' +
+                  '<td></td>'
 
         row_array.push(row);
-    };
+    }
+    ;
     return row_array
 };
 
@@ -397,8 +411,8 @@ function startTestSuite() {
 }
 
 function runNextTest() {
-    if (!runAllTests)
-            return;
+    if (!runAllTests && !document.getElementById("runAllRestTests").checked)
+        return;
 
     suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
 
@@ -428,7 +442,7 @@ function runNextTest() {
         // If this is an automated run (i.e., build script), then submit
         // the test results by posting to a form
         if (isAutomatedRun())
-                postTestResults(suiteFailed, suiteTable);
+            postTestResults(suiteFailed, suiteTable);
     }
 
     else {
@@ -493,15 +507,15 @@ function postTestResults(suiteFailed, suiteTable) {
     document.body.appendChild(form);
 
     form.id = "resultsForm";
-    form.method="post";
-    form.target="myiframe";
+    form.method = "post";
+    form.target = "myiframe";
 
     var resultsUrl = getQueryParameter("resultsUrl");
     if (!resultsUrl) {
         resultsUrl = "./postResults";
     }
 
-    var actionAndParameters = resultsUrl.split('?',2);
+    var actionAndParameters = resultsUrl.split('?', 2);
     form.action = actionAndParameters[0];
     var resultsUrlQueryString = actionAndParameters[1];
 
@@ -516,7 +530,7 @@ function postTestResults(suiteFailed, suiteTable) {
     if (resultsUrlQueryString) {
         var clauses = resultsUrlQueryString.split('&');
         for (var i = 0; i < clauses.length; i++) {
-            var keyValuePair = clauses[i].split('=',2);
+            var keyValuePair = clauses[i].split('=', 2);
             var key = unescape(keyValuePair[0]);
             var value = unescape(keyValuePair[1]);
             form.createHiddenField(key, value);
@@ -537,7 +551,7 @@ function postTestResults(suiteFailed, suiteTable) {
 
     // Create an input for each test table.  The inputs are named
     // testTable.1, testTable.2, etc.
-    for (rowNum = 1; rowNum < suiteTable.rows.length;rowNum++) {
+    for (rowNum = 1; rowNum < suiteTable.rows.length; rowNum++) {
         // If there is a second column, then add a new input
         if (suiteTable.rows[rowNum].cells.length > 1) {
             var resultCell = suiteTable.rows[rowNum].cells[1];
@@ -552,37 +566,37 @@ function postTestResults(suiteFailed, suiteTable) {
     // Add HTML for the suite itself
     form.createHiddenField("suite", suiteTable.parentNode.innerHTML);
 
-	if (isQueryParameterTrue("save")) {
-		saveToFile(resultsUrl, form);
-	} else {
-    	form.submit();
+    if (isQueryParameterTrue("save")) {
+        saveToFile(resultsUrl, form);
+    } else {
+        form.submit();
     }
     document.body.removeChild(form);
-	if (isQueryParameterTrue("close")) {
-    	window.top.close();
+    if (isQueryParameterTrue("close")) {
+        window.top.close();
     }
 }
 
 function saveToFile(fileName, form) {
-	// This only works when run as an IE HTA
-	var inputs = new Object();
-	for (var i = 0; i < form.elements.length; i++) {
-		inputs[form.elements[i].name] = form.elements[i].value;
-	}
-	var objFSO = new ActiveXObject("Scripting.FileSystemObject")
-	var scriptFile = objFSO.CreateTextFile(fileName);
-	scriptFile.WriteLine("<html><body>\n<h1>Test suite results </h1>" +
-            "\n\n<table>\n<tr>\n<td>result:</td>\n<td>" + inputs["result"] + "</td>\n" +
-            "</tr>\n<tr>\n<td>totalTime:</td>\n<td>" + inputs["totalTime"] + "</td>\n</tr>\n" +
-            "<tr>\n<td>numTestPasses:</td>\n<td>" + inputs["numTestPasses"] + "</td>\n</tr>\n" +
-            "<tr>\n<td>numTestFailures:</td>\n<td>" + inputs["numTestFailures"] + "</td>\n</tr>\n" +
-            "<tr>\n<td>numCommandPasses:</td>\n<td>" + inputs["numCommandPasses"] + "</td>\n</tr>\n" +
-            "<tr>\n<td>numCommandFailures:</td>\n<td>" + inputs["numCommandFailures"] + "</td>\n</tr>\n" +
-            "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
-            "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr>");
+    // This only works when run as an IE HTA
+    var inputs = new Object();
+    for (var i = 0; i < form.elements.length; i++) {
+        inputs[form.elements[i].name] = form.elements[i].value;
+    }
+    var objFSO = new ActiveXObject("Scripting.FileSystemObject")
+    var scriptFile = objFSO.CreateTextFile(fileName);
+    scriptFile.WriteLine("<html><body>\n<h1>Test suite results </h1>" +
+                         "\n\n<table>\n<tr>\n<td>result:</td>\n<td>" + inputs["result"] + "</td>\n" +
+                         "</tr>\n<tr>\n<td>totalTime:</td>\n<td>" + inputs["totalTime"] + "</td>\n</tr>\n" +
+                         "<tr>\n<td>numTestPasses:</td>\n<td>" + inputs["numTestPasses"] + "</td>\n</tr>\n" +
+                         "<tr>\n<td>numTestFailures:</td>\n<td>" + inputs["numTestFailures"] + "</td>\n</tr>\n" +
+                         "<tr>\n<td>numCommandPasses:</td>\n<td>" + inputs["numCommandPasses"] + "</td>\n</tr>\n" +
+                         "<tr>\n<td>numCommandFailures:</td>\n<td>" + inputs["numCommandFailures"] + "</td>\n</tr>\n" +
+                         "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
+                         "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr>");
     var testNum = inputs["numTestTotal"];
     for (var rowNum = 1; rowNum < testNum; rowNum++) {
-    	scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
+        scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
     }
     scriptFile.WriteLine("</table></body></html>");
     scriptFile.Close();
@@ -603,11 +617,11 @@ function printMetrics() {
     minutes = Math.floor(totalSecs / 60);
     seconds = totalSecs % 60;
 
-    setText(document.getElementById("elapsedTime"), pad(minutes)+":"+pad(seconds));
+    setText(document.getElementById("elapsedTime"), pad(minutes) + ":" + pad(seconds));
 }
 
 // Puts a leading 0 on num if it is less than 10
-function pad (num) {
+function pad(num) {
     return (num > 9) ? num : "0" + num;
 }
 
@@ -628,9 +642,9 @@ function nextCommand() {
     }
     row.cells[2].originalHTML = row.cells[2].innerHTML;
     return new SeleniumCommand(getText(row.cells[0]),
-                               getText(row.cells[1]),
-                               getText(row.cells[2]),
-                               row.stopOnThisCommand);
+            getText(row.cells[1]),
+            getText(row.cells[2]),
+            row.stopOnThisCommand);
 }
 
 function removeNbsp(value) {
@@ -738,6 +752,8 @@ Object.extend(TestRunner.prototype, {
     },
 
     commandStarted : function() {
+        document.getElementById('pauseTest').disabled = false;
+
         this.currentRow.bgColor = workingColor;
         scrollIntoView(this.currentRow.cells[0]);
         printMetrics();
@@ -774,6 +790,8 @@ Object.extend(TestRunner.prototype, {
     },
 
     testComplete : function() {
+        document.getElementById('pauseTest').disabled = true;
+        document.getElementById('stepTest').disabled = true;
         var resultColor = passColor;
         if (testFailed) {
             resultColor = failColor;
@@ -796,7 +814,10 @@ Object.extend(TestRunner.prototype, {
     },
 
     pause : function() {
-        document.getElementById('continueTest').disabled = false;
+        runInterval = -1;
+        document.getElementById('stepTest').disabled = false;
+        document.getElementById('pauseTest').innerHTML = "Continue";
+        document.getElementById('pauseTest').onclick = continueCurrentTest;
     },
 
     doNextCommand: function() {
@@ -825,8 +846,8 @@ Object.extend(TestRunner.prototype, {
 
 Selenium.prototype.doPause = function(waitTime) {
     /** Wait for the specified amount of time (in milliseconds)
-    * @param waitTime the amount of time to sleep (in milliseconds)
-    */
+     * @param waitTime the amount of time to sleep (in milliseconds)
+     */
     currentTest.pauseInterval = waitTime;
 };
 
@@ -834,18 +855,17 @@ Selenium.prototype.doPause.dontCheckAlertsAndConfirms = true;
 
 Selenium.prototype.doBreak = function() {
     /** Halt the currently running test, and wait for the user to press the Continue button.
-    * This command is useful for debugging, but be careful when using it, because it will
-    * force automated tests to hang until a user intervenes manually.
-    */
-    document.getElementById('modeStep').checked = true;
+     * This command is useful for debugging, but be careful when using it, because it will
+     * force automated tests to hang until a user intervenes manually.
+     */
     runInterval = -1;
 };
 
 Selenium.prototype.doStore = function(expression, variableName) {
     /** This command is a synonym for storeExpression.
-    * @param expression the value to store
-    * @param variableName the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
-    */
+     * @param expression the value to store
+     * @param variableName the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+     */
     storedVars[variableName] = expression;
 }
 
@@ -860,21 +880,21 @@ Selenium.prototype.XXXdoModalDialogTest = function(returnValue) {
 
 Selenium.prototype.doEcho = function(message) {
     /** Prints the specified message into the third table cell in your Selenese tables.
-    * Useful for debugging.
-    * @param message the message to print
-    */
-	currentTest.currentRow.cells[2].innerHTML = message;
+     * Useful for debugging.
+     * @param message the message to print
+     */
+    currentTest.currentRow.cells[2].innerHTML = message;
 }
 
 Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
-	/**
-   * Verifies that the selected option of a drop-down satisfies the optionSpecifier.  <i>Note that this command is deprecated; you should use assertSelectedLabel, assertSelectedValue, assertSelectedIndex, or assertSelectedId instead.</i>
-   *
-   * <p>See the select command for more information about option locators.</p>
-   *
-   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
-   * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
-   */
+    /**
+     * Verifies that the selected option of a drop-down satisfies the optionSpecifier.  <i>Note that this command is deprecated; you should use assertSelectedLabel, assertSelectedValue, assertSelectedIndex, or assertSelectedId instead.</i>
+     *
+     * <p>See the select command for more information about option locators.</p>
+     *
+     * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+     * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
+     */
     var element = this.page().findElement(selectLocator);
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     if (element.selectedIndex == -1)
