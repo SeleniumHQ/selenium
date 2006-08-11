@@ -116,7 +116,7 @@ public class SeleneseTestCase extends TestCase {
         if (s1.startsWith("regex:")) {
             String s1regexp = s1.replaceFirst("regex:", ".*") + ".*";
             if (!s2.matches(s1regexp)) {
-                System.out.println("expected " + s2 + " to match regexp " + s1);
+                System.out.println("expected " + s2 + " to match regex " + s1);
                 return false;
             }
             return true;
