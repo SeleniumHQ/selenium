@@ -1,5 +1,10 @@
+
+def include_file(name)
+  require File.expand_path(File.dirname(__FILE__) + "/buildscript/#{name}")
+end
+
 require 'rake'
-require 'javascripttest'
+require 'buildscript/javascripttest'
 require 'zip/zip'
 
 CURRENT_VERSION = "0.7.2-SNAPSHOT"
@@ -59,6 +64,6 @@ JavaScriptTestTask.new(:test) do |t|
   functional_tests="/javascript/core/TestRunner.html?close=true&auto=true&test=../tests/TestSuite.html&resultsUrl=#{host}/seleniumResults&t=#{timestamp}"
   t.mount("/javascript")
   t.run jsunit_tests
-#  t.run functional_tests 
-  t.browser(Firefox)
+  t.run functional_tests 
+  t.browser(Opera)
 end

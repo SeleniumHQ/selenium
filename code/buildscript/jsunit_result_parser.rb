@@ -1,6 +1,8 @@
 require "cgi"
 require 'builder'
 
+include_file "test_result"
+
 class JsUnitResultParser
   def parse(body)
     strings = CGI::unescape(body).split("&testCases=")

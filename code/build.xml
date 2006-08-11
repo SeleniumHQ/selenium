@@ -17,7 +17,7 @@
     <property name="docs.generation.dir" location="javascript/doctool"/>
 
 	<!-- for jsunit integration -->
-	<condition property="browserFileNames" value="c:\program files\internet explorer\iexplore.exe,c:\program files\Mozilla Firefox\firefox.exe">
+	<condition property="browserFileNames" value="c:\program files\Opera\opera.exe">
 		<os family="windows" />
 	</condition>
 	<condition property="browserFileNames" value="/usr/bin/firefox">
