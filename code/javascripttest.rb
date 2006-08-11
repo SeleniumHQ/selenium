@@ -39,13 +39,18 @@ class Firefox < Browser
   
   def visit(url)
     applescript('tell application "Firefox" to Get URL "' + url + '"') if macos? 
-    system("#{@path} -new-window #{url}") if windows? 
+    system("#{@path} #{url}") if windows? 
     system("firefox #{url}") if linux?
   end
   
   def to_s
     "Firefox"
   end
+  
+    def teardown
+      require 'process'
+      kill_process 'firefox'
+    end
 end
 
 class Opera < Browser
@@ -164,11 +169,11 @@ class JavaScriptTestTask < ::Rake::TaskLib
   end
   
   def parse_result(req, parser, log_file)
-      xml = parser.to_xml(req)
-      File.open(log_file, File::CREAT|File::RDWR) do |f|
-        f << xml
-      end
-      parser.to_html(req)
+    xml = parser.to_xml(req)
+    File.open(log_file, File::CREAT|File::RDWR) do |f|
+      f << xml
+    end
+    parser.to_html(req)
   end
   
   def define
@@ -189,12 +194,14 @@ class JavaScriptTestTask < ::Rake::TaskLib
             @tests.each do |test|
               browser.setup
               browser.visit("http://localhost:#{@port}#{test}")
-              result = @queue.pop
-              puts "#{result} : #{test} on #{browser}"
-              browser.teardown
+              
             end
             
           end
+          result = @queue.pop
+#          puts "#{result} : #{test} on #{browser}"
+          browser.teardown
+          
         else
           puts "Skipping #{browser}, not supported on this OS"
         end
