@@ -1811,7 +1811,7 @@ Selenium.prototype.getCookie = function() {
     /**
      * Return all cookies of the current page under test.
      *
-     * @return string of all cookies of the current page under test
+     * @return string all cookies of the current page under test
      */
     var doc = this.page().currentDocument;
     return doc.cookie;
@@ -1851,7 +1851,9 @@ Selenium.prototype.doDeleteCookie = function(name,path) {
      * @param name the name of the cookie to be deleted
      * @param path the path property of the cookie to be deleted
      */
-    this.page().currentDocument.cookie = name.trim() + "=irrelevant; path=" + path.trim() + "; expires=" + (new Date()).toGMTString();
+    // set the expire time of the cookie to be deleted to one minute before now.
+    var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
+    this.page().currentDocument.cookie = name.trim() + "=deleted; path=" + path.trim() + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
 }
 
 
