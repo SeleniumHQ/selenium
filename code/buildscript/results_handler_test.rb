@@ -1,7 +1,3 @@
-def include_file(name)
-  require name
-end
-
 require "jsunit_result_parser"
 require "selenium_result_parser"
 require "Hpricot"

@@ -1,5 +1,9 @@
-require 'win32ole'
-include_file 'win32_process'
+require 'rbconfig'
+
+if Config::CONFIG['host'].include?('mswin')
+  require 'win32ole'
+  require 'win32_process'
+end
 
 class Browser
   def supported?; true; end
@@ -39,7 +43,7 @@ class Firefox < Browser
     Thread.new do 
       system("#{@path} -new-window #{url}") if windows? 
     end
-    system("firefox #{url}") if linux?
+    system("firefox '#{url}'") if linux?
   end
   
   def to_s

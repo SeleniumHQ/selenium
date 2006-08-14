@@ -1,11 +1,15 @@
-
-def include_file(name)
-  require File.expand_path(File.dirname(__FILE__) + "/buildscript/#{name}")
-end
+# Pre-requisites:
+#   gem install builder
+#   gem install hpricot
+#   gem install rubyzip
 
 require 'rake'
-require 'buildscript/javascripttest'
 require 'zip/zip'
+
+$:.unshift('buildscript')
+
+require 'rubygems'
+require 'javascripttest'
 
 CURRENT_VERSION = "0.7.2-SNAPSHOT"
 SELENIUM_ARTIFACT_FILENAME= "build/dist/Selenium-Core-#{CURRENT_VERSION}.zip"
@@ -18,7 +22,6 @@ desc "Clean"
 task :clean do 
   rm_rf 'build'
   rm_rf 'logs'
-  mkdir_p 'logs'
 end
 
 desc "Copy files to build/image"
@@ -65,5 +68,5 @@ JavaScriptTestTask.new(:test) do |t|
   t.mount("/javascript")
   t.run jsunit_tests
   t.run functional_tests 
-  t.browser(Opera)
+  t.browser(Firefox)
 end

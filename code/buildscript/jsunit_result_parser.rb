@@ -1,7 +1,6 @@
 require "cgi"
 require 'builder'
-
-include_file "test_result"
+require "test_result"
 
 class JsUnitResultParser
   def parse(body)

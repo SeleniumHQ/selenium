@@ -1,12 +1,9 @@
 require 'rake/tasklib'
 require 'thread'
 require 'webrick'
-require 'rbconfig'
-
-include_file 'browser'
-include_file 'jsunit_result_parser'
-include_file 'selenium_result_parser'
-
+require 'browser'
+require 'jsunit_result_parser'
+require 'selenium_result_parser'
 
 class JavaScriptTestTask < ::Rake::TaskLib
   def initialize(name=:test)
@@ -16,6 +13,7 @@ class JavaScriptTestTask < ::Rake::TaskLib
     @port = 8889
     
     @queue = Queue.new
+    
     
     @server = WEBrick::HTTPServer.new(:Port => @port) # TODO: make port configurable
     @server.mount_proc("/results") do |req, res|
@@ -38,6 +36,7 @@ class JavaScriptTestTask < ::Rake::TaskLib
   
   def parse_result(req, parser, log_file)
     xml = parser.to_xml(req)
+    mkdir_p 'logs'
     File.open(log_file, File::CREAT|File::RDWR) do |f|
       f << xml
     end
