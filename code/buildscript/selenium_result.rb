@@ -1,5 +1,5 @@
 require "builder"
-require "Hpricot"
+require "hpricot"
 
 require "test_case_result"
 

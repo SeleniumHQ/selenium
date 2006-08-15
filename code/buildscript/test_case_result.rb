@@ -1,4 +1,4 @@
-require "Hpricot"
+require "hpricot"
 
 class TestCaseResult
   def self.parse_jsunit(url)

@@ -1,6 +1,6 @@
-require "jsunit_result"
+rrequire "jsunit_result"
 require "selenium_result"
-require "Hpricot"
+require "hpricot"
 
 class JsUnitResultTest < Test::Unit::TestCase
   def setup

@@ -36,7 +36,6 @@ class Dir
       next if src =~ excludes
       dest = dest_dir + Pathname.new(src).relative_path_from(src_dir)
       mkdir_p dest.dirname.to_s
-      puts "COPYING #{src} => #{dest}"
       cp(src, dest)
     end
   end

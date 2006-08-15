@@ -5,6 +5,10 @@ if Config::CONFIG['host'].include?('mswin')
   require 'win32_process'
 end
 
+if Config::CONFIG['host'].include?('linux')
+  require 'linux_process'
+end
+
 class Browser
   def supported?; true; end
   def setup ; end
