@@ -54,7 +54,14 @@ task :dist => [:image] do
     end
   end
   cp SELENIUM_ARTIFACT_FILENAME, SELENIUM_JAR_FILENAME
-  exec "mvn install:install-file -DgroupId=org.openqa.selenium.core -DartifactId=selenium-core -Dversion=#{CURRENT_VERSION} -Dpackaging=jar -Dfile=#{SELENIUM_JAR_FILENAME}"
+  if windows? then
+    maven_command = 'mvn.bat'
+  elsif linux? then
+    maven_command = 'mvn'
+  else maven_command = 'mvn'
+  end
+  
+  exec maven_command + " install:install-file -DgroupId=org.openqa.selenium.core -DartifactId=selenium-core -Dversion=#{CURRENT_VERSION} -Dpackaging=jar -Dfile=#{SELENIUM_JAR_FILENAME}"
   puts "OVER"
 end
 
@@ -63,9 +70,10 @@ JavaScriptTestTask.new(:test) do |t|
   host = "http://localhost:8889"
   timestamp = "%.6f" % Time.now.to_f
   jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=#{host}/javascript/unittest/browserbot/suite.html&submitResults=#{host}/jsunitResults&t=#{timestamp}" 
-  functional_tests="/javascript/core/TestRunner.html?close=true&auto=true&test=../tests/ShortTestSuite.html&resultsUrl=#{host}/seleniumResults&t=#{timestamp}"
+  functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/ShortTestSuite.html&resultsUrl=#{host}/seleniumResults&t=#{timestamp}"
   t.mount("/javascript")
-  t.run jsunit_tests
   t.run functional_tests 
-  t.browser(Firefox)
+  t.run jsunit_tests
+  t.browser(Opera)
+
 end

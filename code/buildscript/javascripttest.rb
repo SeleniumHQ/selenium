@@ -6,6 +6,8 @@ require 'test_case_result'
 require 'jsunit_result'
 require 'selenium_result'
 
+include Browser
+
 class JavaScriptTestTask < ::Rake::TaskLib
   def initialize(name=:test)
     @name = name

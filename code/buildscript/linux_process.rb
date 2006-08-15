@@ -1,5 +1,7 @@
 def kill_process(name)
-  process_line = `ps aux | grep #{name}`
-  pid = process_line.split(/\s+/)[1]
-  `kill #{pid}`
+  processes = `ps aux | grep #{name}`
+  processes.split(/(\n|\r)+/).each do |process_line|
+    pid = process_line.split(/\s+/)[1]
+    `kill #{pid}`
+  end
 end
