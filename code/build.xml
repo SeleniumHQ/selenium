@@ -38,7 +38,8 @@
 
     <target name="clean">
         <delete dir="${build.dir}"/>
-		<delete dir="${logs.dir}"/>
+	<delete dir="${logs.dir}"/>
+	<mkdir dir="${build.dir}" />
     </target>
 
     <target name="get-svn-revision">

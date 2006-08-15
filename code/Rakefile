@@ -54,7 +54,7 @@ task :dist => [:image] do
     end
   end
   cp SELENIUM_ARTIFACT_FILENAME, SELENIUM_JAR_FILENAME
-  exec "mvn.bat install:install-file -DgroupId=org.openqa.selenium.core -DartifactId=selenium-core -Dversion=#{CURRENT_VERSION} -Dpackaging=jar -Dfile=#{SELENIUM_JAR_FILENAME}"
+  exec "mvn install:install-file -DgroupId=org.openqa.selenium.core -DartifactId=selenium-core -Dversion=#{CURRENT_VERSION} -Dpackaging=jar -Dfile=#{SELENIUM_JAR_FILENAME}"
   puts "OVER"
 end
 

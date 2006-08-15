@@ -44,10 +44,10 @@ class Firefox < Browser
   
   def visit(url)
     applescript('tell application "Firefox" to Get URL "' + url + '"') if macos? 
-    Thread.new do 
+    Thread.new do
+      system("firefox '#{url}'") if linux?
       system("#{@path} -new-window #{url}") if windows? 
     end
-    system("firefox '#{url}'") if linux?
   end
   
   def to_s
