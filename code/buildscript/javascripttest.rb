@@ -2,8 +2,9 @@ require 'rake/tasklib'
 require 'thread'
 require 'webrick'
 require 'browser'
-require 'jsunit_result_parser'
-require 'selenium_result_parser'
+require 'test_case_result'
+require 'jsunit_result'
+require 'selenium_result'
 
 class JavaScriptTestTask < ::Rake::TaskLib
   def initialize(name=:test)
@@ -16,31 +17,37 @@ class JavaScriptTestTask < ::Rake::TaskLib
     
     
     @server = WEBrick::HTTPServer.new(:Port => @port) # TODO: make port configurable
-    @server.mount_proc("/results") do |req, res|
-      @queue.push(req.query['time'].to_s)
-      res.body += parse_result(req, JsUnitResultParser.new, "logs/JsUnitResults.xml")
+    @server.mount_proc("/jsunitResults") do |req, res|
+      parser, log_file = [JsUnitResult.new(req), "logs/JsUnitResults.xml"]
+      html_report = handle_test_results(res, parser, log_file)    
     end
     
     @server.mount_proc("/seleniumResults") do |req, res|
-      result = parse_result(req, SeleniumResultParser.new, "logs/SeleniumResults.xml")
+      parser, log_file = [SeleniumResult.new(req), "logs/SeleniumResults.xml"]
+      html_report = handle_test_results(res, parser, log_file)      
       File.open("logs/SeleniumResults.html", File::CREAT|File::RDWR) do |f|
-        f << result
+        f << html_report
       end
-      res.body += result
-      @queue.push(req.query['result'].to_s)
     end
     
     yield self if block_given?
     define
   end
   
-  def parse_result(req, parser, log_file)
-    xml = parser.to_xml(req)
+  def handle_test_results(res, parser, log_file)
+    html_report = parse_result(parser, log_file)
+    res.body += html_report
+    @queue.push(parser.success?)
+    return html_report
+  end
+  
+  def parse_result(parser, log_file)
+    xml = parser.to_xml()
     mkdir_p 'logs'
     File.open(log_file, File::CREAT|File::RDWR) do |f|
       f << xml
     end
-    parser.to_html(req)
+    parser.to_html()
   end
   
   def define
@@ -52,28 +59,21 @@ class JavaScriptTestTask < ::Rake::TaskLib
         @server.start
       }
       
-      # run all combinations of browsers and tests
-      threads = Array.new
       @browsers.each do |browser|
         if browser.supported?
-          threads <<  Thread.new do            
-            @tests.each do |test|
-              browser.setup
-              browser.visit("http://localhost:#{@port}#{test}")              
-              result = @queue.pop
-              browser.teardown
-            end            
-          end
-          
+          @tests.each do |test|
+            browser.setup
+            browser.visit("http://localhost:#{@port}#{test}")              
+            passed = @queue.pop
+            browser.teardown
+            raise "TEST FAILED" unless passed
+          end            
           
         else
           puts "Skipping #{browser}, not supported on this OS"
         end
       end
       
-      threads.each do |thread|
-        thread.join
-      end
       @server.shutdown
       t.join
     end
@@ -81,7 +81,6 @@ class JavaScriptTestTask < ::Rake::TaskLib
   
   def mount(path, dir=nil)
     dir = Dir.pwd + path unless dir
-    
     @server.mount(path, WEBrick::HTTPServlet::FileHandler, dir)
   end
   

@@ -52,6 +52,7 @@ class Firefox < Browser
   
   def teardown
     kill_process 'firefox'
+    sleep 1 # wait for process handle killed
   end
 end
 
