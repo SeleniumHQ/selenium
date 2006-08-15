@@ -68,6 +68,7 @@ module Browser
     
     def visit(url)
       Thread.new do
+        system("opera '#{url}'") if linux?    
         system("#{@path} #{url}") if windows?    
       end
     end
@@ -77,7 +78,8 @@ module Browser
     end
     
     def teardown
-      kill_process 'Opera'
+      kill_process 'opera' if linux?
+      kill_process 'Opera' if windows?
       sleep 1 # wait for process handle killed
     end
   end
