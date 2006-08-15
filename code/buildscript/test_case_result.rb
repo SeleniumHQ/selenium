@@ -7,9 +7,11 @@ class TestCaseResult
   end
   
   def self.parse_selenium(table)
+    # TODO: this assumes the topmost row contains the test-name, 
+    # which is not necessarily the case
     doc = Hpricot(table)
-    name = doc.search("//td").first.to_s
-    name = name.sub(/<td[^>]*>((.|\n|\r)*)<\/td>/) { $1 }
+    name = ""
+    doc.search("//td").first.traverse_text { |t| name += t.to_s }
     TestCaseResult.new(name, failed_commands(table).size == 0, error_message(table))
   end
   
