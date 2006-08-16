@@ -411,7 +411,7 @@ function startTestSuite() {
 }
 
 function runNextTest() {
-    if (!runAllTests && !document.getElementById("runAllRestTests").checked)
+    if (!runAllTests)
         return;
 
     suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
