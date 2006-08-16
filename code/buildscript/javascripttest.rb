@@ -13,7 +13,7 @@ class JavaScriptTestTask < ::Rake::TaskLib
     @name = name
     @tests = []
     @browsers = []
-    @port = 8889
+    @port = 4444
     
     @queue = Queue.new
     

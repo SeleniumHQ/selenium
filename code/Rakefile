@@ -67,7 +67,7 @@ end
 
 desc "Runs all the jsunit tests and collects the results"
 JavaScriptTestTask.new(:test) do |t|
-  host = "http://localhost:8889"
+  host = "http://localhost:4444"
   timestamp = "%.6f" % Time.now.to_f
   jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=#{host}/javascript/unittest/browserbot/suite.html&submitResults=#{host}/jsunitResults&t=#{timestamp}" 
   functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=#{host}/seleniumResults&t=#{timestamp}"
