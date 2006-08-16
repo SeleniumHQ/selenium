@@ -56,7 +56,7 @@ http-equiv="content-type">
 </script>
 </head>
 
-<body onLoad="runSeleniumTest()" onUnload="cleanUp()">
+<body onLoad="setTimeout(function(){runSeleniumTest();},1000)" onUnload="cleanUp()">
 
 <table border="1" style="height: 100%;">
   <tr>
