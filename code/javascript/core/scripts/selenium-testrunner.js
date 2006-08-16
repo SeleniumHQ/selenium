@@ -114,7 +114,7 @@ function loadSuiteFrame() {
         runInterval = tempRunInterval;
     }
 
-    new Control.Slider('speedHandle', 'speedTrack', {
+    speedController = new Control.Slider('speedHandle', 'speedTrack', {
         range:$R(0, 1000),
         onSlide:function(v) {
             onChange(v);
@@ -339,6 +339,7 @@ function pauseCurrentTest() {
 }
 
 function continueCurrentTest() {
+    runInterval = speedController.value;
     currentTest.resume();
 
     document.getElementById('pauseTest').innerHTML = "Pause";
@@ -346,6 +347,7 @@ function continueCurrentTest() {
 }
 
 function stepCurrentTest() {
+    runInterval = -1;
     currentTest.resume();
 }
 

@@ -253,15 +253,24 @@ div.executionOptions br {
 #speedTrack {
     margin: 0.5em 0em 1em 1em;
     width: 260px;
-    background-color: #aaa;
-    height: 10px;
+    height: 3px;
     cursor: pointer;
     clear: both;
+    background: ThreeDFace;
+    border: 1px solid;
+    border-color: ThreeDDarkShadow ThreeDDarkShadow
+    ThreeDDarkShadow ThreeDDarkShadow;
 }
 
 #speedHandle {
-    width: 5px;
-    height: 15px;
-    background-color: #f00;
+    position: relative;
+    top: -5px;
+    font-size: 6pt;
+    font-weight: bold;
+    width: 20px;
+    background-color: ThreeDFace;
     cursor: pointer;
+    border: 1px solid;
+    border-color: ThreeDDarkShadow  ThreeDDarkShadow
+    ThreeDDarkShadow ThreeDDarkShadow ;
 }
