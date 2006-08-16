@@ -6,28 +6,14 @@ class TestCaseResult
     TestCaseResult.new(test_case_strings[0], test_case_strings[2] == 'S', test_case_strings[3], test_case_strings[1])
   end
   
-  def self.parse_selenium(table)
-    # TODO: this assumes the topmost row contains the test-name, 
-    # which is not necessarily the case
-    doc = Hpricot(table)
-    name = ""
-    doc.search("//td").first.traverse_text { |t| name += t.to_s }
-    TestCaseResult.new(name.strip, failed_commands(table).size == 0, error_message(table))
+  def self.parse_selenium(table, name)
+    TestCaseResult.new(name.strip, failed_commands(table).size == 0, table)
   end
   
   private
   def self.failed_commands(table)
     doc = Hpricot(table)
     return doc.search("//tr[@bgcolor=#ffcccc]")
-  end
-  
-  def self.error_message(table)
-    result = ""
-    failed_commands(table).each do |tr|
-      error = tr.attributes["title"]
-      result << error << "\n" if error!=nil
-    end
-    return result
   end
   
   public
@@ -37,7 +23,7 @@ class TestCaseResult
     @message = message
     @time = time
   end
-  attr_reader :testname, :time
+  attr_reader :testname, :time, :message
   
   def pass?
     @pass

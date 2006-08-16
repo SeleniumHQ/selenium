@@ -35,11 +35,18 @@ class SeleniumResult
     @req.query["numTestFailures"].to_i == 0
   end
   
+  def test_case_name(i)
+    doc = Hpricot(@req.query["suite"])
+    name = ""
+    doc.search("//a")[i].traverse_text { |t| name += t.to_s }
+    return name
+  end
+  
   private 
   def parse
     results = []
     for i in 1..number_of_tests
-      results << TestCaseResult.parse_selenium(@req.query["testTable.#{i}"])
+      results << TestCaseResult.parse_selenium(@req.query["testTable.#{i}"], test_case_name(i - 1))
     end
     return results
   end
