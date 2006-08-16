@@ -70,10 +70,10 @@ JavaScriptTestTask.new(:test) do |t|
   host = "http://localhost:8889"
   timestamp = "%.6f" % Time.now.to_f
   jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=#{host}/javascript/unittest/browserbot/suite.html&submitResults=#{host}/jsunitResults&t=#{timestamp}" 
-  functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/ShortTestSuite.html&resultsUrl=#{host}/seleniumResults&t=#{timestamp}"
+  functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=#{host}/seleniumResults&t=#{timestamp}"
   t.mount("/javascript")
-  t.run functional_tests 
   t.run jsunit_tests
-  t.browser(Opera)
+  t.run functional_tests
+  t.browser(Firefox)
 
 end

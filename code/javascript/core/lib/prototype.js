@@ -1,4 +1,4 @@
-/*  Prototype JavaScript framework, version 1.4.0
+/*  Prototype JavaScript framework, version 1.5.0_rc0
  *  (c) 2005 Sam Stephenson <sam@conio.net>
  *
  *  Prototype is freely distributable under the terms of an MIT-style license.
@@ -7,7 +7,7 @@
 /*--------------------------------------------------------------------------*/
 
 var Prototype = {
-  Version: '1.4.0',
+  Version: '1.5.0_rc0',
   ScriptFragment: '(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)',
 
   emptyFunction: function() {},
@@ -25,7 +25,7 @@ var Class = {
 var Abstract = new Object();
 
 Object.extend = function(destination, source) {
-  for (property in source) {
+  for (var property in source) {
     destination[property] = source[property];
   }
   return destination;
@@ -116,26 +116,49 @@ PeriodicalExecuter.prototype = {
     }
   }
 }
-
-/*--------------------------------------------------------------------------*/
-
-function $() {
-  var elements = new Array();
-
-  for (var i = 0; i < arguments.length; i++) {
-    var element = arguments[i];
-    if (typeof element == 'string')
-      element = document.getElementById(element);
-
-    if (arguments.length == 1)
-      return element;
-
-    elements.push(element);
-  }
-
-  return elements;
-}
 Object.extend(String.prototype, {
+  gsub: function(pattern, replacement) {
+    var result = '', source = this, match;
+    replacement = arguments.callee.prepareReplacement(replacement);
+
+    while (source.length > 0) {
+      if (match = source.match(pattern)) {
+        result += source.slice(0, match.index);
+        result += (replacement(match) || '').toString();
+        source  = source.slice(match.index + match[0].length);
+      } else {
+        result += source, source = '';
+      }
+    }
+    return result;
+  },
+
+  sub: function(pattern, replacement, count) {
+    replacement = this.gsub.prepareReplacement(replacement);
+    count = count === undefined ? 1 : count;
+
+    return this.gsub(pattern, function(match) {
+      if (--count < 0) return match[0];
+      return replacement(match);
+    });
+  },
+
+  scan: function(pattern, iterator) {
+    this.gsub(pattern, iterator);
+    return this;
+  },
+
+  truncate: function(length, truncation) {
+    length = length || 30;
+    truncation = truncation === undefined ? '...' : truncation;
+    return this.length > length ?
+      this.slice(0, length - truncation.length) + truncation : this;
+  },
+
+  strip: function() {
+    return this.replace(/^\s+/, '').replace(/\s+$/, '');
+  },
+
   stripTags: function() {
     return this.replace(/<\/?[^>]+>/gi, '');
   },
@@ -153,7 +176,7 @@ Object.extend(String.prototype, {
   },
 
   evalScripts: function() {
-    return this.extractScripts().map(eval);
+    return this.extractScripts().map(function(script) { return eval(script) });
   },
 
   escapeHTML: function() {
@@ -199,11 +222,34 @@ Object.extend(String.prototype, {
   },
 
   inspect: function() {
-    return "'" + this.replace('\\', '\\\\').replace("'", '\\\'') + "'";
+    return "'" + this.replace(/\\/g, '\\\\').replace(/'/g, '\\\'') + "'";
   }
 });
 
+String.prototype.gsub.prepareReplacement = function(replacement) {
+  if (typeof replacement == 'function') return replacement;
+  var template = new Template(replacement);
+  return function(match) { return template.evaluate(match) };
+}
+
 String.prototype.parseQuery = String.prototype.toQueryParams;
+
+var Template = Class.create();
+Template.Pattern = /(^|.|\r|\n)(#\{(.*?)\})/;
+Template.prototype = {
+  initialize: function(template, pattern) {
+    this.template = template.toString();
+    this.pattern  = pattern || Template.Pattern;
+  },
+
+  evaluate: function(object) {
+    return this.template.gsub(this.pattern, function(match) {
+      var before = match[1];
+      if (before == '\\') return match[2];
+      return before + (object[match[3]] || '').toString();
+    });
+  }
+}
 
 var $break    = new Object();
 var $continue = new Object();
@@ -309,7 +355,7 @@ var Enumerable = {
     var result;
     this.each(function(value, index) {
       value = (iterator || Prototype.K)(value, index);
-      if (value >= (result || value))
+      if (result == undefined || value >= result)
         result = value;
     });
     return result;
@@ -319,7 +365,7 @@ var Enumerable = {
     var result;
     this.each(function(value, index) {
       value = (iterator || Prototype.K)(value, index);
-      if (value <= (result || value))
+      if (result == undefined || value < result)
         result = value;
     });
     return result;
@@ -371,8 +417,7 @@ var Enumerable = {
 
     var collections = [this].concat(args).map($A);
     return this.map(function(value, index) {
-      iterator(value = collections.pluck(index));
-      return value;
+      return iterator(collections.pluck(index));
     });
   },
 
@@ -402,7 +447,8 @@ var $A = Array.from = function(iterable) {
 
 Object.extend(Array.prototype, Enumerable);
 
-Array.prototype._reverse = Array.prototype.reverse;
+if (!Array.prototype._reverse)
+  Array.prototype._reverse = Array.prototype.reverse;
 
 Object.extend(Array.prototype, {
   _each: function(iterator) {
@@ -431,7 +477,7 @@ Object.extend(Array.prototype, {
 
   flatten: function() {
     return this.inject([], function(array, value) {
-      return array.concat(value.constructor == Array ?
+      return array.concat(value && value.constructor == Array ?
         value.flatten() : [value]);
     });
   },
@@ -453,21 +499,13 @@ Object.extend(Array.prototype, {
     return (inline !== false ? this : this.toArray())._reverse();
   },
 
-  shift: function() {
-    var result = this[0];
-    for (var i = 0; i < this.length - 1; i++)
-      this[i] = this[i + 1];
-    this.length--;
-    return result;
-  },
-
   inspect: function() {
     return '[' + this.map(Object.inspect).join(', ') + ']';
   }
 });
 var Hash = {
   _each: function(iterator) {
-    for (key in this) {
+    for (var key in this) {
       var value = this[key];
       if (typeof value == 'function') continue;
 
@@ -545,9 +583,9 @@ var $R = function(start, end, exclusive) {
 var Ajax = {
   getTransport: function() {
     return Try.these(
+      function() {return new XMLHttpRequest()},
       function() {return new ActiveXObject('Msxml2.XMLHTTP')},
-      function() {return new ActiveXObject('Microsoft.XMLHTTP')},
-      function() {return new XMLHttpRequest()}
+      function() {return new ActiveXObject('Microsoft.XMLHTTP')}
     ) || false;
   },
 
@@ -599,6 +637,7 @@ Ajax.Base.prototype = {
     this.options = {
       method:       'post',
       asynchronous: true,
+      contentType:  'application/x-www-form-urlencoded',
       parameters:   ''
     }
     Object.extend(this.options, options || {});
@@ -658,11 +697,11 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
   setRequestHeaders: function() {
     var requestHeaders =
       ['X-Requested-With', 'XMLHttpRequest',
-       'X-Prototype-Version', Prototype.Version];
+       'X-Prototype-Version', Prototype.Version,
+       'Accept', 'text/javascript, text/html, application/xml, text/xml, */*'];
 
     if (this.options.method == 'post') {
-      requestHeaders.push('Content-type',
-        'application/x-www-form-urlencoded');
+      requestHeaders.push('Content-type', this.options.contentType);
 
       /* Force "Connection: close" for Mozilla browsers to work around
        * a bug where XMLHttpReqeuest sends an incorrect Content-length
@@ -693,7 +732,7 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
 
   evalJSON: function() {
     try {
-      return eval(this.header('X-JSON'));
+      return eval('(' + this.header('X-JSON') + ')');
     } catch (e) {}
   },
 
@@ -827,22 +866,57 @@ Ajax.PeriodicalUpdater.prototype = Object.extend(new Ajax.Base(), {
     this.updater = new Ajax.Updater(this.container, this.url, this.options);
   }
 });
+function $() {
+  var results = [], element;
+  for (var i = 0; i < arguments.length; i++) {
+    element = arguments[i];
+    if (typeof element == 'string')
+      element = document.getElementById(element);
+    results.push(Element.extend(element));
+  }
+  return results.length < 2 ? results[0] : results;
+}
+
 document.getElementsByClassName = function(className, parentElement) {
   var children = ($(parentElement) || document.body).getElementsByTagName('*');
   return $A(children).inject([], function(elements, child) {
     if (child.className.match(new RegExp("(^|\\s)" + className + "(\\s|$)")))
-      elements.push(child);
+      elements.push(Element.extend(child));
     return elements;
   });
 }
 
 /*--------------------------------------------------------------------------*/
 
-if (!window.Element) {
+if (!window.Element)
   var Element = new Object();
+
+Element.extend = function(element) {
+  if (!element) return;
+  if (_nativeExtensions) return element;
+
+  if (!element._extended && element.tagName && element != window) {
+    var methods = Element.Methods, cache = Element.extend.cache;
+    for (property in methods) {
+      var value = methods[property];
+      if (typeof value == 'function')
+        element[property] = cache.findOrStore(value);
+    }
+  }
+
+  element._extended = true;
+  return element;
 }
 
-Object.extend(Element, {
+Element.extend.cache = {
+  findOrStore: function(value) {
+    return this[value] = this[value] || function() {
+      return value.apply(null, [this].concat($A(arguments)));
+    }
+  }
+}
+
+Element.Methods = {
   visible: function(element) {
     return $(element).style.display != 'none';
   },
@@ -875,6 +949,19 @@ Object.extend(Element, {
 
   update: function(element, html) {
     $(element).innerHTML = html.stripScripts();
+    setTimeout(function() {html.evalScripts()}, 10);
+  },
+
+  replace: function(element, html) {
+    element = $(element);
+    if (element.outerHTML) {
+      element.outerHTML = html.stripScripts();
+    } else {
+      var range = element.ownerDocument.createRange();
+      range.selectNodeContents(element);
+      element.parentNode.replaceChild(
+        range.createContextualFragment(html.stripScripts()), element);
+    }
     setTimeout(function() {html.evalScripts()}, 10);
   },
 
@@ -916,6 +1003,13 @@ Object.extend(Element, {
     return $(element).innerHTML.match(/^\s*$/);
   },
 
+  childOf: function(element, ancestor) {
+    element = $(element), ancestor = $(ancestor);
+    while (element = element.parentNode)
+      if (element == ancestor) return true;
+    return false;
+  },
+
   scrollTo: function(element) {
     element = $(element);
     var x = element.x ? element.x : element.offsetLeft,
@@ -943,7 +1037,7 @@ Object.extend(Element, {
 
   setStyle: function(element, style) {
     element = $(element);
-    for (name in style)
+    for (var name in style)
       element.style[name.camelize()] = style[name];
   },
 
@@ -1009,7 +1103,32 @@ Object.extend(Element, {
     element.style.overflow = element._overflow;
     element._overflow = undefined;
   }
-});
+}
+
+Object.extend(Element, Element.Methods);
+
+var _nativeExtensions = false;
+
+if(!HTMLElement && /Konqueror|Safari|KHTML/.test(navigator.userAgent)) {
+  var HTMLElement = {}
+  HTMLElement.prototype = document.createElement('div').__proto__;
+}
+
+Element.addMethods = function(methods) {
+  Object.extend(Element.Methods, methods || {});
+
+  if(typeof HTMLElement != 'undefined') {
+    var methods = Element.Methods, cache = Element.extend.cache;
+    for (property in methods) {
+      var value = methods[property];
+      if (typeof value == 'function')
+        HTMLElement.prototype[property] = cache.findOrStore(value);
+    }
+    _nativeExtensions = true;
+  }
+}
+
+Element.addMethods();
 
 var Toggle = new Object();
 Toggle.display = Element.toggle;
@@ -1029,7 +1148,8 @@ Abstract.Insertion.prototype = {
       try {
         this.element.insertAdjacentHTML(this.adjacency, this.content);
       } catch (e) {
-        if (this.element.tagName.toLowerCase() == 'tbody') {
+        var tagName = this.element.tagName.toLowerCase();
+        if (tagName == 'tbody' || tagName == 'tr') {
           this.insertContent(this.contentFromAnonymousTable());
         } else {
           throw e;
@@ -1144,6 +1264,116 @@ Element.ClassNames.prototype = {
 }
 
 Object.extend(Element.ClassNames.prototype, Enumerable);
+var Selector = Class.create();
+Selector.prototype = {
+  initialize: function(expression) {
+    this.params = {classNames: []};
+    this.expression = expression.toString().strip();
+    this.parseExpression();
+    this.compileMatcher();
+  },
+
+  parseExpression: function() {
+    function abort(message) { throw 'Parse error in selector: ' + message; }
+
+    if (this.expression == '')  abort('empty expression');
+
+    var params = this.params, expr = this.expression, match, modifier, clause, rest;
+    while (match = expr.match(/^(.*)\[([a-z0-9_:-]+?)(?:([~\|!]?=)(?:"([^"]*)"|([^\]\s]*)))?\]$/i)) {
+      params.attributes = params.attributes || [];
+      params.attributes.push({name: match[2], operator: match[3], value: match[4] || match[5] || ''});
+      expr = match[1];
+    }
+
+    if (expr == '*') return this.params.wildcard = true;
+
+    while (match = expr.match(/^([^a-z0-9_-])?([a-z0-9_-]+)(.*)/i)) {
+      modifier = match[1], clause = match[2], rest = match[3];
+      switch (modifier) {
+        case '#':       params.id = clause; break;
+        case '.':       params.classNames.push(clause); break;
+        case '':
+        case undefined: params.tagName = clause.toUpperCase(); break;
+        default:        abort(expr.inspect());
+      }
+      expr = rest;
+    }
+
+    if (expr.length > 0) abort(expr.inspect());
+  },
+
+  buildMatchExpression: function() {
+    var params = this.params, conditions = [], clause;
+
+    if (params.wildcard)
+      conditions.push('true');
+    if (clause = params.id)
+      conditions.push('element.id == ' + clause.inspect());
+    if (clause = params.tagName)
+      conditions.push('element.tagName.toUpperCase() == ' + clause.inspect());
+    if ((clause = params.classNames).length > 0)
+      for (var i = 0; i < clause.length; i++)
+        conditions.push('Element.hasClassName(element, ' + clause[i].inspect() + ')');
+    if (clause = params.attributes) {
+      clause.each(function(attribute) {
+        var value = 'element.getAttribute(' + attribute.name.inspect() + ')';
+        var splitValueBy = function(delimiter) {
+          return value + ' && ' + value + '.split(' + delimiter.inspect() + ')';
+        }
+
+        switch (attribute.operator) {
+          case '=':       conditions.push(value + ' == ' + attribute.value.inspect()); break;
+          case '~=':      conditions.push(splitValueBy(' ') + '.include(' + attribute.value.inspect() + ')'); break;
+          case '|=':      conditions.push(
+                            splitValueBy('-') + '.first().toUpperCase() == ' + attribute.value.toUpperCase().inspect()
+                          ); break;
+          case '!=':      conditions.push(value + ' != ' + attribute.value.inspect()); break;
+          case '':
+          case undefined: conditions.push(value + ' != null'); break;
+          default:        throw 'Unknown operator ' + attribute.operator + ' in selector';
+        }
+      });
+    }
+
+    return conditions.join(' && ');
+  },
+
+  compileMatcher: function() {
+    this.match = new Function('element', 'if (!element.tagName) return false; \
+      return ' + this.buildMatchExpression());
+  },
+
+  findElements: function(scope) {
+    var element;
+
+    if (element = $(this.params.id))
+      if (this.match(element))
+        if (!scope || Element.childOf(element, scope))
+          return [element];
+
+    scope = (scope || document).getElementsByTagName(this.params.tagName || '*');
+
+    var results = [];
+    for (var i = 0; i < scope.length; i++)
+      if (this.match(element = scope[i]))
+        results.push(Element.extend(element));
+
+    return results;
+  },
+
+  toString: function() {
+    return this.expression;
+  }
+}
+
+function $$() {
+  return $A(arguments).map(function(expression) {
+    return expression.strip().split(/\s+/).inject([null], function(results, expr) {
+      var selector = new Selector(expr);
+      return results.map(selector.findElements.bind(selector)).flatten();
+    });
+  }).flatten();
+}
 var Field = {
   clear: function() {
     for (var i = 0; i < arguments.length; i++)
@@ -1192,7 +1422,7 @@ var Form = {
     form = $(form);
     var elements = new Array();
 
-    for (tagName in Form.Element.Serializers) {
+    for (var tagName in Form.Element.Serializers) {
       var tagElements = form.getElementsByTagName(tagName);
       for (var j = 0; j < tagElements.length; j++)
         elements.push(tagElements[j]);
@@ -1314,23 +1544,17 @@ Form.Element.Serializers = {
     var value = '', opt, index = element.selectedIndex;
     if (index >= 0) {
       opt = element.options[index];
-      value = opt.value;
-      if (!value && !('value' in opt))
-        value = opt.text;
+      value = opt.value || opt.text;
     }
     return [element.name, value];
   },
 
   selectMany: function(element) {
-    var value = new Array();
+    var value = [];
     for (var i = 0; i < element.length; i++) {
       var opt = element.options[i];
-      if (opt.selected) {
-        var optValue = opt.value;
-        if (!optValue && !('value' in opt))
-          optValue = opt.text;
-        value.push(optValue);
-      }
+      if (opt.selected)
+        value.push(opt.value || opt.text);
     }
     return [element.name, value];
   }
@@ -1547,7 +1771,8 @@ Object.extend(Event, {
 });
 
 /* prevent memory leaks in IE */
-Event.observe(window, 'unload', Event.unloadCache, false);
+if (navigator.appVersion.match(/\bMSIE\b/))
+  Event.observe(window, 'unload', Event.unloadCache, false);
 var Position = {
   // set to true if needed, warning: firefox performance problems
   // NOT neeeded for page scrolling, only if draggable contained in

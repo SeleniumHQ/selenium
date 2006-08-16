@@ -66,19 +66,6 @@ runInterval = 0;
 
 queryString = null;
 
-function setRunInterval() {
-    // Get the value of the checked runMode option.
-    // There should be a way of getting the value of the "group", but I don't know how.
-    var runModeOptions = document.forms['controlPanel'].runMode;
-    for (var i = 0; i < runModeOptions.length; i++) {
-        if (runModeOptions[i].checked) {
-            runInterval = runModeOptions[i].value;
-            break;
-        }
-    }
-}
-
-
 function getApplicationFrame() {
     var f = document.getElementById('myiframe');
     if (f == null) {
@@ -112,7 +99,7 @@ function loadAndRunIfAuto() {
 
 function start() {
     queryString = null;
-    setRunInterval();
+    runInterval = 0;
     loadSuiteFrame();
 }
 
@@ -127,9 +114,14 @@ function loadSuiteFrame() {
         runInterval = tempRunInterval;
     }
 
-    document.getElementById("modeRun").onclick = setRunInterval;
-    document.getElementById('modeWalk').onclick = setRunInterval;
-
+    new Control.Slider('speedHandle', 'speedTrack', {
+        range:$R(0, 1000),
+        onSlide:function(v) {
+            onChange(v);
+        } ,
+        onChange:function(v) {
+            runInterval = v;
+        }});
     document.getElementById("highlightOption").checked = getQueryParameter("highlight")
 
     var testSuiteName = getQueryParameter("test");
@@ -347,7 +339,6 @@ function pauseCurrentTest() {
 }
 
 function continueCurrentTest() {
-    setRunInterval();
     currentTest.resume();
 
     document.getElementById('pauseTest').innerHTML = "Pause";
