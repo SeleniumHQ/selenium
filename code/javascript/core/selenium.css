@@ -16,9 +16,12 @@
 
 /*---( Layout )---*/
 
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
 body {
-    margin: 0;
-    padding: 0;
     overflow: auto;
 }
 
@@ -37,15 +40,13 @@ tr {
 }
 
 .layout td {
-    margin: 0;
-    padding: 0;
     border: 0;
 }
 
 iframe {
+    border: 0px;
     width: 100%;
     height: 100%;
-    border: 0;
     background: white;
     overflow: auto;
 }
@@ -158,11 +159,6 @@ button, label {
     color: #f90;
 }
 
-.splash {
-    border: 1px solid black;
-    padding: 20px;
-    background: #ccc;
-}
 
 /*---( Logging Console )---*/
 
@@ -250,27 +246,42 @@ div.executionOptions br {
     clear: left;
 }
 
-#speedTrack {
-    margin: 0.5em 0em 1em 1em;
+#speedSlider {
+    text-align: left;
+    margin: 0px auto;
     width: 260px;
-    height: 3px;
-    cursor: pointer;
-    clear: both;
-    background: ThreeDFace;
-    border: 1px solid;
-    border-color: ThreeDDarkShadow ThreeDDarkShadow
-    ThreeDDarkShadow ThreeDDarkShadow;
+    line-height: 0px;
+    font-size: 0px;
+    padding: 0px;
 }
 
-#speedHandle {
-    position: relative;
-    top: -5px;
-    font-size: 6pt;
-    font-weight: bold;
-    width: 20px;
-    background-color: ThreeDFace;
-    cursor: pointer;
+#speedSlider #speedTrack {
+    background-color: #333;
+    width: 260px;
+    height: 2px;
+    <!--[if IE]> 
+    height: 2px; 
+    line-height: 2px; 
+    <![endif]--> 
+    z-index: 1;
     border: 1px solid;
-    border-color: ThreeDDarkShadow  ThreeDDarkShadow
-    ThreeDDarkShadow ThreeDDarkShadow ;
+    border-color: #999 #ddd #ddd #999;
+    cursor: pointer;
+}
+
+#speedSlider #speedHandle {
+    width: 12px;
+    top: -8px;
+    background-color: #666;
+    position: relative;
+    margin: 0px;
+    height: 8px;
+    <!--[if IE]> 
+    height: 8px; 
+    line-height: 8px; 
+    <![endif]--> 
+    z-index: 1;
+    border: 1px solid;
+    border-color: #999 #333 #333 #999;
+    cursor: pointer;
 }

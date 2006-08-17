@@ -117,7 +117,7 @@ function loadSuiteFrame() {
     speedController = new Control.Slider('speedHandle', 'speedTrack', {
         range:$R(0, 1000),
         onSlide:function(v) {
-            onChange(v);
+            runInterval = v;
         } ,
         onChange:function(v) {
             runInterval = v;
