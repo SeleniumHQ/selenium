@@ -1,4 +1,5 @@
-require "hpricot"
+require 'htree/traverse'
+require 'htree/parse'
 
 class TestCaseResult
   def self.parse_jsunit(url)
@@ -12,8 +13,18 @@ class TestCaseResult
   
   private
   def self.failed_commands(table)
-    doc = Hpricot(table)
-    return doc.search("//tr[@bgcolor=#ffcccc]")
+    doc = HTree.parse(table)
+    result = []
+    doc.traverse_element("tr") do |e|
+      begin 
+        bgcolor = e.fetch_attr("bgcolor")
+      rescue
+        # if there isn't "bgcolor" attribute, just ignore this row
+        next
+      end
+      result << e if bgcolor == "#ffcccc"
+    end
+    return result
   end
   
   public

@@ -1,5 +1,6 @@
 require "builder"
-require "hpricot"
+require 'htree/traverse'
+require 'htree/parse'
 
 require "test_case_result"
 
@@ -36,10 +37,16 @@ class SeleniumResult
   end
   
   def test_case_name(i)
-    doc = Hpricot(@req.query["suite"])
+    doc = HTree.parse(@req.query["suite"])
     name = ""
-    doc.search("//a")[i].traverse_text { |t| name += t.to_s }
-    return name
+    position = 0
+    doc.traverse_element("a") do |e| 
+      e.traverse_text do |t|
+        return t.to_s if position == i
+      end
+      position += 1
+    end
+    return nil
   end
   
   private 
