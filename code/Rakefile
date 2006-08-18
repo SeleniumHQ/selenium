@@ -1,31 +1,32 @@
-message = <<EOL
-Please make sure you've installed following gems before running Rake tasks:
+MISSING_LIBRARIES_MESSAGE = <<EOL
+Please make sure you\'ve installed following gems before running Rake tasks:
   gem install builder
   gem install rubyzip
     
 EOL
 
-require 'rake'
+require 'fileutils'
+require 'pathname'
+require 'rubygems'
+
 begin
   require 'zip/zip'
   require 'builder'
 rescue Exception => e
-  puts "#{e.message}\n#{message}"
+  puts "#{e.message}\n#{MISSING_LIBRARIES_MESSAGE}"
   raise "required library cannot be found"
 end
 
 $:.unshift('buildscript')
 $:.unshift('buildscript/lib/htree')
 
-require 'rubygems'
 require 'javascripttest'
 
 CURRENT_VERSION = "0.7.2-SNAPSHOT"
-SELENIUM_ARTIFACT_FILENAME= "build/dist/Selenium-Core-#{CURRENT_VERSION}.zip"
-SELENIUM_JAR_FILENAME = "build/dist/Selenium-Core.jar"
+SELENIUM_ARTIFACT_FILENAME= Pathname.new("build/dist/Selenium-Core-#{CURRENT_VERSION}.zip")
 
 desc "Default Task"
-task :default => [ :clean, :test, :dist ]
+task :default => [ :test, :dist ]
 
 desc "Clean"
 task :clean do 
@@ -33,36 +34,36 @@ task :clean do
   rm_rf 'logs'
 end
 
-desc "Copy files to build/image"
-require 'pathname'
-
 class Dir
-  def copy_to(dest_dir, excludes)
+  def copy_to(dest_dir)
     src_dir = Pathname.new(self.path)
     dest_dir = Pathname.new(dest_dir)
     FileList["#{src_dir}/**/*"].each do |src|
       next if File.directory?(src)
-      next if src =~ excludes
       dest = dest_dir + Pathname.new(src).relative_path_from(src_dir)
-      mkdir_p dest.dirname.to_s
-      cp(src, dest)
+      mkdir_p dest.dirname.to_s unless dest.dirname.directory?
+      cp(src, dest) unless uptodate?(dest, src)
     end
   end
 end
 
+desc "Copy files to build/image"
 task :image do
-  Dir.new('javascript').copy_to('build/image', /\/.svn\//)
+  Dir.new('javascript').copy_to('build/image')
 end
 
 desc "Distribute artifacts" 
-task :dist => [:image] do
+task :dist => SELENIUM_ARTIFACT_FILENAME
+
+file SELENIUM_ARTIFACT_FILENAME => [:image] do
   mkdir_p 'build/dist'
+  rm_f SELENIUM_ARTIFACT_FILENAME
+  puts "building #{SELENIUM_ARTIFACT_FILENAME}"
   Zip::ZipFile::open(SELENIUM_ARTIFACT_FILENAME, true) do |zf|
     Dir['{build/image}/**/*'].each do |f| 
       zf.add(f.gsub(/build\/image\//, ''), f)
     end
   end
-  cp SELENIUM_ARTIFACT_FILENAME, SELENIUM_JAR_FILENAME
   puts "BUILD SUCCESSFUL"
 end
 

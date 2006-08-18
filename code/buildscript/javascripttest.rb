@@ -54,15 +54,18 @@ class JavaScriptTestTask < ::Rake::TaskLib
   
   def define
     task @name do
-      trap("INT") { 
+      trap("INT") {
+        puts "INT! test-server shutdown"
         @server.shutdown
       }
       t = Thread.new { 
+        puts "Starting test-server"
         @server.start
       }
       
       @browsers.each do |browser|
         if browser.supported?
+          puts "Running tests with #{browser}"
           @tests.each do |test|
             browser.setup
             browser.visit("http://localhost:#{@port}#{test}")              
@@ -70,12 +73,13 @@ class JavaScriptTestTask < ::Rake::TaskLib
             browser.teardown
             raise "TEST FAILED" unless passed
           end            
-          
+          puts "Done tests with #{browser}"
         else
           puts "Skipping #{browser}, not supported on this OS"
         end
       end
       
+      puts "Shutting down test-server"
       @server.shutdown
       t.join
     end
