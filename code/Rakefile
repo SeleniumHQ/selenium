@@ -1,12 +1,21 @@
-# Pre-requisites:
-#   gem install builder
-#   gem install hpricot
-#   gem install rubyzip
+message = <<EOL
+Please make sure you've installed following gems before running Rake tasks:
+  gem install builder
+  gem install rubyzip
+    
+EOL
 
 require 'rake'
-require 'zip/zip'
+begin
+  require 'zip/zip'
+  require 'builder'
+rescue Exception => e
+  puts "#{e.message}\n#{message}"
+  raise "required library cannot be found"
+end
 
 $:.unshift('buildscript')
+$:.unshift('buildscript/lib/htree')
 
 require 'rubygems'
 require 'javascripttest'
@@ -54,15 +63,7 @@ task :dist => [:image] do
     end
   end
   cp SELENIUM_ARTIFACT_FILENAME, SELENIUM_JAR_FILENAME
-  if windows? then
-    maven_command = 'mvn.bat'
-  elsif linux? then
-    maven_command = 'mvn'
-  else maven_command = 'mvn'
-  end
-  
-  exec maven_command + " install:install-file -DgroupId=org.openqa.selenium.core -DartifactId=selenium-core -Dversion=#{CURRENT_VERSION} -Dpackaging=jar -Dfile=#{SELENIUM_JAR_FILENAME}"
-  puts "OVER"
+  puts "BUILD SUCCESSFUL"
 end
 
 desc "Runs all the jsunit tests and collects the results"
@@ -75,5 +76,4 @@ JavaScriptTestTask.new(:test) do |t|
   t.run jsunit_tests
   t.run functional_tests
   t.browser(Firefox)
-
 end
