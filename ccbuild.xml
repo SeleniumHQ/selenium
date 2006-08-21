@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="selenium" default="cruise" basedir=".">
+	<macrodef name="svn-update">
+                <attribute name="workdir"/>
+                <sequential>
+                        <exec dir="@{workdir}" executable="svn" failonerror="true">
+                                <arg line="update --non-interactive"/>
+                        </exec>
+                </sequential>
+        </macrodef>
+
+	<target name="_score-build">
+		<svn-update workdir="../score"/>
+		<ant antfile = "build.xml" 
+			dir="../score/code" 
+			target="all-with-tests" 
+			output="score-build.log" />
+	</target>
+
+	<target name="_src-build">
+		<svn-update workdir="."/>
+		<ant antfile = "build.xml" 
+		     dir="." 
+		     output="src-build.log" />
+	</target>
+
+	<target name="cruise" depends="_score-build, _src-build" />
+</project>
+
