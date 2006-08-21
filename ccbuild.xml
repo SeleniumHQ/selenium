@@ -12,7 +12,7 @@
 	<target name="all">
 		<svn-update workdir="."/>
 		<exec command="rake.bat" dir="code"  outputproperty="rake.build.output"/>
-		<fail message="Selenium Core Build Failed">
+		<fail message="Selenium Core Build Failed\n Detail: ${rake.build.output}">
 			<condition>
 				<contains string="${rake.build.output}" substring="rake aborted"
 					casesensitive="false"/>
