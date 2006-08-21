@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="selenium_core" default="all" basedir=".">
+	<macrodef name="svn-update">
+                <attribute name="workdir"/>
+                <sequential>
+                        <exec dir="@{workdir}" executable="svn" failonerror="true">
+                                <arg line="update --non-interactive"/>
+                        </exec>
+                </sequential>
+        </macrodef>
+
+	<target name="all">
+		<svn-update workdir="."/>
+		<exec command="rake.bat" dir="code" failonerror="true"/>
+	</target>
+
+</project>
+
