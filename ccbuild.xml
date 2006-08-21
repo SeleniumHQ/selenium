@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="selenium_core" default="all" basedir=".">
 	<macrodef name="svn-update">
-                <attribute name="workdir"/>
-                <sequential>
-                        <exec dir="@{workdir}" executable="svn" failonerror="true">
-                                <arg line="update --non-interactive"/>
-                        </exec>
-                </sequential>
-        </macrodef>
+		<attribute name="workdir"/>
+		<sequential>
+			<exec dir="@{workdir}" executable="svn" failonerror="true">
+				<arg line="update --non-interactive"/>
+			</exec>
+		</sequential>
+	</macrodef>
 
 	<target name="all">
 		<svn-update workdir="."/>
-		<exec command="rake.bat" dir="code" failonerror="true"/>
+		<exec command="rake.bat" dir="code"  outputproperty="rake.build.output"/>
+		<fail message="Selenium Core Build Failed">
+			<condition>
+				<contains string="${rake.build.output}" substring="rake aborted"
+					casesensitive="false"/>
+			</condition>
+		</fail>
+		<echo message="Selenium Core Build Completed Successfully"/> 
 	</target>
 
 </project>
