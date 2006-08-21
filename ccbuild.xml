@@ -13,7 +13,7 @@
 		<svn-update workdir="../score"/>
 		<ant antfile = "build.xml" 
 			dir="../score/code" 
-			target="all-with-tests" 
+			target="all" 
 			output="score-build.log" />
 	</target>
 
