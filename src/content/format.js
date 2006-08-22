@@ -242,7 +242,7 @@ Format.prototype.saveAs = function(testCase, filename) {
 			testCase.name = file.leafName.replace(/\.\w+$/,'');
 			// save the directory so we can continue to load/save files from the current suite?
 			var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
-			outputStream.init(file, 0x02 | 0x08 | 0x20, 440, 0);
+			outputStream.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
 			var converter = this.getUnicodeConverter();
 			var text = converter.ConvertFromUnicode(this.getFormatter().format(testCase, testCase.name, '', true));
 			outputStream.write(text, text.length);
