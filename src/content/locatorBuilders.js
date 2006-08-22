@@ -48,7 +48,7 @@ LocatorBuilders.prototype.build = function(e) {
 		this.log.debug("trying " + finderName);
 		locator = this.buildWith(finderName, e);
 		if (locator) {
-			locator = new String(locator);
+			locator = String(locator);
 			this.log.debug("locator=" + locator);
 			// test the locator
 			if (e == this.findElement(locator)) {

@@ -71,6 +71,12 @@ function testLinkLocator() {
 	assertLocator("link=Yahoo Japan", builders.buildWith('link', yahooJP), yahooJP);
 }
 
+function testIdLocator() {
+	var input = document.getElementById("test4-input");
+	assertLocator("test4-input", builders.buildWith("id", input), input);
+}
+
+
 function assertLocator(expected, locator, element) {
 	assertEquals(expected, locator);
 	assertEquals(element, builders.pageBot().findElement(locator));
