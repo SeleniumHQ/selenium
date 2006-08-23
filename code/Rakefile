@@ -67,14 +67,22 @@ file SELENIUM_ARTIFACT_FILENAME => [:image] do
   puts "BUILD SUCCESSFUL"
 end
 
-desc "Runs all the jsunit tests and collects the results"
-JavaScriptTestTask.new(:test) do |t|
-  host = "http://localhost:4444"
+task :test => [:unit_tests, :functional_tests]
+
+desc "Runs all the JSunit tests"
+JavaScriptTestTask.new(:unit_tests) do |t|
   timestamp = "%.6f" % Time.now.to_f
-  jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=#{host}/javascript/unittest/browserbot/suite.html&submitResults=#{host}/jsunitResults&t=#{timestamp}" 
-  functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=#{host}/seleniumResults&t=#{timestamp}"
+  jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=/javascript/unittest/browserbot/suite.html&submitResults=ROOT/jsunitResults&t=#{timestamp}" 
   t.mount("/javascript")
   t.run jsunit_tests
+  t.browser(Firefox)
+end
+
+desc "Runs all the functional tests"
+JavaScriptTestTask.new(:functional_tests) do |t|
+  timestamp = "%.6f" % Time.now.to_f
+  functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=/seleniumResults&t=#{timestamp}"
+  t.mount("/javascript")
   t.run functional_tests
   t.browser(Firefox)
 end
