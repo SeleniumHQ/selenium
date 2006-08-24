@@ -50,7 +50,7 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 };
 
 Selenium.prototype.doPause = function(waitTime) {
-    testLoop.pauseInterval = waitTime;
+    currentTest.pauseInterval = waitTime;
 };
 
 // doStore* methods are copied from selenium-testrunner.js
@@ -120,18 +120,18 @@ var LOG = new Logger();
 // runner functions
 //
 
-testLoop = null;
+currentTest = null;
 stopping = false;
 
 function stopAndDo(func, arg1, arg2) {
-	if (testLoop && editor.state != 'paused') {
+	if (currentTest && editor.state != 'paused') {
 		LOG.debug("stopping... (state=" + editor.state + ")");
 		stopping = true;
 		setTimeout(func, 500, arg1, arg2);
 		return false;
 	}
 	stopping = false;
-	testLoop = null;
+	currentTest = null;
 	testCase.debugContext.reset();
 	for (var i = 0; i < testCase.commands.length; i++) {
 		delete testCase.commands[i].result;
@@ -152,23 +152,23 @@ function start(baseURL) {
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
 
-	testLoop = new TestLoop(commandFactory);
+	currentTest = new TestLoop(commandFactory);
 		
-	testLoop.getCommandInterval = function() { return stopping ? -1 : getInterval(); }
-	testLoop.nextCommand = function() {
+	currentTest.getCommandInterval = function() { return stopping ? -1 : getInterval(); }
+	currentTest.nextCommand = function() {
 		if (testCase.debugContext.debugIndex >= 0)
 			editor.view.rowUpdated(testCase.debugContext.debugIndex);
 		var command = testCase.debugContext.nextCommand();
 		if (command == null) return null;
 		return new SeleniumCommand(command.command, command.target, command.value);
 	}
-	testLoop.firstCommand = testLoop.nextCommand; // Selenium <= 0.6 only
-	testLoop.commandStarted = function() {
+	currentTest.firstCommand = currentTest.nextCommand; // Selenium <= 0.6 only
+	currentTest.commandStarted = function() {
 		editor.setState("playing");
 		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 		editor.view.scrollToRow(testCase.debugContext.debugIndex);
 	}
-	testLoop.commandComplete = function(result) {
+	currentTest.commandComplete = function(result) {
 		if (result.failed) {
 			testCase.debugContext.currentCommand().result = 'failed';
 		} else if (result.passed) {
@@ -178,24 +178,24 @@ function start(baseURL) {
 		}
 		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
-	testLoop.commandError = function() {
+	currentTest.commandError = function() {
 		LOG.debug("commandError");
 		testCase.debugContext.currentCommand().result = 'failed';
 		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
-	testLoop.testComplete = function() {
+	currentTest.testComplete = function() {
 		LOG.debug("testComplete");
 		editor.setState(null);
-		testLoop = null;
+		currentTest = null;
 		testCase.debugContext.reset();
 		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
-	testLoop.pause = function() {
+	currentTest.pause = function() {
 		editor.setState("paused");
 	}
 
 	testCase.debugContext.reset();
-	testLoop.start();
+	currentTest.start();
 }
 
 function executeCommand(baseURL, command) {
@@ -212,11 +212,11 @@ function executeCommand(baseURL, command) {
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
 	
-	testLoop = new TestLoop(commandFactory);
+	currentTest = new TestLoop(commandFactory);
 		
-	testLoop.getCommandInterval = function() { return 0; }
+	currentTest.getCommandInterval = function() { return 0; }
 	var first = true;
-	testLoop.nextCommand = function() {
+	currentTest.nextCommand = function() {
 		if (first) {
 			first = false;
 			testCase.debugContext.debugIndex = testCase.commands.indexOf(command);
@@ -225,11 +225,11 @@ function executeCommand(baseURL, command) {
 			return null;
 		}
 	}
-	testLoop.firstCommand = testLoop.nextCommand; // Selenium <= 0.6 only
-	testLoop.commandStarted = function() {
+	currentTest.firstCommand = currentTest.nextCommand; // Selenium <= 0.6 only
+	currentTest.commandStarted = function() {
 		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
-	testLoop.commandComplete = function(result) {
+	currentTest.commandComplete = function(result) {
 		if (result.failed) {
 			command.result = 'failed';
 		} else if (result.passed) {
@@ -239,33 +239,33 @@ function executeCommand(baseURL, command) {
 		}
 		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
-	testLoop.commandError = function() {
+	currentTest.commandError = function() {
 		command.result = 'failed';
 		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
-	testLoop.testComplete = function() {
-		testLoop = null;
+	currentTest.testComplete = function() {
+		currentTest = null;
 		testCase.debugContext.reset();
 		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
-	testLoop.pause = function() {
+	currentTest.pause = function() {
 		editor.setState("paused");
 	}
 
-	testLoop.start();
+	currentTest.start();
 }
 
 function continueCurrentTest() {
-	if (testLoop != null) {
-		if (testLoop.resume) {
+	if (currentTest != null) {
+		if (currentTest.resume) {
 			// Selenium 0.7?
-			testLoop.resume();
+			currentTest.resume();
 		} else {
 			// Selenium 0.6
-			testLoop.finishCommandExecution();
+			currentTest.finishCommandExecution();
 		}
 	} else {
-		LOG.error("testLoop is null");
+		LOG.error("currentTest is null");
 	}
 }
 

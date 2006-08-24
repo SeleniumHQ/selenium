@@ -165,6 +165,11 @@ limitations under the License.
 
     <vbox id="logBox" flex="1" height="100">
       <hbox id="logMenu" align="center">
+
+	<label id="logLabel" value="&logConsole.label;" onclick="editor.switchConsole('log')" />
+	<label id="helpLabel" value="&reference.label;" onclick="editor.switchConsole('help')"/>
+	<spacer flex="1"/>
+	<hbox align="center" id="logButtons">
 	<menulist id="logFilter" oncommand="editor.selDebugger.reloadLog()">
 	  <menupopup>
 	    <menuitem label="&logFilter.debug.label;" value="0"/>
@@ -174,8 +179,11 @@ limitations under the License.
 	  </menupopup>
 	</menulist>
 	<button id="logClear" label="&logClear.label;" oncommand="editor.selDebugger.clearLog()"/>
+	</hbox>
       </hbox>
-      <iframe flex="1" id="logView" src="LogFrame.html">
+      <iframe flex="1" id="logView" src="LogFrame.html" onload="editor.selDebugger.logFrame.refresh()">
+      </iframe>
+      <iframe flex="1" id="helpView" hidden="true">
       </iframe>
     </vbox>
   </vbox>
