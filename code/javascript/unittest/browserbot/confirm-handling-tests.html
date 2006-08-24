@@ -30,9 +30,8 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
-   testFrame =  document.getElementById("frame");
-   testWindow = testFrame.contentWindow;
-   browserBot = BrowserBot.createForFrame(testFrame);
+   testWindow = window;
+   browserBot = BrowserBot.createForWindow(testWindow);
    browserBot.getCurrentPage();
 }
 
@@ -88,7 +87,6 @@ function testShouldRemoveConfirmationWhenItIsRetreived() {
 
   <body>
     <h1>Selenium PageBot Confirm Handling Tests</h1>
-    <iframe NAME="frame" ID="frame" SRC=""></iframe>
     
   </body>
 </html>

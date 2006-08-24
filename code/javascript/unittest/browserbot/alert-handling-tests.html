@@ -32,7 +32,7 @@ Copyright 2004 ThoughtWorks, Inc
 function setUp() {
    testFrame =  document.getElementById("frame");
    testWindow = testFrame.contentWindow;
-   browserBot = BrowserBot.createForFrame(testFrame);
+   browserBot = BrowserBot.createForWindow(testWindow);
    browserBot.getCurrentPage();
 }
 

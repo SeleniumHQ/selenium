@@ -36,7 +36,7 @@ function setUp() {
 
     // To be realistic, the elements are located in a separate IFrame.
     var iframe = document.getElementById("testIframe");
-    var iWindow = iframe.contentWindow.window;
+    iWindow = iframe.contentWindow.window;
     frameDocument = iWindow.document;
 
     pageBot = PageBot.createForWindow(iWindow);
@@ -142,7 +142,7 @@ function testIdentifierLocatorReturnsFirstElementWithMatchingName() {
 //
 function testLocateElementByDomTraversal() {
     assertEquals(element2,
-            pageBot.findElementBy('dom', "document.links[1]", frameDocument));
+            pageBot.findElementBy('dom', "document.links[1]", frameDocument, iWindow));
 }
 
 function testLocateElementByDomTraversalReturnsNullForNoMatchingElement() {

@@ -31,12 +31,8 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 function setUp() {
-    mockFrame = new String('mockFrame');
-
-    mockFrame.contentWindow = new String('mockContentWindow');
-    mockFrame.contentWindow.window = new String('mockWindow');
-
-    browserBot = new MozillaBrowserBot(mockFrame);
+    mockWindow = new String('mockWindow');
+    browserBot = new MozillaBrowserBot(mockWindow);
 
     browserBot.currentWindowName = 'originalWindowName';
     browserBot.currentPage = 'originalPage';
@@ -51,7 +47,7 @@ function testPageAndCurrentWindowNameIsSetToNullWhenSelectWindowIsCalledWithNull
 
 function testPageIsSetToNullAndCurrentWindowIsSetWhenSelectWindowIsCalledWithNonNull() {
     // Make sure new window can be found
-    mockFrame.contentWindow.window.windowName = new String('anotherWindow');
+    mockWindow.windowName = new String('anotherWindow');
 
     browserBot.selectWindow('windowName');
 
@@ -71,13 +67,13 @@ function testExceptionWhenSelectWindowIsCalledWithUnknownWindowName() {
 
 function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocationWhenThereIsNoCurrentWindow() {
     browserBot.currentWindowName = null;
-    mockFrame.contentWindow.window.location = {
+    mockWindow.location = {
         href:""
     };
     browserBot.openLocation('myNewLocation');
 
     assertNull(browserBot.currentPage);
-    assertEquals('myNewLocation', mockFrame.contentWindow.window.location.href);
+    assertEquals('myNewLocation', mockWindow.location.href);
 }
 
 function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIsNull() {
@@ -87,15 +83,15 @@ function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIs
     var mockLocation = new Mock();
     mockLocation.expectsProperty('pathname').returns('thelocation');
 
-    mockFrame.contentWindow.window.location = mockLocation;
-    mockFrame.contentWindow.window.document = 'thedocument';
-    mockFrame.contentWindow.window.addEventListener = function(){};
-    mockFrame.contentWindow.window.attachEvent = function(){};
+    mockWindow.location = mockLocation;
+    mockWindow.document = 'thedocument';
+    mockWindow.addEventListener = function(){};
+    mockWindow.attachEvent = function(){};
 
     var pageBot = browserBot.getCurrentPage();
     assertEquals(pageBot, browserBot.currentPage);
 
-    assertEquals(mockFrame.contentWindow.window, pageBot.currentWindow);
+    assertEquals(mockWindow, pageBot.currentWindow);
     assertEquals('thedocument', pageBot.currentDocument);
     assertEquals(mockLocation, pageBot.location);
 
@@ -108,20 +104,12 @@ function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSe
     var mockLocation = new Mock();
     mockLocation.expectsProperty('pathname').returns('thelocation');
 
-    targetWindow = new String('anotherWindow');
-    targetWindow.location = mockLocation;
-    targetWindow.addEventListener = function(){};
-    targetWindow.attachEvent = function(){};
-
-    mockFrame.contentWindow.window.targetWindow = targetWindow;
-
-    browserBot.currentWindowName = 'targetWindow';
-    var detectPageTransition = false;
-    browserBot.callOnWindowPageTransition = function() { detectPageTransition = true; };
+    mockWindow.location = mockLocation;
+    mockWindow.addEventListener = function(){};
+    mockWindow.attachEvent = function(){};
 
     var pageBot = browserBot.getCurrentPage();
-    assertEquals(targetWindow, pageBot.currentWindow);
-    assertTrue(detectPageTransition);
+    assertEquals(mockWindow, pageBot.currentWindow);
 
     mockLocation.verify();
 }

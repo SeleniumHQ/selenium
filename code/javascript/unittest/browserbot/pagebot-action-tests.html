@@ -37,6 +37,7 @@ function setUp() {
     initialiseRadios()
     initialiseButtons()
     pageBot = PageBot.createForWindow(window);
+    pageBot.windowClosed = function() {};
 }
 
 function attachEventListeners(element, eventSink) {
@@ -98,25 +99,25 @@ function initialiseButtons() {
     attachEventListeners(theSubmit, submitEvents)
 }
 
-function testSelectOptionShouldSelectAndTriggerFocusChangeAndBlur() {
+function testSelectOptionShouldSelectAndTriggerFocusChange() {
     pageBot.selectOption(theSelect, theSelect.options[2])
 
     assertEquals("option3", theSelect.value)
-    assertEquals("focus,change,blur", theSelectEvents.join());
+    assertEquals("focus,change", theSelectEvents.join());
 }
 
 function testSelectAlreadySelectedOptionWithLabelShouldNotTriggerChange() {
     pageBot.selectOption(theSelect, theSelect.options[1])
 
     assertEquals("option2", theSelect.value)
-    assertEquals("focus,blur", theSelectEvents.join())
+    assertEquals("focus", theSelectEvents.join())
 }
 
-function testReplaceTextInTextBoxShouldTriggerFocusSelectChangeBlur() {
+function testReplaceTextInTextBoxShouldTriggerFocusSelectChange() {
     pageBot.replaceText(theTextbox, "new text")
     assertEquals("new text", theTextbox.value)
 
-    assertEquals("focus,select,change,blur", textboxEvents.join())
+    assertEquals("focus,select,change", textboxEvents.join())
 }
 
 function TODO_testReplaceTextShouldNotTriggerSelectIfOriginallyEmpty() {
@@ -125,10 +126,10 @@ function TODO_testReplaceTextShouldNotTriggerSelectIfOriginallyEmpty() {
     pageBot.replaceText(theTextbox, "new text")
 
     assertEquals("new text", theTextbox.value)
-    assertEquals("focus,change,blur", textboxEvents.join());
+    assertEquals("focus,change", textboxEvents.join());
 }
 
-function testClickCheckboxShouldTriggerFocusClickChangeAndBlur() {
+function testClickCheckboxShouldTriggerFocusClickChange() {
     pageBot.clickElement(theCheckbox)
 
     assertTrue("Checkbox should be checked", theCheckbox.checked)
@@ -136,11 +137,11 @@ function testClickCheckboxShouldTriggerFocusClickChangeAndBlur() {
     // Emulate actual event order (varies per browser for manual click)
     if (browserVersion.isSafari)
     {
-      assertEquals("focus,change,click,blur", checkboxEvents.join())
+      assertEquals("focus,change,click", checkboxEvents.join())
     }
     else
     {
-      assertEquals("focus,click,change,blur", checkboxEvents.join())
+      assertEquals("focus,click,change", checkboxEvents.join())
     }
 }
 
@@ -150,7 +151,7 @@ function testClickCheckboxShouldUncheckIfAlreadyChecked() {
     assertFalse("Checkbox shouldn't be checked", theCheckbox.checked)
 }
 
-function testClickRadioShouldTriggerFocusClickChangeAndBlur() {
+function testClickRadioShouldTriggerFocusClickChange() {
     pageBot.clickElement(theRadio2)
     assertFalse("Radio1 shouldn't be checked", theRadio1.checked)
     assertTrue("Radio should be checked", theRadio2.checked)
@@ -160,11 +161,11 @@ function testClickRadioShouldTriggerFocusClickChangeAndBlur() {
     // Safari-real doesn't support change events on radio
     if (browserVersion.isSafari)
     {
-      assertEquals("focus,click,blur", radio2Events.join());
+      assertEquals("focus,click", radio2Events.join());
     }
     else
     {
-      assertEquals("focus,click,change,blur", radio2Events.join())
+      assertEquals("focus,click,change", radio2Events.join())
     }
 }
 
@@ -173,20 +174,19 @@ function testClickRadioShouldNotTriggerChangeIfAlreadySelected() {
     pageBot.clickElement(theRadio1)
     assertTrue("Radio1 should be checked", theRadio1.checked)
 
-    assertEquals("focus,click,blur", radio1Events.join())
+    assertEquals("focus,click", radio1Events.join())
     assertEquals("", radio2Events.join())
 }
 
-function testClickButtonShouldTriggerFocusClickAndBlur() {
+function testClickButtonShouldTriggerFocusClick() {
     pageBot.clickElement(theButton)
 
-    assertEquals("focus,click,blur", buttonEvents.join())
+    assertEquals("focus,click", buttonEvents.join())
 }
 
-function testClickSubmitShouldTriggerFocusClickAndBlur() {
+function testClickSubmitShouldTriggerFocusClick() {
     pageBot.clickElement(theSubmit)
-
-    assertEquals("focus,click,blur", submitEvents.join())
+    assertEquals("focus,click", submitEvents.join())
 }
 
 function testClickShouldNotTriggerEventsPassedClickIfWindowIsClosed() {
