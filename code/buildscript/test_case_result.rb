@@ -1,14 +1,32 @@
+require 'cgi'
 require 'htree/traverse'
 require 'htree/parse'
 
+# Represents the results of a test-case
 class TestCaseResult
+
   def self.parse_jsunit(url)
-    test_case_strings = url.split("/").last.split("|")
-    TestCaseResult.new(test_case_strings[0], test_case_strings[2] == 'S', test_case_strings[3], test_case_strings[1])
+    (name, time, status, message) = url.split('|', 4)
+    result = TestCaseResult.new(name.split("/").last, time)
+    case status
+    when 'S'
+      # okay
+    when 'F'
+      result.failure_message = message
+    when 'E'
+      result.error_message = message
+    else
+      raise "unrecognised status: #{status}"
+    end
+    result
   end
   
   def self.parse_selenium(table, name)
-    TestCaseResult.new(name.strip, failed_commands(table).size == 0, table)
+    result = TestCaseResult.new(name.strip)
+    if failed_commands(table).size > 0
+      result.failure_message = table
+    end
+    result
   end
   
   private
@@ -28,21 +46,27 @@ class TestCaseResult
   end
   
   public
-  def initialize(testname, pass, message=nil, time=0)
-    @testname = testname
-    @pass = pass
-    @message = message
+
+  def initialize(name, time=nil)
+    @name = name
     @time = time
   end
-  attr_reader :testname, :time, :message
+
+  attr_reader :name, :time
+  attr_accessor :failure_message, :error_message
   
-  def pass?
-    @pass
+  def passed?
+    @failure_message.nil? && @error_message.nil?
   end
-  
+
   def to_xml
-    result = "<testcase name='#{@testname}' time='#{@time}'>\n"
-    result << "\t<failure message='#{CGI::escape(@message)}' />\n" unless @pass
-    result << "</testcase>\n"
+    xml = %{<testcase name="#{@name}"}
+    xml << %{ time="#{@time}"} if @time
+    xml << ">\n"
+    xml << %{  <failure message="#{CGI::escapeHTML(@failure_message)}"/>\n} if @failure_message
+    xml << %{  <error message="#{CGI::escapeHTML(@error_message)}"/>\n} if @error_message
+    xml << %{</testcase>\n}
+    xml
   end
+
 end

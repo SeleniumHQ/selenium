@@ -54,7 +54,7 @@ class SeleniumResultTest < Test::Unit::TestCase
     assert(xml.include?('errors="0"'))
   end
   
-  def test_should_generate_negtive_junit_report_from_request_when_haveing_tests_failed
+  def test_should_generate_negtive_junit_report_from_request_with_tests_failed
     result = SeleniumResult.new(@failed_result_req)
     error_message = "Actual value 'http://localhost:8889/javascript/tests/html/test_open_nonexist.html' did not match '*/tests/html/test_open.html'"
     xml = result.to_xml()
@@ -66,7 +66,7 @@ class SeleniumResultTest < Test::Unit::TestCase
     doc = Hpricot(xml)
     failures = doc.search("//testcase/failure")
     assert_equal(1, failures.size)
-    assert(failures[0].attributes["message"].include?(CGI::escape(error_message)))
+    assert(failures[0].attributes["message"].include?(CGI::escapeHTML(error_message)))
   end
   
   def test_should_generate_result_table_from_request
@@ -110,45 +110,4 @@ class RequestStub
     end
     return result
   end
-end
-
-class TestCaseResultTest < Test::Unit::TestCase
-  
-  def test_xml_generation_for_succeed_test
-    doc = Hpricot(TestCaseResult.new("name", true).to_xml())
-    assert_equal(1, doc.search("/testcase[@name=name]").size)    
-  end
-  
-  def test_should_include_failure_tag_if_test_failed
-    doc = Hpricot(TestCaseResult.new("name", false, "error").to_xml())
-    assert_equal(1, doc.search("/testcase/failure").size)
-  end
-  
-  def test_should_have_failed_test_case_result
-    url = 'some_web_site/alert-handling-tests.html:testShouldRemoveAlertWhenItIsRetreived|0.016|F|some message|'
-    test_case = TestCaseResult.parse_jsunit(url)
-    assert_equal(false, test_case.pass?)
-  end
-  
-  def test_should_extract_time_of_running_jsunit_test_case
-    url = 'some_web_site/alert-handling-tests.html:testShouldRemoveAlertWhenItIsRetreived|0.016|S||'
-    test_case = TestCaseResult.parse_jsunit(url)
-    assert_equal("0.016", test_case.time)
-  end
-  
-  def test_should_extract_name_of_jsunit_test_case
-    url = 'some_web_site/alert-handling-tests.html:testShouldRemoveAlertWhenItIsRetreived|0.016|S||'
-    test_case = TestCaseResult.parse_jsunit(url)
-    assert(test_case.instance_of?(TestCaseResult))
-    assert_equal('alert-handling-tests.html:testShouldRemoveAlertWhenItIsRetreived', test_case.testname)
-  end
-  
-  def test_should_parse_test_case_from_html_table
-    table = CGI::unescape("%3Cdiv%3E%0D%0A%3Ctable+border%3D%221%22+cellpadding%3D%221%22+cellspacing%3D%221%22%3E%0D%0A++%3Ctbody%3E%0D%0A++++%3Ctr+bgcolor%3D%22%23ccffcc%22%3E%0D%0A++++++%3Ctd+rowspan%3D%221%22+colspan%3D%223%22%3ETest+Form+Auto-completion+is+disabled%3Cbr%3E%0D%0A++++++%3C%2Ftd%3E%0D%0A++++%3C%2Ftr%3E%0D%0A++++++%3Ctr+style%3D%22cursor%3A+pointer%3B%22+bgcolor%3D%22%23eeffee%22%3E%0D%0A++++++++%3Ctd%3Eopen%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3E..%2Ftests%2Fhtml%2Ftest_type_page1.html%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3E%26nbsp%3B%3C%2Ftd%3E%0D%0A++++++%3C%2Ftr%3E%0D%0A++++++%3Ctr+style%3D%22cursor%3A+pointer%3B%22+bgcolor%3D%22%23eeffee%22%3E%0D%0A++++++++%3Ctd%3Etype%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3Eusername%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3ETestUser%3C%2Ftd%3E%0D%0A++++++%3C%2Ftr%3E%0D%0A++++++%3Ctr+style%3D%22cursor%3A+pointer%3B%22+bgcolor%3D%22%23eeffee%22%3E%0D%0A++++++++%3Ctd%3Etype%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3Epassword%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3EtestUserPassword%3C%2Ftd%3E%0D%0A++++++%3C%2Ftr%3E%0D%0A++++++%3Ctr+style%3D%22cursor%3A+pointer%3B%22+bgcolor%3D%22%23eeffee%22%3E%0D%0A++++++++%3Ctd%3EclickAndWait%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3EsubmitButton%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3E%26nbsp%3B%3C%2Ftd%3E%0D%0A++++++%3C%2Ftr%3E%0D%0A++++++%3Ctr+style%3D%22cursor%3A+pointer%3B%22+bgcolor%3D%22%23ccffcc%22%3E%0D%0A++++++++%3Ctd%3EverifyTextPresent%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3EWelcome%2C+TestUser%21%3Cbr%3E%0D%0A++++++++%3C%2Ftd%3E%0D%0A++++++++%3Ctd%3E%26nbsp%3B%3C%2Ftd%3E%0D%0A++++++%3C%2Ftr%3E%0D%0A++%3C%2Ftbody%3E%0D%0A%3C%2Ftable%3E%0D%0A%0D%0A%3C%2Fdiv%3E")
-    test_name = "sample test case"
-    test_case = TestCaseResult.parse_selenium(table, test_name)
-    assert_equal(table, test_case.message)
-    assert_equal(test_name, test_case.testname)
-  end
-    
 end

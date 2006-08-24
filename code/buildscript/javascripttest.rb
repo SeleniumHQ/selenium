@@ -32,7 +32,7 @@ class JavaScriptTestTask < ::Rake::TaskLib
     @tests = []
     @mounts = {}
     @browsers = []
-    @port = 4444
+    @port = 4445
     
     @queue = Queue.new
     
@@ -63,7 +63,7 @@ class JavaScriptTestTask < ::Rake::TaskLib
   
   def parse_result(parser, log_file)
     xml = parser.to_xml()
-    mkdir_p 'logs'
+    mkdir_p('logs') unless File.exist?('logs')
     File.open(log_file, "w") do |f|
       f << xml
     end

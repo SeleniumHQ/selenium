@@ -4,6 +4,7 @@ require 'builder'
 require "test_case_result"
 
 class JsUnitResult
+
   def initialize(req)
     @req = req
     @test_cases = parse
@@ -12,7 +13,7 @@ class JsUnitResult
   def to_xml
     fail_count = 0
     @test_cases.each do |test_case|
-      fail_count += 1 unless test_case.pass?
+      fail_count += 1 unless test_case.passed?
     end
     xml = Builder::XmlMarkup.new
     xml.testsuite(:name => "JsUnitTests", :tests => @test_cases.size, :errors => 0, :failures => fail_count) do
@@ -24,7 +25,7 @@ class JsUnitResult
   
   def success?
     @test_cases.each do |test_case|
-      return false unless test_case.pass?
+      return false unless test_case.passed?
     end
     return true
   end
@@ -34,8 +35,8 @@ class JsUnitResult
   private
   def parse
     strings = CGI::unescape(@req.body).split("&testCases=")
+    strings.shift
     result = []
-    strings.delete_at(0)
     strings.each do |url|
       result << TestCaseResult.parse_jsunit(url)
     end
