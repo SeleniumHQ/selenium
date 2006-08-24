@@ -36,13 +36,14 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
         output = new File(getName() + "-results.html");
         System.out.println("Will print results to " + output.getAbsolutePath());
         HttpRequest.__maxFormContentSize = 400000;
-        server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
+        
+    }
+    
+    protected void runHTMLSuite(String browser, boolean slowResources) throws Exception {
+        server = new SeleniumServer(SeleniumServer.DEFAULT_PORT, slowResources);
         launcher = new HTMLLauncher(server);
         server.start();
         browserURL = "http://localhost:" + server.getPort();
-    }
-    
-    protected void runHTMLSuite(String browser) throws Exception {
         String testURL = browserURL + "/selenium-server/tests/" + suiteName;
         long timeout = 1000 * 60 * 10; // ten minutes
         String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);

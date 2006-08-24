@@ -3,13 +3,19 @@ package org.openqa.selenium.server;
 
 public class LinuxHTMLRunnerTest extends HTMLRunnerTestBase {
     public void testFirefox() throws Exception{
-        runHTMLSuite("*firefox");
+        runHTMLSuite("*firefox", false);
+    }
+    
+    public void testFirefoxSlow() throws Exception{
+        runHTMLSuite("*firefox", true);
     }
         
     public void testChrome() throws Exception {
-        // TODO incorporate Shinya's fixes from Selenium IDE
-        // This test should pass
-        runHTMLSuite("*chrome");
+        runHTMLSuite("*chrome", false);
+    }
+    
+    public void testChromeSlow() throws Exception {
+        runHTMLSuite("*chrome", true);
     }
 
 }
