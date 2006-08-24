@@ -31,32 +31,39 @@ var cmd4 = document.createElement("div");
 
 var postResult = "START";
 var debugMode = false;
-var relayToRC = null;	// override in injection.html
+var relayToRC = null;
+// override in injection.html
 var queryString = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
-function runSeleniumTest() {
-    var testAppFrame = document.getElementById('myiframe');
 
-    if (testAppFrame==null) {
+function runSeleniumTest() {
+    var testAppWindow;
+
+    if (isQueryParameterTrue('multiWindow')) {
+        testAppWindow = openSeparateApplicationWindow('Blank.html');
+    } else {
+        testAppWindow = $('myiframe').contentWindow;
+    }
+    if (testAppWindow == null) {
         proxyInjectionMode = true;
-    	testAppFrame = window;
+        testAppWindow = window;
     }
     else
     {
         proxyInjectionMode = false;
     }
 
-    selenium = Selenium.createForFrame(testAppFrame);
+    selenium = Selenium.createForWindow(testAppWindow);
     if (!debugMode) {
-    	debugMode = getQueryVariable("debugMode");
+        debugMode = getQueryVariable("debugMode");
     }
     if (proxyInjectionMode) {
         LOG.log = logToRc;
     }
     else if (debugMode) {
-    	LOG.logHook = logToRc;
+        LOG.logHook = logToRc;
     }
     window.selenium = selenium;
 
@@ -66,35 +73,35 @@ function runSeleniumTest() {
     currentTest = new SeleneseRunner(commandFactory);
 
     if (document.getElementById("commandList") != null) {
-    	document.getElementById("commandList").appendChild(cmd4);
+        document.getElementById("commandList").appendChild(cmd4);
         document.getElementById("commandList").appendChild(cmd3);
         document.getElementById("commandList").appendChild(cmd2);
         document.getElementById("commandList").appendChild(cmd1);
     }
 
     var doContinue = getQueryVariable("continue");
-	if (doContinue != null) postResult = "OK";
+    if (doContinue != null) postResult = "OK";
 
     currentTest.start();
 }
 
 function getQueryString() {
-	if (queryString != null) return queryString;
-	if (browserVersion.isHTA) {
-		var args = extractArgs();
-		if (args.length < 2) return null;
-		queryString = args[1];
-		return queryString;
-        } else if (proxyInjectionMode) {
-        	return selenium.browserbot.getCurrentWindow().location.search.substr(1);
-    	} else {
-		return top.location.search.substr(1);
-	}
+    if (queryString != null) return queryString;
+    if (browserVersion.isHTA) {
+        var args = extractArgs();
+        if (args.length < 2) return null;
+        queryString = args[1];
+        return queryString;
+    } else if (proxyInjectionMode) {
+        return selenium.browserbot.getCurrentWindow().location.search.substr(1);
+    } else {
+        return top.location.search.substr(1);
+    }
 }
 
 function extractArgs() {
-	var str = SeleniumHTARunner.commandLine;
-	if (str == null || str == "") return new Array();
+    var str = SeleniumHTARunner.commandLine;
+    if (str == null || str == "") return new Array();
     var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")(\S+))/g);
     // We either want non quote stuff ([^"]+) surrounded by quotes
     // or we want to look-ahead, see that the next character isn't
@@ -115,7 +122,7 @@ function getQueryVariable(variable) {
     var query = getQueryString();
     if (query == null) return null;
     var vars = query.split("&");
-    for (var i=0;i<vars.length;i++) {
+    for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split("=");
         if (pair[0] == variable) {
             return pair[1];
@@ -124,27 +131,27 @@ function getQueryVariable(variable) {
 }
 
 function buildBaseUrl() {
-	var baseUrl = getQueryVariable("baseUrl");
-        if (baseUrl != null) {
-        	return baseUrl;
-        }
-        var s=window.location.href
-        var slashPairOffset=s.indexOf("//") + "//".length
-        var pathSlashOffset=s.substring(slashPairOffset).indexOf("/")
-        return s.substring(0, slashPairOffset + pathSlashOffset) + "/selenium-server/core/";
+    var baseUrl = getQueryVariable("baseUrl");
+    if (baseUrl != null) {
+        return baseUrl;
+    }
+    var s = window.location.href
+    var slashPairOffset = s.indexOf("//") + "//".length
+    var pathSlashOffset = s.substring(slashPairOffset).indexOf("/")
+    return s.substring(0, slashPairOffset + pathSlashOffset) + "/selenium-server/core/";
 }
 
 function logToRc(message, logLevel) {
-    if (logLevel==null) {
-    	logLevel = "debug";
+    if (logLevel == null) {
+        logLevel = "debug";
     }
     if (debugMode) {
-    	sendToRC("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/, " ") + "\n");
+        sendToRC("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/, " ") + "\n");
     }
 }
 
 function isArray(x) {
-    return ((typeof x)=="object") && (x["length"]!=null);
+    return ((typeof x) == "object") && (x["length"] != null);
 }
 
 function serializeString(name, s) {
@@ -159,7 +166,7 @@ function serializeObject(name, x)
     {
         s = name + "=new Array(); ";
         var len = x["length"];
-        for (var j = 0; j<len; j++)
+        for (var j = 0; j < len; j++)
         {
             s += serializeString(name + "[" + j + "]", x[j]);
         }
@@ -175,10 +182,11 @@ function serializeObject(name, x)
     return s;
 }
 
-function relayBotToRC(s) {}
+function relayBotToRC(s) {
+}
 
 function setSeleniumWindowName(seleniumWindowName) {
-	selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
+    selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
 }
 
 function slowClicked() {
@@ -361,22 +369,23 @@ Object.extend(SeleneseRunner.prototype, {
 
 
 function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
-    if (async==null) {
-    	async = true;
+    if (async == null) {
+        async = true;
     }
-    if (xmlHttpObject==null) {
- 	xmlHttpObject = XmlHttp.create();
+    if (xmlHttpObject == null) {
+        xmlHttpObject = XmlHttp.create();
     }
     var url = buildBaseUrl() + "driver/?"
     if (urlParms) {
-    	url += urlParms;
+        url += urlParms;
     }
     url += "&localFrameAddress=" + (proxyInjectionMode ? makeAddressToAUTFrame() : "top");
     url += "&seleniumWindowName=" + getSeleniumWindowName();
     url += "&uniqueId=" + uniqueId;
 
-    if (callback==null) {
-    	callback = function(){};
+    if (callback == null) {
+        callback = function() {
+        };
     }
     url += buildDriverParams() + preventBrowserCaching();
     xmlHttpObject.open("POST", url, async);
@@ -396,7 +405,7 @@ function buildDriverParams() {
 
     var sessionId = getQueryVariable("sessionId");
     if (sessionId == undefined) {
-    	sessionId = injectedSessionId;
+        sessionId = injectedSessionId;
     }
     if (sessionId != undefined) {
         params = params + "&sessionId=" + sessionId;
@@ -420,34 +429,34 @@ function preventBrowserCaching() {
 // itself).  In this case, return "?".
 //
 function getSeleniumWindowName() {
-	var w = (proxyInjectionMode ? selenium.browserbot.getCurrentWindow() : window);
-	if (w.opener==null) {
-        	return "";
-        }
-        if (w["seleniumWindowName"]==null) {
-        	return "?";
-        }
-        return w["seleniumWindowName"];
+    var w = (proxyInjectionMode ? selenium.browserbot.getCurrentWindow() : window);
+    if (w.opener == null) {
+        return "";
+    }
+    if (w["seleniumWindowName"] == null) {
+        return "?";
+    }
+    return w["seleniumWindowName"];
 }
 
 // construct a JavaScript expression which leads to my frame (i.e., the frame containing the window
 // in which this code is operating)
 function makeAddressToAUTFrame(w, frameNavigationalJSexpression)
 {
-    if (w==null)
+    if (w == null)
     {
-        w=top;
+        w = top;
         frameNavigationalJSexpression = "top";
     }
 
-    if (w==selenium.browserbot.getCurrentWindow())
+    if (w == selenium.browserbot.getCurrentWindow())
     {
         return frameNavigationalJSexpression;
     }
     for (var j = 0; j < w.frames.length; j++)
     {
         var t = makeAddressToAUTFrame(w.frames[j], frameNavigationalJSexpression + ".frames[" + j + "]");
-        if (t!=null)
+        if (t != null)
         {
             return t;
         }

@@ -64,15 +64,34 @@ FAILURE = 1;
 
 runInterval = 0;
 
+selenium = null;
 queryString = null;
 
-function getApplicationFrame() {
-    var f = document.getElementById('myiframe');
-    if (f == null) {
-        f = top;
-        // proxyInjection mode does not set myiframe
+warned = null;
+
+var appWindow;
+/**
+ * Get the window that will hold the AUT.
+ *
+ * If the query-pamemeter "multiWindow" is set, this returns a separate
+ * top-level window, suitable for testing "frame-busting" applications.
+ * Otherwise, it returns an embedded iframe window.
+ */
+function getApplicationWindow() {
+    if (isQueryParameterTrue('multiWindow')) {
+        return getSeparateApplicationWindow();
     }
-    return f;
+    return $('myiframe').contentWindow;
+}
+
+/**
+ * Get (or create) the separate top-level AUT window.
+ */
+function getSeparateApplicationWindow() {
+    if (appWindow == null) {
+        appWindow = openSeparateApplicationWindow('TestRunner-splash.html');
+    }
+    return appWindow;
 }
 
 function getSuiteFrame() {
@@ -97,23 +116,32 @@ function loadAndRunIfAuto() {
     loadSuiteFrame();
 }
 
-function start() {
+function onSeleniumLoad() {
+    //openSeparateAppWindow();
+    
+    //LOG.show();
+
     queryString = null;
     runInterval = 0;
-    loadSuiteFrame();
+    
+    // we use a timeout here to make sure the LOG has loaded first, so we can see _every_ error
+    setTimeout('loadSuiteFrame()', 500);
 }
 
 function loadSuiteFrame() {
-    var testAppFrame = document.getElementById('myiframe');
-    selenium = Selenium.createForFrame(testAppFrame);
-    registerCommandHandlers();
+    var testAppWindow = getApplicationWindow();
+    //testAppWindow.foo = '123';
+    if (selenium == null)  {
+        selenium = Selenium.createForWindow(testAppWindow);
+        registerCommandHandlers();
+    }
 
     //set the runInterval if there is a queryParameter for it
     var tempRunInterval = getQueryParameter("runInterval");
     if (tempRunInterval) {
         runInterval = tempRunInterval;
     }
-
+    
     speedController = new Control.Slider('speedHandle', 'speedTrack', {
         range:$R(0, 1000),
         onSlide:function(v) {
@@ -135,7 +163,7 @@ function loadSuiteFrame() {
 }
 
 function startSingleTest() {
-    removeLoadListener(getApplicationFrame(), startSingleTest);
+    removeLoadListener(getApplicationWindow(), startSingleTest);
     var singleTestName = getQueryParameter("singletest");
     addLoadListener(getTestFrame(), startTest);
     getTestFrame().src = singleTestName;
@@ -172,9 +200,9 @@ function onloadTestSuite() {
             startTestSuite();
         } else if (getQueryParameter("autoURL")) {
 
-            addLoadListener(getApplicationFrame(), startSingleTest);
+            addLoadListener(getApplicationWindow(), startSingleTest);
 
-            getApplicationFrame().src = getQueryParameter("autoURL");
+        getApplicationWindow().src = getQueryParameter("autoURL");
 
         } else {
             testLink = suiteTable.rows[currentRowInSuite + 1].cells[0].getElementsByTagName("a")[0];
@@ -257,15 +285,6 @@ function getBreakpointEventHandler(commandRow) {
     }
 }
 
-
-function isQueryParameterTrue(name) {
-    parameterValue = getQueryParameter(name);
-    if (parameterValue == null) return false;
-    if (parameterValue.toLowerCase() == "true") return true;
-    if (parameterValue.toLowerCase() == "on") return true;
-    return false;
-}
-
 function getQueryString() {
     if (queryString != null) return queryString;
     if (browserVersion.isHTA) {
@@ -295,20 +314,6 @@ function extractArgs() {
         args[i] = args[i].replace(/^"(.*)"$/, "$1");
     }
     return args;
-}
-
-function getQueryParameter(searchKey) {
-    var str = getQueryString();
-    if (str == null) return null;
-    var clauses = str.split('&');
-    for (var i = 0; i < clauses.length; i++) {
-        var keyValuePair = clauses[i].split('=', 2);
-        var key = unescape(keyValuePair[0]);
-        if (key == searchKey) {
-            return unescape(keyValuePair[1]);
-        }
-    }
-    return null;
 }
 
 function isNewWindow() {
@@ -374,6 +379,9 @@ function startTest() {
     storedVars = new Object();
 
     currentTest.start();
+
+    // PL: for the purpose of testing
+    //testLoop.waitForConditionTimeout = 2000;
 }
 
 get_new_rows = function() {

@@ -76,6 +76,7 @@ TestLoop.prototype = {
     resume : function() {
         LOG.debug("currentTest.resume() - actually execute");
         try {
+        	selenium.browserbot.runScheduledPollers();
             this._executeCurrentCommand();
             this.waitForConditionStart = new Date().getTime();
             this.continueTestWhenConditionIsTrue();
@@ -137,6 +138,7 @@ TestLoop.prototype = {
  */
     continueTestWhenConditionIsTrue : function () {
         LOG.debug("currentTest.continueTestWhenConditionIsTrue()");
+    	selenium.browserbot.runScheduledPollers();
         try {
             if (this.waitForCondition == null || this.waitForCondition()) {
                 LOG.debug("condition satisfied; let's continueTest()");

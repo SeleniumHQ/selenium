@@ -8,10 +8,27 @@ require 'selenium_result'
 
 include Browser
 
+class DelayedFileHandler < WEBrick::HTTPServlet::FileHandler
+
+  def initialize(server, dir, delay=0)
+    @delay = delay
+    super(server, dir)
+  end
+
+  def exec_handler(req, res)
+    sleep(@delay)
+    super(req, res)
+  end
+
+end
+
 class JavaScriptTestTask < ::Rake::TaskLib
+
+  attr_accessor :delay
 
   def initialize(name)
     @name = name
+    @delay = 0
     @tests = []
     @mounts = {}
     @browsers = []
@@ -67,18 +84,18 @@ class JavaScriptTestTask < ::Rake::TaskLib
       end
     end
     @mounts.each do |path,dir|
-      @server.mount(path, WEBrick::HTTPServlet::FileHandler, dir)
+      @server.mount(path, DelayedFileHandler, dir, @delay)
     end
   end
 
   def define
     task @name do
       create_server
+      trap(:INT) {
+        @server.shutdown
+      }
       t = Thread.new { 
         puts "Starting test-server"
-        trap(:INT) {
-          @server.shutdown
-        }
         @server.start
       }
       

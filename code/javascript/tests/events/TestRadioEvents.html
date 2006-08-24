@@ -69,18 +69,18 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theRadio1)} * {blur(theRadio1)}</td>
+      <td>{focus(theRadio1)} *</td>
     </tr>
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>* {click(theRadio1)} *</td>
+      <td>*{click(theRadio1)}*</td>
     </tr>
     <!-- Safari doesn't fire change events for radio buttons -->
     <tr if="!browserVersion.isSafari">
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>* {change(theRadio1)} *</td>
+      <td>*{change(theRadio1)}*</td>
     </tr>
     <tr if="browserVersion.isSafari">
       <td>verifyNotValue</td>
@@ -112,18 +112,18 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theRadio2)} * {blur(theRadio2)}</td>
+      <td>{focus(theRadio2)} *</td>
     </tr>
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>* {click(theRadio2)} *</td>
+      <td>*{click(theRadio2)}*</td>
     </tr>
     <!-- Safari doesn't fire change events for radio buttons -->
     <tr if="!browserVersion.isSafari">
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>* {change(theRadio2)} *</td>
+      <td>*{change(theRadio2)}*</td>
     </tr>
     <tr if="browserVersion.isSafari">
       <td>verifyNotValue</td>
@@ -155,7 +155,7 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
-      <td>{focus(theRadio2)} {click(theRadio2)} {blur(theRadio2)}</td>
+      <td>{focus(theRadio2)} {click(theRadio2)}</td>
     </tr>
   </tbody>
 </table>

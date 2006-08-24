@@ -156,8 +156,11 @@ function Selenium(browserbot) {
     };
 }
 
-Selenium.createForFrame = function(frame) {
-    return new Selenium(BrowserBot.createForFrame(frame));
+Selenium.createForWindow = function(window) {
+    if (!window.location) {
+        throw "error: not a window!";
+    }
+    return new Selenium(BrowserBot.createForWindow(window));
 };
 
 Selenium.prototype.reset = function() {
@@ -524,11 +527,25 @@ Selenium.prototype.doSubmit = function(formLocator) {
     var form = this.page().findElement(formLocator);
     var actuallySubmit = true;
     if (form.onsubmit) {
-    	// apply this to the correct window so alerts are properly handled, even in IE HTA mode
-    	actuallySubmit = form.onsubmit.apply(this.browserbot.getContentWindow());
-    }
-    if (actuallySubmit) {
-        form.submit();
+    	if (browserVersion.isHTA) {
+	    	// run the code in the correct window so alerts are handled correctly even in HTA mode
+	    	var win = this.browserbot.getCurrentWindow();
+	    	var now = new Date().getTime();
+	    	var marker = 'marker' + now;
+	    	win[marker] = form;
+	    	win.setTimeout("var actuallySubmit = "+marker+".onsubmit(); if (actuallySubmit) { "+marker+".submit(); };", 0);    		    	
+	    	// pause for at least 20ms for this command to run
+	    	testLoop.waitForCondition = function () {
+	    		return new Date().getTime() > (now + 20);
+	    	}
+	    } else {
+	    	actuallySubmit = form.onsubmit();
+	    	if (actuallySubmit) {
+	    		form.submit();
+	    	}
+	    }
+    } else {
+    	form.submit();
     }
     
 };
@@ -552,6 +569,11 @@ Selenium.prototype.doOpen = function(url) {
     return SELENIUM_PROCESS_WAIT;
 };
 
+Selenium.prototype.makeThisTheDefaultWindow = function() {
+	this.browserbot.makeThisTheDefaultWindow();
+};
+	
+
 Selenium.prototype.doSelectWindow = function(windowID) {
 	/**
    * Selects a popup window; once a popup window has been selected, all
@@ -565,8 +587,7 @@ Selenium.prototype.doSelectWindow = function(windowID) {
 
 Selenium.prototype.doSelectFrame = function(locator) {
 	/**
-        * NOT IMPLEMENTED YET: 
-        * Selects a frame within the current window.  (You may invoke this command
+	* Selects a frame within the current window.  (You may invoke this command
 	* multiple times to select nested frames.)  To select the parent frame, use
 	* "relative=parent" as a locator; to select the top frame, use "relative=top".
 	*
@@ -575,7 +596,7 @@ Selenium.prototype.doSelectFrame = function(locator) {
 	*
 	* @param locator an <a href="#locators">element locator</a> identifying a frame or iframe
 	*/
-        throw new SeleniumError("NOT IMPLEMENTED YET");
+        this.browserbot.selectFrame(locator);
 };
 
 Selenium.prototype.getLogMessages = function() {
@@ -663,12 +684,29 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
     }
     
     currentTest.waitForCondition = function () {
-        var targetWindow = selenium.browserbot.getTargetWindow(windowID);
+        var targetWindow = selenium.browserbot.getWindowByName(windowID, true);
         if (!targetWindow) return false;
         if (!targetWindow.location) return false;
         if ("about:blank" == targetWindow.location) return false;
+        if (browserVersion.isKonqueror) {
+        	if ("/" == targetWindow.location.href) {
+        		// apparently Konqueror uses this as the temporary location, instead of about:blank
+        		return false;
+        	}
+        }
+        if (browserVersion.isSafari) {
+        	if(targetWindow.location.href == selenium.browserbot.buttonWindow.location.href) {
+        		// Apparently Safari uses this as the temporary location, instead of about:blank
+        		// what a world!
+        		LOG.debug("DGF what a world!");
+        		return false;
+        	}
+        }
         if (!targetWindow.document) return false;
-        if (!targetWindow.document.readyState) return true;
+        if (!selenium.browserbot.window.document.readyState) {
+    		// This is Firefox, with no readyState extension
+    		return true;
+    	}
         if ('complete' != targetWindow.document.readyState) return false;
         return true;
     };
@@ -1135,23 +1173,11 @@ Selenium.prototype.isTextPresent = function(pattern) {
    */
     var allText = this.page().bodyText();
 
-    if(allText == "") {
-    	// used to assert that allText wasn't empty, but in fact it will be empty if we are in a frameset;
-        // so don't throw an error:
-        return false;
-    } else {
-    	var patternMatcher = new PatternMatcher(pattern);
-        if (patternMatcher.strategy == PatternMatcher.strategies.exact) {
-        	pattern = pattern.replace(/^exact:/, "");
-        	return new String(allText).indexOf(pattern) != -1;
-    	}
-        
-        if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
-        	pattern = pattern.replace(/^glob:/, "");
-    		patternMatcher.matcher = new PatternMatcher.strategies.globContains(pattern);
-    	}
-    	return patternMatcher.matches(allText);
-    }
+    var patternMatcher = new PatternMatcher(pattern);
+    if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
+		patternMatcher.matcher = new PatternMatcher.strategies.globContains(pattern);
+	}
+	return patternMatcher.matches(allText);
 };
 
 Selenium.prototype.isElementPresent = function(locator) {
@@ -1208,7 +1234,7 @@ Selenium.prototype.findEffectiveStyle = function(element) {
     if (element.style == undefined) {
         return undefined; // not a styled element
     }
-    var window = this.browserbot.getContentWindow();
+    var window = this.browserbot.getCurrentWindow();
     if (window.getComputedStyle) { 
         // DOM-Level-2-CSS
         return window.getComputedStyle(element, null);
@@ -1279,7 +1305,7 @@ Selenium.prototype._getTestAppParentOfAllWindows = function() {
    if (this.browserbot.getCurrentWindow().opener!=null) {
    	return this.browserbot.getCurrentWindow().opener;
    }
-   return testAppParentOfAllWindows = this.browserbot.getCurrentWindow();
+   return testAppParentOfAllWindows = this.browserbot.buttonWindow;
 };
 
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
@@ -1313,7 +1339,7 @@ Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
         // we are searching with respect to the widow name.
         // So make a special case so that this logic will work:
         if (PatternMatcher.matches(soughtAfterWindowPropertyValue, "")) {
-   		return testAppParentOfAllWindows;
+   		return this.browserbot.getCurrentWindow();
         }
    }
    
@@ -1651,7 +1677,6 @@ Selenium.prototype.getCursorPosition = function(locator) {
    var doc = this.page().currentDocument;
    var win = this.browserbot.getCurrentWindow();
 	if( doc.selection && !browserVersion.isOpera){
-		
 		var selectRange = doc.selection.createRange().duplicate();
 		var elementRange = element.createTextRange();
 		selectRange.move("character",0);
@@ -1666,7 +1691,7 @@ Selenium.prototype.getCursorPosition = function(locator) {
 		var answer = String(elementRange.text).replace(/\r/g,"").length;
 		return answer;
 	} else {
-		if (typeof(element.selectionStart) != undefined) {
+		if (typeof(element.selectionStart) != "undefined") {
 			if (win.getSelection && typeof(win.getSelection().rangeCount) != undefined && win.getSelection().rangeCount == 0) {
 				Assert.fail("There is no cursor on this page!");
 			}

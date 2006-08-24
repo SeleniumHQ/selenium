@@ -216,13 +216,9 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble) {
     var keycode = getKeyCodeFromKeySequence(keySequence);
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-        var w = parent.frames['myiframe']
-        if (w == null) {
-            w = window;
-        }
-        keyEvent = w.document.createEventObject();
-        keyEvent.keyCode = keycode;
-        element.fireEvent('on' + eventType, keyEvent);
+		keyEvent = element.ownerDocument.createEventObject();
+		keyEvent.keyCode=keycode;
+		element.fireEvent('on' + eventType, keyEvent);
     }
     else {
         var evt;
@@ -254,7 +250,7 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
             element.fireEvent('on' + eventType);
         }
         else {
-            var ieEvent = document.createEventObject();
+            var ieEvent = element.ownerDocument.createEventObject();
             ieEvent.detail = 0;
             ieEvent.screenX = screenX;
             ieEvent.screenY = screenY;
@@ -309,6 +305,7 @@ function removeLoadListener(element, command) {
 }
 
 function addLoadListener(element, command) {
+	LOG.info('Adding loadLisenter for ' + element + ', ' + command);
     if (window.addEventListener && !browserVersion.isOpera)
         element.addEventListener("load", command, true);
     else if (window.attachEvent)
@@ -564,4 +561,61 @@ function objToString(obj) {
         s += line + "\n";
     }
     return s;
+}
+
+var seenReadyStateWarning = false;
+
+function openSeparateApplicationWindow(url) {
+    // resize the Selenium window itself
+    window.resizeTo(1200, 500);
+    window.moveTo(window.screenX, 0);
+
+    var appWindow = window.open(url + '?start=true', 'main');
+    try {
+        var windowHeight = 500;
+        if (window.outerHeight) {
+            windowHeight = window.outerHeight;
+        } else if (document.documentElement && document.documentElement.offsetHeight) {
+            windowHeight = document.documentElement.offsetHeight;
+        }
+
+        if (window.screenLeft && !window.screenX) window.screenX = window.screenLeft;
+        if (window.screenTop && !window.screenY) window.screenY = window.screenTop;
+
+        appWindow.resizeTo(1200, screen.availHeight - windowHeight - 60);
+        appWindow.moveTo(window.screenX, window.screenY + windowHeight + 25);
+    } catch (e) {
+        LOG.error("Couldn't resize app window");
+        LOG.exception(e);
+    }
+
+
+    if (window.document.readyState == null && !seenReadyStateWarning) {
+        alert("Beware!  Mozilla bug 300992 means that we can't always reliably detect when a new page has loaded.  Install the Selenium IDE extension or the readyState extension available from selenium.openqa.org to make page load detection more reliable.");
+        seenReadyStateWarning = true;
+    }
+    
+    return appWindow;
+}
+
+function isQueryParameterTrue(name) {
+    parameterValue = getQueryParameter(name);
+    if (parameterValue == null) return false;
+    if (parameterValue.toLowerCase() == "true") return true;
+    if (parameterValue.toLowerCase() == "on") return true;
+    return false;
+}
+
+function getQueryParameter(searchKey) {
+    var str = getQueryString();
+    if (str == null) return null;
+    var clauses = str.split('&');
+    for (var i = 0; i < clauses.length; i++) {
+        var keyValuePair = clauses[i].split('=', 2);
+        var key = unescape(keyValuePair[0]);
+        if (key == searchKey) {
+            return unescape(keyValuePair[1]);
+        }
+    }
+    return null;
 }

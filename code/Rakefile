@@ -82,6 +82,7 @@ desc "Runs all the functional tests"
 JavaScriptTestTask.new(:functional_tests) do |t|
   timestamp = "%.6f" % Time.now.to_f
   functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=/seleniumResults&t=#{timestamp}"
+  t.delay = 0
   t.mount("/javascript")
   t.run functional_tests
   t.browser(Firefox)

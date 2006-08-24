@@ -97,20 +97,8 @@
 			<os family="windows" />
 		</condition>
 	</target>
-	
-	<target name="shouldWeTest" depends="checkWindows" if="thisIsWindows">
-	    <condition property="shouldRunTests">
-			<not><isset property="skiptests" /></not>
-		</condition>
-	</target>
-	
-	<target name="skiptests">
-	    <property name="skiptests" value="true" />
-	</target>
 
-    <target name="test" depends="dist-image, shouldWeTest, justtest" if="shouldRunTests"/>
-    
-	<target name="justtest">
+	<target name="test" depends="dist-image, checkWindows" if="thisIsWindows">
 		<echo message="Starting HTA tests..." />
 		<property name="results.file" location="${build.dir}/results.html" />
 		<delete file="${results.file}" />
@@ -134,7 +122,7 @@
 				</tokenfilter>
 			</filterchain>
 		</loadfile>
-		<fail unless="tests.passed" message="HTA Tests did not pass, see results file for details:&#xa;${results.file}" />
+		<fail unless="tests.passed" message="HTA Tests did not pass, see results file for details: ${results.file}" />
 		<echo message="HTA tests passed!" />
 	</target>
 

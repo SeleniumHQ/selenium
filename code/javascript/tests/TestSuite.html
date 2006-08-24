@@ -52,23 +52,30 @@ http-equiv="content-type">
         <tbody>
 		<tr><td><b>Test Suite</b></td></tr>
 
+            <tr unless="true"><td><a href="./TestCookie.html">TestCookieCommands</a></td></tr>
             <tr><td><a href="./events/TestMouseEvents.html">TestMouseEvents</a></td></tr>
             <tr><td><a href="./TestDragAndDrop.html">TestDragAndDrop</a></td></tr>
             <tr><td><a href="./TestBrowserVersion.html">TestBrowserVersion</a></td></tr>
             <tr><td><a href="./TestOpen.html">TestOpen</a></td></tr>
             <tr><td><a href="./TestClick.html">TestClick</a></td></tr>
             <tr><td><a href="./TestClickJavascriptHref.html">TestClickJavascriptHref</a></td></tr>
+            <tr unless="browserVersion.isIE && browserVersion.preSV1"><td><a href="./TestSelectWindow.html">TestSelectWindow</a></td></tr>
+            <tr unless="browserVersion.isIE && browserVersion.preSV1"><td><a href="./TestWaitInPopupWindow.html">TestWaitInPopupWindow</a></td></tr>
+            <tr><td><a href="./TestFramesNested.html">TestFramesNested</a></td></tr>
+            <tr><td><a href="./TestFramesOpen.html">TestFramesOpen</a></td></tr>
+            <tr><td><a href="./TestFramesClick.html">TestFramesClick</a></td></tr>
+            
             <tr><td><a id="TestType" href="./TestType.html">TestType</a></td></tr>
             <tr><td><a href="./TestSelect.html">TestSelect</a></td></tr>
             <tr><td><a href="./TestMultiSelect.html">TestMultiSelect</a></td></tr>
             <tr><td><a href="./TestSubmit.html">TestSubmit</a></td></tr>
             <tr><td><a href="./TestCheckUncheck.html">TestCheckUncheck</a></td></tr>
-            <tr unless="browserVersion.isIE && browserVersion.preSV1"><td><a href="./TestSelectWindow.html">TestSelectWindow</a></td></tr>
+            
             <tr><td><a href="./TestStore.html">TestStore</a></td></tr>
             <tr><td><a href="./TestJavascriptParameters.html">TestJavascriptParameters</a></td></tr>
             <tr><td><a href="./TestPause.html">TestPause</a></td></tr>
             <tr><td><a href="./TestWait.html">TestWait</a></td></tr>
-            <tr unless="browserVersion.isIE && browserVersion.preSV1"><td><a href="./TestWaitInPopupWindow.html">TestWaitInPopupWindow</a></td></tr>
+            
             <tr><td><a href="./TestWaitFor.html">TestWaitFor</a></td></tr>
             <tr><td><a href="./TestWaitForNot.html">TestWaitForNot</a></td></tr>
             <tr><td><a href="./TestVerifications.html">TestVerifications</a></td></tr>
@@ -104,7 +111,6 @@ http-equiv="content-type">
             <tr><td><a href="./TestFailingAssert.html">TestFailingAssert</a></td></tr>
             <tr><td><a href="./TestCommandError.html">TestCommandError</a></td></tr>
             <tr><td><a href="./TestElementPresent.html">TestElementPresent</a></td></tr>
-            <tr><td><a href="./TestCookie.html">TestCookieCommands</a></td></tr>
         </tbody>
     </table>
 
