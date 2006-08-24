@@ -30,6 +30,9 @@
 var BrowserBot = function(win) {
     this.topWindow = win;
     this.window = this.topWindow;
+    
+    // the buttonWindow is the Selenium window
+    // it contains the Run/Pause buttons... this should *not* be the AUT window
     this.buttonWindow = this.topWindow; // not sure what this is used for
     this.currentPage = null;
     this.currentWindow = this.topWindow;
@@ -878,9 +881,7 @@ PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocumen
     	if (browserVersion.isOpera) {
     		element = inWindow.eval(domTraversal);
     	} else {
-	    	with (inWindow) {
-	    		element = eval(domTraversal);
-	    	}
+    		element = eval("inWindow." + domTraversal);
 	    }
     } catch (e) {
     	e.isSeleniumError = true;
@@ -1082,10 +1083,8 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
     element.value = stringValue;
-    if (!browserVersion.isChrome) {
-        // In chrome URL, The change event is already fired by setting the value.
-        triggerEvent(element, 'change', true);
-    }
+    // DGF this used to be skipped in chrome URLs, but no longer.  Is xpcnativewrappers to blame?
+    triggerEvent(element, 'change', true);
 };
 
 MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
