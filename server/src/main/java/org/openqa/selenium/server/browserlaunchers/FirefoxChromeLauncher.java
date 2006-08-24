@@ -307,7 +307,8 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         File chromeManifest = new File(extensionDir, "chrome.manifest");
         out = new PrintStream(new FileOutputStream(chromeManifest));
         out.print("content\tsrc\t");
-        out.println(htmlDir.toURI().toURL());
+        out.print(htmlDir.toURI().toURL());
+        out.println("\txpcnativewrappers=no");
         out.close();
     }
 
