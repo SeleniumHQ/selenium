@@ -54,7 +54,7 @@ http-equiv="content-type">
 
             <tr unless="true"><td><a href="./TestCookie.html">TestCookieCommands</a></td></tr>
             <tr><td><a href="./events/TestMouseEvents.html">TestMouseEvents</a></td></tr>
-            <tr><td><a href="./TestDragAndDrop.html">TestDragAndDrop</a></td></tr>
+            <tr unless="browserVersion.isKonqueror"><td><a href="./TestDragAndDrop.html">TestDragAndDrop</a></td></tr>
             <tr><td><a href="./TestBrowserVersion.html">TestBrowserVersion</a></td></tr>
             <tr><td><a href="./TestOpen.html">TestOpen</a></td></tr>
             <tr><td><a href="./TestClick.html">TestClick</a></td></tr>
@@ -105,7 +105,7 @@ http-equiv="content-type">
             <tr><td><a href="./TestPrompt.html">TestPrompt</a></td></tr>
             <tr unless="browserVersion.isKonqueror || browserVersion.isSafari"><td><a href="./TestVisibility.html">TestVisibility</a></td></tr>
             <tr><td><a href="./TestEditable.html">TestEditable</a></td></tr>
-            <tr unless="browserVersion.isOpera || browserVersion.isMozilla"><td><a href="./TestCursorPosition.html">TestCursorPosition</a></td></tr>
+            <tr unless="browserVersion.isOpera || browserVersion.isMozilla || browserVersion.isKonqueror"><td><a href="./TestCursorPosition.html">TestCursorPosition</a></td></tr>
 
             <tr><td><a href="./TestFailingVerifications.html">TestFailingVerifications</a></td></tr>
             <tr><td><a href="./TestFailingAssert.html">TestFailingAssert</a></td></tr>
