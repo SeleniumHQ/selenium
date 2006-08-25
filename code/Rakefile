@@ -52,8 +52,7 @@ task :test => [:internal_tests, :unit_tests, :functional_tests]
 
 desc "Test the testing infrastructure"
 task :internal_tests do 
-  ruby "-I buildscript buildscript/test_case_result_test.rb"
-  ruby "-I buildscript buildscript/results_handler_test.rb"
+  ruby "-I buildscript buildscript/internal_test_suite.rb"
 end
 
 desc "Runs all the JSunit tests"

@@ -2,7 +2,7 @@ require 'rubygems'
 require 'test/unit'
 require 'jsunit_result'
 require 'selenium_result'
-require 'hpricot'
+require 'htree'
 
 class JsUnitResultTest < Test::Unit::TestCase
   def setup
@@ -63,8 +63,11 @@ class SeleniumResultTest < Test::Unit::TestCase
     assert(xml.include?('time="4"'))
     assert(xml.include?('failures="1"'))
     assert(xml.include?('errors="0"'))
-    doc = Hpricot(xml)
-    failures = doc.search("//testcase/failure")
+    doc = HTree(xml).to_rexml
+    failures = []
+    doc.each_element("//testcase/failure") do |failure|
+      failures << failure
+    end
     assert_equal(1, failures.size)
     assert(failures[0].attributes["message"].include?(CGI::escapeHTML(error_message)))
   end
