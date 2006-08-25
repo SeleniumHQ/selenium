@@ -52,10 +52,10 @@
     </build>
     <dependencies>
     	<dependency>
-    		<groupId>org.openqa.selenium.core</groupId>
-		    <artifactId>selenium-core</artifactId>
-		    <version>0.7.2-SNAPSHOT</version>
-		    <scope>provided</scope>
+            <groupId>org.openqa.selenium.core</groupId>
+            <artifactId>selenium-core</artifactId>
+            <version>0.8.0-SNAPSHOT</version>
+            <scope>provided</scope>
     	</dependency>
         <dependency>
             <groupId>ant</groupId>
