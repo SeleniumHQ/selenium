@@ -39,11 +39,15 @@ String.prototype.startsWith = function(str) {
 function getText(element) {
     var text = "";
 
-    if (browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5")
+    if (browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5" )
     {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.textContent;
+    } else if(browserVersion.isKonqueror) {
+	var dummyElement = element.cloneNode(true);
+        renderWhitespaceInTextContent(dummyElement);
+        text = dummyElement.innerText;
     } else if (browserVersion.isOpera) {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
