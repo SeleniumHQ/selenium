@@ -1,7 +1,6 @@
 MISSING_LIBRARIES_MESSAGE = <<EOL
 Please make sure you\'ve installed following gems before running Rake tasks:
   gem install builder
-  gem install rubyzip
     
 EOL
 
@@ -10,7 +9,6 @@ require 'pathname'
 require 'rubygems'
 
 begin
-  require 'zip/zip'
   require 'builder'
 rescue Exception => e
   puts "#{e.message}\n#{MISSING_LIBRARIES_MESSAGE}"
@@ -18,17 +16,13 @@ rescue Exception => e
 end
 
 $:.unshift('buildscript')
-$:.unshift('buildscript/lib/htree')
 
 require 'javascripttest'
 
 $stderr.sync = true
 
-CURRENT_VERSION = "0.7.2-SNAPSHOT"
-SELENIUM_ARTIFACT_FILENAME= Pathname.new("build/dist/Selenium-Core-#{CURRENT_VERSION}.zip")
-
 desc "Default Task"
-task :default => [ :test, :dist ]
+task :default => [ :test ]
 
 desc "Clean"
 task :clean do 
@@ -54,22 +48,13 @@ task :image do
   Dir.new('javascript').copy_to('build/image')
 end
 
-desc "Distribute artifacts" 
-task :dist => SELENIUM_ARTIFACT_FILENAME
+task :test => [:internal_tests, :unit_tests, :functional_tests]
 
-file SELENIUM_ARTIFACT_FILENAME => [:image] do
-  mkdir_p 'build/dist'
-  rm_f SELENIUM_ARTIFACT_FILENAME
-  puts "building #{SELENIUM_ARTIFACT_FILENAME}"
-  Zip::ZipFile::open(SELENIUM_ARTIFACT_FILENAME, true) do |zf|
-    Dir['{build/image}/**/*'].each do |f| 
-      zf.add(f.gsub(/build\/image\//, ''), f)
-    end
-  end
-  puts "BUILD SUCCESSFUL"
+desc "Test the testing infrastructure"
+task :internal_tests do 
+  ruby "-I buildscript buildscript/test_case_result_test.rb"
+  ruby "-I buildscript buildscript/results_handler_test.rb"
 end
-
-task :test => [:unit_tests, :functional_tests]
 
 desc "Runs all the JSunit tests"
 JavaScriptTestTask.new(:unit_tests) do |t|

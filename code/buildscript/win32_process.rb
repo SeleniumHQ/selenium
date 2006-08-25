@@ -3,9 +3,8 @@ require 'win32ole'
 def kill_process(name)
   process_table.each{|process| 
     if process.name =~ Regexp.compile(name)
-      puts "terminating #{process.caption} : #{process.commandLine} process"
+      puts "terminating #{process.caption} process"
       process.Terminate
-      puts "#{process.name} process terminated"
     end
   }
 end

@@ -1,7 +1,7 @@
-require "cgi"
+require 'cgi'
 require 'builder'
 
-require "test_case_result"
+require 'test_case_result'
 
 class JsUnitResult
 
@@ -21,6 +21,7 @@ class JsUnitResult
         xml << test_case.to_xml
       end
     end
+    xml.target!
   end
   
   def success?

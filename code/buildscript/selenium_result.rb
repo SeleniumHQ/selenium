@@ -1,8 +1,7 @@
-require "builder"
+require 'builder'
 require 'htree/traverse'
 require 'htree/parse'
-
-require "test_case_result"
+require 'test_case_result'
 
 class SeleniumResult
   def initialize(req)
@@ -22,6 +21,7 @@ class SeleniumResult
         xml << result.to_xml
       end
     end
+    xml.target!
   end
   
   def to_html
