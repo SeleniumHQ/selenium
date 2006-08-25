@@ -30,7 +30,7 @@
 var BrowserBot = function(win) {
     this.topWindow = win;
     this.window = this.topWindow;
-    
+
     // the buttonWindow is the Selenium window
     // it contains the Run/Pause buttons... this should *not* be the AUT window
     this.buttonWindow = this.topWindow; // not sure what this is used for
@@ -85,6 +85,9 @@ BrowserBot.createForWindow = function(window) {
     }
     else if (browserVersion.isKonqueror) {
         browserbot = new KonquerorBrowserBot(window);
+    }
+    else if (browserVersion.isOpera) {
+        browserbot = new OperaBrowserBot(window);
     }
     else if (browserVersion.isSafari) {
         browserbot = new SafariBrowserBot(window);
@@ -223,7 +226,7 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 };
 
 BrowserBot.prototype.setOpenLocation = function(win, loc) {
-    
+
     // is there a Permission Denied risk here? setting a timeout breaks Firefox
     //win.setTimeout(function() { win.location.href = loc; }, 0);
     win.location.href = loc;
@@ -292,7 +295,7 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
     	LOG.info("modifySeparateTestWindowToDetectPageLoads: already polling this window: " + oldMarker);
     	return;
     }
-    
+
     var marker = 'selenium' + new Date().getTime();
     LOG.info("Starting pollForLoad ("+marker+"): " + windowObject.document.location);
     this.pollingForLoad[marker] = true;
@@ -391,7 +394,7 @@ BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
 			// We'll have to just take a guess as to when the document is loaded; this guess
 			// will never be perfect. :-(
 			if (    typeof currentDocument.getElementsByTagName != 'undefined'
-		         && typeof currentDocument.getElementById != 'undefined' 
+		         && typeof currentDocument.getElementById != 'undefined'
 		         && ( currentDocument.getElementsByTagName('body')[0] != null
 		              || currentDocument.body != null ) ) {
 		              	if (windowObject.frameElement && windowObject.location.href == "about:blank" && windowObject.frameElement.src != "about:blank") {
@@ -406,7 +409,7 @@ BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
 		              			return null;
 		              		}
 		              	}
-		
+
 		        rs = 'complete';
 		    } else {
 		    	LOG.info("pollForLoad readyState was null and DOM appeared to not be ready yet");
@@ -431,7 +434,7 @@ BrowserBot.prototype.XXXreschedulePoller = function(loadFunction, windowObject, 
 };
 
 /** This function isn't used normally, but is useful for debugging asynchronous pollers 
-* To enable it, rename it to "reschedulePoller", so it will override the 
+* To enable it, rename it to "reschedulePoller", so it will override the
 * existing reschedulePoller function
 */
 BrowserBot.prototype.XXXreschedulePoller = function(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker) {
@@ -544,6 +547,19 @@ SafariBrowserBot.prototype = new BrowserBot;
 SafariBrowserBot.prototype.setIFrameLocation = KonquerorBrowserBot.prototype.setIFrameLocation;
 SafariBrowserBot.prototype.setOpenLocation = KonquerorBrowserBot.prototype.setOpenLocation;
 
+
+function OperaBrowserBot(frame) {
+    BrowserBot.call(this, frame);
+}
+OperaBrowserBot.prototype = new BrowserBot;
+OperaBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
+    if (iframe.src == location) {
+        iframe.src = location + '?reload';
+    } else {
+        iframe.src = location;
+    }
+}
+
 function IEBrowserBot(frame) {
     BrowserBot.call(this, frame);
 }
@@ -609,7 +625,7 @@ IEBrowserBot.prototype.windowClosed = function(win) {
 		if (!c) {
 			try {
 				win.document;
-			} catch (de) {	
+			} catch (de) {
 				if (de.message == "Permission denied") {
 					// the window is probably unloading, which means it's probably not closed yet
 					return false;
@@ -710,7 +726,7 @@ var PageBot = function(pageWindow) {
      * Find a locator based on a prefix.
      */
     this.findElementBy = function(locatorType, locator, inDocument, inWindow) {
-        var locatorFunction = this.locationStrategies[locatorType];        
+        var locatorFunction = this.locationStrategies[locatorType];
         if (! locatorFunction) {
             throw new SeleniumError("Unrecognised locator type: '" + locatorType + "'");
         }
@@ -1094,11 +1110,11 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     // Add an event listener that detects if the default action has been prevented.
     // (This is caused by a javascript onclick handler returning false)
     var preventDefault = false;
-    
+
     element.addEventListener("click", function(evt) {
         preventDefault = evt.getPreventDefault();
     }, false);
-    
+
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true, clientX, clientY);
 
@@ -1126,7 +1142,7 @@ OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true, clientX, clientY);
-    
+
     if (isDefined(element.checked)) {
     	// In Opera, clicking won't check/uncheck
     	if (element.type == "checkbox") {
@@ -1135,7 +1151,7 @@ OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     		element.checked = true;
     	}
     }
-    
+
     if (this.windowClosed()) {
         return;
     }
@@ -1310,7 +1326,7 @@ PageBot.prototype.getAllLinks = function() {
 PageBot.prototype.setContext = function(strContext, logLevel) {
      //set the current test title
     var ctx = document.getElementById("context");
-    if (ctx != null) { 
+    if (ctx != null) {
         ctx.innerHTML = strContext;
     }
     if (logLevel != null) {
@@ -1354,7 +1370,7 @@ PageBot.prototype.selectElementsBy = function(filterType, filter, elements) {
     return filterFunction(filter, elements);
 };
 
-PageBot.filterFunctions = {}; 
+PageBot.filterFunctions = {};
 
 PageBot.filterFunctions.name = function(name, elements) {
     var selectedElements = [];
@@ -1387,10 +1403,10 @@ PageBot.filterFunctions.index = function(index, elements) {
     return [elements[index]];
 };
 
-PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterType) {    
+PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterType) {
 
     var filterType = (defaultFilterType || 'value');
-    
+
     // If there is a filter prefix, use the specified strategy
     var result = filterExpr.match(/^([A-Za-z]+)=(.+)/);
     if (result) {
@@ -1405,8 +1421,8 @@ PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterT
  * Find an element by class
  */
 PageBot.prototype.locateElementByClass = function(locator, document) {
-    return Element.findFirstMatchingChild(document, 
-	    function(element) { 
+    return Element.findFirstMatchingChild(document,
+	    function(element) {
 		    return element.className == locator
 		}
     );
