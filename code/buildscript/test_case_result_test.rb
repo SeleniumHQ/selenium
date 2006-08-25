@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'test/unit'
 require 'test_case_result'
-require 'hpricot'
 
 class TestCaseResultTest < Test::Unit::TestCase
   
