@@ -693,16 +693,21 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
 
 var PageBot = function(pageWindow) {
     if (pageWindow) {
+        // This conditional exists to allow PageBot to be extended.
+        // TODO: clean up initialisation to remove this hack!
         this.currentWindow = pageWindow;
-        this.currentDocument = pageWindow.document;
         this.location = pageWindow.location;
         this.title = function() {
-        	var t = this.currentDocument.title;
-        	if (typeof(t) == "string") {
-        		t = t.trim();
-        	}
-        	return t;
+            var t = this.document().title;
+            if (typeof(t) == "string") {
+                t = t.trim();
+            }
+            return t;
         };
+    }
+
+    this.document = function() {
+        return this.currentWindow.document;
     }
 
     // Register all locateElementBy* functions
@@ -807,7 +812,7 @@ PageBot.prototype.findElement = function(locator) {
         locatorString = result[2];
     }
 
-    var element = this.findElementBy(locatorType, locatorString, this.currentDocument, this.currentWindow);
+    var element = this.findElementBy(locatorType, locatorString, this.document(), this.currentWindow);
     if (element != null) {
         return this.highlight(element);
     }
@@ -1276,11 +1281,11 @@ PageBot.prototype.windowClosed = function(element) {
 };
 
 PageBot.prototype.bodyText = function() {
-    return getText(this.currentDocument.body);
+    return getText(this.document().body);
 };
 
 PageBot.prototype.getAllButtons = function() {
-    var elements = this.currentDocument.getElementsByTagName('input');
+    var elements = this.document().getElementsByTagName('input');
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
@@ -1296,7 +1301,7 @@ PageBot.prototype.getAllButtons = function() {
 
 
 PageBot.prototype.getAllFields = function() {
-    var elements = this.currentDocument.getElementsByTagName('input');
+    var elements = this.document().getElementsByTagName('input');
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
@@ -1311,7 +1316,7 @@ PageBot.prototype.getAllFields = function() {
 };
 
 PageBot.prototype.getAllLinks = function() {
-    var elements = this.currentDocument.getElementsByTagName('a');
+    var elements = this.document().getElementsByTagName('a');
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {

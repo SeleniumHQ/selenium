@@ -15,6 +15,8 @@
  *
  */
 
+// TODO: stop navigating this.page().document() ... it breaks encapsulation
+
 var storedVars = new Object();
 
 function Selenium(browserbot) {
@@ -1445,7 +1447,7 @@ Selenium.prototype.getHtmlSource = function() {
    *
    * @return string the entire HTML source
    */
-	return this.page().currentDocument.getElementsByTagName("html")[0].innerHTML;
+	return this.page().document().getElementsByTagName("html")[0].innerHTML;
 };
 
 Selenium.prototype.doSetCursorPosition = function(locator, position) {
@@ -1674,7 +1676,7 @@ Selenium.prototype.getCursorPosition = function(locator) {
    * @return number the numerical position of the cursor in the field
    */
    var element = this.page().findElement(locator);
-   var doc = this.page().currentDocument;
+   var doc = this.page().document();
    var win = this.browserbot.getCurrentWindow();
 	if( doc.selection && !browserVersion.isOpera){
 		var selectRange = doc.selection.createRange().duplicate();
@@ -1838,7 +1840,7 @@ Selenium.prototype.getCookie = function() {
      *
      * @return string all cookies of the current page under test
      */
-    var doc = this.page().currentDocument;
+    var doc = this.page().document();
     return doc.cookie;
 };
 
@@ -1866,7 +1868,7 @@ Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
     if (results) {
         cookie += "; path=" + results[1];
     }
-    this.page().currentDocument.cookie = cookie;
+    this.page().document().cookie = cookie;
 }
 
 Selenium.prototype.doDeleteCookie = function(name,path) {
@@ -1878,7 +1880,7 @@ Selenium.prototype.doDeleteCookie = function(name,path) {
      */
     // set the expire time of the cookie to be deleted to one minute before now.
     var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
-    this.page().currentDocument.cookie = name.trim() + "=deleted; path=" + path.trim() + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    this.page().document().cookie = name.trim() + "=deleted; path=" + path.trim() + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
 }
 
 
