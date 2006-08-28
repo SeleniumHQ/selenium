@@ -55,13 +55,15 @@ task :internal_tests do
   ruby "-I buildscript buildscript/internal_test_suite.rb"
 end
 
+@browser = Firefox
+
 desc "Runs all the JSunit tests"
 JavaScriptTestTask.new(:unit_tests) do |t|
   timestamp = "%.6f" % Time.now.to_f
   jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=/javascript/unittest/browserbot/suite.html&submitResults=ROOT/jsunitResults&t=#{timestamp}" 
   t.mount("/javascript")
   t.run jsunit_tests
-  t.browser(Firefox)
+  t.browser(@browser)
 end
 
 desc "Runs all the functional tests"
@@ -70,5 +72,5 @@ JavaScriptTestTask.new(:functional_tests) do |t|
   functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=/seleniumResults&t=#{timestamp}"
   t.mount("/javascript")
   t.run functional_tests
-  t.browser(Firefox)
+  t.browser(@browser)
 end
