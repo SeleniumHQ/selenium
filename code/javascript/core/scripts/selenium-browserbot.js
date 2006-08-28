@@ -123,6 +123,12 @@ BrowserBot.prototype.relayBotToRC = function() {
 };
 // override in injection.html
 
+BrowserBot.prototype.resetPopups = function() {
+    this.recordedAlerts = [];
+    this.recordedConfirmations = [];
+    this.recordedPrompts = [];
+}
+
 BrowserBot.prototype.getNextAlert = function() {
     var t = this.recordedAlerts.shift();
     this.relayBotToRC("browserbot.recordedAlerts");

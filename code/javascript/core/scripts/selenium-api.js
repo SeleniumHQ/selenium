@@ -171,6 +171,9 @@ Selenium.prototype.reset = function() {
    */
     storedVars = new Object();
     this.browserbot.selectWindow("null");
+    
+    this.browserbot.resetPopups();
+    
 };
 
 Selenium.prototype.doClick = function(locator) {
@@ -760,11 +763,20 @@ Selenium.prototype.doRefresh = function() {
 };
 
 Selenium.prototype.doClose = function() {
-	/**
-   * Simulates the user clicking the "close" button in the titlebar of a popup
-   * window or tab.
-   */
+    /**
+     * Simulates the user clicking the "close" button in the titlebar of a popup
+     * window or tab.
+     */
     this.page().close();
+};
+
+Selenium.prototype.ensureNoUnhandledPopups = function() {
+    if (this.browserbot.hasAlerts()) {
+        throw new SeleniumError("There was an unexpected Alert! [" + this.browserbot.getNextAlert() + "]");
+    }
+    if ( this.browserbot.hasConfirmations() ) {
+        throw new SeleniumError("There was an unexpected Confirmation! [" + this.browserbot.getNextConfirmation() + "]");
+    }
 };
 
 Selenium.prototype.isAlertPresent = function() {
@@ -778,6 +790,7 @@ Selenium.prototype.isAlertPresent = function() {
    */
     return this.browserbot.hasAlerts();
 };
+
 Selenium.prototype.isPromptPresent = function() {
    /**
    * Has a prompt occurred?
@@ -789,6 +802,7 @@ Selenium.prototype.isPromptPresent = function() {
    */
     return this.browserbot.hasPrompts();
 };
+
 Selenium.prototype.isConfirmationPresent = function() {
    /**
    * Has confirm() been called?

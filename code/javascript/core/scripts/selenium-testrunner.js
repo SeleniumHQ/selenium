@@ -300,7 +300,7 @@ function getQueryString() {
 function extractArgs() {
     var str = SeleniumHTARunner.commandLine;
     if (str == null || str == "") return new Array();
-    var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")(\S+))/g);
+    var matches = str.match(/(?:\"([^\"]+)\"|(?!\"([^\"]+)\")(\S+))/g);
     // We either want non quote stuff ([^"]+) surrounded by quotes
     // or we want to look-ahead, see that the next character isn't
     // a quoted argument, and then grab all the non-space stuff
@@ -780,14 +780,22 @@ Object.extend(TestRunner.prototype, {
 
     _recordFailure : function(errorMsg) {
         LOG.warn("currentTest.recordFailure: " + errorMsg);
-        // Set cell background to red
-        this.currentRow.bgColor = failColor;
 
-        // Set error message
-        this.currentRow.cells[2].innerHTML = errorMsg;
-        this.currentRow.title = errorMsg;
         testFailed = true;
         suiteFailed = true;
+
+        var testDocument = getIframeDocument(getTestFrame());
+
+        if (!this.currentRow) {
+            alert(errorMsg);
+            return;
+            // TODO: find a better way to handle error at end-of-table
+        }
+        
+        this.currentRow.bgColor = failColor;
+        this.currentRow.cells[2].innerHTML = errorMsg;
+        this.currentRow.title = errorMsg;
+        
     },
 
     testComplete : function() {

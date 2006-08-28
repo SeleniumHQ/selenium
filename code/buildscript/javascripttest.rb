@@ -25,6 +25,7 @@ end
 class JavaScriptTestTask < ::Rake::TaskLib
 
   attr_accessor :delay
+  attr_accessor :browsers
 
   def initialize(name)
     @name = name
@@ -50,10 +51,6 @@ class JavaScriptTestTask < ::Rake::TaskLib
     @mounts[path] = dir
   end
   
-  def browser(browser)
-    @browsers << browser.new
-  end
-
   def handle_test_results(res, parser, log_file)
     html_report = parse_result(parser, log_file)
     res.body += html_report
@@ -73,10 +70,12 @@ class JavaScriptTestTask < ::Rake::TaskLib
   def create_server
     @server = WEBrick::HTTPServer.new(:Port => @port)
     @server.mount_proc("/jsunitResults") do |req, res|
+      $stderr.puts("got jsunitResults")
       parser, log_file = [JsUnitResult.new(req), "logs/JsUnitResults.xml"]
       html_report = handle_test_results(res, parser, log_file)    
     end
     @server.mount_proc("/seleniumResults") do |req, res|
+      $stderr.puts("got seleniumResults")
       parser, log_file = [SeleniumResult.new(req), "logs/SeleniumResults.xml"]
       html_report = handle_test_results(res, parser, log_file)      
       File.open("logs/SeleniumResults.html", "w") do |f|

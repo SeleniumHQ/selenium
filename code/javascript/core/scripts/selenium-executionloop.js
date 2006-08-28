@@ -48,7 +48,7 @@ TestLoop.prototype = {
             this.commandStarted(this.currentCommand);
             this._resumeAfterDelay();
         } else {
-            this.testComplete();
+            this._testComplete();
         }
     },
 
@@ -76,15 +76,20 @@ TestLoop.prototype = {
     resume : function() {
         LOG.debug("currentTest.resume() - actually execute");
         try {
-        	selenium.browserbot.runScheduledPollers();
+            selenium.browserbot.runScheduledPollers();
             this._executeCurrentCommand();
             this.waitForConditionStart = new Date().getTime();
             this.continueTestWhenConditionIsTrue();
         } catch (e) {
             this._handleCommandError(e);
-            this.testComplete();
+            this._testComplete();
             return;
         }
+    },
+
+    _testComplete : function() {
+        selenium.ensureNoUnhandledPopups();
+        this.testComplete();
     },
 
 /**

@@ -28,59 +28,18 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 
+function testActionCommandsShouldCheckForUnhandledPopups() {
 
-function testShouldFailActionCommandsIfAlertPresent() {
+     var mockSelenium = new Mock();
+     mockSelenium.expects("ensureNoUnhandledPopups");
 
-     mockBrowserBot = new Mock();
+     var noop = function() {};
+     var handler = new ActionHandler(noop, false);
+     handler.execute(mockSelenium, "command");
 
-     function MockSelenium() {
-        this.browserbot = mockBrowserBot;
-     }
-
-     mockBrowserBot.expects("hasAlerts").returns(true);
-     mockBrowserBot.expects("getNextAlert").returns("The Alert");
-
-     var executorCalled = false;
-     var executor = function() { executorCalled = true;};
-     var handler = new ActionHandler(executor, false);
-     try {
-        handler.execute(new MockSelenium(), "command");
-        fail("Command Should have failed");
-     } catch ( e ) {
-        assertTrue(e.isSeleniumError);
-        assertEquals("There was an unexpected Alert! [The Alert]", e.message);
-     }
-
-     assertFalse(executorCalled);
-     mockBrowserBot.verify();
+     mockSelenium.verify();
 }
 
-function testShouldFailActionCommandsIfConfirmPresent() {
-
-     mockBrowserBot = new Mock();
-
-     function MockSelenium() {
-        this.browserbot = mockBrowserBot;
-     }
-
-     mockBrowserBot.expects("hasAlerts").returns(false);
-     mockBrowserBot.expects("hasConfirmations").returns(true);
-     mockBrowserBot.expects("getNextConfirmation").returns("The Confirmation");
-
-     var executorCalled = false;
-     var executor = function() { executorCalled = true;};
-     var handler = new ActionHandler(executor, false);
-     try {
-        handler.execute(new MockSelenium(), "command");
-        fail("Command Should have failed");
-     } catch ( e ) {
-        assertTrue(e.isSeleniumError);
-        assertEquals("There was an unexpected Confirmation! [The Confirmation]", e.message);
-     }
-
-     assertFalse(executorCalled);
-     mockBrowserBot.verify();
-}
 
 function testAccessorHandlerShouldReturnResultInCommandResult() {
         function MockSelenium() {

@@ -342,7 +342,38 @@ function assertCallErrors(message, theCall, expectedFailureMessage) {
     fail(message);
 }
 
+function testEnsureNoUnhandledPopupsThrowsExceptionIfAlertPresent() {
 
+     mockBrowserBot.expects("hasAlerts").returns(true);
+     mockBrowserBot.expects("getNextAlert").returns("The Alert");
+
+     try {
+        selenium.ensureNoUnhandledPopups();
+        fail("exception expected");
+     } catch (e) {
+        assertTrue(e.isSeleniumError);
+        assertEquals("There was an unexpected Alert! [The Alert]", e.message);
+     }
+
+     mockBrowserBot.verify();
+}
+
+function testShouldFailActionCommandsIfConfirmPresent() {
+
+     mockBrowserBot.expects("hasAlerts").returns(false);
+     mockBrowserBot.expects("hasConfirmations").returns(true);
+     mockBrowserBot.expects("getNextConfirmation").returns("The Confirmation");
+
+     try {
+        selenium.ensureNoUnhandledPopups();
+        fail("exception expected");
+     } catch (e) {
+        assertTrue(e.isSeleniumError);
+        assertEquals("There was an unexpected Confirmation! [The Confirmation]", e.message);
+     }
+
+     mockBrowserBot.verify();
+}
 </script>
   </head>
   <body>Selenium API Tests

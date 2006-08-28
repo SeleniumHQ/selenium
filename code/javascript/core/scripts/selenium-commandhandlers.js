@@ -296,7 +296,7 @@ function ActionHandler(action, wait, dontCheckAlerts) {
 ActionHandler.prototype = new CommandHandler;
 ActionHandler.prototype.execute = function(seleniumApi, command) {
     if (this.checkAlerts && (null==/(Alert|Confirmation)(Not)?Present/.exec(command.command))) {
-	this.checkForAlerts(seleniumApi);
+        seleniumApi.ensureNoUnhandledPopups();
     }
     var processState = this.executor.call(seleniumApi, command.target, command.value);
     // If the handler didn't return a wait flag, check to see if the
@@ -305,14 +305,6 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
         processState = SELENIUM_PROCESS_WAIT;
     }
     return new CommandResult(processState);
-};
-ActionHandler.prototype.checkForAlerts = function(seleniumApi) {
-    if ( seleniumApi.browserbot.hasAlerts() ) {
-        throw new SeleniumError("There was an unexpected Alert! [" + seleniumApi.browserbot.getNextAlert() + "]");
-    }
-    if ( seleniumApi.browserbot.hasConfirmations() ) {
-        throw new SeleniumError("There was an unexpected Confirmation! [" + seleniumApi.browserbot.getNextConfirmation() + "]");
-    }
 };
 
 function AccessorHandler(accessor) {
