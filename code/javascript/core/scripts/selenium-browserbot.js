@@ -182,6 +182,11 @@ BrowserBot.prototype.selectWindow = function(target) {
     }
 };
 
+BrowserBot.prototype.getFrameFromGlobal = function(target) {
+    pagebot = PageBot.createForWindow(this.topWindow, this);
+    return pagebot.findElementBy("implicit", target, this.topWindow.document, this.topWindow);
+}
+
 BrowserBot.prototype.makeThisTheDefaultWindow = function() {
     this.window = this.getCurrentWindow();
     this.selectWindow();
@@ -1136,20 +1141,15 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     // In chrome URL, the link action is already executed by triggerMouseEvent.
     if (!browserVersion.isChrome && !preventDefault) {
         // Try the element itself, as well as it's parent - this handles clicking images inside links.
-        targetName = element.target;
-        if (targetName) {
-            originWindow = selenium.browserbot.getCurrentWindow();
-            selenium.browserbot.selectFrame("relative=top");
-            selenium.browserbot.selectFrame(targetName);
+        var targetWindow = this.currentWindow();
+        if (element.target) {
+            var frame = this.browserbot.getFrameFromGlobal(element.target);
+            targetWindow = frame.contentWindow;
         }
         if (element.href) {
-            this.currentWindow().location.href = element.href;
-        }
-        else if (element.parentNode && element.parentNode.href) {
-            this.currentWindow().location.href = element.parentNode.href;
-        }
-        if (targetName) {
-            selenium.browserbot.currentWindow = originWindow;
+            targetWindow.location.href = element.href;
+        } else if (element.parentNode && element.parentNode.href) {
+            targetWindow.location.href = element.parentNode.href;
         }
     }
 
