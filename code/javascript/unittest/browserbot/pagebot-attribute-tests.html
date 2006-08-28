@@ -35,6 +35,9 @@ Copyright 2004 ThoughtWorks, Inc
 function setUp() {
     pageBot = PageBot.createForWindow(window);
     pageBot.setHighlightElement(false);
+
+    pageBot.browserbot = BrowserBot.createForWindow(window);
+
     element1 = document.getElementById("id1");
     element2 = document.getElementById("id2");
     element3 = document.getElementById("id3");

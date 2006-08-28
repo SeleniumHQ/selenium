@@ -100,13 +100,16 @@ function testSelectWindow() {
 }
 
 function testGetLocation() {
-    mockPageBot.expectsProperty("location").returns("http://page/path?foo=bar");
+    var mockWindow = new Object();
+    mockWindow.location = "http://page/path?foo=bar";
+    mockPageBot.currentWindow = function() {
+        return mockWindow;
+    }
 
     assertTrue(selenium.getLocation().indexOf("path") > 0);
     assertTrue(selenium.getLocation().indexOf("page/path") > 0);
     assertTrue(selenium.getLocation().indexOf("http://page/path?foo=bar") > -1);
 
-    verifyMocks();
 }
 
 function testGetTitleReturnsTheTitle() {

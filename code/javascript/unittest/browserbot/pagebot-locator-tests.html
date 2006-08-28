@@ -41,6 +41,8 @@ function setUp() {
 
     pageBot = PageBot.createForWindow(iWindow);
     pageBot.setHighlightElement(false);
+    pageBot.browserbot = BrowserBot.createForWindow(iWindow);
+
     element1 = iWindow.document.getElementById("id1");
     element2 = iWindow.document.getElementById("id2");
     element3 = iWindow.document.getElementById("id3");

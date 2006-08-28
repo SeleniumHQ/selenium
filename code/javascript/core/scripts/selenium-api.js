@@ -22,7 +22,7 @@ var storedVars = new Object();
 function Selenium(browserbot) {
 	/**
 	 * Defines an object that runs Selenium commands.
-	 * 
+	 *
 	 * <h3><a name="locators"></a>Element Locators</h3>
 	 * <p>
 	 * Element Locators tell Selenium which HTML element a command refers to.
@@ -30,7 +30,7 @@ function Selenium(browserbot) {
 	 * <blockquote>
 	 * <em>locatorType</em><strong>=</strong><em>argument</em>
 	 * </blockquote>
-	 * 
+	 *
 	 * <p>
 	 * We support the following strategies for locating elements:
 	 * </p>
@@ -42,7 +42,7 @@ function Selenium(browserbot) {
 	 * (This is normally the default; see below.)</dd>
 	 * <dt><strong>id</strong>=<em>id</em></dt>
 	 * <dd>Select the element with the specified &#64;id attribute.</dd>
-	 * 
+	 *
 	 * <dt><strong>name</strong>=<em>name</em></dt>
 	 * <dd>Select the first element with the specified &#64;name attribute.</dd>
 	 * <dd><ul class="first last simple">
@@ -51,15 +51,15 @@ function Selenium(browserbot) {
 	 * </ul>
 	 * </dd>
 	 * <dd>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace.  If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</dd>
-	 * 
+	 *
 	 * <dd><ul class="first last simple">
 	 * <li>name=flavour value=chocolate</li>
 	 * </ul>
 	 * </dd>
 	 * <dt><strong>dom</strong>=<em>javascriptExpression</em></dt>
-	 * 
+	 *
 	 * <dd>
-	 * 
+	 *
 	 * <dd>Find an element using JavaScript traversal of the HTML Document Object
 	 * Model. DOM locators <em>must</em> begin with &quot;document.&quot;.
 	 * <ul class="first last simple">
@@ -67,15 +67,15 @@ function Selenium(browserbot) {
 	 * <li>dom=document.images[56]</li>
 	 * </ul>
 	 * </dd>
-	 * 
+	 *
 	 * </dd>
-	 * 
+	 *
 	 * <dt><strong>xpath</strong>=<em>xpathExpression</em></dt>
 	 * <dd>Locate an element using an XPath expression.
 	 * <ul class="first last simple">
 	 * <li>xpath=//img[&#64;alt='The image alt text']</li>
 	 * <li>xpath=//table[&#64;id='table1']//tr[4]/td[2]</li>
-	 * 
+	 *
 	 * </ul>
 	 * </dd>
 	 * <dt><strong>link</strong>=<em>textPattern</em></dt>
@@ -84,7 +84,7 @@ function Selenium(browserbot) {
 	 * <ul class="first last simple">
 	 * <li>link=The link text</li>
 	 * </ul>
-	 * 
+	 *
 	 * </dd>
 	 *
 	 * <dt><strong>css</strong>=<em>cssSelectorSyntax</em></dt>
@@ -101,7 +101,7 @@ function Selenium(browserbot) {
 	 * Without an explicit locator prefix, Selenium uses the following default
 	 * strategies:
 	 * </p>
-	 * 
+	 *
 	 * <ul class="simple">
 	 * <li><strong>dom</strong>, for locators starting with &quot;document.&quot;</li>
 	 * <li><strong>xpath</strong>, for locators starting with &quot;//&quot;</li>
@@ -114,7 +114,7 @@ function Selenium(browserbot) {
 	 * <p>Filters look much like locators, ie.</p>
 	 * <blockquote>
 	 * <em>filterType</em><strong>=</strong><em>argument</em></blockquote>
-	 * 
+	 *
 	 * <p>Supported element-filters are:</p>
 	 * <p><strong>value=</strong><em>valuePattern</em></p>
 	 * <blockquote>
@@ -125,7 +125,7 @@ function Selenium(browserbot) {
 	 * </blockquote>
 	 *
 	 * <h3><a name="patterns"></a>String-match Patterns</h3>
-	 * 
+	 *
 	 * <p>
 	 * Various Pattern syntaxes are available for matching string values:
 	 * </p>
@@ -141,7 +141,7 @@ function Selenium(browserbot) {
 	 * <dd>Match a string using a regular-expression. The full power of JavaScript
 	 * regular-expressions is available.</dd>
 	 * <dt><strong>exact:</strong><em>string</em></dt>
-	 * 
+	 *
 	 * <dd>Match a string exactly, verbatim, without any of that fancy wildcard
 	 * stuff.</dd>
 	 * </dl>
@@ -192,7 +192,7 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
    * causes a new page to load (like a link usually does), call
    * waitForPageToLoad.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locator an element locator
@@ -220,7 +220,7 @@ Selenium.prototype.doFireEvent = function(locator, eventName) {
 Selenium.prototype.doKeyPress = function(locator, keySequence) {
 	/**
    * Simulates a user pressing and releasing a key.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @param keySequence Either be a string("\" followed by the numeric keycode
    *  of the key to be pressed, normally the ASCII value of that key), or a single
@@ -233,7 +233,7 @@ Selenium.prototype.doKeyPress = function(locator, keySequence) {
 Selenium.prototype.doKeyDown = function(locator, keySequence) {
 	/**
    * Simulates a user pressing a key (without releasing it yet).
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @param keySequence Either be a string("\" followed by the numeric keycode
    *  of the key to be pressed, normally the ASCII value of that key), or a single
@@ -246,7 +246,7 @@ Selenium.prototype.doKeyDown = function(locator, keySequence) {
 Selenium.prototype.doKeyUp = function(locator, keySequence) {
 	/**
    * Simulates a user releasing a key.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @param keySequence Either be a string("\" followed by the numeric keycode
    *  of the key to be pressed, normally the ASCII value of that key), or a single
@@ -269,16 +269,16 @@ function getClientXY(element, coordString) {
    else {
       x = y = 0;
    }
-  
+
    // Get position of element,
    // Return 2 item array with clientX and clientY
    return [Selenium.prototype.getElementPositionLeft(element) + x, Selenium.prototype.getElementPositionTop(element) + y];
-}  
+}
 
 Selenium.prototype.doMouseOver = function(locator) {
 	/**
    * Simulates a user hovering a mouse over the specified element.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    */
     var element = this.page().findElement(locator);
@@ -288,7 +288,7 @@ Selenium.prototype.doMouseOver = function(locator) {
 Selenium.prototype.doMouseOut = function(locator) {
    /**
    * Simulates a user moving the mouse pointer away from the specified element.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    */
     var element = this.page().findElement(locator);
@@ -311,7 +311,7 @@ Selenium.prototype.doMouseDownAt = function(locator, coordString) {
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locator an <a href="#locators">element locator</a>
@@ -320,7 +320,7 @@ Selenium.prototype.doMouseDownAt = function(locator, coordString) {
    */
     var element = this.page().findElement(locator);
     var clientXY = getClientXY(element, coordString)
-  
+
     triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
 };
 
@@ -340,7 +340,7 @@ Selenium.prototype.doMouseUpAt = function(locator, coordString) {
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locator an <a href="#locators">element locator</a>
@@ -349,7 +349,7 @@ Selenium.prototype.doMouseUpAt = function(locator, coordString) {
    */
     var element = this.page().findElement(locator);
     var clientXY = getClientXY(element, coordString)
-  
+
     triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
 };
 
@@ -369,27 +369,27 @@ Selenium.prototype.doMouseMoveAt = function(locator, coordString) {
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
    */
-  
+
     var element = this.page().findElement(locator);
     var clientXY = getClientXY(element, coordString)
-  
+
     triggerMouseEvent(element, 'mousemove', true, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doType = function(locator, value) {
 	/**
    * Sets the value of an input field, as though you typed it in.
-   * 
+   *
    * <p>Can also be used to set the value of combo boxes, check boxes, etc. In these cases,
    * value should be the value of the option selected, not the visible text.</p>
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @param value the value to type
    */
@@ -409,7 +409,7 @@ Selenium.prototype.findToggleButton = function(locator) {
 Selenium.prototype.doCheck = function(locator) {
 	/**
    * Check a toggle-button (checkbox/radio)
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    */
     this.findToggleButton(locator).checked = true;
@@ -418,7 +418,7 @@ Selenium.prototype.doCheck = function(locator) {
 Selenium.prototype.doUncheck = function(locator) {
 	/**
    * Uncheck a toggle-button (checkbox/radio)
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    */
     this.findToggleButton(locator).checked = false;
@@ -427,7 +427,7 @@ Selenium.prototype.doUncheck = function(locator) {
 Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
 	/**
    * Select an option from a drop-down using an option locator.
-   * 
+   *
    * <p>
    * Option locators provide different ways of specifying options of an HTML
    * Select element (e.g. for selecting a specific option, or for asserting
@@ -447,11 +447,11 @@ Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
    * <ul class="first last simple">
    * <li>value=other</li>
    * </ul>
-   * 
-   * 
+   *
+   *
    * </dd>
    * <dt><strong>id</strong>=<em>id</em></dt>
-   * 
+   *
    * <dd>matches options based on their ids.
    * <ul class="first last simple">
    * <li>id=option1</li>
@@ -460,7 +460,7 @@ Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
    * <dt><strong>index</strong>=<em>index</em></dt>
    * <dd>matches an option based on its index (offset from zero).
    * <ul class="first last simple">
-   * 
+   *
    * <li>index=2</li>
    * </ul>
    * </dd>
@@ -468,8 +468,8 @@ Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
    * <p>
    * If no option locator prefix is provided, the default behaviour is to match on <strong>label</strong>.
    * </p>
-   * 
-   * 
+   *
+   *
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @param optionLocator an option locator (a label by default)
    */
@@ -523,7 +523,7 @@ Selenium.prototype.doSubmit = function(formLocator) {
 	/**
    * Submit the specified form. This is particularly useful for forms without
    * submit buttons, e.g. single-input "Search" forms.
-   * 
+   *
    * @param formLocator an <a href="#locators">element locator</a> for the form you want to submit
    */
     var form = this.page().findElement(formLocator);
@@ -535,7 +535,7 @@ Selenium.prototype.doSubmit = function(formLocator) {
 	    	var now = new Date().getTime();
 	    	var marker = 'marker' + now;
 	    	win[marker] = form;
-	    	win.setTimeout("var actuallySubmit = "+marker+".onsubmit(); if (actuallySubmit) { "+marker+".submit(); };", 0);    		    	
+	    	win.setTimeout("var actuallySubmit = "+marker+".onsubmit(); if (actuallySubmit) { "+marker+".submit(); };", 0);
 	    	// pause for at least 20ms for this command to run
 	    	testLoop.waitForCondition = function () {
 	    		return new Date().getTime() > (now + 20);
@@ -549,14 +549,14 @@ Selenium.prototype.doSubmit = function(formLocator) {
     } else {
     	form.submit();
     }
-    
+
 };
 
 Selenium.prototype.doOpen = function(url) {
 	/**
    * Opens an URL in the test frame. This accepts both relative and absolute
    * URLs.
-   * 
+   *
    * The &quot;open&quot; command waits for the page to load before proceeding,
    * ie. the &quot;AndWait&quot; suffix is implicit.
    *
@@ -564,7 +564,7 @@ Selenium.prototype.doOpen = function(url) {
    * due to security restrictions in the browser (Same Origin Policy). If you
    * need to open an URL on another domain, use the Selenium Server to start a
    * new browser session on that domain.
-   * 
+   *
    * @param url the URL to open; may be relative or absolute
    */
     this.browserbot.openLocation(url);
@@ -574,14 +574,14 @@ Selenium.prototype.doOpen = function(url) {
 Selenium.prototype.makeThisTheDefaultWindow = function() {
 	this.browserbot.makeThisTheDefaultWindow();
 };
-	
+
 
 Selenium.prototype.doSelectWindow = function(windowID) {
 	/**
    * Selects a popup window; once a popup window has been selected, all
    * commands go to that window. To select the main window again, use "null"
    * as the target.
-   * 
+   *
    * @param windowID the JavaScript window ID of the window to select
    */
     this.browserbot.selectWindow(windowID);
@@ -606,10 +606,10 @@ Selenium.prototype.getLogMessages = function() {
         * Return the contents of the log.
 	*
         * <p>This is a placeholder intended to make the code generator make this API
-        * available to clients.  The selenium server will intercept this call, however, 
+        * available to clients.  The selenium server will intercept this call, however,
         * and return its recordkeeping of log messages since the last call to this API.
         * Thus this code in JavaScript will never be called.</p>
-        * 
+        *
         * <p>The reason I opted for a servercentric solution is to be able to support
         * multiple frames served from different domains, which would break a
         * centralized JavaScript logging mechanism under some conditions.</p>
@@ -626,8 +626,8 @@ Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFra
 	*
         * <p>This is useful in proxy injection mode, where this code runs in every
         * browser frame and window, and sometimes the selenium server needs to identify
-        * the "current" frame.  In this case, when the test calls selectFrame, this 
-        * routine is called for each frame to figure out which one has been selected.  
+        * the "current" frame.  In this case, when the test calls selectFrame, this
+        * routine is called for each frame to figure out which one has been selected.
         * The selected frame will return true, while all others will return false.</p>
 	*
         * @param currentFrameString starting frame
@@ -653,7 +653,7 @@ Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFra
         }
         if (isDom) {
                 return false;
-        }        
+        }
         var currentFrame;
         eval("currentFrame=" + currentFrameString);
 	if (target == "relative=up") {
@@ -661,7 +661,7 @@ Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFra
                 	return true;
                 }
                 return false;
-        } 
+        }
         if (target == "relative=top") {
         	if (currentFrame.window.top==autWindow) {
                 	return true;
@@ -684,7 +684,7 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
 	if (isNaN(timeout)) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
-    
+
     currentTest.waitForCondition = function () {
         var targetWindow = selenium.browserbot.getWindowByName(windowID, true);
         if (!targetWindow) return false;
@@ -712,10 +712,10 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
         if ('complete' != targetWindow.document.readyState) return false;
         return true;
     };
-    
+
     currentTest.waitForConditionStart = new Date().getTime();
     currentTest.waitForConditionTimeout = timeout;
-	
+
 }
 
 Selenium.prototype.doWaitForPopUp.dontCheckAlertsAndConfirms = true;
@@ -726,7 +726,7 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
    * return true, as if the user had manually clicked OK.  After running
    * this command, the next call to confirm() will return false, as if
    * the user had clicked Cancel.
-   * 
+   *
    */
     this.browserbot.cancelNextConfirmation();
 };
@@ -736,8 +736,8 @@ Selenium.prototype.doAnswerOnNextPrompt = function(answer) {
 	/**
    * Instructs Selenium to return the specified answer string in response to
    * the next JavaScript prompt [window.prompt()].
-   * 
-   * 
+   *
+   *
    * @param answer the answer to give in response to the prompt pop-up
    */
     this.browserbot.setNextPromptResult(answer);
@@ -746,7 +746,7 @@ Selenium.prototype.doAnswerOnNextPrompt = function(answer) {
 Selenium.prototype.doGoBack = function() {
     /**
      * Simulates the user clicking the "back" button on their browser.
-     * 
+     *
      */
     this.page().goBack();
 };
@@ -754,7 +754,7 @@ Selenium.prototype.doGoBack = function() {
 Selenium.prototype.doRefresh = function() {
     /**
      * Simulates the user clicking the "Refresh" button on their browser.
-     * 
+     *
      */
     this.page().refresh();
 };
@@ -770,7 +770,7 @@ Selenium.prototype.doClose = function() {
 Selenium.prototype.isAlertPresent = function() {
    /**
    * Has an alert occurred?
-   * 
+   *
    * <p>
    * This function never throws an exception
    * </p>
@@ -781,7 +781,7 @@ Selenium.prototype.isAlertPresent = function() {
 Selenium.prototype.isPromptPresent = function() {
    /**
    * Has a prompt occurred?
-   * 
+   *
    * <p>
    * This function never throws an exception
    * </p>
@@ -792,7 +792,7 @@ Selenium.prototype.isPromptPresent = function() {
 Selenium.prototype.isConfirmationPresent = function() {
    /**
    * Has confirm() been called?
-   * 
+   *
    * <p>
    * This function never throws an exception
    * </p>
@@ -803,14 +803,14 @@ Selenium.prototype.isConfirmationPresent = function() {
 Selenium.prototype.getAlert = function() {
 	/**
    * Retrieves the message of a JavaScript alert generated during the previous action, or fail if there were no alerts.
-   * 
+   *
    * <p>Getting an alert has the same effect as manually clicking OK. If an
    * alert is generated but you do not get/verify it, the next Selenium action
    * will fail.</p>
-   * 
+   *
    * <p>NOTE: under Selenium, JavaScript alerts will NOT pop up a visible alert
    * dialog.</p>
-   * 
+   *
    * <p>NOTE: Selenium does NOT support JavaScript alerts that are generated in a
    * page's onload() event handler. In this case a visible dialog WILL be
    * generated and Selenium will hang until someone manually clicks OK.</p>
@@ -827,26 +827,26 @@ Selenium.prototype.getConfirmation = function() {
 	/**
    * Retrieves the message of a JavaScript confirmation dialog generated during
    * the previous action.
-   * 
+   *
    * <p>
    * By default, the confirm function will return true, having the same effect
    * as manually clicking OK. This can be changed by prior execution of the
    * chooseCancelOnNextConfirmation command. If an confirmation is generated
    * but you do not get/verify it, the next Selenium action will fail.
    * </p>
-   * 
+   *
    * <p>
    * NOTE: under Selenium, JavaScript confirmations will NOT pop up a visible
    * dialog.
    * </p>
-   * 
+   *
    * <p>
    * NOTE: Selenium does NOT support JavaScript confirmations that are
    * generated in a page's onload() event handler. In this case a visible
    * dialog WILL be generated and Selenium will hang until you manually click
    * OK.
    * </p>
-   * 
+   *
    * @return string the message of the most recent JavaScript confirmation dialog
    */
     if (!this.browserbot.hasConfirmations()) {
@@ -855,19 +855,19 @@ Selenium.prototype.getConfirmation = function() {
     return this.browserbot.getNextConfirmation();
 };
 Selenium.prototype.getConfirmation.dontCheckAlertsAndConfirms = true;
- 
+
 Selenium.prototype.getPrompt = function() {
 	/**
    * Retrieves the message of a JavaScript question prompt dialog generated during
    * the previous action.
-   * 
+   *
    * <p>Successful handling of the prompt requires prior execution of the
    * answerOnNextPrompt command. If a prompt is generated but you
    * do not get/verify it, the next Selenium action will fail.</p>
-   * 
+   *
    * <p>NOTE: under Selenium, JavaScript prompts will NOT pop up a visible
    * dialog.</p>
-   * 
+   *
    * <p>NOTE: Selenium does NOT support JavaScript prompts that are generated in a
    * page's onload() event handler. In this case a visible dialog WILL be
    * generated and Selenium will hang until someone manually clicks OK.</p>
@@ -881,15 +881,15 @@ Selenium.prototype.getPrompt = function() {
 
 Selenium.prototype.getLocation = function() {
 	/** Gets the absolute URL of the current page.
-   * 
+   *
    * @return string the absolute URL of the current page
    */
-    return this.page().location;
+    return this.page().currentWindow().location;
 };
 
 Selenium.prototype.getTitle = function() {
 	/** Gets the title of the current page.
-   * 
+   *
    * @return string the title of the current page
    */
     return this.page().title();
@@ -910,7 +910,7 @@ Selenium.prototype.getValue = function(locator) {
    * Gets the (whitespace-trimmed) value of an input field (or anything else with a value parameter).
    * For checkbox/radio elements, the value will be "on" or "off" depending on
    * whether the element is checked or not.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @return string the element value, or "on/off" for checkbox/radio elements
    */
@@ -924,7 +924,7 @@ Selenium.prototype.getText = function(locator) {
    * text. This command uses either the textContent (Mozilla-like browsers) or
    * the innerText (IE-like browsers) of the element, which is the rendered
    * text shown to the user.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @return string the text of the element
    */
@@ -933,9 +933,9 @@ Selenium.prototype.getText = function(locator) {
 };
 
 Selenium.prototype.getEval = function(script) {
-	/** Gets the result of evaluating the specified JavaScript snippet.  The snippet may 
+	/** Gets the result of evaluating the specified JavaScript snippet.  The snippet may
    * have multiple lines, but only the result of the last line will be returned.
-   * 
+   *
    * <p>Note that, by default, the snippet will run in the context of the "selenium"
    * object itself, so <code>this</code> will refer to the Selenium object, and <code>window</code> will
    * refer to the top-level runner test window, not the window of your application.</p>
@@ -944,7 +944,7 @@ Selenium.prototype.getEval = function(script) {
    * to <code>this.browserbot.getCurrentWindow()</code> and if you need to use
    * a locator to refer to a single element in your application page, you can
    * use <code>this.page().findElement("foo")</code> where "foo" is your locator.</p>
-   * 
+   *
    * @param script the JavaScript snippet to run
    * @return string the results of evaluating the snippet
    */
@@ -975,7 +975,7 @@ Selenium.prototype.getTable = function(tableCellAddress) {
 	/**
    * Gets the text from a cell of a table. The cellAddress syntax
    * tableLocator.row.column, where row and column start at 0.
-   * 
+   *
    * @param tableCellAddress a cell address, e.g. "foo.1.4"
    * @return string the text from the specified cell
    */
@@ -1089,9 +1089,9 @@ Selenium.prototype.isSomethingSelected = function(selectLocator) {
     if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
     }
-    
+
     var selectedOptions = [];
-    
+
     for (var i = 0; i < element.options.length; i++) {
         if (element.options[i].selected)
         {
@@ -1133,7 +1133,7 @@ Selenium.prototype.findSelectedOptionProperty = function(locator, property) {
 
 Selenium.prototype.getSelectOptions = function(selectLocator) {
 	/** Gets all option labels in the specified select drop-down.
-   * 
+   *
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @return string[] an array of all option labels in the specified select drop-down
    */
@@ -1145,7 +1145,7 @@ Selenium.prototype.getSelectOptions = function(selectLocator) {
     	var option = element.options[i].text.replace(/,/g, "\\,");
         selectOptions.push(option);
     }
-    
+
     return selectOptions.join(",");
 };
 
@@ -1154,7 +1154,7 @@ Selenium.prototype.getAttribute = function(attributeLocator) {
 	/**
    * Gets the value of an element attribute.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param attributeLocator an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
@@ -1203,12 +1203,12 @@ Selenium.prototype.isVisible = function(locator) {
    * property to "hidden", or the "display" property to "none", either for the
    * element itself or one if its ancestors.  This method will fail if
    * the element is not present.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @return boolean true if the specified element is visible, false otherwise
    */
     var element;
-    element = this.page().findElement(locator); 
+    element = this.page().findElement(locator);
     var visibility = this.findEffectiveStyleProperty(element, "visibility");
     var _isDisplayed = this._isDisplayed(element);
     return (visibility != "hidden" && _isDisplayed);
@@ -1237,7 +1237,7 @@ Selenium.prototype.findEffectiveStyle = function(element) {
         return undefined; // not a styled element
     }
     var window = this.browserbot.getCurrentWindow();
-    if (window.getComputedStyle) { 
+    if (window.getComputedStyle) {
         // DOM-Level-2-CSS
         return window.getComputedStyle(element, null);
     }
@@ -1255,7 +1255,7 @@ Selenium.prototype.isEditable = function(locator) {
 	/**
    * Determines whether the specified input element is editable, ie hasn't been disabled.
    * This method will fail if the specified element isn't an input element.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a>
    * @return boolean true if the input element is editable, false otherwise
    */
@@ -1268,9 +1268,9 @@ Selenium.prototype.isEditable = function(locator) {
 
 Selenium.prototype.getAllButtons = function() {
 	/** Returns the IDs of all buttons on the page.
-   * 
+   *
    * <p>If a given button has no ID, it will appear as "" in this array.</p>
-   * 
+   *
    * @return string[] the IDs of all buttons on the page
    */
    return this.page().getAllButtons();
@@ -1278,9 +1278,9 @@ Selenium.prototype.getAllButtons = function() {
 
 Selenium.prototype.getAllLinks = function() {
 	/** Returns the IDs of all links on the page.
-   * 
+   *
    * <p>If a given link has no ID, it will appear as "" in this array.</p>
-   * 
+   *
    * @return string[] the IDs of all links on the page
    */
    return this.page().getAllLinks();
@@ -1288,9 +1288,9 @@ Selenium.prototype.getAllLinks = function() {
 
 Selenium.prototype.getAllFields = function() {
 	/** Returns the IDs of all input fields on the page.
-   * 
+   *
    * <p>If a given field has no ID, it will appear as "" in this array.</p>
-   * 
+   *
    * @return string[] the IDs of all field on the page
    */
    return this.page().getAllFields();
@@ -1298,9 +1298,9 @@ Selenium.prototype.getAllFields = function() {
 
 Selenium.prototype._getTestAppParentOfAllWindows = function() {
   /** Returns the IDs of all input fields on the page.
-   * 
+   *
    * <p>If a given field has no ID, it will appear as "" in this array.</p>
-   * 
+   *
    * @return string[] the IDs of all field on the page
    */
    var testAppParentOfAllWindows;
@@ -1312,7 +1312,7 @@ Selenium.prototype._getTestAppParentOfAllWindows = function() {
 
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
   /** Returns every instance of some attribute from all known windows.
-   * 
+   *
    * @param attributeName name of an attribute on the windows
    * @return string[] the set of values of this attribute from all known windows.
    */
@@ -1337,14 +1337,14 @@ Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
    else {
    	// matching "name":
    	// If we are not in proxy injection mode, then the top-level test window will be named myiframe.
-        // But as far as the interface goes, we are expected to match a blank string to this window, if 
+        // But as far as the interface goes, we are expected to match a blank string to this window, if
         // we are searching with respect to the widow name.
         // So make a special case so that this logic will work:
         if (PatternMatcher.matches(soughtAfterWindowPropertyValue, "")) {
    		return this.browserbot.getCurrentWindow();
         }
    }
-   
+
    if (PatternMatcher.matches(soughtAfterWindowPropertyValue, eval("testAppParentOfAllWindows." + targetPropertyName))) {
    	return testAppParentOfAllWindows;
    }
@@ -1359,9 +1359,9 @@ Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
 
 Selenium.prototype.doDragdrop = function(locator, movementsString) {
    /** Drags an element a certain distance and then drops it
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to 
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
-   * 
+   *
    * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    * @param locator an element locator
    */
@@ -1373,13 +1373,13 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
    var movements = movementsString.split(/,/);
    var movementX = Number(movements[0]);
    var movementY = Number(movements[1]);
-   
+
    var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
    var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
-   
+
    var movementXincrement = (movementX > 0) ? 1 : -1;
    var movementYincrement = (movementY > 0) ? 1 : -1;
-   
+
    triggerMouseEvent(element, 'mousedown', true, clientStartX, clientStartY);
    var clientX = clientStartX;
    var clientY = clientStartY;
@@ -1397,7 +1397,7 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
 
 Selenium.prototype.doWindowFocus = function(windowName) {
 /** Gives focus to a window
-   * 
+   *
    * @param windowName name of the window to be given focus
    */
    this.findWindow(windowName).focus();
@@ -1406,7 +1406,7 @@ Selenium.prototype.doWindowFocus = function(windowName) {
 
 Selenium.prototype.doWindowMaximize = function(windowName) {
 /** Resize window to take up the entire screen
-   * 
+   *
    * @param windowName name of the window to be enlarged
    */
    var window = this.findWindow(windowName);
@@ -1419,7 +1419,7 @@ Selenium.prototype.doWindowMaximize = function(windowName) {
 
 Selenium.prototype.getAllWindowIds = function() {
   /** Returns the IDs of all windows that the browser knows about.
-   * 
+   *
    * @return string[] the IDs of all windows that the browser knows about.
    */
    return this.getAttributeFromAllWindows("id");
@@ -1427,7 +1427,7 @@ Selenium.prototype.getAllWindowIds = function() {
 
 Selenium.prototype.getAllWindowNames = function() {
   /** Returns the names of all windows that the browser knows about.
-   * 
+   *
    * @return string[] the names of all windows that the browser knows about.
    */
    return this.getAttributeFromAllWindows("name");
@@ -1435,7 +1435,7 @@ Selenium.prototype.getAllWindowNames = function() {
 
 Selenium.prototype.getAllWindowTitles = function() {
   /** Returns the titles of all windows that the browser knows about.
-   * 
+   *
    * @return string[] the titles of all windows that the browser knows about.
    */
    return this.getAttributeFromAllWindows("document.title");
@@ -1454,7 +1454,7 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
 	/**
    * Moves the text cursor to the specified position in the given input element or textarea.
    * This method will fail if the specified element isn't an input element or textarea.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a> pointing to an input element or textarea
    * @param position the numerical position of the cursor in the field; position should be 0 to move the position to the beginning of the field.  You can also set the cursor to -1 to move it to the end of the field.
    */
@@ -1465,11 +1465,11 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
     if (position == -1) {
     	position = element.value.length;
     }
-    
+
    if( element.setSelectionRange && !browserVersion.isOpera) {
    	element.focus();
         element.setSelectionRange(/*start*/position,/*end*/position);
-   } 
+   }
    else if( element.createTextRange ) {
       triggerEvent(element, 'focus', false);
       var range = element.createTextRange();
@@ -1502,7 +1502,7 @@ Selenium.prototype.getElementIndex = function(locator) {
 
 Selenium.prototype.isOrdered = function(locator1, locator2) {
     /**
-     * Check if these two elements have same parent and are ordered. Two same elements will 
+     * Check if these two elements have same parent and are ordered. Two same elements will
      * not be considered ordered.
      *
      * @param locator1 an <a href="#locators">element locator</a> pointing to the first element
@@ -1530,7 +1530,7 @@ Selenium.prototype._isCommentOrEmptyTextNode = function(node) {
 Selenium.prototype.getElementPositionLeft = function(locator) {
    /**
    * Retrieves the horizontal position of an element
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a> pointing to an element OR an element itself
    * @return number of pixels from the edge of the frame.
    */
@@ -1541,39 +1541,39 @@ Selenium.prototype.getElementPositionLeft = function(locator) {
         else {
         	element = locator;
         }
-	var x = element.offsetLeft;      
-	var elementParent = element.offsetParent; 
+	var x = element.offsetLeft;
+	var elementParent = element.offsetParent;
 
 	while (elementParent != null)
-	{                                        
-		if(document.all)            
+	{
+		if(document.all)
 		{
 			if( (elementParent.tagName != "TABLE") && (elementParent.tagName != "BODY") )
-			{                                   
-				x += elementParent.clientLeft; 
+			{
+				x += elementParent.clientLeft;
 			}
 		}
 		else // Netscape/DOM
 		{
-			if(elementParent.tagName == "TABLE")  
-			{                                  
+			if(elementParent.tagName == "TABLE")
+			{
 				var parentBorder = parseInt(elementParent.border);
-				if(isNaN(parentBorder))     
-				{                            
+				if(isNaN(parentBorder))
+				{
 					var parentFrame = elementParent.getAttribute('frame');
-					if(parentFrame != null)    
+					if(parentFrame != null)
 					{
-						x += 1;  
+						x += 1;
 					}
 				}
-				else if(parentBorder > 0)  
+				else if(parentBorder > 0)
 				{
-					x += parentBorder; 
+					x += parentBorder;
 				}
 			}
 		}
 		x += elementParent.offsetLeft;
-		elementParent = elementParent.offsetParent; 
+		elementParent = elementParent.offsetParent;
 	}
 	return x;
 };
@@ -1581,7 +1581,7 @@ Selenium.prototype.getElementPositionLeft = function(locator) {
 Selenium.prototype.getElementPositionTop = function(locator) {
    /**
    * Retrieves the vertical position of an element
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a> pointing to an element OR an element itself
    * @return number of pixels from the edge of the frame.
    */
@@ -1592,38 +1592,38 @@ Selenium.prototype.getElementPositionTop = function(locator) {
         else {
         	element = locator;
         }
-   
-   	var y = 0;         
+
+   	var y = 0;
 
    	while (element != null)
-	{                                        
-		if(document.all)  
+	{
+		if(document.all)
 		{
 			if( (element.tagName != "TABLE") && (element.tagName != "BODY") )
-			{                                  
+			{
 			y += element.clientTop;
 			}
 		}
 		else // Netscape/DOM
 		{
-			if(element.tagName == "TABLE") 
-			{    
+			if(element.tagName == "TABLE")
+			{
 			var parentBorder = parseInt(element.border);
-			if(isNaN(parentBorder))   
-			{               
+			if(isNaN(parentBorder))
+			{
 				var parentFrame = element.getAttribute('frame');
-				if(parentFrame != null) 
+				if(parentFrame != null)
 				{
-					y += 1;  
+					y += 1;
 				}
 			}
-			else if(parentBorder > 0)   
+			else if(parentBorder > 0)
 			{
 				y += parentBorder;
 			}
 			}
 		}
-		y += element.offsetTop;  
+		y += element.offsetTop;
 
 			// Netscape can get confused in some cases, such that the height of the parent is smaller
 			// than that of the element (which it shouldn't really be). If this is the case, we need to
@@ -1631,21 +1631,21 @@ Selenium.prototype.getElementPositionTop = function(locator) {
 			if (element.offsetParent && element.offsetParent.offsetHeight && element.offsetParent.offsetHeight < element.offsetHeight)
 			{
 				// skip the parent that's too small
-				element = element.offsetParent.offsetParent; 
+				element = element.offsetParent.offsetParent;
 			}
 			else
-			{    
+			{
 			// Next up...
-			element = element.offsetParent; 
+			element = element.offsetParent;
 		}
-   	}    
+   	}
 	return y;
 };
 
 Selenium.prototype.getElementWidth = function(locator) {
    /**
    * Retrieves the width of an element
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number width of an element in pixels
    */
@@ -1656,7 +1656,7 @@ Selenium.prototype.getElementWidth = function(locator) {
 Selenium.prototype.getElementHeight = function(locator) {
    /**
    * Retrieves the height of an element
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number height of an element in pixels
    */
@@ -1667,11 +1667,11 @@ Selenium.prototype.getElementHeight = function(locator) {
 Selenium.prototype.getCursorPosition = function(locator) {
 	/**
    * Retrieves the text cursor position in the given input element or textarea; beware, this may not work perfectly on all browsers.
-   * 
+   *
    * <p>Specifically, if the cursor/selection has been cleared by JavaScript, this command will tend to
    * return the position of the last location of the cursor, even though the cursor is now gone from the page.  This is filed as <a href="http://jira.openqa.org/browse/SEL-243">SEL-243</a>.</p>
    * This method will fail if the specified element isn't an input element or textarea, or there is no cursor in the element.
-   * 
+   *
    * @param locator an <a href="#locators">element locator</a> pointing to an input element or textarea
    * @return number the numerical position of the cursor in the field
    */
@@ -1698,23 +1698,23 @@ Selenium.prototype.getCursorPosition = function(locator) {
 				Assert.fail("There is no cursor on this page!");
 			}
 			return element.selectionStart;
-		} 
+		}
 	}
 	throw new Error("Couldn't detect cursor position on this browser!");
 }
-   
+
 
 Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
 	/**
    * Writes a message to the status bar and adds a note to the browser-side
    * log.
-   * 
+   *
    * <p>If logLevelThreshold is specified, set the threshold for logging
    * to that level (debug, info, warn, error).</p>
-   * 
+   *
    * <p>(Note that the browser-side logs will <i>not</i> be sent back to the
    * server, and are invisible to the Client Driver.)</p>
-   * 
+   *
    * @param context
    *            the message to be sent to the browser
    * @param logLevelThreshold one of "debug", "info", "warn", "error", sets the threshold for browser-side logging
@@ -1731,7 +1731,7 @@ Selenium.prototype.getExpression = function(expression) {
 	 *
 	 * <p>This is useful because of JavaScript preprocessing.
 	 * It is used to generate commands like assertExpression and waitForExpression.</p>
-	 * 
+	 *
 	 * @param expression the value to return
 	 * @return string the value passed in
 	 */
@@ -1743,7 +1743,7 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
    * Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
    * The snippet may have multiple lines, but only the result of the last line
    * will be considered.
-   * 
+   *
    * <p>Note that, by default, the snippet will be run in the runner's test window, not in the window
    * of your application.  To get the window of your application, you can use
    * the JavaScript snippet <code>selenium.browserbot.getCurrentWindow()</code>, and then
@@ -1754,11 +1754,11 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
     if (isNaN(timeout)) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
-    
+
     currentTest.waitForCondition = function () {
         return eval(script);
     };
-    
+
     currentTest.waitForConditionStart = new Date().getTime();
     currentTest.waitForConditionTimeout = timeout;
 };
@@ -1779,10 +1779,10 @@ Selenium.prototype.doSetTimeout = function(timeout) {
 Selenium.prototype.doWaitForPageToLoad = function(timeout) {
 	/**
    * Waits for a new page to load.
-   * 
+   *
    * <p>You can use this command instead of the "AndWait" suffixes, "clickAndWait", "selectAndWait", "typeAndWait" etc.
    * (which are only available in the JS API).</p>
-   * 
+   *
    * <p>Selenium constantly keeps track of new pages loading, and sets a "newPageLoaded"
    * flag when it first notices a page load.  Running any other Selenium command after
    * turns the flag to false.  Hence, if you want to wait for a page to load, you must

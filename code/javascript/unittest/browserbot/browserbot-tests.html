@@ -91,9 +91,15 @@ function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIs
     var pageBot = browserBot.getCurrentPage();
     assertEquals(pageBot, browserBot.currentPage);
 
+<<<<<<< .mine
+    assertEquals(mockWindow, pageBot.currentWindow());
+    assertEquals('thedocument', pageBot.currentDocument());
+
+=======
     assertEquals(mockWindow, pageBot.currentWindow);
     assertEquals('thedocument', pageBot.document());
     assertEquals(mockLocation, pageBot.location);
+>>>>>>> .theirs
 
     mockLocation.verify();
 }
@@ -109,7 +115,7 @@ function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSe
     mockWindow.attachEvent = function(){};
 
     var pageBot = browserBot.getCurrentPage();
-    assertEquals(mockWindow, pageBot.currentWindow);
+    assertEquals(mockWindow, pageBot.currentWindow());
 
     mockLocation.verify();
 }
