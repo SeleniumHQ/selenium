@@ -289,12 +289,12 @@ Object.extend(SeleneseRunner.prototype, {
             if (this.xmlHttpForCommandsAndResults.status == 200) {
                 var command = this._extractCommand(this.xmlHttpForCommandsAndResults);
                 this.currentCommand = command;
-                this.beginNextTest();
+                this.continueTestAtCurrentCommand();
             } else {
                 var s = 'xmlHttp returned: ' + this.xmlHttpForCommandsAndResults.status + ": " + this.xmlHttpForCommandsAndResults.statusText;
                 LOG.error(s);
                 this.currentCommand = null;
-                setTimeout(this.beginNextTest.bind(this), 2000);
+                setTimeout(this.continueTestAtCurrentCommand.bind(this), 2000);
             }
 
         }

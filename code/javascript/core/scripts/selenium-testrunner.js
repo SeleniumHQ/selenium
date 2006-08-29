@@ -274,12 +274,12 @@ function addBreakpointSupport() {
 
 function getBreakpointEventHandler(commandRow) {
     return function() {
-        if (commandRow.stopOnThisCommand == undefined) {
-            commandRow.stopOnThisCommand = true;
+        if (commandRow.isBreakpoint == undefined) {
+            commandRow.isBreakpoint = true;
             commandRow.beforeBackgroundColor = Element.getStyle(commandRow, "backgroundColor");
             Element.setStyle(commandRow, {"background-color" : "#cccccc"});
         } else {
-            commandRow.stopOnThisCommand = undefined;
+            commandRow.isBreakpoint = undefined;
             Element.setStyle(commandRow, {"background-color" : commandRow.beforeBackgroundColor});
         }
     }
@@ -636,18 +636,6 @@ function registerCommandHandlers() {
 
 }
 
-function nextCommand() {
-    var row = currentTest.nextCommand();
-    if (row == null) {
-        return null;
-    }
-    row.cells[2].originalHTML = row.cells[2].innerHTML;
-    return new SeleniumCommand(getText(row.cells[0]),
-            getText(row.cells[1]),
-            getText(row.cells[2]),
-            row.stopOnThisCommand);
-}
-
 function removeNbsp(value) {
     return value.replace(/\240/g, "");
 }
@@ -749,7 +737,7 @@ Object.extend(TestRunner.prototype, {
         return new SeleniumCommand(getText(row.cells[0]),
                 getText(row.cells[1]),
                 getText(row.cells[2]),
-                row.stopOnThisCommand);
+                row.isBreakpoint);
     },
 
     commandStarted : function() {

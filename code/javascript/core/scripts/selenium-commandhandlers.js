@@ -351,9 +351,9 @@ function CommandResult(processState) {
     this.result = null;
 }
 
-function SeleniumCommand(command, target, value, stopOnThisCommand) {
+function SeleniumCommand(command, target, value, isBreakpoint) {
     this.command = command;
     this.target = target;
     this.value = value;
-    this.stopOnThisCommand = stopOnThisCommand;
+    this.isBreakpoint = isBreakpoint;
 }

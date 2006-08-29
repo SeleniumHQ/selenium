@@ -21,28 +21,28 @@ function TestLoop(commandFactory) {
 }
 
 TestLoop.prototype = {
-/** The default is not to have any interval between commands. */
+
     start : function() {
         selenium.reset();
         LOG.debug("currentTest.start()");
         this.continueTest();
     },
 
-/**
- * Select the next command and continue the test.
- */
     continueTest : function() {
+        /**
+         * Select the next command and continue the test.
+         */
         LOG.debug("currentTest.continueTest() - acquire the next command");
         if (! this.aborted) {
             this.currentCommand = this.nextCommand();
         }
         if (! this.requiresCallBack) {
-            this.beginNextTest();
-        } // otherwise, just finish and let the callback invoke beginNextTest()
+            this.continueTestAtCurrentCommand();
+        } // otherwise, just finish and let the callback invoke continueTestAtCurrentCommand()
     },
 
-    beginNextTest : function() {
-        LOG.debug("currentTest.beginNextTest()");
+    continueTestAtCurrentCommand : function() {
+        LOG.debug("currentTest.continueTestAtCurrentCommand()");
         if (this.currentCommand) {
             // TODO: rename commandStarted to commandSelected, OR roll it into nextCommand
             this.commandStarted(this.currentCommand);
@@ -52,17 +52,17 @@ TestLoop.prototype = {
         }
     },
 
-/**
- * Pause, then execute the current command.
- */
     _resumeAfterDelay : function() {
+        /**
+         * Pause, then execute the current command.
+         */
 
         // Get the command delay. If a pauseInterval is set, use it once
         // and reset it.  Otherwise, use the defined command-interval.
         var delay = this.pauseInterval || this.getCommandInterval();
         this.pauseInterval = undefined;
 
-        if (this.currentCommand.stopOnThisCommand || delay < 0) {
+        if (this.currentCommand.isBreakpoint || delay < 0) {
             // Pause: enable the "next/continue" button
             this.pause();
         } else {
@@ -70,10 +70,10 @@ TestLoop.prototype = {
         }
     },
 
-/**
- * Select the next command and continue the test.
- */
     resume : function() {
+        /**
+         * Select the next command and continue the test.
+         */
         LOG.debug("currentTest.resume() - actually execute");
         try {
             selenium.browserbot.runScheduledPollers();
@@ -92,14 +92,13 @@ TestLoop.prototype = {
         this.testComplete();
     },
 
-/**
- * Execute the current command.
- *
- * The return value, if not null, should be a function which will be
- * used to determine when execution can continue.
- */
     _executeCurrentCommand : function() {
-
+        /**
+         * Execute the current command.
+         *
+         * @return a function which will be used to determine when
+         * execution can continue, or null if we can continue immediately
+         */
         var command = this.currentCommand;
         LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
 
@@ -137,13 +136,14 @@ TestLoop.prototype = {
         }
     },
 
-/**
- * Busy wait for waitForCondition() to become true, and then carry on
- * with test.  Fail the current test if there's a timeout or an exception.
- */
     continueTestWhenConditionIsTrue : function () {
+        /**
+         * Busy wait for waitForCondition() to become true, and then carry
+         * on with test.  Fail the current test if there's a timeout or an
+         * exception.
+         */
         LOG.debug("currentTest.continueTestWhenConditionIsTrue()");
-    	selenium.browserbot.runScheduledPollers();
+        selenium.browserbot.runScheduledPollers();
         try {
             if (this.waitForCondition == null || this.waitForCondition()) {
                 LOG.debug("condition satisfied; let's continueTest()");
