@@ -64,7 +64,7 @@
 	
 	<target name="maven-skiptest" depends="maven-skiptest-init, maven" description="Builds the Maven stuff, skipping the automated tests" />
 
-	<target name="all" depends="clean, init, maven" description="Builds everything">
+	<target name="all" depends="init, maven" description="Builds everything">
 		<ant dir="clients" target="all"/>
 	</target>
 
