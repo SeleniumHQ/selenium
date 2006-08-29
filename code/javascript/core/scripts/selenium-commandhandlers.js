@@ -143,14 +143,14 @@ function CommandHandlerFactory() {
     // returns an appropriate PredicateResult value.
     this.createPredicateFromBooleanAccessor = function(accessor) {
         return function() {
-        	var accessorResult;
-        	if (arguments.length > 2) throw new SeleniumError("Too many arguments! " + arguments.length);
-        	if (arguments.length == 2) {
-            	accessorResult = accessor.call(this, arguments[0], arguments[1]);
+            var accessorResult;
+            if (arguments.length > 2) throw new SeleniumError("Too many arguments! " + arguments.length);
+            if (arguments.length == 2) {
+                accessorResult = accessor.call(this, arguments[0], arguments[1]);
             } else if (arguments.length == 1) {
-            	accessorResult = accessor.call(this, arguments[0]);
+                accessorResult = accessor.call(this, arguments[0]);
             } else {
-            	accessorResult = accessor.call(this);
+                accessorResult = accessor.call(this);
             }
             if (accessorResult) {
                 return new PredicateResult(true, "true");
@@ -164,7 +164,7 @@ function CommandHandlerFactory() {
     // return a predicate equivalent to isBlah([target,] value) that
     // is true when the value returned by the accessor matches the specified value.
     this.createPredicateFromAccessor = function(accessor) {
-		if (accessor.length == 0) {
+        if (accessor.length == 0) {
             return self.createPredicateFromNoArgAccessor(accessor);
         }
         return self.createPredicateFromSingleArgAccessor(accessor);
@@ -183,12 +183,12 @@ function CommandHandlerFactory() {
 
     // Convert an isBlahBlah(target, value) function into an assertBlahBlah(target, value) function.
     this.createAssertionFromPredicate = function(predicate) {
-    	return function(target, value) {
-    		var result = predicate.call(this, target, value);
-    		if (!result.isTrue) {
-    			Assert.fail(result.message);
-    		}
-    	};
+        return function(target, value) {
+            var result = predicate.call(this, target, value);
+            if (!result.isTrue) {
+                Assert.fail(result.message);
+            }
+        };
     };
 
 
@@ -218,21 +218,21 @@ function CommandHandlerFactory() {
 
     // Convert an isBlahBlah(target, value) function into a waitForBlahBlah(target, value) function.
     this.createWaitForActionFromPredicate = function(predicate) {
-    	var action = function(target, value) {
-    		var seleniumApi = this;
-		    currentTest.waitForCondition = function () {
-		    	try {
-				    return predicate.call(seleniumApi, target, value).isTrue;
-				} catch (e) {
-					// Treat exceptions as meaning the condition is not yet met.
-					// Useful, for example, for waitForValue when the element has
-					// not even been created yet.
-					// TODO: possibly should rethrow some types of exception.
-					return false;
-				}
-		    };
-    	};
-    	return action;
+        var action = function(target, value) {
+            var seleniumApi = this;
+            currentTest.waitForCondition = function () {
+                try {
+                    return predicate.call(seleniumApi, target, value).isTrue;
+                } catch (e) {
+                    // Treat exceptions as meaning the condition is not yet met.
+                    // Useful, for example, for waitForValue when the element has
+                    // not even been created yet.
+                    // TODO: possibly should rethrow some types of exception.
+                    return false;
+                }
+            };
+        };
+        return action;
     };
 
     // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
@@ -241,28 +241,28 @@ function CommandHandlerFactory() {
             predicate = self.createPredicateFromAccessor(accessor);
         }
         var waitForAction = self.createWaitForActionFromPredicate(predicate);
-    	self.registerAction("waitFor"+baseName, waitForAction, false, true);
+        self.registerAction("waitFor"+baseName, waitForAction, false, true);
         var invertedPredicate = self.invertPredicate(predicate);
         var waitForNotAction = self.createWaitForActionFromPredicate(invertedPredicate);
-	   	self.registerAction("waitFor"+_negtiveName(baseName), waitForNotAction, false, true);
+        self.registerAction("waitFor"+_negtiveName(baseName), waitForNotAction, false, true);
         //TODO decide remove "waitForNot.*Present" action name or not
         //for the back compatiblity issues we still make waitForNot.*Present availble
         self.registerAction("waitForNot"+baseName, waitForNotAction, false, true);
     }
 
-	// Register a storeBlahBlah based on the specified accessor.
+    // Register a storeBlahBlah based on the specified accessor.
     this.registerStoreCommandBasedOnAccessor = function(accessor, baseName) {
         var action;
         if (accessor.length == 1) {
-	    	action = function(target, varName) {
-			    storedVars[varName] = accessor.call(this, target);
-	    	};
-	    } else {
-	    	action = function(varName) {
-			    storedVars[varName] = accessor.call(this);
-	    	};
-	    }
-    	self.registerAction("store"+baseName, action, false, accessor.dontCheckAlertsAndConfirms);
+            action = function(target, varName) {
+                storedVars[varName] = accessor.call(this, target);
+            };
+        } else {
+            action = function(varName) {
+                storedVars[varName] = accessor.call(this);
+            };
+        }
+        self.registerAction("store"+baseName, action, false, accessor.dontCheckAlertsAndConfirms);
     };
 
 }
