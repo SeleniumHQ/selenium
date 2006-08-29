@@ -1123,7 +1123,17 @@ PageBot.prototype.checkMultiselect = function(element) {
 PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'focus', false);
     triggerEvent(element, 'select', true);
-    element.value = stringValue;
+    var maxLengthAttr = element.getAttribute("maxLength");
+    var actualValue = stringValue;
+    if (maxLengthAttr != null) {
+        var maxLength = parseInt(maxLengthAttr);
+        if (stringValue.length > maxLength) {
+            LOG.warn("BEFORE")
+            actualValue = stringValue.substr(0, maxLength);
+            LOG.warn("AFTER")
+        }
+    }
+    element.value = actualValue;
     // DGF this used to be skipped in chrome URLs, but no longer.  Is xpcnativewrappers to blame?
     triggerEvent(element, 'change', true);
 };
