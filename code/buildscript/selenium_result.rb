@@ -40,7 +40,7 @@ class SeleniumResult
     doc = HTree.parse(@req.query["suite"])
     name = ""
     position = 0
-    doc.traverse_element("a") do |e| 
+    doc.traverse_element("A", "a") do |e|
       e.traverse_text do |t|
         return t.to_s if position == i
       end
