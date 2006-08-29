@@ -31,7 +31,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
-    pageBot = PageBot.createForWindow(window, BrowserBot.createForWindow(window));
+    pageBot = PageBot.createForWindow(BrowserBot.createForWindow(window));
 }
 
 function testTitleProperty() {

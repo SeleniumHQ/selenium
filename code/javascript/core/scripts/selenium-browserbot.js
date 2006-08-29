@@ -169,7 +169,7 @@ BrowserBot.prototype.modifyWindow = function(win) {
     if (!win[this.uniqueId]) {
         win[this.uniqueId] = true;
         this.modifyWindowToRecordPopUpDialogs(win, this);
-        this.currentPage = PageBot.createForWindow(win, this);
+        this.currentPage = PageBot.createForWindow(this);
         this.newPageLoaded = false;
     }
     this.modifySeparateTestWindowToDetectPageLoads(win);
@@ -188,7 +188,7 @@ BrowserBot.prototype.selectWindow = function(target) {
 };
 
 BrowserBot.prototype.getFrameFromGlobal = function(target) {
-    pagebot = PageBot.createForWindow(this.topWindow, this);
+    pagebot = PageBot.createForWindow(this);
     return pagebot.findElementBy("implicit", target, this.topWindow.document, this.topWindow);
 }
 
@@ -246,7 +246,7 @@ BrowserBot.prototype.setOpenLocation = function(win, loc) {
 BrowserBot.prototype.getCurrentPage = function() {
     if (this.currentPage == null) {
         var testWindow = this.getCurrentWindow();
-        this.currentPage = PageBot.createForWindow(testWindow, this);
+        this.currentPage = PageBot.createForWindow(this);
         this.newPageLoaded = false;
     }
 
@@ -772,23 +772,23 @@ var PageBot = function(browserbot) {
 
 };
 
-PageBot.createForWindow = function(windowObject, browserbot) {
+PageBot.createForWindow = function(browserbot) {
     if (browserVersion.isIE) {
-        return new IEPageBot(windowObject, browserbot);
+        return new IEPageBot(browserbot);
     }
     else if (browserVersion.isKonqueror) {
-        return new KonquerorPageBot(windowObject, browserbot);
+        return new KonquerorPageBot(browserbot);
     }
     else if (browserVersion.isSafari) {
-        return new SafariPageBot(windowObject, browserbot);
+        return new SafariPageBot(browserbot);
     }
     else if (browserVersion.isOpera) {
-        return new OperaPageBot(windowObject, browserbot);
+        return new OperaPageBot(browserbot);
     }
     else {
         LOG.info("Using MozillaPageBot")
         // Use mozilla by default
-        return new MozillaPageBot(windowObject, browserbot);
+        return new MozillaPageBot(browserbot);
     }
 };
 

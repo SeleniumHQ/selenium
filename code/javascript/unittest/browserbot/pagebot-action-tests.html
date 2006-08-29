@@ -36,7 +36,7 @@ function setUp() {
     initialiseCheckbox()
     initialiseRadios()
     initialiseButtons()
-    pageBot = PageBot.createForWindow(window, BrowserBot.createForWindow(window));
+    pageBot = PageBot.createForWindow(BrowserBot.createForWindow(window));
     pageBot.windowClosed = function() {};
 }
 
