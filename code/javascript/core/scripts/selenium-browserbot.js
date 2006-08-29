@@ -99,7 +99,6 @@ BrowserBot.createForWindow = function(window) {
         browserbot = new MozillaBrowserBot(window);
     }
 
-    browserbot.getCurrentWindow();
     return browserbot;
 };
 
@@ -708,7 +707,7 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
     };
 };
 
-var PageBot = function(pageWindow, browserbot) {
+var PageBot = function(browserbot) {
     this.title = function() {
         var t = this.document().title;
         if (typeof(t) == "string") {
@@ -793,28 +792,28 @@ PageBot.createForWindow = function(windowObject, browserbot) {
     }
 };
 
-var MozillaPageBot = function(pageWindow, browserbot) {
-    PageBot.call(this, pageWindow, browserbot);
+var MozillaPageBot = function(browserbot) {
+    PageBot.call(this, browserbot);
 };
 MozillaPageBot.prototype = new PageBot();
 
-var KonquerorPageBot = function(pageWindow, browserbot) {
-    PageBot.call(this, pageWindow, browserbot);
+var KonquerorPageBot = function(browserbot) {
+    PageBot.call(this, browserbot);
 };
 KonquerorPageBot.prototype = new PageBot();
 
-var SafariPageBot = function(pageWindow, browserbot) {
-    PageBot.call(this, pageWindow, browserbot);
+var SafariPageBot = function(browserbot) {
+    PageBot.call(this, browserbot);
 };
 SafariPageBot.prototype = new PageBot();
 
-var IEPageBot = function(pageWindow, browserbot) {
-    PageBot.call(this, pageWindow, browserbot);
+var IEPageBot = function(browserbot) {
+    PageBot.call(this, browserbot);
 };
 IEPageBot.prototype = new PageBot();
 
-var OperaPageBot = function(pageWindow, browserbot) {
-    PageBot.call(this, pageWindow, browserbot);
+var OperaPageBot = function(browserbot) {
+    PageBot.call(this, browserbot);
 };
 OperaPageBot.prototype = new PageBot();
 
