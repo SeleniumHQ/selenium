@@ -16,42 +16,27 @@
  */
 package org.openqa.selenium.server;
 
-import org.mortbay.util.Resource;
 import org.mortbay.util.IO;
+import org.mortbay.util.Resource;
 
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Represents resource file off of the classpath.
+ *
  * @author Patrick Lightbody (plightbo at gmail dot com)
  */
 public class ClassPathResource extends Resource {
     String path;
     ByteArrayOutputStream os;
 
+    /**
+     * Specifies the classpath path containing the resource
+     */
     public ClassPathResource(String path) {
-        this(path, false);
-    }
-    
-    /** Specifies the classpath path containing the resource */
-    public ClassPathResource(String path, boolean slowResources) {
         this.path = path;
-        
-        if (slowResources) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-            }
-            if (path != null && path.endsWith("slow.html")) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                }
-            }
-        }
-
         InputStream is = ClassPathResource.class.getResourceAsStream(path);
         if (is != null) {
             os = new ByteArrayOutputStream();
@@ -79,8 +64,10 @@ public class ClassPathResource extends Resource {
         return false;
     }
 
-    /** Returns the lastModified time, which 
-     * is always in the distant future to prevent caching. */
+    /**
+     * Returns the lastModified time, which
+     * is always in the distant future to prevent caching.
+     */
     public long lastModified() {
         return System.currentTimeMillis() + 1000 * 3600 * 24 * 365;
     }
@@ -109,7 +96,6 @@ public class ClassPathResource extends Resource {
         if (os != null) {
             return new ByteArrayInputStream(os.toByteArray());
         }
-
         return null;
     }
 

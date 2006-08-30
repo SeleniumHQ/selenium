@@ -116,7 +116,7 @@ public class InjectionHelper {
         }
     }
 
-    public static void injectJavaScript(SeleniumServer seleniumServer, boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
+    public static void injectJavaScript(boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
 	    if (!contentTransformations.containsKey("__SELENIUM_JS__")) {
 	        init();   
         }

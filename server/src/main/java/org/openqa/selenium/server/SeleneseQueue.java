@@ -109,7 +109,7 @@ public class SeleneseQueue {
                     throw new RuntimeException("unexpected result " + commandResultHolder.peek());
                 }
             }
-        }
+        }                            
         synchronized(commandHolder) {
             if (!commandHolder.isEmpty()) {
                 throw new RuntimeException("unexpected command " + commandHolder.peek() 

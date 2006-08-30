@@ -64,7 +64,6 @@ public class ProxyHandler extends AbstractHttpHandler {
     protected Set<String> _proxyHostsBlackList;
     protected int _tunnelTimeoutMs = 250;
     private boolean _anonymous = false;
-    private SeleniumServer seleniumServer;
     private transient boolean _chained = false;
 
     /* ------------------------------------------------------------ */
@@ -399,7 +398,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                         && !request.getPath().endsWith(".jpg")
                         && !request.getPath().endsWith(".dwr")
                         && !request.getPath().endsWith(".js")) {
-            		InjectionHelper.injectJavaScript(seleniumServer, isKnownToBeHtml, response, proxy_in, response.getOutputStream());
+            		InjectionHelper.injectJavaScript(isKnownToBeHtml, response, proxy_in, response.getOutputStream());
             	}
             	else {
             		IO.copy(proxy_in, response.getOutputStream());
@@ -656,9 +655,5 @@ public class ProxyHandler extends AbstractHttpHandler {
      */
     public void setAnonymous(boolean anonymous) {
         _anonymous = anonymous;
-    }
-
-    public void setSeleniumServer(SeleniumServer server) {
-        seleniumServer = server;
     }
 }

@@ -1,18 +1,18 @@
 package org.openqa.selenium.server;
 
 public class WindowsHTMLRunnerTest extends HTMLRunnerTestBase {
-    public void testFirefox() throws Exception{
+    public void testFirefox() throws Exception {
         runHTMLSuite("*firefox", false);
     }
-    
-    public void testFirefoxSlow() throws Exception{
+
+    public void testFirefoxSlow() throws Exception {
         runHTMLSuite("*firefox", true);
     }
 
     public void testIExplore() throws Exception {
         runHTMLSuite("*iexplore", false);
     }
-    
+
     public void testIExploreSlow() throws Exception {
         runHTMLSuite("*iexplore", true);
     }
@@ -20,7 +20,7 @@ public class WindowsHTMLRunnerTest extends HTMLRunnerTestBase {
     public void testChrome() throws Exception {
         runHTMLSuite("*chrome", false);
     }
-    
+
     public void testChromeSlow() throws Exception {
         runHTMLSuite("*chrome", true);
     }
@@ -28,7 +28,7 @@ public class WindowsHTMLRunnerTest extends HTMLRunnerTestBase {
     public void testOpera() throws Exception {
         runHTMLSuite("*opera", false);
     }
-    
+
     public void testOperaSlow() throws Exception {
         runHTMLSuite("*opera", true);
     }

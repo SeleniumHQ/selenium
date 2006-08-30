@@ -44,8 +44,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <includes><include>**/ServerTestSuite.java</include></includes>
-                    <forkMode>never</forkMode>
+                    <includes>
+                        <include>**/UnitTestSuite.java</include>
+						<include>**/ServerTestSuite.java</include>
+                     </includes>
+                     <forkMode>never</forkMode>
                 </configuration>
             </plugin>
         </plugins>
