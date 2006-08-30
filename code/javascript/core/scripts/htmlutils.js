@@ -545,13 +545,17 @@ function SeleniumError(message) {
 var Effect = new Object();
 
 Object.extend(Effect, {
-    highlight : function(element) {    	
-        var highLightColor = "yellow";	
-        var originalColor = Element.getStyle(element, "background-color");
+    highlight : function(element) {
+        var highLightColor = "yellow";
+        if (element.originalColor == undefined) { // avoid picking up highlight
+            element.originalColor = Element.getStyle(element, "background-color");
+        }
         Element.setStyle(element, {"background-color" : highLightColor});
         window.setTimeout(function() {
-	        if(element.document != undefined && element.document==null) return;
-            Element.setStyle(element, {"background-color" : originalColor});
+            if (element.document != undefined && element.document == null) {
+                return;
+            }
+            Element.setStyle(element, {"background-color" : element.originalColor});
         }, 200);
     }
 });
