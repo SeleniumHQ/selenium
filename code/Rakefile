@@ -55,7 +55,7 @@ task :internal_tests do
   ruby "-I buildscript buildscript/internal_test_suite.rb"
 end
 
-browsers = [IE.new]
+browsers = [Firefox.new]
 
 desc "Runs all the JSunit tests"
 JavaScriptTestTask.new(:unit_tests) do |t|
