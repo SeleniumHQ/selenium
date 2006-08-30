@@ -146,7 +146,7 @@ function logToRc(message, logLevel) {
         logLevel = "debug";
     }
     if (debugMode) {
-        sendToRC("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/, " ") + "\n");
+        sendToRC("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/g, " ") + "\n");
     }
 }
 
