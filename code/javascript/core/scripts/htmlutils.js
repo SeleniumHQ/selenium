@@ -550,7 +550,7 @@ Object.extend(Effect, {
         var originalColor = Element.getStyle(element, "background-color");
         Element.setStyle(element, {"background-color" : highLightColor});
         window.setTimeout(function() {
-	    if(!element.document) return;
+	        if(element.document != undefined && element.document==null) return;
             Element.setStyle(element, {"background-color" : originalColor});
         }, 200);
     }
