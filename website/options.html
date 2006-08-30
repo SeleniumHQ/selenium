@@ -20,6 +20,14 @@
     <code>java -Dhttp.proxyHost=myproxy.com -Dhttp.proxyPort=1234 -jar selenium-server.jar</code>
 </blockquote>
 
+<p><code>-Dselenium.javascript.dir</code>: override Selenium Core's javascript
+location. Without this system property, Selenium RC will use Selenium Core pre-embbed in
+the jar. The following command line will start Selenium Server using Selenium
+Core at c:\selenium-core\</p>
+<blockquote>
+    <code>java -Dselenium.javascript.dir=c:\selenium-core\code\javascript -jar selenium-server.jar</code>
+</blockquote>
+
 </body></html>
 
 
