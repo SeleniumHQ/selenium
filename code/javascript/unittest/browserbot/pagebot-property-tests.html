@@ -35,11 +35,11 @@ function setUp() {
 }
 
 function testTitleProperty() {
-    assertEquals("PageBot Property Tests", pageBot.title());
+    assertEquals("PageBot Property Tests", pageBot.getTitle());
 }
 
 function testCurrentWindowProperty() {
-  assertEquals(window, pageBot.currentWindow());
+  assertEquals(window, pageBot.getCurrentWindow());
 }
 
 function testBodyText() {

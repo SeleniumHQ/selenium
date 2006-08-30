@@ -29,7 +29,6 @@
 
 var BrowserBot = function(win) {
     this.topWindow = win;
-    this.window = this.topWindow;
 
     // the buttonWindow is the Selenium window
     // it contains the Run/Pause buttons... this should *not* be the AUT window
@@ -39,7 +38,6 @@ var BrowserBot = function(win) {
     this.currentWindow = this.topWindow;
     this.currentWindowName = null;
 
-    this.windowPollers = new Array();
     this.modalDialogTest = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
@@ -49,8 +47,10 @@ var BrowserBot = function(win) {
     this.nextPromptResult = '';
     this.newPageLoaded = false;
     this.pageLoadError = null;
+    
     this.uniqueId = new Date().getTime();
     this.pollingForLoad = new Object();
+    this.windowPollers = new Array();
 
 
     var self = this;
@@ -98,7 +98,7 @@ BrowserBot.createForWindow = function(window) {
         // Use mozilla by default
         browserbot = new MozillaBrowserBot(window);
     }
-
+    browserbot.getCurrentWindow();
     return browserbot;
 };
 
@@ -154,14 +154,14 @@ BrowserBot.prototype.getNextPrompt = function() {
     return t;
 };
 
-BrowserBot.prototype.windowClosed = function(win) {
+BrowserBot.prototype._windowClosed = function(win) {
     var c = win.closed;
     if (c == null) return true;
     return c;
 };
 
-BrowserBot.prototype.modifyWindow = function(win) {
-    if (this.windowClosed(win)) {
+BrowserBot.prototype._modifyWindow = function(win) {
+    if (this._windowClosed(win)) {
         LOG.error("modifyWindow: Window was closed!");
         return null;
     }
@@ -179,23 +179,23 @@ BrowserBot.prototype.modifyWindow = function(win) {
 BrowserBot.prototype.selectWindow = function(target) {
     // we've moved to a new page - clear the current one
     this.currentPage = null;
-    this.currentWindowName = null;
-    this.currentWindow = this.window;
+
     if (target && target != "null") {
-        this.currentWindow = this.getWindowByName(target);
-        this.currentWindowName = target;
+        this._selectWindowByName(target);
+    } else {
+        this._selectTopWindow();
     }
 };
 
-BrowserBot.prototype.getFrameFromGlobal = function(target) {
-    pagebot = PageBot.createForWindow(this);
-    return pagebot.findElementBy("implicit", target, this.topWindow.document, this.topWindow);
+BrowserBot.prototype._selectTopWindow = function() {
+    this.currentWindowName = null;
+    this.currentWindow = this.topWindow;
 }
 
-BrowserBot.prototype.makeThisTheDefaultWindow = function() {
-    this.window = this.getCurrentWindow();
-    this.selectWindow();
-};
+BrowserBot.prototype._selectWindowByName = function(target) {
+    this.currentWindow = this.getWindowByName(target, false);
+    this.currentWindowName = target;
+}
 
 BrowserBot.prototype.selectFrame = function(target) {
     if (target == "relative=up") {
@@ -297,7 +297,7 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
         LOG.warn("modifySeparateTestWindowToDetectPageLoads: no windowObject!");
         return;
     }
-    if (this.windowClosed(windowObject)) {
+    if (this._windowClosed(windowObject)) {
         LOG.info("modifySeparateTestWindowToDetectPageLoads: windowObject was closed");
         return;
     }
@@ -311,7 +311,7 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
     LOG.info("Starting pollForLoad (" + marker + "): " + windowObject.document.location);
     this.pollingForLoad[marker] = true;
     // if this is a frame, add a load listener, otherwise, attach a poller
-    if (this.getFrameElement(windowObject)) {
+    if (this._getFrameElement(windowObject)) {
         LOG.info("modifySeparateTestWindowToDetectPageLoads: this window is a frame; attaching a load listener");
         addLoadListener(windowObject.frameElement, this.recordPageLoad);
         windowObject.frameElement[marker] = true;
@@ -323,7 +323,7 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
     }
 };
 
-BrowserBot.prototype.getFrameElement = function(win) {
+BrowserBot.prototype._getFrameElement = function(win) {
     var frameElement = null;
     try {
         frameElement = win.frameElement;
@@ -348,7 +348,7 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
     var rs;
     var markedLoc;
     try {
-        if (this.windowClosed(windowObject)) {
+        if (this._windowClosed(windowObject)) {
             LOG.info("pollForLoad WINDOW CLOSED (" + marker + ")");
             delete this.pollingForLoad[marker];
             return;
@@ -372,7 +372,7 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
         if (!(sameDoc && sameLoc && sameHref && markedLoc) && rs == 'complete') {
             LOG.info("pollForLoad FINISHED (" + marker + "): " + rs + " (" + currentHref + ")");
             delete this.pollingForLoad[marker];
-            this.modifyWindow(windowObject);
+            this._modifyWindow(windowObject);
             var newMarker = this.isPollingForLoad(windowObject);
             if (!newMarker) {
                 LOG.debug("modifyWindow didn't start new poller: " + newMarker);
@@ -484,7 +484,7 @@ BrowserBot.prototype.runScheduledPollers = function() {
 
 BrowserBot.prototype.isPollingForLoad = function(win) {
     var marker;
-    if (this.getFrameElement(win)) {
+    if (this._getFrameElement(win)) {
         marker = win.frameElement[this.uniqueId];
     } else {
         marker = win[this.uniqueId];
@@ -505,13 +505,13 @@ BrowserBot.prototype.getWindowByName = function(windowName, doNotModify) {
     // First look in the map of opened windows
     var targetWindow = this.openedWindows[windowName];
     if (!targetWindow) {
-        targetWindow = this.window[windowName];
+        targetWindow = this.topWindow[windowName];
     }
     if (!targetWindow) {
         throw new SeleniumError("Window does not exist");
     }
     if (!doNotModify) {
-        this.modifyWindow(targetWindow);
+        this._modifyWindow(targetWindow);
     }
     return targetWindow;
 };
@@ -519,7 +519,7 @@ BrowserBot.prototype.getWindowByName = function(windowName, doNotModify) {
 BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     var testWindow = this.currentWindow;
     if (!doNotModify) {
-        this.modifyWindow(testWindow);
+        this._modifyWindow(testWindow);
     }
     return testWindow;
 };
@@ -633,7 +633,7 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
     }
 };
 
-IEBrowserBot.prototype.windowClosed = function(win) {
+IEBrowserBot.prototype._windowClosed = function(win) {
     try {
         var c = win.closed;
         // frame windows claim to be non-closed when their parents are closed
@@ -708,28 +708,11 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
 };
 
 var PageBot = function(browserbot) {
-    this.title = function() {
-        var t = this.document().title;
-        if (typeof(t) == "string") {
-            t = t.trim();
-        }
-        return t;
-    }
-
     this.browserbot = browserbot;
+    this._registerAllLocatorFunctions();
+};
 
-    this.document = function() {
-        return this.currentWindow().document;
-    }
-
-    this.currentWindow = function() {
-        return this.browserbot.getCurrentWindow();
-    }
-
-
-
-
-    // Register all locateElementBy* functions
+PageBot.prototype._registerAllLocatorFunctions = function() {
     // TODO - don't do this in the constructor - only needed once ever
     this.locationStrategies = {};
     for (var functionName in this) {
@@ -769,8 +752,23 @@ var PageBot = function(browserbot) {
         }
         return this.locateElementByIdentifier(locator, inDocument, inWindow);
     };
+}
 
-};
+PageBot.prototype.getDocument = function() {
+    return this.getCurrentWindow().document;
+}
+
+PageBot.prototype.getCurrentWindow = function() {
+    return this.browserbot.getCurrentWindow();
+}
+
+PageBot.prototype.getTitle = function() {
+    var t = this.getDocument().title;
+    if (typeof(t) == "string") {
+        t = t.trim();
+    }
+    return t;
+}
 
 PageBot.createForWindow = function(browserbot) {
     if (browserVersion.isIE) {
@@ -831,12 +829,12 @@ PageBot.prototype.findElement = function(locator) {
         locatorString = result[2];
     }
 
-    var element = this.findElementBy(locatorType, locatorString, this.document(), this.currentWindow());
+    var element = this.findElementBy(locatorType, locatorString, this.getDocument(), this.getCurrentWindow());
     if (element != null) {
         return this.highlight(element);
     }
-    for (var i = 0; i < this.currentWindow().frames.length; i++) {
-        element = this.findElementBy(locatorType, locatorString, this.currentWindow().frames[i].document, this.currentWindow().frames[i]);
+    for (var i = 0; i < this.getCurrentWindow().frames.length; i++) {
+        element = this.findElementBy(locatorType, locatorString, this.getCurrentWindow().frames[i].document, this.getCurrentWindow().frames[i]);
         if (element != null) {
             return this.highlight(element);
         }
@@ -1156,9 +1154,9 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     // In chrome URL, the link action is already executed by triggerMouseEvent.
     if (!browserVersion.isChrome && !preventDefault) {
         // Try the element itself, as well as it's parent - this handles clicking images inside links.
-        var targetWindow = this.currentWindow();
+        var targetWindow = this.getCurrentWindow();
         if (element.target) {
-            var frame = this.browserbot.getFrameFromGlobal(element.target);
+            var frame = this.browserbot._getFrameFromGlobal(element.target);
             targetWindow = frame.contentWindow;
         }
         if (element.href) {
@@ -1168,11 +1166,16 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
         }
     }
 
-    if (this.windowClosed()) {
+    if (this._windowClosed()) {
         return;
     }
 
 };
+
+BrowserBot.prototype._getFrameFromGlobal = function(target) {
+    pagebot = PageBot.createForWindow(this);
+    return pagebot.findElementBy("implicit", target, this.topWindow.document, this.topWindow);
+}
 
 OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
@@ -1190,7 +1193,7 @@ OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
         }
     }
 
-    if (this.windowClosed()) {
+    if (this._windowClosed()) {
         return;
     }
 
@@ -1208,7 +1211,7 @@ KonquerorPageBot.prototype.clickElement = function(element, clientX, clientY) {
         triggerMouseEvent(element, 'click', true, clientX, clientY);
     }
 
-    if (this.windowClosed()) {
+    if (this._windowClosed()) {
         return;
     }
 
@@ -1244,10 +1247,10 @@ SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
         if (success) {
             // Try the element itself, as well as it's parent - this handles clicking images inside links.
             if (element.href) {
-                this.currentWindow().location.href = element.href;
+                this.getCurrentWindow().location.href = element.href;
             }
             else if (element.parentNode.href) {
-                this.currentWindow().location.href = element.parentNode.href;
+                this.getCurrentWindow().location.href = element.parentNode.href;
             } else {
                 // This is true for buttons outside of forms, and maybe others.
                 LOG.warn("Ignoring 'click' call for button outside form, or link without href."
@@ -1259,7 +1262,7 @@ SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
         }
     }
 
-    if (this.windowClosed()) {
+    if (this._windowClosed()) {
         return;
     }
 
@@ -1277,16 +1280,16 @@ IEPageBot.prototype.clickElement = function(element, clientX, clientY) {
     var pageUnloadDetector = function() {
         pageUnloading = true;
     };
-    this.currentWindow().attachEvent("onbeforeunload", pageUnloadDetector);
+    this.getCurrentWindow().attachEvent("onbeforeunload", pageUnloadDetector);
     element.click();
 
 
     // If the page is going to unload - still attempt to fire any subsequent events.
     // However, we can't guarantee that the page won't unload half way through, so we need to handle exceptions.
     try {
-        this.currentWindow().detachEvent("onbeforeunload", pageUnloadDetector);
+        this.getCurrentWindow().detachEvent("onbeforeunload", pageUnloadDetector);
 
-        if (this.windowClosed()) {
+        if (this._windowClosed()) {
             return;
         }
 
@@ -1309,16 +1312,16 @@ IEPageBot.prototype.clickElement = function(element, clientX, clientY) {
     }
 };
 
-PageBot.prototype.windowClosed = function(element) {
-    return selenium.browserbot.windowClosed(this.currentWindow());
+PageBot.prototype._windowClosed = function(element) {
+    return selenium.browserbot._windowClosed(this.getCurrentWindow());
 };
 
 PageBot.prototype.bodyText = function() {
-    return getText(this.document().body);
+    return getText(this.getDocument().body);
 };
 
 PageBot.prototype.getAllButtons = function() {
-    var elements = this.document().getElementsByTagName('input');
+    var elements = this.getDocument().getElementsByTagName('input');
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
@@ -1334,7 +1337,7 @@ PageBot.prototype.getAllButtons = function() {
 
 
 PageBot.prototype.getAllFields = function() {
-    var elements = this.document().getElementsByTagName('input');
+    var elements = this.getDocument().getElementsByTagName('input');
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
@@ -1349,7 +1352,7 @@ PageBot.prototype.getAllFields = function() {
 };
 
 PageBot.prototype.getAllLinks = function() {
-    var elements = this.document().getElementsByTagName('a');
+    var elements = this.getDocument().getElementsByTagName('a');
     var result = '';
 
     for (var i = 0; i < elements.length; i++) {
@@ -1377,23 +1380,23 @@ function isDefined(value) {
 }
 
 PageBot.prototype.goBack = function() {
-    this.currentWindow().history.back();
+    this.getCurrentWindow().history.back();
 };
 
 PageBot.prototype.goForward = function() {
-    this.currentWindow().history.forward();
+    this.getCurrentWindow().history.forward();
 };
 
 PageBot.prototype.close = function() {
     if (browserVersion.isChrome) {
-        this.currentWindow().close();
+        this.getCurrentWindow().close();
     } else {
-        this.currentWindow().eval("window.close();");
+        this.getCurrentWindow().eval("window.close();");
     }
 };
 
 PageBot.prototype.refresh = function() {
-    this.currentWindow().location.reload(true);
+    this.getCurrentWindow().location.reload(true);
 };
 
 /**

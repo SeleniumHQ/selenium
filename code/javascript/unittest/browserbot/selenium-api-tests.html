@@ -102,7 +102,7 @@ function testSelectWindow() {
 function testGetLocation() {
     var mockWindow = new Object();
     mockWindow.location = "http://page/path?foo=bar";
-    mockPageBot.currentWindow = function() {
+    mockPageBot.getCurrentWindow = function() {
         return mockWindow;
     }
 
@@ -113,7 +113,7 @@ function testGetLocation() {
 }
 
 function testGetTitleReturnsTheTitle() {
-    mockPageBot.expects("title").returns("foo");
+    mockPageBot.expects("getTitle").returns("foo");
     assertEquals("foo", selenium.getTitle());
     verifyMocks();
 }

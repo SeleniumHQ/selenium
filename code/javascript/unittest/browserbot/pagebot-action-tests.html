@@ -37,7 +37,7 @@ function setUp() {
     initialiseRadios()
     initialiseButtons()
     pageBot = PageBot.createForWindow(BrowserBot.createForWindow(window));
-    pageBot.windowClosed = function() {};
+    pageBot._windowClosed = function() {};
 }
 
 function attachEventListeners(element, eventSink) {
@@ -192,7 +192,7 @@ function testClickSubmitShouldTriggerFocusClick() {
 function testClickShouldNotTriggerEventsPassedClickIfWindowIsClosed() {
     theButton.onclick = function() {
         buttonEvents.push('clickNclose');
-        pageBot.windowClosed = function() {return true};
+        pageBot._windowClosed = function() {return true};
     }
 
     pageBot.clickElement(theButton);

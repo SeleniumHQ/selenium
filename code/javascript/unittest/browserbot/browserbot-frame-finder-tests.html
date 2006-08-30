@@ -37,7 +37,7 @@ function setUp() {
 }
 
     function testShouldAbleToGetFirstLevelFrameAccordingNameGiven(){
-        var frame = browserbot.getFrameFromGlobal("testIframe-name");
+        var frame = browserbot._getFrameFromGlobal("testIframe-name");
         assertEquals("testIframe-name", frame.name)
     }
 

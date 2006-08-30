@@ -574,11 +574,6 @@ Selenium.prototype.doOpen = function(url) {
     return SELENIUM_PROCESS_WAIT;
 };
 
-Selenium.prototype.makeThisTheDefaultWindow = function() {
-	this.browserbot.makeThisTheDefaultWindow();
-};
-
-
 Selenium.prototype.doSelectWindow = function(windowID) {
 	/**
    * Selects a popup window; once a popup window has been selected, all
@@ -708,7 +703,7 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
         	}
         }
         if (!targetWindow.document) return false;
-        if (!selenium.browserbot.window.document.readyState) {
+        if (!selenium.browserbot.getCurrentWindow().document.readyState) {
     		// This is Firefox, with no readyState extension
     		return true;
     	}
@@ -898,7 +893,7 @@ Selenium.prototype.getLocation = function() {
    *
    * @return string the absolute URL of the current page
    */
-    return this.page().currentWindow().location;
+    return this.page().getCurrentWindow().location;
 };
 
 Selenium.prototype.getTitle = function() {
@@ -906,7 +901,7 @@ Selenium.prototype.getTitle = function() {
    *
    * @return string the title of the current page
    */
-    return this.page().title();
+    return this.page().getTitle();
 };
 
 
@@ -1690,7 +1685,7 @@ Selenium.prototype.getCursorPosition = function(locator) {
    * @return number the numerical position of the cursor in the field
    */
    var element = this.page().findElement(locator);
-   var doc = this.page().document();
+   var doc = this.page().getDocument();
    var win = this.browserbot.getCurrentWindow();
 	if( doc.selection && !browserVersion.isOpera){
 		var selectRange = doc.selection.createRange().duplicate();
