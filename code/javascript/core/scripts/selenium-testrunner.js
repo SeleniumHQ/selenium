@@ -117,8 +117,6 @@ function loadAndRunIfAuto() {
 }
 
 function onSeleniumLoad() {
-    //openSeparateAppWindow();
-    
     //LOG.show();
 
     queryString = null;
@@ -681,6 +679,13 @@ Object.extend(TestRunner.prototype, {
         this.currentItem = null;
         this.commandAgenda = new Array();
 
+        if (this.document.originalBody == undefined) {
+            this.document.originalBody = this.document.body.innerHTML;
+        } else {
+            this.document.body.innerHTML = this.document.originalBody;
+            addBreakpointSupport();
+        }
+        
         var tables = this.document.getElementsByTagName("table");
         for (var i = 0; i < tables.length; i++) {
             var candidateRows = tables[i].rows;
@@ -707,10 +712,6 @@ Object.extend(TestRunner.prototype, {
     },
 
     _addCommandRow: function(row) {
-        if (row.cells[2] && row.cells[2].originalHTML) {
-            row.cells[2].innerHTML = row.cells[2].originalHTML;
-        }
-        row.bgColor = "";
         this.commandRows.push(row);
     },
 
@@ -733,7 +734,6 @@ Object.extend(TestRunner.prototype, {
         if (row == null) {
             return null;
         }
-        row.cells[2].originalHTML = row.cells[2].innerHTML;
         return new SeleniumCommand(getText(row.cells[0]),
                 getText(row.cells[1]),
                 getText(row.cells[2]),
@@ -760,7 +760,6 @@ Object.extend(TestRunner.prototype, {
         }
     },
 
-
     commandError : function(errorMessage) {
         numCommandErrors += 1;
         this._recordFailure(errorMessage);
@@ -774,15 +773,18 @@ Object.extend(TestRunner.prototype, {
 
         var testDocument = getIframeDocument(getTestFrame());
 
-        if (!this.currentRow) {
-            alert(errorMsg);
-            return;
-            // TODO: find a better way to handle error at end-of-table
+        var errorRow = this.currentRow;
+        if (!errorRow) {
+            // At the end of the test, we might not have a "current" row
+            var fakeTable = testDocument.createElement("table");
+            fakeTable.innerHTML = "<tr><td></td><td></td><td></td></tr>";
+            testDocument.body.appendChild(fakeTable);
+            errorRow = fakeTable.rows[0];
         }
         
-        this.currentRow.bgColor = failColor;
-        this.currentRow.cells[2].innerHTML = errorMsg;
-        this.currentRow.title = errorMsg;
+        errorRow.bgColor = failColor;
+        errorRow.cells[2].innerHTML = errorMsg;
+        errorRow.title = errorMsg;
         
     },
 
