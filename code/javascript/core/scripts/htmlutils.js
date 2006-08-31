@@ -15,9 +15,8 @@
  *
  */
 
-// This script contains some HTML utility functions that
-// make it possible to handle elements in a way that is
-// compatible with both IE-like and Mozilla-like browsers
+// This script contains a badly-organised collection of miscellaneous
+// functions that really better homes.
 
 String.prototype.trim = function() {
     var result = this.replace(/^\s+/g, "");
