@@ -1184,15 +1184,6 @@ OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     // Trigger the click event.
     triggerMouseEvent(element, 'click', true, clientX, clientY);
 
-    if (isDefined(element.checked)) {
-        // In Opera, clicking won't check/uncheck
-        if (element.type == "checkbox") {
-            element.checked = !element.checked;
-        } else {
-            element.checked = true;
-        }
-    }
-
     if (this._windowClosed()) {
         return;
     }

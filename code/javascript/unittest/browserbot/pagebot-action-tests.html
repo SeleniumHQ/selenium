@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 
 <!--
 Copyright 2004 ThoughtWorks, Inc
@@ -17,10 +17,10 @@ Copyright 2004 ThoughtWorks, Inc
  limitations under the License.
 -->
 <html>
-  <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>JsUnit Utility Tests</title>
-    <link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Utility Tests</title>
+<link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
 <script language="JavaScript" type="text/javascript" src="dummy-logging.js"></script>
@@ -37,15 +37,26 @@ function setUp() {
     initialiseRadios()
     initialiseButtons()
     pageBot = PageBot.createForWindow(BrowserBot.createForWindow(window));
-    pageBot._windowClosed = function() {};
+    pageBot._windowClosed = function() {
+    };
 }
 
 function attachEventListeners(element, eventSink) {
-    element.onfocus = function() {eventSink.push('focus')}
-    element.onselect = function() {eventSink.push('select')}
-    element.onclick = function() {eventSink.push('click')}
-    element.onchange = function() {eventSink.push('change')}
-    element.onblur = function() {eventSink.push('blur')}
+    element.onfocus = function() {
+        eventSink.push('focus')
+    }
+    element.onselect = function() {
+        eventSink.push('select')
+    }
+    element.onclick = function() {
+        eventSink.push('click')
+    }
+    element.onchange = function() {
+        eventSink.push('change')
+    }
+    element.onblur = function() {
+        eventSink.push('blur')
+    }
 }
 
 function initialiseSelect() {
@@ -137,11 +148,12 @@ function testClickCheckboxShouldTriggerFocusClickChange() {
     // Emulate actual event order (varies per browser for manual click)
     if (browserVersion.isSafari)
     {
-      assertEquals("focus,change,click", checkboxEvents.join())
-    }
-    else
+        assertEquals("focus,change,click", checkboxEvents.join())
+    } else if (browserVersion.isOpera) {
+        assertEquals("focus,click", checkboxEvents.join())
+    } else
     {
-      assertEquals("focus,click,change", checkboxEvents.join())
+        assertEquals("focus,click,change", checkboxEvents.join())
     }
 }
 
@@ -161,11 +173,12 @@ function testClickRadioShouldTriggerFocusClickChange() {
     // Safari-real doesn't support change events on radio
     if (browserVersion.isSafari)
     {
-      assertEquals("focus,click", radio2Events.join());
-    }
-    else
+        assertEquals("focus,click", radio2Events.join());
+    } else if (browserVersion.isOpera) {
+        assertEquals("focus,click", radio2Events.join())
+    } else
     {
-      assertEquals("focus,click,change", radio2Events.join())
+        assertEquals("focus,click,change", radio2Events.join())
     }
 }
 
@@ -192,29 +205,32 @@ function testClickSubmitShouldTriggerFocusClick() {
 function testClickShouldNotTriggerEventsPassedClickIfWindowIsClosed() {
     theButton.onclick = function() {
         buttonEvents.push('clickNclose');
-        pageBot._windowClosed = function() {return true};
+        pageBot._windowClosed = function() {
+            return true
+        };
     }
 
     pageBot.clickElement(theButton);
     assertEquals("focus,clickNclose", buttonEvents.join());
 }
 </script>
-  </head>
+</head>
 
-  <body>
-    <h1>Selenium Browserbot Tests</h1>
+<body>
+<h1>Selenium Browserbot Tests</h1>
 
-    <form id="theForm" name="theForm" onsubmit="return false;">
-      <input name="theTextbox" id="theTextbox" type="text" value="theTextbox"/>
-      <input name="theCheckbox" id="theCheckbox" type="checkbox"/>
-      <input name="theRadio" id="theRadio1" type="radio" value="radio1"/><input name="theRadio" id="theRadio2" type="radio" value="radio2"/>
-      <select name="theSelect" id="theSelect">
+<form id="theForm" name="theForm" onsubmit="return false;">
+    <input name="theTextbox" id="theTextbox" type="text" value="theTextbox"/>
+    <input name="theCheckbox" id="theCheckbox" type="checkbox"/>
+    <input name="theRadio" id="theRadio1" type="radio" value="radio1"/><input name="theRadio" id="theRadio2"
+                                                                              type="radio" value="radio2"/>
+    <select name="theSelect" id="theSelect">
         <option value="option1">First Option</option>
         <option value="option2" selected="true">Second Option</option>
         <option value="option3">Third Option</option>
-      </select>
-      <input name="theButton" id="theButton" type="button" value="The Button"/>
-      <input name="theSubmit" id="theSubmit" type="submit" value="The Submit"/>
-    </form>
-  </body>
+    </select>
+    <input name="theButton" id="theButton" type="button" value="The Button"/>
+    <input name="theSubmit" id="theSubmit" type="submit" value="The Submit"/>
+</form>
+</body>
 </html>
