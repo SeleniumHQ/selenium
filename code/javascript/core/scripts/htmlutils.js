@@ -552,7 +552,8 @@ Object.extend(Effect, {
         }
         Element.setStyle(element, {"background-color" : highLightColor});
         window.setTimeout(function() {
-            if (element.document != undefined && element.document == null) {
+	    //if element is orphan, probably page of it has already gone, so ignore
+            if (!element.parentNode) {
                 return;
             }
             Element.setStyle(element, {"background-color" : element.originalColor});
