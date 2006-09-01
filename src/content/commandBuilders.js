@@ -148,4 +148,13 @@ CommandBuilders.add('accessor', function(window) {
 		return result;
 	});
 
-
+CommandBuilders.add('accessor', function(window) {
+		var result = { accessor: "elementPresent", booleanAccessor: true };
+		var element = this.getRecorder(window).clickedElement;
+		if (element) {
+			result.target = this.getRecorder(window).clickedElementLocator;
+		} else {
+			result.disabled = true;
+		}
+		return result;
+	});
