@@ -169,6 +169,7 @@ Selenium.prototype.reset = function() {
 	/**
    * Clear out all stored variables and select the null (starting) window
    */
+    //todo: move it back to testRunner, api should not know store vars
     storedVars = new Object();
     this.browserbot.selectWindow("null");
     

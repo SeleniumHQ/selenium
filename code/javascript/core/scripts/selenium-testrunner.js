@@ -121,7 +121,7 @@ function onSeleniumLoad() {
 
     queryString = null;
     runInterval = 0;
-    
+
     // we use a timeout here to make sure the LOG has loaded first, so we can see _every_ error
     setTimeout('loadSuiteFrame()', 500);
 }
@@ -129,7 +129,7 @@ function onSeleniumLoad() {
 function loadSuiteFrame() {
     var testAppWindow = getApplicationWindow();
     //testAppWindow.foo = '123';
-    if (selenium == null)  {
+    if (selenium == null) {
         selenium = Selenium.createForWindow(testAppWindow);
         registerCommandHandlers();
     }
@@ -139,7 +139,7 @@ function loadSuiteFrame() {
     if (tempRunInterval) {
         runInterval = tempRunInterval;
     }
-    
+
     speedController = new Control.Slider('speedHandle', 'speedTrack', {
         range:$R(0, 1000),
         onSlide:function(v) {
@@ -167,6 +167,7 @@ function startSingleTest() {
     getTestFrame().src = singleTestName;
 }
 
+//todo: move it to SeleniumFrame
 function getIframeDocument(iframe)
 {
     if (iframe.contentDocument) {
@@ -200,7 +201,7 @@ function onloadTestSuite() {
 
             addLoadListener(getApplicationWindow(), startSingleTest);
 
-        getApplicationWindow().src = getQueryParameter("autoURL");
+            getApplicationWindow().src = getQueryParameter("autoURL");
 
         } else {
             testLink = suiteTable.rows[currentRowInSuite + 1].cells[0].getElementsByTagName("a")[0];
@@ -358,6 +359,7 @@ function startTest() {
     removeLoadListener(getTestFrame(), startTest);
     setHighlightOption();
 
+    //todo: move it into SeleniumFrame
     // Scroll to the top of the test frame
     if (getTestFrame().contentWindow) {
         getTestFrame().contentWindow.scrollTo(0, 0);
@@ -366,13 +368,10 @@ function startTest() {
         frames['testFrame'].scrollTo(0, 0);
     }
 
+    var isJavascriptTest = getIframeDocument(getTestFrame()).getElementById('se-js-table');
+    currentTest = new TestRunner(getIframeDocument(getTestFrame()), isJavascriptTest, commandFactory);
 
-    if (getIframeDocument(getTestFrame()).getElementById('se-js-table'))  // selenium script in javascript
-        currentTest = new TestRunner(getIframeDocument(getTestFrame()), true, commandFactory);
-    else
-        currentTest = new TestRunner(getIframeDocument(getTestFrame()), false, commandFactory);
-
-
+    //todo: move testFailed and storedVars to TestCase
     testFailed = false;
     storedVars = new Object();
 
@@ -415,6 +414,47 @@ function runNextTest() {
 
     suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
 
+    updateSuiteWithResultOfPreviousTest();
+
+    currentRowInSuite++;
+
+    // If we are done with all of the tests, set the title bar as pass or fail
+    if (currentRowInSuite >= suiteTable.rows.length) {
+        testSuiteComplete();
+    } else {
+        startCurrentTestCase();
+    }
+}
+
+function startCurrentTestCase() {
+    // Make the current row blue
+    setCellColor(suiteTable.rows, currentRowInSuite, 0, workingColor);
+
+    testLink = suiteTable.rows[currentRowInSuite].cells[0].getElementsByTagName("a")[0];
+    //todo: use scrollIntoView instead?
+    testLink.focus();
+
+    var testFrame = getTestFrame();
+    addLoadListener(testFrame, startTest);
+
+    // todo: move setIframeLocation elsewhere?
+    selenium.browserbot.setIFrameLocation(testFrame, testLink.href);
+}
+
+function testSuiteComplete() {
+    if (suiteFailed) {
+        setCellColor(suiteTable.rows, 0, 0, failColor);
+    } else {
+        setCellColor(suiteTable.rows, 0, 0, passColor);
+    }
+
+    // If this is an automated run (i.e., build script), then submit
+    // the test results by posting to a form
+    if (isAutomatedRun())
+        postTestResults(suiteFailed, suiteTable);
+}
+
+function updateSuiteWithResultOfPreviousTest() {
     // Do not change the row color of the first row
     if (currentRowInSuite > 0) {
         // Provide test-status feedback
@@ -426,35 +466,6 @@ function runNextTest() {
 
         // Set the results from the previous test run
         setResultsData(suiteTable, currentRowInSuite);
-    }
-
-    currentRowInSuite++;
-
-    // If we are done with all of the tests, set the title bar as pass or fail
-    if (currentRowInSuite >= suiteTable.rows.length) {
-        if (suiteFailed) {
-            setCellColor(suiteTable.rows, 0, 0, failColor);
-        } else {
-            setCellColor(suiteTable.rows, 0, 0, passColor);
-        }
-
-        // If this is an automated run (i.e., build script), then submit
-        // the test results by posting to a form
-        if (isAutomatedRun())
-            postTestResults(suiteFailed, suiteTable);
-    }
-
-    else {
-        // Make the current row blue
-        setCellColor(suiteTable.rows, currentRowInSuite, 0, workingColor);
-
-        testLink = suiteTable.rows[currentRowInSuite].cells[0].getElementsByTagName("a")[0];
-        testLink.focus();
-
-        var testFrame = getTestFrame();
-        addLoadListener(testFrame, startTest);
-
-        selenium.browserbot.setIFrameLocation(testFrame, testLink.href);
     }
 }
 
@@ -685,7 +696,7 @@ Object.extend(TestRunner.prototype, {
             this.document.body.innerHTML = this.document.originalBody;
             addBreakpointSupport();
         }
-        
+
         var tables = this.document.getElementsByTagName("table");
         for (var i = 0; i < tables.length; i++) {
             var candidateRows = tables[i].rows;
@@ -781,11 +792,11 @@ Object.extend(TestRunner.prototype, {
             testDocument.body.appendChild(fakeTable);
             errorRow = fakeTable.rows[0];
         }
-        
+
         errorRow.bgColor = failColor;
         errorRow.cells[2].innerHTML = errorMsg;
         errorRow.title = errorMsg;
-        
+
     },
 
     testComplete : function() {
