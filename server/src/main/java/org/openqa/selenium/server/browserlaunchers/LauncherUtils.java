@@ -121,9 +121,12 @@ public class LauncherUtils {
                 "&resultsUrl=../postResults&test=" + suiteUrl;
     }
     
-    protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId) {
+    protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow) {
         String url = LauncherUtils.stripStartURL(startURL);
-        return url + "/selenium-server/core/SeleneseRunner.html?sessionId=" + sessionId + "&debugMode=" + SeleniumServer.isDebugMode();
+        return url + "/selenium-server/core/SeleneseRunner.html?" +
+                "sessionId=" + sessionId +
+                "&multiWindow=" + multiWindow +
+                "&debugMode=" + SeleniumServer.isDebugMode();
     }
 
     protected static File extractHTAFile(File dir, int port, String resourceFile, String outFile) {

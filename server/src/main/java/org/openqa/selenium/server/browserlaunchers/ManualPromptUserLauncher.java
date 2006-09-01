@@ -42,8 +42,8 @@ public class ManualPromptUserLauncher implements BrowserLauncher {
         launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
     }
     
-    public void launchRemoteSession(String browserURL) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId));
+    public void launchRemoteSession(String browserURL, boolean multiWindow) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow));
     }
 
     public void close() {

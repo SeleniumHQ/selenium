@@ -51,8 +51,8 @@ public class DestroyableRuntimeExecutingBrowserLauncher implements BrowserLaunch
         launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
     }
     
-    public void launchRemoteSession(String browserURL) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId));
+    public void launchRemoteSession(String browserURL, boolean multiWindow) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow));
     }
 
     protected void exec(String command) {

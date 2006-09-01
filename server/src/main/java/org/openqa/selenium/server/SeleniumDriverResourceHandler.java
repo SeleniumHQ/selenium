@@ -451,7 +451,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             sessionIdsToBrowserStrings.put(sessionId, browserString);
             
             queue.setResultExpected(true); // keep initial load result for call to discardCommandResult below
-            launcher.launchRemoteSession(startURL);
+            boolean multiWindow = server.isMultiWindow();
+            launcher.launchRemoteSession(startURL, multiWindow);
             queue.discardCommandResult();
         }
         SeleniumServer.log("Allocated session " + sessionId + " for " + startURL);

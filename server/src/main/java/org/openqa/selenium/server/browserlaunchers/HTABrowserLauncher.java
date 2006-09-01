@@ -96,8 +96,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
         //launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl), "TestRunner.hta");
     }
     
-    public void launchRemoteSession(String browserURL) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId), "SeleneseRunner.hta");
+    public void launchRemoteSession(String browserURL, boolean multiWindow) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow), "SeleneseRunner.hta");
     }
 
 }

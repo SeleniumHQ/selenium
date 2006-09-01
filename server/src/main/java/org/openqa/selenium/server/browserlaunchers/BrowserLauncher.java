@@ -24,8 +24,9 @@ package org.openqa.selenium.server.browserlaunchers;
  * @version $Revision: 732 $
  */
 public interface BrowserLauncher {
-    /** Start the browser and navigate directly to the specified URL */
-    void launchRemoteSession(String url);
+    /** Start the browser and navigate directly to the specified URL 
+     * @param multiWindow TODO*/
+    void launchRemoteSession(String url, boolean multiWindow);
     /** Start the browser in Selenese mode, auto-running the specified HTML suite
      * 
      * @param startURL the url within which to initiate the session (if needed)

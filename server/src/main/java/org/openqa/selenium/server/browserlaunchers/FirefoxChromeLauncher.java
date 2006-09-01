@@ -424,7 +424,7 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         
     }
     
-    public void launchRemoteSession(String browserURL) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId), "SeleneseRunner.html");
+    public void launchRemoteSession(String browserURL, boolean multiWindow) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow), "SeleneseRunner.html");
     }
 }

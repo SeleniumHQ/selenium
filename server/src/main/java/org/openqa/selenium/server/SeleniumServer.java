@@ -133,6 +133,7 @@ public class SeleniumServer {
     private SeleniumHTMLRunnerResultsHandler postResultsHandler;
     private StaticContentHandler staticContentHandler;
     private int port;
+    private boolean multiWindow = false;
 
     private static String debugURL = "";  // add special tracing for debug when this URL is requested
     private static boolean debugMode = false;
@@ -483,10 +484,12 @@ public class SeleniumServer {
      *
      * @param port          the port to start on
      * @param slowResources should the webserver return static resources more slowly?  (Note that this will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML tests.)
+     * @param multiWindow   run the tests in the "multi-Window" layout, without using the embedded iframe
      * @throws Exception you know, just in case
      */
-    public SeleniumServer(int port, boolean slowResources) throws Exception {
+    public SeleniumServer(int port, boolean slowResources, boolean multiWindow) throws Exception {
         this.port = port;
+        this.multiWindow = multiWindow;
         server = new Server();
         SocketListener socketListener = new SocketListener();
         socketListener.setMaxIdleTimeMs(60000);
@@ -494,6 +497,10 @@ public class SeleniumServer {
         server.addListener(socketListener);
         configServer();
         assembleHandlers(slowResources);
+    }
+    
+    public SeleniumServer(int port, boolean slowResources) throws Exception {
+        this(port, slowResources, false);
     }
 
     private void assembleHandlers(boolean slowResources) {
@@ -580,6 +587,10 @@ public class SeleniumServer {
 
     public int getPort() {
         return port;
+    }
+    
+    public boolean isMultiWindow() {
+        return multiWindow;
     }
 
     /**
