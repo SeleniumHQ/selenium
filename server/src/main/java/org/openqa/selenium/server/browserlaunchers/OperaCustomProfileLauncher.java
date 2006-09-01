@@ -16,19 +16,22 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
-import java.util.regex.*;
+import org.apache.tools.ant.taskdefs.condition.Os;
+import org.openqa.selenium.server.SeleniumServer;
 
-import org.apache.tools.ant.taskdefs.condition.*;
-import org.openqa.selenium.server.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.regex.Pattern;
 
 public class OperaCustomProfileLauncher implements BrowserLauncher {
 
     // TODO What is this really?
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Opera.app/Contents/MacOS/opera";
-    
+
     private static boolean simple = false;
-    
+
     private int port;
     private String sessionId;
     private File customProfileDir;
@@ -38,11 +41,11 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
     private Process process;
 
     private static AsyncExecute exe = new AsyncExecute();
-    
+
     public OperaCustomProfileLauncher(int port, String sessionId) {
         this(port, sessionId, findBrowserLaunchLocation());
     }
-    
+
     public OperaCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
         commandPath = browserLaunchLocation;
         this.port = port;
@@ -57,21 +60,21 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
             if (operaBin != null) {
                 String libPathKey = getLibPathKey();
                 String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
-                exe.setEnvironment(new String[] {
-                    "MOZ_NO_REMOTE=1",
-                    libPathKey+"="+libPath+":" + operaBin.getParent(),
+                exe.setEnvironment(new String[]{
+                        "MOZ_NO_REMOTE=1",
+                        libPathKey + "=" + libPath + ":" + operaBin.getParent(),
                 });
             }
         }
     }
-    
+
     private static String getLibPathKey() {
         if (WindowsUtils.thisIsWindows()) return WindowsUtils.getExactPathEnvKey();
         if (Os.isFamily("mac")) return "DYLD_LIBRARY_PATH";
         // TODO other linux?
         return "LD_LIBRARY_PATH";
     }
-    
+
     private static String findBrowserLaunchLocation() {
         String defaultPath = System.getProperty("operaDefaultPath");
         if (defaultPath == null) {
@@ -85,57 +88,58 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
         }
-            if (WindowsUtils.thisIsWindows()) {
-            	File operaEXE = AsyncExecute.whichExec("opera.exe");
-            	if (operaEXE != null) return operaEXE.getAbsolutePath();
-            	throw new RuntimeException("Opera couldn't be found in the path!\n" +
-            			"Please add the directory containing opera.exe to your PATH environment\n" +
-            			"variable, or explicitly specify a path to Opera like this:\n" +
-            			"*opera c:\\blah\\opera.exe");
+        if (WindowsUtils.thisIsWindows()) {
+            File operaEXE = AsyncExecute.whichExec("opera.exe");
+            if (operaEXE != null) return operaEXE.getAbsolutePath();
+            throw new RuntimeException("Opera couldn't be found in the path!\n" +
+                    "Please add the directory containing opera.exe to your PATH environment\n" +
+                    "variable, or explicitly specify a path to Opera like this:\n" +
+                    "*opera c:\\blah\\opera.exe");
         }
-                // On unix, prefer operaBin if it's on the path
-                File operaBin = AsyncExecute.whichExec("opera");
-                if (operaBin != null) {
-                    return operaBin.getAbsolutePath();
-                }
-                throw new RuntimeException("Opera couldn't be found in the path!\n" +
-            			"Please add the directory containing 'opera' to your PATH environment\n" +
-            			"variable, or explicitly specify a path to Opera like this:\n" +
-            			"*opera /blah/blah/opera");
-            }
-            
+        // On unix, prefer operaBin if it's on the path
+        File operaBin = AsyncExecute.whichExec("opera");
+        if (operaBin != null) {
+            return operaBin.getAbsolutePath();
+        }
+        throw new RuntimeException("Opera couldn't be found in the path!\n" +
+                "Please add the directory containing 'opera' to your PATH environment\n" +
+                "variable, or explicitly specify a path to Opera like this:\n" +
+                "*opera /blah/blah/opera");
+    }
+
     static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
     static final Pattern JAVA_STYLE_LOCAL_URL = Pattern.compile("^file:/([A-Z]:/.*)$");
+
     public void launch(String url) {
         try {
             File opera6ini = makeCustomProfile();
-            
+
             System.out.println("Launching Opera...");
             if (WindowsUtils.thisIsWindows()) {
-                cmdarray = new String[] {commandPath, "/settings", opera6ini.getAbsolutePath(), url};
+                cmdarray = new String[]{commandPath, "/settings", opera6ini.getAbsolutePath(), url};
             } else {
-                cmdarray = new String[] {commandPath, "-personaldir", opera6ini.getParentFile().getAbsolutePath(), url};
+                cmdarray = new String[]{commandPath, "-personaldir", opera6ini.getParentFile().getAbsolutePath(), url};
             }
-            
+
             exe.setCommandline(cmdarray);
-            
+
             process = exe.asyncSpawn();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    
+
 
     private File makeCustomProfile() throws IOException {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
-        
+
         if (simple) return customProfileDir;
-        
+
         File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
-        
+
         // TODO Do we want to make these preferences configurable somehow?
         File opera6ini = new File(customProfileDir, "opera6.ini");
-        
+
         PrintStream out = new PrintStream(new FileOutputStream(opera6ini));
         // Configure us as the local proxy
         // TODO Proxy.pac file doesn't seem to want to work correctly
@@ -157,14 +161,14 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
         out.println("Automatic Proxy Configuration URL=" + proxyPAC.getAbsolutePath());
         out.println("No Proxy Servers");
         out.println("No Proxy Servers Check=0");
-        
+
         out.println("");
         out.println("[State]");
         out.println("Run=0");
 
-	// Accept License (unix only)
-	out.println("Accept License=1");
-        
+        // Accept License (unix only)
+        out.println("Accept License=1");
+
         out.println("[User Prefs]");
         // Put our Opera profile in the custom profile dir
         out.println("Opera Directory=" + customProfileDir.getAbsolutePath());
@@ -180,14 +184,19 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
         // Don't open any pages on startup (except for command line URL)
         out.println("Startup Type=4");
 
-	// Don't tell us KDE detected (unix only)
-	out.println("Has Shown KDE Shortcut Message=1");
-        
+        // Don't tell us KDE detected (unix only)
+        out.println("Has Shown KDE Shortcut Message=1");
+
+        //new windows mode
+        out.println("SDI=1");
+
+        out.println("Maximize New Windows=3");
+
         out.println("[Install]");
         out.println("HELLO=NO");
-        
+
         // TODO Disable security warnings
-        
+
         out.close();
         return opera6ini;
     }
@@ -211,13 +220,12 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
             System.err.println("WARNING: Opera seems to have ended on its own (did we kill the real browser???)");
         }
         try {
-            waitForFileLockToGoAway(5*000, 500);
+            waitForFileLockToGoAway(5 * 000, 500);
         } catch (FileLockRemainedException e1) {
             fileLockException = e1;
         }
-        
-        
-        
+
+
         try {
             LauncherUtils.deleteTryTryAgain(customProfileDir, 6);
         } catch (RuntimeException e) {
@@ -234,39 +242,43 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
         }
         closed = true;
     }
-    
-    /** Opera knows it's running by using a "parent.lock" file in
+
+    /**
+     * Opera knows it's running by using a "parent.lock" file in
      * the profile directory.  Wait for this file to go away (and stay gone)
-     * @param timeout max time to wait for the file to go away
+     *
+     * @param timeout    max time to wait for the file to go away
      * @param timeToWait minimum time to wait to make sure the file is gone
-     * @throws FileLockRemainedException 
+     * @throws FileLockRemainedException
      */
     private void waitForFileLockToGoAway(long timeout, long timeToWait) throws FileLockRemainedException {
         File lock = new File(customProfileDir, "parent.lock");
-        for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeout; ) {
+        for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeout;) {
             AsyncExecute.sleepTight(500);
             if (!lock.exists() && makeSureFileLockRemainsGone(lock, timeToWait)) return;
         }
         if (lock.exists()) throw new FileLockRemainedException("Lock file still present! " + lock.getAbsolutePath());
     }
-    
-    /** When initializing the profile, Opera rapidly starts, stops, restarts and
+
+    /**
+     * When initializing the profile, Opera rapidly starts, stops, restarts and
      * stops again; we need to wait a bit to make sure the file lock is really gone.
-     * @param lock the parent.lock file in the profile directory
-     * @param timeToWait minimum time to wait to see if the file shows back 
-     * up again. This is not a timeout; we will always wait this amount of time or more.
-     * @return true if the file stayed gone for the entire timeToWait; false if the 
-     * file exists (or came back)
+     *
+     * @param lock       the parent.lock file in the profile directory
+     * @param timeToWait minimum time to wait to see if the file shows back
+     *                   up again. This is not a timeout; we will always wait this amount of time or more.
+     * @return true if the file stayed gone for the entire timeToWait; false if the
+     *         file exists (or came back)
      */
     private boolean makeSureFileLockRemainsGone(File lock, long timeToWait) {
-        for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeToWait; ) {
+        for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeToWait;) {
             AsyncExecute.sleepTight(500);
             if (lock.exists()) return false;
         }
         if (!lock.exists()) return true;
         return false;
     }
-    
+
     public static void main(String[] args) throws Exception {
         OperaCustomProfileLauncher l = new OperaCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUSTFF");
         l.launch("http://www.google.com");
@@ -276,19 +288,19 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
         l.close();
         System.out.println("He's dead now, right?");
     }
-    
+
     private class FileLockRemainedException extends Exception {
         FileLockRemainedException(String message) {
             super(message);
         }
     }
-    
+
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
         launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
     }
-    
+
     public void launchRemoteSession(String browserURL, boolean multiWindow) {
         launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow));
     }
-    
+
 }
