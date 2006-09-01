@@ -178,9 +178,11 @@ function getIframeDocument(iframe)
     }
 }
 
+var suiteTable;
+
 function onloadTestSuite() {
     removeLoadListener(getSuiteFrame(), onloadTestSuite);
-    addLoadListener(getTestFrame(), addBreakpointSupport);
+    addLoadListener(getTestFrame(), onloadTestCase);
 
     // Add an onclick function to each link in all suite tables
     var allTables = getIframeDocument(getSuiteFrame()).getElementsByTagName("table");
@@ -246,7 +248,7 @@ function addOnclick(suiteTable, rowNum) {
                 bodyElement.removeChild(bodyElement.firstChild);
             }
 
-            addBreakpointSupport();
+            addBreakpointSupport(getIframeDocument(getTestFrame()));
         }
         // Otherwise, just open up the fresh page.
         else {
@@ -257,8 +259,11 @@ function addOnclick(suiteTable, rowNum) {
     };
 }
 
-function addBreakpointSupport() {
-    var testDocument = getIframeDocument(getTestFrame());
+function onloadTestCase() {
+    addBreakpointSupport(getIframeDocument(getTestFrame()));
+}
+
+function addBreakpointSupport(testDocument) {
     var tables = testDocument.getElementsByTagName("table");
     for (var i = 0; i < tables.length; i++) {
         var rows = tables[i].rows;
@@ -420,7 +425,7 @@ function runNextTest() {
 
     // If we are done with all of the tests, set the title bar as pass or fail
     if (currentRowInSuite >= suiteTable.rows.length) {
-        testSuiteComplete();
+        isTestSuiteComplete();
     } else {
         startCurrentTestCase();
     }
@@ -441,7 +446,7 @@ function startCurrentTestCase() {
     selenium.browserbot.setIFrameLocation(testFrame, testLink.href);
 }
 
-function testSuiteComplete() {
+function isTestSuiteComplete() {
     if (suiteFailed) {
         setCellColor(suiteTable.rows, 0, 0, failColor);
     } else {
@@ -450,8 +455,9 @@ function testSuiteComplete() {
 
     // If this is an automated run (i.e., build script), then submit
     // the test results by posting to a form
-    if (isAutomatedRun())
+    if (isAutomatedRun()) {
         postTestResults(suiteFailed, suiteTable);
+    }
 }
 
 function updateSuiteWithResultOfPreviousTest() {
@@ -694,7 +700,7 @@ Object.extend(TestRunner.prototype, {
             this.document.originalBody = this.document.body.innerHTML;
         } else {
             this.document.body.innerHTML = this.document.originalBody;
-            addBreakpointSupport();
+            addBreakpointSupport(this.document);
         }
 
         var tables = this.document.getElementsByTagName("table");
