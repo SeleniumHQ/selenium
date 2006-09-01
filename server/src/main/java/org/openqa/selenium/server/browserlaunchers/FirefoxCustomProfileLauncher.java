@@ -21,7 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.tools.ant.taskdefs.condition.Os;
-import org.openqa.selenium.server.SeleniumServer;
 
 public class FirefoxCustomProfileLauncher implements BrowserLauncher {
 
@@ -39,7 +38,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
 
     private static AsyncExecute exe = new AsyncExecute();
 
-    public FirefoxCustomProfileLauncher(int port, String sessionId) {
+    public FirefoxCustomProfileLauncher(String sessionId) {
         this(sessionId, findBrowserLaunchLocation());
     }
 
@@ -174,34 +173,9 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
             return;
         }
         File sourceLocation = new File(getClass().getClassLoader().getResource("customProfileDirCUSTFF").getFile());
-        copyDirectory(sourceLocation, customProfileDir);
+        LauncherUtils.copyDirectory(sourceLocation, customProfileDir);
     }
 
-    private void copyDirectory(File sourceLocation, File targetLocation) throws IOException {
-        if (sourceLocation.isDirectory()) {
-            if (!targetLocation.exists()) {
-                targetLocation.mkdir();
-            }
-
-            String[] children = sourceLocation.list();
-            for (int i = 0; i < children.length; i++) {
-                copyDirectory(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
-            }
-        } else {
-
-            InputStream in = new FileInputStream(sourceLocation);
-            OutputStream out = new FileOutputStream(targetLocation);
-
-            // Copy the bits from instream to outstream
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
-        }
-    }
 
     public void close() {
         if (closed) return;
@@ -315,7 +289,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUSTFF");
+        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher("CUSTFF");
         l.launch("http://www.google.com");
         int seconds = 15000;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
