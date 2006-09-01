@@ -1,0 +1,17 @@
+user_pref('browser.shell.checkDefaultBrowser', false);
+user_pref('network.http.phishy-userpass-length', 255);
+user_pref('browser.allowpopups', true);
+user_pref('dom.disable_open_during_load', false);
+user_pref('network.proxy.type', 2);
+user_pref('network.proxy.autoconfig_url', 'file:/C:/DOCUME~1/jxiong/LOCALS~1/Temp/customProfileDirCUSTFF/proxy.pac');
+user_pref('security.warn_submit_insecure', false);
+user_pref('security.warn_submit_insecure.show_once', false);
+user_pref('security.warn_entering_secure', false);
+user_pref('security.warn_entering_secure.show_once', false);
+user_pref('security.warn_entering_weak', false);
+user_pref('security.warn_entering_weak.show_once', false);
+user_pref('security.warn_leaving_secure', false);
+user_pref('security.warn_leaving_secure.show_once', false);
+user_pref('security.warn_viewing_mixed', false);
+user_pref('security.warn_viewing_mixed.show_once', false);
+user_pref('signon.rememberSignons', false);
