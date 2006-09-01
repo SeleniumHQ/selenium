@@ -114,9 +114,11 @@ public class LauncherUtils {
         }
     }
     
-    protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl) {
+    protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow) {
         String url = LauncherUtils.stripStartURL(browserURL);
-        return url + "/selenium-server/core/TestRunner.html?auto=true&resultsUrl=../postResults&test=" + suiteUrl;
+        return url + "/selenium-server/core/TestRunner.html?auto=true&" +
+                "multiWindow=" + multiWindow + 
+                "&resultsUrl=../postResults&test=" + suiteUrl;
     }
     
     protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId) {

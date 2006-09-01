@@ -28,9 +28,18 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
     SeleniumServer server;
     HTMLLauncher launcher;
     HTMLTestResults results = null;
+    protected boolean multiWindow = true;
     protected String suiteName = "TestSuite.html";
     protected String browserURL; 
     File output;
+    
+    public HTMLRunnerTestBase() {
+        super();
+    }
+    
+    public HTMLRunnerTestBase(String name) {
+        super(name);
+    }
     
     public void setUp() throws Exception {
         output = new File(getName() + "-results.html");
@@ -46,7 +55,7 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
         browserURL = "http://localhost:" + server.getPort();
         String testURL = browserURL + "/selenium-server/tests/" + suiteName;
         long timeout = 1000 * 60 * 10; // ten minutes
-        String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout);
+        String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout, multiWindow);
         assertTrue("Results file doesn't exist: " + output.getAbsolutePath(), output.exists());
         assertEquals("Tests didn't pass", "PASSED", result);
     }

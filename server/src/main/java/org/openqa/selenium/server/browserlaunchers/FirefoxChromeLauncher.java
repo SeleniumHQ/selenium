@@ -417,7 +417,7 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         }
     }
     
-    public void launchHTMLSuite(String suiteUrl, String browserURL) {
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
         launch("http://localhost:" + port + 
                 "/selenium-server/core/TestRunner.html?auto=true&resultsUrl=http://localhost:" + port + 
                 "/selenium-server/postResults&test=" + suiteUrl, "TestRunner.html");

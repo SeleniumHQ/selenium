@@ -30,8 +30,9 @@ public interface BrowserLauncher {
      * 
      * @param startURL the url within which to initiate the session (if needed)
      * @param suiteUrl the url of the HTML suite to launch
+     * @param multiWindow TODO
      */
-    void launchHTMLSuite(String startURL, String suiteUrl);
+    void launchHTMLSuite(String startURL, String suiteUrl, boolean multiWindow);
     /** Stop (kill) the browser process */
     void close();
 }

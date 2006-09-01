@@ -90,7 +90,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
         LauncherUtils.recursivelyDeleteDir(dir);
     }
     
-    public void launchHTMLSuite(String suiteUrl, String browserURL) {
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
         throw new UnsupportedOperationException("HTA mode doesn't support running Selenium tests under Selenium RC.\n" +
                 "Just run the tests in HTA mode with Selenium Core!");
         //launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl), "TestRunner.hta");

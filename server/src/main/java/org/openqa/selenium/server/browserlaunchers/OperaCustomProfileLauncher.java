@@ -283,8 +283,8 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
         }
     }
     
-    public void launchHTMLSuite(String suiteUrl, String browserURL) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl));
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
     }
     
     public void launchRemoteSession(String browserURL) {

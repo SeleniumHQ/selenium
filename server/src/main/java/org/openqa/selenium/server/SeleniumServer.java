@@ -170,6 +170,7 @@ public class SeleniumServer {
         boolean interactive = false;
 
         boolean htmlSuite = false;
+        boolean multiWindow = false;
         String browserString = null;
         String startURL = null;
         String suiteFilePath = null;
@@ -197,6 +198,8 @@ public class SeleniumServer {
                 logOut = new PrintStream(getArg(args, ++i));
             } else if ("-port".equals(arg)) {
                 port = Integer.parseInt(getArg(args, ++i));
+            } else if ("-multiWindow".equals(arg)) {
+                multiWindow = true;
             } else if ("-proxyInjectionMode".equals(arg)) {
                 proxyInjectionModeArg = true;
             } else if ("-portDriversShouldContact".equals(arg)) {
@@ -307,7 +310,7 @@ public class SeleniumServer {
                 seleniumProxy.addNewStaticContent(suiteFile.getParentFile());
                 String suiteURL = startURL + "/selenium-server/" + suiteFile.getName();
                 HTMLLauncher launcher = new HTMLLauncher(seleniumProxy);
-                result = launcher.runHTMLSuite(browserString, startURL, suiteURL, new File(resultFilePath), timeout);
+                result = launcher.runHTMLSuite(browserString, startURL, suiteURL, new File(resultFilePath), timeout, multiWindow);
             } catch (Exception e) {
                 System.err.println("HTML suite exception seen:");
                 e.printStackTrace();
@@ -627,7 +630,7 @@ public class SeleniumServer {
         return defaultBrowserString;
     }
 
-    public static int getTimeout() {
+    public static int getTimeoutInSeconds() {
         return timeout;
     }
 

@@ -31,18 +31,19 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @param browserURL - the start URL for the browser
      * @param HTMLSuite - the relative URL to the HTML suite
      * @param outputFile - The file to which we'll output the HTML results
-     * @param timeout - the amount of time to wait for the browser to finish
+     * @param timeoutInMs - the amount of time (in milliseconds) to wait for the browser to finish
+     * @param multiWindow TODO
      * @return PASS or FAIL
      * @throws IOException if we can't write the output file
      */
-    public String runHTMLSuite(String browser, String browserURL, String HTMLSuite, File outputFile, long timeout) throws IOException {
+    public String runHTMLSuite(String browser, String browserURL, String HTMLSuite, File outputFile, long timeoutInMs, boolean multiWindow) throws IOException {
         server.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, null);
-        launcher.launchHTMLSuite(HTMLSuite, browserURL);
+        launcher.launchHTMLSuite(HTMLSuite, browserURL, multiWindow);
         long now = System.currentTimeMillis();
-        long end = now + timeout * 1000;
+        long end = now + timeoutInMs;
         while (results == null && System.currentTimeMillis() < end) {
             AsyncExecute.sleepTight(500);
         }
