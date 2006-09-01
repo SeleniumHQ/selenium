@@ -140,6 +140,7 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
             }
             query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
             String homePage = "chrome://src/content/" + htmlName + "?" + query;
+            System.out.println(homePage);
             String profilePath = makeCustomProfile(homePage);
 
             String chromeURL = "chrome://killff/content/kill.html";
@@ -177,8 +178,53 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         LauncherUtils.copyDirectory(getResourceAsFile(sourceLocationName), customProfileDir);
 
         copyRunnerHtmlFiles();
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
+
+        createPrefJs(homePage, proxyPAC);
 
         return customProfileDir.getAbsolutePath();
+    }
+
+    private void createPrefJs(String homePage, File proxyPAC) throws FileNotFoundException {
+        // TODO Do we want to make these preferences configurable somehow?
+//      TODO: there is redundancy between these settings in the settings in FirefoxChromeLauncher.
+        // Those settings should be combined into a single location.
+
+        File prefsJS = new File(customProfileDir, "prefs.js");
+        PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
+        // Don't ask if we want to switch default browsers
+        out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
+
+        // suppress authentication confirmations
+        out.println("user_pref('network.http.phishy-userpass-length', 255);");
+
+        out.println("user_pref('startup.homepage_override_url', '" + homePage + "');");
+
+        // Disable pop-up blocking
+        out.println("user_pref('browser.allowpopups', true);");
+        out.println("user_pref('dom.disable_open_during_load', false);");
+
+        // Configure us as the local proxy
+        out.println("user_pref('network.proxy.type', 2);");
+        out.println("user_pref('network.proxy.autoconfig_url', '" +
+                pathToBrowserURL(proxyPAC.getAbsolutePath()) +
+                "');");
+
+        // Disable security warnings
+        out.println("user_pref('security.warn_submit_insecure', false);");
+        out.println("user_pref('security.warn_submit_insecure.show_once', false);");
+        out.println("user_pref('security.warn_entering_secure', false);");
+        out.println("user_pref('security.warn_entering_secure.show_once', false);");
+        out.println("user_pref('security.warn_entering_weak', false);");
+        out.println("user_pref('security.warn_entering_weak.show_once', false);");
+        out.println("user_pref('security.warn_leaving_secure', false);");
+        out.println("user_pref('security.warn_leaving_secure.show_once', false);");
+        out.println("user_pref('security.warn_viewing_mixed', false);");
+        out.println("user_pref('security.warn_viewing_mixed.show_once', false);");
+
+        // Disable "do you want to remember this password?"
+        out.println("user_pref('signon.rememberSignons', false);");
+        out.close();
     }
 
     private File getResourceAsFile(String sourceLocationName) {
@@ -307,6 +353,7 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
     }
 
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
+        System.out.println("========================== Launching ===========================");
         launch("http://localhost:" + port +
                 "/selenium-server/core/TestRunner.html?auto=true" +
                 "&multiWindow=" + multiWindow +
