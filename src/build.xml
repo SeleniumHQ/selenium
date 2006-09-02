@@ -21,6 +21,7 @@
       <fileset dir=".">
 	<include name="content/**" />
 	<include name="locale/**" />
+	<include name="skin/**" />
       </fileset>
     </copy>
   </target>
