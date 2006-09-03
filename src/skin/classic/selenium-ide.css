@@ -69,8 +69,24 @@ treechildren::-moz-tree-image(startpoint)
   border-bottom: 1px solid #aaa;
 }
 
-.selected-console-tab { 
-  font-weight: bold;
+.console-tab {
+  height: 32px;
+  border-width: 0 1px 0 0;
+  border-style: solid;
+  border-color: #AAA;
+  margin: 0;
+}
+
+.console-tab .toolbarbutton-text { 
+  color: #666666;
+}
+
+.console-tab[selected] { 
+  background-color: #FFFFFF;
+}
+
+.console-tab[selected] .toolbarbutton-text {
+  color: #000000;
 }
 
 /*

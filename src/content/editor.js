@@ -610,12 +610,12 @@ Editor.prototype.loadSeleniumAPI = function() {
 Editor.prototype.switchConsole = function(name) {
 	if (this.lastConsole == name) return;
 	
-	document.getElementById(this.lastConsole + "Label").setAttribute("class", "");
+	document.getElementById(this.lastConsole + "Tab").removeAttribute("selected");
 	//document.getElementById(this.lastConsole + "View").setAttribute("style", "display: none");
 	document.getElementById(this.lastConsole + "View").hidden = true;
 	//document.getElementById(name + "View").setAttribute("style", "display: inline");
 	document.getElementById(name + "View").hidden = false;
-	document.getElementById(name + "Label").setAttribute("class", "selected-console-tab");
+	document.getElementById(name + "Tab").setAttribute("selected", "true");
 	
 	if ("log" == name) {
 		document.getElementById("logButtons").hidden = false;
@@ -647,6 +647,8 @@ Editor.prototype.initLog = function() {
 						   true);
 }
 
+// GeneratedReference: reference generated from iedoc.xml
+
 function GeneratedReference(name) {
 	this.name = name;
 }
@@ -665,6 +667,8 @@ GeneratedReference.prototype.show = function(frame, def) {
 	Editor.log.debug("show: " + frame);
 	frame.contentDocument.body.innerHTML = def.getReference();
 }
+
+// HTMLReference: reference based on single HTML page
 
 function HTMLReference(name, url) {
 	this.name = name;

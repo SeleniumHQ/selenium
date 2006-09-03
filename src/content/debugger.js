@@ -36,6 +36,11 @@ function Debugger(editor) {
 		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 	    .getService(Components.interfaces.mozIJSSubScriptLoader);
 		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-logging.js', this.runner);
+
+		// TODO These files should be loaded again in Firefox 2.0
+		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/prototype-1.4.0.js', this.runner);
+		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/htmlutils.js', this.runner);
+
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-commandhandlers.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);

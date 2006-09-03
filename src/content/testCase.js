@@ -89,6 +89,7 @@ Command.loadAPI = function() {
 				def.params.push(param);
 			}
 			functions[def.name] = def;
+            // generate negative accessors
 			if (def.name.match(/^(is|get)/)) {
 				def.isAccessor = true;
 				functions["!" + def.name] = def.negativeAccessor();
