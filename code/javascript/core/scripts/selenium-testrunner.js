@@ -127,7 +127,7 @@ function getSeparateApplicationWindow() {
 }
 
 function getSuiteFrame() {
-    var f = document.getElementById('testSuiteFrame');
+    var f = $('testSuiteFrame');
     if (f == null) {
         f = top;
         // proxyInjection mode does not set myiframe
@@ -136,7 +136,7 @@ function getSuiteFrame() {
 }
 
 function getTestFrame() {
-    var f = document.getElementById('testFrame');
+    var f = $('testFrame');
     if (f == null) {
         f = top;
         // proxyInjection mode does not set myiframe
@@ -181,7 +181,7 @@ function loadSuiteFrame() {
         onChange:function(v) {
             runInterval = v;
         }});
-    document.getElementById("highlightOption").checked = getQueryParameter("highlight")
+    $('highlightOption').checked = getQueryParameter("highlight")
 
     var testSuiteName = getQueryParameter("test");
 
@@ -373,8 +373,8 @@ function continueCurrentTest() {
     runInterval = speedController.value;
     currentTest.resume();
 
-    document.getElementById('pauseTest').innerHTML = "Pause";
-    document.getElementById('pauseTest').onclick = pauseCurrentTest;
+    $('pauseTest').innerHTML = "Pause";
+    $('pauseTest').onclick = pauseCurrentTest;
 }
 
 function stepCurrentTest() {
@@ -715,11 +715,11 @@ function saveToFile(fileName, form) {
 }
 
 function printMetrics() {
-    setText(document.getElementById("commandPasses"), numCommandPasses);
-    setText(document.getElementById("commandFailures"), numCommandFailures);
-    setText(document.getElementById("commandErrors"), numCommandErrors);
-    setText(document.getElementById("testRuns"), numTestPasses + numTestFailures);
-    setText(document.getElementById("testFailures"), numTestFailures);
+    setText($('commandPasses'), numCommandPasses);
+    setText($('commandFailures'), numCommandFailures);
+    setText($('commandErrors'), numCommandErrors);
+    setText($('testRuns'), numTestPasses + numTestFailures);
+    setText($('testFailures'), numTestFailures);
 
     currentTime = new Date().getTime();
 
@@ -729,7 +729,7 @@ function printMetrics() {
     minutes = Math.floor(totalSecs / 60);
     seconds = totalSecs % 60;
 
-    setText(document.getElementById("elapsedTime"), pad(minutes) + ":" + pad(seconds));
+    setText($('elapsedTime'), pad(minutes) + ":" + pad(seconds));
 }
 
 // Puts a leading 0 on num if it is less than 10
@@ -761,7 +761,7 @@ function scrollIntoView(element) {
 }
 
 function setHighlightOption() {
-    var isHighlight = document.getElementById("highlightOption").checked;
+    var isHighlight = $('highlightOption').checked;
     selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
 }
 
@@ -833,7 +833,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     commandStarted : function() {
-        document.getElementById('pauseTest').disabled = false;
+        $('pauseTest').disabled = false;
 
         this.currentRow.bgColor = workingColor;
         scrollIntoView(this.currentRow.cells[0]);
@@ -865,8 +865,8 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     testComplete : function() {
-        document.getElementById('pauseTest').disabled = true;
-        document.getElementById('stepTest').disabled = true;
+        $('pauseTest').disabled = true;
+        $('stepTest').disabled = true;
         if (testFailed) {
             this.htmlTestCase.setFailed();
             numTestFailures += 1;
@@ -886,9 +886,9 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     pause : function() {
         runInterval = -1;
-        document.getElementById('stepTest').disabled = false;
-        document.getElementById('pauseTest').innerHTML = "Continue";
-        document.getElementById('pauseTest').onclick = continueCurrentTest;
+        $('stepTest').disabled = false;
+        $('pauseTest').innerHTML = "Continue";
+        $('pauseTest').onclick = continueCurrentTest;
     },
 
     doNextCommand: function() {
@@ -913,7 +913,6 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     }
 
 });
-
 
 Selenium.prototype.doPause = function(waitTime) {
     /** Wait for the specified amount of time (in milliseconds)
