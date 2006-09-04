@@ -93,12 +93,7 @@ Object.extend(SeleniumFrame.prototype, {
     },
 
     setLocation : function(location) {
-        if (location == this.iframe.src) {
-            // reload
-            this.iframe.contentWindow.location.reload(true);
-        } else {
-            this.iframe.src = location;
-        }
+        this.iframe.contentWindow.location.replace(location);
     }
 
 });
@@ -387,14 +382,97 @@ function stepCurrentTest() {
     currentTest.resume();
 }
 
+var HtmlTestCase = Class.create();
+Object.extend(HtmlTestCase.prototype, {
+
+    initialize: function(testDocument) {
+        this.testDocument = testDocument;
+    },
+
+    reset: function() {
+        /**
+         * reset the test to runnable state
+         */
+        this.testDocument.bgColor = "";
+
+        var self = this;
+        var tables = $A(this.testDocument.getElementsByTagName("table"));
+        tables.each(function(table) {
+            $A(table.rows).each(function(row) {
+                // remove pass/fail bgColor
+                row.bgColor = '';
+                self._replaceErrorMessageWithOriginalText(row.cells[2]);
+            });
+        });
+
+        // remove any additional fake "error" row added to the end of the document
+        var errorElement = this.testDocument.getElementById('error');
+        if (errorElement) {
+            Element.remove(errorElement);
+        }
+    },
+
+    _replaceErrorMessageWithOriginalText: function(element) {
+        if (element) {
+            if (element.originalHTML) {
+                element.innerHTML = element.originalHTML;
+            } else {
+                element.originalHTML = element.innerHTML;
+            }
+        }
+    },
+
+    getCommandRows: function() {
+        var commandRows = [];
+        var tables = $A(this.testDocument.getElementsByTagName("table"));
+        tables.each(function (table) {
+            $A(table.rows).each(function(candidateRow) {
+                if (isCommandRow(candidateRow)) {
+                    commandRows.push(candidateRow);
+                }
+            });
+        });
+        return commandRows;
+    },
+
+    _setResultColor: function(resultColor) {
+        var headerRow = this.testDocument.getElementsByTagName("tr")[0];
+        if (headerRow) {
+            headerRow.bgColor = resultColor;
+        }
+    },
+
+    setFailed: function() {
+        this._setResultColor(failColor);
+    },
+
+    setPassed: function() {
+        this._setResultColor(passColor);
+    },
+
+    addErrorMessage: function(errorMsg, currentRow) {
+        if (currentRow) {
+            currentRow.bgColor = failColor;
+            currentRow.cells[2].innerHTML = errorMsg;
+            currentRow.title = errorMsg;
+        } else {
+            var errorElement = this.testDocument.createElement("p");
+            errorElement.id = "error";
+            errorElement.innerHTML = errorMsg;
+            this.testDocument.body.appendChild(errorElement);
+            Element.setStyle(errorElement, {'backgroundColor': failColor});
+        }
+    }
+
+});
+
 function startTest() {
     testIFrame.removeLoadListener(startTest);
     setHighlightOption();
 
     testIFrame.scrollToTop();
-
-    var isJavascriptTest = testIFrame.getDocument().getElementById('se-js-table');
-    currentTest = new HtmlRunnerTestLoop(testIFrame.getDocument(), isJavascriptTest, commandFactory);
+    var htmlTestCase = new HtmlTestCase(testIFrame.getDocument());
+    currentTest = new HtmlRunnerTestLoop(htmlTestCase, commandFactory);
 
     //todo: move testFailed and storedVars to TestCase
     testFailed = false;
@@ -694,45 +772,33 @@ function isCommandRow(row) {
 var HtmlRunnerTestLoop = Class.create();
 Object.extend(HtmlRunnerTestLoop.prototype, new TestLoop());
 Object.extend(HtmlRunnerTestLoop.prototype, {
-    initialize : function(testDocument, isJavaScript, commandFactory) {
+    initialize : function(htmlTestCase, commandFactory) {
 
         this.commandFactory = commandFactory;
         this.waitForConditionTimeout = 30 * 1000;
         // 30 seconds
 
-        this.isJavaScript = isJavaScript;
+        this.htmlTestCase = htmlTestCase;
+
         se = selenium;
         global.se = selenium;
-        this.document = testDocument;
-        this.document.bgColor = "";
+
         this.currentRow = null;
         this.currentRowIndex = 0;
         this.commandRows = new Array();
-        this.headerRow = null;
 
         // used for selenium tests in javascript
         this.currentItem = null;
         this.commandAgenda = new Array();
 
-        this._resetTestCase();
+        this.htmlTestCase.reset();
 
-        var tables = this.document.getElementsByTagName("table");
-        for (var i = 0; i < tables.length; i++) {
-            var candidateRows = tables[i].rows;
-            for (var j = 0; j < candidateRows.length; j++) {
-                if (!this.headerRow) {
-                    this.headerRow = candidateRows[j];
-                }
-                if (isCommandRow(candidateRows[j])) {
-                    this._addCommandRow(candidateRows[j]);
-                }
-            }
-        }
+        this.commandRows = this.htmlTestCase.getCommandRows();
 
-        if (isJavaScript) {
-            var script = this.document.getElementById('sejs')  // the script source
+        this.sejsElement = this.htmlTestCase.testDocument.getElementById('sejs');
+        if (this.sejsElement) {
             var fname = 'Selenium JavaScript';
-            parse_result = parse(script.innerHTML, fname, 0);
+            parse_result = parse(this.sejsElement.innerHTML, fname, 0);
 
             var x2 = new ExecutionContext(GLOBAL_CODE);
             ExecutionContext.current = x2;
@@ -741,47 +807,10 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
         }
     },
 
-    _resetTestCase: function() {
-        /**
-         * reset the test to runnable state
-         */
-        var self = this;
-        var tables = $A(this.document.getElementsByTagName("table"));
-        tables.each(function(table) {
-            $A(table.rows).each(function(row) {
-                // remove pass/fail bgColor
-                row.bgColor = null;
-                // replace error message (in 3rd column) with original text
-                var thirdCell = row.cells[2];
-                self._replaceErrorMessageWithOriginalText(thirdCell);
-            });
-        });
-
-        // remove any additional fake "error" row added to the end of the document
-        var errorElement = this.document.getElementById('error');
-        if (errorElement) {
-            Element.remove(errorElement);
-        }
-    },
-
-    _replaceErrorMessageWithOriginalText: function(element) {
-        if (element) {
-            if (element.originalHTML) {
-                element.innerHTML = element.originalHTML;
-            } else {
-                element.originalHTML = element.innerHTML;
-            }
-        }
-    },
-
-    _addCommandRow: function(row) {
-        this.commandRows.push(row);
-    },
-
     _nextCommandRow: function() {
         if (this.commandRows.length > 0) {
             this.currentRow = this.commandRows.shift();
-            if (this.isJavaScript) {
+            if (this.sejsElement) {
                 this.currentItem = agenda.pop();
                 this.currentRowIndex++;
             }
@@ -830,38 +859,20 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     _recordFailure : function(errorMsg) {
         LOG.warn("currentTest.recordFailure: " + errorMsg);
-
         testFailed = true;
         suiteFailed = true;
-
-        var testDocument = testIFrame.getDocument();
-
-        if (this.currentRow) {
-            this.currentRow.bgColor = failColor;
-            this.currentRow.cells[2].innerHTML = errorMsg;
-            this.currentRow.title = errorMsg;
-        } else {
-            var errorElement = testDocument.createElement("p");
-            errorElement.id = "error";
-            errorElement.innerHTML = errorMsg;
-            testDocument.body.appendChild(errorElement);
-            Element.setStyle(errorElement, {'backgroundColor': failColor});
-        }
+        this.htmlTestCase.addErrorMessage(errorMsg, this.currentRow);
     },
 
     testComplete : function() {
         document.getElementById('pauseTest').disabled = true;
         document.getElementById('stepTest').disabled = true;
-        var resultColor = passColor;
         if (testFailed) {
-            resultColor = failColor;
+            this.htmlTestCase.setFailed();
             numTestFailures += 1;
         } else {
+            this.htmlTestCase.setPassed();
             numTestPasses += 1;
-        }
-
-        if (this.headerRow) {
-            this.headerRow.bgColor = resultColor;
         }
 
         printMetrics();
@@ -887,7 +898,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
         new_block = new Array()
         execute(_n, _x);
         if (new_block.length > 0) {
-            var the_table = this.document.getElementById("se-js-table")
+            var the_table = this.htmlTestCase.testDocument.getElementById("se-js-table")
             var loc = this.currentRowIndex
             var new_rows = get_new_rows()
 
