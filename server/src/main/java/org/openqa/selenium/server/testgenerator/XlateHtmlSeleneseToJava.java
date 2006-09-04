@@ -535,15 +535,18 @@ public class XlateHtmlSeleneseToJava {
                 }
                 return "\t\t\tassertTrue(" + possibleInversion + "selenium.is" + op + "(" + XlateSeleneseArgument(tokens[1]) + "));";
             }
+            if (op.equals("SomethingSelected")) {
+                return commentedSelenese + "assertTrue(selenium.getSelectedIndexes(" + XlateSeleneseArgument(tokens[1]) + ").length != 0);";
+            }
+            if (op.equals("NotSomethingSelected")) {
+                return commentedSelenese + "try {selenium.getSelectedIndexes(" + XlateSeleneseArgument(tokens[1]) + ");} catch(Throwable e) {}";
+            }
             if (op.startsWith("Not")) {
                 beginning = invertAssertion(beginning);
                 op = op.replaceFirst("Not", "");
             }
             if (op.equals("TextLength")) {
                 middle = XlateSeleneseArgument(tokens[2]) + ", \"\" + selenium.getText(" + XlateSeleneseArgument(tokens[1]) + ").length()";
-            }
-            else if (op.equals("SomethingSelected")) {
-                return commentedSelenese + "assertTrue(selenium.getSelectedIndexes(" + XlateSeleneseArgument(tokens[1]) + ").length != 0);";
             }
             else if (op.equals("Confirmation")
                     || op.equals("Location")) {
