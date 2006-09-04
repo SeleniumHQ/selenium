@@ -72,34 +72,34 @@ warned = null;
 // todo: could this just be "SeleniumWindow" instead?
 var SeleniumFrame = Class.create();
 Object.extend(SeleniumFrame.prototype, {
-    initialize : function(iframe) {
-        this.iframe = iframe;
+    initialize : function(frame) {
+        this.frame = frame;
     },
 
     getDocument : function() {
-        return this.iframe.contentWindow.document;
+        return this.frame.contentWindow.document;
     },
 
     addLoadListener : function(listener) {
-        addLoadListener(this.iframe, listener);
+        addLoadListener(this.frame, listener);
     },
 
     removeLoadListener : function(listener) {
-        removeLoadListener(this.iframe, listener);
+        removeLoadListener(this.frame, listener);
     },
 
     scrollToTop : function() {
-        this.iframe.contentWindow.scrollTo(0, 0);
+        this.frame.contentWindow.scrollTo(0, 0);
     },
 
     setLocation : function(location) {
-        this.iframe.contentWindow.location.replace(location);
+        this.frame.contentWindow.location.replace(location);
     }
 
 });
 
-var suiteIFrame;
-var testIFrame;
+var suiteFrame;
+var testFrame;
 
 var appWindow;
 /**
@@ -149,8 +149,8 @@ function loadAndRunIfAuto() {
 }
 
 function onSeleniumLoad() {
-    suiteIFrame = new SeleniumFrame(getSuiteFrame());
-    testIFrame = new SeleniumFrame(getTestFrame());
+    suiteFrame = new SeleniumFrame(getSuiteFrame());
+    testFrame = new SeleniumFrame(getTestFrame());
 
     queryString = null;
     runInterval = 0;
@@ -186,8 +186,8 @@ function loadSuiteFrame() {
     var testSuiteName = getQueryParameter("test");
 
     if (testSuiteName) {
-        suiteIFrame.addLoadListener(onloadTestSuite);
-        getSuiteFrame().src = testSuiteName;
+        suiteFrame.addLoadListener(onloadTestSuite);
+        suiteFrame.setLocation(testSuiteName);
     } else {
         onloadTestSuite();
     }
@@ -196,18 +196,18 @@ function loadSuiteFrame() {
 function startSingleTest() {
     removeLoadListener(getApplicationWindow(), startSingleTest);
     var singleTestName = getQueryParameter("singletest");
-    testIFrame.addLoadListener(startTest);
+    testFrame.addLoadListener(startTest);
     getTestFrame().src = singleTestName;
 }
 
 var suiteTable;
 
 function onloadTestSuite() {
-    suiteIFrame.removeLoadListener(onloadTestSuite);
-    testIFrame.addLoadListener(onloadTestCase);
+    suiteFrame.removeLoadListener(onloadTestSuite);
+    testFrame.addLoadListener(onloadTestCase);
 
     // Add an onclick function to each link in all suite tables
-    var allTables = suiteIFrame.getDocument().getElementsByTagName("table");
+    var allTables = suiteFrame.getDocument().getElementsByTagName("table");
     for (var tableNum = 0; tableNum < allTables.length; tableNum++)
     {
         var skippedTable = allTables[tableNum];
@@ -216,7 +216,7 @@ function onloadTestSuite() {
         }
     }
 
-    suiteTable = suiteIFrame.getDocument().getElementsByTagName("table")[0];
+    suiteTable = suiteFrame.getDocument().getElementsByTagName("table")[0];
     if (suiteTable != null) {
 
         if (isAutomatedRun()) {
@@ -257,10 +257,10 @@ function addOnclick(suiteTable, rowNum) {
 
         // If the row has a stored results table, use that
         if (suiteTable.rows[row].cells[1]) {
-            var bodyElement = testIFrame.getDocument().body;
+            var bodyElement = testFrame.getDocument().body;
 
             // Create a div element to hold the results table.
-            var tableNode = testIFrame.getDocument().createElement("div");
+            var tableNode = testFrame.getDocument().createElement("div");
             var resultsCell = suiteTable.rows[row].cells[1];
             tableNode.innerHTML = resultsCell.innerHTML;
 
@@ -270,11 +270,11 @@ function addOnclick(suiteTable, rowNum) {
                 bodyElement.removeChild(bodyElement.firstChild);
             }
 
-            addBreakpointSupport(testIFrame.getDocument());
+            addBreakpointSupport(testFrame.getDocument());
         }
         // Otherwise, just open up the fresh page.
         else {
-            testIFrame.setLocation(suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href);
+            testFrame.setLocation(suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href);
         }
 
         return false;
@@ -282,7 +282,7 @@ function addOnclick(suiteTable, rowNum) {
 }
 
 function onloadTestCase() {
-    addBreakpointSupport(testIFrame.getDocument());
+    addBreakpointSupport(testFrame.getDocument());
 }
 
 function addBreakpointSupport(testDocument) {
@@ -467,11 +467,11 @@ Object.extend(HtmlTestCase.prototype, {
 });
 
 function startTest() {
-    testIFrame.removeLoadListener(startTest);
+    testFrame.removeLoadListener(startTest);
     setHighlightOption();
 
-    testIFrame.scrollToTop();
-    var htmlTestCase = new HtmlTestCase(testIFrame.getDocument());
+    testFrame.scrollToTop();
+    var htmlTestCase = new HtmlTestCase(testFrame.getDocument());
     currentTest = new HtmlRunnerTestLoop(htmlTestCase, commandFactory);
 
     //todo: move testFailed and storedVars to TestCase
@@ -515,7 +515,7 @@ function runNextTest() {
     if (!runAllTests)
         return;
 
-    suiteTable = suiteIFrame.getDocument().getElementsByTagName("table")[0];
+    suiteTable = suiteFrame.getDocument().getElementsByTagName("table")[0];
 
     updateSuiteWithResultOfPreviousTest();
 
@@ -537,8 +537,8 @@ function startCurrentTestCase() {
     //todo: use scrollIntoView instead?
     testLink.focus();
 
-    testIFrame.addLoadListener(startTest);
-    testIFrame.setLocation(testLink.href);
+    testFrame.addLoadListener(startTest);
+    testFrame.setLocation(testLink.href);
 
 }
 
@@ -579,7 +579,7 @@ function setCellColor(tableRows, row, col, colorStr) {
 // for each tests, the second column is set to the HTML from the test table.
 function setResultsData(suiteTable, row) {
     // Create a text node of the test table
-    var resultTable = testIFrame.getDocument().body.innerHTML;
+    var resultTable = testFrame.getDocument().body.innerHTML;
     if (!resultTable) return;
 
     var tableNode = suiteTable.ownerDocument.createElement("div");
