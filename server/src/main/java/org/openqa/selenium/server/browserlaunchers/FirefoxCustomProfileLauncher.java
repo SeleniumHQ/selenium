@@ -38,11 +38,11 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
 
     private static AsyncExecute exe = new AsyncExecute();
 
-    public FirefoxCustomProfileLauncher(String sessionId) {
-        this(sessionId, findBrowserLaunchLocation());
+    public FirefoxCustomProfileLauncher(int port, String sessionId) {
+        this(port, sessionId, findBrowserLaunchLocation());
     }
 
-    public FirefoxCustomProfileLauncher(String sessionId, String browserLaunchLocation) {
+    public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
         init();
         commandPath = browserLaunchLocation;
         this.sessionId = sessionId;
@@ -289,7 +289,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher("CUSTFF");
+        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(4444, "CUSTFF");
         l.launch("http://www.google.com");
         int seconds = 15000;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

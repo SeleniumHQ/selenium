@@ -16,12 +16,12 @@ public class ProxyInjectionFirefoxCustomProfileLauncher extends
         FirefoxCustomProfileLauncher {
 
     public ProxyInjectionFirefoxCustomProfileLauncher(int port, String sessionId) {
-        super(sessionId);
+        super(port, sessionId);
     }
 
     public ProxyInjectionFirefoxCustomProfileLauncher(int port,
             String sessionId, String browserLaunchLocation) {
-        super(sessionId, browserLaunchLocation);
+        super(port, sessionId, browserLaunchLocation);
     }
 
     @Override
