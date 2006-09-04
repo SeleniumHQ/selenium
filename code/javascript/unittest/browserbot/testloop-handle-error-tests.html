@@ -37,7 +37,7 @@ Copyright 2004 ThoughtWorks, Inc
         LOG = new Mock();
         selenium = new Selenium();
         global = new Object();
-        seleniumTest = new TestRunner(document, false, commandFactory);
+        seleniumTest = new HtmlRunnerTestLoop(document, false, commandFactory);
         // We want to verify that testLoop.commandError() function is called appropriately
         // by testLoop.handleCommandError()
         commandErrorHandler = new Mock();

@@ -394,7 +394,7 @@ function startTest() {
     testIFrame.scrollToTop();
 
     var isJavascriptTest = testIFrame.getDocument().getElementById('se-js-table');
-    currentTest = new TestRunner(testIFrame.getDocument(), isJavascriptTest, commandFactory);
+    currentTest = new HtmlRunnerTestLoop(testIFrame.getDocument(), isJavascriptTest, commandFactory);
 
     //todo: move testFailed and storedVars to TestCase
     testFailed = false;
@@ -691,9 +691,9 @@ function isCommandRow(row) {
     return row.cells.length >= 3;
 }
 
-var TestRunner = Class.create();
-Object.extend(TestRunner.prototype, new TestLoop());
-Object.extend(TestRunner.prototype, {
+var HtmlRunnerTestLoop = Class.create();
+Object.extend(HtmlRunnerTestLoop.prototype, new TestLoop());
+Object.extend(HtmlRunnerTestLoop.prototype, {
     initialize : function(testDocument, isJavaScript, commandFactory) {
 
         this.commandFactory = commandFactory;
