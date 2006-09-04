@@ -17,10 +17,12 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
-import java.net.*;
 import java.util.regex.*;
 
 import org.apache.tools.ant.taskdefs.condition.*;
+import net.sf.cotta.TDirectory;
+import net.sf.cotta.TFileFactory;
+import net.sf.cotta.utils.ClassPathLocator;
 
 public class FirefoxChromeLauncher implements BrowserLauncher {
 
@@ -175,21 +177,21 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         if (simple) return customProfileDir.getAbsolutePath();
 
         String sourceLocationName = "customProfileDirCUSTFFCHROME";
-        LauncherUtils.copyDirectory(getResourceAsFile(sourceLocationName), customProfileDir);
+        TDirectory dir = new ClassPathLocator(getClass()).locate().asDirectory();
+        LauncherUtils.copyDirectory(dir.dir(sourceLocationName), new TFileFactory().dir(customProfileDir.getAbsolutePath()));
 
         copyRunnerHtmlFiles();
-        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
 
-        createPrefJs(homePage, proxyPAC);
+        generatePacAndPrefJs(homePage);
 
         return customProfileDir.getAbsolutePath();
     }
 
-    private void createPrefJs(String homePage, File proxyPAC) throws FileNotFoundException {
+    private void generatePacAndPrefJs(String homePage) throws FileNotFoundException {
         // TODO Do we want to make these preferences configurable somehow?
 //      TODO: there is redundancy between these settings in the settings in FirefoxChromeLauncher.
         // Those settings should be combined into a single location.
-
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
         File prefsJS = new File(customProfileDir, "prefs.js");
         PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
         // Don't ask if we want to switch default browsers
@@ -225,10 +227,6 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         // Disable "do you want to remember this password?"
         out.println("user_pref('signon.rememberSignons', false);");
         out.close();
-    }
-
-    private File getResourceAsFile(String sourceLocationName) {
-        return new File(getClass().getClassLoader().getResource(sourceLocationName).getFile());
     }
 
     private void copyRunnerHtmlFiles() {

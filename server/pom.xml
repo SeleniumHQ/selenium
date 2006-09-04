@@ -11,6 +11,12 @@
     <packaging>jar</packaging>
     <name>Selenium Server</name>
     <url>http://www.openqa.org/selenium</url>
+    <repositories>
+        <repository>
+            <id>project-repo</id>
+            <url>file://${basedir}/../projectrepository</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -54,7 +60,14 @@
         </plugins>
     </build>
     <dependencies>
-    	<dependency>
+        <dependency>
+            <groupId>net.sf.cotta</groupId>
+            <artifactId>cotta</artifactId>
+            <version>1.0rc</version>
+            <scope>provided</scope>
+    	</dependency>
+        
+        <dependency>
             <groupId>org.openqa.selenium.core</groupId>
             <artifactId>selenium-core</artifactId>
             <version>0.8.0-SNAPSHOT</version>

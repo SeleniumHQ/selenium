@@ -21,6 +21,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.tools.ant.taskdefs.condition.Os;
+import net.sf.cotta.TDirectory;
+import net.sf.cotta.TFile;
+import net.sf.cotta.TFileFactory;
+import net.sf.cotta.utils.ClassPathLocator;
 
 public class FirefoxCustomProfileLauncher implements BrowserLauncher {
 
@@ -37,6 +41,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     protected boolean proxySeleniumTrafficOnly = true;
 
     private static AsyncExecute exe = new AsyncExecute();
+    private int port;
 
     public FirefoxCustomProfileLauncher(int port, String sessionId) {
         this(port, sessionId, findBrowserLaunchLocation());
@@ -45,6 +50,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
         init();
         commandPath = browserLaunchLocation;
+        this.port = port;
         this.sessionId = sessionId;
         // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
         // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
@@ -138,6 +144,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     public void launch(String url) {
         try {
 
+            System.out.println("customProfileDir = " + customProfileDir());
             makeCustomProfile(customProfileDir());
 
             String chromeURL = "chrome://killff/content/kill.html";
@@ -172,8 +179,51 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
         if (simple) {
             return;
         }
-        File sourceLocation = new File(getClass().getClassLoader().getResource("customProfileDirCUSTFF").getFile());
-        LauncherUtils.copyDirectory(sourceLocation, customProfileDir);
+
+        TDirectory dir = new ClassPathLocator(getClass()).locate().asDirectory();
+        LauncherUtils.copyDirectory(dir.dir("customProfileDirCUSTFF"), new TFileFactory().dir(customProfileDir.getAbsolutePath()));
+
+        generatePacAndPrefJs(customProfileDir);
+    }
+
+    private void generatePacAndPrefJs(File customProfileDir) throws FileNotFoundException {
+        // TODO Do we want to make these preferences configurable somehow?
+        // TODO: there is redundancy between these settings in the settings in FirefoxChromeLauncher.
+        // Those settings should be combined into a single location.
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly );
+        File prefsJS = new File(customProfileDir, "prefs.js");
+        PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
+        // Don't ask if we want to switch default browsers
+        out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
+
+        // suppress authentication confirmations
+        out.println("user_pref('network.http.phishy-userpass-length', 255);");
+
+        // Disable pop-up blocking
+        out.println("user_pref('browser.allowpopups', true);");
+        out.println("user_pref('dom.disable_open_during_load', false);");
+
+        // Configure us as the local proxy
+        out.println("user_pref('network.proxy.type', 2);");
+        out.println("user_pref('network.proxy.autoconfig_url', '" +
+                pathToBrowserURL(proxyPAC.getAbsolutePath()) +
+                "');");
+
+        // Disable security warnings
+        out.println("user_pref('security.warn_submit_insecure', false);");
+        out.println("user_pref('security.warn_submit_insecure.show_once', false);");
+        out.println("user_pref('security.warn_entering_secure', false);");
+        out.println("user_pref('security.warn_entering_secure.show_once', false);");
+        out.println("user_pref('security.warn_entering_weak', false);");
+        out.println("user_pref('security.warn_entering_weak.show_once', false);");
+        out.println("user_pref('security.warn_leaving_secure', false);");
+        out.println("user_pref('security.warn_leaving_secure.show_once', false);");
+        out.println("user_pref('security.warn_viewing_mixed', false);");
+        out.println("user_pref('security.warn_viewing_mixed.show_once', false);");
+
+        // Disable "do you want to remember this password?"
+        out.println("user_pref('signon.rememberSignons', false);");
+        out.close();
     }
 
 

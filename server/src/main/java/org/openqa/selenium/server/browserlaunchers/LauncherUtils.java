@@ -1,4 +1,3 @@
-
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
@@ -7,13 +6,23 @@ import java.net.*;
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
 import org.openqa.selenium.server.SeleniumServer;
+import net.sf.cotta.utils.ClassPath;
+import net.sf.cotta.utils.ClassPathType;
+import net.sf.cotta.utils.ClassPathLocator;
+import net.sf.cotta.TFileFactory;
+import net.sf.cotta.TFile;
+import net.sf.cotta.TDirectory;
+import net.sf.cotta.TIoException;
+import net.sf.cotta.memory.InMemoryFileSystem;
 
 /**
  * Various static utility functions used to launch browsers
  */
 public class LauncherUtils {
 
-    /** creates an empty temp directory for managing a browser profile */
+    /**
+     * creates an empty temp directory for managing a browser profile
+     */
     protected static File createCustomProfileDir(String sessionId) {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         String customProfileDirParent = ((tmpDir.exists() && tmpDir.isDirectory()) ? tmpDir.getAbsolutePath() : ".");
@@ -25,11 +34,13 @@ public class LauncherUtils {
         return customProfileDir;
     }
 
-    /** Delete a directory and all subdirectories */
+    /**
+     * Delete a directory and all subdirectories
+     */
     protected static void recursivelyDeleteDir(File customProfileDir) {
-	if(customProfileDir == null || !customProfileDir.exists()){
-		return;
-	}
+        if (customProfileDir == null || !customProfileDir.exists()) {
+            return;
+        }
         Delete delete = new Delete();
         delete.setProject(new Project());
         delete.setDir(customProfileDir);
@@ -37,31 +48,35 @@ public class LauncherUtils {
         delete.execute();
     }
 
-    /** Try several times to recursively delete a directory */
+    /**
+     * Try several times to recursively delete a directory
+     */
     protected static void deleteTryTryAgain(File dir, int tries) {
         try {
             recursivelyDeleteDir(dir);
         } catch (BuildException e) {
             if (tries > 0) {
                 AsyncExecute.sleepTight(2000);
-                deleteTryTryAgain(dir, tries-1);
+                deleteTryTryAgain(dir, tries - 1);
             } else {
                 throw e;
             }
         }
     }
 
-    /** Generate a proxy.pac file, configuring a dynamic proxy for URLs
+    /**
+     * Generate a proxy.pac file, configuring a dynamic proxy for URLs
      * containing "/selenium-server/"
      */
     protected static File makeProxyPAC(File parentDir, int port) throws FileNotFoundException {
         return makeProxyPAC(parentDir, port, true);
     }
-    
-    /** Generate a proxy.pac file, configuring a dynamic proxy.
-     * 
-     *  If proxySeleniumTrafficOnly is true, then the proxy applies only to URLs containing "/selenium-server/".
-     *  Otherwise the proxy applies to all URLs.
+
+    /**
+     * Generate a proxy.pac file, configuring a dynamic proxy.
+     * <p/>
+     * If proxySeleniumTrafficOnly is true, then the proxy applies only to URLs containing "/selenium-server/".
+     * Otherwise the proxy applies to all URLs.
      */
     protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
         File proxyPAC = new File(parentDir, "proxy.pac");
@@ -85,7 +100,7 @@ public class LauncherUtils {
             out.println("    } else {");
             out.println("        return '" + defaultProxy + "';");
         }
-        if (proxySeleniumTrafficOnly) { 
+        if (proxySeleniumTrafficOnly) {
             out.println("    }");
         }
         out.println("}");
@@ -93,8 +108,11 @@ public class LauncherUtils {
         return proxyPAC;
     }
 
-    /** Strips the specified URL so it only includes a protocal, hostname and port 
-     * @throws MalformedURLException */
+    /**
+     * Strips the specified URL so it only includes a protocal, hostname and port
+     *
+     * @throws MalformedURLException
+     */
     public static String stripStartURL(String url) {
         try {
             URL u = new URL(url);
@@ -113,14 +131,14 @@ public class LauncherUtils {
             throw new RuntimeException(e);
         }
     }
-    
+
     protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow) {
         String url = LauncherUtils.stripStartURL(browserURL);
         return url + "/selenium-server/core/TestRunner.html?auto=true&" +
-                "multiWindow=" + multiWindow + 
+                "multiWindow=" + multiWindow +
                 "&resultsUrl=../postResults&test=" + suiteUrl;
     }
-    
+
     protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow) {
         String url = LauncherUtils.stripStartURL(startURL);
         return url + "/selenium-server/core/SeleneseRunner.html?" +
@@ -161,33 +179,33 @@ public class LauncherUtils {
                 throw new RuntimeException("File was a script file, not a real executable: " + f.getAbsolutePath());
             }
         } catch (IOException e) {
-            throw new RuntimeException (e);
+            throw new RuntimeException(e);
         }
     }
 
-    protected static void copyDirectory(File sourceLocation, File targetLocation) throws IOException {
-        if (sourceLocation.isDirectory()) {
-            if (!targetLocation.exists()) {
-                targetLocation.mkdir();
-            }
+    protected static void copyDirectory(TDirectory sourceLocation, TDirectory targetLocation) throws IOException {
+        targetLocation.ensureExists();
 
-            String[] children = sourceLocation.list();
-            for (int i = 0; i < children.length; i++) {
-                copyDirectory(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
-            }
-        } else {
+        TDirectory[] subSourceDirs = sourceLocation.listDirs();
+        for(int i = 0; i < subSourceDirs.length; i++) {
+            TDirectory subSourceLocation = subSourceDirs[i];
+            copyDirectory(subSourceLocation, targetLocation.dir(subSourceLocation.name()));
+        }
 
-            InputStream in = new FileInputStream(sourceLocation);
-            OutputStream out = new FileOutputStream(targetLocation);
+        TFile[] files = sourceLocation.listFiles();
+        for(int i = 0; i < files.length; i++) {
+            TFile file = files[i];
+            file.copyTo(targetLocation.file(file.name()));
+        }
+    }
 
-            // Copy the bits from instream to outstream
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
+    static public void main(String[] args) throws TIoException {
+        TDirectory dir = new ClassPathLocator(LauncherUtils.class).locate().asDirectory();
+
+        TFile[] files = dir.dir("customProfileDirCUSTFFCHROME").listFiles();
+        for (int i = 0; i < files.length; i++) {
+            TFile file = files[i];
+            System.out.println("file = " + file);
         }
     }
 
