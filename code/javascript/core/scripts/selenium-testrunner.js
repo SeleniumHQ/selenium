@@ -69,6 +69,43 @@ queryString = null;
 
 warned = null;
 
+// todo: could this just be "SeleniumWindow" instead?
+var SeleniumFrame = Class.create();
+Object.extend(SeleniumFrame.prototype, {
+    initialize : function(iframe) {
+        this.iframe = iframe;
+    },
+
+    getDocument : function() {
+        return this.iframe.contentWindow.document;
+    },
+
+    addLoadListener : function(listener) {
+        addLoadListener(this.iframe, listener);
+    },
+
+    removeLoadListener : function(listener) {
+        removeLoadListener(this.iframe, listener);
+    },
+
+    scrollToTop : function() {
+        this.iframe.contentWindow.scrollTo(0, 0);
+    },
+
+    setLocation : function(location) {
+        if (location == this.iframe.src) {
+            // reload
+            this.iframe.contentWindow.location.reload(true);
+        } else {
+            this.iframe.src = location;
+        }
+    }
+
+});
+
+var suiteIFrame;
+var testIFrame;
+
 var appWindow;
 /**
  * Get the window that will hold the AUT.
@@ -117,7 +154,8 @@ function loadAndRunIfAuto() {
 }
 
 function onSeleniumLoad() {
-    //LOG.show();
+    suiteIFrame = new SeleniumFrame(getSuiteFrame());
+    testIFrame = new SeleniumFrame(getTestFrame());
 
     queryString = null;
     runInterval = 0;
@@ -153,7 +191,7 @@ function loadSuiteFrame() {
     var testSuiteName = getQueryParameter("test");
 
     if (testSuiteName) {
-        addLoadListener(getSuiteFrame(), onloadTestSuite);
+        suiteIFrame.addLoadListener(onloadTestSuite);
         getSuiteFrame().src = testSuiteName;
     } else {
         onloadTestSuite();
@@ -163,29 +201,18 @@ function loadSuiteFrame() {
 function startSingleTest() {
     removeLoadListener(getApplicationWindow(), startSingleTest);
     var singleTestName = getQueryParameter("singletest");
-    addLoadListener(getTestFrame(), startTest);
+    testIFrame.addLoadListener(startTest);
     getTestFrame().src = singleTestName;
-}
-
-//todo: move it to SeleniumFrame
-function getIframeDocument(iframe)
-{
-    if (iframe.contentDocument) {
-        return iframe.contentDocument;
-    }
-    else {
-        return iframe.contentWindow.document;
-    }
 }
 
 var suiteTable;
 
 function onloadTestSuite() {
-    removeLoadListener(getSuiteFrame(), onloadTestSuite);
-    addLoadListener(getTestFrame(), onloadTestCase);
+    suiteIFrame.removeLoadListener(onloadTestSuite);
+    testIFrame.addLoadListener(addBreakpointSupport);
 
     // Add an onclick function to each link in all suite tables
-    var allTables = getIframeDocument(getSuiteFrame()).getElementsByTagName("table");
+    var allTables = suiteIFrame.getDocument().getElementsByTagName("table");
     for (var tableNum = 0; tableNum < allTables.length; tableNum++)
     {
         var skippedTable = allTables[tableNum];
@@ -194,7 +221,7 @@ function onloadTestSuite() {
         }
     }
 
-    suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
+    suiteTable = suiteIFrame.getDocument().getElementsByTagName("table")[0];
     if (suiteTable != null) {
 
         if (isAutomatedRun()) {
@@ -235,10 +262,10 @@ function addOnclick(suiteTable, rowNum) {
 
         // If the row has a stored results table, use that
         if (suiteTable.rows[row].cells[1]) {
-            var bodyElement = getIframeDocument(getTestFrame()).body;
+            var bodyElement = testIFrame.getDocument().body;
 
             // Create a div element to hold the results table.
-            var tableNode = getIframeDocument(getTestFrame()).createElement("div");
+            var tableNode = testIFrame.getDocument().createElement("div");
             var resultsCell = suiteTable.rows[row].cells[1];
             tableNode.innerHTML = resultsCell.innerHTML;
 
@@ -252,7 +279,7 @@ function addOnclick(suiteTable, rowNum) {
         }
         // Otherwise, just open up the fresh page.
         else {
-            getTestFrame().src = suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href;
+            testIFrame.setLocation(suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href);
         }
 
         return false;
@@ -260,7 +287,7 @@ function addOnclick(suiteTable, rowNum) {
 }
 
 function onloadTestCase() {
-    addBreakpointSupport(getIframeDocument(getTestFrame()));
+    addBreakpointSupport(testIFrame.getDocument());
 }
 
 function addBreakpointSupport(testDocument) {
@@ -361,20 +388,13 @@ function stepCurrentTest() {
 }
 
 function startTest() {
-    removeLoadListener(getTestFrame(), startTest);
+    testIFrame.removeLoadListener(startTest);
     setHighlightOption();
 
-    //todo: move it into SeleniumFrame
-    // Scroll to the top of the test frame
-    if (getTestFrame().contentWindow) {
-        getTestFrame().contentWindow.scrollTo(0, 0);
-    }
-    else {
-        frames['testFrame'].scrollTo(0, 0);
-    }
+    testIFrame.scrollToTop();
 
-    var isJavascriptTest = getIframeDocument(getTestFrame()).getElementById('se-js-table');
-    currentTest = new TestRunner(getIframeDocument(getTestFrame()), isJavascriptTest, commandFactory);
+    var isJavascriptTest = testIFrame.getDocument().getElementById('se-js-table');
+    currentTest = new TestRunner(testIFrame.getDocument(), isJavascriptTest, commandFactory);
 
     //todo: move testFailed and storedVars to TestCase
     testFailed = false;
@@ -417,7 +437,7 @@ function runNextTest() {
     if (!runAllTests)
         return;
 
-    suiteTable = getIframeDocument(getSuiteFrame()).getElementsByTagName("table")[0];
+    suiteTable = suiteIFrame.getDocument().getElementsByTagName("table")[0];
 
     updateSuiteWithResultOfPreviousTest();
 
@@ -439,11 +459,9 @@ function startCurrentTestCase() {
     //todo: use scrollIntoView instead?
     testLink.focus();
 
-    var testFrame = getTestFrame();
-    addLoadListener(testFrame, startTest);
+    testIFrame.addLoadListener(startTest);
+    testIFrame.setLocation(testLink.href);
 
-    // todo: move setIframeLocation elsewhere?
-    selenium.browserbot.setIFrameLocation(testFrame, testLink.href);
 }
 
 function isTestSuiteComplete() {
@@ -483,7 +501,7 @@ function setCellColor(tableRows, row, col, colorStr) {
 // for each tests, the second column is set to the HTML from the test table.
 function setResultsData(suiteTable, row) {
     // Create a text node of the test table
-    var resultTable = getIframeDocument(getTestFrame()).body.innerHTML;
+    var resultTable = testIFrame.getDocument().body.innerHTML;
     if (!resultTable) return;
 
     var tableNode = suiteTable.ownerDocument.createElement("div");
@@ -788,7 +806,7 @@ Object.extend(TestRunner.prototype, {
         testFailed = true;
         suiteFailed = true;
 
-        var testDocument = getIframeDocument(getTestFrame());
+        var testDocument = testIFrame.getDocument();
 
         var errorRow = this.currentRow;
         if (!errorRow) {

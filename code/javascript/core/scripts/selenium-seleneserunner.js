@@ -193,15 +193,6 @@ function slowClicked() {
     slowMode = !slowMode;
 }
 
-function getIframeDocument(iframe) {
-    if (iframe.contentDocument) {
-        return iframe.contentDocument;
-    }
-    else {
-        return iframe.contentWindow.document;
-    }
-}
-
 SeleneseRunner = Class.create();
 Object.extend(SeleneseRunner.prototype, new TestLoop());
 Object.extend(SeleneseRunner.prototype, {
