@@ -209,7 +209,7 @@ var suiteTable;
 
 function onloadTestSuite() {
     suiteIFrame.removeLoadListener(onloadTestSuite);
-    testIFrame.addLoadListener(addBreakpointSupport);
+    testIFrame.addLoadListener(onloadTestCase);
 
     // Add an onclick function to each link in all suite tables
     var allTables = suiteIFrame.getDocument().getElementsByTagName("table");
@@ -275,7 +275,7 @@ function addOnclick(suiteTable, rowNum) {
                 bodyElement.removeChild(bodyElement.firstChild);
             }
 
-            addBreakpointSupport(getIframeDocument(getTestFrame()));
+            addBreakpointSupport(testIFrame.getDocument());
         }
         // Otherwise, just open up the fresh page.
         else {
@@ -714,12 +714,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
         this.currentItem = null;
         this.commandAgenda = new Array();
 
-        if (this.document.originalBody == undefined) {
-            this.document.originalBody = this.document.body.innerHTML;
-        } else {
-            this.document.body.innerHTML = this.document.originalBody;
-            addBreakpointSupport(this.document);
-        }
+        this._resetTestCase();
 
         var tables = this.document.getElementsByTagName("table");
         for (var i = 0; i < tables.length; i++) {
@@ -743,6 +738,33 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
             ExecutionContext.current = x2;
 
             execute(parse_result, x2)
+        }
+    },
+
+    _resetTestCase: function() {
+        // reset the test to runnable state:
+        var tables = this.document.getElementsByTagName("table");
+        for (var i = 0; i < tables.length; i++) {
+            var rows = tables[i].rows;
+            for (var j = 0; j < rows.length; j++) {
+                var row = rows[j];
+                // remove pass/fail bgColor
+                row.bgColor = null;
+                // replace error message (in 3rd column) with original text
+                var thirdCell = row.cells[2];
+                if (thirdCell) {
+                    if (thirdCell.originalHTML) {
+                        thirdCell.innerHTML = thirdCell.originalHTML;
+                    } else {
+                        thirdCell.originalHTML = thirdCell.innerHTML;
+                    }
+                }
+            }
+        }
+        // remove any additional fake "error" row added to the end of the document
+        var errorElement = this.document.getElementById('error');
+        if (errorElement) {
+            Element.remove(errorElement);
         }
     },
 
@@ -808,19 +830,17 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
         var testDocument = testIFrame.getDocument();
 
-        var errorRow = this.currentRow;
-        if (!errorRow) {
-            // At the end of the test, we might not have a "current" row
-            var fakeTable = testDocument.createElement("table");
-            fakeTable.innerHTML = "<tr><td></td><td></td><td></td></tr>";
-            testDocument.body.appendChild(fakeTable);
-            errorRow = fakeTable.rows[0];
+        if (this.currentRow) {
+            this.currentRow.bgColor = failColor;
+            this.currentRow.cells[2].innerHTML = errorMsg;
+            this.currentRow.title = errorMsg;
+        } else {
+            var errorElement = testDocument.createElement("p");
+            errorElement.id = "error";
+            errorElement.innerHTML = errorMsg;
+            testDocument.body.appendChild(errorElement);
+            Element.setStyle(errorElement, {'backgroundColor': failColor});
         }
-
-        errorRow.bgColor = failColor;
-        errorRow.cells[2].innerHTML = errorMsg;
-        errorRow.title = errorMsg;
-
     },
 
     testComplete : function() {
