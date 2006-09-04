@@ -742,29 +742,35 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     _resetTestCase: function() {
-        // reset the test to runnable state:
-        var tables = this.document.getElementsByTagName("table");
-        for (var i = 0; i < tables.length; i++) {
-            var rows = tables[i].rows;
-            for (var j = 0; j < rows.length; j++) {
-                var row = rows[j];
+        /**
+         * reset the test to runnable state
+         */
+        var self = this;
+        var tables = $A(this.document.getElementsByTagName("table"));
+        tables.each(function(table) {
+            $A(table.rows).each(function(row) {
                 // remove pass/fail bgColor
                 row.bgColor = null;
                 // replace error message (in 3rd column) with original text
                 var thirdCell = row.cells[2];
-                if (thirdCell) {
-                    if (thirdCell.originalHTML) {
-                        thirdCell.innerHTML = thirdCell.originalHTML;
-                    } else {
-                        thirdCell.originalHTML = thirdCell.innerHTML;
-                    }
-                }
-            }
-        }
+                self._replaceErrorMessageWithOriginalText(thirdCell);
+            });
+        });
+
         // remove any additional fake "error" row added to the end of the document
         var errorElement = this.document.getElementById('error');
         if (errorElement) {
             Element.remove(errorElement);
+        }
+    },
+
+    _replaceErrorMessageWithOriginalText: function(element) {
+        if (element) {
+            if (element.originalHTML) {
+                element.innerHTML = element.originalHTML;
+            } else {
+                element.originalHTML = element.innerHTML;
+            }
         }
     },
 
