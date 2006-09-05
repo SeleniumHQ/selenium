@@ -7,8 +7,8 @@
 require 'webrick'
 
 $port = 4444
-$min_delay = 0.5
-$max_delay = 1.5
+$min_delay = 0.1
+$max_delay = 0.5
 
 class RandomDelayedFileHandler < WEBrick::HTTPServlet::FileHandler
 
@@ -34,8 +34,6 @@ end
 server = WEBrick::HTTPServer.new(:Port => $port)
 server.mount("/javascript", RandomDelayedFileHandler, "javascript", $min_delay, $max_delay)
 trap(:INT) {
-  puts "Shutting down test server"
   server.shutdown
 }
-puts "Starting test-server"
 server.start
