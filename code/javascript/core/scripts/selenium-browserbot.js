@@ -32,6 +32,8 @@ var BrowserBot = function(win) {
 
     // the buttonWindow is the Selenium window
     // it contains the Run/Pause buttons... this should *not* be the AUT window
+    // todo: Here the buttonWindow is not Selenium window. It will be set to Selenium window in pollForLoad.
+    // Change this!!!
     this.buttonWindow = this.topWindow;
     // not sure what this is used for
     this.currentPage = null;
@@ -317,7 +319,6 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
         windowObject.frameElement[marker] = true;
         windowObject.frameElement[this.uniqueId] = marker;
     } else {
-        this.buttonWindow = this.topWindow.opener;
         windowObject.document.location[marker] = true;
         windowObject[this.uniqueId] = marker;
         this.pollForLoad(this.recordPageLoad, windowObject, windowObject.document, windowObject.location, windowObject.location.href, marker);
@@ -354,6 +355,11 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
             delete this.pollingForLoad[marker];
             return;
         }
+        // todo: Change this!!!
+        // under multi-window layout, buttonWindow should be TestRunner window
+        // but only after the _windowClosed checking, we can ensure that this.topWindow exists
+        // then we can assign the TestRunner window to buttonWindow
+        this.buttonWindow = this.topWindow.opener;
 
         currentDocument = windowObject.document;
         currentLocation = windowObject.location;
