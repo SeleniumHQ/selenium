@@ -359,7 +359,7 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
         // under multi-window layout, buttonWindow should be TestRunner window
         // but only after the _windowClosed checking, we can ensure that this.topWindow exists
         // then we can assign the TestRunner window to buttonWindow
-        this.buttonWindow = this.topWindow.opener;
+        this.buttonWindow = windowObject.opener;
 
         currentDocument = windowObject.document;
         currentLocation = windowObject.location;
