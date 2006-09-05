@@ -2,6 +2,8 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
 import java.net.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
@@ -187,16 +189,94 @@ public class LauncherUtils {
         targetLocation.ensureExists();
 
         TDirectory[] subSourceDirs = sourceLocation.listDirs();
-        for(int i = 0; i < subSourceDirs.length; i++) {
+        for (int i = 0; i < subSourceDirs.length; i++) {
             TDirectory subSourceLocation = subSourceDirs[i];
             copyDirectory(subSourceLocation, targetLocation.dir(subSourceLocation.name()));
         }
 
         TFile[] files = sourceLocation.listFiles();
-        for(int i = 0; i < files.length; i++) {
+        for (int i = 0; i < files.length; i++) {
             TFile file = files[i];
             file.copyTo(targetLocation.file(file.name()));
         }
+    }
+
+    protected static void generatePacAndPrefJs(File customProfileDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
+        generatePacAndPrefJs(customProfileDir, port, proxySeleniumTrafficOnly, null);
+    }
+
+    protected static void generatePacAndPrefJs(File customProfileDir, int port, boolean proxySeleniumTrafficOnly, String homePage) throws FileNotFoundException {
+        // TODO Do we want to make these preferences configurable somehow?
+        // TODO: there is redundancy between these settings in the settings in FirefoxChromeLauncher.
+        // Those settings should be combined into a single location.
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly);
+        File prefsJS = new File(customProfileDir, "prefs.js");
+        PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
+        // Don't ask if we want to switch default browsers
+        out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
+
+        // suppress authentication confirmations
+        out.println("user_pref('network.http.phishy-userpass-length', 255);");
+
+        // Disable pop-up blocking
+        out.println("user_pref('browser.allowpopups', true);");
+        out.println("user_pref('dom.disable_open_during_load', false);");
+
+        // Configure us as the local proxy
+        out.println("user_pref('network.proxy.type', 2);");
+        out.println("user_pref('network.proxy.autoconfig_url', '" +
+                pathToBrowserURL(proxyPAC.getAbsolutePath()) +
+                "');");
+
+        if (homePage != null) {
+            out.println("user_pref('startup.homepage_override_url', '" + homePage + "');");
+        }
+
+        // Disable security warnings
+        out.println("user_pref('security.warn_submit_insecure', false);");
+        out.println("user_pref('security.warn_submit_insecure.show_once', false);");
+        out.println("user_pref('security.warn_entering_secure', false);");
+        out.println("user_pref('security.warn_entering_secure.show_once', false);");
+        out.println("user_pref('security.warn_entering_weak', false);");
+        out.println("user_pref('security.warn_entering_weak.show_once', false);");
+        out.println("user_pref('security.warn_leaving_secure', false);");
+        out.println("user_pref('security.warn_leaving_secure.show_once', false);");
+        out.println("user_pref('security.warn_viewing_mixed', false);");
+        out.println("user_pref('security.warn_viewing_mixed.show_once', false);");
+
+        // Disable cache
+        out.println("user_pref('browser.cache.disk.enable', false);");
+        out.println("user_pref('browser.cache.memory.enable', false);");
+
+        // Disable "do you want to remember this password?"
+        out.println("user_pref('signon.rememberSignons', false);");
+        out.close();
+    }
+
+
+    static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
+
+    /**
+     * Generates an URL suitable for use in browsers, unlike Java's URLs, which choke
+     * on UNC paths.
+     * <p/>
+     * <P>Java's URLs work in IE, but break in Mozilla.  Mozilla's team snobbily demanded
+     * that <I>all</I> file paths must have the empty authority (file:///), even for UNC file paths.
+     * On Mozilla \\socrates\build is therefore represented as file://///socrates/build.</P>  See
+     * Mozilla bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=66194">66194</A>.
+     *
+     * @param path - the file path to convert to a browser URL
+     * @return a nice Mozilla-compatible file URL
+     */
+    private static String pathToBrowserURL(String path) {
+        if (path == null) return null;
+        String url = (new File(path)).toURI().toString();
+        Matcher m = JAVA_STYLE_UNC_URL.matcher(url);
+        if (m.find()) {
+            url = "file://///";
+            url += m.group(1);
+        }
+        return url;
     }
 
     static public void main(String[] args) throws TIoException {

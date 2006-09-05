@@ -16,13 +16,13 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
-import java.util.regex.*;
-
-import org.apache.tools.ant.taskdefs.condition.*;
 import net.sf.cotta.TDirectory;
 import net.sf.cotta.TFileFactory;
 import net.sf.cotta.utils.ClassPathLocator;
+import org.apache.tools.ant.taskdefs.condition.Os;
+
+import java.io.File;
+import java.io.IOException;
 
 public class FirefoxChromeLauncher implements BrowserLauncher {
 
@@ -109,31 +109,6 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
                 "*firefox /blah/blah/firefox-bin");
     }
 
-    static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
-
-    /**
-     * Generates an URL suitable for use in browsers, unlike Java's URLs, which choke
-     * on UNC paths.
-     * <p/>
-     * <P>Java's URLs work in IE, but break in Mozilla.  Mozilla's team snobbily demanded
-     * that <I>all</I> file paths must have the empty authority (file:///), even for UNC file paths.
-     * On Mozilla \\socrates\build is therefore represented as file://///socrates/build.</P>  See
-     * Mozilla bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=66194">66194</A>.
-     *
-     * @param path - the file path to convert to a browser URL
-     * @return a nice Mozilla-compatible file URL
-     */
-    private static String pathToBrowserURL(String path) {
-        if (path == null) return null;
-        String url = (new File(path)).toURI().toString();
-        Matcher m = JAVA_STYLE_UNC_URL.matcher(url);
-        if (m.find()) {
-            url = "file://///";
-            url += m.group(1);
-        }
-        return url;
-    }
-
     public void launch(String url, String htmlName) {
         try {
             String query = LauncherUtils.getQueryString(url);
@@ -182,52 +157,11 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
 
         copyRunnerHtmlFiles();
 
-        generatePacAndPrefJs(homePage);
+        LauncherUtils.generatePacAndPrefJs(customProfileDir, port, true, homePage);
 
         return customProfileDir.getAbsolutePath();
     }
 
-    private void generatePacAndPrefJs(String homePage) throws FileNotFoundException {
-        // TODO Do we want to make these preferences configurable somehow?
-//      TODO: there is redundancy between these settings in the settings in FirefoxChromeLauncher.
-        // Those settings should be combined into a single location.
-        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
-        File prefsJS = new File(customProfileDir, "prefs.js");
-        PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
-        // Don't ask if we want to switch default browsers
-        out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
-
-        // suppress authentication confirmations
-        out.println("user_pref('network.http.phishy-userpass-length', 255);");
-
-        out.println("user_pref('startup.homepage_override_url', '" + homePage + "');");
-
-        // Disable pop-up blocking
-        out.println("user_pref('browser.allowpopups', true);");
-        out.println("user_pref('dom.disable_open_during_load', false);");
-
-        // Configure us as the local proxy
-        out.println("user_pref('network.proxy.type', 2);");
-        out.println("user_pref('network.proxy.autoconfig_url', '" +
-                pathToBrowserURL(proxyPAC.getAbsolutePath()) +
-                "');");
-
-        // Disable security warnings
-        out.println("user_pref('security.warn_submit_insecure', false);");
-        out.println("user_pref('security.warn_submit_insecure.show_once', false);");
-        out.println("user_pref('security.warn_entering_secure', false);");
-        out.println("user_pref('security.warn_entering_secure.show_once', false);");
-        out.println("user_pref('security.warn_entering_weak', false);");
-        out.println("user_pref('security.warn_entering_weak.show_once', false);");
-        out.println("user_pref('security.warn_leaving_secure', false);");
-        out.println("user_pref('security.warn_leaving_secure.show_once', false);");
-        out.println("user_pref('security.warn_viewing_mixed', false);");
-        out.println("user_pref('security.warn_viewing_mixed.show_once', false);");
-
-        // Disable "do you want to remember this password?"
-        out.println("user_pref('signon.rememberSignons', false);");
-        out.close();
-    }
 
     private void copyRunnerHtmlFiles() {
         String guid = "{503A0CD4-EDC8-489b-853B-19E0BAA8F0A4}";
