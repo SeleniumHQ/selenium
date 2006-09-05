@@ -18,94 +18,101 @@ Copyright 2004 ThoughtWorks, Inc
 -->
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>JsUnit Utility Tests</title>
-    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
-    <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
-    <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
-    <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
-    <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
-    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
-    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
-    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
-    <script language="JavaScript" type="text/javascript">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Utility Tests</title>
+<link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
+<script language="JavaScript" type="text/javascript">
 
-        function setUp() {
-            htmlTestCaseRow = new HtmlTestCaseRow($("commandRow"));
-            htmlTestCaseRow.reset();
-        }
+    function setUp() {
+        rowElement = $("commandRow").cloneNode(true);
+        htmlTestCaseRow = new HtmlTestCaseRow(rowElement);
+        htmlTestCaseRow.reset();
+    }
 
-        function testCanGetSeleniumCommandFromCommandRow() {
-            var command = htmlTestCaseRow.getCommand();
-            assertEquals("theCommand", command.command);
-            assertEquals("theTarget", command.target);
-            assertEquals("theValue", command.value);
-        }
+    function testCanGetSeleniumCommandFromCommandRow() {
+        var command = htmlTestCaseRow.getCommand();
+        assertEquals("theCommand", command.command);
+        assertEquals("theTarget", command.target);
+        assertEquals("theValue", command.value);
+    }
 
-        function testSetWorkingChangesRowBackgroundColor() {
-            htmlTestCaseRow.setWorking();
-            assertEquals(workingColor, htmlTestCaseRow.trElement.bgColor);
-        }
+    function testSetWorkingChangesRowBackgroundColor() {
+        htmlTestCaseRow.setWorking();
+        assertEquals(workingColor, rowElement.bgColor);
+    }
 
-        function testSetWorkingWillScrollWorkingRowToView() {
-            var scrolled = false
-            scrollIntoView = function(element) {
-                scrolled = true;
-                assertEquals($('commandRow'), element);
-            };
-            htmlTestCaseRow.setWorking();
-            assert(scrolled);
-        }
+    function testSetWorkingWillScrollWorkingRowToView() {
+        var scrolled = false
+        scrollIntoView = function(element) {
+            scrolled = true;
+            assertEquals(rowElement, element);
+        };
+        htmlTestCaseRow.setWorking();
+        assert(scrolled);
+    }
 
-        function testSetPassedChangesRowBackgroundColor() {
-            htmlTestCaseRow.setPassed();
-            assertEquals(passColor, htmlTestCaseRow.trElement.bgColor);
-        }
+    function testSetPassedChangesRowBackgroundColor() {
+        htmlTestCaseRow.setPassed();
+        assertEquals(passColor, rowElement.bgColor);
+    }
 
-        function testSetDoneChangesRowBackgroundColor() {
-            htmlTestCaseRow.setDone();
-            assertEquals(doneColor, htmlTestCaseRow.trElement.bgColor);
-        }
+    function testSetDoneChangesRowBackgroundColor() {
+        htmlTestCaseRow.setDone();
+        assertEquals(doneColor, rowElement.bgColor);
+    }
 
-        function testSetFailedChangesBackgroundColorAndAddsErrorMessage() {
-            htmlTestCaseRow.setFailed("an error message");
-            assertEquals(failColor, htmlTestCaseRow.trElement.bgColor);
-            assertEquals("an error message", getText(htmlTestCaseRow.trElement.cells[2]));
-        }
+    function testSetFailedChangesBackgroundColorAndAddsErrorMessage() {
+        htmlTestCaseRow.setFailed("an error message");
+        assertEquals(failColor, rowElement.bgColor);
+        assertEquals("an error message", getText(htmlTestCaseRow.trElement.cells[2]));
+    }
 
-        function testEchoWillSetMessageToLastCell() {
-            htmlTestCaseRow.setMessage("some echo message");
-            assertEquals("some echo message", getText(htmlTestCaseRow.trElement.cells[2]));
-        }
+    function testEchoWillSetMessageToLastCell() {
+        htmlTestCaseRow.setMessage("some echo message");
+        assertEquals("some echo message", getText(rowElement.cells[2]));
+    }
 
-        function testResetWillMakeTheBackgroundColorEmptyAndCleanErrorMessage() {
-            htmlTestCaseRow.setFailed("some error");
-            htmlTestCaseRow.reset();
-            assertEquals('', htmlTestCaseRow.trElement.bgColor);
-            assertEquals("theValue", getText(htmlTestCaseRow.trElement.cells[2]));
-        }
+    function testResetWillMakeTheBackgroundColorEmptyAndCleanErrorMessage() {
+        htmlTestCaseRow.setFailed("some error");
+        htmlTestCaseRow.reset();
+        assertEquals('', rowElement.bgColor);
+        assertEquals("theValue", getText(rowElement.cells[2]));
+    }
 
-        function testAddClickHandlerAddsRowsOnClickAsElementsClickHandler() {
-            assertTrue(htmlTestCaseRow.trElement.onclick == null);
-            htmlTestCaseRow.addBreakpointSupport();
-            assertNotNull(htmlTestCaseRow.trElement.onclick);
-            htmlTestCaseRow.onClickCalled = false;
-            htmlTestCaseRow.onClick = function() {
-                this.onClickCalled = true;
-            };
-            htmlTestCaseRow.trElement.onclick();
-            assert(htmlTestCaseRow.onClickCalled);
-        }
+    function testAddBreakpointSupportBindRowsOnClickToElementsClickHandler() {
+        assertTrue(rowElement.onclick == null);
+        htmlTestCaseRow.addBreakpointSupport();
+        assertNotNull(rowElement.onclick);
+        htmlTestCaseRow.onClickCalled = false;
+        htmlTestCaseRow.onClick = function() {
+            this.onClickCalled = true;
+        };
+        rowElement.onclick();
+        assertTrue(htmlTestCaseRow.onClickCalled);
+    }
 
-        function testOnClickTogglesBreakpoint() {
-            assertFalse(htmlTestCaseRow.isBreakpoint());
-            htmlTestCaseRow.onClick();
-            assertTrue(htmlTestCaseRow.isBreakpoint());
-            htmlTestCaseRow.onClick();
-            assertFalse(htmlTestCaseRow.isBreakpoint());
-        }
+    function testOnClickTogglesBreakpoint() {
+        assertFalse(htmlTestCaseRow.isBreakpoint());
+        htmlTestCaseRow.onClick();
+        assertTrue(htmlTestCaseRow.isBreakpoint());
+        htmlTestCaseRow.onClick();
+        assertFalse(htmlTestCaseRow.isBreakpoint());
+    }
 
-    </script>
+    function testAddBreakpointSupportShouldMakeRowCursorSmallHand() {
+        assertNull(Element.getStyle(rowElement, "cursor"));
+        htmlTestCaseRow.addBreakpointSupport();
+        assertEquals("pointer", Element.getStyle(rowElement, "cursor"));
+    }
+
+</script>
 </head>
 
 <body>

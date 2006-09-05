@@ -282,7 +282,8 @@ function addOnclick(suiteTable, rowNum) {
 }
 
 function onloadTestCase() {
-    new HtmlTestCase(testFrame.getDocument()).addBreakpointSupport();
+    currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
+    currentHtmlTestCase.addBreakpointSupport();
 }
 
 function getQueryString() {
@@ -423,7 +424,10 @@ Object.extend(HtmlTestCaseRow.prototype, {
     },
 
     isBreakpoint: function() {
-        return this.trElement.isBreakpoint == true;
+        if (this.trElement.isBreakpoint == undefined || this.trElement.isBreakpoint == null) {
+            return false
+        }
+        return this.trElement.isBreakpoint;
     }
 })
 
@@ -433,6 +437,7 @@ Object.extend(HtmlTestCase.prototype, {
     initialize: function(testDocument) {
         this.testDocument = testDocument;
         this.commandRows = this._collectCommandRows();
+        this.nextCommandRowIndex = 0;
     },
 
     _collectCommandRows: function () {
@@ -452,6 +457,7 @@ Object.extend(HtmlTestCase.prototype, {
         /**
          * reset the test to runnable state
          */
+        this.nextCommandRowIndex = 0;
         this.testDocument.bgColor = "";
 
 
@@ -501,17 +507,27 @@ Object.extend(HtmlTestCase.prototype, {
         this.commandRows.each(function(row) {
             row.addBreakpointSupport();
         });
+    },
+
+    getNextCommandRow: function() {
+        if (this.isTouchingEnd()) {
+            return null;
+        }
+        return this.commandRows[this.nextCommandRowIndex++];
+    },
+
+    isTouchingEnd: function() {
+        return this.nextCommandRowIndex == this.commandRows.length;
     }
 });
 
 function startTest() {
+    //todo move testFrame init to testcase.rest()
     testFrame.removeLoadListener(startTest);
     setHighlightOption();
 
     testFrame.scrollToTop();
-    var htmlTestCase = new HtmlTestCase(testFrame.getDocument());
-    currentTest = new HtmlRunnerTestLoop(htmlTestCase, commandFactory);
-
+    currentTest = new HtmlRunnerTestLoop(currentHtmlTestCase, commandFactory);
     //todo: move testFailed and storedVars to TestCase
     testFailed = false;
     storedVars = new Object();
@@ -823,7 +839,6 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
         this.currentRow = null;
         this.currentRowIndex = 0;
-        this.commandRows = this.htmlTestCase.getCommandRows();
 
         // used for selenium tests in javascript
         this.currentItem = null;
@@ -844,15 +859,15 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     _nextCommandRow: function() {
-        if (this.commandRows.length > 0) {
-            this.currentRow = this.commandRows.shift();
+        if (this.htmlTestCase.isTouchingEnd()) {
+            this.currentRow = null;
+            this.currentItem = null;
+        } else {
+            this.currentRow = this.htmlTestCase.getNextCommandRow();
             if (this.sejsElement) {
                 this.currentItem = agenda.pop();
                 this.currentRowIndex++;
             }
-        } else {
-            this.currentRow = null;
-            this.currentItem = null;
         }
         return this.currentRow;
     },
@@ -944,6 +959,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     }
 
 });
+
 
 Selenium.prototype.doPause = function(waitTime) {
     /** Wait for the specified amount of time (in milliseconds)

@@ -45,8 +45,36 @@ Copyright 2004 ThoughtWorks, Inc
                 this.clickHandlerAdded = true;
             };
             testcase.addBreakpointSupport();
-            assert(testcase.getCommandRows()[0].clickHandlerAdded);
-            assert(testcase.getCommandRows()[1].clickHandlerAdded);
+            assert(testcase.getNextCommandRow().clickHandlerAdded);
+            assert(testcase.getNextCommandRow().clickHandlerAdded);
+        }
+
+        function testGetNextCommandShouldGetCommandInOrder() {
+            assertEquals("open", testcase.getNextCommandRow().getCommand().command);
+            assertEquals("verifyLocation", testcase.getNextCommandRow().getCommand().command);
+        }
+
+        function testTouchingEndShouldBeTrueWhenShiftToLastCommand() {
+            assertFalse(testcase.isTouchingEnd());
+            testcase.getNextCommandRow();
+            assertFalse(testcase.isTouchingEnd());
+            testcase.getNextCommandRow();
+            assertTrue(testcase.isTouchingEnd());
+        }
+
+        function testResetWillMakeTheNextCommandTheFirstCommandAgain() {
+            testcase.getNextCommandRow();
+            testcase.getNextCommandRow();
+            testcase.reset();
+            assertEquals("open", testcase.getNextCommandRow().getCommand().command);
+            assertFalse(testcase.isTouchingEnd());
+        }
+
+        function testGetNextCommandWhenAlreadyTouchedEndWillCauseError() {
+            testcase.getNextCommandRow();
+            testcase.getNextCommandRow();
+            assertTrue(testcase.isTouchingEnd());
+            assertNull(testcase.getNextCommandRow());
         }
 
     </script>
