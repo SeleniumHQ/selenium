@@ -317,6 +317,7 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
         windowObject.frameElement[marker] = true;
         windowObject.frameElement[this.uniqueId] = marker;
     } else {
+        this.buttonWindow = this.topWindow.opener;
         windowObject.document.location[marker] = true;
         windowObject[this.uniqueId] = marker;
         this.pollForLoad(this.recordPageLoad, windowObject, windowObject.document, windowObject.location, windowObject.location.href, marker);

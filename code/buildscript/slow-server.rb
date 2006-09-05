@@ -15,7 +15,7 @@ class RandomDelayedFileHandler < WEBrick::HTTPServlet::FileHandler
   def initialize(server, dir, mindelay=0, maxdelay=nil)
     @mindelay = mindelay
     @maxdelay = maxdelay || @mindelay 
-    super(server, dir)
+    super(server, dir, true)
   end
 
   def random_delay
