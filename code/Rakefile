@@ -60,9 +60,12 @@ browsers = [Firefox.new]
 desc "Runs all the JSunit tests"
 JavaScriptTestTask.new(:unit_tests) do |t|
   timestamp = "%.6f" % Time.now.to_f
-  jsunit_tests ="/javascript/jsunit/testRunner.html?autoRun=true&testPage=/javascript/unittest/browserbot/suite.html&submitResults=ROOT/jsunitResults&t=#{timestamp}" 
+
+  t.run "/javascript/jsunit/testRunner.html?autoRun=true&testPage=/javascript/unittest/browserbot/suite.html&submitResults=ROOT/jsunitResults&t=#{timestamp}" 
+
+  t.run "/javascript/jsunit/testRunner.html?autoRun=true&testPage=/javascript/unittest/htmlrunner/suite.html&submitResults=ROOT/jsunitResults&t=#{timestamp}"
+
   t.mount("/javascript")
-  t.run jsunit_tests
   t.browsers = browsers
 end
 
