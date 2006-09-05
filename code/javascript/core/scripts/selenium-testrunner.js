@@ -282,33 +282,7 @@ function addOnclick(suiteTable, rowNum) {
 }
 
 function onloadTestCase() {
-    addBreakpointSupport(testFrame.getDocument());
-}
-
-function addBreakpointSupport(testDocument) {
-    var tables = testDocument.getElementsByTagName("table");
-    for (var i = 0; i < tables.length; i++) {
-        var rows = tables[i].rows;
-        for (var j = 0; j < rows.length; j++) {
-            if (isCommandRow(rows[j])) {
-                Element.setStyle(rows[j], {"cursor" : "pointer"});
-                Event.observe(rows[j], 'click', getBreakpointEventHandler(rows[j]), false);
-            }
-        }
-    }
-}
-
-function getBreakpointEventHandler(commandRow) {
-    return function() {
-        if (commandRow.isBreakpoint == undefined) {
-            commandRow.isBreakpoint = true;
-            commandRow.beforeBackgroundColor = Element.getStyle(commandRow, "backgroundColor");
-            Element.setStyle(commandRow, {"background-color" : "#cccccc"});
-        } else {
-            commandRow.isBreakpoint = undefined;
-            Element.setStyle(commandRow, {"background-color" : commandRow.beforeBackgroundColor});
-        }
-    }
+    new HtmlTestCase(testFrame.getDocument()).addBreakpointSupport();
 }
 
 function getQueryString() {
@@ -382,7 +356,6 @@ function stepCurrentTest() {
     currentTest.resume();
 }
 
-
 var HtmlTestCaseRow = Class.create();
 Object.extend(HtmlTestCaseRow.prototype, {
     initialize: function(trElement) {
@@ -393,11 +366,12 @@ Object.extend(HtmlTestCaseRow.prototype, {
         return new SeleniumCommand(getText(this.trElement.cells[0]),
                 getText(this.trElement.cells[1]),
                 getText(this.trElement.cells[2]),
-                this.trElement.isBreakpoint);
+                this.isBreakpoint());
     },
 
     setWorking: function() {
         this.trElement.bgColor = workingColor;
+        scrollIntoView(this.trElement);
     },
 
     setPassed: function() {
@@ -427,6 +401,29 @@ Object.extend(HtmlTestCaseRow.prototype, {
                 thirdCell.originalHTML = thirdCell.innerHTML;
             }
         }
+    },
+
+    onClick: function() {
+        if (this.trElement.isBreakpoint == undefined) {
+            this.trElement.isBreakpoint = true;
+            this.trElement.beforeBackgroundColor = Element.getStyle(this.trElement, "backgroundColor");
+            Element.setStyle(this.trElement, {"background-color" : "#cccccc"});
+        } else {
+            this.trElement.isBreakpoint = undefined;
+            Element.setStyle(this.trElement, {"background-color" : this.trElement.beforeBackgroundColor});
+        }
+    },
+
+    addBreakpointSupport: function() {
+        var self = this;
+        Element.setStyle(this.trElement, {"cursor" : "pointer"});
+        this.trElement.onclick = function() {
+            self.onClick();
+        }
+    },
+
+    isBreakpoint: function() {
+        return this.trElement.isBreakpoint == true;
     }
 })
 
@@ -435,6 +432,20 @@ Object.extend(HtmlTestCase.prototype, {
 
     initialize: function(testDocument) {
         this.testDocument = testDocument;
+        this.commandRows = this._collectCommandRows();
+    },
+
+    _collectCommandRows: function () {
+        var commandRows = [];
+        var tables = $A(this.testDocument.getElementsByTagName("table"));
+        tables.each(function (table) {
+            $A(table.rows).each(function(candidateRow) {
+                if (isCommandRow(candidateRow)) {
+                    commandRows.push(new HtmlTestCaseRow(candidateRow));
+                }
+            });
+        });
+        return commandRows;
     },
 
     reset: function() {
@@ -443,12 +454,9 @@ Object.extend(HtmlTestCase.prototype, {
          */
         this.testDocument.bgColor = "";
 
-        var self = this;
-        var tables = $A(this.testDocument.getElementsByTagName("table"));
-        tables.each(function(table) {
-            $A(table.rows).each(function(row) {
-                new HtmlTestCaseRow(row).reset();
-            });
+
+        this.commandRows.each(function(row) {
+            row.reset();
         });
 
         // remove any additional fake "error" row added to the end of the document
@@ -458,17 +466,8 @@ Object.extend(HtmlTestCase.prototype, {
         }
     },
 
-    getCommandRows: function() {
-        var commandRows = [];
-        var tables = $A(this.testDocument.getElementsByTagName("table"));
-        tables.each(function (table) {
-            $A(table.rows).each(function(candidateRow) {
-                if (isCommandRow(candidateRow)) {
-                    commandRows.push(candidateRow);
-                }
-            });
-        });
-        return commandRows;
+    getCommandRows: function () {
+        return this.commandRows;
     },
 
     _setResultColor: function(resultColor) {
@@ -496,8 +495,13 @@ Object.extend(HtmlTestCase.prototype, {
             this.testDocument.body.appendChild(errorElement);
             Element.setStyle(errorElement, {'backgroundColor': failColor});
         }
-    }
+    },
 
+    addBreakpointSupport: function() {
+        this.commandRows.each(function(row) {
+            row.addBreakpointSupport();
+        });
+    }
 });
 
 function startTest() {
@@ -819,15 +823,13 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
         this.currentRow = null;
         this.currentRowIndex = 0;
-        this.commandRows = new Array();
+        this.commandRows = this.htmlTestCase.getCommandRows();
 
         // used for selenium tests in javascript
         this.currentItem = null;
         this.commandAgenda = new Array();
 
         this.htmlTestCase.reset();
-
-        this.commandRows = this.htmlTestCase.getCommandRows();
 
         this.sejsElement = this.htmlTestCase.testDocument.getElementById('sejs');
         if (this.sejsElement) {
@@ -843,7 +845,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     _nextCommandRow: function() {
         if (this.commandRows.length > 0) {
-            this.currentRow = new HtmlTestCaseRow(this.commandRows.shift());
+            this.currentRow = this.commandRows.shift();
             if (this.sejsElement) {
                 this.currentItem = agenda.pop();
                 this.currentRowIndex++;
@@ -865,9 +867,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     commandStarted : function() {
         $('pauseTest').disabled = false;
-
         this.currentRow.setWorking();
-        scrollIntoView(this.currentRow.trElement.cells[0]);
         printMetrics();
     },
 

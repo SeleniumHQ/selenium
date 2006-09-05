@@ -23,56 +23,86 @@ Copyright 2004 ThoughtWorks, Inc
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
     <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
     <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
-    <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
-    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
     <script language="JavaScript" type="text/javascript">
+
         function setUp() {
-            commandRow = new HtmlTestCaseRow($('commandRow'));
-            commandRow.reset();
+            htmlTestCaseRow = new HtmlTestCaseRow($("commandRow"));
+            htmlTestCaseRow.reset();
         }
 
-
         function testCanGetSeleniumCommandFromCommandRow() {
-            var command = commandRow.getCommand();
+            var command = htmlTestCaseRow.getCommand();
             assertEquals("theCommand", command.command);
             assertEquals("theTarget", command.target);
             assertEquals("theValue", command.value);
         }
 
         function testSetWorkingChangesRowBackgroundColor() {
-            commandRow.setWorking();
-            assertEquals(workingColor, commandRow.trElement.bgColor);
+            htmlTestCaseRow.setWorking();
+            assertEquals(workingColor, htmlTestCaseRow.trElement.bgColor);
+        }
+
+        function testSetWorkingWillScrollWorkingRowToView() {
+            var scrolled = false
+            scrollIntoView = function(element) {
+                scrolled = true;
+                assertEquals($('commandRow'), element);
+            };
+            htmlTestCaseRow.setWorking();
+            assert(scrolled);
         }
 
         function testSetPassedChangesRowBackgroundColor() {
-            commandRow.setPassed();
-            assertEquals(passColor, commandRow.trElement.bgColor);
+            htmlTestCaseRow.setPassed();
+            assertEquals(passColor, htmlTestCaseRow.trElement.bgColor);
         }
 
         function testSetDoneChangesRowBackgroundColor() {
-            commandRow.setDone();
-            assertEquals(doneColor, commandRow.trElement.bgColor);
+            htmlTestCaseRow.setDone();
+            assertEquals(doneColor, htmlTestCaseRow.trElement.bgColor);
         }
 
         function testSetFailedChangesBackgroundColorAndAddsErrorMessage() {
-            commandRow.setFailed("an error message");
-            assertEquals(failColor, commandRow.trElement.bgColor);
-            assertEquals("an error message", getText(commandRow.trElement.cells[2]));
+            htmlTestCaseRow.setFailed("an error message");
+            assertEquals(failColor, htmlTestCaseRow.trElement.bgColor);
+            assertEquals("an error message", getText(htmlTestCaseRow.trElement.cells[2]));
         }
 
         function testEchoWillSetMessageToLastCell() {
-            commandRow.setMessage("some echo message");
-            assertEquals("some echo message", getText(commandRow.trElement.cells[2]));
+            htmlTestCaseRow.setMessage("some echo message");
+            assertEquals("some echo message", getText(htmlTestCaseRow.trElement.cells[2]));
         }
 
         function testResetWillMakeTheBackgroundColorEmptyAndCleanErrorMessage() {
-            commandRow.setFailed("some error");
-            commandRow.reset();
-            assertEquals('', commandRow.trElement.bgColor);
-            assertEquals("theValue", getText(commandRow.trElement.cells[2]));
+            htmlTestCaseRow.setFailed("some error");
+            htmlTestCaseRow.reset();
+            assertEquals('', htmlTestCaseRow.trElement.bgColor);
+            assertEquals("theValue", getText(htmlTestCaseRow.trElement.cells[2]));
+        }
+
+        function testAddClickHandlerAddsRowsOnClickAsElementsClickHandler() {
+            assertTrue(htmlTestCaseRow.trElement.onclick == null);
+            htmlTestCaseRow.addBreakpointSupport();
+            assertNotNull(htmlTestCaseRow.trElement.onclick);
+            htmlTestCaseRow.onClickCalled = false;
+            htmlTestCaseRow.onClick = function() {
+                this.onClickCalled = true;
+            };
+            htmlTestCaseRow.trElement.onclick();
+            assert(htmlTestCaseRow.onClickCalled);
+        }
+
+        function testOnClickTogglesBreakpoint() {
+            assertFalse(htmlTestCaseRow.isBreakpoint());
+            htmlTestCaseRow.onClick();
+            assertTrue(htmlTestCaseRow.isBreakpoint());
+            htmlTestCaseRow.onClick();
+            assertFalse(htmlTestCaseRow.isBreakpoint());
         }
 
     </script>

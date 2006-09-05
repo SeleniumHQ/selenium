@@ -4,15 +4,15 @@
 <script language="Javascript">
 function fixUnitTestLinks()
 {
-  baseurl = document.location + "";
-  baseurl = baseurl.replace(/[^\/]*$/, '');
-  fixUnitTestLink("seleniumUnitTests", baseurl);
-  fixUnitTestLink("jsmockUnitTests", baseurl);
-}
-function fixUnitTestLink(elementId, baseurl)
-{
-  jsunitLink = document.getElementById(elementId);
-  jsunitLink['href'] = jsunitLink['href'].replace('BASEURL', baseurl);
+    var baseurl = document.location + "";
+    baseurl = baseurl.replace(/[^\/]*$/, '');
+    var links = document.getElementsByTagName("a");
+    for (var i = 0; i < links.length; i++) {
+        var link = links[i];
+        if (link.className == 'jsUnitSuite') {
+            link['href'] = link['href'].replace('BASEURL', baseurl);
+        }
+    }
 }
 </script>
 <style>
@@ -45,10 +45,13 @@ functionality of Selenium.
 <ul>
 
   <li>
-    <a id="seleniumUnitTests" href="jsunit/testRunner.html?testPage=BASEURLunittest/browserbot/suite.html">Selenium BrowserBot unit-tests</a>
+      <a class="jsUnitSuite" href="jsunit/testRunner.html?testPage=BASEURLunittest/browserbot/suite.html">Selenium BrowserBot unit-tests</a>
   </li>
   <li>
-    <a id="jsmockUnitTests" href="jsunit/testRunner.html?testPage=BASEURLunittest/jsmock/mock-tests.html">JsMock unit-tests</a>
+      <a class="jsUnitSuite" href="jsunit/testRunner.html?testPage=BASEURLunittest/htmlrunner/suite.html">Selenium TestRunner UI unit-tests</a>
+  </li>
+  <li>
+      <a class="jsUnitSuite" href="jsunit/testRunner.html?testPage=BASEURLunittest/jsmock/mock-tests.html">JsMock unit-tests</a>
   </li>
 
 </ul>
