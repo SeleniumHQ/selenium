@@ -291,6 +291,7 @@ public class XlateHtmlSeleneseToJava {
         body = body.replaceAll("\r", "");
         body = body.replaceAll("</?[bi]/?>", "");
         
+        body = body.replaceFirst(".*<title>([^<]+)</title>.*?<table.*?>", "\n");
         body = body.replaceAll("<br>", ""); // these pop up all over and break other regexps
         
         body = body.replaceAll("\\\\", "\\\\\\\\"); // double the backslashes to avoid invalid escape sequences
