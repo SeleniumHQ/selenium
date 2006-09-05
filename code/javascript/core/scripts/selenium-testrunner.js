@@ -382,6 +382,54 @@ function stepCurrentTest() {
     currentTest.resume();
 }
 
+
+var HtmlTestCaseRow = Class.create();
+Object.extend(HtmlTestCaseRow.prototype, {
+    initialize: function(trElement) {
+        this.trElement = trElement;
+    },
+
+    getCommand: function () {
+        return new SeleniumCommand(getText(this.trElement.cells[0]),
+                getText(this.trElement.cells[1]),
+                getText(this.trElement.cells[2]),
+                this.trElement.isBreakpoint);
+    },
+
+    setWorking: function() {
+        this.trElement.bgColor = workingColor;
+    },
+
+    setPassed: function() {
+        this.trElement.bgColor = passColor;
+    },
+
+    setDone: function() {
+        this.trElement.bgColor = doneColor;
+    },
+
+    setFailed: function(errorMsg) {
+        this.trElement.bgColor = failColor;
+        this.setMessage(errorMsg);
+    },
+
+    setMessage: function(message) {
+        this.trElement.cells[2].innerHTML = message;
+    },
+
+    reset: function() {
+        this.trElement.bgColor = '';
+        var thirdCell = this.trElement.cells[2];
+        if (thirdCell) {
+            if (thirdCell.originalHTML) {
+                thirdCell.innerHTML = thirdCell.originalHTML;
+            } else {
+                thirdCell.originalHTML = thirdCell.innerHTML;
+            }
+        }
+    }
+})
+
 var HtmlTestCase = Class.create();
 Object.extend(HtmlTestCase.prototype, {
 
@@ -399,9 +447,7 @@ Object.extend(HtmlTestCase.prototype, {
         var tables = $A(this.testDocument.getElementsByTagName("table"));
         tables.each(function(table) {
             $A(table.rows).each(function(row) {
-                // remove pass/fail bgColor
-                row.bgColor = '';
-                self._replaceErrorMessageWithOriginalText(row.cells[2]);
+                new HtmlTestCaseRow(row).reset();
             });
         });
 
@@ -409,16 +455,6 @@ Object.extend(HtmlTestCase.prototype, {
         var errorElement = this.testDocument.getElementById('error');
         if (errorElement) {
             Element.remove(errorElement);
-        }
-    },
-
-    _replaceErrorMessageWithOriginalText: function(element) {
-        if (element) {
-            if (element.originalHTML) {
-                element.innerHTML = element.originalHTML;
-            } else {
-                element.originalHTML = element.innerHTML;
-            }
         }
     },
 
@@ -452,9 +488,7 @@ Object.extend(HtmlTestCase.prototype, {
 
     addErrorMessage: function(errorMsg, currentRow) {
         if (currentRow) {
-            currentRow.bgColor = failColor;
-            currentRow.cells[2].innerHTML = errorMsg;
-            currentRow.title = errorMsg;
+            currentRow.setFailed(errorMsg);
         } else {
             var errorElement = this.testDocument.createElement("p");
             errorElement.id = "error";
@@ -809,7 +843,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     _nextCommandRow: function() {
         if (this.commandRows.length > 0) {
-            this.currentRow = this.commandRows.shift();
+            this.currentRow = new HtmlTestCaseRow(this.commandRows.shift());
             if (this.sejsElement) {
                 this.currentItem = agenda.pop();
                 this.currentRowIndex++;
@@ -826,17 +860,14 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
         if (row == null) {
             return null;
         }
-        return new SeleniumCommand(getText(row.cells[0]),
-                getText(row.cells[1]),
-                getText(row.cells[2]),
-                row.isBreakpoint);
+        return row.getCommand();
     },
 
     commandStarted : function() {
         $('pauseTest').disabled = false;
 
-        this.currentRow.bgColor = workingColor;
-        scrollIntoView(this.currentRow.cells[0]);
+        this.currentRow.setWorking();
+        scrollIntoView(this.currentRow.trElement.cells[0]);
         printMetrics();
     },
 
@@ -846,9 +877,9 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
             this._recordFailure(result.failureMessage);
         } else if (result.passed) {
             numCommandPasses += 1;
-            this.currentRow.bgColor = passColor;
+            this.currentRow.setPassed();
         } else {
-            this.currentRow.bgColor = doneColor;
+            this.currentRow.setDone();
         }
     },
 
@@ -953,7 +984,7 @@ Selenium.prototype.doEcho = function(message) {
      * Useful for debugging.
      * @param message the message to print
      */
-    currentTest.currentRow.cells[2].innerHTML = message;
+    currentTest.currentRow.setMessage(message);
 }
 
 Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {

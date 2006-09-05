@@ -16,43 +16,43 @@ Copyright 2004 ThoughtWorks, Inc
 -->
 <html>
 <head>
-  <meta content="text/html; charset=ISO-8859-1"
- http-equiv="content-type">
-  <title>Test Browser Version</title>
-<script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
-<script>
-	
-	function load() {
-		var output = document.getElementById("output");
-		for (key in navigator) {
-			var node = document.createTextNode("navigator." + key + " -> " + navigator[key]);
-			output.appendChild(node);
-			output.appendChild(document.createElement("br"));
-		}
-		for (key in browserVersion) {
-			var node = document.createTextNode("browserVersion." + key + " -> " + browserVersion[key]);
-			output.appendChild(node);
-			output.appendChild(document.createElement("br"));
-		}
-	}
+    <meta content="text/html; charset=ISO-8859-1"
+          http-equiv="content-type">
+    <title>Test Browser Version</title>
+    <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
+    <script>
 
-</script>
+        function load() {
+            var output = document.getElementById("output");
+            for (key in navigator) {
+                var node = document.createTextNode("navigator." + key + " -> " + navigator[key]);
+                output.appendChild(node);
+                output.appendChild(document.createElement("br"));
+            }
+            for (key in browserVersion) {
+                var node = document.createTextNode("browserVersion." + key + " -> " + browserVersion[key]);
+                output.appendChild(node);
+                output.appendChild(document.createElement("br"));
+            }
+        }
+
+    </script>
 
 </head>
+
 <body onload="load();">
 <table cellpadding="1" cellspacing="1" border="1">
-  <tbody>
-    <tr>
-      <td rowspan="1" colspan="3">Test Browser Version<br>
-      </td>
-    </tr>
-    <tr>
-      <td>echo
-</td>
-      <td>javascript{browserVersion.name}</td>
-      <td>&nbsp;</td>
-    </tr>
-  </tbody>
+    <tbody>
+        <tr>
+            <td rowspan="1" colspan="3">Test Browser Version<br>
+            </td>
+        </tr>
+        <tr>
+            <td>echo</td>
+            <td>javascript{browserVersion.name}</td>
+            <td>&nbsp;</td>
+        </tr>
+    </tbody>
 </table>
 
 <div id="output"></div>
