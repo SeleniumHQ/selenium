@@ -8,7 +8,6 @@ public class TestRefresh extends SeleneseTestCase
 {
    public void testRefresh() throws Throwable {
 		try {
-			selenium.setContext("Test Refresh", "info");
 
 /* Test Refresh */
 			// open|../tests/html/test_page.slow.html|

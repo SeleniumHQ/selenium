@@ -8,7 +8,6 @@ public class TestWaitInPopupWindow extends SeleneseTestCase
 {
    public void testWaitInPopupWindow() throws Throwable {
    	try {
-		selenium.setContext("Test SelectWindow", "info");
 
 /* Test selectWindow */
 		// open|../tests/html/test_select_window.html|

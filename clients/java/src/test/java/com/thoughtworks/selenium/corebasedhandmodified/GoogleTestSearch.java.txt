@@ -8,7 +8,6 @@ public class GoogleTestSearch extends SeleneseTestCase
 {
    public void testGoogleTestSearch() throws Throwable {
    	try {
-		selenium.setContext("Test Open", "info");
 
 /* Google Test Search */
 		// open|http://www.google.com|
