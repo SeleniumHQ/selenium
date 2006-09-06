@@ -104,16 +104,25 @@ Make your new test case available by linking to it from the TestSuite; for examp
     <p>The Control Panel allows you to control how tests are executed.</p>
     
     <p><img src="images/test_runner_frame.jpg"></img>
+</div>
 
-<p>You can also run your application under test in a seperate window just
-by specifying a parameter <b>"multiWindow=true"</b> to the
+<div class="section" id="multiwindow">
+<h2><a name="multiwindow">Run your Test Case in multi-window mode</a></h2>
+<p>By default your application under test is run in a frame which
+resides in the same window with selenium control panel. You can also
+run your application under test in a seperate window just by specifying a parameter <b>"multiWindow=true"</b> to the
 TestRunner.html. By this way you do not have to worry about your
 application will occupy the top window of the browser and break the
 selenium when you are running it in the "frame" mode.
 <p>Selenium control window:
 <p><img src="images/multiwindow1.jpg" title="seleniuim control window" alt="seleniuim control window"></img>
 <p>Your application under test:
-<p><img src="images/multiwindow2.jpg" title="your application under test" alt="your application under test"></img>
+<p><img src="images/multiwindow2.jpg" title="your application under
+test" alt="your application under test"></img>
+<p><b>Notice:</b> Because Firefox currently does not support
+document.readyState property, our multi-window mode may not be very
+stable on Firefox. You can install this <a href="download/readyState.xpi">extension</a> to
+solve this problem.
 </div>
 
 <div class="section" id="setup-teardown">
