@@ -33,6 +33,7 @@ passColor = "#ccffcc";
 doneColor = "#eeffee";
 failColor = "#ffcccc";
 workingColor = "#ffffcc";
+breakpointColor = "#cccccc"
 
 // Holds the handlers for each command.
 commandHandlers = null;
@@ -408,7 +409,7 @@ Object.extend(HtmlTestCaseRow.prototype, {
         if (this.trElement.isBreakpoint == undefined) {
             this.trElement.isBreakpoint = true;
             this.trElement.beforeBackgroundColor = Element.getStyle(this.trElement, "backgroundColor");
-            Element.setStyle(this.trElement, {"background-color" : "#cccccc"});
+            Element.setStyle(this.trElement, {"background-color" : breakpointColor});
         } else {
             this.trElement.isBreakpoint = undefined;
             Element.setStyle(this.trElement, {"background-color" : this.trElement.beforeBackgroundColor});

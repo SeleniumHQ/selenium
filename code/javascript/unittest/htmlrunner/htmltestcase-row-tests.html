@@ -20,7 +20,7 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>JsUnit Utility Tests</title>
-<link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+<link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
@@ -30,100 +30,113 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-    function setUp() {
-        rowElement = $("commandRow").cloneNode(true);
-        htmlTestCaseRow = new HtmlTestCaseRow(rowElement);
-        htmlTestCaseRow.reset();
-    }
+function setUp() {
+    document.getElementById("bodyid").innerHTML
+            = "<table><tr id='commandRow'><td>theCommand</td> <td>theTarget</td><td>theValue</td></tr></table>";
+    htmlTrElement = $("commandRow");
+    htmlTestCaseRow = new HtmlTestCaseRow(htmlTrElement);
+    htmlTestCaseRow.reset();
+}
 
-    function testCanGetSeleniumCommandFromCommandRow() {
-        var command = htmlTestCaseRow.getCommand();
-        assertEquals("theCommand", command.command);
-        assertEquals("theTarget", command.target);
-        assertEquals("theValue", command.value);
-    }
+function testCanGetSeleniumCommandFromCommandRow() {
+    var command = htmlTestCaseRow.getCommand();
+    assertEquals("theCommand", command.command);
+    assertEquals("theTarget", command.target);
+    assertEquals("theValue", command.value);
+}
 
-    function testSetWorkingChangesRowBackgroundColor() {
-        htmlTestCaseRow.setWorking();
-        assertEquals(workingColor, rowElement.bgColor);
-    }
+function testSetWorkingChangesRowBackgroundColor() {
+    htmlTestCaseRow.setWorking();
+    assertEquals(workingColor, htmlTrElement.bgColor);
+}
 
-    function testSetWorkingWillScrollWorkingRowToView() {
-        var scrolled = false
-        scrollIntoView = function(element) {
-            scrolled = true;
-            assertEquals(rowElement, element);
-        };
-        htmlTestCaseRow.setWorking();
-        assert(scrolled);
-    }
+function testSetWorkingWillScrollWorkingRowToView() {
+    var scrolled = false
+    scrollIntoView = function(element) {
+        scrolled = true;
+        assertEquals(htmlTrElement, element);
+    };
+    htmlTestCaseRow.setWorking();
+    assert(scrolled);
+}
 
-    function testSetPassedChangesRowBackgroundColor() {
-        htmlTestCaseRow.setPassed();
-        assertEquals(passColor, rowElement.bgColor);
-    }
+function testSetPassedChangesRowBackgroundColor() {
+    htmlTestCaseRow.setPassed();
+    assertEquals(passColor, htmlTrElement.bgColor);
+}
 
-    function testSetDoneChangesRowBackgroundColor() {
-        htmlTestCaseRow.setDone();
-        assertEquals(doneColor, rowElement.bgColor);
-    }
+function testSetDoneChangesRowBackgroundColor() {
+    htmlTestCaseRow.setDone();
+    assertEquals(doneColor, htmlTrElement.bgColor);
+}
 
-    function testSetFailedChangesBackgroundColorAndAddsErrorMessage() {
-        htmlTestCaseRow.setFailed("an error message");
-        assertEquals(failColor, rowElement.bgColor);
-        assertEquals("an error message", getText(htmlTestCaseRow.trElement.cells[2]));
-    }
+function testSetFailedChangesBackgroundColorAndAddsErrorMessage() {
+    htmlTestCaseRow.setFailed("an error message");
+    assertEquals(failColor, htmlTrElement.bgColor);
+    assertEquals("an error message", getText(htmlTestCaseRow.trElement.cells[2]));
+}
 
-    function testEchoWillSetMessageToLastCell() {
-        htmlTestCaseRow.setMessage("some echo message");
-        assertEquals("some echo message", getText(rowElement.cells[2]));
-    }
+function testEchoWillSetMessageToLastCell() {
+    htmlTestCaseRow.setMessage("some echo message");
+    assertEquals("some echo message", getText(htmlTrElement.cells[2]));
+}
 
-    function testResetWillMakeTheBackgroundColorEmptyAndCleanErrorMessage() {
-        htmlTestCaseRow.setFailed("some error");
-        htmlTestCaseRow.reset();
-        assertEquals('', rowElement.bgColor);
-        assertEquals("theValue", getText(rowElement.cells[2]));
-    }
+function testResetWillMakeTheBackgroundColorEmptyAndCleanErrorMessage() {
+    htmlTestCaseRow.setFailed("some error");
+    htmlTestCaseRow.reset();
+    assertEquals('', htmlTrElement.bgColor);
+    assertEquals("theValue", getText(htmlTrElement.cells[2]));
+}
 
-    function testAddBreakpointSupportBindRowsOnClickToElementsClickHandler() {
-        assertTrue(rowElement.onclick == null);
-        htmlTestCaseRow.addBreakpointSupport();
-        assertNotNull(rowElement.onclick);
-        htmlTestCaseRow.onClickCalled = false;
-        htmlTestCaseRow.onClick = function() {
-            this.onClickCalled = true;
-        };
-        rowElement.onclick();
-        assertTrue(htmlTestCaseRow.onClickCalled);
-    }
+function testAddBreakpointSupportBindRowsOnClickToElementsClickHandler() {
+    assertTrue(htmlTrElement.onclick == null);
+    htmlTestCaseRow.addBreakpointSupport();
+    assertNotNull(htmlTrElement.onclick);
+    htmlTestCaseRow.onClickCalled = false;
+    htmlTestCaseRow.onClick = function() {
+        this.onClickCalled = true;
+    };
+    htmlTrElement.onclick();
+    assertTrue(htmlTestCaseRow.onClickCalled);
+}
 
-    function testOnClickTogglesBreakpoint() {
-        assertFalse(htmlTestCaseRow.isBreakpoint());
-        htmlTestCaseRow.onClick();
-        assertTrue(htmlTestCaseRow.isBreakpoint());
-        htmlTestCaseRow.onClick();
-        assertFalse(htmlTestCaseRow.isBreakpoint());
-    }
+function testOnClickShouldTogglesBreakpoint() {
+    assertFalse(htmlTestCaseRow.isBreakpoint());
+    htmlTestCaseRow.onClick();
+    assertTrue(htmlTestCaseRow.isBreakpoint());
+    htmlTestCaseRow.onClick();
+    assertFalse(htmlTestCaseRow.isBreakpoint());
+}
 
-    function testAddBreakpointSupportShouldMakeRowCursorSmallHand() {
-        assertNull(Element.getStyle(rowElement, "cursor"));
-        htmlTestCaseRow.addBreakpointSupport();
-        assertEquals("pointer", Element.getStyle(rowElement, "cursor"));
-    }
+function testOnClickShouldTogglesRowsBackGroundColor() {
+    var orginalColor = "#ccffcc";
+    Element.setStyle(htmlTrElement, {"background-color": orginalColor});
+    htmlTestCaseRow.onClick();
+    assertColorEquals(breakpointColor, Element.getStyle(htmlTrElement, "background-color"));
+    htmlTestCaseRow.onClick();
+    assertColorEquals(orginalColor, Element.getStyle(htmlTrElement, "background-color"));
+}
+
+function testAddBreakpointSupportShouldMakeRowCursorSmallHand() {
+    assertNull(Element.getStyle(htmlTrElement, "cursor"));
+    htmlTestCaseRow.addBreakpointSupport();
+    assertEquals("pointer", Element.getStyle(htmlTrElement, "cursor"));
+}
+
+function assertColorEquals(leftColor, rightColor) {
+    assertEquals(normalizeColor(leftColor), normalizeColor(rightColor));
+}
+
+function normalizeColor(aColor) {
+    var dummyBody = document.createElement("body");
+    Element.setStyle(dummyBody, {"background-color":aColor});
+    return Element.getStyle(dummyBody, "background-color");
+}
+
 
 </script>
 </head>
 
-<body>
-
-<table>
-    <tr id="commandRow">
-        <td>theCommand</td>
-        <td>theTarget</td>
-        <td>theValue</td>
-    </tr>
-</table>
-
+<body id="bodyid">
 </body>
 </html>
