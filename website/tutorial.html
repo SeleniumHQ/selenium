@@ -282,7 +282,14 @@ end
 <p>If you just point straight at &quot;/selenium-server/SeleneseRunner.html&quot; you can send commands to that browser without specifying a Session ID. When no Session ID is specified, the Selenium Server uses the &quot;null&quot; session to communicate with any browser that comes to speak with it.</p>
 <p>You can even make up your own Session IDs, just by starting your browser while pointing to &quot;/selenium-server/SeleneseRunner.html?sessionId=foo&quot;. That will use the Session ID &quot;foo&quot; instead of some crazy long number. (Session IDs don't have to be numbers, though they usually are when the Selenium Server generates one.) Hence, if you use a Session ID that isn't on record with the Selenium Server, no error message will be thrown; the Selenium Server will just wait patiently for some browser to come along and request work from that Session ID.</p>
 
-
+<h2><a name="multiWindowMode"/>Run tests under multi-window mode</h2>
+<p>If you want to make your application under test run in a seperate window rather than in the default frame, just start
+ selenium server with <b>-multiWindow</b> parameter:</p>
+<blockquote>
+  <code>java -jar selenium-server.jar <b>-multiWindow</b></code>
+</blockquote>
+<p>See <a href="http://www.openqa.org/selenium-core/usage.html#multiwindow">Run tests in multi-window mode</a> for more information.</p>
+        
 <hr />
 <p>With that, you're ready to try out one of our Client Drivers. We have Client Drivers available in a variety of languages, allowing you to automatically submit HTTP requests to the Selenium Server and automate your browsing tasks. Click on one of them on the left to get more information about any particular Client Driver, or get information on how to write your own from scratch. </p>
 <p>Good luck!</p>

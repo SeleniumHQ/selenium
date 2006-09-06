@@ -268,6 +268,7 @@ public class SeleniumServer {
         }
         System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
         final SeleniumServer seleniumProxy = new SeleniumServer(port);
+        seleniumProxy.multiWindow = multiWindow;
         checkArgsSanity(port, interactive, htmlSuite,
                 proxyInjectionModeArg, portDriversShouldContactArg, seleniumProxy);
         Thread jetty = new Thread(new Runnable() {
