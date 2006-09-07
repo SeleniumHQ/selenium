@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 
 <!--
 Copyright 2004 ThoughtWorks, Inc
@@ -17,62 +17,68 @@ Copyright 2004 ThoughtWorks, Inc
  limitations under the License.
 -->
 <html>
-  <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>JsUnit Utility Tests</title>
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
-<script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
-<script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-api.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-executionloop.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
-<script language="JavaScript" type="text/javascript">
-    function setUp() {
-        commandFactory = new Mock();
-        LOG = new Mock();
-        selenium = new Selenium();
-        global = new Object();
-        seleniumTest = new HtmlRunnerTestLoop(new HtmlTestCase(document), false, commandFactory);
-        // We want to verify that testLoop.commandError() function is called appropriately
-        // by testLoop.handleCommandError()
-        commandErrorHandler = new Mock();
-        seleniumTest.commandError = function(message) {
-        	commandErrorHandler.handleError(message);
+    <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-api.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserbot.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-executionloop.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
+    <script language="JavaScript" type="text/javascript">
+        function setUp() {
+            commandFactory = new Mock();
+            LOG = new Mock();
+            selenium = new Selenium();
+            global = new Object();
+            htmlTestCase = new Object();
+            htmlTestCase.reset = function() {
+            };
+            htmlTestCase.testDocument = document;
+            seleniumTest = new HtmlRunnerTestLoop(htmlTestCase, false, commandFactory);
+            // We want to verify that testLoop.commandError() function is called appropriately
+            // by testLoop.handleCommandError()
+            commandErrorHandler = new Mock();
+            seleniumTest.commandError = function(message) {
+                commandErrorHandler.handleError(message);
+            };
         };
-    };
 
-    function verifyMocks() {
-        commandFactory.verify();
-        LOG.verify();
-        commandErrorHandler.verify();
-    }
+        function verifyMocks() {
+            commandFactory.verify();
+            LOG.verify();
+            commandErrorHandler.verify();
+        }
 
-    function testOrdinaryCommandError() {
-        var error = new SeleniumError("Test Error");
-        LOG.expects("error", "Test Error");
-        commandErrorHandler.expects("handleError", "Test Error");
-        seleniumTest._handleCommandError(error);
-    };
+        function testOrdinaryCommandError() {
+            var error = new SeleniumError("Test Error");
+            LOG.expects("error", "Test Error");
+            commandErrorHandler.expects("handleError", "Test Error");
+            seleniumTest._handleCommandError(error);
+        };
 
-    function testSeleniumMalfunction() {
-    	var error = new Error("Test Error");
-        LOG.expects("exception", error);
-        commandErrorHandler.expects("handleError", "Selenium failure. Please report to selenium-dev@openqa.org, with error details from the log window.  The error message is: Test Error");
-        seleniumTest._handleCommandError(error);
-    };
+        function testSeleniumMalfunction() {
+            var error = new Error("Test Error");
+            LOG.expects("exception", error);
+            commandErrorHandler.expects("handleError", "Selenium failure. Please report to selenium-dev@openqa.org, with error details from the log window.  The error message is: Test Error");
+            seleniumTest._handleCommandError(error);
+        };
 
-  </script>
-  </head>
+    </script>
+</head>
 
-  <body>
-    <p>
+<body>
+<a href="#" id="testLink">Test Link</a>
+
+<p>
     This page contains tests for the SeleniumTest : handleCommandError()
     To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html
-    </p>
-  </body>
+</p>
+</body>
 </html>
