@@ -31,8 +31,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 
 function setUp() {
-    document.getElementById("bodyid").innerHTML
-            = "<table><tr id='commandRow'><td>theCommand</td> <td>theTarget</td><td>theValue</td></tr></table>";
+    $("bodyid").innerHTML = "<table><tr id='commandRow'><td>theCommand</td> <td>theTarget</td><td>theValue</td></tr></table>";
     htmlTrElement = $("commandRow");
     htmlTestCaseRow = new HtmlTestCaseRow(htmlTrElement);
     htmlTestCaseRow.reset();
@@ -51,8 +50,8 @@ function testSetWorkingChangesRowBackgroundColor() {
 }
 
 function testSetWorkingWillScrollWorkingRowToView() {
-    var scrolled = false
-    scrollIntoView = function(element) {
+    var scrolled = false;
+    safeScrollIntoView = function(element) {
         scrolled = true;
         assertEquals(htmlTrElement, element);
     };

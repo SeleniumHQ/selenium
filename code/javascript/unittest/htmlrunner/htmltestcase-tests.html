@@ -20,7 +20,7 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>JsUnit Utility Tests</title>
-    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+    <link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
     <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
     <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
@@ -28,7 +28,9 @@ Copyright 2004 ThoughtWorks, Inc
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
     <script language="JavaScript" type="text/javascript">
+
         function setUp() {
             testcase = new HtmlTestCase(document);
         }
@@ -81,7 +83,6 @@ Copyright 2004 ThoughtWorks, Inc
 </head>
 
 <body>
-
 <table cellpadding="1" cellspacing="1" border="1" id="testTable">
     <tbody>
         <tr>
@@ -101,6 +102,5 @@ Copyright 2004 ThoughtWorks, Inc
         </tr>
     </tbody>
 </table>
-
 </body>
 </html>

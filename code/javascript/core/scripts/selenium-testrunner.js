@@ -70,7 +70,6 @@ queryString = null;
 
 warned = null;
 
-// todo: could this just be "SeleniumWindow" instead?
 var SeleniumFrame = Class.create();
 Object.extend(SeleniumFrame.prototype, {
     initialize : function(frame) {
@@ -81,11 +80,12 @@ Object.extend(SeleniumFrame.prototype, {
         return this.frame.contentWindow.document;
     },
 
-    addLoadListener : function(listener) {
+    addLoadListener: function(listener) {
+        //todo: use prototype event.observe?
         addLoadListener(this.frame, listener);
     },
 
-    removeLoadListener : function(listener) {
+    removeLoadListener: function(listener) {
         removeLoadListener(this.frame, listener);
     },
 
@@ -98,6 +98,7 @@ Object.extend(SeleniumFrame.prototype, {
     }
 
 });
+
 
 var suiteFrame;
 var testFrame;
@@ -206,84 +207,23 @@ var suiteTable;
 function onloadTestSuite() {
     suiteFrame.removeLoadListener(onloadTestSuite);
     testFrame.addLoadListener(onloadTestCase);
+    htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
 
-    // Add an onclick function to each link in all suite tables
-    var allTables = suiteFrame.getDocument().getElementsByTagName("table");
-    for (var tableNum = 0; tableNum < allTables.length; tableNum++)
-    {
-        var skippedTable = allTables[tableNum];
-        for (rowNum = 1; rowNum < skippedTable.rows.length; rowNum++) {
-            addOnclick(skippedTable, rowNum);
-        }
-    }
-
-    suiteTable = suiteFrame.getDocument().getElementsByTagName("table")[0];
-    if (suiteTable != null) {
-
+    if (htmlTestSuite.isAvaliable()) {
         if (isAutomatedRun()) {
             startTestSuite();
         } else if (getQueryParameter("autoURL")) {
-
+            //todo what is the autourl doing, left to check it out
             addLoadListener(getApplicationWindow(), startSingleTest);
-
             getApplicationWindow().src = getQueryParameter("autoURL");
-
         } else {
-            testLink = suiteTable.rows[currentRowInSuite + 1].cells[0].getElementsByTagName("a")[0];
-            getTestFrame().src = testLink.href;
+            htmlTestSuite.getSuiteRows()[0].loadTestCase();
         }
     }
 }
 
-// Adds an onclick function to the link in the given row in suite table.
-// This function checks whether the test has already been run and the data is
-// stored. If the data is stored, it sets the test frame to be the stored data.
-// Otherwise, it loads the fresh page.
-function addOnclick(suiteTable, rowNum) {
-    aLink = suiteTable.rows[rowNum].cells[0].getElementsByTagName("a")[0];
-    aLink.onclick = function(eventObj) {
-        srcObj = null;
-
-        // For mozilla-like browsers
-        if (eventObj)
-            srcObj = eventObj.target;
-
-        // For IE-like browsers
-        else if (getSuiteFrame().contentWindow.event)
-            srcObj = getSuiteFrame().contentWindow.event.srcElement;
-
-        // The target row (the event source is not consistently reported by browsers)
-        row = srcObj.parentNode.parentNode.rowIndex || srcObj.parentNode.parentNode.parentNode.rowIndex;
-        currentRowInSuite = row;
-
-        // If the row has a stored results table, use that
-        if (suiteTable.rows[row].cells[1]) {
-            var bodyElement = testFrame.getDocument().body;
-
-            // Create a div element to hold the results table.
-            var tableNode = testFrame.getDocument().createElement("div");
-            var resultsCell = suiteTable.rows[row].cells[1];
-            tableNode.innerHTML = resultsCell.innerHTML;
-
-            // Append this text node, and remove all the preceding nodes.
-            bodyElement.appendChild(tableNode);
-            while (bodyElement.firstChild != bodyElement.lastChild) {
-                bodyElement.removeChild(bodyElement.firstChild);
-            }
-
-            currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
-            currentHtmlTestCase.addBreakpointSupport();
-        }
-        // Otherwise, just open up the fresh page.
-        else {
-            testFrame.setLocation(suiteTable.rows[row].cells[0].getElementsByTagName("a")[0].href);
-        }
-
-        return false;
-    };
-}
-
 function onloadTestCase() {
+    //testFrame.removeLoadListener(onloadTestCase);
     currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
     currentHtmlTestCase.addBreakpointSupport();
 }
@@ -374,7 +314,7 @@ Object.extend(HtmlTestCaseRow.prototype, {
 
     setWorking: function() {
         this.trElement.bgColor = workingColor;
-        scrollIntoView(this.trElement);
+        safeScrollIntoView(this.trElement);
     },
 
     setPassed: function() {
@@ -418,11 +358,10 @@ Object.extend(HtmlTestCaseRow.prototype, {
     },
 
     addBreakpointSupport: function() {
-        var self = this;
         Element.setStyle(this.trElement, {"cursor" : "pointer"});
         this.trElement.onclick = function() {
-            self.onClick();
-        }
+            this.onClick();
+        }.bindAsEventListener(this);
     },
 
     isBreakpoint: function() {
@@ -431,7 +370,83 @@ Object.extend(HtmlTestCaseRow.prototype, {
         }
         return this.trElement.isBreakpoint;
     }
-})
+});
+
+
+var HtmlTestSuiteRow = Class.create();
+Object.extend(HtmlTestSuiteRow.prototype, {
+    initialize: function(trElement, testFrame) {
+        this.trElement = trElement;
+        this.testFrame = testFrame;
+        this.link = trElement.getElementsByTagName("a")[0];
+        this.link.onclick = this._onClick.bindAsEventListener(this);
+    },
+
+    _onClick: function(eventObj) {
+        currentRowInSuite = this.trElement.rowIndex;
+        this.loadTestCase();
+        return false;
+    },
+
+    loadTestCase: function() {
+        // If the row has a stored results table, use that
+        var resultsFromPreviousRun = this.trElement.cells[1];
+        if (resultsFromPreviousRun) {
+            var testBody = this.testFrame.getDocument().body;
+            testBody.innerHTML = resultsFromPreviousRun.innerHTML;
+            // todo: this duplicates onloadTestCase
+            currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
+            currentHtmlTestCase.addBreakpointSupport();
+        } else {
+            this.testFrame.setLocation(this.link.href);
+        }
+    }
+});
+
+var HtmlTestSuite = Class.create();
+Object.extend(HtmlTestSuite.prototype, {
+    initialize: function(suiteDocument) {
+        this.suiteDocument = suiteDocument;
+        this.suiteRows = this._collectSuiteRows();
+        this.titleRow = this.getTestTable().rows[0];
+        this.title = this.titleRow.cells[0].innerHTML;
+    },
+
+    getTitle: function() {
+        return this.title;
+    },
+
+    getSuiteRows: function() {
+        return this.suiteRows;
+    },
+
+    getTestTable: function() {
+        var tables = $A(this.suiteDocument.getElementsByTagName("table"));
+        return tables[0];
+    },
+
+    isAvaliable: function() {
+        return this.getTestTable() != null;
+    },
+
+    _collectSuiteRows: function () {
+        var result = [];
+        for (rowNum = 1; rowNum < this.getTestTable().rows.length; rowNum++) {
+            var rowElement = this.getTestTable().rows[rowNum];
+            result.push(new HtmlTestSuiteRow(rowElement, testFrame));
+        }
+        return result;
+    },
+
+    setFailed: function() {
+        this.titleRow.bgColor = failColor;
+    },
+    setPassed: function() {
+        this.titleRow.bgColor = passColor;
+    }
+
+});
+
 
 var HtmlTestCase = Class.create();
 Object.extend(HtmlTestCase.prototype, {
@@ -445,14 +460,19 @@ Object.extend(HtmlTestCase.prototype, {
     _collectCommandRows: function () {
         var commandRows = [];
         var tables = $A(this.testDocument.getElementsByTagName("table"));
+        var self = this;
         tables.each(function (table) {
             $A(table.rows).each(function(candidateRow) {
-                if (isCommandRow(candidateRow)) {
+                if (self.isCommandRow(candidateRow)) {
                     commandRows.push(new HtmlTestCaseRow(candidateRow));
                 }
-            });
+            }.bind(this));
         });
         return commandRows;
+    },
+
+    isCommandRow:  function (row) {
+        return row.cells.length >= 3;
     },
 
     reset: function() {
@@ -523,7 +543,6 @@ Object.extend(HtmlTestCase.prototype, {
 });
 
 function startTest() {
-    //todo move testFrame init to testcase.rest()
     testFrame.removeLoadListener(startTest);
     setHighlightOption();
     testFrame.scrollToTop();
@@ -561,6 +580,8 @@ get_new_rows = function() {
     return row_array
 };
 
+
+//todo move to testsuite
 function startTestSuite() {
     resetMetrics();
     currentRowInSuite = 0;
@@ -570,11 +591,12 @@ function startTestSuite() {
     runNextTest();
 }
 
+//todo move to testsuit
 function runNextTest() {
     if (!runAllTests)
         return;
 
-    suiteTable = suiteFrame.getDocument().getElementsByTagName("table")[0];
+    suiteTable = htmlTestSuite.getTestTable();
 
     updateSuiteWithResultOfPreviousTest();
 
@@ -588,24 +610,26 @@ function runNextTest() {
     }
 }
 
+//todo move to testsuit
 function startCurrentTestCase() {
-    // Make the current row blue
+    // mark the current row as "working"
     setCellColor(suiteTable.rows, currentRowInSuite, 0, workingColor);
 
     testLink = suiteTable.rows[currentRowInSuite].cells[0].getElementsByTagName("a")[0];
-    //todo: use scrollIntoView instead?
-    testLink.focus();
+    safeScrollIntoView(testLink);
 
     testFrame.addLoadListener(startTest);
     testFrame.setLocation(testLink.href);
 
 }
 
+//todo move to testsuite
 function isTestSuiteComplete() {
+
     if (suiteFailed) {
-        setCellColor(suiteTable.rows, 0, 0, failColor);
+        htmlTestSuite.setFailed();
     } else {
-        setCellColor(suiteTable.rows, 0, 0, passColor);
+        htmlTestSuite.setPassed();
     }
 
     // If this is an automated run (i.e., build script), then submit
@@ -615,6 +639,7 @@ function isTestSuiteComplete() {
     }
 }
 
+//todo move to testsuit
 function updateSuiteWithResultOfPreviousTest() {
     // Do not change the row color of the first row
     if (currentRowInSuite > 0) {
@@ -630,10 +655,12 @@ function updateSuiteWithResultOfPreviousTest() {
     }
 }
 
+//todo move to testsuit
 function setCellColor(tableRows, row, col, colorStr) {
     tableRows[row].cells[col].bgColor = colorStr;
 }
 
+//todo move to testsuit
 // Sets the results from a test into a hidden column on the suite table.  So,
 // for each tests, the second column is set to the HTML from the test table.
 function setResultsData(suiteTable, row) {
@@ -803,14 +830,13 @@ function pad(num) {
 function registerCommandHandlers() {
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
-
 }
 
 function removeNbsp(value) {
     return value.replace(/\240/g, "");
 }
 
-function scrollIntoView(element) {
+function safeScrollIntoView(element) {
     if (element.scrollIntoView) {
         element.scrollIntoView(false);
         return;
@@ -824,9 +850,6 @@ function setHighlightOption() {
     selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
 }
 
-function isCommandRow(row) {
-    return row.cells.length >= 3;
-}
 
 var HtmlRunnerTestLoop = Class.create();
 Object.extend(HtmlRunnerTestLoop.prototype, new TestLoop());

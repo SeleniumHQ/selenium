@@ -301,6 +301,7 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
 }
 
 function removeLoadListener(element, command) {
+	LOG.info('Removing loadListenter for ' + element + ', ' + command);
     if (window.removeEventListener)
         element.removeEventListener("load", command, true);
     else if (window.detachEvent)
@@ -308,18 +309,11 @@ function removeLoadListener(element, command) {
 }
 
 function addLoadListener(element, command) {
-	LOG.info('Adding loadLisenter for ' + element + ', ' + command);
+	LOG.info('Adding loadListenter for ' + element + ', ' + command);
     if (window.addEventListener && !browserVersion.isOpera)
         element.addEventListener("load", command, true);
     else if (window.attachEvent)
         element.attachEvent("onload", command);
-}
-
-function addUnloadListener(element, command) {
-    if (window.addEventListener)
-        element.addEventListener("unload", command, true);
-    else if (window.attachEvent)
-        element.attachEvent("onunload", command);
 }
 
 /**
