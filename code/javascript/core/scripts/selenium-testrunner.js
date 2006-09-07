@@ -565,10 +565,6 @@ function startTest() {
     setHighlightOption();
     testFrame.scrollToTop();
 
-    // todo: this duplicates handling in onLoadTestCase
-    currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
-    currentHtmlTestCase.addBreakpointSupport();
-
     // todo: move currentTest to test suite?
     currentTest = new HtmlRunnerTestLoop(currentHtmlTestCase, commandFactory);
     //todo: move testFailed and storedVars to TestCase
