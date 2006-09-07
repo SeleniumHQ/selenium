@@ -271,7 +271,8 @@ function addOnclick(suiteTable, rowNum) {
                 bodyElement.removeChild(bodyElement.firstChild);
             }
 
-            addBreakpointSupport(testFrame.getDocument());
+            currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
+            currentHtmlTestCase.addBreakpointSupport();
         }
         // Otherwise, just open up the fresh page.
         else {
@@ -461,7 +462,6 @@ Object.extend(HtmlTestCase.prototype, {
         this.nextCommandRowIndex = 0;
         this.testDocument.bgColor = "";
 
-
         this.commandRows.each(function(row) {
             row.reset();
         });
@@ -526,8 +526,12 @@ function startTest() {
     //todo move testFrame init to testcase.rest()
     testFrame.removeLoadListener(startTest);
     setHighlightOption();
-
     testFrame.scrollToTop();
+
+    // todo: this duplicates handling in onLoadTestCase
+    currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
+    currentHtmlTestCase.addBreakpointSupport();
+
     currentTest = new HtmlRunnerTestLoop(currentHtmlTestCase, commandFactory);
     //todo: move testFailed and storedVars to TestCase
     testFailed = false;
