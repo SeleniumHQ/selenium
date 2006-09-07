@@ -72,33 +72,61 @@ warned = null;
 
 var SeleniumFrame = Class.create();
 Object.extend(SeleniumFrame.prototype, {
+
     initialize : function(frame) {
         this.frame = frame;
+        addLoadListener(this.frame, function() {
+            this._handleLoad()
+        }.bind(this));
     },
 
     getDocument : function() {
         return this.frame.contentWindow.document;
     },
 
-    addLoadListener: function(listener) {
-        //todo: use prototype event.observe?
-        addLoadListener(this.frame, listener);
+    _handleLoad: function() {
+        this.onLoad();
+        if (this.loadCallback) {
+            this.loadCallback();
+            this.loadCallback = null;
+        }
     },
 
-    removeLoadListener: function(listener) {
-        removeLoadListener(this.frame, listener);
+    onLoad: function() {
     },
 
     scrollToTop : function() {
         this.frame.contentWindow.scrollTo(0, 0);
     },
 
-    setLocation : function(location) {
+    setLocation: function(location) {
         this.frame.contentWindow.location.replace(location);
+    },
+
+    load: function(/* url, [callback] */) {
+        if (arguments.length > 1) {
+            this.loadCallback =  arguments[1];
+        }
+        this.setLocation(arguments[0]);
     }
 
 });
 
+var HtmlTestFrame = Class.create();
+Object.extend(HtmlTestFrame.prototype, SeleniumFrame.prototype);
+Object.extend(HtmlTestFrame.prototype, {
+
+    onLoad: function() {
+        this.setCurrentTestCase();
+    },
+
+    setCurrentTestCase: function() {
+        // todo: stop accessing globals like currentHtmlTestCase
+        currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
+        currentHtmlTestCase.addBreakpointSupport();
+    }
+
+});
 
 var suiteFrame;
 var testFrame;
@@ -152,7 +180,7 @@ function loadAndRunIfAuto() {
 
 function onSeleniumLoad() {
     suiteFrame = new SeleniumFrame(getSuiteFrame());
-    testFrame = new SeleniumFrame(getTestFrame());
+    testFrame = new HtmlTestFrame(getTestFrame());
 
     queryString = null;
     runInterval = 0;
@@ -188,8 +216,7 @@ function loadSuiteFrame() {
     var testSuiteName = getQueryParameter("test");
 
     if (testSuiteName) {
-        suiteFrame.addLoadListener(onloadTestSuite);
-        suiteFrame.setLocation(testSuiteName);
+        suiteFrame.load(testSuiteName, onloadTestSuite);
     } else {
         onloadTestSuite();
     }
@@ -198,15 +225,12 @@ function loadSuiteFrame() {
 function startSingleTest() {
     removeLoadListener(getApplicationWindow(), startSingleTest);
     var singleTestName = getQueryParameter("singletest");
-    testFrame.addLoadListener(startTest);
-    getTestFrame().src = singleTestName;
+    testFrame.load(singleTestName, startTest);
 }
 
 var suiteTable;
 
 function onloadTestSuite() {
-    suiteFrame.removeLoadListener(onloadTestSuite);
-    testFrame.addLoadListener(onloadTestCase);
     htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
 
     if (htmlTestSuite.isAvaliable()) {
@@ -220,12 +244,6 @@ function onloadTestSuite() {
             htmlTestSuite.getSuiteRows()[0].loadTestCase();
         }
     }
-}
-
-function onloadTestCase() {
-    //testFrame.removeLoadListener(onloadTestCase);
-    currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
-    currentHtmlTestCase.addBreakpointSupport();
 }
 
 function getQueryString() {
@@ -392,12 +410,13 @@ Object.extend(HtmlTestSuiteRow.prototype, {
         // If the row has a stored results table, use that
         var resultsFromPreviousRun = this.trElement.cells[1];
         if (resultsFromPreviousRun) {
+            // this.testFrame.restoreTestCase(resultsFromPreviousRun.innerHTML);
             var testBody = this.testFrame.getDocument().body;
             testBody.innerHTML = resultsFromPreviousRun.innerHTML;
             // todo: this duplicates onloadTestCase
-            currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
-            currentHtmlTestCase.addBreakpointSupport();
+            testFrame.setCurrentTestCase();
         } else {
+            // this.loadTestCase();
             this.testFrame.setLocation(this.link.href);
         }
     }
@@ -543,7 +562,6 @@ Object.extend(HtmlTestCase.prototype, {
 });
 
 function startTest() {
-    testFrame.removeLoadListener(startTest);
     setHighlightOption();
     testFrame.scrollToTop();
 
@@ -551,6 +569,7 @@ function startTest() {
     currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
     currentHtmlTestCase.addBreakpointSupport();
 
+    // todo: move currentTest to test suite?
     currentTest = new HtmlRunnerTestLoop(currentHtmlTestCase, commandFactory);
     //todo: move testFailed and storedVars to TestCase
     testFailed = false;
@@ -618,9 +637,7 @@ function startCurrentTestCase() {
     testLink = suiteTable.rows[currentRowInSuite].cells[0].getElementsByTagName("a")[0];
     safeScrollIntoView(testLink);
 
-    testFrame.addLoadListener(startTest);
-    testFrame.setLocation(testLink.href);
-
+    testFrame.load(testLink.href, startTest);
 }
 
 //todo move to testsuite
