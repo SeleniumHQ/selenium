@@ -46,7 +46,7 @@ Copyright 2004 ThoughtWorks, Inc
             HtmlTestCaseRow.prototype.addBreakpointSupport = function () {
                 this.clickHandlerAdded = true;
             };
-            testcase.addBreakpointSupport();
+            testcase._addBreakpointSupport();
             assert(testcase.getNextCommandRow().clickHandlerAdded);
             assert(testcase.getNextCommandRow().clickHandlerAdded);
         }
@@ -56,26 +56,26 @@ Copyright 2004 ThoughtWorks, Inc
             assertEquals("verifyLocation", testcase.getNextCommandRow().getCommand().command);
         }
 
-        function testTouchingEndShouldBeTrueWhenShiftToLastCommand() {
-            assertFalse(testcase.isTouchingEnd());
+        function testHasMoreCommandRowsShouldBeFalseAtEndOfTest() {
+            assertTrue(testcase.hasMoreCommandRows());
             testcase.getNextCommandRow();
-            assertFalse(testcase.isTouchingEnd());
+            assertTrue(testcase.hasMoreCommandRows());
             testcase.getNextCommandRow();
-            assertTrue(testcase.isTouchingEnd());
+            assertFalse(testcase.hasMoreCommandRows());
         }
 
-        function testResetWillMakeTheNextCommandTheFirstCommandAgain() {
+        function testAfterResetGetNextCommandShouldReturnTheFirstCommandAgain() {
             testcase.getNextCommandRow();
             testcase.getNextCommandRow();
             testcase.reset();
             assertEquals("open", testcase.getNextCommandRow().getCommand().command);
-            assertFalse(testcase.isTouchingEnd());
+            assertTrue(testcase.hasMoreCommandRows());
         }
 
-        function testGetNextCommandWhenAlreadyTouchedEndWillReturnNull() {
+        function testGetNextCommandShouldReturnNullAtEndOfTest() {
             testcase.getNextCommandRow();
             testcase.getNextCommandRow();
-            assertTrue(testcase.isTouchingEnd());
+            assertFalse(testcase.hasMoreCommandRows());
             assertNull(testcase.getNextCommandRow());
         }
 

@@ -36,8 +36,8 @@ Copyright 2004 ThoughtWorks, Inc
             initialize: function() {
                 this.fireLoading = false;
             },
-            setLocation: function(location) {
-                this.location = location;
+            load: function() {
+                this.location = arguments[0];
                 if (this.fireLoading) this.loadListener();
             },
             addLoadListener: function(listener) {

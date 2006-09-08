@@ -70,14 +70,13 @@ queryString = null;
 
 warned = null;
 
+/** SeleniumFrame encapsulates an iframe element */
 var SeleniumFrame = Class.create();
 Object.extend(SeleniumFrame.prototype, {
 
     initialize : function(frame) {
         this.frame = frame;
-        addLoadListener(this.frame, function() {
-            this._handleLoad()
-        }.bind(this));
+        addLoadListener(this.frame, this._handleLoad.bind(this));
     },
 
     getDocument : function() {
@@ -85,29 +84,29 @@ Object.extend(SeleniumFrame.prototype, {
     },
 
     _handleLoad: function() {
-        this.onLoad();
+        this._onLoad();
         if (this.loadCallback) {
             this.loadCallback();
             this.loadCallback = null;
         }
     },
 
-    onLoad: function() {
+    _onLoad: function() {
     },
 
     scrollToTop : function() {
         this.frame.contentWindow.scrollTo(0, 0);
     },
 
-    setLocation: function(location) {
+    _setLocation: function(location) {
         this.frame.contentWindow.location.replace(location);
     },
 
     load: function(/* url, [callback] */) {
         if (arguments.length > 1) {
-            this.loadCallback =  arguments[1];
+            this.loadCallback = arguments[1];
         }
-        this.setLocation(arguments[0]);
+        this._setLocation(arguments[0]);
     }
 
 });
@@ -116,14 +115,16 @@ var HtmlTestFrame = Class.create();
 Object.extend(HtmlTestFrame.prototype, SeleniumFrame.prototype);
 Object.extend(HtmlTestFrame.prototype, {
 
-    onLoad: function() {
+    _onLoad: function() {
         this.setCurrentTestCase();
     },
 
     setCurrentTestCase: function() {
-        // todo: stop accessing globals like currentHtmlTestCase
-        currentHtmlTestCase = new HtmlTestCase(testFrame.getDocument());
-        currentHtmlTestCase.addBreakpointSupport();
+        this.currentTestCase = new HtmlTestCase(this.getDocument());
+    },
+
+    getCurrentTestCase: function() {
+        return this.currentTestCase;
     }
 
 });
@@ -132,6 +133,7 @@ var suiteFrame;
 var testFrame;
 
 var appWindow;
+
 /**
  * Get the window that will hold the AUT.
  *
@@ -393,6 +395,7 @@ Object.extend(HtmlTestCaseRow.prototype, {
 
 var HtmlTestSuiteRow = Class.create();
 Object.extend(HtmlTestSuiteRow.prototype, {
+
     initialize: function(trElement, testFrame) {
         this.trElement = trElement;
         this.testFrame = testFrame;
@@ -416,14 +419,14 @@ Object.extend(HtmlTestSuiteRow.prototype, {
             // todo: this duplicates onloadTestCase
             testFrame.setCurrentTestCase();
         } else {
-            // this.loadTestCase();
-            this.testFrame.setLocation(this.link.href);
+            this.testFrame.load(this.link.href);
         }
     }
 });
 
 var HtmlTestSuite = Class.create();
 Object.extend(HtmlTestSuite.prototype, {
+
     initialize: function(suiteDocument) {
         this.suiteDocument = suiteDocument;
         this.suiteRows = this._collectSuiteRows();
@@ -460,13 +463,14 @@ Object.extend(HtmlTestSuite.prototype, {
     markFailed: function() {
         this.titleRow.bgColor = failColor;
     },
-        
+
     markPassed: function() {
         this.titleRow.bgColor = passColor;
     }
 
 });
 
+/** HtmlTestCase encapsulates an HTML test document */
 var HtmlTestCase = Class.create();
 Object.extend(HtmlTestCase.prototype, {
 
@@ -474,6 +478,7 @@ Object.extend(HtmlTestCase.prototype, {
         this.testDocument = testDocument;
         this.commandRows = this._collectCommandRows();
         this.nextCommandRowIndex = 0;
+        this._addBreakpointSupport();
     },
 
     _collectCommandRows: function () {
@@ -543,39 +548,38 @@ Object.extend(HtmlTestCase.prototype, {
         }
     },
 
-    addBreakpointSupport: function() {
+    _addBreakpointSupport: function() {
         this.commandRows.each(function(row) {
             row.addBreakpointSupport();
         });
     },
 
-    getNextCommandRow: function() {
-        if (this.isTouchingEnd()) {
-            return null;
-        }
-        return this.commandRows[this.nextCommandRowIndex++];
+    hasMoreCommandRows: function() {
+        return this.nextCommandRowIndex < this.commandRows.length;
     },
 
-    isTouchingEnd: function() {
-        return this.nextCommandRowIndex == this.commandRows.length;
+    getNextCommandRow: function() {
+        if (this.hasMoreCommandRows()) {
+            return this.commandRows[this.nextCommandRowIndex++];
+        }
+        return null;
     }
+
 });
 
 function startTest() {
     setHighlightOption();
     testFrame.scrollToTop();
 
-    // todo: move currentTest to test suite?
-    currentTest = new HtmlRunnerTestLoop(currentHtmlTestCase, commandFactory);
     //todo: move testFailed and storedVars to TestCase
     testFailed = false;
     storedVars = new Object();
 
+    currentTest = new HtmlRunnerTestLoop(testFrame.getCurrentTestCase(), commandFactory);
     currentTest.start();
-
-    // PL: for the purpose of testing
-    //testLoop.waitForConditionTimeout = 2000;
 }
+
+// TODO: split out an JavascriptTestCase class to handle the "sejs" stuff
 
 get_new_rows = function() {
     var row_array = new Array();
@@ -591,12 +595,9 @@ get_new_rows = function() {
 
         row_array.push(row);
     }
-    ;
-    return row_array
+    return row_array;
 };
 
-
-//todo move to testsuite
 function startTestSuite() {
     resetMetrics();
     currentRowInSuite = 0;
@@ -606,10 +607,10 @@ function startTestSuite() {
     runNextTest();
 }
 
-//todo move to testsuit
 function runNextTest() {
-    if (!runAllTests)
+    if (!runAllTests) {
         return;
+    }
 
     suiteTable = htmlTestSuite.getTestTable();
 
@@ -625,7 +626,6 @@ function runNextTest() {
     }
 }
 
-//todo move to testsuit
 function startCurrentTestCase() {
     // mark the current row as "working"
     setCellColor(suiteTable.rows, currentRowInSuite, 0, workingColor);
@@ -636,7 +636,6 @@ function startCurrentTestCase() {
     testFrame.load(testLink.href, startTest);
 }
 
-//todo move to testsuite
 function isTestSuiteComplete() {
 
     if (suiteFailed) {
@@ -652,7 +651,6 @@ function isTestSuiteComplete() {
     }
 }
 
-//todo move to testsuit
 function updateSuiteWithResultOfPreviousTest() {
     // Do not change the row color of the first row
     if (currentRowInSuite > 0) {
@@ -668,12 +666,10 @@ function updateSuiteWithResultOfPreviousTest() {
     }
 }
 
-//todo move to testsuit
 function setCellColor(tableRows, row, col, colorStr) {
     tableRows[row].cells[col].bgColor = colorStr;
 }
 
-//todo move to testsuit
 // Sets the results from a test into a hidden column on the suite table.  So,
 // for each tests, the second column is set to the HTML from the test table.
 function setResultsData(suiteTable, row) {
@@ -899,26 +895,25 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
         }
     },
 
-    _nextCommandRow: function() {
-        if (this.htmlTestCase.isTouchingEnd()) {
-            this.currentRow = null;
-            this.currentItem = null;
-        } else {
+    _advanceToNextRow: function() {
+        if (this.htmlTestCase.hasMoreCommandRows())   {
             this.currentRow = this.htmlTestCase.getNextCommandRow();
             if (this.sejsElement) {
                 this.currentItem = agenda.pop();
                 this.currentRowIndex++;
             }
+        } else  {
+            this.currentRow = null;
+            this.currentItem = null;
         }
-        return this.currentRow;
     },
 
     nextCommand : function() {
-        var row = this._nextCommandRow();
-        if (row == null) {
+        this._advanceToNextRow();
+        if (this.currentRow == null) {
             return null;
         }
-        return row.getCommand();
+        return this.currentRow.getCommand();
     },
 
     commandStarted : function() {

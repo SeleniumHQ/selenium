@@ -166,15 +166,9 @@ Selenium.createForWindow = function(window) {
 };
 
 Selenium.prototype.reset = function() {
-	/**
-   * Clear out all stored variables and select the null (starting) window
-   */
-    //todo: move it back to testRunner, api should not know store vars
-    storedVars = new Object();
+    // todo: this.browserbot.reset()
     this.browserbot.selectWindow("null");
-    
     this.browserbot.resetPopups();
-    
 };
 
 Selenium.prototype.doClick = function(locator) {
@@ -1803,6 +1797,7 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
    if (window["proxyInjectionMode"] == null || !window["proxyInjectionMode"]) {
     	this.doWaitForCondition("selenium.browserbot.isNewPageLoaded()", timeout);
    }
+   // todo: should just be able to return SELENIUM_PROCESS_WAIT here to get the same effect
 };
 
 Selenium.prototype.doWaitForPageToLoad.dontCheckAlertsAndConfirms = true;

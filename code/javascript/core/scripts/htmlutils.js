@@ -519,7 +519,6 @@ function AssertionArguments(args) {
     }
 }
 
-
 function AssertionFailedError(message) {
     this.isAssertionFailedError = true;
     this.isSeleniumError = true;
@@ -532,8 +531,6 @@ function SeleniumError(message) {
     error.isSeleniumError = true;
     return error;
 }
-;
-
 
 var Effect = new Object();
 

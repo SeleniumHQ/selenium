@@ -27,8 +27,8 @@
 // The window to which the commands will be sent.  For example, to click on a
 // popup window, first select that window, and then do a normal click command.
 
-var BrowserBot = function(win) {
-    this.topWindow = win;
+var BrowserBot = function(topLevelApplicationWindow) {
+    this.topWindow = topLevelApplicationWindow;
 
     // the buttonWindow is the Selenium window
     // it contains the Run/Pause buttons... this should *not* be the AUT window
@@ -53,7 +53,6 @@ var BrowserBot = function(win) {
     this.uniqueId = new Date().getTime();
     this.pollingForLoad = new Object();
     this.windowPollers = new Array();
-
 
     var self = this;
     this.recordPageLoad = function() {
@@ -100,10 +99,11 @@ BrowserBot.createForWindow = function(window) {
         // Use mozilla by default
         browserbot = new MozillaBrowserBot(window);
     }
-    browserbot.getCurrentWindow();
+    browserbot.getCurrentWindow();  // todo: why?
     return browserbot;
 };
 
+// todo: rename?  This doesn't actually "do" anything.
 BrowserBot.prototype.doModalDialogTest = function(test) {
     this.modalDialogTest = test;
 };
@@ -777,6 +777,7 @@ PageBot.prototype.getTitle = function() {
     return t;
 }
 
+// todo: this is a bad name ... we're not passing a window in
 PageBot.createForWindow = function(browserbot) {
     if (browserVersion.isIE) {
         return new IEPageBot(browserbot);
