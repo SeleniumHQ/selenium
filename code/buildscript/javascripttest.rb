@@ -66,9 +66,13 @@ class JavaScriptTestTask < ::Rake::TaskLib
     end
     parser.to_html()
   end
+
+  def mime_types
+    WEBrick::HTTPUtils::DefaultMimeTypes.update("xhtml" => "application/xhtml+xml")
+  end
   
   def create_server
-    @server = WEBrick::HTTPServer.new(:Port => @port)
+    @server = WEBrick::HTTPServer.new(:Port => @port, :MimeTypes => mime_types)
     @server.mount_proc("/jsunitResults") do |req, res|
       $stderr.puts("got jsunitResults")
       parser, log_file = [JsUnitResult.new(req), "logs/JsUnitResults.xml"]

@@ -49,7 +49,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.nextPromptResult = '';
     this.newPageLoaded = false;
     this.pageLoadError = null;
-    
+
     this.uniqueId = new Date().getTime();
     this.pollingForLoad = new Object();
     this.windowPollers = new Array();
@@ -1014,10 +1014,25 @@ PageBot.prototype._findElementByTagNameAndText = function(
     return null;
 };
 
+PageBot.prototype._namespaceResolver = function(prefix) {
+    if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {
+        return 'http://www.w3.org/1999/xhtml';
+    } else if (prefix == 'mathml') {
+        return 'http://www.w3.org/1998/Math/MathML';
+    } else {
+        throw new Error("Unknown namespace: " + prefix + ".");
+    }
+}
+
 PageBot.prototype._findElementUsingFullXPath = function(xpath, inDocument, inWindow) {
+    // HUGE hack - remove namespace from xpath for IE
+    if (browserVersion.isIE) {
+        xpath = xpath.replace(/x:/g, '')
+    }
+
     // Use document.evaluate() if it's available
     if (inDocument.evaluate) {
-        return inDocument.evaluate(xpath, inDocument, null, 0, null).iterateNext();
+        return inDocument.evaluate(xpath, inDocument, this._namespaceResolver, 0, null).iterateNext();
     }
 
     // If not, fall back to slower JavaScript implementation

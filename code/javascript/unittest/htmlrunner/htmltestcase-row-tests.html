@@ -117,7 +117,10 @@ function testOnClickShouldTogglesRowsBackGroundColor() {
 }
 
 function testAddBreakpointSupportShouldMakeRowCursorSmallHand() {
-    assertNull(Element.getStyle(htmlTrElement, "cursor"));
+    var defaultStyle = Element.getStyle(htmlTrElement, "cursor");
+    // on opera, the default style is 'default'
+    // on other browsers which is null
+    assert(defaultStyle == null || defaultStyle == 'default');
     htmlTestCaseRow.addBreakpointSupport();
     assertEquals("pointer", Element.getStyle(htmlTrElement, "cursor"));
 }
