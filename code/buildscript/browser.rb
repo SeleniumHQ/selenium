@@ -65,7 +65,11 @@ module Browser
     def initialize(path='C:\Program Files\Opera\opera.exe')
       @path = path
     end
-    
+   
+    def supported?
+      windows?
+    end
+  
     def visit(url)
       Thread.new do
         system("opera '#{url}'") if linux?    
