@@ -25,7 +25,7 @@ public class StaticContentHandlerTest extends TestCase {
         handler.handle("", "", new HttpRequest(), response);
         assertEquals("-1", response.getField("Expires"));
     }
-
+    
     public void testShouldDelayResourceLoadingIfSetToSlow() throws Exception {
         long start = new Date().getTime();
         slowHandler.getResource("not_exists");

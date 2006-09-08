@@ -1,16 +1,20 @@
 package org.openqa.selenium.server;
 
-import org.mortbay.http.*;
-import org.mortbay.http.handler.ResourceHandler;
-import org.mortbay.util.Resource;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class StaticContentHandler extends ResourceHandler {
+import org.mortbay.http.HttpException;
+import org.mortbay.http.HttpFields;
+import org.mortbay.http.HttpRequest;
+import org.mortbay.http.HttpResponse;
+import org.mortbay.http.ResourceCache;
+import org.mortbay.http.handler.ResourceHandler;
+import org.mortbay.util.Resource;
 
-    private final boolean slowResources;
+class StaticContentHandler extends ResourceHandler {
+	private static final long serialVersionUID = 8031049889874827358L;
+	private final boolean slowResources;
     private List<ResourceLocator> resourceLocators = new ArrayList<ResourceLocator>();
     public static final int SERVER_DELAY = 1000;
 
@@ -20,6 +24,7 @@ class StaticContentHandler extends ResourceHandler {
 
     public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
         httpResponse.setField("Expires", "-1"); // never cached.
+        httpResponse.setField(HttpFields.__ContentType, "application/xhtml+xml");
         if (pathInContext.equals("/core/SeleneseRunner.html") && SeleniumServer.isProxyInjectionMode()) {
             pathInContext = pathInContext.replaceFirst("/core/SeleneseRunner.html",
                     "/core/InjectedSeleneseRunner.html");

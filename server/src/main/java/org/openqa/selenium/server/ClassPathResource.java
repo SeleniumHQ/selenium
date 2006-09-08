@@ -25,97 +25,104 @@ import java.net.URL;
 
 /**
  * Represents resource file off of the classpath.
- *
+ * 
  * @author Patrick Lightbody (plightbo at gmail dot com)
  */
 public class ClassPathResource extends Resource {
-    String path;
-    ByteArrayOutputStream os;
+	String path;
 
-    /**
-     * Specifies the classpath path containing the resource
-     */
-    public ClassPathResource(String path) {
-        this.path = path;
-        InputStream is = ClassPathResource.class.getResourceAsStream(path);
-        if (is != null) {
-            os = new ByteArrayOutputStream();
-            try {
-                IO.copy(is, os);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+	ByteArrayOutputStream os;
 
-    /* ------------------------------------------------------------ */
-    public Object getAssociate() {
-        return super.getAssociate();
-    }
+	/**
+	 * Specifies the classpath path containing the resource
+	 */
+	public ClassPathResource(String path) {
+		this.path = path;
+		InputStream is = ClassPathResource.class.getResourceAsStream(path);
+		if (is != null) {
+			os = new ByteArrayOutputStream();
+			try {
+				IO.copy(is, os);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-    public void release() {
-    }
+	/* ------------------------------------------------------------ */
+	public Object getAssociate() {
+		return super.getAssociate();
+	}
 
-    public boolean exists() {
-        return os != null;
-    }
+	public void release() {
+	}
 
-    public boolean isDirectory() {
-        return false;
-    }
+	public boolean exists() {
+		return os != null;
+	}
 
-    /**
-     * Returns the lastModified time, which
-     * is always in the distant future to prevent caching.
-     */
-    public long lastModified() {
-        return System.currentTimeMillis() + 1000 * 3600 * 24 * 365;
-    }
+	public boolean isDirectory() {
+		return false;
+	}
 
-    public long length() {
-        if (os != null) {
-            return os.size();
-        }
+	/**
+	 * Returns the lastModified time, which is always in the distant future to
+	 * prevent caching.
+	 */
+	public long lastModified() {
+		return System.currentTimeMillis() + 1000 * 3600 * 24 * 365;
+	}
 
-        return 0;
-    }
+	public long length() {
+		if (os != null) {
+			return os.size();
+		}
 
-    public URL getURL() {
-        return null;
-    }
+		return 0;
+	}
 
-    public File getFile() throws IOException {
-        return null;
-    }
+	public URL getURL() {
+		return null;
+	}
 
-    public String getName() {
-        return null;
-    }
+	public File getFile() throws IOException {
+		return null;
+	}
 
-    public InputStream getInputStream() throws IOException {
-        if (os != null) {
-            return new ByteArrayInputStream(os.toByteArray());
-        }
-        return null;
-    }
+	public String getName() {
+		return path;
+	}
 
-    public OutputStream getOutputStream() throws IOException, SecurityException {
-        return null;
-    }
+	public InputStream getInputStream() throws IOException {
+		if (os != null) {
+			return new ByteArrayInputStream(os.toByteArray());
+		}
+		return null;
+	}
 
-    public boolean delete() throws SecurityException {
-        return false;
-    }
+	public OutputStream getOutputStream() throws IOException, SecurityException {
+		return null;
+	}
 
-    public boolean renameTo(Resource dest) throws SecurityException {
-        return false;
-    }
+	public boolean delete() throws SecurityException {
+		return false;
+	}
 
-    public String[] list() {
-        return new String[0];
-    }
+	public boolean renameTo(Resource dest) throws SecurityException {
+		return false;
+	}
 
-    public Resource addPath(String pathParm) throws IOException, MalformedURLException {
-        return new ClassPathResource(this.path + "/" + pathParm);
-    }
+	public String[] list() {
+		return new String[0];
+	}
+
+	public Resource addPath(String pathParm) throws IOException,
+			MalformedURLException {
+		return new ClassPathResource(this.path + "/" + pathParm);
+	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }
