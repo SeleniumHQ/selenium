@@ -45,7 +45,7 @@ function testCanGetSeleniumCommandFromCommandRow() {
 }
 
 function testSetWorkingChangesRowBackgroundColor() {
-    htmlTestCaseRow.setWorking();
+    htmlTestCaseRow.markWorking();
     assertEquals(workingColor, htmlTrElement.bgColor);
 }
 
@@ -55,22 +55,22 @@ function testSetWorkingWillScrollWorkingRowToView() {
         scrolled = true;
         assertEquals(htmlTrElement, element);
     };
-    htmlTestCaseRow.setWorking();
+    htmlTestCaseRow.markWorking();
     assert(scrolled);
 }
 
 function testSetPassedChangesRowBackgroundColor() {
-    htmlTestCaseRow.setPassed();
+    htmlTestCaseRow.markPassed();
     assertEquals(passColor, htmlTrElement.bgColor);
 }
 
 function testSetDoneChangesRowBackgroundColor() {
-    htmlTestCaseRow.setDone();
+    htmlTestCaseRow.markDone();
     assertEquals(doneColor, htmlTrElement.bgColor);
 }
 
 function testSetFailedChangesBackgroundColorAndAddsErrorMessage() {
-    htmlTestCaseRow.setFailed("an error message");
+    htmlTestCaseRow.markFailed("an error message");
     assertEquals(failColor, htmlTrElement.bgColor);
     assertEquals("an error message", getText(htmlTestCaseRow.trElement.cells[2]));
 }
@@ -81,7 +81,7 @@ function testEchoWillSetMessageToLastCell() {
 }
 
 function testResetWillMakeTheBackgroundColorEmptyAndCleanErrorMessage() {
-    htmlTestCaseRow.setFailed("some error");
+    htmlTestCaseRow.markFailed("some error");
     htmlTestCaseRow.reset();
     assertEquals('', htmlTrElement.bgColor);
     assertEquals("theValue", getText(htmlTrElement.cells[2]));

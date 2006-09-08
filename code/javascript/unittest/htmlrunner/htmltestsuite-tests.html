@@ -50,13 +50,13 @@ Copyright 2004 ThoughtWorks, Inc
 
         function testSetFailedShouldChangeTitleRowBgColorToFailedColor() {
             $("titleRow").bgColor = "";
-            testsuite.setFailed();
+            testsuite.markFailed();
             assertEquals(failColor, $("titleRow").bgColor);
         }
 
         function testSetPassedShouldChangeTitleRowBgColorToPassedColor() {
             $("titleRow").bgColor = "";
-            testsuite.setPassed();
+            testsuite.markPassed();
             assertEquals(passColor, $("titleRow").bgColor);
         }
 

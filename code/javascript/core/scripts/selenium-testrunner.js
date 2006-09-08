@@ -330,20 +330,20 @@ Object.extend(HtmlTestCaseRow.prototype, {
                 this.isBreakpoint());
     },
 
-    setWorking: function() {
+    markWorking: function() {
         this.trElement.bgColor = workingColor;
         safeScrollIntoView(this.trElement);
     },
 
-    setPassed: function() {
+    markPassed: function() {
         this.trElement.bgColor = passColor;
     },
 
-    setDone: function() {
+    markDone: function() {
         this.trElement.bgColor = doneColor;
     },
 
-    setFailed: function(errorMsg) {
+    markFailed: function(errorMsg) {
         this.trElement.bgColor = failColor;
         this.setMessage(errorMsg);
     },
@@ -457,15 +457,15 @@ Object.extend(HtmlTestSuite.prototype, {
         return result;
     },
 
-    setFailed: function() {
+    markFailed: function() {
         this.titleRow.bgColor = failColor;
     },
-    setPassed: function() {
+        
+    markPassed: function() {
         this.titleRow.bgColor = passColor;
     }
 
 });
-
 
 var HtmlTestCase = Class.create();
 Object.extend(HtmlTestCase.prototype, {
@@ -523,17 +523,17 @@ Object.extend(HtmlTestCase.prototype, {
         }
     },
 
-    setFailed: function() {
+    markFailed: function() {
         this._setResultColor(failColor);
     },
 
-    setPassed: function() {
+    markPassed: function() {
         this._setResultColor(passColor);
     },
 
     addErrorMessage: function(errorMsg, currentRow) {
         if (currentRow) {
-            currentRow.setFailed(errorMsg);
+            currentRow.markFailed(errorMsg);
         } else {
             var errorElement = this.testDocument.createElement("p");
             errorElement.id = "error";
@@ -640,9 +640,9 @@ function startCurrentTestCase() {
 function isTestSuiteComplete() {
 
     if (suiteFailed) {
-        htmlTestSuite.setFailed();
+        htmlTestSuite.markFailed();
     } else {
-        htmlTestSuite.setPassed();
+        htmlTestSuite.markPassed();
     }
 
     // If this is an automated run (i.e., build script), then submit
@@ -923,7 +923,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     commandStarted : function() {
         $('pauseTest').disabled = false;
-        this.currentRow.setWorking();
+        this.currentRow.markWorking();
         printMetrics();
     },
 
@@ -933,9 +933,9 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
             this._recordFailure(result.failureMessage);
         } else if (result.passed) {
             numCommandPasses += 1;
-            this.currentRow.setPassed();
+            this.currentRow.markPassed();
         } else {
-            this.currentRow.setDone();
+            this.currentRow.markDone();
         }
     },
 
@@ -955,10 +955,10 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
         $('pauseTest').disabled = true;
         $('stepTest').disabled = true;
         if (testFailed) {
-            this.htmlTestCase.setFailed();
+            this.htmlTestCase.markFailed();
             numTestFailures += 1;
         } else {
-            this.htmlTestCase.setPassed();
+            this.htmlTestCase.markPassed();
             numTestPasses += 1;
         }
 
