@@ -16,13 +16,13 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.SeleniumServer;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.openqa.selenium.server.SeleniumServer;
-
-public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
+public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher {
 
     protected static final String REG_KEY_SELENIUM_FOLDER = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\";
     protected static final String REG_KEY_BACKUP_READY = REG_KEY_SELENIUM_FOLDER + "BackupReady";
@@ -44,9 +44,9 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     protected static final String REG_KEY_PROXY_SERVER = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer";
     protected static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
     protected static final String REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache";
-    
+
     private static ArrayList<RegKeyBackup> keys = null;
-    
+
     private int port = 8180;
     private String sessionId;
     private File customProxyPACDir;
@@ -54,21 +54,19 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     private String commandPath;
     private Process process;
     protected boolean customPACappropriate = true;
-    
+
     public InternetExplorerCustomProxyLauncher(int port, String sessionId) {
-        init();
-        commandPath = findBrowserLaunchLocation();
-        this.port = port;
-        this.sessionId = sessionId;
+        this(port, sessionId, findBrowserLaunchLocation());
     }
-    
+
     public InternetExplorerCustomProxyLauncher(int port, String sessionId, String browserLaunchLocation) {
+        super(sessionId);
         init();
         commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
-    }    
-    
+    }
+
     protected void init() {
         if (!isStaticInitDone()) {
             initStatic();
@@ -76,8 +74,9 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
     }
 
     protected boolean isStaticInitDone() {
-        return keys!=null;
+        return keys != null;
     }
+
     protected void initStatic() {
         keys = new ArrayList<RegKeyBackup>();
         addRegistryKeyToBackupList(REG_KEY_POPUP_MGR, REG_KEY_BACKUP_POPUP_MGR, String.class);
@@ -100,68 +99,67 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
             return defaultLocation.getAbsolutePath();
         }
         File iexploreEXE = AsyncExecute.whichExec("iexplore.exe");
-    	if (iexploreEXE != null) return iexploreEXE.getAbsolutePath();
-    	throw new RuntimeException("Internet Explorer couldn't be found in the path!\n" +
-    			"Please add the directory containing iexplore.exe to your PATH environment\n" +
-    			"variable, or explicitly specify a path to IE like this:\n" +
-    			"*iexplore c:\\blah\\iexplore.exe");
+        if (iexploreEXE != null) return iexploreEXE.getAbsolutePath();
+        throw new RuntimeException("Internet Explorer couldn't be found in the path!\n" +
+                "Please add the directory containing iexplore.exe to your PATH environment\n" +
+                "variable, or explicitly specify a path to IE like this:\n" +
+                "*iexplore c:\\blah\\iexplore.exe");
     }
 
     public void launch(String url) {
-    try {
-	    if(WindowsUtils.thisIsWindows()){
-		    backupRegistrySettings();
-		    changeRegistrySettings();
-		    cmdarray = new String[] {commandPath, "-new", url};
-	    } else {
-		    cmdarray = new String[] {commandPath, url};
-	    }
-	    System.out.println("Launching Internet Explorer...");
-	    AsyncExecute exe = new AsyncExecute();
-	    exe.setCommandline(cmdarray);
-	    process = exe.asyncSpawn();
-	    } catch (IOException e) {
-		    throw new RuntimeException(e);
-	    }
+        try {
+            if (WindowsUtils.thisIsWindows()) {
+                backupRegistrySettings();
+                changeRegistrySettings();
+                cmdarray = new String[]{commandPath, "-new", url};
+            } else {
+                cmdarray = new String[]{commandPath, url};
+            }
+            System.out.println("Launching Internet Explorer...");
+            AsyncExecute exe = new AsyncExecute();
+            exe.setCommandline(cmdarray);
+            process = exe.asyncSpawn();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-    
+
 
     protected void changeRegistrySettings() throws IOException {
         if (!customPACappropriate) {
             if (WindowsUtils.doesRegistryValueExist(REG_KEY_AUTOCONFIG_URL)) {
                 WindowsUtils.deleteRegistryValue(REG_KEY_AUTOCONFIG_URL);
             }
-        }
-        else {
+        } else {
             customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
             if (customProxyPACDir.exists()) {
                 LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
             }
             customProxyPACDir.mkdir();
-            
+
             File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port);
-            
+
             System.out.println("Modifying registry settings...");
-            
+
             String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
             WindowsUtils.writeStringRegistryValue(REG_KEY_AUTOCONFIG_URL, newURL);
         }
-        
+
         // Disabling automatic proxy caching
         // http://support.microsoft.com/?kbid=271361
         // Otherwise, *all* requests will go through our proxy, rather than just */selenium-server/* requests
         WindowsUtils.writeBooleanRegistryValue(REG_KEY_AUTOPROXY_RESULT_CACHE, false);
-        
+
         // Disable caching of html
         WindowsUtils.writeStringRegistryValue(REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
 
         // Disable pop-up blocking
         WindowsUtils.writeStringRegistryValue(REG_KEY_POPUP_MGR, "no");
-        
+
         if (WindowsUtils.doesRegistryValueExist(REG_KEY_PROXY_OVERRIDE)) {
             WindowsUtils.deleteRegistryValue(REG_KEY_PROXY_OVERRIDE);
         }
-        
+
         // TODO Do we want to make these preferences configurable somehow?
         // TODO Disable security warnings
         // TODO Disable "do you want to remember this password?"
@@ -177,7 +175,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
         }
         backupReady(true);
     }
-    
+
     public void restoreRegistrySettings() {
         // Backup really should be ready, but if not, skip it 
         if (!backupIsReady()) return;
@@ -187,21 +185,21 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
         }
         backupReady(false);
     }
-    
+
     private boolean backupIsReady() {
         if (!WindowsUtils.doesRegistryValueExist(REG_KEY_BACKUP_READY)) return false;
         return WindowsUtils.readBooleanRegistryValue(REG_KEY_BACKUP_READY);
     }
-    
+
     private void backupReady(boolean backupReady) {
         WindowsUtils.writeBooleanRegistryValue(REG_KEY_BACKUP_READY, backupReady);
     }
-    
+
     public void close() {
         Exception taskKillException = null;
-	if(WindowsUtils.thisIsWindows()){
-		restoreRegistrySettings();
-	}
+        if (WindowsUtils.thisIsWindows()) {
+            restoreRegistrySettings();
+        }
         if (false) {
             try {
                 // try to kill with windows taskkill
@@ -227,7 +225,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
             }
         }
     }
-    
+
     public static void main(String[] args) {
         InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumServer.DEFAULT_PORT, "CUSTIE");
         l.launch("http://www.google.com/");
@@ -237,27 +235,29 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
         l.close();
         System.out.println("He's dead now, right?");
     }
-    
-    /** A data wrapper class to manage backup/restore of registry keys */
+
+    /**
+     * A data wrapper class to manage backup/restore of registry keys
+     */
     private static class RegKeyBackup {
         private String keyOriginal;
         private String keyBackup;
         private Class type;
-        
+
         public RegKeyBackup(String keyOriginal, String keyBackup, Class type) {
             this.keyOriginal = keyOriginal;
             this.keyBackup = keyBackup;
             this.type = type;
         }
-        
+
         private boolean backupExists() {
             return WindowsUtils.doesRegistryValueExist(keyBackup);
         }
-        
+
         private boolean originalExists() {
             return WindowsUtils.doesRegistryValueExist(keyOriginal);
         }
-        
+
         private void backup() {
             if (originalExists()) {
                 copy(keyOriginal, keyBackup);
@@ -265,7 +265,7 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
                 clear(keyBackup);
             }
         }
-        
+
         private void restore() {
             if (backupExists()) {
                 copy(keyBackup, keyOriginal);
@@ -273,13 +273,13 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
                 clear(keyOriginal);
             }
         }
-        
+
         private void clear(String key) {
             if (WindowsUtils.doesRegistryValueExist(key)) {
                 WindowsUtils.deleteRegistryValue(key);
             }
         }
-        
+
         private void copy(String source, String dest) {
             if (type.equals(String.class)) {
                 copyString(source, dest);
@@ -293,28 +293,21 @@ public class InternetExplorerCustomProxyLauncher implements BrowserLauncher {
             }
             throw new RuntimeException("Bad type: " + type.getName());
         }
-        
+
         private void copyString(String source, String dest) {
             String data = WindowsUtils.readStringRegistryValue(source);
             WindowsUtils.writeStringRegistryValue(dest, data);
         }
-        
+
         private void copyBoolean(String source, String dest) {
             boolean data = WindowsUtils.readBooleanRegistryValue(source);
             WindowsUtils.writeBooleanRegistryValue(dest, data);
         }
-        
+
         private void copyInt(String source, String dest) {
             int data = WindowsUtils.readIntRegistryValue(source);
             WindowsUtils.writeIntRegistryValue(dest, data);
         }
     }
-    
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
-    }
-    
-    public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow));
-    }
+
 }

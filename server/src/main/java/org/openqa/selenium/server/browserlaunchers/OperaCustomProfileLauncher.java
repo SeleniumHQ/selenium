@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.regex.Pattern;
 
-public class OperaCustomProfileLauncher implements BrowserLauncher {
+public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
     // TODO What is this really?
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Opera.app/Contents/MacOS/opera";
@@ -47,6 +47,7 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
     }
 
     public OperaCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
+        super(sessionId);
         commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
@@ -110,7 +111,7 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
     static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
     static final Pattern JAVA_STYLE_LOCAL_URL = Pattern.compile("^file:/([A-Z]:/.*)$");
 
-    public void launch(String url) {
+    protected void launch(String url) {
         try {
             File opera6ini = makeCustomProfile();
 
@@ -294,13 +295,4 @@ public class OperaCustomProfileLauncher implements BrowserLauncher {
             super(message);
         }
     }
-
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
-    }
-
-    public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow));
-    }
-
 }

@@ -23,9 +23,8 @@ import org.apache.tools.ant.taskdefs.condition.Os;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Pattern;
 
-public class FirefoxCustomProfileLauncher implements BrowserLauncher {
+public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
 
@@ -47,6 +46,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
     }
 
     public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
+        super(sessionId);
         init();
         commandPath = browserLaunchLocation;
         this.port = port;
@@ -115,7 +115,7 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
                 "*firefox /blah/blah/firefox-bin");
     }
 
-    public void launch(String url) {
+    protected void launch(String url) {
         try {
 
             System.out.println("customProfileDir = " + customProfileDir());
@@ -278,13 +278,4 @@ public class FirefoxCustomProfileLauncher implements BrowserLauncher {
             super(message);
         }
     }
-
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
-    }
-
-    public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow));
-    }
-
 }

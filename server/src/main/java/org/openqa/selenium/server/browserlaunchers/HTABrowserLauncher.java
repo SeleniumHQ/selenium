@@ -50,9 +50,6 @@ public class HTABrowserLauncher implements BrowserLauncher {
 
     private void launch(String url, String htaName) {
         String query = LauncherUtils.getQueryString(url);
-        if (null == query) {
-            query = "";
-        }
         query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
         createHTAFiles();
         String hta = (new File(dir, htaName)).getAbsolutePath();

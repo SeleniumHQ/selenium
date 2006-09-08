@@ -1,21 +1,19 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import net.sf.cotta.TDirectory;
+import net.sf.cotta.TFile;
+import net.sf.cotta.TIoException;
+import net.sf.cotta.utils.ClassPathLocator;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Delete;
+import org.openqa.selenium.server.SeleniumServer;
+
 import java.io.*;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
-import org.openqa.selenium.server.SeleniumServer;
-import net.sf.cotta.utils.ClassPath;
-import net.sf.cotta.utils.ClassPathType;
-import net.sf.cotta.utils.ClassPathLocator;
-import net.sf.cotta.TFileFactory;
-import net.sf.cotta.TFile;
-import net.sf.cotta.TDirectory;
-import net.sf.cotta.TIoException;
-import net.sf.cotta.memory.InMemoryFileSystem;
 
 /**
  * Various static utility functions used to launch browsers
@@ -128,7 +126,7 @@ public class LauncherUtils {
         try {
             URL u = new URL(url);
             String query = u.getQuery();
-            return query;
+            return query == null ? "" : query;
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

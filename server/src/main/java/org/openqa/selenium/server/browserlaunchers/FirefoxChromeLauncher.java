@@ -23,8 +23,10 @@ import org.apache.tools.ant.taskdefs.condition.Os;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public class FirefoxChromeLauncher implements BrowserLauncher {
+public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
 
@@ -45,6 +47,7 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
     }
 
     public FirefoxChromeLauncher(int port, String sessionId, String browserLaunchLocation) {
+        super(sessionId);
         commandPath = browserLaunchLocation;
         this.port = port;
         this.sessionId = sessionId;
@@ -109,15 +112,9 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
                 "*firefox /blah/blah/firefox-bin");
     }
 
-    public void launch(String url, String htmlName) {
+    protected void launch(String url) {
         try {
-            String query = LauncherUtils.getQueryString(url);
-            if (null == query) {
-                query = "";
-            }
-            query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
-            String homePage = "chrome://src/content/" + htmlName + "?" + query;
-            System.out.println(homePage);
+            String homePage = new ChromeUrlConvert().convert(url, port);
             String profilePath = makeCustomProfile(homePage);
 
             String chromeURL = "chrome://killff/content/kill.html";
@@ -284,23 +281,18 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
         }
     }
 
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        System.out.println("========================== Launching ===========================");
-        launch("http://localhost:" + port +
-                "/selenium-server/core/TestRunner.html?auto=true" +
-                "&multiWindow=" + multiWindow +
-                "&resultsUrl=http://localhost:" + port +
-                "/selenium-server/postResults&test=" + suiteUrl, "TestRunner.html");
-
-    }
-
-    public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow), "SeleneseRunner.html");
+    public static class ChromeUrlConvert {
+        public String convert(String httpUrl, int port) throws MalformedURLException {
+            String query = LauncherUtils.getQueryString(httpUrl);
+            query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
+            String file = new File(new URL(httpUrl).getPath()).getName();
+            return "chrome://src/content/" + file + "?" + query;
+        }
     }
 
     public static void main(String[] args) throws Exception {
         FirefoxChromeLauncher l = new FirefoxChromeLauncher(4444, "CUSTFFCHROME");
-        l.launch("http://www.google.com", "TestRunner.html");
+        l.launch("http://www.google.com");
         int seconds = 15000;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
         AsyncExecute.sleepTight(seconds * 1000);
@@ -310,3 +302,4 @@ public class FirefoxChromeLauncher implements BrowserLauncher {
 
 
 }
+

@@ -26,7 +26,7 @@ import java.io.*;
  * @author Paul Hammant
  * @version $Revision: 189 $
  */
-public class DestroyableRuntimeExecutingBrowserLauncher implements BrowserLauncher {
+public class DestroyableRuntimeExecutingBrowserLauncher extends AbstractBrowserLauncher{
 
     protected Process process;
     protected String commandPath;
@@ -34,6 +34,7 @@ public class DestroyableRuntimeExecutingBrowserLauncher implements BrowserLaunch
 
     /** Specifies a command path to run */
     public DestroyableRuntimeExecutingBrowserLauncher(String commandPath, String sessionId) {
+        super(sessionId);
         this.commandPath = commandPath;
         this.sessionId = sessionId;
     }
@@ -43,20 +44,12 @@ public class DestroyableRuntimeExecutingBrowserLauncher implements BrowserLaunch
         process.destroy();
     }
 
-    public void launch(String url) {
+    protected void launch(String url) {
         exec(commandPath + " " + url);
-    }
-    
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
-    }
-    
-    public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow));
     }
 
     protected void exec(String command) {
-    
+
         try {
             process = Runtime.getRuntime().exec(command);
         } catch (IOException e) {

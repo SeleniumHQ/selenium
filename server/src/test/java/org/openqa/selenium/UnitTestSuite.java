@@ -7,6 +7,7 @@ import org.openqa.selenium.server.ClasspathResourceLocatorTest;
 import org.openqa.selenium.server.FsResourceLocatorTest;
 import org.openqa.selenium.server.StaticContentHandlerTest;
 import org.openqa.selenium.server.browserlaunchers.WindowsUtilsTest;
+import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncherTest;
 
 public class UnitTestSuite extends TestCase {
 
@@ -17,6 +18,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(FsResourceLocatorTest.class);
         suite.addTestSuite(StaticContentHandlerTest.class);
         suite.addTestSuite(WindowsUtilsTest.class);
+        suite.addTestSuite(FirefoxChromeLauncherTest.class);
         return suite;
     }
 }
