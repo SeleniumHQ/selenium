@@ -114,17 +114,23 @@ function CommandDefinition(name) {
 	this.params = [];
 }
 
-CommandDefinition.prototype.getReference = function() {
-	var ref = "<dt><strong>" + this.name + "(";
+CommandDefinition.prototype.getReferenceFor = function(command) {
+    var paramNames = [];
 	for (var i = 0; i < this.params.length; i++) {
-		ref += this.params[i].name;
-		if (i < this.params.length - 1) {
-			ref += ", ";
-		}
+        paramNames.push(this.params[i].name);
 	}
-	ref += ")</strong></dt>";
-	ref += "<dd>" + this.comment + "</dd>";
-	return ref;
+    if (this.name.match(/^is|get/)) { // accessor
+        if (command.command) {
+            if (command.command.match(/^store/)) {
+                paramNames.push("variableName");
+            } else if (command.command.match(/^(assert|verify|waitFor)/)) {
+                paramNames.push("pattern");
+            }
+        }
+    }
+	return "<dt><strong>" + (command.command || this.name) + "(" +
+        paramNames.join(", ") + ")</strong></dt>" +
+        "<dd>" + this.comment + "</dd>";
 }
 
 CommandDefinition.prototype.negativeAccessor = function() {

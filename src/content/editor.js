@@ -631,7 +631,7 @@ Editor.prototype.showReference = function(command) {
 	if (def) {
 		this.switchConsole("help");
 		this.log.debug("showReference: " + def.name);
-		this.reference.show(document.getElementById("helpView"), def);
+		this.reference.show(def, command);
 	}
 }
 
@@ -647,25 +647,39 @@ Editor.prototype.initLog = function() {
 						   true);
 }
 
+//
+
+function AbstractReference() {
+}
+
+AbstractReference.prototype.load = function(frame) {
+	var self = this;
+    this.frame = document.getElementById("helpView");
+	this.frame.addEventListener("load", 
+						   function() {
+							   if (self.selectedDefinition) {
+                                   self.doShow();
+                               }
+						   }, 
+						   true);
+}
+
+AbstractReference.prototype.show = function(def, command) {
+	this.selectedDefinition = def;
+    this.selectedCommand = command;
+    this.doShow();
+}
+
 // GeneratedReference: reference generated from iedoc.xml
 
 function GeneratedReference(name) {
 	this.name = name;
 }
 
-GeneratedReference.prototype.load = function(frame) {
-	var self = this;
-	frame.addEventListener("load", 
-						   function() {
-							   if (self.selectedDefinition) self.show(frame, self.selectedDefinition);
-						   }, 
-						   true);
-}
+GeneratedReference.prototype = new AbstractReference;
 
-GeneratedReference.prototype.show = function(frame, def) {
-	this.selectedDefinition = def;
-	Editor.log.debug("show: " + frame);
-	frame.contentDocument.body.innerHTML = def.getReference();
+GeneratedReference.prototype.doShow = function(frame) {
+	this.frame.contentDocument.body.innerHTML = this.selectedDefinition.getReferenceFor(this.selectedCommand);
 }
 
 // HTMLReference: reference based on single HTML page
@@ -675,29 +689,23 @@ function HTMLReference(name, url) {
 	this.url = url;
 }
 
-HTMLReference.prototype.load = function(frame) {
-	var self = this;
-	frame.addEventListener("load", 
-						   function() {
-							   if (self.selectedDefinition) self.show(frame, self.selectedDefinition);
-						   }, 
-						   true);
-	frame.setAttribute("src", this.url);
+HTMLReference.prototype = new AbstractReference;
+
+HTMLReference.prototype.load = function() {
+    AbstractReference.prototype.load.call(this);
+	this.frame.setAttribute("src", this.url);
 }
 
-
-HTMLReference.prototype.show = function(frame, def) {
-	Editor.log.debug("show: " + frame);
-	var func = def.name.replace(/^(get|is)/, "store");
-	this.selectedDefinition = def;
-	frame.contentWindow.location.hash = func;
+HTMLReference.prototype.doShow = function() {
+	var func = this.selectedDefinition.name.replace(/^(get|is)/, "store");
+	this.frame.contentWindow.location.hash = func;
 }
 
 Editor.references = [];
 
 Editor.prototype.selectDefaultReference = function() {
 	this.reference = Editor.references[0];
-	this.reference.load(document.getElementById("helpView"));
+	this.reference.load();
 }
 
 Editor.references.push(new GeneratedReference("Generated"));
