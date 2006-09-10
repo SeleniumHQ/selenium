@@ -196,18 +196,22 @@ LocatorBuilders.add('domFormElementName', function(e) {
 
 LocatorBuilders.add('linkXPath', function(e) {
 		if (e.nodeName == 'A') {
-			var nodeList = e.childNodes;
-			for (var i = 0; i < nodeList.length; i++) {
-				var node = nodeList[i];
-				if (node.nodeName == 'IMG' && node.alt != '') {
-					return "//a[img/@alt=" + this.attributeValue(node.alt) + "]";
-				}
-			}
 			var text = e.textContent;
 			if (!text.match(/^\s*$/)) {
 				return "//a[contains(text(),'" + text.replace(/^\s+/,'').replace(/\s+$/,'') + "')]";
 			}
 		}
+		return null;
+	});
+
+LocatorBuilders.add('imgXPath', function(e) {
+        if (e.nodeName == 'IMG') {
+            if (e.alt != '') {
+                return "//img[@alt=" + this.attributeValue(e.alt) + "]";
+            } else if (e.src != '') {
+				return "//img[contains(@src," + this.attributeValue(e.src) + ")]";
+            }
+        }
 		return null;
 	});
 
@@ -311,5 +315,5 @@ LocatorBuilders.add('positionXPath', function(e) {
 	});
 
 // You can change the priority of builders by setting LocatorBuilders.order.
-//LocatorBuilders.order = ['id', 'link', 'name', 'domFormElementName', 'linkXPath', 'attributesXPath', 'hrefXPath', 'domFormElementIndex', 'positionXPath'];
+//LocatorBuilders.order = ['id', 'link', 'name', 'domFormElementName', 'linkXPath', 'imgXPath', 'attributesXPath', 'hrefXPath', 'domFormElementIndex', 'positionXPath'];
 

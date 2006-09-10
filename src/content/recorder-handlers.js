@@ -114,7 +114,7 @@ Recorder.addEventHandler('clickLocator', 'click', function(event) {
 		if (event.button == 0) {
 			var clickable = this.findClickableElement(event.target);
 			if (clickable) {
-				this.clickLocator = this.findLocator(clickable);
+				this.clickLocator = this.findLocator(event.target);
 			}
 		}
 	}, { capture: true });
