@@ -57,14 +57,32 @@ Recorder.addEventHandler('selectMousedown', 'mousedown', function(event) {
 		}
 	}, { capture: true });
 
+Recorder.prototype.getOptionLocator = function(option) {
+    var label = option.text.replace(/^ *(.*?) *$/, "$1");
+    if (label.match(/\xA0/)) { // if the text contains &nbsp;
+        return "label=regexp:" + label.replace(/\s+/g, function(str) {
+                if (str.match(/\xA0/)) {
+                    if (str.length > 1) {
+                        return "\\s+";
+                    } else {
+                        return "\\s";
+                    }
+                } else {
+                    return str;
+                }
+            });
+    } else {
+        return "label=" + label;
+    }
+}
+
 Recorder.addEventHandler('select', 'change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
 		if ('select' == tagName) {
 			if (!event.target.multiple) {
-				var label = event.target.options[event.target.selectedIndex].innerHTML;
-				var value = "label=" + label.replace(/^\s*(.*?)\s*$/, "$1");
+                var option = event.target.options[event.target.selectedIndex];
 				this.log.debug('selectedIndex=' + event.target.selectedIndex);
-				this.record("select", this.findLocator(event.target), value);
+				this.record("select", this.findLocator(event.target), this.getOptionLocator(option));
 			} else {
 				this.log.debug('change selection on select-multiple');
 				var options = event.target.options;
@@ -74,8 +92,7 @@ Recorder.addEventHandler('select', 'change', function(event) {
 						this.log.warn('_wasSelected was not recorded');
 					}
 					if (options[i]._wasSelected != options[i].selected) {
-						var label = options[i].innerHTML;
-						var value = "label=" + label.replace(/^\s*(.*?)\s*$/, "$1");
+                        var value = this.getOptionLocator(options[i]);
 						if (options[i].selected) {
 							this.record("addSelection", this.findLocator(event.target), value);
 						} else {
