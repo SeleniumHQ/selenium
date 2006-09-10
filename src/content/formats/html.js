@@ -229,11 +229,11 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
  */
 this.options = {
 	commandLoadPattern:
-	"<tr>" +
+	"<tr\s*[^>]*>" +
 	"\\s*(<!--[\\d\\D]*?-->)?" +
-	"\\s*<td>\\s*([\\w]*?)\\s*</td>" +
-	"\\s*<td>([\\d\\D]*?)</td>" +
-	"\\s*(<td>([\\d\\D]*?)</td>|<td/>)" +
+	"\\s*<td\s*[^>]*>\\s*([\\w]*?)\\s*</td>" +
+	"\\s*<td\s*[^>]*>([\\d\\D]*?)</td>" +
+	"\\s*(<td\s*[^>]*>([\\d\\D]*?)</td>|<td\s*/>)" +
 	"\\s*</tr>\\s*",
 	
 	commandLoadScript:

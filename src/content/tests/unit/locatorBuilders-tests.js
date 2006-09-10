@@ -58,8 +58,11 @@ function testPositionXPathLocator() {
 function testLinkXPathLocator() {
 	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
 	assertLocator("//a[contains(text(),'Yahoo')]", builders.buildWith('linkXPath', yahoo), yahoo);
-	var yahoo2 = document.getElementById("test2").getElementsByTagName("a")[2];
-	assertLocator("//a[img/@alt='test']", builders.buildWith('linkXPath', yahoo2), yahoo2);
+}
+
+function testImgXPathLocator() {
+	var yahoo2 = document.getElementById("test2").getElementsByTagName("img")[0];
+	assertLocator("//img[@alt='test']", builders.buildWith('imgXPath', yahoo2), yahoo2);
 }
 
 function testLinkLocator() {
