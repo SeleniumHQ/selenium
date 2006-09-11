@@ -123,7 +123,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
             String chromeURL = "chrome://killff/content/kill.html";
 
-            cmdarray = new String[]{commandPath, "-profile", customProfileDir().getAbsolutePath(), chromeURL};
+            cmdarray = new String[]{commandPath, "-profile", customProfileDir().getAbsolutePath(), "-chrome", chromeURL};
 
             /* The first time we launch Firefox with an empty profile directory,
      * Firefox will launch itself, populate the profile directory, then
