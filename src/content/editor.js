@@ -460,7 +460,7 @@ Editor.prototype.playback = function() {
 	this.loadTestRunner = true;
 	
 	contentWindow.location.href = 'chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
-		'&userExtensionsURL=' + ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',') +
+	'&userExtensionsURL=' + encodeURI(ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',')) +
 	    '&baseURL=' + document.getElementById("baseURL").value;
 	
 }

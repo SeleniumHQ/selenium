@@ -45,14 +45,16 @@ OptionsManager.prototype = {
 	
 	getCharPref: function(name, defaultValue) {
 		if (this.branch.prefHasUserValue(name)) {
-			return this.branch.getCharPref(name);
+			return this.branch.getComplexValue(name, Components.interfaces.nsISupportsString).data;
 		} else {
 			return defaultValue;
 		}
 	},
 
 	setCharPref: function(name, value) {
-		this.branch.setCharPref(name, value != null ? value : '');
+		var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+		str.data = value;
+		this.branch.setComplexValue(name, Components.interfaces.nsISupportsString, str);
 	},
 
 	load: function() {

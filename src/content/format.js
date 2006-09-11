@@ -285,12 +285,12 @@ Format.prototype.load = function() {
 	var nsIFilePicker = Components.interfaces.nsIFilePicker;
 	var fp = Components.classes["@mozilla.org/filepicker;1"]
 	    .createInstance(nsIFilePicker);
+	fp.init(window, "Select a File", nsIFilePicker.modeOpen);
     var defaultDir = optionsManager.getCharPref("testCaseDirectory");
     if (defaultDir) {
         fp.displayDirectory = FileUtils.getFile(defaultDir);
     }
 	fp.appendFilters(nsIFilePicker.filterHTML | nsIFilePicker.filterAll);
-	fp.init(window, "Select a File", nsIFilePicker.modeOpen);
 	var res = fp.show();
 	if (res == nsIFilePicker.returnOK) {
         optionsManager.setCharPref("testCaseDirectory", fp.file.parent.path);
