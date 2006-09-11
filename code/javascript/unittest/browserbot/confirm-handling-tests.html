@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 <!--
 Copyright 2004 ThoughtWorks, Inc
 
@@ -16,77 +16,78 @@ Copyright 2004 ThoughtWorks, Inc
  limitations under the License.
 -->
 <html>
-  <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>JsUnit Utility Tests</title>
     <link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
-<script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
-<script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
-<script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserbot.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
+    <script language="JavaScript" type="text/javascript">
 
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserbot.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
-<script language="JavaScript" type="text/javascript">
+        function setUp() {
+            $("body").innerHTML = "<iframe NAME='frame' ID='frame' SRC='about:blank'></iframe>"
+            testWindow = window;
+            browserBot = BrowserBot.createForWindow(testWindow);
+            browserBot.getCurrentPage();
+        }
 
-function setUp() {
-   testWindow = window;
-   browserBot = BrowserBot.createForWindow(testWindow);
-   browserBot.getCurrentPage();
-}
+        function testShouldConfirmConfirmationsByDefault() {
+            assertTrue(testWindow.confirm("Continue?"));
+        }
 
-function testShouldConfirmConfirmationsByDefault() {
-    assertTrue( testWindow.confirm("Continue?"));
-}
+        function testShouldCancelConfirmationIfPreviouslyInstructedTo() {
+            browserBot.cancelNextConfirmation();
+            assertFalse(testWindow.confirm("Continue?"));
+        }
 
-function testShouldCancelConfirmationIfPreviouslyInstructedTo() {
-   browserBot.cancelNextConfirmation();
-   assertFalse( testWindow.confirm("Continue?"));
-}
+        function testShouldRevertToDefaultBehaviourAfterCancellingConfirmation() {
+            browserBot.cancelNextConfirmation();
+            testWindow.confirm("Continue?");
+            testShouldConfirmConfirmationsByDefault();
+        }
 
-function testShouldRevertToDefaultBehaviourAfterCancellingConfirmation() {
-   browserBot.cancelNextConfirmation();
-   testWindow.confirm("Continue?");
-   testShouldConfirmConfirmationsByDefault();
-}
+        function testShouldNotReportAnyConfirmationsIfNoneHaveBeenGenerated() {
+            assertFalse(browserBot.hasConfirmations());
+            assertUndefined(browserBot.getNextConfirmation());
+        }
 
-function testShouldNotReportAnyConfirmationsIfNoneHaveBeenGenerated() {
-    assertFalse(browserBot.hasConfirmations());
-    assertUndefined(browserBot.getNextConfirmation());
-}
+        function testShouldReportSingleConfirmationIfGenerated() {
+            testWindow.confirm("Continue?");
 
-function testShouldReportSingleConfirmationIfGenerated() {
-    testWindow.confirm("Continue?");
-    
-    assertTrue(browserBot.hasConfirmations());
-    assertEquals("Continue?", browserBot.getNextConfirmation());
-}
+            assertTrue(browserBot.hasConfirmations());
+            assertEquals("Continue?", browserBot.getNextConfirmation());
+        }
 
-function testShouldReportMultipleConfirmationsInOrderIfGenerated() {
-    testWindow.confirm("Continue?");
-    testWindow.confirm("Really Continue?");
-    
-    assertTrue(browserBot.hasConfirmations());
-    assertEquals("Continue?", browserBot.getNextConfirmation());
-    assertTrue(browserBot.hasConfirmations());
-    assertEquals("Really Continue?", browserBot.getNextConfirmation());
-    assertFalse(browserBot.hasConfirmations());
-}
+        function testShouldReportMultipleConfirmationsInOrderIfGenerated() {
+            testWindow.confirm("Continue?");
+            testWindow.confirm("Really Continue?");
 
-function testShouldRemoveConfirmationWhenItIsRetreived() {
-    testWindow.confirm("Continue?");
-    
-    assertTrue(browserBot.hasConfirmations());
-    assertNotUndefined(browserBot.getNextConfirmation());
-    assertFalse(browserBot.hasConfirmations());
-    assertUndefined(browserBot.getNextConfirmation());
-}
+            assertTrue(browserBot.hasConfirmations());
+            assertEquals("Continue?", browserBot.getNextConfirmation());
+            assertTrue(browserBot.hasConfirmations());
+            assertEquals("Really Continue?", browserBot.getNextConfirmation());
+            assertFalse(browserBot.hasConfirmations());
+        }
 
-</script>
-  </head>
+        function testShouldRemoveConfirmationWhenItIsRetreived() {
+            testWindow.confirm("Continue?");
 
-  <body>
-    <h1>Selenium PageBot Confirm Handling Tests</h1>
-    
-  </body>
+            assertTrue(browserBot.hasConfirmations());
+            assertNotUndefined(browserBot.getNextConfirmation());
+            assertFalse(browserBot.hasConfirmations());
+            assertUndefined(browserBot.getNextConfirmation());
+        }
+
+    </script>
+</head>
+
+<body id="body">
+<h1>Selenium PageBot Confirm Handling Tests</h1>
+
+</body>
 </html>

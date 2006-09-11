@@ -16,54 +16,24 @@
 */
 
 // An object representing the current test
-currentTest = null;
+var currentTest = null;
 
 // Whether or not the jsFT should run all tests in the suite
-runAllTests = false;
+var runAllTests = false;
 
-testFailed = false;
+var testFailed = false;
 
 // Colors used to provide feedback
-passColor = "#ccffcc";
-doneColor = "#eeffee";
-failColor = "#ffcccc";
-workingColor = "#ffffcc";
-breakpointColor = "#cccccc"
+var passColor = "#ccffcc";
+var doneColor = "#eeffee";
+var failColor = "#ffcccc";
+var workingColor = "#ffffcc";
+var breakpointColor = "#cccccc"
 
-// Holds the handlers for each command.
-commandHandlers = null;
+var runInterval = 0;
 
-// The number of tests run
-numTestPasses = 0;
-
-// The number of tests that have failed
-numTestFailures = 0;
-
-// The number of commands which have passed
-numCommandPasses = 0;
-
-// The number of commands which have failed
-numCommandFailures = 0;
-
-// The number of commands which have caused errors (element not found)
-numCommandErrors = 0;
-
-// The time that the test was started.
-startTime = null;
-
-// The current time.
-currentTime = null;
-
-// An simple enum for failureType
-ERROR = 0;
-FAILURE = 1;
-
-runInterval = 0;
-
-selenium = null;
-queryString = null;
-
-warned = null;
+var selenium = null;
+var queryString = null;
 
 /** SeleniumFrame encapsulates an iframe element */
 var SeleniumFrame = Class.create();
@@ -283,18 +253,9 @@ function isAutomatedRun() {
     return isQueryParameterTrue("auto");
 }
 
-function resetMetrics() {
-    numTestPasses = 0;
-    numTestFailures = 0;
-    numCommandPasses = 0;
-    numCommandFailures = 0;
-    numCommandErrors = 0;
-    startTime = new Date().getTime();
-}
-
 function runSingleTest() {
     runAllTests = false;
-    resetMetrics();
+    metrics.resetMetrics();
     startTest();
 }
 
@@ -686,7 +647,7 @@ get_new_rows = function() {
 };
 
 function startTestSuite() {
-    resetMetrics();
+    metrics.resetMetrics();
     htmlTestSuite.reset();
     runAllTests = true;
 
@@ -764,12 +725,12 @@ function postTestResults(suiteFailed, suiteTable) {
 
     form.createHiddenField("result", suiteFailed == true ? "failed" : "passed");
 
-    form.createHiddenField("totalTime", Math.floor((currentTime - startTime) / 1000));
-    form.createHiddenField("numTestPasses", numTestPasses);
-    form.createHiddenField("numTestFailures", numTestFailures);
-    form.createHiddenField("numCommandPasses", numCommandPasses);
-    form.createHiddenField("numCommandFailures", numCommandFailures);
-    form.createHiddenField("numCommandErrors", numCommandErrors);
+    form.createHiddenField("totalTime", Math.floor((metrics.currentTime - metrics.startTime) / 1000));
+    form.createHiddenField("numTestPasses", metrics.numTestPasses);
+    form.createHiddenField("numTestFailures", metrics.numTestFailures);
+    form.createHiddenField("numCommandPasses", metrics.numCommandPasses);
+    form.createHiddenField("numCommandFailures", metrics.numCommandFailures);
+    form.createHiddenField("numCommandErrors", metrics.numCommandErrors);
 
     // Create an input for each test table.  The inputs are named
     // testTable.1, testTable.2, etc.
@@ -824,28 +785,6 @@ function saveToFile(fileName, form) {
     scriptFile.Close();
 }
 
-function printMetrics() {
-    setText($('commandPasses'), numCommandPasses);
-    setText($('commandFailures'), numCommandFailures);
-    setText($('commandErrors'), numCommandErrors);
-    setText($('testRuns'), numTestPasses + numTestFailures);
-    setText($('testFailures'), numTestFailures);
-
-    currentTime = new Date().getTime();
-
-    timeDiff = currentTime - startTime;
-    totalSecs = Math.floor(timeDiff / 1000);
-
-    minutes = Math.floor(totalSecs / 60);
-    seconds = totalSecs % 60;
-
-    setText($('elapsedTime'), pad(minutes) + ":" + pad(seconds));
-}
-
-// Puts a leading 0 on num if it is less than 10
-function pad(num) {
-    return (num > 9) ? num : "0" + num;
-}
 
 /*
  * Register all of the built-in command handlers with the CommandHandlerFactory.
@@ -874,11 +813,64 @@ function setHighlightOption() {
     selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
 }
 
+var Metrics = Class.create();
+Object.extend(Metrics.prototype, {
+    initialize: function() {
+        // The number of tests run
+        this.numTestPasses = 0;
+        // The number of tests that have failed
+        this.numTestFailures = 0;
+        // The number of commands which have passed
+        this.numCommandPasses = 0;
+        // The number of commands which have failed
+        this.numCommandFailures = 0;
+        // The number of commands which have caused errors (element not found)
+        this.numCommandErrors = 0;
+        // The time that the test was started.
+        this.startTime = null;
+        // The current time.
+        this.currentTime = null;
+    },
+
+    printMetrics: function() {
+        setText($('commandPasses'), this.numCommandPasses);
+        setText($('commandFailures'), this.numCommandFailures);
+        setText($('commandErrors'), this.numCommandErrors);
+        setText($('testRuns'), this.numTestPasses + this.numTestFailures);
+        setText($('testFailures'), this.numTestFailures);
+
+        this.currentTime = new Date().getTime();
+
+        var timeDiff = this.currentTime - this.startTime;
+        var totalSecs = Math.floor(timeDiff / 1000);
+
+        var minutes = Math.floor(totalSecs / 60);
+        var seconds = totalSecs % 60;
+
+        setText($('elapsedTime'), this._pad(minutes) + ":" + this._pad(seconds));
+    },
+
+// Puts a leading 0 on num if it is less than 10
+    _pad: function(num) {
+        return (num > 9) ? num : "0" + num;
+    },
+
+    resetMetrics: function() {
+        this.numTestPasses = 0;
+        this.numTestFailures = 0;
+        this.numCommandPasses = 0;
+        this.numCommandFailures = 0;
+        this.numCommandErrors = 0;
+        this.startTime = new Date().getTime();
+    }
+
+});
+var metrics = new Metrics();
+
 var HtmlRunnerTestLoop = Class.create();
 Object.extend(HtmlRunnerTestLoop.prototype, new TestLoop());
 Object.extend(HtmlRunnerTestLoop.prototype, {
-    initialize : function(htmlTestCase, commandFactory) {
-
+    initialize: function(htmlTestCase, commandFactory) {
         this.commandFactory = commandFactory;
         this.waitForConditionTimeout = 30 * 1000;
         // 30 seconds
@@ -933,15 +925,15 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     commandStarted : function() {
         $('pauseTest').disabled = false;
         this.currentRow.markWorking();
-        printMetrics();
+        metrics.printMetrics();
     },
 
     commandComplete : function(result) {
         if (result.failed) {
-            numCommandFailures += 1;
+            metrics.numCommandFailures += 1;
             this._recordFailure(result.failureMessage);
         } else if (result.passed) {
-            numCommandPasses += 1;
+            metrics.numCommandPasses += 1;
             this.currentRow.markPassed();
         } else {
             this.currentRow.markDone();
@@ -949,7 +941,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     commandError : function(errorMessage) {
-        numCommandErrors += 1;
+        metrics.numCommandErrors += 1;
         this._recordFailure(errorMessage);
     },
 
@@ -965,13 +957,13 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
         $('stepTest').disabled = true;
         if (testFailed) {
             this.htmlTestCase.markFailed();
-            numTestFailures += 1;
+            metrics.numTestFailures += 1;
         } else {
             this.htmlTestCase.markPassed();
-            numTestPasses += 1;
+            metrics.numTestPasses += 1;
         }
 
-        printMetrics();
+        metrics.printMetrics();
 
         window.setTimeout("runNextTest()", 1);
     },
