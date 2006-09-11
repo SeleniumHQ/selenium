@@ -31,9 +31,15 @@ verify_text($chinese, "chinese");
 verify_text($japanese, "japanese");
 verify_text($dangerous, "dangerous");
 
+# todo: looks like destory() haven't been invoked $sel.stop() on linux, which
+# will left one firefox window not closed for each build running. 
+# Somebody who knows perl well please check this out!!
+$sel.stop();
+
+
 sub verify_text {
 	my $expected = shift;
 	my $id = shift;
 	$sel->is_text_present_ok($expected);
-	$sel->text_is($id, $expected);
+    $sel->text_is($id, $expected);
 }
