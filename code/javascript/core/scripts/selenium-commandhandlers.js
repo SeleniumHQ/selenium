@@ -218,9 +218,9 @@ function CommandHandlerFactory() {
 
     // Convert an isBlahBlah(target, value) function into a waitForBlahBlah(target, value) function.
     this.createWaitForActionFromPredicate = function(predicate) {
-        var action = function(target, value) {
+        return function(target, value) {
             var seleniumApi = this;
-            currentTest.waitForCondition = function () {
+            return function () {
                 try {
                     return predicate.call(seleniumApi, target, value).isTrue;
                 } catch (e) {
@@ -232,7 +232,6 @@ function CommandHandlerFactory() {
                 }
             };
         };
-        return action;
     };
 
     // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
@@ -345,9 +344,8 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
     return result;
 };
 
-
-function CommandResult(processState) {
-    this.processState = processState;
+function CommandResult(terminationCondition) {
+    this.terminationCondition = terminationCondition;
     this.result = null;
 }
 

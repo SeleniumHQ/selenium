@@ -114,7 +114,8 @@ TestLoop.prototype = {
         LOG.debug("Command complete");
         this.commandComplete(result);
 
-        if (result.processState == SELENIUM_PROCESS_WAIT) {
+        this.waitForCondition = result.terminationCondition;
+        if (this.waitForCondition == SELENIUM_PROCESS_WAIT) { // special case
             this.waitForCondition = function() {
                 LOG.debug("Checking condition: isNewPageLoaded?");
                 return selenium.browserbot.isNewPageLoaded();

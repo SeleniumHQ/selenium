@@ -614,57 +614,57 @@ Selenium.prototype.getLogMessages = function() {
 
 
 Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFrameString, target) {
-	/**
-        * Determine whether current/locator identify the frame containing this running code.
-	*
-        * <p>This is useful in proxy injection mode, where this code runs in every
-        * browser frame and window, and sometimes the selenium server needs to identify
-        * the "current" frame.  In this case, when the test calls selectFrame, this
-        * routine is called for each frame to figure out which one has been selected.
-        * The selected frame will return true, while all others will return false.</p>
-	*
-        * @param currentFrameString starting frame
-        * @param target new frame (which might be relative to the current one)
-        * @return boolean true if the new frame is this code's window
-	*/
-        var isDom = false;
-        if (target.indexOf("dom=")==0) {
-    		target = target.substr(4);
-                isDom = true;
-	}
- 	var t;
-        try {
-        	eval("t=" + currentFrameString + "." + target);
-        } catch (e) {
-        }
-        var autWindow = this.browserbot.getCurrentWindow();
-        if (t!=null) {
-        	if (t.window==autWindow) {
-                	return true;
-                }
-                return false;
-        }
-        if (isDom) {
-                return false;
-        }
-        var currentFrame;
-        eval("currentFrame=" + currentFrameString);
-	if (target == "relative=up") {
-        	if (currentFrame.window.parent==autWindow) {
-                	return true;
-                }
-                return false;
-        }
-        if (target == "relative=top") {
-        	if (currentFrame.window.top==autWindow) {
-                	return true;
-                }
-                return false;
-	}
-        if (autWindow.name==target && currentFrame.window==autWindow.parent) {
-        	return true;
+    /**
+     * Determine whether current/locator identify the frame containing this running code.
+     *
+     * <p>This is useful in proxy injection mode, where this code runs in every
+     * browser frame and window, and sometimes the selenium server needs to identify
+     * the "current" frame.  In this case, when the test calls selectFrame, this
+     * routine is called for each frame to figure out which one has been selected.
+     * The selected frame will return true, while all others will return false.</p>
+     *
+     * @param currentFrameString starting frame
+     * @param target new frame (which might be relative to the current one)
+     * @return boolean true if the new frame is this code's window
+     */
+    var isDom = false;
+    if (target.indexOf("dom=") == 0) {
+        target = target.substr(4);
+        isDom = true;
+    }
+    var t;
+    try {
+        eval("t=" + currentFrameString + "." + target);
+    } catch (e) {
+    }
+    var autWindow = this.browserbot.getCurrentWindow();
+    if (t != null) {
+        if (t.window == autWindow) {
+            return true;
         }
         return false;
+    }
+    if (isDom) {
+        return false;
+    }
+    var currentFrame;
+    eval("currentFrame=" + currentFrameString);
+    if (target == "relative=up") {
+        if (currentFrame.window.parent == autWindow) {
+            return true;
+        }
+        return false;
+    }
+    if (target == "relative=top") {
+        if (currentFrame.window.top == autWindow) {
+            return true;
+        }
+        return false;
+    }
+    if (autWindow.name == target && currentFrame.window == autWindow.parent) {
+        return true;
+    }
+    return false;
 };
 
 Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
@@ -677,8 +677,9 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
 	if (isNaN(timeout)) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
+    currentTest.waitForConditionTimeout = timeout;
 
-    currentTest.waitForCondition = function () {
+    return function () {
         var targetWindow = selenium.browserbot.getWindowByName(windowID, true);
         if (!targetWindow) return false;
         if (!targetWindow.location) return false;
@@ -705,10 +706,6 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
         if ('complete' != targetWindow.document.readyState) return false;
         return true;
     };
-
-    currentTest.waitForConditionStart = new Date().getTime();
-    currentTest.waitForConditionTimeout = timeout;
-
 }
 
 Selenium.prototype.doWaitForPopUp.dontCheckAlertsAndConfirms = true;
@@ -1758,13 +1755,11 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
     if (isNaN(timeout)) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
+    currentTest.waitForConditionTimeout = timeout;
 
-    currentTest.waitForCondition = function () {
+    return function () {
         return eval(script);
     };
-
-    currentTest.waitForConditionStart = new Date().getTime();
-    currentTest.waitForConditionTimeout = timeout;
 };
 
 Selenium.prototype.doWaitForCondition.dontCheckAlertsAndConfirms = true;

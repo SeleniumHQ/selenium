@@ -215,17 +215,15 @@ function setUp() {
         var factory = new CommandHandlerFactory();
     	var action = factory.createWaitForActionFromPredicate(predicate);
     	
-    	// testLoop is normally set up by selenium api.
-    	currentTest = {};
-    	
-    	action.call(mockSeleniumApi, "target", "value");
-    	assertTrue(currentTest.waitForCondition());
+    	var terminationCondition = action.call(mockSeleniumApi, "target", "value");
+        assertEquals('function', typeof(terminationCondition));
+        assertTrue(terminationCondition());
     	
     	mockPredicateResult.verify();
         mockSeleniumApi.verify();
     };
     
-    function testPredicateBasedWaitForActionReturnsFalseForExceptoins() {
+    function testPredicateBasedWaitForActionReturnsFalseForExceptions() {
     	// We treat exceptions as meaning that the condition is not yet true.
     	// Handy for things like waitForValue when the specified element
     	// has yet to be created!
@@ -235,11 +233,8 @@ function setUp() {
         var factory = new CommandHandlerFactory();
     	var action = factory.createWaitForActionFromPredicate(predicate);
     	
-    	// testLoop is normally set up by selenium api.
-    	currentTest = {};
-    	
-    	action.call("seleniumApi", "target", "value");
-    	assertFalse(currentTest.waitForCondition());
+    	var terminationCondition = action.call("seleniumApi", "target", "value");
+    	assertFalse(terminationCondition());
     };
     
     

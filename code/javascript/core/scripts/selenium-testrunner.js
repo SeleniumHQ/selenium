@@ -377,13 +377,13 @@ Object.extend(HtmlTestSuiteRow.prototype, {
     },
 
     _onClick: function(eventObj) {
-        this.htmlTestSuite.currentRowInSuite = this.trElement.rowIndex - 1;
         // todo: just send a message to the testSuite
         this.loadTestCase(null);
         return false;
     },
 
     loadTestCase: function(onloadFunction) {
+        this.htmlTestSuite.currentRowInSuite = this.trElement.rowIndex - 1;
         // If the row has a stored results table, use that
         var resultsFromPreviousRun = this.trElement.cells[1];
         if (resultsFromPreviousRun) {
@@ -520,6 +520,12 @@ var HtmlTestCase = Class.create();
 Object.extend(HtmlTestCase.prototype, {
 
     initialize: function(testDocument, htmlTestSuiteRow) {
+        if (testDocument == null) {
+            throw "testDocument should not be null";
+        }
+        if (htmlTestSuiteRow == null) {
+            throw "htmlTestSuiteRow should not be null";
+        }
         this.testDocument = testDocument;
         this.htmlTestSuiteRow = htmlTestSuiteRow;
         this.commandRows = this._collectCommandRows();
