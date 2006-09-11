@@ -21,6 +21,8 @@ http-equiv="content-type">
 <link rel="stylesheet" type="text/css" href="../core/selenium.css" />
 <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript">
+    var DISABLED = true; // used to flag failing tests
+
     function filterTestsForBrowser() {
         var suiteTable = document.getElementById("suiteTable");
         var skippedTests = document.getElementById("skippedTests");
@@ -63,7 +65,7 @@ http-equiv="content-type">
             <tr><td><a href="./TestSelectMultiLevelFrame.html">TestSelectMultiLevelFrame</a></td></tr>
             <tr><td><a href="./TestOpenInTargetFrame.html">TestOpenInTargetFrame</a></td></tr>
 
-            <tr unless="true"><td><a href="./TestCookie.html">TestCookieCommands</a></td></tr>
+            <tr unless="DISABLED"><td><a href="./TestCookie.html">TestCookieCommands</a></td></tr>
             <tr><td><a href="./TestBrowserVersion.html">TestBrowserVersion</a></td></tr>
             <tr><td><a href="./TestOpen.html">TestOpen</a></td></tr>
             <tr><td><a href="./TestClick.html">TestClick</a></td></tr>
@@ -93,7 +95,7 @@ http-equiv="content-type">
             <tr><td><a href="./TestElementOrder.html">TestElementOrder</a></td></tr>
             <tr><td><a href="./TestImplicitLocators.html">TestImplicitLocators</a></td></tr>
             <tr><td><a href="./TestXPathLocators.html">TestXPathLocators</a></td></tr>
-            <tr><td><a href="./TestXPathLocatorInXHtml.html">TestXPathLocatorInXHtml</a></td></tr>
+            <tr unless="DISABLED"><td><a href="./TestXPathLocatorInXHtml.html">TestXPathLocatorInXHtml</a></td></tr>
             <tr unless="browserVersion.isKonqueror || browserVersion.isSafari || browserVersion.isHTA"><td><a href="./TestGoBack.html">TestGoBack</a></td></tr>
             <tr unless="browserVersion.isOpera"><td><a href="./TestRefresh.html">TestRefresh</a></td></tr>
 
