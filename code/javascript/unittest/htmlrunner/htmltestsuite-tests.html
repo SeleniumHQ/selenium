@@ -54,12 +54,31 @@ Copyright 2004 ThoughtWorks, Inc
             assertEquals(failColor, $("titleRow").bgColor);
         }
 
-        function testSetPassedShouldChangeTitleRowBgColorToPassedColor() {
+        function testMarkDoneShouldMarkSuitePassed() {
             $("titleRow").bgColor = "";
-            testsuite.markPassed();
+            testsuite.markDone();
             assertEquals(passColor, $("titleRow").bgColor);
         }
 
+        function testMarkDoneShouldLeaveSuiteMarkedFailed() {
+            $("titleRow").bgColor = "";
+            testsuite.markFailed();
+            testsuite.markDone();
+            assertEquals(failColor, $("titleRow").bgColor);
+        }
+
+        function testResetShouldClearFailedFlag() {
+            testsuite.failed = true;
+            testsuite.reset();
+            assertNull(testsuite.failed);
+        }
+
+        function testGetCurrentRowShouldReturnCurrentRow() {
+            testsuite.currentRowInSuite = 0;
+            assertEquals($('row1'), testsuite.getCurrentRow().trElement);
+            testsuite.currentRowInSuite = 1;
+            assertEquals($('row2'), testsuite.getCurrentRow().trElement);
+        }
 
     </script>
 </head>
@@ -71,8 +90,8 @@ Copyright 2004 ThoughtWorks, Inc
        border="1">
     <tbody>
         <tr id="titleRow"><td><B>Test Suite Title</B></td></tr>
-        <tr><td><a id='link0' href="./TestFormAutocomplete.html">Test Form Auto-complete</a></td></tr>
-        <tr><td><a id='link1' href="./TestPopupWindow.html">Test Popup Window</a></td></tr>
+        <tr id="row1"><td><a id='link0' href="./TestFormAutocomplete.html">Test Form Auto-complete</a></td></tr>
+        <tr id="row2"><td><a id='link1' href="./TestPopupWindow.html">Test Popup Window</a></td></tr>
     </tbody>
 </table>
 

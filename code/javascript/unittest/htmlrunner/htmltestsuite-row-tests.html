@@ -47,7 +47,8 @@ Copyright 2004 ThoughtWorks, Inc
 
         function setUp() {
             mockFrame = new MockSeleniumFrame();
-            suiteRow = new HtmlTestSuiteRow($("trRow"), mockFrame);
+            mockHtmlTestSuite = {};
+            suiteRow = new HtmlTestSuiteRow($("trRow"), mockFrame, mockHtmlTestSuite);
         }
 
         function testShouldLoadTestCaseWhenRowElementsClick() {
@@ -61,13 +62,30 @@ Copyright 2004 ThoughtWorks, Inc
             assert(suiteRow.testCaseLoaded);
         }
 
-        function testloadTestCaseShouldChangeTestFramesLocation() {
+        function testLoadTestCaseShouldChangeTestFramesLocation() {
             mockFrame.fireLoading = false;
             assertUndefined(mockFrame.location);
             suiteRow.loadTestCase();
             assertEquals($("link").href, mockFrame.location);
         }
 
+        function testMarkFailedShouldMarkTrElementFailed() {
+            $("trRow").bgColor = "";
+            suiteRow.markFailed();
+            assertEquals(failColor, $("trRow").bgColor);
+        }
+
+        function testMarkPassedShouldMarkTrElementPassed() {
+            $("trRow").bgColor = "";
+            suiteRow.markPassed();
+            assertEquals(passColor, $("trRow").bgColor);
+        }
+
+        function testMarkWorkingShouldMarkTrElementWorking() {
+            $("trRow").bgColor = "";
+            suiteRow.markWorking();
+            assertEquals(workingColor, $("trRow").bgColor);
+        }
 
     </script>
 </head>

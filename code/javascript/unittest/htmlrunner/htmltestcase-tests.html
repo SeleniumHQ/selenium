@@ -32,7 +32,8 @@ Copyright 2004 ThoughtWorks, Inc
     <script language="JavaScript" type="text/javascript">
 
         function setUp() {
-            testcase = new HtmlTestCase(document);
+            mockSuiteRow = new Mock();
+            testcase = new HtmlTestCase(document, mockSuiteRow);
         }
 
         function testGetCommandRowsShouldReturnHtmlTestCaseRows() {
@@ -77,6 +78,18 @@ Copyright 2004 ThoughtWorks, Inc
             testcase.getNextCommandRow();
             assertFalse(testcase.hasMoreCommandRows());
             assertNull(testcase.getNextCommandRow());
+        }
+
+        function testMarkFailedShouldMarkSuiteRowFailed() {
+            mockSuiteRow.expects('markFailed')
+            testcase.markFailed();
+            mockSuiteRow.verify();
+        }
+
+        function testMarkPassedShouldMarkSuiteRowPassed() {
+            mockSuiteRow.expects('markPassed')
+            testcase.markPassed();
+            mockSuiteRow.verify();
         }
 
     </script>

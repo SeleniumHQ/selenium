@@ -15,18 +15,13 @@
 *
 */
 
-// The current row in the list of tests (test suite)
-currentRowInSuite = 0;
-
 // An object representing the current test
 currentTest = null;
 
 // Whether or not the jsFT should run all tests in the suite
 runAllTests = false;
 
-// Whether or not the current test has any errors;
 testFailed = false;
-suiteFailed = false;
 
 // Colors used to provide feedback
 passColor = "#ccffcc";
@@ -111,6 +106,7 @@ Object.extend(SeleniumFrame.prototype, {
 
 });
 
+/** HtmlTestFrame - encapsulates the test-case iframe element */
 var HtmlTestFrame = Class.create();
 Object.extend(HtmlTestFrame.prototype, SeleniumFrame.prototype);
 Object.extend(HtmlTestFrame.prototype, {
@@ -120,7 +116,8 @@ Object.extend(HtmlTestFrame.prototype, {
     },
 
     setCurrentTestCase: function() {
-        this.currentTestCase = new HtmlTestCase(this.getDocument());
+        this.currentTestCase = new HtmlTestCase(this.getDocument(), htmlTestSuite.getCurrentRow());
+        // todo: GLOBAL!
     },
 
     getCurrentTestCase: function() {
@@ -133,6 +130,9 @@ var suiteFrame;
 var testFrame;
 
 var appWindow;
+
+var htmlTestSuite;
+// todo: shouldn't be global
 
 /**
  * Get the window that will hold the AUT.
@@ -193,7 +193,6 @@ function onSeleniumLoad() {
 
 function loadSuiteFrame() {
     var testAppWindow = getApplicationWindow();
-    //testAppWindow.foo = '123';
     if (selenium == null) {
         selenium = Selenium.createForWindow(testAppWindow);
         registerCommandHandlers();
@@ -230,21 +229,22 @@ function startSingleTest() {
     testFrame.load(singleTestName, startTest);
 }
 
-var suiteTable;
-
 function onloadTestSuite() {
     htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
 
-    if (htmlTestSuite.isAvaliable()) {
-        if (isAutomatedRun()) {
-            startTestSuite();
-        } else if (getQueryParameter("autoURL")) {
-            //todo what is the autourl doing, left to check it out
-            addLoadListener(getApplicationWindow(), startSingleTest);
-            getApplicationWindow().src = getQueryParameter("autoURL");
-        } else {
-            htmlTestSuite.getSuiteRows()[0].loadTestCase();
-        }
+    if (! htmlTestSuite.isAvailable()) {
+        // hack!
+        return;
+    }
+
+    if (isAutomatedRun()) {
+        startTestSuite();
+    } else if (getQueryParameter("autoURL")) {
+        //todo what is the autourl doing, left to check it out
+        addLoadListener(getApplicationWindow(), startSingleTest);
+        getApplicationWindow().src = getQueryParameter("autoURL");
+    } else {
+        htmlTestSuite.getSuiteRows()[0].loadTestCase();
     }
 }
 
@@ -277,10 +277,6 @@ function extractArgs() {
         args[i] = args[i].replace(/^"(.*)"$/, "$1");
     }
     return args;
-}
-
-function isNewWindow() {
-    return isQueryParameterTrue("newWindow");
 }
 
 function isAutomatedRun() {
@@ -319,17 +315,11 @@ function stepCurrentTest() {
     currentTest.resume();
 }
 
-var HtmlTestCaseRow = Class.create();
-Object.extend(HtmlTestCaseRow.prototype, {
+var AbstractResultAwareRow = Class.create();
+Object.extend(AbstractResultAwareRow.prototype, {
+
     initialize: function(trElement) {
         this.trElement = trElement;
-    },
-
-    getCommand: function () {
-        return new SeleniumCommand(getText(this.trElement.cells[0]),
-                getText(this.trElement.cells[1]),
-                getText(this.trElement.cells[2]),
-                this.isBreakpoint());
     },
 
     markWorking: function() {
@@ -343,6 +333,23 @@ Object.extend(HtmlTestCaseRow.prototype, {
 
     markDone: function() {
         this.trElement.bgColor = doneColor;
+    },
+
+    markFailed: function() {
+        this.trElement.bgColor = failColor;
+    }
+
+});
+
+var HtmlTestCaseRow = Class.create();
+Object.extend(HtmlTestCaseRow.prototype, AbstractResultAwareRow.prototype);
+Object.extend(HtmlTestCaseRow.prototype, {
+
+    getCommand: function () {
+        return new SeleniumCommand(getText(this.trElement.cells[0]),
+                getText(this.trElement.cells[1]),
+                getText(this.trElement.cells[2]),
+                this.isBreakpoint());
     },
 
     markFailed: function(errorMsg) {
@@ -392,24 +399,30 @@ Object.extend(HtmlTestCaseRow.prototype, {
     }
 });
 
-
 var HtmlTestSuiteRow = Class.create();
+Object.extend(HtmlTestSuiteRow.prototype, AbstractResultAwareRow.prototype);
 Object.extend(HtmlTestSuiteRow.prototype, {
 
-    initialize: function(trElement, testFrame) {
+    initialize: function(trElement, testFrame, htmlTestSuite) {
         this.trElement = trElement;
         this.testFrame = testFrame;
+        this.htmlTestSuite = htmlTestSuite;
         this.link = trElement.getElementsByTagName("a")[0];
         this.link.onclick = this._onClick.bindAsEventListener(this);
     },
 
+    reset: function() {
+        this.trElement.bgColor = '';
+    },
+
     _onClick: function(eventObj) {
-        currentRowInSuite = this.trElement.rowIndex;
-        this.loadTestCase();
+        this.htmlTestSuite.currentRowInSuite = this.trElement.rowIndex - 1;
+        // todo: just send a message to the testSuite
+        this.loadTestCase(null);
         return false;
     },
 
-    loadTestCase: function() {
+    loadTestCase: function(onloadFunction) {
         // If the row has a stored results table, use that
         var resultsFromPreviousRun = this.trElement.cells[1];
         if (resultsFromPreviousRun) {
@@ -418,10 +431,30 @@ Object.extend(HtmlTestSuiteRow.prototype, {
             testBody.innerHTML = resultsFromPreviousRun.innerHTML;
             // todo: this duplicates onloadTestCase
             testFrame.setCurrentTestCase();
+            if (onloadFunction) {
+                onloadFunction();
+            }
         } else {
-            this.testFrame.load(this.link.href);
+            this.testFrame.load(this.link.href, onloadFunction);
         }
+    },
+
+    saveTestResults: function() {
+        // todo: GLOBAL ACCESS!
+        var resultHTML = this.testFrame.getDocument().body.innerHTML;
+        if (!resultHTML) return;
+
+        // todo: why create this div?
+        var divElement = this.trElement.ownerDocument.createElement("div");
+        divElement.innerHTML = resultHTML;
+
+        var hiddenCell = this.trElement.ownerDocument.createElement("td");
+        hiddenCell.appendChild(divElement);
+        hiddenCell.style.display = "none";
+
+        this.trElement.appendChild(hiddenCell);
     }
+
 });
 
 var HtmlTestSuite = Class.create();
@@ -432,6 +465,16 @@ Object.extend(HtmlTestSuite.prototype, {
         this.suiteRows = this._collectSuiteRows();
         this.titleRow = this.getTestTable().rows[0];
         this.title = this.titleRow.cells[0].innerHTML;
+        this.reset();
+    },
+
+    reset: function() {
+        this.failed = null;
+        this.currentRowInSuite = -1;
+        this.titleRow.bgColor = '';
+        this.suiteRows.each(function(row) {
+            row.reset();
+        });
     },
 
     getTitle: function() {
@@ -447,7 +490,7 @@ Object.extend(HtmlTestSuite.prototype, {
         return tables[0];
     },
 
-    isAvaliable: function() {
+    isAvailable: function() {
         return this.getTestTable() != null;
     },
 
@@ -455,17 +498,58 @@ Object.extend(HtmlTestSuite.prototype, {
         var result = [];
         for (rowNum = 1; rowNum < this.getTestTable().rows.length; rowNum++) {
             var rowElement = this.getTestTable().rows[rowNum];
-            result.push(new HtmlTestSuiteRow(rowElement, testFrame));
+            result.push(new HtmlTestSuiteRow(rowElement, testFrame, this));
         }
         return result;
     },
 
+    getCurrentRow: function() {
+        return this.suiteRows[this.currentRowInSuite];
+    },
+
     markFailed: function() {
+        this.failed = true;
         this.titleRow.bgColor = failColor;
     },
 
-    markPassed: function() {
-        this.titleRow.bgColor = passColor;
+    markDone: function() {
+        if (!this.failed) {
+            this.passed = true;
+            this.titleRow.bgColor = passColor;
+        }
+    },
+
+    _startCurrentTestCase: function() {
+        this.getCurrentRow().markWorking();
+        this.getCurrentRow().loadTestCase(startTest);
+    },
+
+    _onTestSuiteComplete: function() {
+        this.markDone();
+
+        // If this is an automated run (i.e., build script), then submit
+        // the test results by posting to a form
+        if (isAutomatedRun()) {
+            postTestResults(this.failed, this.getTestTable());
+        }
+    },
+
+    _updateSuiteWithResultOfPreviousTest: function() {
+        if (this.currentRowInSuite >= 0) {
+            this.getCurrentRow().saveTestResults();
+        }
+    },
+
+    runNextTest: function() {
+        this._updateSuiteWithResultOfPreviousTest();
+        this.currentRowInSuite++;
+
+        // If we are done with all of the tests, set the title bar as pass or fail
+        if (this.currentRowInSuite >= this.suiteRows.length) {
+            this._onTestSuiteComplete();
+        } else {
+            this._startCurrentTestCase();
+        }
     }
 
 });
@@ -474,8 +558,9 @@ Object.extend(HtmlTestSuite.prototype, {
 var HtmlTestCase = Class.create();
 Object.extend(HtmlTestCase.prototype, {
 
-    initialize: function(testDocument) {
+    initialize: function(testDocument, htmlTestSuiteRow) {
         this.testDocument = testDocument;
+        this.htmlTestSuiteRow = htmlTestSuiteRow;
         this.commandRows = this._collectCommandRows();
         this.nextCommandRowIndex = 0;
         this._addBreakpointSupport();
@@ -504,8 +589,8 @@ Object.extend(HtmlTestCase.prototype, {
          * reset the test to runnable state
          */
         this.nextCommandRowIndex = 0;
-        this.testDocument.bgColor = "";
 
+        this._setResultColor('');
         this.commandRows.each(function(row) {
             row.reset();
         });
@@ -530,10 +615,12 @@ Object.extend(HtmlTestCase.prototype, {
 
     markFailed: function() {
         this._setResultColor(failColor);
+        this.htmlTestSuiteRow.markFailed();
     },
 
     markPassed: function() {
         this._setResultColor(passColor);
+        this.htmlTestSuiteRow.markPassed();
     },
 
     addErrorMessage: function(errorMsg, currentRow) {
@@ -600,9 +687,8 @@ get_new_rows = function() {
 
 function startTestSuite() {
     resetMetrics();
-    currentRowInSuite = 0;
+    htmlTestSuite.reset();
     runAllTests = true;
-    suiteFailed = false;
 
     runNextTest();
 }
@@ -612,82 +698,11 @@ function runNextTest() {
         return;
     }
 
-    suiteTable = htmlTestSuite.getTestTable();
-
-    updateSuiteWithResultOfPreviousTest();
-
-    currentRowInSuite++;
-
-    // If we are done with all of the tests, set the title bar as pass or fail
-    if (currentRowInSuite >= suiteTable.rows.length) {
-        isTestSuiteComplete();
-    } else {
-        startCurrentTestCase();
-    }
-}
-
-function startCurrentTestCase() {
-    // mark the current row as "working"
-    setCellColor(suiteTable.rows, currentRowInSuite, 0, workingColor);
-
-    testLink = suiteTable.rows[currentRowInSuite].cells[0].getElementsByTagName("a")[0];
-    safeScrollIntoView(testLink);
-
-    testFrame.load(testLink.href, startTest);
-}
-
-function isTestSuiteComplete() {
-
-    if (suiteFailed) {
-        htmlTestSuite.markFailed();
-    } else {
-        htmlTestSuite.markPassed();
-    }
-
-    // If this is an automated run (i.e., build script), then submit
-    // the test results by posting to a form
-    if (isAutomatedRun()) {
-        postTestResults(suiteFailed, suiteTable);
-    }
-}
-
-function updateSuiteWithResultOfPreviousTest() {
-    // Do not change the row color of the first row
-    if (currentRowInSuite > 0) {
-        // Provide test-status feedback
-        if (testFailed) {
-            setCellColor(suiteTable.rows, currentRowInSuite, 0, failColor);
-        } else {
-            setCellColor(suiteTable.rows, currentRowInSuite, 0, passColor);
-        }
-
-        // Set the results from the previous test run
-        setResultsData(suiteTable, currentRowInSuite);
-    }
+    htmlTestSuite.runNextTest();
 }
 
 function setCellColor(tableRows, row, col, colorStr) {
     tableRows[row].cells[col].bgColor = colorStr;
-}
-
-// Sets the results from a test into a hidden column on the suite table.  So,
-// for each tests, the second column is set to the HTML from the test table.
-function setResultsData(suiteTable, row) {
-    // Create a text node of the test table
-    var resultTable = testFrame.getDocument().body.innerHTML;
-    if (!resultTable) return;
-
-    var tableNode = suiteTable.ownerDocument.createElement("div");
-    tableNode.innerHTML = resultTable;
-
-    var new_column = suiteTable.ownerDocument.createElement("td");
-    new_column.appendChild(tableNode);
-
-    // Set the column to be invisible
-    new_column.style.display = "none";
-
-    // Add the invisible column
-    suiteTable.rows[row].appendChild(new_column);
 }
 
 // Post the results to a servlet, CGI-script, etc.  The URL of the
@@ -859,7 +874,6 @@ function setHighlightOption() {
     selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
 }
 
-
 var HtmlRunnerTestLoop = Class.create();
 Object.extend(HtmlRunnerTestLoop.prototype, new TestLoop());
 Object.extend(HtmlRunnerTestLoop.prototype, {
@@ -896,13 +910,13 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     _advanceToNextRow: function() {
-        if (this.htmlTestCase.hasMoreCommandRows())   {
+        if (this.htmlTestCase.hasMoreCommandRows()) {
             this.currentRow = this.htmlTestCase.getNextCommandRow();
             if (this.sejsElement) {
                 this.currentItem = agenda.pop();
                 this.currentRowIndex++;
             }
-        } else  {
+        } else {
             this.currentRow = null;
             this.currentItem = null;
         }
@@ -942,7 +956,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     _recordFailure : function(errorMsg) {
         LOG.warn("currentTest.recordFailure: " + errorMsg);
         testFailed = true;
-        suiteFailed = true;
+        htmlTestSuite.markFailed();
         this.htmlTestCase.addErrorMessage(errorMsg, this.currentRow);
     },
 
