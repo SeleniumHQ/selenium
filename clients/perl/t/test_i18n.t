@@ -34,7 +34,7 @@ verify_text($dangerous, "dangerous");
 # todo: looks like destory() haven't been invoked $sel.stop() on linux, which
 # will left one firefox window not closed for each build running. 
 # Somebody who knows perl well please check this out!!
-$sel.stop();
+$sel->stop();
 
 
 sub verify_text {
