@@ -300,6 +300,14 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         System.out.println("He's dead now, right?");
     }
 
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
+        launch("http://localhost:" + port +
+                "/selenium-server/core/TestRunner.html?auto=true" +
+                "&multiWindow=" + multiWindow +
+                "&resultsUrl=http://localhost:" + port +
+                "/selenium-server/postResults&test=" + suiteUrl);
+    }
+
 
 }
 
