@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="selenium" default="cruise" basedir=".">
+	
+	<property name="score.dir" value="../score"/>
+
 	<macrodef name="svn-update">
                 <attribute name="workdir"/>
                 <sequential>
@@ -10,9 +13,9 @@
         </macrodef>
 
 	<target name="_score-build">
-		<svn-update workdir="../score"/>
+		<svn-update workdir="${score.dir}"/>
 		<ant antfile = "build.xml" 
-			dir="../score/code" 
+			dir="${score.dir}/code" 
 			target="all" 
 			output="score-build.log" />
 	</target>
