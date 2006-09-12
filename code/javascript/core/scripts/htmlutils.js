@@ -38,13 +38,13 @@ String.prototype.startsWith = function(str) {
 function getText(element) {
     var text = "";
 
-    if (browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5" )
+    if (browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5")
     {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.textContent;
-    } else if(browserVersion.isKonqueror) {
-	var dummyElement = element.cloneNode(true);
+    } else if (browserVersion.isKonqueror) {
+        var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.innerText;
     } else if (browserVersion.isOpera) {
@@ -219,9 +219,9 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble) {
     var keycode = getKeyCodeFromKeySequence(keySequence);
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-		keyEvent = element.ownerDocument.createEventObject();
-		keyEvent.keyCode=keycode;
-		element.fireEvent('on' + eventType, keyEvent);
+        keyEvent = element.ownerDocument.createEventObject();
+        keyEvent.keyCode = keycode;
+        element.fireEvent('on' + eventType, keyEvent);
     }
     else {
         var evt;
@@ -301,7 +301,7 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
 }
 
 function removeLoadListener(element, command) {
-	LOG.info('Removing loadListenter for ' + element + ', ' + command);
+    LOG.info('Removing loadListenter for ' + element + ', ' + command);
     if (window.removeEventListener)
         element.removeEventListener("load", command, true);
     else if (window.detachEvent)
@@ -309,7 +309,7 @@ function removeLoadListener(element, command) {
 }
 
 function addLoadListener(element, command) {
-	LOG.info('Adding loadListenter for ' + element + ', ' + command);
+    LOG.info('Adding loadListenter for ' + element + ', ' + command);
     if (window.addEventListener && !browserVersion.isOpera)
         element.addEventListener("load", command, true);
     else if (window.attachEvent)
@@ -542,7 +542,7 @@ Object.extend(Effect, {
         }
         Element.setStyle(element, {"background-color" : highLightColor});
         window.setTimeout(function() {
-	    //if element is orphan, probably page of it has already gone, so ignore
+            //if element is orphan, probably page of it has already gone, so ignore
             if (!element.parentNode) {
                 return;
             }
@@ -594,28 +594,57 @@ function openSeparateApplicationWindow(url) {
         alert("Beware!  Mozilla bug 300992 means that we can't always reliably detect when a new page has loaded.  Install the Selenium IDE extension or the readyState extension available from selenium.openqa.org to make page load detection more reliable.");
         seenReadyStateWarning = true;
     }
-    
+
     return appWindow;
 }
 
-function isQueryParameterTrue(name) {
-    parameterValue = getQueryParameter(name);
-    if (parameterValue == null) return false;
-    if (parameterValue.toLowerCase() == "true") return true;
-    if (parameterValue.toLowerCase() == "on") return true;
-    return false;
-}
+var URLConfiguration = Class.create();
+Object.extend(URLConfiguration.prototype, {
+    initialize: function() {
 
-function getQueryParameter(searchKey) {
-    var str = getQueryString();
-    if (str == null) return null;
-    var clauses = str.split('&');
-    for (var i = 0; i < clauses.length; i++) {
-        var keyValuePair = clauses[i].split('=', 2);
-        var key = unescape(keyValuePair[0]);
-        if (key == searchKey) {
-            return unescape(keyValuePair[1]);
+    },
+    _isQueryParameterTrue: function (name) {
+        var parameterValue = this._getQueryParameter(name);
+        if (parameterValue == null) return false;
+        if (parameterValue.toLowerCase() == "true") return true;
+        if (parameterValue.toLowerCase() == "on") return true;
+        return false;
+    },
+
+    _getQueryParameter: function(searchKey) {
+        var str = this._getQueryString();
+        if (str == null) return null;
+        var clauses = str.split('&');
+        for (var i = 0; i < clauses.length; i++) {
+            var keyValuePair = clauses[i].split('=', 2);
+            var key = unescape(keyValuePair[0]);
+            if (key == searchKey) {
+                return unescape(keyValuePair[1]);
+            }
         }
+        return null;
+    },
+
+    _extractArgs: function() {
+        var str = SeleniumHTARunner.commandLine;
+        if (str == null || str == "") return new Array();
+        var matches = str.match(/(?:\"([^\"]+)\"|(?!\"([^\"]+)\")(\S+))/g);
+        // We either want non quote stuff ([^"]+) surrounded by quotes
+        // or we want to look-ahead, see that the next character isn't
+        // a quoted argument, and then grab all the non-space stuff
+        // this will return for the line: "foo" bar
+        // the results "\"foo\"" and "bar"
+
+        // So, let's unquote the quoted arguments:
+        var args = new Array;
+        for (var i = 0; i < matches.length; i++) {
+            args[i] = matches[i];
+            args[i] = args[i].replace(/^"(.*)"$/, "$1");
+        }
+        return args;
+    },
+
+    isMultiWindowMode:function() {
+        return this._isQueryParameterTrue('multiWindow');
     }
-    return null;
-}
+});

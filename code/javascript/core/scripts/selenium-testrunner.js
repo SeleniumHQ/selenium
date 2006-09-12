@@ -112,7 +112,7 @@ var htmlTestSuite;
  * Otherwise, it returns an embedded iframe window.
  */
 function getApplicationWindow() {
-    if (isQueryParameterTrue('multiWindow')) {
+    if (runOptions.isMultiWindowMode()) {
         return getSeparateApplicationWindow();
     }
     return $('myiframe').contentWindow;
@@ -151,15 +151,131 @@ function loadAndRunIfAuto() {
 }
 
 function onSeleniumLoad() {
+    runOptions = new RunOptions();
     suiteFrame = new SeleniumFrame(getSuiteFrame());
     testFrame = new HtmlTestFrame(getTestFrame());
-
-    queryString = null;
-    runInterval = 0;
 
     // we use a timeout here to make sure the LOG has loaded first, so we can see _every_ error
     setTimeout('loadSuiteFrame()', 500);
 }
+
+var RunOptions = Class.create();
+Object.extend(RunOptions.prototype, URLConfiguration.prototype);
+Object.extend(RunOptions.prototype, {
+    initialize: function() {
+        this.runInterval = 0;
+
+        this.highlightOption = $('highlightOption');
+        this.pauseButton = $('pauseTest');
+        this.stepButton = $('stepTest');
+
+        this.highlightOption.onclick = (function() {
+            this.setHighlightOption();
+        }).bindAsEventListener(this);
+        this.pauseButton.onclick = this.pauseCurrentTest.bindAsEventListener(this);
+        this.stepButton.onclick = this.stepCurrentTest.bindAsEventListener(this);
+
+        this.speedController = new Control.Slider('speedHandle', 'speedTrack', {
+            range: $R(0, 1000),
+            onSlide: this.setRunInterval.bindAsEventListener(this),
+            onChange: this.setRunInterval.bindAsEventListener(this)
+        });
+
+        this._parseQueryParameter();
+    },
+
+    setHighlightOption: function () {
+        var isHighlight = this.highlightOption.checked;
+        selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
+    },
+
+    _parseQueryParameter: function() {
+        var tempRunInterval = this._getQueryParameter("runInterval");
+        if (tempRunInterval) {
+            this.setRunInterval(tempRunInterval);
+        }
+        this.highlightOption.checked = this._getQueryParameter("highlight");
+    },
+
+    setRunInterval: function(runInterval) {
+        this.runInterval = runInterval;
+    },
+
+    setToPauseAtNextCommand: function() {
+        this.runInterval = -1;
+    },
+
+    pauseCurrentTest: function () {
+        this.setToPauseAtNextCommand();
+        this._switchPauseButtonToContinue();
+    },
+
+    continueCurrentTest: function () {
+        this.runInterval = this.speedController.value;
+        currentTest.resume();
+        this._switchContinueButtonToPause();
+    },
+
+    _switchContinueButtonToPause: function() {
+        this.pauseButton.innerHTML = "Pause";
+        this.pauseButton.onclick = this.pauseCurrentTest.bindAsEventListener(this);
+    },
+
+    _switchPauseButtonToContinue: function() {
+        $('stepTest').disabled = false;
+        this.pauseButton.innerHTML = "Continue";
+        this.pauseButton.onclick = this.continueCurrentTest.bindAsEventListener(this);
+    },
+
+    stepCurrentTest: function () {
+        this.setToPauseAtNextCommand();
+        currentTest.resume();
+    },
+
+    isAutomatedRun: function() {
+        return this._isQueryParameterTrue("auto");
+    },
+
+    shouldSaveResultsToFile: function() {
+        return this._isQueryParameterTrue("save");
+    },
+
+    closeAfterTests: function() {
+        return this._isQueryParameterTrue("close");
+    },
+
+    getTestSuiteName: function() {
+        return this._getQueryParameter("test");
+    },
+
+    getSingleTestName: function() {
+        return this._getQueryParameter("singletest");
+    },
+
+    getAutoUrl: function() {
+        return this._getQueryParameter("autoURL");
+    },
+
+    getResultsUrl: function() {
+        return this._getQueryParameter("resultsUrl");
+    },
+
+    _getQueryString: function() {
+        if (queryString != null) return queryString;
+        if (browserVersion.isHTA) {
+            var args = this._extractArgs();
+            if (args.length < 2) return null;
+            queryString = args[1];
+            return queryString;
+        } else {
+            return location.search.substr(1);
+        }
+    }
+
+});
+
+var runOptions;
+
 
 function loadSuiteFrame() {
     var testAppWindow = getApplicationWindow();
@@ -167,24 +283,9 @@ function loadSuiteFrame() {
         selenium = Selenium.createForWindow(testAppWindow);
         registerCommandHandlers();
     }
+    runOptions.setHighlightOption();
 
-    //set the runInterval if there is a queryParameter for it
-    var tempRunInterval = getQueryParameter("runInterval");
-    if (tempRunInterval) {
-        runInterval = tempRunInterval;
-    }
-
-    speedController = new Control.Slider('speedHandle', 'speedTrack', {
-        range:$R(0, 1000),
-        onSlide:function(v) {
-            runInterval = v;
-        } ,
-        onChange:function(v) {
-            runInterval = v;
-        }});
-    $('highlightOption').checked = getQueryParameter("highlight")
-
-    var testSuiteName = getQueryParameter("test");
+    var testSuiteName = runOptions.getTestSuiteName();
 
     if (testSuiteName) {
         suiteFrame.load(testSuiteName, onloadTestSuite);
@@ -195,7 +296,7 @@ function loadSuiteFrame() {
 
 function startSingleTest() {
     removeLoadListener(getApplicationWindow(), startSingleTest);
-    var singleTestName = getQueryParameter("singletest");
+    var singleTestName = runOptions.getSingleTestName();
     testFrame.load(singleTestName, startTest);
 }
 
@@ -207,73 +308,21 @@ function onloadTestSuite() {
         return;
     }
 
-    if (isAutomatedRun()) {
+    if (runOptions.isAutomatedRun()) {
         startTestSuite();
-    } else if (getQueryParameter("autoURL")) {
+    } else if (runOptions.getAutoUrl()) {
         //todo what is the autourl doing, left to check it out
         addLoadListener(getApplicationWindow(), startSingleTest);
-        getApplicationWindow().src = getQueryParameter("autoURL");
+        getApplicationWindow().src = runOptions.getAutoUrl();
     } else {
         htmlTestSuite.getSuiteRows()[0].loadTestCase();
     }
-}
-
-function getQueryString() {
-    if (queryString != null) return queryString;
-    if (browserVersion.isHTA) {
-        var args = extractArgs();
-        if (args.length < 2) return null;
-        queryString = args[1];
-        return queryString;
-    } else {
-        return location.search.substr(1);
-    }
-}
-
-function extractArgs() {
-    var str = SeleniumHTARunner.commandLine;
-    if (str == null || str == "") return new Array();
-    var matches = str.match(/(?:\"([^\"]+)\"|(?!\"([^\"]+)\")(\S+))/g);
-    // We either want non quote stuff ([^"]+) surrounded by quotes
-    // or we want to look-ahead, see that the next character isn't
-    // a quoted argument, and then grab all the non-space stuff
-    // this will return for the line: "foo" bar
-    // the results "\"foo\"" and "bar"
-
-    // So, let's unquote the quoted arguments:
-    var args = new Array;
-    for (var i = 0; i < matches.length; i++) {
-        args[i] = matches[i];
-        args[i] = args[i].replace(/^"(.*)"$/, "$1");
-    }
-    return args;
-}
-
-function isAutomatedRun() {
-    return isQueryParameterTrue("auto");
 }
 
 function runSingleTest() {
     runAllTests = false;
     metrics.resetMetrics();
     startTest();
-}
-
-function pauseCurrentTest() {
-    runInterval = -1;
-}
-
-function continueCurrentTest() {
-    runInterval = speedController.value;
-    currentTest.resume();
-
-    $('pauseTest').innerHTML = "Pause";
-    $('pauseTest').onclick = pauseCurrentTest;
-}
-
-function stepCurrentTest() {
-    runInterval = -1;
-    currentTest.resume();
 }
 
 var AbstractResultAwareRow = Class.create();
@@ -490,7 +539,7 @@ Object.extend(HtmlTestSuite.prototype, {
 
         // If this is an automated run (i.e., build script), then submit
         // the test results by posting to a form
-        if (isAutomatedRun()) {
+        if (runOptions.isAutomatedRun()) {
             postTestResults(this.failed, this.getTestTable());
         }
     },
@@ -622,7 +671,6 @@ Object.extend(HtmlTestCase.prototype, {
 });
 
 function startTest() {
-    setHighlightOption();
     testFrame.scrollToTop();
 
     //todo: move testFailed and storedVars to TestCase
@@ -635,7 +683,7 @@ function startTest() {
 
 // TODO: split out an JavascriptTestCase class to handle the "sejs" stuff
 
-get_new_rows = function() {
+var get_new_rows = function() {
     var row_array = new Array();
     for (var i = 0; i < new_block.length; i++) {
 
@@ -699,7 +747,7 @@ function postTestResults(suiteFailed, suiteTable) {
     form.method = "post";
     form.target = "myiframe";
 
-    var resultsUrl = getQueryParameter("resultsUrl");
+    var resultsUrl = runOptions.getResultsUrl();
     if (!resultsUrl) {
         resultsUrl = "./postResults";
     }
@@ -755,13 +803,13 @@ function postTestResults(suiteFailed, suiteTable) {
     // Add HTML for the suite itself
     form.createHiddenField("suite", suiteTable.parentNode.innerHTML);
 
-    if (isQueryParameterTrue("save")) {
+    if (runOptions.shouldSaveResultsToFile()) {
         saveToFile(resultsUrl, form);
     } else {
         form.submit();
     }
     document.body.removeChild(form);
-    if (isQueryParameterTrue("close")) {
+    if (runOptions.closeAfterTests()) {
         window.top.close();
     }
 }
@@ -812,11 +860,6 @@ function safeScrollIntoView(element) {
     }
     // TODO: work out how to scroll browsers that don't support
     // scrollIntoView (like Konqueror)
-}
-
-function setHighlightOption() {
-    var isHighlight = $('highlightOption').checked;
-    selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
 }
 
 var Metrics = Class.create();
@@ -975,14 +1018,11 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     getCommandInterval : function() {
-        return runInterval;
+        return runOptions.runInterval;
     },
 
     pause : function() {
-        runInterval = -1;
-        $('stepTest').disabled = false;
-        $('pauseTest').innerHTML = "Continue";
-        $('pauseTest').onclick = continueCurrentTest;
+        runOptions.pauseCurrentTest();
     },
 
     doNextCommand: function() {
@@ -1023,7 +1063,7 @@ Selenium.prototype.doBreak = function() {
      * This command is useful for debugging, but be careful when using it, because it will
      * force automated tests to hang until a user intervenes manually.
      */
-    runInterval = -1;
+    runOptions.setToPauseAtNextCommand();
 };
 
 Selenium.prototype.doStore = function(expression, variableName) {

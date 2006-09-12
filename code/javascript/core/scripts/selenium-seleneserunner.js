@@ -37,11 +37,55 @@ var queryString = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
+var RunOptions = Class.create();
+Object.extend(RunOptions.prototype, URLConfiguration.prototype);
+Object.extend(RunOptions.prototype, {
+    getDebugMode: function() {
+        return this._getQueryParameter("debugMode");
+    },
+
+    getContinue: function() {
+        return this._getQueryParameter("continue");
+    },
+
+    getBaseUrl: function() {
+        return this._getQueryParameter("baseUrl");
+    },
+
+    getDriverHost: function() {
+        return this._getQueryParameter("driverhost");
+    },
+
+    getDriverPort: function() {
+        return this._getQueryParameter("driverport");
+    },
+
+    getSessionId: function() {
+        return this._getQueryParameter("sessionId");
+    },
+
+    _getQueryString: function () {
+        if (queryString != null) return queryString;
+        if (browserVersion.isHTA) {
+            var args = this._extractArgs();
+            if (args.length < 2) return null;
+            queryString = args[1];
+            return queryString;
+        } else if (proxyInjectionMode) {
+            return selenium.browserbot.getCurrentWindow().location.search.substr(1);
+        } else {
+            return top.location.search.substr(1);
+        }
+    }
+
+});
+var runOptions;
 
 function runSeleniumTest() {
+    runOptions = new URLConfiguration();
     var testAppWindow;
 
-    if (isQueryParameterTrue('multiWindow')) {
+    if (runOptions.isMultiWindowMode()) {
         testAppWindow = openSeparateApplicationWindow('Blank.html');
     } else {
         testAppWindow = $('myiframe').contentWindow;
@@ -57,7 +101,7 @@ function runSeleniumTest() {
 
     selenium = Selenium.createForWindow(testAppWindow);
     if (!debugMode) {
-        debugMode = getQueryVariable("debugMode");
+        debugMode = runOptions.getDebugMode();
     }
     if (proxyInjectionMode) {
         LOG.log = logToRc;
@@ -79,59 +123,14 @@ function runSeleniumTest() {
         document.getElementById("commandList").appendChild(cmd1);
     }
 
-    var doContinue = getQueryVariable("continue");
+    var doContinue = runOptions.getContinue();
     if (doContinue != null) postResult = "OK";
 
     currentTest.start();
 }
 
-function getQueryString() {
-    if (queryString != null) return queryString;
-    if (browserVersion.isHTA) {
-        var args = extractArgs();
-        if (args.length < 2) return null;
-        queryString = args[1];
-        return queryString;
-    } else if (proxyInjectionMode) {
-        return selenium.browserbot.getCurrentWindow().location.search.substr(1);
-    } else {
-        return top.location.search.substr(1);
-    }
-}
-
-function extractArgs() {
-    var str = SeleniumHTARunner.commandLine;
-    if (str == null || str == "") return new Array();
-    var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")(\S+))/g);
-    // We either want non quote stuff ([^"]+) surrounded by quotes
-    // or we want to look-ahead, see that the next character isn't
-    // a quoted argument, and then grab all the non-space stuff
-    // this will return for the line: "foo" bar
-    // the results "\"foo\"" and "bar"
-
-    // So, let's unquote the quoted arguments:
-    var args = new Array;
-    for (var i = 0; i < matches.length; i++) {
-        args[i] = matches[i];
-        args[i] = args[i].replace(/^"(.*)"$/, "$1");
-    }
-    return args;
-}
-
-function getQueryVariable(variable) {
-    var query = getQueryString();
-    if (query == null) return null;
-    var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split("=");
-        if (pair[0] == variable) {
-            return pair[1];
-        }
-    }
-}
-
 function buildBaseUrl() {
-    var baseUrl = getQueryVariable("baseUrl");
+    var baseUrl = runOptions.getBaseUrl();
     if (baseUrl != null) {
         return baseUrl;
     }
@@ -388,13 +387,13 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
 function buildDriverParams() {
     var params = "";
 
-    var host = getQueryVariable("driverhost");
-    var port = getQueryVariable("driverport");
+    var host = runOptions.getDriverHost();
+    var port = runOptions.getDriverPort();
     if (host != undefined && port != undefined) {
         params = params + "&driverhost=" + host + "&driverport=" + port;
     }
 
-    var sessionId = getQueryVariable("sessionId");
+    var sessionId = runOptions.getSessionId();
     if (sessionId == undefined) {
         sessionId = injectedSessionId;
     }

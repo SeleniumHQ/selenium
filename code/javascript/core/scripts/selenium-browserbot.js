@@ -599,7 +599,7 @@ IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModif
         var end_of_base_ref = doc_location.indexOf('TestRunner.html');
         var base_ref = doc_location.substring(0, end_of_base_ref);
 
-        var fullURL = base_ref + "TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runInterval;
+        var fullURL = base_ref + "TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runOptions.runInterval;
         browserBot.modalDialogTest = null;
 
         var returnValue = oldShowModalDialog(fullURL, args, features);
