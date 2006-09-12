@@ -16,78 +16,84 @@ Copyright 2004 ThoughtWorks, Inc
 -->
 
 <head>
-<meta content="text/html; charset=ISO-8859-1"
-http-equiv="content-type">
-<title>Select a Test Suite</title>
-<script language="JavaScript" type="text/javascript" src="scripts/selenium-browserdetect.js"></script>
-<script>
-	
-function load() {
-	if (browserVersion.isHTA) {
-		document.getElementById("save-div").style.display = "inline";
-	}
-}
+    <meta content="text/html; charset=ISO-8859-1"
+          http-equiv="content-type">
+    <title>Select a Test Suite</title>
+    <script language="JavaScript" type="text/javascript" src="scripts/selenium-browserdetect.js"></script>
+    <script>
 
-function autoCheck() {
-	var auto = document.getElementById("auto");
-	var autoDiv = document.getElementById("auto-div");
-	if (auto.checked) {
-		autoDiv.style.display = "inline";
-		
-	} else {
-		autoDiv.style.display = "none";
-	}
-}
-	
-function saveCheck() {
-	var results = document.getElementById("results");
-	var check =  document.getElementById("save").checked;
-	if (check) {
-		results.firstChild.nodeValue = "Results file ";
-		document.getElementById("resultsUrl").value = "results.html";
-	} else {
-		results.firstChild.nodeValue = "Results URL ";
-		document.getElementById("resultsUrl").value = "../postResults";
-	}
-}
+        function load() {
+            if (browserVersion.isHTA) {
+                document.getElementById("save-div").style.display = "inline";
+            }
+        }
 
-function go() {
-	if (!browserVersion.isHTA) return true;
-	var inputs = document.getElementsByTagName("input");
-	var queryString = "";
-	for (var i = 0; i < inputs.length; i++) {
-		var elem = inputs[i];
-		var name = elem.name;
-		var value = elem.value;
-		if (elem.type == "checkbox") {
-		    value = elem.checked;
-		}
-		queryString += escape(name) + "=" + escape(value);
-		if (i < (inputs.length - 1)) {
-			queryString += "&";
-		}
-	}
-	
-	window.parent.queryString = queryString;
-	window.parent.loadSuiteFrame();
-	return false;
-}
-</script>
+        function autoCheck() {
+            var auto = document.getElementById("auto");
+            var autoDiv = document.getElementById("auto-div");
+            if (auto.checked) {
+                autoDiv.style.display = "inline";
+
+            } else {
+                autoDiv.style.display = "none";
+            }
+        }
+
+        function saveCheck() {
+            var results = document.getElementById("results");
+            var check = document.getElementById("save").checked;
+            if (check) {
+                results.firstChild.nodeValue = "Results file ";
+                document.getElementById("resultsUrl").value = "results.html";
+            } else {
+                results.firstChild.nodeValue = "Results URL ";
+                document.getElementById("resultsUrl").value = "../postResults";
+            }
+        }
+
+        function go() {
+            if (!browserVersion.isHTA) return true;
+            var inputs = document.getElementsByTagName("input");
+            var queryString = "";
+            for (var i = 0; i < inputs.length; i++) {
+                var elem = inputs[i];
+                var name = elem.name;
+                var value = elem.value;
+                if (elem.type == "checkbox") {
+                    value = elem.checked;
+                }
+                queryString += escape(name) + "=" + escape(value);
+                if (i < (inputs.length - 1)) {
+                    queryString += "&";
+                }
+            }
+
+            window.parent.queryString = queryString;
+            window.parent.loadSuiteFrame();
+            return false;
+        }
+    </script>
 </head>
+
 <body onload="load()" style="font-size: x-small">
 <form id="prompt" target="_top" method="GET" onsubmit="return go();" action="TestRunner.html">
-<p>Select an HTML test suite:</p>
-<input id="test" name="test" size="30" value="../tests/TestSuite.html"/>
-<p><label for="auto">Auto-run </label><input id="auto" type="checkbox" name="auto" onclick="autoCheck();"/>
-<div id="auto-div" style="display: none">
-<label for="close" >Close afterwards </label><input id="close" type="checkbox" name="close" />
-<div id="save-div" style="display: none">
-	<br/><label for="save">Save to file </label><input id="save" type="checkbox" name="save" onclick="saveCheck();"/>
-</div>
+    <p>Select an HTML test suite:</p>
+    <input id="test" name="test" size="30" value="../tests/TestSuite.html"/>
 
-<p id="results" >Results URL <input id="resultsUrl" name="resultsUrl" value="../postResults"/></p>
-</div>
-<p><input type="submit" value="go"/></p>
+    <p><label for="auto">Auto-run </label><input id="auto" type="checkbox" name="auto" onclick="autoCheck();"/>
+
+    <div id="auto-div" style="display: none">
+        <label for="close">Close afterwards </label><input id="close" type="checkbox" name="close"/>
+
+        <div id="save-div" style="display: none">
+            <br/><label for="save">Save to file </label><input id="save" type="checkbox" name="save"
+                                                               onclick="saveCheck();"/>
+        </div>
+
+        <p id="results">Results URL <input id="resultsUrl" name="resultsUrl" value="../postResults"/></p>
+    </div>
+
+    <p><input type="submit" value="go"/></p>
 </form>
 </body>
 </html>
