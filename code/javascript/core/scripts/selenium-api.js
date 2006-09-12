@@ -1788,11 +1788,14 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
    * wait immediately after a Selenium command that caused a page-load.</p>
    * @param timeout a timeout in milliseconds, after which this command will return with an error
    */
-   // in pi-mode, the test and the harness share the window; thus if we are executing this code, then we have loaded
-   if (window["proxyInjectionMode"] == null || !window["proxyInjectionMode"]) {
-    	this.doWaitForCondition("selenium.browserbot.isNewPageLoaded()", timeout);
-   }
-   // todo: should just be able to return SELENIUM_PROCESS_WAIT here to get the same effect
+    if (isNaN(timeout)) {
+        throw new SeleniumError("Timeout is not a number: " + timeout);
+    }
+    // in pi-mode, the test and the harness share the window; thus if we are executing this code, then we have loaded
+    if (window["proxyInjectionMode"] == null || !window["proxyInjectionMode"]) {
+        currentTest.waitForConditionTimeout = timeout;
+        return SELENIUM_PROCESS_WAIT;
+    }
 };
 
 Selenium.prototype.doWaitForPageToLoad.dontCheckAlertsAndConfirms = true;
