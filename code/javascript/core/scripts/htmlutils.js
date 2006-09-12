@@ -601,7 +601,6 @@ function openSeparateApplicationWindow(url) {
 var URLConfiguration = Class.create();
 Object.extend(URLConfiguration.prototype, {
     initialize: function() {
-
     },
     _isQueryParameterTrue: function (name) {
         var parameterValue = this._getQueryParameter(name);
@@ -612,7 +611,7 @@ Object.extend(URLConfiguration.prototype, {
     },
 
     _getQueryParameter: function(searchKey) {
-        var str = this._getQueryString();
+        var str = this.queryString
         if (str == null) return null;
         var clauses = str.split('&');
         for (var i = 0; i < clauses.length; i++) {

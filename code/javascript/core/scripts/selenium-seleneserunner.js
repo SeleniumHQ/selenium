@@ -32,14 +32,15 @@ var cmd4 = document.createElement("div");
 var postResult = "START";
 var debugMode = false;
 var relayToRC = null;
-// override in injection.html
-var queryString = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
 var RunOptions = Class.create();
 Object.extend(RunOptions.prototype, URLConfiguration.prototype);
 Object.extend(RunOptions.prototype, {
+    initialize: function() {
+        this._acquireQueryString();
+    },
     getDebugMode: function() {
         return this._getQueryParameter("debugMode");
     },
@@ -64,17 +65,16 @@ Object.extend(RunOptions.prototype, {
         return this._getQueryParameter("sessionId");
     },
 
-    _getQueryString: function () {
-        if (queryString != null) return queryString;
+    _acquireQueryString: function () {
+        if (this.queryString) return;
         if (browserVersion.isHTA) {
             var args = this._extractArgs();
             if (args.length < 2) return null;
-            queryString = args[1];
-            return queryString;
+            this.queryString = args[1];
         } else if (proxyInjectionMode) {
-            return selenium.browserbot.getCurrentWindow().location.search.substr(1);
+            this.queryString = selenium.browserbot.getCurrentWindow().location.search.substr(1);
         } else {
-            return top.location.search.substr(1);
+            this.queryString = top.location.search.substr(1);
         }
     }
 
@@ -82,7 +82,7 @@ Object.extend(RunOptions.prototype, {
 var runOptions;
 
 function runSeleniumTest() {
-    runOptions = new URLConfiguration();
+    runOptions = new RunOptions();
     var testAppWindow;
 
     if (runOptions.isMultiWindowMode()) {
