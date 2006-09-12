@@ -48,6 +48,7 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
         supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
         supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
+        supportedBrowsers.put("konqueror", KonquerorLauncher.class);
     }
     
     SeleniumServer server;

@@ -24,7 +24,6 @@ class StaticContentHandler extends ResourceHandler {
 
     public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
         httpResponse.setField("Expires", "-1"); // never cached.
-        httpResponse.setField(HttpFields.__ContentType, "application/xhtml+xml");
         if (pathInContext.equals("/core/SeleneseRunner.html") && SeleniumServer.isProxyInjectionMode()) {
             pathInContext = pathInContext.replaceFirst("/core/SeleneseRunner.html",
                     "/core/InjectedSeleneseRunner.html");
