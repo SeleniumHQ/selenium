@@ -12,21 +12,33 @@
                 </sequential>
         </macrodef>
 
-	<target name="_score-build">
+	<target name="update">
 		<svn-update workdir="${score.dir}"/>
+		<svn-update workdir="."/>
+	</target>
+
+	<target name="score-build">
 		<ant antfile = "build.xml" 
 			dir="${score.dir}/code" 
 			target="all" 
 			output="score-build.log" />
 	</target>
 
-	<target name="_src-build">
-		<svn-update workdir="."/>
+	<target name="src-build">
 		<ant antfile = "build.xml" 
 		     dir="." 
 		     output="src-build.log" />
 	</target>
 
-	<target name="cruise" depends="_score-build, _src-build" />
+	<target name="build" depends="score-build, src-build" />
+
+	<target name="cruise" depends="update, build" />
+
+	<target name="cruise-release" 
+		description="build, then upload artifacts to OpenQA"
+		depends="cruise">
+		<echo message="Release script goes here :-)" />
+	</target>
+
 </project>
 
