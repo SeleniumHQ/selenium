@@ -99,7 +99,8 @@ BrowserBot.createForWindow = function(window) {
         // Use mozilla by default
         browserbot = new MozillaBrowserBot(window);
     }
-    browserbot.getCurrentWindow();  // todo: why?
+    browserbot.getCurrentWindow();
+    // todo: why?
     return browserbot;
 };
 
@@ -341,14 +342,7 @@ BrowserBot.prototype._getFrameElement = function(win) {
  */
 BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker) {
     LOG.info("pollForLoad original (" + marker + "): " + originalHref);
-    var currentDocument;
-    var currentLocation;
-    var currentHref;
-    var sameDoc;
-    var sameLoc;
-    var sameHref;
-    var rs;
-    var markedLoc;
+
     try {
         if (this._windowClosed(windowObject)) {
             LOG.info("pollForLoad WINDOW CLOSED (" + marker + ")");
@@ -361,22 +355,11 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
         // then we can assign the TestRunner window to buttonWindow
         this.buttonWindow = windowObject.opener;
 
-        currentDocument = windowObject.document;
-        currentLocation = windowObject.location;
-        currentHref = currentLocation.href
+        var isSamePage = this._isSamePage(windowObject, originalDocument, originalLocation, originalHref, marker);
+        var rs = this.getReadyState(windowObject, windowObject.document);
 
-        sameDoc = (originalDocument === currentDocument);
-        sameLoc = (originalLocation === currentLocation);
-        sameHref = (originalHref === currentHref);
-        rs = this.getReadyState(windowObject, currentDocument);
-        markedLoc = currentLocation[marker];
-
-        if (browserVersion.isKonqueror || browserVersion.isSafari) {
-            // the mark disappears too early on these browsers
-            markedLoc = true;
-        }
-
-        if (!(sameDoc && sameLoc && sameHref && markedLoc) && rs == 'complete') {
+        if (!isSamePage && rs == 'complete') {
+            var currentHref = windowObject.location.href;
             LOG.info("pollForLoad FINISHED (" + marker + "): " + rs + " (" + currentHref + ")");
             delete this.pollingForLoad[marker];
             this._modifyWindow(windowObject);
@@ -404,6 +387,29 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
         this.pageLoadError = e;
     }
 };
+
+BrowserBot.prototype._isSamePage = function(windowObject, originalDocument, originalLocation, originalHref, marker) {
+    var currentDocument = windowObject.document;
+    var currentLocation = windowObject.location;
+    var currentHref = currentLocation.href
+
+    var sameDoc = this._isSameDocument(originalDocument, currentDocument);
+
+    var sameLoc = (originalLocation === currentLocation);
+    var sameHref = (originalHref === currentHref);
+    var markedLoc = currentLocation[marker];
+
+    if (browserVersion.isKonqueror || browserVersion.isSafari) {
+        // the mark disappears too early on these browsers
+        markedLoc = true;
+    }
+    return sameDoc && sameLoc && sameHref && markedLoc
+};
+
+BrowserBot.prototype._isSameDocument = function(originalDocument, currentDocument) {
+    return originalDocument === currentDocument;
+};
+
 
 BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
     var rs = currentDocument.readyState;
@@ -454,7 +460,7 @@ BrowserBot.prototype.XXXreschedulePoller = function(loadFunction, windowObject, 
     }, 500);
 };
 
-/** This function isn't used normally, but is useful for debugging asynchronous pollers 
+/** This function isn't used normally, but is useful for debugging asynchronous pollers
  * To enable it, rename it to "reschedulePoller", so it will override the
  * existing reschedulePoller function
  */
@@ -557,6 +563,17 @@ KonquerorBrowserBot.prototype.setOpenLocation = function(win, loc) {
     var marker = this.isPollingForLoad(win);
     if (marker) {
         delete win.location[marker];
+    }
+};
+
+KonquerorBrowserBot.prototype._isSameDocument = function(originalDocument, currentDocument) {
+    // under Konqueror, there may be this case:
+    // originalDocument and currentDocument are different objects
+    // while their location are same.
+    if (originalDocument) {
+        return originalDocument.location == currentDocument.location
+    } else {
+        return originalDocument === currentDocument;
     }
 };
 
