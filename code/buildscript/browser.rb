@@ -142,11 +142,16 @@ module Browser
     end
     
     def visit(url)
-      system("kfmclient openURL #{url}")
+      system("kfmclient openURL '#{url}'")
     end
     
     def to_s
       "Konqueror"
+    end
+
+    def teardown
+      kill_process 'konqueror' if linux?
+      sleep 1 # wait for process handle killed
     end
   end
 
