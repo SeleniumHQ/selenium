@@ -30,15 +30,31 @@
 		     output="src-build.log" />
 	</target>
 
+	<target name="score-upload">
+		<ant antfile = "build.xml" 
+		     dir="${score.dir}/code" 
+		     target="openqa-upload" 
+		     output="score-upload.log" />
+	</target>
+
+	<target name="src-upload">
+		<ant antfile = "build.xml" 
+		     dir="." 
+		     target="openqa-upload"
+		     output="src-upload.log" />
+	</target>
+
 	<target name="build" depends="score-build, src-build" />
 
 	<target name="cruise" depends="update, build" />
 
+	<target name="openqa-upload"
+		description="upload artifacts to OpenQA"
+		depends="score-upload, src-upload"/>
+
 	<target name="cruise-release" 
 		description="build, then upload artifacts to OpenQA"
-		depends="cruise">
-		<echo message="Release script goes here :-)" />
-	</target>
+		depends="cruise, openqa-upload"/>
 
 </project>
 
