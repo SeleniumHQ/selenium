@@ -213,8 +213,12 @@ Object.extend(RunOptions.prototype, {
     },
 
     continueCurrentTest: function () {
-        this.runInterval = this.speedController.value;
+        this.reset();
         currentTest.resume();
+    },
+
+    reset: function() {
+        this.runInterval = this.speedController.value;
         this._switchContinueButtonToPause();
     },
 
@@ -669,6 +673,7 @@ Object.extend(HtmlTestCase.prototype, {
 });
 
 function startTest() {
+    runOptions.reset();
     testFrame.scrollToTop();
 
     //todo: move testFailed and storedVars to TestCase
@@ -699,10 +704,10 @@ var get_new_rows = function() {
 };
 
 function startTestSuite() {
+    runOptions.reset();
     metrics.resetMetrics();
     htmlTestSuite.reset();
     runAllTests = true;
-
     runNextTest();
 }
 
