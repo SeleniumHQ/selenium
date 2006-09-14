@@ -10,21 +10,21 @@
     <property name="ruby.executable" value="/usr/bin/ruby"/>
 
     <property name="build.dir" location="build"/>
-	<property name="logs.dir" location="logs" />
+    <property name="logs.dir" location="logs" />
     <property name="dist.dir" location="${build.dir}/dist"/>
     <property name="image.dir" location="${build.dir}/image"/>
     <property name="resultshandler.image.dir" location="${build.dir}/resultshandler"/>
     <property name="docs.generation.dir" location="javascript/doctool"/>
 
-	<!-- for jsunit integration -->
-	<condition property="browserFileNames" value="c:\program files\Internet Explorer\iexplore.exe">
-		<os family="windows" />
-	</condition>
-	<condition property="browserFileNames" value="/usr/bin/firefox">
-		<os family="unix" />
-	</condition>
-	<property name="testRunnerLocation" location="javascript/jsunit/testRunner.html" />
-	<property name="testSuiteLocation" location="javascript/unittest/browserbot/suite.html" />
+    <!-- for jsunit integration -->
+    <condition property="browserFileNames" value="c:\program files\Internet Explorer\iexplore.exe">
+        <os family="windows" />
+    </condition>
+    <condition property="browserFileNames" value="/usr/bin/firefox">
+        <os family="unix" />
+    </condition>
+    <property name="testRunnerLocation" location="javascript/jsunit/testRunner.html" />
+    <property name="testSuiteLocation" location="javascript/unittest/browserbot/suite.html" />
     <property name="browserBotTestUrl" value="file://${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=true"/>
     <property name="port" value=""/>
     <property name="resourceBase" value=""/>
@@ -38,8 +38,8 @@
 
     <target name="clean">
         <delete dir="${build.dir}"/>
-	<delete dir="${logs.dir}"/>
-	<mkdir dir="${build.dir}" />
+        <delete dir="${logs.dir}"/>
+        <mkdir dir="${build.dir}" />
     </target>
 
     <target name="get-svn-revision">
@@ -92,39 +92,39 @@
 
     <target name="dist-image" depends="get-svn-revision, copy-sources, generate-doc"/>
 
-	<target name="checkWindows">
-		<condition property="thisIsWindows">
-			<os family="windows" />
-		</condition>
-	</target>
+    <target name="checkWindows">
+        <condition property="thisIsWindows">
+            <os family="windows" />
+        </condition>
+    </target>
 
-	<target name="test" depends="dist-image, checkWindows" if="thisIsWindows">
-		<echo message="Starting HTA tests..." />
-		<property name="results.file" location="${build.dir}/results.html" />
-		<delete file="${results.file}" />
-		<delete file="${results.file}" />
-		<exec executable="cmd" failonerror="true" dir="${build.dir}" timeout="300000">
-			<arg value="/c" />
-			<!--<arg value="start" />
-			<arg value="/wait" />-->
-			<arg value="${image.dir}/core/TestRunner.hta" />
-			<arg value="&quot;test=../tests/TestSuite.html&amp;auto=true&amp;save=true&amp;resultsUrl=${results.file}&amp;close=true&quot;" />
-		</exec>
-		<condition property="build.failed">
-			<not><available file="${results.file}" /></not>
-		</condition>
-		<fail if="build.failed" message="Couldn't find results file: ${results.file}" />
-		<loadfile srcfile="${results.file}" property="tests.passed">
-			<filterchain>
-				<tokenfilter>
-					<filetokenizer />
-					<containsregex pattern="result:./td.\s*.td.passed./td." />
-				</tokenfilter>
-			</filterchain>
-		</loadfile>
-		<fail unless="tests.passed" message="HTA Tests did not pass, see results file for details: ${results.file}" />
-		<echo message="HTA tests passed!" />
-	</target>
+    <target name="test" depends="dist-image, checkWindows" if="thisIsWindows">
+        <echo message="Starting HTA tests..." />
+        <property name="results.file" location="${build.dir}/results.html" />
+        <delete file="${results.file}" />
+        <delete file="${results.file}" />
+        <exec executable="cmd" failonerror="true" dir="${build.dir}" timeout="300000">
+            <arg value="/c" />
+            <!--<arg value="start" />
+                 <arg value="/wait" />-->
+            <arg value="${image.dir}/core/TestRunner.hta" />
+            <arg value="&quot;test=../tests/TestSuite.html&amp;auto=true&amp;save=true&amp;resultsUrl=${results.file}&amp;close=true&quot;" />
+        </exec>
+        <condition property="build.failed">
+            <not><available file="${results.file}" /></not>
+        </condition>
+        <fail if="build.failed" message="Couldn't find results file: ${results.file}" />
+        <loadfile srcfile="${results.file}" property="tests.passed">
+            <filterchain>
+                <tokenfilter>
+                    <filetokenizer />
+                    <containsregex pattern="result:./td.\s*.td.passed./td." />
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
+        <fail unless="tests.passed" message="HTA Tests did not pass, see results file for details: ${results.file}" />
+        <echo message="HTA tests passed!" />
+    </target>
 
     <target name="dist" depends="dist-image">
         <mkdir dir="${dist.dir}"/>
@@ -137,10 +137,10 @@
     <target name="resultshandler-image" depends="get-svn-revision, copy-sources"
             description="Creates a public test results handler image - this should be copied to an apache directory, preserving permissions.">
         <echo>
-        Creating a public test results handler image for Selenium revision ${svn-revision} at
+            Creating a public test results handler image for Selenium revision ${svn-revision} at
             ${resultshandler.image.dir}.
-        This should be copied to an apache directory that is available via the URL "http://HOST${resultshandler.path.prefix}".
-        Permissions must be preserved in the copy.
+            This should be copied to an apache directory that is available via the URL "http://HOST${resultshandler.path.prefix}".
+            Permissions must be preserved in the copy.
         </echo>
         <!-- Copy the image -->
         <copy todir="${resultshandler.image.dir}/selenium">
@@ -179,92 +179,91 @@
             <fileset dir="${image.dir}"/>
         </jar>
         <mvn-install file="${dist.dir}/selenium-core.jar" 
-            groupId="org.openqa.selenium.core" 
-            artifactId="selenium-core"
-        />
+                     groupId="org.openqa.selenium.core" 
+                     artifactId="selenium-core"
+                     />
     </target>
 
     <target name="deploy-maven" depends="maven-tasks, install-jar">
-	    <mvn-deploy file="${dist.dir}/selenium-core.jar" 
-            groupId="org.openqa.selenium.core" 
-            artifactId="selenium-core"
-            repositoryId="openqa"
-            url="scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs"
-        />
-	</target>
+        <mvn-deploy file="${dist.dir}/selenium-core.jar" 
+                    groupId="org.openqa.selenium.core" 
+                    artifactId="selenium-core"
+                    repositoryId="openqa"
+                    url="scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs" />
+    </target>
 
     <target name="maven-tasks">
         <!-- Defining Maven tasks; we're doing this because of various bugs in the Ant tasks,
-        most especially including MNG-2060 and MNG-2264 -->
-		<property environment="env" />
-		<property name="maven.home" value="${env.MAVEN_HOME}" /> <!-- override this if necessary -->
-		<condition property="build.failed">
-		    <not><available file="${maven.home}" /></not>
-		</condition>
-		<fail if="build.failed" message="Couldn't find MAVEN_HOME.  (Did you set the MAVEN_HOME environment variable correctly?)&#xa;Maven Home: ${maven.home}" />
-		<property name="mvn.overrideable.settings" value="" />
-		<presetdef name="mvn">
-			<java classname="org.codehaus.classworlds.Launcher" fork="true" failonerror="true">
-				<!--<jvmarg value="-Xdebug"/>
-				<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"/>
-				<jvmarg value="-Xnoagent"/>
-				<jvmarg value="-Djava.compiler=NONE"/>-->
-				<classpath>
-					<fileset dir="${maven.home}/core/boot" includes="classworlds-*.jar" />
-				</classpath>
-				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
-				<sysproperty key="maven.home" value="${maven.home}" />
-				<arg line="${mvn.overrideable.settings}" />
-			</java>
-		</presetdef>
-		<mvn outputproperty="ignore.output" failonerror="false" resultproperty="mvn.noargs.should.be.1" />
-		<condition property="build.failed">
-			<not><equals arg1="1" arg2="${mvn.noargs.should.be.1}" /></not>
-		</condition>
-		<fail if="build.failed" message="mvn is not appropriately failing on error...&#0010;You may be affected by maven bug 2127 http://jira.codehaus.org/browse/MNG-2127" />
-		<echo message="mvn appears to be able to fail on error" />
-		
-		<macrodef name="mvn-install">
-		    <attribute name="file" />
-		    <attribute name="groupId" />
-		    <attribute name="artifactId" />
-		    <attribute name="version" default="${version}" />
-		    <attribute name="packaging" default="jar" />
-		    <sequential>
-		        <property name="@{file}.location" location="@{file}" />
-		        <mvn>
-		            <arg value="install:install-file" />
-		            <arg value="-Dfile=${@{file}.location}" />
-		            <arg value="-DgroupId=@{groupId}" />
-		            <arg value="-DartifactId=@{artifactId}" />
-		            <arg value="-Dversion=@{version}" />
-		            <arg value="-Dpackaging=@{packaging}" />
-		        </mvn>
-		    </sequential>
-		</macrodef>
-		
-		<macrodef name="mvn-deploy">
-		    <attribute name="file" />
-		    <attribute name="groupId" />
-		    <attribute name="artifactId" />
-		    <attribute name="version" default="${version}" />
-		    <attribute name="packaging" default="jar" />
-		    <attribute name="repositoryId" />
-		    <attribute name="url" />
-		    <sequential>
-		        <property name="@{file}.location" location="@{file}" />
-		        <mvn>
-		            <arg value="deploy:deploy-file" />
-		            <arg value="-Dfile=${@{file}.location}" />
-		            <arg value="-DgroupId=@{groupId}" />
-		            <arg value="-DartifactId=@{artifactId}" />
-		            <arg value="-Dversion=@{version}" />
-		            <arg value="-Dpackaging=@{packaging}" />
-		            <arg value="-DrepositoryId=@{repositoryId}" />
-		            <arg value="-Durl=@{url}" />
-		        </mvn>
-		    </sequential>
-		</macrodef>
+             most especially including MNG-2060 and MNG-2264 -->
+        <property environment="env" />
+        <property name="maven.home" value="${env.MAVEN_HOME}" /> <!-- override this if necessary -->
+        <condition property="build.failed">
+            <not><available file="${maven.home}" /></not>
+        </condition>
+        <fail if="build.failed" message="Couldn't find MAVEN_HOME.  (Did you set the MAVEN_HOME environment variable correctly?)&#xa;Maven Home: ${maven.home}" />
+        <property name="mvn.overrideable.settings" value="" />
+        <presetdef name="mvn">
+            <java classname="org.codehaus.classworlds.Launcher" fork="true" failonerror="true">
+                <!--<jvmarg value="-Xdebug"/>
+                     <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"/>
+                     <jvmarg value="-Xnoagent"/>
+                     <jvmarg value="-Djava.compiler=NONE"/>-->
+                <classpath>
+                    <fileset dir="${maven.home}/core/boot" includes="classworlds-*.jar" />
+                </classpath>
+                <sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
+                <sysproperty key="maven.home" value="${maven.home}" />
+                <arg line="${mvn.overrideable.settings}" />
+            </java>
+        </presetdef>
+        <mvn outputproperty="ignore.output" failonerror="false" resultproperty="mvn.noargs.should.be.1" />
+        <condition property="build.failed">
+            <not><equals arg1="1" arg2="${mvn.noargs.should.be.1}" /></not>
+        </condition>
+        <fail if="build.failed" message="mvn is not appropriately failing on error...&#0010;You may be affected by maven bug 2127 http://jira.codehaus.org/browse/MNG-2127" />
+        <echo message="mvn appears to be able to fail on error" />
+        
+        <macrodef name="mvn-install">
+            <attribute name="file" />
+            <attribute name="groupId" />
+            <attribute name="artifactId" />
+            <attribute name="version" default="${version}" />
+            <attribute name="packaging" default="jar" />
+            <sequential>
+                <property name="@{file}.location" location="@{file}" />
+                <mvn>
+                    <arg value="install:install-file" />
+                    <arg value="-Dfile=${@{file}.location}" />
+                    <arg value="-DgroupId=@{groupId}" />
+                    <arg value="-DartifactId=@{artifactId}" />
+                    <arg value="-Dversion=@{version}" />
+                    <arg value="-Dpackaging=@{packaging}" />
+                </mvn>
+            </sequential>
+        </macrodef>
+        
+        <macrodef name="mvn-deploy">
+            <attribute name="file" />
+            <attribute name="groupId" />
+            <attribute name="artifactId" />
+            <attribute name="version" default="${version}" />
+            <attribute name="packaging" default="jar" />
+            <attribute name="repositoryId" />
+            <attribute name="url" />
+            <sequential>
+                <property name="@{file}.location" location="@{file}" />
+                <mvn>
+                    <arg value="deploy:deploy-file" />
+                    <arg value="-Dfile=${@{file}.location}" />
+                    <arg value="-DgroupId=@{groupId}" />
+                    <arg value="-DartifactId=@{artifactId}" />
+                    <arg value="-Dversion=@{version}" />
+                    <arg value="-Dpackaging=@{packaging}" />
+                    <arg value="-DrepositoryId=@{repositoryId}" />
+                    <arg value="-Durl=@{url}" />
+                </mvn>
+            </sequential>
+        </macrodef>
     </target>
 
     <target name="browser_bot_tests" description="Runs JsUnit tests on the local machine as configured by the url and browserfilenames properties">
@@ -279,5 +278,10 @@
         </junit>
     </target>
 
+    <target name="openqa-upload"
+            description="Upload artifacts to OpenQA"
+            depends="deploy-maven">
+        <echo message="Uploaded to OpenQA"/>
+    </target>
 
 </project>
