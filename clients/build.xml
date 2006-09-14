@@ -27,7 +27,8 @@
 
     <target name="dist" depends="dist-java, dist-dotnet, dist-ruby, dist-python, dist-perl, dist-doc">
     	<property name="src.release" value="selenium-remote-control-${version}"/>
-    	<zip zipfile="dist/${src.release}.zip">
+        <mkdir dir="dist/nightly" />
+        <zip zipfile="dist/nightly/${src.release}.zip">
     		<zipfileset dir="dist-image" prefix="${src.release}" />
     	</zip>
     </target>
@@ -42,7 +43,8 @@
 	    <macrodef name="copy-doc">
 	    	<attribute name="dir" />
 	    	<sequential>
-			    <copy todir="dist-doc/@{dir}">
+                <mkdir dir="dist/nightly/doc"/>
+                <copy todir="dist/nightly/doc/@{dir}">
 			        <fileset dir="dist-image/@{dir}/doc" />
 			    </copy>
 			</sequential>
@@ -269,5 +271,9 @@
 	<target name="clean-ruby">
         <ant dir="ruby" target="clean"/>
     </target>
+
+
+
+
 
 </project>
