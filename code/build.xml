@@ -2,8 +2,8 @@
 
     <property name="version" value="0.8.0-SNAPSHOT"/>
 
-    <target name="all" depends="clean, install-jar, dist"/>
-    <target name="all-with-tests" depends="clean, browser_bot_tests, install-jar, dist"/>
+    <target name="all" depends="clean, install-jar, nightly-image"/>
+    <target name="all-with-tests" depends="clean, browser_bot_tests, install-jar, nightly-image"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
@@ -15,6 +15,15 @@
     <property name="image.dir" location="${build.dir}/image"/>
     <property name="resultshandler.image.dir" location="${build.dir}/resultshandler"/>
     <property name="docs.generation.dir" location="javascript/doctool"/>
+
+    <!-- override to suit your environment -->
+
+    <property name="release.host" value="release.openqa.org"/>
+    <property name="release.user" value="release"/>
+    <property name="release.dir" value="release.openqa.org/htdocs/selenium-core"/>
+    <property name="release.key.file"
+              value="${user.home}/.ssh/openqa/release_openqa"/>
+    <property name="release.key.passphrase" value=""/>
 
     <!-- for jsunit integration -->
     <condition property="browserFileNames" value="c:\program files\Internet Explorer\iexplore.exe">
@@ -35,11 +44,9 @@
         </fileset>
     </path>
 
-
     <target name="clean">
         <delete dir="${build.dir}"/>
         <delete dir="${logs.dir}"/>
-        <mkdir dir="${build.dir}" />
     </target>
 
     <target name="get-svn-revision">
@@ -50,23 +57,13 @@
     </target>
 
     <target name="copy-sources">
+        <mkdir dir="${image.dir}"/>
         <property name="svn-revision" value="unknown-revision"/>
-        <copy todir="${image.dir}" overwrite="true">
+
+        <copy todir="${image.dir}">
             <fileset dir="javascript">
-                <exclude name="jsunit/intellij/**"/>
-                <exclude name="jsunit/java/**"/>
-                <exclude name="jsunit/tests/**"/>
-            </fileset>
-            
-        </copy>
-        <copy todir="${image.dir}" overwrite="true">
-            <fileset dir="javascript">
-                <include name="**/*.js" />
-                <include name="**/*.txt" />
-                <include name="**/*.html" />
-                <exclude name="jsunit/intellij/**"/>
-                <exclude name="jsunit/java/**"/>
-                <exclude name="jsunit/tests/**"/>
+                <exclude name="doctool"/>
+                <exclude name="doctool/**"/>
             </fileset>
             <filterset>
                 <filter token="VERSION" value="${version}"/>
@@ -90,7 +87,7 @@
         <xslt in="${image.dir}/doc.xml" out="${image.dir}/reference.html" style="${docs.generation.dir}/doc2html.xml"/>
     </target>
 
-    <target name="dist-image" depends="get-svn-revision, copy-sources, generate-doc"/>
+    <target name="image" depends="get-svn-revision, copy-sources, generate-doc"/>
 
     <target name="checkWindows">
         <condition property="thisIsWindows">
@@ -98,7 +95,7 @@
         </condition>
     </target>
 
-    <target name="test" depends="dist-image, checkWindows" if="thisIsWindows">
+    <target name="test" depends="image, checkWindows" if="thisIsWindows">
         <echo message="Starting HTA tests..." />
         <property name="results.file" location="${build.dir}/results.html" />
         <delete file="${results.file}" />
@@ -124,14 +121,6 @@
         </loadfile>
         <fail unless="tests.passed" message="HTA Tests did not pass, see results file for details: ${results.file}" />
         <echo message="HTA tests passed!" />
-    </target>
-
-    <target name="dist" depends="dist-image">
-        <mkdir dir="${dist.dir}"/>
-        <property name="selenium-core-release" value="selenium-core-${version}"/>
-        <zip destfile="${dist.dir}/${selenium-core-release}.zip">
-            <zipfileset dir="${image.dir}" prefix="${selenium-core-release}"/>
-        </zip>
     </target>
 
     <target name="resultshandler-image" depends="get-svn-revision, copy-sources"
@@ -173,19 +162,19 @@
         </chmod>
     </target>
 
-    <target name="install-jar" depends="dist-image, maven-tasks">
-        <mkdir dir="${dist.dir}"/>
-        <jar destfile="${dist.dir}/selenium-core.jar">
+    <target name="install-jar" depends="image, maven-tasks">
+        <mkdir dir="${dist.dir}/maven"/>
+        <jar destfile="${dist.dir}/maven/selenium-core.jar">
             <fileset dir="${image.dir}"/>
         </jar>
-        <mvn-install file="${dist.dir}/selenium-core.jar" 
+        <mvn-install file="${dist.dir}/maven/selenium-core.jar" 
                      groupId="org.openqa.selenium.core" 
                      artifactId="selenium-core"
                      />
     </target>
 
     <target name="deploy-maven" depends="maven-tasks, install-jar">
-        <mvn-deploy file="${dist.dir}/selenium-core.jar" 
+        <mvn-deploy file="${dist.dir}/maven/selenium-core.jar" 
                     groupId="org.openqa.selenium.core" 
                     artifactId="selenium-core"
                     repositoryId="openqa"
@@ -278,9 +267,35 @@
         </junit>
     </target>
 
+    <target name="nightly-image" depends="image">
+        <mkdir dir="${dist.dir}/nightly"/>
+        <property name="release.name" value="selenium-core-${version}"/>
+        <zip destfile="${dist.dir}/nightly/${release.name}.zip">
+            <zipfileset dir="${image.dir}" prefix="${release.name}"/>
+        </zip>
+        <copy todir="${dist.dir}/nightly"
+              file="${image.dir}/reference.html" />
+    </target>
+
+    <target name="nightly-upload"
+            depends="nightly-image">
+        <sshexec host="${release.host}"
+                 username="${release.user}"
+                 keyfile="${release.key.file}"
+                 passphrase="${release.key.passphrase}"
+                 command="rm -fr ${release.dir}/nightly"/>
+        <scp todir="${release.user}@${release.host}:${release.dir}"
+             keyfile="${release.key.file}"
+             passphrase="${release.key.passphrase}">
+            <fileset dir="${dist.dir}">
+                <include name="nightly/**"/>
+            </fileset>
+        </scp>
+    </target>
+
     <target name="openqa-upload"
             description="Upload artifacts to OpenQA"
-            depends="deploy-maven">
+            depends="deploy-maven, nightly-upload">
         <echo message="Uploaded to OpenQA"/>
     </target>
 
