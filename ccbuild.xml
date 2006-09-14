@@ -18,30 +18,27 @@
 	</target>
 
 	<target name="score-build">
-		<ant antfile = "build.xml" 
+		<ant antfile="build.xml" 
 			dir="${score.dir}/code" 
-			target="all" 
-			output="score-build.log" />
+			target="all" />
 	</target>
 
 	<target name="src-build">
-		<ant antfile = "build.xml" 
+		<ant antfile="build.xml" 
 		     dir="." 
-		     output="src-build.log" />
+		     target="all" />
 	</target>
 
 	<target name="score-upload">
-		<ant antfile = "build.xml" 
+		<ant antfile="build.xml" 
 		     dir="${score.dir}/code" 
-		     target="openqa-upload" 
-		     output="score-upload.log" />
+		     target="openqa-upload" />
 	</target>
 
 	<target name="src-upload">
-		<ant antfile = "build.xml" 
+		<ant antfile="build.xml" 
 		     dir="." 
-		     target="openqa-upload"
-		     output="src-upload.log" />
+		     target="openqa-upload" />
 	</target>
 
 	<target name="build" depends="score-build, src-build" />
