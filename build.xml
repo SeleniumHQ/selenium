@@ -91,4 +91,10 @@
 		<ant dir="clients" target="clean"/>
 	</target>
 
+	<target name="openqa-upload"
+		description="Upload artifacts to OpenQA"
+		depends="maven-deploy-skiptest">
+		<echo message="Uploaded to OpenQA"/>
+	</target>
+
 </project>
