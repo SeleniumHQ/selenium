@@ -62,7 +62,6 @@
     <target name="maven" depends="init" description="Builds just the Maven stuff">
         <mvn>
             <arg value="install"/>
-            <arg value="-Dmaven.test.skip"/>
         </mvn>
     </target>
 
