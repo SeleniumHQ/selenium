@@ -18,6 +18,9 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
     <meta content="text/html; charset=ISO-8859-1"
           http-equiv="content-type">
+    <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
+    <script language="JavaScript" type="text/javascript" src="filter-tests-for-browser.js"></script>
+
     <title>Test XPath Locators</title>
 </head>
 
@@ -87,12 +90,15 @@ Copyright 2004 ThoughtWorks, Inc
 
         <!-- Funky XPath -->
 
-        <tr>
+        <tr  if="!browserVersion.isSafari">
+            <td>verifyText</td>
+            <td>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</td>
+            <td>theCellText</td>
+        </tr>
+
+        <tr  if="browserVersion.isSafari">
             <td>verifyText</td>
             <td>xpath=//table[@class='stylee']//td</td>
-<!-- Safari doesn't support the funcky stuff. What's the purpose of it? 
-            <td>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</td>
--->
             <td>theCellText</td>
         </tr>
 
