@@ -258,6 +258,7 @@ BrowserBot.prototype.getCurrentPage = function() {
 
 BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     var self = this;
+
     windowToModify.alert = function(alert) {
         browserBot.recordedAlerts.push(alert);
         self.relayBotToRC("browserbot.recordedAlerts");
@@ -1193,17 +1194,7 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     // Perform the link action if preventDefault was set.
     // In chrome URL, the link action is already executed by triggerMouseEvent.
     if (!browserVersion.isChrome && !preventDefault) {
-        // Try the element itself, as well as it's parent - this handles clicking images inside links.
-        var targetWindow = this.getCurrentWindow();
-        if (element.target) {
-            var frame = this.browserbot._getFrameFromGlobal(element.target);
-            targetWindow = frame.contentWindow;
-        }
-        if (element.href) {
-            targetWindow.location.href = element.href;
-        } else if (element.parentNode && element.parentNode.href) {
-            targetWindow.location.href = element.parentNode.href;
-        }
+       this.browserbot._handleClickingImagesInsideLinks(element);
     }
 
     if (this._windowClosed()) {
@@ -1211,6 +1202,34 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     }
 
 };
+
+BrowserBot.prototype._handleClickingImagesInsideLinks = function(element) {
+ 	// Try the element itself, as well as it's parent - this handles clicking images inside links.
+        var targetWindow = this.getCurrentWindow();
+        if (element.target) {
+            var frame = this._getFrameFromGlobal(element.target);
+            targetWindow = frame.contentWindow;
+        }
+        if (element.href) {
+	LOG.error(element.href);
+// this.setOpenLocation(targetWindow, element.href);
+            targetWindow.location.href = element.href;
+        } else if (element.parentNode && element.parentNode.href) {
+            targetWindow.location.href = element.parentNode.href;
+        }
+}
+
+SafariBrowserBot.prototype._handleClickingImagesInsideLinks = function(element) {
+ 	// Try the element itself, as well as it's parent - this handles clicking images inside links.
+        var targetWindow = this.getCurrentWindow();
+        if (element.target) {
+            var frame = this._getFrameFromGlobal(element.target);
+            targetWindow = frame.contentWindow;
+        }
+        if (element.parentNode && element.parentNode.href) {
+            targetWindow.location.href = element.parentNode.href;
+        }
+}
 
 BrowserBot.prototype._getFrameFromGlobal = function(target) {
     pagebot = PageBot.createForWindow(this);
@@ -1260,41 +1279,52 @@ SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
     }
     // For links and other elements, event emulation is required.
     else {
-        triggerMouseEvent(element, 'click', true, clientX, clientY);
+       
 
         // Unfortunately, triggering the event doesn't seem to activate onclick handlers.
         // We currently call onclick for the link, but I'm guessing that the onclick for containing
         // elements is not being called.
-        var success = true;
-        if (element.onclick) {
+        
+	var success = true;
+        /*if (element.onclick) {
+LOG.error("executing element.onclick : \n" + element.onclick);
             var evt = document.createEvent('HTMLEvents');
             evt.initEvent('click', true, true);
             var onclickResult = element.onclick(evt);
             if (onclickResult === false) {
                 success = false;
             }
-        }
+LOG.error("result == " + success);
+        } */
 
-        if (success) {
-            // Try the element itself, as well as it's parent - this handles clicking images inside links.
-            if (element.href) {
-                this.getCurrentWindow().location.href = element.href;
-            }
-            else if (element.parentNode.href) {
-                this.getCurrentWindow().location.href = element.parentNode.href;
-            } else {
-                // This is true for buttons outside of forms, and maybe others.
-                LOG.warn("Ignoring 'click' call for button outside form, or link without href."
-                        + "Using buttons without an enclosing form can cause wierd problems with URL resolution in Safari.");
-                // I implemented special handling for window.open, but unfortunately this behaviour is also displayed
-                // when we have a button without an enclosing form that sets document.location in the onclick handler.
-                // The solution is to always use an enclosing form for a button.
-            }
-        }
-    }
+	 if(element.href && element.href.indexOf("#") != -1) {
+	   var targetWindow = this.getCurrentWindow();
+           if (element.target) {
+               var frame = this._getFrameFromGlobal(element.target);
+               targetWindow = frame.contentWindow;
+           }
 
-    if (this._windowClosed()) {
-        return;
+           if (element.href) {
+	     LOG.error(element.href);
+            	var b = targetWindow.document.getElementById(element.href.split("#")[1]);
+		targetWindow.document.body.scrollTop = b.offsetTop;
+
+	    //  targetWindow.location.href = element.href;
+           } else if (element.parentNode && element.parentNode.href) {
+            targetWindow.location.href = element.parentNode.href;
+           }
+
+
+	   success = false;
+	} else {
+		success = false;
+	   triggerMouseEvent(element, 'click', true, clientX, clientY);
+	}
+
+	if (!element.onclick && element.href) {
+//        if (success) {
+	   this.browserbot._handleClickingImagesInsideLinks(element);	          
+        }
     }
 
 };

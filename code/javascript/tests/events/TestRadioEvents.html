@@ -49,12 +49,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td>eventlog</td>
       <td>&nbsp;</td>
     </tr>
-
-    <!-- Check the first radio -->
-    <tr>
+	
+   <tr>
       <td>click</td>
       <td>theRadio1</td>
-      <td></td>
+      <td>&nbsp;</td>
     </tr>
     <tr>
       <td>verifyValue</td>
@@ -76,19 +75,13 @@ Copyright 2004 ThoughtWorks, Inc
       <td>eventlog</td>
       <td>*{click(theRadio1)}*</td>
     </tr>
-    <!-- Safari doesn't fire change events for radio buttons -->
-    <tr if="!browserVersion.isSafari">
+    <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
       <td>*{change(theRadio1)}*</td>
     </tr>
-    <tr if="browserVersion.isSafari">
-      <td>verifyNotValue</td>
-      <td>eventlog</td>
-      <td>* {change(theRadio1)} *</td>
-    </tr>
+    
 
-    <!-- Click the other radio -->
     <tr>
       <td>type</td>
       <td>eventlog</td>
@@ -119,19 +112,13 @@ Copyright 2004 ThoughtWorks, Inc
       <td>eventlog</td>
       <td>*{click(theRadio2)}*</td>
     </tr>
-    <!-- Safari doesn't fire change events for radio buttons -->
-    <tr if="!browserVersion.isSafari">
+    <tr>
       <td>verifyValue</td>
       <td>eventlog</td>
       <td>*{change(theRadio2)}*</td>
     </tr>
-    <tr if="browserVersion.isSafari">
-      <td>verifyNotValue</td>
-      <td>eventlog</td>
-      <td>* {change(theRadio2)} *</td>
-    </tr>
+   
 
-    <!-- Click the same radio again, shouldn't trigger a change event -->
     <tr>
       <td>type</td>
       <td>eventlog</td>

@@ -63,7 +63,11 @@ Object.extend(SeleniumFrame.prototype, {
     },
 
     _setLocation: function(location) {
-        this.frame.contentWindow.location.replace(location);
+        if (browserVersion.isSafari) {
+            this.frame.src = location;
+        } else {
+            this.frame.contentWindow.location.replace(location);
+        }
     },
 
     load: function(/* url, [callback] */) {

@@ -43,7 +43,7 @@ function getText(element) {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.textContent;
-    } else if (browserVersion.isKonqueror) {
+    } else if (browserVersion.isKonqueror || browserVersion.isSafari) {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.innerText;
@@ -249,6 +249,7 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
 
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
+	LOG.error("element has fireEvent");
         if (!screenX && !screenY && !clientX && !clientY) {
             element.fireEvent('on' + eventType);
         }
@@ -285,18 +286,20 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
         }
     }
     else {
+	LOG.error("element doesn't have fireEvent");
         var evt = document.createEvent('MouseEvents');
         if (evt.initMouseEvent)
         {
+	LOG.error("element has initMouseEvent");
+	//Safari
             evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, false, false, false, false, 0, null)
         }
-        else
-        {
-            // Safari
+        else {
+	LOG.error("element doesen't has initMouseEvent");
             // TODO we should be initialising other mouse-event related attributes here
             evt.initEvent(eventType, canBubble, true);
         }
-        element.dispatchEvent(evt);
+       element.dispatchEvent(evt);
     }
 }
 
