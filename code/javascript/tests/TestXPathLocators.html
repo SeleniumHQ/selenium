@@ -18,10 +18,11 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
     <meta content="text/html; charset=ISO-8859-1"
           http-equiv="content-type">
-    <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
-    <script language="JavaScript" type="text/javascript" src="filter-tests-for-browser.js"></script>
+        <title>Test XPath Locators</title>
+<script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../tests/filter-tests-for-browser.js"></script>
 
-    <title>Test XPath Locators</title>
+
 </head>
 
 <body>
@@ -38,7 +39,6 @@ Copyright 2004 ThoughtWorks, Inc
             <td>&nbsp;</td>
         </tr>
 
-        <!-- Explicit XPath location -->
         <tr>
             <td>verifyText</td>
             <td>xpath=//a</td>
@@ -75,7 +75,6 @@ Copyright 2004 ThoughtWorks, Inc
             <td>&nbsp;</td>
         </tr>
 
-        <!-- Implicit XPath location -->
 
         <tr>
             <td>verifyText</td>
@@ -88,21 +87,19 @@ Copyright 2004 ThoughtWorks, Inc
             <td>a1</td>
         </tr>
 
-        <!-- Funky XPath -->
 
-        <tr  if="!browserVersion.isSafari">
+        <tr if="!browserVersion.isSafari">
             <td>verifyText</td>
             <td>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</td>
             <td>theCellText</td>
         </tr>
 
-        <tr  if="browserVersion.isSafari">
+        <tr if="browserVersion.isSafari">
             <td>verifyText</td>
             <td>xpath=//table[@class='stylee']//td</td>
             <td>theCellText</td>
         </tr>
 
-        <!-- XPath with value attribute  -->
 
         <tr>
             <td>click</td>
