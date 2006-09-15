@@ -1194,7 +1194,12 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     // Perform the link action if preventDefault was set.
     // In chrome URL, the link action is already executed by triggerMouseEvent.
     if (!browserVersion.isChrome && !preventDefault) {
-       this.browserbot._handleClickingImagesInsideLinks(element);
+        var targetWindow = this.browserbot._getTargetWindow(element);
+        if (element.href) {
+            targetWindow.location.href = element.href;
+        } else {
+            this.browserbot._handleClickingImagesInsideLinks(targetWindow, element);
+        }
     }
 
     if (this._windowClosed()) {
@@ -1203,32 +1208,19 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
 };
 
-BrowserBot.prototype._handleClickingImagesInsideLinks = function(element) {
- 	// Try the element itself, as well as it's parent - this handles clicking images inside links.
-        var targetWindow = this.getCurrentWindow();
-        if (element.target) {
-            var frame = this._getFrameFromGlobal(element.target);
-            targetWindow = frame.contentWindow;
-        }
-        if (element.href) {
-	LOG.error(element.href);
-// this.setOpenLocation(targetWindow, element.href);
-            targetWindow.location.href = element.href;
-        } else if (element.parentNode && element.parentNode.href) {
-            targetWindow.location.href = element.parentNode.href;
-        }
+BrowserBot.prototype._handleClickingImagesInsideLinks = function(targetWindow, element) {
+    if (element.parentNode && element.parentNode.href) {
+        targetWindow.location.href = element.parentNode.href;
+    }
 }
 
-SafariBrowserBot.prototype._handleClickingImagesInsideLinks = function(element) {
- 	// Try the element itself, as well as it's parent - this handles clicking images inside links.
-        var targetWindow = this.getCurrentWindow();
-        if (element.target) {
-            var frame = this._getFrameFromGlobal(element.target);
-            targetWindow = frame.contentWindow;
-        }
-        if (element.parentNode && element.parentNode.href) {
-            targetWindow.location.href = element.parentNode.href;
-        }
+BrowserBot.prototype._getTargetWindow = function(element) {
+    var targetWindow = this.getCurrentWindow();
+    if (element.target) {
+        var frame = this._getFrameFromGlobal(element.target);
+        targetWindow = frame.contentWindow;
+    }
+    return targetWindow;
 }
 
 BrowserBot.prototype._getFrameFromGlobal = function(target) {
@@ -1268,9 +1260,7 @@ KonquerorPageBot.prototype.clickElement = function(element, clientX, clientY) {
 };
 
 SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
-
     triggerEvent(element, 'focus', false);
-
     var wasChecked = element.checked;
 
     // For form element it is simple.
@@ -1279,51 +1269,17 @@ SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
     }
     // For links and other elements, event emulation is required.
     else {
-       
+        var targetWindow = this._getTargetWindow(element);
+        // todo: what if the target anchor is on another page?
+        if (element.href && element.href.indexOf("#") != -1) {
+            var b = targetWindow.document.getElementById(element.href.split("#")[1]);
+            targetWindow.document.body.scrollTop = b.offsetTop;
+        } else {
+            triggerMouseEvent(element, 'click', true, clientX, clientY);
+        }
 
-        // Unfortunately, triggering the event doesn't seem to activate onclick handlers.
-        // We currently call onclick for the link, but I'm guessing that the onclick for containing
-        // elements is not being called.
-        
-	var success = true;
-        /*if (element.onclick) {
-LOG.error("executing element.onclick : \n" + element.onclick);
-            var evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', true, true);
-            var onclickResult = element.onclick(evt);
-            if (onclickResult === false) {
-                success = false;
-            }
-LOG.error("result == " + success);
-        } */
-
-	 if(element.href && element.href.indexOf("#") != -1) {
-	   var targetWindow = this.getCurrentWindow();
-           if (element.target) {
-               var frame = this._getFrameFromGlobal(element.target);
-               targetWindow = frame.contentWindow;
-           }
-
-           if (element.href) {
-	     LOG.error(element.href);
-            	var b = targetWindow.document.getElementById(element.href.split("#")[1]);
-		targetWindow.document.body.scrollTop = b.offsetTop;
-
-	    //  targetWindow.location.href = element.href;
-           } else if (element.parentNode && element.parentNode.href) {
-            targetWindow.location.href = element.parentNode.href;
-           }
-
-
-	   success = false;
-	} else {
-		success = false;
-	   triggerMouseEvent(element, 'click', true, clientX, clientY);
-	}
-
-	if (!element.onclick && element.href) {
-//        if (success) {
-	   this.browserbot._handleClickingImagesInsideLinks(element);	          
+        if (!element.onclick) {
+            this.browserbot._handleClickingImagesInsideLinks(targetWindow, element);
         }
     }
 
