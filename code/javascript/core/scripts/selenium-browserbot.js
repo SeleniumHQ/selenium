@@ -1278,9 +1278,6 @@ SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
             triggerMouseEvent(element, 'click', true, clientX, clientY);
         }
 
-        if (!element.onclick) {
-            this.browserbot._handleClickingImagesInsideLinks(targetWindow, element);
-        }
     }
 
 };
@@ -1405,7 +1402,7 @@ PageBot.prototype.goForward = function() {
 };
 
 PageBot.prototype.close = function() {
-    if (browserVersion.isChrome) {
+    if (browserVersion.isChrome || browserVersion.isSafari) {
         this.getCurrentWindow().close();
     } else {
         this.getCurrentWindow().eval("window.close();");
