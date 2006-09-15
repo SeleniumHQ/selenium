@@ -1269,7 +1269,7 @@ SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
     }
     // For links and other elements, event emulation is required.
     else {
-        var targetWindow = this._getTargetWindow(element);
+        var targetWindow = this.browserbot._getTargetWindow(element);
         // todo: what if the target anchor is on another page?
         if (element.href && element.href.indexOf("#") != -1) {
             var b = targetWindow.document.getElementById(element.href.split("#")[1]);
