@@ -196,7 +196,7 @@ public class SeleniumServer {
                 SeleniumServer.log("\"" + defaultBrowserString + "\" will be used as the browser " +
                         "mode for all sessions, no matter what is passed to getNewBrowserSession.");
             } else if ("-log".equals(arg)) {
-                logOut = new PrintStream(getArg(args, ++i));
+                setLogOut(getArg(args, ++i));
             } else if ("-port".equals(arg)) {
                 port = Integer.parseInt(getArg(args, ++i));
             } else if ("-multiWindow".equals(arg)) {
@@ -390,6 +390,15 @@ public class SeleniumServer {
         }
     }
 
+    private static void setLogOut(String logFileName) {
+        try {
+            logOut = new PrintStream(logFileName);
+        } catch (FileNotFoundException e) {
+            System.err.println("could not write to " + logFileName);
+            Runtime.getRuntime().halt(-1);
+        }
+    }
+
     private static void checkArgsSanity(int port, boolean interactive, boolean htmlSuite, boolean proxyInjectionModeArg, int portDriversShouldContactArg, SeleniumServer seleniumProxy) throws Exception {
         if (interactive && htmlSuite) {
             System.err.println("You can't use -interactive and -htmlSuite on the same line!");
@@ -523,6 +532,11 @@ public class SeleniumServer {
         }
         staticContentHandler.addStaticContent(new ClasspathResourceLocator());
 
+        String logOutFileName = System.getProperty("selenium.log.fileName");
+        if (logOutFileName != null) {
+            setLogOut(logOutFileName);
+        }
+        
         context.addHandler(staticContentHandler);
         context.addHandler(new SingleTestSuiteResourceHandler());
 
