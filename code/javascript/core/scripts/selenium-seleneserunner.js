@@ -87,7 +87,7 @@ function runSeleniumTest() {
 
     if (runOptions.isMultiWindowMode()) {
         testAppWindow = openSeparateApplicationWindow('Blank.html');
-    } else {
+    } else if ($('myiframe') != null) {
         testAppWindow = $('myiframe').contentWindow;
     }
     if (testAppWindow == null) {
