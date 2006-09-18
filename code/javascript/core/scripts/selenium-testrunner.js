@@ -23,8 +23,9 @@ var htmlTestRunner;
 var HtmlTestRunner = Class.create();
 Object.extend(HtmlTestRunner.prototype, {
     initialize: function() {
-        this.htmlTestSuite = null;
+        this.metrics = new Metrics();
         this.runOptions = new RunOptions();
+        this.htmlTestSuite = null;
         this.testFailed = false;
         this.currentTest = null;
         this.runAllTests = false;
@@ -96,7 +97,7 @@ Object.extend(HtmlTestRunner.prototype, {
 
     startTestSuite: function() {
         this.runOptions.reset();
-        metrics.resetMetrics();
+        this.metrics.resetMetrics();
         this.htmlTestSuite.reset();
         this.runAllTests = true;
         this.runNextTest();
@@ -115,14 +116,14 @@ Object.extend(HtmlTestRunner.prototype, {
         //todo: move testFailed and storedVars to TestCase
         this.testFailed = false;
         storedVars = new Object();
-        this.currentTest = new HtmlRunnerTestLoop(testFrame.getCurrentTestCase(), commandFactory);
+        this.currentTest = new HtmlRunnerTestLoop(testFrame.getCurrentTestCase(), this.metrics, commandFactory);
         currentTest = this.currentTest;
         this.currentTest.start();
     },
 
     runSingleTest:function() {
         this.runAllTests = false;
-        metrics.resetMetrics();
+        this.metrics.resetMetrics();
         this.startTest();
     }
 });
@@ -612,6 +613,7 @@ Object.extend(TestResult.prototype, {
 //
     initialize: function (suiteFailed, suiteTable) {
         this.runOptions = htmlTestRunner.runOptions;
+        this.metrics = htmlTestRunner.metrics;
         this.suiteFailed = suiteFailed;
         this.suiteTable = suiteTable;
     },
@@ -659,12 +661,12 @@ Object.extend(TestResult.prototype, {
 
         form.createHiddenField("result", this.suiteFailed ? "failed" : "passed");
 
-        form.createHiddenField("totalTime", Math.floor((metrics.currentTime - metrics.startTime) / 1000));
-        form.createHiddenField("numTestPasses", metrics.numTestPasses);
-        form.createHiddenField("numTestFailures", metrics.numTestFailures);
-        form.createHiddenField("numCommandPasses", metrics.numCommandPasses);
-        form.createHiddenField("numCommandFailures", metrics.numCommandFailures);
-        form.createHiddenField("numCommandErrors", metrics.numCommandErrors);
+        form.createHiddenField("totalTime", Math.floor((this.metrics.currentTime - this.metrics.startTime) / 1000));
+        form.createHiddenField("numTestPasses", this.metrics.numTestPasses);
+        form.createHiddenField("numTestFailures", this.metrics.numTestFailures);
+        form.createHiddenField("numCommandPasses", this.metrics.numCommandPasses);
+        form.createHiddenField("numCommandFailures", this.metrics.numCommandFailures);
+        form.createHiddenField("numCommandErrors", this.metrics.numCommandErrors);
 
         // Create an input for each test table.  The inputs are named
         // testTable.1, testTable.2, etc.
@@ -899,13 +901,14 @@ Object.extend(Metrics.prototype, {
     }
 
 });
-var metrics = new Metrics();
+
 
 var HtmlRunnerTestLoop = Class.create();
 Object.extend(HtmlRunnerTestLoop.prototype, new TestLoop());
 Object.extend(HtmlRunnerTestLoop.prototype, {
-    initialize: function(htmlTestCase, commandFactory) {
+    initialize: function(htmlTestCase, metrics, commandFactory) {
         this.commandFactory = commandFactory;
+        this.metrics = metrics;
         this.waitForConditionTimeout = 30 * 1000;
         // 30 seconds
 
@@ -959,15 +962,15 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     commandStarted : function() {
         $('pauseTest').disabled = false;
         this.currentRow.markWorking();
-        metrics.printMetrics();
+        this.metrics.printMetrics();
     },
 
     commandComplete : function(result) {
         if (result.failed) {
-            metrics.numCommandFailures += 1;
+            this.metrics.numCommandFailures += 1;
             this._recordFailure(result.failureMessage);
         } else if (result.passed) {
-            metrics.numCommandPasses += 1;
+            this.metrics.numCommandPasses += 1;
             this.currentRow.markPassed();
         } else {
             this.currentRow.markDone();
@@ -975,7 +978,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     commandError : function(errorMessage) {
-        metrics.numCommandErrors += 1;
+        this.metrics.numCommandErrors += 1;
         this._recordFailure(errorMessage);
     },
 
@@ -990,13 +993,13 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
         $('stepTest').disabled = true;
         if (htmlTestRunner.testFailed) {
             this.htmlTestCase.markFailed();
-            metrics.numTestFailures += 1;
+            this.metrics.numTestFailures += 1;
         } else {
             this.htmlTestCase.markPassed();
-            metrics.numTestPasses += 1;
+            this.metrics.numTestPasses += 1;
         }
 
-        metrics.printMetrics();
+        this.metrics.printMetrics();
 
         window.setTimeout(function() {
             htmlTestRunner.runNextTest();
