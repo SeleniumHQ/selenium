@@ -37,7 +37,7 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     markFailed: function() {
-        testFailed = true;
+        this.testFailed = true;
         this.htmlTestSuite.markFailed();
     },
 
@@ -76,8 +76,8 @@ Object.extend(HtmlTestRunner.prototype, {
             htmlTestRunner.startTestSuite();
         } else if (this.runOptions.getAutoUrl()) {
             //todo what is the autourl doing, left to check it out
-            addLoadListener(getApplicationWindow(), this._startSingleTest.bind(this));
-            getApplicationWindow().src = this.runOptions.getAutoUrl();
+            addLoadListener(this._getApplicationWindow(), this._startSingleTest.bind(this));
+            this._getApplicationWindow().src = this.runOptions.getAutoUrl();
         } else {
             this.htmlTestSuite.getSuiteRows()[0].loadTestCase();
         }
@@ -90,7 +90,6 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     _registerCommandHandlers: function () {
-        //TODO work out an easy way for people to register handlers without modifying the Selenium sources.
         commandFactory = new CommandHandlerFactory();
         commandFactory.registerAll(selenium);
     },
