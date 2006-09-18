@@ -46,7 +46,7 @@ function testCanGetSeleniumCommandFromCommandRow() {
 
 function testSetWorkingChangesRowBackgroundColor() {
     htmlTestCaseRow.markWorking();
-    assertEquals(workingColor, htmlTrElement.bgColor);
+    assertEquals(FeedbackColors.workingColor, htmlTrElement.bgColor);
 }
 
 function testSetWorkingWillScrollWorkingRowToView() {
@@ -61,17 +61,17 @@ function testSetWorkingWillScrollWorkingRowToView() {
 
 function testSetPassedChangesRowBackgroundColor() {
     htmlTestCaseRow.markPassed();
-    assertEquals(passColor, htmlTrElement.bgColor);
+    assertEquals(FeedbackColors.passColor, htmlTrElement.bgColor);
 }
 
 function testSetDoneChangesRowBackgroundColor() {
     htmlTestCaseRow.markDone();
-    assertEquals(doneColor, htmlTrElement.bgColor);
+    assertEquals(FeedbackColors.doneColor, htmlTrElement.bgColor);
 }
 
 function testSetFailedChangesBackgroundColorAndAddsErrorMessage() {
     htmlTestCaseRow.markFailed("an error message");
-    assertEquals(failColor, htmlTrElement.bgColor);
+    assertEquals(FeedbackColors.failColor, htmlTrElement.bgColor);
     assertEquals("an error message", getText(htmlTestCaseRow.trElement.cells[2]));
 }
 
@@ -111,7 +111,7 @@ function testOnClickShouldTogglesRowsBackGroundColor() {
     var orginalColor = "#ccffcc";
     Element.setStyle(htmlTrElement, {"background-color": orginalColor});
     htmlTestCaseRow.onClick();
-    assertColorEquals(breakpointColor, Element.getStyle(htmlTrElement, "background-color"));
+    assertColorEquals(FeedbackColors.breakpointColor, Element.getStyle(htmlTrElement, "background-color"));
     htmlTestCaseRow.onClick();
     assertColorEquals(orginalColor, Element.getStyle(htmlTrElement, "background-color"));
 }

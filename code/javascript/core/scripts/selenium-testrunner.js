@@ -15,20 +15,64 @@
 *
 */
 
-// An object representing the current test
+// An object representing the current test, used external
 var currentTest = null;
 
-// Whether or not the jsFT should run all tests in the suite
-var runAllTests = false;
 
-var testFailed = false;
+var htmlTestRunner;
+var HtmlTestRunner = Class.create();
+Object.extend(HtmlTestRunner.prototype, {
+    initialize: function() {
+        this.testFailed = false;
+        this.currentTest = null;
+        this.runAllTests = false;
+    },
 
-// Colors used to provide feedback
-var passColor = "#ccffcc";
-var doneColor = "#eeffee";
-var failColor = "#ffcccc";
-var workingColor = "#ffffcc";
-var breakpointColor = "#cccccc"
+
+    startTestSuite: function() {
+        runOptions.reset();
+        metrics.resetMetrics();
+        htmlTestSuite.reset();
+        this.runAllTests = true;
+        this.runNextTest();
+    },
+
+
+    runNextTest: function () {
+        if (!this.runAllTests) {
+            return;
+        }
+        htmlTestSuite.runNextTestInSuite();
+    },
+
+    startTest: function () {
+        runOptions.reset();
+        testFrame.scrollToTop();
+        //todo: move testFailed and storedVars to TestCase
+        this.testFailed = false;
+        storedVars = new Object();
+        this.currentTest = new HtmlRunnerTestLoop(testFrame.getCurrentTestCase(), commandFactory);
+        currentTest = this.currentTest;
+        this.currentTest.start();
+    },
+
+    runSingleTest:function() {
+        this.runAllTests = false;
+        metrics.resetMetrics();
+        this.startTest();
+    }
+});
+
+
+var FeedbackColors = Class.create();
+Object.extend(FeedbackColors, {
+    passColor : "#ccffcc",
+    doneColor : "#eeffee",
+    failColor : "#ffcccc",
+    workingColor : "#ffffcc",
+    breakpointColor : "#cccccc"
+});
+
 
 var runInterval = 0;
 
@@ -153,16 +197,16 @@ function loadAndRunIfAuto() {
     loadSuiteFrame();
 }
 
-var runOptions;
 function onSeleniumLoad() {
     runOptions = new RunOptions();
     suiteFrame = new SeleniumFrame(getSuiteFrame());
     testFrame = new HtmlTestFrame(getTestFrame());
-
+    htmlTestRunner = new HtmlTestRunner();
     // we use a timeout here to make sure the LOG has loaded first, so we can see _every_ error
     setTimeout('loadSuiteFrame()', 500);
 }
 
+var runOptions;
 var RunOptions = Class.create();
 Object.extend(RunOptions.prototype, URLConfiguration.prototype);
 Object.extend(RunOptions.prototype, {
@@ -300,11 +344,6 @@ function loadSuiteFrame() {
     }
 }
 
-function startSingleTest() {
-    removeLoadListener(getApplicationWindow(), startSingleTest);
-    var singleTestName = runOptions.getSingleTestName();
-    testFrame.load(singleTestName, startTest);
-}
 
 function onloadTestSuite() {
     htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
@@ -315,7 +354,7 @@ function onloadTestSuite() {
     }
 
     if (runOptions.isAutomatedRun()) {
-        startTestSuite();
+        htmlTestRunner.startTestSuite();
     } else if (runOptions.getAutoUrl()) {
         //todo what is the autourl doing, left to check it out
         addLoadListener(getApplicationWindow(), startSingleTest);
@@ -325,11 +364,12 @@ function onloadTestSuite() {
     }
 }
 
-function runSingleTest() {
-    runAllTests = false;
-    metrics.resetMetrics();
-    startTest();
+function startSingleTest() {
+    removeLoadListener(getApplicationWindow(), startSingleTest);
+    var singleTestName = runOptions.getSingleTestName();
+    testFrame.load(singleTestName, htmlTestRunner.startTest);
 }
+
 
 var AbstractResultAwareRow = Class.create();
 Object.extend(AbstractResultAwareRow.prototype, {
@@ -339,20 +379,20 @@ Object.extend(AbstractResultAwareRow.prototype, {
     },
 
     markWorking: function() {
-        this.trElement.bgColor = workingColor;
+        this.trElement.bgColor = FeedbackColors.workingColor;
         safeScrollIntoView(this.trElement);
     },
 
     markPassed: function() {
-        this.trElement.bgColor = passColor;
+        this.trElement.bgColor = FeedbackColors.passColor;
     },
 
     markDone: function() {
-        this.trElement.bgColor = doneColor;
+        this.trElement.bgColor = FeedbackColors.doneColor;
     },
 
     markFailed: function() {
-        this.trElement.bgColor = failColor;
+        this.trElement.bgColor = FeedbackColors.failColor;
     }
 
 });
@@ -369,7 +409,7 @@ Object.extend(HtmlTestCaseRow.prototype, {
     },
 
     markFailed: function(errorMsg) {
-        this.trElement.bgColor = failColor;
+        this.trElement.bgColor = FeedbackColors.failColor;
         this.setMessage(errorMsg);
     },
 
@@ -393,7 +433,7 @@ Object.extend(HtmlTestCaseRow.prototype, {
         if (this.trElement.isBreakpoint == undefined) {
             this.trElement.isBreakpoint = true;
             this.trElement.beforeBackgroundColor = Element.getStyle(this.trElement, "backgroundColor");
-            Element.setStyle(this.trElement, {"background-color" : breakpointColor});
+            Element.setStyle(this.trElement, {"background-color" : FeedbackColors.breakpointColor});
         } else {
             this.trElement.isBreakpoint = undefined;
             Element.setStyle(this.trElement, {"background-color" : this.trElement.beforeBackgroundColor});
@@ -431,7 +471,7 @@ Object.extend(HtmlTestSuiteRow.prototype, {
         this.trElement.bgColor = '';
     },
 
-    _onClick: function(eventObj) {
+    _onClick: function() {
         // todo: just send a message to the testSuite
         this.loadTestCase(null);
         return false;
@@ -445,7 +485,6 @@ Object.extend(HtmlTestSuiteRow.prototype, {
             // this.testFrame.restoreTestCase(resultsFromPreviousRun.innerHTML);
             var testBody = this.testFrame.getDocument().body;
             testBody.innerHTML = resultsFromPreviousRun.innerHTML;
-            // todo: this duplicates onloadTestCase
             testFrame.setCurrentTestCase();
             if (onloadFunction) {
                 onloadFunction();
@@ -525,19 +564,19 @@ Object.extend(HtmlTestSuite.prototype, {
 
     markFailed: function() {
         this.failed = true;
-        this.titleRow.bgColor = failColor;
+        this.titleRow.bgColor = FeedbackColors.failColor;
     },
 
     markDone: function() {
         if (!this.failed) {
             this.passed = true;
-            this.titleRow.bgColor = passColor;
+            this.titleRow.bgColor = FeedbackColors.passColor;
         }
     },
 
     _startCurrentTestCase: function() {
         this.getCurrentRow().markWorking();
-        this.getCurrentRow().loadTestCase(startTest);
+        this.getCurrentRow().loadTestCase(htmlTestRunner.startTest);
     },
 
     _onTestSuiteComplete: function() {
@@ -546,9 +585,128 @@ Object.extend(HtmlTestSuite.prototype, {
         // If this is an automated run (i.e., build script), then submit
         // the test results by posting to a form
         if (runOptions.isAutomatedRun()) {
-            postTestResults(this.failed, this.getTestTable());
+            this._postTestResults(this.failed, this.getTestTable());
         }
     },
+// Post the results to a servlet, CGI-script, etc.  The URL of the
+// results-handler defaults to "/postResults", but an alternative location
+// can be specified by providing a "resultsUrl" query parameter.
+//
+// Parameters passed to the results-handler are:
+//      result:         passed/failed depending on whether the suite passed or failed
+//      totalTime:      the total running time in seconds for the suite.
+//
+//      numTestPasses:  the total number of tests which passed.
+//      numTestFailures: the total number of tests which failed.
+//
+//      numCommandPasses: the total number of commands which passed.
+//      numCommandFailures: the total number of commands which failed.
+//      numCommandErrors: the total number of commands which errored.
+//
+//      suite:      the suite table, including the hidden column of test results
+//      testTable.1 to testTable.N: the individual test tables
+//
+    _postTestResults: function (suiteFailed, suiteTable) {
+
+        var form = document.createElement("form");
+        document.body.appendChild(form);
+
+        form.id = "resultsForm";
+        form.method = "post";
+        form.target = "myiframe";
+
+        var resultsUrl = runOptions.getResultsUrl();
+        if (!resultsUrl) {
+            resultsUrl = "./postResults";
+        }
+
+        var actionAndParameters = resultsUrl.split('?', 2);
+        form.action = actionAndParameters[0];
+        var resultsUrlQueryString = actionAndParameters[1];
+
+        form.createHiddenField = function(name, value) {
+            input = document.createElement("input");
+            input.type = "hidden";
+            input.name = name;
+            input.value = value;
+            this.appendChild(input);
+        };
+
+        if (resultsUrlQueryString) {
+            var clauses = resultsUrlQueryString.split('&');
+            for (var i = 0; i < clauses.length; i++) {
+                var keyValuePair = clauses[i].split('=', 2);
+                var key = unescape(keyValuePair[0]);
+                var value = unescape(keyValuePair[1]);
+                form.createHiddenField(key, value);
+            }
+        }
+
+        form.createHiddenField("selenium.version", Selenium.version);
+        form.createHiddenField("selenium.revision", Selenium.revision);
+
+        form.createHiddenField("result", suiteFailed == true ? "failed" : "passed");
+
+        form.createHiddenField("totalTime", Math.floor((metrics.currentTime - metrics.startTime) / 1000));
+        form.createHiddenField("numTestPasses", metrics.numTestPasses);
+        form.createHiddenField("numTestFailures", metrics.numTestFailures);
+        form.createHiddenField("numCommandPasses", metrics.numCommandPasses);
+        form.createHiddenField("numCommandFailures", metrics.numCommandFailures);
+        form.createHiddenField("numCommandErrors", metrics.numCommandErrors);
+
+        // Create an input for each test table.  The inputs are named
+        // testTable.1, testTable.2, etc.
+        for (rowNum = 1; rowNum < suiteTable.rows.length; rowNum++) {
+            // If there is a second column, then add a new input
+            if (suiteTable.rows[rowNum].cells.length > 1) {
+                var resultCell = suiteTable.rows[rowNum].cells[1];
+                form.createHiddenField("testTable." + rowNum, resultCell.innerHTML);
+                // remove the resultCell, so it's not included in the suite HTML
+                resultCell.parentNode.removeChild(resultCell);
+            }
+        }
+
+        form.createHiddenField("numTestTotal", rowNum);
+
+        // Add HTML for the suite itself
+        form.createHiddenField("suite", suiteTable.parentNode.innerHTML);
+
+        if (runOptions.shouldSaveResultsToFile()) {
+            this._saveToFile(resultsUrl, form);
+        } else {
+            form.submit();
+        }
+        document.body.removeChild(form);
+        if (runOptions.closeAfterTests()) {
+            window.top.close();
+        }
+    },
+
+    _saveToFile: function (fileName, form) {
+        // This only works when run as an IE HTA
+        var inputs = new Object();
+        for (var i = 0; i < form.elements.length; i++) {
+            inputs[form.elements[i].name] = form.elements[i].value;
+        }
+        var objFSO = new ActiveXObject("Scripting.FileSystemObject")
+        var scriptFile = objFSO.CreateTextFile(fileName);
+        scriptFile.WriteLine("<html><body>\n<h1>Test suite results </h1>" +
+                             "\n\n<table>\n<tr>\n<td>result:</td>\n<td>" + inputs["result"] + "</td>\n" +
+                             "</tr>\n<tr>\n<td>totalTime:</td>\n<td>" + inputs["totalTime"] + "</td>\n</tr>\n" +
+                             "<tr>\n<td>numTestPasses:</td>\n<td>" + inputs["numTestPasses"] + "</td>\n</tr>\n" +
+                             "<tr>\n<td>numTestFailures:</td>\n<td>" + inputs["numTestFailures"] + "</td>\n</tr>\n" +
+                             "<tr>\n<td>numCommandPasses:</td>\n<td>" + inputs["numCommandPasses"] + "</td>\n</tr>\n" +
+                             "<tr>\n<td>numCommandFailures:</td>\n<td>" + inputs["numCommandFailures"] + "</td>\n</tr>\n" +
+                             "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
+                             "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr>");
+        var testNum = inputs["numTestTotal"];
+        for (var rowNum = 1; rowNum < testNum; rowNum++) {
+            scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
+        }
+        scriptFile.WriteLine("</table></body></html>");
+        scriptFile.Close();
+    },
+
 
     _updateSuiteWithResultOfPreviousTest: function() {
         if (this.currentRowInSuite >= 0) {
@@ -556,7 +714,7 @@ Object.extend(HtmlTestSuite.prototype, {
         }
     },
 
-    runNextTest: function() {
+    runNextTestInSuite: function() {
         this._updateSuiteWithResultOfPreviousTest();
         this.currentRowInSuite++;
 
@@ -567,6 +725,8 @@ Object.extend(HtmlTestSuite.prototype, {
             this._startCurrentTestCase();
         }
     }
+
+
 
 });
 
@@ -612,7 +772,7 @@ Object.extend(HtmlTestCase.prototype, {
          */
         this.nextCommandRowIndex = 0;
 
-        this._setResultColor('');
+        this._setTitleColor('');
         this.commandRows.each(function(row) {
             row.reset();
         });
@@ -628,20 +788,20 @@ Object.extend(HtmlTestCase.prototype, {
         return this.commandRows;
     },
 
-    _setResultColor: function(resultColor) {
+    _setTitleColor: function(color) {
         var headerRow = this.testDocument.getElementsByTagName("tr")[0];
         if (headerRow) {
-            headerRow.bgColor = resultColor;
+            headerRow.bgColor = color;
         }
     },
 
     markFailed: function() {
-        this._setResultColor(failColor);
+        this._setTitleColor(FeedbackColors.failColor);
         this.htmlTestSuiteRow.markFailed();
     },
 
     markPassed: function() {
-        this._setResultColor(passColor);
+        this._setTitleColor(FeedbackColors.passColor);
         this.htmlTestSuiteRow.markPassed();
     },
 
@@ -653,7 +813,7 @@ Object.extend(HtmlTestCase.prototype, {
             errorElement.id = "error";
             errorElement.innerHTML = errorMsg;
             this.testDocument.body.appendChild(errorElement);
-            Element.setStyle(errorElement, {'backgroundColor': failColor});
+            Element.setStyle(errorElement, {'backgroundColor': FeedbackColors.failColor});
         }
     },
 
@@ -676,17 +836,6 @@ Object.extend(HtmlTestCase.prototype, {
 
 });
 
-function startTest() {
-    runOptions.reset();
-    testFrame.scrollToTop();
-
-    //todo: move testFailed and storedVars to TestCase
-    testFailed = false;
-    storedVars = new Object();
-
-    currentTest = new HtmlRunnerTestLoop(testFrame.getCurrentTestCase(), commandFactory);
-    currentTest.start();
-}
 
 // TODO: split out an JavascriptTestCase class to handle the "sejs" stuff
 
@@ -707,167 +856,16 @@ var get_new_rows = function() {
     return row_array;
 };
 
-function startTestSuite() {
-    runOptions.reset();
-    metrics.resetMetrics();
-    htmlTestSuite.reset();
-    runAllTests = true;
-    runNextTest();
-}
-
-function runNextTest() {
-    if (!runAllTests) {
-        return;
-    }
-
-    htmlTestSuite.runNextTest();
-}
-
-function setCellColor(tableRows, row, col, colorStr) {
-    tableRows[row].cells[col].bgColor = colorStr;
-}
-
-// Post the results to a servlet, CGI-script, etc.  The URL of the
-// results-handler defaults to "/postResults", but an alternative location
-// can be specified by providing a "resultsUrl" query parameter.
-//
-// Parameters passed to the results-handler are:
-//      result:         passed/failed depending on whether the suite passed or failed
-//      totalTime:      the total running time in seconds for the suite.
-//
-//      numTestPasses:  the total number of tests which passed.
-//      numTestFailures: the total number of tests which failed.
-//
-//      numCommandPasses: the total number of commands which passed.
-//      numCommandFailures: the total number of commands which failed.
-//      numCommandErrors: the total number of commands which errored.
-//
-//      suite:      the suite table, including the hidden column of test results
-//      testTable.1 to testTable.N: the individual test tables
-//
-function postTestResults(suiteFailed, suiteTable) {
-
-    form = document.createElement("form");
-    document.body.appendChild(form);
-
-    form.id = "resultsForm";
-    form.method = "post";
-    form.target = "myiframe";
-
-    var resultsUrl = runOptions.getResultsUrl();
-    if (!resultsUrl) {
-        resultsUrl = "./postResults";
-    }
-
-    var actionAndParameters = resultsUrl.split('?', 2);
-    form.action = actionAndParameters[0];
-    var resultsUrlQueryString = actionAndParameters[1];
-
-    form.createHiddenField = function(name, value) {
-        input = document.createElement("input");
-        input.type = "hidden";
-        input.name = name;
-        input.value = value;
-        this.appendChild(input);
-    };
-
-    if (resultsUrlQueryString) {
-        var clauses = resultsUrlQueryString.split('&');
-        for (var i = 0; i < clauses.length; i++) {
-            var keyValuePair = clauses[i].split('=', 2);
-            var key = unescape(keyValuePair[0]);
-            var value = unescape(keyValuePair[1]);
-            form.createHiddenField(key, value);
-        }
-    }
-
-    form.createHiddenField("selenium.version", Selenium.version);
-    form.createHiddenField("selenium.revision", Selenium.revision);
-
-    form.createHiddenField("result", suiteFailed == true ? "failed" : "passed");
-
-    form.createHiddenField("totalTime", Math.floor((metrics.currentTime - metrics.startTime) / 1000));
-    form.createHiddenField("numTestPasses", metrics.numTestPasses);
-    form.createHiddenField("numTestFailures", metrics.numTestFailures);
-    form.createHiddenField("numCommandPasses", metrics.numCommandPasses);
-    form.createHiddenField("numCommandFailures", metrics.numCommandFailures);
-    form.createHiddenField("numCommandErrors", metrics.numCommandErrors);
-
-    // Create an input for each test table.  The inputs are named
-    // testTable.1, testTable.2, etc.
-    for (rowNum = 1; rowNum < suiteTable.rows.length; rowNum++) {
-        // If there is a second column, then add a new input
-        if (suiteTable.rows[rowNum].cells.length > 1) {
-            var resultCell = suiteTable.rows[rowNum].cells[1];
-            form.createHiddenField("testTable." + rowNum, resultCell.innerHTML);
-            // remove the resultCell, so it's not included in the suite HTML
-            resultCell.parentNode.removeChild(resultCell);
-        }
-    }
-
-    form.createHiddenField("numTestTotal", rowNum);
-
-    // Add HTML for the suite itself
-    form.createHiddenField("suite", suiteTable.parentNode.innerHTML);
-
-    if (runOptions.shouldSaveResultsToFile()) {
-        saveToFile(resultsUrl, form);
-    } else {
-        form.submit();
-    }
-    document.body.removeChild(form);
-    if (runOptions.closeAfterTests()) {
-        window.top.close();
-    }
-}
-
-function saveToFile(fileName, form) {
-    // This only works when run as an IE HTA
-    var inputs = new Object();
-    for (var i = 0; i < form.elements.length; i++) {
-        inputs[form.elements[i].name] = form.elements[i].value;
-    }
-    var objFSO = new ActiveXObject("Scripting.FileSystemObject")
-    var scriptFile = objFSO.CreateTextFile(fileName);
-    scriptFile.WriteLine("<html><body>\n<h1>Test suite results </h1>" +
-                         "\n\n<table>\n<tr>\n<td>result:</td>\n<td>" + inputs["result"] + "</td>\n" +
-                         "</tr>\n<tr>\n<td>totalTime:</td>\n<td>" + inputs["totalTime"] + "</td>\n</tr>\n" +
-                         "<tr>\n<td>numTestPasses:</td>\n<td>" + inputs["numTestPasses"] + "</td>\n</tr>\n" +
-                         "<tr>\n<td>numTestFailures:</td>\n<td>" + inputs["numTestFailures"] + "</td>\n</tr>\n" +
-                         "<tr>\n<td>numCommandPasses:</td>\n<td>" + inputs["numCommandPasses"] + "</td>\n</tr>\n" +
-                         "<tr>\n<td>numCommandFailures:</td>\n<td>" + inputs["numCommandFailures"] + "</td>\n</tr>\n" +
-                         "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
-                         "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr>");
-    var testNum = inputs["numTestTotal"];
-    for (var rowNum = 1; rowNum < testNum; rowNum++) {
-        scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
-    }
-    scriptFile.WriteLine("</table></body></html>");
-    scriptFile.Close();
-}
-
 
 /*
- * Register all of the built-in command handlers with the CommandHandlerFactory.
- * TODO work out an easy way for people to register handlers without modifying the Selenium sources.
- */
+* Register all of the built-in command handlers with the CommandHandlerFactory.
+* TODO work out an easy way for people to register handlers without modifying the Selenium sources.
+*/
 function registerCommandHandlers() {
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 }
 
-function removeNbsp(value) {
-    return value.replace(/\240/g, "");
-}
-
-function safeScrollIntoView(element) {
-    if (element.scrollIntoView) {
-        element.scrollIntoView(false);
-        return;
-    }
-    // TODO: work out how to scroll browsers that don't support
-    // scrollIntoView (like Konqueror)
-}
 
 var Metrics = Class.create();
 Object.extend(Metrics.prototype, {
@@ -1003,7 +1001,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     _recordFailure : function(errorMsg) {
         LOG.warn("currentTest.recordFailure: " + errorMsg);
-        testFailed = true;
+        htmlTestRunner.testFailed = true;
         htmlTestSuite.markFailed();
         this.htmlTestCase.addErrorMessage(errorMsg, this.currentRow);
     },
@@ -1011,7 +1009,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     testComplete : function() {
         $('pauseTest').disabled = true;
         $('stepTest').disabled = true;
-        if (testFailed) {
+        if (htmlTestRunner.testFailed) {
             this.htmlTestCase.markFailed();
             metrics.numTestFailures += 1;
         } else {
@@ -1021,7 +1019,9 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
         metrics.printMetrics();
 
-        window.setTimeout("runNextTest()", 1);
+        window.setTimeout(function() {
+            htmlTestRunner.runNextTest();
+        }, 1);
     },
 
     getCommandInterval : function() {

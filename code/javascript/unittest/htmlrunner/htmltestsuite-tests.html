@@ -51,20 +51,20 @@ Copyright 2004 ThoughtWorks, Inc
         function testSetFailedShouldChangeTitleRowBgColorToFailedColor() {
             $("titleRow").bgColor = "";
             testsuite.markFailed();
-            assertEquals(failColor, $("titleRow").bgColor);
+            assertEquals(FeedbackColors.failColor, $("titleRow").bgColor);
         }
 
         function testMarkDoneShouldMarkSuitePassed() {
             $("titleRow").bgColor = "";
             testsuite.markDone();
-            assertEquals(passColor, $("titleRow").bgColor);
+            assertEquals(FeedbackColors.passColor, $("titleRow").bgColor);
         }
 
         function testMarkDoneShouldLeaveSuiteMarkedFailed() {
             $("titleRow").bgColor = "";
             testsuite.markFailed();
             testsuite.markDone();
-            assertEquals(failColor, $("titleRow").bgColor);
+            assertEquals(FeedbackColors.failColor, $("titleRow").bgColor);
         }
 
         function testResetShouldClearFailedFlag() {

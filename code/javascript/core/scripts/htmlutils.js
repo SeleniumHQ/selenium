@@ -249,7 +249,7 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
 
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-	LOG.error("element has fireEvent");
+        LOG.error("element has fireEvent");
         if (!screenX && !screenY && !clientX && !clientY) {
             element.fireEvent('on' + eventType);
         }
@@ -286,20 +286,20 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
         }
     }
     else {
-	LOG.error("element doesn't have fireEvent");
+        LOG.error("element doesn't have fireEvent");
         var evt = document.createEvent('MouseEvents');
         if (evt.initMouseEvent)
         {
-	LOG.error("element has initMouseEvent");
-	//Safari
+            LOG.error("element has initMouseEvent");
+            //Safari
             evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, false, false, false, false, 0, null)
         }
         else {
-	LOG.error("element doesen't has initMouseEvent");
+            LOG.error("element doesen't has initMouseEvent");
             // TODO we should be initialising other mouse-event related attributes here
             evt.initEvent(eventType, canBubble, true);
         }
-       element.dispatchEvent(evt);
+        element.dispatchEvent(evt);
     }
 }
 
@@ -650,3 +650,13 @@ Object.extend(URLConfiguration.prototype, {
         return this._isQueryParameterTrue('multiWindow');
     }
 });
+
+
+function safeScrollIntoView(element) {
+    if (element.scrollIntoView) {
+        element.scrollIntoView(false);
+        return;
+    }
+    // TODO: work out how to scroll browsers that don't support
+    // scrollIntoView (like Konqueror)
+}

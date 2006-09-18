@@ -72,19 +72,19 @@ Copyright 2004 ThoughtWorks, Inc
         function testMarkFailedShouldMarkTrElementFailed() {
             $("trRow").bgColor = "";
             suiteRow.markFailed();
-            assertEquals(failColor, $("trRow").bgColor);
+            assertEquals(FeedbackColors.failColor, $("trRow").bgColor);
         }
 
         function testMarkPassedShouldMarkTrElementPassed() {
             $("trRow").bgColor = "";
             suiteRow.markPassed();
-            assertEquals(passColor, $("trRow").bgColor);
+            assertEquals(FeedbackColors.passColor, $("trRow").bgColor);
         }
 
         function testMarkWorkingShouldMarkTrElementWorking() {
             $("trRow").bgColor = "";
             suiteRow.markWorking();
-            assertEquals(workingColor, $("trRow").bgColor);
+            assertEquals(FeedbackColors.workingColor, $("trRow").bgColor);
         }
 
     </script>
