@@ -29,7 +29,7 @@
 <!ENTITY value.label "Valeur">
 <!ENTITY findTarget.label "Rechercher">
 
-<!ENTITY logConsole.label "Console de log">
+<!ENTITY logConsole.label "Log">
 <!ENTITY logFilter.debug.label "Debug">
 <!ENTITY logFilter.info.label "Info">
 <!ENTITY logFilter.warn.label "Warn">

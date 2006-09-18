@@ -50,46 +50,9 @@ limitations under the License.
 
   <toolbox>
     <menubar id="menubar">
-      <menu id="fileMenu" label="&fileMenu.label;" accesskey="F">
-	<menupopup id="file-popup">
-	  <menuitem label="&newTestCmd.label;" oncommand="editor.newTestCase();" accesskey="N"/>
-	  <menuitem label="&openCmd.label;" command="cmd_open" key="open-key" accesskey="O"/>
-	  <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key" accesskey="S"/>
-	  <menuitem label="&saveTestAsCmd.label;" oncommand="editor.saveNewTestCase();" accesskey="A"/>
-	  <menu label="&exportCmd.label;" accesskey="E">
-	    <menupopup id="popup_export_formats" onpopupshowing="editor.populateFormatsPopup(this)" oncommand="editor.exportTestCaseWithFormat(editor.formats.selectFormat(event.target.getAttribute('value')))">
-	    </menupopup>
-	  </menu>
-	  <menuseparator/>
-	  <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X"/>
-	</menupopup>
-      </menu>
-      <menu id="menu_edit">
-        <menupopup>
-          <menuitem id="menu_undo"/>
-          <menuitem id="menu_redo"/>
-	  <menuseparator/>
-          <menuitem id="menu_cut"/>
-          <menuitem id="menu_copy"/>
-          <menuitem id="menu_paste"/>
-          <menuitem id="menu_delete"/>
-          <menuseparator/>
-          <menuitem id="menu_selectAll"/>
-	</menupopup>
-      </menu>
-      <menu id="optionsMenu" label="&optionsMenu.label;" accesskey="O">
-	<menupopup id="options-popup" onpopupshowing="editor.onPopupOptions()">
-	  <menuitem label="&optionsCmd.label;" oncommand="editor.openSeleniumIDEPreferences();" accesskey="O"/>
-	  <menu label="&formatCmd.label;" accesskey="F">
-	    <menupopup id="popup_formats" onpopupshowing="editor.populateFormatsPopup(this, editor.currentFormat)" oncommand="editor.setCurrentFormat(editor.formats.selectFormat(event.target.getAttribute('value')))">
-	    </menupopup>
-	  </menu>
-	  <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;">
-	    <menupopup id="popup_clipboard_formats" onpopupshowing="editor.populateFormatsPopup(this, editor.clipboardFormat)" oncommand="editor.setClipboardFormat(editor.formats.selectFormat(event.target.getAttribute('value')))">
-	    </menupopup>
-	  </menu>
-	</menupopup>
-      </menu>
+      <menu id="fileMenu" />
+      <menu id="menu_edit" />
+      <menu id="optionsMenu" />
       <menu id="windowMenu"/>
       <menu id="helpMenu"/>
       <menupopup id="menu_ToolsPopup"/> <!-- for Mac -->
@@ -178,29 +141,8 @@ limitations under the License.
       <grippy/>
     </splitter>
 
-    <vbox id="logBox" flex="1" height="100">
-      <hbox id="logMenu" align="center">
-
-	<toolbarbutton id="logTab" label="&logConsole.label;" onclick="editor.switchConsole('log')" class="console-tab" selected="true"/>
-	<toolbarbutton id="helpTab" label="&reference.label;" onclick="editor.switchConsole('help')" class="console-tab"/>
-	<spacer flex="1"/>
-	<hbox align="center" id="logButtons">
-	<menulist id="logFilter" oncommand="editor.selDebugger.reloadLog()">
-	  <menupopup>
-	    <menuitem label="&logFilter.debug.label;" value="0"/>
-	    <menuitem label="&logFilter.info.label;" value="1" selected="true"/>
-	    <menuitem label="&logFilter.warn.label;" value="2"/>
-	    <menuitem label="&logFilter.error.label;" value="3"/>
-	  </menupopup>
-	</menulist>
-	<button id="logClear" label="&logClear.label;" oncommand="editor.selDebugger.clearLog()"/>
-	</hbox>
-      </hbox>
-      <iframe flex="1" id="logView" src="LogFrame.html" onload="editor.selDebugger.logFrame.refresh()">
-      </iframe>
-      <iframe flex="1" id="helpView" hidden="true">
-      </iframe>
-    </vbox>
+    <vbox id="logBox" flex="1" height="100"/>
+    
   </vbox>
 
 </window>

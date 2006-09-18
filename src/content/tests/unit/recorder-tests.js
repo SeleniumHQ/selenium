@@ -26,6 +26,8 @@ function testAttachAndDetach() {
 }
 
 function testRegisterAndRecordAndDeregister() {
+    var property = "_Selenium_IDE_Recorder_test";
+    Recorder.WINDOW_RECORDER_PROPERTY = property;
 	var observer = {
 		recordingEnabled: true,
 		count: 0, 
@@ -34,11 +36,11 @@ function testRegisterAndRecordAndDeregister() {
 			this.count++;
 		}
 	};
-	assertUndefined(window._Selenium_IDE_Recorder);
+	assertUndefined(window[property]);
 	var recorder = Recorder.register(observer, window);
 	recorder.record("test", "aaa", "bbb");
 	assertEquals(1, observer.count);
-	assertNotNull(window._Selenium_IDE_Recorder);
+	assertNotNull(window[property]);
 	recorder.deregister(observer);
-	assertUndefined(window._Selenium_IDE_Recorder);
+	assertUndefined(window[property]);
 }

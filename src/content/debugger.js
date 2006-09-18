@@ -54,8 +54,8 @@ function Debugger(editor) {
 		}
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-runner.js', this.runner);
 
-		this.logFrame = new LogFrame(this.runner.LOG, this.editor);
-
+        this.editor.infoPanel.logView.setLog(this.runner.LOG);
+        
 		this.runner.getInterval = function() {
 			if (self.runner.testCase.debugContext.currentCommand().breakpoint) {
 				self.paused = true;
@@ -112,65 +112,4 @@ Debugger.prototype.doContinue = function(pause) {
 Debugger.prototype.showElement = function(locator) {
 	this.init();
 	this.runner.showElement(locator);
-}
-
-Debugger.prototype.clearLog = function() {
-	if (this.runner)
-		this.runner.LOG.clear();
-}
-
-Debugger.prototype.reloadLog = function() {
-	if (this.logFrame)
-		this.logFrame.reload();
-}
-
-function LogFrame(log, editor) {
-	this.log = log;
-	this.log.observers.push(this);
-	this.view = document.getElementById("logView");
-	this.filter = document.getElementById("logFilter");
-	this.editor = editor;
-}
-
-LogFrame.prototype.getLogElement = function() {
-	return this.view.contentDocument.getElementById("log");
-}
-
-LogFrame.prototype.isHidden = function() {
-	return this.view.hidden || this.getLogElement() == null;
-}
-
-LogFrame.prototype.onClear = function() {
-	if (!this.isHidden()) {
-		var nodes = this.getLogElement().childNodes;
-		var i;
-		for (i = nodes.length - 1; i >= 0; i--) {
-			this.getLogElement().removeChild(nodes[i]);
-		}
-	}
-}
-
-LogFrame.prototype.reload = function() {
-	if (!this.isHidden()) {
-		var self = this;
-		this.onClear();
-		this.log.entries.forEach(function(entry) { self.onAppendEntry(entry); });
-	}
-}
-
-LogFrame.prototype.onAppendEntry = function(entry) {
-	if (!this.isHidden()) {
-		var levels = { debug: 0, info: 1, warn: 2, error: 3 };
-		var entryValue = levels[entry.level];
-		var filterValue = this.filter.selectedItem.value;
-		if (filterValue <= entryValue) {
-			var newEntry = this.view.contentDocument.createElement('li');
-			newEntry.className = entry.level;
-			newEntry.appendChild(this.view.contentDocument.createTextNode(entry.line()));
-			this.getLogElement().appendChild(newEntry);
-			newEntry.scrollIntoView();
-		}
-	} else {
-		this.editor.switchConsole("log");
-	}
 }

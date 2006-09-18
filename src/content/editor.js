@@ -16,7 +16,6 @@
 
 function Editor(window, isSidebar) {
 	this.log.debug("initializing");
-	this.lastConsole = "log";
 	this.window = window;
 	window.editor = this;
 	var self = this;
@@ -45,10 +44,8 @@ function Editor(window, isSidebar) {
 	this.initOptions();
 	//this.toggleView(this.treeView);
 	
-	
 	// "debugger" cannot be used since it is a reserved word in JS
 	this.selDebugger = new Debugger(this);
-	this.initLog();
 	
 	//top.document.commandDispatcher.getControllers().appendController(Editor.controller);
 	//window.controllers.appendController(Editor.controller);
@@ -57,6 +54,8 @@ function Editor(window, isSidebar) {
 	//window.controllers.appendController(controller);
 
 	this.updateViewTabs();
+    this.infoPanel = new Editor.InfoPanel(this);
+    
 	//top.document.commandDispatcher.updateCommands("selenium-ide-state");
 
 	document.addEventListener("focus", Editor.checkTimestamp, false);
@@ -185,7 +184,6 @@ Editor.prototype.confirmClose = function() {
 	}
 	return true;
 }
-
 
 Editor.prototype.log = Editor.log = new Log("Editor");
 
@@ -447,22 +445,22 @@ Editor.prototype.checkForTestRunner = function(contentWindow) {
 	}
 }
 
-Editor.prototype.playback = function() {
+Editor.prototype.showInBrowser = function(url) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
 	var contentWindow = window.getBrowser().contentWindow;
-	this.seleniumStartPage = contentWindow.location.href;
-	this.seleniumWindow = contentWindow;
-	
+	contentWindow.location.href = url;
+}
+
+Editor.prototype.playback = function() {
 	// disable recording
 	this.setRecordingEnabled(false);
 
 	this.loadTestRunner = true;
-	
-	contentWindow.location.href = 'chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
-	'&userExtensionsURL=' + encodeURI(ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',')) +
-	    '&baseURL=' + document.getElementById("baseURL").value;
-	
+
+    this.showInBrowser('chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
+                       '&userExtensionsURL=' + encodeURI(ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',')) +
+                       '&baseURL=' + document.getElementById("baseURL").value);
 }
 
 Editor.prototype.loadPlayerTest = function(e) {
@@ -480,6 +478,7 @@ Editor.prototype.openLogWindow = function() {
 
 Editor.prototype.onPopupOptions = function() {
 	document.getElementById("clipboardFormatMenu").setAttribute("disabled", !editor.currentFormat.getFormatter().playable);
+	document.getElementById("internalTestsMenu").setAttribute("hidden", this.options.showInternalTestsMenu == null);
 }
 
 Editor.prototype.populateFormatsPopup = function(e, format) {
@@ -606,45 +605,13 @@ Editor.prototype.loadSeleniumAPI = function() {
 	}
 }
 
-
-Editor.prototype.switchConsole = function(name) {
-	if (this.lastConsole == name) return;
-	
-	document.getElementById(this.lastConsole + "Tab").removeAttribute("selected");
-	//document.getElementById(this.lastConsole + "View").setAttribute("style", "display: none");
-	document.getElementById(this.lastConsole + "View").hidden = true;
-	//document.getElementById(name + "View").setAttribute("style", "display: inline");
-	document.getElementById(name + "View").hidden = false;
-	document.getElementById(name + "Tab").setAttribute("selected", "true");
-	
-	if ("log" == name) {
-		document.getElementById("logButtons").hidden = false;
-	} else {
-		document.getElementById("logButtons").hidden = true;
-	}
-	
-	this.lastConsole = name;
-}
-
 Editor.prototype.showReference = function(command) {
 	var def = command.getDefinition();
 	if (def) {
-		this.switchConsole("help");
+        this.infoPanel.switchView(this.infoPanel.helpView);
 		this.log.debug("showReference: " + def.name);
 		this.reference.show(def, command);
 	}
-}
-
-Editor.prototype.initLog = function() {
-	var self = this;
-	var frame = document.getElementById("logView");
-	frame.addEventListener("load", 
-						   function() {
-							   if (self.selDebugger.logFrame) {
-								   self.selDebugger.logFrame.reload();
-							   }
-						   }, 
-						   true);
 }
 
 //
@@ -711,3 +678,146 @@ Editor.prototype.selectDefaultReference = function() {
 Editor.references.push(new GeneratedReference("Generated"));
 Editor.references.push(new HTMLReference("Internal HTML", "chrome://selenium-ide/content/selenium/reference.html"));
 //Editor.references.push(new HTMLReference("Japanese", "Reference HTML contained in Selenium IDE", "http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29"));
+
+/*
+ * InfoPanel
+ */
+
+Editor.InfoPanel = function(editor) {
+    this.logView = new Editor.LogView(this, editor);
+    this.helpView = new Editor.HelpView(this);
+    this.currentView = this.logView;
+}
+
+Editor.InfoPanel.prototype.switchView = function(view) {
+	if (this.currentView == view) return;
+    this.currentView.hide();
+    view.show();
+	this.currentView = view;
+}
+
+/*
+ * InfoView
+ */
+
+Editor.InfoView = function() {
+}
+
+Editor.InfoView.prototype.show = function() {
+	document.getElementById(this.name + "View").hidden = false;
+	document.getElementById(this.name + "Tab").setAttribute("selected", "true");
+}
+
+Editor.InfoView.prototype.hide = function() {
+	document.getElementById(this.name + "Tab").removeAttribute("selected");
+	document.getElementById(this.name + "View").hidden = true;
+}
+
+/*
+ * LogView
+ */
+
+Editor.LogView = function(panel, editor) {
+    this.name = "log";
+    this.changeLogLevel("1"); // INFO
+	this.view = document.getElementById("logView");
+    this.panel = panel;
+    //this.log = editor.selDebugger.runner.LOG;
+    //this.log.observers.push(this.infoPanel.logView);
+    var self = this;
+	this.view.addEventListener("load", function() { self.reload() }, true);
+}
+
+Editor.LogView.prototype = new Editor.InfoView;
+
+Editor.LogView.prototype.show = function() {
+    Editor.InfoView.prototype.show.call(this);
+    document.getElementById("logButtons").hidden = false;
+}
+
+Editor.LogView.prototype.hide = function() {
+    Editor.InfoView.prototype.hide.call(this);
+    document.getElementById("logButtons").hidden = true;
+}
+
+Editor.LogView.prototype.setLog = function(log) {
+    this.log = log;
+    log.observers.push(this);
+}
+
+Editor.LogView.prototype.changeLogLevel = function(level, reload) {
+    var filterElement = document.getElementById("logFilter");
+    var popup = document.getElementById("logFilterPopup");
+    this.filterValue = level;
+    var i;
+    for (i = 0; i < popup.childNodes.length; i++) {
+        var node = popup.childNodes[i];
+        if (level == node.value) {
+            filterElement.label = node.label;
+            break;
+        }
+    }
+
+    if (reload) {
+        this.reload();
+    }
+}
+
+Editor.LogView.prototype.getLogElement = function() {
+	return this.view.contentDocument.getElementById("log");
+}
+
+Editor.LogView.prototype.isHidden = function() {
+	return this.view.hidden || this.getLogElement() == null;
+}
+
+Editor.LogView.prototype.clear = function() {
+    if (!this.isHidden() && this.log) {
+        this.log.clear();
+    }
+}
+
+Editor.LogView.prototype.onClear = function() {
+	if (!this.isHidden()) {
+		var nodes = this.getLogElement().childNodes;
+		var i;
+		for (i = nodes.length - 1; i >= 0; i--) {
+			this.getLogElement().removeChild(nodes[i]);
+		}
+	}
+}
+
+Editor.LogView.prototype.reload = function() {
+	if (!this.isHidden() && this.log) {
+		var self = this;
+		this.onClear();
+		this.log.entries.forEach(function(entry) { self.onAppendEntry(entry); });
+	}
+}
+
+Editor.LogView.prototype.onAppendEntry = function(entry) {
+	if (!this.isHidden()) {
+		var levels = { debug: 0, info: 1, warn: 2, error: 3 };
+		var entryValue = levels[entry.level];
+		var filterValue = parseInt(this.filterValue);
+		if (filterValue <= entryValue) {
+			var newEntry = this.view.contentDocument.createElement('li');
+			newEntry.className = entry.level;
+			newEntry.appendChild(this.view.contentDocument.createTextNode(entry.line()));
+			this.getLogElement().appendChild(newEntry);
+			newEntry.scrollIntoView();
+		}
+	} else {
+		this.panel.switchView(this);
+	}
+}
+
+/*
+ * HelpView
+ */
+
+Editor.HelpView = function() {
+    this.name = "help";
+}
+
+Editor.HelpView.prototype = new Editor.InfoView;

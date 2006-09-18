@@ -70,11 +70,15 @@ treechildren::-moz-tree-image(startpoint)
 }
 
 .console-tab {
-  height: 32px;
+  height: 20px;
   border-width: 0 1px 0 0;
   border-style: solid;
   border-color: #AAA;
   margin: 0;
+}
+
+.console-tab label { 
+  font-size: 8pt;
 }
 
 .console-tab .toolbarbutton-text { 
@@ -87,6 +91,11 @@ treechildren::-moz-tree-image(startpoint)
 
 .console-tab[selected] .toolbarbutton-text {
   color: #000000;
+}
+
+.console-button label {
+  margin-left: 7px;
+  font-size: 8pt;
 }
 
 /*

@@ -21,6 +21,8 @@ function Recorder(window) {
 	this.attach();
 }
 
+Recorder.WINDOW_RECORDER_PROPERTY = "_Selenium_IDE_Recorder";
+
 Recorder.log = new Log("Recorder");
 
 Recorder.prototype.reattachWindowMethods = function() {
@@ -152,7 +154,7 @@ Recorder.prototype.deregister = function(observer) {
 	}
 	if (this.observers.length == 0) {
 		this.detach();
-		delete this.window._Selenium_IDE_Recorder;
+		delete this.window[Recorder.WINDOW_RECORDER_PROPERTY];
 	}
 }
 
@@ -184,10 +186,10 @@ Recorder.removeEventHandler = function(handlerName) {
 }
 
 Recorder.register = function(observer, window) {
-	var recorder = window._Selenium_IDE_Recorder;
+	var recorder = Recorder.get(window);
 	if (!recorder) {
 		recorder = new Recorder(window);
-		window._Selenium_IDE_Recorder = recorder;
+		window[Recorder.WINDOW_RECORDER_PROPERTY] = recorder;
 	}
 	recorder.observers.push(observer);
 	this.log.debug("register: observers.length=" + recorder.observers.length);
@@ -195,7 +197,7 @@ Recorder.register = function(observer, window) {
 }
 
 Recorder.deregister = function(observer, window) {
-	var recorder = window._Selenium_IDE_Recorder;
+	var recorder = Recorder.get(window);
 	if (recorder) {
 		recorder.deregister(observer);
 		this.log.debug("deregister: observers.length=" + recorder.observers.length);
@@ -205,7 +207,7 @@ Recorder.deregister = function(observer, window) {
 }
 
 Recorder.get = function(window) {
-	return window._Selenium_IDE_Recorder;
+	return window[Recorder.WINDOW_RECORDER_PROPERTY] || null;
 }
 
 Recorder.registerAll = function(observer) {

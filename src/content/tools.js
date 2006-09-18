@@ -15,12 +15,6 @@
  */
 
 function Log(category) {
-	// DEBUG
-	//var LOG_THRESHOLD = "DEBUG";
-	// RELEASE
-	//var LOG_THRESHOLD = "WARN";
-	// TODO: this variable should be configurable through option
-
 	var thresholdName = getOptionValue("internalLogThreshold", "INFO");
 
 	var log = this;
