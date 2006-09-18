@@ -17,7 +17,7 @@
 
 // An object representing the current test, used external
 var currentTest = null;
-
+var selenium = null;
 
 var htmlTestRunner;
 var HtmlTestRunner = Class.create();
@@ -26,8 +26,69 @@ Object.extend(HtmlTestRunner.prototype, {
         this.testFailed = false;
         this.currentTest = null;
         this.runAllTests = false;
+        this.appWindow = null;
+        // we use a timeout here to make sure the LOG has loaded first, so we can see _every_ error
+        setTimeout(function() {
+            this.loadSuiteFrame();
+        }.bind(this), 500);
     },
 
+    loadSuiteFrame: function() {
+        if (selenium == null) {
+            selenium = Selenium.createForWindow(this._getApplicationWindow());
+            this._registerCommandHandlers();
+        }
+        runOptions.setHighlightOption();
+        var testSuiteName = runOptions.getTestSuiteName();
+        if (testSuiteName) {
+            suiteFrame.load(testSuiteName, this._onloadTestSuite.bind(this));
+        }
+    },
+
+    _getApplicationWindow: function () {
+        if (runOptions.isMultiWindowMode()) {
+            return this._getSeparateApplicationWindow();
+        }
+        return $('myiframe').contentWindow;
+    },
+
+    _getSeparateApplicationWindow: function () {
+        if (this.appWindow == null) {
+            this.appWindow = openSeparateApplicationWindow('TestRunner-splash.html');
+        }
+        return this.appWindow;
+    },
+
+    _onloadTestSuite:function () {
+        htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
+
+        if (! htmlTestSuite.isAvailable()) {
+            // hack!
+            return;
+        }
+
+        if (runOptions.isAutomatedRun()) {
+            htmlTestRunner.startTestSuite();
+        } else if (runOptions.getAutoUrl()) {
+            //todo what is the autourl doing, left to check it out
+            addLoadListener(getApplicationWindow(), this._startSingleTest.bind(this));
+            getApplicationWindow().src = runOptions.getAutoUrl();
+        } else {
+            htmlTestSuite.getSuiteRows()[0].loadTestCase();
+        }
+    },
+
+    _startSingleTest:function () {
+        removeLoadListener(getApplicationWindow(), this._startSingleTest.bind(this));
+        var singleTestName = runOptions.getSingleTestName();
+        testFrame.load(singleTestName, this.startTest.bind(this));
+    },
+
+    _registerCommandHandlers: function () {
+        //TODO work out an easy way for people to register handlers without modifying the Selenium sources.
+        commandFactory = new CommandHandlerFactory();
+        commandFactory.registerAll(selenium);
+    },
 
     startTestSuite: function() {
         runOptions.reset();
@@ -36,7 +97,6 @@ Object.extend(HtmlTestRunner.prototype, {
         this.runAllTests = true;
         this.runNextTest();
     },
-
 
     runNextTest: function () {
         if (!this.runAllTests) {
@@ -76,7 +136,6 @@ Object.extend(FeedbackColors, {
 
 var runInterval = 0;
 
-var selenium = null;
 
 /** SeleniumFrame encapsulates an iframe element */
 var SeleniumFrame = Class.create();
@@ -143,38 +202,22 @@ Object.extend(HtmlTestFrame.prototype, {
 
 });
 
-var suiteFrame;
-var testFrame;
-
-var appWindow;
 
 var htmlTestSuite;
 // todo: shouldn't be global
 
-/**
- * Get the window that will hold the AUT.
- *
- * If the query-pamemeter "multiWindow" is set, this returns a separate
- * top-level window, suitable for testing "frame-busting" applications.
- * Otherwise, it returns an embedded iframe window.
- */
-function getApplicationWindow() {
-    if (runOptions.isMultiWindowMode()) {
-        return getSeparateApplicationWindow();
-    }
-    return $('myiframe').contentWindow;
+
+function onSeleniumLoad() {
+    runOptions = new RunOptions();
+    suiteFrame = new SeleniumFrame(getSuiteFrame());
+    testFrame = new HtmlTestFrame(getTestFrame());
+    htmlTestRunner = new HtmlTestRunner();
+
 }
 
-/**
- * Get (or create) the separate top-level AUT window.
- */
-function getSeparateApplicationWindow() {
-    if (appWindow == null) {
-        appWindow = openSeparateApplicationWindow('TestRunner-splash.html');
-    }
-    return appWindow;
-}
 
+var suiteFrame;
+var testFrame;
 function getSuiteFrame() {
     var f = $('testSuiteFrame');
     if (f == null) {
@@ -191,19 +234,6 @@ function getTestFrame() {
         // proxyInjection mode does not set myiframe
     }
     return f;
-}
-
-function loadAndRunIfAuto() {
-    loadSuiteFrame();
-}
-
-function onSeleniumLoad() {
-    runOptions = new RunOptions();
-    suiteFrame = new SeleniumFrame(getSuiteFrame());
-    testFrame = new HtmlTestFrame(getTestFrame());
-    htmlTestRunner = new HtmlTestRunner();
-    // we use a timeout here to make sure the LOG has loaded first, so we can see _every_ error
-    setTimeout('loadSuiteFrame()', 500);
 }
 
 var runOptions;
@@ -326,49 +356,6 @@ Object.extend(RunOptions.prototype, {
     }
 
 });
-
-function loadSuiteFrame() {
-    var testAppWindow = getApplicationWindow();
-    if (selenium == null) {
-        selenium = Selenium.createForWindow(testAppWindow);
-        registerCommandHandlers();
-    }
-    runOptions.setHighlightOption();
-
-    var testSuiteName = runOptions.getTestSuiteName();
-
-    if (testSuiteName) {
-        suiteFrame.load(testSuiteName, onloadTestSuite);
-    } else {
-        onloadTestSuite();
-    }
-}
-
-
-function onloadTestSuite() {
-    htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
-
-    if (! htmlTestSuite.isAvailable()) {
-        // hack!
-        return;
-    }
-
-    if (runOptions.isAutomatedRun()) {
-        htmlTestRunner.startTestSuite();
-    } else if (runOptions.getAutoUrl()) {
-        //todo what is the autourl doing, left to check it out
-        addLoadListener(getApplicationWindow(), startSingleTest);
-        getApplicationWindow().src = runOptions.getAutoUrl();
-    } else {
-        htmlTestSuite.getSuiteRows()[0].loadTestCase();
-    }
-}
-
-function startSingleTest() {
-    removeLoadListener(getApplicationWindow(), startSingleTest);
-    var singleTestName = runOptions.getSingleTestName();
-    testFrame.load(singleTestName, htmlTestRunner.startTest);
-}
 
 
 var AbstractResultAwareRow = Class.create();
@@ -517,10 +504,12 @@ Object.extend(HtmlTestSuite.prototype, {
 
     initialize: function(suiteDocument) {
         this.suiteDocument = suiteDocument;
-        this.suiteRows = this._collectSuiteRows();
-        this.titleRow = this.getTestTable().rows[0];
-        this.title = this.titleRow.cells[0].innerHTML;
-        this.reset();
+        if (this.getTestTable()) {
+            this.suiteRows = this._collectSuiteRows();
+            this.titleRow = this.getTestTable().rows[0];
+            this.title = this.titleRow.cells[0].innerHTML;
+            this.reset();
+        }
     },
 
     reset: function() {
@@ -860,16 +849,6 @@ var get_new_rows = function() {
     }
     return row_array;
 };
-
-
-/*
-* Register all of the built-in command handlers with the CommandHandlerFactory.
-* TODO work out an easy way for people to register handlers without modifying the Selenium sources.
-*/
-function registerCommandHandlers() {
-    commandFactory = new CommandHandlerFactory();
-    commandFactory.registerAll(selenium);
-}
 
 
 var Metrics = Class.create();
