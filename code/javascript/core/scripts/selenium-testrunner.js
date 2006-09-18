@@ -524,7 +524,7 @@ Object.extend(HtmlTestSuite.prototype, {
     },
 
     reset: function() {
-        this.failed = null;
+        this.failed = false;
         this.currentRowInSuite = -1;
         this.titleRow.bgColor = '';
         this.suiteRows.each(function(row) {
@@ -569,7 +569,6 @@ Object.extend(HtmlTestSuite.prototype, {
 
     markDone: function() {
         if (!this.failed) {
-            this.passed = true;
             this.titleRow.bgColor = FeedbackColors.passColor;
         }
     },
@@ -581,13 +580,34 @@ Object.extend(HtmlTestSuite.prototype, {
 
     _onTestSuiteComplete: function() {
         this.markDone();
+        new TestResult(this.failed, this.getTestTable()).post();
+    },
 
-        // If this is an automated run (i.e., build script), then submit
-        // the test results by posting to a form
-        if (runOptions.isAutomatedRun()) {
-            this._postTestResults(this.failed, this.getTestTable());
+    _updateSuiteWithResultOfPreviousTest: function() {
+        if (this.currentRowInSuite >= 0) {
+            this.getCurrentRow().saveTestResults();
         }
     },
+
+    runNextTestInSuite: function() {
+        this._updateSuiteWithResultOfPreviousTest();
+        this.currentRowInSuite++;
+
+        // If we are done with all of the tests, set the title bar as pass or fail
+        if (this.currentRowInSuite >= this.suiteRows.length) {
+            this._onTestSuiteComplete();
+        } else {
+            this._startCurrentTestCase();
+        }
+    }
+
+
+
+});
+
+var TestResult = Class.create();
+Object.extend(TestResult.prototype, {
+
 // Post the results to a servlet, CGI-script, etc.  The URL of the
 // results-handler defaults to "/postResults", but an alternative location
 // can be specified by providing a "resultsUrl" query parameter.
@@ -606,8 +626,15 @@ Object.extend(HtmlTestSuite.prototype, {
 //      suite:      the suite table, including the hidden column of test results
 //      testTable.1 to testTable.N: the individual test tables
 //
-    _postTestResults: function (suiteFailed, suiteTable) {
+    initialize: function (suiteFailed, suiteTable) {
+        this.suiteFailed = suiteFailed;
+        this.suiteTable = suiteTable;
+    },
 
+    post: function () {
+        if (!runOptions.isAutomatedRun()) {
+            return;
+        }
         var form = document.createElement("form");
         document.body.appendChild(form);
 
@@ -645,7 +672,7 @@ Object.extend(HtmlTestSuite.prototype, {
         form.createHiddenField("selenium.version", Selenium.version);
         form.createHiddenField("selenium.revision", Selenium.revision);
 
-        form.createHiddenField("result", suiteFailed == true ? "failed" : "passed");
+        form.createHiddenField("result", this.suiteFailed ? "failed" : "passed");
 
         form.createHiddenField("totalTime", Math.floor((metrics.currentTime - metrics.startTime) / 1000));
         form.createHiddenField("numTestPasses", metrics.numTestPasses);
@@ -656,10 +683,10 @@ Object.extend(HtmlTestSuite.prototype, {
 
         // Create an input for each test table.  The inputs are named
         // testTable.1, testTable.2, etc.
-        for (rowNum = 1; rowNum < suiteTable.rows.length; rowNum++) {
+        for (rowNum = 1; rowNum < this.suiteTable.rows.length; rowNum++) {
             // If there is a second column, then add a new input
-            if (suiteTable.rows[rowNum].cells.length > 1) {
-                var resultCell = suiteTable.rows[rowNum].cells[1];
+            if (this.suiteTable.rows[rowNum].cells.length > 1) {
+                var resultCell = this.suiteTable.rows[rowNum].cells[1];
                 form.createHiddenField("testTable." + rowNum, resultCell.innerHTML);
                 // remove the resultCell, so it's not included in the suite HTML
                 resultCell.parentNode.removeChild(resultCell);
@@ -669,7 +696,7 @@ Object.extend(HtmlTestSuite.prototype, {
         form.createHiddenField("numTestTotal", rowNum);
 
         // Add HTML for the suite itself
-        form.createHiddenField("suite", suiteTable.parentNode.innerHTML);
+        form.createHiddenField("suite", this.suiteTable.parentNode.innerHTML);
 
         if (runOptions.shouldSaveResultsToFile()) {
             this._saveToFile(resultsUrl, form);
@@ -705,29 +732,7 @@ Object.extend(HtmlTestSuite.prototype, {
         }
         scriptFile.WriteLine("</table></body></html>");
         scriptFile.Close();
-    },
-
-
-    _updateSuiteWithResultOfPreviousTest: function() {
-        if (this.currentRowInSuite >= 0) {
-            this.getCurrentRow().saveTestResults();
-        }
-    },
-
-    runNextTestInSuite: function() {
-        this._updateSuiteWithResultOfPreviousTest();
-        this.currentRowInSuite++;
-
-        // If we are done with all of the tests, set the title bar as pass or fail
-        if (this.currentRowInSuite >= this.suiteRows.length) {
-            this._onTestSuiteComplete();
-        } else {
-            this._startCurrentTestCase();
-        }
     }
-
-
-
 });
 
 /** HtmlTestCase encapsulates an HTML test document */

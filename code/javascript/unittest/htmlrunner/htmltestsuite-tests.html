@@ -70,7 +70,7 @@ Copyright 2004 ThoughtWorks, Inc
         function testResetShouldClearFailedFlag() {
             testsuite.failed = true;
             testsuite.reset();
-            assertNull(testsuite.failed);
+            assertFalse(testsuite.failed);
         }
 
         function testGetCurrentRowShouldReturnCurrentRow() {
