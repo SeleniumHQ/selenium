@@ -26,57 +26,94 @@ Copyright 2004 ThoughtWorks, Inc
   <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
   <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
   <script language="JavaScript" type="text/javascript">
-    function testSpaces()
-    {
-      assertTextContent("1 1 1", "one_space");
-      assertTextContent("2 2  2", "two_spaces");
-      assertTextContent("3 3   3  3   3", "three_spaces");
-      assertTextContent("1 tab2 tabs", "tabs");
-    }
+      function testEmpty()
+      {
+          assertText("", "empty");
+      }
+      function testSpaces()
+      {
+          assertText("1 1 1", "one_space");
+          assertText("2 2  2", "two_spaces");
+          assertText("3 3   3  3   3", "three_spaces");
+          assertText("1 tab2 tabs", "tabs");
+      }
 
-    function testNonTextMarkup()
-    {
-      assertTextContent("There is non-visible and visible markup here that doesn't change the text content", "non_text_markup");
-      assertTextContent("There is an image here and an image link", "image_in_text");
-    }
+      function testNonTextMarkup()
+      {
+          assertText("There is non-visible and visible markup here that doesn't change the text content", "non_text_markup");
+          assertText("There is an image here and an image link", "image_in_text");
+      }
 
-    function testNonVisibleNewlinesInText()
-    {
-      assertTextContent("non visible newlines", "non_visible_newlines");
-    }
+      function testNonVisibleNewlinesInText()
+      {
+          assertText("non visible newlines", "non_visible_newlines");
+      }
 
-    function testInlineElementsForcingNewlines()
-    {
-      assertTextContent("<br/>\nnewline", "br");
-      // TODO we should probably always return a single (or double) newline
-      assertTextContent("<hr/>\n+newline", "hr");
-    }
+      function testInlineElementsForcingNewlines()
+      {
+          assertText("<br/>\nnewline", "br");
+          // TODO we should probably always return a single (or double) newline
+          assertText("<hr/>\n+newline", "hr");
+      }
 
-    function testBlockElementsForcingNewlines()
-    {
-      // TODO we should probably always return a single (or double) newline
-      assertTextContent("First paragraph\n+Second paragraph", "paragraphs");
-      assertTextContent("First div\n+Second div", "divs");
-    }
+      function testBlockElementsForcingNewlines()
+      {
+          // TODO we should probably always return a single (or double) newline
+          assertText("First paragraph\n+Second paragraph", "paragraphs");
+          assertText("First div\n+Second div", "divs");
+      }
 
-    function testPreformattedNewlines()
-    {
-      // TODO What other Html tags support preformatted newlines?
-      assertTextContent("preformatted\nnewline", "preformatted");
-    }
+      function testPreformattedNewlines()
+      {
+          // TODO What other Html tags support preformatted newlines?
+          assertText("preformatted\nnewline", "preformatted");
+      }
 
-    function assertTextContent(pattern, elementId)
-    {
-      var text = getText(document.getElementById(elementId));
-      var re = new RegExp(pattern);
+      function assertText(pattern, elementId)
+      {
+          var text = getText(document.getElementById(elementId));
+          var re = new RegExp(pattern);
 
-      assertTrue(text + "\n does not match pattern \n'" + pattern.replace(/\n/g, "\\n") + "'",
-                 re.test(text));
-    }
+          assertTrue(text + "\n does not match pattern \n'" + pattern.replace(/\n/g, "\\n") + "'",
+                  re.test(text));
+      }
+
+      function assertTextContent(expectedTextContent, elementId) {
+          var actualTextContent = normalizeNewlines(getTextContent(document.getElementById(elementId)));
+          assertEquals(expectedTextContent, actualTextContent);
+      }
+
+      function testTextContentOfEmptyElementIsBlankString() {
+          assertTextContent("", 'empty');
+      }
+
+      function testTextContentOfSimpleElementIsContainedText() {
+          assertTextContent("abc", 'simple');
+      }
+
+      function testTextContentIncludesContentOfChildElements() {
+          assertTextContent("this is not simple", 'not_simple');
+      }
+
+      function testTextContentOfPreElementIncludesNewlines() {
+          assertTextContent("preformatted block\n", 'pre');
+      }
+
+      function testTextContentOfElementsWithinPreElementIncludesNewlines() {
+          assertTextContent("preformatted block with nested\nbold tag\n", 'pre_with_nested_tags');
+      }
+
+      function testTextContentOfBlockElementsIncludesTrailingNewline() {
+          assertTextContent("this is a paragraph\n", 'p_element');
+          assertTextContent("\n", 'br_element');
+          assertTextContent("\n", 'hr_element');
+          assertTextContent("this is a div\n", 'div_element');
+      }
   </script>
 </head>
 
 <body>
+
 <div id="one_space">1 1&nbsp;1</div>
 <div id="two_spaces">2  2&nbsp;&nbsp;2</div>
 <div id="three_spaces">3   3&nbsp;&nbsp;&nbsp;3  &nbsp;3 &nbsp;&nbsp;3</div>
@@ -107,5 +144,31 @@ newlines</span>
   <pre>preformatted
 newline</pre>
 </div>
+
+<hr/>
+
+<span id="empty"></span>
+
+<span id="simple">abc</span>
+
+<span id="not_simple">this is <b>not</b> simple</span>
+
+<pre id="pre">
+preformatted block
+</pre>
+
+<pre id="pre_with_nested_tags">
+preformatted block with <b>nested
+bold tag</b>
+</pre>
+
+<p id="p_element">this is a paragraph</p>
+
+<hr id="hr_element"/>
+<br id="br_element"/>
+<div id="div_element">this is a div</div>
+
+
+
 </body>
 </html>

@@ -38,27 +38,12 @@ String.prototype.startsWith = function(str) {
 function getText(element) {
     var text = "";
 
-    if (browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5")
-    {
-        var dummyElement = element.cloneNode(true);
-        renderWhitespaceInTextContent(dummyElement);
-        text = dummyElement.textContent;
-    } else if (browserVersion.isKonqueror || browserVersion.isSafari) {
-        var dummyElement = element.cloneNode(true);
-        renderWhitespaceInTextContent(dummyElement);
-        text = dummyElement.innerText;
-    } else if (browserVersion.isOpera) {
-        var dummyElement = element.cloneNode(true);
-        renderWhitespaceInTextContent(dummyElement);
-        text = dummyElement.innerText;
-        text = xmlDecode(text);
-    }
-    else if (element.textContent)
-    {
+    var isRecentFirefox = (browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5");
+    if (isRecentFirefox || browserVersion.isKonqueror || browserVersion.isSafari || browserVersion.isOpera) {
+        text = getTextContent(element);
+    } else if (element.textContent) {
         text = element.textContent;
-    }
-    else if (element.innerText)
-    {
+    } else if (element.innerText) {
         text = element.innerText;
     }
 
@@ -68,62 +53,34 @@ function getText(element) {
     return text.trim();
 }
 
-function renderWhitespaceInTextContent(element) {
-    // Remove non-visible newlines in text nodes
-    if (element.nodeType == Node.TEXT_NODE)
-    {
-        element.data = element.data.replace(/\n|\r|\t/g, " ");
-        return;
-    }
-
-    if (element.nodeType == Node.COMMENT_NODE)
-    {
-        element.data = "";
-        return;
-    }
-
-    // Don't modify PRE elements
-    if (element.tagName == "PRE")
-    {
-        return;
-    }
-
-    // Handle inline element that force newlines
-    if (tagIs(element, ["BR", "HR"]))
-    {
-        // Replace this element with a newline text element
-        element.parentNode.replaceChild(element.ownerDocument.createTextNode("\n"), element)
-    }
-
-    for (var i = 0; i < element.childNodes.length; i++)
-    {
-        var child = element.childNodes.item(i)
-        renderWhitespaceInTextContent(child);
-    }
-
-    // Handle block elements that introduce newlines
-    // -- From HTML spec:
-    //<!ENTITY % block
-    //     "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT |
-    //      BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
-    if (tagIs(element, ["P", "DIV"]))
-    {
-        element.appendChild(element.ownerDocument.createTextNode("\n"), element)
-    }
-
-}
-
-function tagIs(element, tags)
-{
-    var tag = element.tagName;
-    for (var i = 0; i < tags.length; i++)
-    {
-        if (tags[i] == tag)
-        {
-            return true;
+function getTextContent(element, preformatted) {
+    if (element.nodeType == 3 /*Node.TEXT_NODE*/) {
+        var text = element.data;
+        if (!preformatted) {
+            text = text.replace(/\n|\r|\t/g, " ");
         }
+        return text;
     }
-    return false;
+    if (element.nodeType == 1 /*Node.ELEMENT_NODE*/) {
+        var childrenPreformatted = preformatted || (element.tagName == "PRE");
+        var text = "";
+        for (var i = 0; i < element.childNodes.length; i++) {
+            var child = element.childNodes.item(i);
+            text += getTextContent(child, childrenPreformatted);
+        }
+        // Handle block elements that introduce newlines
+        // -- From HTML spec:
+        //<!ENTITY % block
+        //     "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT |
+        //      BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
+        //
+        // TODO: should potentially introduce multiple newlines to separate blocks
+        if (element.tagName == "P" || element.tagName == "BR" || element.tagName == "HR" || element.tagName == "DIV") {
+            text += "\n";
+        }
+        return text;
+    }
+    return '';
 }
 
 /**
@@ -150,10 +107,8 @@ function normalizeSpaces(text)
     text = text.replace(/\ +/g, " ");
 
     // Replace &nbsp; with a space
-    var pat = String.fromCharCode(160);
-    // Opera doesn't like /\240/g
-    var re = new RegExp(pat, "g");
-    return text.replace(re, " ");
+    var nbspPattern = new RegExp(String.fromCharCode(160), "g");
+    return text.replace(nbspPattern, " ");
 }
 
 function xmlDecode(text) {
