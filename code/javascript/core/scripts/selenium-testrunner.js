@@ -23,6 +23,7 @@ var htmlTestRunner;
 var HtmlTestRunner = Class.create();
 Object.extend(HtmlTestRunner.prototype, {
     initialize: function() {
+        runOptions = new RunOptions();
         this.testFailed = false;
         this.currentTest = null;
         this.runAllTests = false;
@@ -208,11 +209,9 @@ var htmlTestSuite;
 
 
 function onSeleniumLoad() {
-    runOptions = new RunOptions();
     suiteFrame = new SeleniumFrame(getSuiteFrame());
     testFrame = new HtmlTestFrame(getTestFrame());
     htmlTestRunner = new HtmlTestRunner();
-
 }
 
 
@@ -564,7 +563,7 @@ Object.extend(HtmlTestSuite.prototype, {
 
     _startCurrentTestCase: function() {
         this.getCurrentRow().markWorking();
-        this.getCurrentRow().loadTestCase(htmlTestRunner.startTest);
+        this.getCurrentRow().loadTestCase(htmlTestRunner.startTest.bind(htmlTestRunner));
     },
 
     _onTestSuiteComplete: function() {
