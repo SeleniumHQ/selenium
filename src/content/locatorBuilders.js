@@ -27,6 +27,10 @@ LocatorBuilders.prototype.pageBot = function() {
 	var pageBot = this.window._locator_pageBot;
 	if (pageBot == null) {
 		pageBot = PageBot.createForWindow(this.window);
+        var self = this;
+        pageBot.getCurrentWindow = function() {
+            return self.window;
+        }
 		this.window._locator_pageBot = pageBot;
 	}
 	return pageBot;

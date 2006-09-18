@@ -214,10 +214,18 @@ SeleniumIDE.Overlay.onContentLoaded = function(event) {
 	}
 }
 
+SeleniumIDE.Overlay.onLoad = function(event) {
+    var doc = event.originalTarget;
+    doc.defaultView.setTimeout(function() {
+            doc._Selenium_IDE_readyState = "complete";
+        }, 0);
+}
+
 SeleniumIDE.Overlay.init = function() {
 	var appcontent = window.document.getElementById("appcontent");
 	if (appcontent) {
 		appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.Overlay.onContentLoaded, false);
+        appcontent.addEventListener("load", SeleniumIDE.Overlay.onLoad, true);
 	}
 	window.addEventListener("beforeunload", 
 							function(event) {

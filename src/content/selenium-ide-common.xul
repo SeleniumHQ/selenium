@@ -26,7 +26,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-browserdetect.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/prototype-1.4.0.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/lib/prototype.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/htmlutils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-logging.js"/>

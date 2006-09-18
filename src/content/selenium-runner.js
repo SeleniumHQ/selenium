@@ -49,6 +49,10 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 	}
 };
 
+BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
+    return currentDocument._Selenium_IDE_readyState;
+};
+
 Selenium.prototype.doPause = function(waitTime) {
     currentTest.pauseInterval = waitTime;
 };
@@ -140,15 +144,22 @@ function stopAndDo(func, arg1, arg2) {
 	return true;
 }
 
-function start(baseURL) {
-	if (!stopAndDo("start", baseURL)) return;
-	
+function createSelenium(baseURL) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var window = wm.getMostRecentWindow('navigator:browser');
 	
-	selenium = Selenium.createForFrame(window.getBrowser().selectedBrowser);
+    var contentWindow = window.getBrowser().selectedBrowser.contentWindow;
+	selenium = Selenium.createForWindow(contentWindow);
 	selenium.browserbot.getCurrentPage();
 	selenium.baseURL = baseURL;
+    return selenium;
+}
+
+function start(baseURL) {
+	if (!stopAndDo("start", baseURL)) return;
+	
+    selenium = createSelenium(baseURL);
+
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
 
@@ -201,19 +212,13 @@ function start(baseURL) {
 function executeCommand(baseURL, command) {
 	if (!stopAndDo("executeCommand", baseURL, command)) return;
 
-	// TODO refactor with start()
-
-	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	var window = wm.getMostRecentWindow('navigator:browser');
-	
-	selenium = Selenium.createForFrame(window.getBrowser().selectedBrowser);
-	selenium.browserbot.getCurrentPage();
-	selenium.baseURL = baseURL;
+    selenium = createSelenium(baseURL);
+    
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
 	
 	currentTest = new TestLoop(commandFactory);
-		
+    
 	currentTest.getCommandInterval = function() { return 0; }
 	var first = true;
 	currentTest.nextCommand = function() {
@@ -271,49 +276,52 @@ function continueCurrentTest() {
 
 function showElement(locator) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	var window = wm.getMostRecentWindow('navigator:browser').getBrowser().contentWindow;
+	var contentWindow = wm.getMostRecentWindow('navigator:browser').getBrowser().contentWindow;
 	
-	var pageBot = window._test_pageBot;
+	var pageBot = contentWindow._test_pageBot;
 	if (pageBot == null) {
-		pageBot = PageBot.createForWindow(window);
-		window._test_pageBot = pageBot;
+		pageBot = PageBot.createForWindow(contentWindow);
+        pageBot.getCurrentWindow = function() {
+            return contentWindow;
+        }
+		contentWindow._test_pageBot = pageBot;
 	}
 
-	var e = pageBot.findElement(locator);
-	if (e) {
-		//LOG.info("bg=" + e.style['background-color']);
-		//e.style['background-color'] = 'red';
-		//LOG.info("locator found: " + locator);
-
-		var flasher = Components.classes["@mozilla.org/inspector/flasher;1"].createInstance()
-			.QueryInterface(Components.interfaces.inIFlasher);
-		flasher.color = "#88ff88";
-		flasher.thickness = 2;
-		flasher.invert = false;
-               
-		flasher.scrollElementIntoView(e);
-		flasher.drawElementOutline(e);
-
-		var flashIndex = 0;
-		
-		function animateFlasher() {
-			var timeout = 0;
-			if (flashIndex % 2 == 0) {
-				flasher.repaintElement(e);
-				timeout = 300;
-			} else {
-				flasher.drawElementOutline(e);
-				timeout = 300;
-			}
-			flashIndex++;
-			if (flashIndex < 3) {
-				setTimeout(animateFlasher, timeout);
-			}
-		}
-
-		setTimeout(animateFlasher, 300);
-
-	} else {
-		LOG.error("locator not found: " + locator);
-	}
+    try {
+        var e = pageBot.findElement(locator);
+        if (e) {
+            var flasher = Components.classes["@mozilla.org/inspector/flasher;1"].createInstance()
+                .QueryInterface(Components.interfaces.inIFlasher);
+            flasher.color = "#88ff88";
+            flasher.thickness = 2;
+            flasher.invert = false;
+            
+            flasher.scrollElementIntoView(e);
+            flasher.drawElementOutline(e);
+            
+            var flashIndex = 0;
+            
+            function animateFlasher() {
+                var timeout = 0;
+                if (flashIndex % 2 == 0) {
+                    flasher.repaintElement(e);
+                    timeout = 300;
+                } else {
+                    flasher.drawElementOutline(e);
+                    timeout = 300;
+                }
+                flashIndex++;
+                if (flashIndex < 3) {
+                    setTimeout(animateFlasher, timeout);
+                }
+            }
+            
+            setTimeout(animateFlasher, 300);
+            
+        } else {
+            LOG.error("locator not found: " + locator);
+        }
+    } catch (error) {
+        LOG.error("locator not found: " + locator + ", error = " + error);
+    }
 }
