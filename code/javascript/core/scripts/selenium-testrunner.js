@@ -23,7 +23,8 @@ var htmlTestRunner;
 var HtmlTestRunner = Class.create();
 Object.extend(HtmlTestRunner.prototype, {
     initialize: function() {
-        runOptions = new RunOptions();
+        this.htmlTestSuite = null;
+        this.runOptions = new RunOptions();
         this.testFailed = false;
         this.currentTest = null;
         this.runAllTests = false;
@@ -34,20 +35,25 @@ Object.extend(HtmlTestRunner.prototype, {
         }.bind(this), 500);
     },
 
+    markFailed: function() {
+        testFailed = true;
+        this.htmlTestSuite.markFailed();
+    },
+
     loadSuiteFrame: function() {
         if (selenium == null) {
             selenium = Selenium.createForWindow(this._getApplicationWindow());
             this._registerCommandHandlers();
         }
-        runOptions.setHighlightOption();
-        var testSuiteName = runOptions.getTestSuiteName();
+        this.runOptions.setHighlightOption();
+        var testSuiteName = this.runOptions.getTestSuiteName();
         if (testSuiteName) {
             suiteFrame.load(testSuiteName, this._onloadTestSuite.bind(this));
         }
     },
 
     _getApplicationWindow: function () {
-        if (runOptions.isMultiWindowMode()) {
+        if (this.runOptions.isMultiWindowMode()) {
             return this._getSeparateApplicationWindow();
         }
         return $('myiframe').contentWindow;
@@ -61,27 +67,24 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     _onloadTestSuite:function () {
-        htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
-
-        if (! htmlTestSuite.isAvailable()) {
-            // hack!
+        this.htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
+        if (! this.htmlTestSuite.isAvailable()) {
             return;
         }
-
-        if (runOptions.isAutomatedRun()) {
+        if (this.runOptions.isAutomatedRun()) {
             htmlTestRunner.startTestSuite();
-        } else if (runOptions.getAutoUrl()) {
+        } else if (this.runOptions.getAutoUrl()) {
             //todo what is the autourl doing, left to check it out
             addLoadListener(getApplicationWindow(), this._startSingleTest.bind(this));
-            getApplicationWindow().src = runOptions.getAutoUrl();
+            getApplicationWindow().src = this.runOptions.getAutoUrl();
         } else {
-            htmlTestSuite.getSuiteRows()[0].loadTestCase();
+            this.htmlTestSuite.getSuiteRows()[0].loadTestCase();
         }
     },
 
     _startSingleTest:function () {
         removeLoadListener(getApplicationWindow(), this._startSingleTest.bind(this));
-        var singleTestName = runOptions.getSingleTestName();
+        var singleTestName = this.runOptions.getSingleTestName();
         testFrame.load(singleTestName, this.startTest.bind(this));
     },
 
@@ -92,9 +95,9 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     startTestSuite: function() {
-        runOptions.reset();
+        this.runOptions.reset();
         metrics.resetMetrics();
-        htmlTestSuite.reset();
+        this.htmlTestSuite.reset();
         this.runAllTests = true;
         this.runNextTest();
     },
@@ -103,11 +106,11 @@ Object.extend(HtmlTestRunner.prototype, {
         if (!this.runAllTests) {
             return;
         }
-        htmlTestSuite.runNextTestInSuite();
+        this.htmlTestSuite.runNextTestInSuite();
     },
 
     startTest: function () {
-        runOptions.reset();
+        this.runOptions.reset();
         testFrame.scrollToTop();
         //todo: move testFailed and storedVars to TestCase
         this.testFailed = false;
@@ -193,8 +196,8 @@ Object.extend(HtmlTestFrame.prototype, {
     },
 
     setCurrentTestCase: function() {
-        this.currentTestCase = new HtmlTestCase(this.getDocument(), htmlTestSuite.getCurrentRow());
-        // todo: GLOBAL!
+        //todo: this is not good looking
+        this.currentTestCase = new HtmlTestCase(this.getDocument(), htmlTestRunner.htmlTestSuite.getCurrentRow());
     },
 
     getCurrentTestCase: function() {
@@ -202,11 +205,6 @@ Object.extend(HtmlTestFrame.prototype, {
     }
 
 });
-
-
-var htmlTestSuite;
-// todo: shouldn't be global
-
 
 function onSeleniumLoad() {
     suiteFrame = new SeleniumFrame(getSuiteFrame());
@@ -235,7 +233,7 @@ function getTestFrame() {
     return f;
 }
 
-var runOptions;
+
 var RunOptions = Class.create();
 Object.extend(RunOptions.prototype, URLConfiguration.prototype);
 Object.extend(RunOptions.prototype, {
@@ -503,12 +501,10 @@ Object.extend(HtmlTestSuite.prototype, {
 
     initialize: function(suiteDocument) {
         this.suiteDocument = suiteDocument;
-        if (this.getTestTable()) {
-            this.suiteRows = this._collectSuiteRows();
-            this.titleRow = this.getTestTable().rows[0];
-            this.title = this.titleRow.cells[0].innerHTML;
-            this.reset();
-        }
+        this.suiteRows = this._collectSuiteRows();
+        this.titleRow = this.getTestTable().rows[0];
+        this.title = this.titleRow.cells[0].innerHTML;
+        this.reset();
     },
 
     reset: function() {
@@ -615,12 +611,13 @@ Object.extend(TestResult.prototype, {
 //      testTable.1 to testTable.N: the individual test tables
 //
     initialize: function (suiteFailed, suiteTable) {
+        this.runOptions = htmlTestRunner.runOptions;
         this.suiteFailed = suiteFailed;
         this.suiteTable = suiteTable;
     },
 
     post: function () {
-        if (!runOptions.isAutomatedRun()) {
+        if (!this.runOptions.isAutomatedRun()) {
             return;
         }
         var form = document.createElement("form");
@@ -630,7 +627,7 @@ Object.extend(TestResult.prototype, {
         form.method = "post";
         form.target = "myiframe";
 
-        var resultsUrl = runOptions.getResultsUrl();
+        var resultsUrl = this.runOptions.getResultsUrl();
         if (!resultsUrl) {
             resultsUrl = "./postResults";
         }
@@ -686,13 +683,13 @@ Object.extend(TestResult.prototype, {
         // Add HTML for the suite itself
         form.createHiddenField("suite", this.suiteTable.parentNode.innerHTML);
 
-        if (runOptions.shouldSaveResultsToFile()) {
+        if (this.runOptions.shouldSaveResultsToFile()) {
             this._saveToFile(resultsUrl, form);
         } else {
             form.submit();
         }
         document.body.removeChild(form);
-        if (runOptions.closeAfterTests()) {
+        if (this.runOptions.closeAfterTests()) {
             window.top.close();
         }
     },
@@ -984,8 +981,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     _recordFailure : function(errorMsg) {
         LOG.warn("currentTest.recordFailure: " + errorMsg);
-        htmlTestRunner.testFailed = true;
-        htmlTestSuite.markFailed();
+        htmlTestRunner.markFailed();
         this.htmlTestCase.addErrorMessage(errorMsg, this.currentRow);
     },
 
@@ -1008,11 +1004,11 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     getCommandInterval : function() {
-        return runOptions.runInterval;
+        return htmlTestRunner.runOptions.runInterval;
     },
 
     pause : function() {
-        runOptions.pauseCurrentTest();
+        htmlTestRunner.runOptions.pauseCurrentTest();
     },
 
     doNextCommand: function() {
@@ -1053,7 +1049,8 @@ Selenium.prototype.doBreak = function() {
      * This command is useful for debugging, but be careful when using it, because it will
      * force automated tests to hang until a user intervenes manually.
      */
-    runOptions.setToPauseAtNextCommand();
+    // todo: should not refer to runOptions directly
+    htmlTestRunner.runOptions.setToPauseAtNextCommand();
 };
 
 Selenium.prototype.doStore = function(expression, variableName) {
