@@ -24,7 +24,7 @@ var HtmlTestRunner = Class.create();
 Object.extend(HtmlTestRunner.prototype, {
     initialize: function() {
         this.metrics = new Metrics();
-        this.runOptions = new RunOptions();
+        this.controlPanel = new HtmlTestRunnerControlPanel();
         this.htmlTestSuite = null;
         this.testFailed = false;
         this.currentTest = null;
@@ -46,15 +46,15 @@ Object.extend(HtmlTestRunner.prototype, {
             selenium = Selenium.createForWindow(this._getApplicationWindow());
             this._registerCommandHandlers();
         }
-        this.runOptions.setHighlightOption();
-        var testSuiteName = this.runOptions.getTestSuiteName();
+        this.controlPanel.setHighlightOption();
+        var testSuiteName = this.controlPanel.getTestSuiteName();
         if (testSuiteName) {
             suiteFrame.load(testSuiteName, this._onloadTestSuite.bind(this));
         }
     },
 
     _getApplicationWindow: function () {
-        if (this.runOptions.isMultiWindowMode()) {
+        if (this.controlPanel.isMultiWindowMode()) {
             return this._getSeparateApplicationWindow();
         }
         return $('myiframe').contentWindow;
@@ -72,12 +72,12 @@ Object.extend(HtmlTestRunner.prototype, {
         if (! this.htmlTestSuite.isAvailable()) {
             return;
         }
-        if (this.runOptions.isAutomatedRun()) {
+        if (this.controlPanel.isAutomatedRun()) {
             htmlTestRunner.startTestSuite();
-        } else if (this.runOptions.getAutoUrl()) {
+        } else if (this.controlPanel.getAutoUrl()) {
             //todo what is the autourl doing, left to check it out
             addLoadListener(this._getApplicationWindow(), this._startSingleTest.bind(this));
-            this._getApplicationWindow().src = this.runOptions.getAutoUrl();
+            this._getApplicationWindow().src = this.controlPanel.getAutoUrl();
         } else {
             this.htmlTestSuite.getSuiteRows()[0].loadTestCase();
         }
@@ -85,7 +85,7 @@ Object.extend(HtmlTestRunner.prototype, {
 
     _startSingleTest:function () {
         removeLoadListener(getApplicationWindow(), this._startSingleTest.bind(this));
-        var singleTestName = this.runOptions.getSingleTestName();
+        var singleTestName = this.controlPanel.getSingleTestName();
         testFrame.load(singleTestName, this.startTest.bind(this));
     },
 
@@ -95,7 +95,7 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     startTestSuite: function() {
-        this.runOptions.reset();
+        this.controlPanel.reset();
         this.metrics.resetMetrics();
         this.htmlTestSuite.reset();
         this.runAllTests = true;
@@ -110,7 +110,7 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     startTest: function () {
-        this.runOptions.reset();
+        this.controlPanel.reset();
         testFrame.scrollToTop();
         //todo: move testFailed and storedVars to TestCase
         this.testFailed = false;
@@ -233,10 +233,9 @@ function getTestFrame() {
     return f;
 }
 
-
-var RunOptions = Class.create();
-Object.extend(RunOptions.prototype, URLConfiguration.prototype);
-Object.extend(RunOptions.prototype, {
+var HtmlTestRunnerControlPanel = Class.create();
+Object.extend(HtmlTestRunnerControlPanel.prototype, URLConfiguration.prototype);
+Object.extend(HtmlTestRunnerControlPanel.prototype, {
     initialize: function() {
         this._acquireQueryString();
 
@@ -611,14 +610,14 @@ Object.extend(TestResult.prototype, {
 //      testTable.1 to testTable.N: the individual test tables
 //
     initialize: function (suiteFailed, suiteTable) {
-        this.runOptions = htmlTestRunner.runOptions;
+        this.controlPanel = htmlTestRunner.controlPanel;
         this.metrics = htmlTestRunner.metrics;
         this.suiteFailed = suiteFailed;
         this.suiteTable = suiteTable;
     },
 
     post: function () {
-        if (!this.runOptions.isAutomatedRun()) {
+        if (!this.controlPanel.isAutomatedRun()) {
             return;
         }
         var form = document.createElement("form");
@@ -628,7 +627,7 @@ Object.extend(TestResult.prototype, {
         form.method = "post";
         form.target = "myiframe";
 
-        var resultsUrl = this.runOptions.getResultsUrl();
+        var resultsUrl = this.controlPanel.getResultsUrl();
         if (!resultsUrl) {
             resultsUrl = "./postResults";
         }
@@ -684,13 +683,13 @@ Object.extend(TestResult.prototype, {
         // Add HTML for the suite itself
         form.createHiddenField("suite", this.suiteTable.parentNode.innerHTML);
 
-        if (this.runOptions.shouldSaveResultsToFile()) {
+        if (this.controlPanel.shouldSaveResultsToFile()) {
             this._saveToFile(resultsUrl, form);
         } else {
             form.submit();
         }
         document.body.removeChild(form);
-        if (this.runOptions.closeAfterTests()) {
+        if (this.controlPanel.closeAfterTests()) {
             window.top.close();
         }
     },
@@ -1006,11 +1005,11 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     },
 
     getCommandInterval : function() {
-        return htmlTestRunner.runOptions.runInterval;
+        return htmlTestRunner.controlPanel.runInterval;
     },
 
     pause : function() {
-        htmlTestRunner.runOptions.pauseCurrentTest();
+        htmlTestRunner.controlPanel.pauseCurrentTest();
     },
 
     doNextCommand: function() {
@@ -1051,8 +1050,8 @@ Selenium.prototype.doBreak = function() {
      * This command is useful for debugging, but be careful when using it, because it will
      * force automated tests to hang until a user intervenes manually.
      */
-    // todo: should not refer to runOptions directly
-    htmlTestRunner.runOptions.setToPauseAtNextCommand();
+    // todo: should not refer to controlPanel directly
+    htmlTestRunner.controlPanel.setToPauseAtNextCommand();
 };
 
 Selenium.prototype.doStore = function(expression, variableName) {

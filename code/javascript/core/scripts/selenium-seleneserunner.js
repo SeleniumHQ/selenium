@@ -35,9 +35,9 @@ var relayToRC = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
-var RunOptions = Class.create();
-Object.extend(RunOptions.prototype, URLConfiguration.prototype);
-Object.extend(RunOptions.prototype, {
+var SeleneseRunnerOptions = Class.create();
+Object.extend(SeleneseRunnerOptions.prototype, URLConfiguration.prototype);
+Object.extend(SeleneseRunnerOptions.prototype, {
     initialize: function() {
         this._acquireQueryString();
     },
@@ -82,7 +82,7 @@ Object.extend(RunOptions.prototype, {
 var runOptions;
 
 function runSeleniumTest() {
-    runOptions = new RunOptions();
+    runOptions = new SeleneseRunnerOptions();
     var testAppWindow;
 
     if (runOptions.isMultiWindowMode()) {
