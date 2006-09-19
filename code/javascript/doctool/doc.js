@@ -112,7 +112,7 @@ while ((result = commandPattern.exec(content)) != null) {
     var args = extractArgList(source);
     var comment = extractInitialComment(source);
     if (comment == null || "" == comment) {
-        throw new Error("Comment for " + i + " was blank!");
+        throw new Error("Comment for " + name + " was blank!");
     }
     handleTags(name, args, comment);
     print("</function>\n");
