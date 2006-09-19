@@ -1179,8 +1179,12 @@ Selenium.prototype.isTextPresent = function(pattern) {
     var patternMatcher = new PatternMatcher(pattern);
     if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
 		patternMatcher.matcher = new PatternMatcher.strategies.globContains(pattern);
-	}
-	return patternMatcher.matches(allText);
+    }
+    else if (patternMatcher.strategy == PatternMatcher.strategies.exact) {
+	            pattern = pattern.substring("exact:".length); // strip off "exact:"
+		return allText.indexOf(pattern) != -1;
+    }
+    return patternMatcher.matches(allText);
 };
 
 Selenium.prototype.isElementPresent = function(locator) {
