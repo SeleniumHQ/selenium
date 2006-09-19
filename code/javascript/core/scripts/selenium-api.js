@@ -156,7 +156,7 @@ function Selenium(browserbot) {
     this.page = function() {
         return browserbot.getCurrentPage();
     };
-    this.defaultTimeout = 30 * 1000;
+    this.reset();
 }
 
 Selenium.createForWindow = function(window) {
@@ -167,6 +167,7 @@ Selenium.createForWindow = function(window) {
 };
 
 Selenium.prototype.reset = function() {
+    this.defaultTimeout = 30 * 1000;
     // todo: this.browserbot.reset()
     this.browserbot.selectWindow("null");
     this.browserbot.resetPopups();
