@@ -157,9 +157,11 @@ function TreeView(editor, document, tree) {
 					base = r[1];
 					commands.push("assert" + base + "NotPresent");
 					commands.push("verify" + base + "NotPresent");
+					commands.push("waitFor" + base + "NotPresent");
 				} else {
 					commands.push("assertNot" + base);
 					commands.push("verifyNot" + base);
+					commands.push("waitForNot" + base);
 				}
 			}
 		}
