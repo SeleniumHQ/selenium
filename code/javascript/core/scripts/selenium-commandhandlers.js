@@ -15,31 +15,29 @@
 *
 */
 function CommandHandlerFactory() {
-    this.actions = {};
-    this.asserts = {};
-    this.accessors = {};
 
     var self = this;
 
+    this.handlers = {};
+
     this.registerAction = function(name, action, wait, dontCheckAlertsAndConfirms) {
         var handler = new ActionHandler(action, wait, dontCheckAlertsAndConfirms);
-        this.actions[name] = handler;
+        this.handlers[name] = handler;
     };
 
     this.registerAccessor = function(name, accessor) {
         var handler = new AccessorHandler(accessor);
-        this.accessors[name] = handler;
+        this.handlers[name] = handler;
     };
 
     this.registerAssert = function(name, assertion, haltOnFailure) {
         var handler = new AssertHandler(assertion, haltOnFailure);
-        this.asserts[name] = handler;
+        this.handlers[name] = handler;
     };
 
     this.getCommandHandler = function(name) {
-        return this.actions[name] || this.accessors[name] || this.asserts[name] || null;
+        return this.handlers[name] ||  null; // todo: why null, and not undefined?
     };
-
 
     // Methods of the form getFoo(target) result in commands:
     // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
@@ -85,7 +83,6 @@ function CommandHandlerFactory() {
         }
     };
 
-
     var _registerAllAsserts = function(commandObject) {
         for (var functionName in commandObject) {
             var result = /^assert([A-Z].+)$/.exec(functionName);
@@ -102,7 +99,6 @@ function CommandHandlerFactory() {
             }
         }
     };
-
 
     this.registerAll = function(commandObject) {
         _registerAllAccessors(commandObject);
@@ -303,8 +299,12 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
     if (terminationCondition == undefined && this.wait) {
         terminationCondition = seleniumApi.makePageLoadCondition();
     }
-    return new CommandResult(terminationCondition);
+    return new ActionResult(terminationCondition);
 };
+
+function ActionResult(terminationCondition) {
+    this.terminationCondition = terminationCondition;
+}
 
 function AccessorHandler(accessor) {
     CommandHandler.call(this, "accessor", true, accessor);
@@ -312,10 +312,12 @@ function AccessorHandler(accessor) {
 AccessorHandler.prototype = new CommandHandler;
 AccessorHandler.prototype.execute = function(seleniumApi, command) {
     var returnValue = this.executor.call(seleniumApi, command.target, command.value);
-    var result = new CommandResult();
-    result.result = returnValue;
-    return result;
+    return new AccessorResult(returnValue);
 };
+
+function AccessorResult(result) {
+    this.result = result;
+}
 
 /**
  * Handler for assertions and verifications.
@@ -325,10 +327,9 @@ function AssertHandler(assertion, haltOnFailure) {
 }
 AssertHandler.prototype = new CommandHandler;
 AssertHandler.prototype.execute = function(seleniumApi, command) {
-    var result = new CommandResult();
+    var result = new AssertResult();
     try {
         this.executor.call(seleniumApi, command.target, command.value);
-        result.passed = true;
     } catch (e) {
         // If this is not a AssertionFailedError, or we should haltOnFailure, rethrow.
         if (!e.isAssertionFailedError) {
@@ -338,15 +339,18 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
             var error = new SeleniumError(e.failureMessage);
             throw error;
         }
-        result.failed = true;
-        result.failureMessage = e.failureMessage;
+        result.setFailed(e.failureMessage);
     }
     return result;
 };
 
-function CommandResult(terminationCondition) {
-    this.terminationCondition = terminationCondition;
-    this.result = null;
+function AssertResult() {
+    this.passed = true;
+}
+AssertResult.prototype.setFailed = function(message) {
+    this.passed = null;
+    this.failed = true;
+    this.failureMessage = message;
 }
 
 function SeleniumCommand(command, target, value, isBreakpoint) {
@@ -356,83 +360,3 @@ function SeleniumCommand(command, target, value, isBreakpoint) {
     this.isBreakpoint = isBreakpoint;
 }
 
-
-
-/**
- * Tell Selenium to expect a failure on the next command execution. This
- * command temporarily installs a CommandFactory that generates
- * CommandHandlers that expect a failure.
- */
-Selenium.prototype.assertFailureOnNext = function(message) {
-    if (!message) {
-        throw new Error("Message must be provided");
-    }
-
-    var expectFailureCommandFactory =
-        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "failure", executeCommandAndReturnFailureMessage);
-    currentTest.commandFactory = expectFailureCommandFactory;
-};
-
-/**
- * Tell Selenium to expect an error on the next command execution. This
- * command temporarily installs a CommandFactory that generates
- * CommandHandlers that expect a failure.
- */
-Selenium.prototype.assertErrorOnNext = function(message) {
-    if (!message) {
-        throw new Error("Message must be provided");
-    }
-
-    var expectFailureCommandFactory =
-        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "error", executeCommandAndReturnErrorMessage);
-    currentTest.commandFactory = expectFailureCommandFactory;
-};
-
-function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor) {
-    this.getCommandHandler = function(name) {
-        var baseHandler = originalCommandFactory.getCommandHandler(name);
-        return new ExpectFailureCommandHandler(baseHandler, originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor);
-    };
-};
-
-function executeCommandAndReturnFailureMessage(baseHandler, originalArguments) {
-    var baseResult = baseHandler.execute.apply(baseHandler, originalArguments);
-    if (baseResult.passed) {
-        return null;
-    }
-    return baseResult.failureMessage;
-};
-
-function executeCommandAndReturnErrorMessage(baseHandler, originalArguments) {
-    try {
-        baseHandler.execute.apply(baseHandler, originalArguments);
-        return null;
-    }
-    catch (expected) {
-        return expected.message;
-    }
-};
-
-function ExpectFailureCommandHandler(baseHandler, originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor) {
-    this.execute = function() {
-        var baseFailureMessage = decoratedExecutor(baseHandler, arguments);
-        var result = new CommandResult();
-        if (!baseFailureMessage) {
-            result.failed = true;
-            result.failureMessage = "Expected " + errorType + " did not occur.";
-        }
-        else {
-            if (! PatternMatcher.matches(expectedErrorMessage, baseFailureMessage)) {
-                result.failed = true;
-                result.failureMessage = "Expected " + errorType + " message '" + expectedErrorMessage
-                                        + "' but was '" + baseFailureMessage + "'";
-            }
-            else {
-                result.passed = true;
-                result.result = baseFailureMessage;
-            }
-        }
-        currentTest.commandFactory = originalCommandFactory;
-        return result;
-    };
-}

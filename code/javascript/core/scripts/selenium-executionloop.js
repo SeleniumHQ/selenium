@@ -147,7 +147,7 @@ TestLoop.prototype = {
                 window.setTimeout(this.continueTestWhenConditionIsTrue.bind(this), 100);
             }
         } catch (e) {
-            var lastResult = new CommandResult();
+            var lastResult = {};
             lastResult.failed = true;
             lastResult.failureMessage = e.message;
             this.commandComplete(lastResult);

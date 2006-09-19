@@ -90,8 +90,8 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     _registerCommandHandlers: function () {
-        commandFactory = new CommandHandlerFactory();
-        commandFactory.registerAll(selenium);
+        this.commandFactory = new CommandHandlerFactory();
+        this.commandFactory.registerAll(selenium);
     },
 
     startTestSuite: function() {
@@ -115,7 +115,7 @@ Object.extend(HtmlTestRunner.prototype, {
         //todo: move testFailed and storedVars to TestCase
         this.testFailed = false;
         storedVars = new Object();
-        this.currentTest = new HtmlRunnerTestLoop(testFrame.getCurrentTestCase(), this.metrics, commandFactory);
+        this.currentTest = new HtmlRunnerTestLoop(testFrame.getCurrentTestCase(), this.metrics, this.commandFactory);
         currentTest = this.currentTest;
         this.currentTest.start();
     },
@@ -126,7 +126,6 @@ Object.extend(HtmlTestRunner.prototype, {
         this.startTest();
     }
 });
-
 
 var FeedbackColors = Class.create();
 Object.extend(FeedbackColors, {
@@ -154,7 +153,7 @@ Object.extend(SeleniumFrame.prototype, {
         return this.frame.contentWindow.document;
     },
 
-    _handleLoad: function() {        
+    _handleLoad: function() {
 		this._onLoad();
         if (this.loadCallback) {
             this.loadCallback();
@@ -171,7 +170,7 @@ Object.extend(SeleniumFrame.prototype, {
 
     _setLocation: function(location) {
         if (browserVersion.isSafari) {
-			// safari doesn't reload the page when the location equals to current location. 
+			// safari doesn't reload the page when the location equals to current location.
 			// hence, set the location to blank so that the page will reload automatically.
 			this.frame.src = "about:blank";
             this.frame.src = location;
@@ -561,7 +560,7 @@ Object.extend(HtmlTestSuite.prototype, {
     },
 
     _startCurrentTestCase: function() {
-        this.getCurrentRow().markWorking();		
+        this.getCurrentRow().markWorking();
         this.getCurrentRow().loadTestCase(htmlTestRunner.startTest.bind(htmlTestRunner));
     },
 
@@ -583,7 +582,7 @@ Object.extend(HtmlTestSuite.prototype, {
         // If we are done with all of the tests, set the title bar as pass or fail
         if (this.currentRowInSuite >= this.suiteRows.length) {
             this._onTestSuiteComplete();
-        } else {			
+        } else {
             this._startCurrentTestCase();
         }
     }
@@ -904,12 +903,38 @@ Object.extend(Metrics.prototype, {
 
 });
 
+var HtmlRunnerCommandFactory = Class.create();
+Object.extend(HtmlRunnerCommandFactory.prototype, {
+
+    initialize: function(seleniumCommandFactory, testLoop) {
+        this.seleniumCommandFactory = seleniumCommandFactory;
+        this.testLoop = testLoop;
+        this.handlers = {
+            pause: {
+                execute: function(selenium, command) {
+                    testLoop.pauseInterval = command.target;
+                    return {};
+                }
+            }
+        };
+        //todo: register commands
+    },
+
+    getCommandHandler: function(command) {
+        if (this.handlers[command]) {
+            return this.handlers[command];
+        }
+        return this.seleniumCommandFactory.getCommandHandler(command);
+    }
+
+});
 
 var HtmlRunnerTestLoop = Class.create();
 Object.extend(HtmlRunnerTestLoop.prototype, new TestLoop());
 Object.extend(HtmlRunnerTestLoop.prototype, {
-    initialize: function(htmlTestCase, metrics, commandFactory) {
-        this.commandFactory = commandFactory;
+    initialize: function(htmlTestCase, metrics, seleniumCommandFactory) {
+
+        this.commandFactory = new HtmlRunnerCommandFactory(seleniumCommandFactory, this);
         this.metrics = metrics;
 
         this.htmlTestCase = htmlTestCase;
@@ -1038,15 +1063,6 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 });
 
 
-Selenium.prototype.doPause = function(waitTime) {
-    /** Wait for the specified amount of time (in milliseconds)
-     * @param waitTime the amount of time to sleep (in milliseconds)
-     */
-    currentTest.pauseInterval = waitTime;
-};
-
-Selenium.prototype.doPause.dontCheckAlertsAndConfirms = true;
-
 Selenium.prototype.doBreak = function() {
     /** Halt the currently running test, and wait for the user to press the Continue button.
      * This command is useful for debugging, but be careful when using it, because it will
@@ -1097,4 +1113,83 @@ Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
         Assert.fail("No option selected");
     }
     locator.assertSelected(element);
+};
+
+/**
+ * Tell Selenium to expect a failure on the next command execution. This
+ * command temporarily installs a CommandFactory that generates
+ * CommandHandlers that expect a failure.
+ */
+Selenium.prototype.assertFailureOnNext = function(message) {
+    if (!message) {
+        throw new Error("Message must be provided");
+    }
+
+    var expectFailureCommandFactory =
+        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "failure", executeCommandAndReturnFailureMessage);
+    currentTest.commandFactory = expectFailureCommandFactory;
+};
+
+/**
+ * Tell Selenium to expect an error on the next command execution. This
+ * command temporarily installs a CommandFactory that generates
+ * CommandHandlers that expect a failure.
+ */
+Selenium.prototype.assertErrorOnNext = function(message) {
+    if (!message) {
+        throw new Error("Message must be provided");
+    }
+
+    var expectFailureCommandFactory =
+        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "error", executeCommandAndReturnErrorMessage);
+    currentTest.commandFactory = expectFailureCommandFactory;
+};
+
+function executeCommandAndReturnFailureMessage(baseHandler, originalArguments) {
+    var baseResult = baseHandler.execute.apply(baseHandler, originalArguments);
+    if (baseResult.passed) {
+        return null;
+    }
+    return baseResult.failureMessage;
+};
+
+function executeCommandAndReturnErrorMessage(baseHandler, originalArguments) {
+    try {
+        baseHandler.execute.apply(baseHandler, originalArguments);
+        return null;
+    }
+    catch (expected) {
+        return expected.message;
+    }
+};
+
+function ExpectFailureCommandHandler(baseHandler, originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor) {
+    this.execute = function() {
+        var baseFailureMessage = decoratedExecutor(baseHandler, arguments);
+        var result = {};
+        if (!baseFailureMessage) {
+            result.failed = true;
+            result.failureMessage = "Expected " + errorType + " did not occur.";
+        }
+        else {
+            if (! PatternMatcher.matches(expectedErrorMessage, baseFailureMessage)) {
+                result.failed = true;
+                result.failureMessage = "Expected " + errorType + " message '" + expectedErrorMessage
+                                        + "' but was '" + baseFailureMessage + "'";
+            }
+            else {
+                result.passed = true;
+                result.result = baseFailureMessage;
+            }
+        }
+        currentTest.commandFactory = originalCommandFactory;
+        return result;
+    };
+}
+
+function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor) {
+    this.getCommandHandler = function(name) {
+        var baseHandler = originalCommandFactory.getCommandHandler(name);
+        return new ExpectFailureCommandHandler(baseHandler, originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor);
+    };
 };
