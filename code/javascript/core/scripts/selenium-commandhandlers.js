@@ -355,3 +355,84 @@ function SeleniumCommand(command, target, value, isBreakpoint) {
     this.value = value;
     this.isBreakpoint = isBreakpoint;
 }
+
+
+
+/**
+ * Tell Selenium to expect a failure on the next command execution. This
+ * command temporarily installs a CommandFactory that generates
+ * CommandHandlers that expect a failure.
+ */
+Selenium.prototype.assertFailureOnNext = function(message) {
+    if (!message) {
+        throw new Error("Message must be provided");
+    }
+
+    var expectFailureCommandFactory =
+        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "failure", executeCommandAndReturnFailureMessage);
+    currentTest.commandFactory = expectFailureCommandFactory;
+};
+
+/**
+ * Tell Selenium to expect an error on the next command execution. This
+ * command temporarily installs a CommandFactory that generates
+ * CommandHandlers that expect a failure.
+ */
+Selenium.prototype.assertErrorOnNext = function(message) {
+    if (!message) {
+        throw new Error("Message must be provided");
+    }
+
+    var expectFailureCommandFactory =
+        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "error", executeCommandAndReturnErrorMessage);
+    currentTest.commandFactory = expectFailureCommandFactory;
+};
+
+function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor) {
+    this.getCommandHandler = function(name) {
+        var baseHandler = originalCommandFactory.getCommandHandler(name);
+        return new ExpectFailureCommandHandler(baseHandler, originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor);
+    };
+};
+
+function executeCommandAndReturnFailureMessage(baseHandler, originalArguments) {
+    var baseResult = baseHandler.execute.apply(baseHandler, originalArguments);
+    if (baseResult.passed) {
+        return null;
+    }
+    return baseResult.failureMessage;
+};
+
+function executeCommandAndReturnErrorMessage(baseHandler, originalArguments) {
+    try {
+        baseHandler.execute.apply(baseHandler, originalArguments);
+        return null;
+    }
+    catch (expected) {
+        return expected.message;
+    }
+};
+
+function ExpectFailureCommandHandler(baseHandler, originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor) {
+    this.execute = function() {
+        var baseFailureMessage = decoratedExecutor(baseHandler, arguments);
+        var result = new CommandResult();
+        if (!baseFailureMessage) {
+            result.failed = true;
+            result.failureMessage = "Expected " + errorType + " did not occur.";
+        }
+        else {
+            if (! PatternMatcher.matches(expectedErrorMessage, baseFailureMessage)) {
+                result.failed = true;
+                result.failureMessage = "Expected " + errorType + " message '" + expectedErrorMessage
+                                        + "' but was '" + baseFailureMessage + "'";
+            }
+            else {
+                result.passed = true;
+                result.result = baseFailureMessage;
+            }
+        }
+        currentTest.commandFactory = originalCommandFactory;
+        return result;
+    };
+}
