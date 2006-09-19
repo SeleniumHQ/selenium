@@ -19,6 +19,8 @@ Copyright 2004 ThoughtWorks, Inc
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
   <title>Test Radio Button Events</title>
+  <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
+  <script language="JavaScript" type="text/javascript" src="../../tests/filter-tests-for-browser.js"></script>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
@@ -73,7 +75,7 @@ Copyright 2004 ThoughtWorks, Inc
       <td>eventlog</td>
       <td>*{click(theRadio1)}*</td>
     </tr>
-    <tr>
+    <tr if="!browserVersion.isSafari">
       <td>verifyValue</td>
       <td>eventlog</td>
       <td>*{change(theRadio1)}*</td>
@@ -110,7 +112,7 @@ Copyright 2004 ThoughtWorks, Inc
       <td>eventlog</td>
       <td>*{click(theRadio2)}*</td>
     </tr>
-    <tr>
+    <tr if="!browserVersion.isSafari">
       <td>verifyValue</td>
       <td>eventlog</td>
       <td>*{change(theRadio2)}*</td>
