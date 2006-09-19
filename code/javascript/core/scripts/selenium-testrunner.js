@@ -154,8 +154,8 @@ Object.extend(SeleniumFrame.prototype, {
         return this.frame.contentWindow.document;
     },
 
-    _handleLoad: function() {
-        this._onLoad();
+    _handleLoad: function() {        
+		this._onLoad();
         if (this.loadCallback) {
             this.loadCallback();
             this.loadCallback = null;
@@ -171,6 +171,9 @@ Object.extend(SeleniumFrame.prototype, {
 
     _setLocation: function(location) {
         if (browserVersion.isSafari) {
+			// safari doesn't reload the page when the location equals to current location. 
+			// hence, set the location to blank so that the page will reload automatically.
+			this.frame.src = "about:blank";
             this.frame.src = location;
         } else {
             this.frame.contentWindow.location.replace(location);
@@ -180,6 +183,7 @@ Object.extend(SeleniumFrame.prototype, {
     load: function(/* url, [callback] */) {
         if (arguments.length > 1) {
             this.loadCallback = arguments[1];
+
         }
         this._setLocation(arguments[0]);
     }
@@ -473,7 +477,7 @@ Object.extend(HtmlTestSuiteRow.prototype, {
                 onloadFunction();
             }
         } else {
-            this.testFrame.load(this.link.href, onloadFunction);
+			this.testFrame.load(this.link.href, onloadFunction);
         }
     },
 
@@ -557,7 +561,7 @@ Object.extend(HtmlTestSuite.prototype, {
     },
 
     _startCurrentTestCase: function() {
-        this.getCurrentRow().markWorking();
+        this.getCurrentRow().markWorking();		
         this.getCurrentRow().loadTestCase(htmlTestRunner.startTest.bind(htmlTestRunner));
     },
 
@@ -579,7 +583,7 @@ Object.extend(HtmlTestSuite.prototype, {
         // If we are done with all of the tests, set the title bar as pass or fail
         if (this.currentRowInSuite >= this.suiteRows.length) {
             this._onTestSuiteComplete();
-        } else {
+        } else {			
             this._startCurrentTestCase();
         }
     }

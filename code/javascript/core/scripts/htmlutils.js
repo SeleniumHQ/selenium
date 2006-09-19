@@ -72,7 +72,7 @@ function getTextContent(element, preformatted) {
         // -- From HTML spec:
         //<!ENTITY % block
         //     "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT |
-        //      BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
+        //      BLOCKQUOTE | F:wORM | HR | TABLE | FIELDSET | ADDRESS">
         //
         // TODO: should potentially introduce multiple newlines to separate blocks
         if (element.tagName == "P" || element.tagName == "BR" || element.tagName == "HR" || element.tagName == "DIV") {
@@ -108,8 +108,20 @@ function normalizeSpaces(text)
 
     // Replace &nbsp; with a space
     var nbspPattern = new RegExp(String.fromCharCode(160), "g");
-    return text.replace(nbspPattern, " ");
+    if (browserVersion.isSafari) {
+	return replaceAll(text, String.fromCharCode(160), " ");
+    } else {
+	return text.replace(nbspPattern, " ");
+    }
 }
+
+function replaceAll(text, oldText, newText) {
+    while (text.indexOf(oldText) != -1) {
+	text = text.replace(oldText, newText);
+    }
+    return text;
+}
+
 
 function xmlDecode(text) {
     text = text.replace(/&quot;/g, '"');

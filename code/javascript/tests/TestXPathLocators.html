@@ -88,18 +88,11 @@ Copyright 2004 ThoughtWorks, Inc
         </tr>
 
 
-        <tr if="!browserVersion.isSafari">
+        <tr>
             <td>verifyText</td>
             <td>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</td>
             <td>theCellText</td>
         </tr>
-
-        <tr if="browserVersion.isSafari">
-            <td>verifyText</td>
-            <td>xpath=//table[@class='stylee']//td</td>
-            <td>theCellText</td>
-        </tr>
-
 
         <tr>
             <td>click</td>
