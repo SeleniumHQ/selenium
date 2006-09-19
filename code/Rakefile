@@ -73,5 +73,5 @@ JavaScriptTestTask.new(:functional_tests) do |t|
   functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=/seleniumResults&t=#{timestamp}"
   t.mount("/javascript")
   t.run functional_tests
-  t.browsers = [IE.new, Konqueror.new, Firefox.new]
+  t.browsers = [Safari.new, IE.new, Konqueror.new, Firefox.new]
 end

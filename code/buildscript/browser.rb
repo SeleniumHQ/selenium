@@ -4,7 +4,7 @@ if Config::CONFIG['host'].include?('mswin')
   require 'win32_process'
 end
 
-if Config::CONFIG['host'].include?('linux')
+if Config::CONFIG['host'].include?('linux') or Config::CONFIG['host'].include?('darwin')
   require 'linux_process'
 end
 
@@ -102,7 +102,7 @@ module Browser
     end
     
     def teardown
-      #applescript('tell application "Safari" to close front document')
+      applescript('tell application "Safari" to close front document')
     end
     
     def to_s
