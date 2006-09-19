@@ -555,7 +555,7 @@ Selenium.prototype.makePageLoadCondition = function(timeout) {
     if (timeout == null) {
         timeout = this.defaultTimeout;
     }
-    return decorateFunctionWithTimeout(this.isNewPageLoaded.bind(this), timeout);
+    return decorateFunctionWithTimeout(this._isNewPageLoaded.bind(this), timeout);
 };
 
 Selenium.prototype.doOpen = function(url) {
@@ -1808,7 +1808,7 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
     }
 };
 
-Selenium.prototype.isNewPageLoaded = function() {
+Selenium.prototype._isNewPageLoaded = function() {
     return this.browserbot.isNewPageLoaded();
 };
 
