@@ -90,21 +90,17 @@ function runSeleniumTest() {
     } else if ($('myiframe') != null) {
         testAppWindow = $('myiframe').contentWindow;
     }
-    if (testAppWindow == null) {
+    else {
         proxyInjectionMode = true;
         testAppWindow = window;
     }
-    else
-    {
-        proxyInjectionMode = false;
-    }
-
     selenium = Selenium.createForWindow(testAppWindow);
     if (!debugMode) {
         debugMode = runOptions.getDebugMode();
     }
     if (proxyInjectionMode) {
         LOG.log = logToRc;
+        selenium.browserbot._modifyWindow(testAppWindow);
     }
     else if (debugMode) {
         LOG.logHook = logToRc;

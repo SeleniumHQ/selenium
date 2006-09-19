@@ -1317,11 +1317,13 @@ Selenium.prototype._getTestAppParentOfAllWindows = function() {
    *
    * @return string[] the IDs of all field on the page
    */
-   var testAppParentOfAllWindows;
    if (this.browserbot.getCurrentWindow().opener!=null) {
    	return this.browserbot.getCurrentWindow().opener;
    }
-   return testAppParentOfAllWindows = this.browserbot.buttonWindow;
+   if (this.browserbot.buttonWindow!=null) {
+   	return this.browserbot.buttonWindow;
+   }
+   return top; // apparently we are in proxy injection mode
 };
 
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
