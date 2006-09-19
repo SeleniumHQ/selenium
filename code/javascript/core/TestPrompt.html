@@ -33,7 +33,6 @@ Copyright 2004 ThoughtWorks, Inc
             var autoDiv = document.getElementById("auto-div");
             if (auto.checked) {
                 autoDiv.style.display = "inline";
-
             } else {
                 autoDiv.style.display = "none";
             }
@@ -77,23 +76,47 @@ Copyright 2004 ThoughtWorks, Inc
 
 <body onload="load()" style="font-size: x-small">
 <form id="prompt" target="_top" method="GET" onsubmit="return go();" action="TestRunner.html">
-    <p>Select an HTML test suite:</p>
-    <input id="test" name="test" size="30" value="../tests/TestSuite.html"/>
 
-    <p><label for="auto">Auto-run </label><input id="auto" type="checkbox" name="auto" onclick="autoCheck();"/>
+    <p>
+        Test Suite:
+        <input id="test" name="test" size="30" value="../tests/TestSuite.html"/>
+    </p>
 
-    <div id="auto-div" style="display: none">
-        <label for="close">Close afterwards </label><input id="close" type="checkbox" name="close"/>
+    <p align="center"><input type="submit" value="Go"/></p>
 
-        <div id="save-div" style="display: none">
-            <br/><label for="save">Save to file </label><input id="save" type="checkbox" name="save"
-                                                               onclick="saveCheck();"/>
+    <fieldset>
+        <legend>Options</legend>
+
+        <p>
+            <input id="multiWindow" type="checkbox" name="multiWindow" onclick="autoCheck();"/> <label
+                for="multiWindow">AUT in separate window</label>
+
+        <p>
+
+        <p>
+            <input id="auto" type="checkbox" name="auto" onclick="autoCheck();"/> <label for="auto">Run
+            automatically</label>
+        </p>
+
+        <div id="auto-div" style="display: none">
+            <p>
+                <input id="close" type="checkbox" name="close"/> <label for="close">Close afterwards </label>
+            </p>
+
+            <div id="save-div" style="display: none">
+                <br/><label for="save">Save to file </label><input id="save" type="checkbox" name="save"
+                                                                   onclick="saveCheck();"/>
+            </div>
+
+            <p id="results">
+                Results URL:
+                <input id="resultsUrl" name="resultsUrl" value="../postResults"/>
+            </p>
+
         </div>
+    </fieldset>
 
-        <p id="results">Results URL <input id="resultsUrl" name="resultsUrl" value="../postResults"/></p>
-    </div>
 
-    <p><input type="submit" value="go"/></p>
 </form>
 </body>
 </html>
