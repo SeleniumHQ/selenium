@@ -76,6 +76,7 @@ Command.loadAPI = function() {
 				var returnType = new String(returns.item(0).attributes.getNamedItem("type").value);
 				returnType = returnType.replace(/string/, "String");
 				def.returnType = returnType;
+				def.returnDescription = this.innerHTML(returns.item(0));
 			}
 			var comments = element.getElementsByTagName("comment");
 			if (comments.length > 0) {
@@ -86,6 +87,7 @@ Command.loadAPI = function() {
 				var paramElement = params.item(j);
 				var param = {};
 				param.name = String(paramElement.attributes.getNamedItem('name').value);
+                param.description = this.innerHTML(paramElement);
 				def.params.push(param);
 			}
 			functions[def.name] = def;
@@ -119,18 +121,41 @@ CommandDefinition.prototype.getReferenceFor = function(command) {
 	for (var i = 0; i < this.params.length; i++) {
         paramNames.push(this.params[i].name);
 	}
+    var originalParamNames = paramNames.join(", ");
     if (this.name.match(/^is|get/)) { // accessor
         if (command.command) {
             if (command.command.match(/^store/)) {
                 paramNames.push("variableName");
             } else if (command.command.match(/^(assert|verify|waitFor)/)) {
-                paramNames.push("pattern");
+                if (this.name.match(/^get/)) {
+                    paramNames.push("pattern");
+                }
             }
         }
     }
-	return "<dt><strong>" + (command.command || this.name) + "(" +
+	var note = "";
+	if (command.command && command.command != this.name) {
+		note = "<dt>Generated from <strong>" + this.name + "(" +
+            originalParamNames + ")</strong></dt>";
+	}
+    var params = "";
+    if (this.params.length > 0) {
+        params += "<div>Arguments:</div><ul>";
+        for (var i = 0; i < this.params.length; i++) {
+            params += "<li>" + this.params[i].name + " - " + this.params[i].description + "</li>";
+        }
+        params += "</ul>";
+    }
+    var returns = "";
+    if (this.returnDescription) {
+        returns += "<dl><dt>Returns:</dt><dd>" + this.returnDescription + "</dd></dl>";
+    }
+	return "<dl><dt><strong>" + (command.command || this.name) + "(" +
         paramNames.join(", ") + ")</strong></dt>" +
-        "<dd>" + this.comment + "</dd>";
+        note +
+	    '<dd style="margin:5px;">' + 
+        params + returns +
+	    this.comment + "</dd></dl>";
 }
 
 CommandDefinition.prototype.negativeAccessor = function() {

@@ -132,7 +132,7 @@ function TreeView(editor, document, tree) {
 	function loadSeleniumCommands() {
 		var commands = [];
 		
-		var nonWaitActions = ['open', 'selectWindow', 'chooseCancelOnNextConfirmation', 'answerOnNextPrompt', 'close', 'setContext', 'setTimeout'];
+		var nonWaitActions = ['open', 'selectWindow', 'chooseCancelOnNextConfirmation', 'answerOnNextPrompt', 'close', 'setContext', 'setTimeout', 'selectFrame'];
 		
 		for (func in this.editor.seleniumAPI.Selenium.prototype) {
 			//this.log.debug("func=" + func);
