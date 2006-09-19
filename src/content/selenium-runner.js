@@ -50,7 +50,11 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 };
 
 BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
-    return currentDocument._Selenium_IDE_readyState;
+    if (currentDocument._Selenium_IDE_readyState) {
+        return currentDocument._Selenium_IDE_readyState;
+    } else {
+        return null;
+    }
 };
 
 Selenium.prototype.doPause = function(waitTime) {
@@ -194,6 +198,16 @@ function start(baseURL) {
 		testCase.debugContext.currentCommand().result = 'failed';
 		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
+    // override _testComplete to ensure testComplete is called even when
+    // ensureNoUnhandledPopups throws any errors
+    currentTest._testComplete = function() {
+        try {
+            selenium.ensureNoUnhandledPopups();
+        } catch (e) {
+            LOG.error(e);
+        }
+        this.testComplete();
+    }
 	currentTest.testComplete = function() {
 		LOG.debug("testComplete");
 		editor.setState(null);

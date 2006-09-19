@@ -216,9 +216,11 @@ SeleniumIDE.Overlay.onContentLoaded = function(event) {
 
 SeleniumIDE.Overlay.onLoad = function(event) {
     var doc = event.originalTarget;
-    doc.defaultView.setTimeout(function() {
-            doc._Selenium_IDE_readyState = "complete";
-        }, 0);
+    if (doc.defaultView) {
+        doc.defaultView.setTimeout(function() {
+                doc._Selenium_IDE_readyState = "complete";
+            }, 0);
+    }
 }
 
 SeleniumIDE.Overlay.init = function() {
