@@ -14,8 +14,6 @@
 *  limitations under the License.
 */
 
-SELENIUM_PROCESS_WAIT = "wait";
-
 function TestLoop(commandFactory) {
     this.commandFactory = commandFactory;
 }
@@ -70,7 +68,7 @@ TestLoop.prototype = {
         }
     },
 
-    resume : function() {
+    resume: function() {
         /**
          * Select the next command and continue the test.
          */
@@ -78,7 +76,6 @@ TestLoop.prototype = {
         try {
             selenium.browserbot.runScheduledPollers();
             this._executeCurrentCommand();
-            this.waitForConditionStart = new Date().getTime();
             this.continueTestWhenConditionIsTrue();
         } catch (e) {
             this._handleCommandError(e);
@@ -115,12 +112,7 @@ TestLoop.prototype = {
         this.commandComplete(result);
 
         this.waitForCondition = result.terminationCondition;
-        if (this.waitForCondition == SELENIUM_PROCESS_WAIT) { // special case
-            this.waitForCondition = function() {
-                LOG.debug("Checking condition: isNewPageLoaded?");
-                return selenium.browserbot.isNewPageLoaded();
-            };
-        }
+
     },
 
     _handleCommandError : function(e) {
@@ -137,7 +129,7 @@ TestLoop.prototype = {
         }
     },
 
-    continueTestWhenConditionIsTrue : function () {
+    continueTestWhenConditionIsTrue: function () {
         /**
          * Busy wait for waitForCondition() to become true, and then carry
          * on with test.  Fail the current test if there's a timeout or an
@@ -149,17 +141,10 @@ TestLoop.prototype = {
             if (this.waitForCondition == null || this.waitForCondition()) {
                 LOG.debug("condition satisfied; let's continueTest()");
                 this.waitForCondition = null;
-                this.waitForConditionStart = null;
                 this.continueTest();
             } else {
                 LOG.debug("waitForCondition was false; keep waiting!");
-                if (this.waitForConditionTimeout != null) {
-                    var now = new Date();
-                    if ((now - this.waitForConditionStart) > this.waitForConditionTimeout) {
-                        throw new SeleniumError("Timed out after " + this.waitForConditionTimeout + "ms");
-                    }
-                }
-                window.setTimeout(this.continueTestWhenConditionIsTrue.bind(this), 10);
+                window.setTimeout(this.continueTestWhenConditionIsTrue.bind(this), 100);
             }
         } catch (e) {
             var lastResult = new CommandResult();
@@ -181,6 +166,23 @@ TestLoop.prototype = {
         return 0;
     }
 
+}
+
+function decorateFunctionWithTimeout(f, timeout) {
+    if (f == null) {
+        return null;
+    }
+    if (isNaN(timeout)) {
+    	throw new SeleniumError("Timeout is not a number: " + timeout);
+    }
+    var now = new Date().getTime();
+    var timeoutTime = now + timeout;
+    return function() {
+        if (new Date().getTime() > timeoutTime) {
+            throw new SeleniumError("Timed out after " + timeout + "ms");
+        }
+        return f();
+    };
 }
 
 /**

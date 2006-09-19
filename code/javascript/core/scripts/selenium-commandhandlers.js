@@ -297,13 +297,13 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
     if (this.checkAlerts && (null==/(Alert|Confirmation)(Not)?Present/.exec(command.command))) {
         seleniumApi.ensureNoUnhandledPopups();
     }
-    var processState = this.executor.call(seleniumApi, command.target, command.value);
+    var terminationCondition = this.executor.call(seleniumApi, command.target, command.value);
     // If the handler didn't return a wait flag, check to see if the
     // handler was registered with the wait flag.
-    if (processState == undefined && this.wait) {
-        processState = SELENIUM_PROCESS_WAIT;
+    if (terminationCondition == undefined && this.wait) {
+        terminationCondition = seleniumApi.makePageLoadCondition();
     }
-    return new CommandResult(processState);
+    return new CommandResult(terminationCondition);
 };
 
 function AccessorHandler(accessor) {

@@ -16,7 +16,7 @@
 */
 
 // An object representing the current test, used external
-var currentTest = null;
+var currentTest = null; // TODO: get rid of this global, which mirrors the htmlTestRunner.currentTest
 var selenium = null;
 
 var htmlTestRunner;
@@ -907,8 +907,6 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
     initialize: function(htmlTestCase, metrics, commandFactory) {
         this.commandFactory = commandFactory;
         this.metrics = metrics;
-        this.waitForConditionTimeout = 30 * 1000;
-        // 30 seconds
 
         this.htmlTestCase = htmlTestCase;
 

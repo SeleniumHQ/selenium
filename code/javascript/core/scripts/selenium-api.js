@@ -156,6 +156,7 @@ function Selenium(browserbot) {
     this.page = function() {
         return browserbot.getCurrentPage();
     };
+    this.defaultTimeout = 30 * 1000;
 }
 
 Selenium.createForWindow = function(window) {
@@ -550,6 +551,13 @@ Selenium.prototype.doSubmit = function(formLocator) {
 
 };
 
+Selenium.prototype.makePageLoadCondition = function(timeout) {
+    if (timeout == null) {
+        timeout = this.defaultTimeout;
+    }
+    return decorateFunctionWithTimeout(this.isNewPageLoaded.bind(this), timeout);
+};
+
 Selenium.prototype.doOpen = function(url) {
 	/**
    * Opens an URL in the test frame. This accepts both relative and absolute
@@ -566,7 +574,7 @@ Selenium.prototype.doOpen = function(url) {
    * @param url the URL to open; may be relative or absolute
    */
     this.browserbot.openLocation(url);
-    return SELENIUM_PROCESS_WAIT;
+    return this.makePageLoadCondition();
 };
 
 Selenium.prototype.doSelectWindow = function(windowID) {
@@ -677,9 +685,8 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
 	if (isNaN(timeout)) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
-    currentTest.waitForConditionTimeout = timeout;
 
-    return function () {
+    var popupLoadedPredicate = function () {
         var targetWindow = selenium.browserbot.getWindowByName(windowID, true);
         if (!targetWindow) return false;
         if (!targetWindow.location) return false;
@@ -706,6 +713,8 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
         if ('complete' != targetWindow.document.readyState) return false;
         return true;
     };
+
+    return decorateFunctionWithTimeout(popupLoadedPredicate, timeout);
 }
 
 Selenium.prototype.doWaitForPopUp.dontCheckAlertsAndConfirms = true;
@@ -1759,11 +1768,9 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
     if (isNaN(timeout)) {
     	throw new SeleniumError("Timeout is not a number: " + timeout);
     }
-    currentTest.waitForConditionTimeout = timeout;
-
-    return function () {
+    return decorateFunctionWithTimeout(function () {
         return eval(script);
-    };
+    }, timeout);
 };
 
 Selenium.prototype.doWaitForCondition.dontCheckAlertsAndConfirms = true;
@@ -1776,7 +1783,7 @@ Selenium.prototype.doSetTimeout = function(timeout) {
 	 * The default timeout is 30 seconds.
 	 * @param timeout a timeout in milliseconds, after which the action will return with an error
 	 */
-	currentTest.waitForConditionTimeout = timeout;
+	this.defaultTimeout = parseInt(timeout);
 }
 
 Selenium.prototype.doWaitForPageToLoad = function(timeout) {
@@ -1797,9 +1804,12 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
     }
     // in pi-mode, the test and the harness share the window; thus if we are executing this code, then we have loaded
     if (window["proxyInjectionMode"] == null || !window["proxyInjectionMode"]) {
-        currentTest.waitForConditionTimeout = timeout;
-        return SELENIUM_PROCESS_WAIT;
+        return this.makePageLoadCondition(timeout);
     }
+};
+
+Selenium.prototype.isNewPageLoaded = function() {
+    return this.browserbot.isNewPageLoaded();
 };
 
 Selenium.prototype.doWaitForPageToLoad.dontCheckAlertsAndConfirms = true;

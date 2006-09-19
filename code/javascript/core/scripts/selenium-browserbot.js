@@ -56,9 +56,9 @@ var BrowserBot = function(topLevelApplicationWindow) {
 
     var self = this;
     this.recordPageLoad = function() {
-        LOG.info("Page load detected");
+        LOG.debug("Page load detected");
         try {
-            LOG.info("Page load location=" + self.getCurrentWindow(true).location);
+            LOG.debug("Page load location=" + self.getCurrentWindow(true).location);
         } catch (e) {
             self.pageLoadError = e;
             return;
@@ -79,7 +79,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
 
 BrowserBot.createForWindow = function(window) {
     var browserbot;
-    LOG.info('createForWindow');
+    LOG.debug('createForWindow');
     LOG.debug("browserName: " + browserVersion.name);
     LOG.debug("userAgent: " + navigator.userAgent);
     if (browserVersion.isIE) {
@@ -95,7 +95,6 @@ BrowserBot.createForWindow = function(window) {
         browserbot = new SafariBrowserBot(window);
     }
     else {
-        LOG.info("Using MozillaBrowserBot")
         // Use mozilla by default
         browserbot = new MozillaBrowserBot(window);
     }
@@ -168,7 +167,7 @@ BrowserBot.prototype._modifyWindow = function(win) {
         LOG.error("modifyWindow: Window was closed!");
         return null;
     }
-    LOG.info('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
+    LOG.debug('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
     if (!win[this.uniqueId]) {
         win[this.uniqueId] = true;
         this.modifyWindowToRecordPopUpDialogs(win, this);
@@ -228,7 +227,7 @@ BrowserBot.prototype.selectFrame = function(target) {
 BrowserBot.prototype.openLocation = function(target) {
     // We're moving to a new page - clear the current one
     var win = this.getCurrentWindow();
-    LOG.info("openLocation newPageLoaded = false");
+    LOG.debug("openLocation newPageLoaded = false");
     this.currentPage = null;
     this.newPageLoaded = false;
 
@@ -307,16 +306,16 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
     }
     var oldMarker = this.isPollingForLoad(windowObject);
     if (oldMarker) {
-        LOG.info("modifySeparateTestWindowToDetectPageLoads: already polling this window: " + oldMarker);
+        LOG.debug("modifySeparateTestWindowToDetectPageLoads: already polling this window: " + oldMarker);
         return;
     }
 
     var marker = 'selenium' + new Date().getTime();
-    LOG.info("Starting pollForLoad (" + marker + "): " + windowObject.document.location);
+    LOG.debug("Starting pollForLoad (" + marker + "): " + windowObject.document.location);
     this.pollingForLoad[marker] = true;
     // if this is a frame, add a load listener, otherwise, attach a poller
     if (this._getFrameElement(windowObject)) {
-        LOG.info("modifySeparateTestWindowToDetectPageLoads: this window is a frame; attaching a load listener");
+        LOG.debug("modifySeparateTestWindowToDetectPageLoads: this window is a frame; attaching a load listener");
         addLoadListener(windowObject.frameElement, this.recordPageLoad);
         windowObject.frameElement[marker] = true;
         windowObject.frameElement[this.uniqueId] = marker;
@@ -342,11 +341,11 @@ BrowserBot.prototype._getFrameElement = function(win) {
  * or href is different from the original one.
  */
 BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker) {
-    LOG.info("pollForLoad original (" + marker + "): " + originalHref);
+    LOG.debug("pollForLoad original (" + marker + "): " + originalHref);
 
     try {
         if (this._windowClosed(windowObject)) {
-            LOG.info("pollForLoad WINDOW CLOSED (" + marker + ")");
+            LOG.debug("pollForLoad WINDOW CLOSED (" + marker + ")");
             delete this.pollingForLoad[marker];
             return;
         }
@@ -361,7 +360,7 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
 
         if (!isSamePage && rs == 'complete') {
             var currentHref = windowObject.location.href;
-            LOG.info("pollForLoad FINISHED (" + marker + "): " + rs + " (" + currentHref + ")");
+            LOG.debug("pollForLoad FINISHED (" + marker + "): " + rs + " (" + currentHref + ")");
             delete this.pollingForLoad[marker];
             this._modifyWindow(windowObject);
             var newMarker = this.isPollingForLoad(windowObject);
@@ -370,17 +369,17 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
                 this.modifySeparateTestWindowToDetectPageLoads(windowObject);
             }
             newMarker = this.isPollingForLoad(windowObject);
-            LOG.info("pollForLoad (" + marker + ") restarting " + newMarker);
+            LOG.debug("pollForLoad (" + marker + ") restarting " + newMarker);
             if (/(TestRunner-splash|Blank)\.html\?start=true$/.test(currentHref)) {
-                LOG.info("pollForLoad Oh, it's just the starting page.  Never mind!");
+                LOG.debug("pollForLoad Oh, it's just the starting page.  Never mind!");
             } else if (this.currentWindow[this.uniqueId] == newMarker) {
                 loadFunction();
             } else {
-                LOG.info("pollForLoad page load detected in non-current window; ignoring");
+                LOG.debug("pollForLoad page load detected in non-current window; ignoring");
             }
             return;
         }
-        LOG.info("pollForLoad continue (" + marker + "): " + currentHref);
+        LOG.debug("pollForLoad continue (" + marker + "): " + currentHref);
         this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
     } catch (e) {
         LOG.error("Exception during pollForLoad; this should get noticed soon (" + e.message + ")!");
@@ -427,26 +426,26 @@ BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
                     LOG.info("getReadyState not loaded, frame location was about:blank, but frame src = " + windowObject.frameElement.src);
                     return null;
                 }
-                LOG.info("getReadyState = windowObject.frames.length = " + windowObject.frames.length);
+                LOG.debug("getReadyState = windowObject.frames.length = " + windowObject.frames.length);
                 for (var i = 0; i < windowObject.frames.length; i++) {
-                    LOG.info("i = " + i);
+                    LOG.debug("i = " + i);
                     if (this.getReadyState(windowObject.frames[i], windowObject.frames[i].document) != 'complete') {
-                        LOG.info("getReadyState aha! the nested frame " + windowObject.frames[i].name + " wasn't ready!");
+                        LOG.debug("getReadyState aha! the nested frame " + windowObject.frames[i].name + " wasn't ready!");
                         return null;
                     }
                 }
 
                 rs = 'complete';
             } else {
-                LOG.info("pollForLoad readyState was null and DOM appeared to not be ready yet");
+                LOG.debug("pollForLoad readyState was null and DOM appeared to not be ready yet");
             }
         }
     }
     else if (rs == "loading" && browserVersion.isIE) {
-        LOG.info("pageUnloading = true!!!!");
+        LOG.debug("pageUnloading = true!!!!");
         this.pageUnloading = true;
     }
-    LOG.info("getReadyState returning " + rs);
+    LOG.debug("getReadyState returning " + rs);
     return rs;
 };
 
@@ -810,7 +809,6 @@ PageBot.createForWindow = function(browserbot) {
         return new OperaPageBot(browserbot);
     }
     else {
-        LOG.info("Using MozillaPageBot")
         // Use mozilla by default
         return new MozillaPageBot(browserbot);
     }
