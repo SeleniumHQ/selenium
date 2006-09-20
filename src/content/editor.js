@@ -311,7 +311,7 @@ Editor.prototype.saveNewTestCase = function() {
 
 Editor.prototype.exportTestCaseWithFormat = function(format) {
 	this.view.syncModel();
-	format.saveAsNew(this.testCase.createCopy());
+	format.saveAsNew(this.testCase.createCopy(), true);
 }
 
 Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {

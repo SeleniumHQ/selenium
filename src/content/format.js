@@ -191,6 +191,7 @@ function Format() {
 }
 
 Format.TEST_CASE_DIRECTORY_PREF = "testCaseDirectory";
+Format.TEST_CASE_EXPORT_DIRECTORY_PREF = "testCaseExportDirectory";
 
 Format.prototype.log = Format.log = new Log('Format');
 
@@ -214,21 +215,21 @@ Format.prototype.getFormatter = function() {
 }
 
 Format.prototype.save = function(testCase) {
-	return this.saveAs(testCase, testCase.filename);
+	return this.saveAs(testCase, testCase.filename, false);
 };
 
-Format.prototype.saveAsNew = function(testCase) {
-	return this.saveAs(testCase, null);
+Format.prototype.saveAsNew = function(testCase, exportTest) {
+	return this.saveAs(testCase, null, exportTest);
 };
 
-Format.prototype.saveAs = function(testCase, filename) {
+Format.prototype.saveAs = function(testCase, filename, exportTest) {
 	//log.debug("saveAs: filename=" + filename);
 	try {
 		var file = null;
 		if (filename == null) {
             file = showFilePicker(window, "Save as...",
                                   Components.interfaces.nsIFilePicker.modeSave,
-                                  Format.TEST_CASE_DIRECTORY_PREF,
+                                  exportTest ? Format.TEST_CASE_EXPORT_DIRECTORY_PREF : Format.TEST_CASE_DIRECTORY_PREF,
                                   function(fp) { return fp.file; });
 		} else {
 			file = FileUtils.getFile(filename);

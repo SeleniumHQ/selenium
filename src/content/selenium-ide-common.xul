@@ -154,7 +154,7 @@ limitations under the License.
     </hbox>
     <iframe flex="1" id="logView" src="LogFrame.html">
     </iframe>
-    <iframe flex="1" id="helpView" hidden="true">
+    <iframe flex="1" id="helpView" src="HelpView.html" hidden="true">
     </iframe>
   </vbox>
 </overlay>

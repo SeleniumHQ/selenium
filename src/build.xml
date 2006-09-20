@@ -34,6 +34,11 @@
       </fileset>
       <fileset dir="content/selenium-src"/>
     </copy>
+    <copy todir="content/selenium-tests">
+      <fileset dir="${selenium.core.dir}/tests">
+	<include name="**"/>
+      </fileset>
+    </copy>
     <copy todir="content/selenium">
       <fileset dir="${selenium.core.dir}">
 	<include name="reference.html"/>
