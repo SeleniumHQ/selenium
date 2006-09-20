@@ -41,44 +41,28 @@ function OptionsManager() {
 }
 
 OptionsManager.prototype = {
-	branch: getOptionsBranch(),
-	
-	getCharPref: function(name, defaultValue) {
-		if (this.branch.prefHasUserValue(name)) {
-			return this.branch.getComplexValue(name, Components.interfaces.nsISupportsString).data;
-		} else {
-			return defaultValue;
-		}
-	},
-
-	setCharPref: function(name, value) {
-		var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-		str.data = value;
-		this.branch.setComplexValue(name, Components.interfaces.nsISupportsString, str);
-	},
-
 	load: function() {
 		var options = {};
 		var name;
 		for (name in OPTIONS) {
 			options[name] = OPTIONS[name];
 		}
-		var names = this.branch.getChildList('', []);
+		var names = Preferences.branch.getChildList('', []);
 		for (var i = 0; i < names.length; i++) {
 			name = names[i];
-			options[name] = this.getCharPref(name, OPTIONS[name] || '');
+			options[name] = Preferences.getString(name, OPTIONS[name] || '');
 		}
 		return options;
 	},
 
 	save: function(options, prop_name) {
 		if (prop_name) {
-			this.setCharPref(prop_name, options[prop_name]);
+			Preferences.setString(prop_name, options[prop_name]);
 		} else {
-			this.branch.deleteBranch("formats");
+			Preferences.branch.deleteBranch("formats");
 			var name;
 			for (name in options) {
-				this.setCharPref(name, options[name]);
+				Preferences.setString(name, options[name]);
 			}
 		}
 	}

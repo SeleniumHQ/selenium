@@ -31,14 +31,9 @@ SeleniumIDE.Overlay.appendCheck = function(event) {
 	SeleniumIDE.Overlay.addRecentCommand(command.command);
 }
 
-SeleniumIDE.Overlay.getOptionsBranch = function() {
-	return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
-}
-
 SeleniumIDE.Overlay.getRecentCommands = function() {
-	var branch = this.getOptionsBranch();
-	if (branch.prefHasUserValue("recentCommands")) {
-		var recentCommands = branch.getCharPref("recentCommands");
+	if (SeleniumIDE.Preferences.branch.prefHasUserValue("recentCommands")) {
+		var recentCommands = SeleniumIDE.Preferences.getString("recentCommands");
 		return recentCommands.split(/,/);
 	} else {
 		return ['open', 'verifyTextPresent', 'verifyValue'];
@@ -59,7 +54,7 @@ SeleniumIDE.Overlay.addRecentCommand = function(id) {
 	if (checks.length > this.NUM_RECENT_COMMANDS) {
 		checks.pop();
 	}
-	this.getOptionsBranch().setCharPref('recentCommands', checks.join(','));
+    SeleniumIDE.Preferences.setString('recentCommands', checks.join(','));
 }
 
 SeleniumIDE.Overlay.testRecorderPopup = function(event) {
@@ -88,7 +83,6 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
 			contextMenu.appendChild(self.createMenuSeparator('recent'));
 		}
 		
-		var branch = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
 		var recentCommands = self.getRecentCommands();
 		var menuitems;
 		var prefixList = ['action', 'assert', 'verify', 'waitFor', 'store'];

@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+this.Preferences = SeleniumIDE.Preferences;
+
 function Log(category) {
-	var thresholdName = getOptionValue("internalLogThreshold", "INFO");
+	var thresholdName = Preferences.getString("internalLogThreshold", "INFO");
 
 	var log = this;
 	var self = this;
@@ -59,17 +61,22 @@ function instanceOf(object, constructor) {
 	return false;
 }
 
-function getOptionsBranch() {
-	return this.Components && Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
-}
-
-function getOptionValue(name, defaultValue) {
-	var branch = getOptionsBranch();
-	if (branch && branch.prefHasUserValue(name)) {
-		return branch.getCharPref(name);
-	} else {
-		return defaultValue;
-	}
+function showFilePicker(window, title, mode, defaultDirPrefName, handler) {
+	var nsIFilePicker = Components.interfaces.nsIFilePicker;
+	var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+	fp.init(window, title, mode);
+    var defaultDir = Preferences.getString(defaultDirPrefName);
+    if (defaultDir) {
+        fp.displayDirectory = FileUtils.getFile(defaultDir);
+    }
+	fp.appendFilters(nsIFilePicker.filterHTML | nsIFilePicker.filterAll);
+    var res = fp.show();
+    if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
+        Preferences.setString(defaultDirPrefName, fp.file.parent.path);
+        return handler(fp);
+    } else {
+        return null;
+    }
 }
 
 function exactMatchPattern(string) {

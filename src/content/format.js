@@ -190,6 +190,8 @@ FormatCollection.prototype.getDefaultFormat = function() {
 function Format() {
 }
 
+Format.TEST_CASE_DIRECTORY_PREF = "testCaseDirectory";
+
 Format.prototype.log = Format.log = new Log('Format');
 
 Format.prototype.getUnicodeConverter = function() {
@@ -224,14 +226,10 @@ Format.prototype.saveAs = function(testCase, filename) {
 	try {
 		var file = null;
 		if (filename == null) {
-			var nsIFilePicker = Components.interfaces.nsIFilePicker;
-			var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-			fp.init(window, "Save as...", nsIFilePicker.modeSave);
-			fp.appendFilters(nsIFilePicker.filterHTML | nsIFilePicker.filterAll);
-			var res = fp.show();
-			if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
-				file = fp.file;
-			}
+            file = showFilePicker(window, "Save as...",
+                                  Components.interfaces.nsIFilePicker.modeSave,
+                                  Format.TEST_CASE_DIRECTORY_PREF,
+                                  function(fp) { return fp.file; });
 		} else {
 			file = FileUtils.getFile(filename);
 		}
@@ -282,22 +280,11 @@ Format.prototype.setSource = function(testCase, source) {
 }
 
 Format.prototype.load = function() {
-	var nsIFilePicker = Components.interfaces.nsIFilePicker;
-	var fp = Components.classes["@mozilla.org/filepicker;1"]
-	    .createInstance(nsIFilePicker);
-	fp.init(window, "Select a File", nsIFilePicker.modeOpen);
-    var defaultDir = optionsManager.getCharPref("testCaseDirectory");
-    if (defaultDir) {
-        fp.displayDirectory = FileUtils.getFile(defaultDir);
-    }
-	fp.appendFilters(nsIFilePicker.filterHTML | nsIFilePicker.filterAll);
-	var res = fp.show();
-	if (res == nsIFilePicker.returnOK) {
-        optionsManager.setCharPref("testCaseDirectory", fp.file.parent.path);
-		return this.loadFile(fp.file);
-	} else {
-		return null;
-	}
+    var self = this;
+    return showFilePicker(window, "Select a File", 
+                          Components.interfaces.nsIFilePicker.modeOpen,
+                          Format.TEST_CASE_DIRECTORY_PREF,
+                          function(fp) { return self.loadFile(fp.file); });
 }
 
 Format.prototype.loadFile = function(file) {

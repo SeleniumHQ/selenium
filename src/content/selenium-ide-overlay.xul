@@ -19,6 +19,7 @@ limitations under the License.
 
 <overlay id="selenium-ide-overlay" 
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-overlay.js"/>
   <stringbundleset id="stringbundleset">

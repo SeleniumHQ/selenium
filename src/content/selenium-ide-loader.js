@@ -18,7 +18,7 @@
 // functions to call IDE from browser window.
 //
 
-var SeleniumIDE = {};
+if (!this.SeleniumIDE) this.SeleniumIDE = {};
 
 SeleniumIDE.Loader = {};
 
