@@ -10,6 +10,40 @@
 
 Release information for different distributions of Selenium Core
 
+<h2>Selenium Core 0.8.0</h2>
+
+September 20, 2006
+
+<p>Highlights include:</p>
+
+<ul>
+    <li>a "multiWindow" option which places the application-under-test in
+        a separate window, allowing testing of "frame-busting" apps;</li>
+    <li>more reliable page-load detection for popup windows;</p>
+    <li>new cookie-management actions;</p>
+    <li>a run-speed slider and "Pause" button which replace the old Run/Walk/Step radio-buttons;</li>
+    <li>many bug-fixes and stability improvements;</p>
+    <li>tested against latest versions of Firefox, IE6, Opera, Konqueror, Safari and WebKit.</li>
+</ul>
+
+<p>Warnings:</p>
+
+<ul>
+  <li>
+    Use of the multiWindow layout in Firefox requires installation of the
+    "readyState.xpi" extension, available in the Selenium Core distribution.
+  </li>
+  <li> 
+    We've been doing a lot of refactoring within the Selenium Javascript
+    code, particularly in the area of the "TestRunner" user-interface: it's
+    likely that some user-extensions may break as a result.
+  </li>
+</ul>
+
+<p>
+For more details, see the <a href="http://jira.openqa.org/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10271">JIRA release summary</a>.
+</p>
+
 <h2>Selenium Core 0.7.1</h2>
 
 August 3, 2006

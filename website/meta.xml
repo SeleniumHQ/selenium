@@ -26,7 +26,7 @@
             </item>
             <item>
                 <name>Reference</name>
-                <url>http://release.openqa.org/selenium-core/0.7.1/reference.html</url>
+                <url>http://release.openqa.org/selenium-core/0.8.0/reference.html</url>
             </item>
             <item>
                 <name>FAQ</name>
@@ -96,9 +96,19 @@
 
     <releases>
     	<release>
-    		<version>0.7.1</version>
-
-            <date>8/03/2006</date>
+            <version>0.8.0</version>
+            <date>20-Sep-2006</date>
+            <jiraId>10271</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.openqa.org/selenium-core/0.8.0/selenium-core-0.8.0.zip</url>
+                    <name>Full release</name>
+                </download>
+            </downloads>
+        </release>
+    	<release>
+            <version>0.7.1</version>
+            <date>3-Aug-2006</date>
             <jiraId>10240</jiraId>
             <downloads>
                 <download>
@@ -106,11 +116,10 @@
                     <name>Full release</name>
                 </download>
             </downloads>
-    	</release>
-    	<release>
-    		<version>0.7.0</version>
-
-            <date>5/14/2006</date>
+        </release>
+        <release>
+            <version>0.7.0</version>
+            <date>14-May-2006</date>
             <jiraId>10112</jiraId>
             <downloads>
                 <download>
@@ -118,12 +127,10 @@
                     <name>Full release</name>
                 </download>
             </downloads>
-    	</release>
+        </release>
         <release>
-        	
             <version>0.6</version>
-
-            <date>9/25/2005</date>
+            <date>25-Sep-2005</date>
             <jiraId>10150</jiraId>
             <downloads>
                 <download>
