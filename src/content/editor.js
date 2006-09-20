@@ -862,20 +862,20 @@ Editor.LogView.prototype.reload = function() {
 }
 
 Editor.LogView.prototype.onAppendEntry = function(entry) {
-	if (!this.isHidden()) {
-		var levels = { debug: 0, info: 1, warn: 2, error: 3 };
-		var entryValue = levels[entry.level];
-		var filterValue = parseInt(this.filterValue);
-		if (filterValue <= entryValue) {
+    var levels = { debug: 0, info: 1, warn: 2, error: 3 };
+    var entryValue = levels[entry.level];
+    var filterValue = parseInt(this.filterValue);
+    if (filterValue <= entryValue) {
+        if (!this.isHidden()) {
 			var newEntry = this.view.contentDocument.createElement('li');
 			newEntry.className = entry.level;
 			newEntry.appendChild(this.view.contentDocument.createTextNode(entry.line()));
 			this.getLogElement().appendChild(newEntry);
 			newEntry.scrollIntoView();
-		}
-	} else {
-		this.panel.switchView(this);
-	}
+        } else {
+            this.panel.switchView(this);
+        }
+    }
 }
 
 /*
