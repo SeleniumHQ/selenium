@@ -15,11 +15,19 @@ import org.openqa.selenium.server.browserlaunchers.*;
 public class ApacheMyFacesSuggestTest extends TestCase {
 
     DefaultSelenium selenium;
+    boolean isProxyInjectionMode;
     
     protected void setUp() throws Exception {
+        isProxyInjectionMode = System.getProperty("selenium.proxyInjectionMode")!=null
+            && System.getProperty("selenium.proxyInjectionMode").equals("true");
     }
     
     public void testAJAXFirefox() throws Throwable {
+        String browserOverride = System.getProperty("selenium.defaultBrowserString");
+        if (browserOverride!=null && isProxyInjectionMode && !browserOverride.equals("*pifirefox")) {
+            // in PI mode, this firefox-specific test will only succeed if the browser mode override is *pifirefox.  Otherwise, just give up.
+            return;
+        }
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
 
@@ -40,6 +48,11 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     public void testAJAXIExplore() throws Throwable {
         if (!WindowsUtils.thisIsWindows()) return;
+        String browserOverride = System.getProperty("selenium.defaultBrowserString");
+        if (browserOverride!=null && isProxyInjectionMode && !browserOverride.equals("*piiexplore")) {
+            // in PI mode, this firefox-specific test will only succeed if the browser mode override is *piiexplore.  Otherwise, just give up.
+            return;
+        }
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
         selenium.start();
 
