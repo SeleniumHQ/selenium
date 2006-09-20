@@ -11,13 +11,10 @@ function loadTestSuite() {
 function startRecording() {
 	var editor = SeleniumIDE.Loader.getTopEditor();
 	editor.loadDefaultOptions();
-	//editor.recordFrameTitle = true;
 	editor.options.recordAssertTitle = 'false';
 	editor.clear(true);
+    editor.topWindow = editor.lastWindow = window.top.document.getElementById('myiframe').contentWindow;
 	editor.setRecordingEnabled(true);
-	editor.lastWindow = document.getElementById('myiframe');
-	
-	//SeleniumIDE.Loader.getRecorder(window).reattachWindowMethods();
 }
 
 function loadTest() {
@@ -70,7 +67,11 @@ function verifyCommands() {
 }
 
 function dumpCommand(command) {
-	return "|" + command.command + "|" + command.target + "|" + command.value + "|";
+    if (command) {
+        return "|" + command.command + "|" + command.target + "|" + command.value + "|";
+    } else {
+        return "";
+    }
 }
 
 function sameCommand(c1, c2) {

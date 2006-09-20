@@ -373,23 +373,88 @@ Editor.prototype.clear = function(force) {
 	return false;
 }
 
+// create the path represented as an array from top level window to the specified frame
+Editor.prototype._createPaths = function(window) {
+    var path = [];
+    var lastWindow = null;
+    while (lastWindow == null || window.parent != lastWindow.parent) {
+        path.unshift(window);
+        lastWindow = window;
+        window = lastWindow.parent;
+    }
+    return path;
+}
+
+Editor.prototype._getTopWindow = function(window) {
+    if (this.topWindow) {
+        var top = this.topWindow; // for functional test of Selenium IDE
+        delete this.topWindow;
+        return top;
+    } else {
+        return window.top;
+    }
+}
+
+Editor.prototype._isSameWindow = function(w1, w2) {
+    if (w1 == w1.parent && w2 == w2.parent) {
+        // top level window
+        return w1.name == w2.name;
+    } else if (w1.parent == w2.parent) {
+        // frame
+        return w1.name == w2.name;
+    } else {
+        return false;
+    }
+}
+
 Editor.prototype.addCommand = function(command,target,value,window) {
-	this.log.debug("addCommand");
-	var windowName;
+    this.log.debug("addCommand: command=" + command);
 	if (command != 'open' && this.testCase.commands.length == 0) {
-		this.recordOpen(window);
-		//if (command != 'assertTitle' && command != 'verifyTitle') {
-		this.recordTitle(window);
-			//}
+        var top = this._getTopWindow(window);
+		this.recordOpen(top);
+		this.recordTitle(top);
 	}
+    if (this.lastWindow) {
+        this.log.debug("window.name=" + window.name + ", lastWindow.name=" + this.lastWindow.name);
+    } else {
+        this.log.debug("window.name=" + window.name);
+    }
 	if (command != 'selectWindow' &&
+        command != 'selectFrame' &&
 		this.lastWindow != null &&
-		window.name != this.lastWindow.name) {
-		windowName = window.name;
-		if (window.name == '') {
-			windowName = 'null';
-		}
-		this.addCommand('selectWindow', windowName, '', 0, window);
+        !this._isSameWindow(this.lastWindow, window)) {
+        if (window.top == this.lastWindow.top) {
+            // frame
+            var destPath = this._createPaths(window);
+            var srcPath = this._createPaths(this.lastWindow);
+            this.log.debug("selectFrame: srcPath=" + srcPath + ", destPath=" + destPath);
+            var branch = 0;
+            var i;
+            for (i = 0;; i++) {
+                if (i >= destPath.length || i >= srcPath.length) break;
+                if (destPath[i] == srcPath[i]) {
+                    branch = i;
+                }
+            }
+            if (branch == 0 && srcPath.size > 1) {
+                // go to root
+                this.addCommand('selectFrame', 'relative=top', '', 0, window);
+            } else {
+                for (i = srcPath.length - 1; i > branch; i--) {
+                    this.addCommand('selectFrame', 'relative=up', '', 0, window);
+                }
+            }
+            for (i = branch + 1; i < destPath.length; i++) {
+                this.addCommand('selectFrame', destPath[i].name, '', 0, window);
+            }
+        } else {
+            // popup
+            var windowName = window.name;
+            if (window.name == '') {
+                windowName = 'null';
+            }
+            this.addCommand('selectWindow', windowName, '', 0, window);
+        }
 	}
 	//resultBox.inputField.scrollTop = resultBox.inputField.scrollHeight - resultBox.inputField.clientHeight;
 	if (this.timeoutID != null) {

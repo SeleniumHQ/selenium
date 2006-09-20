@@ -13,6 +13,7 @@
   <target name="clean" description="Delete build files">
     <delete dir="${build}"/>
     <delete dir="content/selenium"/>
+    <delete dir="content/selenium-tests"/>
     <delete dir="content/jsunit"/>
   </target>
 

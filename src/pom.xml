@@ -19,7 +19,7 @@
                 <ant antfile="build.xml" target="create-xpi">
                   <property name="build" location="${project.build.directory}" />
                   <property name="output.path" location="${project.build.outputDirectory}" />
-                  <property name="selenium.core.dir" location="${project.build.directory}/assembly/work/selenium-core-0.8.0-SNAPSHOT" />
+                  <property name="selenium.core.dir" location="${project.build.directory}/assembly/work/selenium-core-0.8.0" />
                 </ant>
               </tasks>
             </configuration>
@@ -74,7 +74,7 @@
     <dependency>
       <groupId>org.openqa.selenium.core</groupId>
       <artifactId>selenium-core</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.8.0</version>
     </dependency>
   </dependencies>
 </project>
