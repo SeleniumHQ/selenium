@@ -5,11 +5,11 @@
   <RDF:Description RDF:about="rdf:#$8MZop3"
                    em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    em:minVersion="1.5"
-                   em:maxVersion="2.0b2" />
+                   em:maxVersion="1.5.0.*" />
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:name="Selenium IDE"
                    em:id="{a6fd85ed-e919-4a43-a5af-8da18bda539f}"
-                   em:version="0.8.1-pre"
+                   em:version="0.8.1"
                    em:description="Record, edit and play Selenium tests"
                    em:creator="Shinya Kasatani"
                    em:homepageURL="http://www.openqa.org/selenium-ide/"

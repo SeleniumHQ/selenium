@@ -5,6 +5,7 @@
 <!ENTITY options.extensions.tip "Dica para extensões: Feche e reabra a janela do Selenium IDE para que as alterações tenham efeito. É possível informar vários arquivos separados por vírgula.">
 <!ENTITY options.rememberBaseURL.description "Lembrar a URL base">
 <!ENTITY options.recordAssertTitle.description "Gravar assertTitle automaticamente">
+<!ENTITY options.recordAbsoluteURL.description "Record absolute URL"><!-- TODO -->
 <!ENTITY options.browse "Procurar...">
 
 <!ENTITY options.resetOptions "Descartar Alterações">

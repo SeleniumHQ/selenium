@@ -5,6 +5,7 @@
 <!ENTITY options.extensions.tip "Tips for extensions: Close and reopen Selenium IDE window to make changes effect. You can specify multiple files separated by commas.">
 <!ENTITY options.rememberBaseURL.description "Remember base URL">
 <!ENTITY options.recordAssertTitle.description "Record assertTitle automatically">
+<!ENTITY options.recordAbsoluteURL.description "Record absolute URL">
 <!ENTITY options.browse "Browse...">
 
 <!ENTITY options.resetOptions "Reset Options">

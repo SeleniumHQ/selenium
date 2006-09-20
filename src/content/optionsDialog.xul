@@ -79,6 +79,7 @@ limitations under the License.
       <separator class="thin"/>
       <checkbox id="rememberBaseURL" label="&options.rememberBaseURL.description;"/>
       <checkbox id="recordAssertTitle" label="&options.recordAssertTitle.description;"/>
+      <checkbox id="recordAbsoluteURL" label="&options.recordAbsoluteURL.description;"/>
     </tabpanel>
     <tabpanel orient="vertical">
       <hbox flex="1">

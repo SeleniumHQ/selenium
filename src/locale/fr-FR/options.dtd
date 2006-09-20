@@ -5,6 +5,7 @@
 <!ENTITY options.extensions.tip "Astuces pour les extensions: Fermez et r&#233;-ouvrez la fen&#234;tre de Selenium IDE pour que les changements prennent effet. Vous pouvez sp&#233;cifier plusieurs fichiers s&#233;par&#233;s par des virgules.">
 <!ENTITY options.rememberBaseURL.description "M&#233;moriser l'URL racine">
 <!ENTITY options.recordAssertTitle.description "Enregistrer assertTitle automatiquement">
+<!ENTITY options.recordAbsoluteURL.description "Record absolute URL"><!-- TODO -->
 <!ENTITY options.browse "Parcourir...">
 
 <!ENTITY options.resetOptions "RAZ des options">

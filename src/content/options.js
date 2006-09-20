@@ -34,7 +34,10 @@ const OPTIONS = {
 	"false",
 
 	timeout:
-	"30000"
+	"30000",
+
+    recordAbsoluteURL:
+    "false"
 };
 
 function OptionsManager() {

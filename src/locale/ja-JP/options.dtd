@@ -5,6 +5,7 @@
 <!ENTITY options.extensions.tip "拡張スクリプトについて：設定変更を有効にするには Selenium IDE のウィンドウを開き直してください。カンマ区切りで複数のファイル名を指定できます。">
 <!ENTITY options.rememberBaseURL.description "Base URL を保存する">
 <!ENTITY options.recordAssertTitle.description "assertTitle を自動的に記録する">
+<!ENTITY options.recordAbsoluteURL.description "絶対 URL を記録する">
 <!ENTITY options.browse "参照...">
 
 <!ENTITY options.resetOptions "既定値に戻す">

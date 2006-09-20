@@ -350,7 +350,7 @@ Editor.prototype.recordOpen = function(window) {
 	var regexp = new RegExp(/^(https?:\/\/[^/:]+(:\d+)?)\/.*/);
 	var base = '';
 	var result = regexp.exec(path);
-	if (result) {
+	if (result && "true" != this.options.recordAbsoluteURL) {
 		path = path.substr(result[1].length);
 		base = result[1] + '/';
 	}
