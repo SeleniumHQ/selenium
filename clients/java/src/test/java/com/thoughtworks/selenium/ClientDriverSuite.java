@@ -57,6 +57,7 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestJavascriptParameters.class);
             suite.addTestSuite(TestClick.class);
             suite.addTestSuite(GoogleTestSearch.class);
+            suite.addTestSuite(GoogleTest.class);
             suite.addTestSuite(TestCheckUncheck.class);
             suite.addTestSuite(TestClick.class);
             suite.addTestSuite(TestXPathLocators.class);
