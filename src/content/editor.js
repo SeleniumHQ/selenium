@@ -423,7 +423,7 @@ Editor.prototype.addCommand = function(command,target,value,window) {
         command != 'selectFrame' &&
 		this.lastWindow != null &&
         !this._isSameWindow(this.lastWindow, window)) {
-        if (window.top == this.lastWindow.top) {
+        if (this._isSameWindow(window.top, this.lastWindow.top)) {
             // frame
             var destPath = this._createPaths(window);
             var srcPath = this._createPaths(this.lastWindow);
