@@ -50,8 +50,8 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 };
 
 BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
-    if (currentDocument._Selenium_IDE_readyState) {
-        return currentDocument._Selenium_IDE_readyState;
+    if (currentDocument.readyState) {
+        return currentDocument.readyState;
     } else {
         return null;
     }
