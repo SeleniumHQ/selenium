@@ -396,6 +396,7 @@ Editor.prototype._getTopWindow = function(window) {
 }
 
 Editor.prototype._isSameWindow = function(w1, w2) {
+    if (w1 == null || w2 == null) return false;
     if (w1 == w1.parent && w2 == w2.parent) {
         // top level window
         return w1.name == w2.name;
