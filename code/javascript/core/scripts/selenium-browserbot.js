@@ -414,7 +414,8 @@ BrowserBot.prototype._isSameDocument = function(originalDocument, currentDocumen
 BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
     var rs = currentDocument.readyState;
     if (rs == null) {
-        if (this.buttonWindow.document.readyState == null) {
+       if ((this.buttonWindow!=null && this.buttonWindow.document.readyState == null) // not proxy injection mode (and therefore buttonWindow isn't null)
+       || (top.document.readyState == null)) {                                               // proxy injection mode (and therefore everything's in the top window, but buttonWindow doesn't exist)
             // uh oh!  we're probably on Firefox with no readyState extension installed!
             // We'll have to just take a guess as to when the document is loaded; this guess
             // will never be perfect. :-(
