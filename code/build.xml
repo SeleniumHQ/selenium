@@ -1,6 +1,6 @@
 <project name="selenium" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
-    <property name="version" value="0.8.0"/>
+    <property name="version" value="0.8.1-SNAPSHOT"/>
 
     <target name="all" depends="clean, install-jar, nightly-image"/>
     <target name="all-with-tests" depends="clean, browser_bot_tests, install-jar, nightly-image"/>
