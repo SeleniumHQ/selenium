@@ -40,6 +40,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.currentWindow = this.topWindow;
     this.currentWindowName = null;
 
+    this.slowMode = false;
     this.modalDialogTest = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
@@ -103,6 +104,22 @@ BrowserBot.createForWindow = function(window) {
     return browserbot;
 };
 
+BrowserBot.prototype.doSetSlowMode = function(val) {
+	if (val=="true") {
+		this.slowMode = true;
+            }
+            else if (val=="false") {
+		this.slowMode = false;
+            }
+            else {
+            	throw new SeleniumError("invalid bool val for setSlowMode: " + val);
+            }
+};
+ 
+BrowserBot.prototype.getSlowMode = function(val) {
+	return this.slowMode;
+};
+ 
 // todo: rename?  This doesn't actually "do" anything.
 BrowserBot.prototype.doModalDialogTest = function(test) {
     this.modalDialogTest = test;

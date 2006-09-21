@@ -21,8 +21,6 @@ errorColor = "#ffffff";
 workingColor = "#DEE7EC";
 doneColor = "#FFFFCC";
 
-slowMode = false;
-
 var injectedSessionId;
 var cmd1 = document.createElement("div");
 var cmd2 = document.createElement("div");
@@ -185,7 +183,7 @@ function setSeleniumWindowName(seleniumWindowName) {
 }
 
 function slowClicked() {
-    slowMode = !slowMode;
+    selenium.browserbot.setSlowMode(!selenium.browserbot.getSlowMode());
 }
 
 SeleneseRunner = Class.create();
@@ -287,7 +285,7 @@ Object.extend(SeleneseRunner.prototype, {
     },
 
     _extractCommand : function(xmlHttp) {
-        if (slowMode) {
+        if (selenium.browserbot.getSlowMode()) {
             this._delay(2000);
         }
 
