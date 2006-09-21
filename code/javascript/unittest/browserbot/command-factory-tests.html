@@ -151,7 +151,7 @@ function setUp() {
         var predicate = function(target, value) {
         	return new PredicateResult(this.foo(), "msg");
         };
-        var invertedPredicate = factory.invertPredicate(predicate);
+        var invertedPredicate = factory._invertPredicate(predicate);
         var result = invertedPredicate.call(seleniumApi, "target", "value");
         assertFalse("Result should have been negated", result.isTrue);
         assertEquals("msg", result.message);
