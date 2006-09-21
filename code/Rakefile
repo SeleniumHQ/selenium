@@ -64,7 +64,7 @@ JavaScriptTestTask.new(:unit_tests) do |t|
   t.run "/javascript/jsunit/testRunner.html?autoRun=true&testPage=/javascript/unittest/htmlrunner/suite.html&submitResults=ROOT/jsunitResults&t=#{timestamp}"
 
   t.mount("/javascript")
-  t.browsers = [IE.new, Firefox.new]
+  t.browsers = [Firefox.new]
 end
 
 desc "Runs all the functional tests"
@@ -73,5 +73,5 @@ JavaScriptTestTask.new(:functional_tests) do |t|
   functional_tests="/javascript/core/TestRunner.html?auto=true&test=../tests/TestSuite.html&resultsUrl=/seleniumResults&t=#{timestamp}"
   t.mount("/javascript")
   t.run functional_tests
-  t.browsers = [Safari.new, IE.new, Konqueror.new, Firefox.new]
+  t.browsers = [Safari.new, Konqueror.new, Firefox.new]
 end
