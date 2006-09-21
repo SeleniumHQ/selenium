@@ -25,6 +25,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
 <script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
 
+<script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
@@ -33,6 +34,11 @@ Copyright 2004 ThoughtWorks, Inc
 function setUp() {
     LOG = new DummyLogger();
 }
+
+    // Allow mocking of Function.prototype.bind()
+    String.prototype.bind = function(target) {
+        return "commandTarget." + this + "()";
+    }
 
     function testNullIsReturnedForUnknownCommands() {
         var factory = new CommandHandlerFactory();
@@ -376,8 +382,8 @@ function setUp() {
         assertNull(factory.getCommandHandler("dontRegister"));
         assertNull(factory.getCommandHandler("notEvenClose"));
 
-        assertEquals("action1", factory.getCommandHandler("anAction").executor);
-        assertEquals("action2", factory.getCommandHandler("anotherAction").executor);
+        assertEquals("commandTarget.action1()", factory.getCommandHandler("anAction").executor);
+        assertEquals("commandTarget.action2()", factory.getCommandHandler("anotherAction").executor);
     }
 
     function testActionsAreRegisteredWithAndWaitSuffix() {
@@ -385,8 +391,8 @@ function setUp() {
         var factory = new CommandHandlerFactory();
         factory.registerAll(actionSet);
 
-        assertEquals("action1", factory.getCommandHandler("anAction").executor);
-        assertEquals("action1", factory.getCommandHandler("anActionAndWait").executor);
+        assertEquals("commandTarget.action1()", factory.getCommandHandler("anAction").executor);
+        assertEquals("commandTarget.action1()", factory.getCommandHandler("anActionAndWait").executor);
         assertUndefined(factory.getCommandHandler("anAction").wait);
         assertTrue(factory.getCommandHandler("anActionAndWait").wait);
     }

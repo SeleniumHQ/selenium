@@ -20,8 +20,8 @@ function CommandHandlerFactory() {
 
     this.handlers = {};
 
-    this.registerAction = function(name, action, wait, dontCheckAlertsAndConfirms) {
-        var handler = new ActionHandler(action, wait, dontCheckAlertsAndConfirms);
+    this.registerAction = function(name, actionFunction, wait, dontCheckAlertsAndConfirms) {
+        var handler = new ActionHandler(actionFunction, wait, dontCheckAlertsAndConfirms);
         this.handlers[name] = handler;
     };
 
@@ -42,52 +42,46 @@ function CommandHandlerFactory() {
     // Methods of the form getFoo(target) result in commands:
     // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
     // storeFoo, waitForFoo, and waitForNotFoo.
-    var _registerAllAccessors = function(commandObject) {
-        for (var functionName in commandObject) {
-            var matchForGetter = /^get([A-Z].+)$/.exec(functionName);
-            if (matchForGetter != null) {
-                var accessor = commandObject[functionName];
-                var baseName = matchForGetter[1];
-                self.registerAccessor(functionName, accessor);
-                self.registerAssertionsBasedOnAccessor(accessor, baseName);
-                self.registerStoreCommandBasedOnAccessor(accessor, baseName);
-                self.registerWaitForCommandsBasedOnAccessor(accessor, baseName);
+    var _registerAllAccessors = function(commandTarget) {
+        for (var functionName in commandTarget) {
+            var match = /^(get|is)([A-Z].+)$/.exec(functionName);
+            if (!match) {
+                continue;
             }
-            var matchForIs = /^is([A-Z].+)$/.exec(functionName);
-            if (matchForIs != null) {
-                var accessor = commandObject[functionName];
-                var baseName = matchForIs[1];
+            var accessor = commandTarget[functionName];
+            var baseName = match[2];
+            var predicate;
+            if (match[1] == "is") {
                 var predicate = self.createPredicateFromBooleanAccessor(accessor);
-                self.registerAccessor(functionName, accessor);
-                self.registerAssertionsBasedOnAccessor(accessor, baseName, predicate);
-                self.registerStoreCommandBasedOnAccessor(accessor, baseName);
-                self.registerWaitForCommandsBasedOnAccessor(accessor, baseName, predicate);
+            } else {
+                predicate = self.createPredicateFromAccessor(accessor);
             }
+            self.registerAccessor(functionName, accessor);
+            self.registerAssertionsForPredicate(baseName, predicate);
+            self.registerStoreCommandBasedOnAccessor(commandTarget, accessor, baseName);
+            self.registerWaitForCommandsForPredicate(commandTarget, baseName, predicate);
         }
     };
 
-    var _registerAllActions = function(commandObject) {
-        for (var functionName in commandObject) {
+    var _registerAllActions = function(commandTarget) {
+        for (var functionName in commandTarget) {
             var result = /^do([A-Z].+)$/.exec(functionName);
             if (result != null) {
                 var actionName = result[1].lcfirst();
-
-                // Register the action without the wait flag.
-                var action = commandObject[functionName];
-                self.registerAction(actionName, action, false, action.dontCheckAlertsAndConfirms);
-
-                // Register actionName + "AndWait" with the wait flag;
-                var waitActionName = actionName + "AndWait";
-                self.registerAction(waitActionName, action, true, action.dontCheckAlertsAndConfirms);
+                var actionMethod = commandTarget[functionName];
+                var dontCheckPopups = actionMethod.dontCheckAlertsAndConfirms;
+                var actionBlock = actionMethod.bind(commandTarget);
+                self.registerAction(actionName, actionBlock, false, dontCheckPopups);
+                self.registerAction(actionName + "AndWait", actionBlock, true, dontCheckPopups);
             }
         }
     };
 
-    var _registerAllAsserts = function(commandObject) {
-        for (var functionName in commandObject) {
+    var _registerAllAsserts = function(commandTarget) {
+        for (var functionName in commandTarget) {
             var result = /^assert([A-Z].+)$/.exec(functionName);
             if (result != null) {
-                var assert = commandObject[functionName];
+                var assert = commandTarget[functionName];
 
                 // Register the assert with the "assert" prefix, and halt on failure.
                 var assertName = functionName;
@@ -100,10 +94,10 @@ function CommandHandlerFactory() {
         }
     };
 
-    this.registerAll = function(commandObject) {
-        _registerAllAccessors(commandObject);
-        _registerAllActions(commandObject);
-        _registerAllAsserts(commandObject);
+    this.registerAll = function(commandTarget) {
+        _registerAllAccessors(commandTarget);
+        _registerAllActions(commandTarget);
+        _registerAllAsserts(commandTarget);
     };
 
     // Given an accessor function getBlah(target),
@@ -187,7 +181,6 @@ function CommandHandlerFactory() {
         };
     };
 
-
     var _negtiveName = function(baseName) {
         var matchResult = /^(.*)Present$/.exec(baseName);
         if (matchResult != null) {
@@ -198,10 +191,7 @@ function CommandHandlerFactory() {
 
     // Register an assertion, a verification, a negative assertion,
     // and a negative verification based on the specified accessor.
-    this.registerAssertionsBasedOnAccessor = function(accessor, baseName, predicate) {
-        if (predicate == null) {
-            predicate = self.createPredicateFromAccessor(accessor);
-        }
+    this.registerAssertionsForPredicate = function(baseName, predicate) {
         var assertion = self.createAssertionFromPredicate(predicate);
         self.registerAssert("assert" + baseName, assertion, true);
         self.registerAssert("verify" + baseName, assertion, false);
@@ -230,23 +220,20 @@ function CommandHandlerFactory() {
         };
     };
 
-    // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
-    this.registerWaitForCommandsBasedOnAccessor = function(accessor, baseName, predicate) {
-        if (predicate==null) {
-            predicate = self.createPredicateFromAccessor(accessor);
-        }
+    this.registerWaitForCommandsForPredicate = function(commandTarget, baseName, predicate) {
+        // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
         var waitForAction = self.createWaitForActionFromPredicate(predicate);
-        self.registerAction("waitFor"+baseName, waitForAction, false, true);
+        self.registerAction("waitFor" + baseName, waitForAction.bind(commandTarget), false, true);
         var invertedPredicate = self.invertPredicate(predicate);
         var waitForNotAction = self.createWaitForActionFromPredicate(invertedPredicate);
-        self.registerAction("waitFor"+_negtiveName(baseName), waitForNotAction, false, true);
+        self.registerAction("waitFor" + _negtiveName(baseName), waitForNotAction.bind(commandTarget), false, true);
         //TODO decide remove "waitForNot.*Present" action name or not
         //for the back compatiblity issues we still make waitForNot.*Present availble
-        self.registerAction("waitForNot"+baseName, waitForNotAction, false, true);
+        self.registerAction("waitForNot" + baseName, waitForNotAction.bind(commandTarget), false, true);
     }
 
-    // Register a storeBlahBlah based on the specified accessor.
-    this.registerStoreCommandBasedOnAccessor = function(accessor, baseName) {
+    this.registerStoreCommandBasedOnAccessor = function(commandTarget, accessor, baseName) {
+        // Register a storeBlahBlah based on the specified accessor.
         var action;
         if (accessor.length == 1) {
             action = function(target, varName) {
@@ -257,7 +244,7 @@ function CommandHandlerFactory() {
                 storedVars[varName] = accessor.call(this);
             };
         }
-        self.registerAction("store"+baseName, action, false, accessor.dontCheckAlertsAndConfirms);
+        self.registerAction("store"+baseName, action.bind(commandTarget), false, accessor.dontCheckAlertsAndConfirms);
     };
 
 }
@@ -291,9 +278,10 @@ function ActionHandler(action, wait, dontCheckAlerts) {
 ActionHandler.prototype = new CommandHandler;
 ActionHandler.prototype.execute = function(seleniumApi, command) {
     if (this.checkAlerts && (null==/(Alert|Confirmation)(Not)?Present/.exec(command.command))) {
+        // todo: this conditional logic is ugly
         seleniumApi.ensureNoUnhandledPopups();
     }
-    var terminationCondition = this.executor.call(seleniumApi, command.target, command.value);
+    var terminationCondition = this.executor(command.target, command.value);
     // If the handler didn't return a wait flag, check to see if the
     // handler was registered with the wait flag.
     if (terminationCondition == undefined && this.wait) {
