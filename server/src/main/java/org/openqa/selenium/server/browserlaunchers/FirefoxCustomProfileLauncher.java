@@ -30,7 +30,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private static boolean simple = false;
 
-    private String sessionId;
     private String[] cmdarray;
     private boolean closed = false;
     private String commandPath;
@@ -149,15 +148,15 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    private void makeCustomProfile(File customProfileDir) throws IOException {
+    private void makeCustomProfile(File customProfileDirectory) throws IOException {
         if (simple) {
             return;
         }
 
         TDirectory dir = new ClassPathLocator(getClass()).locate().asDirectory();
-        LauncherUtils.copyDirectory(dir.dir("customProfileDirCUSTFF"), new TFileFactory().dir(customProfileDir.getAbsolutePath()));
+        LauncherUtils.copyDirectory(dir.dir("customProfileDirCUSTFF"), new TFileFactory().dir(customProfileDirectory.getAbsolutePath()));
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDir, port, proxySeleniumTrafficOnly);
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, port, proxySeleniumTrafficOnly);
     }
 
     public void close() {

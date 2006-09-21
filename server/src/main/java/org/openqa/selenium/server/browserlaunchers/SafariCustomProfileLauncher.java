@@ -28,7 +28,6 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
 
 //    private int port;
-    private String sessionId;
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;

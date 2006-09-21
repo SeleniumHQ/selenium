@@ -30,8 +30,7 @@ public class DestroyableRuntimeExecutingBrowserLauncher extends AbstractBrowserL
 
     protected Process process;
     protected String commandPath;
-    protected String sessionId;
-
+    
     /** Specifies a command path to run */
     public DestroyableRuntimeExecutingBrowserLauncher(String commandPath, String sessionId) {
         super(sessionId);

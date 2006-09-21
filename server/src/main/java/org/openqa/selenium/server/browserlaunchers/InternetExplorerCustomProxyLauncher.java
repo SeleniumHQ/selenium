@@ -48,7 +48,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     private static ArrayList<RegKeyBackup> keys = null;
 
     private int port = 8180;
-    private String sessionId;
     private File customProxyPACDir;
     private String[] cmdarray;
     private String commandPath;

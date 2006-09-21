@@ -33,7 +33,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     private static boolean simple = false;
 
     private int port;
-    private String sessionId;
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
