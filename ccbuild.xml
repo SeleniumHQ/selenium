@@ -2,11 +2,12 @@
 <project name="selenium" default="cruise" basedir=".">
 	
 	<property name="score.dir" value="../score"/>
+	<property name="svn.executable" value="svn"/>
 
 	<macrodef name="svn-update">
                 <attribute name="workdir"/>
                 <sequential>
-                        <exec dir="@{workdir}" executable="svn" failonerror="true">
+                        <exec dir="@{workdir}" executable="${svn.executable}" failonerror="true">
                                 <arg line="update --non-interactive"/>
                         </exec>
                 </sequential>
