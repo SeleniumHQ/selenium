@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry output="target/test-classes" kind="src" path="src/test/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar" kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
-	<classpathentry sourcepath="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-sources.jar" kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
-	<classpathentry sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar" kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar"/>
-	<classpathentry sourcepath="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar" kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
-	<classpathentry sourcepath="/DOWNLOADS_JAVA_JETTY" kind="var" path="M2_REPO/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-core"/>
-	<classpathentry kind="output" path="eclipse"/>
+<classpathentry kind="src" path="src/main/java"/>
+<classpathentry kind="src" path="src/main/resources"/>
+<classpathentry output="target/test-classes" kind="src" path="src/test/java"/>
+<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+<classpathentry kind="var" path="M2_REPO/net/sf/cotta/cotta/1.0rc/cotta-1.0rc.jar"/>
+<classpathentry sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar" kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+<classpathentry sourcepath="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-sources.jar" kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+<classpathentry sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar" kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar"/>
+<classpathentry sourcepath="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar" kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
+<classpathentry sourcepath="/DOWNLOADS_JAVA_JETTY" kind="var" path="M2_REPO/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar"/>
+<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-core"/>
+<classpathentry kind="output" path="eclipse"/>
 </classpath>
