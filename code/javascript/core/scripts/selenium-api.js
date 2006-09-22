@@ -1399,8 +1399,8 @@ Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
    * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
    *
-   * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    * @param locator an element locator
+   * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    */
    var element = this.page().findElement(locator);
    var clientStartXY = getClientXY(element)
