@@ -400,6 +400,15 @@ Selenium.prototype.doType = function(locator, value) {
     this.page().replaceText(element, value);
 };
 
+Selenium.prototype.doSetSlowMode = function(value) {
+ /**
+   * Set slow mode (where each selenium operation is followed by a human-perceptible delay)
+   *
+   * @param value the value to set slow mode to (either true or false)
+   */
+    selenium.browserbot.setSlowMode(value=="true");
+};
+
 Selenium.prototype.findToggleButton = function(locator) {
     var element = this.page().findElement(locator);
     if (element.checked == null) {
@@ -1377,6 +1386,15 @@ Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
 };
 
 Selenium.prototype.doDragdrop = function(locator, movementsString) {
+/** DEPRECATED -- use dragAndDrop instead
+   *
+   * @param movementsString
+   * @param locator 
+   */
+   this.doDragAndDrop(locator, movementsString);
+};
+   
+Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
    /** Drags an element a certain distance and then drops it
    * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
@@ -1412,6 +1430,17 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
         triggerMouseEvent(element, 'mousemove', true, clientX, clientY);
     }
     triggerMouseEvent(element, 'mouseup',   true, clientFinishX, clientFinishY);
+};
+
+Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, locatorOfDragDestinationObject) {
+/** Drags an element and drops it over another element
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+   * get null event arguments.  Read the bug for more details, including a workaround.
+   *
+   * @param locatorOfObjectToBeDragged an element to be dragged
+   * @param locatorOfDragDestinationObject an element whose location will be the point where locatorOfObjectToBeDragged  is dropped
+   */
+   throw new SeleniumError("not implemented yet");
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {

@@ -182,10 +182,6 @@ function setSeleniumWindowName(seleniumWindowName) {
     selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
 }
 
-function slowClicked() {
-    selenium.browserbot.setSlowMode(!selenium.browserbot.getSlowMode());
-}
-
 SeleneseRunner = Class.create();
 Object.extend(SeleneseRunner.prototype, new TestLoop());
 Object.extend(SeleneseRunner.prototype, {
