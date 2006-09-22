@@ -1388,8 +1388,8 @@ Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
 Selenium.prototype.doDragdrop = function(locator, movementsString) {
 /** DEPRECATED -- use dragAndDrop instead
    *
-   * @param movementsString
    * @param locator 
+   * @param movementsString
    */
    this.doDragAndDrop(locator, movementsString);
 };
