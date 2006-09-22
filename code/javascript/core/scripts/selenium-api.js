@@ -406,6 +406,10 @@ Selenium.prototype.doSetSlowMode = function(value) {
    *
    * @param value the value to set slow mode to (either true or false)
    */
+   if (value!="true" && value!="false") {
+   	throw new SeleniumError("invalid bool val for setSlowMode: " + value);
+    }
+    LOG.debug("setSlowMode(" + value + ") (was  previously " + selenium.browserbot.getSlowMode());
     selenium.browserbot.setSlowMode(value=="true");
 };
 

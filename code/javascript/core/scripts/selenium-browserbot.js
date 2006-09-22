@@ -104,16 +104,8 @@ BrowserBot.createForWindow = function(window) {
     return browserbot;
 };
 
-BrowserBot.prototype.doSetSlowMode = function(val) {
-	if (val=="true") {
-		this.slowMode = true;
-            }
-            else if (val=="false") {
-		this.slowMode = false;
-            }
-            else {
-            	throw new SeleniumError("invalid bool val for setSlowMode: " + val);
-            }
+BrowserBot.prototype.setSlowMode = function(val) {
+	this.slowMode = val;
 };
  
 BrowserBot.prototype.getSlowMode = function(val) {
