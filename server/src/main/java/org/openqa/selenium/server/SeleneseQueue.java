@@ -33,9 +33,10 @@ public class SeleneseQueue {
     private SingleEntryAsyncQueue commandResultHolder;
     private String sessionId;
     private String uniqueId;
-    private boolean slowMode;
     private FrameAddress frameAddress = null;
     private boolean resultExpected = false;
+
+    static private boolean slowMode;
 
     public SeleneseQueue(String sessionId, FrameAddress frameAddress) {
         this(sessionId);
@@ -278,5 +279,9 @@ public class SeleneseQueue {
 
     public void setResultExpected(boolean resultExpected) {
         this.resultExpected = resultExpected;
+    }
+
+    public static void setSlowMode(boolean b) {
+        slowMode = b;
     }
 }

@@ -275,7 +275,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return (s!=null) && s.matches("java.io.IOException: CreateProcess: .*error=3");
     }
 
-    private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
+	private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
         // If this a Driver Client sending a new command...
         res.setContentType("text/plain");
         hackRemoveConnectionCloseHeader(res);
@@ -298,7 +298,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
         results = doCommand(cmd, values, sessionId, res);
 
-        // under some conditions, the results variable will be null 
+        // under some conditions, the results variable will be null
         // (cf http://forums.openqa.org/thread.jspa?threadID=2955&messageID=8085#8085 for an example of this)
         if (results!=null) {
             try {
@@ -311,7 +311,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         req.setHandled(true);
     }
 
-    public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
+	public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
         String results;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
@@ -330,6 +330,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("isPostSupported".equals(cmd)) {
             // We don't support POST
             results = "OK,false";
+        } else if ("setSlowMode".equals(cmd)) {
+            SeleneseQueue.setSlowMode(values.get(0).equals("true"));
+            results = "OK";
         } else if ("addStaticContent".equals(cmd)) {
             File dir = new File( values.get(0));
             if (dir.exists()) {
