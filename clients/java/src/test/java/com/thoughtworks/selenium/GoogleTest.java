@@ -33,7 +33,9 @@ public class GoogleTest extends TestCase
         for (String windowTitle : windowTitles) {
             System.out.println("Window Title: " + windowTitle);
         }
+        selenium.setSlowMode("true");
         selenium.windowFocus("");
+        selenium.setSlowMode("false");
         selenium.windowMaximize("title=Google");
         selenium.windowMaximize("title=exact:Google");
         selenium.windowMaximize("title=regexp:Google");
