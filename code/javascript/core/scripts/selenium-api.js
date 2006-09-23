@@ -1203,6 +1203,9 @@ Selenium.prototype.isTextPresent = function(pattern) {
 
     var patternMatcher = new PatternMatcher(pattern);
     if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
+	    	if (pattern.indexOf("glob:")==0) {
+		            pattern = pattern.substring("glob:".length); // strip off "glob:"
+        		}
 		patternMatcher.matcher = new PatternMatcher.strategies.globContains(pattern);
     }
     else if (patternMatcher.strategy == PatternMatcher.strategies.exact) {
