@@ -1437,14 +1437,30 @@ Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
 };
 
 Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, locatorOfDragDestinationObject) {
-/** Drags an element and drops it over another element
+/** Drags an element and drops it on another element
    * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
    * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locatorOfObjectToBeDragged an element to be dragged
-   * @param locatorOfDragDestinationObject an element whose location will be the point where locatorOfObjectToBeDragged  is dropped
+   * @param locatorOfDragDestinationObject an element whose location (i.e., whose top left corner) will be the point where locatorOfObjectToBeDragged  is dropped
    */
-   throw new SeleniumError("not implemented yet");
+   var startX = Selenium.prototype.getElementPositionLeft(locatorOfObjectToBeDragged);
+   var startY = Selenium.prototype.getElementPositionTop(locatorOfObjectToBeDragged);
+   
+   var destinationLeftX = Selenium.prototype.getElementPositionLeft(locatorOfDragDestinationObject);
+   var destinationTopY = Selenium.prototype.getElementPositionTop(locatorOfDragDestinationObject);
+   var destinationWidth = Selenium.prototype.getElementWidth(locatorOfDragDestinationObject);
+   var destinationHeight = Selenium.prototype.getElementHeight(locatorOfDragDestinationObject);
+
+   var endX = destinationLeftX + (destinationWidth / 2);
+   var endY = destinationLeftY + (destinationHeight / 2);
+   
+   var deltaX = endX - startX;
+   var deltaY = endY - startY;
+   
+   var movementsString = "" + deltaX + "," + deltaY;
+   
+   doDragAndDrop(locatorOfObjectToBeDragged, movementsString);
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {
