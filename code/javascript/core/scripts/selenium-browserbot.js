@@ -40,7 +40,6 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.currentWindow = this.topWindow;
     this.currentWindowName = null;
 
-    this.slowMode = false;
     this.modalDialogTest = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
@@ -104,14 +103,6 @@ BrowserBot.createForWindow = function(window) {
     return browserbot;
 };
 
-BrowserBot.prototype.setSlowMode = function(val) {
-	this.slowMode = val;
-};
- 
-BrowserBot.prototype.getSlowMode = function(val) {
-	return this.slowMode;
-};
- 
 // todo: rename?  This doesn't actually "do" anything.
 BrowserBot.prototype.doModalDialogTest = function(test) {
     this.modalDialogTest = test;

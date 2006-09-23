@@ -404,13 +404,9 @@ Selenium.prototype.doSetSlowMode = function(value) {
  /**
    * Set slow mode (where each selenium operation is followed by a human-perceptible delay)
    *
-   * @param value the value to set slow mode to (either true or false)
+   * @param value the number of milliseconds to pause between each operation
    */
-   if (value!="true" && value!="false") {
-   	throw new SeleniumError("invalid bool val for setSlowMode: " + value);
-    }
-    LOG.debug("setSlowMode(" + value + ") (was  previously " + selenium.browserbot.getSlowMode());
-    selenium.browserbot.setSlowMode(value=="true");
+   throw new SeleniumError("this operation is only implemented in selenium-rc, and should never result in a request making it across the wire");
 };
 
 Selenium.prototype.findToggleButton = function(locator) {

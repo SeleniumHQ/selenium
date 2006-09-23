@@ -281,10 +281,6 @@ Object.extend(SeleneseRunner.prototype, {
     },
 
     _extractCommand : function(xmlHttp) {
-        if (selenium.browserbot.getSlowMode()) {
-            this._delay(2000);
-        }
-
         var command;
         try {
             var re = new RegExp("^(.*?)\n((.|[\r\n])*)");
