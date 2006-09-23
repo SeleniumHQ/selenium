@@ -36,7 +36,7 @@ public class SeleneseQueue {
     private FrameAddress frameAddress = null;
     private boolean resultExpected = false;
 
-    static private boolean slowMode;
+    static private int millisecondDelayBetweenOperations;
 
     public SeleneseQueue(String sessionId, FrameAddress frameAddress) {
         this(sessionId);
@@ -54,7 +54,7 @@ public class SeleneseQueue {
         // because of routine selenium server inactivity).
         commandHolder.setTimeout(Integer.MAX_VALUE);
         
-        slowMode = (System.getProperty("selenium.slowMode")!=null) && "true".equals(System.getProperty("selenium.slowMode"));
+        millisecondDelayBetweenOperations = (System.getProperty("selenium.slowMode")==null) ? 0 : Integer.parseInt(System.getProperty("selenium.slowMode"));
     }
         
     /** Schedules the specified command to be retrieved by the next call to
@@ -81,10 +81,10 @@ public class SeleneseQueue {
     }
 
     public void doCommandWithoutWaitingForAResponse(String command, String field, String value) {
-        if (slowMode) {
-            SeleniumServer.log("    Slow mode in effect: sleep 1 second...");
+        if (millisecondDelayBetweenOperations > 0) {
+            SeleniumServer.log("    Slow mode in effect: sleep " + millisecondDelayBetweenOperations + " milliseconds...");
             try {
-                Thread.sleep(1000);
+                Thread.sleep(millisecondDelayBetweenOperations);
             } catch (InterruptedException e) {
             }
             SeleniumServer.log("    ...done");
@@ -281,7 +281,7 @@ public class SeleneseQueue {
         this.resultExpected = resultExpected;
     }
 
-    public static void setSlowMode(boolean b) {
-        slowMode = b;
+    public static void setSlowMode(int i) {
+        millisecondDelayBetweenOperations = i;
     }
 }

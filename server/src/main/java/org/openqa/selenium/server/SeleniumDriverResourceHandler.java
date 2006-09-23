@@ -331,7 +331,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             // We don't support POST
             results = "OK,false";
         } else if ("setSlowMode".equals(cmd)) {
-            SeleneseQueue.setSlowMode(values.get(0).equals("true"));
+            SeleneseQueue.setSlowMode(Integer.parseInt(values.get(0)));
             results = "OK";
         } else if ("addStaticContent".equals(cmd)) {
             File dir = new File( values.get(0));
