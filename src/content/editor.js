@@ -449,9 +449,7 @@ Editor.prototype.addCommand = function(command,target,value,window) {
         }
 	}
 	//resultBox.inputField.scrollTop = resultBox.inputField.scrollHeight - resultBox.inputField.clientHeight;
-	if (this.timeoutID != null) {
-		clearTimeout(this.timeoutID);
-	}
+    this.clearLastCommand();
 	this.lastWindow = window;
 
 	this.lastCommandIndex = this.view.getRecordIndex();
@@ -462,6 +460,10 @@ Editor.prototype.addCommand = function(command,target,value,window) {
 
 Editor.prototype.clearLastCommand = function() {
 	this.lastCommandIndex = null;
+	if (this.timeoutID != null) {
+		clearTimeout(this.timeoutID);
+        this.timeoutID = null;
+	}
 }
 
 Editor.appendWaitForPageToLoad = function() {
@@ -480,6 +482,7 @@ Editor.appendWaitForPageToLoad = function() {
 			editor.view.rowUpdated(lastCommandIndex);
 		}
 	}
+    editor.clearLastCommand();
 	//updateSource();
 }
 
