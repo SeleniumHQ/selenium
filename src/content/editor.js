@@ -324,7 +324,7 @@ Editor.prototype.onUnloadDocument = function(doc) {
 		if (this.unloadTimeoutID != null) {
 			clearTimeout(this.unloadTimeoutID);
 		}
-		this.unloadTimeoutID = setTimeout("Editor.appendWaitForPageToLoad()", 20);
+		this.unloadTimeoutID = setTimeout("Editor.appendWaitForPageToLoad()", 0);
 	}
 }
 
