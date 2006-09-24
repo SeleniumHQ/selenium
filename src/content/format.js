@@ -288,26 +288,27 @@ Format.prototype.load = function() {
                           function(fp) { return self.loadFile(fp.file); });
 }
 
-Format.prototype.loadFile = function(file) {
+Format.prototype.loadFile = function(file, isURL) {
 	this.log.debug("start loading: file=" + file);
 	
 	try {
-		var is = Components.classes["@mozilla.org/network/file-input-stream;1"]
-	    .createInstance( Components.interfaces.nsIFileInputStream );
-		is.init(file, 0x01, 00004, null);
-		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
-	    .createInstance( Components.interfaces.nsIScriptableInputStream );
-		sis.init(is);
+        var sis;
+        if (isURL) {
+            sis = FileUtils.openURLInputStream(file);
+        } else {
+            sis = FileUtils.openFileInputStream(file);
+        }
 		var text = this.getUnicodeConverter().ConvertToUnicode(sis.read(sis.available()));
 		var testCase = new TestCase();
 		this.getFormatter().parse(testCase, text);
 		
 		sis.close();
-		is.close();
 		testCase.file = file;
-		testCase.lastModifiedTime = file.lastModifiedTime;
-		testCase.filename = file.path;
-		testCase.baseFilename = file.leafName;
+        if (!isURL) {
+            testCase.lastModifiedTime = file.lastModifiedTime;
+            testCase.filename = file.path;
+            testCase.baseFilename = file.leafName;
+        }
 		
 		return testCase;
 	} catch (err) {

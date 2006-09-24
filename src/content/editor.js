@@ -40,7 +40,7 @@ function Editor(window, isSidebar) {
 				}
 			};
 		});
-	this.setTestCase(new TestCase());
+	this.setTestCase(new TestCase(), true);
 	this.initOptions();
 	//this.toggleView(this.treeView);
 	
@@ -78,7 +78,6 @@ Editor.checkTimestamp = function() {
 			var testCase = editor.currentFormat.loadFile(editor.testCase.file);
 			if (testCase) {
 				editor.setTestCase(testCase);
-				editor.view.refresh();
 			}
 		}
 	}
@@ -244,23 +243,15 @@ Editor.prototype.initOptions = function() {
 Editor.prototype.newTestCase = function() {
 	if (this.confirmClose()) {
 		this.setTestCase(new TestCase());
-		this.view.refresh();
-		//document.getElementById("filename").value = '';
-		//document.title = DEFAULT_TITLE;
-		this.updateTitle();
 	}
 }
 
-Editor.prototype.loadTestCase = function() {
+Editor.prototype.loadTestCase = function(file, url) {
 	this.log.debug("loadTestCase");
 	try {
 		var testCase = null;
 		if ((testCase = this.currentFormat.load()) != null) {
 			this.setTestCase(testCase);
-			this.view.refresh();
-			//document.getElementById("filename").value = this.testCase.filename;
-			//document.title = this.testCase.filename + " - " + DEFAULT_TITLE;
-			this.updateTitle();
 		}
 	} catch (error) {
 		alert(error);
@@ -511,22 +502,30 @@ Editor.prototype.checkForTestRunner = function(contentWindow) {
 	}
 }
 
-Editor.prototype.showInBrowser = function(url) {
-	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	var window = wm.getMostRecentWindow('navigator:browser');
-	var contentWindow = window.getBrowser().contentWindow;
-	contentWindow.location.href = url;
+Editor.prototype.showInBrowser = function(url, newWindow) {
+    if (newWindow) {
+        this.window.open(url);
+    } else {
+        var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+        var window = wm.getMostRecentWindow('navigator:browser');
+        var contentWindow = window.getBrowser().contentWindow;
+        contentWindow.location.href = url;
+    }
 }
 
-Editor.prototype.playback = function() {
+Editor.prototype.playback = function(newWindow, resultCallback) {
 	// disable recording
 	this.setRecordingEnabled(false);
 
 	this.loadTestRunner = true;
+    this.testRunnerResultCallback = resultCallback;
+    var auto = resultCallback != null;
 
     this.showInBrowser('chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
                        '&userExtensionsURL=' + encodeURI(ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',')) +
-                       '&baseURL=' + document.getElementById("baseURL").value);
+                       '&baseURL=' + document.getElementById("baseURL").value +
+                       (auto ? "&auto=true" : ""), 
+                       newWindow);
 }
 
 Editor.prototype.loadPlayerTest = function(e) {
@@ -601,11 +600,15 @@ Editor.prototype.getBaseURL = function() {
 	return this.document.getElementById("baseURL").value;
 }
 
-Editor.prototype.setTestCase = function(testCase) {
+Editor.prototype.setTestCase = function(testCase, dontRefresh) {
 	this.testCase = testCase;
 	for (var i = 0; i < this.testCaseListeners.length; i++) {
 		this.testCaseListeners[i].call(this, this.testCase);
 	}
+    if (!dontRefresh) {
+        this.view.refresh();
+        this.updateTitle();
+    }
 }
 
 Editor.prototype.toggleView = function(view) {

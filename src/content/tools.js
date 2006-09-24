@@ -125,7 +125,7 @@ var ExtensionsLoader = {
 			commaSeparatedPaths.split(/,/).forEach(function(path) {
 					path = path.replace(/^\s*/, '');
 					path = path.replace(/\s*$/, '');
-					if (!path.match(/^file:/)) {
+					if (!path.match(/^(file|chrome):/)) {
 						path = FileUtils.fileURI(FileUtils.getFile(path));
 					}
 					urls.push(path);
