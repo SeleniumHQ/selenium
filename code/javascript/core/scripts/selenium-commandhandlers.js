@@ -12,7 +12,6 @@
 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
-*
 */
 
 var CommandHandlerFactory = Class.create();
@@ -52,7 +51,7 @@ Object.extend(CommandHandlerFactory.prototype, {
             var accessor = commandTarget[functionName];
             var baseName = match[2];
             this.registerAccessor(functionName, accessor);
-            this.registerStoreCommandBasedOnAccessor(commandTarget, accessor, baseName);
+            this.registerStoreCommandBasedOnAccessor(baseName, accessor.bind(commandTarget), accessor.length);
             var predicate;
             if (match[1] == "is") {
                 var predicate = this.createPredicateFromBooleanAccessor(accessor);
@@ -233,19 +232,18 @@ Object.extend(CommandHandlerFactory.prototype, {
         this.registerAction("waitForNot" + baseName, waitForNotAction.bind(commandTarget), false, true);
     },
 
-    registerStoreCommandBasedOnAccessor: function(commandTarget, accessor, baseName) {
-        // Register a storeBlahBlah based on the specified accessor.
+    registerStoreCommandBasedOnAccessor: function(baseName, accessorFunction, accessorArity) {
         var action;
-        if (accessor.length == 1) {
+        if (accessorArity == 1) {
             action = function(target, varName) {
-                storedVars[varName] = accessor.call(this, target);
+                storedVars[varName] = accessorFunction(target);
             };
         } else {
             action = function(varName) {
-                storedVars[varName] = accessor.call(this);
+                storedVars[varName] = accessorFunction();
             };
         }
-        this.registerAction("store"+baseName, action.bind(commandTarget), false, accessor.dontCheckAlertsAndConfirms);
+        this.registerAction("store" + baseName, action, false, true);
     }
 
 });
