@@ -400,7 +400,7 @@ Object.extend(HtmlTestCaseRow.prototype, {
     },
 
     setMessage: function(message) {
-        this.trElement.cells[2].innerHTML = message;
+        setText(this.trElement.cells[2], message);
     },
 
     reset: function() {
@@ -799,12 +799,13 @@ Object.extend(HtmlTestCase.prototype, {
     },
 
     addErrorMessage: function(errorMsg, currentRow) {
+        errorMsg = errorMsg.replace(/ /g, String.fromCharCode(160)).replace("\n", '\\n');
         if (currentRow) {
             currentRow.markFailed(errorMsg);
         } else {
             var errorElement = this.testDocument.createElement("p");
             errorElement.id = "error";
-            errorElement.innerHTML = errorMsg;
+            setText(errorElement, errorMsg);
             this.testDocument.body.appendChild(errorElement);
             Element.setStyle(errorElement, {'backgroundColor': FeedbackColors.failColor});
         }
