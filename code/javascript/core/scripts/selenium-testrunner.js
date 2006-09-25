@@ -154,7 +154,7 @@ Object.extend(SeleniumFrame.prototype, {
     },
 
     _handleLoad: function() {
-		this._onLoad();
+        this._onLoad();
         if (this.loadCallback) {
             this.loadCallback();
             this.loadCallback = null;
@@ -170,9 +170,9 @@ Object.extend(SeleniumFrame.prototype, {
 
     _setLocation: function(location) {
         if (browserVersion.isSafari) {
-			// safari doesn't reload the page when the location equals to current location.
-			// hence, set the location to blank so that the page will reload automatically.
-			this.frame.src = "about:blank";
+            // safari doesn't reload the page when the location equals to current location.
+            // hence, set the location to blank so that the page will reload automatically.
+            this.frame.src = "about:blank";
             this.frame.src = location;
         } else {
             this.frame.contentWindow.location.replace(location);
@@ -476,7 +476,7 @@ Object.extend(HtmlTestSuiteRow.prototype, {
                 onloadFunction();
             }
         } else {
-			this.testFrame.load(this.link.href, onloadFunction);
+            this.testFrame.load(this.link.href, onloadFunction);
         }
     },
 
