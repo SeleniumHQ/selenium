@@ -42,7 +42,7 @@ Object.extend(CommandHandlerFactory.prototype, {
     },
 
     getCommandHandler: function(name) {
-        return this.handlers[name] ||  null; // todo: why null, and not undefined?
+        return this.handlers[name];
     },
 
     // Methods of the form getFoo(target) result in commands:
