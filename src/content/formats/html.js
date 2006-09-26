@@ -1,7 +1,7 @@
 function decodeText(text) {
 	var escapeXml = options.escapeXmlEntities;
 	var r;
-	text = text.replace(/<br\s*\\?>/i, "\n");
+	text = text.replace(/<br\s*\/?>/gi, "\n");
 	if (escapeXml == 'always' || escapeXml == 'partial' || escapeXml == 'html') {
 		text = text.replace(/&lt;/g, '<');
 		text = text.replace(/&gt;/g, '>');
@@ -71,6 +71,7 @@ function encodeText(text) {
 		text = text.replace(/^\$\{/g, '\\${'); // replace ${...} to \${...}
 		text = text.replace(/\$\$\{/g, '${'); // replace $${...} to ${...}
 	}
+    text = text.replace(/\n/g, "<br />");
 	return text;
 }
 
