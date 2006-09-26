@@ -16,34 +16,20 @@
 
 package org.openqa.selenium.server;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
-import org.mortbay.http.HttpConnection;
-import org.mortbay.http.HttpException;
-import org.mortbay.http.HttpFields;
-import org.mortbay.http.HttpMessage;
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
-import org.mortbay.http.HttpTunnel;
+import org.mortbay.http.*;
 import org.mortbay.http.handler.AbstractHttpHandler;
 import org.mortbay.log.LogFactory;
-import org.mortbay.util.IO;
-import org.mortbay.util.InetAddrPort;
-import org.mortbay.util.LineInput;
-import org.mortbay.util.LogSupport;
-import org.mortbay.util.StringMap;
+import org.mortbay.util.*;
 import org.mortbay.util.URI;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /* ------------------------------------------------------------ */
 
@@ -65,6 +51,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     protected int _tunnelTimeoutMs = 250;
     private boolean _anonymous = false;
     private transient boolean _chained = false;
+    private HashMap<InetAddrPort,SslRelay> _sslMap = new HashMap<InetAddrPort, SslRelay>();
 
     /* ------------------------------------------------------------ */
     /**
@@ -442,6 +429,32 @@ public class ProxyHandler extends AbstractHttpHandler {
                 HttpConnection http_connection = request.getHttpConnection();
                 http_connection.forceClose();
 
+                HttpServer server = http_connection.getHttpServer();
+
+                SslRelay listener = _sslMap.get(addrPort);
+                if (listener==null)
+                {
+                    listener = new SslRelay(addrPort);
+                    // TODO Generate a certificate and configure it on the listener
+                    // TODO at least plug in a dummy certificate so this will work with pop-up warnings.
+                    listener.setKeystore("demokeystore");
+                    listener.setPassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
+                    listener.setKeyPassword("OBF:1u2u1wml1z7s1z7a1wnl1u2g");
+                    server.addListener(listener);
+                    try
+                    {
+                        listener.start();
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                    _sslMap.put(addrPort,listener);
+                }
+
+                int port = listener.getPort();
+
                 // Get the timeout
                 int timeoutMs = 30000;
                 Object maybesocket = http_connection.getConnection();
@@ -451,8 +464,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                 }
 
                 // Create the tunnel
-                HttpTunnel tunnel = newHttpTunnel(request, response, addrPort.getInetAddress(), addrPort.getPort(), timeoutMs);
-
+                HttpTunnel tunnel = newHttpTunnel(request, response, InetAddress.getLocalHost(), port, timeoutMs);
 
                 if (tunnel != null) {
                     // TODO - need to setup semi-busy loop for IE.
@@ -655,5 +667,27 @@ public class ProxyHandler extends AbstractHttpHandler {
      */
     public void setAnonymous(boolean anonymous) {
         _anonymous = anonymous;
+    }
+
+    private static class SslRelay extends SslListener
+    {
+        InetAddrPort _addr;
+
+        SslRelay(InetAddrPort addr)
+        {
+            _addr=addr;
+        }
+
+        protected void customizeRequest(Socket socket, HttpRequest request)
+        {
+            super.customizeRequest(socket,request);
+            URI uri=request.getURI();
+
+            // Convert the URI to a proxy URL
+            uri.setScheme("https");
+            uri.setHost(_addr.getHost());
+            uri.setPort(_addr.getPort());
+            System.err.println("URI="+uri);
+        }
     }
 }
