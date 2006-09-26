@@ -179,6 +179,7 @@ public class SeleniumServer {
         File userExtensions = null;
         boolean proxyInjectionModeArg = false;
         int portDriversShouldContactArg = 0;
+        boolean userJsInjection = false;
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -218,6 +219,7 @@ public class SeleniumServer {
             } else if ("-timeout".equals(arg)) {
                 timeout = Integer.parseInt(getArg(args, ++i));
             } else if ("-userJsInjection".equals(arg)) {
+                userJsInjection = true;
                 if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
                     usage(null);
                     System.exit(1);
@@ -262,6 +264,10 @@ public class SeleniumServer {
                 usage("unrecognized argument " + arg);
                 System.exit(1);
             }
+        }
+        if (userJsInjection && !proxyInjectionModeArg) {
+            System.err.println("User js injection can only be used w/ -proxyInjectionMode");
+            System.exit(1);
         }
         if (portDriversShouldContactArg == 0) {
             portDriversShouldContactArg = port;
