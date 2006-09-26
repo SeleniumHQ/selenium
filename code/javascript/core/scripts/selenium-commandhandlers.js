@@ -47,7 +47,6 @@ Object.extend(CommandHandlerFactory.prototype, {
 
     _registerAllAccessors: function(commandTarget) {
         // Methods of the form getFoo(target) result in commands:
-        // Methods of the form getFoo(target) result in commands:
         // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
         // storeFoo, waitForFoo, and waitForNotFoo.
         for (var functionName in commandTarget) {
