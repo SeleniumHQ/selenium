@@ -461,13 +461,14 @@ public class SeleniumServer {
             System.err.println(msg + ":");
         }
         System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive]" +
-                " [-defaultBrowserString browserString] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+                " [-defaultBrowserString browserString] [-userExtensions extensionJs] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
                 "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
                 "where:\n" +
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
                 "the argument for port is the port number the selenium server should use (default 4444)" +
                 "\n\t-interactive puts you into interactive mode.  See the tutorial for more details" +
                 "\n\t-defaultBrowserString (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
+                "\n\t-userExtensions indicates a JavaScript file that will be loaded into selenium" +
                 "\n\t-browserSessionReuse stops re-initialization and spawning of the browser between tests" +
                 "\n\t-debug puts you into debug mode, with more trace information and diagnostics" +
                 "\n\t-proxyInjectionMode puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
