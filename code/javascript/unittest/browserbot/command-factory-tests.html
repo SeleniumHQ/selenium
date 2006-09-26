@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 
 <!--
 Copyright 2004 ThoughtWorks, Inc
@@ -17,10 +17,10 @@ Copyright 2004 ThoughtWorks, Inc
  limitations under the License.
 -->
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>JsUnit Utility Tests</title>
-    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Utility Tests</title>
+<link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
 <script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
@@ -35,391 +35,416 @@ function setUp() {
     LOG = new DummyLogger();
 }
 
-    // Allow mocking of Function.prototype.bind()
-    String.prototype.bind = function(target) {
-        return "commandTarget." + this;
-    }
+// Allow mocking of Function.prototype.bind()
+String.prototype.bind = function(target) {
+    return "commandTarget." + this;
+}
 
-    function testNullIsReturnedForUnknownCommands() {
-        var factory = new CommandHandlerFactory();
-        assertUndefined(factory.getCommandHandler("unknown"));
-    }
-    
-    function testActionHandlerConstructorWithNoValueForDontCheckAlerts() {
-    	var handler = new ActionHandler({}, false, this.someUndefinedProperty);
-    	assertTrue("Should be checking", handler.checkAlerts);
-    	assertEquals("action", handler.type);
-    	assertTrue("Should halt on failure", handler.haltOnFailure);
-    	assertUndefined("Should not be waiting", handler.wait);
+function testNullIsReturnedForUnknownCommands() {
+    var factory = new CommandHandlerFactory();
+    assertUndefined(factory.getCommandHandler("unknown"));
+}
+
+function testActionHandlerConstructorWithNoValueForDontCheckAlerts() {
+    var handler = new ActionHandler({}, false, this.someUndefinedProperty);
+    assertTrue("Should be checking", handler.checkAlerts);
+    assertEquals("action", handler.type);
+    assertTrue("Should halt on failure", handler.haltOnFailure);
+    assertUndefined("Should not be waiting", handler.wait);
+};
+
+function testActionsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
+    var factory = new CommandHandlerFactory();
+    factory.registerAction("myAction", "actionFunction");
+
+    var myAction = factory.getCommandHandler("myAction");
+    assertNotUndefined(myAction);
+    assertEquals(CommandHandler, myAction.constructor);
+    assertEquals("actionFunction", myAction.actionBlock);
+    assertEquals("action", myAction.type);
+}
+
+function testAssertsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
+    var factory = new CommandHandlerFactory();
+    factory.registerAssert("assertFoo", "assertFunction", true);
+
+    var myAssert = factory.getCommandHandler("assertFoo");
+    assertNotUndefined(myAssert);
+    assertEquals(CommandHandler, myAssert.constructor);
+    assertEquals("assertFunction", myAssert.assertBlock);
+    assertEquals("assert", myAssert.type);
+    assertTrue(myAssert.haltOnFailure);
+}
+
+function testAccessorsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
+    var factory = new CommandHandlerFactory();
+    factory.registerAccessor("getFoo", "accessorFunction");
+
+    var myAccessor = factory.getCommandHandler("getFoo");
+    assertNotUndefined(myAccessor);
+    assertEquals(CommandHandler, myAccessor.constructor);
+    assertEquals("accessorFunction", myAccessor.accessorMethod);
+    assertEquals("accessor", myAccessor.type);
+}
+
+
+function testCreatePredicateFromSingleArgAccessorReturnsDesiredPredicate() {
+    var factory = new CommandHandlerFactory();
+    var accessor = function(arg) {
+        assertEquals("target", arg);
+        return this.foo();
     };
+    var predicate = factory.createPredicateFromSingleArgAccessor(accessor);
+    var seleniumApi = {foo: function() {
+        return "theValue";
+    }};
 
-    function testActionsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
-        var factory = new CommandHandlerFactory();
-        factory.registerAction("myAction", "actionFunction");
+    var result = predicate.call(seleniumApi, "target", "regexp:theV[aeiou]lue");
+    assertEquals("Actual value 'theValue' did match 'regexp:theV[aeiou]lue'", result.message);
+    assertTrue("Should have matched", result.isTrue);
 
-        var myAction = factory.getCommandHandler("myAction");
-        assertNotUndefined(myAction);
-        assertEquals(CommandHandler, myAction.constructor);
-        assertEquals("actionFunction", myAction.actionBlock);
-        assertEquals("action", myAction.type);
+    var result = predicate.call(seleniumApi, "target", "betterNotMatch");
+    assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
+    assertFalse("Should not have matched", result.isTrue);
+}
+
+function testCreatePredicateFromNoArgAccessorReturnsDesiredPredicate() {
+    var factory = new CommandHandlerFactory();
+    var accessor = function() {
+        return this.foo();
+    };
+    var predicate = factory.createPredicateFromNoArgAccessor(accessor);
+    var seleniumApi = {foo: function() {
+        return "theValue";
+    }};
+
+    var result = predicate.call(seleniumApi, "theV*e", "");
+    assertEquals("Actual value 'theValue' did match 'theV*e'", result.message);
+    assertTrue("Should have matched", result.isTrue);
+
+    var result = predicate.call(seleniumApi, "betterNotMatch", "");
+    assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
+    assertFalse("Should not have matched", result.isTrue);
+}
+
+function testCreatePredicateFromAccessorWhenNoArgs() {
+    var factory = new CommandHandlerFactory();
+    // replace createPredicateFromNoArgAccessor() so we know it gets called.
+    factory.createPredicateFromNoArgAccessor = function(accessor) {
+        return "predicate";
     }
+    var accessor = function() {
+        return 42;
+    };
+    var predicate = factory.createPredicateFromAccessor(accessor);
+    assertEquals("predicate", predicate);
+};
 
-    function testAssertsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
-        var factory = new CommandHandlerFactory();
-        factory.registerAssert("assertFoo", "assertFunction", true);
-
-        var myAssert = factory.getCommandHandler("assertFoo");
-        assertNotUndefined(myAssert);
-        assertEquals(CommandHandler, myAssert.constructor);
-        assertEquals("assertFunction", myAssert.assertMethod);
-        assertEquals("assert", myAssert.type);
-        assertTrue(myAssert.haltOnFailure);
+function testCreatePredicateFromAccessorWhenOneArg() {
+    var factory = new CommandHandlerFactory();
+    // replace createPredicateFromOneArgAccessor() so we know it gets called.
+    factory.createPredicateFromSingleArgAccessor = function(accessor) {
+        return "predicate";
     }
+    var accessor = function(arg) {
+        return 42;
+    };
+    var predicate = factory.createPredicateFromAccessor(accessor);
+    assertEquals("predicate", predicate);
+};
 
-    function testAccessorsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
-        var factory = new CommandHandlerFactory();
-        factory.registerAccessor("getFoo", "accessorFunction");
+function testInvertPredicateReturnsDesiredPredicate() {
+    var factory = new CommandHandlerFactory();
+    var seleniumApi = {foo: function() {
+        return true;
+    }};
+    var predicate = function(target, value) {
+        return new PredicateResult(this.foo(), "msg");
+    };
+    var invertedPredicate = factory._invertPredicate(predicate.bind(seleniumApi));
+    var result = invertedPredicate("target", "value");
+    assertFalse("Result should have been negated", result.isTrue);
+    assertEquals("msg", result.message);
+};
 
-        var myAccessor = factory.getCommandHandler("getFoo");
-        assertNotUndefined(myAccessor);
-        assertEquals(CommandHandler, myAccessor.constructor);
-        assertEquals("accessorFunction", myAccessor.accessorMethod);
-        assertEquals("accessor", myAccessor.type);
-    }
-    
- 
-    function testCreatePredicateFromSingleArgAccessorReturnsDesiredPredicate() {
-        var factory = new CommandHandlerFactory();
-        var accessor = function(arg) {
-            assertEquals("target", arg);
-            return this.foo(); 
-        };
-        var predicate = factory.createPredicateFromSingleArgAccessor(accessor);
-        var seleniumApi = {foo: function() { return "theValue";}};
+function testCreateAssertionFromPredicateForPositiveCase() {
+    // Make sure that the method looks at the isTrue property of the result.
+    var mockPredicateResult = new Mock();
+    mockPredicateResult.expectsProperty("isTrue").returns(true);
 
-        var result = predicate.call(seleniumApi, "target", "regexp:theV[aeiou]lue");
-        assertEquals("Actual value 'theValue' did match 'regexp:theV[aeiou]lue'", result.message);
-        assertTrue("Should have matched", result.isTrue);
+    // Make sure that the executeAssertion method invokes the predicate in
+    // the context of the Selenium API.
+    var mockSeleniumApi = new Mock();
+    mockSeleniumApi.expects("foo");
 
-        var result = predicate.call(seleniumApi, "target", "betterNotMatch");
-        assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
-        assertFalse("Should not have matched", result.isTrue);
-    }
-    
-    function testCreatePredicateFromNoArgAccessorReturnsDesiredPredicate() {
-        var factory = new CommandHandlerFactory();
-        var accessor = function() {
-            return this.foo(); 
-        };
-        var predicate = factory.createPredicateFromNoArgAccessor(accessor);
-        var seleniumApi = {foo: function() { return "theValue";}};
+    var predicate = function(target, value) {
+        assertEquals("target", target);
+        assertEquals("value", value);
+        this.foo();
+        return mockPredicateResult;
+    };
+    var factory = new CommandHandlerFactory();
+    var assertion = factory.createAssertionFromPredicate(predicate.bind(mockSeleniumApi));
 
-        var result = predicate.call(seleniumApi, "theV*e", "");
-        assertEquals("Actual value 'theValue' did match 'theV*e'", result.message);
-        assertTrue("Should have matched", result.isTrue);
+    assertion("target", "value");
 
-        var result = predicate.call(seleniumApi, "betterNotMatch", "");
-        assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
-        assertFalse("Should not have matched", result.isTrue);
-    }
-    
-    function testCreatePredicateFromAccessorWhenNoArgs() {
-        var factory = new CommandHandlerFactory();
-        // replace createPredicateFromNoArgAccessor() so we know it gets called.
-        factory.createPredicateFromNoArgAccessor = function(accessor) {
-        	return "predicate";
+    mockPredicateResult.verify();
+    mockSeleniumApi.verify();
+};
+
+function testCreateAssertionFromPredicateForNegativeCase() {
+    var predicate = function(target, value) {
+        return new PredicateResult(false, "message");
+    };
+    var factory = new CommandHandlerFactory();
+    var assertion = factory.createAssertionFromPredicate(predicate);
+
+    try {
+        assertion.call("seleniumApi", "target", "value");
+    } catch(e) {
+        if (!e.isAssertionFailedError) {
+            throw e;
         }
-        var accessor = function(){return 42;};
-        var predicate = factory.createPredicateFromAccessor(accessor);
-        assertEquals("predicate", predicate);
-    };
-    
-    function testCreatePredicateFromAccessorWhenOneArg() {
-        var factory = new CommandHandlerFactory();
-        // replace createPredicateFromOneArgAccessor() so we know it gets called.
-        factory.createPredicateFromSingleArgAccessor = function(accessor) {
-        	return "predicate";
-        }
-        var accessor = function(arg){return 42;};
-        var predicate = factory.createPredicateFromAccessor(accessor);
-        assertEquals("predicate", predicate);
-    };
-    
-    function testInvertPredicateReturnsDesiredPredicate() {
-        var factory = new CommandHandlerFactory();
-        var seleniumApi = {foo: function() { return true;}};
-        var predicate = function(target, value) {
-        	return new PredicateResult(this.foo(), "msg");
-        };
-        var invertedPredicate = factory._invertPredicate(predicate);
-        var result = invertedPredicate.call(seleniumApi, "target", "value");
-        assertFalse("Result should have been negated", result.isTrue);
-        assertEquals("msg", result.message);
-    };
-    
+        assertEquals("message", e.failureMessage);
+        return;
+    }
+    fail("Should have thrown an exception");
+};
 
-    function testCreateAssertionFromPredicateForPositiveCase() {
-    	// Make sure that the method looks at the isTrue property of the result.
-        var mockPredicateResult = new Mock();
-        mockPredicateResult.expectsProperty("isTrue").returns(true);
-        
-        // Make sure that the executeAssertion method invokes the predicate in
-        // the context of the Selenium API.
-        var mockSeleniumApi = new Mock();
-        mockSeleniumApi.expects("foo");
-        
-        var predicate = function(target, value) {
-        	assertEquals("target", target);
-        	assertEquals("value", value);
-        	this.foo();
-        	return mockPredicateResult;
-        };
-        var factory = new CommandHandlerFactory();
-    	var assertion = factory.createAssertionFromPredicate(predicate);
-    	
-    	assertion.call(mockSeleniumApi, "target", "value");
-    	
-        mockPredicateResult.verify();
-        mockSeleniumApi.verify();    	
+function testCreateWaitForActionFromPredicateSetsCurrentTest() {
+    // Make sure that the method looks at the isTrue property of the result.
+    var mockPredicateResult = new Mock();
+    mockPredicateResult.expectsProperty("isTrue").returns(true);
+
+    // Make sure that the executeAssertion method invokes the predicate in
+    // the context of the Selenium API.
+    var mockSeleniumApi = new Mock();
+    mockSeleniumApi.expects("foo");
+
+    var predicate = function(target, value) {
+        assertEquals("target", target);
+        assertEquals("value", value);
+        this.foo();
+        return mockPredicateResult;
     };
+    var factory = new CommandHandlerFactory();
+    var actionBlock = factory.createWaitForActionFromPredicate(predicate.bind(mockSeleniumApi));
 
-	function testCreateAssertionFromPredicateForNegativeCase() {
-        var predicate = function(target, value) {
-        	return new PredicateResult(false, "message");
-        };
-        var factory = new CommandHandlerFactory();
-        var assertion = factory.createAssertionFromPredicate(predicate);
+    var terminationCondition = actionBlock("target", "value");
+    assertEquals('function', typeof(terminationCondition));
+    assertTrue(terminationCondition());
 
-		try {
-	        assertion.call("seleniumApi", "target", "value");
-	    } catch(e) {
-            if (!e.isAssertionFailedError) {
-                throw e;
-            }
-            assertEquals("message", e.failureMessage);
-	    	return;
-	    }
+    mockPredicateResult.verify();
+    mockSeleniumApi.verify();
+};
+
+function testPredicateBasedWaitForActionReturnsFalseForExceptions() {
+    // We treat exceptions as meaning that the condition is not yet true.
+    // Handy for things like waitForValue when the specified element
+    // has yet to be created!
+    var predicate = function(target, value) {
+        throw new Error("test exception");
+    };
+    var factory = new CommandHandlerFactory();
+    var action = factory.createWaitForActionFromPredicate(predicate);
+
+    var terminationCondition = action.call("seleniumApi", "target", "value");
+    assertFalse(terminationCondition());
+};
+
+
+function testAllMethodsWithGetPrefixAreRegisteredAsAccessorsByRegisterAll() {
+    var actionSet = {getOne: "get1", getTwo: "get2", getdontGet: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
+
+    assertUndefined(factory.getCommandHandler("getdontGet"));
+    assertUndefined(factory.getCommandHandler("notEvenClose"));
+
+    assertEquals("get1", factory.getCommandHandler("getOne").accessorMethod);
+    assertEquals("get2", factory.getCommandHandler("getTwo").accessorMethod);
+}
+
+function testAllMethodsWithGetPrefixAreRegisteredAsAssertsByRegisterAll() {
+    var actionSet = {getOne: function(target) {
+        return target + "foo";
+    }, getTwo: "get2", getdontGet: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
+
+    assertUndefined(factory.getCommandHandler("assertdontGet"));
+    assertUndefined(factory.getCommandHandler("notEvenClose"));
+
+    var myAssert = factory.getCommandHandler("assertOne");
+    assertEquals(CommandHandler, myAssert.constructor);
+    assertNotUndefined(myAssert.assertBlock);
+    assertEquals("assert", myAssert.type);
+    assertTrue(myAssert.haltOnFailure);
+}
+
+function testAllMethodsWithGetPrefixAreRegisteredAsVerifiesByRegisterAll() {
+    var actionSet = {getOne: function(target) {
+        return target + "foo";
+    }, getTwo: "get2", getdontGet: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
+
+    var myAssert = factory.getCommandHandler("verifyOne");
+    assertEquals(CommandHandler, myAssert.constructor);
+    assertNotUndefined(myAssert.assertBlock);
+    assertEquals("assert", myAssert.type);
+    assertFalse(myAssert.haltOnFailure);
+}
+
+function testAllMethodsWithGetPrefixAreRegisteredAsAssertNotsByRegisterAll() {
+    var actionSet = {getOne: function(target) {
+        return target + "foo";
+    }, getTwo: "get2", getdontGet: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
+
+    var myAssert = factory.getCommandHandler("assertNotOne");
+    assertEquals(CommandHandler, myAssert.constructor);
+    assertNotUndefined(myAssert.assertBlock);
+    assertEquals("assert", myAssert.type);
+    assertTrue(myAssert.haltOnFailure);
+    try {
+        myAssert.assertBlock("blah", "blahfoo");
         fail("Should have thrown an exception");
-	};
-    
-    function testCreateWaitForActionFromPredicateSetsCurrentTest() {
-    	// Make sure that the method looks at the isTrue property of the result.
-        var mockPredicateResult = new Mock();
-        mockPredicateResult.expectsProperty("isTrue").returns(true);
-        
-        // Make sure that the executeAssertion method invokes the predicate in
-        // the context of the Selenium API.
-        var mockSeleniumApi = new Mock();
-        mockSeleniumApi.expects("foo");
-        
-        var predicate = function(target, value) {
-        	assertEquals("target", target);
-        	assertEquals("value", value);
-        	this.foo();
-        	return mockPredicateResult;
-        };
-        var factory = new CommandHandlerFactory();
-    	var action = factory.createWaitForActionFromPredicate(predicate);
-    	
-    	var terminationCondition = action.call(mockSeleniumApi, "target", "value");
-        assertEquals('function', typeof(terminationCondition));
-        assertTrue(terminationCondition());
-    	
-    	mockPredicateResult.verify();
-        mockSeleniumApi.verify();
-    };
-    
-    function testPredicateBasedWaitForActionReturnsFalseForExceptions() {
-    	// We treat exceptions as meaning that the condition is not yet true.
-    	// Handy for things like waitForValue when the specified element
-    	// has yet to be created!
-        var predicate = function(target, value) {
-        	throw new Error("test exception");
-        };
-        var factory = new CommandHandlerFactory();
-    	var action = factory.createWaitForActionFromPredicate(predicate);
-    	
-    	var terminationCondition = action.call("seleniumApi", "target", "value");
-    	assertFalse(terminationCondition());
-    };
-    
-    
-    function testAllMethodsWithGetPrefixAreRegisteredAsAccessorsByRegisterAll() {
-        var actionSet = {getOne: "get1", getTwo: "get2", getdontGet: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
-
-        assertUndefined(factory.getCommandHandler("getdontGet"));
-        assertUndefined(factory.getCommandHandler("notEvenClose"));
-
-        assertEquals("get1", factory.getCommandHandler("getOne").accessorMethod);
-        assertEquals("get2", factory.getCommandHandler("getTwo").accessorMethod);
     }
-    
-    function testAllMethodsWithGetPrefixAreRegisteredAsAssertsByRegisterAll() {
-        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
-
-        assertUndefined(factory.getCommandHandler("assertdontGet"));
-        assertUndefined(factory.getCommandHandler("notEvenClose"));
-
-        var myAssert = factory.getCommandHandler("assertOne");
-        assertEquals(CommandHandler, myAssert.constructor);
-        assertNotUndefined(myAssert.assertMethod);
-        assertEquals("assert", myAssert.type);
-        assertTrue(myAssert.haltOnFailure);
+    catch (e) {
+        // Expected.
     }
-    
-    function testAllMethodsWithGetPrefixAreRegisteredAsVerifiesByRegisterAll() {
-        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
+}
 
-        var myAssert = factory.getCommandHandler("verifyOne");
-        assertEquals(CommandHandler, myAssert.constructor);
-        assertNotUndefined(myAssert.assertMethod);
-        assertEquals("assert", myAssert.type);
-        assertFalse(myAssert.haltOnFailure);
+function testAllMethodsWithGetPrefixAreRegisteredAsVerifyNotsByRegisterAll() {
+    var actionSet = {getOne: function(target) {
+        return target + "foo";
+    }, getTwo: "get2", getdontGet: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
+
+    var myAssert = factory.getCommandHandler("verifyNotOne");
+    assertEquals(CommandHandler, myAssert.constructor);
+    assertNotUndefined(myAssert.assertBlock);
+    assertEquals("assert", myAssert.type);
+    assertFalse(myAssert.haltOnFailure);
+    try {
+        myAssert.assertBlock("blah", "blahfoo");
+        fail("Should have thrown an exception");
     }
-    
-    function testAllMethodsWithGetPrefixAreRegisteredAsAssertNotsByRegisterAll() {
-        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
-
-        var myAssert = factory.getCommandHandler("assertNotOne");
-        assertEquals(CommandHandler, myAssert.constructor);
-        assertNotUndefined(myAssert.assertMethod);
-        assertEquals("assert", myAssert.type);
-        assertTrue(myAssert.haltOnFailure);
-        try {
-            myAssert.assertMethod("blah", "blahfoo");
-            fail("Should have thrown an exception");
-        }
-        catch (e) {
-            // Expected.
-        }
+    catch (e) {
+        // Expected.
     }
-    
-    function testAllMethodsWithGetPrefixAreRegisteredAsVerifyNotsByRegisterAll() {
-        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
+}
 
-        var myAssert = factory.getCommandHandler("verifyNotOne");
-        assertEquals(CommandHandler, myAssert.constructor);
-        assertNotUndefined(myAssert.assertMethod);
-        assertEquals("assert", myAssert.type);
-        assertFalse(myAssert.haltOnFailure);
-        try {
-            myAssert.assertMethod("blah", "blahfoo");
-            fail("Should have thrown an exception");
-        }
-        catch (e) {
-            // Expected.
-        }
-    }
-    
-    // This object is normally declared in selenium-api.js
-    storedVars = new Object();
-    
-    function testAllMethodsWithGetPrefixAreRegisteredAsStoreCommandsByRegisterAll() {
-        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
+// This object is normally declared in selenium-api.js
+storedVars = new Object();
 
-        var storeCommand = factory.getCommandHandler("storeOne");
-        assertEquals(CommandHandler, storeCommand.constructor);
-        assertNotUndefined(storeCommand.actionBlock);
-        assertEquals("action", storeCommand.type);
-        assertTrue(storeCommand.haltOnFailure);
-        storeCommand.actionBlock("mytarget", "myvar");
-        assertEquals("mytargetfoo", storedVars["myvar"]);
-    }
+function testAllMethodsWithGetPrefixAreRegisteredAsStoreCommandsByRegisterAll() {
+    var actionSet = {getOne: function(target) {
+        return target + "foo";
+    }, getTwo: "get2", getdontGet: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
 
-    function testAllMethodsWithGetPrefixAreRegisteredAsWaitForCommandsByRegisterAll() {
-        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
+    var storeCommand = factory.getCommandHandler("storeOne");
+    assertEquals(CommandHandler, storeCommand.constructor);
+    assertNotUndefined(storeCommand.actionBlock);
+    assertEquals("action", storeCommand.type);
+    assertTrue(storeCommand.haltOnFailure);
+    storeCommand.actionBlock("mytarget", "myvar");
+    assertEquals("mytargetfoo", storedVars["myvar"]);
+}
 
-        var command = factory.getCommandHandler("waitForOne");
-        assertEquals(CommandHandler, command.constructor);
-        assertNotUndefined(command.actionBlock);
-        assertEquals("action", command.type);
-        assertTrue(command.haltOnFailure);
-    }
-    
-    function testAllMethodsWithGetPrefixAreRegisteredAsWaitForNotCommandsByRegisterAll() {
-        var actionSet = {getOne: function(target) {return target + "foo";}, getTwo: "get2", getdontGet: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
+function testAllMethodsWithGetPrefixAreRegisteredAsWaitForCommandsByRegisterAll() {
+    var actionSet = {getOne: function(target) {
+        return target + "foo";
+    }, getTwo: "get2", getdontGet: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
 
-        var command = factory.getCommandHandler("waitForNotOne");
-        assertEquals(CommandHandler, command.constructor);
-        assertNotUndefined(command.actionBlock);
-        assertEquals("action", command.type);
-        assertTrue(command.haltOnFailure);
-    }
+    var command = factory.getCommandHandler("waitForOne");
+    assertEquals(CommandHandler, command.constructor);
+    assertNotUndefined(command.actionBlock);
+    assertEquals("action", command.type);
+    assertTrue(command.haltOnFailure);
+}
 
-    function testHaltOnFailureDefaultsToFalseForAsserts() {
-        var factory = new CommandHandlerFactory();
-        factory.registerAssert("doHalt", "assertFunction", true);
-        factory.registerAssert("dontHalt", "assertFunction");
+function testAllMethodsWithGetPrefixAreRegisteredAsWaitForNotCommandsByRegisterAll() {
+    var actionSet = {getOne: function(target) {
+        return target + "foo";
+    }, getTwo: "get2", getdontGet: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
 
-        assertTrue(factory.getCommandHandler("doHalt").haltOnFailure);
-        assertFalse(factory.getCommandHandler("dontHalt").haltOnFailure);
-    }
+    var command = factory.getCommandHandler("waitForNotOne");
+    assertEquals(CommandHandler, command.constructor);
+    assertNotUndefined(command.actionBlock);
+    assertEquals("action", command.type);
+    assertTrue(command.haltOnFailure);
+}
 
-    function testAllMethodsWithDoPrefixAreRegisteredAsActionsByRegisterAll() {
-        var actionSet = {doAnAction: "action1", doAnotherAction: "action2", dontRegister: "another"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
+function testHaltOnFailureDefaultsToFalseForAsserts() {
+    var factory = new CommandHandlerFactory();
+    factory.registerAssert("doHalt", "assertFunction", true);
+    factory.registerAssert("dontHalt", "assertFunction");
 
-        assertUndefined(factory.getCommandHandler("dontRegister"));
-        assertUndefined(factory.getCommandHandler("notEvenClose"));
+    assertTrue(factory.getCommandHandler("doHalt").haltOnFailure);
+    assertFalse(factory.getCommandHandler("dontHalt").haltOnFailure);
+}
 
-        assertEquals("commandTarget.action1", factory.getCommandHandler("anAction").actionBlock);
-        assertEquals("commandTarget.action2", factory.getCommandHandler("anotherAction").actionBlock);
-    }
+function testAllMethodsWithDoPrefixAreRegisteredAsActionsByRegisterAll() {
+    var actionSet = {doAnAction: "action1", doAnotherAction: "action2", dontRegister: "another"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
 
-    function testActionsAreRegisteredWithAndWaitSuffix() {
-        var actionSet = {doAnAction: "action1"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
+    assertUndefined(factory.getCommandHandler("dontRegister"));
+    assertUndefined(factory.getCommandHandler("notEvenClose"));
 
-        assertEquals("commandTarget.action1", factory.getCommandHandler("anAction").actionBlock);
-        assertEquals("commandTarget.action1", factory.getCommandHandler("anActionAndWait").actionBlock);
-        assertUndefined(factory.getCommandHandler("anAction").wait);
-        assertTrue(factory.getCommandHandler("anActionAndWait").wait);
-    }
+    assertEquals("commandTarget.action1", factory.getCommandHandler("anAction").actionBlock);
+    assertEquals("commandTarget.action2", factory.getCommandHandler("anotherAction").actionBlock);
+}
 
-    function testAllMethodsWithAssertPrefixAreRegisteredForAssertAndVerifyByRegisterAll() {
-        var actionSet = {assertSomething: "assert1", assertSomeOtherThing: "assert2", assertionOther: "shouldn't register"};
-        var factory = new CommandHandlerFactory();
-        factory.registerAll(actionSet);
+function testActionsAreRegisteredWithAndWaitSuffix() {
+    var actionSet = {doAnAction: "action1"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
 
-        assertUndefined(factory.getCommandHandler("assertionOther"));
-        assertUndefined(factory.getCommandHandler("notEvenClose"));
+    assertEquals("commandTarget.action1", factory.getCommandHandler("anAction").actionBlock);
+    assertEquals("commandTarget.action1", factory.getCommandHandler("anActionAndWait").actionBlock);
+    assertUndefined(factory.getCommandHandler("anAction").wait);
+    assertTrue(factory.getCommandHandler("anActionAndWait").wait);
+}
 
-        var myAssert = factory.getCommandHandler("assertSomething");
-        assertEquals("assert1", myAssert.assertMethod);
-        assertTrue(myAssert.haltOnFailure);
-        assertEquals("assert", myAssert.type);
+function testAllMethodsWithAssertPrefixAreRegisteredForAssertAndVerifyByRegisterAll() {
+    var actionSet = {assertSomething: "assert1", assertSomeOtherThing: "assert2", assertionOther: "shouldn't register"};
+    var factory = new CommandHandlerFactory();
+    factory.registerAll(actionSet);
 
-        var myVerify = factory.getCommandHandler("verifySomething");
-        assertEquals("assert1", myVerify.assertMethod);
-        assertFalse(myVerify.haltOnFailure);
-        assertEquals("assert", myVerify.type);
+    assertUndefined(factory.getCommandHandler("assertionOther"));
+    assertUndefined(factory.getCommandHandler("notEvenClose"));
 
-        assertEquals("assert2", factory.getCommandHandler("assertSomeOtherThing").assertMethod);
-        assertEquals("assert2", factory.getCommandHandler("verifySomeOtherThing").assertMethod);
-    }
-  </script>
-  </head>
+    var myAssert = factory.getCommandHandler("assertSomething");
+    assertEquals("commandTarget.assert1", myAssert.assertBlock);
+    assertTrue(myAssert.haltOnFailure);
+    assertEquals("assert", myAssert.type);
 
-  <body>
-    <a href="#" onclick="testAllMethodsWithDoPrefixAreRegisteredAsActionsByRegisterAll();">try</a>
-    <p>This page contains tests for the CommandFactory object in selenium-commandhandlers.js. To see them, take a look at the source. To run them, load this file via JsUnit's testRunner.html</p>
-  </body>
+    var myVerify = factory.getCommandHandler("verifySomething");
+    assertEquals("commandTarget.assert1", myVerify.assertBlock);
+    assertFalse(myVerify.haltOnFailure);
+    assertEquals("assert", myVerify.type);
+
+    assertEquals("commandTarget.assert2", factory.getCommandHandler("assertSomeOtherThing").assertBlock);
+    assertEquals("commandTarget.assert2", factory.getCommandHandler("verifySomeOtherThing").assertBlock);
+}
+</script>
+</head>
+
+<body>
+<a href="#" onclick="testAllMethodsWithDoPrefixAreRegisteredAsActionsByRegisterAll();">try</a>
+
+<p>This page contains tests for the CommandFactory object in selenium-commandhandlers.js. To see them, take a look at
+    the source. To run them, load this file via JsUnit's testRunner.html</p>
+</body>
 </html>
