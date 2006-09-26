@@ -78,12 +78,12 @@ function testAssertsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory
 
 function testAccessorsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
     var factory = new CommandHandlerFactory();
-    factory.registerAccessor("getFoo", "accessorFunction");
+    factory.registerAccessor("getFoo", "accessorBlock");
 
     var myAccessor = factory.getCommandHandler("getFoo");
     assertNotUndefined(myAccessor);
     assertEquals(CommandHandler, myAccessor.constructor);
-    assertEquals("accessorFunction", myAccessor.accessorMethod);
+    assertEquals("accessorBlock", myAccessor.accessBlock);
     assertEquals("accessor", myAccessor.type);
 }
 
@@ -94,16 +94,16 @@ function testCreatePredicateFromSingleArgAccessorReturnsDesiredPredicate() {
         assertEquals("target", arg);
         return this.foo();
     };
-    var predicate = factory.createPredicateFromSingleArgAccessor(accessor);
     var seleniumApi = {foo: function() {
         return "theValue";
     }};
+    var predicate = factory._predicateForSingleArgAccessor(accessor.bind(seleniumApi));
 
-    var result = predicate.call(seleniumApi, "target", "regexp:theV[aeiou]lue");
+    var result = predicate("target", "regexp:theV[aeiou]lue");
     assertEquals("Actual value 'theValue' did match 'regexp:theV[aeiou]lue'", result.message);
     assertTrue("Should have matched", result.isTrue);
 
-    var result = predicate.call(seleniumApi, "target", "betterNotMatch");
+    var result = predicate("target", "betterNotMatch");
     assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
     assertFalse("Should not have matched", result.isTrue);
 }
@@ -113,43 +113,43 @@ function testCreatePredicateFromNoArgAccessorReturnsDesiredPredicate() {
     var accessor = function() {
         return this.foo();
     };
-    var predicate = factory.createPredicateFromNoArgAccessor(accessor);
     var seleniumApi = {foo: function() {
         return "theValue";
     }};
+    var predicate = factory._predicateForNoArgAccessor(accessor.bind(seleniumApi));
 
-    var result = predicate.call(seleniumApi, "theV*e", "");
+    var result = predicate("theV*e", "");
     assertEquals("Actual value 'theValue' did match 'theV*e'", result.message);
     assertTrue("Should have matched", result.isTrue);
 
-    var result = predicate.call(seleniumApi, "betterNotMatch", "");
+    var result = predicate("betterNotMatch", "");
     assertEquals("Actual value 'theValue' did not match 'betterNotMatch'", result.message);
     assertFalse("Should not have matched", result.isTrue);
 }
 
 function testCreatePredicateFromAccessorWhenNoArgs() {
     var factory = new CommandHandlerFactory();
-    // replace createPredicateFromNoArgAccessor() so we know it gets called.
-    factory.createPredicateFromNoArgAccessor = function(accessor) {
+    factory._predicateForNoArgAccessor = function(accessor) {
+        // mock
         return "predicate";
     }
     var accessor = function() {
         return 42;
     };
-    var predicate = factory.createPredicateFromAccessor(accessor);
+    var predicate = factory._predicateForAccessor(accessor, false);
     assertEquals("predicate", predicate);
 };
 
 function testCreatePredicateFromAccessorWhenOneArg() {
     var factory = new CommandHandlerFactory();
-    // replace createPredicateFromOneArgAccessor() so we know it gets called.
-    factory.createPredicateFromSingleArgAccessor = function(accessor) {
+    factory._predicateForSingleArgAccessor = function(accessor) {
+        // mock
         return "predicate";
     }
     var accessor = function(arg) {
         return 42;
     };
-    var predicate = factory.createPredicateFromAccessor(accessor);
+    var predicate = factory._predicateForAccessor(accessor, true);
     assertEquals("predicate", predicate);
 };
 
@@ -228,7 +228,7 @@ function testCreateWaitForActionFromPredicateSetsCurrentTest() {
         return mockPredicateResult;
     };
     var factory = new CommandHandlerFactory();
-    var actionBlock = factory.createWaitForActionFromPredicate(predicate.bind(mockSeleniumApi));
+    var actionBlock = factory._waitForActionForPredicate(predicate.bind(mockSeleniumApi));
 
     var terminationCondition = actionBlock("target", "value");
     assertEquals('function', typeof(terminationCondition));
@@ -246,7 +246,7 @@ function testPredicateBasedWaitForActionReturnsFalseForExceptions() {
         throw new Error("test exception");
     };
     var factory = new CommandHandlerFactory();
-    var action = factory.createWaitForActionFromPredicate(predicate);
+    var action = factory._waitForActionForPredicate(predicate);
 
     var terminationCondition = action.call("seleniumApi", "target", "value");
     assertFalse(terminationCondition());
@@ -261,8 +261,8 @@ function testAllMethodsWithGetPrefixAreRegisteredAsAccessorsByRegisterAll() {
     assertUndefined(factory.getCommandHandler("getdontGet"));
     assertUndefined(factory.getCommandHandler("notEvenClose"));
 
-    assertEquals("get1", factory.getCommandHandler("getOne").accessorMethod);
-    assertEquals("get2", factory.getCommandHandler("getTwo").accessorMethod);
+    assertEquals("commandTarget.get1", factory.getCommandHandler("getOne").accessBlock);
+    assertEquals("commandTarget.get2", factory.getCommandHandler("getTwo").accessBlock);
 }
 
 function testAllMethodsWithGetPrefixAreRegisteredAsAssertsByRegisterAll() {

@@ -33,8 +33,8 @@ Object.extend(CommandHandlerFactory.prototype, {
         this.handlers[name] = new ActionHandler(actionBlock, wait, dontCheckAlertsAndConfirms);
     },
 
-    registerAccessor: function(name, accessorMethod) {
-        this.handlers[name] = new AccessorHandler(accessorMethod);
+    registerAccessor: function(name, accessBlock) {
+        this.handlers[name] = new AccessorHandler(accessBlock);
     },
 
     registerAssert: function(name, assertBlock, haltOnFailure) {
@@ -51,31 +51,28 @@ Object.extend(CommandHandlerFactory.prototype, {
         // storeFoo, waitForFoo, and waitForNotFoo.
         for (var functionName in commandTarget) {
             var match = /^(get|is)([A-Z].+)$/.exec(functionName);
-            if (!match) {
-                continue;
+            if (match) {
+                var accessMethod = commandTarget[functionName];
+                var accessBlock = accessMethod.bind(commandTarget);
+                var baseName = match[2];
+                var isBoolean = (match[1] == "is");
+                var requiresTarget = (accessMethod.length == 1);
+
+                this.registerAccessor(functionName, accessBlock);
+                this._registerStoreCommandForAccessor(baseName, accessBlock, requiresTarget);
+
+                var predicateBlock = this._predicateForAccessor(accessBlock, requiresTarget, isBoolean);
+                this._registerAssertionsForPredicate(baseName, predicateBlock);
+                this._registerWaitForCommandsForPredicate(commandTarget, baseName, predicateBlock);
             }
-            var accessorMethod = commandTarget[functionName];
-            var accessorBlock = accessorMethod.bind(commandTarget);
-            var baseName = match[2];
-            this.registerAccessor(functionName, accessorMethod);
-            this.registerStoreCommandBasedOnAccessor(baseName, accessorBlock, accessorMethod.length);
-            var predicate;
-            if (match[1] == "is") {
-                var predicateMethod = this.createPredicateFromBooleanAccessor(accessorMethod);
-            } else {
-                predicateMethod = this.createPredicateFromAccessor(accessorMethod);
-            }
-            var predicateBlock = predicateMethod.bind(commandTarget);
-            this.registerAssertionsForPredicate(baseName, predicateBlock);
-            this.registerWaitForCommandsForPredicate(commandTarget, baseName, predicateBlock);
         }
     },
 
     _registerAllActions: function(commandTarget) {
         for (var functionName in commandTarget) {
-            var result = /^do([A-Z].+)$/.exec(functionName);
-            if (result != null) {
-                var actionName = result[1].lcfirst();
+            var match = /^do([A-Z].+)$/.exec(functionName);
+            if (match) {
+                var actionName = match[1].lcfirst();
                 var actionMethod = commandTarget[functionName];
                 var dontCheckPopups = actionMethod.dontCheckAlertsAndConfirms;
                 var actionBlock = actionMethod.bind(commandTarget);
@@ -87,8 +84,8 @@ Object.extend(CommandHandlerFactory.prototype, {
 
     _registerAllAsserts: function(commandTarget) {
         for (var functionName in commandTarget) {
-            var result = /^assert([A-Z].+)$/.exec(functionName);
-            if (result != null) {
+            var match = /^assert([A-Z].+)$/.exec(functionName);
+            if (match) {
                 var assertBlock = commandTarget[functionName].bind(commandTarget);
 
                 // Register the assert with the "assert" prefix, and halt on failure.
@@ -96,7 +93,7 @@ Object.extend(CommandHandlerFactory.prototype, {
                 this.registerAssert(assertName, assertBlock, true);
 
                 // Register the assert with the "verify" prefix, and do not halt on failure.
-                var verifyName = "verify" + result[1];
+                var verifyName = "verify" + match[1];
                 this.registerAssert(verifyName, assertBlock, false);
             }
         }
@@ -108,12 +105,22 @@ Object.extend(CommandHandlerFactory.prototype, {
         this._registerAllAsserts(commandTarget);
     },
 
-    createPredicateFromSingleArgAccessor: function(accessor) {
+    _predicateForAccessor: function(accessBlock, requiresTarget, isBoolean) {
+        if (isBoolean) {
+            return this._predicateForBooleanAccessor(accessBlock);
+        }
+        if (requiresTarget) {
+            return this._predicateForSingleArgAccessor(accessBlock);
+        }
+        return this._predicateForNoArgAccessor(accessBlock);
+    },
+
+    _predicateForSingleArgAccessor: function(accessBlock) {
         // Given an accessor function getBlah(target),
         // return a "predicate" equivalient to isBlah(target, value) that
         // is true when the value returned by the accessor matches the specified value.
         return function(target, value) {
-            var accessorResult = accessor.call(this, target);
+            var accessorResult = accessBlock(target);
             if (PatternMatcher.matches(value, accessorResult)) {
                 return new PredicateResult(true, "Actual value '" + accessorResult + "' did match '" + value + "'");
             } else {
@@ -122,12 +129,12 @@ Object.extend(CommandHandlerFactory.prototype, {
         };
     },
 
-    createPredicateFromNoArgAccessor: function(accessor) {
+    _predicateForNoArgAccessor: function(accessBlock) {
         // Given a (no-arg) accessor function getBlah(),
         // return a "predicate" equivalient to isBlah(value) that
         // is true when the value returned by the accessor matches the specified value.
         return function(value) {
-            var accessorResult = accessor.call(this);
+            var accessorResult = accessBlock();
             if (PatternMatcher.matches(value, accessorResult)) {
                 return new PredicateResult(true, "Actual value '" + accessorResult + "' did match '" + value + "'");
             } else {
@@ -136,19 +143,19 @@ Object.extend(CommandHandlerFactory.prototype, {
         };
     },
 
-// Given a boolean accessor function isBlah(),
-// return a "predicate" equivalient to isBlah() that
-// returns an appropriate PredicateResult value.
-    createPredicateFromBooleanAccessor: function(accessorMethod) {
+    _predicateForBooleanAccessor: function(accessBlock) {
+        // Given a boolean accessor function isBlah(),
+        // return a "predicate" equivalient to isBlah() that
+        // returns an appropriate PredicateResult value.
         return function() {
             var accessorResult;
             if (arguments.length > 2) throw new SeleniumError("Too many arguments! " + arguments.length);
             if (arguments.length == 2) {
-                accessorResult = accessorMethod.call(this, arguments[0], arguments[1]);
+                accessorResult = accessBlock(arguments[0], arguments[1]);
             } else if (arguments.length == 1) {
-                accessorResult = accessorMethod.call(this, arguments[0]);
+                accessorResult = accessBlock(arguments[0]);
             } else {
-                accessorResult = accessorMethod.call(this);
+                accessorResult = accessBlock();
             }
             if (accessorResult) {
                 return new PredicateResult(true, "true");
@@ -156,16 +163,6 @@ Object.extend(CommandHandlerFactory.prototype, {
                 return new PredicateResult(false, "false");
             }
         };
-    },
-
-    createPredicateFromAccessor: function(accessorMethod) {
-        // Given an accessor fuction getBlah([target])  (target is optional)
-        // return a predicate equivalent to isBlah([target,] value) that
-        // is true when the value returned by the accessor matches the specified value.
-        if (accessorMethod.length == 0) {
-            return this.createPredicateFromNoArgAccessor(accessorMethod);
-        }
-        return this.createPredicateFromSingleArgAccessor(accessorMethod);
     },
 
     _invertPredicate: function(predicateBlock) {
@@ -197,7 +194,7 @@ Object.extend(CommandHandlerFactory.prototype, {
         return "Not" + baseName;
     },
 
-    registerAssertionsForPredicate: function(baseName, predicateBlock) {
+    _registerAssertionsForPredicate: function(baseName, predicateBlock) {
         // Register an assertion, a verification, a negative assertion,
         // and a negative verification based on the specified accessor.
         var assertBlock = this.createAssertionFromPredicate(predicateBlock);
@@ -210,7 +207,7 @@ Object.extend(CommandHandlerFactory.prototype, {
         this.registerAssert("verify" + this._invertPredicateName(baseName), negativeassertBlock, false);
     },
 
-    createWaitForActionFromPredicate: function(predicateBlock) {
+    _waitForActionForPredicate: function(predicateBlock) {
         // Convert an isBlahBlah(target, value) function into a waitForBlahBlah(target, value) function.
         return function(target, value) {
             return function () {
@@ -227,27 +224,27 @@ Object.extend(CommandHandlerFactory.prototype, {
         };
     },
 
-    registerWaitForCommandsForPredicate: function(commandTarget, baseName, predicateBlock) {
+    _registerWaitForCommandsForPredicate: function(commandTarget, baseName, predicateBlock) {
         // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
-        var waitForActionBlock = this.createWaitForActionFromPredicate(predicateBlock);
+        var waitForActionBlock = this._waitForActionForPredicate(predicateBlock);
         this.registerAction("waitFor" + baseName, waitForActionBlock, false, true);
         var invertedPredicateBlock = this._invertPredicate(predicateBlock);
-        var waitForNotActionBlock = this.createWaitForActionFromPredicate(invertedPredicateBlock);
+        var waitForNotActionBlock = this._waitForActionForPredicate(invertedPredicateBlock);
         this.registerAction("waitFor" + this._invertPredicateName(baseName), waitForNotActionBlock, false, true);
         //TODO decide remove "waitForNot.*Present" action name or not
         //for the back compatiblity issues we still make waitForNot.*Present availble
         this.registerAction("waitForNot" + baseName, waitForNotActionBlock, false, true);
     },
 
-    registerStoreCommandBasedOnAccessor: function(baseName, accessorBlock, accessorArity) {
+    _registerStoreCommandForAccessor: function(baseName, accessBlock, requiresTarget) {
         var action;
-        if (accessorArity == 1) {
+        if (requiresTarget) {
             action = function(target, varName) {
-                storedVars[varName] = accessorBlock(target);
+                storedVars[varName] = accessBlock(target);
             };
         } else {
             action = function(varName) {
-                storedVars[varName] = accessorBlock();
+                storedVars[varName] = accessBlock();
             };
         }
         this.registerAction("store" + baseName, action, false, true);
@@ -300,13 +297,13 @@ function ActionResult(terminationCondition) {
     this.terminationCondition = terminationCondition;
 }
 
-function AccessorHandler(accessorMethod) {
-    this.accessorMethod = accessorMethod;
+function AccessorHandler(accessBlock) {
+    this.accessBlock = accessBlock;
     CommandHandler.call(this, "accessor", true);
 }
 AccessorHandler.prototype = new CommandHandler;
 AccessorHandler.prototype.execute = function(seleniumApi, command) {
-    var returnValue = this.accessorMethod.call(seleniumApi, command.target, command.value);
+    var returnValue = this.accessBlock(command.target, command.value);
     return new AccessorResult(returnValue);
 };
 
