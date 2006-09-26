@@ -47,6 +47,18 @@
 
     <releases>
         <release>
+            <version>0.8.2</version>
+            <description>Includes Selenium Core 0.8.0</description>
+            <date>09/27/2006</date>
+            <jiraId>10320</jiraId>
+            <downloads>
+              <download>
+                <url>http://release.openqa.org/selenium-ide/0.8.2/selenium-ide-0.8.2.xpi</url>
+                <name>Firefox extension (requires Firefox 1.5 or 1.5.0.*)</name>
+              </download>
+            </downloads>
+        </release>
+        <release>
             <version>0.8.1</version>
             <description>Includes Selenium Core 0.8.0</description>
             <date>09/20/2006</date>
