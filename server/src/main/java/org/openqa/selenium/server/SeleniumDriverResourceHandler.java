@@ -331,7 +331,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             // We don't support POST
             results = "OK,false";
         } else if ("setSlowMode".equals(cmd)) {
-            SeleneseQueue.setSlowMode(Integer.parseInt(values.get(0)));
+            try {
+                SeleneseQueue.setSlowMode(Integer.parseInt(values.get(0)));
+            }
+            catch (NumberFormatException e) {
+                return "ERROR: setSlowMode expects a string containing an integer, but saw '" + values.get(0) + "'";
+            }
             results = "OK";
         } else if ("addStaticContent".equals(cmd)) {
             File dir = new File( values.get(0));
