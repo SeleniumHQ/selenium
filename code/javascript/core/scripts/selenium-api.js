@@ -161,6 +161,24 @@ function Selenium(browserbot) {
 
 Selenium.DEFAULT_TIMEOUT = 30 * 1000;
 
+Selenium.decorateFunctionWithTimeout = function(f, timeout) {
+    if (f == null) {
+        return null;
+    }
+    var timeoutValue = parseInt(timeout);
+    if (isNaN(timeoutValue)) {
+        throw new SeleniumError("Timeout is not a number: '" + timeout + "'");
+    }
+    var now = new Date().getTime();
+    var timeoutTime = now + timeoutValue;
+    return function() {
+        if (new Date().getTime() > timeoutTime) {
+            throw new SeleniumError("Timed out after " + timeoutValue + "ms");
+        }
+        return f();
+    };
+}
+
 Selenium.createForWindow = function(window) {
     if (!window.location) {
         throw "error: not a window!";
@@ -567,7 +585,7 @@ Selenium.prototype.makePageLoadCondition = function(timeout) {
     if (timeout == null) {
         timeout = this.defaultTimeout;
     }
-    return decorateFunctionWithTimeout(this._isNewPageLoaded.bind(this), timeout);
+    return Selenium.decorateFunctionWithTimeout(this._isNewPageLoaded.bind(this), timeout);
 };
 
 Selenium.prototype.doOpen = function(url) {
@@ -694,10 +712,6 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
 	* @param windowID the JavaScript window ID of the window that will appear
 	* @param timeout a timeout in milliseconds, after which the action will return with an error
 	*/
-	if (isNaN(timeout)) {
-    	throw new SeleniumError("Timeout is not a number: " + timeout);
-    }
-
     var popupLoadedPredicate = function () {
         var targetWindow = selenium.browserbot.getWindowByName(windowID, true);
         if (!targetWindow) return false;
@@ -726,7 +740,7 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
         return true;
     };
 
-    return decorateFunctionWithTimeout(popupLoadedPredicate, timeout);
+    return Selenium.decorateFunctionWithTimeout(popupLoadedPredicate, timeout);
 }
 
 Selenium.prototype.doWaitForPopUp.dontCheckAlertsAndConfirms = true;
@@ -1818,10 +1832,7 @@ Selenium.prototype.doWaitForCondition = function(script, timeout) {
    * @param script the JavaScript snippet to run
    * @param timeout a timeout in milliseconds, after which this command will return with an error
    */
-    if (isNaN(timeout)) {
-    	throw new SeleniumError("Timeout is not a number: " + timeout);
-    }
-    return decorateFunctionWithTimeout(function () {
+    return Selenium.decorateFunctionWithTimeout(function () {
         return eval(script);
     }, timeout);
 };
@@ -1836,25 +1847,25 @@ Selenium.prototype.doSetTimeout = function(timeout) {
 	 * The default timeout is 30 seconds.
 	 * @param timeout a timeout in milliseconds, after which the action will return with an error
 	 */
-	this.defaultTimeout = parseInt(timeout);
+    if (!timeout) {
+        timeout = Selenium.DEFAULT_TIMEOUT;
+    }
+    this.defaultTimeout = timeout;
 }
 
 Selenium.prototype.doWaitForPageToLoad = function(timeout) {
-	/**
-   * Waits for a new page to load.
-   *
-   * <p>You can use this command instead of the "AndWait" suffixes, "clickAndWait", "selectAndWait", "typeAndWait" etc.
-   * (which are only available in the JS API).</p>
-   *
-   * <p>Selenium constantly keeps track of new pages loading, and sets a "newPageLoaded"
-   * flag when it first notices a page load.  Running any other Selenium command after
-   * turns the flag to false.  Hence, if you want to wait for a page to load, you must
-   * wait immediately after a Selenium command that caused a page-load.</p>
-   * @param timeout a timeout in milliseconds, after which this command will return with an error
-   */
-    if (isNaN(timeout)) {
-        throw new SeleniumError("Timeout is not a number: " + timeout);
-    }
+    /**
+     * Waits for a new page to load.
+     *
+     * <p>You can use this command instead of the "AndWait" suffixes, "clickAndWait", "selectAndWait", "typeAndWait" etc.
+     * (which are only available in the JS API).</p>
+     *
+     * <p>Selenium constantly keeps track of new pages loading, and sets a "newPageLoaded"
+     * flag when it first notices a page load.  Running any other Selenium command after
+     * turns the flag to false.  Hence, if you want to wait for a page to load, you must
+     * wait immediately after a Selenium command that caused a page-load.</p>
+     * @param timeout a timeout in milliseconds, after which this command will return with an error
+     */
     // in pi-mode, the test and the harness share the window; thus if we are executing this code, then we have loaded
     if (window["proxyInjectionMode"] == null || !window["proxyInjectionMode"]) {
         return this.makePageLoadCondition(timeout);

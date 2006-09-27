@@ -167,20 +167,3 @@ TestLoop.prototype = {
     }
 
 }
-
-function decorateFunctionWithTimeout(f, timeout) {
-    if (f == null) {
-        return null;
-    }
-    if (isNaN(timeout)) {
-    	throw new SeleniumError("Timeout is not a number: " + timeout);
-    }
-    var now = new Date().getTime();
-    var timeoutTime = now + timeout;
-    return function() {
-        if (new Date().getTime() > timeoutTime) {
-            throw new SeleniumError("Timed out after " + timeout + "ms");
-        }
-        return f();
-    };
-}
