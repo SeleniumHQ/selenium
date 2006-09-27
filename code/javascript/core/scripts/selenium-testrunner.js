@@ -493,7 +493,7 @@ Object.extend(HtmlTestSuiteRow.prototype, {
             //   this.testFrame.restoreTestCase(resultsFromPreviousRun.innerHTML);
             var testBody = this.testFrame.getDocument().body;
             testBody.innerHTML = resultsFromPreviousRun.innerHTML;
-            this.testFrame._onload();
+            this.testFrame._onLoad();
             if (onloadFunction) {
                 onloadFunction();
             }
