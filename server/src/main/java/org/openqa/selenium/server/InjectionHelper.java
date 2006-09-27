@@ -127,7 +127,8 @@ public class InjectionHelper {
         if (len == -1) {
             return;
         }
-        String data = new String(buf, 0, len);
+        int lengthOfBOM = getBOMLength(buf); 
+        String data = new String(buf, lengthOfBOM, len);
         if (!isKnownToBeHtml) {
             isKnownToBeHtml = match("<\\s*meta([^>]*?\"content-type\"[^>]*?)>", data, isKnownToBeHtml);
             if (!isKnownToBeHtml) {
@@ -135,6 +136,9 @@ public class InjectionHelper {
             }
         }
         String url = response.getHttpRequest().getRequestURL().toString();
+        if (url.equals("http://process-sel1:8080/portal/server.pt/gateway/PTARGS_39_0_206_0_0_47/")) {
+            System.out.println("hi");
+        }
         if (SeleniumServer.getDebugURL().equals(url)) {
             System.out.println("debug URL seen");
         }
@@ -142,6 +146,9 @@ public class InjectionHelper {
         if (!isKnownToBeHtml) {
             out.write(buf, 0, len);
         }
+//        else if (lengthOfBOM>0) {
+//            out.write(buf, 0, lengthOfBOM);
+//        }
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
         
         if (SeleniumServer.isDebugMode()) {
@@ -173,6 +180,38 @@ public class InjectionHelper {
             }
             writeDataWithUserTransformations(data, in, out);
         }
+    }
+
+    private static int getBOMLength(byte[] buf) {
+        if ((buf!=null) && (buf.length>=3) && (buf[0]==(byte) -17) && (buf[1]==(byte) -69) && (buf[2]==(byte) -65)) {
+// jeez, what was that, you may be asking?  This comparison is quite wacky.  When I look at the same data hexdumped 
+//            from a file on disk, the bytes are EF BB BF,  so I think I could be comparing against 0xef, 0xbb, and 0xbf.
+//            But that doesn't work.  Here are some interesting evaluations from the Display view in my eclipse:
+//
+//            buf[0]
+//                 (byte) -17
+//            buf[1]
+//                 (byte) -69
+//            buf[2]
+//                 (byte) -65
+//            buf[3]
+//                 (byte) 10
+//            (int)(new String(buf)).charAt(0)
+//                 (int) 239
+//            (int)(new String(buf)).charAt(1)
+//                 (int) 187
+//            (int)(new String(buf)).charAt(2)
+//                 (int) 191
+//            (new String(buf)).charAt(2)
+//                 (char) ¿
+//            (int)(new String(buf)).charAt(3)
+//                 (int) 10
+//
+//            what I would really like would be to recognize any BOM (cf http://en.wikipedia.org/wiki/Byte_Order_Mark).   I could easily set up
+//            the appropriate comparisons if I knew how to translate from the hex form to some appropriate analogue for a Java comparison.
+            return 3;
+        }
+        return 0; // there was no BOM
     }
 
     private static boolean match(String regex, String data, boolean isKnownToBeHtml) {
