@@ -259,10 +259,7 @@ div.executionOptions br {
     background-color: #333;
     width: 260px;
     height: 2px;
-    <!--[if IE]> 
-    height: 2px; 
-    line-height: 2px; 
-    <![endif]--> 
+    line-height: 2px;
     z-index: 1;
     border: 1px solid;
     border-color: #999 #ddd #ddd #999;
@@ -276,10 +273,7 @@ div.executionOptions br {
     position: relative;
     margin: 0px;
     height: 8px;
-    <!--[if IE]> 
-    height: 8px; 
-    line-height: 8px; 
-    <![endif]--> 
+    line-height: 8px;
     z-index: 1;
     border: 1px solid;
     border-color: #999 #333 #333 #999;
