@@ -25,7 +25,6 @@ Object.extend(HtmlTestRunner.prototype, {
     initialize: function() {
         this.metrics = new Metrics();
         this.controlPanel = new HtmlTestRunnerControlPanel();
-        this.htmlTestSuite = null;
         this.testFailed = false;
         this.currentTest = null;
         this.runAllTests = false;
@@ -36,9 +35,13 @@ Object.extend(HtmlTestRunner.prototype, {
         }.bind(this), 500);
     },
 
+    getTestSuite: function() {
+        return suiteFrame.getCurrentTestSuite();
+    },
+
     markFailed: function() {
         this.testFailed = true;
-        this.htmlTestSuite.markFailed();
+        this.getTestSuite().markFailed();
     },
 
     loadSuiteFrame: function() {
@@ -68,18 +71,17 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     _onloadTestSuite:function () {
-        this.htmlTestSuite = new HtmlTestSuite(suiteFrame.getDocument());
-        if (! this.htmlTestSuite.isAvailable()) {
+        if (! this.getTestSuite().isAvailable()) {
             return;
         }
         if (this.controlPanel.isAutomatedRun()) {
-            htmlTestRunner.startTestSuite();
+            this.startTestSuite();
         } else if (this.controlPanel.getAutoUrl()) {
             //todo what is the autourl doing, left to check it out
             addLoadListener(this._getApplicationWindow(), this._startSingleTest.bind(this));
             this._getApplicationWindow().src = this.controlPanel.getAutoUrl();
         } else {
-            this.htmlTestSuite.getSuiteRows()[0].loadTestCase();
+            this.getTestSuite().getSuiteRows()[0].loadTestCase();
         }
     },
 
@@ -97,7 +99,7 @@ Object.extend(HtmlTestRunner.prototype, {
     startTestSuite: function() {
         this.controlPanel.reset();
         this.metrics.resetMetrics();
-        this.htmlTestSuite.reset();
+        this.getTestSuite().reset();
         this.runAllTests = true;
         this.runNextTest();
     },
@@ -106,7 +108,7 @@ Object.extend(HtmlTestRunner.prototype, {
         if (!this.runAllTests) {
             return;
         }
-        this.htmlTestSuite.runNextTestInSuite();
+        this.getTestSuite().runNextTestInSuite();
     },
 
     startTest: function () {
@@ -136,9 +138,7 @@ Object.extend(FeedbackColors, {
     breakpointColor : "#cccccc"
 });
 
-
 var runInterval = 0;
-
 
 /** SeleniumFrame encapsulates an iframe element */
 var SeleniumFrame = Class.create();
@@ -189,18 +189,28 @@ Object.extend(SeleniumFrame.prototype, {
 
 });
 
+/** HtmlTestSuiteFrame - encapsulates the suite iframe element */
+var HtmlTestSuiteFrame = Class.create();
+Object.extend(HtmlTestSuiteFrame.prototype, SeleniumFrame.prototype);
+Object.extend(HtmlTestSuiteFrame.prototype, {
+
+    _onLoad: function() {
+        this.currentTestSuite = new HtmlTestSuite(this.getDocument());
+    },
+
+    getCurrentTestSuite: function() {
+        return this.currentTestSuite;
+    }
+
+});
+
 /** HtmlTestFrame - encapsulates the test-case iframe element */
 var HtmlTestFrame = Class.create();
 Object.extend(HtmlTestFrame.prototype, SeleniumFrame.prototype);
 Object.extend(HtmlTestFrame.prototype, {
 
     _onLoad: function() {
-        this.setCurrentTestCase();
-    },
-
-    setCurrentTestCase: function() {
-        //todo: this is not good looking
-        this.currentTestCase = new HtmlTestCase(this.getDocument(), htmlTestRunner.htmlTestSuite.getCurrentRow());
+        this.currentTestCase = new HtmlTestCase(this.getDocument(), htmlTestRunner.getTestSuite().getCurrentRow());
     },
 
     getCurrentTestCase: function() {
@@ -210,14 +220,14 @@ Object.extend(HtmlTestFrame.prototype, {
 });
 
 function onSeleniumLoad() {
-    suiteFrame = new SeleniumFrame(getSuiteFrame());
+    suiteFrame = new HtmlTestSuiteFrame(getSuiteFrame());
     testFrame = new HtmlTestFrame(getTestFrame());
     htmlTestRunner = new HtmlTestRunner();
 }
 
-
 var suiteFrame;
 var testFrame;
+
 function getSuiteFrame() {
     var f = $('testSuiteFrame');
     if (f == null) {
@@ -468,10 +478,11 @@ Object.extend(HtmlTestSuiteRow.prototype, {
         // If the row has a stored results table, use that
         var resultsFromPreviousRun = this.trElement.cells[1];
         if (resultsFromPreviousRun) {
-            // this.testFrame.restoreTestCase(resultsFromPreviousRun.innerHTML);
+            // todo: delegate to TestFrame, e.g.
+            //   this.testFrame.restoreTestCase(resultsFromPreviousRun.innerHTML);
             var testBody = this.testFrame.getDocument().body;
             testBody.innerHTML = resultsFromPreviousRun.innerHTML;
-            testFrame.setCurrentTestCase();
+            this.testFrame._onload();
             if (onloadFunction) {
                 onloadFunction();
             }
