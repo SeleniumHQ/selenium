@@ -1,0 +1,40 @@
+body, table {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
+
+a {
+    text-decoration: none;
+}
+
+/**
+// Jason's old stuff ...
+
+table.selenium {
+    font-size: 12;
+    border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    background-color: white;
+}
+
+table.selenium th {
+    border-width: 1px 1px 1px 1px;
+    padding: 1px 1px 1px 1px;
+}
+
+table.selenium td {
+    border-width: 1px 1px 1px 1px;
+    padding: 1px 1px 1px 1px;
+}
+
+*/

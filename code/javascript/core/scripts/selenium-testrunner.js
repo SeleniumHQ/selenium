@@ -154,11 +154,22 @@ Object.extend(SeleniumFrame.prototype, {
     },
 
     _handleLoad: function() {
+        this._attachStylesheet();
         this._onLoad();
         if (this.loadCallback) {
             this.loadCallback();
             this.loadCallback = null;
         }
+    },
+
+    _attachStylesheet: function() {
+        var d = this.getDocument();
+        var head = d.getElementsByTagName('head').item(0);
+        var styleLink = d.createElement("link");
+        styleLink.rel = "stylesheet";
+        styleLink.type = "text/css";
+        styleLink.href = window.location.pathname.replace(/[^\/]+$/, "selenium-test.css");
+        head.appendChild(styleLink);
     },
 
     _onLoad: function() {
