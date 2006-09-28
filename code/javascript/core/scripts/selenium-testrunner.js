@@ -105,6 +105,7 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     runNextTest: function () {
+        this.getTestSuite().updateSuiteWithResultOfPreviousTest();
         if (!this.runAllTests) {
             return;
         }
@@ -593,14 +594,13 @@ Object.extend(HtmlTestSuite.prototype, {
         new TestResult(this.failed, this.getTestTable()).post();
     },
 
-    _updateSuiteWithResultOfPreviousTest: function() {
+    updateSuiteWithResultOfPreviousTest: function() {
         if (this.currentRowInSuite >= 0) {
             this.getCurrentRow().saveTestResults();
         }
     },
 
     runNextTestInSuite: function() {
-        this._updateSuiteWithResultOfPreviousTest();
         this.currentRowInSuite++;
 
         // If we are done with all of the tests, set the title bar as pass or fail
