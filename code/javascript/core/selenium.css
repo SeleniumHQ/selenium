@@ -88,6 +88,51 @@ body, html {
     margin: 0.5ex;
 }
 
+#imageButtonPanel button {
+    width: 24px;
+    height: 20px;
+    background-color:white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+}
+
+#controlPanel #runSuite {
+    width: 32   px;
+    background-image: url("icons/all.png");
+}
+
+#controlPanel #runSeleniumTest {
+    width: 32px;
+    background-image: url("icons/selected.png");
+}
+
+.cssPauseTest {
+    background-image: url("icons/pause.png");
+}
+
+.cssPauseTest[disabled]  {
+    background-image: url("icons/pause_disabled.png");
+}
+
+.cssContinueTest {
+    background-image: url("icons/continue.png");
+}
+
+.cssContinueTest[disabled] {
+    background-image: url("icons/continue_disabled.png");
+}
+
+#controlPanel #stepTest {
+    background-image: url("icons/step.png");
+}
+
+#controlPanel #stepTest[disabled] {
+    background-image: url("icons/step_disabled.png");
+}
+
 #controlPanel table {
     font-size: 100%;
 }

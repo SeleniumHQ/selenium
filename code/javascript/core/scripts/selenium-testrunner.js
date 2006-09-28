@@ -321,13 +321,13 @@ Object.extend(HtmlTestRunnerControlPanel.prototype, {
     },
 
     _switchContinueButtonToPause: function() {
-        this.pauseButton.innerHTML = "Pause";
+        this.pauseButton.className = "cssPauseTest";
         this.pauseButton.onclick = this.pauseCurrentTest.bindAsEventListener(this);
     },
 
     _switchPauseButtonToContinue: function() {
         $('stepTest').disabled = false;
-        this.pauseButton.innerHTML = "Continue";
+        this.pauseButton.className = "cssContinueTest";
         this.pauseButton.onclick = this.continueCurrentTest.bindAsEventListener(this);
     },
 
