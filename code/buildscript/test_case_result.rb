@@ -35,12 +35,11 @@ class TestCaseResult
     result = []
     doc.traverse_element("tr") do |e|
       begin 
-        bgcolor = e.fetch_attr("bgcolor")
+        className = e.fetch_attr("class")
+        result << e if className =~ /fail/
       rescue
         # if there isn't "bgcolor" attribute, just ignore this row
-        next
       end
-      result << e if bgcolor == "#ffcccc"
     end
     return result
   end
