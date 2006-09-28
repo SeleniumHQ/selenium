@@ -17,24 +17,27 @@ a {
     text-decoration: none;
 }
 
-/**
-// Jason's old stuff ...
-
-table.selenium {
-    font-size: 12;
-    border-width: 1px 1px 1px 1px;
-    border-spacing: 2px;
-    background-color: white;
+.title {
+    font-style: italic;
 }
 
-table.selenium th {
-    border-width: 1px 1px 1px 1px;
-    padding: 1px 1px 1px 1px;
+.status_selected {
+    background-color: #ffffcc;
 }
 
-table.selenium td {
-    border-width: 1px 1px 1px 1px;
-    padding: 1px 1px 1px 1px;
+.status_done {
+    background-color: #eeffee;
 }
 
-*/
+.status_passed {
+    background-color: #ccffcc;
+}
+
+.status_failed {
+    background-color: #ffcccc;
+}
+
+.breakpoint {
+    background-color: #cccccc;
+    border: 1px solid black;
+}

@@ -84,28 +84,27 @@ to work-around a bug in IE on Win2K whereby the HTA application doesn't function
                 <fieldset>
                     <legend>Execute Tests</legend>
 
-                    <div style="float:left">Fast</div>
-                    <div style="float:right">Slow</div>
-	      <br>
-	      <div id="speedSlider">
-	      <div id="speedTrack">&nbsp;</div>
-	      <div id="speedHandle">&nbsp;</div>
-	      </div>
-
                     <div id="imageButtonPanel">
                         <button type="button" id="runSuite" onClick="htmlTestRunner.startTestSuite();"
-                                title="Run all tests">
+                                title="Run All tests">
                         </button>
                         <button type="button" id="runSeleniumTest" onClick="htmlTestRunner.runSingleTest();"
-                                title="Run the selected test">
+                                title="Run the Selected test">
                         </button>
                         <button type="button" id="pauseTest" disabled="disabled"
-                                title="Pause/Continue the current Test" class="cssPauseTest">
+                                title="Pause/Continue" class="cssPauseTest">
                         </button>
                         <button type="button" id="stepTest" disabled="disabled"
-                                title="Step the Test">
-                            
+                                title="Step">
                         </button>
+                    </div>
+
+                    <div style="float:left">Fast</div>
+                    <div style="float:right">Slow</div>
+                    <br/>
+                    <div id="speedSlider">
+                        <div id="speedTrack">&nbsp;</div>
+                        <div id="speedHandle">&nbsp;</div>
                     </div>
 
                     <div class="executionOptions">

@@ -27,16 +27,13 @@ Copyright 2004 ThoughtWorks, Inc
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-executionloop.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
     <script language="JavaScript" type="text/javascript">
         function setUp() {
             //mock up global testFrame
             testFrame = new Object();
             testsuite = new HtmlTestSuite(document);
-        }
-
-        function testShouldParseOutTitleFromDocument() {
-            assertHTMLEquals("<b>Test Suite Title</b>", testsuite.getTitle());
         }
 
         function testShouldAbleToParseTestSuiteRows() {
@@ -51,20 +48,22 @@ Copyright 2004 ThoughtWorks, Inc
         function testSetFailedShouldChangeTitleRowBgColorToFailedColor() {
             $("titleRow").bgColor = "";
             testsuite.markFailed();
-            assertEquals(FeedbackColors.failColor, $("titleRow").bgColor);
+            assertContains("failed", $("titleRow").className);
         }
 
         function testMarkDoneShouldMarkSuitePassed() {
-            $("titleRow").bgColor = "";
             testsuite.markDone();
-            assertEquals(FeedbackColors.passColor, $("titleRow").bgColor);
+            assertContains("status_passed", $("titleRow").className);
         }
 
         function testMarkDoneShouldLeaveSuiteMarkedFailed() {
-            $("titleRow").bgColor = "";
             testsuite.markFailed();
             testsuite.markDone();
-            assertEquals(FeedbackColors.failColor, $("titleRow").bgColor);
+            assertContains("status_failed", $("titleRow").className);
+            assertTrue(
+                    "should not be marked passed",
+                    $("titleRow").className.indexOf("status_passed") == -1
+                    );
         }
 
         function testResetShouldClearFailedFlag() {

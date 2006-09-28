@@ -129,15 +129,6 @@ Object.extend(HtmlTestRunner.prototype, {
     }
 });
 
-var FeedbackColors = Class.create();
-Object.extend(FeedbackColors, {
-    passColor : "#ccffcc",
-    doneColor : "#eeffee",
-    failColor : "#ffcccc",
-    workingColor : "#ffffcc",
-    breakpointColor : "#cccccc"
-});
-
 var runInterval = 0;
 
 /** SeleniumFrame encapsulates an iframe element */
@@ -377,7 +368,6 @@ Object.extend(HtmlTestRunnerControlPanel.prototype, {
 
 });
 
-
 var AbstractResultAwareRow = Class.create();
 Object.extend(AbstractResultAwareRow.prototype, {
 
@@ -385,21 +375,39 @@ Object.extend(AbstractResultAwareRow.prototype, {
         this.trElement = trElement;
     },
 
+    setStatus: function(status) {
+        this.trElement.className = this.trElement.className.replace(/status_[a-z]+/, "");
+        if (status) {
+            Element.addClassName(this.trElement, "status_" + status);
+        }
+    },
+
     markWorking: function() {
-        this.trElement.bgColor = FeedbackColors.workingColor;
+        this.setStatus("selected");
         safeScrollIntoView(this.trElement);
     },
 
     markPassed: function() {
-        this.trElement.bgColor = FeedbackColors.passColor;
+        this.setStatus("passed");
     },
 
     markDone: function() {
-        this.trElement.bgColor = FeedbackColors.doneColor;
+        this.setStatus("done");
     },
 
     markFailed: function() {
-        this.trElement.bgColor = FeedbackColors.failColor;
+        this.setStatus("failed");
+    }
+
+});
+
+var TitleRow = Class.create();
+Object.extend(TitleRow.prototype, AbstractResultAwareRow.prototype);
+Object.extend(TitleRow.prototype, {
+
+    initialize: function(trElement) {
+        this.trElement = trElement;
+        trElement.className = "title";
     }
 
 });
@@ -416,7 +424,7 @@ Object.extend(HtmlTestCaseRow.prototype, {
     },
 
     markFailed: function(errorMsg) {
-        this.trElement.bgColor = FeedbackColors.failColor;
+        AbstractResultAwareRow.prototype.markFailed.call(this, errorMsg);
         this.setMessage(errorMsg);
     },
 
@@ -425,7 +433,7 @@ Object.extend(HtmlTestCaseRow.prototype, {
     },
 
     reset: function() {
-        this.trElement.bgColor = '';
+        this.setStatus(null);
         var thirdCell = this.trElement.cells[2];
         if (thirdCell) {
             if (thirdCell.originalHTML) {
@@ -439,11 +447,10 @@ Object.extend(HtmlTestCaseRow.prototype, {
     onClick: function() {
         if (this.trElement.isBreakpoint == undefined) {
             this.trElement.isBreakpoint = true;
-            this.trElement.beforeBackgroundColor = Element.getStyle(this.trElement, "backgroundColor");
-            Element.setStyle(this.trElement, {"background-color" : FeedbackColors.breakpointColor});
+            Element.addClassName(this.trElement, "breakpoint");
         } else {
             this.trElement.isBreakpoint = undefined;
-            Element.setStyle(this.trElement, {"background-color" : this.trElement.beforeBackgroundColor});
+            Element.removeClassName(this.trElement, "breakpoint");
         }
     },
 
@@ -475,7 +482,7 @@ Object.extend(HtmlTestSuiteRow.prototype, {
     },
 
     reset: function() {
-        this.trElement.bgColor = '';
+        this.setStatus(null);
     },
 
     _onClick: function() {
@@ -526,22 +533,17 @@ Object.extend(HtmlTestSuite.prototype, {
     initialize: function(suiteDocument) {
         this.suiteDocument = suiteDocument;
         this.suiteRows = this._collectSuiteRows();
-        this.titleRow = this.getTestTable().rows[0];
-        this.title = this.titleRow.cells[0].innerHTML;
+        this.titleRow = new TitleRow(this.getTestTable().rows[0]);
         this.reset();
     },
 
     reset: function() {
         this.failed = false;
         this.currentRowInSuite = -1;
-        this.titleRow.bgColor = '';
+        this.titleRow.setStatus(null);
         this.suiteRows.each(function(row) {
             row.reset();
         });
-    },
-
-    getTitle: function() {
-        return this.title;
     },
 
     getSuiteRows: function() {
@@ -572,12 +574,12 @@ Object.extend(HtmlTestSuite.prototype, {
 
     markFailed: function() {
         this.failed = true;
-        this.titleRow.bgColor = FeedbackColors.failColor;
+        this.titleRow.markFailed();
     },
 
     markDone: function() {
         if (!this.failed) {
-            this.titleRow.bgColor = FeedbackColors.passColor;
+            this.titleRow.markPassed();
         }
     },
 
@@ -758,6 +760,7 @@ Object.extend(HtmlTestCase.prototype, {
         }
         this.testDocument = testDocument;
         this.htmlTestSuiteRow = htmlTestSuiteRow;
+        this.headerRow = new TitleRow(this.testDocument.getElementsByTagName("tr")[0]);
         this.commandRows = this._collectCommandRows();
         this.nextCommandRowIndex = 0;
         this._addBreakpointSupport();
@@ -787,7 +790,7 @@ Object.extend(HtmlTestCase.prototype, {
          */
         this.nextCommandRowIndex = 0;
 
-        this._setTitleColor('');
+        this.setStatus('');
         this.commandRows.each(function(row) {
             row.reset();
         });
@@ -803,20 +806,17 @@ Object.extend(HtmlTestCase.prototype, {
         return this.commandRows;
     },
 
-    _setTitleColor: function(color) {
-        var headerRow = this.testDocument.getElementsByTagName("tr")[0];
-        if (headerRow) {
-            headerRow.bgColor = color;
-        }
+    setStatus: function(status) {
+        this.headerRow.setStatus(status);
     },
 
     markFailed: function() {
-        this._setTitleColor(FeedbackColors.failColor);
+        this.setStatus("failed");
         this.htmlTestSuiteRow.markFailed();
     },
 
     markPassed: function() {
-        this._setTitleColor(FeedbackColors.passColor);
+        this.setStatus("passed");
         this.htmlTestSuiteRow.markPassed();
     },
 
@@ -829,7 +829,7 @@ Object.extend(HtmlTestCase.prototype, {
             errorElement.id = "error";
             setText(errorElement, errorMsg);
             this.testDocument.body.appendChild(errorElement);
-            Element.setStyle(errorElement, {'backgroundColor': FeedbackColors.failColor});
+            errorElement.className = "status_failed";
         }
     },
 

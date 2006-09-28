@@ -26,6 +26,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-executionloop.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-testrunner.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -44,9 +45,9 @@ function testCanGetSeleniumCommandFromCommandRow() {
     assertEquals("theValue", command.value);
 }
 
-function testSetWorkingChangesRowBackgroundColor() {
+function testMarkWorkingAddSelectedClass() {
     htmlTestCaseRow.markWorking();
-    assertEquals(FeedbackColors.workingColor, htmlTrElement.bgColor);
+    assertEquals("status_selected", htmlTrElement.className);
 }
 
 function testSetWorkingWillScrollWorkingRowToView() {
@@ -59,19 +60,19 @@ function testSetWorkingWillScrollWorkingRowToView() {
     assert(scrolled);
 }
 
-function testSetPassedChangesRowBackgroundColor() {
+function testMarkPassedAddsPassedClass() {
     htmlTestCaseRow.markPassed();
-    assertEquals(FeedbackColors.passColor, htmlTrElement.bgColor);
+    assertEquals("status_passed", htmlTrElement.className);
 }
 
-function testSetDoneChangesRowBackgroundColor() {
+function testMarkDoneAddsDoneClass() {
     htmlTestCaseRow.markDone();
-    assertEquals(FeedbackColors.doneColor, htmlTrElement.bgColor);
+    assertEquals("status_done", htmlTrElement.className);
 }
 
-function testSetFailedChangesBackgroundColorAndAddsErrorMessage() {
+function testSetFailedAddsFailedClassAndErrorMessage() {
     htmlTestCaseRow.markFailed("an error message");
-    assertEquals(FeedbackColors.failColor, htmlTrElement.bgColor);
+    assertEquals("status_failed", htmlTrElement.className);
     assertEquals("an error message", getText(htmlTestCaseRow.trElement.cells[2]));
 }
 
@@ -80,10 +81,10 @@ function testEchoWillSetMessageToLastCell() {
     assertEquals("some echo message", getText(htmlTrElement.cells[2]));
 }
 
-function testResetWillMakeTheBackgroundColorEmptyAndCleanErrorMessage() {
+function testResetWillClearStatusAndErrorMessage() {
     htmlTestCaseRow.markFailed("some error");
     htmlTestCaseRow.reset();
-    assertEquals('', htmlTrElement.bgColor);
+    assertEquals('', htmlTrElement.className);
     assertEquals("theValue", getText(htmlTrElement.cells[2]));
 }
 
@@ -99,21 +100,19 @@ function testAddBreakpointSupportBindRowsOnClickToElementsClickHandler() {
     assertTrue(htmlTestCaseRow.onClickCalled);
 }
 
-function testOnClickShouldTogglesBreakpoint() {
+function testOnClickShouldToggleBreakpoint() {
     assertFalse(htmlTestCaseRow.isBreakpoint());
-    htmlTestCaseRow.onClick();
-    assertTrue(htmlTestCaseRow.isBreakpoint());
-    htmlTestCaseRow.onClick();
-    assertFalse(htmlTestCaseRow.isBreakpoint());
-}
+    assertEquals("", htmlTrElement.className);
 
-function testOnClickShouldTogglesRowsBackGroundColor() {
-    var orginalColor = "#ccffcc";
-    Element.setStyle(htmlTrElement, {"background-color": orginalColor});
     htmlTestCaseRow.onClick();
-    assertColorEquals(FeedbackColors.breakpointColor, Element.getStyle(htmlTrElement, "background-color"));
+
+    assertTrue(htmlTestCaseRow.isBreakpoint());
+    assertEquals("breakpoint", htmlTrElement.className);
+
     htmlTestCaseRow.onClick();
-    assertColorEquals(orginalColor, Element.getStyle(htmlTrElement, "background-color"));
+
+    assertFalse(htmlTestCaseRow.isBreakpoint());
+    assertEquals("", htmlTrElement.className);
 }
 
 function testAddBreakpointSupportShouldMakeRowCursorSmallHand() {
