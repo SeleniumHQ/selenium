@@ -23,6 +23,8 @@ import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
 import org.mortbay.util.URI;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
@@ -337,7 +339,9 @@ public class ProxyHandler extends AbstractHttpHandler {
                 response.setReason(http.getResponseMessage());
                 
                 String contentType = http.getContentType();
-                SeleniumServer.log("Content-Type is: " + contentType);
+                if (SeleniumServer.isDebugMode()) {
+                    SeleniumServer.log("Content-Type is: " + contentType);
+                }
                 if (contentType != null) {
                     isKnownToBeHtml = contentType.startsWith("text/html");
                 }
@@ -435,11 +439,27 @@ public class ProxyHandler extends AbstractHttpHandler {
                 if (listener==null)
                 {
                     listener = new SslRelay(addrPort);
-                    // TODO Generate a certificate and configure it on the listener
-                    // TODO at least plug in a dummy certificate so this will work with pop-up warnings.
-                    listener.setKeystore("demokeystore");
-                    listener.setPassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
-                    listener.setKeyPassword("OBF:1u2u1wml1z7s1z7a1wnl1u2g");
+
+                    // grab a keystore that has been signed by a CA cert that has already been imported in to the browser
+                    // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
+                    // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
+                    File keystore = File.createTempFile("selenium-rc-" + addrPort.getHost() + "-" + addrPort.getPort(), "keystore");
+                    URL url = new URL("http://dangerous-certificate-authority.openqa.org/genkey.jsp?domain=" + addrPort.getHost());
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    FileOutputStream fos = new FileOutputStream(keystore);
+                    while ((length = is.read(buffer)) != -1) {
+                        fos.write(buffer, 0, length);
+                    }
+                    fos.close();
+                    is.close();
+
+                    listener.setKeystore(keystore.getAbsolutePath());
+                    listener.setPassword("password");
+                    listener.setKeyPassword("password");
                     server.addListener(listener);
                     try
                     {
@@ -687,7 +707,6 @@ public class ProxyHandler extends AbstractHttpHandler {
             uri.setScheme("https");
             uri.setHost(_addr.getHost());
             uri.setPort(_addr.getPort());
-            System.err.println("URI="+uri);
         }
     }
 }
