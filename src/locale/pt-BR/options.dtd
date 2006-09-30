@@ -1,17 +1,17 @@
-<!ENTITY options.encoding.description "Codificação dos arquivos">
-<!ENTITY options.timeout.description "Tempo de expiração padrão para comandos gravados">
-<!ENTITY options.userExtensionsPaths.description "Extensões do Selenium Core (user-extensions.js)">
-<!ENTITY options.ideExtensionsPaths.description "Extensões do Selenium IDE">
-<!ENTITY options.extensions.tip "Dica para extensões: Feche e reabra a janela do Selenium IDE para que as alterações tenham efeito. É possível informar vários arquivos separados por vírgula.">
+<!ENTITY options.encoding.description "CodificaÃ§Ã£o dos arquivos">
+<!ENTITY options.timeout.description "Tempo de expiraÃ§Ã£o padrÃ£o para comandos gravados">
+<!ENTITY options.userExtensionsPaths.description "ExtensÃµes do Selenium Core (user-extensions.js)">
+<!ENTITY options.ideExtensionsPaths.description "ExtensÃµes do Selenium IDE">
+<!ENTITY options.extensions.tip "Dica para extensÃµes: Feche e reabra a janela do Selenium IDE para que as alteraÃ§Ãµes tenham efeito. Ã‰ possÃ­vel informar vÃ¡rios arquivos separados por vÃ­rgula.">
 <!ENTITY options.rememberBaseURL.description "Lembrar a URL base">
 <!ENTITY options.recordAssertTitle.description "Gravar assertTitle automaticamente">
 <!ENTITY options.recordAbsoluteURL.description "Record absolute URL"><!-- TODO -->
 <!ENTITY options.browse "Procurar...">
 
-<!ENTITY options.resetOptions "Descartar Alterações">
+<!ENTITY options.resetOptions "Descartar AlteraÃ§Ãµes">
 <!ENTITY options.general.label "Geral">
 <!ENTITY options.formats.label "Formatos">
 <!ENTITY options.formats.add-button.label "Adicionar">
 <!ENTITY options.formats.rename-button.label "Renomear">
 <!ENTITY options.formats.delete-button.label "Excluir">
-<!ENTITY options.formats.source-button.label "Código-Fonte">
+<!ENTITY options.formats.source-button.label "CÃ³digo-Fonte">

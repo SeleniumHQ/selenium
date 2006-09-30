@@ -3,26 +3,26 @@
 <!ENTITY saveTestCmd.label "Salvar Teste">
 <!ENTITY saveTestAsCmd.label "Salvar Teste Como...">
 <!ENTITY exportCmd.label "Exportar Teste Como...">
-<!ENTITY optionsCmd.label "Opções...">
+<!ENTITY optionsCmd.label "OpÃ§Ãµes...">
 <!ENTITY formatCmd.label "Formato">
-<!ENTITY clipboardFormatCmd.label "Formato da Área de Transferência">
+<!ENTITY clipboardFormatCmd.label "Formato da Ãrea de TransferÃªncia">
 <!ENTITY tableTab.label "Tabela">
-<!ENTITY sourceTab.label "Código-Fonte">
+<!ENTITY sourceTab.label "CÃ³digo-Fonte">
 <!ENTITY runRadio.label "Executar">
 <!ENTITY walkRadio.label "Caminhar">
 <!ENTITY stepRadio.label "Iterar">
-<!ENTITY playButton.tooltip "Executar do começo ou do ponto de início">
+<!ENTITY playButton.tooltip "Executar do comeÃ§o ou do ponto de inÃ­cio">
 <!ENTITY pauseButton.tooltip "Pausar / Reiniciar">
 <!ENTITY stepButton.tooltip "Iterar">
 <!ENTITY testrunnerButton.tooltip "Executar com Selenium TestRunner">
 <!ENTITY recordButton.tooltip "Gravar">
 <!ENTITY baseURL.label "URL Base">
-<!ENTITY baseURLTextbox.tooltip "Informe a URL do website a ser testado. Este valor é usado para executar o comando &quot;open.&quot;">
+<!ENTITY baseURLTextbox.tooltip "Informe a URL do website a ser testado. Este valor Ã© usado para executar o comando &quot;open.&quot;">
 
 <!ENTITY selenium-ide.sidebar.title "Selenium IDE">
 
 <!ENTITY fileMenu.label "Arquivo">
-<!ENTITY optionsMenu.label "Opções">
+<!ENTITY optionsMenu.label "OpÃ§Ãµes">
 
 <!ENTITY command.label "Comando">
 <!ENTITY target.label "Alvo">
@@ -30,8 +30,8 @@
 <!ENTITY findTarget.label "Procurar">
 
 <!ENTITY logConsole.label "Mensagens">
-<!ENTITY logFilter.debug.label "Depuração">
-<!ENTITY logFilter.info.label "Informações">
+<!ENTITY logFilter.debug.label "DepuraÃ§Ã£o">
+<!ENTITY logFilter.info.label "InformaÃ§Ãµes">
 <!ENTITY logFilter.warn.label "Avisos">
 <!ENTITY logFilter.error.label "Erros">
 <!ENTITY logClear.label "Limpar">
@@ -42,8 +42,8 @@
 <!ENTITY contextMenu.paste.label "Colar">
 <!ENTITY contextMenu.delete.label "Limpar">
 <!ENTITY contextMenu.insertCommand.label "Inserir Novo Comando">
-<!ENTITY contextMenu.insertComment.label "Inserir Novo Comentário">
+<!ENTITY contextMenu.insertComment.label "Inserir Novo ComentÃ¡rio">
 <!ENTITY contextMenu.clear.label "Limpar Tudo">
 <!ENTITY contextMenu.breakpoint.label "Inserir Breakpoint">
-<!ENTITY contextMenu.startpoint.label "Definir / Limpar Ponto de Início">
+<!ENTITY contextMenu.startpoint.label "Definir / Limpar Ponto de InÃ­cio">
 <!ENTITY contextMenu.execCommand.label "Executar Este Comando">
