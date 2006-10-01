@@ -86,7 +86,10 @@ function runSeleniumTest() {
     if (runOptions.isMultiWindowMode()) {
         testAppWindow = openSeparateApplicationWindow('Blank.html');
     } else if ($('myiframe') != null) {
-        testAppWindow = $('myiframe').contentWindow;
+        var myiframe = $('myiframe');
+        if (myiframe) {
+            testAppWindow = myiframe.contentWindow;
+        }
     }
     else {
         proxyInjectionMode = true;
