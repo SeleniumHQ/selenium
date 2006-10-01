@@ -17,12 +17,7 @@ package org.openqa.selenium.server;
  */
 
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>Manages sets of SeleneseQueues corresponding to windows and frames in a single browser session.</p>
@@ -133,7 +128,7 @@ public class FrameGroupSeleneseQueueSet {
      * handle command result, and returns the result of that command.
      * 
      * @param command - the Selenese command verb
-     * @param field - the first Selenese argument (meaning depends on the verb)
+     * @param arg - the first Selenese argument (meaning depends on the verb)
      * @param value - the second Selenese argument
      * @return - the command result, defined by the Selenese JavaScript.  "getX" style
      * commands may return data from the browser; other "doX" style commands may just
