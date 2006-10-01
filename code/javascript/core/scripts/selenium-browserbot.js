@@ -396,6 +396,19 @@ BrowserBot.prototype._isSamePage = function(windowObject, originalDocument, orig
     var sameDoc = this._isSameDocument(originalDocument, currentDocument);
 
     var sameLoc = (originalLocation === currentLocation);
+
+    // hash marks don't meant the page has loaded, so we need to strip them off if they exist...
+    var currentHash = currentHref.indexOf('#');
+    if (currentHash > 0) {
+        currentHref = currentHref.substring(0, currentHash);
+    }
+    var originalHash = originalHref.indexOf('#');
+    if (originalHash > 0) {
+        originalHref = originalHref.substring(0, originalHash);
+    }
+    LOG.debug("_isSamePage: currentHref: " + currentHref);
+    LOG.debug("_isSamePage: originalHref: " + originalHref);
+
     var sameHref = (originalHref === currentHref);
     var markedLoc = currentLocation[marker];
 
@@ -403,6 +416,13 @@ BrowserBot.prototype._isSamePage = function(windowObject, originalDocument, orig
         // the mark disappears too early on these browsers
         markedLoc = true;
     }
+
+    // since this is some _very_ important logic, especially for PI and multiWindow mode, we should log all these out
+    LOG.debug("_isSamePage: sameDoc: " + sameDoc);
+    LOG.debug("_isSamePage: sameLoc: " + sameLoc);
+    LOG.debug("_isSamePage: sameHref: " + sameHref);
+    LOG.debug("_isSamePage: markedLoc: " + markedLoc);
+
     return sameDoc && sameLoc && sameHref && markedLoc
 };
 
