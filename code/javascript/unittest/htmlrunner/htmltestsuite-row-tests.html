@@ -64,9 +64,14 @@ Copyright 2004 ThoughtWorks, Inc
 
         function testLoadTestCaseShouldChangeTestFramesLocation() {
             mockFrame.fireLoading = false;
+            mockHtmlTestSuite.currentRowUnselected = false;
+            mockHtmlTestSuite.unselectCurrentRow = function() {
+                this.currentRowUnselected = true;
+            };
             assertUndefined(mockFrame.location);
             suiteRow.loadTestCase();
             assertEquals($("link").href, mockFrame.location);
+            assert(mockHtmlTestSuite.currentRowUnselected);
         }
 
         function testMarkFailedShouldMarkTrElementFailed() {
@@ -80,9 +85,9 @@ Copyright 2004 ThoughtWorks, Inc
             assertEquals("status_passed", $("trRow").className);
         }
 
-        function testMarkWorkingShouldMarkTrElementWorking() {
+        function testSelectShouldMarkTrElementSelected() {
             $("trRow").bgColor = "";
-            suiteRow.markWorking();
+            suiteRow.select();
             assertEquals("status_selected", $("trRow").className);
         }
 
@@ -92,7 +97,8 @@ Copyright 2004 ThoughtWorks, Inc
 <body>
 <table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium">
     <tbody>
-        <tr id="trRow"><td><a id="link" href="./events/TestMouseEvents.html">TestMouseEvents</a></td></tr>
+        <tr id="trRow"><td><a id="link" href="test1.html">test1</a></td></tr>
+        <tr id="trRow2"><td><a id="link" href="test2.html">test2</a></td></tr>
     </tbody>
 </table>
 

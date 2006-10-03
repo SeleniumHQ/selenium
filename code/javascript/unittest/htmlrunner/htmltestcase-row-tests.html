@@ -45,18 +45,18 @@ function testCanGetSeleniumCommandFromCommandRow() {
     assertEquals("theValue", command.value);
 }
 
-function testMarkWorkingAddSelectedClass() {
-    htmlTestCaseRow.markWorking();
+function testSelectAddSelectedClass() {
+    htmlTestCaseRow.select();
     assertEquals("status_selected", htmlTrElement.className);
 }
 
-function testSetWorkingWillScrollWorkingRowToView() {
+function testSelectWillScrollRowToView() {
     var scrolled = false;
     safeScrollIntoView = function(element) {
         scrolled = true;
         assertEquals(htmlTrElement, element);
     };
-    htmlTestCaseRow.markWorking();
+    htmlTestCaseRow.select();
     assert(scrolled);
 }
 

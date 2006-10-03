@@ -377,15 +377,20 @@ Object.extend(AbstractResultAwareRow.prototype, {
     },
 
     setStatus: function(status) {
+        this.unselect();
         this.trElement.className = this.trElement.className.replace(/status_[a-z]+/, "");
         if (status) {
             Element.addClassName(this.trElement, "status_" + status);
         }
     },
 
-    markWorking: function() {
-        this.setStatus("selected");
+    select: function() {
+        Element.addClassName(this.trElement, "status_selected");
         safeScrollIntoView(this.trElement);
+    },
+
+    unselect: function() {
+        Element.removeClassName(this.trElement, "status_selected");
     },
 
     markPassed: function() {
@@ -487,12 +492,13 @@ Object.extend(HtmlTestSuiteRow.prototype, {
     },
 
     _onClick: function() {
-        // todo: just send a message to the testSuite
         this.loadTestCase(null);
         return false;
     },
 
     loadTestCase: function(onloadFunction) {
+        this.htmlTestSuite.unselectCurrentRow();
+        this.select();
         this.htmlTestSuite.currentRowInSuite = this.trElement.rowIndex - 1;
         // If the row has a stored results table, use that
         var resultsFromPreviousRun = this.trElement.cells[1];
@@ -570,7 +576,17 @@ Object.extend(HtmlTestSuite.prototype, {
     },
 
     getCurrentRow: function() {
+        if (this.currentRowInSuite == -1) {
+            return null;
+        }
         return this.suiteRows[this.currentRowInSuite];
+    },
+
+    unselectCurrentRow: function() {
+        var currentRow = this.getCurrentRow()
+        if (currentRow) {
+            currentRow.unselect();
+        }
     },
 
     markFailed: function() {
@@ -585,7 +601,6 @@ Object.extend(HtmlTestSuite.prototype, {
     },
 
     _startCurrentTestCase: function() {
-        this.getCurrentRow().markWorking();
         this.getCurrentRow().loadTestCase(htmlTestRunner.startTest.bind(htmlTestRunner));
     },
 
@@ -1009,7 +1024,7 @@ Object.extend(HtmlRunnerTestLoop.prototype, {
 
     commandStarted : function() {
         $('pauseTest').disabled = false;
-        this.currentRow.markWorking();
+        this.currentRow.select();
         this.metrics.printMetrics();
     },
 
