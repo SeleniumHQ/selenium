@@ -385,12 +385,12 @@ Object.extend(AbstractResultAwareRow.prototype, {
     },
 
     select: function() {
-        Element.addClassName(this.trElement, "status_selected");
+        Element.addClassName(this.trElement, "selected");
         safeScrollIntoView(this.trElement);
     },
 
     unselect: function() {
-        Element.removeClassName(this.trElement, "status_selected");
+        Element.removeClassName(this.trElement, "selected");
     },
 
     markPassed: function() {
