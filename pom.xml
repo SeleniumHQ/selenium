@@ -1,8 +1,0 @@
-<project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openqa.selenium</groupId>
-  <version>1.0-SNAPSHOT</version>
-  <artifactId>selenium</artifactId>
-  <name>Selenium</name>
-  <packaging>pom</packaging>
-</project>
