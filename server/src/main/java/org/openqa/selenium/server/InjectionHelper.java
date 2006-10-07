@@ -136,9 +136,6 @@ public class InjectionHelper {
             }
         }
         String url = response.getHttpRequest().getRequestURL().toString();
-        if (url.equals("http://process-sel1:8080/portal/server.pt/gateway/PTARGS_39_0_206_0_0_47/")) {
-            System.out.println("hi");
-        }
         if (SeleniumServer.getDebugURL().equals(url)) {
             System.out.println("debug URL seen");
         }
