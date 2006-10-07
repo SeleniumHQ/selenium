@@ -7,7 +7,7 @@ load('remoteControl.js');
 this.name = "cs-rc";
 
 function testMethodName(testName) {
-	return capitalize(testName) + "Test";
+	return "The" + capitalize(testName) + "Test";
 }
 
 function assertTrue(expression) {
