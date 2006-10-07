@@ -467,6 +467,7 @@ public class SeleniumServer {
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
                 "the argument for port is the port number the selenium server should use (default 4444)" +
                 "\n\t-interactive puts you into interactive mode.  See the tutorial for more details" +
+                "\n\t-multiwindow puts you into a mode where the test web site executes in a separate window, and selenium supports frames" +
                 "\n\t-defaultBrowserString (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
                 "\n\t-userExtensions indicates a JavaScript file that will be loaded into selenium" +
                 "\n\t-browserSessionReuse stops re-initialization and spawning of the browser between tests" +
@@ -481,19 +482,7 @@ public class SeleniumServer {
                 "\n" +
                 "\n\t\t\t\t   -userContentTransformation https http" +
                 "\n" +
-                "\n\t\t\t\tthen all \"https\" strings in the HTML of the test application will be changed to be \"http\".\n" +
-                "\n\t-debug puts you into debug mode, with more trace information and diagnostics" +
-                "\n\t-proxyInjectionMode puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
-                "\n\t\tfor all content going to the test application.  Under this mode, multiple domains can be visited, and the " +
-                "\n\t\tfollowing additional flags are supported:" +
-                "\n\t\t\tThe -userJsInjection flag allows you to point at a JavaScript file which will then be injected into all pages.  " +
-                "\n\t\t\tThe -userContentTransformation flag takes two arguments: the first is a regular expression which is matched " +
-                "\n\t\t\t\tagainst all AUT content; the second is a string which will replace matches.  These flags can be used any " +
-                "\n\t\t\t\tnumber of times.  A simple example of how this could be useful: if you add" +
-                "\n\n" +
-                "   -userContentTransformation https http\r\n" +
-                "\n\n" +
-                "\n\t\t\t\tthen all \"https\" strings in the HTML of the test application will be changed to be \"http\".\n");
+                           "\n\t\t\t\tthen all \"https\" strings in the HTML of the test application will be changed to be \"http\".\n");
     }
 
     /**
