@@ -1002,12 +1002,21 @@ PageBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
     // Handle //tag[@attr='value']
     var match = xpath.match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/);
     if (match) {
-        return this._findElementByTagNameAndAttributeValue(
+        // We don't return the value without checking if it is null first.
+        // This is beacuse in some rare cases, this shortcut actually WONT work
+        // but that the full XPath WILL. A known case, for example, is in IE
+        // when the attribute is onclick/onblur/onsubmit/etc. Due to a bug in IE
+        // this shortcut won't work because the actual function is returned
+        // by getAttribute() rather than the text of the attribute.
+        var val = this._findElementByTagNameAndAttributeValue(
                 inDocument,
                 match[1].toUpperCase(),
                 match[2].toLowerCase(),
                 match[3].slice(1, -1)
                 );
+        if (val) {
+            return val;
+        }
     }
 
     // Handle //tag[text()='value']
