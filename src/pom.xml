@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openqa.selenium.ide</groupId>
-  <version>0.8.2</version>
+  <version>0.8.3</version>
   <artifactId>selenium-ide</artifactId>
   <packaging>jar</packaging>
   <name>Selenium IDE</name>
