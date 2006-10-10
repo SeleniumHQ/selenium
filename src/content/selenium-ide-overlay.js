@@ -24,11 +24,13 @@ SeleniumIDE.Overlay.NUM_RECENT_COMMANDS = 8;
 
 SeleniumIDE.Overlay.appendCheck = function(event) {
 	var command = event.target._Selenium_IDE_command;
-	if (command.command.match(/^store/)) {
-		command[command.valueProperty] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
-	}
-	SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
-	SeleniumIDE.Overlay.addRecentCommand(command.command);
+    if (command) {
+        if (command.command.match(/^store/)) {
+            command[command.valueProperty] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
+        }
+        SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
+        SeleniumIDE.Overlay.addRecentCommand(command.command);
+    }
 }
 
 SeleniumIDE.Overlay.getRecentCommands = function() {
