@@ -418,11 +418,24 @@ Selenium.prototype.doType = function(locator, value) {
     this.page().replaceText(element, value);
 };
 
-Selenium.prototype.doSetSlowMode = function(value) {
+Selenium.prototype.doSetSpeed = function(value) {
  /**
-   * Set slow mode (where each selenium operation is followed by a human-perceptible delay)
+ * Set execution speed (i.e., set the millisecond length of a delay which will follow each selenium operation).  By default, there is no such delay, i.e.,
+ * the delay is 0 milliseconds.
    *
-   * @param value the number of milliseconds to pause between each operation
+   * @param value the number of milliseconds to pause after operation
+   */
+   throw new SeleniumError("this operation is only implemented in selenium-rc, and should never result in a request making it across the wire");
+};
+
+Selenium.prototype.doGetSpeed = function() {
+ /**
+ * Get execution speed (i.e., get the millisecond length of the delay following each selenium operation).  By default, there is no such delay, i.e.,
+ * the delay is 0 milliseconds.
+   *
+   * @param value the number of milliseconds to pause after operation
+   *
+   * See also setSpeed.
    */
    throw new SeleniumError("this operation is only implemented in selenium-rc, and should never result in a request making it across the wire");
 };
