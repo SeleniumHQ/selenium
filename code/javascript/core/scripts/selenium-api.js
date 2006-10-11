@@ -433,8 +433,6 @@ Selenium.prototype.doGetSpeed = function() {
  * Get execution speed (i.e., get the millisecond length of the delay following each selenium operation).  By default, there is no such delay, i.e.,
  * the delay is 0 milliseconds.
    *
-   * @param value the number of milliseconds to pause after operation
-   *
    * See also setSpeed.
    */
    throw new SeleniumError("this operation is only implemented in selenium-rc, and should never result in a request making it across the wire");
