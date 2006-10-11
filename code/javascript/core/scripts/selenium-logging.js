@@ -52,6 +52,10 @@ Logger.prototype = {
             "width=600,height=1000,bottom=0,right=0,status,scrollbars,resizable"
         );
         this.logWindow.moveTo(window.screenX + 1210, window.screenY + window.outerHeight - 1400);
+        if (browserVersion.appearsToBeBrokenInitialIE6) {
+        var pendingMessage = new LogMessage("warn", "You appear to be running an unpatched IE 6, which is not stable and can crash due to memory problems.  We recommend you run Windows update to install a more stable version of IE.");
+            this.pendingMessages.push(pendingMessage);
+        }
         return this.logWindow;
     },
     
@@ -84,7 +88,7 @@ Logger.prototype = {
             /* these logging messages are never flushed, which creates 
                an enormous array of strings that never stops growing.  Only
                turn this on if you need it for debugging! */
-            //this.pendingMessages.push(new LogMessage(message, className));
+            //this.pendingMessages.push(new LogMessage(className, message));
         }
     },
 
@@ -101,19 +105,19 @@ Logger.prototype = {
     },
 
     debug: function(message) {
-        this.log(message, "debug");
+       this.log("debug", message);
     },
 
     info: function(message) {
-        this.log(message, "info");
+       this.log("info", message);
     },
 
     warn: function(message) {
-        this.log(message, "warn");
+       this.log("warn", message);
     },
 
     error: function(message) {
-        this.log(message, "error");
+       this.log("error", message);
     },
 
     exception: function(exception) {
@@ -125,7 +129,7 @@ Logger.prototype = {
 
 var LOG = new Logger();
 
-var LogMessage = function(msg, type) {
+var LogMessage = function(type, msg) {
     this.type = type;
     this.msg = msg;
 }

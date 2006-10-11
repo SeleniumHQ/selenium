@@ -1407,6 +1407,7 @@ PageBot.prototype.getAllLinks = function() {
 };
 
 PageBot.prototype.setContext = function(strContext, logLevel) {
+
     //set the current test title
     var ctx = document.getElementById("context");
     if (ctx != null) {
