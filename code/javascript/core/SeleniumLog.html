@@ -16,8 +16,6 @@ var logLevels = {
     error: 3
 };
 
-var logLevelThreshold = null;
-
 function getThresholdLevel() {
     var buttons = document.getElementById('logLevelChooser').level;
     for (var i = 0; i < buttons.length; i++) {
@@ -28,10 +26,9 @@ function getThresholdLevel() {
 }
 
 function setThresholdLevel(logLevel) {
-    logLevelThreshold = logLevel;
     var buttons = document.getElementById('logLevelChooser').level;
     for (var i = 0; i < buttons.length; i++) {
-    	if (buttons[i].value==logLevel) {
+        if (buttons[i].value==logLevel) {
             buttons[i].checked = true;
         }
         else {
@@ -41,9 +38,7 @@ function setThresholdLevel(logLevel) {
 }
 
 function append(message, logLevel) {
-    if (logLevelThreshold==null) {
-    	logLevelThreshold = getThresholdLevel();
-    }
+    var logLevelThreshold = getThresholdLevel();
     if (logLevels[logLevel] < logLevels[logLevelThreshold]) {
         return;
     }
