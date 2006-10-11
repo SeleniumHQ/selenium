@@ -281,7 +281,11 @@ public class SeleneseQueue {
         this.resultExpected = resultExpected;
     }
 
-    public static void setSlowMode(int i) {
+    public static void setSpeed(int i) {
         millisecondDelayBetweenOperations = i;
+    }
+    
+    public static int getSpeed() {
+        return millisecondDelayBetweenOperations;
     }
 }
