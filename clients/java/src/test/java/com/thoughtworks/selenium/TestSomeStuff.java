@@ -2,9 +2,32 @@ package com.thoughtworks.selenium;
 
 public class TestSomeStuff extends SeleneseTestCase {
     public void setUp() throws Exception {
-        super.setUp("http://process-dev-vm2:8080");
+        super.setUp("http://process-sel1:8080");
     }
-    public void testSlider_SliderStyles()
+    
+
+    public void xtestAndy() throws Exception {
+        System.out.println("configure");
+        String url = "http://process-sel1:8080/portal/server.pt";
+        url = "http://nelsons-procsel:8080/portal/server.pt";
+        selenium.open(url);
+        assertEquals("Log In", selenium.getTitle());
+        selenium.type("in_tx_username", "administrator");
+        selenium.click("in_bu_Login");
+        selenium.waitForPageToLoad("5000");
+        selenium.click("//link=Administration");
+        //selenium.getEval("this.browserbot.getCurrentWindow().location = getSafeVarWarn('mandTabsArray')[0][2].substring(3)");
+        selenium.waitForPageToLoad("15000");
+        
+//        selenium.click("xpath=//DIV[@id='pt-portal-content-100']/TABLE[5]/TBODY/TR/TD[2]/TABLE/TBODY/TR/TD/SPAN/A");
+        //assertEquals(selenium.getTitle(), "Administration");
+        selenium.select("xpath=//SELECT[@id='in_se_UtilitiesSelect']", "Process Administrator");
+        //selenium.select("xpath=/html/body[@id='pt-page-201']/div[@id='pt-portal-content-201']/table[3]/tbody/tr/td/table/tbody/tr/td[4]/select[@id='in_se_commnav']", "Process Community");
+        selenium.waitForPageToLoad("15000");
+        assertEquals("*BPM - Process Administrator", selenium.getTitle());
+    }
+
+    public void xtestSlider_SliderStyles()
     throws InterruptedException
 {
     String idPrefix1 = "form1_";
