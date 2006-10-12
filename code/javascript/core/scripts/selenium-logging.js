@@ -53,7 +53,10 @@ Logger.prototype = {
         );
         this.logWindow.moveTo(window.screenX + 1210, window.screenY + window.outerHeight - 1400);
         if (browserVersion.appearsToBeBrokenInitialIE6) {
-        var pendingMessage = new LogMessage("warn", "You appear to be running an unpatched IE 6, which is not stable and can crash due to memory problems.  We recommend you run Windows update to install a more stable version of IE.");
+	// I would really prefer for the message to immediately appear in the log window, the instant the user requests that the log window be 
+        	// visible.  But when I initially coded it this way, thou message simply didn't appear unless I stepped through the code with a debugger.  
+        	// So obviously there is some timing issue here which I don't have the patience to figure out.
+        	var pendingMessage = new LogMessage("warn", "You appear to be running an unpatched IE 6, which is not stable and can crash due to memory problems.  We recommend you run Windows update to install a more stable version of IE.");
             this.pendingMessages.push(pendingMessage);
         }
         return this.logWindow;
