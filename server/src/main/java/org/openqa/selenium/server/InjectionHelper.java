@@ -247,15 +247,20 @@ public class InjectionHelper {
         while (true) {
             for (String beforeRegexp : contentTransformations.keySet()) {
                 String after = contentTransformations.get(beforeRegexp);
-                try {
-                    data = data.replaceAll(beforeRegexp, after);
+                if (after==null) {
+                    System.out.println("Warning: no transformation seen for key " + beforeRegexp);
                 }
-                catch (IllegalArgumentException e) {
-                    // bad regexp or bad back ref in the 'after'.  
-                    // Do a straight substitution instead.
-                    // (This logic needed for injection.html's __SELENIUM_JS__
-                    // replacement to work.)
-                    data = data.replace(beforeRegexp, after);       
+                else {
+                    try {
+                        data = data.replaceAll(beforeRegexp, after);
+                    }
+                    catch (IllegalArgumentException e) {
+                        // bad regexp or bad back ref in the 'after'.  
+                        // Do a straight substitution instead.
+                        // (This logic needed for injection.html's __SELENIUM_JS__
+                        // replacement to work.)
+                        data = data.replace(beforeRegexp, after);       
+                    }
                 }
             }
             out.write(data.getBytes());
