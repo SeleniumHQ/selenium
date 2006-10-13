@@ -315,6 +315,10 @@ public class SeleniumServer {
             String result = null;
             try {
                 File suiteFile = new File(suiteFilePath);
+                if (!suiteFile.exists()) {
+                    usage("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
+                    System.exit(1);
+                }
                 seleniumProxy.addNewStaticContent(suiteFile.getParentFile());
                 String suiteURL = startURL + "/selenium-server/" + suiteFile.getName();
                 HTMLLauncher launcher = new HTMLLauncher(seleniumProxy);
