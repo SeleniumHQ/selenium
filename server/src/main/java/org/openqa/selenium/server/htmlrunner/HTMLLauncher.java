@@ -36,7 +36,8 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @return PASS or FAIL
      * @throws IOException if we can't write the output file
      */
-    public String runHTMLSuite(String browser, String browserURL, String HTMLSuite, File outputFile, long timeoutInMs, boolean multiWindow) throws IOException {
+    public String runHTMLSuite(String browser, String browserURL, String HTMLSuite, File outputFile, int timeoutInSeconds, boolean multiWindow) throws IOException {
+        long timeoutInMs = 1000 * timeoutInSeconds;
         server.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);

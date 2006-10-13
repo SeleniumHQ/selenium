@@ -357,9 +357,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 if (values.size() > 4) {
                     output = new File(values.get(4));
                 }
-                long timeoutInMs = SeleniumServer.getTimeoutInSeconds() * 1000;
+                
                 try {
-                    results = launcher.runHTMLSuite( values.get(0),  values.get(1),  values.get(2), output, timeoutInMs, "true".equals(values.get(3)));
+                    results = launcher.runHTMLSuite( values.get(0),  values.get(1),  values.get(2), output, SeleniumServer.getTimeoutInSeconds(), "true".equals(values.get(3)));
                 } catch (IOException e) {
                     e.printStackTrace();
                     results = e.toString();

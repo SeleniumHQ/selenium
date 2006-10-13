@@ -54,7 +54,7 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
         server.start();
         browserURL = "http://localhost:" + server.getPort();
         String testURL = browserURL + "/selenium-server/tests/" + suiteName;
-        long timeout = 1000 * 60 * 10; // ten minutes
+        int timeout = 60 * 10; // ten minutes
         String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout, multiWindow);
         assertTrue("Results file doesn't exist: " + output.getAbsolutePath(), output.exists());
         assertEquals("Tests didn't pass", "PASSED", result);

@@ -156,7 +156,7 @@ public class SeleniumServer {
     private static String defaultBrowserString = null;
 
     public static final int DEFAULT_TIMEOUT = (30 * 60);
-    public static int timeout = DEFAULT_TIMEOUT;
+    public static int timeoutInSeconds = DEFAULT_TIMEOUT;
     private static Boolean reusingBrowserSessions = null;
 
     /**
@@ -172,10 +172,6 @@ public class SeleniumServer {
 
         boolean htmlSuite = false;
         boolean multiWindow = false;
-        String browserString = null;
-        String startURL = null;
-        String suiteFilePath = null;
-        String resultFilePath = null;
         File userExtensions = null;
         boolean proxyInjectionModeArg = false;
         int portDriversShouldContactArg = 0;
@@ -217,7 +213,7 @@ public class SeleniumServer {
             } else if ("-debugURL".equals(arg)) {
                 debugURL = getArg(args, ++i);
             } else if ("-timeout".equals(arg)) {
-                timeout = Integer.parseInt(getArg(args, ++i));
+                timeoutInSeconds = Integer.parseInt(getArg(args, ++i));
             } else if ("-userJsInjection".equals(arg)) {
                 userJsInjection = true;
                 if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
@@ -241,10 +237,10 @@ public class SeleniumServer {
                 }
             } else if ("-htmlSuite".equals(arg)) {
                 try {
-                    browserString = args[++i];
-                    startURL = args[++i];
-                    suiteFilePath = args[++i];
-                    resultFilePath = args[++i];
+                    System.setProperty("htmlSuite.browserString", args[++i]);
+                    System.setProperty("htmlSuite.startURL", args[++i]);
+                    System.setProperty("htmlSuite.suiteFilePath", args[++i]);
+                    System.setProperty("htmlSuite.resultFilePath", args[++i]);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("Not enough command line arguments for -htmlSuite");
                     System.err.println("-htmlSuite requires you to specify:");
@@ -256,7 +252,7 @@ public class SeleniumServer {
                 }
                 htmlSuite = true;
             } else if ("-interactive".equals(arg)) {
-                timeout = Integer.MAX_VALUE;
+                timeoutInSeconds = Integer.MAX_VALUE;
                 interactive = true;
             } else if (arg.startsWith("-D")) {
                 setSystemProperty(arg);
@@ -312,31 +308,10 @@ public class SeleniumServer {
         }
 
         if (htmlSuite) {
-            String result = null;
-            try {
-                File suiteFile = new File(suiteFilePath);
-                if (!suiteFile.exists()) {
-                    usage("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
-                    System.exit(1);
-                }
-                seleniumProxy.addNewStaticContent(suiteFile.getParentFile());
-                String suiteURL = startURL + "/selenium-server/" + suiteFile.getName();
-                HTMLLauncher launcher = new HTMLLauncher(seleniumProxy);
-                result = launcher.runHTMLSuite(browserString, startURL, suiteURL, new File(resultFilePath), timeout, multiWindow);
-            } catch (Exception e) {
-                System.err.println("HTML suite exception seen:");
-                e.printStackTrace();
-                System.exit(1);
-            }
-
-            if (!"PASSED".equals(result)) {
-                System.err.println("Tests failed");
-                System.exit(1);
-            } else {
-                System.exit(0);
-            }
+            runHtmlSuite(seleniumProxy);
+            return;
         }
-
+        
         if (interactive) {
             AsyncExecute.sleepTight(500);
             System.out.println("Entering interactive mode... type Selenium commands here (e.g: cmd=open&1=http://www.yahoo.com)");
@@ -415,7 +390,7 @@ public class SeleniumServer {
             System.exit(1);
         }
 
-        SingleEntryAsyncQueue.setDefaultTimeout(timeout);
+        SingleEntryAsyncQueue.setDefaultTimeout(timeoutInSeconds);
         seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
         SeleniumServer.setPortDriversShouldContact(portDriversShouldContactArg);
 
@@ -642,45 +617,90 @@ public class SeleniumServer {
         return portDriversShouldContact;
     }
 
-    private static void setPortDriversShouldContact(int port) {
+	private static void setPortDriversShouldContact(int port) {
         SeleniumServer.portDriversShouldContact = port;
     }
 
-    public void setProxyInjectionMode(boolean proxyInjectionMode) {
+	public void setProxyInjectionMode(boolean proxyInjectionMode) {
         if (proxyInjectionMode) {
             proxyInjectionSpeech();
         }
         SeleniumServer.proxyInjectionMode = proxyInjectionMode;
     }
 
-    public static String getDefaultBrowser() {
+	public static String getDefaultBrowser() {
         return defaultBrowserString;
     }
 
-    public static int getTimeoutInSeconds() {
-        return timeout;
+	public static int getTimeoutInSeconds() {
+        return timeoutInSeconds;
     }
 
-    public static void setDefaultBrowser(String defaultBrowserString) {
+	public static void setDefaultBrowser(String defaultBrowserString) {
         SeleniumServer.defaultBrowserString = defaultBrowserString;
     }
 
-    public static boolean reusingBrowserSessions() {
+	public static boolean reusingBrowserSessions() {
         if (reusingBrowserSessions == null) {
 //            if (isProxyInjectionMode()) {     turn off this default until we are stable.  Too many variables spoils the soup.
 //                reusingBrowserSessions = Boolean.TRUE; // default in pi mode
-//            }        
+//            }
 //            else {
             reusingBrowserSessions = Boolean.FALSE; // default in non-pi mode
-//            }        
+//            }
         }
         return reusingBrowserSessions;
     }
 
-    public static String getDebugURL() {
+	public static String getDebugURL() {
         return debugURL;
     }
 
+	private static String getRequiredSystemProperty(String name) {
+        String value = System.getProperty(name);
+        if (value==null) {
+            usage("expected property " + name + " to be defined");
+            System.exit(1);
+        }
+        return value;
+    }
+    
+	private static void runHtmlSuite(SeleniumServer seleniumProxy) {
+        String result = null;
+        try {
+            String suiteFilePath = getRequiredSystemProperty("htmlSuite.suiteFilePath");
+                File suiteFile = new File(suiteFilePath);
+            if (!suiteFile.exists()) {
+                usage("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
+                System.exit(1);
+            }
+            seleniumProxy.addNewStaticContent(suiteFile.getParentFile());
+            String startURL = getRequiredSystemProperty("htmlSuite.startURL");
+            String suiteURL = startURL + "/selenium-server/" + suiteFile.getName();
+            HTMLLauncher launcher = new HTMLLauncher(seleniumProxy);
+            String resultFilePath = getRequiredSystemProperty("htmlSuite.resultFilePath");
+            File resultFile = new File(resultFilePath);
+            if (!resultFile.canWrite()) {
+                usage("can't write to result file " + resultFilePath);
+                System.exit(1);
+            }
+            result = launcher.runHTMLSuite(getRequiredSystemProperty("htmlSuite.browserString"), startURL, suiteURL, resultFile, 
+                    timeoutInSeconds, seleniumProxy.isMultiWindow());
+            } catch (Exception e) {
+                System.err.println("HTML suite exception seen:");
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            if (!"PASSED".equals(result)) {
+                System.err.println("Tests failed");
+                System.exit(1);
+            } else {
+                System.exit(0);
+            }
+        }
+
+    
     public static void log(String logMessages) {
         PrintStream out = (logOut != null) ? logOut : System.out;
         if (logMessages.endsWith("\n")) {
