@@ -101,6 +101,11 @@ public class AsyncExecute extends Execute {
         if (waiter.isAlive()) {
             waiter.interrupt();
         }
+        try {
+            waiter.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Bug? Main interrupted while waiting for dead process waiter", e);
+        }
         InterruptedException ie = pw.getException();
         if (ie != null) {
             throw new RuntimeException("Timeout waiting for process to die", ie);
