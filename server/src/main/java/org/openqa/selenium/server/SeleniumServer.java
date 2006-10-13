@@ -179,10 +179,10 @@ public class SeleniumServer {
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            if ("-help".equals(arg)) {
+            if ("-help".equalsIgnoreCase(arg)) {
                 usage(null);
                 System.exit(1);
-            } else if ("-defaultBrowserString".equals(arg)) {
+            } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
                 for (i++; i < args.length; i++) {
                     if (SeleniumServer.defaultBrowserString == null)
                         SeleniumServer.defaultBrowserString = "";
@@ -192,50 +192,50 @@ public class SeleniumServer {
                 }
                 SeleniumServer.log("\"" + defaultBrowserString + "\" will be used as the browser " +
                         "mode for all sessions, no matter what is passed to getNewBrowserSession.");
-            } else if ("-log".equals(arg)) {
+            } else if ("-log".equalsIgnoreCase(arg)) {
                 setLogOut(getArg(args, ++i));
-            } else if ("-port".equals(arg)) {
+            } else if ("-port".equalsIgnoreCase(arg)) {
                 port = Integer.parseInt(getArg(args, ++i));
-            } else if ("-multiWindow".equals(arg)) {
+            } else if ("-multiWindow".equalsIgnoreCase(arg)) {
                 multiWindow = true;
-            } else if ("-proxyInjectionMode".equals(arg)) {
+            } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
                 proxyInjectionModeArg = true;
-            } else if ("-portDriversShouldContact".equals(arg)) {
+            } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
                 // to facilitate tcptrace interception of interaction between 
                 // injected js and the selenium server
                 portDriversShouldContactArg = Integer.parseInt(getArg(args, ++i));
-            } else if ("-noBrowserSessionReuse".equals(arg)) {
+            } else if ("-noBrowserSessionReuse".equalsIgnoreCase(arg)) {
                 SeleniumServer.reusingBrowserSessions = Boolean.FALSE;
-            } else if ("-browserSessionReuse".equals(arg)) {
+            } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
                 SeleniumServer.reusingBrowserSessions = Boolean.TRUE;
-            } else if ("-debug".equals(arg)) {
+            } else if ("-debug".equalsIgnoreCase(arg)) {
                 SeleniumServer.setDebugMode(true);
-            } else if ("-debugURL".equals(arg)) {
+            } else if ("-debugURL".equalsIgnoreCase(arg)) {
                 debugURL = getArg(args, ++i);
-            } else if ("-timeout".equals(arg)) {
+            } else if ("-timeout".equalsIgnoreCase(arg)) {
                 timeoutInSeconds = Integer.parseInt(getArg(args, ++i));
-            } else if ("-userJsInjection".equals(arg)) {
+            } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
                 userJsInjection = true;
                 if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
                     usage(null);
                     System.exit(1);
                 }
-            } else if ("-userContentTransformation".equals(arg)) {
+            } else if ("-userContentTransformation".equalsIgnoreCase(arg)) {
                 if (!InjectionHelper.addUserContentTransformation(getArg(args, ++i), getArg(args, ++i))) {
                     usage(null);
                     System.exit(1);
                 }
-            } else if ("-userExtensions".equals(arg)) {
+            } else if ("-userExtensions".equalsIgnoreCase(arg)) {
                 userExtensions = new File(getArg(args, ++i));
                 if (!userExtensions.exists()) {
                     System.err.println("User Extensions file doesn't exist: " + userExtensions.getAbsolutePath());
                     System.exit(1);
                 }
-                if (!"user-extensions.js".equals(userExtensions.getName())) {
+                if (!"user-extensions.js".equalsIgnoreCase(userExtensions.getName())) {
                     System.err.println("User extensions file MUST be called \"user-extensions.js\": " + userExtensions.getAbsolutePath());
                     System.exit(1);
                 }
-            } else if ("-htmlSuite".equals(arg)) {
+            } else if ("-htmlSuite".equalsIgnoreCase(arg)) {
                 try {
                     System.setProperty("htmlSuite.browserString", args[++i]);
                     System.setProperty("htmlSuite.startURL", args[++i]);
@@ -251,7 +251,7 @@ public class SeleniumServer {
                     System.exit(1);
                 }
                 htmlSuite = true;
-            } else if ("-interactive".equals(arg)) {
+            } else if ("-interactive".equalsIgnoreCase(arg)) {
                 timeoutInSeconds = Integer.MAX_VALUE;
                 interactive = true;
             } else if (arg.startsWith("-D")) {
@@ -321,7 +321,7 @@ public class SeleniumServer {
             final String[] lastSessionId = new String[]{""};
 
             while ((userInput = stdIn.readLine()) != null) {
-                if ("quit".equals(userInput)) {
+                if ("exit".equals(userInput) || "quit".equals(userInput)) {
                     System.out.println("Stopping...");
                     seleniumProxy.stop();
                     System.exit(0);
@@ -446,7 +446,7 @@ public class SeleniumServer {
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
                 "the argument for port is the port number the selenium server should use (default 4444)" +
                 "\n\t-interactive puts you into interactive mode.  See the tutorial for more details" +
-                "\n\t-multiwindow puts you into a mode where the test web site executes in a separate window, and selenium supports frames" +
+                "\n\t-multiWindow puts you into a mode where the test web site executes in a separate window, and selenium supports frames" +
                 "\n\t-defaultBrowserString (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
                 "\n\t-userExtensions indicates a JavaScript file that will be loaded into selenium" +
                 "\n\t-browserSessionReuse stops re-initialization and spawning of the browser between tests" +
