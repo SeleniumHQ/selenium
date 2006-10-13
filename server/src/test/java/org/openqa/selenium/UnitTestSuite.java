@@ -19,6 +19,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(StaticContentHandlerTest.class);
         suite.addTestSuite(WindowsUtilsTest.class);
         suite.addTestSuite(FirefoxChromeLauncherTest.class);
+        suite.addTestSuite(HTMLSuiteResultTest.class);
         return suite;
     }
 }

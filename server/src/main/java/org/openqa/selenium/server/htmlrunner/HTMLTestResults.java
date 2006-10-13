@@ -35,9 +35,56 @@ public class HTMLTestResults {
     private final String numCommandPasses;
     private final String numCommandFailures;
     private final String numCommandErrors;
-    private final String suite;
+    private final HTMLSuiteResult suite;
 
-    private static final String SUMMARY_HTML = "<html><body>\n<h1>Test suite results </h1>" +
+    private static final String HEADER = "<html>\n" +
+    "<head><style type='text/css'>\n" +
+    "body, table {\n" + 
+    "    font-family: Verdana, Arial, sans-serif;\n" + 
+    "    font-size: 12;\n" + 
+    "}\n" + 
+    "\n" + 
+    "table {\n" + 
+    "    border-collapse: collapse;\n" + 
+    "    border: 1px solid #ccc;\n" + 
+    "}\n" + 
+    "\n" + 
+    "th, td {\n" + 
+    "    padding-left: 0.3em;\n" + 
+    "    padding-right: 0.3em;\n" + 
+    "}\n" + 
+    "\n" + 
+    "a {\n" + 
+    "    text-decoration: none;\n" + 
+    "}\n" + 
+    "\n" + 
+    ".title {\n" + 
+    "    font-style: italic;\n" + 
+    "}\n" + 
+    "\n" + 
+    ".selected {\n" + 
+    "    background-color: #ffffcc;\n" + 
+    "}\n" + 
+    "\n" + 
+    ".status_done {\n" + 
+    "    background-color: #eeffee;\n" + 
+    "}\n" + 
+    "\n" + 
+    ".status_passed {\n" + 
+    "    background-color: #ccffcc;\n" + 
+    "}\n" + 
+    "\n" + 
+    ".status_failed {\n" + 
+    "    background-color: #ffcccc;\n" + 
+    "}\n" + 
+    "\n" + 
+    ".breakpoint {\n" + 
+    "    background-color: #cccccc;\n" + 
+    "    border: 1px solid black;\n" + 
+    "}\n" +
+    "</style><title>Test suite results</title></head>\n" + 
+    "<body>\n<h1>Test suite results </h1>";
+    private static final String SUMMARY_HTML =  
             "\n\n<table>\n<tr>\n<td>result:</td>\n<td>{0}</td>\n" +
             "</tr>\n<tr>\n<td>totalTime:</td>\n<td>{1}</td>\n</tr>\n" +
             "<tr>\n<td>numTestPasses:</td>\n<td>{2}</td>\n</tr>\n" +
@@ -45,21 +92,21 @@ public class HTMLTestResults {
             "<tr>\n<td>numCommandPasses:</td>\n<td>{4}</td>\n</tr>\n" +
             "<tr>\n<td>numCommandFailures:</td>\n<td>{5}</td>\n</tr>\n" +
             "<tr>\n<td>numCommandErrors:</td>\n<td>{6}</td>\n</tr>\n" +
-            "<tr>\n<td>{7}</td>\n<td>&nbsp;</td>\n</tr>";
+            "<tr>\n<td>{7}</td>\n<td>&nbsp;</td>\n</tr>\n</table>";
     
-    private static final String SUITE_HTML = "<tr>\n<td>{0}</td>\n<td>&nbsp;</td>\n</tr>";
+    private static final String SUITE_HTML = "<tr>\n<td><a name=\"testresult{0}\">{1}</a><br/>{2}</td>\n<td>&nbsp;</td>\n</tr>";
     
-    private final List testTables;
+    private final List<String> testTables;
     
     public HTMLTestResults(String postedResult, String postedTotalTime, 
             String postedNumTestPasses, String postedNumTestFailures, 
             String postedNumCommandPasses, String postedNumCommandFailures, 
-            String postedNumCommandErrors, String postedSuite, List postedTestTables) {
+            String postedNumCommandErrors, String postedSuite, List<String> postedTestTables) {
 
         result = postedResult;
         numCommandFailures = postedNumCommandFailures;
         numCommandErrors = postedNumCommandErrors;
-        suite = postedSuite;
+        suite = new HTMLSuiteResult(postedSuite);
         totalTime = postedTotalTime;
         numTestPasses = postedNumTestPasses;
         numTestFailures = postedNumTestFailures;
@@ -68,30 +115,6 @@ public class HTMLTestResults {
     }
 
 
-    public List getTestNames() {
-        List<String> testNames = new LinkedList<String>();
-        
-        int testStartIndex = 0;
-        int testEndIndex = 0;
-        
-        while (suite.indexOf(".html\">", testEndIndex) != -1) {
-            testStartIndex = suite.indexOf(".html\">", testEndIndex) + 7;
-            testEndIndex = suite.indexOf("</a>", testStartIndex);
-            String testName = suite.substring(testStartIndex, testEndIndex);
-            testNames.add(testName);
-        }
-        
-        return testNames;
-    }
-
-    public String getDecodedTestSuite() {
-        return new UrlDecoder().decode(suite);
-    }
-    
-    public List getDecodedTestTables() {
-        return new UrlDecoder().decodeListOfStrings(testTables);
-    }
-    
     public String getResult() {
         return result;
     }
@@ -110,9 +133,6 @@ public class HTMLTestResults {
     public String getNumTestPasses() {
         return numTestPasses;
     }
-    public String getSuite() {
-        return suite;
-    }
     public Collection getTestTables() {
         return testTables;
     }
@@ -124,7 +144,8 @@ public class HTMLTestResults {
     }
 
     public void write(Writer out) throws IOException {
-        Object[] parameters = new Object[] {
+        out.write(HEADER);
+        out.write(MessageFormat.format(SUMMARY_HTML,
                 result,
                 totalTime,
                 numTestPasses,
@@ -132,14 +153,10 @@ public class HTMLTestResults {
                 numCommandPasses,
                 numCommandFailures,
                 numCommandErrors,
-                suite,
-        };
-        out.write(MessageFormat.format(SUMMARY_HTML,parameters));
-        parameters = new Object[1];
-        for (Iterator i = testTables.iterator(); i.hasNext();) {
-            String table = (String) i.next();
-            parameters[0] = table;
-            out.write(MessageFormat.format(SUITE_HTML, parameters));
+                suite.getUpdatedSuite()));
+        for (int i = 0; i < testTables.size(); i++) {
+            String table = testTables.get(i);
+            out.write(MessageFormat.format(SUITE_HTML, i, suite.getHref(i), table));
         }
         out.write("</table></body></html>");
         out.flush();
