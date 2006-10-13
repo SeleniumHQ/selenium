@@ -38,6 +38,10 @@ public class HTMLLauncher implements HTMLResultsListener {
      */
     public String runHTMLSuite(String browser, String browserURL, String HTMLSuite, File outputFile, int timeoutInSeconds, boolean multiWindow) throws IOException {
         long timeoutInMs = 1000 * timeoutInSeconds;
+        if (timeoutInMs < 0) {
+            System.err.println("Looks like the timeout overflowed, so resetting it to the maximum.");
+            timeoutInMs = Long.MAX_VALUE;
+        }
         server.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
