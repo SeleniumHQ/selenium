@@ -78,12 +78,11 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
 
     public void close() {
-        iexploreProcess.destroy();
-        int exitValue = AsyncExecute.waitForProcessDeath(iexploreProcess, 10000);
+        int exitValue = AsyncExecute.killProcess(iexploreProcess);
         if (exitValue == 0) {
             System.err.println("WARNING: Embedded iexplore seems to have ended on its own (did we kill the real browser???)");
         }
-        htaProcess.destroy();
+        AsyncExecute.killProcess(htaProcess);
         LauncherUtils.recursivelyDeleteDir(dir);
     }
     

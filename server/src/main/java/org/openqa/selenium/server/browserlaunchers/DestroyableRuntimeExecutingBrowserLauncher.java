@@ -40,7 +40,7 @@ public class DestroyableRuntimeExecutingBrowserLauncher extends AbstractBrowserL
 
     /** Kills the process */
     public void close() {
-        process.destroy();
+        AsyncExecute.killProcess(process);
     }
 
     protected void launch(String url) {

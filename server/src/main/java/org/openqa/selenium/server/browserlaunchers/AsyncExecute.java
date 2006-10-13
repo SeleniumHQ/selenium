@@ -80,6 +80,7 @@ public class AsyncExecute extends Execute {
         return process;
     }
     
+    /** Is this process still running ? */
     public static boolean isAlive(Process p) {
         try {
             p.exitValue();
@@ -89,6 +90,7 @@ public class AsyncExecute extends Execute {
         return false;
     }
 
+    /** Waits the specified timeout for the process to die */
     public static int waitForProcessDeath(Process p, long timeout) {
         ProcessWaiter pw = new ProcessWaiter(p);
         Thread waiter = new Thread(pw);
@@ -108,9 +110,50 @@ public class AsyncExecute extends Execute {
         }
         InterruptedException ie = pw.getException();
         if (ie != null) {
-            throw new RuntimeException("Timeout waiting for process to die", ie);
+            throw new ProcessStillAliveException("Timeout waiting for process to die", ie);
         }
         return p.exitValue();
+        
+    }
+    
+    /** Forcibly kills a process, using OS tools like "kill" as a last resort */
+    public static int killProcess(Process process) {
+        process.destroy();
+        int exitValue;
+        try {
+            exitValue = AsyncExecute.waitForProcessDeath(process, 10000);
+        } catch (ProcessStillAliveException ex) {
+            if (WindowsUtils.thisIsWindows()) throw ex;
+            try {
+                System.out.println("Process didn't die after 10 seconds");
+                UnixUtils.kill9(process);
+                exitValue = AsyncExecute.waitForProcessDeath(process, 10000);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Process refused to die after 10 seconds, and couldn't kill9 it: " + e.getMessage(), ex);
+            }
+        }
+        return exitValue;
+    }
+    
+    /** Thrown when a process remains alive after attempting to destroy it */
+    public static class ProcessStillAliveException extends RuntimeException {
+
+        public ProcessStillAliveException() {
+            super();
+        }
+
+        public ProcessStillAliveException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public ProcessStillAliveException(String message) {
+            super(message);
+        }
+
+        public ProcessStillAliveException(Throwable cause) {
+            super(cause);
+        }
         
     }
     

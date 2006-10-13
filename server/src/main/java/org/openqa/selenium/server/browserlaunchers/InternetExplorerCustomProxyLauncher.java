@@ -207,7 +207,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
                 taskKillException = e;
             }
         }
-        process.destroy();
+        AsyncExecute.killProcess(process);
         if (customPACappropriate) {
             try {
                 LauncherUtils.recursivelyDeleteDir(customProxyPACDir);

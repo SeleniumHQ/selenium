@@ -214,8 +214,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
                 taskKillException = e;
             }
         }
-        process.destroy();
-        int exitValue = AsyncExecute.waitForProcessDeath(process, 10000);
+        int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
             System.err.println("WARNING: Opera seems to have ended on its own (did we kill the real browser???)");
         }

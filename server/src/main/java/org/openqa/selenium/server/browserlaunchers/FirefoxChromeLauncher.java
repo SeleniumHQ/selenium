@@ -20,6 +20,7 @@ import net.sf.cotta.TDirectory;
 import net.sf.cotta.TFileFactory;
 import net.sf.cotta.utils.ClassPathLocator;
 import org.apache.tools.ant.taskdefs.condition.Os;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -184,8 +185,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
                 taskKillException = e;
             }
         }
-        process.destroy();
-        int exitValue = AsyncExecute.waitForProcessDeath(process, 10000);
+        int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
             System.err.println("WARNING: Firefox seems to have ended on its own (did we kill the real browser???)");
         }
