@@ -39,8 +39,8 @@ Object.extend(SeleneseRunnerOptions.prototype, {
     initialize: function() {
         this._acquireQueryString();
     },
-    getDebugMode: function() {
-        return this._getQueryParameter("debugMode");
+    isDebugMode: function() {
+        return this._isQueryParameterTrue("debugMode");
     },
 
     getContinue: function() {
@@ -97,7 +97,7 @@ function runSeleniumTest() {
     }
     selenium = Selenium.createForWindow(testAppWindow);
     if (!debugMode) {
-        debugMode = runOptions.getDebugMode();
+        debugMode = runOptions.isDebugMode();
     }
     if (proxyInjectionMode) {
         LOG.log = logToRc;
