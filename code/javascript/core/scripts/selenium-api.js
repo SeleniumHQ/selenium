@@ -60,11 +60,12 @@ function Selenium(browserbot) {
 	 *
 	 * <dd>
 	 *
-	 * <dd>Find an element using JavaScript traversal of the HTML Document Object
-	 * Model. DOM locators <em>must</em> begin with &quot;document.&quot;.
+	 * <dd>Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
+	 * Model using JavaScript.  Note that you must not return a value in this string; simply make it the last expression in the block.
 	 * <ul class="first last simple">
 	 * <li>dom=document.forms['myForm'].myDropdown</li>
 	 * <li>dom=document.images[56]</li>
+	 * <li>dom=function foo() { return document.links[1]; }; foo();</li>
 	 * </ul>
 	 * </dd>
 	 *

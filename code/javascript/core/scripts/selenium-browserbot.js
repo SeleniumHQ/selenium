@@ -957,15 +957,12 @@ PageBot.prototype.locateElementByName = function(locator, document, inWindow) {
 /**
  * Finds an element using by evaluating the specfied string.
  */
-PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument, inWindow) {
+PageBot.prototype.locateElementByDomTraversal = function(domTraversal, document, window) {
 
+    var browserbot = this.browserbot;
     var element = null;
     try {
-        if (browserVersion.isOpera) {
-            element = inWindow.eval(domTraversal);
-        } else {
-            element = eval("inWindow." + domTraversal);
-        }
+        element = eval(domTraversal);
     } catch (e) {
         e.isSeleniumError = true;
         throw e;
