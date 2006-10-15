@@ -160,7 +160,7 @@ Object.extend(SeleniumFrame.prototype, {
         var styleLink = d.createElement("link");
         styleLink.rel = "stylesheet";
         styleLink.type = "text/css";
-        styleLink.href = window.location.pathname.replace(/[^\/]+$/, "selenium-test.css");
+        styleLink.href = window.location.pathname.replace(/[^\/\\]+$/, "selenium-test.css");
         head.appendChild(styleLink);
     },
 
