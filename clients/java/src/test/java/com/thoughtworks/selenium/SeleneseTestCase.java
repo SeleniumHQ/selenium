@@ -21,6 +21,7 @@ package com.thoughtworks.selenium;
 import junit.framework.*;
 
 import org.openqa.selenium.server.*;
+import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 
 /**
  * @author Nelson Sproul (nsproul@bea.com) Mar 13-06
@@ -36,7 +37,11 @@ public class SeleneseTestCase extends TestCase {
     }
 
     protected void setUp(String url) throws Exception {
-        setUp(url, "*iexplore");
+      if(WindowsUtils.thisIsWindows()){
+	     setUp(url, "*iexplore");
+      }else{
+	     setUp(url, "*firefox");
+      } 
     }
     
     protected void setUp(String url, String browserMode) throws Exception {
