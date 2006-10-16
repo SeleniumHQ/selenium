@@ -236,7 +236,7 @@ public class WindowsUtils {
     
     public static String getPath() {
         loadEnvironment();
-        return env.getProperty(getExactPathEnvKey());
+        return getEnvVarIgnoreCase("PATH");
     }
     
     /** Returns the path to the Windows Program Files.  On non-English versions,
@@ -245,12 +245,21 @@ public class WindowsUtils {
      */
     public static String getProgramFilesPath() {
         loadEnvironment();
-        String pf = env.getProperty("ProgramFiles");
+        String pf = getEnvVarIgnoreCase("ProgramFiles");
         if (pf != null) {
             File ProgramFiles = new File(pf);
             if (ProgramFiles.exists()) return ProgramFiles.getAbsolutePath();
         } 
         return new File("C:\\Program Files").getAbsolutePath();
+    }
+    
+    public static String getEnvVarIgnoreCase(String var) {
+        loadEnvironment();
+        for (Iterator i = env.keySet().iterator(); i.hasNext();) {
+            String key = (String) i.next();
+            if (key.equalsIgnoreCase(var)) return key;
+        }
+        return null;
     }
     
     /** Finds the system root directory, e.g. "c:\windows" or "c:\winnt" */
