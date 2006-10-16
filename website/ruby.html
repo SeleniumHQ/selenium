@@ -14,7 +14,9 @@
 
 <p>To use the Ruby Client Driver, just "require" or "load" selenium.rb in your Ruby script, and create a new Selenium::SeleneseInterpreter object.  You'll need to give it the hostname and port of the Selenium Server, the browser string to use with "getNewBrowserSession", and the base URL at which we'll start testing.  When you're ready to begin, run the "start" method on your SeleneseInterpreter object; when it's time to close the browser, use the "stop" method.</p>
 
-<p>The SeleneseInterpreter object is full of handy methods that handle your Selenium Commands.  If one of them has an error (or if an "assert" command fails) the method will raise a SeleniumCommandError with a handy error message, which you can wrap up in a "catch" block if you like.</p>
+<p>The SeleneseInterpreter object is full of handy methods that handle your Selenium Commands.  If one of them has an error (or if an "assert" command fails) the method will raise a SeleniumCommandError with a handy error message, which you can wrap up in a "rescue" block if you like.</p>
+
+<p>If you get tired of typing "@selenium" in front of all of your commands, you can also mixin the SeleniumHelper module, which will automatically pass all calls to missing methods to the @selenium object.  You still need to define a @selenium object yourself, and start/stop it normally.</p>
 
 <p>While we recommend that you use the Ruby Client Driver together with Ruby's <a href="http://www.ruby-doc.org/stdlib/libdoc/test/unit/rdoc/classes/Test/Unit.html">Test::Unit</a> unit testing framework, Test::Unit is not required; you can use the Ruby Client Driver with any program whatsoever to automate tasks in your browser.</p>
 

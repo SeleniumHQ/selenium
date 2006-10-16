@@ -20,8 +20,9 @@ require 'test/unit'
 require 'selenium'
 
 class ExampleTest < Test::Unit::TestCase
-
-	def setup
+    include SeleniumHelper
+    
+    def setup
         @selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://www.irian.at", 10000);
         @selenium.start
     end
@@ -31,18 +32,19 @@ class ExampleTest < Test::Unit::TestCase
     end
 
     def test_something
-	input_id = 'ac4'
-	update_id = 'ac4update'
-
-	@selenium.open "http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html"
-	@selenium.key_press input_id, 74
-	sleep 0.5
-	@selenium.key_press input_id, 97
-	@selenium.key_press input_id, 110
-	sleep 0.5
-	assert_equal('Jane Agnews', @selenium.get_text(update_id))
-	@selenium.key_press input_id, '\9'
-	sleep 0.5
-	assert_equal('Jane Agnews', @selenium.get_value(input_id))
+        input_id = 'ac4'
+        update_id = 'ac4update'
+        
+        open "http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html"
+        key_press input_id, 74
+        sleep 0.5
+        key_press input_id, 97
+        key_press input_id, 110
+        sleep 0.5
+        assert_equal('Jane Agnews', get_text(update_id))
+        key_press input_id, '\9'
+        sleep 0.5
+        assert_equal('Jane Agnews', get_value(input_id))
     end
+    
 end
