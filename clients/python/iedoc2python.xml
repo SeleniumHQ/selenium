@@ -116,12 +116,15 @@ class selenium:
         csv = self.get_string(verb, args)
         token = ""
         tokens = []
+        escape = False
         for i in range(len(csv)):
             letter = csv[i]
-            if (letter == '\\'):
-                i = i + 1
-                letter = csv[i]
+            if (escape):
                 token = token + letter
+                escape = False
+                continue
+            if (letter == '\\'):
+                escape = True
             elif (letter == ','):
                 tokens.append(token)
                 token = ""
