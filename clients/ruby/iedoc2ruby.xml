@@ -116,12 +116,15 @@ module Selenium
             csv = get_string(verb, args)
             token = ""
             tokens = []
-            csv.length.times do |i|
-                letter = csv[i,1]
-                if (letter == '\\')
-                    i++
-                    letter = csv[i,1]
+            escape = false
+            csv.split(//).each do |letter|
+                if escape
                     token = token + letter
+                    escape = false
+                    next
+                end
+                if (letter == '\\')
+                    escape = true
                 elsif (letter == ',')
                     tokens.push(token)
                     token = ""
