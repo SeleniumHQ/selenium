@@ -1,0 +1,434 @@
+<project name="selenium" default="dist" xmlns:maven="urn:maven-artifact-ant">
+
+    <property name="version" value="0.8.1-SNAPSHOT"/>
+
+    <target name="all" depends="clean, install-jar, nightly-image"/>
+    <target name="all-with-tests" depends="clean, browser_bot_tests, install-jar, nightly-image"/>
+
+    <property name="resultshandler.path.prefix" value=""/>
+    <property name="svnversion.executable" value="svnversion"/>
+    <property name="ruby.executable" value="/usr/bin/ruby"/>
+
+    <property name="build.dir" location="build"/>
+    <property name="logs.dir" location="logs"/>
+    <property name="dist.dir" location="${build.dir}/dist"/>
+    <property name="image.dir" location="${build.dir}/image"/>
+    <property name="resultshandler.image.dir" location="${build.dir}/resultshandler"/>
+    <property name="docs.generation.dir" location="javascript/doctool"/>
+
+    <!-- override to suit your environment -->
+
+    <property name="release.host" value="release.openqa.org"/>
+    <property name="release.user" value="release"/>
+    <property name="release.dir" value="release.openqa.org/htdocs/selenium-core"/>
+    <property name="release.key.file"
+              value="${user.home}/.ssh/openqa/release_openqa"/>
+    <property name="release.key.passphrase" value=""/>
+
+    <!-- for jsunit integration -->
+    <condition property="browserFileNames" value="c:\program files\Internet Explorer\iexplore.exe">
+        <os family="windows"/>
+    </condition>
+    <condition property="browserFileNames" value="/usr/bin/firefox">
+        <os family="unix"/>
+    </condition>
+    <property name="testRunnerLocation" location="javascript/jsunit/testRunner.html"/>
+    <property name="testSuiteLocation" location="javascript/unittest/browserbot/suite.html"/>
+    <property name="browserBotTestUrl"
+              value="file://${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=true"/>
+    <property name="port" value=""/>
+    <property name="resourceBase" value=""/>
+    <property name="logsDirectory" value=""/>
+    <path id="classpath">
+        <fileset dir="java/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${logs.dir}"/>
+    </target>
+
+    <target name="get-svn-revision">
+        <exec executable="${svnversion.executable}" outputProperty="svn-revision" failOnError="true">
+            <arg value="."/>
+        </exec>
+        <echo message="Got svn revision: ${svn-revision}"/>
+    </target>
+
+    <target name="copy-sources">
+        <mkdir dir="${image.dir}"/>
+        <property name="svn-revision" value="unknown-revision"/>
+        <copy todir="${image.dir}">
+            <fileset dir="javascript">
+                <exclude name="doctool"/>
+                <exclude name="doctool/**"/>
+                <exclude name="core/scripts/selenium-version.js"/>
+                <exclude name="VERSION.txt"/>                
+                <exclude name="tests/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${image.dir}">
+            <fileset dir="javascript">
+                <include name="core/scripts/selenium-version.js"/>
+                <include name="VERSION.txt"/>
+            </fileset>
+            <filterset>
+                <filter token="VERSION" value="${version}"/>
+                <filter token="REVISION" value="${svn-revision}"/>
+            </filterset>
+        </copy>
+        <copy file="${image.dir}/core/TestRunner.html" tofile="${image.dir}/core/TestRunner.hta"/>
+    </target>
+
+    <target name="generate-xml" depends="copy-sources">
+        <java jar="${docs.generation.dir}/js.jar" output="${image.dir}/doc.xml" failonerror="true" fork="true">
+            <arg file="${docs.generation.dir}/doc.js"/>
+            <arg file="javascript/core/scripts/selenium-api.js"/>
+        </java>
+        <xmlvalidate file="${image.dir}/doc.xml" lenient="true"/>
+        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc.xml" overwrite="true"/>
+        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc-core.xml" overwrite="true"/>
+    </target>
+
+    <target name="generate-doc" depends="generate-xml">
+        <xslt in="${image.dir}/doc.xml" out="${image.dir}/reference.html" style="${docs.generation.dir}/doc2html.xml"/>
+    </target>
+
+    <target name="image" depends="get-svn-revision, copy-sources, generate-doc"/>
+
+    <target name="browser_bot_tests"
+            description="Runs JsUnit tests on the local machine as configured by the url and browserfilenames properties">
+        <junit showoutput="true" haltonerror="true" haltonfailure="true">
+            <classpath refid="classpath"/>
+            <sysproperty key="browserFileNames" value="${browserFileNames}"/>
+            <sysproperty key="url" value="${browserBotTestUrl}"/>
+            <sysproperty key="port" value="${port}"/>
+            <sysproperty key="resourceBase" value="${resourceBase}"/>
+            <sysproperty key="logsDirectory" value="${logsDirectory}"/>
+            <test name="net.jsunit.StandaloneTest"/>
+        </junit>
+    </target>
+
+    <target name="test-allmodes">
+        <property name="allmodes.target" value="test-allbrowsers" />
+        
+        <antcall target="test-allbrowsers">
+            <param name="slowResources" value="false" />
+            <param name="multiWindow" value="true" />
+        </antcall>
+        <antcall target="test-allbrowsers">
+            <param name="slowResources" value="false" />
+            <param name="multiWindow" value="false" />
+        </antcall>
+        <antcall target="test-allbrowsers">
+            <param name="slowResources" value="true" />
+            <param name="multiWindow" value="true" />
+        </antcall>
+        <antcall target="test-allbrowsers">
+            <param name="slowResources" value="true" />
+            <param name="multiWindow" value="false" />
+        </antcall>
+    </target>
+    
+    <target name="test-allbrowsers" depends="iexploreTests, firefoxTests, chromeTests, operaTests" />
+    
+    <target name="iexploreTests" depends="selenese-task, checkWindows" if="thisIsWindows">
+        <preset-selenese taskname="iexplore" browser="*iexplore" />
+    </target>
+    
+    <target name="firefoxTests" depends="selenese-task, image">
+        <preset-selenese taskname="firefox" browser="*firefox" />
+    </target>
+    
+    <target name="chromeTests" depends="selenese-task, image">
+        <preset-selenese taskname="chrome" browser="*chrome" />
+    </target>
+    
+    <target name="operaTests" depends="selenese-task, image">
+        <preset-selenese taskname="opera" browser="*opera" />
+    </target>
+
+    <target name="htaTests" depends="image, checkWindows" if="thisIsWindows">
+        <echo message="Starting HTA tests..."/>
+        <property name="results.file" location="${build.dir}/results.html"/>
+        <delete file="${results.file}"/>
+        <delete file="${results.file}"/>
+        <exec executable="cmd" failonerror="true" dir="${build.dir}" timeout="300000">
+            <arg value="/c"/>
+            <!--<arg value="start" />
+                 <arg value="/wait" />-->
+            <arg value="${image.dir}/core/TestRunner.hta"/>
+            <arg value="&quot;test=../tests/TestSuite.html&amp;auto=true&amp;save=true&amp;resultsUrl=${results.file}&amp;close=true&quot;"/>
+        </exec>
+        <condition property="build.failed">
+            <not>
+                <available file="${results.file}"/>
+            </not>
+        </condition>
+        <fail if="build.failed" message="Couldn't find results file: ${results.file}"/>
+        <loadfile srcfile="${results.file}" property="tests.passed">
+            <filterchain>
+                <tokenfilter>
+                    <filetokenizer/>
+                    <containsregex pattern="result:./td.\s*.td.passed./td."/>
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
+        <fail unless="tests.passed" message="HTA Tests did not pass, see results file for details: ${results.file}"/>
+        <echo message="HTA tests passed!"/>
+    </target>
+
+    <target name="checkWindows">
+        <condition property="thisIsWindows">
+            <os family="windows"/>
+        </condition>
+    </target>
+
+    <target name="selenese-task" depends="image, maven-tasks">
+        <find-maven-jar groupId="org.openqa.selenium.server" version="0.8.2-SNAPSHOT" artifactId="selenium-server-coreless" /> 
+        <property name="slowResources" value="false" />
+        <property name="multiWindow" value="true" />
+        <taskdef resource="selenium-ant.properties">
+            <classpath>
+                <pathelement location="${selenium-server-coreless.jar}" />
+                <pathelement location="${image.dir}" />
+            </classpath>
+        </taskdef>
+        <property name="suite" value="TestSuite" />
+        <property name="suite.path" location="javascript/tests/${suite}.html" />
+        <presetdef name="preset-selenese">
+            <!-- javaScriptCoreDir="${image.dir}" -->
+            <selenese 
+                suite="${suite.path}"
+                
+                slowResources="${slowResources}"
+                multiWindow="${multiWindow}"
+                startURL="http://localhost:4444" />
+        </presetdef>
+    </target>
+
+    <target name="resultshandler-image" depends="get-svn-revision, copy-sources"
+            description="Creates a public test results handler image - this should be copied to an apache directory, preserving permissions.">
+        <echo>
+            Creating a public test results handler image for Selenium revision ${svn-revision} at
+            ${resultshandler.image.dir}.
+            This should be copied to an apache directory that is available via the URL
+            "http://HOST${resultshandler.path.prefix}".
+            Permissions must be preserved in the copy.
+        </echo>
+        <!-- Copy the image -->
+        <copy todir="${resultshandler.image.dir}/selenium">
+            <fileset dir="${image.dir}"/>
+        </copy>
+
+        <!-- Copy the results handler files with correct permissions -->
+        <copy todir="${resultshandler.image.dir}">
+            <fileset dir="resultshandler"/>
+            <filterset>
+                <filter token="PATH_PREFIX" value="${resultshandler.path.prefix}"/>
+                <filter token="RUBY" value="${ruby.executable}"/>
+            </filterset>
+        </copy>
+        <chmod perm="755">
+            <fileset dir="${resultshandler.image.dir}">
+                <include name="**/*.rb"/>
+            </fileset>
+        </chmod>
+        <chmod perm="777">
+            <dirset dir="${resultshandler.image.dir}">
+                <include name="results"/>
+            </dirset>
+        </chmod>
+        <chmod perm="666">
+            <fileset dir="${resultshandler.image.dir}/results">
+                <include name="index.html"/>
+                <include name="results.list"/>
+            </fileset>
+        </chmod>
+    </target>
+
+    <target name="install-jar" depends="image, maven-tasks">
+        <mkdir dir="${dist.dir}/maven"/>
+        <jar destfile="${dist.dir}/maven/selenium-core.jar">
+            <fileset dir="${image.dir}"/>
+        </jar>
+        <mvn-install file="${dist.dir}/maven/selenium-core.jar"
+                     groupId="org.openqa.selenium.core"
+                     artifactId="selenium-core"
+                />
+    </target>
+
+    <target name="deploy-maven" depends="maven-tasks, install-jar">
+        <mvn-deploy file="${dist.dir}/maven/selenium-core.jar"
+                    groupId="org.openqa.selenium.core"
+                    artifactId="selenium-core"
+                    repositoryId="openqa"
+                    url="scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs"/>
+    </target>
+
+    <target name="maven-tasks-base">
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
+			<classpath>
+				<pathelement location="maven-artifact-ant-2.0.2-dep.jar" />
+			</classpath>
+		</typedef>
+		<maven:remoteRepository id="openqa" url="http://maven.openqa.org" />
+	</target>
+	
+	<target name="custom-repo" depends="maven-tasks-base" if="custom.maven.repo">
+		<presetdef name="mavendeps">
+			<maven:dependencies>
+				<localRepository location="${custom.maven.repo}" />
+				<remoteRepository refid="openqa" />
+			</maven:dependencies>
+		</presetdef>
+	</target>
+	
+	<target name="default-repo" depends="maven-tasks-base" unless="custom.maven.repo">
+		<presetdef name="mavendeps">
+			<maven:dependencies>
+			    <remoteRepository refid="openqa" />
+			</maven:dependencies>
+		</presetdef>
+	</target>
+
+	<target name="maven-tasks" depends="custom-repo,default-repo">
+        <!-- Defining Maven tasks; we're have do this goofy stuff because of various bugs in the Maven Ant tasks,
+             most especially including MNG-2060 and MNG-2264 -->
+        <property environment="env"/>
+        <property name="maven.home" value="${env.MAVEN_HOME}"/>
+        <!-- override this if necessary -->
+        <condition property="build.failed">
+            <not>
+                <available file="${maven.home}"/>
+            </not>
+        </condition>
+        <fail if="build.failed"
+              message="Couldn't find MAVEN_HOME.  (Did you set the MAVEN_HOME environment variable correctly?)&#xa;Maven Home: ${maven.home}"/>
+        <property name="mvn.overrideable.settings" value=""/>
+        <presetdef name="mvn">
+            <java classname="org.codehaus.classworlds.Launcher" fork="true" failonerror="true">
+                <!--<jvmarg value="-Xdebug"/>
+                     <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"/>
+                     <jvmarg value="-Xnoagent"/>
+                     <jvmarg value="-Djava.compiler=NONE"/>-->
+                <classpath>
+                    <fileset dir="${maven.home}/core/boot" includes="classworlds-*.jar"/>
+                </classpath>
+                <sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf"/>
+                <sysproperty key="maven.home" value="${maven.home}"/>
+                <arg line="${mvn.overrideable.settings}"/>
+            </java>
+        </presetdef>
+        <mvn outputproperty="ignore.output" failonerror="false" resultproperty="mvn.noargs.should.be.1"/>
+        <condition property="build.failed">
+            <not>
+                <equals arg1="1" arg2="${mvn.noargs.should.be.1}"/>
+            </not>
+        </condition>
+        <fail if="build.failed"
+              message="mvn is not appropriately failing on error...&#0010;You may be affected by maven bug 2127 http://jira.codehaus.org/browse/MNG-2127"/>
+        <echo message="mvn appears to be able to fail on error"/>
+
+        <macrodef name="mvn-install">
+            <attribute name="file"/>
+            <attribute name="groupId"/>
+            <attribute name="artifactId"/>
+            <attribute name="version" default="${version}"/>
+            <attribute name="packaging" default="jar"/>
+            <sequential>
+                <property name="@{file}.location" location="@{file}"/>
+                <mvn>
+                    <arg value="install:install-file"/>
+                    <arg value="-Dfile=${@{file}.location}"/>
+                    <arg value="-DgroupId=@{groupId}"/>
+                    <arg value="-DartifactId=@{artifactId}"/>
+                    <arg value="-Dversion=@{version}"/>
+                    <arg value="-Dpackaging=@{packaging}"/>
+                </mvn>
+            </sequential>
+        </macrodef>
+
+        <macrodef name="mvn-deploy">
+            <attribute name="file"/>
+            <attribute name="groupId"/>
+            <attribute name="artifactId"/>
+            <attribute name="version" default="${version}"/>
+            <attribute name="packaging" default="jar"/>
+            <attribute name="repositoryId"/>
+            <attribute name="url"/>
+            <sequential>
+                <property name="@{file}.location" location="@{file}"/>
+                <mvn>
+                    <arg value="deploy:deploy-file"/>
+                    <arg value="-Dfile=${@{file}.location}"/>
+                    <arg value="-DgroupId=@{groupId}"/>
+                    <arg value="-DartifactId=@{artifactId}"/>
+                    <arg value="-Dversion=@{version}"/>
+                    <arg value="-Dpackaging=@{packaging}"/>
+                    <arg value="-DrepositoryId=@{repositoryId}"/>
+                    <arg value="-Durl=@{url}"/>
+                </mvn>
+            </sequential>
+        </macrodef>
+        
+        <macrodef name="find-maven-jar">
+			<attribute name="groupId" />
+			<attribute name="artifactId" />
+			<attribute name="version" default="${version}" />
+			<sequential>
+				<mavendeps pathId="@{artifactId}.classpath">
+					<dependency groupId="@{groupId}" artifactId="@{artifactId}" version="@{version}" scope="runtime"/>
+				</mavendeps>
+				<pathconvert targetos="windows" property="@{artifactId}.string" refid="@{artifactId}.classpath" />
+				<condition property="build.failed">
+					<contains string="${@{artifactId}.string}" substring=";" />
+				</condition>
+				<fail if="build.failed" message="Maven gave us more than one @{artifactId} jar: ${@{artifactId}.string}" />
+				<condition property="@{artifactId}.jar" value="${@{artifactId}.string}">
+				    <available file="${@{artifactId}.string}" />
+				</condition>
+				<property name="@{artifactId}.jar" location="${@{artifactId}.string}/../../@{version}/@{artifactId}-@{version}.jar" />
+				<condition property="build.failed">
+				    <not><available file="${@{artifactId}.jar}" /></not>
+				</condition>
+				<fail if="build.failed">Maven gave us a bad path to Selenium Server: ${@{artifactId}.jar}</fail>
+			</sequential>
+		</macrodef>
+    </target>
+
+    <target name="nightly-image" depends="image">
+        <mkdir dir="${dist.dir}/nightly"/>
+        <property name="release.name" value="selenium-core-${version}"/>
+        <zip destfile="${dist.dir}/nightly/${release.name}.zip">
+            <zipfileset dir="${image.dir}" prefix="${release.name}"/>
+        </zip>
+        <copy todir="${dist.dir}/nightly"
+              file="${image.dir}/reference.html"/>
+    </target>
+
+    <target name="nightly-upload"
+            depends="nightly-image">
+        <sshexec host="${release.host}"
+                 username="${release.user}"
+                 keyfile="${release.key.file}"
+                 passphrase="${release.key.passphrase}"
+                 command="rm -fr ${release.dir}/nightly"/>
+        <scp todir="${release.user}@${release.host}:${release.dir}"
+             keyfile="${release.key.file}"
+             passphrase="${release.key.passphrase}">
+            <fileset dir="${dist.dir}">
+                <include name="nightly/**"/>
+            </fileset>
+        </scp>
+    </target>
+
+    <target name="openqa-upload"
+            description="Upload artifacts to OpenQA"
+            depends="deploy-maven, nightly-upload">
+        <echo message="Uploaded to OpenQA"/>
+    </target>
+
+</project>
