@@ -33,7 +33,7 @@ my $sel = Test::WWW::Selenium->new( host => "localhost",
                                       browser_url => "http://localhost:4444",
                                     );
 $sel->open_ok("/selenium-server/tests/html/test_click_page1.html");
-$sel->text_contains("link", "Click here for next page", "link contains expected text");
+$sel->text_like("link", qr/Click here for next page/, "link contains expected text");
 @links = $sel->get_all_links();
 ok(@links > 3);
 is($links[3], "linkToAnchorOnThisPage");

@@ -97,12 +97,12 @@ TOP
 #  limitations under the License.
 #
 
+### This part is hard-coded in the XSL
 
 package WWW::Selenium;
 use LWP::UserAgent;
 use HTTP::Request;
 use URI::Escape;
-use Encode;
 use Carp qw(croak);
 
 use strict;
@@ -123,10 +123,10 @@ WWW::Selenium - Perl Client for the Selenium Remote Control test tool
                                     );
     
     $sel->start;
-    $sel->open "http://www.google.com";
-    $sel->type "q", "hello world";
-    $sel->click "btnG";
-    $sel->wait_for_page_to_load 5000;
+    $sel->open("http://www.google.com");
+    $sel->type("q", "hello world");
+    $sel->click("btnG");
+    $sel->wait_for_page_to_load(5000);
     print $sel->get_title;
     $sel->stop;
 
@@ -152,6 +152,8 @@ the Selenium Server.  (The Selenium Server is a Java application.)
 
 =cut
 
+### This next part is auto-generated based on the big comment in selenium-api.js
+
 #]]></xsl:text><!-- Append this # so we can comment out the first line of the top description -->
     <xsl:apply-templates>
         <xsl:with-param name="replace-string"><xsl:text>&nl;</xsl:text></xsl:with-param>
@@ -161,6 +163,11 @@ the Selenium Server.  (The Selenium Server is a Java application.)
 =cut
 
 ### This part is hard-coded in the XSL
+
+eval 'require Encode';
+my $encode_present = !$@;
+Encode->import('decode_utf8') if $encode_present;
+
 sub new {
     my ($class, %args) = @_;
     my $self = { # default args:
@@ -215,7 +222,7 @@ sub do_command {
     else {
         die "Error requesting $fullurl:\n" . $response->status_line . "\n";
     }
-    $result = decode_utf8($result);
+    $result = decode_utf8($result) if $encode_present;
     die "Error requesting $fullurl:\n$result\n" unless $result =~ /^OK/;
     return $result;
 }
@@ -375,6 +382,8 @@ browser-specific prompting.
 
 =back
 
+=back
+
 =cut
 
 ### From here on, everything's auto-generated from XML
@@ -484,7 +493,7 @@ browser-specific prompting.
 
 <xsl:template match="dt">
 	<xsl:param name="replace-string" />
-	<xsl:text>&nl;=item </xsl:text>
+	<xsl:text>&nl;=item * </xsl:text>
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
 	</xsl:apply-templates>
@@ -506,7 +515,7 @@ FUNCTION
 
 <xsl:template match="function">
 	<!-- POD PerlDoc -->
-	<xsl:text>&nl;&nl;=item $sel-E&lt;gt&gt;</xsl:text>
+	<xsl:text>&nl;&nl;=item * $sel-E&lt;gt&gt;</xsl:text>
 	<xsl:call-template name="underscorify">
 		<xsl:with-param name="input"><xsl:value-of select="@name" /></xsl:with-param>
 	</xsl:call-template>
