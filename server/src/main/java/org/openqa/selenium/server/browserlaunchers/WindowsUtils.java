@@ -491,11 +491,12 @@ public class WindowsUtils {
         if (isRegExeVersion1()) {
             if (doesRegistryValueExist(key)) {
                 exec.createArg().setValue("update");
+                exec.createArg().setValue(key + "=" + Integer.toString(data));
             } else {
                 exec.createArg().setValue("add");
+                exec.createArg().setValue(key + "=" + Integer.toString(data));
+                exec.createArg().setValue("REG_DWORD");
             }
-        	exec.createArg().setValue(key + "=" + Integer.toString(data));
-        	exec.createArg().setValue("REG_DWORD");
         } else {
             exec.createArg().setValue("add");
         	RegKeyValue r = new RegKeyValue(key);
