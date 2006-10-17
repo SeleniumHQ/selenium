@@ -18,40 +18,45 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Run Tests</title>
+  <title>Test Timeout</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">Test Run Tests<br>
+      <td rowspan="1" colspan="3">Test Timeout<br>
       </td>
     </tr>
 
     <tr>
       <td>open</td>
-      <td>../core/TestRunner.html?test=../tests/ShortTestSuite.html&auto=true</td>
+      <td>../tests/dogfood/aut/html/test_timeout.html</td>
       <td>&nbsp;</td>
     </tr>
 
     <tr>
       <td>click</td>
-      <td>id=runSuite</td>
+      <td>start</td>
       <td>&nbsp;</td>
     </tr>
-    
+
     <tr>
-    	<td>waitForText</td>
-    	<td>testRuns</td>
-    	<td>4</td>
+      <td>verifyText</td>
+      <td>content</td>
+      <td>Loading text...</td>
     </tr>
-    
+
     <tr>
-    	<td>verifyText</td>
-    	<td>commandPasses</td>
-    	<td>4</td>
+      <td>waitForText</td>
+      <td>content</td>
+      <td>This text will change after a few seconds...</td>
     </tr>
-    
+
+    <tr>
+      <td>verifyText</td>
+      <td>content</td>
+      <td>This is final text</td>
+    </tr>
   </tbody>
 </table>
 
