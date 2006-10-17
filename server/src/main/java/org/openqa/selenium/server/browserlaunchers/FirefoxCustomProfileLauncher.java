@@ -20,7 +20,6 @@ import net.sf.cotta.TDirectory;
 import net.sf.cotta.TFileFactory;
 import net.sf.cotta.utils.ClassPathLocator;
 import org.apache.tools.ant.taskdefs.condition.Os;
-import org.openqa.selenium.server.browserlaunchers.AsyncExecute.*;
 
 import java.io.File;
 import java.io.IOException;

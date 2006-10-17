@@ -49,7 +49,7 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
         
         int numTotalTests = Integer.parseInt(numTestPasses) + Integer.parseInt(numTestFailures);
         
-        List testTables = createTestTables(request, numTotalTests);
+        List<String> testTables = createTestTables(request, numTotalTests);
 
         
         HTMLTestResults results = new HTMLTestResults(result, totalTime,
@@ -73,7 +73,7 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
         writer.flush();
     }
     
-    private List createTestTables(HttpRequest request, int numTotalTests) {
+    private List<String> createTestTables(HttpRequest request, int numTotalTests) {
         List<String> testTables = new LinkedList<String>();
         for (int i = 1; i <= numTotalTests; i++) {
             String testTable = request.getParameter("testTable." + i);

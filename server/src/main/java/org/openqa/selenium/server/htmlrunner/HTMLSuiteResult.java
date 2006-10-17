@@ -14,12 +14,12 @@ import javax.swing.text.html.HTMLEditorKit.*;
 
 public class HTMLSuiteResult {
 
-    private final String originalSuite;
+    //private final String originalSuite;
     private final String updatedSuite;
     private final List<String> hrefs;
     
     public HTMLSuiteResult(String originalSuite) {
-        this.originalSuite = originalSuite;
+        //this.originalSuite = originalSuite;
         StringReader s = new StringReader(originalSuite);
         HTMLEditorKit k = new HTMLEditorKit();
         HTMLDocument doc = (HTMLDocument) k.createDefaultDocument();
@@ -32,12 +32,12 @@ public class HTMLSuiteResult {
             // DGF aw, this won't really happen!  (will it?)
             throw new RuntimeException(e);
         }
-        hrefs = p.hrefs;
+        hrefs = p.hrefList;
         StringBuilder sb = new StringBuilder();
         int previousPosition = originalSuite.length();
         for (int i = p.tagPositions.size()-1; i >= 0; i--) {
             int pos = p.tagPositions.get(i);
-            String href = p.hrefs.get(i);
+            String href = p.hrefList.get(i);
             String snippet = originalSuite.substring(pos, previousPosition); 
             String replaceSnippet = snippet.replaceFirst ("\\Q" + href + "\\E", "#testresult" + i);
             sb.insert(0, replaceSnippet);
@@ -66,13 +66,13 @@ public class HTMLSuiteResult {
             this.foo = foo;
         }
         String foo;
-        public List<String> hrefs = new ArrayList<String>();
+        public List<String> hrefList = new ArrayList<String>();
         public List<Integer> tagPositions = new ArrayList<Integer>();
         @Override 
         public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {
             if (Tag.A.equals(tag)) {
                 String href = (String) attributes.getAttribute(HTML.Attribute.HREF);
-                hrefs.add(href);
+                hrefList.add(href);
                 tagPositions.add(pos);
             }
         };
