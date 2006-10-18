@@ -71,7 +71,7 @@ Logger.prototype = {
     logHook: function(message, className) {
     },
 
-    log: function(message, className) {
+    log: function(className, message) {
         var logWindow = this.getLogWindow();
         this.logHook(message, className);
         if (logWindow) {
