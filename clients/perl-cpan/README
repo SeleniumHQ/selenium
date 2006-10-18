@@ -1,0 +1,65 @@
+Test-WWW-Selenium is a perl driver and test library for Selenium Remote 
+Control (SRC).  You will need to setup a Selenium Server that can launch 
+browsers.  
+
+Selenium Remote Control (SRC) is a test tool that allows you to write
+automated web application UI tests in any programming language against
+any HTTP website using any mainstream JavaScript-enabled browser.  SRC
+provides a Selenium Server, which can automatically start/stop/control
+any supported browser. It works by using Selenium Core, a pure-HTML+JS
+library that performs automated tasks in JavaScript; the Selenium
+Server communicates directly with the browser using AJAX (XmlHttpRe-
+quest).
+
+This module sends commands directly to the Server using simple HTTP
+GET/POST requests.  Using this module together with the Selenium
+Server, you can automatically control any supported browser.
+
+To use this module, you need to have already downloaded and started the
+Selenium Server.  (The Selenium Server is a Java application.)
+
+The Selenium Server is available here:
+
+  http://www.openqa.org/selenium-rc/
+  
+or on CPAN in the Alien-SeleniumRC package:
+
+  http://search.cpan.org/dist/Alien-SeleniumRC
+
+To install:
+
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+Once installed, your test script will look something like this:
+
+    #!/usr/bin/perl
+    use strict;
+    use warnings;
+    use Test::More tests => 4;
+    use Test::WWW::Selenium;
+
+    my $sel = Test::WWW::Selenium->new( host => "localhost",    # where selenium-server is running
+                                        browser => "*firefox",  # browser to server should launch
+                                        browser_url => "http://your.site");
+
+    $sel->open("http://your.site");
+    $sel->title_is('Super Cool Mega Site!');
+    $sel->text_is('todays_awesomeness', '100');
+    $sel->text_like('status', qr/returned 42 results/);
+
+
+Copyright (c) 2006 Luke Closs <lukec@cpan.org>.
+Copyright (c) 2006 Dan Fabulitch <dfabulich@warpmail.net>.
+Copyright (c) 2005, 2006 Mattia Barbon <mbarbon@cpan.org>.
+
+lib/WWW/Selenium.pm comes from the Selenium-RC project, which releases
+it under the Apache License, Version 2.0.
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+This package is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+

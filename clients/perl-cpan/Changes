@@ -1,0 +1,119 @@
+Revision history for Perl extension Test::WWW::Selenium.
+
+1.04 - Fri Oct  6 19:02:30 PDT 2006
+ - Happy Canadian Thanksgiving!  I thank everyone who uses this.
+ - Documentation fixes from Frederic Buclin++
+ - Fixed WWW::Selenium example code
+ - Patch received from Paul Johnson++ improves:
+   - Error message for undefined methods
+   - Default test names
+   - whitespace and typo fixes
+ - Made default_names default to on
+ - Removed docs suggesting support for Java-style method names
+   (This hasn't worked since < 0.20)
+
+1.03 - Tue Jun 27 22:47:43 PDT 2006
+ - Unit tests don't test stderr using Test::Builder::Tester
+ - When the Test-Simple folks get T::B::Tester working better I'll 
+   re-enable these tests
+
+1.02 - Sat Jun 24 17:25:35 PDT 2006
+ - Added unit tests for all auto-generated functions
+ - fixed bugs where line numbers and file info wasn't reported
+ - fixed bug where test description was lost
+ - added get_location method to return relative location
+ - removed references to contains and lacks functions
+ - failed action_ok() doesn't die anymore, the test just fails
+
+1.01 - Thu Jun 22 13:57:33 PDT 2006
+ - No longer call WWW::Selenium::AUTOLOAD if method can't be 
+   found (rt bug #20042)
+ - Update sample Test::WWW::Selenium code to actually work 
+   (Thanks, Shane Landrum)
+
+1.00 - Mon Jun 12 08:53:18 PDT 2006
+ - This works well, so make it a stable 1.0 release
+ - Better fix for Encode.pm support (Kevin Jones)
+ - fixed unit tests when run under 5.8
+ - Fixed pod errors in WWW::Selenium
+
+0.24 - Sat May 27 18:08:17 PDT 2006
+    - add version to WWW::Selenium
+    - fixed Encode.pm support (Kevin Jones)
+    - fixed typo (Kevin Jones)
+
+0.22 - Sat May 27 18:08:17 PDT 2006
+    - Integrate Dan Fabulitch's latest lib/WWW/Selenium.pm
+    - made Encode dependency optional
+    - Changed Test::Builder comparators - this seems to work,
+      I hope it doesn't break for other people.
+
+0.21 - Fri Apr 21 00:37:23 PDT 2006
+    - fixed MANIFEST to include additional tests
+    - fixed pod coverage
+
+0.20 - Mon Apr 17 00:54:42 PDT 2006
+    - major refactoring to use Selenium Remote Control (SRC)
+    - WWW/Selenium.pm comes from Dan Fabulich
+      - From selenium-rc developer release 0.7.2
+      - changed to use named arguments to new
+      - provide reasonable default args
+      - skip undefined arguments in do_command
+      - add a verbose mode
+      - simplified get_string_array to split with a regex
+      - remove unused get_(number|boolean)[_array] functions
+      - add some extra docs
+    - Updated Test::WWW::Selenium to use new WWW::Selenium
+    - new unit tests
+
+0.11 - not released
+    - Removed get/set_url
+    - fixed driver redirect
+
+0.10 - Thu Mar 16 09:31:18 PST 2006
+    - update to latest Module::Install
+    - fix test numbering problem
+    - Thanks to Scott Lanning (SLANNING) for bug reports
+
+0.08 - Wed Mar 15 23:03:32 PST 2006
+    - fixed dependencies on Test packages and WWW::Selenium::Utils
+    - Allow file backend to specify where it keeps it's files
+    - minor testing improvements
+
+0.06  Thu Mar  9 00:01:34 PST 2006
+    - Added descriptive png images to doc/ 
+    - Added support for CGI driver to store/retrive commands and results
+    - Added script to convert a wiki syntax file into a perl script
+
+0.05  Fri Feb 24 00:47:02 PST 2006
+    - ownership changed to Luke Closs
+    - Changed to use Module::Install instead of Module::Build
+    - removed POE based server
+    - added a Safari Launcher
+    - Added a CommandBridge class with abstract backends
+    - Added In-memory and file based CommandBridges
+    - Added a CGI-based Selenium Driver
+    - Added example CGI driver and example test script
+    - Use Mac::Applescript to control Safari, if available
+
+0.04 (Mattia Barbon) (Not released)
+    - Added a REST interface to Selenium Server (as an exercise).
+    - When running the regression tests, the SELENIUM_LAUNCHER
+      and SELENIUM_PROCESSOR enviornment variables can be used
+      to control which Launcher and CommandProcessor are used.
+    - The SELENIUM_BROWSERS environment variable can be used to control
+      which browser is used by the Pick/UnixDefault Launchers.
+    - Added the 'NoLaunch' launcher which does not launch any browser.
+
+0.03  Tue Jan 10 20:14:19 CET 2006
+    - Added a short description of Selenium.
+
+0.02  Tue Dec 27 21:09:47 CET 2005
+    - Fix handling of commands taking locators as first argument in
+      Test::WWW::Selenium.
+    - Improved the documentation.
+    - Added mozilla-firefox and mozffremote to the Unix browser list
+      (thanks to Mark Stosberg).
+
+0.01  Tue Nov  1 10:25:24 CET 2005
+    - First public release.

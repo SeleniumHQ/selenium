@@ -1,0 +1,8 @@
+- bundle test modules with distribution M::I::Bundle
+
+- WWW::Selenium
+  - check that browser_url is sane
+
+- have Test::WWW::Selenium->new launch selenium-rc.jar if available
+
+- fix google example to work in non-us countries
