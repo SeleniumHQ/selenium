@@ -709,4 +709,8 @@ public class SeleniumServer {
             out.println(logMessages);
         }
     }
+
+    public static void setReusingBrowserSessions(boolean reusingBrowserSessions) {
+        SeleniumServer.reusingBrowserSessions = reusingBrowserSessions;
+    }
 }
