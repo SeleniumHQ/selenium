@@ -20,8 +20,8 @@ var currentTest = null; // TODO: get rid of this global, which mirrors the htmlT
 var selenium = null;
 
 var htmlTestRunner;
-var HtmlTestRunner = Class.create();
-Object.extend(HtmlTestRunner.prototype, {
+var HtmlTestRunner = classCreate();
+objectExtend(HtmlTestRunner.prototype, {
     initialize: function() {
         this.metrics = new Metrics();
         this.controlPanel = new HtmlTestRunnerControlPanel();
@@ -30,9 +30,9 @@ Object.extend(HtmlTestRunner.prototype, {
         this.runAllTests = false;
         this.appWindow = null;
         // we use a timeout here to make sure the LOG has loaded first, so we can see _every_ error
-        setTimeout(function() {
+        setTimeout(fnBind(function() {
             this.loadSuiteFrame();
-        }.bind(this), 500);
+        }, this), 500);
     },
 
     getTestSuite: function() {
@@ -52,7 +52,7 @@ Object.extend(HtmlTestRunner.prototype, {
         this.controlPanel.setHighlightOption();
         var testSuiteName = this.controlPanel.getTestSuiteName();
         if (testSuiteName) {
-            suiteFrame.load(testSuiteName, this._onloadTestSuite.bind(this));
+            suiteFrame.load(testSuiteName, fnBind(this._onloadTestSuite, this));
         }
     },
 
@@ -78,7 +78,7 @@ Object.extend(HtmlTestRunner.prototype, {
             this.startTestSuite();
         } else if (this.controlPanel.getAutoUrl()) {
             //todo what is the autourl doing, left to check it out
-            addLoadListener(this._getApplicationWindow(), this._startSingleTest.bind(this));
+            addLoadListener(this._getApplicationWindow(), fnBind(this._startSingleTest, this));
             this._getApplicationWindow().src = this.controlPanel.getAutoUrl();
         } else {
             this.getTestSuite().getSuiteRows()[0].loadTestCase();
@@ -86,9 +86,9 @@ Object.extend(HtmlTestRunner.prototype, {
     },
 
     _startSingleTest:function () {
-        removeLoadListener(getApplicationWindow(), this._startSingleTest.bind(this));
+        removeLoadListener(getApplicationWindow(), fnBind(this._startSingleTest, this));
         var singleTestName = this.controlPanel.getSingleTestName();
-        testFrame.load(singleTestName, this.startTest.bind(this));
+        testFrame.load(singleTestName, fnBind(this.startTest, this));
     },
 
     _registerCommandHandlers: function () {
@@ -133,12 +133,12 @@ Object.extend(HtmlTestRunner.prototype, {
 var runInterval = 0;
 
 /** SeleniumFrame encapsulates an iframe element */
-var SeleniumFrame = Class.create();
-Object.extend(SeleniumFrame.prototype, {
+var SeleniumFrame = classCreate();
+objectExtend(SeleniumFrame.prototype, {
 
     initialize : function(frame) {
         this.frame = frame;
-        addLoadListener(this.frame, this._handleLoad.bind(this));
+        addLoadListener(this.frame, fnBind(this._handleLoad, this));
     },
 
     getDocument : function() {
@@ -193,9 +193,9 @@ Object.extend(SeleniumFrame.prototype, {
 });
 
 /** HtmlTestSuiteFrame - encapsulates the suite iframe element */
-var HtmlTestSuiteFrame = Class.create();
-Object.extend(HtmlTestSuiteFrame.prototype, SeleniumFrame.prototype);
-Object.extend(HtmlTestSuiteFrame.prototype, {
+var HtmlTestSuiteFrame = classCreate();
+objectExtend(HtmlTestSuiteFrame.prototype, SeleniumFrame.prototype);
+objectExtend(HtmlTestSuiteFrame.prototype, {
 
     _onLoad: function() {
         this.currentTestSuite = new HtmlTestSuite(this.getDocument());
@@ -208,9 +208,9 @@ Object.extend(HtmlTestSuiteFrame.prototype, {
 });
 
 /** HtmlTestFrame - encapsulates the test-case iframe element */
-var HtmlTestFrame = Class.create();
-Object.extend(HtmlTestFrame.prototype, SeleniumFrame.prototype);
-Object.extend(HtmlTestFrame.prototype, {
+var HtmlTestFrame = classCreate();
+objectExtend(HtmlTestFrame.prototype, SeleniumFrame.prototype);
+objectExtend(HtmlTestFrame.prototype, {
 
     _onLoad: function() {
         this.currentTestCase = new HtmlTestCase(this.getDocument(), htmlTestRunner.getTestSuite().getCurrentRow());
@@ -249,9 +249,9 @@ function getTestFrame() {
     return f;
 }
 
-var HtmlTestRunnerControlPanel = Class.create();
-Object.extend(HtmlTestRunnerControlPanel.prototype, URLConfiguration.prototype);
-Object.extend(HtmlTestRunnerControlPanel.prototype, {
+var HtmlTestRunnerControlPanel = classCreate();
+objectExtend(HtmlTestRunnerControlPanel.prototype, URLConfiguration.prototype);
+objectExtend(HtmlTestRunnerControlPanel.prototype, {
     initialize: function() {
         this._acquireQueryString();
 
@@ -261,16 +261,17 @@ Object.extend(HtmlTestRunnerControlPanel.prototype, {
         this.pauseButton = $('pauseTest');
         this.stepButton = $('stepTest');
 
-        this.highlightOption.onclick = (function() {
+        this.highlightOption.onclick = fnBindAsEventListener((function() {
             this.setHighlightOption();
-        }).bindAsEventListener(this);
-        this.pauseButton.onclick = this.pauseCurrentTest.bindAsEventListener(this);
-        this.stepButton.onclick = this.stepCurrentTest.bindAsEventListener(this);
+        }), this);
+        this.pauseButton.onclick = fnBindAsEventListener(this.pauseCurrentTest, this);
+        this.stepButton.onclick = fnBindAsEventListener(this.stepCurrentTest, this);
+
 
         this.speedController = new Control.Slider('speedHandle', 'speedTrack', {
             range: $R(0, 1000),
-            onSlide: this.setRunInterval.bindAsEventListener(this),
-            onChange: this.setRunInterval.bindAsEventListener(this)
+            onSlide: fnBindAsEventListener(this.setRunInterval, this),
+            onChange: fnBindAsEventListener(this.setRunInterval, this)
         });
 
         this._parseQueryParameter();
@@ -308,19 +309,19 @@ Object.extend(HtmlTestRunnerControlPanel.prototype, {
     },
 
     reset: function() {
-        this.runInterval = this.speedController.value;
+        // this.runInterval = this.speedController.value;
         this._switchContinueButtonToPause();
     },
 
     _switchContinueButtonToPause: function() {
         this.pauseButton.className = "cssPauseTest";
-        this.pauseButton.onclick = this.pauseCurrentTest.bindAsEventListener(this);
+        this.pauseButton.onclick = fnBindAsEventListener(this.pauseCurrentTest, this);
     },
 
     _switchPauseButtonToContinue: function() {
         $('stepTest').disabled = false;
         this.pauseButton.className = "cssContinueTest";
-        this.pauseButton.onclick = this.continueCurrentTest.bindAsEventListener(this);
+        this.pauseButton.onclick = fnBindAsEventListener(this.continueCurrentTest, this);
     },
 
     stepCurrentTest: function () {
@@ -369,8 +370,8 @@ Object.extend(HtmlTestRunnerControlPanel.prototype, {
 
 });
 
-var AbstractResultAwareRow = Class.create();
-Object.extend(AbstractResultAwareRow.prototype, {
+var AbstractResultAwareRow = classCreate();
+objectExtend(AbstractResultAwareRow.prototype, {
 
     initialize: function(trElement) {
         this.trElement = trElement;
@@ -380,17 +381,17 @@ Object.extend(AbstractResultAwareRow.prototype, {
         this.unselect();
         this.trElement.className = this.trElement.className.replace(/status_[a-z]+/, "");
         if (status) {
-            Element.addClassName(this.trElement, "status_" + status);
+            addClassName(this.trElement, "status_" + status);
         }
     },
 
     select: function() {
-        Element.addClassName(this.trElement, "selected");
+        addClassName(this.trElement, "selected");
         safeScrollIntoView(this.trElement);
     },
 
     unselect: function() {
-        Element.removeClassName(this.trElement, "selected");
+        removeClassName(this.trElement, "selected");
     },
 
     markPassed: function() {
@@ -407,9 +408,9 @@ Object.extend(AbstractResultAwareRow.prototype, {
 
 });
 
-var TitleRow = Class.create();
-Object.extend(TitleRow.prototype, AbstractResultAwareRow.prototype);
-Object.extend(TitleRow.prototype, {
+var TitleRow = classCreate();
+objectExtend(TitleRow.prototype, AbstractResultAwareRow.prototype);
+objectExtend(TitleRow.prototype, {
 
     initialize: function(trElement) {
         this.trElement = trElement;
@@ -418,9 +419,9 @@ Object.extend(TitleRow.prototype, {
 
 });
 
-var HtmlTestCaseRow = Class.create();
-Object.extend(HtmlTestCaseRow.prototype, AbstractResultAwareRow.prototype);
-Object.extend(HtmlTestCaseRow.prototype, {
+var HtmlTestCaseRow = classCreate();
+objectExtend(HtmlTestCaseRow.prototype, AbstractResultAwareRow.prototype);
+objectExtend(HtmlTestCaseRow.prototype, {
 
     getCommand: function () {
         return new SeleniumCommand(getText(this.trElement.cells[0]),
@@ -453,18 +454,18 @@ Object.extend(HtmlTestCaseRow.prototype, {
     onClick: function() {
         if (this.trElement.isBreakpoint == undefined) {
             this.trElement.isBreakpoint = true;
-            Element.addClassName(this.trElement, "breakpoint");
+            addClassName(this.trElement, "breakpoint");
         } else {
             this.trElement.isBreakpoint = undefined;
-            Element.removeClassName(this.trElement, "breakpoint");
+            removeClassName(this.trElement, "breakpoint");
         }
     },
 
     addBreakpointSupport: function() {
-        Element.setStyle(this.trElement, {"cursor" : "pointer"});
-        this.trElement.onclick = function() {
+        elementSetStyle(this.trElement, {"cursor" : "pointer"});
+        this.trElement.onclick = fnBindAsEventListener(function() {
             this.onClick();
-        }.bindAsEventListener(this);
+        }, this);
     },
 
     isBreakpoint: function() {
@@ -475,16 +476,16 @@ Object.extend(HtmlTestCaseRow.prototype, {
     }
 });
 
-var HtmlTestSuiteRow = Class.create();
-Object.extend(HtmlTestSuiteRow.prototype, AbstractResultAwareRow.prototype);
-Object.extend(HtmlTestSuiteRow.prototype, {
+var HtmlTestSuiteRow = classCreate();
+objectExtend(HtmlTestSuiteRow.prototype, AbstractResultAwareRow.prototype);
+objectExtend(HtmlTestSuiteRow.prototype, {
 
     initialize: function(trElement, testFrame, htmlTestSuite) {
         this.trElement = trElement;
         this.testFrame = testFrame;
         this.htmlTestSuite = htmlTestSuite;
         this.link = trElement.getElementsByTagName("a")[0];
-        this.link.onclick = this._onClick.bindAsEventListener(this);
+        this.link.onclick = fnBindAsEventListener(this._onClick, this);
     },
 
     reset: function() {
@@ -534,8 +535,8 @@ Object.extend(HtmlTestSuiteRow.prototype, {
 
 });
 
-var HtmlTestSuite = Class.create();
-Object.extend(HtmlTestSuite.prototype, {
+var HtmlTestSuite = classCreate();
+objectExtend(HtmlTestSuite.prototype, {
 
     initialize: function(suiteDocument) {
         this.suiteDocument = suiteDocument;
@@ -548,9 +549,10 @@ Object.extend(HtmlTestSuite.prototype, {
         this.failed = false;
         this.currentRowInSuite = -1;
         this.titleRow.setStatus(null);
-        this.suiteRows.each(function(row) {
+        for (var i = 0; i < this.suiteRows.length; i++) {
+            var row = this.suiteRows[i];
             row.reset();
-        });
+        }
     },
 
     getSuiteRows: function() {
@@ -601,7 +603,7 @@ Object.extend(HtmlTestSuite.prototype, {
     },
 
     _startCurrentTestCase: function() {
-        this.getCurrentRow().loadTestCase(htmlTestRunner.startTest.bind(htmlTestRunner));
+        this.getCurrentRow().loadTestCase(fnBind(htmlTestRunner.startTest, htmlTestRunner));
     },
 
     _onTestSuiteComplete: function() {
@@ -630,8 +632,8 @@ Object.extend(HtmlTestSuite.prototype, {
 
 });
 
-var TestResult = Class.create();
-Object.extend(TestResult.prototype, {
+var TestResult = classCreate();
+objectExtend(TestResult.prototype, {
 
 // Post the results to a servlet, CGI-script, etc.  The URL of the
 // results-handler defaults to "/postResults", but an alternative location
@@ -763,8 +765,8 @@ Object.extend(TestResult.prototype, {
 });
 
 /** HtmlTestCase encapsulates an HTML test document */
-var HtmlTestCase = Class.create();
-Object.extend(HtmlTestCase.prototype, {
+var HtmlTestCase = classCreate();
+objectExtend(HtmlTestCase.prototype, {
 
     initialize: function(testDocument, htmlTestSuiteRow) {
         if (testDocument == null) {
@@ -785,13 +787,16 @@ Object.extend(HtmlTestCase.prototype, {
         var commandRows = [];
         var tables = $A(this.testDocument.getElementsByTagName("table"));
         var self = this;
-        tables.each(function (table) {
-            $A(table.rows).each(function(candidateRow) {
+        for (var i = 0; i < tables.length; i++) {
+            var table = tables[i];
+            var tableRows = $A(table.rows);
+            for (var j = 0; j < tableRows.length; j++) {
+                var candidateRow = tableRows[j];
                 if (self.isCommandRow(candidateRow)) {
                     commandRows.push(new HtmlTestCaseRow(candidateRow));
                 }
-            }.bind(this));
-        });
+            }
+        }
         return commandRows;
     },
 
@@ -806,14 +811,15 @@ Object.extend(HtmlTestCase.prototype, {
         this.nextCommandRowIndex = 0;
 
         this.setStatus('');
-        this.commandRows.each(function(row) {
+        for (var i = 0; i < this.commandRows.length; i++) {
+            var row = this.commandRows[i];
             row.reset();
-        });
+        }
 
         // remove any additional fake "error" row added to the end of the document
         var errorElement = this.testDocument.getElementById('error');
         if (errorElement) {
-            Element.remove(errorElement);
+            errorElement.parentNode.removeChild(errorElement);
         }
     },
 
@@ -849,9 +855,10 @@ Object.extend(HtmlTestCase.prototype, {
     },
 
     _addBreakpointSupport: function() {
-        this.commandRows.each(function(row) {
+        for (var i = 0; i < this.commandRows.length; i++) {
+            var row = this.commandRows[i];
             row.addBreakpointSupport();
-        });
+        }
     },
 
     hasMoreCommandRows: function() {
@@ -888,8 +895,8 @@ var get_new_rows = function() {
 };
 
 
-var Metrics = Class.create();
-Object.extend(Metrics.prototype, {
+var Metrics = classCreate();
+objectExtend(Metrics.prototype, {
     initialize: function() {
         // The number of tests run
         this.numTestPasses = 0;
@@ -941,8 +948,8 @@ Object.extend(Metrics.prototype, {
 
 });
 
-var HtmlRunnerCommandFactory = Class.create();
-Object.extend(HtmlRunnerCommandFactory.prototype, {
+var HtmlRunnerCommandFactory = classCreate();
+objectExtend(HtmlRunnerCommandFactory.prototype, {
 
     initialize: function(seleniumCommandFactory, testLoop) {
         this.seleniumCommandFactory = seleniumCommandFactory;
@@ -967,9 +974,9 @@ Object.extend(HtmlRunnerCommandFactory.prototype, {
 
 });
 
-var HtmlRunnerTestLoop = Class.create();
-Object.extend(HtmlRunnerTestLoop.prototype, new TestLoop());
-Object.extend(HtmlRunnerTestLoop.prototype, {
+var HtmlRunnerTestLoop = classCreate();
+objectExtend(HtmlRunnerTestLoop.prototype, new TestLoop());
+objectExtend(HtmlRunnerTestLoop.prototype, {
     initialize: function(htmlTestCase, metrics, seleniumCommandFactory) {
 
         this.commandFactory = new HtmlRunnerCommandFactory(seleniumCommandFactory, this);

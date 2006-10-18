@@ -1510,7 +1510,7 @@ PageBot.prototype.selectElements = function(filterExpr, elements, defaultFilterT
  * Find an element by class
  */
 PageBot.prototype.locateElementByClass = function(locator, document) {
-    return Element.findFirstMatchingChild(document,
+    return elementFindFirstMatchingChild(document,
             function(element) {
                 return element.className == locator
             }
@@ -1521,7 +1521,7 @@ PageBot.prototype.locateElementByClass = function(locator, document) {
  * Find an element by alt
  */
 PageBot.prototype.locateElementByAlt = function(locator, document) {
-    return Element.findFirstMatchingChild(document,
+    return elementFindFirstMatchingChild(document,
             function(element) {
                 return element.alt == locator
             }

@@ -64,7 +64,7 @@ TestLoop.prototype = {
             // Pause: enable the "next/continue" button
             this.pause();
         } else {
-            window.setTimeout(this.resume.bind(this), delay);
+            window.setTimeout(fnBind(this.resume, this), delay);
         }
     },
 
@@ -144,7 +144,7 @@ TestLoop.prototype = {
                 this.continueTest();
             } else {
                 LOG.debug("waitForCondition was false; keep waiting!");
-                window.setTimeout(this.continueTestWhenConditionIsTrue.bind(this), 100);
+                window.setTimeout(fnBind(this.continueTestWhenConditionIsTrue, this), 100);
             }
         } catch (e) {
             var lastResult = {};

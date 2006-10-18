@@ -33,9 +33,9 @@ var relayToRC = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
-var SeleneseRunnerOptions = Class.create();
-Object.extend(SeleneseRunnerOptions.prototype, URLConfiguration.prototype);
-Object.extend(SeleneseRunnerOptions.prototype, {
+var SeleneseRunnerOptions = classCreate();
+objectExtend(SeleneseRunnerOptions.prototype, URLConfiguration.prototype);
+objectExtend(SeleneseRunnerOptions.prototype, {
     initialize: function() {
         this._acquireQueryString();
     },
@@ -185,9 +185,9 @@ function setSeleniumWindowName(seleniumWindowName) {
     selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
 }
 
-SeleneseRunner = Class.create();
-Object.extend(SeleneseRunner.prototype, new TestLoop());
-Object.extend(SeleneseRunner.prototype, {
+SeleneseRunner = classCreate();
+objectExtend(SeleneseRunner.prototype, new TestLoop());
+objectExtend(SeleneseRunner.prototype, {
     initialize : function(commandFactory) {
         this.commandFactory = commandFactory;
         this.requiresCallBack = true;
@@ -201,7 +201,7 @@ Object.extend(SeleneseRunner.prototype, {
             urlParms += "seleniumStart=true";
         }
         this.xmlHttpForCommandsAndResults = XmlHttp.create();
-        sendToRC(postResult, urlParms, this._HandleHttpResponse.bind(this), this.xmlHttpForCommandsAndResults);
+        sendToRC(postResult, urlParms, fnBind(this._HandleHttpResponse, this), this.xmlHttpForCommandsAndResults);
     },
 
     commandStarted : function(command) {
@@ -277,7 +277,7 @@ Object.extend(SeleneseRunner.prototype, {
                 var s = 'xmlHttp returned: ' + this.xmlHttpForCommandsAndResults.status + ": " + this.xmlHttpForCommandsAndResults.statusText;
                 LOG.error(s);
                 this.currentCommand = null;
-                setTimeout(this.continueTestAtCurrentCommand.bind(this), 2000);
+                setTimeout(fnBind(this.continueTestAtCurrentCommand, this), 2000);
             }
 
         }

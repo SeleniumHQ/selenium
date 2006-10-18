@@ -629,7 +629,7 @@ Selenium.prototype.makePageLoadCondition = function(timeout) {
     if (timeout == null) {
         timeout = this.defaultTimeout;
     }
-    return Selenium.decorateFunctionWithTimeout(this._isNewPageLoaded.bind(this), timeout);
+    return Selenium.decorateFunctionWithTimeout(fnBind(this._isNewPageLoaded, this), timeout);
 };
 
 Selenium.prototype.doOpen = function(url) {

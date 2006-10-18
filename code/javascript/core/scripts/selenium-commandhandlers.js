@@ -22,8 +22,8 @@
 //   - a "Block" is a function that has been bound to a target object, so can be called invoked directly
 //     (or with a null target)
 
-var CommandHandlerFactory = Class.create();
-Object.extend(CommandHandlerFactory.prototype, {
+var CommandHandlerFactory = classCreate();
+objectExtend(CommandHandlerFactory.prototype, {
 
     initialize: function() {
         this.handlers = {};
@@ -53,7 +53,7 @@ Object.extend(CommandHandlerFactory.prototype, {
             var match = /^(get|is)([A-Z].+)$/.exec(functionName);
             if (match) {
                 var accessMethod = commandTarget[functionName];
-                var accessBlock = accessMethod.bind(commandTarget);
+                var accessBlock = fnBind(accessMethod, commandTarget);
                 var baseName = match[2];
                 var isBoolean = (match[1] == "is");
                 var requiresTarget = (accessMethod.length == 1);
@@ -75,7 +75,7 @@ Object.extend(CommandHandlerFactory.prototype, {
                 var actionName = match[1].lcfirst();
                 var actionMethod = commandTarget[functionName];
                 var dontCheckPopups = actionMethod.dontCheckAlertsAndConfirms;
-                var actionBlock = actionMethod.bind(commandTarget);
+                var actionBlock = fnBind(actionMethod, commandTarget);
                 this.registerAction(actionName, actionBlock, false, dontCheckPopups);
                 this.registerAction(actionName + "AndWait", actionBlock, true, dontCheckPopups);
             }
@@ -86,7 +86,7 @@ Object.extend(CommandHandlerFactory.prototype, {
         for (var functionName in commandTarget) {
             var match = /^assert([A-Z].+)$/.exec(functionName);
             if (match) {
-                var assertBlock = commandTarget[functionName].bind(commandTarget);
+                var assertBlock = fnBind(commandTarget[functionName], commandTarget);
 
                 // Register the assert with the "assert" prefix, and halt on failure.
                 var assertName = functionName;

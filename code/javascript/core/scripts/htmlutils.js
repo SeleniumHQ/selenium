@@ -18,6 +18,89 @@
 // This script contains a badly-organised collection of miscellaneous
 // functions that really better homes.
 
+function classCreate() {
+    return function() {
+      this.initialize.apply(this, arguments);
+    }
+}
+
+function objectExtend(destination, source) {
+  for (var property in source) {
+    destination[property] = source[property];
+  }
+  return destination;
+}
+
+function $() {
+  var results = [], element;
+  for (var i = 0; i < arguments.length; i++) {
+    element = arguments[i];
+    if (typeof element == 'string')
+      element = document.getElementById(element);
+    results[results.length] = element;
+  }
+  return results.length < 2 ? results[0] : results;
+}
+
+function $A(iterable) {
+  if (!iterable) return [];
+  if (iterable.toArray) {
+    return iterable.toArray();
+  } else {
+    var results = [];
+    for (var i = 0; i < iterable.length; i++)
+      results.push(iterable[i]);
+    return results;
+  }
+}
+
+function fnBind() {
+  var args = $A(arguments), __method = args.shift(), object = args.shift();
+  return function() {
+    return __method.apply(object, args.concat($A(arguments)));
+  }
+}
+
+function fnBindAsEventListener(fn, object) {
+  var __method = fn;
+  return function(event) {
+    return __method.call(object, event || window.event);
+  }
+}
+
+function removeClassName(element, name) {
+    var re = new RegExp("\\b" + name + "\\b", "g");
+    element.className = element.className.replace(re, "");
+}
+
+function addClassName(element, name) {
+    element.className = element.className + ' ' + name;
+}
+
+function elementSetStyle(element, style) {
+    for (var name in style) {
+      element.style[name] = style[name];
+    }
+}
+
+function elementGetStyle(element, style) {
+    var value = element.style[style];
+    if (!value) {
+      if (document.defaultView && document.defaultView.getComputedStyle) {
+        var css = document.defaultView.getComputedStyle(element, null);
+        value = css ? css.getPropertyValue(style) : null;
+      } else if (element.currentStyle) {
+        value = element.currentStyle[style];
+      }
+    }
+
+    /** DGF necessary? 
+    if (window.opera && ['left', 'top', 'right', 'bottom'].include(style))
+      if (Element.getStyle(element, 'position') == 'static') value = 'auto'; */
+
+    return value == 'auto' ? null : value;
+  }
+
 String.prototype.trim = function() {
     var result = this.replace(/^\s+/g, "");
     // strip leading
@@ -504,19 +587,19 @@ function SeleniumError(message) {
 
 var Effect = new Object();
 
-Object.extend(Effect, {
+objectExtend(Effect, {
     highlight : function(element) {
         var highLightColor = "yellow";
         if (element.originalColor == undefined) { // avoid picking up highlight
-            element.originalColor = Element.getStyle(element, "background-color");
+            element.originalColor = elementGetStyle(element, "background-color");
         }
-        Element.setStyle(element, {"background-color" : highLightColor});
+        elementSetStyle(element, {"background-color" : highLightColor});
         window.setTimeout(function() {
             //if element is orphan, probably page of it has already gone, so ignore
             if (!element.parentNode) {
                 return;
             }
-            Element.setStyle(element, {"background-color" : element.originalColor});
+            elementSetStyle(element, {"background-color" : element.originalColor});
         }, 200);
     }
 });
@@ -568,8 +651,8 @@ function openSeparateApplicationWindow(url) {
     return appWindow;
 }
 
-var URLConfiguration = Class.create();
-Object.extend(URLConfiguration.prototype, {
+var URLConfiguration = classCreate();
+objectExtend(URLConfiguration.prototype, {
     initialize: function() {
     },
     _isQueryParameterTrue: function (name) {

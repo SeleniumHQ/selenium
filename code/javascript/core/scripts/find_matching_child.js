@@ -15,8 +15,8 @@
  *
  */
 
-Element.findMatchingChildren = function(element, selector) {
-  var matches = $A([]);
+elementFindMatchingChildren = function(element, selector) {
+  var matches = [];
 
   var childCount = element.childNodes.length;
   for (var i=0; i<childCount; i++) {
@@ -24,7 +24,7 @@ Element.findMatchingChildren = function(element, selector) {
     if (selector(child)) {
       matches.push(child);
     } else {
-      childMatches = Element.findMatchingChildren(child, selector);
+      childMatches = elementFindMatchingChildren(child, selector);
       matches.push(childMatches);
     }
   }
@@ -34,7 +34,7 @@ Element.findMatchingChildren = function(element, selector) {
 
 ELEMENT_NODE_TYPE = 1;
 
-Element.findFirstMatchingChild = function(element, selector) {
+elementFindFirstMatchingChild = function(element, selector) {
 
   var childCount = element.childNodes.length;
   for (var i=0; i<childCount; i++) {
@@ -43,7 +43,7 @@ Element.findFirstMatchingChild = function(element, selector) {
       if (selector(child)) {
         return child;
       }
-      result = Element.findFirstMatchingChild(child, selector);
+      result = elementFindFirstMatchingChild(child, selector);
       if (result) {
         return result;
       }
@@ -52,7 +52,7 @@ Element.findFirstMatchingChild = function(element, selector) {
   return null;
 }
 
-Element.findFirstMatchingParent = function(element, selector) {
+elementFindFirstMatchingParent = function(element, selector) {
   var current = element.parentNode;
   while (current != null) {
     if (selector(current)) {
@@ -63,7 +63,7 @@ Element.findFirstMatchingParent = function(element, selector) {
   return current;
 }
 
-Element.findMatchingChildById = function(element, id) {
-  return Element.findFirstMatchingChild(element, function(element){return element.id==id} );
+elementFindMatchingChildById = function(element, id) {
+  return elementFindFirstMatchingChild(element, function(element){return element.id==id} );
 }
 
