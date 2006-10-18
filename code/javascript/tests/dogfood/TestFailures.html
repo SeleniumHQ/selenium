@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Break Point</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Break Point<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../core/TestRunner.html?test=../tests/dogfood/aut/FailuresTestSuite.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+        <td>waitForText</td>
+        <td>//table[@id='test_suite_table']//tr[1]</td>
+        <td>Dogfood AUT: Failures</td>
+    </tr>
+
+    <tr>
+      <td rowspan="1" colspan="3">Run First Test Case<br>
+      </td>
+    </tr>
+      <tr> <!-- not very reliable. sometimes will not run test case -->
+          <td>waitForText</td>
+          <td>//table[@id='test_case_table']//tr[1]</td>
+          <td>Test Alert verifyment</td>
+      </tr>
+    <tr>
+        <td>click</td>
+        <td>runSeleniumTest</td>
+        <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+        <td>waitForText</td>
+        <td>testRuns</td>
+        <td>1</td>
+    </tr>
+
+    <tr>
+        <td>verifyAttribute</td>
+        <td>//table[@id='test_case_table']//tr[19]/@class</td>
+        <td>status_failed</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>//table[@id='test_case_table']//tr[21]/@class</td>
+        <td>status_failed</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>//table[@id='test_case_table']//tr[23]/@class</td>
+        <td>status_failed</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>//table[@id='test_case_table']//tr[24]/@class</td>
+        <td>status_failed</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>//table[@id='test_case_table']//tr[26]/@class</td>
+        <td>status_failed</td>
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>
