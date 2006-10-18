@@ -207,6 +207,19 @@ Selenium.prototype.doClick = function(locator) {
    this.page().clickElement(element);
 };
 
+Selenium.prototype.doDoubleClick = function(locator) {
+	/**
+   * Double clicks on a link, button, checkbox or radio button. If the double click action
+   * causes a new page to load (like a link usually does), call
+   * waitForPageToLoad.
+   *
+   * @param locator an element locator
+   *
+   */
+   var element = this.page().findElement(locator);
+   this.page().doubleClickElement(element);
+};
+
 Selenium.prototype.doClickAt = function(locator, coordString) {
 	/**
    * Clicks on a link, button, checkbox or radio button. If the click action
@@ -224,6 +237,25 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
     var element = this.page().findElement(locator);
     var clientXY = getClientXY(element, coordString)
     this.page().clickElement(element, clientXY[0], clientXY[1]);
+};
+
+Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
+	/**
+   * Doubleclicks on a link, button, checkbox or radio button. If the action
+   * causes a new page to load (like a link usually does), call
+   * waitForPageToLoad.
+   *
+   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+   * get null event arguments.  Read the bug for more details, including a workaround.
+   *
+   * @param locator an element locator
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   *
+   */
+    var element = this.page().findElement(locator);
+    var clientXY = getClientXY(element, coordString)
+    this.page().doubleClickElement(element, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doFireEvent = function(locator, eventName) {

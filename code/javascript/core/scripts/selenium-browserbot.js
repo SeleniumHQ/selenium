@@ -1201,7 +1201,15 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'change', true);
 };
 
-MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
+PageBot.prototype.clickElement = function(element, clientX, clientY) {
+       this.pokeElement("click", element, clientX, clientY);
+};
+    
+BrowserBot.prototype.doubleClickElement = function(element, clientX, clientY) {
+       this.pokeElement("dblclick", element, clientX, clientY);
+};
+    
+MozillaPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -1209,12 +1217,12 @@ MozillaPageBot.prototype.clickElement = function(element, clientX, clientY) {
     // (This is caused by a javascript onclick handler returning false)
     var preventDefault = false;
 
-    element.addEventListener("click", function(evt) {
+    element.addEventListener(eventType, function(evt) {
         preventDefault = evt.getPreventDefault();
     }, false);
 
-    // Trigger the click event.
-    triggerMouseEvent(element, 'click', true, clientX, clientY);
+    // Trigger the event.
+    triggerMouseEvent(element, eventType, true, clientX, clientY);
 
     // Perform the link action if preventDefault was set.
     // In chrome URL, the link action is already executed by triggerMouseEvent.
@@ -1253,12 +1261,12 @@ BrowserBot.prototype._getFrameFromGlobal = function(target) {
     return pagebot.findElementBy("implicit", target, this.topWindow.document, this.topWindow);
 }
 
-OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
+OperaPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
     // Trigger the click event.
-    triggerMouseEvent(element, 'click', true, clientX, clientY);
+    triggerMouseEvent(element, eventType, true, clientX, clientY);
 
     if (this._windowClosed()) {
         return;
@@ -1267,15 +1275,15 @@ OperaPageBot.prototype.clickElement = function(element, clientX, clientY) {
 };
 
 
-KonquerorPageBot.prototype.clickElement = function(element, clientX, clientY) {
+KonquerorPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
-    if (element.click) {
-        element.click();
+    if (element[eventType]) {
+    	eval("element." + eventType + "()");
     }
     else {
-        triggerMouseEvent(element, 'click', true, clientX, clientY);
+        triggerMouseEvent(element, eventType, true, clientX, clientY);
     }
 
     if (this._windowClosed()) {
@@ -1284,13 +1292,13 @@ KonquerorPageBot.prototype.clickElement = function(element, clientX, clientY) {
 
 };
 
-SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
+SafariPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
     triggerEvent(element, 'focus', false);
     var wasChecked = element.checked;
 
     // For form element it is simple.
-    if (element.click) {
-        element.click();
+    if (element[eventType]) {
+    	eval("element." + eventType + "()");
     }
     // For links and other elements, event emulation is required.
     else {
@@ -1300,14 +1308,14 @@ SafariPageBot.prototype.clickElement = function(element, clientX, clientY) {
             var b = targetWindow.document.getElementById(element.href.split("#")[1]);
             targetWindow.document.body.scrollTop = b.offsetTop;
         } else {
-            triggerMouseEvent(element, 'click', true, clientX, clientY);
+            triggerMouseEvent(element, eventType, true, clientX, clientY);
         }
 
     }
 
 };
 
-IEPageBot.prototype.clickElement = function(element, clientX, clientY) {
+IEPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -1320,7 +1328,7 @@ IEPageBot.prototype.clickElement = function(element, clientX, clientY) {
         pageUnloading = true;
     };
     this.getCurrentWindow().attachEvent("onbeforeunload", pageUnloadDetector);
-    element.click();
+    eval("element." + eventType + "()");
 
 
     // If the page is going to unload - still attempt to fire any subsequent events.
