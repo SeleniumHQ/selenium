@@ -1202,14 +1202,14 @@ PageBot.prototype.replaceText = function(element, stringValue) {
 };
 
 PageBot.prototype.clickElement = function(element, clientX, clientY) {
-       this.pokeElement("click", element, clientX, clientY);
+       this.fireEventOnElement("click", element, clientX, clientY);
 };
     
 BrowserBot.prototype.doubleClickElement = function(element, clientX, clientY) {
-       this.pokeElement("dblclick", element, clientX, clientY);
+       this.fireEventOnElement("dblclick", element, clientX, clientY);
 };
     
-MozillaPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
+MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -1261,7 +1261,7 @@ BrowserBot.prototype._getFrameFromGlobal = function(target) {
     return pagebot.findElementBy("implicit", target, this.topWindow.document, this.topWindow);
 }
 
-OperaPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
+OperaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -1275,7 +1275,7 @@ OperaPageBot.prototype.pokeElement = function(eventType, element, clientX, clien
 };
 
 
-KonquerorPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
+KonquerorPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -1292,7 +1292,7 @@ KonquerorPageBot.prototype.pokeElement = function(eventType, element, clientX, c
 
 };
 
-SafariPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
+SafariPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
     triggerEvent(element, 'focus', false);
     var wasChecked = element.checked;
 
@@ -1315,7 +1315,7 @@ SafariPageBot.prototype.pokeElement = function(eventType, element, clientX, clie
 
 };
 
-IEPageBot.prototype.pokeElement = function(eventType, element, clientX, clientY) {
+IEPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
