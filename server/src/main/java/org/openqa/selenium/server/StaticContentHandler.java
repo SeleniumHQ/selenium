@@ -78,8 +78,7 @@ class StaticContentHandler extends ResourceHandler {
         if (resource.length() != -1) {
             response.setField(HttpFields.__ContentLength, metaData.getLength());
         }
-        boolean knownToBeHtml = (mimeType != null) && mimeType.equals("text/html");
-        InjectionHelper.injectJavaScript(knownToBeHtml, response, resource.getInputStream(), response.getOutputStream());
+        InjectionHelper.injectJavaScript(request, response, resource.getInputStream(), response.getOutputStream());
         request.setHandled(true);
     }
 }

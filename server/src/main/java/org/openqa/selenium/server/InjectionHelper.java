@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mortbay.http.HttpResponse;
+import org.mortbay.http.HttpRequest;
 import org.mortbay.util.IO;
 
 public class InjectionHelper {
@@ -77,7 +78,6 @@ public class InjectionHelper {
         try {
             appendFileContent(sb, "/jsunit/app/jsUnitCore.js");
             appendFileContent(sb, "/core/scripts/xmlextras.js");
-            appendFileContent(sb, "/core/lib/prototype.js");
             appendFileContent(sb, "/core/scripts/selenium-browserdetect.js");
             appendFileContent(sb, "/core/scripts/selenium-browserbot.js");
             appendFileContent(sb, "/core/scripts/find_matching_child.js");
@@ -116,7 +116,7 @@ public class InjectionHelper {
         }
     }
 
-    public static void injectJavaScript(boolean isKnownToBeHtml, HttpResponse response, InputStream in, OutputStream out) throws IOException {
+    public static void injectJavaScript(HttpRequest request, HttpResponse response, InputStream in, OutputStream out) throws IOException {
 	    if (!contentTransformations.containsKey("__SELENIUM_JS__")) {
 	        init();   
         }
@@ -129,12 +129,9 @@ public class InjectionHelper {
         }
         int lengthOfBOM = getBOMLength(buf); 
         String data = new String(buf, lengthOfBOM, len);
-        if (!isKnownToBeHtml) {
-            isKnownToBeHtml = match("<\\s*meta([^>]*?\"content-type\"[^>]*?)>", data, isKnownToBeHtml);
-            if (!isKnownToBeHtml) {
-                isKnownToBeHtml = match("<html", data, isKnownToBeHtml);
-            }
-        }
+
+        boolean isKnownToBeHtml = HtmlIdentifier.shouldBeInjected(request.getPath(), response.getContentType(), data);
+
         String url = response.getHttpRequest().getRequestURL().toString();
         if (SeleniumServer.getDebugURL().equals(url)) {
             System.out.println("debug URL seen");

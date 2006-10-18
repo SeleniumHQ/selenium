@@ -159,6 +159,8 @@ public class SeleniumServer {
     public static int timeoutInSeconds = DEFAULT_TIMEOUT;
     private static Boolean reusingBrowserSessions = null;
 
+    private static String dontInjectRegex = null;
+
     /**
      * Starts up the server on the specified port (or default if no port was specified)
      * and then starts interactive mode if specified.
@@ -208,6 +210,8 @@ public class SeleniumServer {
                 SeleniumServer.reusingBrowserSessions = Boolean.FALSE;
             } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
                 SeleniumServer.reusingBrowserSessions = Boolean.TRUE;
+            } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
+                dontInjectRegex = getArg(args, ++i);
             } else if ("-debug".equalsIgnoreCase(arg)) {
                 SeleniumServer.setDebugMode(true);
             } else if ("-debugURL".equalsIgnoreCase(arg)) {
@@ -440,7 +444,7 @@ public class SeleniumServer {
             System.err.println(msg + ":");
         }
         System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive]" +
-                " [-defaultBrowserString browserString] [-userExtensions extensionJs] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+                " [-defaultBrowserString browserString] [-userExtensions extensionJs] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename] [-dontInjectRegex java-regex]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
                 "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
                 "where:\n" +
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
@@ -450,6 +454,7 @@ public class SeleniumServer {
                 "\n\t-defaultBrowserString (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
                 "\n\t-userExtensions indicates a JavaScript file that will be loaded into selenium" +
                 "\n\t-browserSessionReuse stops re-initialization and spawning of the browser between tests" +
+                "\n\t-dontInjectRegex is an optional regular expression that proxy injection mode can use to know when to bypss injection" +
                 "\n\t-debug puts you into debug mode, with more trace information and diagnostics" +
                 "\n\t-proxyInjectionMode puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
                 "\n\t\tfor all content going to the test application.  Under this mode, multiple domains can be visited, and the " +
@@ -640,7 +645,11 @@ public class SeleniumServer {
         SeleniumServer.defaultBrowserString = defaultBrowserString;
     }
 
-	public static boolean reusingBrowserSessions() {
+    public static void setDontInjectRegex(String dontInjectRegex) {
+        SeleniumServer.dontInjectRegex = dontInjectRegex;
+    }
+
+    public static boolean reusingBrowserSessions() {
         if (reusingBrowserSessions == null) {
 //            if (isProxyInjectionMode()) {     turn off this default until we are stable.  Too many variables spoils the soup.
 //                reusingBrowserSessions = Boolean.TRUE; // default in pi mode
@@ -652,7 +661,15 @@ public class SeleniumServer {
         return reusingBrowserSessions;
     }
 
-	public static String getDebugURL() {
+    public static boolean shouldInject(String path) {
+        if (dontInjectRegex == null) {
+            return true;
+        } else {
+            return !path.matches(dontInjectRegex);
+        }
+    }
+
+    public static String getDebugURL() {
         return debugURL;
     }
 
