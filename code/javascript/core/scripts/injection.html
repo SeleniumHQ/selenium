@@ -1,21 +1,35 @@
+<script type="text/javascript" src="/selenium-server/core/lib/cssQuery/cssQuery-p.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/xmlextras.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/selenium-browserdetect.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/selenium-browserbot.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/find_matching_child.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/htmlutils.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/selenium-api.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/selenium-commandhandlers.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/selenium-executionloop.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/selenium-seleneserunner.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/selenium-logging.js"></script>
+<script type="text/javascript" src="/selenium-server/core/scripts/selenium-version.js"></script>
+<script type="text/javascript" src="/selenium-server/core/xpath/misc.js"></script>
+<script type="text/javascript" src="/selenium-server/core/xpath/dom.js"></script>
+<script type="text/javascript" src="/selenium-server/core/xpath/xpath.js"></script>
 <script language="JavaScript">
     if (window["selenium_has_been_loaded_into_this_window"]==null)
     {
-__SELENIUM_JS__    
 
 // Some background on the code below: broadly speaking, where we are relative to other windows
 // when running in proxy injection mode depends on whether we are in a frame set file or not.
-// 
+//
 // In regular HTML files, the selenium JavaScript is injected into an iframe called "selenium"
 // in order to reduce its impact on the JavaScript environment (through namespace pollution,
 // etc.).  So in regular HTML files, we need to look at the parent of the current window when we want
 // a handle to, e.g., the application window.
-// 
+//
 // In frame set files, we can't use an iframe, so we put the JavaScript in the head element and share
 // the window with the frame set.  So in this case, we need to look at the current window, not the
-// parent when looking for, e.g., the application window.  (TODO: Perhaps I should have just 
+// parent when looking for, e.g., the application window.  (TODO: Perhaps I should have just
 // assigned a regular frame for selenium?)
-// 
+//
 BrowserBot.prototype.getContentWindow = function() {
     if (window["seleniumInSameWindow"] != null) return window;
     return window.parent;
