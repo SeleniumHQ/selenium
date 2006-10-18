@@ -283,6 +283,24 @@ Selenium.prototype.doKeyPress = function(locator, keySequence) {
     triggerKeyEvent(element, 'keypress', keySequence, true);
 };
 
+Selenium.prototype.doShiftDown = function() {
+	/**
+   * Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.
+   *
+   */
+   this.browserbot.shiftKeyDown = true;
+   throw new SeleniumError("not implemented yet");
+};
+
+Selenium.prototype.doShiftUp = function() {
+	/**
+   * Release the shift key.
+   *
+   */
+   this.browserbot.shiftKeyDown = false;
+   throw new SeleniumError("not implemented yet");
+};
+
 Selenium.prototype.doKeyDown = function(locator, keySequence) {
 	/**
    * Simulates a user pressing a key (without releasing it yet).
@@ -654,9 +672,25 @@ Selenium.prototype.doOpen = function(url) {
 Selenium.prototype.doSelectWindow = function(windowID) {
 	/**
    * Selects a popup window; once a popup window has been selected, all
-   * commands go to that window. To select the main window again, use "null"
+   * commands go to that window. To select the main window again, use null
    * as the target.
    *
+   * Selenium has several strategies for finding the window object referred to by the "windowID" parameter.
+   * 
+   * 1.) if windowID is null, then it is assumed the user is referring to the original window instantiated by the browser).
+   * 2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
+   * that this variable contains the return value from a call to the JavaScript window.open() method.
+   * 3.) Otherwise, selenium looks in a hash it maintains that maps string names to window objects.  Each of these string 
+   * names matches the second parameter "windowName" past to the JavaScript method  window.open(url, windowName, windowFeatures, replaceFlag)
+   * (which selenium intercepts).
+   *
+   *
+   * If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages
+   * which identify the names of windows created via window.open (and therefore intercepted by selenium).  You will see messages
+   * like the following for each window as it is opened:
+   * 
+   * 	debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow"
+   * 
    * @param windowID the JavaScript window ID of the window to select
    */
     this.browserbot.selectWindow(windowID);

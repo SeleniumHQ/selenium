@@ -39,6 +39,10 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.currentPage = null;
     this.currentWindow = this.topWindow;
     this.currentWindowName = null;
+    
+    this.altKeyDown = false;
+    this.controlKeyDown = false;
+    this.shiftKeyDown = false;
 
     this.modalDialogTest = null;
     this.recordedAlerts = new Array();
@@ -286,6 +290,7 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
         var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
         selenium.browserbot.openedWindows[windowName] = openedWindow;
+        LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
         return openedWindow;
     };
 };
