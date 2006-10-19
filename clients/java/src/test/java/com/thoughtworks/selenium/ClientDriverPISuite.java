@@ -1,6 +1,7 @@
 package com.thoughtworks.selenium;
 
 import junit.framework.Test;
+import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 
 /**
  * This class executes the same tests that ClientDriverSuite does, but it does so with proxy injection mode
@@ -13,8 +14,12 @@ import junit.framework.Test;
 public class ClientDriverPISuite extends ClientDriverSuite {
     public static Test suite() {
         System.setProperty("selenium.proxyInjectionMode", "true");
-        System.setProperty("selenium.defaultBrowserString", "*piiexplore");
-        
+        if (WindowsUtils.thisIsWindows()) {
+            System.setProperty("selenium.defaultBrowserString", "*piiexplore");
+        } else {
+            System.setProperty("selenium.defaultBrowserString", "*pifirefox");
+        }
+
         return ClientDriverSuite.suite();
     }
 }
