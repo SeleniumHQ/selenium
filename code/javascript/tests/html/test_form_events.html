@@ -33,8 +33,20 @@ function recordEvent(e) {
     else {
     	eventMessage = '{' + e.type + '(' + this.id;
     	if (e.keyCode) {
-        	eventMessage += ' - ' + e.keyCode;
-        }
+	      eventMessage += ' - ' + e.keyCode;
+            }
+    	if (e.altKey) {
+	      eventMessage += ' altKeyDown';
+            }
+    	if (e.ctrlKey) {
+	      eventMessage += ' ctrlKeyDown';
+            }
+    	if (e.shiftKey) {
+	      eventMessage += ' shiftKeyDown';
+            }            
+    	if (e.metaKey) {
+	      eventMessage += ' metaKeyDown';
+            }            
         eventMessage += ')} ';
     }
     log(eventMessage);

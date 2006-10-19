@@ -235,13 +235,20 @@ function getInputValue(inputElement) {
 }
 
 /* Fire an event in a browser-compatible manner */
-function triggerEvent(element, eventType, canBubble) {
+function triggerEvent(element, eventType, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-        element.fireEvent('on' + eventType);
+        var evt = createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);        
+        element.fireEvent('on' + eventType, evt);
     }
     else {
         var evt = document.createEvent('HTMLEvents');
+        
+        evt.shiftKey = shiftKeyDown;
+        evt.metaKey = metaKeyDown;
+        evt.altKey = altKeyDown;
+        evt.ctrlKey = controlKeyDown;
+        
         evt.initEvent(eventType, canBubble, true);
         element.dispatchEvent(evt);
     }
@@ -265,11 +272,20 @@ function getKeyCodeFromKeySequence(keySequence) {
     throw SeleniumError("invalid keySequence");
 }
 
-function triggerKeyEvent(element, eventType, keySequence, canBubble) {
+function createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
+     var evt = element.ownerDocument.createEventObject();
+     evt.shiftKey = shiftKeyDown;
+     evt.metaKey = metaKeyDown;
+     evt.altKey = altKeyDown;
+     evt.ctrlKey = controlKeyDown;
+     return evt;
+}
+
+function triggerKeyEvent(element, eventType, keySequence, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
     var keycode = getKeyCodeFromKeySequence(keySequence);
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-        keyEvent = element.ownerDocument.createEventObject();
+        var keyEvent = createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
         keyEvent.keyCode = keycode;
         element.fireEvent('on' + eventType, keyEvent);
     }
@@ -277,9 +293,15 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble) {
         var evt;
         if (window.KeyEvent) {
             evt = document.createEvent('KeyEvents');
-            evt.initKeyEvent(eventType, true, true, window, false, false, false, false, keycode, keycode);
+            evt.initKeyEvent(eventType, true, true, window, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown, keycode, keycode);
         } else {
             evt = document.createEvent('UIEvents');
+            
+            evt.shiftKey = shiftKeyDown;
+            evt.metaKey = metaKeyDown;
+            evt.altKey = altKeyDown;
+            evt.ctrlKey = controlKeyDown;
+
             evt.initUIEvent(eventType, true, true, window, 1);
             evt.keyCode = keycode;
         }
@@ -289,40 +311,36 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble) {
 }
 
 /* Fire a mouse event in a browser-compatible manner */
-function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
+function triggerMouseEvent(element, eventType, canBubble, clientX, clientY, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
     clientX = clientX ? clientX : 0;
     clientY = clientY ? clientY : 0;
 
-    // TODO: set these attributes -- they don't seem to be needed by the initial test cases, but that could change...
+    LOG.warn("triggerMouseEvent assumes setting screenX and screenY to 0 is ok");
     var screenX = 0;
     var screenY = 0;
 
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-        LOG.error("element has fireEvent");
+        LOG.info("element has fireEvent");
+        var evt = createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
+        evt.detail = 0;
+        evt.button = 1;
+        evt.relatedTarget = null;
         if (!screenX && !screenY && !clientX && !clientY) {
             element.fireEvent('on' + eventType);
         }
         else {
-            var ieEvent = element.ownerDocument.createEventObject();
-            ieEvent.detail = 0;
-            ieEvent.screenX = screenX;
-            ieEvent.screenY = screenY;
-            ieEvent.clientX = clientX;
-            ieEvent.clientY = clientY;
-            ieEvent.ctrlKey = false;
-            ieEvent.altKey = false;
-            ieEvent.shiftKey = false;
-            ieEvent.metaKey = false;
-            ieEvent.button = 1;
-            ieEvent.relatedTarget = null;
+            evt.screenX = screenX;
+            evt.screenY = screenY;
+            evt.clientX = clientX;
+            evt.clientY = clientY;
 
             // when we go this route, window.event is never set to contain the event we have just created.
             // ideally we could just slide it in as follows in the try-block below, but this normally
             // doesn't work.  This is why I try to avoid this code path, which is only required if we need to
             // set attributes on the event (e.g., clientX).
             try {
-                window.event = ieEvent;
+                window.event = evt;
             }
             catch(e) {
                 // getting an "Object does not support this action or property" error.  Save the event away
@@ -330,24 +348,29 @@ function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
                 // TODO: is there a way to update window.event?
 
                 // work around for http://jira.openqa.org/browse/SEL-280 -- make the event available somewhere:
-                selenium.browserbot.getCurrentWindow().selenium_event = ieEvent;
+                selenium.browserbot.getCurrentWindow().selenium_event = evt;
             }
-            element.fireEvent('on' + eventType, ieEvent);
+            element.fireEvent('on' + eventType, evt);
         }
     }
     else {
-        LOG.error("element doesn't have fireEvent");
+        LOG.info("element doesn't have fireEvent");
         var evt = document.createEvent('MouseEvents');
         if (evt.initMouseEvent)
         {
-            LOG.error("element has initMouseEvent");
+            LOG.info("element has initMouseEvent");
             //Safari
-            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, false, false, false, false, 0, null)
+            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown, 0, null)
         }
         else {
-            LOG.error("element doesen't has initMouseEvent");
-            // TODO we should be initialising other mouse-event related attributes here
+        	LOG.warn("element doesn't have initMouseEvent; firing an event which should -- but doesn't -- have other mouse-event related attributes here, as well as controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown");
             evt.initEvent(eventType, canBubble, true);
+            
+            evt.shiftKey = shiftKeyDown;
+            evt.metaKey = metaKeyDown;
+            evt.altKey = altKeyDown;
+            evt.ctrlKey = controlKeyDown;
+
         }
         element.dispatchEvent(evt);
     }
@@ -606,7 +629,7 @@ objectExtend(Effect, {
 
 
 // for use from vs.2003 debugger
-function objToString(obj) {
+function o2s(obj) {
     var s = "";
     for (key in obj) {
         var line = key + "->" + obj[key];

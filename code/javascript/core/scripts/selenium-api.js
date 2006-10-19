@@ -280,25 +280,75 @@ Selenium.prototype.doKeyPress = function(locator, keySequence) {
    *  character. For example: "w", "\119".
    */
     var element = this.page().findElement(locator);
-    triggerKeyEvent(element, 'keypress', keySequence, true);
+    triggerKeyEvent(element, 'keypress', keySequence, true, 
+    	this.browserbot.controlKeyDown, 
+    	this.browserbot.altKeyDown, 
+        	this.browserbot.shiftKeyDown,
+        	this.browserbot.metaKeyDown);
 };
 
-Selenium.prototype.doShiftDown = function() {
+Selenium.prototype.doShiftKeyDown = function() {
 	/**
    * Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.
    *
    */
    this.browserbot.shiftKeyDown = true;
-   throw new SeleniumError("not implemented yet");
 };
 
-Selenium.prototype.doShiftUp = function() {
+Selenium.prototype.doShiftKeyUp = function() {
 	/**
    * Release the shift key.
    *
    */
    this.browserbot.shiftKeyDown = false;
-   throw new SeleniumError("not implemented yet");
+};
+
+Selenium.prototype.doMetaKeyDown = function() {
+	/**
+   * Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.
+   *
+   */
+   this.browserbot.metaKeyDown = true;
+};
+
+Selenium.prototype.doMetaKeyUp = function() {
+	/**
+   * Release the meta key.
+   *
+   */
+   this.browserbot.metaKeyDown = false;
+};
+
+Selenium.prototype.doAltKeyDown = function() {
+	/**
+   * Press the alt key and hold it down until doAltUp() is called or a new page is loaded.
+   *
+   */
+   this.browserbot.altKeyDown = true;
+};
+
+Selenium.prototype.doAltKeyUp = function() {
+	/**
+   * Release the alt key.
+   *
+   */
+   this.browserbot.altKeyDown = false;
+};
+
+Selenium.prototype.doControlKeyDown = function() {
+	/**
+   * Press the control key and hold it down until doControlUp() is called or a new page is loaded.
+   *
+   */
+   this.browserbot.controlKeyDown = true;
+};
+
+Selenium.prototype.doControlKeyUp = function() {
+	/**
+   * Release the control key.
+   *
+   */
+   this.browserbot.controlKeyDown = false;
 };
 
 Selenium.prototype.doKeyDown = function(locator, keySequence) {
@@ -311,7 +361,11 @@ Selenium.prototype.doKeyDown = function(locator, keySequence) {
    *  character. For example: "w", "\119".
    */
     var element = this.page().findElement(locator);
-    triggerKeyEvent(element, 'keydown', keySequence, true);
+    triggerKeyEvent(element, 'keydown', keySequence, true,
+    	this.browserbot.controlKeyDown, 
+        	this.browserbot.altKeyDown, 
+            this.browserbot.shiftKeyDown, 
+            this.browserbot.metaKeyDown);
 };
 
 Selenium.prototype.doKeyUp = function(locator, keySequence) {
@@ -324,7 +378,11 @@ Selenium.prototype.doKeyUp = function(locator, keySequence) {
    *  character. For example: "w", "\119".
    */
     var element = this.page().findElement(locator);
-    triggerKeyEvent(element, 'keyup', keySequence, true);
+    triggerKeyEvent(element, 'keyup', keySequence, true,
+    	this.browserbot.controlKeyDown, 
+        	this.browserbot.altKeyDown, 
+    	this.browserbot.shiftKeyDown,
+    	this.browserbot.metaKeyDown);
 };
 
 function getClientXY(element, coordString) {
@@ -464,8 +522,14 @@ Selenium.prototype.doType = function(locator, value) {
    * @param locator an <a href="#locators">element locator</a>
    * @param value the value to type
    */
+   if (this.browserbot.controlKeyDown || this.browserbot.altKeyDown || this.browserbot.metaKeyDown) {
+    	throw new SeleniumError("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
+    }
 		// TODO fail if it can't be typed into.
     var element = this.page().findElement(locator);
+    if (this.browserbot.shiftKeyDown) {
+    	value = new String(value).toUpperCase();
+    }
     this.page().replaceText(element, value);
 };
 
