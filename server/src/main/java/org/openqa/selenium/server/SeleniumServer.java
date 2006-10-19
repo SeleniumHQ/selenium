@@ -153,7 +153,7 @@ public class SeleniumServer {
     // all the data coming in and out:
     private static int portDriversShouldContact = DEFAULT_PORT;
     private static PrintStream logOut = null;
-    private static String defaultBrowserString = null;
+    private static String forcedBrowserMode = null; 
 
     public static final int DEFAULT_TIMEOUT = (30 * 60);
     public static int timeoutInSeconds = DEFAULT_TIMEOUT;
@@ -185,14 +185,16 @@ public class SeleniumServer {
                 usage(null);
                 System.exit(1);
             } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
+                usage("-defaultBrowserString has been renamed -forcedBrowserMode");
+            } else if ("-forcedBrowserMode".equalsIgnoreCase(arg)) {
                 for (i++; i < args.length; i++) {
-                    if (SeleniumServer.defaultBrowserString == null)
-                        SeleniumServer.defaultBrowserString = "";
+                    if (SeleniumServer.forcedBrowserMode == null)
+                        SeleniumServer.forcedBrowserMode = "";
                     else
-                        SeleniumServer.defaultBrowserString += " ";
-                    SeleniumServer.defaultBrowserString += args[i];
+                        SeleniumServer.forcedBrowserMode += " ";
+                    SeleniumServer.forcedBrowserMode += args[i];
                 }
-                SeleniumServer.log("\"" + defaultBrowserString + "\" will be used as the browser " +
+                SeleniumServer.log("\"" + forcedBrowserMode + "\" will be used as the browser " +
                         "mode for all sessions, no matter what is passed to getNewBrowserSession.");
             } else if ("-log".equalsIgnoreCase(arg)) {
                 setLogOut(getArg(args, ++i));
@@ -444,14 +446,14 @@ public class SeleniumServer {
             System.err.println(msg + ":");
         }
         System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive]" +
-                " [-defaultBrowserString browserString] [-userExtensions extensionJs] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename] [-dontInjectRegex java-regex]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
+                " [-forcedBrowserMode browserString] [-userExtensions extensionJs] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename] [-dontInjectRegex java-regex]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
                 "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
                 "where:\n" +
                 "the argument for timeout is an integer number of seconds before we should give up\n" +
                 "the argument for port is the port number the selenium server should use (default 4444)" +
                 "\n\t-interactive puts you into interactive mode.  See the tutorial for more details" +
                 "\n\t-multiWindow puts you into a mode where the test web site executes in a separate window, and selenium supports frames" +
-                "\n\t-defaultBrowserString (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
+                "\n\t-forcedBrowserMode (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
                 "\n\t-userExtensions indicates a JavaScript file that will be loaded into selenium" +
                 "\n\t-browserSessionReuse stops re-initialization and spawning of the browser between tests" +
                 "\n\t-dontInjectRegex is an optional regular expression that proxy injection mode can use to know when to bypss injection" +
@@ -535,7 +537,11 @@ public class SeleniumServer {
 
     private void configServer() {
         if (getDefaultBrowser() == null) {
-            SeleniumServer.setDefaultBrowser(System.getProperty("selenium.defaultBrowserString"));
+            if (null!=System.getProperty("selenium.defaultBrowserString")) {
+                System.err.println("The selenium.defaultBrowserString property is no longer supported; use selenium.forcedBrowserMode instead.");
+                System.exit(-1);
+            }
+            SeleniumServer.setForcedBrowserMode(System.getProperty("selenium.forcedBrowserMode"));
         }
         if (!isProxyInjectionMode() && System.getProperty("selenium.proxyInjectionMode") != null) {
             setProxyInjectionMode("true".equals(System.getProperty("selenium.proxyInjectionMode")));
@@ -634,15 +640,15 @@ public class SeleniumServer {
     }
 
 	public static String getDefaultBrowser() {
-        return defaultBrowserString;
+        return forcedBrowserMode;
     }
 
 	public static int getTimeoutInSeconds() {
         return timeoutInSeconds;
     }
 
-	public static void setDefaultBrowser(String defaultBrowserString) {
-        SeleniumServer.defaultBrowserString = defaultBrowserString;
+	public static void setForcedBrowserMode(String s) {
+        SeleniumServer.forcedBrowserMode = s;
     }
 
     public static void setDontInjectRegex(String dontInjectRegex) {
