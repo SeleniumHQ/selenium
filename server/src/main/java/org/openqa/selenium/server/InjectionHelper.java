@@ -8,11 +8,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.mortbay.http.HttpResponse;
 import org.mortbay.http.HttpRequest;
+import org.mortbay.http.HttpResponse;
 import org.mortbay.util.IO;
 
 public class InjectionHelper {
@@ -206,16 +204,6 @@ public class InjectionHelper {
             return 3;
         }
         return 0; // there was no BOM
-    }
-
-    private static boolean match(String regex, String data, boolean isKnownToBeHtml) {
-        Pattern regexp = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = regexp.matcher(data);
-        if (matcher.find()) {
-            String metaTag = matcher.group();
-            isKnownToBeHtml = (metaTag.indexOf("text/html")!=-1);
-        }
-        return isKnownToBeHtml;
     }
 
     /**

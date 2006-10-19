@@ -426,8 +426,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private String getNewBrowserSession(String browserString, String startURL) {
-        if (SeleniumServer.getDefaultBrowser()!=null) {
-            browserString = SeleniumServer.getDefaultBrowser(); 
+        if (SeleniumServer.getForcedBrowserMode()!=null) {
+            browserString = SeleniumServer.getForcedBrowserMode(); 
         }
         if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
             SeleniumServer.log("WARNING: running in proxy injection mode, but you used a *iexplore browser string; this is " +

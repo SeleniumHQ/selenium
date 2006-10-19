@@ -536,7 +536,7 @@ public class SeleniumServer {
     }
 
     private void configServer() {
-        if (getDefaultBrowser() == null) {
+        if (getForcedBrowserMode() == null) {
             if (null!=System.getProperty("selenium.defaultBrowserString")) {
                 System.err.println("The selenium.defaultBrowserString property is no longer supported; use selenium.forcedBrowserMode instead.");
                 System.exit(-1);
@@ -639,7 +639,7 @@ public class SeleniumServer {
         SeleniumServer.proxyInjectionMode = proxyInjectionMode;
     }
 
-	public static String getDefaultBrowser() {
+	public static String getForcedBrowserMode() {
         return forcedBrowserMode;
     }
 
@@ -670,9 +670,8 @@ public class SeleniumServer {
     public static boolean shouldInject(String path) {
         if (dontInjectRegex == null) {
             return true;
-        } else {
-            return !path.matches(dontInjectRegex);
         }
+        return !path.matches(dontInjectRegex);
     }
 
     public static String getDebugURL() {

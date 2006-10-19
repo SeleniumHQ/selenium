@@ -330,7 +330,6 @@ public class ProxyHandler extends AbstractHttpHandler {
 
             // handler status codes etc.
             int code;
-            boolean isKnownToBeHtml = false;
             if (http != null) {
                 proxy_in = http.getErrorStream();
 
@@ -341,9 +340,6 @@ public class ProxyHandler extends AbstractHttpHandler {
                 String contentType = http.getContentType();
                 if (SeleniumServer.isDebugMode()) {
                     SeleniumServer.log("Content-Type is: " + contentType);
-                }
-                if (contentType != null) {
-                    isKnownToBeHtml = contentType.startsWith("text/html");
                 }
             }
 
