@@ -15,9 +15,9 @@ public class ClientDriverPISuite extends ClientDriverSuite {
     public static Test suite() {
         System.setProperty("selenium.proxyInjectionMode", "true");
         if (WindowsUtils.thisIsWindows()) {
-            System.setProperty("selenium.defaultBrowserString", "*piiexplore");
+            System.setProperty("selenium.forcedBrowserMode", "*piiexplore");
         } else {
-            System.setProperty("selenium.defaultBrowserString", "*pifirefox");
+            System.setProperty("selenium.forcedBrowserMode", "*pifirefox");
         }
 
         return ClientDriverSuite.suite();
