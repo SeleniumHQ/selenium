@@ -23,6 +23,7 @@ public class XlateHtmlSeleneseToJava {
     static Set<String> generatedJavaClassNames = new HashSet<String>();
     
     private static Map<String, Class> funcTypes = null;
+    private static Map<String, Integer> funcArgCounts = null;
 
     static final String BEGIN_SELENESE = ">>>>>";
     static final String END_SELENESE   = "<<<<<";
@@ -114,6 +115,7 @@ public class XlateHtmlSeleneseToJava {
     private static void initializeFuncTypes() {
         if (funcTypes != null) return;
         funcTypes = new HashMap<String, Class>();
+        funcArgCounts = new HashMap<String, Integer>();
         InputStream stream = XlateHtmlSeleneseToJava.class.getResourceAsStream("/core/iedoc.xml");
         if (stream==null) {
             throw new RuntimeException("could not find /core/iedoc.xml on the class path");
@@ -125,6 +127,7 @@ public class XlateHtmlSeleneseToJava {
                 Element function = (Element) functions.item(i);
                 String funcName = function.getAttribute("name");
                 NodeList returnElements = function.getElementsByTagName("return");
+                funcArgCounts.put(funcName, function.getElementsByTagName("param").getLength());
                 if (returnElements.getLength() == 0) {
                     funcTypes.put(funcName, void.class);
                 } else {
@@ -621,27 +624,7 @@ public class XlateHtmlSeleneseToJava {
             recordFirstDomain(tokens[1]);
             tokens[1] = possiblyAdjustOpenURL(tokens[1]);
         }
-        int expectedArgCount = 2;
-        if (op.equals("open")
-                || op.equals("answerOnNextPrompt")
-                || op.equals("click")
-                || op.equals("check")
-                || op.equals("selectWindow")
-                || op.equals("selectFrame")
-                || op.equals("submit")
-                || op.equals("uncheck")
-                || op.equals("answerOnNextPrompt")
-                || op.startsWith("window")
-                ) {
-            expectedArgCount = 1;
-        }
-        else if (op.equals("chooseCancelOnNextConfirmation")
-                || op.equals("close")
-                || op.equals("refresh")
-                || op.equals("goBack")) {
-            expectedArgCount = 0;
-        }
-        return beginning + XlateSeleneseStatementDefault(expectedArgCount, "selenium", tokens) + ending;
+        return beginning + XlateSeleneseStatementDefault(funcArgCounts.get(op), "selenium", tokens) + ending;
     }
 
     private static String possiblyAdjustOpenURL(String url) {
