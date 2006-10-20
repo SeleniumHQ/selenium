@@ -23,7 +23,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     }
     
     public void testAJAXFirefox() throws Throwable {
-        String browserOverride = System.getProperty("selenium.defaultBrowserString");
+        String browserOverride = System.getProperty("selenium.forcedBrowserMode");
         if (browserOverride!=null && isProxyInjectionMode && !browserOverride.equals("*pifirefox")) {
             // in PI mode, this firefox-specific test will only succeed if the browser mode override is *pifirefox.  Otherwise, just give up.
             return;
@@ -48,7 +48,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     public void testAJAXIExplore() throws Throwable {
         if (!WindowsUtils.thisIsWindows()) return;
-        String browserOverride = System.getProperty("selenium.defaultBrowserString");
+        String browserOverride = System.getProperty("selenium.forcedBrowserMode");
         if (browserOverride!=null && isProxyInjectionMode && !browserOverride.equals("*piiexplore")) {
             // in PI mode, this firefox-specific test will only succeed if the browser mode override is *piiexplore.  Otherwise, just give up.
             return;
