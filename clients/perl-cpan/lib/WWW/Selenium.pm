@@ -71,21 +71,20 @@ the Selenium Server.  (The Selenium Server is a Java application.)
 
 #Defines an object that runs Selenium commands.
 
-
 =head3 Element Locators
-
 
 Element Locators tell Selenium which HTML element a command refers to.
 The format of a locator is:
 
+=over
+
 I<locatorType>B<=>I<argument>
+
+=back
 
 We support the following strategies for locating elements:
 
-
-
 =over
-
 
 =item B<identifier>=I<id>
 
@@ -101,92 +100,80 @@ Select the element with the specified @id attribute.
 
 Select the first element with the specified @name attribute.
 
-
-
 =over
-
 
 =item * username
 
 =item * name=username
 
-
 =back
-
 
 The name may optionally be followed by one or more I<element-filters>, separated from the name by whitespace.  If the I<filterType> is not specified, B<value> is assumed.
 
-
-
 =over
-
 
 =item * name=flavour value=chocolate
 
-
 =back
-
 
 =item B<dom>=I<javascriptExpression>
 
-
-Find an element using JavaScript traversal of the HTML Document Object
-Model. DOM locators I<must> begin with "document.".
-
+Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
+Model using JavaScript.  Note that you must not return a value in this string; simply make it the last expression in the block.
 
 =over
-
 
 =item * dom=document.forms['myForm'].myDropdown
 
 =item * dom=document.images[56]
 
+=item * dom=function foo() { return document.links[1]; }; foo();
 
 =back
-
-
 
 =item B<xpath>=I<xpathExpression>
 
 Locate an element using an XPath expression.
 
-
 =over
-
 
 =item * xpath=//img[@alt='The image alt text']
 
 =item * xpath=//table[@id='table1']//tr[4]/td[2]
 
-
 =back
-
 
 =item B<link>=I<textPattern>
 
 Select the link (anchor) element which contains text matching the
 specified I<pattern>.
 
-
 =over
-
 
 =item * link=The link text
 
+=back
+
+=item B<css>=I<cssSelectorSyntax>
+
+Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
+
+=over
+
+=item * css=a[href="#id3"]
+
+=item * css=span#firstChild + span
 
 =back
 
-
+Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). 
 
 =back
 
 Without an explicit locator prefix, Selenium uses the following default
 strategies:
 
-
-
 =over
-
 
 =item * B<dom>, for locators starting with "document."
 
@@ -194,35 +181,43 @@ strategies:
 
 =item * B<identifier>, otherwise
 
-
 =back
 
 =head3 Element Filters
 
 Element filters can be used with a locator to refine a list of candidate elements.  They are currently used only in the 'name' element-locator.
+
 Filters look much like locators, ie.
 
+=over
+
 I<filterType>B<=>I<argument>
+
+=back
 
 Supported element-filters are:
 
 B<value=>I<valuePattern>
 
+=over
+
 Matches elements based on their values.  This is particularly useful for refining a list of similarly-named toggle-buttons.
+
+=back
 
 B<index=>I<index>
 
+=over
+
 Selects a single element based on its position in the list (offset from zero).
+
+=back
 
 =head3 String-match Patterns
 
-
 Various Pattern syntaxes are available for matching string values:
 
-
-
 =over
-
 
 =item B<glob:>I<pattern>
 
@@ -241,7 +236,6 @@ regular-expressions is available.
 
 Match a string exactly, verbatim, without any of that fancy wildcard
 stuff.
-
 
 =back
 
