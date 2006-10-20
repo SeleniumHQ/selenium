@@ -1,4 +1,38 @@
 package org.openqa.selenium.server;
+/*
+ * HtmlIdentifier: a module to identify HTML (and in so doing determine whether it should be
+ * injected with selenium JavaScript when running in proxy injection mode).
+ * 
+ * As content arrives from the web server, the selenium server must decide whether it is appropriate
+ * to inject the selenium test harness JavaScript into that content.  It determines this by means of
+ * logic in HtmlIdentifier, a module Patrick recently added.  This module looks at the suffix (e.g.,
+ * .html, .js, etc.), the HTTP content type header field, and the content itself (e.g., it
+ * asks questions like 'does it contain "<html>"?').  It applies a series of rules which are used
+ * to derive an integer score indicating whether injection is a good idea.
+ * 
+ * So if you find that proxy injection mode is inappropriately injecting JavaScript into content, or
+ * not injecting JavaScript into content which needs it, then it is likely that HtmlIdentifier's rules
+ * need to be adjusted.  First, you can diagnose the logic by running the selenium server in
+ * debug mode, and looking at the log output.  In this output you can see how any particular
+ * content's score was arrived at.  For example:
+ * 
+ * HtmlIdentifier.shouldBeInjected("http://www.google.com/webhp", "text/html; charset=UTF-8", "...")
+ *   applied rule [extension [html, htm] rule: match=10000]: 0
+ *   applied rule [extension [jsp, asp, php, pl] rule: match=100]: 0
+ *   applied rule [extension [dll, gif, ico, jpg, jpeg, png, dwr, js] rule: match=-1000]: 0
+ *   applied rule [content <html rule: match=1000, failure to match -> -100]: 1000
+ *   applied rule [content <!DOCTYPE html rule: match=1000, failure to match -> -100]: -100
+ *   applied rule [content type text/html rule: match=100, failure to match -> -1000]: 100
+ *   applied rule [dojo catcher rule: match=-100000]: 0
+ *   total : 1000 (should inject)
+ * 
+ * If you find a case where an incorrect decision is being made, then
+ * 
+ * 1. add a test case to the TestHtmlIdentifier module to reproduce the problem
+ * 2. add rules or adjust HtmlIdentifier's logic to fix the problem
+ * 3. run all the tests to be sure that we haven't regressed in scenarios other than your own
+ * 4. check it in
+ */
 
 import java.util.ArrayList;
 import java.util.List;
