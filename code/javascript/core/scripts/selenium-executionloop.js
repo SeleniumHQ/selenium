@@ -135,7 +135,7 @@ TestLoop.prototype = {
          * on with test.  Fail the current test if there's a timeout or an
          * exception.
          */
-        LOG.debug("currentTest.continueTestWhenConditionIsTrue()");
+        //LOG.debug("currentTest.continueTestWhenConditionIsTrue()");
         selenium.browserbot.runScheduledPollers();
         try {
             if (this.waitForCondition == null || this.waitForCondition()) {
@@ -143,7 +143,7 @@ TestLoop.prototype = {
                 this.waitForCondition = null;
                 this.continueTest();
             } else {
-                LOG.debug("waitForCondition was false; keep waiting!");
+                //LOG.debug("waitForCondition was false; keep waiting!");
                 window.setTimeout(fnBind(this.continueTestWhenConditionIsTrue, this), 100);
             }
         } catch (e) {
