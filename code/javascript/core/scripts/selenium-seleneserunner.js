@@ -95,7 +95,7 @@ function runSeleniumTest() {
         proxyInjectionMode = true;
         testAppWindow = window;
     }
-    selenium = Selenium.createForWindow(testAppWindow);
+    selenium = Selenium.createForWindow(testAppWindow, proxyInjectionMode);
     if (!debugMode) {
         debugMode = runOptions.isDebugMode();
     }
@@ -137,7 +137,7 @@ function buildBaseUrl() {
     return s.substring(0, slashPairOffset + pathSlashOffset) + "/selenium-server/core/";
 }
 
-function logToRc(message, logLevel) {
+function logToRc(logLevel, message) {
     if (logLevel == null) {
         logLevel = "debug";
     }

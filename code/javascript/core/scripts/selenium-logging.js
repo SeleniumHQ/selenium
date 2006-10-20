@@ -68,12 +68,12 @@ Logger.prototype = {
         }
     },
 
-    logHook: function(message, className) {
+    logHook: function(className, message) {
     },
 
     log: function(className, message) {
         var logWindow = this.getLogWindow();
-        this.logHook(message, className);
+        this.logHook(className, message);
         if (logWindow) {
             if (logWindow.append) {
                 if (this.pendingMessages.length > 0) {

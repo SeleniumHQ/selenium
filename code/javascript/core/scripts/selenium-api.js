@@ -180,11 +180,11 @@ Selenium.decorateFunctionWithTimeout = function(f, timeout) {
     };
 }
 
-Selenium.createForWindow = function(window) {
+Selenium.createForWindow = function(window, proxyInjectionMode) {
     if (!window.location) {
         throw "error: not a window!";
     }
-    return new Selenium(BrowserBot.createForWindow(window));
+    return new Selenium(BrowserBot.createForWindow(window, proxyInjectionMode));
 };
 
 Selenium.prototype.reset = function() {
