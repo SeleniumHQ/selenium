@@ -81,7 +81,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
     };
 };
 
-BrowserBot.createForWindow = function(window) {
+BrowserBot.createForWindow = function(window, proxyInjectionMode) {
     var browserbot;
     LOG.debug('createForWindow');
     LOG.debug("browserName: " + browserVersion.name);
@@ -102,8 +102,8 @@ BrowserBot.createForWindow = function(window) {
         // Use mozilla by default
         browserbot = new MozillaBrowserBot(window);
     }
-    browserbot.getCurrentWindow();
-    // todo: why?
+    browserbot.proxyInjectionMode = proxyInjectionMode;
+    browserbot.getCurrentWindow();	// for modifyWindow side effect.  This is not a transparent style
     return browserbot;
 };
 
@@ -178,7 +178,9 @@ BrowserBot.prototype._modifyWindow = function(win) {
         this.currentPage = PageBot.createForWindow(this);
         this.newPageLoaded = false;
     }
-    this.modifySeparateTestWindowToDetectPageLoads(win);
+    if (!this.proxyInjectionMode) {
+        this.modifySeparateTestWindowToDetectPageLoads(win);
+    }
     return win;
 };
 
