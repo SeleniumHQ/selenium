@@ -15,8 +15,9 @@ public class HtmlIdentifier {
         rules.add(new ContentRule("<!DOCTYPE html", 1000, -100));
         rules.add(new ContentRule("<!DOCTYPE html", 1000, -100));
         rules.add(new ContentTypeRule("text/html", 100, -1000));
-        rules.add(new Rule() {
+        rules.add(new Rule("dojo catcher", -100000, 0) {
             public int score(String path, String contentType, String contentPreview) {
+                
                 if (path == null) {
                     return 0;
                 }
@@ -34,35 +35,60 @@ public class HtmlIdentifier {
     public static boolean shouldBeInjected(String path, String contentType, String contentPreview) {
         int score = 0;
 
+        boolean debugMode = SeleniumServer.isDebugMode();
+        if (debugMode) {
+            SeleniumServer.log("HtmlIdentifier.shouldBeInjected(\"" + path + "\", \"" + contentType);
+        }        
+        
         for (Rule rule : rules) {
-            score += rule.score(path, contentType, contentPreview);
+            int scoreDelta = rule.score(path, contentType, contentPreview);
+            if (debugMode) {
+                SeleniumServer.log("    applied rule " + rule + ": " + scoreDelta);
+            }
+            score += scoreDelta;
         }
-
-        return score > 200;
+        boolean shouldInject = (score > 200);
+        if (debugMode) {
+            SeleniumServer.log("    total : " + score + " (should " + (shouldInject ? "" : "not ") + "inject)");
+        }        
+        return shouldInject;
     }
 
-    static interface Rule {
-        int score(String path, String contentType, String contentPreview);
+    static abstract class Rule {
+        protected final int missingScore;
+        protected final int score;
+        protected String name;
+        public Rule(String name, int score, int missingScore) {
+            this.name = name;
+            this.score = score;
+            this.missingScore = missingScore;
+        }
+        abstract int score(String path, String contentType, String contentPreview);
+        public String toString() {
+            return "[" + name + " rule: match=" + score +
+                    (missingScore==0 ? "": (", failure to match -> " + missingScore))
+                    + "]";
+        }
     }
 
-    static class ExtensionRule implements Rule {
+    static class ExtensionRule extends Rule {
         List<String> exts = new ArrayList<String>();
-        int score;
 
         public ExtensionRule(String ext, int score) {
+            super("extension " + ext, score, 0);
             exts.add(ext);
-            this.score = score;
         }
 
         public ExtensionRule(String[] ext, int score) {
+            super(null, score, 0);
             for (String s : ext) {
                 exts.add(s);
             }
-            this.score = score;
+            name = "extension " + exts;
         }
 
         public int score(String path, String contentType, String contentPreview) {
-            if (path == null) {
+            if (path == null || !path.contains(".")) {
                 return 0;
             }
 
@@ -71,20 +97,17 @@ public class HtmlIdentifier {
                     return score;
                 }
             }
-
+            
             return 0;
         }
     }
 
-    static class ContentRule implements Rule {
-        String content;
-        int score;
-        int missingScore;
+    static class ContentRule extends Rule {
+        String contentInLowerCase;
 
         public ContentRule(String content, int score, int missingScore) {
-            this.content = content;
-            this.score = score;
-            this.missingScore = missingScore;
+            super("content " + content, score, missingScore);
+            this.contentInLowerCase = content.toLowerCase();
         }
 
         public int score(String path, String contentType, String contentPreview) {
@@ -92,30 +115,25 @@ public class HtmlIdentifier {
                 return 0;
             }
 
-            if (contentPreview.toLowerCase().contains(content.toLowerCase())) {
+            if (contentPreview.toLowerCase().contains(contentInLowerCase)) {
                 return score;
             }
-
             return missingScore;
         }
     }
 
-    static class ContentTypeRule implements Rule {
+    static class ContentTypeRule extends Rule {
         String type;
-        int score;
-        int missingScore;
 
         public ContentTypeRule(String type, int score, int missingScore) {
+            super("content type " + type, score, missingScore);
             this.type = type;
-            this.score = score;
-            this.missingScore = missingScore;
         }
 
         public int score(String path, String contentType, String contentPreview) {
-            if (type.equals(contentType)) {
+            if (contentType.contains(type)) {
                 return score;
             }
-
             return missingScore;
         }
     }
