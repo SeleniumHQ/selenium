@@ -5,14 +5,14 @@ import java.util.List;
 
 public class HtmlIdentifier {
     private static List<Rule> rules = new ArrayList<Rule>();
-
+    private static boolean logging = SeleniumServer.isDebugMode();
+    
     static {
         rules.add(new ExtensionRule(new String[]{"html", "htm"}, 10000));
         rules.add(new ExtensionRule(new String[]{"jsp", "asp", "php", "pl"}, 100));
         // ebay dll contains HTML snippets which fool InjectionHelper.  -nas
         rules.add(new ExtensionRule(new String[]{"dll", "gif", "ico", "jpg", "jpeg", "png", "dwr", "js"}, -1000));
         rules.add(new ContentRule("<html", 1000, -100));
-        rules.add(new ContentRule("<!DOCTYPE html", 1000, -100));
         rules.add(new ContentRule("<!DOCTYPE html", 1000, -100));
         rules.add(new ContentTypeRule("text/html", 100, -1000));
         rules.add(new Rule("dojo catcher", -100000, 0) {
@@ -35,20 +35,19 @@ public class HtmlIdentifier {
     public static boolean shouldBeInjected(String path, String contentType, String contentPreview) {
         int score = 0;
 
-        boolean debugMode = SeleniumServer.isDebugMode();
-        if (debugMode) {
-            SeleniumServer.log("HtmlIdentifier.shouldBeInjected(\"" + path + "\", \"" + contentType);
+        if (logging) {
+            SeleniumServer.log("HtmlIdentifier.shouldBeInjected(\"" + path + "\", \"" + contentType + "\", \"...\")");
         }        
         
         for (Rule rule : rules) {
             int scoreDelta = rule.score(path, contentType, contentPreview);
-            if (debugMode) {
+            if (logging) {
                 SeleniumServer.log("    applied rule " + rule + ": " + scoreDelta);
             }
             score += scoreDelta;
         }
         boolean shouldInject = (score > 200);
-        if (debugMode) {
+        if (logging) {
             SeleniumServer.log("    total : " + score + " (should " + (shouldInject ? "" : "not ") + "inject)");
         }        
         return shouldInject;
@@ -136,5 +135,9 @@ public class HtmlIdentifier {
             }
             return missingScore;
         }
+    }
+
+    public static void setLogging(boolean b) {
+        HtmlIdentifier.logging = b;
     }
 }
