@@ -19,7 +19,7 @@
                 <configuration>
                     <includes>
 						<include>**/ClientDriverSuite.java</include>
-						<include>**/ClientDriverPISuite.java</include>
+						<!--<include>**/ClientDriverPISuite.java</include>-->
                     </includes>
                     <forkMode>never</forkMode>
                 </configuration>
