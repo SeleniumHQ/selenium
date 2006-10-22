@@ -139,7 +139,7 @@ Recorder.prototype.findClickableElement = function(e) {
 	var type = e.type;
 	if (e.hasAttribute("onclick") || e.hasAttribute("href") || tagName == "button" ||
 		(tagName == "input" && 
-		 (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox"))) {
+		 (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox" || type == "reset"))) {
 		return e;
 	} else {
 		if (e.parentNode != null) {
