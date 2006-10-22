@@ -60,7 +60,7 @@ limitations under the License.
     <command id="cmd_selenium_exec_command" oncommand="goDoCommand('cmd_selenium_exec_command')"/>
   </commandset>
 <!--  <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="alert('commandupdate: window.editor=' + window.editor);if (window.editor) { editor.updateSeleniumCommands() }"/>-->
-  <commandset id="seleniumIDEUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="if (window.editor) { editor.updateSeleniumCommands() }"/>
+  <commandset id="seleniumIDEUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="if (window.editor) { window.editor.updateSeleniumCommands() }"/>
 
   <keyset id="seleniumIDEKeys">
     <key id="close-key" modifiers="accel" key="W" command="cmd_close"/>
@@ -79,28 +79,28 @@ limitations under the License.
       <menuitem label="&contextMenu.paste.label;" command="cmd_paste" key="key_paste" accesskey="P"/>
       <menuitem label="&contextMenu.delete.label;" command="cmd_delete" key="key_delete" accesskey="D"/>
       <menuseparator/>
-      <menuitem label="&contextMenu.insertCommand.label;" oncommand="editor.treeView.insertCommand()" accesskey="I"/>
-      <menuitem label="&contextMenu.insertComment.label;" oncommand="editor.treeView.insertComment()" accesskey="M"/>
+      <menuitem label="&contextMenu.insertCommand.label;" oncommand="window.editor.treeView.insertCommand()" accesskey="I"/>
+      <menuitem label="&contextMenu.insertComment.label;" oncommand="window.editor.treeView.insertComment()" accesskey="M"/>
       <menuseparator/>
-      <menuitem label="&contextMenu.clear.label;" oncommand="editor.clear()" accesskey="A"/>
+      <menuitem label="&contextMenu.clear.label;" oncommand="window.editor.clear()" accesskey="A"/>
       <menuseparator/>
       <menuitem label="&contextMenu.breakpoint.label;" command="cmd_selenium_breakpoint" key="breakpoint-key" accesskey="B"/>
       <menuitem label="&contextMenu.startpoint.label;" command="cmd_selenium_startpoint" key="startpoint-key" accesskey="S"/>
       <menuitem label="&contextMenu.execCommand.label;" command="cmd_selenium_exec_command" key="exec-key" accesskey="E"/>
     </popup>
     <popup id="popupSeleniumCommands">
-      <menuitem label="&contextMenu.clear.label;" oncommand="editor.clear()" accesskey="A"/>
+      <menuitem label="&contextMenu.clear.label;" oncommand="window.editor.clear()" accesskey="A"/>
     </popup>
   </popupset>
 
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="F">
     <menupopup id="file-popup">
-      <menuitem label="&newTestCmd.label;" oncommand="editor.newTestCase();" accesskey="N"/>
+      <menuitem label="&newTestCmd.label;" oncommand="window.editor.newTestCase();" accesskey="N"/>
       <menuitem label="&openCmd.label;" command="cmd_open" key="open-key" accesskey="O"/>
       <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key" accesskey="S"/>
-      <menuitem label="&saveTestAsCmd.label;" oncommand="editor.saveNewTestCase();" accesskey="A"/>
+      <menuitem label="&saveTestAsCmd.label;" oncommand="window.editor.saveNewTestCase();" accesskey="A"/>
       <menu label="&exportCmd.label;" accesskey="E">
-	<menupopup id="popup_export_formats" onpopupshowing="editor.populateFormatsPopup(this)" oncommand="editor.exportTestCaseWithFormat(editor.formats.selectFormat(event.target.getAttribute('value')))">
+	<menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestCaseWithFormat(window.editor.formats.selectFormat(event.target.getAttribute('value')))">
 	</menupopup>
       </menu>
       <menuseparator/>
@@ -121,35 +121,35 @@ limitations under the License.
     </menupopup>
   </menu>
   <menu id="optionsMenu" label="&optionsMenu.label;" accesskey="O">
-    <menupopup id="options-popup" onpopupshowing="editor.onPopupOptions()">
-      <menuitem label="&optionsCmd.label;" oncommand="editor.openSeleniumIDEPreferences();" accesskey="O"/>
+    <menupopup id="options-popup" onpopupshowing="window.editor.onPopupOptions()">
+      <menuitem label="&optionsCmd.label;" oncommand="window.editor.openSeleniumIDEPreferences();" accesskey="O"/>
       <menu label="&formatCmd.label;" accesskey="F">
-	<menupopup id="popup_formats" onpopupshowing="editor.populateFormatsPopup(this, editor.currentFormat)" oncommand="editor.setCurrentFormat(editor.formats.selectFormat(event.target.getAttribute('value')))">
+	<menupopup id="popup_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.currentFormat)" oncommand="window.editor.setCurrentFormat(window.editor.formats.selectFormat(event.target.getAttribute('value')))">
 	</menupopup>
       </menu>
       <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;">
-	<menupopup id="popup_clipboard_formats" onpopupshowing="editor.populateFormatsPopup(this, editor.clipboardFormat)" oncommand="editor.setClipboardFormat(editor.formats.selectFormat(event.target.getAttribute('value')))">
+	<menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.clipboardFormat)" oncommand="window.editor.setClipboardFormat(window.editor.formats.selectFormat(event.target.getAttribute('value')))">
 	</menupopup>
       </menu>
-      <menuitem id="internalTestsMenu" label="Test Selenium IDE" oncommand="editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />
+      <menuitem id="internalTestsMenu" label="Test Selenium IDE" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />
     </menupopup>
   </menu>
   
   <vbox id="logBox">
     <hbox id="logMenu" align="center">
-      <toolbarbutton id="logTab" label="&logConsole.label;" onclick="editor.infoPanel.switchView(editor.infoPanel.logView)" class="console-tab" selected="true"/>
-      <toolbarbutton id="helpTab" label="&reference.label;" onclick="editor.infoPanel.switchView(editor.infoPanel.helpView)" class="console-tab"/>
+      <toolbarbutton id="logTab" label="&logConsole.label;" onclick="window.editor.infoPanel.switchView(window.editor.infoPanel.logView)" class="console-tab" selected="true"/>
+      <toolbarbutton id="helpTab" label="&reference.label;" onclick="window.editor.infoPanel.switchView(window.editor.infoPanel.helpView)" class="console-tab"/>
       <spacer flex="1"/>
       <hbox align="center" id="logButtons">
 	<toolbarbutton id="logFilter" label="Debug" type="menu" class="console-button">
-	  <menupopup id="logFilterPopup" oncommand="editor.infoPanel.logView.changeLogLevel(event.target.value, true)">
+	  <menupopup id="logFilterPopup" oncommand="window.editor.infoPanel.logView.changeLogLevel(event.target.value, true)">
 	    <menuitem label="&logFilter.debug.label;" value="0"/>
 	    <menuitem label="&logFilter.info.label;" value="1" selected="true"/>
 	    <menuitem label="&logFilter.warn.label;" value="2"/>
 	    <menuitem label="&logFilter.error.label;" value="3"/>
 	  </menupopup>
         </toolbarbutton>
-	<toolbarbutton id="logClear" label="&logClear.label;" oncommand="editor.infoPanel.logView.clear()" class="console-button"/>
+	<toolbarbutton id="logClear" label="&logClear.label;" oncommand="window.editor.infoPanel.logView.clear()" class="console-button"/>
       </hbox>
     </hbox>
     <iframe flex="1" id="logView" src="LogFrame.html">
