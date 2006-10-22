@@ -18,6 +18,9 @@ package org.openqa.selenium.server;
 
 
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
+
 
 /**
  * <p>Manages sets of SeleneseQueues corresponding to windows and frames in a single browser session.</p>
@@ -47,6 +50,9 @@ public class FrameGroupSeleneseQueueSet {
     private Map<FrameAddress, SeleneseQueue> frameAddressToSeleneseQueue = new HashMap<FrameAddress, SeleneseQueue>();
     
     private Map<FrameAddress, Boolean> frameAddressToJustLoaded = new HashMap<FrameAddress, Boolean>();
+    static private Lock dataLock = new ReentrantLock();
+    static private Condition justLoadedUpdate = dataLock.newCondition();
+
     /**
      * A unique string denoting a session with a browser.  In most cases this session begins with the
      * selenium server configuring and starting a browser process, and ends with a selenium server killing 
@@ -68,7 +74,7 @@ public class FrameGroupSeleneseQueueSet {
     public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
     /**
      * Each user-visible window group has a selenium window name.  The name of the initial browser window is "".
-     * Even if the page reloads, the JavaScript is able to determined that it is this initial window because
+     * Even if the page reloads, the JavaScript is able to determine that it is this initial window because
      * window.opener==null.  Any window for whom window.opener!=null is a "pop-up".  
      * 
      * When a pop-up reloads, it can see that it is not in the initial window.  It will not know which window
@@ -168,38 +174,62 @@ public class FrameGroupSeleneseQueueSet {
                 return "OK";
             }
             if (command.equals("waitForPopUp")) {
-                return waitForPopUp(arg, Integer.parseInt(value));
+                String waitingForThisWindowName = arg;
+                int timeoutInSeconds = Integer.parseInt(value);
+                selectWindow(waitingForThisWindowName);
+                return waitForLoad(waitingForThisWindowName, "top", timeoutInSeconds);
             }
             if (command.equals("waitForPageToLoad")) {
-                if (justLoaded(currentFrameAddress)) {
-                    SeleniumServer.log("Not requesting waitForPageToLoad since just loaded "
-                                       + currentFrameAddress);
-                    markWhetherJustLoaded(currentFrameAddress, false); // only do this trick once
-                    return "OK";
-                }
-                String result = getSeleneseQueue().waitForResult();
-                if (justLoaded(currentFrameAddress)) { // happened during waitForResult call
-                    markWhetherJustLoaded(currentFrameAddress, false);   // reset this recordkeeping
-                }
-                return result;
+                return waitForLoad(currentFrameAddress.getWindowName(),
+                        currentFrameAddress.getLocalFrameAddress(),
+                        SeleniumServer.getTimeoutInSeconds());
             }
         } // if (SeleniumServer.isProxyInjectionMode())
         return getSeleneseQueue().doCommand(command, arg, value);
     }
     
-    private String waitForPopUp(String seleniumWindowName, int timeout) {
-        setExpectedNewWindowName(seleniumWindowName);
-        selectWindow(seleniumWindowName);
-        if (justLoaded(currentFrameAddress)) {
-            return "OK";  // since no one who was waiting when this window arrived, its result was discarded
-        }
-        return getSeleneseQueue().waitForResult(timeout);
-    }
+	private String waitForLoad(String waitingForThisWindowName, String waitingForThisLocalFrame, int timeoutInSeconds) {
+	    FrameGroupSeleneseQueueSet.expectedNewWindowName = waitingForThisWindowName;
+	    dataLock.lock();
+	    try {
+	        for (FrameAddress matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
+	            for (FrameAddress justLoaded : frameAddressToJustLoaded.keySet()) {
+                    if (waitingForThisLocalFrame!=null) {
+	                    if (!justLoaded.getLocalFrameAddress().equals(waitingForThisLocalFrame)) {
+	                        continue;
+	                    }
+	                }
+	                if (justLoaded.getWindowName().equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP)) {
+	                    justLoaded.setWindowName(waitingForThisWindowName);
+	                }
+	                else if (!justLoaded.getWindowName().equals(waitingForThisWindowName)) {
+                        continue;
+	                }
+                    matchingFrameAddress = justLoaded;
+                    break;
+ 	            }
+                if (matchingFrameAddress!=null) {
+                    frameAddressToJustLoaded.remove(matchingFrameAddress);
+                    return "OK";
+                }
+	            SeleniumServer.log("waiting for window " + waitingForThisWindowName);
+	            try {
+	                justLoadedUpdate.await(1, TimeUnit.SECONDS);
+	            } catch (InterruptedException e) {
+	            }
+	        }
+	        return "ERROR: timed out waiting for window " + waitingForThisWindowName + " to appear";
+	    }
+	    finally {
+	        dataLock.unlock();
+	    }
 
-    /**
-     * <p>Accepts a command reply, and retrieves the next command to run.</p>
-     * 
-     * 
+	}
+
+	/**
+	 * <p>Accepts a command reply, and retrieves the next command to run.</p>
+	 * 
+	 * 
      * @param commandResult - the reply from the previous command, or null
      * @param frameAddress - frame from which the reply came
      * @param uniqueId 
@@ -213,6 +243,7 @@ public class FrameGroupSeleneseQueueSet {
         else {
             synchronized(this) {
                 if (frameAddress.getWindowName().equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP)) {
+                    boolean foundFrameAddressOfUnknownPopup = false;
                     for (FrameAddress f : frameAddressToSeleneseQueue.keySet()) {
                         // the situation being handled here: a pop-up window has either just loaded or reloaded, and therefore
                         // doesn't know its name.  It uses SELENIUM_WINDOW_NAME_UNKNOWN_POPUP as a placeholder.
@@ -226,8 +257,12 @@ public class FrameGroupSeleneseQueueSet {
                                 && !f.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)
                                 && frameAddressToSeleneseQueue.get(f).getCommandResultHolder().hasBlockedGetter()) {
                             frameAddress = f;
+                            foundFrameAddressOfUnknownPopup = true;
                             break;
                         }
+                    }
+                    if (!foundFrameAddressOfUnknownPopup) {
+                        SeleniumServer.log("WARNING: unknown popup " + frameAddress + " was not resolved");
                     }
                 }
             }
@@ -247,24 +282,31 @@ public class FrameGroupSeleneseQueueSet {
         }
     }
     
-    public boolean justLoaded(FrameAddress frameAddress) {
+    private boolean justLoaded(FrameAddress frameAddress) {
         return (frameAddressToJustLoaded.containsKey(frameAddress));
     }
-    
+
     public void markWhetherJustLoaded(FrameAddress frameAddress, boolean justLoaded) {
         boolean oldState = justLoaded(frameAddress);
         if (oldState!=justLoaded) {
-            if (justLoaded) {
-                if (SeleniumServer.isDebugMode()) {
-                    SeleniumServer.log(frameAddress + " marked as just loaded");
+            dataLock.lock();
+            try {       
+                if (justLoaded) {
+                    if (SeleniumServer.isDebugMode()) {
+                        SeleniumServer.log(frameAddress + " marked as just loaded");
+                    }
+                    frameAddressToJustLoaded.put(frameAddress, true);
                 }
-                frameAddressToJustLoaded.put(frameAddress, true);
+                else {
+                    if (SeleniumServer.isDebugMode()) {
+                        SeleniumServer.log(frameAddress + " marked as NOT just loaded");
+                    }
+                    frameAddressToJustLoaded.remove(frameAddress);
+                }
+                justLoadedUpdate.signalAll();
             }
-            else {
-                if (SeleniumServer.isDebugMode()) {
-                    SeleniumServer.log(frameAddress + " marked as NOT just loaded");
-                }
-                frameAddressToJustLoaded.remove(frameAddress);
+            finally {
+                dataLock.unlock();
             }
         }
     }
@@ -307,14 +349,6 @@ public class FrameGroupSeleneseQueueSet {
             expectedNewWindowName = null;
         }
         return new FrameAddress(seleniumWindowName, localFrameAddress);
-    }
-
-    public static String getExpectedNewWindowName() {
-        return expectedNewWindowName;
-    }
-
-    public static void setExpectedNewWindowName(String expectedNewWindowName) {
-        FrameGroupSeleneseQueueSet.expectedNewWindowName = expectedNewWindowName;
     }
 
     /**
