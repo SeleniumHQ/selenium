@@ -181,8 +181,11 @@ function serializeObject(name, x)
 function relayBotToRC(s) {
 }
 
+// seems like no one uses this, but in fact it is called using eval from server-side PI mode code; however, 
+// because multiple names can map to the same popup, assigning a single name confuses matters sometimes;
+// thus, I'm disabling this for now.  -Nelson 10/21/06
 function setSeleniumWindowName(seleniumWindowName) {
-    selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
+//selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
 }
 
 SeleneseRunner = classCreate();
