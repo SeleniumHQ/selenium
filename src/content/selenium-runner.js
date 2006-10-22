@@ -185,6 +185,7 @@ function start(baseURL) {
 	}
 	currentTest.commandComplete = function(result) {
 		if (result.failed) {
+            testCase.debugContext.failed = true;
 			testCase.debugContext.currentCommand().result = 'failed';
 		} else if (result.passed) {
 			testCase.debugContext.currentCommand().result = 'passed';
@@ -195,6 +196,7 @@ function start(baseURL) {
 	}
 	currentTest.commandError = function() {
 		LOG.debug("commandError");
+        testCase.debugContext.failed = true;
 		testCase.debugContext.currentCommand().result = 'failed';
 		editor.view.rowUpdated(testCase.debugContext.debugIndex);
 	}
@@ -220,6 +222,7 @@ function start(baseURL) {
 	}
 
 	testCase.debugContext.reset();
+    testCase.debugContext.failed = false;
 	currentTest.start();
 }
 

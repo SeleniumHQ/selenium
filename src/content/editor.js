@@ -507,12 +507,13 @@ Editor.prototype.checkForTestRunner = function(contentWindow) {
 
 Editor.prototype.showInBrowser = function(url, newWindow) {
     if (newWindow) {
-        this.window.open(url);
+        return this.window.open(url);
     } else {
         var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
         var window = wm.getMostRecentWindow('navigator:browser');
         var contentWindow = window.getBrowser().contentWindow;
         contentWindow.location.href = url;
+        return window;
     }
 }
 

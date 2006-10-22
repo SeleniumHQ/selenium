@@ -41,6 +41,7 @@ function Debugger(editor) {
             // In Firefox 2.0, it seems that methods added to Object or String does not work in subscripts,
             // so we'll load prototype.js and htmlutils.js again
             // (Tested on Firefox 2.0 RC2)
+            this.runner.eval = function(str) { return eval(str); }
             this.runner.window = window;
             this.runner.Element = window.Element;
             this.runner.Event = window.Event;
