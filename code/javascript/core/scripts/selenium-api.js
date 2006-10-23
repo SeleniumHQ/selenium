@@ -847,8 +847,21 @@ Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFra
     return false;
 };
 
-Selenium.prototype.getWhetherThisWindowMatchWindowExpression = function(currentFrameString, target) {
-throw new SeleniumError("not implemented yet");
+Selenium.prototype.getWhetherThisWindowMatchWindowExpression = function(currentWindowString, target) {
+    /**
+    * Determine whether currentWindowString plus target identify the window containing this running code.
+     *
+     * <p>This is useful in proxy injection mode, where this code runs in every
+     * browser frame and window, and sometimes the selenium server needs to identify
+     * the "current" window.  In this case, when the test calls selectWindow, this
+     * routine is called for each window to figure out which one has been selected.
+     * The selected window will return true, while all others will return false.</p>
+     *
+     * @param currentWindowString starting window
+     * @param target new window (which might be relative to the current one, e.g., "_parent")
+     * @return boolean true if the new window is this code's window
+     */
+     throw new SeleniumError("not implemented yet");
 };
 
 Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
