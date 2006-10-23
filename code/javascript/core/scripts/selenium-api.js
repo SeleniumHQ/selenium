@@ -847,6 +847,10 @@ Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFra
     return false;
 };
 
+Selenium.prototype.getWhetherThisWindowMatchWindowExpression = function(currentFrameString, target) {
+throw new SeleniumError("not implemented yet");
+};
+
 Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
 	/**
 	* Waits for a popup window to appear and load up.
