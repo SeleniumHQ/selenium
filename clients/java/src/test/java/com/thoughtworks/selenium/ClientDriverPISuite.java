@@ -14,12 +14,15 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 public class ClientDriverPISuite extends ClientDriverSuite {
     public static Test suite() {
         System.setProperty("selenium.proxyInjectionMode", "true");
-        if (WindowsUtils.thisIsWindows()) {
-            System.setProperty("selenium.forcedBrowserMode", "*piiexplore");
-        } else {
-            System.setProperty("selenium.forcedBrowserMode", "*pifirefox");
-        }
 
+        String forcedBrowserMode = System.getProperty("selenium.forcedBrowserMode");
+        if (forcedBrowserMode==null) {
+            if (WindowsUtils.thisIsWindows()) {
+                System.setProperty("selenium.forcedBrowserMode", "*piiexplore");
+            } else {
+                System.setProperty("selenium.forcedBrowserMode", "*pifirefox");
+            }
+        }
         return ClientDriverSuite.suite();
     }
 }
