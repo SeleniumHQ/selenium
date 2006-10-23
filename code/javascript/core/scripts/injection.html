@@ -59,10 +59,16 @@ function seleniumOnLoad() {
         runSeleniumTest();
 }
 
+function seleniumOnUnload() {
+	sendToRC("OK"); // just in case some poor PI server thread is waiting for a response
+}
+
 if (window.addEventListener) {
     	window.addEventListener("load", seleniumOnLoad, false);	// firefox
+    	window.addEventListener("unload", seleniumOnUnload, false);	// firefox
 } else if (window.attachEvent){
     	window.attachEvent("onload", seleniumOnLoad);	// IE
+    	window.attachEvent("onunload", seleniumOnUnload);	// IE
 }
 else {
     	throw "causing a JavaScript error to tell the world that I did not arrange to be run on load";
