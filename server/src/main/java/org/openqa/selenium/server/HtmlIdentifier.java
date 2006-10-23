@@ -40,6 +40,7 @@ import java.util.List;
 public class HtmlIdentifier {
     private static List<Rule> rules = new ArrayList<Rule>();
     private static boolean logging = SeleniumServer.isDebugMode();
+    private static final int INJECTION_THRESHOLD = 200;
     
     static {
         rules.add(new ExtensionRule(new String[]{"html", "htm"}, 10000));
@@ -80,9 +81,9 @@ public class HtmlIdentifier {
             }
             score += scoreDelta;
         }
-        boolean shouldInject = (score > 200);
+        boolean shouldInject = (score > INJECTION_THRESHOLD);
         if (logging) {
-            SeleniumServer.log("    total : " + score + " (should " + (shouldInject ? "" : "not ") + "inject)");
+            SeleniumServer.log("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
         }        
         return shouldInject;
     }
