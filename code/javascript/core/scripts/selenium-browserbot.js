@@ -1354,7 +1354,12 @@ BrowserBot.prototype._getFrameFromGlobal = function(target) {
     }
     pagebot = this.getCurrentPage();
     var frameElement = pagebot.findElementBy("implicit", target, this.topWindow.document, this.topWindow);
-    return frameElement.contentWindow;
+    if (frameElement) {
+        return frameElement.contentWindow;
+    }
+    var win = this.getWindowByName(target);
+    if (win) return win;
+    return this.getCurrentWindow().open('', target);
 }
 
 OperaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
