@@ -55,6 +55,7 @@
 						<include>**/ServerTestSuite.java</include>
                      </includes>
                      <forkMode>never</forkMode>
+                     <useFile>false</useFile>
                 </configuration>
             </plugin>
         </plugins>
