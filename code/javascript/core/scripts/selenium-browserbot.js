@@ -1284,7 +1284,16 @@ PageBot.prototype.clickElement = function(element, clientX, clientY) {
 BrowserBot.prototype.doubleClickElement = function(element, clientX, clientY) {
        this.fireEventOnElement("dblclick", element, clientX, clientY);
 };
-    
+
+PageBot.prototype._modifyElementTarget = function(element) {
+    if (element.target && element.target == "_blank" && element.tagName && element.tagName.toLowerCase() == "a") {
+        var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
+        LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
+        this.getCurrentWindow().open('', newTarget);
+        element.target = newTarget;
+    }
+}
+
 MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
@@ -1296,6 +1305,8 @@ MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clien
     element.addEventListener(eventType, function(evt) {
         preventDefault = evt.getPreventDefault();
     }, false);
+    
+    this._modifyElementTarget(element);
 
     // Trigger the event.
     triggerMouseEvent(element, eventType, true, clientX, clientY);
@@ -1349,6 +1360,8 @@ BrowserBot.prototype._getFrameFromGlobal = function(target) {
 OperaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
+    
+    this._modifyElementTarget(element);
 
     // Trigger the click event.
     triggerMouseEvent(element, eventType, true, clientX, clientY);
@@ -1363,9 +1376,11 @@ OperaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX
 KonquerorPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
+    
+    this._modifyElementTarget(element);
 
     if (element[eventType]) {
-    	eval("element." + eventType + "()");
+    	element[eventType]();
     }
     else {
         triggerMouseEvent(element, eventType, true, clientX, clientY);
@@ -1380,10 +1395,12 @@ KonquerorPageBot.prototype.fireEventOnElement = function(eventType, element, cli
 SafariPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
     triggerEvent(element, 'focus', false);
     var wasChecked = element.checked;
+    
+    this._modifyElementTarget(element);
 
     // For form element it is simple.
     if (element[eventType]) {
-    	eval("element." + eventType + "()");
+    	element[eventType]();
     }
     // For links and other elements, event emulation is required.
     else {
@@ -1413,12 +1430,7 @@ IEPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, c
         pageUnloading = true;
     };
     this.getCurrentWindow().attachEvent("onbeforeunload", pageUnloadDetector);
-    if (element.target && element.target == "_blank" && element.tagName && element.tagName.toLowerCase() == "a") {
-        var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
-        LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
-        this.getCurrentWindow().open('', newTarget);
-        element.target = newTarget;
-    }
+    this._modifyElementTarget(element);
     element[eventType]();
 
 
@@ -1533,7 +1545,7 @@ PageBot.prototype.goForward = function() {
 };
 
 PageBot.prototype.close = function() {
-    if (browserVersion.isChrome || browserVersion.isSafari) {
+    if (browserVersion.isChrome || browserVersion.isSafari || browserVersion.isOpera) {
         this.getCurrentWindow().close();
     } else {
         this.getCurrentWindow().eval("window.close();");
