@@ -415,7 +415,11 @@ function getDocumentBase(doc) {
 function describe(object, delimiter) {
     var props = new Array();
     for (var prop in object) {
-        props.push(prop + " -> " + object[prop]);
+        try {
+            props.push(prop + " -> " + object[prop]);
+        } catch (e) {
+            props.push(prop + " -> [htmlutils: ack! couldn't read this property! (Permission Denied?)]");
+        }
     }
     return props.join(delimiter || '\n');
 }

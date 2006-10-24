@@ -733,27 +733,46 @@ Selenium.prototype.doOpen = function(url) {
     return this.makePageLoadCondition();
 };
 
+Selenium.prototype.doOpenWindow = function(url, windowID) {
+	/**
+   * Opens a popup window (if a window with that ID isn't already open).
+   * After opening the window, you'll need to select it using the selectWindow
+   * command.
+   * 
+   * <p>This command can also be a useful workaround for bug SEL-339.  In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
+   * In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using
+   * an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p>
+   *
+   * @param url the URL to open, which can be blank 
+   * @param windowID the JavaScript window ID of the window to select
+   */
+    this.browserbot.getCurrentWindow().open(url, windowID);
+};
+
 Selenium.prototype.doSelectWindow = function(windowID) {
 	/**
    * Selects a popup window; once a popup window has been selected, all
    * commands go to that window. To select the main window again, use null
    * as the target.
    *
-   * Selenium has several strategies for finding the window object referred to by the "windowID" parameter.
+   * <p>Selenium has several strategies for finding the window object referred to by the "windowID" parameter.</p>
    * 
-   * 1.) if windowID is null, then it is assumed the user is referring to the original window instantiated by the browser).
-   * 2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
-   * that this variable contains the return value from a call to the JavaScript window.open() method.
-   * 3.) Otherwise, selenium looks in a hash it maintains that maps string names to window objects.  Each of these string 
+   * <p>1.) if windowID is null, then it is assumed the user is referring to the original window instantiated by the browser).</p>
+   * <p>2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
+   * that this variable contains the return value from a call to the JavaScript window.open() method.</p>
+   * <p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window objects.  Each of these string 
    * names matches the second parameter "windowName" past to the JavaScript method  window.open(url, windowName, windowFeatures, replaceFlag)
-   * (which selenium intercepts).
+   * (which selenium intercepts).</p>
    *
-   *
-   * If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages
+   * <p>If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages
    * which identify the names of windows created via window.open (and therefore intercepted by selenium).  You will see messages
-   * like the following for each window as it is opened:
+   * like the following for each window as it is opened:</p>
    * 
-   * 	debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow"
+   * <p><code>debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow"</code></p>
+   *
+   * <p>In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
+   * (This is bug SEL-339.)  In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using
+   * an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p>
    * 
    * @param windowID the JavaScript window ID of the window to select
    */
