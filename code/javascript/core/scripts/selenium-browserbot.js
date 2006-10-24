@@ -881,8 +881,8 @@ PageBot.prototype.getDocument = function() {
     return this.getCurrentWindow().document;
 }
 
-PageBot.prototype.getCurrentWindow = function() {
-    return this.browserbot.getCurrentWindow();
+PageBot.prototype.getCurrentWindow = function(doNotModify) {
+    return this.browserbot.getCurrentWindow(doNotModify);
 }
 
 PageBot.prototype.getTitle = function() {
