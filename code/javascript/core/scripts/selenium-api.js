@@ -880,7 +880,10 @@ Selenium.prototype.getWhetherThisWindowMatchWindowExpression = function(currentW
      * @param target new window (which might be relative to the current one, e.g., "_parent")
      * @return boolean true if the new window is this code's window
      */
-     throw new SeleniumError("not implemented yet");
+     if (window.opener!=null && window.opener["target"]!=null && window.opener["target"]==window) {
+     	return true;
+     }
+     return false;
 };
 
 Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
