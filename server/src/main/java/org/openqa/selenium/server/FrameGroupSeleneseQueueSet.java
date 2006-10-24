@@ -159,7 +159,7 @@ public class FrameGroupSeleneseQueueSet {
                         }
                         else if (!"OK,false".equals(frameMatchBooleanString)) {
                             throw new RuntimeException("unexpected return " + frameMatchBooleanString
-                                    + " from frame search");                            
+                                                       + " from frame search");
                         }
                     }
                 }
@@ -180,15 +180,24 @@ public class FrameGroupSeleneseQueueSet {
                 return waitForLoad(waitingForThisWindowName, "top", timeoutInSeconds);
             }
             if (command.equals("waitForPageToLoad")) {
-                return waitForLoad(currentFrameAddress.getWindowName(),
-                        currentFrameAddress.getLocalFrameAddress(),
-                        SeleniumServer.getTimeoutInSeconds());
+                return waitForLoad();
+            }
+            if (command.equals("open")) {
+                String t = getSeleneseQueue().doCommand(command, arg, value);
+                if (!"OK".equals(t)) {
+                    return t;
+                }
+                return waitForLoad();
             }
         } // if (SeleniumServer.isProxyInjectionMode())
         return getSeleneseQueue().doCommand(command, arg, value);
     }
+
+    private String waitForLoad() {
+        return waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, SeleniumServer.getTimeoutInSeconds());
+    }
     
-	private String waitForLoad(String waitingForThisWindowName, String waitingForThisLocalFrame, int timeoutInSeconds) {
+    private String waitForLoad(String waitingForThisWindowName, String waitingForThisLocalFrame, int timeoutInSeconds) {
 	    FrameGroupSeleneseQueueSet.expectedNewWindowName = waitingForThisWindowName;
 	    dataLock.lock();
 	    try {
@@ -337,7 +346,7 @@ public class FrameGroupSeleneseQueueSet {
         }
     }
     
-    public static synchronized FrameAddress findFrameAddress(String seleniumWindowName, String localFrameAddress, boolean justLoaded) {
+    public static synchronized FrameAddress makeFrameAddress(String seleniumWindowName, String localFrameAddress, boolean justLoaded) {
         if (seleniumWindowName==null) {
             // we are talking to a version of selenium core which isn't telling us the
             // seleniumWindowName.  Set it to the default, which will be right most of
