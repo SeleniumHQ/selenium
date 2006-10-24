@@ -182,6 +182,7 @@ BrowserBot.prototype._modifyWindow = function(win) {
         win[this.uniqueId] = true;
         this.modifyWindowToRecordPopUpDialogs(win, this);
         this.currentPage = PageBot.createForWindow(this);
+        //LOG.debug("_modifyWindow newPageLoaded = false");
         this.newPageLoaded = false;
     }
     if (!this.proxyInjectionMode) {
@@ -269,6 +270,7 @@ BrowserBot.prototype.getCurrentPage = function() {
     if (this.currentPage == null) {
         var testWindow = this.getCurrentWindow();
         this.currentPage = PageBot.createForWindow(this);
+        //LOG.debug("getCurrentPage newPageLoaded = false");
         this.newPageLoaded = false;
     }
     if (this._windowClosed(this.getCurrentWindow())) {
@@ -1469,7 +1471,7 @@ IEPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, c
 
 PageBot.prototype._windowClosed = function(element) {
     try {
-        return selenium.browserbot._windowClosed(this.getCurrentWindow());
+        return selenium.browserbot._windowClosed(this.getCurrentWindow(true));
     } catch (e) {
         if (e.windowClosed) {
             return true;
