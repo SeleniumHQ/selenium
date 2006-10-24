@@ -182,7 +182,7 @@ BrowserBot.prototype._modifyWindow = function(win) {
         win[this.uniqueId] = true;
         this.modifyWindowToRecordPopUpDialogs(win, this);
         this.currentPage = PageBot.createForWindow(this);
-        //LOG.debug("_modifyWindow newPageLoaded = false");
+        LOG.debug("_modifyWindow newPageLoaded = false");
         this.newPageLoaded = false;
     }
     if (!this.proxyInjectionMode) {
@@ -1444,7 +1444,7 @@ IEPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, c
     // If the page is going to unload - still attempt to fire any subsequent events.
     // However, we can't guarantee that the page won't unload half way through, so we need to handle exceptions.
     try {
-        this.getCurrentWindow().detachEvent("onbeforeunload", pageUnloadDetector);
+        this.getCurrentWindow(true).detachEvent("onbeforeunload", pageUnloadDetector);
 
         if (this._windowClosed()) {
             return;
