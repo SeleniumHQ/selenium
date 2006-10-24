@@ -46,7 +46,16 @@ objectExtend(HtmlTestRunner.prototype, {
 
     loadSuiteFrame: function() {
         if (selenium == null) {
-            selenium = Selenium.createForWindow(this._getApplicationWindow());
+            var appWindow = this._getApplicationWindow();
+            try { appWindow.location; }
+            catch (e) { 
+                // when reloading, we may be pointing at an old window (Perm Denied)
+                setTimeout(fnBind(function() {
+                    this.loadSuiteFrame();
+                }, this), 500);
+                return;
+            }
+            selenium = Selenium.createForWindow(appWindow);
             this._registerCommandHandlers();
         }
         this.controlPanel.setHighlightOption();
@@ -570,9 +579,20 @@ objectExtend(HtmlTestSuite.prototype, {
 
     _collectSuiteRows: function () {
         var result = [];
-        for (rowNum = 1; rowNum < this.getTestTable().rows.length; rowNum++) {
-            var rowElement = this.getTestTable().rows[rowNum];
+        var tables = $A(this.suiteDocument.getElementsByTagName("table"));
+        var testTable = tables[0];
+        for (rowNum = 1; rowNum < testTable.rows.length; rowNum++) {
+            var rowElement = testTable.rows[rowNum];
             result.push(new HtmlTestSuiteRow(rowElement, testFrame, this));
+        }
+        
+        // process the unsuited rows as well
+        for (var tableNum = 1; tableNum < $A(this.suiteDocument.getElementsByTagName("table")).length; tableNum++) {
+            testTable = tables[tableNum];
+            for (rowNum = 1; rowNum < testTable.rows.length; rowNum++) {
+                var rowElement = testTable.rows[rowNum];
+                new HtmlTestSuiteRow(rowElement, testFrame, this);
+            }
         }
         return result;
     },
