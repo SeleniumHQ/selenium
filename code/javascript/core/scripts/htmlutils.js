@@ -386,10 +386,13 @@ function removeLoadListener(element, command) {
 
 function addLoadListener(element, command) {
     LOG.info('Adding loadListenter for ' + element + ', ' + command);
+    var augmentedCommand = function() {
+        command.call(this, element);
+    }
     if (window.addEventListener && !browserVersion.isOpera)
-        element.addEventListener("load", command, true);
+        element.addEventListener("load", augmentedCommand, true);
     else if (window.attachEvent)
-        element.attachEvent("onload", command);
+        element.attachEvent("onload", augmentedCommand);
 }
 
 /**

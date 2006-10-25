@@ -59,13 +59,20 @@ var BrowserBot = function(topLevelApplicationWindow) {
 
     this.uniqueId = new Date().getTime();
     this.pollingForLoad = new Object();
+    this.permDeniedCount = new Object();
     this.windowPollers = new Array();
 
     var self = this;
-    this.recordPageLoad = function() {
+    this.recordPageLoad = function(elementOrWindow) {
         LOG.debug("Page load detected");
         try {
-            LOG.debug("Page load location=" + self.getCurrentWindow(true).location);
+            if (elementOrWindow.location && elementOrWindow.location.href) {
+                LOG.debug("Page load location=" + elementOrWindow.location.href);
+            } else if (elementOrWindow.contentWindow && elementOrWindow.contentWindow.location && elementOrWindow.contentWindow.location.href) {
+                LOG.debug("Page load location=" + elementOrWindow.contentWindow.location.href);
+            } else {
+                LOG.debug("Page load location unknown, current window location=" + this.getCurrentWindow(true).location);
+            }
         } catch (e) {
             LOG.error("Caught an exception attempting to log location; this should get noticed soon!");
             LOG.exception(e);
@@ -275,6 +282,7 @@ BrowserBot.prototype.getCurrentPage = function() {
     }
     if (this._windowClosed(this.getCurrentWindow())) {
         if (this.isSubFrameSelected) {
+            LOG.warn("Current subframe appears to have closed; selecting top frame");
             this.selectFrame("relative=top");
             return this.getCurrentPage();
         } else {
@@ -407,11 +415,18 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
                 this.modifySeparateTestWindowToDetectPageLoads(windowObject);
             }
             newMarker = this.isPollingForLoad(windowObject);
+            var currentlySelectedWindow;
+            var currentlySelectedWindowMarker;
+            currentlySelectedWindow =this.getCurrentWindow(true);
+            LOG.debug("DGF got the currentlySelectedWindow...");
+            LOG.debug("DGF currentlySelectedWindow.location="+currentlySelectedWindow.location.href);
+            currentlySelectedWindowMarker = currentlySelectedWindow[this.uniqueId];
+
             LOG.debug("pollForLoad (" + marker + ") restarting " + newMarker);
             if (/(TestRunner-splash|Blank)\.html\?start=true$/.test(currentHref)) {
                 LOG.debug("pollForLoad Oh, it's just the starting page.  Never mind!");
-            } else if (this.getCurrentWindow(true)[this.uniqueId] == newMarker) {
-                loadFunction();
+            } else if (currentlySelectedWindowMarker == newMarker) {
+                loadFunction(currentlySelectedWindow);
             } else {
                 LOG.debug("pollForLoad page load detected in non-current window; ignoring");
             }
@@ -604,12 +619,9 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     if (!doNotModify) {
         this._modifyWindow(testWindow);
     }
-    var winClosed = true;
-    try {
-        winClosed = this._windowClosed(testWindow);
-    } catch (e) {}
-    if (winClosed) {
+    if (this._windowClosed(testWindow)) {
         if (this.isSubFrameSelected) {
+            LOG.warn("Current subframe appears to have closed; selecting top frame");
             this.selectFrame("relative=top");
             return this.getCurrentWindow(doNotModify);
         } else {
@@ -687,6 +699,31 @@ function IEBrowserBot(frame) {
 }
 IEBrowserBot.prototype = new BrowserBot;
 
+IEBrowserBot.prototype.getCurrentWindow = function(doNotModify) {
+    var testWindow = this.currentWindow;
+    if (!doNotModify) {
+        this._modifyWindow(testWindow);
+    }
+    try {
+        testWindow.location.href;
+        this.permDenied = 0;
+    } catch (e) {
+        this.permDenied++;
+    }
+    if (this._windowClosed(testWindow) || this.permDenied > 4) {
+        if (this.isSubFrameSelected) {
+            LOG.warn("Current subframe appears to have closed; selecting top frame");
+            this.selectFrame("relative=top");
+            return this.getCurrentWindow(doNotModify);
+        } else {
+            var closedError = new SeleniumError("Current window or frame is closed!");
+            closedError.windowClosed = true;
+            throw closedError;
+        }
+    }
+    return testWindow;
+};
+
 IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     BrowserBot.prototype.modifyWindowToRecordPopUpDialogs(windowToModify, browserBot);
 
@@ -710,7 +747,6 @@ IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModif
 
 IEBrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(windowObject) {
     this.pageUnloading = false;
-    this.permDeniedCount = 0;
     var self = this;
     var pageUnloadDetector = function() {
         self.pageUnloading = true;
@@ -721,6 +757,7 @@ IEBrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(wind
 
 IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker) {
     LOG.debug("IEBrowserBot.pollForLoad: " + marker);
+    if (!this.permDeniedCount[marker]) this.permDeniedCount[marker] = 0;
     BrowserBot.prototype.pollForLoad.call(this, loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
     if (this.pageLoadError) {
         if (this.pageUnloading) {
@@ -730,9 +767,9 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
             this.pageLoadError = null;
             return;
         } else if (((this.pageLoadError.message == "Permission denied") || (/^Access is denied/.test(this.pageLoadError.message)))
-                && this.permDeniedCount++ < 4) {
+                && this.permDeniedCount[marker]++ < 8) {
             var self = this;
-            LOG.warn("pollForLoad (" + marker + "): " + this.pageLoadError.message + " (" + this.permDeniedCount + "), waiting to see if it goes away");
+            LOG.warn("pollForLoad (" + marker + "): " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), waiting to see if it goes away");
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
             this.pageLoadError = null;
             return;
@@ -772,32 +809,19 @@ IEBrowserBot.prototype._windowClosed = function(win) {
         }
         return c;
     } catch (e) {
-        // Got an exception trying to read win.closed; we'll have to take a guess!
-        
-        // if it's a frame, and we're in a pop-up, you can get permission denied when it gets closed
-        var thisIsFrame = this._getFrameElement(win);
+        LOG.debug("IEPageBot._windowClosed: Got an exception trying to read win.closed; we'll have to take a guess!");
             
         if (browserVersion.isHTA) {
             if (e.message == "Permission denied") {
-                if (thisIsFrame) {
-                    // the frame is probably closed
-                    return true;
-                } else { 
-                    // the window is probably unloading, which means it's not closed yet
-                    return false;
-                }
+                // the window is probably unloading, which means it's not closed yet
+                return false;
             } else {
                 // there's a good chance that we've lost contact with the window object if it is closed
                 return true;
             }
         } else {
-            if (thisIsFrame) {
-                // the frame is probably closed
-                return true;
-            } else { 
-                // the window is probably unloading, which means it's not closed yet
-                return false;
-            }
+            // the window is probably unloading, which means it's not closed yet
+            return false;
         }
     }
 };
