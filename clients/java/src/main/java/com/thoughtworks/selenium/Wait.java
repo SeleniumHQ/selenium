@@ -4,7 +4,7 @@
  */
 package com.thoughtworks.selenium;
 
-import junit.framework.*;
+//import junit.framework.*;
 
 /**
  * A utility class, designed to help the user automatically wait until a
@@ -56,6 +56,7 @@ public abstract class Wait {
                 throw new RuntimeException(e);
             }
         }
-        Assert.fail(message);
+        //Assert.fail(message);
+        throw new RuntimeException("Assert.fail(" + message + ")"); // ugly, yes, but I just want to be sure this doesn't fail silently
     }
 }
