@@ -29,6 +29,7 @@
 
 var BrowserBot = function(topLevelApplicationWindow) {
     this.topWindow = topLevelApplicationWindow;
+    this.topFrame = this.topWindow;
 
     // the buttonWindow is the Selenium window
     // it contains the Run/Pause buttons... this should *not* be the AUT window
@@ -212,11 +213,13 @@ BrowserBot.prototype.selectWindow = function(target) {
 BrowserBot.prototype._selectTopWindow = function() {
     this.currentWindowName = null;
     this.currentWindow = this.topWindow;
+    this.topFrame = this.topWindow;
     this.isSubFrameSelected = false;
 }
 
 BrowserBot.prototype._selectWindowByName = function(target) {
     this.currentWindow = this.getWindowByName(target, false);
+    this.topFrame = this.currentWindow;
     this.currentWindowName = target;
     this.isSubFrameSelected = false;
 }
@@ -226,7 +229,7 @@ BrowserBot.prototype.selectFrame = function(target) {
         this.currentWindow = this.getCurrentWindow().parent;
         this.isSubFrameSelected = (this._getFrameElement(this.currentWindow) != null);
     } else if (target == "relative=top") {
-        this.currentWindow = this.topWindow;
+        this.currentWindow = this.topFrame;
         this.isSubFrameSelected = false;
     } else {
         var frame = this.getCurrentPage().findElement(target);
@@ -418,8 +421,6 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
             var currentlySelectedWindow;
             var currentlySelectedWindowMarker;
             currentlySelectedWindow =this.getCurrentWindow(true);
-            LOG.debug("DGF got the currentlySelectedWindow...");
-            LOG.debug("DGF currentlySelectedWindow.location="+currentlySelectedWindow.location.href);
             currentlySelectedWindowMarker = currentlySelectedWindow[this.uniqueId];
 
             LOG.debug("pollForLoad (" + marker + ") restarting " + newMarker);
@@ -428,7 +429,8 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
             } else if (currentlySelectedWindowMarker == newMarker) {
                 loadFunction(currentlySelectedWindow);
             } else {
-                LOG.debug("pollForLoad page load detected in non-current window; ignoring");
+                LOG.debug("pollForLoad page load detected in non-current window; ignoring (currentlySelected="+currentlySelectedWindowMarker+", detection in "+newMarker+")");
+                LOG.debug("DGF "+currentlySelectedWindow.name+".closed="+currentlySelectedWindow.closed);
             }
             return;
         }
@@ -619,19 +621,29 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     if (!doNotModify) {
         this._modifyWindow(testWindow);
     }
-    if (this._windowClosed(testWindow)) {
-        if (this.isSubFrameSelected) {
+    if (this.isSubFrameSelected) {
+        var missing = true;
+        if (testWindow.parent && testWindow.parent.frames && testWindow.parent.frames.length) {
+            for (var i = 0; i < testWindow.parent.frames.length; i++) {
+                if (testWindow.parent.frames[i] == testWindow) {
+                    missing = false;
+                    break;
+                }
+            }
+        }
+        if (missing) {
             LOG.warn("Current subframe appears to have closed; selecting top frame");
             this.selectFrame("relative=top");
             return this.getCurrentWindow(doNotModify);
-        } else {
-            var closedError = new SeleniumError("Current window or frame is closed!");
-            closedError.windowClosed = true;
-            throw closedError;
         }
+    } else if (this._windowClosed(testWindow)) {
+        var closedError = new SeleniumError("Current window or frame is closed!");
+        closedError.windowClosed = true;
+        throw closedError;
     }
     return testWindow;
 };
+
 
 function MozillaBrowserBot(frame) {
     BrowserBot.call(this, frame);
@@ -1371,7 +1383,7 @@ BrowserBot.prototype._getTargetWindow = function(element) {
 BrowserBot.prototype._getFrameFromGlobal = function(target) {
     
     if (target == "_top") {
-        return this.topWindow;
+        return this.topFrame;
     } else if (target == "_parent") {
         return this.getCurrentWindow().parent;
     } else if (target == "_blank") {
@@ -1379,7 +1391,7 @@ BrowserBot.prototype._getFrameFromGlobal = function(target) {
         return this.getCurrentWindow().open('', '_blank');
     }
     pagebot = this.getCurrentPage();
-    var frameElement = pagebot.findElementBy("implicit", target, this.topWindow.document, this.topWindow);
+    var frameElement = pagebot.findElementBy("implicit", target, this.topFrame.document, this.topFrame);
     if (frameElement) {
         return frameElement.contentWindow;
     }
