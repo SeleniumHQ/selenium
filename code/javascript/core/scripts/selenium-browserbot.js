@@ -180,17 +180,24 @@ BrowserBot.prototype._windowClosed = function(win) {
     return c;
 };
 
+// 
+// 
+// 
+// temporarily commented out LOG calls in _modifyWindow which lead to an infinite loop:
+//
+//
+//
 BrowserBot.prototype._modifyWindow = function(win) {
     if (this._windowClosed(win)) {
-        LOG.error("modifyWindow: Window was closed!");
+        //LOG.error("modifyWindow: Window was closed!");
         return null;
     }
-    LOG.debug('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
+    //LOG.debug('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
     if (!win[this.uniqueId]) {
         win[this.uniqueId] = true;
         this.modifyWindowToRecordPopUpDialogs(win, this);
         this.currentPage = PageBot.createForWindow(this);
-        LOG.debug("_modifyWindow newPageLoaded = false");
+        //LOG.debug("_modifyWindow newPageLoaded = false");
         this.newPageLoaded = false;
     }
     if (!this.proxyInjectionMode) {
