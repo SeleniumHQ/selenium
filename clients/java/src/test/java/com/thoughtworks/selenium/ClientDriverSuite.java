@@ -51,12 +51,10 @@ public class ClientDriverSuite extends TestCase {
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             if (isProxyInjectionMode) {
-                if (forcedBrowserMode.equals("*piiexplore")) { // BUG in PI mode multiple window handling
 //                  once frames support is added to the main trunk, we will be able to run the following in non-proxy injection mode:
                     suite.addTestSuite(TestFramesClick.class);
                     suite.addTestSuite(TestFramesOpen.class);
                     suite.addTestSuite(TestFramesNested.class);
-                }
             }
             suite.addTest(I18nTest.suite());
             suite.addTestSuite(RealDealIntegrationTest.class);
