@@ -246,7 +246,17 @@ BrowserBot.prototype.selectFrame = function(target) {
             this.currentWindow = frame;
             this.isSubFrameSelected = true;
         } else {
-            // neither
+            // neither, let's loop through the frame names
+            var win = this.getCurrentWindow();
+            if (win && win.frames && win.frames.length) {
+                for (var i = 0; i < win.frames.length; i++) {
+                    if (win.frames[i].name == target) {
+                        this.currentWindow = win.frames[i];
+                        this.isSubFrameSelected = true;
+                        return;
+                    }
+                }
+            }
             throw new SeleniumError("Not a frame: " + target);
         }
     }
@@ -601,9 +611,16 @@ BrowserBot.prototype.getWindowByName = function(windowName, doNotModify) {
     }
     if (!targetWindow && windowName == "_blank") {
         for (var winName in this.openedWindows) {
+            // _blank can match selenium_blank*, if it looks like it's OK (valid href, not closed)
             if (/^selenium_blank/.test(winName)) {
                 targetWindow = this.openedWindows[winName];
-                break;
+                var ok;
+                try {
+                    if (!targetWindow.closed) {
+                        ok = targetWindow.location.href;
+                    }
+                } catch (e) {}
+                if (ok) break;
             }
         }
     }
