@@ -52,7 +52,7 @@ objectExtend(HtmlTestRunner.prototype, {
                 // when reloading, we may be pointing at an old window (Perm Denied)
                 setTimeout(fnBind(function() {
                     this.loadSuiteFrame();
-                }, this), 500);
+                }, this), 50);
                 return;
             }
             selenium = Selenium.createForWindow(appWindow);
