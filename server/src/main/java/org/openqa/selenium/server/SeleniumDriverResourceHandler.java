@@ -90,6 +90,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             String cmd = getParam(req, "cmd");
             String sessionId = getParam(req, "sessionId");
             String seleniumStart = getParam(req, "seleniumStart");
+            String loggingParam = getParam(req, "logging");
+            String jsStateParam = getParam(req, "state");
+            boolean logging = "true".equals(loggingParam);
+            boolean jsState = "true".equals(jsStateParam);
             boolean justLoaded = (seleniumStart != null && seleniumStart.equals("true"));
 
             // If this is a browser requesting work for the first time...
@@ -97,8 +101,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 FrameAddress frameAddress = FrameGroupSeleneseQueueSet.makeFrameAddress(getParam(req, "seleniumWindowName"), 
                         getParam(req, "localFrameAddress"), justLoaded);
                 String uniqueId = getParam(req, "uniqueId");
-                    String postedData = readPostedData(req, sessionId, uniqueId);
-                if (postedData == null || postedData.equals("")) {
+                String postedData = readPostedData(req, sessionId, uniqueId);
+                if (logging) {
+                    handleLogMessages(postedData);
+                } else if (jsState) {
+                    handleJsState(sessionId, uniqueId, postedData);
+                }
+                if (postedData == null || postedData.equals("") || logging || jsState) {
                     res.getOutputStream().write("\r\n\r\n".getBytes());
                     req.setHandled(true);
                     return;
@@ -189,37 +198,29 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             sb.append((char) c);
         }
         String s = sb.toString();
-        s = extractLogMessages(s);
-        s = extractJsState(sessionId, uniqueId, s);
         return s;
     }
 
-    private String extractLogMessages(String s) {
+    private void handleLogMessages(String s) {
         String logMessages = grepStringsStartingWith("logLevel=", s);
         if (logMessages==null) {
-            return s;
+            return;
         }
         logMessages = "\t" + logMessages.replaceAll("\n", "\n\t");  // put a tab in front of all the messages
         logMessages = logMessages.replaceFirst("\t$", "");
         logMessagesBuffer.append(logMessages);
         SeleniumServer.log(logMessages);
-        return grepVStringsStartingWith("logLevel=", s);
     }
 
-    private String grepVStringsStartingWith(String pattern, String s) {
-        return s.replaceAll(pattern + ".*\n", "");
-    }
-
-    private String extractJsState(String sessionId, String uniqueId, String s) {
+    private void handleJsState(String sessionId, String uniqueId, String s) {
         String jsInitializers = grepStringsStartingWith("state:", s);
         if (jsInitializers==null) {
-            return s;
+            return;
         }
         for (String jsInitializer : jsInitializers.split("\n")) {
             String jsVarName = extractVarName(jsInitializer);
             InjectionHelper.saveJsStateInitializer(sessionId, uniqueId, jsVarName, jsInitializer);
         }
-        return grepVStringsStartingWith("state:", s);
     }
 
     private String extractVarName(String jsInitializer) {
