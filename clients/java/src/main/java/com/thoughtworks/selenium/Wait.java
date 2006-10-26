@@ -56,7 +56,27 @@ public abstract class Wait {
                 throw new RuntimeException(e);
             }
         }
-        //Assert.fail(message);
-        throw new RuntimeException("Assert.fail(" + message + ")"); // ugly, yes, but I just want to be sure this doesn't fail silently
+        throw new WaitTimedOutException(message);
+    }
+    
+    @SuppressWarnings("serial")
+    public class WaitTimedOutException extends RuntimeException {
+
+        public WaitTimedOutException() {
+            super();
+        }
+
+        public WaitTimedOutException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public WaitTimedOutException(String message) {
+            super(message);
+        }
+
+        public WaitTimedOutException(Throwable cause) {
+            super(cause);
+        }
+        
     }
 }
