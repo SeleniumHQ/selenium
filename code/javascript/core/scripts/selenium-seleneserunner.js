@@ -142,7 +142,7 @@ function logToRc(logLevel, message) {
         logLevel = "debug";
     }
     if (debugMode) {
-        sendToRC("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/g, " ") + "\n");
+        sendToRC("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/g, " ") + "\n", "logging=true");
     }
 }
 

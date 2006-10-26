@@ -39,7 +39,7 @@ LOG.openLogWindow = function(message, className) {
 BrowserBot.prototype.relayToRC = function(name) {
 	var object = eval(name);
         var s = 'state:' + serializeObject(name, object) + "\n";
-        sendToRC(s);
+        sendToRC(s,"state=true");
 }
 
 BrowserBot.prototype.relayBotToRC = function(s) {
