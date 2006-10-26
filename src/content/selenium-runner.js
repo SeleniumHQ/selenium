@@ -85,11 +85,10 @@ addUnloadListener = function(element, command) {
 }
 
 if (!navigator.userAgent.match(/ rv:1\.8\.0/)) { // Not Firefox 1.5 (Gecko 1.8.0)
-    // eval() in subscript does not work properly in Firefox 2.0, 
-    // so we'll patch this method so that we won't use eval().
     PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument, inWindow) {
         var element = null;
         try {
+            // hack to pass local variable to eval
             element = eval("arg." + domTraversal, inWindow);
         } catch (e) {
             e.isSeleniumError = true;
