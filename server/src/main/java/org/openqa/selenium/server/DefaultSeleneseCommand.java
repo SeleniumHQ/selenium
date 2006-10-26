@@ -19,6 +19,7 @@ package org.openqa.selenium.server;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 
 /**
  * The default implementation of the SeleneseCommand interface
@@ -80,13 +81,30 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
 
     /** Factory method to create a SeleneseCommand from a wiki-style input string */
     public static SeleneseCommand parse(String inputLine) {
-        if (inputLine == null) throw new IllegalArgumentException("inputLine must not be null");
+        if (inputLine == null) throw new NullPointerException("inputLine must not be null");
+        if (!inputLine.startsWith("cmd=")) throw new IllegalArgumentException("invalid command string, missing 'cmd='=" + inputLine);
+        
 
-        String[] values = inputLine.split("\\|");
-        if (values.length != NUMARGSINCLUDINGBOUNDARIES) {
-            throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
+        String[] parts = inputLine.split("\\&");
+        HashMap<String,String> args = new HashMap<String,String>();
+        for (String part : parts) {
+            String[] pair = part.split("\\=");
+            if (pair.length < 2) {
+                args.put(pair[0], "");
+            } else {
+                try {
+                    args.put(pair[0], URLDecoder.decode(pair[1], "utf-8"));
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException("Bug! utf-8 isn't supported???");
+                }
+            }
+            
         }
-        return new DefaultSeleneseCommand(values[FIRSTINDEX], values[SECONDINDEX], values[THIRDINDEX]);
+        
+        String command = args.get("cmd");
+        String arg1 = args.get("1");
+        String arg2 = args.get("2");
+        return new DefaultSeleneseCommand(command, arg1, arg2);
     }
     
     /** Encodes the text as an URL using UTF-8.

@@ -49,6 +49,7 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
         supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
         supportedBrowsers.put("konqueror", KonquerorLauncher.class);
+        supportedBrowsers.put("mock", MockBrowserLauncher.class);
     }
     
     SeleniumServer server;
