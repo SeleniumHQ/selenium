@@ -84,6 +84,26 @@ addUnloadListener = function(element, command) {
 	element.addEventListener("pagehide", command, true);
 }
 
+if (!navigator.userAgent.match(/ rv:1\.8\.0/)) { // Not Firefox 1.5 (Gecko 1.8.0)
+    // eval() in subscript does not work properly in Firefox 2.0, 
+    // so we'll patch this method so that we won't use eval().
+    PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument, inWindow) {
+        var element = null;
+        try {
+            element = eval("arg." + domTraversal, inWindow);
+        } catch (e) {
+            e.isSeleniumError = true;
+            throw e;
+        }
+        
+        if (!element) {
+            return null;
+        }
+        
+        return element;
+    };
+    PageBot.prototype.locateElementByDomTraversal.prefix = "dom";
+}
 
 function Logger() {
 	var self = this;
