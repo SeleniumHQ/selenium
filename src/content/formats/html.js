@@ -107,7 +107,7 @@ function parse(testCase, source) {
 				command.skip = docResult.index - lastIndex;
 				command.index = lastIndex;
 				var result = commandRegexp.exec(doc.substring(lastIndex));
-				eval(options.commandLoadScript);
+				eval(options.commandLoadScript, {command: command, result: result});
 				convertText(command, decodeText);
 				commands.push(command);
 				if (!commandFound) {
@@ -126,7 +126,7 @@ function parse(testCase, source) {
 				comment.skip = docResult.index - lastIndex;
 				comment.index = docResult.index;
 				var result = commentRegexp.exec(doc.substring(lastIndex));
-				eval(options.commentLoadScript);
+				eval(options.commentLoadScript, {comment: comment, result: result});
 				commands.push(comment);
 			}
 		} else {
@@ -159,10 +159,10 @@ function getSourceForCommand(commandObj) {
 	}
 	var result;
 	var text = template.replace(/\$\{([a-zA-Z0-9_\.]+)\}/g, 
-								function(str, p1, offset, s) {
-									 result = eval(p1);
-									 return result != null ? result : '';
-								 });
+        function(str, p1, offset, s) {
+            result = eval(p1, {command: command, comment: comment});
+            return result != null ? result : '';
+        });
 	return text;
 }
 

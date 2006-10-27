@@ -254,7 +254,7 @@ Editor.prototype.loadTestCase = function(file, url) {
 			this.setTestCase(testCase);
 		}
 	} catch (error) {
-		alert(error);
+		alert("error loading test case: " + error);
 	}
 }
 

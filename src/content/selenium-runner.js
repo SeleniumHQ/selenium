@@ -84,12 +84,12 @@ addUnloadListener = function(element, command) {
 	element.addEventListener("pagehide", command, true);
 }
 
-if (!navigator.userAgent.match(/ rv:1\.8\.0/)) { // Not Firefox 1.5 (Gecko 1.8.0)
+if (isFirefox2()) {
     PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument, inWindow) {
         var element = null;
         try {
             // hack to pass local variable to eval
-            element = eval("arg." + domTraversal, inWindow);
+            element = eval("inWindow." + domTraversal, {inWindow: inWindow});
         } catch (e) {
             e.isSeleniumError = true;
             throw e;

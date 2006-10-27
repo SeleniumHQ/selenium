@@ -92,7 +92,11 @@ FormatCollection.saveUserFormats = function(formats) {
 FormatCollection.loadFormatter = function(url) {
 	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 	  .getService(Components.interfaces.mozIJSSubScriptLoader);
+    
 	var format = {};
+    if (isFirefox2()) {
+        format.eval = doEval;
+    }
 	format.options = {};
 	format.configForm = '';
 	format.log = new Log("Format");
