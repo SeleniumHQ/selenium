@@ -28,7 +28,7 @@ public class ClientDriverPISuite extends ClientDriverSuite {
             return ClientDriverSuite.suite();
         }
         finally {
-            if (oldProxyInjectionModeSetting!=null) {
+            if (oldProxyInjectionModeSetting==null) {
                 oldProxyInjectionModeSetting = "false";
             }
             System.setProperty("selenium.proxyInjectionMode", oldProxyInjectionModeSetting);
