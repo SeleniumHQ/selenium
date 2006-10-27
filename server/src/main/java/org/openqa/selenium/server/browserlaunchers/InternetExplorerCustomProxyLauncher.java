@@ -45,6 +45,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     protected static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
     protected static final String REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache";
 
+    protected static Class popupMgrType;
+    
     private static ArrayList<RegKeyBackup> keys = null;
 
     private int port = 8180;
@@ -78,10 +80,36 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
     protected void initStatic() {
         keys = new ArrayList<RegKeyBackup>();
-        addRegistryKeyToBackupList(REG_KEY_POPUP_MGR, REG_KEY_BACKUP_POPUP_MGR, String.class);
+        popupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_POPUP_MGR);
+        if (popupMgrType == int.class) {
+        	popupMgrType = boolean.class;
+        }
+        handleEvilPopupMgrBackup();
+        addRegistryKeyToBackupList(REG_KEY_POPUP_MGR, REG_KEY_BACKUP_POPUP_MGR, popupMgrType);
         addRegistryKeyToBackupList(REG_KEY_AUTOCONFIG_URL, REG_KEY_BACKUP_AUTOCONFIG_URL, String.class);
         addRegistryKeyToBackupList(REG_KEY_AUTOPROXY_RESULT_CACHE, REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE, boolean.class);
         addRegistryKeyToBackupList(REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE, String.class);
+    }
+    
+    // IE7 changed the type of the popup mgr key to DWORD (int/boolean) from String (which could be "yes" or "no")
+    protected void handleEvilPopupMgrBackup() {
+    	if (!backupIsReady()) return;
+    	if (!WindowsUtils.doesRegistryValueExist(REG_KEY_BACKUP_POPUP_MGR)) return;
+    	Class backupPopupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_BACKUP_POPUP_MGR);
+    	if (backupPopupMgrType.equals(popupMgrType)) return;
+    	WindowsUtils.deleteRegistryValue(REG_KEY_BACKUP_POPUP_MGR);
+    	// assume they wanted it off
+    	writePopUpManagerRegKey(REG_KEY_BACKUP_POPUP_MGR , false);
+    }
+    
+    protected void writePopUpManagerRegKey(String key, boolean blockPopUps) {
+    	init();
+    	if (popupMgrType.equals(String.class)) {
+    		String value = blockPopUps ? "on" : "off";
+    		WindowsUtils.writeStringRegistryValue(key, value);
+    	} else {
+    		WindowsUtils.writeBooleanRegistryValue(key, blockPopUps);
+    	}
     }
 
     protected void addRegistryKeyToBackupList(String regKey, String backupRegKey, Class clazz) {
@@ -153,7 +181,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         WindowsUtils.writeStringRegistryValue(REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
 
         // Disable pop-up blocking
-        WindowsUtils.writeStringRegistryValue(REG_KEY_POPUP_MGR, "no");
+        writePopUpManagerRegKey(REG_KEY_POPUP_MGR, false);
 
         if (WindowsUtils.doesRegistryValueExist(REG_KEY_PROXY_OVERRIDE)) {
             WindowsUtils.deleteRegistryValue(REG_KEY_PROXY_OVERRIDE);

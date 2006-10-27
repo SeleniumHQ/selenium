@@ -371,6 +371,32 @@ public class WindowsUtils {
         return version1;
     }
     
+    public static Class discoverRegistryKeyType(String key) {
+    	if (!doesRegistryValueExist(key)) {
+    		throw new WindowsRegistryException("Can't discover reg key type, because key doesn't exist: " + key);
+    	}
+    	RegKeyValue r = new RegKeyValue(key);
+    	String output = runRegQuery(key);
+        Pattern pat;
+        if (isRegExeVersion1()) {
+        	pat = Pattern.compile("\\s*(REG_\\S+)");
+        } else {
+        	pat = Pattern.compile("\\Q" + r.value + "\\E\\s+(REG_\\S+)\\s+(.*)");
+        }
+        Matcher m = pat.matcher(output);
+        if (!m.find()) {
+            throw new WindowsRegistryException("Output didn't look right: " + output);
+        }
+        String type = m.group(1);
+        if ("REG_SZ".equals(type)) {
+            return String.class;
+        } else if ("REG_DWORD".equals(type)) {
+        	return int.class;
+        } else {
+        	throw new WindowsRegistryException("Unknown type: " + type);
+        }
+    }
+    
     public static String readStringRegistryValue(String key) {
         RegKeyValue r = new RegKeyValue(key);
     	String output = runRegQuery(key);
@@ -602,7 +628,8 @@ public class WindowsUtils {
         return THIS_IS_WINDOWS;
     }
     
-    static class WindowsRegistryException extends RuntimeException {
+    @SuppressWarnings("serial")
+	static class WindowsRegistryException extends RuntimeException {
         WindowsRegistryException(Exception e) {
             super(generateMessage(), e);
         }
