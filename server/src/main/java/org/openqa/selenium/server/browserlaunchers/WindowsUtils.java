@@ -373,7 +373,7 @@ public class WindowsUtils {
     
     public static Class discoverRegistryKeyType(String key) {
     	if (!doesRegistryValueExist(key)) {
-    		throw new WindowsRegistryException("Can't discover reg key type, because key doesn't exist: " + key);
+    		return null;
     	}
     	RegKeyValue r = new RegKeyValue(key);
     	String output = runRegQuery(key);

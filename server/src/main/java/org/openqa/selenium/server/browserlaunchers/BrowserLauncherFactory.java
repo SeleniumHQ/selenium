@@ -131,7 +131,7 @@ public class BrowserLauncherFactory {
 
                 return browserLauncher;
 	    } catch (InvocationTargetException e) {
-		throw new RuntimeException("failed to contruct launcher for "+browserStartCommand +"for"+  e.getTargetException());
+		throw new RuntimeException("failed to contruct launcher for "+browserStartCommand, e.getTargetException());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

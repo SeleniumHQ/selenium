@@ -80,10 +80,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
     protected void initStatic() {
         keys = new ArrayList<RegKeyBackup>();
-        popupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_POPUP_MGR);
-        if (popupMgrType == int.class) {
-        	popupMgrType = boolean.class;
-        }
         handleEvilPopupMgrBackup();
         addRegistryKeyToBackupList(REG_KEY_POPUP_MGR, REG_KEY_BACKUP_POPUP_MGR, popupMgrType);
         addRegistryKeyToBackupList(REG_KEY_AUTOCONFIG_URL, REG_KEY_BACKUP_AUTOCONFIG_URL, String.class);
@@ -93,22 +89,44 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     
     // IE7 changed the type of the popup mgr key to DWORD (int/boolean) from String (which could be "yes" or "no")
     protected void handleEvilPopupMgrBackup() {
-    	if (!backupIsReady()) return;
-    	if (!WindowsUtils.doesRegistryValueExist(REG_KEY_BACKUP_POPUP_MGR)) return;
+    	// this will return String (REG_SZ), int (REG_DWORD), or null if the key is missing
+    	popupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_POPUP_MGR);
     	Class backupPopupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_BACKUP_POPUP_MGR);
-    	if (backupPopupMgrType.equals(popupMgrType)) return;
-    	WindowsUtils.deleteRegistryValue(REG_KEY_BACKUP_POPUP_MGR);
+    	if (popupMgrType == null) { // if official PopupMgr key is missing
+    		if (backupPopupMgrType == null) {
+    			// we don't know which type it should be; let's take a guess
+    			// IE6 can deal with a DWORD 0
+    			popupMgrType = boolean.class;
+        		return;
+        	} else {
+        		// non-null backup type is our best guess
+        		popupMgrType = backupPopupMgrType;
+        		return;
+        	}
+    	}
+    	if (popupMgrType.equals(backupPopupMgrType)) return;
+    	
+    	// if we're here, we know the current type of pop-up manager,
+    	// and the backup has a different (wrong) type
+    	if (backupPopupMgrType != null) {
+    		WindowsUtils.deleteRegistryValue(REG_KEY_BACKUP_POPUP_MGR);
+    	}
+    	if (!backupIsReady()) {
+    		return;
+    	}
+    	
     	// assume they wanted it off
-    	writePopUpManagerRegKey(REG_KEY_BACKUP_POPUP_MGR , false);
+    	turnOffPopupBlocking(REG_KEY_BACKUP_POPUP_MGR);
     }
     
-    protected void writePopUpManagerRegKey(String key, boolean blockPopUps) {
-    	init();
+    protected void turnOffPopupBlocking(String key) {
+    	if (WindowsUtils.doesRegistryValueExist(key)) {
+            WindowsUtils.deleteRegistryValue(key);
+        }
     	if (popupMgrType.equals(String.class)) {
-    		String value = blockPopUps ? "on" : "off";
-    		WindowsUtils.writeStringRegistryValue(key, value);
+    		WindowsUtils.writeStringRegistryValue(key, "no");
     	} else {
-    		WindowsUtils.writeBooleanRegistryValue(key, blockPopUps);
+    		WindowsUtils.writeBooleanRegistryValue(key, false);
     	}
     }
 
@@ -181,7 +199,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         WindowsUtils.writeStringRegistryValue(REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
 
         // Disable pop-up blocking
-        writePopUpManagerRegKey(REG_KEY_POPUP_MGR, false);
+        turnOffPopupBlocking(REG_KEY_POPUP_MGR);
 
         if (WindowsUtils.doesRegistryValueExist(REG_KEY_PROXY_OVERRIDE)) {
             WindowsUtils.deleteRegistryValue(REG_KEY_PROXY_OVERRIDE);
