@@ -59,8 +59,8 @@ public abstract class Wait {
     /** The amout of time to wait before giving up; the default is 30 seconds */
     public long timeoutInMilliseconds = 30000l;
     
-    /** The interval to pause between checking; the default is 50 milliseconds */ 
-    public long intervalInMilliseconds = 50l;
+    /** The interval to pause between checking; the default is 500 milliseconds */ 
+    public long intervalInMilliseconds = 500l;
     
     /** Wait until the "until" condition returns true or the timeout happens
      * 
