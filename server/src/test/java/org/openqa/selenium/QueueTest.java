@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SingleEntryAsyncQueue;
-import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 
 public class QueueTest extends TestCase {
     SingleEntryAsyncQueue q;
@@ -41,21 +40,6 @@ public class QueueTest extends TestCase {
     
     public void setUp() {
         q = new SingleEntryAsyncQueue();
-    }
-    
-    public void testClearHungGetter() throws Exception {
-        new Thread() {
-            public void run() {
-                try {
-                    q.get();
-                }
-                catch (Throwable e) {
-                    fail("got an unexpected exception: " + e);
-                }
-           }
-        }.start();
-        AsyncExecute.sleepTight(300);    // give getter thread a chance to go wait on the queue
-        q.clear();
     }
     
     public void testGetFromEmptyQueue() throws Exception {
