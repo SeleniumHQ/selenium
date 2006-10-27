@@ -6,3 +6,8 @@
 - have Test::WWW::Selenium->new launch selenium-rc.jar if available
 
 - fix google example to work in non-us countries
+
+- Change documentation 
+  - to not use phrases like "We support"
+  - to not say "never throws an exception"
+

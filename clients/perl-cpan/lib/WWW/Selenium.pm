@@ -242,8 +242,6 @@ stuff.
 If no pattern prefix is specified, Selenium assumes that it's a "glob"
 pattern.
 
-
-
 =cut
 
 eval 'require Encode';
@@ -471,15 +469,18 @@ browser-specific prompting.
 
 ### From here on, everything's auto-generated from XML
 
-
-
 =item * $sel-E<gt>click($locator)
 
 Clicks on a link, button, checkbox or radio button. If the click action
 causes a new page to load (like a link usually does), call
 waitForPageToLoad.
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
+
 
 =cut
 
@@ -488,6 +489,75 @@ sub click {
     $self->do_command("click", @_);
 }
 
+=item * $sel-E<gt>doubleClick($locator)
+
+Double clicks on a link, button, checkbox or radio button. If the double click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.
+
+=over
+
+$locator is an element locator
+
+=back
+
+
+=cut
+
+sub doubleClick {
+    my $self = shift;
+    $self->do_command("doubleClick", @_);
+}
+
+=item * $sel-E<gt>clickAt($locator, $coordString)
+
+Clicks on a link, button, checkbox or radio button. If the click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.
+
+Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+get null event arguments.  Read the bug for more details, including a workaround.
+
+=over
+
+$locator is an element locator
+
+$coordString is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+
+=back
+
+
+=cut
+
+sub clickAt {
+    my $self = shift;
+    $self->do_command("clickAt", @_);
+}
+
+=item * $sel-E<gt>doubleClickAt($locator, $coordString)
+
+Doubleclicks on a link, button, checkbox or radio button. If the action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.
+
+Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+get null event arguments.  Read the bug for more details, including a workaround.
+
+=over
+
+$locator is an element locator
+
+$coordString is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+
+=back
+
+
+=cut
+
+sub doubleClickAt {
+    my $self = shift;
+    $self->do_command("doubleClickAt", @_);
+}
 
 =item * $sel-E<gt>fire_event($locator, $event_name)
 
