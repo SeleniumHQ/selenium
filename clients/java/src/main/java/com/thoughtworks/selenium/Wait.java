@@ -32,14 +32,35 @@ public abstract class Wait {
         wait(message);
     }
     
+    /** Specifies a failure message and a timeout
+     * 
+     * @param message the failure message
+     * @param timoutInMilliseconds timeout in milliseconds
+     */
+    public Wait(String message, long timeoutInMilliseconds) {
+        wait(message);
+        this.timeoutInMilliseconds = timeoutInMilliseconds;
+    }
+    
+    /** Specifies a failure message, a timeout, and an interval
+     * 
+     * @param message the failure message
+     * @param timoutInMilliseconds timeout in milliseconds
+     */
+    public Wait(String message, long timeoutInMilliseconds, long intervalInMilliseconds) {
+        wait(message);
+        this.timeoutInMilliseconds = timeoutInMilliseconds;
+        this.intervalInMilliseconds = intervalInMilliseconds;
+    }
+    
     /** Returns true when it's time to stop waiting */
     abstract boolean until();
     
     /** The amout of time to wait before giving up; the default is 30 seconds */
-    public long timeout = 30000l;
+    public long timeoutInMilliseconds = 30000l;
     
     /** The interval to pause between checking; the default is 50 milliseconds */ 
-    public long interval = 50l;
+    public long intervalInMilliseconds = 50l;
     
     /** Wait until the "until" condition returns true or the timeout happens
      * 
@@ -47,11 +68,11 @@ public abstract class Wait {
      */
     public void wait(String message) {
         long start = System.currentTimeMillis();
-        long end = start + timeout;
+        long end = start + timeoutInMilliseconds;
         while (System.currentTimeMillis() < end) {
             if (until()) return;
             try {
-                Thread.sleep(interval);
+                Thread.sleep(intervalInMilliseconds);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

@@ -16,6 +16,8 @@ public class ApacheMyFacesSuggestTest extends TestCase {
 
     DefaultSelenium selenium;
     boolean isProxyInjectionMode;
+    private static final String updateId = "ac4update";
+    private static final String inputId = "ac4";
     
     protected void setUp() throws Exception {
         isProxyInjectionMode = System.getProperty("selenium.proxyInjectionMode")!=null
@@ -31,19 +33,23 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
 
-		String inputId = "ac4";
-		String updateId = "ac4update";
-
         selenium.open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");
-		selenium.keyPress(inputId, "\\74");
-		Thread.sleep(500);
-		selenium.keyPress(inputId, "\\97");
-		selenium.keyPress(inputId, "\\110");
-		Thread.sleep(500);
-		assertEquals("Jane Agnews", selenium.getText(updateId));
-		selenium.keyPress(inputId, "\\9");
-		Thread.sleep(500);
-		assertEquals("Jane Agnews", selenium.getValue(inputId));
+        selenium.keyPress(inputId, "\\74");
+        Thread.sleep(500);
+        selenium.keyPress(inputId, "\\97");
+        selenium.keyPress(inputId, "\\110");
+        new Wait("Didn't find 'Jane Agnews' in updateId") {
+            boolean until() {
+                String text = selenium.getText(updateId);
+                return "Jane Agnews".equals(text);
+            }
+        };
+        selenium.keyPress(inputId, "\\9");
+        new Wait("Didn't find 'Jane Agnews' in inputId") {
+            boolean until() {
+                return "Jane Agnews".equals(selenium.getValue(inputId));
+            }
+        };
     }
     
     public void testAJAXIExplore() throws Throwable {
@@ -56,23 +62,26 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
         selenium.start();
 
-		String inputId = "ac4";
-		String updateId = "ac4update";
-
         selenium.open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");
-		selenium.type(inputId, "J");
-		selenium.keyDown(inputId, "\\74");
-		Thread.sleep(500);
-		selenium.type(inputId, "Jan");
-		selenium.keyDown(inputId, "\\110");
-		Thread.sleep(500);
-		assertEquals("Jane Agnews", selenium.getText(updateId));
-		selenium.keyDown(inputId, "\\13");
-		Thread.sleep(500);
-		assertEquals("Jane Agnews", selenium.getValue(inputId));
+        selenium.type(inputId, "J");
+        selenium.keyDown(inputId, "\\74");
+        Thread.sleep(500);
+        selenium.type(inputId, "Jan");
+        selenium.keyDown(inputId, "\\110");
+        new Wait("Didn't find 'Jane Agnews' in updateId") {
+            boolean until() {
+                return "Jane Agnews".equals(selenium.getText(updateId));
+            }
+        };
+        selenium.keyDown(inputId, "\\13");
+        new Wait("Didn't find 'Jane Agnews' in inputId") {
+            boolean until() {
+                return "Jane Agnews".equals(selenium.getValue(inputId));
+            }
+        };
     }
     
-	public void tearDown() {
+    public void tearDown() {
         if (selenium == null) return;
         selenium.stop();
     }
