@@ -1,30 +1,41 @@
 package com.thoughtworks.selenium;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.extensions.*;
+import junit.framework.*;
 
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.server.browserlaunchers.*;
 
 /**
- * This class executes the same tests that ClientDriverSuite does, but it does so with proxy injection mode
- * turned on and with the default browser string set so as to use IE.  (ClientDriverSuite normally uses Firefox.)
+ * This class executes the same tests that ClientDriverSuite does, but it does
+ * so with proxy injection mode turned on and with the default browser string
+ * set so as to use IE. (ClientDriverSuite normally uses Firefox.)
  * 
  * @author nelsons
- *
+ * 
  */
 
 public class ClientDriverPISuite extends ClientDriverSuite {
     public static Test suite() {
         TestSuite supersuite = new TestSuite(ClientDriverPISuite.class.getName());
-        TestSuite suite = new TestSuite(ClientDriverPISuite.class.getName());
-        suite.addTest(ClientDriverSuite.suite());
+        TestSuite suite = ClientDriverSuite.generateSuite(true, determineForcedBrowserMode());
+        suite.setName(ClientDriverPISuite.class.getName());
 
         InitSystemPropertiesForPImodeTesting setup = new InitSystemPropertiesForPImodeTesting(suite);
         supersuite.addTest(setup);
         return supersuite;
     }
 
+    private static String determineForcedBrowserMode() {
+        String forcedBrowserMode = System.getProperty("selenium.forcedBrowserMode");
+        if (forcedBrowserMode == null) {
+            if (WindowsUtils.thisIsWindows()) {
+                forcedBrowserMode = "*piiexplore";
+            } else {
+                forcedBrowserMode = "*pifirefox";
+            }
+        }
+        return forcedBrowserMode;
+    }
 
     /** A TestSetup decorator that runs a super setUp and tearDown at the
      * beginning and end of the entire run: in this case, we use it to
@@ -50,13 +61,7 @@ public class ClientDriverPISuite extends ClientDriverSuite {
             System.setProperty(SELENIUM_PROXY_INJECTION_MODE, "true");
 
             oldForcedBrowserModeSetting = System.getProperty(SELENIUM_FORCED_BROWSER_MODE);
-            if (oldForcedBrowserModeSetting==null) {
-                if (WindowsUtils.thisIsWindows()) {
-                    System.setProperty(SELENIUM_FORCED_BROWSER_MODE, "*piiexplore");
-                } else {
-                    System.setProperty(SELENIUM_FORCED_BROWSER_MODE, "*pifirefox");
-                }
-            }
+            System.setProperty(SELENIUM_FORCED_BROWSER_MODE, determineForcedBrowserMode());
         }
 
         public void tearDown() throws Exception {
