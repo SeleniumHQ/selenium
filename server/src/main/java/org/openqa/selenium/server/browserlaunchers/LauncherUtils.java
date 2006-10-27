@@ -217,12 +217,18 @@ public class LauncherUtils {
 		out.println("user_pref('browser.allowpopups', true);");
 		out.println("user_pref('dom.disable_open_during_load', false);");
 
+		// Open links in new windows (Firefox 2.0)
+		out.println("user_pref('browser.link.open_external', 2);");
+		out.println("user_pref('browser.link.open_newwindow', 2);");
+		
 		// Configure us as the local proxy
 		out.println("user_pref('network.proxy.type', 2);");
 		out.println("user_pref('network.proxy.autoconfig_url', '" + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");
 
 		if (homePage != null) {
 			out.println("user_pref('startup.homepage_override_url', '" + homePage + "');");
+			// for Firefox 2.0
+			out.println("user_pref('browser.startup.homepage', '" + homePage + "');");
 		}
 
 		// Disable security warnings
