@@ -1,6 +1,9 @@
 package com.thoughtworks.selenium;
 
+import junit.extensions.TestSetup;
 import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 
 /**
@@ -13,25 +16,61 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 
 public class ClientDriverPISuite extends ClientDriverSuite {
     public static Test suite() {
-        String oldProxyInjectionModeSetting = System.getProperty("selenium.proxyInjectionMode");
-        try {
-            System.setProperty("selenium.proxyInjectionMode", "true");
+        TestSuite supersuite = new TestSuite(ClientDriverPISuite.class.getName());
+        TestSuite suite = new TestSuite(ClientDriverPISuite.class.getName());
+        suite.addTest(ClientDriverSuite.suite());
 
-            String forcedBrowserMode = System.getProperty("selenium.forcedBrowserMode");
-            if (forcedBrowserMode==null) {
+        InitSystemPropertiesForPImodeTesting setup = new InitSystemPropertiesForPImodeTesting(suite);
+        supersuite.addTest(setup);
+        return supersuite;
+    }
+
+
+    /** A TestSetup decorator that runs a super setUp and tearDown at the
+     * beginning and end of the entire run: in this case, we use it to
+     * set and clear the PI mode property, and rename the suite.
+     *
+     *
+     *  @author nelsons
+     *
+     */
+    static class InitSystemPropertiesForPImodeTesting extends TestSetup {
+        private static final String SELENIUM_PROXY_INJECTION_MODE = "selenium.proxyInjectionMode";
+        private static final String SELENIUM_FORCED_BROWSER_MODE = "selenium.forcedBrowserMode";
+        String oldProxyInjectionModeSetting;
+        String oldForcedBrowserModeSetting;
+
+        public InitSystemPropertiesForPImodeTesting(Test test) {
+            super(test);
+        }
+
+        public void setUp() throws Exception {
+
+            oldProxyInjectionModeSetting = System.getProperty(SELENIUM_PROXY_INJECTION_MODE);
+            System.setProperty(SELENIUM_PROXY_INJECTION_MODE, "true");
+
+            oldForcedBrowserModeSetting = System.getProperty(SELENIUM_FORCED_BROWSER_MODE);
+            if (oldForcedBrowserModeSetting==null) {
                 if (WindowsUtils.thisIsWindows()) {
-                    System.setProperty("selenium.forcedBrowserMode", "*piiexplore");
+                    System.setProperty(SELENIUM_FORCED_BROWSER_MODE, "*piiexplore");
                 } else {
-                    System.setProperty("selenium.forcedBrowserMode", "*pifirefox");
+                    System.setProperty(SELENIUM_FORCED_BROWSER_MODE, "*pifirefox");
                 }
             }
-            return ClientDriverSuite.suite();
         }
-        finally {
-            if (oldProxyInjectionModeSetting==null) {
-                oldProxyInjectionModeSetting = "false";
+
+        public void tearDown() throws Exception {
+            revertProperty(SELENIUM_PROXY_INJECTION_MODE, oldProxyInjectionModeSetting);
+            revertProperty(SELENIUM_FORCED_BROWSER_MODE, oldForcedBrowserModeSetting);
+        }
+
+        private void revertProperty(String key, String oldValue) {
+            if (oldValue==null) {
+                System.clearProperty(key);
             }
-            System.setProperty("selenium.proxyInjectionMode", oldProxyInjectionModeSetting);
+            else {
+                System.setProperty(key, oldValue);
+            }
         }
     }
 }
