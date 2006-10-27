@@ -98,11 +98,10 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     			// IE6 can deal with a DWORD 0
     			popupMgrType = boolean.class;
         		return;
-        	} else {
-        		// non-null backup type is our best guess
-        		popupMgrType = backupPopupMgrType;
-        		return;
         	}
+            // non-null backup type is our best guess
+            popupMgrType = backupPopupMgrType;
+            return;
     	}
     	if (popupMgrType.equals(backupPopupMgrType)) return;
     	

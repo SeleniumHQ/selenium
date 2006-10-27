@@ -27,11 +27,6 @@ import java.util.*;
  * @version $Revision: 184 $
  */
 public class DefaultSeleneseCommand implements SeleneseCommand {
-    // as we have beginning and ending pipes, we will have 1 more entry than we need
-    private static final int NUMARGSINCLUDINGBOUNDARIES = 4;
-    private static final int FIRSTINDEX = 1;
-    private static final int SECONDINDEX = 2;
-    private static final int THIRDINDEX = 3;
     private final String command;
     private final String field;
     private final String value;
