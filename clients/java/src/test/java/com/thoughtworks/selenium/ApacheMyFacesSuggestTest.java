@@ -24,12 +24,34 @@ public class ApacheMyFacesSuggestTest extends TestCase {
             && System.getProperty("selenium.proxyInjectionMode").equals("true");
     }
     
-    public void testAJAXFirefox() throws Throwable {
+    private boolean shouldSkip() {
         String browserOverride = System.getProperty("selenium.forcedBrowserMode");
-        if (browserOverride!=null && isProxyInjectionMode && !browserOverride.equals("*pifirefox")) {
-            // in PI mode, this firefox-specific test will only succeed if the browser mode override is *pifirefox.  Otherwise, just give up.
-            return;
+        if (browserOverride == null) return false;
+        String name = getName();
+        if (name == null) throw new NullPointerException("Test name is null!");
+        String browserName;
+        if (name.endsWith("Firefox")) {
+            browserName = "firefox";
+        } else if (name.endsWith("IExplore")) {
+            browserName = "iexplore";
+        } else {
+            throw new RuntimeException("Test name unexpected: " + getName());
         }
+        if (isProxyInjectionMode) {
+            browserName = "*pi" + browserName;
+        } else {
+            browserName = "*" + browserName;
+        }
+        
+        if (!browserName.equals(browserOverride)) {
+            System.err.println("WARNING!!! Skipping " + getName());
+            return true;
+        }
+        return false;
+    }
+    
+    public void testAJAXFirefox() throws Throwable {
+        if (shouldSkip()) return;
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*firefox", "http://www.irian.at");
         selenium.start();
 
@@ -54,11 +76,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     public void testAJAXIExplore() throws Throwable {
         if (!WindowsUtils.thisIsWindows()) return;
-        String browserOverride = System.getProperty("selenium.forcedBrowserMode");
-        if (browserOverride!=null && isProxyInjectionMode && !browserOverride.equals("*piiexplore")) {
-            // in PI mode, this firefox-specific test will only succeed if the browser mode override is *piiexplore.  Otherwise, just give up.
-            return;
-        }
+        if (shouldSkip()) return;
         selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", "http://www.irian.at");
         selenium.start();
 
