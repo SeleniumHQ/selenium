@@ -219,15 +219,16 @@ public class FrameGroupSeleneseQueueSet {
  	            }
                 if (matchingFrameAddress!=null) {
                     frameAddressToJustLoaded.remove(matchingFrameAddress);
+                    SeleniumServer.log("wait is over: window \"" + waitingForThisWindowName + "\" was seen at last");
                     return "OK";
                 }
-	            SeleniumServer.log("waiting for window " + waitingForThisWindowName);
+	            SeleniumServer.log("waiting for window \"" + waitingForThisWindowName + "\"");
 	            try {
 	                justLoadedUpdate.await(1, TimeUnit.SECONDS);
 	            } catch (InterruptedException e) {
 	            }
 	        }
-	        return "ERROR: timed out waiting for window " + waitingForThisWindowName + " to appear";
+	        return "ERROR: timed out waiting for window \"" + waitingForThisWindowName + "\" to appear";
 	    }
 	    finally {
 	        dataLock.unlock();
@@ -406,3 +407,5 @@ public class FrameGroupSeleneseQueueSet {
         doCommand("open", defaultUrl, ""); // will close out subframes
     }
 }
+
+    
