@@ -229,6 +229,7 @@ public class LauncherUtils {
 			out.println("user_pref('startup.homepage_override_url', '" + homePage + "');");
 			// for Firefox 2.0
 			out.println("user_pref('browser.startup.homepage', '" + homePage + "');");
+            out.println("user_pref('startup.homepage_welcome_url', '');");
 		}
 
 		// Disable security warnings
