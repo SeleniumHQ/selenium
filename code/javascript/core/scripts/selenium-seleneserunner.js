@@ -217,6 +217,10 @@ objectExtend(SeleneseRunner.prototype, {
             }
         }
         innerHTML += ")";
+        if (innerHTML.length >40) {
+            innerHTML = innerHTML.substring(0,40);
+            innerHTML += "...";
+        }
         this.commandNode.innerHTML = innerHTML;
         this.commandNode.style.backgroundColor = workingColor;
         if (document.getElementById("commandList") != null) {
