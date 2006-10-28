@@ -557,7 +557,12 @@ public class SeleniumServer {
     }
 
     public SeleniumServer() throws Exception {
-        this(SeleniumServer.DEFAULT_PORT, slowResourceProperty());
+        this(SeleniumServer.getDefaultPort(), slowResourceProperty());
+    }
+
+    public static int getDefaultPort() {
+        String portString = System.getProperty("selenium.port", ""+SeleniumServer.DEFAULT_PORT);
+        return Integer.parseInt(portString);
     }
 
     private static boolean slowResourceProperty() {
