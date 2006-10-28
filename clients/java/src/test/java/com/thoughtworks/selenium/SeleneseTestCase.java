@@ -46,10 +46,11 @@ public class SeleneseTestCase extends TestCase {
     
     protected void setUp(String url, String browserMode) throws Exception {
         super.setUp();
+        int port = SeleniumServer.getDefaultPort();
         if (url==null) {
-            url = "http://localhost:" + SeleniumServer.DEFAULT_PORT;
+            url = "http://localhost:" + port;
         }
-        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, browserMode, url);
+        selenium = new DefaultSelenium("localhost", port, browserMode, url);
         selenium.start();
     }
 
