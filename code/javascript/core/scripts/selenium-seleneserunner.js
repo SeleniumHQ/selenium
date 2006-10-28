@@ -277,6 +277,10 @@ objectExtend(SeleneseRunner.prototype, {
     _HandleHttpResponse : function() {
         if (this.xmlHttpForCommandsAndResults.readyState == 4) {
             if (this.xmlHttpForCommandsAndResults.status == 200) {
+            	if (this.xmlHttpForCommandsAndResults.responseText=="") {
+                    LOG.error("saw blank string xmlHttpForCommandsAndResults.responseText");
+                    return;
+                }
                 var command = this._extractCommand(this.xmlHttpForCommandsAndResults);
                 this.currentCommand = command;
                 this.continueTestAtCurrentCommand();
