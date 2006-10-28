@@ -132,17 +132,21 @@
         </antcall>
     </target>
     
-    <target name="test-allbrowsers" depends="iexploreTests, firefoxTests, chromeTests, operaTests" />
+    <target name="test-allbrowsers" depends="firefoxTests, iexploreTests, operaTests, chromeTests" />
     
     <target name="iexploreTests" depends="selenese-task, checkWindows" if="thisIsWindows">
         <preset-selenese taskname="iexplore" browser="*iexplore" />
+    </target>
+    
+    <target name="konqTests" depends="selenese-task, checkWindows" if="thisIsWindows">
+        <preset-selenese taskname="konqueror" browser="*konqueror" />
     </target>
     
     <target name="firefoxTests" depends="selenese-task, image">
         <preset-selenese taskname="firefox" browser="*firefox" />
     </target>
     
-    <target name="chromeTests" depends="selenese-task, image">
+    <target name="chromeTests" depends="selenese-task, image" unless="skipChrome">
         <preset-selenese taskname="chrome" browser="*chrome" />
     </target>
     
@@ -190,11 +194,12 @@
         <find-maven-jar groupId="org.openqa.selenium.server" version="0.8.2-SNAPSHOT" artifactId="selenium-server-coreless" /> 
         <property name="slowResources" value="false" />
         <property name="multiWindow" value="true" />
+        <path id="selenium-ant">
+            <pathelement location="${selenium-server-coreless.jar}" />
+            <pathelement location="${image.dir}" />
+        </path>
         <taskdef resource="selenium-ant.properties">
-            <classpath>
-                <pathelement location="${selenium-server-coreless.jar}" />
-                <pathelement location="${image.dir}" />
-            </classpath>
+            <classpath refid="selenium-ant"/>
         </taskdef>
         <property name="suite" value="TestSuite" />
         <property name="suite.path" location="javascript/tests/${suite}.html" />
