@@ -169,7 +169,17 @@ objectExtend(SeleniumFrame.prototype, {
         var styleLink = d.createElement("link");
         styleLink.rel = "stylesheet";
         styleLink.type = "text/css";
-        styleLink.href = window.location.pathname.replace(/[^\/\\]+$/, "selenium-test.css");
+        if (browserVersion && browserVersion.isChrome) {
+            // DGF We have to play a clever trick to get the right absolute path.
+            // This trick works on most browsers, (not IE), but is only needed in
+            // chrome
+            var tempLink = window.document.createElement("link");
+            tempLink.href = "selenium-test.css"; // this will become an absolute href
+            styleLink.href = tempLink.href;
+        } else {
+            // this works in every browser (except Firefox in chrome mode)
+            styleLink.href = window.location.pathname.replace(/[^\/\\]+$/, "selenium-test.css");
+        }
         head.appendChild(styleLink);
     },
 
