@@ -25,12 +25,14 @@ package org.openqa.selenium.server;
  * @version $Revision: 411 $
  */
 public class SingleEntryAsyncQueue {
-
+    private static int idGenerator = 1;
     private Object thing = null;
     private boolean done = false;
     private static int defaultTimeout = SeleniumServer.DEFAULT_TIMEOUT;
     private int timeout;
+    private int id = idGenerator++;
     private boolean hasBlockedGetter = false;
+    private String loggingPreamble = "SingleEntryAsyncQueue" + id + ": ";
     
     public SingleEntryAsyncQueue() {
         timeout = defaultTimeout;
@@ -67,7 +69,7 @@ public class SingleEntryAsyncQueue {
      */
     public synchronized Object get() {
         if (done) {
-            throw new RuntimeException("get(" + this + ") on a retired queue");
+            return null;
         }
 
         int retries = 0;
@@ -120,25 +122,30 @@ public class SingleEntryAsyncQueue {
     }
 
     public String toString() {
-        return thing==null ? "null" : thing.toString();
+        StringBuffer sb = new StringBuffer(loggingPreamble);
+        sb.append((thing==null ? "null" : thing.toString()));
+        return sb.toString();
     }
 
     /**
      * <p>Puts something in the queue.</p>
      * If there's already something available in the queue, wait
      * for that item to get picked up and removed from the queue. 
-     * @param obj - the thing to put in the queue
+     * @param newObj - the thing to put in the queue
      */    
-    public synchronized void put(Object obj) {
+    public synchronized void put(Object newObj) {
         if (done) {
-            throw new RuntimeException("put(" + obj + ") on a retired queue");
+            throw new RuntimeException("put(" + newObj + ") on a retired queue");
         }
-        synchronized(this) {
-            if (thing!=null) {
-                throw new SingleEntryAsyncQueueOverflow(obj, thing);
-            }
-            thing = obj;
-            notifyAll();
+        boolean overflow = false;
+        if (thing != null) {
+            overflow = true;
+        }
+        Object oldObj = thing;
+        thing = newObj;
+        notifyAll();
+        if (overflow) {
+            throw new SingleEntryAsyncQueueOverflow(newObj, oldObj);
         }
     }
 

@@ -71,12 +71,22 @@ public class SeleneseQueue {
         resultExpected = true;
         doCommandWithoutWaitingForAResponse(command, field, value);
         try {
-            return (String) queueGet("commandResultHolder", commandResultHolder);
-        } catch (SeleniumCommandTimedOutException e) {
-            return "ERROR: Command timed out";
+            return queueGetResult("doCommand");
         }
         finally {
             resultExpected = false;
+        }
+    }
+
+    private String queueGetResult(String comment) {
+        try {
+            String result = (String) queueGet(comment, commandResultHolder);
+            if (result==null) {
+                result = "ERROR: got a null result";
+            }
+            return result;
+        } catch (SeleniumCommandTimedOutException e) {
+            return "ERROR: Command timed out";
         }
     }
 
@@ -100,11 +110,7 @@ public class SeleneseQueue {
                         SeleniumServer.log("Apparently a page load result preceded the command; will ignore it...");
                         SeleniumServer.log("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
                     }
-                    setResultExpected(true);
-                    queueGet("doCommand spotted early result, discard", commandResultHolder);
-                    queuePut("put a dummy command to satisfy an orphaned waiting thread from a page which has been reloaded: commandHolder", 
-                            commandHolder, new DefaultSeleneseCommand("dummy command for a page which has been reloaded", "dummy", "dummy"));
-                    setResultExpected(false);
+                    commandResultHolder.clear();
                 }
                 else {
                     throw new RuntimeException("unexpected result " + commandResultHolder.peek());
@@ -210,10 +216,24 @@ public class SeleneseQueue {
             }
         }
         else {
-            queuePut("commandResultHolder", commandResultHolder, commandResult);
+            queuePutResult(commandResult);
         }
         SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder", commandHolder);
         return sc;
+    }
+
+    private void queuePutResult(String commandResult) {
+        try {
+            queuePut("commandResultHolder", commandResultHolder, commandResult);
+        }
+        catch (SingleEntryAsyncQueueOverflow e) {
+            if (SeleniumServer.isProxyInjectionMode()) {
+                SeleniumServer.log("overwrote old result with " + commandResult);
+            }
+            else {
+                throw e;
+            }
+        }
     }
 
     private String getIdentification(String caller) {
@@ -234,17 +254,20 @@ public class SeleneseQueue {
      */
     public void discardCommandResult() {
         resultExpected = true;
-        queueGet("commandResultHolder discard", commandResultHolder);
+        queueGetResult("commandResultHolder discard");
         resultExpected = false;
     }
 
     /**
-     * <p> Empty queues, and thereby wake up any threads that are hanging around.
+     * <p> Empty queues, and thereby wake up any threads that are hanging around and send them on their way.
      *
      */
     public void endOfLife() {
         commandResultHolder.clear();
+        commandResultHolder = null;
+        
         commandHolder.clear();
+        commandHolder = null;
     }
 
     public String getUniqueId() {
@@ -258,7 +281,7 @@ public class SeleneseQueue {
     public String waitForResult() {
         try {
             setResultExpected(true);            
-            return (String) queueGet("waitForResult commandResultHolder", commandResultHolder);
+            return queueGetResult("waitForResult commandResultHolder");
         }
         finally {
             setResultExpected(false);
