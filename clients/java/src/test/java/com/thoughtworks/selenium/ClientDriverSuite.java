@@ -59,61 +59,55 @@ public class ClientDriverSuite extends TestCase {
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class
                     .getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
-            if (!isProxyInjectionMode) {
-                if (isProxyInjectionMode) {
-                    // once frames support is added to the main trunk, we will be
-                    // able to run the following in non-proxy injection mode:
-                    suite.addTestSuite(TestFramesClick.class);
-                    suite.addTestSuite(TestFramesOpen.class);
-                    suite.addTestSuite(TestFramesNested.class);
-                }
-                suite.addTestSuite(ApacheMyFacesSuggestTest.class);
-                suite.addTest(I18nTest.suite());
-                suite.addTestSuite(RealDealIntegrationTest.class);
-                suite.addTestSuite(TestErrorChecking.class);
-                suite.addTestSuite(TestJavascriptParameters.class);
-                suite.addTestSuite(TestClick.class);
-                suite.addTestSuite(GoogleTestSearch.class);
-                suite.addTestSuite(GoogleTest.class);
-                suite.addTestSuite(TestCheckUncheck.class);
-                suite.addTestSuite(TestXPathLocators.class);
-                suite.addTestSuite(TestClickJavascriptHref.class);
-                suite.addTestSuite(TestCommandError.class);
-                suite.addTestSuite(TestComments.class);
-                suite.addTestSuite(TestFailingAssert.class);
-                suite.addTestSuite(TestFailingVerifications.class);
-                suite.addTestSuite(TestFocusOnBlur.class);
-                suite.addTestSuite(TestGoBack.class);
-                suite.addTestSuite(TestImplicitLocators.class);
-                suite.addTestSuite(TestLocators.class);
-                suite.addTestSuite(TestOpen.class);
-                suite.addTestSuite(TestPatternMatching.class);
-                suite.addTestSuite(TestPause.class);
-                if (!isProxyInjectionMode) {
-                    suite.addTestSuite(TestSelectWindow.class);
-                }
-                suite.addTestSuite(TestStore.class);
-                suite.addTestSuite(TestSubmit.class);
-                suite.addTestSuite(TestType.class);
-                suite.addTestSuite(TestVerifications.class);
-                suite.addTestSuite(TestWait.class);
-                suite.addTestSuite(TestSelect.class);
-                suite.addTestSuite(TestEditable.class);
-                if (!isProxyInjectionMode
-                        || "*piiexplore".equals(forcedBrowserMode)) { // BUG in PI mode propogation of state
-                    suite.addTestSuite(TestPrompt.class);
-                    suite.addTestSuite(TestConfirmations.class);
-                    suite.addTestSuite(TestAlerts.class);
-                    suite.addTestSuite(TestRefresh.class);
-                }
-                suite.addTestSuite(TestVisibility.class);
-                suite.addTestSuite(TestMultiSelect.class);
-                if (!isProxyInjectionMode) {
-                    suite.addTestSuite(TestWaitInPopupWindow.class);
-                }
-                suite.addTestSuite(TestWaitFor.class);
-                suite.addTestSuite(TestWaitForNot.class);
+            if (isProxyInjectionMode && "*piiexplore".equals(forcedBrowserMode)) {
+                // once frames support is added to the main trunk, we will be
+                // able to run the following in non-proxy injection mode:
+                suite.addTestSuite(TestFramesClick.class);
+                suite.addTestSuite(TestFramesOpen.class);
+                suite.addTestSuite(TestFramesNested.class);
             }
+            suite.addTestSuite(ApacheMyFacesSuggestTest.class);
+            suite.addTest(I18nTest.suite());
+            suite.addTestSuite(RealDealIntegrationTest.class);
+            suite.addTestSuite(TestErrorChecking.class);
+            suite.addTestSuite(TestJavascriptParameters.class);
+            suite.addTestSuite(TestClick.class);
+            suite.addTestSuite(GoogleTestSearch.class);
+            suite.addTestSuite(GoogleTest.class);
+            suite.addTestSuite(TestCheckUncheck.class);
+            suite.addTestSuite(TestXPathLocators.class);
+            suite.addTestSuite(TestClickJavascriptHref.class);
+            suite.addTestSuite(TestCommandError.class);
+            suite.addTestSuite(TestComments.class);
+            suite.addTestSuite(TestFailingAssert.class);
+            suite.addTestSuite(TestFailingVerifications.class);
+            suite.addTestSuite(TestFocusOnBlur.class);
+            suite.addTestSuite(TestGoBack.class);
+            suite.addTestSuite(TestImplicitLocators.class);
+            suite.addTestSuite(TestLocators.class);
+            suite.addTestSuite(TestOpen.class);
+            suite.addTestSuite(TestPatternMatching.class);
+            suite.addTestSuite(TestPause.class);
+            suite.addTestSuite(TestSelectWindow.class);
+            suite.addTestSuite(TestStore.class);
+            suite.addTestSuite(TestSubmit.class);
+            suite.addTestSuite(TestType.class);
+            suite.addTestSuite(TestVerifications.class);
+            suite.addTestSuite(TestWait.class);
+            suite.addTestSuite(TestSelect.class);
+            suite.addTestSuite(TestEditable.class);
+            if (!isProxyInjectionMode
+                    || "*piiexplore".equals(forcedBrowserMode)) { // BUG in PI mode propogation of state
+                suite.addTestSuite(TestPrompt.class);
+                suite.addTestSuite(TestConfirmations.class);
+                suite.addTestSuite(TestAlerts.class);
+                suite.addTestSuite(TestRefresh.class);
+            }
+            suite.addTestSuite(TestVisibility.class);
+            suite.addTestSuite(TestMultiSelect.class);
+            suite.addTestSuite(TestWaitInPopupWindow.class);
+            suite.addTestSuite(TestWaitFor.class);
+            suite.addTestSuite(TestWaitForNot.class);
             ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
             supersuite.addTest(setup);
             return supersuite;
@@ -141,8 +135,9 @@ public class ClientDriverSuite extends TestCase {
 
         public void setUp() throws Exception {
             try {
-                server = new SeleniumServer(SeleniumServer.DEFAULT_PORT);
-                System.out.println("Starting the Selenium Server as part of global setup...");
+                server = new SeleniumServer();
+                System.out.println("Starting the Selenium Server listening on port " + server.getPort()
+                        + " as part of global setup...");
                 server.start();
             } catch (Exception e) {
                 e.printStackTrace();
