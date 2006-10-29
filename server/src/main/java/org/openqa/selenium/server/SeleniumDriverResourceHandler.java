@@ -528,23 +528,19 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     /** Retrieves a FrameGroupSeleneseQueueSet for the specifed sessionId, creating a new one if there isn't one with that sessionId already 
      */
     private FrameGroupSeleneseQueueSet getQueueSet(String sessionId) {
-        synchronized (queueSets) {
-            FrameGroupSeleneseQueueSet queueSet = queueSets.get(sessionId);
-            if (queueSet == null) {
-                queueSet = new FrameGroupSeleneseQueueSet(sessionId);
-                queueSets.put(sessionId, queueSet);
-            }
-            return queueSet;
+        FrameGroupSeleneseQueueSet queueSet = queueSets.get(sessionId);
+        if (queueSet == null) {
+            queueSet = new FrameGroupSeleneseQueueSet(sessionId);
+            queueSets.put(sessionId, queueSet);
         }
+        return queueSet;
     }
 
     /** Deletes the specified FrameGroupSeleneseQueueSet */
     public void clearQueueSet(String sessionId) {
-        synchronized(queueSets) {
-            FrameGroupSeleneseQueueSet queue = queueSets.get(sessionId);
-            queue.endOfLife();
-            queueSets.remove(sessionId);
-        }
+        FrameGroupSeleneseQueueSet queue = queueSets.get(sessionId);
+        queue.endOfLife();
+        queueSets.remove(sessionId);
     }
 
     /** Kills all running browsers */
@@ -574,7 +570,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return lastSessionId;
     }
 
-    private static synchronized void setLastSessionId(String sessionId) {
+    private static void setLastSessionId(String sessionId) {
         SeleniumDriverResourceHandler.lastSessionId = sessionId;
     }
 }
