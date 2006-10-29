@@ -59,6 +59,11 @@ public class ClientDriverSuite extends TestCase {
             TestSuite supersuite = new TestSuite(ClientDriverSuite.class
                     .getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
+            
+            
+            if (!isProxyInjectionMode) {
+            
+            
             if (isProxyInjectionMode && "*piiexplore".equals(forcedBrowserMode)) {
                 // once frames support is added to the main trunk, we will be
                 // able to run the following in non-proxy injection mode:
@@ -108,6 +113,11 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestWaitInPopupWindow.class);
             suite.addTestSuite(TestWaitFor.class);
             suite.addTestSuite(TestWaitForNot.class);
+            
+            
+            }
+            
+            
             ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
             supersuite.addTest(setup);
             return supersuite;
