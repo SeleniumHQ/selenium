@@ -21,15 +21,21 @@ my $selenium_description = $1;
 
 my @functions = extract_functions($iedoc);
 
-print perl_header(), 
-      $selenium_description, 
-      perl_constructor(), 
-      @functions,
-      perl_footer();
+# Print Selenium.pm
+write_file("lib/WWW/Selenium.pm", join('', pm_header(), 
+                                           $selenium_description, 
+                                           pm_constructor(), 
+                                           map({ $_->{text} } @functions),
+                                           pm_footer() ) );
 
+# Print unit test file
+write_file("t/selenium-core.t", join('', t_header(), 
+                                         test_functions(@functions) ) );
 exit;
 
-sub perl_header {
+
+
+sub pm_header {
     return <<'EOT';
 # Copyright 2006 ThoughtWorks, Inc
 #
@@ -107,7 +113,7 @@ the Selenium Server.  (The Selenium Server is a Java application.)
 EOT
 }
 
-sub perl_constructor {
+sub pm_constructor {
     return <<'EOT';
 
 =cut
@@ -339,7 +345,7 @@ browser-specific prompting.
 EOT
 }
 
-sub perl_footer {
+sub pm_footer {
     return <<'EOT';
 =pod
 
@@ -386,6 +392,26 @@ limitations under the License.
 EOT
 }
 
+sub t_header {
+    return <<'EOT';
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Test::More qw/no_plan/;
+use t::Utils qw/method_exists/;
+
+EOT
+}
+
+sub test_functions {
+    my @funcs = @_;
+    my $text = '';
+    for my $f (@funcs) {
+        $text .= qq{method_exists("$f->{name}");\n};
+    }
+    return $text;
+}
+
 sub read_iedoc_xml {
     my $iedoc_file = 'iedoc.xml';
     die "Can't find iedoc.xml" unless -e $iedoc_file;
@@ -396,4 +422,11 @@ sub read_iedoc_xml {
     }
     close $fh;
     return $iedoc;
+}
+
+sub write_file {
+    my ($name, $content) = @_;
+    open(my $fh, ">$name") or die "Can't open $name: $!";
+    print $fh $content;
+    close $fh or die "Can't write $name: $!";
 }
