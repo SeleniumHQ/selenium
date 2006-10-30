@@ -151,7 +151,7 @@ public class SeleniumServer {
     // into the selenium server will be routed to port 4445, although the selenium server will still be listening   
     // to the default port 4444.  At this point, you would open tcptrace to bridge the gap and be able to watch   
     // all the data coming in and out:
-    private static int portDriversShouldContact = DEFAULT_PORT;
+    private static int portDriversShouldContact = 0;
     private static PrintStream logOut = null;
     private static String forcedBrowserMode = null; 
 
@@ -398,8 +398,7 @@ public class SeleniumServer {
 
         SingleEntryAsyncQueue.setDefaultTimeout(timeoutInSeconds);
         seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
-        SeleniumServer.setPortDriversShouldContact(portDriversShouldContactArg);
-
+        
         if (!isProxyInjectionMode() &&
                 (InjectionHelper.userContentTransformationsExist() ||
                         InjectionHelper.userJsInjectionsExist())) {
@@ -481,6 +480,9 @@ public class SeleniumServer {
      */
     public SeleniumServer(int port, boolean slowResources, boolean multiWindow) throws Exception {
         this.port = port;
+        if (portDriversShouldContact==0) {
+            SeleniumServer.setPortDriversShouldContact(port);
+        }
         this.multiWindow = multiWindow;
         server = new Server();
         SocketListener socketListener = new SocketListener();
