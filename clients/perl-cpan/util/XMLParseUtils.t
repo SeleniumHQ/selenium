@@ -160,7 +160,7 @@ EOT
     my @got = extract_functions($xml);
     is scalar(@got), scalar(@functions);
     for my $i (0 .. @got-1) {
-        eq_or_diff $got[$i], $functions[$i];
+        eq_or_diff $got[$i]->{text}, $functions[$i];
     }
 }
 
@@ -212,7 +212,7 @@ EOT
     my @got = extract_functions($xml);
     is scalar(@got), scalar(@functions);
     for my $i (0 .. @got-1) {
-        eq_or_diff $got[$i], $functions[$i];
+        eq_or_diff $got[$i]->{text}, $functions[$i];
     }
 }
 
@@ -268,6 +268,6 @@ EOT
     my @got = extract_functions($xml);
     is scalar(@got), scalar(@functions);
     for my $i (0 .. @got-1) {
-        eq_or_diff $got[$i], $functions[$i];
+        eq_or_diff $got[$i]->{text}, $functions[$i];
     }
 }

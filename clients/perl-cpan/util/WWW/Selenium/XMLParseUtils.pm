@@ -75,7 +75,7 @@ sub extract_functions {
 
         my $sel_func = $return_type ? "get_$return_type" : "do_command";
         my $return   = $return_type ? "return " : '';
-        push @functions, { name => $perl_name, text => <<EOT };
+        my $text = <<EOT;
 =item \$sel-E<gt>$perl_name($params->{names})
 
 $func_comment
@@ -90,12 +90,17 @@ sub $perl_name {
 }
 
 EOT
+        $text = html2pod($text);
+        $text =~ s#\n{2,}#\n\n#g;
+        push @functions, { 
+            name => $perl_name, 
+            text => $text,
+            return_type => $return_type,
+            params => $params,
+        };
     }
 
-    return map { $_ =~ s#\n{2,}#\n\n#g; $_ } # strip newlines
-             map { html2pod($_->{text}) } # get rid of any <p>'s
-#             sort { $a->{name} cmp $b->{name} }
-               @functions;
+    return @functions;
 }
 
 sub _extract_params {
