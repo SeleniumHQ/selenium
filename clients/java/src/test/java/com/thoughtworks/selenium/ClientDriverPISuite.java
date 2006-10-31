@@ -48,8 +48,10 @@ public class ClientDriverPISuite extends ClientDriverSuite {
     static class InitSystemPropertiesForPImodeTesting extends TestSetup {
         private static final String SELENIUM_PROXY_INJECTION_MODE = "selenium.proxyInjectionMode";
         private static final String SELENIUM_FORCED_BROWSER_MODE = "selenium.forcedBrowserMode";
+        private static final String SELENIUM_LOG = "selenium.log";
         String oldProxyInjectionModeSetting;
         String oldForcedBrowserModeSetting;
+        String oldLogSetting;
 
         public InitSystemPropertiesForPImodeTesting(Test test) {
             super(test);
@@ -62,11 +64,15 @@ public class ClientDriverPISuite extends ClientDriverSuite {
 
             oldForcedBrowserModeSetting = System.getProperty(SELENIUM_FORCED_BROWSER_MODE);
             System.setProperty(SELENIUM_FORCED_BROWSER_MODE, determineForcedBrowserMode());
+
+            oldLogSetting = System.getProperty(SELENIUM_LOG);
+            System.setProperty(SELENIUM_LOG, "log.txt");
         }
 
         public void tearDown() throws Exception {
             revertProperty(SELENIUM_PROXY_INJECTION_MODE, oldProxyInjectionModeSetting);
             revertProperty(SELENIUM_FORCED_BROWSER_MODE, oldForcedBrowserModeSetting);
+            revertProperty(SELENIUM_LOG, oldLogSetting);
         }
 
         private void revertProperty(String key, String oldValue) {
