@@ -1,5 +1,7 @@
 package com.thoughtworks.selenium;
 
+import java.util.HashMap;
+
 import junit.extensions.*;
 import junit.framework.*;
 
@@ -46,41 +48,36 @@ public class ClientDriverPISuite extends ClientDriverSuite {
      *
      */
     static class InitSystemPropertiesForPImodeTesting extends TestSetup {
-        private static final String SELENIUM_PROXY_INJECTION_MODE = "selenium.proxyInjectionMode";
-        private static final String SELENIUM_FORCED_BROWSER_MODE = "selenium.forcedBrowserMode";
-        private static final String SELENIUM_LOG = "selenium.log";
-        String oldProxyInjectionModeSetting;
-        String oldForcedBrowserModeSetting;
-        String oldLogSetting;
+        private HashMap<String, String> savedValuesOfSystemProperties = new HashMap<String, String>();
 
         public InitSystemPropertiesForPImodeTesting(Test test) {
             super(test);
         }
 
         public void setUp() throws Exception {
+            overrideProperty("selenium.proxyInjectionMode", "true");
+            overrideProperty("selenium.forcedBrowserMode", determineForcedBrowserMode());
+            overrideProperty("selenium.log", "log.txt");
+            
+            // make jetty logging especially verbose
+            overrideProperty("DEBUG", "true");
+            overrideProperty("DEBUG_VERBOSE", "1");
+        }
 
-            oldProxyInjectionModeSetting = System.getProperty(SELENIUM_PROXY_INJECTION_MODE);
-            System.setProperty(SELENIUM_PROXY_INJECTION_MODE, "true");
-
-            oldForcedBrowserModeSetting = System.getProperty(SELENIUM_FORCED_BROWSER_MODE);
-            System.setProperty(SELENIUM_FORCED_BROWSER_MODE, determineForcedBrowserMode());
-
-            oldLogSetting = System.getProperty(SELENIUM_LOG);
-            System.setProperty(SELENIUM_LOG, "log.txt");
+        private void overrideProperty(String propertyName, String propertyValue) {
+            savedValuesOfSystemProperties.put(propertyName, System.getProperty(propertyName));
+            System.setProperty(propertyName, propertyValue);
         }
 
         public void tearDown() throws Exception {
-            revertProperty(SELENIUM_PROXY_INJECTION_MODE, oldProxyInjectionModeSetting);
-            revertProperty(SELENIUM_FORCED_BROWSER_MODE, oldForcedBrowserModeSetting);
-            revertProperty(SELENIUM_LOG, oldLogSetting);
-        }
-
-        private void revertProperty(String key, String oldValue) {
-            if (oldValue==null) {
-                System.clearProperty(key);
-            }
-            else {
-                System.setProperty(key, oldValue);
+            for (String propertyName : savedValuesOfSystemProperties.keySet()) {                
+                String oldValue = savedValuesOfSystemProperties.get(propertyName);
+                if (oldValue==null) {
+                    System.clearProperty(propertyName);
+                }
+                else {
+                    System.setProperty(propertyName, oldValue);
+                }
             }
         }
     }
