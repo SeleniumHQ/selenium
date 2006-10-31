@@ -502,6 +502,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             }
         }
         catch (Exception e) {
+            System.err.println("handleConnect: ProxyHandler.java: " + e);
             LogSupport.ignore(log, e);
             response.sendError(HttpResponse.__500_Internal_Server_Error);
         }
