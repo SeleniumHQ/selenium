@@ -39,7 +39,7 @@ public class QueueTest extends TestCase {
     }
     
     public void setUp() {
-        q = new SingleEntryAsyncQueue();
+        q = new SingleEntryAsyncQueue("test_queue");
     }
     
     public void testGetFromEmptyQueue() throws Exception {

@@ -32,10 +32,13 @@ public class SingleEntryAsyncQueue {
     private int timeout;
     private int id = idGenerator++;
     private boolean hasBlockedGetter = false;
-    private String loggingPreamble = "SingleEntryAsyncQueue" + id + ": ";
+    private String loggingPreamble;
+    private String label;
     
-    public SingleEntryAsyncQueue() {
+    public SingleEntryAsyncQueue(String label) {
+        this.label = label;
         timeout = defaultTimeout;
+        loggingPreamble = this.label + id + ": ";
     }
     
     /**

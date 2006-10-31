@@ -38,15 +38,15 @@ public class SeleneseQueue {
 
     static private int millisecondDelayBetweenOperations;
 
-    public SeleneseQueue(String sessionId, FrameAddress frameAddress) {
-        this(sessionId);
-        this.frameAddress  = frameAddress;
+    public SeleneseQueue(String sessionId) {
+        this(sessionId, null);
     }
 
-    public SeleneseQueue(String sessionId) {
+    public SeleneseQueue(String sessionId, FrameAddress frameAddress) {
         this.sessionId = sessionId;
-        commandHolder = new SingleEntryAsyncQueue();
-        commandResultHolder = new SingleEntryAsyncQueue();
+        this.frameAddress  = frameAddress;
+        commandHolder = new SingleEntryAsyncQueue("commandHolder/" + frameAddress);
+        commandResultHolder = new SingleEntryAsyncQueue("resultHolder/" + frameAddress);
         //
         // we are only concerned about the browser, and command queue timeouts will never be
         // because of a browser problem, we should just set an infinite timeout threshold
