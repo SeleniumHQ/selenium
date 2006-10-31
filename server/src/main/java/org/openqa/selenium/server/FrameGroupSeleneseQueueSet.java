@@ -241,19 +241,19 @@ public class FrameGroupSeleneseQueueSet {
      * 
      * 
      * @param commandResult - the reply from the previous command, or null
-     * @param frameAddress - frame from which the reply came
+     * @param incomingFrameAddress - frame from which the reply came
      * @param uniqueId 
      * @return - the next command to run
      */
-    public SeleneseCommand handleCommandResult(String commandResult, FrameAddress frameAddress, String uniqueId) {
+    public SeleneseCommand handleCommandResult(String commandResult, FrameAddress incomingFrameAddress, String uniqueId) {
         SeleneseQueue queue;
         if (!SeleniumServer.isProxyInjectionMode()) {
             queue = getSeleneseQueue();
         }
         else {
-            if (frameAddress.getWindowName().equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP)) {
+            if (incomingFrameAddress.getWindowName().equals(SELENIUM_WINDOW_NAME_UNKNOWN_POPUP)) {
                 boolean foundFrameAddressOfUnknownPopup = false;
-                for (FrameAddress f : frameAddressToSeleneseQueue.keySet()) {
+                for (FrameAddress knownFrameAddress : frameAddressToSeleneseQueue.keySet()) {
                     // the situation being handled here: a pop-up window has either just loaded or reloaded, and therefore
                     // doesn't know its name.  It uses SELENIUM_WINDOW_NAME_UNKNOWN_POPUP as a placeholder.
                     // Meanwhile, on the selenium server-side, a thread is waiting for this result.
@@ -262,19 +262,19 @@ public class FrameGroupSeleneseQueueSet {
                     // looking for ones with a matching local frame address (e.g., top.frames[1]), is also a
                     // pop-up, and which has a thread waiting on a result.  If all of these conditions hold,
                     // then we figure this queue is the one that we want:
-                    if (f.getLocalFrameAddress().equals(frameAddress.getLocalFrameAddress())
-                            && !f.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)
-                            && frameAddressToSeleneseQueue.get(f).getCommandResultHolder().hasBlockedGetter()) {
-                        frameAddress = f;
+                    if (knownFrameAddress.getLocalFrameAddress().equals(incomingFrameAddress.getLocalFrameAddress())
+                            && !knownFrameAddress.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)
+                            && frameAddressToSeleneseQueue.get(knownFrameAddress).getCommandResultHolder().hasBlockedGetter()) {
+                        incomingFrameAddress = knownFrameAddress;
                         foundFrameAddressOfUnknownPopup = true;
                         break;
                     }
                 }
                 if (!foundFrameAddressOfUnknownPopup) {
-                    SeleniumServer.log("WARNING: unknown popup " + frameAddress + " was not resolved");
+                    SeleniumServer.log("WARNING: unknown popup " + incomingFrameAddress + " was not resolved");
                 }
             }
-            queue = getSeleneseQueue(frameAddress);
+            queue = getSeleneseQueue(incomingFrameAddress);
         }
         queue.setUniqueId(uniqueId);
         return queue.handleCommandResult(commandResult);
