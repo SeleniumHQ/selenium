@@ -60,11 +60,7 @@ public class ClientDriverSuite extends TestCase {
                     .getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             
-            
-            if (!isProxyInjectionMode) {
-            
-            
-            if (isProxyInjectionMode && "*piiexplore".equals(forcedBrowserMode)) {
+            if (isProxyInjectionMode) {
                 // once frames support is added to the main trunk, we will be
                 // able to run the following in non-proxy injection mode:
                 suite.addTestSuite(TestFramesClick.class);
@@ -101,23 +97,16 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestWait.class);
             suite.addTestSuite(TestSelect.class);
             suite.addTestSuite(TestEditable.class);
-            if (!isProxyInjectionMode
-                    || "*piiexplore".equals(forcedBrowserMode)) { // BUG in PI mode propogation of state
-                suite.addTestSuite(TestPrompt.class);
-                suite.addTestSuite(TestConfirmations.class);
-                suite.addTestSuite(TestAlerts.class);
-                suite.addTestSuite(TestRefresh.class);
-            }
+            suite.addTestSuite(TestPrompt.class);
+            suite.addTestSuite(TestConfirmations.class);
+            suite.addTestSuite(TestAlerts.class);
+            suite.addTestSuite(TestRefresh.class);
             suite.addTestSuite(TestVisibility.class);
             suite.addTestSuite(TestMultiSelect.class);
             suite.addTestSuite(TestWaitInPopupWindow.class);
             suite.addTestSuite(TestWaitFor.class);
             suite.addTestSuite(TestWaitForNot.class);
-            
-            
-            }
-            
-            
+
             ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
             supersuite.addTest(setup);
             return supersuite;
