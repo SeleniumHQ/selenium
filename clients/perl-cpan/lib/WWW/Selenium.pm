@@ -69,6 +69,8 @@ the Selenium Server.  (The Selenium Server is a Java application.)
 
 =cut
 
+### This next part is auto-generated based on the big comment in selenium-api.js
+
 #Defines an object that runs Selenium commands.
 
 =head3 Element Locators
@@ -102,9 +104,9 @@ Select the first element with the specified @name attribute.
 
 =over
 
-=item * username
+=item username
 
-=item * name=username
+=item name=username
 
 =back
 
@@ -112,7 +114,7 @@ The name may optionally be followed by one or more I<element-filters>, separated
 
 =over
 
-=item * name=flavour value=chocolate
+=item name=flavour value=chocolate
 
 =back
 
@@ -123,11 +125,11 @@ Model using JavaScript.  Note that you must not return a value in this string; s
 
 =over
 
-=item * dom=document.forms['myForm'].myDropdown
+=item dom=document.forms['myForm'].myDropdown
 
-=item * dom=document.images[56]
+=item dom=document.images[56]
 
-=item * dom=function foo() { return document.links[1]; }; foo();
+=item dom=function foo() { return document.links[1]; }; foo();
 
 =back
 
@@ -137,9 +139,9 @@ Locate an element using an XPath expression.
 
 =over
 
-=item * xpath=//img[@alt='The image alt text']
+=item xpath=//img[@alt='The image alt text']
 
-=item * xpath=//table[@id='table1']//tr[4]/td[2]
+=item xpath=//table[@id='table1']//tr[4]/td[2]
 
 =back
 
@@ -150,19 +152,19 @@ specified I<pattern>.
 
 =over
 
-=item * link=The link text
+=item link=The link text
 
 =back
 
 =item B<css>=I<cssSelectorSyntax>
 
-Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
+Select the element using css selectors. Please refer to http://www.w3.org/TR/REC-CSS2/selector.html (CSS2 selectors), http://www.w3.org/TR/2001/CR-css3-selectors-20011113/ (CSS3 selectors) for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
 
 =over
 
-=item * css=a[href="#id3"]
+=item css=a[href="#id3"]
 
-=item * css=span#firstChild + span
+=item css=span#firstChild + span
 
 =back
 
@@ -175,11 +177,11 @@ strategies:
 
 =over
 
-=item * B<dom>, for locators starting with "document."
+=item B<dom>, for locators starting with "document."
 
-=item * B<xpath>, for locators starting with "//"
+=item B<xpath>, for locators starting with "//"
 
-=item * B<identifier>, otherwise
+=item B<identifier>, otherwise
 
 =back
 
@@ -248,7 +250,6 @@ eval 'require Encode';
 my $encode_present = !$@;
 Encode->import('decode_utf8') if $encode_present;
 
-### This part is hard-coded in the XSL
 sub new {
     my ($class, %args) = @_;
     my $self = { # default args:
@@ -469,7 +470,7 @@ browser-specific prompting.
 
 ### From here on, everything's auto-generated from XML
 
-=item * $sel-E<gt>click($locator)
+=item $sel-E<gt>click($locator)
 
 Clicks on a link, button, checkbox or radio button. If the click action
 causes a new page to load (like a link usually does), call
@@ -481,7 +482,6 @@ $locator is an element locator
 
 =back
 
-
 =cut
 
 sub click {
@@ -489,7 +489,7 @@ sub click {
     $self->do_command("click", @_);
 }
 
-=item * $sel-E<gt>doubleClick($locator)
+=item $sel-E<gt>double_click($locator)
 
 Double clicks on a link, button, checkbox or radio button. If the double click action
 causes a new page to load (like a link usually does), call
@@ -501,15 +501,14 @@ $locator is an element locator
 
 =back
 
-
 =cut
 
-sub doubleClick {
+sub double_click {
     my $self = shift;
     $self->do_command("doubleClick", @_);
 }
 
-=item * $sel-E<gt>clickAt($locator, $coordString)
+=item $sel-E<gt>click_at($locator, $coord_string)
 
 Clicks on a link, button, checkbox or radio button. If the click action
 causes a new page to load (like a link usually does), call
@@ -522,19 +521,18 @@ get null event arguments.  Read the bug for more details, including a workaround
 
 $locator is an element locator
 
-$coordString is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+$coord_string is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
 
 =back
 
-
 =cut
 
-sub clickAt {
+sub click_at {
     my $self = shift;
     $self->do_command("clickAt", @_);
 }
 
-=item * $sel-E<gt>doubleClickAt($locator, $coordString)
+=item $sel-E<gt>double_click_at($locator, $coord_string)
 
 Doubleclicks on a link, button, checkbox or radio button. If the action
 causes a new page to load (like a link usually does), call
@@ -547,25 +545,29 @@ get null event arguments.  Read the bug for more details, including a workaround
 
 $locator is an element locator
 
-$coordString is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+$coord_string is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
 
 =back
 
-
 =cut
 
-sub doubleClickAt {
+sub double_click_at {
     my $self = shift;
     $self->do_command("doubleClickAt", @_);
 }
 
-=item * $sel-E<gt>fire_event($locator, $event_name)
+=item $sel-E<gt>fire_event($locator, $event_name)
 
 Explicitly simulate an event, to trigger the corresponding "onI<event>"
 handler.
 
-$locator is an element locator.  
-$event_name is the event name, e.g. "focus" or "blur".  
+=over
+
+$locator is an element locator
+
+$event_name is the event name, e.g. "focus" or "blur"
+
+=back
 
 =cut
 
@@ -574,14 +576,17 @@ sub fire_event {
     $self->do_command("fireEvent", @_);
 }
 
-
-=item * $sel-E<gt>key_press($locator, $keycode)
+=item $sel-E<gt>key_press($locator, $key_sequence)
 
 Simulates a user pressing and releasing a key.
 
-$locator is an element locator.  
-$keycode is the numeric keycode of the key to be pressed, normally the
-            ASCII value of that key..  
+=over
+
+$locator is an element locator
+
+$key_sequence is Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
+
+=back
 
 =cut
 
@@ -590,14 +595,17 @@ sub key_press {
     $self->do_command("keyPress", @_);
 }
 
-
-=item * $sel-E<gt>key_down($locator, $keycode)
+=item $sel-E<gt>key_down($locator, $key_sequence)
 
 Simulates a user pressing a key (without releasing it yet).
 
-$locator is an element locator.  
-$keycode is the numeric keycode of the key to be pressed, normally the
-            ASCII value of that key..  
+=over
+
+$locator is an element locator
+
+$key_sequence is Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
+
+=back
 
 =cut
 
@@ -606,14 +614,17 @@ sub key_down {
     $self->do_command("keyDown", @_);
 }
 
-
-=item * $sel-E<gt>key_up($locator, $keycode)
+=item $sel-E<gt>key_up($locator, $key_sequence)
 
 Simulates a user releasing a key.
 
-$locator is an element locator.  
-$keycode is the numeric keycode of the key to be released, normally the
-            ASCII value of that key..  
+=over
+
+$locator is an element locator
+
+$key_sequence is Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
+
+=back
 
 =cut
 
@@ -622,12 +633,15 @@ sub key_up {
     $self->do_command("keyUp", @_);
 }
 
-
-=item * $sel-E<gt>mouse_over($locator)
+=item $sel-E<gt>mouse_over($locator)
 
 Simulates a user hovering a mouse over the specified element.
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
 
 =cut
 
@@ -636,13 +650,33 @@ sub mouse_over {
     $self->do_command("mouseOver", @_);
 }
 
+=item $sel-E<gt>mouse_out($locator)
 
-=item * $sel-E<gt>mouse_down($locator)
+Simulates a user moving the mouse pointer away from the specified element.
+
+=over
+
+$locator is an element locator
+
+=back
+
+=cut
+
+sub mouse_out {
+    my $self = shift;
+    $self->do_command("mouseOut", @_);
+}
+
+=item $sel-E<gt>mouse_down($locator)
 
 Simulates a user pressing the mouse button (without releasing it yet) on
 the specified element.
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
 
 =cut
 
@@ -651,17 +685,125 @@ sub mouse_down {
     $self->do_command("mouseDown", @_);
 }
 
+=item $sel-E<gt>mouse_down_at($locator, $coord_string)
 
-=item * $sel-E<gt>type($locator, $value)
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+
+Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+get null event arguments.  Read the bug for more details, including a workaround.
+
+=over
+
+$locator is an element locator
+
+$coord_string is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+
+=back
+
+=cut
+
+sub mouse_down_at {
+    my $self = shift;
+    $self->do_command("mouseDownAt", @_);
+}
+
+=item $sel-E<gt>mouse_up($locator)
+
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+
+=over
+
+$locator is an element locator
+
+=back
+
+=cut
+
+sub mouse_up {
+    my $self = shift;
+    $self->do_command("mouseUp", @_);
+}
+
+=item $sel-E<gt>mouse_up_at($locator, $coord_string)
+
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+
+Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+get null event arguments.  Read the bug for more details, including a workaround.
+
+=over
+
+$locator is an element locator
+
+$coord_string is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+
+=back
+
+=cut
+
+sub mouse_up_at {
+    my $self = shift;
+    $self->do_command("mouseUpAt", @_);
+}
+
+=item $sel-E<gt>mouse_move($locator)
+
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+
+=over
+
+$locator is an element locator
+
+=back
+
+=cut
+
+sub mouse_move {
+    my $self = shift;
+    $self->do_command("mouseMove", @_);
+}
+
+=item $sel-E<gt>mouse_move_at($locator, $coord_string)
+
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+
+Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+get null event arguments.  Read the bug for more details, including a workaround.
+
+=over
+
+$locator is an element locator
+
+$coord_string is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+
+=back
+
+=cut
+
+sub mouse_move_at {
+    my $self = shift;
+    $self->do_command("mouseMoveAt", @_);
+}
+
+=item $sel-E<gt>type($locator, $value)
 
 Sets the value of an input field, as though you typed it in.
 
 Can also be used to set the value of combo boxes, check boxes, etc. In these cases,
 value should be the value of the option selected, not the visible text.
 
+=over
 
-$locator is an element locator.  
-$value is the value to type.  
+$locator is an element locator
+
+$value is the value to type
+
+=back
 
 =cut
 
@@ -670,12 +812,47 @@ sub type {
     $self->do_command("type", @_);
 }
 
+=item $sel-E<gt>set_speed($value)
 
-=item * $sel-E<gt>check($locator)
+Set execution speed (i.e., set the millisecond length of a delay which will follow each selenium operation).  By default, there is no such delay, i.e.,
+the delay is 0 milliseconds.
+
+=over
+
+$value is the number of milliseconds to pause after operation
+
+=back
+
+=cut
+
+sub set_speed {
+    my $self = shift;
+    $self->do_command("setSpeed", @_);
+}
+
+=item $sel-E<gt>get_speed()
+
+Get execution speed (i.e., get the millisecond length of the delay following each selenium operation).  By default, there is no such delay, i.e.,
+the delay is 0 milliseconds.
+
+See also setSpeed.
+
+=cut
+
+sub get_speed {
+    my $self = shift;
+    $self->do_command("getSpeed", @_);
+}
+
+=item $sel-E<gt>check($locator)
 
 Check a toggle-button (checkbox/radio)
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
 
 =cut
 
@@ -684,12 +861,15 @@ sub check {
     $self->do_command("check", @_);
 }
 
-
-=item * $sel-E<gt>uncheck($locator)
+=item $sel-E<gt>uncheck($locator)
 
 Uncheck a toggle-button (checkbox/radio)
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
 
 =cut
 
@@ -698,88 +878,65 @@ sub uncheck {
     $self->do_command("uncheck", @_);
 }
 
-
-=item * $sel-E<gt>select($select_locator, $option_locator)
+=item $sel-E<gt>select($select_locator, $option_locator)
 
 Select an option from a drop-down using an option locator.
-
 
 Option locators provide different ways of specifying options of an HTML
 Select element (e.g. for selecting a specific option, or for asserting
 that the selected option satisfies a specification). There are several
 forms of Select Option Locator.
 
-
-
-=over
-
-
-=item * B<label>=I<labelPattern>
+=item B<label>=I<labelPattern>
 
 matches options based on their labels, i.e. the visible text. (This
 is the default.)
 
-
 =over
 
-
-=item * label=regexp:^[Oo]ther
-
+=item label=regexp:^[Oo]ther
 
 =back
 
-
-=item * B<value>=I<valuePattern>
+=item B<value>=I<valuePattern>
 
 matches options based on their values.
 
-
 =over
 
-
-=item * value=other
-
+=item value=other
 
 =back
 
-
-=item * B<id>=I<id>
+=item B<id>=I<id>
 
 matches options based on their ids.
 
-
 =over
 
-
-=item * id=option1
-
+=item id=option1
 
 =back
 
-
-=item * B<index>=I<index>
+=item B<index>=I<index>
 
 matches an option based on its index (offset from zero).
 
-
 =over
 
-
-=item * index=2
-
-
-=back
-
-
+=item index=2
 
 =back
 
 If no option locator prefix is provided, the default behaviour is to match on B<label>.
 
+=over
 
+$select_locator is an element locator identifying a drop-down menu
 
-$select_locator is an element locator identifying a drop-down menu.  
-$option_locator is an option locator (a label by default).  
+$option_locator is an option locator (a label by default)
+
+=back
 
 =cut
 
@@ -788,15 +945,19 @@ sub select {
     $self->do_command("select", @_);
 }
 
-
-=item * $sel-E<gt>add_selection($locator, $option_locator)
+=item $sel-E<gt>add_selection($locator, $option_locator)
 
 Add a selection to the set of selected options in a multi-select element using an option locator.
 
 @see #doSelect for details of option locators
 
-$locator is an element locator identifying a multi-select box.  
-$option_locator is an option locator (a label by default).  
+=over
+
+$locator is an element locator identifying a multi-select box
+
+$option_locator is an option locator (a label by default)
+
+=back
 
 =cut
 
@@ -805,15 +966,19 @@ sub add_selection {
     $self->do_command("addSelection", @_);
 }
 
-
-=item * $sel-E<gt>remove_selection($locator, $option_locator)
+=item $sel-E<gt>remove_selection($locator, $option_locator)
 
 Remove a selection from the set of selected options in a multi-select element using an option locator.
 
 @see #doSelect for details of option locators
 
-$locator is an element locator identifying a multi-select box.  
-$option_locator is an option locator (a label by default).  
+=over
+
+$locator is an element locator identifying a multi-select box
+
+$option_locator is an option locator (a label by default)
+
+=back
 
 =cut
 
@@ -822,13 +987,16 @@ sub remove_selection {
     $self->do_command("removeSelection", @_);
 }
 
-
-=item * $sel-E<gt>submit($form_locator)
+=item $sel-E<gt>submit($form_locator)
 
 Submit the specified form. This is particularly useful for forms without
 submit buttons, e.g. single-input "Search" forms.
 
-$form_locator is an element locator for the form you want to submit.  
+=over
+
+$form_locator is an element locator for the form you want to submit
+
+=back
 
 =cut
 
@@ -837,8 +1005,7 @@ sub submit {
     $self->do_command("submit", @_);
 }
 
-
-=item * $sel-E<gt>open($url)
+=item $sel-E<gt>open($url)
 
 Opens an URL in the test frame. This accepts both relative and absolute
 URLs.
@@ -851,7 +1018,11 @@ due to security restrictions in the browser (Same Origin Policy). If you
 need to open an URL on another domain, use the Selenium Server to start a
 new browser session on that domain.
 
-$url is the URL to open; may be relative or absolute.  
+=over
+
+$url is the URL to open; may be relative or absolute
+
+=back
 
 =cut
 
@@ -860,14 +1031,17 @@ sub open {
     $self->do_command("open", @_);
 }
 
-
-=item * $sel-E<gt>select_window($window_i_d)
+=item $sel-E<gt>select_window($window_id)
 
 Selects a popup window; once a popup window has been selected, all
 commands go to that window. To select the main window again, use "null"
 as the target.
 
-$window_i_d is the JavaScript window ID of the window to select.  
+=over
+
+$window_id is the JavaScript window ID of the window to select
+
+=back
 
 =cut
 
@@ -876,13 +1050,96 @@ sub select_window {
     $self->do_command("selectWindow", @_);
 }
 
+=item $sel-E<gt>select_frame($locator)
 
-=item * $sel-E<gt>wait_for_pop_up($window_i_d, $timeout)
+Selects a frame within the current window.  (You may invoke this command
+multiple times to select nested frames.)  To select the parent frame, use
+"relative=parent" as a locator; to select the top frame, use "relative=top".
+
+You may also use a DOM expression to identify the frame you want directly,
+like this: C<dom=frames["main"].frames["subframe"]>
+
+=over
+
+$locator is an element locator identifying a frame or iframe
+
+=back
+
+=cut
+
+sub select_frame {
+    my $self = shift;
+    $self->do_command("selectFrame", @_);
+}
+
+=item $sel-E<gt>get_log_messages()
+
+Return the contents of the log.
+
+This is a placeholder intended to make the code generator make this API
+available to clients.  The selenium server will intercept this call, however,
+and return its recordkeeping of log messages since the last call to this API.
+Thus this code in JavaScript will never be called.
+
+The reason I opted for a servercentric solution is to be able to support
+multiple frames served from different domains, which would break a
+centralized JavaScript logging mechanism under some conditions.
+
+=over
+
+Returns all log messages seen since the last call to this API
+
+=back
+
+=cut
+
+sub get_log_messages {
+    my $self = shift;
+    return $self->get_string("getLogMessages", @_);
+}
+
+=item $sel-E<gt>get_whether_this_frame_match_frame_expression($current_frame_string, $target)
+
+Determine whether current/locator identify the frame containing this running code.
+
+This is useful in proxy injection mode, where this code runs in every
+browser frame and window, and sometimes the selenium server needs to identify
+the "current" frame.  In this case, when the test calls selectFrame, this
+routine is called for each frame to figure out which one has been selected.
+The selected frame will return true, while all others will return false.
+
+=over
+
+$current_frame_string is starting frame
+
+$target is new frame (which might be relative to the current one)
+
+=back
+
+=over
+
+Returns true if the new frame is this code's window
+
+=back
+
+=cut
+
+sub get_whether_this_frame_match_frame_expression {
+    my $self = shift;
+    return $self->get_boolean("getWhetherThisFrameMatchFrameExpression", @_);
+}
+
+=item $sel-E<gt>wait_for_pop_up($window_id, $timeout)
 
 Waits for a popup window to appear and load up.
 
-$window_i_d is the JavaScript window ID of the window that will appear.  
-$timeout is a timeout in milliseconds, after which the action will return with an error.  
+=over
+
+$window_id is the JavaScript window ID of the window that will appear
+
+$timeout is a timeout in milliseconds, after which the action will return with an error
+
+=back
 
 =cut
 
@@ -891,14 +1148,12 @@ sub wait_for_pop_up {
     $self->do_command("waitForPopUp", @_);
 }
 
-
-=item * $sel-E<gt>choose_cancel_on_next_confirmation()
+=item $sel-E<gt>choose_cancel_on_next_confirmation()
 
 By default, Selenium's overridden window.confirm() function will
 return true, as if the user had manually clicked OK.  After running
 this command, the next call to confirm() will return false, as if
 the user had clicked Cancel.
-
 
 =cut
 
@@ -907,13 +1162,16 @@ sub choose_cancel_on_next_confirmation {
     $self->do_command("chooseCancelOnNextConfirmation", @_);
 }
 
-
-=item * $sel-E<gt>answer_on_next_prompt($answer)
+=item $sel-E<gt>answer_on_next_prompt($answer)
 
 Instructs Selenium to return the specified answer string in response to
 the next JavaScript prompt [window.prompt()].
 
-$answer is the answer to give in response to the prompt pop-up.  
+=over
+
+$answer is the answer to give in response to the prompt pop-up
+
+=back
 
 =cut
 
@@ -922,11 +1180,9 @@ sub answer_on_next_prompt {
     $self->do_command("answerOnNextPrompt", @_);
 }
 
-
-=item * $sel-E<gt>go_back()
+=item $sel-E<gt>go_back()
 
 Simulates the user clicking the "back" button on their browser.
-
 
 =cut
 
@@ -935,11 +1191,9 @@ sub go_back {
     $self->do_command("goBack", @_);
 }
 
-
-=item * $sel-E<gt>refresh()
+=item $sel-E<gt>refresh()
 
 Simulates the user clicking the "Refresh" button on their browser.
-
 
 =cut
 
@@ -948,12 +1202,10 @@ sub refresh {
     $self->do_command("refresh", @_);
 }
 
-
-=item * $sel-E<gt>close()
+=item $sel-E<gt>close()
 
 Simulates the user clicking the "close" button in the titlebar of a popup
 window or tab.
-
 
 =cut
 
@@ -962,16 +1214,17 @@ sub close {
     $self->do_command("close", @_);
 }
 
-
-=item * $sel-E<gt>is_alert_present()
+=item $sel-E<gt>is_alert_present()
 
 Has an alert occurred?
 
-
 This function never throws an exception
 
+=over
 
+Returns true if there is an alert
 
+=back
 
 =cut
 
@@ -980,16 +1233,17 @@ sub is_alert_present {
     return $self->get_boolean("isAlertPresent", @_);
 }
 
-
-=item * $sel-E<gt>is_prompt_present()
+=item $sel-E<gt>is_prompt_present()
 
 Has a prompt occurred?
 
-
 This function never throws an exception
 
+=over
 
+Returns true if there is a pending prompt
 
+=back
 
 =cut
 
@@ -998,16 +1252,17 @@ sub is_prompt_present {
     return $self->get_boolean("isPromptPresent", @_);
 }
 
-
-=item * $sel-E<gt>is_confirmation_present()
+=item $sel-E<gt>is_confirmation_present()
 
 Has confirm() been called?
 
-
 This function never throws an exception
 
+=over
 
+Returns true if there is a pending confirmation
 
+=back
 
 =cut
 
@@ -1016,21 +1271,26 @@ sub is_confirmation_present {
     return $self->get_boolean("isConfirmationPresent", @_);
 }
 
-
-=item * $sel-E<gt>get_alert()
+=item $sel-E<gt>get_alert()
 
 Retrieves the message of a JavaScript alert generated during the previous action, or fail if there were no alerts.
 
 Getting an alert has the same effect as manually clicking OK. If an
 alert is generated but you do not get/verify it, the next Selenium action
 will fail.
+
 NOTE: under Selenium, JavaScript alerts will NOT pop up a visible alert
 dialog.
+
 NOTE: Selenium does NOT support JavaScript alerts that are generated in a
 page's onload() event handler. In this case a visible dialog WILL be
 generated and Selenium will hang until someone manually clicks OK.
 
+=over
 
+Returns The message of the most recent JavaScript alert
+
+=back
 
 =cut
 
@@ -1039,30 +1299,29 @@ sub get_alert {
     return $self->get_string("getAlert", @_);
 }
 
-
-=item * $sel-E<gt>get_confirmation()
+=item $sel-E<gt>get_confirmation()
 
 Retrieves the message of a JavaScript confirmation dialog generated during
 the previous action.
-
 
 By default, the confirm function will return true, having the same effect
 as manually clicking OK. This can be changed by prior execution of the
 chooseCancelOnNextConfirmation command. If an confirmation is generated
 but you do not get/verify it, the next Selenium action will fail.
 
-
 NOTE: under Selenium, JavaScript confirmations will NOT pop up a visible
 dialog.
-
 
 NOTE: Selenium does NOT support JavaScript confirmations that are
 generated in a page's onload() event handler. In this case a visible
 dialog WILL be generated and Selenium will hang until you manually click
 OK.
 
+=over
 
+Returns the message of the most recent JavaScript confirmation dialog
 
+=back
 
 =cut
 
@@ -1071,8 +1330,7 @@ sub get_confirmation {
     return $self->get_string("getConfirmation", @_);
 }
 
-
-=item * $sel-E<gt>get_prompt()
+=item $sel-E<gt>get_prompt()
 
 Retrieves the message of a JavaScript question prompt dialog generated during
 the previous action.
@@ -1080,13 +1338,19 @@ the previous action.
 Successful handling of the prompt requires prior execution of the
 answerOnNextPrompt command. If a prompt is generated but you
 do not get/verify it, the next Selenium action will fail.
+
 NOTE: under Selenium, JavaScript prompts will NOT pop up a visible
 dialog.
+
 NOTE: Selenium does NOT support JavaScript prompts that are generated in a
 page's onload() event handler. In this case a visible dialog WILL be
 generated and Selenium will hang until someone manually clicks OK.
 
+=over
 
+Returns the message of the most recent JavaScript question prompt
+
+=back
 
 =cut
 
@@ -1095,39 +1359,32 @@ sub get_prompt {
     return $self->get_string("getPrompt", @_);
 }
 
-
-=item * $sel-E<gt>get_absolute_location()
+=item $sel-E<gt>get_location()
 
 Gets the absolute URL of the current page.
 
+=over
+
+Returns the absolute URL of the current page
+
+=back
 
 =cut
 
-sub get_absolute_location {
+sub get_location {
     my $self = shift;
-    return $self->get_string("getAbsoluteLocation", @_);
+    return $self->get_string("getLocation", @_);
 }
 
-
-=item * $sel-E<gt>is_location($expected_location)
-
-Verify the location of the current page ends with the expected location.
-If an URL querystring is provided, this is checked as well.
-
-$expected_location is the location to match.  
-
-=cut
-
-sub is_location {
-    my $self = shift;
-    return $self->get_boolean("isLocation", @_);
-}
-
-
-=item * $sel-E<gt>get_title()
+=item $sel-E<gt>get_title()
 
 Gets the title of the current page.
 
+=over
+
+Returns the title of the current page
+
+=back
 
 =cut
 
@@ -1136,11 +1393,15 @@ sub get_title {
     return $self->get_string("getTitle", @_);
 }
 
-
-=item * $sel-E<gt>get_body_text()
+=item $sel-E<gt>get_body_text()
 
 Gets the entire text of the page.
 
+=over
+
+Returns the entire text of the page
+
+=back
 
 =cut
 
@@ -1149,14 +1410,23 @@ sub get_body_text {
     return $self->get_string("getBodyText", @_);
 }
 
-
-=item * $sel-E<gt>get_value($locator)
+=item $sel-E<gt>get_value($locator)
 
 Gets the (whitespace-trimmed) value of an input field (or anything else with a value parameter).
 For checkbox/radio elements, the value will be "on" or "off" depending on
 whether the element is checked or not.
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
+
+=over
+
+Returns the element value, or "on/off" for checkbox/radio elements
+
+=back
 
 =cut
 
@@ -1165,15 +1435,24 @@ sub get_value {
     return $self->get_string("getValue", @_);
 }
 
-
-=item * $sel-E<gt>get_text($locator)
+=item $sel-E<gt>get_text($locator)
 
 Gets the text of an element. This works for any element that contains
 text. This command uses either the textContent (Mozilla-like browsers) or
 the innerText (IE-like browsers) of the element, which is the rendered
 text shown to the user.
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
+
+=over
+
+Returns the text of the element
+
+=back
 
 =cut
 
@@ -1182,22 +1461,31 @@ sub get_text {
     return $self->get_string("getText", @_);
 }
 
+=item $sel-E<gt>get_eval($script)
 
-=item * $sel-E<gt>get_eval($script)
-
-Gets the result of evaluating the specified JavaScript snippet.  The snippet may 
+Gets the result of evaluating the specified JavaScript snippet.  The snippet may
 have multiple lines, but only the result of the last line will be returned.
 
 Note that, by default, the snippet will run in the context of the "selenium"
 object itself, so C<this> will refer to the Selenium object, and C<window> will
 refer to the top-level runner test window, not the window of your application.
+
 If you need a reference to the window of your application, you can refer
 to C<this.browserbot.getCurrentWindow()> and if you need to use
 a locator to refer to a single element in your application page, you can
 use C<this.page().findElement("foo")> where "foo" is your locator.
 
+=over
 
-$script is the JavaScript snippet to run.  
+$script is the JavaScript snippet to run
+
+=back
+
+=over
+
+Returns the results of evaluating the snippet
+
+=back
 
 =cut
 
@@ -1206,27 +1494,45 @@ sub get_eval {
     return $self->get_string("getEval", @_);
 }
 
-
-=item * $sel-E<gt>get_checked($locator)
+=item $sel-E<gt>is_checked($locator)
 
 Gets whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.
 
-$locator is an element locator pointing to a checkbox or radio button.  
+=over
+
+$locator is an element locator pointing to a checkbox or radio button
+
+=back
+
+=over
+
+Returns true if the checkbox is checked, false otherwise
+
+=back
 
 =cut
 
-sub get_checked {
+sub is_checked {
     my $self = shift;
-    return $self->get_string("getChecked", @_);
+    return $self->get_boolean("isChecked", @_);
 }
 
-
-=item * $sel-E<gt>get_table($table_cell_address)
+=item $sel-E<gt>get_table($table_cell_address)
 
 Gets the text from a cell of a table. The cellAddress syntax
 tableLocator.row.column, where row and column start at 0.
 
-$table_cell_address is a cell address, e.g. "foo.1.4".  
+=over
+
+$table_cell_address is a cell address, e.g. "foo.1.4"
+
+=back
+
+=over
+
+Returns the text from the specified cell
+
+=back
 
 =cut
 
@@ -1235,44 +1541,228 @@ sub get_table {
     return $self->get_string("getTable", @_);
 }
 
+=item $sel-E<gt>get_selected_labels($select_locator)
 
-=item * $sel-E<gt>is_selected($locator, $option_locator)
+Gets all option labels (visible text) for selected options in the specified select or multi-select element.
 
-Verifies that the selected option of a drop-down satisfies the optionSpecifier.
+=over
 
-See the select command for more information about option locators.
+$select_locator is an element locator identifying a drop-down menu
 
+=back
 
-$locator is an element locator.  
-$option_locator is an option locator, typically just an option label (e.g. "John Smith").  
+=over
 
-=cut
+Returns an array of all selected option labels in the specified select drop-down
 
-sub is_selected {
-    my $self = shift;
-    return $self->get_boolean("isSelected", @_);
-}
-
-
-=item * $sel-E<gt>get_selected_options($locator)
-
-Gets all option labels for selected options in the specified select or multi-select element.
-
-$locator is an element locator.  
+=back
 
 =cut
 
-sub get_selected_options {
+sub get_selected_labels {
     my $self = shift;
-    return $self->get_string_array("getSelectedOptions", @_);
+    return $self->get_string_array("getSelectedLabels", @_);
 }
 
+=item $sel-E<gt>get_selected_label($select_locator)
 
-=item * $sel-E<gt>get_select_options($locator)
+Gets option label (visible text) for selected option in the specified select element.
+
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns the selected option label in the specified select drop-down
+
+=back
+
+=cut
+
+sub get_selected_label {
+    my $self = shift;
+    return $self->get_string("getSelectedLabel", @_);
+}
+
+=item $sel-E<gt>get_selected_values($select_locator)
+
+Gets all option values (value attributes) for selected options in the specified select or multi-select element.
+
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns an array of all selected option values in the specified select drop-down
+
+=back
+
+=cut
+
+sub get_selected_values {
+    my $self = shift;
+    return $self->get_string_array("getSelectedValues", @_);
+}
+
+=item $sel-E<gt>get_selected_value($select_locator)
+
+Gets option value (value attribute) for selected option in the specified select element.
+
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns the selected option value in the specified select drop-down
+
+=back
+
+=cut
+
+sub get_selected_value {
+    my $self = shift;
+    return $self->get_string("getSelectedValue", @_);
+}
+
+=item $sel-E<gt>get_selected_indexes($select_locator)
+
+Gets all option indexes (option number, starting at 0) for selected options in the specified select or multi-select element.
+
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns an array of all selected option indexes in the specified select drop-down
+
+=back
+
+=cut
+
+sub get_selected_indexes {
+    my $self = shift;
+    return $self->get_string_array("getSelectedIndexes", @_);
+}
+
+=item $sel-E<gt>get_selected_index($select_locator)
+
+Gets option index (option number, starting at 0) for selected option in the specified select element.
+
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns the selected option index in the specified select drop-down
+
+=back
+
+=cut
+
+sub get_selected_index {
+    my $self = shift;
+    return $self->get_string("getSelectedIndex", @_);
+}
+
+=item $sel-E<gt>get_selected_ids($select_locator)
+
+Gets all option element IDs for selected options in the specified select or multi-select element.
+
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns an array of all selected option IDs in the specified select drop-down
+
+=back
+
+=cut
+
+sub get_selected_ids {
+    my $self = shift;
+    return $self->get_string_array("getSelectedIds", @_);
+}
+
+=item $sel-E<gt>get_selected_id($select_locator)
+
+Gets option element ID for selected option in the specified select element.
+
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns the selected option ID in the specified select drop-down
+
+=back
+
+=cut
+
+sub get_selected_id {
+    my $self = shift;
+    return $self->get_string("getSelectedId", @_);
+}
+
+=item $sel-E<gt>is_something_selected($select_locator)
+
+Determines whether some option in a drop-down menu is selected.
+
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns true if some option has been selected, false otherwise
+
+=back
+
+=cut
+
+sub is_something_selected {
+    my $self = shift;
+    return $self->get_boolean("isSomethingSelected", @_);
+}
+
+=item $sel-E<gt>get_select_options($select_locator)
 
 Gets all option labels in the specified select drop-down.
 
-$locator is an element locator.  
+=over
+
+$select_locator is an element locator identifying a drop-down menu
+
+=back
+
+=over
+
+Returns an array of all option labels in the specified select drop-down
+
+=back
 
 =cut
 
@@ -1281,12 +1771,24 @@ sub get_select_options {
     return $self->get_string_array("getSelectOptions", @_);
 }
 
-
-=item * $sel-E<gt>get_attribute($attribute_locator)
+=item $sel-E<gt>get_attribute($attribute_locator)
 
 Gets the value of an element attribute.
 
-$attribute_locator is an element locator followed by an.  
+Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+get null event arguments.  Read the bug for more details, including a workaround.
+
+=over
+
+$attribute_locator is an element locator followed by an
+
+=back
+
+=over
+
+Returns the value of the specified attribute
+
+=back
 
 =cut
 
@@ -1295,12 +1797,21 @@ sub get_attribute {
     return $self->get_string("getAttribute", @_);
 }
 
-
-=item * $sel-E<gt>is_text_present($pattern)
+=item $sel-E<gt>is_text_present($pattern)
 
 Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.
 
-$pattern is a pattern to match with the text of the page.  
+=over
+
+$pattern is a pattern to match with the text of the page
+
+=back
+
+=over
+
+Returns true if the pattern matches the text, false otherwise
+
+=back
 
 =cut
 
@@ -1309,12 +1820,21 @@ sub is_text_present {
     return $self->get_boolean("isTextPresent", @_);
 }
 
-
-=item * $sel-E<gt>is_element_present($locator)
+=item $sel-E<gt>is_element_present($locator)
 
 Verifies that the specified element is somewhere on the page.
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
+
+=over
+
+Returns true if the element is present, false otherwise
+
+=back
 
 =cut
 
@@ -1323,8 +1843,7 @@ sub is_element_present {
     return $self->get_boolean("isElementPresent", @_);
 }
 
-
-=item * $sel-E<gt>is_visible($locator)
+=item $sel-E<gt>is_visible($locator)
 
 Determines if the specified element is visible. An
 element can be rendered invisible by setting the CSS "visibility"
@@ -1332,7 +1851,17 @@ property to "hidden", or the "display" property to "none", either for the
 element itself or one if its ancestors.  This method will fail if
 the element is not present.
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
+
+=over
+
+Returns true if the specified element is visible, false otherwise
+
+=back
 
 =cut
 
@@ -1341,13 +1870,22 @@ sub is_visible {
     return $self->get_boolean("isVisible", @_);
 }
 
-
-=item * $sel-E<gt>is_editable($locator)
+=item $sel-E<gt>is_editable($locator)
 
 Determines whether the specified input element is editable, ie hasn't been disabled.
 This method will fail if the specified element isn't an input element.
 
-$locator is an element locator.  
+=over
+
+$locator is an element locator
+
+=back
+
+=over
+
+Returns true if the input element is editable, false otherwise
+
+=back
 
 =cut
 
@@ -1356,14 +1894,17 @@ sub is_editable {
     return $self->get_boolean("isEditable", @_);
 }
 
-
-=item * $sel-E<gt>get_all_buttons()
+=item $sel-E<gt>get_all_buttons()
 
 Returns the IDs of all buttons on the page.
 
 If a given button has no ID, it will appear as "" in this array.
 
+=over
 
+Returns the IDs of all buttons on the page
+
+=back
 
 =cut
 
@@ -1372,14 +1913,17 @@ sub get_all_buttons {
     return $self->get_string_array("getAllButtons", @_);
 }
 
-
-=item * $sel-E<gt>get_all_links()
+=item $sel-E<gt>get_all_links()
 
 Returns the IDs of all links on the page.
 
 If a given link has no ID, it will appear as "" in this array.
 
+=over
 
+Returns the IDs of all links on the page
+
+=back
 
 =cut
 
@@ -1388,14 +1932,17 @@ sub get_all_links {
     return $self->get_string_array("getAllLinks", @_);
 }
 
-
-=item * $sel-E<gt>get_all_fields()
+=item $sel-E<gt>get_all_fields()
 
 Returns the IDs of all input fields on the page.
 
 If a given field has no ID, it will appear as "" in this array.
 
+=over
 
+Returns the IDs of all field on the page
+
+=back
 
 =cut
 
@@ -1404,12 +1951,185 @@ sub get_all_fields {
     return $self->get_string_array("getAllFields", @_);
 }
 
+=item $sel-E<gt>get_attribute_from_all_windows($attribute_name)
 
-=item * $sel-E<gt>get_html_source()
+Returns every instance of some attribute from all known windows.
+
+=over
+
+$attribute_name is name of an attribute on the windows
+
+=back
+
+=over
+
+Returns the set of values of this attribute from all known windows.
+
+=back
+
+=cut
+
+sub get_attribute_from_all_windows {
+    my $self = shift;
+    return $self->get_string_array("getAttributeFromAllWindows", @_);
+}
+
+=item $sel-E<gt>dragdrop($locator, $movements_string)
+
+deprecated - use dragAndDrop instead
+
+=over
+
+$locator is an element locator
+
+$movements_string is offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
+
+=back
+
+=cut
+
+sub dragdrop {
+    my $self = shift;
+    $self->do_command("dragdrop", @_);
+}
+
+=item $sel-E<gt>drag_and_drop($locator, $movements_string)
+
+Drags an element a certain distance and then drops it
+Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+get null event arguments.  Read the bug for more details, including a workaround.
+
+=over
+
+$locator is an element locator
+
+$movements_string is offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
+
+=back
+
+=cut
+
+sub drag_and_drop {
+    my $self = shift;
+    $self->do_command("dragAndDrop", @_);
+}
+
+=item $sel-E<gt>drag_and_drop_to_object($locator_of_object_to_be_dragged, $locator_of_drag_destination_object)
+
+Drags an element and drops it on another element
+Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
+get null event arguments.  Read the bug for more details, including a workaround.
+
+=over
+
+$locator_of_object_to_be_dragged is an element to be dragged
+
+$locator_of_drag_destination_object is an element whose location (i.e., whose top left corner) will be the point where locatorOfObjectToBeDragged  is dropped
+
+=back
+
+=cut
+
+sub drag_and_drop_to_object {
+    my $self = shift;
+    $self->do_command("dragAndDropToObject", @_);
+}
+
+=item $sel-E<gt>window_focus($window_name)
+
+Gives focus to a window
+
+=over
+
+$window_name is name of the window to be given focus
+
+=back
+
+=cut
+
+sub window_focus {
+    my $self = shift;
+    $self->do_command("windowFocus", @_);
+}
+
+=item $sel-E<gt>window_maximize($window_name)
+
+Resize window to take up the entire screen
+
+=over
+
+$window_name is name of the window to be enlarged
+
+=back
+
+=cut
+
+sub window_maximize {
+    my $self = shift;
+    $self->do_command("windowMaximize", @_);
+}
+
+=item $sel-E<gt>get_all_window_ids()
+
+Returns the IDs of all windows that the browser knows about.
+
+=over
+
+Returns the IDs of all windows that the browser knows about.
+
+=back
+
+=cut
+
+sub get_all_window_ids {
+    my $self = shift;
+    return $self->get_string_array("getAllWindowIds", @_);
+}
+
+=item $sel-E<gt>get_all_window_names()
+
+Returns the names of all windows that the browser knows about.
+
+=over
+
+Returns the names of all windows that the browser knows about.
+
+=back
+
+=cut
+
+sub get_all_window_names {
+    my $self = shift;
+    return $self->get_string_array("getAllWindowNames", @_);
+}
+
+=item $sel-E<gt>get_all_window_titles()
+
+Returns the titles of all windows that the browser knows about.
+
+=over
+
+Returns the titles of all windows that the browser knows about.
+
+=back
+
+=cut
+
+sub get_all_window_titles {
+    my $self = shift;
+    return $self->get_string_array("getAllWindowTitles", @_);
+}
+
+=item $sel-E<gt>get_html_source()
 
 Returns the entire HTML source between the opening and
 closing "html" tags.
 
+=over
+
+Returns the entire HTML source
+
+=back
 
 =cut
 
@@ -1418,14 +2138,18 @@ sub get_html_source {
     return $self->get_string("getHtmlSource", @_);
 }
 
-
-=item * $sel-E<gt>set_cursor_position($locator, $position)
+=item $sel-E<gt>set_cursor_position($locator, $position)
 
 Moves the text cursor to the specified position in the given input element or textarea.
 This method will fail if the specified element isn't an input element or textarea.
 
-$locator is an element locator pointing to an input element or textarea.  
-$position is the numerical position of the cursor in the field; position should be 0 to move the position to the beginning of the field.  You can also set the cursor to -1 to move it to the end of the field..  
+=over
+
+$locator is an element locator pointing to an input element or textarea
+
+$position is the numerical position of the cursor in the field; position should be 0 to move the position to the beginning of the field.  You can also set the cursor to -1 to move it to the end of the field.
+
+=back
 
 =cut
 
@@ -1434,17 +2158,167 @@ sub set_cursor_position {
     $self->do_command("setCursorPosition", @_);
 }
 
+=item $sel-E<gt>get_element_index($locator)
 
-=item * $sel-E<gt>get_cursor_position($locator)
+Get the relative index of an element to its parent (starting from 0). The comment node and empty text node
+will be ignored.
+
+=over
+
+$locator is an element locator pointing to an element
+
+=back
+
+=over
+
+Returns of relative index of the element to its parent (starting from 0)
+
+=back
+
+=cut
+
+sub get_element_index {
+    my $self = shift;
+    return $self->get_number("getElementIndex", @_);
+}
+
+=item $sel-E<gt>is_ordered($locator1, $locator2)
+
+Check if these two elements have same parent and are ordered. Two same elements will
+not be considered ordered.
+
+=over
+
+$locator1 is an element locator pointing to the first element
+
+$locator2 is an element locator pointing to the second element
+
+=back
+
+=over
+
+Returns true if two elements are ordered and have same parent, false otherwise
+
+=back
+
+=cut
+
+sub is_ordered {
+    my $self = shift;
+    return $self->get_boolean("isOrdered", @_);
+}
+
+=item $sel-E<gt>get_element_position_left($locator)
+
+Retrieves the horizontal position of an element
+
+=over
+
+$locator is an element locator pointing to an element OR an element itself
+
+=back
+
+=over
+
+Returns of pixels from the edge of the frame.
+
+=back
+
+=cut
+
+sub get_element_position_left {
+    my $self = shift;
+    return $self->get_number("getElementPositionLeft", @_);
+}
+
+=item $sel-E<gt>get_element_position_top($locator)
+
+Retrieves the vertical position of an element
+
+=over
+
+$locator is an element locator pointing to an element OR an element itself
+
+=back
+
+=over
+
+Returns of pixels from the edge of the frame.
+
+=back
+
+=cut
+
+sub get_element_position_top {
+    my $self = shift;
+    return $self->get_number("getElementPositionTop", @_);
+}
+
+=item $sel-E<gt>get_element_width($locator)
+
+Retrieves the width of an element
+
+=over
+
+$locator is an element locator pointing to an element
+
+=back
+
+=over
+
+Returns width of an element in pixels
+
+=back
+
+=cut
+
+sub get_element_width {
+    my $self = shift;
+    return $self->get_number("getElementWidth", @_);
+}
+
+=item $sel-E<gt>get_element_height($locator)
+
+Retrieves the height of an element
+
+=over
+
+$locator is an element locator pointing to an element
+
+=back
+
+=over
+
+Returns height of an element in pixels
+
+=back
+
+=cut
+
+sub get_element_height {
+    my $self = shift;
+    return $self->get_number("getElementHeight", @_);
+}
+
+=item $sel-E<gt>get_cursor_position($locator)
 
 Retrieves the text cursor position in the given input element or textarea; beware, this may not work perfectly on all browsers.
 
 Specifically, if the cursor/selection has been cleared by JavaScript, this command will tend to
-return the position of the last location of the cursor, even though the cursor is now gone from the page.  This is filed as SEL-243.
-
+return the position of the last location of the cursor, even though the cursor is now gone from the page.  This is filed as http://jira.openqa.org/browse/SEL-243 (SEL-243).
 This method will fail if the specified element isn't an input element or textarea, or there is no cursor in the element.
 
-$locator is an element locator pointing to an input element or textarea.  
+=over
+
+$locator is an element locator pointing to an input element or textarea
+
+=back
+
+=over
+
+Returns the numerical position of the cursor in the field
+
+=back
 
 =cut
 
@@ -1453,20 +2327,24 @@ sub get_cursor_position {
     return $self->get_number("getCursorPosition", @_);
 }
 
-
-=item * $sel-E<gt>set_context($context, $log_level_threshold)
+=item $sel-E<gt>set_context($context, $log_level_threshold)
 
 Writes a message to the status bar and adds a note to the browser-side
 log.
 
 If logLevelThreshold is specified, set the threshold for logging
 to that level (debug, info, warn, error).
-(Note that the browser-side logs will I<not> be sent back to the
+
+(Note that the browser-side logs will <i>not</i> be sent back to the
 server, and are invisible to the Client Driver.)
 
+=over
 
-$context is the message to be sent to the browser.  
-$log_level_threshold is one of "debug", "info", "warn", "error", sets the threshold for browser-side logging.  
+$context is the message to be sent to the browser
+
+$log_level_threshold is one of "debug", "info", "warn", "error", sets the threshold for browser-side logging
+
+=back
 
 =cut
 
@@ -1475,16 +2353,24 @@ sub set_context {
     $self->do_command("setContext", @_);
 }
 
-
-=item * $sel-E<gt>get_expression($expression)
+=item $sel-E<gt>get_expression($expression)
 
 Returns the specified expression.
 
 This is useful because of JavaScript preprocessing.
-It is used to generate commands like assertExpression and storeExpression.
+It is used to generate commands like assertExpression and waitForExpression.
 
+=over
 
-$expression is the value to return.  
+$expression is the value to return
+
+=back
+
+=over
+
+Returns the value passed in
+
+=back
 
 =cut
 
@@ -1493,8 +2379,7 @@ sub get_expression {
     return $self->get_string("getExpression", @_);
 }
 
-
-=item * $sel-E<gt>wait_for_condition($script, $timeout)
+=item $sel-E<gt>wait_for_condition($script, $timeout)
 
 Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
 The snippet may have multiple lines, but only the result of the last line
@@ -1505,9 +2390,13 @@ of your application.  To get the window of your application, you can use
 the JavaScript snippet C<selenium.browserbot.getCurrentWindow()>, and then
 run your JavaScript in there
 
+=over
 
-$script is the JavaScript snippet to run.  
-$timeout is a timeout in milliseconds, after which this command will return with an error.  
+$script is the JavaScript snippet to run
+
+$timeout is a timeout in milliseconds, after which this command will return with an error
+
+=back
 
 =cut
 
@@ -1516,8 +2405,7 @@ sub wait_for_condition {
     $self->do_command("waitForCondition", @_);
 }
 
-
-=item * $sel-E<gt>set_timeout($timeout)
+=item $sel-E<gt>set_timeout($timeout)
 
 Specifies the amount of time that Selenium will wait for actions to complete.
 
@@ -1525,7 +2413,11 @@ Actions that require waiting include "open" and the "waitFor*" actions.
 
 The default timeout is 30 seconds.
 
-$timeout is a timeout in milliseconds, after which the action will return with an error.  
+=over
+
+$timeout is a timeout in milliseconds, after which the action will return with an error
+
+=back
 
 =cut
 
@@ -1534,26 +2426,192 @@ sub set_timeout {
     $self->do_command("setTimeout", @_);
 }
 
-
-=item * $sel-E<gt>wait_for_page_to_load($timeout)
+=item $sel-E<gt>wait_for_page_to_load($timeout)
 
 Waits for a new page to load.
 
 You can use this command instead of the "AndWait" suffixes, "clickAndWait", "selectAndWait", "typeAndWait" etc.
 (which are only available in the JS API).
+
 Selenium constantly keeps track of new pages loading, and sets a "newPageLoaded"
 flag when it first notices a page load.  Running any other Selenium command after
 turns the flag to false.  Hence, if you want to wait for a page to load, you must
 wait immediately after a Selenium command that caused a page-load.
 
+=over
 
-$timeout is a timeout in milliseconds, after which this command will return with an error.  
+$timeout is a timeout in milliseconds, after which this command will return with an error
+
+=back
 
 =cut
 
 sub wait_for_page_to_load {
     my $self = shift;
     $self->do_command("waitForPageToLoad", @_);
+}
+
+=item $sel-E<gt>get_cookie()
+
+Return all cookies of the current page under test.
+
+=over
+
+Returns all cookies of the current page under test
+
+=back
+
+=cut
+
+sub get_cookie {
+    my $self = shift;
+    return $self->get_string("getCookie", @_);
+}
+
+=item $sel-E<gt>create_cookie($name_value_pair, $options_string)
+
+Create a new cookie whose path and domain are same with those of current page
+under test, unless you specified a path for this cookie explicitly.
+
+=over
+
+$name_value_pair is name and value of the cookie in a format "name=value"
+
+$options_string is options for the cookie. Currently supported options include 'path' and 'max_age'.      the optionsString's format is "path=/path/, max_age=60". The order of options are irrelevant, the unit      of the value of 'max_age' is second.
+
+=back
+
+=cut
+
+sub create_cookie {
+    my $self = shift;
+    $self->do_command("createCookie", @_);
+}
+
+=item $sel-E<gt>delete_cookie($name, $path)
+
+Delete a named cookie with specified path.
+
+=over
+
+$name is the name of the cookie to be deleted
+
+$path is the path property of the cookie to be deleted
+
+=back
+
+=cut
+
+sub delete_cookie {
+    my $self = shift;
+    $self->do_command("deleteCookie", @_);
+}
+
+
+=item * $sel-E<gt>is_location($expected_location)
+
+Verify the location of the current page ends with the expected location.
+If an URL querystring is provided, this is checked as well.
+
+=over
+
+$expected_location is the location to match.  
+
+=back
+
+Note: This function is deprecated, use get_location() instead.
+
+=cut
+
+sub is_location {
+    my $self = shift;
+    warn "is_location() is deprecated, use get_location()\n";
+    my $expected_location = shift;
+    my $loc = $self->get_string("getLocation");
+    return $loc =~ /\Q$expected_location\E$/;
+}
+
+=item * $sel-E<gt>get_checked($locator)
+
+Gets whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.
+
+=over
+
+$locator is an element locator pointing to a checkbox or radio button.  
+
+=back
+
+Note: This function is deprecated, use is_checked() instead.
+
+=cut
+
+sub get_checked {
+    my $self = shift;
+    warn "get_checked() is deprecated, use is_checked()\n";
+    return $self->get_string("isChecked", @_) ? 'true' : 'false';
+}
+
+=item * $sel-E<gt>is_selected($locator, $option_locator)
+
+Verifies that the selected option of a drop-down satisfies the optionSpecifier.
+
+See the select command for more information about option locators.
+
+=over
+
+$locator is an element locator.  
+$option_locator is an option locator, typically just an option label (e.g. "John Smith").  
+
+=back
+
+Note: This function is deprecated, use the get_selected_*() methods instead.
+
+=cut
+
+sub is_selected {
+    my ($self, $locator, $option_locator) = @_;
+    warn "is_selected() is deprecated, use get_selected_*() methods\n";
+    $option_locator =~ m/^(?:(.+)=)?(.+)/;
+    my $selector = $1 || 'label';
+    $selector = 'indexe' if $selector eq 'index';
+    my $pattern = $2;
+    my $func = "get_selected_${selector}s";
+    my @selected = $self->$func($locator);
+    return grep { $pattern eq $_ } @selected;
+}
+
+=item * $sel-E<gt>get_selected_options($locator)
+
+Gets all option labels for selected options in the specified select or multi-select element.
+
+=over
+
+$locator is an element locator.  
+
+=back
+
+Note: This function is deprecated, use get_selected_labels() instead.
+
+=cut
+
+sub get_selected_options {
+    my $self = shift;
+    warn "get_selected_options() is deprecated, use get_selected_labels()\n";
+    return $self->get_string_array("getSelectedLabels", @_);
+}
+
+=item * $sel-E<gt>get_absolute_location()
+
+Gets the absolute URL of the current page.
+
+Note: This function is deprecated, use get_location() instead.
+
+=cut
+
+sub get_absolute_location {
+    my $self = shift;
+    warn "get_absolute_location() is deprecated, use get_location()\n";
+    return $self->get_string("getLocation", @_);
 }
 
 =pod
@@ -1578,7 +2636,9 @@ online at L<http://jira.openqa.org/browse/SRC>.
 
 =head1 AUTHOR
 
-Maintained by Dan Fabulich <dfabulich@warpmail.net>
+Perl driver maintained by Luke Closs <selenium-rc@awesnob.com>
+
+Selenium Remote Control maintained by Dan Fabulich <dfabulich@warpmail.net>
 
 =head1 LICENSE
 
@@ -1595,5 +2655,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 

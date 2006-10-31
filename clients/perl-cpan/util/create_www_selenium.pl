@@ -347,6 +347,113 @@ EOT
 
 sub pm_footer {
     return <<'EOT';
+
+=item * $sel-E<gt>is_location($expected_location)
+
+Verify the location of the current page ends with the expected location.
+If an URL querystring is provided, this is checked as well.
+
+=over
+
+$expected_location is the location to match.  
+
+=back
+
+Note: This function is deprecated, use get_location() instead.
+
+=cut
+
+sub is_location {
+    my $self = shift;
+    warn "is_location() is deprecated, use get_location()\n";
+    my $expected_location = shift;
+    my $loc = $self->get_string("getLocation");
+    return $loc =~ /\Q$expected_location\E$/;
+}
+
+=item * $sel-E<gt>get_checked($locator)
+
+Gets whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.
+
+=over
+
+$locator is an element locator pointing to a checkbox or radio button.  
+
+=back
+
+Note: This function is deprecated, use is_checked() instead.
+
+=cut
+
+sub get_checked {
+    my $self = shift;
+    warn "get_checked() is deprecated, use is_checked()\n";
+    return $self->get_string("isChecked", @_) ? 'true' : 'false';
+}
+
+=item * $sel-E<gt>is_selected($locator, $option_locator)
+
+Verifies that the selected option of a drop-down satisfies the optionSpecifier.
+
+See the select command for more information about option locators.
+
+=over
+
+$locator is an element locator.  
+$option_locator is an option locator, typically just an option label (e.g. "John Smith").  
+
+=back
+
+Note: This function is deprecated, use the get_selected_*() methods instead.
+
+=cut
+
+sub is_selected {
+    my ($self, $locator, $option_locator) = @_;
+    warn "is_selected() is deprecated, use get_selected_*() methods\n";
+    $option_locator =~ m/^(?:(.+)=)?(.+)/;
+    my $selector = $1 || 'label';
+    $selector = 'indexe' if $selector eq 'index';
+    my $pattern = $2;
+    my $func = "get_selected_${selector}s";
+    my @selected = $self->$func($locator);
+    return grep { $pattern eq $_ } @selected;
+}
+
+=item * $sel-E<gt>get_selected_options($locator)
+
+Gets all option labels for selected options in the specified select or multi-select element.
+
+=over
+
+$locator is an element locator.  
+
+=back
+
+Note: This function is deprecated, use get_selected_labels() instead.
+
+=cut
+
+sub get_selected_options {
+    my $self = shift;
+    warn "get_selected_options() is deprecated, use get_selected_labels()\n";
+    return $self->get_string_array("getSelectedLabels", @_);
+}
+
+=item * $sel-E<gt>get_absolute_location()
+
+Gets the absolute URL of the current page.
+
+Note: This function is deprecated, use get_location() instead.
+
+=cut
+
+sub get_absolute_location {
+    my $self = shift;
+    warn "get_absolute_location() is deprecated, use get_location()\n";
+    return $self->get_string("getLocation", @_);
+}
+
 =pod
 
 =back
@@ -398,7 +505,17 @@ sub t_header {
 use strict;
 use warnings;
 use Test::More qw/no_plan/;
-use t::Utils qw/method_exists/;
+
+BEGIN {
+    use lib 't/lib';
+    use_ok 'LWP::UserAgent';    # mocked
+    use_ok 'HTTP::Response';    # mocked
+    use lib 'lib';
+    use t::WWW::Selenium;
+}
+
+my $sel = t::WWW::Selenium->new;
+isa_ok $sel, 't::WWW::Selenium';
 
 EOT
 }
@@ -407,7 +524,7 @@ sub test_functions {
     my @funcs = @_;
     my $text = '';
     for my $f (@funcs) {
-        $text .= qq{method_exists("$f->{name}");\n};
+        $text .= qq{\$sel->_method_exists("$f->{name}");\n};
     }
     return $text;
 }
