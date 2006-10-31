@@ -18,6 +18,7 @@
 package org.openqa.selenium.server;
 
 import org.mortbay.http.HttpContext;
+import org.mortbay.http.NCSARequestLog;
 import org.mortbay.http.SocketListener;
 import org.mortbay.jetty.Server;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
@@ -153,6 +154,7 @@ public class SeleniumServer {
     // all the data coming in and out:
     private static int portDriversShouldContact = 0;
     private static PrintStream logOut = null;
+    private static String logOutFileName = null;
     private static String forcedBrowserMode = null; 
 
     public static final int DEFAULT_TIMEOUT = (30 * 60);
@@ -382,6 +384,8 @@ public class SeleniumServer {
     }
 
     private static void setLogOut(String logFileName) {
+        logOutFileName = logFileName;
+
         try {
             logOut = new PrintStream(logFileName);
         } catch (FileNotFoundException e) {
@@ -483,8 +487,20 @@ public class SeleniumServer {
         if (portDriversShouldContact==0) {
             SeleniumServer.setPortDriversShouldContact(port);
         }
+        if (logOut==null && System.getProperty("selenium.log")!=null) {
+            setLogOut(System.getProperty("selenium.log"));
+        }
         this.multiWindow = multiWindow;
         server = new Server();
+        
+        if (logOut!=null) {
+            NCSARequestLog log = new NCSARequestLog();
+            log.setFilename(logOutFileName + ".jetty");
+            log.setRetainDays(3);
+            log.setExtended(true);
+            log.setAppend(true);
+            server.setRequestLog(log);
+        }  
         SocketListener socketListener = new SocketListener();
         socketListener.setMaxIdleTimeMs(60000);
         socketListener.setPort(port);
@@ -516,7 +532,9 @@ public class SeleniumServer {
         }
         staticContentHandler.addStaticContent(new ClasspathResourceLocator());
 
-        String logOutFileName = System.getProperty("selenium.log.fileName");
+        if (logOutFileName==null) {
+            logOutFileName = System.getProperty("selenium.log.fileName");
+        }
         if (logOutFileName != null) {
             setLogOut(logOutFileName);
         }
