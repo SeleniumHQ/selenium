@@ -1,8 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More qw/no_plan/;
-use t::Utils qw/method_exists/;
+use Test::More tests => 20;
 use Test::Exception;
 
 # The purpose of these tests are to ensure that WWW::Selenium does not 
@@ -39,14 +38,57 @@ Is_location: {
 }
 
 Get_checked: {
-    # XXX - Not sure what SeleniumServer actually returns here.
     True: {
-        $sel->_set_mock_response_content('checked');
-        is $sel->get_checked('id=foo'), 'checked';
+        $sel->_set_mock_response_content('true');
+        is $sel->get_checked('id=foo'), 'true';
     }
 
     False: {
-        $sel->_set_mock_response_content('unchecked');
-        is $sel->get_checked('id=foo'), 'unchecked';
+        $sel->_set_mock_response_content('false');
+        is $sel->get_checked('id=foo'), 'false';
+    }
+
+    Element_does_not_exist: {
+        my $error_msg = "Element id=foo not found";
+        $sel->_set_mock_response_content("ERROR: $error_msg");
+        throws_ok { $sel->get_checked('id=foo') }
+                  qr/\Q$error_msg\E/;
+    }
+}
+
+Is_selected: {
+    True: {
+        $sel->_set_mock_response_content('true');
+        ok $sel->is_selected('id=foo');
+    }
+
+    False: {
+        $sel->_set_mock_response_content('false');
+        ok !$sel->is_selected('id=foo');
+    }
+
+    Element_does_not_exist: {
+        my $error_msg = "Element id=foo not found";
+        $sel->_set_mock_response_content("ERROR: $error_msg");
+        throws_ok { $sel->is_selected('id=foo') }
+                  qr/\Q$error_msg\E/;
+    }
+}
+
+Get_selected_options: {
+    None_selected: {
+        $sel->_set_mock_response_content('');
+        is_deeply [$sel->get_selected_options('id=foo')], [''];
+    }
+
+    One_selected: {
+        $sel->_set_mock_response_content('first response');
+        is_deeply [$sel->get_selected_options('id=foo')], ['first response'];
+    }
+
+    Two_selected: {
+        $sel->_set_mock_response_content('first response,second');
+        is_deeply [$sel->get_selected_options('id=foo')], 
+                  ['first response', 'second'];
     }
 }

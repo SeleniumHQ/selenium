@@ -29,7 +29,11 @@ sub new {
 
 sub _set_mock_response_content {
     my ($self, $content) = @_;
-    $self->{__ua}{res} = HTTP::Response->new(content => join(',', 'OK', $content));
+    my $msg = $content;
+    if (length($msg) == 0 or $msg !~ /^ERROR/) {
+        $msg = "OK,$msg";
+    }
+    $self->{__ua}{res} = HTTP::Response->new(content => $msg);
 }
 
 sub _method_exists {
