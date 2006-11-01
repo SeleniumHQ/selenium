@@ -10,7 +10,7 @@ public class DomainTourTest extends TestCase
     
     public void setUp() throws Exception {
         String url = "http://www.google.com";
-        selenium = new DefaultSelenium("localhost", SeleniumServer.DEFAULT_PORT, "*iexplore", url);
+        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*iexplore", url);
         selenium.start();
     }
     
