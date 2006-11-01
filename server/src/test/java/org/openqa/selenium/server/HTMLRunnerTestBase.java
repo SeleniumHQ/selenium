@@ -49,7 +49,7 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
     }
     
     protected void runHTMLSuite(String browser, boolean slowResources) throws Exception {
-        server = new SeleniumServer(SeleniumServer.DEFAULT_PORT, slowResources);
+        server = new SeleniumServer(SeleniumServer.getDefaultPort(), slowResources);
         launcher = new HTMLLauncher(server);
         server.start();
         browserURL = "http://localhost:" + server.getPort();

@@ -110,7 +110,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
     {
         _allowedConnectPorts.add(80);
-        _allowedConnectPorts.add(SeleniumServer.DEFAULT_PORT);
+        _allowedConnectPorts.add(SeleniumServer.getDefaultPort());
         _allowedConnectPorts.add(8000);
         _allowedConnectPorts.add(8080);
         _allowedConnectPorts.add(8888);
