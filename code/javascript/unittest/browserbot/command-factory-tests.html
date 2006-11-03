@@ -55,12 +55,12 @@ function testActionHandlerConstructorWithNoValueForDontCheckAlerts() {
 
 function testActionsAreTypedAndAvailableAfterRegistrationInCommandHandlerFactory() {
     var factory = new CommandHandlerFactory();
-    factory.registerAction("myAction", "actionFunction");
+    factory.registerAction("myAction", fnBind("actionFunction", this));
 
     var myAction = factory.getCommandHandler("myAction");
     assertNotUndefined(myAction);
     assertEquals(CommandHandler, myAction.constructor);
-    assertEquals("actionFunction", myAction.actionBlock);
+    assertEquals("actionFunction", myAction.actionBlock.__method);
     assertEquals("action", myAction.type);
 }
 
@@ -261,8 +261,8 @@ function testAllMethodsWithGetPrefixAreRegisteredAsAccessorsByRegisterAll() {
     assertUndefined(factory.getCommandHandler("getdontGet"));
     assertUndefined(factory.getCommandHandler("notEvenClose"));
 
-    assertEquals("commandTarget.get1", factory.getCommandHandler("getOne").accessBlock);
-    assertEquals("commandTarget.get2", factory.getCommandHandler("getTwo").accessBlock);
+    assertEquals("get1", factory.getCommandHandler("getOne").accessBlock.__method);
+    assertEquals("get2", factory.getCommandHandler("getTwo").accessBlock.__method);
 }
 
 function testAllMethodsWithGetPrefixAreRegisteredAsAssertsByRegisterAll() {
@@ -402,8 +402,8 @@ function testAllMethodsWithDoPrefixAreRegisteredAsActionsByRegisterAll() {
     assertUndefined(factory.getCommandHandler("dontRegister"));
     assertUndefined(factory.getCommandHandler("notEvenClose"));
 
-    assertEquals("commandTarget.action1", factory.getCommandHandler("anAction").actionBlock);
-    assertEquals("commandTarget.action2", factory.getCommandHandler("anotherAction").actionBlock);
+    assertEquals("action1", factory.getCommandHandler("anAction").actionBlock.__method);
+    assertEquals("action2", factory.getCommandHandler("anotherAction").actionBlock.__method);
 }
 
 function testActionsAreRegisteredWithAndWaitSuffix() {
@@ -411,8 +411,8 @@ function testActionsAreRegisteredWithAndWaitSuffix() {
     var factory = new CommandHandlerFactory();
     factory.registerAll(actionSet);
 
-    assertEquals("commandTarget.action1", factory.getCommandHandler("anAction").actionBlock);
-    assertEquals("commandTarget.action1", factory.getCommandHandler("anActionAndWait").actionBlock);
+    assertEquals("action1", factory.getCommandHandler("anAction").actionBlock.__method);
+    assertEquals("action1", factory.getCommandHandler("anActionAndWait").actionBlock.__method);
     assertUndefined(factory.getCommandHandler("anAction").wait);
     assertTrue(factory.getCommandHandler("anActionAndWait").wait);
 }
@@ -426,17 +426,17 @@ function testAllMethodsWithAssertPrefixAreRegisteredForAssertAndVerifyByRegister
     assertUndefined(factory.getCommandHandler("notEvenClose"));
 
     var myAssert = factory.getCommandHandler("assertSomething");
-    assertEquals("commandTarget.assert1", myAssert.assertBlock);
+    assertEquals("assert1", myAssert.assertBlock.__method);
     assertTrue(myAssert.haltOnFailure);
     assertEquals("assert", myAssert.type);
 
     var myVerify = factory.getCommandHandler("verifySomething");
-    assertEquals("commandTarget.assert1", myVerify.assertBlock);
+    assertEquals("assert1", myVerify.assertBlock.__method);
     assertFalse(myVerify.haltOnFailure);
     assertEquals("assert", myVerify.type);
 
-    assertEquals("commandTarget.assert2", factory.getCommandHandler("assertSomeOtherThing").assertBlock);
-    assertEquals("commandTarget.assert2", factory.getCommandHandler("verifySomeOtherThing").assertBlock);
+    assertEquals("assert2", factory.getCommandHandler("assertSomeOtherThing").assertBlock.__method);
+    assertEquals("assert2", factory.getCommandHandler("verifySomeOtherThing").assertBlock.__method);
 }
 </script>
 </head>

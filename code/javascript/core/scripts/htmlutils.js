@@ -56,9 +56,11 @@ function $A(iterable) {
 
 function fnBind() {
   var args = $A(arguments), __method = args.shift(), object = args.shift();
-  return function() {
+  var retval = function() {
     return __method.apply(object, args.concat($A(arguments)));
   }
+  retval.__method = __method;
+  return retval;
 }
 
 function fnBindAsEventListener(fn, object) {
