@@ -1,0 +1,113 @@
+<html>
+    <head>
+    	<title>Mock Core TestRunner</title>
+        <script>
+            
+            function submitForm() {
+                var form = document.createElement("form");
+                document.body.appendChild(form);
+            
+                form.id = "resultsForm";
+                form.method = "post";
+            
+                var resultsUrl = _getQueryParameter("resultsUrl");
+                if (!resultsUrl) {
+                    resultsUrl = "./postResults";
+                }
+            
+                var actionAndParameters = resultsUrl.split('?', 2);
+                form.action = actionAndParameters[0];
+                var resultsUrlQueryString = actionAndParameters[1];
+            
+                form.createHiddenField = function(name, value) {
+                    input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = name;
+                    input.value = value;
+                    this.appendChild(input);
+                };
+            
+                if (resultsUrlQueryString) {
+                    var clauses = resultsUrlQueryString.split('&');
+                    for (var i = 0; i < clauses.length; i++) {
+                        var keyValuePair = clauses[i].split('=', 2);
+                        var key = unescape(keyValuePair[0]);
+                        var value = unescape(keyValuePair[1]);
+                        form.createHiddenField(key, value);
+                    }
+                }
+            
+                form.createHiddenField("selenium.version", "???");
+                form.createHiddenField("selenium.revision", "???");
+            
+                form.createHiddenField("result", "passed");
+            
+                form.createHiddenField("totalTime", 47);
+                form.createHiddenField("numTestPasses", 1);
+                form.createHiddenField("numTestFailures", 0);
+                form.createHiddenField("numCommandPasses", 1);
+                form.createHiddenField("numCommandFailures", 0);
+                form.createHiddenField("numCommandErrors", 0);
+            
+                // Create an input for each test table.  The inputs are named
+                // testTable.1, testTable.2, etc.
+                var suite = document.getElementById("suite");
+                var test1 = document.getElementById("test1");
+                
+                form.createHiddenField("testTable.1", suite.innerHTML);
+            
+                form.createHiddenField("numTestTotal", 1);
+            
+                // Add HTML for the suite itself
+                form.createHiddenField("suite", suite.innerHTML);
+            
+                
+                form.submit();
+            }
+            
+            function _getQueryParameter(searchKey) {
+                var str = top.location.search.substr(1);
+                if (str == null) return null;
+                var clauses = str.split('&');
+                for (var i = 0; i < clauses.length; i++) {
+                    var keyValuePair = clauses[i].split('=', 2);
+                    var key = unescape(keyValuePair[0]);
+                    if (key == searchKey) {
+                        return unescape(keyValuePair[1]);
+                    }
+                }
+                return null;
+            }
+        </script>
+    </head>
+    <body onload="submitForm();">
+        Hello world!
+        <div id="suite">
+            <table border="1" cellpadding="1" cellspacing="1">
+                <tbody>
+                    <tr class="title status_passed"><td><b>Test Suite</b></td></tr>
+                    <tr class="status_passed"><td><a href="TestHelloWorld.html">TestHelloWorld</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="test1">
+            <table border="1" cellpadding="1" cellspacing="1">
+              <tbody>
+                <tr class="title status_passed">
+                  <td rowspan="1" colspan="3">Test Hello World<br>
+            
+                  </td>
+                </tr>
+                <tr class="status_done" style="cursor: pointer;">
+                  <td>fakeTestCommand</td>
+                  <td>hello</td>
+                  <td>world</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+
+        
+        
+    </body></html>

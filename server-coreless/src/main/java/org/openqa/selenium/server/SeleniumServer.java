@@ -17,19 +17,13 @@
 
 package org.openqa.selenium.server;
 
-import org.mortbay.http.HttpContext;
-import org.mortbay.http.NCSARequestLog;
-import org.mortbay.http.SocketListener;
-import org.mortbay.jetty.Server;
-import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
-import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
-import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
-import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
-
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
+
+import org.mortbay.http.*;
+import org.mortbay.jetty.*;
+import org.openqa.selenium.server.browserlaunchers.*;
+import org.openqa.selenium.server.htmlrunner.*;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive Selenese commands
@@ -135,6 +129,7 @@ public class SeleniumServer {
     private StaticContentHandler staticContentHandler;
     private int port;
     private boolean multiWindow = false;
+    private Thread shutDownHook;
 
     private static String debugURL = "";  // add special tracing for debug when this URL is requested
     private static boolean debugMode = false;
@@ -297,19 +292,9 @@ public class SeleniumServer {
             jetty.setDaemon(true);
         }
 
-        jetty.start();
+        seleniumProxy.start();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            public void run() {
-                try {
-                    System.out.println("Shutting down...");
-                    seleniumProxy.stop();
-                } catch (InterruptedException e) {
-                    System.err.println("run exception seen:");
-                    e.printStackTrace();
-                }
-            }
-        }));
+        
 
         if (userExtensions != null) {
             seleniumProxy.addNewStaticContent(userExtensions.getParentFile());
@@ -601,15 +586,38 @@ public class SeleniumServer {
      * Starts the Jetty server
      */
     public void start() throws Exception {
+    	System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
         server.start();
+        
+        shutDownHook = new Thread(new ShutDownHook(this));
+        Runtime.getRuntime().addShutdownHook(shutDownHook);
+    }
+    
+    private class ShutDownHook implements Runnable {
+    	SeleniumServer selenium;
+    	ShutDownHook(SeleniumServer selenium) { this.selenium = selenium; } 
+    	public void run() {
+            System.out.println("Shutting down...");
+            selenium.stop();
+        }
     }
 
     /**
      * Stops the Jetty server
      */
-    public void stop() throws InterruptedException {
-        server.stop();
-        driver.stopAllBrowsers();
+    public void stop() {
+        try {
+        	server.stop();
+        } catch (InterruptedException ex) {
+        	throw new RuntimeException(ex);
+        } finally {
+        	driver.stopAllBrowsers();
+        	try {
+        		Runtime.getRuntime().removeShutdownHook(shutDownHook);
+        	} catch (IllegalStateException e) {} // if we're shutting down, it's too late for that!
+        }
+        
+        
     }
 
     public int getPort() {
@@ -631,6 +639,15 @@ public class SeleniumServer {
      */
     public Server getServer() {
         return server;
+    }
+    
+    public InputStream getResourceAsStream(String path) throws IOException {
+    	return staticContentHandler.getResource(path).getInputStream();
+    }
+    
+    /** Registers a running browser with a specific sessionID */
+    public void registerSeleneseLauncher(String sessionId, BrowserLauncher launcher) {
+    	driver.registerSeleneseLauncher(sessionId, launcher);
     }
 
     public static boolean isDebugMode() {
@@ -723,29 +740,32 @@ public class SeleniumServer {
             }
             seleniumProxy.addNewStaticContent(suiteFile.getParentFile());
             String startURL = getRequiredSystemProperty("htmlSuite.startURL");
-            String suiteURL = startURL + "/selenium-server/" + suiteFile.getName();
             HTMLLauncher launcher = new HTMLLauncher(seleniumProxy);
             String resultFilePath = getRequiredSystemProperty("htmlSuite.resultFilePath");
             File resultFile = new File(resultFilePath);
+            resultFile.createNewFile();
+            
             if (!resultFile.canWrite()) {
                 usage("can't write to result file " + resultFilePath);
                 System.exit(1);
             }
-            result = launcher.runHTMLSuite(getRequiredSystemProperty("htmlSuite.browserString"), startURL, suiteURL, resultFile, 
+            
+            result = launcher.runHTMLSuite(getRequiredSystemProperty("htmlSuite.browserString"), startURL, suiteFile, resultFile, 
                     timeoutInSeconds, seleniumProxy.isMultiWindow());
-            } catch (Exception e) {
-                System.err.println("HTML suite exception seen:");
-                e.printStackTrace();
-                System.exit(1);
-            }
-
+            
             if (!"PASSED".equals(result)) {
-                System.err.println("Tests failed");
+                System.err.println("Tests failed, see result file for details: " + resultFile.getAbsolutePath());
                 System.exit(1);
             } else {
                 System.exit(0);
             }
-        }
+        } catch (Exception e) {
+            System.err.println("HTML suite exception seen:");
+            e.printStackTrace();
+                System.exit(1);
+            }
+
+    }
 
     
     public static void log(String logMessages) {

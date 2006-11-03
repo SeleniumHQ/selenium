@@ -118,7 +118,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
             if (WindowsUtils.thisIsWindows()) {
                 cmdarray = new String[]{commandPath, "/settings", opera6ini.getAbsolutePath(), url};
             } else {
-                cmdarray = new String[]{commandPath, "-personaldir", opera6ini.getParentFile().getAbsolutePath(), url};
+                cmdarray = new String[]{commandPath, "-nosession", "-personaldir", opera6ini.getParentFile().getAbsolutePath(), url};
             }
 
             exe.setCommandline(cmdarray);
@@ -162,6 +162,16 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         out.println("No Proxy Servers");
         out.println("No Proxy Servers Check=0");
 
+        out.println("");
+        out.println("[Cache]");
+        out.println("Cache Docs=0");
+        
+        out.println("");
+        out.println("[Disk Cache]");
+        out.println("Cache Docs=0");
+        out.println("Enabled=0");
+        out.println("Size=0");
+        
         out.println("");
         out.println("[State]");
         out.println("Run=0");

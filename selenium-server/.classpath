@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar" kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-core"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-server-coreless"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

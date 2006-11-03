@@ -7,9 +7,9 @@
 		<artifactId>selenium</artifactId>
 	</parent>
     <groupId>org.openqa.selenium.server</groupId>
-    <artifactId>selenium-server</artifactId>
+    <artifactId>selenium-server-coreless</artifactId>
     <packaging>jar</packaging>
-    <name>Selenium Server</name>
+    <name>Selenium Server (Coreless)</name>
     <url>http://www.openqa.org/selenium</url>
     <repositories>
         <repository>
@@ -65,13 +65,6 @@
             <groupId>net.sf.cotta</groupId>
             <artifactId>cotta</artifactId>
             <version>1.0rc</version>
-            <scope>provided</scope>
-    	</dependency>
-        
-        <dependency>
-            <groupId>org.openqa.selenium.core</groupId>
-            <artifactId>selenium-core</artifactId>
-            <version>0.8.1-SNAPSHOT</version>
             <scope>provided</scope>
     	</dependency>
         <dependency>

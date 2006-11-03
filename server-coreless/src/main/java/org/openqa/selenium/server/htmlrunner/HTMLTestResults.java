@@ -35,6 +35,8 @@ public class HTMLTestResults {
     private final String numCommandPasses;
     private final String numCommandFailures;
     private final String numCommandErrors;
+    private final String seleniumVersion;
+    private final String seleniumRevision;
     private final HTMLSuiteResult suite;
 
     private static final String HEADER = "<html>\n" +
@@ -85,23 +87,26 @@ public class HTMLTestResults {
     "</style><title>Test suite results</title></head>\n" + 
     "<body>\n<h1>Test suite results </h1>";
     private static final String SUMMARY_HTML =  
-            "\n\n<table>\n<tr>\n<td>result:</td>\n<td>{0}</td>\n" +
-            "</tr>\n<tr>\n<td>totalTime:</td>\n<td>{1}</td>\n</tr>\n" +
+            "\n\n<table>\n" +
+            "<tr>\n<td>result:</td>\n<td>{0}</td>\n</tr>\n" +
+            "<tr>\n<td>totalTime:</td>\n<td>{1}</td>\n</tr>\n" +
             "<tr>\n<td>numTestPasses:</td>\n<td>{2}</td>\n</tr>\n" +
             "<tr>\n<td>numTestFailures:</td>\n<td>{3}</td>\n</tr>\n" +
             "<tr>\n<td>numCommandPasses:</td>\n<td>{4}</td>\n</tr>\n" +
             "<tr>\n<td>numCommandFailures:</td>\n<td>{5}</td>\n</tr>\n" +
             "<tr>\n<td>numCommandErrors:</td>\n<td>{6}</td>\n</tr>\n" +
-            "<tr>\n<td>{7}</td>\n<td>&nbsp;</td>\n</tr>\n</table>";
+            "<tr>\n<td>Selenium Version:</td>\n<td>{7}</td>\n</tr>\n" +
+            "<tr>\n<td>Selenium Revision:</td>\n<td>{8}</td>\n</tr>\n" +
+            "<tr>\n<td>{9}</td>\n<td>&nbsp;</td>\n</tr>\n</table>";
     
     private static final String SUITE_HTML = "<tr>\n<td><a name=\"testresult{0}\">{1}</a><br/>{2}</td>\n<td>&nbsp;</td>\n</tr>";
     
     private final List<String> testTables;
     
-    public HTMLTestResults(String postedResult, String postedTotalTime, 
+    public HTMLTestResults(String postedSeleniumVersion, String postedSeleniumRevision, 
+            String postedResult, String postedTotalTime, 
             String postedNumTestPasses, String postedNumTestFailures, 
-            String postedNumCommandPasses, String postedNumCommandFailures, 
-            String postedNumCommandErrors, String postedSuite, List<String> postedTestTables) {
+            String postedNumCommandPasses, String postedNumCommandFailures, String postedNumCommandErrors, String postedSuite, List<String> postedTestTables) {
 
         result = postedResult;
         numCommandFailures = postedNumCommandFailures;
@@ -112,6 +117,8 @@ public class HTMLTestResults {
         numTestFailures = postedNumTestFailures;
         numCommandPasses = postedNumCommandPasses;
         testTables = postedTestTables;
+        seleniumVersion = postedSeleniumVersion;
+        seleniumRevision = postedSeleniumRevision;
     }
 
 
@@ -153,9 +160,11 @@ public class HTMLTestResults {
                 numCommandPasses,
                 numCommandFailures,
                 numCommandErrors,
+                seleniumVersion,
+                seleniumRevision,
                 suite.getUpdatedSuite()));
         for (int i = 0; i < testTables.size(); i++) {
-            String table = testTables.get(i);
+            String table = testTables.get(i).replace("\u00a0", "&nbsp;");
             out.write(MessageFormat.format(SUITE_HTML, i, suite.getHref(i), table));
         }
         out.write("</table></body></html>");
@@ -166,7 +175,8 @@ public class HTMLTestResults {
 
         public String decode(String string) {
             try {
-                return URLDecoder.decode(string, System.getProperty("file.encoding"));
+                return URLDecoder.decode(string, System.getProperty("file.encoding"))
+                    ;
             } catch (UnsupportedEncodingException e) {
                 return string;
             }

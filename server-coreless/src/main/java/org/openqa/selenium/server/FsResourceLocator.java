@@ -1,14 +1,15 @@
 package org.openqa.selenium.server;
 
-import org.mortbay.http.HttpContext;
-import org.mortbay.util.Resource;
+import java.io.*;
+import java.net.*;
 
-import java.io.File;
-import java.io.IOException;
+import org.mortbay.http.*;
+import org.mortbay.util.*;
 
 public class FsResourceLocator implements ResourceLocator {
     private File rootDir;
     private static final String USER_EXTENSIONS_JS_NAME = "user-extensions.js";
+    private static final String TEST_DIR = "/tests";
 
     public FsResourceLocator(File directory) {
         this.rootDir = directory;
@@ -22,6 +23,12 @@ public class FsResourceLocator implements ResourceLocator {
             resource = userExtensionResource(context);
             if (resource.exists()) return resource;
         }
+        // And another hack to make the -htmlSuite appear in the /tests directory
+        if (!resource.exists() && pathInContext.startsWith(TEST_DIR)) {
+            File testFile = new File(rootDir, pathInContext.substring(TEST_DIR.length()));
+            resource = createFileResource(testFile, context);
+            if (resource.exists()) return resource;
+        }
         return resource;
     }
 
@@ -31,8 +38,12 @@ public class FsResourceLocator implements ResourceLocator {
     }
 
     private Resource createFileResource(File file, HttpContext context) throws IOException {
-        Resource resource = Resource.newResource(file.toURI().toURL());
-        context.getResourceMetaData(resource);
-        return resource;
-    }
-}
+        try {
+        	Resource resource = new FutureFileResource(file.toURI().toURL());
+        	context.getResourceMetaData(resource);
+            return resource;
+        } catch (URISyntaxException e) {
+        	throw new RuntimeException(e);
+        }
+        
+    }}

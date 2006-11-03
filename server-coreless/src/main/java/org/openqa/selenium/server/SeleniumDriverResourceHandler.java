@@ -544,6 +544,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         queueSets.remove(sessionId);
     }
 
+    public void registerSeleneseLauncher(String sessionId, BrowserLauncher launcher) {
+    	launchers.put(sessionId, launcher);
+    }
+    
     /** Kills all running browsers */
     public void stopAllBrowsers() {
         for (Iterator i = launchers.values().iterator(); i.hasNext();) {

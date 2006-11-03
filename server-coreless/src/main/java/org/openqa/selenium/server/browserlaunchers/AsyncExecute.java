@@ -118,7 +118,7 @@ public class AsyncExecute extends Execute {
     
     /** Forcibly kills a process, using OS tools like "kill" as a last resort */
     public static int killProcess(Process process) {
-        process.destroy();
+    	process.destroy();
         int exitValue;
         try {
             exitValue = AsyncExecute.waitForProcessDeath(process, 10000);

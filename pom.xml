@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="US-ASCII"?>
 <project>
 
   <modelVersion>4.0.0</modelVersion>
@@ -7,9 +8,11 @@
   <name>Selenium</name>
   <packaging>pom</packaging>
   <modules>
-<module>server</module> 
-<module>xlator</module> 
+    <module>server-coreless</module> 
+    <module>selenium-server</module>
+    <module>xlator</module> 
     <module>clients/java</module>
+    
   </modules>
   <repositories>
     <repository>
@@ -79,6 +82,7 @@
               <id>attach-source</id>
               <goals>
                 <goal>jar</goal>
+                <goal>test-jar</goal>
               </goals>
             </execution>
           </executions>

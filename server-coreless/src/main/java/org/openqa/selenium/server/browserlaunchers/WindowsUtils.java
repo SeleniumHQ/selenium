@@ -257,7 +257,7 @@ public class WindowsUtils {
         loadEnvironment();
         for (Iterator i = env.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
-            if (key.equalsIgnoreCase(var)) return key;
+            if (key.equalsIgnoreCase(var)) return env.getProperty(key);
         }
         return null;
     }
