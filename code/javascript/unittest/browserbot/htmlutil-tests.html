@@ -24,7 +24,6 @@ Copyright 2004 ThoughtWorks, Inc
     <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
     <script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
 
-    <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
     <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
     <script language="JavaScript" type="text/javascript">
 
@@ -39,10 +38,10 @@ Copyright 2004 ThoughtWorks, Inc
             var previousColor = "#000000";
             var highlightColor = "yellow";
             var colorsChanged = [];
-            Element.getStyle = function(element, styleAttribut) {
+            elementGetStyle = function(element, styleAttribut) {
                 return previousColor;
             }
-            Element.setStyle = function(element, style) {
+            elementSetStyle = function(element, style) {
                 colorsChanged.push(style["background-color"]);
             };
 
