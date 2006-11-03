@@ -61,8 +61,7 @@
         <macrodef name="mvn-modules">
             <attribute name="goal" />
             <sequential>
-                <mvn><arg value="install"/></mvn>
-                <mvn><arg value="@{goal}"/></mvn>
+                <mvn><arg value="-N"/><arg value="install"/></mvn>
                 <mvn dir="server-coreless"><arg value="@{goal}"/></mvn>
                 <mvn dir="selenium-server"><arg value="@{goal}"/></mvn>
                 <mvn dir="xlator"><arg value="@{goal}"/></mvn>
