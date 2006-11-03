@@ -32,6 +32,7 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript">
 function setUp() {
     mockWindow = new String('mockWindow');
+    mockWindow.closed = false;
     browserBot = new MozillaBrowserBot(mockWindow);
 
     browserBot.currentWindowName = 'originalWindowName';
@@ -67,9 +68,13 @@ function testExceptionWhenSelectWindowIsCalledWithUnknownWindowName() {
 
 function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocationWhenThereIsNoCurrentWindow() {
     browserBot.currentWindowName = null;
-    mockWindow.location = {
+    var mockLocation = {
         href:""
     };
+    mockWindow.location = mockLocation;
+    var mockDocument = new Object();
+    mockWindow.document = mockDocument;
+    mockWindow.document.location = mockLocation;
     browserBot.openLocation('myNewLocation');
 
     assertNull(browserBot.currentPage);
@@ -84,7 +89,9 @@ function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIs
     mockLocation.expectsProperty('pathname').returns('thelocation');
 
     mockWindow.location = mockLocation;
-    mockWindow.document = 'thedocument';
+    var mockDocument = new Object();
+    mockWindow.document = mockDocument;
+    mockWindow.document.location = mockLocation;
     mockWindow.addEventListener = function(){};
     mockWindow.attachEvent = function(){};
 
@@ -92,7 +99,7 @@ function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIs
     assertEquals(pageBot, browserBot.currentPage);
 
     assertEquals(mockWindow, pageBot.getCurrentWindow());
-    assertEquals('thedocument', pageBot.getDocument());
+    assertEquals(mockDocument, pageBot.getDocument());
 
     mockLocation.verify();
 }
@@ -104,6 +111,9 @@ function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSe
     mockLocation.expectsProperty('pathname').returns('thelocation');
 
     mockWindow.location = mockLocation;
+    var mockDocument = new Object();
+    mockWindow.document = mockDocument;
+    mockWindow.document.location = mockLocation;
     mockWindow.addEventListener = function(){};
     mockWindow.attachEvent = function(){};
 
