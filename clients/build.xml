@@ -162,6 +162,10 @@
 		<find-maven-jar groupId="org.openqa.selenium.server" artifactId="selenium-server" />
 	</target>
 	
+	<target name="find-server-coreless" depends="maven-tasks" unless="${selenium-server-coreless.jar}">
+		<find-maven-jar groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" />
+	</target>
+	
 	<target name="find-java-client" depends="maven-tasks">
 		<find-maven-jar groupId="org.openqa.selenium.client-drivers" artifactId="selenium-java-client-driver" />
 	</target>
@@ -235,17 +239,17 @@
 		</copy>
 	</target>
 	
-	<target name="dist-java" depends="dist-dirs, find-server, find-java-client">
+	<target name="dist-java" depends="dist-dirs, find-server, find-server-coreless, find-java-client">
 		<mkdir dir="dist-image/server" />
 		<mkdir dir="dist-image/server/source" />
 		<mkdir dir="dist-image/server/doc" />
 		<copy file="${selenium-server.jar}" tofile="dist-image/server/selenium-server.jar" />
-		<copy file="${selenium-server.jar}/../selenium-server-${version}-tests.jar"
+		<copy file="${selenium-server-coreless.jar}/../selenium-server-coreless-${version}-tests.jar"
 			tofile="dist-image/server/selenium-server-tests.jar" />
 		<copy todir="dist-image/server/source/src">
-		    <fileset dir="../server/src" />
+		    <fileset dir="../server-coreless/src" />
 		</copy>
-		<unzip src="${selenium-server.jar}/../selenium-server-${version}-javadoc.jar" dest="dist-image/server/doc" />
+		<unzip src="${selenium-server-coreless.jar}/../selenium-server-coreless-${version}-javadoc.jar" dest="dist-image/server/doc" />
 		
 		<mkdir dir="dist-image/java" />
 		<mkdir dir="dist-image/java/source" />
