@@ -28,15 +28,15 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
  */
 public class SeleneseTestCase extends TestCase {
 
-    protected Selenium selenium;
-    protected static StringBuffer verificationErrors = new StringBuffer(); 
+    public Selenium selenium;
+    public static StringBuffer verificationErrors = new StringBuffer(); 
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         this.setUp(null);
     }
 
-    protected void setUp(String url) throws Exception {
+    public void setUp(String url) throws Exception {
       if(WindowsUtils.thisIsWindows()){
 	     setUp(url, "*iexplore");
       }else{
@@ -44,7 +44,7 @@ public class SeleneseTestCase extends TestCase {
       } 
     }
     
-    protected void setUp(String url, String browserMode) throws Exception {
+    public void setUp(String url, String browserMode) throws Exception {
         super.setUp();
         int port = SeleniumServer.getDefaultPort();
         if (url==null) {
@@ -70,7 +70,7 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
-    protected String getText() {
+    public String getText() {
         return selenium.getEval("this.page().bodyText()");
     }
 
@@ -213,14 +213,14 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
-    protected void pause(int millisecs) {
+    public void pause(int millisecs) {
         try {
             Thread.sleep(millisecs);
         } catch (InterruptedException e) {
         }
     }
     
-    protected String quote(String value) {
+    public String quote(String value) {
         return "'" + value.replaceAll("'", "\\'") + "'";
     }
     
@@ -233,7 +233,7 @@ public class SeleneseTestCase extends TestCase {
         verificationErrors = new StringBuffer();
     }
     
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         selenium.stop();
     }
 }

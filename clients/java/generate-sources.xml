@@ -1,14 +1,10 @@
 <project name="java-client-driver-generate-sources" default="generate-sources">
+
+    <property name="maven.src.path" location="${project.build.directory}/generated-sources/main/java/com/thoughtworks/selenium" />
 	
-	<property name="dir.java.tests.based.on.core.javascript" location="${maven.src.path}/../../../../../test/java/com/thoughtworks/selenium/corebased" />
-	<property name="dir.java.tests.based.on.core.javascript.later.modified.by.hand" location="${dir.java.tests.based.on.core.javascript}/../corebasedhandmodified" />
+	<property name="dir.java.tests.based.on.core.javascript" location="${project.build.directory}/generated-sources/test/java/com/thoughtworks/selenium/corebased" />
+	<property name="dir.java.tests.based.on.core.javascript.later.modified.by.hand" location="src/test/java/com/thoughtworks/selenium/corebasedhandmodified" />
 	
-	
-	<target name="clean-sources">
-		<delete file="${maven.src.path}/Selenium.java" />
-		<delete file="${maven.src.path}/DefaultSelenium.java" />
-        <delete dir="${dir.java.tests.based.on.core.javascript}" />
-	</target>
 	
 	<target name="generate-sources" depends="generate-client, generate-tests" />
 	
@@ -41,7 +37,7 @@
             <arg value="-skip"/>
             <arg value="TestOpen_SSV_syntax.html"/>
             
-            <classpath refid="depend.classpath"/>
+            <classpath refid="maven.test.classpath"/>
         </java>
         
         <copy overwrite="true" todir="${dir.java.tests.based.on.core.javascript}">
@@ -78,36 +74,15 @@
 	</target>
 	
 	<target name="extract-jar" depends="maybe-skip-generation" unless="skip.generation.true">
-		<fail unless="output.path" message="output.path was not set.  This ant script must be run from within Maven!" />
+		<fail unless="project.build.directory" message="project.build.directory was not set.  This ant script must be run from within Maven!" />
 		<fail unless="maven.src.path" message="maven.src.path was not set.  This ant script must be run from within Maven!" />
-		<fail message="maven.src.path could not be found: ${maven.src.path}">
-			<condition>
-				<not><available file="${maven.src.path}" /></not>
-			</condition>
-		</fail>
-		<mkdir dir="${output.path}" />
-		<echo message="${depend.maven.path}" />
-		<echo message="${depend.maven.path}" file="${output.path}/path.txt" />
-		<loadfile property="depend.classpath.str" srcfile="${output.path}/path.txt">
-			<filterchain>
-				<tokenfilter>
-					<replaceregex pattern="^.*\[(.*)\]" replace="\1" />
-				</tokenfilter>
-				<tokenfilter>
-					<replaceregex pattern=", " replace=";" flags="g" />
-				</tokenfilter>
-			</filterchain>
-		</loadfile>
-		<echo message="depend.classpath.str = ${depend.classpath.str}" />
-		<path id="depend.classpath">
-			<pathelement path="${depend.classpath.str}" />
-		</path>
-		<pathconvert property="depend.classpath.output" refid="depend.classpath" />
+		<mkdir dir="${project.build.directory}" />
+		<pathconvert property="depend.classpath.output" refid="maven.test.classpath" />
 		<echo message="depend.classpath.output = ${depend.classpath.output}" />
 		<whichresource resource="/core/iedoc.xml" property="iedoc.url" classpath="${depend.classpath.output}"/>
 		<fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${depend.classpath.output}" />
-		<echo message="${iedoc.url}" file="${output.path}/url.txt" />
-		<loadfile property="selenium-server.jar.file" srcfile="${output.path}/url.txt">
+		<echo message="${iedoc.url}" file="${project.build.directory}/url.txt" />
+		<loadfile property="selenium-server.jar.file" srcfile="${project.build.directory}/url.txt">
 			<filterchain>
 				<tokenfilter>
 					<replaceregex pattern="^jar:file:(.*)!.*" replace="\1" />
@@ -119,7 +94,7 @@
 		</loadfile>
 		<property name="selenium-server.jar" location="${selenium-server.jar.file}" />
 		<echo message="selenium-server.jar = ${selenium-server.jar}" />
-		<property name="core.javascript.path" location="${output.path}/selenium-server" />
+		<property name="core.javascript.path" location="${project.build.directory}/selenium-server" />
 		<mkdir dir="${core.javascript.path}" />
 		<unzip src="${selenium-server.jar}" dest="${core.javascript.path}" />
 		<property name="iedoc.xml" location="${core.javascript.path}/core/iedoc.xml" />

@@ -33,27 +33,13 @@
 						<phase>generate-sources</phase>
 						<configuration>
 							<tasks>
-								<ant antfile="generate-sources.xml">
-									<property name="depend.maven.path" location="${project.testClasspathElements}" />
-									<property name="output.path" location="${project.build.directory}" />
-									<property name="maven.src.path" location="src/main/java/com/thoughtworks/selenium" />
+								<ant antfile="generate-sources.xml" inheritRefs="true">
+									<property name="project.build.directory" location="${project.build.directory}" />
 									<property name="skip.generation" value="${skip.generation}" />
 								</ant>
 							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>clean-sources</id>
-						<phase>clean</phase>
-						<configuration>
-							<tasks>
-								<ant antfile="generate-sources.xml" target="clean-sources">
-									<property name="maven.src.path" location="src/main/java/com/thoughtworks/selenium" />
-								</ant>
-							</tasks>
+							<sourceRoot>${project.build.directory}/generated-sources/main/java</sourceRoot>
+                            <testSourceRoot>${project.build.directory}/generated-sources/test/java</testSourceRoot>
 						</configuration>
 						<goals>
 							<goal>run</goal>
