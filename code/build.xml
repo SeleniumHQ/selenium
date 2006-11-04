@@ -15,6 +15,18 @@
     <property name="image.dir" location="${build.dir}/image"/>
     <property name="resultshandler.image.dir" location="${build.dir}/resultshandler"/>
     <property name="docs.generation.dir" location="javascript/doctool"/>
+    
+    <condition property="thisIsWindows">
+        <os family="windows"/>
+    </condition>
+    
+    <condition property="thisIsUnix">
+        <os family="unix"/>
+    </condition>
+    
+    <condition property="thisIsMac">
+        <os family="mac"/>
+    </condition>
 
     <!-- override to suit your environment -->
 
@@ -139,12 +151,16 @@
     
     <target name="test-allbrowsers" depends="firefoxTests, iexploreTests, operaTests, chromeTests" />
     
-    <target name="iexploreTests" depends="selenese-task, checkWindows" if="thisIsWindows">
+    <target name="iexploreTests" depends="selenese-task" if="thisIsWindows">
         <preset-selenese taskname="iexplore" browser="*iexplore" />
     </target>
     
-    <target name="konqTests" depends="selenese-task, checkUnix" if="thisIsUnix">
+    <target name="konqTests" depends="selenese-task" if="thisIsUnix">
         <preset-selenese taskname="konqueror" browser="*konqueror" />
+    </target>
+    
+    <target name="safariTests" depends="selenese-task" if="thisIsMac">
+        <preset-selenese taskname="safari" browser="*safari" />
     </target>
     
     <target name="firefoxTests" depends="selenese-task, image">
@@ -160,7 +176,7 @@
         <preset-selenese taskname="opera" browser="${opera.browser}" />
     </target>
 
-    <target name="htaTests" depends="image, checkWindows" if="thisIsWindows">
+    <target name="htaTests" depends="image" if="thisIsWindows">
         <echo message="Starting HTA tests..."/>
         <property name="results.file" location="${build.dir}/results.html"/>
         <delete file="${results.file}"/>
@@ -191,9 +207,7 @@
     </target>
 
     <target name="checkWindows">
-        <condition property="thisIsWindows">
-            <os family="windows"/>
-        </condition>
+        
     </target>
     
     <target name="checkUnix">
