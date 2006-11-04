@@ -17,8 +17,7 @@
 	</target>
 
 	<target name="build" description="runs ant script">
-		<ant antfile="build.xml" 
-		     dir="." 
+		<ant dir="code" 
 		     target="all-with-tests" />
 	</target>
 
