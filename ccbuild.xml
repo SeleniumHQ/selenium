@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="selenium_core" default="all" basedir=".">
-	<macrodef name="svn-update">
-		<attribute name="workdir"/>
-		<sequential>
-			<exec dir="@{workdir}" executable="svn" failonerror="true">
-				<arg line="update --non-interactive"/>
-			</exec>
-		</sequential>
-	</macrodef>
+<project name="selenium-core-cruise" default="cruise" basedir=".">
+	
+	<property name="svn.executable" value="svn"/>
 
-	<target name="all">
+	<macrodef name="svn-update">
+                <attribute name="workdir"/>
+                <sequential>
+                        <exec dir="@{workdir}" executable="${svn.executable}" failonerror="true">
+                                <arg line="update --non-interactive"/>
+                        </exec>
+                </sequential>
+        </macrodef>
+
+	<target name="update" description="syncs source code">
 		<svn-update workdir="."/>
-		<exec command="rake.bat" dir="code"  outputproperty="rake.build.output"/>
-		<fail message="Selenium Core Build Failed\n Detail: ${rake.build.output}">
-			<condition>
-				<contains string="${rake.build.output}" substring="rake aborted"
-					casesensitive="false"/>
-			</condition>
-		</fail>
-		<echo message="Selenium Core Build Completed Successfully"/> 
 	</target>
+
+	<target name="build" description="runs ant script">
+		<ant antfile="build.xml" 
+		     dir="." 
+		     target="all-with-tests" />
+	</target>
+
+	<target name="openqa-upload" description="uploads artifacts to official repository">
+		<ant antfile="build.xml" 
+		     dir="." 
+		     target="openqa-upload" />
+	</target>
+
+	<target name="cruise" depends="update, build" description="update, build"/>
+
+	<target name="cruise-release" 
+		description="cruise, openqa-upload"
+		depends="cruise, openqa-upload"/>
 
 </project>
 
