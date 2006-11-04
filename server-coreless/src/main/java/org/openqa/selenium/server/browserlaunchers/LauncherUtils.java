@@ -1,19 +1,13 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import net.sf.cotta.TDirectory;
-import net.sf.cotta.TFile;
-import net.sf.cotta.TIoException;
-import net.sf.cotta.utils.ClassPathLocator;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Delete;
-import org.openqa.selenium.server.SeleniumServer;
-
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.net.*;
+import java.util.regex.*;
+
+import org.apache.tools.ant.*;
+import org.apache.tools.ant.taskdefs.*;
+import org.apache.tools.ant.types.*;
+import org.openqa.selenium.server.*;
 
 /**
  * Various static utility functions used to launch browsers
@@ -179,22 +173,17 @@ public class LauncherUtils {
 		}
 	}
 
-	protected static void copyDirectory(TDirectory sourceLocation, TDirectory targetLocation) throws IOException {
-		targetLocation.ensureExists();
-
-		TDirectory[] subSourceDirs = sourceLocation.listDirs();
-		for (int i = 0; i < subSourceDirs.length; i++) {
-			TDirectory subSourceLocation = subSourceDirs[i];
-			copyDirectory(subSourceLocation, targetLocation.dir(subSourceLocation.name()));
-		}
-
-		TFile[] files = sourceLocation.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			TFile file = files[i];
-			file.copyTo(targetLocation.file(file.name()));
-		}
-	}
-
+    protected static void copyDirectory(File source, File dest) {
+        Project p = new Project();
+        Copy c = new Copy();
+        c.setProject(p);
+        c.setTodir(dest);
+        FileSet fs = new FileSet();
+        fs.setDir(source);
+        c.addFileset(fs);
+        c.execute();
+    }
+    
 	protected static void generatePacAndPrefJs(File customProfileDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
 		generatePacAndPrefJs(customProfileDir, port, proxySeleniumTrafficOnly, null);
 	}
@@ -281,16 +270,6 @@ public class LauncherUtils {
 			url += m.group(1);
 		}
 		return url;
-	}
-
-	static public void main(String[] args) throws TIoException {
-		TDirectory dir = new ClassPathLocator(LauncherUtils.class).locate().asDirectory();
-
-		TFile[] files = dir.dir("customProfileDirCUSTFFCHROME").listFiles();
-		for (int i = 0; i < files.length; i++) {
-			TFile file = files[i];
-			System.out.println("file = " + file);
-		}
 	}
 
 }

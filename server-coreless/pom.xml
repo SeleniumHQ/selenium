@@ -46,11 +46,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>net.sf.cotta</groupId>
-            <artifactId>cotta</artifactId>
-            <version>1.0rc</version>
-    	</dependency>
-        <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.6.5</version>

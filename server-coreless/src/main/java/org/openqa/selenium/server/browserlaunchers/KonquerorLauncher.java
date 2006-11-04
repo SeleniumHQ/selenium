@@ -1,16 +1,9 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-
-import net.sf.cotta.TDirectory;
-import net.sf.cotta.TFileFactory;
-import net.sf.cotta.utils.ClassPathLocator;
+import java.io.*;
 
 public class KonquerorLauncher extends AbstractBrowserLauncher {
-	private static final String KONQUEROR_PROFILE_SRC_LOCATION = "konqueror";
+	private static final String KONQUEROR_PROFILE_SRC_LOCATION = "/konqueror";
 
 	private static final String KONQUEROR_PROFILE_DEST_LOCATION = System.getProperty("user.home") + "/.kde/share/config";
 
@@ -42,9 +35,10 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 		exec(browserLaunchLocation + " " + url);
 	}
 
-	private TDirectory makeCustomProfile() throws IOException {
-		TDirectory profileSrc = new ClassPathLocator(getClass()).locate().asDirectory().dir(KONQUEROR_PROFILE_SRC_LOCATION);
-		TDirectory profileDest = new TFileFactory().dir(KONQUEROR_PROFILE_DEST_LOCATION);
+	private void makeCustomProfile() throws IOException {
+        File profileDest = new File(KONQUEROR_PROFILE_DEST_LOCATION);
+        ResourceExtractor.extractResourcePath(getClass(), KONQUEROR_PROFILE_SRC_LOCATION, profileDest);
+		
 
 		File pacFile = LauncherUtils.makeProxyPAC(new File(KONQUEROR_PROFILE_DEST_LOCATION), port);
 
@@ -58,8 +52,6 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 		out.println("ReversedException=false");
 		out.close();
 
-		LauncherUtils.copyDirectory(profileSrc, profileDest);
-		return profileDest;
 	}
 
 	public void close() {
@@ -73,15 +65,6 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 		} catch (IOException e) {
 			throw new RuntimeException("Error starting browser by executing command " + command + ": " + e);
 		}
-	}
-
-	public static void main(String... strings) throws Exception {
-		TDirectory dir = new TFileFactory().dir(KONQUEROR_PROFILE_DEST_LOCATION);
-		System.out.println(dir.path());
-		KonquerorLauncher launcher = new KonquerorLauncher(4444, "jsdklfjslkf");
-		launcher.launch("http://www.google.com/selenium-server/core/TestRunner.html?multiWindow=true&test=../tests/TestSuite.html");
-		Thread.sleep(15000);
-		// launcher.close();
 	}
 
 }

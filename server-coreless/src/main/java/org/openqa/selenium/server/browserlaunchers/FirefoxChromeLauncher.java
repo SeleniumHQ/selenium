@@ -16,15 +16,10 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import net.sf.cotta.TDirectory;
-import net.sf.cotta.TFileFactory;
-import net.sf.cotta.utils.ClassPathLocator;
-import org.apache.tools.ant.taskdefs.condition.Os;
+import java.io.*;
+import java.net.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.apache.tools.ant.taskdefs.condition.*;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
@@ -147,9 +142,8 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
         if (simple) return customProfileDir.getAbsolutePath();
 
-        String sourceLocationName = "customProfileDirCUSTFFCHROME";
-        TDirectory dir = new ClassPathLocator(getClass()).locate().asDirectory();
-        LauncherUtils.copyDirectory(dir.dir(sourceLocationName), new TFileFactory().dir(customProfileDir.getAbsolutePath()));
+        String sourceLocationName = "/customProfileDirCUSTFFCHROME";
+        ResourceExtractor.extractResourcePath(getClass(), sourceLocationName, customProfileDir);
 
         copyRunnerHtmlFiles();
 

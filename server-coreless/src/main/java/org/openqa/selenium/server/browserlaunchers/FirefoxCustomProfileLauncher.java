@@ -16,13 +16,9 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import net.sf.cotta.TDirectory;
-import net.sf.cotta.TFileFactory;
-import net.sf.cotta.utils.ClassPathLocator;
-import org.apache.tools.ant.taskdefs.condition.Os;
+import java.io.*;
 
-import java.io.File;
-import java.io.IOException;
+import org.apache.tools.ant.taskdefs.condition.*;
 
 public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
@@ -153,8 +149,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             return;
         }
 
-        TDirectory dir = new ClassPathLocator(getClass()).locate().asDirectory();
-        LauncherUtils.copyDirectory(dir.dir("customProfileDirCUSTFF"), new TFileFactory().dir(customProfileDirectory.getAbsolutePath()));
+        ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFF", customProfileDir);
 
         LauncherUtils.generatePacAndPrefJs(customProfileDirectory, port, proxySeleniumTrafficOnly);
     }
