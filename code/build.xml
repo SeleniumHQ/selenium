@@ -38,7 +38,7 @@
               value="file://${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=true"/>
     <property name="port" value=""/>
     <property name="resourceBase" value=""/>
-    <property name="logsDirectory" value=""/>
+    <property name="logsDirectory" value="${logs.dir}"/>
 
     <target name="clean">
         <delete dir="${build.dir}"/>
