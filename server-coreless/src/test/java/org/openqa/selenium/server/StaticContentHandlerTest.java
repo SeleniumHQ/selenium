@@ -30,14 +30,16 @@ public class StaticContentHandlerTest extends TestCase {
         long start = new Date().getTime();
         slowHandler.getResource("not_exists");
         long end = new Date().getTime();
-        assertTrue(end - start >= StaticContentHandler.SERVER_DELAY);
+        assertTrue(end - start >= 0.9 * StaticContentHandler.SERVER_DELAY);
     }
 
     public void testShouldDoubleDelayWithAPageMarkedAsSlow() throws Exception {
         long start = new Date().getTime();
         slowHandler.getResource("something-really-slow.html");
         long end = new Date().getTime();
-        assertTrue(end - start >= 2 * StaticContentHandler.SERVER_DELAY);
+        long diff = end - start;
+        System.out.println("diff = " + diff);
+        assertTrue(end - start >= 1.9 * StaticContentHandler.SERVER_DELAY);
     }
 
     public void testShouldReturnTheFirstResourceLocatedByLocators() throws Exception {
