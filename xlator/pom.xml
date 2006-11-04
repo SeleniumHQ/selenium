@@ -2,7 +2,7 @@
   <parent>
     <artifactId>selenium</artifactId>
     <groupId>org.openqa.selenium</groupId>
-    <version>0.8.2-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openqa.selenium</groupId>
