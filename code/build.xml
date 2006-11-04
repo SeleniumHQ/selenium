@@ -34,7 +34,8 @@
     </condition>
     <property name="testRunnerLocation" location="javascript/jsunit/testRunner.html"/>
     <property name="testSuiteLocation" location="javascript/unittest/browserbot/suite.html"/>
-    <property name="port" value="8080"/>
+    <!-- DGF CherryPy binds port 8080 on buildix; and it's a very common port in general! -->
+    <property name="port" value="8281"/>
     <property name="browserBotTestUrl"
               value="file://${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=localhost:${port}/jsunit/acceptor"/>
     <property name="resourceBase" value=""/>
