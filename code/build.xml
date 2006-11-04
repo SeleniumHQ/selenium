@@ -3,7 +3,7 @@
     <property name="version" value="0.8.1-SNAPSHOT"/>
 
     <target name="all" depends="clean, install-jar, nightly-image"/>
-    <target name="all-with-tests" depends="clean, browser_bot_tests, install-jar, nightly-image"/>
+    <target name="all-with-tests" depends="clean, browser_bot_tests, test-allmodes, install-jar, nightly-image"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
@@ -26,7 +26,7 @@
     <property name="release.key.passphrase" value=""/>
 
     <!-- for jsunit integration -->
-    <condition property="browserFileNames" value="c:\program files\Internet Explorer\iexplore.exe">
+    <condition property="browserFileNames" value="c:\program files\Mozilla Firefox\firefox.exe">
         <os family="windows"/>
     </condition>
     <condition property="browserFileNames" value="/usr/bin/firefox">
@@ -39,11 +39,6 @@
     <property name="port" value=""/>
     <property name="resourceBase" value=""/>
     <property name="logsDirectory" value=""/>
-    <path id="classpath">
-        <fileset dir="java/lib">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
 
     <target name="clean">
         <delete dir="${build.dir}"/>
@@ -66,6 +61,7 @@
                 <exclude name="doctool/**"/>
                 <exclude name="core/scripts/selenium-version.js"/>
                 <exclude name="VERSION.txt"/>                
+                <exclude name="tests/**"/>
             </fileset>
         </copy>
         <copy todir="${image.dir}">
@@ -97,13 +93,72 @@
 
     <target name="image" depends="get-svn-revision, copy-sources, generate-doc"/>
 
-    <target name="checkWindows">
-        <condition property="thisIsWindows">
-            <os family="windows"/>
-        </condition>
+    <target name="browser_bot_tests"
+            description="Runs JsUnit tests on the local machine as configured by the url and browserfilenames properties">
+        <junit showoutput="true" errorproperty="tests.failed" failureproperty="tests.failed">
+            <classpath>
+                <fileset dir="java/lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+            <sysproperty key="browserFileNames" value="${browserFileNames}"/>
+            <sysproperty key="url" value="${browserBotTestUrl}"/>
+            <sysproperty key="port" value="${port}"/>
+            <sysproperty key="resourceBase" value="${resourceBase}"/>
+            <sysproperty key="logsDirectory" value="${logsDirectory}"/>
+            <test name="net.jsunit.StandaloneTest"/>
+        </junit>
+        <junitreport todir="${logs.dir}">
+            <fileset dir="${logs.dir}"/>
+            <report format="frames" todir="${logs.dir}" />
+        </junitreport>
+        <fail if="tests.failed" message="JSUnit tests failed, see output for details: ${logs.dir}" />
     </target>
 
-    <target name="test" depends="image, checkWindows" if="thisIsWindows">
+    <target name="test-allmodes">
+        <property name="allmodes.target" value="test-allbrowsers" />
+        
+        <antcall target="${allmodes.target}">
+            <param name="slowResources" value="false" />
+            <param name="multiWindow" value="true" />
+        </antcall>
+        <antcall target="${allmodes.target}">
+            <param name="slowResources" value="false" />
+            <param name="multiWindow" value="false" />
+        </antcall>
+        <antcall target="${allmodes.target}">
+            <param name="slowResources" value="true" />
+            <param name="multiWindow" value="true" />
+        </antcall>
+        <antcall target="${allmodes.target}">
+            <param name="slowResources" value="true" />
+            <param name="multiWindow" value="false" />
+        </antcall>
+    </target>
+    
+    <target name="test-allbrowsers" depends="firefoxTests, iexploreTests, operaTests, chromeTests" />
+    
+    <target name="iexploreTests" depends="selenese-task, checkWindows" if="thisIsWindows">
+        <preset-selenese taskname="iexplore" browser="*iexplore" />
+    </target>
+    
+    <target name="konqTests" depends="selenese-task, checkUnix" if="thisIsUnix">
+        <preset-selenese taskname="konqueror" browser="*konqueror" />
+    </target>
+    
+    <target name="firefoxTests" depends="selenese-task, image">
+        <preset-selenese taskname="firefox" browser="*firefox" />
+    </target>
+    
+    <target name="chromeTests" depends="selenese-task, image" unless="skipChrome">
+        <preset-selenese taskname="chrome" browser="*chrome" />
+    </target>
+    
+    <target name="operaTests" depends="selenese-task, image">
+        <preset-selenese taskname="opera" browser="*opera" />
+    </target>
+
+    <target name="htaTests" depends="image, checkWindows" if="thisIsWindows">
         <echo message="Starting HTA tests..."/>
         <property name="results.file" location="${build.dir}/results.html"/>
         <delete file="${results.file}"/>
@@ -131,6 +186,44 @@
         </loadfile>
         <fail unless="tests.passed" message="HTA Tests did not pass, see results file for details: ${results.file}"/>
         <echo message="HTA tests passed!"/>
+    </target>
+
+    <target name="checkWindows">
+        <condition property="thisIsWindows">
+            <os family="windows"/>
+        </condition>
+    </target>
+    
+    <target name="checkUnix">
+        <condition property="thisIsUnix">
+            <os family="unix"/>
+        </condition>
+    </target>
+
+    <target name="selenese-task" depends="image, maven-tasks">
+        <mavendeps pathId="selenium-server-coreless.classpath">
+			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" version="0.8.2" scope="runtime"/>
+		</mavendeps>
+        <property name="slowResources" value="false" />
+        <property name="multiWindow" value="true" />
+        <path id="selenium-ant">
+            <path refid="selenium-server-coreless.classpath" />
+            <pathelement location="${image.dir}" />
+        </path>
+        <taskdef resource="selenium-ant.properties">
+            <classpath refid="selenium-ant"/>
+        </taskdef>
+        <property name="suite" value="TestSuite" />
+        <property name="suite.path" location="javascript/tests/${suite}.html" />
+        <presetdef name="preset-selenese">
+            <!-- javaScriptCoreDir="${image.dir}" -->
+            <selenese 
+                suite="${suite.path}"
+                
+                slowResources="${slowResources}"
+                multiWindow="${multiWindow}"
+                startURL="http://localhost:4444" />
+        </presetdef>
     </target>
 
     <target name="resultshandler-image" depends="get-svn-revision, copy-sources"
@@ -192,8 +285,34 @@
                     url="scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs"/>
     </target>
 
-    <target name="maven-tasks">
-        <!-- Defining Maven tasks; we're doing this because of various bugs in the Ant tasks,
+    <target name="maven-tasks-base">
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
+			<classpath>
+				<pathelement location="maven-artifact-ant-2.0.2-dep.jar" />
+			</classpath>
+		</typedef>
+		<maven:remoteRepository id="openqa" url="http://maven.openqa.org" />
+	</target>
+	
+	<target name="custom-repo" depends="maven-tasks-base" if="custom.maven.repo">
+		<presetdef name="mavendeps">
+			<maven:dependencies>
+				<localRepository location="${custom.maven.repo}" />
+				<remoteRepository refid="openqa" />
+			</maven:dependencies>
+		</presetdef>
+	</target>
+	
+	<target name="default-repo" depends="maven-tasks-base" unless="custom.maven.repo">
+		<presetdef name="mavendeps">
+			<maven:dependencies>
+			    <remoteRepository refid="openqa" />
+			</maven:dependencies>
+		</presetdef>
+	</target>
+
+	<target name="maven-tasks" depends="custom-repo,default-repo">
+        <!-- Defining Maven tasks; we're have do this goofy stuff because of various bugs in the Maven Ant tasks,
              most especially including MNG-2060 and MNG-2264 -->
         <property environment="env"/>
         <property name="maven.home" value="${env.MAVEN_HOME}"/>
@@ -271,19 +390,6 @@
                 </mvn>
             </sequential>
         </macrodef>
-    </target>
-
-    <target name="browser_bot_tests"
-            description="Runs JsUnit tests on the local machine as configured by the url and browserfilenames properties">
-        <junit showoutput="true" haltonerror="true" haltonfailure="true">
-            <classpath refid="classpath"/>
-            <sysproperty key="browserFileNames" value="${browserFileNames}"/>
-            <sysproperty key="url" value="${browserBotTestUrl}"/>
-            <sysproperty key="port" value="${port}"/>
-            <sysproperty key="resourceBase" value="${resourceBase}"/>
-            <sysproperty key="logsDirectory" value="${logsDirectory}"/>
-            <test name="net.jsunit.StandaloneTest"/>
-        </junit>
     </target>
 
     <target name="nightly-image" depends="image">
