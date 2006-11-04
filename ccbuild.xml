@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="selenium" default="cruise" basedir=".">
+<project name="selenium-remote-control-cruise" default="cruise" basedir=".">
 	
-	<property name="score.dir" value="../score"/>
 	<property name="svn.executable" value="svn"/>
 
 	<macrodef name="svn-update">
@@ -13,45 +12,26 @@
                 </sequential>
         </macrodef>
 
-	<target name="update">
-		<svn-update workdir="${score.dir}"/>
+	<target name="update" description="syncs source code">
 		<svn-update workdir="."/>
 	</target>
 
-	<target name="score-build">
-		<ant antfile="build.xml" 
-			dir="${score.dir}/code" 
-			target="all" />
-	</target>
-
-	<target name="src-build">
+	<target name="build" description="runs ant script">
 		<ant antfile="build.xml" 
 		     dir="." 
 		     target="all" />
 	</target>
 
-	<target name="score-upload">
-		<ant antfile="build.xml" 
-		     dir="${score.dir}/code" 
-		     target="openqa-upload" />
-	</target>
-
-	<target name="src-upload">
+	<target name="openqa-upload" description="uploads artifacts to official repository">
 		<ant antfile="build.xml" 
 		     dir="." 
 		     target="openqa-upload" />
 	</target>
 
-	<target name="build" depends="score-build, src-build" />
-
-	<target name="cruise" depends="update, build" />
-
-	<target name="openqa-upload"
-		description="upload artifacts to OpenQA"
-		depends="score-upload, src-upload"/>
+	<target name="cruise" depends="update, build" description="update, build"/>
 
 	<target name="cruise-release" 
-		description="build, then upload artifacts to OpenQA"
+		description="cruise, openqa-upload"
 		depends="cruise, openqa-upload"/>
 
 </project>
