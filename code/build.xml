@@ -155,7 +155,8 @@
     </target>
     
     <target name="operaTests" depends="selenese-task, image">
-        <preset-selenese taskname="opera" browser="*opera" />
+        <property name="opera.browser" value="*opera" />
+        <preset-selenese taskname="opera" browser="${opera.browser}" />
     </target>
 
     <target name="htaTests" depends="image, checkWindows" if="thisIsWindows">
