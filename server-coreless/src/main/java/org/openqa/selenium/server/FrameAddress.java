@@ -1,5 +1,8 @@
 package org.openqa.selenium.server;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FrameAddress {
 
     /**
@@ -8,11 +11,29 @@ public class FrameAddress {
     private String windowName;
     private String localFrameAddress;
 
-    public FrameAddress(String windowName, String localFrameAddress) {
+
+    /**
+     * FrameAddress objects are used as hash keys in several instances, and therefore it is
+     * important to prevent the allocation of multiple FrameAddress objects corresponding
+     * to the same address.  Use the hash to help enforce this prohibition.
+     */
+    static private Map<String, FrameAddress> stringToFrameAddress = new HashMap<String, FrameAddress>();
+    
+    private FrameAddress(String windowName, String localFrameAddress) {
         this.windowName = (windowName!=null) ? windowName : FrameGroupSeleneseQueueSet.DEFAULT_SELENIUM_WINDOW_NAME;
         this.localFrameAddress = (localFrameAddress!=null) ? localFrameAddress : FrameGroupSeleneseQueueSet.DEFAULT_LOCAL_FRAME_ADDRESS;
     }
 
+    static public FrameAddress make(String windowName, String localFrameAddress) {
+        FrameAddress f = new FrameAddress(windowName, localFrameAddress);
+        String s = f.toString();
+        if (stringToFrameAddress.containsKey(s)) {
+            return stringToFrameAddress.get(s);
+        }
+        stringToFrameAddress.put(s, f);
+        return f;
+    }
+    
     @Override
     public String toString() {
         return windowName + ":" + localFrameAddress;
@@ -46,10 +67,14 @@ public class FrameAddress {
     }
 
     public void setLocalFrameAddress(String localFrameAddress) {
+        assert this==stringToFrameAddress.remove(toString());
         this.localFrameAddress = localFrameAddress;
+        stringToFrameAddress.put(toString(), this);
     }
 
     public void setWindowName(String windowName) {
+        assert this==stringToFrameAddress.remove(toString());
         this.windowName = windowName;
+        stringToFrameAddress.put(toString(), this);
     }
 }
