@@ -17,32 +17,15 @@
 
 package org.openqa.selenium.server;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.*;
 
-import org.mortbay.http.HttpConnection;
-import org.mortbay.http.HttpException;
-import org.mortbay.http.HttpFields;
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
-import org.mortbay.http.handler.ResourceHandler;
-import org.mortbay.util.StringUtil;
-import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
+import org.mortbay.http.*;
+import org.mortbay.http.handler.*;
+import org.mortbay.util.*;
+import org.openqa.selenium.server.browserlaunchers.*;
+import org.openqa.selenium.server.htmlrunner.*;
 
 /**
  * A Jetty handler that takes care of Selenese Driven requests.
@@ -380,9 +363,17 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private void shutDown(HttpResponse res) {
         SeleniumServer.log("Shutdown command received");
         
-        for (String sessionId : unusedBrowserSessions.values()) {
-            endBrowserSession(sessionId, false);
-        }
+        Runnable initiateShutDown = new Runnable() {
+            public void run() {
+                SeleniumServer.log("initiating shutdown");
+                AsyncExecute.sleepTight(3000);
+                System.exit(0);
+            }
+        };
+        
+        Thread isd = new Thread(initiateShutDown);
+        isd.setName("initiateShutDown");
+        isd.start();
         
         if (res != null) {
             try {
@@ -392,8 +383,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 throw new RuntimeException(e);
             }
         }
-        AsyncExecute.sleepTight(3000);
-        System.exit(0);
+        
     }
 
     private String endBrowserSession(String sessionId, boolean cacheUnused) {
