@@ -129,6 +129,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     public void close() {
         if (closed) return;
+        if (process == null) return;
         System.out.println("Killing Safari...");
         int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {

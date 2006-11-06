@@ -213,6 +213,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
     public void close() {
         if (closed) return;
+        if (process == null) return;
         System.out.println("Killing Opera...");
         Exception taskKillException = null;
         Exception fileLockException = null;

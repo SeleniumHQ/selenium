@@ -55,6 +55,7 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 	}
 
 	public void close() {
+		if (process == null) return;
         AsyncExecute.killProcess(process);
 	}
 

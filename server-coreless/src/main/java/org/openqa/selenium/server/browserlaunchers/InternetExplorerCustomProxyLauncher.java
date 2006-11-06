@@ -244,6 +244,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         if (WindowsUtils.thisIsWindows()) {
             restoreRegistrySettings();
         }
+        if (process == null) return;
         if (false) {
             try {
                 // try to kill with windows taskkill
