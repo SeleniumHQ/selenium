@@ -74,7 +74,6 @@
                 <exclude name="doctool/**"/>
                 <exclude name="core/scripts/selenium-version.js"/>
                 <exclude name="VERSION.txt"/>                
-                <exclude name="tests/**"/>
             </fileset>
         </copy>
         <copy todir="${image.dir}">
