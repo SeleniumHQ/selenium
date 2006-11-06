@@ -17,15 +17,32 @@
 
 package org.openqa.selenium.server;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
-import org.mortbay.http.*;
-import org.mortbay.http.handler.*;
-import org.mortbay.util.*;
-import org.openqa.selenium.server.browserlaunchers.*;
-import org.openqa.selenium.server.htmlrunner.*;
+import org.mortbay.http.HttpConnection;
+import org.mortbay.http.HttpException;
+import org.mortbay.http.HttpFields;
+import org.mortbay.http.HttpRequest;
+import org.mortbay.http.HttpResponse;
+import org.mortbay.http.handler.ResourceHandler;
+import org.mortbay.util.StringUtil;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 
 /**
  * A Jetty handler that takes care of Selenese Driven requests.
@@ -37,7 +54,6 @@ import org.openqa.selenium.server.htmlrunner.*;
  * @version $Revision: 674 $
  */
 public class SeleniumDriverResourceHandler extends ResourceHandler {
-    private final Map<String, FrameGroupSeleneseQueueSet> queueSets = new HashMap<String, FrameGroupSeleneseQueueSet>();    
     private final Map<String, BrowserLauncher> launchers = new HashMap<String, BrowserLauncher>();
     private SeleniumServer server;
     private static String lastSessionId = null;
@@ -97,16 +113,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 logPostedData(frameAddress, justLoaded, sessionId, postedData, uniqueId);
 
-                FrameGroupSeleneseQueueSet queueSet = getQueueSet(sessionId);
+                FrameGroupSeleneseQueueSet queueSet = FrameGroupSeleneseQueueSet.getOrMakeQueueSet(sessionId);
+                SeleniumServer.log("req: "+seleniumStart+":"+req);
                 if (justLoaded) {
-                    postedData = "OK";	// assume a new page starting is okay
-                    queueSet.markWhetherJustLoaded(frameAddress, true);
+                    postedData = "OK";  // assume a new page starting is okay
                 }
-                else {
-                    queueSet.markWhetherJustLoaded(frameAddress, false);
-                }
-
-                SeleneseCommand sc = queueSet.handleCommandResult(postedData, frameAddress, uniqueId);
+                SeleneseCommand sc = queueSet.handleCommandResult(postedData, frameAddress, uniqueId, justLoaded,
+                        req.getParameterValues("jsWindowNameVar"));
                 if (sc != null) {
                     respond(res, sc);
                 }
@@ -353,7 +366,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             if ("open".equals(cmd)) {
                 warnIfApparentDomainChange(sessionId, values.get(0));
             }
-            FrameGroupSeleneseQueueSet queue = getQueueSet(sessionId);
+            FrameGroupSeleneseQueueSet queue = FrameGroupSeleneseQueueSet.getOrMakeQueueSet(sessionId);
             results = queue.doCommand(cmd, values.get(0), values.get(1));
         }
         SeleniumServer.log("Got result: " + results + " on session " + sessionId);
@@ -396,7 +409,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 return "ERROR: No launcher found for sessionId " + sessionId;
             } 
             launcher.close();
-            clearQueueSet(sessionId);
+            FrameGroupSeleneseQueueSet.clearQueueSet(sessionId);
         }
         return "OK";
     }
@@ -441,13 +454,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         SeleneseQueue queue;
         if (sessionId != null) {
             setLastSessionId(sessionId); 
-            queue = getQueueSet(sessionId).getSeleneseQueue();
+            queue = FrameGroupSeleneseQueueSet.getOrMakeQueueSet(sessionId).getSeleneseQueue();
         }
         else {
             sessionId = Long.toString(System.currentTimeMillis() % 1000000);
             setLastSessionId(sessionId); 
             BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
-            queue = getQueueSet(sessionId).getSeleneseQueue();
+            queue = FrameGroupSeleneseQueueSet.getOrMakeQueueSet(sessionId).getSeleneseQueue();
             BrowserLauncher launcher = blf.getBrowserLauncher(browserString, sessionId, queue);
             launchers.put(sessionId, launcher);
             sessionIdsToBrowserStrings.put(sessionId, browserString);
@@ -456,6 +469,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             boolean multiWindow = server.isMultiWindow();
             launcher.launchRemoteSession(startURL, multiWindow);
             queue.discardCommandResult();
+            queue.setResultExpected(false);
         }
         SeleniumServer.log("Allocated session " + sessionId + " for " + startURL);
         queue.doCommand("setContext", sessionId, "");
@@ -467,7 +481,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private void addUnusedBrowserSession(String sessionId) {
-        getQueueSet(sessionId).reset();
+        FrameGroupSeleneseQueueSet.getOrMakeQueueSet(sessionId).reset();
         unusedBrowserSessions.put(sessionIdsToBrowserStrings.get(sessionId), sessionId);
     }
 
@@ -515,27 +529,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             return launchers.get(sessionId);
         }
     }
-
-    /** Retrieves a FrameGroupSeleneseQueueSet for the specifed sessionId, creating a new one if there isn't one with that sessionId already 
-     */
-    private FrameGroupSeleneseQueueSet getQueueSet(String sessionId) {
-        FrameGroupSeleneseQueueSet queueSet = queueSets.get(sessionId);
-        if (queueSet == null) {
-            queueSet = new FrameGroupSeleneseQueueSet(sessionId);
-            queueSets.put(sessionId, queueSet);
-        }
-        return queueSet;
-    }
-
-    /** Deletes the specified FrameGroupSeleneseQueueSet */
-    public void clearQueueSet(String sessionId) {
-        FrameGroupSeleneseQueueSet queue = queueSets.get(sessionId);
-        queue.endOfLife();
-        queueSets.remove(sessionId);
-    }
-
+    
     public void registerSeleneseLauncher(String sessionId, BrowserLauncher launcher) {
-    	launchers.put(sessionId, launcher);
+        launchers.put(sessionId, launcher);
     }
     
     /** Kills all running browsers */

@@ -19,6 +19,9 @@ package org.openqa.selenium.server;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 /**
  * <p>Schedules and coordinates commands to be run.</p>
@@ -36,17 +39,23 @@ public class SeleneseQueue {
     private FrameAddress frameAddress = null;
     private boolean resultExpected = false;
 
+    private final Lock dataLock;
+    private Condition resultArrived;
+    private Condition commandReady;
+    private HashMap<String, Boolean> cachedJsVariableNamesPointingAtThisWindow = new HashMap<String, Boolean>(); 
+    
     static private int millisecondDelayBetweenOperations;
 
-    public SeleneseQueue(String sessionId) {
-        this(sessionId, null);
-    }
-
-    public SeleneseQueue(String sessionId, FrameAddress frameAddress) {
+    public SeleneseQueue(String sessionId, FrameAddress frameAddress, Lock dataLock) {
         this.sessionId = sessionId;
         this.frameAddress  = frameAddress;
-        commandHolder = new SingleEntryAsyncQueue("commandHolder/" + frameAddress);
-        commandResultHolder = new SingleEntryAsyncQueue("resultHolder/" + frameAddress);
+        this.dataLock = dataLock;
+        
+        resultArrived = dataLock.newCondition();
+        commandReady = dataLock.newCondition();
+        
+        commandHolder = new SingleEntryAsyncQueue("commandHolder/" + frameAddress, dataLock, commandReady);
+        commandResultHolder = new SingleEntryAsyncQueue("resultHolder/" + frameAddress, dataLock, resultArrived);
         //
         // we are only concerned about the browser, and command queue timeouts will never be
         // because of a browser problem, we should just set an infinite timeout threshold
@@ -68,19 +77,21 @@ public class SeleneseQueue {
      * return "OK" or an error message.
      */
     public String doCommand(String command, String field, String value) {
-        resultExpected = true;
-        doCommandWithoutWaitingForAResponse(command, field, value);
+        dataLock.lock();
         try {
+            resultExpected = true;
+            doCommandWithoutWaitingForAResponse(command, field, value);
             return queueGetResult("doCommand");
         }
         finally {
             resultExpected = false;
+            dataLock.unlock();
         }
     }
 
     private String queueGetResult(String comment) {
         try {
-            String result = (String) queueGet(comment, commandResultHolder);
+            String result = (String) queueGet(comment, commandResultHolder, resultArrived);
             if (result==null) {
                 result = "ERROR: got a null result";
             }
@@ -100,17 +111,26 @@ public class SeleneseQueue {
             SeleniumServer.log("    ...done");
         }
         synchronized(commandResultHolder) {
-            if (!commandResultHolder.isEmpty()) {
+            if (commandResultHolder.isEmpty()) {
+                commandResultHolder.clear();    // get rid of any threads who are waiting for a result
+            }
+            else {
                 if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
-                    if (SeleniumServer.isDebugMode()) {
-                        // In proxy injection mode, a single command could cause multiple pages to
-                        // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
-                        // relationship between commands and results can go out of whack.  To avoid this, we
-                        // discard results for which no thread is waiting:
-                        SeleniumServer.log("Apparently a page load result preceded the command; will ignore it...");
-                        SeleniumServer.log("Apparently orphaned waiting thread (from request from replaced page) for command -- send him on his way");
+                    if (command.startsWith("wait")) {
+                        if (SeleniumServer.isDebugMode()) {
+                            SeleniumServer.log("Page load beat the wait command.  Leave the result to be picked up below");
+                        }
                     }
-                    commandResultHolder.clear();
+                    else {
+                        if (SeleniumServer.isDebugMode()) {
+                            // In proxy injection mode, a single command could cause multiple pages to
+                            // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
+                            // relationship between commands and results can go out of whack.  To avoid this, we
+                            // discard results for which no thread is waiting:
+                            SeleniumServer.log("Apparently a page load result preceded the command; will ignore it...");
+                        }
+                        commandResultHolder.put(null); // overwrite result
+                    }
                 }
                 else {
                     throw new RuntimeException("unexpected result " + commandResultHolder.peek());
@@ -124,7 +144,8 @@ public class SeleneseQueue {
             }
         }
         queuePut("commandHolder", commandHolder, 
-                new DefaultSeleneseCommand(command, field, value, makeJavaScript()));
+                new DefaultSeleneseCommand(command, field, value, makeJavaScript()), 
+                commandReady);
     }
 
     private String makeJavaScript() {
@@ -141,26 +162,24 @@ public class SeleneseQueue {
         return sb.toString();
     }
 
-    private Object queueGet(String caller, SingleEntryAsyncQueue q) {
+    private Object queueGet(String caller, SingleEntryAsyncQueue q, Condition condition) {
         boolean clearedEarlierThread = false;
-        if (q.hasBlockedGetter()) {
-            q.clear();
-            clearedEarlierThread = true;
-        }
+
         String hdr = "\t" + getIdentification(caller) + " queueGet() ";
         if (SeleniumServer.isDebugMode()) {
             SeleniumServer.log(hdr + "called"
                     + (clearedEarlierThread ? " (superceding other blocked thread)" : ""));
         }
+
         Object object = q.get();
-        
+
         if (SeleniumServer.isDebugMode()) {
             SeleniumServer.log(hdr + "-> " + object); 
         }
         return object;
     }
 
-    private void queuePut(String caller, SingleEntryAsyncQueue q, Object thing) {
+    private void queuePut(String caller, SingleEntryAsyncQueue q, Object thing, Condition condition) {
         String hdr = "\t" + getIdentification(caller) + " queuePut";
         if (SeleniumServer.isDebugMode()) {
             SeleniumServer.log(hdr + "(" + thing + ")");
@@ -172,6 +191,7 @@ public class SeleneseQueue {
             SeleniumServer.log(hdr + " caused " + e);
             throw e;
         }
+        condition.signalAll();
     }
 
     public String toString() {
@@ -205,8 +225,9 @@ public class SeleneseQueue {
             // in one frame causes reloads in others).
             if (commandResult.equals("OK")) {
                 if (SeleniumServer.isDebugMode()) {
-                    SeleniumServer.log("Ignoring page load no one is waiting for.");
+                    SeleniumServer.log("Saw page load no one was waiting for.");
                 }
+                queuePutResult(commandResult);
             }
             else if (commandResult.startsWith("OK")) {
                 // since the result includes a value, this is clearly not from a page which has just loaded.
@@ -218,22 +239,19 @@ public class SeleneseQueue {
         else {
             queuePutResult(commandResult);
         }
-        SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder", commandHolder);
+        SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder", commandHolder, commandReady);
         return sc;
     }
 
     private void queuePutResult(String commandResult) {
-        try {
-            queuePut("commandResultHolder", commandResultHolder, commandResult);
-        }
-        catch (SingleEntryAsyncQueueOverflow e) {
-            if (SeleniumServer.isProxyInjectionMode()) {
-                SeleniumServer.log("overwrote old result with " + commandResult);
-            }
-            else {
-                throw e;
+        if (SeleniumServer.isProxyInjectionMode()) {
+            if (!commandResultHolder.isEmpty()) {
+                commandHolder.clear();
+                SeleniumServer.log("clearing out old window thread(s?) for " + this 
+                        + "; replaced result with " + commandResult);
             }
         }
+        queuePut("commandResultHolder", commandResultHolder, commandResult, resultArrived);
     }
 
     private String getIdentification(String caller) {
@@ -245,7 +263,11 @@ public class SeleneseQueue {
         sb.append(caller)
             .append(' ')
             .append(uniqueId);
-        return sb.toString();
+        String s = sb.toString();
+        if (s.endsWith("null")) {
+            System.out.println("yikes");
+        }
+        return s;
     }
 
     /**
@@ -253,9 +275,13 @@ public class SeleneseQueue {
      *
      */
     public void discardCommandResult() {
-        resultExpected = true;
-        queueGetResult("commandResultHolder discard");
-        resultExpected = false;
+        dataLock.lock();
+        try {
+            queueGetResult("commandResultHolder discard");
+        }
+        finally {
+            dataLock.unlock();
+        }
     }
 
     /**
@@ -278,24 +304,6 @@ public class SeleneseQueue {
         this.uniqueId = uniqueId;
     }
 
-    public String waitForResult() {
-        try {
-            setResultExpected(true);            
-            return queueGetResult("waitForResult commandResultHolder");
-        }
-        finally {
-            setResultExpected(false);
-        }
-    }
-    
-    public String waitForResult(int timeout) {
-        int oldTimeout = commandResultHolder.getTimeout();
-        commandResultHolder.setTimeout(timeout);
-        String result = waitForResult();
-        commandResultHolder.setTimeout(oldTimeout);
-        return result;
-    }
-
     public SingleEntryAsyncQueue getCommandResultHolder() {
         return commandResultHolder;
     }
@@ -310,5 +318,38 @@ public class SeleneseQueue {
     
     public static int getSpeed() {
         return millisecondDelayBetweenOperations;
+    }
+
+    public boolean isWindowPointedToByJsVariable(String jsVariableName) {
+        Boolean isPointingAtThisWindow = cachedJsVariableNamesPointingAtThisWindow.get(jsVariableName);
+        if (isPointingAtThisWindow==null) {
+            isPointingAtThisWindow = false; // disable this -- causes timing problems since it's on same channel as initial load msg: doBooleanCommand("getWhetherThisWindowMatchWindowExpression", "", jsVariableName);
+            cachedJsVariableNamesPointingAtThisWindow.put(jsVariableName, isPointingAtThisWindow);
+        }
+        return isPointingAtThisWindow;
+    }
+
+    public boolean doBooleanCommand(String command, String arg1, String arg2) {
+        String booleanResult = doCommand(command, arg1, arg2);
+        boolean result;
+        if ("OK,true".equals(booleanResult)) {
+            result = true;
+        }
+        else if ("OK,false".equals(booleanResult)) {
+            result = false;
+        }
+        else {
+            throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
+        }
+        SeleniumServer.log("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
+        return result;
+    }
+
+    public boolean matchesFrameAddress(String currentLocalFrameAddress, String newFrameAddressExpression) {
+        return doBooleanCommand("getWhetherThisFrameMatchFrameExpression", currentLocalFrameAddress, newFrameAddressExpression);
+    }
+
+    public void addJsWindowNameVar(String jsWindowNameVar) {
+        cachedJsVariableNamesPointingAtThisWindow.put(jsWindowNameVar, true);
     }
 }

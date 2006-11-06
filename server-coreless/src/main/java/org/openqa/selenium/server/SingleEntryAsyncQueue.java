@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.server;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+
 
 /**
  * <p>Provides a synchronizing queue that holds a single entry
@@ -35,8 +39,17 @@ public class SingleEntryAsyncQueue {
     private String loggingPreamble;
     private String label;
     
-    public SingleEntryAsyncQueue(String label) {
+    private int countOfCallsToGet = 0;
+    private int clearCallsToGetPrecedingThisThreshold = 0;
+    
+    private int waitingThreadCount = 0;
+    private final Lock dataLock;
+    private final Condition condition;
+    
+    public SingleEntryAsyncQueue(String label, Lock dataLock, Condition condition) {
         this.label = label;
+        this.dataLock = dataLock;
+        this.condition = condition;
         timeout = defaultTimeout;
         loggingPreamble = this.label + id + ": ";
     }
@@ -45,15 +58,7 @@ public class SingleEntryAsyncQueue {
      * clear contents and tell any waiting threads to go away.
      */
     public void clear() {
-        thing = null;
-        while (hasBlockedGetter) {
-            this.done = true;
-            synchronized(this) {
-                this.notifyAll();
-            }
-            Thread.yield();
-        }
-        this.done = false;
+        clearCallsToGetPrecedingThisThreshold = countOfCallsToGet;
     }
     
     public int getTimeout() {
@@ -70,25 +75,27 @@ public class SingleEntryAsyncQueue {
      * @return the item in the queue
      * @throws SeleniumCommandTimedOutException if the timeout is exceeded. 
      */
-    public synchronized Object get() {
+    public Object get() {
+        int thisCall = countOfCallsToGet++;
+        System.out.println("get call " +thisCall);
         if (done) {
             return null;
         }
-
         int retries = 0;
         hasBlockedGetter = true;
         Object t = null;
+        waitingThreadCount++;
         try {
             while (thing==null) {
                 if (thing==null & retries >= timeout) {
                     throw new SeleniumCommandTimedOutException();
                 }
                 try {
-                    wait(1000);
+                    condition.await(1000, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {
                     continue;
                 }
-                if (done) {                
+                if (done || (thisCall < clearCallsToGetPrecedingThisThreshold)) {
                     return null;
                 }
                 retries++;
@@ -97,9 +104,12 @@ public class SingleEntryAsyncQueue {
         }
         finally {
             hasBlockedGetter = false;
+            waitingThreadCount--;
         }
-        thing = null;
-        notifyAll();
+        System.out.println("get wrapping up: thisCall="+thisCall+ " (clearThreshold=" + clearCallsToGetPrecedingThisThreshold+")");
+        if (waitingThreadCount==0) {
+            thing = null;
+        }
         return t;
     }
         
@@ -110,7 +120,7 @@ public class SingleEntryAsyncQueue {
      * @return the item in the queue
      * @throws SeleniumCommandTimedOutException if the timeout is exceeded. 
      */
-    public synchronized Object peek() {
+    public Object peek() {
         if (done) {
             throw new RuntimeException("peek(" + this + ") on a retired queue");
         }
@@ -136,19 +146,22 @@ public class SingleEntryAsyncQueue {
      * for that item to get picked up and removed from the queue. 
      * @param newObj - the thing to put in the queue
      */    
-    public synchronized void put(Object newObj) {
+    public void put(Object newObj) {
         if (done) {
             throw new RuntimeException("put(" + newObj + ") on a retired queue");
         }
-        boolean overflow = false;
-        if (thing != null) {
-            overflow = true;
+        if (newObj==null) {
+            thing = null;
         }
-        Object oldObj = thing;
-        thing = newObj;
-        notifyAll();
-        if (overflow) {
-            throw new SingleEntryAsyncQueueOverflow(newObj, oldObj);
+        else {
+            dataLock.lock();
+            try {
+                thing = newObj;
+                condition.signalAll();
+            }
+            finally {
+                dataLock.unlock();
+            }
         }
     }
 

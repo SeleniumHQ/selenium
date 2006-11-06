@@ -16,6 +16,10 @@
  */
 package org.openqa.selenium;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import junit.framework.TestCase;
 
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
@@ -23,6 +27,9 @@ import org.openqa.selenium.server.SingleEntryAsyncQueue;
 
 public class QueueTest extends TestCase {
     SingleEntryAsyncQueue q;
+    private final Lock dataLock = new ReentrantLock();
+    private Condition condition = dataLock.newCondition();
+    
     
     class QTestThread extends Thread {
         private Object objToPut;
@@ -39,7 +46,7 @@ public class QueueTest extends TestCase {
     }
     
     public void setUp() {
-        q = new SingleEntryAsyncQueue("test_queue");
+        q = new SingleEntryAsyncQueue("test_queue", dataLock, condition);
     }
     
     public void testGetFromEmptyQueue() throws Exception {
