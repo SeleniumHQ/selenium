@@ -590,6 +590,7 @@ public class SeleniumServer {
         server.start();
         
         shutDownHook = new Thread(new ShutDownHook(this));
+        shutDownHook.setName("SeleniumServerShutDownHook");
         Runtime.getRuntime().addShutdownHook(shutDownHook);
     }
     
@@ -613,7 +614,9 @@ public class SeleniumServer {
         } finally {
         	driver.stopAllBrowsers();
         	try {
-        		Runtime.getRuntime().removeShutdownHook(shutDownHook);
+                if (shutDownHook != null) {
+                    Runtime.getRuntime().removeShutdownHook(shutDownHook);
+                }
         	} catch (IllegalStateException e) {} // if we're shutting down, it's too late for that!
         }
         
