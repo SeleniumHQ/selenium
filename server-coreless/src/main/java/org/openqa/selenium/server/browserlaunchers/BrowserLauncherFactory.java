@@ -113,15 +113,22 @@ public class BrowserLauncherFactory {
     }
 
     private BrowserLauncher createBrowserLauncher(Class c, String browserStartCommand, String sessionId, SeleneseQueue queue) {
+        try {
             try {
                 BrowserLauncher browserLauncher;
                 if (null == browserStartCommand) {
-                    Constructor ctor = c.getConstructor(new Class[]{int.class, String.class});
-                    Object[] args = new Object[] {new Integer(server.getPort()), sessionId};
+                    Constructor ctor = c.getConstructor(new Class[] { int.class,
+                            String.class });
+                    Object[] args = new Object[] { new Integer(server.getPort()),
+                            sessionId };
                     browserLauncher = (BrowserLauncher) ctor.newInstance(args);
                 } else {
-                    Constructor ctor = c.getConstructor(new Class[]{int.class, String.class, String.class});
-                    Object[] args = new Object[] {new Integer(SeleniumServer.getPortDriversShouldContact()), sessionId, browserStartCommand};
+                    Constructor ctor = c.getConstructor(new Class[] { int.class,
+                            String.class, String.class });
+                    Object[] args = new Object[] {
+                            new Integer(SeleniumServer
+                                    .getPortDriversShouldContact()), sessionId,
+                            browserStartCommand };
                     browserLauncher = (BrowserLauncher) ctor.newInstance(args);
                 }
 
@@ -130,10 +137,13 @@ public class BrowserLauncherFactory {
                 }
 
                 return browserLauncher;
-	    } catch (InvocationTargetException e) {
-		throw new RuntimeException("failed to contruct launcher for "+browserStartCommand, e.getTargetException());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw e.getTargetException();
             }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 }
