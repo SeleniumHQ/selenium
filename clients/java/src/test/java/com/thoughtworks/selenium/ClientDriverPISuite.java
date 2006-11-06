@@ -57,6 +57,7 @@ public class ClientDriverPISuite extends ClientDriverSuite {
         public void setUp() throws Exception {
             overrideProperty("selenium.proxyInjectionMode", "true");
             overrideProperty("selenium.forcedBrowserMode", determineForcedBrowserMode());
+            overrideProperty("selenium.debugMode", "true");
             overrideProperty("selenium.log", "log.txt");
             
             // make jetty logging especially verbose
@@ -70,6 +71,10 @@ public class ClientDriverPISuite extends ClientDriverSuite {
         }
 
         public void tearDown() throws Exception {
+            restoreOldSystemPropertySettings();
+        }
+
+        private void restoreOldSystemPropertySettings() {
             for (String propertyName : savedValuesOfSystemProperties.keySet()) {                
                 String oldValue = savedValuesOfSystemProperties.get(propertyName);
                 if (oldValue==null) {
