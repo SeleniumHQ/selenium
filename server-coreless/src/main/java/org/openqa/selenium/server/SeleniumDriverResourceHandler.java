@@ -366,7 +366,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         Runnable initiateShutDown = new Runnable() {
             public void run() {
                 SeleniumServer.log("initiating shutdown");
-                AsyncExecute.sleepTight(3000);
+                AsyncExecute.sleepTight(500);
                 System.exit(0);
             }
         };
