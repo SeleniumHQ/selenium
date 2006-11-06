@@ -19,7 +19,13 @@ $iedoc =~ s#\n{2,}#\n\n#g;
 $iedoc =~ s#^(.+?)</top>##s;
 my $selenium_description = $1;
 
-my @functions = extract_functions($iedoc);
+my $function_extras = {
+    open => { extra_code => <<'EOT' },
+    $self->{_page_opened} = 1;
+    $_[0] ||= '/'; # default to opening site root
+EOT
+};
+my @functions = extract_functions($iedoc, $function_extras);
 
 # Print Selenium.pm
 write_file("lib/WWW/Selenium.pm", join('', pm_header(), 
@@ -122,11 +128,103 @@ eval 'require Encode';
 my $encode_present = !$@;
 Encode->import('decode_utf8') if $encode_present;
 
+=head2 METHODS
+
+The following methods are available:
+
+=over
+
+=item $sel = WWW::Selenium-E<gt>new( %args )
+
+Constructs a new C<WWW::Selenium> object, specifying a Selenium Server
+host/port, a command to launch the browser, and a starting URL for the
+browser.
+
+Options:
+
+=over
+
+=item * C<host>
+
+host is the host name on which the Selenium Server resides.
+
+=item * C<port>
+
+port is the port on which the Selenium Server is listening.
+
+=item * C<browser_url>
+
+browser_url is the starting URL including just a domain name.  We'll
+start the browser pointing at the Selenium resources on this URL,
+e.g. "http://www.google.com" would send the browser to
+"http://www.google.com/selenium-server/SeleneseRunner.html"
+
+=item * C<browser> or C<browser_start_command>
+
+This is the command string used to launch the browser, e.g.
+"*firefox", "*iexplore" or "/usr/bin/firefox"
+
+This option may be any one of the following:
+
+=over
+
+=item * C<*firefox [absolute path]>
+
+Automatically launch a new Firefox process using a custom Firefox
+profile.
+This profile will be automatically configured to use the Selenium
+Server as a proxy and to have all annoying prompts
+("save your password?" "forms are insecure" "make Firefox your default
+browser?" disabled.  You may optionally specify
+an absolute path to your firefox executable, or just say "*firefox". 
+If no absolute path is specified, we'll look for
+firefox.exe in a default location (normally c:\program files\mozilla
+firefox\firefox.exe), which you can override by
+setting the Java system property C<firefoxDefaultPath> to the correct
+path to Firefox.
+
+=item * C<*iexplore [absolute path]>
+
+Automatically launch a new Internet Explorer process using custom
+Windows registry settings.
+This process will be automatically configured to use the Selenium
+Server as a proxy and to have all annoying prompts
+("save your password?" "forms are insecure" "make Firefox your default
+browser?" disabled.  You may optionally specify
+an absolute path to your iexplore executable, or just say "*iexplore". 
+If no absolute path is specified, we'll look for
+iexplore.exe in a default location (normally c:\program files\internet
+explorer\iexplore.exe), which you can override by
+setting the Java system property C<iexploreDefaultPath> to the correct
+path to Internet Explorer.
+
+=item * C</path/to/my/browser [other arguments]>
+
+You may also simply specify the absolute path to your browser
+executable, or use a relative path to your executable (which we'll try
+to find on your path).  B<Warning:> If you
+specify your own custom browser, it's up to you to configure it
+correctly.  At a minimum, you'll need to configure your
+browser to use the Selenium Server as a proxy, and disable all
+browser-specific prompting.
+
+=back
+
+=item * C<auto_stop>
+
+Defaults to true, and will attempt to close the browser if the object
+goes out of scope and stop hasn't been called.
+
+=back
+
+=cut
+
 sub new {
     my ($class, %args) = @_;
     my $self = { # default args:
                  host => 'localhost',
                  port => 4444,
+                 auto_stop => 1,
                  browser_start_command => delete $args{browser} || '*firefox',
                  %args,
                };
@@ -150,6 +248,17 @@ sub stop {
 
 sub do_command {
     my ($self, $command, @args) = @_;
+
+    # Check that user has called open()
+    my %valid_pre_open_commands = (
+        open => 1,
+        testComplete => 1,
+        getNewBrowserSession => 1,
+    );
+    if (!$self->{_page_opened} and !$valid_pre_open_commands{$command}) {
+        die "You must open a page before calling $command. eg: \$sel->open('/');\n";
+    }
+
     $command = uri_escape($command);
     my $fullurl = "http://$self->{host}:$self->{port}/selenium-server/driver/"
                   . "\?cmd=$command";
@@ -254,91 +363,6 @@ sub get_boolean_array {
     return @boolarr;
 }
 
-=head2 METHODS
-
-The following methods are available:
-
-=over
-
-=item $sel = WWW::Selenium-E<gt>new( %args )
-
-Constructs a new C<WWW::Selenium> object, specifying a Selenium Server
-host/port, a command to launch the browser, and a starting URL for the
-browser.
-
-Options:
-
-=over
-
-=item * C<host>
-
-host is the host name on which the Selenium Server resides.
-
-=item * C<port>
-
-port is the port on which the Selenium Server is listening.
-
-=item * C<browser_url>
-
-browser_url is the starting URL including just a domain name.  We'll
-start the browser pointing at the Selenium resources on this URL,
-e.g. "http://www.google.com" would send the browser to
-"http://www.google.com/selenium-server/SeleneseRunner.html"
-
-=item * C<browser> or C<browser_start_command>
-
-This is the command string used to launch the browser, e.g.
-"*firefox", "*iexplore" or "/usr/bin/firefox"
-
-This option may be any one of the following:
-
-=over
-
-=item * C<*firefox [absolute path]>
-
-Automatically launch a new Firefox process using a custom Firefox
-profile.
-This profile will be automatically configured to use the Selenium
-Server as a proxy and to have all annoying prompts
-("save your password?" "forms are insecure" "make Firefox your default
-browser?" disabled.  You may optionally specify
-an absolute path to your firefox executable, or just say "*firefox". 
-If no absolute path is specified, we'll look for
-firefox.exe in a default location (normally c:\program files\mozilla
-firefox\firefox.exe), which you can override by
-setting the Java system property C<firefoxDefaultPath> to the correct
-path to Firefox.
-
-=item * C<*iexplore [absolute path]>
-
-Automatically launch a new Internet Explorer process using custom
-Windows registry settings.
-This process will be automatically configured to use the Selenium
-Server as a proxy and to have all annoying prompts
-("save your password?" "forms are insecure" "make Firefox your default
-browser?" disabled.  You may optionally specify
-an absolute path to your iexplore executable, or just say "*iexplore". 
-If no absolute path is specified, we'll look for
-iexplore.exe in a default location (normally c:\program files\internet
-explorer\iexplore.exe), which you can override by
-setting the Java system property C<iexploreDefaultPath> to the correct
-path to Internet Explorer.
-
-=item * C</path/to/my/browser [other arguments]>
-
-You may also simply specify the absolute path to your browser
-executable, or use a relative path to your executable (which we'll try
-to find on your path).  B<Warning:> If you
-specify your own custom browser, it's up to you to configure it
-correctly.  At a minimum, you'll need to configure your
-browser to use the Selenium Server as a proxy, and disable all
-browser-specific prompting.
-
-=back
-
-=back
-
-=cut
 
 ### From here on, everything's auto-generated from XML
 
@@ -365,7 +389,8 @@ Note: This function is deprecated, use get_location() instead.
 
 sub is_location {
     my $self = shift;
-    warn "is_location() is deprecated, use get_location()\n";
+    warn "is_location() is deprecated, use get_location()\n"
+        unless $self->{no_deprecation_msg};
     my $expected_location = shift;
     my $loc = $self->get_string("getLocation");
     return $loc =~ /\Q$expected_location\E$/;
@@ -387,7 +412,8 @@ Note: This function is deprecated, use is_checked() instead.
 
 sub get_checked {
     my $self = shift;
-    warn "get_checked() is deprecated, use is_checked()\n";
+    warn "get_checked() is deprecated, use is_checked()\n"
+        unless $self->{no_deprecation_msg};
     return $self->get_string("isChecked", @_) ? 'true' : 'false';
 }
 
@@ -410,7 +436,8 @@ Note: This function is deprecated, use the get_selected_*() methods instead.
 
 sub is_selected {
     my ($self, $locator, $option_locator) = @_;
-    warn "is_selected() is deprecated, use get_selected_*() methods\n";
+    warn "is_selected() is deprecated, use get_selected_*() methods\n"
+        unless $self->{no_deprecation_msg};
     $option_locator =~ m/^(?:(.+)=)?(.+)/;
     my $selector = $1 || 'label';
     $selector = 'indexe' if $selector eq 'index';
@@ -436,7 +463,8 @@ Note: This function is deprecated, use get_selected_labels() instead.
 
 sub get_selected_options {
     my $self = shift;
-    warn "get_selected_options() is deprecated, use get_selected_labels()\n";
+    warn "get_selected_options() is deprecated, use get_selected_labels()\n"
+        unless $self->{no_deprecation_msg};
     return $self->get_string_array("getSelectedLabels", @_);
 }
 
@@ -450,7 +478,8 @@ Note: This function is deprecated, use get_location() instead.
 
 sub get_absolute_location {
     my $self = shift;
-    warn "get_absolute_location() is deprecated, use get_location()\n";
+    warn "get_absolute_location() is deprecated, use get_location()\n"
+        unless $self->{no_deprecation_msg};
     return $self->get_string("getLocation", @_);
 }
 
@@ -459,6 +488,11 @@ sub get_absolute_location {
 =back
 
 =cut
+
+sub DESTROY {
+    my $self = shift;
+    $self->stop if $self->{auto_stop};
+}
 
 1;
 

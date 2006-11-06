@@ -4,7 +4,7 @@ use strict;
 use base qw(WWW::Selenium);
 use Carp qw(croak);
 
-our $VERSION = '1.04';
+our $VERSION = '1.10';
 
 =head1 NAME
 
@@ -174,21 +174,6 @@ sub new {
     $self->{default_names} = $default_names;
     $self->start;
     return $self;
-}
-
-sub DESTROY {
-    my $self = shift;
-    $self->stop;
-}
-
-# Other helpful methods
-
-sub get_location {
-    my ($self) = @_;
-    my $absolute = $self->get_absolute_location;
-    return $1 if $absolute =~ m{\w+://[^/:]+(?::\d+)?(/.*)};
-    warn "Couldn't parse absolute location ($absolute)!";
-    return $absolute;
 }
 
 1;

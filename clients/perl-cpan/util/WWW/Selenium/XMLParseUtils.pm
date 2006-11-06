@@ -62,6 +62,8 @@ sub html2pod {
 
 sub extract_functions {
     my $text = shift;
+    my $function_extras = shift;
+
     my @functions;
     while ($text =~ s#<function name="([^"]+)">\n*(.+?)\n*</function>##s) {
         my ($name, $desc) = ($1, $2);
@@ -72,6 +74,11 @@ sub extract_functions {
         my $params = _extract_params($desc);
         $desc =~ m#<comment>(.+?)</comment>#s;
         my $func_comment = $1 or die "Can't find function comment: $desc";
+
+        my $extra_code = '';
+        if (my $code = $function_extras->{$perl_name}{extra_code}) {
+            $extra_code = "\n$code";
+        }
 
         my $sel_func = $return_type ? "get_$return_type" : "do_command";
         my $return   = $return_type ? "return " : '';
@@ -85,7 +92,7 @@ $return_desc
 =cut
 
 sub $perl_name {
-    my \$self = shift;
+    my \$self = shift;$extra_code
     $return\$self->$sel_func("$name", \@_);
 }
 

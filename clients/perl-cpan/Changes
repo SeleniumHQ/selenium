@@ -1,5 +1,16 @@
 Revision history for Perl extension Test::WWW::Selenium.
 
+1.10 - 
+ - Integrated latest functions available in Selenium-Core
+   - WWW/Selenium.pm is build directly from Core's iedoc.xml
+ - Retained backwards compatibility for deprecated core functions
+ - Cleaned up POD
+ - Check that caller has opened a page before running commands
+ - Open without args opens '/'
+ - Added auto_stop option (default on) to auto-close browser windows
+ - Remove old get_location function in favour of core builtin
+   get_location.  It returns the absolute location.
+
 1.04 - Fri Oct  6 19:02:30 PDT 2006
  - Happy Canadian Thanksgiving!  I thank everyone who uses this.
  - Documentation fixes from Frederic Buclin++

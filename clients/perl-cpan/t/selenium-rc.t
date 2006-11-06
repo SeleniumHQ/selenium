@@ -34,6 +34,7 @@ Good_usage: {
     is $ua->{req}, 'http://localhost:4444/selenium-server/driver/'
                    . '?cmd=getNewBrowserSession&1=*firefox&2=http%3A%2F%2Ffoo.com';
     is $sel->{session_id}, 'SESSION_ID';
+    $sel->open;
 
     # try some commands
     $ua->{res} = HTTP::Response->new(content => 'OK,Some Title');
@@ -75,6 +76,7 @@ Failing_command: {
     isa_ok $sel, 'WWW::Selenium';
     $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
     $sel->start;
+    $sel->open;
     $ua->{res} = HTTP::Response->new(content => 'Error: foo');
     throws_ok { $sel->get_title } qr#Error: foo#;
 }
@@ -84,6 +86,7 @@ Multi_values: {
     isa_ok $sel, 'WWW::Selenium';
     $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
     $sel->start;
+    $sel->open;
 
     my %testcases = (
             'one,two,three' => [qw(one two three)],

@@ -250,11 +250,103 @@ eval 'require Encode';
 my $encode_present = !$@;
 Encode->import('decode_utf8') if $encode_present;
 
+=head2 METHODS
+
+The following methods are available:
+
+=over
+
+=item $sel = WWW::Selenium-E<gt>new( %args )
+
+Constructs a new C<WWW::Selenium> object, specifying a Selenium Server
+host/port, a command to launch the browser, and a starting URL for the
+browser.
+
+Options:
+
+=over
+
+=item * C<host>
+
+host is the host name on which the Selenium Server resides.
+
+=item * C<port>
+
+port is the port on which the Selenium Server is listening.
+
+=item * C<browser_url>
+
+browser_url is the starting URL including just a domain name.  We'll
+start the browser pointing at the Selenium resources on this URL,
+e.g. "http://www.google.com" would send the browser to
+"http://www.google.com/selenium-server/SeleneseRunner.html"
+
+=item * C<browser> or C<browser_start_command>
+
+This is the command string used to launch the browser, e.g.
+"*firefox", "*iexplore" or "/usr/bin/firefox"
+
+This option may be any one of the following:
+
+=over
+
+=item * C<*firefox [absolute path]>
+
+Automatically launch a new Firefox process using a custom Firefox
+profile.
+This profile will be automatically configured to use the Selenium
+Server as a proxy and to have all annoying prompts
+("save your password?" "forms are insecure" "make Firefox your default
+browser?" disabled.  You may optionally specify
+an absolute path to your firefox executable, or just say "*firefox". 
+If no absolute path is specified, we'll look for
+firefox.exe in a default location (normally c:\program files\mozilla
+firefox\firefox.exe), which you can override by
+setting the Java system property C<firefoxDefaultPath> to the correct
+path to Firefox.
+
+=item * C<*iexplore [absolute path]>
+
+Automatically launch a new Internet Explorer process using custom
+Windows registry settings.
+This process will be automatically configured to use the Selenium
+Server as a proxy and to have all annoying prompts
+("save your password?" "forms are insecure" "make Firefox your default
+browser?" disabled.  You may optionally specify
+an absolute path to your iexplore executable, or just say "*iexplore". 
+If no absolute path is specified, we'll look for
+iexplore.exe in a default location (normally c:\program files\internet
+explorer\iexplore.exe), which you can override by
+setting the Java system property C<iexploreDefaultPath> to the correct
+path to Internet Explorer.
+
+=item * C</path/to/my/browser [other arguments]>
+
+You may also simply specify the absolute path to your browser
+executable, or use a relative path to your executable (which we'll try
+to find on your path).  B<Warning:> If you
+specify your own custom browser, it's up to you to configure it
+correctly.  At a minimum, you'll need to configure your
+browser to use the Selenium Server as a proxy, and disable all
+browser-specific prompting.
+
+=back
+
+=item * C<auto_stop>
+
+Defaults to true, and will attempt to close the browser if the object
+goes out of scope and stop hasn't been called.
+
+=back
+
+=cut
+
 sub new {
     my ($class, %args) = @_;
     my $self = { # default args:
                  host => 'localhost',
                  port => 4444,
+                 auto_stop => 1,
                  browser_start_command => delete $args{browser} || '*firefox',
                  %args,
                };
@@ -278,6 +370,17 @@ sub stop {
 
 sub do_command {
     my ($self, $command, @args) = @_;
+
+    # Check that user has called open()
+    my %valid_pre_open_commands = (
+        open => 1,
+        testComplete => 1,
+        getNewBrowserSession => 1,
+    );
+    if (!$self->{_page_opened} and !$valid_pre_open_commands{$command}) {
+        die "You must open a page before calling $command. eg: \$sel->open('/');\n";
+    }
+
     $command = uri_escape($command);
     my $fullurl = "http://$self->{host}:$self->{port}/selenium-server/driver/"
                   . "\?cmd=$command";
@@ -382,91 +485,6 @@ sub get_boolean_array {
     return @boolarr;
 }
 
-=head2 METHODS
-
-The following methods are available:
-
-=over
-
-=item $sel = WWW::Selenium-E<gt>new( %args )
-
-Constructs a new C<WWW::Selenium> object, specifying a Selenium Server
-host/port, a command to launch the browser, and a starting URL for the
-browser.
-
-Options:
-
-=over
-
-=item * C<host>
-
-host is the host name on which the Selenium Server resides.
-
-=item * C<port>
-
-port is the port on which the Selenium Server is listening.
-
-=item * C<browser_url>
-
-browser_url is the starting URL including just a domain name.  We'll
-start the browser pointing at the Selenium resources on this URL,
-e.g. "http://www.google.com" would send the browser to
-"http://www.google.com/selenium-server/SeleneseRunner.html"
-
-=item * C<browser> or C<browser_start_command>
-
-This is the command string used to launch the browser, e.g.
-"*firefox", "*iexplore" or "/usr/bin/firefox"
-
-This option may be any one of the following:
-
-=over
-
-=item * C<*firefox [absolute path]>
-
-Automatically launch a new Firefox process using a custom Firefox
-profile.
-This profile will be automatically configured to use the Selenium
-Server as a proxy and to have all annoying prompts
-("save your password?" "forms are insecure" "make Firefox your default
-browser?" disabled.  You may optionally specify
-an absolute path to your firefox executable, or just say "*firefox". 
-If no absolute path is specified, we'll look for
-firefox.exe in a default location (normally c:\program files\mozilla
-firefox\firefox.exe), which you can override by
-setting the Java system property C<firefoxDefaultPath> to the correct
-path to Firefox.
-
-=item * C<*iexplore [absolute path]>
-
-Automatically launch a new Internet Explorer process using custom
-Windows registry settings.
-This process will be automatically configured to use the Selenium
-Server as a proxy and to have all annoying prompts
-("save your password?" "forms are insecure" "make Firefox your default
-browser?" disabled.  You may optionally specify
-an absolute path to your iexplore executable, or just say "*iexplore". 
-If no absolute path is specified, we'll look for
-iexplore.exe in a default location (normally c:\program files\internet
-explorer\iexplore.exe), which you can override by
-setting the Java system property C<iexploreDefaultPath> to the correct
-path to Internet Explorer.
-
-=item * C</path/to/my/browser [other arguments]>
-
-You may also simply specify the absolute path to your browser
-executable, or use a relative path to your executable (which we'll try
-to find on your path).  B<Warning:> If you
-specify your own custom browser, it's up to you to configure it
-correctly.  At a minimum, you'll need to configure your
-browser to use the Selenium Server as a proxy, and disable all
-browser-specific prompting.
-
-=back
-
-=back
-
-=cut
 
 ### From here on, everything's auto-generated from XML
 
@@ -593,6 +611,94 @@ $key_sequence is Either be a string("\" followed by the numeric keycode  of the 
 sub key_press {
     my $self = shift;
     $self->do_command("keyPress", @_);
+}
+
+=item $sel-E<gt>shift_key_down()
+
+Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.
+
+=cut
+
+sub shift_key_down {
+    my $self = shift;
+    $self->do_command("shiftKeyDown", @_);
+}
+
+=item $sel-E<gt>shift_key_up()
+
+Release the shift key.
+
+=cut
+
+sub shift_key_up {
+    my $self = shift;
+    $self->do_command("shiftKeyUp", @_);
+}
+
+=item $sel-E<gt>meta_key_down()
+
+Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.
+
+=cut
+
+sub meta_key_down {
+    my $self = shift;
+    $self->do_command("metaKeyDown", @_);
+}
+
+=item $sel-E<gt>meta_key_up()
+
+Release the meta key.
+
+=cut
+
+sub meta_key_up {
+    my $self = shift;
+    $self->do_command("metaKeyUp", @_);
+}
+
+=item $sel-E<gt>alt_key_down()
+
+Press the alt key and hold it down until doAltUp() is called or a new page is loaded.
+
+=cut
+
+sub alt_key_down {
+    my $self = shift;
+    $self->do_command("altKeyDown", @_);
+}
+
+=item $sel-E<gt>alt_key_up()
+
+Release the alt key.
+
+=cut
+
+sub alt_key_up {
+    my $self = shift;
+    $self->do_command("altKeyUp", @_);
+}
+
+=item $sel-E<gt>control_key_down()
+
+Press the control key and hold it down until doControlUp() is called or a new page is loaded.
+
+=cut
+
+sub control_key_down {
+    my $self = shift;
+    $self->do_command("controlKeyDown", @_);
+}
+
+=item $sel-E<gt>control_key_up()
+
+Release the control key.
+
+=cut
+
+sub control_key_up {
+    my $self = shift;
+    $self->do_command("controlKeyUp", @_);
 }
 
 =item $sel-E<gt>key_down($locator, $key_sequence)
@@ -1028,14 +1134,63 @@ $url is the URL to open; may be relative or absolute
 
 sub open {
     my $self = shift;
+    $self->{_page_opened} = 1;
+    $_[0] ||= '/'; # default to opening site root
+
     $self->do_command("open", @_);
+}
+
+=item $sel-E<gt>open_window($url, $window_id)
+
+Opens a popup window (if a window with that ID isn't already open).
+After opening the window, you'll need to select it using the selectWindow
+command.
+
+This command can also be a useful workaround for bug SEL-339.  In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
+In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using
+an empty (blank) url, like this: openWindow("", "myFunnyWindow").
+
+=over
+
+$url is the URL to open, which can be blank
+
+$window_id is the JavaScript window ID of the window to select
+
+=back
+
+=cut
+
+sub open_window {
+    my $self = shift;
+    $self->do_command("openWindow", @_);
 }
 
 =item $sel-E<gt>select_window($window_id)
 
 Selects a popup window; once a popup window has been selected, all
-commands go to that window. To select the main window again, use "null"
+commands go to that window. To select the main window again, use null
 as the target.
+
+Selenium has several strategies for finding the window object referred to by the "windowID" parameter.
+
+1.) if windowID is null, then it is assumed the user is referring to the original window instantiated by the browser).
+
+2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
+that this variable contains the return value from a call to the JavaScript window.open() method.
+
+3.) Otherwise, selenium looks in a hash it maintains that maps string names to window objects.  Each of these string 
+names matches the second parameter "windowName" past to the JavaScript method  window.open(url, windowName, windowFeatures, replaceFlag)
+(which selenium intercepts).
+
+If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages
+which identify the names of windows created via window.open (and therefore intercepted by selenium).  You will see messages
+like the following for each window as it is opened:
+
+C<debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow">
+
+In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
+(This is bug SEL-339.)  In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using
+an empty (blank) url, like this: openWindow("", "myFunnyWindow").
 
 =over
 
@@ -1127,6 +1282,37 @@ Returns true if the new frame is this code's window
 sub get_whether_this_frame_match_frame_expression {
     my $self = shift;
     return $self->get_boolean("getWhetherThisFrameMatchFrameExpression", @_);
+}
+
+=item $sel-E<gt>get_whether_this_window_match_window_expression($current_window_string, $target)
+
+Determine whether currentWindowString plus target identify the window containing this running code.
+
+This is useful in proxy injection mode, where this code runs in every
+browser frame and window, and sometimes the selenium server needs to identify
+the "current" window.  In this case, when the test calls selectWindow, this
+routine is called for each window to figure out which one has been selected.
+The selected window will return true, while all others will return false.
+
+=over
+
+$current_window_string is starting window
+
+$target is new window (which might be relative to the current one, e.g., "_parent")
+
+=back
+
+=over
+
+Returns true if the new window is this code's window
+
+=back
+
+=cut
+
+sub get_whether_this_window_match_window_expression {
+    my $self = shift;
+    return $self->get_boolean("getWhetherThisWindowMatchWindowExpression", @_);
 }
 
 =item $sel-E<gt>wait_for_pop_up($window_id, $timeout)
@@ -2525,7 +2711,8 @@ Note: This function is deprecated, use get_location() instead.
 
 sub is_location {
     my $self = shift;
-    warn "is_location() is deprecated, use get_location()\n";
+    warn "is_location() is deprecated, use get_location()\n"
+        unless $self->{no_deprecation_msg};
     my $expected_location = shift;
     my $loc = $self->get_string("getLocation");
     return $loc =~ /\Q$expected_location\E$/;
@@ -2547,7 +2734,8 @@ Note: This function is deprecated, use is_checked() instead.
 
 sub get_checked {
     my $self = shift;
-    warn "get_checked() is deprecated, use is_checked()\n";
+    warn "get_checked() is deprecated, use is_checked()\n"
+        unless $self->{no_deprecation_msg};
     return $self->get_string("isChecked", @_) ? 'true' : 'false';
 }
 
@@ -2570,7 +2758,8 @@ Note: This function is deprecated, use the get_selected_*() methods instead.
 
 sub is_selected {
     my ($self, $locator, $option_locator) = @_;
-    warn "is_selected() is deprecated, use get_selected_*() methods\n";
+    warn "is_selected() is deprecated, use get_selected_*() methods\n"
+        unless $self->{no_deprecation_msg};
     $option_locator =~ m/^(?:(.+)=)?(.+)/;
     my $selector = $1 || 'label';
     $selector = 'indexe' if $selector eq 'index';
@@ -2596,7 +2785,8 @@ Note: This function is deprecated, use get_selected_labels() instead.
 
 sub get_selected_options {
     my $self = shift;
-    warn "get_selected_options() is deprecated, use get_selected_labels()\n";
+    warn "get_selected_options() is deprecated, use get_selected_labels()\n"
+        unless $self->{no_deprecation_msg};
     return $self->get_string_array("getSelectedLabels", @_);
 }
 
@@ -2610,7 +2800,8 @@ Note: This function is deprecated, use get_location() instead.
 
 sub get_absolute_location {
     my $self = shift;
-    warn "get_absolute_location() is deprecated, use get_location()\n";
+    warn "get_absolute_location() is deprecated, use get_location()\n"
+        unless $self->{no_deprecation_msg};
     return $self->get_string("getLocation", @_);
 }
 
@@ -2619,6 +2810,11 @@ sub get_absolute_location {
 =back
 
 =cut
+
+sub DESTROY {
+    my $self = shift;
+    $self->stop if $self->{auto_stop};
+}
 
 1;
 

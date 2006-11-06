@@ -12,6 +12,7 @@ sub new {
         port => 4444, 
         browser => '*firefox', 
         browser_url => 'http://example.com',
+        no_deprecation_msg => 1,
         @_,
     );
     my $self = $class->SUPER::new( %opts );

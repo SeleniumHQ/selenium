@@ -24,6 +24,7 @@ Good_usage: {
         $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com');
         isa_ok $sel, 'Test::WWW::Selenium';
         is $sel->{session_id}, 'SESSION_ID', 'correct session id';
+        $sel->open;
     }
 
     Test_page_title: {
@@ -51,6 +52,7 @@ Comparators: {
   for(1 .. 2) {
     $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
     my $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com');
+    $sel->open;
     is_pass: {
         local $ua->{res} = HTTP::Response->new(content => 'OK,foo');
         test_out('ok 1 - bar');
@@ -111,6 +113,7 @@ Comparators: {
 Commands: {
     local $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
     my $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com');
+    $sel->open;
     click_pass: {
         local $ua->{res} = HTTP::Response->new(content => 'OK');
         test_out('ok 1 - click, id, bar');
@@ -132,9 +135,10 @@ Commands: {
 
 no_locatior: { 
     local $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
-    for my $getter (qw(alert prompt absolute_location title)) {
+    for my $getter (qw(alert prompt location title)) {
         local $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
         my $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com');
+        $sel->open;
         my $method = "${getter}_is";
         is_pass: {
             local $ua->{res} = HTTP::Response->new(content => 'OK,foo');
@@ -158,6 +162,7 @@ Non_existant_command: {
     $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
     my $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com');
     isa_ok $sel, 'Test::WWW::Selenium';
+    $sel->open;
     $ua->{res} = HTTP::Response->new(content => 'OK');
     throws_ok { $sel->drink_coffee_ok } qr/Can't locate object method/;
     # for $sel DESTROY
@@ -167,21 +172,21 @@ Non_existant_command: {
 Relative_location: {
     local $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
     my $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com');
+    $sel->open;
     get_location: {
-        my %locations = ('http://example.com/' => '/',
-                         'http://example.com/bar' => '/bar',
-                         'http://example.com:8080/baz' => '/baz',
+        my @locations = ('http://example.com/',
+                         'http://example.com/bar',
+                         'http://example.com:8080/baz',
                         );
-        for my $abs (keys %locations) {
+        for my $abs (@locations) {
             local $ua->{res} = HTTP::Response->new(content => "OK,$abs");
-            my $relative = $sel->get_location;
-            is $relative, $locations{$abs}, "location $locations{$abs}";
+            is $sel->get_location, $abs, "location $abs";
         }
     }
     location_is_pass: {
         local $ua->{res} = HTTP::Response->new(content => 'OK,http://foo.com:23/monkey/man');
         test_out('ok 1 - bar');
-        $sel->location_is('/monkey/man', 'bar');
+        $sel->location_is('http://foo.com:23/monkey/man', 'bar');
         test_test('is pass');
     }
     location_is_fail: {
@@ -200,6 +205,7 @@ Default_test_names: {
         local $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
         my $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com', 
                                            default_names => 0);
+        $sel->open;
         local $ua->{res} = HTTP::Response->new(content => 'OK');
         test_out('ok 1');
         $sel->click_ok('id', 'bar');
@@ -209,6 +215,7 @@ Default_test_names: {
         local $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
         my $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com', 
                                            default_names => 1);
+        $sel->open;
         local $ua->{res} = HTTP::Response->new(content => 'OK');
         test_out('ok 1 - test name');
         $sel->click_ok('id', 'bar', 'test name');
@@ -217,6 +224,7 @@ Default_test_names: {
     No_test_name_provided: {
         local $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
         my $sel = Test::WWW::Selenium->new(browser_url => 'http://foo.com');
+        $sel->open;
         local $ua->{res} = HTTP::Response->new(content => 'OK');
         test_out('ok 1 - click, id, bar');
         $sel->click_ok('id', 'bar');
