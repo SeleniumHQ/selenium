@@ -343,16 +343,12 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     var originalOpen = windowToModify.open;
     windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
          var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
-         this.recordWindowOpening(openedWindow, windowName);
-        selenium.browserbot.openedWindows[windowName] = openedWindow;
-        return openedWindow;
-    };
-    
-    recordWindowOpening = function(openedWindow, windowName) {
-        LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
-        if (windowName!=null) {
-        	openedWindow["seleniumWindowName"] = windowName;
-        }
+         LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
+         if (windowName!=null) {
+         	openedWindow["seleniumWindowName"] = windowName;
+         }
+         selenium.browserbot.openedWindows[windowName] = openedWindow;
+         return openedWindow;
     };
 };
 
@@ -894,7 +890,10 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
         newUrl = currentPath + url;
 
         var openedWindow = originalOpen(newUrl, windowName, windowFeatures, replaceFlag);
-        this.recordWindowOpening(openedWindow, windowName);
+        LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
+        if (windowName!=null) {
+        	openedWindow["seleniumWindowName"] = windowName;
+        }
         return openedWindow;
     };
 };
