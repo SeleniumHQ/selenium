@@ -258,9 +258,9 @@ public class FrameGroupSeleneseQueueSet {
     }
 
     private FrameAddress findMatchingFrameAddress(Set<FrameAddress> frameAddresses, String windowName, String localFrame) {
-        for (FrameAddress justLoaded : frameAddresses) {
-            if (matchesFrameAddress(justLoaded, windowName, localFrame)) {
-                return justLoaded;
+        for (FrameAddress frameAddress : frameAddresses) {
+            if (matchesFrameAddress(frameAddress, windowName, localFrame)) {
+                return frameAddress;
             }
         }
         return null;
