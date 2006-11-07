@@ -342,10 +342,17 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     // note that in IE the "windowName" argument must be a valid javascript identifier, it seems.
     var originalOpen = windowToModify.open;
     windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
-        var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
+         var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
+         this.recordWindowOpening(openedWindow, windowName);
         selenium.browserbot.openedWindows[windowName] = openedWindow;
-        LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
         return openedWindow;
+    };
+    
+    recordWindowOpening = function(openedWindow, windowName) {
+        LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
+        if (windowName!=null) {
+        	openedWindow["seleniumWindowName"] = windowName;
+        }
     };
 };
 
@@ -886,7 +893,9 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
 
         newUrl = currentPath + url;
 
-        return originalOpen(newUrl, windowName, windowFeatures, replaceFlag);
+        var openedWindow = originalOpen(newUrl, windowName, windowFeatures, replaceFlag);
+        this.recordWindowOpening(openedWindow, windowName);
+        return openedWindow;
     };
 };
 
