@@ -41,7 +41,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         if (!outputFile.canWrite()) {
         	throw new IOException("Can't write to outputFile: " + outputFile.getAbsolutePath());
         }
-    	long timeoutInMs = 1000l * (long)timeoutInSeconds;
+    	long timeoutInMs = 1000l * timeoutInSeconds;
         if (timeoutInMs < 0) {
             System.err.println("Looks like the timeout overflowed, so resetting it to the maximum.");
             timeoutInMs = Long.MAX_VALUE;

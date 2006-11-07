@@ -1,10 +1,10 @@
 package org.openqa.selenium.server;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.IOException;
 
-import org.mortbay.http.*;
-import org.mortbay.util.*;
+import org.mortbay.http.HttpContext;
+import org.mortbay.util.Resource;
 
 public class FsResourceLocator implements ResourceLocator {
     private File rootDir;
@@ -38,12 +38,8 @@ public class FsResourceLocator implements ResourceLocator {
     }
 
     private Resource createFileResource(File file, HttpContext context) throws IOException {
-        try {
-        	Resource resource = new FutureFileResource(file.toURI().toURL());
+         	Resource resource = new FutureFileResource(file.toURI().toURL());
         	context.getResourceMetaData(resource);
-            return resource;
-        } catch (URISyntaxException e) {
-        	throw new RuntimeException(e);
-        }
-        
-    }}
+            return resource;        
+    }
+}

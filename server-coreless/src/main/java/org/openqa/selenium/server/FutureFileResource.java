@@ -84,7 +84,7 @@ public class FutureFileResource extends URLResource
     
     /* -------------------------------------------------------- */
     public FutureFileResource(URL url)
-        throws IOException, URISyntaxException
+        throws IOException
     {
         super(url,null);
 
@@ -286,10 +286,11 @@ public class FutureFileResource extends URLResource
     public boolean renameTo( Resource dest)
         throws SecurityException
     {
-        if( dest instanceof FutureFileResource)
+        if( dest instanceof FutureFileResource) {
             return _file.renameTo( ((FutureFileResource)dest)._file);
-        else
-            return false;
+        }
+        
+        return false;
     }
 
     /* --------------------------------------------------------- */
