@@ -448,7 +448,6 @@ function getSeleniumWindowNameURLparameters() {
 	    s += "&jsWindowNameVar=" + key;			// found a js variable in the opener referring to this window
         }
     }
-    debugger
     return s;
 }
 
