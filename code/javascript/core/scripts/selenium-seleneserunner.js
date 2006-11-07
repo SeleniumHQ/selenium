@@ -370,7 +370,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
         url += urlParms;
     }
     url += "&localFrameAddress=" + (proxyInjectionMode ? makeAddressToAUTFrame() : "top");
-    url += "&seleniumWindowName=" + getSeleniumWindowName();
+    url += getSeleniumWindowNameURLparameters();
     url += "&uniqueId=" + uniqueId;
 
     if (callback == null) {
@@ -408,25 +408,48 @@ function preventBrowserCaching() {
     return "&counterToMakeURsUniqueAndSoStopPageCachingInTheBrowser=" + t;
 }
 
-// Return the name of the current window in the selenium recordkeeping.
 //
-// In selenium, the additional widow has no name.
+// Return URL parameters pertaining to the name(s?) of the current window
 //
-// Additional pop-ups are associated with names given by the argument to the routine waitForPopUp.
+// In selenium, the main (i.e., first) window's name is a blank string.
 //
-// I try to arrange for widows which are opened in such manner to track their own names using the top-level property
-// seleniumWindowName, but it is possible that this property will not be available (if the widow has just reloaded
-// itself).  In this case, return "?".
+// Additional pop-ups are associated with either 1.) the name given by the 2nd parameter to window.open, or 2.) the name of a 
+// property on the opening window which points at the window.
 //
-function getSeleniumWindowName() {
-    var w = (proxyInjectionMode ? selenium.browserbot.getCurrentWindow() : window);
+// An example of #2: if window X contains JavaScript as follows:
+//
+// 	var windowABC = window.open(...)
+//
+// Note that the example JavaScript above is equivalent to
+//
+// 	window["windowABC"] = window.open(...)
+//
+function getSeleniumWindowNameURLparameters() {
+    var w = (proxyInjectionMode ? selenium.browserbot.getCurrentWindow() : window).top;
+    var s = "&seleniumWindowName=";
     if (w.opener == null) {
-        return "";
+        return s;
     }
     if (w["seleniumWindowName"] == null) {
-        return "?";
+    	s +=  'generatedSeleniumWindowName_' + Math.round(100000 * Math.random());
     }
-    return w["seleniumWindowName"];
+    else {
+    	s += w["seleniumWindowName"];
+    }
+    var windowOpener = w.opener;
+    for (key in windowOpener) {
+        var val = null;
+        try {
+    	    val = windowOpener[key];
+        }
+        catch(e) {
+        }        
+        if (val==w) {
+	    s += "&jsWindowNameVar=" + key;			// found a js variable in the opener referring to this window
+        }
+    }
+    debugger
+    return s;
 }
 
 // construct a JavaScript expression which leads to my frame (i.e., the frame containing the window
