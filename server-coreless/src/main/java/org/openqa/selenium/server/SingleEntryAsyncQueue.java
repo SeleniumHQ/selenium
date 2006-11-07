@@ -77,7 +77,6 @@ public class SingleEntryAsyncQueue {
      */
     public Object get() {
         int thisCall = countOfCallsToGet++;
-        System.out.println("get call " +thisCall);
         if (done) {
             return null;
         }
@@ -106,7 +105,6 @@ public class SingleEntryAsyncQueue {
             hasBlockedGetter = false;
             waitingThreadCount--;
         }
-        System.out.println("get wrapping up: thisCall="+thisCall+ " (clearThreshold=" + clearCallsToGetPrecedingThisThreshold+")");
         if (waitingThreadCount==0) {
             thing = null;
         }
