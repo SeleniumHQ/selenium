@@ -90,6 +90,7 @@
     </target>
 
     <target name="maven-deploy" depends="init">
+        <mvn><arg value="-N"/><arg value="deploy"/></mvn>
         <mvn-modules goal="deploy" />
     </target>
 
