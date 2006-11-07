@@ -221,6 +221,17 @@ public class FrameGroupSeleneseQueueSet {
                     }
                     return waitForLoad();
                 }
+
+                // strip off AndWait - in PI mode we handle this in the server rather than in core...
+                if (command.endsWith("AndWait")) {
+                    command = command.substring(0, command.length() - "AndWait".length());
+                    String t = getSeleneseQueue().doCommand(command, arg, value);
+                    if (!t.startsWith("OK")) {
+                        return t;
+                    }
+
+                    return waitForLoad();
+                }
             } // if (SeleniumServer.isProxyInjectionMode())
             return getSeleneseQueue().doCommand(command, arg, value);
         }
