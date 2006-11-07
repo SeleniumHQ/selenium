@@ -166,7 +166,7 @@ public class SeleniumServer {
      * @throws Exception - you know, just in case.
      */
     public static void main(String[] args) throws Exception {
-        int port = DEFAULT_PORT;
+        int port = SeleniumServer.getDefaultPort();
         boolean interactive = false;
 
         boolean htmlSuite = false;
