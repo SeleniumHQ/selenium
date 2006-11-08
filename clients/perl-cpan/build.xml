@@ -1,0 +1,83 @@
+<project name="selenium" default="generate-sources">
+	<target name="init">
+		<property environment="env" />
+		<property name="env.PERL5LIB" value="" />
+		<property name="perl.executable" value="perl" />
+		<presetdef name="perl">
+			<exec executable="${perl.executable}" failonerror="true">
+				<env key="PERL5LIB" value="${env.PERL5LIB}" />
+			</exec>
+		</presetdef>
+		<!-- Cygwin make won't work with the auto-generated Makefile -->
+		<condition property="make.executable" value="nmake">
+			<os family="windows" />
+		</condition>
+		<property name="make.executable" value="make" />
+		<presetdef name="make">
+			<exec executable="${make.executable}" failonerror="true">
+				<env key="PERL5LIB" value="${env.PERL5LIB}" />
+			</exec>
+		</presetdef>
+		<!-- <perl>
+			<arg value="-e" />
+			<arg value="print qq(@INC);" />
+		</perl>-->
+	</target>
+	<target name="generate-sources" depends="init">
+    	<ant dir=".." target="extract-xml"/>
+    	<copy file="../iedoc.xml" tofile="iedoc.xml" />
+    	<perl>
+    	    <arg value="util/create_www_selenium.pl" />
+    	</perl>
+    </target>
+    <target name="doc" depends="init, generate-sources">
+    	<mkdir dir="doc"/>
+    	<property name="outfile.www.selenium" location="doc/WWW-Selenium.html" />
+    	<perl>
+			<arg value="mypod2html.pl"/>
+			<arg value="--infile=lib/WWW/Selenium.pm" />
+			<arg value="--outfile=${outfile.www.selenium}" />
+		</perl>
+		<property name="outfile.test.www.selenium" location="doc/Test-WWW-Selenium.html" />
+    	<perl>
+			<arg value="mypod2html.pl"/>
+			<arg value="--infile=lib/Test/WWW/Selenium.pm" />
+			<arg value="--outfile=${outfile.test.www.selenium}" />
+		</perl>
+		<echo file="doc/index.html"><![CDATA[
+<html><head><title>Selenium RC PerlDoc</title></head>
+<body>
+<h1>Selenium RC PerlDoc</h1>
+<p><a href="WWW-Selenium.html">WWW::Selenium</a></p>
+<p><a href="Test-WWW-Selenium.html">Test::WWW::Selenium</a></p>
+</body></html>
+]]>
+</echo>
+    </target>
+    <target name="all" depends="generate-sources, test, doc"/>
+    <target name="make" depends="init, generate-sources">
+    	<perl>
+    		<arg value="Makefile.PL" />
+    	</perl>
+    	<make />
+    </target>
+    <target name="test" depends="init, make" unless="skiptests">
+    	<ant dir=".." target="start-server" />
+        <make failonerror="false" resultproperty="result">
+        	<arg value="test" />
+        </make>
+        <ant dir=".." target="stop-server" />
+        <condition property="build.failed">
+        	<not><equals arg1="0" arg2="${result}" /></not>
+        </condition>
+        <fail if="build.failed" message="perl tests failed!" />
+    </target>
+    <target name="clean">
+    	<mkdir dir="lib/WWW" />
+    	<delete dir="lib/WWW" />
+    	<mkdir dir="doc" />
+    	<delete dir="doc" />
+    	<mkdir dir="blib" />
+    	<delete dir="blib" />
+    </target>
+</project>
