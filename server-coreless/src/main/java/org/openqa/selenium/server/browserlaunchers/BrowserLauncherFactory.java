@@ -37,7 +37,7 @@ public class BrowserLauncherFactory {
 
     private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*custom( .*)?$");
     
-    private static final Map<String, Class> supportedBrowsers = new HashMap<String, Class>();
+    private static final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers = new HashMap<String, Class<? extends BrowserLauncher>>();
 
     static {
         supportedBrowsers.put("firefox", FirefoxCustomProfileLauncher.class);
@@ -92,7 +92,7 @@ public class BrowserLauncherFactory {
         throw browserNotSupported(browser);
     }
 
-    public static void addBrowserLauncher(String browser, Class clazz) {
+    public static void addBrowserLauncher(String browser, Class<? extends BrowserLauncher> clazz) {
         supportedBrowsers.put(browser, clazz);
     }
 
@@ -112,24 +112,18 @@ public class BrowserLauncherFactory {
         return new RuntimeException(errorMessage.toString());
     }
 
-    private BrowserLauncher createBrowserLauncher(Class c, String browserStartCommand, String sessionId, SeleneseQueue queue) {
+    private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand, String sessionId, SeleneseQueue queue) {
         try {
             try {
                 BrowserLauncher browserLauncher;
+                Constructor<? extends BrowserLauncher> ctor;
+                int port = SeleniumServer.getPortDriversShouldContact();
                 if (null == browserStartCommand) {
-                    Constructor ctor = c.getConstructor(new Class[] { int.class,
-                            String.class });
-                    Object[] args = new Object[] { new Integer(server.getPort()),
-                            sessionId };
-                    browserLauncher = (BrowserLauncher) ctor.newInstance(args);
+                    ctor = c.getConstructor(int.class, String.class);
+                    browserLauncher = ctor.newInstance(port, sessionId);
                 } else {
-                    Constructor ctor = c.getConstructor(new Class[] { int.class,
-                            String.class, String.class });
-                    Object[] args = new Object[] {
-                            new Integer(SeleniumServer
-                                    .getPortDriversShouldContact()), sessionId,
-                            browserStartCommand };
-                    browserLauncher = (BrowserLauncher) ctor.newInstance(args);
+                    ctor = c.getConstructor(int.class, String.class, String.class);
+                    browserLauncher = ctor.newInstance(port, sessionId, browserStartCommand);
                 }
 
                 if (browserLauncher instanceof SeleneseQueueAware) {
