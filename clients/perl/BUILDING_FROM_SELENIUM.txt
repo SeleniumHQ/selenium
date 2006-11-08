@@ -1,0 +1,15 @@
+This module's WWW/Selenium.pm is generated from iedoc.xml, an artifact of the
+Selenium-core build.  Because the file is generated, it is not kept in
+subversion.  To create this file, follow these steps:
+
+1) Find a iedoc.xml, and put it in the perl/ directory.
+   To download and extract iedoc.xml from the latest nightly selenium-core
+   build, run:
+   
+     perl util/fetch_iedoc_xml.pl
+
+2) Generate lib/WWW/Selenium.pm and t/selenium-core.t from iedoc.xml:
+
+     perl util/create_www_selenium.pl
+
+3) Profit!
