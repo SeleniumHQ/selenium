@@ -53,6 +53,10 @@
             	<url>selenese.html</url>
             </item>
             <item>
+            	<name>- JavaScript</name>
+            	<url>js.html</url>
+            </item>
+            <item>
             	<name>Server Command Line Options</name>
             	<url>options.html</url>
             </item>
