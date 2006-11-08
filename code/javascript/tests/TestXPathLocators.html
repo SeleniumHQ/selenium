@@ -69,12 +69,29 @@ Copyright 2004 ThoughtWorks, Inc
             <td>xpath=//a[contains(@href,'#id1')]/@class</td>
             <td>a1</td>
         </tr>
+        
+    </tbody>
+</table>
+<p>SEL-165: search for text w/ and w/out nbsp: "this is the&amp;nbsp;second element" and "this is the second element"</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+
+        <tr>
+            <td>verifyElementPresent</td>
+            <td>xpath=//a[text()="this is the&nbsp;second element"]</td>
+            <td>&nbsp;</td>
+        </tr>
         <tr>
             <td>verifyElementPresent</td>
             <td>xpath=//a[text()="this is the second element"]</td>
             <td>&nbsp;</td>
         </tr>
 
+    </tbody>
+</table>
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
 
         <tr>
             <td>verifyText</td>
