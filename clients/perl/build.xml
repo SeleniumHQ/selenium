@@ -73,8 +73,7 @@
         <fail if="build.failed" message="perl tests failed!" />
     </target>
     <target name="clean">
-    	<mkdir dir="lib/WWW" />
-    	<delete dir="lib/WWW" />
+    	<delete file="lib/WWW/Selenium.pm" />    	
     	<mkdir dir="doc" />
     	<delete dir="doc" />
     	<mkdir dir="blib" />
