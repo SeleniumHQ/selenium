@@ -41,6 +41,7 @@ sub _method_exists {
     my ($self, $method, $return_type) = @_;
     my $response = 'Something';
     $response = 'true' if $method =~ m/^(?:is_|get_whether)/i;
+    $self->open('/');
     $self->_set_mock_response_content($response);
     lives_ok { $self->$method('one', 'two') } "$method lives";
 }
