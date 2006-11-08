@@ -20,6 +20,7 @@ import java.io.*;
 import java.net.*;
 
 import org.apache.tools.ant.taskdefs.condition.*;
+import org.openqa.selenium.server.*;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
@@ -143,6 +144,10 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         if (simple) return customProfileDir.getAbsolutePath();
 
         String sourceLocationName = "/customProfileDirCUSTFFCHROME";
+        File firefoxProfileTemplate = SeleniumServer.getFirefoxProfileTemplate(); 
+        if (firefoxProfileTemplate != null) {
+            LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
+        }
         ResourceExtractor.extractResourcePath(getClass(), sourceLocationName, customProfileDir);
 
         copyRunnerHtmlFiles();

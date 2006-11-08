@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.io.*;
 
 import org.apache.tools.ant.taskdefs.condition.*;
+import org.openqa.selenium.server.*;
 
 public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
@@ -149,6 +150,10 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             return;
         }
 
+        File firefoxProfileTemplate = SeleniumServer.getFirefoxProfileTemplate(); 
+        if (firefoxProfileTemplate != null) {
+            LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
+        }
         ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFF", customProfileDir);
 
         LauncherUtils.generatePacAndPrefJs(customProfileDirectory, port, proxySeleniumTrafficOnly);

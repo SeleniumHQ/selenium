@@ -135,6 +135,7 @@ public class SeleniumServer {
     private static boolean debugMode = false;
     private static boolean alwaysProxy = false;
     private static boolean proxyInjectionMode = false;
+    private static File firefoxProfileTemplate = null;
 
     public static final int DEFAULT_PORT = 4444;
 
@@ -212,6 +213,12 @@ public class SeleniumServer {
                 SeleniumServer.reusingBrowserSessions = Boolean.FALSE;
             } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
                 SeleniumServer.reusingBrowserSessions = Boolean.TRUE;
+            } else if ("-firefoxProfileTemplate".equalsIgnoreCase(arg)) {
+                firefoxProfileTemplate = new File(getArg(args, ++i));
+                if (!firefoxProfileTemplate.exists()) {
+                    System.err.println("Firefox profile template doesn't exist: " + firefoxProfileTemplate.getAbsolutePath());
+                    System.exit(1);
+                }
             } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
                 dontInjectRegex = getArg(args, ++i);
             } else if ("-debug".equalsIgnoreCase(arg)) {
@@ -447,6 +454,7 @@ public class SeleniumServer {
         printWrappedErrorLine(INDENT, "-userExtensions <file>: indicates a JavaScript file that will be loaded into selenium");
         printWrappedErrorLine(INDENT, "-browserSessionReuse: stops re-initialization and spawning of the browser between tests");
         printWrappedErrorLine(INDENT, "-alwaysProxy: By default, we proxy as little as we can; set this flag to force all browser traffic through the proxy");
+        printWrappedErrorLine(INDENT, "-firefoxProfileTemplate <dir>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.");
         printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics");
         printWrappedErrorLine(INDENT, "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
         printWrappedErrorLine(INDENT, "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
@@ -594,6 +602,10 @@ public class SeleniumServer {
     public static int getDefaultPort() {
         String portString = System.getProperty("selenium.port", ""+SeleniumServer.DEFAULT_PORT);
         return Integer.parseInt(portString);
+    }
+    
+    public static File getFirefoxProfileTemplate() {
+        return firefoxProfileTemplate;
     }
 
     private static boolean slowResourceProperty() {

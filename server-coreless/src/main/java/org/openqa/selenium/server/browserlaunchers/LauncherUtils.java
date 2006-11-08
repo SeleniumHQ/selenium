@@ -198,7 +198,7 @@ public class LauncherUtils {
 		// Those settings should be combined into a single location.
 		File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly);
 		File prefsJS = new File(customProfileDir, "prefs.js");
-		PrintStream out = new PrintStream(new FileOutputStream(prefsJS));
+		PrintStream out = new PrintStream(new FileOutputStream(prefsJS, true));
 		// Don't ask if we want to switch default browsers
 		out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
 
