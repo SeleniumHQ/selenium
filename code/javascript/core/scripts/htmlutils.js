@@ -417,6 +417,13 @@ function getDocumentBase(doc) {
     return "";
 }
 
+function extractExceptionMessage(ex) {
+    if (ex == null) return "null exception";
+    if (ex.message != null) return ex.message;
+    if (ex.toString && ex.toString() != null) return ex.toString();
+}
+    
+
 function describe(object, delimiter) {
     var props = new Array();
     for (var prop in object) {

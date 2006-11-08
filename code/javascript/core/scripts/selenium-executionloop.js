@@ -149,7 +149,7 @@ TestLoop.prototype = {
         } catch (e) {
             var lastResult = {};
             lastResult.failed = true;
-            lastResult.failureMessage = e.message;
+            lastResult.failureMessage = extractExceptionMessage(e);
             this.commandComplete(lastResult);
             this.testComplete();
         }
