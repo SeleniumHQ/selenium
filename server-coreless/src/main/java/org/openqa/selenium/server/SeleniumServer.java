@@ -133,6 +133,7 @@ public class SeleniumServer {
 
     private static String debugURL = "";  // add special tracing for debug when this URL is requested
     private static boolean debugMode = false;
+    private static boolean alwaysProxy = false;
     private static boolean proxyInjectionMode = false;
 
     public static final int DEFAULT_PORT = 4444;
@@ -199,6 +200,8 @@ public class SeleniumServer {
                 port = Integer.parseInt(getArg(args, ++i));
             } else if ("-multiWindow".equalsIgnoreCase(arg)) {
                 multiWindow = true;
+            } else if ("-alwaysProxy".equalsIgnoreCase(arg)) {
+                alwaysProxy = true;
             } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
                 proxyInjectionModeArg = true;
             } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
@@ -433,30 +436,53 @@ public class SeleniumServer {
         if (msg != null) {
             System.err.println(msg + ":");
         }
-        System.err.println("Usage: java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive]" +
-                " [-forcedBrowserMode browserString] [-userExtensions extensionJs] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename] [-dontInjectRegex java-regex]] [-htmlSuite browserString (e.g. \"*firefox\") startURL (e.g. \"http://www.google.com\") " +
-                "suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\") resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\"]\n" +
-                "where:\n" +
-                "the argument for timeout is an integer number of seconds before we should give up\n" +
-                "the argument for port is the port number the selenium server should use (default 4444)" +
-                "\n\t-interactive puts you into interactive mode.  See the tutorial for more details" +
-                "\n\t-multiWindow puts you into a mode where the test web site executes in a separate window, and selenium supports frames" +
-                "\n\t-forcedBrowserMode (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession" +
-                "\n\t-userExtensions indicates a JavaScript file that will be loaded into selenium" +
-                "\n\t-browserSessionReuse stops re-initialization and spawning of the browser between tests" +
-                "\n\t-dontInjectRegex is an optional regular expression that proxy injection mode can use to know when to bypss injection" +
-                "\n\t-debug puts you into debug mode, with more trace information and diagnostics" +
-                "\n\t-proxyInjectionMode puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
-                "\n\t\tfor all content going to the test application.  Under this mode, multiple domains can be visited, and the " +
-                "\n\t\tfollowing additional flags are supported:" +
-                "\n\t\t\tThe -userJsInjection flag allows you to point at a JavaScript file which will then be injected into all pages.  " +
-                "\n\t\t\tThe -userContentTransformation flag takes two arguments: the first is a regular expression which is matched " +
-                "\n\t\t\t\tagainst all test HTML content; the second is a string which will replace matches.  These flags can be used any " +
-                "\n\t\t\t\tnumber of times.  A simple example of how this could be useful: if you add" +
-                "\n" +
-                "\n\t\t\t\t   -userContentTransformation https http" +
-                "\n" +
-                           "\n\t\t\t\tthen all \"https\" strings in the HTML of the test application will be changed to be \"http\".\n");
+        String INDENT = "  ";
+        String INDENT2X = INDENT+INDENT;
+        printWrappedErrorLine("", "Usage: java -jar selenium-server.jar [-interactive] [options]\n");
+        printWrappedErrorLine(INDENT, "-port <nnnn>: the port number the selenium server should use (default 4444)");
+        printWrappedErrorLine(INDENT, "-timeout <nnnn>: an integer number of seconds before we should give up");
+        printWrappedErrorLine(INDENT, "-interactive: puts you into interactive mode.  See the tutorial for more details");
+        printWrappedErrorLine(INDENT, "-multiWindow: puts you into a mode where the test web site executes in a separate window, and selenium supports frames");
+        printWrappedErrorLine(INDENT, "-forcedBrowserMode <browser>: sets the browser mode (e.g. \"*iexplore\" for all sessions, no matter what is passed to getNewBrowserSession");
+        printWrappedErrorLine(INDENT, "-userExtensions <file>: indicates a JavaScript file that will be loaded into selenium");
+        printWrappedErrorLine(INDENT, "-browserSessionReuse: stops re-initialization and spawning of the browser between tests");
+        printWrappedErrorLine(INDENT, "-alwaysProxy: By default, we proxy as little as we can; set this flag to force all browser traffic through the proxy");
+        printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics");
+        printWrappedErrorLine(INDENT, "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
+        printWrappedErrorLine(INDENT, "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
+                "for all content going to the test application.  Under this mode, multiple domains can be visited, and the " +
+                "following additional flags are supported:\n");
+        printWrappedErrorLine(INDENT2X, "-dontInjectRegex <regex>: an optional regular expression that proxy injection mode can use to know when to bypss injection");
+        printWrappedErrorLine(INDENT2X, "-userJsInjection <file>: specifies a JavaScript file which will then be injected into all pages");
+        printWrappedErrorLine(INDENT2X, "-userContentTransformation <regex> <replacement>: a regular expression which is matched " +
+                "against all test HTML content; the second is a string which will replace matches.  These flags can be used any " +
+                "number of times.  A simple example of how this could be useful: if you add \"-userContentTransformation https http\" " +
+                "then all \"https\" strings in the HTML of the test application will be changed to be \"http\".");        
+    }
+    
+    private static void printWrappedErrorLine(String prefix, String msg) {
+        printWrappedErrorLine(prefix, msg, true);
+    }
+    
+    private static void printWrappedErrorLine(String prefix, String msg, boolean first) {
+        System.err.print(prefix);
+        if (!first) {
+            System.err.print("  ");
+        }
+        int defaultWrap = 70;
+        int wrap = defaultWrap - prefix.length();
+        if (wrap > msg.length()) {
+            System.err.println(msg);
+            return;
+        }
+        String lineRaw = msg.substring(0, wrap);
+        int spaceIndex = lineRaw.lastIndexOf(' ');
+        if (spaceIndex == -1) {
+            spaceIndex = lineRaw.length();
+        }
+        String line = lineRaw.substring(0, spaceIndex);
+        System.err.println(line);
+        printWrappedErrorLine(prefix, msg.substring(spaceIndex+1), false);
     }
 
     /**
@@ -667,6 +693,10 @@ public class SeleniumServer {
 
     public static boolean isProxyInjectionMode() {
         return proxyInjectionMode;
+    }
+    
+    public static boolean isAlwaysProxy() {
+        return alwaysProxy;
     }
 
     public static int getPortDriversShouldContact() {

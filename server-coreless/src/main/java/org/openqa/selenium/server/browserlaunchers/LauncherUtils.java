@@ -72,7 +72,10 @@ public class LauncherUtils {
 	 * containing "/selenium-server/". Otherwise the proxy applies to all URLs.
 	 */
 	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
-		File proxyPAC = new File(parentDir, "proxy.pac");
+		if (SeleniumServer.isAlwaysProxy()) {
+            proxySeleniumTrafficOnly = false;
+        }
+        File proxyPAC = new File(parentDir, "proxy.pac");
 		PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
 		String defaultProxy = "DIRECT";
 		String configuredProxy = System.getProperty("http.proxyHost");
