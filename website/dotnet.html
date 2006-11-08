@@ -22,6 +22,28 @@
 
 <p>Examples: <a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/dotnet/src/IntegrationTests/GoogleTest.cs">GoogleTest.cs</a>, <a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/dotnet/src/IntegrationTests/SeleniumIntegrationTest.cs">SeleniumIntegrationTest.cs</a>.</p>
 
+<p>VB Example:<blockquote><code>
+    
+Imports Selenium<br/>
+<br/>
+Module Module1<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Sub Main()<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim sel As DefaultSelenium = New DefaultSelenium("localhost", 4444, "*iexplore", "http://www.google.com")<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel.Start()<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel.Open("http://www.google.com/webhp")<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel.Type("q", "hello world")<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel.Click("btnG")<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel.Stop()<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;End Sub<br/>
+<br/>
+End Module<br/>
+
+    
+    </code></blockquote></p>
+
 </body></html>
 
 
