@@ -550,6 +550,7 @@ BEGIN {
 
 my $sel = t::WWW::Selenium->new;
 isa_ok $sel, 't::WWW::Selenium';
+$sel->open;
 
 EOT
 }

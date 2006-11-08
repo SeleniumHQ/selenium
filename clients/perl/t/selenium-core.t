@@ -13,6 +13,7 @@ BEGIN {
 
 my $sel = t::WWW::Selenium->new;
 isa_ok $sel, 't::WWW::Selenium';
+$sel->open('/');
 
 $sel->_method_exists("click");
 $sel->_method_exists("double_click");
