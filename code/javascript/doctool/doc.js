@@ -97,6 +97,9 @@ function getFileContentOfSeleniumAPIFile(filename) {
 }
 
 var content = getFileContentOfSeleniumAPIFile(arguments[0]);
+if (arguments[1]) {
+    content += getFileContentOfSeleniumAPIFile(arguments[1]);
+}
 
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 print("<apidoc>\n");
@@ -112,6 +115,7 @@ while ((result = commandPattern.exec(content)) != null) {
     var args = extractArgList(source);
     var comment = extractInitialComment(source);
     if (comment == null || "" == comment) {
+        print ("Comment for " + name + " was blank!");
         throw new Error("Comment for " + name + " was blank!");
     }
     handleTags(name, args, comment);

@@ -984,14 +984,7 @@ objectExtend(HtmlRunnerCommandFactory.prototype, {
     initialize: function(seleniumCommandFactory, testLoop) {
         this.seleniumCommandFactory = seleniumCommandFactory;
         this.testLoop = testLoop;
-        this.handlers = {
-            pause: {
-                execute: function(selenium, command) {
-                    testLoop.pauseInterval = command.target;
-                    return {};
-                }
-            }
-        };
+        this.handlers = {};
         //todo: register commands
     },
 
@@ -1137,6 +1130,13 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
 
 });
 
+Selenium.prototype.doPause = function(waitTime) {
+    /** Wait for the specified amount of time (in milliseconds)
+     * @param waitTime the amount of time to sleep (in milliseconds)
+     */
+    // todo: should not refer to currentTest directly
+    htmlTestRunner.currentTest.pauseInterval = waitTime;
+};
 
 Selenium.prototype.doBreak = function() {
     /** Halt the currently running test, and wait for the user to press the Continue button.
@@ -1190,12 +1190,13 @@ Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
     locator.assertSelected(element);
 };
 
-/**
- * Tell Selenium to expect a failure on the next command execution. This
- * command temporarily installs a CommandFactory that generates
- * CommandHandlers that expect a failure.
- */
 Selenium.prototype.assertFailureOnNext = function(message) {
+    /**
+     * Tell Selenium to expect a failure on the next command execution. 
+     * @param message The failure message we should expect.  This command will fail if the wrong failure message appears.
+     */
+     // This command temporarily installs a CommandFactory that generates
+     // CommandHandlers that expect a failure.
     if (!message) {
         throw new Error("Message must be provided");
     }
@@ -1205,12 +1206,13 @@ Selenium.prototype.assertFailureOnNext = function(message) {
     currentTest.commandFactory = expectFailureCommandFactory;
 };
 
-/**
- * Tell Selenium to expect an error on the next command execution. This
- * command temporarily installs a CommandFactory that generates
- * CommandHandlers that expect a failure.
- */
 Selenium.prototype.assertErrorOnNext = function(message) {
+    /**
+     * Tell Selenium to expect an error on the next command execution. 
+     * @param message The error message we should expect.  This command will fail if the wrong error message appears.
+     */
+     // This command temporarily installs a CommandFactory that generates
+     // CommandHandlers that expect an error.
     if (!message) {
         throw new Error("Message must be provided");
     }

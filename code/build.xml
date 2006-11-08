@@ -90,17 +90,21 @@
     </target>
 
     <target name="generate-xml" depends="copy-sources">
-        <java jar="${docs.generation.dir}/js.jar" output="${image.dir}/doc.xml" failonerror="true" fork="true">
+        <java jar="${docs.generation.dir}/js.jar" output="${image.dir}/core/iedoc.xml" failonerror="true" fork="true">
             <arg file="${docs.generation.dir}/doc.js"/>
             <arg file="javascript/core/scripts/selenium-api.js"/>
         </java>
-        <xmlvalidate file="${image.dir}/doc.xml" lenient="true"/>
-        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc.xml" overwrite="true"/>
-        <copy file="${image.dir}/doc.xml" tofile="${image.dir}/core/iedoc-core.xml" overwrite="true"/>
+        <xmlvalidate file="${image.dir}/core/iedoc.xml" lenient="true"/>
+        <java jar="${docs.generation.dir}/js.jar" output="${image.dir}/core/iedoc-core.xml" failonerror="true" fork="true">
+            <arg file="${docs.generation.dir}/doc.js"/>
+            <arg file="javascript/core/scripts/selenium-api.js"/>
+            <arg file="javascript/core/scripts/selenium-testrunner.js"/>
+        </java>
+        <xmlvalidate file="${image.dir}/core/iedoc-core.xml" lenient="true"/>
     </target>
 
     <target name="generate-doc" depends="generate-xml">
-        <xslt in="${image.dir}/doc.xml" out="${image.dir}/reference.html" style="${docs.generation.dir}/doc2html.xml"/>
+        <xslt in="${image.dir}/core/iedoc-core.xml" out="${image.dir}/reference.html" style="${docs.generation.dir}/doc2html.xml"/>
     </target>
 
     <target name="image" depends="get-svn-revision, copy-sources, generate-doc"/>
