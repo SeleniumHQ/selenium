@@ -265,7 +265,9 @@ public class SeleneseQueue {
             .append(uniqueId);
         String s = sb.toString();
         if (s.endsWith("null")) {
-            System.out.println("yikes");
+            if (SeleniumServer.isDebugMode()) {
+                SeleniumServer.log("caller identification came in ending with null");
+            }
         }
         return s;
     }
