@@ -22,8 +22,7 @@
 	</target>
 
 	<target name="openqa-upload" description="uploads artifacts to official repository">
-		<ant antfile="build.xml" 
-		     dir="." 
+		<ant dir="code" 
 		     target="openqa-upload" />
 	</target>
 
