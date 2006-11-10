@@ -71,7 +71,7 @@ public class BrowserLauncherFactory {
         for (Iterator iterator = supportedBrowsers.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String name = (String) entry.getKey();
-            Class c = (Class) entry.getValue();
+            Class<? extends BrowserLauncher> c = (Class<? extends BrowserLauncher>) entry.getValue();
             Pattern pat = Pattern.compile("^\\*" + name + "( .*)?$");
             Matcher mat = pat.matcher(browser);
             if (mat.find()) {
@@ -104,8 +104,8 @@ public class BrowserLauncherFactory {
         }
         errorMessage.append('\n');
         errorMessage.append("Supported browsers include:\n");
-        for (Iterator iterator = supportedBrowsers.keySet().iterator(); iterator.hasNext();) {
-            String name = (String) iterator.next();
+        for (Iterator<String> iterator = supportedBrowsers.keySet().iterator(); iterator.hasNext();) {
+            String name = iterator.next();
             errorMessage.append("  *").append(name).append('\n');
         }
         errorMessage.append("  *custom\n");
