@@ -159,6 +159,7 @@ public class SeleniumServer {
     private static Boolean reusingBrowserSessions = null;
 
     private static String dontInjectRegex = null;
+    private static boolean FORCE_PROXY_CHAIN = false;
 
     /**
      * Starts up the server on the specified port (or default if no port was specified)
@@ -631,7 +632,15 @@ public class SeleniumServer {
         shutDownHook.setName("SeleniumServerShutDownHook");
         Runtime.getRuntime().addShutdownHook(shutDownHook);
     }
-    
+
+    public static boolean isForceProxyChain() {
+        return FORCE_PROXY_CHAIN;
+    }
+
+    public static void setForceProxyChain(boolean force) {
+        FORCE_PROXY_CHAIN = force;
+    }
+
     private class ShutDownHook implements Runnable {
     	SeleniumServer selenium;
     	ShutDownHook(SeleniumServer selenium) { this.selenium = selenium; } 

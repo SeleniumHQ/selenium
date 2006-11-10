@@ -123,7 +123,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     /*
      */
     public void start() throws Exception {
-        _chained = System.getProperty("http.proxyHost") != null;
+        _chained = System.getProperty("http.proxyHost") != null || SeleniumServer.isForceProxyChain();
         super.start();
     }
 
