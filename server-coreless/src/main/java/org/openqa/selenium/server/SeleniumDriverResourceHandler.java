@@ -546,7 +546,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private void setNoCacheHeaders(HttpResponse res) {
         res.setField(HttpFields.__CacheControl, "no-cache");
         res.setField(HttpFields.__Pragma, "no-cache");
-        res.setField(HttpFields.__Expires, "-1");
+        res.setField(HttpFields.__Expires, HttpFields.__01Jan1970);
     }
 
     private void setDomain(String sessionId, String domain) {

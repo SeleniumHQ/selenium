@@ -1,16 +1,12 @@
 package org.openqa.selenium.server;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.*;
 
-import org.mortbay.http.HttpException;
-import org.mortbay.http.HttpFields;
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
-import org.mortbay.http.ResourceCache;
-import org.mortbay.http.handler.ResourceHandler;
-import org.mortbay.util.Resource;
+import org.mortbay.http.*;
+import org.mortbay.http.handler.*;
+import org.mortbay.util.*;
 
 class StaticContentHandler extends ResourceHandler {
 	private static final long serialVersionUID = 8031049889874827358L;
@@ -23,12 +19,37 @@ class StaticContentHandler extends ResourceHandler {
     }
 
     public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
-        httpResponse.setField("Expires", "-1"); // never cached.
+        hackRemoveLastModifiedSince(httpRequest);
+        setNoCacheHeaders(httpResponse);
         if (pathInContext.equals("/core/SeleneseRunner.html") && SeleniumServer.isProxyInjectionMode()) {
             pathInContext = pathInContext.replaceFirst("/core/SeleneseRunner.html",
                     "/core/InjectedSeleneseRunner.html");
         }
         super.handle(pathInContext, pathParams, httpRequest, httpResponse);
+    }
+    
+    /** DGF Opera just refuses to honor my cache settings.  This will
+     * force jetty to return the document anyway.
+     */
+    private void hackRemoveLastModifiedSince(HttpRequest req) {
+        if (null == req.getField(HttpFields.__IfModifiedSince)) {
+            return;
+        }
+        try {
+            Field f = HttpMessage.class.getDeclaredField("_header");
+            f.setAccessible(true);
+            HttpFields header = (HttpFields) f.get(req);
+            header.remove(HttpFields.__IfModifiedSince);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /** Sets all the don't-cache headers on the HttpResponse */
+    private void setNoCacheHeaders(HttpResponse res) {
+        res.setField(HttpFields.__CacheControl, "no-cache");
+        res.setField(HttpFields.__Pragma, "no-cache");
+        res.setField(HttpFields.__Expires, HttpFields.__01Jan1970);
     }
 
 

@@ -70,7 +70,7 @@ public class ClassPathResource extends Resource {
 	 * prevent caching.
 	 */
 	public long lastModified() {
-		return System.currentTimeMillis() + 1000 * 3600 * 24 * 365;
+		return System.currentTimeMillis() + 1000l * 3600l * 24l * 365l;
 	}
 
 	public long length() {

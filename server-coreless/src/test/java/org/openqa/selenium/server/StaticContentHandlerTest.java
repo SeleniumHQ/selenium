@@ -23,7 +23,7 @@ public class StaticContentHandlerTest extends TestCase {
     public void testShouldMakePageNotCachedWhenHandle() throws Exception {
         HttpResponse response = new HttpResponse();
         handler.handle("", "", new HttpRequest(), response);
-        assertEquals("-1", response.getField("Expires"));
+        assertEquals("Thu, 01 Jan 1970 00:00:00 GMT", response.getField("Expires"));
     }
     
     public void testShouldDelayResourceLoadingIfSetToSlow() throws Exception {

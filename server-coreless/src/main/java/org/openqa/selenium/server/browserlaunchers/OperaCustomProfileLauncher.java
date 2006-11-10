@@ -165,12 +165,18 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         out.println("");
         out.println("[Cache]");
         out.println("Cache Docs=0");
+        out.println("Document=0");
+        out.println("Figure=0");
+        out.println("Cache Figs=0");
         
         out.println("");
         out.println("[Disk Cache]");
         out.println("Cache Docs=0");
         out.println("Enabled=0");
         out.println("Size=0");
+        out.println("Docs Modification=1");
+        out.println("Figs Modification=1");
+        out.println("Other Modification=1");
         
         out.println("");
         out.println("[State]");
@@ -180,6 +186,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         out.println("Accept License=1");
 
         out.println("[User Prefs]");
+        out.println("Automatic RAM Cache=0");
         // Put our Opera profile in the custom profile dir
         out.println("Opera Directory=" + customProfileDir.getAbsolutePath());
         out.println("Shown First Time Setup=1");
