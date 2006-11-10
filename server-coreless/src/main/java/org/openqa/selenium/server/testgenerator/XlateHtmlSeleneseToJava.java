@@ -552,6 +552,7 @@ public class XlateHtmlSeleneseToJava {
                 middle = XlateSeleneseArgument(tokens[2]) + ", \"\" + selenium.getText(" + XlateSeleneseArgument(tokens[1]) + ").length()";
             }
             else if (op.equals("Confirmation")
+                    || op.equals("HtmlSource")
                     || op.equals("Location")) {
                 middle = XlateSeleneseArgument(tokens[1]) + ", selenium.get" + op + "()";
             }
