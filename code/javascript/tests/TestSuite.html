@@ -41,6 +41,12 @@ http-equiv="content-type">
             }
         }
     }
+    
+    function isFileURL() {
+        var p = window.location.protocol;
+        var result = ("file:" == p);
+        return result;
+    }
 </script>
 </head>
 
@@ -52,6 +58,8 @@ http-equiv="content-type">
            class="selenium">
         <tbody>
 		<tr><td><b>Test Suite</b></td></tr>
+		    <tr><td><a href="./TestBrowserVersion.html">TestBrowserVersion</a></td></tr>
+		    
             <tr><td><a href="./TestJavaScriptAttributes.html">TestJavaScriptAttributes</a></td></tr>
             <tr><td><a href="./events/TestMouseEvents.html">TestMouseEvents</a></td></tr>
             <tr unless="browserVersion.isKonqueror || browserVersion.isSafari"><td><a href="./TestDragAndDrop.html">TestDragAndDrop</a></td></tr>
@@ -67,8 +75,8 @@ http-equiv="content-type">
             <tr><td><a href="./TestOpenInTargetFrame.html">TestOpenInTargetFrame</a></td></tr>
             
 
-            <tr unless="DISABLED"><td><a href="./TestCookie.html">TestCookieCommands</a></td></tr>
-            <tr><td><a href="./TestBrowserVersion.html">TestBrowserVersion</a></td></tr>
+            <tr unless="isFileURL()"><td><a href="./TestCookie.html">TestCookieCommands</a></td></tr>
+            
             <tr><td><a href="./TestOpen.html">TestOpen</a></td></tr>
             <tr><td><a href="./TestClick.html">TestClick</a></td></tr>
             <tr><td><a href="./TestClickJavascriptHref.html">TestClickJavascriptHref</a></td></tr>
@@ -101,6 +109,7 @@ http-equiv="content-type">
             <tr unless="browserVersion.isKonqueror || browserVersion.isSafari || browserVersion.isHTA"><td><a href="./TestGoBack.html">TestGoBack</a></td></tr>
             <tr unless="browserVersion.isOpera"><td><a href="./TestRefresh.html">TestRefresh</a></td></tr>
 
+            <tr><td><a href="./TestHtmlSource.html">TestHtmlSource</a></td></tr>
             <tr><td><a href="./TestComments.html">TestComments</a></td></tr>
             <tr><td><a href="./events/TestLinkEvents.html">TestLinkEvents</a></td></tr>
             <tr><td><a href="./events/TestButtonEvents.html">TestButtonEvents</a></td></tr>

@@ -1709,7 +1709,7 @@ Selenium.prototype.getHtmlSource = function() {
    *
    * @return string the entire HTML source
    */
-	return this.page().document().getElementsByTagName("html")[0].innerHTML;
+	return this.page().getDocument().getElementsByTagName("html")[0].innerHTML;
 };
 
 Selenium.prototype.doSetCursorPosition = function(locator, position) {
@@ -2102,7 +2102,7 @@ Selenium.prototype.getCookie = function() {
      *
      * @return string all cookies of the current page under test
      */
-    var doc = this.page().document();
+    var doc = this.page().getDocument();
     return doc.cookie;
 };
 
@@ -2130,7 +2130,7 @@ Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
     if (results) {
         cookie += "; path=" + results[1];
     }
-    this.page().document().cookie = cookie;
+    this.page().getDocument().cookie = cookie;
 }
 
 Selenium.prototype.doDeleteCookie = function(name,path) {
@@ -2142,7 +2142,7 @@ Selenium.prototype.doDeleteCookie = function(name,path) {
      */
     // set the expire time of the cookie to be deleted to one minute before now.
     var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
-    this.page().document().cookie = name.trim() + "=deleted; path=" + path.trim() + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    this.page().getDocument().cookie = name.trim() + "=deleted; path=" + path.trim() + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
 }
 
 
