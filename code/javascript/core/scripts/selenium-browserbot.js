@@ -388,7 +388,7 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
     }
 
     var marker = 'selenium' + new Date().getTime();
-    LOG.debug("Starting pollForLoad (" + marker + "): " + windowObject.document.location);
+    LOG.debug("Starting pollForLoad (" + marker + "): " + windowObject.location);
     this.pollingForLoad[marker] = true;
     // if this is a frame, add a load listener, otherwise, attach a poller
     var frameElement = this._getFrameElement(windowObject);
@@ -398,7 +398,7 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
         frameElement[marker] = true;
         frameElement[this.uniqueId] = marker;
     } else {
-        windowObject.document.location[marker] = true;
+        windowObject.location[marker] = true;
         windowObject[this.uniqueId] = marker;
         this.pollForLoad(this.recordPageLoad, windowObject, windowObject.document, windowObject.location, windowObject.location.href, marker);
     }
