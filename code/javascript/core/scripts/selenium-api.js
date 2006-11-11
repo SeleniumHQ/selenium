@@ -692,7 +692,7 @@ Selenium.prototype.doSubmit = function(formLocator) {
 	    	win[marker] = form;
 	    	win.setTimeout("var actuallySubmit = "+marker+".onsubmit(); if (actuallySubmit) { "+marker+".submit(); };", 0);
 	    	// pause for at least 20ms for this command to run
-	    	testLoop.waitForCondition = function () {
+	    	return function () {
 	    		return new Date().getTime() > (now + 20);
 	    	}
 	    } else {
