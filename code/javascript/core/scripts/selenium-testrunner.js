@@ -60,8 +60,9 @@ objectExtend(HtmlTestRunner.prototype, {
         }
         this.controlPanel.setHighlightOption();
         var testSuiteName = this.controlPanel.getTestSuiteName();
+        var self = this;
         if (testSuiteName) {
-            suiteFrame.load(testSuiteName, setTimeout(fnBind(this._onloadTestSuite, this), 50) );
+            suiteFrame.load(testSuiteName, function() {setTimeout(fnBind(self._onloadTestSuite, self), 50)} );
         }
     },
 
