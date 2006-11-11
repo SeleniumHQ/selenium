@@ -158,6 +158,10 @@
         <preset-selenese taskname="iexplore" browser="*iexplore" />
     </target>
     
+    <target name="iehtaTests" depends="selenese-task" if="thisIsWindows">
+        <preset-selenese taskname="iehta" browser="*iehta" />
+    </target>
+    
     <target name="konqTests" depends="selenese-task" if="thisIsUnix">
         <preset-selenese taskname="konqueror" browser="*konqueror" />
     </target>
