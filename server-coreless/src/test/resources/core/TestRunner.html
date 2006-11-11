@@ -1,5 +1,6 @@
 <html>
     <head>
+        <HTA:APPLICATION ID="SeleniumHTARunner" APPLICATIONNAME="Selenium">
     	<title>Mock Core TestRunner</title>
         <script>
             
@@ -9,6 +10,7 @@
             
                 form.id = "resultsForm";
                 form.method = "post";
+                form.target = "results";
             
                 var resultsUrl = _getQueryParameter("resultsUrl");
                 if (!resultsUrl) {
@@ -66,7 +68,7 @@
             }
             
             function _getQueryParameter(searchKey) {
-                var str = top.location.search.substr(1);
+                var str = _acquireQueryString();
                 if (str == null) return null;
                 var clauses = str.split('&');
                 for (var i = 0; i < clauses.length; i++) {
@@ -77,6 +79,39 @@
                     }
                 }
                 return null;
+            }
+            
+            function _acquireQueryString() {
+                if (_isHTA()) {
+                    var args = _extractArgs();
+                    if (args.length < 2) return null;
+                    return args[1];
+                } else {
+                    return location.search.substr(1);
+                }
+            }
+            
+            function _isHTA() {
+            	return (window.top.SeleniumHTARunner && window.top.document.location.pathname.match(/.hta$/i));
+           	}
+           	
+           	function _extractArgs() {
+                var str = SeleniumHTARunner.commandLine;
+                if (str == null || str == "") return new Array();
+                var matches = str.match(/(?:\"([^\"]+)\"|(?!\"([^\"]+)\")(\S+))/g);
+                // We either want non quote stuff ([^"]+) surrounded by quotes
+                // or we want to look-ahead, see that the next character isn't
+                // a quoted argument, and then grab all the non-space stuff
+                // this will return for the line: "foo" bar
+                // the results "\"foo\"" and "bar"
+        
+                // So, let's unquote the quoted arguments:
+                var args = new Array;
+                for (var i = 0; i < matches.length; i++) {
+                    args[i] = matches[i];
+                    args[i] = args[i].replace(/^"(.*)"$/, "$1");
+                }
+                return args;
             }
         </script>
     </head>
@@ -108,6 +143,6 @@
             </table>
         </div>
 
-        
+		<iframe name="results" src="about:blank" />        
         
     </body></html>

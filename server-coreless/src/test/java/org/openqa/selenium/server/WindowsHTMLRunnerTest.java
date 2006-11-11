@@ -1,6 +1,7 @@
 package org.openqa.selenium.server;
 
 public class WindowsHTMLRunnerTest extends HTMLRunnerTestBase {
+
     public void testFirefox() throws Exception {
         runHTMLSuite("*firefox", false);
     }
@@ -18,12 +19,7 @@ public class WindowsHTMLRunnerTest extends HTMLRunnerTestBase {
     }
 
     public void testHTA() throws Exception {
-        try {
-            runHTMLSuite("*iehta", false);
-            fail("Didn't catch expected exception");
-        } catch (UnsupportedOperationException e) {
-            System.out.println("caught expected exception");
-        }
+        runHTMLSuite("*iehta", false);
     }
 
 }

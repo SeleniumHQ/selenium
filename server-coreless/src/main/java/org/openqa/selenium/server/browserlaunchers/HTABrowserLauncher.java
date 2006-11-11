@@ -90,9 +90,11 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
     
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        throw new UnsupportedOperationException("HTA mode doesn't support running Selenium tests under Selenium RC.\n" +
-                "Just run the tests in HTA mode with Selenium Core!");
-        //launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl), "TestRunner.hta");
+        launch("http://localhost:" + port +
+                "/selenium-server/core/TestRunner.html?auto=true" +
+                "&multiWindow=" + multiWindow +
+                "&resultsUrl=http://localhost:" + port +
+                "/selenium-server/postResults&test=" + suiteUrl, "TestRunner.hta");
     }
     
     public void launchRemoteSession(String browserURL, boolean multiWindow) {
