@@ -3,7 +3,7 @@
     <property name="version" value="0.8.1-SNAPSHOT"/>
 
     <target name="all" depends="clean, install-jar, nightly-image"/>
-    <target name="all-with-tests" depends="clean, browser_bot_tests, test-allmodes, install-jar, nightly-image"/>
+    <target name="all-with-tests" depends="clean, browser_bot_tests, test-allmodes, htaTests-simple, install-jar, nightly-image"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
@@ -183,7 +183,7 @@
         <preset-selenese taskname="opera" browser="${opera.browser}" />
     </target>
 
-    <target name="htaTests" depends="image" if="thisIsWindows">
+    <target name="htaTests-simple" depends="image" if="thisIsWindows">
         <echo message="Starting HTA tests..."/>
         <property name="results.file" location="${build.dir}/results.html"/>
         <delete file="${results.file}"/>
