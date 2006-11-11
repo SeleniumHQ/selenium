@@ -6,6 +6,8 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
 
+import org.apache.tools.ant.util.*;
+
 public class HTABrowserLauncher implements BrowserLauncher {
 
     private int port;
@@ -52,7 +54,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
         String query = LauncherUtils.getQueryString(url);
         query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
         createHTAFiles();
-        String hta = (new File(dir, htaName)).getAbsolutePath();
+        String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
         System.out.println("Launching Embedded Internet Explorer...");
         AsyncExecute exe = new AsyncExecute();
         exe.setCommandline(new String[] {InternetExplorerCustomProxyLauncher.findBrowserLaunchLocation(), "-Embedding"});
@@ -73,8 +75,19 @@ public class HTABrowserLauncher implements BrowserLauncher {
     
     private void createHTAFiles() {
         dir = LauncherUtils.createCustomProfileDir(sessionId);
-        LauncherUtils.extractHTAFile(dir, port, "/core/TestRunner.html", "TestRunner.hta");
-        LauncherUtils.extractHTAFile(dir, port, "/core/SeleneseRunner.html", "SeleneseRunner.hta");
+        File coreDir = new File(dir, "core");
+        try {
+            coreDir.mkdirs();
+            ResourceExtractor.extractResourcePath(HTABrowserLauncher.class, "/core", coreDir);
+            FileUtils f = FileUtils.getFileUtils();
+            File selRunnerSrc = new File(coreDir, "SeleneseRunner.html");
+            File selRunnerDest = new File(coreDir, "SeleneseRunner.html");
+            f.copyFile(selRunnerSrc, selRunnerDest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        
     }
 
     public void close() {
