@@ -282,6 +282,21 @@ BrowserBot.prototype.openLocation = function(target) {
     this.setOpenLocation(win, target);
 };
 
+BrowserBot.prototype.openWindow = function(url, windowID) {
+    if (browserVersion.isHTA) {
+        // in HTA mode, calling .open on the window interprets the url relative to that window
+        // we need to absolute-ize the URL to make it consistent
+        if (url != "" && !/^(http|file):/.test(url)) {
+            url = window.location.pathname.replace(/[^\/\\]+$/, url);
+            url = url.replace(/\\/g, "/");
+        }
+        var child = this.getCurrentWindow().open(url, windowID);
+        selenium.browserbot.openedWindows[windowID] = child;
+    } else {
+        this.getCurrentWindow().open(url, windowID);
+    }
+};
+
 BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
     iframe.src = location;
 };
@@ -1359,7 +1374,7 @@ PageBot.prototype._modifyElementTarget = function(element) {
     if (element.target && element.target == "_blank" && element.tagName && element.tagName.toLowerCase() == "a") {
         var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
         LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
-        this.getCurrentWindow().open('', newTarget);
+        this.browserbot.openWindow('', newTarget);
         element.target = newTarget;
     }
 }

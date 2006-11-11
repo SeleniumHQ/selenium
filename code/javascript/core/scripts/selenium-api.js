@@ -746,7 +746,7 @@ Selenium.prototype.doOpenWindow = function(url, windowID) {
    * @param url the URL to open, which can be blank 
    * @param windowID the JavaScript window ID of the window to select
    */
-    this.browserbot.getCurrentWindow().open(url, windowID);
+   this.browserbot.openWindow(url, windowID);
 };
 
 Selenium.prototype.doSelectWindow = function(windowID) {
