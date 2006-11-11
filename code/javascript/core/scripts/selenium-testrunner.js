@@ -61,7 +61,7 @@ objectExtend(HtmlTestRunner.prototype, {
         this.controlPanel.setHighlightOption();
         var testSuiteName = this.controlPanel.getTestSuiteName();
         if (testSuiteName) {
-            suiteFrame.load(testSuiteName, fnBind(this._onloadTestSuite, this));
+            suiteFrame.load(testSuiteName, setTimeout(fnBind(this._onloadTestSuite, this), 50) );
         }
     },
 
@@ -216,11 +216,10 @@ var HtmlTestSuiteFrame = classCreate();
 objectExtend(HtmlTestSuiteFrame.prototype, SeleniumFrame.prototype);
 objectExtend(HtmlTestSuiteFrame.prototype, {
 
-    _onLoad: function() {
-        this.currentTestSuite = new HtmlTestSuite(this.getDocument());
-    },
-
     getCurrentTestSuite: function() {
+        if (!this.currentTestSuite) {
+            this.currentTestSuite = new HtmlTestSuite(this.getDocument());
+        }
         return this.currentTestSuite;
     }
 
