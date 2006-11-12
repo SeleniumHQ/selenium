@@ -6,4 +6,4 @@ Because of javascript security settings standard in most browsers, Selenium need
 Once deployed to the server, to run Selenium's self-tests, check out:
 http://<webservername>:<port>/selenium/TestRunner.html
 
-Read the website for more details. (http://selenium.thoughtworks.com)
+Read the website for more details. (http://www.openqa.org/selenium-core/usage.html)
