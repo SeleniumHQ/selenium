@@ -1016,6 +1016,8 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
         // used for selenium tests in javascript
         this.currentItem = null;
         this.commandAgenda = new Array();
+        this.expectedFailure = null;
+        this.expectedFailureType = null;
 
         this.htmlTestCase.reset();
 
@@ -1059,6 +1061,7 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
     },
 
     commandComplete : function(result) {
+        this._checkExpectedFailure(result);
         if (result.failed) {
             this.metrics.numCommandFailures += 1;
             this._recordFailure(result.failureMessage);
@@ -1070,7 +1073,41 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
         }
     },
 
+    _checkExpectedFailure : function(result) {
+        if (this.expectedFailure != null) {
+            if (this.expectedFailureJustSet) {
+                this.expectedFailureJustSet = false;
+                return;
+            }
+            if (result.passed) {
+                result.passed = false;
+                result.failed = true;
+                result.failureMessage = "Expected " + this.expectedFailureType + " did not occur.";
+            } else {
+                if (PatternMatcher.matches(this.expectedFailure, result.failureMessage)) {
+                    result.failed = false;
+                    result.passed = true;
+                } else {
+                    result.failed = true;
+                    result.failureMessage = "Expected " + this.expectedFailureType + " message '" + this.expectedFailure
+                                            + "' but was '" + result.failureMessage + "'";
+                }
+            }
+            this.expectedFailure = null;
+            this.expectedFailureType = null;
+        }
+    },
+
     commandError : function(errorMessage) {
+        var tempResult = {};
+        tempResult.passed = false;
+        tempResult.failed = false;
+        tempResult.failureMessage = errorMessage;
+        this._checkExpectedFailure(tempResult);
+        if (tempResult.passed) {
+            this.currentRow.markDone();
+            return true;
+        }
         this.metrics.numCommandErrors += 1;
         this._recordFailure(errorMessage);
     },
@@ -1135,7 +1172,7 @@ Selenium.prototype.doPause = function(waitTime) {
      * @param waitTime the amount of time to sleep (in milliseconds)
      */
     // todo: should not refer to currentTest directly
-    htmlTestRunner.currentTest.pauseInterval = waitTime;
+    currentTest.pauseInterval = waitTime;
 };
 
 Selenium.prototype.doBreak = function() {
@@ -1195,15 +1232,13 @@ Selenium.prototype.assertFailureOnNext = function(message) {
      * Tell Selenium to expect a failure on the next command execution. 
      * @param message The failure message we should expect.  This command will fail if the wrong failure message appears.
      */
-     // This command temporarily installs a CommandFactory that generates
-     // CommandHandlers that expect a failure.
     if (!message) {
-        throw new Error("Message must be provided");
+        throw new SeleniumError("Message must be provided");
     }
 
-    var expectFailureCommandFactory =
-        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "failure", executeCommandAndReturnFailureMessage);
-    currentTest.commandFactory = expectFailureCommandFactory;
+    currentTest.expectedFailure = message;
+    currentTest.expectedFailureType = "failure";
+    currentTest.expectedFailureJustSet = true;
 };
 
 Selenium.prototype.assertErrorOnNext = function(message) {
@@ -1214,59 +1249,11 @@ Selenium.prototype.assertErrorOnNext = function(message) {
      // This command temporarily installs a CommandFactory that generates
      // CommandHandlers that expect an error.
     if (!message) {
-        throw new Error("Message must be provided");
+        throw new SeleniumError("Message must be provided");
     }
 
-    var expectFailureCommandFactory =
-        new ExpectFailureCommandFactory(currentTest.commandFactory, message, "error", executeCommandAndReturnErrorMessage);
-    currentTest.commandFactory = expectFailureCommandFactory;
+    currentTest.expectedFailure = message;
+    currentTest.expectedFailureType = "error";
+    currentTest.expectedFailureJustSet = true;
 };
 
-function executeCommandAndReturnFailureMessage(baseHandler, originalArguments) {
-    var baseResult = baseHandler.execute.apply(baseHandler, originalArguments);
-    if (baseResult.passed) {
-        return null;
-    }
-    return baseResult.failureMessage;
-};
-
-function executeCommandAndReturnErrorMessage(baseHandler, originalArguments) {
-    try {
-        baseHandler.execute.apply(baseHandler, originalArguments);
-        return null;
-    }
-    catch (expected) {
-        return expected.message;
-    }
-};
-
-function ExpectFailureCommandHandler(baseHandler, originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor) {
-    this.execute = function() {
-        var baseFailureMessage = decoratedExecutor(baseHandler, arguments);
-        var result = {};
-        if (!baseFailureMessage) {
-            result.failed = true;
-            result.failureMessage = "Expected " + errorType + " did not occur.";
-        }
-        else {
-            if (! PatternMatcher.matches(expectedErrorMessage, baseFailureMessage)) {
-                result.failed = true;
-                result.failureMessage = "Expected " + errorType + " message '" + expectedErrorMessage
-                                        + "' but was '" + baseFailureMessage + "'";
-            }
-            else {
-                result.passed = true;
-                result.result = baseFailureMessage;
-            }
-        }
-        currentTest.commandFactory = originalCommandFactory;
-        return result;
-    };
-}
-
-function ExpectFailureCommandFactory(originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor) {
-    this.getCommandHandler = function(name) {
-        var baseHandler = originalCommandFactory.getCommandHandler(name);
-        return new ExpectFailureCommandHandler(baseHandler, originalCommandFactory, expectedErrorMessage, errorType, decoratedExecutor);
-    };
-};

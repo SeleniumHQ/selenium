@@ -34,7 +34,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- Click a regular link -->
+  </tbody>
+</table>
+    <p>Click a regular link</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
     <tr>
       <td>verifyText</td>
       <td>link</td>
@@ -60,8 +64,12 @@ Copyright 2004 ThoughtWorks, Inc
       <td>Click Page 1</td>
       <td>&nbsp;</td>
     </tr>
-
-    <!-- Click a link with an enclosed image -->
+</tbody>
+</table>
+    <p>Click a link with an enclosed image</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
     <tr>
       <td>clickAndWait</td>
       <td>linkWithEnclosedImage</td>
@@ -77,8 +85,12 @@ Copyright 2004 ThoughtWorks, Inc
       <td>previousPage</td>
       <td>&nbsp;</td>
     </tr>
-
-    <!-- Click an image enclosed by a link -->
+</tbody>
+</table>
+    <p>Click an image enclosed by a link</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
     <tr>
       <td>clickAndWait</td>
       <td>enclosedImage</td>
@@ -94,8 +106,12 @@ Copyright 2004 ThoughtWorks, Inc
       <td>previousPage</td>
       <td>&nbsp;</td>
     </tr>
-
-    <!-- Click a link with an href anchor target within this page -->
+</tbody>
+</table>
+    <p>Click a link with an href anchor target within this page</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
     <tr>
       <td>click</td>
       <td>linkToAnchorOnThisPage</td>
@@ -106,14 +122,39 @@ Copyright 2004 ThoughtWorks, Inc
       <td>Click Page 1</td>
       <td>&nbsp;</td>
     </tr>
+    <tr>
+      <td>assertErrorOnNext</td>
+      <td>Timed out after 500ms</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>waitForPageToLoad</td>
+      <td>500</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>setTimeout</td>
+      <td>30000</td>
+      <td>&nbsp;</td>
+    </tr>
+</tbody>
+</table>
 
-    <!-- Click a link where onclick returns false -->
+    <p>Click a link where onclick returns false</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
     <tr>
       <td>click</td>
       <td>linkWithOnclickReturnsFalse</td>
       <td></td>
     </tr>
-    <!-- Need a pause to give the page a chance to reload (so this test can fail) -->
+</tbody>
+</table>
+    <p>Need a pause to give the page a chance to reload (so this test can fail)</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
     <tr><td>pause</td><td>300</td><td/></tr>
     <tr>
       <td>verifyTitle</td>
@@ -131,7 +172,6 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
 
-    <!-- TODO Click a link with a target attribute -->
 
   </tbody>
 </table>

@@ -78,9 +78,11 @@ TestLoop.prototype = {
             this._executeCurrentCommand();
             this.continueTestWhenConditionIsTrue();
         } catch (e) {
-            this._handleCommandError(e);
-            this._testComplete();
-            return;
+            if (!this._handleCommandError(e)) {
+                this._testComplete();
+            } else {
+                this.continueTest();
+            }
         }
     },
 
@@ -107,11 +109,10 @@ TestLoop.prototype = {
         command.target = selenium.preprocessParameter(command.target);
         command.value = selenium.preprocessParameter(command.value);
         LOG.debug("Command found, going to execute " + command.command);
-        var result = handler.execute(selenium, command);
-        LOG.debug("Command complete");
-        this.commandComplete(result);
+        this.result = handler.execute(selenium, command);
+        
 
-        this.waitForCondition = result.terminationCondition;
+        this.waitForCondition = this.result.terminationCondition;
 
     },
 
@@ -122,10 +123,10 @@ TestLoop.prototype = {
             if (e.message) {
                 msg += "  The error message is: " + e.message;
             }
-            this.commandError(msg);
+            return this.commandError(msg);
         } else {
             LOG.error(e.message);
-            this.commandError(e.message);
+            return this.commandError(e.message);
         }
     },
 
@@ -138,20 +139,27 @@ TestLoop.prototype = {
         //LOG.debug("currentTest.continueTestWhenConditionIsTrue()");
         selenium.browserbot.runScheduledPollers();
         try {
-            if (this.waitForCondition == null || this.waitForCondition()) {
+            if (this.waitForCondition == null) {
+                LOG.debug("null condition; let's continueTest()");
+                LOG.debug("Command complete");
+                this.commandComplete(this.result);
+                this.continueTest();
+            } else if (this.waitForCondition()) {
                 LOG.debug("condition satisfied; let's continueTest()");
                 this.waitForCondition = null;
+                LOG.debug("Command complete");
+                this.commandComplete(this.result);
                 this.continueTest();
             } else {
                 //LOG.debug("waitForCondition was false; keep waiting!");
                 window.setTimeout(fnBind(this.continueTestWhenConditionIsTrue, this), 100);
             }
         } catch (e) {
-            var lastResult = {};
-            lastResult.failed = true;
-            lastResult.failureMessage = extractExceptionMessage(e);
-            this.commandComplete(lastResult);
-            this.testComplete();
+            this.result = {};
+            this.result.failed = true;
+            this.result.failureMessage = extractExceptionMessage(e);
+            this.commandComplete(this.result);
+            this.continueTest();
         }
     },
 
