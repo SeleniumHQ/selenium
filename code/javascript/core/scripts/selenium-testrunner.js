@@ -1085,8 +1085,14 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
                 result.failureMessage = "Expected " + this.expectedFailureType + " did not occur.";
             } else {
                 if (PatternMatcher.matches(this.expectedFailure, result.failureMessage)) {
-                    result.failed = false;
-                    result.passed = true;
+                    var failureType = result.failed ? "failure" : "error";
+                    if (failureType == this.expectedFailureType) {
+                        result.failed = false;
+                        result.passed = true;
+                    } else {
+                        result.failed = true;
+                        result.failureMessage = "Expected "+this.expectedFailureType+", but "+failureType+" occurred instead";
+                    }
                 } else {
                     result.failed = true;
                     result.failureMessage = "Expected " + this.expectedFailureType + " message '" + this.expectedFailure
@@ -1108,6 +1114,7 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
             this.currentRow.markDone();
             return true;
         }
+        errorMessage = tempResult.failureMessage;
         this.metrics.numCommandErrors += 1;
         this._recordFailure(errorMessage);
     },

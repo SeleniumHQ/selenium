@@ -23,6 +23,7 @@ Copyright 2004 ThoughtWorks, Inc
     <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
 <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/lib/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-api.js"></script>
@@ -33,13 +34,33 @@ Copyright 2004 ThoughtWorks, Inc
     function setUp() {
         selenium = new Selenium();
         commandFactory = new Mock();
-
-        currentTest = {};
-        currentTest.commandFactory = commandFactory;
+        
+        testCase = new Mock();
+        testCase.expects("reset");
+        
+        testCase.testDocument = {
+            getElementById : function() {}
+        }
+        
+        global = {};
+        
+        var metrics = {
+            numCommandErrors : 0
+        };
+        
+        htmlTestRunner = {
+            markFailed : function(){}
+        };
+        
+        currentTest = new HtmlRunnerTestLoop(testCase, metrics, commandFactory);
+        currentTest.currentRow = {
+            markDone : function() {}
+        }
     };
 
     function verifyMocks() {
         commandFactory.verify();
+        testCase.verify();
     }
 
     function testMustProvideMessageToExpectFailure() {
@@ -52,29 +73,15 @@ Copyright 2004 ThoughtWorks, Inc
         fail("Message is a required parameter");
     };
 
-    function testCommandFactoryIsTemporarilyReplacedByExpectFailureOnNext() {
-        var failingCommand = new Mock();
-        failingCommand.expects("execute").returns({failed:true, failureMessage: "Expected failure message"});
-        commandFactory.expects("getCommandHandler", "cmd").returns(failingCommand);
-
-        selenium.assertFailureOnNext("Expected failure message");
-
-        assertTrue(commandFactory != currentTest.commandFactory);
-
-        currentTest.commandFactory.getCommandHandler("cmd").execute();
-
-        assertTrue(commandFactory === currentTest.commandFactory);
-
-        verifyMocks();
-    };
-
     function testExpectFailureSucceedsWhenSubsequentCommandFails() {
         var failingCommand = new Mock();
         failingCommand.expects("execute").returns({failed:true, failureMessage: "Expected failure message"});
         commandFactory.expects("getCommandHandler", "cmd").returns(failingCommand);
 
         selenium.assertFailureOnNext("Expected failure message");
+        currentTest.expectedFailureJustSet = false;
         var result = currentTest.commandFactory.getCommandHandler("cmd").execute();
+        currentTest._checkExpectedFailure(result);
         assertTrue(result.passed);
         verifyMocks();
     };
@@ -82,11 +89,12 @@ Copyright 2004 ThoughtWorks, Inc
     function testExpectFailureFailsWhenSubsequentCommandFailsWithTheWrongMessage() {
         var failingCommand = new Mock();
         failingCommand.expects("execute").returns({failed:true, failureMessage: "foo"});
-        var originalCommandFactory = currentTest.commandFactory;
-        originalCommandFactory.expects("getCommandHandler", "cmd").returns(failingCommand);
+        commandFactory.expects("getCommandHandler", "cmd").returns(failingCommand);
 
         selenium.assertFailureOnNext("bar");
+        currentTest.expectedFailureJustSet = false;
         var result = currentTest.commandFactory.getCommandHandler("cmd").execute();
+        currentTest._checkExpectedFailure(result);
         assertTrue(result.failed);
         assertEquals("Expected failure message 'bar' but was 'foo'", result.failureMessage);
         verifyMocks();
@@ -95,30 +103,25 @@ Copyright 2004 ThoughtWorks, Inc
     function testExpectFailureFailsWhenSubsequentCommandPasses() {
         var successCommand = new Mock();
         successCommand.expects("execute").returns({passed:true});
-        var originalCommandFactory = currentTest.commandFactory;
-        originalCommandFactory.expects("getCommandHandler", "foo").returns(successCommand);
+        commandFactory.expects("getCommandHandler", "foo").returns(successCommand);
 
         selenium.assertFailureOnNext("expectedFailureMessage");
+        currentTest.expectedFailureJustSet = false;
         var result = currentTest.commandFactory.getCommandHandler("foo").execute();
+        currentTest._checkExpectedFailure(result);
         assertTrue(result.failed);
         assertEquals("Expected failure did not occur.", result.failureMessage);
         verifyMocks();
     };
 
-    function testExpectFailurePropogatesCommandErrors() {
-        var errorCommand = new Mock();
-        errorCommand.expects("execute").andThrows("error message");
-        commandFactory.expects("getCommandHandler", "foo").returns(errorCommand);
-
-        selenium.assertFailureOnNext("Expected failure message");
-        try {
-            currentTest.commandFactory.getCommandHandler("foo").execute();
-        }
-        catch (expected) {
-            verifyMocks();
-            return;
-        }
-        fail("Command error should not be caught by expect failure.");
+    function testExpectFailureFailsWhenSubsequentCommandErrors() {
+        var msg = "error message";
+        selenium.assertFailureOnNext(msg);
+        currentTest.expectedFailureJustSet = false;
+        testCase.expects("addErrorMessage", "Expected failure, but error occurred instead", currentTest.currentRow);
+        var handled = currentTest.commandError("error message");
+        assertTrue(!handled);
+        verifyMocks();
     };
 
     function testMustProvideMessageToExpectError() {
@@ -131,41 +134,21 @@ Copyright 2004 ThoughtWorks, Inc
         fail("Message is a required parameter");
     };
 
-    function testCommandFactoryIsTemporarilyReplacedByExpectErrorOnNext() {
-        var errorCommand = new Mock();
-        errorCommand.expects("execute").andThrows("error message");
-        commandFactory.expects("getCommandHandler", "cmd").returns(errorCommand);
-
-        selenium.assertErrorOnNext("Error: error message");
-
-        assertTrue(commandFactory != currentTest.commandFactory);
-
-        currentTest.commandFactory.getCommandHandler("cmd").execute();
-
-        assertTrue(commandFactory === currentTest.commandFactory);
-        verifyMocks();
-    };
-
     function testExpectErrorSucceedsWhenSubsequentCommandErrors() {
-        var errorCommand = new Mock();
-        errorCommand.expects("execute").andThrows("error message");
-        commandFactory.expects("getCommandHandler", "cmd").returns(errorCommand);
-
-        selenium.assertErrorOnNext("error message");
-        var result = currentTest.commandFactory.getCommandHandler("cmd").execute();
-        assertTrue(result.passed);
+        var msg = "error message";
+        selenium.assertErrorOnNext(msg);
+        currentTest.expectedFailureJustSet = false;
+        var handled = currentTest.commandError("error message");
+        assertTrue(handled);
         verifyMocks();
     };
 
     function testExpectErrorFailsWhenSubsequentCommandErrorsWithTheWrongMessage() {
-        var errorCommand = new Mock();
-        errorCommand.expects("execute").andThrows("actualError");
-        commandFactory.expects("getCommandHandler", "cmd").returns(errorCommand);
-
         selenium.assertErrorOnNext("expectedError");
-        var result = currentTest.commandFactory.getCommandHandler("cmd").execute();
-        assertTrue(result.failed);
-        assertEquals("Expected error message 'expectedError' but was 'actualError'", result.failureMessage);
+        currentTest.expectedFailureJustSet = false;
+        testCase.expects("addErrorMessage", "Expected error message 'expectedError' but was 'actualError'", currentTest.currentRow);
+        var handled = currentTest.commandError("actualError");
+        assertTrue(!handled);
         verifyMocks();
     };
 
@@ -175,7 +158,9 @@ Copyright 2004 ThoughtWorks, Inc
         commandFactory.expects("getCommandHandler", "foo").returns(successCommand);
 
         selenium.assertErrorOnNext("Expected error message");
+        currentTest.expectedFailureJustSet = false;
         var result = currentTest.commandFactory.getCommandHandler("foo").execute();
+        currentTest._checkExpectedFailure(result);
         assertTrue(result.failed);
         assertEquals("Expected error did not occur.", result.failureMessage);
         verifyMocks();
@@ -187,9 +172,12 @@ Copyright 2004 ThoughtWorks, Inc
         commandFactory.expects("getCommandHandler", "cmd").returns(failingCommand);
 
         selenium.assertErrorOnNext("message");
+        currentTest.expectedFailureJustSet = false;
         var result = currentTest.commandFactory.getCommandHandler("cmd").execute();
+        currentTest._checkExpectedFailure(result);
         assertTrue(result.failed);
-        assertEquals("Expected error did not occur.", result.failureMessage);
+        
+        assertEquals("Expected error, but failure occurred instead", result.failureMessage);
         verifyMocks();
     };
   </script>
