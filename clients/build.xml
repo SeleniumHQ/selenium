@@ -274,6 +274,14 @@
         <copy file="java/easymode/test.classpath" tofile="dist-image/java/source/test/.classpath" />
     </target>
     
+    <target name="pull-jars" depends="maven-tasks">
+        <mavendeps pathId="pull">
+            <dependency groupId="org.openqa.selenium.server" artifactId="selenium-server" version="${version}" scope="runtime" />
+            <dependency groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" version="${version}" scope="runtime" />
+            <dependency groupId="org.openqa.selenium.client-drivers" artifactId="selenium-java-client-driver" version="${version}" scope="runtime" />
+        </mavendeps>
+    </target>
+    
     <target name="test-ruby">
         <ant dir="ruby" target="all"/>
     </target>

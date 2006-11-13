@@ -92,6 +92,8 @@
     <target name="maven-deploy" depends="init">
         <mvn><arg value="-N"/><arg value="deploy"/></mvn>
         <mvn-modules goal="deploy" />
+        <!-- Pull them back down so they don't clutter our build in the future -->
+        <ant dir="clients" target="pull-jars"/>
     </target>
 
     <target name="maven-deploy-skiptest" depends="maven-skiptest-init,maven-deploy" />
