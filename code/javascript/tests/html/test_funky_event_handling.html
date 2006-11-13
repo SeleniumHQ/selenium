@@ -1,0 +1,22 @@
+<html>
+<head>
+   <script type="text/javascript">
+       function onLoadFunc() {
+           var parent = document.getElementById("clickMeParent");
+
+           parent.addEventListener('click', function(evt) {
+               evt.preventDefault();
+               evt.stopPropagation();
+           }, false);
+       }
+   </script>
+</head>
+
+<body onload="onLoadFunc()">
+
+<div id="clickMeParent">
+    <a id="clickMe" href="test_funk_event_handling_shouldnt_go_here.html">Click Me</a>
+</div>
+
+</body>
+</html>

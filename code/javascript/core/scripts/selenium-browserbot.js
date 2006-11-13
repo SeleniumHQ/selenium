@@ -1385,10 +1385,13 @@ MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clien
 
     // Add an event listener that detects if the default action has been prevented.
     // (This is caused by a javascript onclick handler returning false)
-    var preventDefault = false;
+    // we capture the whole event, rather than the getPreventDefault() state at the time,
+    // because we need to let the entire event bubbling and capturing to go through
+    // before making a decision on whether we should force the href
+    var savedEvent = null;
 
     element.addEventListener(eventType, function(evt) {
-        preventDefault = evt.getPreventDefault();
+        savedEvent = evt;
     }, false);
     
     this._modifyElementTarget(element);
@@ -1398,7 +1401,7 @@ MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clien
 
     // Perform the link action if preventDefault was set.
     // In chrome URL, the link action is already executed by triggerMouseEvent.
-    if (!browserVersion.isChrome && !preventDefault) {
+    if (!browserVersion.isChrome && savedEveng != null && !savedEvent.getPreventDefault()) {
         var targetWindow = this.browserbot._getTargetWindow(element);
         if (element.href) {
             targetWindow.location.href = element.href;
