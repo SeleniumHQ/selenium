@@ -64,7 +64,6 @@ function attachSliderEvents() {
 			divs[i].val=slider[divNum].val;
 			divs[i].onchange=slider[divNum].onchange;
 			divs[i].num=divNum;
-
 			addAnEvent(divs[i], 'mousedown', function(e){
 				sliderClick(e);
 				var el=sliderFromEvent(e);
@@ -72,10 +71,33 @@ function attachSliderEvents() {
 				activeSlider=el.num;
 				stopEvent(e);
 			});
-			addAnEvent(divs[i], 'mouseup', function(e){
+                        
+                        
+                        // to prove that http://jira.openqa.org/browse/SEL-280 is in fact fixed, assign directly to onmouseup 
+                        // (instead of using the addAnEvent code below; this used to cause trouble because the global event var was not getting set)
+                        	divs[i].onmouseup = function(e){
+                        
+                        		if (e==null) e = event;	// only needed when we do direct assignment to onmouseup
+                                        
 				activeSlider=-1;
 				stopEvent(e);
-			});
+			};
+			//addAnEvent(divs[i], 'mouseup', function(e){
+			//	activeSlider=-1;
+			//	stopEvent(e);
+			//});
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
 		}
 	}
 }
@@ -91,6 +113,13 @@ function stopEvent(event) {
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 addAnEvent(window, 'load', attachSliderEvents);
+
+
+
 addAnEvent(document, 'mousemove', sliderMouseMove);
+//document.onmousemove = sliderMouseMove;
+
+
+
 var activeSlider=-1;
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
