@@ -219,9 +219,9 @@ function xmlDecode(text) {
 
 // Sets the text in this element
 function setText(element, text) {
-    if (element.textContent) {
+    if (element.textContent != null) {
         element.textContent = text;
-    } else if (element.innerText) {
+    } else if (element.innerText != null) {
         element.innerText = text;
     }
 }
