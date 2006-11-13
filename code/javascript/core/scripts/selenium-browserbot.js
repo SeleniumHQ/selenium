@@ -1366,7 +1366,7 @@ PageBot.prototype.clickElement = function(element, clientX, clientY) {
        this.fireEventOnElement("click", element, clientX, clientY);
 };
     
-BrowserBot.prototype.doubleClickElement = function(element, clientX, clientY) {
+PageBot.prototype.doubleClickElement = function(element, clientX, clientY) {
        this.fireEventOnElement("dblclick", element, clientX, clientY);
 };
 
@@ -1521,7 +1521,12 @@ IEPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, c
     };
     this.getCurrentWindow().attachEvent("onbeforeunload", pageUnloadDetector);
     this._modifyElementTarget(element);
-    element[eventType]();
+    if (element[eventType]) {
+    	element[eventType]();
+    }
+    else {
+        triggerMouseEvent(element, eventType, true, clientX, clientY);
+    }
 
 
     // If the page is going to unload - still attempt to fire any subsequent events.
