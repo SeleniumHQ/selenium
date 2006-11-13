@@ -246,10 +246,16 @@ function triggerEvent(element, eventType, canBubble, controlKeyDown, altKeyDown,
     else {
         var evt = document.createEvent('HTMLEvents');
         
-        evt.shiftKey = shiftKeyDown;
-        evt.metaKey = metaKeyDown;
-        evt.altKey = altKeyDown;
-        evt.ctrlKey = controlKeyDown;
+        try {
+            evt.shiftKey = shiftKeyDown;
+            evt.metaKey = metaKeyDown;
+            evt.altKey = altKeyDown;
+            evt.ctrlKey = controlKeyDown;
+        } catch (e) {
+            // On Firefox 1.0, you can only set these during initMouseEvent or initKeyEvent
+            // we'll have to ignore them here
+            LOG.exception(e);
+        }
         
         evt.initEvent(eventType, canBubble, true);
         element.dispatchEvent(evt);
