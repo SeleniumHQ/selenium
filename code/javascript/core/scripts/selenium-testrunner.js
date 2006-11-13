@@ -179,7 +179,11 @@ objectExtend(SeleniumFrame.prototype, {
             styleLink.href = tempLink.href;
         } else {
             // this works in every browser (except Firefox in chrome mode)
-            styleLink.href = window.location.pathname.replace(/[^\/\\]+$/, "selenium-test.css");
+            var styleSheetPath = window.location.pathname.replace(/[^\/\\]+$/, "selenium-test.css");
+            if (browserVersion.isIE && window.location.protocol == "file:") {
+                styleSheetPath = "file://" + styleSheetPath;
+            }
+            styleLink.href = styleSheetPath;
         }
         head.appendChild(styleLink);
     },
