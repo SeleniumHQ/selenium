@@ -226,9 +226,6 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
    * causes a new page to load (like a link usually does), call
    * waitForPageToLoad.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
-   * get null event arguments.  Read the bug for more details, including a workaround.
-   *
    * @param locator an element locator
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
@@ -244,9 +241,6 @@ Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
    * Doubleclicks on a link, button, checkbox or radio button. If the action
    * causes a new page to load (like a link usually does), call
    * waitForPageToLoad.
-   *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
-   * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locator an element locator
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
@@ -440,9 +434,6 @@ Selenium.prototype.doMouseDownAt = function(locator, coordString) {
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
-   * get null event arguments.  Read the bug for more details, including a workaround.
-   *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
@@ -469,9 +460,6 @@ Selenium.prototype.doMouseUpAt = function(locator, coordString) {
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
-   * get null event arguments.  Read the bug for more details, including a workaround.
-   *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
@@ -497,9 +485,6 @@ Selenium.prototype.doMouseMoveAt = function(locator, coordString) {
 	/**
    * Simulates a user pressing the mouse button (without releasing it yet) on
    * the specified element.
-   *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
-   * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
@@ -1371,9 +1356,6 @@ Selenium.prototype.getAttribute = function(attributeLocator) {
 	/**
    * Gets the value of an element attribute.
    *
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
-   * get null event arguments.  Read the bug for more details, including a workaround.
-   *
    * @param attributeLocator an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
    * @return string the value of the specified attribute
    */
@@ -1594,9 +1576,6 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
    
 Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
    /** Drags an element a certain distance and then drops it
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
-   * get null event arguments.  Read the bug for more details, including a workaround.
-   *
    * @param locator an element locator
    * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    */
@@ -1632,8 +1611,6 @@ Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
 
 Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, locatorOfDragDestinationObject) {
 /** Drags an element and drops it on another element
-   * Beware of http://jira.openqa.org/browse/SEL-280, which will lead some event handlers to
-   * get null event arguments.  Read the bug for more details, including a workaround.
    *
    * @param locatorOfObjectToBeDragged an element to be dragged
    * @param locatorOfDragDestinationObject an element whose location (i.e., whose top left corner) will be the point where locatorOfObjectToBeDragged  is dropped
