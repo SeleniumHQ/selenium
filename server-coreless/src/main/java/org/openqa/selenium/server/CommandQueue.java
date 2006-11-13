@@ -31,7 +31,7 @@ import java.util.concurrent.locks.Lock;
  * @author Paul Hammant
  * @version $Revision: 734 $
  */
-public class SeleneseQueue {
+public class CommandQueue {
     private SingleEntryAsyncQueue commandHolder;
     private SingleEntryAsyncQueue commandResultHolder;
     private String sessionId;
@@ -46,7 +46,7 @@ public class SeleneseQueue {
     
     static private int millisecondDelayBetweenOperations;
 
-    public SeleneseQueue(String sessionId, FrameAddress frameAddress, Lock dataLock) {
+    public CommandQueue(String sessionId, FrameAddress frameAddress, Lock dataLock) {
         this.sessionId = sessionId;
         this.frameAddress  = frameAddress;
         this.dataLock = dataLock;
@@ -69,10 +69,10 @@ public class SeleneseQueue {
     /** Schedules the specified command to be retrieved by the next call to
      * handle command result, and returns the result of that command.
      * 
-     * @param command - the Selenese command verb
-     * @param field - the first Selenese argument (meaning depends on the verb)
-     * @param value - the second Selenese argument
-     * @return - the command result, defined by the Selenese JavaScript.  "getX" style
+     * @param command - the remote command verb
+     * @param field - the first remote argument (meaning depends on the verb)
+     * @param value - the second remote argument
+     * @return - the command result, defined by the remote JavaScript.  "getX" style
      * commands may return data from the browser; other "doX" style commands may just
      * return "OK" or an error message.
      */
@@ -144,13 +144,13 @@ public class SeleneseQueue {
             }
         }
         queuePut("commandHolder", commandHolder, 
-                new DefaultSeleneseCommand(command, field, value, makeJavaScript()), 
+                new DefaultRemoteCommand(command, field, value, makeJavaScript()), 
                 commandReady);
     }
 
     private String makeJavaScript() {
         StringBuffer sb = new StringBuffer(InjectionHelper.restoreJsStateInitializer(sessionId, uniqueId));
-        if (frameAddress!=null && !frameAddress.getWindowName().equals(FrameGroupSeleneseQueueSet.DEFAULT_SELENIUM_WINDOW_NAME)) {
+        if (frameAddress!=null && !frameAddress.getWindowName().equals(FrameGroupCommandQueueSet.DEFAULT_SELENIUM_WINDOW_NAME)) {
             sb.append("setSeleniumWindowName(unescape('");
             try {
                 sb.append(URLEncoder.encode(frameAddress.getWindowName(), "UTF-8"));
@@ -212,7 +212,7 @@ public class SeleneseQueue {
      * @param commandResult - the reply from the previous command, or null
      * @return - the next command to run
      */
-    public SeleneseCommand handleCommandResult(String commandResult) {
+    public RemoteCommand handleCommandResult(String commandResult) {
         if (commandResult == null) {
         	throw new RuntimeException("null command result");
         }
@@ -239,7 +239,7 @@ public class SeleneseQueue {
         else {
             queuePutResult(commandResult);
         }
-        SeleneseCommand sc = (SeleneseCommand) queueGet("commandHolder", commandHolder, commandReady);
+        RemoteCommand sc = (RemoteCommand) queueGet("commandHolder", commandHolder, commandReady);
         return sc;
     }
 

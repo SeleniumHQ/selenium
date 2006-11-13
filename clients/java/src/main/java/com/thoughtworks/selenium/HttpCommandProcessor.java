@@ -42,7 +42,7 @@ public class HttpCommandProcessor implements CommandProcessor {
      * @param serverPort - the port on which the Selenium Server is listening
      * @param browserStartCommand - the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"
      * @param browserURL - the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
-     * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/core/SeleneseRunner.html"
+     * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/core/RemoteRunner.html"
      */
     public HttpCommandProcessor(String serverHost, int serverPort, String browserStartCommand, String browserURL) {
         this.pathToServlet = "http://" + serverHost + 
@@ -64,7 +64,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     }
 
     public String doCommand(String commandName, String[] args) {
-        DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandName,args);
+        DefaultRemoteCommand command = new DefaultRemoteCommand(commandName,args);
         String result = executeCommandOnServlet(command.getCommandURLString());
         if (result == null) {
             throw new NullPointerException("Selenium Bug! result must not be null");
@@ -129,7 +129,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         sb.append(command);
         if (sessionId != null) {
             sb.append("&sessionId=");
-            sb.append(DefaultSeleneseCommand.urlEncode(sessionId));
+            sb.append(DefaultRemoteCommand.urlEncode(sessionId));
         }
         URL result = new URL(sb.toString());
         return result;

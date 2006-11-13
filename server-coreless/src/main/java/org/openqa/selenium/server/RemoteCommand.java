@@ -18,10 +18,10 @@
 package org.openqa.selenium.server;
 
 /**
- * Represents a single Selenese action
+ * Represents a single remote action
  * @version $Id: $
  */
-public interface SeleneseCommand {
+public interface RemoteCommand {
     /** Return the URL query string which will be sent to the browser */
     String getCommandURLString();
 

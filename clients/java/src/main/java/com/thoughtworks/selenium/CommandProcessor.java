@@ -27,11 +27,11 @@ package com.thoughtworks.selenium;
  */
 public interface CommandProcessor {
 
-    /** Send the specified Selenese command to the browser to be performed
+    /** Send the specified remote command to the browser to be performed
      * 
-     * @param command - the Selenese command verb
-     * @param args - the arguments to the Selenese command (depends on the verb)
-     * @return - the command result, defined by the Selenese JavaScript.  "getX" style
+     * @param command - the remote command verb
+     * @param args - the arguments to the remote command (depends on the verb)
+     * @return - the command result, defined by the remote JavaScript.  "getX" style
      * commands may return data from the browser; other "doX" style commands may just
      * return "OK" or an error message.
      */

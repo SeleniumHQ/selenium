@@ -135,7 +135,7 @@ public class LauncherUtils {
 
 	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow) {
 		String url = LauncherUtils.stripStartURL(startURL);
-		return url + "/selenium-server/core/SeleneseRunner.html?" + "sessionId=" + sessionId + "&multiWindow=" + multiWindow + "&debugMode="
+		return url + "/selenium-server/core/RemoteRunner.html?" + "sessionId=" + sessionId + "&multiWindow=" + multiWindow + "&debugMode="
 				+ SeleniumServer.isDebugMode();
 	}
 

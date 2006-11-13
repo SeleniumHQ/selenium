@@ -21,13 +21,13 @@ import java.io.*;
 import java.net.*;
 
 /**
- * The default implementation of the SeleneseCommand interface
+ * The default implementation of the RemoteCommand interface
  * 
- * @see com.thoughtworks.selenium.SeleneseCommand
+ * @see com.thoughtworks.selenium.RemoteCommand
  * @author Paul Hammant
  * @version $Revision$
  */
-public class DefaultSeleneseCommand implements SeleneseCommand {
+public class DefaultRemoteCommand implements RemoteCommand {
     // as we have beginning and ending pipes, we will have 1 more entry than we need
     private static final int NUMARGSINCLUDINGBOUNDARIES = 4;
     private static final int FIRSTINDEX = 1;
@@ -37,7 +37,7 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
     private final String[] args;
 
 
-    public DefaultSeleneseCommand(String command, String[] args) {
+    public DefaultRemoteCommand(String command, String[] args) {
         this.command = command;
         this.args = args;
         if ("selectWindow".equals(command) && args[0]==null) {
@@ -65,14 +65,14 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         return getCommandURLString();
     }
 
-    /** Factory method to create a SeleneseCommand from a wiki-style input string */
-    public static SeleneseCommand parse(String inputLine) {
+    /** Factory method to create a RemoteCommand from a wiki-style input string */
+    public static RemoteCommand parse(String inputLine) {
         if (null == inputLine) throw new NullPointerException("inputLine can't be null");
         String[] values = inputLine.split("\\|");
         if (values.length != NUMARGSINCLUDINGBOUNDARIES) {
             throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
         }
-        return new DefaultSeleneseCommand(values[FIRSTINDEX], new String[] {values[SECONDINDEX], values[THIRDINDEX]});
+        return new DefaultRemoteCommand(values[FIRSTINDEX], new String[] {values[SECONDINDEX], values[THIRDINDEX]});
     }
     
     /** Encodes the text as an URL using UTF-8.

@@ -22,24 +22,24 @@ import java.net.*;
 import java.util.*;
 
 /**
- * The default implementation of the SeleneseCommand interface
+ * The default implementation of the RemoteCommand interface
  * @author Paul Hammant
  * @version $Revision: 184 $
  */
-public class DefaultSeleneseCommand implements SeleneseCommand {
+public class DefaultRemoteCommand implements RemoteCommand {
     private final String command;
     private final String field;
     private final String value;
     private final String piggybackedJavaScript;
 
-    public DefaultSeleneseCommand(String command, String field, String value) {
+    public DefaultRemoteCommand(String command, String field, String value) {
         this.command = command;
         this.field = field;
         this.value = value;
         this.piggybackedJavaScript = null;
     }
 
-    public DefaultSeleneseCommand(String command, String field, String value, String piggybackedJavaScript) {
+    public DefaultRemoteCommand(String command, String field, String value, String piggybackedJavaScript) {
         this.command = command;
         this.field = field;
         this.value = value;
@@ -74,8 +74,8 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         return getCommandURLString() + "\n" + getPiggybackedJavaScript();
     }
 
-    /** Factory method to create a SeleneseCommand from a wiki-style input string */
-    public static SeleneseCommand parse(String inputLine) {
+    /** Factory method to create a RemoteCommand from a wiki-style input string */
+    public static RemoteCommand parse(String inputLine) {
         if (inputLine == null) throw new NullPointerException("inputLine must not be null");
         if (!inputLine.startsWith("cmd=")) throw new IllegalArgumentException("invalid command string, missing 'cmd='=" + inputLine);
         
@@ -99,7 +99,7 @@ public class DefaultSeleneseCommand implements SeleneseCommand {
         String command = args.get("cmd");
         String arg1 = args.get("1");
         String arg2 = args.get("2");
-        return new DefaultSeleneseCommand(command, arg1, arg2);
+        return new DefaultRemoteCommand(command, arg1, arg2);
     }
     
     /** Encodes the text as an URL using UTF-8.

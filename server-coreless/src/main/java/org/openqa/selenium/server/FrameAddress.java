@@ -20,8 +20,8 @@ public class FrameAddress {
     static private Map<String, FrameAddress> stringToFrameAddress = new HashMap<String, FrameAddress>();
     
     private FrameAddress(String windowName, String localFrameAddress) {
-        this.windowName = (windowName!=null) ? windowName : FrameGroupSeleneseQueueSet.DEFAULT_SELENIUM_WINDOW_NAME;
-        this.localFrameAddress = (localFrameAddress!=null) ? localFrameAddress : FrameGroupSeleneseQueueSet.DEFAULT_LOCAL_FRAME_ADDRESS;
+        this.windowName = (windowName!=null) ? windowName : FrameGroupCommandQueueSet.DEFAULT_SELENIUM_WINDOW_NAME;
+        this.localFrameAddress = (localFrameAddress!=null) ? localFrameAddress : FrameGroupCommandQueueSet.DEFAULT_LOCAL_FRAME_ADDRESS;
     }
 
     static public FrameAddress make(String windowName, String localFrameAddress) {
@@ -48,8 +48,8 @@ public class FrameAddress {
     }
 
     public boolean isDefault() {
-        return getWindowName().equals(FrameGroupSeleneseQueueSet.DEFAULT_SELENIUM_WINDOW_NAME)
-        && getLocalFrameAddress().equals(FrameGroupSeleneseQueueSet.DEFAULT_LOCAL_FRAME_ADDRESS);
+        return getWindowName().equals(FrameGroupCommandQueueSet.DEFAULT_SELENIUM_WINDOW_NAME)
+        && getLocalFrameAddress().equals(FrameGroupCommandQueueSet.DEFAULT_LOCAL_FRAME_ADDRESS);
     }
     
     @Override

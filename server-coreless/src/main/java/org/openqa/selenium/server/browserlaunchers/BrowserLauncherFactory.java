@@ -16,7 +16,7 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.SeleneseQueue;
+import org.openqa.selenium.server.CommandQueue;
 import org.openqa.selenium.server.SeleniumServer;
 
 import java.lang.reflect.*;
@@ -65,7 +65,7 @@ public class BrowserLauncherFactory {
      * @param queue
      * @return the BrowserLauncher ready to launch
      */
-    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, SeleneseQueue queue) {
+    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, CommandQueue queue) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
 
         for (Iterator iterator = supportedBrowsers.entrySet().iterator(); iterator.hasNext();) {
@@ -112,7 +112,7 @@ public class BrowserLauncherFactory {
         return new RuntimeException(errorMessage.toString());
     }
 
-    private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand, String sessionId, SeleneseQueue queue) {
+    private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand, String sessionId, CommandQueue queue) {
         try {
             try {
                 BrowserLauncher browserLauncher;
@@ -126,8 +126,8 @@ public class BrowserLauncherFactory {
                     browserLauncher = ctor.newInstance(port, sessionId, browserStartCommand);
                 }
 
-                if (browserLauncher instanceof SeleneseQueueAware) {
-                    ((SeleneseQueueAware) browserLauncher).setSeleneseQueue(queue);
+                if (browserLauncher instanceof CommandQueueAware) {
+                    ((CommandQueueAware) browserLauncher).setCommandQueue(queue);
                 }
 
                 return browserLauncher;

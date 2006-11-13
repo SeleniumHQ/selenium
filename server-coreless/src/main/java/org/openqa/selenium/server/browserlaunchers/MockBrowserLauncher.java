@@ -51,7 +51,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
             String commandLine = doBrowserRequest(startURL+"&seleniumStart=true", "START");
             while (!interrupted) {
                 System.out.println("MOCK: " + commandLine);
-                SeleneseCommand sc = DefaultSeleneseCommand.parse(commandLine);
+                RemoteCommand sc = DefaultRemoteCommand.parse(commandLine);
                 String command = sc.getCommand();
                 String result = "OK";
                 if (command.startsWith("get")) {

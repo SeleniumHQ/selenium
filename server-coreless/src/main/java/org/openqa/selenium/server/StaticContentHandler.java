@@ -21,9 +21,9 @@ class StaticContentHandler extends ResourceHandler {
     public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
         hackRemoveLastModifiedSince(httpRequest);
         setNoCacheHeaders(httpResponse);
-        if (pathInContext.equals("/core/SeleneseRunner.html") && SeleniumServer.isProxyInjectionMode()) {
-            pathInContext = pathInContext.replaceFirst("/core/SeleneseRunner.html",
-                    "/core/InjectedSeleneseRunner.html");
+        if (pathInContext.equals("/core/RemoteRunner.html") && SeleniumServer.isProxyInjectionMode()) {
+            pathInContext = pathInContext.replaceFirst("/core/RemoteRunner.html",
+                    "/core/InjectedRemoteRunner.html");
         }
         super.handle(pathInContext, pathParams, httpRequest, httpResponse);
     }

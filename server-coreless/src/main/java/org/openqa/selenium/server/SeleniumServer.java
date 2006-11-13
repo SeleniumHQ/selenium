@@ -26,7 +26,7 @@ import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.htmlrunner.*;
 
 /**
- * Provides a server that can launch/terminate browsers and can receive Selenese commands
+ * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
  * over HTTP and send them on to the browser.
  * <p/>
  * <p>To run Selenium Server, run:
@@ -39,7 +39,7 @@ import org.openqa.selenium.server.htmlrunner.*;
  * communications queues before an exception is thrown.
  * <p/>
  * <p>Using the <code>-interactive</code> flag will start the server in Interactive mode.
- * In this mode you can type Selenese commands on the command line (e.g. cmd=open&1=http://www.yahoo.com).
+ * In this mode you can type remote Selenium commands on the command line (e.g. cmd=open&1=http://www.yahoo.com).
  * You may also interactively specify commands to run on a particular "browser session" (see below) like this:
  * <blockquote><code>cmd=open&1=http://www.yahoo.com&sessionId=1234</code></blockquote></p>
  * <p/>
@@ -50,7 +50,7 @@ import org.openqa.selenium.server.htmlrunner.*;
  * Selenium Server as an HTTP proxy, you can use the Selenium Server as a web proxy.  This allows
  * the server to create a virtual "/selenium-server" directory on every website that you visit using
  * the proxy.
- * <li><b>Browser Selenese</b>: If the browser goes to "/selenium-server/SeleneseRunner.html?sessionId=1234" on any website
+ * <li><b>Remote Browser Commands</b>: If the browser goes to "/selenium-server/RemoteRunner.html?sessionId=1234" on any website
  * via the Client-Configured Proxy, it will ask the Selenium Server for work to do, like this:
  * <blockquote><code>http://www.yahoo.com/selenium-server/driver/?seleniumStart=true&sessionId=1234</code></blockquote>
  * The driver will then reply with a command to run in the body of the HTTP response, e.g. "|open|http://www.yahoo.com||".  Once
@@ -71,7 +71,7 @@ import org.openqa.selenium.server.htmlrunner.*;
  * <p>There are some special commands that only work in the Selenium Server.  These commands are:
  * <ul><li><p><strong>getNewBrowserSession</strong>( <em>browserString</em>, <em>startURL</em> )</p>
  * <p>Creates a new "sessionId" number (based on the current time in milliseconds) and launches the browser specified in
- * <i>browserString</i>.  We will then browse directly to <i>startURL</i> + "/selenium-server/SeleneseRunner.html?sessionId=###"
+ * <i>browserString</i>.  We will then browse directly to <i>startURL</i> + "/selenium-server/RemoteRunner.html?sessionId=###"
  * where "###" is the sessionId number. Only commands that are associated with the specified sessionId will be run by this browser.</p>
  * <p/>
  * <p><i>browserString</i> may be any one of the following:
@@ -696,8 +696,8 @@ public class SeleniumServer {
     }
     
     /** Registers a running browser with a specific sessionID */
-    public void registerSeleneseLauncher(String sessionId, BrowserLauncher launcher) {
-    	driver.registerSeleneseLauncher(sessionId, launcher);
+    public void registerBrowserLauncher(String sessionId, BrowserLauncher launcher) {
+    	driver.registerBrowserLauncher(sessionId, launcher);
     }
 
     public static boolean isDebugMode() {

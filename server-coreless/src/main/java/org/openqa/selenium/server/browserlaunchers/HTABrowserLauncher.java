@@ -80,8 +80,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
             coreDir.mkdirs();
             ResourceExtractor.extractResourcePath(HTABrowserLauncher.class, "/core", coreDir);
             FileUtils f = FileUtils.getFileUtils();
-            File selRunnerSrc = new File(coreDir, "SeleneseRunner.html");
-            File selRunnerDest = new File(coreDir, "SeleneseRunner.html");
+            File selRunnerSrc = new File(coreDir, "RemoteRunner.html");
+            File selRunnerDest = new File(coreDir, "RemoteRunner.hta");
             f.copyFile(selRunnerSrc, selRunnerDest);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -111,7 +111,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
     
     public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow), "SeleneseRunner.hta");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow), "RemoteRunner.hta");
     }
 
 }
