@@ -28,12 +28,12 @@ namespace ThoughtWorks.Selenium.UnitTests
 	public class DefaultSelenesCommandTest
 	{
 		[Test]
-		public void ShouldCreateDefaultSeleneseCommand()
+		public void ShouldCreateDefaultRemoteCommand()
 		{
 			string commandString = "open";
 			string argument1 = "http://localhost";
 			string argument2 = "";
-			DefaultSeleneseCommand command = new DefaultSeleneseCommand(commandString, new string[]{argument1, argument2});
+			DefaultRemoteCommand command = new DefaultRemoteCommand(commandString, new string[]{argument1, argument2});
 			Assert.AreEqual("cmd=open&1=http%3a%2f%2flocalhost&2=", command.CommandString);
 		}
 
@@ -41,7 +41,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 		public void ShouldParseCommandWithFourPipes()
 		{
 			string openCommand = "|setTextField|fieldName|fieldValue|";
-			DefaultSeleneseCommand command = DefaultSeleneseCommand.Parse(openCommand);
+			DefaultRemoteCommand command = DefaultRemoteCommand.Parse(openCommand);
 			Assert.AreEqual("setTextField", command.Command);
 			Assert.AreEqual("fieldName", command.Args[0]);
 			Assert.AreEqual("fieldValue", command.Args[1]);
@@ -51,35 +51,35 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseCommandStringWithNoPipes()
 		{
-			DefaultSeleneseCommand.Parse("junk");
+			DefaultRemoteCommand.Parse("junk");
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseCommandStringWithExtraPipes()
 		{
-			DefaultSeleneseCommand.Parse("|command|blah|blah|blah|");
+			DefaultRemoteCommand.Parse("|command|blah|blah|blah|");
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseCommandStringWhichDoesNotStartWithAPipe()
 		{
-			DefaultSeleneseCommand.Parse("command|blah|blah|blah|");
+			DefaultRemoteCommand.Parse("command|blah|blah|blah|");
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseNullCommandString()
 		{
-			DefaultSeleneseCommand.Parse(null);
+			DefaultRemoteCommand.Parse(null);
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseCommandStringWithWhiteSpace()
 		{
-			DefaultSeleneseCommand.Parse("  ");
+			DefaultRemoteCommand.Parse("  ");
 		}
 
 	}

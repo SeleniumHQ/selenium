@@ -17,9 +17,9 @@
 namespace Selenium
 {
 	/// <summary>
-	/// Summary description for SeleneseCommand.
+	/// Summary description for IRemoteCommand.
 	/// </summary>
-	public interface ISeleneseCommand
+	public interface IRemoteCommand
 	{
 		/// <summary>
 		/// A string representation of this command

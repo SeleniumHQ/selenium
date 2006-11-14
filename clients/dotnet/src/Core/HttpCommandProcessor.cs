@@ -50,7 +50,7 @@ namespace Selenium
 		/// <param name="serverPort">the port on which the Selenium Server is listening</param>
 		/// <param name="browserStartCommand">the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"</param>
 		/// <param name="browserURL">the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
-		/// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"</param>
+		/// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/RemoteRunner.html"</param>
 		public HttpCommandProcessor(string serverHost, int serverPort, string browserStartCommand, string browserURL) 
 		{
 			this.url = "http://" + serverHost + 
@@ -65,7 +65,7 @@ namespace Selenium
 		/// <param name="serverURL">the URL of the Selenium Server Driver, e.g. "http://localhost:4444/selenium-server/driver/" (don't forget the final slash!)</param>
 		/// <param name="browserStartCommand">the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"</param>
 		/// <param name="browserURL">the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
-		/// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"</param>
+		/// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/RemoteRunner.html"</param>
 		public HttpCommandProcessor(string serverURL, string browserStartCommand, string browserURL) 
 		{
 			this.url = serverURL;
@@ -74,16 +74,16 @@ namespace Selenium
 		}
 
 		/// <summary>
-		/// Send the specified Selenese command to the browser to be performed
+		/// Send the specified remote command to the browser to be performed
 		/// </summary>
-		/// <param name="command">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
-		/// <returns>the command result, defined by the Selenese JavaScript.  "getX" style
+		/// <param name="command">the remote command verb</param>
+		/// <param name="args">the arguments to the remote command (depends on the verb)</param>
+		/// <returns>the command result, defined by the remote JavaScript.  "getX" style
 		///		commands may return data from the browser</returns>
 		public string DoCommand(string command, string[] args)
 		{
-			ISeleneseCommand seleneseCommand = new DefaultSeleneseCommand(command, args);
-			using (HttpWebResponse response = (HttpWebResponse) CreateWebRequest(seleneseCommand).GetResponse())
+			IRemoteCommand remoteCommand = new DefaultRemoteCommand(command, args);
+			using (HttpWebResponse response = (HttpWebResponse) CreateWebRequest(remoteCommand).GetResponse())
 			{
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
@@ -113,11 +113,11 @@ namespace Selenium
 		}
 
 		/// <summary>
-		/// Builds an HTTP request based on the specified Selenese Command
+		/// Builds an HTTP request based on the specified remote Command
 		/// </summary>
 		/// <param name="command">the command we'll send to the server</param>
 		/// <returns>an HTTP request, which will perform this command</returns>
-		public virtual WebRequest CreateWebRequest(ISeleneseCommand command)
+		public virtual WebRequest CreateWebRequest(IRemoteCommand command)
 		{
 			WebRequest request = WebRequest.Create(BuildCommandString(command.CommandString));
 			request.Timeout = Timeout.Infinite;
@@ -154,10 +154,10 @@ namespace Selenium
 		}
 
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="commandName">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="commandName">the remote Command verb</param>
+		/// <param name="args">the arguments to the remote Command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		public String GetString(String commandName, String[] args) 
 		{
@@ -165,10 +165,10 @@ namespace Selenium
 		}
 
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="commandName">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="commandName">the remote Command verb</param>
+		/// <param name="args">the arguments to the remote Command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		public String[] GetStringArray(String commandName, String[] args)
 		{
@@ -209,10 +209,10 @@ namespace Selenium
 		}
 
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="commandName">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="commandName">the remote Command verb</param>
+		/// <param name="args">the arguments to the remote Command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		public Decimal GetNumber(String commandName, String[] args)
 		{
@@ -222,10 +222,10 @@ namespace Selenium
 		}
 
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="commandName">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="commandName">the remote Command verb</param>
+		/// <param name="args">the arguments to the remote Command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		public Decimal[] GetNumberArray(String commandName, String[] args)
 		{
@@ -239,10 +239,10 @@ namespace Selenium
 		}
 
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="commandName">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="commandName">the remote Command verb</param>
+		/// <param name="args">the arguments to the remote Command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		public bool GetBoolean(String commandName, String[] args)
 		{
@@ -262,10 +262,10 @@ namespace Selenium
 		}
 
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="commandName">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="commandName">the remote Command verb</param>
+		/// <param name="args">the arguments to the remote Command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		public bool[] GetBooleanArray(String commandName, String[] args)
 		{

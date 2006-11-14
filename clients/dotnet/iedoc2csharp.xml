@@ -136,7 +136,7 @@ THISISAFAKENEWLINE	    /// <param name="serverHost">the host name on which the S
 THISISAFAKENEWLINE	    /// <param name="serverPort">the port on which the Selenium Server is listening</param>
 THISISAFAKENEWLINE	    /// <param name="browserString">the command string used to launch the browser, e.g. "*firefox", "*iexplore" or "c:\\program files\\internet explorer\\iexplore.exe"</param>
 THISISAFAKENEWLINE	    /// <param name="browserURL">the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
-THISISAFAKENEWLINE	    /// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"</param>
+THISISAFAKENEWLINE	    /// e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/RemoteRunner.html"</param>
 THISISAFAKENEWLINE	    public DefaultSelenium(String serverHost, int serverPort, String browserString, String browserURL)
 THISISAFAKENEWLINE	    {
 THISISAFAKENEWLINE	        this.commandProcessor = new HttpCommandProcessor(serverHost, serverPort, browserString, browserURL);

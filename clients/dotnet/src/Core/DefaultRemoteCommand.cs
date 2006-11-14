@@ -21,9 +21,9 @@ using System.Text;
 namespace Selenium
 {
 	/// <summary>
-	/// A representation of a single Selenese Command
+	/// A representation of a single remote Command
 	/// </summary>
-	public class DefaultSeleneseCommand : ISeleneseCommand
+	public class DefaultRemoteCommand : IRemoteCommand
 	{
 		private static readonly string PARSE_ERROR_MESSAGE = "Command string must contain 4 pipe characters and should start with a '|'. Unable to parse command string";
 		private readonly string[] args;
@@ -34,7 +34,7 @@ namespace Selenium
 		/// </summary>
 		/// <param name="command">the name of the command to run</param>
 		/// <param name="args">its arguments (convert non-string arguments to strings)</param>
-		public DefaultSeleneseCommand(string command, string[] args)
+		public DefaultRemoteCommand(string command, string[] args)
 		{
 			this.command = command;
 			this.args = args;
@@ -78,8 +78,8 @@ namespace Selenium
 		/// Parses a "wiki-style" command string, like this: |type|q|Hello World|
 		/// </summary>
 		/// <param name="commandString">a wiki-style command string to parse</param>
-		/// <returns>a Selenese Command object that implements the command string</returns>
-		public static DefaultSeleneseCommand Parse(string commandString)
+		/// <returns>a Remote Command object that implements the command string</returns>
+		public static DefaultRemoteCommand Parse(string commandString)
 		{
 			if (commandString == null || commandString.Trim().Length == 0 || !commandString.StartsWith("|"))
 			{
@@ -93,7 +93,7 @@ namespace Selenium
 				throw new ArgumentException(PARSE_ERROR_MESSAGE + "'" + commandString + "'.");
 			}
 			
-			return new DefaultSeleneseCommand(commandArray[1], new String[] {commandArray[2], commandArray[3]});
+			return new DefaultRemoteCommand(commandArray[1], new String[] {commandArray[2], commandArray[3]});
 		}
 	}
 }

@@ -80,7 +80,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "DefaultSeleneseCommand.cs"
+                    RelPath = "DefaultRemoteCommand.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -100,7 +100,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "ISeleneseCommand.cs"
+                    RelPath = "IRemoteCommand.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

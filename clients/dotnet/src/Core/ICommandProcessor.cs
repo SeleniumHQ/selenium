@@ -24,11 +24,11 @@ namespace Selenium
 	public interface ICommandProcessor
 	{
 		/// <summary>
-		/// Send the specified Selenese command to the browser to be performed
+		/// Send the specified remote command to the browser to be performed
 		/// </summary>
-		/// <param name="command">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
-		/// <returns>the command result, defined by the Selenese JavaScript.  "getX" style
+		/// <param name="command">the remote command verb</param>
+		/// <param name="args">the arguments to the remote command (depends on the verb)</param>
+		/// <returns>the command result, defined by the remote JavaScript.  "getX" style
 		///		commands may return data from the browser</returns>
 		string DoCommand(string command, string[] args);
 		/// <summary>
@@ -40,45 +40,45 @@ namespace Selenium
 		/// </summary>
 		void Stop();
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="command">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="command">the remote command verb</param>
+		/// <param name="args">the arguments to the remote command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		String GetString(String command, String[] args);
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="command">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="command">the remote command verb</param>
+		/// <param name="args">the arguments to the remote command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		String[] GetStringArray(String command, String[] args);
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="command">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="command">the remote command verb</param>
+		/// <param name="args">the arguments to the remote command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		Decimal GetNumber(String command, String[] args);
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="command">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="command">the remote command verb</param>
+		/// <param name="args">the arguments to the remote command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		Decimal[] GetNumberArray(String command, String[] args);
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="command">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="command">the remote command verb</param>
+		/// <param name="args">the arguments to the remote command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		bool GetBoolean(String command, String[] args);
 		/// <summary>
-		/// Runs the specified Selenese accessor (getter) command and returns the retrieved result
+		/// Runs the specified remote accessor (getter) command and returns the retrieved result
 		/// </summary>
-		/// <param name="command">the Selenese command verb</param>
-		/// <param name="args">the arguments to the Selenese command (depends on the verb)</param>
+		/// <param name="command">the remote command verb</param>
+		/// <param name="args">the arguments to the remote command (depends on the verb)</param>
 		/// <returns>the result of running the accessor on the browser</returns>
 		bool[] GetBooleanArray(String command, String[] args);
 	}
