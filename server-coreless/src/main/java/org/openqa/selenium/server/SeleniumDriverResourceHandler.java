@@ -125,7 +125,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 req.setHandled(true);
             } else if (cmd != null) {
-                SeleniumServer.log(method + ": " + cmd);
+                SeleniumServer.log(method + ": " + req.getQuery());
                 handleCommandRequest(req, res, cmd, sessionId);
             } else if (-1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js") 
                     || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")){
