@@ -95,6 +95,17 @@
     </developers>
 
     <releases>
+        <release>
+            <version>0.8.1</version>
+            <date>13-Nov-2006</date>
+            <jiraId>10301</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.openqa.org/selenium-core/0.8.1/selenium-core-0.8.1.zip</url>
+                    <name>Full release</name>
+                </download>
+            </downloads>
+        </release>
     	<release>
             <version>0.8.0</version>
             <date>20-Sep-2006</date>
