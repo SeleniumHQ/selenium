@@ -22,7 +22,7 @@ require 'selenium'
 class ExampleTest < Test::Unit::TestCase
 
 	def setup
-        @selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);
+        @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);
         @selenium.start
     end
     

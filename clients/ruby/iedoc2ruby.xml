@@ -17,6 +17,8 @@
 	<xsl:text disable-output-escaping="yes">
     end
 
+    SeleneseInterpreter = SeleniumDriver # for backward compatibility
+
 end
 
 class SeleniumCommandError &lt; RuntimeError 
@@ -92,7 +94,7 @@ require 'cgi'
 	<xsl:text disable-output-escaping="yes"><![CDATA[
 module Selenium
 
-    class SeleneseInterpreter
+    class SeleniumDriver
         include Selenium
     
         def initialize(server_host, server_port, browserStartCommand, browserURL, timeout=30000)
@@ -104,7 +106,7 @@ module Selenium
         end
         
         def to_s
-            "SeleneseInterpreter"
+            "SeleniumDriver"
         end
 
         def start()
