@@ -11,6 +11,20 @@ import org.openqa.selenium.server.htmlrunner.*;
 /**
  * An Ant task to run a suite of HTML Selenese tests.
  * 
+ * <p>Use it like this (for example):<blockquote><code>
+ * &lt;taskdef&nbsp;resource="selenium-ant.properties"&gt;<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&lt;classpath&gt;<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;pathelement&nbsp;location="selenium-server.jar"/&gt;<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&lt;/classpath&gt;<br/>
+ * &lt;/taskdef&gt;<br/>
+ * &lt;selenese&nbsp;<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;suite="c:\absolute\path\to\my\HTMLSuite.html"<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;browser="*firefox"<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;results="c:\absolute\path\to\my\results.html"<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;multiWindow="true"<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;timeoutInSeconds="900"<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;startURL="http://www.google.com"&nbsp;/&gt;</code></blockquote>
+ * 
  * <h3>Parameters</h3>
  * <table border="1" cellpadding="2" cellspacing="0">
  *   <tr>
