@@ -61,8 +61,11 @@ public class ClientDriverSuite extends TestCase {
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             
             
-            if (!isProxyInjectionMode) {
-            
+            if (isProxyInjectionMode) {
+                suite.addTestSuite(TestClick.class);    // ok, run just a single test in PI mode
+            }
+            else {
+                
             if (isProxyInjectionMode) {
                 // once frames support is added to the main trunk, we will be
                 // able to run the following in non-proxy injection mode:
