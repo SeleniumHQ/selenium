@@ -1,8 +1,9 @@
 Revision history for Perl extension Test::WWW::Selenium.
 
-1.10 - 
- - Integrated latest functions available in Selenium-Core
+1.10 - Tue Nov 14 20:51:13 PST 2006
+ - Integrated latest functions available in Selenium-Core 0.90
    - WWW/Selenium.pm is build directly from Core's iedoc.xml
+   - Module is built as part of Selenium-RC nightly build process
  - Retained backwards compatibility for deprecated core functions
  - Cleaned up POD
  - Check that caller has opened a page before running commands
