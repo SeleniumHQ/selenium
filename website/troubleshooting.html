@@ -24,10 +24,10 @@ Having trouble?  Maybe we've heard of it before.  If not, try our <a href="userF
 <li>If you have checked "Automatically detect settings", (the top check box,) you'll need to uncheck it before using Selenium RC.  This is filed as bug <a href="http://jira.openqa.org/browse/SRC-22">SRC-22</a>.
 
 <p>If you need to use a proxy to access the application you want to test, you'll need to start Selenium Server with "-Dhttp.proxyHost"; see the <a href="options.html">command line options</a> for more details.</p></li>
-<li>Also note, as this Control Panel states, that "these settings will not apply to dial-up or VPN connections".  If you're on a dial-up or VPN connection, Selenium RC cannot automatically configure the IE proxy... in fact, as far as we know, there's no standard way to configure your proxy at all, even manually!  (This is filed as bug <a href="http://jira.openqa.org/browse/SRC-21">SRC-21</a>, but it may not be possible to fix it.)  As a workaround, you may be able to use the <a href="#experimental">experimental *iehta browser launcher</a> instead.
+<li>Also note, as this Control Panel states, that "these settings will not apply to dial-up or VPN connections".  If you're on a dial-up or VPN connection, Selenium RC cannot automatically configure the IE proxy... in fact, as far as we know, there's no standard way to configure your proxy at all, even manually!  (This is filed as bug <a href="http://jira.openqa.org/browse/SRC-21">SRC-21</a>, but it may not be possible to fix it.)  As a workaround, you may be able to use the <a href="experimental.html">experimental *iehta browser launcher</a> instead.
 </ul>
 
-<p>As a last resort, you may try configuring your proxy manually and then launching your browser with <a href="#custom">*custom</a>, or with our <a href="#experimental">experimental *iehta browser launcher</a>.</p>
+<p>As a last resort, you may try configuring your proxy manually and then launching your browser with <a href="#custom">*custom</a>, or with our <a href="experimental.html">experimental *iehta browser launcher</a>.</p>
 
 <li><b>*custom</b>: When using *custom, it's up to you to configure the proxy correctly (manually).  If you forgot to do this, or if you configured the proxy incorrectly, you'll get a 404 error.  Double-check that you've configured your proxy settings correctly.  Note that in some browsers it's very easy to make a mistake and change the wrong settings, thinking that you've configured your proxy, when you've really had no effect at all.
 
@@ -35,11 +35,11 @@ Having trouble?  Maybe we've heard of it before.  If not, try our <a href="userF
 
 <p>For example, you might try configuring your browser to use the proxy server "asdflkjdasf" on port "1234".  Then try connecting to google.com in the ordinary way, and doing a search.  If you connect successfully to google.com, then you must not have really changed your proxy settings at all!  You might also try turning your Selenium Server off while using the correct settings (localhost on port 4444).  You should not be able to connect to Google if your proxy is disabled.  If it seems like you can, then you know you've almost certainly made a mistake.</p>
 
-<p>Note that this problem can be especially troublesome on Internet Explorer, which can sometimes ignore whatever proxy settings are configured, even manually!  (This normally happens when you're using a dial-up Internet connection, or if you're using a VPN.)  In that case, you may not be able to configure your proxy at all.  As a workaround, you may be able to use the <a href="#experimental">experimental *iehta browser launcher</a> instead.</p>
+<p>Note that this problem can be especially troublesome on Internet Explorer, which can sometimes ignore whatever proxy settings are configured, even manually!  (This normally happens when you're using a dial-up Internet connection, or if you're using a VPN.)  In that case, you may not be able to configure your proxy at all.  As a workaround, you may be able to use the <a href="experimental.html">experimental *iehta browser launcher</a> instead.</p>
 
-<li><b>SSL/HTTPS</b>: If you attempt to start a browser session on an HTTPS URL, we cannot use our proxy to intercept these encrypted instructions.  We hope to one day add SSL support to our proxy (this is issue <a href="http://jira.openqa.org/browse/SRC-3">SRC-3</a>), but in the meantime, you'll have to use one of our <a href="#experimental">experimental browser launchers</a> to test sites that require HTTPS support.
+<li><b>SSL/HTTPS</b>: If you attempt to start a browser session on an HTTPS URL, we will try to use our proxy to intercept these encrypted instructions.  See the section on <a href="tutorial.html#https">HTTPS in the tutorial</a>.  This may cause your browser to spawn a pop-up warning you that someone may be intercepting your secure transaction; in this case, that is actually happening.  Our proxy is forging SSL credentials and trying to make your browser accept them.  (We hope to one day to be able to automatically configure browsers not to present these warnings.)  In the meantime, if our built-in SSL support doesn't work for you, you'll have to use one of our <a href="experimental.html">experimental browser launchers</a> to test sites that require HTTPS support.
 
-<li><b>others (*firefox, *opera)</b>: For the others, we automatically hard-code the proxy for you, and don't know of any known issues with this functionality (except for the SSL/HTTPS issue, noted previously).  If you're encountering 404 errors during the tutorial while using these browser launchers, post them to our <a href="userForums.action">user forums</a>... they might be bugs!
+<li><b>others (*firefox, *opera)</b>: For the others, we automatically hard-code the proxy for you, and don't know of any known issues with this functionality.  If you're encountering 404 errors in the tutorial while using these browser launchers, post them to our <a href="userForums.action">user forums</a>... they might be bugs!
 
 </ul>
 
@@ -61,7 +61,7 @@ Having trouble?  Maybe we've heard of it before.  If not, try our <a href="userF
 
 <p>In most cases, you can remedy this just by making sure that your browser session starts on the right origin.  You can't test www.google.com from a browser session starting at google.com, so you'll just need to start your browser session differently.</p>
 
-<p>If for some reason you absolutely need to be able to access websites on multiple domains, then right now the only way to do that is to use one of our <a href="#experimental">experimental browser launchers</a>.
+<p>If for some reason you absolutely need to be able to access websites on multiple domains, then right now the only way to do that is to use one of our <a href="experimental.html">experimental browser launchers</a>.
     
 <h3><a name="custom" />Selenium Server launches the browser in just one particular configuration (pop-ups blocked, etc.).  I need to test running the browser in a different configuration.  How do I do that?</h3>
 
@@ -83,7 +83,7 @@ For example, you can launch Firefox with a custom configuration like this:
 
 <p>For example, you might try configuring your browser to use the proxy server "asdflkjdasf" on port "1234".  Then try connecting to google.com in the ordinary way, and doing a search.  If you connect successfully to google.com, then you must not have really changed your proxy settings at all!  You might also try turning your Selenium Server off while using the correct settings (localhost on port 4444).  You should not be able to connect to Google if your proxy is disabled.  If it seems like you can, then you know you've almost certainly made a mistake.</p>
 
-<p>Note that this problem can be especially troublesome on Internet Explorer, which can sometimes ignore whatever proxy settings are configured, even manually!  (This normally happens when you're using a dial-up Internet connection, or if you're using a VPN).  In that case, you may not be able to configure your proxy at all.  As a workaround, you may be able to use the <a href="#experimental">experimental *iehta browser launcher</a> instead.</p>
+<p>Note that this problem can be especially troublesome on Internet Explorer, which can sometimes ignore whatever proxy settings are configured, even manually!  (This normally happens when you're using a dial-up Internet connection, or if you're using a VPN).  In that case, you may not be able to configure your proxy at all.  As a workaround, you may be able to use the <a href="experimental.html">experimental *iehta browser launcher</a> instead.</p>
 
 <h3><a name="linux" />On Linux, why isn't my Firefox browser session closing?</h3>
 
@@ -93,64 +93,6 @@ For example, you can launch Firefox with a custom configuration like this:
     
 <blockquote>
   <p><code> cmd=getNewBrowserSession&amp;1=<strong>*firefox /usr/local/firefox/firefox-bin</strong>&amp;2=http://www.google.com</code></p>
-</blockquote>
-
-<h2><a name="experimental" />Using the experimental browser launchers</h2>
-
-<p>Selenium 0.9.0 comes with four "experimental" browser launchers.  Two of these do not require the use of proxy servers at all; the other two use the proxy server aggressively to modify the application under test.  These browser launchers allow you to test applications on any web site, including SSL/HTTPS websites, and allow your tests to freely change domains.</p>
-
-<h3>Elevated Security Privileges</h3>
-
-<p>The two experimental "elevated security privilege" browser launchers are:</p>
-<ul>
-<li>*iehta: Launches Internet Explorer as an <a href="http://msdn.microsoft.com/workshop/author/hta/overview/htaoverview.asp">HTML Application (HTA)</a>.  There are some significant known bugs with HTA mode in 0.9.0, mostly having to do with frame support.
-<li>*chrome: Launches Firefox using a <a href="http://xulplanet.com/tutorials/xultu/chromeurl.html">chrome URL</a>.
-</ul>
-
-You can use one of these browser launchers just by specifying them instead of *firefox or *iexplore in your call to getNewBrowserSession (or in your constructor to the Selenium object in your client driver of choice).
-
-<blockquote>
-  <p><code> cmd=getNewBrowserSession&amp;1=<strong>*chrome</strong>&amp;2=http://www.google.com</code></p>
-</blockquote>
-
-If Firefox is installed in a non-standard location, you can launch *chrome mode like this:
-
-<blockquote>
-  <p><code>cmd=getNewBrowserSession&amp;1=<strong>*chrome c:\firefox\firefox.exe</strong>&amp;2=http://www.google.com</code></p>
-</blockquote>
-
-<p>These browser launchers are still experimental because they behave somewhat differently from a normal browser as a user might use it.  (We have a lot of areas in the code where we have to check whether this is chrome or HTA and behave differently in that case.)  We're optimistic that these browser launchers will one day become the default, but for now we're just making them available as experimental options, useful as workarounds when nothing else works.</p>
-
-<p>Note that *chrome mode is not really compatible with *custom, because we <i>must</i> create our own Firefox profile in order to run Firefox in *chrome mode.  If you need to use your own Firefox profile together with *chrome mode, you can use the -firefoxProfileTemplate command line option as you start the Selenium Server; this will make a copy of your profile before we begin modifying it.  For example:</p>
-
-<blockquote><code>java&nbsp;-jar&nbsp;selenium-server.jar&nbsp;-firefoxProfileTemplate&nbsp;"C:\Documents&nbsp;and&nbsp;Settings\danielf\Application&nbsp;Data\Mozilla\Firefox\Profiles\ebbhbrpt.default"</code></blockquote>
-
-<h3>Proxy Injection Mode</h3>
-
-<p>The two experimental "proxy injection mode" browser launchers are:</p>
-
-<ul>
-<li>*piiexplore
-<li>*pifirefox
-</ul>
-
-<p>"Proxy injection" mode is a new highly experimental feature for 0.9.0.  (Beware, there are bugs in proxy injection mode; see our <a href="http://jira.openqa.org/secure/IssueNavigator.jspa?pid=10100&component=10290">bug tracker</a> for details.)  Whereas in "normal mode" we keep two automated test windows--one for Selenium, and one for your application under test (AUT)--in proxy injection mode we eliminate the separate Selenium window, in favor of "injecting" Selenium into every HTML page.  By injecting ourselves into the HTML, we have increased control over the AUT, but this comes with some risk, because we're also modifying the AUT in order to test it.</p>
-
-To use PI mode, you need to start the Selenium Server with a special command line argument, like this:
-
-<blockquote><code>java -jar selenium-server.jar -proxyInjectionMode</code></blockquote>
-
-There are additional command line options you can use that only apply to proxy injection mode; see our <a href="options.html">command-line options</a> page for details.
-
-Once you've given the special command line argument, you can use an expermental proxyinjection browser launcher like this:
-<blockquote>
-  <p><code> cmd=getNewBrowserSession&amp;1=<strong>*pifirefox</strong>&amp;2=http://www.google.com</code></p>
-</blockquote>
-
-If Firefox is installed in a non-standard location, you can launch *pifirefox mode like this:
-
-<blockquote>
-  <p><code>cmd=getNewBrowserSession&amp;1=<strong>*pifirefox c:\firefox\firefox.exe</strong>&amp;2=http://www.google.com</code></p>
 </blockquote>
 
 </body>

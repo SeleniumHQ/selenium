@@ -94,7 +94,7 @@ Now that you know how to run commands in interactive mode, let's code this test 
 import com.thoughtworks.selenium.*;
 import junit.framework.*;
 public class GoogleTest extends TestCase {
-	private Selenium sel;
+    private Selenium sel;
     public void setUp() {
         sel = new DefaultSelenium("localhost",
             4444, "*firefox", "http://www.google.com");
@@ -158,10 +158,10 @@ use Test::More;
 plan tests => 1;
 
 my $sel = WWW::Selenium->new( host => "localhost", 
-                                      port => 4444, 
-                                      browser => "*firefox", 
-                                      browser_url => "http://www.google.com",
-                                    );
+                              port => 4444, 
+                              browser => "*iexplore", 
+                              browser_url => "http://www.google.com";,
+                            );
 $sel->start();
 $sel->open("http://www.google.com");
 $sel->type("q", "hello world");
@@ -209,7 +209,7 @@ require 'selenium'
 class GoogleTest < Test::Unit::TestCase
 
 	def setup
-		@sel = Selenium::SeleneseInterpreter.new("localhost", 4444,
+		@sel = Selenium::SeleniumDriver.new("localhost", 4444,
 			"*firefox", "http://www.google.com", 15000)
 		@sel.start
 	end
@@ -252,7 +252,7 @@ end
 </blockquote>
 <p>and then we tried to open up google.com (which did work...) and type &quot;Hello World&quot; into the search box. But yahoo.com doesn't have the right to modify google.com, so that operation fails.</p>
 <p>All this means is that you have to choose your browser's start URL wisely: if you open up the browser to yahoo.com, you can't use it to test google.com, and vice versa.</p>
-<p>(A note for the future: we hope to have a slightly cooler solution for you in an upcoming release, allowing you to change a running browser session from one domain to another. The two domains still won't be able to talk to each other, but at least then you'll be able to switch back and forth easily. Most people won't need this functionality; if you're only testing one website at a time, you should be OK.)</p>
+<p>However, in some cases, you may be <i>required</i> to test more than one domain at once.  The most common case is when you need to test both http://blah.com <i>and</i> https://blah.com.  "http:" and "https:" are considered different "origins" from JavaScript perspective, so tests running on one can't run on the other.  In that case, for now, you'll have to use one of our <a href="experimental.html">experimental browser launchers</a> which support running in multiple domains.
 
 
 <h2><a name="otherbrowsers"/>Automatically Launching Other Browsers</h2>
@@ -289,20 +289,21 @@ end
 <p>You can even make up your own Session IDs, just by starting your browser while pointing to &quot;/selenium-server/RemoteRunner.html?sessionId=foo&quot;. That will use the Session ID &quot;foo&quot; instead of some crazy long number. (Session IDs don't have to be numbers, though they usually are when the Selenium Server generates one.) Hence, if you use a Session ID that isn't on record with the Selenium Server, no error message will be thrown; the Selenium Server will just wait patiently for some browser to come along and request work from that Session ID.</p>
 
 <h2><a name="multiWindowMode"/>Run tests under multi-window mode</h2>
-<p>If you want to make your application under test run in a seperate window rather than in the default frame, just start
- selenium server with <b>-multiWindow</b> parameter:</p>
+<p>By default, Selenium runs the application under test in a subframe.  (Running the AUT in a subframe gives us a great deal of control over the AUT.)  But some apps don't run properly in a subframe, preferring to be loaded into the top frame of the window.  In that case, you need to make your application under test run in a seperate window rather than in the default frame.  To do that, start
+ selenium server with the <b>-multiWindow</b> parameter:</p>
 <blockquote>
   <code>java -jar selenium-server.jar <b>-multiWindow</b></code>
 </blockquote>
-<p>See <a href="http://www.openqa.org/selenium-core/usage.html#multiwindow">Run tests in multi-window mode</a> for more information.</p>
+
+<p>Note that multiWindow mode is a little less stable than running in a frame, so you should probably avoid doing this if you can possibly help it.</p>
         
-<h2>Support for HTTPS</h2>
+<h2><a name="https">Support for HTTPS</a></h2>
 
 Because of the unique proxy-based nature of Selenium RC, tests that require HTTPS can be a challenge. There are two
 options available:
 
 <ol>
-    <li>Use the *chrome or *iehta browser launchers, which can typically bypass security restrictions that the other
+    <li>Use the <a href="experimental.html">experimental</a> *chrome or *iehta browser launchers, which can typically bypass security restrictions that the other
         modes cannot.
     </li>
     <li>Use the HTTPS support outlined below.</li>

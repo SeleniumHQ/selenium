@@ -29,6 +29,10 @@
                 <url>troubleshooting.html</url>
             </item>
             <item>
+                <name>Experimental</name>
+                <url>experimental.html</url>
+            </item>
+            <item>
                 <name>- Java</name>
                 <url>java.html</url>
             </item>
