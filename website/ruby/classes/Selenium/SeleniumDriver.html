@@ -1,0 +1,2787 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Selenium::SeleniumDriver</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Selenium::SeleniumDriver</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/selenium_rb.html">
+                selenium.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000046">add_selection</a>&nbsp;&nbsp;
+      <a href="#M000026">alt_key_down</a>&nbsp;&nbsp;
+      <a href="#M000027">alt_key_up</a>&nbsp;&nbsp;
+      <a href="#M000058">answer_on_next_prompt</a>&nbsp;&nbsp;
+      <a href="#M000043">check</a>&nbsp;&nbsp;
+      <a href="#M000057">choose_cancel_on_next_confirmation</a>&nbsp;&nbsp;
+      <a href="#M000016">click</a>&nbsp;&nbsp;
+      <a href="#M000018">click_at</a>&nbsp;&nbsp;
+      <a href="#M000061">close</a>&nbsp;&nbsp;
+      <a href="#M000028">control_key_down</a>&nbsp;&nbsp;
+      <a href="#M000029">control_key_up</a>&nbsp;&nbsp;
+      <a href="#M000118">create_cookie</a>&nbsp;&nbsp;
+      <a href="#M000119">delete_cookie</a>&nbsp;&nbsp;
+      <a href="#M000009">do_command</a>&nbsp;&nbsp;
+      <a href="#M000017">double_click</a>&nbsp;&nbsp;
+      <a href="#M000019">double_click_at</a>&nbsp;&nbsp;
+      <a href="#M000096">drag_and_drop</a>&nbsp;&nbsp;
+      <a href="#M000097">drag_and_drop_to_object</a>&nbsp;&nbsp;
+      <a href="#M000095">dragdrop</a>&nbsp;&nbsp;
+      <a href="#M000020">fire_event</a>&nbsp;&nbsp;
+      <a href="#M000065">get_alert</a>&nbsp;&nbsp;
+      <a href="#M000091">get_all_buttons</a>&nbsp;&nbsp;
+      <a href="#M000093">get_all_fields</a>&nbsp;&nbsp;
+      <a href="#M000092">get_all_links</a>&nbsp;&nbsp;
+      <a href="#M000100">get_all_window_ids</a>&nbsp;&nbsp;
+      <a href="#M000101">get_all_window_names</a>&nbsp;&nbsp;
+      <a href="#M000102">get_all_window_titles</a>&nbsp;&nbsp;
+      <a href="#M000086">get_attribute</a>&nbsp;&nbsp;
+      <a href="#M000094">get_attribute_from_all_windows</a>&nbsp;&nbsp;
+      <a href="#M000070">get_body_text</a>&nbsp;&nbsp;
+      <a href="#M000014">get_boolean</a>&nbsp;&nbsp;
+      <a href="#M000015">get_boolean_array</a>&nbsp;&nbsp;
+      <a href="#M000066">get_confirmation</a>&nbsp;&nbsp;
+      <a href="#M000117">get_cookie</a>&nbsp;&nbsp;
+      <a href="#M000111">get_cursor_position</a>&nbsp;&nbsp;
+      <a href="#M000110">get_element_height</a>&nbsp;&nbsp;
+      <a href="#M000105">get_element_index</a>&nbsp;&nbsp;
+      <a href="#M000107">get_element_position_left</a>&nbsp;&nbsp;
+      <a href="#M000108">get_element_position_top</a>&nbsp;&nbsp;
+      <a href="#M000109">get_element_width</a>&nbsp;&nbsp;
+      <a href="#M000073">get_eval</a>&nbsp;&nbsp;
+      <a href="#M000113">get_expression</a>&nbsp;&nbsp;
+      <a href="#M000103">get_html_source</a>&nbsp;&nbsp;
+      <a href="#M000068">get_location</a>&nbsp;&nbsp;
+      <a href="#M000053">get_log_messages</a>&nbsp;&nbsp;
+      <a href="#M000012">get_number</a>&nbsp;&nbsp;
+      <a href="#M000013">get_number_array</a>&nbsp;&nbsp;
+      <a href="#M000067">get_prompt</a>&nbsp;&nbsp;
+      <a href="#M000085">get_select_options</a>&nbsp;&nbsp;
+      <a href="#M000083">get_selected_id</a>&nbsp;&nbsp;
+      <a href="#M000082">get_selected_ids</a>&nbsp;&nbsp;
+      <a href="#M000081">get_selected_index</a>&nbsp;&nbsp;
+      <a href="#M000080">get_selected_indexes</a>&nbsp;&nbsp;
+      <a href="#M000077">get_selected_label</a>&nbsp;&nbsp;
+      <a href="#M000076">get_selected_labels</a>&nbsp;&nbsp;
+      <a href="#M000079">get_selected_value</a>&nbsp;&nbsp;
+      <a href="#M000078">get_selected_values</a>&nbsp;&nbsp;
+      <a href="#M000042">get_speed</a>&nbsp;&nbsp;
+      <a href="#M000010">get_string</a>&nbsp;&nbsp;
+      <a href="#M000011">get_string_array</a>&nbsp;&nbsp;
+      <a href="#M000075">get_table</a>&nbsp;&nbsp;
+      <a href="#M000072">get_text</a>&nbsp;&nbsp;
+      <a href="#M000069">get_title</a>&nbsp;&nbsp;
+      <a href="#M000071">get_value</a>&nbsp;&nbsp;
+      <a href="#M000054">get_whether_this_frame_match_frame_expression</a>&nbsp;&nbsp;
+      <a href="#M000055">get_whether_this_window_match_window_expression</a>&nbsp;&nbsp;
+      <a href="#M000059">go_back</a>&nbsp;&nbsp;
+      <a href="#M000062">is_alert_present</a>&nbsp;&nbsp;
+      <a href="#M000074">is_checked</a>&nbsp;&nbsp;
+      <a href="#M000064">is_confirmation_present</a>&nbsp;&nbsp;
+      <a href="#M000090">is_editable</a>&nbsp;&nbsp;
+      <a href="#M000088">is_element_present</a>&nbsp;&nbsp;
+      <a href="#M000106">is_ordered</a>&nbsp;&nbsp;
+      <a href="#M000063">is_prompt_present</a>&nbsp;&nbsp;
+      <a href="#M000084">is_something_selected</a>&nbsp;&nbsp;
+      <a href="#M000087">is_text_present</a>&nbsp;&nbsp;
+      <a href="#M000089">is_visible</a>&nbsp;&nbsp;
+      <a href="#M000030">key_down</a>&nbsp;&nbsp;
+      <a href="#M000021">key_press</a>&nbsp;&nbsp;
+      <a href="#M000031">key_up</a>&nbsp;&nbsp;
+      <a href="#M000024">meta_key_down</a>&nbsp;&nbsp;
+      <a href="#M000025">meta_key_up</a>&nbsp;&nbsp;
+      <a href="#M000034">mouse_down</a>&nbsp;&nbsp;
+      <a href="#M000035">mouse_down_at</a>&nbsp;&nbsp;
+      <a href="#M000038">mouse_move</a>&nbsp;&nbsp;
+      <a href="#M000039">mouse_move_at</a>&nbsp;&nbsp;
+      <a href="#M000033">mouse_out</a>&nbsp;&nbsp;
+      <a href="#M000032">mouse_over</a>&nbsp;&nbsp;
+      <a href="#M000036">mouse_up</a>&nbsp;&nbsp;
+      <a href="#M000037">mouse_up_at</a>&nbsp;&nbsp;
+      <a href="#M000005">new</a>&nbsp;&nbsp;
+      <a href="#M000049">open</a>&nbsp;&nbsp;
+      <a href="#M000050">open_window</a>&nbsp;&nbsp;
+      <a href="#M000060">refresh</a>&nbsp;&nbsp;
+      <a href="#M000047">remove_selection</a>&nbsp;&nbsp;
+      <a href="#M000045">select</a>&nbsp;&nbsp;
+      <a href="#M000052">select_frame</a>&nbsp;&nbsp;
+      <a href="#M000051">select_window</a>&nbsp;&nbsp;
+      <a href="#M000112">set_context</a>&nbsp;&nbsp;
+      <a href="#M000104">set_cursor_position</a>&nbsp;&nbsp;
+      <a href="#M000041">set_speed</a>&nbsp;&nbsp;
+      <a href="#M000115">set_timeout</a>&nbsp;&nbsp;
+      <a href="#M000022">shift_key_down</a>&nbsp;&nbsp;
+      <a href="#M000023">shift_key_up</a>&nbsp;&nbsp;
+      <a href="#M000007">start</a>&nbsp;&nbsp;
+      <a href="#M000008">stop</a>&nbsp;&nbsp;
+      <a href="#M000048">submit</a>&nbsp;&nbsp;
+      <a href="#M000006">to_s</a>&nbsp;&nbsp;
+      <a href="#M000040">type</a>&nbsp;&nbsp;
+      <a href="#M000044">uncheck</a>&nbsp;&nbsp;
+      <a href="#M000114">wait_for_condition</a>&nbsp;&nbsp;
+      <a href="#M000116">wait_for_page_to_load</a>&nbsp;&nbsp;
+      <a href="#M000056">wait_for_pop_up</a>&nbsp;&nbsp;
+      <a href="#M000098">window_focus</a>&nbsp;&nbsp;
+      <a href="#M000099">window_maximize</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+    <div id="includes">
+      <h3 class="section-bar">Included Modules</h3>
+
+      <div id="includes-list">
+        <span class="include-name"><a href="../Selenium.html">Selenium</a></span>
+      </div>
+    </div>
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000005.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000005.html');return false;">
+          <span class="method-name">new</span><span class="method-args">(server_host, server_port, browserStartCommand, browserURL, timeout=30000)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000046" class="method-detail">
+        <a name="M000046"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000046.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000046.html');return false;">
+          <span class="method-name">add_selection</span><span class="method-args">(locator,optionLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Add a selection to the set of selected options in a multi-select element
+using an option locator.
+</p>
+<p>
+@see doSelect for details of option locators
+</p>
+<p>
+&#8216;locator&#8217; is an element locator identifying a multi-select box
+&#8216;optionLocator&#8217; is an option locator (a label by default)
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000026" class="method-detail">
+        <a name="M000026"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000026.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000026.html');return false;">
+          <span class="method-name">alt_key_down</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Press the alt key and hold it down until doAltUp() is called or a new page
+is loaded.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000027" class="method-detail">
+        <a name="M000027"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000027.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000027.html');return false;">
+          <span class="method-name">alt_key_up</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Release the alt key.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000058" class="method-detail">
+        <a name="M000058"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000058.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000058.html');return false;">
+          <span class="method-name">answer_on_next_prompt</span><span class="method-args">(answer)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Instructs <a href="../Selenium.html">Selenium</a> to return the specified
+answer string in response to the next JavaScript prompt [window.prompt()].
+</p>
+<p>
+&#8216;answer&#8217; is the answer to give in response to the prompt pop-up
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000043" class="method-detail">
+        <a name="M000043"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000043.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000043.html');return false;">
+          <span class="method-name">check</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Check a toggle-button (checkbox/radio)
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000057" class="method-detail">
+        <a name="M000057"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000057.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000057.html');return false;">
+          <span class="method-name">choose_cancel_on_next_confirmation</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+By default, <a href="../Selenium.html">Selenium</a>&#8217;s overridden
+window.confirm() function will return true, as if the user had manually
+clicked OK. After running this command, the next call to confirm() will
+return false, as if the user had clicked Cancel.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000016.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000016.html');return false;">
+          <span class="method-name">click</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Clicks on a link, button, checkbox or radio button. If the click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000018" class="method-detail">
+        <a name="M000018"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000018.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000018.html');return false;">
+          <span class="method-name">click_at</span><span class="method-args">(locator,coordString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Clicks on a link, button, checkbox or radio button. If the click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;coordString&#8217; is
+specifies the x,y position (i.e. - 10,20) of the mouse event relative to
+the element returned by the locator.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000061" class="method-detail">
+        <a name="M000061"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000061.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000061.html');return false;">
+          <span class="method-name">close</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates the user clicking the &quot;close&quot; button in the titlebar of
+a popup window or tab.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000028" class="method-detail">
+        <a name="M000028"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000028.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000028.html');return false;">
+          <span class="method-name">control_key_down</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Press the control key and hold it down until doControlUp() is called or a
+new page is loaded.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000029" class="method-detail">
+        <a name="M000029"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000029.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000029.html');return false;">
+          <span class="method-name">control_key_up</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Release the control key.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000118" class="method-detail">
+        <a name="M000118"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000118.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000118.html');return false;">
+          <span class="method-name">create_cookie</span><span class="method-args">(nameValuePair,optionsString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Create a new cookie whose path and domain are same with those of current
+page under test, unless you specified a path for this cookie explicitly.
+</p>
+<p>
+&#8216;nameValuePair&#8217; is name and value of the cookie in a format
+&quot;name=value&quot; &#8216;optionsString&#8217; is options for the
+cookie. Currently supported options include &#8216;path&#8217; and
+&#8216;max_age&#8217;. the optionsString&#8217;s format is
+&quot;path=/path/, max_age=60&quot;. The order of options are irrelevant,
+the unit of the value of &#8216;max_age&#8217; is second.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000119" class="method-detail">
+        <a name="M000119"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000119.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000119.html');return false;">
+          <span class="method-name">delete_cookie</span><span class="method-args">(name,path)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Delete a named cookie with specified path.
+</p>
+<p>
+&#8216;name&#8217; is the name of the cookie to be deleted
+&#8216;path&#8217; is the path property of the cookie to be deleted
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000009" class="method-detail">
+        <a name="M000009"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000009.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000009.html');return false;">
+          <span class="method-name">do_command</span><span class="method-args">(verb, args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000017" class="method-detail">
+        <a name="M000017"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000017.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000017.html');return false;">
+          <span class="method-name">double_click</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Double clicks on a link, button, checkbox or radio button. If the double
+click action causes a new page to load (like a link usually does), call
+waitForPageToLoad.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000019" class="method-detail">
+        <a name="M000019"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000019.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000019.html');return false;">
+          <span class="method-name">double_click_at</span><span class="method-args">(locator,coordString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Doubleclicks on a link, button, checkbox or radio button. If the action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;coordString&#8217; is
+specifies the x,y position (i.e. - 10,20) of the mouse event relative to
+the element returned by the locator.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000096" class="method-detail">
+        <a name="M000096"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000096.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000096.html');return false;">
+          <span class="method-name">drag_and_drop</span><span class="method-args">(locator,movementsString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Drags an element a certain distance and then drops it
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;movementsString&#8217;
+is offset in pixels from the current location to which the element should
+be moved, e.g., &quot;+70,-300&quot;
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000097" class="method-detail">
+        <a name="M000097"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000097.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000097.html');return false;">
+          <span class="method-name">drag_and_drop_to_object</span><span class="method-args">(locatorOfObjectToBeDragged,locatorOfDragDestinationObject)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Drags an element and drops it on another element
+</p>
+<p>
+&#8216;locatorOfObjectToBeDragged&#8217; is an element to be dragged
+&#8216;locatorOfDragDestinationObject&#8217; is an element whose location
+(i.e., whose top left corner) will be the point where
+locatorOfObjectToBeDragged is dropped
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000095" class="method-detail">
+        <a name="M000095"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000095.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000095.html');return false;">
+          <span class="method-name">dragdrop</span><span class="method-args">(locator,movementsString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+deprecated - use dragAndDrop instead
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;movementsString&#8217;
+is offset in pixels from the current location to which the element should
+be moved, e.g., &quot;+70,-300&quot;
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000020" class="method-detail">
+        <a name="M000020"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000020.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000020.html');return false;">
+          <span class="method-name">fire_event</span><span class="method-args">(locator,eventName)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Explicitly simulate an event, to trigger the corresponding
+&quot;on<em>event</em>&quot; handler.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;eventName&#8217; is the
+event name, e.g. &quot;focus&quot; or &quot;blur&quot;
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000065" class="method-detail">
+        <a name="M000065"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000065.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000065.html');return false;">
+          <span class="method-name">get_alert</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Retrieves the message of a JavaScript alert generated during the previous
+action, or fail if there were no alerts.
+</p>
+<p>
+Getting an alert has the same effect as manually clicking OK. If an alert
+is generated but you do not get/verify it, the next <a
+href="../Selenium.html">Selenium</a> action will fail. NOTE: under <a
+href="../Selenium.html">Selenium</a>, JavaScript alerts will NOT pop up a
+visible alert dialog. NOTE: <a href="../Selenium.html">Selenium</a> does
+NOT support JavaScript alerts that are generated in a page&#8217;s onload()
+event handler. In this case a visible dialog WILL be generated and <a
+href="../Selenium.html">Selenium</a> will hang until someone manually
+clicks OK.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000091" class="method-detail">
+        <a name="M000091"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000091.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000091.html');return false;">
+          <span class="method-name">get_all_buttons</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the IDs of all buttons on the page.
+</p>
+<p>
+If a given button has no ID, it will appear as &quot;&quot; in this array.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000093" class="method-detail">
+        <a name="M000093"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000093.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000093.html');return false;">
+          <span class="method-name">get_all_fields</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the IDs of all input fields on the page.
+</p>
+<p>
+If a given field has no ID, it will appear as &quot;&quot; in this array.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000092" class="method-detail">
+        <a name="M000092"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000092.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000092.html');return false;">
+          <span class="method-name">get_all_links</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the IDs of all links on the page.
+</p>
+<p>
+If a given link has no ID, it will appear as &quot;&quot; in this array.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000100" class="method-detail">
+        <a name="M000100"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000100.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000100.html');return false;">
+          <span class="method-name">get_all_window_ids</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the IDs of all windows that the browser knows about.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000101" class="method-detail">
+        <a name="M000101"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000101.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000101.html');return false;">
+          <span class="method-name">get_all_window_names</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the names of all windows that the browser knows about.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000102" class="method-detail">
+        <a name="M000102"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000102.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000102.html');return false;">
+          <span class="method-name">get_all_window_titles</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the titles of all windows that the browser knows about.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000086" class="method-detail">
+        <a name="M000086"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000086.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000086.html');return false;">
+          <span class="method-name">get_attribute</span><span class="method-args">(attributeLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets the value of an element attribute.
+</p>
+<p>
+&#8216;attributeLocator&#8217; is an element locator followed by an
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000094" class="method-detail">
+        <a name="M000094"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000094.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000094.html');return false;">
+          <span class="method-name">get_attribute_from_all_windows</span><span class="method-args">(attributeName)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns every instance of some attribute from all known windows.
+</p>
+<p>
+&#8216;attributeName&#8217; is name of an attribute on the windows
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000070" class="method-detail">
+        <a name="M000070"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000070.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000070.html');return false;">
+          <span class="method-name">get_body_text</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets the entire text of the page.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000014" class="method-detail">
+        <a name="M000014"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000014.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000014.html');return false;">
+          <span class="method-name">get_boolean</span><span class="method-args">(verb, args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000015" class="method-detail">
+        <a name="M000015"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000015.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000015.html');return false;">
+          <span class="method-name">get_boolean_array</span><span class="method-args">(verb, args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000066" class="method-detail">
+        <a name="M000066"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000066.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000066.html');return false;">
+          <span class="method-name">get_confirmation</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Retrieves the message of a JavaScript confirmation dialog generated during
+the previous action.
+</p>
+<p>
+By default, the confirm function will return true, having the same effect
+as manually clicking OK. This can be changed by prior execution of the
+chooseCancelOnNextConfirmation command. If an confirmation is generated but
+you do not get/verify it, the next <a href="../Selenium.html">Selenium</a>
+action will fail.
+</p>
+<p>
+NOTE: under <a href="../Selenium.html">Selenium</a>, JavaScript
+confirmations will NOT pop up a visible dialog.
+</p>
+<p>
+NOTE: <a href="../Selenium.html">Selenium</a> does NOT support JavaScript
+confirmations that are generated in a page&#8217;s onload() event handler.
+In this case a visible dialog WILL be generated and <a
+href="../Selenium.html">Selenium</a> will hang until you manually click OK.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000117" class="method-detail">
+        <a name="M000117"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000117.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000117.html');return false;">
+          <span class="method-name">get_cookie</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Return all cookies of the current page under test.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000111" class="method-detail">
+        <a name="M000111"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000111.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000111.html');return false;">
+          <span class="method-name">get_cursor_position</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Retrieves the text cursor position in the given input element or textarea;
+beware, this may not work perfectly on all browsers.
+</p>
+<p>
+Specifically, if the cursor/selection has been cleared by JavaScript, this
+command will tend to return the position of the last location of the
+cursor, even though the cursor is now gone from the page. This is filed as
+SEL-243.
+</p>
+<p>
+This method will fail if the specified element isn&#8217;t an input element
+or textarea, or there is no cursor in the element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator pointing to an input element or
+textarea
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000110" class="method-detail">
+        <a name="M000110"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000110.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000110.html');return false;">
+          <span class="method-name">get_element_height</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Retrieves the height of an element
+</p>
+<p>
+&#8216;locator&#8217; is an element locator pointing to an element
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000105" class="method-detail">
+        <a name="M000105"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000105.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000105.html');return false;">
+          <span class="method-name">get_element_index</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Get the relative index of an element to its parent (starting from 0). The
+comment node and empty text node will be ignored.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator pointing to an element
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000107" class="method-detail">
+        <a name="M000107"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000107.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000107.html');return false;">
+          <span class="method-name">get_element_position_left</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Retrieves the horizontal position of an element
+</p>
+<p>
+&#8216;locator&#8217; is an element locator pointing to an element OR an
+element itself
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000108" class="method-detail">
+        <a name="M000108"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000108.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000108.html');return false;">
+          <span class="method-name">get_element_position_top</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Retrieves the vertical position of an element
+</p>
+<p>
+&#8216;locator&#8217; is an element locator pointing to an element OR an
+element itself
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000109" class="method-detail">
+        <a name="M000109"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000109.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000109.html');return false;">
+          <span class="method-name">get_element_width</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Retrieves the width of an element
+</p>
+<p>
+&#8216;locator&#8217; is an element locator pointing to an element
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000073" class="method-detail">
+        <a name="M000073"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000073.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000073.html');return false;">
+          <span class="method-name">get_eval</span><span class="method-args">(script)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets the result of evaluating the specified JavaScript snippet. The snippet
+may have multiple lines, but only the result of the last line will be
+returned.
+</p>
+<p>
+Note that, by default, the snippet will run in the context of the
+&quot;selenium&quot; object itself, so <tt>this</tt> will refer to the <a
+href="../Selenium.html">Selenium</a> object, and <tt>window</tt> will refer
+to the top-level runner test window, not the window of your application. If
+you need a reference to the window of your application, you can refer to
+<tt>this.browserbot.getCurrentWindow()</tt> and if you need to use a
+locator to refer to a single element in your application page, you can use
+<tt>this.page().findElement(&quot;foo&quot;)</tt> where &quot;foo&quot; is
+your locator.
+</p>
+<p>
+&#8216;script&#8217; is the JavaScript snippet to run
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000113" class="method-detail">
+        <a name="M000113"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000113.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000113.html');return false;">
+          <span class="method-name">get_expression</span><span class="method-args">(expression)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the specified expression.
+</p>
+<p>
+This is useful because of JavaScript preprocessing. It is used to generate
+commands like assertExpression and waitForExpression.
+</p>
+<p>
+&#8216;expression&#8217; is the value to return
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000103" class="method-detail">
+        <a name="M000103"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000103.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000103.html');return false;">
+          <span class="method-name">get_html_source</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the entire HTML source between the opening and closing
+&quot;html&quot; tags.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000068" class="method-detail">
+        <a name="M000068"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000068.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000068.html');return false;">
+          <span class="method-name">get_location</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets the absolute URL of the current page.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000053" class="method-detail">
+        <a name="M000053"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000053.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000053.html');return false;">
+          <span class="method-name">get_log_messages</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Return the contents of the log.
+</p>
+<p>
+This is a placeholder intended to make the code generator make this API
+available to clients. The selenium server will intercept this call,
+however, and return its recordkeeping of log messages since the last call
+to this API. Thus this code in JavaScript will never be called. The reason
+I opted for a servercentric solution is to be able to support multiple
+frames served from different domains, which would break a centralized
+JavaScript logging mechanism under some conditions.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000012" class="method-detail">
+        <a name="M000012"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000012.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000012.html');return false;">
+          <span class="method-name">get_number</span><span class="method-args">(verb, args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000013" class="method-detail">
+        <a name="M000013"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000013.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000013.html');return false;">
+          <span class="method-name">get_number_array</span><span class="method-args">(verb, args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000067" class="method-detail">
+        <a name="M000067"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000067.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000067.html');return false;">
+          <span class="method-name">get_prompt</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Retrieves the message of a JavaScript question prompt dialog generated
+during the previous action.
+</p>
+<p>
+Successful handling of the prompt requires prior execution of the
+answerOnNextPrompt command. If a prompt is generated but you do not
+get/verify it, the next <a href="../Selenium.html">Selenium</a> action will
+fail. NOTE: under <a href="../Selenium.html">Selenium</a>, JavaScript
+prompts will NOT pop up a visible dialog. NOTE: <a
+href="../Selenium.html">Selenium</a> does NOT support JavaScript prompts
+that are generated in a page&#8217;s onload() event handler. In this case a
+visible dialog WILL be generated and <a
+href="../Selenium.html">Selenium</a> will hang until someone manually
+clicks OK.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000085" class="method-detail">
+        <a name="M000085"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000085.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000085.html');return false;">
+          <span class="method-name">get_select_options</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets all option labels in the specified select drop-down.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000083" class="method-detail">
+        <a name="M000083"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000083.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000083.html');return false;">
+          <span class="method-name">get_selected_id</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets option element ID for selected option in the specified select element.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000082" class="method-detail">
+        <a name="M000082"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000082.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000082.html');return false;">
+          <span class="method-name">get_selected_ids</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets all option element IDs for selected options in the specified select or
+multi-select element.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000081" class="method-detail">
+        <a name="M000081"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000081.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000081.html');return false;">
+          <span class="method-name">get_selected_index</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets option index (option number, starting at 0) for selected option in the
+specified select element.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000080" class="method-detail">
+        <a name="M000080"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000080.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000080.html');return false;">
+          <span class="method-name">get_selected_indexes</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets all option indexes (option number, starting at 0) for selected options
+in the specified select or multi-select element.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000077" class="method-detail">
+        <a name="M000077"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000077.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000077.html');return false;">
+          <span class="method-name">get_selected_label</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets option label (visible text) for selected option in the specified
+select element.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000076" class="method-detail">
+        <a name="M000076"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000076.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000076.html');return false;">
+          <span class="method-name">get_selected_labels</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets all option labels (visible text) for selected options in the specified
+select or multi-select element.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000079" class="method-detail">
+        <a name="M000079"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000079.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000079.html');return false;">
+          <span class="method-name">get_selected_value</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets option value (value attribute) for selected option in the specified
+select element.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000078" class="method-detail">
+        <a name="M000078"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000078.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000078.html');return false;">
+          <span class="method-name">get_selected_values</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets all option values (value attributes) for selected options in the
+specified select or multi-select element.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000042" class="method-detail">
+        <a name="M000042"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000042.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000042.html');return false;">
+          <span class="method-name">get_speed</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Get execution speed (i.e., get the millisecond length of the delay
+following each selenium operation). By default, there is no such delay,
+i.e., the delay is 0 milliseconds.
+</p>
+<p>
+See also setSpeed.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000010" class="method-detail">
+        <a name="M000010"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000010.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000010.html');return false;">
+          <span class="method-name">get_string</span><span class="method-args">(verb, args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000011" class="method-detail">
+        <a name="M000011"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000011.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000011.html');return false;">
+          <span class="method-name">get_string_array</span><span class="method-args">(verb, args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000075" class="method-detail">
+        <a name="M000075"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000075.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000075.html');return false;">
+          <span class="method-name">get_table</span><span class="method-args">(tableCellAddress)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets the text from a cell of a table. The cellAddress syntax
+tableLocator.row.column, where row and column start at 0.
+</p>
+<p>
+&#8216;tableCellAddress&#8217; is a cell address, e.g. &quot;foo.1.4&quot;
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000072" class="method-detail">
+        <a name="M000072"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000072.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000072.html');return false;">
+          <span class="method-name">get_text</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets the text of an element. This works for any element that contains text.
+This command uses either the textContent (Mozilla-like browsers) or the
+innerText (IE-like browsers) of the element, which is the rendered text
+shown to the user.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000069" class="method-detail">
+        <a name="M000069"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000069.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000069.html');return false;">
+          <span class="method-name">get_title</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets the title of the current page.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000071" class="method-detail">
+        <a name="M000071"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000071.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000071.html');return false;">
+          <span class="method-name">get_value</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets the (whitespace-trimmed) value of an input field (or anything else
+with a value parameter). For checkbox/radio elements, the value will be
+&quot;on&quot; or &quot;off&quot; depending on whether the element is
+checked or not.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000054" class="method-detail">
+        <a name="M000054"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000054.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000054.html');return false;">
+          <span class="method-name">get_whether_this_frame_match_frame_expression</span><span class="method-args">(currentFrameString,target)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Determine whether current/locator identify the frame containing this
+running code.
+</p>
+<p>
+This is useful in proxy injection mode, where this code runs in every
+browser frame and window, and sometimes the selenium server needs to
+identify the &quot;current&quot; frame. In this case, when the test calls
+selectFrame, this routine is called for each frame to figure out which one
+has been selected. The selected frame will return true, while all others
+will return false.
+</p>
+<p>
+&#8216;currentFrameString&#8217; is starting frame &#8216;target&#8217; is
+new frame (which might be relative to the current one)
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000055" class="method-detail">
+        <a name="M000055"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000055.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000055.html');return false;">
+          <span class="method-name">get_whether_this_window_match_window_expression</span><span class="method-args">(currentWindowString,target)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Determine whether currentWindowString plus target identify the window
+containing this running code.
+</p>
+<p>
+This is useful in proxy injection mode, where this code runs in every
+browser frame and window, and sometimes the selenium server needs to
+identify the &quot;current&quot; window. In this case, when the test calls
+selectWindow, this routine is called for each window to figure out which
+one has been selected. The selected window will return true, while all
+others will return false.
+</p>
+<p>
+&#8216;currentWindowString&#8217; is starting window &#8216;target&#8217;
+is new window (which might be relative to the current one, e.g.,
+&quot;_parent&quot;)
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000059" class="method-detail">
+        <a name="M000059"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000059.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000059.html');return false;">
+          <span class="method-name">go_back</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates the user clicking the &quot;back&quot; button on their browser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000062" class="method-detail">
+        <a name="M000062"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000062.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000062.html');return false;">
+          <span class="method-name">is_alert_present</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Has an alert occurred?
+</p>
+<p>
+This function never throws an exception
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000074" class="method-detail">
+        <a name="M000074"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000074.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000074.html');return false;">
+          <span class="method-name">is_checked</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gets whether a toggle-button (checkbox/radio) is checked. Fails if the
+specified element doesn&#8217;t exist or isn&#8217;t a toggle-button.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator pointing to a checkbox or radio
+button
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000064" class="method-detail">
+        <a name="M000064"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000064.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000064.html');return false;">
+          <span class="method-name">is_confirmation_present</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Has confirm() been called?
+</p>
+<p>
+This function never throws an exception
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000090" class="method-detail">
+        <a name="M000090"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000090.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000090.html');return false;">
+          <span class="method-name">is_editable</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Determines whether the specified input element is editable, ie hasn&#8217;t
+been disabled. This method will fail if the specified element isn&#8217;t
+an input element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000088" class="method-detail">
+        <a name="M000088"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000088.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000088.html');return false;">
+          <span class="method-name">is_element_present</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Verifies that the specified element is somewhere on the page.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000106" class="method-detail">
+        <a name="M000106"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000106.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000106.html');return false;">
+          <span class="method-name">is_ordered</span><span class="method-args">(locator1,locator2)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Check if these two elements have same parent and are ordered. Two same
+elements will not be considered ordered.
+</p>
+<p>
+&#8216;locator1&#8217; is an element locator pointing to the first element
+&#8216;locator2&#8217; is an element locator pointing to the second element
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000063" class="method-detail">
+        <a name="M000063"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000063.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000063.html');return false;">
+          <span class="method-name">is_prompt_present</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Has a prompt occurred?
+</p>
+<p>
+This function never throws an exception
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000084" class="method-detail">
+        <a name="M000084"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000084.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000084.html');return false;">
+          <span class="method-name">is_something_selected</span><span class="method-args">(selectLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Determines whether some option in a drop-down menu is selected.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000087" class="method-detail">
+        <a name="M000087"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000087.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000087.html');return false;">
+          <span class="method-name">is_text_present</span><span class="method-args">(pattern)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Verifies that the specified text pattern appears somewhere on the rendered
+page shown to the user.
+</p>
+<p>
+&#8216;pattern&#8217; is a pattern to match with the text of the page
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000089" class="method-detail">
+        <a name="M000089"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000089.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000089.html');return false;">
+          <span class="method-name">is_visible</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Determines if the specified element is visible. An element can be rendered
+invisible by setting the CSS &quot;visibility&quot; property to
+&quot;hidden&quot;, or the &quot;display&quot; property to
+&quot;none&quot;, either for the element itself or one if its ancestors.
+This method will fail if the element is not present.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000030" class="method-detail">
+        <a name="M000030"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000030.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000030.html');return false;">
+          <span class="method-name">key_down</span><span class="method-args">(locator,keySequence)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user pressing a key (without releasing it yet).
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;keySequence&#8217; is
+Either be a string(&quot;\&quot; followed by the numeric keycode of the key
+to be pressed, normally the ASCII value of that key), or a single
+character. For example: &quot;w&quot;, &quot;\119&quot;.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000021" class="method-detail">
+        <a name="M000021"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000021.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000021.html');return false;">
+          <span class="method-name">key_press</span><span class="method-args">(locator,keySequence)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user pressing and releasing a key.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;keySequence&#8217; is
+Either be a string(&quot;\&quot; followed by the numeric keycode of the key
+to be pressed, normally the ASCII value of that key), or a single
+character. For example: &quot;w&quot;, &quot;\119&quot;.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000031" class="method-detail">
+        <a name="M000031"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000031.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000031.html');return false;">
+          <span class="method-name">key_up</span><span class="method-args">(locator,keySequence)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user releasing a key.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;keySequence&#8217; is
+Either be a string(&quot;\&quot; followed by the numeric keycode of the key
+to be pressed, normally the ASCII value of that key), or a single
+character. For example: &quot;w&quot;, &quot;\119&quot;.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000024" class="method-detail">
+        <a name="M000024"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000024.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000024.html');return false;">
+          <span class="method-name">meta_key_down</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Press the meta key and hold it down until doMetaUp() is called or a new
+page is loaded.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000025" class="method-detail">
+        <a name="M000025"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000025.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000025.html');return false;">
+          <span class="method-name">meta_key_up</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Release the meta key.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000034" class="method-detail">
+        <a name="M000034"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000034.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000034.html');return false;">
+          <span class="method-name">mouse_down</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000035" class="method-detail">
+        <a name="M000035"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000035.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000035.html');return false;">
+          <span class="method-name">mouse_down_at</span><span class="method-args">(locator,coordString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;coordString&#8217; is
+specifies the x,y position (i.e. - 10,20) of the mouse event relative to
+the element returned by the locator.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000038" class="method-detail">
+        <a name="M000038"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000038.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000038.html');return false;">
+          <span class="method-name">mouse_move</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000039" class="method-detail">
+        <a name="M000039"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000039.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000039.html');return false;">
+          <span class="method-name">mouse_move_at</span><span class="method-args">(locator,coordString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;coordString&#8217; is
+specifies the x,y position (i.e. - 10,20) of the mouse event relative to
+the element returned by the locator.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000033" class="method-detail">
+        <a name="M000033"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000033.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000033.html');return false;">
+          <span class="method-name">mouse_out</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user moving the mouse pointer away from the specified element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000032" class="method-detail">
+        <a name="M000032"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000032.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000032.html');return false;">
+          <span class="method-name">mouse_over</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user hovering a mouse over the specified element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000036" class="method-detail">
+        <a name="M000036"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000036.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000036.html');return false;">
+          <span class="method-name">mouse_up</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000037" class="method-detail">
+        <a name="M000037"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000037.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000037.html');return false;">
+          <span class="method-name">mouse_up_at</span><span class="method-args">(locator,coordString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;coordString&#8217; is
+specifies the x,y position (i.e. - 10,20) of the mouse event relative to
+the element returned by the locator.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000049" class="method-detail">
+        <a name="M000049"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000049.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000049.html');return false;">
+          <span class="method-name">open</span><span class="method-args">(url)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Opens an URL in the test frame. This accepts both relative and absolute
+URLs.
+</p>
+<p>
+The &quot;open&quot; command waits for the page to load before proceeding,
+ie. the &quot;AndWait&quot; suffix is implicit.
+</p>
+<p>
+<em>Note</em>: The URL must be on the same domain as the runner HTML due to
+security restrictions in the browser (Same Origin Policy). If you need to
+open an URL on another domain, use the <a
+href="../Selenium.html">Selenium</a> Server to start a new browser session
+on that domain.
+</p>
+<p>
+&#8216;url&#8217; is the URL to open; may be relative or absolute
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000050" class="method-detail">
+        <a name="M000050"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000050.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000050.html');return false;">
+          <span class="method-name">open_window</span><span class="method-args">(url,windowID)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Opens a popup window (if a window with that ID isn&#8217;t already open).
+After opening the window, you&#8217;ll need to select it using the
+selectWindow command.
+</p>
+<p>
+This command can also be a useful workaround for bug SEL-339. In some
+cases, <a href="../Selenium.html">Selenium</a> will be unable to intercept
+a call to window.open (if the call occurs during or before the
+&quot;onLoad&quot; event, for example). In those cases, you can force <a
+href="../Selenium.html">Selenium</a> to notice the open window&#8217;s name
+by using the <a href="../Selenium.html">Selenium</a> openWindow command,
+using an empty (blank) url, like this: openWindow(&quot;&quot;,
+&quot;myFunnyWindow&quot;).
+</p>
+<p>
+&#8216;url&#8217; is the URL to open, which can be blank
+&#8216;windowID&#8217; is the JavaScript window ID of the window to select
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000060" class="method-detail">
+        <a name="M000060"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000060.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000060.html');return false;">
+          <span class="method-name">refresh</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Simulates the user clicking the &quot;Refresh&quot; button on their
+browser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000047" class="method-detail">
+        <a name="M000047"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000047.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000047.html');return false;">
+          <span class="method-name">remove_selection</span><span class="method-args">(locator,optionLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Remove a selection from the set of selected options in a multi-select
+element using an option locator.
+</p>
+<p>
+@see doSelect for details of option locators
+</p>
+<p>
+&#8216;locator&#8217; is an element locator identifying a multi-select box
+&#8216;optionLocator&#8217; is an option locator (a label by default)
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000045" class="method-detail">
+        <a name="M000045"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000045.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000045.html');return false;">
+          <span class="method-name">select</span><span class="method-args">(selectLocator,optionLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Select an option from a drop-down using an option locator.
+</p>
+<p>
+Option locators provide different ways of specifying options of an HTML
+Select element (e.g. for selecting a specific option, or for asserting that
+the selected option satisfies a specification). There are several forms of
+Select Option Locator.
+</p>
+<ul>
+<li><b>label</b>=<em>labelPattern</em>::
+
+</li>
+</ul>
+<pre>
+    matches options based on their labels, i.e. the visible text. (This
+    is the default.)
+    *    label=regexp:^[Oo]ther
+</pre>
+<ul>
+<li><b>value</b>=<em>valuePattern</em>::
+
+</li>
+</ul>
+<pre>
+    matches options based on their values.
+    *    value=other
+</pre>
+<ul>
+<li><b>id</b>=<em>id</em>::
+
+</li>
+</ul>
+<pre>
+    matches options based on their ids.
+    *    id=option1
+</pre>
+<ul>
+<li><b>index</b>=<em>index</em>::
+
+</li>
+</ul>
+<pre>
+    matches an option based on its index (offset from zero).
+    *    index=2
+</pre>
+<p>
+If no option locator prefix is provided, the default behaviour is to match
+on <b>label</b>.
+</p>
+<p>
+&#8216;selectLocator&#8217; is an element locator identifying a drop-down
+menu &#8216;optionLocator&#8217; is an option locator (a label by default)
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000052" class="method-detail">
+        <a name="M000052"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000052.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000052.html');return false;">
+          <span class="method-name">select_frame</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Selects a frame within the current window. (You may invoke this command
+multiple times to select nested frames.) To select the parent frame, use
+&quot;relative=parent&quot; as a locator; to select the top frame, use
+&quot;relative=top&quot;.
+</p>
+<p>
+You may also use a DOM expression to identify the frame you want directly,
+like this: <tt><a
+href="http://"subframe"">dom=frames["main"].frames</a></tt>
+</p>
+<p>
+&#8216;locator&#8217; is an element locator identifying a frame or iframe
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000051" class="method-detail">
+        <a name="M000051"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000051.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000051.html');return false;">
+          <span class="method-name">select_window</span><span class="method-args">(windowID)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Selects a popup window; once a popup window has been selected, all commands
+go to that window. To select the main window again, use null as the target.
+</p>
+<p>
+<a href="../Selenium.html">Selenium</a> has several strategies for finding
+the window object referred to by the &quot;windowID&quot; parameter. 1.) if
+windowID is null, then it is assumed the user is referring to the original
+window instantiated by the browser). 2.) if the value of the
+&quot;windowID&quot; parameter is a JavaScript variable name in the current
+application window, then it is assumed that this variable contains the
+return value from a call to the JavaScript window.open() method. 3.)
+Otherwise, selenium looks in a hash it maintains that maps string names to
+window objects. Each of these string names matches the second parameter
+&quot;windowName&quot; past to the JavaScript method window.open(url,
+windowName, windowFeatures, replaceFlag) (which selenium intercepts). If
+you&#8217;re having trouble figuring out what is the name of a window that
+you want to manipulate, look at the selenium log messages which identify
+the names of windows created via window.open (and therefore intercepted by
+selenium). You will see messages like the following for each window as it
+is opened: <tt>debug: window.open call intercepted; window ID (which you
+can use with selectWindow()) is &quot;myNewWindow&quot;</tt> In some cases,
+<a href="../Selenium.html">Selenium</a> will be unable to intercept a call
+to window.open (if the call occurs during or before the &quot;onLoad&quot;
+event, for example). (This is bug SEL-339.) In those cases, you can force
+<a href="../Selenium.html">Selenium</a> to notice the open window&#8217;s
+name by using the <a href="../Selenium.html">Selenium</a> openWindow
+command, using an empty (blank) url, like this: openWindow(&quot;&quot;,
+&quot;myFunnyWindow&quot;).
+</p>
+<p>
+&#8216;windowID&#8217; is the JavaScript window ID of the window to select
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000112" class="method-detail">
+        <a name="M000112"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000112.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000112.html');return false;">
+          <span class="method-name">set_context</span><span class="method-args">(context,logLevelThreshold)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Writes a message to the status bar and adds a note to the browser-side log.
+</p>
+<p>
+If logLevelThreshold is specified, set the threshold for logging to that
+level (debug, info, warn, error). (Note that the browser-side logs will
+<em>not</em> be sent back to the server, and are invisible to the Client
+Driver.)
+</p>
+<p>
+&#8216;context&#8217; is the message to be sent to the browser
+&#8216;logLevelThreshold&#8217; is one of &quot;debug&quot;,
+&quot;info&quot;, &quot;warn&quot;, &quot;error&quot;, sets the threshold
+for browser-side logging
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000104" class="method-detail">
+        <a name="M000104"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000104.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000104.html');return false;">
+          <span class="method-name">set_cursor_position</span><span class="method-args">(locator,position)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Moves the text cursor to the specified position in the given input element
+or textarea. This method will fail if the specified element isn&#8217;t an
+input element or textarea.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator pointing to an input element or
+textarea &#8216;position&#8217; is the numerical position of the cursor in
+the field; position should be 0 to move the position to the beginning of
+the field. You can also set the cursor to -1 to move it to the end of the
+field.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000041" class="method-detail">
+        <a name="M000041"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000041.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000041.html');return false;">
+          <span class="method-name">set_speed</span><span class="method-args">(value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Set execution speed (i.e., set the millisecond length of a delay which will
+follow each selenium operation). By default, there is no such delay, i.e.,
+the delay is 0 milliseconds.
+</p>
+<p>
+&#8216;value&#8217; is the number of milliseconds to pause after operation
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000115" class="method-detail">
+        <a name="M000115"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000115.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000115.html');return false;">
+          <span class="method-name">set_timeout</span><span class="method-args">(timeout)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Specifies the amount of time that <a href="../Selenium.html">Selenium</a>
+will wait for actions to complete.
+</p>
+<p>
+Actions that require waiting include &quot;open&quot; and the
+&quot;waitFor*&quot; actions.
+</p>
+<p>
+The default timeout is 30 seconds.
+</p>
+<p>
+&#8216;timeout&#8217; is a timeout in milliseconds, after which the action
+will return with an error
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000022" class="method-detail">
+        <a name="M000022"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000022.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000022.html');return false;">
+          <span class="method-name">shift_key_down</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Press the shift key and hold it down until doShiftUp() is called or a new
+page is loaded.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000023" class="method-detail">
+        <a name="M000023"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000023.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000023.html');return false;">
+          <span class="method-name">shift_key_up</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Release the shift key.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000007.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000007.html');return false;">
+          <span class="method-name">start</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000008" class="method-detail">
+        <a name="M000008"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000008.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000008.html');return false;">
+          <span class="method-name">stop</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000048" class="method-detail">
+        <a name="M000048"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000048.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000048.html');return false;">
+          <span class="method-name">submit</span><span class="method-args">(formLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Submit the specified form. This is particularly useful for forms without
+submit buttons, e.g. single-input &quot;Search&quot; forms.
+</p>
+<p>
+&#8216;formLocator&#8217; is an element locator for the form you want to
+submit
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000006.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000006.html');return false;">
+          <span class="method-name">to_s</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000040" class="method-detail">
+        <a name="M000040"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000040.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000040.html');return false;">
+          <span class="method-name">type</span><span class="method-args">(locator,value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Sets the value of an input field, as though you typed it in.
+</p>
+<p>
+Can also be used to set the value of combo boxes, check boxes, etc. In
+these cases, value should be the value of the option selected, not the
+visible text.
+</p>
+<p>
+&#8216;locator&#8217; is an element locator &#8216;value&#8217; is the
+value to type
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000044" class="method-detail">
+        <a name="M000044"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000044.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000044.html');return false;">
+          <span class="method-name">uncheck</span><span class="method-args">(locator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Uncheck a toggle-button (checkbox/radio)
+</p>
+<p>
+&#8216;locator&#8217; is an element locator
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000114" class="method-detail">
+        <a name="M000114"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000114.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000114.html');return false;">
+          <span class="method-name">wait_for_condition</span><span class="method-args">(script,timeout)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Runs the specified JavaScript snippet repeatedly until it evaluates to
+&quot;true&quot;. The snippet may have multiple lines, but only the result
+of the last line will be considered.
+</p>
+<p>
+Note that, by default, the snippet will be run in the runner&#8217;s test
+window, not in the window of your application. To get the window of your
+application, you can use the JavaScript snippet
+<tt>selenium.browserbot.getCurrentWindow()</tt>, and then run your
+JavaScript in there
+</p>
+<p>
+&#8216;script&#8217; is the JavaScript snippet to run &#8216;timeout&#8217;
+is a timeout in milliseconds, after which this command will return with an
+error
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000116" class="method-detail">
+        <a name="M000116"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000116.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000116.html');return false;">
+          <span class="method-name">wait_for_page_to_load</span><span class="method-args">(timeout)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Waits for a new page to load.
+</p>
+<p>
+You can use this command instead of the &quot;AndWait&quot; suffixes,
+&quot;clickAndWait&quot;, &quot;selectAndWait&quot;,
+&quot;typeAndWait&quot; etc. (which are only available in the JS API). <a
+href="../Selenium.html">Selenium</a> constantly keeps track of new pages
+loading, and sets a &quot;newPageLoaded&quot; flag when it first notices a
+page load. Running any other <a href="../Selenium.html">Selenium</a>
+command after turns the flag to false. Hence, if you want to wait for a
+page to load, you must wait immediately after a <a
+href="../Selenium.html">Selenium</a> command that caused a page-load.
+</p>
+<p>
+&#8216;timeout&#8217; is a timeout in milliseconds, after which this
+command will return with an error
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000056" class="method-detail">
+        <a name="M000056"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000056.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000056.html');return false;">
+          <span class="method-name">wait_for_pop_up</span><span class="method-args">(windowID,timeout)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Waits for a popup window to appear and load up.
+</p>
+<p>
+&#8216;windowID&#8217; is the JavaScript window ID of the window that will
+appear &#8216;timeout&#8217; is a timeout in milliseconds, after which the
+action will return with an error
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000098" class="method-detail">
+        <a name="M000098"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000098.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000098.html');return false;">
+          <span class="method-name">window_focus</span><span class="method-args">(windowName)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Gives focus to a window
+</p>
+<p>
+&#8216;windowName&#8217; is name of the window to be given focus
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000099" class="method-detail">
+        <a name="M000099"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumDriver.src/M000099.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumDriver.src/M000099.html');return false;">
+          <span class="method-name">window_maximize</span><span class="method-args">(windowName)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Resize window to take up the entire screen
+</p>
+<p>
+&#8216;windowName&#8217; is name of the window to be enlarged
+</p>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

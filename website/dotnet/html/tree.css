@@ -1,0 +1,60 @@
+.treeDiv 
+{
+    font-family: verdana;
+    font-size: 70.5%;
+    font-weight: normal;
+    background-color: #f1f1f1;
+    color: Black;
+    overflow: auto;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+
+.treeNode 
+{
+    white-space: nowrap;
+    text-indent: -14px;
+    margin: 5px 2px 5px 14px;
+}
+A.treeUnselected:hover, A.treeSelected:hover 
+{
+    text-decoration: underline;
+    background-color: #cccccc;
+    border: solid 1px #999999;
+    text-decoration: none;
+}
+A.treeUnselected, A.treeSelected
+{
+	color: Black;
+	padding: 1px 3px 1px 3px;
+    text-decoration: none;
+}
+A.treeSelected
+{
+	background-color: #ffffff;
+    border: solid 1px #999999;
+}
+A.treeUnselected 
+{
+	border: solid 1px f0f0f0;
+    background-color: transparent;
+}
+.treeSubnodes
+{
+	display: block;
+}
+.treeSubnodesHidden
+{
+	display: none;
+}
+.treeNode IMG.treeNoLinkImage, .treeNode IMG.treeLinkImage
+{
+	width: 9px;
+	height: 9px;
+	margin-left: 5px;
+	margin-right: 0px;
+}
+.treeNode IMG.treeLinkImage
+{
+    cursor: pointer;
+}

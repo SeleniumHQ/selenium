@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: SeleniumHelper</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">SeleniumHelper</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/selenium_rb.html">
+                selenium.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Defines a mixin module that you can use to write <a
+href="Selenium.html">Selenium</a> tests without typing
+&quot;@selenium.&quot; in front of every command. Every call to a missing
+method will be automatically sent to the @selenium object.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000004">method_missing</a>&nbsp;&nbsp;
+      <a href="#M000001">open</a>&nbsp;&nbsp;
+      <a href="#M000003">select</a>&nbsp;&nbsp;
+      <a href="#M000002">type</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumHelper.src/M000004.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumHelper.src/M000004.html');return false;">
+          <span class="method-name">method_missing</span><span class="method-args">(method_name, *args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Passes all calls to missing methods to @selenium
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000001" class="method-detail">
+        <a name="M000001"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumHelper.src/M000001.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumHelper.src/M000001.html');return false;">
+          <span class="method-name">open</span><span class="method-args">(addr)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Overrides standard &quot;open&quot; method with @selenium.open
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumHelper.src/M000003.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumHelper.src/M000003.html');return false;">
+          <span class="method-name">select</span><span class="method-args">(inputLocator, optionLocator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Overrides standard &quot;select&quot; method with @selenium.select
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000002" class="method-detail">
+        <a name="M000002"></a>
+
+        <div class="method-heading">
+          <a href="SeleniumHelper.src/M000002.html" target="Code" class="method-signature"
+            onclick="popupCode('SeleniumHelper.src/M000002.html');return false;">
+          <span class="method-name">type</span><span class="method-args">(inputLocator, value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Overrides standard &quot;type&quot; method with @selenium.type
+</p>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

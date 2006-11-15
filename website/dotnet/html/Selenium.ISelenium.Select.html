@@ -1,0 +1,59 @@
+<html dir="LTR">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+    <title>ISelenium.Select Method</title>
+    <xml>
+    </xml>
+    <link rel="stylesheet" type="text/css" href="MSDN.css" />
+  </head>
+  <body id="bodyID" class="dtBODY">
+    <div id="nsbanner">
+      <div id="bannerrow1">
+        <table class="bannerparthead" cellspacing="0">
+          <tr id="hdr">
+            <td class="runninghead">An NDoc Documented Class Library</td>
+            <td class="product">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="TitleRow">
+        <h1 class="dtH1">ISelenium.Select Method </h1>
+      </div>
+    </div>
+    <div id="nstext">Select an option from a drop-down using an option locator. <p> Option locators provide different ways of specifying options of an HTML Select element (e.g. for selecting a specific option, or for asserting that the selected option satisfies a specification). There are several forms of Select Option Locator. </p><dl>
+                    <dt>
+                        <strong>label</strong>=<em>labelPattern</em></dt>
+                    <dd>matches options based on their labels, i.e. the visible text. (This is the default.) <ul class="first last simple">
+                            <li>label=regexp:^[Oo]ther</li>
+                        </ul></dd>
+                    <dt>
+                        <strong>value</strong>=<em>valuePattern</em></dt>
+                    <dd>matches options based on their values. <ul class="first last simple">
+                            <li>value=other</li>
+                        </ul></dd>
+                    <dt>
+                        <strong>id</strong>=<em>id</em></dt>
+                    <dd>matches options based on their ids. <ul class="first last simple">
+                            <li>id=option1</li>
+                        </ul></dd>
+                    <dt>
+                        <strong>index</strong>=<em>index</em></dt>
+                    <dd>matches an option based on its index (offset from zero). <ul class="first last simple">
+                            <li>index=2</li>
+                        </ul></dd>
+                </dl><p> If no option locator prefix is provided, the default behaviour is to match on <strong>label</strong>. </p><div class="syntax">
+        <a href="ms-help://MS.NETFrameworkSDKv1.1/cpref/html/frlrfSystemVoidClassTopic.htm">void</a> Select(<br />   <a href="ms-help://MS.NETFrameworkSDKv1.1/cpref/html/frlrfSystemStringClassTopic.htm">string</a> <i>selectLocator</i>,<br />   <a href="ms-help://MS.NETFrameworkSDKv1.1/cpref/html/frlrfSystemStringClassTopic.htm">string</a> <i>optionLocator</i><br />);</div><h4 class="dtH4">Parameters</h4><dl>
+        <dt>
+          <i>selectLocator</i>
+        </dt>
+        <dd>an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
+        <dt>
+          <i>optionLocator</i>
+        </dt>
+        <dd>an option locator (a label by default)</dd>
+      </dl><h4 class="dtH4">See Also</h4><p>
+        <a href="Selenium.ISelenium.html">ISelenium Interface</a> | <a href="Selenium.html">Selenium Namespace</a></p></div>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<html dir="LTR">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+    <title>ISelenium.SelectWindow Method</title>
+    <xml>
+    </xml>
+    <link rel="stylesheet" type="text/css" href="MSDN.css" />
+  </head>
+  <body id="bodyID" class="dtBODY">
+    <div id="nsbanner">
+      <div id="bannerrow1">
+        <table class="bannerparthead" cellspacing="0">
+          <tr id="hdr">
+            <td class="runninghead">An NDoc Documented Class Library</td>
+            <td class="product">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="TitleRow">
+        <h1 class="dtH1">ISelenium.SelectWindow Method </h1>
+      </div>
+    </div>
+    <div id="nstext">Selects a popup window; once a popup window has been selected, all commands go to that window. To select the main window again, use null as the target. <p>Selenium has several strategies for finding the window object referred to by the "windowID" parameter.</p><p>1.) if windowID is null, then it is assumed the user is referring to the original window instantiated by the browser).</p><p>2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed that this variable contains the return value from a call to the JavaScript window.open() method.</p><p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window objects. Each of these string names matches the second parameter "windowName" past to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag) (which selenium intercepts).</p><p>If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages which identify the names of windows created via window.open (and therefore intercepted by selenium). You will see messages like the following for each window as it is opened:</p><p>
+                    <pre class="code">debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow"</pre>
+                </p><p>In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example). (This is bug SEL-339.) In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p><div class="syntax">
+        <a href="ms-help://MS.NETFrameworkSDKv1.1/cpref/html/frlrfSystemVoidClassTopic.htm">void</a> SelectWindow(<br />   <a href="ms-help://MS.NETFrameworkSDKv1.1/cpref/html/frlrfSystemStringClassTopic.htm">string</a> <i>windowID</i><br />);</div><h4 class="dtH4">Parameters</h4><dl>
+        <dt>
+          <i>windowID</i>
+        </dt>
+        <dd>the JavaScript window ID of the window to select</dd>
+      </dl><h4 class="dtH4">See Also</h4><p>
+        <a href="Selenium.ISelenium.html">ISelenium Interface</a> | <a href="Selenium.html">Selenium Namespace</a></p></div>
+  </body>
+</html>

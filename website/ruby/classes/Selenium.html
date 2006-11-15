@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: Selenium</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">Selenium</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/selenium_rb.html">
+                selenium.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Defines an object that runs <a href="Selenium.html">Selenium</a> commands.
+</p>
+<h3>Element Locators</h3>
+<p>
+Element Locators tell <a href="Selenium.html">Selenium</a> which HTML
+element a command refers to. The format of a locator is:
+<em>locatorType</em><b>=</b><em>argument</em> We support the following
+strategies for locating elements:
+</p>
+<ul>
+<li><b>identifier</b>=<em>id</em>::
+
+</li>
+</ul>
+<pre>
+    Select the element with the specified @id attribute. If no match is
+    found, select the first element whose @name attribute is &lt;em&gt;id&lt;/em&gt;.
+    (This is normally the default; see below.)
+</pre>
+<ul>
+<li><b>id</b>=<em>id</em>::
+
+</li>
+</ul>
+<pre>
+    Select the element with the specified @id attribute.
+</pre>
+<ul>
+<li><b>name</b>=<em>name</em>::
+
+</li>
+</ul>
+<pre>
+    Select the first element with the specified @name attribute.
+
+    *    username
+    *    name=username
+
+    The name may optionally be followed by one or more &lt;em&gt;element-filters&lt;/em&gt;, separated from the name by whitespace.  If the &lt;em&gt;filterType&lt;/em&gt; is not specified, &lt;b&gt;value&lt;/b&gt; is assumed.
+
+    *    name=flavour value=chocolate
+</pre>
+<ul>
+<li><b>dom</b>=<em>javascriptExpression</em>::
+
+<pre>
+   Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
+   Model using JavaScript.  Note that you must not return a value in this string; simply make it the last expression in the block.
+   *    dom=document.forms['myForm'].myDropdown
+   *    dom=document.images[56]
+   *    dom=function foo() { return document.links[1]; }; foo();
+</pre>
+</li>
+<li><b>xpath</b>=<em>xpathExpression</em>::
+
+</li>
+</ul>
+<pre>
+    Locate an element using an XPath expression.
+    *    xpath=//img[@alt='The image alt text']
+    *    xpath=//table[@id='table1']//tr[4]/td[2]
+</pre>
+<ul>
+<li><b>link</b>=<em>textPattern</em>::
+
+</li>
+</ul>
+<pre>
+    Select the link (anchor) element which contains text matching the
+    specified &lt;em&gt;pattern&lt;/em&gt;.
+    *    link=The link text
+</pre>
+<ul>
+<li><b>css</b>=<em>cssSelectorSyntax</em>::
+
+</li>
+</ul>
+<pre>
+    Select the element using css selectors. Please refer to CSS2 selectors, CSS3 selectors for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
+    *    css=a[href=&quot;#id3&quot;]
+    *    css=span#firstChild + span
+
+    Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after).
+</pre>
+<p>
+Without an explicit locator prefix, <a href="Selenium.html">Selenium</a>
+uses the following default strategies:
+</p>
+<ul>
+<li><b>dom</b>, for locators starting with &quot;document.&quot;
+
+</li>
+<li><b>xpath</b>, for locators starting with &quot;//&quot;
+
+</li>
+<li><b>identifier</b>, otherwise
+
+</li>
+</ul>
+<h3>Element FiltersElement filters can be used with a locator to refine a list of candidate elements. They are currently used only in the &#8216;name&#8217; element-locator.</h3>
+<p>
+Filters look much like locators, ie.
+<em>filterType</em><b>=</b><em>argument</em>Supported element-filters are:
+<b>value=</b><em>valuePattern</em>
+</p>
+<p>
+Matches elements based on their values. This is particularly useful for
+refining a list of similarly-named
+toggle-buttons.<b>index=</b><em>index</em>
+</p>
+<p>
+Selects a single element based on its position in the list (offset from
+zero).===String-match Patterns Various Pattern syntaxes are available for
+matching string values:
+</p>
+<ul>
+<li><b>glob:</b><em>pattern</em>::
+
+</li>
+</ul>
+<pre>
+    Match a string against a &quot;glob&quot; (aka &quot;wildmat&quot;) pattern. &quot;Glob&quot; is a
+    kind of limited regular-expression syntax typically used in command-line
+    shells. In a glob pattern, &quot;*&quot; represents any sequence of characters, and &quot;?&quot;
+    represents any single character. Glob patterns match against the entire
+    string.
+</pre>
+<ul>
+<li><b>regexp:</b><em>regexp</em>::
+
+</li>
+</ul>
+<pre>
+    Match a string using a regular-expression. The full power of JavaScript
+    regular-expressions is available.
+</pre>
+<ul>
+<li><b>exact:</b><em>string</em>::
+
+</li>
+</ul>
+<pre>
+    Match a string exactly, verbatim, without any of that fancy wildcard
+    stuff.
+</pre>
+<p>
+If no pattern prefix is specified, <a href="Selenium.html">Selenium</a>
+assumes that it&#8217;s a &quot;glob&quot; pattern.
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+    <div id="class-list">
+      <h3 class="section-bar">Classes and Modules</h3>
+
+      Class <a href="Selenium/SeleniumDriver.html" class="link">Selenium::SeleniumDriver</a><br />
+
+    </div>
+
+    <div id="constants-list">
+      <h3 class="section-bar">Constants</h3>
+
+      <div class="name-list">
+        <table summary="Constants">
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">SeleneseInterpreter</td>
+          <td>=</td>
+          <td class="context-item-value">SeleniumDriver # for backward compatibility</td>
+        </tr>
+        </table>
+      </div>
+    </div>
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

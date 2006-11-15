@@ -1,0 +1,301 @@
+<html dir="LTR">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+    <title>Selenium</title>
+    <xml>
+    </xml>
+    <link rel="stylesheet" type="text/css" href="MSDN.css" />
+  </head>
+  <body id="bodyID" class="dtBODY">
+    <div id="nsbanner">
+      <div id="bannerrow1">
+        <table class="bannerparthead" cellspacing="0">
+          <tr id="hdr">
+            <td class="runninghead">An NDoc Documented Class Library</td>
+            <td class="product">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="TitleRow">
+        <h1 class="dtH1">Selenium Namespace</h1>
+      </div>
+    </div>
+    <div id="nstext">
+      <p>
+        <a href="SeleniumHierarchy.html">Namespace hierarchy</a>
+      </p>
+      <h3 class="dtH3">Classes</h3>
+      <div class="tablediv">
+        <table class="dtTABLE" cellspacing="0">
+          <tr valign="top">
+            <th width="50%">Class</th>
+            <th width="50%">Description</th>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="Selenium.DefaultRemoteCommand.html">DefaultRemoteCommand</a>
+            </td>
+            <td width="50%"> A representation of a single remote Command </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="Selenium.DefaultSelenium.html">DefaultSelenium</a>
+            </td>
+            <td width="50%">Defines an object that runs Selenium commands. <h3>
+                    <a name="locators">
+                    </a>Element Locators</h3><p> Element Locators tell Selenium which HTML element a command refers to. The format of a locator is:</p><blockquote>
+                    <em>locatorType</em>
+                    <strong>=</strong>
+                    <em>argument</em>
+                </blockquote><p> We support the following strategies for locating elements: </p><blockquote>
+                    <dl>
+                        <dt>
+                            <strong>identifier</strong>=<em>id</em></dt>
+                        <dd>Select the element with the specified @id attribute. If no match is found, select the first element whose @name attribute is <em>id</em>. (This is normally the default; see below.)</dd>
+                        <dt>
+                            <strong>id</strong>=<em>id</em></dt>
+                        <dd>Select the element with the specified @id attribute.</dd>
+                        <dt>
+                            <strong>name</strong>=<em>name</em></dt>
+                        <dd>Select the first element with the specified @name attribute.</dd>
+                        <dd>
+                            <ul class="first last simple">
+                                <li>username</li>
+                                <li>name=username</li>
+                            </ul>
+                        </dd>
+                        <dd>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace. If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</dd>
+                        <dd>
+                            <ul class="first last simple">
+                                <li>name=flavour value=chocolate</li>
+                            </ul>
+                        </dd>
+                        <dt>
+                            <strong>dom</strong>=<em>javascriptExpression</em></dt>
+                        <dd>
+                            <dd>Find an element by evaluating the specified string. This allows you to traverse the HTML Document Object Model using JavaScript. Note that you must not return a value in this string; simply make it the last expression in the block. <ul class="first last simple">
+                                    <li>dom=document.forms['myForm'].myDropdown</li>
+                                    <li>dom=document.images[56]</li>
+                                    <li>dom=function foo() { return document.links[1]; }; foo();</li>
+                                </ul></dd>
+                        </dd>
+                        <dt>
+                            <strong>xpath</strong>=<em>xpathExpression</em></dt>
+                        <dd>Locate an element using an XPath expression. <ul class="first last simple">
+                                <li>xpath=//img[@alt='The image alt text']</li>
+                                <li>xpath=//table[@id='table1']//tr[4]/td[2]</li>
+                            </ul></dd>
+                        <dt>
+                            <strong>link</strong>=<em>textPattern</em></dt>
+                        <dd>Select the link (anchor) element which contains text matching the specified <em>pattern</em>. <ul class="first last simple">
+                                <li>link=The link text</li>
+                            </ul></dd>
+                        <dt>
+                            <strong>css</strong>=<em>cssSelectorSyntax</em></dt>
+                        <dd>Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package. <ul class="first last simple">
+                                <li>css=a[href="#id3"]</li>
+                                <li>css=span#firstChild + span</li>
+                            </ul></dd>
+                        <dd>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </dd>
+                    </dl>
+                </blockquote><p> Without an explicit locator prefix, Selenium uses the following default strategies: </p><ul class="simple">
+                    <li>
+                        <strong>dom</strong>, for locators starting with "document."</li>
+                    <li>
+                        <strong>xpath</strong>, for locators starting with "//"</li>
+                    <li>
+                        <strong>identifier</strong>, otherwise</li>
+                </ul><h3>
+                    <a name="element-filters">Element Filters</a>
+                </h3><blockquote>
+                    <p>Element filters can be used with a locator to refine a list of candidate elements. They are currently used only in the 'name' element-locator.</p>
+                    <p>Filters look much like locators, ie.</p>
+                    <blockquote>
+                        <em>filterType</em>
+                        <strong>=</strong>
+                        <em>argument</em>
+                    </blockquote>
+                    <p>Supported element-filters are:</p>
+                    <p>
+                        <strong>value=</strong>
+                        <em>valuePattern</em>
+                    </p>
+                    <blockquote> Matches elements based on their values. This is particularly useful for refining a list of similarly-named toggle-buttons.</blockquote>
+                    <p>
+                        <strong>index=</strong>
+                        <em>index</em>
+                    </p>
+                    <blockquote> Selects a single element based on its position in the list (offset from zero).</blockquote>
+                </blockquote><h3>
+                    <a name="patterns">
+                    </a>String-match Patterns</h3><p> Various Pattern syntaxes are available for matching string values: </p><blockquote>
+                    <dl>
+                        <dt>
+                            <strong>glob:</strong>
+                            <em>pattern</em>
+                        </dt>
+                        <dd>Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a kind of limited regular-expression syntax typically used in command-line shells. In a glob pattern, "*" represents any sequence of characters, and "?" represents any single character. Glob patterns match against the entire string.</dd>
+                        <dt>
+                            <strong>regexp:</strong>
+                            <em>regexp</em>
+                        </dt>
+                        <dd>Match a string using a regular-expression. The full power of JavaScript regular-expressions is available.</dd>
+                        <dt>
+                            <strong>exact:</strong>
+                            <em>string</em>
+                        </dt>
+                        <dd>Match a string exactly, verbatim, without any of that fancy wildcard stuff.</dd>
+                    </dl>
+                </blockquote><p> If no pattern prefix is specified, Selenium assumes that it's a "glob" pattern. </p></td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="Selenium.HttpCommandProcessor.html">HttpCommandProcessor</a>
+            </td>
+            <td width="50%"> Sends commands and retrieves results via HTTP. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="Selenium.SeleniumException.html">SeleniumException</a>
+            </td>
+            <td width="50%"> Thrown when a Selenium command fails. </td>
+          </tr>
+        </table>
+      </div>
+      <h3 class="dtH3">Interfaces</h3>
+      <div class="tablediv">
+        <table class="dtTABLE" cellspacing="0">
+          <tr valign="top">
+            <th width="50%">Interface</th>
+            <th width="50%">Description</th>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="Selenium.ICommandProcessor.html">ICommandProcessor</a>
+            </td>
+            <td width="50%"> Provides a DoCommand method, which sends the command to the browser to be performed. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="Selenium.IRemoteCommand.html">IRemoteCommand</a>
+            </td>
+            <td width="50%"> Summary description for IRemoteCommand. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="Selenium.ISelenium.html">ISelenium</a>
+            </td>
+            <td width="50%">Defines an object that runs Selenium commands. <h3>
+                    <a name="locators">
+                    </a>Element Locators</h3><p> Element Locators tell Selenium which HTML element a command refers to. The format of a locator is:</p><blockquote>
+                    <em>locatorType</em>
+                    <strong>=</strong>
+                    <em>argument</em>
+                </blockquote><p> We support the following strategies for locating elements: </p><blockquote>
+                    <dl>
+                        <dt>
+                            <strong>identifier</strong>=<em>id</em></dt>
+                        <dd>Select the element with the specified @id attribute. If no match is found, select the first element whose @name attribute is <em>id</em>. (This is normally the default; see below.)</dd>
+                        <dt>
+                            <strong>id</strong>=<em>id</em></dt>
+                        <dd>Select the element with the specified @id attribute.</dd>
+                        <dt>
+                            <strong>name</strong>=<em>name</em></dt>
+                        <dd>Select the first element with the specified @name attribute.</dd>
+                        <dd>
+                            <ul class="first last simple">
+                                <li>username</li>
+                                <li>name=username</li>
+                            </ul>
+                        </dd>
+                        <dd>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace. If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</dd>
+                        <dd>
+                            <ul class="first last simple">
+                                <li>name=flavour value=chocolate</li>
+                            </ul>
+                        </dd>
+                        <dt>
+                            <strong>dom</strong>=<em>javascriptExpression</em></dt>
+                        <dd>
+                            <dd>Find an element by evaluating the specified string. This allows you to traverse the HTML Document Object Model using JavaScript. Note that you must not return a value in this string; simply make it the last expression in the block. <ul class="first last simple">
+                                    <li>dom=document.forms['myForm'].myDropdown</li>
+                                    <li>dom=document.images[56]</li>
+                                    <li>dom=function foo() { return document.links[1]; }; foo();</li>
+                                </ul></dd>
+                        </dd>
+                        <dt>
+                            <strong>xpath</strong>=<em>xpathExpression</em></dt>
+                        <dd>Locate an element using an XPath expression. <ul class="first last simple">
+                                <li>xpath=//img[@alt='The image alt text']</li>
+                                <li>xpath=//table[@id='table1']//tr[4]/td[2]</li>
+                            </ul></dd>
+                        <dt>
+                            <strong>link</strong>=<em>textPattern</em></dt>
+                        <dd>Select the link (anchor) element which contains text matching the specified <em>pattern</em>. <ul class="first last simple">
+                                <li>link=The link text</li>
+                            </ul></dd>
+                        <dt>
+                            <strong>css</strong>=<em>cssSelectorSyntax</em></dt>
+                        <dd>Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package. <ul class="first last simple">
+                                <li>css=a[href="#id3"]</li>
+                                <li>css=span#firstChild + span</li>
+                            </ul></dd>
+                        <dd>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </dd>
+                    </dl>
+                </blockquote><p> Without an explicit locator prefix, Selenium uses the following default strategies: </p><ul class="simple">
+                    <li>
+                        <strong>dom</strong>, for locators starting with "document."</li>
+                    <li>
+                        <strong>xpath</strong>, for locators starting with "//"</li>
+                    <li>
+                        <strong>identifier</strong>, otherwise</li>
+                </ul><h3>
+                    <a name="element-filters">Element Filters</a>
+                </h3><blockquote>
+                    <p>Element filters can be used with a locator to refine a list of candidate elements. They are currently used only in the 'name' element-locator.</p>
+                    <p>Filters look much like locators, ie.</p>
+                    <blockquote>
+                        <em>filterType</em>
+                        <strong>=</strong>
+                        <em>argument</em>
+                    </blockquote>
+                    <p>Supported element-filters are:</p>
+                    <p>
+                        <strong>value=</strong>
+                        <em>valuePattern</em>
+                    </p>
+                    <blockquote> Matches elements based on their values. This is particularly useful for refining a list of similarly-named toggle-buttons.</blockquote>
+                    <p>
+                        <strong>index=</strong>
+                        <em>index</em>
+                    </p>
+                    <blockquote> Selects a single element based on its position in the list (offset from zero).</blockquote>
+                </blockquote><h3>
+                    <a name="patterns">
+                    </a>String-match Patterns</h3><p> Various Pattern syntaxes are available for matching string values: </p><blockquote>
+                    <dl>
+                        <dt>
+                            <strong>glob:</strong>
+                            <em>pattern</em>
+                        </dt>
+                        <dd>Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a kind of limited regular-expression syntax typically used in command-line shells. In a glob pattern, "*" represents any sequence of characters, and "?" represents any single character. Glob patterns match against the entire string.</dd>
+                        <dt>
+                            <strong>regexp:</strong>
+                            <em>regexp</em>
+                        </dt>
+                        <dd>Match a string using a regular-expression. The full power of JavaScript regular-expressions is available.</dd>
+                        <dt>
+                            <strong>exact:</strong>
+                            <em>string</em>
+                        </dt>
+                        <dd>Match a string exactly, verbatim, without any of that fancy wildcard stuff.</dd>
+                    </dl>
+                </blockquote><p> If no pattern prefix is specified, Selenium assumes that it's a "glob" pattern. </p></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

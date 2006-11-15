@@ -1,0 +1,195 @@
+
+
+/* Tables */ 
+table.help         { margin-left: auto; margin-right: auto; }
+th.summary, th.details, th.index
+                   { text-align: left; font-size: 120%; } 
+th.group           { text-align: left; font-size: 120%;
+                     font-style: italic; } 
+
+/* Documentation page titles */
+h2.module          { margin-top: 0.2em; }
+h2.class           { margin-top: 0.2em; }
+h2.type            { margin-top: 0.2em; }
+h2.py-src          { margin-top: 0.2em; }
+
+/* Headings */
+h1.help            { text-align: center; }
+h1.heading         { font-size: +140%; font-style: italic;
+                     font-weight: bold; }
+h2.heading         { font-size: +125%; font-style: italic;
+                     font-weight: bold; }
+h3.heading         { font-size: +110%; font-style: italic;
+                     font-weight: normal; }
+h1.tocheading      { text-align: center; font-size: 105%; margin: 0;
+                     font-weight: bold; padding: 0; }
+h2.tocheading      { font-size: 100%; margin: 0.5em 0 0 -0.3em;
+                     font-weight: bold; }
+
+/* Table of contents */
+p.toc              { margin: 0; padding: 0; }
+
+/* Base tree */
+pre.base-tree      { font-size: 80%; margin: 0; }
+
+/* Summary Sections */
+p.varlist          { padding: 0 0 0 7em; text-indent: -7em;
+                     margin: 0; }
+.varlist-header    { font-weight: bold; }
+p.imports          { padding: 0 0 0 7em; text-indent: -7em; }
+.imports-header    { font-weight: bold; }
+
+/* Details Sections */
+table.func-details { border-width: 2px; border-style: groove;
+                     padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
+h3.func-detail     { margin: 0 0 1em 0; }
+table.var-details  { border-width: 2px; border-style: groove;
+                     padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
+h3.var-details     { margin: 0 0 1em 0; }
+table.prop-details  { border-width: 2px; border-style: groove;
+                     padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
+h3.prop-details     { margin: 0 0 1em 0; }
+
+/* Function signatures */
+.sig               { font-weight: bold; }  
+
+/* Doctest blocks */
+.py-prompt         { font-weight: bold;}
+pre.doctestblock   { padding: .5em; margin: 1em;
+                     border-width: 1px; border-style: solid; }
+table pre.doctestblock
+                   { padding: .5em; margin: 1em;
+                     border-width: 1px; border-style: solid; }
+
+/* Variable values */
+pre.variable       { padding: .5em; margin: 0;
+                     border-width: 1px; border-style: solid; }
+
+/* Navigation bar */ 
+table.navbar       { border-width: 2px; border-style: groove; }
+.nomargin          { margin: 0; }
+
+/* This is used in <div> sections containing tables of private
+values, to make them flow more seamlessly with the table that
+comes before them. */
+.continue          { border-top: 0; }
+
+/* Links */ 
+a.navbar           { text-decoration: none; }  
+
+/* Source Code Listings */
+pre.py-src         { border: 2px solid black; }
+div.highlight-hdr  { border-top: 2px solid black;
+                     border-bottom: 1px solid black; }
+div.highlight      { border-bottom: 2px solid black; }
+a.pysrc-toggle     { text-decoration: none; }
+.py-line           { border-left: 2px solid black; margin-left: .2em;
+                     padding-left: .4em; }
+.lineno            { font-style: italic; font-size: 90%;
+                     padding-left: .5em; }
+/*a.py-name          { text-decoration: none; }*/
+
+/* For Graphs */
+.graph-without-title  { border: none; }
+.graph-with-title     { border: 1px solid black; }
+.graph-title          { font-weight: bold; }
+
+/* Lists */
+ul { margin-top: 0; }
+
+/* Misc. */
+.footer            { font-size: 85%; }
+.header            { font-size: 85%; }
+.breadcrumbs       { font-size: 85%; font-weight: bold; }
+.options           { font-size: 70%; }
+.rtype, .ptype, .vtype 
+                   { font-size: 85%; }
+dt                 { font-weight: bold; }
+.small             { font-size: 85%; }
+
+h2 span.codelink { font-size: 58%; font-weight: normal; }
+span.codelink { font-size: 85%; font-weight; normal; }
+
+/* Body color */ 
+body               { background: #ffffff; color: #000000; } 
+ 
+/* Tables */ 
+table.summary, table.details, table.index
+                   { background: #e8f0f8; color: #000000; } 
+tr.summary, tr.details, tr.index
+                   { background: #70b0ff; color: #000000; } 
+th.group           { background: #c0e0f8; color: #000000; } 
+
+/* Details Sections */
+table.func-details { background: #e8f0f8; color: #000000;
+                     border-color: #c0d0d0; }
+h3.func-detail     { background: transparent; color: #000000; }
+table.var-details  { background: #e8f0f8; color: #000000;
+                     border-color: #c0d0d0; }
+h3.var-details     { background: transparent; color: #000000; }
+table.prop-details  { background: #e8f0f8; color: #000000;
+                     border-color: #c0d0d0; }
+h3.prop-details     { background: transparent; color: #000000; }
+
+/* Function signatures */
+.sig               { background: transparent; color: #000000; }
+.sig-name          { background: transparent; color: #006080; }  
+.sig-arg, .sig-kwarg, .sig-vararg
+                   { background: transparent; color: #008060; }  
+.sig-default       { background: transparent; color: #602000; }  
+.summary-sig       { background: transparent; color: #000000; }  
+.summary-sig-name  { background: transparent; color: #204080; }
+.summary-sig-arg, .summary-sig-kwarg, .summary-sig-vararg
+                   { background: transparent; color: #008060; }  
+
+/* Souce code listings & doctest blocks */
+.py-src            { background: transparent; color: #000000; }
+.py-prompt         { background: transparent; color: #005050; }
+.py-string         { background: transparent; color: #006030; }
+.py-comment        { background: transparent; color: #003060; }
+.py-keyword        { background: transparent; color: #600000; }
+.py-output         { background: transparent; color: #404040; }
+.py-name           { background: transparent; color: #000050; }
+.py-name:link      { background: transparent; color: #000050; }
+.py-name:visited   { background: transparent; color: #000050; }
+.py-number         { background: transparent; color: #005000; }
+.py-def-name       { background: transparent; color: #000060;
+                     font-weight: bold; }
+.py-base-class     { background: transparent; color: #000060; }
+.py-param          { background: transparent; color: #000060; }
+.py-docstring      { background: transparent; color: #006030; }
+.py-decorator      { background: transparent; color: #804020; }
+
+pre.doctestblock   { background: #f4faff; color: #000000; 
+                     border-color: #708890; }
+table pre.doctestblock
+                   { background: #dce4ec; color: #000000; 
+                     border-color: #708890; }
+div.py-src         { background: #f0f0f0; }
+div.highlight-hdr  { background: #d8e8e8; }
+div.highlight      { background: #d0e0e0; }
+
+
+/* Variable values */
+pre.variable       { background: #dce4ec; color: #000000;
+                     border-color: #708890; }
+.variable-linewrap { background: transparent; color: #604000; }
+.variable-ellipsis { background: transparent; color: #604000; }
+.variable-quote    { background: transparent; color: #604000; }
+.re                { background: transparent; color: #000000; }
+.re-char           { background: transparent; color: #006030; }
+.re-op             { background: transparent; color: #600000; }
+.re-group          { background: transparent; color: #003060; }
+.re-ref            { background: transparent; color: #404040; }
+
+/* Navigation bar */ 
+table.navbar       { background: #a0c0ff; color: #0000ff;
+                     border-color: #c0d0d0; }
+th.navbar          { background: #a0c0ff; color: #0000ff; } 
+th.navselect       { background: #70b0ff; color: #000000; } 
+
+/* Links */ 
+a:link             { background: transparent; color: #0000ff; }  
+a:visited          { background: transparent; color: #204080; }  
+a.navbar:link      { background: transparent; color: #0000ff; }
+a.navbar:visited   { background: transparent; color: #204080; }

@@ -1,0 +1,35 @@
+<html dir="LTR">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+    <title>DefaultSelenium.WaitForPageToLoad Method</title>
+    <xml>
+    </xml>
+    <link rel="stylesheet" type="text/css" href="MSDN.css" />
+  </head>
+  <body id="bodyID" class="dtBODY">
+    <div id="nsbanner">
+      <div id="bannerrow1">
+        <table class="bannerparthead" cellspacing="0">
+          <tr id="hdr">
+            <td class="runninghead">An NDoc Documented Class Library</td>
+            <td class="product">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="TitleRow">
+        <h1 class="dtH1">DefaultSelenium.WaitForPageToLoad Method </h1>
+      </div>
+    </div>
+    <div id="nstext">Waits for a new page to load. <p>You can use this command instead of the "AndWait" suffixes, "clickAndWait", "selectAndWait", "typeAndWait" etc. (which are only available in the JS API).</p><p>Selenium constantly keeps track of new pages loading, and sets a "newPageLoaded" flag when it first notices a page load. Running any other Selenium command after turns the flag to false. Hence, if you want to wait for a page to load, you must wait immediately after a Selenium command that caused a page-load.</p><div class="syntax">public <a href="ms-help://MS.NETFrameworkSDKv1.1/cpref/html/frlrfSystemVoidClassTopic.htm">void</a> WaitForPageToLoad(<br />   <a href="ms-help://MS.NETFrameworkSDKv1.1/cpref/html/frlrfSystemStringClassTopic.htm">string</a> <i>timeout</i><br />);</div><h4 class="dtH4">Parameters</h4><dl>
+        <dt>
+          <i>timeout</i>
+        </dt>
+        <dd>a timeout in milliseconds, after which this command will return with an error</dd>
+      </dl><h4 class="dtH4">Implements</h4><p>
+        <a href="Selenium.ISelenium.WaitForPageToLoad.html">ISelenium.WaitForPageToLoad</a>
+      </p><h4 class="dtH4">See Also</h4><p>
+        <a href="Selenium.DefaultSelenium.html">DefaultSelenium Class</a> | <a href="Selenium.html">Selenium Namespace</a></p></div>
+  </body>
+</html>
