@@ -39,9 +39,9 @@
 <h2>IEDoc.js, IEDoc.xml and XSLT</h2>
 <p>Most of the code for the supported client drivers is generated using XSLT.  The XML file is generated based on the current latest Selenium Core JavaScript files, so our client drivers never get out of date.  This also allows us to embed API documentation into the generated Client Driver code, so we can use standard documentation generation tools like JavaDoc, NDoc, (E|Hap)Pydoc, RDoc or PerlDoc to present end users with documentation with they which will be familiar.</p>
 
-<p>Specifically, "selenium-api.js" is a file in Selenium Core that contains a complete definition of every Selenium command.  We've written a tool called "iedoc.js" that parses selenium-api.js and generates XML output from it (called iedoc.xml).  We call it "iedoc.js" because it only works on Windows, using cscript.exe, on the command line.  It's written in JavaScript because that way we don't have to write our own JavaScript parser: we just run selenium-api.js in JavaScript and inspect the Selenium prototype object to see what methods were added to it.  (It doesn't/can't work this way in Mozilla/Firefox; if this annoys you, please take a look at bug <a href="http://jira.openqa.org/browse/SRC-39">SRC-39</a> for details).
+<p>Specifically, "selenium-api.js" is a file in Selenium Core that contains a complete definition of every Selenium command.  We've written a tool called "doc.js" that parses selenium-api.js and generates XML output from it (called iedoc.xml, for historical reasons).
 
-<p>For an example of IEDoc.xml, you can look inside the Selenium Server jar itself.  (JAR files are just zip files, and can be extracted with any standard unzip tool.)  "iedoc.xml" should be embedded inside selenium-server.jar in the /selenium directory. i.e. selenium-server.jar!/selenium/iedoc.xml.</p>
+<p>For an example of IEDoc.xml, you can look inside the Selenium Server jar itself.  (JAR files are just zip files, and can be extracted with any standard unzip tool.)  "iedoc.xml" should be embedded inside selenium-server.jar in the /core directory. i.e. selenium-server.jar!/core/iedoc.xml.</p>
 
 <p>You can always get the latest copy of iedoc.xml from the nightly builds of Selenium Core, available on <a href="http://release.openqa.org/">release.openqa.org</a>.</p>
 
@@ -51,13 +51,13 @@
 
 <p><a name="tools"/>The Java Selenium Server is officially built using <a href="http://ant.apache.org/">Ant</a> and <a href="http://maven.apache.org/">Maven</a>.  (We would just use Maven, but there are bugs in Maven that require us to workaround them in Ant.)</p>
 
-<p>We're currently set up to use JDK 1.4.2_06, Maven 2.0.2 (though any 2.0.x version should do) and Ant 1.6.5.  To verify that you've set them up and installed them correctly, run the following commands from the command line:</p>
+<p>We're currently set up to use JDK 1.5.0_07, Maven 2.0.4 and Ant 1.6.5.  To verify that you've set them up and installed them correctly, run the following commands from the command line:</p>
 
 <pre>
 &gt; java -version
-java version "1.4.2_06"
-Java(TM) 2 Runtime Environment, Standard Edition (build 1.4.2_06-b03)
-Java HotSpot(TM) Client VM (build 1.4.2_06-b03, mixed mode)
+java version "1.5.0_07"
+Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_07-b03)
+Java HotSpot(TM) Client VM (build 1.5.0_07-b03, mixed mode)
 &gt; ant -version
 Apache Ant version 1.6.5 compiled on June 2 2005
 &gt; mvn -version
@@ -94,14 +94,16 @@ In the course of running the build, we will also attempt to run the automated te
 
 <h2>Java Selenium RC Maven Projects</h2>
 
-<P>There are two Maven projects in the Java part of Selenium Remote Control:</P>
+<P>There are four Maven projects in the Java part of Selenium Remote Control:</P>
 
 <OL>
-	<li>selenium-server (trunk/server): Builds selenium-server.jar; this includes all the code to launch browsers on various operating systems and the client-configured proxy.</li>
+    <li>selenium-server-coreless (trunk/server-coreless): Builds selenium-server-coreless.jar; this includes all the code to launch browsers on various operating systems and the client-configured proxy, but doesn't include Selenium Core.  (This can be used to test Selenium Core, and was created to avoid a circular dependency.)</li>
+    <li>selenium-xlator (trunk/xlator): [EXPERIMENTAL] Builds a command-line tool that automatically translates HTML Selenese into Java using the JavaScript baked into Selenium IDE.  As of this writing (November 13, 2006, Selenium RC 0.9.0) we don't actually use this xlator; we use our own pure-Java xlator in selenium-server-coreless.
+	<li>selenium-server (trunk/server): Builds selenium-server.jar; this includes selenium-server-coreless as well as selenium-core.  You can use this to run your automated tests.</li>
 	<li>selenium-java-client-driver (trunk/clients/java): Runs the XSLT to generate DefaultSelenium.java and Selenium.java.  Acts as a simple HTTP request system, no more complicated than any of the other drivers.</li>
 </ol>
 
-<p>selenium-server depends on selenium-core.  We assume you're going to get that from maven.openqa.org; otherwise you'll need to install your own private selenium-core in your Maven local repository with the "install-jar" target in the selenium-core build scripts.  selenium-server also depends on Jetty, and Ant itself (we use Ant as a library as well as a build tool).  We also use the Codehaus <a href="http://mojo.codehaus.org/dependency-maven-plugin/introduction.html">dependency-maven-plugin</a> to <i>republish</i> selenium-server's dependencies within its jar.  (Hence, selenium-server depends on selenium-core, jetty and ant at the "provided" scope, meaning that projects that depend on selenium-server should <i>not</i> explicitly depend on selenium-server's dependencies.)</p>
+<p>selenium-server-coreless doesn't depend on any other Selenium project.  selenium-server depends on selenium-server-coreless and selenium-core.  We assume you're going to get selenium-core from maven.openqa.org; otherwise you'll need to install your own private selenium-core in your Maven local repository with the "install-jar" target in the selenium-core build scripts.  selenium-server also depends on Jetty, and Ant itself (we use Ant as a library as well as a build tool).  We also use the Codehaus <a href="http://mojo.codehaus.org/dependency-maven-plugin/introduction.html">dependency-maven-plugin</a> to <i>republish</i> selenium-server's dependencies within its jar.  (Hence, selenium-server depends on selenium-server-coreless, selenium-core, jetty and ant at the "provided" scope, meaning that projects that depend on selenium-server should <i>not</i> explicitly depend on selenium-server's dependencies.)</p>
 
 <p>selenium-java-client-driver depends on selenium-server at build time and at test time (i.e. at the "test" scope) but not at runtime.  Philosophically, of course, it depends on the Selenium Server in order to do its work at runtime, but it doesn't (necessarily) need the selenium-server.jar to be loaded up in the same classpath with it: the Selenium Server could easily be installed on another machine entirely and the Java Client Driver would still work.  Note that this is <i>not</i> true of the <i>unit tests</i> for selenium-java-client-driver, which assume that the server is available in the classpath for running tests.  (We could have written the unit tests without assuming that, but it makes the tests easier to write/run.)</p>
 
@@ -121,13 +123,13 @@ In the course of running the build, we will also attempt to run the automated te
 
 <h3>Developing the .NET Client Driver</h3>
 
-<p>The .NET Client Driver is implemented in C#.  A solution file is available with every build of Selenium RC that you can open up in Visual Studio .NET 2003.  At this time, the .NET Client Driver can only be built using VS 2003 and only on Windows.  If this annoys you, I encourage you to take a look at <a href="http://jira.openqa.org/browse/SRC-40">SRC-40</a> (.NET build scripts should not depend on Visual Studio) and <a href="http://jira.openqa.org/browse/SRC-41">SRC-41</a> (We should make a Mono-compatible .NET driver).</p>
+<p>The .NET Client Driver is implemented in C#.  A solution file is available with every build of Selenium RC that you can open up in Visual Studio .NET 2003, or you can use the NAnt script "solution.build" to kick off the build.  (The Ant script turns around and launches the NAnt script.)  At this time, the .NET Client Driver is only designed to work on Windows, but as far as we know it should work on Mono, too.  If you're interested, I encourage you to take a look at <a href="http://jira.openqa.org/browse/SRC-41">SRC-41</a> (We should make a Mono-compatible .NET driver).</p>
 
 <p>To automatically generate the sources you need, you can navigate to trunk/clients/dotnet and run:</p>
 
 <p>&nbsp;&nbsp;&nbsp;<code>ant generate-sources</code></p>
 
-<p><b>To change ISelenium.cs or DefaultSelenium.cs, you <i>must</i> make these changes in the XSLT file trunk/clients/java/iedoc2csharp.xml.</b>  These .cs files are not checked in (and must not be checked in, or they'll get out of date).</p>
+<p><b>To change ISelenium.cs or DefaultSelenium.cs, you <i>must</i> make these changes in the XSLT file trunk/clients/dotnet/iedoc2csharp.xml.</b>  These .cs files are not checked in (and must not be checked in, or they'll get out of date).</p>
 
 <p>To do a full build-and-test from the command line, you can run <code>ant all</code> to do the build; again, you'll need to specify the location of selenium-server.jar if you haven't built it locally with Maven.  This will automatically launch NDoc to generate documentation based on iedoc.xml.</p>
 
@@ -139,7 +141,7 @@ In the course of running the build, we will also attempt to run the automated te
 
 <p>&nbsp;&nbsp;&nbsp;<code>ant generate-sources</code></p>
 
-<p><b>To change selenium.rb, you <i>must</i> make these changes in the XSLT file trunk/clients/java/iedoc2ruby.xml.</b>  selenium.rb is not checked in (and must not be checked in, or it'll get out of date).</p>
+<p><b>To change selenium.rb, you <i>must</i> make these changes in the XSLT file trunk/clients/ruby/iedoc2ruby.xml.</b>  selenium.rb is not checked in (and must not be checked in, or it'll get out of date).</p>
 
 <p>To do a full build-and-test from the command line, you can run <code>ant all</code> to do the build; again, you'll need to specify the location of selenium-server.jar if you haven't built it locally with Maven.  This will automatically launch RDoc to generate documentation based on iedoc.xml.</p>
 
@@ -151,7 +153,7 @@ In the course of running the build, we will also attempt to run the automated te
 
 <p>&nbsp;&nbsp;&nbsp;<code>ant generate-sources</code></p>
 
-<p><b>To change selenium.py, you <i>must</i> make these changes in the XSLT file trunk/clients/java/iedoc2python.xml.</b>  selenium.py is not checked in (and must not be checked in, or it'll get out of date).</p>
+<p><b>To change selenium.py, you <i>must</i> make these changes in the XSLT file trunk/clients/python/iedoc2python.xml.</b>  selenium.py is not checked in (and must not be checked in, or it'll get out of date).</p>
 
 <p>To do a full build-and-test from the command line, you can run <code>ant all</code> to do the build; again, you'll need to specify the location of selenium-server.jar if you haven't built it locally with Maven.</p>
 
@@ -165,9 +167,11 @@ In the course of running the build, we will also attempt to run the automated te
 
 <p>&nbsp;&nbsp;&nbsp;<code>ant generate-sources</code></p>
 
+<p>Unlike the other client drivers, the Perl driver is generated from XML using Perl, rather than using XSLT.  You can find the driver generator in trunk/clients/perl/util/create_www_selenium.pl.</p>
+
 <p>To run the tests for the Perl Driver, you can either run "<code>ant test</code>" from the command line, or you can directly run "perl Makefile.PL".  Running Perl on that Makefile will, in turn, autogenerate a single "Makefile" that you can use to build/run the tests.  Note that this Makefile is incompatible with cygwin's GNU make; on Windows you should use <a href="http://johnbokma.com/perl/make-for-windows.html">nmake</a> instead.  (Note that nmake comes along with <a href="http://www.activestate.com/Products/ActivePerl/">ActiveState Perl</a>; it should already be available in your Perl\bin directory.)  Once you've generated your Makefile, you can use "<code>make test</code>" (or "<code>nmake test</code>") to run the tests.</p>
 
-<p><b>To change WWW/Selenium.pm, you <i>must</i> make these changes in the XSLT file trunk/clients/java/iedoc2perl.xml.</b>  Selenium.pm is not checked in (and must not be checked in, or it'll get out of date).</p>
+<p><b>To change WWW/Selenium.pm, you <i>must</i> make these changes in the generator script trunk/clients/perl/create_www_selenium.pl.</b>  Selenium.pm is not checked in (and must not be checked in, or it'll get out of date).</p>
 
 <p>To do a full build-and-test from the command line, you can run <code>ant all</code> to do the build; again, you'll need to specify the location of selenium-server.jar if you haven't built it locally with Maven.  This will automatically launch pod2html to generate documentation based on iedoc.xml.</p>
 
@@ -210,7 +214,7 @@ In the course of running the build, we will also attempt to run the automated te
 <li><a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/dotnet/iedoc2csharp.xml">C#</a>
 <li><a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/python/iedoc2python.xml">Python</a>
 <li><a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/ruby/iedoc2ruby.xml">Ruby</a>
-<li><a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/perl/iedoc2perl.xml">Perl</a>
+<li><a href="http://svn.openqa.org/fisheye/viewrep/~raw,r=HEAD/selenium-rc/trunk/clients/perl/util/create_www_selenium.pl">Perl</a>
 </ul>
 
 </body></html>

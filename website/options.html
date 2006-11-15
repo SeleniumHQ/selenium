@@ -7,42 +7,33 @@
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
-java -jar selenium-server.jar -debug [-port nnnn] [-timeout nnnn] [-interactive] [-defaultBrowserString browserString] [-userExtensions extensionJs] [-log logfile] [-proxyInjectionMode [-browserSessionReuse|-noBrowserSessionReuse][-userContentTransformation your-before-regexp-string your-after-string] [-userJsInjection your-js-filename]] [-htmlSuite browserString (e.g. *firefox) startURL (e.g. http://www.google.com) suiteFile (e.g., c:\absolute\path\to\my\HTMLSuite.html\) resultFile (e.g., c:\absolute\path\to\my\results.html)
-<p>
-where:
-<p>
+<code>Usage: java -jar selenium-server.jar [-interactive] [options]    
+    
 <ul>
-<li><code>-interactive</code>: starts the server in Interactive mode.  In this mode you can type Selenese commands on the command line (e.g. <code>cmd=getNewBrowserSession&1=*firefox&2=http%3A%2F%2Fwww.google.com</code>).</li>
-    <li><code>-multiwindow</code> puts you into a mode where the test web site executes in a separate window, and selenium supports frames</li>
-    <li><code>-defaultBrowserString</code> (e.g., *iexplore) sets the browser mode for all sessions, no matter what is passed to getNewBrowserSession</li>
-    <li><code>-userExtensions</code> indicates a JavaScript file that will be loaded into selenium</li>
-    <li><code>-browserSessionReuse</code> stops re-initialization and spawning of the browser between tests</li>
-    <li><code>-debug</code> puts you into debug mode, with more trace information and diagnostics</li>	
-<li><code>-port</code>: specifies the port you wish to run the Server on (default is 4444)</li>
-<li><code>-timeout</code>: specifies the number of seconds that the server will wait for the browser to respond to the previous command, or for the client driver to issue a new request.</li>
+<li><b>-port &lt;nnnn&gt;</b>: the port number the selenium server should use (default 4444)</li>
+<li><b>-timeout &lt;nnnn&gt;</b>: an integer number of seconds before we should give up</li>
+<li><b>-interactive</b>: puts you into interactive mode.  See the tutorial for more details</li>
+<li><b>-multiWindow</b>: puts you into a mode where the test web site executes in a separate window, and selenium supports frames</li>
+<li><b>-forcedBrowserMode &lt;browser&gt;</b>: sets the browser mode (e.g. "*iexplore" for all sessions, no matter what is passed to getNewBrowserSession</li>
+<li><b>-userExtensions &lt;file&gt;</b>: indicates a JavaScript file that will be loaded into selenium</li>
+<li><b>-browserSessionReuse</b>: stops re-initialization and spawning of the browser between tests</li>
+<li><b>-alwaysProxy</b>: By default, we proxy as little as we can; set this flag to force all browser traffic through the proxy</li>
+<li><b>-firefoxProfileTemplate &lt;dir&gt;</b>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.</li>
+<li><b>-debug</b>: puts you into debug mode, with more trace information and diagnostics</li>
+<li><b>-htmlSuite &lt;browser&gt; &lt;startURL&gt; &lt;suiteFile&gt; &lt;resultFile&gt;</b>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. "*firefox") on the specified URL (e.g. "http://www.google.com").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.</li>
+<li><b>-proxyInjectionMode</b>: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server for all content going to the test application.  Under this mode, multiple domains can be visited, and the following additional flags are supported:</li>
+<ul>
+    <li><b>-dontInjectRegex &lt;regex&gt;</b>: an optional regular expression that proxy injection mode can use to know when to bypss injection</li>
+    <li><b>-userJsInjection &lt;file&gt;</b>: specifies a JavaScript file which will then be injected into all pages</li>
+    <li><b>-userContentTransformation &lt;regex&gt; &lt;replacement&gt;</b>: a regular expression which is matched against all test HTML content; the second is a string which will replace matches.  These flags can be used any number of times.  A simple example of how this could be useful: if you add "-userContentTransformation https http" then all "https" strings in the HTML of the test application will be changed to be "http".
+</ul>
+</ul></code>
 
-<li><code>-htmlSuite</code>: automatically runs a single HTML suite and saves the results to a file.  See the <a href="selenese.html">Selenese</a> section for more information.</li>
-
-<li><code>-Dhttp.proxyHost</code> and <code>-Dhttp.proxyPort</code>: Selenium RC normally overrides your proxy server configuration, using the Selenium Server as a proxy.  Use these options if you need to use your own proxy together with the Selenium Server proxy.  (Note that these settings are new for Selenium 0.8.0, and may be a bit raw... use them with care, and report any issues to our user forums.)  Use the proxy settings like like this:
+<p>We also support two Java system properties: <b><code>-Dhttp.proxyHost</code> and <code>-Dhttp.proxyPort</code></b>. Selenium RC normally overrides your proxy server configuration, using the Selenium Server as a proxy.  Use these options if you need to use your own proxy together with the Selenium Server proxy.  Use the proxy settings like like this:
 <blockquote>
     <code>java -Dhttp.proxyHost=myproxy.com -Dhttp.proxyPort=1234 -jar selenium-server.jar</code>
 </blockquote>
-</li>
-<li><code>-Dselenium.javascript.dir</code>: override Selenium Core's javascript location. Without this system property, Selenium RC will use Selenium Core pre-embbed in the jar. The following command line will start Selenium Server using Selenium Core at c:\selenium-core:
-<blockquote>
-    <code>java -Dselenium.javascript.dir=c:\selenium-core\code\javascript -jar selenium-server.jar</code>
-</blockquote>
-</li>
-    <li><code>-proxyInjectionMode</code> puts you into proxy injection mode, a mode where the selenium server acts as a proxy server for all content going to the test application.  Under this mode, multiple domains can be visited, and the following additional flags are supported:
-    <ul>
-        <li><code>The</code> -userJsInjection flag allows you to point at a JavaScript file which will then be injected into all pages.  </li>
-        <li><code>The</code> -userContentTransformation flag takes two arguments: the first is a regular expression which is matched against all test HTML content; the second is a string which will replace matches.  These flags can be used any number of times.  A simple example of how this could be useful: if you add
-        <code>                                    
-            -userContentTransformation https http
-        </code>
- then all <i>https</i> strings in the HTML of the test application will be changed to be <i>http</i>.</li>
-</ul>
-</ul>
+
 
 
 </body></html>

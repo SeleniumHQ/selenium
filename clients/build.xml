@@ -1,6 +1,6 @@
 <project name="selenium-rc-clients" default="dist" xmlns:maven="urn:maven-artifact-ant">
 
-    <property name="version" value="0.9.0"/>
+    <property name="version" value="0.9.1-SNAPSHOT"/>
 
     <condition property="property.file.name" value="build.windows.properties">
         <os family="windows" />

@@ -2,7 +2,7 @@
   <parent>
     <artifactId>selenium</artifactId>
     <groupId>org.openqa.selenium</groupId>
-    <version>0.9.0</version>
+    <version>0.9.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openqa.selenium</groupId>
@@ -24,7 +24,7 @@
   	<dependency>
       <groupId>org.openqa.selenium.core</groupId>
       <artifactId>selenium-core</artifactId>
-      <version>0.8.1</version>
+      <version>0.8.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.openqa.selenium.ide</groupId>

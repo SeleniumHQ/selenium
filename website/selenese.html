@@ -20,38 +20,33 @@
 
 <p><tt>&nbsp;&nbsp;&nbsp;java&nbsp;-jar&nbsp;selenium-server.jar&nbsp;-htmlSuite&nbsp;"*firefox"&nbsp;"http://www.google.com"&nbsp;"c:\absolute\path\to\my\HTMLSuite.html"&nbsp;"c:\absolute\path\to\my\results.html"&nbsp;-timeout&nbsp;30</tt></p>
 
-<p>(You can also use the -htmlSuite parameter with the -port and -timeout options, but it is incompatible with -interactive; you can't do both of those at once.)</p>
-
 <p>That will automatically launch your HTML suite and wait the specified number of seconds for the test to complete; if the test doesn't complete within that amount of time, the command will exit with a non-zero exit code and no results file will be generated.</p>
+
+<p>Note that this command line is very long and <i>very</i> finicky... be careful when you type it in.  (You can use the -htmlSuite parameter with the -port and -timeout options, but it is incompatible with -interactive; you can't do both of those at once.)  Also note that it requires you to pass in an HTML Selenese <i>suite</i>, not a single test.</p>
+
 
 <h3>Running Selenese Tests under Continuous Integration</h3>
 
 <p>If you just want to use the Selenium Server as a quick-and-dirty way to launch your HTML Selenese suites from the command line and generate results automatically, you can do that, too, just by following the instructions above.</p>
 
-<h3> XlateHtmlSeleneseToJava: a translation tool to convert Selenese HTML tests to Java</h3>
+<p>We've also provided an Ant task to make it easier to launch the tests.  Run it like this:</p><blockquote><code>
+&lt;taskdef&nbsp;resource="selenium-ant.properties"&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;classpath&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;pathelement&nbsp;location="selenium-server.jar"/&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/classpath&gt;<br/>
+&lt;/taskdef&gt;<br/>
+&lt;selenese&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;suite="c:\absolute\path\to\my\HTMLSuite.html"<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;browser="*firefox"<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;results="c:\absolute\path\to\my\results.html"<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;multiWindow="true"<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;timeoutInSeconds="900"<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;startURL="http://www.google.com"&nbsp;/&gt;
+</code></blockquote>See the <a href="server/org/openqa/selenium/server/ant/SeleneseAntTask.html">javadoc</a> for additional configuration details.
+    
 
-We have a tool that we use to automatically convert Selenese HTML tests into Java.  
-<p>
-Selenese HTML tests have no support for conditional "if" statements or looping "while" statements.  There is also no way to reuse testing code within other tests.
-<p>
-If you need a more expressive language to write your tests, then you may benefit from using our tool to migrate your existing Selenium tests into Java.  Currently the selenium-rc nightly build uses this tool to convert most of the HTML tests into RC tests, which end up living in rc/clients/java/src/test/java/com/thoughtworks/selenium/corebased.  Interested parties can inspect the invocation of the translator in rc/clients/java/generate-sources.xml:23:
-<p>
-<code>
-	&lt;java classname="org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava" fork="true" failonerror="true"&gt;
-	&lt;arg value="${dir.java.tests.based.on.core.javascript}"/&gt;
-	&lt;arg value="-silent"/&gt;
-	&lt;arg value="-dontThrowOnTranslationDifficulties"/&gt;
-	&lt;arg value="-dir"/&gt;
-	&lt;arg value="${dir.core.tests}"/&gt;
-	&lt;classpath refid="depend.classpath"/&gt;
-	&lt;/java&gt;
-</code>
-<p>
-The dir argument tells it to translate everything within a directory. It is possible to also invoke it so as to translate a single class. Here's another sample invocation in bash:
-<p>
-<code>
-	cp="z:/shared/p4/Dev/selenium-rc_svn/trunk/rc/server/target/test-classes;z:/shared/p4/Dev/selenium-rc_svn/trunk/rc/server/eclipse;C:/Documents and Settings/nelsons/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar;C:/Documents and Settings/nelsons/.m2/repository/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar;C:/Documents and Settings/nelsons/.m2/repository/ant/ant/1.6.5/ant-1.6.5.jar;C:/Documents and Settings/nelsons/.m2/repository/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar;C:/Documents and Settings/nelsons/.m2/repository/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar;$HOME/shared/p4/Dev/selenium-rc_svn/trunk/core/bin"
-	java -ea -Dcode_root=. -classpath "$cp" org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava $HOME/shared/p4/Dev/selenium-rc_svn/trunk/rc/clients/java/src/test/java/com/thoughtworks/selenium/corebased $HOME/shared/p4/Dev/selenium-rc_svn/trunk/core/tests/TestSelect.html
-</code>
-<p>
-This example takes as its input $HOME/shared/p4/Dev/selenium-rc_svn/trunk/core/tests/TestSelect.html, and produces as its output $HOME/shared/p4/Dev/selenium-rc_svn/trunk/rc/clients/java/src/test/java/com/thoughtworks/selenium/corebased/TestSelect.java.
+
+<h3> Translate Selenese Tests into Another Language </h3>
+
+The latest versions of <a href="/selenium-ide/">Selenium IDE</a> include outstanding support for translating HTML Selenese tests into other languages; the latest version supports converting HTML Selenese into Java, C#, Perl, Python and Ruby.  The Selenium IDE translator is an excellent migration tool for when you've outgrown some of the limitations of HTML Selenese.
+

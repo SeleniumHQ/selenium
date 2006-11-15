@@ -3,7 +3,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openqa.selenium</groupId>
-  <version>0.9.0</version>
+  <version>0.9.1-SNAPSHOT</version>
   <artifactId>selenium</artifactId>
   <name>Selenium</name>
   <packaging>pom</packaging>
