@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openqa.selenium.ide</groupId>
-  <version>0.8.4</version>
+  <version>0.8.5-SNAPSHOT</version>
   <artifactId>selenium-ide</artifactId>
   <packaging>jar</packaging>
   <name>Selenium IDE</name>
@@ -19,7 +19,7 @@
                 <ant antfile="build.xml" target="create-xpi">
                   <property name="build" location="${project.build.directory}" />
                   <property name="output.path" location="${project.build.outputDirectory}" />
-                  <property name="selenium.core.dir" location="${project.build.directory}/assembly/work/selenium-core-0.8.0" />
+                  <property name="selenium.core.dir" location="${project.build.directory}/assembly/work/selenium-core-0.8.1" />
                 </ant>
               </tasks>
             </configuration>
@@ -74,7 +74,7 @@
     <dependency>
       <groupId>org.openqa.selenium.core</groupId>
       <artifactId>selenium-core</artifactId>
-      <version>0.8.0</version>
+      <version>0.8.1</version>
     </dependency>
   </dependencies>
 </project>
