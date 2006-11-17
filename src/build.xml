@@ -6,6 +6,7 @@
   
   <target name="prepare">
     <tstamp/>
+    <echo message="Building Selenium IDE ${app.version}" />
     <mkdir dir="${build}"/>
     <mkdir dir="${build}/chrome"/>
   </target>
@@ -52,26 +53,42 @@
     </copy>
   </target>
   
-  <target name="create-jar" depends="prepare,import-selenium,copy-sources">
-    <zip destfile="${build}/chrome/${ant.project.name}.jar">
-      <fileset dir="${output.path}" />
-    </zip>
+  <target name="create-xpi" depends="prepare,import-selenium,copy-sources" description="Create Extension Packages">
+    <create-xpi suffix="-test">
+    </create-xpi>
+    <create-xpi suffix="">
+      <jar-fileset>
+        <exclude name="content/selenium-tests/**" />
+        <exclude name="content/jsunit/**" />
+        <exclude name="content/tests/**" />
+      </jar-fileset>
+    </create-xpi>
   </target>
 
-  <target name="create-xpi" depends="create-jar" description="Create the extension package">
-    <zip destfile="${build}/${ant.project.name}.xpi">
-      <fileset dir="${build}">
-	<include name="chrome/*"/>
-      </fileset>
-      <fileset dir=".">
-	<include name="install.rdf"/>
-	<include name="components/**"/>
-	<exclude name="components/*.idl"/>
-      </fileset>
-      <fileset dir="production">
-	<include name="chrome.manifest"/>
-      </fileset>
-    </zip>
-  </target>
+  <macrodef name="create-xpi">
+    <attribute name="suffix" />
+    <element name="jar-fileset" optional="true" />
+    <sequential>
+      <delete file="${build}/chrome/${ant.project.name}.jar" />
+      <zip destfile="${build}/chrome/${ant.project.name}.jar">
+        <fileset dir="${output.path}">
+          <jar-fileset />
+        </fileset>
+      </zip>
+      <zip destfile="${build}/${ant.project.name}-${app.version}@{suffix}.xpi">
+        <fileset dir="${build}">
+	  <include name="chrome/*"/>
+        </fileset>
+        <fileset dir=".">
+	  <include name="install.rdf"/>
+	  <include name="components/**"/>
+	  <exclude name="components/*.idl"/>
+        </fileset>
+        <fileset dir="production">
+	  <include name="chrome.manifest"/>
+        </fileset>
+      </zip>
+    </sequential>
+  </macrodef>
 
 </project>

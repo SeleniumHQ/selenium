@@ -20,6 +20,7 @@
                   <property name="build" location="${project.build.directory}" />
                   <property name="output.path" location="${project.build.outputDirectory}" />
                   <property name="selenium.core.dir" location="${project.build.directory}/assembly/work/selenium-core-0.8.1" />
+                  <property name="app.version" value="${project.version}" />
                 </ant>
               </tasks>
             </configuration>
