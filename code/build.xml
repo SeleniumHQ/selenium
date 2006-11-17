@@ -226,7 +226,7 @@
 
     <target name="selenese-task" depends="image, maven-tasks">
         <mavendeps pathId="selenium-server-coreless.classpath">
-			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" version="0.8.2" scope="runtime"/>
+			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" version="0.9.0" scope="runtime"/>
 		</mavendeps>
         <property name="slowResources" value="false" />
         <property name="multiWindow" value="true" />
@@ -335,7 +335,7 @@
 		</presetdef>
 	</target>
 
-	<target name="maven-tasks" depends="custom-repo,default-repo">
+	<target name="maven-tasks" depends="custom-repo,default-repo" unless="maven-tasks.done">
         <!-- Defining Maven tasks; we're have do this goofy stuff because of various bugs in the Maven Ant tasks,
              most especially including MNG-2060 and MNG-2264 -->
         <property environment="env"/>
@@ -414,6 +414,8 @@
                 </mvn>
             </sequential>
         </macrodef>
+        
+        <property name="maven-tasks.done" value="true" />
     </target>
 
     <target name="nightly-image" depends="image">
