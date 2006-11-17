@@ -31,9 +31,13 @@
 
 <p>We also support two Java system properties: <b><code>-Dhttp.proxyHost</code> and <code>-Dhttp.proxyPort</code></b>. Selenium RC normally overrides your proxy server configuration, using the Selenium Server as a proxy.  Use these options if you need to use your own proxy together with the Selenium Server proxy.  Use the proxy settings like like this:
 <blockquote>
-    <code>java -Dhttp.proxyHost=myproxy.com -Dhttp.proxyPort=1234 -jar selenium-server.jar</code>
+    <code>java&nbsp;-Dhttp.proxyHost=myproxy.com&nbsp;-Dhttp.proxyPort=1234&nbsp;-jar&nbsp;selenium-server.jar</code>
 </blockquote>
+If your HTTP proxy requires authentication, you will also need to set <b><code>-Dhttp.proxyUser</code></b> and <b><code>-Dhttp.proxyPassword</code></b>, in addition to http.proxyHost and http.proxyPort.
 
+<blockquote>
+    <code>java&nbsp;-Dhttp.proxyHost=myproxy.com&nbsp;-Dhttp.proxyPort=1234&nbsp;-Dhttp.proxyUser=joe&nbsp;-Dhttp.proxyPassword=example&nbsp;-jar&nbsp;selenium-server.jar</code>
+</blockquote>
 
 
 </body></html>
