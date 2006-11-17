@@ -1399,6 +1399,10 @@ MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clien
     // Trigger the event.
     triggerMouseEvent(element, eventType, true, clientX, clientY);
 
+    if (this._windowClosed()) {
+        return;
+    }
+    
     // Perform the link action if preventDefault was set.
     // In chrome URL, the link action is already executed by triggerMouseEvent.
     if (!browserVersion.isChrome && savedEvent != null && !savedEvent.getPreventDefault()) {
@@ -1408,10 +1412,6 @@ MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clien
         } else {
             this.browserbot._handleClickingImagesInsideLinks(targetWindow, element);
         }
-    }
-
-    if (this._windowClosed()) {
-        return;
     }
 
 };
