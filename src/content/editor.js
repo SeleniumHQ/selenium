@@ -368,7 +368,7 @@ Editor.prototype.clear = function(force) {
 Editor.prototype._createPaths = function(window) {
     var path = [];
     var lastWindow = null;
-    while (lastWindow == null || window.parent != lastWindow.parent) {
+    while (window != lastWindow) {
         path.unshift(window);
         lastWindow = window;
         window = lastWindow.parent;
@@ -400,7 +400,7 @@ Editor.prototype._isSameWindow = function(w1, w2) {
 }
 
 Editor.prototype.addCommand = function(command,target,value,window) {
-    this.log.debug("addCommand: command=" + command);
+    this.log.debug("addCommand: command=" + command + ", window.name=" + window.name);
 	if (command != 'open' && this.testCase.commands.length == 0) {
         var top = this._getTopWindow(window);
 		this.recordOpen(top);
@@ -419,7 +419,7 @@ Editor.prototype.addCommand = function(command,target,value,window) {
             // frame
             var destPath = this._createPaths(window);
             var srcPath = this._createPaths(this.lastWindow);
-            this.log.debug("selectFrame: srcPath=" + srcPath + ", destPath=" + destPath);
+            this.log.debug("selectFrame: srcPath.length=" + srcPath.length + ", destPath.length=" + destPath.length);
             var branch = 0;
             var i;
             for (i = 0;; i++) {
@@ -428,6 +428,7 @@ Editor.prototype.addCommand = function(command,target,value,window) {
                     branch = i;
                 }
             }
+            this.log.debug("branch=" + branch);
             if (branch == 0 && srcPath.size > 1) {
                 // go to root
                 this.addCommand('selectFrame', 'relative=top', '', 0, window);
