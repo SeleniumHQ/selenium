@@ -10,7 +10,7 @@ def parse_key(filename, line)
     $1
   elsif line =~ %r{^([a-z0-9_\.-]+)=}i
     $1
-  elsif line =~ /^\s*$/
+  elsif line =~ /^\s*$/ || line =~ /^#/
     nil
   else
     raise "parse error: file=#{filename}, line=#{line}"

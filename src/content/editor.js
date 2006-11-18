@@ -22,11 +22,11 @@ function Editor(window, isSidebar) {
 	this.isSidebar = isSidebar;
 	this.recordFrameTitle = false;
 	this.document = document;
-	this.recordingEnabled = true;
 	this.setOptions(optionsManager.load());
 	this.loadExtensions();
 	this.loadSeleniumAPI();
 	this.selectDefaultReference();
+    this.toggleRecordingEnabled(true);
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
 	this.testCaseListeners = new Array();
@@ -317,6 +317,8 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 
 Editor.prototype.toggleRecordingEnabled = function(enabled) {
 	this.recordingEnabled = enabled;
+    var tooltip = Editor.getString("recordButton.tooltip." + (enabled ? "on" : "off"));
+    document.getElementById("record-button").setAttribute("tooltiptext", tooltip);
 }
 
 Editor.prototype.onUnloadDocument = function(doc) {
