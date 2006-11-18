@@ -320,12 +320,11 @@ Editor.prototype.toggleRecordingEnabled = function(enabled) {
 }
 
 Editor.prototype.onUnloadDocument = function(doc) {
-	if (doc.defaultView == this.lastWindow) {
-		if (this.unloadTimeoutID != null) {
-			clearTimeout(this.unloadTimeoutID);
-		}
-		this.unloadTimeoutID = setTimeout("Editor.appendWaitForPageToLoad()", 0);
-	}
+    this.log.debug("onUnloadDocument");
+    var self = this;
+    setTimeout(function() {
+            self.appendWaitForPageToLoad(doc);
+        }, 0);
 }
 
 Editor.prototype.recordTitle = function(window) {
@@ -467,23 +466,28 @@ Editor.prototype.clearLastCommand = function() {
 	}
 }
 
-Editor.appendWaitForPageToLoad = function() {
-	var lastCommandIndex = editor.lastCommandIndex;
-	if (lastCommandIndex == null || lastCommandIndex >= editor.testCase.commands.length) {
+Editor.prototype.appendWaitForPageToLoad = function(doc) {
+    this.log.debug("appendWaitForPageToLoad");
+    if (doc.defaultView != this.lastWindow) {
+        this.log.debug("window did not match");
+        return;
+    }
+	var lastCommandIndex = this.lastCommandIndex;
+	if (lastCommandIndex == null || lastCommandIndex >= this.testCase.commands.length) {
 		return;
 	}
-	editor.lastCommandIndex = null;
-	var lastCommand = editor.testCase.commands[lastCommandIndex];
+	this.lastCommandIndex = null;
+	var lastCommand = this.testCase.commands[lastCommandIndex];
 	if (lastCommand.type == 'command' && 
 		!lastCommand.command.match(/^(assert|verify|store)/)) {
-		if (editor.currentFormat.getFormatter().remoteControl) {
-			editor.addCommand("waitForPageToLoad", editor.options.timeout, null, editor.lastWindow);
+		if (this.currentFormat.getFormatter().remoteControl) {
+			this.addCommand("waitForPageToLoad", this.options.timeout, null, this.lastWindow);
 		} else {
 			lastCommand.command = lastCommand.command + "AndWait";
-			editor.view.rowUpdated(lastCommandIndex);
+			this.view.rowUpdated(lastCommandIndex);
 		}
 	}
-    editor.clearLastCommand();
+    this.clearLastCommand();
 	//updateSource();
 }
 
