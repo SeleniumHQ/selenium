@@ -336,7 +336,7 @@ Editor.prototype.recordTitle = function(window) {
 	}
 }
 
-Editor.prototype.recordOpen = function(window) {
+Editor.prototype.getPathAndUpdateBaseURL = function(window) {
 	if (!window.location) return;
 	var path = window.location.href;
 	var regexp = new RegExp(/^(https?:\/\/[^/:]+(:\d+)?)\/.*/);
@@ -346,11 +346,11 @@ Editor.prototype.recordOpen = function(window) {
 		path = path.substr(result[1].length);
 		base = result[1] + '/';
 	}
-	this.addCommand("open", path, '', window);
 	if (!document.getElementById("baseURL").value ||
 		document.getElementById("baseURL").value.indexOf(base) < 0) {
 		document.getElementById("baseURL").value = base;
 	}
+    return [path, base];
 }
 
 Editor.prototype.clear = function(force) {
@@ -404,7 +404,8 @@ Editor.prototype.addCommand = function(command,target,value,window) {
     this.log.debug("addCommand: command=" + command + ", window.name=" + window.name);
 	if (command != 'open' && this.testCase.commands.length == 0) {
         var top = this._getTopWindow(window);
-		this.recordOpen(top);
+		var path = this.getPathAndUpdateBaseURL(top)[0];
+        this.addCommand("open", path, '', window);
 		this.recordTitle(top);
 	}
     if (this.lastWindow) {

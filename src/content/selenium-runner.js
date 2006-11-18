@@ -29,13 +29,14 @@ Selenium.prototype.doOpen = function(newLocation) {
 	if (newLocation) {
 		if (!newLocation.match(/^\w+:\/\//)) {
 			if (!this.baseURL) {
-				LOG.warn("Please set Base URL before running the test.");
-			}
-			if (this.baseURL[this.baseURL.length - 1] == '/' && newLocation[0] == '/') {
-				newLocation = this.baseURL + newLocation.substr(1);
-			} else {
-				newLocation = this.baseURL + newLocation;
-			}
+				LOG.warn("Base URL is not set. Updating base URL from current window.");
+                this.baseURL = editor.getPathAndUpdateBaseURL(this.browserbot.getCurrentWindow())[1];
+            }
+            if (this.baseURL[this.baseURL.length - 1] == '/' && newLocation[0] == '/') {
+                newLocation = this.baseURL + newLocation.substr(1);
+            } else {
+                newLocation = this.baseURL + newLocation;
+            }
 		}
 	}
 	return this.real_doOpen(newLocation);
