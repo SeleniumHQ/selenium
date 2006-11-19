@@ -152,7 +152,7 @@ TestLoop.prototype = {
                 this.continueTest();
             } else {
                 //LOG.debug("waitForCondition was false; keep waiting!");
-                window.setTimeout(fnBind(this.continueTestWhenConditionIsTrue, this), 100);
+                window.setTimeout(fnBind(this.continueTestWhenConditionIsTrue, this), 10);
             }
         } catch (e) {
             this.result = {};
