@@ -33,6 +33,10 @@ Copyright 2004 ThoughtWorks, Inc
 
 function setUp() {
     LOG = new DummyLogger();
+    Selenium = new Object();
+    Selenium.decorateFunctionWithTimeout = function(f, timeout) {
+        return f;
+    }
 }
 
 // Allow mocking of Function.prototype.bind()
