@@ -46,7 +46,7 @@ public class FrameGroupCommandQueueSet {
      */
     private FrameAddress currentFrameAddress = null;
     
-    private Map<FrameAddress, CommandQueue> frameAddressToCommandQueue = new HashMap<FrameAddress, CommandQueue>();
+    private Map<FrameAddress, CommandQueue> frameAddressToCommandQueue = new ConcurrentHashMap<FrameAddress, CommandQueue>();
     static public final Map<String, FrameGroupCommandQueueSet> queueSets = new HashMap<String, FrameGroupCommandQueueSet>();
     
     private Map<FrameAddress, Boolean> frameAddressToJustLoaded = new HashMap<FrameAddress, Boolean>();
