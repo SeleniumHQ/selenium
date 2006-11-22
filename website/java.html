@@ -14,6 +14,8 @@
 
 <p>Just add selenium-java-client-driver.jar to your classpath, and create a new DefaultSelenium object.  You'll need to give it the hostname and port of the Selenium Server, the browser string to use with "getNewBrowserSession", and the base URL at which we'll start testing.  When you're ready to begin, run the .start() method on your DefaultSelenium object; when it's time to close the browser, use the .stop() method.</p>
 
+<p><b>You do not need selenium-server.jar in your classpath</b> if the Selenium Server is already running.  The Java client driver just needs to <i>connect</i> to the Selenium Server; selenium-server.jar doesn't need to run in the same JVM, or even on the same machine.  We recommend the running the Selenium Server on many different machines, ideally with many different operating systems and browsers; your client driver can connect directly to those machines by specifying a different hostname in the DefaultSelenium constructor.</p>
+
 <p>The DefaultSelenium object is full of handy methods that handle your Selenium Commands.  If one of them has an error (or if an "assert" command fails) the method will throw an exception with a handy error message, which you can wrap up in a try/catch block if you like.</p>
 
 <p>While we recommend that you use the Java Client Driver together with a testing framework like <a href="http://www.junit.org/">JUnit</a> or <a href="http://testng.org/">TestNG</a>, a testing framework is not required; you can use the Java Client Driver with any program whatsoever to automate tasks in your browser.</p>
