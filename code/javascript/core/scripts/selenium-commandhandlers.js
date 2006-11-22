@@ -16,11 +16,26 @@
 
 // A naming convention used in this file:
 //
+//
+//   - a "seleniumApi" is an instance of the Selenium object, defined in selenium-api.js.
+//
 //   - a "Method" is an unbound function whose target must be supplied when it's called, ie.
 //     it should be invoked using Function.call() or Function.apply()
 //
 //   - a "Block" is a function that has been bound to a target object, so can be called invoked directly
 //     (or with a null target)
+//
+//   - "CommandHandler" is effectively an abstract base for
+//     various handlers including ActionHandler, AccessorHandler and AssertHandler.
+//     Subclasses need to implement an execute(seleniumApi, command) function,
+//     where seleniumApi is the Selenium object, and command a SeleniumCommand object.
+//
+//   - Handlers will return a "result" object (ActionResult, AccessorResult, AssertResult).
+//     ActionResults may contain a .terminationCondition function which is run by 
+//     -executionloop.js after the command is run; we'll run it over and over again
+//     until it returns true or the .terminationCondition throws an exception.
+//     AccessorResults will contain the results of running getter (e.g. getTitle returns
+//     the title as a string).
 
 var CommandHandlerFactory = classCreate();
 objectExtend(CommandHandlerFactory.prototype, {
@@ -45,15 +60,15 @@ objectExtend(CommandHandlerFactory.prototype, {
         return this.handlers[name];
     },
 
-    _registerAllAccessors: function(commandTarget) {
+    _registerAllAccessors: function(seleniumApi) {
         // Methods of the form getFoo(target) result in commands:
         // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
         // storeFoo, waitForFoo, and waitForNotFoo.
-        for (var functionName in commandTarget) {
+        for (var functionName in seleniumApi) {
             var match = /^(get|is)([A-Z].+)$/.exec(functionName);
             if (match) {
-                var accessMethod = commandTarget[functionName];
-                var accessBlock = fnBind(accessMethod, commandTarget);
+                var accessMethod = seleniumApi[functionName];
+                var accessBlock = fnBind(accessMethod, seleniumApi);
                 var baseName = match[2];
                 var isBoolean = (match[1] == "is");
                 var requiresTarget = (accessMethod.length == 1);
@@ -63,30 +78,30 @@ objectExtend(CommandHandlerFactory.prototype, {
 
                 var predicateBlock = this._predicateForAccessor(accessBlock, requiresTarget, isBoolean);
                 this._registerAssertionsForPredicate(baseName, predicateBlock);
-                this._registerWaitForCommandsForPredicate(commandTarget, baseName, predicateBlock);
+                this._registerWaitForCommandsForPredicate(seleniumApi, baseName, predicateBlock);
             }
         }
     },
 
-    _registerAllActions: function(commandTarget) {
-        for (var functionName in commandTarget) {
+    _registerAllActions: function(seleniumApi) {
+        for (var functionName in seleniumApi) {
             var match = /^do([A-Z].+)$/.exec(functionName);
             if (match) {
                 var actionName = match[1].lcfirst();
-                var actionMethod = commandTarget[functionName];
+                var actionMethod = seleniumApi[functionName];
                 var dontCheckPopups = actionMethod.dontCheckAlertsAndConfirms;
-                var actionBlock = fnBind(actionMethod, commandTarget);
+                var actionBlock = fnBind(actionMethod, seleniumApi);
                 this.registerAction(actionName, actionBlock, false, dontCheckPopups);
                 this.registerAction(actionName + "AndWait", actionBlock, true, dontCheckPopups);
             }
         }
     },
 
-    _registerAllAsserts: function(commandTarget) {
-        for (var functionName in commandTarget) {
+    _registerAllAsserts: function(seleniumApi) {
+        for (var functionName in seleniumApi) {
             var match = /^assert([A-Z].+)$/.exec(functionName);
             if (match) {
-                var assertBlock = fnBind(commandTarget[functionName], commandTarget);
+                var assertBlock = fnBind(seleniumApi[functionName], seleniumApi);
 
                 // Register the assert with the "assert" prefix, and halt on failure.
                 var assertName = functionName;
@@ -99,10 +114,10 @@ objectExtend(CommandHandlerFactory.prototype, {
         }
     },
 
-    registerAll: function(commandTarget) {
-        this._registerAllAccessors(commandTarget);
-        this._registerAllActions(commandTarget);
-        this._registerAllAsserts(commandTarget);
+    registerAll: function(seleniumApi) {
+        this._registerAllAccessors(seleniumApi);
+        this._registerAllActions(seleniumApi);
+        this._registerAllAsserts(seleniumApi);
     },
 
     _predicateForAccessor: function(accessBlock, requiresTarget, isBoolean) {
@@ -210,7 +225,7 @@ objectExtend(CommandHandlerFactory.prototype, {
     _waitForActionForPredicate: function(predicateBlock) {
         // Convert an isBlahBlah(target, value) function into a waitForBlahBlah(target, value) function.
         return function(target, value) {
-            return function () {
+            var terminationCondition = function () {
                 try {
                     return predicateBlock(target, value).isTrue;
                 } catch (e) {
@@ -221,15 +236,20 @@ objectExtend(CommandHandlerFactory.prototype, {
                     return false;
                 }
             };
+            return Selenium.decorateFunctionWithTimeout(terminationCondition, this.defaultTimeout);
         };
     },
 
-    _registerWaitForCommandsForPredicate: function(commandTarget, baseName, predicateBlock) {
+    _registerWaitForCommandsForPredicate: function(seleniumApi, baseName, predicateBlock) {
         // Register a waitForBlahBlah and waitForNotBlahBlah based on the specified accessor.
-        var waitForActionBlock = this._waitForActionForPredicate(predicateBlock);
-        this.registerAction("waitFor" + baseName, waitForActionBlock, false, true);
+        var waitForActionMethod = this._waitForActionForPredicate(predicateBlock);
+        var waitForActionBlock = fnBind(waitForActionMethod, seleniumApi);
+        
         var invertedPredicateBlock = this._invertPredicate(predicateBlock);
-        var waitForNotActionBlock = this._waitForActionForPredicate(invertedPredicateBlock);
+        var waitForNotActionMethod = this._waitForActionForPredicate(invertedPredicateBlock);
+        var waitForNotActionBlock = fnBind(waitForNotActionMethod, seleniumApi);
+        
+        this.registerAction("waitFor" + baseName, waitForActionBlock, false, true);
         this.registerAction("waitFor" + this._invertPredicateName(baseName), waitForNotActionBlock, false, true);
         //TODO decide remove "waitForNot.*Present" action name or not
         //for the back compatiblity issues we still make waitForNot.*Present availble

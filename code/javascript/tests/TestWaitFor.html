@@ -140,6 +140,28 @@ Test for waiting for something on a new page.
   </tbody>
 </table>
 
+<br>
+Test for waiting for something that never arrives
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>setTimeout</td>
+      <td>500</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>assertFailureOnNext</td>
+      <td>Timed out after 500ms</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>waitForTextPresent</td>
+      <td>thisTextIsNotPresent</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
 
 </body>
 </html>
