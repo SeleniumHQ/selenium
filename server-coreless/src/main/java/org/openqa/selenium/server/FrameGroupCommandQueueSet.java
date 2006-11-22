@@ -212,14 +212,14 @@ public class FrameGroupCommandQueueSet {
                     return selectWindow(waitingForThisWindowName);
                 }
                 if (command.equals("waitForPageToLoad")) {
-                    return waitForLoad();
+                    return waitForLoad(arg);
                 }
                 if (command.equals("open")) {
                     String t = getCommandQueue().doCommand(command, arg, value);
                     if (!"OK".equals(t)) {
                         return t;
                     }
-                    return waitForLoad();
+                    return waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
                 }
 
                 // strip off AndWait - in PI mode we handle this in the server rather than in core...
@@ -230,7 +230,7 @@ public class FrameGroupCommandQueueSet {
                         return t;
                     }
 
-                    return waitForLoad();
+                    return waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
                 }
             } // if (SeleniumServer.isProxyInjectionMode())
             return getCommandQueue().doCommand(command, arg, value);
@@ -240,8 +240,16 @@ public class FrameGroupCommandQueueSet {
         }
     }
 
-    private String waitForLoad() {
-        return waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, SeleniumServer.getTimeoutInSeconds());
+    private String waitForLoad(long timeoutInMilliseconds) {
+        int timeoutInSeconds = (int)(timeoutInMilliseconds / 1000l);
+        if (timeoutInSeconds == 0) {
+            timeoutInSeconds = 1;
+        };
+        return waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, timeoutInSeconds);
+    }
+    
+    private String waitForLoad(String timeoutInMilliseconds) {
+        return waitForLoad(Long.parseLong(timeoutInMilliseconds));
     }
 
     private String waitForLoad(String waitingForThisWindowName, String waitingForThisLocalFrame, int timeoutInSeconds) {
