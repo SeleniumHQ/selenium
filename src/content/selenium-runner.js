@@ -76,15 +76,6 @@ Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
 
-// In Firefox 1.5, "load" event is not fired on cached pages, so we'll use "pageshow" instead.
-addLoadListener = function(element, command) {
-	element.addEventListener("pageshow", command, true);
-}
-// use "pagehide" instead of "unload".
-addUnloadListener = function(element, command) {
-	element.addEventListener("pagehide", command, true);
-}
-
 if (isFirefox2()) {
     PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument, inWindow) {
         var element = null;

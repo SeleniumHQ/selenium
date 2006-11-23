@@ -337,7 +337,7 @@ Editor.prototype.recordTitle = function(window) {
 }
 
 Editor.prototype.getPathAndUpdateBaseURL = function(window) {
-	if (!window.location) return;
+	if (!window || !window.location) return;
 	var path = window.location.href;
 	var regexp = new RegExp(/^(https?:\/\/[^/:]+(:\d+)?)\/.*/);
 	var base = '';
@@ -402,53 +402,56 @@ Editor.prototype._isSameWindow = function(w1, w2) {
 
 Editor.prototype.addCommand = function(command,target,value,window) {
     this.log.debug("addCommand: command=" + command + ", window.name=" + window.name);
-	if (command != 'open' && this.testCase.commands.length == 0) {
-        var top = this._getTopWindow(window);
-		var path = this.getPathAndUpdateBaseURL(top)[0];
-        this.addCommand("open", path, '', window);
-		this.recordTitle(top);
-	}
     if (this.lastWindow) {
         this.log.debug("window.name=" + window.name + ", lastWindow.name=" + this.lastWindow.name);
     } else {
         this.log.debug("window.name=" + window.name);
     }
-	if (command != 'selectWindow' &&
-        command != 'selectFrame' &&
-		this.lastWindow != null &&
-        !this._isSameWindow(this.lastWindow, window)) {
-        if (this._isSameWindow(window.top, this.lastWindow.top)) {
-            // frame
-            var destPath = this._createPaths(window);
-            var srcPath = this._createPaths(this.lastWindow);
-            this.log.debug("selectFrame: srcPath.length=" + srcPath.length + ", destPath.length=" + destPath.length);
-            var branch = 0;
-            var i;
-            for (i = 0;; i++) {
-                if (i >= destPath.length || i >= srcPath.length) break;
-                if (destPath[i] == srcPath[i]) {
-                    branch = i;
+	if (command != 'open' && 
+        command != 'selectWindow' &&
+        command != 'selectFrame') {
+        if (this.testCase.commands.length == 0) {
+            var top = this._getTopWindow(window);
+            this.log.debug("top=" + top);
+            var path = this.getPathAndUpdateBaseURL(top)[0];
+            this.addCommand("open", path, '', top);
+            this.recordTitle(top);
+        }
+        if (this.lastWindow != null &&
+            !this._isSameWindow(this.lastWindow, window)) {
+            if (this._isSameWindow(window.top, this.lastWindow.top)) {
+                // frame
+                var destPath = this._createPaths(window);
+                var srcPath = this._createPaths(this.lastWindow);
+                this.log.debug("selectFrame: srcPath.length=" + srcPath.length + ", destPath.length=" + destPath.length);
+                var branch = 0;
+                var i;
+                for (i = 0;; i++) {
+                    if (i >= destPath.length || i >= srcPath.length) break;
+                    if (destPath[i] == srcPath[i]) {
+                        branch = i;
+                    }
                 }
-            }
-            this.log.debug("branch=" + branch);
-            if (branch == 0 && srcPath.size > 1) {
-                // go to root
-                this.addCommand('selectFrame', 'relative=top', '', 0, window);
+                this.log.debug("branch=" + branch);
+                if (branch == 0 && srcPath.size > 1) {
+                    // go to root
+                    this.addCommand('selectFrame', 'relative=top', '', window);
+                } else {
+                    for (i = srcPath.length - 1; i > branch; i--) {
+                        this.addCommand('selectFrame', 'relative=up', '', window);
+                    }
+                }
+                for (i = branch + 1; i < destPath.length; i++) {
+                    this.addCommand('selectFrame', destPath[i].name, '', window);
+                }
             } else {
-                for (i = srcPath.length - 1; i > branch; i--) {
-                    this.addCommand('selectFrame', 'relative=up', '', 0, window);
+                // popup
+                var windowName = window.name;
+                if (window.name == '') {
+                    windowName = 'null';
                 }
+                this.addCommand('selectWindow', windowName, '', window);
             }
-            for (i = branch + 1; i < destPath.length; i++) {
-                this.addCommand('selectFrame', destPath[i].name, '', 0, window);
-            }
-        } else {
-            // popup
-            var windowName = window.name;
-            if (window.name == '') {
-                windowName = 'null';
-            }
-            this.addCommand('selectWindow', windowName, '', 0, window);
         }
 	}
 	//resultBox.inputField.scrollTop = resultBox.inputField.scrollHeight - resultBox.inputField.clientHeight;
