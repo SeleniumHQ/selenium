@@ -219,7 +219,7 @@ public class FrameGroupCommandQueueSet {
                     if (!"OK".equals(t)) {
                         return t;
                     }
-                    return waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
+                    return waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
                 }
 
                 // strip off AndWait - in PI mode we handle this in the server rather than in core...
@@ -230,7 +230,7 @@ public class FrameGroupCommandQueueSet {
                         return t;
                     }
 
-                    return waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
+                    return waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
                 }
             } // if (SeleniumServer.isProxyInjectionMode())
             return getCommandQueue().doCommand(command, arg, value);
