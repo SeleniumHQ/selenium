@@ -192,7 +192,7 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
         evt.detail = 0;
         evt.button = 1;
         evt.relatedTarget = null;
-        if (!screenX && !screenY && !clientX && !clientY) {
+        if (!screenX && !screenY && !clientX && !clientY && !this.controlKeyDown && !this.altKeyDown && !this.shiftKeyDown && !this.metaKeyDown) {
             element.fireEvent('on' + eventType);
         }
         else {

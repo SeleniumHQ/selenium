@@ -20,6 +20,7 @@ Copyright 2006 ThoughtWorks, Inc
 <!--
 /*  flag to determine if event should be recorded. */
 var recording = true;
+var sawCtrlKeyDown = false;
 
 /* Records an event in the events textarea */
 function recordEvent(e) {
@@ -41,6 +42,8 @@ function recordEvent(e) {
     	if (e.ctrlKey) {
 	      eventMessage += ' ctrlKeyDown';
             }
+            sawCtrlKeyDown = e.ctrlKey;
+
     	if (e.shiftKey) {
 	      eventMessage += ' shiftKeyDown';
             }            
