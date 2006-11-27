@@ -47,6 +47,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.altKeyDown = false;
     this.controlKeyDown = false;
     this.shiftKeyDown = false;
+    this.metaKeyDown = false;
 
     this.modalDialogTest = null;
     this.recordedAlerts = new Array();
@@ -173,6 +174,74 @@ BrowserBot.prototype.getNextPrompt = function() {
     this.relayBotToRC("browserbot.recordedPrompts");
     return t;
 };
+
+/* Fire a mouse event in a browser-compatible manner */
+
+BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble, clientX, clientY) {
+    clientX = clientX ? clientX : 0;
+    clientY = clientY ? clientY : 0;
+
+    LOG.warn("triggerMouseEvent assumes setting screenX and screenY to 0 is ok");
+    var screenX = 0;
+    var screenY = 0;
+
+    canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
+    if (element.fireEvent) {
+        LOG.info("element has fireEvent");
+        var evt = createEventObject(element, this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown);
+        evt.detail = 0;
+        evt.button = 1;
+        evt.relatedTarget = null;
+        if (!screenX && !screenY && !clientX && !clientY) {
+            element.fireEvent('on' + eventType);
+        }
+        else {
+            evt.screenX = screenX;
+            evt.screenY = screenY;
+            evt.clientX = clientX;
+            evt.clientY = clientY;
+
+            // when we go this route, window.event is never set to contain the event we have just created.
+            // ideally we could just slide it in as follows in the try-block below, but this normally
+            // doesn't work.  This is why I try to avoid this code path, which is only required if we need to
+            // set attributes on the event (e.g., clientX).
+            try {
+                window.event = evt;
+            }
+            catch(e) {
+                // getting an "Object does not support this action or property" error.  Save the event away
+                // for future reference.
+                // TODO: is there a way to update window.event?
+
+                // work around for http://jira.openqa.org/browse/SEL-280 -- make the event available somewhere:
+                selenium.browserbot.getCurrentWindow().selenium_event = evt;
+            }
+            element.fireEvent('on' + eventType, evt);
+        }
+    }
+    else {
+        LOG.info("element doesn't have fireEvent");
+        var evt = document.createEvent('MouseEvents');
+        if (evt.initMouseEvent)
+        {
+            LOG.info("element has initMouseEvent");
+            //Safari
+            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, 
+            	this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown, 0, null);
+        }
+        else {
+        	LOG.warn("element doesn't have initMouseEvent; firing an event which should -- but doesn't -- have other mouse-event related attributes here, as well as controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown");
+            evt.initEvent(eventType, canBubble, true);
+            
+            evt.shiftKey = this.shiftKeyDown;
+            evt.metaKey = this.metaKeyDown;
+            evt.altKey = this.altKeyDown;
+            evt.ctrlKey = this.controlKeyDown;
+
+        }
+        element.dispatchEvent(evt);
+    }
+}
 
 BrowserBot.prototype._windowClosed = function(win) {
     var c = win.closed;
@@ -1397,7 +1466,7 @@ MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clien
     this._modifyElementTarget(element);
 
     // Trigger the event.
-    triggerMouseEvent(element, eventType, true, clientX, clientY);
+    this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
 
     if (this._windowClosed()) {
         return;
@@ -1457,7 +1526,7 @@ OperaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX
     this._modifyElementTarget(element);
 
     // Trigger the click event.
-    triggerMouseEvent(element, eventType, true, clientX, clientY);
+    this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
 
     if (this._windowClosed()) {
         return;
@@ -1476,7 +1545,7 @@ KonquerorPageBot.prototype.fireEventOnElement = function(eventType, element, cli
     	element[eventType]();
     }
     else {
-        triggerMouseEvent(element, eventType, true, clientX, clientY);
+        this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
     }
 
     if (this._windowClosed()) {
@@ -1503,7 +1572,7 @@ SafariPageBot.prototype.fireEventOnElement = function(eventType, element, client
             var b = targetWindow.document.getElementById(element.href.split("#")[1]);
             targetWindow.document.body.scrollTop = b.offsetTop;
         } else {
-            triggerMouseEvent(element, eventType, true, clientX, clientY);
+            this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
         }
 
     }
@@ -1528,7 +1597,7 @@ IEPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, c
     	element[eventType]();
     }
     else {
-        triggerMouseEvent(element, eventType, true, clientX, clientY);
+        this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
     }
 
 

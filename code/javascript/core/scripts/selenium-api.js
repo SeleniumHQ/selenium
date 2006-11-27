@@ -405,7 +405,7 @@ Selenium.prototype.doMouseOver = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    */
     var element = this.page().findElement(locator);
-    triggerMouseEvent(element, 'mouseover', true);
+    this.browserbot.triggerMouseEvent(element, 'mouseover', true);
 };
 
 Selenium.prototype.doMouseOut = function(locator) {
@@ -415,7 +415,7 @@ Selenium.prototype.doMouseOut = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    */
     var element = this.page().findElement(locator);
-    triggerMouseEvent(element, 'mouseout', true);
+    this.browserbot.triggerMouseEvent(element, 'mouseout', true);
 };
 
 Selenium.prototype.doMouseDown = function(locator) {
@@ -426,7 +426,7 @@ Selenium.prototype.doMouseDown = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    */
    var element = this.page().findElement(locator);
-   triggerMouseEvent(element, 'mousedown', true);
+   this.browserbot.triggerMouseEvent(element, 'mousedown', true);
 };
 
 Selenium.prototype.doMouseDownAt = function(locator, coordString) {
@@ -441,7 +441,7 @@ Selenium.prototype.doMouseDownAt = function(locator, coordString) {
     var element = this.page().findElement(locator);
     var clientXY = getClientXY(element, coordString)
 
-    triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
+    this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doMouseUp = function(locator) {
@@ -452,7 +452,7 @@ Selenium.prototype.doMouseUp = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    */
    var element = this.page().findElement(locator);
-   triggerMouseEvent(element, 'mouseup', true);
+   this.browserbot.triggerMouseEvent(element, 'mouseup', true);
 };
 
 Selenium.prototype.doMouseUpAt = function(locator, coordString) {
@@ -467,7 +467,7 @@ Selenium.prototype.doMouseUpAt = function(locator, coordString) {
     var element = this.page().findElement(locator);
     var clientXY = getClientXY(element, coordString)
 
-    triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
+    this.browserbot.triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doMouseMove = function(locator) {
@@ -478,7 +478,7 @@ Selenium.prototype.doMouseMove = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    */
    var element = this.page().findElement(locator);
-   triggerMouseEvent(element, 'mousemove', true);
+   this.browserbot.triggerMouseEvent(element, 'mousemove', true);
 };
 
 Selenium.prototype.doMouseMoveAt = function(locator, coordString) {
@@ -494,7 +494,7 @@ Selenium.prototype.doMouseMoveAt = function(locator, coordString) {
     var element = this.page().findElement(locator);
     var clientXY = getClientXY(element, coordString)
 
-    triggerMouseEvent(element, 'mousemove', true, clientXY[0], clientXY[1]);
+    this.browserbot.triggerMouseEvent(element, 'mousemove', true, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doType = function(locator, value) {
@@ -1594,7 +1594,7 @@ Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
    var movementXincrement = (movementX > 0) ? 1 : -1;
    var movementYincrement = (movementY > 0) ? 1 : -1;
 
-   triggerMouseEvent(element, 'mousedown', true, clientStartX, clientStartY);
+   this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientStartX, clientStartY);
    var clientX = clientStartX;
    var clientY = clientStartY;
    while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
@@ -1604,9 +1604,9 @@ Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
    	if (clientY != clientFinishY) {
    		clientY += movementYincrement;
         }
-        triggerMouseEvent(element, 'mousemove', true, clientX, clientY);
+        this.browserbot.triggerMouseEvent(element, 'mousemove', true, clientX, clientY);
     }
-    triggerMouseEvent(element, 'mouseup',   true, clientFinishX, clientFinishY);
+    this.browserbot.triggerMouseEvent(element, 'mouseup',   true, clientFinishX, clientFinishY);
 };
 
 Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, locatorOfDragDestinationObject) {
