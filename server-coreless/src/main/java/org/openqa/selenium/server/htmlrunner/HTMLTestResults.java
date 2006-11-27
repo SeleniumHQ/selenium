@@ -163,6 +163,7 @@ public class HTMLTestResults {
                 seleniumVersion,
                 seleniumRevision,
                 suite.getUpdatedSuite()));
+        out.write("<table>");
         for (int i = 0; i < testTables.size(); i++) {
             String table = testTables.get(i).replace("\u00a0", "&nbsp;");
             out.write(MessageFormat.format(SUITE_HTML, i, suite.getHref(i), table));
