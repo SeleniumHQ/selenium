@@ -38,13 +38,4 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetE
         WindowsUtils.writeIntRegistryValue(REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, 256);
         WindowsUtils.writeIntRegistryValue(REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, 256);
     }
-    
-    protected void initStatic() {
-        super.initStatic();
-        addRegistryKeyToBackupList(REG_KEY_PROXY_ENABLE, REG_KEY_BACKUP_PROXY_ENABLE, boolean.class);
-        addRegistryKeyToBackupList(REG_KEY_PROXY_OVERRIDE, REG_KEY_BACKUP_PROXY_OVERRIDE, boolean.class);
-        addRegistryKeyToBackupList(REG_KEY_PROXY_SERVER, REG_KEY_BACKUP_PROXY_SERVER, String.class);
-        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR, int.class);
-        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR, int.class);        
-    }
 }
