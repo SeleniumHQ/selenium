@@ -30,6 +30,9 @@
 var BrowserBot = function(topLevelApplicationWindow) {
     this.topWindow = topLevelApplicationWindow;
     this.topFrame = this.topWindow;
+    if (this.topWindow && this.topWindow.location) {
+        this.baseUrl=this.topWindow.location.href;
+    }
 
     // the buttonWindow is the Selenium window
     // it contains the Run/Pause buttons... this should *not* be the AUT window
@@ -87,6 +90,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
 
     this.isNewPageLoaded = function() {
         if (this.pageLoadError) {
+            LOG.error("isNewPageLoaded found an old pageLoadError");
             var e = this.pageLoadError;
             this.pageLoadError = null;
             throw e;
@@ -313,27 +317,41 @@ BrowserBot.prototype.selectFrame = function(target) {
             throw new SeleniumError("Not found: " + target);
         }
         // now, did they give us a frame or a frame ELEMENT?
+        var match = false;
         if (frame.contentWindow) {
             // this must be a frame element
-            this.currentWindow = frame.contentWindow;
-            this.isSubFrameSelected = true;
-        } else if (frame.document) {
+            if (browserVersion.isHTA) {
+                // stupid HTA bug; can't get in the front door
+                target = frame.contentWindow.name;
+            } else {
+                this.currentWindow = frame.contentWindow;
+                this.isSubFrameSelected = true;
+                match = true;
+            }
+        } else if (frame.document && frame.location) {
             // must be an actual window frame
             this.currentWindow = frame;
             this.isSubFrameSelected = true;
-        } else {
+            match = true;
+        }
+        
+        if (!match) {
             // neither, let's loop through the frame names
             var win = this.getCurrentWindow();
+            
             if (win && win.frames && win.frames.length) {
                 for (var i = 0; i < win.frames.length; i++) {
                     if (win.frames[i].name == target) {
                         this.currentWindow = win.frames[i];
                         this.isSubFrameSelected = true;
-                        return;
+                        match = true;
+                        break;
                     }
                 }
             }
-            throw new SeleniumError("Not a frame: " + target);
+            if (!match) {
+                throw new SeleniumError("Not a frame: " + target);
+            }
         }
     }
     this.currentPage = null;
@@ -355,9 +373,8 @@ BrowserBot.prototype.openWindow = function(url, windowID) {
     if (browserVersion.isHTA) {
         // in HTA mode, calling .open on the window interprets the url relative to that window
         // we need to absolute-ize the URL to make it consistent
-        if (url != "" && !/^(http|file):/.test(url)) {
-            url = window.location.pathname.replace(/[^\/\\]+$/, url);
-            url = url.replace(/\\/g, "/");
+        if (url != "") {
+            url = absolutify(url, this.baseUrl);
         }
         var child = this.getCurrentWindow().open(url, windowID);
         selenium.browserbot.openedWindows[windowID] = child;
@@ -371,19 +388,23 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 };
 
 BrowserBot.prototype.setOpenLocation = function(win, loc) {
-
-    // is there a Permission Denied risk here? setting a timeout breaks Firefox
-    //win.setTimeout(function() { win.location.href = loc; }, 0);
-    win.location.href = loc;
+    if (browserVersion.isHTA) {
+        var oldHref = win.location.href;
+        loc = absolutify(loc, this.baseUrl);
+        win.location.href = loc;
+        var marker = null;
+        try {
+            marker = this.isPollingForLoad(win);
+        } catch (e) {} // DGF don't know why, but this often fails
+        if (marker && win.location[marker]) {
+            win.location[marker] = false;
+        }
+    } else {
+        win.location.href = loc;
+    }
 };
 
 BrowserBot.prototype.getCurrentPage = function() {
-    if (this.currentPage == null) {
-        var testWindow = this.getCurrentWindow();
-        this.currentPage = PageBot.createForWindow(this);
-        //LOG.debug("getCurrentPage newPageLoaded = false");
-        this.newPageLoaded = false;
-    }
     if (this._windowClosed(this.getCurrentWindow())) {
         if (this.isSubFrameSelected) {
             LOG.warn("Current subframe appears to have closed; selecting top frame");
@@ -392,6 +413,13 @@ BrowserBot.prototype.getCurrentPage = function() {
         } else {
             throw new SeleniumError("Current window or frame is closed!");
         }
+    }
+
+    if (this.currentPage == null) {
+        var testWindow = this.getCurrentWindow();
+        this.currentPage = PageBot.createForWindow(this);
+        //LOG.debug("getCurrentPage newPageLoaded = false");
+        this.newPageLoaded = false;
     }
 
     return this.currentPage;
@@ -425,15 +453,42 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     // Keep a reference to all popup windows by name
     // note that in IE the "windowName" argument must be a valid javascript identifier, it seems.
     var originalOpen = windowToModify.open;
-    windowToModify.open = function(url, windowName, windowFeatures, replaceFlag) {
-         var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
-         LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
-         if (windowName!=null) {
-         	openedWindow["seleniumWindowName"] = windowName;
-         }
-         selenium.browserbot.openedWindows[windowName] = openedWindow;
-         return openedWindow;
+    var originalOpenReference;
+    if (browserVersion.isHTA) {
+        originalOpenReference = 'selenium_originalOpen' + new Date().getTime();
+        windowToModify[originalOpenReference] = windowToModify.open;
+    }
+    
+    var isHTA = browserVersion.isHTA;
+    
+    var newOpen = function(url, windowName, windowFeatures, replaceFlag) {
+        if (isHTA) {
+            var originalOpen = this[originalOpenReference];
+        }
+        var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
+        LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
+        if (windowName!=null) {
+        	openedWindow["seleniumWindowName"] = windowName;
+        }
+        selenium.browserbot.openedWindows[windowName] = openedWindow;
+        return openedWindow;
     };
+    
+    if (browserVersion.isHTA) {
+        originalOpenReference = 'selenium_originalOpen' + new Date().getTime();
+        var setOriginalRef = "this['" + originalOpenReference + "'] = this.open;";
+        if (windowToModify.eval) {
+            windowToModify.eval(setOriginalRef);
+            windowToModify.open = newOpen;
+        } else {
+            windowToModify.setTimeout(setOriginalRef, 0);
+            windowToModify.setTimeout(function() {
+                windowToModify.open = newOpen;
+            }, 1);
+        }
+    } else {
+        windowToModify.open = newOpen;
+    }
 };
 
 /**
@@ -461,7 +516,9 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
     this.pollingForLoad[marker] = true;
     // if this is a frame, add a load listener, otherwise, attach a poller
     var frameElement = this._getFrameElement(windowObject);
-    if (frameElement) {
+    // DGF HTA mode can't attach load listeners to subframes (yuk!)
+    var htaSubFrame = this._isHTASubFrame(windowObject);
+    if (frameElement && !htaSubFrame) {
         LOG.debug("modifySeparateTestWindowToDetectPageLoads: this window is a frame; attaching a load listener");
         addLoadListener(frameElement, this.recordPageLoad);
         frameElement[marker] = true;
@@ -473,14 +530,29 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
     }
 };
 
+BrowserBot.prototype._isHTASubFrame = function(win) {
+    if (!browserVersion.isHTA) return false;
+    // DGF this is wrong! what if "win" isn't the selected window?
+    return this.isSubFrameSelected;
+}
+
 BrowserBot.prototype._getFrameElement = function(win) {
     var frameElement = null;
+    var caught;
     try {
         frameElement = win.frameElement;
     } catch (e) {
+        caught = true;
+    }
+    if (caught) {
         // on IE, checking frameElement in a pop-up results in a "No such interface supported" exception
         // but it might have a frame element anyway!
-        if (win.name && win.parent && win.parent.frames && win.parent.frames[win.name]) {
+        var parentContainsIdenticallyNamedFrame = false;
+        try {
+            parentContainsIdenticallyNamedFrame = win.parent.frames[win.name];
+        } catch (e) {} // this may fail if access is denied to the parent; in that case, assume it's not a pop-up
+        
+        if (parentContainsIdenticallyNamedFrame) {
             // it can't be a coincidence that the parent has a frame with the same name as myself!
             return PageBot.prototype.locateElementByName(win.name, win.parent.document, win.parent);
         }
@@ -495,7 +567,6 @@ BrowserBot.prototype._getFrameElement = function(win) {
  */
 BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker) {
     LOG.debug("pollForLoad original (" + marker + "): " + originalHref);
-
     try {
         if (this._windowClosed(windowObject)) {
             LOG.debug("pollForLoad WINDOW CLOSED (" + marker + ")");
@@ -534,7 +605,6 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
                 loadFunction(currentlySelectedWindow);
             } else {
                 LOG.debug("pollForLoad page load detected in non-current window; ignoring (currentlySelected="+currentlySelectedWindowMarker+", detection in "+newMarker+")");
-                LOG.debug("DGF "+currentlySelectedWindow.name+".closed="+currentlySelectedWindow.closed);
             }
             return;
         }
@@ -680,7 +750,8 @@ BrowserBot.prototype.runScheduledPollers = function() {
 BrowserBot.prototype.isPollingForLoad = function(win) {
     var marker;
     var frameElement = this._getFrameElement(win);
-    if (frameElement) {
+    var htaSubFrame = this._isHTASubFrame(win);
+    if (frameElement && !htaSubFrame) {
         marker = frameElement[this.uniqueId];
     } else {
         marker = win[this.uniqueId];
@@ -720,6 +791,14 @@ BrowserBot.prototype.getWindowByName = function(windowName, doNotModify) {
     }
     if (!targetWindow) {
         throw new SeleniumError("Window does not exist");
+    }
+    if (browserVersion.isHTA) {
+        try {
+            targetWindow.location.href;
+        } catch (e) {
+            targetWindow = window.open("", targetWindow.name);
+            this.openedWindows[targetWindow.name] = targetWindow;
+        }
     }
     if (!doNotModify) {
         this._modifyWindow(targetWindow);
@@ -891,6 +970,25 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
             return;
         } else if (((this.pageLoadError.message == "Permission denied") || (/^Access is denied/.test(this.pageLoadError.message)))
                 && this.permDeniedCount[marker]++ < 8) {
+            if (this.permDeniedCount[marker] > 4) {
+                var canAccessThisWindow;
+                var canAccessCurrentlySelectedWindow;
+                try {
+                    windowObject.location.href;
+                    canAccessThisWindow = true;
+                } catch (e) {}
+                try {
+                    this.getCurrentWindow(true).location.href;
+                    canAccessCurrentlySelectedWindow = true;
+                } catch (e) {}
+                if (canAccessCurrentlySelectedWindow & !canAccessThisWindow) {
+                    LOG.warn("pollForLoad (" + marker + ") ABORTING: " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), but the currently selected window is fine");
+                    // returning without rescheduling
+                    this.pageLoadError = null;
+                    return;
+                }
+            }
+            
             var self = this;
             LOG.warn("pollForLoad (" + marker + "): " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), waiting to see if it goes away");
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);

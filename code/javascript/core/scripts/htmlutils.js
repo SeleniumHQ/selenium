@@ -357,6 +357,75 @@ function getDocumentBase(doc) {
     return "";
 }
 
+function absolutify(url, baseUrl) {
+    /** returns a relative url in its absolute form, given by baseUrl.
+    * 
+    * This function is a little odd, because it can take baseUrls that
+    * aren't necessarily directories.  It uses the same rules as the HTML 
+    * &lt;base&gt; tag; if the baseUrl doesn't end with "/", we'll assume
+    * that it points to a file, and strip the filename off to find its
+    * base directory.
+    *
+    * So absolutify("foo", "http://x/bar") will return "http://x/foo" (stripping off bar),
+    * whereas absolutify("foo", "http://x/bar/") will return "http://x/bar/foo" (preserving bar).
+    * Naturally absolutify("foo", "http://x") will return "http://x/foo", appropriately.
+    * 
+    * @param url the url to make absolute; if this url is already absolute, we'll just return that, unchanged
+    * @param baseUrl the baseUrl from which we'll absolutify, following the rules above.
+    * @return 'url' if it was already absolute, or the absolutized version of url if it was not absolute.
+    */
+    
+    // DGF isn't there some library we could use for this?
+        
+    if (/^\w+:/.test(url)) {
+        // it's already absolute
+        return url;
+    }
+    
+    var scheme;
+    var schemepart;
+    
+    // is it absolute? what's the URL scheme?
+    if (!/^(\w+):\/\/(.*)/.test(baseUrl)) {
+        // is it an absolute windows file path? let's play the hero in that case
+        if (/^\w:\\/.test(baseUrl)) {
+            scheme = "file";
+            schemepart = "/" + baseUrl.replace(/\\/g, "/");
+            baseUrl = "file://" + schemepart;
+        } else {
+            throw new SeleniumError("baseUrl wasn't absolute: " + baseUrl);
+        }
+    } else {
+        scheme = RegExp.$1;
+        schemepart = RegExp.$2;
+    }
+    
+    if (scheme != "http" && scheme != "file") {
+        // What? would you have me absolutify a javascript: URL?  What does that even mean???
+        throw new SeleniumError("We can only absolutify URLs that start with 'http' or 'file': " + baseUrl);
+    }
+    
+    // for windows, replace backslashes with forward slashes
+    url = url.replace(/\\/g, "/");
+    
+    // if baseUrl ends with /, just append url
+    if (/\/$/.test(baseUrl)) {
+        return baseUrl + url;
+    }
+    
+    // if schemepart doesn't contain a /, then it only contains a login/hostname
+    // so we'll just append "/" + the url
+    if (!/\//.test(schemepart)) {
+        return baseUrl + "/" + url;
+    }
+    
+    // if we're here, then the scheme part contains a /, but doesn't end with /
+    // in that case, we replace everything after the final / with the relative url
+    var result = baseUrl.replace(/[^\/\\]+$/, url);
+    return result;
+    
+}
+
 function extractExceptionMessage(ex) {
     if (ex == null) return "null exception";
     if (ex.message != null) return ex.message;
@@ -677,6 +746,10 @@ objectExtend(URLConfiguration.prototype, {
 
     isMultiWindowMode:function() {
         return this._isQueryParameterTrue('multiWindow');
+    },
+    
+    getBaseUrl:function() {
+        return this._isQueryParameterTrue('baseUrl');
     }
 });
 

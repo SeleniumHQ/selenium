@@ -63,6 +63,10 @@ objectExtend(HtmlTestRunner.prototype, {
         var self = this;
         if (testSuiteName) {
             suiteFrame.load(testSuiteName, function() {setTimeout(fnBind(self._onloadTestSuite, self), 50)} );
+            selenium.browserbot.baseUrl = testSuiteName;
+        }
+        if (this.controlPanel.getBaseUrl()) {
+            selenium.browserbot.baseUrl = this.controlPanel.getBaseUrl();
         }
     },
 
@@ -196,6 +200,10 @@ objectExtend(SeleniumFrame.prototype, {
     },
 
     _setLocation: function(location) {
+        var isChrome = browserVersion.isChrome || false;
+        var isHTA = browserVersion.isHTA || false;
+        // DGF TODO multiWindow
+        location += "?thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA;
         if (browserVersion.isSafari) {
             // safari doesn't reload the page when the location equals to current location.
             // hence, set the location to blank so that the page will reload automatically.

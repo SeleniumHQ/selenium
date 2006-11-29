@@ -30,29 +30,60 @@ var BrowserVersion = function() {
         return;
     }
     
+    var _getQueryParameter = function(searchKey) {
+        var str = location.search.substr(1);
+        if (str == null) return null;
+        var clauses = str.split('&');
+        for (var i = 0; i < clauses.length; i++) {
+            var keyValuePair = clauses[i].split('=', 2);
+            var key = unescape(keyValuePair[0]);
+            if (key == searchKey) {
+                return unescape(keyValuePair[1]);
+            }
+        }
+        return null;
+    };
+    
     var self = this;
     
     var checkChrome = function() {
         var loc = window.document.location.href;
         try {
             loc = window.top.document.location.href;
+            if (/^chrome:\/\//.test(loc)) {
+                self.isChrome = true;
+            } else {
+                self.isChrome = false;
+            }
         } catch (e) {
             // can't see the top (that means we might be chrome, but it's impossible to be sure)
             self.isChromeDetectable = "no, top location couldn't be read in this window";
+            if (_getQueryParameter('thisIsChrome')) {
+                self.isChrome = true;
+            } else {
+                self.isChrome = false;
+            }
         }
         
-        if (/^chrome:\/\//.test(loc)) {
-            self.isChrome = true;
-        } else {
-            self.isChrome = false;
-        }
+        
     }
+    
+    
 
     if (this.name == "Microsoft Internet Explorer") {
         this.browser = BrowserVersion.IE;
         this.isIE = true;
-        if (window.top.SeleniumHTARunner && window.top.document.location.pathname.match(/.hta$/i)) {
-            this.isHTA = true;
+        try {
+            if (window.top.SeleniumHTARunner && window.top.document.location.pathname.match(/.hta$/i)) {
+                this.isHTA = true;
+            }
+        } catch (e) {
+            this.isHTADetectable = "no, top location couldn't be read in this window";
+            if (_getQueryParameter('thisIsHTA')) {
+                self.isHTA = true;
+            } else {
+                self.isHTA = false;
+            }
         }
         if ("0" == navigator.appMinorVersion) {
             this.preSV1 = true;
