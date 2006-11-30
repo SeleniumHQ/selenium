@@ -75,10 +75,11 @@ function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocationWhenThereIsNoCurrent
     var mockDocument = new Object();
     mockWindow.document = mockDocument;
     mockWindow.document.location = mockLocation;
+    browserBot.baseUrl = "http://x";
     browserBot.openLocation('myNewLocation');
 
     assertNull(browserBot.currentPage);
-    assertEquals('myNewLocation', mockWindow.location.href);
+    assertEquals('http://x/myNewLocation', mockWindow.location.href);
 }
 
 function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIsNull() {
