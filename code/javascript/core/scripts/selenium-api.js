@@ -684,28 +684,7 @@ Selenium.prototype.doSubmit = function(formLocator) {
    * @param formLocator an <a href="#locators">element locator</a> for the form you want to submit
    */
     var form = this.page().findElement(formLocator);
-    var actuallySubmit = true;
-    if (form.onsubmit) {
-        if (browserVersion.isHTA) {
-            // run the code in the correct window so alerts are handled correctly even in HTA mode
-            var win = this.browserbot.getCurrentWindow();
-            var now = new Date().getTime();
-            var marker = 'marker' + now;
-            win[marker] = form;
-            win.setTimeout("var actuallySubmit = "+marker+".onsubmit(); if (actuallySubmit) { "+marker+".submit(); };", 0);
-            // pause for at least 20ms for this command to run
-            return function () {
-                return new Date().getTime() > (now + 20);
-            }
-        } else {
-            actuallySubmit = form.onsubmit();
-            if (actuallySubmit) {
-                form.submit();
-            }
-        }
-    } else {
-        form.submit();
-    }
+    this.page().submit(form);
 
 };
 

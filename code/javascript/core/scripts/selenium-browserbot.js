@@ -1539,6 +1539,32 @@ PageBot.prototype.replaceText = function(element, stringValue) {
     triggerEvent(element, 'change', true);
 };
 
+PageBot.prototype.submit = function(formElement) {
+    var actuallySubmit = true;
+    this._modifyElementTarget(formElement);
+    if (formElement.onsubmit) {
+        if (browserVersion.isHTA) {
+            // run the code in the correct window so alerts are handled correctly even in HTA mode
+            var win = this.browserbot.getCurrentWindow();
+            var now = new Date().getTime();
+            var marker = 'marker' + now;
+            win[marker] = formElement;
+            win.setTimeout("var actuallySubmit = "+marker+".onsubmit(); if (actuallySubmit) { "+marker+".submit(); };", 0);
+            // pause for at least 20ms for this command to run
+            return function () {
+                return new Date().getTime() > (now + 20);
+            }
+        } else {
+            actuallySubmit = formElement.onsubmit();
+            if (actuallySubmit) {
+                formElement.submit();
+            }
+        }
+    } else {
+        formElement.submit();
+    }
+}
+
 PageBot.prototype.clickElement = function(element, clientX, clientY) {
        this._fireEventOnElement("click", element, clientX, clientY);
 };
@@ -1548,11 +1574,17 @@ PageBot.prototype.doubleClickElement = function(element, clientX, clientY) {
 };
 
 PageBot.prototype._modifyElementTarget = function(element) {
-    if (element.target && element.target == "_blank" && element.tagName && element.tagName.toLowerCase() == "a") {
-        var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
-        LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
-        this.browserbot.openWindow('', newTarget);
-        element.target = newTarget;
+    if (element.target && element.target == "_blank") {
+        var tagName;
+        if (element.tagName && element.tagName.toLowerCase) {
+            tagName = element.tagName.toLowerCase();
+        }
+        if (tagName == "a" || tagName == "form") {
+            var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
+            LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
+            this.browserbot.openWindow('', newTarget);
+            element.target = newTarget;
+        }
     }
 }
 
