@@ -25,7 +25,7 @@ public class HTMLSuiteResultTest extends TestCase {
         "\r\n" + 
         "";
         HTMLSuiteResult hsr = new HTMLSuiteResult(input);
-        System.out.println(hsr.getUpdatedSuite());
+        // System.out.println(hsr.getUpdatedSuite());
         String expected = "\r\n" + 
         "\r\n" + 
         "<table border=\"1\" cellpadding=\"1\" cellspacing=\"1\">\r\n" + 
