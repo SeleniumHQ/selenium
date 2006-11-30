@@ -477,15 +477,17 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     
     if (browserVersion.isHTA) {
         originalOpenReference = 'selenium_originalOpen' + new Date().getTime();
+        newOpenReference = 'selenium_newOpen' + new Date().getTime();
         var setOriginalRef = "this['" + originalOpenReference + "'] = this.open;";
+        
         if (windowToModify.eval) {
             windowToModify.eval(setOriginalRef);
             windowToModify.open = newOpen;
         } else {
+            // DGF why can't I eval here?  Seems like I'm querying the window at a bad time, maybe?
+            setOriginalRef += "this.open = this['" + newOpenReference + "'];";
+            windowToModify[newOpenReference] = newOpen;
             windowToModify.setTimeout(setOriginalRef, 0);
-            windowToModify.setTimeout(function() {
-                windowToModify.open = newOpen;
-            }, 1);
         }
     } else {
         windowToModify.open = newOpen;
