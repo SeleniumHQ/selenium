@@ -382,6 +382,8 @@ function absolutify(url, baseUrl) {
         return url;
     }
     
+    baseUrl = baseUrl.replace(/[\?\#].*/, "");
+    
     var scheme;
     var schemepart;
     
@@ -749,7 +751,8 @@ objectExtend(URLConfiguration.prototype, {
     },
     
     getBaseUrl:function() {
-        return this._isQueryParameterTrue('baseUrl');
+        return this._getQueryParameter('baseUrl');
+            
     }
 });
 

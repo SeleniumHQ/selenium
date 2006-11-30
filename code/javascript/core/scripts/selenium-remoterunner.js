@@ -33,9 +33,9 @@ var relayToRC = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
 
-var SeleneseRunnerOptions = classCreate();
-objectExtend(SeleneseRunnerOptions.prototype, URLConfiguration.prototype);
-objectExtend(SeleneseRunnerOptions.prototype, {
+var RemoteRunnerOptions = classCreate();
+objectExtend(RemoteRunnerOptions.prototype, URLConfiguration.prototype);
+objectExtend(RemoteRunnerOptions.prototype, {
     initialize: function() {
         this._acquireQueryString();
     },
@@ -47,16 +47,8 @@ objectExtend(SeleneseRunnerOptions.prototype, {
         return this._getQueryParameter("continue");
     },
 
-    getBaseUrl: function() {
-        return this._getQueryParameter("baseUrl");
-    },
-
-    getDriverHost: function() {
-        return this._getQueryParameter("driverhost");
-    },
-
-    getDriverPort: function() {
-        return this._getQueryParameter("driverport");
+    getDriverUrl: function() {
+        return this._getQueryParameter("driverUrl");
     },
 
     getSessionId: function() {
@@ -80,7 +72,7 @@ objectExtend(SeleneseRunnerOptions.prototype, {
 var runOptions;
 
 function runSeleniumTest() {
-    runOptions = new SeleneseRunnerOptions();
+    runOptions = new RemoteRunnerOptions();
     var testAppWindow;
 
     if (runOptions.isMultiWindowMode()) {
@@ -96,6 +88,9 @@ function runSeleniumTest() {
         testAppWindow = window;
     }
     selenium = Selenium.createForWindow(testAppWindow, proxyInjectionMode);
+    if (runOptions.getBaseUrl()) {
+        selenium.browserbot.baseUrl = runOptions.getBaseUrl();
+    }
     if (!debugMode) {
         debugMode = runOptions.isDebugMode();
     }
@@ -111,7 +106,7 @@ function runSeleniumTest() {
     commandFactory = new CommandHandlerFactory();
     commandFactory.registerAll(selenium);
 
-    currentTest = new SeleneseRunner(commandFactory);
+    currentTest = new RemoteRunner(commandFactory);
 
     if (document.getElementById("commandList") != null) {
         document.getElementById("commandList").appendChild(cmd4);
@@ -126,15 +121,15 @@ function runSeleniumTest() {
     currentTest.start();
 }
 
-function buildBaseUrl() {
-    var baseUrl = runOptions.getBaseUrl();
-    if (baseUrl != null) {
-        return baseUrl;
+function buildDriverUrl() {
+    var driverUrl = runOptions.getDriverUrl();
+    if (driverUrl != null) {
+        return driverUrl;
     }
     var s = window.location.href
     var slashPairOffset = s.indexOf("//") + "//".length
     var pathSlashOffset = s.substring(slashPairOffset).indexOf("/")
-    return s.substring(0, slashPairOffset + pathSlashOffset) + "/selenium-server/core/";
+    return s.substring(0, slashPairOffset + pathSlashOffset) + "/selenium-server/driver/";
 }
 
 function logToRc(logLevel, message) {
@@ -188,9 +183,9 @@ function setSeleniumWindowName(seleniumWindowName) {
 //selenium.browserbot.getCurrentWindow()['seleniumWindowName'] = seleniumWindowName;
 }
 
-SeleneseRunner = classCreate();
-objectExtend(SeleneseRunner.prototype, new TestLoop());
-objectExtend(SeleneseRunner.prototype, {
+RemoteRunner = classCreate();
+objectExtend(RemoteRunner.prototype, new TestLoop());
+objectExtend(RemoteRunner.prototype, {
     initialize : function(commandFactory) {
         this.commandFactory = commandFactory;
         this.requiresCallBack = true;
@@ -365,7 +360,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     if (xmlHttpObject == null) {
         xmlHttpObject = XmlHttp.create();
     }
-    var url = buildBaseUrl() + "driver/?"
+    var url = buildDriverUrl() + "?"
     if (urlParms) {
         url += urlParms;
     }
@@ -386,12 +381,6 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
 
 function buildDriverParams() {
     var params = "";
-
-    var host = runOptions.getDriverHost();
-    var port = runOptions.getDriverPort();
-    if (host != undefined && port != undefined) {
-        params = params + "&driverhost=" + host + "&driverport=" + port;
-    }
 
     var sessionId = runOptions.getSessionId();
     if (sessionId == undefined) {

@@ -63,8 +63,10 @@ objectExtend(HtmlTestRunner.prototype, {
         var self = this;
         if (testSuiteName) {
             suiteFrame.load(testSuiteName, function() {setTimeout(fnBind(self._onloadTestSuite, self), 50)} );
-            selenium.browserbot.baseUrl = testSuiteName;
+            selenium.browserbot.baseUrl = absolutify(testSuiteName, window.location.href);
         }
+        // DGF or should we use the old default?
+        // selenium.browserbot.baseUrl = window.location.href;
         if (this.controlPanel.getBaseUrl()) {
             selenium.browserbot.baseUrl = this.controlPanel.getBaseUrl();
         }

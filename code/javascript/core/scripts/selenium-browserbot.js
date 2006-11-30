@@ -370,12 +370,12 @@ BrowserBot.prototype.openLocation = function(target) {
 };
 
 BrowserBot.prototype.openWindow = function(url, windowID) {
+    if (url != "") {
+        url = absolutify(url, this.baseUrl);
+    }
     if (browserVersion.isHTA) {
         // in HTA mode, calling .open on the window interprets the url relative to that window
         // we need to absolute-ize the URL to make it consistent
-        if (url != "") {
-            url = absolutify(url, this.baseUrl);
-        }
         var child = this.getCurrentWindow().open(url, windowID);
         selenium.browserbot.openedWindows[windowID] = child;
     } else {
@@ -388,9 +388,9 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 };
 
 BrowserBot.prototype.setOpenLocation = function(win, loc) {
+    loc = absolutify(loc, this.baseUrl);
     if (browserVersion.isHTA) {
         var oldHref = win.location.href;
-        loc = absolutify(loc, this.baseUrl);
         win.location.href = loc;
         var marker = null;
         try {
@@ -462,10 +462,11 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
     var isHTA = browserVersion.isHTA;
     
     var newOpen = function(url, windowName, windowFeatures, replaceFlag) {
+        var myOriginalOpen = originalOpen;
         if (isHTA) {
-            var originalOpen = this[originalOpenReference];
+            myOriginalOpen = this[originalOpenReference];
         }
-        var openedWindow = originalOpen(url, windowName, windowFeatures, replaceFlag);
+        var openedWindow = myOriginalOpen(url, windowName, windowFeatures, replaceFlag);
         LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
         if (windowName!=null) {
         	openedWindow["seleniumWindowName"] = windowName;
