@@ -684,7 +684,7 @@ Selenium.prototype.doSubmit = function(formLocator) {
    * @param formLocator an <a href="#locators">element locator</a> for the form you want to submit
    */
     var form = this.page().findElement(formLocator);
-    this.page().submit(form);
+    return this.page().submit(form);
 
 };
 
