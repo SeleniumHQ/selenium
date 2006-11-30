@@ -30,9 +30,7 @@
 var BrowserBot = function(topLevelApplicationWindow) {
     this.topWindow = topLevelApplicationWindow;
     this.topFrame = this.topWindow;
-    if (this.topWindow && this.topWindow.location) {
-        this.baseUrl=this.topWindow.location.href;
-    }
+    this.baseUrl=window.location.href;
 
     // the buttonWindow is the Selenium window
     // it contains the Run/Pause buttons... this should *not* be the AUT window

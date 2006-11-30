@@ -415,6 +415,13 @@ function absolutify(url, baseUrl) {
     // for windows, replace backslashes with forward slashes
     url = url.replace(/\\/g, "/");
     
+    // if url begins with /, we strip the path off of the
+    // baseUrl and just use its login/hostname
+    if (/^\//.test(url)) {
+        var loginHostName = schemepart.replace(/\/(.*)/, "");
+        return scheme + "://" + loginHostName + url;
+    }
+    
     // if baseUrl ends with /, just append url
     if (/\/$/.test(baseUrl)) {
         return baseUrl + url;
