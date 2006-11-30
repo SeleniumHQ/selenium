@@ -226,7 +226,7 @@
 
     <target name="selenese-task" depends="image, maven-tasks">
         <mavendeps pathId="selenium-server-coreless.classpath">
-			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" version="0.9.0" scope="runtime"/>
+			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" version="0.9.1" scope="runtime"/>
 		</mavendeps>
         <property name="slowResources" value="false" />
         <property name="multiWindow" value="true" />
