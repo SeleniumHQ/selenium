@@ -673,7 +673,7 @@ function o2s(obj) {
 
 var seenReadyStateWarning = false;
 
-function openSeparateApplicationWindow(url) {
+function openSeparateApplicationWindow(url, suppressMozillaWarning) {
     // resize the Selenium window itself
     window.resizeTo(1200, 500);
     window.moveTo(window.screenX, 0);
@@ -698,7 +698,7 @@ function openSeparateApplicationWindow(url) {
     }
 
 
-    if (window.document.readyState == null && !seenReadyStateWarning) {
+    if (!suppressMozillaWarning && window.document.readyState == null && !seenReadyStateWarning) {
         alert("Beware!  Mozilla bug 300992 means that we can't always reliably detect when a new page has loaded.  Install the Selenium IDE extension or the readyState extension available from selenium.openqa.org to make page load detection more reliable.");
         seenReadyStateWarning = true;
     }
