@@ -11,12 +11,6 @@
     <packaging>jar</packaging>
     <name>Selenium Server (Coreless)</name>
     <url>http://www.openqa.org/selenium</url>
-    <repositories>
-        <repository>
-            <id>project-repo</id>
-            <url>file://${basedir}/../projectrepository</url>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
