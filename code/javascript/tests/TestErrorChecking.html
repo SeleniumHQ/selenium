@@ -74,22 +74,29 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     <tr>
       <td>verifyErrorOnNext</td>
-      <td>The next command does error, but this is the wrong message</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>verifyText</td>
-      <td>notAlink</td>
-      <td>foo</td>
-    </tr>
-    <tr>
-      <td>verifyErrorOnNext</td>
       <td>The next command has a failure, not an error</td>
       <td></td>
     </tr>
     <tr>
       <td>verifyText</td>
       <td>link</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+
+This next command must come last, because it causes a real error.
+
+<table>
+  <tbody>
+    <tr>
+      <td>verifyErrorOnNext</td>
+      <td>The next command does error, but this is the wrong message</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>notAlink</td>
       <td>foo</td>
     </tr>
   </tbody>
