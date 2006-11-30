@@ -1547,7 +1547,7 @@ PageBot.prototype.submit = function(formElement) {
             var now = new Date().getTime();
             var marker = 'marker' + now;
             win[marker] = formElement;
-            win.setTimeout("debugger; var actuallySubmit = "+marker+".onsubmit();" +
+            win.setTimeout("var actuallySubmit = "+marker+".onsubmit();" +
                 "if (actuallySubmit) { " +
                     marker+".submit(); " +
                     "if ("+marker+".target && !/^_/.test("+marker+".target)) {"+
