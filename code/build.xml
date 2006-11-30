@@ -152,26 +152,37 @@
             <param name="multiWindow" value="false" />
         </antcall>
     </target>
+
+    <!-- SEL-390: "ant iehtaTests" randomly fails with Permission Denied errors -->
+    <property name="skipIehta" value="true" />
+    <!-- SRC-166: "We should have a Mac build machine", and, less importantly, SRC-13: "Safari Proxy support" -->
+    <property name="skipSafari" value="true" />
+    <!-- SEL-342: "Konqueror crashes when running in auto=true" -->
+    <property name="skipKonq" value="true" />
+    <!-- SEL-350: "Official Linux Opera tests succeed one out of 10 times" -->
+    <condition property="skipOpera" value="true">
+        <not><os family="windows" /></not>
+    </condition>
     
-    <target name="test-allbrowsers" depends="iehtaTests, firefoxTests, iexploreTests, operaTests, chromeTests" />
+    <target name="test-allbrowsers" depends="iehtaTests, firefoxTests, iexploreTests, operaTests, chromeTests, konqTests, safariTests" />
     
-    <target name="iexploreTests" depends="selenese-task" if="thisIsWindows">
+    <target name="iexploreTests" depends="selenese-task" if="thisIsWindows" unless="skipIexplore">
         <preset-selenese taskname="iexplore" browser="*iexplore" />
     </target>
     
-    <target name="iehtaTests" depends="selenese-task" if="thisIsWindows">
+    <target name="iehtaTests" depends="selenese-task" if="thisIsWindows" unless="skipIehta">
         <preset-selenese taskname="iehta" browser="*iehta" />
     </target>
     
-    <target name="konqTests" depends="selenese-task" if="thisIsUnix">
+    <target name="konqTests" depends="selenese-task" if="thisIsUnix" unless="skipKonq">
         <preset-selenese taskname="konqueror" browser="*konqueror" />
     </target>
     
-    <target name="safariTests" depends="selenese-task" if="thisIsMac">
+    <target name="safariTests" depends="selenese-task" if="thisIsMac" unless="skipSafari">
         <preset-selenese taskname="safari" browser="*safari" />
     </target>
     
-    <target name="firefoxTests" depends="selenese-task, image">
+    <target name="firefoxTests" depends="selenese-task, image" unless="skipFirefox">
         <preset-selenese taskname="firefox" browser="*firefox" />
     </target>
     
@@ -179,7 +190,7 @@
         <preset-selenese taskname="chrome" browser="*chrome" />
     </target>
     
-    <target name="operaTests" depends="selenese-task, image">
+    <target name="operaTests" depends="selenese-task, image" unless="skipOpera">
         <property name="opera.browser" value="*opera" />
         <preset-selenese taskname="opera" browser="${opera.browser}" />
     </target>
