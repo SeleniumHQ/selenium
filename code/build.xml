@@ -153,8 +153,6 @@
         </antcall>
     </target>
 
-    <!-- SEL-390: "ant iehtaTests" randomly fails with Permission Denied errors -->
-    <property name="skipIehta" value="true" />
     <!-- SRC-166: "We should have a Mac build machine", and, less importantly, SRC-13: "Safari Proxy support" -->
     <property name="skipSafari" value="true" />
     <!-- SEL-342: "Konqueror crashes when running in auto=true" -->
@@ -445,6 +443,7 @@
                  username="${release.user}"
                  keyfile="${release.key.file}"
                  passphrase="${release.key.passphrase}"
+                 timeout="120"
                  command="rm -fr ${release.dir}/nightly"/>
         <scp todir="${release.user}@${release.host}:${release.dir}"
              keyfile="${release.key.file}"
