@@ -395,10 +395,10 @@ BrowserBot.prototype.setOpenLocation = function(win, loc) {
         var marker = null;
         try {
             marker = this.isPollingForLoad(win);
+            if (marker && win.location[marker]) {
+                win.location[marker] = false;
+            }
         } catch (e) {} // DGF don't know why, but this often fails
-        if (marker && win.location[marker]) {
-            win.location[marker] = false;
-        }
     } else {
         win.location.href = loc;
     }
