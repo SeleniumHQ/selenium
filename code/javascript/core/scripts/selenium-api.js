@@ -622,6 +622,8 @@ Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
     this.page().selectOption(element, option);
 };
 
+
+
 Selenium.prototype.doAddSelection = function(locator, optionLocator) {
     /**
    * Add a selection to the set of selected options in a multi-select element using an option locator.
@@ -658,6 +660,21 @@ Selenium.prototype.doRemoveSelection = function(locator, optionLocator) {
     var option = locator.findOption(element);
     this.page().removeSelection(element, option);
 };
+
+Selenium.prototype.doRemoveAllSelections = function(locator) {
+    /**
+    * Unselects all of the selected options in a multi-select element.
+    *
+    * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
+    */
+    var element = this.page().findElement(locator);
+    if (!("options" in element)) {
+        throw new SeleniumError("Specified element is not a Select (has no options)");
+    }
+    for (var i = 0; i < element.options.length; i++) {
+        this.page().removeSelection(element, element.options[i]);
+    }
+}
 
 Selenium.prototype.doSubmit = function(formLocator) {
     /**
