@@ -1547,7 +1547,7 @@ PageBot.prototype.submit = function(formElement) {
             var now = new Date().getTime();
             var marker = 'marker' + now;
             win[marker] = formElement;
-            win.setTimeout("var actuallySubmit = "+marker+".onsubmit();" +
+            win.setTimeout("debugger; var actuallySubmit = "+marker+".onsubmit();" +
                 "if (actuallySubmit) { " +
                     marker+".submit(); " +
                     "if ("+marker+".target && !/^_/.test("+marker+".target)) {"+
@@ -1562,8 +1562,8 @@ PageBot.prototype.submit = function(formElement) {
             actuallySubmit = formElement.onsubmit();
             if (actuallySubmit) {
                 formElement.submit();
-                if (element.target && !/^_/.test(element.target)) {
-                    this.browserbot.openWindow('', element.target);
+                if (formElement.target && !/^_/.test(formElement.target)) {
+                    this.browserbot.openWindow('', formElement.target);
                 }
             }
         }
