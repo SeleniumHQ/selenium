@@ -18,26 +18,38 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Run Tests</title>
+  <title>Test Run Failed Tests</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">Test Run Tests<br>
+      <td rowspan="1" colspan="3">Test Run Failed Tests<br>
       </td>
     </tr>
 
     <tr>
-      <td>open</td>
-      <td>../../core/TestRunner.html?test=../tests/ShortTestSuite.html</td>
+      <td>storeEval</td>
+      <td>selenium.browserbot.baseUrl</td>
+      <td>myBaseUrl</td>
+    </tr>
+    
+    <tr>
+      <td>echo</td>
+      <td>${myBaseUrl}</td>
       <td>&nbsp;</td>
     </tr>
 
     <tr>
+      <td>open</td>
+      <td>../../core/TestRunner.html?test=../tests/dogfood/aut/BaseUrl1TestSuite.html&baseUrl=${myBaseUrl}</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
     	<td>waitForText</td>
     	<td>//tr[@class="title"]</td>
-    	<td>Test Suite</td>
+    	<td>Dogfood AUT: BaseUrl1</td>
     </tr>
     <tr>
         <td>click</td>
@@ -54,20 +66,38 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
     	<td>verifyText</td>
     	<td>commandPasses</td>
-    	<td>26</td>
+    	<td>1</td>
     </tr>
     
     <tr>
-        <td>verifyText</td>
-        <td>//tr[@class='status_passed']//td[1]</td>
-        <td>TestLocators</td>
+      <td>open</td>
+      <td>../../core/TestRunner.html?test=../tests/dogfood/aut/BaseUrl2TestSuite.html&baseUrl=${myBaseUrl}/../../html/</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+    	<td>waitForText</td>
+    	<td>//tr[@class="title"]</td>
+    	<td>Dogfood AUT: BaseUrl2</td>
+    </tr>
+    <tr>
+        <td>click</td>
+        <td>runSuite</td>
+        <td>&nbsp;</td>
     </tr>
 
     <tr>
-        <td>verifyText</td>
-        <td>//tr[@class='title status_passed']//td[1]</td>
-        <td>Test Suite</td>
+    	<td>waitForText</td>
+    	<td>testRuns</td>
+    	<td>1</td>
     </tr>
+    
+    <tr>
+    	<td>verifyText</td>
+    	<td>commandPasses</td>
+    	<td>1</td>
+    </tr>
+        
   </tbody>
 </table>
 
