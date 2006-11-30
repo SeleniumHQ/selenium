@@ -276,6 +276,13 @@ BrowserBot.prototype._modifyWindow = function(win) {
     if (!this.proxyInjectionMode) {
         this.modifySeparateTestWindowToDetectPageLoads(win);
     }
+    if (win.frames && win.frames.length && win.frames.length > 0) {
+        for (var i = 0; i < win.frames.length; i++) {
+            try {
+                this._modifyWindow(win.frames[i]);
+            } catch (e) {} // we're just trying to be opportunistic; don't worry if this doesn't work out
+        }
+    }
     return win;
 };
 
@@ -1533,11 +1540,11 @@ PageBot.prototype.replaceText = function(element, stringValue) {
 };
 
 PageBot.prototype.clickElement = function(element, clientX, clientY) {
-       this.fireEventOnElement("click", element, clientX, clientY);
+       this._fireEventOnElement("click", element, clientX, clientY);
 };
     
 PageBot.prototype.doubleClickElement = function(element, clientX, clientY) {
-       this.fireEventOnElement("dblclick", element, clientX, clientY);
+       this._fireEventOnElement("dblclick", element, clientX, clientY);
 };
 
 PageBot.prototype._modifyElementTarget = function(element) {
@@ -1549,7 +1556,7 @@ PageBot.prototype._modifyElementTarget = function(element) {
     }
 }
 
-MozillaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
+MozillaPageBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
@@ -1593,7 +1600,7 @@ BrowserBot.prototype._handleClickingImagesInsideLinks = function(targetWindow, e
 }
 
 BrowserBot.prototype._getTargetWindow = function(element) {
-    var targetWindow = this.getCurrentWindow();
+    var targetWindow = element.ownerDocument.defaultView;
     if (element.target) {
         targetWindow = this._getFrameFromGlobal(element.target);
     }
@@ -1620,7 +1627,7 @@ BrowserBot.prototype._getFrameFromGlobal = function(target) {
     return this.getCurrentWindow().open('', target);
 }
 
-OperaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
+OperaPageBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
     
@@ -1636,7 +1643,7 @@ OperaPageBot.prototype.fireEventOnElement = function(eventType, element, clientX
 };
 
 
-KonquerorPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
+KonquerorPageBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
     
@@ -1655,7 +1662,7 @@ KonquerorPageBot.prototype.fireEventOnElement = function(eventType, element, cli
 
 };
 
-SafariPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
+SafariPageBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     triggerEvent(element, 'focus', false);
     var wasChecked = element.checked;
     
@@ -1680,7 +1687,7 @@ SafariPageBot.prototype.fireEventOnElement = function(eventType, element, client
 
 };
 
-IEPageBot.prototype.fireEventOnElement = function(eventType, element, clientX, clientY) {
+IEPageBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
 
     triggerEvent(element, 'focus', false);
 
