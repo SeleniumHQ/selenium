@@ -228,10 +228,15 @@ function setText(element, text) {
 
 // Get the value of an <input> element
 function getInputValue(inputElement) {
-    if (inputElement.type.toUpperCase() == 'CHECKBOX' ||
-        inputElement.type.toUpperCase() == 'RADIO')
-    {
-        return (inputElement.checked ? 'on' : 'off');
+    if (inputElement.type) {
+        if (inputElement.type.toUpperCase() == 'CHECKBOX' ||
+            inputElement.type.toUpperCase() == 'RADIO')
+        {
+            return (inputElement.checked ? 'on' : 'off');
+        }
+    }
+    if (inputElement.value == null) {
+        throw new SeleniumError("This element has no value; is it really a form field?");
     }
     return inputElement.value;
 }
@@ -277,7 +282,7 @@ function getKeyCodeFromKeySequence(keySequence) {
     if (match != null) {
         return match[0];
     }
-    throw SeleniumError("invalid keySequence");
+    throw new SeleniumError("invalid keySequence");
 }
 
 function createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
