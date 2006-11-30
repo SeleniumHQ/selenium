@@ -116,6 +116,7 @@
     </target>
     
     <target name="custom-repo" depends="maven-tasks-base" if="custom.maven.repo">
+        <property name="maven.repo.local" value="${custom.maven.repo}"/>
         <presetdef name="mavendeps">
             <maven:dependencies>
                 <localRepository location="${custom.maven.repo}" />
@@ -125,6 +126,7 @@
     </target>
     
     <target name="default-repo" depends="maven-tasks-base" unless="custom.maven.repo">
+        <property name="maven.repo.local" value="${user.home}/.m2/repository"/>
         <presetdef name="mavendeps">
             <maven:dependencies>
                 <remoteRepository refid="openqa" />
@@ -141,24 +143,15 @@
                 <mavendeps pathId="@{artifactId}.classpath">
                     <dependency groupId="@{groupId}" artifactId="@{artifactId}" version="@{version}" scope="runtime"/>
                 </mavendeps>
-                <pathconvert property="@{artifactId}.classpath.str" refid="@{artifactId}.classpath" />
-                <whichresource resource="/META-INF/maven/@{groupId}/@{artifactId}/pom.xml" property="@{artifactId}.pom.url">
-                    <classpath refid="@{artifactId}.classpath" />
-                </whichresource>
-                <fail unless="@{artifactId}.pom.url" message="Maven gave us a bad classpath; couldn't find pom.xml ${@{artifactId}.classpath.str}" />
                 <mkdir dir="dist" />
-                <echo message="${@{artifactId}.pom.url}" file="dist/url.txt" />
-                <loadfile property="@{artifactId}.jar.file" srcfile="dist/url.txt">
-                    <filterchain>
-                        <tokenfilter>
-                            <replaceregex pattern="^jar:file:(.*)!.*" replace="\1" />
-                        </tokenfilter>
-                        <tokenfilter>
-                            <replaceregex pattern="%20" replace=" " flags="g" />
-                        </tokenfilter>
-                    </filterchain>
-                </loadfile>
-                <property name="@{artifactId}.jar" location="${@{artifactId}.jar.file}" />
+                <echo message="@{groupId}" file="dist/groupId.txt" />
+                <replace file="dist/groupId.txt" token="." value="/" />
+                <loadfile srcfile="dist/groupId.txt" property="@{groupId}.munged" />
+                <property name="@{artifactId}.jar" location="${maven.repo.local}/${@{groupId}.munged}/@{artifactId}/@{version}/@{artifactId}-@{version}.jar" />
+                <condition property="build.failed">
+                    <not><available file="${@{artifactId}.jar}" /></not>
+                </condition>
+                <fail if="build.failed" message="Couldn't find ${@{artifactId}.jar}" />
                 <echo message="@{artifactId}.jar = ${@{artifactId}.jar}" />
             </sequential>
         </macrodef>
