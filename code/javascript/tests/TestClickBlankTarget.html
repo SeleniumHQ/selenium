@@ -71,10 +71,95 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
       <td>&nbsp;</td>
     </tr>
+
+</tbody>
+</table>
+<p>And again, from the wrong frame</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>    
+    <tr>
+      <td>selectWindow</td>
+      <td>null</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>changeBlank</td>
+      <td>&nbsp;</td>
+    </tr>
     
+    <tr>
+      <td>waitForPopUp</td>
+      <td>_blank</td>
+      <td>10000</td>
+    </tr>
+    
+    <tr>
+      <td>selectWindow</td>
+      <td>_blank</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    
+    <tr>
+      <td>click</td>
+      <td>changeSpan</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td>close</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
   </tbody>
 </table>
-
-
+<p>Also try submitting a form with a _blank target</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>selectWindow</td>
+      <td>null</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td>selectFrame</td>
+      <td>bottomFrame</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td>submit</td>
+      <td>formBlank</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td>waitForPopUp</td>
+      <td>_blank</td>
+      <td>10000</td>
+    </tr>
+    
+    <tr>
+      <td>selectWindow</td>
+      <td>_blank</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    
+    <tr>
+      <td>click</td>
+      <td>changeSpan</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td>close</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 </body>
 </html>

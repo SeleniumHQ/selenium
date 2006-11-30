@@ -791,7 +791,7 @@ BrowserBot.prototype.getWindowByName = function(windowName, doNotModify) {
                 targetWindow = this.openedWindows[winName];
                 var ok;
                 try {
-                    if (!targetWindow.closed) {
+                    if (!this._windowClosed(targetWindow)) {
                         ok = targetWindow.location.href;
                     }
                 } catch (e) {}
@@ -1549,7 +1549,13 @@ PageBot.prototype.submit = function(formElement) {
             var now = new Date().getTime();
             var marker = 'marker' + now;
             win[marker] = formElement;
-            win.setTimeout("var actuallySubmit = "+marker+".onsubmit(); if (actuallySubmit) { "+marker+".submit(); };", 0);
+            win.setTimeout("var actuallySubmit = "+marker+".onsubmit();" +
+                "if (actuallySubmit) { " +
+                    marker+".submit(); " +
+                    "if ("+marker+".target && !/^_/.test("+marker+".target)) {"+
+                        "window.open('', "+marker+".target);"+
+                    "}"+
+                "};", 0);
             // pause for at least 20ms for this command to run
             return function () {
                 return new Date().getTime() > (now + 20);
@@ -1558,6 +1564,9 @@ PageBot.prototype.submit = function(formElement) {
             actuallySubmit = formElement.onsubmit();
             if (actuallySubmit) {
                 formElement.submit();
+                if (element.target && !/^_/.test(element.target)) {
+                    this.browserbot.openWindow('', element.target);
+                }
             }
         }
     } else {
@@ -1574,16 +1583,18 @@ PageBot.prototype.doubleClickElement = function(element, clientX, clientY) {
 };
 
 PageBot.prototype._modifyElementTarget = function(element) {
-    if (element.target && element.target == "_blank") {
-        var tagName;
-        if (element.tagName && element.tagName.toLowerCase) {
-            tagName = element.tagName.toLowerCase();
-        }
-        if (tagName == "a" || tagName == "form") {
-            var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
-            LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
-            this.browserbot.openWindow('', newTarget);
-            element.target = newTarget;
+    if (element.target) {
+        if (element.target == "_blank" || /^selenium_blank/.test(element.target) ) {
+            var tagName;
+            if (element.tagName && element.tagName.toLowerCase) {
+                tagName = element.tagName.toLowerCase();
+            }
+            if (tagName == "a" || tagName == "form") {
+                var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
+                LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
+                this.browserbot.openWindow('', newTarget);
+                element.target = newTarget;
+            }
         }
     }
 }
