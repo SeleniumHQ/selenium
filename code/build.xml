@@ -56,6 +56,9 @@
     <target name="clean">
         <delete dir="${build.dir}"/>
         <delete dir="${logs.dir}"/>
+        <delete>
+            <fileset dir="." includes="results-*.html" />
+        </delete>
     </target>
 
     <target name="get-svn-revision">
