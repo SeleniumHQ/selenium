@@ -1554,11 +1554,13 @@ PageBot.prototype.submit = function(formElement) {
                     "if ("+marker+".target && !/^_/.test("+marker+".target)) {"+
                         "window.open('', "+marker+".target);"+
                     "}"+
-                "};", 0);
-            // pause for at least 20ms for this command to run
-            return function () {
-                return new Date().getTime() > (now + 20);
+                "};"+
+                marker+"=null", 0);
+            // pause for up to 2s while this command runs
+            var terminationCondition = function () {
+                return !win[marker];
             }
+            return Selenium.decorateFunctionWithTimeout(terminationCondition, 2000);
         } else {
             actuallySubmit = formElement.onsubmit();
             if (actuallySubmit) {
