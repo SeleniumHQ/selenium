@@ -76,6 +76,11 @@ function Selenium(browserbot) {
      * <ul class="first last simple">
      * <li>xpath=//img[&#64;alt='The image alt text']</li>
      * <li>xpath=//table[&#64;id='table1']//tr[4]/td[2]</li>
+     * <li>xpath=//a[contains(&#64;href,'#id1')]</li>
+     * <li>xpath=//a[contains(&#64;href,'#id1')]/&#64;class</li>
+     * <li>xpath=(//table[&#64;class='stylee'])//th[text()='theHeaderText']/../td</li>
+     * <li>xpath=//input[&#64;name='name2' and &#64;value='yes']</li>
+     * <li>xpath=//*[text()="right"]</li>
      *
      * </ul>
      * </dd>
