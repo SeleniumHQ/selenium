@@ -7,6 +7,18 @@
 <body>
 Having trouble?  Maybe we've heard of it before.  If not, try our <a href="userForums.action">user forums</a>.
 
+<h3><a name="java5">When first starting the server, I get this error message: "(Unsupported major.minor version 49.0)"</h3>
+    
+This is Java's extremely unhelpful error message telling you that you're not using the correct version of Java.  The Selenium Server requires Java 1.5 or higher; this typically happens when you use Java 1.4 instead of 1.5.  Try running this from the command line:</p>
+<blockquote><code> java -version</code></blockquote>
+<p>You should see a brief message telling you what version of Java is installed, like this:
+    
+    <blockquote><code><pre>java version "1.5.0_07"
+Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_07-b03)
+Java HotSpot(TM) Client VM (build 1.5.0_07-b03, mixed mode)</pre></code></blockquote>
+
+If you see a lower version number instead, you may need to install a newer version of the <a href="http://www.java.com/en/download/manual.jsp">JRE</a>, or you may need to add it to your PATH environment variable.</p>
+
 <h3><a name="404" />During the tutorial, I get a 404 error when running the getNewBrowserSession command!</h3>
 
 <p>First, finish reading the <a href="tutorial.html">tutorial</a>.  Make sure you read the section about the "Same Origin Policy" carefully.</p>
@@ -43,7 +55,7 @@ Having trouble?  Maybe we've heard of it before.  If not, try our <a href="userF
 
 </ul>
 
-<h3>During the tutorial, I can't access Google when running the "open" command!</h3>
+<h3><a name="google">During the tutorial, I can't access Google when running the "open" command!</h3>
 
 <p>First, finish reading the <a href="tutorial.html">tutorial</a>.  Make sure you read the section about the "Same Origin Policy" carefully.</p>
 
