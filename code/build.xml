@@ -497,12 +497,14 @@
 
     <target name="nightly-upload"
             depends="nightly-image">
+        <echo message="deleting old nightly dir" />
         <sshexec host="${release.host}"
                  username="${release.user}"
                  keyfile="${release.key.file}"
                  passphrase="${release.key.passphrase}"
                  timeout="120"
                  command="rm -fr ${release.dir}/nightly"/>
+        <echo message="uploading new files" />
         <scp todir="${release.user}@${release.host}:${release.dir}"
              keyfile="${release.key.file}"
              passphrase="${release.key.passphrase}">
