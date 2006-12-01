@@ -348,6 +348,7 @@
         <!-- Defining Maven tasks; we're have do this goofy stuff because of various bugs in the Maven Ant tasks,
              most especially including MNG-2060 and MNG-2264 -->
         <property environment="env"/>
+        <property name="env.MAVEN_HOME" value="${env.M2_HOME}" />
         <property name="maven.home" value="${env.MAVEN_HOME}"/>
         <!-- override this if necessary -->
         <condition property="build.failed">
