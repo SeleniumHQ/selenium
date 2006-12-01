@@ -3,7 +3,7 @@
     <property name="version" value="0.8.2-SNAPSHOT"/>
 
     <target name="all" depends="clean, install-jar, nightly-image"/>
-    <target name="all-with-tests" depends="clean, browser_bot_tests, htaTests-simple, test-allmodes, install-jar, nightly-image"/>
+    <target name="all-with-tests" depends="clean, browser_bot_tests, htaTests-simple, test-allmodes-parallel, install-jar, nightly-image"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
@@ -61,14 +61,15 @@
         </delete>
     </target>
 
-    <target name="get-svn-revision">
+    <target name="get-svn-revision" unless="already-got-svn-revision">
         <exec executable="${svnversion.executable}" outputProperty="svn-revision" failOnError="true">
             <arg value="."/>
         </exec>
         <echo message="Got svn revision: ${svn-revision}"/>
+        <property name="already-got-svn-revision" value="true" />
     </target>
 
-    <target name="copy-sources">
+    <target name="copy-sources" unless="already-copied-sources">
         <mkdir dir="${image.dir}"/>
         <property name="svn-revision" value="unknown-revision"/>
         <copy todir="${image.dir}">
@@ -91,9 +92,10 @@
             </filterset>
         </copy>
         <copy file="${image.dir}/core/TestRunner.html" tofile="${image.dir}/core/TestRunner.hta"/>
+        <property name="already-copied-sources" value="true" />
     </target>
 
-    <target name="generate-xml" depends="copy-sources">
+    <target name="generate-xml" depends="copy-sources" unless="already-generated-xml">
         <java jar="${docs.generation.dir}/js.jar" output="${image.dir}/core/iedoc.xml" failonerror="true" fork="true">
             <arg file="${docs.generation.dir}/doc.js"/>
             <arg file="javascript/core/scripts/selenium-api.js"/>
@@ -105,6 +107,7 @@
             <arg file="javascript/core/scripts/selenium-testrunner.js"/>
         </java>
         <xmlvalidate file="${image.dir}/core/iedoc-core.xml" lenient="true"/>
+        <property name="already-generated-xml" value="true" />
     </target>
 
     <target name="generate-doc" depends="generate-xml">
@@ -156,6 +159,8 @@
         </antcall>
     </target>
 
+    <!-- SEL-390: iehtaTests randomly fails as iexplore crashes -->
+    <property name="skipIehta" value="true" />
     <!-- SRC-166: "We should have a Mac build machine", and, less importantly, SRC-13: "Safari Proxy support" -->
     <property name="skipSafari" value="true" />
     <!-- SEL-342: "Konqueror crashes when running in auto=true" -->
@@ -166,6 +171,54 @@
     </condition>
     
     <target name="test-allbrowsers" depends="iehtaTests, firefoxTests, iexploreTests, operaTests, chromeTests, konqTests, safariTests" />
+    
+    <target name="test-allbrowsers-parallel" depends="selenese-task">
+        <parallel failonany="true">
+            <antcall target="bothIexploreTests">
+                <param name="serverport" value="4444" />
+            </antcall>
+            <antcall target="bothFirefoxTests">
+                <param name="serverport" value="4445" />
+            </antcall>
+            <antcall target="operaTests">
+                <param name="serverport" value="4446" />
+            </antcall>
+            <antcall target="konqTests">
+                <param name="serverport" value="4447" />
+            </antcall>
+            <antcall target="safariTests">
+                <param name="serverport" value="4448" />
+            </antcall>
+        </parallel>
+    </target>
+    
+    <target name="test-allmodes-parallel" depends="selenese-task">
+        <parallel failonany="true">
+            <antcall target="test-allmodes">
+                <param name="allmodes.target" value="bothIexploreTests"/>
+                <param name="serverport" value="4444" />
+            </antcall>
+            <antcall target="test-allmodes">
+                <param name="allmodes.target" value="bothFirefoxTests"/>
+                <param name="serverport" value="4445" />
+            </antcall>
+            <antcall target="test-allmodes">
+                <param name="allmodes.target" value="operaTests"/>
+                <param name="serverport" value="4446" />
+            </antcall>
+            <antcall target="test-allmodes">
+                <param name="allmodes.target" value="konqTests"/>
+                <param name="serverport" value="4447" />
+            </antcall>
+            <antcall target="test-allmodes">
+                <param name="allmodes.target" value="safariTests"/>
+                <param name="serverport" value="4448" />
+            </antcall>
+        </parallel>
+    </target>
+    
+    <target name="bothIexploreTests" depends="iehtaTests, iexploreTests" />
+    <target name="bothFirefoxTests" depends="chromeTests, firefoxTests" />
     
     <target name="iexploreTests" depends="selenese-task" if="thisIsWindows" unless="skipIexplore">
         <preset-selenese taskname="iexplore" browser="*iexplore" />
@@ -240,6 +293,7 @@
         <mavendeps pathId="selenium-server-coreless.classpath">
 			<dependency groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" version="0.9.1" scope="runtime"/>
 		</mavendeps>
+		<property name="serverport" value="4444" />
         <property name="slowResources" value="false" />
         <property name="multiWindow" value="true" />
         <path id="selenium-ant">
@@ -255,7 +309,7 @@
             <!-- javaScriptCoreDir="${image.dir}" -->
             <selenese 
                 suite="${suite.path}"
-                
+                port="${serverport}"
                 slowResources="${slowResources}"
                 multiWindow="${multiWindow}"
                 startURL="http://localhost:4444" />
