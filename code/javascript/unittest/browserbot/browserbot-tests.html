@@ -25,10 +25,10 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
 <script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
 
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserdetect.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-logging.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
 <script language="JavaScript" type="text/javascript">
 function setUp() {
     mockWindow = new String('mockWindow');
@@ -39,20 +39,18 @@ function setUp() {
     browserBot.currentPage = 'originalPage';
 }
 
-function testPageAndCurrentWindowNameIsSetToNullWhenSelectWindowIsCalledWithNull() {
+function testCurrentWindowNameIsSetToNullWhenSelectWindowIsCalledWithNull() {
     browserBot.selectWindow('null');
 
-    assertNull(browserBot.currentPage);
     assertNull(browserBot.currentWindowName);
 }
 
-function testPageIsSetToNullAndCurrentWindowIsSetWhenSelectWindowIsCalledWithNonNull() {
+function testCurrentWindowIsSetWhenSelectWindowIsCalledWithNonNull() {
     // Make sure new window can be found
     mockWindow.windowName = new String('anotherWindow');
 
     browserBot.selectWindow('windowName');
 
-    assertNull(browserBot.currentPage);
     assertEquals('windowName', browserBot.currentWindowName);
 }
 
@@ -66,7 +64,7 @@ function testExceptionWhenSelectWindowIsCalledWithUnknownWindowName() {
     }
 }
 
-function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocationWhenThereIsNoCurrentWindow() {
+function testFrameSrcIsSetOnOpenLocationWhenThereIsNoCurrentWindow() {
     browserBot.currentWindowName = null;
     var mockLocation = {
         href:""
@@ -78,7 +76,6 @@ function testCurrentPageIsNullAndFrameSrcIsSetOnOpenLocationWhenThereIsNoCurrent
     browserBot.baseUrl = "http://x";
     browserBot.openLocation('myNewLocation');
 
-    assertNull(browserBot.currentPage);
     assertEquals('http://x/myNewLocation', mockWindow.location.href);
 }
 
@@ -97,7 +94,6 @@ function testCurrentPageIsLazyCreatedBasedOnContentWindowWhenCurrentWindowNameIs
     mockWindow.attachEvent = function(){};
 
     var pageBot = browserBot.getCurrentPage();
-    assertEquals(pageBot, browserBot.currentPage);
 
     assertEquals(mockWindow, pageBot.getCurrentWindow());
     assertEquals(mockDocument, pageBot.getDocument());

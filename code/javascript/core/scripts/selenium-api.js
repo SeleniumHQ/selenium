@@ -15,7 +15,7 @@
  *
  */
 
-// TODO: stop navigating this.page().document() ... it breaks encapsulation
+// TODO: stop navigating this.browserbot.document() ... it breaks encapsulation
 
 var storedVars = new Object();
 
@@ -159,8 +159,9 @@ function Selenium(browserbot) {
      */
     this.browserbot = browserbot;
     this.optionLocatorFactory = new OptionLocatorFactory();
+    // DGF for backwards compatibility
     this.page = function() {
-        return browserbot.getCurrentPage();
+        return browserbot;
     };
     this.defaultTimeout = Selenium.DEFAULT_TIMEOUT;
 }
@@ -208,8 +209,8 @@ Selenium.prototype.doClick = function(locator) {
    * @param locator an element locator
    *
    */
-   var element = this.page().findElement(locator);
-   this.page().clickElement(element);
+   var element = this.browserbot.findElement(locator);
+   this.browserbot.clickElement(element);
 };
 
 Selenium.prototype.doDoubleClick = function(locator) {
@@ -221,8 +222,8 @@ Selenium.prototype.doDoubleClick = function(locator) {
    * @param locator an element locator
    *
    */
-   var element = this.page().findElement(locator);
-   this.page().doubleClickElement(element);
+   var element = this.browserbot.findElement(locator);
+   this.browserbot.doubleClickElement(element);
 };
 
 Selenium.prototype.doClickAt = function(locator, coordString) {
@@ -236,9 +237,9 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
    *      event relative to the element returned by the locator.
    *
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString)
-    this.page().clickElement(element, clientXY[0], clientXY[1]);
+    this.browserbot.clickElement(element, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
@@ -252,9 +253,9 @@ Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
    *      event relative to the element returned by the locator.
    *
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString)
-    this.page().doubleClickElement(element, clientXY[0], clientXY[1]);
+    this.browserbot.doubleClickElement(element, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doFireEvent = function(locator, eventName) {
@@ -265,7 +266,7 @@ Selenium.prototype.doFireEvent = function(locator, eventName) {
    * @param locator an <a href="#locators">element locator</a>
    * @param eventName the event name, e.g. "focus" or "blur"
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     triggerEvent(element, eventName, false);
 };
 
@@ -278,7 +279,7 @@ Selenium.prototype.doKeyPress = function(locator, keySequence) {
    *  of the key to be pressed, normally the ASCII value of that key), or a single
    *  character. For example: "w", "\119".
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     triggerKeyEvent(element, 'keypress', keySequence, true, 
         this.browserbot.controlKeyDown, 
         this.browserbot.altKeyDown, 
@@ -359,7 +360,7 @@ Selenium.prototype.doKeyDown = function(locator, keySequence) {
    *  of the key to be pressed, normally the ASCII value of that key), or a single
    *  character. For example: "w", "\119".
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     triggerKeyEvent(element, 'keydown', keySequence, true,
         this.browserbot.controlKeyDown, 
             this.browserbot.altKeyDown, 
@@ -376,7 +377,7 @@ Selenium.prototype.doKeyUp = function(locator, keySequence) {
    *  of the key to be pressed, normally the ASCII value of that key), or a single
    *  character. For example: "w", "\119".
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     triggerKeyEvent(element, 'keyup', keySequence, true,
         this.browserbot.controlKeyDown, 
             this.browserbot.altKeyDown, 
@@ -409,7 +410,7 @@ Selenium.prototype.doMouseOver = function(locator) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     this.browserbot.triggerMouseEvent(element, 'mouseover', true);
 };
 
@@ -419,7 +420,7 @@ Selenium.prototype.doMouseOut = function(locator) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     this.browserbot.triggerMouseEvent(element, 'mouseout', true);
 };
 
@@ -430,7 +431,7 @@ Selenium.prototype.doMouseDown = function(locator) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-   var element = this.page().findElement(locator);
+   var element = this.browserbot.findElement(locator);
    this.browserbot.triggerMouseEvent(element, 'mousedown', true);
 };
 
@@ -443,7 +444,7 @@ Selenium.prototype.doMouseDownAt = function(locator, coordString) {
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString)
 
     this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
@@ -456,7 +457,7 @@ Selenium.prototype.doMouseUp = function(locator) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-   var element = this.page().findElement(locator);
+   var element = this.browserbot.findElement(locator);
    this.browserbot.triggerMouseEvent(element, 'mouseup', true);
 };
 
@@ -469,7 +470,7 @@ Selenium.prototype.doMouseUpAt = function(locator, coordString) {
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
    *      event relative to the element returned by the locator.
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString)
 
     this.browserbot.triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
@@ -482,7 +483,7 @@ Selenium.prototype.doMouseMove = function(locator) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-   var element = this.page().findElement(locator);
+   var element = this.browserbot.findElement(locator);
    this.browserbot.triggerMouseEvent(element, 'mousemove', true);
 };
 
@@ -496,7 +497,7 @@ Selenium.prototype.doMouseMoveAt = function(locator, coordString) {
    *      event relative to the element returned by the locator.
    */
 
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString)
 
     this.browserbot.triggerMouseEvent(element, 'mousemove', true, clientXY[0], clientXY[1]);
@@ -516,11 +517,11 @@ Selenium.prototype.doType = function(locator, value) {
         throw new SeleniumError("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
     }
         // TODO fail if it can't be typed into.
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     if (this.browserbot.shiftKeyDown) {
         value = new String(value).toUpperCase();
     }
-    this.page().replaceText(element, value);
+    this.browserbot.replaceText(element, value);
 };
 
 Selenium.prototype.doSetSpeed = function(value) {
@@ -544,7 +545,7 @@ Selenium.prototype.doGetSpeed = function() {
 };
 
 Selenium.prototype.findToggleButton = function(locator) {
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     if (element.checked == null) {
         Assert.fail("Element " + locator + " is not a toggle-button.");
     }
@@ -618,13 +619,13 @@ Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @param optionLocator an option locator (a label by default)
    */
-    var element = this.page().findElement(selectLocator);
+    var element = this.browserbot.findElement(selectLocator);
     if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
     }
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     var option = locator.findOption(element);
-    this.page().selectOption(element, option);
+    this.browserbot.selectOption(element, option);
 };
 
 
@@ -638,13 +639,13 @@ Selenium.prototype.doAddSelection = function(locator, optionLocator) {
    * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
    * @param optionLocator an option locator (a label by default)
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
     }
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     var option = locator.findOption(element);
-    this.page().addSelection(element, option);
+    this.browserbot.addSelection(element, option);
 };
 
 Selenium.prototype.doRemoveSelection = function(locator, optionLocator) {
@@ -657,13 +658,13 @@ Selenium.prototype.doRemoveSelection = function(locator, optionLocator) {
    * @param optionLocator an option locator (a label by default)
    */
 
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
     }
     var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
     var option = locator.findOption(element);
-    this.page().removeSelection(element, option);
+    this.browserbot.removeSelection(element, option);
 };
 
 Selenium.prototype.doRemoveAllSelections = function(locator) {
@@ -672,12 +673,12 @@ Selenium.prototype.doRemoveAllSelections = function(locator) {
     *
     * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
     */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
     }
     for (var i = 0; i < element.options.length; i++) {
-        this.page().removeSelection(element, element.options[i]);
+        this.browserbot.removeSelection(element, element.options[i]);
     }
 }
 
@@ -688,8 +689,8 @@ Selenium.prototype.doSubmit = function(formLocator) {
    *
    * @param formLocator an <a href="#locators">element locator</a> for the form you want to submit
    */
-    var form = this.page().findElement(formLocator);
-    return this.page().submit(form);
+    var form = this.browserbot.findElement(formLocator);
+    return this.browserbot.submit(form);
 
 };
 
@@ -940,7 +941,7 @@ Selenium.prototype.doGoBack = function() {
      * Simulates the user clicking the "back" button on their browser.
      *
      */
-    this.page().goBack();
+    this.browserbot.goBack();
 };
 
 Selenium.prototype.doRefresh = function() {
@@ -948,7 +949,7 @@ Selenium.prototype.doRefresh = function() {
      * Simulates the user clicking the "Refresh" button on their browser.
      *
      */
-    this.page().refresh();
+    this.browserbot.refresh();
 };
 
 Selenium.prototype.doClose = function() {
@@ -956,7 +957,7 @@ Selenium.prototype.doClose = function() {
      * Simulates the user clicking the "close" button in the titlebar of a popup
      * window or tab.
      */
-    this.page().close();
+    this.browserbot.close();
 };
 
 Selenium.prototype.ensureNoUnhandledPopups = function() {
@@ -1087,7 +1088,7 @@ Selenium.prototype.getLocation = function() {
    *
    * @return string the absolute URL of the current page
    */
-    return this.page().getCurrentWindow().location;
+    return this.browserbot.getCurrentWindow().location;
 };
 
 Selenium.prototype.getTitle = function() {
@@ -1095,7 +1096,7 @@ Selenium.prototype.getTitle = function() {
    *
    * @return string the title of the current page
    */
-    return this.page().getTitle();
+    return this.browserbot.getTitle();
 };
 
 
@@ -1104,7 +1105,7 @@ Selenium.prototype.getBodyText = function() {
      * Gets the entire text of the page.
      * @return string the entire text of the page
      */
-    return this.page().bodyText();
+    return this.browserbot.bodyText();
 };
 
 
@@ -1117,7 +1118,7 @@ Selenium.prototype.getValue = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    * @return string the element value, or "on/off" for checkbox/radio elements
    */
-    var element = this.page().findElement(locator)
+    var element = this.browserbot.findElement(locator)
     return getInputValue(element).trim();
 }
 
@@ -1131,7 +1132,7 @@ Selenium.prototype.getText = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    * @return string the text of the element
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     return getText(element).trim();
 };
 
@@ -1141,7 +1142,7 @@ Selenium.prototype.doHighlight = function(locator) {
     * 
     * @param locator an <a href="#locators">element locator</a>
     */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     this.browserbot.highlight(element, true);
 };
 
@@ -1156,7 +1157,7 @@ Selenium.prototype.getEval = function(script) {
    * <p>If you need a reference to the window of your application, you can refer
    * to <code>this.browserbot.getCurrentWindow()</code> and if you need to use
    * a locator to refer to a single element in your application page, you can
-   * use <code>this.page().findElement("foo")</code> where "foo" is your locator.</p>
+   * use <code>this.browserbot.findElement("foo")</code> where "foo" is your locator.</p>
    *
    * @param script the JavaScript snippet to run
    * @return string the results of evaluating the snippet
@@ -1177,7 +1178,7 @@ Selenium.prototype.isChecked = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to a checkbox or radio button
    * @return boolean true if the checkbox is checked, false otherwise
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     if (element.checked == null) {
         throw new SeleniumError("Element " + locator + " is not a toggle-button.");
     }
@@ -1206,7 +1207,7 @@ Selenium.prototype.getTable = function(tableCellAddress) {
     row = pieces[2];
     col = pieces[3];
 
-    var table = this.page().findElement(tableName);
+    var table = this.browserbot.findElement(tableName);
     if (row > table.rows.length) {
         Assert.fail("Cannot access row " + row + " - table has " + table.rows.length + " rows");
     }
@@ -1298,7 +1299,7 @@ Selenium.prototype.isSomethingSelected = function(selectLocator) {
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @return boolean true if some option has been selected, false otherwise
    */
-    var element = this.page().findElement(selectLocator);
+    var element = this.browserbot.findElement(selectLocator);
     if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
     }
@@ -1315,7 +1316,7 @@ Selenium.prototype.isSomethingSelected = function(selectLocator) {
 }
 
 Selenium.prototype.findSelectedOptionProperties = function(locator, property) {
-   var element = this.page().findElement(locator);
+   var element = this.browserbot.findElement(locator);
    if (!("options" in element)) {
         throw new SeleniumError("Specified element is not a Select (has no options)");
     }
@@ -1350,7 +1351,7 @@ Selenium.prototype.getSelectOptions = function(selectLocator) {
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @return string[] an array of all option labels in the specified select drop-down
    */
-    var element = this.page().findElement(selectLocator);
+    var element = this.browserbot.findElement(selectLocator);
 
     var selectOptions = [];
 
@@ -1370,7 +1371,7 @@ Selenium.prototype.getAttribute = function(attributeLocator) {
    * @param attributeLocator an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
    * @return string the value of the specified attribute
    */
-   var result = this.page().findAttribute(attributeLocator);
+   var result = this.browserbot.findAttribute(attributeLocator);
    if (result == null) {
            throw new SeleniumError("Could not find element attribute: " + attributeLocator);
     }
@@ -1383,7 +1384,7 @@ Selenium.prototype.isTextPresent = function(pattern) {
    * @param pattern a <a href="#patterns">pattern</a> to match with the text of the page
    * @return boolean true if the pattern matches the text, false otherwise
    */
-    var allText = this.page().bodyText();
+    var allText = this.browserbot.bodyText();
 
     var patternMatcher = new PatternMatcher(pattern);
     if (patternMatcher.strategy == PatternMatcher.strategies.glob) {
@@ -1406,7 +1407,7 @@ Selenium.prototype.isElementPresent = function(locator) {
    * @return boolean true if the element is present, false otherwise
    */
     try {
-        this.page().findElement(locator);
+        this.browserbot.findElement(locator);
     } catch (e) {
         return false;
     }
@@ -1425,7 +1426,7 @@ Selenium.prototype.isVisible = function(locator) {
    * @return boolean true if the specified element is visible, false otherwise
    */
     var element;
-    element = this.page().findElement(locator);
+    element = this.browserbot.findElement(locator);
     var visibility = this.findEffectiveStyleProperty(element, "visibility");
     var _isDisplayed = this._isDisplayed(element);
     return (visibility != "hidden" && _isDisplayed);
@@ -1476,7 +1477,7 @@ Selenium.prototype.isEditable = function(locator) {
    * @param locator an <a href="#locators">element locator</a>
    * @return boolean true if the input element is editable, false otherwise
    */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     if (element.value == undefined) {
         Assert.fail("Element " + locator + " is not an input.");
     }
@@ -1490,7 +1491,7 @@ Selenium.prototype.getAllButtons = function() {
    *
    * @return string[] the IDs of all buttons on the page
    */
-   return this.page().getAllButtons();
+   return this.browserbot.getAllButtons();
 };
 
 Selenium.prototype.getAllLinks = function() {
@@ -1500,7 +1501,7 @@ Selenium.prototype.getAllLinks = function() {
    *
    * @return string[] the IDs of all links on the page
    */
-   return this.page().getAllLinks();
+   return this.browserbot.getAllLinks();
 };
 
 Selenium.prototype.getAllFields = function() {
@@ -1510,7 +1511,7 @@ Selenium.prototype.getAllFields = function() {
    *
    * @return string[] the IDs of all field on the page
    */
-   return this.page().getAllFields();
+   return this.browserbot.getAllFields();
 };
 
 Selenium.prototype._getTestAppParentOfAllWindows = function() {
@@ -1590,7 +1591,7 @@ Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
    * @param locator an element locator
    * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    */
-   var element = this.page().findElement(locator);
+   var element = this.browserbot.findElement(locator);
    var clientStartXY = getClientXY(element)
    var clientStartX = clientStartXY[0];
    var clientStartY = clientStartXY[1];
@@ -1697,7 +1698,7 @@ Selenium.prototype.getHtmlSource = function() {
    *
    * @return string the entire HTML source
    */
-    return this.page().getDocument().getElementsByTagName("html")[0].innerHTML;
+    return this.browserbot.getDocument().getElementsByTagName("html")[0].innerHTML;
 };
 
 Selenium.prototype.doSetCursorPosition = function(locator, position) {
@@ -1708,7 +1709,7 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
    * @param locator an <a href="#locators">element locator</a> pointing to an input element or textarea
    * @param position the numerical position of the cursor in the field; position should be 0 to move the position to the beginning of the field.  You can also set the cursor to -1 to move it to the end of the field.
    */
-   var element = this.page().findElement(locator);
+   var element = this.browserbot.findElement(locator);
     if (element.value == undefined) {
         Assert.fail("Element " + locator + " is not an input.");
     }
@@ -1738,7 +1739,7 @@ Selenium.prototype.getElementIndex = function(locator) {
      * @param locator an <a href="#locators">element locator</a> pointing to an element
      * @return number of relative index of the element to its parent (starting from 0)
      */
-    var element = this.page().findElement(locator);
+    var element = this.browserbot.findElement(locator);
     var previousSibling;
     var index = 0;
     while ((previousSibling = element.previousSibling) != null) {
@@ -1759,8 +1760,8 @@ Selenium.prototype.isOrdered = function(locator1, locator2) {
      * @param locator2 an <a href="#locators">element locator</a> pointing to the second element
      * @return boolean true if two elements are ordered and have same parent, false otherwise
      */
-    var element1 = this.page().findElement(locator1);
-    var element2 = this.page().findElement(locator2);
+    var element1 = this.browserbot.findElement(locator1);
+    var element2 = this.browserbot.findElement(locator2);
     if (element1 === element2) return false;
 
     var previousSibling;
@@ -1786,7 +1787,7 @@ Selenium.prototype.getElementPositionLeft = function(locator) {
    */
        var element;
         if ("string"==typeof locator) {
-            element = this.page().findElement(locator);
+            element = this.browserbot.findElement(locator);
         }
         else {
             element = locator;
@@ -1837,7 +1838,7 @@ Selenium.prototype.getElementPositionTop = function(locator) {
    */
        var element;
         if ("string"==typeof locator) {
-            element = this.page().findElement(locator);
+            element = this.browserbot.findElement(locator);
         }
         else {
             element = locator;
@@ -1899,7 +1900,7 @@ Selenium.prototype.getElementWidth = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number width of an element in pixels
    */
-   var element = this.page().findElement(locator);
+   var element = this.browserbot.findElement(locator);
    return element.offsetWidth;
 };
 
@@ -1910,7 +1911,7 @@ Selenium.prototype.getElementHeight = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to an element
    * @return number height of an element in pixels
    */
-   var element = this.page().findElement(locator);
+   var element = this.browserbot.findElement(locator);
    return element.offsetHeight;
 };
 
@@ -1925,8 +1926,8 @@ Selenium.prototype.getCursorPosition = function(locator) {
    * @param locator an <a href="#locators">element locator</a> pointing to an input element or textarea
    * @return number the numerical position of the cursor in the field
    */
-    var element = this.page().findElement(locator);
-    var doc = this.page().getDocument();
+    var element = this.browserbot.findElement(locator);
+    var doc = this.browserbot.getDocument();
     var win = this.browserbot.getCurrentWindow();
     if( doc.selection && !browserVersion.isOpera){
         try {
@@ -1970,9 +1971,9 @@ Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
    * @param logLevelThreshold one of "debug", "info", "warn", "error", sets the threshold for browser-side logging
    */
     if  (logLevelThreshold==null || logLevelThreshold=="") {
-        return this.page().setContext(context);
+        return this.browserbot.setContext(context);
     }
-    return this.page().setContext(context, logLevelThreshold);
+    return this.browserbot.setContext(context, logLevelThreshold);
 };
 
 Selenium.prototype.getExpression = function(expression) {
@@ -2090,7 +2091,7 @@ Selenium.prototype.getCookie = function() {
      *
      * @return string all cookies of the current page under test
      */
-    var doc = this.page().getDocument();
+    var doc = this.browserbot.getDocument();
     return doc.cookie;
 };
 
@@ -2118,7 +2119,7 @@ Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
     if (results) {
         cookie += "; path=" + results[1];
     }
-    this.page().getDocument().cookie = cookie;
+    this.browserbot.getDocument().cookie = cookie;
 }
 
 Selenium.prototype.doDeleteCookie = function(name,path) {
@@ -2130,7 +2131,7 @@ Selenium.prototype.doDeleteCookie = function(name,path) {
      */
     // set the expire time of the cookie to be deleted to one minute before now.
     var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
-    this.page().getDocument().cookie = name.trim() + "=deleted; path=" + path.trim() + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    this.browserbot.getDocument().cookie = name.trim() + "=deleted; path=" + path.trim() + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
 }
 
 

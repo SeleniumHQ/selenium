@@ -33,13 +33,9 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-api.js"></script>
 <script language="JavaScript" type="text/javascript">
 function setUp() {
-    mockPageBot = new Mock();
-
-    mockBrowserBot = new Mock();
-    mockBrowserBot.getCurrentPage = function() { return mockPageBot; };
+    mockPageBot = mockBrowserBot = new Mock();
 
     selenium = new Selenium(mockBrowserBot);
-    assertEquals(mockPageBot, selenium.page());
 }
 
 function verifyMocks() {
