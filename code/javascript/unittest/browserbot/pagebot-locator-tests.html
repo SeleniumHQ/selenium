@@ -37,7 +37,6 @@ function setUp() {
     frameDocument = iWindow.document;
 
     pageBot = PageBot.createForWindow(iWindow);
-    pageBot.setHighlightElement(false);
     pageBot.browserbot = BrowserBot.createForWindow(iWindow);
 
     element1 = iWindow.document.getElementById("id1");
@@ -51,7 +50,6 @@ function setUp() {
 }
 
 function testShouldNotHighlightFoundElementIfHighlightFlagNotSetted() {
-    pageBot.setHighlightElement(false);
     Effect = new Mock();
     pageBot.findElement('id1');
     Effect.verify();
@@ -59,7 +57,7 @@ function testShouldNotHighlightFoundElementIfHighlightFlagNotSetted() {
 
 
 function testShouldBeAbleToHighlightFoundElement() {
-    pageBot.setHighlightElement(true);
+    pageBot.browserbot.setShouldHighlightElement(true);
     Effect = new Mock();
     Effect.expects("highlight", element1);
     pageBot.findElement('id1');
@@ -67,7 +65,7 @@ function testShouldBeAbleToHighlightFoundElement() {
 }
 
 function testShouldNotTryToHightlightIfNoElementFound() {
-    pageBot.setHighlightElement(true);
+    pageBot.browserbot.setShouldHighlightElement(true);
     Effect = new Mock();
     try {
         pageBot.findElement('IDontExist');
