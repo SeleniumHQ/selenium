@@ -3,7 +3,7 @@
     <property name="version" value="0.8.2-SNAPSHOT"/>
 
     <target name="all" depends="clean, install-jar, nightly-image"/>
-    <target name="all-with-tests" depends="clean, browser_bot_tests, htaTests-simple, test-allmodes-parallel, install-jar, nightly-image"/>
+    <target name="all-with-tests" depends="clean, browser_bot_tests, htaTests-simple, test-allmodes, install-jar, nightly-image"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
