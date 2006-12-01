@@ -1130,6 +1130,16 @@ Selenium.prototype.getText = function(locator) {
     return getText(element).trim();
 };
 
+Selenium.prototype.doHighlight = function(locator) {
+    /**
+    * Briefly changes the backgroundColor of the specified element yellow.  Useful for debugging.
+    * 
+    * @param locator an <a href="#locators">element locator</a>
+    */
+    var element = this.page().findElement(locator);
+    this.browserbot.highlight(element, true);
+};
+
 Selenium.prototype.getEval = function(script) {
     /** Gets the result of evaluating the specified JavaScript snippet.  The snippet may
    * have multiple lines, but only the result of the last line will be returned.

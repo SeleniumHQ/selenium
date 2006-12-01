@@ -59,6 +59,8 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.nextPromptResult = '';
     this.newPageLoaded = false;
     this.pageLoadError = null;
+    
+    this.shouldHighlightLocatedElement = false;
 
     this.uniqueId = new Date().getTime();
     this.pollingForLoad = new Object();
@@ -842,6 +844,19 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     return testWindow;
 };
 
+BrowserBot.prototype.highlight = function (element, force) {
+    if (force || this.shouldHighlightLocatedElement) {
+        try {
+            Effect.highlight(element);
+        } catch (e) {} // DGF element highlighting is low-priority and possibly dangerous
+    }
+    return element;
+}
+
+BrowserBot.prototype.setShouldHighlightElement = function (shouldHighlight) {
+    this.shouldHighlightLocatedElement = shouldHighlight;
+}
+
 
 function MozillaBrowserBot(frame) {
     BrowserBot.call(this, frame);
@@ -1212,32 +1227,18 @@ PageBot.prototype.findElement = function(locator) {
 
     var element = this.findElementBy(locatorType, locatorString, this.getDocument(), this.getCurrentWindow());
     if (element != null) {
-        return this.highlight(element);
+        return this.browserbot.highlight(element);
     }
     for (var i = 0; i < this.getCurrentWindow().frames.length; i++) {
         element = this.findElementBy(locatorType, locatorString, this.getCurrentWindow().frames[i].document, this.getCurrentWindow().frames[i]);
         if (element != null) {
-            return this.highlight(element);
+            return this.browserbot.highlight(element);
         }
     }
 
     // Element was not found by any locator function.
     throw new SeleniumError("Element " + locator + " not found");
 };
-
-PageBot.prototype.highlight = function (element) {
-    if (shouldHighlightLocatedElement) {
-        Effect.highlight(element);
-    }
-    return element;
-}
-
-// as a static variable.
-var shouldHighlightLocatedElement = false;
-
-PageBot.prototype.setHighlightElement = function (shouldHighlight) {
-    shouldHighlightLocatedElement = shouldHighlight;
-}
 
 /**
  * In non-IE browsers, getElementById() does not search by name.  Instead, we

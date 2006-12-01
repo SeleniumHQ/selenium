@@ -312,7 +312,7 @@ objectExtend(HtmlTestRunnerControlPanel.prototype, {
 
     setHighlightOption: function () {
         var isHighlight = this.highlightOption.checked;
-        selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
+        selenium.browserbot.setShouldHighlightElement(isHighlight);
     },
 
     _parseQueryParameter: function() {

@@ -81,7 +81,9 @@ function addClassName(element, name) {
 
 function elementSetStyle(element, style) {
     for (var name in style) {
-      element.style[name] = style[name];
+      var value = style[name];
+      if (value == null) value = "";
+      element.style[name] = value;
     }
 }
 
@@ -655,13 +657,15 @@ objectExtend(Effect, {
         if (element.originalColor == undefined) { // avoid picking up highlight
             element.originalColor = elementGetStyle(element, "background-color");
         }
-        elementSetStyle(element, {"background-color" : highLightColor});
+        elementSetStyle(element, {"backgroundColor" : highLightColor});
         window.setTimeout(function() {
-            //if element is orphan, probably page of it has already gone, so ignore
-            if (!element.parentNode) {
-                return;
-            }
-            elementSetStyle(element, {"background-color" : element.originalColor});
+            try {
+                //if element is orphan, probably page of it has already gone, so ignore
+                if (!element.parentNode) {
+                    return;
+                }
+                elementSetStyle(element, {"backgroundColor" : element.originalColor});
+            } catch (e) {} // DGF unhighlighting is very dangerous and low priority
         }, 200);
     }
 });
