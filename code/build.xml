@@ -3,7 +3,7 @@
     <property name="version" value="0.8.2-SNAPSHOT"/>
 
     <target name="all" depends="clean, install-jar, nightly-image"/>
-    <target name="all-with-tests" depends="clean, browser_bot_tests, htaTests-simple, test-allmodes, install-jar, nightly-image"/>
+    <target name="all-with-tests" depends="clean, unittests, htaTests-simple, test-allmodes, install-jar, nightly-image"/>
 
     <property name="resultshandler.path.prefix" value=""/>
     <property name="svnversion.executable" value="svnversion"/>
@@ -116,7 +116,7 @@
 
     <target name="image" depends="get-svn-revision, copy-sources, generate-doc"/>
 
-    <target name="browser_bot_tests"
+    <target name="unittests"
             description="Runs JsUnit tests on the local machine as configured by the url and browserfilenames properties">
         <junit showoutput="true" errorproperty="tests.failed" failureproperty="tests.failed">
             <classpath>
@@ -153,10 +153,11 @@
             <param name="slowResources" value="true" />
             <param name="multiWindow" value="true" />
         </antcall>
+        <!-- DGF we don't really need slow resources in frame mode... load listeners are more reliable
         <antcall target="${allmodes.target}">
             <param name="slowResources" value="true" />
             <param name="multiWindow" value="false" />
-        </antcall>
+        </antcall>-->
     </target>
 
     <!-- SEL-390: iehtaTests randomly fails as iexplore crashes -->
