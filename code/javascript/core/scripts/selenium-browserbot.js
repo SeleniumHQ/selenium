@@ -258,25 +258,22 @@ BrowserBot.prototype._windowClosed = function(win) {
     return c;
 };
 
-// 
-// 
-// 
-// temporarily commented out LOG calls in _modifyWindow which lead to an infinite loop:
-//
-//
-//
 BrowserBot.prototype._modifyWindow = function(win) {
+    // In proxyInjectionMode, have to suppress LOG calls in _modifyWindow to avoid an infinite loop
     if (this._windowClosed(win)) {
-        //LOG.error("modifyWindow: Window was closed!");
+        if (!this.proxyInjectionMode) {
+            LOG.error("modifyWindow: Window was closed!");
+        }
         return null;
     }
-    //LOG.debug('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
+    if (!this.proxyInjectionMode) {
+        LOG.debug('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
+    }
     if (!win[this.uniqueId]) {
         win[this.uniqueId] = true;
         this.modifyWindowToRecordPopUpDialogs(win, this);
-        //LOG.debug("_modifyWindow newPageLoaded = false");
-        this.newPageLoaded = false;
     }
+    // In proxyInjection mode, we have our own mechanism for detecting page loads
     if (!this.proxyInjectionMode) {
         this.modifySeparateTestWindowToDetectPageLoads(win);
     }
@@ -802,9 +799,21 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     var testWindow = this.currentWindow;
     if (!doNotModify) {
         this._modifyWindow(testWindow);
-        LOG.debug("getCurrentWindow newPageLoaded = false");
+        if (!this.proxyInjectionMode) {
+            // In proxy injection mode, have to avoid logging during getCurrentWindow to avoid an infinite loop
+            LOG.debug("getCurrentWindow newPageLoaded = false");
+        }
         this.newPageLoaded = false;
     }
+    testWindow = this._handleClosedSubFrame(testWindow, doNotModify);
+    return testWindow;
+};
+
+BrowserBot.prototype._handleClosedSubFrame = function(testWindow, doNotModify) {
+    if (this.proxyInjectionMode) {
+        return testWindow;
+    }
+    
     if (this.isSubFrameSelected) {
         var missing = true;
         if (testWindow.parent && testWindow.parent.frames && testWindow.parent.frames.length) {
@@ -1561,13 +1570,11 @@ function IEBrowserBot(frame) {
 }
 objectExtend(IEBrowserBot.prototype, BrowserBot.prototype);
 
-IEBrowserBot.prototype.getCurrentWindow = function(doNotModify) {
-    var testWindow = this.currentWindow;
-    if (!doNotModify) {
-        this._modifyWindow(testWindow);
-        LOG.debug("getCurrentWindow newPageLoaded = false");
-        this.newPageLoaded = false;
+IEBrowserBot.prototype._handleClosedSubFrame = function(testWindow, doNotModify) {
+    if (this.proxyInjectionMode) {
+        return testWindow;
     }
+    
     try {
         testWindow.location.href;
         this.permDenied = 0;
