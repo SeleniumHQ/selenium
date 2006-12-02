@@ -74,7 +74,15 @@
 	</target>
 	
 	<target name="extract-jar" depends="maybe-skip-generation" unless="skip.generation.true">
-		<fail unless="project.build.directory" message="project.build.directory was not set.  This ant script must be run from within Maven!" />
+		<touch file="${project.build.directory}/selenium-server.jar.touch" />
+		<property name="core.javascript.path" location="${project.build.directory}/selenium-server" />
+		<mkdir dir="${core.javascript.path}" />
+		<unzip src="${selenium-server.jar}" dest="${core.javascript.path}" />
+		<property name="iedoc.xml" location="${core.javascript.path}/core/iedoc.xml" />
+	</target>
+	
+	<target name="find-jar">
+	    <fail unless="project.build.directory" message="project.build.directory was not set.  This ant script must be run from within Maven!" />
 		<fail unless="maven.src.path" message="maven.src.path was not set.  This ant script must be run from within Maven!" />
 		<mkdir dir="${project.build.directory}" />
 		<pathconvert property="depend.classpath.output" refid="maven.test.classpath" />
@@ -93,16 +101,17 @@
 			</filterchain>
 		</loadfile>
 		<property name="selenium-server.jar" location="${selenium-server.jar.file}" />
+		<property name="selenium-server.jar.touch" value="${project.build.directory}/selenium-server.jar.touch" />
 		<echo message="selenium-server.jar = ${selenium-server.jar}" />
-		<property name="core.javascript.path" location="${project.build.directory}/selenium-server" />
-		<mkdir dir="${core.javascript.path}" />
-		<unzip src="${selenium-server.jar}" dest="${core.javascript.path}" />
-		<property name="iedoc.xml" location="${core.javascript.path}/core/iedoc.xml" />
+		
 	</target>
 	
-	<target name="maybe-skip-generation" if="skip.generation">
+	<target name="maybe-skip-generation" if="skip.generation" depends="find-jar">
 		<condition property="skip.generation.true">
 			<istrue value="${skip.generation}" />
+		</condition>
+		<condition property="skip.generation.true">
+			<uptodate srcfile="${selenium-server.jar}" targetfile="${selenium-server.jar.touch}" />
 		</condition>
 	</target>
 	
