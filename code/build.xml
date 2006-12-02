@@ -316,6 +316,10 @@
                 startURL="http://localhost:4444" />
         </presetdef>
     </target>
+    
+    <target name="short">
+        <property name="suite" value="ShortTestSuite" />
+    </target>
 
     <target name="resultshandler-image" depends="get-svn-revision, copy-sources"
             description="Creates a public test results handler image - this should be copied to an apache directory, preserving permissions.">
@@ -503,7 +507,8 @@
                  username="${release.user}"
                  keyfile="${release.key.file}"
                  passphrase="${release.key.passphrase}"
-                 timeout="120000"
+                 timeout="60000"
+                 failonerror="false"
                  command="rm -fr ${release.dir}/nightly"/>
         <echo message="uploading new files" />
         <scp todir="${release.user}@${release.host}:${release.dir}"
