@@ -802,6 +802,8 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     var testWindow = this.currentWindow;
     if (!doNotModify) {
         this._modifyWindow(testWindow);
+        LOG.debug("getCurrentWindow newPageLoaded = false");
+        this.newPageLoaded = false;
     }
     if (this.isSubFrameSelected) {
         var missing = true;
@@ -1563,6 +1565,8 @@ IEBrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     var testWindow = this.currentWindow;
     if (!doNotModify) {
         this._modifyWindow(testWindow);
+        LOG.debug("getCurrentWindow newPageLoaded = false");
+        this.newPageLoaded = false;
     }
     try {
         testWindow.location.href;
