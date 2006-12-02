@@ -1093,13 +1093,13 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
                 this.expectedFailureJustSet = false;
                 return;
             }
-            if (result.passed) {
+            if (!result.failed) {
                 result.passed = false;
                 result.failed = true;
                 result.failureMessage = "Expected " + this.expectedFailureType + " did not occur.";
             } else {
                 if (PatternMatcher.matches(this.expectedFailure, result.failureMessage)) {
-                    var failureType = result.failed ? "failure" : "error";
+                    var failureType = result.error ? "error" : "failure";
                     if (failureType == this.expectedFailureType) {
                         result.failed = false;
                         result.passed = true;
@@ -1121,7 +1121,8 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
     commandError : function(errorMessage) {
         var tempResult = {};
         tempResult.passed = false;
-        tempResult.failed = false;
+        tempResult.failed = true;
+        tempResult.error = true;
         tempResult.failureMessage = errorMessage;
         this._checkExpectedFailure(tempResult);
         if (tempResult.passed) {
