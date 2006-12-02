@@ -503,7 +503,7 @@
                  username="${release.user}"
                  keyfile="${release.key.file}"
                  passphrase="${release.key.passphrase}"
-                 timeout="120"
+                 timeout="120000"
                  command="rm -fr ${release.dir}/nightly"/>
         <echo message="uploading new files" />
         <scp todir="${release.user}@${release.host}:${release.dir}"
