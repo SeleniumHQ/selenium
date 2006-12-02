@@ -13,14 +13,21 @@ us elevated security privileges.  (Selenium IDE runs in chrome mode.)
 The targets to run these tests are: "firefoxTests", "iexploreTests",
 "operaTests", and "chromeTests".  So "ant chromeTests" will run the
 tests in Firefox/chrome mode.  You can also run our JsUnit tests
-(firefox only) by using the "browser_bot_tests" target.
+(firefox only) by using the "unittests" target.
 
 There are also targets for running tests in Konqueror (konqTests) and
-Safari (safariTests), but as of this writing (November 4, 2006) those
+Safari (safariTests), but as of this writing (December 1, 2006) those
 targets aren't wired up to be run automatically.  (For Konqueror, this
 is due to SEL-342, which crashes konq.  For Safari, this is because we
 don't have a Mac build machine.  It would also be nice to resolve
 SRC-13 before we officially supported Safari.)
+
+We also have support for running tests in IE HTA mode.  Currently we
+only run those tests directly off the filesystem with the
+"htaTests-simple" target.  We also have an "iehtaTests" target that
+tests iehta mode using selenium-server-coreless, but we don't run
+it automatically (as of this writing, December 1, 2006) because of
+SEL-390, which crashes iexplore.exe.
 
 The tests have two mode "flags" that can be turned on/off:
 
@@ -65,3 +72,8 @@ If you have questions about this, feel free to post them to our
 forums at http://forums.openqa.org
 
 Good luck!
+
+P.S. Do you feel lucky?  try "test-allbrowsers-parallel" or
+"test-allmodes-parallel".  It tends to turn up false failures a lot
+of the time, but if it passes, you can be pretty confident your
+code works.  :-)
