@@ -86,7 +86,11 @@ public class BrowserLauncherFactory {
         }
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
         if (CustomMatcher.find()) {
-            String browserStartCommand = CustomMatcher.group(1).substring(1);
+            String browserStartCommand = CustomMatcher.group(1);
+            if (browserStartCommand == null) {
+                throw new RuntimeException("You must specify the path to an executable when using *custom!\n\n");
+            }
+            browserStartCommand = browserStartCommand.substring(1);
             return new DestroyableRuntimeExecutingBrowserLauncher(browserStartCommand, sessionId);
         }
         throw browserNotSupported(browser);
