@@ -52,13 +52,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
             while (!interrupted) {
                 System.out.println("MOCK: " + commandLine);
                 RemoteCommand sc = DefaultRemoteCommand.parse(commandLine);
-                String command = sc.getCommand();
-                String result = "OK";
-                if (command.startsWith("get")) {
-                    result = "OK,x";
-                } else if (command.startsWith("is")) {
-                    result = "OK,true";
-                }
+                String result = doCommand(sc);
                 if (SeleniumServer.isDebugMode() && !interrupted) {
                     for (int i = 0; i < 3; i++) {
                         doBrowserRequest(startURL + "&logging=true", "logLevel=debug:dummy log message " + i + "\n");
@@ -74,6 +68,24 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
             re.printStackTrace();
             throw re;
         }
+    }
+
+    private String doCommand(RemoteCommand sc) {
+        String command = sc.getCommand();
+        String result = "OK";
+        if (command.equals("getAllButtons")) {
+            result = "OK,";
+        } else if (command.equals("getAllLinks")) {
+            result = "OK,1";
+        } else if (command.equals("getAllFields")) {
+            result = "OK,1,2,3";
+        }
+        else if (command.startsWith("get")) {
+            result = "OK,x";
+        } else if (command.startsWith("is")) {
+            result = "OK,true";
+        }
+        return result;
     }
     
     private String stringContentsOfInputStream(InputStream is) throws IOException {
