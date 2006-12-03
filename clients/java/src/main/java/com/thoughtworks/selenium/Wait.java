@@ -54,7 +54,7 @@ public abstract class Wait {
     }
     
     /** Returns true when it's time to stop waiting */
-    abstract boolean until();
+    public abstract boolean until();
     
     /** The amout of time to wait before giving up; the default is 30 seconds */
     public long timeoutInMilliseconds = 30000l;

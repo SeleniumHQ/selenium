@@ -61,14 +61,14 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         selenium.keyPress(inputId, "\\97");
         selenium.keyPress(inputId, "\\110");
         new Wait("Didn't find 'Jane Agnews' in updateId") {
-            boolean until() {
+            public boolean until() {
                 String text = selenium.getText(updateId);
                 return "Jane Agnews".equals(text);
             }
         };
         selenium.keyPress(inputId, "\\9");
         new Wait("Didn't find 'Jane Agnews' in inputId") {
-            boolean until() {
+            public boolean until() {
                 return "Jane Agnews".equals(selenium.getValue(inputId));
             }
         };
@@ -87,13 +87,13 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         selenium.type(inputId, "Jan");
         selenium.keyDown(inputId, "\\110");
         new Wait("Didn't find 'Jane Agnews' in updateId") {
-            boolean until() {
+            public boolean until() {
                 return "Jane Agnews".equals(selenium.getText(updateId));
             }
         };
         selenium.keyDown(inputId, "\\13");
         new Wait("Didn't find 'Jane Agnews' in inputId") {
-            boolean until() {
+            public boolean until() {
                 return "Jane Agnews".equals(selenium.getValue(inputId));
             }
         };
