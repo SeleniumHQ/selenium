@@ -32,7 +32,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     private String commandPath;
     private Process process;
 
-    protected boolean proxySeleniumTrafficOnly = true;
+    protected LauncherUtils.ProxySetting proxySetting = LauncherUtils.ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY;
 
     private static AsyncExecute exe = new AsyncExecute();
     private int port;
@@ -156,7 +156,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         }
         ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFF", customProfileDir);
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, port, proxySeleniumTrafficOnly);
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, port, proxySetting, null);
     }
 
     public void close() {

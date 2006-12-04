@@ -219,21 +219,24 @@ public class LauncherUtils {
         c.execute();
     }
     
-	protected static void generatePacAndPrefJs(File customProfileDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
-		generatePacAndPrefJs(customProfileDir, port, proxySeleniumTrafficOnly, null);
-	}
-
-	protected static void generatePacAndPrefJs(File customProfileDir, int port, boolean proxySeleniumTrafficOnly, String homePage) throws FileNotFoundException {
+    protected enum ProxySetting { NO_PROXY, PROXY_SELENIUM_TRAFFIC_ONLY, PROXY_EVERYTHING };
+    
+	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage) throws FileNotFoundException {
 		// TODO Do we want to make these preferences configurable somehow?
-		// TODO: there is redundancy between these settings in the settings in
-		// FirefoxChromeLauncher.
-		// Those settings should be combined into a single location.
-		File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly);
+		
 		File prefsJS = new File(customProfileDir, "prefs.js");
 		PrintStream out = new PrintStream(new FileOutputStream(prefsJS, true));
 		// Don't ask if we want to switch default browsers
 		out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
 
+        if (proxySetting != ProxySetting.NO_PROXY) {
+            boolean proxySeleniumTrafficOnly = (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY);
+            // Configure us as the local proxy
+            File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly);
+            out.println("user_pref('network.proxy.type', 2);");
+            out.println("user_pref('network.proxy.autoconfig_url', '" + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");
+        }
+        
 		// suppress authentication confirmations
 		out.println("user_pref('network.http.phishy-userpass-length', 255);");
 
@@ -244,10 +247,6 @@ public class LauncherUtils {
 		// Open links in new windows (Firefox 2.0)
 		out.println("user_pref('browser.link.open_external', 2);");
 		out.println("user_pref('browser.link.open_newwindow', 2);");
-		
-		// Configure us as the local proxy
-		out.println("user_pref('network.proxy.type', 2);");
-		out.println("user_pref('network.proxy.autoconfig_url', '" + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");
 
 		if (homePage != null) {
 			out.println("user_pref('startup.homepage_override_url', '" + homePage + "');");

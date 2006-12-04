@@ -27,6 +27,6 @@ public class ProxyInjectionFirefoxCustomProfileLauncher extends
     @Override
     protected void init() {
         super.init();
-        proxySeleniumTrafficOnly = false;
+        proxySetting = LauncherUtils.ProxySetting.PROXY_EVERYTHING;
     }
 }
