@@ -246,7 +246,7 @@ class Testing_Selenium
      * @access public
      * @throws Testing_Selenium_Exception
      */
-    public function __construct($browser, $browserUrl, $host = 'localhost', $port = 4444, $timeout = 30000, $driver = 'curl')
+    public function __construct($browser, $browserUrl, $host = 'localhost', $port = 4444, $timeout = 30000, $driver = 'native')
     {
         $this->browser = $browser;
         $this->browserUrl = $browserUrl;
