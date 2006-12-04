@@ -245,10 +245,8 @@
         <copy file="${selenium-server.jar}" tofile="dist-image/server/selenium-server.jar" />
         <copy file="${selenium-server-coreless.jar}/../selenium-server-coreless-${version}-tests.jar"
             tofile="dist-image/server/selenium-server-tests.jar" />
-        <copy todir="dist-image/server/source/src">
-            <fileset dir="../server-coreless/src" />
-        </copy>
-        <unzip src="${selenium-server-coreless.jar}/../selenium-server-coreless-${version}-javadoc.jar" dest="dist-image/server/doc" />
+        <unzip src="${selenium-server-coreless.jar}/../selenium-server-coreless-${version}-sources.jar" dest="dist-image/server/source/main" />
+        <unzip src="${selenium-server-coreless.jar}/../selenium-server-coreless-${version}-test-sources.jar" dest="dist-image/server/source/test" />
         
         <mkdir dir="dist-image/java" />
         <mkdir dir="dist-image/java/source" />
@@ -256,10 +254,9 @@
         <copy file="${selenium-java-client-driver.jar}" tofile="dist-image/java/selenium-java-client-driver.jar" />
         <copy file="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-tests.jar"
             tofile="dist-image/java/selenium-java-client-driver-tests.jar" />
-        <copy todir="dist-image/java/source">
-            <fileset dir="java/src" />
-        </copy>
         <unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-javadoc.jar" dest="dist-image/java/doc" />
+        <unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-sources.jar" dest="dist-image/java/source/main" />
+        <unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-test-sources.jar" dest="dist-image/java/source/test" />
         <copy file="${selenium-server.jar}" tofile="dist-image/java/source/test/selenium-server.jar" />
         <copy file="java/easymode/main.project" tofile="dist-image/java/source/main/.project" />
         <copy file="java/easymode/main.classpath" tofile="dist-image/java/source/main/.classpath" />
