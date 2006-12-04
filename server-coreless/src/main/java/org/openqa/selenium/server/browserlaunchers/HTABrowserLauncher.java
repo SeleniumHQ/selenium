@@ -103,15 +103,11 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
     
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch("http://localhost:" + port +
-                "/selenium-server/core/TestRunner.html?auto=true" +
-                "&multiWindow=" + multiWindow +
-                "&resultsUrl=http://localhost:" + port +
-                "/selenium-server/postResults&test=" + suiteUrl, "TestRunner.hta");
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, sessionId, multiWindow, port), "TestRunner.hta");
     }
     
     public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow), "RemoteRunner.hta");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, port), "RemoteRunner.hta");
     }
 
 }

@@ -298,14 +298,15 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         System.out.println("He's dead now, right?");
     }
 
+    @Override // need to specify an absolute resultsUrl
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch("http://localhost:" + port +
-                "/selenium-server/core/TestRunner.html?auto=true" +
-                "&multiWindow=" + multiWindow +
-                "&resultsUrl=http://localhost:" + port +
-                "/selenium-server/postResults&test=" + suiteUrl);
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, port));
     }
-
+    
+    @Override // need to specify an absolute driverUrl
+    public void launchRemoteSession(String browserURL, boolean multiWindow) { 
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, port));
+    }
 
 }
 

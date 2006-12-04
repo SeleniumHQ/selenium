@@ -17,11 +17,11 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
     protected abstract void launch(String url);
 
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow));
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, 0));
     }
 
     public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow));
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, 0));
     }
 
 

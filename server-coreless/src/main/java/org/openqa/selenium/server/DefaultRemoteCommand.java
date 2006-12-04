@@ -21,6 +21,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import org.openqa.selenium.server.browserlaunchers.*;
+
 /**
  * The default implementation of the RemoteCommand interface
  * @author Paul Hammant
@@ -52,7 +54,7 @@ public class DefaultRemoteCommand implements RemoteCommand {
     }
 
     public String getCommandURLString() {
-        return "cmd=" + urlEncode(command) + "&1=" + urlEncode(field) + "&2=" + urlEncode(value);
+        return "cmd=" + LauncherUtils.urlEncode(command) + "&1=" + LauncherUtils.urlEncode(field) + "&2=" + LauncherUtils.urlEncode(value);
     }
 
     public String getCommand() {
@@ -100,20 +102,6 @@ public class DefaultRemoteCommand implements RemoteCommand {
         String arg1 = args.get("1");
         String arg2 = args.get("2");
         return new DefaultRemoteCommand(command, arg1, arg2);
-    }
-    
-    /** Encodes the text as an URL using UTF-8.
-     * 
-     * @param text the text too encode
-     * @return the encoded URI string
-     * @see URLEncoder#encode(java.lang.String, java.lang.String)
-     */
-    public static String urlEncode(String text) {
-        try {
-            return URLEncoder.encode(text, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public String getPiggybackedJavaScript() {

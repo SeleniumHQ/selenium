@@ -128,16 +128,48 @@ public class LauncherUtils {
 		}
 	}
 
-	protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow) {
+	protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, int serverPort) {
 		String url = LauncherUtils.stripStartURL(browserURL);
-		return url + "/selenium-server/core/TestRunner.html?auto=true&" + "multiWindow=" + multiWindow + "&resultsUrl=../postResults&test=" + suiteUrl;
+        String resultsUrl;
+        if (serverPort == 0) {
+            resultsUrl = "../postResults";
+        } else {
+            resultsUrl = "http://localhost:" + serverPort + "/selenium-server/postResults";
+        }
+		return url + "/selenium-server/core/TestRunner.html?auto=true"
+                + "&multiWindow=" + multiWindow
+                + "&baseUrl=" + urlEncode(browserURL)
+                + "&resultsUrl=" + resultsUrl
+                + "&test=" + suiteUrl;
 	}
 
-	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow) {
+	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort) {
 		String url = LauncherUtils.stripStartURL(startURL);
-		return url + "/selenium-server/core/RemoteRunner.html?" + "sessionId=" + sessionId + "&multiWindow=" + multiWindow + "&debugMode="
-				+ SeleniumServer.isDebugMode();
+		url += "/selenium-server/core/RemoteRunner.html?" 
+                + "sessionId=" + sessionId 
+                + "&multiWindow=" + multiWindow 
+                + "&baseUrl=" + urlEncode(startURL)
+                + "&debugMode=" + SeleniumServer.isDebugMode();
+        if (serverPort != 0) {
+            url += "&driverUrl=http://localhost:" + serverPort + "/selenium-server/driver/";
+        }
+        return url;
 	}
+    
+    
+    /** Encodes the text as an URL using UTF-8.
+     * 
+     * @param text the text too encode
+     * @return the encoded URI string
+     * @see URLEncoder#encode(java.lang.String, java.lang.String)
+     */
+    public static String urlEncode(String text) {
+        try {
+            return URLEncoder.encode(text, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	protected static File extractHTAFile(File dir, int port, String resourceFile, String outFile) {
 		InputStream input = HTABrowserLauncher.class.getResourceAsStream(resourceFile);
