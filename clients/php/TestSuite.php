@@ -8,7 +8,7 @@ require_once 'PHPUnit/TextUI/TestRunner.php';
  
 require_once 'SeleniumTest.php';
 require_once 'GoogleTest.php';
-// ...
+require_once 'MockBrowserTest.php';
  
 class TestSuite
 {
