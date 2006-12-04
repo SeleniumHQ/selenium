@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xslt [
+  <!--Used to control code intenting -->
+  <!ENTITY nl "&#xa;">
+  <!ENTITY tab "    ">
+]>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:output method="html"/>
+<xsl:strip-space elements="*"/>
+<xsl:param name="mode" />
+
+<xsl:template match="/">
+
+  <xsl:apply-templates select="//top" />
+  <xsl:apply-templates select="//function" />
+  <xsl:text disable-output-escaping="yes"><![CDATA[
+    private function doCommand($verb, $args = array())
+    {
+        $url = sprintf('http://%s:%s/selenium-server/driver/?cmd=%s', $this->host, $this->port, urlencode($verb));
+        for ($i = 0; $i < count($args); $i++) {
+            $argNum = strval($i + 1);
+            $url .= sprintf('&%s=%s', $argNum, htmlspecialchars($args[$i]));
+        }
+
+        if (isset($this->sessionId)) {
+            $url .= sprintf('&%s=%s', 'sessionId', $this->sessionId);
+        }
+        if ($this->driver == 'curl') {
+            $response = $this->useCurl($verb, $args, $url);
+        } elseif ($this->driver == 'pear') {
+            $response = $this->useHTTP_Request($verb, $args, $url);
+        } else {
+            $response = $this->useNative($verb, $args, $url);
+        }
+
+        if (!preg_match('/^OK/', $response)) {
+            throw new Testing_Selenium_Exception('The Response of the Selenium RC is invalid: ' . $response);
+        }
+        return $response;
+    }
+
+    private function useHTTP_Request($verb, $args, $url)
+    {
+        require_once 'HTTP/Request.php';
+        $request = new HTTP_Request($url);
+        $request->_sock->blocking = false;
+        $result = $request->sendRequest();
+        if (PEAR::isError($result)) {
+            throw Testing_Selenium_Exception('Can not connect to Selenium RC Server: '. $result->getMessage(), $request->getResponseCode());
+        }
+        return $request->getResponseBody();
+    }
+
+    private function useNative($verb, $args, $url)
+    {
+        if (!$handle = fopen($url, 'r')) {
+            throw new Testing_Selenium_Exception('Cannot connected to Selenium RC Server');
+        }
+        // no socket block
+        stream_set_blocking($handle, false);
+        $response = stream_get_contents($handle);
+        fclose($handle);
+
+        return $response;
+    }
+
+    private function useCurl($verb, $args, $url)
+    {
+        if (!function_exists('curl_init')) {
+            throw new Testing_Selenium_Exception('cannot use curl exntensions. chosse "pear" or "native"');
+        }
+
+        if (!$ch = curl_init($url)) {
+            throw new Testing_Selenium_Exception('Unable to setup curl');
+        }
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+
+        if (($errno = curl_errno($ch)) != 0) {
+            throw new Testing_Selenium_Exception('Curl returned non-null errno ' . $errno . ':' . curl_error($ch));
+        }
+        curl_close($ch);
+        return $result;
+    }
+
+    private function getString($verb, $args = array())
+    {
+        try {
+            $result = $this->doCommand($verb, $args);
+        } catch (Testing_Selenium_Exception $e) {
+            return $e;
+        }
+        return substr($result, 3);
+    }
+
+    private function getStringArray($verb, $args = array())
+    {
+        $csv = $this->getString($verb, $args);
+        $token = '';
+        $tokens = array();
+        $letters = preg_split('//', $csv, -1, PREG_SPLIT_NO_EMPTY);
+        for ($i = 0; $i < count($letters); $i++) {
+            $letter = $letters[$i];
+            switch($letter) {
+            case '\\':
+                $i++;
+                $letter = $letters[$i];
+                $token = $token . $letter;
+                break;
+            case ',':
+                array_push($tokens, $token);
+                $token = '';
+                break;
+            default:
+                $token = $token . $letter;
+                break;
+            }
+        }
+        array_push($tokens, $token);
+        return $tokens;
+    }
+
+    private function getBoolean($verb, $args = array())
+    {
+        $result = $this->getString($verb, $args);
+        switch ($result) {
+        case 'true':
+            return true;
+        case 'false':
+            return false;
+        default:
+            throw new Testing_Selenium_Exception('result is neither "true" or "false": ' . $result);
+        }
+    }
+}]]>
+?&gt;
+  </xsl:text>
+</xsl:template>
+
+<!--********************
+TOP
+***************-->
+
+<xsl:template match="top">
+  <xsl:text disable-output-escaping="yes">&lt;?php
+/** Copyright 2006 ThoughtWorks, Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * -----------------
+ * This file has been automatically generated via XSL
+ * -----------------
+ *
+ *
+ *
+ * @category   Testing
+ * @package    Selenium
+ * @author     Shin Ohno &lt;ganchiku at gmail dot com&gt;
+ * @author     Bjoern Schotte &lt;schotte at mayflower dot de&gt;
+ * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
+ * @version    @package_version@
+ * @see        http://www.openqa.org/selenium-rc/
+ * @since      0.1
+ */
+
+/**
+ * Selenium exception class
+ */
+require_once 'Testing/Selenium/Exception.php';
+
+/**
+ * </xsl:text>
+  <xsl:apply-templates>
+    <xsl:with-param name="replace-string">&nl; * </xsl:with-param>
+  </xsl:apply-templates>
+  <xsl:text disable-output-escaping="yes"><![CDATA[
+ *
+ * @package Selenium
+ * @author Shin Ohno <ganchiku at gmail dot com>
+ * @author Bjoern Schotte <schotte at mayflower dot de>
+ */
+class Testing_Selenium
+{
+    /**
+     * @var    string
+     * @access private
+     */
+    private $browser;
+
+    /**
+     * @var    string
+     * @access private
+     */
+    private $browserUrl;
+
+    /**
+     * @var    string
+     * @access private
+     */
+    private $host;
+
+    /**
+     * @var    int
+     * @access private
+     */
+    private $port;
+
+    /**
+     * @var    string
+     * @access private
+     */
+    private $sessionId;
+
+    /**
+     * @var    string
+     * @access private
+     */
+    private $timeout;
+
+    /**
+     * @var    string
+     * @access private
+     */
+    private $driver;
+
+    /**
+     * Constructor
+     *
+     * @param string $browser
+     * @param string $browserUrl
+     * @param string $host
+     * @param int $port
+     * @param int $timeout
+     * @param string $driver
+     * @access public
+     * @throws Testing_Selenium_Exception
+     */
+    public function __construct($browser, $browserUrl, $host = 'localhost', $port = 4444, $timeout = 30000, $driver = 'curl')
+    {
+        $this->browser = $browser;
+        $this->browserUrl = $browserUrl;
+        $this->host = $host;
+        $this->port = $port;
+        $this->timeout = $timeout;
+        $this->setDriver($driver);
+    }
+
+    /**
+     * Set driver for HTTP Request.
+     *
+     * @param string $driver
+     * @access public
+     * @return void
+     * @throws Testing_Selenium_Exception
+     */
+    public function setDriver($driver)
+    {
+        if ($driver == 'curl' or $driver == 'pear' or $driver == 'native') {
+            $this->driver = $driver;
+        } else {
+            throw new Testing_Selenium_Exception('Driver has to be "curl" or "pear" or "native"');
+        }
+    }
+
+    /**
+     * Run the browser and set session id.
+     *
+     * @access public
+     * @return void
+     */
+    public function start()
+    {
+        $this->sessionId = $this->getString("getNewBrowserSession", array($this->browser, $this->browserUrl));
+        return $this->sessionId;
+    }
+    /**
+     * Close the browser and set session id null
+     *
+     * @access public
+     * @return void
+     */
+    public function stop()
+    {
+        $this->doCommand("testComplete");
+        $this->sessionId = null;
+    }
+]]>
+  </xsl:text>
+</xsl:template>
+
+
+<xsl:template match="comment">
+  <xsl:text>&nl;&tab; * </xsl:text>
+  <xsl:apply-templates>
+    <xsl:with-param name="replace-string">&nl;&tab; * </xsl:with-param>
+  </xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="node()|@*" >
+  <xsl:param name="replace-string" />
+  <xsl:copy>
+    <xsl:apply-templates select="node()|@*">
+      <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="text()">
+  <xsl:param name="replace-string" />
+  <xsl:call-template name="search-and-replace">
+    <xsl:with-param name="input"><xsl:value-of select='.' /></xsl:with-param>
+    <xsl:with-param name="search-string"><xsl:text>&nl;</xsl:text></xsl:with-param>
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:template match="b|strong">
+  <xsl:param name="replace-string" />
+  <xsl:element name="b">
+    <xsl:apply-templates select="node()|@*">
+      <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:element>
+</xsl:template>
+
+<xsl:template match="code|tt">
+  <xsl:param name="replace-string" />
+  <xsl:element name="tt">
+    <xsl:apply-templates select="node()|@*">
+      <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:element>
+</xsl:template>
+
+<xsl:template match="em|i">
+  <xsl:param name="replace-string" />
+  <xsl:element name="em">
+    <xsl:apply-templates select="node()|@*">
+      <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:element>
+</xsl:template>
+
+<xsl:template match="h3">
+  <xsl:param name="replace-string" />
+  <xsl:text>===</xsl:text>
+  <xsl:apply-templates select="node()|@*">
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+  </xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="li">
+  <xsl:param name="replace-string" />
+  <xsl:choose>
+    <xsl:when test="local-name(..) = 'ul'">
+      <xsl:text>*&tab;</xsl:text>
+    </xsl:when>
+    <xsl:when test="local-name(..) = 'ol'">
+      <xsl:value-of select="position()"/><xsl:text>. </xsl:text>
+    </xsl:when>
+  </xsl:choose>
+  <xsl:apply-templates select="node()|@*">
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+  </xsl:apply-templates>
+  <xsl:value-of select="$replace-string" />
+</xsl:template>
+
+<xsl:template match="ul|ol|dl">
+  <xsl:param name="replace-string" />
+  <xsl:apply-templates select="node()|@*">
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><!--<xsl:text>&tab;</xsl:text>--></xsl:with-param>
+  </xsl:apply-templates>
+  <xsl:value-of select="$replace-string" />
+</xsl:template>
+
+<xsl:template match="p">
+  <xsl:param name="replace-string" />
+  <xsl:apply-templates select="node()|@*">
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+  </xsl:apply-templates>
+  <xsl:value-of select="$replace-string" />
+</xsl:template>
+
+<xsl:template match="a|blockquote">
+  <xsl:param name="replace-string" />
+  <xsl:apply-templates select="node()|@*">
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+  </xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="dt">
+  <xsl:param name="replace-string" />
+  <xsl:text>*&tab;</xsl:text>
+  <xsl:apply-templates select="node()|@*">
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+  </xsl:apply-templates>
+  <xsl:text>::</xsl:text>
+</xsl:template>
+
+<xsl:template match="dd">
+  <xsl:param name="replace-string" />
+  <xsl:value-of select="$replace-string" />
+  <xsl:text>&tab;</xsl:text>
+  <xsl:apply-templates select="node()|@*">
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><xsl:text>&tab;</xsl:text></xsl:with-param>
+  </xsl:apply-templates>
+  <xsl:value-of select="$replace-string" />
+</xsl:template>
+
+<!--****************
+FUNCTION
+******************-->
+
+<xsl:template match="function">
+  <!-- Doc -->
+  <xsl:text>&nl;&tab;/**</xsl:text>
+  <xsl:apply-templates select="comment" />
+  <xsl:text>&nl;&tab; *</xsl:text>
+  <xsl:text>&nl;&tab; * @access public</xsl:text>
+  <xsl:apply-templates select="param" mode="comment" />
+  <xsl:apply-templates select="return" mode="comment" />
+  <xsl:text>&nl;&tab; */</xsl:text>
+  <xsl:text>&nl;&tab;public function </xsl:text>
+  <xsl:value-of select="@name" />
+
+  <!-- Params -->
+  <xsl:text>(</xsl:text>
+  <xsl:apply-templates select="param" mode="declaration" />
+  <xsl:text>)&nl;&tab;{&nl;&tab;&tab;</xsl:text>
+
+  <xsl:if test="count(./return) = 0">
+    <xsl:text disable-output-escaping="yes">$this-&gt;doCommand</xsl:text>
+  </xsl:if>
+  <xsl:apply-templates select="return" mode="implementation" />
+  <xsl:text>("</xsl:text>
+  <xsl:value-of select="@name" />
+
+  <xsl:text>", array(</xsl:text>
+  <xsl:apply-templates select="param" mode="implementation" />
+  <xsl:text>)</xsl:text>
+
+  <xsl:text>);&nl;&tab;}&nl;&nl;</xsl:text>
+</xsl:template>
+
+<!--*****************
+RETURN
+*******************-->
+
+<xsl:template name="procMethod">
+  <xsl:param name="type" />
+  <xsl:choose>
+    <xsl:when test="$type='string'">
+      <xsl:text disable-output-escaping="yes">$this-&gt;getString</xsl:text>
+    </xsl:when>
+    <xsl:when test="$type='number'">
+      <xsl:text disable-output-escaping="yes">$this-&gt;getNumber</xsl:text>
+    </xsl:when>
+    <xsl:when test="$type='boolean'">
+      <xsl:text disable-output-escaping="yes">$this-&gt;getBoolean</xsl:text>
+    </xsl:when>
+    <xsl:when test="$type='string[]'">
+      <xsl:text disable-output-escaping="yes">$this-&gt;getStringArray</xsl:text>
+    </xsl:when>
+    <xsl:when test="$type='number[]'">
+      <xsl:text disable-output-escaping="yes">$this-&gt;getNumberArray</xsl:text>
+    </xsl:when>
+    <xsl:when test="$type='boolean[]'">
+      <xsl:text disable-output-escaping="yes">$this-&gt;getBooleanArray</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message terminate="yes">returntype is invalid: <xsl:value-of select="$type"/></xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- In the function implementation, add "return" keyword, casting to correct type -->
+<xsl:template match="return" mode="implementation">
+  <xsl:text>return </xsl:text>
+  <xsl:call-template name="procMethod">
+    <xsl:with-param name="type"><xsl:value-of select="@type" /></xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+
+<!-- In the PHPDoc, tag -->
+<xsl:template match="return" mode="comment">
+  <xsl:text>&nl;&tab; * @return </xsl:text>
+  <xsl:choose>
+    <xsl:when test="@type='string[]'">
+      <xsl:text>array</xsl:text>
+    </xsl:when>
+    <xsl:when test="@type='number[]'">
+      <xsl:text>array</xsl:text>
+    </xsl:when>
+    <xsl:when test="@type='boolean[]'">
+      <xsl:text>array</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="@type" />
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text> </xsl:text>
+  <xsl:apply-templates />
+</xsl:template>
+
+<!-- In the PHPDoc, -->
+<xsl:template match="param" mode="comment">
+  <xsl:text>&nl;&tab; * @param string $</xsl:text>
+  <xsl:value-of select="@name" />
+  <xsl:text> </xsl:text>
+  <xsl:apply-templates />
+</xsl:template>
+
+<!-- In the function declaration, specify all String parameters -->
+<xsl:template match="param" mode="declaration">
+  <xsl:text>$</xsl:text>
+  <xsl:value-of select="@name" />
+  <xsl:if test="position() != last()">
+    <xsl:text>, </xsl:text>
+  </xsl:if>
+</xsl:template>
+
+<!-- In the function implementation, add String parameters to array -->
+<xsl:template match="param" mode="implementation">
+  <xsl:text>$</xsl:text>
+  <xsl:value-of select="@name" />
+  <!-- waitForPageLoad has default value of the timeout -->
+  <xsl:if test="position() != last()">
+    <xsl:text>, </xsl:text>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="search-and-replace">
+  <xsl:param name="input"/>
+  <xsl:param name="search-string"/>
+  <xsl:param name="replace-string"/>
+  <xsl:choose>
+    <!-- See if the input contains the search string -->
+    <xsl:when test="$search-string and
+      contains($input,$search-string)">
+      <!-- If so, then concatenate the substring before the search
+      string to the replacement string and to the result of
+      recursively applying this template to the remaining substring.
+      -->
+      <xsl:value-of
+        select="substring-before($input,$search-string)"/>
+      <xsl:value-of select="$replace-string"/>
+      <xsl:call-template name="search-and-replace">
+        <xsl:with-param name="input"
+          select="substring-after($input,$search-string)"/>
+        <xsl:with-param name="search-string"
+          select="$search-string"/>
+        <xsl:with-param name="replace-string"
+          select="$replace-string"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- There are no more occurrences of the search string so
+      just return the current input string -->
+      <xsl:value-of select="$input"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+</xsl:stylesheet>
+
