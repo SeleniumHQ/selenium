@@ -66,7 +66,7 @@ class Testing_Selenium_Exception extends PEAR_Exception
       <property name="phpunit.executable" value="phpunit" />
       <!--<fail message="autofail ${php.executable}" />-->
       <exec executable="${phpunit.executable}" resultproperty="result">
-        <arg line="SeleniumTest.php"/>
+        <arg line="TestSuite.php"/>
       </exec>
       <ant dir=".." target="stop-server" />
       <condition property="build.failed">

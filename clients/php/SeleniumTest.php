@@ -14,14 +14,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
 
     public function __construct($name)
     {
-        // The URL you are going to test
-        // Please install tests the following URL or edit the URI
-        // http://localhost/tests/
-        // ganchiku.com is just for the initial testing.
-        $this->browserUrl = "http://www.ganchiku.com/";
-//        $this->browserUrl = "http://yourserver/";
-        // The path for the tests
-        $this->testUrl = $this->browserUrl . "selenium/tests";
+        $this->browserUrl = "http://localhost:4444/selenium-server/tests/";
         parent::__construct($name);
     }
 // {{{ setUp and tearDown
@@ -29,9 +22,6 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     {
         try {
             $this->selenium = new Testing_Selenium("*firefox", $this->browserUrl);
-            // XXX pear does not work E_STRICT because of HTTP_Request
-            // the options are "curl", "pear", "native"
-//            $this->selenium->setDriver("pear");
             $this->selenium->start();
         } catch (Testing_Selenium_Exception $e) {
             $this->selenium->stop();
@@ -52,26 +42,27 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     // {{{ testOpen
     public function testOpen()
     {
-        try {
-            $this->selenium->open("{$this->testUrl}/html/test_open.html");
-            $this->assertEquals("{$this->testUrl}/html/test_open.html", $this->selenium->getLocation());
-            $this->assertEquals("This is a test of the open command.", $this->selenium->getBodyText());
+        $this->selenium->open("html/test_open.html");
+        $this->assertEndsWith("html/test_open.html", $this->selenium->getLocation());
+        $this->assertEquals("This is a test of the open command.", $this->selenium->getBodyText());
 
-            $this->selenium->open("{$this->testUrl}/html/test_page.slow.html");
-            $this->assertEquals("{$this->testUrl}/html/test_page.slow.html", $this->selenium->getLocation());
-            $this->assertEquals("Slow Loading Page", $this->selenium->getTitle());
-        } catch (Testing_Selenium_Exception $e) {
-            $this->selenium->stop();
-            echo $e;
-        }
+        $this->selenium->open("html/test_page.slow.html");
+        $this->assertEndsWith("html/test_page.slow.html", $this->selenium->getLocation());
+        $this->assertEquals("Slow Loading Page", $this->selenium->getTitle());
     }
+    
+    public function assertEndsWith($substring, $actual)
+    {
+        $this->assertRegExp("/".preg_quote($substring, "/")."$/", $actual);
+    }
+    
     // }}}
   /*
     // {{{ testClick
     public function testClick()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_click_page1.html");
+            $this->selenium->open("html/test_click_page1.html");
             $this->assertEquals("Click here for next page", $this->selenium->getText("link"));
             $this->selenium->click("link");
             $this->selenium->waitForPageToLoad(500);
@@ -107,7 +98,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testClickJavaScriptHref()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_click_javascript_page.html");
+            $this->selenium->open("html/test_click_javascript_page.html");
             $this->selenium->click("link");
             $this->assertTrue($this->selenium->isAlertPresent());
             $this->assertEquals("link clicked", $this->selenium->getAlert());
@@ -137,7 +128,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testType()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_type_page1.html");
+            $this->selenium->open("html/test_type_page1.html");
             $this->selenium->type("username", "TestUser");
             $this->assertEquals("TestUser", $this->selenium->getValue("username"));
             $this->selenium->type("password", "testUserPassword");
@@ -159,7 +150,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testSelect()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_select.html");
+            $this->selenium->open("html/test_select.html");
             $this->assertEquals("Second Option", $this->selenium->getSelectedLabel("theSelect"));
             $this->assertEquals("option2", $this->selenium->getSelectedValue("theSelect"));
 
@@ -196,7 +187,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testMultiSelect()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_multiselect.html");
+            $this->selenium->open("html/test_multiselect.html");
             $this->assertEquals("Second Option", $this->selenium->getSelectedLabel("theSelect"));
 
             $this->selenium->select("theSelect", "index=4");
@@ -232,7 +223,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testSubmit()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_submit.html");
+            $this->selenium->open("html/test_submit.html");
             $this->selenium->submit("searchForm");
             $this->assertTrue($this->selenium->isAlertPresent());
             $this->assertEquals("onsubmit called", $this->selenium->getAlert());
@@ -253,7 +244,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testCheckUncheck()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_check_uncheck.html");
+            $this->selenium->open("html/test_check_uncheck.html");
             $this->assertEquals("on", $this->selenium->getValue("base-spud"));
             $this->assertNotEquals("on", $this->selenium->getValue("base-rice"));
             $this->assertEquals("on", $this->selenium->getValue("option-cheese"));
@@ -285,27 +276,27 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testSelectWidndow()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_select_window.html");
+            $this->selenium->open("html/test_select_window.html");
             $this->selenium->click("popupPage");
             $this->selenium->waitForPopUp("myPopupWindow", 1000);
             $this->selenium->selectWindow("myPopupWindow");
-            $this->assertEquals("{$this->testUrl}/html/test_select_window_popup.html", $this->selenium->getLocation());
+            $this->assertEndsWith("html/test_select_window_popup.html", $this->selenium->getLocation());
             $this->assertEquals("Select Window Popup", $this->selenium->getTitle());
             $this->selenium->close();
             $this->selenium->selectWindow("null");
 
-            $this->assertEquals("{$this->testUrl}/html/test_select_window.html", $this->selenium->getLocation());
+            $this->assertEndsWith("html/test_select_window.html", $this->selenium->getLocation());
             $this->selenium->click("popupPage");
             $this->selenium->waitForPopUp("myNewWindow", 1000);
             $this->selenium->selectWindow("myNewWindow");
-            $this->assertEquals("{$this->testUrl}/html/test_select_window_popup.html", $this->selenium->getLocation());
+            $this->assertEndsWith("html/test_select_window_popup.html", $this->selenium->getLocation());
             $this->selenium->close();
             $this->selenium->selectWindow("null");
 
             $this->selenium->click("popupAnonymous");
             $this->selenium->waitForPopUp("anonymouspopup", 1000);
             $this->selenium->selectWindow("anonymouspopup");
-            $this->assertEquals("{$this->testUrl}/html/test_select_window_popup.html", $this->selenium->getLocation());
+            $this->assertEndsWith("html/test_select_window_popup.html", $this->selenium->getLocation());
             $this->selenium->click("closePage");
 
         } catch (Testing_Selenium_Exception $e) {
@@ -323,7 +314,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testJavaScriptParameters()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_store_value.html");
+            $this->selenium->open("html/test_store_value.html");
             $this->selenium->type("theText", "javascript{[1,2,3,4,5].join(':')}");
             $this->assertEquals("1:2:3:4:5", $this->selenium->getValue("theText"));
 
@@ -344,7 +335,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testWait()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_reload_onchange_page.html");
+            $this->selenium->open("html/test_reload_onchange_page.html");
             $this->selenium->select("theSelect", "Second Option");
             $this->selenium->waitForPageToLoad(500);
             $this->assertEquals("Slow Loading Page", $this->selenium->getTitle());
@@ -377,7 +368,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testWaitInPopupWindow()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_select_window.html");
+            $this->selenium->open("html/test_select_window.html");
             $this->selenium->click("popupPage");
             $this->selenium->waitForPopUp("myPopupWindow", 500);
             $this->selenium->selectWindow("myPopupWindow");
@@ -428,7 +419,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testLocators()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_locators.html");
+            $this->selenium->open("html/test_locators.html");
             $this->assertEquals("this is the first element", $this->selenium->getText("id=id1"));
             $this->assertFalse($this->selenium->isElementPresent("id=name1"));
             $this->assertFalse($this->selenium->isElementPresent("id=id4"));
@@ -460,7 +451,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testImplicitLocators()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_locators.html");
+            $this->selenium->open("html/test_locators.html");
             $this->assertEquals("this is the first element", $this->selenium->getText("id1"));
             $this->assertEquals("a1", $this->selenium->getAttribute("id1@class"));
 
@@ -483,7 +474,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testXPathLocators()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_locators.html");
+            $this->selenium->open("html/test_locators.html");
             $this->assertEquals("this is the first element", $this->selenium->getText("xpath=//a"));
             $this->assertEquals("this is the second element", $this->selenium->getText("xpath=//a[@class='a2']"));
             $this->assertEquals("this is the second element", $this->selenium->getText("xpath=//*[@class='a2']"));
@@ -510,7 +501,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testGoBack()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_click_page1.html");
+            $this->selenium->open("html/test_click_page1.html");
             $this->assertEquals("Click Page 1", $this->selenium->getTitle());
 
             $this->selenium->click("link");
@@ -531,8 +522,8 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testRefresh()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_page.slow.html");
-            $this->assertEquals("{$this->testUrl}/html/test_page.slow.html", $this->selenium->getLocation());
+            $this->selenium->open("html/test_page.slow.html");
+            $this->assertEndsWith("html/test_page.slow.html", $this->selenium->getLocation());
             $this->assertEquals("Slow Loading Page", $this->selenium->getTitle());
 
             $this->selenium->click("changeSpan");
@@ -562,7 +553,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testLinkEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->assertEquals("", $this->selenium->getValue("eventlog"));
             $this->selenium->click("theLink");
             $this->assertEquals("{focus(theLink)} {click(theLink)} {blur(theLink)}", $this->selenium->getValue("eventlog"));
@@ -579,7 +570,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testButtonEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->assertEquals("", $this->selenium->getValue("eventlog"));
             $this->selenium->click("theButton");
             $this->assertEquals("{focus(theButton)} {click(theButton)} {blur(theButton)}", $this->selenium->getValue("eventlog"));
@@ -598,7 +589,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testSelectEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->assertEquals("", $this->selenium->getValue("theSelect"));
             $this->assertEquals("", $this->selenium->getValue("eventlog"));
 
@@ -627,7 +618,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testRadioEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->assertEquals("off", $this->selenium->getValue("theRadio1"));
             $this->assertEquals("off", $this->selenium->getValue("theRadio2"));
             $this->assertEquals("", $this->selenium->getValue("eventlog"));
@@ -660,7 +651,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testCheckboxEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->assertEquals("off", $this->selenium->getValue("theCheckbox"));
             $this->assertEquals("", $this->selenium->getValue("eventlog"));
 
@@ -683,7 +674,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testTextEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->assertEquals("", $this->selenium->getValue("theTextbox"));
             $this->assertEquals("", $this->selenium->getValue("eventlog"));
 
@@ -706,7 +697,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testFireEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->assertEquals("", $this->selenium->getValue("eventlog"));
             $this->selenium->fireEvent("theTextbox", "focus");
             $this->assertEquals("{focus(theTextbox)}", $this->selenium->getValue("eventlog"));
@@ -728,7 +719,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testMouseEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->selenium->mouseOver("theTextbox");
             $this->selenium->mouseOver("theButton");
             $this->selenium->mouseDown("theTextbox");
@@ -745,7 +736,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testKeyEvents()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_form_events.html");
+            $this->selenium->open("html/test_form_events.html");
             $this->selenium->keyPress("theTextbox", "119");
             $this->selenium->keyPress("theTextbox", "115");
             $this->selenium->keyUp("theTextbox", "44");
@@ -762,7 +753,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testFocusOnBlur()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_focus_on_blur.html");
+            $this->selenium->open("html/test_focus_on_blur.html");
             $this->selenium->type("testInput", "test");
             $this->assertEquals("Bad value", $this->selenium->getAlert());
             $this->selenium->type("testInput", "somethingelse");
@@ -776,7 +767,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testAlerts()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_verify_alert.html");
+            $this->selenium->open("html/test_verify_alert.html");
             $this->assertFalse($this->selenium->isAlertPresent());
 
             $this->selenium->click("oneAlert");
@@ -801,7 +792,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testConfirmations()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_confirm.html");
+            $this->selenium->open("html/test_confirm.html");
             $this->selenium->chooseCancelOnNextConfirmation();
             $this->selenium->click("confirmAndLeave");
             $this->assertTrue($this->selenium->isConfirmationPresent());
@@ -823,7 +814,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testPrompt()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_prompt.html");
+            $this->selenium->open("html/test_prompt.html");
             $this->assertFalse($this->selenium->isPromptPresent());
 
             $this->selenium->click("promptAndLeave");
@@ -847,7 +838,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testVisibility()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_visibility.html");
+            $this->selenium->open("html/test_visibility.html");
             $this->assertTrue($this->selenium->isVisible("visibleParagraph"));
             $this->assertFalse($this->selenium->isVisible("hiddenParagraph"));
             $this->assertFalse($this->selenium->isVisible("suppressedParagraph"));
@@ -868,7 +859,7 @@ class SeleniumTest extends PHPUnit_Framework_TestCase
     public function testEditable()
     {
         try {
-            $this->selenium->open("{$this->testUrl}/html/test_editable.html");
+            $this->selenium->open("html/test_editable.html");
             $this->assertTrue($this->selenium->isEditable("normal_text"));
             $this->assertTrue($this->selenium->isEditable("normal_select"));
             $this->assertFalse($this->selenium->isEditable("disabled_text"));
