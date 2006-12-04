@@ -18,16 +18,17 @@
 package com.thoughtworks.selenium;
 
 
-import junit.framework.*;
+import java.io.*;
 
-import org.openqa.selenium.server.*;
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
+import junit.framework.*;
 
 /**
  * @author Nelson Sproul (nsproul@bea.com) Mar 13-06
  */
 public class SeleneseTestCase extends TestCase {
 
+    private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
+    
     public Selenium selenium;
     public static StringBuffer verificationErrors = new StringBuffer(); 
 
@@ -37,7 +38,7 @@ public class SeleneseTestCase extends TestCase {
     }
 
     public void setUp(String url) throws Exception {
-      if(WindowsUtils.thisIsWindows()){
+      if(THIS_IS_WINDOWS){
 	     setUp(url, "*iexplore");
       }else{
 	     setUp(url, "*firefox");
@@ -46,7 +47,7 @@ public class SeleneseTestCase extends TestCase {
     
     public void setUp(String url, String browserMode) throws Exception {
         super.setUp();
-        int port = SeleniumServer.getDefaultPort();
+        int port = 4444;
         if (url==null) {
             url = "http://localhost:" + port;
         }
