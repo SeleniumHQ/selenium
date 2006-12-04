@@ -23,6 +23,7 @@ class TestSuite
  
         $suite->addTestSuite('SeleniumTest');
         $suite->addTestSuite('GoogleTest');
+        $suite->addTestSuite('MockBrowserTest');
  
         return $suite;
     }
