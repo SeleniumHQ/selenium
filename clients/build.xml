@@ -16,7 +16,7 @@
 
     <target name="all" depends="test, dist" />
 
-    <target name="clean" depends="clean-dotnet, clean-python, clean-ruby, clean-perl">
+    <target name="clean" depends="clean-dotnet, clean-python, clean-ruby, clean-perl, clean-php">
         <delete dir="dist-image"/>
         <delete dir="dist-doc"/>
         <delete dir="dist"/>
@@ -25,7 +25,7 @@
         </delete>
     </target>
 
-    <target name="dist" depends="dist-java, dist-dotnet, dist-ruby, dist-python, dist-perl, dist-doc">
+    <target name="dist" depends="dist-java, dist-dotnet, dist-ruby, dist-python, dist-perl, dist-php, dist-doc">
         <property name="src.release" value="selenium-remote-control-${version}"/>
         <mkdir dir="dist/nightly" />
         <zip zipfile="dist/nightly/${src.release}.zip">
@@ -39,7 +39,7 @@
         <mkdir dir="dist"/>
     </target>
 
-    <target name="dist-doc" depends="dist-java, dist-dotnet, dist-ruby, dist-python, dist-perl">
+    <target name="dist-doc" depends="dist-java, dist-dotnet, dist-ruby, dist-php, dist-python, dist-perl">
         <macrodef name="copy-doc">
             <attribute name="dir" />
             <sequential>
@@ -55,6 +55,7 @@
         <copy-doc dir="ruby" />
         <copy-doc dir="python" />
         <copy-doc dir="perl" />
+        <copy-doc dir="php" />
     </target>
 
     <target name="dist-ruby" depends="dist-dirs">
@@ -68,6 +69,21 @@
         <property name="ruby.release" value="selenium-ruby-client-driver-${version}"/>
         <zip zipfile="dist/${ruby.release}.zip">
             <zipfileset dir="dist-image/ruby" prefix="${ruby.release}"/>
+        </zip>
+    </target>
+
+    <target name="dist-php" depends="dist-dirs">
+        <copy todir="dist-image/php">
+            <fileset dir="php">
+                <include name="PEAR/**"/>
+                <include name="*.php"/>
+                <include name="doc/**" />
+            </fileset>
+        </copy>
+
+        <property name="php.release" value="selenium-php-client-driver-${version}"/>
+        <zip zipfile="dist/${php.release}.zip">
+            <zipfileset dir="dist-image/php" prefix="${php.release}"/>
         </zip>
     </target>
 
@@ -275,12 +291,18 @@
     <target name="test-ruby">
         <ant dir="ruby" target="all"/>
     </target>
-
+    
     <target name="clean-ruby">
         <ant dir="ruby" target="clean"/>
     </target>
-
-
+    
+    <target name="test-php">
+        <ant dir="ruby" target="all"/>
+    </target>
+    
+    <target name="clean-php">
+        <ant dir="ruby" target="clean"/>
+    </target>
 
 
 
