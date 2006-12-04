@@ -336,7 +336,7 @@ class Testing_Selenium
 
 <xsl:template match="code|tt">
   <xsl:param name="replace-string" />
-  <xsl:element name="tt">
+  <xsl:element name="code">
     <xsl:apply-templates select="node()|@*">
       <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
     </xsl:apply-templates>
@@ -345,77 +345,75 @@ class Testing_Selenium
 
 <xsl:template match="em|i">
   <xsl:param name="replace-string" />
-  <xsl:element name="em">
+  <xsl:element name="i">
     <xsl:apply-templates select="node()|@*">
       <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
     </xsl:apply-templates>
   </xsl:element>
 </xsl:template>
 
-<xsl:template match="h3">
+<!-- No headings in phpDoc... replacing with <p><b>blah</b></p> -->
+<xsl:template match="h1|h2|h3">
   <xsl:param name="replace-string" />
-  <xsl:text>===</xsl:text>
+  <xsl:value-of select="$replace-string" /><xsl:element name="p"><xsl:value-of select="$replace-string" /><xsl:element name="b">
   <xsl:apply-templates select="node()|@*">
     <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
   </xsl:apply-templates>
+  </xsl:element><xsl:value-of select="$replace-string" /></xsl:element>
 </xsl:template>
 
 <xsl:template match="li">
   <xsl:param name="replace-string" />
-  <xsl:choose>
-    <xsl:when test="local-name(..) = 'ul'">
-      <xsl:text>*&tab;</xsl:text>
-    </xsl:when>
-    <xsl:when test="local-name(..) = 'ol'">
-      <xsl:value-of select="position()"/><xsl:text>. </xsl:text>
-    </xsl:when>
-  </xsl:choose>
+  <xsl:value-of select="$replace-string" /><xsl:element name="li"><xsl:value-of select="$replace-string" />
   <xsl:apply-templates select="node()|@*">
     <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
   </xsl:apply-templates>
-  <xsl:value-of select="$replace-string" />
+  <xsl:value-of select="$replace-string" /></xsl:element>
 </xsl:template>
 
-<xsl:template match="ul|ol|dl">
+<xsl:template match="ul">
   <xsl:param name="replace-string" />
+  <xsl:value-of select="$replace-string" /><xsl:element name="ul"><xsl:value-of select="$replace-string" />
   <xsl:apply-templates select="node()|@*">
-    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><!--<xsl:text>&tab;</xsl:text>--></xsl:with-param>
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
   </xsl:apply-templates>
-  <xsl:value-of select="$replace-string" />
+  <xsl:value-of select="$replace-string" /></xsl:element>
+</xsl:template>
+
+<xsl:template match="ol">
+  <xsl:param name="replace-string" />
+  <xsl:element name="ol"><xsl:value-of select="$replace-string" />
+  <xsl:apply-templates select="node()|@*">
+    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+  </xsl:apply-templates>
+  <xsl:value-of select="$replace-string" /></xsl:element>
 </xsl:template>
 
 <xsl:template match="p">
   <xsl:param name="replace-string" />
+  <xsl:element name="p"><xsl:value-of select="$replace-string" />
   <xsl:apply-templates select="node()|@*">
     <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
   </xsl:apply-templates>
-  <xsl:value-of select="$replace-string" />
+  <xsl:value-of select="$replace-string" /></xsl:element>
 </xsl:template>
 
-<xsl:template match="a|blockquote">
+<!-- No links in phpDoc... stripping -->
+<xsl:template match="a">
   <xsl:param name="replace-string" />
-  <xsl:apply-templates select="node()|@*">
+  <xsl:apply-templates select="node()">
     <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
   </xsl:apply-templates>
 </xsl:template>
 
-<xsl:template match="dt">
+<!-- No blockquotes in phpDoc... not even an indent!  replacing with <p> -->
+<xsl:template match="blockquote">
   <xsl:param name="replace-string" />
-  <xsl:text>*&tab;</xsl:text>
+  <xsl:element name="p"><xsl:value-of select="$replace-string" /><xsl:value-of select="$replace-string" />
   <xsl:apply-templates select="node()|@*">
     <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
   </xsl:apply-templates>
-  <xsl:text>::</xsl:text>
-</xsl:template>
-
-<xsl:template match="dd">
-  <xsl:param name="replace-string" />
-  <xsl:value-of select="$replace-string" />
-  <xsl:text>&tab;</xsl:text>
-  <xsl:apply-templates select="node()|@*">
-    <xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><xsl:text>&tab;</xsl:text></xsl:with-param>
-  </xsl:apply-templates>
-  <xsl:value-of select="$replace-string" />
+  <xsl:value-of select="$replace-string" /></xsl:element><xsl:value-of select="$replace-string" />
 </xsl:template>
 
 <!--****************
