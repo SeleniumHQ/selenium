@@ -34,45 +34,42 @@ function Selenium(browserbot) {
      * <p>
      * We support the following strategies for locating elements:
      * </p>
-     * <blockquote>
-     * <dl>
-     * <dt><strong>identifier</strong>=<em>id</em></dt>
-     * <dd>Select the element with the specified &#64;id attribute. If no match is
+     * 
+     * <ul>
+     * <li><strong>identifier</strong>=<em>id</em>: 
+     * Select the element with the specified &#64;id attribute. If no match is
      * found, select the first element whose &#64;name attribute is <em>id</em>.
-     * (This is normally the default; see below.)</dd>
-     * <dt><strong>id</strong>=<em>id</em></dt>
-     * <dd>Select the element with the specified &#64;id attribute.</dd>
+     * (This is normally the default; see below.)</li>
+     * <li><strong>id</strong>=<em>id</em>:
+     * Select the element with the specified &#64;id attribute.</li>
      *
-     * <dt><strong>name</strong>=<em>name</em></dt>
-     * <dd>Select the first element with the specified &#64;name attribute.</dd>
-     * <dd><ul class="first last simple">
+     * <li><strong>name</strong>=<em>name</em>:
+     * Select the first element with the specified &#64;name attribute.
+     * <ul class="first last simple">
      * <li>username</li>
      * <li>name=username</li>
      * </ul>
-     * </dd>
-     * <dd>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace.  If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</dd>
+     * 
+     * <p>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace.  If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</p>
      *
-     * <dd><ul class="first last simple">
+     * <ul class="first last simple">
      * <li>name=flavour value=chocolate</li>
      * </ul>
-     * </dd>
-     * <dt><strong>dom</strong>=<em>javascriptExpression</em></dt>
+     * </li>
+     * <li><strong>dom</strong>=<em>javascriptExpression</em>: 
      *
-     * <dd>
-     *
-     * <dd>Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
+     * Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
      * Model using JavaScript.  Note that you must not return a value in this string; simply make it the last expression in the block.
      * <ul class="first last simple">
      * <li>dom=document.forms['myForm'].myDropdown</li>
      * <li>dom=document.images[56]</li>
      * <li>dom=function foo() { return document.links[1]; }; foo();</li>
      * </ul>
-     * </dd>
      *
-     * </dd>
+     * </li>
      *
-     * <dt><strong>xpath</strong>=<em>xpathExpression</em></dt>
-     * <dd>Locate an element using an XPath expression.
+     * <li><strong>xpath</strong>=<em>xpathExpression</em>: 
+     * Locate an element using an XPath expression.
      * <ul class="first last simple">
      * <li>xpath=//img[&#64;alt='The image alt text']</li>
      * <li>xpath=//table[&#64;id='table1']//tr[4]/td[2]</li>
@@ -83,26 +80,26 @@ function Selenium(browserbot) {
      * <li>xpath=//*[text()="right"]</li>
      *
      * </ul>
-     * </dd>
-     * <dt><strong>link</strong>=<em>textPattern</em></dt>
-     * <dd>Select the link (anchor) element which contains text matching the
+     * </li>
+     * <li><strong>link</strong>=<em>textPattern</em>:
+     * Select the link (anchor) element which contains text matching the
      * specified <em>pattern</em>.
      * <ul class="first last simple">
      * <li>link=The link text</li>
      * </ul>
      *
-     * </dd>
+     * </li>
      *
-     * <dt><strong>css</strong>=<em>cssSelectorSyntax</em></dt>
-     * <dd>Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
+     * <li><strong>css</strong>=<em>cssSelectorSyntax</em>:
+     * Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
      * <ul class="first last simple">
      * <li>css=a[href="#id3"]</li>
      * <li>css=span#firstChild + span</li>
      * </ul>
-     * </dd>
-     * <dd>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </dd>
-     * </dl>
-     * </blockquote>
+     * <p>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </p>
+     * </li>
+     * </ul>
+     * 
      * <p>
      * Without an explicit locator prefix, Selenium uses the following default
      * strategies:
@@ -135,23 +132,21 @@ function Selenium(browserbot) {
      * <p>
      * Various Pattern syntaxes are available for matching string values:
      * </p>
-     * <blockquote>
-     * <dl>
-     * <dt><strong>glob:</strong><em>pattern</em></dt>
-     * <dd>Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a
+     * <ul>
+     * <li><strong>glob:</strong><em>pattern</em>:
+     * Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a
      * kind of limited regular-expression syntax typically used in command-line
      * shells. In a glob pattern, "*" represents any sequence of characters, and "?"
      * represents any single character. Glob patterns match against the entire
-     * string.</dd>
-     * <dt><strong>regexp:</strong><em>regexp</em></dt>
-     * <dd>Match a string using a regular-expression. The full power of JavaScript
-     * regular-expressions is available.</dd>
-     * <dt><strong>exact:</strong><em>string</em></dt>
+     * string.</li>
+     * <li><strong>regexp:</strong><em>regexp</em>:
+     * Match a string using a regular-expression. The full power of JavaScript
+     * regular-expressions is available.</li>
+     * <li><strong>exact:</strong><em>string</em>:
      *
-     * <dd>Match a string exactly, verbatim, without any of that fancy wildcard
-     * stuff.</dd>
-     * </dl>
-     * </blockquote>
+     * Match a string exactly, verbatim, without any of that fancy wildcard
+     * stuff.</li>
+     * </ul>
      * <p>
      * If no pattern prefix is specified, Selenium assumes that it's a "glob"
      * pattern.
@@ -580,37 +575,37 @@ Selenium.prototype.doSelect = function(selectLocator, optionLocator) {
    * that the selected option satisfies a specification). There are several
    * forms of Select Option Locator.
    * </p>
-   * <dl>
-   * <dt><strong>label</strong>=<em>labelPattern</em></dt>
-   * <dd>matches options based on their labels, i.e. the visible text. (This
+   * <ul>
+   * <li><strong>label</strong>=<em>labelPattern</em>:
+   * matches options based on their labels, i.e. the visible text. (This
    * is the default.)
    * <ul class="first last simple">
    * <li>label=regexp:^[Oo]ther</li>
    * </ul>
-   * </dd>
-   * <dt><strong>value</strong>=<em>valuePattern</em></dt>
-   * <dd>matches options based on their values.
+   * </li>
+   * <li><strong>value</strong>=<em>valuePattern</em>:
+   * matches options based on their values.
    * <ul class="first last simple">
    * <li>value=other</li>
    * </ul>
    *
    *
-   * </dd>
-   * <dt><strong>id</strong>=<em>id</em></dt>
+   * </li>
+   * <li><strong>id</strong>=<em>id</em>:
    *
-   * <dd>matches options based on their ids.
+   * matches options based on their ids.
    * <ul class="first last simple">
    * <li>id=option1</li>
    * </ul>
-   * </dd>
-   * <dt><strong>index</strong>=<em>index</em></dt>
-   * <dd>matches an option based on its index (offset from zero).
+   * </li>
+   * <li><strong>index</strong>=<em>index</em>:
+   * matches an option based on its index (offset from zero).
    * <ul class="first last simple">
    *
    * <li>index=2</li>
    * </ul>
-   * </dd>
-   * </dl>
+   * </li>
+   * </ul>
    * <p>
    * If no option locator prefix is provided, the default behaviour is to match on <strong>label</strong>.
    * </p>
