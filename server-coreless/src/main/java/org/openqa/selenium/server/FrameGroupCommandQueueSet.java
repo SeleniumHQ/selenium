@@ -106,16 +106,33 @@ public class FrameGroupCommandQueueSet {
     }
     
 
-    /** Retrieves a FrameGroupCommandQueueSet for the specifed sessionId, creating a new one if there isn't one with that sessionId already 
+    /** Retrieves a FrameGroupCommandQueueSet for the specifed sessionId 
      */
-    static public FrameGroupCommandQueueSet getOrMakeQueueSet(String sessionId) {
+    static public FrameGroupCommandQueueSet getQueueSet(String sessionId) {
         dataLock.lock();
         try {
             FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
             if (queueSet == null) {
-                queueSet = new FrameGroupCommandQueueSet(sessionId);
-                FrameGroupCommandQueueSet.queueSets.put(sessionId, queueSet);
+                throw new RuntimeException("sessionId " + sessionId + " doesn't exist"); 
             }
+            return queueSet;
+        }
+        finally {
+            dataLock.unlock();
+        }
+    }
+    
+    /** Creates a FrameGroupCommandQueueSet for the specifed sessionId 
+     */
+    static public FrameGroupCommandQueueSet makeQueueSet(String sessionId) {
+        dataLock.lock();
+        try {
+            FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
+            if (queueSet != null) {
+                throw new RuntimeException("sessionId " + sessionId + " already exists");
+            }
+            queueSet = new FrameGroupCommandQueueSet(sessionId);
+            FrameGroupCommandQueueSet.queueSets.put(sessionId, queueSet);
             return queueSet;
         }
         finally {

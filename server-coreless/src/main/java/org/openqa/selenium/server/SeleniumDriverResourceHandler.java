@@ -113,7 +113,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 logPostedData(frameAddress, justLoaded, sessionId, postedData, uniqueId);
 
-                FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getOrMakeQueueSet(sessionId);
+                FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
                 SeleniumServer.log("req: "+seleniumStart+":"+req);
                 if (justLoaded) {
                     postedData = "OK";  // assume a new page starting is okay
@@ -366,7 +366,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             if ("open".equals(cmd)) {
                 warnIfApparentDomainChange(sessionId, values.get(0));
             }
-            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getOrMakeQueueSet(sessionId);
+            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
             results = queue.doCommand(cmd, values.get(0), values.get(1));
         }
         SeleniumServer.log("Got result: " + results + " on session " + sessionId);
@@ -454,13 +454,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         CommandQueue queue;
         if (sessionId != null) {
             setLastSessionId(sessionId); 
-            queue = FrameGroupCommandQueueSet.getOrMakeQueueSet(sessionId).getCommandQueue();
+            queue = FrameGroupCommandQueueSet.getQueueSet(sessionId).getCommandQueue();
         }
         else {
             sessionId = Long.toString(System.currentTimeMillis() % 1000000);
             setLastSessionId(sessionId); 
             BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
-            queue = FrameGroupCommandQueueSet.getOrMakeQueueSet(sessionId).getCommandQueue();
+            queue = FrameGroupCommandQueueSet.makeQueueSet(sessionId).getCommandQueue();
             BrowserLauncher launcher = blf.getBrowserLauncher(browserString, sessionId, queue);
             launchers.put(sessionId, launcher);
             sessionIdsToBrowserStrings.put(sessionId, browserString);
@@ -481,7 +481,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private void addUnusedBrowserSession(String sessionId) {
-        FrameGroupCommandQueueSet.getOrMakeQueueSet(sessionId).reset();
+        FrameGroupCommandQueueSet.getQueueSet(sessionId).reset();
         unusedBrowserSessions.put(sessionIdsToBrowserStrings.get(sessionId), sessionId);
     }
 
