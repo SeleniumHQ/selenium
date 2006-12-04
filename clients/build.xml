@@ -297,11 +297,11 @@
     </target>
     
     <target name="test-php">
-        <ant dir="ruby" target="all"/>
+        <ant dir="php" target="all"/>
     </target>
     
     <target name="clean-php">
-        <ant dir="ruby" target="clean"/>
+        <ant dir="php" target="clean"/>
     </target>
 
 
