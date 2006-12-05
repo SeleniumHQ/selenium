@@ -23,20 +23,42 @@ import java.io.*;
 import junit.framework.*;
 
 /**
+ * Provides a JUnit TestCase base class that implements some handy functionality 
+ * for Selenium testing (you are <i>not</i> required to extend this class).
+ * 
+ * <p>This class adds a number of "verify" commands, which are like "assert" commands,
+ * but they don't stop the test when they fail.  Instead, verification errors are all
+ * thrown at once during tearDown.</p>
+ * 
  * @author Nelson Sproul (nsproul@bea.com) Mar 13-06
  */
 public class SeleneseTestCase extends TestCase {
 
     private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
     
-    public Selenium selenium;
-    public static StringBuffer verificationErrors = new StringBuffer(); 
+    /** Use this object to run all of your selenium tests */
+    protected Selenium selenium;
+    
+    private StringBuffer verificationErrors = new StringBuffer();
 
+    /** The port on which the Selenium Server is running; defaults to 4444 */
+	protected int port = 4444; 
+
+	/** Calls this.setUp(null)
+	 * @see #setUp(String)
+	 */
     public void setUp() throws Exception {
         super.setUp();
         this.setUp(null);
     }
 
+    /**
+     * Calls this.setUp with the specified url and a default browser.  On Windows, the default browser is *iexplore; otherwise, the default browser is *firefox.
+     * @see #setUp(String, String)
+     * @param url the baseUrl to use for your Selenium tests
+     * @throws Exception
+     * 
+     */
     public void setUp(String url) throws Exception {
       if(THIS_IS_WINDOWS){
 	     setUp(url, "*iexplore");
@@ -45,16 +67,22 @@ public class SeleneseTestCase extends TestCase {
       } 
     }
     
-    public void setUp(String url, String browserMode) throws Exception {
+    /**
+     * Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser string
+     * @param url the baseUrl for your tests
+     * @param browserString the browser to use, e.g. *firefox
+     * @throws Exception
+     */
+    public void setUp(String url, String browserString) throws Exception {
         super.setUp();
-        int port = 4444;
         if (url==null) {
             url = "http://localhost:" + port;
         }
-        selenium = new DefaultSelenium("localhost", port, browserMode, url);
+        selenium = new DefaultSelenium("localhost", port, browserString, url);
         selenium.start();
     }
 
+    /** Like assertTrue, but fails at the end of the test (during tearDown) */
     public void verifyTrue(boolean b) {
         try {
             assertTrue(b);
@@ -63,6 +91,7 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
+    /** Like assertFalse, but fails at the end of the test (during tearDown) */
     public void verifyFalse(boolean b) {
         try {
             assertFalse(b);
@@ -71,11 +100,13 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
+    /** Returns the body text of the current page */
     public String getText() {
         return selenium.getEval("this.page().bodyText()");
     }
 
-    public static void verifyEquals(Object s1, Object s2) {
+    /** Like assertEquals, but fails at the end of the test (during tearDown) */
+    public void verifyEquals(Object s1, Object s2) {
         try {
             assertEquals(s1, s2);
         } catch (AssertionFailedError e) {
@@ -83,6 +114,7 @@ public class SeleneseTestCase extends TestCase {
         }
     }
 
+    /** Like JUnit's Assert.assertEquals, but knows how to compare string arrays */
     public static void assertEquals(Object s1, Object s2) {
         if (s1 instanceof String && s2 instanceof String) {
             assertEquals((String)s1, (String)s2);
@@ -102,61 +134,74 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
+    /** Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese */ 
     public static void assertEquals(String s1, String s2) {
         assertTrue("Expected \"" + s1 + "\" but saw \"" + s2 + "\" instead", seleniumEquals(s1, s2));
     }
     
-    public static boolean seleniumEquals(String s1, String s2) {
-        if (s2.startsWith("regexp:") || s2.startsWith("regex:")) {
-            String tmp = s2;
-            s2 = s1;
-            s1 = tmp;
+    /** Compares two strings, but handles "regexp:" strings like HTML Selenese
+     * 
+     * @param expectedPattern
+     * @param actual
+     * @return true if actual matches the expectedPattern, or false otherwise
+     */
+    public static boolean seleniumEquals(String expectedPattern, String actual) {
+        if (actual.startsWith("regexp:") || actual.startsWith("regex:")) {
+            // swap 'em
+        	String tmp = actual;
+            actual = expectedPattern;
+            expectedPattern = tmp;
         }
-        if (s1.startsWith("regexp:")) {
-            String s1regexp = s1.replaceFirst("regexp:", ".*") + ".*";
-            if (!s2.matches(s1regexp)) {
-                System.out.println("expected " + s2 + " to match regexp " + s1);
+        if (expectedPattern.startsWith("regexp:")) {
+            String expectedRegEx = expectedPattern.replaceFirst("regexp:", ".*") + ".*";
+            if (!actual.matches(expectedRegEx)) {
+                System.out.println("expected " + actual + " to match regexp " + expectedPattern);
                 return false;                    
             }
             return true;
         }
-        if (s1.startsWith("regex:")) {
-            String s1regexp = s1.replaceFirst("regex:", ".*") + ".*";
-            if (!s2.matches(s1regexp)) {
-                System.out.println("expected " + s2 + " to match regex " + s1);
+        if (expectedPattern.startsWith("regex:")) {
+            String expectedRegEx = expectedPattern.replaceFirst("regex:", ".*") + ".*";
+            if (!actual.matches(expectedRegEx)) {
+                System.out.println("expected " + actual + " to match regex " + expectedPattern);
                 return false;
             }
             return true;
         }
         
-        if (s1.startsWith("exact:")) {
-            String s1exact = s1.replaceFirst("exact:", "");
-            if (!s1exact.equals(s2)) {
-                System.out.println("expected " + s2 + " to match " + s1);
+        if (expectedPattern.startsWith("exact:")) {
+            String expectedExact = expectedPattern.replaceFirst("exact:", "");
+            if (!expectedExact.equals(actual)) {
+                System.out.println("expected " + actual + " to match " + expectedPattern);
                 return false;
             }
             return true;
         }
         
-        String s1glob = s1.replaceFirst("glob:", "");
-        s1glob = s1glob.replaceAll("([\\]\\[\\\\{\\}$\\(\\)\\|\\^\\+.])", "\\\\$1");
+        String expectedGlob = expectedPattern.replaceFirst("glob:", "");
+        expectedGlob = expectedGlob.replaceAll("([\\]\\[\\\\{\\}$\\(\\)\\|\\^\\+.])", "\\\\$1");
 
-        s1glob = s1glob.replaceAll("\\*", "(.|[\r\n])*");
-        s1glob = s1glob.replaceAll("\\?", "(.|[\r\n])");
-        if (!s2.matches(s1glob)) {
-            System.out.println("expected \"" + s2 + "\" to match glob \"" + s1 + "\" (had transformed the glob into regexp \"" + s1glob + "\"");
+        expectedGlob = expectedGlob.replaceAll("\\*", "(.|[\r\n])*");
+        expectedGlob = expectedGlob.replaceAll("\\?", "(.|[\r\n])");
+        if (!actual.matches(expectedGlob)) {
+            System.out.println("expected \"" + actual + "\" to match glob \"" + expectedPattern + "\" (had transformed the glob into regexp \"" + expectedGlob + "\"");
             return false;
         }
         return true;
     }
     
-    public static boolean seleniumEquals(Object s1, Object s2) {
-        if (s1 instanceof String && s2 instanceof String) {
-            return seleniumEquals((String)s1, (String)s2);
+    /** Compares two objects, but handles "regexp:" strings like HTML Selenese
+     * @see #seleniumEquals(String, String)
+     * @return true if actual matches the expectedPattern, or false otherwise
+     */
+    public static boolean seleniumEquals(Object expected, Object actual) {
+        if (expected instanceof String && actual instanceof String) {
+            return seleniumEquals((String)expected, (String)actual);
         }
-        return s1.equals(s2);
+        return expected.equals(actual);
     }
     
+    /** Asserts that two string arrays have identical string contents */
     public static void assertEquals(String[] s1, String[] s2) {
         String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(s1, s2);
         if (comparisonDumpIfNotEqual!=null) {
@@ -164,7 +209,8 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
-    public static void verifyEquals(String[] s1, String[] s2) {
+    /** Asserts that two string arrays have identical string contents (fails at the end of the test, during tearDown) */
+    public void verifyEquals(String[] s1, String[] s2) {
         String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(s1, s2);
         if (comparisonDumpIfNotEqual!=null) {
             verificationErrors.append(comparisonDumpIfNotEqual);
@@ -200,7 +246,8 @@ public class SeleneseTestCase extends TestCase {
         return sb.toString();
     }
 
-    public static void verifyNotEquals(Object s1, Object s2) {
+    /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
+    public void verifyNotEquals(Object s1, Object s2) {
         try {
             assertNotEquals(s1, s2);
         } catch (AssertionFailedError e) {
@@ -208,12 +255,14 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
+    /** Asserts that two objects are not the same (compares using .equals()) */
     public static void assertNotEquals(Object obj1, Object obj2) {
         if (obj1.equals(obj2)) {
             fail("did not expect values to be equal (" + obj1.toString() + ")");
         }
     }
     
+    /** Sleeps for the specified number of milliseconds */
     public void pause(int millisecs) {
         try {
             Thread.sleep(millisecs);
@@ -221,20 +270,23 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
-    public String quote(String value) {
-        return "'" + value.replaceAll("'", "\\'") + "'";
-    }
-    
+    /** Asserts that there were no verification errors during the current test, failing immediately if any are found */
     public void checkForVerificationErrors() {
         assertEquals("", verificationErrors.toString());
         clearVerificationErrors();
     }
 
+    /** Clears out the list of verification errors */
     public void clearVerificationErrors() {
         verificationErrors = new StringBuffer();
     }
     
+    /** checks for verification errors and stops the browser */
     public void tearDown() throws Exception {
-        selenium.stop();
+    	try {
+    		checkForVerificationErrors();
+    	} finally {
+    		selenium.stop();
+    	}
     }
 }
