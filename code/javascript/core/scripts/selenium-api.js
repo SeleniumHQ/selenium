@@ -1622,23 +1622,23 @@ Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, 
    * @param locatorOfObjectToBeDragged an element to be dragged
    * @param locatorOfDragDestinationObject an element whose location (i.e., whose top left corner) will be the point where locatorOfObjectToBeDragged  is dropped
    */
-   var startX = Selenium.prototype.getElementPositionLeft(locatorOfObjectToBeDragged);
-   var startY = Selenium.prototype.getElementPositionTop(locatorOfObjectToBeDragged);
+   var startX = this.getElementPositionLeft(locatorOfObjectToBeDragged);
+   var startY = this.getElementPositionTop(locatorOfObjectToBeDragged);
    
-   var destinationLeftX = Selenium.prototype.getElementPositionLeft(locatorOfDragDestinationObject);
-   var destinationTopY = Selenium.prototype.getElementPositionTop(locatorOfDragDestinationObject);
-   var destinationWidth = Selenium.prototype.getElementWidth(locatorOfDragDestinationObject);
-   var destinationHeight = Selenium.prototype.getElementHeight(locatorOfDragDestinationObject);
+   var destinationLeftX = this.getElementPositionLeft(locatorOfDragDestinationObject);
+   var destinationTopY = this.getElementPositionTop(locatorOfDragDestinationObject);
+   var destinationWidth = this.getElementWidth(locatorOfDragDestinationObject);
+   var destinationHeight = this.getElementHeight(locatorOfDragDestinationObject);
 
    var endX = destinationLeftX + (destinationWidth / 2);
-   var endY = destinationLeftY + (destinationHeight / 2);
+   var endY = destinationTopY + (destinationHeight / 2);
    
    var deltaX = endX - startX;
    var deltaY = endY - startY;
    
    var movementsString = "" + deltaX + "," + deltaY;
    
-   doDragAndDrop(locatorOfObjectToBeDragged, movementsString);
+   this.doDragAndDrop(locatorOfObjectToBeDragged, movementsString);
 };
 
 Selenium.prototype.doWindowFocus = function(windowName) {
