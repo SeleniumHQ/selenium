@@ -159,9 +159,11 @@ function Selenium(browserbot) {
         return browserbot;
     };
     this.defaultTimeout = Selenium.DEFAULT_TIMEOUT;
+    this.mouseSpeed = 10;
 }
 
 Selenium.DEFAULT_TIMEOUT = 30 * 1000;
+Selenium.DEFAULT_MOUSE_SPEED = 10;
 
 Selenium.decorateFunctionWithTimeout = function(f, timeout) {
     if (f == null) {
@@ -1580,39 +1582,65 @@ Selenium.prototype.doDragdrop = function(locator, movementsString) {
    */
    this.doDragAndDrop(locator, movementsString);
 };
-   
+
+Selenium.prototype.doSetMouseSpeed = function(pixels) {
+    /** Configure the number of pixels between "mousemove" events during dragAndDrop commands (default=10).
+    * <p>Setting this value to 0 means that we'll send a "mousemove" event to every single pixel
+    * in between the start location and the end location; that can be very slow, and may
+    * cause some browsers to force the JavaScript to timeout.</p>
+    * 
+    * <p>If the mouse speed is greater than the distance between the two dragged objects, we'll
+    * just send one "mousemove" at the start location and then one final one at the end location.</p>
+    * @param pixels the number of pixels between "mousemove" events
+    */
+    this.mouseSpeed = pixels;
+}
+ 
+Selenium.prototype.getMouseSpeed = function() {
+    /** Returns the number of pixels between "mousemove" events during dragAndDrop commands (default=10).
+    * 
+    * @return number the number of pixels between "mousemove" events during dragAndDrop commands (default=10)
+    */
+    this.mouseSpeed = pixels;
+}
+
+
 Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
-   /** Drags an element a certain distance and then drops it
-   * @param locator an element locator
-   * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
-   */
-   var element = this.browserbot.findElement(locator);
-   var clientStartXY = getClientXY(element)
-   var clientStartX = clientStartXY[0];
-   var clientStartY = clientStartXY[1];
-
-   var movements = movementsString.split(/,/);
-   var movementX = Number(movements[0]);
-   var movementY = Number(movements[1]);
-
-   var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
-   var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
-
-   var movementXincrement = (movementX > 0) ? 1 : -1;
-   var movementYincrement = (movementY > 0) ? 1 : -1;
-
-   this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientStartX, clientStartY);
-   var clientX = clientStartX;
-   var clientY = clientStartY;
-   while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
-       if (clientX != clientFinishX) {
-           clientX += movementXincrement;
-        }
-       if (clientY != clientFinishY) {
-           clientY += movementYincrement;
-        }
+    /** Drags an element a certain distance and then drops it
+    * @param locator an element locator
+    * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
+    */
+    var element = this.browserbot.findElement(locator);
+    var clientStartXY = getClientXY(element)
+    var clientStartX = clientStartXY[0];
+    var clientStartY = clientStartXY[1];
+    
+    var movements = movementsString.split(/,/);
+    var movementX = Number(movements[0]);
+    var movementY = Number(movements[1]);
+    
+    var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
+    var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
+    
+    var mouseSpeed = this.mouseSpeed;
+    var move = function(current, dest) {
+        if (current == dest) return current;
+        if (Math.abs(current - dest) < mouseSpeed) return dest;
+        return (current < dest) ? current + mouseSpeed : current - mouseSpeed;
+    }
+    
+    this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientStartX, clientStartY);
+    this.browserbot.triggerMouseEvent(element, 'mousemove',   true, clientStartX, clientStartY);
+    var clientX = clientStartX;
+    var clientY = clientStartY;
+    
+    while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
+        clientX = move(clientX, clientFinishX);
+        clientY = move(clientY, clientFinishY);
         this.browserbot.triggerMouseEvent(element, 'mousemove', true, clientX, clientY);
     }
+    
+    this.browserbot.triggerMouseEvent(element, 'mousemove',   true, clientFinishX, clientFinishY);
     this.browserbot.triggerMouseEvent(element, 'mouseup',   true, clientFinishX, clientFinishY);
 };
 
@@ -1620,7 +1648,7 @@ Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, 
 /** Drags an element and drops it on another element
    *
    * @param locatorOfObjectToBeDragged an element to be dragged
-   * @param locatorOfDragDestinationObject an element whose location (i.e., whose top left corner) will be the point where locatorOfObjectToBeDragged  is dropped
+   * @param locatorOfDragDestinationObject an element whose location (i.e., whose center-most pixel) will be the point where locatorOfObjectToBeDragged  is dropped
    */
    var startX = this.getElementPositionLeft(locatorOfObjectToBeDragged);
    var startY = this.getElementPositionTop(locatorOfObjectToBeDragged);
@@ -1630,8 +1658,8 @@ Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, 
    var destinationWidth = this.getElementWidth(locatorOfDragDestinationObject);
    var destinationHeight = this.getElementHeight(locatorOfDragDestinationObject);
 
-   var endX = destinationLeftX + (destinationWidth / 2);
-   var endY = destinationTopY + (destinationHeight / 2);
+   var endX = Math.round(destinationLeftX + (destinationWidth / 2));
+   var endY = Math.round(destinationTopY + (destinationHeight / 2));
    
    var deltaX = endX - startX;
    var deltaY = endY - startY;
