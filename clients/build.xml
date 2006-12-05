@@ -212,7 +212,7 @@
         <echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
     </target>
     
-    <target name="test" depends="test-dotnet, test-ruby, test-python, test-perl"/>
+    <target name="test" depends="test-dotnet, test-ruby, test-python, test-perl, test-php"/>
     
     <target name="clean-python">
         <ant dir="python" target="clean"/>
