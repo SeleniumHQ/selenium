@@ -364,6 +364,14 @@ function getDocumentBase(doc) {
     return "";
 }
 
+function getTagName(element) {
+    var tagName;
+    if (element && element.tagName && element.tagName.toLowerCase) {
+        tagName = element.tagName.toLowerCase();
+    }
+    return tagName;
+}
+
 function absolutify(url, baseUrl) {
     /** returns a relative url in its absolute form, given by baseUrl.
     * 

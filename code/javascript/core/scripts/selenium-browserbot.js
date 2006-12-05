@@ -1223,9 +1223,22 @@ BrowserBot.prototype.replaceText = function(element, stringValue) {
             LOG.warn("AFTER")
         }
     }
-    element.value = actualValue;
+    
+    if (getTagName(element) == "body") {
+        if (element.ownerDocument && element.ownerDocument.designMode) {
+            var designMode = new String(element.ownerDocument.designMode).toLowerCase();
+            if (designMode = "on") {
+                // this must be a rich text control!
+                element.innerHTML = actualValue;
+            }
+        }
+    } else {
+        element.value = actualValue;
+    }
     // DGF this used to be skipped in chrome URLs, but no longer.  Is xpcnativewrappers to blame?
-    triggerEvent(element, 'change', true);
+    try {
+        triggerEvent(element, 'change', true);
+    } catch (e) {}
 };
 
 BrowserBot.prototype.submit = function(formElement) {
@@ -1276,10 +1289,7 @@ BrowserBot.prototype.doubleClickElement = function(element, clientX, clientY) {
 BrowserBot.prototype._modifyElementTarget = function(element) {
     if (element.target) {
         if (element.target == "_blank" || /^selenium_blank/.test(element.target) ) {
-            var tagName;
-            if (element.tagName && element.tagName.toLowerCase) {
-                tagName = element.tagName.toLowerCase();
-            }
+            var tagName = getTagName(element);
             if (tagName == "a" || tagName == "form") {
                 var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
                 LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
@@ -1792,6 +1802,8 @@ MozillaBrowserBot.prototype._fireEventOnElement = function(eventType, element, c
     }
 
 };
+
+
 OperaBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     var win = this.getCurrentWindow();
     triggerEvent(element, 'focus', false);
