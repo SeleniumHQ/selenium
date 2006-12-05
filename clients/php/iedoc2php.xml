@@ -168,7 +168,7 @@ TOP
  * @package    Selenium
  * @author     Shin Ohno &lt;ganchiku at gmail dot com&gt;
  * @author     Bjoern Schotte &lt;schotte at mayflower dot de&gt;
- * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
+ * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License, Version 2.0
  * @version    @package_version@
  * @see        http://www.openqa.org/selenium-rc/
  * @since      0.1
