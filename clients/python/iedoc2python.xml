@@ -64,7 +64,7 @@ import re
 
 class selenium:
     """
-</xsl:text>
+    </xsl:text>
 	<xsl:apply-templates>
 		<xsl:with-param name="replace-string"><xsl:text>&nl;&tab;</xsl:text></xsl:with-param>
 	</xsl:apply-templates>
@@ -186,8 +186,17 @@ class selenium:
 
 <xsl:template match="text()">
 	<xsl:param name="replace-string" />
+	<!-- DGF escape all asterisks -->
+	<xsl:variable name="asterisks">
+		<xsl:call-template name="search-and-replace">
+    		<xsl:with-param name="input"><xsl:value-of select='.' /></xsl:with-param>
+    		<xsl:with-param name="search-string"><xsl:text>*</xsl:text></xsl:with-param>
+    		<xsl:with-param name="replace-string">\*</xsl:with-param>
+    	</xsl:call-template>
+	</xsl:variable>
+	<!-- replace newlines with the current replace string (usually some indentation) -->
 	<xsl:call-template name="search-and-replace">
-		<xsl:with-param name="input"><xsl:value-of select='.' /></xsl:with-param>
+		<xsl:with-param name="input"><xsl:value-of select='$asterisks' /></xsl:with-param>
 		<xsl:with-param name="search-string"><xsl:text>&nl;</xsl:text></xsl:with-param>
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
 	</xsl:call-template>
@@ -261,20 +270,21 @@ class selenium:
 	<xsl:param name="replace-string" />
 	<xsl:choose>
 		<xsl:when test="local-name(..) = 'ul'">
-			<xsl:text>*&tab;</xsl:text>
+			<xsl:text>*   </xsl:text>
 		</xsl:when>
 		<xsl:when test="local-name(..) = 'ol'">
 			<xsl:value-of select="position()"/><xsl:text>. </xsl:text>
 		</xsl:when>
 	</xsl:choose>
 	<xsl:apply-templates select="node()|@*">
-		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><xsl:text>&tab;</xsl:text></xsl:with-param>
 	</xsl:apply-templates>
 	<xsl:value-of select="$replace-string" />
 </xsl:template>
 
 <xsl:template match="ul|ol|dl">
 	<xsl:param name="replace-string" />
+	<xsl:value-of select="$replace-string" />
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /><!--<xsl:text>&tab;</xsl:text>--></xsl:with-param>
 	</xsl:apply-templates>
@@ -283,17 +293,27 @@ class selenium:
 
 <xsl:template match="p">
 	<xsl:param name="replace-string" />
+	<xsl:value-of select="$replace-string" />
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
 	</xsl:apply-templates>
 	<xsl:value-of select="$replace-string" />
 </xsl:template>
 
-<xsl:template match="a|blockquote">
+<xsl:template match="a">
 	<xsl:param name="replace-string" />
 	<xsl:apply-templates select="node()|@*">
 		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
 	</xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="blockquote">
+	<xsl:param name="replace-string" />
+	<xsl:value-of select="$replace-string" />
+	<xsl:apply-templates select="node()|@*">
+		<xsl:with-param name="replace-string"><xsl:value-of select="$replace-string" /></xsl:with-param>
+	</xsl:apply-templates>
+	<xsl:value-of select="$replace-string" />
 </xsl:template>
 
 <xsl:template match="dt">
