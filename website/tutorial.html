@@ -67,7 +67,7 @@ When this command finishes, your browser window should reveal google.com in the 
 <blockquote>
   <p><code>cmd=<strong>click</strong>&amp;1=<strong>btnG</strong>&amp;sessionId=<em>260113</em></code> </p>
 </blockquote>
-<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers (<a href="java.html">Java</a>, <a href="dotnet.html">.NET</a>, <a href="python.html">Perl</a>, <a href="python.html">Python</a> or <a href="ruby.html">Ruby</a>). </p>
+<p>You should now see the results of your Google Search in your browser window. You can run dozens of Selenium commands to automate all manner of browsing tasks. For more information on particular commands, you can go look at the <a href="http://www.openqa.org/selenium/">Selenium Core</a> section at the Open QA website, or check out the reference materials available for any of our Client Drivers (<a href="java.html">Java</a>, <a href="dotnet.html">.NET</a>, <a href="perl.html">Perl</a>, <a href="php.html">PHP</a>, <a href="python.html">Python</a> or <a href="ruby.html">Ruby</a>). </p>
 <p>The next thing we might want to do is read some information back out of the page... for example, let's retrieve the HTML title of the current page, like this:
 <blockquote>
   <p><code> cmd=<strong>getTitle</strong>&amp;sessionId=<em>260113</em></code></p>
@@ -87,7 +87,7 @@ When this command finishes, your browser window should reveal google.com in the 
 </p>
 
 <h2>Programming a Selenium RC Test</h2>
-Now that you know how to run commands in interactive mode, let's code this test up!  Here's examples of writing the test we just wrote in four different programming languages:
+Now that you know how to run commands in interactive mode, let's code this test up!  Here's examples of writing the test we just wrote in five different programming languages:
 
 <h3><a href="#" onclick="document.getElementById('java').style.display='inline';return false;">(+) Java (JUnit)</a></h3>
 <pre id="java" style="display:none">
@@ -169,6 +169,43 @@ $sel->click("btnG");
 $sel->wait_for_page_to_load(5000);
 like($sel->get_title(), qr/Google Search/);
 $sel->stop();
+
+</pre>
+
+<h3><a href="#" onclick="document.getElementById('php').style.display='inline';return false;">(+) PHP (PHPUnit)</a></h3>
+
+<pre id="php" style="display:none">
+&lt;?php
+
+require_once 'Testing/Selenium.php';
+require_once 'PHPUnit/Framework/TestCase.php';
+
+class GoogleTest extends PHPUnit_Framework_TestCase
+{
+    private $selenium;
+
+    public function setUp()
+    {
+        $this->selenium = new Testing_Selenium("*firefox", "http://www.google.com");
+        $this->selenium->start();
+    }
+
+    public function tearDown()
+    {
+        $this->selenium->stop();
+    }
+
+    public function testGoogle()
+    {
+        $this->selenium->open("/");
+        $this->selenium->type("q", "hello world");
+        $this->selenium->click("btnG");
+        $this->selenium->waitForPageToLoad(10000);
+        $this->assertRegExp("/Google Search/", $this->selenium->getTitle());
+    }
+
+}
+?>
 
 </pre>
 
@@ -282,11 +319,6 @@ end
 </blockquote>
 
 <p>Again, note that you'll need to manually configure your proxy prior to launching Firefox in this way; otherwise you'll get a 404 error while following the steps in the tutorial.</p>
-
-<h2><a name="nullsession"/>Running without a Session ID - the &quot;null&quot; session</h2>
-<p>If you get annoyed with typing out your Session ID over-and-over, or if you want to try manually testing with another browser that we don't yet officially support, you can always just launch the browser yourself and browse to &quot;/selenium-server/RemoteRunner.html&quot; manually.  (Don't forget to set your proxy settings, as discussed in the previous section.)</p>
-<p>If you just point straight at &quot;/selenium-server/RemoteRunner.html&quot; you can send commands to that browser without specifying a Session ID. When no Session ID is specified, the Selenium Server uses the &quot;null&quot; session to communicate with any browser that comes to speak with it.</p>
-<p>You can even make up your own Session IDs, just by starting your browser while pointing to &quot;/selenium-server/RemoteRunner.html?sessionId=foo&quot;. That will use the Session ID &quot;foo&quot; instead of some crazy long number. (Session IDs don't have to be numbers, though they usually are when the Selenium Server generates one.) Hence, if you use a Session ID that isn't on record with the Selenium Server, no error message will be thrown; the Selenium Server will just wait patiently for some browser to come along and request work from that Session ID.</p>
 
 <h2><a name="multiWindowMode"/>Run tests under multi-window mode</h2>
 <p>By default, Selenium runs the application under test in a subframe.  (Running the AUT in a subframe gives us a great deal of control over the AUT.)  But some apps don't run properly in a subframe, preferring to be loaded into the top frame of the window.  In that case, you need to make your application under test run in a seperate window rather than in the default frame.  To do that, start
