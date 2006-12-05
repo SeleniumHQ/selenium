@@ -543,7 +543,6 @@ public class SeleniumServer {
         HttpContext context = new HttpContext();
         context.setContextPath("/selenium-server");
         context.setMimeMapping("xhtml", "application/xhtml+xml");
-        log(context.getMimeMap().get("xhtml").toString());
 
         staticContentHandler = new StaticContentHandler(slowResources);
         String overrideJavascriptDir = System.getProperty("selenium.javascript.dir");
