@@ -37,18 +37,20 @@ sub strip_blockquotes {
 
 sub html2pod {
     my $text = shift;
-    $text =~ s#^<p>([^<]+)</p>$#\n$1\n#smg;             # p's should be spaced out a bit
+    $text =~ s#<p>(.+?)</p>#\n$1\n#smg;             # p's should be spaced out a bit
     $text =~ s#^</?(?:p|dl)>##smg;                      # <p>s and <dl>s on their own line
     $text =~ s#</?(?:p|dl)>##g;                         # <p>s and <dl>s 
     $text =~ s#<a name="[^"]+">([^<]*)</a>#$1#g;        # don't need anchors
-    $text =~ s#<h3>([^<]+)</h3>#=head3 $1#g;            # headings
+    $text =~ s#<h3>([^<]+)</h3>#\n\n=head3 $1\n\n#g;            # headings
     $text =~ s#<em>([^<]+)</em>#I<$1>#g;                # italics
     $text =~ s#<strong>([^<]+)</strong>#B<$1>#g;        # italics
     $text =~ s#</?dd>#\n#gs;                            # item text
     $text =~ s#<dt>(.+?)</dt>#=item $1\n#g;             # list items
-    $text =~ s#<li>(.+?)</li>#=item $1\n\n#g;           # ul item
-    $text =~ s#<ul[^>]+>#\n=over\n\n#g;                 # ul start
-    $text =~ s#</ul>#=back\n\n#g;                       # ul end
+    for (my $i = 0; $i < 5; $i++) {
+        $text =~ s#<li>(.+?)</li>#=item *\n\n$1\n\n#gs;           # ul item
+        $text =~ s#<ul[^>]*>#\n\n=over\n\n#g;                 # ul start
+        $text =~ s#</ul>#=back\n\n#g;                       # ul end
+    }
     $text =~ s/<a href="#[^"]+">([^<]+)<\/a>/$1/g;      # strip in-page links
     $text =~ s#<a href="([^"]+)">([^<]+)</a>#$1 ($2)#g; # reformat links
     $text =~ s#<code>([^<]+)</code>#C<$1>#g;            # code blocks

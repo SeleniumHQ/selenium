@@ -9,6 +9,8 @@ my $iedoc = read_iedoc_xml();
 
 # Convert HTML formatting into POD
 $iedoc =~ s{^<\?.+?<top>}{#}s; # strip the xml header
+
+$iedoc =~ s#\n##smg; # newlines shouldn't matter to them, but they do matter to us
 $iedoc = html2pod($iedoc); 
 
 $iedoc = strip_blockquotes($iedoc);
