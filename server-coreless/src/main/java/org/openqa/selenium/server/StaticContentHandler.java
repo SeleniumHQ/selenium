@@ -55,7 +55,8 @@ class StaticContentHandler extends ResourceHandler {
 
     protected Resource getResource(final String pathInContext) throws IOException {
         delayIfNeed(pathInContext);
-        for (int i = 0; i < resourceLocators.size(); i++) {
+        // DGF go through the resource locators in reverse order, to prefer the classpath locator last
+        for (int i = resourceLocators.size()-1; i >= 0; i--) {
             ResourceLocator resourceLocator = resourceLocators.get(i);
             Resource resource = resourceLocator.getResource(getHttpContext(), pathInContext);
             if (resource.exists()) return resource;
