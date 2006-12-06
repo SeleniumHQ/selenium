@@ -280,7 +280,7 @@ public class FrameGroupCommandQueueSet {
                     frameAddressToJustLoaded.remove(matchingFrameAddress);
                     return "OK";
                 }
-                SeleniumServer.log("waiting for window \"" + waitingForThisWindowName + "\"");
+                SeleniumServer.log("waiting for window \"" + waitingForThisWindowName + "\"" + " local frame \"" + waitingForThisLocalFrame + "\"");
                 try {
                     resultArrivedOnAnyQueue.await(1, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
