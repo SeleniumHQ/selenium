@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.server;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
+import java.io.*;
+import java.net.*;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
 
 /**
  * <p>Schedules and coordinates commands to be run.</p>
@@ -42,7 +41,7 @@ public class CommandQueue {
     private final Lock dataLock;
     private Condition resultArrived;
     private Condition commandReady;
-    private HashMap<String, Boolean> cachedJsVariableNamesPointingAtThisWindow = new HashMap<String, Boolean>(); 
+    private ConcurrentHashMap<String, Boolean> cachedJsVariableNamesPointingAtThisWindow = new ConcurrentHashMap<String, Boolean>(); 
     
     static private int millisecondDelayBetweenOperations;
 
