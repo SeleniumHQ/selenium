@@ -521,6 +521,32 @@ Selenium.prototype.doType = function(locator, value) {
     this.browserbot.replaceText(element, value);
 };
 
+Selenium.prototype.doTypeKeys = function(locator, value) {
+    /**
+    * Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+    *
+    * <p>This is a convenience method for calling keyDown, keyUp, keyPress for every character in the specified string;
+    * this is useful for dynamic UI widgets (like auto-completing combo boxes) that require explicit key events.</p>
+    * 
+    * <p>Unlike the simple "type" command, which forces the specified value into the page directly, this command
+    * may or may not have any visible effect, even in cases where typing keys would normally have a visible effect.
+    * For example, if you use "typeKeys" on a form element, you may or may not see the results of what you typed in
+    * the field.</p>
+    * <p>In some cases, you may need to use the simple "type" command to set the value of the field and then the "typeKeys" command to
+    * send the keystroke events corresponding to what you just typed.</p>
+    *
+    * @param locator an <a href="#locators">element locator</a>
+    * @param value the value to type
+    */
+    var keys = new String(value).split("");
+    for (var i = 0; i < keys.length; i++) {
+        var c = keys[i];
+        this.doKeyDown(locator, c);
+        this.doKeyUp(locator, c);
+        this.doKeyPress(locator, c);
+    }
+};
+
 Selenium.prototype.doSetSpeed = function(value) {
  /**
  * Set execution speed (i.e., set the millisecond length of a delay which will follow each selenium operation).  By default, there is no such delay, i.e.,
