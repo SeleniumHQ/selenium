@@ -1852,13 +1852,8 @@ SafariBrowserBot.prototype._fireEventOnElement = function(eventType, element, cl
     // For links and other elements, event emulation is required.
     else {
         var targetWindow = this.browserbot._getTargetWindow(element);
-        // todo: what if the target anchor is on another page?
-        if (element.href && element.href.indexOf("#") != -1) {
-            var b = targetWindow.document.getElementById(element.href.split("#")[1]);
-            targetWindow.document.body.scrollTop = b.offsetTop;
-        } else {
-            this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
-        }
+        // todo: deal with anchors?
+        this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
 
     }
 
