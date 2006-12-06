@@ -909,6 +909,26 @@ BrowserBot.prototype.getTitle = function() {
 }
 
 /*
+ * Finds an element recursively in frames and nested frames
+ * in the specified document, using various lookup protocols
+ */
+BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString, inDocument, inWindow) {
+
+    var element = this.findElementBy(locatorType, locatorString, inDocument, inWindow);
+    if (element != null) {
+        return element;
+    }
+    
+    for (var i = 0; i < inWindow.frames.length; i++) {        
+        element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
+        
+        if (element != null) {
+        	return element;
+        }
+    }
+};
+
+/*
 * Finds an element on the current page, using various lookup protocols
 */
 BrowserBot.prototype.findElement = function(locator) {
@@ -921,16 +941,11 @@ BrowserBot.prototype.findElement = function(locator) {
         locatorType = result[1].toLowerCase();
         locatorString = result[2];
     }
-
-    var element = this.findElementBy(locatorType, locatorString, this.getDocument(), this.getCurrentWindow());
+    
+    var element = this.findElementRecursive(locatorType, locatorString, this.getDocument(), this.getCurrentWindow())
+    
     if (element != null) {
-        return this.browserbot.highlight(element);
-    }
-    for (var i = 0; i < this.getCurrentWindow().frames.length; i++) {
-        element = this.findElementBy(locatorType, locatorString, this.getCurrentWindow().frames[i].document, this.getCurrentWindow().frames[i]);
-        if (element != null) {
-            return this.browserbot.highlight(element);
-        }
+    	return this.browserbot.highlight(element);
     }
 
     // Element was not found by any locator function.
