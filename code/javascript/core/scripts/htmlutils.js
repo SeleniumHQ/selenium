@@ -319,6 +319,7 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble, controlKeyD
 
             evt.initUIEvent(eventType, true, true, window, 1);
             evt.keyCode = keycode;
+            evt.which = keycode;
         }
 
         element.dispatchEvent(evt);
