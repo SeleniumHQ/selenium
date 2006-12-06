@@ -451,6 +451,12 @@ function absolutify(url, baseUrl) {
     
 }
 
+function canonicalize(url) {
+    var tempLink = window.document.createElement("link");
+    tempLink.href = url; // this will canonicalize the href
+    return tempLink.href;
+}
+
 function extractExceptionMessage(ex) {
     if (ex == null) return "null exception";
     if (ex.message != null) return ex.message;

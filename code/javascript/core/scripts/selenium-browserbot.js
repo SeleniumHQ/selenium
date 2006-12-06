@@ -1549,8 +1549,20 @@ KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 KonquerorBrowserBot.prototype.setOpenLocation = function(win, loc) {
     // Window doesn't fire onload event when setting src to the current value,
     // so we set it to blank first.
-    win.location.href = "about:blank";
-    win.location.href = loc;
+    loc = absolutify(loc, this.baseUrl);
+    loc = canonicalize(loc);
+    
+    if (win.location.href.startsWith(loc)) {
+        LOG.debug("opening roughly same location");       
+        win.location.href = "about:blank";
+        var setRealLoc = function() {
+            win.location.href = loc;
+        }
+        window.setTimeout(setRealLoc, 0);
+    } else {
+        LOG.debug("locations differ");
+        win.location.href = loc;
+    }
     // force the current polling thread to detect a page load
     var marker = this.isPollingForLoad(win);
     if (marker) {
