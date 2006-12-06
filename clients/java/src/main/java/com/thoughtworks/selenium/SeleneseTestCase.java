@@ -20,6 +20,8 @@ package com.thoughtworks.selenium;
 
 import java.io.*;
 
+import org.openqa.selenium.server.*;
+
 import junit.framework.*;
 
 /**
@@ -40,9 +42,6 @@ public class SeleneseTestCase extends TestCase {
     protected Selenium selenium;
     
     private StringBuffer verificationErrors = new StringBuffer();
-
-    /** The port on which the Selenium Server is running; defaults to 4444 */
-	protected int port = 4444; 
 
 	/** Calls this.setUp(null)
 	 * @see #setUp(String)
@@ -75,8 +74,10 @@ public class SeleneseTestCase extends TestCase {
      */
     public void setUp(String url, String browserString) throws Exception {
         super.setUp();
+        int port = SeleniumServer.getDefaultPort();
         if (url==null) {
             url = "http://localhost:" + port;
+;
         }
         selenium = new DefaultSelenium("localhost", port, browserString, url);
         selenium.start();
