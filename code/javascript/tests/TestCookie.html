@@ -23,6 +23,7 @@ Copyright 2004 ThoughtWorks, Inc
 <body>
     
     <p>WARNING! You can only run this test off of a "real" webserver (i.e. over http); you can't run this test directly off of the file system.</p>
+    <p>Also note that the paths used in this test don't have to actually exist; we can get 404 errors on every one of these pages but still successfully test the cookie functionality.</p>
 <table cellpadding="1" cellspacing="1" border="1">
     <tbody>
         <tr>
@@ -30,9 +31,9 @@ Copyright 2004 ThoughtWorks, Inc
             </td>
         </tr>
         <tr>
-            <td>deleteCookie</td>
-            <td> testCookieWithSameName</td>
-            <td> /path2/</td>
+            <td>open</td>
+            <td>/path1/cookies</td>
+            <td>&nbsp;</td>
         </tr>
         <tr>
             <td>deleteCookie</td>
@@ -45,9 +46,29 @@ Copyright 2004 ThoughtWorks, Inc
             <td> /path1/</td>
         </tr>
         <tr>
+            <td>verifyCookie</td>
+            <td></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>open</td>
+            <td>/path2/cookies</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>deleteCookie</td>
+            <td> testCookieWithSameName</td>
+            <td> /path2/</td>
+        </tr>
+        <tr>
             <td>deleteCookie</td>
             <td> addedCookieForPath2</td>
             <td> /path2/</td>
+        </tr>
+        <tr>
+            <td>verifyCookie</td>
+            <td></td>
+            <td>&nbsp;</td>
         </tr>
     </tbody>
 </table>
@@ -90,6 +111,16 @@ Copyright 2004 ThoughtWorks, Inc
             <td>&nbsp;</td>
         </tr>
         <tr>
+            <td>deleteCookie</td>
+            <td> addedCookieForPath1</td>
+            <td> /path1/</td>
+        </tr>
+        <tr>
+            <td>verifyCookie</td>
+            <td></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
             <td>open</td>
             <td>/path2/cookies</td>
             <td>&nbsp;</td>
@@ -110,9 +141,9 @@ Copyright 2004 ThoughtWorks, Inc
             <td> /path2/</td>
         </tr>
         <tr>
-            <td>deleteCookie</td>
-            <td> addedCookieForPath1</td>
-            <td> /path1/</td>
+            <td>verifyCookie</td>
+            <td></td>
+            <td>&nbsp;</td>
         </tr>
     </tbody>
 </table>

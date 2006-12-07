@@ -2166,8 +2166,16 @@ Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
     }
     results = /path=([^\s,]+)[,]?/.exec(optionsString);
     if (results) {
-        cookie += "; path=" + results[1];
+        var path = results[1];
+        if (browserVersion.khtml) {
+            // Safari and conquerer don't like paths with / at the end
+            if ("/" != path) {
+                path = path.replace(/\/$/, "");
+            }
+        }
+        cookie += "; path=" + path;
     }
+    LOG.debug("Setting cookie to: " + cookie);
     this.browserbot.getDocument().cookie = cookie;
 }
 
@@ -2179,8 +2187,17 @@ Selenium.prototype.doDeleteCookie = function(name,path) {
      * @param path the path property of the cookie to be deleted
      */
     // set the expire time of the cookie to be deleted to one minute before now.
+    path = path.trim();
+    if (browserVersion.khtml) {
+        // Safari and conquerer don't like paths with / at the end
+        if ("/" != path) {
+            path = path.replace(/\/$/, "");
+        }
+    }
     var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
-    this.browserbot.getDocument().cookie = name.trim() + "=deleted; path=" + path.trim() + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    var cookie = name.trim() + "=deleted; path=" + path + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    LOG.debug("Setting cookie to: " + cookie);
+    this.browserbot.getDocument().cookie = cookie;
 }
 
 
