@@ -664,26 +664,23 @@ function SeleniumError(message) {
     return error;
 }
 
-var Effect = new Object();
-
-objectExtend(Effect, {
-    highlight : function(element) {
-        var highLightColor = "yellow";
-        if (element.originalColor == undefined) { // avoid picking up highlight
-            element.originalColor = elementGetStyle(element, "background-color");
-        }
-        elementSetStyle(element, {"backgroundColor" : highLightColor});
-        window.setTimeout(function() {
-            try {
-                //if element is orphan, probably page of it has already gone, so ignore
-                if (!element.parentNode) {
-                    return;
-                }
-                elementSetStyle(element, {"backgroundColor" : element.originalColor});
-            } catch (e) {} // DGF unhighlighting is very dangerous and low priority
-        }, 200);
+function highlight(element) {
+    var highLightColor = "yellow";
+    if (element.originalColor == undefined) { // avoid picking up highlight
+        element.originalColor = elementGetStyle(element, "background-color");
     }
-});
+    elementSetStyle(element, {"backgroundColor" : highLightColor});
+    window.setTimeout(function() {
+        try {
+            //if element is orphan, probably page of it has already gone, so ignore
+            if (!element.parentNode) {
+                return;
+            }
+            elementSetStyle(element, {"backgroundColor" : element.originalColor});
+        } catch (e) {} // DGF unhighlighting is very dangerous and low priority
+    }, 200);
+}
+
 
 
 // for use from vs.2003 debugger

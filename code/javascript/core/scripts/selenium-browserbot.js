@@ -840,7 +840,7 @@ BrowserBot.prototype._handleClosedSubFrame = function(testWindow, doNotModify) {
 BrowserBot.prototype.highlight = function (element, force) {
     if (force || this.shouldHighlightLocatedElement) {
         try {
-            Effect.highlight(element);
+            highlight(element);
         } catch (e) {} // DGF element highlighting is low-priority and possibly dangerous
     }
     return element;
