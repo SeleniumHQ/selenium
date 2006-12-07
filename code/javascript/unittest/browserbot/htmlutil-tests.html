@@ -45,7 +45,7 @@ Copyright 2004 ThoughtWorks, Inc
                 colorsChanged.push(style["background-color"]);
             };
 
-            Effect.highlight(element1);
+            highlight(element1);
 
             assertObjectEquals([highlightColor, previousColor], colorsChanged);
         }
@@ -71,6 +71,23 @@ Copyright 2004 ThoughtWorks, Inc
             checkKeySequence("\\1234");
             checkKeySequence("ab");
         }
+        
+        function testAbsolutify() {
+            assertEquals("http://x/blah", absolutify("http://x/blah", "http://y"));
+            
+            assertEquals("http://y/blah", absolutify("blah", "http://y"));
+            
+            assertEquals("http://y/blah", absolutify("blah", "http://y/foo"));
+            assertEquals("http://y/foo/blah", absolutify("blah", "http://y/foo/"));
+            
+            // windows file urls
+            assertEquals("file:///c:/foo/blah", absolutify("blah", "c:\\foo\\"));
+            assertEquals("file:///c:/blah", absolutify("blah", "c:\\foo"));
+            assertEquals("file:///blah", absolutify("/blah", "c:\\foo\\bar"));
+            
+        }
+        
+        
 
         function checkKeySequence(input) {
             try {
