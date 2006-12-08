@@ -1538,17 +1538,11 @@ Selenium.prototype.getAllFields = function() {
 };
 
 Selenium.prototype._getTestAppParentOfAllWindows = function() {
-  /** Returns the IDs of all input fields on the page.
-   *
-   * <p>If a given field has no ID, it will appear as "" in this array.</p>
-   *
-   * @return string[] the IDs of all field on the page
-   */
-   if (this.browserbot.getCurrentWindow().opener!=null) {
-       return this.browserbot.getCurrentWindow().opener;
-   }
    if (this.browserbot.buttonWindow!=null) {
        return this.browserbot.buttonWindow;
+   }
+   if (this.browserbot.getCurrentWindow().opener!=null) {
+       return this.browserbot.getCurrentWindow().opener;
    }
    return top; // apparently we are in proxy injection mode
 };
@@ -1561,11 +1555,10 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
    */
    var attributes = new Array();
    var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
-   attributes.push(eval("testAppParentOfAllWindows." + attributeName));
-   var selenium = testAppParentOfAllWindows.selenium==null ? testAppParentOfAllWindows.parent.selenium : testAppParentOfAllWindows.selenium;
-   for (windowName in selenium.browserbot.openedWindows)
+   attributes.push(testAppParentOfAllWindows[attributeName]);
+   for (var windowName in this.browserbot.openedWindows)
    {
-       attributes.push(eval("selenium.browserbot.openedWindows[windowName]." + attributeName));
+       attributes.push(selenium.browserbot.openedWindows[windowName][attributeName]);
    }
    return attributes;
 };
