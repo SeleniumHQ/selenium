@@ -398,57 +398,104 @@ function absolutify(url, baseUrl) {
         return url;
     }
     
-    baseUrl = baseUrl.replace(/[\?\#].*/, "");
-    
-    var scheme;
-    var schemepart;
-    
-    // is it absolute? what's the URL scheme?
-    if (!/^(\w+):\/\/(.*)/.test(baseUrl)) {
+    var loc;
+    try {
+        loc = parseUrl(baseUrl);
+    } catch (e) {
         // is it an absolute windows file path? let's play the hero in that case
         if (/^\w:\\/.test(baseUrl)) {
-            scheme = "file";
-            schemepart = "/" + baseUrl.replace(/\\/g, "/");
-            baseUrl = "file://" + schemepart;
+            baseUrl = "file:///" + baseUrl.replace(/\\/g, "/");
+            loc = parseUrl(baseUrl);
         } else {
             throw new SeleniumError("baseUrl wasn't absolute: " + baseUrl);
         }
-    } else {
-        scheme = RegExp.$1;
-        schemepart = RegExp.$2;
     }
+    loc.search = null;
+    loc.hash = null;
     
-    if (scheme != "http" && scheme != "file") {
-        // What? would you have me absolutify a javascript: URL?  What does that even mean???
-        throw new SeleniumError("We can only absolutify URLs that start with 'http' or 'file': " + baseUrl);
-    }
-    
-    // for windows, replace backslashes with forward slashes
-    url = url.replace(/\\/g, "/");
-    
-    // if url begins with /, we strip the path off of the
-    // baseUrl and just use its login/hostname
+    // if url begins with /, then that's the whole pathname
     if (/^\//.test(url)) {
-        var loginHostName = schemepart.replace(/\/(.*)/, "");
-        return scheme + "://" + loginHostName + url;
+        loc.pathname = url;
+        var result = reassembleLocation(loc);
+        return result;
     }
     
-    // if baseUrl ends with /, just append url
-    if (/\/$/.test(baseUrl)) {
-        return baseUrl + url;
+    // if pathname is null, then we'll just append "/" + the url
+    if (!loc.pathname) {
+        loc.pathname = "/" + url;
+        var result = reassembleLocation(loc);
+        return result;
     }
     
-    // if schemepart doesn't contain a /, then it only contains a login/hostname
-    // so we'll just append "/" + the url
-    if (!/\//.test(schemepart)) {
-        return baseUrl + "/" + url;
+    // if pathname ends with /, just append url
+    if (/\/$/.test(loc.pathname)) {
+        loc.pathname += url;
+        var result = reassembleLocation(loc);
+        return result;
     }
     
-    // if we're here, then the scheme part contains a /, but doesn't end with /
+    // if we're here, then the baseUrl has a pathname, but it doesn't end with /
     // in that case, we replace everything after the final / with the relative url
-    var result = baseUrl.replace(/[^\/\\]+$/, url);
+    loc.pathname = loc.pathname.replace(/[^\/\\]+$/, url);
+    var result = reassembleLocation(loc);
     return result;
     
+}
+
+var URL_REGEX = /^((\w+):\/\/)(([^:]+):?([^@]+)?@)?([^\/\?:]*):?(\d+)?(\/?[^\?#]+)?\??([^#]+)?#?(.+)?/;
+
+function parseUrl(url) {
+    var fields = ['url', null, 'protocol', null, 'username', 'password', 'host', 'port', 'pathname', 'search', 'hash'];
+    var result = URL_REGEX.exec(url);
+    if (!result) {
+        throw new SeleniumError("Invalid URL: " + url);
+    }
+    var loc = new Object();
+    for (var i = 0; i < fields.length; i++) {
+        var field = fields[i];
+        if (field == null) {
+            continue;
+        }
+        loc[field] = result[i];
+    }
+    return loc;
+}
+
+function reassembleLocation(loc) {
+    if (!loc.protocol) {
+        throw new Error("Not a valid location object: " + o2s(loc));
+    }
+    var protocol = loc.protocol;
+    protocol = protocol.replace(/:$/, "");
+    var url = protocol + "://";
+    if (loc.username) {
+        url += loc.username;
+        if (loc.password) {
+            url += ":" + loc.password;
+        }
+        url += "@";
+    }
+    if (loc.host) {
+        url += loc.host;
+    }
+    
+    if (loc.port) {
+        url += ":" + loc.port;
+    }
+    
+    if (loc.pathname) {
+        url += loc.pathname;
+    }
+    
+    if (loc.search) {
+        url += "?" + loc.search;
+    }
+    if (loc.hash) {
+        var hash = loc.hash;
+        hash = loc.hash.replace(/^#/, "");
+        url += "#" + hash;
+    }
+    return url;
 }
 
 function canonicalize(url) {

@@ -80,6 +80,10 @@ Copyright 2004 ThoughtWorks, Inc
             assertEquals("http://y/blah", absolutify("blah", "http://y/foo"));
             assertEquals("http://y/foo/blah", absolutify("blah", "http://y/foo/"));
             
+            assertEquals("http://y/foo/blah", absolutify("blah", "http://y/foo/?bar=1"));
+            assertEquals("http://y/foo/blah", absolutify("blah", "http://y/foo/?bar=1#baz=2"));
+            assertEquals("http://y/foo/blah", absolutify("blah", "http://y/foo/#baz=2"));
+            
             // windows file urls
             assertEquals("file:///c:/foo/blah", absolutify("blah", "c:\\foo\\"));
             assertEquals("file:///c:/blah", absolutify("blah", "c:\\foo"));
@@ -88,7 +92,25 @@ Copyright 2004 ThoughtWorks, Inc
         }
         
         
-
+        function testParseAndReassembleUrl() {
+            var tests = [
+                "http://www.google.com"
+                ,"file://localhost/c:/blah"
+                ,"file:///c:/blah"
+                ,"http://www.google.com/"
+                ,"http://www.google.com/foo"
+                ,"http://www.google.com/foo?blah=blah/blah"
+                ,"http://www.google.com/foo?blah=blah/blah#barbar"
+                ,"http://www.google.com/foo#bur?blah"
+                ,"http://foo:bar@www.google.com"
+                ,"http://foo@www.google.com"
+                ,"http://foo:ba%20r@www.google.com"
+            ];
+            for (var i = 0; i < tests.length; i++) {
+                assertEquals(tests[i], reassembleLocation(parseUrl(tests[i])));
+            }
+        }
+        
         function checkKeySequence(input) {
             try {
                 getKeyCodeFromKeySequence(input);

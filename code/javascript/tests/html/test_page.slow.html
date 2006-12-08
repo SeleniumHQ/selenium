@@ -30,9 +30,10 @@ Copyright 2006 ThoughtWorks, Inc
 </head>
 <body>
 <img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
-<span id="theSpan">This is a slow-loading page.</span>
+<a name="linktarget"></a><span id="theSpan">This is a slow-loading page.</span>
 <a id="slowPage_reload" href="./test_page.slow.html">Click to reload</a>
 <button id="changeSpan" onclick="changeSpan();">change span</button>
 <button id="slowRefresh" onclick="slowRefresh();">slow refresh</button>
+<p><a id="anchor" href="#linktarget">anchor</a></p>
 </body>
 </html>

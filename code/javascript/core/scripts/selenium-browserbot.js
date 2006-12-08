@@ -1548,17 +1548,18 @@ KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 
 KonquerorBrowserBot.prototype.setOpenLocation = function(win, loc) {
     // Window doesn't fire onload event when setting src to the current value,
-    // so we set it to blank first.
+    // so we just refresh in that case instead.
     loc = absolutify(loc, this.baseUrl);
     loc = canonicalize(loc);
-    
-    if (win.location.href.startsWith(loc)) {
-        LOG.debug("opening roughly same location");       
-        win.location.href = "about:blank";
-        var setRealLoc = function() {
-            win.location.href = loc;
-        }
-        window.setTimeout(setRealLoc, 0);
+    var startLoc = parseUrl(win.location.href);
+    startLoc.hash = null;
+    var startUrl = reassembleLocation(startLoc);
+    LOG.debug("startUrl="+startUrl);
+    LOG.debug("win.location.href="+win.location.href);
+    LOG.debug("loc="+loc);
+    if (startUrl == loc) {
+        LOG.debug("opening exact same location");
+        this.refresh();
     } else {
         LOG.debug("locations differ");
         win.location.href = loc;
@@ -1884,6 +1885,20 @@ SafariBrowserBot.prototype._fireEventOnElement = function(eventType, element, cl
 
     }
 
+};
+
+SafariBrowserBot.prototype.refresh = function() {
+    var win = this.getCurrentWindow();
+    if (win.location.hash) {
+        // DGF Safari refuses to refresh when there's a hash symbol in the URL
+        win.location.hash = "";
+        var actuallyReload = function() {
+            win.location.reload(true);
+        }
+        window.setTimeout(actuallyReload, 1);
+    } else {
+        win.location.reload(true);
+    }
 };
 
 IEBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
