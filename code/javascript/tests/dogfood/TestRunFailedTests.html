@@ -30,7 +30,7 @@ Copyright 2004 ThoughtWorks, Inc
 
     <tr>
       <td>open</td>
-      <td>../../core/TestRunner.html?test=../tests/ErrorCheckingTestSuite.html</td>
+      <td>../core/TestRunner.html?test=../tests/ErrorCheckingTestSuite.html</td>
       <td>&nbsp;</td>
     </tr>
 
@@ -74,14 +74,15 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     
     <tr>
-        <td>verifyText</td>
-        <td>//tr[@class='status_failed']//td[1]</td>
-        <td>TestErrorChecking</td>
+        <td>verifyElementPresent</td>
+        <td>//tr[contains(@class, 'status_failed')]//a[contains(text(), 'TestErrorChecking')]</td>
+        <td></td>
     </tr>
+    
     <tr>
-        <td>verifyText</td>
-        <td>//tr[@class='title status_failed']//td[1]</td>
-        <td>Test Suite</td>
+        <td>verifyElementPresent</td>
+        <td>//tr[contains(@class, 'status_failed')]//*[contains(text(), 'Test Suite')]</td>
+        <td></td>
     </tr>
         
   </tbody>

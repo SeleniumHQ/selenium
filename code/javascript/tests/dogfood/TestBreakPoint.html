@@ -30,7 +30,7 @@ Copyright 2004 ThoughtWorks, Inc
 
     <tr>
       <td>open</td>
-      <td>../../core/TestRunner.html?test=../tests/dogfood/aut/PauseTestSuite.html</td>
+      <td>../core/TestRunner.html?test=../tests/dogfood/aut/PauseTestSuite.html</td>
       <td>&nbsp;</td>
     </tr>
 
@@ -52,14 +52,14 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     <tr>
         <td>click</td>
-        <td>//table[@border="1"]//tr[6]</td>
+        <td>breakpointable</td>
         <td>&nbsp;</td>
     </tr>
     
     <tr>
         <td>verifyAttribute</td>
-        <td>//table[@border="1"]//tr[6]/@class</td>
-        <td>breakpoint</td>
+        <td>breakpointable@class</td>
+        <td>regex:breakpoint</td>
     </tr>
 
     <tr>
@@ -79,15 +79,20 @@ Copyright 2004 ThoughtWorks, Inc
         <td>2</td>
     </tr>
     <tr>
-        <td>verifyText</td>
-        <td>//tr[@class='title status_passed']//td[1]</td>
-        <td>Dogfood AUT: Pause</td>
+        <td>verifyElementPresent</td>
+        <td>//tr[contains(@class, 'status_passed')]//*[contains(text(), 'Dogfood AUT: Pause')]</td>
+        <td></td>
     </tr>
 
     <tr>
         <td>verifyAttribute</td>
-        <td>//table[@border="1"]//tr[6]/@class</td>
-        <td>breakpoint status_passed</td>
+        <td>breakpointable@class</td>
+        <td>regex:breakpoint</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>breakpointable@class</td>
+        <td>regex:status_passed</td>
     </tr>
     <!-- I tried to remove the break point but the clicking didn't work
     <tr>
@@ -97,7 +102,7 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     <tr>
         <td>verifyAttribute</td>
-        <td>//table[@border="1"]//tr[6]/@class</td>
+        <td>breakpointable@class</td>
         <td>status_passed</td>
     </tr>
     -->

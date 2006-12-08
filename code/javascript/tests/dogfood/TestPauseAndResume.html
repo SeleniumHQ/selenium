@@ -31,7 +31,7 @@ Copyright 2004 ThoughtWorks, Inc
     <tr><td colspan="3">in normal case the AUT test should fail</td></tr>
     <tr>
       <td>open</td>
-      <td>../../core/TestRunner.html?test=../tests/dogfood/aut/PauseTestSuite.html</td>
+      <td>../core/TestRunner.html?test=../tests/dogfood/aut/PauseTestSuite.html</td>
       <td>&nbsp;</td>
     </tr>
 
@@ -60,7 +60,7 @@ Copyright 2004 ThoughtWorks, Inc
     <tr><td colspan="3">click pause to make the test pass</td></tr>
     <tr>
       <td>open</td>
-      <td>../../core/TestRunner.html?test=../tests/dogfood/aut/PauseTestSuite.html</td>
+      <td>../core/TestRunner.html?test=../tests/dogfood/aut/PauseTestSuite.html</td>
       <td>&nbsp;</td>
     </tr>
 
@@ -104,9 +104,9 @@ Copyright 2004 ThoughtWorks, Inc
         <td>2</td>
     </tr>
     <tr>
-        <td>verifyText</td>
-        <td>//tr[@class='title status_passed']//td[1]</td>
-        <td>Dogfood AUT: Pause</td>
+        <td>verifyElementPresent</td>
+        <td>//tr[contains(@class, 'status_passed')]//*[contains(text(), 'Dogfood AUT: Pause')]</td>
+        <td></td>
     </tr>
   </tbody>
 </table>

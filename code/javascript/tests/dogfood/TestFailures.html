@@ -21,6 +21,8 @@ Copyright 2004 ThoughtWorks, Inc
   <title>Test Break Point</title>
 </head>
 <body>
+    
+    DGF Is this test worth anything?  It's extremely unreliable on IE
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
@@ -30,13 +32,13 @@ Copyright 2004 ThoughtWorks, Inc
 
     <tr>
       <td>open</td>
-      <td>../../core/TestRunner.html?test=../tests/dogfood/aut/FailuresTestSuite.html</td>
+      <td>../core/TestRunner.html?test=../tests/dogfood/aut/FailuresTestSuite.html</td>
       <td>&nbsp;</td>
     </tr>
 
     <tr>
         <td>waitForText</td>
-        <td>//table[@id='test_suite_table']//tr[1]</td>
+        <td>//tr[@class="title"]</td>
         <td>Dogfood AUT: Failures</td>
     </tr>
 
@@ -44,11 +46,6 @@ Copyright 2004 ThoughtWorks, Inc
       <td rowspan="1" colspan="3">Run First Test Case<br>
       </td>
     </tr>
-      <tr> <!-- not very reliable. sometimes will not run test case -->
-          <td>waitForText</td>
-          <td>//table[@id='test_case_table']//tr[1]</td>
-          <td>Test Alert verifyment</td>
-      </tr>
     <tr>
         <td>click</td>
         <td>runSeleniumTest</td>
@@ -63,28 +60,28 @@ Copyright 2004 ThoughtWorks, Inc
 
     <tr>
         <td>verifyAttribute</td>
-        <td>//table[@id='test_case_table']//tr[19]/@class</td>
-        <td>status_failed</td>
+        <td>failure1@class</td>
+        <td>regex:status_failed</td>
     </tr>
     <tr>
         <td>verifyAttribute</td>
-        <td>//table[@id='test_case_table']//tr[21]/@class</td>
-        <td>status_failed</td>
+        <td>failure2@class</td>
+        <td>regex:status_failed</td>
     </tr>
     <tr>
         <td>verifyAttribute</td>
-        <td>//table[@id='test_case_table']//tr[23]/@class</td>
-        <td>status_failed</td>
+        <td>failure3@class</td>
+        <td>regex:status_failed</td>
     </tr>
     <tr>
         <td>verifyAttribute</td>
-        <td>//table[@id='test_case_table']//tr[24]/@class</td>
-        <td>status_failed</td>
+        <td>failure4@class</td>
+        <td>regex:status_failed</td>
     </tr>
     <tr>
         <td>verifyAttribute</td>
-        <td>//table[@id='test_case_table']//tr[26]/@class</td>
-        <td>status_failed</td>
+        <td>finalopen@class</td>
+        <td>regex:status_failed</td>
     </tr>
 
   </tbody>

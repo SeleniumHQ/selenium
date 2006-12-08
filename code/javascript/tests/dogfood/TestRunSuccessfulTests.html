@@ -30,7 +30,7 @@ Copyright 2004 ThoughtWorks, Inc
 
     <tr>
       <td>open</td>
-      <td>../../core/TestRunner.html?test=../tests/ShortTestSuite.html</td>
+      <td>../core/TestRunner.html?test=../tests/ShortTestSuite.html</td>
       <td>&nbsp;</td>
     </tr>
 
@@ -58,14 +58,14 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     
     <tr>
-        <td>verifyText</td>
-        <td>//tr[@class='status_passed']//td[1]</td>
-        <td>TestLocators</td>
+        <td>verifyElementPresent</td>
+        <td>//tr[contains(@class, 'status_passed')]//a[contains(text(), 'TestLocators')]</td>
+        <td></td>
     </tr>
 
     <tr>
         <td>verifyText</td>
-        <td>//tr[@class='title status_passed']//td[1]</td>
+        <td>//tr[contains(@class, 'title status_passed')]//td[1]</td>
         <td>Test Suite</td>
     </tr>
   </tbody>
