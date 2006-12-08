@@ -1548,19 +1548,21 @@ Selenium.prototype._getTestAppParentOfAllWindows = function() {
 };
 
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
-  /** Returns every instance of some attribute from all known windows.
-   *
-   * @param attributeName name of an attribute on the windows
-   * @return string[] the set of values of this attribute from all known windows.
-   */
-   var attributes = new Array();
-   var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
-   attributes.push(testAppParentOfAllWindows[attributeName]);
-   for (var windowName in this.browserbot.openedWindows)
-   {
-       attributes.push(selenium.browserbot.openedWindows[windowName][attributeName]);
-   }
-   return attributes;
+    /** Returns every instance of some attribute from all known windows.
+    *
+    * @param attributeName name of an attribute on the windows
+    * @return string[] the set of values of this attribute from all known windows.
+    */
+    var attributes = new Array();
+    var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
+    attributes.push(testAppParentOfAllWindows[attributeName]);
+    for (var windowName in this.browserbot.openedWindows)
+    {
+        try {
+            attributes.push(selenium.browserbot.openedWindows[windowName][attributeName]);
+        } catch (e) {} // DGF If we miss one... meh. It's probably closed or inaccessible anyway.
+    }
+    return attributes;
 };
 
 Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
