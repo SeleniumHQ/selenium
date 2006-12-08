@@ -1538,13 +1538,16 @@ Selenium.prototype.getAllFields = function() {
 };
 
 Selenium.prototype._getTestAppParentOfAllWindows = function() {
+   if (this.browserbot.proxyInjectionMode) {
+       return top;
+   }
    if (this.browserbot.buttonWindow!=null) {
        return this.browserbot.buttonWindow;
    }
    if (this.browserbot.getCurrentWindow().opener!=null) {
        return this.browserbot.getCurrentWindow().opener;
    }
-   return top; // apparently we are in proxy injection mode
+   throw new SeleniumError("cannot find parent of all windows");
 };
 
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
