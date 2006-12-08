@@ -29,6 +29,13 @@ Copyright 2004 ThoughtWorks, Inc
 <script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-browserbot.js"></script>
 <script language="JavaScript" type="text/javascript">
 
+var highlighter = new Object();
+highlighter.highlight = function(){};
+
+function highlight() {
+    highlighter.highlight();
+}
+
 function setUp() {
 
     // To be realistic, the elements are located in a separate IFrame.
@@ -49,30 +56,31 @@ function setUp() {
 }
 
 function testShouldNotHighlightFoundElementIfHighlightFlagNotSetted() {
-    Effect = new Mock();
+    highlighter = new Mock();
     pageBot.findElement('id1');
-    Effect.verify();
+    highlighter.verify();
 }
 
 
 function testShouldBeAbleToHighlightFoundElement() {
     pageBot.browserbot.setShouldHighlightElement(true);
-    Effect = new Mock();
-    Effect.expects("highlight", element1);
+    highlighter = new Mock();
+    
+    highlighter.expects("highlight", element1);
     pageBot.findElement('id1');
-    Effect.verify();
+    highlighter.verify();
 }
 
 function testShouldNotTryToHightlightIfNoElementFound() {
     pageBot.browserbot.setShouldHighlightElement(true);
-    Effect = new Mock();
+    highlighter = new Mock();
     try {
         pageBot.findElement('IDontExist');
         fail("Should have failed for element not found");
     } catch(e) {
         //expects
     }
-    Effect.verify();
+    highlighter.verify();
 }
 
 //
