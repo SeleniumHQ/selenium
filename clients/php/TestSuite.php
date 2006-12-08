@@ -21,7 +21,7 @@ class TestSuite
     {
         $suite = new PHPUnit_Framework_TestSuite('PHPUnit Framework');
  
-//        $suite->addTestSuite('SeleniumTest');
+        $suite->addTestSuite('SeleniumTest');
         $suite->addTestSuite('GoogleTest');
         $suite->addTestSuite('MockBrowserTest');
  
