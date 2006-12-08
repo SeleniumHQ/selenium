@@ -112,6 +112,10 @@ public class LauncherUtils {
 	public static String stripStartURL(String url) {
 		try {
 			URL u = new URL(url);
+			String path = u.getPath();
+			if (path != null && !"".equals(path) && !path.endsWith("/")) {
+				SeleniumServer.log("WARNING: It looks like your baseUrl ("+url+") is pointing to a file, not a directory (it doesn't end with a /).  We're going to have to strip off the last part of the pathname."); 
+			}
 			return u.getProtocol() + "://" + u.getAuthority();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
