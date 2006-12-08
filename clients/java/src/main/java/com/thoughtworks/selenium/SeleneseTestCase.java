@@ -119,6 +119,8 @@ public class SeleneseTestCase extends TestCase {
     public static void assertEquals(Object s1, Object s2) {
         if (s1 instanceof String && s2 instanceof String) {
             assertEquals((String)s1, (String)s2);
+        } else if (s1 instanceof String && s2 instanceof String[]) {
+            assertEquals((String)s1, (String[])s2);
         } else if (s1 instanceof String && s2 instanceof Number) {
             assertEquals((String)s1, ((Number)s2).toString());
         }
@@ -138,6 +140,13 @@ public class SeleneseTestCase extends TestCase {
     /** Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese */ 
     public static void assertEquals(String s1, String s2) {
         assertTrue("Expected \"" + s1 + "\" but saw \"" + s2 + "\" instead", seleniumEquals(s1, s2));
+    }
+    
+    /** Like JUnit's Assert.assertEquals, but joins the string array with commas, and 
+     * handles "regexp:" strings like HTML Selenese
+     */
+    public static void assertEquals(String s1, String[] s2) {
+    	assertEquals(s1, stringArrayToSimpleString(s2));
     }
     
     /** Compares two strings, but handles "regexp:" strings like HTML Selenese
@@ -244,6 +253,17 @@ public class SeleneseTestCase extends TestCase {
             .append("\"");            
         }
         sb.append(" }");
+        return sb.toString();
+    }
+    
+    private static String stringArrayToSimpleString(String[] sa) {
+        StringBuffer sb = new StringBuffer();
+        for (int j = 0; j < sa.length; j++) {
+            sb.append(sa[j]);
+            if (j < sa.length -1) {
+            	sb.append(',');
+            }          
+        }
         return sb.toString();
     }
 

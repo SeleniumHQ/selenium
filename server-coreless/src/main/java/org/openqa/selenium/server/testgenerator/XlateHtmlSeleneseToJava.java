@@ -597,6 +597,9 @@ public class XlateHtmlSeleneseToJava {
             else if (op.equals("ElementIndex")) {
                 middle =  XlateSeleneseArgument(tokens[2]) + ", selenium.get" + op + "(" + XlateSeleneseArgument(tokens[1]) + ")";
             }
+            else if (op.matches("^All.*s$")) {
+                middle =  XlateSeleneseArgument(tokens[1]) + ", selenium.get" + op + "()";
+            }
             else if (op.equals("Cookie")) {
                 middle =  XlateSeleneseArgument(tokens[1]) + ", selenium.get" + op + "()";
             }
