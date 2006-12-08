@@ -68,6 +68,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
 
     var self = this;
     
+    objectExtend(this, PageBot.prototype);
     this._registerAllLocatorFunctions();
     
     this.recordPageLoad = function(elementOrWindow) {
@@ -98,11 +99,11 @@ var BrowserBot = function(topLevelApplicationWindow) {
         }
         return self.newPageLoaded;
     };
+
 };
 
 // DGF PageBot exists for backwards compatibility with old user-extensions
 var PageBot = function(){};
-objectExtend(BrowserBot.prototype, PageBot.prototype);
 
 BrowserBot.createForWindow = function(window, proxyInjectionMode) {
     var browserbot;
