@@ -89,7 +89,7 @@ public class HTMLLauncher implements HTMLResultsListener {
     		throw new IOException("Can't read HTML Suite file: " + suiteFile.getAbsolutePath());
     	}
     	server.addNewStaticContent(suiteFile.getParentFile());
-    	String suiteURL = browserURL + "/selenium-server/tests/" + suiteFile.getName();
+    	String suiteURL = LauncherUtils.stripStartURL(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
     	return runHTMLSuite(browser, browserURL, suiteURL, outputFile, timeoutInSeconds, multiWindow);
     }
     
