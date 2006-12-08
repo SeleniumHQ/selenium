@@ -125,8 +125,8 @@ Logger.prototype = {
     },
 
     exception: function(exception) {
-        var msg = "Unexpected Exception: " + describe(exception, ', ');
-        this.error(msg);
+        this.error("Unexpected Exception: " + extractExceptionMessage(exception));
+        this.error("Exception details: " + describe(exception, ', '));
     }
 
 };
