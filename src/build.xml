@@ -65,6 +65,30 @@
     </create-xpi>
   </target>
 
+  <target name="prepare-profile-template">
+    <property name="profile.template.dir" value="${build}/profile-template" />
+    <property name="profile.extension.dir" value="${profile.template.dir}/extensions/{a6fd85ed-e919-4a43-a5af-8da18bda539f}" />
+    <mkdir dir="${profile.extension.dir}" />
+    <unzip src="${build}/${ant.project.name}-${app.version}-test.xpi" dest="${profile.extension.dir}" />
+  </target>
+
+  <target name="integration-test" depends="prepare-profile-template">
+    <java classname="org.openqa.selenium.server.SeleniumServer" fork="true" failonerror="true">
+      <classpath>
+        <dirset dir="target/assembly/work">
+          <include name="*" />
+        </dirset>
+      </classpath>
+      <arg value="-htmlSuite" />
+      <arg value="*chrome" />
+      <arg value="http://localhost:4444" />
+      <arg value="content/tests/functional/TestSuite.html" />
+      <arg value="${build}/results.html" />
+      <arg value="-firefoxProfileTemplate" />
+      <arg value="${profile.template.dir}" />
+    </java>
+  </target>
+
   <macrodef name="create-xpi">
     <attribute name="suffix" />
     <element name="jar-fileset" optional="true" />

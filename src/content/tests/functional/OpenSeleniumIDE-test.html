@@ -1,12 +1,32 @@
 <html>
   <head>
     <script type="text/javascript" src="chrome://browser/content/browser.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"></script>
     <script type="text/javascript">
       function load() {
-        toOpenWindowByType('global:selenium-ide','chrome://selenium-ide/content/selenium-ide.xul');
+        SeleniumIDE.Loader.openRecorder();
+        setTimeout(initEditor, 100);
+      }
+
+      function initEditor() {
+	      var editor = SeleniumIDE.Loader.getTopEditor();
+        if (!editor) {
+          setTimeout(initEditor, 100);
+          return;
+        }
+	      var BrowserBot = window.top.BrowserBot;
+	      var originalModify = BrowserBot.prototype.modifyWindowToRecordPopUpDialogs;
+        BrowserBot.SeleniumIDE = SeleniumIDE;
+	      BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+		      originalModify.call(this, windowToModify, browserBot);
+		      BrowserBot.SeleniumIDE.Loader.getRecorder(windowToModify).reattachWindowMethods();
+	      }
+//        window.top.SeleniumIDE = SeleniumIDE;
+        document.getElementById("status").innerHTML = "OK";
       }
     </script>
   </head>
   <body onload="load()">
+    <div id="status"></div>
   </body>
 </html>

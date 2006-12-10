@@ -1,11 +1,13 @@
 function loadTestSuite() {
 	var editor = SeleniumIDE.Loader.getTopEditor();
+    /*
 	var BrowserBot = window.top.BrowserBot;
 	var originalModify = BrowserBot.prototype.modifyWindowToRecordPopUpDialogs;
 	BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
 		originalModify.call(this, windowToModify, browserBot);
 		SeleniumIDE.Loader.getRecorder(windowToModify).reattachWindowMethods();
 	}
+    */
 }
 
 function startRecording() {
