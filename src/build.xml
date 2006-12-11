@@ -3,6 +3,7 @@
   <property file="build.properties" />
   <property name="build" value="build"/>
   <property name="output.path" value="${build}/classes"/>
+  <property name="browser.launcher" value="*chrome" />
   
   <target name="prepare">
     <tstamp/>
@@ -80,7 +81,7 @@
         </dirset>
       </classpath>
       <arg value="-htmlSuite" />
-      <arg value="*chrome" />
+      <arg value="${browser.launcher}" />
       <arg value="http://localhost:4444" />
       <arg value="content/tests/functional/TestSuite.html" />
       <arg value="${build}/results.html" />
