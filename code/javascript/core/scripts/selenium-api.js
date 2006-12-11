@@ -1537,19 +1537,6 @@ Selenium.prototype.getAllFields = function() {
    return this.browserbot.getAllFields();
 };
 
-Selenium.prototype._getTestAppParentOfAllWindows = function() {
-   if (this.browserbot.proxyInjectionMode) {
-       return top;
-   }
-   if (this.browserbot.buttonWindow!=null) {
-       return this.browserbot.buttonWindow;
-   }
-   if (this.browserbot.getCurrentWindow().opener!=null) {
-       return this.browserbot.getCurrentWindow().opener;
-   }
-   throw new SeleniumError("cannot find parent of all windows");
-};
-
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
     /** Returns every instance of some attribute from all known windows.
     *
@@ -1557,19 +1544,24 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
     * @return string[] the set of values of this attribute from all known windows.
     */
     var attributes = new Array();
-    var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
-    attributes.push(testAppParentOfAllWindows[attributeName]);
+    
+    var win = selenium.browserbot.topWindow;
+    
+    // DGF normally you should use []s instead of eval "win."+attributeName
+    // but in this case, attributeName may contain dots (e.g. document.title)
+    // in that case, we have no choice but to use eval...
+    attributes.push(eval("win."+attributeName));
     for (var windowName in this.browserbot.openedWindows)
     {
         try {
-            attributes.push(selenium.browserbot.openedWindows[windowName][attributeName]);
+            win = selenium.browserbot.openedWindows[windowName];
+            attributes.push(eval("win."+attributeName));
         } catch (e) {} // DGF If we miss one... meh. It's probably closed or inaccessible anyway.
     }
     return attributes;
 };
 
 Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
-   var testAppParentOfAllWindows = this._getTestAppParentOfAllWindows();
    var targetPropertyName = "name";
    if (soughtAfterWindowPropertyValue.match("^title=")) {
        targetPropertyName = "document.title";
@@ -1586,8 +1578,11 @@ Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
         }
    }
 
-   if (PatternMatcher.matches(soughtAfterWindowPropertyValue, eval("testAppParentOfAllWindows." + targetPropertyName))) {
-       return testAppParentOfAllWindows;
+   // DGF normally you should use []s instead of eval "win."+attributeName
+   // but in this case, attributeName may contain dots (e.g. document.title)
+   // in that case, we have no choice but to use eval...
+   if (PatternMatcher.matches(soughtAfterWindowPropertyValue, eval("this.browserbot.topWindow." + targetPropertyName))) {
+       return this.browserbot.topWindow;
    }
    for (windowName in selenium.browserbot.openedWindows) {
        var openedWindow = selenium.browserbot.openedWindows[windowName];
