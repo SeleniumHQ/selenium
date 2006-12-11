@@ -168,9 +168,41 @@
     <!-- SEL-342: "Konqueror crashes when running in auto=true" -->
     <property name="skipKonq" value="true" />
     <!-- SEL-350: "Official Linux Opera tests succeed one out of 10 times" -->
-    <condition property="skipOpera" value="true">
+    <condition property="skipOpera">
         <not><os family="windows" /></not>
     </condition>
+    
+    <condition property="skipIehtaIfSet">
+        <istrue value="${skipIehta}" />
+    </condition>
+    
+    <condition property="skipFirefoxIfSet">
+        <istrue value="${skipFirefox}" />
+    </condition>
+    
+    <condition property="skipIexploreIfSet">
+        <istrue value="${skipIexplore}" />
+    </condition>
+    
+    <condition property="skipOperaIfSet">
+        <istrue value="${skipOpera}" />
+    </condition>
+    
+    <condition property="skipChromeIfSet">
+        <istrue value="${skipChrome}" />
+    </condition>
+    
+    <condition property="skipKonqIfSet">
+        <istrue value="${skipKonq}" />
+    </condition>
+    
+    <condition property="skipSafariIfSet">
+        <istrue value="${skipSafari}" />
+    </condition>
+    
+    <target name="dogfood">
+        <property name="suite" value="dogfood/DogFoodTestSuite" />
+    </target>
     
     <target name="test-allbrowsers" depends="iehtaTests, firefoxTests, iexploreTests, operaTests, chromeTests, konqTests, safariTests" />
     
@@ -222,31 +254,31 @@
     <target name="bothIexploreTests" depends="iehtaTests, iexploreTests" />
     <target name="bothFirefoxTests" depends="chromeTests, firefoxTests" />
     
-    <target name="iexploreTests" depends="selenese-task" if="thisIsWindows" unless="skipIexplore">
+    <target name="iexploreTests" depends="selenese-task" if="thisIsWindows" unless="skipIexploreIfSet">
         <preset-selenese taskname="iexplore" browser="*iexplore" />
     </target>
     
-    <target name="iehtaTests" depends="selenese-task" if="thisIsWindows" unless="skipIehta">
+    <target name="iehtaTests" depends="selenese-task" if="thisIsWindows" unless="skipIehtaIfSet">
         <preset-selenese taskname="iehta" browser="*iehta" />
     </target>
     
-    <target name="konqTests" depends="selenese-task" if="thisIsUnix" unless="skipKonq">
+    <target name="konqTests" depends="selenese-task" if="thisIsUnix" unless="skipKonqIfSet">
         <preset-selenese taskname="konqueror" browser="*konqueror" />
     </target>
     
-    <target name="safariTests" depends="selenese-task" if="thisIsMac" unless="skipSafari">
+    <target name="safariTests" depends="selenese-task" if="thisIsMac" unless="skipSafariIfSet">
         <preset-selenese taskname="safari" browser="*safari" />
     </target>
     
-    <target name="firefoxTests" depends="selenese-task, image" unless="skipFirefox">
+    <target name="firefoxTests" depends="selenese-task, image" unless="skipFirefoxIfSet">
         <preset-selenese taskname="firefox" browser="*firefox" />
     </target>
     
-    <target name="chromeTests" depends="selenese-task, image" unless="skipChrome">
+    <target name="chromeTests" depends="selenese-task, image" unless="skipChromeIfSet">
         <preset-selenese taskname="chrome" browser="*chrome" />
     </target>
     
-    <target name="operaTests" depends="selenese-task, image" unless="skipOpera">
+    <target name="operaTests" depends="selenese-task, image" unless="skipOperaIfSet">
         <property name="opera.browser" value="*opera" />
         <preset-selenese taskname="opera" browser="${opera.browser}" />
     </target>
