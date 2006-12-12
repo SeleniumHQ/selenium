@@ -80,7 +80,7 @@ public abstract class Wait {
         throw new WaitTimedOutException(message);
     }
     
-    @SuppressWarnings("serial")
+    //@SuppressWarnings("serial")
     public class WaitTimedOutException extends RuntimeException {
 
         public WaitTimedOutException() {

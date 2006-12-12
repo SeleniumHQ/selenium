@@ -19,8 +19,7 @@ package com.thoughtworks.selenium;
 
 
 import java.io.*;
-
-import org.openqa.selenium.server.*;
+import java.lang.reflect.*;
 
 import junit.framework.*;
 
@@ -74,13 +73,24 @@ public class SeleneseTestCase extends TestCase {
      */
     public void setUp(String url, String browserString) throws Exception {
         super.setUp();
-        int port = SeleniumServer.getDefaultPort();
+        int port = getDefaultPort();
         if (url==null) {
             url = "http://localhost:" + port;
 ;
         }
         selenium = new DefaultSelenium("localhost", port, browserString, url);
         selenium.start();
+    }
+
+    private int getDefaultPort() {
+        try {
+            Class c = Class.forName("org.openqa.selenium.server.SeleniumServer");
+            Method getDefaultPort = c.getMethod("getDefaultPort", new Class[0]);
+            Integer portNumber = (Integer)getDefaultPort.invoke(null, new Object[0]);
+            return portNumber.intValue();
+        } catch (Exception e) {
+            return 4444;
+        }
     }
 
     /** Like assertTrue, but fails at the end of the test (during tearDown) */
@@ -110,6 +120,15 @@ public class SeleneseTestCase extends TestCase {
     public void verifyEquals(Object s1, Object s2) {
         try {
             assertEquals(s1, s2);
+        } catch (AssertionFailedError e) {
+            verificationErrors.append(e);
+        }
+    }
+    
+    /** Like assertEquals, but fails at the end of the test (during tearDown) */
+    public void verifyEquals(boolean s1, boolean s2) {
+        try {
+            assertEquals(new Boolean(s1), new Boolean(s2));
         } catch (AssertionFailedError e) {
             verificationErrors.append(e);
         }
@@ -276,11 +295,25 @@ public class SeleneseTestCase extends TestCase {
         }
     }
     
+    /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
+    public void verifyNotEquals(boolean s1, boolean s2) {
+        try {
+            assertNotEquals(new Boolean(s1), new Boolean(s2));
+        } catch (AssertionFailedError e) {
+            verificationErrors.append(e);
+        }
+    }
+    
     /** Asserts that two objects are not the same (compares using .equals()) */
     public static void assertNotEquals(Object obj1, Object obj2) {
         if (obj1.equals(obj2)) {
             fail("did not expect values to be equal (" + obj1.toString() + ")");
         }
+    }
+    
+    /** Asserts that two booleans are not the same */
+    public static void assertNotEquals(boolean b1, boolean b2) {
+        assertNotEquals(new Boolean(b1), new Boolean(b2));
     }
     
     /** Sleeps for the specified number of milliseconds */

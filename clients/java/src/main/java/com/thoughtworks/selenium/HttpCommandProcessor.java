@@ -161,7 +161,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     }
 
     private static String[] parseCSV(String input) {
-        ArrayList<String> output = new ArrayList<String>();
+        ArrayList output = new ArrayList();
         StringBuffer sb = new StringBuffer();
         for(int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
@@ -179,7 +179,7 @@ public class HttpCommandProcessor implements CommandProcessor {
             }  
         }
         output.add(sb.toString());
-        return output.toArray(new String[0]);
+        return (String[]) output.toArray(new String[0]);
     }
     
     public Number getNumber(String commandName, String[] args) {

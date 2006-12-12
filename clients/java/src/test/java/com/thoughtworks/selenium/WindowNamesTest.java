@@ -23,16 +23,19 @@ public class WindowNamesTest extends TestCase
         
 		assertEquals("Google", selenium.getTitle());
 		String[] windowNames = selenium.getAllWindowNames();
-        for (String windowName : windowNames) {
+        for (int i = 0; i < windowNames.length; i++) {
+            String windowName = windowNames[i];
             System.out.println("Window Name: " + windowName);
         }
         selenium.selectWindow(null);
         String[] windowIds = selenium.getAllWindowNames();
-        for (String windowId : windowIds) {
+        for (int i = 0; i < windowIds.length; i++) {
+            String windowId = windowIds[i];
             System.out.println("Window Id: " + windowId);
         }
         String[] windowTitles = selenium.getAllWindowTitles();
-        for (String windowTitle : windowTitles) {
+        for (int i = 0; i < windowTitles.length; i++) {
+            String windowTitle = windowTitles[i];
             System.out.println("Window Title: " + windowTitle);
         }
         //selenium.setSpeed("500");

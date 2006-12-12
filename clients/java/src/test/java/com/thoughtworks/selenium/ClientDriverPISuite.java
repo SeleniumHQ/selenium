@@ -1,6 +1,6 @@
 package com.thoughtworks.selenium;
 
-import java.util.HashMap;
+import java.util.*;
 
 import junit.extensions.*;
 import junit.framework.*;
@@ -48,7 +48,7 @@ public class ClientDriverPISuite extends ClientDriverSuite {
      *
      */
     static class InitSystemPropertiesForPImodeTesting extends TestSetup {
-        private HashMap<String, String> savedValuesOfSystemProperties = new HashMap<String, String>();
+        private HashMap/*<String, String>*/ savedValuesOfSystemProperties = new HashMap/*<String, String>*/();
 
         public InitSystemPropertiesForPImodeTesting(Test test) {
             super(test);
@@ -75,8 +75,9 @@ public class ClientDriverPISuite extends ClientDriverSuite {
         }
 
         private void restoreOldSystemPropertySettings() {
-            for (String propertyName : savedValuesOfSystemProperties.keySet()) {                
-                String oldValue = savedValuesOfSystemProperties.get(propertyName);
+            for (Iterator i = savedValuesOfSystemProperties.keySet().iterator(); i.hasNext(); ) {                
+                String propertyName = (String) i.next();
+                String oldValue = (String) savedValuesOfSystemProperties.get(propertyName);
                 if (oldValue==null) {
                     System.clearProperty(propertyName);
                 }
