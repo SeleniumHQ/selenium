@@ -1,10 +1,9 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Selenium Core 0.8.1 Reference</title>
+<title>Selenium Core 0.8.2 Reference</title>
 </head>
 <body>
-<h1>Selenium Core 0.8.1 Reference</h1>
 <h2>Concepts</h2>
 <p>A <strong>command</strong> is what tells Selenium what to do. Selenium commands come in three 'flavors': <strong>Actions</strong>, <strong>Accessors</strong> and <strong>Assertions</strong>.
 	Each command call is one line in the test table of the form:</p>
@@ -53,77 +52,69 @@ The format of a locator is:</p>
 <p>
 We support the following strategies for locating elements:
 </p>
-<blockquote>
-<dl>
-<dt>
-<strong>identifier</strong>=<em>id</em>
-</dt>
-<dd>Select the element with the specified @id attribute. If no match is
+<ul>
+<li>
+<strong>identifier</strong>=<em>id</em>: 
+Select the element with the specified @id attribute. If no match is
 found, select the first element whose @name attribute is <em>id</em>.
-(This is normally the default; see below.)</dd>
-<dt>
-<strong>id</strong>=<em>id</em>
-</dt>
-<dd>Select the element with the specified @id attribute.</dd>
-<dt>
-<strong>name</strong>=<em>name</em>
-</dt>
-<dd>Select the first element with the specified @name attribute.</dd>
-<dd>
+(This is normally the default; see below.)</li>
+<li>
+<strong>id</strong>=<em>id</em>:
+Select the element with the specified @id attribute.</li>
+<li>
+<strong>name</strong>=<em>name</em>:
+Select the first element with the specified @name attribute.
 <ul class="first last simple">
 <li>username</li>
 <li>name=username</li>
 </ul>
-</dd>
-<dd>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace.  If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</dd>
-<dd>
+<p>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace.  If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</p>
 <ul class="first last simple">
 <li>name=flavour value=chocolate</li>
 </ul>
-</dd>
-<dt>
-<strong>dom</strong>=<em>javascriptExpression</em>
-</dt>
-<dd>
-<dd>Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
+</li>
+<li>
+<strong>dom</strong>=<em>javascriptExpression</em>: 
+
+Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
 Model using JavaScript.  Note that you must not return a value in this string; simply make it the last expression in the block.
 <ul class="first last simple">
 <li>dom=document.forms['myForm'].myDropdown</li>
 <li>dom=document.images[56]</li>
 <li>dom=function foo() { return document.links[1]; }; foo();</li>
 </ul>
-</dd>
-</dd>
-<dt>
-<strong>xpath</strong>=<em>xpathExpression</em>
-</dt>
-<dd>Locate an element using an XPath expression.
+</li>
+<li>
+<strong>xpath</strong>=<em>xpathExpression</em>: 
+Locate an element using an XPath expression.
 <ul class="first last simple">
 <li>xpath=//img[@alt='The image alt text']</li>
 <li>xpath=//table[@id='table1']//tr[4]/td[2]</li>
+<li>xpath=//a[contains(@href,'#id1')]</li>
+<li>xpath=//a[contains(@href,'#id1')]/@class</li>
+<li>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</li>
+<li>xpath=//input[@name='name2' and @value='yes']</li>
+<li>xpath=//*[text()="right"]</li>
 </ul>
-</dd>
-<dt>
-<strong>link</strong>=<em>textPattern</em>
-</dt>
-<dd>Select the link (anchor) element which contains text matching the
+</li>
+<li>
+<strong>link</strong>=<em>textPattern</em>:
+Select the link (anchor) element which contains text matching the
 specified <em>pattern</em>.
 <ul class="first last simple">
 <li>link=The link text</li>
 </ul>
-</dd>
-<dt>
-<strong>css</strong>=<em>cssSelectorSyntax</em>
-</dt>
-<dd>Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
+</li>
+<li>
+<strong>css</strong>=<em>cssSelectorSyntax</em>:
+Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
 <ul class="first last simple">
 <li>css=a[href="#id3"]</li>
 <li>css=span#firstChild + span</li>
 </ul>
-</dd>
-<dd>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </dd>
-</dl>
-</blockquote>
+<p>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </p>
+</li>
+</ul>
 <p>
 Without an explicit locator prefix, Selenium uses the following default
 strategies:
@@ -162,28 +153,24 @@ Selects a single element based on its position in the list (offset from zero).</
 <p>
 Various Pattern syntaxes are available for matching string values:
 </p>
-<blockquote>
-<dl>
-<dt>
-<strong>glob:</strong><em>pattern</em>
-</dt>
-<dd>Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a
+<ul>
+<li>
+<strong>glob:</strong><em>pattern</em>:
+Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a
 kind of limited regular-expression syntax typically used in command-line
 shells. In a glob pattern, "*" represents any sequence of characters, and "?"
 represents any single character. Glob patterns match against the entire
-string.</dd>
-<dt>
-<strong>regexp:</strong><em>regexp</em>
-</dt>
-<dd>Match a string using a regular-expression. The full power of JavaScript
-regular-expressions is available.</dd>
-<dt>
-<strong>exact:</strong><em>string</em>
-</dt>
-<dd>Match a string exactly, verbatim, without any of that fancy wildcard
-stuff.</dd>
-</dl>
-</blockquote>
+string.</li>
+<li>
+<strong>regexp:</strong><em>regexp</em>:
+Match a string using a regular-expression. The full power of JavaScript
+regular-expressions is available.</li>
+<li>
+<strong>exact:</strong><em>string</em>:
+
+Match a string exactly, verbatim, without any of that fancy wildcard
+stuff.</li>
+</ul>
 <p>
 If no pattern prefix is specified, Selenium assumes that it's a "glob"
 pattern.
@@ -418,7 +405,7 @@ waitForPageToLoad.<p>Arguments:</p>
 <dd>Drags an element and drops it on another element<p>Arguments:</p>
 <ul>
 <li>locatorOfObjectToBeDragged - an element to be dragged</li>
-<li>locatorOfDragDestinationObject - an element whose location (i.e., whose top left corner) will be the point where locatorOfObjectToBeDragged  is dropped</li>
+<li>locatorOfDragDestinationObject - an element whose location (i.e., whose center-most pixel) will be the point where locatorOfObjectToBeDragged  is dropped</li>
 </ul>
 </dd>
 <br>
@@ -486,6 +473,20 @@ See also setSpeed.</dd>
 	</strong>
 </dt>
 <dd>Simulates the user clicking the "back" button on their browser.</dd>
+<br>
+<dt>
+<strong><a name="highlight"></a>highlight
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Briefly changes the backgroundColor of the specified element yellow.  Useful for debugging.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
 <br>
 <dt>
 <strong><a name="keyDown"></a>keyDown
@@ -737,6 +738,19 @@ an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p>
 <dd>Simulates the user clicking the "Refresh" button on their browser.</dd>
 <br>
 <dt>
+<strong><a name="removeAllSelections"></a>removeAllSelections
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Unselects all of the selected options in a multi-select element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> identifying a multi-select box</li>
+</ul>
+</dd>
+<br>
+<dt>
 <strong><a name="removeSelection"></a>removeSelection
 		(
 			locator,optionLocator
@@ -767,41 +781,38 @@ Select element (e.g. for selecting a specific option, or for asserting
 that the selected option satisfies a specification). There are several
 forms of Select Option Locator.
 </p>
-<dl>
-<dt>
-<strong>label</strong>=<em>labelPattern</em>
-</dt>
-<dd>matches options based on their labels, i.e. the visible text. (This
+<ul>
+<li>
+<strong>label</strong>=<em>labelPattern</em>:
+matches options based on their labels, i.e. the visible text. (This
 is the default.)
 <ul class="first last simple">
 <li>label=regexp:^[Oo]ther</li>
 </ul>
-</dd>
-<dt>
-<strong>value</strong>=<em>valuePattern</em>
-</dt>
-<dd>matches options based on their values.
+</li>
+<li>
+<strong>value</strong>=<em>valuePattern</em>:
+matches options based on their values.
 <ul class="first last simple">
 <li>value=other</li>
 </ul>
-</dd>
-<dt>
-<strong>id</strong>=<em>id</em>
-</dt>
-<dd>matches options based on their ids.
+</li>
+<li>
+<strong>id</strong>=<em>id</em>:
+
+matches options based on their ids.
 <ul class="first last simple">
 <li>id=option1</li>
 </ul>
-</dd>
-<dt>
-<strong>index</strong>=<em>index</em>
-</dt>
-<dd>matches an option based on its index (offset from zero).
+</li>
+<li>
+<strong>index</strong>=<em>index</em>:
+matches an option based on its index (offset from zero).
 <ul class="first last simple">
 <li>index=2</li>
 </ul>
-</dd>
-</dl>
+</li>
+</ul>
 <p>
 If no option locator prefix is provided, the default behaviour is to match on <strong>label</strong>.
 </p>
@@ -902,6 +913,25 @@ This method will fail if the specified element isn't an input element or textare
 </dd>
 <br>
 <dt>
+<strong><a name="setMouseSpeed"></a>setMouseSpeed
+		(
+			pixels
+		)
+	</strong>
+</dt>
+<dd>Configure the number of pixels between "mousemove" events during dragAndDrop commands (default=10).
+<p>Setting this value to 0 means that we'll send a "mousemove" event to every single pixel
+in between the start location and the end location; that can be very slow, and may
+cause some browsers to force the JavaScript to timeout.</p>
+<p>If the mouse speed is greater than the distance between the two dragged objects, we'll
+just send one "mousemove" at the start location and then one final one at the end location.</p>
+<p>Arguments:</p>
+<ul>
+<li>pixels - the number of pixels between "mousemove" events</li>
+</ul>
+</dd>
+<br>
+<dt>
 <strong><a name="setSpeed"></a>setSpeed
 		(
 			value
@@ -988,6 +1018,31 @@ submit buttons, e.g. single-input "Search" forms.<p>Arguments:</p>
 
 <p>Can also be used to set the value of combo boxes, check boxes, etc. In these cases,
 value should be the value of the option selected, not the visible text.</p>
+<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>value - the value to type</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="typeKeys"></a>typeKeys
+		(
+			locator,value
+		)
+	</strong>
+</dt>
+<dd>Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+
+<p>This is a convenience method for calling keyDown, keyUp, keyPress for every character in the specified string;
+this is useful for dynamic UI widgets (like auto-completing combo boxes) that require explicit key events.</p>
+<p>Unlike the simple "type" command, which forces the specified value into the page directly, this command
+may or may not have any visible effect, even in cases where typing keys would normally have a visible effect.
+For example, if you use "typeKeys" on a form element, you may or may not see the results of what you typed in
+the field.</p>
+<p>In some cases, you may need to use the simple "type" command to set the value of the field and then the "typeKeys" command to
+send the keystroke events corresponding to what you just typed.</p>
 <p>Arguments:</p>
 <ul>
 <li>locator - an <a href="#locators">element locator</a>
@@ -2267,7 +2322,7 @@ refer to the top-level runner test window, not the window of your application.</
 <p>If you need a reference to the window of your application, you can refer
 to <code>this.browserbot.getCurrentWindow()</code> and if you need to use
 a locator to refer to a single element in your application page, you can
-use <code>this.page().findElement("foo")</code> where "foo" is your locator.</p>
+use <code>this.browserbot.findElement("foo")</code> where "foo" is your locator.</p>
 <p>Arguments:</p>
 <ul>
 <li>script - the JavaScript snippet to run</li>
@@ -2535,6 +2590,57 @@ centralized JavaScript logging mechanism under some conditions.</p>
 				)
 			</li>
 <li>waitForNotLogMessages
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeMouseSpeed"></a>storeMouseSpeed
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the number of pixels between "mousemove" events during dragAndDrop commands (default=10).<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the number of pixels between "mousemove" events during dragAndDrop commands (default=10)</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotMouseSpeed
 				(
 					<a href="#patterns">pattern</a>
 				)

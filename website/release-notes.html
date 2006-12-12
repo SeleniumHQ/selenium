@@ -10,6 +10,41 @@
 
 Release information for different distributions of Selenium Core
 
+<h2>Selenium Core 0.8.2</h2>
+
+December 11, 2006
+
+<p>Version 0.8.2 is a bug-fix release for Selenium Core.  A critical bug
+    was fixed in all waitFor* commands that made them never timeout.
+    Other bug fixes were mostly in in element highlighting and support
+    for IE HTA mode.
+    
+<p>Warnings:</p>
+
+<ul>
+  <li>
+    Selenium's support for handling baseUrls has changed from version 0.8.1.
+    Whereas before, opening relative URLs with the "open" command would result
+    in windows opening relative to TestRunner.html, they now open relative to
+    your test suite.  Tests using relative URLs may therefore fail in 0.8.2.  Fortunately,
+    0.8.2 also adds support for specifying an arbitrary baseUrl by specifying it
+    in the TestRunner query string, like this: TestRunner.html?baseUrl=http://localhost/blah/
+    
+    <p>Note that your baseUrl should end with a "/".  If it does not end in a slash,
+    we'll have to assume that it's really a file and strip off everything after the
+    slash.</p>
+  </li>
+  <li>
+    Use of the multiWindow layout in Firefox requires installation of the
+    "readyState.xpi" extension, available in the Selenium Core distribution.
+  </li>
+</ul>
+
+<p>
+For more details, see the <a href="http://jira.openqa.org/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10301">JIRA release summary</a>.
+</p>
+
+
 <h2>Selenium Core 0.8.1</h2>
 
 November 13, 2006
