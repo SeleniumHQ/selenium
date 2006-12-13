@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-this.Preferences = SeleniumIDE.Preferences;
+if (this.SeleniumIDE && SeleniumIDE.Preferences) {
+    this.Preferences = SeleniumIDE.Preferences;
+} else {
+    // Preferences is not available when called from xlator
+    this.Preferences = {
+        getString: function(name, defaultValue) {
+            return defaultValue;
+        }
+    };
+}
 
 function Log(category) {
-	var thresholdName = Preferences.getString("internalLogThreshold", "INFO");
+    var thresholdName = Preferences.getString("internalLogThreshold", "INFO");
 
 	var log = this;
 	var self = this;
