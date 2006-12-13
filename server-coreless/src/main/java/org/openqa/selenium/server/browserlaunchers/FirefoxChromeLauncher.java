@@ -282,7 +282,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     public static class ChromeUrlConvert {
         public String convert(String httpUrl, int port) throws MalformedURLException {
             String query = LauncherUtils.getQueryString(httpUrl);
-            query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
             String file = new File(new URL(httpUrl).getPath()).getName();
             return "chrome://src/content/" + file + "?" + query;
         }

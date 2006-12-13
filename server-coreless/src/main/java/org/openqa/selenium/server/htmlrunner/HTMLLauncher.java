@@ -82,14 +82,22 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @throws IOException if we can't write the output file
      */
     public String runHTMLSuite(String browser, String browserURL, File suiteFile, File outputFile, int timeoutInSeconds, boolean multiWindow) throws IOException {
-    	if (!suiteFile.exists()) {
+        if (browser == null) throw new IllegalArgumentException("browser may not be null");
+        if (!suiteFile.exists()) {
     		throw new IOException("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
     	}
     	if (!suiteFile.canRead()) {
     		throw new IOException("Can't read HTML Suite file: " + suiteFile.getAbsolutePath());
     	}
     	server.addNewStaticContent(suiteFile.getParentFile());
-    	String suiteURL = LauncherUtils.stripStartURL(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
+        
+        // DGF this is a hack, but I can't find a better place to put it
+        String suiteURL;
+        if (browser.startsWith("*chrome") || browser.startsWith("*iehta")) {
+            suiteURL = "http://localhost:" + server.getPortDriversShouldContact() + "/selenium-server/tests/" + suiteFile.getName();
+        } else {
+            suiteURL = LauncherUtils.stripStartURL(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
+        }
     	return runHTMLSuite(browser, browserURL, suiteURL, outputFile, timeoutInSeconds, multiWindow);
     }
     
