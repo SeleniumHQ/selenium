@@ -244,6 +244,7 @@ sub start {
 
 sub stop {
     my $self = shift;
+    return unless defined $self->{session_id};
     $self->do_command("testComplete");
     $self->{session_id} = undef;
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 32;
+use Test::More tests => 36;
 use Test::Exception;
 
 BEGIN {
@@ -116,3 +116,17 @@ Multi_values: {
     }
 }
 
+Stop_called_twice: {
+    my $sel = WWW::Selenium->new( browser_url => 'http://foo.com' );
+    isa_ok $sel, 'WWW::Selenium';
+    $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
+    $sel->start;
+    $ua->{res} = HTTP::Response->new(content => 'OK');
+    $sel->stop;
+    is $sel->{session_id}, undef;
+    is $ua->{req}, 'http://localhost:4444/selenium-server/driver/'
+                   . '?cmd=testComplete&sessionId=SESSION_ID';
+    $ua->{req} = undef;
+    $sel->stop;
+    is $ua->{req}, undef;
+}
