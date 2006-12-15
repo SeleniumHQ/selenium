@@ -6,7 +6,7 @@ use Archive::Zip qw(:ERROR_CODES :CONSTANTS);
 use File::Copy qw/copy/;
 use File::Path qw/rmtree/;
 
-my $selenium_core_url = 'http://release.openqa.org/selenium-core/nightly/selenium-core-0.8.1-SNAPSHOT.zip';
+my $selenium_core_url = 'http://release.openqa.org/selenium-core/nightly/selenium-core-0.8.3-SNAPSHOT.zip';
 my $core_dir = fetch_and_extract($selenium_core_url);
 my $core_iedoc = "$core_dir/core/iedoc.xml";
 die "Can't find $core_iedoc" unless -e $core_iedoc;
