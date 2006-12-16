@@ -2,6 +2,7 @@ Revision history for Perl extension Test::WWW::Selenium.
 
 1.11 - 
  - don't stop a stopped session
+ - Update with Selenium-RC 0.91
 
 1.10 - Tue Nov 14 20:51:13 PST 2006
  - Integrated latest functions available in Selenium-Core 0.90
