@@ -288,7 +288,12 @@ BrowserBot.prototype._modifyWindow = function(win) {
 
 BrowserBot.prototype.selectWindow = function(target) {
     if (target && target != "null") {
-        this._selectWindowByName(target);
+    	try {
+    		this._selectWindowByName(target);
+    	}
+    	catch (e) {
+    		this._selectWindowByTitle(target);
+    	}
     } else {
         this._selectTopWindow();
     }
@@ -306,6 +311,11 @@ BrowserBot.prototype._selectWindowByName = function(target) {
     this.topFrame = this.currentWindow;
     this.currentWindowName = target;
     this.isSubFrameSelected = false;
+}
+
+BrowserBot.prototype._selectWindowByTitle = function(target) {
+    var windowName = this.getWindowNameByTitle(target);
+    this._selectWindowByName(windowName);
 }
 
 BrowserBot.prototype.selectFrame = function(target) {
@@ -787,6 +797,26 @@ BrowserBot.prototype.getWindowByName = function(windowName, doNotModify) {
         this._modifyWindow(targetWindow);
     }
     return targetWindow;
+};
+
+/**
+ * Find a window name from the window title.
+ */
+BrowserBot.prototype.getWindowNameByTitle = function(windowTitle) {
+    LOG.debug("getWindowNameByTitle(" + windowTitle + ")");
+    
+    // First look in the map of opened windows and iterate them
+    for (var windowName in this.openedWindows) {
+    	var targetWindow = this.openedWindows[windowName];
+    	
+    	// If the target window's title is our title
+    	if (targetWindow.document.title == windowTitle
+    		&& !this._windowClosed(targetWindow)) {
+    		return windowName;
+    	}
+    }
+    
+    throw new SeleniumError("Window does not exist from title");
 };
 
 BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
