@@ -287,6 +287,7 @@ BrowserBot.prototype._modifyWindow = function(win) {
 };
 
 BrowserBot.prototype.selectWindow = function(target) {
+    // TODO implement a locator syntax here
     if (target && target != "null") {
     	try {
     		this._selectWindowByName(target);
@@ -810,13 +811,20 @@ BrowserBot.prototype.getWindowNameByTitle = function(windowTitle) {
     	var targetWindow = this.openedWindows[windowName];
     	
     	// If the target window's title is our title
-    	if (targetWindow.document.title == windowTitle
-    		&& !this._windowClosed(targetWindow)) {
-    		return windowName;
-    	}
+    	try {
+    	    // TODO implement Pattern Matching here
+        	if (!this._windowClosed(targetWindow) &&
+        	    targetWindow.document.title == windowTitle) {
+        		return windowName;
+        	}
+        } catch (e) {
+            // You'll often get Permission Denied errors here in IE
+            // eh, if we can't read this window's title,
+            // it's probably not available to us right now anyway
+        }
     }
     
-    throw new SeleniumError("Window does not exist from title");
+    throw new SeleniumError("Could not find window with title " + windowTitle);
 };
 
 BrowserBot.prototype.getCurrentWindow = function(doNotModify) {

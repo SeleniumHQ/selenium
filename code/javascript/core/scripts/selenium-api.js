@@ -765,14 +765,20 @@ Selenium.prototype.doSelectWindow = function(windowID) {
    * commands go to that window. To select the main window again, use null
    * as the target.
    *
+   * <p>Note that there is a big difference between a window's internal JavaScript "name" property
+   * and the "title" of a given window's document (which is normally what you actually see, as an end user,
+   * in the title bar of the window).  The "name" is normally invisible to the end-user; it's the second 
+   * parameter "windowName" passed to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
+   * (which selenium intercepts).</p>
+   *
    * <p>Selenium has several strategies for finding the window object referred to by the "windowID" parameter.</p>
    * 
-   * <p>1.) if windowID is null, then it is assumed the user is referring to the original window instantiated by the browser).</p>
+   * <p>1.) if windowID is null, (or the string "null") then it is assumed the user is referring to the original window instantiated by the browser).</p>
    * <p>2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
    * that this variable contains the return value from a call to the JavaScript window.open() method.</p>
-   * <p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window objects.  Each of these string 
-   * names matches the second parameter "windowName" past to the JavaScript method  window.open(url, windowName, windowFeatures, replaceFlag)
-   * (which selenium intercepts).</p>
+   * <p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window "names".</p>
+   * <p>4.) If <i>that</i> fails, we'll try looping over all of the known windows to try to find the appropriate "title".
+   * Since "title" is not necessarily unique, this may have unexpected behavior.</p>
    *
    * <p>If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages
    * which identify the names of windows created via window.open (and therefore intercepted by selenium).  You will see messages

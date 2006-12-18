@@ -60,7 +60,7 @@ function testExceptionWhenSelectWindowIsCalledWithUnknownWindowName() {
         fail("Should have thrown exception");
     }
     catch (e) {
-        assertEquals("Window does not exist", e.message);
+        assertEquals("Could not find window with title notAwindow", e.message);
     }
 }
 
