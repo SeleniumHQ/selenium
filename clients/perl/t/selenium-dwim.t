@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 14;
 use Test::Exception;
 
 # Tests for enhancements to help users find their problems faster
@@ -24,6 +24,13 @@ Open_default: {
     my $sel = t::WWW::Selenium->new;
     lives_ok { $sel->open };
     like $sel->{__ua}{req}, qr/\Q1=%2F\E/, 'open specified /';
+}
+
+Double_start: {
+    my $sel = t::WWW::Selenium->new; # calls start() automatically
+    delete $sel->{__ua}{req};
+    $sel->start;
+    is $sel->{__ua}{req}, undef, 'no duplicate session';
 }
 
 Auto_stop: {

@@ -237,6 +237,7 @@ sub new {
 
 sub start {
     my $self = shift;
+    return if $self->{session_id};
     $self->{session_id} = $self->get_string("getNewBrowserSession", 
                                             $self->{browser_start_command}, 
                                             $self->{browser_url});
