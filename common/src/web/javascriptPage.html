@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Testing Javascript</title>
+  <script type="text/javascript">
+    function updateContent(input) {
+      document.getElementById('result').innerHTML = "<p>" + input.value + "</p>";
+    }
+  </script>
+</head>
+<body>
+  <h1>Type Stuff</h1>
+  
+  <div id="result">
+    Key up results will appear here
+  </div>
+  
+  <div id="formageddon">
+    <form action="#">
+      Key Up: <input type="text" id="keyUp" onkeyup="javascript:updateContent(this)" /><br />
+      Key Down: <input type="text" id="keyDown" onkeydown="javascript:updateContent(this)" /><br />
+      Key Press: <input type="text" id="keyPress" onkeypress="javascript:updateContent(this)" /><br />
+      <textarea id="keyDownArea" onkeydown="javascript:updateContent(this)" rows="2" cols="15"></textarea>
+      <textarea id="keyPressArea" onkeypress="javascript:updateContent(this)" rows="2" cols="15"></textarea>
+      <textarea id="keyUpArea" onkeyup="javascript:updateContent(this)" rows="2" cols="15"></textarea>
+    </form>
+  </div>
+</body>
+</html>

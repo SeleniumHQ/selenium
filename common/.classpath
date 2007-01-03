@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/classes" path="src/java"/>
+	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/buildtime/org.mortbay.jetty.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/buildtime/junit-3.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/buildtime/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/jasper-runtime.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/jasper-compiler.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

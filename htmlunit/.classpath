@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/classes" path="src/java"/>
+	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
+	<classpathentry kind="lib" path="lib/runtime/htmlunit-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/jaxen-1.1-beta-11.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/commons-httpclient-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/commons-lang-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/commons-io-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/js-1.6R2.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/xercesImpl-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/nekohtml-0.9.5.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/commons-collections-3.2.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

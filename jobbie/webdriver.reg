@@ -1,0 +1,32 @@
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\InternetExploderFox]
+@="WebDriver.IeWrapper"
+
+[HKEY_CLASSES_ROOT\InternetExploderFox\CLSID]
+@="{9077DEDA-652B-4EFD-9560-3692086D4670}"
+
+[HKEY_CLASSES_ROOT\CLSID\{9077DEDA-652B-4EFD-9560-3692086D4670}]
+@="WebDriver.IeWrapper"
+
+[HKEY_CLASSES_ROOT\CLSID\{9077DEDA-652B-4EFD-9560-3692086D4670}\InprocServer32]
+@="mscoree.dll"
+"ThreadingModel"="Both"
+"Class"="WebDriver.IeWrapper"
+"Assembly"="webdriver-jobbie, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+"RuntimeVersion"="v2.0.50727"
+
+[HKEY_CLASSES_ROOT\CLSID\{9077DEDA-652B-4EFD-9560-3692086D4670}\InprocServer32\1.0.0.0]
+"Class"="WebDriver.IeWrapper"
+"Assembly"="webdriver-jobbie, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+"RuntimeVersion"="v2.0.50727"
+
+[HKEY_CLASSES_ROOT\CLSID\{9077DEDA-652B-4EFD-9560-3692086D4670}\ProgId]
+@="InternetExploderFox"
+
+[HKEY_CLASSES_ROOT\CLSID\{9077DEDA-652B-4EFD-9560-3692086D4670}\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}]
+
+[HKEY_CLASSES_ROOT\Record\{B02C902F-A24D-384A-A082-DC32E866FFE7}\1.0.0.0]
+"Class"="WebDriver.IeWrapper+AccessBy"
+"Assembly"="webdriver-jobbie, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+"RuntimeVersion"="v2.0.50727"
