@@ -17,8 +17,6 @@
 
 package com.thoughtworks.webdriver.ie;
 
-import java.io.File;
-
 import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
 import com.thoughtworks.webdriver.WebDriver;
 
@@ -28,7 +26,6 @@ public class InternetExplorerDriverTest extends JavascriptEnabledDriverTest {
 	}
 	
 	protected WebDriver getDriver() {
-		System.out.println(new File(".").getAbsolutePath());
 		return new InternetExplorerDriver();
 	}
 }
