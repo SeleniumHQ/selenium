@@ -42,7 +42,7 @@ Selenium.prototype.doOpen = function(newLocation) {
 	return this.real_doOpen(newLocation);
 };
 
-BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
+MozillaBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 	if (iframe.src) {
 		iframe.src = location;
 	} else {
@@ -50,7 +50,7 @@ BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 	}
 };
 
-BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
+MozillaBrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
     if (currentDocument.readyState) {
         return currentDocument.readyState;
     } else {
@@ -77,7 +77,7 @@ Selenium.prototype.doStore = function(value, varName) {
 };
 
 if (isFirefox2()) {
-    PageBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument, inWindow) {
+    MozillaBrowserBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument, inWindow) {
         var element = null;
         try {
             // hack to pass local variable to eval
@@ -93,7 +93,7 @@ if (isFirefox2()) {
         
         return element;
     };
-    PageBot.prototype.locateElementByDomTraversal.prefix = "dom";
+    MozillaBrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
 }
 
 function Logger() {
@@ -308,7 +308,7 @@ function showElement(locator) {
 	
 	var pageBot = contentWindow._test_pageBot;
 	if (pageBot == null) {
-		pageBot = PageBot.createForWindow(contentWindow);
+		pageBot = new MozillaBrowserBot(contentWindow);
         pageBot.getCurrentWindow = function() {
             return contentWindow;
         }

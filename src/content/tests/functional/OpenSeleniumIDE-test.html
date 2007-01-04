@@ -14,12 +14,12 @@
           setTimeout(initEditor, 100);
           return;
         }
-	      var BrowserBot = window.top.BrowserBot;
-	      var originalModify = BrowserBot.prototype.modifyWindowToRecordPopUpDialogs;
-        BrowserBot.SeleniumIDE = SeleniumIDE;
-	      BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+	      var MozillaBrowserBot = window.top.MozillaBrowserBot;
+	      var originalModify = MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs;
+        MozillaBrowserBot.SeleniumIDE = SeleniumIDE;
+	      MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
 		      originalModify.call(this, windowToModify, browserBot);
-		      BrowserBot.SeleniumIDE.Loader.getRecorder(windowToModify).reattachWindowMethods();
+		      MozillaBrowserBot.SeleniumIDE.Loader.getRecorder(windowToModify).reattachWindowMethods();
 	      }
 //        window.top.SeleniumIDE = SeleniumIDE;
         document.getElementById("status").innerHTML = "OK";

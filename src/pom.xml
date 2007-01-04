@@ -99,7 +99,7 @@
     </dependency>
   </dependencies>
   <properties>
-    <seleniumCoreVersion>0.8.1</seleniumCoreVersion>
+    <seleniumCoreVersion>0.8.2</seleniumCoreVersion>
     <seleniumRCVersion>0.9.1-SNAPSHOT</seleniumRCVersion>
   </properties>
 </project>
