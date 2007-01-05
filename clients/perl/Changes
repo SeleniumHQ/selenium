@@ -1,6 +1,6 @@
 Revision history for Perl extension Test::WWW::Selenium.
 
-1.11 - 
+1.11 - Thu Jan  4 19:53:18 PST 2007
  - don't stop a stopped session
  - don't open multiple browsers when start() is called several times
  - Update with Selenium-RC 0.91
