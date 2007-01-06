@@ -213,6 +213,8 @@ LocatorBuilders.add('imgXPath', function(e) {
         if (e.nodeName == 'IMG') {
             if (e.alt != '') {
                 return "//img[@alt=" + this.attributeValue(e.alt) + "]";
+            } else if (e.title != '') {
+                return "//img[@title=" + this.attributeValue(e.title) + "]";
             } else if (e.src != '') {
 				return "//img[contains(@src," + this.attributeValue(e.src) + ")]";
             }
