@@ -76,26 +76,6 @@ Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
 
-if (isFirefox2()) {
-    MozillaBrowserBot.prototype.locateElementByDomTraversal = function(domTraversal, inDocument, inWindow) {
-        var element = null;
-        try {
-            // hack to pass local variable to eval
-            element = eval("inWindow." + domTraversal, {inWindow: inWindow});
-        } catch (e) {
-            e.isSeleniumError = true;
-            throw e;
-        }
-        
-        if (!element) {
-            return null;
-        }
-        
-        return element;
-    };
-    MozillaBrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
-}
-
 function Logger() {
 	var self = this;
 	var levels = ["log","debug","info","warn","error"];

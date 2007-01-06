@@ -151,17 +151,3 @@ var ExtensionsLoader = {
 			});
 	}
 };
-
-function doEval(str, obj) {
-    if (obj) {
-        with (obj) {
-            return eval(str);
-        }
-    } else {
-        return eval(str);
-    }
-}
-
-function isFirefox2() {
-    return !navigator.userAgent.match(/ rv:1\.8\.0/); // Not Firefox 1.5 (Gecko 1.8.0)
-}

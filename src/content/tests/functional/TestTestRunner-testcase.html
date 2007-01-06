@@ -23,14 +23,10 @@
 	<td>link=Forums</td>
 	<td></td>
 </tr>
+<!-- test user-extensions.js -->
 <tr>
 	<td>typeRepeated</td>
 	<td>q01</td>
-	<td>test</td>
-</tr>
-<tr>
-	<td>storeEval</td>
-	<td>new Date().getTime()</td>
 	<td>test</td>
 </tr>
 <tr>
@@ -38,6 +34,23 @@
 	<td>q01</td>
 	<td>testtest</td>
 </tr>
+<!-- test javascript eval -->
+<tr>
+	<td>storeEval</td>
+	<td>new Date().getTime()</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q01</td>
+	<td>javascript{"abc" + storedVars['test']}</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>q01</td>
+	<td>regexp:^abc\d+$</td>
+</tr>
+<!-- test goBack -->
 <tr>
 	<td>goBackAndWait</td>
 	<td></td>

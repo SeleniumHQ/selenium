@@ -37,17 +37,6 @@ function Debugger(editor) {
 	    .getService(Components.interfaces.mozIJSSubScriptLoader);
 		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-logging.js', this.runner);
 
-        if (isFirefox2()) {
-            // In Firefox 2.0, it seems that methods added to Object or String does not work in subscripts,
-            // so we'll load prototype.js and htmlutils.js again
-            // (Tested on Firefox 2.0 RC2)
-            this.runner.eval = doEval;
-            this.runner.window = window;
-            this.runner.Element = window.Element;
-            this.runner.Event = window.Event;
-            subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/lib/prototype.js', this.runner);
-            subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/htmlutils.js', this.runner);
-        }
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-commandhandlers.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);
