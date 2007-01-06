@@ -14,6 +14,7 @@ function testDecodeTextWithHtmlFormat() {
 	assertEquals("&amp;", decodeText("&amp;amp;"));
 	assertEquals("a=b&c=d", decodeText("a=b&c=d"));
 	assertEquals("&foobar;", decodeText("&foobar;"));
+	assertEquals("<foobar>", decodeText("&lt;foobar&gt;"));
     assertEquals("a\nb", decodeText("a<br>b"));
     assertEquals("a\nb", decodeText("a<br />b"));
 }
@@ -26,6 +27,7 @@ function testEncodeTextWithHtmlFormat() {
 	assertEquals("&amp;amp;", encodeText("&amp;"));
 	assertEquals("a=b&c=d", encodeText("a=b&c=d"));
 	assertEquals("&foobar;", encodeText("&foobar;"));
+	assertEquals("&lt;foobar&gt;", encodeText("<foobar>"));
     assertEquals("<br />", encodeText("\n"));
 }
 

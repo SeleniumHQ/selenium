@@ -62,7 +62,7 @@ function encodeText(text) {
 				return result;
 			}); // convert multiple spaces to nbsp
 	}
-	if (escapeXml == 'always' || escapeXml == 'partial') {
+	if (escapeXml == 'always' || escapeXml == 'partial' || escapeXml == 'html') {
 		text = text.replace(/</g, '&lt;');
 		text = text.replace(/>/g, '&gt;');
 	}
