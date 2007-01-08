@@ -46,8 +46,7 @@ function waitFor(expression) {
 
 function assertOrVerifyFailure(line, isAssert) {
 	var message = '"expected failure"';
-	var failStatement = isAssert ? "fail(" + message  + ");" : 
-		"verificationErrors.append(" + message + ");";
+    var failStatement = "fail(" + message + ");";
 	return "try { " + line + " " + failStatement + " } catch (Throwable e) {}";
 }
 
