@@ -376,9 +376,14 @@ function formatCommand(command) {
 				this.verifyFailureOnNext = def.name.match(/^verify/);
 			} else {
 				var call = new CallSelenium(def.name);
-				for (var i = 0; i < def.params.length; i++) {
-					call.args.push(xlateArgument(command.getParameterAt(i)));
-				}
+                if ("open" == def.name && options.urlSuffix && !command.target.match(/^\w+:\/\//)) {
+                    // urlSuffix is used to translate core-based test
+                    call.args.push(xlateArgument(options.urlSuffix + command.target));
+                } else {
+                    for (var i = 0; i < def.params.length; i++) {
+                        call.args.push(xlateArgument(command.getParameterAt(i)));
+                    }
+                }
 				line = statement(call);
 			}
 		} else {
