@@ -73,7 +73,7 @@
     <unzip src="${build}/${ant.project.name}-${app.version}-test.xpi" dest="${profile.extension.dir}" />
   </target>
 
-  <target name="integration-test" depends="prepare-profile-template" unless="maven.test.skip">
+  <target name="integration-test" depends="prepare-profile-template" unless="skip-integration-test">
     <java classname="org.openqa.selenium.server.SeleniumServer" fork="true" failonerror="true">
       <classpath>
         <dirset dir="target/assembly/work">
