@@ -158,7 +158,7 @@ function seleniumEquals(type, pattern, expression) {
 	if (type == 'String[]') {
 		var matcher = 'exact';
 		var r;
-		if ((r = pattern.match(/^(regexp|glob|exact):/))) {
+		if ((r = pattern.match(/^(regexp|regex|glob|exact):/))) {
 			matcher = r[1];
 			pattern = pattern.substring(r[0].length);
 		} else if (pattern.match(/[\*\?]/)) {
@@ -179,6 +179,8 @@ function seleniumEquals(type, pattern, expression) {
 		}
 	} else if (type == 'String' && pattern.match(/^regexp:/)) {
 		return new RegexpMatch(pattern.substring(7), expression);
+	} else if (type == 'String' && pattern.match(/^regex:/)) {
+		return new RegexpMatch(pattern.substring(6), expression);
 	} else if (type == 'String' && (pattern.match(/^glob:/) || pattern.match(/[\*\?]/))) {
 		pattern = pattern.replace(/^glob:/, '');
 		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).])/g, "\\$1");

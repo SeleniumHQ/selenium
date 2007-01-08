@@ -156,7 +156,6 @@ options.header =
     "\tpublic void ${methodName}() throws Exception {\n";
 
 options.footer =
-	"\t\tcheckForVerificationErrors();\n" +
 	"\t}\n" +
 	"}\n";
 
