@@ -53,3 +53,14 @@ function testParse() {
 	assertEquals("selectWindow", commands.shift().command);
 	assertEquals(0, commands.length);
 }
+
+function testParseEmptyTD() {
+	var source = FileUtils.readURL("chrome://selenium-ide/content/tests/unit/html/TestEmptyTD.html");
+	var testCase = new TestCase();
+	parse(testCase, source);
+	var commands = testCase.commands;
+    assertEquals("open", commands.shift().command);
+    assertEquals("type", commands.shift().command);
+    assertEquals("verifyValue", commands.shift().command);
+	assertEquals(0, commands.length);
+}

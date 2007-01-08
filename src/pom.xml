@@ -50,6 +50,7 @@
                 <ant antfile="build.xml" target="integration-test">
                   <property name="build" location="${project.build.directory}" />
                   <property name="app.version" value="${project.version}" />
+                  <property name="maven.test.skip" value="${maven.test.skip}" />
                 </ant>
               </tasks>
             </configuration>
