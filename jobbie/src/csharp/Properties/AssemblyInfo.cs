@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly : AssemblyConfiguration("")]
 [assembly : AssemblyCompany("Thoughtworks")]
 [assembly : AssemblyProduct("WebDriver")]
-[assembly : AssemblyCopyright("Copyright © Thoughtworks 2006")]
+[assembly: AssemblyCopyright("Copyright © Thoughtworks 2007")]
 [assembly : AssemblyTrademark("")]
 [assembly : AssemblyCulture("")]
 

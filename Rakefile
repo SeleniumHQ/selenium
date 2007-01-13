@@ -55,7 +55,8 @@ end
 
 file 'jobbie/build/webdriver-jobbie.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
   csc :out => 'jobbie/build/webdriver-jobbie.dll', :sources => FileList['jobbie/src/csharp/**/*.cs'], 
-      :references => ['C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll', 'C:\WINDOWS\assembly\GAC\Microsoft.mshtml\7.0.3300.0__b03f5f7f11d50a3a\Microsoft.mshtml.dll', 'jobbie\lib\buildtime\Interop.SHDocVw.dll']
+      :references => ['C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll', 'C:\WINDOWS\assembly\GAC\Microsoft.mshtml\7.0.3300.0__b03f5f7f11d50a3a\Microsoft.mshtml.dll', 'jobbie\lib\runtime\Interop.SHDocVw.dll']
+  File.copy('jobbie/lib/runtime/Interop.SHDocVw.dll', 'jobbie/build')
 end
 
 def windows?
@@ -68,7 +69,7 @@ if windows? then
   Rake::Task[:test_jobbie].enhance([:jobbie])
   Rake::Task[:jobbie].enhance %w(jobbie/build/webdriver-jobbie.dll) do
     sh 'regasm jobbie/build/webdriver-jobbie.dll', :verbose => false
-    sh 'regasm /regfile:jobbie/build/webdriver.reg jobbie/build/webdriver-jobbie.dll', :verbose => false
+    sh 'regasm /regfile:jobbie/build/webdriver.reg jobbie/build/webdriver-jobbie.dll', :verbose => false    
   end
 end
 
@@ -166,7 +167,7 @@ def csc(args)
   argfile += "/target:#{target.gsub('/', '\\')} "
   argfile += '/nologo '
   argfile += "/debug#{debug ? '+' : '-'} "
-  argfile += "/lib:build "
+  argfile += "/lib:jobbie\\build "
   resources.each do |res| 
     res_path = res.gsub('/', '\\')
     res_name = "#{module_name}.EmbeddedResources.#{File.basename(res_path)}"
