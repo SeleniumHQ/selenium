@@ -28,6 +28,7 @@ function Editor(window, isSidebar) {
 	this.selectDefaultReference();
     this.toggleRecordingEnabled(true);
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
+    this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
 	this.testCaseListeners = new Array();
 	this.testCaseListeners.push(function(testCase) {
@@ -41,6 +42,7 @@ function Editor(window, isSidebar) {
 			};
 		});
 	this.setTestCase(new TestCase(), true);
+    this.setTestSuite(new TestSuite());
 	this.initOptions();
 	//this.toggleView(this.treeView);
 	
@@ -93,6 +95,7 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close":
 		case "cmd_open":
+		case "cmd_open_suite":
 		case "cmd_save":
 		case "cmd_selenium_play":
 		case "cmd_selenium_pause":
@@ -108,6 +111,7 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close":
 		case "cmd_open":
+		case "cmd_open_suite":
 		case "cmd_save":
 			return true;
 		case "cmd_selenium_testrunner":
@@ -127,6 +131,7 @@ Editor.controller = {
 		case "cmd_close": if (editor.confirmClose()) { window.close(); } break;
 		case "cmd_save": editor.saveTestCase(); break;
 		case "cmd_open": editor.loadTestCase(); break;
+		case "cmd_open_suite": editor.loadTestSuite(); break;
 		case "cmd_selenium_play":
 			editor.selDebugger.start();
 			break;
@@ -246,16 +251,38 @@ Editor.prototype.newTestCase = function() {
 	}
 }
 
-Editor.prototype.loadTestCase = function(file, url) {
+Editor.prototype.loadTestCase = function(file) {
 	this.log.debug("loadTestCase");
 	try {
 		var testCase = null;
-		if ((testCase = this.currentFormat.load()) != null) {
+        if (file) {
+            testCase = this.currentFormat.loadFile(file, false);
+        } else {
+            testCase = this.currentFormat.load();
+        }
+        if (testCase != null) {
 			this.setTestCase(testCase);
 		}
 	} catch (error) {
 		alert("error loading test case: " + error);
 	}
+}
+
+Editor.prototype.loadTestSuite = function() {
+	this.log.debug("loadTestSuite");
+	try {
+		var testSuite = null;
+		if ((testSuite = TestSuite.load()) != null) {
+            this.setTestSuite(testSuite);
+		}
+	} catch (error) {
+		alert("error loading test suite: " + error);
+	}
+}
+
+Editor.prototype.setTestSuite = function(testSuite) {
+    this.testSuite = testSuite;
+    this.suiteTreeView.refresh();
 }
 
 Editor.prototype.updateTitle = function() {

@@ -154,3 +154,8 @@ toolbarbutton.icon label {
 #testrunner-button { 
   -moz-image-region: rect(0px 96px 16px 80px);
 }
+
+tab label { 
+  font-size: 8.5pt;
+}
+

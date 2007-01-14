@@ -80,7 +80,17 @@ limitations under the License.
   </toolbox>
 
   <vbox flex="1">
-    <tabbox flex="3" height="300">
+    <hbox width="100">
+      <tree id="suiteTree" flex="1" enableColumnDrag="false" hidecolumnpicker="true">
+	<treecols>
+	  <treecol label="Test Case" flex="1" />
+        </treecols>
+        <treechildren />
+      </tree>
+    <splitter collapse="before">
+      <grippy/>
+    </splitter>
+    <tabbox flex="3" height="300" width="250">
       <tabs orient="horizontal" onselect="if (window.editor) { window.editor.tabSelected(selectedItem.id) }" id="viewTabs">
 	<tab id="editorTab" label="&tableTab.label;" />
 	<tab id="sourceTab" label="&sourceTab.label;" />
@@ -90,8 +100,6 @@ limitations under the License.
 	  <tree id="commands" flex="1" enableColumnDrag="false" hidecolumnpicker="true"
 		context="treeContextMenu" onselect="window.editor.treeView.selectCommand()"
 		ondblclick="goDoCommand('cmd_selenium_exec_command')" disableKeyNavigation="true">
-		<!--onfocus="recorder.treeView.focused=true" onblur="recorder.treeView.focused=false">-->
-	    <!--ondblclick="recorder.treeView.selectRecordIndex()">-->
 	    <treecols>
 	      <treecol id="command" label="&command.label;" width="120"/>
 	      <splitter class="tree-splitter" />
@@ -137,6 +145,7 @@ limitations under the License.
 	</tabpanel>
       </tabpanels>
     </tabbox>
+    </hbox>
     <splitter collapse="after">
       <grippy/>
     </splitter>

@@ -47,3 +47,5 @@
 <!ENTITY contextMenu.breakpoint.label "ブレークポイントの指定/解除">
 <!ENTITY contextMenu.startpoint.label "開始位置の指定/解除">
 <!ENTITY contextMenu.execCommand.label "このコマンドを実行">
+
+<!ENTITY openSuiteCmd.label "テストスイートを開く...">

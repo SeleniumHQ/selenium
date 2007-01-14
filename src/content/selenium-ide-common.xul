@@ -42,8 +42,10 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/format.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testSuite.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/suiteTreeView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>
   
   <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
@@ -51,6 +53,7 @@ limitations under the License.
   <commandset id="seleniumIDECommands">
     <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
     <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
+    <command id="cmd_open_suite" oncommand="goDoCommand('cmd_open_suite')"/>
     <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
     <command id="cmd_selenium_play" oncommand="goDoCommand('cmd_selenium_play')"/>
     <command id="cmd_selenium_testrunner" oncommand="goDoCommand('cmd_selenium_testrunner')"/>
@@ -104,6 +107,8 @@ limitations under the License.
 	<menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestCaseWithFormat(window.editor.formats.selectFormat(event.target.getAttribute('value')))">
 	</menupopup>
       </menu>
+      <menuseparator/>
+      <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" />
       <menuseparator/>
       <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X"/>
     </menupopup>

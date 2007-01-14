@@ -293,30 +293,25 @@ Format.prototype.load = function() {
 Format.prototype.loadFile = function(file, isURL) {
 	this.log.debug("start loading: file=" + file);
 	
-	try {
-        var sis;
-        if (isURL) {
-            sis = FileUtils.openURLInputStream(file);
-        } else {
-            sis = FileUtils.openFileInputStream(file);
-        }
-		var text = this.getUnicodeConverter().ConvertToUnicode(sis.read(sis.available()));
-		var testCase = new TestCase();
-		this.getFormatter().parse(testCase, text);
-		
-		sis.close();
-		testCase.file = file;
-        if (!isURL) {
-            testCase.lastModifiedTime = file.lastModifiedTime;
-            testCase.filename = file.path;
-            testCase.baseFilename = file.leafName;
-        }
-		
-		return testCase;
-	} catch (err) {
-		alert("error: " + err);
-		return null;
-	}
+    var sis;
+    if (isURL) {
+        sis = FileUtils.openURLInputStream(file);
+    } else {
+        sis = FileUtils.openFileInputStream(file);
+    }
+    var text = this.getUnicodeConverter().ConvertToUnicode(sis.read(sis.available()));
+    var testCase = new TestCase();
+    this.getFormatter().parse(testCase, text);
+	
+    sis.close();
+    testCase.file = file;
+    if (!isURL) {
+        testCase.lastModifiedTime = file.lastModifiedTime;
+        testCase.filename = file.path;
+        testCase.baseFilename = file.leafName;
+    }
+	
+    return testCase;
 }
 
 

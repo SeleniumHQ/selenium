@@ -47,3 +47,5 @@
 <!ENTITY contextMenu.breakpoint.label "Inserir Breakpoint">
 <!ENTITY contextMenu.startpoint.label "Definir / Limpar Ponto de Início">
 <!ENTITY contextMenu.execCommand.label "Executar Este Comando">
+
+<!ENTITY openSuiteCmd.label "Open Test Suite...">

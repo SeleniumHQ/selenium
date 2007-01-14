@@ -48,3 +48,4 @@
 <!ENTITY contextMenu.startpoint.label "D&#233;finir / Retirer le point de d&#233;part">
 <!ENTITY contextMenu.execCommand.label "Ex&#233;cuter cette commande">
 
+<!ENTITY openSuiteCmd.label "Open Test Suite...">
