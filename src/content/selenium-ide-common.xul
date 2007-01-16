@@ -38,8 +38,8 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/commandBuilders.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/xul-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/format.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testSuite.js"/>
@@ -53,6 +53,7 @@ limitations under the License.
   <commandset id="seleniumIDECommands">
     <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
     <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
+    <command id="cmd_save_suite" oncommand="goDoCommand('cmd_save_suite')"/>
     <command id="cmd_open_suite" oncommand="goDoCommand('cmd_open_suite')"/>
     <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
     <command id="cmd_selenium_play" oncommand="goDoCommand('cmd_selenium_play')"/>
@@ -109,6 +110,10 @@ limitations under the License.
       </menu>
       <menuseparator/>
       <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" />
+      <menuitem label="&saveSuiteCmd.label;" command="cmd_save_suite" />
+      <menu label="&recentSuiteCmd.label;">
+        <menupopup id="popup_recent_suites" onpopupshowing="window.editor.populateRecentTestSuites(this)" oncommand="window.editor.loadTestSuite(event.target.getAttribute('value'))" />
+      </menu>
       <menuseparator/>
       <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X"/>
     </menupopup>

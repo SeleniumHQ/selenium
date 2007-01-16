@@ -49,3 +49,5 @@
 <!ENTITY contextMenu.execCommand.label "このコマンドを実行">
 
 <!ENTITY openSuiteCmd.label "テストスイートを開く...">
+<!ENTITY saveSuiteCmd.label "テストスイートを保存">
+<!ENTITY recentSuiteCmd.label "最近開いたテストスイート">

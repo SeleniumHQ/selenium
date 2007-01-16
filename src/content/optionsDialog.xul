@@ -33,7 +33,6 @@ limitations under the License.
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/options.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/optionsDialog.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>

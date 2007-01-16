@@ -31,6 +31,75 @@ SeleniumIDE.Preferences = {
 		var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
 		str.data = value;
 		this.branch.setComplexValue(name, Components.interfaces.nsISupportsString, str);
-    }
+    },
+
+    getArray: function(name) {
+        var length = this.getString(name + ".length");
+        if (length == null) return [];
+        var value = [];
+        for (var i = 0; i < length; i++) {
+            value.push(this.getString(name + "." + i));
+        }
+        return value;
+    },
+
+    setArray: function(name, value) {
+        this.setString(name + ".length", value.length);
+        for (var i = 0; i < value.length; i++) {
+            this.setString(name + "." + i, value[i]);
+        }
+    },
+    
+	load: function() {
+		var options = {};
+		var name;
+		for (name in this.DEFAULT_OPTIONS) {
+			options[name] = this.DEFAULT_OPTIONS[name];
+		}
+		var names = this.branch.getChildList('', []);
+		for (var i = 0; i < names.length; i++) {
+			name = names[i];
+			options[name] = this.getString(name, this.DEFAULT_OPTIONS[name] || '');
+		}
+		return options;
+	},
+
+	save: function(options, prop_name) {
+		if (prop_name) {
+			this.setString(prop_name, options[prop_name]);
+		} else {
+			this.branch.deleteBranch("formats");
+			var name;
+			for (name in options) {
+				this.setString(name, options[name]);
+			}
+		}
+	}
 }
+
+SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
+	encoding: "UTF-8",
+
+	// This should be called 'userExtensionsPaths', but it is left for backward compatibility.
+	userExtensionsURL:
+	"",
+
+	ideExtensionsPaths:
+	"",
+	
+	rememberBaseURL:
+	"true",
+
+	baseURL:
+	"",
+
+	recordAssertTitle:
+	"false",
+
+	timeout:
+	"30000",
+
+    recordAbsoluteURL:
+    "false"
+};
 

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+this.Preferences = SeleniumIDE.Preferences;
+
 function Editor(window, isSidebar) {
 	this.log.debug("initializing");
 	this.window = window;
@@ -22,27 +24,30 @@ function Editor(window, isSidebar) {
 	this.isSidebar = isSidebar;
 	this.recordFrameTitle = false;
 	this.document = document;
-	this.setOptions(optionsManager.load());
+	this.setOptions(Preferences.load());
 	this.loadExtensions();
 	this.loadSeleniumAPI();
 	this.selectDefaultReference();
     this.toggleRecordingEnabled(true);
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
-    this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
 	this.testCaseListeners = new Array();
 	this.testCaseListeners.push(function(testCase) {
 			if (self.view) {
 				self.view.testCase = testCase;
 			}
-			testCase.observer = {
-				modifiedStateUpdated: function() {
-					self.updateTitle();
-				}
-			};
+            testCase.addObserver({
+                    modifiedStateUpdated: function() {
+                        self.updateTitle();
+                    }
+                });
 		});
-	this.setTestCase(new TestCase(), true);
-    this.setTestSuite(new TestSuite());
+    this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
+    var testCase = new TestCase();
+    var testSuite = new TestSuite();
+    testSuite.addTestCaseFromContent(testCase);
+    this.setTestSuite(testSuite);
+	this.setTestCase(testCase, true);
 	this.initOptions();
 	//this.toggleView(this.treeView);
 	
@@ -97,6 +102,7 @@ Editor.controller = {
 		case "cmd_open":
 		case "cmd_open_suite":
 		case "cmd_save":
+		case "cmd_save_suite":
 		case "cmd_selenium_play":
 		case "cmd_selenium_pause":
 		case "cmd_selenium_step":
@@ -113,6 +119,7 @@ Editor.controller = {
 		case "cmd_open":
 		case "cmd_open_suite":
 		case "cmd_save":
+		case "cmd_save_suite":
 			return true;
 		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
@@ -132,6 +139,7 @@ Editor.controller = {
 		case "cmd_save": editor.saveTestCase(); break;
 		case "cmd_open": editor.loadTestCase(); break;
 		case "cmd_open_suite": editor.loadTestSuite(); break;
+		case "cmd_save_suite": editor.saveTestSuite(); break;
 		case "cmd_selenium_play":
 			editor.selDebugger.start();
 			break;
@@ -194,7 +202,7 @@ Editor.prototype.log = Editor.log = new Log("Editor");
 Editor.prototype.unload = function() {
 	if (this.options.rememberBaseURL == 'true'){
 		this.options.baseURL = document.getElementById("baseURL").value;
-		optionsManager.save(this.options, 'baseURL');
+		Preferences.save(this.options, 'baseURL');
 	}
 	
 	if (this.isSidebar) {
@@ -268,16 +276,49 @@ Editor.prototype.loadTestCase = function(file) {
 	}
 }
 
-Editor.prototype.loadTestSuite = function() {
+Editor.prototype.populateRecentTestSuites = function(e) {
+    XulUtils.clearChildren(e);
+    var files = Preferences.getArray("recentTestSuites");
+    for (var i = 0; i < files.length; i++) {
+        var file = FileUtils.getFile(files[i]);
+        XulUtils.appendMenuItem(e, {
+                label: file.leafName,
+                value: file.path
+            });
+    }
+}
+
+Editor.prototype.loadTestSuite = function(path) {
 	this.log.debug("loadTestSuite");
 	try {
 		var testSuite = null;
-		if ((testSuite = TestSuite.load()) != null) {
+        if (path) {
+            testSuite = TestSuite.loadFile(FileUtils.getFile(path));
+        } else {
+            testSuite = TestSuite.load();
+        }
+		if (testSuite) {
             this.setTestSuite(testSuite);
+            this.addRecentTestSuite(testSuite);
 		}
 	} catch (error) {
 		alert("error loading test suite: " + error);
 	}
+}
+
+Editor.prototype.addRecentTestSuite = function(testSuite) {
+    var recent = Preferences.getArray("recentTestSuites");
+    var path = testSuite.file.path;
+    recent.delete(path);
+    recent.unshift(path);
+    Preferences.setArray("recentTestSuites", recent);
+}
+
+Editor.prototype.saveTestSuite = function() {
+	this.log.debug("saveTestSuite");
+    if (this.testSuite.save()) {
+        this.addRecentTestSuite(this.testSuite);
+    }
 }
 
 Editor.prototype.setTestSuite = function(testSuite) {
@@ -296,6 +337,7 @@ Editor.prototype.updateTitle = function() {
 		title += " *";
 	}
 	document.title = title;
+    
 }
 
 Editor.prototype.tabSelected = function(id) {
@@ -589,22 +631,15 @@ Editor.prototype.onPopupOptions = function() {
 }
 
 Editor.prototype.populateFormatsPopup = function(e, format) {
-	var i;
-	for (i = e.childNodes.length - 1; i >= 0; i--) {
-		e.removeChild(e.childNodes[i]);
-	}
+    XulUtils.clearChildren(e);
 	var formats = this.formats.formats;
 	for (i = 0; i < formats.length; i++) {
-		var menuitem = document.createElement("menuitem");
-		//menuitem.label = formats[i].name;
-		menuitem.setAttribute("type", "radio");
-		menuitem.setAttribute("name", "formats");
-		menuitem.setAttribute("label", formats[i].name);
-		menuitem.setAttribute("value", formats[i].id);
-		if (format && format.id == formats[i].id) {
-			menuitem.setAttribute("checked", true);
-		}
-		e.appendChild(menuitem);
+        XulUtils.appendMenuItem(e, {
+                    type: "radio",
+                    name: "formats",
+                    label: formats[i].name,
+                    value: formats[i].id,
+                    checked: (format && format.id == formats[i].id) ? true : null});
 	}
 }
 
@@ -627,7 +662,7 @@ Editor.prototype.setCurrentFormat = function(format) {
 	this.currentFormat = format;
 	this.updateViewTabs();
 	this.options.selectedFormat = this.currentFormat.id;
-	optionsManager.save(this.options, 'selectedFormat');
+	Preferences.save(this.options, 'selectedFormat');
 	this.setClipboardFormat(format);
 	this.updateState();
 }
@@ -635,7 +670,7 @@ Editor.prototype.setCurrentFormat = function(format) {
 Editor.prototype.setClipboardFormat = function(format) {
 	this.clipboardFormat = format;
 	this.options.clipboardFormat = this.clipboardFormat.id;
-	optionsManager.save(this.options, 'clipboardFormat');
+	Preferences.save(this.options, 'clipboardFormat');
 }
 
 Editor.prototype.getBaseURL = function() {
@@ -680,7 +715,7 @@ Editor.prototype.setRecordingEnabled = function(enabled) {
  * Used for self-testing Selenium IDE.
  */
 Editor.prototype.loadDefaultOptions = function() {
-	this.setOptions(OPTIONS);
+	this.setOptions(Preferences.DEFAULT_OPTIONS);
 }
 
 Editor.prototype.loadExtensions = function() {
@@ -932,3 +967,13 @@ Editor.HelpView = function() {
 }
 
 Editor.HelpView.prototype = new Editor.InfoView;
+
+Array.prototype.delete = function(value) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] == value) {
+            this.splice(i, 1);
+            return true;
+        }
+    }
+    return false;
+}

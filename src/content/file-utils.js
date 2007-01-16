@@ -21,6 +21,12 @@ var FileUtils = {
 		  .get("ProfD", Components.interfaces.nsILocalFile);
 	},
 	
+	getTempDir: function() {
+		return Components.classes["@mozilla.org/file/directory_service;1"]
+		  .getService(Components.interfaces.nsIProperties)
+		  .get("TmpD", Components.interfaces.nsILocalFile);
+	},
+	
 	getUnicodeConverter: function(encoding) {
 		var unicodeConverter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 		try {

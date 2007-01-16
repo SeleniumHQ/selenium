@@ -234,11 +234,8 @@ Comment.prototype.createCopy = function() {
 
 function TestCase() {
 	this.log = new Log("TestCase");
-
 	this.formatLocalMap = {};
-	
 	this.setCommands([]);
-	
 	this.modified = false;
 
 	var testCase = this;
@@ -331,16 +328,12 @@ TestCase.prototype.clear = function() {
 
 TestCase.prototype.setModified = function() {
 	this.modified = true;
-	if (this.observer) {
-		this.observer.modifiedStateUpdated();
-	}
+    this.notify("modifiedStateUpdated");
 }
 
 TestCase.prototype.clearModified = function() {
 	this.modified = false;
-	if (this.observer) {
-		this.observer.modifiedStateUpdated();
-	}
+    this.notify("modifiedStateUpdated");
 }
 
 TestCase.prototype.checkTimestamp = function() {
@@ -374,3 +367,5 @@ TestCase.prototype.getCommandIndexByTextIndex = function(text, index, formatter)
 	}
 	return this.commands.length;
 }
+
+observable(TestCase);

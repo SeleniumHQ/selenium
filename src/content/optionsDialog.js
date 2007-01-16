@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+this.Preferences = SeleniumIDE.Preferences;
+
 function saveOptions() {
 	var options = this.options;
 	var name;
@@ -27,7 +29,7 @@ function saveOptions() {
 			editor.setOptions(options);
 		});
 	
-	optionsManager.save(options);
+	Preferences.save(options);
 	return true;
 }
 
@@ -60,7 +62,7 @@ function loadDefaultOptions() {
 }
 
 function loadOptions() {
-	var options = optionsManager.load();
+	var options = Preferences.load();
 	loadFromOptions(options);
 	this.formats = new FormatCollection(options);
 	this.options = options;

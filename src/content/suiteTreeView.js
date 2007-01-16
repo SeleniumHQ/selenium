@@ -27,6 +27,21 @@ function SuiteTreeView(editor, tree) {
                 editor.loadTestCase(testCase.getFile());
             }
         }, false);
+    editor.testCaseListeners.push(function(testCase) {
+            testCase.addObserver({
+                    modifiedStateUpdated: function() {
+                        self.treebox.invalidateRow(self.currentTestCaseIndex);
+                    }
+                });
+            var tests = self.getTestSuite().tests;
+            for (var i = 0; i < tests.length; i++) {
+                if (tests[i].content == testCase) {
+                    self.currentTestCase = testCase;
+                    self.currentTestCaseIndex = i;
+                    break;
+                }
+            }
+        });
 }
 
 SuiteTreeView.prototype = {
@@ -50,7 +65,12 @@ SuiteTreeView.prototype = {
 	//
     getCellText : function(row, column){
 		var colId = column.id != null ? column.id : column;
-        return this.getTestSuite().tests[row].title;
+        var testCase = this.getTestSuite().tests[row];
+        var text = testCase.title;
+        if (testCase.content && testCase.content.modified) {
+            text += " *";
+        }
+        return text;
     },
     setTree: function(treebox) {
 		this.treebox = treebox;

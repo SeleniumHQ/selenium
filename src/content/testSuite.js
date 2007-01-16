@@ -58,6 +58,54 @@ TestSuite.loadInputStream = function(input) {
     }
 }
 
+// TODO make this configurable
+TestSuite.header = 
+    "<html>\n" +
+    "<head>\n" +
+    '  <meta content="text/html; charset=UTF-8" http-equiv="content-type">' + "\n" +
+    "  <title>Test Suite</title>\n" +
+    "</head>\n" +
+    "<body><table><tbody>\n";
+
+TestSuite.footer = 
+    "</tbody></table></body>\n</html>\n";
+
+TestSuite.prototype = {
+    addTestCaseFromContent: function(content) {
+        var testCase = new TestSuite.TestCase(this, "NewTest.html", "NewTest");
+        testCase.content = content;
+        this.tests.push(testCase);
+    },
+
+    save: function() {
+        if (!this.file) {
+            var self = this;
+            return showFilePicker(window, Editor.getString("chooseTestSuite"),
+                           Components.interfaces.nsIFilePicker.modeSave,
+                           TestSuite.TEST_SUITE_DIRECTORY_PREF,
+                           function(fp) {
+                               self.file = fp.file;
+                               return self.save();
+                           });
+        }
+        var output = FileUtils.openFileOutputStream(this.file);
+        var converter = FileUtils.getUnicodeConverter("UTF-8");
+        var content = TestSuite.header;
+        for (var i = 0; i < this.tests.length; i++) {
+            content += this.tests[i].format();
+        }
+        content += TestSuite.footer;
+        var text = converter.ConvertFromUnicode(content);
+        output.write(text, text.length);
+        var fin = converter.Finish();
+        if (fin.length > 0) {
+            output.write(fin, fin.length);
+        }
+        output.close();
+        return true;
+    }
+}
+
 TestSuite.TestCase = function(testSuite, filename, title) {
     this.testSuite = testSuite;
     this.filename = filename;
@@ -71,6 +119,11 @@ TestSuite.TestCase.prototype = {
         //alert(file + " " + this.filename);
         file.appendRelativePath(this.filename);
         return file;
+    },
+    
+    format: function() {
+        return "<tr><td><a href=\"" + this.filename + "\">" +
+            this.title + "</a></td></tr>\n";
     }
 }
 

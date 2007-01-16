@@ -151,3 +151,20 @@ var ExtensionsLoader = {
 			});
 	}
 };
+
+function observable(clazz) {
+    clazz.prototype.addObserver = function(observer) {
+        if (!this.observers) this.observers = [];
+        this.observers.push(observer);
+    }
+
+    clazz.prototype.notify = function(event, arg) {
+        if (!this.observers) return;
+        for (var i = 0; i < this.observers.length; i++) {
+            var observer = this.observers[i];
+            if (observer[event]) {
+                observer[event].apply(observer, arg);
+            }
+        }
+    }
+}
