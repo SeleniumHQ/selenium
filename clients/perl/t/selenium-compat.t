@@ -1,16 +1,13 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 27;
+use Test::More tests => 25;
 use Test::Exception;
 
 # The purpose of these tests are to ensure that WWW::Selenium does not 
 # break backwards compatibility with previously released versions.
 
 BEGIN {
-    use lib 't/lib';
-    use_ok 'LWP::UserAgent';    # mocked
-    use_ok 'HTTP::Response';    # mocked
     use lib 'lib';
     use_ok 't::WWW::Selenium';  # subclass for testing
 }

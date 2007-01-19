@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
+use Test::Mock::LWP;
 use base 'WWW::Selenium';
 
 sub new {
@@ -18,12 +19,12 @@ sub new {
     my $self = $class->SUPER::new( %opts );
 
     # Store mock www user agent and startup a session
-    $self->{__ua} = LWP::UserAgent->new; # singleton
     $self->_set_mock_response_content('FAKE_SESSION_ID');
     $self->start;
     (my $enc_url = $opts{browser_url}) =~ s#://#%3A%2F%2F#; # simple
-    is $self->{__ua}->{req}, "http://$opts{host}:$opts{port}/selenium-server/driver/"
+    my $url = "http://$opts{host}:$opts{port}/selenium-server/driver/"
                    . "?cmd=getNewBrowserSession&1=$opts{browser}&2=$enc_url";
+    is_deeply $Mock_req->new_args, [ 'HTTP::Request', 'GET', $url ];
 
     return $self;
 }
@@ -34,7 +35,7 @@ sub _set_mock_response_content {
     if (length($msg) == 0 or $msg !~ /^ERROR/) {
         $msg = "OK,$msg";
     }
-    $self->{__ua}{res} = HTTP::Response->new(content => $msg);
+    $Mock_resp->mock( content => sub { $msg } );
 }
 
 sub _method_exists {

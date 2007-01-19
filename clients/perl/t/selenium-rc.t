@@ -1,19 +1,14 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 36;
+use Test::More tests => 28;
 use Test::Exception;
+use Test::Mock::LWP;
 
 BEGIN {
-    use lib 't/lib'; # use mock libraries
-    use_ok 'LWP::UserAgent';
-    use_ok 'HTTP::Response';
     use lib 'lib';
     use_ok 'WWW::Selenium';
 }
-
-# singleton user agent for mocking WWW::Selenium
-my $ua = LWP::UserAgent->new;
 
 Good_usage: {
     my $sel = WWW::Selenium->new( host => 'localhost', 
@@ -28,26 +23,32 @@ Good_usage: {
     is $sel->{browser_url}, 'http://foo.com';
     is $sel->{session_id}, undef;
 
-    # now start up selenium
-    $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
-    $sel->start;
-    is $ua->{req}, 'http://localhost:4444/selenium-server/driver/'
-                   . '?cmd=getNewBrowserSession&1=*firefox&2=http%3A%2F%2Ffoo.com';
-    is $sel->{session_id}, 'SESSION_ID';
-    $sel->open;
+    Start_up_selenium: {
+        $Mock_resp->mock( content => sub {'OK,SESSION_ID'} );
+        $sel->start;
+        my $url = 'http://localhost:4444/selenium-server/driver/?'
+            . 'cmd=getNewBrowserSession&1=*firefox&2=http%3A%2F%2Ffoo.com';
+        is_deeply $Mock_req->new_args, [ 'HTTP::Request', 'GET', $url ];
+        $Mock_resp->mock( content => sub { 'OK' } );
+        $sel->open;
+    }
 
-    # try some commands
-    $ua->{res} = HTTP::Response->new(content => 'OK,Some Title');
-    is $sel->get_title, 'Some Title';
-    is $ua->{req}, 'http://localhost:4444/selenium-server/driver/?cmd=getTitle'
-                   . '&sessionId=SESSION_ID';
+    Execute_command: {
+        $Mock_resp->mock( content => sub { 'OK,Some Title' } );
+        is $sel->get_title, 'Some Title';
+        my $url = 'http://localhost:4444/selenium-server/driver/?cmd=getTitle'
+            . '&sessionId=SESSION_ID';
+        is_deeply $Mock_req->new_args, ['HTTP::Request', 'GET', $url];
+    }
 
-    # finish it off
-    $ua->{res} = HTTP::Response->new(content => 'OK');
-    $sel->stop;
-    is $sel->{session_id}, undef;
-    is $ua->{req}, 'http://localhost:4444/selenium-server/driver/'
-                   . '?cmd=testComplete&sessionId=SESSION_ID';
+    Close_down_selenium: {
+        $Mock_resp->mock( content => sub { 'OK' } );
+        $sel->stop;
+        is $sel->{session_id}, undef;
+        my $url = 'http://localhost:4444/selenium-server/driver/?'
+            . 'cmd=testComplete&sessionId=SESSION_ID';
+        is_deeply $Mock_req->new_args, ['HTTP::Request', 'GET', $url];
+    }
 }
 
 No_browser_url: {
@@ -56,7 +57,6 @@ No_browser_url: {
 
 Default_args: {
     my $sel = WWW::Selenium->new( browser_url => 'http://foo.com' );
-    isa_ok $sel, 'WWW::Selenium';
     is $sel->{host}, 'localhost';
     is $sel->{port}, 4444;
     is $sel->{browser_start_command}, '*firefox';
@@ -66,25 +66,22 @@ Default_args: {
 
 start_fails: {
     my $sel = WWW::Selenium->new( browser_url => 'http://foo.com' );
-    isa_ok $sel, 'WWW::Selenium';
-    $ua->{res} = HTTP::Response->new(content => 'Error: foo');
+    $Mock_resp->mock( content => sub { 'Error: foo' } );
     throws_ok { $sel->start } qr#Error: foo#;
 }
 
 Failing_command: {
     my $sel = WWW::Selenium->new( browser_url => 'http://foo.com' );
-    isa_ok $sel, 'WWW::Selenium';
-    $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
+    $Mock_resp->mock( content => sub { 'OK,SESSION_ID' } );
     $sel->start;
     $sel->open;
-    $ua->{res} = HTTP::Response->new(content => 'Error: foo');
+    $Mock_resp->mock( content => sub { 'Error: foo' } );
     throws_ok { $sel->get_title } qr#Error: foo#;
 }
  
 Multi_values: {
     my $sel = WWW::Selenium->new( browser_url => 'http://foo.com' );
-    isa_ok $sel, 'WWW::Selenium';
-    $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
+    $Mock_resp->mock( content => sub { 'OK,SESSION_ID' } );
     $sel->start;
     $sel->open;
 
@@ -104,7 +101,7 @@ Multi_values: {
     my $tester = sub {
         my $tests = shift;
         for my $k (keys %$tests) {
-            $ua->{res} = HTTP::Response->new(content => "OK,$k");
+            $Mock_resp->mock( content => sub { "OK,$k" } );
             my $fields = [$sel->get_all_fields];
             is_deeply $fields, $tests->{$k}, "parsing $k";
         }
@@ -118,15 +115,14 @@ Multi_values: {
 
 Stop_called_twice: {
     my $sel = WWW::Selenium->new( browser_url => 'http://foo.com' );
-    isa_ok $sel, 'WWW::Selenium';
-    $ua->{res} = HTTP::Response->new(content => 'OK,SESSION_ID');
+    $Mock_resp->mock( content => sub { 'OK,SESSION_ID' } );
     $sel->start;
-    $ua->{res} = HTTP::Response->new(content => 'OK');
+    $Mock_resp->mock( content => sub { 'OK' } );
     $sel->stop;
     is $sel->{session_id}, undef;
-    is $ua->{req}, 'http://localhost:4444/selenium-server/driver/'
+    my $url = 'http://localhost:4444/selenium-server/driver/'
                    . '?cmd=testComplete&sessionId=SESSION_ID';
-    $ua->{req} = undef;
+    is_deeply $Mock_req->new_args, [ 'HTTP::Request', 'GET', $url ];
     $sel->stop;
-    is $ua->{req}, undef;
+    is_deeply $Mock_req->new_args, undef;
 }
