@@ -179,8 +179,8 @@ TestSuite.TestCase.prototype = {
     },
 
     getTitle: function() {
-        if (this.content && this.content.name) {
-            return this.content.name;
+        if (this.content) {
+            return this.content.getTitle();
         } else {
             return this.title;
         }

@@ -32,15 +32,21 @@ function Editor(window, isSidebar) {
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
     this.addObserver({
+            _testCaseObserver: {
+                modifiedStateUpdated: function() {
+                    self.updateTitle();
+                }
+            },
+                
             testCaseLoaded: function(testCase) {
                 if (self.view) {
                     self.view.testCase = testCase;
                 }
-                testCase.addObserver({
-                        modifiedStateUpdated: function() {
-                            self.updateTitle();
-                        }
-                    });
+                testCase.addObserver(this._testCaseObserver);
+            },
+
+            testCaseUnloaded: function(testCase) {
+                testCase.removeObserver(this._testCaseObserver);
             }
         });
     this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
@@ -136,7 +142,7 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close": if (editor.confirmClose()) { window.close(); } break;
 		case "cmd_save": editor.saveTestCase(); break;
-		case "cmd_open": editor.loadTestCase(); break;
+		case "cmd_open": editor.loadTestCaseWithNewSuite(); break;
 		case "cmd_new_suite": editor.newTestSuite(); break;
 		case "cmd_open_suite": editor.loadTestSuite(); break;
 		case "cmd_save_suite": editor.saveTestSuite(); break;
@@ -259,6 +265,14 @@ Editor.prototype.newTestCase = function() {
     this.setTestCase(testCase);
 }
 
+Editor.prototype.loadTestCaseWithNewSuite = function(file) {
+    if (this.loadTestCase(file)) {
+        var testSuite = new TestSuite();
+        testSuite.addTestCaseFromContent(this.testCase);
+        this.setTestSuite(testSuite);
+    }
+}
+
 Editor.prototype.loadTestCase = function(file) {
 	this.log.debug("loadTestCase");
 	try {
@@ -270,9 +284,12 @@ Editor.prototype.loadTestCase = function(file) {
         }
         if (testCase != null) {
 			this.setTestCase(testCase);
+            return true;
 		}
+        return false;
 	} catch (error) {
 		alert("error loading test case: " + error);
+        return false;
 	}
 }
 
@@ -352,8 +369,8 @@ Editor.prototype.setTestSuite = function(testSuite) {
 
 Editor.prototype.updateTitle = function() {
 	var title;
-	if (this.testCase && this.testCase.baseFilename) {
-		title = this.testCase.baseFilename + " - " + Editor.DEFAULT_TITLE;
+	if (this.testCase && this.testCase.file) {
+		title = this.testCase.file.leafName + " - " + Editor.DEFAULT_TITLE;
 	} else {
 		title = Editor.DEFAULT_TITLE;
 	}
@@ -702,6 +719,10 @@ Editor.prototype.getBaseURL = function() {
 }
 
 Editor.prototype.setTestCase = function(testCase) {
+    if (this.testCase) {
+        if (testCase == this.testCase) return;
+        this.notify("testCaseUnloaded", this.testCase);
+    }
 	this.testCase = testCase;
     this.notify("testCaseLoaded", this.testCase);
     // this.view is not set yet when setTestCase is called from constructor
@@ -990,16 +1011,6 @@ Editor.HelpView = function() {
 }
 
 Editor.HelpView.prototype = new Editor.InfoView;
-
-Array.prototype.delete = function(value) {
-    for (var i = 0; i < this.length; i++) {
-        if (this[i] == value) {
-            this.splice(i, 1);
-            return true;
-        }
-    }
-    return false;
-}
 
 observable(Editor);
 

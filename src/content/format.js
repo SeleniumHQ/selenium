@@ -217,7 +217,7 @@ Format.prototype.getFormatter = function() {
 }
 
 Format.prototype.save = function(testCase) {
-	return this.saveAs(testCase, testCase.filename, false);
+	return this.saveAs(testCase, testCase.file && testCase.file.path, false);
 };
 
 Format.prototype.saveAsNew = function(testCase, exportTest) {
@@ -238,14 +238,11 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
 		}
 		if (file != null) {
 			testCase.file = file;
-			testCase.filename = file.path;
-			testCase.baseFilename = file.leafName;
-			testCase.name = file.leafName.replace(/\.\w+$/,'');
 			// save the directory so we can continue to load/save files from the current suite?
 			var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
 			outputStream.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
 			var converter = this.getUnicodeConverter();
-			var text = converter.ConvertFromUnicode(this.getFormatter().format(testCase, testCase.name, '', true));
+			var text = converter.ConvertFromUnicode(this.getFormatter().format(testCase, testCase.getTitle(), '', true));
 			outputStream.write(text, text.length);
 			var fin = converter.Finish();
 			if (fin.length > 0) {
@@ -307,8 +304,6 @@ Format.prototype.loadFile = function(file, isURL) {
     testCase.file = file;
     if (!isURL) {
         testCase.lastModifiedTime = file.lastModifiedTime;
-        testCase.filename = file.path;
-        testCase.baseFilename = file.leafName;
     }
 	
     return testCase;

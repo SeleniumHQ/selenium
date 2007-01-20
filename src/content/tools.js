@@ -152,10 +152,25 @@ var ExtensionsLoader = {
 	}
 };
 
+Array.prototype.delete = function(value) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] == value) {
+            this.splice(i, 1);
+            return true;
+        }
+    }
+    return false;
+}
+
 function observable(clazz) {
     clazz.prototype.addObserver = function(observer) {
         if (!this.observers) this.observers = [];
         this.observers.push(observer);
+    }
+
+    clazz.prototype.removeObserver = function(observer) {
+        if (!this.observers) return;
+        this.observers.delete(observer);
     }
 
     clazz.prototype.notify = function(event) {

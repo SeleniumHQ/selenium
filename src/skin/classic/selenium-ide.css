@@ -57,6 +57,16 @@ treechildren::-moz-tree-image(startpoint)
 }
 
 /*
+ * Test Suite View
+ */
+
+treechildren::-moz-tree-cell-text(currentTestCase)
+{
+  font-weight: bold;
+}
+
+
+/*
  * Log Console
  */
 

@@ -232,10 +232,10 @@ Comment.prototype.createCopy = function() {
 	return copy;
 };
 
-function TestCase(name) {
-    if (!name) name = "Untitled";
+function TestCase(title) {
+    if (!title) title = "Untitled";
 	this.log = new Log("TestCase");
-    this.name = name;
+    this.title = title;
 	this.formatLocalMap = {};
 	this.setCommands([]);
 	this.modified = false;
@@ -368,6 +368,16 @@ TestCase.prototype.getCommandIndexByTextIndex = function(text, index, formatter)
 		}
 	}
 	return this.commands.length;
+}
+
+TestCase.prototype.getTitle = function() {
+    if (this.file) {
+        return this.file.leafName.replace(/\.\w+$/,'');
+    } else if (this.title) {
+        return this.title;
+    } else {
+        return null;
+    }
 }
 
 observable(TestCase);

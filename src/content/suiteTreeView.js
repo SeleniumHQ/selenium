@@ -32,12 +32,14 @@ function SuiteTreeView(editor, tree) {
             }
         }, false);
     editor.addObserver({
+            _testCaseObserver: {
+                modifiedStateUpdated: function() {
+                    self.treebox.invalidateRow(self.currentTestCaseIndex);
+                }
+            },
+
             testCaseLoaded: function(testCase) {
-                testCase.addObserver({
-                        modifiedStateUpdated: function() {
-                            self.treebox.invalidateRow(self.currentTestCaseIndex);
-                        }
-                    });
+                testCase.addObserver(this._testCaseObserver);
                 var tests = self.getTestSuite().tests;
                 for (var i = 0; i < tests.length; i++) {
                     if (tests[i].content == testCase) {
@@ -47,6 +49,10 @@ function SuiteTreeView(editor, tree) {
                     }
                 }
                 self.refresh();
+            },
+
+            testCaseUnloaded: function(testCase) {
+                testCase.removeObserver(this._testCaseObserver);
             }
         });
 }
@@ -62,16 +68,17 @@ SuiteTreeView.prototype = {
 
 	refresh: function() {
 		this.log.debug("refresh: old rowCount=" + this.rowCount);
+        var length = this.getTestSuite().tests.length;
 		this.treebox.rowCountChanged(0, -this.rowCount);
-        this.treebox.rowCountChanged(0, this.getTestSuite().tests.length);
+        this.treebox.rowCountChanged(0, length);
 		this.rowCount = length;
+		this.log.debug("refresh: new rowCount=" + this.rowCount);
 	},
 
 	//
 	// nsITreeView interfaces
 	//
     getCellText : function(row, column){
-		var colId = column.id != null ? column.id : column;
         var testCase = this.getTestSuite().tests[row];
         var text = testCase.getTitle();
         if (testCase.content && testCase.content.modified) {
@@ -100,6 +107,9 @@ SuiteTreeView.prototype = {
     getRowProperties: function(row, props) {
 	},
     getCellProperties: function(row, col, props) {
+        if (row == this.currentTestCaseIndex) {
+			props.AppendElement(XulUtils.atomService.getAtom("currentTestCase"));
+        }
 	},
     getColumnProperties: function(colid, col, props) {},
 	cycleHeader: function(colID, elt) {}

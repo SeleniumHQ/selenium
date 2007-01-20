@@ -14,7 +14,7 @@ function testSave() {
     var testCase = {};
     testCaseFile.append("Test.html");
     testCase.file = testCaseFile;
-    testCase.name = "Test Case";
+    testCase.getTitle = function() { return "Test Case" };
     var testCaseInfo = new TestSuite.TestCase(testSuite);
     testCaseInfo.content = testCase;
     testSuite.tests.push(testCaseInfo);
