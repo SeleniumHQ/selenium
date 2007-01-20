@@ -29,8 +29,11 @@ function Debugger(editor) {
 		this.paused = false;
 		this.runner = new Object();
 		this.runner.editor = this.editor;
-
-		this.editor.testCaseListeners.push(function(testCase) { self.runner.testCase = testCase; });
+        this.editor.addObserver({
+                testCaseLoaded: function(testCase) {
+                    self.runner.testCase = testCase;
+                }
+            });
 		this.runner.testCase = this.editor.testCase;
 		
 		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]

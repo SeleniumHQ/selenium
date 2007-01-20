@@ -158,12 +158,16 @@ function observable(clazz) {
         this.observers.push(observer);
     }
 
-    clazz.prototype.notify = function(event, arg) {
+    clazz.prototype.notify = function(event) {
         if (!this.observers) return;
+        var args = [];
+        for (var i = 1; i < arguments.length; i++) {
+            args.push(arguments[i]);
+        }
         for (var i = 0; i < this.observers.length; i++) {
             var observer = this.observers[i];
             if (observer[event]) {
-                observer[event].apply(observer, arg);
+                observer[event].apply(observer, args);
             }
         }
     }

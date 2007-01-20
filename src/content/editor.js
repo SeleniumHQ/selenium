@@ -31,23 +31,20 @@ function Editor(window, isSidebar) {
     this.toggleRecordingEnabled(true);
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
-	this.testCaseListeners = new Array();
-	this.testCaseListeners.push(function(testCase) {
-			if (self.view) {
-				self.view.testCase = testCase;
-			}
-            testCase.addObserver({
-                    modifiedStateUpdated: function() {
-                        self.updateTitle();
-                    }
-                });
-		});
+    this.addObserver({
+            testCaseLoaded: function(testCase) {
+                if (self.view) {
+                    self.view.testCase = testCase;
+                }
+                testCase.addObserver({
+                        modifiedStateUpdated: function() {
+                            self.updateTitle();
+                        }
+                    });
+            }
+        });
     this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
-    var testCase = new TestCase();
-    var testSuite = new TestSuite();
-    testSuite.addTestCaseFromContent(testCase);
-    this.setTestSuite(testSuite);
-	this.setTestCase(testCase, true);
+    this.newTestSuite();
 	this.initOptions();
 	//this.toggleView(this.treeView);
 	
@@ -100,6 +97,7 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close":
 		case "cmd_open":
+        case "cmd_new_suite":
 		case "cmd_open_suite":
 		case "cmd_save":
 		case "cmd_save_suite":
@@ -117,6 +115,7 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close":
 		case "cmd_open":
+		case "cmd_new_suite":
 		case "cmd_open_suite":
 		case "cmd_save":
 		case "cmd_save_suite":
@@ -138,6 +137,7 @@ Editor.controller = {
 		case "cmd_close": if (editor.confirmClose()) { window.close(); } break;
 		case "cmd_save": editor.saveTestCase(); break;
 		case "cmd_open": editor.loadTestCase(); break;
+		case "cmd_new_suite": editor.newTestSuite(); break;
 		case "cmd_open_suite": editor.loadTestSuite(); break;
 		case "cmd_save_suite": editor.saveTestSuite(); break;
 		case "cmd_selenium_play":
@@ -254,9 +254,9 @@ Editor.prototype.initOptions = function() {
 }
 
 Editor.prototype.newTestCase = function() {
-	if (this.confirmClose()) {
-		this.setTestCase(new TestCase());
-	}
+    var testCase = new TestCase(this.testSuite.generateNewTestCaseTitle());
+    this.testSuite.addTestCaseFromContent(testCase);
+    this.setTestCase(testCase);
 }
 
 Editor.prototype.loadTestCase = function(file) {
@@ -288,6 +288,15 @@ Editor.prototype.populateRecentTestSuites = function(e) {
     }
 }
 
+Editor.prototype.newTestSuite = function() {
+	this.log.debug("newTestSuite");
+    var testSuite = new TestSuite();
+    var testCase = new TestCase();
+    testSuite.addTestCaseFromContent(testCase);
+    this.setTestSuite(testSuite);
+	this.setTestCase(testCase);
+}
+
 Editor.prototype.loadTestSuite = function(path) {
 	this.log.debug("loadTestSuite");
 	try {
@@ -316,8 +325,23 @@ Editor.prototype.addRecentTestSuite = function(testSuite) {
 
 Editor.prototype.saveTestSuite = function() {
 	this.log.debug("saveTestSuite");
-    if (this.testSuite.save()) {
-        this.addRecentTestSuite(this.testSuite);
+    var cancelled = false;
+    this.testSuite.tests.forEach(function(test) {
+            if (cancelled) return;
+            if (test.content && test.content.modified) {
+                if (confirm("The test case is modified. Do you want to save this test case?")) {
+                    if (!this.currentFormat.save(test.content)) {
+                        cancelled = true;
+                    }
+                } else {
+                    cancelled = true;
+                }
+            }
+        }, this);
+    if (!cancelled) {
+        if (this.testSuite.save()) {
+            this.addRecentTestSuite(this.testSuite);
+        }
     }
 }
 
@@ -677,12 +701,11 @@ Editor.prototype.getBaseURL = function() {
 	return this.document.getElementById("baseURL").value;
 }
 
-Editor.prototype.setTestCase = function(testCase, dontRefresh) {
+Editor.prototype.setTestCase = function(testCase) {
 	this.testCase = testCase;
-	for (var i = 0; i < this.testCaseListeners.length; i++) {
-		this.testCaseListeners[i].call(this, this.testCase);
-	}
-    if (!dontRefresh) {
+    this.notify("testCaseLoaded", this.testCase);
+    // this.view is not set yet when setTestCase is called from constructor
+    if (this.view) {
         this.view.refresh();
         this.updateTitle();
     }
@@ -977,3 +1000,6 @@ Array.prototype.delete = function(value) {
     }
     return false;
 }
+
+observable(Editor);
+

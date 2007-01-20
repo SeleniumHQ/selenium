@@ -232,8 +232,10 @@ Comment.prototype.createCopy = function() {
 	return copy;
 };
 
-function TestCase() {
+function TestCase(name) {
+    if (!name) name = "Untitled";
 	this.log = new Log("TestCase");
+    this.name = name;
 	this.formatLocalMap = {};
 	this.setCommands([]);
 	this.modified = false;

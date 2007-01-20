@@ -72,7 +72,7 @@ TestSuite.footer =
 
 TestSuite.prototype = {
     addTestCaseFromContent: function(content) {
-        var testCase = new TestSuite.TestCase(this, "NewTest.html", "NewTest");
+        var testCase = new TestSuite.TestCase(this);
         testCase.content = content;
         this.tests.push(testCase);
     },
@@ -103,6 +103,20 @@ TestSuite.prototype = {
         }
         output.close();
         return true;
+    },
+
+    generateNewTestCaseTitle: function() {
+        if (this.tests.some(function(test) { return /^Untitled/.test(test.getTitle()) })) {
+            var max = 1;
+            this.tests.forEach(function(test) {
+                    if (/^Untitled (\d+)/.test(test.getTitle())) {
+                        max = parseInt(RegExp.$1);
+                    }
+                });
+            return "Untitled " + (max + 1);
+        } else {
+            return "Untitled";
+        }
     }
 }
 
@@ -120,10 +134,61 @@ TestSuite.TestCase.prototype = {
         file.appendRelativePath(this.filename);
         return file;
     },
+
+    getRelativeFilePath: function() {
+        if (this.content) {
+            return this._computeRelativePath(this.testSuite.file, this.content.file);
+        } else {
+            return this.filename;
+        }
+    },
+
+    _computeRelativePath: function(fromFile, toFile) {
+        var from = this._splitPath(fromFile.parent);
+        var to = this._splitPath(toFile);
+        var result = [];
+        for (var base = 0; base < from.length && base < to.length; base++) {
+            if (from[base] != to[base]) {
+                break;
+            }
+        }
+        for (var i = from.length - 1; i >= base; i--) {
+            result.push("..");
+        }
+        for (var i = base; i < to.length; i++) {
+            result.push(to[i]);
+        }
+        return result.join("/");
+    },
+
+    _splitPath: function(file) {
+        var result = [];
+        while (file && file.path != "/") {
+            result.unshift(file.leafName);
+            file = file.parent;
+        }
+        return result;
+    },
+
+    getFilePath: function() {
+        if (this.content) {
+            return this.content.filename;
+        } else {
+            return this.filename;
+        }
+    },
+
+    getTitle: function() {
+        if (this.content && this.content.name) {
+            return this.content.name;
+        } else {
+            return this.title;
+        }
+    },
     
     format: function() {
-        return "<tr><td><a href=\"" + this.filename + "\">" +
-            this.title + "</a></td></tr>\n";
+        return "<tr><td><a href=\"" + this.getRelativeFilePath() + "\">" +
+            this.getTitle() + "</a></td></tr>\n";
     }
 }
 

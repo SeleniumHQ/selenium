@@ -53,6 +53,7 @@ limitations under the License.
   <commandset id="seleniumIDECommands">
     <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
     <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
+    <command id="cmd_new_suite" oncommand="goDoCommand('cmd_new_suite')"/>
     <command id="cmd_save_suite" oncommand="goDoCommand('cmd_save_suite')"/>
     <command id="cmd_open_suite" oncommand="goDoCommand('cmd_open_suite')"/>
     <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
@@ -109,6 +110,7 @@ limitations under the License.
 	</menupopup>
       </menu>
       <menuseparator/>
+      <menuitem label="&newSuiteCmd.label;" command="cmd_new_suite" />
       <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" />
       <menuitem label="&saveSuiteCmd.label;" command="cmd_save_suite" />
       <menu label="&recentSuiteCmd.label;">

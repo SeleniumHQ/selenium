@@ -10,12 +10,32 @@ function testLoad() {
 
 function testSave() {
     var testSuite = new TestSuite();
-    testSuite.tests.push(new TestSuite.TestCase(testSuite, "Hoge.html", "Hoge"));
+    var testCaseFile = FileUtils.getTempDir().clone();
+    var testCase = {};
+    testCaseFile.append("Test.html");
+    testCase.file = testCaseFile;
+    testCase.name = "Test Case";
+    var testCaseInfo = new TestSuite.TestCase(testSuite);
+    testCaseInfo.content = testCase;
+    testSuite.tests.push(testCaseInfo);
+    
     var file = FileUtils.getTempDir().clone();
     file.append("SeleniumIDE-TestSuite-test.html");
     testSuite.file = file;
+
     testSuite.save();
-    assert(/<html>[\s\S]+<tr><td><a href="Hoge.html">Hoge<\/a><\/td><\/tr>\n[\s\S]+<\/html>/.test(FileUtils.readFile(file)));
+    var content = FileUtils.readFile(file);
+    assert(/<html>[\s\S]+<tr><td><a href="Test.html">Test Case<\/a><\/td><\/tr>\n[\s\S]+<\/html>/.test(content));
+
+    testCaseFile = FileUtils.getTempDir().clone();
+    testCaseFile.append("foo");
+    testCaseFile.append("Test.html");
+    testCase.file = testCaseFile;
+
+    testSuite.save();
+    var content = FileUtils.readFile(file);
+    assert(/<html>[\s\S]+<tr><td><a href="foo\/Test.html">Test Case<\/a><\/td><\/tr>\n[\s\S]+<\/html>/.test(content));
+    
     file.remove(false);
 }
 
@@ -28,3 +48,21 @@ function testGetFile() {
     assertEquals("TestCase.html", testCase.getFile().leafName);
 }
 
+function testGenerateNewTestCaseTitle() {
+    var suite = new TestSuite();
+    loadTests([]);
+    assertEquals("Untitled", suite.generateNewTestCaseTitle());
+    loadTests(["Untitled"]);
+    assertEquals("Untitled 2", suite.generateNewTestCaseTitle());
+    loadTests(["Untitled", "Untitled 2"]);
+    assertEquals("Untitled 3", suite.generateNewTestCaseTitle());
+    loadTests(["Untitled 3"]);
+    assertEquals("Untitled 4", suite.generateNewTestCaseTitle());
+
+    function loadTests(tests) {
+        suite.tests = [];
+        tests.forEach(function(name) {
+                suite.tests.push(new TestSuite.TestCase(suite, name, name));
+            });
+    }
+}

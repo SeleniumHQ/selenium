@@ -24,22 +24,29 @@ function SuiteTreeView(editor, tree) {
     tree.addEventListener("dblclick", function(event) {
             var testCase = self.getSelectedTestCase();
             if (testCase) {
-                editor.loadTestCase(testCase.getFile());
+                if (testCase.content) {
+                    editor.setTestCase(testCase.content);
+                } else {
+                    editor.loadTestCase(testCase.getFile());
+                }
             }
         }, false);
-    editor.testCaseListeners.push(function(testCase) {
-            testCase.addObserver({
-                    modifiedStateUpdated: function() {
-                        self.treebox.invalidateRow(self.currentTestCaseIndex);
+    editor.addObserver({
+            testCaseLoaded: function(testCase) {
+                testCase.addObserver({
+                        modifiedStateUpdated: function() {
+                            self.treebox.invalidateRow(self.currentTestCaseIndex);
+                        }
+                    });
+                var tests = self.getTestSuite().tests;
+                for (var i = 0; i < tests.length; i++) {
+                    if (tests[i].content == testCase) {
+                        self.currentTestCase = testCase;
+                        self.currentTestCaseIndex = i;
+                        break;
                     }
-                });
-            var tests = self.getTestSuite().tests;
-            for (var i = 0; i < tests.length; i++) {
-                if (tests[i].content == testCase) {
-                    self.currentTestCase = testCase;
-                    self.currentTestCaseIndex = i;
-                    break;
                 }
+                self.refresh();
             }
         });
 }
@@ -66,7 +73,7 @@ SuiteTreeView.prototype = {
     getCellText : function(row, column){
 		var colId = column.id != null ? column.id : column;
         var testCase = this.getTestSuite().tests[row];
-        var text = testCase.title;
+        var text = testCase.getTitle();
         if (testCase.content && testCase.content.modified) {
             text += " *";
         }

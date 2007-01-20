@@ -1,8 +1,8 @@
-<!ENTITY newTestCmd.label "テストを新規作成">
-<!ENTITY openCmd.label "テストを開く...">
-<!ENTITY saveTestCmd.label "テストを保存">
-<!ENTITY saveTestAsCmd.label "テストに名前を付けて保存...">
-<!ENTITY exportCmd.label "テストをエクスポート...">
+<!ENTITY newTestCmd.label "テストケースを新規作成">
+<!ENTITY openCmd.label "テストケースを開く...">
+<!ENTITY saveTestCmd.label "テストケースを保存">
+<!ENTITY saveTestAsCmd.label "テストケースに名前を付けて保存...">
+<!ENTITY exportCmd.label "テストケースをエクスポート...">
 <!ENTITY optionsCmd.label "設定...">
 <!ENTITY formatCmd.label "フォーマット">
 <!ENTITY clipboardFormatCmd.label "クリップボードのフォーマット">
@@ -48,6 +48,8 @@
 <!ENTITY contextMenu.startpoint.label "開始位置の指定/解除">
 <!ENTITY contextMenu.execCommand.label "このコマンドを実行">
 
+<!ENTITY suiteTree.testCase.label "テストケース">
+<!ENTITY newSuiteCmd.label "テストスイートを新規作成">
 <!ENTITY openSuiteCmd.label "テストスイートを開く...">
 <!ENTITY saveSuiteCmd.label "テストスイートを保存">
 <!ENTITY recentSuiteCmd.label "最近開いたテストスイート">

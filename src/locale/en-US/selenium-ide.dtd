@@ -1,8 +1,8 @@
-<!ENTITY newTestCmd.label "New Test">
+<!ENTITY newTestCmd.label "New Test Case">
 <!ENTITY openCmd.label "Open...">
-<!ENTITY saveTestCmd.label "Save Test">
-<!ENTITY saveTestAsCmd.label "Save Test As...">
-<!ENTITY exportCmd.label "Export Test As...">
+<!ENTITY saveTestCmd.label "Save Test Case">
+<!ENTITY saveTestAsCmd.label "Save Test Case As...">
+<!ENTITY exportCmd.label "Export Test Case As...">
 <!ENTITY optionsCmd.label "Options...">
 <!ENTITY formatCmd.label "Format">
 <!ENTITY clipboardFormatCmd.label "Clipboard Format">
@@ -48,6 +48,8 @@
 <!ENTITY contextMenu.startpoint.label "Set / Clear Start Point">
 <!ENTITY contextMenu.execCommand.label "Execute this command">
 
+<!ENTITY suiteTree.testCase.label "Test Case">
+<!ENTITY newSuiteCmd.label "New Test Suite">
 <!ENTITY openSuiteCmd.label "Open Test Suite...">
 <!ENTITY saveSuiteCmd.label "Save Test Suite">
 <!ENTITY recentSuiteCmd.label "Recent Test Suites">

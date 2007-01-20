@@ -81,9 +81,9 @@ limitations under the License.
 
   <vbox flex="1">
     <hbox width="100">
-      <tree id="suiteTree" flex="1" enableColumnDrag="false" hidecolumnpicker="true">
+      <tree id="suiteTree" flex="1" enableColumnDrag="false" hidecolumnpicker="true" width="80">
 	<treecols>
-	  <treecol label="Test Case" flex="1" />
+	  <treecol label="&suiteTree.testCase.label;" flex="1" />
         </treecols>
         <treechildren />
       </tree>
