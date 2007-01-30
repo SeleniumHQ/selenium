@@ -124,6 +124,7 @@ import org.openqa.selenium.server.htmlrunner.*;
 public class SeleniumServer {
 
     private Server server;
+    private ProxyHandler customProxyHandler;
     private SeleniumDriverResourceHandler driver;
     private SeleniumHTMLRunnerResultsHandler postResultsHandler;
     private StaticContentHandler staticContentHandler;
@@ -536,8 +537,11 @@ public class SeleniumServer {
     private void assembleHandlers(boolean slowResources) {
         HttpContext root = new HttpContext();
         root.setContextPath("/");
-        ProxyHandler rootProxy = new ProxyHandler();
-        root.addHandler(rootProxy);
+        if (customProxyHandler == null) {
+            root.addHandler(new ProxyHandler());
+        } else {
+            root.addHandler(customProxyHandler);
+        }
         server.addContext(root);
 
         HttpContext context = new HttpContext();
@@ -638,6 +642,14 @@ public class SeleniumServer {
 
     public static void setForceProxyChain(boolean force) {
         FORCE_PROXY_CHAIN = force;
+    }
+
+    /**
+     * Used for implementations that invoke SeleniumServer programmatically and require additional logic
+     * when proxying data.
+     */
+    public void setCustomProxyHandler(ProxyHandler customProxyHandler) {
+        this.customProxyHandler = customProxyHandler;
     }
 
     private class ShutDownHook implements Runnable {

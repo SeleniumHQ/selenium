@@ -114,7 +114,7 @@ public class InjectionHelper {
         }
     }
 
-    public static void injectJavaScript(HttpRequest request, HttpResponse response, InputStream in, OutputStream out) throws IOException {
+    public static long injectJavaScript(HttpRequest request, HttpResponse response, InputStream in, OutputStream out) throws IOException {
 	    if (!contentTransformations.containsKey("__SELENIUM_JS__")) {
 	        init();   
         }
@@ -123,7 +123,7 @@ public class InjectionHelper {
         byte[] buf = new byte[len];
         len = readStream(in, buf, len);
         if (len == -1) {
-            return;
+            return -1;
         }
         int lengthOfBOM = getBOMLength(buf); 
         String data = new String(buf, lengthOfBOM, len);
@@ -142,12 +142,14 @@ public class InjectionHelper {
 //            out.write(buf, 0, lengthOfBOM);
 //        }
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
-        
+
+        long bytesCopied;
+
         if (SeleniumServer.isDebugMode()) {
             SeleniumServer.log(url + " (InjectionHelper looking)");
         }
         if (!isKnownToBeHtml) {
-            IO.copy(in, out);
+            bytesCopied = ModifiedIO.copy(in, out);
         }
         else {
             if (SeleniumServer.isDebugMode()) {
@@ -170,8 +172,10 @@ public class InjectionHelper {
                 jsIn = new FileInputStream(filename);
                 IO.copy(jsIn, out); 
             }
-            writeDataWithUserTransformations(data, in, out);
+            bytesCopied = writeDataWithUserTransformations(data, in, out);
         }
+
+        return bytesCopied;
     }
 
     private static int getBOMLength(byte[] buf) {
@@ -227,7 +231,8 @@ public class InjectionHelper {
         return bytesReadTotal;
     }
 
-    private static void writeDataWithUserTransformations(String data, InputStream in, OutputStream out) throws IOException {
+    private static long writeDataWithUserTransformations(String data, InputStream in, OutputStream out) throws IOException {
+        long bytesWritten = data.getBytes().length;
         byte[] buf = new byte[8192];
         while (true) {
             for (String beforeRegexp : contentTransformations.keySet()) {
@@ -251,10 +256,14 @@ public class InjectionHelper {
             out.write(data.getBytes());
             int len = in.read(buf);
             if (len == -1) {
-                return;
+                break;
+            } else {
+                bytesWritten += len;
             }
             data = new String(buf, 0, len);
         }
+
+        return bytesWritten;
     }
 
     private static byte[] setSomeJsVars(String sessionId) {
