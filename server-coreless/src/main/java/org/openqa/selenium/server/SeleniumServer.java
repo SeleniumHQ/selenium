@@ -124,7 +124,6 @@ import org.openqa.selenium.server.htmlrunner.*;
 public class SeleniumServer {
 
     private Server server;
-    private ProxyHandler customProxyHandler;
     private SeleniumDriverResourceHandler driver;
     private SeleniumHTMLRunnerResultsHandler postResultsHandler;
     private StaticContentHandler staticContentHandler;
@@ -132,6 +131,7 @@ public class SeleniumServer {
     private boolean multiWindow = false;
     private Thread shutDownHook;
 
+    private static ProxyHandler customProxyHandler;
     private static String debugURL = "";  // add special tracing for debug when this URL is requested
     private static boolean debugMode = false;
     private static boolean alwaysProxy = false;
@@ -513,7 +513,7 @@ public class SeleniumServer {
         }
         this.multiWindow = multiWindow;
         server = new Server();
-        
+
         if (logOut!=null) {
             NCSARequestLog log = new NCSARequestLog();
             log.setFilename(logOutFileName + ".jetty");
@@ -521,7 +521,7 @@ public class SeleniumServer {
             log.setExtended(true);
             log.setAppend(true);
             server.setRequestLog(log);
-        }  
+        }
         SocketListener socketListener = new SocketListener();
         socketListener.setMaxIdleTimeMs(60000);
         socketListener.setPort(port);
@@ -529,7 +529,7 @@ public class SeleniumServer {
         configServer();
         assembleHandlers(slowResources);
     }
-    
+
     public SeleniumServer(int port, boolean slowResources) throws Exception {
         this(port, slowResources, false);
     }
@@ -648,8 +648,8 @@ public class SeleniumServer {
      * Used for implementations that invoke SeleniumServer programmatically and require additional logic
      * when proxying data.
      */
-    public void setCustomProxyHandler(ProxyHandler customProxyHandler) {
-        this.customProxyHandler = customProxyHandler;
+    public static void setCustomProxyHandler(ProxyHandler customProxyHandler) {
+        SeleniumServer.customProxyHandler = customProxyHandler;
     }
 
     private class ShutDownHook implements Runnable {

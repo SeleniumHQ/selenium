@@ -143,13 +143,13 @@ public class InjectionHelper {
 //        }
         String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
 
-        long bytesCopied;
+        long bytesCopied = len;
 
         if (SeleniumServer.isDebugMode()) {
             SeleniumServer.log(url + " (InjectionHelper looking)");
         }
         if (!isKnownToBeHtml) {
-            bytesCopied = ModifiedIO.copy(in, out);
+            bytesCopied += ModifiedIO.copy(in, out);
         }
         else {
             if (SeleniumServer.isDebugMode()) {
@@ -172,7 +172,7 @@ public class InjectionHelper {
                 jsIn = new FileInputStream(filename);
                 IO.copy(jsIn, out); 
             }
-            bytesCopied = writeDataWithUserTransformations(data, in, out);
+            bytesCopied += writeDataWithUserTransformations(data, in, out);
         }
 
         return bytesCopied;
@@ -232,7 +232,7 @@ public class InjectionHelper {
     }
 
     private static long writeDataWithUserTransformations(String data, InputStream in, OutputStream out) throws IOException {
-        long bytesWritten = data.getBytes().length;
+        long bytesWritten = 0;
         byte[] buf = new byte[8192];
         while (true) {
             for (String beforeRegexp : contentTransformations.keySet()) {
