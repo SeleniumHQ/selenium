@@ -151,8 +151,10 @@ public class SeleneseTestCase extends TestCase {
                 if (sa1.length!=sa2.length) {
                     throw new AssertionFailedError("Expected " + sa1 + " but saw " + sa2);
                 }
+                for (int j = 0; j < sa1.length; j++) {
+                    Assert.assertEquals(sa1[j], sa2[j]);
+                }
             }
-            Assert.assertEquals(s1, s2);
         }
     }
     
