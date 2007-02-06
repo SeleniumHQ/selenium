@@ -70,7 +70,7 @@ use Carp qw(croak);
 use strict;
 use warnings;
 
-our $VERSION = '0.91';
+our $VERSION = '0.911';
 
 =head1 NAME
 
@@ -359,7 +359,7 @@ sub get_boolean_array {
             next;
         }
         if ($result[$i] eq "false") {
-            push (@boolarr, 1);
+            push (@boolarr, 0);
             next;
         }
         die "result is neither 'true' nor 'false': ". $result[$i];

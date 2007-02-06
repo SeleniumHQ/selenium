@@ -2,6 +2,7 @@ Revision history for Perl extension Test::WWW::Selenium.
 
 1.12 -
  - refactor unit tests to use Test::Mock::LWP
+ - fix bug in get_boolean_array - thanks to Ilya Averyanov
 
 1.11 - Thu Jan  4 19:53:18 PST 2007
  - don't stop a stopped session

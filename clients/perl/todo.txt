@@ -1,5 +1,7 @@
 - bundle test modules with distribution M::I::Bundle
 
+- add tests for get_boolean_array()
+
 - WWW::Selenium
   - check that browser_url is sane
 
