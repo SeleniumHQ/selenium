@@ -245,7 +245,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 	public void testShouldFindElementsByXPath() {
 		driver.get(xhtmlTestPage);
 		List divs = driver.selectElements("//div");
-		assertEquals(3, divs.size());
+		assertEquals(4, divs.size());
 	}
 
 	public void testShouldFindTextUsingXPath() {
@@ -386,6 +386,31 @@ public abstract class BasicDriverTestCase extends TestCase {
 		} catch (UnsupportedOperationException e) {
 			// This is expected
 		}
+	}
+	
+	public void testShouldBeAbleToIdentifyElementsByClass() {
+		driver.get(xhtmlTestPage);
+		
+		String header = driver.selectText("//h1[@class='header']");
+		assertEquals("XHTML Might Be The Future", header);
+	}
+	
+	public void testShouldReturnValueOfClassAttributeOfAnElement() {
+		driver.get(xhtmlTestPage);
+		
+		WebElement heading = driver.selectElement("//h1");
+		String className = heading.getAttribute("class");
+		
+		assertEquals("header", className);
+	}
+	
+	public void testShouldReturnTheValueOfTheStyleAttribute() {
+		driver.get(formPage);
+		
+		WebElement element = driver.selectElement("//form[3]");
+		String style = element.getAttribute("style");
+		
+		assertEquals("display: block", style);
 	}
 	
 	protected WebDriver driver;

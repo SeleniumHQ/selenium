@@ -8,5 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/javax.servlet.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/jasper-runtime.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/jasper-compiler.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/commons-logging.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

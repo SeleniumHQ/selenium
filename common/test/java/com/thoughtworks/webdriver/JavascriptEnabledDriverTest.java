@@ -27,7 +27,7 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 		driver.get(javascriptPage);
 	}
 	
-    public void testDocumentShouldReflectLatestDOM() {
+    public void testDocumentShouldReflectLatestTitle() throws Exception {
         driver.get(xhtmlTestPage);
 
         assertEquals("XHTML Test Page", driver.getTitle());
@@ -37,7 +37,17 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         String titleViaXPath = driver.selectText("/html/head/title");
         assertEquals("Changed", titleViaXPath);
     }
-	
+
+    public void testDocumentShouldReflectLatestDom() throws Exception {
+    	driver.get(xhtmlTestPage);
+    	String currentText = driver.selectText("//div[@id='dynamo']");
+    	assertEquals("What's for dinner?", currentText);
+        driver.selectElement("link=Update a div").click();
+        
+        String newText = driver.selectText("//div[@id='dynamo']");
+        assertEquals("Fish and chips!", newText);
+    }
+    
 	public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
 		WebElement element = driver.selectElement("//input[@id='keyUp']");
 		element.setValue("I like cheese");
@@ -69,7 +79,7 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 	public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
 		WebElement element = driver.selectElement("//textarea[@id='keyUpArea']");
 		element.setValue("I like cheese");
-
+		
 		WebElement result = driver.selectElement("//div[@id='result']");
 		assertEquals("I like cheese", result.getText());
 	}
