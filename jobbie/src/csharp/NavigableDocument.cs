@@ -281,7 +281,7 @@ namespace WebDriver
 
         public IHTMLDOMNode CurrentNode
         {
-            get { return currentNode as IHTMLDOMNode; }
+            get { return currentNode; }
         }
     }
 }

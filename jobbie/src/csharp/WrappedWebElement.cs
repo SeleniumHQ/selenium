@@ -18,7 +18,6 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
-using System.Threading;
 using IEWrapper;
 using mshtml;
 
@@ -44,8 +43,10 @@ namespace WebDriver
 
         public string GetAttribute(string name)
         {
-            object attribute = node.getAttribute(name, 0);
-            
+            string lookFor = (name.ToLower() == "class" ? "className" : name);
+
+            object attribute = node.getAttribute(lookFor, 0);
+
             if (attribute == null)
             {
                 return "";
@@ -57,12 +58,25 @@ namespace WebDriver
                 return b.ToString().ToLower();
             }
 
-            // This is a nasty hack. 
+            // This is a nasty hack. We don't know what the type is. Look at the "name" and make a guess
             if ("System.__ComObject".Equals(attribute.GetType().FullName)) {
-                return "";
+                switch (lookFor.ToLower())
+                {
+                    case "style":
+                        return GetStyleValue();
+
+                    default:
+                        return "";
+                }
             }
             
             return attribute.ToString();
+        }
+
+        private string GetStyleValue()
+        {
+            IHTMLStyle style = node.style;
+            return style == null  || style.cssText == null ? "" : style.cssText.ToLower();
         }
 
         public void SetAttribute(string name, object value)
@@ -122,9 +136,6 @@ namespace WebDriver
             IHTMLEventObj eventObject = document.CreateEventObject(ref refObj);
             object eventRef = eventObject;
 
-            //    this.browserbot.triggerMouseEvent(element, 'mousedown', true);
-            //  this.browserbot.triggerMouseEvent(element, 'mouseup', true);
-            
             element.FireEvent("onMouseDown", ref eventRef);
             element.FireEvent("onMouseUp", ref eventRef);
             node.click();

@@ -42,7 +42,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 		} else {
 			driver = getDriver();
 		}
-		driver.setVisible(false);
+		driver.setVisible(true);
 		
 		startEnvironmentIfNecessary();
 		simpleTestPage = baseUrl + "simpleTest.html";

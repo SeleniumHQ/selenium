@@ -231,7 +231,7 @@ namespace WebDriver
         {
             driver.Get(xhtmlTestPage);
             IList divs = driver.SelectElementsByXPath("//div");
-            Assert.AreEqual(3, divs.Count);
+            Assert.AreEqual(4, divs.Count);
         }
 
         [Test]
@@ -449,6 +449,37 @@ namespace WebDriver
         {
             driver.Get(formPage);
             driver.SelectElement("//title").SetSelected();
+        }
+
+        [Test]
+        public void ShouldBeAbleToIdentifyElementsByClass()
+        {
+            driver.Get(xhtmlTestPage);
+
+            string header = driver.SelectTextWithXPath("//h1[@class='header']");
+            Assert.AreEqual("XHTML Might Be The Future", header);
+        }
+
+        [Test]
+        public void testShouldReturnValueOfClassAttributeOfAnElement()
+        {
+            driver.Get(xhtmlTestPage);
+
+            WebElement heading = driver.SelectElement("//h1");
+            string className = heading.GetAttribute("class");
+
+            Assert.AreEqual("header", className);
+        }
+
+        [Test]
+        public void testShouldReturnTheValueOfTheStyleAttribute()
+        {
+            driver.Get(formPage);
+
+            WebElement element = driver.SelectElement("//form[3]");
+            string style = element.GetAttribute("style");
+
+            Assert.AreEqual("display: block", style);
         }
 
         private string GetTestPageText(string path)
