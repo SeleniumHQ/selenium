@@ -61,15 +61,6 @@ Log.write = function(message) {
 	}
 }
 
-function instanceOf(object, constructor) {
-	while (object != null) {
-		if (object == constructor.prototype)
-			return true;
-		object = object.__proto__;
-	}
-	return false;
-}
-
 function showFilePicker(window, title, mode, defaultDirPrefName, handler) {
 	var nsIFilePicker = Components.interfaces.nsIFilePicker;
 	var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);

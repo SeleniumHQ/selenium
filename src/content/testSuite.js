@@ -144,8 +144,8 @@ TestSuite.TestCase.prototype = {
     },
 
     _computeRelativePath: function(fromFile, toFile) {
-        var from = this._splitPath(fromFile.parent);
-        var to = this._splitPath(toFile);
+        var from = FileUtils.splitPath(fromFile.parent);
+        var to = FileUtils.splitPath(toFile);
         var result = [];
         for (var base = 0; base < from.length && base < to.length; base++) {
             if (from[base] != to[base]) {
@@ -159,15 +159,6 @@ TestSuite.TestCase.prototype = {
             result.push(to[i]);
         }
         return result.join("/");
-    },
-
-    _splitPath: function(file) {
-        var result = [];
-        while (file && file.path != "/") {
-            result.unshift(file.leafName);
-            file = file.parent;
-        }
-        return result;
     },
 
     getFilePath: function() {

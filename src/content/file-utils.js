@@ -82,5 +82,14 @@ var FileUtils = {
 	fileURI: function(file) {
 		return Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).
 		  newFileURI(file).spec;
-	}
+	},
+
+    splitPath: function(file) {
+        var result = [];
+        while (file && file.path != "/") {
+            result.unshift(file.leafName);
+            file = file.parent;
+        }
+        return result;
+    }
 }
