@@ -726,7 +726,11 @@ public class SeleniumServer {
     public static boolean isProxyInjectionMode() {
         return proxyInjectionMode;
     }
-    
+
+    public static void setAlwaysProxy(boolean alwaysProxy) {
+        SeleniumServer.alwaysProxy = alwaysProxy;
+    }
+
     public static boolean isAlwaysProxy() {
         return alwaysProxy;
     }
