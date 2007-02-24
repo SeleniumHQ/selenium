@@ -17,17 +17,12 @@
 
 using System;
 using System.Collections;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Security;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Xml;
 using System.Xml.XPath;
 using IEWrapper;
 using mshtml;
 using SHDocVw;
-using STATSTG=System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace WebDriver
 {
@@ -65,7 +60,7 @@ namespace WebDriver
 
         public String Title
         {
-            get { return GetDocument().title; }
+            get { return HtmlDocument.title; }
         }
 
         public bool Visible
@@ -110,7 +105,7 @@ namespace WebDriver
             }
 
             // This is what Watir does. Will it work here? Who knows?
-            while (GetDocument().readyState != "complete")
+            while (HtmlDocument.readyState != "complete")
             {
                 Thread.Sleep(20);
             }
@@ -119,188 +114,6 @@ namespace WebDriver
         public void DumpBody()
         {
             // Console.WriteLine(GetDocumentText());
-        }
-
-        public string GetDocumentText()
-        {
-            StreamReader reader = new StreamReader(GetDocumentStream());
-            return reader.ReadToEnd();
-        }
-
-        public XmlDocument GetDocumentXml()
-        {
-            //HACK: XmlDocument tries to load the dtd - which doesn't always exist.  Chopping it out until a better 
-            //way is found
-
-            string text = GetDocumentText();
-            text = Regex.Replace(text, "<!DOCTYPE.*?>", "");
-            text = Regex.Replace(text, "xmlns=\".*?\"", "");
-
-            // HACK: This takes out the html tag's xmlns declaration so that we can use simple XPath queries
-            text = text.Replace("xmlns=\"http://www.w3.org/1999/xhtml\"", "");
-
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(text);
-            return xml;
-        }
-
-        private Stream GetDocumentStream()
-        {
-            /*
-         * The only way to get the original document source is to have the browser save it to a stream - this is
-         * achieved by casting it to the IPersistStreamInit COM type.  As managed equivalents for this type or the
-         * types it uses we have to create them ourselves.  Beware, some of it was lifted from private classes within
-         * the .Net framework, so could be legally dodgy.
-         */
-
-            IPersistStreamInit persister = browser.Document as IPersistStreamInit;
-            MemoryStream baseStream = new MemoryStream();
-            ComStream comStream = new ComStream(baseStream);
-            persister.Save(comStream, false);
-            baseStream.Position = 0;
-            return baseStream;
-
-            // We might well try something like this:
-//            IHTMLDocument2 doc = (IHTMLDocument2)this.axWebBrowser1.Document;
-//            UCOMIPersistFile pf = (UCOMIPersistFile)doc;
-//            pf.Save(@"c:\myhtmlpage.html", true);
-        }
-
-        public HTMLDocument GetDocument()
-        {
-            try
-            {
-                return browser.Document as HTMLDocument;
-            }
-            catch (COMException)
-            {
-                return null;
-            }
-        }
-
-        [
-            ComImport, Guid("7FD52380-4E07-101B-AE2D-08002B2EC713"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)
-                ,
-                SuppressUnmanagedCodeSecurity]
-        private interface IPersistStreamInit
-        {
-            void GetClassID(out Guid pClassID);
-
-            [PreserveSig]
-            int IsDirty();
-
-            void Load([In, MarshalAs(UnmanagedType.Interface)] IStream pstm);
-
-            void Save([In, MarshalAs(UnmanagedType.Interface)] IStream pstm,
-                      [In, MarshalAs(UnmanagedType.Bool)] bool fClearDirty);
-
-            void GetSizeMax([Out, MarshalAs(UnmanagedType.U8)] ulong pcbSize);
-            void InitNew();
-        }
-
-        [
-            ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), SuppressUnmanagedCodeSecurity,
-                Guid("0000000C-0000-0000-C000-000000000046")]
-        private interface IStream
-        {
-            int Read(IntPtr buf, int len);
-            int Write(IntPtr pBuffer, int length);
-
-            [return : MarshalAs(UnmanagedType.I8)]
-            long Seek([In, MarshalAs(UnmanagedType.I8)] long dlibMove, int dwOrigin);
-
-            void SetSize([In, MarshalAs(UnmanagedType.I8)] long libNewSize);
-
-            [return : MarshalAs(UnmanagedType.I8)]
-            long CopyTo([In, MarshalAs(UnmanagedType.Interface)] IStream pstm, [In, MarshalAs(UnmanagedType.I8)] long cb,
-                        [Out, MarshalAs(UnmanagedType.LPArray)] long[] pcbRead);
-
-            void Commit(int grfCommitFlags);
-            void Revert();
-
-            void LockRegion([In, MarshalAs(UnmanagedType.I8)] long libOffset, [In, MarshalAs(UnmanagedType.I8)] long cb,
-                            int dwLockType);
-
-            void UnlockRegion([In, MarshalAs(UnmanagedType.I8)] long libOffset,
-                              [In, MarshalAs(UnmanagedType.I8)] long cb,
-                              int dwLockType);
-
-            void Stat([Out] STATSTG pStatstg, int grfStatFlag);
-
-            [return : MarshalAs(UnmanagedType.Interface)]
-            IStream Clone();
-        }
-
-        private class ComStream : IStream
-        {
-            private readonly Stream baseStream;
-
-            public ComStream(Stream stream)
-            {
-                baseStream = stream;
-            }
-
-            public int Write(IntPtr pBuffer, int length)
-            {
-                byte[] buffer = new byte[length];
-                Marshal.Copy(pBuffer, buffer, 0, length);
-                baseStream.Write(buffer, 0, length);
-                return length;
-            }
-
-            #region not implemented
-
-            public int Read(IntPtr buf, int len)
-            {
-                throw new NotImplementedException();
-            }
-
-            public long Seek(long dlibMove, int dwOrigin)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void SetSize(long libNewSize)
-            {
-                throw new NotImplementedException();
-            }
-
-            public long CopyTo(IStream pstm, long cb, long[] pcbRead)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Commit(int grfCommitFlags)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Revert()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void LockRegion(long libOffset, long cb, int dwLockType)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void UnlockRegion(long libOffset, long cb, int dwLockType)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Stat(STATSTG pStatstg, int grfStatFlag)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IStream Clone()
-            {
-                throw new NotImplementedException();
-            }
-
-            #endregion
         }
 
         public void Close()
@@ -375,7 +188,7 @@ namespace WebDriver
             int equalsIndex = selector.IndexOf('=') + 1;
             String linkText = selector.Substring(equalsIndex).Trim();
 
-            IHTMLElementCollection links = GetDocument().links;
+            IHTMLElementCollection links = HtmlDocument.links;
             IEnumerator enumerator = links.GetEnumerator();
 
             while (enumerator.MoveNext())
@@ -388,5 +201,21 @@ namespace WebDriver
             }
             throw new NoSuchElementException("Cannot find link with text: " + linkText);
         }
+
+        private HTMLDocument HtmlDocument
+        {
+            get
+            {
+                try
+                {
+                    return browser.Document as HTMLDocument;
+                }
+                catch (COMException)
+                {
+                    return null;
+                }
+            }
+        }
+
     }
 }
