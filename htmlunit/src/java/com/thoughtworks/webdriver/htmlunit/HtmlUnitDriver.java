@@ -118,10 +118,6 @@ public class HtmlUnitDriver implements WebDriver {
 		newWebClient();
 	}
 
-	public void evaluateJavascript(String javascript) {
-		// no-op
-	}
-
 	private synchronized HtmlPage lastPage() {
 		return (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
 	}

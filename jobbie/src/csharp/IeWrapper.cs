@@ -162,17 +162,6 @@ namespace WebDriver
             }
         }
 
-        public void EvaluateJavascript(string javascript)
-        {
-            IHTMLDocument2 document = (IHTMLDocument2) browser.Document;
-            IHTMLWindow2 window = document.parentWindow;
-
-            if (window == null)
-                return;
-
-            window.execScript(javascript, "javascript");
-        }
-
         public XPathNavigator CreateNavigator()
         {
             return new NavigableDocument(browser.Document as IHTMLDocument2);

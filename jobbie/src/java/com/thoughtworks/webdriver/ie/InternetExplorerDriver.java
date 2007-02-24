@@ -55,9 +55,6 @@ public class InternetExplorerDriver implements WebDriver {
 		ie.invoke("DumpBody");
 	}
 
-	public void evaluateJavascript(String javascript) {
-	}
-
 	public String getTitle() {
 		return ie.getPropertyAsString("Title");
 	}

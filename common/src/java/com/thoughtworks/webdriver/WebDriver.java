@@ -147,19 +147,4 @@ public interface WebDriver {
 	 * currently open.
 	 */
 	void close();
-
-	// AJAX support
-	/**
-	 * Evaluate a chunk of Javascript within the current page. Due to
-	 * limitations of the underlying browsers, this method does not return any
-	 * value. Should you wish to use this method to determine whether a
-	 * particular AJAX function has completed, it is suggested that either the
-	 * AJAX function or the given javascript set the value of an element on the
-	 * page which can then be located using
-	 * {@link WebDriver#selectElement(String)}.
-	 * 
-	 * @param javascript
-	 *            The javascript to be executed.
-	 */
-	void evaluateJavascript(String javascript);
 }

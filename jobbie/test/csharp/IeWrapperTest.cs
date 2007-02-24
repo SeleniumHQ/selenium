@@ -220,15 +220,6 @@ namespace WebDriver
         }
 
         [Test]
-        public void ShouldBeAbleToExecuteBasicJavascriptWhichReturnsNothing()
-        {
-            driver.Get(xhtmlTestPage);
-            Assert.IsFalse(driver.Title.Equals("Changed"));
-            driver.EvaluateJavascript("document.title = 'fish'");
-            Assert.AreEqual("fish", driver.Title);
-        }
-
-        [Test]
         public void ShouldBeAbleToChangeTheSelectedOptionInASelect()
         {
             driver.Get(formPage);

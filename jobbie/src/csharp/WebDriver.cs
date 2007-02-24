@@ -39,9 +39,6 @@ namespace WebDriver
         // Misc
         void DumpBody();
         void Close();
-
-        // AJAX support
-        void EvaluateJavascript(string javascript);
     }
 
     [Guid("03D6E98A-9005-40eb-A0FF-5B31005E2FB7")]
