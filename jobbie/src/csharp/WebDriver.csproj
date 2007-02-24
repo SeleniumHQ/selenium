@@ -36,12 +36,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IeWrapper.cs" />
-    <Compile Include="NavigableDocument.cs" />
     <Compile Include="NoSuchElementException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnsupportedOperationException.cs" />
     <Compile Include="WebDriver.cs" />
     <Compile Include="WrappedWebElement.cs" />
+    <Compile Include="XPath\NavigableDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="MSHTML">

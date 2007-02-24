@@ -17,10 +17,7 @@
 
 using System;
 using System.Collections;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
-using System.Xml;
 using IEWrapper;
 using NUnit.Framework;
 
@@ -78,41 +75,6 @@ namespace WebDriver
 
             driver.Get(simpleTestPage);
             Assert.AreEqual("Hello WebDriver", driver.Title);
-        }
-
-        [Test]
-        public void ShouldReturnPageSourceAsPlainText()
-        {
-            driver.Get(simpleTestPage);
-
-            string fromFile = GetTestPageText(Path.GetFullPath(@"..\..\common\src\web\simpleTest.html"));
-            string fromBrowser = driver.GetDocumentText();
-
-            Assert.AreEqual(fromFile, fromBrowser);
-        }
-
-        [Test]
-        public void ShouldReturnPageAsXmlDocument()
-        {
-            driver.Get(xhtmlTestPage);
-
-            XmlDocument document = driver.GetDocumentXml();
-
-            XmlNodeList titleElements = document.GetElementsByTagName("title");
-            Assert.AreEqual("XHTML Test Page", titleElements[0].InnerText);
-        }
-
-        [Test]
-        public void ShouldHandleComExceptionsIfDocumentIsNotSet()
-        {
-            try
-            {
-                driver.GetDocumentXml();
-            }
-            catch (COMException)
-            {
-                Assert.Fail();
-            }
         }
 
         [Test]
@@ -480,14 +442,6 @@ namespace WebDriver
             string style = element.GetAttribute("style");
 
             Assert.AreEqual("display: block", style);
-        }
-
-        private string GetTestPageText(string path)
-        {
-            using (StreamReader reader = File.OpenText(path))
-            {
-                return reader.ReadToEnd();
-            }
         }
     }
 }

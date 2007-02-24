@@ -15,7 +15,12 @@
  *
  */
 
+using System;
 using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.XPath;
+using System.Xml.Xsl;
 using NUnit.Framework;
 
 namespace WebDriver
@@ -79,6 +84,65 @@ namespace WebDriver
         {
             string text = driver.SelectTextWithXPath("//div/h1");
             Assert.AreEqual("List of stuff", text);
+        }
+
+        [Test]
+        [Ignore("SimonStewart: 2007-02-24: Finishing the refactoring of the NavigableDocument first")]
+        public void ShouldAllowAnXsltToBeRunSuccessfully()
+        {
+            string xhtmlPage = "http://localhost/webdriver/xhtmlTest.html";
+            driver.Get(xhtmlPage);
+
+            XPathNavigator navigator = driver.CreateNavigator();
+            XmlDocument xslDoc = new XmlDocument();
+            xslDoc.LoadXml(
+              @"<?xml version=""1.0""?>
+                <xsl:stylesheet version=""1.0"" xmlns:xsl=""http://www.w3.org/1999/XSL/Transform"">
+                    <xsl:template match=""/"">
+                        <xsl:copy-of select="".""/>
+                    </xsl:template>     
+                </xsl:stylesheet>");
+
+            XslCompiledTransform xsl = new XslCompiledTransform();
+            xsl.Load(xslDoc);
+
+            StringBuilder output = new StringBuilder();
+            xsl.Transform(navigator, new XsltArgumentList(), new StringWriter(output));
+
+            String result = output.ToString();
+
+            // Do we get text in the body of the transformed document?
+            Assert.IsTrue(result.Contains("XHTML Might Be The Future"), "No text from the body of the page");
+
+            // Do we get tag's?
+            Assert.IsTrue(result.Contains("<"), "No tags appear to have been opened");
+            Assert.IsTrue(result.Contains("</body"), "The body tag has not been closed. Check that tags are being output");
+
+            // Do we get the page's title?
+            Assert.IsTrue(result.Contains("XHTML Test Page"), "No title seen");
+        }
+
+        [Test]
+        [Ignore("SimonStewart: 2007-02-24: Finishing the refactoring of the NavigableDocument first")]
+        public void ShouldReturnTheInnerXmlOfTheNavigableDocument()
+        {
+            string xhtmlPage = "http://localhost/webdriver/xhtmlTest.html";
+            driver.Get(xhtmlPage);
+
+            XPathNavigator navigator = driver.CreateNavigator();
+            string result = navigator.InnerXml;
+
+            Console.WriteLine(result);
+
+            // Do we get text in the body of the transformed document?
+            Assert.IsTrue(result.Contains("XHTML Might Be The Future"), "No text from the body of the page");
+
+            // Do we get tag's?
+            Assert.IsTrue(result.Contains("<"), "No tags appear to have been opened");
+            Assert.IsTrue(result.Contains("</body"), "The body tag has not been closed. Check that tags are being output");
+
+            // Do we get the page's title?
+            Assert.IsTrue(result.Contains("XHTML Test Page"), "No title seen");
         }
     }
 }
