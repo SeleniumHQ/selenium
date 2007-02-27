@@ -42,6 +42,7 @@
     <Compile Include="WebDriver.cs" />
     <Compile Include="WrappedWebElement.cs" />
     <Compile Include="XPath\AttributeNodes.cs" />
+    <Compile Include="XPath\ElementNode.cs" />
     <Compile Include="XPath\NavigableDocument.cs" />
   </ItemGroup>
   <ItemGroup>

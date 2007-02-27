@@ -26,12 +26,12 @@ namespace WebDriver
     internal class NavigableDocument : XPathNavigator
     {
         private IHTMLDocument2 document;
-        private IHTMLDOMNode currentNode;
+        private ElementNode element;
         private AttributeNodes attrs;
 
         public NavigableDocument(IHTMLDocument2 document)
         {
-            currentNode = (IHTMLDOMNode) ((IHTMLDocument3)document).documentElement;
+            element = new ElementNode(document);
             this.document = document;
         }
         
@@ -86,12 +86,10 @@ namespace WebDriver
 
         public override bool MoveToNext()
         {
-            IHTMLDOMNode sibling = CurrentNode.nextSibling;
-            if (sibling == null)
-            {
+            if (!element.HasNextSibling)
                 return false;
-            }
-            currentNode = sibling;
+
+            element = element.NextSibling;
             attrs = null;
             return true;
         }
@@ -103,12 +101,10 @@ namespace WebDriver
 
         public override bool MoveToFirstChild()
         {
-            IHTMLDOMNode child = currentNode.firstChild;
-            if (child == null)
-            {
+            if (!element.HasFirstChild)
                 return false;
-            }
-            currentNode = child;
+
+            element = element.FirstChild;
             return true;
         }
 
@@ -118,10 +114,9 @@ namespace WebDriver
             {
                 attrs = null;
             }
-            IHTMLDOMNode parentNode = currentNode.parentNode;
-            if (parentNode == null)
+            if (!element.HasParent)
                 return false;
-            currentNode = parentNode;
+            element = element.Parent;
             attrs = null;
             
             return true;
@@ -133,7 +128,8 @@ namespace WebDriver
             if (o == null)
                 return false;
 
-            currentNode = o.currentNode;
+            element = new ElementNode(o.element);
+
             if (o.attrs != null)
             {
                 attrs = new AttributeNodes(o.attrs);
@@ -152,7 +148,7 @@ namespace WebDriver
             if (o == null)
                 return false;
             
-            if (!document.Equals(o.document) || !currentNode.Equals(o.currentNode))
+            if (!document.Equals(o.document) || !element.Equals(o.element))
                 return false;
             
             if (o.attrs == null && attrs == null)
@@ -172,29 +168,8 @@ namespace WebDriver
             {
                 if (attrs != null)
                     return attrs.NodeType;
-                
-                switch (currentNode.nodeType)
-                {
-                    case 1:
-                        return XPathNodeType.Element;
 
-                    case 3:
-                        return XPathNodeType.Text;
-
-                    case 8:
-                        return XPathNodeType.Comment;
-                        
-                    case 9:
-                        return XPathNodeType.Root;
-                        
-                    case 11: // Claims to be a document fragment
-                        return XPathNodeType.Text;
-
-                    default:
-                        Console.WriteLine("Unknown type: " + currentNode.nodeName + " (" + currentNode.nodeType + ") " + currentNode.nodeValue);
-                        break;
-                }
-                throw new ArgumentException("Cannot identify node type");
+                return element.NodeType;
             }
         }
 
@@ -204,7 +179,7 @@ namespace WebDriver
             {
                 if (attrs != null)
                     return attrs.NodeName;
-                return currentNode.nodeName.ToLower();
+                return element.NodeNode;
             }
         }
 
@@ -242,21 +217,14 @@ namespace WebDriver
             {
                 if (attrs != null)
                     return attrs.NodeValue;
-                
-                if (currentNode is IHTMLTitleElement)
-                    return document.title;
-                IHTMLElement element = currentNode as IHTMLElement;
-                if (element != null)
-                {
-                    return element.innerText;
-                }
-                return currentNode.nodeValue.ToString();
+
+                return element.NodeValue;
             }
         }
 
         private IHTMLDOMNode CurrentNode
         {
-            get { return currentNode; }
+            get { return element.Node; }
         }
 
 
