@@ -19,9 +19,8 @@ using System;
 using System.Xml;
 using System.Xml.XPath;
 using mshtml;
-using WebDriver.XPath;
 
-namespace WebDriver
+namespace WebDriver.XPath
 {
     internal class NavigableDocument : XPathNavigator
     {
@@ -66,12 +65,7 @@ namespace WebDriver
 
         public override bool MoveToNextAttribute()
         {
-            if (!attrs.MoveNext())
-            {
-                attrs.ResetToCurrentLocation();
-                return false;
-            }
-            return true;
+            return attrs.MoveNext();
         }
 
         public override bool MoveToFirstNamespace(XPathNamespaceScope namespaceScope)
@@ -105,20 +99,16 @@ namespace WebDriver
                 return false;
 
             element = element.FirstChild;
+            attrs = null;
             return true;
         }
 
         public override bool MoveToParent()
         {
-            if (attrs != null)
-            {
-                attrs = null;
-            }
             if (!element.HasParent)
                 return false;
             element = element.Parent;
-            attrs = null;
-            
+            attrs = null;            
             return true;
         }
 
@@ -154,7 +144,7 @@ namespace WebDriver
             if (o.attrs == null && attrs == null)
                 return true;
 
-            return o.attrs == attrs;
+            return attrs.Equals(o.attrs);
         }
 
         public override XmlNameTable NameTable
@@ -179,7 +169,7 @@ namespace WebDriver
             {
                 if (attrs != null)
                     return attrs.NodeName;
-                return element.NodeNode;
+                return element.NodeName;
             }
         }
 

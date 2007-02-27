@@ -1,13 +1,14 @@
 using System;
 using System.Xml.XPath;
 using mshtml;
+using WebDriver.XPath;
 
 namespace WebDriver
 {
     internal class ElementNode
     {
         private readonly IHTMLDocument2 document;
-        private IHTMLDOMNode node;
+        private readonly IHTMLDOMNode node;
 
         public ElementNode(IHTMLDocument2 document)
         {
@@ -109,7 +110,7 @@ namespace WebDriver
             }
         }
 
-        public string NodeNode
+        public string NodeName
         {
             get { return node.nodeName.ToLower(); }
         }

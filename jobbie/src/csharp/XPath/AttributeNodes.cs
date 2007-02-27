@@ -70,6 +70,7 @@ namespace WebDriver.XPath
                 return false;
             }
 
+
             bool result = attributeEnumerator.MoveNext();
             if (result)
             {
