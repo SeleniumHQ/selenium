@@ -23,6 +23,7 @@ using System.Xml.XPath;
 using IEWrapper;
 using mshtml;
 using SHDocVw;
+using WebDriver.XPath;
 
 namespace WebDriver
 {
@@ -141,7 +142,7 @@ namespace WebDriver
             while (allNodes.MoveNext())
             {
                 NavigableDocument node = (NavigableDocument) allNodes.Current;
-                elements.Add(new WrappedWebElement(this, node.CurrentNode));
+                elements.Add(new WrappedWebElement(this, node.UnderlyingObject as IHTMLDOMNode));
             }
             return elements;
         }
@@ -158,7 +159,7 @@ namespace WebDriver
                 NavigableDocument node = navigator.SelectSingleNode(xpath) as NavigableDocument;
                 if (node == null)
                     throw new NoSuchElementException("Cannot find an element with the expression: " + xpath);
-                return new WrappedWebElement(this, node.CurrentNode);
+                return new WrappedWebElement(this, node.UnderlyingObject as IHTMLDOMNode);
             }
         }
 

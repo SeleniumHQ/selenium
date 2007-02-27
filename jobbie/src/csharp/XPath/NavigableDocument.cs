@@ -16,10 +16,10 @@
  */
 
 using System;
-using System.Collections;
 using System.Xml;
 using System.Xml.XPath;
 using mshtml;
+using WebDriver.XPath;
 
 namespace WebDriver
 {
@@ -27,8 +27,7 @@ namespace WebDriver
     {
         private IHTMLDocument2 document;
         private IHTMLDOMNode currentNode;
-        private IEnumerator attributes;
-        private int attributeIndex;
+        private AttributeNodes attrs;
 
         public NavigableDocument(IHTMLDocument2 document)
         {
@@ -55,38 +54,24 @@ namespace WebDriver
             {
                 return false;
             }
-            
-            attributes = collection.GetEnumerator();
-            if (!attributes.MoveNext())
+
+            attrs = new AttributeNodes(CurrentNode);
+            if (!attrs.MoveNext())
             {
-                attributes = null;
+                attrs = null;
                 return false;
             }
-            attributeIndex = 1;
             return true;
         }
 
         public override bool MoveToNextAttribute()
         {
-            if (!attributes.MoveNext())
+            if (!attrs.MoveNext())
             {
-                ResetAttributesToCurrentIndex();
+                attrs.ResetToCurrentLocation();
                 return false;
             }
-            attributeIndex++;
-            if (!((IHTMLDOMAttribute)attributes.Current).specified)
-                return MoveToNextAttribute();
-
             return true;
-        }
-
-        private void ResetAttributesToCurrentIndex()
-        {
-            attributes.Reset();
-            for (int i = 0; i < attributeIndex; i++)
-            {
-                attributes.MoveNext();
-            }
         }
 
         public override bool MoveToFirstNamespace(XPathNamespaceScope namespaceScope)
@@ -107,8 +92,7 @@ namespace WebDriver
                 return false;
             }
             currentNode = sibling;
-            attributes = null;
-            attributeIndex = 0;
+            attrs = null;
             return true;
         }
 
@@ -130,16 +114,15 @@ namespace WebDriver
 
         public override bool MoveToParent()
         {
-            if (attributes != null)
+            if (attrs != null)
             {
-                attributes = null;
-                attributeIndex = 0;
+                attrs = null;
             }
             IHTMLDOMNode parentNode = currentNode.parentNode;
             if (parentNode == null)
                 return false;
             currentNode = parentNode;
-            attributes = null;
+            attrs = null;
             
             return true;
         }
@@ -151,11 +134,9 @@ namespace WebDriver
                 return false;
 
             currentNode = o.currentNode;
-            if (o.attributes != null)
+            if (o.attrs != null)
             {
-                MoveToFirstAttribute();
-                attributeIndex = o.attributeIndex;
-                ResetAttributesToCurrentIndex();
+                attrs = new AttributeNodes(o.attrs);
             }
             return true;
         }
@@ -174,10 +155,10 @@ namespace WebDriver
             if (!document.Equals(o.document) || !currentNode.Equals(o.currentNode))
                 return false;
             
-            if (o.attributes == null && attributes == null)
+            if (o.attrs == null && attrs == null)
                 return true;
 
-            return o.attributeIndex == attributeIndex;
+            return o.attrs == attrs;
         }
 
         public override XmlNameTable NameTable
@@ -189,8 +170,8 @@ namespace WebDriver
         {
             get
             {
-                if (attributes != null)
-                    return XPathNodeType.Attribute;
+                if (attrs != null)
+                    return attrs.NodeType;
                 
                 switch (currentNode.nodeType)
                 {
@@ -221,11 +202,8 @@ namespace WebDriver
         {
             get
             {
-                if (attributes != null)
-                {
-                    string name = ((IHTMLDOMAttribute)attributes.Current).nodeName;
-                    return name;
-                }
+                if (attrs != null)
+                    return attrs.NodeName;
                 return currentNode.nodeName.ToLower();
             }
         }
@@ -262,11 +240,8 @@ namespace WebDriver
         {
             get
             {
-                if (attributes != null)
-                {
-                    string value = (string) ((IHTMLDOMAttribute)attributes.Current).nodeValue;
-                    return value;
-                }
+                if (attrs != null)
+                    return attrs.NodeValue;
                 
                 if (currentNode is IHTMLTitleElement)
                     return document.title;
@@ -279,9 +254,15 @@ namespace WebDriver
             }
         }
 
-        public IHTMLDOMNode CurrentNode
+        private IHTMLDOMNode CurrentNode
         {
             get { return currentNode; }
+        }
+
+
+        public override object UnderlyingObject
+        {
+            get { return CurrentNode; }
         }
     }
 }
