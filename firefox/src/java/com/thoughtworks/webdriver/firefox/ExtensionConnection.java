@@ -10,11 +10,8 @@ import java.net.SocketAddress;
 
 class ExtensionConnection {
 	private Socket socket;
-
 	private final SocketAddress address;
-
 	private PrintWriter out;
-
 	private BufferedReader in;
 
 	public ExtensionConnection(String host, int port) {
