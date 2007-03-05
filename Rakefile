@@ -6,18 +6,19 @@ require 'rake/rdoctask'
 
 task :default => [:test]
 
-task :build => [:common, :htmlunit]
+task :build => [:common, :htmlunit, :firefox]
 
 task :clean do
   rm_rf 'common/build'
   rm_rf 'htmlunit/build'
   rm_rf 'jobbie/build'
+  rm_rf 'firefox/build'
 end
 
-task :test => [:test_htmlunit] do 
+task :test => [:test_htmlunit, :test_firefox] do 
 end
 
-%w(common htmlunit jobbie).each do |driver|
+%w(common htmlunit jobbie firefox).each do |driver|
   source = FileList["#{driver}/src/java/**/*.java"]
   libs = ["#{driver}/lib/runtime/*.jar", "#{driver}/lib/buildtime/*.jar", "common/build/webdriver-common.jar"]
   deps = Array.new
@@ -136,11 +137,11 @@ def junit(args)
   test_string += '-Djava.library.path=' + args[:native_path].join(File::PATH_SEPARATOR) + ' ' unless args[:native_path].nil?
   test_string += 'junit.textui.TestRunner'
   tests.each do |test|
+    puts "Looking at #{test}\n"
     name = test.sub("#{source_dir}/", '').gsub('/', '.')
     test_string += " #{name[0, name.size - 5]}"
+    result = sh test_string, :verbose => false
   end
-  
-  result = sh test_string, :verbose => false
 end
 
 def csc(args)
