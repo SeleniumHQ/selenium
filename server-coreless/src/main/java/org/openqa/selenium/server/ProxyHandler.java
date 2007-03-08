@@ -25,10 +25,7 @@ import org.mortbay.util.URI;
 
 import java.io.*;
 import java.net.*;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /* ------------------------------------------------------------ */
 
@@ -50,7 +47,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     protected int _tunnelTimeoutMs = 250;
     private boolean _anonymous = false;
     private transient boolean _chained = false;
-    private HashMap<InetAddrPort,SslRelay> _sslMap = new HashMap<InetAddrPort, SslRelay>();
+    private Map<InetAddrPort,SslRelay> _sslMap = new LinkedHashMap<InetAddrPort, SslRelay>();
 
     /* ------------------------------------------------------------ */
     /**
@@ -444,7 +441,13 @@ public class ProxyHandler extends AbstractHttpHandler {
                     // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
                     // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
                     File keystore = File.createTempFile("selenium-rc-" + addrPort.getHost() + "-" + addrPort.getPort(), "keystore");
-                    URL url = new URL("http://dangerous-certificate-authority.openqa.org/genkey.jsp?domain=" + addrPort.getHost());
+                    String urlString = "http://dangerous-certificate-authority.openqa.org/genkey.jsp?nothing=true";
+                    List<InetAddrPort> addresses = new ArrayList<InetAddrPort>(_sslMap.keySet());
+                    addresses.add(addrPort);
+                    for (InetAddrPort addr : addresses) {
+                        urlString += "&domain=" + addr.getHost();
+                    }
+                    URL url = new URL(urlString);
                     URLConnection conn = url.openConnection();
                     conn.connect();
                     InputStream is = conn.getInputStream();
