@@ -22,7 +22,9 @@ public class FirefoxDriver implements WebDriver {
 
 		if (!extension.isConnected()) {
 			throw new RuntimeException(
-					"Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?\nTo set up a profile for WebDriver, simply start firefox from the command line with the \"profileManager\" switch\nThis will look like: firefox -profileManager");
+					"Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?\n" +
+                            "To set up a profile for WebDriver, simply start firefox from the command line with the \"profileManager\" switch\n" +
+                            "This will look like: firefox -profileManager");
 		}
 	}
 
@@ -33,22 +35,18 @@ public class FirefoxDriver implements WebDriver {
 
 	public void dumpBody() {
 		// TODO Auto-generated method stub
-
 	}
 
 	public void get(String url) {
-		// TODO Auto-generated method stub
-
+		extension.sendMessageAndWaitForResponse("get", url);
 	}
 
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return extension.sendMessageAndWaitForResponse("title", null);
 	}
 
 	public boolean getVisible() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public WebElement selectElement(String selector) {
@@ -62,13 +60,11 @@ public class FirefoxDriver implements WebDriver {
 	}
 
 	public String selectText(String xpath) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        return extension.sendMessageAndWaitForResponse("selectText", xpath);
+    }
 
 	public void setVisible(boolean visible) {
-		// TODO Auto-generated method stub
-
+        // no-op
 	}
 
 	private String locateFirefoxBinary() {
@@ -125,8 +121,6 @@ public class FirefoxDriver implements WebDriver {
 				}
 			}
 		}
-		if (!extension.isConnected())
-			return false;
-		return true;
-	}
+        return extension.isConnected();
+    }
 }

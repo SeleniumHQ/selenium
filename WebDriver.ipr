@@ -795,6 +795,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/firefox/firefox.iml" filepath="$PROJECT_DIR$/firefox/firefox.iml" />
       <module fileurl="file://$PROJECT_DIR$/htmlunit/htmlunit.iml" filepath="$PROJECT_DIR$/htmlunit/htmlunit.iml" />
       <module fileurl="file://$PROJECT_DIR$/jobbie/jobbie.iml" filepath="$PROJECT_DIR$/jobbie/jobbie.iml" />
     </modules>
@@ -827,6 +828,7 @@
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/junit-3.8.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jasper-runtime.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jasper-compiler.jar!/" />
+        <root url="jar://$PROJECT_DIR$/common/lib/buildtime/commons-logging.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

@@ -2,5 +2,7 @@
 <overlay id="fxdriver-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="utils.js" />
   <script src="socketListener.js" />
-  <script src="server.js" />
+  <script src="firefoxDriver.js" />
+  <script src="webLoadingListener.js" />
+    <script src="server.js" />
  </overlay>
