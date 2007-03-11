@@ -15,7 +15,7 @@ WebDriverServer.prototype.onSocketAccepted = function(socket, transport)
         this.outstream = transport.openOutputStream(0, 0, 0);
         this.stream = transport.openInputStream(0, 0, 0);
         this.instream = Utils.newInstance("@mozilla.org/scriptableinputstream;1", "nsIScriptableInputStream");
-    	this.instream.init(this.stream);
+        this.instream.init(this.stream);
 
         var socketListener = new SocketListener(this.instream, new FirefoxDriver(this));
         var pump = Utils.newInstance("@mozilla.org/network/input-stream-pump;1", "nsIInputStreamPump");
@@ -38,8 +38,16 @@ WebDriverServer.prototype.close = function()
 };
 
 WebDriverServer.prototype.respond = function(method, response) {
-    var length = response.split("\n").length;
-    var output = method + " " + length + "\n" + response + "\n";
+    var output = method + " ";
+
+    if (response == undefined) {
+        output += "0\n";
+    } else {
+        var length = response["split"] ? response.split("\n").length : 1;
+        output += length + "\n" + response + "\n";
+    }
+
+//    dump("Response: " + output);
     this.outstream.write(output, output.length);
     this.outstream.flush();
 };

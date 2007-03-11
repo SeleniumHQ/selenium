@@ -29,10 +29,7 @@ WebLoadingListener.prototype.onSecurityChange = function(webProgress, request, s
 
 WebLoadingListener.prototype.onStateChange = function(webProgress, request, stateFlags, aStatus)
 {
-    if (stateFlags & Components.interfaces.nsIWebProgressListener.STATE_STOP && stateFlags & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)
-    {
-        this.toCall(request);
-    }
+    this.toCall(request, stateFlags);
 };
 
 WebLoadingListener.prototype.onStatusChange = function(webProgress, request, status, message)

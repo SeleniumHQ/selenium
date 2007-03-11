@@ -3,6 +3,7 @@
   <script src="utils.js" />
   <script src="socketListener.js" />
   <script src="firefoxDriver.js" />
+  <script src="wrappedElement.js" />
   <script src="webLoadingListener.js" />
-    <script src="server.js" />
+  <script src="server.js" />
  </overlay>

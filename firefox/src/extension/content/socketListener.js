@@ -32,7 +32,8 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
                 this.linesLeft += incoming[i];
             } else {
                 this.step++;
-                this.linesLeft = this.linesLeft - 0;  // Convert it to a number
+                this.linesLeft = this.linesLeft - 0;
+                // Convert it to a number
 
                 if (this.linesLeft == 0) {
                     this.executeCommand();
@@ -53,7 +54,13 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
 
 SocketListener.prototype.executeCommand = function() {
     if (this.driver[this.command]) {
-        this.driver[this.command](this.data);
+        try {
+            this.driver[this.command](this.data);
+        } catch (e) {
+            dump(e + "\n");
+            dump(this.command + "(" + this.data + ")\n");
+            this.driver.server.respond(this.command);
+        }
     } else {
         dump("Unrecognised command: " + this.command + "\n");
     }

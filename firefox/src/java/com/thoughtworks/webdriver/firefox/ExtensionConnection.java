@@ -72,7 +72,8 @@ class ExtensionConnection {
 		String line = in.readLine();
 
         int spaceIndex = line.indexOf(' ');
-		String methodName = line.substring(0, spaceIndex);
+//        System.out.println("Line: " + line);
+        String methodName = line.substring(0, spaceIndex);
 		String remainingResponse = line.substring(spaceIndex + 1);
 		long count = Long.parseLong(remainingResponse);
 
