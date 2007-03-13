@@ -47,7 +47,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     protected int _tunnelTimeoutMs = 250;
     private boolean _anonymous = false;
     private transient boolean _chained = false;
-    private Map<InetAddrPort,SslRelay> _sslMap = new LinkedHashMap<InetAddrPort, SslRelay>();
+    private final Map<InetAddrPort,SslRelay> _sslMap = new LinkedHashMap<InetAddrPort, SslRelay>();
 
     /* ------------------------------------------------------------ */
     /**
@@ -432,48 +432,52 @@ public class ProxyHandler extends AbstractHttpHandler {
 
                 HttpServer server = http_connection.getHttpServer();
 
-                SslRelay listener = _sslMap.get(addrPort);
-                if (listener==null)
-                {
-                    listener = new SslRelay(addrPort);
-
-                    // grab a keystore that has been signed by a CA cert that has already been imported in to the browser
-                    // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
-                    // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
-                    File keystore = File.createTempFile("selenium-rc-" + addrPort.getHost() + "-" + addrPort.getPort(), "keystore");
-                    String urlString = "http://dangerous-certificate-authority.openqa.org/genkey.jsp?nothing=true";
-                    List<InetAddrPort> addresses = new ArrayList<InetAddrPort>(_sslMap.keySet());
-                    addresses.add(addrPort);
-                    for (InetAddrPort addr : addresses) {
-                        urlString += "&domain=" + addr.getHost();
-                    }
-                    URL url = new URL(urlString);
-                    URLConnection conn = url.openConnection();
-                    conn.connect();
-                    InputStream is = conn.getInputStream();
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    FileOutputStream fos = new FileOutputStream(keystore);
-                    while ((length = is.read(buffer)) != -1) {
-                        fos.write(buffer, 0, length);
-                    }
-                    fos.close();
-                    is.close();
-
-                    listener.setKeystore(keystore.getAbsolutePath());
-                    listener.setPassword("password");
-                    listener.setKeyPassword("password");
-                    server.addListener(listener);
-                    try
+                SslRelay listener;
+                synchronized(_sslMap) {
+                    listener = _sslMap.get(addrPort);
+                    if (listener==null)
                     {
-                        listener.start();
+                        listener = new SslRelay(addrPort);
+
+                        // grab a keystore that has been signed by a CA cert that has already been imported in to the browser
+                        // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
+                        // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
+                        File keystore = File.createTempFile("selenium-rc-" + addrPort.getHost() + "-" + addrPort.getPort(), "keystore");
+                        String urlString = "http://dangerous-certificate-authority.openqa.org/genkey.jsp?nothing=true";
+                        List<InetAddrPort> addresses = new ArrayList<InetAddrPort>(_sslMap.keySet());
+                        addresses.add(addrPort);
+                        for (InetAddrPort addr : addresses) {
+                            urlString += "&domain=" + addr.getHost();
+                        }
+                        System.out.println(urlString);
+                        URL url = new URL(urlString);
+                        URLConnection conn = url.openConnection();
+                        conn.connect();
+                        InputStream is = conn.getInputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        FileOutputStream fos = new FileOutputStream(keystore);
+                        while ((length = is.read(buffer)) != -1) {
+                            fos.write(buffer, 0, length);
+                        }
+                        fos.close();
+                        is.close();
+
+                        listener.setKeystore(keystore.getAbsolutePath());
+                        listener.setPassword("password");
+                        listener.setKeyPassword("password");
+                        server.addListener(listener);
+                        try
+                        {
+                            listener.start();
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                            throw e;
+                        }
+                        _sslMap.put(addrPort,listener);
                     }
-                    catch(Exception e)
-                    {
-                        e.printStackTrace();
-                        throw e;
-                    }
-                    _sslMap.put(addrPort,listener);
                 }
 
                 int port = listener.getPort();
