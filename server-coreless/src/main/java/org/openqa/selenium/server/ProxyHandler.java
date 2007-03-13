@@ -239,7 +239,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             proxyPlainTextRequest(url, pathInContext, pathParams, request, response);
         }
         catch (Exception e) {
-            log.warn(e.toString());
+            log.warn("Could not proxy " + uri, e);
             LogSupport.ignore(log, e);
             if (!response.isCommitted())
                 response.sendError(HttpResponse.__400_Bad_Request);
@@ -443,8 +443,8 @@ public class ProxyHandler extends AbstractHttpHandler {
                         // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
                         // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
                         File keystore = File.createTempFile("selenium-rc-" + addrPort.getHost() + "-" + addrPort.getPort(), "keystore");
-                        String urlString = "http://dangerous-certificate-authority.openqa.org/genkey.jsp?nothing=true";
-                        List<InetAddrPort> addresses = new ArrayList<InetAddrPort>(_sslMap.keySet());
+                        String urlString = "http://dangerous-certificate-authority.openqa.org/genkey.jsp?padding=" + _sslMap.size();
+                        List<InetAddrPort> addresses = new ArrayList<InetAddrPort>();
                         addresses.add(addrPort);
                         for (InetAddrPort addr : addresses) {
                             urlString += "&domain=" + addr.getHost();
@@ -464,6 +464,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                         is.close();
 
                         listener.setKeystore(keystore.getAbsolutePath());
+                        //listener.setKeystore("c:\\" + (_sslMap.size() + 1) + ".keystore");
                         listener.setPassword("password");
                         listener.setKeyPassword("password");
                         server.addListener(listener);
