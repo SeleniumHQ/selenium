@@ -14,12 +14,11 @@
 # limitations under the License.
 
 use Test::WWW::Selenium;
-
-use lib 't/lib';
-use SeleniumUtil qw(server_is_running);
+use WWW::Selenium::Util qw(server_is_running);
 use Test::More;
 
-if (server_is_running) {
+my ($host, $port) = server_is_running();
+if ($host and $port) {
     plan tests => 3;
 }
 else {
@@ -27,11 +26,12 @@ else {
     exit 0;
 }
 
-my $sel = Test::WWW::Selenium->new( host => "localhost", 
-                                      port => 4444, 
-                                      browser => "*firefox", 
-                                      browser_url => "http://www.irian.at",
-                                    );
+my $sel = Test::WWW::Selenium->new(
+    host        => $host,
+    port        => $port,
+    browser     => "*firefox",
+    browser_url => "http://www.irian.at",
+);
 my $input_id = 'ac4';
 my $update_id = 'ac4update';
 $sel->open_ok("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");

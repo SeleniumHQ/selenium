@@ -1,9 +1,9 @@
 use Test::WWW::Selenium;
-
-use lib 't/lib';
-use SeleniumUtil qw(server_is_running);
+use WWW::Selenium::Util qw(server_is_running);
 use Test::More;
-if (server_is_running) {
+
+my ($host, $port) = server_is_running();
+if ($host and $port) {
     plan tests => 10;
 }
 else {
@@ -12,11 +12,12 @@ else {
 }
 
 
-$sel = Test::WWW::Selenium->new( host => "localhost", 
-                                      port => 4444, 
-                                      browser => "*firefox", 
-                                      browser_url => "http://localhost:4444",
-                                    );
+$sel = Test::WWW::Selenium->new(
+    host        => $host,
+    port        => $port,
+    browser     => "*firefox",
+    browser_url => "http://$host:$port",
+);
 $sel->open("/selenium-server/tests/html/test_i18n.html");
 
 $romance = "\x{00FC}\x{00F6}\x{00E4}\x{00DC}\x{00D6}\x{00C4} \x{00E7}\x{00E8}\x{00E9} \x{00BF}\x{00F1} \x{00E8}\x{00E0}\x{00F9}\x{00F2}";

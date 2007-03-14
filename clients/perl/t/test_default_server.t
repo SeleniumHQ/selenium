@@ -14,11 +14,11 @@
 # limitations under the License.
 
 use Test::WWW::Selenium;
-
-use lib 't/lib';
-use SeleniumUtil qw(server_is_running);
+use WWW::Selenium::Util qw(server_is_running);
 use Test::More;
-if (server_is_running) {
+
+my ($host, $port) = server_is_running();
+if ($host and $port) {
     plan tests => 6;
 }
 else {
@@ -27,11 +27,12 @@ else {
 }
 
 
-my $sel = Test::WWW::Selenium->new( host => "localhost", 
-                                      port => 4444, 
-                                      browser => "*firefox", 
-                                      browser_url => "http://localhost:4444",
-                                    );
+my $sel = Test::WWW::Selenium->new(
+    host        => $host,
+    port        => $port,
+    browser     => "*firefox",
+    browser_url => "http://$host:$port",
+);
 $sel->open_ok("/selenium-server/tests/html/test_click_page1.html");
 $sel->text_like("link", qr/Click here for next page/, "link contains expected text");
 @links = $sel->get_all_links();

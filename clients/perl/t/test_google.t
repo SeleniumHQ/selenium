@@ -1,9 +1,9 @@
 use Test::WWW::Selenium;
-
-use lib 't/lib';
-use SeleniumUtil qw(server_is_running);
+use WWW::Selenium::Util qw(server_is_running);
 use Test::More;
-if (server_is_running) {
+
+my ($host, $port) = server_is_running();
+if ($host and $port) {
     plan tests => 1;
 }
 else {
@@ -12,11 +12,12 @@ else {
 }
 
 
-my $sel = Test::WWW::Selenium->new( host => "localhost", 
-                                      port => 4444, 
-                                      browser => "*firefox", 
-                                      browser_url => "http://www.google.com/webhp",
-                                    );
+my $sel = Test::WWW::Selenium->new(
+    host        => $host,
+    port        => $port,
+    browser     => "*firefox",
+    browser_url => "http://www.google.com/webhp",
+);
 $sel->open("http://www.google.com/webhp");
 $sel->type("q", "hello world");
 $sel->click("btnG");
