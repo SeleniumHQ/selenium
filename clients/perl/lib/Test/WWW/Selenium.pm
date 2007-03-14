@@ -4,7 +4,7 @@ use strict;
 use base qw(WWW::Selenium);
 use Carp qw(croak);
 
-our $VERSION = '1.11';
+our $VERSION = '1.12';
 
 =head1 NAME
 

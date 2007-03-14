@@ -14,6 +14,7 @@ inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Test/WWW/Selenium.pm
 lib/WWW/Selenium.pm
+lib/WWW/Selenium/Util.pm
 Makefile.PL
 t/01_load.t
 t/z0_pod.t

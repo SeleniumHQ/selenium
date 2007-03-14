@@ -1,6 +1,7 @@
 Revision history for Perl extension Test::WWW::Selenium.
 
-1.12 -
+1.12 - Tue Mar 13 20:26:10 PDT 2007
+ - move unit test utility to WWW::Selenium::Util
  - refactor unit tests to use Test::Mock::LWP
  - fix bug in get_boolean_array - thanks to Ilya Averyanov
 
