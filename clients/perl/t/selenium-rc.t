@@ -77,6 +77,7 @@ Failing_command: {
     $sel->open;
     $Mock_resp->mock( content => sub { 'Error: foo' } );
     throws_ok { $sel->get_title } qr#Error: foo#;
+    $Mock_resp->mock( content => sub { 'OK' } );
 }
  
 Multi_values: {
