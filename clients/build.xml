@@ -264,7 +264,7 @@
         </copy>
     </target>
     
-    <target name="dist-java" depends="dist-dirs, find-server, find-server-coreless, find-java-client">
+    <target name="dist-java" depends="dist-dirs, find-server-standalone, find-server-coreless, find-java-client">
         <mkdir dir="dist-image/server" />
         <mkdir dir="dist-image/server/source" />
         <mkdir dir="dist-image/server/doc" />
