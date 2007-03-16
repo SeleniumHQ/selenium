@@ -177,6 +177,16 @@
         <find-maven-jar groupId="org.openqa.selenium.server" artifactId="selenium-server" />
     </target>
     
+    <target name="find-server-standalone" depends="find-server" unless="${selenium-server-standalone.jar}">
+        <dirname property="selenium-server.dirname" file="${selenium-server.jar}" />
+        <basename property="selenium-server.basename" file="${selenium-server.jar}" suffix="jar" />
+        <property name="selenium-server-standalone.jar" location="${selenium-server.dirname}/${selenium-server.basename}-standalone.jar" />
+        <condition property="build.failed">
+            <not><available file="${selenium-server-standalone.jar}" /></not>
+        </condition>
+        <fail if="build.failed" message="Couldn't find ${selenium-server-standalone.jar}" />
+    </target>
+    
     <target name="find-server-coreless" depends="maven-tasks" unless="${selenium-server-coreless.jar}">
         <find-maven-jar groupId="org.openqa.selenium.server" artifactId="selenium-server-coreless" />
     </target>
@@ -185,23 +195,23 @@
         <find-maven-jar groupId="org.openqa.selenium.client-drivers" artifactId="selenium-java-client-driver" />
     </target>
     
-    <target name="start-server" depends="find-server">
+    <target name="start-server" depends="find-server-standalone">
         <!-- Configurable server default firefox location; if this doesn't work, we'll just try to run it off the path -->
         <echo message="starting server...."/>
         <echo message="firefox.location = ${firefox.location}"/>
         <echo message="opera.location = ${opera.location}"/>
-        <java jar="${selenium-server.jar}" fork="true" spawn="true">
+        <java jar="${selenium-server-standalone.jar}" fork="true" spawn="true">
             <sysproperty key="firefoxDefaultPath" file="${firefox.location}" />
             <sysproperty key="operaDefaultPath" file="${opera.location}" />
         </java>
-        <echo message="Starting: ${selenium-server.jar}" />
+        <echo message="Starting: ${selenium-server-standalone.jar}" />
         <sleep seconds="2"/>
     </target>
     
-    <target name="extract-xml" depends="find-server">
+    <target name="extract-xml" depends="find-server-standalone">
         <property name="output.path" location="${basedir}" />
-        <whichresource resource="/core/iedoc.xml" property="iedoc.url" classpath="${selenium-server.jar}"/>
-        <fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${selenium-server.jar}" />
+        <whichresource resource="/core/iedoc.xml" property="iedoc.url" classpath="${selenium-server-standalone.jar}"/>
+        <fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${selenium-server-standalone.jar}" />
         <!--<echo message="iedoc.url = ${iedoc.url}" />-->
         <get src="${iedoc.url}" dest="${output.path}/iedoc.xml" />
         <property name="iedoc.xml" location="${output.path}/iedoc.xml" />
@@ -258,7 +268,7 @@
         <mkdir dir="dist-image/server" />
         <mkdir dir="dist-image/server/source" />
         <mkdir dir="dist-image/server/doc" />
-        <copy file="${selenium-server.jar}" tofile="dist-image/server/selenium-server.jar" />
+        <copy file="${selenium-server-standalone.jar}" tofile="dist-image/server/selenium-server.jar" />
         <copy file="${selenium-server-coreless.jar}/../selenium-server-coreless-${version}-tests.jar"
             tofile="dist-image/server/selenium-server-tests.jar" />
         <unzip src="${selenium-server-coreless.jar}/../selenium-server-coreless-${version}-sources.jar" dest="dist-image/server/source/main" />
@@ -273,7 +283,7 @@
         <unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-javadoc.jar" dest="dist-image/java/doc" />
         <unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-sources.jar" dest="dist-image/java/source/main" />
         <unzip src="${selenium-java-client-driver.jar}/../selenium-java-client-driver-${version}-test-sources.jar" dest="dist-image/java/source/test" />
-        <copy file="${selenium-server.jar}" tofile="dist-image/java/source/test/selenium-server.jar" />
+        <copy file="${selenium-server-standalone.jar}" tofile="dist-image/java/source/test/selenium-server.jar" />
         <copy file="java/easymode/main.project" tofile="dist-image/java/source/main/.project" />
         <copy file="java/easymode/main.classpath" tofile="dist-image/java/source/main/.classpath" />
         <copy file="java/easymode/test.project" tofile="dist-image/java/source/test/.project" />
