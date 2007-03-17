@@ -273,7 +273,7 @@ public class LauncherUtils {
 
 		// Disable cache
 		out.println("user_pref('browser.cache.disk.enable', false);");
-		out.println("user_pref('browser.cache.memory.enable', false);");
+		out.println("user_pref('browser.cache.memory.enable', true);");
 
 		// Disable "do you want to remember this password?"
 		out.println("user_pref('signon.rememberSignons', false);");
