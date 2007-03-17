@@ -237,8 +237,8 @@ function TestCase(title) {
 	this.log = new Log("TestCase");
     this.title = title;
 	this.formatLocalMap = {};
-	this.setCommands([]);
-	this.modified = false;
+    this.commands = [];
+    this.recordModifiedInCommands();
 
 	var testCase = this;
 
@@ -291,8 +291,19 @@ TestCase.prototype.formatLocal = function(formatName) {
 	return scope;
 }
 
+// For backwards compatibility
 TestCase.prototype.setCommands = function(commands) {
+    this.commands = commands;
+    this.recordModifiedInCommands();
+}
+
+TestCase.prototype.recordModifiedInCommands = function() {
+    if (this.commands.recordModified) {
+        return;
+    }
+    this.commands.recordModified = true;
 	var self = this;
+    var commands = this.commands;
 
 	var _push = commands.push;
 	commands.push = function(command) {
@@ -317,9 +328,6 @@ TestCase.prototype.setCommands = function(commands) {
 		self.setModified();
 		return command;
 	}
-
-	this.commands = commands;
-	this.setModified();
 }
 
 TestCase.prototype.clear = function() {
