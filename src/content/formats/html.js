@@ -105,7 +105,7 @@ function parse(testCase, source) {
 			if (docResult[2]) { // command
 				var command = new Command();
 				command.skip = docResult.index - lastIndex;
-				command.index = lastIndex;
+				command.index = docResult.index;
 				var result = commandRegexp.exec(doc.substring(lastIndex));
 				eval(options.commandLoadScript);
 				convertText(command, decodeText);
