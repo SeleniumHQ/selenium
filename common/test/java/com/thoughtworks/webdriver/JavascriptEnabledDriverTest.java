@@ -39,13 +39,23 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     }
 
     public void testDocumentShouldReflectLatestDom() throws Exception {
-    	driver.get(xhtmlTestPage);
-    	String currentText = driver.selectText("//div[@id='dynamo']");
+        System.out.println("Getting");
+        driver.get(xhtmlTestPage);
+        System.out.println("Selecting");
+        String currentText = driver.selectText("//div[@id='dynamo']");
     	assertEquals("What's for dinner?", currentText);
-        driver.selectElement("link=Update a div").click();
-        
+
+        System.out.println("Selecting with link");
+        WebElement webElement = driver.selectElement("link=Update a div");
+
+        System.out.println("Clicking");
+        webElement.click();
+
+        System.out.println("Selecting again");
         String newText = driver.selectText("//div[@id='dynamo']");
         assertEquals("Fish and chips!", newText);
+
+        System.out.println("Done");
     }
     
 	public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
@@ -103,4 +113,23 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 		// filled, we're a letter short here
 		assertEquals("I like chees", result.getText());
 	}
+
+    public void testCollapsingTwoTestsTogether() throws Exception {
+        driver.get(xhtmlTestPage);
+
+        assertEquals("XHTML Test Page", driver.getTitle());
+        driver.selectElement("link=Change the page title!").click();
+        assertEquals("Changed", driver.getTitle());
+
+        String titleViaXPath = driver.selectText("/html/head/title");
+        assertEquals("Changed", titleViaXPath);
+
+    	driver.get(xhtmlTestPage);
+    	String currentText = driver.selectText("//div[@id='dynamo']");
+    	assertEquals("What's for dinner?", currentText);
+        driver.selectElement("link=Update a div").click();
+
+        String newText = driver.selectText("//div[@id='dynamo']");
+        assertEquals("Fish and chips!", newText);
+    }
 }

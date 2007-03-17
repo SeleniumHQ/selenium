@@ -1,38 +1,14 @@
-function WebLoadingListener(toCall)
-{
-    this.toCall = toCall;
-    var docLoaderService = Utils.getService("@mozilla.org/docloaderservice;1", "nsIWebProgress");
-    docLoaderService.addProgressListener(this, Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
+function WebLoadingListener(toCall) {
+    var listener = this;
+
+    this.func = function(event) {
+        document.getElementById("appcontent").removeEventListener("DOMContentLoaded", listener.func, true);
+        toCall(event);
+    }
+
+    document.getElementById("appcontent").addEventListener("DOMContentLoaded", this.func, true);
 }
 
-WebLoadingListener.prototype.QueryInterface = function(aIID)
-{
-    if (aIID.equals(Components.interfaces.nsIWebProgressListener) || aIID.equals(Components.interfaces.nsISupportsWeakReference) || aIID.equals(Components.interfaces.nsISupports))
-        return this;
-    throw Components.results.NS_NOINTERFACE;
+WebLoadingListener.removeListener = function(listener) {
+    document.getElementById("appcontent").removeEventListener("DOMContentLoaded", listener.func, true);
 }
-
-WebLoadingListener.prototype.onLocationChange = function(webProgress, request, location)
-{
-    return 0;
-};
-
-WebLoadingListener.prototype.onProgressChange = function(webProgress, request, curSelfProgress, maxSelfProgress, curTotalProgress, maxTotalProgress)
-{
-    return 0;
-};
-
-WebLoadingListener.prototype.onSecurityChange = function(webProgress, request, state)
-{
-    return 0;
-};
-
-WebLoadingListener.prototype.onStateChange = function(webProgress, request, stateFlags, aStatus)
-{
-    this.toCall(request, stateFlags);
-};
-
-WebLoadingListener.prototype.onStatusChange = function(webProgress, request, status, message)
-{
-    return 0;
-};

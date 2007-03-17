@@ -21,8 +21,8 @@ WebDriverServer.prototype.onSocketAccepted = function(socket, transport)
         var pump = Utils.newInstance("@mozilla.org/network/input-stream-pump;1", "nsIInputStreamPump");
         pump.init(this.stream, -1, -1, 0, 0, false);
         pump.asyncRead(socketListener, null);
-    } catch(ex2) {
-        dump("::" + ex2);
+    } catch(e) {
+        dump(e);
     }
 };
 

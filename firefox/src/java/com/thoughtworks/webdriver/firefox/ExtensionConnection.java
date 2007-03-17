@@ -38,7 +38,7 @@ class ExtensionConnection {
         if (argument != null)
             message.append(argument).append("\n");
 
-		out.print(message.toString());
+        out.print(message.toString());
         out.flush();
 
         return waitForResponseFor(methodName);
@@ -62,17 +62,18 @@ class ExtensionConnection {
 
 	private String readLoop(String command) throws IOException {
 		while (true) {
-			String[] response = nextResponse(); 
-			if (command.equals(response[0]))
+			String[] response = nextResponse();
+
+            if (command.equals(response[0]))
 				return response[1];
-		}
+            throw new RuntimeException("Expected response to " + command + " but actually got: " + response[0] + " (" + response[1] + ")");
+        }
 	}
 
 	private String[] nextResponse() throws IOException {
-		String line = in.readLine();
+        String line = in.readLine();
 
         int spaceIndex = line.indexOf(' ');
-//        System.out.println("Line: " + line);
         String methodName = line.substring(0, spaceIndex);
 		String remainingResponse = line.substring(spaceIndex + 1);
 		long count = Long.parseLong(remainingResponse);

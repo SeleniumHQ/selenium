@@ -9,13 +9,9 @@ FirefoxDriver.prototype.click = function(position) {
 
     // Attach a listener so that we can wait until any page load this causes to complete
     var server = this.server;
-    var clickListener = new WebLoadingListener(function(request, stateFlags) {
-        if (stateFlags & Components.interfaces.nsIWebProgressListener.STATE_STOP) {
-            Utils.getBrowser().removeProgressListener(this);
-            server.respond("click");
-        }
+    var clickListener = new WebLoadingListener(function(event) {
+        server.respond("click");
     });
-    Utils.getBrowser().addProgressListener(clickListener)
 
     // Now do the click
     try {
@@ -35,9 +31,9 @@ FirefoxDriver.prototype.click = function(position) {
         // doesn't happen. The other race condition is that we make this check before the load has begun. With all the javascript out there,
         // this might actually be a bit of a problem.
         //    if (!this.getBrowser().webProgress.isLoadingDocument) {
-        var docLoaderService = Utils.getService("@mozilla.org/docloaderservice;1", "nsIWebProgress");
+        var docLoaderService = Utils.getBrowser().webProgress
         if (!docLoaderService.isLoadingDocument) {
-            Utils.getBrowser().removeProgressListener(clickListener);
+            WebLoadingListener.removeListener(clickListener);
             server.respond("click");
         }
     }

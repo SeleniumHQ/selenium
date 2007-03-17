@@ -43,7 +43,7 @@ public interface WebElement {
 	 * to change, then this method will block until the new page is loaded.
 	 * 
 	 * @throws NoSuchElementException
-	 *             If the given element is not within a form
+	 *             If the given element is not within a form    
 	 */
 	void submit();
 
