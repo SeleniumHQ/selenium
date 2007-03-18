@@ -58,12 +58,19 @@ Utils.getElementAt = function(index) {
 };
 
 Utils.type = function(element, text) {
-    element.setAttribute("value", "");
+    var isTextField = Utils.isTextField(element);
+
+    var value = "";
+    if (isTextField)
+        element.setAttribute("value", value);
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i);
+        value += character;
 
         Utils.keyDownOrUp(element, true, character);
         Utils.keyPress(element, character);
+        if (isTextField)
+            element.setAttribute("value", value);
         Utils.keyDownOrUp(element, false, character);
     }
 };
@@ -82,3 +89,34 @@ Utils.keyDownOrUp = function(element, down, text) {
     event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser().contentWindow, 0, 0, 0, 0, keyCode, 0);
     element.dispatchEvent(event);
 };
+
+Utils.isTextField = function(element) {
+    var name = element.tagName.toLowerCase();
+    if (name == "textfield")
+        return true;
+    if (name == "input")
+        return element.type == "text" || element.type == "password";
+    return false;
+}
+
+Utils.findForm = function(element) {
+    // Are we already on an element that can be used to submit the form?
+    try {
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLButtonElement);
+        return element;
+    } catch(e) {}
+
+    try {
+        var input = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
+        if (input.type == "image" || input.type == "button")
+            return input;
+    } catch(e) {}
+
+    var form = element;
+    while (form) {
+        if (form["submit"])
+            return form;
+        form = form.parentNode;
+    }
+    return undefined;
+}

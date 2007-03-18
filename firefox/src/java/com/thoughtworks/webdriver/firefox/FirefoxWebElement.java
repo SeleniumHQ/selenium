@@ -18,6 +18,7 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public void submit() {
+        extension.sendMessageAndWaitForResponse("submitElement", elementId);
     }
 
     public String getValue() {

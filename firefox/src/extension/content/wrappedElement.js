@@ -70,3 +70,21 @@ FirefoxDriver.prototype.getElementAttribute = function(value) {
 
     this.server.respond("getElementAttribute", element.getAttribute(attributeName));
 }
+
+FirefoxDriver.prototype.submitElement = function(elementId) {
+    var element = Utils.getElementAt(elementId);
+
+    var submitElement = Utils.findForm(element);
+    if (submitElement) {
+        var server = this.server;
+        new WebLoadingListener(function(event) {
+            server.respond("submitElement");
+        });
+        if (submitElement["submit"])
+            submitElement.submit();
+        else
+            submitElement.click();
+    } else {
+        server.respond("submitElement");
+    }
+}
