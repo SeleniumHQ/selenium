@@ -87,10 +87,10 @@ FirefoxDriver.prototype.getElementAttribute = function(value) {
     if (attributeName == "disabled") {
         this.server.respond("getElementAttribute", element.disabled);
         return;
-    } else if (attributeName == "checked") {
+    } else if (attributeName == "checked" && element.tagName.toLowerCase() == "input") {
         this.server.respond("getElementAttribute", element.checked);
         return;
-    } else if (attributeName == "selected") {
+    } else if (attributeName == "selected" && element.tagName.toLowerCase() == "option") {
         this.server.respond("getElementAttribute", element.selected);
         return;
     }
@@ -149,18 +149,21 @@ FirefoxDriver.prototype.getElementSelected = function(elementId) {
 
 FirefoxDriver.prototype.setElementSelected = function(elementId) {
     var element = Utils.getElementAt(elementId);
+    var wasSet = false;
 
     try {
         var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement)
         option.selected = true;
+        wasSet = true;
     } catch(e) {}
 
     try {
         var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
         if (checkbox.type == "checkbox") {
-            checkbox.checked = true;;
+            checkbox.checked = true;
+            wasSet = true;
         }
     } catch(e) {}
 
-    this.server.respond("setElementSelected");
+    this.server.respond("setElementSelected", wasSet);
 }

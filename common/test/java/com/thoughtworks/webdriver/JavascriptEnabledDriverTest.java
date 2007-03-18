@@ -39,23 +39,15 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     }
 
     public void testDocumentShouldReflectLatestDom() throws Exception {
-        System.out.println("Getting");
         driver.get(xhtmlTestPage);
-        System.out.println("Selecting");
         String currentText = driver.selectText("//div[@id='dynamo']");
     	assertEquals("What's for dinner?", currentText);
 
-        System.out.println("Selecting with link");
         WebElement webElement = driver.selectElement("link=Update a div");
-
-        System.out.println("Clicking");
         webElement.click();
 
-        System.out.println("Selecting again");
         String newText = driver.selectText("//div[@id='dynamo']");
         assertEquals("Fish and chips!", newText);
-
-        System.out.println("Done");
     }
     
 	public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {

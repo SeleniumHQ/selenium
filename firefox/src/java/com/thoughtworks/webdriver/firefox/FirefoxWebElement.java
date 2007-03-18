@@ -45,7 +45,10 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public void setSelected() {
-        extension.sendMessageAndWaitForResponse("setElementSelected", elementId);
+        String response = extension.sendMessageAndWaitForResponse("setElementSelected", elementId);
+        if (!Boolean.parseBoolean(response)) {
+            throw new UnsupportedOperationException("You may not select an unselectable element");
+        }
     }
 
     public boolean isEnabled() {

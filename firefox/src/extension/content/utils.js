@@ -108,7 +108,7 @@ Utils.findForm = function(element) {
 
     try {
         var input = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
-        if (input.type == "image" || input.type == "button")
+        if (input.type == "image" || input.type == "submit")
             return input;
     } catch(e) {}
 
