@@ -35,14 +35,17 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public boolean toggle() {
-        return false;
+        click();
+        return isSelected();
     }
 
     public boolean isSelected() {
-        return false;
+        String value = extension.sendMessageAndWaitForResponse("getElementSelected", elementId);
+        return Boolean.parseBoolean(value);
     }
 
     public void setSelected() {
+        extension.sendMessageAndWaitForResponse("setElementSelected", elementId);
     }
 
     public boolean isEnabled() {

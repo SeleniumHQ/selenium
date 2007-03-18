@@ -311,8 +311,12 @@ public abstract class BasicDriverTestCase extends TestCase {
 		isChecked = checkbox.toggle();
 		assertFalse(isChecked);
 	}
-	
-	public void testShouldBeAbleToSelectARadioButton() {
+
+    public void testShouldNotBeAbleToSelectSomethingThatIsDisabled() {
+        
+    }
+
+    public void testShouldBeAbleToSelectARadioButton() {
 		
 	}
 	

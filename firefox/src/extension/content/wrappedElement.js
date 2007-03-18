@@ -96,8 +96,44 @@ FirefoxDriver.prototype.getElementChildren = function(elementIdAndTagName) {
     var children = element.getElementsByTagName(parts[1]);
     var response = "";
     for (var i = 0; i < children.length; i++) {
-        Utils.addToKnownElements(children[i]);
-        response += i + " ";
+        response += Utils.addToKnownElements(children[i]) + " ";
     }
     this.server.respond("getElementChildren", response);
+}
+
+FirefoxDriver.prototype.getElementSelected = function(elementId) {
+    var element = Utils.getElementAt(elementId);
+    var selected = false;
+
+    try {
+        var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement)
+        selected = option.selected;
+    } catch(e) {}
+
+    try {
+        var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
+        if (checkbox.type == "checkbox") {
+            var selected = checkbox.checked;
+        }
+    } catch(e) {}
+
+    this.server.respond("getElementSelected", selected);
+}
+
+FirefoxDriver.prototype.setElementSelected = function(elementId) {
+    var element = Utils.getElementAt(elementId);
+
+    try {
+        var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement)
+        option.selected = true;
+    } catch(e) {}
+
+    try {
+        var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
+        if (checkbox.type == "checkbox") {
+            checkbox.checked = true;;
+        }
+    } catch(e) {}
+
+    this.server.respond("setElementSelected");
 }

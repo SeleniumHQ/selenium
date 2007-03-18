@@ -7,23 +7,6 @@ FirefoxDriver.prototype.get = function(url) {
     new WebLoadingListener(function(event) {
         // TODO: Rescue the URI and response code from the event
         var responseText = "";
-//            var responseText = request.originalURI ? request.originalURI.spec : request.name;
-//
-//            try {
-//                var channel = request.QueryInterface(Components.interfaces.nsIHttpChannel);
-//                responseText += " " + channel.responseStatus + " " + channel.responseStatusText;
-//            } catch (e) {
-//                responseText += " undefined undefined";
-//            }
-//
-//            try {
-//                request.QueryInterface(Components.interfaces.nsIXMLHttpRequest)
-//                dump("Is XmlHttpRequest\n");
-//            } catch (e) {
-//                // Do nothing
-//            }
-//            dump("Responding now\n");
-//            WebLoadingListener.removeListener(this);
         server.respond("get", responseText);
     });
     Utils.getBrowser().loadURI(url);
