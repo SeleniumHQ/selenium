@@ -50,6 +50,8 @@ function TreeView(editor, document, tree) {
 			case "cmd_copy":
 			case "cmd_cut":
 			    return self.selection.getRangeCount() > 0;
+            case "cmd_selectAll":
+                return true;
 			case "cmd_paste":
 			    return self.clipboard != null;
 			case "cmd_undo":
@@ -72,6 +74,7 @@ function TreeView(editor, document, tree) {
 			case "cmd_copy": self.copy(); break;
 			case "cmd_cut": self.cut(); break;
 			case "cmd_paste": self.paste(); break;
+            case "cmd_selectAll": self.selectAll(); break;
 			case "cmd_undo": self.undo(); break;
 			case "cmd_redo": self.redo(); break;
 			case "cmd_selenium_breakpoint": self.setBreakpoint(); break;
@@ -329,6 +332,11 @@ TreeView.prototype = {
 	deleteSelected: function() {
 		this.copyOrDelete(false, true);
 	},
+    selectAll: function() {
+        if (this.testCase.commands.length > 1) {
+            this.selection.rangedSelect(0, this.testCase.commands.length - 1, false);
+        }
+    },
 	paste: function() {
 		if (!this.treebox.focused) return;
 		if (this.clipboard != null) {
