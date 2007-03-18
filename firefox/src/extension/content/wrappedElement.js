@@ -88,3 +88,16 @@ FirefoxDriver.prototype.submitElement = function(elementId) {
         server.respond("submitElement");
     }
 }
+
+FirefoxDriver.prototype.getElementChildren = function(elementIdAndTagName) {
+    var parts = elementIdAndTagName.split(" ");
+    var element = Utils.getElementAt(parts[0]);
+
+    var children = element.getElementsByTagName(parts[1]);
+    var response = "";
+    for (var i = 0; i < children.length; i++) {
+        Utils.addToKnownElements(children[i]);
+        response += i + " ";
+    }
+    this.server.respond("getElementChildren", response);
+}

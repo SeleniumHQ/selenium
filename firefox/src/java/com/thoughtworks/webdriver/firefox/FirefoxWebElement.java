@@ -3,6 +3,7 @@ package com.thoughtworks.webdriver.firefox;
 import com.thoughtworks.webdriver.WebElement;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class FirefoxWebElement implements WebElement {
     private final ExtensionConnection extension;
@@ -53,6 +54,13 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public List getChildrenOfType(String tagName) {
-        return null;
+        String response = extension.sendMessageAndWaitForResponse("getElementChildren", elementId + " " + tagName);
+        String[] ids = response.split(" ");
+
+        ArrayList children = new ArrayList();
+        for (int i = 0; i < ids.length; i++)
+            children.add(new FirefoxWebElement(extension, ids[i]));
+
+        return children;
     }
 }

@@ -92,7 +92,7 @@ Utils.keyDownOrUp = function(element, down, text) {
 
 Utils.isTextField = function(element) {
     var name = element.tagName.toLowerCase();
-    if (name == "textfield")
+    if (name == "textarea")
         return true;
     if (name == "input")
         return element.type == "text" || element.type == "password";
