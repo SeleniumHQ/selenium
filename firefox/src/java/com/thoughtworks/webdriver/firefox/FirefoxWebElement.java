@@ -49,7 +49,8 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public boolean isEnabled() {
-        return false;
+        String value = getAttribute("disabled");
+        return !Boolean.parseBoolean(value);
     }
 
     public String getText() {

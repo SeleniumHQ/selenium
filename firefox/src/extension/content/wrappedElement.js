@@ -68,7 +68,34 @@ FirefoxDriver.prototype.getElementAttribute = function(value) {
     spaceIndex = value.indexOf(" ", spaceIndex);
     var attributeName = value.substring(spaceIndex + 1);
 
-    this.server.respond("getElementAttribute", element.getAttribute(attributeName));
+    if (element.hasAttribute(attributeName)) {
+        var response = element.getAttribute(attributeName);
+
+        if (attributeName.toLowerCase() == "disabled") {
+            response = response.toLowerCase() == "disabled" || response.toLowerCase() == "true";
+        } else if (attributeName.toLowerCase() == "selected") {
+            response = response.toLowerCase() == "selected" || response.toLowerCase() == "true";
+        } else if (attributeName.toLowerCase() == "checked") {
+            response = response.toLowerCase() == "checked" || response.toLowerCase() == "true";
+        }
+
+        this.server.respond("getElementAttribute", response);
+        return;
+    }
+
+    attributeName = attributeName.toLowerCase();
+    if (attributeName == "disabled") {
+        this.server.respond("getElementAttribute", element.disabled);
+        return;
+    } else if (attributeName == "checked") {
+        this.server.respond("getElementAttribute", element.checked);
+        return;
+    } else if (attributeName == "selected") {
+        this.server.respond("getElementAttribute", element.selected);
+        return;
+    }
+
+    this.server.respond("getElementAttribute", "");
 }
 
 FirefoxDriver.prototype.submitElement = function(elementId) {
