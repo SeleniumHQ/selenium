@@ -165,6 +165,10 @@ public class HtmlIdentifier {
         }
 
         public int score(String path, String contentType, String contentPreview) {
+            if (contentType == null) {
+                return 0;
+            }
+
             if (contentType.contains(type)) {
                 return score;
             }
