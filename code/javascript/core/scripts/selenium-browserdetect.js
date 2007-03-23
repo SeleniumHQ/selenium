@@ -87,7 +87,6 @@ var BrowserVersion = function() {
         }
         if ("0" == navigator.appMinorVersion) {
             this.preSV1 = true;
-            debugger
             if (navigator.appVersion.match(/MSIE 6.0/)) {
             	this.appearsToBeBrokenInitialIE6 = true;
             }
