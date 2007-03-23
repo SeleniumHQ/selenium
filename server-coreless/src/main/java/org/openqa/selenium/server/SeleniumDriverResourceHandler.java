@@ -186,6 +186,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * @throws IOException
      */
 	private String readPostedData(HttpRequest req, String sessionId, String uniqueId) throws IOException {
+        if (req.getParameter("postedData") != null) {
+            return req.getParameter("postedData");
+        }
+
         InputStream is = req.getInputStream();
         StringBuffer sb = new StringBuffer();
         InputStreamReader r = new InputStreamReader(is, "UTF-8");
@@ -193,8 +197,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         while ((c = r.read()) != -1) {
             sb.append((char) c);
         }
-        String s = sb.toString();
-        return s;
+
+        return sb.toString();
     }
 
     private void handleLogMessages(String s) {
