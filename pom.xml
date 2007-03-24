@@ -19,7 +19,36 @@
             <name>OpenQA Maven Repository</name>
             <url>http://maven.openqa.org</url>
         </repository>
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Maven Snapshot Repository</name>
+            <url>http://people.apache.org/maven-snapshot-repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>snapshots</id>
+            <name>Maven Plugin Snapshot Repository</name>
+            <url>http://people.apache.org/maven-snapshot-repository</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
     <distributionManagement>
         <repository>
             <id>openqa</id>
