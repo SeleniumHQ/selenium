@@ -71,6 +71,8 @@ objectExtend(RemoteRunnerOptions.prototype, {
 });
 var runOptions;
 
+browserVersion = new BrowserVersion()
+
 function runSeleniumTest() {
     runOptions = new RemoteRunnerOptions();
     var testAppWindow;
@@ -292,6 +294,7 @@ objectExtend(RemoteRunner.prototype, {
     _extractCommand : function(xmlHttp) {
         var command;
         try {
+            console.log("xmlHttp.responseText = " + xmlHttp.responseText);
             var re = new RegExp("^(.*?)\n((.|[\r\n])*)");
             if (re.exec(xmlHttp.responseText)) {
                 command = RegExp.$1;
@@ -373,6 +376,12 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
         };
     }
     url += buildDriverParams() + preventBrowserCaching();
+
+    console.log("URL = " + url);
+    console.log("dataToBePosted = " + dataToBePosted);
+
+    url += "&postedData=" + dataToBePosted;
+
     xmlHttpObject.open("POST", url, async);
     xmlHttpObject.onreadystatechange = callback;
     xmlHttpObject.send(dataToBePosted);

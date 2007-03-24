@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.openqa.selenium.core</groupId>
+    <artifactId>selenium-core</artifactId>
+    <version>0.8.2-SNAPSHOT</version>
+    <name>Selenium Core</name>
+    <packaging>jar</packaging>
+    <url>http://www.openqa.org/selenium-core</url>
+    <repositories>
+        <repository>
+            <id>openqa</id>
+            <name>OpenQA Maven Repository</name>
+            <url>http://maven.openqa.org</url>
+        </repository>
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Maven Snapshot Repository</name>
+            <url>http://people.apache.org/maven-snapshot-repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+    </repositories>
+    <build>
+        <resources>
+            <resource></resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>snapshots</id>
+            <name>Maven Plugin Snapshot Repository</name>
+            <url>http://people.apache.org/maven-snapshot-repository</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+    <distributionManagement>
+        <repository>
+            <id>openqa</id>
+            <name>OpenQA Maven Repository</name>
+            <url>scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs</url>
+        </repository>
+    </distributionManagement>
+</project>
