@@ -100,7 +100,6 @@ public abstract class BasicDriverTestCase extends TestCase {
 
 	public void testShouldFollowMetaRedirects() throws Exception {
 		driver.get(metaRedirectPage);
-		Thread.sleep(500);  // Let the redirect happen
 		assertEquals("We Arrive Here", driver.getTitle());
 	}
 
