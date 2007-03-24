@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.openqa.selenium</groupId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.9.2-SNAPSHOT</version>
         <artifactId>selenium-rc</artifactId>
     </parent>
     <groupId>org.openqa.selenium.client-drivers</groupId>
@@ -29,7 +29,8 @@
                                 <mkdir dir="${basedir}/target"/>
                                 <property name="output.path" location="${basedir}/target"/>
 
-                                <whichresource resource="/core/iedoc.xml" property="iedoc.url" classpath="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                <whichresource resource="/core/iedoc.xml" property="iedoc.url"
+                                               classpath="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
                                 <fail unless="iedoc.url"
                                       message="Couldn't find iedoc.xml in the classpath: ${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
 

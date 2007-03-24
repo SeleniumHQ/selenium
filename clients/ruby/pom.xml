@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.openqa.selenium.client-drivers</groupId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.9.2-SNAPSHOT</version>
         <artifactId>selenium-client-drivers</artifactId>
     </parent>
     <groupId>org.openqa.selenium.client-drivers</groupId>
@@ -30,7 +30,8 @@
                                 <configuration>
                                     <tasks>
                                         <ant target="ant-test">
-                                            <property name="selenium-server" value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                            <property name="selenium-server"
+                                                      value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
                                         </ant>
                                     </tasks>
                                 </configuration>
@@ -63,7 +64,8 @@
                         <configuration>
                             <tasks>
                                 <ant target="ant-generate-sources">
-                                    <property name="selenium-server" value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                    <property name="selenium-server"
+                                              value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
                                 </ant>
                             </tasks>
                         </configuration>
@@ -77,7 +79,8 @@
                         <configuration>
                             <tasks>
                                 <ant target="ant-doc">
-                                    <property name="selenium-server" value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                    <property name="selenium-server"
+                                              value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
                                 </ant>
                             </tasks>
                         </configuration>
