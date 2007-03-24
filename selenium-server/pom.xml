@@ -2,15 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-	  	<groupId>org.openqa.selenium</groupId>
-		<version>0.9.1-SNAPSHOT</version>
-		<artifactId>selenium</artifactId>
-	</parent>
+        <groupId>org.openqa.selenium</groupId>
+        <version>0.9.1-SNAPSHOT</version>
+        <artifactId>selenium-rc</artifactId>
+    </parent>
     <groupId>org.openqa.selenium.server</groupId>
     <artifactId>selenium-server</artifactId>
     <packaging>jar</packaging>
-    <name>Selenium Server</name>
-    <url>http://www.openqa.org/selenium</url>
+    <name>Selenium RC Server</name>
     <build>
         <plugins>
             <plugin>
@@ -38,9 +37,9 @@
                 <configuration>
                     <includes>
                         <include>**/UnitTestSuite.java</include>
-						<include>**/ServerTestSuite.java</include>
-                     </includes>
-                     <forkMode>never</forkMode>
+                        <include>**/ServerTestSuite.java</include>
+                    </includes>
+                    <forkMode>never</forkMode>
                 </configuration>
             </plugin>
         </plugins>
@@ -49,19 +48,14 @@
         <dependency>
             <groupId>org.openqa.selenium.server</groupId>
             <artifactId>selenium-server-coreless</artifactId>
-            <version>${project.version}</version>
-    	</dependency>
-        
+        </dependency>
         <dependency>
             <groupId>org.openqa.selenium.core</groupId>
             <artifactId>selenium-core</artifactId>
-            <version>0.8.2-SNAPSHOT</version>
-    	</dependency>
-
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -17,7 +17,7 @@
 
 
 require 'test/unit'
-require 'selenium'
+require 'target/selenium'
 
 class ExampleTest < Test::Unit::TestCase
     include SeleniumHelper

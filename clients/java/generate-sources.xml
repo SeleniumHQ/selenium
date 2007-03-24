@@ -1,20 +1,16 @@
-<project name="java-client-driver-generate-sources" default="generate-sources">
+<project name="java-client-driver-generate-sources">
 
-    <property name="maven.src.path" location="${project.build.directory}/generated-sources/main/java/com/thoughtworks/selenium" />
+    <property name="maven.src.path" location="target/generated-sources/main/java/com/thoughtworks/selenium" />
 	
-	<property name="dir.java.tests.based.on.core.javascript" location="${project.build.directory}/generated-sources/test/java/com/thoughtworks/selenium/corebased" />
+	<property name="dir.java.tests.based.on.core.javascript" location="target/generated-sources/test/java/com/thoughtworks/selenium/corebased" />
 	<property name="dir.java.tests.based.on.core.javascript.later.modified.by.hand" location="src/test/java/com/thoughtworks/selenium/corebasedhandmodified" />
 	
 	
-	<target name="generate-sources" depends="generate-client, generate-tests" />
-	
-    <target name="generate-tests" depends="extract-jar" unless="skip.generation.true">
-		<condition property="build.failed">
-			<not><available file="${core.javascript.path}" /></not>
-		</condition>
-		<fail if="build.failed" message="Couldn't find JavaScript: ${core.javascript.path}" />
-		<property name="dir.core.tests" location="${core.javascript.path}/tests" />
-		<echo message="maven.src.path = ${maven.src.path}" />
+    <target name="ant-generate-tests">
+        <mkdir dir="target/selenium-server"/> 
+        <unzip src="${selenium-server}" dest="target/selenium-server" />
+
+		<property name="dir.core.tests" location="target/selenium-server/tests" />
         <mkdir  dir="${dir.java.tests.based.on.core.javascript}" />
         <java classname="org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava" fork="true" failonerror="true">
             <arg value="${dir.java.tests.based.on.core.javascript}"/>
@@ -22,24 +18,24 @@
             <arg value="-dontThrowOnTranslationDifficulties"/>
             <arg value="-dir"/>
             <arg value="${dir.core.tests}"/>
-            
+
             <arg value="-skip"/>
             <arg value="TestJS-for-loops.html"/>
-            
-            
+
+
             <arg value="-skip"/>
             <arg value="TestJS-functions.html"/>
-            
-            
+
+
             <arg value="-skip"/>
             <arg value="TestJS-if-then-else.html"/>
-            
+
             <arg value="-skip"/>
             <arg value="TestOpen_SSV_syntax.html"/>
-            
-            <classpath refid="maven.test.classpath"/>
+
+            <classpath path="${selenium-server}"/>
         </java>
-        
+
         <copy overwrite="true" todir="${dir.java.tests.based.on.core.javascript}">
             <fileset dir="${dir.java.tests.based.on.core.javascript.later.modified.by.hand}">
                 <include name="**/*.java.txt"/>
@@ -49,70 +45,13 @@
             </mapper>
         </copy>
 	</target>
-	
-	<target name="generate-tests2" depends="extract-jar" unless="skip.generation.true">
-		<condition property="build.failed">
-			<not><available file="${core.javascript.path}" /></not>
-		</condition>
-		<fail if="build.failed" message="Couldn't find JavaScript: ${core.javascript.path}" />
-		<property name="dir.core.tests" location="${core.javascript.path}/tests" />
-		<echo message="maven.src.path = ${maven.src.path}" />
-        <mkdir  dir="${dir.java.tests.based.on.core.javascript}" />
-        <typedef name="xlate" classname="org.openqa.selenium.XlatorTask" />
-        <xlate formatter="java-rc" destDir="${dir.java.tests.based.on.core.javascript}">
-        	<fileset dir="${dir.core.tests}" includes="*.html" excludes="*Suite*"/>
-        </xlate>
-	</target>
-	
-	<target name="generate-client" depends="extract-jar" unless="skip.generation.true">
-		<xslt in="${iedoc.xml}" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
+
+	<target name="ant-generate-sources">
+        <xslt in="../target/iedoc.xml" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="interface" />
 		</xslt>
-		<xslt in="${iedoc.xml}" out="${maven.src.path}/DefaultSelenium.java" style="iedoc2java.xml">
+		<xslt in="../target/iedoc.xml" out="${maven.src.path}/DefaultSelenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="implementation" />
 		</xslt>
 	</target>
-	
-	<target name="extract-jar" depends="maybe-skip-generation" unless="skip.generation.true">
-		<touch file="${project.build.directory}/selenium-server.jar.touch" />
-		<property name="core.javascript.path" location="${project.build.directory}/selenium-server" />
-		<mkdir dir="${core.javascript.path}" />
-		<unzip src="${selenium-server.jar}" dest="${core.javascript.path}" />
-		<property name="iedoc.xml" location="${core.javascript.path}/core/iedoc.xml" />
-	</target>
-	
-	<target name="find-jar">
-	    <fail unless="project.build.directory" message="project.build.directory was not set.  This ant script must be run from within Maven!" />
-		<fail unless="maven.src.path" message="maven.src.path was not set.  This ant script must be run from within Maven!" />
-		<mkdir dir="${project.build.directory}" />
-		<pathconvert property="depend.classpath.output" refid="maven.test.classpath" />
-		<echo message="depend.classpath.output = ${depend.classpath.output}" />
-		<whichresource resource="/core/iedoc.xml" property="iedoc.url" classpath="${depend.classpath.output}"/>
-		<fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${depend.classpath.output}" />
-		<echo message="${iedoc.url}" file="${project.build.directory}/url.txt" />
-		<loadfile property="selenium-server.jar.file" srcfile="${project.build.directory}/url.txt">
-			<filterchain>
-				<tokenfilter>
-					<replaceregex pattern="^jar:file:(.*)!.*" replace="\1" />
-				</tokenfilter>
-				<tokenfilter>
-					<replaceregex pattern="%20" replace=" " flags="g" />
-				</tokenfilter>
-			</filterchain>
-		</loadfile>
-		<property name="selenium-server.jar" location="${selenium-server.jar.file}" />
-		<property name="selenium-server.jar.touch" value="${project.build.directory}/selenium-server.jar.touch" />
-		<echo message="selenium-server.jar = ${selenium-server.jar}" />
-		
-	</target>
-	
-	<target name="maybe-skip-generation" if="skip.generation" depends="find-jar">
-		<condition property="skip.generation.true">
-			<istrue value="${skip.generation}" />
-		</condition>
-		<condition property="skip.generation.true">
-			<uptodate srcfile="${selenium-server.jar}" targetfile="${selenium-server.jar.touch}" />
-		</condition>
-	</target>
-	
 </project>
