@@ -103,6 +103,12 @@
             </build>
         </profile>
         <profile>
+            <id>core</id>
+            <modules>
+                <module>../selenium-core</module>
+            </modules>
+        </profile>
+        <profile>
             <id>dist</id>
             <build>
                 <plugins>
