@@ -23,8 +23,6 @@ package com.thoughtworks.webdriver;
 public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
-		
-		driver.get(javascriptPage);
 	}
 	
     public void testDocumentShouldReflectLatestTitle() throws Exception {
@@ -51,7 +49,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     }
     
 	public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
-		WebElement element = driver.selectElement("//input[@id='keyUp']");
+        driver.get(javascriptPage);
+        WebElement element = driver.selectElement("//input[@id='keyUp']");
 		element.setValue("I like cheese");
 
 		WebElement result = driver.selectElement("//div[@id='result']");
@@ -59,7 +58,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 	}
 
 	public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
-		WebElement element = driver.selectElement("//input[@id='keyDown']");
+        driver.get(javascriptPage);
+        WebElement element = driver.selectElement("//input[@id='keyDown']");
 		element.setValue("I like cheese");
 
 		WebElement result = driver.selectElement("//div[@id='result']");
@@ -69,7 +69,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 	}
 
 	public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
-		WebElement element = driver.selectElement("//input[@id='keyPress']");
+        driver.get(javascriptPage);
+        WebElement element = driver.selectElement("//input[@id='keyPress']");
 		element.setValue("I like cheese");
 
 		WebElement result = driver.selectElement("//div[@id='result']");
@@ -79,7 +80,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 	}
 	
 	public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
-		WebElement element = driver.selectElement("//textarea[@id='keyUpArea']");
+        driver.get(javascriptPage);
+        WebElement element = driver.selectElement("//textarea[@id='keyUpArea']");
 		element.setValue("I like cheese");
 		
 		WebElement result = driver.selectElement("//div[@id='result']");
@@ -87,7 +89,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 	}
 
 	public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
-		WebElement element = driver.selectElement("//textarea[@id='keyDownArea']");
+        driver.get(javascriptPage);
+        WebElement element = driver.selectElement("//textarea[@id='keyDownArea']");
 		element.setValue("I like cheese");
 
 		WebElement result = driver.selectElement("//div[@id='result']");
@@ -97,7 +100,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 	}
 
 	public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
-		WebElement element = driver.selectElement("//textarea[@id='keyPressArea']");
+        driver.get(javascriptPage);
+        WebElement element = driver.selectElement("//textarea[@id='keyPressArea']");
 		element.setValue("I like cheese");
 
 		WebElement result = driver.selectElement("//div[@id='result']");
