@@ -16,7 +16,7 @@
         e = new Execute(new PumpStreamHandler(System.out, System.err, new StringInputStream("y\ny\n")));
         e.setWorkingDirectory(wd);
         e.setCommandline(new String[]{
-                "openssl", "ca", "-in", domain + ".csr", "-out", "serverapp.pem", "-keyfile", "ca.key", "-days", "10950"
+                "openssl", "ca", "-in", domain + ".csr", "-out", "serverapp.pem", "-keyfile", "ca.key", "-startdate", "000101000000Z", "-enddate", "300101000000Z"
         });
         e.execute();
 
