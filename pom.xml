@@ -28,15 +28,107 @@
         </repository>
     </repositories>
     <build>
-        <resources>
-            <resource></resource>
-        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.2-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="target/classes/core"/>
+                                <java jar="${maven.dependency.rhino.js.jar.path}" output="target/classes/core/iedoc.xml" failonerror="true" fork="true">
+                                    <arg file="src/main/resources/doctool/doc.js"/>
+                                    <arg file="src/main/resources/core/scripts/selenium-api.js"/>
+                                </java>
+                                <!--<xmlvalidate file="target/classes/core/iedoc.xml" lenient="true"/>-->
+                                <java jar="${maven.dependency.rhino.js.jar.path}" output="target/classes/core/iedoc-core.xml" failonerror="true" fork="true">
+                                    <arg file="src/main/resources/doctool/doc.js"/>
+                                    <arg file="src/main/resources/core/scripts/selenium-api.js"/>
+                                    <arg file="src/main/resources/core/scripts/selenium-testrunner.js"/>
+                                </java>
+                                <!--<xmlvalidate file="target/classes/core/iedoc-core.xml" lenient="true"/>-->
+
+                                <xslt in="target/classes/core/iedoc-core.xml" out="target/reference.html" style="src/main/resources/doctool/doc2html.xml"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <tasks>
+                                <condition property="browserFileNames" value="c:\program files\Mozilla Firefox\firefox.exe">
+                                    <os family="windows"/>
+                                </condition>
+                                <condition property="browserFileNames" value="/usr/bin/firefox">
+                                    <os family="unix"/>
+                                </condition>
+                                <condition property="browserFileNames" value="/Applications/Firefox.app/Contents/MacOS/firefox-bin">
+                                    <os family="mac"/>
+                                </condition>
+                                <property name="testRunnerLocation" location="src/main/resources/jsunit/testRunner.html"/>
+                                <property name="testSuiteLocation" location="src/main/resources/unittest/browserbot/suite.html"/>
+                                <property name="port" value="8281"/>
+                                <property name="browserBotTestUrl"
+                                          value="file://${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=localhost:${port}/jsunit/acceptor"/>
+                                <property name="resourceBase" value=""/>
+                                <property name="logsDirectory" value="target/logs"/>
+
+                                <mkdir dir="target/logs"/>
+                                <junit showoutput="true" errorproperty="tests.failed" failureproperty="tests.failed">
+                                    <classpath>
+                                        <fileset dir="code/java/lib">
+                                            <include name="*.jar"/>
+                                        </fileset>
+                                    </classpath>
+                                    <sysproperty key="browserFileNames" value="${browserFileNames}"/>
+                                    <sysproperty key="url" value="${browserBotTestUrl}"/>
+                                    <sysproperty key="port" value="${port}"/>
+                                    <sysproperty key="resourceBase" value="${resourceBase}"/>
+                                    <sysproperty key="logsDirectory" value="target/logs"/>
+                                    <test name="net.jsunit.StandaloneTest"/>
+                                </junit>
+                                <junitreport todir="target/logs">
+                                    <fileset dir="target/logs"/>
+                                    <report format="frames" todir="target/logs" />
+                                </junitreport>
+                                <fail if="tests.failed" message="JSUnit tests failed, see output for details: target/logs" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-trax</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-junit</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                        <version>3.8.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -63,4 +155,55 @@
             <url>scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs</url>
         </repository>
     </distributionManagement>
+    <dependencies>
+        <!--
+        <dependency>
+            <groupId>jsunit</groupId>
+            <artifactId>jsunit</artifactId>
+            <version>2.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jetty</groupId>
+            <artifactId>org.mortbay.jetty</artifactId>
+            <version>5.1.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>rhino</groupId>
+            <artifactId>js</artifactId>
+            <version>1.6R5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+    </dependencies>
 </project>

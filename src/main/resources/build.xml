@@ -1,3 +1,0 @@
-<project basedir="..">
-    <import file="../build.xml" />
-</project>
