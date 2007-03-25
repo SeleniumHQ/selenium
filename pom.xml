@@ -40,10 +40,25 @@
                 <version>1.2-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <id>generate-sources</id>
-                        <phase>generate-sources</phase>
+                        <id>compile</id>
+                        <phase>compile</phase>
                         <configuration>
                             <tasks>
+                                <exec executable="svnversion" outputProperty="svn-revision" failOnError="true">
+                                    <arg value="."/>
+                                </exec>
+
+                                <copy todir="target/classes" overwrite="true">
+                                    <fileset dir="src/main/resources">
+                                        <include name="core/scripts/selenium-version.js"/>
+                                        <include name="VERSION.txt"/>
+                                    </fileset>
+                                    <filterset>
+                                        <filter token="VERSION" value="${project.version}"/>
+                                        <filter token="REVISION" value="${svn-revision}"/>
+                                    </filterset>
+                                </copy>
+
                                 <mkdir dir="target/classes/core"/>
                                 <java jar="${maven.dependency.rhino.js.jar.path}" output="target/classes/core/iedoc.xml" failonerror="true" fork="true">
                                     <arg file="src/main/resources/doctool/doc.js"/>
