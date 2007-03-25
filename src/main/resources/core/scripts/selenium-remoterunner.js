@@ -71,8 +71,6 @@ objectExtend(RemoteRunnerOptions.prototype, {
 });
 var runOptions;
 
-browserVersion = new BrowserVersion()
-
 function runSeleniumTest() {
     runOptions = new RemoteRunnerOptions();
     var testAppWindow;
@@ -178,7 +176,7 @@ function serializeObject(name, x)
 function relayBotToRC(s) {
 }
 
-// seems like no one uses this, but in fact it is called using eval from server-side PI mode code; however, 
+// seems like no one uses this, but in fact it is called using eval from server-side PI mode code; however,
 // because multiple names can map to the same popup, assigning a single name confuses matters sometimes;
 // thus, I'm disabling this for now.  -Nelson 10/21/06
 function setSeleniumWindowName(seleniumWindowName) {
@@ -294,7 +292,6 @@ objectExtend(RemoteRunner.prototype, {
     _extractCommand : function(xmlHttp) {
         var command;
         try {
-            console.log("xmlHttp.responseText = " + xmlHttp.responseText);
             var re = new RegExp("^(.*?)\n((.|[\r\n])*)");
             if (re.exec(xmlHttp.responseText)) {
                 command = RegExp.$1;
@@ -376,12 +373,6 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
         };
     }
     url += buildDriverParams() + preventBrowserCaching();
-
-    console.log("URL = " + url);
-    console.log("dataToBePosted = " + dataToBePosted);
-
-    url += "&postedData=" + dataToBePosted;
-
     xmlHttpObject.open("POST", url, async);
     xmlHttpObject.onreadystatechange = callback;
     xmlHttpObject.send(dataToBePosted);
@@ -411,7 +402,7 @@ function preventBrowserCaching() {
 //
 // In selenium, the main (i.e., first) window's name is a blank string.
 //
-// Additional pop-ups are associated with either 1.) the name given by the 2nd parameter to window.open, or 2.) the name of a 
+// Additional pop-ups are associated with either 1.) the name given by the 2nd parameter to window.open, or 2.) the name of a
 // property on the opening window which points at the window.
 //
 // An example of #2: if window X contains JavaScript as follows:
@@ -441,7 +432,7 @@ function getSeleniumWindowNameURLparameters() {
     	    val = windowOpener[key];
         }
         catch(e) {
-        }        
+        }
         if (val==w) {
 	    s += "&jsWindowNameVar=" + key;			// found a js variable in the opener referring to this window
         }

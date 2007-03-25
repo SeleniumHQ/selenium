@@ -36,10 +36,10 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.buttonWindow = window;
     this.currentWindow = this.topWindow;
     this.currentWindowName = null;
-    
+
     // We need to know this in advance, in case the frame closes unexpectedly
     this.isSubFrameSelected = false;
-    
+
     this.altKeyDown = false;
     this.controlKeyDown = false;
     this.shiftKeyDown = false;
@@ -54,7 +54,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.nextPromptResult = '';
     this.newPageLoaded = false;
     this.pageLoadError = null;
-    
+
     this.shouldHighlightLocatedElement = false;
 
     this.uniqueId = new Date().getTime();
@@ -65,10 +65,10 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.browserbot = this;
 
     var self = this;
-    
+
     objectExtend(this, PageBot.prototype);
     this._registerAllLocatorFunctions();
-    
+
     this.recordPageLoad = function(elementOrWindow) {
         LOG.debug("Page load detected");
         try {
@@ -234,13 +234,13 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
         {
             LOG.info("element has initMouseEvent");
             //Safari
-            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, 
+            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY,
             	this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown, 0, null);
         }
         else {
         	LOG.warn("element doesn't have initMouseEvent; firing an event which should -- but doesn't -- have other mouse-event related attributes here, as well as controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown");
             evt.initEvent(eventType, canBubble, true);
-            
+
             evt.shiftKey = this.shiftKeyDown;
             evt.metaKey = this.metaKeyDown;
             evt.altKey = this.altKeyDown;
@@ -349,11 +349,11 @@ BrowserBot.prototype.selectFrame = function(target) {
             this.isSubFrameSelected = true;
             match = true;
         }
-        
+
         if (!match) {
             // neither, let's loop through the frame names
             var win = this.getCurrentWindow();
-            
+
             if (win && win.frames && win.frames.length) {
                 for (var i = 0; i < win.frames.length; i++) {
                     if (win.frames[i].name == target) {
@@ -454,9 +454,9 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         originalOpenReference = 'selenium_originalOpen' + new Date().getTime();
         windowToModify[originalOpenReference] = windowToModify.open;
     }
-    
+
     var isHTA = browserVersion.isHTA;
-    
+
     var newOpen = function(url, windowName, windowFeatures, replaceFlag) {
         var myOriginalOpen = originalOpen;
         if (isHTA) {
@@ -470,12 +470,12 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         selenium.browserbot.openedWindows[windowName] = openedWindow;
         return openedWindow;
     };
-    
+
     if (browserVersion.isHTA) {
         originalOpenReference = 'selenium_originalOpen' + new Date().getTime();
         newOpenReference = 'selenium_newOpen' + new Date().getTime();
         var setOriginalRef = "this['" + originalOpenReference + "'] = this.open;";
-        
+
         if (windowToModify.eval) {
             windowToModify.eval(setOriginalRef);
             windowToModify.open = newOpen;
@@ -550,12 +550,12 @@ BrowserBot.prototype._getFrameElement = function(win) {
         try {
             parentContainsIdenticallyNamedFrame = win.parent.frames[win.name];
         } catch (e) {} // this may fail if access is denied to the parent; in that case, assume it's not a pop-up
-        
+
         if (parentContainsIdenticallyNamedFrame) {
             // it can't be a coincidence that the parent has a frame with the same name as myself!
             return BrowserBot.prototype.locateElementByName(win.name, win.parent.document, win.parent);
         }
-    } 
+    }
     return frameElement;
 }
 
@@ -805,11 +805,11 @@ BrowserBot.prototype.getWindowByName = function(windowName, doNotModify) {
  */
 BrowserBot.prototype.getWindowNameByTitle = function(windowTitle) {
     LOG.debug("getWindowNameByTitle(" + windowTitle + ")");
-    
+
     // First look in the map of opened windows and iterate them
     for (var windowName in this.openedWindows) {
     	var targetWindow = this.openedWindows[windowName];
-    	
+
     	// If the target window's title is our title
     	try {
     	    // TODO implement Pattern Matching here
@@ -823,7 +823,7 @@ BrowserBot.prototype.getWindowNameByTitle = function(windowTitle) {
             // it's probably not available to us right now anyway
         }
     }
-    
+
     throw new SeleniumError("Could not find window with title " + windowTitle);
 };
 
@@ -845,7 +845,7 @@ BrowserBot.prototype._handleClosedSubFrame = function(testWindow, doNotModify) {
     if (this.proxyInjectionMode) {
         return testWindow;
     }
-    
+
     if (this.isSubFrameSelected) {
         var missing = true;
         if (testWindow.parent && testWindow.parent.frames && testWindow.parent.frames.length) {
@@ -950,10 +950,10 @@ BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString,
     if (element != null) {
         return element;
     }
-    
-    for (var i = 0; i < inWindow.frames.length; i++) {        
+
+    for (var i = 0; i < inWindow.frames.length; i++) {
         element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
-        
+
         if (element != null) {
         	return element;
         }
@@ -973,9 +973,9 @@ BrowserBot.prototype.findElement = function(locator) {
         locatorType = result[1].toLowerCase();
         locatorString = result[2];
     }
-    
+
     var element = this.findElementRecursive(locatorType, locatorString, this.getDocument(), this.getCurrentWindow())
-    
+
     if (element != null) {
     	return this.browserbot.highlight(element);
     }
@@ -1270,7 +1270,7 @@ BrowserBot.prototype.replaceText = function(element, stringValue) {
             LOG.warn("AFTER")
         }
     }
-    
+
     if (getTagName(element) == "body") {
         if (element.ownerDocument && element.ownerDocument.designMode) {
             var designMode = new String(element.ownerDocument.designMode).toLowerCase();
@@ -1328,7 +1328,7 @@ BrowserBot.prototype.submit = function(formElement) {
 BrowserBot.prototype.clickElement = function(element, clientX, clientY) {
        this._fireEventOnElement("click", element, clientX, clientY);
 };
-    
+
 BrowserBot.prototype.doubleClickElement = function(element, clientX, clientY) {
        this._fireEventOnElement("dblclick", element, clientX, clientY);
 };
@@ -1363,7 +1363,7 @@ BrowserBot.prototype._getTargetWindow = function(element) {
 }
 
 BrowserBot.prototype._getFrameFromGlobal = function(target) {
-    
+
     if (target == "_top") {
         return this.topFrame;
     } else if (target == "_parent") {
@@ -1581,23 +1581,17 @@ KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 KonquerorBrowserBot.prototype.setOpenLocation = function(win, loc) {
     // Window doesn't fire onload event when setting src to the current value,
     // so we just refresh in that case instead.
-    if (loc != "about:blank") {
-        loc = absolutify(loc, this.baseUrl);
-        loc = canonicalize(loc);
-        var startLoc = parseUrl(win.location.href);
-        startLoc.hash = null;
-        var startUrl = reassembleLocation(startLoc);
-        LOG.debug("startUrl="+startUrl);
-        LOG.debug("win.location.href="+win.location.href);
-        LOG.debug("loc="+loc);
-
-        if (startUrl == loc) {
-            LOG.debug("opening exact same location");
-            this.refresh();
-        } else {
-            LOG.debug("locations differ");
-            win.location.href = loc;
-        }
+    loc = absolutify(loc, this.baseUrl);
+    loc = canonicalize(loc);
+    var startLoc = parseUrl(win.location.href);
+    startLoc.hash = null;
+    var startUrl = reassembleLocation(startLoc);
+    LOG.debug("startUrl="+startUrl);
+    LOG.debug("win.location.href="+win.location.href);
+    LOG.debug("loc="+loc);
+    if (startUrl == loc) {
+        LOG.debug("opening exact same location");
+        this.refresh();
     } else {
         LOG.debug("locations differ");
         win.location.href = loc;
@@ -1650,7 +1644,7 @@ IEBrowserBot.prototype._handleClosedSubFrame = function(testWindow, doNotModify)
     if (this.proxyInjectionMode) {
         return testWindow;
     }
-    
+
     try {
         testWindow.location.href;
         this.permDenied = 0;
@@ -1733,7 +1727,7 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
                     return;
                 }
             }
-            
+
             var self = this;
             LOG.warn("pollForLoad (" + marker + "): " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), waiting to see if it goes away");
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
@@ -1776,7 +1770,7 @@ IEBrowserBot.prototype._windowClosed = function(win) {
         return c;
     } catch (e) {
         LOG.debug("IEBrowserBot._windowClosed: Got an exception trying to read win.closed; we'll have to take a guess!");
-            
+
         if (browserVersion.isHTA) {
             if (e.message == "Permission denied") {
                 // the window is probably unloading, which means it's not closed yet
@@ -1846,7 +1840,7 @@ MozillaBrowserBot.prototype._fireEventOnElement = function(eventType, element, c
     element.addEventListener(eventType, function(evt) {
         savedEvent = evt;
     }, false);
-    
+
     this._modifyElementTarget(element);
 
     // Trigger the event.
@@ -1855,7 +1849,7 @@ MozillaBrowserBot.prototype._fireEventOnElement = function(eventType, element, c
     if (this._windowClosed(win)) {
         return;
     }
-    
+
     // Perform the link action if preventDefault was set.
     // In chrome URL, the link action is already executed by triggerMouseEvent.
     if (!browserVersion.isChrome && savedEvent != null && !savedEvent.getPreventDefault()) {
@@ -1873,7 +1867,7 @@ MozillaBrowserBot.prototype._fireEventOnElement = function(eventType, element, c
 OperaBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     var win = this.getCurrentWindow();
     triggerEvent(element, 'focus', false);
-    
+
     this._modifyElementTarget(element);
 
     // Trigger the click event.
@@ -1889,7 +1883,7 @@ OperaBrowserBot.prototype._fireEventOnElement = function(eventType, element, cli
 KonquerorBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     var win = this.getCurrentWindow();
     triggerEvent(element, 'focus', false);
-    
+
     this._modifyElementTarget(element);
 
     if (element[eventType]) {
@@ -1908,7 +1902,7 @@ KonquerorBrowserBot.prototype._fireEventOnElement = function(eventType, element,
 SafariBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     triggerEvent(element, 'focus', false);
     var wasChecked = element.checked;
-    
+
     this._modifyElementTarget(element);
 
     // For form element it is simple.
