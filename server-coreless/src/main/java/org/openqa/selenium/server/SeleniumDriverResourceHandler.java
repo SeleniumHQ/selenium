@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.net.URLDecoder;
 
 import org.mortbay.http.HttpConnection;
 import org.mortbay.http.HttpException;
@@ -186,6 +187,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * @throws IOException
      */
 	private String readPostedData(HttpRequest req, String sessionId, String uniqueId) throws IOException {
+        // if the request was sent as application/x-www-form-urlencoded, we can get the decoded data right away...
+        // we do this because it appears that Safari likes to send the data back as application/x-www-form-urlencoded
+        // even when told to send it back as application/xml. So in short, this function pulls back the data in any
+        // way it can!
         if (req.getParameter("postedData") != null) {
             return req.getParameter("postedData");
         }
@@ -198,7 +203,20 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             sb.append((char) c);
         }
 
-        return sb.toString();
+        String postedData = sb.toString();
+
+        // we check here because, depending on the Selenium Core version you have, specifically the selenium-testrunner.js,
+        // the data could be sent back directly or as URL-encoded for the parameter "postedData" (see above). Because
+        // firefox and other browsers like to send it back as application/xml (opposite of Safari), we need to be prepared
+        // to decode the data ourselves. Also, we check for the string starting with the key because in the rare case
+        // someone has an outdated version selenium-testrunner.js, which, until today (3/25/2007) sent back the data
+        // *un*-encoded, we'd like to be as flexible as possible.
+        if (postedData.startsWith("postedData=")) {
+            postedData = postedData.substring(11);
+            postedData = URLDecoder.decode(postedData, "UTF-8");
+        }
+
+        return postedData;
     }
 
     private void handleLogMessages(String s) {
