@@ -373,6 +373,9 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
         };
     }
     url += buildDriverParams() + preventBrowserCaching();
+    dataToBePosted = "postedData=" + encodeURIComponent(dataToBePosted);
+
+    //xmlHttpObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlHttpObject.open("POST", url, async);
     xmlHttpObject.onreadystatechange = callback;
     xmlHttpObject.send(dataToBePosted);
