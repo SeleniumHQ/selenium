@@ -1581,17 +1581,23 @@ KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 KonquerorBrowserBot.prototype.setOpenLocation = function(win, loc) {
     // Window doesn't fire onload event when setting src to the current value,
     // so we just refresh in that case instead.
-    loc = absolutify(loc, this.baseUrl);
-    loc = canonicalize(loc);
-    var startLoc = parseUrl(win.location.href);
-    startLoc.hash = null;
-    var startUrl = reassembleLocation(startLoc);
-    LOG.debug("startUrl="+startUrl);
-    LOG.debug("win.location.href="+win.location.href);
-    LOG.debug("loc="+loc);
-    if (startUrl == loc) {
-        LOG.debug("opening exact same location");
-        this.refresh();
+    if (loc != "about:blank") {
+        loc = absolutify(loc, this.baseUrl);
+        loc = canonicalize(loc);
+        var startLoc = parseUrl(win.location.href);
+        startLoc.hash = null;
+        var startUrl = reassembleLocation(startLoc);
+        LOG.debug("startUrl="+startUrl);
+        LOG.debug("win.location.href="+win.location.href);
+        LOG.debug("loc="+loc);
+
+        if (startUrl == loc) {
+            LOG.debug("opening exact same location");
+            this.refresh();
+        } else {
+            LOG.debug("locations differ");
+            win.location.href = loc;
+        }
     } else {
         LOG.debug("locations differ");
         win.location.href = loc;
