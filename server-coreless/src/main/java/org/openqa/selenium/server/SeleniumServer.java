@@ -616,6 +616,10 @@ public class SeleniumServer {
         return ("true".equals(System.getProperty("slowResources")));
     }
 
+    public static void setTimeoutInSeconds(int timeoutInSeconds) {
+        SeleniumServer.timeoutInSeconds = timeoutInSeconds;
+    }
+
     public void addNewStaticContent(File directory) {
         staticContentHandler.addStaticContent(new FsResourceLocator(directory));
     }
