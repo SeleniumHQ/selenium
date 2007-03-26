@@ -383,9 +383,9 @@ public class ProxyHandler extends AbstractHttpHandler {
         long bytesCopied = -1;
         request.setHandled(true);
         if (proxy_in != null) {
-            if (SeleniumServer.isProxyInjectionMode()
-                    && http.getResponseCode()==HttpURLConnection.HTTP_OK) {
-
+            boolean injectableResponse = http.getResponseCode() == HttpURLConnection.HTTP_OK ||
+                    (http.getResponseCode() >= 400 && http.getResponseCode() < 600);
+            if (SeleniumServer.isProxyInjectionMode() && injectableResponse) {
                 // check if we should proxy this path based on the dontProxyRegex that can be user-specified
                 if (SeleniumServer.shouldInject(request.getPath())) {
                     bytesCopied = InjectionHelper.injectJavaScript(request, response, proxy_in, response.getOutputStream());
