@@ -35,15 +35,17 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     protected static final String REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE = REG_KEY_SELENIUM_FOLDER + "EnableAutoproxyResultCache";
     protected static final String REG_KEY_BACKUP_POPUP_MGR = REG_KEY_SELENIUM_FOLDER + "PopupMgr";
     protected static final String REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE = REG_KEY_SELENIUM_FOLDER + "MimeExclusionListForCache";
-    protected static final String REG_KEY_POPUP_MGR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr";
-    protected static final String REG_KEY_AUTOCONFIG_URL = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL";
-    protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPer1_0Server";
-    protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPerServer";
-    protected static final String REG_KEY_PROXY_ENABLE = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
-    protected static final String REG_KEY_PROXY_OVERRIDE = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyOverride";
-    protected static final String REG_KEY_PROXY_SERVER = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer";
-    protected static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
-    protected static final String REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE = "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache";
+
+    protected static String REG_KEY_BASE = "HKEY_CURRENT_USER";
+    protected static final String REG_KEY_POPUP_MGR = "\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr";
+    protected static final String REG_KEY_AUTOCONFIG_URL = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL";
+    protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPer1_0Server";
+    protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPerServer";
+    protected static final String REG_KEY_PROXY_ENABLE = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
+    protected static final String REG_KEY_PROXY_OVERRIDE = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyOverride";
+    protected static final String REG_KEY_PROXY_SERVER = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer";
+    protected static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
+    protected static final String REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE = "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache";
 
     protected static Class popupMgrType;
     
@@ -81,23 +83,23 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     protected void initStatic() {
         keys = new ArrayList<RegKeyBackup>();
         handleEvilPopupMgrBackup();
-        addRegistryKeyToBackupList(REG_KEY_POPUP_MGR, REG_KEY_BACKUP_POPUP_MGR, popupMgrType);
-        addRegistryKeyToBackupList(REG_KEY_AUTOCONFIG_URL, REG_KEY_BACKUP_AUTOCONFIG_URL, String.class);
-        addRegistryKeyToBackupList(REG_KEY_AUTOPROXY_RESULT_CACHE, REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE, boolean.class);
-        addRegistryKeyToBackupList(REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE, String.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_POPUP_MGR, REG_KEY_BACKUP_POPUP_MGR, popupMgrType);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_AUTOCONFIG_URL, REG_KEY_BACKUP_AUTOCONFIG_URL, String.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_AUTOPROXY_RESULT_CACHE, REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE, boolean.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE, String.class);
         
         // Only needed for proxy injection mode, but always adding to the list to guarantee they get restored correctly
-        addRegistryKeyToBackupList(REG_KEY_PROXY_ENABLE, REG_KEY_BACKUP_PROXY_ENABLE, boolean.class);
-        addRegistryKeyToBackupList(REG_KEY_PROXY_OVERRIDE, REG_KEY_BACKUP_PROXY_OVERRIDE, boolean.class);
-        addRegistryKeyToBackupList(REG_KEY_PROXY_SERVER, REG_KEY_BACKUP_PROXY_SERVER, String.class);
-        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR, int.class);
-        addRegistryKeyToBackupList(REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR, int.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_PROXY_ENABLE, REG_KEY_BACKUP_PROXY_ENABLE, boolean.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_PROXY_OVERRIDE, REG_KEY_BACKUP_PROXY_OVERRIDE, boolean.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_PROXY_SERVER, REG_KEY_BACKUP_PROXY_SERVER, String.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR, int.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR, int.class);
     }
     
     // IE7 changed the type of the popup mgr key to DWORD (int/boolean) from String (which could be "yes" or "no")
     protected void handleEvilPopupMgrBackup() {
     	// this will return String (REG_SZ), int (REG_DWORD), or null if the key is missing
-    	popupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_POPUP_MGR);
+    	popupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_BASE + REG_KEY_POPUP_MGR);
     	Class backupPopupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_BACKUP_POPUP_MGR);
     	if (popupMgrType == null) { // if official PopupMgr key is missing
     		if (backupPopupMgrType == null) {
@@ -140,6 +142,10 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         keys.add(new RegKeyBackup(regKey, backupRegKey, clazz));
     }
 
+    public static void setBaseRegKey(String base) {
+        REG_KEY_BASE = base;
+    }
+
     protected static String findBrowserLaunchLocation() {
         String defaultPath = System.getProperty("internetExplorerDefaultPath");
         if (defaultPath == null) {
@@ -178,8 +184,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
     protected void changeRegistrySettings() throws IOException {
         if (!customPACappropriate) {
-            if (WindowsUtils.doesRegistryValueExist(REG_KEY_AUTOCONFIG_URL)) {
-                WindowsUtils.deleteRegistryValue(REG_KEY_AUTOCONFIG_URL);
+            if (WindowsUtils.doesRegistryValueExist(REG_KEY_BASE + REG_KEY_AUTOCONFIG_URL)) {
+                WindowsUtils.deleteRegistryValue(REG_KEY_BASE + REG_KEY_AUTOCONFIG_URL);
             }
         } else {
             customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
@@ -193,22 +199,22 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
             System.out.println("Modifying registry settings...");
 
             String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
-            WindowsUtils.writeStringRegistryValue(REG_KEY_AUTOCONFIG_URL, newURL);
+            WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_AUTOCONFIG_URL, newURL);
         }
 
         // Disabling automatic proxy caching
         // http://support.microsoft.com/?kbid=271361
         // Otherwise, *all* requests will go through our proxy, rather than just */selenium-server/* requests
-        WindowsUtils.writeBooleanRegistryValue(REG_KEY_AUTOPROXY_RESULT_CACHE, false);
+        WindowsUtils.writeBooleanRegistryValue(REG_KEY_BASE + REG_KEY_AUTOPROXY_RESULT_CACHE, false);
 
         // Disable caching of html
-        WindowsUtils.writeStringRegistryValue(REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
+        WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
 
         // Disable pop-up blocking
-        turnOffPopupBlocking(REG_KEY_POPUP_MGR);
+        turnOffPopupBlocking(REG_KEY_BASE + REG_KEY_POPUP_MGR);
 
-        if (WindowsUtils.doesRegistryValueExist(REG_KEY_PROXY_OVERRIDE)) {
-            WindowsUtils.deleteRegistryValue(REG_KEY_PROXY_OVERRIDE);
+        if (WindowsUtils.doesRegistryValueExist(REG_KEY_BASE + REG_KEY_PROXY_OVERRIDE)) {
+            WindowsUtils.deleteRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_OVERRIDE);
         }
 
         // TODO Do we want to make these preferences configurable somehow?
