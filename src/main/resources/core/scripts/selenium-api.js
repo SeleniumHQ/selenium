@@ -37,14 +37,14 @@ function Selenium(browserbot) {
      * 
      * <ul>
      * <li><strong>identifier</strong>=<em>id</em>: 
-     * Select the element with the specified &#64;id attribute. If no match is
-     * found, select the first element whose &#64;name attribute is <em>id</em>.
+     * Select the element with the specified @id attribute. If no match is
+     * found, select the first element whose @name attribute is <em>id</em>.
      * (This is normally the default; see below.)</li>
      * <li><strong>id</strong>=<em>id</em>:
-     * Select the element with the specified &#64;id attribute.</li>
+     * Select the element with the specified @id attribute.</li>
      *
      * <li><strong>name</strong>=<em>name</em>:
-     * Select the first element with the specified &#64;name attribute.
+     * Select the first element with the specified @name attribute.
      * <ul class="first last simple">
      * <li>username</li>
      * <li>name=username</li>
@@ -71,12 +71,12 @@ function Selenium(browserbot) {
      * <li><strong>xpath</strong>=<em>xpathExpression</em>: 
      * Locate an element using an XPath expression.
      * <ul class="first last simple">
-     * <li>xpath=//img[&#64;alt='The image alt text']</li>
-     * <li>xpath=//table[&#64;id='table1']//tr[4]/td[2]</li>
-     * <li>xpath=//a[contains(&#64;href,'#id1')]</li>
-     * <li>xpath=//a[contains(&#64;href,'#id1')]/&#64;class</li>
-     * <li>xpath=(//table[&#64;class='stylee'])//th[text()='theHeaderText']/../td</li>
-     * <li>xpath=//input[&#64;name='name2' and &#64;value='yes']</li>
+     * <li>xpath=//img[@alt='The image alt text']</li>
+     * <li>xpath=//table[@id='table1']//tr[4]/td[2]</li>
+     * <li>xpath=//a[contains(@href,'#id1')]</li>
+     * <li>xpath=//a[contains(@href,'#id1')]/@class</li>
+     * <li>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</li>
+     * <li>xpath=//input[@name='name2' and @value='yes']</li>
      * <li>xpath=//*[text()="right"]</li>
      *
      * </ul>
@@ -1397,7 +1397,7 @@ Selenium.prototype.getAttribute = function(attributeLocator) {
     /**
    * Gets the value of an element attribute.
    *
-   * @param attributeLocator an element locator followed by an &#64; sign and then the name of the attribute, e.g. "foo&#64;bar"
+   * @param attributeLocator an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
    * @return string the value of the specified attribute
    */
    var result = this.browserbot.findAttribute(attributeLocator);
