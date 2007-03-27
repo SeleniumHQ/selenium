@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 14;
 use Test::Exception;
 use Test::Mock::LWP;
 
@@ -46,4 +46,11 @@ Auto_stop_off: {
     $sel->get_location;
     $sel = undef;
     unlike $Mock_req->new_args->[2], qr/cmd=testComplete/, 'not auto-stop';
+}
+
+Do_command_open: {
+    my $sel = t::WWW::Selenium->new;
+    $sel->do_command(qw(open /));
+    $sel->_set_mock_response_content('http://example.com');
+    lives_ok { $sel->get_location };
 }

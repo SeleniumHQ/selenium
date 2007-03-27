@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::WWW::Selenium.
 
+1.13 - Not yet released
+ - fix bug to allow directly calling do_command - Thanks, Tom
+
 1.12 - Tue Mar 13 20:26:10 PDT 2007
  - move unit test utility to WWW::Selenium::Util
  - refactor unit tests to use Test::Mock::LWP

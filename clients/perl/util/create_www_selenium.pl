@@ -23,7 +23,6 @@ my $selenium_description = $1;
 
 my $function_extras = {
     open => { extra_code => <<'EOT' },
-    $self->{_page_opened} = 1;
     $_[0] ||= '/'; # default to opening site root
 EOT
 };
@@ -253,9 +252,10 @@ sub stop {
 sub do_command {
     my ($self, $command, @args) = @_;
 
+    $self->{_page_opened} = 1 if $command eq 'open';
+
     # Check that user has called open()
     my %valid_pre_open_commands = (
-        open => 1,
         testComplete => 1,
         getNewBrowserSession => 1,
     );
