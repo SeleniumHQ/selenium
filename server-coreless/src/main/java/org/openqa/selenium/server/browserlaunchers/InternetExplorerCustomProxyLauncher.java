@@ -46,6 +46,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     protected static final String REG_KEY_PROXY_SERVER = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer";
     protected static final String REG_KEY_AUTOPROXY_RESULT_CACHE = "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache";
     protected static final String REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE = "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache";
+    protected static final String REG_KEY_WARN_ON_FORM_SUBMIT = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1601";
 
     protected static Class popupMgrType;
     
@@ -212,6 +213,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
         // Disable pop-up blocking
         turnOffPopupBlocking(REG_KEY_BASE + REG_KEY_POPUP_MGR);
+
+        WindowsUtils.writeIntRegistryValue(REG_KEY_BASE + REG_KEY_WARN_ON_FORM_SUBMIT, 0);
 
         if (WindowsUtils.doesRegistryValueExist(REG_KEY_BASE + REG_KEY_PROXY_OVERRIDE)) {
             WindowsUtils.deleteRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_OVERRIDE);
