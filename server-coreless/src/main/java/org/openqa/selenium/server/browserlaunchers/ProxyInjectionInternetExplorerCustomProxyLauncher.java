@@ -18,6 +18,7 @@ import org.openqa.selenium.server.SeleniumServer;
  *
  */
 public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetExplorerCustomProxyLauncher {
+    private static boolean changeMaxConnections = true;
 
     public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId) {
         super(port, sessionId);
@@ -34,8 +35,14 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetE
         WindowsUtils.writeBooleanRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_ENABLE, true);
         WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_SERVER, "127.0.0.1:" + SeleniumServer.getPortDriversShouldContact());
 
-        // need at least 1 xmlHttp connection per frame/window
-        WindowsUtils.writeIntRegistryValue(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, 256);
-        WindowsUtils.writeIntRegistryValue(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, 256);
+        if (changeMaxConnections) {
+            // need at least 1 xmlHttp connection per frame/window
+            WindowsUtils.writeIntRegistryValue(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, 256);
+            WindowsUtils.writeIntRegistryValue(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, 256);
+        }
+    }
+
+    public static void setChangeMaxConnections(boolean changeMaxConnections) {
+        ProxyInjectionInternetExplorerCustomProxyLauncher.changeMaxConnections = changeMaxConnections;
     }
 }
