@@ -106,5 +106,41 @@ namespace Test
             // Because the key down gets the result before the input element is filled, we're a letter short here
             Assert.AreEqual("I like chees", result.Text);
         }
+
+        [Test]
+        public void ShouldIssueMouseDownEvents()
+        {
+            driver.SelectElement("//div[@id='mousedown']").Click();
+
+            string result = driver.SelectElement("//div[@id='result']").Text;
+            Assert.AreEqual("mouse down", result);
+        }
+
+        [Test]
+        public void ShouldIssueClickEvents()
+        {
+            driver.SelectElement("//div[@id='mouseclick']").Click();
+
+            string result = driver.SelectElement("//div[@id='result']").Text;
+            Assert.AreEqual("mouse click", result);
+        }
+
+        [Test]
+        public void ShouldIssueMouseUpEvents()
+        {
+            driver.SelectElement("//div[@id='mouseup']").Click();
+
+            string result = driver.SelectElement("//div[@id='result']").Text;
+            Assert.AreEqual("mouse up", result);
+        }
+
+        [Test]
+        public void MouseEventsShouldBubbleUpToContainingElements()
+        {
+            driver.SelectElement("//p[@id='child']").Click();
+
+            string result = driver.SelectElement("//div[@id='result']").Text;
+            Assert.AreEqual("mouse down", result);
+        }
     }
 }

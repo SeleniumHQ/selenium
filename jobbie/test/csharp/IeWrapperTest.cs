@@ -26,7 +26,7 @@ namespace WebDriver
     [TestFixture]
     public class IeWrapperTest
     {
-        private string baseUrl = "http://localhost/webdriver/";
+        private string baseUrl = "http://localhost:1451/web/";
         private string simpleTestPage;
         private string xhtmlTestPage;
         private string formPage;
