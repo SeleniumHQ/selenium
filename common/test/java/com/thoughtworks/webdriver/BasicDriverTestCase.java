@@ -244,7 +244,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 	public void testShouldFindElementsByXPath() {
 		driver.get(xhtmlTestPage);
 		List divs = driver.selectElements("//div");
-		assertEquals(4, divs.size());
+		assertEquals(2, divs.size());
 	}
 
 	public void testShouldFindTextUsingXPath() {

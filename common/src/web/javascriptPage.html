@@ -6,6 +6,10 @@
     function updateContent(input) {
       document.getElementById('result').innerHTML = "<p>" + input.value + "</p>";
     }
+
+    function displayMessage(message) {
+      document.getElementById('result').innerHTML = "<p>" + message + "</p>";
+    }
   </script>
 </head>
 <body>
@@ -24,6 +28,28 @@
       <textarea id="keyPressArea" onkeypress="javascript:updateContent(this)" rows="2" cols="15"></textarea>
       <textarea id="keyUpArea" onkeyup="javascript:updateContent(this)" rows="2" cols="15"></textarea>
     </form>
+  </div>
+
+  <div>
+    <p><a href="#" onclick="javascript:document.title='Changed'">Change the page title!</a></p>
+
+	<p><a href="#" onclick="javascript:document.getElementById('dynamo').innerHTML = 'Fish and chips!';">Update a div</a></p>
+  </div>
+
+  <div id="dynamo">What's for dinner?</div>
+
+
+  <div id="mousedown" onmousedown="javascript:displayMessage('mouse down');">
+      <p>Click for the mouse down event</p>
+      <span><p id="child">Here's some text</p></span>
+  </div>
+
+  <div id="mouseup" onmouseup="javascript:displayMessage('mouse up');">
+      <p>Click for the mouse up event</p>
+  </div>
+
+  <div id="mouseclick" onclick="javascript:displayMessage('mouse click');">
+      <p>Click for the mouse click event</p>
   </div>
 </body>
 </html>

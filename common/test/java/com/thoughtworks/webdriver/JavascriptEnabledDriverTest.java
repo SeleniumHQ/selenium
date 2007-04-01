@@ -21,14 +21,10 @@ package com.thoughtworks.webdriver;
  * Test case for browsers that support using Javascript
  */
 public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-	
     public void testDocumentShouldReflectLatestTitle() throws Exception {
-        driver.get(xhtmlTestPage);
+        driver.get(javascriptPage);
 
-        assertEquals("XHTML Test Page", driver.getTitle());
+        assertEquals("Testing Javascript", driver.getTitle());
         driver.selectElement("link=Change the page title!").click();
         assertEquals("Changed", driver.getTitle());
 
@@ -37,7 +33,7 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     }
 
     public void testDocumentShouldReflectLatestDom() throws Exception {
-        driver.get(xhtmlTestPage);
+        driver.get(javascriptPage);
         String currentText = driver.selectText("//div[@id='dynamo']");
     	assertEquals("What's for dinner?", currentText);
 
@@ -111,21 +107,53 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 	}
 
     public void testCollapsingTwoTestsTogether() throws Exception {
-        driver.get(xhtmlTestPage);
+        driver.get(javascriptPage);
 
-        assertEquals("XHTML Test Page", driver.getTitle());
+        assertEquals("Testing Javascript", driver.getTitle());
         driver.selectElement("link=Change the page title!").click();
         assertEquals("Changed", driver.getTitle());
 
         String titleViaXPath = driver.selectText("/html/head/title");
         assertEquals("Changed", titleViaXPath);
 
-    	driver.get(xhtmlTestPage);
+    	driver.get(javascriptPage);
     	String currentText = driver.selectText("//div[@id='dynamo']");
     	assertEquals("What's for dinner?", currentText);
         driver.selectElement("link=Update a div").click();
 
         String newText = driver.selectText("//div[@id='dynamo']");
         assertEquals("Fish and chips!", newText);
+    }
+
+    public void testShouldIssueMouseDownEvents() {
+        driver.get(javascriptPage);
+        driver.selectElement("//div[@id='mousedown']").click();
+
+        String result = driver.selectElement("//div[@id='result']").getText();
+        assertEquals("mouse down", result);
+    }
+
+    public void testShouldIssueClickEvents() {
+        driver.get(javascriptPage);
+        driver.selectElement("//div[@id='mouseclick']").click();
+
+        String result = driver.selectElement("//div[@id='result']").getText();
+        assertEquals("mouse click", result);
+    }
+
+    public void testShouldIssueMouseUpEvents() {
+        driver.get(javascriptPage);
+        driver.selectElement("//div[@id='mouseup']").click();
+
+        String result = driver.selectElement("//div[@id='result']").getText();
+        assertEquals("mouse up", result);
+    }
+
+    public void testMouseEventsShouldBubbleUpToContainingElements() {
+        driver.get(javascriptPage);
+        driver.selectElement("//p[@id='child']").click();
+
+        String result = driver.selectElement("//div[@id='result']").getText();
+        assertEquals("mouse down", result);
     }
 }

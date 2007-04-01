@@ -13,24 +13,24 @@ FirefoxDriver.prototype.click = function(position) {
         server.respond("click");
     });
 
+    element.focus();
+    Utils.fireMouseEventOn(element, "mousedown");
+
     // Now do the click
-    try {
-        var button = element.QueryInterface(Components.interfaces.nsIDOMNSHTMLButtonElement);
-        button.focus();
-        button.click();
-    } catch (e) {
+    if (element["click"]) {
+        element.click();
+    } else {
         // It's not a button. That's cool. We'll just send the appropriate mouse event
-        var event = Utils.getDocument().createEvent("MouseEvents");
-        event.initMouseEvent('click', true, true, null, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-        element.dispatchEvent(event);
+        Utils.fireMouseEventOn(element, "click");
     }
 
+    Utils.fireMouseEventOn(element, "mouseup");    
+
     var checkForLoad = function() {
-        // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are
+        // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
         // There's a race condition here, in that the click event and load may have finished before we get here. For now, let's pretend that
         // doesn't happen. The other race condition is that we make this check before the load has begun. With all the javascript out there,
         // this might actually be a bit of a problem.
-        //    if (!this.getBrowser().webProgress.isLoadingDocument) {
         var docLoaderService = Utils.getBrowser().webProgress
         if (!docLoaderService.isLoadingDocument) {
             WebLoadingListener.removeListener(clickListener);
