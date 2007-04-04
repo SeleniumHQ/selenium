@@ -20,7 +20,7 @@ FirefoxDriver.prototype.click = function(position) {
     if (element["click"]) {
         element.click();
     } else {
-        // It's not a button. That's cool. We'll just send the appropriate mouse event
+        // Send the mouse event too. Not sure if this will cause the thing to be double clicked....
         Utils.fireMouseEventOn(element, "click");
     }
 
@@ -38,7 +38,7 @@ FirefoxDriver.prototype.click = function(position) {
         }
     }
 
-    Utils.getBrowser().contentWindow.setTimeout(checkForLoad, 25);
+    Utils.getBrowser().contentWindow.setTimeout(checkForLoad, 50);
 };
 
 FirefoxDriver.prototype.getElementText = function(elementId) {
@@ -138,9 +138,9 @@ FirefoxDriver.prototype.getElementSelected = function(elementId) {
     } catch(e) {}
 
     try {
-        var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
-        if (checkbox.type == "checkbox") {
-            var selected = checkbox.checked;
+        var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
+        if (inputElement.type == "checkbox" || inputElement.type == "radio") {
+            selected = inputElement.checked;
         }
     } catch(e) {}
 

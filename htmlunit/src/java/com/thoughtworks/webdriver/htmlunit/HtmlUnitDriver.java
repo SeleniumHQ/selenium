@@ -28,6 +28,7 @@ import org.jaxen.XPath;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -104,6 +105,8 @@ public class HtmlUnitDriver implements WebDriver {
 	public WebElement selectElement(String selector) {
 		if (selector.startsWith("link=")) {
 			return selectLinkWithText(selector);
+		} else if (selector.startsWith("id=")) {
+			return selectElementById(selector);
 		} else {
 			return selectElementUsingXPath(selector);
 		}
@@ -137,6 +140,18 @@ public class HtmlUnitDriver implements WebDriver {
 		throw new NoSuchElementException("No link found with text: " + expectedText);
 	}
 
+	private WebElement selectElementById(String selector) {
+		int equalsIndex = selector.indexOf('=') + 1;
+		String id = selector.substring(equalsIndex).trim();
+
+        try {
+            HtmlElement element = lastPage().getHtmlElementById(id);
+	    	return new HtmlUnitWebElement(element);
+        } catch (ElementNotFoundException e) {
+            throw new NoSuchElementException("Cannot find element with ID: " + id);
+        }
+    }
+	
 	private WebElement selectElementUsingXPath(String selector) {
 		try {
 			XPath xpath = new HtmlUnitXPath(selector);

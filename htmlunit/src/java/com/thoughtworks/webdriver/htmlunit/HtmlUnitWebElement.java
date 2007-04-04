@@ -166,8 +166,12 @@ public class HtmlUnitWebElement implements WebElement {
 		 }
 		 return elements;
 	}
-	
-	private HtmlForm findParentForm() {
+
+    public boolean isDisplayed() {
+        return false;
+    }
+
+    private HtmlForm findParentForm() {
 		DomNode current = element;
 		while (!(current == null || current instanceof HtmlForm)) {
 			current = current.getParentNode();

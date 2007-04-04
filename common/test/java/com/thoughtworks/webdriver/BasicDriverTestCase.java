@@ -416,7 +416,26 @@ public abstract class BasicDriverTestCase extends TestCase {
 		assertEquals("display: block", style);
 	}
 	
-	protected WebDriver driver;
+	public void testShouldSelectElementsBasedOnId() {
+		driver.get(formPage);
+		
+		WebElement element = driver.selectElement("id=checky");
+		
+		assertFalse(element.isSelected());
+	}
+
+    public void testShouldNotBeAbleToSelectElementsBasedOnIdIfTheElementIsNotThere() {
+		driver.get(formPage);
+
+        try {
+            driver.selectElement("id=notThere");
+            fail("Should not be able to select element by id here");
+        } catch (NoSuchElementException e) {
+            // This is expected
+        }
+    }
+
+    protected WebDriver driver;
 	protected String baseUrl;
 	protected String simpleTestPage;
 	protected String xhtmlTestPage;

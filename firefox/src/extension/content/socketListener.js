@@ -57,8 +57,8 @@ SocketListener.prototype.executeCommand = function() {
         try {
             this.driver[this.command](this.data);
         } catch (e) {
+            dump("Exception caught: " + this.command + "(" + this.data + ")\n");            
             dump(e + "\n");
-            dump(this.command + "(" + this.data + ")\n");
             this.driver.server.respond(this.command);
         }
     } else {

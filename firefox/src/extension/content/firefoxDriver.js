@@ -56,6 +56,18 @@ FirefoxDriver.prototype.selectElementUsingLink = function(linkText) {
     }
 };
 
+FirefoxDriver.prototype.selectElementById = function(id) {
+    var element = Utils.getDocument().getElementById(id);
+
+    if (element == null || !element) {
+        this.server.respond("selectElementById");
+    }
+
+    var index = Utils.addToKnownElements(element);
+
+    this.server.respond("selectElementById", index);
+}
+
 FirefoxDriver.prototype.selectElementsUsingXPath = function(xpath) {
     var result = Utils.getDocument().evaluate(xpath, Utils.getDocument(), null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
     var response = "";

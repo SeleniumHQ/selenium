@@ -1,4 +1,5 @@
-var LOAD_EVENT = "DOMContentLoaded";
+//var LOAD_EVENT = "DOMContentLoaded";
+var LOAD_EVENT = "load";
 
 function WebLoadingListener(toCall) {
     var listener = this;

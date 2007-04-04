@@ -127,4 +127,13 @@ public interface WebElement {
 	 * @return A list of {@link WebElement}s of the given type.
 	 */
 	List getChildrenOfType(String tagName);
+
+    /**
+     * Is this element displayed or not? Typically, this will make the most sense on full
+     * browser implementations rather than simulated ones, but avoids the problem of having
+     * to parse an element's "style" attribute.
+     *
+     * @return Whether or not the element is displayed
+     */
+//    boolean isDisplayed();
 }

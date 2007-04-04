@@ -47,7 +47,6 @@ WebDriverServer.prototype.respond = function(method, response) {
         output += length + "\n" + response + "\n";
     }
 
-//    dump("Response: " + output);
     this.outstream.write(output, output.length);
     this.outstream.flush();
 };

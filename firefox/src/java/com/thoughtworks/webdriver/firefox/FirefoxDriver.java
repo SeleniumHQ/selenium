@@ -57,6 +57,9 @@ public class FirefoxDriver implements WebDriver {
         if (selector.startsWith("link=")) {
             commandName = "selectElementUsingLink";
             argument = selector.substring("link=".length());
+        } else if (selector.startsWith("id=")) {
+        	commandName = "selectElementById";
+            argument = selector.substring("id=".length());
         }
 
         String elementId = extension.sendMessageAndWaitForResponse(commandName, argument);
