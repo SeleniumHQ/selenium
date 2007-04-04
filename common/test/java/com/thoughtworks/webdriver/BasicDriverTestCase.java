@@ -84,7 +84,15 @@ public abstract class BasicDriverTestCase extends TestCase {
 		assertEquals("Hello WebDriver", driver.getTitle());
 	}
 
-	public void testShouldReturnTitleOfPageIfSet() {
+    public void testShouldReportTheCurrentUrlCorrectly() {
+        driver.get(simpleTestPage);
+        assertEquals(simpleTestPage, driver.getCurrentUrl());
+
+        driver.get(javascriptPage);
+        assertEquals(javascriptPage, driver.getCurrentUrl());
+    }
+
+    public void testShouldReturnTitleOfPageIfSet() {
 		driver.get(xhtmlTestPage);
 		assertEquals("XHTML Test Page", driver.getTitle());
 

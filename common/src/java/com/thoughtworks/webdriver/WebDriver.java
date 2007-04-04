@@ -65,7 +65,14 @@ public interface WebDriver {
 	 */
 	void get(String url);
 
-	// General properties
+    /**
+     * Get a string representing the current URL that the browser is looking at.
+     *
+     * @return The URL of the page currently loaded in the browser
+     */
+    String getCurrentUrl();
+
+    // General properties
 	/**
 	 * The title of the current page.
 	 * 
@@ -120,7 +127,10 @@ public interface WebDriver {
 	/**
 	 * Select the first {@link WebElement} which matches the given selector. The
 	 * selector is assumed to be an XPath expression, unless it begins with
-	 * "link=" (no spaces!) followed by the link text to look for.
+	 * <ul>
+     *   <li>"link=" (no spaces!) followed by the link text to look for.</li>
+     *   <li>"id=" followed by the ID of the element to locate</li>
+     * </ul>
 	 * 
 	 * @param selector
 	 *            An XPath expression to use, or the link text of if the

@@ -43,6 +43,10 @@ public class FirefoxDriver implements WebDriver {
         extension.sendMessageAndWaitForResponse("get", url);
     }
 
+    public String getCurrentUrl() {
+        return extension.sendMessageAndWaitForResponse("getCurrentUrl", null);
+    }
+
     public String getTitle() {
         return extension.sendMessageAndWaitForResponse("title", null);
     }

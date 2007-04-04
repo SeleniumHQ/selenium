@@ -12,6 +12,10 @@ FirefoxDriver.prototype.get = function(url) {
     Utils.getBrowser().loadURI(url);
 }
 
+FirefoxDriver.prototype.getCurrentUrl = function() {
+    this.server.respond("getCurrentUrl", Utils.getBrowser().contentWindow.location.toString());
+}
+
 FirefoxDriver.prototype.title = function() {
     this.server.respond("title", Utils.getBrowser().contentTitle);
 };

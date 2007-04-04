@@ -40,18 +40,17 @@ public class InternetExplorerDriver implements WebDriver {
 	public void close() {
 		ie.invoke("Close");
 		ComThread.Release();
-//		try {
-//			Thread.sleep(100);
-//		} catch (InterruptedException e) {
-			// Does nothing
-//		}
 	}
 
 	public void get(String url) {
 		ie.invoke("Get", url);
 	}
 
-	public void dumpBody() {
+    public String getCurrentUrl() {
+        return ie.getPropertyAsString("CurrentUrl");
+    }
+
+    public void dumpBody() {
 		ie.invoke("DumpBody");
 	}
 

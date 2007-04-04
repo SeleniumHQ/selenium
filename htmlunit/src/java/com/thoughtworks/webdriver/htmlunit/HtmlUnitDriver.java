@@ -61,7 +61,11 @@ public class HtmlUnitDriver implements WebDriver {
 		}
 	}
 
-	public String getTitle() {
+    public String getCurrentUrl() {
+        return lastPage().getWebResponse().getUrl().toString();
+    }
+
+    public String getTitle() {
 		HtmlPage htmlPage = lastPage();
 		if (htmlPage == null) {
 			return null; // no page so there is no title
