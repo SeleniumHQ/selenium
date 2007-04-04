@@ -414,8 +414,16 @@ public abstract class BasicDriverTestCase extends TestCase {
 		
 		assertEquals("header", className);
 	}
-	
-	public void testShouldReturnTheValueOfTheStyleAttribute() {
+
+    public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
+        driver.get(formPage);
+
+        String value = driver.selectElement("id=withText").getValue();
+
+        assertEquals("Example text", value);
+    }    
+
+    public void testShouldReturnTheValueOfTheStyleAttribute() {
 		driver.get(formPage);
 		
 		WebElement element = driver.selectElement("//form[3]");

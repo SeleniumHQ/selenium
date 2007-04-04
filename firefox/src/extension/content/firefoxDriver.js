@@ -65,6 +65,7 @@ FirefoxDriver.prototype.selectElementById = function(id) {
 
     if (element == null || !element) {
         this.server.respond("selectElementById");
+        return;
     }
 
     var index = Utils.addToKnownElements(element);

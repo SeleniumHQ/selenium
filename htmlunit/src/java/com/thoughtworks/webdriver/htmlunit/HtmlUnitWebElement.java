@@ -79,13 +79,17 @@ public class HtmlUnitWebElement implements WebElement {
 	}
 	
 	public String getValue() {
-		return getAttribute("value");
+        if (element instanceof HtmlTextArea)
+            return ((HtmlTextArea)element).getText();
+        return getAttribute("value");
 	}
 	
 	public void setValue(String value) {
-		if (element instanceof HtmlInput || element instanceof HtmlTextArea)
+		if (element instanceof HtmlInput)
 			element.setAttributeValue("value", value);
-		else
+        else if (element instanceof HtmlTextArea)
+            ((HtmlTextArea)element).setText(value);
+        else
 			throw new UnsupportedOperationException("You may only set the value of elements that are input elements");
 	}
 	
