@@ -25,6 +25,7 @@ namespace WebDriver
     public interface WebDriver
     {
         // Properties
+        string CurrentUrl { get; }
         string Title { get; }
         bool Visible { get; set; }
 

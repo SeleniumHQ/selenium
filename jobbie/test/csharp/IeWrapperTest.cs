@@ -68,6 +68,14 @@ namespace WebDriver
         }
 
         [Test]
+        public void ShouldReturnTheUrlOfTheCurrentPage()
+        {
+            driver.Get(formPage);
+
+            Assert.AreEqual(formPage, driver.CurrentUrl);
+        }
+
+        [Test]
         public void ShouldReturnTitleOfPageIfSet()
         {
             driver.Get(xhtmlTestPage);

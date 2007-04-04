@@ -224,5 +224,9 @@ namespace WebDriver
             }
         }
 
+        public string CurrentUrl
+        {
+            get { return ((HTMLDocument) browser.Document).url; }
+        }
     }
 }
