@@ -1,7 +1,5 @@
 FirefoxDriver.prototype.click = function(position) {
-    var index = position.indexOf(" ");
-    index = position.substring(0, index);
-    var element = Utils.getElementAt(index);
+    var element = Utils.getElementAt(position);
     if (!element) {
         this.server.respond("click");
         return;
