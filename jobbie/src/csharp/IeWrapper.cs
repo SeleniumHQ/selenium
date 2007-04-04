@@ -147,18 +147,22 @@ namespace WebDriver
             return elements;
         }
 
-        public WebElement SelectElement(string xpath)
+        public WebElement SelectElement(string selector)
         {
-            if (xpath.StartsWith("link="))
+            if (selector.StartsWith("link="))
             {
-                return SelectLinkWithText(xpath);
+                return SelectLinkWithText(selector);
+            } 
+            else if (selector.StartsWith("id="))
+            {
+                return SelectElementById(selector);
             }
             else
             {
                 XPathNavigator navigator = CreateNavigator();
-                NavigableDocument node = navigator.SelectSingleNode(xpath) as NavigableDocument;
+                NavigableDocument node = navigator.SelectSingleNode(selector) as NavigableDocument;
                 if (node == null)
-                    throw new NoSuchElementException("Cannot find an element with the expression: " + xpath);
+                    throw new NoSuchElementException("Cannot find an element with the expression: " + selector);
                 return new WrappedWebElement(this, node.UnderlyingObject as IHTMLDOMNode);
             }
         }
@@ -176,7 +180,7 @@ namespace WebDriver
         private WebElement SelectLinkWithText(String selector)
         {
             int equalsIndex = selector.IndexOf('=') + 1;
-            String linkText = selector.Substring(equalsIndex).Trim();
+            string linkText = selector.Substring(equalsIndex).Trim();
 
             IHTMLElementCollection links = HtmlDocument.links;
             IEnumerator enumerator = links.GetEnumerator();
@@ -190,6 +194,19 @@ namespace WebDriver
                 }
             }
             throw new NoSuchElementException("Cannot find link with text: " + linkText);
+        }
+
+        private WebElement SelectElementById(String selector)
+        {
+            int equalsIndex = selector.IndexOf('=') + 1;
+            string id = selector.Substring(equalsIndex).Trim();
+
+            IHTMLElement element = HtmlDocument.getElementById(id);
+            if (element != null)
+            {
+                return new WrappedWebElement(this, (IHTMLDOMNode) element);
+            }
+            throw new NoSuchElementException("Cannot find element with id: " + selector);
         }
 
         private HTMLDocument HtmlDocument

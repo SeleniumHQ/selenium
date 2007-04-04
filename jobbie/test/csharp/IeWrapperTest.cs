@@ -434,5 +434,15 @@ namespace WebDriver
 
             Assert.AreEqual("display: block", style);
         }
+
+        [Test]
+        public void ShouldSelectElementsBasedOnId()
+        {
+            driver.Get(formPage);
+
+            WebElement element = driver.SelectElement("id=checky");
+
+            Assert.IsFalse(element.Selected);
+        }
     }
 }

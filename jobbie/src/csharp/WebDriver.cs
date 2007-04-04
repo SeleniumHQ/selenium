@@ -34,7 +34,7 @@ namespace WebDriver
         // XPath goodness
         string SelectTextWithXPath(string xpath);
         ArrayList SelectElementsByXPath(string xpath);
-        WebElement SelectElement(string xpath);
+        WebElement SelectElement(string selector);
 
         // Misc
         void DumpBody();
