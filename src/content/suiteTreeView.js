@@ -23,13 +23,7 @@ function SuiteTreeView(editor, tree) {
     var self = this;
     tree.addEventListener("dblclick", function(event) {
             var testCase = self.getSelectedTestCase();
-            if (testCase) {
-                if (testCase.content) {
-                    editor.setTestCase(testCase.content);
-                } else {
-                    editor.loadTestCase(testCase.getFile());
-                }
-            }
+            if (testCase) editor.showTestCaseFromSuite(testCase);
         }, false);
     editor.addObserver({
             _testCaseObserver: {

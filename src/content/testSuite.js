@@ -65,10 +65,10 @@ TestSuite.header =
     '  <meta content="text/html; charset=UTF-8" http-equiv="content-type">' + "\n" +
     "  <title>Test Suite</title>\n" +
     "</head>\n" +
-    "<body><table><tbody>\n";
+    "<body>\n";
 
 TestSuite.footer = 
-    "</tbody></table></body>\n</html>\n";
+    "</body>\n</html>\n";
 
 TestSuite.prototype = {
     addTestCaseFromContent: function(content) {
@@ -90,11 +90,7 @@ TestSuite.prototype = {
         }
         var output = FileUtils.openFileOutputStream(this.file);
         var converter = FileUtils.getUnicodeConverter("UTF-8");
-        var content = TestSuite.header;
-        for (var i = 0; i < this.tests.length; i++) {
-            content += this.tests[i].format();
-        }
-        content += TestSuite.footer;
+        var content = TestSuite.header + this.formatSuiteTable() + TestSuite.footer;
         var text = converter.ConvertFromUnicode(content);
         output.write(text, text.length);
         var fin = converter.Finish();
@@ -103,6 +99,16 @@ TestSuite.prototype = {
         }
         output.close();
         return true;
+    },
+
+    formatSuiteTable: function() {
+        var content = "<table id=\"suiteTable\" cellpadding=\"1\" cellspacing=\"1\" border=\"1\" class=\"selenium\"><tbody>\n";
+        content += "<tr><td><b>Test Suite</b></td></tr>\n";
+        for (var i = 0; i < this.tests.length; i++) {
+            content += this.tests[i].format();
+        }
+        content += "</tbody></table>\n";
+        return content;
     },
 
     generateNewTestCaseTitle: function() {

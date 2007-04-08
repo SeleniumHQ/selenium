@@ -108,6 +108,7 @@ Editor.controller = {
 		case "cmd_save":
 		case "cmd_save_suite":
 		case "cmd_selenium_play":
+		case "cmd_selenium_play_suite":
 		case "cmd_selenium_pause":
 		case "cmd_selenium_step":
 		case "cmd_selenium_testrunner":
@@ -128,6 +129,7 @@ Editor.controller = {
 			return true;
 		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
+		case "cmd_selenium_play_suite":
 		    return editor.currentFormat.getFormatter().playable && editor.state != 'playing';
 		case "cmd_selenium_pause":
 		    return editor.currentFormat.getFormatter().playable && (editor.state == 'playing' || editor.state == 'paused');
@@ -148,6 +150,9 @@ Editor.controller = {
 		case "cmd_save_suite": editor.saveTestSuite(); break;
 		case "cmd_selenium_play":
 			editor.selDebugger.start();
+			break;
+		case "cmd_selenium_play_suite":
+			editor.playTestSuite();
 			break;
 		case "cmd_selenium_pause": 
 			if (editor.state == 'paused') {
@@ -270,6 +275,15 @@ Editor.prototype.loadTestCaseWithNewSuite = function(file) {
         var testSuite = new TestSuite();
         testSuite.addTestCaseFromContent(this.testCase);
         this.setTestSuite(testSuite);
+    }
+}
+
+// show specified TestSuite.TestCase object.
+Editor.prototype.showTestCaseFromSuite = function(testCase) {
+    if (testCase.content) {
+        this.setTestCase(testCase.content);
+    } else {
+        this.loadTestCase(testCase.getFile());
     }
 }
 
@@ -647,6 +661,15 @@ Editor.prototype.showInBrowser = function(url, newWindow) {
     }
 }
 
+Editor.prototype.playTestSuite = function(index) {
+    if (index == null) index = 0;
+    this.showTestCaseFromSuite(this.testSuite.tests[index]);
+    var self = this;
+    this.selDebugger.start(function() {
+            if (++index < self.testSuite.tests.length) self.playTestSuite(index);
+        });
+}
+
 Editor.prototype.playback = function(newWindow, resultCallback) {
 	// disable recording
 	this.setRecordingEnabled(false);
@@ -662,8 +685,23 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
                        newWindow);
 }
 
-Editor.prototype.loadPlayerTest = function(e) {
-	e.innerHTML = this.formats.getDefaultFormat().getFormatter().format(this.testCase, "Test Player", false, true);
+Editor.prototype.loadTestSuiteToTestRunner = function(e) {
+    var content = "<table id=\"suiteTable\" cellpadding=\"1\" cellspacing=\"1\" border=\"1\" class=\"selenium\"><tbody>\n";
+    content += "<tr><td><b>Test Suite</b></td></tr>\n";
+    for (var i = 0; i < this.testSuite.tests.length; i++) {
+        var testCase = this.testSuite.tests[i];
+        content += "<tr><td><a href=\"PlayerTest.html?" + i + "\">" +
+            testCase.getTitle() + "</a></td></tr>\n";
+    }
+    content += "</tbody></table>\n";
+    e.innerHTML = content;
+}
+
+Editor.prototype.loadTestCaseToTestRunner = function(e, index) {
+    this.log.debug("loading test index #" + index + " into test runner");
+    var testCaseInfo = this.testSuite.tests[index];
+    var testCase = testCaseInfo.content || this.currentFormat.loadFile(testCaseInfo.getFile(), false);
+	e.innerHTML = this.formats.getDefaultFormat().getFormatter().format(testCase, testCaseInfo.getTitle(), false, true);
 }
 
 Editor.prototype.openLogWindow = function() {

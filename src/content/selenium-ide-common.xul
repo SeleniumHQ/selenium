@@ -58,6 +58,7 @@ limitations under the License.
     <command id="cmd_open_suite" oncommand="goDoCommand('cmd_open_suite')"/>
     <command id="cmd_close" oncommand="goDoCommand('cmd_close')"/>
     <command id="cmd_selenium_play" oncommand="goDoCommand('cmd_selenium_play')"/>
+    <command id="cmd_selenium_play_suite" oncommand="goDoCommand('cmd_selenium_play_suite')"/>
     <command id="cmd_selenium_testrunner" oncommand="goDoCommand('cmd_selenium_testrunner')"/>
     <command id="cmd_selenium_pause" oncommand="goDoCommand('cmd_selenium_pause')"/>
     <command id="cmd_selenium_step" oncommand="goDoCommand('cmd_selenium_step')"/>

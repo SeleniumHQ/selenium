@@ -62,6 +62,10 @@ Selenium.prototype.doPause = function(waitTime) {
     currentTest.pauseInterval = waitTime;
 };
 
+Selenium.prototype.doEcho = function(message) {
+    LOG.info("echo: " + message);
+};
+
 // doStore* methods are copied from selenium-testrunner.js
 Selenium.prototype.doStoreText = function(target, varName) {
     var element = this.page().findElement(target);
@@ -79,7 +83,7 @@ Selenium.prototype.doStore = function(value, varName) {
 function Logger() {
 	var self = this;
 	var levels = ["log","debug","info","warn","error"];
-	
+    this.maxEntries = 1000;
 	this.entries = [];
 	
 	levels.forEach(function(level) {
@@ -104,6 +108,7 @@ function Logger() {
 			}
 		};
 		this.entries.push(entry);
+        if (this.entries.size > this.maxEntries) this.entries.unshift();
 		this.observers.forEach(function(o) { o.onAppendEntry(entry) });
 	}
 
@@ -150,7 +155,7 @@ function createSelenium(baseURL) {
     return selenium;
 }
 
-function start(baseURL) {
+function start(baseURL, handler) {
 	if (!stopAndDo("start", baseURL)) return;
 	
     selenium = createSelenium(baseURL);
@@ -178,6 +183,7 @@ function start(baseURL) {
 		if (result.failed) {
             testCase.debugContext.failed = true;
 			testCase.debugContext.currentCommand().result = 'failed';
+            LOG.error(result.failureMessage);
 		} else if (result.passed) {
 			testCase.debugContext.currentCommand().result = 'passed';
 		} else {
@@ -203,10 +209,11 @@ function start(baseURL) {
     }
 	currentTest.testComplete = function() {
 		LOG.debug("testComplete");
-		editor.setState(null);
 		currentTest = null;
+		editor.setState(null);
 		testCase.debugContext.reset();
-		editor.view.rowUpdated(testCase.debugContext.debugIndex);
+		//editor.view.rowUpdated(testCase.debugContext.debugIndex);
+        if (handler && handler.testComplete) handler.testComplete();
 	}
 	currentTest.pause = function() {
 		editor.setState("paused");

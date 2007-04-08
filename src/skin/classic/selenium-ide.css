@@ -119,8 +119,9 @@ treechildren::-moz-tree-cell-text(currentTestCase)
  */
 
 toolbarbutton.icon {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding: 2px 4px 2px 4px;
+  margin: 0;
+  border: 0;
 }
 
 toolbarbutton:hover:not([disabled="true"]) { 
@@ -143,8 +144,11 @@ toolbarbutton.icon label {
   display: none;
 }
 
+#play-suite-button { 
+  -moz-image-region: rect(0px 121px 16px 96px);
+}
 #play-button { 
-  -moz-image-region: rect(0px 16px 16px 0px);
+  -moz-image-region: rect(0px 146px 16px 121px);
 }
 .pause#pause-button { 
   -moz-image-region: rect(0px 32px 16px 16px);

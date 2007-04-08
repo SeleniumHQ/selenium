@@ -4,12 +4,16 @@
   <meta content="text/html; charset=UTF-8" http-equiv="content-type">
   <title>Test Open</title>
 	<script language="JavasSript" type="text/javascript">
-function loadTest(body) {
-  top.editor.loadPlayerTest(document.getElementById("testTable"));
+function loadTest() {
+  var index = location.search.substr(1);
+  if (index && /^\d+/.test(index)) {
+    top.editor.loadTestCaseToTestRunner(document.getElementById("testTable"), 
+                                        parseInt(index));
+  }
 }
 	</script>
 </head>
-<body onload="loadTest(this)">
+<body onload="loadTest()">
 	<div id="testTable">
 	</div>
 </body>

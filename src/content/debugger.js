@@ -68,7 +68,7 @@ function Debugger(editor) {
 	}
 }
 
-Debugger.prototype.start = function() {
+Debugger.prototype.start = function(complete) {
 	document.getElementById("record-button").checked = false;
 	this.editor.toggleRecordingEnabled(false);
 
@@ -76,7 +76,14 @@ Debugger.prototype.start = function() {
 
 	this.init();
 	this.paused = false;
-	this.runner.start(this.editor.getBaseURL());
+    var self = this;
+	this.runner.start(this.editor.getBaseURL(), {
+            testComplete: function() {
+                self.editor.setState(null);
+                self.editor.view.rowUpdated(self.runner.testCase.debugContext.debugIndex);
+                if (complete) complete();
+            }
+        });
 };
 
 Debugger.prototype.executeCommand = function(command) {
