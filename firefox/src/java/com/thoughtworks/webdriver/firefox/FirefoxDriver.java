@@ -94,6 +94,10 @@ public class FirefoxDriver implements WebDriver {
         // no-op
     }
 
+    public TargetLocator switchTo() {
+        return null;
+    }
+
     private String locateFirefoxBinary() {
         String osName = System.getProperty("os.name").toLowerCase();
         File potentialPath;

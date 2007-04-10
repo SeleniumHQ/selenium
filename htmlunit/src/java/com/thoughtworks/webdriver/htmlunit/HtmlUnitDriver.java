@@ -25,13 +25,11 @@ import java.util.List;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
@@ -39,8 +37,9 @@ import com.thoughtworks.webdriver.WebElement;
 
 public class HtmlUnitDriver implements WebDriver {
 	private WebClient webClient;
+    private WebWindow currentWindow;
 
-	public HtmlUnitDriver() {
+    public HtmlUnitDriver() {
 		newWebClient();
 	}
 
@@ -56,7 +55,8 @@ public class HtmlUnitDriver implements WebDriver {
 			URL fullUrl = new URL(url);
 			Page page = webClient.getPage(fullUrl);
 			page.initialize();
-		} catch (Exception e) {
+            currentWindow = webClient.getCurrentWindow();
+        } catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -125,9 +125,14 @@ public class HtmlUnitDriver implements WebDriver {
 		newWebClient();
 	}
 
-	private synchronized HtmlPage lastPage() {
-		return (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
-	}
+
+    public TargetLocator switchTo() {
+        return new HtmlUnitTargetLocator();
+    }
+
+    private synchronized HtmlPage lastPage() {
+        return (HtmlPage) currentWindow.getEnclosedPage();
+    }
 
 	private WebElement selectLinkWithText(String selector) {
 		int equalsIndex = selector.indexOf('=') + 1;
@@ -159,7 +164,7 @@ public class HtmlUnitDriver implements WebDriver {
 	private WebElement selectElementUsingXPath(String selector) {
 		try {
 			XPath xpath = new HtmlUnitXPath(selector);
-			Object node = xpath.selectSingleNode(lastPage());
+            Object node = xpath.selectSingleNode(lastPage());
 			if (node == null) 
 				throw new NoSuchElementException("Cannot locate a node using " + selector);
 			return new HtmlUnitWebElement((HtmlElement) node);
@@ -167,4 +172,12 @@ public class HtmlUnitDriver implements WebDriver {
 			throw new RuntimeException(e);
 		}
 	}
+
+    private class HtmlUnitTargetLocator implements TargetLocator {
+        public WebDriver frame(int frameIndex) {
+            HtmlPage page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+            currentWindow = (WebWindow) page.getFrames().get(frameIndex);
+            return HtmlUnitDriver.this;
+        }
+    }
 }

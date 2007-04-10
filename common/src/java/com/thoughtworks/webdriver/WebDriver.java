@@ -17,6 +17,8 @@
 
 package com.thoughtworks.webdriver;
 
+import org.mortbay.html.FrameSet;
+
 import java.util.List;
 
 
@@ -157,4 +159,26 @@ public interface WebDriver {
 	 * currently open.
 	 */
 	void close();
+
+    /**
+     * Send future commands to a different frame or window.
+     *
+     * @return A TargetLocator which can be used to select a frame or window
+     * @see com.thoughtworks.webdriver.WebDriver.TargetLocator
+     */
+    TargetLocator switchTo();
+
+    /**
+     * Used to locate a given frame or window.
+     */
+    public interface TargetLocator {
+        /**
+         * Select a frame by its (zero-based) index. That is, if a page has three frames, the first frame would be at index "0",
+         * the second at index "1" and the third at index "2". Once the frame has been selected, all subsequent calls on the WebDriver interface are made to that frame.
+         *
+         * @param frameIndex
+         * @return
+         */
+        WebDriver frame(int frameIndex);
+    }
 }

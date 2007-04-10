@@ -87,7 +87,11 @@ public class InternetExplorerDriver implements WebDriver {
 		return safelyInvoke("SelectTextWithXPath", xpath, "Cannot find text using xpath: " + xpath).getString();
 	}
 
-	private Variant safelyInvoke(String methodName, String argument, String errorMessage) {
+    public TargetLocator switchTo() {
+        return null;
+    }
+
+    private Variant safelyInvoke(String methodName, String argument, String errorMessage) {
 		try {
 			return ie.invoke(methodName, argument);
 		} catch (ComFailException e) {

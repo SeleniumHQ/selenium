@@ -51,7 +51,8 @@ public abstract class BasicDriverTestCase extends TestCase {
 		metaRedirectPage = baseUrl + "meta-redirect.html";
 		redirectPage = baseUrl + "redirect";
 		javascriptPage = baseUrl + "javascriptPage.html";
-	}
+        framesetPage = baseUrl + "frameset.html";
+    }
 
 	protected abstract WebDriver getDriver();
 	
@@ -451,6 +452,19 @@ public abstract class BasicDriverTestCase extends TestCase {
         }
     }
 
+    public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
+        driver.get(framesetPage);
+
+        driver.switchTo().frame(0);
+        WebElement pageNumber = driver.selectElement("//span[@id='pageNumber']");
+        assertEquals("1", pageNumber.getText());
+
+        driver.switchTo().frame(1);
+        pageNumber = driver.selectElement("//span[@id='pageNumber']");
+        assertEquals("2", pageNumber.getText());
+
+    }
+
     protected WebDriver driver;
 	protected String baseUrl;
 	protected String simpleTestPage;
@@ -459,4 +473,5 @@ public abstract class BasicDriverTestCase extends TestCase {
 	protected String metaRedirectPage;
 	protected String redirectPage;
 	protected String javascriptPage;
+    protected String framesetPage;
 }

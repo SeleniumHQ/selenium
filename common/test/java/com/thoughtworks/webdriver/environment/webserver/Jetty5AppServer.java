@@ -39,8 +39,10 @@ public class Jetty5AppServer implements AppServer {
 		WebApplicationContext context = addWebApplication("", path.getAbsolutePath());
 		
 		addRedirectorServlet(context);
-		
-		context.setClassLoaderJava2Compliant(true);
+
+        addInfinitePagesServlet(context);
+
+        context.setClassLoaderJava2Compliant(true);
 	}
 
 	private void findRootOfWebApp() {
@@ -58,7 +60,15 @@ public class Jetty5AppServer implements AppServer {
 		}
 	}
 
-	public String getBaseUrl() {
+    private void addInfinitePagesServlet(WebApplicationContext context) {
+        try {
+			context.addServlet("Pages", "/page/*", PageServlet.class.getName());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    public String getBaseUrl() {
 		return "http://localhost:" + port + "/";
 	}
 
