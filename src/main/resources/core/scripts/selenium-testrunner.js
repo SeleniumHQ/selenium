@@ -76,7 +76,7 @@ objectExtend(HtmlTestRunner.prototype, {
         if (this.controlPanel.isMultiWindowMode()) {
             return this._getSeparateApplicationWindow();
         }
-        return $('myiframe').contentWindow;
+        return sel$('myiframe').contentWindow;
     },
 
     _getSeparateApplicationWindow: function () {
@@ -265,7 +265,7 @@ var suiteFrame;
 var testFrame;
 
 function getSuiteFrame() {
-    var f = $('testSuiteFrame');
+    var f = sel$('testSuiteFrame');
     if (f == null) {
         f = top;
         // proxyInjection mode does not set myiframe
@@ -274,7 +274,7 @@ function getSuiteFrame() {
 }
 
 function getTestFrame() {
-    var f = $('testFrame');
+    var f = sel$('testFrame');
     if (f == null) {
         f = top;
         // proxyInjection mode does not set myiframe
@@ -290,9 +290,9 @@ objectExtend(HtmlTestRunnerControlPanel.prototype, {
 
         this.runInterval = 0;
 
-        this.highlightOption = $('highlightOption');
-        this.pauseButton = $('pauseTest');
-        this.stepButton = $('stepTest');
+        this.highlightOption = sel$('highlightOption');
+        this.pauseButton = sel$('pauseTest');
+        this.stepButton = sel$('stepTest');
 
         this.highlightOption.onclick = fnBindAsEventListener((function() {
             this.setHighlightOption();
@@ -352,7 +352,7 @@ objectExtend(HtmlTestRunnerControlPanel.prototype, {
     },
 
     _switchPauseButtonToContinue: function() {
-        $('stepTest').disabled = false;
+        sel$('stepTest').disabled = false;
         this.pauseButton.className = "cssContinueTest";
         this.pauseButton.onclick = fnBindAsEventListener(this.continueCurrentTest, this);
     },
@@ -959,11 +959,11 @@ objectExtend(Metrics.prototype, {
     },
 
     printMetrics: function() {
-        setText($('commandPasses'), this.numCommandPasses);
-        setText($('commandFailures'), this.numCommandFailures);
-        setText($('commandErrors'), this.numCommandErrors);
-        setText($('testRuns'), this.numTestPasses + this.numTestFailures);
-        setText($('testFailures'), this.numTestFailures);
+        setText(sel$('commandPasses'), this.numCommandPasses);
+        setText(sel$('commandFailures'), this.numCommandFailures);
+        setText(sel$('commandErrors'), this.numCommandErrors);
+        setText(sel$('testRuns'), this.numTestPasses + this.numTestFailures);
+        setText(sel$('testFailures'), this.numTestFailures);
 
         this.currentTime = new Date().getTime();
 
@@ -973,7 +973,7 @@ objectExtend(Metrics.prototype, {
         var minutes = Math.floor(totalSecs / 60);
         var seconds = totalSecs % 60;
 
-        setText($('elapsedTime'), this._pad(minutes) + ":" + this._pad(seconds));
+        setText(sel$('elapsedTime'), this._pad(minutes) + ":" + this._pad(seconds));
     },
 
 // Puts a leading 0 on num if it is less than 10
@@ -1069,7 +1069,7 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
     },
 
     commandStarted : function() {
-        $('pauseTest').disabled = false;
+        sel$('pauseTest').disabled = false;
         this.currentRow.select();
         this.metrics.printMetrics();
     },
@@ -1141,8 +1141,8 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
     },
 
     testComplete : function() {
-        $('pauseTest').disabled = true;
-        $('stepTest').disabled = true;
+        sel$('pauseTest').disabled = true;
+        sel$('stepTest').disabled = true;
         if (htmlTestRunner.testFailed) {
             this.htmlTestCase.markFailed();
             this.metrics.numTestFailures += 1;

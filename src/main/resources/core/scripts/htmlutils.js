@@ -31,7 +31,7 @@ function objectExtend(destination, source) {
   return destination;
 }
 
-function $() {
+function sel$() {
   var results = [], element;
   for (var i = 0; i < arguments.length; i++) {
     element = arguments[i];

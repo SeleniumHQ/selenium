@@ -54,9 +54,9 @@ function selenium_frameRunTest(oldOnLoadRoutine) {
 }
 
 function seleniumOnLoad() {
-    	injectedSessionId = @SESSION_ID@;
-        window["selenium_has_been_loaded_into_this_window"] = true;
-        runSeleniumTest();
+    injectedSessionId = @SESSION_ID@;
+    window["selenium_has_been_loaded_into_this_window"] = true;
+    runSeleniumTest();
 }
 
 function seleniumOnUnload() {
@@ -64,11 +64,11 @@ function seleniumOnUnload() {
 }
 
 if (window.addEventListener) {
-    	window.addEventListener("load", seleniumOnLoad, false);	// firefox
-    	window.addEventListener("unload", seleniumOnUnload, false);	// firefox
+        window.addEventListener("load", seleniumOnLoad, false);	// firefox
+        window.addEventListener("unload", seleniumOnUnload, false);	// firefox
 } else if (window.attachEvent){
     	window.attachEvent("onload", seleniumOnLoad);	// IE
-    	window.attachEvent("onunload", seleniumOnUnload);	// IE
+        window.attachEvent("onunload", seleniumOnUnload);	// IE
 }
 else {
     	throw "causing a JavaScript error to tell the world that I did not arrange to be run on load";
