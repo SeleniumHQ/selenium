@@ -231,7 +231,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             }
 
             // is this URL a /selenium URL?
-            if (url.toString().indexOf("/selenium") != -1) { 
+            if (isSeleniumUrl(url.toString())) {
                 request.setHandled(false);
                 return;
             }
@@ -244,6 +244,28 @@ public class ProxyHandler extends AbstractHttpHandler {
             if (!response.isCommitted())
                 response.sendError(HttpResponse.__400_Bad_Request);
         }
+    }
+
+    private boolean isSeleniumUrl(String url) {
+        int slashSlash = url.indexOf("//");
+        if (slashSlash == -1) {
+            return false;
+        }
+
+        int nextSlash = url.indexOf("/", slashSlash + 2);
+        if (nextSlash == -1) {
+            return false;
+        }
+
+        int seleniumServer = url.indexOf("/selenium-server/");
+        if (seleniumServer == -1) {
+            return false;
+        }
+
+        // we do this complex checking because sometimes some sites/pages (such as ominture ads) embed the referrer URL,
+        // which will include selenium stuff, in to the query parameter, which would fake out a simple String.contains()
+        // call. This method is more robust and will catch this stuff.
+        return seleniumServer == nextSlash; 
     }
 
     protected long proxyPlainTextRequest(URL url, String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws IOException {
