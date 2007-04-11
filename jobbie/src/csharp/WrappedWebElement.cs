@@ -212,7 +212,7 @@ namespace WebDriver
                 element.FireEvent("onKeyUp", ref eventRef);
             }
         }
-
+        
         public ArrayList GetChildrenOfType(string tagName)
         {
             ArrayList children = new ArrayList();

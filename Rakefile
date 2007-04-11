@@ -51,13 +51,10 @@ end
   end
 end
 
-# C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Csc.exe /noconfig /nowarn:1701,1702 /errorreport:prompt /warn:4 /define:DEBUG;TRACE /reference:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll /reference:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll /reference:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll /reference:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll /reference:C:\WINDOWS\assembly\GAC\Microsoft.mshtml\7.0.3300.0__b03f5f7f11d50a3a\Microsoft.mshtml.dll /reference:obj\Debug\Interop.SHDocVw.dll /debug+ /debug:full /optimize- /out:obj\Debug\WebDriver.dll /target:library IeWrapper.cs NavigableDocument.cs NoSuchElementException.cs Properties\AssemblyInfo.cs UnsupportedOperationException.cs WebDriver.cs WrappedWebElement.cs
-# C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Csc.exe /noconfig /nowarn:1701,1702 /errorreport:prompt /warn:4 /define:DEBUG;TRACE /reference:"C:\Program Files\Microsoft.NET\Primary Interop Assemblies\Microsoft.mshtml.dll" /reference:C:\WINDOWS\assembly\GAC\nunit.framework\2.2.0.0__96d09a1eb7f44a77\nunit.framework.dll /reference:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll /reference:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll /reference:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll /reference:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll /reference:C:\work\webdriver-qs\build\jobbie\WebDriver.dll /reference:obj\Debug\Interop.SHDocVw.dll /debug+ /debug:full /optimize- /out:obj\Debug\Test.dll /target:library IeWrapperJavascriptTest.cs IeWrapperTest.cs Properties\AssemblyInfo.cs XPathTest.cs
-
 file 'jobbie/build/webdriver-jobbie.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
-  csc :out => 'jobbie/build/webdriver-jobbie.dll', :sources => FileList['jobbie/src/csharp/**/*.cs'], 
-      :references => ['C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll', 'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll', 'C:\WINDOWS\assembly\GAC\Microsoft.mshtml\7.0.3300.0__b03f5f7f11d50a3a\Microsoft.mshtml.dll', 'jobbie\lib\runtime\Interop.SHDocVw.dll']
-  File.copy('jobbie/lib/runtime/Interop.SHDocVw.dll', 'jobbie/build')
+  sh "devenv webdriver.sln /Rebuild", :verbose => true
+
+#  File.copy('jobbie/lib/runtime/Interop.SHDocVw.dll', 'jobbie/build')
 end
 
 def windows?
@@ -68,10 +65,11 @@ if windows? then
   Rake::Task[:build].enhance([:jobbie])
   Rake::Task[:test].enhance([:test_jobbie])
   Rake::Task[:test_jobbie].enhance([:jobbie])
-  Rake::Task[:jobbie].enhance %w(jobbie/build/webdriver-jobbie.dll) do
-    sh 'regasm jobbie/build/webdriver-jobbie.dll', :verbose => false
-    sh 'regasm /regfile:jobbie/build/webdriver.reg jobbie/build/webdriver-jobbie.dll', :verbose => false    
-  end
+  Rake::Task[:jobbie].enhance %w(jobbie/build/webdriver-jobbie.dll)
+#  Rake::Task[:jobbie].enhance %w(jobbie/build/webdriver-jobbie.dll) do
+#    sh 'regasm jobbie/build/webdriver-jobbie.dll', :verbose => false
+#    sh 'regasm /regfile:jobbie/build/webdriver.reg jobbie/build/webdriver-jobbie.dll', :verbose => false    
+#  end
 end
 
 def javac(args)
@@ -142,42 +140,4 @@ def junit(args)
     test_string += " #{name[0, name.size - 5]}"
     result = sh test_string, :verbose => false
   end
-end
-
-def csc(args)
-  # mandatory args  
-  out = (args[:out] or raise 'csc: please specify the :out parameter')
-  source_patterns = (args[:sources] or raise 'csc: please specify the :sources parameter')
-  sources = FileList.new(source_patterns)
-  raise "No source files found at #{sources.join(', ')}" if sources.empty?
-
-  # optional args
-  unless args[:exclude].nil?
-    args[:exclude].each { |pattern| sources.exclude(pattern) }
-  end
-  target = (args[:target] or 'library')
-  debug = (args[:debug] or true)
-  resources = args[:resources] ? FileList.new(args[:resources]) : []
-  references = args[:references] ? FileList.new(args[:references]) : []
-  extra_args = args[:extra_args]
-  
-  module_name = File.basename(out).sub(/\.dll$|\.exe$/, '')
-  
-  argfile = 'csc '
-  argfile += "/out:#{out.gsub('/', '\\')} "
-  argfile += "/target:#{target.gsub('/', '\\')} "
-  argfile += '/nologo '
-  argfile += "/debug#{debug ? '+' : '-'} "
-  argfile += "/lib:jobbie\\build "
-  resources.each do |res| 
-    res_path = res.gsub('/', '\\')
-    res_name = "#{module_name}.EmbeddedResources.#{File.basename(res_path)}"
-    argfile += "/resource:#{res_path},#{res_name},public "
-  end
-  references.each { |ref| argfile += "/reference:#{ref.gsub('/', '\\')} " }
-  sources.each { |src| argfile += "#{src.gsub('/', '\\')} " }
-  argfile += extra_args unless extra_args.nil?
-  
-  puts "Compiling #{out}" if verbose
-  sh "#{argfile}", :verbose => false
 end

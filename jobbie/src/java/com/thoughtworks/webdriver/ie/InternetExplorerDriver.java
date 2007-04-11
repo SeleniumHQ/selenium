@@ -88,7 +88,7 @@ public class InternetExplorerDriver implements WebDriver {
 	}
 
     public TargetLocator switchTo() {
-        return null;
+        return new InternetExplorerTargetLocator(ie.invoke("SwitchTo"));
     }
 
     private Variant safelyInvoke(String methodName, String argument, String errorMessage) {
@@ -98,4 +98,17 @@ public class InternetExplorerDriver implements WebDriver {
 			throw new NoSuchElementException(errorMessage);
 		}
 	}
+    
+    private class InternetExplorerTargetLocator implements TargetLocator {
+		private final ActiveXComponent targetLocator;
+
+		public InternetExplorerTargetLocator(Variant targetLocator) {
+			this.targetLocator = new ActiveXComponent(targetLocator.toDispatch());
+		}
+
+		public WebDriver frame(int frameIndex) {
+			targetLocator.invoke("Frame", frameIndex);
+			return InternetExplorerDriver.this;
+		}
+    }
 }

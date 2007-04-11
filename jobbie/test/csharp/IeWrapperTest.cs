@@ -26,13 +26,14 @@ namespace WebDriver
     [TestFixture]
     public class IeWrapperTest
     {
-        private string baseUrl = "http://localhost:1451/web/";
+        private string baseUrl = "http://localhost:1890/web/";
         private string simpleTestPage;
         private string xhtmlTestPage;
         private string formPage;
         private string redirectPage;
         private string metaRedirectPage;
         private string javascriptPage;
+        private string framesetPage;
         private IeWrapper driver;
 
         [TestFixtureSetUp]
@@ -55,8 +56,9 @@ namespace WebDriver
             xhtmlTestPage = baseUrl + "xhtmlTest.html";
             formPage = baseUrl + "formPage.html";
             metaRedirectPage = baseUrl + "meta-redirect.html";
-            redirectPage = baseUrl + "redirect";
+            redirectPage = baseUrl + "Redirect.aspx";
             javascriptPage = baseUrl + "javascriptPage.html";
+            framesetPage = baseUrl + "win32frameset.html";
         }
 
         [Test]
@@ -86,7 +88,6 @@ namespace WebDriver
         }
 
         [Test]
-        [Ignore("SimonStewart: Need to figure out how to create a redirect page in ASP.Net")]
         public void ShouldFollowRedirectsSentInTheHttpResponseHeaders()
         {
             driver.Get(redirectPage);
@@ -201,7 +202,7 @@ namespace WebDriver
         {
             driver.Get(xhtmlTestPage);
             IList divs = driver.SelectElementsByXPath("//div");
-            Assert.AreEqual(4, divs.Count);
+            Assert.AreEqual(2, divs.Count);
         }
 
         [Test]
@@ -217,9 +218,9 @@ namespace WebDriver
         [Test]
         public void DocumentShouldReflectLatestDOM()
         {
-            driver.Get(xhtmlTestPage);
+            driver.Get(javascriptPage);
    
-            Assert.AreEqual("XHTML Test Page", driver.Title);
+            Assert.AreEqual("Testing Javascript", driver.Title);
             driver.SelectElement("link=Change the page title!").Click();
             Assert.AreEqual("Changed", driver.Title);
 
@@ -451,6 +452,43 @@ namespace WebDriver
             WebElement element = driver.SelectElement("id=checky");
 
             Assert.IsFalse(element.Selected);
+        }
+
+        [Test]
+        public void ShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded()
+        {
+            driver.Get(framesetPage);
+
+            driver.SwitchTo().Frame(0);
+            WebElement pageNumber = driver.SelectElement("//span[@id='pageNumber']");
+            Assert.AreEqual("1", pageNumber.Text.Trim());
+
+            driver.SwitchTo().Frame(1);
+            pageNumber = driver.SelectElement("//span[@id='pageNumber']");
+            Assert.AreEqual("2", pageNumber.Text.Trim());
+
+        }
+
+        [Test]
+        public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected()
+        {
+            driver.Get(framesetPage);
+
+            driver.SwitchTo().Frame(2);
+            WebElement checkbox = driver.SelectElement("//input[@name='checky']");
+            checkbox.Toggle();
+            checkbox.Submit();
+
+            Assert.AreEqual("Success!", driver.SelectTextWithXPath("//p"));
+        }
+
+        public void testShouldAutomaticallyUseTheFirstFrameOnAPage()
+        {
+            driver.Get(framesetPage);
+
+            // Notice that we've not switched to the 0th frame
+            WebElement pageNumber = driver.SelectElement("//span[@id='pageNumber']");
+            Assert.AreEqual("1", pageNumber.Text.Trim());
         }
     }
 }

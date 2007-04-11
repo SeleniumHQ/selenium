@@ -34,6 +34,7 @@ namespace WebDriver
     {
         private InternetExplorer browser = new InternetExplorer();
         private bool documentComplete;
+        private int currentFrame = 0;
 
         public enum AccessBy
         {
@@ -84,6 +85,7 @@ namespace WebDriver
             documentComplete = false;
             Navigate(url);
             WaitForLoadToComplete();
+            currentFrame = 0;
         }
 
         internal void WaitForLoadToComplete()
@@ -169,7 +171,7 @@ namespace WebDriver
 
         public XPathNavigator CreateNavigator()
         {
-            return new NavigableDocument(browser.Document as IHTMLDocument2);
+            return new NavigableDocument(HtmlDocument as IHTMLDocument2);
         }
 
         public void Dispose()
@@ -215,7 +217,13 @@ namespace WebDriver
             {
                 try
                 {
-                    return browser.Document as HTMLDocument;
+                    FramesCollection frames = ((IHTMLDocument2)browser.Document).frames;
+                    if (frames.length == 0)
+                        return browser.Document as HTMLDocument;
+
+                    object refIndex = currentFrame;
+                    IHTMLWindow2 frame = (IHTMLWindow2) frames.item(ref refIndex);
+                    return frame.document as HTMLDocument;
                 }
                 catch (COMException)
                 {
@@ -226,7 +234,42 @@ namespace WebDriver
 
         public string CurrentUrl
         {
-            get { return ((HTMLDocument) browser.Document).url; }
+            get { return HtmlDocument.url; }
+        }
+
+        public TargetLocator SwitchTo()
+        {
+            return new IeWrapperTargetLocator(this);
+        }
+
+        private WebDriver SwitchToFrame(int index)
+        {
+            FramesCollection frames = ((IHTMLDocument2)browser.Document).frames;
+
+            if (!(index < frames.length))
+            {
+                throw new IndexOutOfRangeException("There are only " + frames.length +
+                                                   " frames to use. You index was out of bounds: " + index);
+            }
+
+            currentFrame = index;
+
+            return this;
+        }
+
+        private class IeWrapperTargetLocator : TargetLocator
+        {
+            private IeWrapper parent;
+
+            public IeWrapperTargetLocator(IeWrapper parent)
+            {
+                this.parent = parent;
+            }
+
+            public WebDriver Frame(int index)
+            {
+                return parent.SwitchToFrame(index);
+            }
         }
     }
 }

@@ -40,6 +40,8 @@ namespace WebDriver
         // Misc
         void DumpBody();
         void Close();
+
+        TargetLocator SwitchTo();
     }
 
     [Guid("03D6E98A-9005-40eb-A0FF-5B31005E2FB7")]
@@ -59,5 +61,10 @@ namespace WebDriver
         bool Enabled { get; }
         string Text { get; }
         ArrayList GetChildrenOfType(string tagName);
+    }
+
+    public interface TargetLocator
+    {
+        WebDriver Frame(int index);
     }
 }

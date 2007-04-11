@@ -5,4 +5,7 @@
     <StartArguments> RUNNERARGS "C:\Documents and Settings\Administrator\Local Settings\Temp\tmpB3.tmp"</StartArguments>
     <StartAction>Program</StartAction>
   </PropertyGroup>
+  <PropertyGroup>
+    <ProjectView>ShowAllFiles</ProjectView>
+  </PropertyGroup>
 </Project>
