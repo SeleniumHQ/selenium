@@ -47,7 +47,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     protected int _tunnelTimeoutMs = 250;
     private boolean _anonymous = false;
     private transient boolean _chained = false;
-    private final Map<InetAddrPort,SslRelay> _sslMap = new LinkedHashMap<InetAddrPort, SslRelay>();
+    private final Map<String,SslRelay> _sslMap = new LinkedHashMap<String, SslRelay>();
 
     /* ------------------------------------------------------------ */
     /**
@@ -434,7 +434,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
                 SslRelay listener;
                 synchronized(_sslMap) {
-                    listener = _sslMap.get(addrPort);
+                    listener = _sslMap.get(uri.toString());
                     if (listener==null)
                     {
                         listener = new SslRelay(addrPort);
@@ -477,7 +477,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                             e.printStackTrace();
                             throw e;
                         }
-                        _sslMap.put(addrPort,listener);
+                        _sslMap.put(uri.toString(),listener);
                     }
                 }
 
