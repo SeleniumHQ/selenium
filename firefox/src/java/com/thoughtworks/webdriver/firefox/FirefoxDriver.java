@@ -13,6 +13,7 @@ import com.thoughtworks.webdriver.NoSuchElementException;
 
 public class FirefoxDriver implements WebDriver {
     private final ExtensionConnection extension;
+    private DocumentLocation identifier = new DocumentLocation("");
 
     public FirefoxDriver() {
         extension = new ExtensionConnection("localhost", 7055);
@@ -40,15 +41,15 @@ public class FirefoxDriver implements WebDriver {
     }
 
     public void get(String url) {
-        extension.sendMessageAndWaitForResponse("get", url);
+        sendMessage("get", url);
     }
 
     public String getCurrentUrl() {
-        return extension.sendMessageAndWaitForResponse("getCurrentUrl", null);
+        return sendMessage("getCurrentUrl", null);
     }
 
     public String getTitle() {
-        return extension.sendMessageAndWaitForResponse("title", null);
+        return sendMessage("title", null);
     }
 
     public boolean getVisible() {
@@ -66,28 +67,28 @@ public class FirefoxDriver implements WebDriver {
             argument = selector.substring("id=".length());
         }
 
-        String elementId = extension.sendMessageAndWaitForResponse(commandName, argument);
+        String elementId = sendMessage(commandName, argument);
         if (elementId == null || "".equals(elementId)) {
             throw new NoSuchElementException("Unable to find " + argument);
         }
 
-        return new FirefoxWebElement(extension, elementId);
+        return new FirefoxWebElement(extension, identifier, elementId);
 
     }
 
     public List selectElements(String xpath) {
-        String returnedIds = extension.sendMessageAndWaitForResponse("selectElementsUsingXPath", xpath);
+        String returnedIds = sendMessage("selectElementsUsingXPath", xpath);
         String[] ids = returnedIds.split(",");
         List elements = new ArrayList();
         for (int i = 0; i < ids.length; i++) {
-            elements.add(new FirefoxWebElement(extension, ids[i]));
+            elements.add(new FirefoxWebElement(extension, identifier, ids[i]));
         }
         return elements;
 
     }
 
     public String selectText(String xpath) {
-        return extension.sendMessageAndWaitForResponse("selectText", xpath);
+        return sendMessage("selectText", xpath);
     }
 
     public void setVisible(boolean visible) {
@@ -95,7 +96,7 @@ public class FirefoxDriver implements WebDriver {
     }
 
     public TargetLocator switchTo() {
-        return null;
+        return new FirefoxTargetLocator();
     }
 
     private String locateFirefoxBinary() {
@@ -153,5 +154,18 @@ public class FirefoxDriver implements WebDriver {
             }
         }
         return extension.isConnected();
+    }
+
+    private String sendMessage(String methodName, String argument) {
+        Response response = extension.sendMessageAndWaitForResponse(methodName, identifier, argument);
+        identifier = response.getIdentifier();
+        return response.getResponseText();
+    }
+
+    private class FirefoxTargetLocator implements TargetLocator {
+        public WebDriver frame(int frameIndex) {
+            String response = sendMessage("switchToFrame", String.valueOf(frameIndex));
+            return null;
+        }
     }
 }

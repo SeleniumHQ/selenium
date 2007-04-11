@@ -1,71 +1,72 @@
 FirefoxDriver.prototype.click = function(position) {
-    var element = Utils.getElementAt(position);
+    var element = Utils.getElementAt(position, this.location);
     if (!element) {
-        this.server.respond("click");
+        this.server.respond(this.location, "click");
         return;
     }
 
     // Attach a listener so that we can wait until any page load this causes to complete
     var server = this.server;
-    var clickListener = new WebLoadingListener(function(event) {
-        server.respond("click");
+    var clickListener = new WebLoadingListener(this, function(event) {
+        server.respond(this.location, "click");
     });
 
     element.focus();
-    Utils.fireMouseEventOn(element, "mousedown");
+    Utils.fireMouseEventOn(this.location, element, "mousedown");
 
     // Now do the click
     if (element["click"]) {
         element.click();
     } else {
         // Send the mouse event too. Not sure if this will cause the thing to be double clicked....
-        Utils.fireMouseEventOn(element, "click");
+        Utils.fireMouseEventOn(this.location, element, "click");
     }
 
-    Utils.fireMouseEventOn(element, "mouseup");    
+    Utils.fireMouseEventOn(this.location, element, "mouseup");
 
+    var driver = this;
     var checkForLoad = function() {
         // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
         // There's a race condition here, in that the click event and load may have finished before we get here. For now, let's pretend that
         // doesn't happen. The other race condition is that we make this check before the load has begun. With all the javascript out there,
         // this might actually be a bit of a problem.
-        var docLoaderService = Utils.getBrowser().webProgress
+        var docLoaderService = Utils.getBrowser(this.location).webProgress
         if (!docLoaderService.isLoadingDocument) {
             WebLoadingListener.removeListener(clickListener);
-            server.respond("click");
+            server.respond(driver.location, "click");
         }
     }
 
-    Utils.getBrowser().contentWindow.setTimeout(checkForLoad, 50);
+    Utils.getBrowser(this.location).contentWindow.setTimeout(checkForLoad, 50);
 };
 
 FirefoxDriver.prototype.getElementText = function(elementId) {
-    var element = Utils.getElementAt(elementId);
-    this.server.respond("getElementText", Utils.getText(element));
+    var element = Utils.getElementAt(elementId, this.location);
+    this.server.respond(this.location, "getElementText", Utils.getText(element));
 }
 
 FirefoxDriver.prototype.getElementValue = function(value) {
-    var element = Utils.getElementAt(value);
+    var element = Utils.getElementAt(value, this.location);
     if (element.tagName.toLowerCase() == "textarea")
-        this.server.respond("getElementValue", element.value);
+        this.server.respond(this.location, "getElementValue", element.value);
     else
-        this.server.respond("getElementValue", element.getAttribute("value"));
+        this.server.respond(this.location, "getElementValue", element.getAttribute("value"));
 }
 
 FirefoxDriver.prototype.setElementValue = function(value) {
     var spaceIndex = value.indexOf(" ");
-    var element = Utils.getElementAt(value.substring(0, spaceIndex));
+    var element = Utils.getElementAt(value.substring(0, spaceIndex), this.location);
     spaceIndex = value.indexOf(" ", spaceIndex);
     var newValue = value.substring(spaceIndex + 1);
 
-    Utils.type(element, newValue);
+    Utils.type(this.location, element, newValue);
 
-    this.server.respond("setElementValue");
+    this.server.respond(this.location, "setElementValue");
 }
 
 FirefoxDriver.prototype.getElementAttribute = function(value) {
     var spaceIndex = value.indexOf(" ");
-    var element = Utils.getElementAt(value.substring(0, spaceIndex));
+    var element = Utils.getElementAt(value.substring(0, spaceIndex), this.location);
     spaceIndex = value.indexOf(" ", spaceIndex);
     var attributeName = value.substring(spaceIndex + 1);
 
@@ -80,57 +81,58 @@ FirefoxDriver.prototype.getElementAttribute = function(value) {
             response = response.toLowerCase() == "checked" || response.toLowerCase() == "true";
         }
 
-        this.server.respond("getElementAttribute", response);
+        this.server.respond(this.location, "getElementAttribute", response);
         return;
     }
 
     attributeName = attributeName.toLowerCase();
     if (attributeName == "disabled") {
-        this.server.respond("getElementAttribute", element.disabled);
+        this.server.respond(this.location, "getElementAttribute", element.disabled);
         return;
     } else if (attributeName == "checked" && element.tagName.toLowerCase() == "input") {
-        this.server.respond("getElementAttribute", element.checked);
+        this.server.respond(this.location, "getElementAttribute", element.checked);
         return;
     } else if (attributeName == "selected" && element.tagName.toLowerCase() == "option") {
-        this.server.respond("getElementAttribute", element.selected);
+        this.server.respond(this.location, "getElementAttribute", element.selected);
         return;
     }
 
-    this.server.respond("getElementAttribute", "");
+    this.server.respond(this.location, "getElementAttribute", "");
 }
 
 FirefoxDriver.prototype.submitElement = function(elementId) {
-    var element = Utils.getElementAt(elementId);
+    var element = Utils.getElementAt(elementId, this.location);
 
     var submitElement = Utils.findForm(element);
     if (submitElement) {
         var server = this.server;
-        new WebLoadingListener(function(event) {
-            server.respond("submitElement");
+        var driver = this;
+        new WebLoadingListener(this, function(event) {
+            server.respond(driver.location, "submitElement");
         });
         if (submitElement["submit"])
             submitElement.submit();
         else
             submitElement.click();
     } else {
-        server.respond("submitElement");
+        server.respond(this.location, "submitElement");
     }
 }
 
 FirefoxDriver.prototype.getElementChildren = function(elementIdAndTagName) {
     var parts = elementIdAndTagName.split(" ");
-    var element = Utils.getElementAt(parts[0]);
+    var element = Utils.getElementAt(parts[0], this.location);
 
     var children = element.getElementsByTagName(parts[1]);
     var response = "";
     for (var i = 0; i < children.length; i++) {
-        response += Utils.addToKnownElements(children[i]) + " ";
+        response += Utils.addToKnownElements(children[i], this.location) + " ";
     }
-    this.server.respond("getElementChildren", response);
+    this.server.respond(this.location, "getElementChildren", response);
 }
 
 FirefoxDriver.prototype.getElementSelected = function(elementId) {
-    var element = Utils.getElementAt(elementId);
+    var element = Utils.getElementAt(elementId, this.location);
     var selected = false;
 
     try {
@@ -145,11 +147,11 @@ FirefoxDriver.prototype.getElementSelected = function(elementId) {
         }
     } catch(e) {}
 
-    this.server.respond("getElementSelected", selected);
+    this.server.respond(this.location, "getElementSelected", selected);
 }
 
 FirefoxDriver.prototype.setElementSelected = function(elementId) {
-    var element = Utils.getElementAt(elementId);
+    var element = Utils.getElementAt(elementId, this.location);
     var wasSet = false;
 
     try {
@@ -166,5 +168,5 @@ FirefoxDriver.prototype.setElementSelected = function(elementId) {
         }
     } catch(e) {}
 
-    this.server.respond("setElementSelected", wasSet);
+    this.server.respond(this.location, "setElementSelected", wasSet);
 }

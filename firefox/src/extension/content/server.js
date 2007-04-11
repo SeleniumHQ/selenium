@@ -37,14 +37,14 @@ WebDriverServer.prototype.close = function()
     this.instream.close();
 };
 
-WebDriverServer.prototype.respond = function(method, response) {
+WebDriverServer.prototype.respond = function(location, method, response) {
     var output = method + " ";
 
     if (response == undefined) {
-        output += "0\n";
+        output += "1\n" + location + "\n";
     } else {
-        var length = response["split"] ? response.split("\n").length : 1;
-        output += length + "\n" + response + "\n";
+        var length = response["split"] ? response.split("\n").length + 1: 2;
+        output += length + "\n" + location + "\n" + response + "\n";
     }
 
     this.outstream.write(output, output.length);

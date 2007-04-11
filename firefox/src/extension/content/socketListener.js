@@ -55,14 +55,18 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
 SocketListener.prototype.executeCommand = function() {
     if (this.driver[this.command]) {
         try {
-            this.driver[this.command](this.data);
+            var bits = this.data.split("\n", 2);
+
+            this.driver.location = bits[0];
+            this.driver[this.command](bits[1]);
         } catch (e) {
             dump("Exception caught: " + this.command + "(" + this.data + ")\n");            
             dump(e + "\n");
-            this.driver.server.respond(this.command);
+            this.driver.server.respond(this.driver.location, this.command);
         }
     } else {
         dump("Unrecognised command: " + this.command + "\n");
+        this.driver.server.respond(this.driver.location, this.command);
     }
     this.command = "";
     this.data = "";

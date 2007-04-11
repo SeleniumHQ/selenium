@@ -56,6 +56,10 @@ public class HtmlUnitDriver implements WebDriver {
 			Page page = webClient.getPage(fullUrl);
 			page.initialize();
             currentWindow = webClient.getCurrentWindow();
+
+            if (((HtmlPage) page).getFrames().size() > 0) {
+                switchTo().frame(0);
+            }
         } catch (Exception e) {
 			throw new RuntimeException(e);
 		}

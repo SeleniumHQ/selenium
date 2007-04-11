@@ -7,31 +7,33 @@ import java.util.ArrayList;
 
 public class FirefoxWebElement implements WebElement {
     private final ExtensionConnection extension;
+    private final DocumentLocation identifier;
     private final String elementId;
 
-    public FirefoxWebElement(ExtensionConnection extension, String elementId) {
+    public FirefoxWebElement(ExtensionConnection extension, DocumentLocation identifier, String elementId) {
         this.extension = extension;
+        this.identifier = identifier;
         this.elementId = elementId;
     }
 
     public void click() {
-        extension.sendMessageAndWaitForResponse("click", elementId);
+        sendMessage("click", elementId);
     }
 
     public void submit() {
-        extension.sendMessageAndWaitForResponse("submitElement", elementId);
+        sendMessage("submitElement", elementId);
     }
 
     public String getValue() {
-        return extension.sendMessageAndWaitForResponse("getElementValue", elementId);
+        return sendMessage("getElementValue", elementId);
     }
 
     public void setValue(String value) {
-        extension.sendMessageAndWaitForResponse("setElementValue", elementId + " " + value);
+        sendMessage("setElementValue", elementId + " " + value);
     }
 
     public String getAttribute(String name) {
-        return extension.sendMessageAndWaitForResponse("getElementAttribute", elementId + " " + name);
+        return sendMessage("getElementAttribute", elementId + " " + name);
     }
 
     public boolean toggle() {
@@ -40,12 +42,12 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public boolean isSelected() {
-        String value = extension.sendMessageAndWaitForResponse("getElementSelected", elementId);
+        String value = sendMessage("getElementSelected", elementId);
         return Boolean.parseBoolean(value);
     }
 
     public void setSelected() {
-        String response = extension.sendMessageAndWaitForResponse("setElementSelected", elementId);
+        String response = sendMessage("setElementSelected", elementId);
         if (!Boolean.parseBoolean(response)) {
             throw new UnsupportedOperationException("You may not select an unselectable element");
         }
@@ -57,17 +59,22 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public String getText() {
-        return extension.sendMessageAndWaitForResponse("getElementText", elementId);
+        return sendMessage("getElementText", elementId);
     }
 
     public List getChildrenOfType(String tagName) {
-        String response = extension.sendMessageAndWaitForResponse("getElementChildren", elementId + " " + tagName);
+        String response = sendMessage("getElementChildren", elementId + " " + tagName);
         String[] ids = response.split(" ");
 
         ArrayList children = new ArrayList();
         for (int i = 0; i < ids.length; i++)
-            children.add(new FirefoxWebElement(extension, ids[i]));
+            children.add(new FirefoxWebElement(extension, identifier, ids[i]));
 
         return children;
+    }
+
+    private String sendMessage(String methodName, String argument) {
+        Response response = extension.sendMessageAndWaitForResponse(methodName, identifier, argument);
+        return response.getResponseText();
     }
 }

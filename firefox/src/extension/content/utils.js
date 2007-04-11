@@ -16,14 +16,20 @@ Utils.getService = function(className, serviceName) {
     return clazz.getService(Components.interfaces[serviceName]);
 };
 
-Utils.getBrowser = function() {
+Utils.getBrowser = function(location) {
     var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
     var win = wm.getMostRecentWindow("navigator:browser");
     return win.getBrowser();
 };
 
-Utils.getDocument = function() {
-    return Utils.getBrowser().contentDocument;
+Utils.getDocument = function(location) {
+    var browser = Utils.getBrowser(location);
+    var frameId = location.split(" ")[1] - 0;
+
+    if (browser.contentWindow.frames[frameId]) {
+        return browser.contentWindow.frames[frameId].document;
+    }
+    return browser.contentDocument;
 };
 
 Utils.getText = function(element) {
@@ -39,25 +45,27 @@ Utils.getText = function(element) {
     return str;
 };
 
-Utils.addToKnownElements = function(element) {
-    if (!Utils.getDocument().fxdriver_elements) {
-        Utils.getDocument().fxdriver_elements = new Array();
+Utils.addToKnownElements = function(element, location) {
+    var doc = Utils.getDocument(location);
+    if (!doc.fxdriver_elements) {
+        doc.fxdriver_elements = new Array();
     }
-    var start = Utils.getDocument().fxdriver_elements.length;
-    Utils.getDocument().fxdriver_elements.push(element);
+    var start = doc.fxdriver_elements.length;
+    doc.fxdriver_elements.push(element);
     return start;
 };
 
-Utils.getElementAt = function(index) {
+Utils.getElementAt = function(index, location) {
     // Convert to a number if we're dealing with a string....
     index = index - 0;
 
-    if (Utils.getDocument().fxdriver_elements)
-        return Utils.getDocument().fxdriver_elements[index];
+    var doc = Utils.getDocument(location);
+    if (doc.fxdriver_elements)
+        return doc.fxdriver_elements[index];
     return undefined;
 };
 
-Utils.type = function(element, text) {
+Utils.type = function(location, element, text) {
     var isTextField = Utils.isTextField(element);
 
     var value = "";
@@ -67,26 +75,26 @@ Utils.type = function(element, text) {
         var character = text.charAt(i);
         value += character;
 
-        Utils.keyDownOrUp(element, true, character);
-        Utils.keyPress(element, character);
+        Utils.keyDownOrUp(location, element, true, character);
+        Utils.keyPress(location, element, character);
         if (isTextField)
             element.setAttribute("value", value);
-        Utils.keyDownOrUp(element, false, character);
+        Utils.keyDownOrUp(location, element, false, character);
     }
 };
 
-Utils.keyPress = function(element, text) {
-    var event = Utils.getDocument().createEvent('KeyEvents');
-    event.initKeyEvent('keypress', true, true, Utils.getBrowser().contentWindow, 0, 0, 0, 0, 0, text.charCodeAt(0));
+Utils.keyPress = function(location, element, text) {
+    var event = Utils.getDocument(location).createEvent('KeyEvents');
+    event.initKeyEvent('keypress', true, true, Utils.getBrowser(location).contentWindow, 0, 0, 0, 0, 0, text.charCodeAt(0));
     element.dispatchEvent(event);
 };
 
-Utils.keyDownOrUp = function(element, down, text) {
+Utils.keyDownOrUp = function(location, element, down, text) {
     var keyCode = text;
     // We should do something clever with non-text characters
 
-    var event = Utils.getDocument().createEvent('KeyEvents');
-    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser().contentWindow, 0, 0, 0, 0, keyCode, 0);
+    var event = Utils.getDocument(location).createEvent('KeyEvents');
+    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser(location).contentWindow, 0, 0, 0, 0, keyCode, 0);
     element.dispatchEvent(event);
 };
 
@@ -123,8 +131,8 @@ Utils.findForm = function(element) {
     return undefined;
 }
 
-Utils.fireMouseEventOn = function(element, eventName) {
-    var event = Utils.getDocument().createEvent("MouseEvents");
+Utils.fireMouseEventOn = function(location, element, eventName) {
+    var event = Utils.getDocument(location).createEvent("MouseEvents");
     event.initMouseEvent(eventName, true, true, null, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
     element.dispatchEvent(event);
 }
@@ -150,4 +158,19 @@ Utils.dumpProperties = function(view) {
     for (var i in view) {
         dump("\t" + i + "\n");
     }
+}
+
+function funcname(f) {
+    var s = f.toString().match(/function (\w*)/)[1];
+    if ((s == null) || (s.length == 0)) return "anonymous";
+    return s;
+}
+
+Utils.stackTrace = function() {
+    var s = "";
+
+    for(var a = arguments.caller; a != null; a = a.caller) {
+        s += funcname(a.callee) + "\n";
+    }
+    dump(s);
 }

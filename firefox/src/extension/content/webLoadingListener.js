@@ -1,12 +1,13 @@
 //var LOAD_EVENT = "DOMContentLoaded";
 var LOAD_EVENT = "load";
 
-function WebLoadingListener(toCall) {
+function WebLoadingListener(driver, toCall) {
     var listener = this;
 
     this.func = function(event) {
         // Is there a meta refresh?
-        var result = Utils.getDocument().evaluate("/html/head/meta[@http-equiv]", Utils.getDocument(), null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+        var doc = Utils.getDocument(driver.location)
+        var result = doc.evaluate("/html/head/meta[@http-equiv]", doc, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
         var element = result.iterateNext();
         while (element) {
             if ("refresh" == element.getAttribute("http-equiv").toLowerCase()) {
@@ -23,6 +24,7 @@ function WebLoadingListener(toCall) {
         }
 
         WebLoadingListener.removeListener(listener);
+        driver.location = "0 0";
         toCall(event);
     }
     document.getElementById("appcontent").addEventListener(LOAD_EVENT, this.func, true);

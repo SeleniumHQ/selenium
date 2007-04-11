@@ -10,7 +10,7 @@ import java.io.IOException;
 public class PageServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Thread.sleep(500);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             // Do nothing
         }
@@ -21,8 +21,8 @@ public class PageServlet extends HttpServlet {
         int lastIndex = request.getPathInfo().lastIndexOf('/');
         String pageNumber = (lastIndex == -1 ? "Unknown" : request.getPathInfo().substring(lastIndex + 1));
         response.getOutputStream().println("Page" + pageNumber);
-        response.getOutputStream().println("</title></head><body>Page number <span id=\"pageNumber\">");
-        response.getOutputStream().println(pageNumber);
-        response.getOutputStream().println("</span></body></html>");
+        response.getOutputStream().print("</title></head><body>Page number <span id=\"pageNumber\">");
+        response.getOutputStream().print(pageNumber);
+        response.getOutputStream().print("</span></body></html>");
     }
 }

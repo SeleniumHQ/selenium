@@ -30,11 +30,14 @@ class ExtensionConnection {
 		return socket != null && socket.isConnected();
 	}
 
-	public String sendMessageAndWaitForResponse(String methodName, String argument) {
-        int lines = countLines(argument);
+	public Response sendMessageAndWaitForResponse(String methodName, DocumentLocation identifier, String argument) {
+        int lines = countLines(argument) + 1;
 
         StringBuffer message = new StringBuffer(methodName);
-		message.append(" ").append(lines).append("\n");
+        message.append(" ").append(lines).append("\n");
+
+        message.append(identifier).append("\n");
+
         if (argument != null)
             message.append(argument).append("\n");
 
@@ -52,7 +55,7 @@ class ExtensionConnection {
         return lines;
     }
 
-    private String waitForResponseFor(String command) {
+    private Response waitForResponseFor(String command) {
 		try {
 			return readLoop(command);
 		} catch (IOException e) {
@@ -60,29 +63,37 @@ class ExtensionConnection {
 		}
 	}
 
-	private String readLoop(String command) throws IOException {
+	private Response readLoop(String command) throws IOException {
 		while (true) {
-			String[] response = nextResponse();
+			Response response = nextResponse();
 
-            if (command.equals(response[0]))
-				return response[1];
-            throw new RuntimeException("Expected response to " + command + " but actually got: " + response[0] + " (" + response[1] + ")");
+            if (command.equals(response.getCommand()))
+				return response;
+            throw new RuntimeException("Expected response to " + command + " but actually got: " + response.getCommand() + " (" + response.getCommand() + ")");
         }
 	}
 
-	private String[] nextResponse() throws IOException {
+	private Response nextResponse() throws IOException {
         String line = in.readLine();
+
+        // Expected input will be of the form:
+        // CommandName NumberOfLinesRemaining
+        // Identifier
+        // ResponseText
 
         int spaceIndex = line.indexOf(' ');
         String methodName = line.substring(0, spaceIndex);
 		String remainingResponse = line.substring(spaceIndex + 1);
 		long count = Long.parseLong(remainingResponse);
 
-		StringBuffer result = new StringBuffer();
+        StringBuffer result = new StringBuffer();
         for (int i = 0; i < count; i++) {
-            result.append(in.readLine());
+            String read = in.readLine();
+            result.append(read);
+            if (i != count-1)
+                result.append("\n");
         }
-		
-		return new String[] { methodName, result.toString() };
+
+        return new Response(methodName, result.toString());
 	}
 }
