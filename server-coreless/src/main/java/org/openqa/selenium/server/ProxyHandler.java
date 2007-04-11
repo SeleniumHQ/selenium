@@ -449,7 +449,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                         for (InetAddrPort addr : addresses) {
                             urlString += "&domain=" + addr.getHost();
                         }
-                        System.out.println(urlString);
+
                         URL url = new URL(urlString);
                         URLConnection conn = url.openConnection();
                         conn.connect();

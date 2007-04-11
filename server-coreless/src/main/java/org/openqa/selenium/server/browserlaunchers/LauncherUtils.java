@@ -227,8 +227,11 @@ public class LauncherUtils {
     
 	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage) throws FileNotFoundException {
 		// TODO Do we want to make these preferences configurable somehow?
-		
-		File prefsJS = new File(customProfileDir, "prefs.js");
+        if (SeleniumServer.isAlwaysProxy()) {
+            proxySetting = ProxySetting.PROXY_EVERYTHING;
+        }
+
+        File prefsJS = new File(customProfileDir, "prefs.js");
 		PrintStream out = new PrintStream(new FileOutputStream(prefsJS, true));
 		// Don't ask if we want to switch default browsers
 		out.println("user_pref('browser.shell.checkDefaultBrowser', false);");

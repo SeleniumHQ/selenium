@@ -419,7 +419,7 @@ public class FrameGroupCommandQueueSet {
         }
     }
 
-    public static FrameAddress makeFrameAddress(String seleniumWindowName, String localFrameAddress, boolean justLoaded) {
+    public static FrameAddress makeFrameAddress(String seleniumWindowName, String localFrameAddress) {
         if (seleniumWindowName==null) {
             // we are talking to a version of selenium core which isn't telling us the
             // seleniumWindowName.  Set it to the default, which will be right most of
