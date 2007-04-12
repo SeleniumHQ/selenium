@@ -23,6 +23,6 @@ public class PageServlet extends HttpServlet {
         response.getOutputStream().println("Page" + pageNumber);
         response.getOutputStream().print("</title></head><body>Page number <span id=\"pageNumber\">");
         response.getOutputStream().print(pageNumber);
-        response.getOutputStream().print("</span></body></html>");
+        response.getOutputStream().print("</span><p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a></body></html>");
     }
 }

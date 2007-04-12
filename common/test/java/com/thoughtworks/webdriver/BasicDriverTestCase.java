@@ -484,6 +484,13 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertEquals("1", pageNumber.getText().trim());
     }
 
+    public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() {
+        driver.get(framesetPage);
+
+        driver.selectElement("link=top").click();
+        assertEquals("XHTML Test Page", driver.getTitle());
+    }
+
     protected WebDriver driver;
     protected String baseUrl;
     protected String simpleTestPage;

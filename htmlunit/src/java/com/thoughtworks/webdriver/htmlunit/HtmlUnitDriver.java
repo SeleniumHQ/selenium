@@ -41,7 +41,18 @@ public class HtmlUnitDriver implements WebDriver {
 
     public HtmlUnitDriver() {
 		newWebClient();
-	}
+        webClient.addWebWindowListener(new WebWindowListener() {
+            public void webWindowOpened(WebWindowEvent webWindowEvent) {
+            }
+
+            public void webWindowContentChanged(WebWindowEvent webWindowEvent) {
+            }
+
+            public void webWindowClosed(WebWindowEvent webWindowEvent) {
+                pickWindow();
+            }
+        });
+    }
 
 	private void newWebClient() {
 		webClient = new WebClient();
@@ -55,15 +66,20 @@ public class HtmlUnitDriver implements WebDriver {
 			URL fullUrl = new URL(url);
 			Page page = webClient.getPage(fullUrl);
 			page.initialize();
-            currentWindow = webClient.getCurrentWindow();
-
-            if (((HtmlPage) page).getFrames().size() > 0) {
-                switchTo().frame(0);
-            }
+            pickWindow();
         } catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+
+    private void pickWindow() {
+        currentWindow = webClient.getCurrentWindow();
+        Page page = webClient.getCurrentWindow().getEnclosedPage();
+
+        if (((HtmlPage) page).getFrames().size() > 0) {
+            switchTo().frame(0);
+        }
+    }
 
     public String getCurrentUrl() {
         return lastPage().getWebResponse().getUrl().toString();
