@@ -18,13 +18,34 @@ Utils.getService = function(className, serviceName) {
 
 Utils.getBrowser = function(location) {
     var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
-    var win = wm.getMostRecentWindow("navigator:browser");
-    return win.getBrowser();
+    var e = wm.getEnumerator("navigator:browser");
+
+    var win;
+    if (location.window == "?") {
+        win = wm.getMostRecentWindow("navigator:browser");
+        var t;
+        var count = -1;
+        while (e.hasMoreElements() && t != win) {
+            t = e.getNext();
+            count++;
+        }
+        location.window = count;
+        dump("Location is now: " + location + "\n");
+        return win.getBrowser();
+    } else {
+        var i = 0;
+
+        while (e.hasMoreElements() && i <= location.window) {
+            win = e.getNext();
+            i++;
+        }
+        return win.getBrowser();
+    }
 };
 
 Utils.getDocument = function(location) {
     var browser = Utils.getBrowser(location);
-    var frameId = location.split(" ")[1] - 0;
+    var frameId = location.frame;
 
     if (browser.contentWindow.frames[frameId]) {
         return browser.contentWindow.frames[frameId].document;
@@ -143,12 +164,14 @@ Utils.dump = function(element) {
     for (var i in Components.interfaces) {
         try {
             var view = element.QueryInterface(Components.interfaces[i]);
-            dump(i + ":\n");
-            Utils.dumpProperties(view);
+            dump(i + ", ");
+//            Utils.dumpProperties(view);
         } catch (e) {
             // Doesn't support the interface
         }
     }
+    dump("\n------------\n");
+    Utils.dumpProperties(element);
     dump("\n");
     Utils.dumpProperties(views);
     dump("=============\n\n\n");
@@ -158,19 +181,4 @@ Utils.dumpProperties = function(view) {
     for (var i in view) {
         dump("\t" + i + "\n");
     }
-}
-
-function funcname(f) {
-    var s = f.toString().match(/function (\w*)/)[1];
-    if ((s == null) || (s.length == 0)) return "anonymous";
-    return s;
-}
-
-Utils.stackTrace = function() {
-    var s = "";
-
-    for(var a = arguments.caller; a != null; a = a.caller) {
-        s += funcname(a.callee) + "\n";
-    }
-    dump(s);
 }

@@ -7,8 +7,9 @@ FirefoxDriver.prototype.click = function(position) {
 
     // Attach a listener so that we can wait until any page load this causes to complete
     var server = this.server;
+    var driver = this;
     var clickListener = new WebLoadingListener(this, function(event) {
-        server.respond(this.location, "click");
+        server.respond(driver.location, "click");
     });
 
     element.focus();
@@ -24,13 +25,13 @@ FirefoxDriver.prototype.click = function(position) {
 
     Utils.fireMouseEventOn(this.location, element, "mouseup");
 
-    var driver = this;
+
     var checkForLoad = function() {
         // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
         // There's a race condition here, in that the click event and load may have finished before we get here. For now, let's pretend that
         // doesn't happen. The other race condition is that we make this check before the load has begun. With all the javascript out there,
         // this might actually be a bit of a problem.
-        var docLoaderService = Utils.getBrowser(this.location).webProgress
+        var docLoaderService = Utils.getBrowser(driver.location).webProgress
         if (!docLoaderService.isLoadingDocument) {
             WebLoadingListener.removeListener(clickListener);
             server.respond(driver.location, "click");

@@ -57,7 +57,7 @@ SocketListener.prototype.executeCommand = function() {
         try {
             var bits = this.data.split("\n", 2);
 
-            this.driver.location = bits[0];
+            this.driver.location = new Location(bits[0]);
             this.driver[this.command](bits[1]);
         } catch (e) {
             dump("Exception caught: " + this.command + "(" + this.data + ")\n");            

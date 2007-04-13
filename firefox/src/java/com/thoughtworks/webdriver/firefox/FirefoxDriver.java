@@ -164,8 +164,13 @@ public class FirefoxDriver implements WebDriver {
 
     private class FirefoxTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
-            String response = sendMessage("switchToFrame", String.valueOf(frameIndex));
-            return null;
+            sendMessage("switchToFrame", String.valueOf(frameIndex));
+            return FirefoxDriver.this;
+        }
+
+        public WebDriver window(int index) {
+            sendMessage("switchToWindow", String.valueOf(index));
+            return FirefoxDriver.this;
         }
     }
 }

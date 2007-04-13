@@ -1,6 +1,7 @@
 function FirefoxDriver(server) {
     this.server = server;
-    this.location = "0,0";
+    this.location = new Location("0 0");
+    new WindowListener(this);
 }
 
 FirefoxDriver.prototype.get = function(url) {
@@ -100,7 +101,14 @@ FirefoxDriver.prototype.switchToFrame = function(frameId) {
 
     var index = frameId - 0;
     if (frames.length > index) {
-        this.location = "0 " + frameId;
+        this.location.frame = frameId;
     }
     this.server.respond(this.location, "switchToFrame");
+}
+
+FirefoxDriver.prototype.switchToWindow = function(windowIndex) {
+    this.location.window = windowIndex;
+    this.location.frame = 0;
+    dump("New location is: " + this.location + "\n");
+    this.server.respond(this.location, "switchToWindow");
 }

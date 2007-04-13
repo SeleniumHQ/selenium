@@ -39,13 +39,23 @@ public class HtmlUnitDriver implements WebDriver {
 	private WebClient webClient;
     private WebWindow currentWindow;
 
+
     public HtmlUnitDriver() {
 		newWebClient();
         webClient.addWebWindowListener(new WebWindowListener() {
+            private boolean waitingToLoad;
+
             public void webWindowOpened(WebWindowEvent webWindowEvent) {
+                waitingToLoad = true;
+                pickWindow();
             }
 
             public void webWindowContentChanged(WebWindowEvent webWindowEvent) {
+                if (waitingToLoad) {
+                    waitingToLoad = false;
+                    webClient.setCurrentWindow(webWindowEvent.getWebWindow());
+                    pickWindow();
+                }
             }
 
             public void webWindowClosed(WebWindowEvent webWindowEvent) {
@@ -197,6 +207,13 @@ public class HtmlUnitDriver implements WebDriver {
         public WebDriver frame(int frameIndex) {
             HtmlPage page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
             currentWindow = (WebWindow) page.getFrames().get(frameIndex);
+            return HtmlUnitDriver.this;
+        }
+
+        public WebDriver window(int index) {
+            WebWindow window = (WebWindow) webClient.getWebWindows().get(index);
+            webClient.setCurrentWindow(window);
+            pickWindow();
             return HtmlUnitDriver.this;
         }
     }

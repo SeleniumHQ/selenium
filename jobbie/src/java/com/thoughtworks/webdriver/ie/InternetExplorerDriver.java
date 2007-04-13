@@ -110,5 +110,9 @@ public class InternetExplorerDriver implements WebDriver {
 			targetLocator.invoke("Frame", frameIndex);
 			return InternetExplorerDriver.this;
 		}
+
+        public WebDriver window(int i) {
+            return null;
+        }
     }
 }

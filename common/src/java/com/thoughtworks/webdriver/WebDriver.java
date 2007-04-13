@@ -180,5 +180,7 @@ public interface WebDriver {
          * @return
          */
         WebDriver frame(int frameIndex);
+
+        WebDriver window(int i);
     }
 }
