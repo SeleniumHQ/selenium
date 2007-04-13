@@ -144,6 +144,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         // Configure us as the local proxy
         // TODO Proxy.pac file doesn't seem to want to work correctly
         // browser starts and just sits there on a blank page!
+
         out.println("[Proxy]");
         out.println("HTTP server=localhost:" + port);
         out.println("Enable HTTP 1.1 for proxy=1");
@@ -198,6 +199,8 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         out.println("Ignore Unrequested Popups=0");
         // Don't ask if we want to switch default browsers
         out.println("Show Default Browser Dialog=0");
+        out.println("Check For New Opera=0");
+        out.println("Show Startup Dialog=0");
         // Don't open any pages on startup (except for command line URL)
         out.println("Startup Type=4");
 
