@@ -434,8 +434,8 @@ Selenium.prototype.doMouseDown = function(locator) {
 
 Selenium.prototype.doMouseDownAt = function(locator, coordString) {
     /**
-   * Simulates a user pressing the mouse button (without releasing it yet) on
-   * the specified element.
+   * Simulates a user pressing the mouse button (without releasing it yet) at
+   * the specified location.
    *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
@@ -449,8 +449,8 @@ Selenium.prototype.doMouseDownAt = function(locator, coordString) {
 
 Selenium.prototype.doMouseUp = function(locator) {
     /**
-   * Simulates a user pressing the mouse button (without releasing it yet) on
-   * the specified element.
+   * Simulates the event that occurs when the user releases the mouse button (i.e., stops
+   * holding the button down) on the specified element.
    *
    * @param locator an <a href="#locators">element locator</a>
    */
@@ -460,8 +460,8 @@ Selenium.prototype.doMouseUp = function(locator) {
 
 Selenium.prototype.doMouseUpAt = function(locator, coordString) {
     /**
-   * Simulates a user pressing the mouse button (without releasing it yet) on
-   * the specified element.
+   * Simulates the event that occurs when the user releases the mouse button (i.e., stops
+   * holding the button down) at the specified location.
    *
    * @param locator an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
