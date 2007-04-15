@@ -1,5 +1,5 @@
 <project name="selenium" default="generate-sources">
-	<target name="init">
+    <target name="init">
 		<property environment="env" />
 		<property name="env.PERL5LIB" value="" />
 		<property name="perl.executable" value="perl" />
@@ -24,8 +24,7 @@
 		</perl>-->
 	</target>
 	<target name="generate-sources" depends="init">
-    	<ant dir=".." target="extract-xml"/>
-    	<copy file="../iedoc.xml" tofile="iedoc.xml" />
+    	<copy file="../target/iedoc.xml" tofile="iedoc.xml" />
     	<perl>
     	    <arg value="util/create_www_selenium.pl" />
     	</perl>
@@ -72,11 +71,32 @@
         </condition>
         <fail if="build.failed" message="perl tests failed!" />
     </target>
+    
+    <target name="dist" depends="generate-sources, doc">
+        <mkdir dir="target" />
+        <property name="project.version" value="UNKNOWNVERSION" />
+        <property name="perl.release" value="selenium-perl-client-driver-${project.version}"/>
+        <zip zipfile="target/${perl.release}.zip">
+            <zipfileset dir="." prefix="${perl.release}">
+                <include name="Makefile.PL"/>
+                <include name="Changes"/>
+                <include name="todo.txt"/>
+                <include name="inc/**"/>
+                <include name="lib/**"/>
+                <include name="t/**"/>
+                <exclude name="mypod2html.pl" />
+                <include name="doc/**" />
+            </zipfileset>
+        </zip>
+    </target>
+    
     <target name="clean">
     	<delete file="lib/WWW/Selenium.pm" />    	
     	<mkdir dir="doc" />
     	<delete dir="doc" />
     	<mkdir dir="blib" />
     	<delete dir="blib" />
+    	<mkdir dir="target" />
+    	<delete dir="target" />
     </target>
 </project>
