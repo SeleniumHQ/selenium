@@ -21,6 +21,7 @@
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
+            <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver</include>
             </includes>
@@ -38,7 +39,7 @@
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}-${version}-sources.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}-sources.${extension}</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:sources</include>
             </includes>
@@ -47,7 +48,7 @@
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}-${version}-tests.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}-tests.${extension}</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:tests</include>
             </includes>
@@ -56,7 +57,7 @@
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}-${version}-test-sources.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}-test-sources.${extension}</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:test-sources</include>
             </includes>
