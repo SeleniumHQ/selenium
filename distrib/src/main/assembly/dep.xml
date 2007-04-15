@@ -17,6 +17,63 @@
                 <exclude>org.openqa.selenium.client-drivers:selenium-java-client-driver</exclude>
             </excludes>
         </dependencySet>
+        
+        <dependencySet>
+            <outputDirectory>selenium-server-${version}</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
+            <includes>
+                <include>org.openqa.selenium.server:selenium-server:jar:standalone</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>selenium-server-${version}</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
+            <includes>
+                <include>org.openqa.selenium.server:selenium-server-coreless</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>selenium-server-${version}</outputDirectory>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <outputFileNameMapping>javadoc</outputFileNameMapping>
+            <includes>
+                <include>org.openqa.selenium.server:selenium-server-coreless:jar:javadoc</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>selenium-server-${version}</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <outputFileNameMapping>selenium-server-sources.${extension}</outputFileNameMapping>
+            <includes>
+                <include>org.openqa.selenium.server:selenium-server-coreless:jar:sources</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>selenium-server-${version}</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <outputFileNameMapping>selenium-server-tests.${extension}</outputFileNameMapping>
+            <includes>
+                <include>org.openqa.selenium.server:selenium-server-coreless:jar:tests</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>selenium-server-${version}</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <outputFileNameMapping>selenium-server-test-sources.${extension}</outputFileNameMapping>
+            <includes>
+                <include>org.openqa.selenium.server:selenium-server-coreless:jar:test-sources</include>
+            </includes>
+        </dependencySet>
+        
+        
         <dependencySet>
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
