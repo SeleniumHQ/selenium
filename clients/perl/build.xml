@@ -61,11 +61,14 @@
     	<make />
     </target>
     <target name="test" depends="init, make" unless="skiptests">
-    	<ant dir=".." target="start-server" />
+    	<echo>${selenium-server}</echo>
+        <java jar="${selenium-server}" fork="true" spawn="true"/>
+        <sleep seconds="2"/>
         <make failonerror="false" resultproperty="result">
         	<arg value="test" />
         </make>
-        <ant dir=".." target="stop-server" />
+        <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
+        <sleep seconds="2"/>
         <condition property="build.failed">
         	<not><equals arg1="0" arg2="${result}" /></not>
         </condition>
