@@ -57,7 +57,9 @@ class Testing_Selenium_Exception extends PEAR_Exception
     </target>
     <target name="all" depends="generate-sources, test, doc"/>
     <target name="test" depends="generate-sources" unless="skiptests">
-      <ant dir=".." target="start-server" />
+      <echo>${selenium-server}</echo>
+      <java jar="${selenium-server}" fork="true" spawn="true"/>
+      <sleep seconds="2"/>
       <!--  output="${tmp}/php_out.txt" -->
      <condition property="phpunit.executable" value="phpunit.bat">
         <os family="windows" />
@@ -67,7 +69,8 @@ class Testing_Selenium_Exception extends PEAR_Exception
       <exec executable="${phpunit.executable}" resultproperty="result">
         <arg line="TestSuite.php"/>
       </exec>
-      <ant dir=".." target="stop-server" />
+      <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
+      <sleep seconds="2"/>
       <condition property="build.failed">
         <not><equals arg1="0" arg2="${result}" /></not>
       </condition>
