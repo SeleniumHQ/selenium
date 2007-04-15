@@ -1,8 +1,7 @@
 <project name="selenium" default="all">
     <target name="generate-sources">
-      <ant dir=".." target="extract-xml"/>
       <mkdir dir="PEAR/Testing/Selenium" />
-      <xslt in="../iedoc.xml" out="PEAR/Testing/Selenium.php" style="iedoc2php.xml"/>
+      <xslt in="../target/iedoc.xml" out="PEAR/Testing/Selenium.php" style="iedoc2php.xml"/>
       <echo file="PEAR/Testing/Selenium/Exception.php"><![CDATA[<?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -73,6 +72,18 @@ class Testing_Selenium_Exception extends PEAR_Exception
         <not><equals arg1="0" arg2="${result}" /></not>
       </condition>
       <fail if="build.failed" message="php tests failed!" />
+    </target>
+    <target name="dist" depends="generate-sources, doc">
+        <mkdir dir="target" />
+        <property name="project.version" value="UNKNOWNVERSION" />
+        <property name="php.release" value="selenium-php-client-driver-${project.version}"/>
+        <zip zipfile="target/${php.release}.zip">
+            <zipfileset dir="." prefix="${php.release}">
+                <include name="PEAR/**"/>
+                <include name="*.php"/>
+                <include name="doc/**" />
+            </zipfileset>
+        </zip>
     </target>
     <target name="clean">
       <delete dir="PEAR" />
