@@ -8,7 +8,7 @@
             depends="init,compile-core, compile-unit-tests, compile-integration-tests"/>
 
     <target name="compile-core">
-        <csc target="library" output="build/ThoughtWorks.Selenium.Core.dll" debug="true" doc="build/Core.xml">
+        <csc target="library" output="target/ThoughtWorks.Selenium.Core.dll" debug="true" doc="target/Core.xml">
             <sources>
                 <include name="src/Core/*.cs"/>
             </sources>
@@ -17,14 +17,14 @@
                 <include name="System.Data.dll"/>
                 <include name="System.Xml.dll"/>
                 <include name="System.Web.dll"/>
-                <include name="build/*.dll"/>
+                <include name="target/*.dll"/>
             </references>
         </csc>
     </target>
 
 
     <target name="compile-unit-tests">
-        <csc target="library" output="build/ThoughtWorks.Selenium.UnitTests.dll" debug="true">
+        <csc target="library" output="target/ThoughtWorks.Selenium.UnitTests.dll" debug="true">
             <sources>
                 <include name="src/UnitTests/*.cs"/>
             </sources>
@@ -35,13 +35,13 @@
                 <include name="System.Web.dll"/>
                 <include name="lib/nunit.*.dll"/>
                 <include name="lib/nmock.dll"/>
-                <include name="build/*.dll"/>
+                <include name="target/*.dll"/>
             </references>
         </csc>
     </target>
 
     <target name="compile-integration-tests">
-        <csc target="library" output="build/ThoughtWorks.Selenium.IntegrationTests.dll" debug="true">
+        <csc target="library" output="target/ThoughtWorks.Selenium.IntegrationTests.dll" debug="true">
             <sources>
                 <include name="src/IntegrationTests/*.cs"/>
             </sources>
@@ -51,12 +51,12 @@
                 <include name="System.Xml.dll"/>
                 <include name="System.Web.dll"/>
                 <include name="lib/nunit.*.dll"/>
-                <include name="build/*.dll"/>
+                <include name="target/*.dll"/>
             </references>
         </csc>
     </target>
     <target name="init">
-        <copy todir="build">
+        <copy todir="target">
             <fileset basedir="lib">
                 <include name="*.dll"/>
             </fileset>
