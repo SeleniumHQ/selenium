@@ -29,9 +29,10 @@
                                 <phase>test</phase>
                                 <configuration>
                                     <tasks>
-                                        <ant target="ant-test">
+                                        <ant target="test">
                                             <property name="selenium-server"
                                                       value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                            <property name="project.version" value="${project.version}" />
                                         </ant>
                                     </tasks>
                                 </configuration>
@@ -63,9 +64,10 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <tasks>
-                                <ant target="ant-generate-sources">
+                                <ant target="generate-sources">
                                     <property name="selenium-server"
                                               value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                    <property name="project.version" value="${project.version}" />
                                 </ant>
                             </tasks>
                         </configuration>
@@ -78,9 +80,10 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                                <ant target="ant-doc">
+                                <ant target="dist">
                                     <property name="selenium-server"
                                               value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                    <property name="project.version" value="${project.version}" />
                                 </ant>
                             </tasks>
                         </configuration>
@@ -110,18 +113,29 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>target/selenium.rb</file>
-                                    <type>rb</type>
-                                </artifact>
-                                <artifact>
-                                    <file>target/doc.zip</file>
+                                    <file>target/selenium-ruby-client-driver-${project.version}.zip</file>
                                     <type>zip</type>
-                                    <classifier>docs</classifier>
                                 </artifact>
                             </artifacts>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>.</directory>
+                            <includes>
+                                <include>selenium.rb</include>
+                            </includes>
+                        </fileset>
+                        <fileset>
+                            <directory>doc</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
     </build>
