@@ -9,7 +9,7 @@
     <groupId>org.openqa.selenium</groupId>
     <artifactId>selenium-remote-control</artifactId>
     <packaging>pom</packaging>
-    <name>Selenium Remote Control</name>
+    <name>Selenium RC Distribution</name>
     <build>
         <plugins>
             <plugin>

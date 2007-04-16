@@ -110,6 +110,9 @@
         </profile>
         <profile>
             <id>dist</id>
+            <modules>
+                <module>distrib</module>
+            </modules>
             <build>
                 <plugins>
                     <plugin>
