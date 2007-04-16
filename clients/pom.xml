@@ -11,8 +11,12 @@
     <packaging>pom</packaging>
     <name>Selenium RC Client Drivers</name>
     <modules>
-        <module>ruby</module>
         <module>java</module>
+        <module>dotnet</module>
+        <module>perl</module>
+        <module>php</module>
+        <module>python</module>
+        <module>ruby</module>
     </modules>
     <build>
         <plugins>
@@ -44,6 +48,11 @@
                     </execution>
                 </executions>
                 <dependencies>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
                     <dependency>
                         <groupId>ant</groupId>
                         <artifactId>ant-trax</artifactId>
