@@ -316,7 +316,7 @@
         <dependency>
             <groupId>org.openqa.selenium.server</groupId>
             <artifactId>selenium-server-coreless</artifactId>
-            <version>0.9.2-SNAPSHOT</version>
+            <version>0.9.1</version>
         </dependency>
         <dependency>
             <groupId>rhino</groupId>
