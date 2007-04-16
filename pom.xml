@@ -58,6 +58,8 @@
                                         <filter token="REVISION" value="${svn-revision}"/>
                                     </filterset>
                                 </copy>
+                                
+                                <copy file="target/classes/core/TestRunner.html" tofile="target/classes/core/TestRunner.hta" />
 
                                 <mkdir dir="target/classes/core"/>
                                 <java jar="${maven.dependency.rhino.js.jar.path}" output="target/classes/core/iedoc.xml" failonerror="true" fork="true">
@@ -183,6 +185,71 @@
                 </plugins>
             </build>
         </profile>
+        
+        <profile>
+            <id>integration-test-firefox</id>
+            <activation>
+                <property>
+                    <name>!notest</name>
+                </property>
+            </activation>
+            <properties>
+                <slowResources>false</slowResources>
+                <multiWindow>true</multiWindow>
+                <browser>*firefox</browser>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.2-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <phase>integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <taskdef resource="selenium-ant.properties">
+                                            <classpath refid="maven.dependency.classpath" />
+                                        </taskdef>
+                                        <selenese 
+                                            browser="${browser}"
+                                            suite="src/main/resources/tests/TestSuite.html"
+                                            port="4444"
+                                            slowResources="${slowResources}"
+                                            multiWindow="${multiWindow}"
+                                            startURL="http://localhost:4444" />
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>ant</groupId>
+                                <artifactId>ant-trax</artifactId>
+                                <version>1.6.5</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>ant</groupId>
+                                <artifactId>ant-junit</artifactId>
+                                <version>1.6.5</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>junit</groupId>
+                                <artifactId>junit</artifactId>
+                                <version>3.8.1</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        
+        
     </profiles>
     <pluginRepositories>
         <pluginRepository>
@@ -246,6 +313,11 @@
             <scope>test</scope>
         </dependency>
         -->
+        <dependency>
+            <groupId>org.openqa.selenium.server</groupId>
+            <artifactId>selenium-server-coreless</artifactId>
+            <version>0.9.2-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>
