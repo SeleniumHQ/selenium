@@ -214,6 +214,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
         out.println("[Install]");
         out.println("HELLO=NO");
+        out.println("Newest Used Version=2000");
 
         // TODO Disable security warnings
 
