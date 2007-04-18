@@ -132,6 +132,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private File makeCustomProfile() throws IOException {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
+        ResourceExtractor.extractResourcePath(getClass(), "/opera", customProfileDir);
 
         if (simple) return customProfileDir;
 
@@ -150,7 +151,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         out.println("Enable HTTP 1.1 for proxy=1");
         out.println("Use Proxy On Local Names Check=1");
         out.println("Use HTTP=1"); //TODO This forces the proxy to be used all the time!
-        out.println("Use HTTPS=0");
+        out.println("Use HTTPS=1");
         out.println("Use FTP=0");
         out.println("Use GOPHER=0");
         out.println("Use WAIS=0");
