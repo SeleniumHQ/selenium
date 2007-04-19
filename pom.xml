@@ -134,6 +134,9 @@
                                 <phase>test</phase>
                                 <configuration>
                                     <tasks>
+                                        <condition property="browserFileNames" value="${firefox}">
+                                            <available file="${firefox}"/>
+                                        </condition>
                                         <condition property="browserFileNames" value="c:\program files\Mozilla Firefox\firefox.exe">
                                             <os family="windows"/>
                                         </condition>
