@@ -12,11 +12,6 @@
     <name>Selenium RC Client Drivers</name>
     <modules>
         <module>java</module>
-        <module>dotnet</module>
-        <module>perl</module>
-        <module>php</module>
-        <module>python</module>
-        <module>ruby</module>
     </modules>
     <build>
         <plugins>
@@ -62,6 +57,38 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>dotnet</id>
+            <modules>
+                <module>dotnet</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>perl</id>
+            <modules>
+                <module>perl</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>php</id>
+            <modules>
+                <module>php</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>python</id>
+            <modules>
+                <module>python</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>ruby</id>
+            <modules>
+                <module>ruby</module>
+            </modules>
+        </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>org.openqa.selenium.server</groupId>
