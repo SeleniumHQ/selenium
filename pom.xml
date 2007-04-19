@@ -137,11 +137,11 @@
                                         <condition property="browserFileNames" value="c:\program files\Mozilla Firefox\firefox.exe">
                                             <os family="windows"/>
                                         </condition>
-                                        <condition property="browserFileNames" value="/usr/bin/firefox">
-                                            <os family="unix"/>
-                                        </condition>
                                         <condition property="browserFileNames" value="/Applications/Firefox.app/Contents/MacOS/firefox-bin">
                                             <os family="mac"/>
+                                        </condition>
+                                        <condition property="browserFileNames" value="/usr/bin/firefox">
+                                            <os family="unix"/>
                                         </condition>
                                         <property name="testRunnerLocation" location="src/main/resources/jsunit/testRunner.html"/>
                                         <property name="testSuiteLocation" location="src/main/resources/unittest/browserbot/suite.html"/>
