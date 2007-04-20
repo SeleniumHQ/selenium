@@ -37,14 +37,14 @@ function Selenium(browserbot) {
      * 
      * <ul>
      * <li><strong>identifier</strong>=<em>id</em>: 
-     * Select the element with the specified @id attribute. If no match is
-     * found, select the first element whose @name attribute is <em>id</em>.
+     * Select the element with the specified &#064;id attribute. If no match is
+     * found, select the first element whose &#064;name attribute is <em>id</em>.
      * (This is normally the default; see below.)</li>
      * <li><strong>id</strong>=<em>id</em>:
-     * Select the element with the specified @id attribute.</li>
+     * Select the element with the specified &#064;id attribute.</li>
      *
      * <li><strong>name</strong>=<em>name</em>:
-     * Select the first element with the specified @name attribute.
+     * Select the first element with the specified &#064;name attribute.
      * <ul class="first last simple">
      * <li>username</li>
      * <li>name=username</li>
@@ -71,12 +71,12 @@ function Selenium(browserbot) {
      * <li><strong>xpath</strong>=<em>xpathExpression</em>: 
      * Locate an element using an XPath expression.
      * <ul class="first last simple">
-     * <li>xpath=//img[@alt='The image alt text']</li>
-     * <li>xpath=//table[@id='table1']//tr[4]/td[2]</li>
-     * <li>xpath=//a[contains(@href,'#id1')]</li>
-     * <li>xpath=//a[contains(@href,'#id1')]/@class</li>
-     * <li>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</li>
-     * <li>xpath=//input[@name='name2' and @value='yes']</li>
+     * <li>xpath=//img[&#064;alt='The image alt text']</li>
+     * <li>xpath=//table[&#064;id='table1']//tr[4]/td[2]</li>
+     * <li>xpath=//a[contains(&#064;href,'#id1')]</li>
+     * <li>xpath=//a[contains(&#064;href,'#id1')]/&#064;class</li>
+     * <li>xpath=(//table[&#064;class='stylee'])//th[text()='theHeaderText']/../td</li>
+     * <li>xpath=//input[&#064;name='name2' and &#064;value='yes']</li>
      * <li>xpath=//*[text()="right"]</li>
      *
      * </ul>
