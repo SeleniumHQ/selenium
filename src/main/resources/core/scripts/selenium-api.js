@@ -1397,7 +1397,7 @@ Selenium.prototype.getAttribute = function(attributeLocator) {
     /**
    * Gets the value of an element attribute.
    *
-   * @param attributeLocator an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
+   * @param attributeLocator an element locator followed by an &#064; sign and then the name of the attribute, e.g. "foo&#064;bar"
    * @return string the value of the specified attribute
    */
    var result = this.browserbot.findAttribute(attributeLocator);
