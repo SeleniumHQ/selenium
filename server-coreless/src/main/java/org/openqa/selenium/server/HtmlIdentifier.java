@@ -48,6 +48,7 @@ public class HtmlIdentifier {
         // ebay dll contains HTML snippets which fool InjectionHelper.  -nas
         rules.add(new ExtensionRule(new String[]{"dll", "gif", "ico", "jpg", "jpeg", "png", "dwr", "js"}, -1000));
         rules.add(new ContentRule("<html", 1000, -100));
+        rules.add(new ContentRule("<head", 500, -100)); // http://drudgereport.com doesn't have <html>, but rather starts with <head>
         rules.add(new ContentRule("<!DOCTYPE html", 1000, -100));
         rules.add(new ContentTypeRule("text/html", 100, -1000));
         rules.add(new Rule("dojo catcher", -100000, 0) {
