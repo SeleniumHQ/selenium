@@ -130,6 +130,7 @@ function buildDriverUrl() {
     var slashPairOffset = s.indexOf("//") + "//".length
     var pathSlashOffset = s.substring(slashPairOffset).indexOf("/")
     return s.substring(0, slashPairOffset + pathSlashOffset) + "/selenium-server/driver/";
+    //return "http://localhost" + uniqueId + "/selenium-server/driver/";
 }
 
 function logToRc(logLevel, message) {

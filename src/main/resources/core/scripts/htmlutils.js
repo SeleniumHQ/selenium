@@ -42,7 +42,7 @@ function sel$() {
   return results.length < 2 ? results[0] : results;
 }
 
-function $A(iterable) {
+function sel$A(iterable) {
   if (!iterable) return [];
   if (iterable.toArray) {
     return iterable.toArray();
@@ -55,9 +55,9 @@ function $A(iterable) {
 }
 
 function fnBind() {
-  var args = $A(arguments), __method = args.shift(), object = args.shift();
+  var args = sel$A(arguments), __method = args.shift(), object = args.shift();
   var retval = function() {
-    return __method.apply(object, args.concat($A(arguments)));
+    return __method.apply(object, args.concat(sel$A(arguments)));
   }
   retval.__method = __method;
   return retval;

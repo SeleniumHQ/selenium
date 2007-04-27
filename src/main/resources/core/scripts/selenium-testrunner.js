@@ -593,7 +593,7 @@ objectExtend(HtmlTestSuite.prototype, {
     },
 
     getTestTable: function() {
-        var tables = $A(this.suiteDocument.getElementsByTagName("table"));
+        var tables = sel$A(this.suiteDocument.getElementsByTagName("table"));
         return tables[0];
     },
 
@@ -603,7 +603,7 @@ objectExtend(HtmlTestSuite.prototype, {
 
     _collectSuiteRows: function () {
         var result = [];
-        var tables = $A(this.suiteDocument.getElementsByTagName("table"));
+        var tables = sel$A(this.suiteDocument.getElementsByTagName("table"));
         var testTable = tables[0];
         for (rowNum = 1; rowNum < testTable.rows.length; rowNum++) {
             var rowElement = testTable.rows[rowNum];
@@ -611,7 +611,7 @@ objectExtend(HtmlTestSuite.prototype, {
         }
         
         // process the unsuited rows as well
-        for (var tableNum = 1; tableNum < $A(this.suiteDocument.getElementsByTagName("table")).length; tableNum++) {
+        for (var tableNum = 1; tableNum < sel$A(this.suiteDocument.getElementsByTagName("table")).length; tableNum++) {
             testTable = tables[tableNum];
             for (rowNum = 1; rowNum < testTable.rows.length; rowNum++) {
                 var rowElement = testTable.rows[rowNum];
@@ -829,11 +829,11 @@ objectExtend(HtmlTestCase.prototype, {
 
     _collectCommandRows: function () {
         var commandRows = [];
-        var tables = $A(this.testDocument.getElementsByTagName("table"));
+        var tables = sel$A(this.testDocument.getElementsByTagName("table"));
         var self = this;
         for (var i = 0; i < tables.length; i++) {
             var table = tables[i];
-            var tableRows = $A(table.rows);
+            var tableRows = sel$A(table.rows);
             for (var j = 0; j < tableRows.length; j++) {
                 var candidateRow = tableRows[j];
                 if (self.isCommandRow(candidateRow)) {
