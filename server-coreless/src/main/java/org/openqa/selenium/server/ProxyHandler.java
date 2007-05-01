@@ -17,20 +17,15 @@
 package org.openqa.selenium.server;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.mortbay.http.*;
 import org.mortbay.http.handler.AbstractHttpHandler;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
 import org.mortbay.util.URI;
-import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
-import cybervillains.ca.KeyStoreManager;
 
 /* ------------------------------------------------------------ */
 
