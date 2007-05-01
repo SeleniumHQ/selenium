@@ -431,6 +431,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 return "ERROR: No launcher found for sessionId " + sessionId;
             } 
             launcher.close();
+            synchronized(launchers) {
+                launchers.remove(sessionId);
+            }
             FrameGroupCommandQueueSet.clearQueueSet(sessionId);
         }
         return "OK";
@@ -558,10 +561,19 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     
     /** Kills all running browsers */
     public void stopAllBrowsers() {
-        for (Iterator i = launchers.values().iterator(); i.hasNext();) {
-            BrowserLauncher launcher = (BrowserLauncher) i.next();
-            launcher.close();
+        synchronized(launchers) {
+            for (Iterator<Map.Entry<String, BrowserLauncher>> iterator = launchers.entrySet().iterator(); iterator.hasNext();)
+            {
+                Map.Entry<String, BrowserLauncher> entry = iterator.next();
+                entry.getValue().close();
+                iterator.remove();
+            }
         }
+    }
+
+
+    public Map<String, BrowserLauncher> getLaunchers() {
+        return launchers;
     }
 
     /** Sets all the don't-cache headers on the HttpResponse */

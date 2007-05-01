@@ -23,6 +23,4 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
     public void launchRemoteSession(String browserURL, boolean multiWindow) {
         launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, 0));
     }
-
-
 }

@@ -101,7 +101,11 @@ public class HTABrowserLauncher implements BrowserLauncher {
     	AsyncExecute.killProcess(htaProcess);
         LauncherUtils.recursivelyDeleteDir(dir);
     }
-    
+
+    public Process getProcess() {
+        return htaProcess;
+    }
+
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
         launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, port), "TestRunner.hta");
     }

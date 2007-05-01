@@ -19,6 +19,7 @@ package org.openqa.selenium.server;
 
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 
 import org.mortbay.http.*;
 import org.mortbay.jetty.*;
@@ -537,11 +538,16 @@ public class SeleniumServer {
     private void assembleHandlers(boolean slowResources) {
         HttpContext root = new HttpContext();
         root.setContextPath("/");
+
+        ProxyHandler proxyHandler;
         if (customProxyHandler == null) {
-            root.addHandler(new ProxyHandler());
+            proxyHandler = new ProxyHandler();
+            root.addHandler(proxyHandler);
         } else {
-            root.addHandler(customProxyHandler);
+            proxyHandler = customProxyHandler;
+            root.addHandler(proxyHandler);
         }
+
         server.addContext(root);
 
         HttpContext context = new HttpContext();
@@ -681,8 +687,14 @@ public class SeleniumServer {
                 }
         	} catch (IllegalStateException e) {} // if we're shutting down, it's too late for that!
         }
-        
-        
+    }
+
+    /**
+     * Returns a map of session IDs and their associated browser launchers for all active sessions.
+     * @return
+     */
+    public Map<String, BrowserLauncher> getBrowserLaunchers() {
+        return driver.getLaunchers();
     }
 
     public int getPort() {

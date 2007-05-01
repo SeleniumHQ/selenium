@@ -287,6 +287,10 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         }
     }
 
+    public Process getProcess() {
+        return process;
+    }
+
     public static void main(String[] args) {
         InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumServer.DEFAULT_PORT, "CUSTIE");
         l.launch("http://www.google.com/");

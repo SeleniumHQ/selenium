@@ -17,15 +17,20 @@
 package org.openqa.selenium.server;
 
 import org.apache.commons.logging.Log;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.mortbay.http.*;
 import org.mortbay.http.handler.AbstractHttpHandler;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
 import org.mortbay.util.URI;
+import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
+import cybervillains.ca.KeyStoreManager;
 
 /* ------------------------------------------------------------ */
 
@@ -48,6 +53,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     private boolean _anonymous = false;
     private transient boolean _chained = false;
     private final Map<String,SslRelay> _sslMap = new LinkedHashMap<String, SslRelay>();
+    private String sslKeystorePath;
 
     /* ------------------------------------------------------------ */
     /**
@@ -461,6 +467,18 @@ public class ProxyHandler extends AbstractHttpHandler {
                     {
                         listener = new SslRelay(addrPort);
 
+/*
+                        File tempDir = null;//File.createTempFile("seleniumSsl", ".tmp");
+                        //tempDir.delete();
+                        //tempDir.mkdirs();
+
+                        tempDir = new File(".");
+
+                        //ResourceExtractor.extractResourcePath(getClass(), "/sslSupport", tempDir);
+                        new KeyStoreManager().getCertificateByHostname(addrPort.getHost());
+
+                        listener.setKeystore(new File(tempDir, "test.jks").getAbsolutePath());
+*/
                         // grab a keystore that has been signed by a CA cert that has already been imported in to the browser
                         // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
                         // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
@@ -718,6 +736,10 @@ public class ProxyHandler extends AbstractHttpHandler {
      */
     public void setAnonymous(boolean anonymous) {
         _anonymous = anonymous;
+    }
+
+    public void setSslKeystorePath(String sslKeystorePath) {
+        this.sslKeystorePath = sslKeystorePath;
     }
 
     private static class SslRelay extends SslListener

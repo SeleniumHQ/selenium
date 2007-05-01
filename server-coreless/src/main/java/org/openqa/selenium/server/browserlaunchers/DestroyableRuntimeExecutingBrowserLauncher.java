@@ -44,6 +44,10 @@ public class DestroyableRuntimeExecutingBrowserLauncher extends AbstractBrowserL
         AsyncExecute.killProcess(process);
     }
 
+    public Process getProcess() {
+        return process;
+    }
+
     protected void launch(String url) {
         exec(commandPath + " " + url);
     }

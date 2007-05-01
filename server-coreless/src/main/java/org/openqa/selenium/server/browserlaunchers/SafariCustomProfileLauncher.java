@@ -138,6 +138,10 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         closed = true;
     }
 
+    public Process getProcess() {
+        return process;
+    }
+
     public static void main(String[] args) throws Exception {
         SafariCustomProfileLauncher l = new SafariCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUST");
         l.launch("http://www.google.com");
