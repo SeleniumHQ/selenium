@@ -6,7 +6,7 @@ function WebLoadingListener(driver, toCall) {
 
     this.func = function(event) {
         // Is there a meta refresh?
-        var doc = Utils.getDocument(driver.location)
+        var doc = Utils.getDocument(driver.context)
         var result = doc.evaluate("/html/head/meta[@http-equiv]", doc, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
         var element = result.iterateNext();
         while (element) {
@@ -24,9 +24,9 @@ function WebLoadingListener(driver, toCall) {
         }
 
         WebLoadingListener.removeListener(listener);
-        driver.location = "0 0";
         toCall(event);
     }
+    
     document.getElementById("appcontent").addEventListener(LOAD_EVENT, this.func, true);
 }
 

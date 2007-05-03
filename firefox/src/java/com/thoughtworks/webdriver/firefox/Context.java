@@ -1,9 +1,9 @@
 package com.thoughtworks.webdriver.firefox;
 
-class DocumentLocation {
+class Context {
     private final String fromExtension;
 
-    public DocumentLocation(String fromExtension) {
+    public Context(String fromExtension) {
         if (fromExtension.length() > 0)
            this.fromExtension = fromExtension;
         else

@@ -30,13 +30,13 @@ class ExtensionConnection {
 		return socket != null && socket.isConnected();
 	}
 
-	public Response sendMessageAndWaitForResponse(String methodName, DocumentLocation identifier, String argument) {
+	public Response sendMessageAndWaitForResponse(String methodName, Context context, String argument) {
         int lines = countLines(argument) + 1;
 
         StringBuffer message = new StringBuffer(methodName);
         message.append(" ").append(lines).append("\n");
 
-        message.append(identifier).append("\n");
+        message.append(context).append("\n");
 
         if (argument != null)
             message.append(argument).append("\n");
@@ -84,7 +84,7 @@ class ExtensionConnection {
         int spaceIndex = line.indexOf(' ');
         String methodName = line.substring(0, spaceIndex);
 		String remainingResponse = line.substring(spaceIndex + 1);
-		long count = Long.parseLong(remainingResponse);
+        long count = Long.parseLong(remainingResponse);
 
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < count; i++) {

@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <overlay id="fxdriver-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="context.js" />
   <script src="utils.js" />
-  <script src="location.js" />
   <script src="socketListener.js" />
   <script src="firefoxDriver.js" />
   <script src="wrappedElement.js" />
   <script src="webLoadingListener.js" />
-  <script src="windowListener.js" />
   <script src="server.js" />
  </overlay>

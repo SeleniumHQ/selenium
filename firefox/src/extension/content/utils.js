@@ -16,41 +16,17 @@ Utils.getService = function(className, serviceName) {
     return clazz.getService(Components.interfaces[serviceName]);
 };
 
-Utils.getBrowser = function(location) {
-    var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
-    var e = wm.getEnumerator("navigator:browser");
+Utils.getServer = function() {
+    var handle = Utils.newInstance("@thoughtworks.com/webdriver/fxdriver;1", "nsISupports");
+    return handle.wrappedJSObject;
+}
 
-    var win;
-    if (location.window == "?") {
-        win = wm.getMostRecentWindow("navigator:browser");
-        var t;
-        var count = -1;
-        while (e.hasMoreElements() && t != win) {
-            t = e.getNext();
-            count++;
-        }
-        location.window = count;
-        dump("Location is now: " + location + "\n");
-        return win.getBrowser();
-    } else {
-        var i = 0;
-
-        while (e.hasMoreElements() && i <= location.window) {
-            win = e.getNext();
-            i++;
-        }
-        return win.getBrowser();
-    }
+Utils.getBrowser = function(context) {
+    return fxbrowser;
 };
 
-Utils.getDocument = function(location) {
-    var browser = Utils.getBrowser(location);
-    var frameId = location.frame;
-
-    if (browser.contentWindow.frames[frameId]) {
-        return browser.contentWindow.frames[frameId].document;
-    }
-    return browser.contentDocument;
+Utils.getDocument = function(context) {
+    return fxdocument;
 };
 
 Utils.getText = function(element) {
@@ -66,8 +42,8 @@ Utils.getText = function(element) {
     return str;
 };
 
-Utils.addToKnownElements = function(element, location) {
-    var doc = Utils.getDocument(location);
+Utils.addToKnownElements = function(element, context) {
+    var doc = Utils.getDocument(context);
     if (!doc.fxdriver_elements) {
         doc.fxdriver_elements = new Array();
     }
@@ -76,17 +52,17 @@ Utils.addToKnownElements = function(element, location) {
     return start;
 };
 
-Utils.getElementAt = function(index, location) {
+Utils.getElementAt = function(index, context) {
     // Convert to a number if we're dealing with a string....
     index = index - 0;
 
-    var doc = Utils.getDocument(location);
+    var doc = Utils.getDocument(context);
     if (doc.fxdriver_elements)
         return doc.fxdriver_elements[index];
     return undefined;
 };
 
-Utils.type = function(location, element, text) {
+Utils.type = function(context, element, text) {
     var isTextField = Utils.isTextField(element);
 
     var value = "";
@@ -96,26 +72,26 @@ Utils.type = function(location, element, text) {
         var character = text.charAt(i);
         value += character;
 
-        Utils.keyDownOrUp(location, element, true, character);
-        Utils.keyPress(location, element, character);
+        Utils.keyDownOrUp(context, element, true, character);
+        Utils.keyPress(context, element, character);
         if (isTextField)
             element.setAttribute("value", value);
-        Utils.keyDownOrUp(location, element, false, character);
+        Utils.keyDownOrUp(context, element, false, character);
     }
 };
 
-Utils.keyPress = function(location, element, text) {
-    var event = Utils.getDocument(location).createEvent('KeyEvents');
-    event.initKeyEvent('keypress', true, true, Utils.getBrowser(location).contentWindow, 0, 0, 0, 0, 0, text.charCodeAt(0));
+Utils.keyPress = function(context, element, text) {
+    var event = Utils.getDocument(context).createEvent('KeyEvents');
+    event.initKeyEvent('keypress', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, 0, text.charCodeAt(0));
     element.dispatchEvent(event);
 };
 
-Utils.keyDownOrUp = function(location, element, down, text) {
+Utils.keyDownOrUp = function(context, element, down, text) {
     var keyCode = text;
     // We should do something clever with non-text characters
 
-    var event = Utils.getDocument(location).createEvent('KeyEvents');
-    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser(location).contentWindow, 0, 0, 0, 0, keyCode, 0);
+    var event = Utils.getDocument(context).createEvent('KeyEvents');
+    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, keyCode, 0);
     element.dispatchEvent(event);
 };
 
@@ -152,33 +128,62 @@ Utils.findForm = function(element) {
     return undefined;
 }
 
-Utils.fireMouseEventOn = function(location, element, eventName) {
-    var event = Utils.getDocument(location).createEvent("MouseEvents");
+Utils.fireMouseEventOn = function(context, element, eventName) {
+    var event = Utils.getDocument(context).createEvent("MouseEvents");
     event.initMouseEvent(eventName, true, true, null, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
     element.dispatchEvent(event);
 }
 
 Utils.dump = function(element) {
-    var views = new Object();
+    dump("=============\n");
+
     dump("Supported interfaces: ");
     for (var i in Components.interfaces) {
         try {
             var view = element.QueryInterface(Components.interfaces[i]);
             dump(i + ", ");
-//            Utils.dumpProperties(view);
         } catch (e) {
             // Doesn't support the interface
         }
     }
     dump("\n------------\n");
-    Utils.dumpProperties(element);
-    dump("\n");
-    Utils.dumpProperties(views);
+    var rows = [];
+    try {
+        Utils.dumpProperties(element, rows);
+    } catch (e) {
+        dump("caught an exception: " + e);
+    }
+
+    rows.sort();
+    for (var i in rows) {
+        dump(rows[i] + "\n");
+    }
+
     dump("=============\n\n\n");
 }
 
-Utils.dumpProperties = function(view) {
+Utils.dumpProperties = function(view, rows) {
     for (var i in view) {
-        dump("\t" + i + "\n");
+        var value = "\t" + i + ": ";
+        try {
+
+            if (typeof(view[i])  == typeof(Function)) {
+                value += " function()";
+            } else {
+                    value += String(view[i]);
+            }
+        } catch (e) {
+            value += " Cannot obtain value";
+        }
+        rows.push(value);
+    }
+}
+
+Utils.stackTrace = function() {
+    var stack = Components.stack;
+    var i = 5;
+    while (i && stack.caller) {
+        stack = stack.caller;
+        dump(stack + "\n");
     }
 }

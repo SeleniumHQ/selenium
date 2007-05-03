@@ -1,56 +1,37 @@
-function WebDriverServer() {
-    this.serverSocket = Utils.newInstance("@mozilla.org/network/server-socket;1", "nsIServerSocket");
-}
-
-WebDriverServer.prototype.startListening = function(port) {
-    var listenOn = port || 7055;
-    this.serverSocket.init(listenOn, true, -1);
-    this.serverSocket.asyncListen(this);
-}
-
-WebDriverServer.prototype.onSocketAccepted = function(socket, transport)
-{
-    try
-    {
-        this.outstream = transport.openOutputStream(0, 0, 0);
-        this.stream = transport.openInputStream(0, 0, 0);
-        this.instream = Utils.newInstance("@mozilla.org/scriptableinputstream;1", "nsIScriptableInputStream");
-        this.instream.init(this.stream);
-
-        var socketListener = new SocketListener(this.instream, new FirefoxDriver(this));
-        var pump = Utils.newInstance("@mozilla.org/network/input-stream-pump;1", "nsIInputStreamPump");
-        pump.init(this.stream, -1, -1, 0, 0, false);
-        pump.asyncRead(socketListener, null);
-    } catch(e) {
-        dump(e);
-    }
-};
-
-WebDriverServer.prototype.onStopListening = function(socket, status)
-{
-    this.stream.close();
-};
-
-
-WebDriverServer.prototype.close = function()
-{
-    this.instream.close();
-};
-
-WebDriverServer.prototype.respond = function(location, method, response) {
-    var output = method + " ";
-
-    if (response == undefined) {
-        output += "1\n" + location + "\n";
-    } else {
-        var length = response["split"] ? response.split("\n").length + 1: 2;
-        output += length + "\n" + location + "\n" + response + "\n";
-    }
-
-    this.outstream.write(output, output.length);
-    this.outstream.flush();
-};
+var driver = false;
 
 window.addEventListener("load", function(e) {
-    new WebDriverServer().startListening();
-}, false); 
+    var server = Utils.getServer();
+
+    server.onSocketAccepted = function(socket, transport) {
+        try {
+            this.outstream = transport.openOutputStream(0, 0, 0);
+            this.stream = transport.openInputStream(0, 0, 0);
+            this.instream = Utils.newInstance("@mozilla.org/scriptableinputstream;1", "nsIScriptableInputStream");
+            this.instream.init(this.stream);
+
+            var socketListener = new SocketListener(this.instream, driver);
+            var pump = Utils.newInstance("@mozilla.org/network/input-stream-pump;1", "nsIInputStreamPump");
+            pump.init(this.stream, -1, -1, 0, 0, false);
+            pump.asyncRead(socketListener, null);
+        } catch(e) {
+            dump(e);
+        }
+    }
+
+    server.startListening();
+
+    if (!driver) {
+        driver = new FirefoxDriver(server);
+        window.fxdriver = driver;
+        server.drivers.push(driver);
+    } else {
+        driver.context.frameId = 0;
+    }
+}, true);
+
+window.addEventListener("focus", function(e) {
+    if (driver) {
+        driver.refreshContext = true;
+    }
+}, true);

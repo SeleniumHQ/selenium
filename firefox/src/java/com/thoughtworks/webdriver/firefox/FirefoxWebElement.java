@@ -7,12 +7,12 @@ import java.util.ArrayList;
 
 public class FirefoxWebElement implements WebElement {
     private final ExtensionConnection extension;
-    private final DocumentLocation identifier;
+    private final Context context;
     private final String elementId;
 
-    public FirefoxWebElement(ExtensionConnection extension, DocumentLocation identifier, String elementId) {
+    public FirefoxWebElement(ExtensionConnection extension, Context context, String elementId) {
         this.extension = extension;
-        this.identifier = identifier;
+        this.context = context;
         this.elementId = elementId;
     }
 
@@ -68,13 +68,13 @@ public class FirefoxWebElement implements WebElement {
 
         ArrayList children = new ArrayList();
         for (int i = 0; i < ids.length; i++)
-            children.add(new FirefoxWebElement(extension, identifier, ids[i]));
+            children.add(new FirefoxWebElement(extension, context, ids[i]));
 
         return children;
     }
 
     private String sendMessage(String methodName, String argument) {
-        Response response = extension.sendMessageAndWaitForResponse(methodName, identifier, argument);
+        Response response = extension.sendMessageAndWaitForResponse(methodName, context, argument);
         return response.getResponseText();
     }
 }

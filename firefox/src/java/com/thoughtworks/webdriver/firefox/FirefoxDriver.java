@@ -13,7 +13,7 @@ import com.thoughtworks.webdriver.NoSuchElementException;
 
 public class FirefoxDriver implements WebDriver {
     private final ExtensionConnection extension;
-    private DocumentLocation identifier = new DocumentLocation("");
+    private Context context = new Context("");
 
     public FirefoxDriver() {
         extension = new ExtensionConnection("localhost", 7055);
@@ -72,8 +72,7 @@ public class FirefoxDriver implements WebDriver {
             throw new NoSuchElementException("Unable to find " + argument);
         }
 
-        return new FirefoxWebElement(extension, identifier, elementId);
-
+        return new FirefoxWebElement(extension, context, elementId);
     }
 
     public List selectElements(String xpath) {
@@ -81,7 +80,7 @@ public class FirefoxDriver implements WebDriver {
         String[] ids = returnedIds.split(",");
         List elements = new ArrayList();
         for (int i = 0; i < ids.length; i++) {
-            elements.add(new FirefoxWebElement(extension, identifier, ids[i]));
+            elements.add(new FirefoxWebElement(extension, context, ids[i]));
         }
         return elements;
 
@@ -157,8 +156,8 @@ public class FirefoxDriver implements WebDriver {
     }
 
     private String sendMessage(String methodName, String argument) {
-        Response response = extension.sendMessageAndWaitForResponse(methodName, identifier, argument);
-        identifier = response.getIdentifier();
+        Response response = extension.sendMessageAndWaitForResponse(methodName, context, argument);
+        context = response.getContext();
         return response.getResponseText();
     }
 
@@ -168,8 +167,8 @@ public class FirefoxDriver implements WebDriver {
             return FirefoxDriver.this;
         }
 
-        public WebDriver window(int index) {
-            sendMessage("switchToWindow", String.valueOf(index));
+        public WebDriver window(int windowIndex) {
+            sendMessage("switchToWindow", String.valueOf(windowIndex));
             return FirefoxDriver.this;
         }
     }
