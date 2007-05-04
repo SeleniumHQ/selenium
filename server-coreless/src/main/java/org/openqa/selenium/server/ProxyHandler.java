@@ -23,6 +23,7 @@ import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
 import org.mortbay.util.URI;
 import org.mortbay.jetty.Server;
+import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 
 import java.io.*;
 import java.net.*;
@@ -54,6 +55,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     private transient boolean _chained = false;
     private final Map<String,SslRelay> _sslMap = new LinkedHashMap<String, SslRelay>();
     private String sslKeystorePath;
+    private boolean useCyberVillains = false;
 
     /* ------------------------------------------------------------ */
     /**
@@ -107,7 +109,6 @@ public class ProxyHandler extends AbstractHttpHandler {
      * Set of allowed CONNECT ports.
      */
     protected HashSet<Integer> _allowedConnectPorts = new HashSet<Integer>();
-    private boolean useCyberVillains;
 
     {
         _allowedConnectPorts.add(80);
@@ -448,7 +449,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         HttpContext httpContext = new HttpContext();
         httpContext.setContextPath("/");
         ProxyHandler proxy = new ProxyHandler();
-        proxy.useCyberVillains = true;
+        proxy.useCyberVillains = false;
         httpContext.addHandler(proxy);
         server.addContext(httpContext);
         SocketListener listener = new SocketListener();
@@ -479,12 +480,15 @@ public class ProxyHandler extends AbstractHttpHandler {
                     listener = _sslMap.get(uri.toString());
                     if (listener==null)
                     {
+                        // we do this because the URI above doesn't actually have the host broken up (it returns null on getHost())
+                        String host = new URL("https://" + uri.toString()).getHost();
+
                         listener = new SslRelay(addrPort);
 
                         if (useCyberVillains) {
-                            wireUpSslWithCyberVilliansCA(addrPort, listener);
+                            wireUpSslWithCyberVilliansCA(host, listener);
                         } else {
-                            wireUpSslWithRemoteService(addrPort, listener);
+                            wireUpSslWithRemoteService(host, listener);
                         }
 
                         listener.setPassword("password");
@@ -542,17 +546,12 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
     }
 
-    private void wireUpSslWithRemoteService(InetAddrPort addrPort, SslRelay listener) throws IOException {
+    private void wireUpSslWithRemoteService(String host, SslRelay listener) throws IOException {
         // grab a keystore that has been signed by a CA cert that has already been imported in to the browser
         // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
         // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
-        File keystore = File.createTempFile("selenium-rc-" + addrPort.getHost() + "-" + addrPort.getPort(), "keystore");
-        String urlString = "http://dangerous-certificate-authority.openqa.org/genkey.jsp?padding=" + _sslMap.size();
-        List<InetAddrPort> addresses = new ArrayList<InetAddrPort>();
-        addresses.add(addrPort);
-        for (InetAddrPort addr : addresses) {
-            urlString += "&domain=" + addr.getHost();
-        }
+        File keystore = File.createTempFile("selenium-rc-" + host, "keystore");
+        String urlString = "http://dangerous-certificate-authority.openqa.org/genkey.jsp?padding=" + _sslMap.size() + "&domain=" + host;
 
         URL url = new URL(urlString);
         URLConnection conn = url.openConnection();
@@ -571,9 +570,24 @@ public class ProxyHandler extends AbstractHttpHandler {
         //listener.setKeystore("c:\\" + (_sslMap.size() + 1) + ".keystore");
     }
 
-    private void wireUpSslWithCyberVilliansCA(InetAddrPort addrPort, SslRelay listener) throws KeyStoreException, InvalidKeyException, SignatureException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, UnrecoverableKeyException {
-        KeyStoreManager.getCertificateByHostname(addrPort.getHost());
-        listener.setKeystore(new File("cybervillainsCA.jks").getAbsolutePath());
+    private void wireUpSslWithCyberVilliansCA(String host, SslRelay listener) throws KeyStoreException, InvalidKeyException, SignatureException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, UnrecoverableKeyException {
+        try {
+            File root = File.createTempFile("seleniumSslSupport", host);
+            root.delete();
+            root.mkdirs();
+
+            ResourceExtractor.extractResourcePath(getClass(), "/sslSupport", root);
+
+
+            KeyStoreManager mgr = new KeyStoreManager(root);
+            mgr.getCertificateByHostname(host);
+            mgr.getKeyStore().deleteEntry(KeyStoreManager._caPrivKeyAlias);
+            mgr.persist();
+
+            listener.setKeystore(new File(root, "cybervillainsCA.jks").getAbsolutePath());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /* ------------------------------------------------------------ */
