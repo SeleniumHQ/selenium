@@ -59,43 +59,45 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class KeyStoreManager {
 	
-	private static final String CERTMAP_SER_FILE = "certmap.ser";
-	private static final String SUBJMAP_SER_FILE = "subjmap.ser";
+	private final String CERTMAP_SER_FILE = "certmap.ser";
+	private final String SUBJMAP_SER_FILE = "subjmap.ser";
 	
-	private static final String EXPORTED_CERT_NAME = "cybervillainsCA.cer";
+	private final String EXPORTED_CERT_NAME = "cybervillainsCA.cer";
 	
-	private static final char[] _keypassword = "password".toCharArray();
-	private static final char[] _keystorepass = "password".toCharArray();
-	private static final String _caPrivateKeystore = "cybervillainsCA.jks";
-	private static final String _caCertAlias = "signingCert";
-	private static final String _caPrivKeyAlias = "signingCertPrivKey";
+	private final char[] _keypassword = "password".toCharArray();
+	private final char[] _keystorepass = "password".toCharArray();
+	private final String _caPrivateKeystore = "cybervillainsCA.jks";
+	private final String _caCertAlias = "signingCert";
+	public static final String _caPrivKeyAlias = "signingCertPrivKey";
 
-	static X509Certificate _caCert;
-	static PrivateKey _caPrivKey;
-	static KeyStore _ks;
+	X509Certificate _caCert;
+	PrivateKey _caPrivKey;
+	KeyStore _ks;
 	
-	private static HashMap<PublicKey, PrivateKey> _rememberedPrivateKeys;   
-	private static HashMap<PublicKey, PublicKey>  _mappedPublicKeys;
-	private static HashMap<String, String>        _certMap;
-	private static HashMap<String, String>		  _subjectMap;
+	private HashMap<PublicKey, PrivateKey> _rememberedPrivateKeys;
+	private HashMap<PublicKey, PublicKey>  _mappedPublicKeys;
+	private HashMap<String, String>        _certMap;
+	private HashMap<String, String>		  _subjectMap;
 	
-	private static final String KEYMAP_SER_FILE     = "keymap.ser";
-	private static final String PUB_KEYMAP_SER_FILE = "pubkeymap.ser";
+	private final String KEYMAP_SER_FILE     = "keymap.ser";
+	private final String PUB_KEYMAP_SER_FILE = "pubkeymap.ser";
 	
-	public static final String RSA_KEYGEN_ALGO = "RSA";
-	public static final String DSA_KEYGEN_ALGO = "DSA";
-	public static final KeyPairGenerator _rsaKpg;
-	public static final KeyPairGenerator _dsaKpg;
+	public final String RSA_KEYGEN_ALGO = "RSA";
+	public final String DSA_KEYGEN_ALGO = "DSA";
+	public final KeyPairGenerator _rsaKpg;
+	public final KeyPairGenerator _dsaKpg;
 	
-	private static SecureRandom _sr;
-	
-	
+	private SecureRandom _sr;
 	
 	
-	private static boolean persistImmediately = true;
 	
-	static
-	{	
+	
+	private boolean persistImmediately = true;
+    private File root;
+
+    public KeyStoreManager(File root) {
+        this.root = root;
+
 		Security.insertProviderAt(new BouncyCastleProvider(), 2);
 		
 		_sr = new SecureRandom();
@@ -112,7 +114,7 @@ public class KeyStoreManager {
 		
 		try {
 			
-			File privKeys = new File(KEYMAP_SER_FILE);
+			File privKeys = new File(root, KEYMAP_SER_FILE);
 			
 			
 			if(!privKeys.exists())
@@ -128,7 +130,7 @@ public class KeyStoreManager {
 			}
 			
 		
-			File pubKeys = new File(PUB_KEYMAP_SER_FILE);
+			File pubKeys = new File(root, PUB_KEYMAP_SER_FILE);
 			
 			if(!pubKeys.exists())
 			{
@@ -188,7 +190,7 @@ public class KeyStoreManager {
 		
 		try {
 			
-			File file = new File(CERTMAP_SER_FILE);
+			File file = new File(root, CERTMAP_SER_FILE);
 			
 			if(!file.exists())
 			{
@@ -218,7 +220,7 @@ public class KeyStoreManager {
 
 		try {
 			
-			File file = new File(SUBJMAP_SER_FILE);
+			File file = new File(root, SUBJMAP_SER_FILE);
 			
 			if(!file.exists())
 			{
@@ -248,8 +250,8 @@ public class KeyStoreManager {
 		
 	}
 	
-	private static void reloadKeystore() throws FileNotFoundException, IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException {
-		InputStream is = new FileInputStream(_caPrivateKeystore);
+	private void reloadKeystore() throws FileNotFoundException, IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException {
+		InputStream is = new FileInputStream(new File(root, _caPrivateKeystore));
 		
 		if (is != null)	{
 			_ks.load(is, _keystorepass);
@@ -261,7 +263,7 @@ public class KeyStoreManager {
 	/**
 	 * Creates, writes and loads a new keystore and CA root certificate.
 	 */
-	protected static void createKeystore() {
+	protected void createKeystore() {
 		
 		Certificate signingCert = null;
 		PrivateKey  caPrivKey  = null;
@@ -272,7 +274,7 @@ public class KeyStoreManager {
 			{
 				System.out.println("Keystore or signing cert & keypair not found.  Generating...");
 				
-				KeyPair caKeypair = KeyStoreManager.getRSAKeyPair();
+				KeyPair caKeypair = getRSAKeyPair();
 				caPrivKey = caKeypair.getPrivate();  			
 				signingCert = CertificateCreator.createTypicalMasterCert(caKeypair);
 				
@@ -284,7 +286,7 @@ public class KeyStoreManager {
 				_ks.setCertificateEntry(_caCertAlias, signingCert);
 				_ks.setKeyEntry(_caPrivKeyAlias, caPrivKey, _keypassword, new Certificate[] {signingCert});
 				
-				File caKsFile = new File(_caPrivateKeystore);
+				File caKsFile = new File(root, _caPrivateKeystore);
 				
 				OutputStream os = new FileOutputStream(caKsFile);
 				_ks.store(os, _keystorepass);
@@ -295,7 +297,7 @@ public class KeyStoreManager {
 				// also export a .cer that can be imported as a trusted root
 				// to disable all warning dialogs for interception
 				
-				File signingCertFile = new File(EXPORTED_CERT_NAME);
+				File signingCertFile = new File(root, EXPORTED_CERT_NAME);
 				
 				FileOutputStream cerOut = new FileOutputStream(signingCertFile);
 				
@@ -328,21 +330,21 @@ public class KeyStoreManager {
 	
 	/**
 	 * Stores a new certificate and its associated private key in the keystore.
-	 * @param cert
-	 * @param privKey
-	 * @throws KeyStoreException
+	 * @param hostname
+     *@param cert
+     * @param privKey @throws KeyStoreException
 	 * @throws CertificateException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static synchronized void addCertAndPrivateKey(final X509Certificate cert, final PrivateKey privKey)
+	public synchronized void addCertAndPrivateKey(String hostname, final X509Certificate cert, final PrivateKey privKey)
 	throws KeyStoreException, CertificateException, NoSuchAlgorithmException
 	{
 		String alias = ThumbprintUtil.getThumbprint(cert);
 		
-		_ks.deleteEntry(alias);
-		
-		_ks.setCertificateEntry(alias, cert);
-		_ks.setKeyEntry(alias, privKey, _keypassword, new Certificate[] {cert, _caCert});
+		_ks.deleteEntry(hostname);
+
+        _ks.setCertificateEntry(hostname, cert);
+		_ks.setKeyEntry(hostname, privKey, _keypassword, new Certificate[] {cert});
 		
 		if(persistImmediately)
 		{
@@ -357,10 +359,10 @@ public class KeyStoreManager {
 	 * @throws NoSuchAlgorithmException
 	 * @throws CertificateException
 	 */
-	public synchronized static void persist() throws KeyStoreException, NoSuchAlgorithmException, CertificateException {
+	public synchronized void persist() throws KeyStoreException, NoSuchAlgorithmException, CertificateException {
 		try
 		{
-			FileOutputStream kso = new FileOutputStream(_caPrivateKeystore);
+			FileOutputStream kso = new FileOutputStream(new File(root, _caPrivateKeystore));
 			_ks.store(kso, _keystorepass);
 			kso.flush();
 			kso.close();
@@ -382,7 +384,7 @@ public class KeyStoreManager {
 	 * @return
 	 * @throws KeyStoreException
 	 */
-	public static synchronized X509Certificate getCertificateByAlias(final String alias) throws KeyStoreException{
+	public synchronized X509Certificate getCertificateByAlias(final String alias) throws KeyStoreException{
 		return (X509Certificate)_ks.getCertificate(alias);
 	}
 	
@@ -402,7 +404,7 @@ public class KeyStoreManager {
 	 * @throws InvalidKeyException 
 	 * @throws CertificateParsingException 
 	 */
-	public static synchronized X509Certificate getCertificateByHostname(final String hostname) throws KeyStoreException, CertificateParsingException, InvalidKeyException, CertificateExpiredException, CertificateNotYetValidException, SignatureException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, UnrecoverableKeyException{
+	public synchronized X509Certificate getCertificateByHostname(final String hostname) throws KeyStoreException, CertificateParsingException, InvalidKeyException, CertificateExpiredException, CertificateNotYetValidException, SignatureException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, UnrecoverableKeyException{
 		
 		String alias = _subjectMap.get(getSubjectForHostname(hostname));
 		
@@ -419,7 +421,7 @@ public class KeyStoreManager {
 	 * @return
 	 * @throws KeyStoreException
 	 */
-	public static synchronized X509Certificate getSigningCert() throws KeyStoreException {
+	public synchronized X509Certificate getSigningCert() throws KeyStoreException {
 		return _caCert;
 	}
 	
@@ -430,7 +432,7 @@ public class KeyStoreManager {
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnrecoverableKeyException
 	 */
-	public static synchronized PrivateKey getSigningPrivateKey() throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
+	public synchronized PrivateKey getSigningPrivateKey() throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
 		return _caPrivKey;
 	}
 	
@@ -438,7 +440,7 @@ public class KeyStoreManager {
 	 * Whether updates are immediately written to disk.
 	 * @return
 	 */
-	public static boolean getPersistImmediately() {
+	public boolean getPersistImmediately() {
 		return persistImmediately;
 	}
 	
@@ -446,8 +448,8 @@ public class KeyStoreManager {
 	 * Whether updates are immediately written to disk.
 	 * @param persistImmediately
 	 */
-	public static void setPersistImmediately(final boolean persistImmediately) {
-		KeyStoreManager.persistImmediately = persistImmediately;
+	public void setPersistImmediately(final boolean persistImmediately) {
+		this.persistImmediately = persistImmediately;
 	}
 	
 	/**
@@ -467,7 +469,7 @@ public class KeyStoreManager {
 	 * @throws KeyStoreException
 	 * @throws UnrecoverableKeyException
 	 */
-	public static synchronized X509Certificate getMappedCertificate(final X509Certificate cert) 
+	public synchronized X509Certificate getMappedCertificate(final X509Certificate cert)
 	throws CertificateEncodingException,
 	InvalidKeyException,
 	CertificateException,
@@ -499,10 +501,10 @@ public class KeyStoreManager {
 				KeyPair kp;
 				
 				if(algo.equals("RSA")) {
-					kp = KeyStoreManager.getRSAKeyPair();
+					kp = getRSAKeyPair();
 				}
 				else if(algo.equals("DSA")) {
-					kp = KeyStoreManager.getDSAKeyPair();
+					kp = getDSAKeyPair();
 				}
 				else
 				{
@@ -526,7 +528,7 @@ public class KeyStoreManager {
 						getSigningCert(), 
 						getSigningPrivateKey());
 			
-			addCertAndPrivateKey(replacementCert, privKey);
+			addCertAndPrivateKey(null, replacementCert, privKey);
 			
 			mappedCertThumbprint = ThumbprintUtil.getThumbprint(replacementCert);
 			
@@ -565,7 +567,7 @@ public class KeyStoreManager {
 	 * @throws KeyStoreException
 	 * @throws UnrecoverableKeyException
 	 */
-	public static X509Certificate getMappedCertificateForHostname(String hostname) throws CertificateParsingException, InvalidKeyException, CertificateExpiredException, CertificateNotYetValidException, SignatureException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException, UnrecoverableKeyException
+	public X509Certificate getMappedCertificateForHostname(String hostname) throws CertificateParsingException, InvalidKeyException, CertificateExpiredException, CertificateNotYetValidException, SignatureException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException, UnrecoverableKeyException
 	{
 		String subject = getSubjectForHostname(hostname);
 		
@@ -573,14 +575,14 @@ public class KeyStoreManager {
 		
 		if(thumbprint == null) {
 			
-			KeyPair kp = KeyStoreManager.getRSAKeyPair();
+			KeyPair kp = getRSAKeyPair();
 			
 			X509Certificate newCert = CertificateCreator.generateStdSSLServerCertificate(kp.getPublic(), 
 																						 getSigningCert(),
 																						 getSigningPrivateKey(),
 																						 subject);
 			
-			addCertAndPrivateKey(newCert, kp.getPrivate());
+			addCertAndPrivateKey(hostname, newCert, kp.getPrivate());
 			
 			thumbprint = ThumbprintUtil.getThumbprint(newCert);
 			
@@ -600,15 +602,15 @@ public class KeyStoreManager {
 		
 	}
 
-	private static String getSubjectForHostname(String hostname) {
+	private String getSubjectForHostname(String hostname) {
 		//String subject = "C=USA, ST=WA, L=Seattle, O=Cybervillains, OU=CertificationAutority, CN=" + hostname + ", EmailAddress=evilRoot@cybervillains.com";
 		String subject = "CN=" + hostname + ", OU=Test, O=CyberVillainsCA, L=Seattle, S=Washington, C=US";
 		return subject;
 	}
 	
-	private synchronized static void persistCertMap() {
+	private synchronized void persistCertMap() {
 		try {
-			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(CERTMAP_SER_FILE));
+			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(root, CERTMAP_SER_FILE)));
 			out.writeObject(_certMap);
 			out.flush();
 			out.close();
@@ -624,9 +626,9 @@ public class KeyStoreManager {
 	
 	
 
-	private synchronized static void persistSubjectMap() {
+	private synchronized void persistSubjectMap() {
 		try {
-			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(SUBJMAP_SER_FILE));
+			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(root, SUBJMAP_SER_FILE)));
 			out.writeObject(_subjectMap);
 			out.flush();
 			out.close();
@@ -650,7 +652,7 @@ public class KeyStoreManager {
 	 * @throws UnrecoverableKeyException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public synchronized static PrivateKey getPrivateKeyForLocalCert(final X509Certificate cert)
+	public synchronized PrivateKey getPrivateKeyForLocalCert(final X509Certificate cert)
 	throws CertificateEncodingException, KeyStoreException, UnrecoverableKeyException,
 	NoSuchAlgorithmException
 	{
@@ -664,7 +666,7 @@ public class KeyStoreManager {
 	 * Generate an RSA Key Pair
 	 * @return
 	 */
-	public static KeyPair getRSAKeyPair()
+	public KeyPair getRSAKeyPair()
 	{
 		KeyPair kp = _rsaKpg.generateKeyPair();
 		rememberKeyPair(kp);
@@ -676,7 +678,7 @@ public class KeyStoreManager {
 	 * Generate a DSA Key Pair
 	 * @return
 	 */
-	public static KeyPair getDSAKeyPair()
+	public KeyPair getDSAKeyPair()
 	{
 			KeyPair kp = _dsaKpg.generateKeyPair();
 			rememberKeyPair(kp);
@@ -684,9 +686,9 @@ public class KeyStoreManager {
 	}
 	
 	
-	private synchronized static void persistPublicKeyMap() {
+	private synchronized void persistPublicKeyMap() {
 		try {
-			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(PUB_KEYMAP_SER_FILE));
+			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(root, PUB_KEYMAP_SER_FILE)));
 			out.writeObject(_mappedPublicKeys);
 			out.flush();
 			out.close();
@@ -700,9 +702,9 @@ public class KeyStoreManager {
 		}
 	}
 	
-	private synchronized static void persistKeyPairMap() {
+	private synchronized void persistKeyPairMap() {
 		try {
-			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(KEYMAP_SER_FILE));
+			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(root, KEYMAP_SER_FILE)));
 			out.writeObject(_rememberedPrivateKeys);
 			out.flush();
 			out.close();
@@ -716,7 +718,7 @@ public class KeyStoreManager {
 		}
 	}
 	
-	private synchronized static void rememberKeyPair(final KeyPair kp)
+	private synchronized void rememberKeyPair(final KeyPair kp)
 	{
 		_rememberedPrivateKeys.put(kp.getPublic(), kp.getPrivate());
 		if(persistImmediately) { persistKeyPairMap(); }
@@ -727,7 +729,7 @@ public class KeyStoreManager {
 	 * @param original
 	 * @param substitute
 	 */
-	public synchronized static void mapPublicKeys(final PublicKey original, final PublicKey substitute)
+	public synchronized void mapPublicKeys(final PublicKey original, final PublicKey substitute)
 	{
 		_mappedPublicKeys.put(original, substitute);
 		if(persistImmediately) { persistPublicKeyMap(); }
@@ -741,7 +743,7 @@ public class KeyStoreManager {
 	 * @param pk
 	 * @return
 	 */
-	public synchronized static PublicKey getMappedPublicKey(final PublicKey original)
+	public synchronized PublicKey getMappedPublicKey(final PublicKey original)
 	{
 		return _mappedPublicKeys.get(original);
 	}
@@ -751,8 +753,12 @@ public class KeyStoreManager {
 	 * @param pk
 	 * @return
 	 */
-	public synchronized static PrivateKey getPrivateKey(final PublicKey pk)
+	public synchronized PrivateKey getPrivateKey(final PublicKey pk)
 	{		
 		return  _rememberedPrivateKeys.get(pk);
 	}
+
+    public KeyStore getKeyStore() {
+        return _ks;
+    }
 }
