@@ -55,7 +55,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     private transient boolean _chained = false;
     private final Map<String,SslRelay> _sslMap = new LinkedHashMap<String, SslRelay>();
     private String sslKeystorePath;
-    private boolean useCyberVillains = false;
+    private boolean useCyberVillains = true;
 
     /* ------------------------------------------------------------ */
     /**
