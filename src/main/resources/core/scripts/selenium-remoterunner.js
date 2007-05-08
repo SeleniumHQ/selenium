@@ -376,9 +376,31 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     url += buildDriverParams() + preventBrowserCaching();
     dataToBePosted = "postedData=" + encodeURIComponent(dataToBePosted);
 
+    var wrappingCallback = function() {
+        if (xmlHttpObject.readyState == 4) {
+            if (xmlHttpObject.status == 200) {
+                var retry = false;
+                if (typeof currentTest != 'undefined') {
+                    var command = currentTest._extractCommand(xmlHttpObject);
+                        //console.log("*********** " + command.command + " | " + command.target + " | " + command.value);
+                    if (command.command == 'retryLast') {
+                        retry = true;
+                    }
+                }
+                if (retry) {
+                    setTimeout(fnBind(function() {
+                        sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async);
+                    }, this), 1000);
+                } else {
+                    callback();
+                }
+            }
+        }
+    }
+
     //xmlHttpObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlHttpObject.open("POST", url, async);
-    xmlHttpObject.onreadystatechange = callback;
+    xmlHttpObject.onreadystatechange = wrappingCallback;
     xmlHttpObject.send(dataToBePosted);
     return null;
 }
