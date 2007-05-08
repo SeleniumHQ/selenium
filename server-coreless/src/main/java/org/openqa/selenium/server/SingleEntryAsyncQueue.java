@@ -45,7 +45,8 @@ public class SingleEntryAsyncQueue {
     private int waitingThreadCount = 0;
     private final Lock dataLock;
     private final Condition condition;
-    
+    private boolean retry;
+
     public SingleEntryAsyncQueue(String label, Lock dataLock, Condition condition) {
         this.label = label;
         this.dataLock = dataLock;
@@ -89,6 +90,14 @@ public class SingleEntryAsyncQueue {
                 if (thing==null & retries >= timeout) {
                     throw new SeleniumCommandTimedOutException();
                 }
+
+                if (retry) {
+                    if (retries > 0 && retries % 10 == 0) {
+                        // kick off a retry request to get around the 2-connections per host issue
+                        return new DefaultRemoteCommand("retryLast", "", "", "");
+                    }
+                }
+
                 try {
                     condition.await(1000, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {
@@ -171,4 +180,7 @@ public class SingleEntryAsyncQueue {
         return hasBlockedGetter ;
     }
 
+    public void setRetry(boolean retry) {
+        this.retry = retry;
+    }
 }

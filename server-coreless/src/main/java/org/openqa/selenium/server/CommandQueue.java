@@ -54,6 +54,7 @@ public class CommandQueue {
         commandReady = dataLock.newCondition();
         
         commandHolder = new SingleEntryAsyncQueue("commandHolder/" + frameAddress, dataLock, commandReady);
+        commandHolder.setRetry(true);
         commandResultHolder = new SingleEntryAsyncQueue("resultHolder/" + frameAddress, dataLock, resultArrived);
         //
         // we are only concerned about the browser, and command queue timeouts will never be
@@ -239,6 +240,10 @@ public class CommandQueue {
             queuePutResult(commandResult);
         }
         RemoteCommand sc = (RemoteCommand) queueGet("commandHolder", commandHolder, commandReady);
+        if (sc != null && sc.getCommand().equals("retryLast")) {
+            //commandResultHolder.clear();
+        }
+
         return sc;
     }
 
