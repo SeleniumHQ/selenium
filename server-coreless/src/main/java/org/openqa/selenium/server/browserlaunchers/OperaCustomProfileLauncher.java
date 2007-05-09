@@ -41,6 +41,12 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private static AsyncExecute exe = new AsyncExecute();
 
+    // Opera has been a real pain for me (Lightbody), and so I'm adding a simple hook in the browser launcher that lets
+    // me define, in an amazingly ghetto way, define additional browser settings to write out to the ini file. For
+    // example, I will use this to pre-determine the window size and location simply because it appears Opera 9.2
+    // has a regression in which window.resizeTo() and window.moveTo() simply do not work!
+    private static String additionalSettings = "";
+
     public OperaCustomProfileLauncher(int port, String sessionId) {
         this(port, sessionId, findBrowserLaunchLocation());
     }
@@ -66,6 +72,11 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
                 });
             }
         }
+    }
+
+
+    public static void setAdditionalSettings(String additionalSettings) {
+        OperaCustomProfileLauncher.additionalSettings = additionalSettings;
     }
 
     private static String getLibPathKey() {
@@ -212,6 +223,8 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         out.println("SDI=1");
 
         out.println("Maximize New Windows=3");
+
+        out.println(additionalSettings);
 
         out.println("[Install]");
         out.println("HELLO=NO");
