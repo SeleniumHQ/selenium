@@ -161,8 +161,8 @@ public class KeyStoreManager {
 		
 		
 		
-		_rsaKpg.initialize(2048, _sr);
-		_dsaKpg.initialize(2048, _sr);
+		_rsaKpg.initialize(1024, _sr);
+		_dsaKpg.initialize(1024, _sr);
 		
 		
 		try
