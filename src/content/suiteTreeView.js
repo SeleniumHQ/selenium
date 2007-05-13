@@ -69,6 +69,16 @@ SuiteTreeView.prototype = {
 		this.log.debug("refresh: new rowCount=" + this.rowCount);
 	},
 
+    editProperties: function() {
+        var testCase = this.getSelectedTestCase();
+        var self = this;
+        if (testCase) {
+            window.openDialog('chrome://selenium-ide/content/testCaseProperties.xul', 'testCaseProperties', 'chrome,modal', testCase, function() {
+                    self.treebox.invalidateRow(self.currentTestCaseIndex);
+                });
+        }
+    },
+
 	//
 	// nsITreeView interfaces
 	//

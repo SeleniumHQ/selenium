@@ -74,6 +74,7 @@ TestSuite.prototype = {
     addTestCaseFromContent: function(content) {
         var testCase = new TestSuite.TestCase(this);
         testCase.content = content;
+        testCase.title = content.getTitle();
         this.tests.push(testCase);
     },
 
@@ -176,11 +177,7 @@ TestSuite.TestCase.prototype = {
     },
 
     getTitle: function() {
-        if (this.content) {
-            return this.content.getTitle();
-        } else {
-            return this.title;
-        }
+        return this.title;
     },
     
     format: function() {

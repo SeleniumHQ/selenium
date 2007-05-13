@@ -53,3 +53,5 @@
 <!ENTITY openSuiteCmd.label "Open Test Suite...">
 <!ENTITY saveSuiteCmd.label "Save Test Suite">
 <!ENTITY recentSuiteCmd.label "Recent Test Suites">
+
+<!ENTITY testCaseProperties.label "Properties...">

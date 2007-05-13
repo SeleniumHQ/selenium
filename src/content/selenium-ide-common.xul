@@ -95,6 +95,10 @@ limitations under the License.
       <menuitem label="&contextMenu.startpoint.label;" command="cmd_selenium_startpoint" key="startpoint-key" accesskey="S"/>
       <menuitem label="&contextMenu.execCommand.label;" command="cmd_selenium_exec_command" key="exec-key" accesskey="E"/>
     </popup>
+    <popup id="suiteContextMenu">
+      <menuitem label="&newTestCmd.label;" oncommand="window.editor.newTestCase();"/>
+      <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
+    </popup>
     <popup id="popupSeleniumCommands">
       <menuitem label="&contextMenu.clear.label;" oncommand="window.editor.clear()" accesskey="A"/>
     </popup>
