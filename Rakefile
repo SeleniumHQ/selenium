@@ -52,9 +52,9 @@ end
 end
 
 file 'jobbie/build/webdriver-jobbie.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
-#  sh "devenv webdriver.sln /Rebuild", :verbose => true
-
-  sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Debug", :verbose => false
+  sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Debug", :verbose => true
+  sh 'regasm jobbie/build/webdriver-jobbie.dll', :verbose => false
+  sh 'regasm /regfile:jobbie/build/webdriver.reg jobbie/build/webdriver-jobbie.dll', :verbose => false
 
 #  File.copy('jobbie/lib/runtime/Interop.SHDocVw.dll', 'jobbie/build')
 end
@@ -68,10 +68,6 @@ if windows? then
   Rake::Task[:test].enhance([:test_jobbie])
   Rake::Task[:test_jobbie].enhance([:jobbie])
   Rake::Task[:jobbie].enhance %w(jobbie/build/webdriver-jobbie.dll)
-#  Rake::Task[:jobbie].enhance %w(jobbie/build/webdriver-jobbie.dll) do
-#    sh 'regasm jobbie/build/webdriver-jobbie.dll', :verbose => false
-#    sh 'regasm /regfile:jobbie/build/webdriver.reg jobbie/build/webdriver-jobbie.dll', :verbose => false    
-#  end
 end
 
 def javac(args)
