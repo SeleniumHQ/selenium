@@ -111,8 +111,9 @@ public class InternetExplorerDriver implements WebDriver {
 			return InternetExplorerDriver.this;
 		}
 
-        public WebDriver window(int i) {
-            return null;
+        public WebDriver window(int windowIndex) {
+            targetLocator.invoke("Window", windowIndex);
+            return InternetExplorerDriver.this;
         }
     }
 }

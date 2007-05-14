@@ -26,7 +26,7 @@ namespace WebDriver
     [TestFixture]
     public class IeWrapperTest
     {
-        private string baseUrl = "http://localhost:1890/web/";
+        private string baseUrl = "http://localhost:1752/web/";
         private string simpleTestPage;
         private string xhtmlTestPage;
         private string formPage;
@@ -34,12 +34,12 @@ namespace WebDriver
         private string metaRedirectPage;
         private string javascriptPage;
         private string framesetPage;
-        private IeWrapper driver;
+        private InternetExplorerDriver driver;
 
         [TestFixtureSetUp]
         public void TestFixtureSetup()
         {
-            driver = new IeWrapper();
+            driver = new InternetExplorerDriver();
             driver.Visible = true;
         }
 
@@ -470,7 +470,7 @@ namespace WebDriver
         }
 
         [Test]
-        public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected()
+        public void ShouldContinueToReferToTheSameFrameOnceItHasBeenSelected()
         {
             driver.Get(framesetPage);
 
@@ -482,13 +482,38 @@ namespace WebDriver
             Assert.AreEqual("Success!", driver.SelectTextWithXPath("//p"));
         }
 
-        public void testShouldAutomaticallyUseTheFirstFrameOnAPage()
+        [Test]
+        public void ShouldAutomaticallyUseTheFirstFrameOnAPage()
         {
             driver.Get(framesetPage);
 
             // Notice that we've not switched to the 0th frame
             WebElement pageNumber = driver.SelectElement("//span[@id='pageNumber']");
             Assert.AreEqual("1", pageNumber.Text.Trim());
+        }
+
+        [Test]
+        public void ShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
+        {
+            driver.Get(framesetPage);
+
+            driver.SelectElement("link=top").Click();
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
+        public void ShouldSwitchFocusToANewWindowWhenItIsOpened()
+        {
+            driver.Get(xhtmlTestPage);
+
+            driver.SelectElement("link=Open new window").Click();
+            Assert.AreEqual("We Arrive Here", driver.Title);
+
+            driver.SwitchTo().Window(0);
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+
+            driver.SwitchTo().Window(1);
+            Assert.AreEqual("We Arrive Here", driver.Title);
         }
     }
 }

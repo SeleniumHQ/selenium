@@ -491,18 +491,18 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertEquals("XHTML Test Page", driver.getTitle());
     }
 
-//    public void testShouldSwitchFocusToANewWindowWhenItIsOpened() {
-//        driver.get(xhtmlTestPage);
-//
-//        driver.selectElement("link=Open new window").click();
-//        assertEquals("We Arrive Here", driver.getTitle());
-//
-//        driver.switchTo().window(0);
-//        assertEquals("XHTML Test Page", driver.getTitle());
-//
-//        driver.switchTo().window(1);
-//        assertEquals("We Arrive Here", driver.getTitle());
-//    }
+    public void testShouldSwitchFocusToANewWindowWhenItIsOpened() {
+        driver.get(xhtmlTestPage);
+
+        driver.selectElement("link=Open new window").click();
+        assertEquals("We Arrive Here", driver.getTitle());
+
+        driver.switchTo().window(0);
+        assertEquals("XHTML Test Page", driver.getTitle());
+
+        driver.switchTo().window(1);
+        assertEquals("We Arrive Here", driver.getTitle());
+    }
 
     protected WebDriver driver;
     protected String baseUrl;

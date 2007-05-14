@@ -7,6 +7,7 @@
     <title>Untitled Page</title>
 </head>
 <body>
+    <a href="../xhtmlTest.html" target="_top">top</a>
     <form id="form1" runat="server">
     <div>
     

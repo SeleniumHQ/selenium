@@ -28,13 +28,13 @@ namespace WebDriver
     [TestFixture]
     public class XPathTest
     {
-        private IeWrapper driver;
+        private InternetExplorerDriver driver;
         private string resultPage = Path.GetFullPath(@"..\..\common\src\web\resultPage.html");
 
         [TestFixtureSetUp]
         public void TestFixtureSetup()
         {
-            driver = new IeWrapper();
+            driver = new InternetExplorerDriver();
             driver.Visible = true;
         }
 

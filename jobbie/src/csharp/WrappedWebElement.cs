@@ -30,7 +30,7 @@ namespace WebDriver
         private readonly IeWrapper parent;
         private readonly IHTMLElement node;
 
-        public WrappedWebElement(IeWrapper parent, IHTMLDOMNode node)
+        internal WrappedWebElement(IeWrapper parent, IHTMLDOMNode node)
         {
             this.parent = parent;
             this.node = (IHTMLElement) node;

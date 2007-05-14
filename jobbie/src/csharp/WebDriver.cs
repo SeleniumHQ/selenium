@@ -66,5 +66,6 @@ namespace WebDriver
     public interface TargetLocator
     {
         WebDriver Frame(int index);
+        WebDriver Window(int i);
     }
 }

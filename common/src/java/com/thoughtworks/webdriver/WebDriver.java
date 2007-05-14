@@ -17,8 +17,6 @@
 
 package com.thoughtworks.webdriver;
 
-import org.mortbay.html.FrameSet;
-
 import java.util.List;
 
 
@@ -181,6 +179,6 @@ public interface WebDriver {
          */
         WebDriver frame(int frameIndex);
 
-        WebDriver window(int i);
+        WebDriver window(int windowIndex);
     }
 }

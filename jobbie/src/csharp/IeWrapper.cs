@@ -27,48 +27,56 @@ using WebDriver.XPath;
 
 namespace WebDriver
 {
-    [Guid("9077DEDA-652B-4efd-9560-3692086D4670")]
-    [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("InternetExploderFox")]
-    public class IeWrapper : WebDriver, IXPathNavigable, IDisposable
+    internal class IeWrapper : WebDriver, IXPathNavigable, IDisposable
     {
-        private InternetExplorer browser = new InternetExplorer();
-        private bool documentComplete;
+        private InternetExplorer browser;
+        private bool shouldWait = true;
         private int currentFrame = 0;
+        private InternetExplorerDriver parent;
 
-        public enum AccessBy
+        public IeWrapper(InternetExplorerDriver parent) : this(parent, new InternetExplorer())
         {
-            id,
-            name
         }
 
-        public IeWrapper()
+        public IeWrapper(InternetExplorerDriver parent, InternetExplorer toWrap)
         {
+            this.parent = parent;
+            browser = toWrap;
+            browser.NewWindow2 +=
+                delegate(ref object ppDisp, ref bool Cancel)
+                    {
+                        InternetExplorer newWindow = new InternetExplorer();
+                        newWindow.Visible = browser.Visible;
+                        ppDisp = newWindow;
+                        parent.AddWrapper(new IeWrapper(parent, newWindow));
+                    };
             Visible = false;
-            browser.DocumentComplete += delegate
-                                            {
-                                                documentComplete = true;
-                                            };
-            browser.BeforeNavigate2 += delegate
-                                           {
-                                               documentComplete = false;
-                                           };
         }
 
-        internal bool DocumentComplete
+        public string Title
         {
-            set { documentComplete = value; }
-        }
-
-        public String Title
-        {
-            get { return HtmlDocument.title; }
+            get
+            {
+                if (shouldWait)
+                    WaitForDocumentToComplete(HtmlDocument);
+                return HtmlDocument.title;
+            }
         }
 
         public bool Visible
         {
             get { return browser.Visible; }
             set { browser.Visible = value; }
+        }
+
+        public string CurrentUrl
+        {
+            get
+            {
+                if (shouldWait)
+                    WaitForDocumentToComplete(HtmlDocument);
+                return HtmlDocument.url;
+            }
         }
 
         private void Navigate(string url)
@@ -82,7 +90,6 @@ namespace WebDriver
 
         public void Get(string url)
         {
-            documentComplete = false;
             Navigate(url);
             WaitForLoadToComplete();
             currentFrame = 0;
@@ -90,25 +97,40 @@ namespace WebDriver
 
         internal void WaitForLoadToComplete()
         {
+            shouldWait = false;
+
             if (browser == null)
             {
                 return;
             }
 
-            // Wait for IE to download everything
-            while (!documentComplete)
+            while (browser.Busy)
             {
-                Thread.Sleep(0);
+                Thread.Sleep(10);
             }
 
-            // And apparently to sort itself out
             while (browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE)
             {
                 Thread.Sleep(20);
             }
 
-            // This is what Watir does. Will it work here? Who knows?
-            while (HtmlDocument.readyState != "complete")
+            WaitForDocumentToComplete(HtmlDocument);
+
+            FramesCollection frames = ((IHTMLDocument2)browser.Document).frames;
+            if (frames != null)
+            {
+                for (int i = 0; i < frames.length; i++)
+                {
+                    object refIndex = currentFrame;
+                    IHTMLWindow2 frame = (IHTMLWindow2)frames.item(ref refIndex);
+                    WaitForDocumentToComplete(frame.document);
+                }
+            }
+        }
+
+        private void WaitForDocumentToComplete(IHTMLDocument2 doc)
+        {
+            while (doc.readyState != "complete")
             {
                 Thread.Sleep(20);
             }
@@ -116,6 +138,9 @@ namespace WebDriver
 
         public void DumpBody()
         {
+            if (shouldWait)
+                WaitForDocumentToComplete(HtmlDocument);
+
             // Console.WriteLine(GetDocumentText());
         }
 
@@ -126,6 +151,9 @@ namespace WebDriver
 
         public string SelectTextWithXPath(string xpath)
         {
+            if (shouldWait)
+                WaitForDocumentToComplete(HtmlDocument);
+
             XPathNavigator navigator = CreateNavigator();
             XPathNodeIterator iterator = navigator.Select(xpath);
             if (iterator.Count == 0)
@@ -137,6 +165,9 @@ namespace WebDriver
 
         public ArrayList SelectElementsByXPath(string xpath)
         {
+            if (shouldWait)
+                WaitForDocumentToComplete(HtmlDocument);
+
             XPathNavigator navigator = CreateNavigator();
             XPathNodeIterator nodes = navigator.Select(xpath);
             IEnumerator allNodes = nodes.GetEnumerator();
@@ -151,6 +182,9 @@ namespace WebDriver
 
         public WebElement SelectElement(string selector)
         {
+            if (shouldWait)
+                WaitForDocumentToComplete(HtmlDocument);
+
             if (selector.StartsWith("link="))
             {
                 return SelectLinkWithText(selector);
@@ -171,11 +205,15 @@ namespace WebDriver
 
         public XPathNavigator CreateNavigator()
         {
-            return new NavigableDocument(HtmlDocument as IHTMLDocument2);
+            if (shouldWait)
+                WaitForDocumentToComplete(HtmlDocument);
+
+            return new NavigableDocument(HtmlDocument);
         }
 
         public void Dispose()
         {
+            Marshal.ReleaseComObject(browser);
             browser = null;
         }
 
@@ -203,7 +241,7 @@ namespace WebDriver
             int equalsIndex = selector.IndexOf('=') + 1;
             string id = selector.Substring(equalsIndex).Trim();
 
-            IHTMLElement element = HtmlDocument.getElementById(id);
+            IHTMLElement element = ((IHTMLDocument3) HtmlDocument).getElementById(id);
             if (element != null)
             {
                 return new WrappedWebElement(this, (IHTMLDOMNode) element);
@@ -211,7 +249,7 @@ namespace WebDriver
             throw new NoSuchElementException("Cannot find element with id: " + selector);
         }
 
-        private HTMLDocument HtmlDocument
+        private IHTMLDocument2 HtmlDocument
         {
             get
             {
@@ -219,27 +257,17 @@ namespace WebDriver
                 {
                     FramesCollection frames = ((IHTMLDocument2)browser.Document).frames;
                     if (frames.length == 0)
-                        return browser.Document as HTMLDocument;
+                        return browser.Document as IHTMLDocument2;
 
                     object refIndex = currentFrame;
                     IHTMLWindow2 frame = (IHTMLWindow2) frames.item(ref refIndex);
-                    return frame.document as HTMLDocument;
+                    return frame.document;
                 }
                 catch (COMException)
                 {
                     return null;
                 }
             }
-        }
-
-        public string CurrentUrl
-        {
-            get { return HtmlDocument.url; }
-        }
-
-        public TargetLocator SwitchTo()
-        {
-            return new IeWrapperTargetLocator(this);
         }
 
         private WebDriver SwitchToFrame(int index)
@@ -257,6 +285,11 @@ namespace WebDriver
             return this;
         }
 
+        public TargetLocator SwitchTo()
+        {
+            return new IeWrapperTargetLocator(this);
+        }
+
         private class IeWrapperTargetLocator : TargetLocator
         {
             private IeWrapper parent;
@@ -268,7 +301,13 @@ namespace WebDriver
 
             public WebDriver Frame(int index)
             {
-                return parent.SwitchToFrame(index);
+                parent.SwitchToFrame(index);
+                return parent.parent;
+            }
+
+            public WebDriver Window(int index)
+            {
+                return parent.parent.SwitchToWindow(index);
             }
         }
     }

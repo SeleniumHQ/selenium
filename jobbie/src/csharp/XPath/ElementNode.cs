@@ -1,7 +1,6 @@
 using System;
 using System.Xml.XPath;
 using mshtml;
-using WebDriver.XPath;
 
 namespace WebDriver
 {

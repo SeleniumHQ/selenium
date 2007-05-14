@@ -28,7 +28,7 @@ namespace Test
         [TestFixtureSetUp]
         public void TestFixtureSetup()
         {
-            driver = new IeWrapper();
+            driver = new InternetExplorerDriver();
             driver.Visible = true;
         }
 
