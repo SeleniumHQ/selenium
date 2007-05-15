@@ -1,8 +1,21 @@
+<script language="JavaScript" src="/selenium-server/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/xmlextras.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/htmlutils.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/selenium-browserdetect.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/selenium-browserbot.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/find_matching_child.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/selenium-api.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/selenium-commandhandlers.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/selenium-executionloop.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/selenium-remoterunner.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/selenium-logging.js"></script>
+<script language="JavaScript" src="/selenium-server/core/xpath/misc.js"></script>
+<script language="JavaScript" src="/selenium-server/core/xpath/dom.js"></script>
+<script language="JavaScript" src="/selenium-server/core/xpath/xpath.js"></script>
+<script language="JavaScript" src="/selenium-server/core/scripts/user-extensions.js"></script>
 <script language="JavaScript">
     if (window["selenium_has_been_loaded_into_this_window"]==null)
     {
-
-        __SELENIUM_JS__
 
 // Some background on the code below: broadly speaking, where we are relative to other windows
 // when running in proxy injection mode depends on whether we are in a frame set file or not.
@@ -18,18 +31,15 @@
 // assigned a regular frame for selenium?)
 //
 BrowserBot.prototype.getContentWindow = function() {
-    if (window["seleniumInSameWindow"] != null) return window;
-    return window.parent;
+    return window;
 };
 
 BrowserBot.prototype.getTargetWindow = function(windowName) {
-    if (window["seleniumInSameWindow"] != null) return window;
-    return window.parent;
+    return window;
 };
 
 BrowserBot.prototype.getCurrentWindow = function() {
-    if (window["seleniumInSameWindow"] != null) return window;
-    return window.parent;
+    return window;
 };
 
 LOG.openLogWindow = function(message, className) {
