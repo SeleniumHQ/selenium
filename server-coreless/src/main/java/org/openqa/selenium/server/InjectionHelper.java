@@ -1,10 +1,6 @@
 package org.openqa.selenium.server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -156,22 +152,25 @@ public class InjectionHelper {
                 SeleniumServer.log("injecting...");
             }
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
-            boolean seleniumInSameWindow = true;
-            String injectionHtml = seleniumInSameWindow ? "/core/scripts/injection.html" : "/core/scripts/injection_iframe.html";
+            String injectionHtml = "/core/scripts/injection.html";
             InputStream jsIn = new ClassPathResource(injectionHtml).getInputStream();
-            if (seleniumInSameWindow) {
-                out.write(makeJsChunk("var seleniumInSameWindow = true;\n"));
-            }
             contentTransformations.put("@SESSION_ID@", sessionId);
-            writeDataWithUserTransformations("", jsIn, out);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            writeDataWithUserTransformations("", jsIn, baos);
             jsIn.close();
-            if (seleniumInSameWindow) {
-                out.write(setSomeJsVars(sessionId));
-            }
+            baos.write(setSomeJsVars(sessionId));
             for (String filename : userJsInjectionFiles) {
                 jsIn = new FileInputStream(filename);
-                IO.copy(jsIn, out); 
+                IO.copy(jsIn, baos); 
             }
+
+            int headIndex = data.toLowerCase().indexOf("<head>");
+            if (headIndex != -1) {
+                data = data.substring(0, headIndex + 6) + baos.toString() + data.substring(headIndex + 6);
+            } else {
+                data = baos.toString() + data;
+            }
+
             bytesCopied += writeDataWithUserTransformations(data, in, out);
         }
 
