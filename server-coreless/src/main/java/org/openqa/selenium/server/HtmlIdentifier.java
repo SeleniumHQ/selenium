@@ -28,7 +28,7 @@ package org.openqa.selenium.server;
  * 
  * If you find a case where an incorrect decision is being made, then
  * 
- * 1. add a test case to the TestHtmlIdentifier module to reproduce the problem
+ * 1. add a test case to the HtmlIdentifierTest module to reproduce the problem
  * 2. add rules or adjust HtmlIdentifier's logic to fix the problem
  * 3. run all the tests to be sure that we haven't regressed in scenarios other than your own
  * 4. check it in

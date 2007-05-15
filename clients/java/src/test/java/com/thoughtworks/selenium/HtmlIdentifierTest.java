@@ -20,6 +20,10 @@ public class HtmlIdentifierTest extends TestCase {
                 true);
     }
 
+    public void testStupidDellDotComScenario() {
+        oneTest("/menu.htm", "text/html", "var x = ''; someOtherJavaScript++; blahblahblah;", false);
+    }
+
     private void oneTest(String path, String contentType, String content, boolean expectedToInject) {
         String testCaseDescription = "HtmlIdentifier.shouldBeInjected(\"" + path + "\", \"" + 
                 contentType + "\", \"" + content + "\"): should " + (expectedToInject ? "": "not ") + "inject";
@@ -27,4 +31,5 @@ public class HtmlIdentifierTest extends TestCase {
                 HtmlIdentifier.shouldBeInjected(path, contentType, content),
                 expectedToInject);
     }
+
 }
