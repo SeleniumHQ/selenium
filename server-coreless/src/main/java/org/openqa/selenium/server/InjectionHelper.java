@@ -164,7 +164,7 @@ public class InjectionHelper {
                 IO.copy(jsIn, baos); 
             }
 
-            int headIndex = data.toLowerCase().indexOf("<head>");
+            int headIndex = -1; //data.toLowerCase().indexOf("<head>");
             if (headIndex != -1) {
                 data = data.substring(0, headIndex + 6) + baos.toString() + data.substring(headIndex + 6);
             } else {

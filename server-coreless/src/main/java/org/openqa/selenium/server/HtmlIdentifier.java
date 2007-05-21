@@ -43,7 +43,7 @@ public class HtmlIdentifier {
     private static final int INJECTION_THRESHOLD = 200;
     
     static {
-        rules.add(new ExtensionRule(new String[]{"html", "htm"}, 250));
+        rules.add(new ExtensionRule(new String[]{"html", "htm"}, 10000));
         rules.add(new ExtensionRule(new String[]{"jsp", "asp", "php", "pl"}, 100));
         // ebay dll contains HTML snippets which fool InjectionHelper.  -nas
         rules.add(new ExtensionRule(new String[]{"dll", "gif", "ico", "jpg", "jpeg", "png", "dwr", "js"}, -1000));
