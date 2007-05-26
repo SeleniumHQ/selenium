@@ -251,7 +251,7 @@ this.options = {
 	testTemplate:
 	"<html>\n" +
 	"<head>\n" +
-	'<meta http-equiv="Content-Type" content="text/html; charset=${encoding}">\n' +
+	'<meta http-equiv="Content-Type" content="text/html; charset=${encoding}" />\n' +
 	"<title>${name}</title>\n" +
 	"</head>\n" +
 	"<body>\n" +
