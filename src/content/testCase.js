@@ -244,6 +244,7 @@ function TestCase(title) {
 
 	this.debugContext = {
 		reset: function() {
+            this.failed = false;
 			this.started = false;
 			this.debugIndex = -1;
 		},
@@ -266,7 +267,11 @@ function TestCase(title) {
 		},
 
 		currentCommand: function() {
-			return testCase.commands[this.debugIndex];
+			var command = testCase.commands[this.debugIndex];
+            if (!command) {
+                testCase.log.warn("currentCommand() not found: commands.length=" + testCase.commands.length + ", debugIndex=" + this.debugIndex);
+            }
+            return command;
 		}
 	}
 }

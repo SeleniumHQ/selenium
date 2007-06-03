@@ -118,9 +118,9 @@ objectExtend(IDETestLoop.prototype, {
         
         commandComplete: function(result) {
             if (result.failed) {
+                LOG.error(result.failureMessage);
                 testCase.debugContext.failed = true;
                 testCase.debugContext.currentCommand().result = 'failed';
-                LOG.error(result.failureMessage);
             } else if (result.passed) {
                 testCase.debugContext.currentCommand().result = 'passed';
             } else {
@@ -151,9 +151,10 @@ objectExtend(IDETestLoop.prototype, {
             LOG.debug("testComplete");
             currentTest = null;
             //editor.setState(null);
-            testCase.debugContext.reset();
             //editor.view.rowUpdated(testCase.debugContext.debugIndex);
-            if (this.handler && this.handler.testComplete) this.handler.testComplete();
+            var failed = testCase.debugContext.failed;
+            testCase.debugContext.reset();
+            if (this.handler && this.handler.testComplete) this.handler.testComplete(failed);
         },
 
         pause: function() {
@@ -242,7 +243,6 @@ function start(baseURL, handler) {
 		
 	currentTest.getCommandInterval = function() { return getInterval(); }
 	testCase.debugContext.reset();
-    testCase.debugContext.failed = false;
 	currentTest.start();
     //setState(Debugger.PLAYING);
 }

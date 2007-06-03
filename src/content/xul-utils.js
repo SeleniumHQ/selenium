@@ -35,3 +35,44 @@ var XulUtils = {
 	atomService: Components.classes["@mozilla.org/atom-service;1"].
 		getService(Components.interfaces.nsIAtomService)
 }
+
+XulUtils.TreeViewHelper = classCreate();
+objectExtend(XulUtils.TreeViewHelper.prototype, {
+        initialize: function(tree) {
+            tree.view = this;
+            this.tree = tree;
+        },
+        
+        scrollToRow: function(index) {
+            this.treebox.ensureRowIsVisible(index);
+        },
+
+        rowUpdated: function(index) {
+            this.treebox.invalidateRow(index);
+        },
+            
+        //
+        // nsITreeView interfaces
+        //
+        setTree: function(treebox) {
+            this.log.debug("setTree: treebox=" + treebox);
+            this.treebox = treebox;
+        },
+        isContainer: function(row) {
+            return false;
+        },
+        isSeparator: function(row) {
+            return false;
+        },
+        isSorted: function(row) {
+            return false;
+        },
+        getLevel: function(row) {
+            return 0;
+        },
+        getImageSrc: function(row,col) {
+            return null;
+        },
+        getColumnProperties: function(colid, col, props) {},
+        cycleHeader: function(colID, elt) {}
+    });

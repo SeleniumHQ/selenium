@@ -104,10 +104,16 @@ Debugger.prototype.start = function(complete) {
     var self = this;
     this.setState(Debugger.PLAYING);
 	this.runner.start(this.editor.getBaseURL(), {
-            testComplete: function() {
+            testComplete: function(failed) {
                 self.setState(Debugger.STOPPED);
-                self.editor.view.rowUpdated(self.runner.testCase.debugContext.debugIndex);
-                if (complete) complete();
+                //self.editor.view.rowUpdated(self.runner.testCase.debugContext.debugIndex);
+                if (complete) {
+                    try {
+                        complete(failed);
+                    } catch (error) {
+                        self.log.error("error at the end of test case: " + error);
+                    }
+                }
             }
         });
 };

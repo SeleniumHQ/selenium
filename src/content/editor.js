@@ -159,7 +159,7 @@ Editor.controller = {
 		case "cmd_open_suite": editor.loadTestSuite(); break;
 		case "cmd_save_suite": editor.saveTestSuite(); break;
 		case "cmd_selenium_play":
-			editor.selDebugger.start();
+            editor.playCurrentTestCase();
 			break;
 		case "cmd_selenium_play_suite":
 			editor.playTestSuite();
@@ -243,7 +243,7 @@ Editor.prototype.updateState = function() {
 
 Editor.prototype.updateSeleniumCommands = function() {
 	this.log.debug("updateSeleniumCommands");
-	["cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step", "cmd_selenium_testrunner"].
+	["cmd_selenium_play_suite", "cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step", "cmd_selenium_testrunner"].
 		forEach(function(cmd) {
 					goUpdateCommand(cmd);
 				});
@@ -283,11 +283,11 @@ Editor.prototype.showTestCaseFromSuite = function(testCase) {
     if (testCase.content) {
         this.setTestCase(testCase.content);
     } else {
-        this.loadTestCase(testCase.getFile());
+        this.loadTestCase(testCase.getFile(), function(test) { testCase.content = test });
     }
 }
 
-Editor.prototype.loadTestCase = function(file) {
+Editor.prototype.loadTestCase = function(file, testCaseHandler) {
 	this.log.debug("loadTestCase");
 	try {
 		var testCase = null;
@@ -297,6 +297,7 @@ Editor.prototype.loadTestCase = function(file) {
             testCase = this.currentFormat.load();
         }
         if (testCase != null) {
+            if (testCaseHandler) testCaseHandler(testCase);
 			this.setTestCase(testCase);
             return true;
 		}
@@ -661,13 +662,31 @@ Editor.prototype.showInBrowser = function(url, newWindow) {
     }
 }
 
-Editor.prototype.playTestSuite = function(index) {
-    if (index == null) index = 0;
-    this.showTestCaseFromSuite(this.testSuite.tests[index]);
+Editor.prototype.playCurrentTestCase = function(next) {
     var self = this;
-    this.selDebugger.start(function() {
-            if (++index < self.testSuite.tests.length) self.playTestSuite(index);
+    this.selDebugger.start(function(failed) {
+            self.log.debug("finished execution of test case: failed=" + failed);
+            var testCase = self.suiteTreeView.getCurrentTestCase();
+            if (testCase) {
+                testCase.testResult = failed ? "failed" : "passed";
+            } else {
+                self.log.error("current test case not found");
+            }
+            self.suiteTreeView.currentRowUpdated();
+            if (next) next();
         });
+}
+
+Editor.prototype.playTestSuite = function(index) {
+    var index = -1;
+    var self = this;
+    (function() {
+        if (++index < self.testSuite.tests.length) {
+            self.suiteTreeView.scrollToRow(index);
+            self.showTestCaseFromSuite(self.testSuite.tests[index]);
+            self.playCurrentTestCase(arguments.callee);
+        }
+    })();
 }
 
 Editor.prototype.playback = function(newWindow, resultCallback) {

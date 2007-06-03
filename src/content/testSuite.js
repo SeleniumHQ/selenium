@@ -131,6 +131,7 @@ TestSuite.TestCase = function(testSuite, filename, title) {
     this.testSuite = testSuite;
     this.filename = filename;
     this.title = title;
+    this.testResult = null;
 }
 
 TestSuite.TestCase.prototype = {
