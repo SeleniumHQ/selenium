@@ -178,3 +178,12 @@ function observable(clazz) {
         }
     }
 }
+
+function defineEnum(clazz, names) {
+    var map = {};
+    for (var i = 0; i < names.length; i++) {
+        clazz[names[i]] = i;
+        map[i] = names[i];
+    }
+    return map;
+}

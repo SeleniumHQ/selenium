@@ -80,6 +80,88 @@ Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
 
+var IDETestLoop = classCreate();
+objectExtend(IDETestLoop.prototype, TestLoop.prototype);
+objectExtend(IDETestLoop.prototype, {
+        initialize: function(commandFactory, handler) {
+            TestLoop.call(this, commandFactory);
+            this.handler = handler;
+        },
+        
+        continueTestWhenConditionIsTrue: function() {
+            if (shouldAbortCurrentCommand()) {
+                this.result = {};
+                this.result.failed = true;
+                this.result.failureMessage = "interrupted";
+                this.commandComplete(this.result);
+                this.continueTest();
+            } else {
+                TestLoop.prototype.continueTestWhenConditionIsTrue.call(this);
+            }
+        },
+        
+        nextCommand: function() {
+            if (testCase.debugContext.debugIndex >= 0)
+                editor.view.rowUpdated(testCase.debugContext.debugIndex);
+            var command = testCase.debugContext.nextCommand();
+            if (command == null) return null;
+            return new SeleniumCommand(command.command, command.target, command.value);
+        },
+        
+        commandStarted: function() {
+            // editor.setState("playing");
+            //setState(Debugger.PLAYING);
+            LOG.info("commandStarted");
+            editor.view.rowUpdated(testCase.debugContext.debugIndex);
+            editor.view.scrollToRow(testCase.debugContext.debugIndex);
+        },
+        
+        commandComplete: function(result) {
+            if (result.failed) {
+                testCase.debugContext.failed = true;
+                testCase.debugContext.currentCommand().result = 'failed';
+                LOG.error(result.failureMessage);
+            } else if (result.passed) {
+                testCase.debugContext.currentCommand().result = 'passed';
+            } else {
+                testCase.debugContext.currentCommand().result = 'done';
+            }
+            editor.view.rowUpdated(testCase.debugContext.debugIndex);
+        },
+
+        commandError: function() {
+            LOG.debug("commandError");
+            testCase.debugContext.failed = true;
+            testCase.debugContext.currentCommand().result = 'failed';
+            editor.view.rowUpdated(testCase.debugContext.debugIndex);
+        },
+        
+        // override _testComplete to ensure testComplete is called even when
+        // ensureNoUnhandledPopups throws any errors
+        _testComplete: function() {
+            try {
+                selenium.ensureNoUnhandledPopups();
+            } catch (e) {
+                LOG.error(e);
+            }
+            this.testComplete();
+        },
+
+        testComplete: function() {
+            LOG.debug("testComplete");
+            currentTest = null;
+            //editor.setState(null);
+            testCase.debugContext.reset();
+            //editor.view.rowUpdated(testCase.debugContext.debugIndex);
+            if (this.handler && this.handler.testComplete) this.handler.testComplete();
+        },
+
+        pause: function() {
+            // editor.setState("paused");
+            setState(Debugger.PAUSED);
+        }
+    });
+
 function Logger() {
 	var self = this;
 	var levels = ["log","debug","info","warn","error"];
@@ -127,21 +209,13 @@ var LOG = new Logger();
 currentTest = null;
 stopping = false;
 
-function stopAndDo(func, arg1, arg2) {
-	if (currentTest && editor.state != 'paused') {
-		LOG.debug("stopping... (state=" + editor.state + ")");
-		stopping = true;
-		setTimeout(func, 500, arg1, arg2);
-		return false;
-	}
-	stopping = false;
+function resetCurrentTest() {
 	currentTest = null;
 	testCase.debugContext.reset();
 	for (var i = 0; i < testCase.commands.length; i++) {
 		delete testCase.commands[i].result;
 		editor.view.rowUpdated(i);
 	}
-	return true;
 }
 
 function createSelenium(baseURL) {
@@ -156,83 +230,33 @@ function createSelenium(baseURL) {
 }
 
 function start(baseURL, handler) {
-	if (!stopAndDo("start", baseURL)) return;
+	//if (!stopAndDo("start", baseURL)) return;
+    resetCurrentTest();
 	
     selenium = createSelenium(baseURL);
 
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
 
-	currentTest = new TestLoop(commandFactory);
+	currentTest = new IDETestLoop(commandFactory, handler);
 		
-	currentTest.getCommandInterval = function() { return stopping ? -1 : getInterval(); }
-	currentTest.nextCommand = function() {
-		if (testCase.debugContext.debugIndex >= 0)
-			editor.view.rowUpdated(testCase.debugContext.debugIndex);
-		var command = testCase.debugContext.nextCommand();
-		if (command == null) return null;
-		return new SeleniumCommand(command.command, command.target, command.value);
-	}
-	currentTest.firstCommand = currentTest.nextCommand; // Selenium <= 0.6 only
-	currentTest.commandStarted = function() {
-		editor.setState("playing");
-		editor.view.rowUpdated(testCase.debugContext.debugIndex);
-		editor.view.scrollToRow(testCase.debugContext.debugIndex);
-	}
-	currentTest.commandComplete = function(result) {
-		if (result.failed) {
-            testCase.debugContext.failed = true;
-			testCase.debugContext.currentCommand().result = 'failed';
-            LOG.error(result.failureMessage);
-		} else if (result.passed) {
-			testCase.debugContext.currentCommand().result = 'passed';
-		} else {
-			testCase.debugContext.currentCommand().result = 'done';
-		}
-		editor.view.rowUpdated(testCase.debugContext.debugIndex);
-	}
-	currentTest.commandError = function() {
-		LOG.debug("commandError");
-        testCase.debugContext.failed = true;
-		testCase.debugContext.currentCommand().result = 'failed';
-		editor.view.rowUpdated(testCase.debugContext.debugIndex);
-	}
-    // override _testComplete to ensure testComplete is called even when
-    // ensureNoUnhandledPopups throws any errors
-    currentTest._testComplete = function() {
-        try {
-            selenium.ensureNoUnhandledPopups();
-        } catch (e) {
-            LOG.error(e);
-        }
-        this.testComplete();
-    }
-	currentTest.testComplete = function() {
-		LOG.debug("testComplete");
-		currentTest = null;
-		editor.setState(null);
-		testCase.debugContext.reset();
-		//editor.view.rowUpdated(testCase.debugContext.debugIndex);
-        if (handler && handler.testComplete) handler.testComplete();
-	}
-	currentTest.pause = function() {
-		editor.setState("paused");
-	}
-
+	currentTest.getCommandInterval = function() { return getInterval(); }
 	testCase.debugContext.reset();
     testCase.debugContext.failed = false;
 	currentTest.start();
+    //setState(Debugger.PLAYING);
 }
 
 function executeCommand(baseURL, command) {
-	if (!stopAndDo("executeCommand", baseURL, command)) return;
+	//if (!stopAndDo("executeCommand", baseURL, command)) return;
+    resetCurrentTest();
 
     selenium = createSelenium(baseURL);
     
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
 	
-	currentTest = new TestLoop(commandFactory);
+    currentTest = new IDETestLoop(commandFactory);
     
 	currentTest.getCommandInterval = function() { return 0; }
 	var first = true;
@@ -262,14 +286,6 @@ function executeCommand(baseURL, command) {
 	currentTest.commandError = function() {
 		command.result = 'failed';
 		editor.view.rowUpdated(testCase.commands.indexOf(command));
-	}
-	currentTest.testComplete = function() {
-		currentTest = null;
-		testCase.debugContext.reset();
-		editor.view.rowUpdated(testCase.commands.indexOf(command));
-	}
-	currentTest.pause = function() {
-		editor.setState("paused");
 	}
 
 	currentTest.start();

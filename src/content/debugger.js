@@ -17,6 +17,7 @@
 function Debugger(editor) {
 	this.log = new Log("Debugger");
 	this.editor = editor;
+    this.pauseTimeout = 3000;
 	var self = this;
 	
 	this.init = function() {
@@ -26,9 +27,14 @@ function Debugger(editor) {
 		}
 		
 		this.log.debug("init");
-		this.paused = false;
+        
+        this.setState(Debugger.STOPPED);
+        
 		this.runner = new Object();
 		this.runner.editor = this.editor;
+        this.runner.setState = function(state) {
+            self.setState(state);
+        }
         this.editor.addObserver({
                 testCaseLoaded: function(testCase) {
                     self.runner.testCase = testCase;
@@ -57,15 +63,35 @@ function Debugger(editor) {
         
 		this.runner.getInterval = function() {
 			if (self.runner.testCase.debugContext.currentCommand().breakpoint) {
-				self.paused = true;
+                self.setState(Debugger.PAUSED);
 				return -1;
-			} else if (self.paused) {
+			} else if (self.state == Debugger.PAUSED || self.state == Debugger.PAUSE_REQUESTED || self.stepContinue) {
+                self.stepContinue = false;
+                self.setState(Debugger.PAUSED);
 				return -1;
 			} else {
 				return document.getElementById("runInterval").selectedItem.value;
 			}
 		}
+
+        this.runner.shouldAbortCurrentCommand = function() {
+            if (self.state == Debugger.PAUSE_REQUESTED) {
+                if ((new Date()).getTime() >= self.pauseTimeLimit) {
+                    self.setState(Debugger.PAUSED);
+                    return true;
+                }
+            }
+            return false;
+        }
 	}
+}
+
+Debugger.STATES = defineEnum(Debugger, ["STOPPED", "PLAYING", "PAUSE_REQUESTED", "PAUSED"]);
+
+Debugger.prototype.setState = function(state) {
+    this.log.debug("setState: state changed from " + Debugger.STATES[this.state] + " to " + Debugger.STATES[state]);
+    this.state = state;
+    this.notify("stateUpdated", state);
 }
 
 Debugger.prototype.start = function(complete) {
@@ -75,11 +101,11 @@ Debugger.prototype.start = function(complete) {
 	this.log.debug("start");
 
 	this.init();
-	this.paused = false;
     var self = this;
+    this.setState(Debugger.PLAYING);
 	this.runner.start(this.editor.getBaseURL(), {
             testComplete: function() {
-                self.editor.setState(null);
+                self.setState(Debugger.STOPPED);
                 self.editor.view.rowUpdated(self.runner.testCase.debugContext.debugIndex);
                 if (complete) complete();
             }
@@ -91,31 +117,31 @@ Debugger.prototype.executeCommand = function(command) {
 	this.editor.toggleRecordingEnabled(false);
 
 	this.init();
-	this.runner.executeCommand(this.editor.getBaseURL(), command);
+    if (this.state != Debugger.PLAYING && this.state != Debugger.PAUSE_REQUESTED) {
+        this.runner.executeCommand(this.editor.getBaseURL(), command);
+    }
 };
 
 Debugger.prototype.pause = function() {
 	this.log.debug("pause");
-	this.paused = true;
+    this.setState(Debugger.PAUSE_REQUESTED);
+    this.pauseTimeLimit = (new Date()).getTime() + this.pauseTimeout; // 1 second
 }
 
-Debugger.prototype.doContinue = function(pause) {
+Debugger.prototype.doContinue = function(step) {
 	document.getElementById("record-button").checked = false;
 	this.editor.toggleRecordingEnabled(false);
 
-	this.log.debug("doContinue: pause=" + pause);
+	this.log.debug("doContinue: pause=" + step);
 	this.init();
-	if (!pause) this.paused = false;
-	if (this.runner.resume) {
-		// Selenium 0.7
-		this.runner.resume();
-	} else {
-		// Selenium 0.6
-		this.runner.continueCurrentTest();
-	}
+    this.stepContinue = step;
+    this.setState(Debugger.PLAYING);
+    this.runner.continueCurrentTest();
 };
 
 Debugger.prototype.showElement = function(locator) {
 	this.init();
 	this.runner.showElement(locator);
 }
+
+observable(Debugger);

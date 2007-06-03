@@ -56,6 +56,16 @@ function Editor(window, isSidebar) {
 	
 	// "debugger" cannot be used since it is a reserved word in JS
 	this.selDebugger = new Debugger(this);
+    this.selDebugger.addObserver({
+            stateUpdated: function(state) {
+                if (state == Debugger.PAUSED) {
+                    document.getElementById("pause-button").setAttribute("class", "icon resume");
+                } else {
+                    document.getElementById("pause-button").setAttribute("class", "icon pause");
+                }
+                self.updateState();
+            }
+        });
 	
 	//top.document.commandDispatcher.getControllers().appendController(Editor.controller);
 	//window.controllers.appendController(Editor.controller);
@@ -130,11 +140,11 @@ Editor.controller = {
 		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
 		case "cmd_selenium_play_suite":
-		    return editor.currentFormat.getFormatter().playable && editor.state != 'playing';
+		    return editor.currentFormat.getFormatter().playable && editor.selDebugger.state != Debugger.PLAYING;
 		case "cmd_selenium_pause":
-		    return editor.currentFormat.getFormatter().playable && (editor.state == 'playing' || editor.state == 'paused');
+		    return editor.currentFormat.getFormatter().playable && (editor.selDebugger.state == Debugger.PLAYING || editor.selDebugger.state == Debugger.PAUSED);
 		case "cmd_selenium_step":
-			return editor.currentFormat.getFormatter().playable && editor.state == 'paused';
+			return editor.currentFormat.getFormatter().playable && editor.selDebugger.state == Debugger.PAUSED;
 		default:
 			return false;
 		}
@@ -155,7 +165,7 @@ Editor.controller = {
 			editor.playTestSuite();
 			break;
 		case "cmd_selenium_pause": 
-			if (editor.state == 'paused') {
+			if (editor.selDebugger.state == Debugger.PAUSED) {
 				editor.selDebugger.doContinue();
 			} else {
 				editor.selDebugger.pause();
@@ -237,16 +247,6 @@ Editor.prototype.updateSeleniumCommands = function() {
 		forEach(function(cmd) {
 					goUpdateCommand(cmd);
 				});
-}
-
-Editor.prototype.setState = function(state) {
-	this.state = state;
-	if (state == 'paused') {
-		document.getElementById("pause-button").setAttribute("class", "icon resume");
-	} else {
-		document.getElementById("pause-button").setAttribute("class", "icon pause");
-	}
-	this.updateState();
 }
 
 Editor.prototype.setOptions = function(options) {

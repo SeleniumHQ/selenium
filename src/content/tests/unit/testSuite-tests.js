@@ -15,9 +15,7 @@ function testSave() {
     testCaseFile.append("Test.html");
     testCase.file = testCaseFile;
     testCase.getTitle = function() { return "Test Case" };
-    var testCaseInfo = new TestSuite.TestCase(testSuite);
-    testCaseInfo.content = testCase;
-    testSuite.tests.push(testCaseInfo);
+    testSuite.addTestCaseFromContent(testCase);
     
     var file = FileUtils.getTempDir().clone();
     file.append("SeleniumIDE-TestSuite-test.html");
@@ -25,6 +23,7 @@ function testSave() {
 
     testSuite.save();
     var content = FileUtils.readFile(file);
+    debug("content: " + content);
     assert(/<html>[\s\S]+<tr><td><a href="Test.html">Test Case<\/a><\/td><\/tr>\n[\s\S]+<\/html>/.test(content));
 
     testCaseFile = FileUtils.getTempDir().clone();
@@ -34,6 +33,7 @@ function testSave() {
 
     testSuite.save();
     var content = FileUtils.readFile(file);
+    debug("content 2: " + content);
     assert(/<html>[\s\S]+<tr><td><a href="foo\/Test.html">Test Case<\/a><\/td><\/tr>\n[\s\S]+<\/html>/.test(content));
     
     file.remove(false);
