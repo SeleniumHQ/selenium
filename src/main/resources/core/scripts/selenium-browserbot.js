@@ -1677,10 +1677,30 @@ IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModif
         var doc_location = document.location.toString();
         var end_of_base_ref = doc_location.indexOf('TestRunner.html');
         var base_ref = doc_location.substring(0, end_of_base_ref);
-
-        var fullURL = base_ref + "TestRunner.html?singletest=" + escape(browserBot.modalDialogTest) + "&autoURL=" + escape(url) + "&runInterval=" + runOptions.runInterval;
+        var runInterval = '';
+        
+        // Only set run interval if options is defined
+        if (typeof(window.runOptions) != undefined)
+            runInterval = "&runInterval=" + runOptions.runInterval;
+        var testRunnerURL = "TestRunner.html?auto=true&singletest=" 
+            + escape(browserBot.modalDialogTest) 
+            + "&autoURL=" 
+            + escape(url) 
+            + runInterval;
+        var fullURL = base_ref + testRunnerURL;
         browserBot.modalDialogTest = null;
 
+        // If using proxy injection mode
+        if (this.proxyInjectionMode) {
+            var sessionId = runOptions.getSessionId();
+            if (sessionId == undefined) {
+                sessionId = injectedSessionId;
+            }
+            if (sessionId != undefined) {
+                LOG.debug("Invoking showModalDialog and injecting URL " + fullURL);
+            }
+            fullURL = url;
+        }
         var returnValue = oldShowModalDialog(fullURL, args, features);
         return returnValue;
     };

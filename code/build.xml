@@ -443,8 +443,8 @@
         <!-- Defining Maven tasks; we're have do this goofy stuff because of various bugs in the Maven Ant tasks,
              most especially including MNG-2060 and MNG-2264 -->
         <property environment="env"/>
-        <property name="env.MAVEN_HOME" value="${env.M2_HOME}" />
-        <property name="maven.home" value="${env.MAVEN_HOME}"/>
+        <property name="env.M2_HOME" value="${env.M2_HOME}" />
+        <property name="maven.home" value="${env.M2_HOME}"/>
         <!-- override this if necessary -->
         <condition property="build.failed">
             <not>
@@ -452,7 +452,7 @@
             </not>
         </condition>
         <fail if="build.failed"
-              message="Couldn't find MAVEN_HOME.  (Did you set the MAVEN_HOME environment variable correctly?)&#xa;Maven Home: ${maven.home}"/>
+              message="Couldn't find M2_HOME.  (Did you set the M2_HOME environment variable correctly?)&#xa;Maven Home: ${maven.home}"/>
         <property name="mvn.overrideable.settings" value=""/>
         <presetdef name="mvn">
             <java classname="org.codehaus.classworlds.Launcher" fork="true" failonerror="true">

@@ -15,16 +15,18 @@ Copyright 2006 ThoughtWorks, Inc
  limitations under the License.
 -->
 <head>
+<title>Modal Dialog Host Window</title>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <script type="text/javascript">
 function openModal() {
-    myModalDialogReturnValue = window.showModalDialog("/tests/html/test_modal_dialog_dialog.html", "","" );
-    alert(myModalDialogReturnValue);
+    myModalDialogReturnValue = window.showModalDialog("/selenium-server/tests/html/test_modal_dialog_dialog.html", "","" );
+    document.getElementById('changeText').innerHTML = "after modal dialog";
 }
 </script>
 </head>
 <body>
     <img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
     <button id="modal" onclick="javascript:openModal()">Click here to open a modal dialog</button>
+	<div id="changeText">before modal dialog</div>
 </body>
 </html>

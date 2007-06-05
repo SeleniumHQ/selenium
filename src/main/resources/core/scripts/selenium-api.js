@@ -2090,6 +2090,24 @@ Selenium.prototype.doWaitForPageToLoad = function(timeout) {
     }
 };
 
+Selenium.prototype.doWaitForFrameToLoad = function(frameAddress, timeout) {
+    /**
+     * Waits for a new frame to load.
+     *
+     * <p>Selenium constantly keeps track of new pages and frames loading, 
+     * and sets a "newPageLoaded" flag when it first notices a page load.</p>
+     * 
+     * See waitForPageToLoad for more information.
+     * 
+     * @param frameAddress FrameAddress from the server side
+     * @param timeout a timeout in milliseconds, after which this command will return with an error
+     */
+    // in pi-mode, the test and the harness share the window; thus if we are executing this code, then we have loaded
+    if (window["proxyInjectionMode"] == null || !window["proxyInjectionMode"]) {
+        return this.makePageLoadCondition(timeout);
+    }
+};
+
 Selenium.prototype._isNewPageLoaded = function() {
     return this.browserbot.isNewPageLoaded();
 };

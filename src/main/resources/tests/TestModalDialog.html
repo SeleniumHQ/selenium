@@ -33,9 +33,19 @@ Copyright 2004 ThoughtWorks, Inc
       <td>&nbsp;</td>
     </tr>
     <tr>
-      <td>modalDialogTest</td>
-      <td>../tests/TestModalDialogDialog.html</td>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_modal_dialog.html</td>
       <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Modal Dialog Host Window</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>changeText</td>
+      <td>before modal dialog</td>
     </tr>
     <tr>
       <td>click</td>
@@ -43,15 +53,45 @@ Copyright 2004 ThoughtWorks, Inc
       <td></td>
     </tr>
     <tr>
-      <td>verifyAlert</td>
-      <td>no ways</td>
+      <td>waitForPopup</td>
+      <td>Modal Dialog Popup</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>Modal Dialog Popup</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Modal Dialog Popup</td>
       <td>&nbsp;</td>
     </tr>
     <tr>
-      <td>verifyLocation</td>
-      <td>*/tests/html/test_modal_dialog.html</td>
-      <td>&nbsp;</td>
+      <td>click</td>
+      <td>change</td>
+      <td></td>
     </tr>
+    <tr>
+      <td>click</td>
+      <td>close</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>Modal Dialog Host Window</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>changeText</td>
+      <td>after modal dialog</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Modal Dialog Popup</td>
+      <td>&nbsp;</td>
+    </tr>       
   </tbody>
 </table>
 </body>
