@@ -17,103 +17,69 @@
 
 package com.thoughtworks.webdriver.ie;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-import com.jacob.activeX.ActiveXComponent;
-import com.jacob.com.ComFailException;
-import com.jacob.com.ComThread;
-import com.jacob.com.Variant;
-import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
 public class InternetExplorerDriver implements WebDriver {
-	private ActiveXComponent ie;
-
+	private long iePointer; // Used by the native code to keep track of the IE instance
+	private static boolean comStarted;
+	
 	public InternetExplorerDriver() {
-	    ComThread.InitSTA();
-	    ie = new ActiveXComponent("InternetExploderFox");
+		startCom();
+		openIe();
 	}
 	
-	public void close() {
-		ie.invoke("Close");
-		ComThread.Release();
-	}
-
-	public void get(String url) {
-		ie.invoke("Get", url);
-	}
-
-    public String getCurrentUrl() {
-        return ie.getPropertyAsString("CurrentUrl");
-    }
-
-    public void dumpBody() {
-		ie.invoke("DumpBody");
-	}
-
-	public String getTitle() {
-		return ie.getPropertyAsString("Title");
-	}
-
-	public boolean getVisible() {
-		return ie.getPropertyAsBoolean("Visible");
-	}
-
-	public void setVisible(boolean visible) {
-		ie.setProperty("Visible", visible);
-	}
+	// We may well need a finalizer to ensure that we release all the resources we should
 	
+	public native void close();
+
+	public void dumpBody() {
+	}
+
+	public native void get(String url);
+
+	public native String getCurrentUrl();
+
+	public native String getTitle();
+
+	public native boolean getVisible();
+
+	public native void setVisible(boolean visible);
+
+	public WebElement selectElement(String selector) {
+		if (selector.startsWith("id=")) {
+			return selectElementById(selector.substring("id=".length()));
+//		} else {
+//			new IeXPath(selector, this).selectSingleNode(null);
+		}
+		return null;
+	}
+
 	public List selectElements(String xpath) {
-		Variant results = safelyInvoke("SelectElementsByXPath", xpath, "Cannot find elements using xpath: " + xpath);
-		Iterator i = new JacobIListWrapper(results).iterator();
-		
-		List elements = new LinkedList();
-		while (i.hasNext()) {
-			elements.add(new WrappedWebElement((Variant) i.next()));
-		}
-
-		return elements;
+		return null;
 	}
 
-	public WebElement selectElement(String xpath) {
-		Variant result = safelyInvoke("SelectElement", xpath, "Cannot find element using: " + xpath);
-		return new WrappedWebElement(result);
+	public String selectText(String xpath) {
+		return null;
+	}
+
+	public TargetLocator switchTo() {
+		return null;
 	}
 	
-	public String selectText(String xpath) {
-		return safelyInvoke("SelectTextWithXPath", xpath, "Cannot find text using xpath: " + xpath).getString();
-	}
-
-    public TargetLocator switchTo() {
-        return new InternetExplorerTargetLocator(ie.invoke("SwitchTo"));
-    }
-
-    private Variant safelyInvoke(String methodName, String argument, String errorMessage) {
-		try {
-			return ie.invoke(methodName, argument);
-		} catch (ComFailException e) {
-			throw new NoSuchElementException(errorMessage);
+	private void startCom() {
+		if (!comStarted) {
+			System.loadLibrary("InternetExplorerDriver");
+			startComNatively();
+			comStarted = true;
 		}
 	}
-    
-    private class InternetExplorerTargetLocator implements TargetLocator {
-		private final ActiveXComponent targetLocator;
-
-		public InternetExplorerTargetLocator(Variant targetLocator) {
-			this.targetLocator = new ActiveXComponent(targetLocator.toDispatch());
-		}
-
-		public WebDriver frame(int frameIndex) {
-			targetLocator.invoke("Frame", frameIndex);
-			return InternetExplorerDriver.this;
-		}
-
-        public WebDriver window(int windowIndex) {
-            targetLocator.invoke("Window", windowIndex);
-            return InternetExplorerDriver.this;
-        }
-    }
+	
+	private native void startComNatively();
+	
+	private native void openIe();
+	
+	private native WebElement selectElementById(String elementId);
 }

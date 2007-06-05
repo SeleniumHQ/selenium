@@ -46,12 +46,6 @@
     <Compile Include="XPathTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\csharp\WebDriver.csproj">
-      <Project>{1745FF65-4EEF-4395-B2DF-6A870260C934}</Project>
-      <Name>WebDriver</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="SHDocVw">
       <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
       <VersionMajor>1</VersionMajor>

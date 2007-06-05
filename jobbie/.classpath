@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="build/classes" path="src/java">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="webdriver-internet-explorer/build"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
-	<classpathentry kind="lib" path="lib/runtime/jacob-1.11.1.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="webdriver-internet-explorer/lib/runtime"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/runtime/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/jaxen-1.1.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
