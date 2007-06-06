@@ -105,15 +105,15 @@ public class HttpCommandProcessor implements CommandProcessor {
     }
 
     private InputStream getCommandResponse(String command, InputStream is) throws IOException {
-        int responsecode = 301;
-        while (responsecode == 301) {
+        int responsecode = HttpURLConnection.HTTP_MOVED_PERM;
+        while (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
             URL result = buildCommandURL(command, pathToServlet);
             HttpURLConnection uc = (HttpURLConnection) result.openConnection();
             uc.setInstanceFollowRedirects(false);
             responsecode = uc.getResponseCode();
-            if (responsecode == 301) {
+            if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
                 pathToServlet = uc.getRequestProperty("Location");
-            } else if (responsecode != 200) {
+            } else if (responsecode != HttpURLConnection.HTTP_OK) {
                 throw new SeleniumException(uc.getResponseMessage());
             } else {
                 is = uc.getInputStream();
