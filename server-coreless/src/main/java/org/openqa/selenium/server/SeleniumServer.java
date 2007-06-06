@@ -158,6 +158,15 @@ public class SeleniumServer {
 
     public static final int DEFAULT_TIMEOUT = (30 * 60);
     public static int timeoutInSeconds = DEFAULT_TIMEOUT;
+    
+    // Minimum and maximum number of jetty threads
+    public static final int MIN_JETTY_THREADS = 1;
+    public static final int MAX_JETTY_THREADS = 1024;
+    public static final int DEFAULT_JETTY_THREADS = 512;
+    
+    // Number of jetty threads for the server
+    private static int jettyThreads = DEFAULT_JETTY_THREADS;
+    
     private static Boolean reusingBrowserSessions = null;
 
     private static String dontInjectRegex = null;
@@ -230,6 +239,16 @@ public class SeleniumServer {
                 debugURL = getArg(args, ++i);
             } else if ("-timeout".equalsIgnoreCase(arg)) {
                 timeoutInSeconds = Integer.parseInt(getArg(args, ++i));
+            } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
+            	int jettyThreads = Integer.parseInt(getArg(args, ++i));
+            	
+            	if (jettyThreads < MIN_JETTY_THREADS || jettyThreads > MAX_JETTY_THREADS) {
+            		System.err.println("You must specify a number of jetty threads between " + MIN_JETTY_THREADS + " and " + MAX_JETTY_THREADS + ".  The default is " + DEFAULT_JETTY_THREADS + ".");
+            		System.exit(1);
+            	}
+            	
+            	// Set the number of jetty threads before we construct the instance
+            	SeleniumServer.setJettyThreads(jettyThreads);
             } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
                 userJsInjection = true;
                 if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
@@ -525,6 +544,7 @@ public class SeleniumServer {
         }
         SocketListener socketListener = new SocketListener();
         socketListener.setMaxIdleTimeMs(60000);
+        socketListener.setMaxThreads(jettyThreads);
         socketListener.setPort(port);
         server.addListener(socketListener);
         configServer();
@@ -726,6 +746,24 @@ public class SeleniumServer {
     public void registerBrowserLauncher(String sessionId, BrowserLauncher launcher) {
     	driver.registerBrowserLauncher(sessionId, launcher);
     }
+    
+    /**
+     * Get the number of threads that the server will use to configure the embedded Jetty instance.
+     * 
+     * @return Returns the number of threads for Jetty.
+     */
+    public static int getJettyThreads() {
+    	return jettyThreads;
+    }
+    
+    /**
+     * Set the number of threads that the server will use for Jetty.
+     * 
+     * In order to use this, you must call this method before you call the SeleniumServer constructor.
+     */
+    public static void setJettyThreads(int jettyThreads) {
+    	SeleniumServer.jettyThreads = jettyThreads;
+    }    
 
     public static boolean isDebugMode() {
         return SeleniumServer.debugMode;
