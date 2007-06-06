@@ -14,8 +14,6 @@ public:
 	const char* getValue();
 
 private:
-	const char* getTextAreaValue();
-
-private:
 	IHTMLDOMNode* node;
+	const char* getTextAreaValue();
 };

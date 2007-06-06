@@ -93,6 +93,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)\..&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -182,15 +183,27 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\com_thoughtworks_webdriver_ie_HtmlNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerDriver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerElement.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ElementWrapper.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\IeWrapper.cpp"
+				RelativePath=".\HtmlNode.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\InternetExplorerDriver.cpp"
+				RelativePath=".\IeWrapper.cpp"
 				>
 			</File>
 			<File
@@ -224,6 +237,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\com_thoughtworks_webdriver_ie_HtmlNode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerDriver.h"
 				>
 			</File>
@@ -233,6 +250,10 @@
 			</File>
 			<File
 				RelativePath=".\ElementWrapper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HtmlNode.h"
 				>
 			</File>
 			<File

@@ -79,6 +79,14 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_selectElementById
   (JNIEnv *, jobject, jstring);
 
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
+ * Method:    getDocument
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getDocument
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

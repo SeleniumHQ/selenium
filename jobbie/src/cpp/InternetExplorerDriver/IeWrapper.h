@@ -21,10 +21,10 @@ public:
 	void get(const char *url);
 
 	ElementWrapper* selectElementById(const char *elementId);
+	IHTMLDocument2* getDocument();
 
 private:
 	void waitForNavigateToFinish();
-	IHTMLDocument2* getDocument();
 	IHTMLDocument3* getDocument3();
 	IWebBrowser2* ie;
 };

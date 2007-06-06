@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "IeWrapper.h"
 #include "ElementWrapper.h"
+#include "HtmlNode.h"
 #include <iostream>
 
 using namespace std;
@@ -20,15 +21,6 @@ IeWrapper* getIe(JNIEnv *env, jobject obj)
 	jlong value = env->GetLongField(obj, fid);
 
 	return (IeWrapper *) value;
-}
-
-ElementWrapper* getWrapper(JNIEnv *env, jobject obj)
-{
-	jclass cls = env->GetObjectClass(obj);
-	jfieldID fid = env->GetFieldID(cls, "nodePointer", "J");
-	jlong value = env->GetLongField(obj, fid);
-
-	return (ElementWrapper *) value;
 }
 
 JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_startComNatively
@@ -106,12 +98,17 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	env->ReleaseStringUTFChars(elementId, converted);	
 }
 
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getValue
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getDocument
   (JNIEnv *env, jobject obj)
 {
-	ElementWrapper *wrapper = getWrapper(env, obj);
-	const char *value = wrapper->getValue();
-	return env->NewStringUTF(value);
+	IeWrapper *ie = getIe(env, obj);
+	IHTMLDocument2 *doc = ie->getDocument();
+
+	HtmlNode *node = new HtmlNode(doc);
+	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/HtmlNode");
+	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+
+	return env->NewObject(clazz, cId, (jlong) node);
 }
 
 #ifdef __cplusplus

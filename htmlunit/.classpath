@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="lib/runtime/commons-lang-2.2.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/htmlunit-1.11.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/jaxen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/jaxen-1.1.1.jar" sourcepath="/webdriver-common/lib-src/jaxen-1.1.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/runtime/js-1.6R5.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

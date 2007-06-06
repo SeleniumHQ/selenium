@@ -19,6 +19,8 @@ package com.thoughtworks.webdriver.ie;
 
 import java.util.List;
 
+import org.jaxen.JaxenException;
+
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
@@ -51,8 +53,14 @@ public class InternetExplorerDriver implements WebDriver {
 	public WebElement selectElement(String selector) {
 		if (selector.startsWith("id=")) {
 			return selectElementById(selector.substring("id=".length()));
-//		} else {
-//			new IeXPath(selector, this).selectSingleNode(null);
+		} else if (selector.startsWith("link=")) {
+			throw new RuntimeException("Not implemented yet");
+		} else {
+			try {
+				new IeXPath(selector, this).selectSingleNode(getDocument());
+			} catch (JaxenException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		return null;
 	}
@@ -82,4 +90,6 @@ public class InternetExplorerDriver implements WebDriver {
 	private native void openIe();
 	
 	private native WebElement selectElementById(String elementId);
+	
+	private native HtmlNode getDocument();
 }
