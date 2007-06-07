@@ -1,7 +1,13 @@
 Revision history for Perl extension Test::WWW::Selenium.
 
-1.13 - Not yet released
+1.13 - Wed Jun  6 19:52:18 PDT 2007
  - fix bug to allow directly calling do_command - Thanks, Tom Hukins
+ - Changes from Kevin Jones at Socialtext:
+   - refactored out how functions are created
+   - add functions to more closely match Selenium IDE:
+     - wait_for_text_present
+     - wait_for_element_present, and
+     - pause
 
 1.12 - Tue Mar 13 20:26:10 PDT 2007
  - move unit test utility to WWW::Selenium::Util

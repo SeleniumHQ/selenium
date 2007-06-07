@@ -2,7 +2,7 @@ package WWW::Selenium::XMLParseUtils;
 use strict;
 use warnings;
 use base 'Exporter';
-our @EXPORT_OK = qw/html2pod strip_blockquotes extract_functions/;
+our @EXPORT_OK = qw/html2pod strip_blockquotes extract_functions create_function camel2perl/;
 
 sub strip_blockquotes {
     my $xml = shift;
@@ -82,23 +82,13 @@ sub extract_functions {
             $extra_code = "\n$code";
         }
 
-        my $sel_func = $return_type ? "get_$return_type" : "do_command";
-        my $return   = $return_type ? "return " : '';
-        my $text = <<EOT;
-=item \$sel-E<gt>$perl_name($params->{names})
+        my $text = create_function( name => $name,
+                                    params => $params->{names},
+                                    desc => "$func_comment\n\n$params->{desc}\n$return_desc",
+                                    ret => $return_type,
+                                    extra => $extra_code,
+                                  );
 
-$func_comment
-
-$params->{desc}
-$return_desc
-=cut
-
-sub $perl_name {
-    my \$self = shift;$extra_code
-    $return\$self->$sel_func("$name", \@_);
-}
-
-EOT
         $text = html2pod($text);
         $text =~ s#\n{2,}#\n\n#g;
         push @functions, { 
@@ -111,6 +101,34 @@ EOT
 
     return @functions;
 }
+
+sub create_function {
+    my %args = @_;
+    $args{params} ||= '';
+    $args{extra} ||= '';
+    $args{desc} ||= "Performs the selenium command: $args{name}";
+
+    my $sub = camel2perl($args{name});
+
+    my $ret = $args{ret} ? 'return ' : '';
+    my $sel_func = $args{ret} ? "get_$args{ret}" : 'do_command';
+
+    return <<EOT;
+=item \$sel-E<gt>$sub($args{params})
+
+$args{desc}
+
+=cut
+
+sub $sub {
+    my \$self = shift;$args{extra}
+    $ret\$self->$sel_func("$args{name}", \@_);
+}
+
+EOT
+}
+
+
 
 sub _extract_params {
     my $text = shift;

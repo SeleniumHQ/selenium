@@ -2,8 +2,8 @@
 use strict;
 use warnings;
 use lib 'util';
-use WWW::Selenium::XMLParseUtils qw/extract_functions html2pod 
-                                    strip_blockquotes/;
+use WWW::Selenium::XMLParseUtils qw/extract_functions html2pod camel2perl
+                                    strip_blockquotes create_function/;
 
 my $iedoc = read_iedoc_xml();
 
@@ -28,19 +28,31 @@ EOT
 };
 my @functions = extract_functions($iedoc, $function_extras);
 
+my @extra_cmds = (
+    { 
+        name => 'waitForTextPresent',
+        params => '$text, $timeout',
+        desc => 'Waits until $text is present in the html source',
+    },
+    {
+        name => 'waitForElementPresent',
+        params => '$locator, $timeout',
+        desc => 'Waits until $locator is present',
+    },
+);
+
 # Print Selenium.pm
 write_file("lib/WWW/Selenium.pm", join('', pm_header(), 
                                            $selenium_description, 
                                            pm_constructor(), 
                                            map({ $_->{text} } @functions),
+                                           map({create_function(%$_)} @extra_cmds),
                                            pm_footer() ) );
 
 # Print unit test file
-write_file("t/selenium-core.t", join('', t_header(), 
-                                         test_functions(@functions) ) );
+my @perl_names = map({camel2perl($_->{name})} @functions, @extra_cmds);
+write_file("t/selenium-core.t", join('', t_header(), test_functions(@perl_names) ));
 exit;
-
-
 
 sub pm_header {
     return <<'EOT';
@@ -65,6 +77,7 @@ use LWP::UserAgent;
 use HTTP::Request;
 use URI::Escape;
 use Carp qw(croak);
+use Time::HiRes qw(sleep);
 
 use strict;
 use warnings;
@@ -367,6 +380,18 @@ sub get_boolean_array {
     return @boolarr;
 }
 
+=item $sel-E<gt>pause($timeout)
+
+Waits $timeout milliseconds (default: 1 second)
+
+=cut
+
+sub pause {
+    my ($self,$timeout) = @_;
+    $timeout = 1000  unless defined $timeout;
+    $timeout /= 1000;
+    sleep $timeout;
+}
 
 ### From here on, everything's auto-generated from XML
 
@@ -563,7 +588,7 @@ sub test_functions {
     my @funcs = @_;
     my $text = '';
     for my $f (@funcs) {
-        $text .= qq{\$sel->_method_exists("$f->{name}");\n};
+        $text .= qq{\$sel->_method_exists("$f");\n};
     }
     return $text;
 }
