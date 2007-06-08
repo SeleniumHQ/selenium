@@ -75,7 +75,6 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	IeWrapper* ie = getIe(env, obj);
 	const char* title = ie->getTitle();
 	jstring toReturn = env->NewStringUTF(title);
-	delete title;
 	return toReturn;
 }
 

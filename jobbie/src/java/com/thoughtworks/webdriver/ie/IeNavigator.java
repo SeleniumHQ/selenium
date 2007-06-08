@@ -128,7 +128,7 @@ public class IeNavigator extends DefaultNavigator {
 	}
 
 	public String getElementNamespaceUri(Object element) {
-		throw new UnsupportedOperationException("getElementNamespaceUri");
+		return "";
 	}
 
 	public String getElementQName(Object element) {

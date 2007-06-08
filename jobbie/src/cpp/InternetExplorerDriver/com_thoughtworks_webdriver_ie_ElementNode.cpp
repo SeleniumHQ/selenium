@@ -52,6 +52,15 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_nextChi
 	return env->NewObject(clazz, cId, (jlong) child);
 }
 
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getName
+  (JNIEnv *env, jobject obj)
+{
+	ElementNode* node = getElementNode(env, obj);
+	const char* name = node->name();
+
+	return env->NewStringUTF(name);
+}
+
 #ifdef __cplusplus
 }
 #endif
