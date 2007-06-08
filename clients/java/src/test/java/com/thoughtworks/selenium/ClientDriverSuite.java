@@ -4,10 +4,15 @@
  */
 package com.thoughtworks.selenium;
 
-import junit.extensions.*;
-import junit.framework.*;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import org.openqa.selenium.server.*;
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.openqa.selenium.server.SeleniumServer;
 
 import com.thoughtworks.selenium.corebased.*;
 
@@ -46,8 +51,18 @@ public class ClientDriverSuite extends TestCase {
         && System.getProperty("selenium.proxyInjectionMode").equals("true");
 
         String forcedBrowserMode = System.getProperty("selenium.forcedBrowserMode");
-
-        return generateSuite(isProxyInjectionMode, forcedBrowserMode);
+        
+        TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
+        TestSuite suite = generateSuite(isProxyInjectionMode, forcedBrowserMode);
+        // Left here to be able to run non proxy injection mode tests in a PI mode server 
+        //InitSystemPropertiesTestSetup setup = new ClientDriverPISuite.InitSystemPropertiesTestSetupForPImode(suite);
+        
+        // Decorate generated test suite with a decorator to initialize system properties
+        // such as debugging and logging properties
+        InitSystemPropertiesTestSetup setup = new InitSystemPropertiesTestSetup(suite);
+        supersuite.addTest(setup);
+        
+        return supersuite;
     }
 
     public static TestSuite generateSuite(boolean isProxyInjectionMode, String forcedBrowserMode) {
@@ -62,7 +77,12 @@ public class ClientDriverSuite extends TestCase {
             
             
             if (isProxyInjectionMode) {
+            	// Run test for selecting windows by titles through PI mode
+            	//suite.addTestSuite(TestSelectWindowTitle.class);
                 suite.addTestSuite(TestClick.class);    // ok, run just a single test in PI mode
+                
+                // Will need to run for IE tests
+                //suite.addTestSuite(TestModalDialog.class);
             }
             else {
                 
@@ -123,6 +143,8 @@ public class ClientDriverSuite extends TestCase {
             throw e;
         }
     }
+    
+
 
     /**
      * A TestSetup decorator that runs a super setUp and tearDown at the
@@ -162,4 +184,54 @@ public class ClientDriverSuite extends TestCase {
         }
 
     }
+    
+    /** 
+     * A TestSetup decorator that runs a super setUp and tearDown at the
+	 * beginning and end of the entire run.
+	 *
+	 * It is used to set system properties at the beginning of each run.
+	 *
+	 * @author nelsons
+	 */
+	static class InitSystemPropertiesTestSetup extends TestSetup {
+		private HashMap/*<String, String>*/savedValuesOfSystemProperties = new HashMap/*<String, String>*/();
+
+		public InitSystemPropertiesTestSetup(Test test) {
+			super(test);
+		}
+
+		public void setUp() throws Exception {
+			overrideProperty("selenium.debugMode", "true");
+			overrideProperty("selenium.log", "log.txt");
+
+			// make jetty logging especially verbose
+			overrideProperty("DEBUG", "true");
+			overrideProperty("DEBUG_VERBOSE", "1");
+		}
+
+		protected void overrideProperty(String propertyName,
+				String propertyValue) {
+			savedValuesOfSystemProperties.put(propertyName, System
+					.getProperty(propertyName));
+			System.setProperty(propertyName, propertyValue);
+		}
+
+		public void tearDown() throws Exception {
+			restoreOldSystemPropertySettings();
+		}
+
+		private void restoreOldSystemPropertySettings() {
+			for (Iterator i = savedValuesOfSystemProperties.keySet().iterator(); i
+					.hasNext();) {
+				String propertyName = (String) i.next();
+				String oldValue = (String) savedValuesOfSystemProperties
+						.get(propertyName);
+				if (oldValue == null) {
+					System.clearProperty(propertyName);
+				} else {
+					System.setProperty(propertyName, oldValue);
+				}
+			}
+		}
+	}
 }

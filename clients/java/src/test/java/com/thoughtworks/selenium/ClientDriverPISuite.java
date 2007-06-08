@@ -22,12 +22,12 @@ public class ClientDriverPISuite extends ClientDriverSuite {
         TestSuite suite = ClientDriverSuite.generateSuite(true, determineForcedBrowserMode());
         suite.setName(ClientDriverPISuite.class.getName());
 
-        InitSystemPropertiesForPImodeTesting setup = new InitSystemPropertiesForPImodeTesting(suite);
+        InitSystemPropertiesTestSetupForPImode setup = new InitSystemPropertiesTestSetupForPImode(suite);
         supersuite.addTest(setup);
         return supersuite;
     }
 
-    private static String determineForcedBrowserMode() {
+    protected static String determineForcedBrowserMode() {
         String forcedBrowserMode = System.getProperty("selenium.forcedBrowserMode");
         if (forcedBrowserMode == null) {
             if (WindowsUtils.thisIsWindows()) {
@@ -38,7 +38,7 @@ public class ClientDriverPISuite extends ClientDriverSuite {
         }
         return forcedBrowserMode;
     }
-
+    
     /** A TestSetup decorator that runs a super setUp and tearDown at the
      * beginning and end of the entire run: in this case, we use it to
      * set and clear the PI mode property, and rename the suite.
@@ -47,44 +47,17 @@ public class ClientDriverPISuite extends ClientDriverSuite {
      *  @author nelsons
      *
      */
-    static class InitSystemPropertiesForPImodeTesting extends TestSetup {
-        private HashMap/*<String, String>*/ savedValuesOfSystemProperties = new HashMap/*<String, String>*/();
+    public static class InitSystemPropertiesTestSetupForPImode extends ClientDriverSuite.InitSystemPropertiesTestSetup {
 
-        public InitSystemPropertiesForPImodeTesting(Test test) {
+        public InitSystemPropertiesTestSetupForPImode(Test test) {
             super(test);
         }
 
         public void setUp() throws Exception {
+        	super.setUp();
+        	
+        	overrideProperty("selenium.forcedBrowserMode", determineForcedBrowserMode());
             overrideProperty("selenium.proxyInjectionMode", "true");
-            overrideProperty("selenium.forcedBrowserMode", determineForcedBrowserMode());
-            overrideProperty("selenium.debugMode", "true");
-            overrideProperty("selenium.log", "log.txt");
-            
-            // make jetty logging especially verbose
-            overrideProperty("DEBUG", "true");
-            overrideProperty("DEBUG_VERBOSE", "1");
-        }
-
-        private void overrideProperty(String propertyName, String propertyValue) {
-            savedValuesOfSystemProperties.put(propertyName, System.getProperty(propertyName));
-            System.setProperty(propertyName, propertyValue);
-        }
-
-        public void tearDown() throws Exception {
-            restoreOldSystemPropertySettings();
-        }
-
-        private void restoreOldSystemPropertySettings() {
-            for (Iterator i = savedValuesOfSystemProperties.keySet().iterator(); i.hasNext(); ) {                
-                String propertyName = (String) i.next();
-                String oldValue = (String) savedValuesOfSystemProperties.get(propertyName);
-                if (oldValue==null) {
-                    System.clearProperty(propertyName);
-                }
-                else {
-                    System.setProperty(propertyName, oldValue);
-                }
-            }
         }
     }
 }
