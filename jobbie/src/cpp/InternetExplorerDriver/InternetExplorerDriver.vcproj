@@ -183,7 +183,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_HtmlNode.cpp"
+				RelativePath=".\com_thoughtworks_webdriver_ie_DocumentNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\com_thoughtworks_webdriver_ie_ElementNode.cpp"
 				>
 			</File>
 			<File
@@ -195,15 +199,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DocumentNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ElementNode.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ElementWrapper.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\HtmlNode.cpp"
+				RelativePath=".\IeWrapper.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\IeWrapper.cpp"
+				RelativePath=".\Node.cpp"
 				>
 			</File>
 			<File
@@ -237,7 +249,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_HtmlNode.h"
+				RelativePath=".\com_thoughtworks_webdriver_ie_DocumentNode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\com_thoughtworks_webdriver_ie_ElementNode.h"
 				>
 			</File>
 			<File
@@ -249,15 +265,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DocumentNode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ElementNode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ElementWrapper.h"
 				>
 			</File>
 			<File
-				RelativePath=".\HtmlNode.h"
+				RelativePath=".\IeWrapper.h"
 				>
 			</File>
 			<File
-				RelativePath=".\IeWrapper.h"
+				RelativePath=".\Node.h"
 				>
 			</File>
 			<File

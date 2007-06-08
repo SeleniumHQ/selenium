@@ -2,6 +2,7 @@
 #define utils_h
 
 #include <jni.h>
+#include <iostream>
 
 void throwRunTimeException(JNIEnv *, const char *message);
 void throwNoSuchElementException(JNIEnv *, const char *message);

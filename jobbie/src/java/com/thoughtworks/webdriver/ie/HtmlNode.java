@@ -1,27 +1,19 @@
 package com.thoughtworks.webdriver.ie;
 
-class HtmlNode {
-	private final long nodePointer;
+interface HtmlNode {
+	Object getDocument();
 
-	public HtmlNode(long nodePointer) {
-		this.nodePointer = nodePointer;
-	}
-	
-	public HtmlNode(Object contextNode) {
-		nodePointer = ((HtmlNode) contextNode).nodePointer;
-	}
+	boolean hasNextChild();
 
-	public native Object getDocument();
-
-	public native boolean hasNextChild();
-
-	public native Object getFirstChild();
+	Object getFirstChild();
 	
-	public native Object nextChild();
+	Object nextChild();
 	
-	public native Object getNextSibling();
+	Object getNextSibling();
 	
-	public native Object getPreviousSibling();
+	Object getPreviousSibling();
 	
-	public native Object getParent();
+	Object getParent();
+	
+	String getName();
 }

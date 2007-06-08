@@ -5,7 +5,7 @@
 #include "utils.h"
 #include "IeWrapper.h"
 #include "ElementWrapper.h"
-#include "HtmlNode.h"
+#include "DocumentNode.h"
 #include <iostream>
 
 using namespace std;
@@ -94,6 +94,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 		return env->NewObject(clazz, cId, (jlong) wrapper);
 	} catch (const char *message) {
 		throwNoSuchElementException(env, message);
+		return NULL;
 	} 
 	env->ReleaseStringUTFChars(elementId, converted);	
 }
@@ -104,8 +105,8 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	IeWrapper *ie = getIe(env, obj);
 	IHTMLDocument2 *doc = ie->getDocument();
 
-	HtmlNode *node = new HtmlNode(doc);
-	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/HtmlNode");
+	DocumentNode *node = new DocumentNode(doc);
+	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/DocumentNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 	return env->NewObject(clazz, cId, (jlong) node);

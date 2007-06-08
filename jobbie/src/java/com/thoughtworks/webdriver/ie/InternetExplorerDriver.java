@@ -91,5 +91,5 @@ public class InternetExplorerDriver implements WebDriver {
 	
 	private native WebElement selectElementById(String elementId);
 	
-	private native HtmlNode getDocument();
+	private native DocumentNode getDocument();
 }

@@ -7,27 +7,35 @@ import org.jaxen.UnsupportedAxisException;
 import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
 
-public class IeNavigator extends DefaultNavigator  {
+public class IeNavigator extends DefaultNavigator {
 	private final InternetExplorerDriver driver;
 
 	public IeNavigator(InternetExplorerDriver driver) {
 		this.driver = driver;
 	}
-	
+
 	public Object getDocumentNode(Object context) {
 		return ((HtmlNode) context).getDocument();
 	}
-	
-	public Iterator getChildAxisIterator(final Object contextNode) throws UnsupportedAxisException {
+
+	public Iterator getAttributeAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		System.out.println("Attribute axis");
+		return super.getAttributeAxisIterator(contextNode);
+	}
+
+	public Iterator getChildAxisIterator(final Object contextNode)
+			throws UnsupportedAxisException {
 		return new Iterator() {
-			HtmlNode node = new HtmlNode(contextNode);
-			
+			HtmlNode node = (HtmlNode) contextNode;
+
 			public boolean hasNext() {
 				return node.hasNextChild();
 			}
 
 			public Object next() {
-				return node.nextChild();
+				node = (HtmlNode) node.nextChild();
+				return node;
 			}
 
 			public void remove() {
@@ -35,84 +43,139 @@ public class IeNavigator extends DefaultNavigator  {
 			}
 		};
 	}
-	
-	public String getAttributeName(Object arg0) {
-		return null;
+
+	public Iterator getDescendantAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException("getDescendantAxisIterator");
 	}
 
-	public String getAttributeNamespaceUri(Object arg0) {
-		return null;
+	public Iterator getFollowingAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException("getFollowingAxisIterator");
 	}
 
-	public String getAttributeQName(Object arg0) {
-		return null;
+	public Iterator getFollowingSiblingAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException(
+				"getFollowingSiblingAxisIterator");
 	}
 
-	public String getAttributeStringValue(Object arg0) {
-		return null;
+	public Iterator getAncestorAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException("getAncestorAxisIterator");
 	}
 
-	public String getCommentStringValue(Object arg0) {
-		return null;
+	public Object getElementById(Object contextNode, String elementId) {
+		throw new UnsupportedOperationException("getElementById");
 	}
 
-	public String getElementName(Object arg0) {
-		return null;
+	public Iterator getNamespaceAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException("getNamespaceAxisIterator");
 	}
 
-	public String getElementNamespaceUri(Object arg0) {
-		return null;
+	public Iterator getParentAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException("getParentAxisIterator");
 	}
 
-	public String getElementQName(Object arg0) {
-		return null;
+	public short getNodeType(Object node) {
+		throw new UnsupportedOperationException("getNodeType");
 	}
 
-	public String getElementStringValue(Object arg0) {
-		return null;
+	public Object getParentNode(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException("getParentNode");
 	}
 
-	public String getNamespacePrefix(Object arg0) {
-		return null;
+	public Iterator getPrecedingAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException("getPrecedingAxisIterator");
 	}
 
-	public String getNamespaceStringValue(Object arg0) {
-		return null;
-	}
-
-	public String getTextStringValue(Object arg0) {
-		return null;
-	}
-
-	public boolean isAttribute(Object arg0) {
-		return false;
-	}
-
-	public boolean isComment(Object arg0) {
-		return false;
-	}
-
-	public boolean isDocument(Object arg0) {
-		return false;
-	}
-
-	public boolean isElement(Object arg0) {
-		return false;
-	}
-
-	public boolean isNamespace(Object arg0) {
-		return false;
-	}
-
-	public boolean isProcessingInstruction(Object arg0) {
-		return false;
-	}
-
-	public boolean isText(Object arg0) {
-		return false;
+	public Iterator getPrecedingSiblingAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		throw new UnsupportedOperationException(
+				"getPrecedingSiblingAxisIterator");
 	}
 
 	public XPath parseXPath(String xpath) throws SAXPathException {
 		return new IeXPath(xpath, driver);
+	}
+
+	public String getAttributeName(Object attr) {
+		throw new UnsupportedOperationException("getAttributeName");
+	}
+
+	public String getAttributeNamespaceUri(Object attr) {
+		throw new UnsupportedOperationException("getAttributeNamespaceUri");
+	}
+
+	public String getAttributeQName(Object attr) {
+		throw new UnsupportedOperationException("getAttributeQName");
+	}
+
+	public String getAttributeStringValue(Object attr) {
+		throw new UnsupportedOperationException("getAttributeStringValue");
+	}
+
+	public String getCommentStringValue(Object comment) {
+		throw new UnsupportedOperationException("getCommentStringValue");
+	}
+
+	public String getElementName(Object element) {
+		return ((ElementNode) element).getName();
+	}
+
+	public String getElementNamespaceUri(Object element) {
+		throw new UnsupportedOperationException("getElementNamespaceUri");
+	}
+
+	public String getElementQName(Object element) {
+		throw new UnsupportedOperationException("getElementQName");
+	}
+
+	public String getElementStringValue(Object element) {
+		throw new UnsupportedOperationException("getElementStringValue");
+	}
+
+	public String getNamespacePrefix(Object ns) {
+		throw new UnsupportedOperationException("getNamespacePrefix");
+	}
+
+	public String getNamespaceStringValue(Object ns) {
+		throw new UnsupportedOperationException("getNamespaceStringValue");
+	}
+
+	public String getTextStringValue(Object text) {
+		throw new UnsupportedOperationException("getTextStringValue");
+	}
+
+	public boolean isAttribute(Object object) {
+		throw new UnsupportedOperationException("isAttribute");
+	}
+
+	public boolean isComment(Object object) {
+		throw new UnsupportedOperationException("isComment");
+	}
+
+	public boolean isDocument(Object object) {
+		throw new UnsupportedOperationException("isDocument");
+	}
+
+	public boolean isElement(Object object) {
+		return object instanceof ElementNode;
+	}
+
+	public boolean isNamespace(Object object) {
+		throw new UnsupportedOperationException("isNamespace");
+	}
+
+	public boolean isProcessingInstruction(Object object) {
+		throw new UnsupportedOperationException("isProcessingInstruction");
+	}
+
+	public boolean isText(Object object) {
+		throw new UnsupportedOperationException("isText");
 	}
 }
