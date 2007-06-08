@@ -116,9 +116,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
                 FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
                 SeleniumServer.log("req: "+seleniumStart+":"+req);
-                if (justLoaded) {
-                    postedData = "OK";  // assume a new page starting is okay
-                }
+                
+//                if (justLoaded) {
+//                    postedData = "OK";  // assume a new page starting is okay
+//                }
+                
                 RemoteCommand sc = queueSet.handleCommandResult(postedData, frameAddress, uniqueId, justLoaded,
                         req.getParameterValues("jsWindowNameVar"));
                 if (sc != null) {

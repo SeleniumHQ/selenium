@@ -80,6 +80,12 @@ public class CommandQueue {
         dataLock.lock();
         try {
             resultExpected = true;
+            
+            // Clear the command result holder before a result is expected
+            // What about clearing the command queue before a command is sent?
+            synchronized (commandResultHolder) {
+            	commandResultHolder.clear();
+            }
             doCommandWithoutWaitingForAResponse(command, field, value);
             return queueGetResult("doCommand");
         }
@@ -220,15 +226,18 @@ public class CommandQueue {
             if (commandResultHolder.hasBlockedGetter()) {
                 throw new RuntimeException("blocked getter for " + this + " but !resultExpected");
             }
-            // This logic is to account for the case where in proxy injection mode, it is possible 
-            // that a page reloads without having been explicitly asked to do so (e.g., an event 
-            // in one frame causes reloads in others).
-            if (commandResult.equals("OK")) {
-                if (SeleniumServer.isDebugMode()) {
-                    SeleniumServer.log("Saw page load no one was waiting for.");
-                }
-                queuePutResult(commandResult);
+            if (SeleniumServer.isProxyInjectionMode()) {
+                // This logic is to account for the case where in proxy injection mode, it is possible 
+                // that a page reloads without having been explicitly asked to do so (e.g., an event 
+                // in one frame causes reloads in others).
+                if (commandResult.startsWith("OK")) {
+                    if (SeleniumServer.isDebugMode()) {
+                        SeleniumServer.log("Saw page load no one was waiting for.");
+                    }
+                    queuePutResult(commandResult);
+                }            	
             }
+
             else if (commandResult.startsWith("OK")) {
                 // since the result includes a value, this is clearly not from a page which has just loaded.
                 // Apparently there is some confusion among the queues
@@ -248,6 +257,9 @@ public class CommandQueue {
     }
 
     private void queuePutResult(String commandResult) {
+    	// Below was commented out before during testing
+    	// to discount situations where the Selenium Server
+    	// would hang due to continually empty command queues
         if (SeleniumServer.isProxyInjectionMode()) {
             if (!commandResultHolder.isEmpty()) {
                 commandHolder.clear();
@@ -316,6 +328,14 @@ public class CommandQueue {
 
     public void setResultExpected(boolean resultExpected) {
         this.resultExpected = resultExpected;
+    }
+    
+    /**
+     * Get whether this command queue expects a result instead of just "OK".
+     * @return Returns whether this command will expect a command result.
+     */
+    public boolean isResultExpected() {
+    	return resultExpected;
     }
 
     public static void setSpeed(int i) {
