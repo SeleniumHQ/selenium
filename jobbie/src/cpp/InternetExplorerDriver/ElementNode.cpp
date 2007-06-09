@@ -6,18 +6,16 @@
 
 using namespace std;
 
-ElementNode::ElementNode(DocumentNode* document, IHTMLElement* element, long index)
+ElementNode::ElementNode(IHTMLElement* element, long index)
 {
 	element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&node);
 	this->index = index;
-	this->document = document;
 }
 
-ElementNode::ElementNode(DocumentNode* document, IHTMLDOMNode* node, long index) 
+ElementNode::ElementNode(IHTMLDOMNode* node, long index) 
 {
 	this->node = node;
 	this->index = index;
-	this->document = document;
 }
 
 ElementNode::~ElementNode()
@@ -26,7 +24,16 @@ ElementNode::~ElementNode()
 
 Node* ElementNode::getDocument()
 {
-	return document;
+	IHTMLDOMNode2 *node2;
+	node->QueryInterface(__uuidof(IHTMLDOMNode2), (void**)&node2);
+
+	IDispatch* dispatch;
+	node2->get_ownerDocument(&dispatch);
+
+	IHTMLDocument2 *doc;
+	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
+
+	return new DocumentNode(doc);
 }
 
 bool ElementNode::hasNextChild()
@@ -62,7 +69,7 @@ Node* ElementNode::getNextChild()
 	IHTMLDOMNode* res;
 	item->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&res);
 
-	return new ElementNode(document, res, index + 1);
+	return new ElementNode(res, index + 1);
 }
 
 const char* ElementNode::name()

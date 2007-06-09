@@ -53,10 +53,8 @@ end
 
 file 'jobbie/build/webdriver-jobbie.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
   sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Debug", :verbose => true
-  sh 'regasm jobbie/build/webdriver-jobbie.dll', :verbose => false
-  sh 'regasm /regfile:jobbie/build/webdriver.reg jobbie/build/webdriver-jobbie.dll', :verbose => false
 
-#  File.copy('jobbie/lib/runtime/Interop.SHDocVw.dll', 'jobbie/build')
+  File.copy('jobbie/build/InternetExplorerDriver.dll', 'jobbie/lib/runtime')
 end
 
 def windows?

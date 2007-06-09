@@ -35,7 +35,7 @@ Node* DocumentNode::getNextChild()
 
 	childIndex++;
 
-	return new ElementNode(this, rootElement, 0);
+	return new ElementNode(rootElement, 0);
 }
 
 const char* DocumentNode::name()
