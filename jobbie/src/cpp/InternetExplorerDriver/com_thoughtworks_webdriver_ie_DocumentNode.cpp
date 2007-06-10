@@ -19,20 +19,11 @@ DocumentNode* getDocumentNode(JNIEnv *env, jobject obj)
 extern "C" {
 #endif
 
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_hasNextChild
-  (JNIEnv *env, jobject obj) 
-{
-	DocumentNode* doc = getDocumentNode(env, obj);
-	return (jboolean) doc->hasNextChild();
-}
-
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_nextChild
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_getFirstChild
   (JNIEnv *env, jobject obj)
 {
 	DocumentNode* doc = getDocumentNode(env, obj);
-	Node* child = doc->getNextChild();
-
-	//cout << "Document next child: " << child->name() << endl;
+	Node* child = doc->getFirstChild();
 
 	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/ElementNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");

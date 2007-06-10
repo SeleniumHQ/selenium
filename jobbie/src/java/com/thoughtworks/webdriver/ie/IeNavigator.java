@@ -18,23 +18,43 @@ public class IeNavigator extends DefaultNavigator {
 		return ((HtmlNode) context).getDocument();
 	}
 
-	public Iterator getAttributeAxisIterator(Object contextNode)
-			throws UnsupportedAxisException {
-		System.out.println("Attribute axis");
-		return super.getAttributeAxisIterator(contextNode);
-	}
-
-	public Iterator getChildAxisIterator(final Object contextNode)
-			throws UnsupportedAxisException {
+	public Iterator getAttributeAxisIterator(Object contextNode) throws UnsupportedAxisException {
+		final HtmlNode firstAttribute = ((HtmlNode) contextNode).getFirstAttribute();
+		
 		return new Iterator() {
-			HtmlNode node = (HtmlNode) contextNode;
-
+			HtmlNode attribute = firstAttribute;
+			
 			public boolean hasNext() {
-				return node.hasNextChild();
+				return attribute.hasNextSibling();
 			}
 
 			public Object next() {
-				node = (HtmlNode) node.nextChild();
+				attribute = (HtmlNode) attribute.getNextSibling();
+				return attribute;
+			}
+
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+		};
+	}
+
+	public Iterator getChildAxisIterator(Object contextNode) throws UnsupportedAxisException {
+		HtmlNode html = (HtmlNode) contextNode;
+		while (html instanceof DocumentNode) {
+			html = (HtmlNode) html.getFirstChild();
+		}
+		final HtmlNode root = html;
+		
+		return new Iterator() {
+			HtmlNode node = (HtmlNode) root.getFirstChild();
+
+			public boolean hasNext() {
+				return node != null && node.hasNextSibling();
+			}
+
+			public Object next() {
+				node = (HtmlNode) node.getNextSibling();
 				return node;
 			}
 

@@ -8,19 +8,20 @@
 class ElementNode : public Node
 {
 public:
-	ElementNode(IHTMLElement* element, long index);
-	ElementNode(IHTMLDOMNode* element, long index);
+	ElementNode(IHTMLElement* element);
+	ElementNode(IHTMLDOMNode* element);
 	~ElementNode();
 
 	Node* getDocument();
-	bool hasNextChild();
-	Node* getNextChild();
+	Node* getFirstChild();
+	bool hasNextSibling();
+	Node* getNextSibling();
+	Node* getFirstAttribute();
 
 	const char* name();
 
 private:
 	IHTMLDOMNode* node;
-	long index;
 };
 
 #endif

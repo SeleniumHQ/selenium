@@ -8,7 +8,6 @@ using namespace std;
 DocumentNode::DocumentNode(IHTMLDocument2* doc)
 {
 	this->doc = doc;
-	this->childIndex = 0;
 }
 
 DocumentNode::~DocumentNode()
@@ -20,12 +19,17 @@ Node* DocumentNode::getDocument()
 	return this;
 }
 
-bool DocumentNode::hasNextChild() 
+bool DocumentNode::hasNextSibling() 
 {
-	return childIndex == 0;
+	return false;
 }
 
-Node* DocumentNode::getNextChild() 
+Node* DocumentNode::getNextSibling()
+{
+	return NULL;
+}
+
+Node* DocumentNode::getFirstChild() 
 {
 	IHTMLDocument3* doc3;
 	doc->QueryInterface(__uuidof(IHTMLDocument3), (void**)&doc3);
@@ -33,9 +37,12 @@ Node* DocumentNode::getNextChild()
 	IHTMLElement* rootElement;
 	doc3->get_documentElement(&rootElement);
 
-	childIndex++;
+	return new ElementNode(rootElement);
+}
 
-	return new ElementNode(rootElement, 0);
+Node* DocumentNode::getFirstAttribute() 
+{
+	return NULL;
 }
 
 const char* DocumentNode::name()

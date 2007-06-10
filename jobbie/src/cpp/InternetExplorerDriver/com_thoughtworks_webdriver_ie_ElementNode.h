@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
  * Method:    getDocument
- * Signature: ()Ljava/lang/Object;
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/DocumentNode;
  */
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getDocument
   (JNIEnv *, jobject);
@@ -18,33 +18,41 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getDocu
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
  * Method:    getFirstChild
- * Signature: ()Ljava/lang/Object;
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
  */
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstChild
   (JNIEnv *, jobject);
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    nextChild
- * Signature: ()Ljava/lang/Object;
- */
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_nextChild
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    hasNextChild
+ * Method:    hasNextSibling
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_hasNextChild
+JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_hasNextSibling
   (JNIEnv *, jobject);
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    getName
+ * Method:    getNextSibling
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNextSibling
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_ElementNode
+ * Method:    getFirstAttribute
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstAttribute
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_ElementNode
+ * Method:    getNativeName
  * Signature: ()Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getName
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNativeName
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

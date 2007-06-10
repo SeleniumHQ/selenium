@@ -7,28 +7,22 @@ public class DocumentNode implements HtmlNode {
 		this.nodePointer = nodePointer;
 	}
 	
-	public Object getDocument() {
+	public DocumentNode getDocument() {
 		return this;
 	}
 
-	public native boolean hasNextChild();
-
-	public native Object nextChild();
-
-	public Object getFirstChild() {
-		throw new UnsupportedOperationException("getFirstChild");
+	public native HtmlNode getFirstChild();
+	
+	public boolean hasNextSibling() {
+		return false;
 	}
 
-	public Object getNextSibling() {
-		throw new UnsupportedOperationException("getNextSibling");
+	public HtmlNode getNextSibling() {
+		return null;
 	}
-
-	public Object getParent() {
-		throw new UnsupportedOperationException("getParent");
-	}
-
-	public Object getPreviousSibling() {
-		throw new UnsupportedOperationException("getPreviousSibling");
+	
+	public AttributeNode getFirstAttribute() {
+		throw new UnsupportedOperationException("getFirstAttribute");
 	}
 	
 	public String getName() {

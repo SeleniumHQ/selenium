@@ -1,14 +1,13 @@
-#ifndef DocumentNode_h
-#define DocumentNode_h
+#pragma once
 
 #include <mshtml.h>
 #include "Node.h"
 
-class DocumentNode : public Node
+class AttributeNode : public Node
 {
 public:
-	DocumentNode(IHTMLDocument2* doc);
-	~DocumentNode();
+	AttributeNode(IHTMLAttributeCollection* allAttributes, long length, long index);
+	~AttributeNode();
 
 	Node* getDocument();
 	bool hasNextSibling();
@@ -19,7 +18,7 @@ public:
 	const char* name();
 
 private:
-	IHTMLDocument2* doc;
+	IHTMLAttributeCollection* allAttributes;
+	long length;
+	long index;
 };
-
-#endif

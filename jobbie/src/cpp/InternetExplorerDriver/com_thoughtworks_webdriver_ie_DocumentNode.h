@@ -9,18 +9,10 @@ extern "C" {
 #endif
 /*
  * Class:     com_thoughtworks_webdriver_ie_DocumentNode
- * Method:    hasNextChild
- * Signature: ()Z
+ * Method:    getFirstChild
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
  */
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_hasNextChild
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_DocumentNode
- * Method:    nextChild
- * Signature: ()Ljava/lang/Object;
- */
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_nextChild
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_getFirstChild
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

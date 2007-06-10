@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "AttributeNode.h"
 #include "ElementNode.h"
 #include "DocumentNode.h"
 #include "utils.h"
@@ -6,16 +7,14 @@
 
 using namespace std;
 
-ElementNode::ElementNode(IHTMLElement* element, long index)
+ElementNode::ElementNode(IHTMLElement* element)
 {
 	element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&node);
-	this->index = index;
 }
 
-ElementNode::ElementNode(IHTMLDOMNode* node, long index) 
+ElementNode::ElementNode(IHTMLDOMNode* node) 
 {
 	this->node = node;
-	this->index = index;
 }
 
 ElementNode::~ElementNode()
@@ -36,40 +35,51 @@ Node* ElementNode::getDocument()
 	return new DocumentNode(doc);
 }
 
-bool ElementNode::hasNextChild()
+Node* ElementNode::getFirstChild()
 {
-	VARIANT_BOOL hasChildren;
-	node->hasChildNodes(&hasChildren);
-	if (hasChildren == VARIANT_FALSE)
-		return false;
+	IHTMLDOMNode* child = NULL;
+	node->get_firstChild(&child);
 
-	IDispatch* dispatch;
-	node->get_childNodes(&dispatch);
+	if (child == NULL)
+		return NULL;
 
-	IHTMLDOMChildrenCollection* children;
-	dispatch->QueryInterface(__uuidof(IHTMLDOMChildrenCollection), (void**)&children);
-
-	long length;
-	children->get_length(&length);
-
-	return length > index + 1;
+	return new ElementNode(child);
 }
 
-Node* ElementNode::getNextChild() 
+bool ElementNode::hasNextSibling()
 {
-	IDispatch* dispatch;
-	node->get_childNodes(&dispatch);
+	IHTMLDOMNode* sibling = NULL;
+	node->get_nextSibling(&sibling);
 
-	IHTMLDOMChildrenCollection* children;
-	dispatch->QueryInterface(__uuidof(IHTMLDOMChildrenCollection), (void**)&children);
+	return sibling != NULL;
+}
 
-	IDispatch* item;
-	children->item(index + 1, &item);
+Node* ElementNode::getNextSibling() 
+{
+	IHTMLDOMNode* sibling = NULL;
+	node->get_nextSibling(&sibling);
 
-	IHTMLDOMNode* res;
-	item->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&res);
+	if (sibling == NULL)
+		return NULL;
 
-	return new ElementNode(res, index + 1);
+	return new ElementNode(sibling);
+}
+
+Node* ElementNode::getFirstAttribute() 
+{
+	IDispatch* dispatch = NULL;
+	node->get_attributes(&dispatch);
+
+	IHTMLAttributeCollection* allAttributes;
+	dispatch->QueryInterface(__uuidof(IHTMLAttributeCollection), (void**)&allAttributes);
+
+	long length = 0;
+	allAttributes->get_length(&length);
+
+	if (length == 0)
+		return NULL;
+
+	return new AttributeNode(allAttributes, length, 0);
 }
 
 const char* ElementNode::name()

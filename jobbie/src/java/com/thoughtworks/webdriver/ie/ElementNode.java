@@ -7,25 +7,20 @@ public class ElementNode implements HtmlNode {
 		this.nodePointer = nodePointer;
 	}
 
-	public native Object getDocument();
+	public native DocumentNode getDocument();
 
-	public native Object getFirstChild();
+	public native HtmlNode getFirstChild();
 
-	public native Object nextChild();
+	public native boolean hasNextSibling();
 	
-	public native boolean hasNextChild();
+	public native HtmlNode getNextSibling();
 
-	public Object getNextSibling() {
-		throw new UnsupportedOperationException("getNextSibling");
+	public native AttributeNode getFirstAttribute();
+	
+	public String getName() {
+		String name = getNativeName();
+		return name == null ? null : name.toLowerCase();
 	}
-
-	public Object getParent() {
-		throw new UnsupportedOperationException("getParent");
-	}
-
-	public Object getPreviousSibling() {
-		throw new UnsupportedOperationException("getPreviousSibling");
-	}
-
-	public native String getName();
+	
+	private native String getNativeName();
 }

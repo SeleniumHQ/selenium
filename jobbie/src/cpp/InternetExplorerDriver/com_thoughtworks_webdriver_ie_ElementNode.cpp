@@ -30,29 +30,49 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getDocu
 	return env->NewObject(clazz, cId, (jlong) doc);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_hasNextChild
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstChild
   (JNIEnv *env, jobject obj)
 {
 	ElementNode* node = getElementNode(env, obj);
-	return (jboolean) node->hasNextChild();
-}
-
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_nextChild
-  (JNIEnv *env, jobject obj)
-{
-	ElementNode* node = getElementNode(env, obj);
-	Node* child = node->getNextChild();
+	Node* child = node->getFirstChild();
 	if (child == NULL)
 		return NULL;
-
-	//cout << "ElementNode next child: " << child->name() << endl;
 
 	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/ElementNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 	return env->NewObject(clazz, cId, (jlong) child);
 }
 
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getName
+JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_hasNextSibling
+  (JNIEnv *env, jobject obj)
+{
+	ElementNode* node = getElementNode(env, obj);
+	return (jboolean) node->hasNextSibling();
+}
+
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNextSibling
+  (JNIEnv *env, jobject obj)
+{	
+	ElementNode* node = getElementNode(env, obj);
+	Node* sibling = node->getNextSibling();
+
+	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/ElementNode");
+	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+	return env->NewObject(clazz, cId, (jlong) sibling);
+}
+
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstAttribute
+  (JNIEnv *env, jobject obj)
+{
+	ElementNode* node = getElementNode(env, obj);
+	Node* attribute = node->getFirstAttribute();
+
+	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/AttributeNode");
+	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+	return env->NewObject(clazz, cId, (jlong) attribute);
+}
+
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNativeName
   (JNIEnv *env, jobject obj)
 {
 	ElementNode* node = getElementNode(env, obj);
