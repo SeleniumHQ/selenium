@@ -12,6 +12,8 @@ AttributeNode::AttributeNode(IHTMLAttributeCollection* allAttributes, long lengt
 	this->allAttributes = allAttributes;
 	this->length = length;
 	this->index = index;
+	
+	attribute = getAttribute(index);
 }
 
 AttributeNode::~AttributeNode()
@@ -24,12 +26,15 @@ Node* AttributeNode::getDocument()
 }
 bool AttributeNode::hasNextSibling() 
 {
-	return index + 1 < length;
+	long newIndex = findNextSpecifiedIndex();
+	return newIndex < length;
 }
 
 Node* AttributeNode::getNextSibling()
 {
-	return new AttributeNode(allAttributes, length, index + 1);
+	long newIndex = findNextSpecifiedIndex();
+
+	return new AttributeNode(allAttributes, length, newIndex);
 }
 
 Node* AttributeNode::getFirstChild() 
@@ -44,17 +49,42 @@ Node* AttributeNode::getFirstAttribute()
 
 const char* AttributeNode::name()
 {
+	BSTR name;
+	attribute->get_nodeName(&name);
+	return bstr2char(name);
+}
+
+const char* AttributeNode::getText()
+{
+	VARIANT value;
+	attribute->get_nodeValue(&value);
+	return variant2char(value);
+}
+
+long AttributeNode::findNextSpecifiedIndex()
+{
+	IHTMLDOMAttribute* attr;
+	VARIANT_BOOL specified;
+	for (int i = index + 1; i < length; i++) {
+		attr = getAttribute(i);
+		attr->get_specified(&specified);
+		if (specified == VARIANT_TRUE) 
+			return i;
+	}
+
+	return length + 1;
+}
+
+IHTMLDOMAttribute* AttributeNode::getAttribute(long atIndex)
+{
 	VARIANT idx;
 	idx.vt = VT_I4;
-	idx.lVal = index;
+	idx.lVal = atIndex;
 
 	IDispatch* dispatch = NULL;
 	allAttributes->item(&idx, &dispatch);
 
-	IHTMLDOMAttribute* attribute;
-	dispatch->QueryInterface(__uuidof(IHTMLDOMAttribute), (void**)&attribute);
-
-	BSTR name;
-	attribute->get_nodeName(&name);
-	return bstr2char(name);
+	IHTMLDOMAttribute* attr;
+	dispatch->QueryInterface(__uuidof(IHTMLDOMAttribute), (void**)&attr);
+	return attr;
 }

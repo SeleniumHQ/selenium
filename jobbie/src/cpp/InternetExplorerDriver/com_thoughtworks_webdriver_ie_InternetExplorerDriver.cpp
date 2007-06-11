@@ -98,13 +98,33 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	env->ReleaseStringUTFChars(elementId, converted);	
 }
 
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_selectElementByLink
+  (JNIEnv *env, jobject obj, jstring linkText)
+{
+	IeWrapper* ie = getIe(env, obj);
+	const char* converted = (const char*)env->GetStringUTFChars(linkText, 0);
+
+	try {
+		ElementWrapper* wrapper = ie->selectElementByLink(converted);
+
+		jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerElement");
+		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+
+		return env->NewObject(clazz, cId, (jlong) wrapper);
+	} catch (const char *message) {
+		throwNoSuchElementException(env, message);
+		return NULL;
+	} 
+	env->ReleaseStringUTFChars(linkText, converted);
+}
+
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getDocument
   (JNIEnv *env, jobject obj)
 {
 	IeWrapper *ie = getIe(env, obj);
 	IHTMLDocument2 *doc = ie->getDocument();
 
-	DocumentNode *node = new DocumentNode(doc);
+	DocumentNode *node = new DocumentNode(ie, doc);
 	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/DocumentNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 

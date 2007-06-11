@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jaxen.JaxenException;
 
+import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
@@ -54,15 +55,17 @@ public class InternetExplorerDriver implements WebDriver {
 		if (selector.startsWith("id=")) {
 			return selectElementById(selector.substring("id=".length()));
 		} else if (selector.startsWith("link=")) {
-			throw new RuntimeException("Not implemented yet");
+			return selectElementByLink(selector.substring("link=".length()));
 		} else {
 			try {
-				new IeXPath(selector, this).selectSingleNode(getDocument());
+				Object result = new IeXPath(selector, this).selectSingleNode(getDocument());
+				if (result == null)
+					throw new NoSuchElementException("Cannot find element: " + selector);
+				return (ElementNode) result;
 			} catch (JaxenException e) {
 				throw new RuntimeException(e);
 			}
 		}
-		return null;
 	}
 
 	public List selectElements(String xpath) {
@@ -90,6 +93,8 @@ public class InternetExplorerDriver implements WebDriver {
 	private native void openIe();
 	
 	private native WebElement selectElementById(String elementId);
+	
+	private native WebElement selectElementByLink(String linkText);
 	
 	private native DocumentNode getDocument();
 }

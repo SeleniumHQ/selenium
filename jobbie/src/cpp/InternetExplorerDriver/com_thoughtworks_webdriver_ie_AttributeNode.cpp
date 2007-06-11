@@ -53,7 +53,15 @@ JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_hasN
   (JNIEnv *env, jobject obj)
 {
 	AttributeNode* node = getAttributeNode(env, obj);
-	return (jboolean) node->hasNextSibling();
+	return node->hasNextSibling() ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getText
+  (JNIEnv *env, jobject obj)
+{
+	AttributeNode* node = getAttributeNode(env, obj);
+	const char* text = node->getText();
+	return env->NewStringUTF(text);
 }
 
 #ifdef __cplusplus

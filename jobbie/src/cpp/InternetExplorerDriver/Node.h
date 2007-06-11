@@ -12,4 +12,5 @@ public:
 	virtual Node* getFirstAttribute() = 0;
 
 	virtual const char* name() = 0;
+	virtual const char* getText() = 0;
 };

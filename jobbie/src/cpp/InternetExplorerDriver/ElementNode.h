@@ -2,14 +2,15 @@
 #define ElementNode_h
 
 #include <mshtml.h>
+#include "IeWrapper.h"
 #include "Node.h"
 #include "DocumentNode.h"
 
 class ElementNode : public Node
 {
 public:
-	ElementNode(IHTMLElement* element);
-	ElementNode(IHTMLDOMNode* element);
+	ElementNode(IeWrapper* ie, IHTMLElement* element);
+	ElementNode(IeWrapper* ie, IHTMLDOMNode* element);
 	~ElementNode();
 
 	Node* getDocument();
@@ -19,8 +20,12 @@ public:
 	Node* getFirstAttribute();
 
 	const char* name();
+	const char* getText();
+
+	void click();
 
 private:
+	IeWrapper* ie;
 	IHTMLDOMNode* node;
 };
 

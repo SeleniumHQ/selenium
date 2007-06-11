@@ -81,6 +81,14 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
+ * Method:    selectElementByLink
+ * Signature: (Ljava/lang/String;)Lcom/thoughtworks/webdriver/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_selectElementByLink
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
  * Method:    getDocument
  * Signature: ()Lcom/thoughtworks/webdriver/ie/DocumentNode;
  */

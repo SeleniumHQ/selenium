@@ -16,9 +16,14 @@ public:
 	Node* getFirstAttribute();
 
 	const char* name();
+	const char* getText();
 
 private:
+	long findNextSpecifiedIndex();
+	IHTMLDOMAttribute* getAttribute(long atIndex);
+
 	IHTMLAttributeCollection* allAttributes;
+	IHTMLDOMAttribute* attribute;
 	long length;
 	long index;
 };

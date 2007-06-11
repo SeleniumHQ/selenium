@@ -42,7 +42,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNext
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
  * Method:    getFirstAttribute
- * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/AttributeNode;
  */
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstAttribute
   (JNIEnv *, jobject);
@@ -53,6 +53,22 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirs
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNativeName
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_ElementNode
+ * Method:    click
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_click
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_ElementNode
+ * Method:    getText
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getText
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

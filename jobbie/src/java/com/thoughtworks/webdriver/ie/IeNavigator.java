@@ -20,23 +20,7 @@ public class IeNavigator extends DefaultNavigator {
 
 	public Iterator getAttributeAxisIterator(Object contextNode) throws UnsupportedAxisException {
 		final HtmlNode firstAttribute = ((HtmlNode) contextNode).getFirstAttribute();
-		
-		return new Iterator() {
-			HtmlNode attribute = firstAttribute;
-			
-			public boolean hasNext() {
-				return attribute.hasNextSibling();
-			}
-
-			public Object next() {
-				attribute = (HtmlNode) attribute.getNextSibling();
-				return attribute;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-		};
+		return new NodeIterator(firstAttribute);
 	}
 
 	public Iterator getChildAxisIterator(Object contextNode) throws UnsupportedAxisException {
@@ -44,24 +28,8 @@ public class IeNavigator extends DefaultNavigator {
 		while (html instanceof DocumentNode) {
 			html = (HtmlNode) html.getFirstChild();
 		}
-		final HtmlNode root = html;
 		
-		return new Iterator() {
-			HtmlNode node = (HtmlNode) root.getFirstChild();
-
-			public boolean hasNext() {
-				return node != null && node.hasNextSibling();
-			}
-
-			public Object next() {
-				node = (HtmlNode) node.getNextSibling();
-				return node;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException("Cannot remove a node");
-			}
-		};
+		return new NodeIterator(html.getFirstChild());
 	}
 
 	public Iterator getDescendantAxisIterator(Object contextNode)
@@ -124,11 +92,11 @@ public class IeNavigator extends DefaultNavigator {
 	}
 
 	public String getAttributeName(Object attr) {
-		throw new UnsupportedOperationException("getAttributeName");
+		return ((AttributeNode) attr).getName();
 	}
 
 	public String getAttributeNamespaceUri(Object attr) {
-		throw new UnsupportedOperationException("getAttributeNamespaceUri");
+		return "";
 	}
 
 	public String getAttributeQName(Object attr) {
@@ -136,7 +104,9 @@ public class IeNavigator extends DefaultNavigator {
 	}
 
 	public String getAttributeStringValue(Object attr) {
-		throw new UnsupportedOperationException("getAttributeStringValue");
+		AttributeNode node = (AttributeNode) attr;
+//		System.out.println(node.getName() + ": " + node.getText());
+		return ((AttributeNode) attr).getText();
 	}
 
 	public String getCommentStringValue(Object comment) {
@@ -172,15 +142,15 @@ public class IeNavigator extends DefaultNavigator {
 	}
 
 	public boolean isAttribute(Object object) {
-		throw new UnsupportedOperationException("isAttribute");
+		return object instanceof AttributeNode;
 	}
 
 	public boolean isComment(Object object) {
-		throw new UnsupportedOperationException("isComment");
+		return false;
 	}
 
 	public boolean isDocument(Object object) {
-		throw new UnsupportedOperationException("isDocument");
+		return object instanceof DocumentNode;
 	}
 
 	public boolean isElement(Object object) {
@@ -188,14 +158,38 @@ public class IeNavigator extends DefaultNavigator {
 	}
 
 	public boolean isNamespace(Object object) {
-		throw new UnsupportedOperationException("isNamespace");
+		return false;
 	}
 
 	public boolean isProcessingInstruction(Object object) {
-		throw new UnsupportedOperationException("isProcessingInstruction");
+		return false;
 	}
 
 	public boolean isText(Object object) {
-		throw new UnsupportedOperationException("isText");
+		// This should really be: 
+		// return object instanceof TextNode
+		return object instanceof ElementNode && "#text".equals(((HtmlNode) object).getName());
+	}
+	
+	private static class NodeIterator implements Iterator {
+		private HtmlNode node;
+
+		public NodeIterator(HtmlNode node) {
+			this.node = node;
+		}
+		
+		public boolean hasNext() {
+			return node != null && node.hasNextSibling();
+		}
+
+		public Object next() {
+			node = (HtmlNode) node.getNextSibling();
+//			System.out.println(node.getName());
+			return node;
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}		
 	}
 }

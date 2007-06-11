@@ -81,6 +81,22 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNati
 	return env->NewStringUTF(name);
 }
 
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_click
+  (JNIEnv *env, jobject obj)
+{
+	ElementNode* node = getElementNode(env, obj);
+	node->click();
+}
+
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getText
+  (JNIEnv *env, jobject obj)
+{
+	ElementNode* node = getElementNode(env, obj);
+	const char* text = node->getText();
+
+	return env->NewStringUTF(text);
+}
+
 #ifdef __cplusplus
 }
 #endif

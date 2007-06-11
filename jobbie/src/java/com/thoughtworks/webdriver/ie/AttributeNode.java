@@ -22,4 +22,6 @@ public class AttributeNode implements HtmlNode {
 	public native HtmlNode getNextSibling();
 
 	public native boolean hasNextSibling();
+	
+	public native String getText();
 }

@@ -5,9 +5,10 @@
 #include <iostream>
 using namespace std;
 
-DocumentNode::DocumentNode(IHTMLDocument2* doc)
+DocumentNode::DocumentNode(IeWrapper* ie, IHTMLDocument2* doc)
 {
 	this->doc = doc;
+	this->ie = ie;
 }
 
 DocumentNode::~DocumentNode()
@@ -37,7 +38,7 @@ Node* DocumentNode::getFirstChild()
 	IHTMLElement* rootElement;
 	doc3->get_documentElement(&rootElement);
 
-	return new ElementNode(rootElement);
+	return new ElementNode(ie, rootElement);
 }
 
 Node* DocumentNode::getFirstAttribute() 
@@ -48,4 +49,9 @@ Node* DocumentNode::getFirstAttribute()
 const char* DocumentNode::name()
 {
 	return "<document node>";
+}
+
+const char* DocumentNode::getText()
+{
+	return NULL;
 }

@@ -79,6 +79,42 @@ ElementWrapper* IeWrapper::selectElementById(const char *elementId)
 	throw "Cannot find element";
 }
 
+ElementWrapper* IeWrapper::selectElementByLink(const char *elementLink)
+{
+	IHTMLDocument2 *doc = getDocument();
+	IHTMLElementCollection* linkCollection;
+	doc->get_links(&linkCollection);
+
+	long linksLength;
+	linkCollection->get_length(&linksLength);
+
+	for (int i = 0; i < linksLength; i++) {
+		VARIANT idx;
+		idx.vt = VT_I4;
+		idx.lVal = i;
+		IDispatch* dispatch;
+		VARIANT zero;
+		zero.vt = VT_I4;
+		zero.lVal = 0;
+		linkCollection->item(idx, zero, &dispatch);
+	
+		IHTMLElement* element;
+		dispatch->QueryInterface(__uuidof(IHTMLElement), (void**)&element);
+
+		BSTR linkText;
+		element->get_innerText(&linkText);
+
+		const char *converted = bstr2char(linkText);
+		if (strcmp(elementLink, converted) == 0) {
+			delete converted;
+			IHTMLDOMNode* linkNode;
+			element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&linkNode);
+			return new ElementWrapper(linkNode);
+		}
+	}
+    throw "Cannot find element";
+}
+
 void IeWrapper::waitForNavigateToFinish() 
 {
 	VARIANT_BOOL busy;
@@ -122,7 +158,7 @@ IHTMLDocument3* IeWrapper::getDocument3()
 
 	if (ppDisp != NULL)
     {
-		if (!FAILED(ppDisp->QueryInterface(IID_IHTMLDocument3, (LPVOID *)&htmlDoc3))) {
+		if (!FAILED(ppDisp->QueryInterface(__uuidof(IHTMLDocument3), (LPVOID *)&htmlDoc3))) {
 			ppDisp->Release();
 			return htmlDoc3;
 		}

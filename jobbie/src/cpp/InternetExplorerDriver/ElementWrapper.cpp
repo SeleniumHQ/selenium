@@ -54,36 +54,6 @@ const char* ElementWrapper::getAttribute(const char* name)
 	dispatch->Release();
 
 	return variant2char(variant2);
-	/*
-	        string lookFor = (name.ToLower() == "class" ? "className" : name);
-
-            object attribute = node.getAttribute(lookFor, 0);
-
-            if (attribute == null)
-            {
-                return "";
-            }
-            
-            Nullable<Boolean> b = attribute as Nullable<Boolean>;
-            if (b != null)
-            {
-                return b.ToString().ToLower();
-            }
-
-            // This is a nasty hack. We don't know what the type is. Look at the "name" and make a guess
-            if ("System.__ComObject".Equals(attribute.GetType().FullName)) {
-                switch (lookFor.ToLower())
-                {
-                    case "style":
-                        return GetStyleValue();
-
-                    default:
-                        return "";
-                }
-            }
-            
-            return attribute.ToString()
-	*/
 }
 
 const char* ElementWrapper::getValue()

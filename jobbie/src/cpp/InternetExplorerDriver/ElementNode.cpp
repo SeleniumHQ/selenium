@@ -7,14 +7,16 @@
 
 using namespace std;
 
-ElementNode::ElementNode(IHTMLElement* element)
+ElementNode::ElementNode(IeWrapper* ie, IHTMLElement* element)
 {
 	element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&node);
+	this->ie = ie;
 }
 
-ElementNode::ElementNode(IHTMLDOMNode* node) 
+ElementNode::ElementNode(IeWrapper* ie, IHTMLDOMNode* node) 
 {
 	this->node = node;
+	this->ie = ie;
 }
 
 ElementNode::~ElementNode()
@@ -32,7 +34,7 @@ Node* ElementNode::getDocument()
 	IHTMLDocument2 *doc;
 	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
 
-	return new DocumentNode(doc);
+	return new DocumentNode(ie, doc);
 }
 
 Node* ElementNode::getFirstChild()
@@ -43,7 +45,7 @@ Node* ElementNode::getFirstChild()
 	if (child == NULL)
 		return NULL;
 
-	return new ElementNode(child);
+	return new ElementNode(ie, child);
 }
 
 bool ElementNode::hasNextSibling()
@@ -62,7 +64,7 @@ Node* ElementNode::getNextSibling()
 	if (sibling == NULL)
 		return NULL;
 
-	return new ElementNode(sibling);
+	return new ElementNode(ie, sibling);
 }
 
 Node* ElementNode::getFirstAttribute() 
@@ -87,4 +89,41 @@ const char* ElementNode::name()
 	CComBSTR name;
 	node->get_nodeName(&name);
 	return bstr2char(name);
+}
+
+const char* ElementNode::getText()
+{
+	IHTMLElement* element;
+	node->QueryInterface(__uuidof(element), (void**)&element);
+
+	BSTR text;
+	element->get_innerText(&text);
+	return bstr2char(text);
+}
+
+void ElementNode::click()
+{
+	IHTMLElement* element;
+	node->QueryInterface(__uuidof(IHTMLElement), (void**)&element);
+	IDispatch *dispatch;
+	element->get_document(&dispatch);
+	IHTMLDocument4* doc;
+	dispatch->QueryInterface(__uuidof(IHTMLDocument4), (void**)&doc);
+
+	IHTMLElement3* element3;
+	node->QueryInterface(__uuidof(IHTMLElement3), (void**)&element3);
+
+	IHTMLEventObj *eventObject;
+	doc->createEventObject(NULL, &eventObject);
+
+	VARIANT eventref;
+	eventref.vt = VT_DISPATCH;
+	eventref.pdispVal = eventObject;
+
+	VARIANT_BOOL cancellable = VARIANT_TRUE;
+	element3->fireEvent(BSTR("onMouseDown"), &eventref, &cancellable);
+	element3->fireEvent(BSTR("onMouseUp"), &eventref, &cancellable);
+
+	element->click();
+	ie->waitForNavigateToFinish();
 }
