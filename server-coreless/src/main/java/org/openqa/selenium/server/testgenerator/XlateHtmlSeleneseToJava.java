@@ -618,9 +618,7 @@ public class XlateHtmlSeleneseToJava {
         if (op.equals("pause")) {
             return beginning + op + "(" + tokens[1] + ")" + ending;
         }
-        if (op.equals("modalDialogTest")
-                || op.equals("ValueRepeated")
-               ) {
+        if (op.equals("ValueRepeated")) {
             return "// skipped undocumented, unsupported op in " + oldLine;
         }
         if (op.equals("open")) {
