@@ -582,8 +582,7 @@ public class XlateHtmlSeleneseToJava {
                 }
                 throw new RuntimeException(t);
             }
-            else if (op.equals("ValueRepeated")
-                    || op.equals("modalDialogTest")) {
+            else if (op.equals("ValueRepeated")) {
                 return "// skipped undocumented " + oldLine;
             }
             else if (op.matches("^Select.*s$")) {
