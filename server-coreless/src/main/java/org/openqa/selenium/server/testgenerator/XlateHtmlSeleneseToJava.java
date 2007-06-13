@@ -582,7 +582,8 @@ public class XlateHtmlSeleneseToJava {
                 }
                 throw new RuntimeException(t);
             }
-            else if (op.equals("ValueRepeated")) {
+            else if (op.equals("ValueRepeated")
+                    || op.equals("modalDialogTest")) {
                 return "// skipped undocumented " + oldLine;
             }
             else if (op.matches("^Select.*s$")) {
@@ -618,7 +619,9 @@ public class XlateHtmlSeleneseToJava {
         if (op.equals("pause")) {
             return beginning + op + "(" + tokens[1] + ")" + ending;
         }
-        if (op.equals("ValueRepeated")) {
+        if (op.equals("modalDialogTest")
+                || op.equals("ValueRepeated")
+               ) {
             return "// skipped undocumented, unsupported op in " + oldLine;
         }
         if (op.equals("open")) {
