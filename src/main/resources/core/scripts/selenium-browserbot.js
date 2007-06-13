@@ -1677,9 +1677,12 @@ IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModif
         if (typeof(window.runOptions) != undefined) {
             runInterval = "&runInterval=" + runOptions.runInterval;
         }
+        
+        // Needs to be changed
+        var modalDialogTest = null;
             
         var testRunnerURL = "TestRunner.html?auto=true&singletest=" 
-            + escape(browserBot.modalDialogTest) 
+            + escape(modalDialogTest) 
             + "&autoURL=" 
             + escape(url) 
             + runInterval;
