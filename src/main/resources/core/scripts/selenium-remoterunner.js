@@ -271,7 +271,9 @@ objectExtend(RemoteRunner.prototype, {
     },
 
     _HandleHttpResponse : function() {
+        // When request is completed
         if (this.xmlHttpForCommandsAndResults.readyState == 4) {
+            // OK
             if (this.xmlHttpForCommandsAndResults.status == 200) {
             	if (this.xmlHttpForCommandsAndResults.responseText=="") {
                     LOG.error("saw blank string xmlHttpForCommandsAndResults.responseText");
@@ -280,7 +282,9 @@ objectExtend(RemoteRunner.prototype, {
                 var command = this._extractCommand(this.xmlHttpForCommandsAndResults);
                 this.currentCommand = command;
                 this.continueTestAtCurrentCommand();
-            } else {
+            }
+            // Not OK 
+            else {
                 var s = 'xmlHttp returned: ' + this.xmlHttpForCommandsAndResults.status + ": " + this.xmlHttpForCommandsAndResults.statusText;
                 LOG.error(s);
                 this.currentCommand = null;
