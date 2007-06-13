@@ -1214,15 +1214,6 @@ Selenium.prototype.doStore = function(expression, variableName) {
     storedVars[variableName] = expression;
 }
 
-/*
- * Click on the located element, and attach a callback to notify
- * when the page is reloaded.
- */
-// DGF TODO this code has been broken for some time... what is it trying to accomplish?
-Selenium.prototype.XXXdoModalDialogTest = function(returnValue) {
-    this.browserbot.doModalDialogTest(returnValue);
-};
-
 Selenium.prototype.doEcho = function(message) {
     /** Prints the specified message into the third table cell in your Selenese tables.
      * Useful for debugging.
