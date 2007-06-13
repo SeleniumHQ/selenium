@@ -45,6 +45,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.shiftKeyDown = false;
     this.metaKeyDown = false;
 
+    this.modalDialogTest = null;
     this.recordedAlerts = new Array();
     this.recordedConfirmations = new Array();
     this.recordedPrompts = new Array();
@@ -127,6 +128,11 @@ BrowserBot.createForWindow = function(window, proxyInjectionMode) {
     browserbot.proxyInjectionMode = proxyInjectionMode;
     browserbot.getCurrentWindow();	// for modifyWindow side effect.  This is not a transparent style
     return browserbot;
+};
+
+// todo: rename?  This doesn't actually "do" anything.
+BrowserBot.prototype.doModalDialogTest = function(test) {
+    this.modalDialogTest = test;
 };
 
 BrowserBot.prototype.cancelNextConfirmation = function() {
@@ -1677,16 +1683,14 @@ IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModif
         if (typeof(window.runOptions) != undefined) {
             runInterval = "&runInterval=" + runOptions.runInterval;
         }
-        
-        // Needs to be changed
-        var modalDialogTest = null;
             
         var testRunnerURL = "TestRunner.html?auto=true&singletest=" 
-            + escape(modalDialogTest) 
+            + escape(browserBot.modalDialogTest)
             + "&autoURL=" 
             + escape(url) 
             + runInterval;
         var fullURL = base_ref + testRunnerURL;
+        browserBot.modalDialogTest = null;
 
         // If using proxy injection mode
         if (this.proxyInjectionMode) {
