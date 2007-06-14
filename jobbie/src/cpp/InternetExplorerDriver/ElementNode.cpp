@@ -16,11 +16,13 @@ ElementNode::ElementNode(IeWrapper* ie, IHTMLElement* element)
 ElementNode::ElementNode(IeWrapper* ie, IHTMLDOMNode* node) 
 {
 	this->node = node;
+	node->AddRef();
 	this->ie = ie;
 }
 
 ElementNode::~ElementNode()
 {
+	node->Release();
 }
 
 Node* ElementNode::getDocument()
@@ -30,11 +32,15 @@ Node* ElementNode::getDocument()
 
 	IDispatch* dispatch;
 	node2->get_ownerDocument(&dispatch);
+	node2->Release();
 
 	IHTMLDocument2 *doc;
 	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
+	dispatch->Release();
 
-	return new DocumentNode(ie, doc);
+	DocumentNode* toReturn = new DocumentNode(ie, doc);
+	doc->Release();
+	return toReturn;
 }
 
 Node* ElementNode::getFirstChild()
@@ -45,7 +51,9 @@ Node* ElementNode::getFirstChild()
 	if (child == NULL)
 		return NULL;
 
-	return new ElementNode(ie, child);
+	ElementNode* toReturn = new ElementNode(ie, child);
+	child->Release();
+	return toReturn;
 }
 
 bool ElementNode::hasNextSibling()
@@ -53,7 +61,11 @@ bool ElementNode::hasNextSibling()
 	IHTMLDOMNode* sibling = NULL;
 	node->get_nextSibling(&sibling);
 
-	return sibling != NULL;
+	if (sibling != NULL) {
+		sibling->Release();
+		return true;
+	}
+	return false;
 }
 
 Node* ElementNode::getNextSibling() 
@@ -64,7 +76,9 @@ Node* ElementNode::getNextSibling()
 	if (sibling == NULL)
 		return NULL;
 
-	return new ElementNode(ie, sibling);
+	ElementNode* toReturn = new ElementNode(ie, sibling);
+	sibling->Release();
+	return toReturn;
 }
 
 Node* ElementNode::getFirstAttribute() 
@@ -74,21 +88,28 @@ Node* ElementNode::getFirstAttribute()
 
 	IHTMLAttributeCollection* allAttributes;
 	dispatch->QueryInterface(__uuidof(IHTMLAttributeCollection), (void**)&allAttributes);
+	dispatch->Release();
 
 	long length = 0;
 	allAttributes->get_length(&length);
 
-	if (length == 0)
+	if (length == 0) {
+		allAttributes->Release();
 		return NULL;
+	}
 
-	return new AttributeNode(allAttributes, length, 0);
+	AttributeNode* toReturn = new AttributeNode(allAttributes, length, 0);
+	allAttributes->Release();
+	return toReturn;
 }
 
 const char* ElementNode::name()
 {
-	CComBSTR name;
+	BSTR name;
 	node->get_nodeName(&name);
-	return bstr2char(name);
+	const char* toReturn = bstr2char(name);
+	SysFreeString(name);
+	return toReturn;
 }
 
 const char* ElementNode::getText()
@@ -98,7 +119,10 @@ const char* ElementNode::getText()
 
 	BSTR text;
 	element->get_innerText(&text);
-	return bstr2char(text);
+	element->Release();
+	const char* toReturn = bstr2char(text);
+	SysFreeString(text);
+	return toReturn;
 }
 
 void ElementNode::click()
@@ -107,14 +131,17 @@ void ElementNode::click()
 	node->QueryInterface(__uuidof(IHTMLElement), (void**)&element);
 	IDispatch *dispatch;
 	element->get_document(&dispatch);
+
 	IHTMLDocument4* doc;
 	dispatch->QueryInterface(__uuidof(IHTMLDocument4), (void**)&doc);
+	dispatch->Release();
 
 	IHTMLElement3* element3;
 	node->QueryInterface(__uuidof(IHTMLElement3), (void**)&element3);
 
 	IHTMLEventObj *eventObject;
 	doc->createEventObject(NULL, &eventObject);
+	doc->Release();
 
 	VARIANT eventref;
 	eventref.vt = VT_DISPATCH;
@@ -125,5 +152,11 @@ void ElementNode::click()
 	element3->fireEvent(BSTR("onMouseUp"), &eventref, &cancellable);
 
 	element->click();
+
+	VariantClear(&eventref);
+	if (eventObject != NULL) eventObject->Release();
+	element->Release();
+	element3->Release();
+
 	ie->waitForNavigateToFinish();
 }

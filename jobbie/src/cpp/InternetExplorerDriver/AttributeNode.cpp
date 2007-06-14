@@ -10,6 +10,7 @@ using namespace std;
 AttributeNode::AttributeNode(IHTMLAttributeCollection* allAttributes, long length, long index)
 {
 	this->allAttributes = allAttributes;
+	allAttributes->AddRef();
 	this->length = length;
 	this->index = index;
 	
@@ -18,6 +19,8 @@ AttributeNode::AttributeNode(IHTMLAttributeCollection* allAttributes, long lengt
 
 AttributeNode::~AttributeNode()
 {
+	attribute->Release();
+	allAttributes->Release();
 }
 
 Node* AttributeNode::getDocument() 
@@ -51,14 +54,18 @@ const char* AttributeNode::name()
 {
 	BSTR name;
 	attribute->get_nodeName(&name);
-	return bstr2char(name);
+	const char* toReturn = bstr2char(name);
+	SysFreeString(name);
+	return toReturn;
 }
 
 const char* AttributeNode::getText()
 {
 	VARIANT value;
 	attribute->get_nodeValue(&value);
-	return variant2char(value);
+	const char* toReturn = variant2char(value);
+	VariantClear(&value);
+	return toReturn;
 }
 
 long AttributeNode::findNextSpecifiedIndex()
@@ -68,6 +75,7 @@ long AttributeNode::findNextSpecifiedIndex()
 	for (int i = index + 1; i < length; i++) {
 		attr = getAttribute(i);
 		attr->get_specified(&specified);
+		attr->Release();
 		if (specified == VARIANT_TRUE) 
 			return i;
 	}
@@ -86,5 +94,8 @@ IHTMLDOMAttribute* AttributeNode::getAttribute(long atIndex)
 
 	IHTMLDOMAttribute* attr;
 	dispatch->QueryInterface(__uuidof(IHTMLDOMAttribute), (void**)&attr);
+	dispatch->Release();
+	VariantClear(&idx);
+
 	return attr;
 }

@@ -8,11 +8,13 @@ using namespace std;
 DocumentNode::DocumentNode(IeWrapper* ie, IHTMLDocument2* doc)
 {
 	this->doc = doc;
+	doc->AddRef();
 	this->ie = ie;
 }
 
 DocumentNode::~DocumentNode()
 {
+	doc->Release();
 }
 
 Node* DocumentNode::getDocument()
@@ -37,8 +39,11 @@ Node* DocumentNode::getFirstChild()
 
 	IHTMLElement* rootElement;
 	doc3->get_documentElement(&rootElement);
+	doc3->Release();
 
-	return new ElementNode(ie, rootElement);
+	ElementNode* toReturn = new ElementNode(ie, rootElement);
+	rootElement->Release();
+	return toReturn;
 }
 
 Node* DocumentNode::getFirstAttribute() 

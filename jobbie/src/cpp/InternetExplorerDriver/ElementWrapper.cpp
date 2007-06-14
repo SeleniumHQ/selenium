@@ -12,10 +12,12 @@ using namespace std;
 ElementWrapper::ElementWrapper(IHTMLDOMNode* node)
 {
 	this->node = node;
+	node->AddRef();
 }
 
 ElementWrapper::~ElementWrapper()
 {
+	node->Release();
 }
 
 const char* ElementWrapper::getAttribute(const char* name) 
@@ -31,6 +33,7 @@ const char* ElementWrapper::getAttribute(const char* name)
 
 	IHTMLAttributeCollection* attributes = NULL;
 	dispatch->QueryInterface(__uuidof(IHTMLAttributeCollection), (void **)&attributes);
+	dispatch->Release();
 
 	VARIANT variant;
 	variant.vt = VT_BSTR;
@@ -38,6 +41,8 @@ const char* ElementWrapper::getAttribute(const char* name)
 	
 	IDispatch* ppDisp = NULL;
 	attributes->item(&variant, &ppDisp); 
+	attributes->Release();
+	VariantClear(&variant);
 
 	if (ppDisp == NULL) {
 		return NULL;
@@ -45,22 +50,23 @@ const char* ElementWrapper::getAttribute(const char* name)
 
 	IHTMLDOMAttribute* attribute;
 	ppDisp->QueryInterface(__uuidof(IHTMLDOMAttribute), (void **)&attribute);
+	ppDisp->Release();
 
 	VARIANT variant2;
 	attribute->get_nodeValue(&variant2);
-
-	ppDisp->Release();
 	attributes->Release();
-	dispatch->Release();
 
-	return variant2char(variant2);
+	const char* toReturn = variant2char(variant2);
+	VariantClear(&variant2);
+	return toReturn;
 }
 
 const char* ElementWrapper::getValue()
 {
-	CComBSTR temp;
+	BSTR temp;
 	node->get_nodeName(&temp);
 	const char *name = bstr2char(temp);
+	SysFreeString(temp);
 
 	int value = _stricmp("textarea", name);
 	delete name;
@@ -77,6 +83,9 @@ const char* ElementWrapper::getTextAreaValue()
 
 	BSTR result;
 	textarea->get_value(&result);
+	textarea->Release();
 
-	return bstr2char(result);
+	const char* toReturn = bstr2char(result);
+	SysFreeString(result);
+	return toReturn;
 }

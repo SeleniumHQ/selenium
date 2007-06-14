@@ -19,10 +19,12 @@ IeWrapper::IeWrapper()
 
 IeWrapper::~IeWrapper()
 {
+	ie->Release();
 }
 
 bool IeWrapper::getVisible()
 {
+	// Does this need to be released?
 	VARIANT_BOOL visible;
 	ie->get_Visible(&visible);
 	return visible == VARIANT_TRUE;
@@ -39,9 +41,12 @@ void IeWrapper::setVisible(bool isVisible)
 const char* IeWrapper::getCurrentUrl() 
 {
 	IHTMLDocument2 *doc = getDocument();
-	CComBSTR url;
+	BSTR url;
 	doc->get_URL(&url);
-	return bstr2char(url);
+	doc->Release();
+	const char* toReturn = bstr2char(url);
+	SysFreeString(url);
+	return toReturn;
 }
 
 const char* IeWrapper::getTitle() 
@@ -50,7 +55,9 @@ const char* IeWrapper::getTitle()
 	IHTMLDocument2 *doc = getDocument();
 	doc->get_title(&title);
 	doc->Release();
-	return bstr2char(title);
+	const char* toReturn = bstr2char(title);
+	SysFreeString(title);
+	return toReturn;
 }
 
 void IeWrapper::get(const char *url)
@@ -73,7 +80,9 @@ ElementWrapper* IeWrapper::selectElementById(const char *elementId)
 		IHTMLDOMNode* node = NULL;
 		element->QueryInterface(__uuidof(IHTMLDOMNode), (void **)&node);
 		element->Release();
-		return new ElementWrapper(node);
+		ElementWrapper* toReturn = new ElementWrapper(node);
+		node->Release();
+		return toReturn;
 	}
 
 	throw "Cannot find element";
@@ -84,6 +93,7 @@ ElementWrapper* IeWrapper::selectElementByLink(const char *elementLink)
 	IHTMLDocument2 *doc = getDocument();
 	IHTMLElementCollection* linkCollection;
 	doc->get_links(&linkCollection);
+	doc->Release();
 
 	long linksLength;
 	linkCollection->get_length(&linksLength);
@@ -97,9 +107,12 @@ ElementWrapper* IeWrapper::selectElementByLink(const char *elementLink)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		linkCollection->item(idx, zero, &dispatch);
-	
+		VariantClear(&idx);
+		VariantClear(&zero);
+
 		IHTMLElement* element;
 		dispatch->QueryInterface(__uuidof(IHTMLElement), (void**)&element);
+		dispatch->Release();
 
 		BSTR linkText;
 		element->get_innerText(&linkText);
@@ -109,8 +122,14 @@ ElementWrapper* IeWrapper::selectElementByLink(const char *elementLink)
 			delete converted;
 			IHTMLDOMNode* linkNode;
 			element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&linkNode);
-			return new ElementWrapper(linkNode);
+			element->Release();
+			linkCollection->Release();
+			ElementWrapper* toReturn = new ElementWrapper(linkNode);
+			linkNode->Release();
+			return toReturn;
 		}
+		delete converted;
+		element->Release();
 	}
     throw "Cannot find element";
 }
@@ -126,7 +145,7 @@ void IeWrapper::waitForNavigateToFinish()
 
 	READYSTATE readyState;
 	ie->get_ReadyState(&readyState);
-	while (readyState != tagREADYSTATE::READYSTATE_COMPLETE) {
+	while (readyState != READYSTATE_COMPLETE) {
 		Sleep(20);
 		ie->get_ReadyState(&readyState);
 	}
