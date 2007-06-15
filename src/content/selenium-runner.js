@@ -166,7 +166,7 @@ objectExtend(IDETestLoop.prototype, {
 function Logger() {
 	var self = this;
 	var levels = ["log","debug","info","warn","error"];
-    this.maxEntries = 1000;
+    this.maxEntries = 2000;
 	this.entries = [];
 	
 	levels.forEach(function(level) {
@@ -191,7 +191,7 @@ function Logger() {
 			}
 		};
 		this.entries.push(entry);
-        if (this.entries.size > this.maxEntries) this.entries.unshift();
+        if (this.entries.length > this.maxEntries) this.entries.shift();
 		this.observers.forEach(function(o) { o.onAppendEntry(entry) });
 	}
 
@@ -224,7 +224,7 @@ function createSelenium(baseURL) {
 	var window = wm.getMostRecentWindow('navigator:browser');
 	
     var contentWindow = window.getBrowser().selectedBrowser.contentWindow;
-	selenium = Selenium.createForWindow(contentWindow);
+	var selenium = Selenium.createForWindow(contentWindow);
 	selenium.browserbot.getCurrentPage();
 	selenium.baseURL = baseURL;
     return selenium;
