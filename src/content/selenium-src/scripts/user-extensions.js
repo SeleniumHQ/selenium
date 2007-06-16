@@ -12,13 +12,17 @@ TestResult.prototype.post = function() {
     }
 };
 
+HtmlTestRunnerControlPanel.prototype.getBaseUrl = function() {
+    // it is recommended to use baseUrl, but for backward compatibility we also accept baseURL
+    return URLConfiguration.prototype.getBaseUrl.call(this) || this._getQueryParameter("baseURL");
+};
+
 var TestRunnerConfig = Class.create();
 Object.extend(TestRunnerConfig.prototype, URLConfiguration.prototype);
 Object.extend(TestRunnerConfig.prototype, {
         initialize: function() {
             this.queryString = location.search.substr(1);
             this.userExtensionsURL = this._getQueryParameter("userExtensionsURL");
-            this.baseURL = this._getQueryParameter("baseURL");
         }
     });
 
@@ -31,19 +35,3 @@ if (testRunnerConfig.userExtensionsURL) {
 		document.write('<script src="' + url + '" language="JavaScript" type="text/javascript"></script>');
 	}
 }
-
-Selenium.prototype.real_doOpen = Selenium.prototype.doOpen;
-
-Selenium.prototype.doOpen = function(newLocation) {
-    var baseURL = testRunnerConfig.baseURL;
-	if (baseURL && newLocation) {
-		if (!newLocation.match(/^\w+:\/\//)) {
-			if (baseURL[baseURL.length - 1] == '/' && newLocation[0] == '/') {
-				newLocation = baseURL + newLocation.substr(1);
-			} else {
-				newLocation = baseURL + newLocation;
-			}
-		}
-	}
-	return this.real_doOpen(newLocation);
-};

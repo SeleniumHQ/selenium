@@ -705,7 +705,7 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
 
     this.showInBrowser('chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
                        '&userExtensionsURL=' + encodeURI(ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',')) +
-                       '&baseURL=' + document.getElementById("baseURL").value +
+                       '&baseUrl=' + document.getElementById("baseURL").value +
                        (auto ? "&auto=true" : ""), 
                        newWindow);
 }
