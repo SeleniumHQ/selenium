@@ -679,6 +679,12 @@ Editor.prototype.playCurrentTestCase = function(next) {
 
 Editor.prototype.playTestSuite = function(index) {
     var index = -1;
+    this.testSuite.tests.forEach(function(test) {
+            if (test.testResult) {
+                delete test.testResult;
+            }
+        });
+    this.suiteTreeView.refresh();
     var self = this;
     (function() {
         if (++index < self.testSuite.tests.length) {
