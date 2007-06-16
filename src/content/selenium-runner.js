@@ -23,24 +23,17 @@
 // Patches for Selenium functions
 //
 
-Selenium.prototype.real_doOpen = Selenium.prototype.doOpen;
+MozillaBrowserBot.prototype.__defineGetter__("baseUrl", function() {
+        if (!this._baseUrl) {
+            LOG.warn("Base URL is not set. Updating base URL from current window.");
+            this._baseUrl = editor.getPathAndUpdateBaseURL(this.browserbot.getCurrentWindow())[1];
+        }
+        return this._baseUrl;
+    });
 
-Selenium.prototype.doOpen = function(newLocation) {
-	if (newLocation) {
-		if (!newLocation.match(/^\w+:\/\//)) {
-			if (!this.baseURL) {
-				LOG.warn("Base URL is not set. Updating base URL from current window.");
-                this.baseURL = editor.getPathAndUpdateBaseURL(this.browserbot.getCurrentWindow())[1];
-            }
-            if (this.baseURL[this.baseURL.length - 1] == '/' && newLocation[0] == '/') {
-                newLocation = this.baseURL + newLocation.substr(1);
-            } else {
-                newLocation = this.baseURL + newLocation;
-            }
-		}
-	}
-	return this.real_doOpen(newLocation);
-};
+MozillaBrowserBot.prototype.__defineSetter__("baseUrl", function(baseUrl) {
+        this._baseUrl = baseUrl;
+    });
 
 MozillaBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 	if (iframe.src) {
@@ -117,6 +110,7 @@ objectExtend(IDETestLoop.prototype, {
         },
         
         commandComplete: function(result) {
+            this._checkExpectedFailure(result);
             if (result.failed) {
                 LOG.error(result.failureMessage);
                 testCase.debugContext.failed = true;
@@ -129,11 +123,19 @@ objectExtend(IDETestLoop.prototype, {
             editor.view.rowUpdated(testCase.debugContext.debugIndex);
         },
 
-        commandError: function() {
-            LOG.debug("commandError");
-            testCase.debugContext.failed = true;
-            testCase.debugContext.currentCommand().result = 'failed';
-            editor.view.rowUpdated(testCase.debugContext.debugIndex);
+        commandError: function(errorMessage) {
+            var tempResult = {};
+            tempResult.passed = false;
+            tempResult.failed = true;
+            tempResult.error = true;
+            tempResult.failureMessage = errorMessage;
+            this._checkExpectedFailure(tempResult);
+            if (!tempResult.passed) {
+                LOG.debug("commandError");
+                testCase.debugContext.failed = true;
+                testCase.debugContext.currentCommand().result = 'failed';
+                editor.view.rowUpdated(testCase.debugContext.debugIndex);
+            }
         },
         
         // override _testComplete to ensure testComplete is called even when
@@ -160,7 +162,9 @@ objectExtend(IDETestLoop.prototype, {
         pause: function() {
             // editor.setState("paused");
             setState(Debugger.PAUSED);
-        }
+        },
+
+        _checkExpectedFailure: HtmlRunnerTestLoop.prototype._checkExpectedFailure
     });
 
 function Logger() {
@@ -226,7 +230,7 @@ function createSelenium(baseURL) {
     var contentWindow = window.getBrowser().selectedBrowser.contentWindow;
 	var selenium = Selenium.createForWindow(contentWindow);
 	selenium.browserbot.getCurrentPage();
-	selenium.baseURL = baseURL;
+	selenium.browserbot.baseUrl = baseURL;
     return selenium;
 }
 

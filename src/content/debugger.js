@@ -50,6 +50,7 @@ function Debugger(editor) {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-commandhandlers.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-testrunner.js', this.runner);
 		if (this.editor.options.userExtensionsURL) {
 			try {
 				ExtensionsLoader.loadSubScript(subScriptLoader, this.editor.options.userExtensionsURL, this.runner);
