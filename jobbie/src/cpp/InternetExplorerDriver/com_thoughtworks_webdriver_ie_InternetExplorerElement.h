@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
+ * Method:    createInternetExplorerElement
+ * Signature: (JLcom/thoughtworks/webdriver/ie/ElementNode;)Lcom/thoughtworks/webdriver/ie/InternetExplorerElement;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_createInternetExplorerElement
+  (JNIEnv *, jclass, jlong, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
  * Method:    click
  * Signature: ()V
  */

@@ -1,5 +1,5 @@
-#include <ExDisp.h>
 #include "stdafx.h"
+#include <ExDisp.h>
 #include "utils.h"
 #include "DocumentNode.h"
 #include <iostream>

@@ -7,14 +7,29 @@
 
 using namespace std;
 
+AttributeNode::AttributeNode(IHTMLAttributeCollection* allAttributes, long length)
+{
+	this->allAttributes = allAttributes;
+	this->allAttributes->AddRef();
+	this->length = length;
+
+	this->index = -1;
+	this->index = findNextSpecifiedIndex();
+	this->attribute = getAttribute(index);
+	if (this->attribute == NULL) {
+		this->allAttributes->Release();
+		throw "No declared attributes";
+	}
+}
+
 AttributeNode::AttributeNode(IHTMLAttributeCollection* allAttributes, long length, long index)
 {
 	this->allAttributes = allAttributes;
-	allAttributes->AddRef();
+	this->allAttributes->AddRef();
 	this->length = length;
 	this->index = index;
 	
-	attribute = getAttribute(index);
+	this->attribute = getAttribute(index);
 }
 
 AttributeNode::~AttributeNode()
@@ -27,6 +42,7 @@ Node* AttributeNode::getDocument()
 {
 	return NULL;
 }
+
 bool AttributeNode::hasNextSibling() 
 {
 	long newIndex = findNextSpecifiedIndex();
@@ -36,7 +52,6 @@ bool AttributeNode::hasNextSibling()
 Node* AttributeNode::getNextSibling()
 {
 	long newIndex = findNextSpecifiedIndex();
-
 	return new AttributeNode(allAttributes, length, newIndex);
 }
 
@@ -47,7 +62,7 @@ Node* AttributeNode::getFirstChild()
 
 Node* AttributeNode::getFirstAttribute() 
 {
-	return new AttributeNode(allAttributes, length, 0);
+	return NULL;
 }
 
 const char* AttributeNode::name()
@@ -56,6 +71,12 @@ const char* AttributeNode::name()
 	attribute->get_nodeName(&name);
 	const char* toReturn = bstr2char(name);
 	SysFreeString(name);
+
+	if (_stricmp("classname", toReturn) == 0) {
+		delete toReturn;
+		return strdup("class");
+	}
+
 	return toReturn;
 }
 
@@ -85,6 +106,9 @@ long AttributeNode::findNextSpecifiedIndex()
 
 IHTMLDOMAttribute* AttributeNode::getAttribute(long atIndex)
 {
+	if (atIndex >= length)
+		return NULL;
+
 	VARIANT idx;
 	idx.vt = VT_I4;
 	idx.lVal = atIndex;

@@ -1,11 +1,14 @@
 package com.thoughtworks.webdriver.ie;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.jaxen.DefaultNavigator;
 import org.jaxen.UnsupportedAxisException;
 import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
+
+import com.thoughtworks.webdriver.NoSuchElementException;
 
 public class IeNavigator extends DefaultNavigator {
 	private final InternetExplorerDriver driver;
@@ -19,8 +22,13 @@ public class IeNavigator extends DefaultNavigator {
 	}
 
 	public Iterator getAttributeAxisIterator(Object contextNode) throws UnsupportedAxisException {
-		final HtmlNode firstAttribute = ((HtmlNode) contextNode).getFirstAttribute();
-		return new NodeIterator(firstAttribute);
+		try {
+			final HtmlNode firstAttribute = ((HtmlNode) contextNode).getFirstAttribute();
+			return new NodeIterator(firstAttribute);
+		} catch (NoSuchElementException e) {
+			// No declared attribute
+			return Collections.EMPTY_LIST.iterator();
+		}
 	}
 
 	public Iterator getChildAxisIterator(Object contextNode) throws UnsupportedAxisException {
@@ -104,8 +112,6 @@ public class IeNavigator extends DefaultNavigator {
 	}
 
 	public String getAttributeStringValue(Object attr) {
-		AttributeNode node = (AttributeNode) attr;
-//		System.out.println(node.getName() + ": " + node.getText());
 		return ((AttributeNode) attr).getText();
 	}
 
@@ -184,7 +190,6 @@ public class IeNavigator extends DefaultNavigator {
 
 		public Object next() {
 			node = (HtmlNode) node.getNextSibling();
-//			System.out.println(node.getName());
 			return node;
 		}
 

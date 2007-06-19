@@ -1,10 +1,7 @@
 package com.thoughtworks.webdriver.ie;
 
-import java.util.List;
 
-import com.thoughtworks.webdriver.WebElement;
-
-public class ElementNode implements HtmlNode, WebElement {
+public class ElementNode implements HtmlNode {
 	private final long nodePointer;
 
 	public ElementNode(long nodePointer) {
@@ -27,44 +24,4 @@ public class ElementNode implements HtmlNode, WebElement {
 	}
 	
 	private native String getNativeName();
-
-	public native void click();
-
-	public String getAttribute(String name) {
-		throw new UnsupportedOperationException("getAttribute");
-	}
-
-	public List getChildrenOfType(String tagName) {
-		throw new UnsupportedOperationException("getChildrenOfType");
-	}
-
-	public native String getText();
-
-	public String getValue() {
-		throw new UnsupportedOperationException("getValue");
-	}
-
-	public boolean isEnabled() {
-		throw new UnsupportedOperationException("isEnabled");
-	}
-
-	public boolean isSelected() {
-		throw new UnsupportedOperationException("isSelected");
-	}
-
-	public void setSelected() {
-		throw new UnsupportedOperationException("setSelected");
-	}
-
-	public void setValue(String value) {
-		throw new UnsupportedOperationException("setValue");
-	}
-
-	public void submit() {
-		throw new UnsupportedOperationException("submit");
-	}
-
-	public boolean toggle() {
-		throw new UnsupportedOperationException("toggle");
-	}
 }

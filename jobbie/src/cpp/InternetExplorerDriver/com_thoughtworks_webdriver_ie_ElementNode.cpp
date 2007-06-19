@@ -1,5 +1,5 @@
-#include <ExDisp.h>
 #include "stdafx.h"
+#include <ExDisp.h>
 #include "utils.h"
 #include "ElementNode.h"
 #include "DocumentNode.h"
@@ -65,11 +65,15 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirs
   (JNIEnv *env, jobject obj)
 {
 	ElementNode* node = getElementNode(env, obj);
-	Node* attribute = node->getFirstAttribute();
+	try {
+		Node* attribute = node->getFirstAttribute();
 
-	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/AttributeNode");
-	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-	return env->NewObject(clazz, cId, (jlong) attribute);
+		jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/AttributeNode");
+		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+		return env->NewObject(clazz, cId, (jlong) attribute);
+	} catch (const char* message) {
+		throwNoSuchElementException(env, message);
+	}
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNativeName
@@ -79,13 +83,6 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNati
 	const char* name = node->name();
 
 	return env->NewStringUTF(name);
-}
-
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_click
-  (JNIEnv *env, jobject obj)
-{
-	ElementNode* node = getElementNode(env, obj);
-	node->click();
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getText

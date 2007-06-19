@@ -5,11 +5,10 @@
 #include <iostream>
 using namespace std;
 
-DocumentNode::DocumentNode(IeWrapper* ie, IHTMLDocument2* doc)
+DocumentNode::DocumentNode(IHTMLDocument2* doc)
 {
 	this->doc = doc;
 	doc->AddRef();
-	this->ie = ie;
 }
 
 DocumentNode::~DocumentNode()
@@ -41,7 +40,7 @@ Node* DocumentNode::getFirstChild()
 	doc3->get_documentElement(&rootElement);
 	doc3->Release();
 
-	ElementNode* toReturn = new ElementNode(ie, rootElement);
+	ElementNode* toReturn = new ElementNode(rootElement);
 	rootElement->Release();
 	return toReturn;
 }

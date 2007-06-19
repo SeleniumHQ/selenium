@@ -2,13 +2,12 @@
 #define DocumentNode_h
 
 #include <mshtml.h>
-#include "IeWrapper.h"
 #include "Node.h"
 
 class DocumentNode : public Node
 {
 public:
-	DocumentNode(IeWrapper* ie, IHTMLDocument2* doc);
+	DocumentNode(IHTMLDocument2* doc);
 	~DocumentNode();
 
 	Node* getDocument();
@@ -21,7 +20,6 @@ public:
 	const char* getText();
 
 private:
-	IeWrapper* ie;
 	IHTMLDocument2* doc;
 };
 

@@ -6,6 +6,7 @@
 class AttributeNode : public Node
 {
 public:
+	AttributeNode(IHTMLAttributeCollection* allAttributes, long length);
 	AttributeNode(IHTMLAttributeCollection* allAttributes, long length, long index);
 	~AttributeNode();
 

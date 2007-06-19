@@ -1,7 +1,7 @@
 // This is the main DLL file.
 
-#include <ExDisp.h>
 #include "stdafx.h"
+#include <ExDisp.h>
 #include "utils.h"
 #include "IeWrapper.h"
 #include "ElementWrapper.h"
@@ -124,7 +124,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	IeWrapper *ie = getIe(env, obj);
 	IHTMLDocument2 *doc = ie->getDocument();
 
-	DocumentNode *node = new DocumentNode(ie, doc);
+	DocumentNode *node = new DocumentNode(doc);
 	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/DocumentNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 

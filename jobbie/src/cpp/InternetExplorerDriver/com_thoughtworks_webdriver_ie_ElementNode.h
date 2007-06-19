@@ -57,14 +57,6 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNati
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    click
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_click
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
  * Method:    getText
  * Signature: ()Ljava/lang/String;
  */

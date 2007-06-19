@@ -6,6 +6,8 @@
 #include <mshtml.h>
 #include "ElementWrapper.h"
 
+class ElementWrapper;
+
 class IeWrapper
 {
 public:

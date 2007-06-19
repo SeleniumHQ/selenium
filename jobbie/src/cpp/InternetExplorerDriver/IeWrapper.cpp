@@ -80,7 +80,7 @@ ElementWrapper* IeWrapper::selectElementById(const char *elementId)
 		IHTMLDOMNode* node = NULL;
 		element->QueryInterface(__uuidof(IHTMLDOMNode), (void **)&node);
 		element->Release();
-		ElementWrapper* toReturn = new ElementWrapper(node);
+		ElementWrapper* toReturn = new ElementWrapper(this, node);
 		node->Release();
 		return toReturn;
 	}
@@ -124,7 +124,7 @@ ElementWrapper* IeWrapper::selectElementByLink(const char *elementLink)
 			element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&linkNode);
 			element->Release();
 			linkCollection->Release();
-			ElementWrapper* toReturn = new ElementWrapper(linkNode);
+			ElementWrapper* toReturn = new ElementWrapper(this, linkNode);
 			linkNode->Release();
 			return toReturn;
 		}

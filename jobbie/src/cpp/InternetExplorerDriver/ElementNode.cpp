@@ -7,17 +7,15 @@
 
 using namespace std;
 
-ElementNode::ElementNode(IeWrapper* ie, IHTMLElement* element)
+ElementNode::ElementNode(IHTMLElement* element)
 {
 	element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&node);
-	this->ie = ie;
 }
 
-ElementNode::ElementNode(IeWrapper* ie, IHTMLDOMNode* node) 
+ElementNode::ElementNode(IHTMLDOMNode* node) 
 {
 	this->node = node;
 	node->AddRef();
-	this->ie = ie;
 }
 
 ElementNode::~ElementNode()
@@ -38,7 +36,7 @@ Node* ElementNode::getDocument()
 	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
 	dispatch->Release();
 
-	DocumentNode* toReturn = new DocumentNode(ie, doc);
+	DocumentNode* toReturn = new DocumentNode(doc);
 	doc->Release();
 	return toReturn;
 }
@@ -51,7 +49,7 @@ Node* ElementNode::getFirstChild()
 	if (child == NULL)
 		return NULL;
 
-	ElementNode* toReturn = new ElementNode(ie, child);
+	ElementNode* toReturn = new ElementNode(child);
 	child->Release();
 	return toReturn;
 }
@@ -76,7 +74,7 @@ Node* ElementNode::getNextSibling()
 	if (sibling == NULL)
 		return NULL;
 
-	ElementNode* toReturn = new ElementNode(ie, sibling);
+	ElementNode* toReturn = new ElementNode(sibling);
 	sibling->Release();
 	return toReturn;
 }
@@ -98,7 +96,7 @@ Node* ElementNode::getFirstAttribute()
 		return NULL;
 	}
 
-	AttributeNode* toReturn = new AttributeNode(allAttributes, length, 0);
+	AttributeNode* toReturn = new AttributeNode(allAttributes, length);
 	allAttributes->Release();
 	return toReturn;
 }
@@ -125,38 +123,7 @@ const char* ElementNode::getText()
 	return toReturn;
 }
 
-void ElementNode::click()
+IHTMLDOMNode* ElementNode::getDomNode()
 {
-	IHTMLElement* element;
-	node->QueryInterface(__uuidof(IHTMLElement), (void**)&element);
-	IDispatch *dispatch;
-	element->get_document(&dispatch);
-
-	IHTMLDocument4* doc;
-	dispatch->QueryInterface(__uuidof(IHTMLDocument4), (void**)&doc);
-	dispatch->Release();
-
-	IHTMLElement3* element3;
-	node->QueryInterface(__uuidof(IHTMLElement3), (void**)&element3);
-
-	IHTMLEventObj *eventObject;
-	doc->createEventObject(NULL, &eventObject);
-	doc->Release();
-
-	VARIANT eventref;
-	eventref.vt = VT_DISPATCH;
-	eventref.pdispVal = eventObject;
-
-	VARIANT_BOOL cancellable = VARIANT_TRUE;
-	element3->fireEvent(BSTR("onMouseDown"), &eventref, &cancellable);
-	element3->fireEvent(BSTR("onMouseUp"), &eventref, &cancellable);
-
-	element->click();
-
-	VariantClear(&eventref);
-	if (eventObject != NULL) eventObject->Release();
-	element->Release();
-	element3->Release();
-
-	ie->waitForNavigateToFinish();
+	return node;
 }

@@ -5,13 +5,14 @@ import java.util.List;
 import com.thoughtworks.webdriver.WebElement;
 
 public class InternetExplorerElement implements WebElement {
-	private final long nodePointer;
+	private long nodePointer;
 
+	// Called from native code
 	private InternetExplorerElement(long nodePointer) {
 		this.nodePointer = nodePointer;
 	}
 
-	public native void foo(long foo);
+	protected static native InternetExplorerElement createInternetExplorerElement(long ieWrapper, ElementNode node);
 	
 	public native void click();
 

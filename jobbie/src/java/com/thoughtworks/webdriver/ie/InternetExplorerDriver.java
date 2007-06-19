@@ -61,7 +61,7 @@ public class InternetExplorerDriver implements WebDriver {
 				Object result = new IeXPath(selector, this).selectSingleNode(getDocument());
 				if (result == null)
 					throw new NoSuchElementException("Cannot find element: " + selector);
-				return (ElementNode) result;
+				return InternetExplorerElement.createInternetExplorerElement(iePointer, ((ElementNode) result));
 			} catch (JaxenException e) {
 				throw new RuntimeException(e);
 			}
@@ -69,15 +69,16 @@ public class InternetExplorerDriver implements WebDriver {
 	}
 
 	public List selectElements(String xpath) {
-		return null;
+		throw new UnsupportedOperationException("selectElements");
 	}
 
 	public String selectText(String xpath) {
-		return null;
+		WebElement element = selectElement(xpath);
+		return element.getText();
 	}
 
 	public TargetLocator switchTo() {
-		return null;
+		throw new UnsupportedOperationException("switchTo");
 	}
 	
 	private void startCom() {
