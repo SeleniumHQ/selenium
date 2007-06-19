@@ -5,8 +5,6 @@ interface HtmlNode {
 
 	HtmlNode getFirstChild();
 
-	boolean hasNextSibling();
-	
 	HtmlNode getNextSibling();
 		
 	String getName();

@@ -44,16 +44,12 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getNe
 	AttributeNode* node = getAttributeNode(env, obj);
 	Node* sibling = node->getNextSibling();
 
+	if (sibling == NULL)
+		return NULL;
+
 	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/AttributeNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 	return env->NewObject(clazz, cId, (jlong) sibling);
-}
-
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_hasNextSibling
-  (JNIEnv *env, jobject obj)
-{
-	AttributeNode* node = getAttributeNode(env, obj);
-	return node->hasNextSibling() ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getText

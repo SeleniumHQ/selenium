@@ -33,14 +33,6 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getNe
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_AttributeNode
- * Method:    hasNextSibling
- * Signature: ()Z
- */
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_hasNextSibling
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_AttributeNode
  * Method:    getText
  * Signature: ()Ljava/lang/String;
  */

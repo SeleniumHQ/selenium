@@ -43,15 +43,11 @@ Node* AttributeNode::getDocument()
 	return NULL;
 }
 
-bool AttributeNode::hasNextSibling() 
-{
-	long newIndex = findNextSpecifiedIndex();
-	return newIndex < length;
-}
-
 Node* AttributeNode::getNextSibling()
 {
 	long newIndex = findNextSpecifiedIndex();
+	if (newIndex >= length)
+		return NULL;
 	return new AttributeNode(allAttributes, length, newIndex);
 }
 

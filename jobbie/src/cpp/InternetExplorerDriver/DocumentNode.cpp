@@ -21,11 +21,6 @@ Node* DocumentNode::getDocument()
 	return this;
 }
 
-bool DocumentNode::hasNextSibling() 
-{
-	return false;
-}
-
 Node* DocumentNode::getNextSibling()
 {
 	return NULL;

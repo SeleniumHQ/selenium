@@ -11,8 +11,6 @@ public class ElementNode implements HtmlNode {
 	public native DocumentNode getDocument();
 
 	public native HtmlNode getFirstChild();
-
-	public native boolean hasNextSibling();
 	
 	public native HtmlNode getNextSibling();
 

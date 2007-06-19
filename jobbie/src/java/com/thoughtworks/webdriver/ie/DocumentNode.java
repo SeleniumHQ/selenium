@@ -13,10 +13,6 @@ public class DocumentNode implements HtmlNode {
 
 	public native HtmlNode getFirstChild();
 	
-	public boolean hasNextSibling() {
-		return false;
-	}
-
 	public HtmlNode getNextSibling() {
 		return null;
 	}

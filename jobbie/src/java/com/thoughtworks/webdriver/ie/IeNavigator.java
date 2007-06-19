@@ -185,12 +185,13 @@ public class IeNavigator extends DefaultNavigator {
 		}
 		
 		public boolean hasNext() {
-			return node != null && node.hasNextSibling();
+			return node != null;
 		}
 
 		public Object next() {
+			HtmlNode toReturn = node;
 			node = (HtmlNode) node.getNextSibling();
-			return node;
+			return toReturn;
 		}
 
 		public void remove() {

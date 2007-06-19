@@ -11,7 +11,6 @@ public:
 	~AttributeNode();
 
 	Node* getDocument();
-	bool hasNextSibling();
 	Node* getNextSibling();
 	Node* getFirstChild();
 	Node* getFirstAttribute();

@@ -43,18 +43,14 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirs
 	return env->NewObject(clazz, cId, (jlong) child);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_hasNextSibling
-  (JNIEnv *env, jobject obj)
-{
-	ElementNode* node = getElementNode(env, obj);
-	return (jboolean) node->hasNextSibling();
-}
-
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNextSibling
   (JNIEnv *env, jobject obj)
 {	
 	ElementNode* node = getElementNode(env, obj);
 	Node* sibling = node->getNextSibling();
+
+	if (sibling == NULL)
+		return NULL;
 
 	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/ElementNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");

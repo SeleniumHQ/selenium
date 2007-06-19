@@ -54,25 +54,14 @@ Node* ElementNode::getFirstChild()
 	return toReturn;
 }
 
-bool ElementNode::hasNextSibling()
-{
-	IHTMLDOMNode* sibling = NULL;
-	node->get_nextSibling(&sibling);
-
-	if (sibling != NULL) {
-		sibling->Release();
-		return true;
-	}
-	return false;
-}
-
 Node* ElementNode::getNextSibling() 
 {
 	IHTMLDOMNode* sibling = NULL;
 	node->get_nextSibling(&sibling);
 
-	if (sibling == NULL)
+	if (sibling == NULL) {
 		return NULL;
+	}
 
 	ElementNode* toReturn = new ElementNode(sibling);
 	sibling->Release();

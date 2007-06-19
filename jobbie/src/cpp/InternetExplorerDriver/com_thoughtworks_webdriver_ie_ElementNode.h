@@ -25,14 +25,6 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirs
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    hasNextSibling
- * Signature: ()Z
- */
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_hasNextSibling
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
  * Method:    getNextSibling
  * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
  */
@@ -53,14 +45,6 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirs
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNativeName
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    getText
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getText
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus
