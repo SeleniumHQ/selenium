@@ -156,17 +156,22 @@ void ElementWrapper::click()
 	IHTMLElement3* element3;
 	element->QueryInterface(__uuidof(IHTMLElement3), (void**)&element3);
 
-	IHTMLEventObj *eventObject;
+	IHTMLEventObj *eventObject = NULL;
 	doc->createEventObject(NULL, &eventObject);
 	doc->Release();
 
 	VARIANT eventref;
-	eventref.vt = VT_DISPATCH;
-	eventref.pdispVal = eventObject;
+	VariantInit(&eventref);
+    V_VT(&eventref) = VT_DISPATCH;
+    V_DISPATCH(&eventref) = eventObject;
 
-	VARIANT_BOOL cancellable = VARIANT_TRUE;
-	element3->fireEvent(BSTR("onMouseDown"), &eventref, &cancellable);
-	element3->fireEvent(BSTR("onMouseUp"), &eventref, &cancellable);
+	VARIANT_BOOL cancellable;
+	BSTR mouseDown = SysAllocString(L"onmousedown");
+	BSTR mouseUp = SysAllocString(L"onmouseup");
+	element3->fireEvent(mouseDown, &eventref, &cancellable);
+	element3->fireEvent(mouseUp, &eventref, &cancellable);
+	SysFreeString(mouseDown);
+	SysFreeString(mouseUp);
 
 	element->click();
 

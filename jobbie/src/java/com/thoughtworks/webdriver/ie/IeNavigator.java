@@ -33,9 +33,9 @@ public class IeNavigator extends DefaultNavigator {
 
 	public Iterator getChildAxisIterator(Object contextNode) throws UnsupportedAxisException {
 		HtmlNode html = (HtmlNode) contextNode;
-		while (html instanceof DocumentNode) {
-			html = (HtmlNode) html.getFirstChild();
-		}
+//		while (html instanceof DocumentNode) {
+//			html = (HtmlNode) html.getFirstChild();
+//		}
 		
 		return new NodeIterator(html.getFirstChild());
 	}
