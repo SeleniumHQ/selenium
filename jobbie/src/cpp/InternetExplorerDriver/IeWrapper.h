@@ -30,6 +30,7 @@ public:
 	void waitForNavigateToFinish();
 
 private:
+	void waitForDocumentToComplete(IHTMLDocument2* doc);
 	IHTMLDocument3* getDocument3();
 	IWebBrowser2* ie;
 };

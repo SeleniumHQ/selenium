@@ -63,7 +63,14 @@ const wchar_t* variant2wchar(const VARIANT toConvert)
 			toReturn = new wchar_t[1];
 			wcscpy_s(toReturn, 1, L"");
 			return toReturn;
-
+/*
+		case VT_I4:
+			long value = toConvert.lVal;
+			int length = value / 10;
+			toReturn = new wchar_t[length + 1];
+			swprintf(toReturn, length, L"%l", value);
+			return toReturn;
+*/
 		case VT_NULL:
 			return NULL;
 

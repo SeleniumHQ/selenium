@@ -59,6 +59,9 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getTe
 {
 	AttributeNode* node = getAttributeNode(env, obj);
 	const wchar_t* text = node->getText();
+	if (text == NULL)
+		return NULL;
+
 	jstring toReturn = env->NewString((const  jchar*) text, (jsize) wcslen(text));
 	delete text;
 	return toReturn;

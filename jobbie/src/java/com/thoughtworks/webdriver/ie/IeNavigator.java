@@ -23,7 +23,6 @@ public class IeNavigator extends DefaultNavigator {
 
 	public Iterator getAttributeAxisIterator(Object contextNode) throws UnsupportedAxisException {
 		try {
-//			System.out.println("Attribute axis of: " + ((HtmlNode)contextNode).getName());
 			final HtmlNode firstAttribute = ((HtmlNode) contextNode).getFirstAttribute();
 			return new NodeIterator(firstAttribute);
 		} catch (NoSuchElementException e) {
@@ -186,8 +185,6 @@ public class IeNavigator extends DefaultNavigator {
 		public Object next() {
 			HtmlNode toReturn = node;
 			node = (HtmlNode) node.getNextSibling();
-//			if (toReturn instanceof AttributeNode && toReturn != null)
-//				System.out.println("   " + toReturn.getName() + " --- " + ((AttributeNode) toReturn).getText());
 			return toReturn;
 		}
 

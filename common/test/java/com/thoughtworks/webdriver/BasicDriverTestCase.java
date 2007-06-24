@@ -143,6 +143,13 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertEquals("We Arrive Here", driver.getTitle());
     }
 
+    public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime() {
+    	driver.get(formPage);
+        driver.get(xhtmlTestPage);
+        driver.selectElement("link=click me").click();
+        assertEquals("We Arrive Here", driver.getTitle());
+    }
+    
     public void testShouldBeAbleToClickOnLinkIdentifiedById() {
         driver.get(xhtmlTestPage);
         driver.selectElement("//a[@id='linkId']").click();
@@ -503,7 +510,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.switchTo().window(1);
         assertEquals("We Arrive Here", driver.getTitle());
     }
-
+    
     protected WebDriver driver;
     protected String baseUrl;
     protected String simpleTestPage;

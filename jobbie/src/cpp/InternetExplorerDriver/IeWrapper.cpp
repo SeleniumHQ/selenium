@@ -144,16 +144,72 @@ void IeWrapper::waitForNavigateToFinish()
 	VARIANT_BOOL busy;
 	ie->get_Busy(&busy);
 	while (busy == VARIANT_TRUE) {
-		Sleep(10);
+		Sleep(100);
 		ie->get_Busy(&busy);
 	}
 
 	READYSTATE readyState;
 	ie->get_ReadyState(&readyState);
 	while (readyState != READYSTATE_COMPLETE) {
-		Sleep(20);
+		Sleep(50);
 		ie->get_ReadyState(&readyState);
 	}
+
+	IHTMLDocument2* doc = getDocument();
+	waitForDocumentToComplete(doc);
+
+	IHTMLFramesCollection2* frames = NULL;
+	doc->get_frames(&frames);
+
+	if (frames != NULL) {
+		long framesLength = 0;
+		frames->get_length(&framesLength);
+
+		VARIANT index;
+		VariantInit(&index);
+		index.vt = VT_I4;
+
+		for (long i = 0; i < framesLength; i++) {
+			index.lVal = i;
+			VARIANT result;
+			frames->item(&index, &result);
+
+			IHTMLWindow2* window;
+			result.pdispVal->QueryInterface(__uuidof(IHTMLWindow2), (void**)&window);
+
+			IHTMLDocument2* frameDoc;
+			window->get_document(&frameDoc);
+
+			waitForDocumentToComplete(frameDoc);
+
+			frameDoc->Release();
+			window->Release();
+			VariantClear(&result);
+		}
+
+		VariantClear(&index);
+		frames->Release();
+	}
+
+	doc->Release();
+}
+
+void IeWrapper::waitForDocumentToComplete(IHTMLDocument2* doc)
+{
+	BSTR state;
+	doc->get_readyState(&state);
+	wchar_t* currentState = bstr2wchar(state);
+
+	while (wcscmp(L"complete", currentState) != 0) {
+		Sleep(50);
+		SysFreeString(state);
+		delete currentState;
+		doc->get_readyState(&state);
+		currentState = bstr2wchar(state);
+	}
+
+	SysFreeString(state);
+	delete currentState;
 }
 
 IHTMLDocument2* IeWrapper::getDocument() 
