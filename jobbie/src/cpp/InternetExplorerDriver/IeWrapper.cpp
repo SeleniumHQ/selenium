@@ -5,7 +5,11 @@
 #include <jni.h>
 #include <comutil.h>
 #include <comdef.h>
-//#include <afxdisp.h>
+#include <stdlib.h>
+#include <string>
+
+#include "atlbase.h"
+#include "atlstr.h"
 
 using namespace std;
 
@@ -24,7 +28,6 @@ IeWrapper::~IeWrapper()
 
 bool IeWrapper::getVisible()
 {
-	// Does this need to be released?
 	VARIANT_BOOL visible;
 	ie->get_Visible(&visible);
 	return visible == VARIANT_TRUE;
@@ -38,29 +41,26 @@ void IeWrapper::setVisible(bool isVisible)
 		ie->put_Visible(VARIANT_FALSE);
 }
 
-const char* IeWrapper::getCurrentUrl() 
+const wchar_t* IeWrapper::getCurrentUrl() 
 {
-	IHTMLDocument2 *doc = getDocument();
-	BSTR url;
+	CComQIPtr<IHTMLDocument2, &__uuidof(IHTMLDocument2)> doc = getDocument();
+	CComBSTR url;
 	doc->get_URL(&url);
-	doc->Release();
-	const char* toReturn = bstr2char(url);
-	SysFreeString(url);
-	return toReturn;
+
+	return bstr2wchar(url);
 }
 
-const char* IeWrapper::getTitle() 
+const wchar_t* IeWrapper::getTitle() 
 {
-	BSTR title;
+	CComBSTR title;
 	IHTMLDocument2 *doc = getDocument();
 	doc->get_title(&title);
 	doc->Release();
-	const char* toReturn = bstr2char(title);
-	SysFreeString(title);
-	return toReturn;
+
+	return bstr2wchar(title);
 }
 
-void IeWrapper::get(const char *url)
+void IeWrapper::get(const wchar_t *url)
 {
 	CComVariant spec(url);
 	CComVariant dummy;
@@ -69,12 +69,14 @@ void IeWrapper::get(const char *url)
 	waitForNavigateToFinish();
 }
 
-ElementWrapper* IeWrapper::selectElementById(const char *elementId) 
+ElementWrapper* IeWrapper::selectElementById(const wchar_t *elementId) 
 {
 	IHTMLDocument3 *doc = getDocument3();
 	IHTMLElement* element = NULL;
-	doc->getElementById(_bstr_t(elementId), &element);
+	BSTR id = SysAllocString(elementId);
+	doc->getElementById(id, &element);
 	doc->Release();
+	SysFreeString(id);
 	
 	if (element != NULL) {
 		IHTMLDOMNode* node = NULL;
@@ -88,7 +90,7 @@ ElementWrapper* IeWrapper::selectElementById(const char *elementId)
 	throw "Cannot find element";
 }
 
-ElementWrapper* IeWrapper::selectElementByLink(const char *elementLink)
+ElementWrapper* IeWrapper::selectElementByLink(const wchar_t *elementLink)
 {
 	IHTMLDocument2 *doc = getDocument();
 	IHTMLElementCollection* linkCollection;
@@ -117,8 +119,10 @@ ElementWrapper* IeWrapper::selectElementByLink(const char *elementLink)
 		BSTR linkText;
 		element->get_innerText(&linkText);
 
-		const char *converted = bstr2char(linkText);
-		if (strcmp(elementLink, converted) == 0) {
+		const wchar_t *converted = bstr2wchar(linkText);
+		SysFreeString(linkText);
+
+		if (wcscmp(elementLink, converted) == 0) {
 			delete converted;
 			IHTMLDOMNode* linkNode;
 			element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&linkNode);
@@ -131,6 +135,7 @@ ElementWrapper* IeWrapper::selectElementByLink(const char *elementLink)
 		delete converted;
 		element->Release();
 	}
+	linkCollection->Release();
     throw "Cannot find element";
 }
 
@@ -157,7 +162,6 @@ IHTMLDocument2* IeWrapper::getDocument()
 	ie->get_Document(&ppDisp);
 
 	IHTMLDocument2* htmlDoc2 = NULL;
-
 	if (ppDisp != NULL)
     {
 		if (!FAILED(ppDisp->QueryInterface(IID_IHTMLDocument2, (LPVOID *)&htmlDoc2))) {
@@ -165,6 +169,7 @@ IHTMLDocument2* IeWrapper::getDocument()
 			return htmlDoc2;
 		}
 	}
+	ppDisp->Release();
 	throw "Cannot locate document as IHTMLDocument2";
 }
 
@@ -182,5 +187,6 @@ IHTMLDocument3* IeWrapper::getDocument3()
 			return htmlDoc3;
 		}
 	}
+	ppDisp->Release();
 	throw "Cannot locate document as IHTMLDocument3";
 }

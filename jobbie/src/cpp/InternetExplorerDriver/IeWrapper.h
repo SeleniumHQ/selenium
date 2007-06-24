@@ -4,6 +4,7 @@
 
 #include <Exdisp.h>
 #include <mshtml.h>
+#include <string>
 #include "ElementWrapper.h"
 
 class ElementWrapper;
@@ -17,13 +18,13 @@ public:
 	bool getVisible();
 	void setVisible(bool isShown);
 
-	const char *getCurrentUrl();
+	const wchar_t* getCurrentUrl();
 
-	const char* getTitle();
-	void get(const char *url);
+	const wchar_t* getTitle();
+	void get(const wchar_t* url);
 
-	ElementWrapper* selectElementById(const char *elementId);
-	ElementWrapper* selectElementByLink(const char *elementLink);
+	ElementWrapper* selectElementById(const wchar_t *elementId);
+	ElementWrapper* selectElementByLink(const wchar_t *elementLink);
 	IHTMLDocument2* getDocument();
 
 	void waitForNavigateToFinish();

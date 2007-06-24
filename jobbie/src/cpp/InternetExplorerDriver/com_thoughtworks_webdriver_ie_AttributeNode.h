@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_thoughtworks_webdriver_ie_AttributeNode
+ * Method:    getParent
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getParent
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_AttributeNode
  * Method:    getFirstAttribute
  * Signature: ()Lcom/thoughtworks/webdriver/ie/AttributeNode;
  */
@@ -37,6 +45,14 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getNe
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getText
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_AttributeNode
+ * Method:    deleteStoredObject
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_deleteStoredObject
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

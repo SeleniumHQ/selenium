@@ -89,10 +89,26 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
+ * Method:    selectElementsByLink
+ * Signature: (Ljava/lang/String;Ljava/util/List;)V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_selectElementsByLink
+  (JNIEnv *, jobject, jstring, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
  * Method:    getDocument
  * Signature: ()Lcom/thoughtworks/webdriver/ie/DocumentNode;
  */
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getDocument
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
+ * Method:    deleteStoredObject
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_deleteStoredObject
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

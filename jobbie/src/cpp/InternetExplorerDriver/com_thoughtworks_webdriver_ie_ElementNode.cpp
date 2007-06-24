@@ -30,6 +30,20 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getDocu
 	return env->NewObject(clazz, cId, (jlong) doc);
 }
 
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getParent
+  (JNIEnv *env, jobject obj)
+{
+	ElementNode* node = getElementNode(env, obj);
+	ElementNode* parent = node->getParent();
+
+	if (parent == NULL)
+		return NULL;
+
+	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/ElementNode");
+	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+	return env->NewObject(clazz, cId, (jlong) parent);
+}
+
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstChild
   (JNIEnv *env, jobject obj)
 {
@@ -70,24 +84,36 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirs
 	} catch (const char* message) {
 		throwNoSuchElementException(env, message);
 	}
+	return NULL;
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNativeName
   (JNIEnv *env, jobject obj)
 {
 	ElementNode* node = getElementNode(env, obj);
-	const char* name = node->name();
+	const wchar_t* name = node->name();
 
-	return env->NewStringUTF(name);
+	jstring toReturn = env->NewString((const jchar*) name, (jsize) wcslen(name));
+	delete name;
+	return toReturn;
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getText
   (JNIEnv *env, jobject obj)
 {
 	ElementNode* node = getElementNode(env, obj);
-	const char* text = node->getText();
+	const wchar_t* text = node->getText();
 
-	return env->NewStringUTF(text);
+	jstring toReturn = env->NewString((const jchar*) text, (jsize) wcslen(text));
+	delete text;
+	return toReturn;
+}
+
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_deleteStoredObject
+  (JNIEnv *env, jobject obj)
+{
+	ElementNode* node = getElementNode(env, obj);
+	delete node;
 }
 
 #ifdef __cplusplus

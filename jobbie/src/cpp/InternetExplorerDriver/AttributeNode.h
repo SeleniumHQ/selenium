@@ -15,8 +15,8 @@ public:
 	Node* getFirstChild();
 	Node* getFirstAttribute();
 
-	const char* name();
-	const char* getText();
+	const wchar_t* name();
+	const wchar_t* getText();
 
 private:
 	long findNextSpecifiedIndex();

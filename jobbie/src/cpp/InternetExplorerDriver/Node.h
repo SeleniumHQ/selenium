@@ -10,6 +10,6 @@ public:
 	virtual Node* getFirstChild() = 0;
 	virtual Node* getFirstAttribute() = 0;
 
-	virtual const char* name() = 0;
-	virtual const char* getText() = 0;
+	virtual const wchar_t* name() = 0;
+	virtual const wchar_t* getText() = 0;
 };

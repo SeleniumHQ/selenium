@@ -3,12 +3,13 @@
 
 #include <jni.h>
 #include <iostream>
+#include <string>
 
 void throwRunTimeException(JNIEnv *, const char *message);
 void throwNoSuchElementException(JNIEnv *, const char *message);
 void throwUnsupportedOperationException(JNIEnv *, const char *message);
 void startCom();
-const char *bstr2char(const BSTR toConvert);
-const char *variant2char(const VARIANT toConvert);
+const wchar_t *variant2wchar(const VARIANT toConvert);
+wchar_t* bstr2wchar(BSTR from);
 
 #endif

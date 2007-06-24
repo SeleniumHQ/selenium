@@ -20,36 +20,46 @@ ElementWrapper::~ElementWrapper()
 	element->Release();
 }
 
-const char* ElementWrapper::getAttribute(const char* name) 
+const wchar_t* ElementWrapper::getAttribute(const wchar_t* name) 
 {
-	char *lookFor = (char *)name;
+	wchar_t *lookFor = (wchar_t *)name;
 
-	if (_stricmp("class", name) == 0) {
-		lookFor = "className";
+	if (_wcsicmp(L"class", name) == 0) {
+		lookFor = L"className";
 	}
 
-	BSTR attributeName = BSTR(lookFor);
+	BSTR attributeName = SysAllocString(lookFor);
 	VARIANT value;
 	element->getAttribute(attributeName, 0, &value);
-
-	const char* toReturn = variant2char(value);
+	const wchar_t* toReturn = variant2wchar(value);
 	VariantClear(&value);
 	return toReturn;
 }
 
-const char* ElementWrapper::getValue()
+const wchar_t* ElementWrapper::getValue()
 {
 	BSTR temp;
 	element->get_tagName(&temp);
-	const char *name = bstr2char(temp);
+	const wchar_t *name = bstr2wchar(temp);
 	SysFreeString(temp);
 
-	int value = _stricmp("textarea", name);
+	int value = _wcsicmp(L"textarea", name);
 	delete name;
 
 	if (value == 0) 
 		return this->getTextAreaValue();
-	return this->getAttribute("value");
+	return this->getAttribute(L"value");
+}
+
+void ElementWrapper::setValue(wchar_t* newValue)
+{
+	CComBSTR value = SysAllocString(L"value");
+	VARIANT reallyNewValue;
+	VariantInit(&reallyNewValue);
+	reallyNewValue.vt = VT_BSTR;
+	reallyNewValue.bstrVal = SysAllocString(newValue);
+	element->setAttribute(value, reallyNewValue, 0);
+	VariantClear(&reallyNewValue);
 }
 
 bool ElementWrapper::isSelected()
@@ -83,12 +93,11 @@ void ElementWrapper::setSelected()
 			click();
 		}
 
-		BSTR checked = BSTR("checked");
+		BSTR checked = SysAllocString(L"checked");
 		VARIANT isChecked;
 		isChecked.vt = VT_BSTR;
-		isChecked.bstrVal = BSTR("true");
+		isChecked.bstrVal = SysAllocString(L"true");
 		element->setAttribute(checked, isChecked, 0);
-		SysFreeString(checked);
 		VariantClear(&isChecked);
 		return;
     }
@@ -120,17 +129,17 @@ bool ElementWrapper::toggle()
 	return isSelected();
 }
 
-const char* ElementWrapper::getText() 
+const wchar_t* ElementWrapper::getText() 
 {
 	BSTR text;
 	element->get_innerText(&text);
 
-	const char* toReturn = bstr2char(text);
+	const wchar_t* toReturn = bstr2wchar(text);
 	SysFreeString(text);
 	return toReturn;
 }
 
-const char* ElementWrapper::getTextAreaValue() 
+const wchar_t* ElementWrapper::getTextAreaValue() 
 {
 	IHTMLTextAreaElement* textarea;
 	element->QueryInterface(__uuidof(IHTMLTextAreaElement), (void**)&textarea);
@@ -139,7 +148,7 @@ const char* ElementWrapper::getTextAreaValue()
 	textarea->get_value(&result);
 	textarea->Release();
 
-	const char* toReturn = bstr2char(result);
+	const wchar_t* toReturn = bstr2wchar(result);
 	SysFreeString(result);
 	return toReturn;
 }
@@ -176,7 +185,6 @@ void ElementWrapper::click()
 	element->click();
 
 	VariantClear(&eventref);
-	if (eventObject != NULL) eventObject->Release();
 	element3->Release();
 
 	ie->waitForNavigateToFinish();
@@ -195,9 +203,9 @@ void ElementWrapper::submit()
 		if (input != NULL) {
 			BSTR typeName;
 			input->get_type(&typeName);
-			const char* type = bstr2char(typeName);
+			const wchar_t* type = bstr2wchar(typeName);
 
-			if (type != NULL && (_stricmp("submit", type) == 0 || _stricmp("image", type) == 0)) {
+			if (type != NULL && (_wcsicmp(L"submit", type) == 0 || _wcsicmp(L"image", type) == 0)) {
 				click();
 			} else {
 				input->get_form(&form);
@@ -232,17 +240,17 @@ bool ElementWrapper::isCheckbox()
 {
 	BSTR tagName;
 	element->get_tagName(&tagName);
-	const char* name = bstr2char(tagName);
+	const wchar_t* name = bstr2wchar(tagName);
 	SysFreeString(tagName);
 
 	bool isCheckbox = false;
-	if (_stricmp(name, "input") == 0) {
+	if (_wcsicmp(name, L"input") == 0) {
 		IHTMLInputElement* input;
 		element->QueryInterface(__uuidof(IHTMLInputElement), (void**)&input);
 		BSTR typeName;
 		input->get_type(&typeName);
-		const char* type = bstr2char(typeName);
-		isCheckbox = type != NULL && _stricmp(type, "checkbox") == 0;
+		const wchar_t* type = bstr2wchar(typeName);
+		isCheckbox = type != NULL && _wcsicmp(type, L"checkbox") == 0;
 		delete type;
 		SysFreeString(typeName);
 		input->Release();
@@ -269,4 +277,40 @@ IHTMLFormElement* ElementWrapper::findParentForm()
 	if (current != element)
 		current->Release();
 	return form;
+}
+
+std::vector<ElementWrapper*>* ElementWrapper::getChildrenWithTagName(const wchar_t* tagName) 
+{
+	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2 = element;
+	CComBSTR name = SysAllocString(tagName);
+	IHTMLElementCollection* elementCollection;
+	element2->getElementsByTagName(name, &elementCollection);
+
+	long length = 0;
+	elementCollection->get_length(&length);
+
+	std::vector<ElementWrapper*>* toReturn = new std::vector<ElementWrapper*>();
+
+	for (int i = 0; i < length; i++) {
+		VARIANT idx;
+		idx.vt = VT_I4;
+		idx.lVal = i;
+		IDispatch* dispatch;
+		VARIANT zero;
+		zero.vt = VT_I4;
+		zero.lVal = 0;
+		elementCollection->item(idx, zero, &dispatch);
+		VariantClear(&idx);
+		VariantClear(&zero);
+
+		IHTMLDOMNode* node;
+		dispatch->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&node);
+		dispatch->Release();
+
+		toReturn->push_back(new ElementWrapper(ie, node));
+		node->Release();
+	}
+
+	elementCollection->Release();
+	return toReturn;
 }

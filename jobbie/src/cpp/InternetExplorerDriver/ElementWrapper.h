@@ -2,6 +2,7 @@
 
 #include <Exdisp.h>
 #include <mshtml.h>
+#include <vector>
 #include "IeWrapper.h"
 #include "com_thoughtworks_webdriver_ie_InternetExplorerElement.h"
 
@@ -13,21 +14,24 @@ public:
 	ElementWrapper(IeWrapper* ie, IHTMLDOMNode *node);
 	~ElementWrapper();
 
-	const char* getAttribute(const char* name);
-	const char* getValue();
+	const wchar_t* getAttribute(const wchar_t* name);
+	const wchar_t* getValue();
+	void setValue(wchar_t* newValue);
 	bool isSelected();
 	void setSelected();
 	bool isEnabled();
 	bool toggle();
-	const char* getText();
+	const wchar_t* getText();
 
 	void click();
 	void submit();
 
+	std::vector<ElementWrapper*>* getChildrenWithTagName(const wchar_t* tagName);
+
 	void setNode(IHTMLDOMNode* fromNode);
 
 private:
-	const char* getTextAreaValue();
+	const wchar_t* getTextAreaValue();
 	bool isCheckbox();
 	IHTMLFormElement* findParentForm();
 

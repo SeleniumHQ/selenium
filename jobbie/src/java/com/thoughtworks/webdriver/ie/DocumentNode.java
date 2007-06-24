@@ -11,6 +11,10 @@ public class DocumentNode implements HtmlNode {
 		return this;
 	}
 
+	public HtmlNode getParent() {
+		throw new UnsupportedOperationException("getParent");
+	}
+	
 	public native HtmlNode getFirstChild();
 	
 	public HtmlNode getNextSibling() {
@@ -24,4 +28,10 @@ public class DocumentNode implements HtmlNode {
 	public String getName() {
 		throw new UnsupportedOperationException("getName");
 	}
+	
+	protected void finalize() throws Throwable {
+		deleteStoredObject();
+	}
+	
+	private native void deleteStoredObject();
 }

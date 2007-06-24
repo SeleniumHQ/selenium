@@ -4,6 +4,8 @@
 #include "ElementNode.h"
 #include "ElementWrapper.h"
 #include <iostream>
+#include <vector>
+#include <iterator>
 
 using namespace std;
 
@@ -47,16 +49,29 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	const char* value = wrapper->getValue();
-	return env->NewStringUTF(value);
+	const wchar_t* value = wrapper->getValue();
+
+	jstring toReturn = env->NewString((const jchar*) value, (jsize) wcslen(value));
+	delete value;
+	return toReturn;
+}
+
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setValue
+  (JNIEnv *env, jobject obj, jstring newValue)
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+	wchar_t* converted = (wchar_t*) env->GetStringChars(newValue, NULL);
+	wrapper->setValue(converted);
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getText
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	const char* value = wrapper->getText();
-	return env->NewStringUTF(value);
+	const wchar_t* value = wrapper->getText();
+	jstring toReturn = env->NewString((const jchar*) value, (jsize) wcslen(value));
+	delete value;
+	return toReturn;
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getAttribute
@@ -64,10 +79,18 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 
-	const char* converted = (const char*)env->GetStringUTFChars(attributeName, 0);
-	const char* value = wrapper->getAttribute(converted);
-	env->ReleaseStringUTFChars(attributeName, converted);
-	return env->NewStringUTF(value);
+	const wchar_t* converted = (wchar_t*) env->GetStringChars(attributeName, NULL);
+	const wchar_t* value = wrapper->getAttribute(converted);
+	env->ReleaseStringChars(attributeName, (const jchar*) converted);
+	wchar_t* toReturn = (wchar_t*) value;
+	if (value == NULL) {
+		toReturn = new wchar_t[1];
+		wcscpy_s(toReturn, 1, L"");
+	}
+
+	jstring toReturn2 = env->NewString((const jchar*) toReturn, (jsize) wcslen(toReturn));
+	delete toReturn;
+	return toReturn2;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_isEnabled
@@ -111,6 +134,38 @@ JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEl
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->toggle() ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getChildrenOfTypeNatively
+  (JNIEnv *env, jobject obj, jobject list, jstring tagName)
+{
+	jclass listClass = env->FindClass("java/util/List");
+	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
+
+	jclass ieeClass = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
+
+	const wchar_t* converted = (wchar_t*) env->GetStringChars(tagName, NULL);
+	ElementWrapper* wrapper = getWrapper(env, obj);
+	const std::vector<ElementWrapper*>* elements = wrapper->getChildrenWithTagName(converted);
+
+	std::vector<ElementWrapper*>::const_iterator end = elements->end();
+	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
+
+	while(cur < end)
+	{
+		ElementWrapper* wrapper = *cur;
+		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
+		env->CallVoidMethod(list, addId, wrapped);
+		cur++;
+	}
+}
+
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_deleteStoredObject
+  (JNIEnv *env, jobject obj)
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+	delete wrapper;
 }
 
 #ifdef __cplusplus

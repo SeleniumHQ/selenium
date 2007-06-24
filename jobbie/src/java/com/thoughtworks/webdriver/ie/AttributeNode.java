@@ -11,6 +11,8 @@ public class AttributeNode implements HtmlNode {
 		throw new UnsupportedOperationException("getDocument");
 	}
 
+	public native HtmlNode getParent();
+	
 	public native AttributeNode getFirstAttribute();
 
 	public HtmlNode getFirstChild() {
@@ -22,4 +24,10 @@ public class AttributeNode implements HtmlNode {
 	public native HtmlNode getNextSibling();
 	
 	public native String getText();
+	
+	protected void finalize() throws Throwable {
+		deleteStoredObject();
+	}
+	
+	private native void deleteStoredObject();
 }

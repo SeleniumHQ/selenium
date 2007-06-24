@@ -40,34 +40,29 @@ void startCom()
 	}
 }
 
-const char* bstr2char(const BSTR toConvert) 
-{
-	if (toConvert == NULL)
-		return NULL;
-
-	char* toReturn = NULL;
-	const size_t size = SysStringLen(toConvert) + 1;
-	if (size > 1) {
-		CW2A result(toConvert);
-		return _strdup(result);
-	} else {
-		return _strdup("");
-	}
-}
-
-const char* variant2char(const VARIANT toConvert) 
+const wchar_t* variant2wchar(const VARIANT toConvert) 
 {
 	VARTYPE type = toConvert.vt;
+	wchar_t* toReturn;
 
 	switch (type) {
 		case VT_BOOL:
-			return _strdup(toConvert.boolVal ? "true" : "false");
+			if (toConvert.boolVal) {
+				toReturn = new wchar_t[5];
+				wcscpy_s(toReturn, 5, L"true");
+			} else {
+				toReturn = new wchar_t[6];
+				wcscpy_s(toReturn, 6, L"false");
+			}
+			return toReturn;
 
 		case VT_BSTR: 
-			return bstr2char(toConvert.bstrVal);
+			return bstr2wchar(toConvert.bstrVal);
 
 		case VT_EMPTY:
-			return _strdup("");
+			toReturn = new wchar_t[1];
+			wcscpy_s(toReturn, 1, L"");
+			return toReturn;
 
 		case VT_NULL:
 			return NULL;
@@ -77,4 +72,12 @@ const char* variant2char(const VARIANT toConvert)
 	}
 
 	return NULL;
+}
+
+wchar_t* bstr2wchar(BSTR from) 
+{
+	size_t length = SysStringLen(from) + 1;
+	wchar_t* toReturn = new wchar_t[length];
+	wcscpy_s(toReturn, length, from);
+	return toReturn;
 }

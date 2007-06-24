@@ -41,6 +41,19 @@ Node* ElementNode::getDocument()
 	return toReturn;
 }
 
+ElementNode* ElementNode::getParent()
+{
+	IHTMLDOMNode* parent = NULL;
+	node->get_parentNode(&parent);
+	
+	if (parent == NULL)
+		return NULL;
+
+	ElementNode* toReturn = new ElementNode(parent);
+	parent->Release();
+	return toReturn;
+}
+
 Node* ElementNode::getFirstChild()
 {
 	IHTMLDOMNode* child = NULL;
@@ -90,16 +103,16 @@ Node* ElementNode::getFirstAttribute()
 	return toReturn;
 }
 
-const char* ElementNode::name()
+const wchar_t* ElementNode::name()
 {
 	BSTR name;
 	node->get_nodeName(&name);
-	const char* toReturn = bstr2char(name);
+	const wchar_t* toReturn = bstr2wchar(name);
 	SysFreeString(name);
 	return toReturn;
 }
 
-const char* ElementNode::getText()
+const wchar_t* ElementNode::getText()
 {
 	IHTMLElement* element;
 	node->QueryInterface(__uuidof(element), (void**)&element);
@@ -107,7 +120,7 @@ const char* ElementNode::getText()
 	BSTR text;
 	element->get_innerText(&text);
 	element->Release();
-	const char* toReturn = bstr2char(text);
+	const wchar_t* toReturn = bstr2wchar(text);
 	SysFreeString(text);
 	return toReturn;
 }

@@ -18,7 +18,7 @@ DocumentNode::~DocumentNode()
 
 Node* DocumentNode::getDocument()
 {
-	return this;
+	return new DocumentNode(doc);
 }
 
 Node* DocumentNode::getNextSibling()
@@ -45,12 +45,14 @@ Node* DocumentNode::getFirstAttribute()
 	return NULL;
 }
 
-const char* DocumentNode::name()
+const wchar_t* DocumentNode::name()
 {
-	return "<document node>";
+	wchar_t* toReturn = new wchar_t[16];
+	wcscpy_s(toReturn, 16, L"<document node>");
+	return toReturn;
 }
 
-const char* DocumentNode::getText()
+const wchar_t* DocumentNode::getText()
 {
 	return NULL;
 }

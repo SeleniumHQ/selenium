@@ -10,6 +10,8 @@ public class ElementNode implements HtmlNode {
 
 	public native DocumentNode getDocument();
 
+	public native HtmlNode getParent();
+	
 	public native HtmlNode getFirstChild();
 	
 	public native HtmlNode getNextSibling();
@@ -22,4 +24,10 @@ public class ElementNode implements HtmlNode {
 	}
 	
 	private native String getNativeName();
+	
+	protected void finalize() throws Throwable {
+		deleteStoredObject();
+	}
+	
+	private native void deleteStoredObject();
 }

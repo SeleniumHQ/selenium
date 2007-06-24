@@ -17,6 +17,8 @@
 
 package com.thoughtworks.webdriver.ie;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jaxen.JaxenException;
@@ -68,8 +70,31 @@ public class InternetExplorerDriver implements WebDriver {
 		}
 	}
 
-	public List selectElements(String xpath) {
-		throw new UnsupportedOperationException("selectElements");
+	public List selectElements(String selector) {
+		List rawElements = new ArrayList();
+		if (selector.startsWith("link=")) {
+			selectElementsByLink(selector.substring("link".length()), rawElements);
+			return convertRawPointersToElements(rawElements);
+		} else {
+			try {
+				rawElements = new IeXPath(selector, this).selectNodes(getDocument());
+				if (rawElements == null)
+					throw new NoSuchElementException("Cannot find element: " + selector);
+				return convertRawPointersToElements(rawElements);
+			} catch (JaxenException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private List convertRawPointersToElements(List rawElements) {
+		List elements = new ArrayList();
+		Iterator iterator = rawElements.iterator();
+		while (iterator.hasNext()) {
+			ElementNode element = (ElementNode) iterator.next();
+			elements.add(InternetExplorerElement.createInternetExplorerElement(iePointer, element));
+		}
+		return elements;
 	}
 
 	public String selectText(String xpath) {
@@ -97,5 +122,13 @@ public class InternetExplorerDriver implements WebDriver {
 	
 	private native WebElement selectElementByLink(String linkText);
 	
+	private native void selectElementsByLink(String linkText, List rawElements);
+	
 	private native DocumentNode getDocument();
+	
+	protected void finalize() throws Throwable {
+		deleteStoredObject();
+	}
+	
+	private native void deleteStoredObject();
 }

@@ -17,6 +17,14 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getDocu
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
+ * Method:    getParent
+ * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getParent
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_ElementNode
  * Method:    getFirstChild
  * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
  */
@@ -45,6 +53,14 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirs
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNativeName
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_ElementNode
+ * Method:    deleteStoredObject
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_deleteStoredObject
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

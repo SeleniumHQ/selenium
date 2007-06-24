@@ -95,6 +95,22 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElemen
 JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_toggle
   (JNIEnv *, jobject);
 
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
+ * Method:    deleteStoredObject
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_deleteStoredObject
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
+ * Method:    getChildrenOfTypeNatively
+ * Signature: (Ljava/util/List;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getChildrenOfTypeNatively
+  (JNIEnv *, jobject, jobject, jstring);
+
 #ifdef __cplusplus
 }
 #endif

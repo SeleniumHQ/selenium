@@ -30,6 +30,13 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_getFir
 	return env->NewObject(clazz, cId, (jlong) child);
 }
 
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_deleteStoredObject
+  (JNIEnv *env, jobject obj)
+{
+	DocumentNode* doc = getDocumentNode(env, obj);
+	delete doc;
+}
+
 #ifdef __cplusplus
 }
 #endif

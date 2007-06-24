@@ -33,9 +33,11 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getNa
   (JNIEnv *env, jobject obj)
 {
 	AttributeNode* node = getAttributeNode(env, obj);
-	const char* name = node->name();
+	const wchar_t* name = node->name();
 
-	return env->NewStringUTF(name);
+	jstring toReturn = env->NewString((const jchar*) name, (jsize) wcslen(name));
+	delete name;
+	return toReturn;
 }
 
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getNextSibling
@@ -56,8 +58,17 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getTe
   (JNIEnv *env, jobject obj)
 {
 	AttributeNode* node = getAttributeNode(env, obj);
-	const char* text = node->getText();
-	return env->NewStringUTF(text);
+	const wchar_t* text = node->getText();
+	jstring toReturn = env->NewString((const  jchar*) text, (jsize) wcslen(text));
+	delete text;
+	return toReturn;
+}
+
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_deleteStoredObject
+  (JNIEnv *env, jobject obj)
+{
+	AttributeNode* node = getAttributeNode(env, obj);
+	delete node;
 }
 
 #ifdef __cplusplus

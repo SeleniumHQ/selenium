@@ -54,8 +54,9 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
   (JNIEnv *env, jobject obj)
 {
 	IeWrapper* ie = getIe(env, obj);
-	const char *url = ie->getCurrentUrl();
-	jstring toReturn = env->NewStringUTF(url);
+	const wchar_t* url = ie->getCurrentUrl();
+
+	jstring toReturn = env->NewString((const jchar*) url, (jsize) wcslen(url));
 	delete url;
 	return toReturn;
 }
@@ -64,17 +65,18 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
   (JNIEnv *env, jobject obj, jstring url)
 {
 	IeWrapper* ie = getIe(env, obj);
-	const char* converted = (const char*)env->GetStringUTFChars(url, 0);
+	const wchar_t* converted = (wchar_t *)env->GetStringChars(url, 0);
 	ie->get(converted);
-	env->ReleaseStringUTFChars(url, converted);
+	env->ReleaseStringChars(url, (jchar*) converted);
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getTitle
   (JNIEnv *env, jobject obj)
 {
 	IeWrapper* ie = getIe(env, obj);
-	const char* title = ie->getTitle();
-	jstring toReturn = env->NewStringUTF(title);
+	const wchar_t* title = ie->getTitle();
+	jstring toReturn = env->NewString((const jchar*) title, (jsize) wcslen(title));
+	delete title;
 	return toReturn;
 }
 
@@ -82,10 +84,11 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
   (JNIEnv *env, jobject obj, jstring elementId)
 {
 	IeWrapper *ie = getIe(env, obj);
-	const char* converted = (const char*)env->GetStringUTFChars(elementId, 0);
+	wchar_t* converted = (wchar_t *)env->GetStringChars(elementId, 0);
 
 	try {
 		ElementWrapper* wrapper = ie->selectElementById(converted);
+		env->ReleaseStringChars(elementId, (const jchar*) converted);	
 
 		jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerElement");
 		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
@@ -95,27 +98,29 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 		throwNoSuchElementException(env, message);
 		return NULL;
 	} 
-	env->ReleaseStringUTFChars(elementId, converted);	
+	env->ReleaseStringChars(elementId, (const jchar*) converted);	
 }
 
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_selectElementByLink
   (JNIEnv *env, jobject obj, jstring linkText)
 {
 	IeWrapper* ie = getIe(env, obj);
-	const char* converted = (const char*)env->GetStringUTFChars(linkText, 0);
+	const wchar_t* converted = (const wchar_t*)env->GetStringChars(linkText, 0);
 
 	try {
 		ElementWrapper* wrapper = ie->selectElementByLink(converted);
+		env->ReleaseStringChars(linkText, (jchar*) converted);
 
 		jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerElement");
 		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 		return env->NewObject(clazz, cId, (jlong) wrapper);
 	} catch (const char *message) {
+		env->ReleaseStringChars(linkText, (jchar*) converted);
 		throwNoSuchElementException(env, message);
 		return NULL;
 	} 
-	env->ReleaseStringUTFChars(linkText, converted);
+
 }
 
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getDocument
@@ -129,6 +134,13 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 	return env->NewObject(clazz, cId, (jlong) node);
+}
+
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_deleteStoredObject
+  (JNIEnv *env, jobject obj)
+{
+	IeWrapper* ie = getIe(env, obj);
+	delete ie;
 }
 
 #ifdef __cplusplus

@@ -13,12 +13,13 @@ public:
 	~ElementNode();
 
 	Node* getDocument();
+	ElementNode* getParent();
 	Node* getFirstChild();
 	Node* getNextSibling();
 	Node* getFirstAttribute();
 
-	const char* name();
-	const char* getText();
+	const wchar_t* name();
+	const wchar_t* getText();
 
 	IHTMLDOMNode* getDomNode();
 

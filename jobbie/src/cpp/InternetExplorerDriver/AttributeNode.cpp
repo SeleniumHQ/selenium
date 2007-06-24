@@ -61,26 +61,27 @@ Node* AttributeNode::getFirstAttribute()
 	return NULL;
 }
 
-const char* AttributeNode::name()
+const wchar_t* AttributeNode::name()
 {
 	BSTR name;
 	attribute->get_nodeName(&name);
-	const char* toReturn = bstr2char(name);
+	wchar_t* toReturn = bstr2wchar(name);
 	SysFreeString(name);
 
-	if (_stricmp("classname", toReturn) == 0) {
+	if (_wcsicmp(L"classname", toReturn) == 0) {
 		delete toReturn;
-		return strdup("class");
+		toReturn = new wchar_t[6];
+		wcscpy_s(toReturn, 6, L"class");
 	}
 
 	return toReturn;
 }
 
-const char* AttributeNode::getText()
+const wchar_t* AttributeNode::getText()
 {
 	VARIANT value;
 	attribute->get_nodeValue(&value);
-	const char* toReturn = variant2char(value);
+	const wchar_t* toReturn = variant2wchar(value);
 	VariantClear(&value);
 	return toReturn;
 }

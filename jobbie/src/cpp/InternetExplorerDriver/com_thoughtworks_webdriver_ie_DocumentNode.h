@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_getFirstChild
   (JNIEnv *, jobject);
 
+/*
+ * Class:     com_thoughtworks_webdriver_ie_DocumentNode
+ * Method:    deleteStoredObject
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_deleteStoredObject
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif
