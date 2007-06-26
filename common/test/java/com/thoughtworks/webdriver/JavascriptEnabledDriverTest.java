@@ -177,4 +177,12 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     	bar.setSelected();
     	assertEquals("bar", driver.selectText("id=result"));
     }
+    
+    public void testShouldEmitOnChangeEventsWhenChnagingTheStateOfACheckbox() {
+    	driver.get(javascriptPage);
+    	WebElement checkbox = driver.selectElement("id=checkbox");
+    	
+    	checkbox.setSelected();
+    	assertEquals("checkbox thing", driver.selectText("id=result"));
+    }
 }

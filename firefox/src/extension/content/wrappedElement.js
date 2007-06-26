@@ -166,7 +166,10 @@ FirefoxDriver.prototype.setElementSelected = function(elementId) {
     try {
         var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
         if (checkbox.type == "checkbox") {
-            checkbox.checked = true;
+			if (!checkbox.checked) {
+	            checkbox.checked = true;
+				Utils.fireHtmlEvent(this.context, checkbox, "change");
+			}
             wasSet = true;
         }
     } catch(e) {}
