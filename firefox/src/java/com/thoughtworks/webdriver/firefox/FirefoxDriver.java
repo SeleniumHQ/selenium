@@ -87,7 +87,8 @@ public class FirefoxDriver implements WebDriver {
     }
 
     public String selectText(String xpath) {
-        return sendMessage("selectText", xpath);
+    	WebElement element = selectElement(xpath);
+    	return element.getText();
     }
 
     public void setVisible(boolean visible) {

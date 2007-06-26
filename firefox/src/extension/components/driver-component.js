@@ -60,13 +60,11 @@ WebDriverServer.prototype.createInstance = function(ignore1, ignore2, ignore3) {
 }
 
 var ServerFactory = {
-  createInstance: function (aOuter, aIID)
-  {
+  createInstance: function (aOuter, aIID) {
     if (aOuter != null)
       throw Components.results.NS_ERROR_NO_AGGREGATION;
-    if (!this.server) {
+    if (!this.server)
         this.server = new WebDriverServer();
-    }
     return (this.server).QueryInterface(aIID);
   }
 };
@@ -74,8 +72,8 @@ var ServerFactory = {
 //module definition (xpcom registration)
 var ServerModule = {
   _firstTime: true,
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
-  {
+
+  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType) {
     if (this._firstTime) {
       this._firstTime = false;
       throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
@@ -84,14 +82,12 @@ var ServerModule = {
     aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
   },
 
-  unregisterSelf: function(aCompMgr, aLocation, aType)
-  {
+  unregisterSelf: function(aCompMgr, aLocation, aType) {
     aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
     aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);
   },
 
-  getClassObject: function(aCompMgr, aCID, aIID)
-  {
+  getClassObject: function(aCompMgr, aCID, aIID) {
     if (!aIID.equals(Components.interfaces.nsIFactory))
       throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 

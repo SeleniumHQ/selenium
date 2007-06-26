@@ -17,6 +17,8 @@
 
 package com.thoughtworks.webdriver;
 
+import java.util.List;
+
 /**
  * Test case for browsers that support using Javascript
  */
@@ -155,5 +157,24 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 
         String result = driver.selectElement("//div[@id='result']").getText();
         assertEquals("mouse down", result);
+    }
+    
+    public void testShouldEmitOnChangeEventsWhenSelectingElements() {
+    	driver.get(javascriptPage);
+    	WebElement select = driver.selectElement("id=selector");
+    	List allOptions = select.getChildrenOfType("option");
+    	
+    	String initialTextValue = driver.selectText("id=result");
+    	
+    	WebElement foo = (WebElement) allOptions.get(0);
+    	WebElement bar = (WebElement) allOptions.get(1);
+
+    	System.out.println("Foo: " + foo.getText());
+    	System.out.println("Bar: " + bar.getText());
+    	
+    	foo.setSelected();
+    	assertEquals(initialTextValue, driver.selectText("id=result"));
+    	bar.setSelected();
+    	assertEquals("bar", driver.selectText("id=result"));
     }
 }

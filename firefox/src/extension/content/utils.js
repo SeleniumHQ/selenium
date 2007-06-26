@@ -95,6 +95,13 @@ Utils.keyDownOrUp = function(context, element, down, text) {
     element.dispatchEvent(event);
 };
 
+Utils.fireHtmlEvent = function(context, element, eventName) {
+    var doc = Utils.getDocument(context);
+    var e = doc.createEvent("HTMLEvents");
+	e.initEvent("change", true, true);
+    element.dispatchEvent(e);
+}
+
 Utils.isTextField = function(element) {
     var name = element.tagName.toLowerCase();
     if (name == "textarea")

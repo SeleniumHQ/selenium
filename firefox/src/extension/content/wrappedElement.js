@@ -156,7 +156,10 @@ FirefoxDriver.prototype.setElementSelected = function(elementId) {
 
     try {
         var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement)
-        option.selected = true;
+		if (!option.selected) {
+            option.selected = true;
+            Utils.fireHtmlEvent(this.context, option, "change");
+        }
         wasSet = true;
     } catch(e) {}
 
