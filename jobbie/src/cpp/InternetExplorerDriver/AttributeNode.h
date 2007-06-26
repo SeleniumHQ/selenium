@@ -6,8 +6,7 @@
 class AttributeNode : public Node
 {
 public:
-	AttributeNode(IHTMLAttributeCollection* allAttributes, long length);
-	AttributeNode(IHTMLAttributeCollection* allAttributes, long length, long index);
+	AttributeNode(IEnumVARIANT* enumerator);
 	~AttributeNode();
 
 	Node* getDocument();
@@ -19,11 +18,8 @@ public:
 	const wchar_t* getText();
 
 private:
-	long findNextSpecifiedIndex();
-	IHTMLDOMAttribute* getAttribute(long atIndex);
+	void moveToNextSpecifiedIndex();
 
-	IHTMLAttributeCollection* allAttributes;
+	IEnumVARIANT* enumerator;
 	IHTMLDOMAttribute* attribute;
-	long length;
-	long index;
 };

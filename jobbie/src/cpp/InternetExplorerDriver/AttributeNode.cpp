@@ -7,35 +7,23 @@
 
 using namespace std;
 
-AttributeNode::AttributeNode(IHTMLAttributeCollection* allAttributes, long length)
+AttributeNode::AttributeNode(IEnumVARIANT* enumerator)
 {
-	this->allAttributes = allAttributes;
-	this->allAttributes->AddRef();
-	this->length = length;
+	this->enumerator = enumerator;
+	this->enumerator->AddRef();
 
-	this->index = -1;
-	this->index = findNextSpecifiedIndex();
-	this->attribute = getAttribute(index);
+	moveToNextSpecifiedIndex();
+
 	if (this->attribute == NULL) {
-		this->allAttributes->Release();
+		this->enumerator->Release();
 		throw "No declared attributes";
 	}
-}
-
-AttributeNode::AttributeNode(IHTMLAttributeCollection* allAttributes, long length, long index)
-{
-	this->allAttributes = allAttributes;
-	this->allAttributes->AddRef();
-	this->length = length;
-	this->index = index;
-	
-	this->attribute = getAttribute(index);
 }
 
 AttributeNode::~AttributeNode()
 {
 	attribute->Release();
-	allAttributes->Release();
+	enumerator->Release();
 }
 
 Node* AttributeNode::getDocument() 
@@ -45,10 +33,11 @@ Node* AttributeNode::getDocument()
 
 Node* AttributeNode::getNextSibling()
 {
-	long newIndex = findNextSpecifiedIndex();
-	if (newIndex >= length)
+	try {
+		return new AttributeNode(enumerator);
+	} catch (const char* ignored) {
 		return NULL;
-	return new AttributeNode(allAttributes, length, newIndex);
+	}
 }
 
 Node* AttributeNode::getFirstChild() 
@@ -86,37 +75,26 @@ const wchar_t* AttributeNode::getText()
 	return toReturn;
 }
 
-long AttributeNode::findNextSpecifiedIndex()
+void AttributeNode::moveToNextSpecifiedIndex()
 {
-	IHTMLDOMAttribute* attr;
-	VARIANT_BOOL specified;
-	for (int i = index + 1; i < length; i++) {
-		attr = getAttribute(i);
+	this->attribute = NULL;
+
+	while (true) {
+		VARIANT* results = new VARIANT[1];
+		enumerator->Next(1, results, NULL);
+		IDispatch* nextAttribute = results[0].pdispVal;
+		if (nextAttribute == NULL)
+			return;
+
+		IHTMLDOMAttribute* attr;
+		nextAttribute->QueryInterface(__uuidof(IHTMLDOMAttribute), (void**)&attr);
+
+		VARIANT_BOOL specified;
 		attr->get_specified(&specified);
+		if (specified == VARIANT_TRUE) {
+			this->attribute = attr;
+			return;
+		}
 		attr->Release();
-		if (specified == VARIANT_TRUE) 
-			return i;
 	}
-
-	return length + 1;
-}
-
-IHTMLDOMAttribute* AttributeNode::getAttribute(long atIndex)
-{
-	if (atIndex >= length)
-		return NULL;
-
-	VARIANT idx;
-	idx.vt = VT_I4;
-	idx.lVal = atIndex;
-
-	IDispatch* dispatch = NULL;
-	allAttributes->item(&idx, &dispatch);
-
-	IHTMLDOMAttribute* attr;
-	dispatch->QueryInterface(__uuidof(IHTMLDOMAttribute), (void**)&attr);
-	dispatch->Release();
-	VariantClear(&idx);
-
-	return attr;
 }

@@ -98,7 +98,13 @@ Node* ElementNode::getFirstAttribute()
 		return NULL;
 	}
 
-	AttributeNode* toReturn = new AttributeNode(allAttributes, length);
+	IUnknown* unknown;
+	allAttributes->get__newEnum(&unknown);
+
+	CComQIPtr<IEnumVARIANT, &__uuidof(IEnumVARIANT)> enumerator;
+	enumerator = unknown;
+
+	AttributeNode* toReturn = new AttributeNode(enumerator);
 	allAttributes->Release();
 	return toReturn;
 }
