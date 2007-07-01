@@ -23,13 +23,13 @@ IeWrapper* getIe(JNIEnv *env, jobject obj)
 	return (IeWrapper *) value;
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_startComNatively
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_startComNatively
   (JNIEnv *env, jobject obj)
 {
 	startCom();
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_openIe
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_openIe
   (JNIEnv *env, jobject obj)
 {
 	try {
@@ -43,14 +43,21 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
 	}
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_setVisible
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_setVisible
   (JNIEnv *env, jobject obj, jboolean isVisible)
 {
 	IeWrapper* ie = getIe(env, obj);
 	ie->setVisible(isVisible == JNI_TRUE);
 }
 
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getCurrentUrl
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_waitForLoadToComplete
+  (JNIEnv *env, jobject obj)
+{
+	IeWrapper* ie = getIe(env, obj);
+	ie->waitForNavigateToFinish();
+}
+
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_getCurrentUrl
   (JNIEnv *env, jobject obj)
 {
 	IeWrapper* ie = getIe(env, obj);
@@ -61,7 +68,7 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	return toReturn;
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_get
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_get
   (JNIEnv *env, jobject obj, jstring url)
 {
 	IeWrapper* ie = getIe(env, obj);
@@ -70,7 +77,7 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
 	env->ReleaseStringChars(url, (jchar*) converted);
 }
 
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getTitle
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_getTitle
   (JNIEnv *env, jobject obj)
 {
 	IeWrapper* ie = getIe(env, obj);
@@ -80,7 +87,7 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	return toReturn;
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_selectElementById
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_selectElementById
   (JNIEnv *env, jobject obj, jstring elementId)
 {
 	IeWrapper *ie = getIe(env, obj);
@@ -101,7 +108,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	env->ReleaseStringChars(elementId, (const jchar*) converted);	
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_selectElementByLink
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_selectElementByLink
   (JNIEnv *env, jobject obj, jstring linkText)
 {
 	IeWrapper* ie = getIe(env, obj);
@@ -123,7 +130,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_getDocument
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_getDocument
   (JNIEnv *env, jobject obj)
 {
 	IeWrapper *ie = getIe(env, obj);
@@ -136,11 +143,18 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
 	return env->NewObject(clazz, cId, (jlong) node);
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_deleteStoredObject
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_deleteStoredObject
   (JNIEnv *env, jobject obj)
 {
 	IeWrapper* ie = getIe(env, obj);
 	delete ie;
+}
+
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_IeWrapper_setFrameIndex
+  (JNIEnv *env, jobject obj, jint frameIndex)
+{
+	IeWrapper* ie = getIe(env, obj);
+	ie->switchToFrame((int) frameIndex);
 }
 
 #ifdef __cplusplus

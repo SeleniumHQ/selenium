@@ -53,12 +53,58 @@ const wchar_t* ElementWrapper::getValue()
 
 void ElementWrapper::setValue(wchar_t* newValue)
 {
-	CComBSTR value = SysAllocString(L"value");
+	IDispatch* dispatch;
+	element->get_document(&dispatch);
+	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc = dispatch;
+	dispatch->Release();
+	CComQIPtr<IHTMLElement3, &__uuidof(IHTMLElement3)> element3 = element;
+
+	VARIANT empty;
+	VariantInit(&empty);
+
+	size_t length = wcslen(newValue);
+
+	CComBSTR valueAttributeName = SysAllocString(L"value");
 	VARIANT reallyNewValue;
 	VariantInit(&reallyNewValue);
 	reallyNewValue.vt = VT_BSTR;
-	reallyNewValue.bstrVal = SysAllocString(newValue);
-	element->setAttribute(value, reallyNewValue, 0);
+	reallyNewValue.bstrVal = SysAllocString(L"");
+	element->setAttribute(valueAttributeName, reallyNewValue, 0);
+	VariantClear(&reallyNewValue);
+
+	CComBSTR onKeyDown = SysAllocString(L"onkeydown");
+	CComBSTR onKeyPress = SysAllocString(L"onkeypress");
+	CComBSTR onKeyUp = SysAllocString(L"onkeyup");
+	VARIANT_BOOL cancellable;
+
+	for (size_t i = 0; i < length; i++) {
+		VariantInit(&reallyNewValue);
+		reallyNewValue.vt = VT_BSTR;
+		wchar_t* t = new wchar_t[i+2];
+		wcsncpy_s(t, i+2, newValue, i+1);
+		t[i+1] = '\0';
+		reallyNewValue.bstrVal = SysAllocString(t);
+
+		IHTMLEventObj* eventObject;
+		doc->createEventObject(&empty, &eventObject);
+		eventObject->put_keyCode((long) newValue[i]);
+
+		VARIANT eventref;
+		VariantInit(&eventref);
+		V_VT(&eventref) = VT_DISPATCH;
+		V_DISPATCH(&eventref) = eventObject;
+
+
+        element3->fireEvent(onKeyDown, &eventref, &cancellable);
+        element3->fireEvent(onKeyPress, &eventref, &cancellable);
+		element->setAttribute(valueAttributeName, reallyNewValue, 0);
+        element3->fireEvent(onKeyUp, &eventref, &cancellable);
+
+		delete t;
+		VariantClear(&eventref);
+		VariantClear(&reallyNewValue);
+	}
+
 	VariantClear(&reallyNewValue);
 }
 
@@ -155,19 +201,21 @@ const wchar_t* ElementWrapper::getTextAreaValue()
 
 void ElementWrapper::click()
 {
-	IDispatch *dispatch;
-	element->get_document(&dispatch);
+	CComQIPtr<IHTMLDOMNode2, &__uuidof(IHTMLDOMNode2)> node = element;
+	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc;
 
-	IHTMLDocument4* doc;
-	dispatch->QueryInterface(__uuidof(IHTMLDocument4), (void**)&doc);
+	IDispatch* dispatch;
+	node->get_ownerDocument(&dispatch);
+	doc = dispatch;
 	dispatch->Release();
 
-	IHTMLElement3* element3;
-	element->QueryInterface(__uuidof(IHTMLElement3), (void**)&element3);
+	CComQIPtr<IHTMLElement3, &__uuidof(IHTMLElement3)> element3;
+	element3 = element;
 
-	IHTMLEventObj *eventObject = NULL;
-	doc->createEventObject(NULL, &eventObject);
-	doc->Release();
+	IHTMLEventObj* eventObject;
+	VARIANT empty;
+	VariantInit(&empty);
+	doc->createEventObject(&empty, &eventObject);
 
 	VARIANT eventref;
 	VariantInit(&eventref);
@@ -185,7 +233,6 @@ void ElementWrapper::click()
 	element->click();
 
 	VariantClear(&eventref);
-	element3->Release();
 
 	ie->waitForNavigateToFinish();
 }

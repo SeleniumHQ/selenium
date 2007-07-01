@@ -29,10 +29,13 @@ public:
 
 	void waitForNavigateToFinish();
 
+	void switchToFrame(int frameIndex);
+
 private:
 	void waitForDocumentToComplete(IHTMLDocument2* doc);
 	IHTMLDocument3* getDocument3();
 	IWebBrowser2* ie;
+	long currentFrame;
 };
 
 #endif

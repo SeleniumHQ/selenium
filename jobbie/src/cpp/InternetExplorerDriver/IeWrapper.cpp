@@ -19,6 +19,8 @@ IeWrapper::IeWrapper()
 	{
 		throw "Cannot create InternetExplorer instance";
 	}
+
+	currentFrame = 0;
 }
 
 IeWrapper::~IeWrapper()
@@ -66,6 +68,7 @@ void IeWrapper::get(const wchar_t *url)
 	CComVariant dummy;
 
 	ie->Navigate2(&spec, &dummy, &dummy, &dummy, &dummy);
+	currentFrame = 0;
 	waitForNavigateToFinish();
 }
 
@@ -212,37 +215,52 @@ void IeWrapper::waitForDocumentToComplete(IHTMLDocument2* doc)
 	delete currentState;
 }
 
+void IeWrapper::switchToFrame(int frameIndex) 
+{
+	currentFrame = frameIndex;
+}
+
 IHTMLDocument2* IeWrapper::getDocument() 
 {
-	IDispatch* ppDisp = NULL;
-	ie->get_Document(&ppDisp);
+	CComPtr<IDispatch> dispatch = NULL;
+	ie->get_Document(&dispatch);
+	IHTMLDocument2* doc = NULL;
+	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
 
-	IHTMLDocument2* htmlDoc2 = NULL;
-	if (ppDisp != NULL)
-    {
-		if (!FAILED(ppDisp->QueryInterface(IID_IHTMLDocument2, (LPVOID *)&htmlDoc2))) {
-			ppDisp->Release();
-			return htmlDoc2;
-		}
+	CComQIPtr<IHTMLFramesCollection2> frames;
+	doc->get_frames(&frames);
+
+	long length = 0;
+	frames->get_length(&length);
+	
+	if (!length) {
+		return doc;
 	}
-	ppDisp->Release();
-	throw "Cannot locate document as IHTMLDocument2";
+
+	doc->Release();
+
+	VARIANT index;
+	VariantInit(&index);
+	index.vt = VT_I4;
+	index.lVal = currentFrame;
+	VARIANT result;
+	VariantInit(&result);
+	frames->item(&index, &result);
+
+	VariantClear(&index);
+	CComQIPtr<IHTMLWindow2, &__uuidof(IHTMLWindow2)> win;
+	win = result.pdispVal;
+	VariantClear(&result);
+
+	win->get_document(&doc);
+	return doc;
 }
 
 IHTMLDocument3* IeWrapper::getDocument3() 
 {
-	IDispatch* ppDisp = NULL;
-	ie->get_Document(&ppDisp);
-
-	IHTMLDocument3* htmlDoc3 = NULL;
-
-	if (ppDisp != NULL)
-    {
-		if (!FAILED(ppDisp->QueryInterface(__uuidof(IHTMLDocument3), (LPVOID *)&htmlDoc3))) {
-			ppDisp->Release();
-			return htmlDoc3;
-		}
-	}
-	ppDisp->Release();
-	throw "Cannot locate document as IHTMLDocument3";
+	IHTMLDocument2* doc2 = getDocument();
+	IHTMLDocument3* toReturn;
+	doc2->QueryInterface(__uuidof(IHTMLDocument3), (void**)&toReturn);
+	doc2->Release();
+	return toReturn;
 }

@@ -35,7 +35,7 @@ Node* AttributeNode::getNextSibling()
 {
 	try {
 		return new AttributeNode(enumerator);
-	} catch (const char* ignored) {
+	} catch (const char*) {
 		return NULL;
 	}
 }

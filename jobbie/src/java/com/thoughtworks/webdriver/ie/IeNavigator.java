@@ -11,10 +11,10 @@ import org.jaxen.saxpath.SAXPathException;
 import com.thoughtworks.webdriver.NoSuchElementException;
 
 public class IeNavigator extends DefaultNavigator {
-	private final InternetExplorerDriver driver;
+	private final IeWrapper wrapper;
 
-	public IeNavigator(InternetExplorerDriver driver) {
-		this.driver = driver;
+	public IeNavigator(IeWrapper wrapper) {
+		this.wrapper = wrapper;
 	}
 
 	public Object getDocumentNode(Object context) {
@@ -90,7 +90,7 @@ public class IeNavigator extends DefaultNavigator {
 	}
 
 	public XPath parseXPath(String xpath) throws SAXPathException {
-		return new IeXPath(xpath, driver);
+		return new IeXPath(xpath, wrapper);
 	}
 
 	public String getAttributeName(Object attr) {
@@ -173,6 +173,7 @@ public class IeNavigator extends DefaultNavigator {
 	
 	private static class NodeIterator implements Iterator {
 		private HtmlNode node;
+		private static long time;
 
 		public NodeIterator(HtmlNode node) {
 			this.node = node;

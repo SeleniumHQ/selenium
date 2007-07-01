@@ -199,7 +199,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerDriver.cpp"
+				RelativePath=".\com_thoughtworks_webdriver_ie_IeWrapper.cpp"
 				>
 			</File>
 			<File
@@ -273,7 +273,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerDriver.h"
+				RelativePath=".\com_thoughtworks_webdriver_ie_IeWrapper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\com_thoughtworks_webdriver_ie_IeWrapper_InternetExplorerTargetLocator.h"
 				>
 			</File>
 			<File
