@@ -1153,6 +1153,8 @@ BrowserBot.prototype._findElementUsingFullXPath = function(xpath, inDocument, in
     }
 
     // If not, fall back to slower JavaScript implementation
+    // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
+    //xpathdebug = true;
     var context = new ExprContext(inDocument);
     var xpathObj = xpathParse(xpath);
     var xpathResult = xpathObj.evaluate(context);

@@ -236,6 +236,9 @@ function xpathReduce(stack, ahead) {
     }
 
     var matchexpr = mapExpr(cand.match, function(m) { return m.expr; });
+    if (xpathdebug) {
+        Log.write('about to run ' + cand.rule[3].toString());
+    }
     cand.expr = cand.rule[3].apply(null, matchexpr);
 
     stack.push(cand);
@@ -1462,6 +1465,7 @@ function makeLocationExpr6(rel, slash, step) {
 
 function makeLocationExpr7(rel, dslash, step) {
   rel.appendStep(makeAbbrevStep(dslash.value));
+  rel.appendStep(step);
   return rel;
 }
 

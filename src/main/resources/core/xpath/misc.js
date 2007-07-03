@@ -189,10 +189,7 @@ function Log() {};
 Log.lines = [];
 
 Log.write = function(s) {
-  if (logging__) {
-    this.lines.push(xmlEscapeText(s));
-    this.show();
-  }
+    LOG.debug("xpath logging: " + s);
 };
 
 // Writes the given XML with every tag on a new line.
