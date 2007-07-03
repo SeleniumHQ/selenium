@@ -1349,8 +1349,13 @@ BrowserBot.prototype._modifyElementTarget = function(element) {
 
 
 BrowserBot.prototype._handleClickingImagesInsideLinks = function(targetWindow, element) {
-    if (element.parentNode && element.parentNode.href) {
-        targetWindow.location.href = element.parentNode.href;
+    var itrElement = element;
+    while (itrElement != null) {
+        if (itrElement.href) {
+            targetWindow.location.href = itrElement.href;
+            break;
+        }
+        itrElement = itrElement.parentNode;
     }
 }
 
