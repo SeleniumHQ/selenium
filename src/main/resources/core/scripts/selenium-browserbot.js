@@ -1590,9 +1590,12 @@ KonquerorBrowserBot.prototype.setOpenLocation = function(win, loc) {
     // so we just refresh in that case instead.
     loc = absolutify(loc, this.baseUrl);
     loc = canonicalize(loc);
-    var startLoc = parseUrl(win.location.href);
-    startLoc.hash = null;
-    var startUrl = reassembleLocation(startLoc);
+    var startUrl = win.location.href;
+    if ("about:blank" != win.location.href) {
+        var startLoc = parseUrl(win.location.href);
+        startLoc.hash = null;
+        var startUrl = reassembleLocation(startLoc);
+    }
     LOG.debug("startUrl="+startUrl);
     LOG.debug("win.location.href="+win.location.href);
     LOG.debug("loc="+loc);
