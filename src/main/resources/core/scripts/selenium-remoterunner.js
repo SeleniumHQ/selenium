@@ -373,34 +373,35 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     url += getSeleniumWindowNameURLparameters();
     url += "&uniqueId=" + uniqueId;
 
+    var wrappingCallback;
     if (callback == null) {
-        callback = function() {
-        };
-    }
-    url += buildDriverParams() + preventBrowserCaching();
-    dataToBePosted = "postedData=" + encodeURIComponent(dataToBePosted);
-
-    var wrappingCallback = function() {
-        if (xmlHttpObject.readyState == 4) {
-            if (xmlHttpObject.status == 200) {
-                var retry = false;
-                if (typeof currentTest != 'undefined') {
-                    var command = currentTest._extractCommand(xmlHttpObject);
-                        //console.log("*********** " + command.command + " | " + command.target + " | " + command.value);
-                    if (command.command == 'retryLast') {
-                        retry = true;
+        callback = function() {};
+        wrappingCallback = callback;
+    } else {
+        wrappingCallback = function() {
+            if (xmlHttpObject.readyState == 4) {
+                if (xmlHttpObject.status == 200) {
+                    var retry = false;
+                    if (typeof currentTest != 'undefined') {
+                        var command = currentTest._extractCommand(xmlHttpObject);
+                            //console.log("*********** " + command.command + " | " + command.target + " | " + command.value);
+                        if (command.command == 'retryLast') {
+                            retry = true;
+                        }
                     }
-                }
-                if (retry) {
-                    setTimeout(fnBind(function() {
-                        sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async);
-                    }, this), 1000);
-                } else {
-                    callback();
+                    if (retry) {
+                        setTimeout(fnBind(function() {
+                            sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async);
+                        }, this), 1000);
+                    } else {
+                        callback();
+                    }
                 }
             }
         }
     }
+    url += buildDriverParams() + preventBrowserCaching();
+    dataToBePosted = "postedData=" + encodeURIComponent(dataToBePosted);
 
     //xmlHttpObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlHttpObject.open("POST", url, async);
