@@ -766,7 +766,7 @@ objectExtend(TestResult.prototype, {
             }
         }
 
-        form.createHiddenField("numTestTotal", rowNum);
+        form.createHiddenField("numTestTotal", rowNum-1);
 
         // Add HTML for the suite itself
         form.createHiddenField("suite", this.suiteTable.parentNode.innerHTML);
