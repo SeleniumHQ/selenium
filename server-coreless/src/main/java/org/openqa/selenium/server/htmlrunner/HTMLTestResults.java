@@ -30,6 +30,7 @@ import java.util.*;
 public class HTMLTestResults {
     private final String result;
     private final String totalTime;
+    private final String numTestTotal;
     private final String numTestPasses;
     private final String numTestFailures;
     private final String numCommandPasses;
@@ -90,14 +91,15 @@ public class HTMLTestResults {
             "\n\n<table>\n" +
             "<tr>\n<td>result:</td>\n<td>{0}</td>\n</tr>\n" +
             "<tr>\n<td>totalTime:</td>\n<td>{1}</td>\n</tr>\n" +
-            "<tr>\n<td>numTestPasses:</td>\n<td>{2}</td>\n</tr>\n" +
-            "<tr>\n<td>numTestFailures:</td>\n<td>{3}</td>\n</tr>\n" +
-            "<tr>\n<td>numCommandPasses:</td>\n<td>{4}</td>\n</tr>\n" +
-            "<tr>\n<td>numCommandFailures:</td>\n<td>{5}</td>\n</tr>\n" +
-            "<tr>\n<td>numCommandErrors:</td>\n<td>{6}</td>\n</tr>\n" +
-            "<tr>\n<td>Selenium Version:</td>\n<td>{7}</td>\n</tr>\n" +
-            "<tr>\n<td>Selenium Revision:</td>\n<td>{8}</td>\n</tr>\n" +
-            "<tr>\n<td>{9}</td>\n<td>&nbsp;</td>\n</tr>\n</table>";
+            "<tr>\n<td>numTestTotal:</td>\n<td>{2}</td>\n</tr>\n" +
+            "<tr>\n<td>numTestPasses:</td>\n<td>{3}</td>\n</tr>\n" +
+            "<tr>\n<td>numTestFailures:</td>\n<td>{4}</td>\n</tr>\n" +
+            "<tr>\n<td>numCommandPasses:</td>\n<td>{5}</td>\n</tr>\n" +
+            "<tr>\n<td>numCommandFailures:</td>\n<td>{6}</td>\n</tr>\n" +
+            "<tr>\n<td>numCommandErrors:</td>\n<td>{7}</td>\n</tr>\n" +
+            "<tr>\n<td>Selenium Version:</td>\n<td>{8}</td>\n</tr>\n" +
+            "<tr>\n<td>Selenium Revision:</td>\n<td>{9}</td>\n</tr>\n" +
+            "<tr>\n<td>{10}</td>\n<td>&nbsp;</td>\n</tr>\n</table>";
     
     private static final String SUITE_HTML = "<tr>\n<td><a name=\"testresult{0}\">{1}</a><br/>{2}</td>\n<td>&nbsp;</td>\n</tr>";
     
@@ -105,14 +107,15 @@ public class HTMLTestResults {
     
     public HTMLTestResults(String postedSeleniumVersion, String postedSeleniumRevision, 
             String postedResult, String postedTotalTime, 
-            String postedNumTestPasses, String postedNumTestFailures, 
-            String postedNumCommandPasses, String postedNumCommandFailures, String postedNumCommandErrors, String postedSuite, List<String> postedTestTables) {
+            String postedNumTestTotal, String postedNumTestPasses, 
+            String postedNumTestFailures, String postedNumCommandPasses, String postedNumCommandFailures, String postedNumCommandErrors, String postedSuite, List<String> postedTestTables) {
 
         result = postedResult;
         numCommandFailures = postedNumCommandFailures;
         numCommandErrors = postedNumCommandErrors;
         suite = new HTMLSuiteResult(postedSuite);
         totalTime = postedTotalTime;
+        numTestTotal = postedNumTestTotal;
         numTestPasses = postedNumTestPasses;
         numTestFailures = postedNumTestFailures;
         numCommandPasses = postedNumCommandPasses;
@@ -155,6 +158,7 @@ public class HTMLTestResults {
         out.write(MessageFormat.format(SUMMARY_HTML,
                 result,
                 totalTime,
+                numTestTotal,
                 numTestPasses,
                 numTestFailures,
                 numCommandPasses,

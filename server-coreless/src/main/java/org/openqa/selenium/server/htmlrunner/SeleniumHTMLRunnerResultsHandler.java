@@ -43,6 +43,7 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
         String seleniumVersion = request.getParameter("selenium.version");
         String seleniumRevision = request.getParameter("selenium.revision");
         String totalTime = request.getParameter("totalTime");
+        String numTestTotal = request.getParameter("numTestTotal");
         String numTestPasses = request.getParameter("numTestPasses");
         String numTestFailures = request.getParameter("numTestFailures");
         String numCommandPasses = request.getParameter("numCommandPasses");
@@ -50,14 +51,14 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
         String numCommandErrors = request.getParameter("numCommandErrors");
         String suite = request.getParameter("suite");
         
-        int numTotalTests = Integer.parseInt(numTestPasses) + Integer.parseInt(numTestFailures);
+        int numTotalTests = Integer.parseInt(numTestTotal);
         
         List<String> testTables = createTestTables(request, numTotalTests);
 
         
         HTMLTestResults results = new HTMLTestResults(seleniumVersion, seleniumRevision,
-                result, totalTime, numTestPasses,
-                numTestFailures, numCommandPasses, numCommandFailures, numCommandErrors, suite, testTables);
+                result, totalTime, numTestTotal,
+                numTestPasses, numTestFailures, numCommandPasses, numCommandFailures, numCommandErrors, suite, testTables);
         
         for (Iterator i = listeners.iterator(); i.hasNext();) {
             HTMLResultsListener listener = (HTMLResultsListener) i.next();
