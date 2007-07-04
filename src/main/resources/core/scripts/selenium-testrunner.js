@@ -205,7 +205,8 @@ objectExtend(SeleniumFrame.prototype, {
         var isChrome = browserVersion.isChrome || false;
         var isHTA = browserVersion.isHTA || false;
         // DGF TODO multiWindow
-        location += "?thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA;
+        location += (location.indexOf("?") == -1 ? "?" : "&");
+        location += "thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA; 
         if (browserVersion.isSafari) {
             // safari doesn't reload the page when the location equals to current location.
             // hence, set the location to blank so that the page will reload automatically.
