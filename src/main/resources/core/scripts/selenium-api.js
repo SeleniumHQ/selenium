@@ -1816,12 +1816,12 @@ Selenium.prototype.getElementIndex = function(locator) {
 
 Selenium.prototype.isOrdered = function(locator1, locator2) {
     /**
-     * Check if these two elements have same parent and are ordered. Two same elements will
+     * Check if these two elements have same parent and are ordered siblings in the DOM. Two same elements will
      * not be considered ordered.
      *
      * @param locator1 an <a href="#locators">element locator</a> pointing to the first element
      * @param locator2 an <a href="#locators">element locator</a> pointing to the second element
-     * @return boolean true if two elements are ordered and have same parent, false otherwise
+     * @return boolean true if element1 is the previous sibling of element2, false otherwise
      */
     var element1 = this.browserbot.findElement(locator1);
     var element2 = this.browserbot.findElement(locator2);
