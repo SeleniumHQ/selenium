@@ -40,13 +40,7 @@ public class WindowNamesTest extends TestCase
         }
         //selenium.setSpeed("500");
         selenium.selectWindow("");
-        selenium.selectWindow("title=Google");
-        selenium.selectWindow("title=exact:Google");
-        selenium.selectWindow("title=regexp:Google");
-        selenium.selectWindow("title=glob:Google");
-//        selenium.setSpeed("0");
-        selenium.selectWindow("regexp:");
-        selenium.selectWindow("regexp:.*");
+        selenium.selectWindow("Google");
         
 		selenium.type("q", "Selenium OpenQA");
 		assertEquals("Selenium OpenQA", selenium.getValue("q"));
