@@ -316,7 +316,11 @@ BrowserBot.prototype._selectWindowByName = function(target) {
 
 BrowserBot.prototype._selectWindowByTitle = function(target) {
     var windowName = this.getWindowNameByTitle(target);
-    this._selectWindowByName(windowName);
+    if (!windowName) {
+        this._selectTopWindow();
+    } else {
+        this._selectWindowByName(windowName);
+    }
 }
 
 BrowserBot.prototype.selectFrame = function(target) {
@@ -823,6 +827,12 @@ BrowserBot.prototype.getWindowNameByTitle = function(windowTitle) {
             // it's probably not available to us right now anyway
         }
     }
+    
+    try {
+        if (this.topWindow.document.title == windowTitle) {
+            return "";
+        }
+    } catch (e) {} // IE Perm denied
 
     throw new SeleniumError("Could not find window with title " + windowTitle);
 };
