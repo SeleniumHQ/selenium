@@ -1694,21 +1694,19 @@ Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, 
    this.doDragAndDrop(locatorOfObjectToBeDragged, movementsString);
 };
 
-Selenium.prototype.doWindowFocus = function(windowName) {
-/** Gives focus to a window
+Selenium.prototype.doWindowFocus = function() {
+/** Gives focus to the currently selected window
    *
-   * @param windowName name of the window to be given focus
    */
-   this.findWindow(windowName).focus();
+   this.browserbot.getCurrentWindow().focus();
 };
 
 
-Selenium.prototype.doWindowMaximize = function(windowName) {
-/** Resize window to take up the entire screen
+Selenium.prototype.doWindowMaximize = function() {
+/** Resize currently selected window to take up the entire screen
    *
-   * @param windowName name of the window to be enlarged
    */
-   var window = this.findWindow(windowName);
+   var window = this.browserbot.getCurrentWindow();
    if (window!=null && window.screen) {
        window.moveTo(0,0);
         window.outerHeight = screen.availHeight;
