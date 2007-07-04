@@ -202,7 +202,7 @@ public class WindowsUtils {
      * 
      * @return the current process environment variables
      */
-    public static Properties loadEnvironment() {
+    public static synchronized Properties loadEnvironment() {
         if (env != null) return env;
         // DGF lifted directly from Ant's Property task
         env = new Properties();
