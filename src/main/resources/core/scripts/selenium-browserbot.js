@@ -1390,6 +1390,9 @@ BrowserBot.prototype._getFrameFromGlobal = function(target) {
 
 
 BrowserBot.prototype.bodyText = function() {
+    if (!this.getDocument().body) {
+        throw new SeleniumError("Couldn't access document.body.  Is this HTML page fully loaded?");
+    }
     return getText(this.getDocument().body);
 };
 
