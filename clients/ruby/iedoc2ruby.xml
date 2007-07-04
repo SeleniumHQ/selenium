@@ -131,12 +131,12 @@ module Selenium
                     command_string = command_string + "&sessionId=" + @session_id.to_s
                 end
                 #print "Requesting --->" + command_string + "\n"
-                response, result = http.get(command_string)
-                #print "RESULT: " + result + "\n\n"
-                if (result[0..1] != "OK")
-                    raise SeleniumCommandError, result
+                response = http.get(command_string)
+                #print "RESULT: " + response.body + "\n\n"
+                if (response.body[0..1] != "OK")
+                    raise SeleniumCommandError, response.body
                 end
-                return result
+                return response.body
             end
         end
         
