@@ -135,8 +135,8 @@ BrowserBot.prototype.doModalDialogTest = function(test) {
     this.modalDialogTest = test;
 };
 
-BrowserBot.prototype.cancelNextConfirmation = function() {
-    this.nextConfirmResult = false;
+BrowserBot.prototype.cancelNextConfirmation = function(result) {
+    this.nextConfirmResult = result;
 };
 
 BrowserBot.prototype.setNextPromptResult = function(result) {

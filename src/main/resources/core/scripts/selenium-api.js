@@ -945,14 +945,31 @@ Selenium.prototype.doWaitForPopUp.dontCheckAlertsAndConfirms = true;
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
     /**
    * By default, Selenium's overridden window.confirm() function will
-   * return true, as if the user had manually clicked OK.  After running
+   * return true, as if the user had manually clicked OK; after running
    * this command, the next call to confirm() will return false, as if
-   * the user had clicked Cancel.
+   * the user had clicked Cancel.  Selenium will then resume using the
+   * default behavior for future confirmations, automatically returning 
+   * true (OK) unless/until you explicitly call this command for each
+   * confirmation.
    *
    */
-    this.browserbot.cancelNextConfirmation();
+    this.browserbot.cancelNextConfirmation(false);
 };
 
+Selenium.prototype.doChooseOkOnNextConfirmation = function() {
+    /**
+   * Undo the effect of calling chooseCancelOnNextConfirmation.  Note
+   * that Selenium's overridden window.confirm() function will normally automatically
+   * return true, as if the user had manually clicked OK, so you shouldn't
+   * need to use this command unless for some reason you need to change
+   * your mind prior to the next confirmation.  After any confirmation, Selenium will resume using the
+   * default behavior for future confirmations, automatically returning 
+   * true (OK) unless/until you explicitly call chooseCancelOnNextConfirmation for each
+   * confirmation.
+   *
+   */
+    this.browserbot.cancelNextConfirmation(true);
+};
 
 Selenium.prototype.doAnswerOnNextPrompt = function(answer) {
     /**
