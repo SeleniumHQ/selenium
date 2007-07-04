@@ -86,13 +86,6 @@ public class ClientDriverSuite extends TestCase {
             }
             else {
                 
-            if (isProxyInjectionMode) {
-                // once frames support is added to the main trunk, we will be
-                // able to run the following in non-proxy injection mode:
-                suite.addTestSuite(TestFramesClick.class);
-                suite.addTestSuite(TestFramesOpen.class);
-                suite.addTestSuite(TestFramesNested.class);
-            }
             suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             suite.addTest(I18nTest.suite());
             suite.addTestSuite(RealDealIntegrationTest.class);
@@ -133,6 +126,10 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestWaitInPopupWindow.class);
             suite.addTestSuite(TestWaitFor.class);
             suite.addTestSuite(TestWaitForNot.class);
+            suite.addTestSuite(TestCssLocators.class);
+            suite.addTestSuite(TestFramesClick.class);
+            suite.addTestSuite(TestFramesOpen.class);
+            suite.addTestSuite(TestFramesNested.class);
             }
             
             ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);

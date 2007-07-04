@@ -72,6 +72,7 @@ public class InjectionHelper {
         try {
             appendFileContent(sb, "/jsunit/app/jsUnitCore.js");
             appendFileContent(sb, "/core/scripts/xmlextras.js");
+            appendFileContent(sb, "/core/lib/cssQuery/cssQuery-p.js");
             appendFileContent(sb, "/core/scripts/htmlutils.js");
             appendFileContent(sb, "/core/scripts/selenium-browserdetect.js");
             appendFileContent(sb, "/core/scripts/selenium-browserbot.js");
