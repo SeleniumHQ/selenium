@@ -1,2 +1,2 @@
-Version=@VERSION@
-Revision=@REVISION@
+selenium.core.version=@VERSION@
+selenium.core.revision=@REVISION@
