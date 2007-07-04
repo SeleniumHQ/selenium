@@ -62,6 +62,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private Map<String, String> unusedBrowserSessions = new HashMap<String, String>();
     private Map<String, String> sessionIdsToBrowserStrings = new HashMap<String, String>();
     private StringBuffer logMessagesBuffer = new StringBuffer();
+    private long previousSessionId = -1;
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
@@ -484,7 +485,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             queue = FrameGroupCommandQueueSet.getQueueSet(sessionId).getCommandQueue();
         }
         else {
-            sessionId = Long.toString(System.currentTimeMillis() % 1000000);
+            sessionId = getSessionIdWithUniqueness();
             setLastSessionId(sessionId); 
             BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
             queue = FrameGroupCommandQueueSet.makeQueueSet(sessionId).getCommandQueue();
@@ -501,6 +502,16 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         SeleniumServer.log("Allocated session " + sessionId + " for " + startURL);
         queue.doCommand("setContext", sessionId, "");
         return sessionId;
+    }
+
+    private String getSessionIdWithUniqueness() {
+        long sessionId;
+
+        do {
+            sessionId = System.currentTimeMillis() % 1000000;
+        } while (sessionId == previousSessionId);
+        previousSessionId = sessionId;
+        return Long.toString(sessionId);
     }
 
     private String getUnusedBrowserSession(String browserString) {
