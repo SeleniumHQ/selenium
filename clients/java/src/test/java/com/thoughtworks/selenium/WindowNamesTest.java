@@ -18,7 +18,7 @@ public class WindowNamesTest extends TestCase
        selenium.stop();
    }
    
-   public void testGoogleTestSearch() throws Throwable {
+   public void testWindowNames() throws Throwable {
 		selenium.open("http://www.google.com/webhp");
         
 		assertEquals("Google", selenium.getTitle());

@@ -17,7 +17,7 @@ public class GoogleTest extends TestCase {
         selenium.stop();
     }
 
-    public void testGoogleTestSearch() throws Throwable {
+    public void testGoogle() throws Throwable {
         selenium.open("http://www.google.com/webhp");
 
         assertEquals("Google", selenium.getTitle());
