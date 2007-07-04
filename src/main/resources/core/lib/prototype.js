@@ -1339,8 +1339,8 @@ Selector.prototype = {
   },
 
   compileMatcher: function() {
-    this.match = new Function('element', 'if (!element.tagName) return false; \
-      return ' + this.buildMatchExpression());
+    this.match = new Function('element', 'if (!element.tagName) return false; \n' +
+    'return ' + this.buildMatchExpression());
   },
 
   findElements: function(scope) {
