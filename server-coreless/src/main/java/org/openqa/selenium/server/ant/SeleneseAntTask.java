@@ -54,7 +54,17 @@ import org.openqa.selenium.server.htmlrunner.*;
  *   <tr>
  *     <td valign="top">results</td>
  *     <td valign="top">The file to which we'll write out our test results.</td>
- *     <td align="center" valign="top">No, defaults to "./results-@{browser}-@{options}-@{suite}" where @{options} may include "-multiWindow" and/or "-slowResources"</td>
+ *     <td align="center" valign="top">No, defaults to "./results-&#064;{browser}-&#064;{options}-&#064;{suite}" where &#064;{options} may include "-multiWindow" and/or "-slowResources"</td>
+ *   </tr>
+ *   <tr>
+ *     <td valign="top">haltonfailure</td>
+ *     <td valign="top">Stop the build process if a test fails.</td>
+ *     <td align="center" valign="top">No, defaults to true</td>
+ *   </tr>
+ *   <tr>
+ *     <td valign="top">failureproperty</td>
+ *     <td valign="top">The name of a property to set in the event of a failure.</td>
+ *     <td align="center" valign="top">No</td>
  *   </tr>
  *   <tr>
  *     <td valign="top">port</td>
@@ -83,7 +93,7 @@ import org.openqa.selenium.server.htmlrunner.*;
  *   </tr>
  * </table>
  * 
- * TODO: more options! fork=true? haltonerror=false? singleTest?
+ * TODO: more options! fork=true? singleTest?
  * @author Dan Fabulich
  *
  */
@@ -95,6 +105,8 @@ public class SeleneseAntTask extends Task {
 	private boolean slowResources, multiWindow;
 	private String browser, startURL;
 	private File suite, results;
+	private boolean haltOnFailure=true;
+	private String failureProperty;
 	
 	private static final Pattern browserPattern = Pattern.compile("\\*(\\w+)");
 	
@@ -114,8 +126,22 @@ public class SeleneseAntTask extends Task {
 			String result = launcher.runHTMLSuite(browser, startURL, suite, results, timeoutInSeconds, multiWindow);
 			server.stop();
 			if (!"PASSED".equals(result)) {
-				throw new BuildException("Tests failed, see result file for details: " + results.getAbsolutePath());
+				
+			    String errorMessage = "Tests failed, see result file for details: " + results.getAbsolutePath();
+				if(haltOnFailure)
+				{
+					throw new BuildException(errorMessage);
+				}
+				log(errorMessage, Project.MSG_ERR);
+				if (failureProperty != null) {
+				    getProject().setProperty(failureProperty, "true");
+				}
+
 			}
+
+			
+
+
 		} catch (Exception e) {
 			if (server != null) server.stop();
 			throw new BuildException(e);
@@ -202,6 +228,17 @@ public class SeleneseAntTask extends Task {
 		if (!coreDir.exists()) throw new BuildException("core dir doesn't exist: " + coreDir.getAbsolutePath());
 		System.setProperty(SELENIUM_JAVASCRIPT_DIR, coreDir.getAbsolutePath());
 	}
+
+
+	public void setHaltOnFailure(boolean haltOnFailure) {
+		this.haltOnFailure=haltOnFailure;
+	}
+
+    public void setFailureProperty(String failureProperty) {
+        this.failureProperty = failureProperty;
+    }
+
+
 
 
 }
