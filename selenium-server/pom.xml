@@ -33,15 +33,55 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/UnitTestSuite.java</include>
-                        <include>**/ServerTestSuite.java</include>
-                    </includes>
-                    <forkMode>never</forkMode>
-                </configuration>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.2-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <tasks>
+                                <exec executable="svnversion" outputProperty="svn-revision" failOnError="true">
+                                    <arg value="."/>
+                                </exec>
+                                
+                                <unzip src="${maven.dependency.org.openqa.selenium.core.selenium-core.jar.path}" dest="target/classes">
+                                    <patternset>
+                                        <include name="VERSION.txt"/>
+                                    </patternset>
+                                </unzip>
+                                
+                                <propertyfile file="target/classes/VERSION.txt">
+                                    <entry key="selenium.rc.version" value="${project.version}" />
+                                    <entry key="selenium.rc.revision" value="${svn-revision}" />
+                                </propertyfile>
+                                <property file="target/classes/VERSION.txt" />
+                                
+                                <copy todir="target/classes" overwrite="true">
+                                    <fileset dir="src/main/resources">
+                                        <include name="core/scripts/selenium-version.js"/>
+                                    </fileset>
+                                    <filterset>
+                                        <filter token="COREVERSION" value="${selenium.core.version}"/>
+                                        <filter token="COREREVISION" value="${selenium.core.revision}"/>
+                                        <filter token="RCVERSION" value="${project.version}"/>
+                                        <filter token="RCREVISION" value="${svn-revision}"/>
+                                    </filterset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -53,11 +93,6 @@
         <dependency>
             <groupId>org.openqa.selenium.core</groupId>
             <artifactId>selenium-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
