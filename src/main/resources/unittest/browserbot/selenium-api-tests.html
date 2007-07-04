@@ -261,7 +261,7 @@ function testGetConfirmationReturnsNextConfirmation() {
 }
 
 function testShouldTellBroswerBotIfAskedToCancelNextConfirmation() {
-     mockBrowserBot.expects("cancelNextConfirmation");
+     mockBrowserBot.expects("cancelNextConfirmation", false);
      selenium.doChooseCancelOnNextConfirmation();
      verifyMocks();
 }

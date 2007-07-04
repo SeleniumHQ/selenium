@@ -42,12 +42,12 @@ Copyright 2004 ThoughtWorks, Inc
         }
 
         function testShouldCancelConfirmationIfPreviouslyInstructedTo() {
-            browserBot.cancelNextConfirmation();
+            browserBot.cancelNextConfirmation(false);
             assertFalse(testWindow.confirm("Continue?"));
         }
 
         function testShouldRevertToDefaultBehaviourAfterCancellingConfirmation() {
-            browserBot.cancelNextConfirmation();
+            browserBot.cancelNextConfirmation(false);
             testWindow.confirm("Continue?");
             testShouldConfirmConfirmationsByDefault();
         }
