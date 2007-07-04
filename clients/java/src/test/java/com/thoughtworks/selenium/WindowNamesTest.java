@@ -39,14 +39,14 @@ public class WindowNamesTest extends TestCase
             System.out.println("Window Title: " + windowTitle);
         }
         //selenium.setSpeed("500");
-        selenium.windowFocus("");
-        selenium.windowMaximize("title=Google");
-        selenium.windowMaximize("title=exact:Google");
-        selenium.windowMaximize("title=regexp:Google");
-        selenium.windowMaximize("title=glob:Google");
+        selenium.selectWindow("");
+        selenium.selectWindow("title=Google");
+        selenium.selectWindow("title=exact:Google");
+        selenium.selectWindow("title=regexp:Google");
+        selenium.selectWindow("title=glob:Google");
 //        selenium.setSpeed("0");
-        selenium.windowMaximize("regexp:");
-        selenium.windowMaximize("regexp:.*");
+        selenium.selectWindow("regexp:");
+        selenium.selectWindow("regexp:.*");
         
 		selenium.type("q", "Selenium OpenQA");
 		assertEquals("Selenium OpenQA", selenium.getValue("q"));
