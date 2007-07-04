@@ -132,6 +132,20 @@ Copyright 2004 ThoughtWorks, Inc
             <td>xpath=//div[@id='nested1']/div[1]//input[2]</td>
             <td>nested3b</td>
         </tr>
+        
+        <tr><td colspan="3"><i>xpath counting</i></td></tr>
+
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='nested1']/div[1]//input</td>
+            <td>2</td>
+        </tr>
+        
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='nonexistent']</td>
+            <td>0</td>
+        </tr>
 
     </tbody>
 </table>

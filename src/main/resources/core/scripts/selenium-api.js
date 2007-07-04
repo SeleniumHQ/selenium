@@ -2052,6 +2052,15 @@ Selenium.prototype.getExpression = function(expression) {
     return expression;
 }
 
+Selenium.prototype.getXpathCount = function(xpath) {
+    /**
+    * Returns the number of nodes that match the specified xpath, eg. "//table" would give
+    * the number of tables.
+    */
+    var result = this.browserbot.evaluateXPathCount(xpath, this.browserbot.getDocument());
+    return result;
+}
+
 Selenium.prototype.doWaitForCondition = function(script, timeout) {
     /**
    * Runs the specified JavaScript snippet repeatedly until it evaluates to "true".

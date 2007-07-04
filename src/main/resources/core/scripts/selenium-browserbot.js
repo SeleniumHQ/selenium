@@ -1162,6 +1162,35 @@ BrowserBot.prototype._findElementUsingFullXPath = function(xpath, inDocument, in
         return xpathResult.value[0];
     }
     return null;
+
+};
+
+// DGF this may LOOK identical to _findElementUsingFullXPath, but 
+// fEUFX pops the first element off the resulting nodelist; this function
+// wraps the xpath in a count() operator and returns the numeric value directly
+BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
+    // HUGE hack - remove namespace from xpath for IE
+    if (browserVersion.isIE) {
+        xpath = xpath.replace(/x:/g, '')
+    }
+    xpath="count("+xpath+")";
+
+    // Use document.evaluate() if it's available
+    if (inDocument.evaluate) {
+        var result = inDocument.evaluate(xpath, inDocument, this._namespaceResolver, XPathResult.NUMBER_TYPE, null);
+        return result.numberValue;
+    }
+
+    // If not, fall back to slower JavaScript implementation
+    // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
+    //xpathdebug = true;
+    var context = new ExprContext(inDocument);
+    var xpathObj = xpathParse(xpath);
+    var xpathResult = xpathObj.evaluate(context);
+    if (xpathResult && xpathResult.value) {
+        return xpathResult.value;
+    }
+    return 0;
 };
 
 /**
