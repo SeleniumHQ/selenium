@@ -341,6 +341,7 @@ public class SeleniumServer {
             final String[] lastSessionId = new String[]{""};
 
             while ((userInput = stdIn.readLine()) != null) {
+                userInput = userInput.trim();
                 if ("exit".equals(userInput) || "quit".equals(userInput)) {
                     System.out.println("Stopping...");
                     seleniumProxy.stop();
