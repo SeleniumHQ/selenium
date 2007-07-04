@@ -205,19 +205,19 @@ objectExtend(RemoteRunner.prototype, {
 
     commandStarted : function(command) {
         this.commandNode = document.createElement("div");
-        var innerHTML = command.command + '(';
+        var cmdText = command.command + '(';
         if (command.target != null && command.target != "") {
-            innerHTML += command.target;
+            cmdText += command.target;
             if (command.value != null && command.value != "") {
-                innerHTML += ', ' + command.value;
+                cmdText += ', ' + command.value;
             }
         }
-        innerHTML += ")";
-        if (innerHTML.length >40) {
-            innerHTML = innerHTML.substring(0,40);
-            innerHTML += "...";
+        cmdText += ")";
+        if (cmdText.length >40) {
+            cmdText = cmdText.substring(0,40);
+            cmdText += "...";
         }
-        this.commandNode.innerHTML = innerHTML;
+        this.commandNode.appendChild(document.createTextNode(cmdText));
         this.commandNode.style.backgroundColor = workingColor;
         if (document.getElementById("commandList") != null) {
             document.getElementById("commandList").removeChild(cmd1);
