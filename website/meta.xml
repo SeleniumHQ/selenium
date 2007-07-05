@@ -26,7 +26,7 @@
             </item>
             <item>
                 <name>Troubleshooting/FAQ</name>
-                <url>troubleshooting.html</url>
+                <url>http://wiki.openqa.org/display/SRC/Selenium+RC+FAQ</url>
             </item>
             <item>
                 <name>Experimental</name>
@@ -70,7 +70,7 @@
             </item>
             <item>
                 <name>Developer's Guide</name>
-                <url>building.html</url>
+                <url>http://wiki.openqa.org/display/SRC/Developer%27s+Guide</url>
             </item>
             <item>
                 <name>Wiki</name>
