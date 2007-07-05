@@ -60,18 +60,18 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         Thread.sleep(500);
         selenium.keyPress(inputId, "\\97");
         selenium.keyPress(inputId, "\\110");
-        new Wait("Didn't find 'Jane Agnews' in updateId") {
+        new Wait() {
             public boolean until() {
                 String text = selenium.getText(updateId);
                 return "Jane Agnews".equals(text);
             }
-        };
+        }.wait("Didn't find 'Jane Agnews' in updateId");
         selenium.keyPress(inputId, "\\9");
-        new Wait("Didn't find 'Jane Agnews' in inputId") {
+        new Wait() {
             public boolean until() {
                 return "Jane Agnews".equals(selenium.getValue(inputId));
             }
-        };
+        }.wait("Didn't find 'Jane Agnews' in inputId");
     }
     
     public void testAJAXIExplore() throws Throwable {
@@ -86,17 +86,18 @@ public class ApacheMyFacesSuggestTest extends TestCase {
         Thread.sleep(500);
         selenium.type(inputId, "Jan");
         selenium.keyDown(inputId, "\\110");
-        new Wait("Didn't find 'Jane Agnews' in updateId") {
+        new Wait() {
             public boolean until() {
                 return "Jane Agnews".equals(selenium.getText(updateId));
             }
-        };
+        }.wait("Didn't find 'Jane Agnews' in updateId");
+        
         selenium.keyDown(inputId, "\\13");
-        new Wait("Didn't find 'Jane Agnews' in inputId") {
+        new Wait() {
             public boolean until() {
                 return "Jane Agnews".equals(selenium.getValue(inputId));
             }
-        };
+        }.wait("Didn't find 'Jane Agnews' in inputId");
     }
     
     public void tearDown() {

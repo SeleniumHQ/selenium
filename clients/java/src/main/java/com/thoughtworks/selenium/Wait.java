@@ -24,49 +24,46 @@ package com.thoughtworks.selenium;
  */
 public abstract class Wait {
 
-    /**
-     * Specifies the message we'll use when we fail
-     * @param message the failure message
-     */
-    public Wait(String message) {
-        wait(message);
-    }
-    
-    /** Specifies a failure message and a timeout
-     * 
-     * @param message the failure message
-     * @param timoutInMilliseconds timeout in milliseconds
-     */
-    public Wait(String message, long timeoutInMilliseconds) {
-        wait(message);
-        this.timeoutInMilliseconds = timeoutInMilliseconds;
-    }
-    
-    /** Specifies a failure message, a timeout, and an interval
-     * 
-     * @param message the failure message
-     * @param timoutInMilliseconds timeout in milliseconds
-     */
-    public Wait(String message, long timeoutInMilliseconds, long intervalInMilliseconds) {
-        wait(message);
-        this.timeoutInMilliseconds = timeoutInMilliseconds;
-        this.intervalInMilliseconds = intervalInMilliseconds;
-    }
-    
     /** Returns true when it's time to stop waiting */
     public abstract boolean until();
     
-    /** The amout of time to wait before giving up; the default is 30 seconds */
-    public long timeoutInMilliseconds = 30000l;
+    /** The amount of time to wait before giving up; the default is 30 seconds */
+    public static final long DEFAULT_TIMEOUT = 30000l;
     
     /** The interval to pause between checking; the default is 500 milliseconds */ 
-    public long intervalInMilliseconds = 500l;
+    public static final long DEFAULT_INTERVAL = 500l;
     
-    /** Wait until the "until" condition returns true or the timeout happens
+    /** Wait until the "until" condition returns true or time runs out.
      * 
      * @param message the failure message
+     * @param timeoutInMilliseconds the amount of time to wait before giving up
+     * @throws WaitTimedOutException if "until" doesn't return true until the timeout
+     * @see #until()
      */
     public void wait(String message) {
+        wait(message, DEFAULT_TIMEOUT, DEFAULT_INTERVAL);
+    }
+    
+    /** Wait until the "until" condition returns true or time runs out.
+     * 
+     * @param message the failure message
+     * @param timeoutInMilliseconds the amount of time to wait before giving up
+     * @throws WaitTimedOutException if "until" doesn't return true until the timeout
+     * @see #until()
+     */
+    public void wait(String message, long timeoutInMilliseconds) {
+        wait(message, timeoutInMilliseconds, DEFAULT_INTERVAL);
+    }
+    
+    /** Wait until the "until" condition returns true or time runs out.
+     * 
+     * @param message the failure message
+     * @param timeoutInMilliseconds the amount of time to wait before giving up
+     * @param intervalInMilliseconds the interval to pause between checking "until"
+     * @throws WaitTimedOutException if "until" doesn't return true until the timeout
+     * @see #until()
+     */
+    public void wait(String message, long timeoutInMilliseconds, long intervalInMilliseconds) {
         long start = System.currentTimeMillis();
         long end = start + timeoutInMilliseconds;
         while (System.currentTimeMillis() < end) {
@@ -80,8 +77,9 @@ public abstract class Wait {
         throw new WaitTimedOutException(message);
     }
     
-    //@SuppressWarnings("serial")
     public class WaitTimedOutException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
 
         public WaitTimedOutException() {
             super();
