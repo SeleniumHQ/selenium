@@ -6,8 +6,20 @@
 	<property name="dir.java.tests.based.on.core.javascript.later.modified.by.hand" location="src/test/java/com/thoughtworks/selenium/corebasedhandmodified" />
 	
 	
-    <target name="ant-generate-tests">
-        <mkdir dir="target/selenium-server"/> 
+    <target name="ant-generate-tests" depends="ant-convert-selenese">
+        <copy overwrite="true" todir="${dir.java.tests.based.on.core.javascript}" preservelastmodified="true">
+            <fileset dir="${dir.java.tests.based.on.core.javascript.later.modified.by.hand}">
+                <include name="**/*.java.txt"/>
+            </fileset>
+            <mapper>
+                <globmapper from="*.java.txt" to="*.java"/>
+            </mapper>
+        </copy>
+	</target>
+
+    <target name="ant-convert-selenese" depends="ant-check-conversion-needed" unless="conversion.notNeeded">
+        <touch file="target/selenium-server.txt" />
+        <mkdir dir="target/selenium-server"/>
         <unzip src="${selenium-server}" dest="target/selenium-server" />
 
 		<property name="dir.core.tests" location="target/selenium-server/tests" />
@@ -35,16 +47,12 @@
 
             <classpath path="${selenium-server}"/>
         </java>
+    </target>
 
-        <copy overwrite="true" todir="${dir.java.tests.based.on.core.javascript}">
-            <fileset dir="${dir.java.tests.based.on.core.javascript.later.modified.by.hand}">
-                <include name="**/*.java.txt"/>
-            </fileset>
-            <mapper>
-                <globmapper from="*.java.txt" to="*.java"/>
-            </mapper>
-        </copy>
-	</target>
+    <target name="ant-check-conversion-needed">
+        <uptodate property="conversion.notNeeded" targetfile="target/selenium-server.txt" srcfile="${selenium-server}"/>
+        <echo>conversion.notNeeded=${conversion.notNeeded}</echo>
+    </target>
 
 	<target name="ant-generate-sources">
         <xslt in="../target/iedoc.xml" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
