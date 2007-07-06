@@ -66,7 +66,7 @@ Logger.prototype = {
         if (! this.getLogWindow()) {
             this.openLogWindow();
         }
-        setTimeout(function(){LOG.info("Log window displayed");}, 500);
+        setTimeout(function(){LOG.info("Log window displayed.  Logging events will now be recorded to this window.");}, 500);
     },
 
     logHook: function(className, message) {
