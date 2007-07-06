@@ -218,6 +218,7 @@
                 <slowResources>false</slowResources>
                 <multiWindow>true</multiWindow>
                 <browser>*firefox</browser>
+                <seleneseSuite>TestSuite</seleneseSuite>
             </properties>
             <build>
                 <plugins>
@@ -235,7 +236,7 @@
                                         </taskdef>
                                         <selenese 
                                             browser="${browser}"
-                                            suite="src/main/resources/tests/TestSuite.html"
+                                            suite="src/main/resources/tests/${seleneseSuite}.html"
                                             port="4444"
                                             slowResources="${slowResources}"
                                             multiWindow="${multiWindow}"
