@@ -26,19 +26,21 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.net.URLDecoder;
 
+import org.apache.commons.logging.Log;
 import org.mortbay.http.HttpConnection;
 import org.mortbay.http.HttpException;
 import org.mortbay.http.HttpFields;
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
 import org.mortbay.http.handler.ResourceHandler;
+import org.mortbay.log.LogFactory;
 import org.mortbay.util.StringUtil;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
@@ -55,6 +57,8 @@ import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
  * @version $Revision: 674 $
  */
 public class SeleniumDriverResourceHandler extends ResourceHandler {
+    static Log log = LogFactory.getLog(SeleniumDriverResourceHandler.class);
+    static Log browserSideLog = LogFactory.getLog(SeleniumDriverResourceHandler.class.getName()+".browserSideLog");
     private final Map<String, BrowserLauncher> launchers = new HashMap<String, BrowserLauncher>();
     private SeleniumServer server;
     private static String lastSessionId = null;
@@ -82,7 +86,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return (String) parameterValues.get(0);
     }
 
-	public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
+    public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         try {
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
@@ -97,6 +101,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             boolean jsState = "true".equals(jsStateParam);
             boolean justLoaded = (seleniumStart != null && seleniumStart.equals("true"));
 
+            if (sessionId != null) {
+                //TODO DGF log4j only
+                //NDC.push("sessionId="+sessionId);
+            }
+            log.debug("req: "+req);
             // If this is a browser requesting work for the first time...
             if ("POST".equalsIgnoreCase(method) || justLoaded) {
                 FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(getParam(req, "seleniumWindowName"), 
@@ -116,7 +125,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 logPostedData(frameAddress, justLoaded, sessionId, postedData, uniqueId);
 
                 FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-                SeleniumServer.log("req: "+seleniumStart+":"+req);
                 
 //                if (justLoaded) {
 //                    postedData = "OK";  // assume a new page starting is okay
@@ -129,14 +137,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 req.setHandled(true);
             } else if (cmd != null) {
-                SeleniumServer.log(method + ": " + req.getQuery());
                 handleCommandRequest(req, res, cmd, sessionId);
             } else if (-1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js") 
                     || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")){
                 // ignore failure to find these items...
             }
             else {
-                SeleniumServer.log("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
+                log.info("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
                 req.setHandled(false);
             }
         }
@@ -149,10 +156,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
             }
             throw e;
+        } finally {
+            //TODO DGF log4j only
+            //NDC.remove();
         }
     }
 
-	private void logPostedData(FrameAddress frameAddress, boolean justLoaded, String sessionId, String postedData, String uniqueId) {
+    private void logPostedData(FrameAddress frameAddress, boolean justLoaded, String sessionId, String postedData, String uniqueId) {
         StringBuffer sb = new StringBuffer();
         sb.append("Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + postedData);
         if (!frameAddress.isDefault()) {
@@ -161,14 +171,17 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         if (justLoaded) {
             sb.append(" NEW");
         }
-        SeleniumServer.log(sb.toString());
+        log.debug(sb.toString());
     }
 
-	private void respond(HttpResponse res, RemoteCommand sc) throws IOException {
+    private void respond(HttpResponse res, RemoteCommand sc) throws IOException {
         ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
         Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
         if (sc!=null) {
             writer.write(sc.toString());
+            log.debug("res: " + sc.toString());
+        } else {
+            log.debug("res empty");
         }
         for (int pad = 998 - buf.size(); pad-- > 0;) {
             writer.write(" ");
@@ -189,7 +202,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * @return a string containing the posted data (with piggybacked log info stripped)
      * @throws IOException
      */
-	private String readPostedData(HttpRequest req, String sessionId, String uniqueId) throws IOException {
+    private String readPostedData(HttpRequest req, String sessionId, String uniqueId) throws IOException {
         // if the request was sent as application/x-www-form-urlencoded, we can get the decoded data right away...
         // we do this because it appears that Safari likes to send the data back as application/x-www-form-urlencoded
         // even when told to send it back as application/xml. So in short, this function pulls back the data in any
@@ -223,14 +236,24 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private void handleLogMessages(String s) {
-        String logMessages = grepStringsStartingWith("logLevel=", s);
-        if (logMessages==null) {
-            return;
+        String[] lines = s.split("\n");
+        for (String line : lines) {
+            if (line.startsWith("logLevel=")) {
+                int logLevelIdx = line.indexOf(':', "logLevel=".length());
+                String logLevel = line.substring("logLevel=".length(), logLevelIdx).toUpperCase();
+                String logMessage = line.substring(logLevelIdx+1);
+                if ("ERROR".equals(logLevel)) {
+                    browserSideLog.error(logMessage);
+                } else if ("WARN".equals(logLevel)) {
+                    browserSideLog.warn(logMessage);
+                } else if ("INFO".equals(logLevel)) {
+                    browserSideLog.info(logMessage);
+                } else {
+                    // DGF debug is default
+                    browserSideLog.debug(logMessage);
+                }
+            }
         }
-        logMessages = "\t" + logMessages.replaceAll("\n", "\n\t");  // put a tab in front of all the messages
-        logMessages = logMessages.replaceFirst("\t$", "");
-        logMessagesBuffer.append(logMessages);
-        SeleniumServer.log(logMessages);
     }
 
     private void handleJsState(String sessionId, String uniqueId, String s) {
@@ -265,16 +288,17 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private String grepStringsStartingWith(String pattern, String s) {
         String[] lines = s.split("\n");
         StringBuffer sb = new StringBuffer();
+        String retval = null;
         for (String line : lines) {
             if (line.startsWith(pattern)) {
                 sb.append(line.substring(pattern.length()))
                 .append('\n');
             }
         }
-        if (sb.length()==0) {
-            return null;
+        if (sb.length()!=0) {
+            retval = sb.toString();
         }
-        return sb.toString();
+        return retval;
     }
 
     /** Try to extract the name of the file whose absence caused the exception
@@ -297,7 +321,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return (s!=null) && s.matches("java.io.IOException: CreateProcess: .*error=3");
     }
 
-	private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
+    private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
+        log.info("This is a command request");
         // If this a Driver Client sending a new command...
         res.setContentType("text/plain");
         hackRemoveConnectionCloseHeader(res);
@@ -316,7 +341,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
         String results;
         if (SeleniumServer.isDebugMode()) {
-            SeleniumServer.log("queryString = " + req.getQuery());
+            log.debug("queryString = " + req.getQuery());
         }
         results = doCommand(cmd, values, sessionId, res);
 
@@ -333,7 +358,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         req.setHandled(true);
     }
 
-	public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
+    public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
         String results;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
@@ -392,18 +417,19 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 warnIfApparentDomainChange(sessionId, values.get(0));
             }
             FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+            log.debug("Session "+sessionId+" going to doCommand("+cmd+','+values.get(0)+','+values.get(1) + ")");
             results = queue.doCommand(cmd, values.get(0), values.get(1));
         }
-        SeleniumServer.log("Got result: " + results + " on session " + sessionId);
+        log.info("Got result: " + results + " on session " + sessionId);
         return results;
     }
 
     private void shutDown(HttpResponse res) {
-        SeleniumServer.log("Shutdown command received");
+        log.info("Shutdown command received");
         
         Runnable initiateShutDown = new Runnable() {
             public void run() {
-                SeleniumServer.log("initiating shutdown");
+                log.info("initiating shutdown");
                 AsyncExecute.sleepTight(500);
                 System.exit(0);
             }
@@ -460,15 +486,15 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private String getNewBrowserSession(String browserString, String startURL) {
         if (SeleniumServer.getForcedBrowserMode()!=null) {
             browserString = SeleniumServer.getForcedBrowserMode(); 
-            SeleniumServer.log("overriding browser mode w/ forced browser mode setting: " + browserString);
+            log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
         }
         if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
-            SeleniumServer.log("WARNING: running in proxy injection mode, but you used a *iexplore browser string; this is " +
+            log.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *piiexplore...");
             browserString = "*piiexplore";
         }
         else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
-            SeleniumServer.log("WARNING: running in proxy injection mode, but you used a *firefox browser string; this is " +
+            log.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *pifirefox...");
             browserString = "*pifirefox";
         }
@@ -499,7 +525,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             queue.discardCommandResult();
             queue.setResultExpected(false);
         }
-        SeleniumServer.log("Allocated session " + sessionId + " for " + startURL);
+        // TODO DGF log4j only
+        // NDC.push("sessionId="+sessionId);
+        log.info("Allocated session " + sessionId + " for " + startURL);
         queue.doCommand("setContext", sessionId, "");
         return sessionId;
     }

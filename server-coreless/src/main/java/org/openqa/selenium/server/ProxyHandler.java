@@ -374,7 +374,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
             String contentType = http.getContentType();
             if (SeleniumServer.isDebugMode()) {
-                SeleniumServer.log("Content-Type is: " + contentType);
+                log.debug("Content-Type is: " + contentType);
             }
         }
 

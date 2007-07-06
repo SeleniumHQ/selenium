@@ -17,9 +17,20 @@ package org.openqa.selenium.server;
  */
 
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.locks.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
 
 
 /**
@@ -28,6 +39,7 @@ import java.util.concurrent.locks.*;
  * @author nelsons
  */
 public class FrameGroupCommandQueueSet {
+    static Log log = LogFactory.getLog(FrameGroupCommandQueueSet.class);
     /**
      * JavaScript expression telling where the frame is within the current window (i.e., "local"
      * to the current window).
@@ -197,14 +209,14 @@ public class FrameGroupCommandQueueSet {
         if (q==null) {
 
             if (SeleniumServer.isDebugMode()) {
-                SeleniumServer.log("---------allocating new CommandQueue for " + frameAddress);
+                log.debug("---------allocating new CommandQueue for " + frameAddress);
             }
             q = new CommandQueue(sessionId, frameAddress, dataLock);
             frameAddressToCommandQueue.put(frameAddress, q);
         }
         else {
             if (SeleniumServer.isDebugMode()) {
-                SeleniumServer.log("---------retrieving CommandQueue for " + frameAddress);
+                log.debug("---------retrieving CommandQueue for " + frameAddress);
             }
         }
         return frameAddressToCommandQueue.get(frameAddress);
@@ -434,7 +446,7 @@ public class FrameGroupCommandQueueSet {
     			matchingFrameAddress = findMatchingFrameAddressFrame(
     				frameAddressToJustLoaded.keySet(), waitingForThisLocalFrame);
     			if (matchingFrameAddress != null) {
-    				SeleniumServer.log("wait is over: frame \""
+    				log.debug("wait is over: frame \""
     				        + waitingForThisLocalFrame
     				        + "\" was seen at last (" + matchingFrameAddress
     				        + ")");
@@ -444,7 +456,7 @@ public class FrameGroupCommandQueueSet {
 					markWhetherJustLoaded(matchingFrameAddress, false);
     				return "OK";
     			}
-    			SeleniumServer.log("waiting for frame \""
+    			log.debug("waiting for frame \""
     			        + waitingForThisLocalFrame + "\"");
     			try {
     			    resultArrivedOnAnyQueue.await(1, TimeUnit.SECONDS);
@@ -552,14 +564,14 @@ public class FrameGroupCommandQueueSet {
                 matchingFrameAddress = findMatchingFrameAddress(frameAddressToJustLoaded.keySet(), 
                         waitingForThisWindowName, waitingForThisLocalFrame);
                 if (matchingFrameAddress!=null) {
-                    SeleniumServer.log("wait is over: window \"" + waitingForThisWindowName + "\" was seen at last (" + matchingFrameAddress + ")");
+                    log.debug("wait is over: window \"" + waitingForThisWindowName + "\" was seen at last (" + matchingFrameAddress + ")");
 					// Remove it from the list of matching frame addresses
 					// since it just loaded.  Mark whether just loaded
 					// to aid debugging.
 					markWhetherJustLoaded(matchingFrameAddress, false);
                     return matchingFrameAddress;
                 }
-                SeleniumServer.log("waiting for window \"" + waitingForThisWindowName + "\"" + " local frame \"" + waitingForThisLocalFrame + "\"");
+                log.debug("waiting for window \"" + waitingForThisWindowName + "\"" + " local frame \"" + waitingForThisLocalFrame + "\"");
                 try {
                     resultArrivedOnAnyQueue.await(1, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
@@ -693,13 +705,13 @@ public class FrameGroupCommandQueueSet {
             try {       
                 if (justLoaded) {
                     if (SeleniumServer.isDebugMode()) {
-                        SeleniumServer.log(frameAddress + " marked as just loaded");
+                        log.debug(frameAddress + " marked as just loaded");
                     }
                     frameAddressToJustLoaded.put(frameAddress, true);
                 }
                 else {
                     if (SeleniumServer.isDebugMode()) {
-                        SeleniumServer.log(frameAddress + " marked as NOT just loaded");
+                        log.debug(frameAddress + " marked as NOT just loaded");
                     }
                     frameAddressToJustLoaded.remove(frameAddress);
                 }
@@ -722,7 +734,7 @@ public class FrameGroupCommandQueueSet {
         this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
 
         if (SeleniumServer.isDebugMode()) {
-            SeleniumServer.log("Current frame address set to " + currentFrameAddress + ".");
+            log.debug("Current frame address set to " + currentFrameAddress + ".");
         }
     }
 
@@ -767,7 +779,7 @@ public class FrameGroupCommandQueueSet {
                     CommandQueue q = getCommandQueue();
                     if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
                         if (SeleniumServer.isDebugMode()) {
-                            SeleniumServer.log("Trying to close " + frameAddress);
+                            log.debug("Trying to close " + frameAddress);
                         }
                         q.doCommandWithoutWaitingForAResponse("getEval", "selenium.browserbot.getCurrentWindow().close()", "");
                     }

@@ -17,10 +17,14 @@
 
 package org.openqa.selenium.server;
 
-import java.io.*;
-import java.net.*;
-import java.util.concurrent.*;
-import java.util.concurrent.locks.*;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
 
 /**
  * <p>Schedules and coordinates commands to be run.</p>
@@ -31,6 +35,7 @@ import java.util.concurrent.locks.*;
  * @version $Revision: 734 $
  */
 public class CommandQueue {
+    static Log log = LogFactory.getLog(CommandQueue.class);
     private SingleEntryAsyncQueue commandHolder;
     private SingleEntryAsyncQueue commandResultHolder;
     private String sessionId;
@@ -109,12 +114,12 @@ public class CommandQueue {
 
     public void doCommandWithoutWaitingForAResponse(String command, String field, String value) {
         if (millisecondDelayBetweenOperations > 0) {
-            SeleniumServer.log("    Slow mode in effect: sleep " + millisecondDelayBetweenOperations + " milliseconds...");
+            log.debug("    Slow mode in effect: sleep " + millisecondDelayBetweenOperations + " milliseconds...");
             try {
                 Thread.sleep(millisecondDelayBetweenOperations);
             } catch (InterruptedException e) {
             }
-            SeleniumServer.log("    ...done");
+            log.debug("    ...done");
         }
         synchronized(commandResultHolder) {
             if (commandResultHolder.isEmpty()) {
@@ -124,7 +129,7 @@ public class CommandQueue {
                 if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
                     if (command.startsWith("wait")) {
                         if (SeleniumServer.isDebugMode()) {
-                            SeleniumServer.log("Page load beat the wait command.  Leave the result to be picked up below");
+                            log.debug("Page load beat the wait command.  Leave the result to be picked up below");
                         }
                     }
                     else {
@@ -133,7 +138,7 @@ public class CommandQueue {
                             // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
                             // relationship between commands and results can go out of whack.  To avoid this, we
                             // discard results for which no thread is waiting:
-                            SeleniumServer.log("Apparently a page load result preceded the command; will ignore it...");
+                            log.debug("Apparently a page load result preceded the command; will ignore it...");
                         }
                         commandResultHolder.put(null); // overwrite result
                     }
@@ -173,14 +178,14 @@ public class CommandQueue {
 
         String hdr = "\t" + getIdentification(caller) + " queueGet() ";
         if (SeleniumServer.isDebugMode()) {
-            SeleniumServer.log(hdr + "called"
+            log.debug(hdr + "called"
                     + (clearedEarlierThread ? " (superceding other blocked thread)" : ""));
         }
 
         Object object = q.get();
 
         if (SeleniumServer.isDebugMode()) {
-            SeleniumServer.log(hdr + "-> " + object); 
+            log.debug(hdr + "-> " + object); 
         }
         return object;
     }
@@ -188,13 +193,13 @@ public class CommandQueue {
     private void queuePut(String caller, SingleEntryAsyncQueue q, Object thing, Condition condition) {
         String hdr = "\t" + getIdentification(caller) + " queuePut";
         if (SeleniumServer.isDebugMode()) {
-            SeleniumServer.log(hdr + "(" + thing + ")");
+            log.debug(hdr + "(" + thing + ")");
         }
         try {
             q.put(thing);
         }
         catch (SingleEntryAsyncQueueOverflow e) {
-            SeleniumServer.log(hdr + " caused " + e);
+            log.debug(hdr + " caused " + e);
             throw e;
         }
         condition.signalAll();
@@ -232,7 +237,7 @@ public class CommandQueue {
                 // in one frame causes reloads in others).
                 if (commandResult.startsWith("OK")) {
                     if (SeleniumServer.isDebugMode()) {
-                        SeleniumServer.log("Saw page load no one was waiting for.");
+                        log.debug("Saw page load no one was waiting for.");
                     }
                     queuePutResult(commandResult);
                 }            	
@@ -263,7 +268,7 @@ public class CommandQueue {
         if (SeleniumServer.isProxyInjectionMode()) {
             if (!commandResultHolder.isEmpty()) {
                 commandHolder.clear();
-                SeleniumServer.log("clearing out old window thread(s?) for " + this 
+                log.debug("clearing out old window thread(s?) for " + this 
                         + "; replaced result with " + commandResult);
             }
         }
@@ -282,7 +287,7 @@ public class CommandQueue {
         String s = sb.toString();
         if (s.endsWith("null")) {
             if (SeleniumServer.isDebugMode()) {
-                SeleniumServer.log("caller identification came in ending with null");
+                log.debug("caller identification came in ending with null");
             }
         }
         return s;
@@ -367,7 +372,7 @@ public class CommandQueue {
         else {
             throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
         }
-        SeleniumServer.log("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
+        log.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
         return result;
     }
 

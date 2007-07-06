@@ -1,15 +1,23 @@
 package org.openqa.selenium.server;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
+import org.mortbay.log.LogFactory;
 import org.mortbay.util.IO;
 
 public class InjectionHelper {
+    static Log log = LogFactory.getLog(InjectionHelper.class);
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
     private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
     
@@ -24,7 +32,7 @@ public class InjectionHelper {
             sessionIdToUniqueId.put(sessionId, uniqueId);
         }
         if (SeleniumServer.isDebugMode()) {
-            SeleniumServer.log("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
+            log.info("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
         }
         if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
             jsStateInitializersBySessionId.put(sessionId, new HashMap<String, String>());
@@ -52,7 +60,7 @@ public class InjectionHelper {
             sb.append(jsStateInitializer)
             .append('\n');
             if (SeleniumServer.isDebugMode()) {
-                SeleniumServer.log("Restoring JavaScript state for session " + sessionId + "/" + uniqueId 
+                log.info("Restoring JavaScript state for session " + sessionId + "/" + uniqueId 
                         + ": key=" + jsVarName + ": " + jsStateInitializer); 
             }
         }
@@ -143,14 +151,14 @@ public class InjectionHelper {
         long bytesCopied = len;
 
         if (SeleniumServer.isDebugMode()) {
-            SeleniumServer.log(url + " (InjectionHelper looking)");
+            log.info(url + " (InjectionHelper looking)");
         }
         if (!isKnownToBeHtml) {
             bytesCopied += ModifiedIO.copy(in, out);
         }
         else {
             if (SeleniumServer.isDebugMode()) {
-                SeleniumServer.log("injecting...");
+                log.info("injecting...");
             }
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
             String injectionHtml = "/core/scripts/injection.html";

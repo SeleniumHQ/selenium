@@ -17,14 +17,30 @@
 
 package org.openqa.selenium.server;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 
-import org.mortbay.http.*;
-import org.mortbay.jetty.*;
-import org.openqa.selenium.server.browserlaunchers.*;
-import org.openqa.selenium.server.htmlrunner.*;
+import org.apache.commons.logging.Log;
+import org.mortbay.http.HttpContext;
+import org.mortbay.http.NCSARequestLog;
+import org.mortbay.http.SocketListener;
+import org.mortbay.jetty.Server;
+import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
+import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
+import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
+import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
@@ -123,7 +139,7 @@ import org.openqa.selenium.server.htmlrunner.*;
  * @author plightbo
  */
 public class SeleniumServer {
-
+    static Log log = LogFactory.getLog(SeleniumServer.class);
     private Server server;
     private SeleniumDriverResourceHandler driver;
     private SeleniumHTMLRunnerResultsHandler postResultsHandler;
@@ -205,8 +221,8 @@ public class SeleniumServer {
                         SeleniumServer.forcedBrowserMode += " ";
                     SeleniumServer.forcedBrowserMode += args[i];
                 }
-                SeleniumServer.log("\"" + forcedBrowserMode + "\" will be used as the browser " +
-                        "mode for all sessions, no matter what is passed to getNewBrowserSession.");
+                SeleniumServer.log.info("\"" + forcedBrowserMode + "\" will be used as the browser " +
+				"mode for all sessions, no matter what is passed to getNewBrowserSession.");
             } else if ("-log".equalsIgnoreCase(arg)) {
                 setLogOut(getArg(args, ++i));
             } else if ("-port".equalsIgnoreCase(arg)) {
@@ -364,7 +380,7 @@ public class SeleniumServer {
                 Thread t = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            SeleniumServer.log("---> Requesting " + url.toString());
+                            SeleniumServer.log.info("---> Requesting " + url.toString());
                             URLConnection conn = url.openConnection();
                             conn.connect();
                             InputStream is = conn.getInputStream();
@@ -430,7 +446,7 @@ public class SeleniumServer {
             System.exit(1);
         }
         if (reusingBrowserSessions()) {
-            SeleniumServer.log("Will recycle browser sessions when possible.");
+            SeleniumServer.log.info("Will recycle browser sessions when possible.");
         }
     }
 
@@ -443,7 +459,7 @@ public class SeleniumServer {
     }
 
     private static void proxyInjectionSpeech() {
-        SeleniumServer.log("The selenium server will execute in proxyInjection mode.");
+        SeleniumServer.log.info("The selenium server will execute in proxyInjection mode.");
     }
 
     private static void setSystemProperty(String arg) {
@@ -781,7 +797,7 @@ public class SeleniumServer {
     static public void setDebugMode(boolean debugMode) {
         SeleniumServer.debugMode = debugMode;
         if (debugMode) {
-            SeleniumServer.log("Selenium server running in debug mode.");
+            SeleniumServer.log.info("Selenium server running in debug mode.");
             System.err.println("Standard error test.");
         }
     }
@@ -900,15 +916,6 @@ public class SeleniumServer {
     }
 
     
-    public static void log(String logMessages) {
-        PrintStream out = (logOut != null) ? logOut : System.out;
-        if (logMessages.endsWith("\n")) {
-            out.print(logMessages);
-        } else {
-            out.println(logMessages);
-        }
-    }
-
     public static void setReusingBrowserSessions(boolean reusingBrowserSessions) {
         SeleniumServer.reusingBrowserSessions = reusingBrowserSessions;
     }

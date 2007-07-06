@@ -37,7 +37,11 @@ package org.openqa.selenium.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
+
 public class HtmlIdentifier {
+    static Log log = LogFactory.getLog(HtmlIdentifier.class);
     private static List<Rule> rules = new ArrayList<Rule>();
     private static boolean logging = SeleniumServer.isDebugMode();
     private static final int INJECTION_THRESHOLD = 200;
@@ -72,19 +76,19 @@ public class HtmlIdentifier {
         int score = 0;
 
         if (logging) {
-            SeleniumServer.log("HtmlIdentifier.shouldBeInjected(\"" + path + "\", \"" + contentType + "\", \"...\")");
+            log.info("HtmlIdentifier.shouldBeInjected(\"" + path + "\", \"" + contentType + "\", \"...\")");
         }        
         
         for (Rule rule : rules) {
             int scoreDelta = rule.score(path, contentType, contentPreview);
             if (logging) {
-                SeleniumServer.log("    applied rule " + rule + ": " + scoreDelta);
+                log.debug("    applied rule " + rule + ": " + scoreDelta);
             }
             score += scoreDelta;
         }
         boolean shouldInject = (score > INJECTION_THRESHOLD);
         if (logging) {
-            SeleniumServer.log("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
+            log.info("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
         }        
         return shouldInject;
     }

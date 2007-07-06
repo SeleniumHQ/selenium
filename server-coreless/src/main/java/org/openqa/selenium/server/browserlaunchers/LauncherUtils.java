@@ -1,19 +1,38 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
-import java.net.*;
-import java.util.regex.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.types.*;
-import org.openqa.selenium.server.*;
+import org.apache.commons.logging.Log;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Copy;
+import org.apache.tools.ant.taskdefs.Delete;
+import org.apache.tools.ant.types.FileSet;
+import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.SeleniumServer;
 
 /**
  * Various static utility functions used to launch browsers
  */
 public class LauncherUtils {
 
+    static Log log = LogFactory.getLog(LauncherUtils.class);
+	
 	/**
 	 * creates an empty temp directory for managing a browser profile
 	 */
@@ -114,7 +133,7 @@ public class LauncherUtils {
 			URL u = new URL(url);
 			String path = u.getPath();
 			if (path != null && !"".equals(path) && !path.endsWith("/")) {
-				SeleniumServer.log("WARNING: It looks like your baseUrl ("+url+") is pointing to a file, not a directory (it doesn't end with a /).  We're going to have to strip off the last part of the pathname."); 
+				log.warn("It looks like your baseUrl ("+url+") is pointing to a file, not a directory (it doesn't end with a /).  We're going to have to strip off the last part of the pathname."); 
 			}
 			return u.getProtocol() + "://" + u.getAuthority();
 		} catch (MalformedURLException e) {
