@@ -104,8 +104,11 @@
         </profile>
         <profile>
             <id>core</id>
+            <properties>
+                <corePath>../selenium-core</corePath>
+            </properties>
             <modules>
-                <module>../selenium-core</module>
+                <module>${corePath}</module>
             </modules>
         </profile>
         <profile>
