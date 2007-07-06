@@ -90,7 +90,7 @@
                     </dependency>
                     <dependency>
                         <groupId>ant</groupId>
-                        <artifactId>ant-junit</artifactId>
+                        <artifactId>ant-nodeps</artifactId>
                         <version>1.6.5</version>
                     </dependency>
                     <dependency>
