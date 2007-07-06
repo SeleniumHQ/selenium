@@ -789,19 +789,43 @@ objectExtend(TestResult.prototype, {
         for (var i = 0; i < form.elements.length; i++) {
             inputs[form.elements[i].name] = form.elements[i].value;
         }
+        
         var objFSO = new ActiveXObject("Scripting.FileSystemObject")
+        
+        // DGF get CSS
+        var styles = "";
+        try {
+            var styleSheetPath = window.location.pathname.replace(/[^\/\\]+$/, "selenium-test.css");
+            if (window.location.protocol == "file:") {
+                var stylesFile = objFSO.OpenTextFile(styleSheetPath, 1);
+                styles = stylesFile.ReadAll();
+            } else {
+                var xhr = XmlHttp.create();
+                xhr.open("GET", styleSheetPath, false);
+                xhr.send("");
+                styles = xhr.responseText;
+            }
+        } catch (e) {}
+        
         var scriptFile = objFSO.CreateTextFile(fileName);
-        scriptFile.WriteLine("<html><body>\n<h1>Test suite results </h1>" +
-                             "\n\n<table>\n<tr>\n<td>result:</td>\n<td>" + inputs["result"] + "</td>\n" +
-                             "</tr>\n<tr>\n<td>totalTime:</td>\n<td>" + inputs["totalTime"] + "</td>\n</tr>\n" +
-                             "<tr>\n<td>numTestPasses:</td>\n<td>" + inputs["numTestPasses"] + "</td>\n</tr>\n" +
-                             "<tr>\n<td>numTestFailures:</td>\n<td>" + inputs["numTestFailures"] + "</td>\n</tr>\n" +
-                             "<tr>\n<td>numCommandPasses:</td>\n<td>" + inputs["numCommandPasses"] + "</td>\n</tr>\n" +
-                             "<tr>\n<td>numCommandFailures:</td>\n<td>" + inputs["numCommandFailures"] + "</td>\n</tr>\n" +
-                             "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
-                             "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr>");
+        
+        
+        scriptFile.WriteLine("<html><head><title>Test suite results</title><style>");
+        scriptFile.WriteLine(styles);
+        scriptFile.WriteLine("</style>");
+        scriptFile.WriteLine("<body>\n<h1>Test suite results</h1>" +
+             "\n\n<table>\n<tr>\n<td>result:</td>\n<td>" + inputs["result"] + "</td>\n" +
+             "</tr>\n<tr>\n<td>totalTime:</td>\n<td>" + inputs["totalTime"] + "</td>\n</tr>\n" +
+             "<tr>\n<td>numTestTotal:</td>\n<td>" + inputs["numTestTotal"] + "</td>\n</tr>\n" +
+             "<tr>\n<td>numTestPasses:</td>\n<td>" + inputs["numTestPasses"] + "</td>\n</tr>\n" +
+             "<tr>\n<td>numTestFailures:</td>\n<td>" + inputs["numTestFailures"] + "</td>\n</tr>\n" +
+             "<tr>\n<td>numCommandPasses:</td>\n<td>" + inputs["numCommandPasses"] + "</td>\n</tr>\n" +
+             "<tr>\n<td>numCommandFailures:</td>\n<td>" + inputs["numCommandFailures"] + "</td>\n</tr>\n" +
+             "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
+             "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr></table><table>");
         var testNum = inputs["numTestTotal"];
-        for (var rowNum = 1; rowNum < testNum; rowNum++) {
+        
+        for (var rowNum = 1; rowNum <= testNum; rowNum++) {
             scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
         }
         scriptFile.WriteLine("</table></body></html>");
