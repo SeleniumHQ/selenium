@@ -38,10 +38,6 @@ BrowserBot.prototype.relayToRC = function(name) {
         sendToRC(s,"state=true");
 }
 
-BrowserBot.prototype.relayBotToRC = function(s) {
-	this.relayToRC("selenium." + s);
-}
-
 function selenium_frameRunTest(oldOnLoadRoutine) {
 	if (oldOnLoadRoutine) {
 		eval(oldOnLoadRoutine);

@@ -147,9 +147,25 @@ BrowserBot.prototype.hasAlerts = function() {
     return (this.recordedAlerts.length > 0);
 };
 
-BrowserBot.prototype.relayBotToRC = function() {
+BrowserBot.prototype.relayBotToRC = function(s) {
+    // DGF need to do this funny trick to see if we're in PI mode, because
+    // "this" might be the window, rather than the browserbot (e.g. during window.alert) 
+    var piMode = this.proxyInjectionMode;
+    if (!piMode) {
+        if (typeof(selenium) != "undefined") {
+            piMode = selenium.browserbot && selenium.browserbot.proxyInjectionMode;
+        }
+    }
+    if (piMode) {
+        this.relayToRC("selenium." + s);
+    }
 };
-// override in injection.html
+
+BrowserBot.prototype.relayToRC = function(name) {
+	var object = eval(name);
+        var s = 'state:' + serializeObject(name, object) + "\n";
+        sendToRC(s,"state=true");
+}
 
 BrowserBot.prototype.resetPopups = function() {
     this.recordedAlerts = [];
@@ -430,14 +446,14 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
 
     windowToModify.alert = function(alert) {
         browserBot.recordedAlerts.push(alert);
-        self.relayBotToRC("browserbot.recordedAlerts");
+        self.relayBotToRC.call(self, "browserbot.recordedAlerts");
     };
 
     windowToModify.confirm = function(message) {
         browserBot.recordedConfirmations.push(message);
         var result = browserBot.nextConfirmResult;
         browserBot.nextConfirmResult = true;
-        self.relayBotToRC("browserbot.recordedConfirmations");
+        self.relayBotToRC.call(self, "browserbot.recordedConfirmations");
         return result;
     };
 
@@ -446,7 +462,7 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         var result = !browserBot.nextConfirmResult ? null : browserBot.nextPromptResult;
         browserBot.nextConfirmResult = true;
         browserBot.nextPromptResult = '';
-        self.relayBotToRC("browserbot.recordedPrompts");
+        self.relayBotToRC.call(self, "browserbot.recordedPrompts");
         return result;
     };
 
@@ -838,6 +854,9 @@ BrowserBot.prototype.getWindowNameByTitle = function(windowTitle) {
 };
 
 BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
+    if (this.proxyInjectionMode) {
+        return window;
+    }
     var testWindow = this.currentWindow;
     if (!doNotModify) {
         this._modifyWindow(testWindow);
