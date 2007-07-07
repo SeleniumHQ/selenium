@@ -76,7 +76,7 @@ public class HtmlIdentifier {
         int score = 0;
 
         if (logging) {
-            log.info("HtmlIdentifier.shouldBeInjected(\"" + path + "\", \"" + contentType + "\", \"...\")");
+            log.debug("shouldBeInjected(\"" + path + "\", \"" + contentType + "\", \"...\")");
         }        
         
         for (Rule rule : rules) {
@@ -88,7 +88,7 @@ public class HtmlIdentifier {
         }
         boolean shouldInject = (score > INJECTION_THRESHOLD);
         if (logging) {
-            log.info("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
+            log.debug("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
         }        
         return shouldInject;
     }

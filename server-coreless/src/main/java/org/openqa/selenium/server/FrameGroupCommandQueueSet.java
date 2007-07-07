@@ -557,7 +557,7 @@ public class FrameGroupCommandQueueSet {
         dataLock.lock();
         try {
             for (FrameAddress matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
-                log.debug("waiting for window \"" + waitingForThisWindowName + "\"" + " local frame \"" + waitingForThisLocalFrame + "\"");
+                log.debug("waiting for window \"" + waitingForThisWindowName + "\"" + " local frame \"" + waitingForThisLocalFrame + "\" for " + timeoutInSeconds + " more secs");
                 matchingFrameAddress = findMatchingFrameAddress(frameAddressToJustLoaded.keySet(), 
                         waitingForThisWindowName, waitingForThisLocalFrame);
                 if (matchingFrameAddress!=null) {

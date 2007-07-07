@@ -1,11 +1,15 @@
 package com.thoughtworks.selenium;
 
 import java.util.*;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 
 import junit.extensions.*;
 import junit.framework.*;
 
 import org.openqa.selenium.server.browserlaunchers.*;
+import org.openqa.selenium.server.log.TerseFormatter;
 
 /**
  * This class executes the same tests that ClientDriverSuite does, but it does
@@ -18,6 +22,14 @@ import org.openqa.selenium.server.browserlaunchers.*;
 
 public class ClientDriverPISuite extends ClientDriverSuite {
     public static Test suite() {
+        for (Handler handler : Logger.getLogger("").getHandlers()) {
+            handler.setFormatter(new TerseFormatter());
+            handler.setLevel(Level.FINE);
+        }
+
+        Logger.getLogger("org.openqa.selenium.server.FrameGroupCommandQueueSet").setLevel(Level.FINE);
+        Logger.getLogger("org.openqa.selenium.server.SeleniumDriverResourceHandler.browserSideLog").setLevel(Level.FINE);
+
         TestSuite supersuite = new TestSuite(ClientDriverPISuite.class.getName());
         TestSuite suite = ClientDriverSuite.generateSuite(true, determineForcedBrowserMode());
         suite.setName(ClientDriverPISuite.class.getName());
