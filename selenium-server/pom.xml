@@ -14,7 +14,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.2-beta-2-SNAPSHOT</version>
                 <configuration>
                     <descriptor>src/main/assembly/dep.xml</descriptor>
                     <archive>
@@ -73,6 +73,32 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
+                    </execution>
+                    <execution>
+	                    <id>fixup-bouncy-castle</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+								<!-- we do the following after the assembly plugin because we can't 
+								     let the bouncy castle signature entries get dumped in to the 
+								     main jar w/o re-signing the jar, which we don't want to do. 
+								     so this simple trick removes the two files that tip java off
+								     to any sort of security in the first place, which is fine with us.-->
+								<move file="target/selenium-server-0.9.2-SNAPSHOT-standalone.jar" 
+									  tofile="target/selenium-server-0.9.2-SNAPSHOT-standalone.bak"/>
+								<jar destfile="target/selenium-server-0.9.2-SNAPSHOT-standalone.jar">
+									<zipfileset src="target/selenium-server-0.9.2-SNAPSHOT-standalone.bak" 
+										        excludes="META-INF/BCKEY.DSA,META-INF/BCKEY.SF"/>
+									<manifest>
+								      <attribute name="Main-Class" value="org.openqa.selenium.server.SeleniumServer"/>
+								    </manifest>
+								</jar>
+								<delete file="target/selenium-server-0.9.2-SNAPSHOT-standalone.bak"/>
+                            </tasks>
+                        </configuration>
                     </execution>
                 </executions>
                 <dependencies>

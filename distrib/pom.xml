@@ -14,7 +14,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-beta-1</version>
+                <version>2.2-beta-2-SNAPSHOT</version>
                 <configuration>
                     <descriptors><descriptor>src/main/assembly/dep.xml</descriptor></descriptors>
                 </configuration>
