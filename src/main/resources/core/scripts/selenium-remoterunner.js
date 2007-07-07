@@ -451,11 +451,13 @@ function getSeleniumWindowNameURLparameters() {
         return s;
     }
     if (w["seleniumWindowName"] == null) {
-    	s +=  'generatedSeleniumWindowName_' + Math.round(100000 * Math.random());
+        if (w.name) {
+            w["seleniumWindowName"] = w.name;
+        } else {
+    	    w["seleniumWindowName"] = 'generatedSeleniumWindowName_' + Math.round(100000 * Math.random());
+    	}
     }
-    else {
-    	s += w["seleniumWindowName"];
-    }
+    s += w["seleniumWindowName"];
     var windowOpener = w.opener;
     for (key in windowOpener) {
         var val = null;
