@@ -13,7 +13,7 @@
     <xsl:apply-templates select="//top" />
     <xsl:apply-templates select="//function" />
     <xsl:text disable-output-escaping="yes"><![CDATA[
-    private function doCommand($verb, $args = array())
+    protected function doCommand($verb, $args = array())
     {
         $url = sprintf('http://%s:%s/selenium-server/driver/?cmd=%s', $this->host, $this->port, urlencode($verb));
         for ($i = 0; $i < count($args); $i++) {
