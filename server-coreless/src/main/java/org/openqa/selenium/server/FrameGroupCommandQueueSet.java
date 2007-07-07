@@ -240,10 +240,6 @@ public class FrameGroupCommandQueueSet {
         dataLock.lock();
         try {
             if (SeleniumServer.isProxyInjectionMode()) {
-                if (command.equals("close")) {
-                    getCommandQueue().doCommandWithoutWaitingForAResponse(command, arg, value);
-                    return "OK";    // do not wait for a response; this window is killing itself
-                }
                 if (command.equals("selectFrame")) {
                     if ("".equals(arg)) {
                         selectFrame(DEFAULT_LOCAL_FRAME_ADDRESS);
@@ -561,6 +557,7 @@ public class FrameGroupCommandQueueSet {
         dataLock.lock();
         try {
             for (FrameAddress matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
+                log.debug("waiting for window \"" + waitingForThisWindowName + "\"" + " local frame \"" + waitingForThisLocalFrame + "\"");
                 matchingFrameAddress = findMatchingFrameAddress(frameAddressToJustLoaded.keySet(), 
                         waitingForThisWindowName, waitingForThisLocalFrame);
                 if (matchingFrameAddress!=null) {
@@ -571,7 +568,6 @@ public class FrameGroupCommandQueueSet {
 					markWhetherJustLoaded(matchingFrameAddress, false);
                     return matchingFrameAddress;
                 }
-                log.debug("waiting for window \"" + waitingForThisWindowName + "\"" + " local frame \"" + waitingForThisLocalFrame + "\"");
                 try {
                     resultArrivedOnAnyQueue.await(1, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
