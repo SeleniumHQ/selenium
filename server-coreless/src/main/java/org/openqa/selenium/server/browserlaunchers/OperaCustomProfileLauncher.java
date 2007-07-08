@@ -16,7 +16,9 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
+import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.File;
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
 
 public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
+    static Log log = LogFactory.getLog(OperaCustomProfileLauncher.class);
     // TODO What is this really?
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Opera.app/Contents/MacOS/opera";
 
@@ -125,7 +128,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         try {
             File opera6ini = makeCustomProfile();
 
-            System.out.println("Launching Opera...");
+            log.info("Launching Opera...");
             if (WindowsUtils.thisIsWindows()) {
                 cmdarray = new String[]{commandPath, "/settings", opera6ini.getAbsolutePath(), url};
             } else {
@@ -239,7 +242,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     public void close() {
         if (closed) return;
         if (process == null) return;
-        System.out.println("Killing Opera...");
+        log.info("Killing Opera...");
         Exception taskKillException = null;
         Exception fileLockException = null;
         if (false) {
@@ -252,7 +255,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         }
         int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
-            System.err.println("WARNING: Opera seems to have ended on its own (did we kill the real browser???)");
+            log.warn("Opera seems to have ended on its own (did we kill the real browser???)");
         }
         try {
             waitForFileLockToGoAway(5 * 000, 500);
@@ -265,13 +268,13 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
             LauncherUtils.deleteTryTryAgain(customProfileDir, 6);
         } catch (RuntimeException e) {
             if (taskKillException != null || fileLockException != null) {
-                e.printStackTrace();
-                System.err.print("Perhaps caused by: ");
-                if (taskKillException != null) taskKillException.printStackTrace();
-                if (fileLockException != null) fileLockException.printStackTrace();
+                log.error("Couldn't delete custom Opera profile directory", e);
+                log.error("Perhaps caused by this exception:");
+                if (taskKillException != null) log.error("Perhaps caused by this exception:", taskKillException);
+                if (fileLockException != null) log.error("Perhaps caused by this exception:", fileLockException);
                 throw new RuntimeException("Couldn't delete custom Opera " +
                         "profile directory, presumably because task kill failed; " +
-                        "see stderr!", e);
+                        "see error log!", e);
             }
             throw e;
         }

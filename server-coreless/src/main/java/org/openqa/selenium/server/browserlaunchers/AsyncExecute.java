@@ -17,11 +17,19 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.taskdefs.condition.*;
-import org.apache.tools.ant.types.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.apache.commons.logging.Log;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Execute;
+import org.apache.tools.ant.taskdefs.ExecuteStreamHandler;
+import org.apache.tools.ant.taskdefs.PumpStreamHandler;
+import org.apache.tools.ant.taskdefs.condition.Os;
+import org.apache.tools.ant.types.Path;
+import org.mortbay.log.LogFactory;
 
 /** A handy wrapper around Ant's Execute class that can spawn a process
  * and return the process handle so you can close it yourself later
@@ -29,6 +37,8 @@ import org.apache.tools.ant.types.*;
  *
  */
 public class AsyncExecute extends Execute {
+    
+    static Log log = LogFactory.getLog(AsyncExecute.class);
     File workingDirectory ;
     Project project;
     boolean useVMLauncher = true; 
@@ -125,11 +135,11 @@ public class AsyncExecute extends Execute {
         } catch (ProcessStillAliveException ex) {
             if (WindowsUtils.thisIsWindows()) throw ex;
             try {
-                System.out.println("Process didn't die after 10 seconds");
+                log.info("Process didn't die after 10 seconds");
                 UnixUtils.kill9(process);
                 exitValue = AsyncExecute.waitForProcessDeath(process, 10000);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Process refused to die after 10 seconds, and couldn't kill9 it", e);
                 throw new RuntimeException("Process refused to die after 10 seconds, and couldn't kill9 it: " + e.getMessage(), ex);
             }
         }

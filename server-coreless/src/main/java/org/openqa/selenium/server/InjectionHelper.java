@@ -137,7 +137,7 @@ public class InjectionHelper {
 
         String url = response.getHttpRequest().getRequestURL().toString();
         if (SeleniumServer.getDebugURL().equals(url)) {
-            System.out.println("debug URL seen");
+            log.info("debug URL seen");
         }
        
         if (!isKnownToBeHtml) {
@@ -246,7 +246,7 @@ public class InjectionHelper {
             for (String beforeRegexp : contentTransformations.keySet()) {
                 String after = contentTransformations.get(beforeRegexp);
                 if (after==null) {
-                    System.out.println("Warning: no transformation seen for key " + beforeRegexp);
+                    log.warn("no transformation seen for key " + beforeRegexp);
                 }
                 else {
                     try {
@@ -335,7 +335,7 @@ public class InjectionHelper {
     public static boolean addUserJsInjectionFile(String fileName) {
         File f = new File(fileName);
         if (!f.canRead()) {
-            System.out.println("Error: cannot read user JavaScript injection file " + fileName);
+            log.error("cannot read user JavaScript injection file " + fileName);
             return false;
         }
         userJsInjectionFiles.add(fileName);

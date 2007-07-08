@@ -18,11 +18,14 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
 
+import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.*;
+import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.*;
 
 public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
+    static Log log = LogFactory.getLog(FirefoxCustomProfileLauncher.class);
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
 
     private static boolean simple = false;
@@ -114,7 +117,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     protected void launch(String url) {
         try {
 
-            System.out.println("customProfileDir = " + customProfileDir());
+            log.debug("customProfileDir = " + customProfileDir());
             makeCustomProfile(customProfileDir());
 
             String chromeURL = "chrome://killff/content/kill.html";
@@ -126,7 +129,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
      * kill/relaunch itself, so our process handle goes out of date.
      * So, the first time we launch Firefox, we'll start it up at an URL
      * that will immediately shut itself down. */
-            System.out.println("Preparing Firefox profile...");
+            log.info("Preparing Firefox profile...");
 
             exe.setCommandline(cmdarray);
             exe.execute();
@@ -134,7 +137,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
             waitForFullProfileToBeCreated(20 * 1000);
 
-            System.out.println("Launching Firefox...");
+            log.info("Launching Firefox...");
             cmdarray = new String[]{commandPath, "-profile", customProfileDir().getAbsolutePath(), url};
 
             exe.setCommandline(cmdarray);
@@ -162,12 +165,12 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     public void close() {
         if (closed) return;
         if (process == null) return;
-        System.out.println("Killing Firefox...");
+        log.info("Killing Firefox...");
         Exception taskKillException = null;
         Exception fileLockException = null;
         int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
-            System.err.println("WARNING: Firefox seems to have ended on its own (did we kill the real browser???)");
+            log.warn("Firefox seems to have ended on its own (did we kill the real browser???)");
         }
         try {
             waitForFileLockToGoAway(0, 500);
@@ -180,13 +183,13 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             LauncherUtils.deleteTryTryAgain(customProfileDir(), 6);
         } catch (RuntimeException e) {
             if (taskKillException != null || fileLockException != null) {
-                e.printStackTrace();
-                System.err.print("Perhaps caused by: ");
-                if (taskKillException != null) taskKillException.printStackTrace();
-                if (fileLockException != null) fileLockException.printStackTrace();
+                log.error("Couldn't delete custom Firefox profile directory", e);
+                log.error("Perhaps caused by this exception:");
+                if (taskKillException != null) log.error("Perhaps caused by this exception:", taskKillException);
+                if (fileLockException != null) log.error("Perhaps caused by this exception:", fileLockException);
                 throw new RuntimeException("Couldn't delete custom Firefox " +
                         "profile directory, presumably because task kill failed; " +
-                        "see stderr!", e);
+                        "see error log!", e);
             }
             throw e;
         }

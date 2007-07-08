@@ -4,10 +4,18 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-import org.openqa.selenium.server.*;
-import org.openqa.selenium.server.browserlaunchers.*;
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.SeleniumCommandTimedOutException;
+import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
 
 /**
  * Runs HTML Selenium test suites.
@@ -18,6 +26,7 @@ import org.openqa.selenium.server.browserlaunchers.*;
  */
 public class HTMLLauncher implements HTMLResultsListener {
 
+    static Log log = LogFactory.getLog(HTMLLauncher.class);
     private SeleniumServer server;
     private HTMLTestResults results;
     
@@ -43,7 +52,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         }
     	long timeoutInMs = 1000l * timeoutInSeconds;
         if (timeoutInMs < 0) {
-            System.err.println("Looks like the timeout overflowed, so resetting it to the maximum.");
+            log.warn("Looks like the timeout overflowed, so resetting it to the maximum.");
             timeoutInMs = Long.MAX_VALUE;
         }
         server.handleHTMLRunnerResults(this);

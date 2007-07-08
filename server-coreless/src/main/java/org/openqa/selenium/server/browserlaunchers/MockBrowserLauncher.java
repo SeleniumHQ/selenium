@@ -4,13 +4,22 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-import org.openqa.selenium.server.*;
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.DefaultRemoteCommand;
+import org.openqa.selenium.server.RemoteCommand;
+import org.openqa.selenium.server.SeleniumServer;
 
 public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
+    static Log log = LogFactory.getLog(MockBrowserLauncher.class);
     private final int port;
     private final String sessionId;
     private Thread browser;
@@ -54,7 +63,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
             String startURL = "http://localhost:" + port+"/selenium-server/driver/?sessionId=" + sessionId;
             String commandLine = doBrowserRequest(startURL+"&seleniumStart=true", "START");
             while (!interrupted) {
-                System.out.println("MOCK: " + commandLine);
+                log.info("MOCK: " + commandLine);
                 RemoteCommand sc = DefaultRemoteCommand.parse(commandLine);
                 String result = doCommand(sc);
                 if (SeleniumServer.isDebugMode() && !interrupted) {
@@ -66,7 +75,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
                     commandLine = doBrowserRequest(startURL, result);
                 }
             }
-            System.out.println("MOCK: interrupted, exiting");
+            log.info("MOCK: interrupted, exiting");
         } catch (Exception e) {
             RuntimeException re = new RuntimeException("Exception in mock browser", e);
             re.printStackTrace();

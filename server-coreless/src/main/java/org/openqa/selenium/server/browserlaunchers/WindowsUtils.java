@@ -30,10 +30,12 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.ExecTask;
 import org.apache.tools.ant.taskdefs.Execute;
 import org.apache.tools.ant.types.Environment;
+import org.mortbay.log.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -41,6 +43,7 @@ import org.w3c.dom.Text;
 
 public class WindowsUtils {
 
+    static Log log = LogFactory.getLog(WindowsUtils.class);
     private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
     private static String wmic = null;
     private static File wbem = null;
@@ -102,23 +105,24 @@ public class WindowsUtils {
             Matcher m = cmd.matcher(commandLine);
             if (m.matches()) {
                 String processID = (String) procMap.get(commandLine);
-                System.out.print("Killing PID ");
-                System.out.print(processID);
-                System.out.print(": ");
-                System.out.println(commandLine);
+                StringBuffer logMessage = new StringBuffer("Killing PID ");
+                logMessage.append(processID);
+                logMessage.append(": ");
+                logMessage.append(commandLine);
+                log.info(logMessage);
                 killPID(processID);
-                System.out.println("Killed");
+                log.info("Killed");
                 killedOne = true;
             }
         }
         if (!killedOne) {
-            System.err.print("Didn't find any matches for");
+            StringBuffer errorMessage = new StringBuffer("Didn't find any matches for");
             for (int i = 0; i < cmdarray.length; i++) {
-                System.err.print(" '");
-                System.err.print(cmdarray[i]);
-                System.err.print('\'');
+                errorMessage.append(" '");
+                errorMessage.append(cmdarray[i]);
+                errorMessage.append('\'');
             }
-            System.err.println("");
+            log.warn(errorMessage);
         }
     }
 
@@ -141,7 +145,7 @@ public class WindowsUtils {
         exec.execute();
         String result = p.getProperty("result");
         String output = p.getProperty("output");
-        System.out.println(output);
+        log.info(output);
         if (!"0".equals(result)) {
             throw new WindowsRegistryException("exec return code " + result + ": " + output);
         }
@@ -164,9 +168,9 @@ public class WindowsUtils {
         exec.createArg().setValue("full");
         exec.createArg().setValue("/format:rawxml.xsl");
         exec.setOutputproperty("proclist");
-        System.out.println("Reading Windows Process List...");
+        log.info("Reading Windows Process List...");
         exec.execute();
-        System.out.println("Done, searching for processes to kill...");
+        log.info("Done, searching for processes to kill...");
         // WMIC drops an ugly zero-length batch file; clean that up
         File TempWmicBatchFile = new File("TempWmicBatchFile.bat");
         if (TempWmicBatchFile.exists()) TempWmicBatchFile.delete();
@@ -211,7 +215,7 @@ public class WindowsUtils {
             String entry = (String) e.nextElement();
             int pos = entry.indexOf('=');
             if (pos == -1) {
-                System.err.println("Ignoring: " + entry);
+                log.warn("Ignoring: " + entry);
             } else {
                 env.put(entry.substring(0, pos),
                 entry.substring(pos + 1));
@@ -288,7 +292,7 @@ public class WindowsUtils {
                 return wmic;
             }
         }
-        System.err.println("Couldn't find wmic! Hope it's on the path...");
+        log.warn("Couldn't find wmic! Hope it's on the path...");
         wmic = "wmic";
         return wmic;
     }
@@ -302,7 +306,7 @@ public class WindowsUtils {
         File systemRoot = findSystemRoot();
         wbem = new File(systemRoot, "system32/wbem");
         if (!wbem.exists()) {
-            System.err.println("Couldn't find wbem!");
+            log.error("Couldn't find wbem!");
             return null;
         }
         return wbem;
@@ -320,7 +324,7 @@ public class WindowsUtils {
             taskkill = taskkillExe.getAbsolutePath();
             return taskkill;
         }
-        System.err.println("Couldn't find taskkill! Hope it's on the path...");
+        log.warn("Couldn't find taskkill! Hope it's on the path...");
         taskkill = "taskkill";
         return taskkill;
     }
@@ -347,7 +351,7 @@ public class WindowsUtils {
         	reg = regExe.getAbsolutePath();
         	return reg;
         }
-    	System.err.println("OS Version: " + System.getProperty("os.version"));
+    	log.error("OS Version: " + System.getProperty("os.version"));
         throw new WindowsRegistryException("Couldn't find reg.exe!\n" +
 			"Please download it from Microsoft and install it in a standard location.\n" +
 			"See here for details: http://wiki.openqa.org/display/SRC/Windows+Registry+Support");

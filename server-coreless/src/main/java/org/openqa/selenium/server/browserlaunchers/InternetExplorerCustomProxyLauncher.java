@@ -16,6 +16,8 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.File;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 
 public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher {
 
+    static Log log = LogFactory.getLog(InternetExplorerCustomProxyLauncher.class);
     protected static final String REG_KEY_SELENIUM_FOLDER = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\";
     protected static final String REG_KEY_BACKUP_READY = REG_KEY_SELENIUM_FOLDER + "BackupReady";
     protected static final String REG_KEY_BACKUP_AUTOCONFIG_URL = REG_KEY_SELENIUM_FOLDER + "AutoConfigURL";
@@ -173,7 +176,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
             } else {
                 cmdarray = new String[]{commandPath, url};
             }
-            System.out.println("Launching Internet Explorer...");
+            log.info("Launching Internet Explorer...");
             AsyncExecute exe = new AsyncExecute();
             exe.setCommandline(cmdarray);
             process = exe.asyncSpawn();
@@ -197,7 +200,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
             File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port);
 
-            System.out.println("Modifying registry settings...");
+            log.info("Modifying registry settings...");
 
             String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
             WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_AUTOCONFIG_URL, newURL);
@@ -229,7 +232,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         // Don't clobber our old backup if we 
         // never got the chance to restore for some reason 
         if (backupIsReady()) return;
-        System.out.println("Backing up registry settings...");
+        log.info("Backing up registry settings...");
         for (RegKeyBackup key : keys) {
             key.backup();
         }
@@ -239,7 +242,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     public void restoreRegistrySettings() {
         // Backup really should be ready, but if not, skip it 
         if (!backupIsReady()) return;
-        System.out.println("Restoring registry settings (won't affect running browsers)...");
+        log.info("Restoring registry settings (won't affect running browsers)...");
         for (RegKeyBackup key : keys) {
             key.restore();
         }
@@ -275,12 +278,11 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
                 LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
             } catch (RuntimeException e) {
                 if (taskKillException != null) {
-                    e.printStackTrace();
-                    System.err.print("Perhaps caused by: ");
-                    taskKillException.printStackTrace();
+                    log.error("Couldn't delete custom IE proxy directory", e);
+                    log.error("Perhaps IE proxy delete error was caused by this exception", taskKillException);
                     throw new RuntimeException("Couldn't delete custom IE " +
                             "proxy directory, presumably because task kill failed; " +
-                            "see stderr!", e);
+                            "see error log!", e);
                 }
                 throw e;
             }

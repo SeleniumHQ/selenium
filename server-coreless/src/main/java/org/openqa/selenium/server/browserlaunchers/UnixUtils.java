@@ -4,13 +4,18 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
 
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
+import org.apache.commons.logging.Log;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.ExecTask;
+import org.mortbay.log.LogFactory;
 
 /** Handy utilities for managing Unix/Linux processes */
 public class UnixUtils {
+    
+    static Log log = LogFactory.getLog(UnixUtils.class);
+    
     /** retrieves the pid */
     public static int getProcessId(Process p) {
         if (WindowsUtils.thisIsWindows()) {
@@ -28,7 +33,7 @@ public class UnixUtils {
     
     /** runs "kill -9" on the specified pid */
     public static void kill9(Integer pid) {
-        System.out.println("kill -9 " + pid);
+        log.debug("kill -9 " + pid);
         Project p = new Project();
         ExecTask exec = new ExecTask();
         exec.setProject(p);
@@ -42,7 +47,7 @@ public class UnixUtils {
         exec.execute();
         String result = p.getProperty("result");
         String output = p.getProperty("output");
-        System.out.println(output);
+        log.debug(output);
         if (!"0".equals(result)) {
             throw new RuntimeException("exec return code " + result + ": " + output);
         }

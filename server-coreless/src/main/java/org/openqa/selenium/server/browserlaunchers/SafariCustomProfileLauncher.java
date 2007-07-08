@@ -16,13 +16,16 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
+import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.*;
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
+    static Log log = LogFactory.getLog(SafariCustomProfileLauncher.class);
     private static final String DEFAULT_LOCATION = "/Applications/Safari.app/Contents/MacOS/Safari";
 
     private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
@@ -96,7 +99,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
             String redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
 
-            System.out.println("Launching Safari to visit " + url + " via " + redirectHtmlFileName + "...");
+            log.info("Launching Safari to visit " + url + " via " + redirectHtmlFileName + "...");
             cmdarray = new String[]{commandPath, redirectHtmlFileName};
 
             exe.setCommandline(cmdarray);
@@ -130,10 +133,10 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     public void close() {
         if (closed) return;
         if (process == null) return;
-        System.out.println("Killing Safari...");
+        log.info("Killing Safari...");
         int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
-            System.err.println("WARNING: Safari seems to have ended on its own (did we kill the real browser???)");
+            log.warn("Safari seems to have ended on its own (did we kill the real browser???)");
         }
         closed = true;
     }

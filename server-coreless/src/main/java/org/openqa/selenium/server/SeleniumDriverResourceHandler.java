@@ -143,7 +143,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 // ignore failure to find these items...
             }
             else {
-                log.info("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
+                log.debug("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
                 req.setHandled(false);
             }
         }
@@ -152,7 +152,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 && looksLikeBrowserLaunchFailedBecauseFileNotFound(e)) {
                 String apparentFile = extractNameOfFileThatCouldntBeFound(e);
                 if (apparentFile!=null) {
-                    System.err.println("\n\nCould not start browser; it appears that " + apparentFile + " is missing or inaccessible");
+                    log.error("Could not start browser; it appears that " + apparentFile + " is missing or inaccessible");
                 }
             }
             throw e;
@@ -322,7 +322,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
-        log.info("command = " + cmd);
         // If this a Driver Client sending a new command...
         res.setContentType("text/plain");
         hackRemoveConnectionCloseHeader(res);
@@ -340,9 +339,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
 
         String results;
-        if (SeleniumServer.isDebugMode()) {
-            log.debug("queryString = " + req.getQuery());
-        }
         results = doCommand(cmd, values, sessionId, res);
 
         // under some conditions, the results variable will be null
@@ -359,6 +355,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
+        log.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
         String results;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
@@ -476,7 +473,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 setDomain(sessionId, urlDomain);
             }
             else if (!url.startsWith(domain)) {
-                System.err.println("warning: you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
+                log.warn("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
                                    + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
                                    + "or alternatively the selenium server is running in proxy injection mode)");
             }

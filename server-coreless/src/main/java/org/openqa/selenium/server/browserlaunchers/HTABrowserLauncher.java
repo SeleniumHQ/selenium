@@ -6,10 +6,13 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
 
+import org.apache.commons.logging.Log;
 import org.apache.tools.ant.util.*;
+import org.mortbay.log.LogFactory;
 
 public class HTABrowserLauncher implements BrowserLauncher {
 
+    static Log log = LogFactory.getLog(HTABrowserLauncher.class);
     private int port;
     private String sessionId;
     private File dir;
@@ -55,7 +58,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
         query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
         createHTAFiles();
         String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
-        System.out.println("Launching Embedded Internet Explorer...");
+        log.info("Launching Embedded Internet Explorer...");
         AsyncExecute exe = new AsyncExecute();
         exe.setCommandline(new String[] {InternetExplorerCustomProxyLauncher.findBrowserLaunchLocation(), "-Embedding"});
         try {
@@ -63,7 +66,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Launching Internet Explorer HTA...");
+        log.info("Launching Internet Explorer HTA...");
         AsyncExecute htaExe = new AsyncExecute();
         htaExe.setCommandline(new String[] {htaCommandPath, hta, query});
         try {
@@ -94,7 +97,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     	if (iexploreProcess != null) {
     		int exitValue = AsyncExecute.killProcess(iexploreProcess);
             if (exitValue == 0) {
-                System.err.println("WARNING: Embedded iexplore seems to have ended on its own (did we kill the real browser???)");
+                log.warn("Embedded iexplore seems to have ended on its own (did we kill the real browser???)");
             }
     	}
     	if (htaProcess == null) return;

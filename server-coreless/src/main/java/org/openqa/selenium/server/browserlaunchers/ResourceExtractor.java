@@ -16,11 +16,14 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.logging.Log;
 import org.apache.tools.ant.util.FileUtils;
+import org.mortbay.log.LogFactory;
 
 
 public class ResourceExtractor {
 
+    static Log log = LogFactory.getLog(ResourceExtractor.class);
     private static final int BUF_SIZE = 8192;
     
     public static File extractResourcePath(String resourcePath, File dest) throws IOException {
@@ -55,7 +58,7 @@ public class ResourceExtractor {
         ZipFile z = new ZipFile(jarFile, ZipFile.OPEN_READ);
         String zipStyleResourcePath = resourcePath.substring(1) + "/"; 
         ZipEntry ze = z.getEntry(zipStyleResourcePath);
-        System.out.println( "Extracting "+resourcePath+" to " + dest.getAbsolutePath() );
+        log.debug( "Extracting "+resourcePath+" to " + dest.getAbsolutePath() );
         if (ze != null) {
             // DGF If it's a directory, then we need to look at all the entries
             for (Enumeration entries = z.entries(); entries.hasMoreElements();) {
