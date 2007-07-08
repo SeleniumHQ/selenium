@@ -13,8 +13,7 @@ import org.bouncycastle.util.encoders.Base64;
  * Copyright (c) 2007, Information Security Partners, LLC
  * All rights reserved.
  * 
-  * This software licensed under the GPLv2, available in LICENSE.txt and at
- * http://www.gnu.org/licenses/gpl.txt
+ * In a special exception, Selenium/OpenQA is allowed to use this code under the Apache License 2.0.
  * 
  * 
  * @author Brad Hill
