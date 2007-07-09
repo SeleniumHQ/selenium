@@ -299,7 +299,15 @@ public class LauncherUtils {
 
 		// Disable "do you want to remember this password?"
 		out.println("user_pref('signon.rememberSignons', false);");
-		out.close();
+
+        // Disable any of the random self-updating crap
+        out.println("user_pref('app.update.auto', false);");
+        out.println("user_pref('app.update.enabled', false);");
+        out.println("user_pref('extensions.update.enabled', false);");
+        out.println("user_pref('browser.search.update', false);");
+        out.println("user_pref('browser.safebrowsing.enabled', false);");
+
+        out.close();
 	}
 
 	static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
