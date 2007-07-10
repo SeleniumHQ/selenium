@@ -67,6 +67,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private Map<String, String> sessionIdsToBrowserStrings = new HashMap<String, String>();
     private StringBuffer logMessagesBuffer = new StringBuffer();
     private long previousSessionId = -1;
+    private BrowserLauncherFactory browserLauncherFactory = new BrowserLauncherFactory();
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
@@ -510,9 +511,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         else {
             sessionId = getSessionIdWithUniqueness();
             setLastSessionId(sessionId); 
-            BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
             queue = FrameGroupCommandQueueSet.makeQueueSet(sessionId).getCommandQueue();
-            BrowserLauncher launcher = blf.getBrowserLauncher(browserString, sessionId, queue);
+            BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, queue);
             launchers.put(sessionId, launcher);
             sessionIdsToBrowserStrings.put(sessionId, browserString);
             
@@ -635,5 +635,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     private static void setLastSessionId(String sessionId) {
         SeleniumDriverResourceHandler.lastSessionId = sessionId;
+    }
+
+    public BrowserLauncherFactory getBrowserLauncherFactory() {
+        return browserLauncherFactory;
+    }
+
+    public void setBrowserLauncherFactory(
+            BrowserLauncherFactory browserLauncherFactory) {
+        this.browserLauncherFactory = browserLauncherFactory;
     }
 }

@@ -373,7 +373,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             response.setReason(http.getResponseMessage());
 
             String contentType = http.getContentType();
-            if (SeleniumServer.isDebugMode()) {
+            if (log.isDebugEnabled()) {
                 log.debug("Content-Type is: " + contentType);
             }
         }

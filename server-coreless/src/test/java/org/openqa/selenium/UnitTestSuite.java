@@ -9,6 +9,7 @@ import org.openqa.selenium.server.SeleniumServerTest;
 import org.openqa.selenium.server.StaticContentHandlerTest;
 import org.openqa.selenium.server.browserlaunchers.WindowsUtilsTest;
 import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncherTest;
+import org.openqa.selenium.server.mock.MockPIFrameTest;
 
 public class UnitTestSuite extends TestCase {
 
@@ -22,6 +23,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(WindowsUtilsTest.class);
         suite.addTestSuite(FirefoxChromeLauncherTest.class);
         suite.addTestSuite(HTMLSuiteResultTest.class);
+        suite.addTestSuite(MockPIFrameTest.class);
         return suite;
     }
 }

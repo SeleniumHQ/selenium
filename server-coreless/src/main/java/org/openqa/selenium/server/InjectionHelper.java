@@ -18,6 +18,7 @@ import org.mortbay.util.IO;
 
 public class InjectionHelper {
     static Log log = LogFactory.getLog(InjectionHelper.class);
+    private static boolean failOnError = true;
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
     private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
     
@@ -31,8 +32,8 @@ public class InjectionHelper {
             jsStateInitializersBySessionId.remove(sessionId);
             sessionIdToUniqueId.put(sessionId, uniqueId);
         }
-        if (SeleniumServer.isDebugMode()) {
-            log.info("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
+        if (log.isDebugEnabled()) {
+            log.debug("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
         }
         if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
             jsStateInitializersBySessionId.put(sessionId, new HashMap<String, String>());
@@ -59,8 +60,8 @@ public class InjectionHelper {
             String jsStateInitializer = h.get(jsVarName);
             sb.append(jsStateInitializer)
             .append('\n');
-            if (SeleniumServer.isDebugMode()) {
-                log.info("Restoring JavaScript state for session " + sessionId + "/" + uniqueId 
+            if (log.isDebugEnabled()) {
+                log.debug("Restoring JavaScript state for session " + sessionId + "/" + uniqueId 
                         + ": key=" + jsVarName + ": " + jsStateInitializer); 
             }
         }
@@ -94,8 +95,12 @@ public class InjectionHelper {
             appendFileContent(sb, "/core/xpath/dom.js");
             appendFileContent(sb, "/core/xpath/xpath.js");
             appendFileContent(sb, "/core/scripts/user-extensions.js");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            if (failOnError) {
+                throw new RuntimeException(e);
+            } else {
+                log.info("failOnError is false, ignoring problems: ", e);
+            }
         }
         contentTransformations.put(key, sb.toString());
     }
@@ -150,15 +155,15 @@ public class InjectionHelper {
 
         long bytesCopied = len;
 
-        if (SeleniumServer.isDebugMode()) {
-            log.info(url + " (InjectionHelper looking)");
+        if (log.isDebugEnabled()) {
+            log.debug(url + " (InjectionHelper looking)");
         }
         if (!isKnownToBeHtml) {
             bytesCopied += ModifiedIO.copy(in, out);
         }
         else {
-            if (SeleniumServer.isDebugMode()) {
-                log.info("injecting...");
+            if (log.isDebugEnabled()) {
+                log.debug("injecting...");
             }
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
             String injectionHtml = "/core/scripts/injection.html";
@@ -348,5 +353,13 @@ public class InjectionHelper {
 
     public static boolean userJsInjectionsExist() {
         return !userJsInjectionFiles.isEmpty();
+    }
+
+    public static boolean isFailOnError() {
+        return failOnError;
+    }
+
+    public static void setFailOnError(boolean failOnError) {
+        InjectionHelper.failOnError = failOnError;
     }
 }

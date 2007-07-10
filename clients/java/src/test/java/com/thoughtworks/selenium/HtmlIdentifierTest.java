@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 public class HtmlIdentifierTest extends TestCase {
     public void setUp() {
-        HtmlIdentifier.setLogging(true);
+        //HtmlIdentifier.setLogging(true);
     }
     
     public void testSomeScenarios() {

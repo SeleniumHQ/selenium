@@ -128,12 +128,12 @@ public class CommandQueue {
             else {
                 if (SeleniumServer.isProxyInjectionMode() && "OK".equals(commandResultHolder.peek())) {
                     if (command.startsWith("wait")) {
-                        if (SeleniumServer.isDebugMode()) {
+                        if (log.isDebugEnabled()) {
                             log.debug("Page load beat the wait command.  Leave the result to be picked up below");
                         }
                     }
                     else {
-                        if (SeleniumServer.isDebugMode()) {
+                        if (log.isDebugEnabled()) {
                             // In proxy injection mode, a single command could cause multiple pages to
                             // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
                             // relationship between commands and results can go out of whack.  To avoid this, we
@@ -177,14 +177,14 @@ public class CommandQueue {
         boolean clearedEarlierThread = false;
 
         String hdr = "\t" + getIdentification(caller) + " queueGet() ";
-        if (SeleniumServer.isDebugMode()) {
+        if (log.isDebugEnabled()) {
             log.debug(hdr + "called"
                     + (clearedEarlierThread ? " (superceding other blocked thread)" : ""));
         }
 
         Object object = q.get();
 
-        if (SeleniumServer.isDebugMode()) {
+        if (log.isDebugEnabled()) {
             log.debug(hdr + "-> " + object); 
         }
         return object;
@@ -192,7 +192,7 @@ public class CommandQueue {
 
     private void queuePut(String caller, SingleEntryAsyncQueue q, Object thing, Condition condition) {
         String hdr = "\t" + getIdentification(caller) + " queuePut";
-        if (SeleniumServer.isDebugMode()) {
+        if (log.isDebugEnabled()) {
             log.debug(hdr + "(" + thing + ")");
         }
         try {
@@ -236,7 +236,7 @@ public class CommandQueue {
                 // that a page reloads without having been explicitly asked to do so (e.g., an event 
                 // in one frame causes reloads in others).
                 if (commandResult.startsWith("OK")) {
-                    if (SeleniumServer.isDebugMode()) {
+                    if (log.isDebugEnabled()) {
                         log.debug("Saw page load no one was waiting for.");
                     }
                     queuePutResult(commandResult);
@@ -286,7 +286,7 @@ public class CommandQueue {
             .append(uniqueId);
         String s = sb.toString();
         if (s.endsWith("null")) {
-            if (SeleniumServer.isDebugMode()) {
+            if (log.isDebugEnabled()) {
                 log.debug("caller identification came in ending with null");
             }
         }

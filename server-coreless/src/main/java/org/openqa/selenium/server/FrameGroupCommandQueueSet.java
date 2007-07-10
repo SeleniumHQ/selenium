@@ -208,14 +208,14 @@ public class FrameGroupCommandQueueSet {
         CommandQueue q = frameAddressToCommandQueue.get(frameAddress);
         if (q==null) {
 
-            if (SeleniumServer.isDebugMode()) {
+            if (log.isDebugEnabled()) {
                 log.debug("---------allocating new CommandQueue for " + frameAddress);
             }
             q = new CommandQueue(sessionId, frameAddress, dataLock);
             frameAddressToCommandQueue.put(frameAddress, q);
         }
         else {
-            if (SeleniumServer.isDebugMode()) {
+            if (log.isDebugEnabled()) {
                 log.debug("---------retrieving CommandQueue for " + frameAddress);
             }
         }
@@ -700,13 +700,13 @@ public class FrameGroupCommandQueueSet {
             dataLock.lock();
             try {       
                 if (justLoaded) {
-                    if (SeleniumServer.isDebugMode()) {
+                    if (log.isDebugEnabled()) {
                         log.debug(frameAddress + " marked as just loaded");
                     }
                     frameAddressToJustLoaded.put(frameAddress, true);
                 }
                 else {
-                    if (SeleniumServer.isDebugMode()) {
+                    if (log.isDebugEnabled()) {
                         log.debug(frameAddress + " marked as NOT just loaded");
                     }
                     frameAddressToJustLoaded.remove(frameAddress);
@@ -729,7 +729,7 @@ public class FrameGroupCommandQueueSet {
         this.currentSeleniumWindowName = frameAddress.getWindowName();
         this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
 
-        if (SeleniumServer.isDebugMode()) {
+        if (log.isDebugEnabled()) {
             log.debug("Current frame address set to " + currentFrameAddress + ".");
         }
     }
@@ -774,7 +774,7 @@ public class FrameGroupCommandQueueSet {
                     selectFrame(frameAddress.getLocalFrameAddress());
                     CommandQueue q = getCommandQueue();
                     if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
-                        if (SeleniumServer.isDebugMode()) {
+                        if (log.isDebugEnabled()) {
                             log.debug("Trying to close " + frameAddress);
                         }
                         q.doCommandWithoutWaitingForAResponse("getEval", "selenium.browserbot.getCurrentWindow().close()", "");

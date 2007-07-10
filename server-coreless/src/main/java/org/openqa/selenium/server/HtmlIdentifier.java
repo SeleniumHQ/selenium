@@ -43,7 +43,6 @@ import org.mortbay.log.LogFactory;
 public class HtmlIdentifier {
     static Log log = LogFactory.getLog(HtmlIdentifier.class);
     private static List<Rule> rules = new ArrayList<Rule>();
-    private static boolean logging = SeleniumServer.isDebugMode();
     private static final int INJECTION_THRESHOLD = 200;
     
     static {
@@ -75,19 +74,19 @@ public class HtmlIdentifier {
     public static boolean shouldBeInjected(String path, String contentType, String contentPreview) {
         int score = 0;
 
-        if (logging) {
+        if (log.isDebugEnabled()) {
             log.debug("shouldBeInjected(\"" + path + "\", \"" + contentType + "\", \"...\")");
         }        
         
         for (Rule rule : rules) {
             int scoreDelta = rule.score(path, contentType, contentPreview);
-            if (logging) {
+            if (log.isDebugEnabled()) {
                 log.debug("    applied rule " + rule + ": " + scoreDelta);
             }
             score += scoreDelta;
         }
         boolean shouldInject = (score > INJECTION_THRESHOLD);
-        if (logging) {
+        if (log.isDebugEnabled()) {
             log.debug("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
         }        
         return shouldInject;
@@ -181,7 +180,4 @@ public class HtmlIdentifier {
         }
     }
 
-    public static void setLogging(boolean b) {
-        HtmlIdentifier.logging = b;
-    }
 }

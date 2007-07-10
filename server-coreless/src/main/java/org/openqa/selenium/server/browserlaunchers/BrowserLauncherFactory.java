@@ -52,10 +52,7 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("mock", MockBrowserLauncher.class);
     }
     
-    SeleniumServer server;
-    
-    public BrowserLauncherFactory(SeleniumServer server) {
-        this.server = server;
+    public BrowserLauncherFactory() {
     }
     
     /** Returns the browser given by the specified browser string
@@ -68,10 +65,9 @@ public class BrowserLauncherFactory {
     public BrowserLauncher getBrowserLauncher(String browser, String sessionId, CommandQueue queue) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
 
-        for (Iterator iterator = supportedBrowsers.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String name = (String) entry.getKey();
-            Class<? extends BrowserLauncher> c = (Class<? extends BrowserLauncher>) entry.getValue();
+        for (Iterator<String> iterator = supportedBrowsers.keySet().iterator(); iterator.hasNext();) {
+            String name = iterator.next();
+            Class<? extends BrowserLauncher> c = supportedBrowsers.get(name);
             Pattern pat = Pattern.compile("^\\*" + name + "( .*)?$");
             Matcher mat = pat.matcher(browser);
             if (mat.find()) {

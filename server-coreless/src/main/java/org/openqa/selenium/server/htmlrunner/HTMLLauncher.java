@@ -56,7 +56,7 @@ public class HTMLLauncher implements HTMLResultsListener {
             timeoutInMs = Long.MAX_VALUE;
         }
         server.handleHTMLRunnerResults(this);
-        BrowserLauncherFactory blf = new BrowserLauncherFactory(server);
+        BrowserLauncherFactory blf = new BrowserLauncherFactory();
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, null);
         server.registerBrowserLauncher(sessionId, launcher);

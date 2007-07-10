@@ -75,6 +75,12 @@ public class DefaultRemoteCommand implements RemoteCommand {
         }
         return getCommandURLString() + "\n" + getPiggybackedJavaScript();
     }
+    
+    @Override public boolean equals(Object obj) {
+        if (!(obj instanceof RemoteCommand)) return false;
+        if (obj == null) return false;
+        return this.toString().equals(obj.toString());
+    };
 
     /** Factory method to create a RemoteCommand from a wiki-style input string */
     public static RemoteCommand parse(String inputLine) {
@@ -90,7 +96,7 @@ public class DefaultRemoteCommand implements RemoteCommand {
                 args.put(pair[0], "");
             } else {
                 try {
-                    args.put(pair[0], URLDecoder.decode(pair[1], "utf-8"));
+                    args.put(pair[0], URLDecoder.decode(pair[1], "utf-8").trim());
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException("Bug! utf-8 isn't supported???");
                 }
