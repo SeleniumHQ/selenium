@@ -29,9 +29,10 @@ public class MockPIFrameTest extends TestCase {
     }
     
     public void tearDown() {
+        server.stop();
         DummyBrowserLauncher.clearSessionId();
         InjectionHelper.setFailOnError(true);
-        server.stop();
+        server.setProxyInjectionMode(false);
     }
     
     /** start a basic browser session */
