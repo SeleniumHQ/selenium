@@ -21,4 +21,5 @@ import com.thoughtworks.webdriver.environment.webserver.AppServer;
 
 public interface TestEnvironment {
 	AppServer getAppServer();
+	void stop();
 }

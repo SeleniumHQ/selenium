@@ -32,6 +32,10 @@ public class InProcessTestEnvironment implements TestEnvironment {
 		return appServer;
 	}
 	
+	public void stop() {
+		appServer.stop();
+	}
+	
 	public static void main(String[] args) {
 		InProcessTestEnvironment environment = new InProcessTestEnvironment();
 		System.out.println("Application server started. " + environment.getAppServer().getBaseUrl());

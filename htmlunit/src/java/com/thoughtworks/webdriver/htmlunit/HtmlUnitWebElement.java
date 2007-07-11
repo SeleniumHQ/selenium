@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.gargoylesoftware.htmlunit.html.ClickableElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
@@ -120,11 +121,14 @@ public class HtmlUnitWebElement implements WebElement {
 
 	public boolean toggle() {
 		try {
-			((ClickableElement) element).click();
+			if (!(element instanceof HtmlCheckBoxInput))
+				throw new UnsupportedOperationException("You may only toggle checkboxes");
+			
+			((HtmlCheckBoxInput) element).click();
+			return isSelected();
 		} catch (IOException e) {
 			throw new RuntimeException("Unexpected exception: " + e);
 		}
-		return isSelected();
 	}
 	
 	public boolean isSelected() {
@@ -137,6 +141,11 @@ public class HtmlUnitWebElement implements WebElement {
 	}
 	
 	public void setSelected() {
+		String disabledValue = element.getAttributeValue("disabled");
+		if (disabledValue.length() > 0) {
+			throw new UnsupportedOperationException("You may not select a disabled element");
+		}
+		
 		if (element instanceof HtmlInput) 
 			((HtmlInput) element).setChecked(true);
 		else if (element instanceof HtmlOption)

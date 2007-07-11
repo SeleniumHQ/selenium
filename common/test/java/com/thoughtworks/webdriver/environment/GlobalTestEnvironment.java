@@ -17,6 +17,7 @@
 
 package com.thoughtworks.webdriver.environment;
 
+
 /**
  * Used to hold a TestEnvironment in a static class-level field. 
  */
@@ -33,5 +34,22 @@ public class GlobalTestEnvironment {
 	
 	public static void set(TestEnvironment environment) {
 		GlobalTestEnvironment.environment = environment;
+	}
+
+	public static TestEnvironment get(Class startThisIfNothingIsAlreadyRunning) {
+		if (environment == null) {
+			try {
+				environment = (TestEnvironment) startThisIfNothingIsAlreadyRunning.newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return environment;
+	}
+
+	public static void stop() {
+		if (environment != null) 
+			environment.stop();
+		environment = null;
 	}
 }

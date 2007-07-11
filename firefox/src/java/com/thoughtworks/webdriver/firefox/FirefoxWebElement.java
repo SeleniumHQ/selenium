@@ -48,8 +48,8 @@ public class FirefoxWebElement implements WebElement {
 
     public void setSelected() {
         String response = sendMessage("setElementSelected", elementId);
-        if (!Boolean.parseBoolean(response)) {
-            throw new UnsupportedOperationException("You may not select an unselectable element");
+        if (!"".equals(response)) {
+            throw new UnsupportedOperationException(response);
         }
     }
 

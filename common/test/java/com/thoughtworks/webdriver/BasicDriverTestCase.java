@@ -328,15 +328,34 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testShouldNotBeAbleToSelectSomethingThatIsDisabled() {
-
+    	driver.get(formPage);
+    	WebElement radioButton = driver.selectElement("id=nothing");
+    	assertFalse(radioButton.isEnabled());
+    	try {
+    		radioButton.setSelected();
+    		fail("Should have thrown an exception");
+    	} catch (UnsupportedOperationException e) {
+    		assertTrue("e.getMessage: " + e.getMessage(), e.getMessage().contains("disabled"));
+    	}
     }
 
     public void testShouldBeAbleToSelectARadioButton() {
-
+    	driver.get(formPage);
+    	WebElement radioButton = driver.selectElement("id=peas");
+    	assertFalse(radioButton.isSelected());
+    	radioButton.setSelected();
+    	assertTrue(radioButton.isSelected());
     }
 
     public void testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton() {
-
+    	driver.get(formPage);
+    	WebElement radioButton = driver.selectElement("id=cheese");
+    	try {
+    		radioButton.toggle();
+    		fail("You should not be able to toggle a radio button");
+    	} catch (UnsupportedOperationException e) {
+    		assertTrue(e.getMessage().contains("toggle"));
+    	}
     }
 
     public void testShouldReturnTheEmptyStringWhenGettingTheValueOfAnAttributeThatIsNotListed() {

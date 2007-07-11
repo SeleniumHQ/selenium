@@ -152,7 +152,16 @@ FirefoxDriver.prototype.getElementSelected = function(elementId) {
 
 FirefoxDriver.prototype.setElementSelected = function(elementId) {
     var element = Utils.getElementAt(elementId, this.context);
-    var wasSet = false;
+    var wasSet = "You may not select an unselectable element";
+
+	try {
+		var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
+		if (inputElement.disabled) {
+			this.server.respond(this.content, "setElementSelected", "You may not select a disabled element");
+			return;
+		}
+	} catch(e) {
+	}
 
     try {
         var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement)
@@ -160,18 +169,18 @@ FirefoxDriver.prototype.setElementSelected = function(elementId) {
             option.selected = true;
             Utils.fireHtmlEvent(this.context, option, "change");
         }
-        wasSet = true;
+        wasSet = "";
     } catch(e) {}
 
     try {
         var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
-        if (checkbox.type == "checkbox") {
+        if (checkbox.type == "checkbox" || checkbox.type == "radio") {
 			if (!checkbox.checked) {
 	            checkbox.checked = true;
 				Utils.fireHtmlEvent(this.context, checkbox, "change");
 			}
-            wasSet = true;
-        }
+            wasSet = "";
+		}
     } catch(e) {}
 
     this.server.respond(this.context, "setElementSelected", wasSet);

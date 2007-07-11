@@ -169,9 +169,6 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     	WebElement foo = (WebElement) allOptions.get(0);
     	WebElement bar = (WebElement) allOptions.get(1);
 
-    	System.out.println("Foo: " + foo.getText());
-    	System.out.println("Bar: " + bar.getText());
-    	
     	foo.setSelected();
     	assertEquals(initialTextValue, driver.selectText("id=result"));
     	bar.setSelected();
