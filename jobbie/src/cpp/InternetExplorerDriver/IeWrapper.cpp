@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "IeWrapper.h"
 #include "utils.h"
+#include <exdispid.h>
 #include <iostream>
 #include <jni.h>
 #include <comutil.h>
@@ -13,6 +14,9 @@
 
 using namespace std;
 
+long invokeCount = 0;
+long queryCount = 0;
+
 IeWrapper::IeWrapper()
 {
 	if (!SUCCEEDED(CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_LOCAL_SERVER, IID_IWebBrowser2, (void**)&ie))) 
@@ -21,11 +25,13 @@ IeWrapper::IeWrapper()
 	}
 
 	currentFrame = 0;
+
+///	sink = new IeEventSink(ie);
 }
 
 IeWrapper::~IeWrapper()
 {
-	ie->Release();
+//	delete sink;	
 }
 
 bool IeWrapper::getVisible()
@@ -263,4 +269,145 @@ IHTMLDocument3* IeWrapper::getDocument3()
 	doc2->QueryInterface(__uuidof(IHTMLDocument3), (void**)&toReturn);
 	doc2->Release();
 	return toReturn;
+}
+
+IeEventSink::IeEventSink(IWebBrowser2* ie) 
+{
+	this->ie = ie;
+	this->ie->AddRef();
+
+	HRESULT hr = AtlAdvise(this->ie, (IUnknown*) this, DIID_DWebBrowserEvents2, &eventSinkCookie);
+/*
+	IConnectionPointContainer* pCPContainer;
+ 
+        // Step 1: Get a pointer to the connection point container
+        HRESULT hr = ie->QueryInterface(IID_IConnectionPointContainer, 
+                                           (void**)&pCPContainer);
+        if (SUCCEEDED(hr))
+        {
+           // m_pConnectionPoint is defined like this:
+           IConnectionPoint* m_pConnectionPoint;
+ 
+           // Step 2: Find the connection point
+           hr = pCPContainer->FindConnectionPoint(
+                         DIID_DWebBrowserEvents2, &m_pConnectionPoint);
+           if (SUCCEEDED(hr))
+           {
+              // Step 3: Advise
+              hr = m_pConnectionPoint->Advise(this, &eventSinkCookie);
+              if (FAILED(hr))
+              {
+                 cout <<  "Failed to Advise" << endl;
+			  }
+           }
+ 
+           pCPContainer->Release();
+        }
+		*/
+}
+
+IeEventSink::~IeEventSink() 
+{
+	AtlUnadvise(ie, DIID_DWebBrowserEvents2, eventSinkCookie);
+}
+
+// IUnknown methods
+STDMETHODIMP IeEventSink::QueryInterface(REFIID interfaceId, void **pointerToObj)
+{
+	queryCount++;
+	cout << "Querying interface: " << queryCount << endl;
+    if (interfaceId == IID_IUnknown)
+    {
+        *pointerToObj = (IUnknown *)this;
+        return S_OK;
+    }
+    else if (interfaceId == IID_IDispatch)
+    {
+        *pointerToObj = (IDispatch *)this;
+        return S_OK;
+    }
+
+	*pointerToObj = NULL;
+    return E_NOINTERFACE;
+    
+}
+
+STDMETHODIMP_(ULONG) IeEventSink::AddRef()
+{
+//	cout << "AddRef" << endl;
+    return 1;
+}
+
+STDMETHODIMP_(ULONG) IeEventSink::Release()
+{
+//	cout << "Release" << endl;
+    return 1;
+}
+
+
+// IDispatch methods
+STDMETHODIMP IeEventSink::Invoke(DISPID dispidMember,
+                                     REFIID riid,
+                                     LCID lcid, WORD wFlags,
+                                     DISPPARAMS* pDispParams,
+                                     VARIANT* pvarResult,
+                                     EXCEPINFO*  pExcepInfo,
+                                     UINT* puArgErr)
+{
+	invokeCount++;
+	cout << "Invoking: " << invokeCount << endl;
+
+	if (!pDispParams)
+		return E_INVALIDARG;
+
+	switch (dispidMember) {
+		case DISPID_PROGRESSCHANGE:
+			break;
+
+		case DISPID_BEFORENAVIGATE2:
+			cout << "Before navigate" << endl;
+			break;
+
+		case DISPID_NAVIGATECOMPLETE2:
+			cout << "Navigation complete" << endl;
+
+		case DISPID_NEWWINDOW2:
+			cout << "New window event detected" << endl;
+			// Check the argument's type
+			/*
+			if (pDispParams->rgvarg[0].vt == (VT_BYREF|VT_VARIANT)) {
+				CComVariant varURL(*pDispParams->rgvarg[0].pvarVal);
+				varURL.ChangeType(VT_BSTR);
+
+			char str[100];   // Not the best way to do this.
+			}
+			*/
+			break;    
+
+		default:
+			break;
+	}
+
+	return S_OK;
+}
+
+STDMETHODIMP IeEventSink::GetIDsOfNames(REFIID    riid,
+                                                 LPOLESTR *names,
+                                                 UINT      numNames,
+                                                 LCID      localeContextId,
+                                                 DISPID *  dispatchIds)
+{
+    return E_NOTIMPL;
+}
+
+STDMETHODIMP IeEventSink::GetTypeInfoCount(UINT* pctinfo)
+{
+    return E_NOTIMPL;
+}
+
+STDMETHODIMP IeEventSink::GetTypeInfo(UINT        typeInfoId,
+                                               LCID        localeContextId,
+                                               ITypeInfo** pointerToTypeInfo)
+{
+    return E_NOTIMPL;
 }
