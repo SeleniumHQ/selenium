@@ -224,34 +224,33 @@ public class CommandQueue {
      * @return - the next command to run
      */
     public RemoteCommand handleCommandResult(String commandResult) {
-        if (commandResult == null) {
-        	throw new RuntimeException("null command result");
-        }
-        if (!resultExpected ) {
-            if (commandResultHolder.hasBlockedGetter()) {
-                throw new RuntimeException("blocked getter for " + this + " but !resultExpected");
+        if (commandResult != null) {
+            if (!resultExpected ) {
+                if (commandResultHolder.hasBlockedGetter()) {
+                    throw new RuntimeException("blocked getter for " + this + " but !resultExpected");
+                }
+                if (SeleniumServer.isProxyInjectionMode()) {
+                    // This logic is to account for the case where in proxy injection mode, it is possible 
+                    // that a page reloads without having been explicitly asked to do so (e.g., an event 
+                    // in one frame causes reloads in others).
+                    if (commandResult.startsWith("OK")) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Saw page load no one was waiting for.");
+                        }
+                        queuePutResult(commandResult);
+                    }            	
+                }
+    
+                else if (commandResult.startsWith("OK")) {
+                    // since the result includes a value, this is clearly not from a page which has just loaded.
+                    // Apparently there is some confusion among the queues
+                    throw new RuntimeException(getIdentification("commandResultHolder") 
+                            + " unexpected value " + commandResult);
+                }
             }
-            if (SeleniumServer.isProxyInjectionMode()) {
-                // This logic is to account for the case where in proxy injection mode, it is possible 
-                // that a page reloads without having been explicitly asked to do so (e.g., an event 
-                // in one frame causes reloads in others).
-                if (commandResult.startsWith("OK")) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Saw page load no one was waiting for.");
-                    }
-                    queuePutResult(commandResult);
-                }            	
+            else {
+                queuePutResult(commandResult);
             }
-
-            else if (commandResult.startsWith("OK")) {
-                // since the result includes a value, this is clearly not from a page which has just loaded.
-                // Apparently there is some confusion among the queues
-                throw new RuntimeException(getIdentification("commandResultHolder") 
-                        + " unexpected value " + commandResult);
-            }
-        }
-        else {
-            queuePutResult(commandResult);
         }
         RemoteCommand sc = (RemoteCommand) queueGet("commandHolder", commandHolder, commandReady);
         if (sc != null && sc.getCommand().equals("retryLast")) {

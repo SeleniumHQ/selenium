@@ -511,16 +511,15 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         else {
             sessionId = getSessionIdWithUniqueness();
             setLastSessionId(sessionId); 
-            queue = FrameGroupCommandQueueSet.makeQueueSet(sessionId).getCommandQueue();
+            FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId);
+            queue = queueSet.getCommandQueue();
             BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, queue);
             launchers.put(sessionId, launcher);
             sessionIdsToBrowserStrings.put(sessionId, browserString);
             
-            queue.setResultExpected(true); // keep initial load result for call to discardCommandResult below
             boolean multiWindow = server.isMultiWindow();
             launcher.launchRemoteSession(startURL, multiWindow);
-            queue.discardCommandResult();
-            queue.setResultExpected(false);
+            queueSet.waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
         }
         // TODO DGF log4j only
         // NDC.push("sessionId="+sessionId);

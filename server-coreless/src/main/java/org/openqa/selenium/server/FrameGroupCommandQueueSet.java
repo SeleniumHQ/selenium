@@ -314,6 +314,7 @@ public class FrameGroupCommandQueueSet {
                 
                 // strip off AndWait - in PI mode we handle this in the server rather than in core...
                 if (command.endsWith("AndWait")) {
+                    markWhetherJustLoaded(currentFrameAddress, false);
                     command = command.substring(0, command.length() - "AndWait".length());
                     String t = getCommandQueue().doCommand(command, arg, value);
                     if (!t.startsWith("OK")) {
@@ -323,6 +324,7 @@ public class FrameGroupCommandQueueSet {
                     return waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
                 }
             } // if (SeleniumServer.isProxyInjectionMode())
+            markWhetherJustLoaded(currentFrameAddress, false);
             return getCommandQueue().doCommand(command, arg, value);
         }
         finally {
@@ -529,7 +531,7 @@ public class FrameGroupCommandQueueSet {
     	return false;
     }    
 
-    private String waitForLoad(long timeoutInMilliseconds) {
+    public String waitForLoad(long timeoutInMilliseconds) {
         int timeoutInSeconds = (int)(timeoutInMilliseconds / 1000l);
         if (timeoutInSeconds == 0) {
             timeoutInSeconds = 1;
@@ -648,7 +650,6 @@ public class FrameGroupCommandQueueSet {
     public RemoteCommand handleCommandResult(String commandResult, FrameAddress incomingFrameAddress, String uniqueId, boolean justLoaded, List jsWindowNameVars) {
         dataLock.lock();
         try {
-            markWhetherJustLoaded(incomingFrameAddress, justLoaded);
             CommandQueue queue;
             if (!SeleniumServer.isProxyInjectionMode()) {
                 queue = getCommandQueue();
@@ -663,8 +664,9 @@ public class FrameGroupCommandQueueSet {
                 }
             }
             
-            if (justLoaded/* && !queue.isResultExpected()*/) {
-            	commandResult = "OK";
+            if (justLoaded) {
+                markWhetherJustLoaded(incomingFrameAddress, true);
+            	commandResult = null;
             }
             
             return queue.handleCommandResult(commandResult);
