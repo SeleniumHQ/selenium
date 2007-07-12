@@ -401,12 +401,12 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
         }
     }
     url += buildDriverParams() + preventBrowserCaching();
-    dataToBePosted = "postedData=" + encodeURIComponent(dataToBePosted);
+    var postedData = "postedData=" + encodeURIComponent(dataToBePosted);
 
     //xmlHttpObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlHttpObject.open("POST", url, async);
     xmlHttpObject.onreadystatechange = wrappingCallback;
-    xmlHttpObject.send(dataToBePosted);
+    xmlHttpObject.send(postedData);
     return null;
 }
 

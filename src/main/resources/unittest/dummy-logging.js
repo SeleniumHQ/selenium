@@ -8,7 +8,8 @@ DummyLogger.prototype = {
     debug: noop,
     info: noop,
     warn: noop,
-    error: noop
+    error: noop,
+    exception: noop
 };
 
 var LOG = new DummyLogger();

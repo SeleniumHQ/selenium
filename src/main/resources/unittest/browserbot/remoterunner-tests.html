@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Copyright 2007 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>RemoteRunner tests</title>
+    <link rel="stylesheet" type="text/css" href="../../jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript" src="../jsmock/mock.js"></script>
+<script language="JavaScript" type="text/javascript" src="../dummy-logging.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/htmlutils.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-commandhandlers.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-executionloop.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../core/scripts/selenium-remoterunner.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function setUp() {
+    postResult = "START";
+    debugMode = false;
+    relayToRC = null;
+    proxyInjectionMode = false;
+    uniqueId = 'sel_654321';
+    
+    Selenium = function() {
+        return {
+            browserbot: {
+                _modifyWindow: function() {},
+                getCurrentWindow: function() { return window; },
+                runScheduledPollers: function() {}
+            },
+            reset: function() {},
+            preprocessParameter: function(arg) { return (arg); },
+            ensureNoUnhandledPopups: function() {},
+            doSpecialTestCommand: function() {},
+            getSpecialTestValue: function() { return "foo"; },
+            isSpecialTestBoolean: function() { return true; }
+        }
+    }
+    
+    Selenium.createForWindow = function() {
+        return new Selenium();
+    };
+    
+    RemoteRunnerOptions = function() {
+        return {
+            initialize: function() {},
+            isDebugMode: function() { return false; },
+            isMultiWindowMode: function() { return false; },
+            getContinue: function() { return null; },
+            getDriverUrl: function() { return "http://localhost:4444/selenium-server/driver/";},
+            getBaseUrl: function() { return "http://localhost:4444/";},
+            getSessionId: function() { return "123456"; },
+        }
+    }
+    
+    xhrs = [];
+    xhr = null;
+    
+    MockXhr = function() {};
+    MockXhr.prototype.open = function(method, url, async) {
+        if (!async) {
+            throw new Error("MockXhr can only handle asynchronous requests");
+        }
+        this.url = url;
+        this.method = method;
+    }
+    MockXhr.prototype.send = function(body) {
+        this.body = body;
+    }
+    MockXhr.prototype.respond = function(body) {
+        this.readyState = 4;
+        this.status = 200;
+        this.responseText = body;
+        this.onreadystatechange();
+        while (timeouts.length > 0) {
+            timeouts.pop().call();
+        }
+    }
+            
+    
+    XmlHttp = {
+        create: function() {
+            var xhr = new MockXhr();
+            xhrs.push(xhr);
+            return xhr;
+        }
+    }
+    
+    parseArgs = function(str) {
+        var clauses = str.split('&');
+        var result = {};
+        for (var i in result) {
+            delete result[i];
+        }
+        for (var i = 0; i < clauses.length; i++) {
+            var keyValuePair = clauses[i].split('=', 2);
+            var key = unescape(keyValuePair[0]);
+            var value = unescape(keyValuePair[1]);
+            result[key] = value;
+        }
+        return result;
+    }
+    
+    assertEvalNotNull = function(str) {
+        assertNotNull(str, eval(str));
+    }
+    
+    assertEvalEquals = function(expected, str) {
+        assertEquals(str, expected, eval(str));
+    }
+    
+    __originalSetTimeout = window.setTimeout;
+    timeouts = [];
+    setTimeout = function(arg) {
+        timeouts.push(arg);
+    }
+}
+
+function tearDown() {
+    window.setTimeout = __originalSetTimeout;
+}
+
+function testRemoteRunnerStart() {
+    runSeleniumTest();
+    assertEvalNotNull("currentTest");
+    assertEvalNotNull("currentTest.xmlHttpForCommandsAndResults");
+    xhr = currentTest.xmlHttpForCommandsAndResults;
+    assertEvalEquals("POST", "xhr.method");
+    assertEvalEquals("postedData=START", "xhr.body");
+    url = parseUrl(xhr.url);
+    args = parseArgs(url.search);
+    baseUrl = url;
+    baseUrl.search = "";
+    baseUrlStr = reassembleLocation(baseUrl);
+    assertEquals("url", "http://localhost:4444/selenium-server/driver/", baseUrlStr);
+    assertEvalEquals("123456", "args.sessionId");
+    assertEvalEquals("true", "args.seleniumStart");
+    assertEvalEquals("", "args.seleniumWindowName");
+    // DGF should we be asserting on localFrameAddress?  It seems like this might be fragile
+    assertEvalEquals("top.frames[2].frames[1]", "args.localFrameAddress");
+    assertEvalEquals("sel_654321", "args.uniqueId");
+    assertEvalNotNull("args.counterToMakeURsUniqueAndSoStopPageCachingInTheBrowser"); // DGF randomly generated
+}
+
+function testInvalidCommand() {
+    testRemoteRunnerStart();
+    xhr.respond("cmd=invalidCommand&1=&2=");
+    xhr = currentTest.xmlHttpForCommandsAndResults;
+    assertEquals("Couldn't get handle to XHR", xhr, currentTest.xmlHttpForCommandsAndResults);
+    response = parseArgs(xhr.body).postedData;
+    assertEquals("ERROR: Unknown command: 'invalidCommand'", response);
+}
+
+function testNormalCommands() {
+    testRemoteRunnerStart();
+    xhr.respond("cmd=specialTestCommand&1=&2=");
+    xhr = currentTest.xmlHttpForCommandsAndResults;
+    response = parseArgs(xhr.body).postedData;
+    assertEvalEquals("OK", "response");
+    
+    xhr.respond("cmd=getSpecialTestValue&1=&2=");
+    xhr = currentTest.xmlHttpForCommandsAndResults;
+    response = parseArgs(xhr.body).postedData;
+    assertEvalEquals("OK,foo", "response");
+    
+    xhr.respond("cmd=isSpecialTestBoolean&1=&2=");
+    xhr = currentTest.xmlHttpForCommandsAndResults;
+    response = parseArgs(xhr.body).postedData;
+    assertEvalEquals("OK,true", "response");
+}
+
+function testRetryLast() {
+    testRemoteRunnerStart();
+    xhr.respond("cmd=retryLast&1=&2=");
+    
+    xhr = currentTest.xmlHttpForCommandsAndResults;
+    response = parseArgs(xhr.body).postedData;
+    assertEvalEquals("START", "response");
+    xhr.respond("cmd=retryLast&1=&2=");
+
+    xhr = currentTest.xmlHttpForCommandsAndResults;
+    response = parseArgs(xhr.body).postedData;
+    assertEvalEquals("START", "response");
+}
+
+</script>
+  </head>
+  <body>RemoteRunner Tests</body>
+</html>
