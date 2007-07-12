@@ -34,11 +34,11 @@ public abstract class AsyncHttpRequest {
     }
     
     /** returns the stringified result of the request, or throws an exception if there was a problem */
-    protected String getResult() throws InterruptedException {
+    protected String getResult() {
         try {
             thread.join();
         } catch (InterruptedException e) {
-            throw e;
+            throw new RuntimeException(e);
         }
         if (runner.ioex != null) {
             throw new RuntimeException(runner.ioex);

@@ -19,7 +19,7 @@ public class MockPIFrameTest extends TestCase {
     private SeleniumServer server;
 
     public void setUp() throws Exception {
-        //System.setProperty("selenium.log", "c:\\dan\\scratch\\selenium.log");
+        System.setProperty("selenium.log", "mockpiframe.log");
         //SeleniumServer.setDebugMode(true);
         server = new SeleniumServer();
         server.setProxyInjectionMode(true);
@@ -51,13 +51,20 @@ public class MockPIFrameTest extends TestCase {
         sessionId = waitForSessionId(getNewBrowserSession);
         // 3. browser starts, requests work
         MockPIFrame frame = new MockPIFrame(DRIVER_URL, sessionId, "frame1");
-        BrowserRequest start = frame.seleniumStart();
-        // 4. server automatically requests setContext
+        frame.seleniumStart();
+        // 4. server requests frame identification; frame identifies itself to the server
+        BrowserRequest browserRequest = frame.handleIdentifyCommand();
+        // 5. server requests further identification, asks for "getTitle"
+        RemoteCommand getTitle = new DefaultRemoteCommand("getTitle", "", "");
+        assertEquals("getTitle command got mangled", getTitle, browserRequest.getCommand());
+        // 6. browser replies "selenium remote runner" to getTitle
+        browserRequest = frame.sendResult("selenium remote runner");
+        // 7. server requests setContext
         RemoteCommand setContext = new DefaultRemoteCommand("setContext", sessionId, "");
-        assertEquals("setContext command got mangled", setContext, start.getCommand());
-        // 5. browser replies "OK" to setContext
+        assertEquals("setContext command got mangled", setContext, browserRequest.getCommand());
+        // 8. browser replies "OK" to setContext
         frame.sendResult("OK");
-        // 6. server replies "OK,123" to driver
+        // 9. server replies "OK,123" to driver
         assertEquals("getNewBrowserSession result got mangled", "OK,"+sessionId, getNewBrowserSession.getResult());
         return frame;
     }
@@ -79,8 +86,7 @@ public class MockPIFrameTest extends TestCase {
         // 4. server automatically begins waiting for load; requests frame2 identify itself
         browserRequest = frame2.handleIdentifyCommand();
         // 5. server requests further identification, asks for "getTitle"; browser replies "blah.html"
-        RemoteCommand getTitle = new DefaultRemoteCommand("getTitle", "", "");
-        assertEquals("getTitle command got mangled", getTitle, browserRequest.getCommand());
+        expectCommand(browserRequest, "getTitle", "", "");
         frame2.sendResult("blah.html");
         // 6. server replies "OK" to driver's original "open" command
         assertEquals("open result got mangled", "OK", openRequest.getResult());
@@ -185,5 +191,12 @@ public class MockPIFrameTest extends TestCase {
     private DriverRequest sendCommand(RemoteCommand cmd, int timeoutInMillis) {
         log.info("Driver sends " + cmd + " on session " + sessionId);
         return DriverRequest.request(DRIVER_URL, cmd, sessionId, timeoutInMillis);
+    }
+    
+    private RemoteCommand expectCommand(BrowserRequest request, String cmd, String arg1, String arg2) {
+        RemoteCommand actual = request.getCommand();
+        RemoteCommand expected = new DefaultRemoteCommand(cmd, arg1, arg2);
+        assertEquals(cmd + " command got mangled", expected, actual);
+        return actual;
     }
 }

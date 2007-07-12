@@ -31,7 +31,7 @@ public class BrowserRequest extends AsyncHttpRequest {
     }
     
     /** Parses the result of the browser request and returns a RemoteCommand */
-    public RemoteCommand getCommand() throws InterruptedException {
+    public RemoteCommand getCommand() {
         return DefaultRemoteCommand.parse(getResult());
     }
 }

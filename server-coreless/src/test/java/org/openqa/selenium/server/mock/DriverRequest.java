@@ -27,7 +27,7 @@ public class DriverRequest extends AsyncHttpRequest {
     
     /** returns the result of the previous command, e.g. "OK" or "OK,123" */
     @Override
-    public String getResult() throws InterruptedException {
+    public String getResult() {
         return super.getResult();
     }
 }
