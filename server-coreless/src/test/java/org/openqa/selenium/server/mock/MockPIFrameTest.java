@@ -36,7 +36,7 @@ public class MockPIFrameTest extends TestCase {
     }
     
     /** start a basic browser session */
-    public void testStartSession() throws Exception {
+    public void testStartSession() {
         startSession();
     }
     /** start a basic browser session
@@ -44,7 +44,7 @@ public class MockPIFrameTest extends TestCase {
      * @return the currently running MockPIFrame
      * @throws Exception
      */
-    public MockPIFrame startSession() throws Exception {
+    public MockPIFrame startSession() {
         // 1. driver requests new session
         DriverRequest getNewBrowserSession = sendCommand("getNewBrowserSession", "*dummy", "http://x");
         // 2. server generates new session, awaits browser launch
@@ -70,7 +70,7 @@ public class MockPIFrameTest extends TestCase {
     }
     
     /** create a session and issue a valid "open" command */
-    public void testRegularOpen() throws Exception {
+    public void testRegularOpen() {
         MockPIFrame frame1 = startSession();
         BrowserRequest browserRequest = frame1.getMostRecentRequest();
         
@@ -96,7 +96,7 @@ public class MockPIFrameTest extends TestCase {
      * response from the browser, as the new page load request comes in before the
      * "OK" from the original page
      */
-    public void testEvilOpen() throws Exception {
+    public void testEvilOpen() {
         MockPIFrame frame1 = startSession();
         BrowserRequest browserRequest = frame1.getMostRecentRequest();
         
@@ -120,6 +120,33 @@ public class MockPIFrameTest extends TestCase {
         frame2.sendResult("blah.html");
         // 6. server replies "OK" to driver's original "open" command
         assertEquals("open result got mangled", "OK", openRequest.getResult());
+    }
+    
+    /** Test out the retryLast logic. 
+     * 
+     */
+    public void testRetryLast() throws Exception {
+        MockPIFrame frame = startSession();
+        BrowserRequest browserRequest = frame.getMostRecentRequest();
+        
+        // 1. driver requests getTitle
+        DriverRequest getTitle = sendCommand("getTitle", "", "");
+        // 2. browser receives getTitle; replies "OK,foo"
+        expectCommand(browserRequest, "getTitle", "", "");
+        browserRequest = frame.sendResult("OK,foo");
+        // 3. driver receives "OK,foo"
+        assertEquals("getTitle result got mangled", "OK,foo", getTitle.getResult());
+        // 4. browser waits around for another command that never arrives.  In 10 seconds, server replies "retryLast"
+        expectCommand(browserRequest, "retryLast", "", "");
+        // 5. browser retries the previous "OK,foo" request
+        browserRequest = frame.sendResult("OK,foo");
+        // 6. driver requests click
+        DriverRequest click = sendCommand("click", "foo", "");
+        // 7. browser receives click; replies "OK"
+        expectCommand(browserRequest, "click", "foo", "");
+        frame.sendResult("OK");
+        // 8. server receives "OK"
+        assertEquals("click result got mangled", "OK", click.getResult());
     }
     
     /** Extracts a sessionId from the DummyBrowserLauncher, so we
@@ -193,8 +220,8 @@ public class MockPIFrameTest extends TestCase {
         return DriverRequest.request(DRIVER_URL, cmd, sessionId, timeoutInMillis);
     }
     
-    private RemoteCommand expectCommand(BrowserRequest request, String cmd, String arg1, String arg2) {
-        RemoteCommand actual = request.getCommand();
+    private RemoteCommand expectCommand(BrowserRequest browserRequest, String cmd, String arg1, String arg2) {
+        RemoteCommand actual = browserRequest.getCommand();
         RemoteCommand expected = new DefaultRemoteCommand(cmd, arg1, arg2);
         assertEquals(cmd + " command got mangled", expected, actual);
         return actual;

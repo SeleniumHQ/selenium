@@ -108,7 +108,7 @@ public class MockPIFrame {
      * @throws InterruptedException
      * @see {@link #frameMatchesFrameExpression(RemoteCommand)}
      */
-    public BrowserRequest handleIdentifyCommand() throws InterruptedException {
+    public BrowserRequest handleIdentifyCommand() {
         RemoteCommand identifyCommand = mostRecentRequest.getCommand();
         boolean matches = frameMatchesFrameExpression(identifyCommand);
         return sendResult("OK," + matches);
