@@ -191,13 +191,19 @@ function testRetryLast() {
     xhr.respond("cmd=retryLast&1=&2=");
     
     xhr = currentTest.xmlHttpForCommandsAndResults;
+    url = parseUrl(xhr.url);
+    args = parseArgs(url.search);
+    assertEvalEquals("true", "args.retry");
     response = parseArgs(xhr.body).postedData;
-    assertEvalEquals("START", "response");
+    assertEvalEquals("RETRY", "response");
     xhr.respond("cmd=retryLast&1=&2=");
 
     xhr = currentTest.xmlHttpForCommandsAndResults;
+    url = parseUrl(xhr.url);
+    args = parseArgs(url.search);
+    assertEvalEquals("true", "args.retry");
     response = parseArgs(xhr.body).postedData;
-    assertEvalEquals("START", "response");
+    assertEvalEquals("RETRY", "response");
 }
 
 </script>

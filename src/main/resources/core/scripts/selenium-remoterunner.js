@@ -391,7 +391,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
                     }
                     if (retry) {
                         setTimeout(fnBind(function() {
-                            sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async);
+                            sendToRC("RETRY", "retry=true", callback, xmlHttpObject, async);
                         }, this), 1000);
                     } else {
                         callback();
