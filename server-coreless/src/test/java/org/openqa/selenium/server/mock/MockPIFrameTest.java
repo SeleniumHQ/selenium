@@ -18,6 +18,14 @@ public class MockPIFrameTest extends TestCase {
     private String sessionId;
     private SeleniumServer server;
 
+    public MockPIFrameTest(String name) {
+        super(name);
+    }
+    
+//    public static Test suite() {
+//        return new MockPIFrameTest("testDoubleCommand");
+//    }
+    
     public void setUp() throws Exception {
         System.setProperty("selenium.log", "mockpiframe.log");
         //SeleniumServer.setDebugMode(true);
@@ -138,8 +146,8 @@ public class MockPIFrameTest extends TestCase {
         assertEquals("getTitle result got mangled", "OK,foo", getTitle.getResult());
         // 4. browser waits around for another command that never arrives.  In 10 seconds, server replies "retryLast"
         expectCommand(browserRequest, "retryLast", "", "");
-        // 5. browser retries the previous "OK,foo" request
-        browserRequest = frame.sendResult("OK,foo");
+        // 5. browser retries
+        browserRequest = frame.sendRetry();
         // 6. driver requests click
         DriverRequest click = sendCommand("click", "foo", "");
         // 7. browser receives click; replies "OK"
@@ -147,6 +155,25 @@ public class MockPIFrameTest extends TestCase {
         frame.sendResult("OK");
         // 8. server receives "OK"
         assertEquals("click result got mangled", "OK", click.getResult());
+    }
+    
+    /** Try sending two commands at once */
+    public void XtestDoubleCommand() throws Exception { 
+        MockPIFrame frame = startSession();
+        BrowserRequest browserRequest = frame.getMostRecentRequest();
+        
+        // 1. driver requests click "foo"
+        DriverRequest clickFoo = sendCommand("click", "foo", "");
+        Thread.sleep(500);
+        // 2. before the browser can respond, driver requests click "bar"
+        DriverRequest clickBar = sendCommand("click", "bar", "");
+        expectCommand(browserRequest, "click", "foo", "");
+        browserRequest = frame.sendResult("OK");
+        expectCommand(browserRequest, "click", "bar", "");
+        frame.sendResult("OK");
+        assertEquals("click foo result got mangled", "OK", clickFoo.getResult());
+        assertEquals("click bar result got mangled", "OK", clickBar.getResult());
+        
     }
     
     /** Extracts a sessionId from the DummyBrowserLauncher, so we

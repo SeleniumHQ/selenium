@@ -79,6 +79,12 @@ public class MockPIFrame {
         return mostRecentRequest;
     }
     
+    public BrowserRequest sendRetry() {
+        log.info(uniqueId + "sends retry");
+        mostRecentRequest = BrowserRequest.request(getUrl() + "&retry=true", "RETRY");
+        return mostRecentRequest;
+    }
+    
     /** Takes a "getWhetherThisFrameMatchFrameExpression" command and tells you
      * whether this frame matches the embedded expression
      * @param identifyCommand the "getWhetherThisFrameMatchFrameExpression" command we're supposed to run

@@ -98,9 +98,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             String seleniumStart = getParam(req, "seleniumStart");
             String loggingParam = getParam(req, "logging");
             String jsStateParam = getParam(req, "state");
+            String retry = getParam(req, "retry");
             boolean logging = "true".equals(loggingParam);
             boolean jsState = "true".equals(jsStateParam);
-            boolean justLoaded = (seleniumStart != null && seleniumStart.equals("true"));
+            boolean justLoaded = "true".equals(seleniumStart);
+            boolean retrying = "true".equals(retry);
 
             if (sessionId != null) {
                 //TODO DGF log4j only
@@ -127,9 +129,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
                 FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
                 
-//                if (justLoaded) {
-//                    postedData = "OK";  // assume a new page starting is okay
-//                }
+                if (retrying) {
+                    postedData = null;  // DGF retries don't really have a result
+                }
                 
                 RemoteCommand sc = queueSet.handleCommandResult(postedData, frameAddress, uniqueId, justLoaded,
                         req.getParameterValues("jsWindowNameVar"));
