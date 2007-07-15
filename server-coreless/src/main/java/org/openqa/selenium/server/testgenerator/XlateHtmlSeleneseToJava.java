@@ -624,7 +624,7 @@ public class XlateHtmlSeleneseToJava {
                ) {
             return "// skipped undocumented, unsupported op in " + oldLine;
         }
-        if (op.equals("open")) {
+        if (op.equals("open") || op.equals("openWindow")) {
             recordFirstDomain(tokens[1]);
             tokens[1] = possiblyAdjustOpenURL(tokens[1]);
         }

@@ -1,8 +1,11 @@
-package com.thoughtworks.selenium;
+package com.thoughtworks.selenium.thirdparty;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
-import org.openqa.selenium.server.*;
+import org.openqa.selenium.server.SeleniumServer;
+
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
 
 public class SSLWellsFargoTest extends TestCase {
     private Selenium selenium;

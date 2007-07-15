@@ -552,7 +552,7 @@ public class SeleniumServer {
         assembleHandlers(slowResources);
     }
 
-    private void configureLogging() {
+    public static void configureLogging() {
         Logger logger = Logger.getLogger("");
         // configure console logger
         for (Handler handler : logger.getHandlers()) {

@@ -1,6 +1,8 @@
-package com.thoughtworks.selenium;
+package com.thoughtworks.selenium.thirdparty;
 
 import org.openqa.selenium.server.SeleniumServer;
+
+import com.thoughtworks.selenium.SeleneseTestCase;
 
 public class YahooHttpsTest extends SeleneseTestCase {
     private SeleniumServer ss;

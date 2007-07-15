@@ -1,7 +1,11 @@
-package com.thoughtworks.selenium;
+package com.thoughtworks.selenium.thirdparty;
 
 import junit.framework.TestCase;
+
 import org.openqa.selenium.server.SeleniumServer;
+
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
 
 public class GoogleVideoTest extends TestCase {
     private Selenium sel;

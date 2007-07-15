@@ -25,6 +25,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <includes>
+                        <include>**/ClientUnitTestSuite.java</include>
                         <include>**/ClientDriverSuite.java</include>
                         <include>**/ClientDriverPISuite.java</include>
                     </includes>

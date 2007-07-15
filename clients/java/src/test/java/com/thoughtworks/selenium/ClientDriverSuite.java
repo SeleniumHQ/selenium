@@ -76,15 +76,12 @@ public class ClientDriverSuite extends TestCase {
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             
             
-            if (false) {
-            	// Run test for selecting windows by titles through PI mode
-            	//suite.addTestSuite(TestSelectWindowTitle.class);
-                suite.addTestSuite(TestClick.class);    // ok, run just a single test in PI mode
+            if (isProxyInjectionMode) {
+                suite.addTestSuite(MultiDomainTest.class);
                 
                 // Will need to run for IE tests
                 //suite.addTestSuite(TestModalDialog.class);
             }
-            else {
                 
             suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             suite.addTest(I18nTest.suite());
@@ -130,6 +127,28 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestFramesClick.class);
             suite.addTestSuite(TestFramesOpen.class);
             suite.addTestSuite(TestFramesNested.class);
+            suite.addTestSuite(TestClickBlankTarget.class);
+            suite.addTestSuite(TestCookie.class);
+            suite.addTestSuite(TestDojoDragAndDrop.class);
+            suite.addTestSuite(TestDragAndDrop.class);
+            suite.addTestSuite(TestElementIndex.class);
+            suite.addTestSuite(TestElementOrder.class);
+            suite.addTestSuite(TestElementPresent.class);
+            suite.addTestSuite(TestFramesClickJavascriptHref.class);
+            suite.addTestSuite(TestFramesSpecialTargets.class);
+            suite.addTestSuite(TestFunkEventHandling.class);
+            suite.addTestSuite(TestHighlight.class);
+            suite.addTestSuite(TestHtmlSource.class);
+            suite.addTestSuite(TestJavaScriptAttributes.class);
+            suite.addTestSuite(TestOpenInTargetFrame.class);
+            suite.addTestSuite(TestSelectMultiLevelFrame.class);
+            suite.addTestSuite(TestSelectWindowTitle.class);
+            suite.addTestSuite(TestTextWhitespace.class);
+            suite.addTestSuite(TestTypeRichText.class);
+            
+            if (false) { 
+                suite.addTestSuite(TestXPathLocatorInXHtml.class); // DGF firefox only
+                suite.addTestSuite(TestCursorPosition.class); // DGF frequently fails on firefox
             }
             
             ClientDriverTestSetup setup = new ClientDriverTestSetup(suite);
