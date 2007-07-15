@@ -92,6 +92,8 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
             result = "OK,1";
         } else if (command.equals("getAllFields")) {
             result = "OK,1,2,3";
+        } else if (command.equals("getWhetherThisFrameMatchFrameExpression")) {
+            result = "OK,true";
         }
         else if (command.startsWith("get")) {
             result = "OK,x";
