@@ -23,21 +23,6 @@ FirefoxDriver.prototype.title = function() {
     this.server.respond(this.context, "title", browser.contentTitle);
 };
 
-FirefoxDriver.prototype.selectText = function(xpath) {
-    var doc = Utils.getDocument(this.context);
-    var result = doc.evaluate(xpath, doc, null, Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    if (result) {
-        // Handle Title elements slightly differently. On the plus side, IE does this too :)
-        if (result.tagName == "TITLE") {
-            this.server.respond(this.context, "selectText", Utils.getBrowser(this.context).contentTitle);
-        } else {
-            this.server.respond(this.context, "selectText", Utils.getText(result));
-        }
-    } else {
-        this.server.respond(this.context, "selectText", "");
-    }
-};
-
 FirefoxDriver.prototype.selectElementUsingXPath = function(xpath) {
     var doc = Utils.getDocument(this.context);
     var result = doc.evaluate(xpath, doc, null, Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;

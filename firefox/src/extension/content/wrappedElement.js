@@ -42,7 +42,11 @@ FirefoxDriver.prototype.click = function(position) {
 
 FirefoxDriver.prototype.getElementText = function(elementId) {
     var element = Utils.getElementAt(elementId, this.context);
-    this.server.respond(this.context, "getElementText", Utils.getText(element));
+	 if (element.tagName == "TITLE") {
+		this.server.respond(this.context, "getElementText", Utils.getBrowser(this.context).contentTitle);
+	} else {
+    	this.server.respond(this.context, "getElementText", Utils.getText(element));
+	}
 }
 
 FirefoxDriver.prototype.getElementValue = function(value) {
