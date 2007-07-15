@@ -65,6 +65,8 @@ public class FrameGroupCommandQueueSet {
     static private Lock dataLock = new ReentrantLock(); // 
     static private Condition resultArrivedOnAnyQueue = dataLock.newCondition();
     
+    private int pageLoadTimeoutInMilliseconds = 30;
+    
     /**
      * A unique string denoting a session with a browser.  In most cases this session begins with the
      * selenium server configuring and starting a browser process, and ends with a selenium server killing 
@@ -305,9 +307,18 @@ public class FrameGroupCommandQueueSet {
                     if (!"OK".equals(t)) {
                         return t;
                     }
-                    return waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
+                    return waitForLoad(pageLoadTimeoutInMilliseconds);
                 }
 
+                if (command.equals("setTimeout")) {
+                    try {
+                        pageLoadTimeoutInMilliseconds = Integer.parseInt(arg);
+                    } catch (NumberFormatException e) {
+                        return "ERROR: setTimeout arg is not a number: " + arg;
+                    }
+                    return "OK";
+                }
+                
                 if (command.equals("getAllWindowNames")) {
                 	return getAllWindowNames();
                 }                
@@ -321,7 +332,7 @@ public class FrameGroupCommandQueueSet {
                         return t;
                     }
 
-                    return waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
+                    return waitForLoad(pageLoadTimeoutInMilliseconds);
                 }
             } // if (SeleniumServer.isProxyInjectionMode())
             markWhetherJustLoaded(currentFrameAddress, false);

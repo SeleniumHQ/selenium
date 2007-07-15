@@ -23,7 +23,7 @@ public class MockPIFrameTest extends TestCase {
     }
     
 //    public static Test suite() {
-//        return new MockPIFrameTest("testDoubleCommand");
+//        return new MockPIFrameTest("testSetTimeout");
 //    }
     
     public void setUp() throws Exception {
@@ -157,6 +157,26 @@ public class MockPIFrameTest extends TestCase {
         assertEquals("click result got mangled", "OK", click.getResult());
     }
     
+    public void testSetTimeout() throws Exception {
+        MockPIFrame frame = startSession();
+        BrowserRequest browserRequest = frame.getMostRecentRequest();
+        
+        // 1. driver requests setTimeout
+        DriverRequest setTimeout = sendCommand("setTimeout", "100", "");
+        // 2. server replies "OK", without contacting the browser
+        assertEquals("setTimeout result got mangled", "OK", setTimeout.getResult());
+        // 3. driver requests open
+        DriverRequest open = sendCommand("open", "blah.html", "", 5000);
+        // 4. original frame receives open request; replies "OK"
+        expectCommand(browserRequest, "open", "blah.html", "");
+        frame.sendResult("OK");
+        // 5. normally, a new frame instance would come into existence, and
+        // send back a "START".  But instead, time passes.
+        Thread.sleep(2000);
+        // 6. server replies to driver with an error message
+        assertEquals("wrong error message on timeout", "timed out waiting for window \"\" to appear", open.getResult());
+    }
+    
     /** Try sending two commands at once */
     public void XtestDoubleCommand() throws Exception { 
         MockPIFrame frame = startSession();
@@ -232,6 +252,10 @@ public class MockPIFrameTest extends TestCase {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    private DriverRequest sendCommand(String cmd, String arg1, String arg2, int timeoutInMillis) {
+        return sendCommand(new DefaultRemoteCommand(cmd, arg1, arg2), timeoutInMillis);
     }
     
     private DriverRequest sendCommand(String cmd, String arg1, String arg2) {
