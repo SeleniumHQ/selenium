@@ -26,7 +26,12 @@ window.addEventListener("load", function(e) {
         window.fxdriver = driver;
         server.drivers.push(driver);
     } else {
-        driver.context.frameId = 0;
+		var frames = window.content.frames;
+		if (frames && frames.length && "FRAME" == frames[0].frameElement.tagName) {
+			driver.context.frameId = 0;
+		} else {
+        	driver.context.frameId = undefined;
+		}
     }
 }, true);
 

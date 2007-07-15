@@ -80,7 +80,7 @@ class ExtensionConnection {
         // CommandName NumberOfLinesRemaining
         // Identifier
         // ResponseText
-
+        
         int spaceIndex = line.indexOf(' ');
         String methodName = line.substring(0, spaceIndex);
 		String remainingResponse = line.substring(spaceIndex + 1);

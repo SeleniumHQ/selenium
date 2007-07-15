@@ -41,7 +41,7 @@ WebDriverServer.prototype.respond = function(context, method, response) {
     if (response == undefined) {
         output += "1\n" + context + "\n";
     } else {
-        var length = response["split"] ? response.split("\n").length + 1: 2;
+        var length = response["split"] ? response.split("\n").length + 1 : 2;
         output += length + "\n" + context + "\n" + response + "\n";
     }
 

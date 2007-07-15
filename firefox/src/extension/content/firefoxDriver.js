@@ -66,7 +66,8 @@ FirefoxDriver.prototype.selectElementUsingLink = function(linkText) {
 };
 
 FirefoxDriver.prototype.selectElementById = function(id) {
-    var element = Utils.getDocument(this.context).getElementById(id);
+	var doc = Utils.getDocument(this.context);
+    var element = doc.getElementById(id);
 
     if (element == null || !element) {
         this.server.respond(this.context, "selectElementById");
@@ -106,7 +107,7 @@ FirefoxDriver.prototype.switchToFrame = function(frameId) {
 }
 
 FirefoxDriver.prototype.switchToWindow = function(windowId) {
-    this.context = new Context(windowId, 0);
+    this.context = new Context(windowId, "?");
     var browser = Utils.getBrowser(this.context);
     
     browser.focus();

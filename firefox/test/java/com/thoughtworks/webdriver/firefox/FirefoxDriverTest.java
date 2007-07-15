@@ -1,8 +1,8 @@
 package com.thoughtworks.webdriver.firefox;
 
 import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
-import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.NoSuchElementException;
+import com.thoughtworks.webdriver.WebDriver;
 
 public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
 	protected WebDriver getDriver() {

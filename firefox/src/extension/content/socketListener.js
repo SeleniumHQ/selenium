@@ -58,6 +58,7 @@ SocketListener.prototype.executeCommand = function() {
     if (this.driver[this.command]) {
         var bits = this.data.split("\n", 2);
         this.driver.context = Context.fromString(bits[0]);
+
         var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
 
         if (this.driver.refreshContext || this.driver.context.windowId == "?") {
@@ -66,7 +67,7 @@ SocketListener.prototype.executeCommand = function() {
             if (this.driver.server.drivers) {
                 for (var i = 0; i < this.driver.server.drivers.length; i++) {
                     if (win.fxdriver == this.driver.server.drivers[i]) {
-                        this.driver.context = new Context(i, 0);
+                        this.driver.context = new Context(i, "?");
                     }
                 }
             } else {
@@ -85,8 +86,22 @@ SocketListener.prototype.executeCommand = function() {
             }
         }
 
-        if (fxbrowser.contentWindow.frames[this.driver.context.frameId]) {
-            fxdocument = fxbrowser.contentWindow.frames[this.driver.context.frameId].document;
+		// Determine whether or not we need to care about frames.
+		var frames = fxbrowser.contentWindow.frames;
+		if ("?" == this.driver.context.frameId) {
+			if (frames && frames.length) {
+				if ("FRAME" == frames[0].frameElement.tagName) {
+					this.driver.context.frameId = 0;
+				} else {
+					this.driver.context.frameId = null;
+				}
+			} else {
+				this.driver.context.frameId = null;
+			}
+		}
+
+        if (this.driver.context.frameId !== undefined && frames[this.driver.context.frameId]) {
+            fxdocument = frames[this.driver.context.frameId].document;
         } else {
             fxdocument = fxbrowser.contentDocument;
         }

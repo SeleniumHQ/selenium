@@ -1,6 +1,8 @@
 function Context(windowId, frameId) {
     this.windowId = windowId - 0 || 0;
-    this.frameId  = frameId - 0 || 0;
+	
+	if (frameId && frameId.match(/^\d+$/g)) 
+    	this.frameId  = frameId - 0;
 }
 
 Context.fromString = function(text) {
@@ -9,5 +11,5 @@ Context.fromString = function(text) {
 }
 
 Context.prototype.toString = function() {
-    return this.windowId + " " + this.frameId;
+    return this.windowId + " " + (this.frameId !== undefined ? this.frameId : "");
 }

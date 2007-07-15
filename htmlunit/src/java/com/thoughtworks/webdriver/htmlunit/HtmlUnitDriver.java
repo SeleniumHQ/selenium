@@ -32,8 +32,10 @@ import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
 import com.thoughtworks.webdriver.NoSuchElementException;
@@ -92,7 +94,9 @@ public class HtmlUnitDriver implements WebDriver {
         Page page = webClient.getCurrentWindow().getEnclosedPage();
 
         if (((HtmlPage) page).getFrames().size() > 0) {
-            switchTo().frame(0);
+        	FrameWindow frame = (FrameWindow) ((HtmlPage) page).getFrames().get(0);
+        	if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
+        		switchTo().frame(0);
         }
     }
 

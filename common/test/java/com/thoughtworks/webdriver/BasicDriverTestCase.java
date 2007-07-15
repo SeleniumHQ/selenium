@@ -52,6 +52,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         redirectPage = baseUrl + "redirect";
         javascriptPage = baseUrl + "javascriptPage.html";
         framesetPage = baseUrl + "frameset.html";
+        iframePage = baseUrl + "iframes.html";
     }
 
     protected abstract WebDriver getDriver();
@@ -517,6 +518,20 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertEquals("XHTML Test Page", driver.getTitle());
     }
 
+    public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
+    	driver.get(iframePage);
+    	driver.selectElement("id=iframe_page_heading");
+    }
+    
+    public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
+    	driver.get(iframePage);
+    	driver.switchTo().frame(0);
+    	
+    	driver.selectElement("id=submitButton").click();
+    	String hello = driver.selectElement("id=greeting").getText();
+    	assertEquals("Success!", hello);
+    }
+    
     public void testShouldSwitchFocusToANewWindowWhenItIsOpened() {
         driver.get(xhtmlTestPage);
 
@@ -539,4 +554,5 @@ public abstract class BasicDriverTestCase extends TestCase {
     protected String redirectPage;
     protected String javascriptPage;
     protected String framesetPage;
+    protected String iframePage;
 }

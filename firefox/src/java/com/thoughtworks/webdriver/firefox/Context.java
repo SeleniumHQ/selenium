@@ -7,7 +7,7 @@ class Context {
         if (fromExtension.length() > 0)
            this.fromExtension = fromExtension;
         else
-            this.fromExtension = "0 0";
+            this.fromExtension = "0 ?";
     }
 
     public String toString() {
