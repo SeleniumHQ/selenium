@@ -37,10 +37,9 @@
             </includes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>selenium-server-${version}</outputDirectory>
+            <outputDirectory>selenium-server-${version}/javadoc</outputDirectory>
             <unpack>true</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>javadoc</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar:javadoc</include>
             </includes>
@@ -84,10 +83,9 @@
             </includes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
+            <outputDirectory>selenium-java-client-driver-${version}/javadoc</outputDirectory>
             <unpack>true</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>javadoc</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</include>
             </includes>
