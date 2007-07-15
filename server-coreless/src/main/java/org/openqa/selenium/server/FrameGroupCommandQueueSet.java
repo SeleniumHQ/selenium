@@ -65,7 +65,7 @@ public class FrameGroupCommandQueueSet {
     static private Lock dataLock = new ReentrantLock(); // 
     static private Condition resultArrivedOnAnyQueue = dataLock.newCondition();
     
-    private int pageLoadTimeoutInMilliseconds = 30;
+    private int pageLoadTimeoutInMilliseconds = 30000;
     
     /**
      * A unique string denoting a session with a browser.  In most cases this session begins with the
