@@ -225,5 +225,10 @@ public class HtmlUnitDriver implements WebDriver {
             pickWindow();
             return HtmlUnitDriver.this;
         }
+        
+        public WebDriver defaultContent() {
+        	pickWindow();
+        	return HtmlUnitDriver.this;
+        }
     }
 }

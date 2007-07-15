@@ -180,5 +180,10 @@ public interface WebDriver {
         WebDriver frame(int frameIndex);
 
         WebDriver window(int windowIndex);
+
+        /**
+         * Selects either the first frame on the page, or the main document when a page contains iframes.
+         */
+		WebDriver defaultContent();
     }
 }

@@ -115,3 +115,8 @@ FirefoxDriver.prototype.switchToWindow = function(windowId) {
 
     this.server.respond(this.context, "switchToWindow");
 }
+
+FirefoxDriver.prototype.switchToDefaultContent = function() {
+	this.context = new Context(this.context.windowId, "?");
+	this.server.respond(this.context, "switchToDefaultContent");
+}

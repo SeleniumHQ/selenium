@@ -172,5 +172,10 @@ public class FirefoxDriver implements WebDriver {
             sendMessage("switchToWindow", String.valueOf(windowIndex));
             return FirefoxDriver.this;
         }
+        
+        public WebDriver defaultContent() {
+        	sendMessage("switchToDefaultContent", null);
+        	return FirefoxDriver.this;
+        }
     }
 }

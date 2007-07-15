@@ -523,6 +523,18 @@ public abstract class BasicDriverTestCase extends TestCase {
     	driver.selectElement("id=iframe_page_heading");
     }
     
+    public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
+    	driver.get(iframePage);
+    	driver.switchTo().frame(0);
+    	
+    	try {
+    		driver.switchTo().defaultContent();
+    		driver.selectElement("id=iframe_page_heading");
+    	} catch (Exception e) {
+    		fail("Should have switched back to main content");
+    	}	
+    }
+    
     public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
     	driver.get(iframePage);
     	driver.switchTo().frame(0);
