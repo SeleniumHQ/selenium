@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.server;
 
+import java.awt.AWTException;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +37,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.http.HttpConnection;
@@ -374,6 +381,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("shutDown".equals(cmd)) {
             results = null;
             shutDown(res);
+        } else if ("captureScreenshot".equals(cmd)) {
+            try {
+                captureScreenshot(values.get(0));
+                results = "OK";
+            } catch (Exception e) {
+                log.error("Problem capturing screenshot", e);
+                results = "ERROR: Problem capturing screenshot: " + e.getMessage();
+            }
         } else if ("isPostSupported".equals(cmd)) {
             // We don't support POST
             results = "OK,false";
@@ -422,6 +437,15 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
         log.info("Got result: " + results + " on session " + sessionId);
         return results;
+    }
+
+    private void captureScreenshot(String fileName) throws AWTException, IOException {
+        Robot robot = new Robot();
+        Rectangle captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+        BufferedImage bufferedImage = robot.createScreenCapture(captureSize);
+        File outFile = new File(fileName);
+        ImageIO.write(bufferedImage, "png", outFile);
+        
     }
 
     private void shutDown(HttpResponse res) {
