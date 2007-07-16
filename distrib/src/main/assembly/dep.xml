@@ -33,7 +33,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server-coreless</include>
+                <include>org.openqa.selenium.server:selenium-server-coreless:jar</include>
             </includes>
         </dependencySet>
         <dependencySet>
