@@ -5,6 +5,7 @@
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
     <dependencySets>
+        <!-- unpack every client driver except for the java client driver (we'll do something special with that one) -->
         <dependencySet>
             <outputDirectory>/</outputDirectory>
             <unpack>true</unpack>
@@ -18,6 +19,7 @@
             </excludes>
         </dependencySet>
         
+        <!-- copy selenium-server-standalone as selenium-server.jar -->
         <dependencySet>
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
@@ -27,6 +29,7 @@
                 <include>org.openqa.selenium.server:selenium-server:jar:standalone</include>
             </includes>
         </dependencySet>
+        <!-- copy selenium-server-coreless.jar -->
         <dependencySet>
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
@@ -36,6 +39,7 @@
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar</include>
             </includes>
         </dependencySet>
+        <!-- extract selenium-server-coreless javadoc -->
         <dependencySet>
             <outputDirectory>selenium-server-${version}/javadoc</outputDirectory>
             <unpack>true</unpack>
@@ -44,6 +48,7 @@
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar:javadoc</include>
             </includes>
         </dependencySet>
+        <!-- copy selenium-server-coreless sources as selenium-server-sources.jar -->
         <dependencySet>
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
@@ -53,6 +58,7 @@
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar:sources</include>
             </includes>
         </dependencySet>
+        <!-- copy selenium-server-coreless tests as selenium-server-tests.jar -->
         <dependencySet>
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
@@ -62,6 +68,7 @@
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar:tests</include>
             </includes>
         </dependencySet>
+        <!-- copy selenium-server-coreless test sources as selenium-server-test-sources.jar -->
         <dependencySet>
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
@@ -71,8 +78,22 @@
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar:test-sources</include>
             </includes>
         </dependencySet>
+        <!-- extract cybervillains.cer -->
+        <dependencySet>
+            <outputDirectory>selenium-server-${version}</outputDirectory>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.openqa.selenium.server:selenium-server-coreless:jar</include>
+            </includes>
+            <unpackOptions>
+                <includes>
+                    <include>**/cybervillainsCA.cer</include>
+                </includes>
+            </unpackOptions>
+        </dependencySet>
         
-        
+        <!-- copy selenium-java-client-driver.jar -->
         <dependencySet>
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
@@ -82,6 +103,7 @@
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver</include>
             </includes>
         </dependencySet>
+        <!-- extract selenium-java-client-driver javadoc -->
         <dependencySet>
             <outputDirectory>selenium-java-client-driver-${version}/javadoc</outputDirectory>
             <unpack>true</unpack>
@@ -90,6 +112,7 @@
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</include>
             </includes>
         </dependencySet>
+        <!-- copy selenium-java-client-driver-sources.jar -->
         <dependencySet>
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
@@ -99,6 +122,7 @@
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:sources</include>
             </includes>
         </dependencySet>
+        <!-- copy selenium-java-client-driver-tests.jar -->
         <dependencySet>
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
@@ -108,6 +132,7 @@
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:tests</include>
             </includes>
         </dependencySet>
+        <!-- copy selenium-java-client-driver-test-sources.jar -->
         <dependencySet>
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
