@@ -497,3 +497,33 @@ function makeAddressToAUTFrame(w, frameNavigationalJSexpression)
     }
     return null;
 }
+
+Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
+    /**
+   * Writes a message to the status bar and adds a note to the browser-side
+   * log.
+   *
+   * <p>If logLevelThreshold is specified, set the threshold for logging
+   * to that level (debug, info, warn, error).</p>
+   *
+   * <p>(Note that the browser-side logs will <i>not</i> be sent back to the
+   * server, and are invisible to the Client Driver.)</p>
+   *
+   * @param context
+   *            the message to be sent to the browser
+   * @param logLevelThreshold one of "debug", "info", "warn", "error", sets the threshold for browser-side logging
+   */
+    if  (logLevelThreshold==null || logLevelThreshold=="") {
+        return this.browserbot.setContext(context);
+    }
+    return this.browserbot.setContext(context, logLevelThreshold);
+};
+
+Selenium.prototype.doCaptureScreenshot = function(filename) {
+    /**
+    * Captures a PNG screenshot to the specified file.
+    *
+    * @param filename the absolute path to the file to be written, e.g. "c:\blah\screenshot.png"
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};

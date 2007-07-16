@@ -65,6 +65,7 @@
                                 <java jar="${maven.dependency.rhino.js.jar.path}" output="target/classes/core/iedoc.xml" failonerror="true" fork="true">
                                     <arg file="src/main/resources/doctool/doc.js"/>
                                     <arg file="src/main/resources/core/scripts/selenium-api.js"/>
+                                    <arg file="src/main/resources/core/scripts/selenium-remoterunner.js"/>
                                 </java>
                                 <!--<xmlvalidate file="target/classes/core/iedoc.xml" lenient="true"/>-->
                                 <java jar="${maven.dependency.rhino.js.jar.path}" output="target/classes/core/iedoc-core.xml" failonerror="true" fork="true">

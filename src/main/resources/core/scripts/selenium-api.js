@@ -809,25 +809,6 @@ Selenium.prototype.doSelectFrame = function(locator) {
         this.browserbot.selectFrame(locator);
 };
 
-Selenium.prototype.getLogMessages = function() {
-    /**
-        * Return the contents of the log.
-    *
-        * <p>This is a placeholder intended to make the code generator make this API
-        * available to clients.  The selenium server will intercept this call, however,
-        * and return its recordkeeping of log messages since the last call to this API.
-        * Thus this code in JavaScript will never be called.</p>
-        *
-        * <p>The reason I opted for a servercentric solution is to be able to support
-        * multiple frames served from different domains, which would break a
-        * centralized JavaScript logging mechanism under some conditions.</p>
-    *
-        * @return string all log messages seen since the last call to this API
-    */
-        return "getLogMessages should be implemented in the selenium server";
-};
-
-
 Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFrameString, target) {
     /**
      * Determine whether current/locator identify the frame containing this running code.
@@ -2017,27 +1998,6 @@ Selenium.prototype.getCursorPosition = function(locator) {
     throw new Error("Couldn't detect cursor position on this browser!");
 }
 
-
-Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
-    /**
-   * Writes a message to the status bar and adds a note to the browser-side
-   * log.
-   *
-   * <p>If logLevelThreshold is specified, set the threshold for logging
-   * to that level (debug, info, warn, error).</p>
-   *
-   * <p>(Note that the browser-side logs will <i>not</i> be sent back to the
-   * server, and are invisible to the Client Driver.)</p>
-   *
-   * @param context
-   *            the message to be sent to the browser
-   * @param logLevelThreshold one of "debug", "info", "warn", "error", sets the threshold for browser-side logging
-   */
-    if  (logLevelThreshold==null || logLevelThreshold=="") {
-        return this.browserbot.setContext(context);
-    }
-    return this.browserbot.setContext(context, logLevelThreshold);
-};
 
 Selenium.prototype.getExpression = function(expression) {
     /**
