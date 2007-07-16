@@ -144,5 +144,9 @@ public class IeWrapper implements WebDriver {
 		public WebDriver window(int windowIndex) {
 			throw new UnsupportedOperationException("window");
 		}
+
+		public WebDriver defaultContent() {
+			throw new UnsupportedOperationException();
+		}
 	}
 }
