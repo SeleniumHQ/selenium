@@ -476,6 +476,7 @@ public class SeleniumServer {
         printWrappedErrorLine(INDENT, "-alwaysProxy: By default, we proxy as little as we can; set this flag to force all browser traffic through the proxy");
         printWrappedErrorLine(INDENT, "-firefoxProfileTemplate <dir>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.");
         printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics");
+        printWrappedErrorLine(INDENT, "-log <logFileName>: writes lots of debug information out to a log file");
         printWrappedErrorLine(INDENT, "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
         printWrappedErrorLine(INDENT, "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
                 "for all content going to the test application.  Under this mode, multiple domains can be visited, and the " +
