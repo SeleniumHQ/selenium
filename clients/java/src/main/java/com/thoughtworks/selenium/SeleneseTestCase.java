@@ -51,6 +51,33 @@ public class SeleneseTestCase extends TestCase {
     }
 
     /**
+     * Runs the bare test sequence, capturing a screenshot if a test fails
+     * @exception Throwable if any exception is thrown
+     */
+    // @Override
+    public void runBare() throws Throwable {
+        setUp();
+        try {
+            runTest();
+        } catch (Throwable t) {
+            if (selenium != null) {
+                String filename = getName() + ".png";
+                try {
+                    selenium.captureScreenshot(filename);
+                    System.err.println("Saved screenshot " + filename);
+                } catch (Exception e) {
+                    System.err.println("Couldn't save screenshot " + filename + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+        finally {
+            tearDown();
+        }
+    }
+    
+    
+    /**
      * Calls this.setUp with the specified url and a default browser.  On Windows, the default browser is *iexplore; otherwise, the default browser is *firefox.
      * @see #setUp(String, String)
      * @param url the baseUrl to use for your Selenium tests
