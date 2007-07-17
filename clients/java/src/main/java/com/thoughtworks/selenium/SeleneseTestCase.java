@@ -69,6 +69,7 @@ public class SeleneseTestCase extends TestCase {
                     System.err.println("Couldn't save screenshot " + filename + ": " + e.getMessage());
                     e.printStackTrace();
                 }
+                throw t;
             }
         }
         finally {
