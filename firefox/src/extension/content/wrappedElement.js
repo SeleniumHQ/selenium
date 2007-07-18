@@ -24,6 +24,7 @@ FirefoxDriver.prototype.click = function(position) {
     }
 
     Utils.fireMouseEventOn(this.context, element, "mouseup");
+	var browser = Utils.getBrowser(this.context);
 
     var checkForLoad = function() {
         // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
@@ -32,7 +33,7 @@ FirefoxDriver.prototype.click = function(position) {
         // this might actually be a bit of a problem.
         var docLoaderService = Utils.getBrowser(driver.context).webProgress
         if (!docLoaderService.isLoadingDocument) {
-            WebLoadingListener.removeListener(clickListener);
+            WebLoadingListener.removeListener(browser, clickListener);
             server.respond(driver.context, "click");
         }
     }
@@ -161,7 +162,7 @@ FirefoxDriver.prototype.setElementSelected = function(elementId) {
 	try {
 		var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
 		if (inputElement.disabled) {
-			this.server.respond(this.content, "setElementSelected", "You may not select a disabled element");
+			this.server.respond(this.context, "setElementSelected", "You may not select a disabled element");
 			return;
 		}
 	} catch(e) {
@@ -189,3 +190,36 @@ FirefoxDriver.prototype.setElementSelected = function(elementId) {
 
     this.server.respond(this.context, "setElementSelected", wasSet);
 }
+
+FirefoxDriver.prototype.toggleElement = function(elementId) {
+	var element = Utils.getElementAt(elementId, this.context);
+	
+	try {
+		var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
+		if (checkbox.type == "checkbox") {
+			checkbox.checked = !checkbox.checked;
+			Utils.fireHtmlEvent(this.context, checkbox, "change");
+			this.server.respond(this.context, "toggleElement");
+			return;
+		}
+	} catch(e) {}
+	
+	try {
+		var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
+		
+		// Find our containing select and see if it allows multiple selections
+		var select = option.parentNode;
+		while (select && select.tagName != "SELECT") {
+			select = select.parentNode;
+		}
+		
+		if (select && select.multiple) {
+			option.selected = !option.selected;
+			Utils.fireHtmlEvent(this.context, option, "change");
+			this.server.respond(this.context, "toggleElement");
+			return;
+		}
+	} catch(e) {}
+	
+	this.server.respond(this.context, "toggleElement", "You may only toggle an element that is either a checkbox or an option in a select that allows multiple selections");
+};

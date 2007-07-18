@@ -17,6 +17,7 @@
 
 package com.thoughtworks.webdriver;
 
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -77,6 +78,9 @@ public abstract class BasicDriverTestCase extends TestCase {
     protected void tearDown() throws Exception {
         if (!isUsingSameDriverInstance())
             driver.close();
+        else {
+        	// Close all the windows, expect for one
+        }
         super.tearDown();
     }
 
@@ -297,7 +301,56 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertFalse(one.isSelected());
         assertTrue(two.isSelected());
     }
-
+    
+    public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
+    	driver.get(formPage);
+    	
+    	WebElement multiSelect = driver.selectElement("id=multi");
+    	List options = multiSelect.getChildrenOfType("option");
+    	Iterator allOptions = options.iterator();
+    	while (allOptions.hasNext()) {
+    		WebElement option = (WebElement) allOptions.next();
+    		option.setSelected();
+    	}
+    	
+    	for (int i = 0; i < options.size(); i++) {
+    		WebElement option = (WebElement) options.get(i);
+    		assertTrue("Option at index is not selected but should be: " + i, option.isSelected());
+    	}
+    }
+    
+    public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
+    	driver.get(formPage);
+    	
+    	WebElement multiSelect = driver.selectElement("id=multi");
+    	List options = multiSelect.getChildrenOfType("option");
+    	
+    	WebElement option = (WebElement) options.get(0);
+    	assertTrue(option.isSelected());
+    	option.toggle();
+    	assertFalse(option.isSelected());
+    	option.toggle();
+    	assertTrue(option.isSelected());
+    	
+    	option = (WebElement) options.get(2);
+    	assertTrue(option.isSelected());
+    }
+    
+    public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
+    	driver.get(formPage);
+    	
+    	WebElement select = driver.selectElement("//select[@name='selectomatic']");
+    	List options = select.getChildrenOfType("option");
+    	WebElement option = (WebElement) options.get(0);
+    	
+    	try {
+    		option.toggle();
+    		fail("You may not toggle an option if the select only allows one thing to be selected");
+    	} catch (RuntimeException e) {
+    		// This is expected
+    	}
+    }
+    
     public void testShouldBeAbleToSelectACheckBox() {
         driver.get(formPage);
         WebElement checkbox = driver.selectElement("//input[@id='checky']");

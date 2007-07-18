@@ -3,7 +3,8 @@ var LOAD_EVENT = "load";
 
 function WebLoadingListener(driver, toCall) {
     var listener = this;
-
+	var browser = Utils.getBrowser(driver.context);
+	
     this.func = function(event) {
         // Is there a meta refresh?
         var doc = Utils.getDocument(driver.context)
@@ -22,14 +23,13 @@ function WebLoadingListener(driver, toCall) {
             }
             element = result.iterateNext();
         }
-
-        WebLoadingListener.removeListener(listener);
+        WebLoadingListener.removeListener(browser, listener);
         toCall(event);
     }
-    
-    document.getElementById("appcontent").addEventListener(LOAD_EVENT, this.func, true);
+
+	browser.addEventListener(LOAD_EVENT, this.func, true);
 }
 
-WebLoadingListener.removeListener = function(listener) {
-    document.getElementById("appcontent").removeEventListener(LOAD_EVENT, listener.func, true);
+WebLoadingListener.removeListener = function(browser, listener) {
+    browser.removeEventListener(LOAD_EVENT, listener.func, true);
 }

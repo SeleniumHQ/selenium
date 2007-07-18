@@ -26,4 +26,20 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
         // Is this works, then we're golden
         driver.get(xhtmlTestPage);
     }
+    
+    public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
+        driver.get(xhtmlTestPage);
+
+        driver.selectElement("link=Open new window").click();
+        assertEquals("We Arrive Here", driver.getTitle());
+
+        driver.switchTo().window(0);
+        assertEquals("XHTML Test Page", driver.getTitle());
+
+        driver.switchTo().window(1);
+        assertEquals("We Arrive Here", driver.getTitle());
+        
+    	driver.get(iframePage);
+    	driver.selectElement("id=iframe_page_heading");
+    }
 }

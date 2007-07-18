@@ -30,6 +30,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlOption;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.thoughtworks.webdriver.NoSuchElementException;
@@ -121,11 +122,21 @@ public class HtmlUnitWebElement implements WebElement {
 
 	public boolean toggle() {
 		try {
-			if (!(element instanceof HtmlCheckBoxInput))
-				throw new UnsupportedOperationException("You may only toggle checkboxes");
+			if (element instanceof HtmlCheckBoxInput) {
+				((HtmlCheckBoxInput) element).click();
+				return isSelected();
+			}
 			
-			((HtmlCheckBoxInput) element).click();
-			return isSelected();
+			if (element instanceof HtmlOption) {
+				HtmlOption option = (HtmlOption) element;
+				HtmlSelect select = option.getEnclosingSelect();
+				if (select.isMultipleSelectEnabled()) {
+					option.setSelected(!option.isSelected());
+					return isSelected();
+				}
+			}
+			
+			throw new UnsupportedOperationException("You may only toggle checkboxes or options in a select which allows multiple selections");
 		} catch (IOException e) {
 			throw new RuntimeException("Unexpected exception: " + e);
 		}

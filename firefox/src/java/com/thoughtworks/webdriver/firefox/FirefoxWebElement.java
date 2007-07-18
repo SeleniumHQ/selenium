@@ -37,7 +37,10 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public boolean toggle() {
-        click();
+        String response = sendMessage("toggleElement", elementId);
+        if (response.length() != 0) {
+        	throw new UnsupportedOperationException(response);
+        }
         return isSelected();
     }
 
