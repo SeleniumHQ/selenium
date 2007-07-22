@@ -121,12 +121,8 @@ public class HtmlUnitDriver implements WebDriver {
 	}
 	
 	public String selectText(String selector) {
-		try {
-			HtmlUnitXPath xpath = new HtmlUnitXPath(selector);
-			return xpath.stringValueOf(lastPage());
-		} catch (JaxenException e) {
-			throw new RuntimeException(e);
-		}
+		WebElement element = selectElement(selector);
+		return element.getText();
 	}
 
 	public List selectElements(String selector) {

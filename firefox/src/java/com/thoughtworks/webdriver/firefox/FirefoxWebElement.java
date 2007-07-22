@@ -25,7 +25,14 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public String getValue() {
-        return sendMessage("getElementValue", elementId);
+        String result = sendMessage("getElementValue", elementId);
+        String[] parts = result.split("\n");
+        if (!"OK".equals(parts[0]))
+        	return null;
+        
+        if (parts.length > 1)
+        	return parts[1];
+        return "";
     }
 
     public void setValue(String value) {
@@ -33,7 +40,14 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public String getAttribute(String name) {
-        return sendMessage("getElementAttribute", elementId + " " + name);
+        String result = sendMessage("getElementAttribute", elementId + " " + name);
+        String[] parts = result.split("\n");
+        if (!"OK".equals(parts[0]))
+        	return null;
+        
+        if (parts.length > 1)
+        	return parts[1];
+        return "";
     }
 
     public boolean toggle() {

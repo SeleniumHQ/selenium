@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.nio.charset.Charset;
 
 class ExtensionConnection {
 	private Socket socket;
@@ -22,7 +23,7 @@ class ExtensionConnection {
 		socket = new Socket();
 
 		socket.connect(address);
-		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
 		out = new PrintWriter(socket.getOutputStream(), true);
 	}
 

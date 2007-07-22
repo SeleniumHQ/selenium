@@ -268,12 +268,78 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertEquals(2, divs.size());
     }
 
-    public void testShouldFindTextUsingXPath() {
-        driver.get(xhtmlTestPage);
-        String text = driver.selectText("//div/h1");
-        assertEquals("XHTML Might Be The Future", text);
+    public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
+    	driver.get(simpleTestPage);
+    	String selectText = driver.selectText("id=oneline");
+    	assertEquals("A single line of text", selectText);
+    	
+    	String getText = driver.selectElement("id=oneline").getText();
+    	assertEquals("A single line of text", getText);
     }
 
+    public void testShouldReturnTheEntireTextContentOfChildElements() {
+    	driver.get(simpleTestPage);
+    	String text = driver.selectText("id=multiline");
+    	
+    	assertTrue(text.contains("A div containing"));
+    	assertTrue(text.contains("More than one line of text"));
+    	assertTrue(text.contains("and block level elements"));
+    }
+
+    public void testShouldRepresentABlockLevelElementAsANewline() {
+    	driver.get(simpleTestPage);
+    	String text = driver.selectText("id=multiline");
+    	
+    	assertEquals(" A div containing\n" + 
+    			" More than one line of text\n" + 
+    			" and block level elements", text);
+    }
+    
+    public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
+    	driver.get(simpleTestPage);
+    	String text = driver.selectText("id=lotsofspaces");
+    	
+    	assertEquals("This line has lots of spaces.", text);
+    }
+    
+    public void testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter() {
+    	driver.get(simpleTestPage);
+    	String text = driver.selectText("id=nbsp");
+    	
+    	assertEquals("This line has a non-breaking space", text);
+    }
+    
+    public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
+    	driver.get(simpleTestPage);
+    	String text = driver.selectText("id=nbspandspaces");
+    	
+    	assertEquals("This line has a non-breaking space and spaces", text);
+    }
+
+    public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
+    	driver.get(simpleTestPage);
+    	String text = driver.selectText("id=inline");
+    	
+    	assertEquals("This line has text within elements that are meant to be displayed inline", text);
+    }
+
+    public void testShouldReturnTheEntireTextOfInlineElements() {
+    	driver.get(simpleTestPage);
+    	String text = driver.selectText("id=span");
+    	
+    	assertEquals("An inline element", text);
+    }
+    
+    /*
+    public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
+    	driver.get(simpleTestPage);
+    	String text = driver.selectText("id=preformatted");
+    	
+    	assertEquals("This section has a\npreformatted\n   text block\n" + 
+    			"  within in\n" + 
+    			"        ", text);
+    }
+    */  
     public void testShouldFindSingleElementByXPath() {
         driver.get(xhtmlTestPage);
         WebElement element = driver.selectElement("//h1");
@@ -412,11 +478,11 @@ public abstract class BasicDriverTestCase extends TestCase {
     	}
     }
 
-    public void testShouldReturnTheEmptyStringWhenGettingTheValueOfAnAttributeThatIsNotListed() {
+    public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
         driver.get(simpleTestPage);
         WebElement head = driver.selectElement("/html");
         String attribute = head.getAttribute("cheese");
-        assertEquals("", attribute);
+        assertNull(attribute);
     }
 
     public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {

@@ -29,19 +29,106 @@ Utils.getDocument = function(context) {
     return fxdocument;
 };
 
+function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
+	var children = node.childNodes;
+
+	for (var i = 0; i < children.length; i++) {
+		var child = children[i];
+		
+		// Do we need to collapse the text so far?
+		if (child["tagName"] && child.tagName == "PRE") {
+			toReturn += collapseWhitespace(textSoFar);
+			textSoFar = "";
+			var bits = getTextFromNode(child, toReturn, "", true);
+			toReturn += bits[1];
+			// dump("bits[0] " + bits[0] + "\n");
+			// dump("bits[1] " + bits[1] + "\n");
+			continue;
+		}
+
+		// Or is this just plain text?
+		if (child.nodeName == "#text") {
+			var textToAdd = child.nodeValue;
+			textToAdd = textToAdd.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
+			textSoFar += textToAdd;
+			continue;
+		}
+		
+		// Treat as another child node. 
+		var bits = getTextFromNode(child, toReturn, textSoFar, false);
+		toReturn = bits[0];
+		textSoFar = bits[1];
+	}
+	
+	if (isBlockLevel(node)) {
+		if (node["tagName"] && node.tagName != "PRE") {
+			toReturn += collapseWhitespace(textSoFar) + "\n";
+			textSoFar = "";
+		} else {
+			toReturn += "\n";
+		}
+	}
+	return [toReturn, textSoFar];
+};
+
+function isBlockLevel(node) {
+	if (node["tagName"] && node.tagName == "BR")
+		return true;
+
+	try {
+		// Should we think about getting hold of the current document?
+		return "block" == document.defaultView.getComputedStyle(node, null).getPropertyValue("display");
+	} catch (e) {
+		return false;
+	}
+}
+
+function collapseWhitespace(textSoFar) {
+	return textSoFar.replace(/\s+/g, " ");
+};
+
+function getPreformattedText(node) {
+	var textToAdd = "";
+	return getTextFromNode(node, "", textToAdd, true)[1];
+};
+
+function isWhiteSpace(character) {
+	return character == '\n' || character == ' ' || character == '\t' || character == '\r';
+}
+
 Utils.getText = function(element) {
+	var bits = getTextFromNode(element, "", "", element.tagName == "PRE");
+	
+	var text = collapseWhitespace(bits[1]) + bits[0];
+	var index = text.length - 1;
+	while (isWhiteSpace(text[index])) {
+		index--;
+	}
+
+	return text.slice(0, index+1);
+};
+
+/*
+Utils.getText = function(element, stripSpaces) {
     var nodes = element.childNodes;
     var str = ""
     for (var i = 0; i < nodes.length; i++) {
         if (nodes[i].nodeName == "#text") {
-            str += nodes[i].nodeValue;
-        } else {
-            str += this.getText(nodes[i]);
+			var text = nodes[i].nodeValue;
+			text = text.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
+			if (stripSpaces) {
+				text = text.replace(/\s+/g, " ");
+			}
+            str += text;
+        } else if ("PRE" == nodes[i].tagName){
+			str += Utils.getText(nodes[i], false);
+		} else {
+            str += Utils.getText(nodes[i], true);
         }
     }
     return str;
 };
-
+*/
 Utils.addToKnownElements = function(element, context) {
     var doc = Utils.getDocument(context);
     if (!doc.fxdriver_elements) {

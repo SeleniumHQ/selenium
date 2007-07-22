@@ -24,12 +24,14 @@ import java.util.List;
 
 import com.gargoylesoftware.htmlunit.html.ClickableElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlOption;
+import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
@@ -38,7 +40,11 @@ import com.thoughtworks.webdriver.WebElement;
 
 public class HtmlUnitWebElement implements WebElement {
 	private final HtmlElement element;
-
+	private final static char nbspChar = (char) 160;
+	private final static String[] blockLevelsTagNames = 
+		{ "p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript", 
+		  "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br" };
+	
 	public HtmlUnitWebElement(HtmlElement element) {
 		this.element = element;
 	}
@@ -117,7 +123,7 @@ public class HtmlUnitWebElement implements WebElement {
 			return "";
 		
 		
-		return "";
+		return null;
 	}
 
 	public boolean toggle() {
@@ -175,10 +181,92 @@ public class HtmlUnitWebElement implements WebElement {
 		return true;
 	}
 
+	// This isn't very pretty. Sorry.
 	public String getText() {
-		return element.asText();
+		StringBuffer toReturn = new StringBuffer();
+		StringBuffer textSoFar = new StringBuffer();
+		
+		getTextFromNode(element, toReturn, textSoFar, element instanceof HtmlPreformattedText);
+		
+		String text = collapseWhitespace(textSoFar) + toReturn.toString();
+		
+		int index = text.length();
+		int lastChar = ' ';
+		while (isWhiteSpace(lastChar)) {
+			index--;
+			lastChar = text.charAt(index);
+		}
+		
+		return text.substring(0, index+1);
 	}
-	
+
+	private boolean isWhiteSpace(int lastChar) {
+		return lastChar == '\n' || lastChar == ' ' || lastChar == '\t' || lastChar == '\r';
+	}
+
+	private void getTextFromNode(DomNode node, StringBuffer toReturn, StringBuffer textSoFar, boolean isPreformatted) {
+		if (isPreformatted) {
+			getPreformattedText(node, toReturn);
+		}
+		
+		Iterator children = node.getChildIterator();
+		while (children.hasNext()) {
+			DomNode child = (DomNode) children.next();
+			
+			// Do we need to collapse the text so far?
+			if (child instanceof HtmlPreformattedText) {
+				toReturn.append(collapseWhitespace(textSoFar));
+				textSoFar.delete(0, textSoFar.length());
+				getTextFromNode(child, toReturn, textSoFar, true);
+				continue;
+			}
+
+			// Or is this just plain text?
+			if (child instanceof DomText) {
+				String textToAdd = ((DomText) child).getData();
+				textToAdd = textToAdd.replace(nbspChar, ' ');
+				textSoFar.append(textToAdd);
+				continue;
+			}
+			
+			// Treat as another child node. 
+			getTextFromNode(child, toReturn, textSoFar, false);
+		}
+		
+		if (isBlockLevel(node)) {
+			toReturn.append(collapseWhitespace(textSoFar)).append("\n");
+			textSoFar.delete(0, textSoFar.length());
+		}
+	}
+
+	private boolean isBlockLevel(DomNode node) {
+		// From the HTML spec (http://www.w3.org/TR/html401/sgml/dtd.html#block)
+//		 <!ENTITY % block "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT | BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
+//	     <!ENTITY % heading "H1|H2|H3|H4|H5|H6">
+//	     <!ENTITY % list "UL | OL">
+//	     <!ENTITY % preformatted "PRE">
+
+		if (!(node instanceof HtmlElement))
+			return false;
+		
+		String tagName = ((HtmlElement) node).getTagName().toLowerCase();
+		for (int i = 0; i < blockLevelsTagNames.length; i++) {
+			if (blockLevelsTagNames[i].equals(tagName))
+				return true;
+		}
+		return false;
+	}
+
+	private String collapseWhitespace(StringBuffer textSoFar) {
+		String textToAdd = textSoFar.toString();
+		return textToAdd.replaceAll("\\p{javaWhitespace}+", " ").replaceAll("\r", "");
+	}
+
+	private void getPreformattedText(DomNode node, StringBuffer toReturn) {
+		String xmlText = node.asXml();
+		toReturn.append(xmlText.replaceAll("^<pre.*?>", "").replaceAll("</pre.*>$", ""));
+	}
+
 	public List getChildrenOfType(String tagName) {
 		 Iterator allChildren = element.getAllHtmlChildElements();
 		 List elements = new ArrayList();

@@ -38,7 +38,7 @@ FirefoxDriver.prototype.selectElementUsingLink = function(linkText) {
     var allLinks = Utils.getDocument(this.context).getElementsByTagName("A");
     var index;
     for (var i = 0; i < allLinks.length && !index; i++) {
-        var text = Utils.getText(allLinks[i]);
+        var text = Utils.getText(allLinks[i], true);
         if (linkText == text) {
             index = Utils.addToKnownElements(allLinks[i], this.context);
         }

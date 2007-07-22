@@ -46,16 +46,28 @@ FirefoxDriver.prototype.getElementText = function(elementId) {
 	 if (element.tagName == "TITLE") {
 		this.server.respond(this.context, "getElementText", Utils.getBrowser(this.context).contentTitle);
 	} else {
-    	this.server.respond(this.context, "getElementText", Utils.getText(element));
+    	this.server.respond(this.context, "getElementText", Utils.getText(element, true));
 	}
 }
 
 FirefoxDriver.prototype.getElementValue = function(value) {
     var element = Utils.getElementAt(value, this.context);
-    if (element.tagName.toLowerCase() == "textarea")
-        this.server.respond(this.context, "getElementValue", element.value);
-    else
-        this.server.respond(this.context, "getElementValue", element.getAttribute("value"));
+    if (element.tagName.toLowerCase() == "textarea") {
+        this.server.respond(this.context, "getElementValue", "OK\n" + element.value);
+		return 
+	}
+
+	if (element.hasAttribute("value")) {
+		this.server.respond(this.context, "getElementValue", "OK\n" + element.getAttribute("value"));
+		return;
+	}
+	
+	if (element["value"]) {
+		this.server.respond(this.context, "getElementValue", "OK\n" + element.value);
+		return;
+	}
+		
+	this.server.respond(this.context, "getElementValue", "No match\n");
 }
 
 FirefoxDriver.prototype.setElementValue = function(value) {
@@ -79,30 +91,30 @@ FirefoxDriver.prototype.getElementAttribute = function(value) {
         var response = element.getAttribute(attributeName);
 
         if (attributeName.toLowerCase() == "disabled") {
-            response = response.toLowerCase() == "disabled" || response.toLowerCase() == "true";
+            response = element.disabled;
         } else if (attributeName.toLowerCase() == "selected") {
-            response = response.toLowerCase() == "selected" || response.toLowerCase() == "true";
+            response = element.selected;
         } else if (attributeName.toLowerCase() == "checked") {
             response = response.toLowerCase() == "checked" || response.toLowerCase() == "true";
         }
 
-        this.server.respond(this.context, "getElementAttribute", response);
+        this.server.respond(this.context, "getElementAttribute", "OK\n" + response);
         return;
     }
 
     attributeName = attributeName.toLowerCase();
     if (attributeName == "disabled") {
-        this.server.respond(this.context, "getElementAttribute", element.disabled);
+        this.server.respond(this.context, "getElementAttribute", "OK\n" + element.disabled);
         return;
     } else if (attributeName == "checked" && element.tagName.toLowerCase() == "input") {
-        this.server.respond(this.context, "getElementAttribute", element.checked);
+        this.server.respond(this.context, "getElementAttribute", "OK\n" + element.checked);
         return;
     } else if (attributeName == "selected" && element.tagName.toLowerCase() == "option") {
-        this.server.respond(this.context, "getElementAttribute", element.selected);
+        this.server.respond(this.context, "getElementAttribute", "OK\n" + element.selected);
         return;
     }
 
-    this.server.respond(this.context, "getElementAttribute", "");
+    this.server.respond(this.context, "getElementAttribute", "No match");
 }
 
 FirefoxDriver.prototype.submitElement = function(elementId) {
