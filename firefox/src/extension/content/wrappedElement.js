@@ -57,13 +57,13 @@ FirefoxDriver.prototype.getElementValue = function(value) {
 		return 
 	}
 
-	if (element.hasAttribute("value")) {
-		this.server.respond(this.context, "getElementValue", "OK\n" + element.getAttribute("value"));
-		return;
-	}
-	
 	if (element["value"]) {
 		this.server.respond(this.context, "getElementValue", "OK\n" + element.value);
+		return;
+	}
+
+	if (element.hasAttribute("value")) {
+		this.server.respond(this.context, "getElementValue", "OK\n" + element.getAttribute("value"));
 		return;
 	}
 		
