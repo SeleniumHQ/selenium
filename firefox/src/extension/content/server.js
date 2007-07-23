@@ -5,7 +5,13 @@ window.addEventListener("load", function(e) {
 
     server.onSocketAccepted = function(socket, transport) {
         try {
-            this.outstream = transport.openOutputStream(0, 0, 0);
+			var rawOutStream = outstream = transport.openOutputStream(0, 0, 0);
+			
+			var charset = "UTF-8"; 
+			this.outstream = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+			                   .createInstance(Components.interfaces.nsIConverterOutputStream);
+			this.outstream.init(rawOutStream, charset, 0, 0x0000);
+	
             this.stream = transport.openInputStream(0, 0, 0);
             this.instream = Utils.newInstance("@mozilla.org/scriptableinputstream;1", "nsIScriptableInputStream");
             this.instream.init(this.stream);
