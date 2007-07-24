@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="src" path="test/selenium-rc-java/modified"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-firefox"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-internet-explorer"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,128 @@
+<html>
+<!--
+Copyright 2006 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<script language="javascript">
+<!--
+/*  flag to determine if event should be recorded. */
+var recording = true;
+var sawCtrlKeyDown = false;
+
+/* Records an event in the events textarea */
+function recordEvent(e) {
+    if (!recording) return;
+    
+    if (!e) e = window.event; // Handle IE
+    var eventMessage;
+    if (!e) {
+    	eventMessage = "{ No window.event is defined, which is expected that if this is a selenium-generated mouse event created by createEventObject under IE }";
+    }
+    else {
+    	eventMessage = '{' + e.type + '(' + this.id;
+    	if (e.keyCode) {
+	      eventMessage += ' - ' + e.keyCode;
+            }
+    	if (e.altKey) {
+	      eventMessage += ' altKeyDown';
+            }
+    	if (e.ctrlKey) {
+	      eventMessage += ' ctrlKeyDown';
+            }
+            sawCtrlKeyDown = e.ctrlKey;
+
+    	if (e.shiftKey) {
+	      eventMessage += ' shiftKeyDown';
+            }            
+    	if (e.metaKey) {
+	      eventMessage += ' metaKeyDown';
+            }            
+        eventMessage += ')} ';
+    }
+    log(eventMessage);
+    return true;
+}
+
+/** Attach recording event handlers to the element */
+function attachEventRecorders(elementId) {
+    var element = document.getElementById(elementId);
+    element.onfocus=recordEvent;
+    element.onchange=recordEvent;
+    element.onclick=recordEvent;
+    element.onselect=recordEvent;
+    element.onblur=recordEvent;
+    element.onmouseover=recordEvent;
+    element.onmousedown=recordEvent;
+    element.onkeydown=recordEvent;
+    element.onkeypress=recordEvent;
+    element.onkeyup=recordEvent;
+}
+
+function setupEventRecorders() {
+    attachEventRecorders('theTextbox');
+    attachEventRecorders('theCheckbox');
+    attachEventRecorders('theRadio1');
+    attachEventRecorders('theRadio2');
+    attachEventRecorders('theSelect');
+    attachEventRecorders('theButton');
+    attachEventRecorders('theSubmit');
+    attachEventRecorders('theLink');
+    document.theForm.onsubmit = function() {
+        log('{submit} ');
+        return false;
+    }
+}
+
+// This functionality is only provided for manual clickety-click assessing of events.
+// Not used in automated testing
+function setupFormEventRecorders(enable) {
+    var recorder = enable ? recordEvent : null;
+    var formElement = document.forms[0];
+    formElement.onfocus=recorder;
+    formElement.onchange=recorder;
+    formElement.onclick=recorder;
+    formElement.onselect=recorder;
+    formElement.onblur=recorder;
+}
+
+function log(message) {
+    document.getElementById('eventlog').value += message;
+}
+
+-->
+</script>
+</head>
+<body id="theBody" onload="setupEventRecorders();">
+<img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
+<form id="theForm" name="theForm" onsubmit="return false;">
+<input name="theTextbox" id="theTextbox" type="text" value=""/>
+<input name="theCheckbox" id="theCheckbox" type="checkbox"/>
+<input name="theRadio" id="theRadio1" type="radio" value="radio1"/><input name="theRadio" id="theRadio2" type="radio" value="theRadio"/>
+<select name="theSelect" id="theSelect"><option value="">Empty Option</option><option value="option1">First Option</option><option value="option2">Second Option</option></select>
+<input name="theButton" id="theButton" type="button" value="A Button"/>
+<input name="theSubmit" id="theSubmit" type="submit" value="The Submit"/>
+</form>
+<a id="theLink" href="javascript:alert('link clicked');">The Link</a>
+
+<hr/>
+
+<div>EventLog<br/>
+<textarea id="eventlog" rows="15" cols="80"></textarea><br/>
+Record events:<input type="checkbox" checked="checked" onclick="recording=this.checked;"/><br/>
+Record form events:<input type="checkbox" onclick="setupFormEventRecorders(this.checked);"/><br/>
+</div>
+</body>
+</html>
