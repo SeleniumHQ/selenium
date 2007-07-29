@@ -419,7 +419,12 @@ function sendToRCAndForget(dataToBePosted, urlParams) {
     var url;
     if (!(browserVersion.isChrome || browserVersion.isHTA)) { 
         // DGF we're behind a proxy, so we can send our logging message to literally any host, to avoid 2-connection limit
-        url = "http://" + Math.round(100000 * Math.random()) + ".selenium.doesnotexist/selenium-server/driver/?" + urlParams;
+        var protocol = "http:";
+        if (window.location.protocol == "https:") {
+            // DGF if we're in HTTPS, use another HTTPS url to avoid security warning
+            protocol = "https:";
+        }
+        url = protocol + "//" + Math.round(100000 * Math.random()) + ".selenium.doesnotexist/selenium-server/driver/?" + urlParams;
     } else {
         url = buildDriverUrl() + "?";
     }
