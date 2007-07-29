@@ -4,6 +4,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Usage</title>
   <link rel="stylesheet" href="default.css" type="text/css">
+  <style>
+    .button {
+        border: 1px solid #000; 
+        padding: 2px;
+    }
+  </style>
 </head>
 <body>
 <div class="document" id="selenium-reference">
@@ -21,11 +27,53 @@ applications.<br>
 
 <h2>Installing Selenium Core</h2>
 
-<p>To use Selenium Core, you need to make it available from the <i>same web server</i> as the application you want to test.  (This is a JavaScript security requirement.  If you can't/won't modify the webserver you want to test, Selenium Core may not be the right tool for you; you may just want to use Selenium IDE or Selenium RC instead.)</p>
+<p>To use Selenium Core, you need to make it available from the <i>same web server</i> as the application you want to test.  That means that you can't use Selenium Core (pure DHTML/JavaScript) to write a test of google.com
+    
+    This is because Selenium Core is pure DHTML/JavaScript, and so it is bound by JavaScript's security restrictions.  Specifically, JavaScript enforces 
+(This is a JavaScript security requirement.  If you can't/won't modify the webserver you want to test, Selenium Core may not be the right tool for you; you may just want to use Selenium IDE or Selenium RC instead.  If you're on Windows and you only want to use Selenium Core with Internet Explorer, you may also use <a href="#hta-mode">HTA mode</a> to run your tests against a remote web site.)</p>
 
 <p>Normally, this is as simple as extracting the Selenium Core zip file into the DocumentRoot, htdocs, or webroot of your webserver.  Then, try to open the TestRunner.html page on your website, which should be in the core/ directory.</p>
 
-<p>You'll be allowed to select a TestSuite; for now, just click "go" to open the default test suite.  If you installed all of the tests along with core, you should now see a list of tests to run.  Click on the "all" button to run them.  Note that some tests may fail if your browser blocks pop-ups, manages passwords, or does other helpful things that interfere with automation.  Be sure to turn these features off before running the tests!</p>
+<h3>Why do I have to install Selenium Core on the same web server?</h3>
+
+<p>Selenium Core is pure DHTML/JavaScript; it is therefore bound by JavaScript security policies, especially the <a href="http://www.mozilla.org/projects/security/components/same-origin.html">same origin policy</a>.  (That write-up is from the Mozilla website, but all modern JavaScript browsers enforce this policy.) The same origin policy states that JavaScript is only allowed to read/modify HTML from the <em>same origin</em> as its source.</p>
+
+<p>That policy makes a lot of sense. Let's say you've got your browser window pointing at, for example, your bank's website, but you also have another webpage open pointing to someone's blog. JavaScript is allowed to <em>read</em> values from web pages, as well as <em>change </em>data appearing on webpages you've loaded. If not for the same origin policy, a malicious blogger could read your bank data, or worse, rewrite your bank page to make you think it was saying something else. The blogger could use JavaScript to trick you into giving him sensitive information. </p>
+<p>Despite the soundness of the policy, it creates a problem for JavaScript automated tests. If you write a .js file designed to test google.com, the same origin policy denies you the right to run that .js file with google.com; instead, you'd have to somehow install that .js file <em>on google.com</em> in order to write automated tests against it. (Selenium IDE defeats the policy by running as a trusted Firefox extension; Selenium RC works around it by acting as a proxy server for the browser, tricking it into believing that our JS is installed on other people's web servers.)</p>
+
+<h2>Running Selenium's Test Suite</h2>
+
+<p>TestRunner.html should look something like this:</p>
+
+<p><img src="images/start.png" title="The Selenium TestRunner" alt="The Selenium TestRunner"></img></p>
+
+<p>The screen is divided into four sections: "Test Suite", "Current Test", "Control Panel" and the main application frame where your application will reside.  Initially, none of the Control Panel buttons will work, because you haven't selected a test suite.  By default, Selenium Core offers to run the test suite in "../tests/TestSuite.html".  Click "Go" to open that test suite.</p>
+
+<p>If you installed the /tests along with /core, you should now see a list of tests to run.  Press the "Run All Tests" button <img class="button" src="http://www.openqa.org/selenium-core/selenium/icons/all.png" title="Run All Tests" alt="Run All Tests"></img> to run all of our automated tests.
+Note that some tests may fail if your browser blocks pop-ups, manages passwords, or does other helpful things that interfere with automation.  Be sure to turn these features off before running the tests!</p>
+
+<h2>Control Panel</h2>
+
+<p>Here's a close-up view of the Selenium Control Panel:</p>
+
+<p><img src="images/controlpanel.png" alt="Selenium Control Panel" title="Selenium Control Panel"></img></p>
+    
+<p>The four execution buttons on the top are:<ul>
+    <li><img src="http://www.openqa.org/selenium-core/selenium/icons/all.png" class="button" title="Run All Tests" alt="Run All Tests"></img> Run All Tests: Run every test in the test suite.</li>
+<li><img src="http://www.openqa.org/selenium-core/selenium/icons/selected.png" class="button" title="Run Selected Test" alt="Run Selected Test"></img> Run Selected Test: Click on one test in the test suite, then click here to run just that one test.</li>
+<li><img src="http://www.openqa.org/selenium-core/selenium/icons/pause.png" class="button" title="Pause" alt="Pause"></img> Pause / <img src="http://www.openqa.org/selenium-core/selenium/icons/continue.png" class="button" title="Continue" alt="Continue"></img> Continue: While a test is running, press the Pause button to temporarily stop running commands.  After you press Pause, you can press Continue to resume the test.</li>
+<li><img src="http://www.openqa.org/selenium-core/selenium/icons/step.png" class="button" title="Step" alt="Step"></img> Step: Click on a test in the test suite, then click on just one line of the test to set a "breakpoint."  When the TestRunner reaches a breakpoint, it will automatically pause execution on that line.  You may then press the Step button to run the next line of the test and pause again.  You can also click on a breakpoint line to remove the breakpoint.</li>
+</ul>
+
+<p>Beneath the four execution buttons is the Speed Slider.  You can drag the slider shuttle to the right to introduce artificial delays in your test, running your test more slowly than it would in a normal automated run.  By default, Selenium will run your tests without any delay.</p>
+
+<p>You may also check the "Highlight Elements" button to highlight elements as they are used in a Selenium test; each element will flash yellow as it is used.  (Also be sure to check out the "highlight" command, which highlights just one element directly.)</p>
+
+<p>The Control Panel lists out a summary of how long the tests have taken in aggregate, and a list of how many tests have passed/failed.  Commands which were unable to execute due to errors are marked as "incomplete"; tests containing any failed or incomplete commands are considered failures.</p>
+
+<p>"View DOM" provides a structured view of the DOM of your document as it's currently represented in the page, including any dynamically generated elements.  It's fairly crude; you may prefer to use the Firefox DOM Explorer or IE Developer Toolbar for more sophisticated DOM analysis.</p>
+
+<p>"Show Log" makes the log window appear; logging only occurs while the log window is open.  Close the log window to stop logging.</p>
 
 <h2>Writing Your First Test Case</h2>
 
@@ -36,7 +84,7 @@ Not all commands take two arguments; in this case either leave the column blank 
 <p>Any rows with fewer than 3 columns will be ignored by Selenium, so can be used for comments.</p>
 
 <p>Example:</p>
-<blockquote>
+<blockquote>    
 <table border="1" class="table">
 <colgroup>
 <col width="31%" />
@@ -83,48 +131,23 @@ Make your new test case available by linking to it from the TestSuite; for examp
     &lt;/table>
 </pre>
 
-<p>For an instance of a test suite, see
-<code>${SELENIUM_HOME}/tests/TestSuite.html</code>.</p>
-
-</p>
-</div>
-
-<div class="section" id="run-your-testcase">
-    <h2><a name="run-your-testcase">Run your Test Case</a></h2>
-    <p>Next, open the Selenium Core "TestRunner"
-    (<code>${SELENIUM_HOME}/core/TestRunner.html</code>).  You should see
-    something like the following screen. </p>
+<p>For an example of a test suite, see
+<code>${SELENIUM_HOME}/tests/TestSuite.html</code>.  That example is big and complicated; for a simpler example, take a look at <code>${SELENIUM_HOME}/tests/ShortTestSuite.html</code></p>
     
-    <p><img src="images/start_on_testsuit.JPG"></img>
-    
-    <p>Locate the name of your test case in the Suite Panel (top left). Clicking on it should cause Selenium to load your test into the Test Panel (top center).  Now you can run the test by clicking the "Selected" button in the control area.</p>
-
-    <p>Alternatively, click the "All" button to run the entire test suite.</p>
-
-    <p>The Control Panel allows you to control how tests are executed.</p>
-    
-    <p><img src="images/test_runner_frame.jpg"></img>
+<p>Finally, run your test suite by opening TestRunner.html, browsing to your test suite, and clicking "Go".
 </div>
 
 <div class="section" id="multiwindow">
-<h2><a name="multiwindow">Run your Test Case in multi-window mode</a></h2>
-<p>By default your application under test is run in a frame which
-resides in the same window with selenium control panel. You can also
-run your application under test in a seperate window just by specifying a parameter <b>"multiWindow=true"</b> to the
-TestRunner.html. By this way you do not have to worry about your
-application will occupy the top window of the browser and break the
-selenium when you are running it in the "frame" mode.
-<p>Selenium control window:
-<p><img src="images/multiwindow1.JPG" title="seleniuim control window" alt="seleniuim control window"></img>
-<p>Your application under test:
-<p><img src="images/multiwindow2.JPG" title="your application under
-test" alt="your application under test"></img>
-<p><b>Notice:</b> Because Firefox currently does not support
-document.readyState property, our multi-window mode may not be very
+<h2><a name="multiwindow">Run your Test Case in Multi-window Mode</a></h2>
+<p>By default your application under test (AUT) is run in a frame which
+resides in the same window with Selenium Control Panel. You can also
+run your application under test in a seperate window just by checking the "AUT in separate window" checkbox.  You may need to use multi-window mode if your application will attempt to occupy the top window of the browser ("frame-busting") and break Selenium.
+
+<p><b>Note:</b> Because Firefox currently does not support
+the document.readyState property, Selenium's multi-window mode may not be very
 stable on Firefox. You can install this <a href="download/readyState.xpi">extension</a> to
 solve this problem. This extension will be automatically installed
-for the customized Firefox profile if you run selenium in
-remote control mode.
+in a custom Firefox profile if you run Selenium Remote Control.</p>
 </div>
 
 <div class="section" id="setup-teardown">
@@ -178,7 +201,7 @@ remote control mode.
 <h2><a name="continuous-integration">Continuous Integration</a></h2>
 <p>Selenium Core can be integrated with an automated build.  When the parameter &quot;auto=true&quot; is added to the URL, Selenium will run the entire suite of tests, and then POST the results to an URL of your choosing.  The default URL is &quot;/postResults&quot;, but an alternative handler location can be provided by specifying a &quot;resultsUrl&quot; parameter.</p>
 
-<p>That means that you're going to need some kind of web application to handle the POSTed test results and save them to disk.  You can write your own in a web-enabled language of your choosing (a simple servlet, ASP, JSP, Perl script, or whatever) or you can use the one that comes with <a href="http://www.openqa.org/selenium-rc/selenese.html">Selenium Remote Control</a>.
+<p>That means that you're going to need some kind of web application to handle the POSTed test results and save them to disk.  You can write your own in a web-enabled language of your choosing (a simple servlet, ASP, JSP, Perl script, or whatever) or you can use the one that comes with <a href="http://www.openqa.org/selenium-rc/selenese.html">Selenium Remote Control</a>.  (Since Selenium Core is pure DHTML/JavaScript, it's not allowed to save results to disk directly.)
 
 <dl>
 <dt>If you do decide to write your own, the steps for Continuous Integration are:</dt>
@@ -213,8 +236,31 @@ remote control mode.
 </dd>
 </dl>
 
+<p>The GET parameters you can pass to TestRunner.html are:</p>
+<blockquote>
+<table border="1" class="table">
+<thead valign="bottom">
+<tr><th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>auto</td><td>boolean</td><td>Run the specified test suite automatically and post the results.</td><td>false</td></tr>
+<tr><td>test</td><td>relative URL</td><td>The URL of the test suite to run, e.g. ../tests/TestSuite.html.</td><td>No default; you must specify a test suite if auto=true</td></tr>
+<tr><td>resultsUrl</td><td>relative URL</td><td>The URL to which we'll post the test results when we're finished.</td><td>/postResults</td></tr>
+<tr><td>close</td><td>boolean</td><td>If auto=true, automatically close the browser window when the test is finished.</td><td>false</td></tr>
+<tr><td>baseUrl</td><td>absolute URL</td><td>If the "open" command uses a relative URL, we'll make it absolute by using this base URL.  This URL MUST be an absolute URL , i.e. it should start with "http://" or "https://", and it should point to a directory, i.e. the URL path should end with "/".  (If the URL does NOT end in /, we'll automatically chop off the last part of the path, e.g. "http://foo/bar" will be treated as "http://foo/".)</td><td>The absolute URL of the test suite specified in the "test" parameter.</td></tr>
+<tr><td>multiWindow</td><td>boolean</td><td>Run the tests in multi-window mode, where the AUT runs in a separate window.</td><td>false</td></tr>
+<tr><td>highlight</td><td>boolean</td><td>Highlight each element as it is located.</td><td>false</td></tr>
+<tr><td>runInterval</td><td>integer (milliseconds)</td><td>Pause this number of milliseconds between test commands</td><td>0</td></tr>
+<tr><td>save</td><td>boolean</td><td>(HTA only) If auto=true, instead of POSTing the test results to a web server, just save the test results to a file.  In this case we'll treat the "resultsURL" as the file name to save.</td><td>false</td></tr>
+</tbody>
+</table>
+</blockquote>
 
-<p>The fields of the post are:</p>
+<p>The POST parameters we'll pass to the fields of the post are:</p>
 <blockquote>
 <table border="1" class="table">
 <colgroup>
@@ -266,5 +312,15 @@ remote control mode.
 </tbody>
 </table>
 </blockquote>
+<div class="section" id="hta-mode">
+<h3><a name="hta-mode">HTA Mode</a></h3>
+<p>Selenium Core provides an additional mechanism for running automated tests called "HTA mode."  HTA Mode only works on Windows, and only with Internet Explorer; you can't use HTA mode to test any other browser.  An HTA file is a special type of HTML file that is allowed to violate the same origin policy and to write files to disk.  When running in HTA mode, you <i>don't</i> have to install Selenium Core on the same webserver as the AUT.  HTA files are also allowed to save test results directly to disk, rather than POSTing the test results to a webserver.</p>
+
+<p>To run Selenium Core in HTA mode, just double-click on TestRunner.hta, in the /core directory of your Selenium installation.  (As you can see, TestRunner.hta is just a copy of TestRunner.html; but that ".hta" extension makes a big difference!)  You can then run your test suite just like any other Selenium Core test, but since the tests are being run in HTA mode, you're free to run your tests against any website.</p>
+
+<p>You can also run TestRunner.hta from the command line, passing arguments to it just like you would pass arguments to an HTML file, like this:</p>
+
+<p><code>C:\selenium\core&gt;TestRunner.hta "test=..%2Ftests%2FTestSuite.html&auto=true&close=true&resultsUrl=results.html&save=true"</code></p>
+</div>
 </body>
 </html>
