@@ -463,9 +463,19 @@ public class ProxyHandler extends AbstractHttpHandler {
         URI uri = request.getURI();
 
         try {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("CONNECT: " + uri);
-            InetAddrPort addrPort = new InetAddrPort(uri.toString());
+            }
+            InetAddrPort addrPort;
+            // DGF when logging, we'll attempt to send messages to hosts that don't exist
+            if (uri.toString().endsWith(".selenium.doesnotexist:443")) {
+                // Always use the same URI, so we don't start a new sslRelay on every logging message
+                uri = new URI("logging.selenium.doesnotexist:443");
+                // Set the host to be localhost (you can't new up an IAP with a non-existent hostname)
+                addrPort = new InetAddrPort(443);
+            } else {
+                addrPort = new InetAddrPort(uri.toString());
+            }
 
             if (isForbidden(HttpMessage.__SSL_SCHEME, addrPort.getHost(), addrPort.getPort(), false)) {
                 sendForbid(request, response, uri);
@@ -540,8 +550,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             }
         }
         catch (Exception e) {
-            System.err.println("handleConnect: ProxyHandler.java: " + e);
-            LogSupport.ignore(log, e);
+            log.debug("error during handleConnect", e);
             response.sendError(HttpResponse.__500_Internal_Server_Error);
         }
     }
