@@ -138,7 +138,7 @@ function logToRc(logLevel, message) {
         logLevel = "debug";
     }
     if (debugMode) {
-        sendToRC("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/g, " ") + "\n", "logging=true");
+        sendToRCAndForget("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/g, " ") + "\n", "logging=true");
     }
 }
 
@@ -369,10 +369,8 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     if (urlParms) {
         url += urlParms;
     }
-    url += "&localFrameAddress=" + (proxyInjectionMode ? makeAddressToAUTFrame() : "top");
-    url += getSeleniumWindowNameURLparameters();
-    url += "&uniqueId=" + uniqueId;
-
+    url = addUrlParams(url);
+    
     var wrappingCallback;
     if (callback == null) {
         callback = function() {};
@@ -400,7 +398,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
             }
         }
     }
-    url += buildDriverParams() + preventBrowserCaching();
+    
     var postedData = "postedData=" + encodeURIComponent(dataToBePosted);
 
     //xmlHttpObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -408,6 +406,48 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     xmlHttpObject.onreadystatechange = wrappingCallback;
     xmlHttpObject.send(postedData);
     return null;
+}
+
+function addUrlParams(url) {
+    return url + "&localFrameAddress=" + (proxyInjectionMode ? makeAddressToAUTFrame() : "top")
+    + getSeleniumWindowNameURLparameters()
+    + "&uniqueId=" + uniqueId
+    + buildDriverParams() + preventBrowserCaching()
+}
+
+function sendToRCAndForget(dataToBePosted, urlParams) {
+    var url;
+    if (!(browserVersion.isChrome || browserVersion.isHTA)) { 
+        // DGF we're behind a proxy, so we can send our logging message to literally any host, to avoid 2-connection limit
+        url = "http://" + Math.round(100000 * Math.random()) + ".selenium.doesnotexist/selenium-server/driver/?" + urlParams;
+    } else {
+        url = buildDriverUrl() + "?";
+    }
+    url = addUrlParams(url);
+    
+    var method = "GET";
+    if (method == "POST") {
+        // DGF submit a request using an iframe; we can't see the response, but we don't need to
+        // TODO not using this mechanism because it screws up back-button
+        var loggingForm = document.createElement("form");
+        loggingForm.method = "POST";
+        loggingForm.action = url;
+        loggingForm.target = "seleniumLoggingFrame";
+        var postedDataInput = document.createElement("input");
+        postedDataInput.type = "hidden";
+        postedDataInput.name = "postedData";
+        postedDataInput.value = dataToBePosted;
+        loggingForm.appendChild(postedDataInput);
+        document.body.appendChild(loggingForm);
+        loggingForm.submit();
+        document.body.removeChild(loggingForm);
+    } else {
+        var postedData = "&postedData=" + encodeURIComponent(dataToBePosted);
+        var scriptTag = document.createElement("script");
+        scriptTag.src = url + postedData;
+        document.body.appendChild(scriptTag);
+        document.body.removeChild(scriptTag);
+    }
 }
 
 function buildDriverParams() {
