@@ -117,7 +117,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
             log.debug("req: "+req);
             // If this is a browser requesting work for the first time...
-            if ("POST".equalsIgnoreCase(method) || justLoaded) {
+            if ("POST".equalsIgnoreCase(method) || justLoaded || logging) {
                 FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(getParam(req, "seleniumWindowName"), 
                         getParam(req, "localFrameAddress"));
                 String uniqueId = getParam(req, "uniqueId");
