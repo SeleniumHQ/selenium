@@ -91,7 +91,7 @@ public class LauncherUtils {
 	 * containing "/selenium-server/". Otherwise the proxy applies to all URLs.
 	 */
 	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
-		if (SeleniumServer.isAlwaysProxy()) {
+		if (!SeleniumServer.isAvoidProxy()) {
             proxySeleniumTrafficOnly = false;
         }
         File proxyPAC = new File(parentDir, "proxy.pac");
@@ -246,7 +246,7 @@ public class LauncherUtils {
     
 	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage) throws FileNotFoundException {
 		// TODO Do we want to make these preferences configurable somehow?
-        if (SeleniumServer.isAlwaysProxy()) {
+        if (!SeleniumServer.isAvoidProxy()) {
             proxySetting = ProxySetting.PROXY_EVERYTHING;
         }
 

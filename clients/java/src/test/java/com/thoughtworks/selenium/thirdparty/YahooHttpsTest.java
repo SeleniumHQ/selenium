@@ -9,7 +9,7 @@ public class YahooHttpsTest extends SeleneseTestCase {
 
     public void setUp() throws Exception {
         boolean pi = true;
-        SeleniumServer.setAlwaysProxy(pi);
+        SeleniumServer.setAvoidProxy(!pi);
         ss = new SeleniumServer(4444, false, !pi);
         ss.setProxyInjectionMode(pi);
         ss.start();

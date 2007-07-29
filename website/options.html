@@ -17,7 +17,7 @@
 <li><b>-forcedBrowserMode &lt;browser&gt;</b>: sets the browser mode (e.g. "*iexplore" for all sessions, no matter what is passed to getNewBrowserSession</li>
 <li><b>-userExtensions &lt;file&gt;</b>: indicates a JavaScript file that will be loaded into selenium</li>
 <li><b>-browserSessionReuse</b>: stops re-initialization and spawning of the browser between tests</li>
-<li><b>-alwaysProxy</b>: By default, we proxy as little as we can; set this flag to force all browser traffic through the proxy</li>
+<li><b>-avoidProxy</b>: By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'</li>
 <li><b>-firefoxProfileTemplate &lt;dir&gt;</b>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.</li>
 <li><b>-debug</b>: puts you into debug mode, with more trace information and diagnostics</li>
 <li><b>-log</b>: writes lots of debug information out to a log file</li>

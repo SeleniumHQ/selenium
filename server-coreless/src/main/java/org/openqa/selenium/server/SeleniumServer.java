@@ -158,7 +158,7 @@ public class SeleniumServer {
     private static ProxyHandler customProxyHandler;
     private static String debugURL = "";  // add special tracing for debug when this URL is requested
     private static boolean debugMode = false;
-    private static boolean alwaysProxy = false;
+    private static boolean avoidProxy = false;
     private static boolean proxyInjectionMode = false;
     private static File firefoxProfileTemplate = null;
 
@@ -234,8 +234,8 @@ public class SeleniumServer {
                 port = Integer.parseInt(getArg(args, ++i));
             } else if ("-multiWindow".equalsIgnoreCase(arg)) {
                 multiWindow = true;
-            } else if ("-alwaysProxy".equalsIgnoreCase(arg)) {
-                alwaysProxy = true;
+            } else if ("-avoidProxy".equalsIgnoreCase(arg)) {
+                setAvoidProxy(true);
             } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
                 proxyInjectionModeArg = true;
             } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
@@ -473,7 +473,7 @@ public class SeleniumServer {
         printWrappedErrorLine(INDENT, "-forcedBrowserMode <browser>: sets the browser mode (e.g. \"*iexplore\" for all sessions, no matter what is passed to getNewBrowserSession");
         printWrappedErrorLine(INDENT, "-userExtensions <file>: indicates a JavaScript file that will be loaded into selenium");
         printWrappedErrorLine(INDENT, "-browserSessionReuse: stops re-initialization and spawning of the browser between tests");
-        printWrappedErrorLine(INDENT, "-alwaysProxy: By default, we proxy as little as we can; set this flag to force all browser traffic through the proxy");
+        printWrappedErrorLine(INDENT, "-avoidProxy: By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'");
         printWrappedErrorLine(INDENT, "-firefoxProfileTemplate <dir>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.");
         printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics");
         printWrappedErrorLine(INDENT, "-log <logFileName>: writes lots of debug information out to a log file");
@@ -833,12 +833,38 @@ public class SeleniumServer {
         return proxyInjectionMode;
     }
 
+    /** 
+     * By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'
+     * @param alwaysProxy true if we should always proxy, false otherwise
+     * @deprecated use setAvoidProxy instead (note that avoidProxy is the opposite of alwaysProxy)
+     */
+    @Deprecated
     public static void setAlwaysProxy(boolean alwaysProxy) {
-        SeleniumServer.alwaysProxy = alwaysProxy;
+        setAvoidProxy(!alwaysProxy);
+    }
+    
+    /** 
+     * By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'
+     * @param avoidProxy true if we should proxy as little as possible, false to proxy everything
+     */
+    public static void setAvoidProxy(boolean avoidProxy) {
+        SeleniumServer.avoidProxy = avoidProxy;
     }
 
+    /** 
+     * By default, we proxy every browser request; if this flag is false, we make the browser use our proxy only for URLs containing '/selenium-server'
+     * @deprecated use isAvoidProxy instaed (note that avoidProxy is th opposite of alwaysProxy)
+     */
+    @Deprecated
     public static boolean isAlwaysProxy() {
-        return alwaysProxy;
+        return !isAvoidProxy();
+    }
+
+    /** 
+     * By default, we proxy every browser request; if this flag is set, we make the browser use our proxy only for URLs containing '/selenium-server'
+     */
+    public static boolean isAvoidProxy() {
+        return avoidProxy;
     }
 
     public static int getPortDriversShouldContact() {
