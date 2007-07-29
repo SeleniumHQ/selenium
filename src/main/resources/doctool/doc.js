@@ -37,6 +37,9 @@ function handleTags(name, args, comment) {
     }
     var tagStart = comment.search(/@(param|return)/);
     if (tagStart == -1) {
+        if ("do" != name.substring(0, 2)) {
+            throw "Command " + name + " doesn't start with 'do', or else you forget to specify a @return tag";
+        }
         comment = comment.replace(/^[\s\r\n]*/, "");
         comment = comment.replace(/[\s\r\n]*$/, "");
         print("<comment>" + comment + "</comment>\n");
@@ -53,7 +56,7 @@ function handleTags(name, args, comment) {
             var arg = paramMatch[1];
             var argDesc = paramMatch[2];
             if (argMap[arg] == null) {
-                throw new Error("Comment error: " + name + " @param " + arg + " does not match any argument");
+                throw ("Comment error: " + name + " @param " + arg + " does not match any argument");
             }
             argDesc = argDesc.replace(/^\s+/, "");
             argDesc = argDesc.replace(/\s+$/, "");
@@ -63,19 +66,20 @@ function handleTags(name, args, comment) {
         if (returnMatch) {
             var returnType = returnMatch[1];
             if (!returnType.match(/^(string|number|boolean)(\[\])?$/)) {
-                throw new Error("Comment error: " + name + " @return type " + returnType + " is invalid; must be one of: string, number, boolean, string[], number[], boolean[]");
+                throw ("Comment error: " + name + " @return type " + returnType + " is invalid; must be one of: string, number, boolean, string[], number[], boolean[]");
             }
             var returnDesc = returnMatch[2];
             if (returnDesc == null) {
-                throw new Error("Comment error: " + name + " @return does not have a description");
+                throw ("Comment error: " + name + " @return does not have a description");
             }
             returnDesc = returnDesc.replace(/^\s+/, "");
             returnDesc = returnDesc.replace(/\s+$/, "");
             print("<return type=\"" + returnType + "\">" + returnDesc + "</return>\n");
         }
     }
+    
     for (var i = 0; i < args.length; i++) {
-        if ("" == argMap[args[i]]) throw new Error("Comment error: param " + args[i] + " has no description");
+        if ("" == argMap[args[i]]) throw ("Comment error: " + name + " param " + args[i] + " has no description");
         print("<param name=\"" + args[i] + "\">" + argMap[args[i]] + "</param>\n");
     }
     comment = comment.replace(/^[\s\r\n]*/, "");
@@ -115,8 +119,7 @@ while ((result = commandPattern.exec(content)) != null) {
     var args = extractArgList(source);
     var comment = extractInitialComment(source);
     if (comment == null || "" == comment) {
-        print ("Comment for " + name + " was blank!");
-        throw new Error("Comment for " + name + " was blank!");
+        throw ("Comment for " + name + " was blank!");
     }
     handleTags(name, args, comment);
     print("</function>\n");
