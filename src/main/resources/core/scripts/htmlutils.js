@@ -749,6 +749,11 @@ function openSeparateApplicationWindow(url, suppressMozillaWarning) {
     window.moveTo(window.screenX, 0);
 
     var appWindow = window.open(url + '?start=true', 'main');
+    if (appWindow == null) {
+        var errorMessage = "Couldn't open app window; is the pop-up blocker enabled?"
+        LOG.error(errorMessage);
+        throw new Error("Couldn't open app window; is the pop-up blocker enabled?");
+    }
     try {
         var windowHeight = 500;
         if (window.outerHeight) {
