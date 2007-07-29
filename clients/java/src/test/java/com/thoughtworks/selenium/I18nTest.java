@@ -34,6 +34,7 @@ public class I18nTest extends TestCase {
                 sel = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*firefox",
                         startUrl);
                 sel.start();
+                sel.open(startUrl + "/selenium-server/tests/html/test_i18n.html");
             } catch (Exception e) {
                 e.printStackTrace();
                 throw e;
@@ -85,7 +86,6 @@ public class I18nTest extends TestCase {
     private void verifyText(String expected, String id) throws UnsupportedEncodingException {
         System.out.println(getName());
         System.out.println(expected);
-        sel.open(startUrl + "/selenium-server/tests/html/test_i18n.html");
         assertTrue(sel.isTextPresent(expected));
         String actual = sel.getText(id);
         byte[] result = actual.getBytes("UTF-8");
