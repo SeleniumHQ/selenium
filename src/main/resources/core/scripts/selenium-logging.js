@@ -23,8 +23,8 @@ Logger.prototype = {
         debug: 0,
         info: 1,
         warn: 2,
-        error: 3
-        off: 999,
+        error: 3,
+        off: 999
     },
 
     pendingMessages: new Array(),
