@@ -157,7 +157,7 @@ public class SeleniumServer {
 
     private static ProxyHandler customProxyHandler;
     private static String debugURL = "";  // add special tracing for debug when this URL is requested
-    private static boolean debugMode = false;
+    private static boolean browserSideLogEnabled = false;
     private static boolean avoidProxy = false;
     private static boolean proxyInjectionMode = false;
     private static File firefoxProfileTemplate = null;
@@ -193,6 +193,7 @@ public class SeleniumServer {
 
     private static String dontInjectRegex = null;
     private static boolean FORCE_PROXY_CHAIN = false;
+    private static boolean debugMode = false;
 
     /**
      * Starts up the server on the specified port (or default if no port was specified)
@@ -254,6 +255,8 @@ public class SeleniumServer {
                 }
             } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
                 dontInjectRegex = getArg(args, ++i);
+            } else if ("-browserSideLog".equalsIgnoreCase(arg)) {
+                SeleniumServer.setBrowserSideLogEnabled(true);
             } else if ("-debug".equalsIgnoreCase(arg)) {
                 SeleniumServer.setDebugMode(true);
             } else if ("-debugURL".equalsIgnoreCase(arg)) {
@@ -475,7 +478,8 @@ public class SeleniumServer {
         printWrappedErrorLine(INDENT, "-browserSessionReuse: stops re-initialization and spawning of the browser between tests");
         printWrappedErrorLine(INDENT, "-avoidProxy: By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'");
         printWrappedErrorLine(INDENT, "-firefoxProfileTemplate <dir>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.");
-        printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics");
+        printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics on the console");
+        printWrappedErrorLine(INDENT, "-browserSideLog: enables logging on the browser side; logging messages will be transmitted to the server.  This can affect performance.");
         printWrappedErrorLine(INDENT, "-log <logFileName>: writes lots of debug information out to a log file");
         printWrappedErrorLine(INDENT, "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
         printWrappedErrorLine(INDENT, "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
@@ -661,6 +665,9 @@ public class SeleniumServer {
         if (!isDebugMode() && System.getProperty("selenium.debugMode") != null) {
             setDebugMode("true".equals(System.getProperty("selenium.debugMode")));
         }
+        if (!isBrowserSideLogEnabled() && System.getProperty("selenium.browserSideLog") != null) {
+            setBrowserSideLogEnabled("true".equals(System.getProperty("selenium.browerSideLog")));
+        }
     }
 
 
@@ -822,11 +829,19 @@ public class SeleniumServer {
 	}    
 
     public static boolean isDebugMode() {
-        return SeleniumServer.debugMode;
+        return debugMode;
+    }
+
+    public static boolean isBrowserSideLogEnabled() {
+        return SeleniumServer.browserSideLogEnabled;
     }
 
     static public void setDebugMode(boolean debugMode) {
-        SeleniumServer.debugMode = debugMode;
+        SeleniumServer.debugMode  = debugMode;
+    }
+
+    static public void setBrowserSideLogEnabled(boolean browserSideLogEnabled) {
+        SeleniumServer.browserSideLogEnabled = browserSideLogEnabled;
     }
 
     public static boolean isProxyInjectionMode() {

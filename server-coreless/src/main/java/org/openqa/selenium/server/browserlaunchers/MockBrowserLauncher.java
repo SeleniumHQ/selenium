@@ -66,7 +66,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
                 log.info("MOCK: " + commandLine);
                 RemoteCommand sc = DefaultRemoteCommand.parse(commandLine);
                 String result = doCommand(sc);
-                if (SeleniumServer.isDebugMode() && !interrupted) {
+                if (SeleniumServer.isBrowserSideLogEnabled() && !interrupted) {
                     for (int i = 0; i < 3; i++) {
                         doBrowserRequest(startURL + "&logging=true", "logLevel=debug:dummy log message " + i + "\n");
                     }

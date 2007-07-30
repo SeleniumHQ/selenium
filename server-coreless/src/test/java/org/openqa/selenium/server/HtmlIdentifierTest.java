@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 public class HtmlIdentifierTest extends TestCase {
     public void setUp() {
-        SeleniumServer.setDebugMode(true);
+        SeleniumServer.setBrowserSideLogEnabled(true);
         SeleniumServer.configureLogging();
     }
     

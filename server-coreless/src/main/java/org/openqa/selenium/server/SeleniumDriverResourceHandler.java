@@ -158,8 +158,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
         }
         catch (RuntimeException e) {
-            if (!SeleniumServer.isDebugMode()
-                && looksLikeBrowserLaunchFailedBecauseFileNotFound(e)) {
+            if (looksLikeBrowserLaunchFailedBecauseFileNotFound(e)) {
                 String apparentFile = extractNameOfFileThatCouldntBeFound(e);
                 if (apparentFile!=null) {
                     log.error("Could not start browser; it appears that " + apparentFile + " is missing or inaccessible");

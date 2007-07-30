@@ -172,7 +172,7 @@ public class LauncherUtils {
                 + "sessionId=" + sessionId 
                 + "&multiWindow=" + multiWindow 
                 + "&baseUrl=" + urlEncode(startURL)
-                + "&debugMode=" + SeleniumServer.isDebugMode();
+                + "&debugMode=" + SeleniumServer.isBrowserSideLogEnabled();
         if (serverPort != 0) {
             url += "&driverUrl=http://localhost:" + serverPort + "/selenium-server/driver/";
         }

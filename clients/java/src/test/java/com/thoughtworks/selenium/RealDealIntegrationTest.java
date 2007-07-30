@@ -40,8 +40,8 @@ public class RealDealIntegrationTest extends TestCase {
     }
 
     public void testWithJavaScript() {
-        selenium.setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java",
-                SeleniumLogLevels.DEBUG);
+        selenium.setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
+        selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
         selenium.open("/selenium-server/tests/html/test_click_page1.html");
         assertTrue("link 'link' doesn't contain expected text", 
                 selenium.getText("link").indexOf("Click here for next page") != -1);
@@ -62,8 +62,8 @@ public class RealDealIntegrationTest extends TestCase {
     
     
     public void testFailure() {
-        selenium.setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java",
-                SeleniumLogLevels.DEBUG);
+        selenium.setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java");
+        selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
         selenium.open("/selenium-server/tests/html/test_click_page1.html");
         String badElementName = "This element doesn't exist, so Selenium should throw an exception";
         try {
@@ -82,8 +82,8 @@ public class RealDealIntegrationTest extends TestCase {
    }
 
     public void testMinimal() {
-         selenium.setContext("minimal 'test' -- to see how little I need to do to repro firefox hang",
-                SeleniumLogLevels.DEBUG);
+         selenium.setContext("minimal 'test' -- to see how little I need to do to repro firefox hang");
+         selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
     }
 }
 

@@ -281,7 +281,7 @@ public class InjectionHelper {
 
     private static byte[] setSomeJsVars(String sessionId) {
         StringBuffer moreJs = new StringBuffer();
-        if (SeleniumServer.isDebugMode()) {
+        if (SeleniumServer.isBrowserSideLogEnabled()) {
             moreJs.append("debugMode = true;\n");
         }
         moreJs.append("injectedSessionId = ")
