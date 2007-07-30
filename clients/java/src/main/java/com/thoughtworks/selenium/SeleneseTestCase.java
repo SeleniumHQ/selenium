@@ -20,6 +20,7 @@ package com.thoughtworks.selenium;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.util.regex.Pattern;
 
 import junit.framework.*;
 
@@ -246,9 +247,9 @@ public class SeleneseTestCase extends TestCase {
         String expectedGlob = expectedPattern.replaceFirst("glob:", "");
         expectedGlob = expectedGlob.replaceAll("([\\]\\[\\\\{\\}$\\(\\)\\|\\^\\+.])", "\\\\$1");
 
-        expectedGlob = expectedGlob.replaceAll("\\*", "(.|[\r\n])*");
-        expectedGlob = expectedGlob.replaceAll("\\?", "(.|[\r\n])");
-        if (!actual.matches(expectedGlob)) {
+        expectedGlob = expectedGlob.replaceAll("\\*", ".*");
+        expectedGlob = expectedGlob.replaceAll("\\?", ".");
+        if (!Pattern.compile(expectedGlob, Pattern.DOTALL).matcher(actual).matches()) {
             System.out.println("expected \"" + actual + "\" to match glob \"" + expectedPattern + "\" (had transformed the glob into regexp \"" + expectedGlob + "\"");
             return false;
         }
