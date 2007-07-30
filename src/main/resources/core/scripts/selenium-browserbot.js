@@ -205,7 +205,7 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
     clientX = clientX ? clientX : 0;
     clientY = clientY ? clientY : 0;
 
-    LOG.warn("triggerMouseEvent assumes setting screenX and screenY to 0 is ok");
+    LOG.debug("triggerMouseEvent assumes setting screenX and screenY to 0 is ok");
     var screenX = 0;
     var screenY = 0;
 
@@ -1325,9 +1325,7 @@ BrowserBot.prototype.replaceText = function(element, stringValue) {
     if (maxLengthAttr != null) {
         var maxLength = parseInt(maxLengthAttr);
         if (stringValue.length > maxLength) {
-            LOG.warn("BEFORE")
             actualValue = stringValue.substr(0, maxLength);
-            LOG.warn("AFTER")
         }
     }
 

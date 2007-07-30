@@ -327,7 +327,7 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble, controlKeyD
 }
 
 function removeLoadListener(element, command) {
-    LOG.info('Removing loadListenter for ' + element + ', ' + command);
+    LOG.debug('Removing loadListenter for ' + element + ', ' + command);
     if (window.removeEventListener)
         element.removeEventListener("load", command, true);
     else if (window.detachEvent)
@@ -335,7 +335,7 @@ function removeLoadListener(element, command) {
 }
 
 function addLoadListener(element, command) {
-    LOG.info('Adding loadListenter for ' + element + ', ' + command);
+    LOG.debug('Adding loadListenter for ' + element + ', ' + command);
     var augmentedCommand = function() {
         command.call(this, element);
     }
