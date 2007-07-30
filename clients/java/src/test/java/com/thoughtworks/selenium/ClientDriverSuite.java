@@ -218,6 +218,7 @@ public class ClientDriverSuite extends TestCase {
 
 		public void setUp() throws Exception {
 			overrideProperty("selenium.debugMode", "true");
+			overrideProperty("selenium.browserSideLog", "true");
 			overrideProperty("selenium.log", "log.txt");
 
 			// make jetty logging especially verbose
