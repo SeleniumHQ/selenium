@@ -37,6 +37,8 @@ public class SeleneseTestCase extends TestCase {
 
     private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
     
+    private boolean captureScreetShotOnFailure = false;
+    
     /** Use this object to run all of your selenium tests */
     protected Selenium selenium;
     
@@ -56,6 +58,10 @@ public class SeleneseTestCase extends TestCase {
      */
     // @Override
     public void runBare() throws Throwable {
+        if (!isCaptureScreetShotOnFailure()) {
+            super.runBare();
+            return;
+        }
         setUp();
         try {
             runTest();
@@ -372,5 +378,13 @@ public class SeleneseTestCase extends TestCase {
     	} finally {
     		selenium.stop();
     	}
+    }
+
+    protected boolean isCaptureScreetShotOnFailure() {
+        return captureScreetShotOnFailure;
+    }
+
+    protected void setCaptureScreetShotOnFailure(boolean captureScreetShotOnFailure) {
+        this.captureScreetShotOnFailure = captureScreetShotOnFailure;
     }
 }
