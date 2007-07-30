@@ -1498,18 +1498,6 @@ BrowserBot.prototype.getAllLinks = function() {
     return result;
 };
 
-BrowserBot.prototype.setContext = function(strContext, logLevel) {
-
-    //set the current test title
-    var ctx = document.getElementById("context");
-    if (ctx != null) {
-        ctx.innerHTML = strContext;
-    }
-    if (logLevel != null) {
-        LOG.setLogLevelThreshold(logLevel);
-    }
-};
-
 function isDefined(value) {
     return typeof(value) != undefined;
 }

@@ -2204,6 +2204,24 @@ Selenium.prototype.doDeleteCookie = function(name,path) {
     this.browserbot.getDocument().cookie = cookie;
 }
 
+Selenium.prototype.doSetBrowserLogLevel = function(logLevel) {
+    /**
+    * Sets the threshold for browser-side logging messages; log messages beneath this threshold will be discarded.
+    * Valid logLevel strings are: "debug", "info", "warn", "error" or "off".
+    * Note that all browser-side log messages are discarded until logging is enabled.  To enable logging, you need to
+    * either show the log window in GUI mode, or enable browser-side logging in Selenium RC.
+    *
+    * @param logLevel one of the following: "debug", "info", "warn", "error" or "off"
+    */
+    if (logLevel == null || logLevel == "") {
+        throw new SeleniumError("You must specify a log level");
+    }
+    logLevel = logLevel.toLowerCase();
+    if (LOG.logLevels[logLevel] == null) {
+        throw new SeleniumError("Invalid log level: " + logLevel);
+    }
+    LOG.setLogLevelThreshold(logLevel);
+}
 
 /**
  *  Factory for creating "Option Locators".

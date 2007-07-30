@@ -95,7 +95,7 @@ function runSeleniumTest() {
         debugMode = runOptions.isDebugMode();
     }
     if (proxyInjectionMode) {
-        LOG.log = logToRc;
+        LOG.logHook = logToRc;
         selenium.browserbot._modifyWindow(testAppWindow);
     }
     else if (debugMode) {
@@ -134,10 +134,10 @@ function buildDriverUrl() {
 }
 
 function logToRc(logLevel, message) {
-    if (logLevel == null) {
-        logLevel = "debug";
-    }
     if (debugMode) {
+        if (logLevel == null) {
+            logLevel = "debug";
+        }
         sendToRCAndForget("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/g, " ") + "\n", "logging=true");
     }
 }
@@ -543,25 +543,19 @@ function makeAddressToAUTFrame(w, frameNavigationalJSexpression)
     return null;
 }
 
-Selenium.prototype.doSetContext = function(context, logLevelThreshold) {
+Selenium.prototype.doSetContext = function(context) {
     /**
    * Writes a message to the status bar and adds a note to the browser-side
    * log.
    *
-   * <p>If logLevelThreshold is specified, set the threshold for logging
-   * to that level (debug, info, warn, error).</p>
-   *
-   * <p>(Note that the browser-side logs will <i>not</i> be sent back to the
-   * server, and are invisible to the Client Driver.)</p>
-   *
    * @param context
    *            the message to be sent to the browser
-   * @param logLevelThreshold one of "debug", "info", "warn", "error", sets the threshold for browser-side logging
    */
-    if  (logLevelThreshold==null || logLevelThreshold=="") {
-        return this.browserbot.setContext(context);
+    //set the current test title
+    var ctx = document.getElementById("context");
+    if (ctx != null) {
+        ctx.innerHTML = context;
     }
-    return this.browserbot.setContext(context, logLevelThreshold);
 };
 
 Selenium.prototype.doCaptureScreenshot = function(filename) {
