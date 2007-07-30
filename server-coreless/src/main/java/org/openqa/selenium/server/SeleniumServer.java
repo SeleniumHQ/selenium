@@ -666,7 +666,7 @@ public class SeleniumServer {
             setDebugMode("true".equals(System.getProperty("selenium.debugMode")));
         }
         if (!isBrowserSideLogEnabled() && System.getProperty("selenium.browserSideLog") != null) {
-            setBrowserSideLogEnabled("true".equals(System.getProperty("selenium.browerSideLog")));
+            setBrowserSideLogEnabled("true".equals(System.getProperty("selenium.browserSideLog")));
         }
     }
 
