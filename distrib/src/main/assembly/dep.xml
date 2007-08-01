@@ -100,7 +100,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver</include>
+                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar</include>
             </includes>
         </dependencySet>
         <!-- extract selenium-java-client-driver javadoc -->
