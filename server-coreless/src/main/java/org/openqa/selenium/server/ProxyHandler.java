@@ -247,7 +247,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             proxyPlainTextRequest(url, pathInContext, pathParams, request, response);
         }
         catch (Exception e) {
-            log.warn("Could not proxy " + uri, e);
+            log.debug("Could not proxy " + uri, e);
             LogSupport.ignore(log, e);
             if (!response.isCommitted())
                 response.sendError(HttpResponse.__400_Bad_Request);
