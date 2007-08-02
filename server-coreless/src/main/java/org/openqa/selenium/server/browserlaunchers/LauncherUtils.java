@@ -245,8 +245,9 @@ public class LauncherUtils {
     protected enum ProxySetting { NO_PROXY, PROXY_SELENIUM_TRAFFIC_ONLY, PROXY_EVERYTHING };
     
 	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage) throws FileNotFoundException {
-		// TODO Do we want to make these preferences configurable somehow?
-        if (!SeleniumServer.isAvoidProxy()) {
+		// We treat PROXY_SELENIUM_TRAFFIC_ONLY as a suggestion; if the user didn't explicitly
+		// allow us to proxy selenium traffic only, then we'll proxy everything
+        if (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY && !SeleniumServer.isAvoidProxy()) {
             proxySetting = ProxySetting.PROXY_EVERYTHING;
         }
 

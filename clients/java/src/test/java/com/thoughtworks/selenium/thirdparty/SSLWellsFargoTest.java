@@ -38,5 +38,21 @@ public class SSLWellsFargoTest extends TestCase {
 
         assertEquals("Wells Fargo Home Page", selenium.getTitle());
     }
+    
+    public void testChrome() throws Throwable {
+        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*chrome", url);
+        selenium.start();
+        selenium.open("https://www.wellsfargo.com");
+
+        assertEquals("Wells Fargo Home Page", selenium.getTitle());
+    }
+    
+    public void testIehta() throws Throwable {
+        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*iehta", url);
+        selenium.start();
+        selenium.open("https://www.wellsfargo.com");
+
+        assertEquals("Wells Fargo Home Page", selenium.getTitle());
+    }
 
 }
