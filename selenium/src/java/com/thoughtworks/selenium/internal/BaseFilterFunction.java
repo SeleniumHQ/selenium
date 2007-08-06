@@ -1,0 +1,24 @@
+package com.thoughtworks.selenium.internal;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.thoughtworks.webdriver.WebElement;
+
+public abstract class BaseFilterFunction implements FilterFunction {
+	public List filterElements(List allElements, String filterValue) {
+		ArrayList toReturn = new ArrayList();
+		
+		Iterator iterator = allElements.iterator();
+		while (iterator.hasNext()) {
+			WebElement element = (WebElement) iterator.next();
+			if (shouldAdd(element, filterValue))
+				toReturn.add(element);
+		}
+		
+		return toReturn;
+	}
+	
+	protected abstract boolean shouldAdd(WebElement element, String filterValue);
+}
