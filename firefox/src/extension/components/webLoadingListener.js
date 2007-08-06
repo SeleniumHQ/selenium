@@ -1,5 +1,6 @@
 //var LOAD_EVENT = "DOMContentLoaded";
 var LOAD_EVENT = "load";
+var ORDERED_NODE_ITERATOR_TYPE = Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE;
 
 function WebLoadingListener(driver, toCall) {
     var listener = this;
@@ -7,8 +8,9 @@ function WebLoadingListener(driver, toCall) {
 	
     this.func = function(event) {
         // Is there a meta refresh?
-        var doc = Utils.getDocument(driver.context)
-        var result = doc.evaluate("/html/head/meta[@http-equiv]", doc, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+        // var doc = Utils.getDocument(driver.context);
+		var doc = event.originalTarget;
+        var result = doc.evaluate("/html/head/meta[@http-equiv]", doc, null, ORDERED_NODE_ITERATOR_TYPE, null);
         var element = result.iterateNext();
         while (element) {
             if ("refresh" == element.getAttribute("http-equiv").toLowerCase()) {
@@ -24,6 +26,7 @@ function WebLoadingListener(driver, toCall) {
             element = result.iterateNext();
         }
         WebLoadingListener.removeListener(browser, listener);
+
         toCall(event);
     }
 

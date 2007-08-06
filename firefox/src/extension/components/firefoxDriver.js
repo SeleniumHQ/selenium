@@ -1,10 +1,12 @@
-function FirefoxDriver(server) {
+function FirefoxDriver(server, id) {
     this.server = server;
     this.context = new Context();
+	this.id = id;
 }
 
 FirefoxDriver.prototype.get = function(url) {
     var self = this;
+	this.context.frameId = "?";
 
     new WebLoadingListener(this, function(event) {
         // TODO: Rescue the URI and response code from the event
@@ -12,6 +14,35 @@ FirefoxDriver.prototype.get = function(url) {
         self.server.respond(self.context, "get", responseText);
     });
     Utils.getBrowser(this.context).loadURI(url);
+}
+
+FirefoxDriver.prototype.close = function() {
+       // Grab all the references we'll need. Once we call close all this might go away
+       var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
+       var appService = Utils.getService("@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
+       var forceQuit = Components.interfaces.nsIAppStartup.eForceQuit;
+       var server = this.server;
+
+       var lastWindow;
+       var allWindows = wm.getEnumerator("navigator:browser");
+       
+       // Here we go!
+       try {
+               var browser = Utils.getBrowser(this.context);
+               browser.contentWindow.close();
+       } catch(e) {
+               dump(e);
+       }
+       
+       // If we're on a Mac we might have closed all the windows but not quit, so ensure that we do actually quit :)
+       var allWindows = wm.getEnumerator("navigator:browser");
+       if (!allWindows.hasMoreElements()) {
+               dump("Quitting. No more open windows\n");
+               appService.quit(forceQuit);
+       }
+       
+       // If we're still running, return
+       server.respond(this.context, "close");
 }
 
 FirefoxDriver.prototype.getCurrentUrl = function() {
@@ -74,8 +105,8 @@ FirefoxDriver.prototype.selectElementsUsingXPath = function(xpath) {
         response += index + ",";
         element = result.iterateNext();
     }
-    response = response.substring(0, response.length - 1);
     // Strip the trailing comma
+    response = response.substring(0, response.length - 1);
     this.server.respond(this.context, "selectElementsUsingXPath", response);
 };
 
@@ -91,17 +122,7 @@ FirefoxDriver.prototype.switchToFrame = function(frameId) {
     this.server.respond(this.context, "switchToFrame");
 }
 
-FirefoxDriver.prototype.switchToWindow = function(windowId) {
-    this.context = new Context(windowId, "?");
-    var browser = Utils.getBrowser(this.context);
-    
-    browser.focus();
-    this.refreshContext = false;
-
-    this.server.respond(this.context, "switchToWindow");
-}
-
 FirefoxDriver.prototype.switchToDefaultContent = function() {
-	this.context = new Context(this.context.windowId, "?");
+	this.context.frameId = "?";
 	this.server.respond(this.context, "switchToDefaultContent");
 }

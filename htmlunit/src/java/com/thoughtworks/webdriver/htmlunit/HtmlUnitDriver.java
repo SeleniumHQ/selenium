@@ -46,22 +46,19 @@ public class HtmlUnitDriver implements WebDriver {
 	private WebClient webClient;
     private WebWindow currentWindow;
 
-
     public HtmlUnitDriver() {
 		newWebClient();
         webClient.addWebWindowListener(new WebWindowListener() {
-            private boolean waitingToLoad;
+             private boolean waitingToLoad;
 
             public void webWindowOpened(WebWindowEvent webWindowEvent) {
                 waitingToLoad = true;
-                pickWindow();
             }
 
             public void webWindowContentChanged(WebWindowEvent webWindowEvent) {
                 if (waitingToLoad) {
                     waitingToLoad = false;
                     webClient.setCurrentWindow(webWindowEvent.getWebWindow());
-                    pickWindow();
                 }
             }
 
@@ -71,6 +68,11 @@ public class HtmlUnitDriver implements WebDriver {
         });
     }
 
+	private HtmlUnitDriver(WebWindow currentWindow) {
+		this();
+		this.currentWindow = currentWindow;
+	}
+
 	private void newWebClient() {
 		webClient = new WebClient();
 		webClient.setThrowExceptionOnFailingStatusCode(true);
@@ -78,12 +80,13 @@ public class HtmlUnitDriver implements WebDriver {
 		webClient.setRedirectEnabled(true);
 	}
 
-	public void get(String url) {
+	public WebDriver get(String url) {
 		try {
 			URL fullUrl = new URL(url);
 			Page page = webClient.getPage(fullUrl);
 			page.initialize();
             pickWindow();
+            return this;
         } catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -116,8 +119,9 @@ public class HtmlUnitDriver implements WebDriver {
 		return false;
 	}
 
-	public void setVisible(boolean visible) {
+	public WebDriver setVisible(boolean visible) {
 		// no-op
+		return this;
 	}
 	
 	public String selectText(String selector) {
@@ -132,7 +136,7 @@ public class HtmlUnitDriver implements WebDriver {
 			List elements = new ArrayList();
 			
 			for (int i = 0; i < nodes.size(); i++) {
-				elements.add(new HtmlUnitWebElement((HtmlElement) nodes.get(i)));
+				elements.add(new HtmlUnitWebElement(this, (HtmlElement) nodes.get(i)));
 			}
 			
 			return elements;
@@ -151,13 +155,15 @@ public class HtmlUnitDriver implements WebDriver {
 		}
 	}
 	
-	public void dumpBody() {
+	public WebDriver dumpBody() {
 		WebResponse webResponse = lastPage().getWebResponse();
 		System.out.println(webResponse.getContentAsString());
+		return this;
 	}
 	
-	public void close() {
+	public WebDriver close() {
 		newWebClient();
+		return findActiveWindow();
 	}
 
 
@@ -178,7 +184,7 @@ public class HtmlUnitDriver implements WebDriver {
 		while (allAnchors.hasNext()) {
 			HtmlAnchor anchor = (HtmlAnchor) allAnchors.next();
 			if (expectedText.equals(anchor.asText())) {
-				return new HtmlUnitWebElement(anchor);
+				return new HtmlUnitWebElement(this, anchor);
 			}
 		}
 		throw new NoSuchElementException("No link found with text: " + expectedText);
@@ -190,7 +196,7 @@ public class HtmlUnitDriver implements WebDriver {
 
         try {
             HtmlElement element = lastPage().getHtmlElementById(id);
-	    	return new HtmlUnitWebElement(element);
+	    	return new HtmlUnitWebElement(this, element);
         } catch (ElementNotFoundException e) {
             throw new NoSuchElementException("Cannot find element with ID: " + id);
         }
@@ -202,7 +208,7 @@ public class HtmlUnitDriver implements WebDriver {
             Object node = xpath.selectSingleNode(lastPage());
 			if (node == null) 
 				throw new NoSuchElementException("Cannot locate a node using " + selector);
-			return new HtmlUnitWebElement((HtmlElement) node);
+			return new HtmlUnitWebElement(this, (HtmlElement) node);
 		} catch (JaxenException e) {
 			throw new RuntimeException(e);
 		}
@@ -215,8 +221,8 @@ public class HtmlUnitDriver implements WebDriver {
             return HtmlUnitDriver.this;
         }
 
-        public WebDriver window(int index) {
-            WebWindow window = (WebWindow) webClient.getWebWindows().get(index);
+        public WebDriver window(String windowId) {
+            WebWindow window = (WebWindow) webClient.getWebWindowByName(windowId);
             webClient.setCurrentWindow(window);
             pickWindow();
             return HtmlUnitDriver.this;
@@ -227,4 +233,19 @@ public class HtmlUnitDriver implements WebDriver {
         	return HtmlUnitDriver.this;
         }
     }
+
+	protected WebDriver findActiveWindow() {
+        WebWindow window = webClient.getCurrentWindow();
+        HtmlPage page = (HtmlPage) window.getEnclosedPage();
+
+        if (page != null && page.getFrames().size() > 0) {
+        	FrameWindow frame = (FrameWindow) page.getFrames().get(0);
+        	if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
+        		return new HtmlUnitDriver(frame);
+        }
+        
+        if (currentWindow != null && currentWindow.equals(window))
+        	return this;
+        return new HtmlUnitDriver(window);
+	}
 }

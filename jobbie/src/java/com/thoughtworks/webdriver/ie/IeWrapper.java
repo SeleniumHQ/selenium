@@ -36,13 +36,13 @@ public class IeWrapper implements WebDriver {
 		openIe();
 	}
 	
-	public void dumpBody() {
+	public WebDriver dumpBody() {
 		throw new UnsupportedOperationException("dumpBody");
 	}
 	
-	public native void close();
+	public native WebDriver close();
 	
-	public native void get(String url);
+	public native WebDriver get(String url);
 
 	public native String getCurrentUrl();
 
@@ -50,7 +50,7 @@ public class IeWrapper implements WebDriver {
 
 	public native boolean getVisible();
 
-	public native void setVisible(boolean visible);
+	public native WebDriver setVisible(boolean visible);
 
 	public WebElement selectElement(String selector) {
 		if (selector.startsWith("id=")) {
@@ -141,7 +141,7 @@ public class IeWrapper implements WebDriver {
 			return IeWrapper.this;
 		}
 
-		public WebDriver window(int windowIndex) {
+		public WebDriver window(String windowName) {
 			throw new UnsupportedOperationException("window");
 		}
 

@@ -31,12 +31,9 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
         driver.get(xhtmlTestPage);
 
         driver.selectElement("link=Open new window").click();
-        assertEquals("We Arrive Here", driver.getTitle());
-
-        driver.switchTo().window(0);
         assertEquals("XHTML Test Page", driver.getTitle());
 
-        driver.switchTo().window(1);
+        driver.switchTo().window("result");
         assertEquals("We Arrive Here", driver.getTitle());
         
     	driver.get(iframePage);

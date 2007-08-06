@@ -108,25 +108,6 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 		assertEquals("I like chees", result.getText());
 	}
 
-    public void testCollapsingTwoTestsTogether() throws Exception {
-        driver.get(javascriptPage);
-
-        assertEquals("Testing Javascript", driver.getTitle());
-        driver.selectElement("link=Change the page title!").click();
-        assertEquals("Changed", driver.getTitle());
-
-        String titleViaXPath = driver.selectText("/html/head/title");
-        assertEquals("Changed", titleViaXPath);
-
-    	driver.get(javascriptPage);
-    	String currentText = driver.selectText("//div[@id='dynamo']");
-    	assertEquals("What's for dinner?", currentText);
-        driver.selectElement("link=Update a div").click();
-
-        String newText = driver.selectText("//div[@id='dynamo']");
-        assertEquals("Fish and chips!", newText);
-    }
-
     public void testShouldIssueMouseDownEvents() {
         driver.get(javascriptPage);
         driver.selectElement("//div[@id='mousedown']").click();

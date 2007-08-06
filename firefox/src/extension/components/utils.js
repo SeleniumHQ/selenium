@@ -22,11 +22,11 @@ Utils.getServer = function() {
 }
 
 Utils.getBrowser = function(context) {
-    return fxbrowser;
+    return context.fxbrowser;
 };
 
 Utils.getDocument = function(context) {
-    return fxdocument;
+    return context.fxdocument;
 };
 
 function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
@@ -41,8 +41,6 @@ function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
 			textSoFar = "";
 			var bits = getTextFromNode(child, toReturn, "", true);
 			toReturn += bits[1];
-			// dump("bits[0] " + bits[0] + "\n");
-			// dump("bits[1] " + bits[1] + "\n");
 			continue;
 		}
 
@@ -77,7 +75,7 @@ function isBlockLevel(node) {
 
 	try {
 		// Should we think about getting hold of the current document?
-		return "block" == document.defaultView.getComputedStyle(node, null).getPropertyValue("display");
+		return "block" == node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue("display");
 	} catch (e) {
 		return false;
 	}
@@ -108,27 +106,6 @@ Utils.getText = function(element) {
 	return text.slice(0, index+1);
 };
 
-/*
-Utils.getText = function(element, stripSpaces) {
-    var nodes = element.childNodes;
-    var str = ""
-    for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeName == "#text") {
-			var text = nodes[i].nodeValue;
-			text = text.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
-			if (stripSpaces) {
-				text = text.replace(/\s+/g, " ");
-			}
-            str += text;
-        } else if ("PRE" == nodes[i].tagName){
-			str += Utils.getText(nodes[i], false);
-		} else {
-            str += Utils.getText(nodes[i], true);
-        }
-    }
-    return str;
-};
-*/
 Utils.addToKnownElements = function(element, context) {
     var doc = Utils.getDocument(context);
     if (!doc.fxdriver_elements) {

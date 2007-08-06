@@ -3,6 +3,7 @@ package com.thoughtworks.webdriver.ie;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
 public class InternetExplorerElement implements WebElement {
@@ -15,7 +16,7 @@ public class InternetExplorerElement implements WebElement {
 
 	protected static native InternetExplorerElement createInternetExplorerElement(long ieWrapper, ElementNode node);
 	
-	public native void click();
+	public native WebDriver click();
 
 	public native String getAttribute(String name);
 
@@ -29,15 +30,15 @@ public class InternetExplorerElement implements WebElement {
 
 	public native String getValue();
 
-	public native void setValue(String value);
+	public native WebDriver setValue(String value);
 	
 	public native boolean isEnabled();
 
 	public native boolean isSelected();
 
-	public native void setSelected();
+	public native WebDriver setSelected();
 
-	public native void submit();
+	public native WebDriver submit();
 
 	public native boolean toggle();
 

@@ -1,31 +1,32 @@
 package com.thoughtworks.webdriver.firefox;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class FirefoxWebElement implements WebElement {
-    private final ExtensionConnection extension;
-    private final Context context;
+    private final FirefoxDriver parent;
     private final String elementId;
 
-    public FirefoxWebElement(ExtensionConnection extension, Context context, String elementId) {
-        this.extension = extension;
-        this.context = context;
-        this.elementId = elementId;
+    public FirefoxWebElement(FirefoxDriver parent, String elementId) {
+        this.parent = parent;
+		this.elementId = elementId;
     }
 
-    public void click() {
-        sendMessage("click", elementId);
+    public WebDriver click() {
+        parent.sendMessage("click", elementId);
+        return parent.findActiveDriver();
     }
 
-    public void submit() {
-        sendMessage("submitElement", elementId);
+    public WebDriver submit() {
+        parent.sendMessage("submitElement", elementId);
+        return parent.findActiveDriver();
     }
 
     public String getValue() {
-        String result = sendMessage("getElementValue", elementId);
+        String result = parent.sendMessage("getElementValue", elementId);
         String[] parts = result.split("\n");
         if (!"OK".equals(parts[0]))
         	return null;
@@ -35,12 +36,13 @@ public class FirefoxWebElement implements WebElement {
         return "";
     }
 
-    public void setValue(String value) {
-        sendMessage("setElementValue", elementId + " " + value);
+    public WebDriver setValue(String value) {
+        parent.sendMessage("setElementValue", elementId + " " + value);
+        return parent.findActiveDriver();
     }
 
     public String getAttribute(String name) {
-        String result = sendMessage("getElementAttribute", elementId + " " + name);
+        String result = parent.sendMessage("getElementAttribute", elementId + " " + name);
         String[] parts = result.split("\n");
         if (!"OK".equals(parts[0]))
         	return null;
@@ -51,7 +53,7 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public boolean toggle() {
-        String response = sendMessage("toggleElement", elementId);
+        String response = parent.sendMessage("toggleElement", elementId);
         if (response.length() != 0) {
         	throw new UnsupportedOperationException(response);
         }
@@ -59,15 +61,16 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public boolean isSelected() {
-        String value = sendMessage("getElementSelected", elementId);
+        String value = parent.sendMessage("getElementSelected", elementId);
         return Boolean.parseBoolean(value);
     }
 
-    public void setSelected() {
-        String response = sendMessage("setElementSelected", elementId);
+    public WebDriver setSelected() {
+        String response = parent.sendMessage("setElementSelected", elementId);
         if (!"".equals(response)) {
             throw new UnsupportedOperationException(response);
         }
+        return parent.findActiveDriver();
     }
 
     public boolean isEnabled() {
@@ -76,22 +79,17 @@ public class FirefoxWebElement implements WebElement {
     }
 
     public String getText() {
-        return sendMessage("getElementText", elementId);
+        return parent.sendMessage("getElementText", elementId);
     }
 
     public List getChildrenOfType(String tagName) {
-        String response = sendMessage("getElementChildren", elementId + " " + tagName);
+        String response = parent.sendMessage("getElementChildren", elementId + " " + tagName);
         String[] ids = response.split(" ");
 
         ArrayList children = new ArrayList();
         for (int i = 0; i < ids.length; i++)
-            children.add(new FirefoxWebElement(extension, context, ids[i]));
+            children.add(new FirefoxWebElement(parent, ids[i]));
 
         return children;
-    }
-
-    private String sendMessage(String methodName, String argument) {
-        Response response = extension.sendMessageAndWaitForResponse(methodName, context, argument);
-        return response.getResponseText();
     }
 }

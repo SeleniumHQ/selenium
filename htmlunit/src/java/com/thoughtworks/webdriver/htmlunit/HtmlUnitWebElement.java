@@ -36,51 +36,56 @@ import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.thoughtworks.webdriver.NoSuchElementException;
+import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
 public class HtmlUnitWebElement implements WebElement {
+	private final HtmlUnitDriver parent;
 	private final HtmlElement element;
 	private final static char nbspChar = (char) 160;
 	private final static String[] blockLevelsTagNames = 
 		{ "p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript", 
 		  "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br" };
 	
-	public HtmlUnitWebElement(HtmlElement element) {
+	
+	public HtmlUnitWebElement(HtmlUnitDriver parent, HtmlElement element) {
+		this.parent = parent;
 		this.element = element;
 	}
 	
-	public void click() {
+	public WebDriver click() {
 		if (!(element instanceof ClickableElement))
-			return;
+			return parent;
 		
 		ClickableElement clickableElement = ((ClickableElement) element);
 		try {
 			clickableElement.click();
+			return parent.findActiveWindow();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public void submit() {
+	public WebDriver submit() {
 		try {
 			if (element instanceof HtmlForm) {
 				((HtmlForm) element).submit();
-				return;
+				return parent.findActiveWindow();
 			} else if (element instanceof HtmlSubmitInput) {
 				((HtmlSubmitInput) element).click();
-				return;
+				return parent.findActiveWindow();
 			} else if (element instanceof HtmlImageInput) {
 				((HtmlImageInput) element).click();
-				return;
+				return parent.findActiveWindow();
 			} else if (element instanceof HtmlInput) {
 				((HtmlInput) element).getEnclosingForm().submit();
-				return;
+				return parent.findActiveWindow();
 			}
 			
-			HtmlForm form = findParentForm();
+			WebElement form = findParentForm();
 			if (form == null) 
 				throw new NoSuchElementException("Unable to find the containing form");
-			form.submit();
+			return form.submit();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -92,13 +97,15 @@ public class HtmlUnitWebElement implements WebElement {
         return getAttribute("value");
 	}
 	
-	public void setValue(String value) {
+	public WebDriver setValue(String value) {
 		if (element instanceof HtmlInput)
 			element.setAttributeValue("value", value);
         else if (element instanceof HtmlTextArea)
             ((HtmlTextArea)element).setText(value);
         else
 			throw new UnsupportedOperationException("You may only set the value of elements that are input elements");
+		
+		return parent.findActiveWindow();
 	}
 	
 	public String getAttribute(String name) {
@@ -157,7 +164,7 @@ public class HtmlUnitWebElement implements WebElement {
 		throw new UnsupportedOperationException("Unable to determine if element is selected. Tag name is: " + element.getTagName());
 	}
 	
-	public void setSelected() {
+	public WebDriver setSelected() {
 		String disabledValue = element.getAttributeValue("disabled");
 		if (disabledValue.length() > 0) {
 			throw new UnsupportedOperationException("You may not select a disabled element");
@@ -169,6 +176,8 @@ public class HtmlUnitWebElement implements WebElement {
 			((HtmlOption) element).setSelected(true);
 		else
 			throw new UnsupportedOperationException("Unable to select element. Tag name is: " + element.getTagName());
+		
+		return parent.findActiveWindow();
 	}
 	
 	public boolean isEnabled() {
@@ -273,7 +282,7 @@ public class HtmlUnitWebElement implements WebElement {
 		 while (allChildren.hasNext()) {
 			 HtmlElement child = (HtmlElement) allChildren.next();
 			 if (tagName.equals(child.getTagName())) {
-				 elements.add(new HtmlUnitWebElement(child));
+				 elements.add(new HtmlUnitWebElement(parent, child));
 			 }
 		 }
 		 return elements;
@@ -283,11 +292,11 @@ public class HtmlUnitWebElement implements WebElement {
         return false;
     }
 
-    private HtmlForm findParentForm() {
+    private WebElement findParentForm() {
 		DomNode current = element;
 		while (!(current == null || current instanceof HtmlForm)) {
 			current = current.getParentNode();
 		}
-		return (HtmlForm) current;
+		return new HtmlUnitWebElement(parent, (HtmlForm) current);
 	}
 }

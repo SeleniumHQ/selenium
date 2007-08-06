@@ -40,9 +40,20 @@ public abstract class BasicDriverTestCase extends TestCase {
                 storedDriver = getDriver();
             }
             driver = storedDriver;
+            
+            WebDriver resultWindow = driver.switchTo().window("result");
+            if (resultWindow != null) {
+            	driver = resultWindow.close();
+            	
+            	// Stored driver may now point to a Bad Window. Make sure that it doesn't :)
+            	storedDriver = driver;
+            }
+            
+            assertNotNull("Driver cannot be null", driver);
         } else {
             driver = getDriver();
         }
+        
         driver.setVisible(true);
 
         startEnvironmentIfNecessary();
@@ -663,17 +674,37 @@ public abstract class BasicDriverTestCase extends TestCase {
     	assertEquals("Success!", hello);
     }
     
-    public void testShouldSwitchFocusToANewWindowWhenItIsOpened() {
+    public void testShouldReturnANewWebDriverWhichSendsCommandsToANewWindowWhenItIsOpened() {
         driver.get(xhtmlTestPage);
 
-        driver.selectElement("link=Open new window").click();
-        assertEquals("We Arrive Here", driver.getTitle());
-
-        driver.switchTo().window(0);
+        WebDriver newWindow = driver.selectElement("link=Open new window").click();
         assertEquals("XHTML Test Page", driver.getTitle());
-
-        driver.switchTo().window(1);
+        assertEquals("We Arrive Here", newWindow.getTitle());
+        
+        driver = driver.switchTo().window("result");
         assertEquals("We Arrive Here", driver.getTitle());
+        
+        driver.switchTo().window("");
+    }
+    
+    public void testMoreCollapsing() {
+    	driver.get(iframePage);
+    	driver.switchTo().frame(0);
+    	
+    	driver.selectElement("id=submitButton").click();
+    	String hello = driver.selectElement("id=greeting").getText();
+    	assertEquals("Success!", hello);
+
+    	driver.get(xhtmlTestPage);
+
+        WebDriver newWindow = driver.selectElement("link=Open new window").click();
+        assertEquals("XHTML Test Page", driver.getTitle());
+        assertEquals("We Arrive Here", newWindow.getTitle());
+        
+        driver = driver.switchTo().window("result");
+        assertEquals("We Arrive Here", driver.getTitle());
+        
+        driver.switchTo().window("");
     }
     
     protected WebDriver driver;

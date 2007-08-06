@@ -11,7 +11,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
 
 	public SeleniumTestEnvironment() {
 		appServer = new Jetty5AppServer();
-		System.out.println(new File("src/web").getAbsolutePath());
+
 		appServer.addAdditionalWebApplication("/selenium-server", new File("src/web").getAbsolutePath());
 		appServer.start();
 	}

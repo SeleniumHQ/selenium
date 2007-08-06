@@ -8,8 +8,12 @@ FirefoxDriver.prototype.click = function(position) {
     // Attach a listener so that we can wait until any page load this causes to complete
     var driver = this;
     var server = this.server;
+	var alreadyReplied = false;
     var clickListener = new WebLoadingListener(this, function(event) {
-        server.respond(driver.context, "click");
+		if (!alreadyReplied) {
+			alreadyReplied = true;
+        	server.respond(driver.context, "click");
+		}
     });
 
     element.focus();
@@ -34,7 +38,10 @@ FirefoxDriver.prototype.click = function(position) {
         var docLoaderService = Utils.getBrowser(driver.context).webProgress
         if (!docLoaderService.isLoadingDocument) {
             WebLoadingListener.removeListener(browser, clickListener);
-            server.respond(driver.context, "click");
+			if (!alreadyReplied) {
+				alreadyReplied = true;
+            	server.respond(driver.context, "click");
+			}
         }
     }
 

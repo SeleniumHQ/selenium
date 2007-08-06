@@ -16,17 +16,20 @@ public class InternetExplorerDriver implements WebDriver {
 		allWrappers.add(currentWrapper);
 	}
 
-	public void close() {
+	public WebDriver close() {
 		currentWrapper.close();
+		return findActiveWindow();
 	}
 
-	public void dumpBody() {
+	public WebDriver dumpBody() {
 		currentWrapper.waitForLoadToComplete();
 		currentWrapper.dumpBody();
+		return findActiveWindow();
 	}
 
-	public void get(String url) {
+	public WebDriver get(String url) {
 		currentWrapper.get(url);
+		return findActiveWindow();
 	}
 
 	public String getCurrentUrl() {
@@ -58,15 +61,20 @@ public class InternetExplorerDriver implements WebDriver {
 		return currentWrapper.getVisible();
 	}
 	
-	public void setVisible(boolean visible) {
+	public WebDriver setVisible(boolean visible) {
 		Iterator iterator = allWrappers.iterator();
 		while (iterator.hasNext()) {
 			IeWrapper wrapper = (IeWrapper) iterator.next();
 			wrapper.setVisible(visible);
 		}
+		return findActiveWindow();
 	}
 
 	public TargetLocator switchTo() {
 		return currentWrapper.switchTo();
+	}
+	
+	private WebDriver findActiveWindow() {
+		throw new UnsupportedOperationException("findActiveWindow");
 	}
 }

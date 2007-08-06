@@ -63,7 +63,7 @@ public interface WebDriver {
 	 * @param url
 	 *            The URL to load. It is best to use a fully qualified URL
 	 */
-	void get(String url);
+	WebDriver get(String url);
 
     /**
      * Get a string representing the current URL that the browser is looking at.
@@ -94,7 +94,7 @@ public interface WebDriver {
 	 * @param visible
 	 *            Set whether or not the browser is visible
 	 */
-	void setVisible(boolean visible);
+	WebDriver setVisible(boolean visible);
 
 	// XPath goodness
 	/**
@@ -150,13 +150,15 @@ public interface WebDriver {
 	 * being used to determine whether the returned text reflects the current
 	 * state of the page or the text last sent by the web server.
 	 */
-	void dumpBody();
+	WebDriver dumpBody();
 
 	/**
 	 * Close the current window, quitting the browser if it's the last window
 	 * currently open.
+	 * 
+	 * @return The currently active WebDriver, or null if there are no windows open
 	 */
-	void close();
+	WebDriver close();
 
     /**
      * Send future commands to a different frame or window.
@@ -179,7 +181,7 @@ public interface WebDriver {
          */
         WebDriver frame(int frameIndex);
 
-        WebDriver window(int windowIndex);
+        WebDriver window(String windowName);
 
         /**
          * Selects either the first frame on the page, or the main document when a page contains iframes.

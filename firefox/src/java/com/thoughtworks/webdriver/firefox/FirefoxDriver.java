@@ -4,16 +4,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.NoSuchElementException;
 
 public class FirefoxDriver implements WebDriver {
     private final ExtensionConnection extension;
-    private Context context = new Context("");
+    private long id;
 
     public FirefoxDriver() {
         extension = new ExtensionConnection("localhost", 7055);
@@ -29,19 +29,27 @@ public class FirefoxDriver implements WebDriver {
                             "To set up a profile for WebDriver, simply start firefox from the command line with the \"profileManager\" switch\n" +
                             "This will look like: firefox -profileManager");
         }
+        
+        fixId();
     }
 
-    public void close() {
-        // TODO Auto-generated method stub
-
+    private FirefoxDriver(ExtensionConnection extension, long id) {
+		this.extension = extension;
+		this.id = id;
+	}
+    
+    public WebDriver close() {
+    	sendMessage("close", null);
+    	return findActiveDriver();
     }
 
-    public void dumpBody() {
-        // TODO Auto-generated method stub
+	public WebDriver dumpBody() {
+		throw new UnsupportedOperationException("dumpBody");
     }
 
-    public void get(String url) {
+    public WebDriver get(String url) {
         sendMessage("get", url);
+        return this;
     }
 
     public String getCurrentUrl() {
@@ -72,7 +80,7 @@ public class FirefoxDriver implements WebDriver {
             throw new NoSuchElementException("Unable to find " + argument);
         }
 
-        return new FirefoxWebElement(extension, context, elementId);
+        return new FirefoxWebElement(this, elementId);
     }
 
     public List selectElements(String xpath) {
@@ -80,7 +88,7 @@ public class FirefoxDriver implements WebDriver {
         String[] ids = returnedIds.split(",");
         List elements = new ArrayList();
         for (int i = 0; i < ids.length; i++) {
-            elements.add(new FirefoxWebElement(extension, context, ids[i]));
+            elements.add(new FirefoxWebElement(this, ids[i]));
         }
         return elements;
 
@@ -91,8 +99,9 @@ public class FirefoxDriver implements WebDriver {
     	return element.getText();
     }
 
-    public void setVisible(boolean visible) {
+    public WebDriver setVisible(boolean visible) {
         // no-op
+    	return this;
     }
 
     public TargetLocator switchTo() {
@@ -156,22 +165,43 @@ public class FirefoxDriver implements WebDriver {
         return extension.isConnected();
     }
 
-    private String sendMessage(String methodName, String argument) {
-        Response response = extension.sendMessageAndWaitForResponse(methodName, context, argument);
-        context = response.getContext();
+    protected WebDriver findActiveDriver() {
+		String response = sendMessage("findActiveDriver", null);
+		long newId = Long.parseLong(response);
+		if (newId == id) {
+			return this;
+		}
+		return new FirefoxDriver(extension, newId);
+	}
+    
+    protected String sendMessage(String methodName, String argument) {
+        Response response = extension.sendMessageAndWaitForResponse(methodName, id, argument);
         return response.getResponseText();
     }
 
+    private void fixId() {
+		String response = sendMessage("findActiveDriver", null);
+		id = Long.parseLong(response);
+	}
+    
     private class FirefoxTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
             sendMessage("switchToFrame", String.valueOf(frameIndex));
             return FirefoxDriver.this;
         }
 
-        public WebDriver window(int windowIndex) {
-            sendMessage("switchToWindow", String.valueOf(windowIndex));
-            return FirefoxDriver.this;
-        }
+        public WebDriver window(String windowName) {
+			String response = sendMessage("switchToWindow", String.valueOf(windowName));
+			if (response == null || "No window found".equals(response)) {
+				return null;
+			}
+			try {
+				FirefoxDriver.this.id = Long.parseLong(response);
+			} catch (NumberFormatException e) {
+				throw new RuntimeException("When switching to window: " + windowName + " ---- " + response);
+			}
+			return FirefoxDriver.this;
+		}
         
         public WebDriver defaultContent() {
         	sendMessage("switchToDefaultContent", null);
