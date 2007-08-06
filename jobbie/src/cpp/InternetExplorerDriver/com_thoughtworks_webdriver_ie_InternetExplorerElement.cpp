@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_createInternetExplorerElement
-  (JNIEnv *env, jclass clazz, jlong ieWrapper, jobject elementNode)
+  (JNIEnv *env, jclass clazz, jlong driverPointer, jobject elementNode)
 {
 	jclass cls = env->GetObjectClass(elementNode);
 	jfieldID fid = env->GetFieldID(cls, "nodePointer", "J");
@@ -31,18 +31,20 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 
 	ElementNode* rawNode = (ElementNode*) value;
 
-	ElementWrapper* wrapper = new ElementWrapper((IeWrapper*) ieWrapper, rawNode->getDomNode());
+	ElementWrapper* wrapper = new ElementWrapper((InternetExplorerDriver*) driverPointer, rawNode->getDomNode());
 	clazz = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerElement");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 	return env->NewObject(clazz, cId, (jlong) wrapper);
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_click
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_click
   (JNIEnv *env, jobject obj) 
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	wrapper->click();
+	InternetExplorerDriver* driver = wrapper->click();
+
+	return newJavaInternetExplorerDriver(env, driver);
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getValue
@@ -56,12 +58,14 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	return toReturn;
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setValue
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setValue
   (JNIEnv *env, jobject obj, jstring newValue)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	wchar_t* converted = (wchar_t*) env->GetStringChars(newValue, NULL);
-	wrapper->setValue(converted);
+	InternetExplorerDriver* driver = wrapper->setValue(converted);
+
+	return newJavaInternetExplorerDriver(env, driver);
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getText
@@ -107,23 +111,25 @@ JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEl
 	return wrapper->isSelected() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setSelected
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setSelected
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	try {
-		wrapper->setSelected();
+		InternetExplorerDriver* driver = wrapper->setSelected();
+		return newJavaInternetExplorerDriver(env, driver);
 	} catch (const char *message) {
 		throwUnsupportedOperationException(env, message);
 	}
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_submit
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_submit
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	try {
-		wrapper->submit();
+		InternetExplorerDriver* driver = wrapper->submit();
+		return newJavaInternetExplorerDriver(env, driver);
 	} catch (const char* message) {
 		throwNoSuchElementException(env, message);
 	}

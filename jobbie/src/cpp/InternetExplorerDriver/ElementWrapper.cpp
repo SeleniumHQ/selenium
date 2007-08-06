@@ -9,7 +9,7 @@ using namespace std;
 #include <comutil.h>
 #include <comdef.h>
 
-ElementWrapper::ElementWrapper(IeWrapper* ie, IHTMLDOMNode* node)
+ElementWrapper::ElementWrapper(InternetExplorerDriver* ie, IHTMLDOMNode* node)
 {
 	node->QueryInterface(__uuidof(IHTMLElement), (void**)&element);
 	this->ie = ie;
@@ -51,7 +51,7 @@ const wchar_t* ElementWrapper::getValue()
 	return this->getAttribute(L"value");
 }
 
-void ElementWrapper::setValue(wchar_t* newValue)
+InternetExplorerDriver* ElementWrapper::setValue(wchar_t* newValue)
 {
 	IDispatch* dispatch;
 	element->get_document(&dispatch);
@@ -106,6 +106,8 @@ void ElementWrapper::setValue(wchar_t* newValue)
 	}
 
 	VariantClear(&reallyNewValue);
+
+	return new InternetExplorerDriver(ie);
 }
 
 bool ElementWrapper::isSelected()
@@ -132,8 +134,10 @@ bool ElementWrapper::isSelected()
 	return false;
 }
 
-void ElementWrapper::setSelected()
+InternetExplorerDriver* ElementWrapper::setSelected()
 {
+	bool currentlySelected = isSelected();
+
 	if (isCheckbox()) {
 		if (!isSelected()) {
 			click();
@@ -145,7 +149,13 @@ void ElementWrapper::setSelected()
 		isChecked.bstrVal = SysAllocString(L"true");
 		element->setAttribute(checked, isChecked, 0);
 		VariantClear(&isChecked);
-		return;
+
+		if (currentlySelected != isSelected()) {
+			IHTMLEventObj* eventObj = newEventObject();
+			fireEvent(eventObj, L"onchange");
+		}
+
+		return new InternetExplorerDriver(ie);
     }
 
 	IHTMLOptionElement* option = NULL;
@@ -153,7 +163,21 @@ void ElementWrapper::setSelected()
 	if (option != NULL) {
 		option->put_selected(VARIANT_TRUE);
 		option->Release();
-		return;
+		
+		// Looks like we'll need to fire the event on the select element and not the option. Assume for now that the parent node is a select. Which is dumb
+		IHTMLDOMNode* node;
+		IHTMLDOMNode* parent;
+		element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&node);
+		node->get_parentNode(&parent);
+		node->Release();
+
+		if (currentlySelected != isSelected()) {
+			IHTMLEventObj* eventObj = newEventObject();
+			fireEvent(parent, eventObj, L"onchange");
+		}
+		parent->Release();
+		
+		return new InternetExplorerDriver(ie);
 	}
 
 	throw "Unable to select element.";
@@ -199,7 +223,7 @@ const wchar_t* ElementWrapper::getTextAreaValue()
 	return toReturn;
 }
 
-void ElementWrapper::click()
+InternetExplorerDriver* ElementWrapper::click()
 {
 	CComQIPtr<IHTMLDOMNode2, &__uuidof(IHTMLDOMNode2)> node = element;
 	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc;
@@ -235,9 +259,11 @@ void ElementWrapper::click()
 	VariantClear(&eventref);
 
 	ie->waitForNavigateToFinish();
+
+	return new InternetExplorerDriver(ie);
 }
 
-void ElementWrapper::submit()
+InternetExplorerDriver* ElementWrapper::submit()
 {
 	IHTMLFormElement* form = NULL;
 	element->QueryInterface(__uuidof(IHTMLFormElement), (void**)&form);
@@ -274,6 +300,7 @@ void ElementWrapper::submit()
 	}
 
 	ie->waitForNavigateToFinish();
+	return new InternetExplorerDriver(ie);
 }
 
 void ElementWrapper::setNode(IHTMLDOMNode* fromNode)
@@ -360,4 +387,40 @@ std::vector<ElementWrapper*>* ElementWrapper::getChildrenWithTagName(const wchar
 
 	elementCollection->Release();
 	return toReturn;
+}
+
+IHTMLEventObj* ElementWrapper::newEventObject() 
+{
+	IDispatch* dispatch;
+	element->get_document(&dispatch);
+	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc = dispatch;
+	dispatch->Release();
+		
+	VARIANT empty;
+	VariantInit(&empty);
+	IHTMLEventObj* eventObject;
+	doc->createEventObject(&empty, &eventObject);
+	return eventObject;
+}
+
+void ElementWrapper::fireEvent(IHTMLEventObj* eventObject, const OLECHAR* eventName) 
+{
+	CComQIPtr<IHTMLDOMNode, &__uuidof(IHTMLDOMNode)> node = element;
+	fireEvent(node, eventObject, eventName);
+}
+
+void ElementWrapper::fireEvent(IHTMLDOMNode* fireOn, IHTMLEventObj* eventObject, const OLECHAR* eventName) 
+{
+	VARIANT eventref;
+	VariantInit(&eventref);
+	V_VT(&eventref) = VT_DISPATCH;
+	V_DISPATCH(&eventref) = eventObject;
+
+	BSTR onChange = SysAllocString(eventName);
+	VARIANT_BOOL cancellable;
+
+	CComQIPtr<IHTMLElement3, &__uuidof(IHTMLElement3)> element3 = fireOn;
+	element3->fireEvent(onChange, &eventref, &cancellable);
+
+	SysFreeString(onChange);
 }

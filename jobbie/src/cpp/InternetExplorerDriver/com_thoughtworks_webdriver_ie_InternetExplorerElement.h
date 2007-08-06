@@ -18,9 +18,9 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
  * Method:    click
- * Signature: ()V
+ * Signature: ()Lcom/thoughtworks/webdriver/WebDriver;
  */
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_click
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_click
   (JNIEnv *, jobject);
 
 /*
@@ -50,9 +50,9 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
  * Method:    setValue
- * Signature: (Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;)Lcom/thoughtworks/webdriver/WebDriver;
  */
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setValue
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setValue
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -74,17 +74,17 @@ JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEl
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
  * Method:    setSelected
- * Signature: ()V
+ * Signature: ()Lcom/thoughtworks/webdriver/WebDriver;
  */
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setSelected
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setSelected
   (JNIEnv *, jobject);
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
  * Method:    submit
- * Signature: ()V
+ * Signature: ()Lcom/thoughtworks/webdriver/WebDriver;
  */
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_submit
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_submit
   (JNIEnv *, jobject);
 
 /*

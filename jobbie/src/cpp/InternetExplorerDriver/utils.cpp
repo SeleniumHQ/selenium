@@ -40,6 +40,14 @@ void startCom()
 	}
 }
 
+jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* driver) 
+{
+	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerDriver");
+	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+
+	return env->NewObject(clazz, cId, (jlong) driver);
+}
+
 const wchar_t* variant2wchar(const VARIANT toConvert) 
 {
 	VARTYPE type = toConvert.vt;

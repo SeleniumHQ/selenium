@@ -687,7 +687,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.switchTo().window("");
     }
     
-    public void testMoreCollapsing() {
+    public void testShouldBeAbleToPerformMultipleActionsOnDifferentDrivers() {
     	driver.get(iframePage);
     	driver.switchTo().frame(0);
     	

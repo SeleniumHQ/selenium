@@ -1,6 +1,6 @@
 #pragma once
-#ifndef IeWrapper_h
-#define IeWrapper_h
+#ifndef InternetExplorerDriver_h
+#define InternetExplorerDriver_h
 
 #include <Exdisp.h>
 #include <mshtml.h>
@@ -10,11 +10,12 @@
 class ElementWrapper;
 class IeEventSink;
 
-class IeWrapper
+class InternetExplorerDriver
 {
 public:
-	IeWrapper();
-	~IeWrapper();
+	InternetExplorerDriver();
+	InternetExplorerDriver(InternetExplorerDriver* other);
+	~InternetExplorerDriver();
 
 	bool getVisible();
 	void setVisible(bool isShown);

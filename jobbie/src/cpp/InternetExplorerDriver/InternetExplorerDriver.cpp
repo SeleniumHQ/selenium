@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "IeWrapper.h"
+#include "InternetExplorerDriver.h"
 #include "utils.h"
 #include <exdispid.h>
 #include <iostream>
@@ -17,31 +17,36 @@ using namespace std;
 long invokeCount = 0;
 long queryCount = 0;
 
-IeWrapper::IeWrapper()
+InternetExplorerDriver::InternetExplorerDriver()
 {
-	if (!SUCCEEDED(CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_LOCAL_SERVER, IID_IWebBrowser2, (void**)&ie))) 
+	if (!SUCCEEDED(CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_ALL, IID_IWebBrowser2, (void**)&ie))) 
 	{
 		throw "Cannot create InternetExplorer instance";
 	}
 
 	currentFrame = 0;
 
-///	sink = new IeEventSink(ie);
+//	sink = new IeEventSink(ie);
 }
 
-IeWrapper::~IeWrapper()
+InternetExplorerDriver::InternetExplorerDriver(InternetExplorerDriver *other)
 {
-//	delete sink;	
+	this->ie = other->ie;
 }
 
-bool IeWrapper::getVisible()
+InternetExplorerDriver::~InternetExplorerDriver()
+{
+//	delete sink;
+}
+
+bool InternetExplorerDriver::getVisible()
 {
 	VARIANT_BOOL visible;
 	ie->get_Visible(&visible);
 	return visible == VARIANT_TRUE;
 }
 
-void IeWrapper::setVisible(bool isVisible) 
+void InternetExplorerDriver::setVisible(bool isVisible) 
 {
 	if (isVisible)
 		ie->put_Visible(VARIANT_TRUE);
@@ -49,7 +54,7 @@ void IeWrapper::setVisible(bool isVisible)
 		ie->put_Visible(VARIANT_FALSE);
 }
 
-const wchar_t* IeWrapper::getCurrentUrl() 
+const wchar_t* InternetExplorerDriver::getCurrentUrl() 
 {
 	CComQIPtr<IHTMLDocument2, &__uuidof(IHTMLDocument2)> doc = getDocument();
 	CComBSTR url;
@@ -58,7 +63,7 @@ const wchar_t* IeWrapper::getCurrentUrl()
 	return bstr2wchar(url);
 }
 
-const wchar_t* IeWrapper::getTitle() 
+const wchar_t* InternetExplorerDriver::getTitle() 
 {
 	CComBSTR title;
 	IHTMLDocument2 *doc = getDocument();
@@ -68,7 +73,7 @@ const wchar_t* IeWrapper::getTitle()
 	return bstr2wchar(title);
 }
 
-void IeWrapper::get(const wchar_t *url)
+void InternetExplorerDriver::get(const wchar_t *url)
 {
 	CComVariant spec(url);
 	CComVariant dummy;
@@ -78,7 +83,7 @@ void IeWrapper::get(const wchar_t *url)
 	waitForNavigateToFinish();
 }
 
-ElementWrapper* IeWrapper::selectElementById(const wchar_t *elementId) 
+ElementWrapper* InternetExplorerDriver::selectElementById(const wchar_t *elementId) 
 {
 	IHTMLDocument3 *doc = getDocument3();
 	IHTMLElement* element = NULL;
@@ -99,7 +104,7 @@ ElementWrapper* IeWrapper::selectElementById(const wchar_t *elementId)
 	throw "Cannot find element";
 }
 
-ElementWrapper* IeWrapper::selectElementByLink(const wchar_t *elementLink)
+ElementWrapper* InternetExplorerDriver::selectElementByLink(const wchar_t *elementLink)
 {
 	IHTMLDocument2 *doc = getDocument();
 	IHTMLElementCollection* linkCollection;
@@ -148,7 +153,7 @@ ElementWrapper* IeWrapper::selectElementByLink(const wchar_t *elementLink)
     throw "Cannot find element";
 }
 
-void IeWrapper::waitForNavigateToFinish() 
+void InternetExplorerDriver::waitForNavigateToFinish() 
 {
 	VARIANT_BOOL busy;
 	ie->get_Busy(&busy);
@@ -203,7 +208,7 @@ void IeWrapper::waitForNavigateToFinish()
 	doc->Release();
 }
 
-void IeWrapper::waitForDocumentToComplete(IHTMLDocument2* doc)
+void InternetExplorerDriver::waitForDocumentToComplete(IHTMLDocument2* doc)
 {
 	BSTR state;
 	doc->get_readyState(&state);
@@ -221,12 +226,12 @@ void IeWrapper::waitForDocumentToComplete(IHTMLDocument2* doc)
 	delete currentState;
 }
 
-void IeWrapper::switchToFrame(int frameIndex) 
+void InternetExplorerDriver::switchToFrame(int frameIndex) 
 {
 	currentFrame = frameIndex;
 }
 
-IHTMLDocument2* IeWrapper::getDocument() 
+IHTMLDocument2* InternetExplorerDriver::getDocument() 
 {
 	CComPtr<IDispatch> dispatch = NULL;
 	ie->get_Document(&dispatch);
@@ -262,7 +267,7 @@ IHTMLDocument2* IeWrapper::getDocument()
 	return doc;
 }
 
-IHTMLDocument3* IeWrapper::getDocument3() 
+IHTMLDocument3* InternetExplorerDriver::getDocument3() 
 {
 	IHTMLDocument2* doc2 = getDocument();
 	IHTMLDocument3* toReturn;
@@ -276,46 +281,19 @@ IeEventSink::IeEventSink(IWebBrowser2* ie)
 	this->ie = ie;
 	this->ie->AddRef();
 
-	HRESULT hr = AtlAdvise(this->ie, (IUnknown*) this, DIID_DWebBrowserEvents2, &eventSinkCookie);
-/*
-	IConnectionPointContainer* pCPContainer;
- 
-        // Step 1: Get a pointer to the connection point container
-        HRESULT hr = ie->QueryInterface(IID_IConnectionPointContainer, 
-                                           (void**)&pCPContainer);
-        if (SUCCEEDED(hr))
-        {
-           // m_pConnectionPoint is defined like this:
-           IConnectionPoint* m_pConnectionPoint;
- 
-           // Step 2: Find the connection point
-           hr = pCPContainer->FindConnectionPoint(
-                         DIID_DWebBrowserEvents2, &m_pConnectionPoint);
-           if (SUCCEEDED(hr))
-           {
-              // Step 3: Advise
-              hr = m_pConnectionPoint->Advise(this, &eventSinkCookie);
-              if (FAILED(hr))
-              {
-                 cout <<  "Failed to Advise" << endl;
-			  }
-           }
- 
-           pCPContainer->Release();
-        }
-		*/
+//	HRESULT hr = AtlAdvise(this->ie, (IUnknown*) this, DIID_DWebBrowserEvents2, &eventSinkCookie);
 }
 
 IeEventSink::~IeEventSink() 
 {
-	AtlUnadvise(ie, DIID_DWebBrowserEvents2, eventSinkCookie);
+//	AtlUnadvise(ie, DIID_DWebBrowserEvents2, eventSinkCookie);
 }
 
 // IUnknown methods
 STDMETHODIMP IeEventSink::QueryInterface(REFIID interfaceId, void **pointerToObj)
 {
 	queryCount++;
-	cout << "Querying interface: " << queryCount << endl;
+//	cout << "Querying interface: " << queryCount << endl;
     if (interfaceId == IID_IUnknown)
     {
         *pointerToObj = (IUnknown *)this;
@@ -334,13 +312,11 @@ STDMETHODIMP IeEventSink::QueryInterface(REFIID interfaceId, void **pointerToObj
 
 STDMETHODIMP_(ULONG) IeEventSink::AddRef()
 {
-//	cout << "AddRef" << endl;
     return 1;
 }
 
 STDMETHODIMP_(ULONG) IeEventSink::Release()
 {
-//	cout << "Release" << endl;
     return 1;
 }
 
@@ -355,7 +331,7 @@ STDMETHODIMP IeEventSink::Invoke(DISPID dispidMember,
                                      UINT* puArgErr)
 {
 	invokeCount++;
-	cout << "Invoking: " << invokeCount << endl;
+//	cout << "Invoking: " << invokeCount << endl;
 
 	if (!pDispParams)
 		return E_INVALIDARG;
@@ -365,14 +341,15 @@ STDMETHODIMP IeEventSink::Invoke(DISPID dispidMember,
 			break;
 
 		case DISPID_BEFORENAVIGATE2:
-			cout << "Before navigate" << endl;
+//			cout << "Before navigate" << endl;
 			break;
 
 		case DISPID_NAVIGATECOMPLETE2:
-			cout << "Navigation complete" << endl;
+//			cout << "Navigation complete" << endl;
+			break;
 
 		case DISPID_NEWWINDOW2:
-			cout << "New window event detected" << endl;
+//			cout << "New window event detected" << endl;
 			// Check the argument's type
 			/*
 			if (pDispParams->rgvarg[0].vt == (VT_BYREF|VT_VARIANT)) {
