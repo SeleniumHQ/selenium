@@ -1481,10 +1481,9 @@ Selenium.prototype.findEffectiveStyle = function(element) {
     if (element.style == undefined) {
         return undefined; // not a styled element
     }
-    var window = this.browserbot.getCurrentWindow();
     if (window.getComputedStyle) {
         // DOM-Level-2-CSS
-        return window.getComputedStyle(element, null);
+        return this.browserbot.getCurrentWindow().getComputedStyle(element, null);
     }
     if (element.currentStyle) {
         // non-standard IE alternative
