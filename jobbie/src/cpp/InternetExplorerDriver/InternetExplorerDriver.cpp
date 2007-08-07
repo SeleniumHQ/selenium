@@ -24,7 +24,7 @@ InternetExplorerDriver::InternetExplorerDriver()
 		throw "Cannot create InternetExplorer instance";
 	}
 
-	currentFrame = 0;
+	currentFrame = -1;
 
 //	sink = new IeEventSink(ie);
 }
@@ -79,7 +79,7 @@ void InternetExplorerDriver::get(const wchar_t *url)
 	CComVariant dummy;
 
 	ie->Navigate2(&spec, &dummy, &dummy, &dummy, &dummy);
-	currentFrame = 0;
+	currentFrame = -1;
 	waitForNavigateToFinish();
 }
 
@@ -169,7 +169,11 @@ void InternetExplorerDriver::waitForNavigateToFinish()
 		ie->get_ReadyState(&readyState);
 	}
 
-	IHTMLDocument2* doc = getDocument();
+	CComPtr<IDispatch> dispatch = NULL;
+	ie->get_Document(&dispatch);
+	IHTMLDocument2* doc = NULL;
+	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
+	
 	waitForDocumentToComplete(doc);
 
 	IHTMLFramesCollection2* frames = NULL;
@@ -243,12 +247,28 @@ IHTMLDocument2* InternetExplorerDriver::getDocument()
 
 	long length = 0;
 	frames->get_length(&length);
-	
+
 	if (!length) {
+		currentFrame = -1;
 		return doc;
 	}
 
-	doc->Release();
+	if (currentFrame == -1) {
+		IHTMLDocument3* doc3 = getDocument3();
+		IHTMLElementCollection* bodyTags;
+
+		BSTR bodyTagName = SysAllocString(L"BODY");
+		doc3->getElementsByTagName(bodyTagName, &bodyTags);
+		SysFreeString(bodyTagName);
+
+		long numberOfBodyTags = 0;
+		bodyTags->get_length(&numberOfBodyTags);
+	
+		if (numberOfBodyTags)
+			return doc;
+
+		currentFrame = 0;
+	}
 
 	VARIANT index;
 	VariantInit(&index);
@@ -257,23 +277,25 @@ IHTMLDocument2* InternetExplorerDriver::getDocument()
 	VARIANT result;
 	VariantInit(&result);
 	frames->item(&index, &result);
-
 	VariantClear(&index);
+
 	CComQIPtr<IHTMLWindow2, &__uuidof(IHTMLWindow2)> win;
 	win = result.pdispVal;
 	VariantClear(&result);
 
+	// Clear the reference to the top frame's doc reference and return the frame's
+	doc->Release();
 	win->get_document(&doc);
 	return doc;
 }
 
 IHTMLDocument3* InternetExplorerDriver::getDocument3() 
 {
-	IHTMLDocument2* doc2 = getDocument();
-	IHTMLDocument3* toReturn;
-	doc2->QueryInterface(__uuidof(IHTMLDocument3), (void**)&toReturn);
-	doc2->Release();
-	return toReturn;
+	CComPtr<IDispatch> dispatch = NULL;
+	ie->get_Document(&dispatch);
+	IHTMLDocument3* doc = NULL;
+	dispatch->QueryInterface(__uuidof(IHTMLDocument3), (void**)&doc);
+	return doc;
 }
 
 IeEventSink::IeEventSink(IWebBrowser2* ie) 
