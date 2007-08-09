@@ -860,10 +860,7 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     var testWindow = this.currentWindow;
     if (!doNotModify) {
         this._modifyWindow(testWindow);
-        if (!this.proxyInjectionMode) {
-            // In proxy injection mode, have to avoid logging during getCurrentWindow to avoid an infinite loop
-            LOG.debug("getCurrentWindow newPageLoaded = false");
-        }
+        LOG.debug("getCurrentWindow newPageLoaded = false");
         this.newPageLoaded = false;
     }
     testWindow = this._handleClosedSubFrame(testWindow, doNotModify);
