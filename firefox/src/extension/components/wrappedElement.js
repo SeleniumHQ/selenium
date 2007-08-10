@@ -1,7 +1,7 @@
-FirefoxDriver.prototype.click = function(position) {
+FirefoxDriver.prototype.click = function(respond, position) {
     var element = Utils.getElementAt(position, this.context);
     if (!element) {
-        this.server.respond(this.context, "click");
+        respond(this.context, "click");
         return;
     }
 
@@ -12,7 +12,7 @@ FirefoxDriver.prototype.click = function(position) {
     var clickListener = new WebLoadingListener(this, function(event) {
 		if (!alreadyReplied) {
 			alreadyReplied = true;
-        	server.respond(driver.context, "click");
+        	respond(driver.context, "click");
 		}
     });
 
@@ -40,7 +40,7 @@ FirefoxDriver.prototype.click = function(position) {
             WebLoadingListener.removeListener(browser, clickListener);
 			if (!alreadyReplied) {
 				alreadyReplied = true;
-            	server.respond(driver.context, "click");
+            	respond(driver.context, "click");
 			}
         }
     }
@@ -48,36 +48,36 @@ FirefoxDriver.prototype.click = function(position) {
     Utils.getBrowser(this.context).contentWindow.setTimeout(checkForLoad, 50);
 };
 
-FirefoxDriver.prototype.getElementText = function(elementId) {
+FirefoxDriver.prototype.getElementText = function(respond, elementId) {
     var element = Utils.getElementAt(elementId, this.context);
 	 if (element.tagName == "TITLE") {
-		this.server.respond(this.context, "getElementText", Utils.getBrowser(this.context).contentTitle);
+		respond(this.context, "getElementText", Utils.getBrowser(this.context).contentTitle);
 	} else {
-    	this.server.respond(this.context, "getElementText", Utils.getText(element, true));
+    	respond(this.context, "getElementText", Utils.getText(element, true));
 	}
 }
 
-FirefoxDriver.prototype.getElementValue = function(value) {
+FirefoxDriver.prototype.getElementValue = function(respond, value) {
     var element = Utils.getElementAt(value, this.context);
     if (element.tagName.toLowerCase() == "textarea") {
-        this.server.respond(this.context, "getElementValue", "OK\n" + element.value);
+        respond(this.context, "getElementValue", "OK\n" + element.value);
 		return 
 	}
 
 	if (element["value"]) {
-		this.server.respond(this.context, "getElementValue", "OK\n" + element.value);
+		respond(this.context, "getElementValue", "OK\n" + element.value);
 		return;
 	}
 
 	if (element.hasAttribute("value")) {
-		this.server.respond(this.context, "getElementValue", "OK\n" + element.getAttribute("value"));
+		respond(this.context, "getElementValue", "OK\n" + element.getAttribute("value"));
 		return;
 	}
 		
-	this.server.respond(this.context, "getElementValue", "No match\n");
+	respond(this.context, "getElementValue", "No match\n");
 }
 
-FirefoxDriver.prototype.setElementValue = function(value) {
+FirefoxDriver.prototype.setElementValue = function(respond, value) {
     var spaceIndex = value.indexOf(" ");
     var element = Utils.getElementAt(value.substring(0, spaceIndex), this.context);
     spaceIndex = value.indexOf(" ", spaceIndex);
@@ -85,10 +85,10 @@ FirefoxDriver.prototype.setElementValue = function(value) {
 
     Utils.type(this.context, element, newValue);
 
-    this.server.respond(this.context, "setElementValue");
+    respond(this.context, "setElementValue");
 }
 
-FirefoxDriver.prototype.getElementAttribute = function(value) {
+FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
     var spaceIndex = value.indexOf(" ");
     var element = Utils.getElementAt(value.substring(0, spaceIndex), this.context);
     spaceIndex = value.indexOf(" ", spaceIndex);
@@ -105,45 +105,44 @@ FirefoxDriver.prototype.getElementAttribute = function(value) {
             response = response.toLowerCase() == "checked" || response.toLowerCase() == "true";
         }
 
-        this.server.respond(this.context, "getElementAttribute", "OK\n" + response);
+        respond(this.context, "getElementAttribute", "OK\n" + response);
         return;
     }
 
     attributeName = attributeName.toLowerCase();
     if (attributeName == "disabled") {
-        this.server.respond(this.context, "getElementAttribute", "OK\n" + element.disabled);
+        respond(this.context, "getElementAttribute", "OK\n" + element.disabled);
         return;
     } else if (attributeName == "checked" && element.tagName.toLowerCase() == "input") {
-        this.server.respond(this.context, "getElementAttribute", "OK\n" + element.checked);
+        respond(this.context, "getElementAttribute", "OK\n" + element.checked);
         return;
     } else if (attributeName == "selected" && element.tagName.toLowerCase() == "option") {
-        this.server.respond(this.context, "getElementAttribute", "OK\n" + element.selected);
+        respond(this.context, "getElementAttribute", "OK\n" + element.selected);
         return;
     }
 
-    this.server.respond(this.context, "getElementAttribute", "No match");
+    respond(this.context, "getElementAttribute", "No match");
 }
 
-FirefoxDriver.prototype.submitElement = function(elementId) {
+FirefoxDriver.prototype.submitElement = function(respond, elementId) {
     var element = Utils.getElementAt(elementId, this.context);
 
     var submitElement = Utils.findForm(element);
     if (submitElement) {
-        var server = this.server;
         var driver = this;
         new WebLoadingListener(this, function(event) {
-            server.respond(driver.context, "submitElement");
+            respond(driver.context, "submitElement");
         });
         if (submitElement["submit"])
             submitElement.submit();
         else
             submitElement.click();
     } else {
-        server.respond(this.context, "submitElement");
+        respond(this.context, "submitElement");
     }
 }
 
-FirefoxDriver.prototype.getElementChildren = function(elementIdAndTagName) {
+FirefoxDriver.prototype.getElementChildren = function(respond, elementIdAndTagName) {
     var parts = elementIdAndTagName.split(" ");
     var element = Utils.getElementAt(parts[0], this.context);
 
@@ -152,10 +151,10 @@ FirefoxDriver.prototype.getElementChildren = function(elementIdAndTagName) {
     for (var i = 0; i < children.length; i++) {
         response += Utils.addToKnownElements(children[i], this.context) + " ";
     }
-    this.server.respond(this.context, "getElementChildren", response);
+    respond(this.context, "getElementChildren", response);
 }
 
-FirefoxDriver.prototype.getElementSelected = function(elementId) {
+FirefoxDriver.prototype.getElementSelected = function(respond, elementId) {
     var element = Utils.getElementAt(elementId, this.context);
     var selected = false;
 
@@ -171,17 +170,17 @@ FirefoxDriver.prototype.getElementSelected = function(elementId) {
         }
     } catch(e) {}
 
-    this.server.respond(this.context, "getElementSelected", selected);
+    respond(this.context, "getElementSelected", selected);
 }
 
-FirefoxDriver.prototype.setElementSelected = function(elementId) {
+FirefoxDriver.prototype.setElementSelected = function(respond, elementId) {
     var element = Utils.getElementAt(elementId, this.context);
     var wasSet = "You may not select an unselectable element";
 
 	try {
 		var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
 		if (inputElement.disabled) {
-			this.server.respond(this.context, "setElementSelected", "You may not select a disabled element");
+			respond(this.context, "setElementSelected", "You may not select a disabled element");
 			return;
 		}
 	} catch(e) {
@@ -207,10 +206,10 @@ FirefoxDriver.prototype.setElementSelected = function(elementId) {
 		}
     } catch(e) {}
 
-    this.server.respond(this.context, "setElementSelected", wasSet);
+    respond(this.context, "setElementSelected", wasSet);
 }
 
-FirefoxDriver.prototype.toggleElement = function(elementId) {
+FirefoxDriver.prototype.toggleElement = function(respond, elementId) {
 	var element = Utils.getElementAt(elementId, this.context);
 	
 	try {
@@ -218,7 +217,7 @@ FirefoxDriver.prototype.toggleElement = function(elementId) {
 		if (checkbox.type == "checkbox") {
 			checkbox.checked = !checkbox.checked;
 			Utils.fireHtmlEvent(this.context, checkbox, "change");
-			this.server.respond(this.context, "toggleElement");
+			respond(this.context, "toggleElement");
 			return;
 		}
 	} catch(e) {}
@@ -235,10 +234,10 @@ FirefoxDriver.prototype.toggleElement = function(elementId) {
 		if (select && select.multiple) {
 			option.selected = !option.selected;
 			Utils.fireHtmlEvent(this.context, option, "change");
-			this.server.respond(this.context, "toggleElement");
+			respond(this.context, "toggleElement");
 			return;
 		}
 	} catch(e) {}
 	
-	this.server.respond(this.context, "toggleElement", "You may only toggle an element that is either a checkbox or an option in a select that allows multiple selections");
+	respond(this.context, "toggleElement", "You may only toggle an element that is either a checkbox or an option in a select that allows multiple selections");
 };

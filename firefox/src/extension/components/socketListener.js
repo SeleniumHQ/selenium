@@ -1,12 +1,25 @@
-function SocketListener(inputStream)
+function SocketListener(server, transport)
 {
-    this.inputStream = inputStream;
+	var rawOutStream = transport.openOutputStream(0, 0, 0);
+	
+	var charset = "UTF-8"; 
+	this.outstream = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+	this.outstream.init(rawOutStream, charset, 0, 0x0000);
+
+    this.stream = transport.openInputStream(0, 0, 0);
+    this.inputStream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
+    this.inputStream.init(this.stream);
+
+	var pump = Components.classes["@mozilla.org/network/input-stream-pump;1"].createInstance(Components.interfaces.nsIInputStreamPump);
+    pump.init(this.stream, -1, -1, 0, 0, false);
+    pump.asyncRead(this, null);
+	
     this.linesLeft = "";
     this.data = "";
     this.command = "";
     this.step = 0;
 	this.wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
-	this.server = Utils.getServer();
+	this.server = server;
 }
 
 SocketListener.prototype.onStartRequest = function(request, context)
@@ -33,8 +46,8 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
                 this.linesLeft += incoming[i];
             } else {
                 this.step++;
-                this.linesLeft = this.linesLeft - 0;
                 // Convert it to a number
+                this.linesLeft = this.linesLeft - 0;
 
                 if (this.linesLeft == 0) {
                     this.executeCommand();
@@ -55,6 +68,21 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
 
 SocketListener.prototype.executeCommand = function() {
 	var fxbrowser, fxdocument;
+	var self = this;
+	
+	var respond = function(context, method, response) {
+	    var output = method + " ";
+
+	    if (response == undefined) {
+	        output += "1\n" + context + "\n";
+	    } else {
+	        var length = response["split"] ? response.split("\n").length + 1 : 2;
+	        output += length + "\n" + context + "\n" + response + "\n";
+	    }
+
+	    self.outstream.writeString(output, output.length);
+	    self.outstream.flush();
+	};
 	
 	if (!this.driverPrototype) 
 		this.driverPrototype = FirefoxDriver.prototype;
@@ -68,8 +96,8 @@ SocketListener.prototype.executeCommand = function() {
 		this.data = "";
 		this.linesLeft = 0;
 		this.step = 0;
-		             
-		this[command](bits[1]);
+		          
+		this[command](respond, bits[1]);
 	} else if (this.driverPrototype[this.command]) {
         var bits = this.data.split("\n", 2);
 		var id = bits[0] - 0;
@@ -134,11 +162,11 @@ SocketListener.prototype.executeCommand = function() {
                 info.driver.window.setTimeout(wait, 10, info);
             } else {
                 try {
-                    info.driver[info.command](info.bits[1] ? info.bits[1] : undefined);
+                    info.driver[info.command](respond, info.bits[1] ? info.bits[1] : undefined);
                 } catch (e) {
                     info.driver.window.dump("Exception caught: " + info.command + "(" + info.data + ")\n");
                     info.driver.window.dump(e + "\n");
-                    info.driver.server.respond(info.driver.context, info.command);
+                    respond(info.driver.context, info.command);
                 }
             }
         }
@@ -149,19 +177,19 @@ SocketListener.prototype.executeCommand = function() {
 		this.data = "";
 		this.linesLeft = 0;
 		this.step = 0;
-        this.server.respond(new Context(), this.command);
+        respond(new Context(), this.command);
     }
-}
+};
 
 SocketListener.prototype.isReadingCommand = function() {
     return this.step == 0;
-}
+};
 
 SocketListener.prototype.isReadingLineCount = function() {
     return this.step == 1;
-}
+};
 
-SocketListener.prototype.switchToWindow = function(windowId) {
+SocketListener.prototype.switchToWindow = function(respond, windowId) {
 	var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
 	var allWindows = wm.getEnumerator(null);
 
@@ -171,17 +199,17 @@ SocketListener.prototype.switchToWindow = function(windowId) {
 			win.focus();
 			var driver = win.top.fxdriver;
 			if (!driver)
-				this.server.respond(this.context, "switchToWindow", "No driver found attached to top window!");
-			this.server.respond(this.context, "switchToWindow", driver.id);
+				respond(this.context, "switchToWindow", "No driver found attached to top window!");
+			respond(this.context, "switchToWindow", driver.id);
 			return;
 		}
 	}
 
-	this.server.respond(this.context, "switchToWindow", "No window found");
+	respond(this.context, "switchToWindow", "No window found");
 }
 
 
-SocketListener.prototype.findActiveDriver = function() {
+SocketListener.prototype.findActiveDriver = function(respond) {
 	var win = this.wm.getMostRecentWindow("navigator:browser");
 
 	var driver = win.fxdriver;
@@ -189,5 +217,5 @@ SocketListener.prototype.findActiveDriver = function() {
 	if (!driver)
 		dump("No drivers associated with the window\n");  // What else can we do?
 
-	driver.server.respond(this.context, "findActiveDriver", driver.id);
+	respond(this.context, "findActiveDriver", driver.id);
 }

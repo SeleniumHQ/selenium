@@ -18,20 +18,7 @@ WebDriverServer.prototype.getNextId = function() {
 
 WebDriverServer.prototype.onSocketAccepted = function(socket, transport) {
     try {
-		var rawOutStream = outstream = transport.openOutputStream(0, 0, 0);
-		
-		var charset = "UTF-8"; 
-		this.outstream = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
-		this.outstream.init(rawOutStream, charset, 0, 0x0000);
-
-        this.stream = transport.openInputStream(0, 0, 0);
-	    this.instream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
-        this.instream.init(this.stream);
-
-        var socketListener = new SocketListener(this.instream);
-	    var pump = Components.classes["@mozilla.org/network/input-stream-pump;1"].createInstance(Components.interfaces.nsIInputStreamPump);
-        pump.init(this.stream, -1, -1, 0, 0, false);
-        pump.asyncRead(socketListener, null);
+        var socketListener = new SocketListener(this, transport);
     } catch(e) {
         dump(e);
     }
@@ -48,27 +35,11 @@ WebDriverServer.prototype.startListening = function(port) {
 
 WebDriverServer.prototype.onStopListening = function(socket, status)
 {
-    this.stream.close();
 };
 
 
 WebDriverServer.prototype.close = function()
 {
-    this.instream.close();
-};
-
-WebDriverServer.prototype.respond = function(context, method, response) {
-    var output = method + " ";
-
-    if (response == undefined) {
-        output += "1\n" + context + "\n";
-    } else {
-        var length = response["split"] ? response.split("\n").length + 1 : 2;
-        output += length + "\n" + context + "\n" + response + "\n";
-    }
-
-    this.outstream.writeString(output, output.length);
-    this.outstream.flush();
 };
 
 WebDriverServer.prototype.QueryInterface = function(aIID) {

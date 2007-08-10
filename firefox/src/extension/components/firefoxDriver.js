@@ -4,19 +4,19 @@ function FirefoxDriver(server, id) {
 	this.id = id;
 }
 
-FirefoxDriver.prototype.get = function(url) {
+FirefoxDriver.prototype.get = function(respond, url) {
     var self = this;
 	this.context.frameId = "?";
 
     new WebLoadingListener(this, function(event) {
         // TODO: Rescue the URI and response code from the event
         var responseText = "";
-        self.server.respond(self.context, "get", responseText);
+        respond(self.context, "get", responseText);
     });
     Utils.getBrowser(this.context).loadURI(url);
 }
 
-FirefoxDriver.prototype.close = function() {
+FirefoxDriver.prototype.close = function(respond) {
        // Grab all the references we'll need. Once we call close all this might go away
        var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
        var appService = Utils.getService("@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
@@ -42,30 +42,30 @@ FirefoxDriver.prototype.close = function() {
        }
        
        // If we're still running, return
-       server.respond(this.context, "close");
+       respond(this.context, "close");
 }
 
-FirefoxDriver.prototype.getCurrentUrl = function() {
-    this.server.respond(this.context, "getCurrentUrl", Utils.getBrowser(this.context).contentWindow.location);
+FirefoxDriver.prototype.getCurrentUrl = function(respond) {
+    respond(this.context, "getCurrentUrl", Utils.getBrowser(this.context).contentWindow.location);
 }
 
-FirefoxDriver.prototype.title = function() {
+FirefoxDriver.prototype.title = function(respond) {
     var browser = Utils.getBrowser(this.context);
-    this.server.respond(this.context, "title", browser.contentTitle);
+    respond(this.context, "title", browser.contentTitle);
 };
 
-FirefoxDriver.prototype.selectElementUsingXPath = function(xpath) {
+FirefoxDriver.prototype.selectElementUsingXPath = function(respond, xpath) {
     var doc = Utils.getDocument(this.context);
     var result = doc.evaluate(xpath, doc, null, Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     if (result) {
         var index = Utils.addToKnownElements(result, this.context);
-        this.server.respond(this.context, "selectElementUsingXPath", index);
+        respond(this.context, "selectElementUsingXPath", index);
     } else {
-        this.server.respond(this.context, "selectElementUsingXPath");
+        respond(this.context, "selectElementUsingXPath");
     }
 };
 
-FirefoxDriver.prototype.selectElementUsingLink = function(linkText) {
+FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
     var allLinks = Utils.getDocument(this.context).getElementsByTagName("A");
     var index;
     for (var i = 0; i < allLinks.length && !index; i++) {
@@ -75,27 +75,27 @@ FirefoxDriver.prototype.selectElementUsingLink = function(linkText) {
         }
     }
     if (index !== undefined) {
-        this.server.respond(this.context, "selectElementUsingLink", index);
+        respond(this.context, "selectElementUsingLink", index);
     } else {
-        this.server.respond(this.context, "selectElementUsingLink");
+        respond(this.context, "selectElementUsingLink");
     }
 };
 
-FirefoxDriver.prototype.selectElementById = function(id) {
+FirefoxDriver.prototype.selectElementById = function(respond, id) {
 	var doc = Utils.getDocument(this.context);
     var element = doc.getElementById(id);
 
     if (element == null || !element) {
-        this.server.respond(this.context, "selectElementById");
+        respond(this.context, "selectElementById");
         return;
     }
 
     var index = Utils.addToKnownElements(element, this.context);
 
-    this.server.respond(this.context, "selectElementById", index);
+    respond(this.context, "selectElementById", index);
 }
 
-FirefoxDriver.prototype.selectElementsUsingXPath = function(xpath) {
+FirefoxDriver.prototype.selectElementsUsingXPath = function(respond, xpath) {
     var doc = Utils.getDocument(this.context)
     var result = doc.evaluate(xpath, doc, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
     var response = "";
@@ -107,10 +107,10 @@ FirefoxDriver.prototype.selectElementsUsingXPath = function(xpath) {
     }
     // Strip the trailing comma
     response = response.substring(0, response.length - 1);
-    this.server.respond(this.context, "selectElementsUsingXPath", response);
+    respond(this.context, "selectElementsUsingXPath", response);
 };
 
-FirefoxDriver.prototype.switchToFrame = function(frameId) {
+FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
     var browser = Utils.getBrowser(this.context);
 
     var frames = browser.contentWindow.frames;
@@ -119,10 +119,10 @@ FirefoxDriver.prototype.switchToFrame = function(frameId) {
     if (frames.length > index) {
         this.context = new Context(this.context.windowId, frameId);
     }
-    this.server.respond(this.context, "switchToFrame");
+    respond(this.context, "switchToFrame");
 }
 
-FirefoxDriver.prototype.switchToDefaultContent = function() {
+FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
 	this.context.frameId = "?";
-	this.server.respond(this.context, "switchToDefaultContent");
+	respond(this.context, "switchToDefaultContent");
 }

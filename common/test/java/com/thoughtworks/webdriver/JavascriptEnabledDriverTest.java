@@ -27,14 +27,10 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         driver.get(javascriptPage);
 
         assertEquals("Testing Javascript", driver.getTitle());
-        System.out.println("About to click");
         driver.selectElement("link=Change the page title!").click();
-        System.out.println("Have clicked");
         assertEquals("Changed", driver.getTitle());
-        System.out.println("Got title");
 
         String titleViaXPath = driver.selectText("/html/head/title");
-        System.out.println("Read text");
         assertEquals("Changed", titleViaXPath);
     }
 
