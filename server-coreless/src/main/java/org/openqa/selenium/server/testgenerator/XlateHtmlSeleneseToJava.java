@@ -561,6 +561,7 @@ public class XlateHtmlSeleneseToJava {
             }
             else if (op.equals("Value")
                     || op.equals("CursorPosition")
+                    || op.equals("Eval")
                     || op.equals("Attribute")
                     || op.matches("^Select.*[^s]$")
                     || op.equals("Text")) {
