@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -161,6 +162,8 @@ public class SeleniumServer {
     private static boolean avoidProxy = false;
     private static boolean proxyInjectionMode = false;
     private static File firefoxProfileTemplate = null;
+    private static Handler[] defaultHandlers;
+    private static Map<Handler, Formatter> defaultFormatters;
 
     public static final int DEFAULT_PORT = 4444;
 
@@ -557,8 +560,9 @@ public class SeleniumServer {
         assembleHandlers(slowResources);
     }
 
-    public static void configureLogging() {
-        Logger logger = Logger.getLogger("");
+    public synchronized static void configureLogging() {
+    	Logger logger = Logger.getLogger("");
+    	resetLogger();
         // configure console logger
         for (Handler handler : logger.getHandlers()) {
             if (handler instanceof ConsoleHandler) {
@@ -594,15 +598,37 @@ public class SeleniumServer {
         }
         if (logOutFileName!=null) {
             try {
-                FileHandler fileHandler = new FileHandler(logOutFileName);
+                File logFile = new File(logOutFileName);
+                FileHandler fileHandler = new FileHandler(logFile.getAbsolutePath());
                 fileHandler.setFormatter(new TerseFormatter(true));
                 logger.setLevel(Level.FINE);
                 fileHandler.setLevel(Level.FINE);
                 logger.addHandler(fileHandler);
+                log.info("Writing debug logs to " + logFile.getAbsolutePath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+    
+    private static void resetLogger() {
+    	Logger logger = Logger.getLogger("");
+    	if (defaultHandlers == null) {
+        	defaultHandlers = logger.getHandlers();
+        	defaultFormatters = new HashMap<Handler, Formatter>();
+        	for (Handler handler : defaultHandlers) {
+        		defaultFormatters.put(handler, handler.getFormatter());
+        	}
+        } else {
+        	for (Handler handler : logger.getHandlers()) {
+        		logger.removeHandler(handler);
+        	}
+        	for (Handler handler : defaultHandlers) {
+        		logger.addHandler(handler);
+        		handler.setFormatter(defaultFormatters.get(handler));
+        	}
+        }
+    	
     }
 
     public SeleniumServer(int port, boolean slowResources) throws Exception {
@@ -686,6 +712,10 @@ public class SeleniumServer {
     
     public static File getFirefoxProfileTemplate() {
         return firefoxProfileTemplate;
+    }
+    
+    public static void setFirefoxProfileTemplate(File template) {
+        firefoxProfileTemplate = template;
     }
 
     private static boolean slowResourceProperty() {
