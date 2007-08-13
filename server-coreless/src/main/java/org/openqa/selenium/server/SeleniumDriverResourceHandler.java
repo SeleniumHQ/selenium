@@ -117,9 +117,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
             log.debug("req: "+req);
             // If this is a browser requesting work for the first time...
-            if ("POST".equalsIgnoreCase(method) || justLoaded || logging) {
-                FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(getParam(req, "seleniumWindowName"), 
-                        getParam(req, "localFrameAddress"));
+            if (cmd != null) {
+                handleCommandRequest(req, res, cmd, sessionId);
+            } else if ("POST".equalsIgnoreCase(method) || justLoaded || logging) {
+                String seleniumWindowName = getParam(req, "seleniumWindowName");
+				String localFrameAddress = getParam(req, "localFrameAddress");
+				FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(seleniumWindowName, 
+                        localFrameAddress);
                 String uniqueId = getParam(req, "uniqueId");
                 String postedData = readPostedData(req, sessionId, uniqueId);
                 if (logging) {
@@ -140,14 +144,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     postedData = null;  // DGF retries don't really have a result
                 }
                 
-                RemoteCommand sc = queueSet.handleCommandResult(postedData, frameAddress, uniqueId, justLoaded,
-                        req.getParameterValues("jsWindowNameVar"));
+                List jsWindowNameVar = req.getParameterValues("jsWindowNameVar");
+				RemoteCommand sc = queueSet.handleCommandResult(postedData, frameAddress, uniqueId, justLoaded,
+                        jsWindowNameVar);
                 if (sc != null) {
                     respond(res, sc);
                 }
                 req.setHandled(true);
-            } else if (cmd != null) {
-                handleCommandRequest(req, res, cmd, sessionId);
             } else if (-1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js") 
                     || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")){
                 // ignore failure to find these items...
@@ -389,8 +392,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 results = "ERROR: Problem capturing screenshot: " + e.getMessage();
             }
         } else if ("isPostSupported".equals(cmd)) {
-            // We don't support POST
-            results = "OK,false";
+            results = "OK,true";
         } else if ("setSpeed".equals(cmd)) {
             try {
                 CommandQueue.setSpeed(Integer.parseInt(values.get(0)));
