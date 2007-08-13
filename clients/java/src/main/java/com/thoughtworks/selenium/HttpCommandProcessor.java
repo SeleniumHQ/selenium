@@ -107,9 +107,15 @@ public class HttpCommandProcessor implements CommandProcessor {
     private InputStream getCommandResponse(String command, InputStream is) throws IOException {
         int responsecode = HttpURLConnection.HTTP_MOVED_PERM;
         while (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
-            URL result = buildCommandURL(command, pathToServlet);
-            HttpURLConnection uc = (HttpURLConnection) result.openConnection();
+            URL result = new URL(pathToServlet); 
+            String body = buildCommandBody(command);
+            HttpURLConnection uc = (HttpURLConnection) result.openConnection();            
             uc.setInstanceFollowRedirects(false);
+            uc.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(uc.getOutputStream());
+            wr.write(body);
+            wr.flush();
+            wr.close();
             responsecode = uc.getResponseCode();
             if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
                 pathToServlet = uc.getRequestProperty("Location");
@@ -122,17 +128,14 @@ public class HttpCommandProcessor implements CommandProcessor {
         return is;
     }
 
-    private URL buildCommandURL(String command, String servletUrl) throws MalformedURLException {
+    private String buildCommandBody(String command) throws MalformedURLException {
         StringBuffer sb = new StringBuffer();
-        sb.append(servletUrl);
-        sb.append("?");
         sb.append(command);
         if (sessionId != null) {
             sb.append("&sessionId=");
             sb.append(DefaultRemoteCommand.urlEncode(sessionId));
         }
-        URL result = new URL(sb.toString());
-        return result;
+        return sb.toString();
     }
 
     public void start() {
@@ -189,6 +192,12 @@ public class HttpCommandProcessor implements CommandProcessor {
             n = NumberFormat.getInstance().parse(result);
         } catch (ParseException e) {
             throw new RuntimeException(e);
+        }
+        if (n instanceof Long) {
+            // SRC-315 we should return Integers if possible
+            if (n.intValue() == n.longValue()) {
+                return new Integer(n.intValue());
+            }
         }
         return n;
     }
