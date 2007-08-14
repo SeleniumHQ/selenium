@@ -109,7 +109,8 @@ public class HttpCommandProcessor implements CommandProcessor {
         while (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
             URL result = new URL(pathToServlet); 
             String body = buildCommandBody(command);
-            HttpURLConnection uc = (HttpURLConnection) result.openConnection();            
+            HttpURLConnection uc = (HttpURLConnection) result.openConnection();
+            uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
             uc.setInstanceFollowRedirects(false);
             uc.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(uc.getOutputStream());
