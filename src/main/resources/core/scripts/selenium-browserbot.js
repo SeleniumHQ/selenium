@@ -573,11 +573,43 @@ BrowserBot.prototype._getFrameElement = function(win) {
 
         if (parentContainsIdenticallyNamedFrame) {
             // it can't be a coincidence that the parent has a frame with the same name as myself!
-            return BrowserBot.prototype.locateElementByName(win.name, win.parent.document, win.parent);
+            var result;
+            try {
+                result = parentContainsIdenticallyNamedFrame.frameElement;
+                if (result) {
+                    return result;
+                }
+            } catch (e) {} // it was worth a try! _getFrameElementsByName is often slow
+            result = this._getFrameElementByName(win.name, win.parent.document);
+            return result;
         }
     }
     return frameElement;
 }
+
+BrowserBot.prototype._getFrameElementByName = function(name, doc) {
+    var frames;
+    var frame;
+    var i;
+    frames = doc.getElementsByTagName("iframe");
+    for (i = 0; i < frames.length; i++) {
+        frame = frames[i];        
+        if (frame.name === name) {
+            return frame;
+        }
+    }
+    frames = doc.getElementsByTagName("frame");
+    for (i = 0; i < frames.length; i++) {
+        frame = frames[i];        
+        if (frame.name === name) {
+            return frame;
+        }
+    }
+    // DGF weird; we only call this function when we know the doc contains the frame
+    LOG.warn("_getFrameElementByName couldn't find a frame or iframe; checking every element for the name " + name);
+    return BrowserBot.prototype.locateElementByName(win.name, win.parent.document);
+}
+    
 
 /**
  * Set up a polling timer that will keep checking the readyState of the document until it's complete.
