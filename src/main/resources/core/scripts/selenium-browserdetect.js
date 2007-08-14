@@ -28,6 +28,10 @@ var BrowserVersion = function() {
         this.isOSX = true;
     }
 
+    if (navigator.userAgent.indexOf('Windows NT 6') != -1) {
+        this.isVista = true;
+    }
+
     if (window.opera != null) {
         this.browser = BrowserVersion.OPERA;
         this.isOpera = true;
