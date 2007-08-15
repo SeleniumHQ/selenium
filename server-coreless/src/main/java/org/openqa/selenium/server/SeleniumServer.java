@@ -164,6 +164,8 @@ public class SeleniumServer {
     private static File firefoxProfileTemplate = null;
     private static Handler[] defaultHandlers;
     private static Map<Handler, Formatter> defaultFormatters;
+    private static Map<Handler, Level> defaultLevels;
+    private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<File, FileHandler>();
 
     public static final int DEFAULT_PORT = 4444;
 
@@ -599,7 +601,11 @@ public class SeleniumServer {
         if (logOutFileName!=null) {
             try {
                 File logFile = new File(logOutFileName);
-                FileHandler fileHandler = new FileHandler(logFile.getAbsolutePath());
+                FileHandler fileHandler = seleniumFileHandlers.get(logFile);
+                if (fileHandler == null) {
+                    fileHandler = new FileHandler(logFile.getAbsolutePath());
+                    seleniumFileHandlers.put(logFile, fileHandler);
+                }   
                 fileHandler.setFormatter(new TerseFormatter(true));
                 logger.setLevel(Level.FINE);
                 fileHandler.setLevel(Level.FINE);
@@ -616,8 +622,10 @@ public class SeleniumServer {
     	if (defaultHandlers == null) {
         	defaultHandlers = logger.getHandlers();
         	defaultFormatters = new HashMap<Handler, Formatter>();
+        	defaultLevels = new HashMap<Handler, Level>();
         	for (Handler handler : defaultHandlers) {
         		defaultFormatters.put(handler, handler.getFormatter());
+        		defaultLevels.put(handler, handler.getLevel());
         	}
         } else {
         	for (Handler handler : logger.getHandlers()) {
@@ -626,6 +634,7 @@ public class SeleniumServer {
         	for (Handler handler : defaultHandlers) {
         		logger.addHandler(handler);
         		handler.setFormatter(defaultFormatters.get(handler));
+        		handler.setLevel(defaultLevels.get(handler));
         	}
         }
     	
