@@ -77,8 +77,8 @@ function runSeleniumTest() {
 
     if (runOptions.isMultiWindowMode()) {
         testAppWindow = openSeparateApplicationWindow('Blank.html', true);
-    } else if (sel$('myiframe') != null) {
-        var myiframe = sel$('myiframe');
+    } else if (sel$('selenium_myiframe') != null) {
+        var myiframe = sel$('selenium_myiframe');
         if (myiframe) {
             testAppWindow = myiframe.contentWindow;
         }

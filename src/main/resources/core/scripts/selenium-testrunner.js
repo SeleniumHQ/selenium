@@ -76,7 +76,7 @@ objectExtend(HtmlTestRunner.prototype, {
         if (this.controlPanel.isMultiWindowMode()) {
             return this._getSeparateApplicationWindow();
         }
-        return sel$('myiframe').contentWindow;
+        return sel$('selenium_myiframe').contentWindow;
     },
 
     _getSeparateApplicationWindow: function () {
@@ -269,7 +269,7 @@ function getSuiteFrame() {
     var f = sel$('testSuiteFrame');
     if (f == null) {
         f = top;
-        // proxyInjection mode does not set myiframe
+        // proxyInjection mode does not set selenium_myiframe
     }
     return f;
 }
@@ -278,7 +278,7 @@ function getTestFrame() {
     var f = sel$('testFrame');
     if (f == null) {
         f = top;
-        // proxyInjection mode does not set myiframe
+        // proxyInjection mode does not set selenium_myiframe
     }
     return f;
 }
@@ -714,7 +714,7 @@ objectExtend(TestResult.prototype, {
 
         form.id = "resultsForm";
         form.method = "post";
-        form.target = "myiframe";
+        form.target = "selenium_myiframe";
 
         var resultsUrl = this.controlPanel.getResultsUrl();
         if (!resultsUrl) {

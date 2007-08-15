@@ -1572,7 +1572,7 @@ Selenium.prototype.findWindow = function(soughtAfterWindowPropertyValue) {
    }
    else {
        // matching "name":
-       // If we are not in proxy injection mode, then the top-level test window will be named myiframe.
+       // If we are not in proxy injection mode, then the top-level test window will be named selenium_myiframe.
         // But as far as the interface goes, we are expected to match a blank string to this window, if
         // we are searching with respect to the widow name.
         // So make a special case so that this logic will work:

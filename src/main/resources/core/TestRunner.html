@@ -49,7 +49,7 @@ to work-around a bug in IE on Win2K whereby the HTA application doesn't function
         <script language="JavaScript" type="text/javascript" src="scripts/user-extensions.js"></script>
         <script language="JavaScript" type="text/javascript">
             function openDomViewer() {
-                var autFrame = document.getElementById('myiframe');
+                var autFrame = document.getElementById('selenium_myiframe');
                 var autFrameDocument = new SeleniumFrame(autFrame).getDocument();
                 this.rootDocument = autFrameDocument;
                 var domViewer = window.open(getDocumentBase(document) + 'domviewer/domviewer.html');
@@ -165,7 +165,7 @@ to work-around a bug in IE on Win2K whereby the HTA application doesn't function
 
 <tr>
     <td colspan="3" height="70%">
-        <iframe name="myiframe" id="myiframe" src="TestRunner-splash.html"></iframe>
+        <iframe name="selenium_myiframe" id="selenium_myiframe" src="TestRunner-splash.html"></iframe>
     </td>
 </tr>
 
