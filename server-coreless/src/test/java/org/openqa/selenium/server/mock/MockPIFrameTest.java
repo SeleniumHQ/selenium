@@ -320,7 +320,7 @@ public class MockPIFrameTest extends TestCase {
         frame.expectCommand("getTitle", "", "");
         frame.sendResult("OK,foo");
         // 3. driver receives "OK,foo"
-        getTitle.expectResult("OK");
+        getTitle.expectResult("OK,foo");
         // 4. browser waits around for another command that never arrives.  In 10 seconds, server replies "retryLast"
         frame.expectCommand("retryLast", "", "");
         // 5. browser retries
