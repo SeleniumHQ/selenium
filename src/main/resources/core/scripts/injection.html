@@ -52,7 +52,7 @@ function seleniumOnLoad() {
 }
 
 function seleniumOnUnload() {
-	sendToRC("OK"); // just in case some poor PI server thread is waiting for a response
+	sendToRC("Current window or frame is closed!", "closing=true");
 }
 
 if (window.addEventListener) {

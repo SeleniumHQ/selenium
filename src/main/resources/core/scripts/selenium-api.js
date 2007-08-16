@@ -740,7 +740,9 @@ Selenium.prototype.doOpen = function(url) {
    * @param url the URL to open; may be relative or absolute
    */
     this.browserbot.openLocation(url);
-    return this.makePageLoadCondition();
+    if (window["proxyInjectionMode"] == null || !window["proxyInjectionMode"]) {
+        return this.makePageLoadCondition();
+    } // in PI mode, just return "OK"; the server will waitForLoad
 };
 
 Selenium.prototype.doOpenWindow = function(url, windowID) {
