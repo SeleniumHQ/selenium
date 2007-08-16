@@ -79,7 +79,7 @@ public class ClientDriverSuite extends TestCase {
             
             
             
-            suite.addTestSuite(MockBrowserTest.class);   
+               
             suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             suite.addTest(I18nTest.suite());
             suite.addTestSuite(RealDealIntegrationTest.class);
@@ -152,6 +152,8 @@ public class ClientDriverSuite extends TestCase {
             }
             
             if (!isProxyInjectionMode) {
+                // In PI mode we force the browser to be *pi___, so we can't use *mock there
+                suite.addTestSuite(MockBrowserTest.class);
                 // SRC-323, TestCookie needs real URLs in PI mode
                 suite.addTestSuite(TestCookie.class);
                 // SRC-312 TFST requires slide-up logic when the subframe is closed
