@@ -28,7 +28,7 @@
     <target name="test" depends="generate-sources" unless="skiptests">
     	<echo>${selenium-server}</echo>
         <java jar="${selenium-server}" fork="true" spawn="true"/>
-        <sleep seconds="15"/>
+        <sleep seconds="20"/>
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="python.executable" value="python" />
         <!--<fail message="autofail ${python.executable}" />-->
@@ -36,7 +36,7 @@
             <arg line="selenium_test_suite.py"/>
         </exec>
         <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
-        <sleep seconds="15"/>
+        <sleep seconds="20"/>
         <condition property="build.failed">
         	<not><equals arg1="0" arg2="${result}" /></not>
         </condition>

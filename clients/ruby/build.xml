@@ -17,7 +17,7 @@
     <target name="test">
         <echo>${selenium-server}</echo>
         <java jar="${selenium-server}" fork="true" spawn="true"/>
-        <sleep seconds="15"/>
+        <sleep seconds="20"/>
 
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="ruby.executable" value="ruby"/>
@@ -26,7 +26,7 @@
             <arg line="selenium_example.rb"/>
         </exec>
         <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
-        <sleep seconds="15"/>
+        <sleep seconds="20"/>
         <condition property="build.failed">
             <not>
                 <equals arg1="0" arg2="${result}"/>
