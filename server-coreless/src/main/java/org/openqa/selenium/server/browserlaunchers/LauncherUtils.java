@@ -50,7 +50,7 @@ public class LauncherUtils {
 	/**
 	 * Delete a directory and all subdirectories
 	 */
-	protected static void recursivelyDeleteDir(File customProfileDir) {
+	public static void recursivelyDeleteDir(File customProfileDir) {
 		if (customProfileDir == null || !customProfileDir.exists()) {
 			return;
 		}
@@ -64,7 +64,7 @@ public class LauncherUtils {
 	/**
 	 * Try several times to recursively delete a directory
 	 */
-	protected static void deleteTryTryAgain(File dir, int tries) {
+	public static void deleteTryTryAgain(File dir, int tries) {
 		try {
 			recursivelyDeleteDir(dir);
 		} catch (BuildException e) {

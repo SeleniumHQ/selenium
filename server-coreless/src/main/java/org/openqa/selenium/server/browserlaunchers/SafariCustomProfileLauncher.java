@@ -95,6 +95,27 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     protected void launch(String url) {
         try {
+            // before launching, nuke caches and cookies
+            // see: http://www.macosxhints.com/article.php?story=20051107093733174&lsrc=osxh
+            if (Os.isFamily("mac")) {
+                // nuke ~/Library/Caches/Safari ~/Library/Cookies/Cookies.plist
+                String user = System.getenv("USER");
+                File cacheDir = new File("/Users/" + user + "/Library/Caches/Safari");
+                File cookiesFile = new File("/Users/" + user + "/Library/Cookies/Cookies.plist");
+
+                try {
+                    LauncherUtils.deleteTryTryAgain(cacheDir, 6);
+                } catch (RuntimeException e) {
+                    throw e;
+                }
+
+                if (cookiesFile.exists()) {
+                    cookiesFile.delete();
+                }
+            } else {
+                // todo: don't know how to do this on non-Mac platforms (ie: Safari 3 on windows)
+            }
+
             cmdarray = new String[]{commandPath};
 
             String redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);

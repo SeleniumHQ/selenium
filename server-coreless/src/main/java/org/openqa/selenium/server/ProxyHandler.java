@@ -16,22 +16,25 @@
 
 package org.openqa.selenium.server;
 
+import cybervillains.ca.KeyStoreManager;
 import org.apache.commons.logging.Log;
 import org.mortbay.http.*;
 import org.mortbay.http.handler.AbstractHttpHandler;
+import org.mortbay.jetty.Server;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
 import org.mortbay.util.URI;
-import org.mortbay.jetty.Server;
+import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.*;
-import java.util.*;
 import java.security.*;
 import java.security.cert.CertificateException;
-
-import cybervillains.ca.KeyStoreManager;
+import java.util.*;
 
 /* ------------------------------------------------------------ */
 
@@ -591,6 +594,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
         listener.setKeystore(keystore.getAbsolutePath());
         //listener.setKeystore("c:\\" + (_sslMap.size() + 1) + ".keystore");
+        listener.setNukeDirOrFile(keystore);
     }
 
     private void wireUpSslWithCyberVilliansCA(String host, SslRelay listener) throws KeyStoreException, InvalidKeyException, SignatureException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, UnrecoverableKeyException {
@@ -608,6 +612,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             mgr.persist();
 
             listener.setKeystore(new File(root, "cybervillainsCA.jks").getAbsolutePath());
+            listener.setNukeDirOrFile(root);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -798,10 +803,15 @@ public class ProxyHandler extends AbstractHttpHandler {
     private static class SslRelay extends SslListener
     {
         InetAddrPort _addr;
+        File nukeDirOrFile;
 
         SslRelay(InetAddrPort addr)
         {
             _addr=addr;
+        }
+
+        public void setNukeDirOrFile(File nukeDirOrFile) {
+            this.nukeDirOrFile = nukeDirOrFile;
         }
 
         protected void customizeRequest(Socket socket, HttpRequest request)
@@ -813,6 +823,18 @@ public class ProxyHandler extends AbstractHttpHandler {
             uri.setScheme("https");
             uri.setHost(_addr.getHost());
             uri.setPort(_addr.getPort());
+        }
+
+        public void stop() throws InterruptedException {
+            super.stop();
+
+            if (nukeDirOrFile != null) {
+                if (nukeDirOrFile.isDirectory()) {
+                    LauncherUtils.recursivelyDeleteDir(nukeDirOrFile);
+                } else {
+                    nukeDirOrFile.delete();
+                }
+            }
         }
     }
 }
