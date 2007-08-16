@@ -62,6 +62,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     private Process process;
     protected boolean customPACappropriate = true;
 
+    private static boolean changeMaxConnections = false;
+
     public InternetExplorerCustomProxyLauncher(int port, String sessionId) {
         this(port, sessionId, findBrowserLaunchLocation());
     }
@@ -223,6 +225,12 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
             WindowsUtils.deleteRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_OVERRIDE);
         }
 
+        if (changeMaxConnections) {
+            // need at least 1 xmlHttp connection per frame/window
+            WindowsUtils.writeIntRegistryValue(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, 256);
+            WindowsUtils.writeIntRegistryValue(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, 256);
+        }
+
         // TODO Do we want to make these preferences configurable somehow?
         // TODO Disable security warnings
         // TODO Disable "do you want to remember this password?"
@@ -377,4 +385,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         }
     }
 
+    public static void setChangeMaxConnections(boolean changeMaxConnections) {
+        InternetExplorerCustomProxyLauncher.changeMaxConnections = changeMaxConnections;
+    }
 }

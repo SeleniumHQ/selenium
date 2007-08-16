@@ -36,6 +36,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     private Process process;
 
     protected LauncherUtils.ProxySetting proxySetting = LauncherUtils.ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY;
+    private boolean changeMaxConnections = false;
 
     private static AsyncExecute exe = new AsyncExecute();
     private int port;
@@ -159,7 +160,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         }
         ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFF", customProfileDir);
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, port, proxySetting, null);
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, port, proxySetting, null, changeMaxConnections);
     }
 
     public void close() {
@@ -283,5 +284,9 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         FileLockRemainedException(String message) {
             super(message);
         }
+    }
+
+    public void setChangeMaxConnections(boolean changeMaxConnections) {
+        this.changeMaxConnections = changeMaxConnections;
     }
 }

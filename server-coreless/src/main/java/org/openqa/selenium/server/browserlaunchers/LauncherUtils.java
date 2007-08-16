@@ -244,7 +244,7 @@ public class LauncherUtils {
     
     protected enum ProxySetting { NO_PROXY, PROXY_SELENIUM_TRAFFIC_ONLY, PROXY_EVERYTHING };
     
-	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage) throws FileNotFoundException {
+	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage, boolean changeMaxConnections) throws FileNotFoundException {
 		// We treat PROXY_SELENIUM_TRAFFIC_ONLY as a suggestion; if the user didn't explicitly
 		// allow us to proxy selenium traffic only, then we'll proxy everything
         if (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY && !SeleniumServer.isAvoidProxy()) {
@@ -307,6 +307,13 @@ public class LauncherUtils {
         out.println("user_pref('extensions.update.enabled', false);");
         out.println("user_pref('browser.search.update', false);");
         out.println("user_pref('browser.safebrowsing.enabled', false);");
+
+        if (changeMaxConnections) {
+            out.println("user_pref('network.http.max-connections', 256);");
+            out.println("user_pref('network.http.max-connections-per-server', 256);");
+            out.println("user_pref('network.http.max-persistent-connections-per-proxy', 256);");
+            out.println("user_pref('network.http.max-persistent-connections-per-server', 256);");
+        }
 
         out.close();
 	}
