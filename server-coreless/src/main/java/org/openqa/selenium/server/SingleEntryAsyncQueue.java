@@ -21,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
+
 
 /**
  * <p>Provides a synchronizing queue that holds a single entry
@@ -29,6 +32,7 @@ import java.util.concurrent.locks.Lock;
  * @version $Revision: 411 $
  */
 public class SingleEntryAsyncQueue {
+	static Log log = LogFactory.getLog(SingleEntryAsyncQueue.class);
     private static int idGenerator = 1;
     private Object thing = null;
     private boolean done = false;
@@ -42,7 +46,6 @@ public class SingleEntryAsyncQueue {
     private int countOfCallsToGet = 0;
     private int clearCallsToGetPrecedingThisThreshold = 0;
     
-    private int waitingThreadCount = 0;
     private final Lock dataLock;
     private final Condition condition;
     private boolean retry;
@@ -52,7 +55,7 @@ public class SingleEntryAsyncQueue {
         this.dataLock = dataLock;
         this.condition = condition;
         timeout = defaultTimeout;
-        loggingPreamble = this.label + id + ": ";
+        loggingPreamble = this.label + "-" + id + ": ";
     }
     
     /**
@@ -77,6 +80,7 @@ public class SingleEntryAsyncQueue {
      * @throws SeleniumCommandTimedOutException if the timeout is exceeded. 
      */
     public Object get() {
+    	log.debug(this + " get()");
         int thisCall = countOfCallsToGet++;
         if (done) {
             return null;
@@ -84,10 +88,9 @@ public class SingleEntryAsyncQueue {
         int retries = 0;
         hasBlockedGetter = true;
         Object t = null;
-        waitingThreadCount++;
         try {
-            while (thing==null) {
-                if (thing==null & retries >= timeout) {
+            while (t==null) {
+                if (t==null & retries >= timeout) {
                     throw new SeleniumCommandTimedOutException();
                 }
 
@@ -99,24 +102,28 @@ public class SingleEntryAsyncQueue {
                 }
 
                 try {
-                    condition.await(1000, TimeUnit.MILLISECONDS);
+                	dataLock.lock();
+                	t = thing;
+                    thing = null;
+                    if (t == null) {
+                    	condition.await(1000, TimeUnit.MILLISECONDS);
+                    }
                 } catch (InterruptedException e) {
                     continue;
+                } finally {
+                	dataLock.unlock();
                 }
                 if (done || (thisCall < clearCallsToGetPrecedingThisThreshold)) {
                     return null;
                 }
                 retries++;
             }
-            t = thing;
+            
         }
         finally {
             hasBlockedGetter = false;
-            waitingThreadCount--;
         }
-        if (waitingThreadCount==0) {
-            thing = null;
-        }
+        log.debug(this + " get() returned " + t);
         return t;
     }
         
@@ -154,6 +161,7 @@ public class SingleEntryAsyncQueue {
      * @param newObj - the thing to put in the queue
      */    
     public void put(Object newObj) {
+    	log.debug(this + " put() " + newObj);
         if (done) {
             throw new RuntimeException("put(" + newObj + ") on a retired queue");
         }

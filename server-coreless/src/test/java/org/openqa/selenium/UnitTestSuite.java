@@ -15,7 +15,7 @@ public class UnitTestSuite extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite(UnitTestSuite.class.getName());
-        suite.addTestSuite(QueueTest.class);
+        suite.addTestSuite(SingleEntryAsyncQueueTest.class);
         suite.addTestSuite(SeleniumServerTest.class);
         suite.addTestSuite(ClasspathResourceLocatorTest.class);
         suite.addTestSuite(FsResourceLocatorTest.class);
