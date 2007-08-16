@@ -4,6 +4,7 @@
  */
 package com.thoughtworks.selenium;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -75,7 +76,6 @@ public class ClientDriverSuite extends TestCase {
                     .getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             
-            
             if (isProxyInjectionMode) {
                 suite.addTestSuite(MultiDomainTest.class);
                 
@@ -128,14 +128,14 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestFramesOpen.class);
             suite.addTestSuite(TestFramesNested.class);
             suite.addTestSuite(TestClickBlankTarget.class);
-            suite.addTestSuite(TestCookie.class);
+            
             suite.addTestSuite(TestDojoDragAndDrop.class);
             suite.addTestSuite(TestDragAndDrop.class);
             suite.addTestSuite(TestElementIndex.class);
             suite.addTestSuite(TestElementOrder.class);
             suite.addTestSuite(TestElementPresent.class);
             suite.addTestSuite(TestFramesClickJavascriptHref.class);
-            suite.addTestSuite(TestFramesSpecialTargets.class);
+            
             suite.addTestSuite(TestFunkEventHandling.class);
             suite.addTestSuite(TestHighlight.class);
             suite.addTestSuite(TestHtmlSource.class);
@@ -144,7 +144,17 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestSelectMultiLevelFrame.class);
             suite.addTestSuite(TestSelectWindowTitle.class);
             suite.addTestSuite(TestTextWhitespace.class);
-            suite.addTestSuite(TestTypeRichText.class);
+            
+            suite.addTestSuite(TestEvilClosingWindow.class);
+            
+            if (!isProxyInjectionMode) {
+                // SRC-323, TestCookie needs real URLs in PI mode
+                suite.addTestSuite(TestCookie.class);
+                // SRC-312 TFST requires slide-up logic when the subframe is closed
+                suite.addTestSuite(TestFramesSpecialTargets.class);
+                // SRC-311 TTRT can't inject PI into iframe with no src
+                suite.addTestSuite(TestTypeRichText.class);
+            }
             
             if (false) { 
                 suite.addTestSuite(TestXPathLocatorInXHtml.class); // DGF firefox only
@@ -219,7 +229,12 @@ public class ClientDriverSuite extends TestCase {
 		public void setUp() throws Exception {
 			overrideProperty("selenium.debugMode", "true");
 			overrideProperty("selenium.browserSideLog", "true");
-			overrideProperty("selenium.log", "log.txt");
+			String logFile = "log.txt";
+			File target = new File("target");
+			if (target.exists() && target.isDirectory()) {
+			    logFile = "target/log.txt";
+			}
+			overrideProperty("selenium.log", logFile);
 
 			// make jetty logging especially verbose
 			overrideProperty("DEBUG", "true");

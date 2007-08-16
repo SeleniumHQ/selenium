@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.server;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -40,8 +38,9 @@ public class CommandQueue {
     private SingleEntryAsyncQueue commandResultHolder;
     private String sessionId;
     private String uniqueId;
-    private FrameAddress frameAddress = null;
+    private FrameAddress frameAddress;
     private boolean resultExpected = false;
+    private boolean closed = false;
 
     private final Lock dataLock;
     private Condition resultArrived;
@@ -50,17 +49,17 @@ public class CommandQueue {
     
     static private int millisecondDelayBetweenOperations;
 
-    public CommandQueue(String sessionId, FrameAddress frameAddress, Lock dataLock) {
+    public CommandQueue(String sessionId, String uniqueId, Lock dataLock) {
         this.sessionId = sessionId;
-        this.frameAddress  = frameAddress;
+        this.uniqueId  = uniqueId;
         this.dataLock = dataLock;
         
         resultArrived = dataLock.newCondition();
         commandReady = dataLock.newCondition();
         
-        commandHolder = new SingleEntryAsyncQueue("commandHolder/" + frameAddress, dataLock, commandReady);
+        commandHolder = new SingleEntryAsyncQueue("commandHolder/" + uniqueId, dataLock, commandReady);
         commandHolder.setRetry(true);
-        commandResultHolder = new SingleEntryAsyncQueue("resultHolder/" + frameAddress, dataLock, resultArrived);
+        commandResultHolder = new SingleEntryAsyncQueue("resultHolder/" + uniqueId, dataLock, resultArrived);
         //
         // we are only concerned about the browser, and command queue timeouts will never be
         // because of a browser problem, we should just set an infinite timeout threshold
@@ -84,6 +83,9 @@ public class CommandQueue {
     public String doCommand(String command, String field, String value) {
         dataLock.lock();
         try {
+        	if (closed) {
+        		return WindowClosedException.WINDOW_CLOSED_ERROR;
+        	}
             resultExpected = true;
             
             // Clear the command result holder before a result is expected
@@ -91,7 +93,11 @@ public class CommandQueue {
             synchronized (commandResultHolder) {
             	commandResultHolder.clear();
             }
-            doCommandWithoutWaitingForAResponse(command, field, value);
+            try {
+            	doCommandWithoutWaitingForAResponse(command, field, value);
+            } catch (WindowClosedException e) {
+            	return queueGetResult("doCommand+WindowClosedException");
+            }
             return queueGetResult("doCommand");
         }
         finally {
@@ -112,7 +118,7 @@ public class CommandQueue {
         }
     }
 
-    public void doCommandWithoutWaitingForAResponse(String command, String field, String value) {
+    public void doCommandWithoutWaitingForAResponse(String command, String field, String value) throws WindowClosedException {
         if (millisecondDelayBetweenOperations > 0) {
             log.debug("    Slow mode in effect: sleep " + millisecondDelayBetweenOperations + " milliseconds...");
             try {
@@ -144,6 +150,9 @@ public class CommandQueue {
                     }
                 }
                 else {
+                	if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(commandResultHolder.peek())) {
+                		throw new WindowClosedException();
+                	}
                     throw new RuntimeException("unexpected result " + commandResultHolder.peek());
                 }
             }
@@ -160,17 +169,10 @@ public class CommandQueue {
     }
 
     private String makeJavaScript() {
-        StringBuffer sb = new StringBuffer(InjectionHelper.restoreJsStateInitializer(sessionId, uniqueId));
-        if (frameAddress!=null && !frameAddress.getWindowName().equals(FrameGroupCommandQueueSet.DEFAULT_SELENIUM_WINDOW_NAME)) {
-            sb.append("setSeleniumWindowName(unescape('");
-            try {
-                sb.append(URLEncoder.encode(frameAddress.getWindowName(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("URLEncoder failed: " + e);
-            }
-            sb.append("'));");
-        }
-        return sb.toString();
+    	return InjectionHelper.restoreJsStateInitializer(sessionId, uniqueId);
+    	// DGF we also used to remind the window of his own selenium window name here
+    	// (e.g. across page loads, when he may have forgotten
+    	// but the JS knows the window name better than we do, I think, so I've cut that code
     }
 
     private Object queueGet(String caller, SingleEntryAsyncQueue q, Condition condition) {
@@ -206,7 +208,11 @@ public class CommandQueue {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer("{ commandHolder=");
+        StringBuffer sb = new StringBuffer();
+        if (closed) {
+            sb.append("CLOSED ");
+        }
+        sb.append("{ commandHolder=");
         sb.append(commandHolder.toString())
         .append(", ")
         .append(" commandResultHolder=")
@@ -224,7 +230,18 @@ public class CommandQueue {
      * @return - the next command to run
      */
     public RemoteCommand handleCommandResult(String commandResult) {
-        if (commandResult != null) {
+        handleCommandResultWithoutWaitingForAResponse(commandResult);
+        RemoteCommand sc = (RemoteCommand) queueGet("commandHolder", commandHolder, commandReady);
+        if (sc != null && sc.getCommand().equals("retryLast")) {
+            //commandResultHolder.clear();
+        }
+
+        return sc;
+    }
+
+	public void handleCommandResultWithoutWaitingForAResponse(
+			String commandResult) {
+		if (commandResult != null) {
             if (!resultExpected ) {
                 if (commandResultHolder.hasBlockedGetter()) {
                     throw new RuntimeException("blocked getter for " + this + " but !resultExpected");
@@ -252,13 +269,7 @@ public class CommandQueue {
                 queuePutResult(commandResult);
             }
         }
-        RemoteCommand sc = (RemoteCommand) queueGet("commandHolder", commandHolder, commandReady);
-        if (sc != null && sc.getCommand().equals("retryLast")) {
-            //commandResultHolder.clear();
-        }
-
-        return sc;
-    }
+	}
 
     private void queuePutResult(String commandResult) {
     	// Below was commented out before during testing
@@ -276,8 +287,8 @@ public class CommandQueue {
 
     private String getIdentification(String caller) {
         StringBuffer sb = new StringBuffer();
-        if (frameAddress!=null) {
-            sb.append(frameAddress)
+        if (uniqueId!=null) {
+            sb.append(uniqueId)
                 .append(' ');
         }
         sb.append(caller)
@@ -321,9 +332,13 @@ public class CommandQueue {
     public String getUniqueId() {
         return uniqueId;
     }
-
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
+    
+    public FrameAddress getFrameAddress() {
+    	return frameAddress;
+    }
+    
+    public void setFrameAddress(FrameAddress frameAddress) {
+    	this.frameAddress = frameAddress;
     }
 
     public SingleEntryAsyncQueue getCommandResultHolder() {
@@ -359,27 +374,15 @@ public class CommandQueue {
         return isPointingAtThisWindow;
     }
 
-    public boolean doBooleanCommand(String command, String arg1, String arg2) {
-        String booleanResult = doCommand(command, arg1, arg2);
-        boolean result;
-        if ("OK,true".equals(booleanResult)) {
-            result = true;
-        }
-        else if ("OK,false".equals(booleanResult)) {
-            result = false;
-        }
-        else {
-            throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
-        }
-        log.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
-        return result;
-    }
-
-    public boolean matchesFrameAddress(String currentLocalFrameAddress, String newFrameAddressExpression) {
-        return doBooleanCommand("getWhetherThisFrameMatchFrameExpression", currentLocalFrameAddress, newFrameAddressExpression);
-    }
-
     public void addJsWindowNameVar(String jsWindowNameVar) {
         cachedJsVariableNamesPointingAtThisWindow.put(jsWindowNameVar, true);
+    }
+    
+    public void declareClosed() {
+    	closed = true;
+    }
+    
+    public boolean isClosed() {
+        return closed;
     }
 }

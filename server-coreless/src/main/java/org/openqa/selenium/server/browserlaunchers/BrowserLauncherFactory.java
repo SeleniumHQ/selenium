@@ -16,7 +16,6 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.CommandQueue;
 import org.openqa.selenium.server.SeleniumServer;
 
 import java.lang.reflect.*;
@@ -59,10 +58,9 @@ public class BrowserLauncherFactory {
      * 
      * @param browser a browser string like "*firefox"
      * @param sessionId the sessionId to launch
-     * @param queue
      * @return the BrowserLauncher ready to launch
      */
-    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, CommandQueue queue) {
+    public BrowserLauncher getBrowserLauncher(String browser, String sessionId) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
 
         for (Iterator<String> iterator = supportedBrowsers.keySet().iterator(); iterator.hasNext();) {
@@ -77,7 +75,7 @@ public class BrowserLauncherFactory {
                 } else {
                     browserStartCommand = mat.group(1).substring(1);
                 }
-                return createBrowserLauncher(c, browserStartCommand, sessionId, queue);
+                return createBrowserLauncher(c, browserStartCommand, sessionId);
             }
         }
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
@@ -112,7 +110,7 @@ public class BrowserLauncherFactory {
         return new RuntimeException(errorMessage.toString());
     }
 
-    private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand, String sessionId, CommandQueue queue) {
+    private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand, String sessionId) {
         try {
             try {
                 BrowserLauncher browserLauncher;
@@ -124,10 +122,6 @@ public class BrowserLauncherFactory {
                 } else {
                     ctor = c.getConstructor(int.class, String.class, String.class);
                     browserLauncher = ctor.newInstance(port, sessionId, browserStartCommand);
-                }
-
-                if (browserLauncher instanceof CommandQueueAware) {
-                    ((CommandQueueAware) browserLauncher).setCommandQueue(queue);
                 }
 
                 return browserLauncher;

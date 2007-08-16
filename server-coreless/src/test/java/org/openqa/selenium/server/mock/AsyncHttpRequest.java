@@ -7,6 +7,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.RemoteCommand;
 
@@ -21,8 +23,9 @@ import org.openqa.selenium.server.RemoteCommand;
 public abstract class AsyncHttpRequest {
     _AsyncRunnable runner;
     Thread thread;
-    public static final int DEFAULT_TIMEOUT = 30000;//0; //0 = infinite, good for debugging
+    public static final int DEFAULT_TIMEOUT = 0; //0 = infinite, good for debugging
     protected AsyncHttpRequest() {};
+    static Log log = LogFactory.getLog(AsyncHttpRequest.class);
     
     /** reusable "constructor" to be used by child classes */
     protected static <T extends AsyncHttpRequest> T constructRequest(T request, String name, String url, String body, int timeoutInMillis) {
@@ -67,7 +70,10 @@ public abstract class AsyncHttpRequest {
         /** do the actual request, capturing the result or the exception */
         public void run() {
             try {
+                log.info("requesting url " + url);
+                log.info("request body " + requestBody);
                 resultBody = doBrowserRequest(url, requestBody);
+                log.info("request got result: " + resultBody);
             } catch (IOException e) {
                 ioex = e;
             } catch (RuntimeException e) {

@@ -99,7 +99,8 @@ public class InjectionHelper {
             if (failOnError) {
                 throw new RuntimeException(e);
             } else {
-                log.info("failOnError is false, ignoring problems: ", e);
+                log.info("failOnError is false, ignoring problems: " + e.getMessage());
+                log.debug("Ignored exception", e);
             }
         }
         contentTransformations.put(key, sb.toString());

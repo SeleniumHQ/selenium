@@ -106,10 +106,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             String loggingParam = getParam(req, "logging");
             String jsStateParam = getParam(req, "state");
             String retry = getParam(req, "retry");
+            String closingParam = getParam(req, "closing");
             boolean logging = "true".equals(loggingParam);
             boolean jsState = "true".equals(jsStateParam);
             boolean justLoaded = "true".equals(seleniumStart);
             boolean retrying = "true".equals(retry);
+            boolean closing = "true".equals(closingParam);
 
             if (sessionId != null) {
                 //TODO DGF log4j only
@@ -142,6 +144,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 
                 if (retrying) {
                     postedData = null;  // DGF retries don't really have a result
+                }
+                if (closing) { // close should happen after everything else
+                    log.debug("closing; yielding to other threads");
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {}
                 }
                 
                 List jsWindowNameVar = req.getParameterValues("jsWindowNameVar");
@@ -530,17 +538,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             throw new IllegalArgumentException("browser string may not be null");
         }
         String sessionId = getUnusedBrowserSession(browserString);
-        CommandQueue queue;
         if (sessionId != null) {
             setLastSessionId(sessionId); 
-            queue = FrameGroupCommandQueueSet.getQueueSet(sessionId).getCommandQueue();
         }
         else {
             sessionId = getSessionIdWithUniqueness();
             setLastSessionId(sessionId); 
             FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId);
-            queue = queueSet.getCommandQueue();
-            BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, queue);
+            BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId);
             launchers.put(sessionId, launcher);
             sessionIdsToBrowserStrings.put(sessionId, browserString);
             
@@ -551,6 +556,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         // TODO DGF log4j only
         // NDC.push("sessionId="+sessionId);
         log.info("Allocated session " + sessionId + " for " + startURL);
+        FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
         queue.doCommand("setContext", sessionId, "");
         return sessionId;
     }

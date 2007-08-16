@@ -1,9 +1,13 @@
 package org.openqa.selenium.server.mock;
 
+import junit.framework.Assert;
+
 import org.openqa.selenium.server.RemoteCommand;
 
 
 public class DriverRequest extends AsyncHttpRequest {
+	
+	RemoteCommand cmd;
 
     /** Send a command to the server.
      * 
@@ -14,6 +18,7 @@ public class DriverRequest extends AsyncHttpRequest {
      */
     public static DriverRequest request(String url, RemoteCommand cmd, String sessionId, int timeoutInMillis) {
         DriverRequest request = new DriverRequest();
+        request.cmd = cmd;
         StringBuffer query = new StringBuffer(url);
         query.append('?');
         query.append(cmd.getCommandURLString());
@@ -23,6 +28,11 @@ public class DriverRequest extends AsyncHttpRequest {
         }
         AsyncHttpRequest.constructRequest(request, "driverRequest: " + query, query.toString(), null, timeoutInMillis);
         return request;
+    }
+    
+    public void expectResult(String expected) {
+    	String message = cmd.getCommand() + " result got mangled";
+    	Assert.assertEquals(message, expected, getResult());
     }
     
     /** returns the result of the previous command, e.g. "OK" or "OK,123" */

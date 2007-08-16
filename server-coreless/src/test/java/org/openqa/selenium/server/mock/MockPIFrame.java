@@ -5,6 +5,7 @@ import static junit.framework.Assert.fail;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RemoteCommand;
+import org.openqa.selenium.server.WindowClosedException;
 
 /**
  * Impersonates a single frame running in PI mode.  This is basically a helper object
@@ -79,6 +80,16 @@ public class MockPIFrame {
         return mostRecentRequest;
     }
     
+    public BrowserRequest sendClose() {
+    	log.info(uniqueId + "sends close");
+        mostRecentRequest = BrowserRequest.request(getUrl() + "&closing=true", WindowClosedException.WINDOW_CLOSED_ERROR);
+        return mostRecentRequest;
+    }
+    
+    public RemoteCommand expectCommand(String cmd, String arg1, String arg2) {
+        return mostRecentRequest.expectCommand(cmd, arg1, arg2);
+    }
+    
     public BrowserRequest sendRetry() {
         log.info(uniqueId + "sends retry");
         mostRecentRequest = BrowserRequest.request(getUrl() + "&retry=true", "RETRY");
@@ -105,19 +116,6 @@ public class MockPIFrame {
                 seleniumWindowName + ':' + localFrameAddress + 
         		"> matches: " + identifyCommand);
         throw new RuntimeException("unreachable; fail() will throw");
-    }
-    
-    /** Gets the most recend request's command, assumes it's a "getWhetherThisFrameMatchFrameExpression"
-     * command, runs {@link #frameMatchesFrameExpression(RemoteCommand)} and reports the result to the server.
-     * This is a convenience method, because this boilerplate comes up a lot
-     * @return request object, used to acquire the next command
-     * @throws InterruptedException
-     * @see {@link #frameMatchesFrameExpression(RemoteCommand)}
-     */
-    public BrowserRequest handleIdentifyCommand() {
-        RemoteCommand identifyCommand = mostRecentRequest.getCommand();
-        boolean matches = frameMatchesFrameExpression(identifyCommand);
-        return sendResult("OK," + matches);
     }
 
     /** returns the most recent BrowserRequest object we've seen */

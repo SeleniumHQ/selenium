@@ -58,7 +58,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         server.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory();
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, null);
+        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
         server.registerBrowserLauncher(sessionId, launcher);
         launcher.launchHTMLSuite(suiteURL, browserURL, multiWindow);
         long now = System.currentTimeMillis();
