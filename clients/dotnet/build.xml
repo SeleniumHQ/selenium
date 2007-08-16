@@ -121,14 +121,14 @@ Redirecting to <a href="html/index.html">html/index.html</a>...
 		<property name="integration.tests.dll" value="ThoughtWorks.Selenium.IntegrationTests.dll" />
 		<echo>${selenium-server}</echo>
         <java jar="${selenium-server}" fork="true" spawn="true"/>
-        <sleep seconds="2"/>
+        <sleep seconds="15"/>
 		<exec resultproperty="integration.result"
 		      command="${dotnet.runtime} 
 				${basedir}/tools/nunit/nunit-console.exe 
 				target/${integration.tests.dll} 
 				/xml:${integration.tests.dll}-results.xml /nologo" />
 		<get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
-        <sleep seconds="2"/>
+        <sleep seconds="15"/>
 		<condition property="build.failed">
         	<not><equals arg1="0" arg2="${integration.result}" /></not>
         	</condition>
