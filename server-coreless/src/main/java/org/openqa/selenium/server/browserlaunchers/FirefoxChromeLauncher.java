@@ -42,7 +42,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     private static AsyncExecute exe = new AsyncExecute();
 
-    private boolean changeMaxConnections = false;
+    private static boolean changeMaxConnections = false;
 
     public FirefoxChromeLauncher(int port, String sessionId) {
         this(port, sessionId, findBrowserLaunchLocation());
@@ -284,8 +284,8 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    public void setChangeMaxConnections(boolean changeMaxConnections) {
-        this.changeMaxConnections = changeMaxConnections;
+    public static void setChangeMaxConnections(boolean changeMaxConnections) {
+        FirefoxChromeLauncher.changeMaxConnections = changeMaxConnections;
     }
 
     private class FileLockRemainedException extends Exception {

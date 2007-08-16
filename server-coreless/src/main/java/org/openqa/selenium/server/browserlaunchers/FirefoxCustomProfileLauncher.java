@@ -36,7 +36,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     private Process process;
 
     protected LauncherUtils.ProxySetting proxySetting = LauncherUtils.ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY;
-    private boolean changeMaxConnections = false;
+    private static boolean changeMaxConnections = false;
 
     private static AsyncExecute exe = new AsyncExecute();
     private int port;
@@ -286,7 +286,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    public void setChangeMaxConnections(boolean changeMaxConnections) {
-        this.changeMaxConnections = changeMaxConnections;
+    public static void setChangeMaxConnections(boolean changeMaxConnections) {
+        FirefoxCustomProfileLauncher.changeMaxConnections = changeMaxConnections;
     }
 }
