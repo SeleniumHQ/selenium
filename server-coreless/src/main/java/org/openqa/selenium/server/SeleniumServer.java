@@ -200,6 +200,9 @@ public class SeleniumServer {
     private static boolean FORCE_PROXY_CHAIN = false;
     private static boolean debugMode = false;
 
+    // useful for situations where Selenium is being invoked programatically and the outside container wants to own logging
+    private static boolean dontTouchLogging = false;
+
     /**
      * Starts up the server on the specified port (or default if no port was specified)
      * and then starts interactive mode if specified.
@@ -563,7 +566,11 @@ public class SeleniumServer {
     }
 
     public synchronized static void configureLogging() {
-    	Logger logger = Logger.getLogger("");
+        if (dontTouchLogging) {
+            return;
+        }
+
+        Logger logger = Logger.getLogger("");
     	resetLogger();
         // configure console logger
         for (Handler handler : logger.getHandlers()) {
@@ -947,6 +954,10 @@ public class SeleniumServer {
 
     public static void setDontInjectRegex(String dontInjectRegex) {
         SeleniumServer.dontInjectRegex = dontInjectRegex;
+    }
+
+    public static void setDontTouchLogging(boolean dontTouchLogging) {
+        SeleniumServer.dontTouchLogging = dontTouchLogging;
     }
 
     public static boolean reusingBrowserSessions() {
