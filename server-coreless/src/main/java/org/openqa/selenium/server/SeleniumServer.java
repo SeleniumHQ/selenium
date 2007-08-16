@@ -664,6 +664,8 @@ public class SeleniumServer {
             proxyHandler = customProxyHandler;
             root.addHandler(proxyHandler);
         }
+        // pre-compute the 1-16 SSL relays+certs for the logging hosts (see selenium-remoterunner.js sendToRCAndForget for more info)
+        proxyHandler.generateSSLCertsForLoggingHosts(server);
 
         server.addContext(root);
 

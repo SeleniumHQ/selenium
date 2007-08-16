@@ -458,6 +458,17 @@ public class ProxyHandler extends AbstractHttpHandler {
         server.start();
     }
 
+    public void generateSSLCertsForLoggingHosts(HttpServer server) {
+        for (int i = 1; i <= 16; i++) {
+            String uri = i + ".selenium.doesnotexist:443";
+            try {
+                getSslRelayOrCreateNew(new URI(uri), new InetAddrPort(443), server);
+            } catch (Exception e) {
+                log.error("Could not pre-create logging SSL relay for " + uri, e);
+            }
+        }
+    }
+
     /* ------------------------------------------------------------ */
     public void handleConnect(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
         URI uri = request.getURI();
@@ -467,11 +478,9 @@ public class ProxyHandler extends AbstractHttpHandler {
                 log.debug("CONNECT: " + uri);
             }
             InetAddrPort addrPort;
-            // DGF when logging, we'll attempt to send messages to hosts that don't exist
+            // When logging, we'll attempt to send messages to hosts that don't exist
             if (uri.toString().endsWith(".selenium.doesnotexist:443")) {
-                // Always use the same URI, so we don't start a new sslRelay on every logging message
-                uri = new URI("logging.selenium.doesnotexist:443");
-                // Set the host to be localhost (you can't new up an IAP with a non-existent hostname)
+                // so we have to do set the host to be localhost (you can't new up an IAP with a non-existent hostname)
                 addrPort = new InetAddrPort(443);
             } else {
                 addrPort = new InetAddrPort(uri.toString());
@@ -485,37 +494,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
                 HttpServer server = http_connection.getHttpServer();
 
-                SslRelay listener;
-                synchronized(_sslMap) {
-                    listener = _sslMap.get(uri.toString());
-                    if (listener==null)
-                    {
-                        // we do this because the URI above doesn't actually have the host broken up (it returns null on getHost())
-                        String host = new URL("https://" + uri.toString()).getHost();
-
-                        listener = new SslRelay(addrPort);
-
-                        if (useCyberVillains) {
-                            wireUpSslWithCyberVilliansCA(host, listener);
-                        } else {
-                            wireUpSslWithRemoteService(host, listener);
-                        }
-
-                        listener.setPassword("password");
-                        listener.setKeyPassword("password");
-                        server.addListener(listener);
-                        try
-                        {
-                            listener.start();
-                        }
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                            throw e;
-                        }
-                        _sslMap.put(uri.toString(),listener);
-                    }
-                }
+                SslRelay listener = getSslRelayOrCreateNew(uri, addrPort, server);
 
                 int port = listener.getPort();
 
@@ -553,6 +532,41 @@ public class ProxyHandler extends AbstractHttpHandler {
             log.debug("error during handleConnect", e);
             response.sendError(HttpResponse.__500_Internal_Server_Error);
         }
+    }
+
+    private SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server) throws Exception {
+        SslRelay listener;
+        synchronized(_sslMap) {
+            listener = _sslMap.get(uri.toString());
+            if (listener==null)
+            {
+                // we do this because the URI above doesn't actually have the host broken up (it returns null on getHost())
+                String host = new URL("https://" + uri.toString()).getHost();
+
+                listener = new SslRelay(addrPort);
+
+                if (useCyberVillains) {
+                    wireUpSslWithCyberVilliansCA(host, listener);
+                } else {
+                    wireUpSslWithRemoteService(host, listener);
+                }
+
+                listener.setPassword("password");
+                listener.setKeyPassword("password");
+                server.addListener(listener);
+                try
+                {
+                    listener.start();
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                    throw e;
+                }
+                _sslMap.put(uri.toString(),listener);
+            }
+        }
+        return listener;
     }
 
     private void wireUpSslWithRemoteService(String host, SslRelay listener) throws IOException {
