@@ -567,6 +567,7 @@ public class SeleniumServer {
 
     public synchronized static void configureLogging() {
         if (dontTouchLogging) {
+            log = LogFactory.getLog(SeleniumServer.class);
             return;
         }
 
