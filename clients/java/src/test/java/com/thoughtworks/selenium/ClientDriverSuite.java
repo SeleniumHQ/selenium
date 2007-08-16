@@ -76,13 +76,10 @@ public class ClientDriverSuite extends TestCase {
                     .getName());
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
             
-            if (isProxyInjectionMode) {
-                suite.addTestSuite(MultiDomainTest.class);
-                
-                // Will need to run for IE tests
-                //suite.addTestSuite(TestModalDialog.class);
-            }
-                
+            
+            
+            
+            suite.addTestSuite(MockBrowserTest.class);   
             suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             suite.addTest(I18nTest.suite());
             suite.addTestSuite(RealDealIntegrationTest.class);
@@ -146,6 +143,13 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestTextWhitespace.class);
             
             suite.addTestSuite(TestEvilClosingWindow.class);
+            
+            if (isProxyInjectionMode) {
+                suite.addTestSuite(MultiDomainTest.class);
+                
+                // Will need to run for IE tests
+                //suite.addTestSuite(TestModalDialog.class);
+            }
             
             if (!isProxyInjectionMode) {
                 // SRC-323, TestCookie needs real URLs in PI mode

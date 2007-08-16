@@ -24,10 +24,12 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     private final String sessionId;
     private Thread browser;
     private boolean interrupted = false;
+    private String uniqueId;
     
     public MockBrowserLauncher(int port, String sessionId) {
         this.port = port;
         this.sessionId = sessionId;
+        this.uniqueId = "mock";
     }
     
     public MockBrowserLauncher(int port, String sessionId, String command) {
@@ -60,7 +62,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
     public void run() {
         try {
-            String startURL = "http://localhost:" + port+"/selenium-server/driver/?sessionId=" + sessionId;
+            String startURL = "http://localhost:" + port+"/selenium-server/driver/?sessionId=" + sessionId + "&uniqueId=" + uniqueId;
             String commandLine = doBrowserRequest(startURL+"&seleniumStart=true", "START");
             while (!interrupted) {
                 log.info("MOCK: " + commandLine);
