@@ -27,7 +27,7 @@
                     <includes>
                         <include>**/ClientUnitTestSuite.java</include>
                         <include>**/ClientDriverSuite.java</include>
-                        <!--include>**/ClientDriverPISuite.java</include-->
+                        <include>**/ClientDriverPISuite.java</include>
                     </includes>
                     <forkMode>never</forkMode>
                     <useFile>false</useFile>
