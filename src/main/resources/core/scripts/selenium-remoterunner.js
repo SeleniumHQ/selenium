@@ -424,7 +424,10 @@ function sendToRCAndForget(dataToBePosted, urlParams) {
             // DGF if we're in HTTPS, use another HTTPS url to avoid security warning
             protocol = "https:";
         }
-        url = protocol + "//" + Math.round(100000 * Math.random()) + ".selenium.doesnotexist/selenium-server/driver/?" + urlParams;
+        // we don't choose a super large random value, but rather 1 - 16, because this matches with the pre-computed
+        // tunnels waiting on the Selenium Server side. This gives us higher throughput than the two-connection-per-host
+        // limitation, but doesn't require we generate an extremely large ammount of fake SSL certs either.
+        url = protocol + "//" + Math.floor(Math.random()* 16 + 1) + ".selenium.doesnotexist/selenium-server/driver/?" + urlParams;
     } else {
         url = buildDriverUrl() + "?";
     }
