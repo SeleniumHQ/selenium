@@ -42,6 +42,8 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     private static AsyncExecute exe = new AsyncExecute();
 
+    private boolean changeMaxConnections = false;
+
     public FirefoxChromeLauncher(int port, String sessionId) {
         this(port, sessionId, findBrowserLaunchLocation());
     }
@@ -157,7 +159,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
         copyRunnerHtmlFiles();
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDir, port, LauncherUtils.ProxySetting.NO_PROXY, homePage);
+        LauncherUtils.generatePacAndPrefJs(customProfileDir, port, LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections);
 
         return customProfileDir.getAbsolutePath();
     }
@@ -280,6 +282,10 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         } catch (FileLockRemainedException e) {
             throw new RuntimeException("Firefox refused shutdown while preparing a profile", e);
         }
+    }
+
+    public void setChangeMaxConnections(boolean changeMaxConnections) {
+        this.changeMaxConnections = changeMaxConnections;
     }
 
     private class FileLockRemainedException extends Exception {
