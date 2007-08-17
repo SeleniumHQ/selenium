@@ -36,8 +36,9 @@ public class WaitTest extends TestCase {
             }.wait("timed out as expected", 500, 50);
             fail("expected timeout");
         } catch (WaitTimedOutException e) {
-            assertTrue("didn't wait long enough", System.currentTimeMillis() > 500);
-            assertTrue("didn't try enough times: " + tries, tries > 9);
+            long waited = System.currentTimeMillis() - now;
+            assertTrue("didn't wait long enough:" + waited, waited >= 500);
+            assertTrue("didn't try enough times: " + tries, tries > 7);
         }
     }
 
