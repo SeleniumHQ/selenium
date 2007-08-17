@@ -147,8 +147,18 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 if (closing) { // close should happen after everything else
                     log.debug("closing; yielding to other threads");
+                    /*
+                     * This is a bit subtle, so a longer comment is appropriate.
+                     * In the normal case, you "click" or "open" or something;
+                     * the window sends "OK" and then shortly afterwards sends
+                     * "I'm closing!" Due to the evils of multi-threading,
+                     * sometimes the "I'm closing!" message will be handled
+                     * before the "OK" message. To avoid this, we sleep for a
+                     * while to make sure all the other messages get through
+                     * first.
+                     */
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {}
                 }
                 
