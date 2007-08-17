@@ -30,7 +30,7 @@ public class MockPIFrameTest extends TestCase {
     public static Test suitex() {
         TestSuite suite = new TestSuite();
         //for (int i= 0; i < 100; i++)
-        suite.addTest(new MockPIFrameTest("testFramesOpen"));
+        suite.addTest(new MockPIFrameTest("testClickAndPause"));
         return suite;
     }
     
@@ -237,7 +237,7 @@ public class MockPIFrameTest extends TestCase {
         frame1.sendClose();
         MockPIFrame frame2 = new MockPIFrame(DRIVER_URL, sessionId, "frame2");
         browserRequest = frame2.seleniumStart();
-        sleep(500);
+        sleep(1500);
         
         driverRequest = sendCommand("click", "bar", "");
         browserRequest.expectCommand("getTitle", "", "");
