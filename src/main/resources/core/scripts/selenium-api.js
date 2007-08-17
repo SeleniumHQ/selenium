@@ -837,10 +837,17 @@ Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFra
     }
     var autWindow = this.browserbot.getCurrentWindow();
     if (t != null) {
-        if (t.window == autWindow) {
-            return true;
-        }
-        return false;
+        try {
+	        if (t.window == autWindow) {
+	            return true;
+	        }
+	        if (t.window.uniqueId == autWindow.uniqueId) {
+	            return true;
+	       	}
+	        return false;
+	    } catch (permDenied) {
+	    	// DGF if the windows are incomparable, they're probably not the same...
+	    }
     }
     if (isDom) {
         return false;
