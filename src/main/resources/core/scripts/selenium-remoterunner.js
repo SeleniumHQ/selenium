@@ -62,7 +62,7 @@ objectExtend(RemoteRunnerOptions.prototype, {
             if (args.length < 2) return null;
             this.queryString = args[1];
         } else if (proxyInjectionMode) {
-            this.queryString = selenium.browserbot.getCurrentWindow().location.search.substr(1);
+            this.queryString = window.location.search.substr(1);
         } else {
             this.queryString = top.location.search.substr(1);
         }
