@@ -240,6 +240,9 @@ public class FrameGroupCommandQueueSet {
                     Arrays.sort(ids);
                     for (String uniqueId : ids) {
                     	CommandQueue frameQ = uniqueIdToCommandQueue.get(uniqueId);
+                    	if (frameQ.isClosed()) {
+                    	    continue;
+                    	}
                     	FrameAddress frameAddress = frameQ.getFrameAddress();
                         if (frameAddress.getWindowName().equals(currentSeleniumWindowName)) {
                             if (queueMatchesFrameAddress(frameQ, currentLocalFrameAddress, arg)) {
