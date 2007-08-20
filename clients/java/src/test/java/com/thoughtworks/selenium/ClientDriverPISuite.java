@@ -59,7 +59,7 @@ public class ClientDriverPISuite extends ClientDriverSuite {
 
         public void setUp() throws Exception {
         	super.setUp();
-        	
+        	InternetExplorerCustomProxyLauncher.setChangeMaxConnections(true);
         	overrideProperty("selenium.forcedBrowserMode", determineForcedBrowserMode());
             overrideProperty("selenium.proxyInjectionMode", "true");
         }
