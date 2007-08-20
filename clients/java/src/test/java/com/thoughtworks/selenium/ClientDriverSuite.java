@@ -131,7 +131,7 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(TestElementIndex.class);
             suite.addTestSuite(TestElementOrder.class);
             suite.addTestSuite(TestElementPresent.class);
-            suite.addTestSuite(TestFramesClickJavascriptHref.class);
+            
             
             suite.addTestSuite(TestFunkEventHandling.class);
             suite.addTestSuite(TestHighlight.class);
@@ -152,6 +152,9 @@ public class ClientDriverSuite extends TestCase {
             }
             
             if (!isProxyInjectionMode) {
+                // SRC-324, TFCJH relies on out-of-frame effects, which are synchronous in JS mode but
+                // asynchronous in PI mode, making this test unreliable
+                suite.addTestSuite(TestFramesClickJavascriptHref.class);
                 // In PI mode we force the browser to be *pi___, so we can't use *mock there
                 suite.addTestSuite(MockBrowserTest.class);
                 // SRC-323, TestCookie needs real URLs in PI mode
