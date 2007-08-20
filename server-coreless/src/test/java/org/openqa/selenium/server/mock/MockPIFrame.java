@@ -21,6 +21,7 @@ public class MockPIFrame {
     String localFrameAddress;
     String seleniumWindowName;
     BrowserRequest mostRecentRequest;
+    int sequenceNumber;
     
     /** Constructs a top-level frame with a blank window name.
      * 
@@ -66,7 +67,10 @@ public class MockPIFrame {
         + "&localFrameAddress="
         + localFrameAddress
         + "&seleniumWindowName="
-        + seleniumWindowName;
+        + seleniumWindowName
+        + "&sequenceNumber="
+        + sequenceNumber++
+        ;
     }
     
     /** Transmits the result of the previous command
@@ -122,4 +126,12 @@ public class MockPIFrame {
     public BrowserRequest getMostRecentRequest() {
         return mostRecentRequest;
     }
+
+	public int getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
 }

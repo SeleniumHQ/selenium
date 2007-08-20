@@ -196,7 +196,7 @@ public class MockPIFrameTest extends TestCase {
     }
     
     /** click, then wait for page to load, but frame1 may send close before sending OK result */
-    public void testEvilClickThenWaitRaceCondition() {
+    public void testEvilClickThenWaitRaceCondition() throws InterruptedException {
     	MockPIFrame frame1 = startSession();
         BrowserRequest browserRequest = frame1.getMostRecentRequest();
         
@@ -204,7 +204,11 @@ public class MockPIFrameTest extends TestCase {
         browserRequest.expectCommand("click", "foo", "");
         
         // ideally, "OK" arrives first; in practice, server may handle these requests in any order
+        int sequenceNumber = frame1.getSequenceNumber();
+        frame1.setSequenceNumber(sequenceNumber+1);
         frame1.sendClose();
+        Thread.sleep(1000);
+        frame1.setSequenceNumber(sequenceNumber);
         frame1.sendResult("OK");
         
         driverRequest.expectResult("OK");

@@ -122,53 +122,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             if (cmd != null) {
                 handleCommandRequest(req, res, cmd, sessionId);
             } else if ("POST".equalsIgnoreCase(method) || justLoaded || logging) {
-                String seleniumWindowName = getParam(req, "seleniumWindowName");
-				String localFrameAddress = getParam(req, "localFrameAddress");
-				FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(seleniumWindowName, 
-                        localFrameAddress);
-                String uniqueId = getParam(req, "uniqueId");
-                String postedData = readPostedData(req, sessionId, uniqueId);
-                if (logging) {
-                    handleLogMessages(postedData);
-                } else if (jsState) {
-                    handleJsState(sessionId, uniqueId, postedData);
-                }
-                if (postedData == null || postedData.equals("") || logging || jsState) {
-                    res.getOutputStream().write("\r\n\r\n".getBytes());
-                    req.setHandled(true);
-                    return;
-                }
-                logPostedData(frameAddress, justLoaded, sessionId, postedData, uniqueId);
-
-                FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-                
-                if (retrying) {
-                    postedData = null;  // DGF retries don't really have a result
-                }
-                if (closing) { // close should happen after everything else
-                    log.debug("closing; yielding to other threads");
-                    /*
-                     * This is a bit subtle, so a longer comment is appropriate.
-                     * In the normal case, you "click" or "open" or something;
-                     * the window sends "OK" and then shortly afterwards sends
-                     * "I'm closing!" Due to the evils of multi-threading,
-                     * sometimes the "I'm closing!" message will be handled
-                     * before the "OK" message. To avoid this, we sleep for a
-                     * while to make sure all the other messages get through
-                     * first.
-                     */
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {}
-                }
-                
-                List jsWindowNameVar = req.getParameterValues("jsWindowNameVar");
-				RemoteCommand sc = queueSet.handleCommandResult(postedData, frameAddress, uniqueId, justLoaded,
-                        jsWindowNameVar);
-                if (sc != null) {
-                    respond(res, sc);
-                }
-                req.setHandled(true);
+                handleBrowserResponse(req, res, sessionId, logging, jsState,
+						justLoaded, retrying, closing);
             } else if (-1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js") 
                     || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")){
                 // ignore failure to find these items...
@@ -192,6 +147,47 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
     }
 
+	private void handleBrowserResponse(HttpRequest req, HttpResponse res,
+			String sessionId, boolean logging, boolean jsState,
+			boolean justLoaded, boolean retrying, boolean closing)
+			throws IOException {
+		String seleniumWindowName = getParam(req, "seleniumWindowName");
+		String localFrameAddress = getParam(req, "localFrameAddress");
+		FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(seleniumWindowName, 
+		        localFrameAddress);
+		String uniqueId = getParam(req, "uniqueId");
+		int sequenceNumber = Integer.parseInt(getParam(req, "sequenceNumber"));
+		FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+		BrowserResponseSequencer browserResponseSequencer = queueSet.getCommandQueue(uniqueId).getBrowserResponseSequencer();
+		browserResponseSequencer.waitUntilNumIsAtLeast(sequenceNumber);
+		
+		String postedData = readPostedData(req, sessionId, uniqueId);
+		if (logging) {
+			handleLogMessages(postedData);
+		} else if (jsState) {
+			handleJsState(sessionId, uniqueId, postedData);
+		}
+		if (postedData == null || postedData.equals("") || logging
+				|| jsState) {
+			browserResponseSequencer.increaseNum();
+			res.getOutputStream().write("\r\n\r\n".getBytes());
+			req.setHandled(true);
+			return;
+		}
+		logPostedData(frameAddress, justLoaded, sessionId, postedData,
+				uniqueId);
+		if (retrying) {
+			postedData = null; // DGF retries don't really have a result
+		}
+		List jsWindowNameVar = req.getParameterValues("jsWindowNameVar");
+		RemoteCommand sc = queueSet.handleCommandResult(postedData,
+				frameAddress, uniqueId, justLoaded, jsWindowNameVar);
+		if (sc != null) {
+			respond(res, sc);
+		}
+		req.setHandled(true);
+	}
+	
     private void logPostedData(FrameAddress frameAddress, boolean justLoaded, String sessionId, String postedData, String uniqueId) {
         StringBuffer sb = new StringBuffer();
         sb.append("Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + postedData);

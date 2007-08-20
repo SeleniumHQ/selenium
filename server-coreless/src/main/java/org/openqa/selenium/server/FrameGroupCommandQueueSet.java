@@ -139,13 +139,7 @@ public class FrameGroupCommandQueueSet {
     }
 
     public CommandQueue getCommandQueue() {
-        dataLock.lock();
-        try {
-            return getCommandQueue(currentUniqueId);
-        }
-        finally {
-            dataLock.unlock();
-        }
+        return getCommandQueue(currentUniqueId);
     }
     
 
@@ -197,22 +191,27 @@ public class FrameGroupCommandQueueSet {
     }
 
 
-    private CommandQueue getCommandQueue(String uniqueId) {
-        CommandQueue q = uniqueIdToCommandQueue.get(uniqueId);
-        if (q==null) {
+    public CommandQueue getCommandQueue(String uniqueId) {
+        dataLock.lock();
+    	try {
+			CommandQueue q = uniqueIdToCommandQueue.get(uniqueId);
+			if (q==null) {
 
-            if (log.isDebugEnabled()) {
-                log.debug("---------allocating new CommandQueue for " + uniqueId);
-            }
-            q = new CommandQueue(sessionId, uniqueId, dataLock);
-            uniqueIdToCommandQueue.put(uniqueId, q);
-        }
-        else {
-            if (log.isDebugEnabled()) {
-                log.debug("---------retrieving CommandQueue for " + uniqueId);
-            }
-        }
-        return uniqueIdToCommandQueue.get(uniqueId);
+			    if (log.isDebugEnabled()) {
+			        log.debug("---------allocating new CommandQueue for " + uniqueId);
+			    }
+			    q = new CommandQueue(sessionId, uniqueId, dataLock);
+			    uniqueIdToCommandQueue.put(uniqueId, q);
+			}
+			else {
+			    if (log.isDebugEnabled()) {
+			        log.debug("---------retrieving CommandQueue for " + uniqueId);
+			    }
+			}
+			return uniqueIdToCommandQueue.get(uniqueId);
+		} finally {
+			dataLock.unlock();
+		}
     }
 
     /** Schedules the specified command to be retrieved by the next call to
@@ -587,6 +586,7 @@ public class FrameGroupCommandQueueSet {
             if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(commandResult)) {
                 queue.handleCommandResultWithoutWaitingForAResponse(commandResult);
                 queue.declareClosed();
+                queue.getBrowserResponseSequencer().increaseNum();
                 return new DefaultRemoteCommand("testComplete", "", "");
             }
             

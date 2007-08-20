@@ -45,7 +45,8 @@ public class CommandQueue {
     private final Lock dataLock;
     private Condition resultArrived;
     private Condition commandReady;
-    private ConcurrentHashMap<String, Boolean> cachedJsVariableNamesPointingAtThisWindow = new ConcurrentHashMap<String, Boolean>(); 
+    private ConcurrentHashMap<String, Boolean> cachedJsVariableNamesPointingAtThisWindow = new ConcurrentHashMap<String, Boolean>();
+    private final BrowserResponseSequencer browserResponseSequencer;
     
     static private int millisecondDelayBetweenOperations;
 
@@ -53,6 +54,7 @@ public class CommandQueue {
         this.sessionId = sessionId;
         this.uniqueId  = uniqueId;
         this.dataLock = dataLock;
+        this.browserResponseSequencer = new BrowserResponseSequencer(uniqueId, dataLock);
         
         resultArrived = dataLock.newCondition();
         commandReady = dataLock.newCondition();
@@ -231,6 +233,7 @@ public class CommandQueue {
      */
     public RemoteCommand handleCommandResult(String commandResult) {
         handleCommandResultWithoutWaitingForAResponse(commandResult);
+        browserResponseSequencer.increaseNum();
         RemoteCommand sc = (RemoteCommand) queueGet("commandHolder", commandHolder, commandReady);
         if (sc != null && sc.getCommand().equals("retryLast")) {
             //commandResultHolder.clear();
@@ -384,5 +387,9 @@ public class CommandQueue {
     
     public boolean isClosed() {
         return closed;
+    }
+    
+    public BrowserResponseSequencer getBrowserResponseSequencer() {
+    	return browserResponseSequencer;
     }
 }

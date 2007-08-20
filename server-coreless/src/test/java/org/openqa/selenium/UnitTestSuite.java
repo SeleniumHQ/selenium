@@ -24,6 +24,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(FirefoxChromeLauncherTest.class);
         suite.addTestSuite(HTMLSuiteResultTest.class);
         suite.addTestSuite(MockPIFrameTest.class);
+        suite.addTestSuite(BrowserResponseSequencerTest.class);
         return suite;
     }
 }
