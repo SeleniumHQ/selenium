@@ -18,6 +18,39 @@ end
 task :test => [:test_htmlunit, :test_firefox] do 
 end
 
+task :install_firefox do  
+  if windows? then
+    dir = ENV['USERPROFILE'] + "\\Application Data\\Mozilla\\Firefox\\Profiles"
+    firefox = "c:\\program files\\mozilla firefox\\firefox"
+  elsif mac? then
+    dir = ENV['HOME'] + "/Library/Application Support/Firefox/Profiles"
+    firefox = "/Applications/Firefox.app/Contents/MacOS/firefox"
+  elsif linux? then
+    dir = ENV['HOME'] + "/.mozilla/Profiles"
+    firefox = firefox
+  end
+  
+  return unless File.exists? dir
+  
+  # Create the profile
+  sh "#{firefox} -CreateProfile WebDriver", :verbose => false
+  
+  extdir = File.join(File.dirname(__FILE__), "firefox/src/extension")
+
+  dir = Dir[dir + "/*WebDriver"]
+  begin
+    File.delete(File.join(dir, "extensions.cache"))
+  rescue
+    # It's okay
+  end
+  
+  extension = File.new(File.join(dir, "extensions/fxdriver@thoughtworks.com"), "w")
+  extension.puts extdir
+  extension.close
+  
+  puts "Created link to extension"
+end
+
 %w(common htmlunit jobbie firefox).each do |driver|
   source = FileList["#{driver}/src/java/**/*.java"]
   libs = ["#{driver}/lib/runtime/*.jar", "#{driver}/lib/buildtime/*.jar", "common/build/webdriver-common.jar"]
@@ -51,6 +84,8 @@ end
   end
 end
 
+task :firefox => :install_firefox
+
 file 'jobbie/build/webdriver-jobbie.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
   sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Debug", :verbose => true
 
@@ -58,7 +93,15 @@ file 'jobbie/build/webdriver-jobbie.dll' => FileList['jobbie/src/csharp/**/*.cs'
 end
 
 def windows?
-  return RUBY_PLATFORM =~ /win32/i
+  RUBY_PLATFORM =~ /win32/i
+end
+
+def mac?
+  RUBY_PLATFORM =~ /darwin/i
+end
+
+def linux?
+  RUBY_PLATFORM =~ /linux/i
 end
 
 if windows? then
