@@ -54,7 +54,7 @@ public class CommandQueue {
         this.sessionId = sessionId;
         this.uniqueId  = uniqueId;
         this.dataLock = dataLock;
-        this.browserResponseSequencer = new BrowserResponseSequencer(uniqueId, dataLock);
+        this.browserResponseSequencer = new BrowserResponseSequencer(uniqueId);
         
         resultArrived = dataLock.newCondition();
         commandReady = dataLock.newCondition();

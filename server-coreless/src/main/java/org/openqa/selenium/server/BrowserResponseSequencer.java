@@ -3,6 +3,7 @@ package org.openqa.selenium.server;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
@@ -13,9 +14,9 @@ public class BrowserResponseSequencer {
 	final Lock lock;
 	final Condition numIncreased;
 	final String uniqueId;
-	public BrowserResponseSequencer(String uniqueId, Lock lock) {
+	public BrowserResponseSequencer(String uniqueId) {
 		this.uniqueId = uniqueId;
-		this.lock = lock;
+		this.lock = new ReentrantLock();
 		numIncreased = lock.newCondition();
 	}
 	

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.locks.ReentrantLock;
 
 import junit.framework.TestCase;
 
@@ -21,7 +20,7 @@ public class BrowserResponseSequencerTest extends TestCase {
 	}
 	
 	public void setUp() {
-		seq = new BrowserResponseSequencer(getName(), new ReentrantLock());
+		seq = new BrowserResponseSequencer(getName());
 		numbers = new ArrayList<Integer>();
 	}
 
