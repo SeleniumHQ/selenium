@@ -25,6 +25,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     private Thread browser;
     private boolean interrupted = false;
     private String uniqueId;
+    private int sequenceNumber = 0;
     
     public MockBrowserLauncher(int port, String sessionId) {
         this.port = port;
@@ -63,18 +64,18 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     public void run() {
         try {
             String startURL = "http://localhost:" + port+"/selenium-server/driver/?sessionId=" + sessionId + "&uniqueId=" + uniqueId;
-            String commandLine = doBrowserRequest(startURL+"&seleniumStart=true", "START");
+            String commandLine = doBrowserRequest(startURL+"&seleniumStart=true&sequenceNumber="+sequenceNumber++, "START");
             while (!interrupted) {
                 log.info("MOCK: " + commandLine);
                 RemoteCommand sc = DefaultRemoteCommand.parse(commandLine);
                 String result = doCommand(sc);
                 if (SeleniumServer.isBrowserSideLogEnabled() && !interrupted) {
                     for (int i = 0; i < 3; i++) {
-                        doBrowserRequest(startURL + "&logging=true", "logLevel=debug:dummy log message " + i + "\n");
+                        doBrowserRequest(startURL + "&logging=true&sequenceNumber="+sequenceNumber++, "logLevel=debug:dummy log message " + i + "\n");
                     }
                 }
                 if (!interrupted) {
-                    commandLine = doBrowserRequest(startURL, result);
+                    commandLine = doBrowserRequest(startURL+"&sequenceNumber="+sequenceNumber++, result);
                 }
             }
             log.info("MOCK: interrupted, exiting");
