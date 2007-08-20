@@ -32,6 +32,7 @@ var debugMode = false;
 var relayToRC = null;
 var proxyInjectionMode = false;
 var uniqueId = 'sel_' + Math.round(100000 * Math.random());
+var seleniumSequenceNumber = 0;
 
 var RemoteRunnerOptions = classCreate();
 objectExtend(RemoteRunnerOptions.prototype, URLConfiguration.prototype);
@@ -412,6 +413,7 @@ function addUrlParams(url) {
     return url + "&localFrameAddress=" + (proxyInjectionMode ? makeAddressToAUTFrame() : "top")
     + getSeleniumWindowNameURLparameters()
     + "&uniqueId=" + uniqueId
+    + "&sequenceNumber=" + seleniumSequenceNumber++
     + buildDriverParams() + preventBrowserCaching()
 }
 
