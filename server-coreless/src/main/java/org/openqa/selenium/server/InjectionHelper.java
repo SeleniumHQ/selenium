@@ -78,31 +78,59 @@ public class InjectionHelper {
         String key = "__SELENIUM_JS__";
         
         StringBuffer sb = new StringBuffer();
-        try {
-            appendFileContent(sb, "/core/scripts/xmlextras.js");
-            appendFileContent(sb, "/core/lib/cssQuery/cssQuery-p.js");
-            appendFileContent(sb, "/core/scripts/htmlutils.js");
-            appendFileContent(sb, "/core/scripts/selenium-browserdetect.js");
-            appendFileContent(sb, "/core/scripts/selenium-browserbot.js");
-            appendFileContent(sb, "/core/scripts/find_matching_child.js");
-            appendFileContent(sb, "/core/scripts/selenium-api.js");
-            appendFileContent(sb, "/core/scripts/selenium-commandhandlers.js");
-            appendFileContent(sb, "/core/scripts/selenium-executionloop.js");
-            appendFileContent(sb, "/core/scripts/selenium-remoterunner.js");
-            appendFileContent(sb, "/core/scripts/selenium-logging.js");
-            appendFileContent(sb, "/core/xpath/misc.js");
-            appendFileContent(sb, "/core/xpath/dom.js");
-            appendFileContent(sb, "/core/xpath/xpath.js");
-            appendFileContent(sb, "/core/scripts/user-extensions.js");
-        } catch (Exception e) {
-            if (failOnError) {
-                throw new RuntimeException(e);
-            } else {
-                log.info("failOnError is false, ignoring problems: " + e.getMessage());
-                log.debug("Ignored exception", e);
+        if (false) { // DGF experiment with using script tags
+            try {
+                appendFileContent(sb, "/core/scripts/xmlextras.js");
+                appendFileContent(sb, "/core/lib/cssQuery/cssQuery-p.js");
+                appendFileContent(sb, "/core/scripts/htmlutils.js");
+                appendFileContent(sb, "/core/scripts/selenium-browserdetect.js");
+                appendFileContent(sb, "/core/scripts/selenium-browserbot.js");
+                appendFileContent(sb, "/core/scripts/find_matching_child.js");
+                appendFileContent(sb, "/core/scripts/selenium-api.js");
+                appendFileContent(sb,
+                        "/core/scripts/selenium-commandhandlers.js");
+                appendFileContent(sb, "/core/scripts/selenium-executionloop.js");
+                appendFileContent(sb, "/core/scripts/selenium-remoterunner.js");
+                appendFileContent(sb, "/core/scripts/selenium-logging.js");
+                appendFileContent(sb, "/core/xpath/misc.js");
+                appendFileContent(sb, "/core/xpath/dom.js");
+                appendFileContent(sb, "/core/xpath/xpath.js");
+                appendFileContent(sb, "/core/scripts/user-extensions.js");
+            } catch (Exception e) {
+                if (failOnError) {
+                    throw new RuntimeException(e);
+                } else {
+                    log.info("failOnError is false, ignoring problems: "
+                            + e.getMessage());
+                    log.debug("Ignored exception", e);
+                }
             }
         }
         contentTransformations.put(key, sb.toString());
+    }
+    
+    private static void writeScriptTags(OutputStream os) throws IOException {
+        writeScriptTag(os, "/core/scripts/xmlextras.js");
+        writeScriptTag(os, "/core/lib/cssQuery/cssQuery-p.js");
+        writeScriptTag(os, "/core/scripts/htmlutils.js");
+        writeScriptTag(os, "/core/scripts/selenium-browserdetect.js");
+        writeScriptTag(os, "/core/scripts/selenium-browserbot.js");
+        writeScriptTag(os, "/core/scripts/find_matching_child.js");
+        writeScriptTag(os, "/core/scripts/selenium-api.js");
+        writeScriptTag(os, "/core/scripts/selenium-commandhandlers.js");
+        writeScriptTag(os, "/core/scripts/selenium-executionloop.js");
+        writeScriptTag(os, "/core/scripts/selenium-remoterunner.js");
+        writeScriptTag(os, "/core/scripts/selenium-logging.js");
+        writeScriptTag(os, "/core/xpath/misc.js");
+        writeScriptTag(os, "/core/xpath/dom.js");
+        writeScriptTag(os, "/core/xpath/xpath.js");
+        writeScriptTag(os, "/core/scripts/user-extensions.js");
+    }
+    
+    private static void writeScriptTag(OutputStream os, String url) throws IOException {
+        os.write("<script type=\"text/javascript\" src=\"/selenium-server".getBytes());
+        os.write(url.getBytes());
+        os.write("\"></script>\n".getBytes());
     }
     
 	private static void appendFileContent(StringBuffer sb, String url) throws IOException {
@@ -166,10 +194,12 @@ public class InjectionHelper {
                 log.debug("injecting...");
             }
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            writeScriptTags(baos);
             String injectionHtml = "/core/scripts/injection.html";
             InputStream jsIn = new ClassPathResource(injectionHtml).getInputStream();
             contentTransformations.put("@SESSION_ID@", sessionId);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            
             writeDataWithUserTransformations("", jsIn, baos);
             jsIn.close();
             baos.write(setSomeJsVars(sessionId));
