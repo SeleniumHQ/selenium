@@ -44,11 +44,16 @@ task :install_firefox do
     # It's okay
   end
   
+  if (windows?) then
+    extdir = extdir.tr '/', '\\'
+  end
+  
+  File.makedirs File.join(dir, "extensions")
   extension = File.new(File.join(dir, "extensions/fxdriver@thoughtworks.com"), "w")
   extension.puts extdir
   extension.close
   
-  puts "Created link to extension"
+  sh "#{firefox} -P WebDriver"
 end
 
 %w(common htmlunit jobbie firefox).each do |driver|
@@ -83,8 +88,6 @@ end
     junit :in => driver, :classpath => libs, :native_path => ["#{driver}/build", "#{driver}/lib/runtime"]
   end
 end
-
-task :firefox => :install_firefox
 
 file 'jobbie/build/webdriver-jobbie.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
   sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Debug", :verbose => true
