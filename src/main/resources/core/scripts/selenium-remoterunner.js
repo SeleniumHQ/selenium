@@ -371,6 +371,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
         url += urlParms;
     }
     url = addUrlParams(url);
+    url += "&sequenceNumber=" + seleniumSequenceNumber++;
     
     var wrappingCallback;
     if (callback == null) {
@@ -413,7 +414,6 @@ function addUrlParams(url) {
     return url + "&localFrameAddress=" + (proxyInjectionMode ? makeAddressToAUTFrame() : "top")
     + getSeleniumWindowNameURLparameters()
     + "&uniqueId=" + uniqueId
-    + "&sequenceNumber=" + seleniumSequenceNumber++
     + buildDriverParams() + preventBrowserCaching()
 }
 
