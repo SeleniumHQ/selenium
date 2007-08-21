@@ -382,8 +382,10 @@ public class CommandQueue {
     }
     
     public void declareClosed() {
-    	handleCommandResultWithoutWaitingForAResponse(WindowClosedException.WINDOW_CLOSED_ERROR);
     	closed = true;
+    	if (commandResultHolder.isEmpty()) {
+    		handleCommandResultWithoutWaitingForAResponse(WindowClosedException.WINDOW_CLOSED_ERROR);
+    	}
     	browserResponseSequencer.increaseNum();
     }
     
