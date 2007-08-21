@@ -156,10 +156,15 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 		FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(seleniumWindowName, 
 		        localFrameAddress);
 		String uniqueId = getParam(req, "uniqueId");
-		int sequenceNumber = Integer.parseInt(getParam(req, "sequenceNumber"));
+		String sequenceNumberString = getParam(req, "sequenceNumber");
+		int sequenceNumber = -1;
 		FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-		BrowserResponseSequencer browserResponseSequencer = queueSet.getCommandQueue(uniqueId).getBrowserResponseSequencer();
-		browserResponseSequencer.waitUntilNumIsAtLeast(sequenceNumber);
+        BrowserResponseSequencer browserResponseSequencer = queueSet.getCommandQueue(uniqueId).getBrowserResponseSequencer();
+		if (sequenceNumberString != null && sequenceNumberString.length() > 0) {
+		    sequenceNumber = Integer.parseInt(sequenceNumberString);
+	        browserResponseSequencer.waitUntilNumIsAtLeast(sequenceNumber);
+		}
+		
 		
 		String postedData = readPostedData(req, sessionId, uniqueId);
 		if (logging) {
@@ -169,7 +174,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 		}
 		if (postedData == null || postedData.equals("") || logging
 				|| jsState) {
-			browserResponseSequencer.increaseNum();
+			if (sequenceNumber != -1) {
+			    browserResponseSequencer.increaseNum();
+			}
 			res.getOutputStream().write("\r\n\r\n".getBytes());
 			req.setHandled(true);
 			return;
