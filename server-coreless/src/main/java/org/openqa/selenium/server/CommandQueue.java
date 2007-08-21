@@ -234,13 +234,13 @@ public class CommandQueue {
     public RemoteCommand handleCommandResult(String commandResult) {
         handleCommandResultWithoutWaitingForAResponse(commandResult);
         browserResponseSequencer.increaseNum();
-        RemoteCommand sc = (RemoteCommand) queueGet("commandHolder", commandHolder, commandReady);
-        if (sc != null && sc.getCommand().equals("retryLast")) {
-            //commandResultHolder.clear();
-        }
-
-        return sc;
+        return getNextCommand();
     }
+
+	private RemoteCommand getNextCommand() {
+		RemoteCommand sc = (RemoteCommand) queueGet("commandHolder", commandHolder, commandReady);
+        return sc;
+	}
 
 	public void handleCommandResultWithoutWaitingForAResponse(
 			String commandResult) {
@@ -382,7 +382,9 @@ public class CommandQueue {
     }
     
     public void declareClosed() {
+    	handleCommandResultWithoutWaitingForAResponse(WindowClosedException.WINDOW_CLOSED_ERROR);
     	closed = true;
+    	browserResponseSequencer.increaseNum();
     }
     
     public boolean isClosed() {

@@ -584,9 +584,7 @@ public class FrameGroupCommandQueueSet {
             }
             
             if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(commandResult)) {
-                queue.handleCommandResultWithoutWaitingForAResponse(commandResult);
                 queue.declareClosed();
-                queue.getBrowserResponseSequencer().increaseNum();
                 return new DefaultRemoteCommand("testComplete", "", "");
             }
             
