@@ -152,10 +152,10 @@ public class HttpCommandProcessor implements CommandProcessor {
 
     public String getString(String commandName, String[] args) {
         String result = doCommand(commandName, args);
-        if (result.length() > "OK,".length()) {
+        if (result.length() >= "OK,".length()) {
             return result.substring("OK,".length());
         }
-        System.out.println("WARNING: getString(" + commandName + ") saw a bad result " + result);
+        System.err.println("WARNING: getString(" + commandName + ") saw a bad result " + result);
         return "";
     }
 
