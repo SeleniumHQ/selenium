@@ -825,51 +825,7 @@ Selenium.prototype.getWhetherThisFrameMatchFrameExpression = function(currentFra
      * @param target new frame (which might be relative to the current one)
      * @return boolean true if the new frame is this code's window
      */
-    var isDom = false;
-    if (target.indexOf("dom=") == 0) {
-        target = target.substr(4);
-        isDom = true;
-    }
-    var t;
-    try {
-        eval("t=" + currentFrameString + "." + target);
-    } catch (e) {
-    }
-    var autWindow = this.browserbot.getCurrentWindow();
-    if (t != null) {
-        try {
-	        if (t.window == autWindow) {
-	            return true;
-	        }
-	        if (t.window.uniqueId == autWindow.uniqueId) {
-	            return true;
-	       	}
-	        return false;
-	    } catch (permDenied) {
-	    	// DGF if the windows are incomparable, they're probably not the same...
-	    }
-    }
-    if (isDom) {
-        return false;
-    }
-    var currentFrame;
-    eval("currentFrame=" + currentFrameString);
-    if (target == "relative=up") {
-        if (currentFrame.window.parent == autWindow) {
-            return true;
-        }
-        return false;
-    }
-    if (target == "relative=top") {
-        if (currentFrame.window.top == autWindow) {
-            return true;
-        }
-        return false;
-    }
-    if (autWindow.name == target && currentFrame.window == autWindow.parent) {
-        return true;
-    }
-    return false;
+    return this.browserbot.doesThisFrameMatchFrameExpression(currentFrameString, target);
 };
 
 Selenium.prototype.getWhetherThisWindowMatchWindowExpression = function(currentWindowString, target) {

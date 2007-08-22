@@ -390,6 +390,62 @@ BrowserBot.prototype.selectFrame = function(target) {
     this.getCurrentWindow();
 };
 
+BrowserBot.prototype.doesThisFrameMatchFrameExpression = function(currentFrameString, target) {
+    var isDom = false;
+    if (target.indexOf("dom=") == 0) {
+        target = target.substr(4);
+        isDom = true;
+    }
+    var t;
+    try {
+        eval("t=" + currentFrameString + "." + target);
+    } catch (e) {
+    }
+    var autWindow = this.browserbot.getCurrentWindow();
+    if (t != null) {
+        try {
+	        if (t.window == autWindow) {
+	            return true;
+	        }
+	        if (t.window.uniqueId == autWindow.uniqueId) {
+	            return true;
+	       	}
+	        return false;
+	    } catch (permDenied) {
+	    	// DGF if the windows are incomparable, they're probably not the same...
+	    }
+    }
+    if (isDom) {
+        return false;
+    }
+    var currentFrame;
+    eval("currentFrame=" + currentFrameString);
+    if (target == "relative=up") {
+        if (currentFrame.window.parent == autWindow) {
+            return true;
+        }
+        return false;
+    }
+    if (target == "relative=top") {
+        if (currentFrame.window.top == autWindow) {
+            return true;
+        }
+        return false;
+    }
+    if (currentFrame.window == autWindow.parent) {
+        if (autWindow.name == target) {
+            return true;
+        }
+        try {
+            var element = this.findElement(target, currentFrame.window);
+            if (element.contentWindow == autWindow) {
+                return true;
+            }
+        } catch (e) {}
+    }
+    return false;
+};
+
 BrowserBot.prototype.openLocation = function(target) {
     // We're moving to a new page - clear the current one
     var win = this.getCurrentWindow();
@@ -1018,7 +1074,7 @@ BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString,
 /*
 * Finds an element on the current page, using various lookup protocols
 */
-BrowserBot.prototype.findElement = function(locator) {
+BrowserBot.prototype.findElement = function(locator, win) {
     var locatorType = 'implicit';
     var locatorString = locator;
 
@@ -1029,7 +1085,10 @@ BrowserBot.prototype.findElement = function(locator) {
         locatorString = result[2];
     }
 
-    var element = this.findElementRecursive(locatorType, locatorString, this.getDocument(), this.getCurrentWindow())
+    if (win == null) {
+        win = this.getCurrentWindow();
+    }
+    var element = this.findElementRecursive(locatorType, locatorString, win.document, win);
 
     if (element != null) {
     	return this.browserbot.highlight(element);
