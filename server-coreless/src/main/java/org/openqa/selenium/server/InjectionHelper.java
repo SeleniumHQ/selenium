@@ -19,6 +19,7 @@ import org.mortbay.util.IO;
 public class InjectionHelper {
     static Log log = LogFactory.getLog(InjectionHelper.class);
     private static boolean failOnError = true;
+    private static final boolean INJECT_SCRIPT_TAGS = true;
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
     private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
     
@@ -78,7 +79,7 @@ public class InjectionHelper {
         String key = "__SELENIUM_JS__";
         
         StringBuffer sb = new StringBuffer();
-        if (false) { // DGF experiment with using script tags
+        if (!INJECT_SCRIPT_TAGS) { // DGF experiment with using script tags
             try {
                 appendFileContent(sb, "/core/scripts/xmlextras.js");
                 appendFileContent(sb, "/core/lib/cssQuery/cssQuery-p.js");
@@ -110,6 +111,7 @@ public class InjectionHelper {
     }
     
     private static void writeScriptTags(OutputStream os) throws IOException {
+    	// DGF script tags are SLOWER than regular injection! (remember, we disable the browser cache entirely)
         writeScriptTag(os, "/core/scripts/xmlextras.js");
         writeScriptTag(os, "/core/lib/cssQuery/cssQuery-p.js");
         writeScriptTag(os, "/core/scripts/htmlutils.js");
@@ -195,7 +197,9 @@ public class InjectionHelper {
             }
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            writeScriptTags(baos);
+            if (INJECT_SCRIPT_TAGS) {
+            	writeScriptTags(baos);
+            }
             String injectionHtml = "/core/scripts/injection.html";
             InputStream jsIn = new ClassPathResource(injectionHtml).getInputStream();
             contentTransformations.put("@SESSION_ID@", sessionId);
