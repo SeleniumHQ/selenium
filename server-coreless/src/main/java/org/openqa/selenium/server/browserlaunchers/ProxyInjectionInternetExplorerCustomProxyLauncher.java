@@ -18,7 +18,9 @@ import org.openqa.selenium.server.SeleniumServer;
  *
  */
 public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetExplorerCustomProxyLauncher {
-    public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId) {
+    private static boolean alwaysChangeMaxConnections = true;
+
+	public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId) {
         super(port, sessionId);
     }
     
@@ -29,8 +31,13 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetE
     @Override
     protected void changeRegistrySettings() throws IOException {
         customPACappropriate = false;
+        changeMaxConnections = alwaysChangeMaxConnections;
         super.changeRegistrySettings();
         WindowsUtils.writeBooleanRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_ENABLE, true);
         WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_SERVER, "127.0.0.1:" + SeleniumServer.getPortDriversShouldContact());
+    }
+    
+    public static void setChangeMaxConnections(boolean changeMaxConnections) {
+    	ProxyInjectionInternetExplorerCustomProxyLauncher.alwaysChangeMaxConnections = changeMaxConnections;
     }
 }

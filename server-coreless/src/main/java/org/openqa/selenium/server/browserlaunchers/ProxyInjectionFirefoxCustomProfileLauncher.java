@@ -15,7 +15,9 @@ package org.openqa.selenium.server.browserlaunchers;
 public class ProxyInjectionFirefoxCustomProfileLauncher extends
         FirefoxCustomProfileLauncher {
 
-    public ProxyInjectionFirefoxCustomProfileLauncher(int port, String sessionId) {
+    private static boolean alwaysChangeMaxConnections = true;
+
+	public ProxyInjectionFirefoxCustomProfileLauncher(int port, String sessionId) {
         super(port, sessionId);
     }
 
@@ -27,6 +29,11 @@ public class ProxyInjectionFirefoxCustomProfileLauncher extends
     @Override
     protected void init() {
         super.init();
+        changeMaxConnections = alwaysChangeMaxConnections;
         proxySetting = LauncherUtils.ProxySetting.PROXY_EVERYTHING;
+    }
+    
+    public static void setChangeMaxConnections(boolean changeMaxConnections) {
+    	ProxyInjectionFirefoxCustomProfileLauncher.alwaysChangeMaxConnections = changeMaxConnections;
     }
 }

@@ -62,7 +62,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     private Process process;
     protected boolean customPACappropriate = true;
 
-    private static boolean changeMaxConnections = false;
+    private static boolean alwaysChangeMaxConnections = false;
+    protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
     public InternetExplorerCustomProxyLauncher(int port, String sessionId) {
         this(port, sessionId, findBrowserLaunchLocation());
@@ -386,6 +387,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
 
     public static void setChangeMaxConnections(boolean changeMaxConnections) {
-        InternetExplorerCustomProxyLauncher.changeMaxConnections = changeMaxConnections;
+        InternetExplorerCustomProxyLauncher.alwaysChangeMaxConnections = changeMaxConnections;
     }
 }
