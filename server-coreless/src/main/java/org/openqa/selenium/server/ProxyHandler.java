@@ -315,7 +315,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             if (connectionHdr != null && connectionHdr.indexOf(hdr) >= 0)
                 continue;
 
-            if (HttpFields.__ContentType.equals(hdr))
+            if (HttpFields.__ContentType.equals(hdr) && !"GET".equals(request.getMethod()))
                 hasContent = true;
 
             Enumeration vals = request.getFieldValues(hdr);
