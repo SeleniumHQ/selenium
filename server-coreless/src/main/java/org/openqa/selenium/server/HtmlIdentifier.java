@@ -55,6 +55,7 @@ public class HtmlIdentifier {
         rules.add(new ContentRule("<head", 500, -100)); // http://drudgereport.com doesn't have <html>, but rather starts with <head>
         rules.add(new ContentRule("<!DOCTYPE html", 1000, -100));
         rules.add(new ContentTypeRule("text/html", 100, -1000));
+        rules.add(new ContentTypeRule("application/java-archive", -20000, 0)); // jars are zips, often containing <html> fragments
         rules.add(new Rule("dojo catcher", -100000, 0) {
             public int score(String path, String contentType, String contentPreview) {
                 
