@@ -31,8 +31,18 @@ Copyright 2004 ThoughtWorks, Inc
             </td>
         </tr>
         <tr>
+            <td>storeEval</td>
+            <td>parseUrl(canonicalize(absolutify("html", selenium.browserbot.baseUrl))).pathname;</td>
+            <td>base</td>
+        </tr>
+        <tr>
+            <td>echo</td>
+            <td>${base}</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
             <td>open</td>
-            <td>/path1/cookies</td>
+            <td>${base}/path1/cookie1.html</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
@@ -43,30 +53,30 @@ Copyright 2004 ThoughtWorks, Inc
         <tr>
             <td>deleteCookie</td>
             <td> addedCookieForPath1</td>
-            <td> /path1/</td>
+            <td>${base}/path1/</td>
         </tr>
         <tr>
-            <td>verifyCookie</td>
+            <td>assertCookie</td>
             <td></td>
             <td>&nbsp;</td>
         </tr>
         <tr>
             <td>open</td>
-            <td>/path2/cookies</td>
+            <td>${base}/path2/cookie2.html</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
             <td>deleteCookie</td>
             <td> testCookieWithSameName</td>
-            <td> /path2/</td>
+            <td> ${base}/path2/</td>
         </tr>
         <tr>
             <td>deleteCookie</td>
             <td> addedCookieForPath2</td>
-            <td> /path2/</td>
+            <td> ${base}/path2/</td>
         </tr>
         <tr>
-            <td>verifyCookie</td>
+            <td>assertCookie</td>
             <td></td>
             <td>&nbsp;</td>
         </tr>
@@ -77,7 +87,7 @@ Copyright 2004 ThoughtWorks, Inc
     <tbody>
         <tr>
             <td>open</td>
-            <td>/path1/cookies</td>
+            <td>${base}/path1/cookie1.html</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
@@ -88,11 +98,11 @@ Copyright 2004 ThoughtWorks, Inc
         <tr>
             <td>createCookie</td>
             <td>addedCookieForPath2=new value2</td>
-            <td>path=/path2/, max_age=60</td>
+            <td>path=${base}/path2/, max_age=60</td>
         </tr>
         <tr>
             <td>open</td>
-            <td>/path1/cookies</td>
+            <td>${base}/path1/cookie1.html</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
@@ -113,7 +123,7 @@ Copyright 2004 ThoughtWorks, Inc
         <tr>
             <td>deleteCookie</td>
             <td> addedCookieForPath1</td>
-            <td> /path1/</td>
+            <td>${base}/path1/</td>
         </tr>
         <tr>
             <td>verifyCookie</td>
@@ -122,7 +132,7 @@ Copyright 2004 ThoughtWorks, Inc
         </tr>
         <tr>
             <td>open</td>
-            <td>/path2/cookies</td>
+            <td>${base}/path2/cookie2.html</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
@@ -138,7 +148,7 @@ Copyright 2004 ThoughtWorks, Inc
         <tr>
             <td>deleteCookie</td>
             <td> addedCookieForPath2</td>
-            <td> /path2/</td>
+            <td>${base}/path2/</td>
         </tr>
         <tr>
             <td>verifyCookie</td>
@@ -159,11 +169,11 @@ Testing creating cookies with same name but diffrent paths
         <tr>
             <td>createCookie</td>
             <td>testCookieWithSameName=new value2</td>
-            <td>path=/path2/</td>
+            <td>path=${base}/path2/</td>
         </tr>
         <tr>
             <td>open</td>
-            <td>/path1/cookies</td>
+            <td>${base}/path1/cookie1.html</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
@@ -173,7 +183,7 @@ Testing creating cookies with same name but diffrent paths
         </tr>
         <tr>
             <td>open</td>
-            <td>/path2/cookies</td>
+            <td>${base}/path2/cookie2.html</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
@@ -189,11 +199,11 @@ Testing creating cookies with same name but diffrent paths
         <tr>
             <td>deleteCookie</td>
             <td> testCookieWithSameName</td>
-            <td> /path2/</td>
+            <td>${base}/path2/</td>
         </tr>
         <tr>
             <td>open</td>
-            <td>/path2/cookies</td>
+            <td>${base}/path2/cookie2.html</td>
             <td>&nbsp;</td>
         </tr>
         <tr>

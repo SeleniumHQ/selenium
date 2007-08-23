@@ -500,8 +500,26 @@ function reassembleLocation(loc) {
 
 function canonicalize(url) {
     var tempLink = window.document.createElement("link");
-    tempLink.href = url; // this will canonicalize the href
-    return tempLink.href;
+    tempLink.href = url; // this will canonicalize the href on most browsers
+    debugger;
+    var loc = parseUrl(tempLink.href)
+    if (!/\/\.\.\//.test(loc.pathname)) {
+    	return tempLink.href;
+    }
+  	// didn't work... let's try it the hard way
+  	var originalParts = loc.pathname.split("/");
+  	var newParts = [];
+  	newParts.push(originalParts.shift());
+  	for (var i = 0; i < originalParts.length; i++) {
+  		var part = originalParts[i];
+  		if (".." == part) {
+  			newParts.pop();
+  			continue;
+  		}
+  		newParts.push(part);
+  	}
+  	loc.pathname = newParts.join("/");
+    return reassembleLocation(loc);
 }
 
 function extractExceptionMessage(ex) {
