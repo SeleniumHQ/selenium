@@ -501,7 +501,6 @@ function reassembleLocation(loc) {
 function canonicalize(url) {
     var tempLink = window.document.createElement("link");
     tempLink.href = url; // this will canonicalize the href on most browsers
-    debugger;
     var loc = parseUrl(tempLink.href)
     if (!/\/\.\.\//.test(loc.pathname)) {
     	return tempLink.href;
