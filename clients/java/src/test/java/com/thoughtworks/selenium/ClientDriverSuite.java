@@ -89,6 +89,7 @@ public class ClientDriverSuite extends TestCase {
             suite.addTestSuite(GoogleTestSearch.class);
             suite.addTestSuite(GoogleTest.class);
             suite.addTestSuite(WindowNamesTest.class);
+            suite.addTestSuite(TestCookie.class);
             suite.addTestSuite(TestCheckUncheck.class);
             suite.addTestSuite(TestXPathLocators.class);
             suite.addTestSuite(TestClickJavascriptHref.class);
@@ -157,8 +158,6 @@ public class ClientDriverSuite extends TestCase {
                 suite.addTestSuite(TestFramesClickJavascriptHref.class);
                 // In PI mode we force the browser to be *pi___, so we can't use *mock there
                 suite.addTestSuite(MockBrowserTest.class);
-                // SRC-323, TestCookie needs real URLs in PI mode
-                suite.addTestSuite(TestCookie.class);
                 // SRC-312 TFST requires slide-up logic when the subframe is closed
                 suite.addTestSuite(TestFramesSpecialTargets.class);
                 // SRC-311 TTRT can't inject PI into iframe with no src
