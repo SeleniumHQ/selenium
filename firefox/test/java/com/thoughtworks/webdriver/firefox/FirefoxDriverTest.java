@@ -1,12 +1,20 @@
 package com.thoughtworks.webdriver.firefox;
 
+import java.io.File;
+
 import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 
 public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
 	protected WebDriver getDriver() {
-		return new FirefoxDriver();
+		String firefoxBinary = System.getProperty("firefox.bin");
+		File binary = null;
+		if (firefoxBinary != null) {
+			System.out.println("Using: " + firefoxBinary);
+			binary = new File(firefoxBinary);
+		}
+		return new FirefoxDriver(binary);
 	}
 	
 	protected boolean isUsingSameDriverInstance() {
