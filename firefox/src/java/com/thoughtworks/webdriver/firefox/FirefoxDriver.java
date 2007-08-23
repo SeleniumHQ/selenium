@@ -16,10 +16,14 @@ public class FirefoxDriver implements WebDriver {
     private long id;
 
     public FirefoxDriver() {
+    	this(null);
+    }
+    
+    public FirefoxDriver(File firefoxBinary) {
         extension = new ExtensionConnection("localhost", 7055);
 
         if (!(connectToBrowser(1))) {
-            startFirefox();
+            startFirefox(firefoxBinary);
             connectToBrowser(10);
         }
 
@@ -108,7 +112,7 @@ public class FirefoxDriver implements WebDriver {
         return new FirefoxTargetLocator();
     }
 
-    private String locateFirefoxBinary() {
+    private File locateFirefoxBinary() {
         String osName = System.getProperty("os.name").toLowerCase();
         File potentialPath;
         if (osName.startsWith("windows")) {
@@ -122,7 +126,7 @@ public class FirefoxDriver implements WebDriver {
         }
 
         if (potentialPath.exists())
-            return potentialPath.getAbsolutePath();
+            return potentialPath;
         throw new RuntimeException(
                 "Unable to locate location of firefox binary");
     }
@@ -139,10 +143,18 @@ public class FirefoxDriver implements WebDriver {
         }
     }
 
-    private void startFirefox() {
-        String binaryPath = locateFirefoxBinary();
+    private void startFirefox(File firefoxBinary) {
+    	File binary = firefoxBinary;
+    	
+    	if (firefoxBinary == null)
+    		binary = locateFirefoxBinary();
+    	
         try {
-            Runtime.getRuntime().exec(binaryPath + " -P WebDriver");
+        	if (!binary.exists()) {
+        		throw new RuntimeException("Unable to locate firefox binary. Please check that it is installed in the default location, " +
+        				"or the path given points to the firefox binary. I would have used: " + firefoxBinary.getPath());
+        	}
+            Runtime.getRuntime().exec(binary.getAbsolutePath() + " -P WebDriver");
         } catch (IOException e) {
             throw new RuntimeException("Cannot load firefox");
         }

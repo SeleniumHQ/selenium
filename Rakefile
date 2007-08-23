@@ -30,7 +30,13 @@ task :install_firefox do
     firefox = firefox
   end
   
-  return unless File.exists? dir
+  if ENV['firefox'] then
+    firefox = ENV['firefox']
+  end
+
+  return unless File.exists?(dir) && File.exists?(firefox)
+
+  puts "Using firefox: #{firefox}"
   
   # Create the profile
   sh "#{firefox} -CreateProfile WebDriver", :verbose => false
