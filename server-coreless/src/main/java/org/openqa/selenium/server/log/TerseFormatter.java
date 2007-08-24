@@ -33,7 +33,7 @@ public class TerseFormatter extends Formatter {
     public TerseFormatter(boolean longForm) {
         buffer = new StringBuffer();
         buffer.append(PREFIX);
-        format = new SimpleDateFormat("HH:mm:ss");
+        format = new SimpleDateFormat("HH:mm:ss.SSS");
         this.longForm = longForm;
     }
     
