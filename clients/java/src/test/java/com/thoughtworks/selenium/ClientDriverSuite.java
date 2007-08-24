@@ -162,6 +162,8 @@ public class ClientDriverSuite extends TestCase {
                 suite.addTestSuite(TestFramesSpecialTargets.class);
                 // SRC-311 TTRT can't inject PI into iframe with no src
                 suite.addTestSuite(TestTypeRichText.class);
+                // SRC-330 TALS requires server-side persistence of locator strategies
+                suite.addTestSuite(TestAddLocationStrategy.class);
             }
             
             if (false) { 
