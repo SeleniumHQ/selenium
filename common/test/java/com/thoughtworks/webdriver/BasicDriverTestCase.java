@@ -707,6 +707,11 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.switchTo().window("");
     }
     
+    public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
+    	driver.get(simpleTestPage);
+    	driver.close();
+    }
+    
     protected WebDriver driver;
     protected String baseUrl;
     protected String simpleTestPage;

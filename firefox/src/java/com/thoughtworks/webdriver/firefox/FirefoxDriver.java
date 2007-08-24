@@ -43,8 +43,13 @@ public class FirefoxDriver implements WebDriver {
 	}
     
     public WebDriver close() {
-    	sendMessage("close", null);
-    	return findActiveDriver();
+		sendMessage("close", null);
+    	try {
+    		return findActiveDriver();
+    	} catch (NullPointerException e) {
+    		// All good
+    		return null;
+    	}
     }
 
 	public WebDriver dumpBody() {
