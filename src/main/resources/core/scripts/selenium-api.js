@@ -802,6 +802,8 @@ Selenium.prototype.doSelectFrame = function(locator) {
     * Selects a frame within the current window.  (You may invoke this command
     * multiple times to select nested frames.)  To select the parent frame, use
     * "relative=parent" as a locator; to select the top frame, use "relative=top".
+    * You can also select a frame by its 0-based index number; select the first frame with
+    * "index=0", or the third frame with "index=2".
     *
     * <p>You may also use a DOM expression to identify the frame you want directly,
     * like this: <code>dom=frames["main"].frames["subframe"]</code></p>

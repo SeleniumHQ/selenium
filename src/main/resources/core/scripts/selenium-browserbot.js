@@ -126,7 +126,7 @@ BrowserBot.createForWindow = function(window, proxyInjectionMode) {
     }
     // getCurrentWindow has the side effect of modifying it to handle page loads etc
     browserbot.proxyInjectionMode = proxyInjectionMode;
-    browserbot.getCurrentWindow();	// for modifyWindow side effect.  This is not a transparent style
+    browserbot.getCurrentWindow();    // for modifyWindow side effect.  This is not a transparent style
     return browserbot;
 };
 
@@ -162,7 +162,7 @@ BrowserBot.prototype.relayBotToRC = function(s) {
 };
 
 BrowserBot.prototype.relayToRC = function(name) {
-	var object = eval(name);
+        var object = eval(name);
         var s = 'state:' + serializeObject(name, object) + "\n";
         sendToRC(s,"state=true");
 }
@@ -248,10 +248,10 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
         {
             //Safari
             evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY,
-            	this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown, 0, null);
+                this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown, 0, null);
         }
         else {
-        	LOG.warn("element doesn't have initMouseEvent; firing an event which should -- but doesn't -- have other mouse-event related attributes here, as well as controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown");
+            LOG.warn("element doesn't have initMouseEvent; firing an event which should -- but doesn't -- have other mouse-event related attributes here, as well as controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown");
             evt.initEvent(eventType, canBubble, true);
 
             evt.shiftKey = this.shiftKeyDown;
@@ -302,12 +302,12 @@ BrowserBot.prototype._modifyWindow = function(win) {
 BrowserBot.prototype.selectWindow = function(target) {
     // TODO implement a locator syntax here
     if (target && target != "null") {
-    	try {
-    		this._selectWindowByName(target);
-    	}
-    	catch (e) {
-    		this._selectWindowByTitle(target);
-    	}
+        try {
+            this._selectWindowByName(target);
+        }
+        catch (e) {
+            this._selectWindowByTitle(target);
+        }
     } else {
         this._selectTopWindow();
     }
@@ -337,7 +337,19 @@ BrowserBot.prototype._selectWindowByTitle = function(target) {
 }
 
 BrowserBot.prototype.selectFrame = function(target) {
-    if (target == "relative=up") {
+    if (target.indexOf("index=") == 0) {
+        target = target.substr(6);
+        var frame = this.getCurrentWindow().frames[target];
+        if (frame == null) {
+            throw new SeleniumError("Not found: frames["+index+"]");
+        }
+        if (!frame.document) {
+            throw new SeleniumError("frames["+index+"] is not a frame");
+        }
+        this.currentWindow = frame;
+        this.isSubFrameSelected = true;
+    }
+    else if (target == "relative=up") {
         this.currentWindow = this.getCurrentWindow().parent;
         this.isSubFrameSelected = (this._getFrameElement(this.currentWindow) != null);
     } else if (target == "relative=top") {
@@ -395,6 +407,9 @@ BrowserBot.prototype.doesThisFrameMatchFrameExpression = function(currentFrameSt
     if (target.indexOf("dom=") == 0) {
         target = target.substr(4);
         isDom = true;
+    } else if (target.indexOf("index=") == 0) {
+        target = "frames[" + target.substr(6) + "]";
+        isDom = true;
     }
     var t;
     try {
@@ -404,16 +419,16 @@ BrowserBot.prototype.doesThisFrameMatchFrameExpression = function(currentFrameSt
     var autWindow = this.browserbot.getCurrentWindow();
     if (t != null) {
         try {
-	        if (t.window == autWindow) {
-	            return true;
-	        }
-	        if (t.window.uniqueId == autWindow.uniqueId) {
-	            return true;
-	       	}
-	        return false;
-	    } catch (permDenied) {
-	    	// DGF if the windows are incomparable, they're probably not the same...
-	    }
+            if (t.window == autWindow) {
+                return true;
+            }
+            if (t.window.uniqueId == autWindow.uniqueId) {
+                return true;
+               }
+            return false;
+        } catch (permDenied) {
+            // DGF if the windows are incomparable, they're probably not the same...
+        }
     }
     if (isDom) {
         return false;
@@ -538,7 +553,7 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         var openedWindow = myOriginalOpen(url, windowName, windowFeatures, replaceFlag);
         LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
         if (windowName!=null) {
-        	openedWindow["seleniumWindowName"] = windowName;
+            openedWindow["seleniumWindowName"] = windowName;
         }
         selenium.browserbot.openedWindows[windowName] = openedWindow;
         return openedWindow;
@@ -913,15 +928,15 @@ BrowserBot.prototype.getWindowNameByTitle = function(windowTitle) {
 
     // First look in the map of opened windows and iterate them
     for (var windowName in this.openedWindows) {
-    	var targetWindow = this.openedWindows[windowName];
+        var targetWindow = this.openedWindows[windowName];
 
-    	// If the target window's title is our title
-    	try {
-    	    // TODO implement Pattern Matching here
-        	if (!this._windowClosed(targetWindow) &&
-        	    targetWindow.document.title == windowTitle) {
-        		return windowName;
-        	}
+        // If the target window's title is our title
+        try {
+            // TODO implement Pattern Matching here
+            if (!this._windowClosed(targetWindow) &&
+                targetWindow.document.title == windowTitle) {
+                return windowName;
+            }
         } catch (e) {
             // You'll often get Permission Denied errors here in IE
             // eh, if we can't read this window's title,
@@ -1066,7 +1081,7 @@ BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString,
         element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
 
         if (element != null) {
-        	return element;
+            return element;
         }
     }
 };
@@ -1091,7 +1106,7 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
     var element = this.findElementRecursive(locatorType, locatorString, win.document, win);
 
     if (element != null) {
-    	return this.browserbot.highlight(element);
+        return this.browserbot.highlight(element);
     }
 
     // Element was not found by any locator function.
@@ -1989,7 +2004,7 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
         var openedWindow = originalOpen(newUrl, windowName, windowFeatures, replaceFlag);
         LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
         if (windowName!=null) {
-        	openedWindow["seleniumWindowName"] = windowName;
+            openedWindow["seleniumWindowName"] = windowName;
         }
         return openedWindow;
     };
@@ -2056,7 +2071,7 @@ KonquerorBrowserBot.prototype._fireEventOnElement = function(eventType, element,
     this._modifyElementTarget(element);
 
     if (element[eventType]) {
-    	element[eventType]();
+        element[eventType]();
     }
     else {
         this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
@@ -2076,7 +2091,7 @@ SafariBrowserBot.prototype._fireEventOnElement = function(eventType, element, cl
 
     // For form element it is simple.
     if (element[eventType]) {
-    	element[eventType]();
+        element[eventType]();
     }
     // For links and other elements, event emulation is required.
     else {
@@ -2117,7 +2132,7 @@ IEBrowserBot.prototype._fireEventOnElement = function(eventType, element, client
     win.attachEvent("onbeforeunload", pageUnloadDetector);
     this._modifyElementTarget(element);
     if (element[eventType]) {
-    	element[eventType]();
+        element[eventType]();
     }
     else {
         this.browserbot.triggerMouseEvent(element, eventType, true, clientX, clientY);
