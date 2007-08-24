@@ -286,7 +286,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         URLConnection connection = url.openConnection();
         connection.setAllowUserInteraction(false);
 
-        if (SeleniumServer.isProxyInjectionMode())
+        if (isProxyInjectionMode())
             adjustRequestForProxyInjection(request, connection);
 
         // Set method
@@ -418,7 +418,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         if (proxy_in != null) {
             boolean injectableResponse = http.getResponseCode() == HttpURLConnection.HTTP_OK ||
                     (http.getResponseCode() >= 400 && http.getResponseCode() < 600);
-            if (SeleniumServer.isProxyInjectionMode() && injectableResponse) {
+            if (isProxyInjectionMode() && injectableResponse) {
                 // check if we should proxy this path based on the dontProxyRegex that can be user-specified
                 if (SeleniumServer.shouldInject(request.getPath())) {
                     bytesCopied = InjectionHelper.injectJavaScript(request, response, proxy_in, response.getOutputStream());
@@ -432,6 +432,20 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
 
         return bytesCopied;
+    }
+
+    /**
+     * A special subclass to determine if this proxy should inject Selenium Core's JS in to the appropriate pages.
+     * This is made available as a protected method, rather than directly calling {@link SeleniumServer#isProxyInjectionMode()}
+     * directly so as to make it possible for subclasses (namely those who use SeleniumServer programatically) to easyily
+     * change the behavior of this important class. It is also nice because this class is probably one of the only instances
+     * out in the open source world right now that can act as a full-fledged HTTP+HTTPS proxy, so with proxy injection
+     * turned off, it can pretty much work as an excellent standalone HTTP proxy.
+     *
+     * @return true if this proxy should inject Selenium JS
+     */
+    protected boolean isProxyInjectionMode() {
+        return SeleniumServer.isProxyInjectionMode();
     }
 
     private void adjustRequestForProxyInjection(HttpRequest request, URLConnection connection) {
