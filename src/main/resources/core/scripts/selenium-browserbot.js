@@ -1074,7 +1074,7 @@ BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString,
 /*
 * Finds an element on the current page, using various lookup protocols
 */
-BrowserBot.prototype.findElement = function(locator, win) {
+BrowserBot.prototype.findElementOrNull = function(locator, win) {
     var locatorType = 'implicit';
     var locatorString = locator;
 
@@ -1095,8 +1095,14 @@ BrowserBot.prototype.findElement = function(locator, win) {
     }
 
     // Element was not found by any locator function.
-    throw new SeleniumError("Element " + locator + " not found");
+    return null;
 };
+
+BrowserBot.prototype.findElement = function(locator, win) {
+    var element = this.findElementOrNull(locator, win);
+    if (element == null) throw new SeleniumError("Element " + locator + " not found");
+    return element;
+}
 
 /**
  * In non-IE browsers, getElementById() does not search by name.  Instead, we
@@ -1152,8 +1158,7 @@ BrowserBot.prototype.locateElementByDomTraversal = function(domTraversal, docume
     try {
         element = eval(domTraversal);
     } catch (e) {
-        e.isSeleniumError = true;
-        throw e;
+        return null;
     }
 
     if (!element) {

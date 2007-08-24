@@ -193,13 +193,13 @@ function testTextPresent() {
 }
 
 function testElementPresent() {
-    mockPageBot.expects("findElement", "id").returns("foo");
+    mockPageBot.expects("findElementOrNull", "id").returns("foo");
     assertTrue(selenium.isElementPresent("id"));
     verifyMocks();
 }
 
 function testElementNotPresent() {
-    mockPageBot.expects("findElement", "id").andThrows("foo");
+    mockPageBot.expects("findElementOrNull", "id").returns(null);
     assertFalse(selenium.isElementPresent("id"));
     verifyMocks();
 }

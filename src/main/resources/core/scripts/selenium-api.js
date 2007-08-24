@@ -1394,13 +1394,12 @@ Selenium.prototype.isTextPresent = function(pattern) {
 
 Selenium.prototype.isElementPresent = function(locator) {
     /**
-   * Verifies that the specified element is somewhere on the page.
-   * @param locator an <a href="#locators">element locator</a>
-   * @return boolean true if the element is present, false otherwise
-   */
-    try {
-        this.browserbot.findElement(locator);
-    } catch (e) {
+    * Verifies that the specified element is somewhere on the page.
+    * @param locator an <a href="#locators">element locator</a>
+    * @return boolean true if the element is present, false otherwise
+    */
+    var element = this.browserbot.findElementOrNull(locator);
+    if (element == null) {
         return false;
     }
     return true;
@@ -2208,6 +2207,46 @@ Selenium.prototype.doRunScript = function(script) {
     doc.body.appendChild(scriptTag);
 }
 
+Selenium.prototype.doAddLocationStrategy = function(strategyName, functionDefinition) {
+    /**
+    * Defines a new function for Selenium to locate elements on the page.
+    * For example,
+    * if you define the strategy "foo", and someone runs click("foo=blah"), we'll
+    * run your function, passing you the string "blah", and click on the element 
+    * that your function
+    * returns, or throw an "Element not found" error if your function returns null.
+    *
+    * We'll pass three arguments to your function:
+    * <ul>
+    * <li>locator: the string the user passed in</li>
+    * <li>inWindow: the currently selected window</li>
+    * <li>inDocument: the currently selected document</li>
+    * </ul>
+    * The function must return null if the element can't be found.
+    * 
+    * @param strategyName the name of the strategy to define; this should use only
+    *   letters [a-zA-Z] with no spaces or other punctuation.
+    * @param functionDefinition a string defining the body of a function in JavaScript.
+    *   For example: <code>return inDocument.getElementById(locator);</code>
+    */
+    if (!/^[a-zA-Z]+$/.test(strategyName)) {
+        throw new SeleniumError("Invalid strategy name: " + strategyName);
+    }
+    var strategyFunction;
+    try {
+        strategyFunction = new Function("locator", "inDocument", "inWindow", functionDefinition);
+    } catch (ex) {
+        throw new SeleniumError("Error evaluating function definition: " + extractExceptionMessage(ex));
+    }
+    var safeStrategyFunction = function() {
+        try {
+            return strategyFunction.apply(this, arguments);
+        } catch (ex) {
+            throw new SeleniumError("Error executing strategy function " + strategyName + ": " + extractExceptionMessage(ex));
+        }
+    }
+    this.browserbot.locationStrategies[strategyName] = safeStrategyFunction;
+}
 
 /**
  *  Factory for creating "Option Locators".
