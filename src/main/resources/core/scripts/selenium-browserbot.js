@@ -1189,7 +1189,6 @@ BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
  * begin with "//".
  */
 BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
-
     // Trim any trailing "/": not valid xpath, and remains from attribute
     // locator.
     if (xpath.charAt(xpath.length - 1) == '/') {
@@ -1975,6 +1974,28 @@ IEBrowserBot.prototype._windowClosed = function(win) {
  */
 IEBrowserBot.prototype.locateElementByIdentifer = function(identifier, inDocument, inWindow) {
     return inDocument.getElementById(identifier);
+};
+
+IEBrowserBot.prototype._findElementByTagNameAndAttributeValue = function(
+        inDocument, tagName, attributeName, attributeValue
+        ) {
+    if (attributeName == "class") {
+        attributeName = "className";
+    }
+    var elements = inDocument.getElementsByTagName(tagName);
+    for (var i = 0; i < elements.length; i++) {
+        var elementAttr = elements[i].getAttribute(attributeName);
+        if (elementAttr == attributeValue) {
+            return elements[i];
+        }
+        // DGF SEL-347, IE6 URL-escapes javascript href attribute
+        if (!elementAttr) continue;
+        elementAttr = unescape(new String(elementAttr));
+        if (elementAttr == attributeValue) {
+            return elements[i];
+        }
+    }
+    return null;
 };
 
 SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
