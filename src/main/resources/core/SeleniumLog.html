@@ -35,9 +35,9 @@ function changeHandler() {
 
 function addChangeListener(element) {
     if (window.addEventListener && !window.opera)
-        element.addEventListener("change", changeHandler, true);
+        element.addEventListener("click", changeHandler, true);
     else if (window.attachEvent)
-        element.attachEvent("onchange", changeHandler);
+        element.attachEvent("onclick", changeHandler);
 }
 
 var logLevels = {
