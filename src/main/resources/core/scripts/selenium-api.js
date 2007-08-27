@@ -1989,6 +1989,18 @@ Selenium.prototype.getXpathCount = function(xpath) {
     return result;
 }
 
+Selenium.prototype.doAssignId = function(locator, identifier) {
+    /**
+    * Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
+    * using its ID rather than a slow/complicated XPath.  This ID will disappear once the page is
+    * reloaded.
+    * @param locator an <a href="#locators">element locator</a> pointing to an element
+    * @param identifier a string to be used as the ID of the specified element
+    */
+    var element = this.browserbot.findElement(locator);
+    element.id = identifier;
+}
+
 Selenium.prototype.doWaitForCondition = function(script, timeout) {
     /**
    * Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
