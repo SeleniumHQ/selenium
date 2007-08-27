@@ -36,6 +36,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.buttonWindow = window;
     this.currentWindow = this.topWindow;
     this.currentWindowName = null;
+    this.allowNativeXpath = true;
 
     // We need to know this in advance, in case the frame closes unexpectedly
     this.isSubFrameSelected = false;
@@ -1281,7 +1282,7 @@ BrowserBot.prototype._findElementUsingFullXPath = function(xpath, inDocument, in
     }
 
     // Use document.evaluate() if it's available
-    if (inDocument.evaluate) {
+    if (this.allowNativeXpath && inDocument.evaluate) {
         return inDocument.evaluate(xpath, inDocument, this._namespaceResolver, 0, null).iterateNext();
     }
 
@@ -1309,7 +1310,7 @@ BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
     xpath="count("+xpath+")";
 
     // Use document.evaluate() if it's available
-    if (inDocument.evaluate) {
+    if (this.allowNativeXpath && inDocument.evaluate) {
         var result = inDocument.evaluate(xpath, inDocument, this._namespaceResolver, XPathResult.NUMBER_TYPE, null);
         return result.numberValue;
     }

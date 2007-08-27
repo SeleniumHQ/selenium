@@ -2001,6 +2001,22 @@ Selenium.prototype.doAssignId = function(locator, identifier) {
     element.id = identifier;
 }
 
+Selenium.prototype.doAllowNativeXpath = function(allow) {
+    /**
+    * Specifies whether Selenium should use the native in-browser implementation
+    * of XPath (if any native version is available); if you pass "false" to
+    * this function, we will always use our pure-JavaScript xpath library.
+    * Using the pure-JS xpath library can improve the consistency of xpath
+    * element locators between different browser vendors, but the pure-JS
+    * version is much slower than the native implementations.
+    * @param allow boolean, true means we'll prefer to use native XPath; false means we'll only use JS XPath
+    */
+    if ("false" == allow || "0" == allow) { // The strings "false" and "0" are true values in JS
+        allow = false;
+    }
+    this.browserbot.allowNativeXpath = allow;
+}
+
 Selenium.prototype.doWaitForCondition = function(script, timeout) {
     /**
    * Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
