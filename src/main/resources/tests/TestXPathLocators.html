@@ -133,11 +133,31 @@ Copyright 2004 ThoughtWorks, Inc
             <td>nested3b</td>
         </tr>
         
+        <tr><td colspan="3"><i>test for SEL-486 and assignId</i></td></tr>
+
+        <tr>
+            <td>verifyValue</td>
+            <td>xpath=id('nested1')/div[1]//input[2]</td>
+            <td>nested3b</td>
+        </tr>
+        
+        <tr>
+            <td>assignId</td>
+            <td>xpath=//*[text()="right"]</td>
+            <td>rightButton</td>
+        </tr>
+        
+        <tr>
+            <td>verifyElementPresent</td>
+            <td>rightButton</td>
+            <td>&nbsp;</td>
+        </tr>
+        
         <tr><td colspan="3"><i>xpath counting</i></td></tr>
 
         <tr>
             <td>verifyXpathCount</td>
-            <td>//div[@id='nested1']/div[1]//input</td>
+            <td>id('nested1')/div[1]//input</td>
             <td>2</td>
         </tr>
         
