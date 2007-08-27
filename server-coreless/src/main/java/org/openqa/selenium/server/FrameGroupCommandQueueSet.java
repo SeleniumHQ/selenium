@@ -89,6 +89,12 @@ public class FrameGroupCommandQueueSet {
      */
     public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
 
+
+    /**
+     * Simple boolean to track if this queue set has been killed or not
+     */
+    private boolean dead = false;
+
     public FrameGroupCommandQueueSet(String sessionId) {
         this.sessionId = sessionId;
     }
@@ -465,6 +471,10 @@ public class FrameGroupCommandQueueSet {
         for (String matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
             dataLock.lock();
             try {
+                // if the queue has been end-of-life'd, don't bother waiting in this look, just quit immediately
+                if (dead) {
+                    break;
+                }
 
                 log.debug("waiting for window \"" + waitingForThisWindowName
                         + "\"" + " local frame \"" + waitingForThisLocalFrame
@@ -601,6 +611,7 @@ public class FrameGroupCommandQueueSet {
      */
     public void endOfLife() {
         dataLock.lock();
+        dead = true;
         try {
             for (CommandQueue frameQ : uniqueIdToCommandQueue.values()) {
                 frameQ.endOfLife();
