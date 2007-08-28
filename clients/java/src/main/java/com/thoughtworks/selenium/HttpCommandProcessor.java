@@ -164,7 +164,14 @@ public class HttpCommandProcessor implements CommandProcessor {
         return parseCSV(result);
     }
 
-    private static String[] parseCSV(String input) {
+    /** Convert backslash-escaped comma-delimited string into String array.  As described in SRC-CDP
+     * spec section 5.2.1.2, these strings are comma-delimited, but commas
+     * can be escaped with a backslash "\".  Backslashes can also be escaped
+     * as a double-backslash. 
+     * @param input the unparsed string, e.g. "veni\, vidi\, vici,c:\\foo\\bar,c:\\I came\, I \\saw\\\, I conquered" 
+     * @return the string array resulting from parsing this string
+     */
+    public static String[] parseCSV(String input) {
         ArrayList output = new ArrayList();
         StringBuffer sb = new StringBuffer();
         for(int i = 0; i < input.length(); i++) {
