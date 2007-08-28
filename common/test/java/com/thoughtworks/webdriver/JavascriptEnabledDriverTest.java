@@ -23,6 +23,14 @@ import java.util.List;
  * Test case for browsers that support using Javascript
  */
 public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
+	private String alertPage;
+
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		alertPage = baseUrl + "alerts.html";
+	}
+	
     public void testDocumentShouldReflectLatestTitle() throws Exception {
         driver.get(javascriptPage);
 
@@ -163,4 +171,47 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     	checkbox.setSelected();
     	assertEquals("checkbox thing", driver.selectText("id=result"));
     }
+    
+//    public void testShouldAllowTheUserToOkayConfirmAlerts() {
+//		driver.get(alertPage);
+//		driver.selectElement("id=confirm").click();
+//		driver.switchTo().alert().accept();
+//		assertEquals("Hello WebDriver", driver.getTitle());
+//	}
+//
+//	public void testShouldAllowUserToDismissAlerts() {
+//		driver.get(alertPage);
+//		driver.selectElement("id=confirm").click();
+//
+//		driver.switchTo().alert().dimiss();
+//		assertEquals("Testing Alerts", driver.getTitle());
+//	}
+//
+//	public void testShouldBeAbleToGetTheTextOfAnAlert() {
+//		driver.get(alertPage);
+//		driver.selectElement("id=confirm").click();
+//
+//		String alertText = driver.switchTo().alert().getText();
+//		assertEquals("Are you sure?", alertText);
+//	}
+//
+//	public void testShouldThrowAnExceptionIfAnAlertIsBeingDisplayedAndTheUserAttemptsToCarryOnRegardless() {
+//		driver.get(alertPage);
+//		driver.selectElement("id=confirm").click();
+//
+//		try {
+//			driver.get(simpleTestPage);
+//			fail("Expected the alert not to allow further progress");
+//		} catch (UnhandledAlertException e) {
+//			// This is good
+//		}
+//	}
+//	
+	public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
+		driver.get(javascriptPage);
+		
+		assertTrue(driver.selectElement("id=displayed").isDisplayed());
+		assertFalse(driver.selectElement("id=none").isDisplayed());
+		assertFalse(driver.selectElement("id=hidden").isDisplayed());
+	}
 }

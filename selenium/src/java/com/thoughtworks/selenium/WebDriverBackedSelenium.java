@@ -33,7 +33,7 @@ import com.thoughtworks.webdriver.WebElement;
 public class WebDriverBackedSelenium implements Selenium {
 	private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
 	private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
-	private final WebDriver driver;
+	protected WebDriver driver;
 	private final String baseUrl;
 	private final Map lookupStrategies = new HashMap();
 	private final Map optionSelectStrategies = new HashMap();
@@ -119,7 +119,7 @@ public class WebDriverBackedSelenium implements Selenium {
 	}
 
 	public void close() {
-		throw new UnsupportedOperationException();
+		driver.close();
 	}
 
 	public void controlKeyDown() {
@@ -437,19 +437,19 @@ public class WebDriverBackedSelenium implements Selenium {
 	}
 
 	public boolean isVisible(String locator) {
-		throw new UnsupportedOperationException();
+		return findElement(locator).isDisplayed();
 	}
 
 	public void keyDown(String locator, String keySequence) {
-		throw new UnsupportedOperationException();
+		typeKeys(locator, keySequence);
 	}
 
 	public void keyPress(String locator, String keySequence) {
-		throw new UnsupportedOperationException();
+		typeKeys(locator, keySequence);
 	}
 
 	public void keyUp(String locator, String keySequence) {
-		throw new UnsupportedOperationException();
+		typeKeys(locator, keySequence);
 	}
 
 	public void metaKeyDown() {
@@ -639,7 +639,7 @@ public class WebDriverBackedSelenium implements Selenium {
 	}
 
 	public void waitForPageToLoad(String timeout) {
-		// no-op
+		// no-op. WebDriver should be blocking
 	}
 
 	public void waitForPopUp(String windowID, String timeout) {

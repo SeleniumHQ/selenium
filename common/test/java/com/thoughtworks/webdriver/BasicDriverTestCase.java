@@ -41,6 +41,11 @@ public abstract class BasicDriverTestCase extends TestCase {
             }
             driver = storedDriver;
             
+//            Alert alert = driver.switchTo().alert();
+//            if (alert != null) {
+//                alert.dimiss();
+//            }
+            
             WebDriver resultWindow = driver.switchTo().window("result");
             if (resultWindow != null) {
             	driver = resultWindow.close();
@@ -708,8 +713,22 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
     
     public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
+    	if (isUsingSameDriverInstance()) {
+    		// Force the driver to be reopened
+    		storedDriver = null;
+    	}
     	driver.get(simpleTestPage);
     	driver.close();
+    }
+    
+    public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
+    	driver.get(formPage);
+    	WebElement textarea = driver.selectElement("id=withText");
+    	String expectedText = "I like cheese\n\nIt's really nice";
+		textarea.setValue(expectedText);
+		
+		String seenText = textarea.getValue();
+		assertEquals(expectedText, seenText);
     }
     
     protected WebDriver driver;

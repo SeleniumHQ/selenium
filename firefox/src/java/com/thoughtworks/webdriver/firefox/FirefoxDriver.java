@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
@@ -223,6 +224,10 @@ public class FirefoxDriver implements WebDriver {
         public WebDriver defaultContent() {
         	sendMessage("switchToDefaultContent", null);
         	return FirefoxDriver.this;
+        }
+        
+        public Alert alert() {
+        	throw new UnsupportedOperationException("alert");
         }
     }
 }

@@ -139,5 +139,5 @@ public interface WebElement {
      *
      * @return Whether or not the element is displayed
      */
-//    boolean isDisplayed();
+    boolean isDisplayed();
 }

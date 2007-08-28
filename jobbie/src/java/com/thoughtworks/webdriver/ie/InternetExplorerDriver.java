@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.jaxen.JaxenException;
 
+import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
@@ -154,7 +155,11 @@ public class InternetExplorerDriver implements WebDriver {
 		}
 
 		public WebDriver defaultContent() {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("defaultContent");
+		}
+		
+		public Alert alert() {
+			throw new UnsupportedOperationException("alert");
 		}
 	}
 }

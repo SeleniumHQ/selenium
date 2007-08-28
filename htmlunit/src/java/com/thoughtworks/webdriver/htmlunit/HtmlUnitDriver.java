@@ -38,6 +38,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
+import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
@@ -231,6 +232,10 @@ public class HtmlUnitDriver implements WebDriver {
         public WebDriver defaultContent() {
         	pickWindow();
         	return HtmlUnitDriver.this;
+        }
+        
+        public Alert alert() {
+        	return null;
         }
     }
 

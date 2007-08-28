@@ -42,6 +42,10 @@ public class InternetExplorerElement implements WebElement {
 
 	public native boolean toggle();
 
+	public boolean isDisplayed() {
+		throw new UnsupportedOperationException("isDisplayed");
+	}
+	
 	protected void finalize() throws Throwable {
 		deleteStoredObject();
 	}

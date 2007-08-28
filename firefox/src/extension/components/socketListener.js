@@ -99,8 +99,9 @@ SocketListener.prototype.executeCommand = function() {
 		          
 		this[command](respond, bits[1]);
 	} else if (this.driverPrototype[this.command]) {
-        var bits = this.data.split("\n", 2);
-		var id = bits[0] - 0;
+        var bits = this.data.split("\n");
+		var id = bits.shift() - 0;
+		var remainder = bits.join("\n");
 		var driver;
 
         var allWindows = this.wm.getEnumerator(null);
@@ -149,7 +150,7 @@ SocketListener.prototype.executeCommand = function() {
             command: this.command,
             data: this.data,
             driver: driver,
-            bits: bits
+            bits: remainder
         };
 
         this.command = "";
@@ -162,7 +163,7 @@ SocketListener.prototype.executeCommand = function() {
                 info.driver.window.setTimeout(wait, 10, info);
             } else {
                 try {
-                    info.driver[info.command](respond, info.bits[1] ? info.bits[1] : undefined);
+                    info.driver[info.command](respond, info.bits);
                 } catch (e) {
                     info.driver.window.dump("Exception caught: " + info.command + "(" + info.data + ")\n");
                     info.driver.window.dump(e + "\n");

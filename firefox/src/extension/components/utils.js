@@ -75,11 +75,15 @@ function isBlockLevel(node) {
 
 	try {
 		// Should we think about getting hold of the current document?
-		return "block" == node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue("display");
+		return "block" == Utils.getStyleProperty(node, "display");
 	} catch (e) {
 		return false;
 	}
 }
+
+Utils.getStyleProperty = function(node, propertyName) {
+	return node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue(propertyName);
+};
 
 function collapseWhitespace(textSoFar) {
 	return textSoFar.replace(/\s+/g, " ");
@@ -130,8 +134,10 @@ Utils.type = function(context, element, text) {
     var isTextField = Utils.isTextField(element);
 
     var value = "";
-    if (isTextField)
+    if (isTextField) {
         element.setAttribute("value", value);
+		element.value = "";
+	}
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i);
         value += character;

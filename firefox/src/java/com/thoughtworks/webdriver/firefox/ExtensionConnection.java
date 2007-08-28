@@ -32,7 +32,7 @@ class ExtensionConnection {
 
 	public Response sendMessageAndWaitForResponse(String methodName, long driverId, String argument) {
         int lines = countLines(argument) + 1;
-
+        
         StringBuffer message = new StringBuffer(methodName);
         message.append(" ").append(lines).append("\n");
 

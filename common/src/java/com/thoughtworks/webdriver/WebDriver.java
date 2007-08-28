@@ -187,5 +187,7 @@ public interface WebDriver {
          * Selects either the first frame on the page, or the main document when a page contains iframes.
          */
 		WebDriver defaultContent();
+
+		Alert alert();
     }
 }

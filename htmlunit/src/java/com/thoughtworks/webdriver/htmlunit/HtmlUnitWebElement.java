@@ -289,7 +289,7 @@ public class HtmlUnitWebElement implements WebElement {
 	}
 
     public boolean isDisplayed() {
-        return false;
+        return true; // Always assume that the element is displayed
     }
 
     private WebElement findParentForm() {

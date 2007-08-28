@@ -1,6 +1,8 @@
 package com.thoughtworks.webdriver.firefox;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.webdriver.WebDriver;
@@ -27,16 +29,24 @@ public class FirefoxWebElement implements WebElement {
 
     public String getValue() {
         String result = parent.sendMessage("getElementValue", elementId);
-        String[] parts = result.split("\n");
-        if (!"OK".equals(parts[0]))
+        
+        int newlineIndex = result.indexOf('\n');
+        
+        String status = result;
+        String remainder = "";
+        
+        if (newlineIndex != -1) {
+        	status = result.substring(0, newlineIndex);
+        	remainder = result.substring(newlineIndex + 1);
+        }
+        
+        if (!"OK".equals(status))
         	return null;
         
-        if (parts.length > 1)
-        	return parts[1];
-        return "";
+        return remainder;
     }
 
-    public WebDriver setValue(String value) {
+	public WebDriver setValue(String value) {
         parent.sendMessage("setElementValue", elementId + " " + value);
         return parent.findActiveDriver();
     }
@@ -91,5 +101,9 @@ public class FirefoxWebElement implements WebElement {
             children.add(new FirefoxWebElement(parent, ids[i]));
 
         return children;
+    }
+    
+    public boolean isDisplayed() {
+    	return Boolean.parseBoolean(parent.sendMessage("isElementDisplayed", elementId));
     }
 }

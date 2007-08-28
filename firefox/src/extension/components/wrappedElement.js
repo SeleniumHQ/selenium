@@ -241,3 +241,13 @@ FirefoxDriver.prototype.toggleElement = function(respond, elementId) {
 	
 	respond(this.context, "toggleElement", "You may only toggle an element that is either a checkbox or an option in a select that allows multiple selections");
 };
+
+FirefoxDriver.prototype.isElementDisplayed = function(respond, elementId) {
+	var element = Utils.getElementAt(elementId, this.context);
+	
+	var display = Utils.getStyleProperty(element, "display");
+	var visible = Utils.getStyleProperty(element, "visibility");
+	
+	respond(this.context, "isElementDisplayed", display != "none" && visible != "hidden");
+};
+
