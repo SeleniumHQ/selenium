@@ -143,10 +143,6 @@ function logToRc(logLevel, message) {
     }
 }
 
-function isArray(x) {
-    return ((typeof x) == "object") && (x["length"] != null);
-}
-
 function serializeString(name, s) {
     return name + "=unescape(\"" + escape(s) + "\");";
 }
@@ -252,7 +248,9 @@ objectExtend(RemoteRunner.prototype, {
             if (result.result == null) {
                 postResult = "OK";
             } else {
-                postResult = "OK," + result.result;
+                var actualResult = result.result;
+                actualResult = selArrayToString(actualResult);
+                postResult = "OK," + actualResult;
             }
             this.commandNode.style.backgroundColor = doneColor;
         }

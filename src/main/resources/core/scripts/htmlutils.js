@@ -373,6 +373,25 @@ function getTagName(element) {
     return tagName;
 }
 
+function selArrayToString(a) {
+    if (isArray(a)) {
+        // DGF copying the array, because the array-like object may be a non-modifiable nodelist
+        var retval = [];
+        for (var i = 0; i < a.length; i++) {
+            var item = a[i];
+            var replaced = new String(item).replace(/([,\\])/g, '\\$1');
+            retval[i] = replaced;
+        }
+        return retval;
+    }
+    return new String(a);
+}
+
+
+function isArray(x) {
+    return ((typeof x) == "object") && (x["length"] != null);
+}
+
 function absolutify(url, baseUrl) {
     /** returns a relative url in its absolute form, given by baseUrl.
     * 

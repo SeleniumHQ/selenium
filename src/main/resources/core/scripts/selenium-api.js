@@ -1221,7 +1221,7 @@ Selenium.prototype.getSelectedLabels = function(selectLocator) {
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @return string[] an array of all selected option labels in the specified select drop-down
    */
-    return this.findSelectedOptionProperties(selectLocator, "text").join(",");
+    return this.findSelectedOptionProperties(selectLocator, "text");
 }
 
 Selenium.prototype.getSelectedLabel = function(selectLocator) {
@@ -1239,7 +1239,7 @@ Selenium.prototype.getSelectedValues = function(selectLocator) {
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @return string[] an array of all selected option values in the specified select drop-down
    */
-    return this.findSelectedOptionProperties(selectLocator, "value").join(",");
+    return this.findSelectedOptionProperties(selectLocator, "value");
 }
 
 Selenium.prototype.getSelectedValue = function(selectLocator) {
@@ -1257,7 +1257,7 @@ Selenium.prototype.getSelectedIndexes = function(selectLocator) {
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @return string[] an array of all selected option indexes in the specified select drop-down
    */
-    return this.findSelectedOptionProperties(selectLocator, "index").join(",");
+    return this.findSelectedOptionProperties(selectLocator, "index");
 }
 
 Selenium.prototype.getSelectedIndex = function(selectLocator) {
@@ -1275,7 +1275,7 @@ Selenium.prototype.getSelectedIds = function(selectLocator) {
    * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
    * @return string[] an array of all selected option IDs in the specified select drop-down
    */
-    return this.findSelectedOptionProperties(selectLocator, "id").join(",");
+    return this.findSelectedOptionProperties(selectLocator, "id");
 }
 
 Selenium.prototype.getSelectedId = function(selectLocator) {
@@ -1321,9 +1321,6 @@ Selenium.prototype.findSelectedOptionProperties = function(locator, property) {
         if (element.options[i].selected)
         {
             var propVal = element.options[i][property];
-            if (propVal.replace) {
-                propVal.replace(/,/g, "\\,");
-            }
             selectedOptions.push(propVal);
         }
     }
@@ -1350,11 +1347,11 @@ Selenium.prototype.getSelectOptions = function(selectLocator) {
     var selectOptions = [];
 
     for (var i = 0; i < element.options.length; i++) {
-        var option = element.options[i].text.replace(/,/g, "\\,");
+        var option = element.options[i].text;
         selectOptions.push(option);
     }
 
-    return selectOptions.join(",");
+    return selectOptions;
 };
 
 

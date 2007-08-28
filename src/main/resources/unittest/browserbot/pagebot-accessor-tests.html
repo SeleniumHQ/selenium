@@ -36,17 +36,17 @@ function setUp() {
 
 function testGetButtonsReturnsBothButtons() {
     var result = pageBot.getAllButtons();
-    assertEquals("theButton,theSubmit,", result);
+    assertObjectEquals(["theButton","theSubmit"], result);
 }
 
 function testGetLinksReturnsLinks() {
     var result = pageBot.getAllLinks();
-    assertEquals("myLink,myOtherLink,yetAnotherLink,", result);
+    assertObjectEquals(["myLink","myOtherLink","yetAnotherLink"], result);
 }
 
 function testGetFieldsReturnsFields() {
     var result = pageBot.getAllFields();
-    assertEquals("theTextbox,theOtherTextbox,", result);
+    assertObjectEquals(["theTextbox","theOtherTextbox"], result);
 }
 </script>
   </head>

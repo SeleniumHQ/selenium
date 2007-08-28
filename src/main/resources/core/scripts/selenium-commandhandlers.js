@@ -136,6 +136,7 @@ objectExtend(CommandHandlerFactory.prototype, {
         // is true when the value returned by the accessor matches the specified value.
         return function(target, value) {
             var accessorResult = accessBlock(target);
+            accessorResult = selArrayToString(accessorResult);
             if (PatternMatcher.matches(value, accessorResult)) {
                 return new PredicateResult(true, "Actual value '" + accessorResult + "' did match '" + value + "'");
             } else {
@@ -150,6 +151,7 @@ objectExtend(CommandHandlerFactory.prototype, {
         // is true when the value returned by the accessor matches the specified value.
         return function(value) {
             var accessorResult = accessBlock();
+            accessorResult = selArrayToString(accessorResult);
             if (PatternMatcher.matches(value, accessorResult)) {
                 return new PredicateResult(true, "Actual value '" + accessorResult + "' did match '" + value + "'");
             } else {

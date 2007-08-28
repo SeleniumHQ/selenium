@@ -293,7 +293,7 @@ function testGetSelectOptions() {
     mockTextControl.options = [{text: "option0"},{text: "option1"},{text: "option2"}];
     mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
-    assertEquals("option0,option1,option2", selenium.getSelectOptions("id"));
+    assertObjectEquals(["option0","option1","option2"], selenium.getSelectOptions("id"));
     verifyMocks();
 }
 
@@ -302,7 +302,7 @@ function testGetSelectOptionsWithCommasEscaped() {
     mockTextControl.options = [{text: "option,0"},{text: "option.1"}];
     mockPageBot.expects("findElement", "id").returns(mockTextControl);
 
-    assertEquals("option\\,0,option.1", selenium.getSelectOptions("id"));
+    assertObjectEquals(["option,0","option.1"], selenium.getSelectOptions("id"));
     verifyMocks();
 }
 

@@ -1559,13 +1559,11 @@ BrowserBot.prototype.bodyText = function() {
 
 BrowserBot.prototype.getAllButtons = function() {
     var elements = this.getDocument().getElementsByTagName('input');
-    var result = '';
+    var result = [];
 
     for (var i = 0; i < elements.length; i++) {
         if (elements[i].type == 'button' || elements[i].type == 'submit' || elements[i].type == 'reset') {
-            result += elements[i].id;
-
-            result += ',';
+            result.push(elements[i].id);
         }
     }
 
@@ -1575,13 +1573,11 @@ BrowserBot.prototype.getAllButtons = function() {
 
 BrowserBot.prototype.getAllFields = function() {
     var elements = this.getDocument().getElementsByTagName('input');
-    var result = '';
+    var result = [];
 
     for (var i = 0; i < elements.length; i++) {
         if (elements[i].type == 'text') {
-            result += elements[i].id;
-
-            result += ',';
+            result.push(elements[i].id);
         }
     }
 
@@ -1590,12 +1586,10 @@ BrowserBot.prototype.getAllFields = function() {
 
 BrowserBot.prototype.getAllLinks = function() {
     var elements = this.getDocument().getElementsByTagName('a');
-    var result = '';
+    var result = [];
 
     for (var i = 0; i < elements.length; i++) {
-        result += elements[i].id;
-
-        result += ',';
+        result.push(elements[i].id);
     }
 
     return result;
