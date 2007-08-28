@@ -82,6 +82,14 @@ public class I18nTest extends TestCase {
         String id = "dangerous";
         verifyText(expected, id);
     }
+    
+    public void testDangerousLinks() throws UnsupportedEncodingException {
+        String[] links = sel.getAllLinks();
+        assertEquals("Wrong number of links", 3, links.length);
+        assertEquals("mangled link", "veni, vidi, vici", links[0]);
+        assertEquals("mangled link", "c:\\foo\\bar", links[1]);
+        assertEquals("mangled link", "c:\\I came, I \\saw\\, I conquered", links[2]);
+    }
 
     private void verifyText(String expected, String id) throws UnsupportedEncodingException {
         System.out.println(getName());
