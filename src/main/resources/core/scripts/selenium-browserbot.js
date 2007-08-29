@@ -1307,6 +1307,15 @@ BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
     if (browserVersion.isIE) {
         xpath = xpath.replace(/x:/g, '')
     }
+    xpath = new String(xpath);
+    if (xpath.indexOf("xpath=") == 0) {
+        xpath = xpath.substring(6); 
+    }
+    if (xpath.indexOf("count(") == 0) {
+        // DGF we COULD just fix this up for the user, but we might get it wrong (parens?)
+        throw new SeleniumError("XPath count expressions must not be wrapped in count() function: " + xpath);
+    }
+    
     xpath="count("+xpath+")";
 
     // Use document.evaluate() if it's available
