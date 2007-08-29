@@ -1669,8 +1669,7 @@ Selenium.prototype.doWindowMaximize = function() {
    var window = this.browserbot.getCurrentWindow();
    if (window!=null && window.screen) {
        window.moveTo(0,0);
-        window.outerHeight = screen.availHeight;
-        window.outerWidth = screen.availWidth;
+       window.resizeTo(screen.availWidth, screen.availHeight);
    }
 };
 
