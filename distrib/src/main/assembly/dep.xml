@@ -24,7 +24,7 @@
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.server:selenium-server:jar:standalone</include>
             </includes>
@@ -34,7 +34,7 @@
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar</include>
             </includes>
@@ -53,7 +53,7 @@
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>selenium-server-sources.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>selenium-server-sources.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar:sources</include>
             </includes>
@@ -63,7 +63,7 @@
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>selenium-server-tests.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>selenium-server-tests.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar:tests</include>
             </includes>
@@ -73,7 +73,7 @@
             <outputDirectory>selenium-server-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>selenium-server-test-sources.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>selenium-server-test-sources.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.server:selenium-server-coreless:jar:test-sources</include>
             </includes>
@@ -98,7 +98,7 @@
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar</include>
             </includes>
@@ -117,7 +117,7 @@
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}-sources.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}-sources.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:sources</include>
             </includes>
@@ -127,7 +127,7 @@
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}-tests.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}-tests.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:tests</include>
             </includes>
@@ -137,7 +137,7 @@
             <outputDirectory>selenium-java-client-driver-${version}</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}-test-sources.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifactId}-test-sources.jar</outputFileNameMapping>
             <includes>
                 <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:test-sources</include>
             </includes>
