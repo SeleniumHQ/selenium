@@ -214,4 +214,12 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 		assertFalse(driver.selectElement("id=none").isDisplayed());
 		assertFalse(driver.selectElement("id=hidden").isDisplayed());
 	}
+	
+	public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
+		driver.get(formPage);
+		
+		driver.selectElement("id=changeme").setSelected();
+		
+		assertEquals("Page3", driver.getTitle());
+	}
 }

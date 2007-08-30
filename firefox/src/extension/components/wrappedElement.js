@@ -59,10 +59,6 @@ FirefoxDriver.prototype.getElementText = function(respond, elementId) {
 
 FirefoxDriver.prototype.getElementValue = function(respond, value) {
     var element = Utils.getElementAt(value, this.context);
-    if (element.tagName.toLowerCase() == "textarea") {
-        respond(this.context, "getElementValue", "OK\n" + element.value);
-		return 
-	}
 
 	if (element["value"]) {
 		respond(this.context, "getElementValue", "OK\n" + element.value);

@@ -131,29 +131,34 @@ Utils.getElementAt = function(index, context) {
 };
 
 Utils.type = function(context, element, text) {
-    var isTextField = Utils.isTextField(element);
+    var isTextField = element["value"];
 
     var value = "";
     if (isTextField) {
-        element.setAttribute("value", value);
-		element.value = "";
+		element.value = value;
+	} else {
+		element.setAttribute("value", value);
 	}
+	
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i);
         value += character;
 
         Utils.keyDownOrUp(context, element, true, character);
         Utils.keyPress(context, element, character);
-        if (isTextField)
-            element.setAttribute("value", value);
+        if (isTextField) {
+			element.value = value;
+		} else {
+          	element.setAttribute("value", value);
+		}
         Utils.keyDownOrUp(context, element, false, character);
-    }
+	}
 };
 
 Utils.keyPress = function(context, element, text) {
     var event = Utils.getDocument(context).createEvent('KeyEvents');
     event.initKeyEvent('keypress', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, 0, text.charCodeAt(0));
-    element.dispatchEvent(event);
+	element.dispatchEvent(event);
 };
 
 Utils.keyDownOrUp = function(context, element, down, text) {
@@ -170,15 +175,6 @@ Utils.fireHtmlEvent = function(context, element, eventName) {
     var e = doc.createEvent("HTMLEvents");
 	e.initEvent("change", true, true);
     element.dispatchEvent(e);
-}
-
-Utils.isTextField = function(element) {
-    var name = element.tagName.toLowerCase();
-    if (name == "textarea")
-        return true;
-    if (name == "input")
-        return element.type == "text" || element.type == "password";
-    return false;
 }
 
 Utils.findForm = function(element) {

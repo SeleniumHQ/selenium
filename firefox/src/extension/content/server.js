@@ -9,10 +9,11 @@ window.addEventListener("load", function(e) {
     if (!driver) {
         driver = server.newDriver(window);
     } else {
-		var frames = window.content.frames;
+		if (window.content)
+			var frames = window.content.frames;
 		
 		// If we are already focused on a frame, try and stay focused
-		if (driver.context.frameId !== undefined) {
+		if (driver.context.frameId !== undefined && frames) {
 			if (frames && frames.length > driver.context.frameId) {
 				// do nothing
 			} else {

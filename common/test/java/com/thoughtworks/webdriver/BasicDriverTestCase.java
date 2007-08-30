@@ -731,6 +731,16 @@ public abstract class BasicDriverTestCase extends TestCase {
 		assertEquals(expectedText, seenText);
     }
     
+    public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
+    	driver.get(formPage);
+    	WebElement input = driver.selectElement("id=working");
+    	String expectedValue = "10/03/2007 to 30/07/1993";
+		input.setValue(expectedValue);
+    	String seenValue = input.getValue();
+    	
+    	assertEquals(expectedValue, seenValue);
+    }
+    
     protected WebDriver driver;
     protected String baseUrl;
     protected String simpleTestPage;

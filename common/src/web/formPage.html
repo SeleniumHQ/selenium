@@ -1,5 +1,14 @@
 <html>
-<head><title>We Leave From Here</title></head>
+<head>
+	<title>We Leave From Here</title>
+
+	<script type="text/javascript">
+		function changePage() {
+				var newLocation = '/page/3';
+				window.location = newLocation;
+			}
+	</script>
+</head>
 <body>
 There should be a form here:
 
@@ -45,6 +54,13 @@ There should be a form here:
 	<textarea id="notWorkingArea" disabled="disabled" cols="5" rows="5"></textarea>
 
     <textarea id="withText" rows="5" cols="5">Example text</textarea>
+</form>
+	
+<form method="post" action="resultPage.html">
+	<select id="redirect" onchange="javascript:changePage();">
+		<option selected="selected">One</option>
+		<option id="changeme">Two</option>
+	</select>
 </form>
 </body>
 </html>
