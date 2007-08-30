@@ -36,8 +36,12 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import org.apache.commons.logging.Log;
+import org.mortbay.http.HashUserRealm;
 import org.mortbay.http.HttpContext;
+import org.mortbay.http.SecurityConstraint;
 import org.mortbay.http.SocketListener;
+import org.mortbay.http.UserRealm;
+import org.mortbay.http.handler.SecurityHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
@@ -674,6 +678,20 @@ public class SeleniumServer {
         HttpContext context = new HttpContext();
         context.setContextPath("/selenium-server");
         context.setMimeMapping("xhtml", "application/xhtml+xml");
+        
+        SecurityConstraint constraint = new SecurityConstraint();
+        constraint.setName(SecurityConstraint.__BASIC_AUTH);;
+        constraint.addRole("user");
+        constraint.setAuthenticate(true);
+
+        context.addSecurityConstraint("/tests/html/basicAuth/*", constraint);
+        HashUserRealm realm = new HashUserRealm("MyRealm");
+        realm.put("alice", "foo");
+        realm.addUserToRole("alice", "user");
+        context.setRealm(realm);
+        
+        SecurityHandler sh = new SecurityHandler();
+        context.addHandler(sh);
 
         staticContentHandler = new StaticContentHandler(slowResources);
         String overrideJavascriptDir = System.getProperty("selenium.javascript.dir");

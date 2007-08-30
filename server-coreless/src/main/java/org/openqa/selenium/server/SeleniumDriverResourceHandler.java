@@ -563,6 +563,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             sessionIdsToBrowserStrings.put(sessionId, browserString);
             
             boolean multiWindow = server.isMultiWindow();
+            log.info("Launching session " + sessionId);
             launcher.launchRemoteSession(startURL, multiWindow);
             queueSet.waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
         }
