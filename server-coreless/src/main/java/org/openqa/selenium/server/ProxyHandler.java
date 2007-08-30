@@ -253,7 +253,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             log.debug("Could not proxy " + uri, e);
             LogSupport.ignore(log, e);
             if (!response.isCommitted())
-                response.sendError(HttpResponse.__400_Bad_Request);
+                response.sendError(HttpResponse.__400_Bad_Request, "Could not proxy " + uri + "\n" + e);
         }
     }
 
@@ -547,7 +547,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
         catch (Exception e) {
             log.debug("error during handleConnect", e);
-            response.sendError(HttpResponse.__500_Internal_Server_Error);
+            response.sendError(HttpResponse.__500_Internal_Server_Error, e.toString());
         }
     }
 
