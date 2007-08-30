@@ -37,10 +37,12 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     protected static final String REG_KEY_BACKUP_PROXY_SERVER = REG_KEY_SELENIUM_FOLDER + "ProxyServer";
     protected static final String REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE = REG_KEY_SELENIUM_FOLDER + "EnableAutoproxyResultCache";
     protected static final String REG_KEY_BACKUP_POPUP_MGR = REG_KEY_SELENIUM_FOLDER + "PopupMgr";
+    protected static final String REG_KEY_BACKUP_USERNAME_PASSWORD_DISABLE = REG_KEY_SELENIUM_FOLDER + "UsernamePasswordDisable";
     protected static final String REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE = REG_KEY_SELENIUM_FOLDER + "MimeExclusionListForCache";
 
     protected static String REG_KEY_BASE = "HKEY_CURRENT_USER";
     protected static final String REG_KEY_POPUP_MGR = "\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr";
+    protected static final String REG_KEY_USERNAME_PASSWORD_DISABLE = "\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE\\iexplore.exe";
     protected static final String REG_KEY_AUTOCONFIG_URL = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL";
     protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPer1_0Server";
     protected static final String REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPerServer";
@@ -94,6 +96,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_AUTOCONFIG_URL, REG_KEY_BACKUP_AUTOCONFIG_URL, String.class);
         addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_AUTOPROXY_RESULT_CACHE, REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE, boolean.class);
         addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE, String.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE, String.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_USERNAME_PASSWORD_DISABLE, REG_KEY_BACKUP_USERNAME_PASSWORD_DISABLE, boolean.class);
         
         // Only needed for proxy injection mode, but always adding to the list to guarantee they get restored correctly
         addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_PROXY_ENABLE, REG_KEY_BACKUP_PROXY_ENABLE, boolean.class);
@@ -216,6 +220,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
         // Disable caching of html
         WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
+        
+        WindowsUtils.writeBooleanRegistryValue(REG_KEY_BASE + REG_KEY_USERNAME_PASSWORD_DISABLE, false);
 
         // Disable pop-up blocking
         turnOffPopupBlocking(REG_KEY_BASE + REG_KEY_POPUP_MGR);
