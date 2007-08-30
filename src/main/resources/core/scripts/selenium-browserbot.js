@@ -649,14 +649,14 @@ BrowserBot.prototype._getFrameElement = function(win) {
                     return result;
                 }
             } catch (e) {} // it was worth a try! _getFrameElementsByName is often slow
-            result = this._getFrameElementByName(win.name, win.parent.document);
+            result = this._getFrameElementByName(win.name, win.parent.document, win);
             return result;
         }
     }
     return frameElement;
 }
 
-BrowserBot.prototype._getFrameElementByName = function(name, doc) {
+BrowserBot.prototype._getFrameElementByName = function(name, doc, win) {
     var frames;
     var frame;
     var i;
