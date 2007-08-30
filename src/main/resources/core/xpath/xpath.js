@@ -1984,7 +1984,7 @@ var xpathGrammarRules =
      [ XPathFilterExpr, TOK_SLASH, XPathRelativeLocationPath ], 19,
      makePathExpr1 ],
    [ XPathPathExpr,
-     [ XPathFilterExpr, TOK_DSLASH, XPathRelativeLocationPath ], 20,
+     [ XPathFilterExpr, TOK_DSLASH, XPathRelativeLocationPath ], 19,
      makePathExpr2 ],
 
    [ XPathFilterExpr, [ XPathPrimaryExpr, XPathPredicate, Q_MM ], 31,
