@@ -44,8 +44,16 @@ public class SeleneseTestCase extends TestCase {
     protected Selenium selenium;
     
     private StringBuffer verificationErrors = new StringBuffer();
+    
+    public SeleneseTestCase() {
+        super();
+    }
+    
+	public SeleneseTestCase(String name) {
+        super(name);
+    }
 
-	/** Calls this.setUp(null)
+    /** Calls this.setUp(null)
 	 * @see #setUp(String)
 	 */
     public void setUp() throws Exception {

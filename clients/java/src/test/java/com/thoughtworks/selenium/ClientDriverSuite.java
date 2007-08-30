@@ -82,6 +82,7 @@ public class ClientDriverSuite extends TestCase {
                
             suite.addTestSuite(ApacheMyFacesSuggestTest.class);
             suite.addTest(I18nTest.suite());
+            suite.addTestSuite(SSLOpenTest.class);
             suite.addTestSuite(RealDealIntegrationTest.class);
             suite.addTestSuite(TestErrorChecking.class);
             suite.addTestSuite(TestJavascriptParameters.class);
