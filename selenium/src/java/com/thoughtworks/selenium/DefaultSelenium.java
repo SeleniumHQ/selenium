@@ -22,7 +22,6 @@ public class DefaultSelenium extends WebDriverBackedSelenium implements Selenium
 		}
 	}
 	
-	@Override
 	public void open(String url) {
 		try {
 			super.open(url);

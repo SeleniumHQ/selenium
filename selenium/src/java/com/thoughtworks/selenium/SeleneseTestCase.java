@@ -25,11 +25,11 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.firefox.FirefoxDriver;
+import com.thoughtworks.webdriver.ie.InternetExplorerDriver;
 import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
 import com.thoughtworks.webdriver.environment.InProcessTestEnvironment;
 import com.thoughtworks.webdriver.environment.TestEnvironment;
-import com.thoughtworks.webdriver.firefox.FirefoxDriver;
-import com.thoughtworks.webdriver.ie.InternetExplorerDriver;
 import com.thoughtworks.webdriver.selenium.SeleniumTestEnvironment;
 
 /**
@@ -75,10 +75,10 @@ public class SeleneseTestCase extends TestCase {
      */
     public void setUp(String url) throws Exception {
       if(THIS_IS_WINDOWS){
-	     setUp(url, new InternetExplorerDriver());
+         setUp(url, new InternetExplorerDriver());
       }else{
 	     setUp(url, new FirefoxDriver());
-      } 
+      }
     }
     
     /**

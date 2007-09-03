@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4" relativePaths="true" type="JAVA_MODULE">
+  <component name="ModuleRootManager" />
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test/selenium-rc-java/modified" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="firefox" />
+    <orderEntry type="module" module-name="jobbie" />
+    <orderEntryProperties />
+  </component>
+</module>
+

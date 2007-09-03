@@ -15,7 +15,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/runtime/jacob-1.11.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/runtime/jaxen-1.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

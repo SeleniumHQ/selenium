@@ -798,6 +798,7 @@
       <module fileurl="file://$PROJECT_DIR$/firefox/firefox.iml" filepath="$PROJECT_DIR$/firefox/firefox.iml" />
       <module fileurl="file://$PROJECT_DIR$/htmlunit/htmlunit.iml" filepath="$PROJECT_DIR$/htmlunit/htmlunit.iml" />
       <module fileurl="file://$PROJECT_DIR$/jobbie/jobbie.iml" filepath="$PROJECT_DIR$/jobbie/jobbie.iml" />
+      <module fileurl="file://$PROJECT_DIR$/selenium/selenium.iml" filepath="$PROJECT_DIR$/selenium/selenium.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="false" project-jdk-name="1.5" project-jdk-type="JavaSDK">
