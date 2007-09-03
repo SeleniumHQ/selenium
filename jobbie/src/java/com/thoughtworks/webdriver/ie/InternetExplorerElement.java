@@ -1,56 +1,56 @@
 package com.thoughtworks.webdriver.ie;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InternetExplorerElement implements WebElement {
-	private long nodePointer;
+    private long nodePointer;
 
-	// Called from native code
-	private InternetExplorerElement(long nodePointer) {
-		this.nodePointer = nodePointer;
-	}
+    // Called from native code
+    private InternetExplorerElement(long nodePointer) {
+        this.nodePointer = nodePointer;
+    }
 
-	protected static native InternetExplorerElement createInternetExplorerElement(long ieWrapper, ElementNode node);
-	
-	public native WebDriver click();
+    protected static native InternetExplorerElement createInternetExplorerElement(long ieWrapper, ElementNode node);
 
-	public native String getAttribute(String name);
+    public native WebDriver click();
 
-	public List getChildrenOfType(String tagName) {
-		List toReturn = new ArrayList();
-		getChildrenOfTypeNatively(toReturn, tagName);
-		return toReturn;
-	}
+    public native String getAttribute(String name);
 
-	public native String getText();
+    public List getChildrenOfType(String tagName) {
+        List toReturn = new ArrayList();
+        getChildrenOfTypeNatively(toReturn, tagName);
+        return toReturn;
+    }
 
-	public native String getValue();
+    public native String getText();
 
-	public native WebDriver setValue(String value);
-	
-	public native boolean isEnabled();
+    public native String getValue();
 
-	public native boolean isSelected();
+    public native WebDriver setValue(String value);
 
-	public native WebDriver setSelected();
+    public native boolean isEnabled();
 
-	public native WebDriver submit();
+    public native boolean isSelected();
 
-	public native boolean toggle();
+    public native WebDriver setSelected();
 
-	public boolean isDisplayed() {
-		throw new UnsupportedOperationException("isDisplayed");
-	}
-	
-	protected void finalize() throws Throwable {
-		deleteStoredObject();
-	}
-	
-	private native void deleteStoredObject();
+    public native WebDriver submit();
 
-	private native void getChildrenOfTypeNatively(List toReturn, String tagName);
+    public native boolean toggle();
+
+    public boolean isDisplayed() {
+        throw new UnsupportedOperationException("isDisplayed");
+    }
+
+    protected void finalize() throws Throwable {
+        deleteStoredObject();
+    }
+
+    private native void deleteStoredObject();
+
+    private native void getChildrenOfTypeNatively(List toReturn, String tagName);
 }

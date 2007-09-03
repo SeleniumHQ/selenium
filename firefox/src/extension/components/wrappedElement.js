@@ -8,12 +8,12 @@ FirefoxDriver.prototype.click = function(respond, position) {
     // Attach a listener so that we can wait until any page load this causes to complete
     var driver = this;
     var server = this.server;
-	var alreadyReplied = false;
+    var alreadyReplied = false;
     var clickListener = new WebLoadingListener(this, function(event) {
-		if (!alreadyReplied) {
-			alreadyReplied = true;
-        	respond(driver.context, "click");
-		}
+        if (!alreadyReplied) {
+            alreadyReplied = true;
+            respond(driver.context, "click");
+        }
     });
 
     element.focus();
@@ -28,7 +28,7 @@ FirefoxDriver.prototype.click = function(respond, position) {
     }
 
     Utils.fireMouseEventOn(this.context, element, "mouseup");
-	var browser = Utils.getBrowser(this.context);
+    var browser = Utils.getBrowser(this.context);
 
     var checkForLoad = function() {
         // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
@@ -38,10 +38,10 @@ FirefoxDriver.prototype.click = function(respond, position) {
         var docLoaderService = Utils.getBrowser(driver.context).webProgress
         if (!docLoaderService.isLoadingDocument) {
             WebLoadingListener.removeListener(browser, clickListener);
-			if (!alreadyReplied) {
-				alreadyReplied = true;
-            	respond(driver.context, "click");
-			}
+            if (!alreadyReplied) {
+                alreadyReplied = true;
+                respond(driver.context, "click");
+            }
         }
     }
 
@@ -50,27 +50,27 @@ FirefoxDriver.prototype.click = function(respond, position) {
 
 FirefoxDriver.prototype.getElementText = function(respond, elementId) {
     var element = Utils.getElementAt(elementId, this.context);
-	 if (element.tagName == "TITLE") {
-		respond(this.context, "getElementText", Utils.getBrowser(this.context).contentTitle);
-	} else {
-    	respond(this.context, "getElementText", Utils.getText(element, true));
-	}
+    if (element.tagName == "TITLE") {
+        respond(this.context, "getElementText", Utils.getBrowser(this.context).contentTitle);
+    } else {
+        respond(this.context, "getElementText", Utils.getText(element, true));
+    }
 }
 
 FirefoxDriver.prototype.getElementValue = function(respond, value) {
     var element = Utils.getElementAt(value, this.context);
 
-	if (element["value"]) {
-		respond(this.context, "getElementValue", "OK\n" + element.value);
-		return;
-	}
+    if (element["value"]) {
+        respond(this.context, "getElementValue", "OK\n" + element.value);
+        return;
+    }
 
-	if (element.hasAttribute("value")) {
-		respond(this.context, "getElementValue", "OK\n" + element.getAttribute("value"));
-		return;
-	}
-		
-	respond(this.context, "getElementValue", "No match\n");
+    if (element.hasAttribute("value")) {
+        respond(this.context, "getElementValue", "OK\n" + element.getAttribute("value"));
+        return;
+    }
+
+    respond(this.context, "getElementValue", "No match\n");
 }
 
 FirefoxDriver.prototype.setElementValue = function(respond, value) {
@@ -157,14 +157,16 @@ FirefoxDriver.prototype.getElementSelected = function(respond, elementId) {
     try {
         var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement)
         selected = option.selected;
-    } catch(e) {}
+    } catch(e) {
+    }
 
     try {
         var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
         if (inputElement.type == "checkbox" || inputElement.type == "radio") {
             selected = inputElement.checked;
         }
-    } catch(e) {}
+    } catch(e) {
+    }
 
     respond(this.context, "getElementSelected", selected);
 }
@@ -173,77 +175,81 @@ FirefoxDriver.prototype.setElementSelected = function(respond, elementId) {
     var element = Utils.getElementAt(elementId, this.context);
     var wasSet = "You may not select an unselectable element";
 
-	try {
-		var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
-		if (inputElement.disabled) {
-			respond(this.context, "setElementSelected", "You may not select a disabled element");
-			return;
-		}
-	} catch(e) {
-	}
+    try {
+        var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
+        if (inputElement.disabled) {
+            respond(this.context, "setElementSelected", "You may not select a disabled element");
+            return;
+        }
+    } catch(e) {
+    }
 
     try {
         var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement)
-		if (!option.selected) {
+        if (!option.selected) {
             option.selected = true;
             Utils.fireHtmlEvent(this.context, option, "change");
         }
         wasSet = "";
-    } catch(e) {}
+    } catch(e) {
+    }
 
     try {
         var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
         if (checkbox.type == "checkbox" || checkbox.type == "radio") {
-			if (!checkbox.checked) {
-	            checkbox.checked = true;
-				Utils.fireHtmlEvent(this.context, checkbox, "change");
-			}
+            if (!checkbox.checked) {
+                checkbox.checked = true;
+                Utils.fireHtmlEvent(this.context, checkbox, "change");
+            }
             wasSet = "";
-		}
-    } catch(e) {}
+        }
+    } catch(e) {
+    }
 
     respond(this.context, "setElementSelected", wasSet);
 }
 
 FirefoxDriver.prototype.toggleElement = function(respond, elementId) {
-	var element = Utils.getElementAt(elementId, this.context);
-	
-	try {
-		var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
-		if (checkbox.type == "checkbox") {
-			checkbox.checked = !checkbox.checked;
-			Utils.fireHtmlEvent(this.context, checkbox, "change");
-			respond(this.context, "toggleElement");
-			return;
-		}
-	} catch(e) {}
-	
-	try {
-		var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
-		
-		// Find our containing select and see if it allows multiple selections
-		var select = option.parentNode;
-		while (select && select.tagName != "SELECT") {
-			select = select.parentNode;
-		}
-		
-		if (select && select.multiple) {
-			option.selected = !option.selected;
-			Utils.fireHtmlEvent(this.context, option, "change");
-			respond(this.context, "toggleElement");
-			return;
-		}
-	} catch(e) {}
-	
-	respond(this.context, "toggleElement", "You may only toggle an element that is either a checkbox or an option in a select that allows multiple selections");
+    var element = Utils.getElementAt(elementId, this.context);
+
+    try {
+        var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
+        if (checkbox.type == "checkbox") {
+            checkbox.checked = !checkbox.checked;
+            Utils.fireHtmlEvent(this.context, checkbox, "change");
+            respond(this.context, "toggleElement");
+            return;
+        }
+    } catch(e) {
+    }
+
+    try {
+        var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
+
+        // Find our containing select and see if it allows multiple selections
+        var select = option.parentNode;
+        while (select && select.tagName != "SELECT") {
+            select = select.parentNode;
+        }
+
+        if (select && select.multiple) {
+            option.selected = !option.selected;
+            Utils.fireHtmlEvent(this.context, option, "change");
+            respond(this.context, "toggleElement");
+            return;
+        }
+    } catch(e) {
+    }
+
+    respond(this.context, "toggleElement", "You may only toggle an element that is either a checkbox or an option in a select that allows multiple selections");
 };
 
 FirefoxDriver.prototype.isElementDisplayed = function(respond, elementId) {
-	var element = Utils.getElementAt(elementId, this.context);
-	
-	var display = Utils.getStyleProperty(element, "display");
-	var visible = Utils.getStyleProperty(element, "visibility");
-	
-	respond(this.context, "isElementDisplayed", display != "none" && visible != "hidden");
+    var element = Utils.getElementAt(elementId, this.context);
+
+    var display = Utils.getStyleProperty(element, "display");
+    var visible = Utils.getStyleProperty(element, "visibility");
+
+    respond(this.context, "isElementDisplayed", display != "none" && visible != "hidden");
 };
 

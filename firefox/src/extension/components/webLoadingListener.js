@@ -4,12 +4,12 @@ var ORDERED_NODE_ITERATOR_TYPE = Components.interfaces.nsIDOMXPathResult.ORDERED
 
 function WebLoadingListener(driver, toCall) {
     var listener = this;
-	var browser = Utils.getBrowser(driver.context);
-	
+    var browser = Utils.getBrowser(driver.context);
+
     this.func = function(event) {
         // Is there a meta refresh?
         // var doc = Utils.getDocument(driver.context);
-		var doc = event.originalTarget;
+        var doc = event.originalTarget;
         var result = doc.evaluate("/html/head/meta[@http-equiv]", doc, null, ORDERED_NODE_ITERATOR_TYPE, null);
         var element = result.iterateNext();
         while (element) {
@@ -30,7 +30,7 @@ function WebLoadingListener(driver, toCall) {
         toCall(event);
     }
 
-	browser.addEventListener(LOAD_EVENT, this.func, true);
+    browser.addEventListener(LOAD_EVENT, this.func, true);
 }
 
 WebLoadingListener.removeListener = function(browser, listener) {

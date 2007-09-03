@@ -30,84 +30,87 @@ Utils.getDocument = function(context) {
 };
 
 function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
-	var children = node.childNodes;
+    var children = node.childNodes;
 
-	for (var i = 0; i < children.length; i++) {
-		var child = children[i];
-		
-		// Do we need to collapse the text so far?
-		if (child["tagName"] && child.tagName == "PRE") {
-			toReturn += collapseWhitespace(textSoFar);
-			textSoFar = "";
-			var bits = getTextFromNode(child, toReturn, "", true);
-			toReturn += bits[1];
-			continue;
-		}
+    for (var i = 0; i < children.length; i++) {
+        var child = children[i];
 
-		// Or is this just plain text?
-		if (child.nodeName == "#text") {
-			var textToAdd = child.nodeValue;
-			textToAdd = textToAdd.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
-			textSoFar += textToAdd;
-			continue;
-		}
-		
-		// Treat as another child node. 
-		var bits = getTextFromNode(child, toReturn, textSoFar, false);
-		toReturn = bits[0];
-		textSoFar = bits[1];
-	}
-	
-	if (isBlockLevel(node)) {
-		if (node["tagName"] && node.tagName != "PRE") {
-			toReturn += collapseWhitespace(textSoFar) + "\n";
-			textSoFar = "";
-		} else {
-			toReturn += "\n";
-		}
-	}
-	return [toReturn, textSoFar];
-};
+        // Do we need to collapse the text so far?
+        if (child["tagName"] && child.tagName == "PRE") {
+            toReturn += collapseWhitespace(textSoFar);
+            textSoFar = "";
+            var bits = getTextFromNode(child, toReturn, "", true);
+            toReturn += bits[1];
+            continue;
+        }
+
+        // Or is this just plain text?
+        if (child.nodeName == "#text") {
+            var textToAdd = child.nodeValue;
+            textToAdd = textToAdd.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
+            textSoFar += textToAdd;
+            continue;
+        }
+
+        // Treat as another child node.
+        var bits = getTextFromNode(child, toReturn, textSoFar, false);
+        toReturn = bits[0];
+        textSoFar = bits[1];
+    }
+
+    if (isBlockLevel(node)) {
+        if (node["tagName"] && node.tagName != "PRE") {
+            toReturn += collapseWhitespace(textSoFar) + "\n";
+            textSoFar = "";
+        } else {
+            toReturn += "\n";
+        }
+    }
+    return [toReturn, textSoFar];
+}
+;
 
 function isBlockLevel(node) {
-	if (node["tagName"] && node.tagName == "BR")
-		return true;
+    if (node["tagName"] && node.tagName == "BR")
+        return true;
 
-	try {
-		// Should we think about getting hold of the current document?
-		return "block" == Utils.getStyleProperty(node, "display");
-	} catch (e) {
-		return false;
-	}
+    try {
+        // Should we think about getting hold of the current document?
+        return "block" == Utils.getStyleProperty(node, "display");
+    } catch (e) {
+        return false;
+    }
 }
 
 Utils.getStyleProperty = function(node, propertyName) {
-	return node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue(propertyName);
+    return node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue(propertyName);
 };
 
 function collapseWhitespace(textSoFar) {
-	return textSoFar.replace(/\s+/g, " ");
-};
+    return textSoFar.replace(/\s+/g, " ");
+}
+;
 
 function getPreformattedText(node) {
-	var textToAdd = "";
-	return getTextFromNode(node, "", textToAdd, true)[1];
-};
+    var textToAdd = "";
+    return getTextFromNode(node, "", textToAdd, true)[1];
+}
+;
 
 function isWhiteSpace(character) {
-	return character == '\n' || character == ' ' || character == '\t' || character == '\r';
+    return character == '\n' || character == ' ' || character == '\t' || character == '\r';
 }
 
 Utils.getText = function(element) {
-	var bits = getTextFromNode(element, "", "", element.tagName == "PRE");
-	
-	var text = collapseWhitespace(bits[1]) + bits[0];
-	var index = text.length - 1;
-	while (isWhiteSpace(text[index])) {
-		index--;
-	}
+    var bits = getTextFromNode(element, "", "", element.tagName == "PRE");
 
-	return text.slice(0, index+1);
+    var text = collapseWhitespace(bits[1]) + bits[0];
+    var index = text.length - 1;
+    while (isWhiteSpace(text[index])) {
+        index--;
+    }
+
+    return text.slice(0, index + 1);
 };
 
 Utils.addToKnownElements = function(element, context) {
@@ -135,11 +138,11 @@ Utils.type = function(context, element, text) {
 
     var value = "";
     if (isTextField) {
-		element.value = value;
-	} else {
-		element.setAttribute("value", value);
-	}
-	
+        element.value = value;
+    } else {
+        element.setAttribute("value", value);
+    }
+
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i);
         value += character;
@@ -147,18 +150,18 @@ Utils.type = function(context, element, text) {
         Utils.keyDownOrUp(context, element, true, character);
         Utils.keyPress(context, element, character);
         if (isTextField) {
-			element.value = value;
-		} else {
-          	element.setAttribute("value", value);
-		}
+            element.value = value;
+        } else {
+            element.setAttribute("value", value);
+        }
         Utils.keyDownOrUp(context, element, false, character);
-	}
+    }
 };
 
 Utils.keyPress = function(context, element, text) {
     var event = Utils.getDocument(context).createEvent('KeyEvents');
     event.initKeyEvent('keypress', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, 0, text.charCodeAt(0));
-	element.dispatchEvent(event);
+    element.dispatchEvent(event);
 };
 
 Utils.keyDownOrUp = function(context, element, down, text) {
@@ -173,7 +176,7 @@ Utils.keyDownOrUp = function(context, element, down, text) {
 Utils.fireHtmlEvent = function(context, element, eventName) {
     var doc = Utils.getDocument(context);
     var e = doc.createEvent("HTMLEvents");
-	e.initEvent("change", true, true);
+    e.initEvent("change", true, true);
     element.dispatchEvent(e);
 }
 
@@ -240,10 +243,10 @@ Utils.dumpProperties = function(view, rows) {
         var value = "\t" + i + ": ";
         try {
 
-            if (typeof(view[i])  == typeof(Function)) {
+            if (typeof(view[i]) == typeof(Function)) {
                 value += " function()";
             } else {
-                    value += String(view[i]);
+                value += String(view[i]);
             }
         } catch (e) {
             value += " Cannot obtain value";

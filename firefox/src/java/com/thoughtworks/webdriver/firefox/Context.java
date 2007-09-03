@@ -5,7 +5,7 @@ class Context {
 
     public Context(String fromExtension) {
         if (fromExtension.length() > 0)
-           this.fromExtension = fromExtension;
+            this.fromExtension = fromExtension;
         else
             this.fromExtension = "0 ?";
     }

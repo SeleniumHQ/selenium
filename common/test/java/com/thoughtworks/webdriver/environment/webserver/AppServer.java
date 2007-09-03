@@ -18,11 +18,11 @@
 package com.thoughtworks.webdriver.environment.webserver;
 
 public interface AppServer {
-	    String getBaseUrl();
+    String getBaseUrl();
 
-	    void start();
+    void start();
 
-	    void stop();
+    void stop();
 
-	    void addAdditionalWebApplication(String context, String absolutePath);
+    void addAdditionalWebApplication(String context, String absolutePath);
 }

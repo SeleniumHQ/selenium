@@ -23,14 +23,14 @@ import java.util.List;
  * Test case for browsers that support using Javascript
  */
 public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
-	private String alertPage;
+    private String alertPage;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		
-		alertPage = baseUrl + "alerts.html";
-	}
-	
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        alertPage = baseUrl + "alerts.html";
+    }
+
     public void testDocumentShouldReflectLatestTitle() throws Exception {
         driver.get(javascriptPage);
 
@@ -45,7 +45,7 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     public void testDocumentShouldReflectLatestDom() throws Exception {
         driver.get(javascriptPage);
         String currentText = driver.selectText("//div[@id='dynamo']");
-    	assertEquals("What's for dinner?", currentText);
+        assertEquals("What's for dinner?", currentText);
 
         WebElement webElement = driver.selectElement("link=Update a div");
         webElement.click();
@@ -53,68 +53,68 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         String newText = driver.selectText("//div[@id='dynamo']");
         assertEquals("Fish and chips!", newText);
     }
-    
-	public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
+
+    public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.selectElement("//input[@id='keyUp']");
-		element.setValue("I like cheese");
+        element.setValue("I like cheese");
 
-		WebElement result = driver.selectElement("//div[@id='result']");
-		assertEquals("I like cheese", result.getText());
-	}
+        WebElement result = driver.selectElement("//div[@id='result']");
+        assertEquals("I like cheese", result.getText());
+    }
 
-	public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
+    public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.selectElement("//input[@id='keyDown']");
-		element.setValue("I like cheese");
+        element.setValue("I like cheese");
 
-		WebElement result = driver.selectElement("//div[@id='result']");
-		// Because the key down gets the result before the input element is
-		// filled, we're a letter short here
-		assertEquals("I like chees", result.getText());
-	}
+        WebElement result = driver.selectElement("//div[@id='result']");
+        // Because the key down gets the result before the input element is
+        // filled, we're a letter short here
+        assertEquals("I like chees", result.getText());
+    }
 
-	public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
+    public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.selectElement("//input[@id='keyPress']");
-		element.setValue("I like cheese");
+        element.setValue("I like cheese");
 
-		WebElement result = driver.selectElement("//div[@id='result']");
-		// Because the key down gets the result before the input element is
-		// filled, we're a letter short here
-		assertEquals("I like chees", result.getText());
-	}
-	
-	public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
+        WebElement result = driver.selectElement("//div[@id='result']");
+        // Because the key down gets the result before the input element is
+        // filled, we're a letter short here
+        assertEquals("I like chees", result.getText());
+    }
+
+    public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.selectElement("//textarea[@id='keyUpArea']");
-		element.setValue("I like cheese");
-		
-		WebElement result = driver.selectElement("//div[@id='result']");
-		assertEquals("I like cheese", result.getText());
-	}
+        element.setValue("I like cheese");
 
-	public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
+        WebElement result = driver.selectElement("//div[@id='result']");
+        assertEquals("I like cheese", result.getText());
+    }
+
+    public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.selectElement("//textarea[@id='keyDownArea']");
-		element.setValue("I like cheese");
+        element.setValue("I like cheese");
 
-		WebElement result = driver.selectElement("//div[@id='result']");
-		// Because the key down gets the result before the input element is
-		// filled, we're a letter short here
-		assertEquals("I like chees", result.getText());
-	}
+        WebElement result = driver.selectElement("//div[@id='result']");
+        // Because the key down gets the result before the input element is
+        // filled, we're a letter short here
+        assertEquals("I like chees", result.getText());
+    }
 
-	public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
+    public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.selectElement("//textarea[@id='keyPressArea']");
-		element.setValue("I like cheese");
+        element.setValue("I like cheese");
 
-		WebElement result = driver.selectElement("//div[@id='result']");
-		// Because the key down gets the result before the input element is
-		// filled, we're a letter short here
-		assertEquals("I like chees", result.getText());
-	}
+        WebElement result = driver.selectElement("//div[@id='result']");
+        // Because the key down gets the result before the input element is
+        // filled, we're a letter short here
+        assertEquals("I like chees", result.getText());
+    }
 
     public void testShouldIssueMouseDownEvents() {
         driver.get(javascriptPage);
@@ -147,31 +147,31 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         String result = driver.selectElement("//div[@id='result']").getText();
         assertEquals("mouse down", result);
     }
-    
-    public void testShouldEmitOnChangeEventsWhenSelectingElements() {
-    	driver.get(javascriptPage);
-    	WebElement select = driver.selectElement("id=selector");
-    	List allOptions = select.getChildrenOfType("option");
-    	
-    	String initialTextValue = driver.selectText("id=result");
-    	
-    	WebElement foo = (WebElement) allOptions.get(0);
-    	WebElement bar = (WebElement) allOptions.get(1);
 
-    	foo.setSelected();
-    	assertEquals(initialTextValue, driver.selectText("id=result"));
-    	bar.setSelected();
-    	assertEquals("bar", driver.selectText("id=result"));
+    public void testShouldEmitOnChangeEventsWhenSelectingElements() {
+        driver.get(javascriptPage);
+        WebElement select = driver.selectElement("id=selector");
+        List allOptions = select.getChildrenOfType("option");
+
+        String initialTextValue = driver.selectText("id=result");
+
+        WebElement foo = (WebElement) allOptions.get(0);
+        WebElement bar = (WebElement) allOptions.get(1);
+
+        foo.setSelected();
+        assertEquals(initialTextValue, driver.selectText("id=result"));
+        bar.setSelected();
+        assertEquals("bar", driver.selectText("id=result"));
     }
-    
+
     public void testShouldEmitOnChangeEventsWhenChnagingTheStateOfACheckbox() {
-    	driver.get(javascriptPage);
-    	WebElement checkbox = driver.selectElement("id=checkbox");
-    	
-    	checkbox.setSelected();
-    	assertEquals("checkbox thing", driver.selectText("id=result"));
+        driver.get(javascriptPage);
+        WebElement checkbox = driver.selectElement("id=checkbox");
+
+        checkbox.setSelected();
+        assertEquals("checkbox thing", driver.selectText("id=result"));
     }
-    
+
 //    public void testShouldAllowTheUserToOkayConfirmAlerts() {
 //		driver.get(alertPage);
 //		driver.selectElement("id=confirm").click();
@@ -206,20 +206,21 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 //			// This is good
 //		}
 //	}
-//	
-	public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
-		driver.get(javascriptPage);
-		
-		assertTrue(driver.selectElement("id=displayed").isDisplayed());
-		assertFalse(driver.selectElement("id=none").isDisplayed());
-		assertFalse(driver.selectElement("id=hidden").isDisplayed());
-	}
-	
-	public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
-		driver.get(formPage);
-		
-		driver.selectElement("id=changeme").setSelected();
-		
-		assertEquals("Page3", driver.getTitle());
-	}
+
+    //
+    public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
+        driver.get(javascriptPage);
+
+        assertTrue(driver.selectElement("id=displayed").isDisplayed());
+        assertFalse(driver.selectElement("id=none").isDisplayed());
+        assertFalse(driver.selectElement("id=hidden").isDisplayed());
+    }
+
+    public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
+        driver.get(formPage);
+
+        driver.selectElement("id=changeme").setSelected();
+
+        assertEquals("Page3", driver.getTitle());
+    }
 }

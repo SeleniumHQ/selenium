@@ -1,12 +1,12 @@
 function FirefoxDriver(server, id) {
     this.server = server;
     this.context = new Context();
-	this.id = id;
+    this.id = id;
 }
 
 FirefoxDriver.prototype.get = function(respond, url) {
     var self = this;
-	this.context.frameId = "?";
+    this.context.frameId = "?";
 
     new WebLoadingListener(this, function(event) {
         // TODO: Rescue the URI and response code from the event
@@ -17,31 +17,31 @@ FirefoxDriver.prototype.get = function(respond, url) {
 }
 
 FirefoxDriver.prototype.close = function(respond) {
-       // Grab all the references we'll need. Once we call close all this might go away
-       var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
-       var appService = Utils.getService("@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
-       var forceQuit = Components.interfaces.nsIAppStartup.eForceQuit;
-       var server = this.server;
+    // Grab all the references we'll need. Once we call close all this might go away
+    var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
+    var appService = Utils.getService("@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
+    var forceQuit = Components.interfaces.nsIAppStartup.eForceQuit;
+    var server = this.server;
 
-       var lastWindow;
-       var allWindows = wm.getEnumerator("navigator:browser");
-       
-       // Here we go!
-       try {
-               var browser = Utils.getBrowser(this.context);
-               browser.contentWindow.close();
-       } catch(e) {
-               dump(e);
-       }
-       
-       // If we're on a Mac we might have closed all the windows but not quit, so ensure that we do actually quit :)
-       var allWindows = wm.getEnumerator("navigator:browser");
-       if (!allWindows.hasMoreElements()) {
-               appService.quit(forceQuit);
-       }
-       
-       // If we're still running, return
-       respond(this.context, "close");
+    var lastWindow;
+    var allWindows = wm.getEnumerator("navigator:browser");
+
+    // Here we go!
+    try {
+        var browser = Utils.getBrowser(this.context);
+        browser.contentWindow.close();
+    } catch(e) {
+        dump(e);
+    }
+
+    // If we're on a Mac we might have closed all the windows but not quit, so ensure that we do actually quit :)
+    var allWindows = wm.getEnumerator("navigator:browser");
+    if (!allWindows.hasMoreElements()) {
+        appService.quit(forceQuit);
+    }
+
+    // If we're still running, return
+    respond(this.context, "close");
 }
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
@@ -54,8 +54,8 @@ FirefoxDriver.prototype.title = function(respond) {
 };
 
 FirefoxDriver.prototype.getPageSource = function(respond) {
-	var source = Utils.getDocument(this.context).getElementsByTagName("html")[0].innerHTML;
-	respond(this.context, "getPageSource", "<html>" + source + "</html>");
+    var source = Utils.getDocument(this.context).getElementsByTagName("html")[0].innerHTML;
+    respond(this.context, "getPageSource", "<html>" + source + "</html>");
 };
 
 
@@ -87,7 +87,7 @@ FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
 };
 
 FirefoxDriver.prototype.selectElementById = function(respond, id) {
-	var doc = Utils.getDocument(this.context);
+    var doc = Utils.getDocument(this.context);
     var element = doc.getElementById(id);
 
     if (element == null || !element) {
@@ -128,6 +128,6 @@ FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
 }
 
 FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
-	this.context.frameId = "?";
-	respond(this.context, "switchToDefaultContent");
+    this.context.frameId = "?";
+    respond(this.context, "switchToDefaultContent");
 }

@@ -17,14 +17,13 @@
 
 package com.thoughtworks.webdriver;
 
-import java.util.Iterator;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
 import com.thoughtworks.webdriver.environment.InProcessTestEnvironment;
 import com.thoughtworks.webdriver.environment.TestEnvironment;
+import junit.framework.TestCase;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * All drivers should pass these basic tests
@@ -40,25 +39,25 @@ public abstract class BasicDriverTestCase extends TestCase {
                 storedDriver = getDriver();
             }
             driver = storedDriver;
-            
+
 //            Alert alert = driver.switchTo().alert();
 //            if (alert != null) {
 //                alert.dimiss();
 //            }
-            
+
             WebDriver resultWindow = driver.switchTo().window("result");
             if (resultWindow != null) {
-            	driver = resultWindow.close();
-            	
-            	// Stored driver may now point to a Bad Window. Make sure that it doesn't :)
-            	storedDriver = driver;
+                driver = resultWindow.close();
+
+                // Stored driver may now point to a Bad Window. Make sure that it doesn't :)
+                storedDriver = driver;
             }
-            
+
             assertNotNull("Driver cannot be null", driver);
         } else {
             driver = getDriver();
         }
-        
+
         driver.setVisible(true);
 
         startEnvironmentIfNecessary();
@@ -95,7 +94,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         if (!isUsingSameDriverInstance())
             driver.close();
         else {
-        	// Close all the windows, expect for one
+            // Close all the windows, expect for one
         }
         super.tearDown();
     }
@@ -165,12 +164,12 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime() {
-    	driver.get(formPage);
+        driver.get(formPage);
         driver.get(xhtmlTestPage);
         driver.selectElement("link=click me").click();
         assertEquals("We Arrive Here", driver.getTitle());
     }
-    
+
     public void testShouldBeAbleToClickOnLinkIdentifiedById() {
         driver.get(xhtmlTestPage);
         driver.selectElement("//a[@id='linkId']").click();
@@ -285,77 +284,77 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
-    	driver.get(simpleTestPage);
-    	String selectText = driver.selectText("id=oneline");
-    	assertEquals("A single line of text", selectText);
-    	
-    	String getText = driver.selectElement("id=oneline").getText();
-    	assertEquals("A single line of text", getText);
+        driver.get(simpleTestPage);
+        String selectText = driver.selectText("id=oneline");
+        assertEquals("A single line of text", selectText);
+
+        String getText = driver.selectElement("id=oneline").getText();
+        assertEquals("A single line of text", getText);
     }
 
     public void testShouldReturnTheEntireTextContentOfChildElements() {
-    	driver.get(simpleTestPage);
-    	String text = driver.selectText("id=multiline");
-    	
-    	assertTrue(text.contains("A div containing"));
-    	assertTrue(text.contains("More than one line of text"));
-    	assertTrue(text.contains("and block level elements"));
+        driver.get(simpleTestPage);
+        String text = driver.selectText("id=multiline");
+
+        assertTrue(text.contains("A div containing"));
+        assertTrue(text.contains("More than one line of text"));
+        assertTrue(text.contains("and block level elements"));
     }
 
     public void testShouldRepresentABlockLevelElementAsANewline() {
-    	driver.get(simpleTestPage);
-    	String text = driver.selectText("id=multiline");
-    	
-    	assertEquals(" A div containing\n" + 
-    			" More than one line of text\n" + 
-    			" and block level elements", text);
+        driver.get(simpleTestPage);
+        String text = driver.selectText("id=multiline");
+
+        assertEquals(" A div containing\n" +
+                " More than one line of text\n" +
+                " and block level elements", text);
     }
-    
+
     public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
-    	driver.get(simpleTestPage);
-    	String text = driver.selectText("id=lotsofspaces");
-    	
-    	assertEquals("This line has lots of spaces.", text);
+        driver.get(simpleTestPage);
+        String text = driver.selectText("id=lotsofspaces");
+
+        assertEquals("This line has lots of spaces.", text);
     }
-    
+
     public void testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter() {
-    	driver.get(simpleTestPage);
-    	String text = driver.selectText("id=nbsp");
-    	
-    	assertEquals("This line has a non-breaking space", text);
+        driver.get(simpleTestPage);
+        String text = driver.selectText("id=nbsp");
+
+        assertEquals("This line has a non-breaking space", text);
     }
-    
+
     public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
-    	driver.get(simpleTestPage);
-    	String text = driver.selectText("id=nbspandspaces");
-    	
-    	assertEquals("This line has a non-breaking space and spaces", text);
+        driver.get(simpleTestPage);
+        String text = driver.selectText("id=nbspandspaces");
+
+        assertEquals("This line has a non-breaking space and spaces", text);
     }
 
     public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
-    	driver.get(simpleTestPage);
-    	String text = driver.selectText("id=inline");
-    	
-    	assertEquals("This line has text within elements that are meant to be displayed inline", text);
+        driver.get(simpleTestPage);
+        String text = driver.selectText("id=inline");
+
+        assertEquals("This line has text within elements that are meant to be displayed inline", text);
     }
 
     public void testShouldReturnTheEntireTextOfInlineElements() {
-    	driver.get(simpleTestPage);
-    	String text = driver.selectText("id=span");
-    	
-    	assertEquals("An inline element", text);
+        driver.get(simpleTestPage);
+        String text = driver.selectText("id=span");
+
+        assertEquals("An inline element", text);
     }
-    
+
     /*
     public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
-    	driver.get(simpleTestPage);
-    	String text = driver.selectText("id=preformatted");
-    	
-    	assertEquals("This section has a\npreformatted\n   text block\n" + 
-    			"  within in\n" + 
-    			"        ", text);
+        driver.get(simpleTestPage);
+        String text = driver.selectText("id=preformatted");
+
+        assertEquals("This section has a\npreformatted\n   text block\n" +
+                "  within in\n" +
+                "        ", text);
     }
-    */  
+    */
     public void testShouldFindSingleElementByXPath() {
         driver.get(xhtmlTestPage);
         WebElement element = driver.selectElement("//h1");
@@ -383,56 +382,56 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertFalse(one.isSelected());
         assertTrue(two.isSelected());
     }
-    
+
     public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
-    	driver.get(formPage);
-    	
-    	WebElement multiSelect = driver.selectElement("id=multi");
-    	List options = multiSelect.getChildrenOfType("option");
-    	Iterator allOptions = options.iterator();
-    	while (allOptions.hasNext()) {
-    		WebElement option = (WebElement) allOptions.next();
-    		option.setSelected();
-    	}
-    	
-    	for (int i = 0; i < options.size(); i++) {
-    		WebElement option = (WebElement) options.get(i);
-    		assertTrue("Option at index is not selected but should be: " + i, option.isSelected());
-    	}
+        driver.get(formPage);
+
+        WebElement multiSelect = driver.selectElement("id=multi");
+        List options = multiSelect.getChildrenOfType("option");
+        Iterator allOptions = options.iterator();
+        while (allOptions.hasNext()) {
+            WebElement option = (WebElement) allOptions.next();
+            option.setSelected();
+        }
+
+        for (int i = 0; i < options.size(); i++) {
+            WebElement option = (WebElement) options.get(i);
+            assertTrue("Option at index is not selected but should be: " + i, option.isSelected());
+        }
     }
-    
+
     public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
-    	driver.get(formPage);
-    	
-    	WebElement multiSelect = driver.selectElement("id=multi");
-    	List options = multiSelect.getChildrenOfType("option");
-    	
-    	WebElement option = (WebElement) options.get(0);
-    	assertTrue(option.isSelected());
-    	option.toggle();
-    	assertFalse(option.isSelected());
-    	option.toggle();
-    	assertTrue(option.isSelected());
-    	
-    	option = (WebElement) options.get(2);
-    	assertTrue(option.isSelected());
+        driver.get(formPage);
+
+        WebElement multiSelect = driver.selectElement("id=multi");
+        List options = multiSelect.getChildrenOfType("option");
+
+        WebElement option = (WebElement) options.get(0);
+        assertTrue(option.isSelected());
+        option.toggle();
+        assertFalse(option.isSelected());
+        option.toggle();
+        assertTrue(option.isSelected());
+
+        option = (WebElement) options.get(2);
+        assertTrue(option.isSelected());
     }
-    
+
     public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
-    	driver.get(formPage);
-    	
-    	WebElement select = driver.selectElement("//select[@name='selectomatic']");
-    	List options = select.getChildrenOfType("option");
-    	WebElement option = (WebElement) options.get(0);
-    	
-    	try {
-    		option.toggle();
-    		fail("You may not toggle an option if the select only allows one thing to be selected");
-    	} catch (RuntimeException e) {
-    		// This is expected
-    	}
+        driver.get(formPage);
+
+        WebElement select = driver.selectElement("//select[@name='selectomatic']");
+        List options = select.getChildrenOfType("option");
+        WebElement option = (WebElement) options.get(0);
+
+        try {
+            option.toggle();
+            fail("You may not toggle an option if the select only allows one thing to be selected");
+        } catch (RuntimeException e) {
+            // This is expected
+        }
     }
-    
+
     public void testShouldBeAbleToSelectACheckBox() {
         driver.get(formPage);
         WebElement checkbox = driver.selectElement("//input[@id='checky']");
@@ -464,34 +463,34 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testShouldNotBeAbleToSelectSomethingThatIsDisabled() {
-    	driver.get(formPage);
-    	WebElement radioButton = driver.selectElement("id=nothing");
-    	assertFalse(radioButton.isEnabled());
-    	try {
-    		radioButton.setSelected();
-    		fail("Should have thrown an exception");
-    	} catch (UnsupportedOperationException e) {
-    		assertTrue("e.getMessage: " + e.getMessage(), e.getMessage().contains("disabled"));
-    	}
+        driver.get(formPage);
+        WebElement radioButton = driver.selectElement("id=nothing");
+        assertFalse(radioButton.isEnabled());
+        try {
+            radioButton.setSelected();
+            fail("Should have thrown an exception");
+        } catch (UnsupportedOperationException e) {
+            assertTrue("e.getMessage: " + e.getMessage(), e.getMessage().contains("disabled"));
+        }
     }
 
     public void testShouldBeAbleToSelectARadioButton() {
-    	driver.get(formPage);
-    	WebElement radioButton = driver.selectElement("id=peas");
-    	assertFalse(radioButton.isSelected());
-    	radioButton.setSelected();
-    	assertTrue(radioButton.isSelected());
+        driver.get(formPage);
+        WebElement radioButton = driver.selectElement("id=peas");
+        assertFalse(radioButton.isSelected());
+        radioButton.setSelected();
+        assertTrue(radioButton.isSelected());
     }
 
     public void testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton() {
-    	driver.get(formPage);
-    	WebElement radioButton = driver.selectElement("id=cheese");
-    	try {
-    		radioButton.toggle();
-    		fail("You should not be able to toggle a radio button");
-    	} catch (UnsupportedOperationException e) {
-    		assertTrue(e.getMessage().contains("toggle"));
-    	}
+        driver.get(formPage);
+        WebElement radioButton = driver.selectElement("id=cheese");
+        try {
+            radioButton.toggle();
+            fail("You should not be able to toggle a radio button");
+        } catch (UnsupportedOperationException e) {
+            assertTrue(e.getMessage().contains("toggle"));
+        }
     }
 
     public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
@@ -654,104 +653,104 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
-    	driver.get(iframePage);
-    	driver.selectElement("id=iframe_page_heading");
+        driver.get(iframePage);
+        driver.selectElement("id=iframe_page_heading");
     }
-    
+
     public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
-    	driver.get(iframePage);
-    	driver.switchTo().frame(0);
-    	
-    	try {
-    		driver.switchTo().defaultContent();
-    		driver.selectElement("id=iframe_page_heading");
-    	} catch (Exception e) {
-    		fail("Should have switched back to main content");
-    	}	
+        driver.get(iframePage);
+        driver.switchTo().frame(0);
+
+        try {
+            driver.switchTo().defaultContent();
+            driver.selectElement("id=iframe_page_heading");
+        } catch (Exception e) {
+            fail("Should have switched back to main content");
+        }
     }
-    
+
     public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
-    	driver.get(iframePage);
-    	driver.switchTo().frame(0);
-    	
-    	driver.selectElement("id=submitButton").click();
-    	String hello = driver.selectElement("id=greeting").getText();
-    	assertEquals("Success!", hello);
+        driver.get(iframePage);
+        driver.switchTo().frame(0);
+
+        driver.selectElement("id=submitButton").click();
+        String hello = driver.selectElement("id=greeting").getText();
+        assertEquals("Success!", hello);
     }
-    
+
     public void testShouldReturnANewWebDriverWhichSendsCommandsToANewWindowWhenItIsOpened() {
         driver.get(xhtmlTestPage);
 
         WebDriver newWindow = driver.selectElement("link=Open new window").click();
         assertEquals("XHTML Test Page", driver.getTitle());
         assertEquals("We Arrive Here", newWindow.getTitle());
-        
+
         driver = driver.switchTo().window("result");
         assertEquals("We Arrive Here", driver.getTitle());
-        
+
         driver.switchTo().window("");
     }
-    
-    public void testShouldBeAbleToPerformMultipleActionsOnDifferentDrivers() {
-    	driver.get(iframePage);
-    	driver.switchTo().frame(0);
-    	
-    	driver.selectElement("id=submitButton").click();
-    	String hello = driver.selectElement("id=greeting").getText();
-    	assertEquals("Success!", hello);
 
-    	driver.get(xhtmlTestPage);
+    public void testShouldBeAbleToPerformMultipleActionsOnDifferentDrivers() {
+        driver.get(iframePage);
+        driver.switchTo().frame(0);
+
+        driver.selectElement("id=submitButton").click();
+        String hello = driver.selectElement("id=greeting").getText();
+        assertEquals("Success!", hello);
+
+        driver.get(xhtmlTestPage);
 
         WebDriver newWindow = driver.selectElement("link=Open new window").click();
         assertEquals("XHTML Test Page", driver.getTitle());
         assertEquals("We Arrive Here", newWindow.getTitle());
-        
+
         driver = driver.switchTo().window("result");
         assertEquals("We Arrive Here", driver.getTitle());
-        
+
         driver.switchTo().window("");
     }
-    
-    public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
-    	if (isUsingSameDriverInstance()) {
-    		// Force the driver to be reopened
-    		storedDriver = null;
-    	}
-    	driver.get(simpleTestPage);
-    	driver.close();
-    }
-    
-    public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
-    	driver.get(formPage);
-    	WebElement textarea = driver.selectElement("id=withText");
-    	String expectedText = "I like cheese\n\nIt's really nice";
-		textarea.setValue(expectedText);
-		
-		String seenText = textarea.getValue();
-		assertEquals(expectedText, seenText);
-    }
-    
-    public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
-    	driver.get(formPage);
-    	WebElement input = driver.selectElement("id=working");
-    	String expectedValue = "10/03/2007 to 30/07/1993";
-		input.setValue(expectedValue);
-    	String seenValue = input.getValue();
-    	
-    	assertEquals(expectedValue, seenValue);
-    }
-    
-    public void testShouldReturnTheSourceOfAPage() {
-    	driver.get(simpleTestPage);
-    	
-    	String source = driver.getPageSource().toLowerCase();
 
-    	assertTrue(source.contains("<html"));
-    	assertTrue(source.contains("</html"));
-    	assertTrue(source.contains("an inline element"));
-    	assertTrue(source.contains("<p id=\"lotsofspaces\""));
+    public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
+        if (isUsingSameDriverInstance()) {
+            // Force the driver to be reopened
+            storedDriver = null;
+        }
+        driver.get(simpleTestPage);
+        driver.close();
     }
-    
+
+    public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
+        driver.get(formPage);
+        WebElement textarea = driver.selectElement("id=withText");
+        String expectedText = "I like cheese\n\nIt's really nice";
+        textarea.setValue(expectedText);
+
+        String seenText = textarea.getValue();
+        assertEquals(expectedText, seenText);
+    }
+
+    public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
+        driver.get(formPage);
+        WebElement input = driver.selectElement("id=working");
+        String expectedValue = "10/03/2007 to 30/07/1993";
+        input.setValue(expectedValue);
+        String seenValue = input.getValue();
+
+        assertEquals(expectedValue, seenValue);
+    }
+
+    public void testShouldReturnTheSourceOfAPage() {
+        driver.get(simpleTestPage);
+
+        String source = driver.getPageSource().toLowerCase();
+
+        assertTrue(source.contains("<html"));
+        assertTrue(source.contains("</html"));
+        assertTrue(source.contains("an inline element"));
+        assertTrue(source.contains("<p id=\"lotsofspaces\""));
+    }
+
     protected WebDriver driver;
     protected String baseUrl;
     protected String simpleTestPage;

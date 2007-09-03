@@ -20,6 +20,7 @@ package com.thoughtworks.webdriver.environment;
 import com.thoughtworks.webdriver.environment.webserver.AppServer;
 
 public interface TestEnvironment {
-	AppServer getAppServer();
-	void stop();
+    AppServer getAppServer();
+
+    void stop();
 }

@@ -17,40 +17,29 @@
 
 package com.thoughtworks.webdriver.htmlunit;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.jaxen.JaxenException;
-import org.jaxen.XPath;
-
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.html.FrameWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.html.*;
 import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
 import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import org.jaxen.JaxenException;
+import org.jaxen.XPath;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class HtmlUnitDriver implements WebDriver {
-	private WebClient webClient;
+    private WebClient webClient;
     private WebWindow currentWindow;
 
     public HtmlUnitDriver() {
-		newWebClient();
+        newWebClient();
         webClient.addWebWindowListener(new WebWindowListener() {
-             private boolean waitingToLoad;
+            private boolean waitingToLoad;
 
             public void webWindowOpened(WebWindowEvent webWindowEvent) {
                 waitingToLoad = true;
@@ -69,38 +58,38 @@ public class HtmlUnitDriver implements WebDriver {
         });
     }
 
-	private HtmlUnitDriver(WebWindow currentWindow) {
-		this();
-		this.currentWindow = currentWindow;
-	}
+    private HtmlUnitDriver(WebWindow currentWindow) {
+        this();
+        this.currentWindow = currentWindow;
+    }
 
-	private void newWebClient() {
-		webClient = new WebClient();
-		webClient.setThrowExceptionOnFailingStatusCode(true);
-		webClient.setJavaScriptEnabled(false);
-		webClient.setRedirectEnabled(true);
-	}
+    private void newWebClient() {
+        webClient = new WebClient();
+        webClient.setThrowExceptionOnFailingStatusCode(true);
+        webClient.setJavaScriptEnabled(false);
+        webClient.setRedirectEnabled(true);
+    }
 
-	public WebDriver get(String url) {
-		try {
-			URL fullUrl = new URL(url);
-			Page page = webClient.getPage(fullUrl);
-			page.initialize();
+    public WebDriver get(String url) {
+        try {
+            URL fullUrl = new URL(url);
+            Page page = webClient.getPage(fullUrl);
+            page.initialize();
             pickWindow();
             return this;
         } catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+            throw new RuntimeException(e);
+        }
+    }
 
     private void pickWindow() {
         currentWindow = webClient.getCurrentWindow();
         Page page = webClient.getCurrentWindow().getEnclosedPage();
 
         if (((HtmlPage) page).getFrames().size() > 0) {
-        	FrameWindow frame = (FrameWindow) ((HtmlPage) page).getFrames().get(0);
-        	if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
-        		switchTo().frame(0);
+            FrameWindow frame = (FrameWindow) ((HtmlPage) page).getFrames().get(0);
+            if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
+                switchTo().frame(0);
         }
     }
 
@@ -109,62 +98,62 @@ public class HtmlUnitDriver implements WebDriver {
     }
 
     public String getTitle() {
-		HtmlPage htmlPage = lastPage();
-		if (htmlPage == null) {
-			return null; // no page so there is no title
-		}
-		return htmlPage.getTitleText();
-	}
+        HtmlPage htmlPage = lastPage();
+        if (htmlPage == null) {
+            return null; // no page so there is no title
+        }
+        return htmlPage.getTitleText();
+    }
 
-	public boolean getVisible() {
-		return false;
-	}
+    public boolean getVisible() {
+        return false;
+    }
 
-	public WebDriver setVisible(boolean visible) {
-		// no-op
-		return this;
-	}
-	
-	public String selectText(String selector) {
-		WebElement element = selectElement(selector);
-		return element.getText();
-	}
+    public WebDriver setVisible(boolean visible) {
+        // no-op
+        return this;
+    }
 
-	public List selectElements(String selector) {
-		try {
-			HtmlUnitXPath xpath = new HtmlUnitXPath(selector);
-			List nodes = xpath.selectNodes(lastPage());
-			List elements = new ArrayList();
-			
-			for (int i = 0; i < nodes.size(); i++) {
-				elements.add(new HtmlUnitWebElement(this, (HtmlElement) nodes.get(i)));
-			}
-			
-			return elements;
-		} catch (JaxenException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public String selectText(String selector) {
+        WebElement element = selectElement(selector);
+        return element.getText();
+    }
 
-	public WebElement selectElement(String selector) {
-		if (selector.startsWith("link=")) {
-			return selectLinkWithText(selector);
-		} else if (selector.startsWith("id=")) {
-			return selectElementById(selector);
-		} else {
-			return selectElementUsingXPath(selector);
-		}
-	}
-	
-	public String getPageSource() {
-		WebResponse webResponse = lastPage().getWebResponse();
-		return webResponse.getContentAsString();
-	}
-	
-	public WebDriver close() {
-		newWebClient();
-		return findActiveWindow();
-	}
+    public List selectElements(String selector) {
+        try {
+            HtmlUnitXPath xpath = new HtmlUnitXPath(selector);
+            List nodes = xpath.selectNodes(lastPage());
+            List elements = new ArrayList();
+
+            for (int i = 0; i < nodes.size(); i++) {
+                elements.add(new HtmlUnitWebElement(this, (HtmlElement) nodes.get(i)));
+            }
+
+            return elements;
+        } catch (JaxenException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public WebElement selectElement(String selector) {
+        if (selector.startsWith("link=")) {
+            return selectLinkWithText(selector);
+        } else if (selector.startsWith("id=")) {
+            return selectElementById(selector);
+        } else {
+            return selectElementUsingXPath(selector);
+        }
+    }
+
+    public String getPageSource() {
+        WebResponse webResponse = lastPage().getWebResponse();
+        return webResponse.getContentAsString();
+    }
+
+    public WebDriver close() {
+        newWebClient();
+        return findActiveWindow();
+    }
 
 
     public TargetLocator switchTo() {
@@ -175,44 +164,44 @@ public class HtmlUnitDriver implements WebDriver {
         return (HtmlPage) currentWindow.getEnclosedPage();
     }
 
-	private WebElement selectLinkWithText(String selector) {
-		int equalsIndex = selector.indexOf('=') + 1;
-		String expectedText = selector.substring(equalsIndex).trim();
-		
-		List anchors = lastPage().getAnchors();
-		Iterator allAnchors = anchors.iterator();
-		while (allAnchors.hasNext()) {
-			HtmlAnchor anchor = (HtmlAnchor) allAnchors.next();
-			if (expectedText.equals(anchor.asText())) {
-				return new HtmlUnitWebElement(this, anchor);
-			}
-		}
-		throw new NoSuchElementException("No link found with text: " + expectedText);
-	}
+    private WebElement selectLinkWithText(String selector) {
+        int equalsIndex = selector.indexOf('=') + 1;
+        String expectedText = selector.substring(equalsIndex).trim();
 
-	private WebElement selectElementById(String selector) {
-		int equalsIndex = selector.indexOf('=') + 1;
-		String id = selector.substring(equalsIndex).trim();
+        List anchors = lastPage().getAnchors();
+        Iterator allAnchors = anchors.iterator();
+        while (allAnchors.hasNext()) {
+            HtmlAnchor anchor = (HtmlAnchor) allAnchors.next();
+            if (expectedText.equals(anchor.asText())) {
+                return new HtmlUnitWebElement(this, anchor);
+            }
+        }
+        throw new NoSuchElementException("No link found with text: " + expectedText);
+    }
+
+    private WebElement selectElementById(String selector) {
+        int equalsIndex = selector.indexOf('=') + 1;
+        String id = selector.substring(equalsIndex).trim();
 
         try {
             HtmlElement element = lastPage().getHtmlElementById(id);
-	    	return new HtmlUnitWebElement(this, element);
+            return new HtmlUnitWebElement(this, element);
         } catch (ElementNotFoundException e) {
             throw new NoSuchElementException("Cannot find element with ID: " + id);
         }
     }
-	
-	private WebElement selectElementUsingXPath(String selector) {
-		try {
-			XPath xpath = new HtmlUnitXPath(selector);
+
+    private WebElement selectElementUsingXPath(String selector) {
+        try {
+            XPath xpath = new HtmlUnitXPath(selector);
             Object node = xpath.selectSingleNode(lastPage());
-			if (node == null) 
-				throw new NoSuchElementException("Cannot locate a node using " + selector);
-			return new HtmlUnitWebElement(this, (HtmlElement) node);
-		} catch (JaxenException e) {
-			throw new RuntimeException(e);
-		}
-	}
+            if (node == null)
+                throw new NoSuchElementException("Cannot locate a node using " + selector);
+            return new HtmlUnitWebElement(this, (HtmlElement) node);
+        } catch (JaxenException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private class HtmlUnitTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
@@ -227,29 +216,29 @@ public class HtmlUnitDriver implements WebDriver {
             pickWindow();
             return HtmlUnitDriver.this;
         }
-        
+
         public WebDriver defaultContent() {
-        	pickWindow();
-        	return HtmlUnitDriver.this;
+            pickWindow();
+            return HtmlUnitDriver.this;
         }
-        
+
         public Alert alert() {
-        	return null;
+            return null;
         }
     }
 
-	protected WebDriver findActiveWindow() {
+    protected WebDriver findActiveWindow() {
         WebWindow window = webClient.getCurrentWindow();
         HtmlPage page = (HtmlPage) window.getEnclosedPage();
 
         if (page != null && page.getFrames().size() > 0) {
-        	FrameWindow frame = (FrameWindow) page.getFrames().get(0);
-        	if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
-        		return new HtmlUnitDriver(frame);
+            FrameWindow frame = (FrameWindow) page.getFrames().get(0);
+            if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
+                return new HtmlUnitDriver(frame);
         }
-        
+
         if (currentWindow != null && currentWindow.equals(window))
-        	return this;
+            return this;
         return new HtmlUnitDriver(window);
-	}
+    }
 }

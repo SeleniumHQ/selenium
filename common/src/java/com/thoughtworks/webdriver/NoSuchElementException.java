@@ -18,7 +18,7 @@
 package com.thoughtworks.webdriver;
 
 public class NoSuchElementException extends RuntimeException {
-	public NoSuchElementException(String reason) {
-		super(reason);
-	}
+    public NoSuchElementException(String reason) {
+        super(reason);
+    }
 }

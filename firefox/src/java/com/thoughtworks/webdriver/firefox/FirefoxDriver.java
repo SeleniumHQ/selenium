@@ -1,5 +1,10 @@
 package com.thoughtworks.webdriver.firefox;
 
+import com.thoughtworks.webdriver.Alert;
+import com.thoughtworks.webdriver.NoSuchElementException;
+import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.WebElement;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -7,19 +12,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.webdriver.Alert;
-import com.thoughtworks.webdriver.NoSuchElementException;
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.WebElement;
-
 public class FirefoxDriver implements WebDriver {
     private final ExtensionConnection extension;
     private long id;
 
     public FirefoxDriver() {
-    	this(null);
+        this(null);
     }
-    
+
     public FirefoxDriver(File firefoxBinary) {
         extension = new ExtensionConnection("localhost", 7055);
 
@@ -34,27 +34,27 @@ public class FirefoxDriver implements WebDriver {
                             "To set up a profile for WebDriver, simply start firefox from the command line with the \"profileManager\" switch\n" +
                             "This will look like: firefox -profileManager");
         }
-        
+
         fixId();
     }
 
     private FirefoxDriver(ExtensionConnection extension, long id) {
-		this.extension = extension;
-		this.id = id;
-	}
-    
+        this.extension = extension;
+        this.id = id;
+    }
+
     public WebDriver close() {
-		sendMessage("close", null);
-    	try {
-    		return findActiveDriver();
-    	} catch (NullPointerException e) {
-    		// All good
-    		return null;
-    	}
+        sendMessage("close", null);
+        try {
+            return findActiveDriver();
+        } catch (NullPointerException e) {
+            // All good
+            return null;
+        }
     }
 
     public String getPageSource() {
-		return sendMessage("getPageSource", null);
+        return sendMessage("getPageSource", null);
     }
 
     public WebDriver get(String url) {
@@ -81,7 +81,7 @@ public class FirefoxDriver implements WebDriver {
             commandName = "selectElementUsingLink";
             argument = selector.substring("link=".length());
         } else if (selector.startsWith("id=")) {
-        	commandName = "selectElementById";
+            commandName = "selectElementById";
             argument = selector.substring("id=".length());
         }
 
@@ -105,13 +105,13 @@ public class FirefoxDriver implements WebDriver {
     }
 
     public String selectText(String xpath) {
-    	WebElement element = selectElement(xpath);
-    	return element.getText();
+        WebElement element = selectElement(xpath);
+        return element.getText();
     }
 
     public WebDriver setVisible(boolean visible) {
         // no-op
-    	return this;
+        return this;
     }
 
     public TargetLocator switchTo() {
@@ -150,16 +150,16 @@ public class FirefoxDriver implements WebDriver {
     }
 
     private void startFirefox(File firefoxBinary) {
-    	File binary = firefoxBinary;
-    	
-    	if (firefoxBinary == null)
-    		binary = locateFirefoxBinary();
-    	
+        File binary = firefoxBinary;
+
+        if (firefoxBinary == null)
+            binary = locateFirefoxBinary();
+
         try {
-        	if (!binary.exists()) {
-        		throw new RuntimeException("Unable to locate firefox binary. Please check that it is installed in the default location, " +
-        				"or the path given points to the firefox binary. I would have used: " + firefoxBinary.getPath());
-        	}
+            if (!binary.exists()) {
+                throw new RuntimeException("Unable to locate firefox binary. Please check that it is installed in the default location, " +
+                        "or the path given points to the firefox binary. I would have used: " + firefoxBinary.getPath());
+            }
             Runtime.getRuntime().exec(binary.getAbsolutePath() + " -P WebDriver");
         } catch (IOException e) {
             throw new RuntimeException("Cannot load firefox");
@@ -184,24 +184,24 @@ public class FirefoxDriver implements WebDriver {
     }
 
     protected WebDriver findActiveDriver() {
-		String response = sendMessage("findActiveDriver", null);
-		long newId = Long.parseLong(response);
-		if (newId == id) {
-			return this;
-		}
-		return new FirefoxDriver(extension, newId);
-	}
-    
+        String response = sendMessage("findActiveDriver", null);
+        long newId = Long.parseLong(response);
+        if (newId == id) {
+            return this;
+        }
+        return new FirefoxDriver(extension, newId);
+    }
+
     protected String sendMessage(String methodName, String argument) {
         Response response = extension.sendMessageAndWaitForResponse(methodName, id, argument);
         return response.getResponseText();
     }
 
     private void fixId() {
-		String response = sendMessage("findActiveDriver", null);
-		id = Long.parseLong(response);
-	}
-    
+        String response = sendMessage("findActiveDriver", null);
+        id = Long.parseLong(response);
+    }
+
     private class FirefoxTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
             sendMessage("switchToFrame", String.valueOf(frameIndex));
@@ -209,25 +209,25 @@ public class FirefoxDriver implements WebDriver {
         }
 
         public WebDriver window(String windowName) {
-			String response = sendMessage("switchToWindow", String.valueOf(windowName));
-			if (response == null || "No window found".equals(response)) {
-				return null;
-			}
-			try {
-				FirefoxDriver.this.id = Long.parseLong(response);
-			} catch (NumberFormatException e) {
-				throw new RuntimeException("When switching to window: " + windowName + " ---- " + response);
-			}
-			return FirefoxDriver.this;
-		}
-        
-        public WebDriver defaultContent() {
-        	sendMessage("switchToDefaultContent", null);
-        	return FirefoxDriver.this;
+            String response = sendMessage("switchToWindow", String.valueOf(windowName));
+            if (response == null || "No window found".equals(response)) {
+                return null;
+            }
+            try {
+                FirefoxDriver.this.id = Long.parseLong(response);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("When switching to window: " + windowName + " ---- " + response);
+            }
+            return FirefoxDriver.this;
         }
-        
+
+        public WebDriver defaultContent() {
+            sendMessage("switchToDefaultContent", null);
+            return FirefoxDriver.this;
+        }
+
         public Alert alert() {
-        	throw new UnsupportedOperationException("alert");
+            throw new UnsupportedOperationException("alert");
         }
     }
 }

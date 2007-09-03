@@ -4,7 +4,7 @@ import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
 public class AltLookupStrategy implements LookupStrategy {
-	public WebElement find(WebDriver driver, String use) {
-		return driver.selectElement("//*[@alt='" + use + "']");
-	}
+    public WebElement find(WebDriver driver, String use) {
+        return driver.selectElement("//*[@alt='" + use + "']");
+    }
 }

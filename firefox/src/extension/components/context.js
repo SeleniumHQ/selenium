@@ -1,8 +1,8 @@
 function Context(windowId, frameId) {
     this.windowId = windowId - 0 || 0;
-	
-	if (frameId && frameId.match(/^\d+$/g)) 
-    	this.frameId  = frameId - 0;
+
+    if (frameId && frameId.match(/^\d+$/g))
+        this.frameId = frameId - 0;
 }
 
 Context.fromString = function(text) {

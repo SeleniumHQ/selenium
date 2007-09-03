@@ -1,12 +1,10 @@
 package com.thoughtworks.webdriver.firefox;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FirefoxWebElement implements WebElement {
     private final FirefoxDriver parent;
@@ -14,7 +12,7 @@ public class FirefoxWebElement implements WebElement {
 
     public FirefoxWebElement(FirefoxDriver parent, String elementId) {
         this.parent = parent;
-		this.elementId = elementId;
+        this.elementId = elementId;
     }
 
     public WebDriver click() {
@@ -29,24 +27,24 @@ public class FirefoxWebElement implements WebElement {
 
     public String getValue() {
         String result = parent.sendMessage("getElementValue", elementId);
-        
+
         int newlineIndex = result.indexOf('\n');
-        
+
         String status = result;
         String remainder = "";
-        
+
         if (newlineIndex != -1) {
-        	status = result.substring(0, newlineIndex);
-        	remainder = result.substring(newlineIndex + 1);
+            status = result.substring(0, newlineIndex);
+            remainder = result.substring(newlineIndex + 1);
         }
-        
+
         if (!"OK".equals(status))
-        	return null;
-        
+            return null;
+
         return remainder;
     }
 
-	public WebDriver setValue(String value) {
+    public WebDriver setValue(String value) {
         parent.sendMessage("setElementValue", elementId + " " + value);
         return parent.findActiveDriver();
     }
@@ -55,17 +53,17 @@ public class FirefoxWebElement implements WebElement {
         String result = parent.sendMessage("getElementAttribute", elementId + " " + name);
         String[] parts = result.split("\n");
         if (!"OK".equals(parts[0]))
-        	return null;
-        
+            return null;
+
         if (parts.length > 1)
-        	return parts[1];
+            return parts[1];
         return "";
     }
 
     public boolean toggle() {
         String response = parent.sendMessage("toggleElement", elementId);
         if (response.length() != 0) {
-        	throw new UnsupportedOperationException(response);
+            throw new UnsupportedOperationException(response);
         }
         return isSelected();
     }
@@ -102,8 +100,8 @@ public class FirefoxWebElement implements WebElement {
 
         return children;
     }
-    
+
     public boolean isDisplayed() {
-    	return Boolean.parseBoolean(parent.sendMessage("isElementDisplayed", elementId));
+        return Boolean.parseBoolean(parent.sendMessage("isElementDisplayed", elementId));
     }
 }

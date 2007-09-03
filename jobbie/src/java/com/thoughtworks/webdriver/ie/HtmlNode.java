@@ -1,15 +1,15 @@
 package com.thoughtworks.webdriver.ie;
 
 interface HtmlNode {
-	DocumentNode getDocument();
+    DocumentNode getDocument();
 
-	HtmlNode getParent();
+    HtmlNode getParent();
 
-	HtmlNode getFirstChild();
+    HtmlNode getFirstChild();
 
-	HtmlNode getNextSibling();
-		
-	String getName();
+    HtmlNode getNextSibling();
 
-	AttributeNode getFirstAttribute();
+    String getName();
+
+    AttributeNode getFirstAttribute();
 }

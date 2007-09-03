@@ -21,7 +21,7 @@ import com.thoughtworks.webdriver.BasicDriverTestCase;
 import com.thoughtworks.webdriver.WebDriver;
 
 public class HtmlUnitDriverTest extends BasicDriverTestCase {
-	protected WebDriver getDriver() {
-		return new HtmlUnitDriver();
-	}
+    protected WebDriver getDriver() {
+        return new HtmlUnitDriver();
+    }
 }

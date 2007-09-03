@@ -1,19 +1,19 @@
 function WebDriverServer() {
     this.wrappedJSObject = this;
     this.serverSocket = Components.classes["@mozilla.org/network/server-socket;1"].createInstance(Components.interfaces.nsIServerSocket);
-	this.nextId = 0;
+    this.nextId = 0;
 }
 
 WebDriverServer.prototype.newDriver = function(window) {
-	window.fxdriver = new FirefoxDriver(this, this.getNextId());
-	// Yuck. But it allows us to refer to it later.
-	window.fxdriver.window = window;
-	return window.fxdriver;
+    window.fxdriver = new FirefoxDriver(this, this.getNextId());
+    // Yuck. But it allows us to refer to it later.
+    window.fxdriver.window = window;
+    return window.fxdriver;
 };
 
 WebDriverServer.prototype.getNextId = function() {
-	this.nextId++;
-	return this.nextId;
+    this.nextId++;
+    return this.nextId;
 }
 
 WebDriverServer.prototype.onSocketAccepted = function(socket, transport) {
@@ -44,7 +44,7 @@ WebDriverServer.prototype.close = function()
 
 WebDriverServer.prototype.QueryInterface = function(aIID) {
     if (!aIID.equals(nsISupports))
-      throw Components.results.NS_ERROR_NO_INTERFACE;
+        throw Components.results.NS_ERROR_NO_INTERFACE;
     return this;
 };
 

@@ -21,23 +21,23 @@ import com.thoughtworks.webdriver.environment.webserver.AppServer;
 import com.thoughtworks.webdriver.environment.webserver.Jetty5AppServer;
 
 public class InProcessTestEnvironment implements TestEnvironment {
-	private AppServer appServer;
+    private AppServer appServer;
 
-	public InProcessTestEnvironment() {
-		appServer = new Jetty5AppServer();
-		appServer.start();
-	}
-	
-	public AppServer getAppServer() {
-		return appServer;
-	}
-	
-	public void stop() {
-		appServer.stop();
-	}
-	
-	public static void main(String[] args) {
-		InProcessTestEnvironment environment = new InProcessTestEnvironment();
-		System.out.println("Application server started. " + environment.getAppServer().getBaseUrl());
-	}
+    public InProcessTestEnvironment() {
+        appServer = new Jetty5AppServer();
+        appServer.start();
+    }
+
+    public AppServer getAppServer() {
+        return appServer;
+    }
+
+    public void stop() {
+        appServer.stop();
+    }
+
+    public static void main(String[] args) {
+        InProcessTestEnvironment environment = new InProcessTestEnvironment();
+        System.out.println("Application server started. " + environment.getAppServer().getBaseUrl());
+    }
 }

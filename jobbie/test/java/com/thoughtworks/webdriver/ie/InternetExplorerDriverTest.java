@@ -21,11 +21,11 @@ import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
 import com.thoughtworks.webdriver.WebDriver;
 
 public class InternetExplorerDriverTest extends JavascriptEnabledDriverTest {
-	protected boolean isUsingSameDriverInstance() {
-		return true;
-	}
-	
-	protected WebDriver getDriver() {
-		return new InternetExplorerDriver();
-	}
+    protected boolean isUsingSameDriverInstance() {
+        return true;
+    }
+
+    protected WebDriver getDriver() {
+        return new InternetExplorerDriver();
+    }
 }

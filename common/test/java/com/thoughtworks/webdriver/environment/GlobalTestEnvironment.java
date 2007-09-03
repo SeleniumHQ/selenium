@@ -19,37 +19,37 @@ package com.thoughtworks.webdriver.environment;
 
 
 /**
- * Used to hold a TestEnvironment in a static class-level field. 
+ * Used to hold a TestEnvironment in a static class-level field.
  */
 public class GlobalTestEnvironment {
-	private static TestEnvironment environment;
-	
-	public static boolean isSetUp() {
-		return environment != null;
-	}
-	
-	public static TestEnvironment get() {
-		return environment;
-	}
-	
-	public static void set(TestEnvironment environment) {
-		GlobalTestEnvironment.environment = environment;
-	}
+    private static TestEnvironment environment;
 
-	public static TestEnvironment get(Class startThisIfNothingIsAlreadyRunning) {
-		if (environment == null) {
-			try {
-				environment = (TestEnvironment) startThisIfNothingIsAlreadyRunning.newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-		return environment;
-	}
+    public static boolean isSetUp() {
+        return environment != null;
+    }
 
-	public static void stop() {
-		if (environment != null) 
-			environment.stop();
-		environment = null;
-	}
+    public static TestEnvironment get() {
+        return environment;
+    }
+
+    public static void set(TestEnvironment environment) {
+        GlobalTestEnvironment.environment = environment;
+    }
+
+    public static TestEnvironment get(Class startThisIfNothingIsAlreadyRunning) {
+        if (environment == null) {
+            try {
+                environment = (TestEnvironment) startThisIfNothingIsAlreadyRunning.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return environment;
+    }
+
+    public static void stop() {
+        if (environment != null)
+            environment.stop();
+        environment = null;
+    }
 }

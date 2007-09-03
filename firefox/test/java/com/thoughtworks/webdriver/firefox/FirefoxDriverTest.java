@@ -1,25 +1,25 @@
 package com.thoughtworks.webdriver.firefox;
 
-import java.io.File;
-
 import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 
+import java.io.File;
+
 public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
-	protected WebDriver getDriver() {
-		String firefoxBinary = System.getProperty("firefox.bin");
-		File binary = null;
-		if (firefoxBinary != null) {
-			System.out.println("Using: " + firefoxBinary);
-			binary = new File(firefoxBinary);
-		}
-		return new FirefoxDriver(binary);
-	}
-	
-	protected boolean isUsingSameDriverInstance() {
-		return true;
-	}
+    protected WebDriver getDriver() {
+        String firefoxBinary = System.getProperty("firefox.bin");
+        File binary = null;
+        if (firefoxBinary != null) {
+            System.out.println("Using: " + firefoxBinary);
+            binary = new File(firefoxBinary);
+        }
+        return new FirefoxDriver(binary);
+    }
+
+    protected boolean isUsingSameDriverInstance() {
+        return true;
+    }
 
     public void testShouldContinueToWorkIfUnableToFindElementById() {
         driver.get(formPage);
@@ -34,7 +34,7 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
         // Is this works, then we're golden
         driver.get(xhtmlTestPage);
     }
-    
+
     public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
         driver.get(xhtmlTestPage);
 
@@ -43,8 +43,8 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
 
         driver.switchTo().window("result");
         assertEquals("We Arrive Here", driver.getTitle());
-        
-    	driver.get(iframePage);
-    	driver.selectElement("id=iframe_page_heading");
+
+        driver.get(iframePage);
+        driver.selectElement("id=iframe_page_heading");
     }
 }
