@@ -79,9 +79,13 @@ SocketListener.prototype.executeCommand = function() {
 	        var length = response["split"] ? response.split("\n").length + 1 : 2;
 	        output += length + "\n" + context + "\n" + response + "\n";
 	    }
-
-	    self.outstream.writeString(output, output.length);
-	    self.outstream.flush();
+	
+		var slices = output.length / 256 + 1;  // Fail on powers of 2 :)
+		for (var i = 0; i < slices; i++) {
+			var slice = output.slice(i * 256, (i+1) * 256);
+	    	self.outstream.writeString(slice, slice.length);
+	    	self.outstream.flush();
+		}
 	};
 	
 	if (!this.driverPrototype) 

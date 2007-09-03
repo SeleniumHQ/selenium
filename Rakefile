@@ -62,6 +62,10 @@ task :install_firefox do
   sh "#{firefox} -P WebDriver"
 end
 
+file 'common/build/webdriver-common.jar' => FileList['common/src/java/*.java'];
+
+file 'common/build/webdriver-common-test.jar' => FileList['common/test/java/*.java'];
+
 %w(common htmlunit jobbie firefox).each do |driver|
   source = FileList["#{driver}/src/java/**/*.java"]
   libs = ["#{driver}/lib/runtime/*.jar", "#{driver}/lib/buildtime/*.jar", "common/build/webdriver-common.jar"]

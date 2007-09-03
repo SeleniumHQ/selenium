@@ -9,6 +9,7 @@ public class GlobTextMatchingStrategy implements TextMatchingStrategy {
 		String regex = compareThis.replace(".", "\\.").replace("*", ".*").replace("?", ".?");
 		Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 		Matcher matcher = pattern.matcher(with);
+		
 		return matcher.find();
 	}
 }

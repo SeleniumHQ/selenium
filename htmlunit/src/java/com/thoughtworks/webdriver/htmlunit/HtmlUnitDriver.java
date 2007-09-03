@@ -156,10 +156,9 @@ public class HtmlUnitDriver implements WebDriver {
 		}
 	}
 	
-	public WebDriver dumpBody() {
+	public String getPageSource() {
 		WebResponse webResponse = lastPage().getWebResponse();
-		System.out.println(webResponse.getContentAsString());
-		return this;
+		return webResponse.getContentAsString();
 	}
 	
 	public WebDriver close() {

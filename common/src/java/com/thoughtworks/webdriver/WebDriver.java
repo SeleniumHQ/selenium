@@ -143,14 +143,16 @@ public interface WebDriver {
 
 	// Misc
 	/**
-	 * Dump the body of the last loaded page to standard out (normally the
-	 * console). If the page has been modified after loading (for example, by
-	 * Javascript) there is no guarentee that the returned text is that of the
-	 * modified page. Please consult the documentation of the particular driver
-	 * being used to determine whether the returned text reflects the current
-	 * state of the page or the text last sent by the web server.
+	 * Get the source of the last loaded page. If the page has been modified
+	 * after loading (for example, by Javascript) there is no guarentee that the
+	 * returned text is that of the modified page. Please consult the
+	 * documentation of the particular driver being used to determine whether
+	 * the returned text reflects the current state of the page or the text last
+	 * sent by the web server.
+	 * 
+	 * @return The source of the current page
 	 */
-	WebDriver dumpBody();
+	String getPageSource();
 
 	/**
 	 * Close the current window, quitting the browser if it's the last window

@@ -53,8 +53,8 @@ public class FirefoxDriver implements WebDriver {
     	}
     }
 
-	public WebDriver dumpBody() {
-		throw new UnsupportedOperationException("dumpBody");
+    public String getPageSource() {
+		return sendMessage("getPageSource", null);
     }
 
     public WebDriver get(String url) {

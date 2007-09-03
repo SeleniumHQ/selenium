@@ -265,7 +265,7 @@ public class WebDriverBackedSelenium implements Selenium {
 	}
 
 	public String getHtmlSource() {
-		throw new UnsupportedOperationException();
+		return driver.getPageSource();
 	}
 
 	public String getLocation() {
@@ -432,7 +432,7 @@ public class WebDriverBackedSelenium implements Selenium {
 			use = matcher.group(2);
 		}
 		TextMatchingStrategy strategy = (TextMatchingStrategy) textMatchingStrategies.get(strategyName);
-		
+
 		return strategy.isAMatch(use, text);
 	}
 

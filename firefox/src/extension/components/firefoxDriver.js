@@ -37,7 +37,6 @@ FirefoxDriver.prototype.close = function(respond) {
        // If we're on a Mac we might have closed all the windows but not quit, so ensure that we do actually quit :)
        var allWindows = wm.getEnumerator("navigator:browser");
        if (!allWindows.hasMoreElements()) {
-               dump("Quitting. No more open windows\n");
                appService.quit(forceQuit);
        }
        
@@ -53,6 +52,12 @@ FirefoxDriver.prototype.title = function(respond) {
     var browser = Utils.getBrowser(this.context);
     respond(this.context, "title", browser.contentTitle);
 };
+
+FirefoxDriver.prototype.getPageSource = function(respond) {
+	var source = Utils.getDocument(this.context).getElementsByTagName("html")[0].innerHTML;
+	respond(this.context, "getPageSource", "<html>" + source + "</html>");
+};
+
 
 FirefoxDriver.prototype.selectElementUsingXPath = function(respond, xpath) {
     var doc = Utils.getDocument(this.context);

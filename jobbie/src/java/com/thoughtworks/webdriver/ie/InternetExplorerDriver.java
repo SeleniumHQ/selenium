@@ -41,8 +41,8 @@ public class InternetExplorerDriver implements WebDriver {
 		this.iePointer = iePointer;
 	}
 	
-	public WebDriver dumpBody() {
-		throw new UnsupportedOperationException("dumpBody");
+	public String getPageSource() {
+		throw new UnsupportedOperationException("getPageSource");
 	}
 	
 	public native WebDriver close();

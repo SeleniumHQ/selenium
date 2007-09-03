@@ -741,6 +741,17 @@ public abstract class BasicDriverTestCase extends TestCase {
     	assertEquals(expectedValue, seenValue);
     }
     
+    public void testShouldReturnTheSourceOfAPage() {
+    	driver.get(simpleTestPage);
+    	
+    	String source = driver.getPageSource().toLowerCase();
+
+    	assertTrue(source.contains("<html"));
+    	assertTrue(source.contains("</html"));
+    	assertTrue(source.contains("an inline element"));
+    	assertTrue(source.contains("<p id=\"lotsofspaces\""));
+    }
+    
     protected WebDriver driver;
     protected String baseUrl;
     protected String simpleTestPage;
