@@ -18,17 +18,17 @@ import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
 public class UnitTests extends TestCase {
-	private static final String TEST_URL = "chrome://selenium-ide/content/jsunit/testRunner.html?testPage=selenium-ide/content/tests/unit/TestSuite.html" +
-		"&autoRun=true&submitresults=http://localhost:" + SeleniumServer.getDefaultPort() + "/jsunit/acceptor";
-	private static final String PROFILE_TEMPLATE_DIR = "target/profile-template";
+    private static final String TEST_URL = "chrome://selenium-ide/content/jsunit/testRunner.html?testPage=selenium-ide/content/tests/unit/TestSuite.html" +
+        "&autoRun=true&submitresults=http://localhost:" + SeleniumServer.getDefaultPort() + "/jsunit/acceptor";
+    private static final String PROFILE_TEMPLATE_DIR = "target/profile-template";
 
-	private SeleniumServer seleniumServer;
-	private Selenium selenium;
-	private List<String> testResults;
+    private SeleniumServer seleniumServer;
+    private Selenium selenium;
+    private List<String> testResults;
 
-	@SuppressWarnings("serial")
+    @SuppressWarnings("serial")
     @Override
-	protected void setUp() throws Exception {
+    protected void setUp() throws Exception {
         SeleniumServer.setFirefoxProfileTemplate(new File(PROFILE_TEMPLATE_DIR));
         SeleniumServer.setCustomProxyHandler(new ProxyHandler() {
             @SuppressWarnings("unchecked")
@@ -50,21 +50,21 @@ public class UnitTests extends TestCase {
         seleniumServer.start();
         selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*chrome", "http://localhost/");
         selenium.start();
-	}
-	
-	@Override
-	protected void tearDown() throws Exception {
+    }
+    
+    @Override
+    protected void tearDown() throws Exception {
         selenium.stop();
         seleniumServer.stop();
-	}
-	
-	public void testUnit() throws Exception {
-		selenium.open(TEST_URL);
-		synchronized (this) {
-		    while (testResults == null) {
-		        wait();
-		    }
-		}
+    }
+    
+    public void testUnit() throws Exception {
+        selenium.open(TEST_URL);
+        synchronized (this) {
+            while (testResults == null) {
+                wait();
+            }
+        }
         StringBuilder failedTests = new StringBuilder();
         Pattern pattern = Pattern.compile("(.*?)\\|([\\d\\.]+)\\|(\\w)\\|([\\s\\S]*)");
         for (String result : testResults) {
@@ -81,5 +81,5 @@ public class UnitTests extends TestCase {
         if (failedTests.length() > 0) {
             fail("Some tests failed!\n" + failedTests);
         }
-	}
+    }
 }
