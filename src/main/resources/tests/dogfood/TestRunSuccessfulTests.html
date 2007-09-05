@@ -18,19 +18,19 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Run Tests</title>
+  <title>TestRunSuccessfulTests</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">Test Run Tests<br>
+      <td rowspan="1" colspan="3">TestRunSuccessfulTests<br>
       </td>
     </tr>
 
     <tr>
       <td>open</td>
-      <td>../core/TestRunner.html?test=../tests/ShortTestSuite.html</td>
+      <td>../core/TestRunner.html?test=../tests/PassingTestSuite.html</td>
       <td>&nbsp;</td>
     </tr>
 
@@ -48,18 +48,34 @@ Copyright 2004 ThoughtWorks, Inc
     <tr>
     	<td>waitForText</td>
     	<td>testRuns</td>
-    	<td>1</td>
+    	<td>2</td>
     </tr>
     
     <tr>
     	<td>verifyText</td>
     	<td>commandPasses</td>
-    	<td>26</td>
+    	<td>31</td>
+    </tr>
+    <tr>
+    	<td>verifyText</td>
+    	<td>testFailures</td>
+    	<td>0</td>
+    </tr>
+    <tr>
+    	<td>verifyText</td>
+    	<td>commandFailures</td>
+    	<td>0</td>
+    </tr>
+    
+    <tr>
+    	<td>verifyText</td>
+    	<td>commandErrors</td>
+    	<td>0</td>
     </tr>
     
     <tr>
         <td>verifyElementPresent</td>
-        <td>//tr[contains(@class, 'status_passed')]//a[contains(text(), 'TestLocators')]</td>
+        <td>//tr[contains(@class, 'status_passed')]//a[contains(text(), 'TestType')]</td>
         <td></td>
     </tr>
 

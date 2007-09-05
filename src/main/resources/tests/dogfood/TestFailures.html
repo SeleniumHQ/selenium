@@ -18,28 +18,27 @@ Copyright 2004 ThoughtWorks, Inc
 <head>
   <meta content="text/html; charset=ISO-8859-1"
  http-equiv="content-type">
-  <title>Test Break Point</title>
+  <title>Test Failures</title>
 </head>
 <body>
     
-    DGF Is this test worth anything?  It's extremely unreliable on IE
 <table cellpadding="1" cellspacing="1" border="1">
   <tbody>
     <tr>
-      <td rowspan="1" colspan="3">Test Break Point<br>
+      <td rowspan="1" colspan="3">Test Failures<br>
       </td>
     </tr>
 
     <tr>
       <td>open</td>
-      <td>../core/TestRunner.html?test=../tests/dogfood/aut/FailuresTestSuite.html</td>
+      <td>../core/TestRunner.html?test=../tests/ErrorCheckingTestSuite.html</td>
       <td>&nbsp;</td>
     </tr>
 
     <tr>
         <td>waitForText</td>
         <td>//tr[@class="title"]</td>
-        <td>Dogfood AUT: Failures</td>
+        <td>Error Checking Test Suite</td>
     </tr>
 
     <tr>
@@ -80,7 +79,12 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     <tr>
         <td>verifyAttribute</td>
-        <td>finalopen@class</td>
+        <td>failure5@class</td>
+        <td>regex:status_failed</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>failure6@class</td>
         <td>regex:status_failed</td>
     </tr>
 
