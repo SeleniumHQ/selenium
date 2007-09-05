@@ -32,6 +32,9 @@
             <arg value="${dir.core.tests}"/>
 
             <arg value="-skip"/>
+            <arg value="TestErrorChecking.html"/>
+
+            <arg value="-skip"/>
             <arg value="TestJS-for-loops.html"/>
 
 
