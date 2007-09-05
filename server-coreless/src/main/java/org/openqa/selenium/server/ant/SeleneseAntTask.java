@@ -54,7 +54,12 @@ import org.openqa.selenium.server.htmlrunner.*;
  *   <tr>
  *     <td valign="top">results</td>
  *     <td valign="top">The file to which we'll write out our test results.</td>
- *     <td align="center" valign="top">No, defaults to "./results-&#064;{browser}-&#064;{options}-&#064;{suite}" where &#064;{options} may include "-multiWindow" and/or "-slowResources"</td>
+ *     <td align="center" valign="top">No, defaults to "results-&#064;{browser}-&#064;{options}-&#064;{suite}" where &#064;{options} may include "-multiWindow" and/or "-slowResources"</td>
+ *   </tr>
+ *   <tr>
+ *     <td valign="top">outputDir</td>
+ *     <td valign="top">The directory in which we'll create the test results file.  Ignored if "results" is absolute.</td>
+ *     <td align="center" valign="top">No, defaults to "."</td>
  *   </tr>
  *   <tr>
  *     <td valign="top">haltonfailure</td>
@@ -104,7 +109,7 @@ public class SeleneseAntTask extends Task {
 	private int timeoutInSeconds = SeleniumServer.DEFAULT_TIMEOUT;
 	private boolean slowResources, multiWindow;
 	private String browser, startURL;
-	private File suite, results;
+	private File suite, results, outputDir;
 	private boolean haltOnFailure=true;
 	private String failureProperty;
 	
@@ -117,6 +122,7 @@ public class SeleneseAntTask extends Task {
 	@Override
 	public void execute() {
 		checkForNulls();
+		checkResultsFile();
 		checkForJavaScriptCoreDir();
 		SeleniumServer server = null;
 		try {
@@ -167,12 +173,13 @@ public class SeleneseAntTask extends Task {
 		if (suite == null) {
 			throw new BuildException("You must specify a suite file");
 		}
+		if (outputDir == null) {
+		    outputDir = getProject().getBaseDir();
+		}
 		if (results == null) {
 			String options = (multiWindow ? "multiWindow-" : "") + (slowResources ? "slowResources-" : "");
 			String name = "results-" + extractUsableBrowserName() + '-' + options + suite.getName();
-			setResults(new File(getProject().getBaseDir(), name));
-			log("Results will go to " + results.getAbsolutePath());
-			
+			setResults(new File(name));
 		}
 	}
 	
@@ -197,14 +204,22 @@ public class SeleneseAntTask extends Task {
 	}
 
 	public void setResults(File results) {
-		try {
+	    this.results = results;
+		
+	}
+
+    private void checkResultsFile() {
+        if (!results.isAbsolute()) {
+            results = new File(outputDir, results.getPath());
+        }
+        try {
 			results.createNewFile();
 		} catch (IOException e) {
 			throw new BuildException("can't write to results file: " + results.getAbsolutePath(), e);
 		}
 		if (!results.canWrite()) throw new BuildException("can't write to results file: " + results.getAbsolutePath());
-		this.results = results;
-	}
+		log("Results will go to " + results.getAbsolutePath());
+    }
 
 	public void setSlowResources(boolean slowResources) {
 		this.slowResources = slowResources;
@@ -236,6 +251,10 @@ public class SeleneseAntTask extends Task {
 
     public void setFailureProperty(String failureProperty) {
         this.failureProperty = failureProperty;
+    }
+
+    public void setOutputDir(File outputDir) {
+        this.outputDir = outputDir;
     }
 
 
