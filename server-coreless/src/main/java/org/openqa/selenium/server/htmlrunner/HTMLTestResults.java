@@ -38,6 +38,7 @@ public class HTMLTestResults {
     private final String numCommandErrors;
     private final String seleniumVersion;
     private final String seleniumRevision;
+    private final String log;
     private final HTMLSuiteResult suite;
 
     private static final String HEADER = "<html>\n" +
@@ -108,7 +109,7 @@ public class HTMLTestResults {
     public HTMLTestResults(String postedSeleniumVersion, String postedSeleniumRevision, 
             String postedResult, String postedTotalTime, 
             String postedNumTestTotal, String postedNumTestPasses, 
-            String postedNumTestFailures, String postedNumCommandPasses, String postedNumCommandFailures, String postedNumCommandErrors, String postedSuite, List<String> postedTestTables) {
+            String postedNumTestFailures, String postedNumCommandPasses, String postedNumCommandFailures, String postedNumCommandErrors, String postedSuite, List<String> postedTestTables, String postedLog) {
 
         result = postedResult;
         numCommandFailures = postedNumCommandFailures;
@@ -122,6 +123,7 @@ public class HTMLTestResults {
         testTables = postedTestTables;
         seleniumVersion = postedSeleniumVersion;
         seleniumRevision = postedSeleniumRevision;
+        log = postedLog;
     }
 
 
@@ -172,8 +174,42 @@ public class HTMLTestResults {
             String table = testTables.get(i).replace("\u00a0", "&nbsp;");
             out.write(MessageFormat.format(SUITE_HTML, i, suite.getHref(i), table));
         }
-        out.write("</table></body></html>");
+        out.write("</table><pre>\n");
+        out.write(quoteCharacters(log));
+        out.write("</pre></body></html>");
         out.flush();
+    }
+    
+    private static String quoteCharacters(String s) {
+        StringBuffer result = null;
+        for (int i = 0, max = s.length(), delta = 0; i < max; i++) {
+            char c = s.charAt(i);
+            String replacement = null;
+
+            if (c == '&') {
+                replacement = "&amp;";
+            } else if (c == '<') {
+                replacement = "&lt;";
+            } else if (c == '>') {
+                replacement = "&gt;";
+            } else if (c == '"') {
+                replacement = "&quot;";
+            } else if (c == '\'') {
+                replacement = "&apos;";
+            }
+
+            if (replacement != null) {
+                if (result == null) {
+                    result = new StringBuffer(s);
+                }
+                result.replace(i + delta, i + delta + 1, replacement);
+                delta += (replacement.length() - 1);
+            }
+        }
+        if (result == null) {
+            return s;
+        }
+        return result.toString();
     }
     
     class UrlDecoder {
