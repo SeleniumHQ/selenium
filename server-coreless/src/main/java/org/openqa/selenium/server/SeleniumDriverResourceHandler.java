@@ -449,6 +449,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     results = e.toString();
                 }
             }
+        } else if ("slowResources".equals(cmd)) {
+            String arg = values.get(0);
+            boolean setting = true;
+            if ("off".equals(arg) || "false".equals(arg)) {
+                setting = false;
+            }
+            StaticContentHandler.setSlowResources(setting);
+            results = "OK";
         } else {
             if ("open".equals(cmd)) {
                 warnIfApparentDomainChange(sessionId, values.get(0));

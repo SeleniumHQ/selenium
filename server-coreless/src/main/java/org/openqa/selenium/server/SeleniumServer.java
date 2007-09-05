@@ -693,7 +693,8 @@ public class SeleniumServer {
         SecurityHandler sh = new SecurityHandler();
         context.addHandler(sh);
 
-        staticContentHandler = new StaticContentHandler(slowResources);
+        StaticContentHandler.setSlowResources(slowResources);
+        staticContentHandler = new StaticContentHandler();
         String overrideJavascriptDir = System.getProperty("selenium.javascript.dir");
         if (overrideJavascriptDir != null) {
             staticContentHandler.addStaticContent(new FsResourceLocator(new File(overrideJavascriptDir)));

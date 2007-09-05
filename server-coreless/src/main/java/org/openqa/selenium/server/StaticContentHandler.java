@@ -8,14 +8,13 @@ import org.mortbay.http.*;
 import org.mortbay.http.handler.*;
 import org.mortbay.util.*;
 
-class StaticContentHandler extends ResourceHandler {
+public class StaticContentHandler extends ResourceHandler {
 	private static final long serialVersionUID = 8031049889874827358L;
-	private final boolean slowResources;
+	private static boolean slowResources;
     private List<ResourceLocator> resourceLocators = new ArrayList<ResourceLocator>();
     public static final int SERVER_DELAY = 1000;
 
-    public StaticContentHandler(boolean slowResources) {
-        this.slowResources = slowResources;
+    public StaticContentHandler() {
     }
 
     public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
@@ -102,5 +101,13 @@ class StaticContentHandler extends ResourceHandler {
         }
         InjectionHelper.injectJavaScript(request, response, resource.getInputStream(), response.getOutputStream());
         request.setHandled(true);
+    }
+    
+    public static void setSlowResources(boolean slowResources) {
+        StaticContentHandler.slowResources = slowResources;
+    }
+    
+    public static boolean getSlowResources() {
+        return slowResources;
     }
 }
