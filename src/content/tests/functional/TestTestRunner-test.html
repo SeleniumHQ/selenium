@@ -35,8 +35,8 @@ new Test.Unit.Runner({
     var editor = SeleniumIDE.Loader.getTopEditor();
     editor.options.userExtensionsURL = "chrome://selenium-ide/content/tests/functional/TestTestRunner-extension.js";
     var testCase = editor.formats.getDefaultFormat().loadFile("chrome://selenium-ide/content/tests/functional/TestTestRunner-testcase.html", true);
-    editor.setTestCase(testCase);
-editor.document.getElementById("baseURL").value = "http://www.openqa.org/";
+    editor.setTestCaseWithNewSuite(testCase);
+    editor.document.getElementById("baseURL").value = "http://www.openqa.org/";
     editor.playback(true, function(result, window) {
             this.playbackResult = result;
             window.top.close();

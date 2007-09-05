@@ -15,14 +15,16 @@ function startRecording() {
 	editor.loadDefaultOptions();
 	editor.options.recordAssertTitle = 'false';
 	editor.clear(true);
-    editor.topWindow = editor.lastWindow = window.top.document.getElementById('myiframe').contentWindow;
+    editor.topWindow = editor.lastWindow = window.top.document.getElementById('selenium_myiframe').contentWindow;
 	editor.setRecordingEnabled(true);
 }
 
 function loadTest() {
 	var editor = SeleniumIDE.Loader.getTopEditor();
-	editor.setRecordingEnabled(false);
-	var iframe = document.getElementById('testCase');
+    if (editor) {
+        editor.setRecordingEnabled(false);
+    }
+    var iframe = document.getElementById('testCase');
 	iframe.addEventListener('load', verifyCommands, false);
 	iframe.src = 'chrome://selenium-ide/content/tests/functional/' + location.hash.substring(1);
 }
@@ -49,8 +51,8 @@ function verifyCommands() {
 				command.command != 'setTimeout' &&
 				command.command != 'close') { // these commands are currently not recorded by Selenium IDE
 				if (command.command == 'selectWindow' && command.target == 'null') {
-					// This is frame for application. Selenium IDE should record this window as 'myiframe'.
-					command.target = 'myiframe';
+					// This is frame for application. Selenium IDE should record this window as 'selenium_myiframe'.
+					command.target = 'selenium_myiframe';
 				}
 				if (recordedCommands.length <= recordedIndex || 
 					!sameCommand(command, recordedCommands[recordedIndex])) {

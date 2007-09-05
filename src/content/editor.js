@@ -272,10 +272,15 @@ Editor.prototype.newTestCase = function() {
 
 Editor.prototype.loadTestCaseWithNewSuite = function(file) {
     if (this.loadTestCase(file)) {
-        var testSuite = new TestSuite();
-        testSuite.addTestCaseFromContent(this.testCase);
-        this.setTestSuite(testSuite);
+        this.setTestCaseWithNewSuite(this.testCase);
     }
+}
+
+Editor.prototype.setTestCaseWithNewSuite = function(testCase) {
+    var testSuite = new TestSuite();
+    testSuite.addTestCaseFromContent(testCase);
+    this.setTestSuite(testSuite);
+    this.setTestCase(testCase);
 }
 
 // show specified TestSuite.TestCase object.
@@ -457,9 +462,10 @@ Editor.prototype.toggleRecordingEnabled = function(enabled) {
 
 Editor.prototype.onUnloadDocument = function(doc) {
     this.log.debug("onUnloadDocument");
+    var window = doc.defaultView;
     var self = this;
     setTimeout(function() {
-            self.appendWaitForPageToLoad(doc);
+            self.appendWaitForPageToLoad(window);
         }, 0);
 }
 
@@ -535,7 +541,7 @@ Editor.prototype._isSameWindow = function(w1, w2) {
 }
 
 Editor.prototype.addCommand = function(command,target,value,window) {
-    this.log.debug("addCommand: command=" + command + ", window.name=" + window.name);
+    this.log.debug("addCommand: command=" + command + ", target=" + target + ", value=" + value + " window.name=" + window.name);
     if (this.lastWindow) {
         this.log.debug("window.name=" + window.name + ", lastWindow.name=" + this.lastWindow.name);
     } else {
@@ -606,9 +612,9 @@ Editor.prototype.clearLastCommand = function() {
 	}
 }
 
-Editor.prototype.appendWaitForPageToLoad = function(doc) {
+Editor.prototype.appendWaitForPageToLoad = function(window) {
     this.log.debug("appendWaitForPageToLoad");
-    if (doc.defaultView != this.lastWindow) {
+    if (window != this.lastWindow) {
         this.log.debug("window did not match");
         return;
     }

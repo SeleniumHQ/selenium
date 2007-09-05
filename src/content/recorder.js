@@ -61,7 +61,7 @@ Recorder.prototype.reattachWindowMethods = function() {
 			self.openCalled = true;
 			var result = self.windowMethods['open'].call(self.window, url, windowName, windowFeatures, replaceFlag);
 			self.openCalled = false;
-			setTimeout(Recorder.record, 100, self, 'waitForPopUp', windowName, "30000");
+			setTimeout(Recorder.record, 0, self, 'waitForPopUp', windowName, "30000");
 			return result;
 		}
 	}

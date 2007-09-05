@@ -36,6 +36,8 @@
       <fileset dir="${selenium.core.dir}/core">
 	<include name="**"/>
       </fileset>
+    </copy>
+    <copy todir="content/selenium" overwrite="true">
       <fileset dir="content/selenium-src"/>
     </copy>
     <copy todir="content/selenium-tests">

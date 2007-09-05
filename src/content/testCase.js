@@ -384,7 +384,7 @@ TestCase.prototype.getCommandIndexByTextIndex = function(text, index, formatter)
 }
 
 TestCase.prototype.getTitle = function() {
-    if (this.file) {
+    if (this.file && this.file.leafName) {
         return this.file.leafName.replace(/\.\w+$/,'');
     } else if (this.title) {
         return this.title;

@@ -26,8 +26,6 @@ if (this.SeleniumIDE && SeleniumIDE.Preferences) {
 }
 
 function Log(category) {
-    var thresholdName = Preferences.getString("internalLogThreshold", "INFO");
-
 	var log = this;
 	var self = this;
 	this.category = category;
@@ -45,20 +43,51 @@ function Log(category) {
 	this.ERROR = new LogLevel(4, "ERROR");
 
 	this.log = function(level, msg) {
-		var threshold = this[thresholdName];
+		var threshold = this[this._getThreshold()];
 		if (level.level >= threshold.level) {
-			Log.write("Selenium IDE [" + level.name + "] " + 
+			this._write("Selenium IDE [" + level.name + "] " + 
+                      this._formatDate(new Date()) + " " +
 					  self.category + ": " + msg);
 		}
 	}
 }
 
-Log.write = function(message) {
-	var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-		.getService(Components.interfaces.nsIConsoleService);
-	if (consoleService != null) {
-		consoleService.logStringMessage(message);
-	}
+Log.prototype = {
+    _getThreshold: function() {
+        if (!this.threshold) {
+            this.threshold = Preferences.getString("internalLogThreshold", "INFO");
+        }
+        return this.threshold;
+    },
+
+    _formatDate: function(date) {
+        return date.getFullYear() + 
+          "-" + this._formatDigits(date.getMonth() + 1, 2) + 
+          "-" + this._formatDigits(date.getDate(), 2) +
+          " " + this._formatDigits(date.getHours(), 2) +
+          ":" + this._formatDigits(date.getMinutes(), 2) +
+          ":" + this._formatDigits(date.getSeconds(), 2) +
+          "." + this._formatDigits(date.getMilliseconds(), 3);
+    },
+
+    _formatDigits: function(n, digits) {
+        var s = n.toString();
+        var pre = digits - s.length;
+        var result = "";
+        for (var i = 0; i < pre; i++) {
+            result += "0";
+        }
+        result += s;
+        return result;
+    },
+
+    _write: function(message) {
+        var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+		    .getService(Components.interfaces.nsIConsoleService);
+        if (consoleService != null) {
+            consoleService.logStringMessage(message);
+        }
+    }
 }
 
 function showFilePicker(window, title, mode, defaultDirPrefName, handler) {
