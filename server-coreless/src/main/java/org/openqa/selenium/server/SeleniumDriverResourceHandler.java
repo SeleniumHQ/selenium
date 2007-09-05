@@ -449,6 +449,18 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     results = e.toString();
                 }
             }
+        } else if ("launchOnly".equals(cmd)) {
+            if (values.size() < 1) {
+                results = "ERROR: You must specify a browser";
+            } else {
+            	String browser = values.get(0);
+                String newSessionId = Long.toString(System.currentTimeMillis() % 1000000);
+                BrowserLauncher simpleLauncher = browserLauncherFactory.getBrowserLauncher(browser, newSessionId);
+                server.registerBrowserLauncher(newSessionId, simpleLauncher);
+                String baseUrl = "http://localhost:" + server.getPort();
+                simpleLauncher.launchHTMLSuite("TestPrompt.html", baseUrl, false, "info");
+                results = "OK";
+            }
         } else if ("slowResources".equals(cmd)) {
             String arg = values.get(0);
             boolean setting = true;

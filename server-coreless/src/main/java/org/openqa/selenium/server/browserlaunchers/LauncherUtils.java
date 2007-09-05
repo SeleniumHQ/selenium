@@ -151,7 +151,7 @@ public class LauncherUtils {
 		}
 	}
 
-	protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, int serverPort) {
+	protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, int serverPort, String defaultLogLevel) {
 		String url = LauncherUtils.stripStartURL(browserURL);
         String resultsUrl;
         if (serverPort == 0) {
@@ -161,6 +161,7 @@ public class LauncherUtils {
         }
 		return url + "/selenium-server/core/TestRunner.html?auto=true"
                 + "&multiWindow=" + multiWindow
+                + "&defaultLogLevel=" + defaultLogLevel
                 + "&baseUrl=" + urlEncode(browserURL) + "/selenium-server/tests/"
                 + "&resultsUrl=" + resultsUrl
                 + "&test=" + suiteUrl;

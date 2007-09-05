@@ -313,8 +313,8 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
 
     @Override // need to specify an absolute resultsUrl
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, port));
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, port, defaultLogLevel));
     }
     
     @Override // need to specify an absolute driverUrl

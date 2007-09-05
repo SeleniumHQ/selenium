@@ -47,7 +47,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     }
 
     public void launchHTMLSuite(String startURL, String suiteUrl,
-            boolean multiWindow) {
+            boolean multiWindow, String defaultLogLevel) {
 
     }
 

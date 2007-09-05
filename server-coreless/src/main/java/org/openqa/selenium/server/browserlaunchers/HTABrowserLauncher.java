@@ -112,8 +112,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
         return htaProcess;
     }
 
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, port), "TestRunner.hta");
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, port, defaultLogLevel), "TestRunner.hta");
     }
     
     public void launchRemoteSession(String browserURL, boolean multiWindow) {
