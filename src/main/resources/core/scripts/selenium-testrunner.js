@@ -45,6 +45,10 @@ objectExtend(HtmlTestRunner.prototype, {
     },
 
     loadSuiteFrame: function() {
+        var logLevel = this.controlPanel.getDefaultLogLevel();
+        if (logLevel) {
+            LOG.setLogLevelThreshold(logLevel);
+        }
         if (selenium == null) {
             var appWindow = this._getApplicationWindow();
             try { appWindow.location; }
@@ -385,6 +389,10 @@ objectExtend(HtmlTestRunnerControlPanel.prototype, {
 
     getAutoUrl: function() {
         return this._getQueryParameter("autoURL");
+    },
+    
+    getDefaultLogLevel: function() {
+        return this._getQueryParameter("defaultLogLevel");
     },
 
     getResultsUrl: function() {
@@ -772,6 +780,17 @@ objectExtend(TestResult.prototype, {
         // Add HTML for the suite itself
         form.createHiddenField("suite", this.suiteTable.parentNode.innerHTML);
 
+        var logMessages = [];
+        while (LOG.pendingMessages.length > 0) {
+            var msg = LOG.pendingMessages.shift();
+            logMessages.push(msg.type);
+            logMessages.push(": ");
+            logMessages.push(msg.msg);
+            logMessages.push('\n');
+        }
+        var logOutput = logMessages.join("");
+        form.createHiddenField("log", logOutput);
+
         if (this.controlPanel.shouldSaveResultsToFile()) {
             this._saveToFile(resultsUrl, form);
         } else {
@@ -828,7 +847,11 @@ objectExtend(TestResult.prototype, {
         for (var rowNum = 1; rowNum <= testNum; rowNum++) {
             scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
         }
-        scriptFile.WriteLine("</table></body></html>");
+        scriptFile.WriteLine("</table><pre>");
+        var log = inputs["log"];
+        log=log.replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/gm,"&quot;").replace(/'/gm,"&apos;");
+        scriptFile.WriteLine(log);
+        scriptFile.WriteLine("</pre></body></html>");
         scriptFile.Close();
     }
 });

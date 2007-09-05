@@ -68,7 +68,7 @@ Logger.prototype = {
         if (! this.getLogWindow()) {
             this.openLogWindow();
         }
-        setTimeout(function(){LOG.info("Log window displayed.  Logging events will now be recorded to this window.");}, 500);
+        setTimeout(function(){LOG.error("Log window displayed.  Logging events will now be recorded to this window.");}, 500);
     },
 
     logHook: function(logLevel, message) {
@@ -97,11 +97,10 @@ Logger.prototype = {
                 logWindow.append(logLevel + ": " + message, logLevel);
             }
         } else {
-            // uncomment this to turn on background logging
-            /* these logging messages are never flushed, which creates 
-               an enormous array of strings that never stops growing.  Only
-               turn this on if you need it for debugging! */
-            //this.pendingMessages.push(new LogMessage(logLevel, message));
+            // TODO these logging messages are never flushed, which creates 
+            //   an enormous array of strings that never stops growing.
+            //   there should at least be a way to clear the messages!
+            this.pendingMessages.push(new LogMessage(logLevel, message));
         }
     },
 
