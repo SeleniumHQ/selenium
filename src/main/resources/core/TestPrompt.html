@@ -20,12 +20,18 @@ Copyright 2004 ThoughtWorks, Inc
           http-equiv="content-type">
     <title>Select a Test Suite</title>
     <script language="JavaScript" type="text/javascript" src="scripts/selenium-browserdetect.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/xmlextras.js"></script>
     <script>
 
         function load() {
             if (browserVersion.isHTA) {
                 document.getElementById("save-div").style.display = "inline";
             }
+            try {
+                if (window.location.hostname == "localhost" && window.location.port == 4444) {
+                    document.getElementById("slowResources-div").style.display = "inline";
+                }
+            } catch (ex) {} // eh, the slowResources feature is gravy
         }
 
         function autoCheck() {
@@ -36,6 +42,15 @@ Copyright 2004 ThoughtWorks, Inc
             } else {
                 autoDiv.style.display = "none";
             }
+        }
+
+        function slowCheck() {
+            var slowResourcesCheckbox = document.getElementById("slowResources");
+            var slowResources = slowResourcesCheckbox.checked ? true : false;
+            var xhr = XmlHttp.create();
+            var driverUrl = "http://localhost:4444/selenium-server/driver/?cmd=slowResources&1=" + slowResources;
+            xhr.open("GET", driverUrl, true);
+            xhr.send(null);
         }
 
         function saveCheck() {
@@ -93,6 +108,12 @@ Copyright 2004 ThoughtWorks, Inc
                 for="multiWindow">AUT in separate window</label>
 
         <p>
+
+        <div id="slowResources-div" style="display: none">
+            <p>
+                <input id="slowResources" type="checkbox" name="slowResources" onclick="slowCheck();" /> <label for="slowResources">Slow down web server</label>
+            </p>
+        </div>
 
         <p>
             <input id="auto" type="checkbox" name="auto" onclick="autoCheck();"/> <label for="auto">Run
