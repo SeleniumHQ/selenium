@@ -37,8 +37,6 @@ import org.openqa.selenium.server.log.TerseFormatter;
 import org.openqa.selenium.testworker.TrackableRunnable;
 import org.openqa.selenium.testworker.TrackableThread;
 
-import com.sun.org.apache.xerces.internal.impl.dv.xs.TimeDV;
-
 public class SingleEntryAsyncQueueTest extends TestCase {
     SingleEntryAsyncQueue q;
     private final Lock dataLock = new ReentrantLock();

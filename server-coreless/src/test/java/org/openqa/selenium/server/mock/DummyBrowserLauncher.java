@@ -40,7 +40,7 @@ public class DummyBrowserLauncher implements BrowserLauncher {
 
     /** noop */
     public void launchHTMLSuite(String startURL, String suiteUrl,
-            boolean multiWindow) {
+            boolean multiWindow, String defaultLogLevel) {
 
     }
 

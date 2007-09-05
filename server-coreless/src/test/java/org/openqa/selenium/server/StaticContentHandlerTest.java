@@ -12,12 +12,16 @@ import java.util.Date;
 
 public class StaticContentHandlerTest extends TestCase {
     private StaticContentHandler handler;
-    private StaticContentHandler slowHandler;
+    private boolean slowResourcesInitially;
 
     public void setUp() throws Exception {
         super.setUp();
-        handler = new StaticContentHandler(false);
-        slowHandler = new StaticContentHandler(true);
+        handler = new StaticContentHandler();
+        slowResourcesInitially = StaticContentHandler.getSlowResources();
+    }
+    
+    public void tearDown() {
+        StaticContentHandler.setSlowResources(slowResourcesInitially);
     }
 
     public void testShouldMakePageNotCachedWhenHandle() throws Exception {
@@ -28,14 +32,16 @@ public class StaticContentHandlerTest extends TestCase {
     
     public void testShouldDelayResourceLoadingIfSetToSlow() throws Exception {
         long start = new Date().getTime();
-        slowHandler.getResource("not_exists");
+        StaticContentHandler.setSlowResources(true);
+        handler.getResource("not_exists");
         long end = new Date().getTime();
         assertTrue(end - start >= 0.9 * StaticContentHandler.SERVER_DELAY);
     }
 
     public void testShouldDoubleDelayWithAPageMarkedAsSlow() throws Exception {
         long start = new Date().getTime();
-        slowHandler.getResource("something-really-slow.html");
+        StaticContentHandler.setSlowResources(true);
+        handler.getResource("something-really-slow.html");
         long end = new Date().getTime();
         long diff = end - start;
         System.out.println("diff = " + diff);
