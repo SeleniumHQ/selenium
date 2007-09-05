@@ -175,7 +175,9 @@ public class HTMLTestResults {
             out.write(MessageFormat.format(SUITE_HTML, i, suite.getHref(i), table));
         }
         out.write("</table><pre>\n");
-        out.write(quoteCharacters(log));
+        if (log != null) {
+        	out.write(quoteCharacters(log));
+        }
         out.write("</pre></body></html>");
         out.flush();
     }
