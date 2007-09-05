@@ -85,7 +85,10 @@ public class HTABrowserLauncher implements BrowserLauncher {
             FileUtils f = FileUtils.getFileUtils();
             File selRunnerSrc = new File(coreDir, "RemoteRunner.html");
             File selRunnerDest = new File(coreDir, "RemoteRunner.hta");
+            File testRunnerSrc = new File(coreDir, "TestRunner.html");
+            File testRunnerDest = new File(coreDir, "TestRunner.hta");
             f.copyFile(selRunnerSrc, selRunnerDest);
+            f.copyFile(testRunnerSrc, testRunnerDest);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
