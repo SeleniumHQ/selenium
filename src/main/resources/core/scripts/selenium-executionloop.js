@@ -79,7 +79,7 @@ TestLoop.prototype = {
             this.continueTestWhenConditionIsTrue();
         } catch (e) {
             if (!this._handleCommandError(e)) {
-                this._testComplete();
+                this.testComplete();
             } else {
                 this.continueTest();
             }
