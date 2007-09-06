@@ -639,7 +639,7 @@ public class WindowsUtils {
         }
         
         private static String generateMessage() {
-            return "Problem while managaging the registry, OS Version '" + 
+            return "Problem while managing the registry, OS Version '" + 
             System.getProperty("os.version") + "', regVersion1 = " + regVersion1;
         }
         
