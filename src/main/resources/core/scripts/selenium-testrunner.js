@@ -192,10 +192,12 @@ objectExtend(SeleniumFrame.prototype, {
             // this works in every browser (except Firefox in chrome mode)
             var styleSheetPath = window.location.pathname.replace(/[^\/\\]+$/, "selenium-test.css");
             if (browserVersion.isIE && window.location.protocol == "file:") {
-                styleSheetPath = "file://" + styleSheetPath;
+                styleSheetPath = "file:///" + styleSheetPath;
             }
             styleLink.href = styleSheetPath;
         }
+        // DGF You're only going to see this log message if you set defaultLogLevel=debug
+        LOG.debug("styleLink.href="+styleLink.href);
         head.appendChild(styleLink);
     },
 
