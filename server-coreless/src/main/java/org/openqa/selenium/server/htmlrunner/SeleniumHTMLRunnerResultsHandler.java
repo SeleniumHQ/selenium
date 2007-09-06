@@ -4,11 +4,23 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
-import org.mortbay.http.*;
-import org.mortbay.util.*;
+import org.apache.commons.logging.Log;
+import org.mortbay.http.HttpContext;
+import org.mortbay.http.HttpException;
+import org.mortbay.http.HttpHandler;
+import org.mortbay.http.HttpRequest;
+import org.mortbay.http.HttpResponse;
+import org.mortbay.log.LogFactory;
+import org.mortbay.util.StringUtil;
 
 /**
  * Handles results of HTMLRunner (aka TestRunner, FITRunner) in automatic mode.
@@ -20,7 +32,8 @@ import org.mortbay.util.*;
  */
 @SuppressWarnings("serial")
 public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
-
+    static Log log = LogFactory.getLog(SeleniumHTMLRunnerResultsHandler.class);
+    
     HttpContext context;
     List<HTMLResultsListener> listeners;
     boolean started = false;
@@ -36,6 +49,7 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
     public void handle(String pathInContext, String pathParams, HttpRequest request, HttpResponse res) throws HttpException, IOException {
         if (!"/postResults".equals(pathInContext)) return;
         request.setHandled(true);
+        log.info("Received posted results");
         String result = request.getParameter("result");
         if (result == null) {
             res.getOutputStream().write("No result was specified!".getBytes());
