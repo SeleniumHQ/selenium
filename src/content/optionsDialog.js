@@ -26,7 +26,7 @@ function saveOptions() {
 		}
 	}
 	SeleniumIDE.Loader.getEditors().forEach(function(editor) {
-			editor.setOptions(options);
+			editor.app.setOptions(options);
 		});
 	
 	Preferences.save(options);

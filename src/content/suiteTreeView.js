@@ -26,16 +26,16 @@ objectExtend(SuiteTreeView.prototype, {
             var self = this;
             tree.addEventListener("dblclick", function(event) {
                     var testCase = self.getSelectedTestCase();
-                    if (testCase) editor.showTestCaseFromSuite(testCase);
+                    if (testCase) editor.app.showTestCaseFromSuite(testCase);
                 }, false);
-            editor.addObserver({
+            editor.app.addObserver({
                     _testCaseObserver: {
                         modifiedStateUpdated: function() {
                             self.treebox.invalidateRow(self.currentTestCaseIndex);
                         }
                     },
-                        
-                    testCaseLoaded: function(testCase) {
+                    
+                    testCaseChanged: function(testCase) {
                         testCase.addObserver(this._testCaseObserver);
                         var tests = self.getTestSuite().tests;
                         for (var i = 0; i < tests.length; i++) {
@@ -70,7 +70,7 @@ objectExtend(SuiteTreeView.prototype, {
         },
             
         getTestSuite: function() {
-            return this.editor.testSuite;
+            return this.editor.app.getTestSuite();
         },
             
         refresh: function() {

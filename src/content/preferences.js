@@ -17,8 +17,14 @@
 if (!this.SeleniumIDE) this.SeleniumIDE = {};
 
 SeleniumIDE.Preferences = {
+    TEST_BRANCH: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.test."),
     branch: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide."),
-    
+
+    // use test branch for unit tests
+    useTestBranch: function() {
+        this.branch = this.TEST_BRANCH;
+    },
+
     getString: function(name, defaultValue) {
         if (this.branch && this.branch.prefHasUserValue(name)) {
             return this.branch.getComplexValue(name, Components.interfaces.nsISupportsString).data;

@@ -194,6 +194,9 @@ function observable(clazz) {
     }
 
     clazz.prototype.notify = function(event) {
+        if (this.log) {
+            this.log.debug("notify " + event);
+        }
         if (!this.observers) return;
         var args = [];
         for (var i = 1; i < arguments.length; i++) {

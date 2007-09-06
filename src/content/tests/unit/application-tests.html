@@ -10,9 +10,12 @@
 		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
-		<script type="text/javascript" src="chrome://selenium-ide/content/editor.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/application.js"></script>
 		<script type="text/javascript">
 function setUp() {
+    Preferences.useTestBranch();
+    this.app = new Application();
+    app.clearOptions();
 }
 
 function testExactMatchPattern() {
@@ -21,6 +24,30 @@ function testExactMatchPattern() {
 	assertEquals("exact:abc?", exactMatchPattern("abc?"));
 	assertEquals("exact:ab*c", exactMatchPattern("ab*c"));
 }
+
+function testSaveState() {
+    Preferences.setString("baseURL", "");
+    app.options.rememberBaseURL = "true";
+    app.baseURL = "http://www.google.com/";
+    app.saveState();
+    assertEquals("http://www.google.com/", Preferences.getString("baseURL"));
+}
+
+function testAddBaseURLHistory() {
+    var count = 0;
+    app.addObserver({
+            baseURLChanged: function() {
+                count += 1;
+            }});
+    app.setBaseURL("http://www.yahoo.com/");
+    assertEquals(1, count);
+    app.setBaseURL("http://www.google.com/");
+    app.setBaseURL("");
+    app.setBaseURL("http://www.msn.com/");
+    app.setBaseURL("http://www.google.com/");
+    assertEquals(["http://www.google.com/", "http://www.msn.com/", "http://www.yahoo.com/"].join(","), Preferences.getArray("baseURLHistory").join(","));
+}
+
     </script>
   </head>
 

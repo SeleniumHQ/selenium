@@ -36,6 +36,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/application.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/commandBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
@@ -96,7 +97,7 @@ limitations under the License.
       <menuitem label="&contextMenu.execCommand.label;" command="cmd_selenium_exec_command" key="exec-key" accesskey="E"/>
     </popup>
     <popup id="suiteContextMenu">
-      <menuitem label="&newTestCmd.label;" oncommand="window.editor.newTestCase();"/>
+      <menuitem label="&newTestCmd.label;" oncommand="window.editor.app.newTestCase();"/>
       <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
     </popup>
     <popup id="popupSeleniumCommands">
@@ -106,12 +107,12 @@ limitations under the License.
 
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="F">
     <menupopup id="file-popup">
-      <menuitem label="&newTestCmd.label;" oncommand="window.editor.newTestCase();" accesskey="N"/>
+      <menuitem label="&newTestCmd.label;" oncommand="window.editor.app.newTestCase();" accesskey="N"/>
       <menuitem label="&openCmd.label;" command="cmd_open" key="open-key" accesskey="O"/>
       <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key" accesskey="S"/>
       <menuitem label="&saveTestAsCmd.label;" oncommand="window.editor.saveNewTestCase();" accesskey="A"/>
       <menu label="&exportCmd.label;" accesskey="E">
-	<menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestCaseWithFormat(window.editor.formats.selectFormat(event.target.getAttribute('value')))">
+	<menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestCaseWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))">
 	</menupopup>
       </menu>
       <menuseparator/>
@@ -119,7 +120,7 @@ limitations under the License.
       <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" />
       <menuitem label="&saveSuiteCmd.label;" command="cmd_save_suite" />
       <menu label="&recentSuiteCmd.label;">
-        <menupopup id="popup_recent_suites" onpopupshowing="window.editor.populateRecentTestSuites(this)" oncommand="window.editor.loadTestSuite(event.target.getAttribute('value'))" />
+        <menupopup id="popup_recent_suites" onpopupshowing="window.editor.populateRecentTestSuites(this)" oncommand="window.editor.app.loadTestSuite(event.target.getAttribute('value'))" />
       </menu>
       <menuseparator/>
       <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X"/>
@@ -142,11 +143,11 @@ limitations under the License.
     <menupopup id="options-popup" onpopupshowing="window.editor.onPopupOptions()">
       <menuitem label="&optionsCmd.label;" oncommand="window.editor.openSeleniumIDEPreferences();" accesskey="O"/>
       <menu label="&formatCmd.label;" accesskey="F">
-	<menupopup id="popup_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.currentFormat)" oncommand="window.editor.setCurrentFormat(window.editor.formats.selectFormat(event.target.getAttribute('value')))">
+	<menupopup id="popup_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.getCurrentFormat())" oncommand="window.editor.app.setCurrentFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
 	</menupopup>
       </menu>
       <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;">
-	<menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.clipboardFormat)" oncommand="window.editor.setClipboardFormat(window.editor.formats.selectFormat(event.target.getAttribute('value')))">
+	<menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.clipboardFormat)" oncommand="window.editor.app.setClipboardFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
 	</menupopup>
       </menu>
       <menuitem id="internalTestsMenu" label="Test Selenium IDE" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />

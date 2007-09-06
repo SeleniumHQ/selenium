@@ -108,7 +108,7 @@ objectExtend(TreeView.prototype, {
             var trans = this._createTransferable();
             var str = this._createClipboardString();
             trans.addDataFlavor("text/unicode");
-            var text = this.editor.clipboardFormat.getSourceForCommands(commands);
+            var text = this.editor.app.getClipboardFormat().getSourceForCommands(commands);
             str.data = text;
             trans.setTransferData("text/unicode", str, text.length * 2);
             var clipboard = Components.classes["@mozilla.org/widget/clipboard;1"].
@@ -176,14 +176,8 @@ objectExtend(TreeView.prototype, {
             commands.push("pause");
             
             commands.sort();
-            var array = Components.classes["@mozilla.org/supports-array;1"].createInstance(Components.interfaces.nsISupportsArray);
-            for (var i = 0; i < commands.length; i++) {
-                var string = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-                string.data = commands[i];
-                array.AppendElement(string);
-            }
             var autocomplete = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-commands"].getService(Components.interfaces.nsISeleniumAutoCompleteSearch);
-            autocomplete.setSeleniumCommands(array);
+            autocomplete.setSeleniumCommands(XulUtils.toXPCOMArray(commands));
         },
 	
         /**

@@ -33,19 +33,19 @@ new Test.Unit.Runner({
 
   testPlay: function() { with(this) {
     var editor = SeleniumIDE.Loader.getTopEditor();
-    editor.options.userExtensionsURL = "chrome://selenium-ide/content/tests/functional/TestTestRunner-extension.js";
-    var testCase = editor.formats.getDefaultFormat().loadFile("chrome://selenium-ide/content/tests/functional/TestTestRunner-testcase.html", true);
-    editor.setTestCaseWithNewSuite(testCase);
-    editor.document.getElementById("baseURL").value = "http://www.openqa.org/";
+    editor.getOptions().userExtensionsURL = "chrome://selenium-ide/content/tests/functional/TestTestRunner-extension.js";
+    var testCase = editor.app.getFormats().getDefaultFormat().loadFile("chrome://selenium-ide/content/tests/functional/TestTestRunner-testcase.html", true);
+    editor.app.setTestCaseWithNewSuite(testCase);
+    editor.app.setBaseURL("http://www.openqa.org/");
     var testWindow = editor.showInBrowser("about:blank", true);
     wait(1000, function() {
     editor.selDebugger.start();
     waitFor(function() {
-            return !editor.testCase.debugContext.started;
+            return !editor.getTestCase().debugContext.started;
         }.bind(this),
         function() {
             testWindow.close();
-            assert(!editor.testCase.debugContext.failed);
+            assert(!editor.getTestCase().debugContext.failed);
         }.bind(this));
     });
   }}

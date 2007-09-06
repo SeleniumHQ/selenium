@@ -33,10 +33,10 @@ new Test.Unit.Runner({
 
   testTestRunner: function() { with(this) {
     var editor = SeleniumIDE.Loader.getTopEditor();
-    editor.options.userExtensionsURL = "chrome://selenium-ide/content/tests/functional/TestTestRunner-extension.js";
-    var testCase = editor.formats.getDefaultFormat().loadFile("chrome://selenium-ide/content/tests/functional/TestTestRunner-testcase.html", true);
-    editor.setTestCaseWithNewSuite(testCase);
-    editor.document.getElementById("baseURL").value = "http://www.openqa.org/";
+    editor.getOptions().userExtensionsURL = "chrome://selenium-ide/content/tests/functional/TestTestRunner-extension.js";
+    var testCase = editor.app.getFormats().getDefaultFormat().loadFile("chrome://selenium-ide/content/tests/functional/TestTestRunner-testcase.html", true);
+    editor.app.setTestCaseWithNewSuite(testCase);
+    editor.app.setBaseURL("http://www.openqa.org/");
     editor.playback(true, function(result, window) {
             this.playbackResult = result;
             window.top.close();

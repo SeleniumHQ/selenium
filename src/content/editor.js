@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-this.Preferences = SeleniumIDE.Preferences;
-
+/*
+ * An UI of Selenium IDE.
+ */
 function Editor(window, isSidebar) {
 	this.log.debug("initializing");
 	this.window = window;
@@ -23,35 +24,56 @@ function Editor(window, isSidebar) {
 	var self = this;
 	this.isSidebar = isSidebar;
 	this.recordFrameTitle = false;
-	this.document = document;
-	this.setOptions(Preferences.load());
-	this.loadExtensions();
-	this.loadSeleniumAPI();
-	this.selectDefaultReference();
-    this.toggleRecordingEnabled(true);
-	this.treeView = new TreeView(this, document, document.getElementById("commands"));
-	this.sourceView = new SourceView(this, document.getElementById("source"));
-    this.addObserver({
-            _testCaseObserver: {
-                modifiedStateUpdated: function() {
-                    self.updateTitle();
-                }
+    this.app = new Application();
+    this.app.addObserver({
+            baseURLChanged: function() {
+                var autocomplete = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-ide-base-urls"].getService(Components.interfaces.nsISeleniumAutoCompleteSearch);
+                autocomplete.setSeleniumCommands(XulUtils.toXPCOMArray(self.app.getBaseURLHistory()));
+                document.getElementById("baseURL").value = self.app.getBaseURL();
             },
-                
-            testCaseLoaded: function(testCase) {
+
+            testSuiteChanged: function(testSuite) {
+                self.suiteTreeView.refresh();
+            },
+
+            testCaseChanged: function(testCase) {
+                // this.view is not set yet when setTestCase is called from constructor
                 if (self.view) {
                     self.view.testCase = testCase;
+                    self.view.refresh();
+                    self.updateTitle();
                 }
                 testCase.addObserver(this._testCaseObserver);
             },
 
             testCaseUnloaded: function(testCase) {
                 testCase.removeObserver(this._testCaseObserver);
+            },
+
+            currentFormatChanged: function(format) {
+                self.updateViewTabs();
+                self.updateState();
+            },
+
+            clipboardFormatChanged: function(format) {
+            },
+
+            _testCaseObserver: {
+                modifiedStateUpdated: function() {
+                    self.updateTitle();
+                }
             }
         });
+
+	this.document = document;
+	this.app.initOptions();
+	this.loadExtensions();
+	this.loadSeleniumAPI();
+	this.selectDefaultReference();
+    this.toggleRecordingEnabled(true);
+	this.treeView = new TreeView(this, document, document.getElementById("commands"));
+	this.sourceView = new SourceView(this, document.getElementById("source"));
     this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
-    this.newTestSuite();
-	this.initOptions();
 	//this.toggleView(this.treeView);
 	
 	// "debugger" cannot be used since it is a reserved word in JS
@@ -75,6 +97,7 @@ function Editor(window, isSidebar) {
 
 	this.updateViewTabs();
     this.infoPanel = new Editor.InfoPanel(this);
+    this.app.newTestSuite();
     
 	//top.document.commandDispatcher.updateCommands("selenium-ide-state");
 
@@ -93,11 +116,11 @@ function Editor(window, isSidebar) {
 
 Editor.checkTimestamp = function() {
 	editor.log.debug('checkTimestamp');
-	if (editor.testCase.checkTimestamp()) {
+	if (editor.app.getTestCase().checkTimestamp()) {
 		if (window.confirm(Editor.getString('confirmReload'))) {
-			var testCase = editor.currentFormat.loadFile(editor.testCase.file);
+			var testCase = editor.app.getCurrentFormat().loadFile(editor.getTestCase().file);
 			if (testCase) {
-				editor.setTestCase(testCase);
+				editor.app.setTestCase(testCase);
 			}
 		}
 	}
@@ -140,11 +163,11 @@ Editor.controller = {
 		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
 		case "cmd_selenium_play_suite":
-		    return editor.currentFormat.getFormatter().playable && editor.selDebugger.state != Debugger.PLAYING;
+		    return editor.app.getCurrentFormat().getFormatter().playable && editor.selDebugger.state != Debugger.PLAYING;
 		case "cmd_selenium_pause":
-		    return editor.currentFormat.getFormatter().playable && (editor.selDebugger.state == Debugger.PLAYING || editor.selDebugger.state == Debugger.PAUSED);
+		    return editor.app.getCurrentFormat().getFormatter().playable && (editor.selDebugger.state == Debugger.PLAYING || editor.selDebugger.state == Debugger.PAUSED);
 		case "cmd_selenium_step":
-			return editor.currentFormat.getFormatter().playable && editor.selDebugger.state == Debugger.PAUSED;
+			return editor.app.getCurrentFormat().getFormatter().playable && editor.selDebugger.state == Debugger.PAUSED;
 		default:
 			return false;
 		}
@@ -154,10 +177,10 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close": if (editor.confirmClose()) { window.close(); } break;
 		case "cmd_save": editor.saveTestCase(); break;
-		case "cmd_open": editor.loadTestCaseWithNewSuite(); break;
-		case "cmd_new_suite": editor.newTestSuite(); break;
-		case "cmd_open_suite": editor.loadTestSuite(); break;
-		case "cmd_save_suite": editor.saveTestSuite(); break;
+		case "cmd_open": editor.app.loadTestCaseWithNewSuite(); break;
+		case "cmd_new_suite": editor.app.newTestSuite(); break;
+		case "cmd_open_suite": editor.app.loadTestSuite(); break;
+		case "cmd_save_suite": editor.app.saveTestSuite(); break;
 		case "cmd_selenium_play":
             editor.playCurrentTestCase();
 			break;
@@ -193,7 +216,7 @@ Editor.prototype.showLoadErrors = function() {
 Editor.DEFAULT_TITLE = "Selenium IDE";
 
 Editor.prototype.confirmClose = function() {
-	if (this.testCase && this.testCase.modified) {
+	if (this.getTestCase() && this.getTestCase().modified) {
 		var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 		    .getService(Components.interfaces.nsIPromptService);
 		
@@ -221,11 +244,8 @@ Editor.prototype.confirmClose = function() {
 Editor.prototype.log = Editor.log = new Log("Editor");
 
 Editor.prototype.unload = function() {
-	if (this.options.rememberBaseURL == 'true'){
-		this.options.baseURL = document.getElementById("baseURL").value;
-		Preferences.save(this.options, 'baseURL');
-	}
-	
+    this.app.saveState();
+
 	if (this.isSidebar) {
 		//this.log.debug("deregister: window=" + window + ", getBrowser=" + window.getBrowser);
 		Recorder.deregisterForWindow(window.parent, this);
@@ -249,68 +269,8 @@ Editor.prototype.updateSeleniumCommands = function() {
 				});
 }
 
-Editor.prototype.setOptions = function(options) {
-	this.options = options;
-	this.formats = new FormatCollection(options);
-	this.currentFormat = this.formats.selectFormat(options.selectedFormat || null);
-	this.clipboardFormat = this.formats.selectFormat(options.clipboardFormat || null);
-}
-
-Editor.prototype.initOptions = function() {
-	if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null){
-		if (document.getElementById("baseURL").value == '') {
-			document.getElementById("baseURL").value = this.options.baseURL;
-		}
-	}
-}
-
-Editor.prototype.newTestCase = function() {
-    var testCase = new TestCase(this.testSuite.generateNewTestCaseTitle());
-    this.testSuite.addTestCaseFromContent(testCase);
-    this.setTestCase(testCase);
-}
-
-Editor.prototype.loadTestCaseWithNewSuite = function(file) {
-    if (this.loadTestCase(file)) {
-        this.setTestCaseWithNewSuite(this.testCase);
-    }
-}
-
-Editor.prototype.setTestCaseWithNewSuite = function(testCase) {
-    var testSuite = new TestSuite();
-    testSuite.addTestCaseFromContent(testCase);
-    this.setTestSuite(testSuite);
-    this.setTestCase(testCase);
-}
-
-// show specified TestSuite.TestCase object.
-Editor.prototype.showTestCaseFromSuite = function(testCase) {
-    if (testCase.content) {
-        this.setTestCase(testCase.content);
-    } else {
-        this.loadTestCase(testCase.getFile(), function(test) { testCase.content = test });
-    }
-}
-
-Editor.prototype.loadTestCase = function(file, testCaseHandler) {
-	this.log.debug("loadTestCase");
-	try {
-		var testCase = null;
-        if (file) {
-            testCase = this.currentFormat.loadFile(file, false);
-        } else {
-            testCase = this.currentFormat.load();
-        }
-        if (testCase != null) {
-            if (testCaseHandler) testCaseHandler(testCase);
-			this.setTestCase(testCase);
-            return true;
-		}
-        return false;
-	} catch (error) {
-		alert("error loading test case: " + error);
-        return false;
-	}
+Editor.prototype.getOptions = function(options) {
+    return this.app.getOptions();
 }
 
 Editor.prototype.populateRecentTestSuites = function(e) {
@@ -334,84 +294,22 @@ Editor.prototype.populateRecentTestSuites = function(e) {
     }
 }
 
-Editor.prototype.newTestSuite = function() {
-	this.log.debug("newTestSuite");
-    var testSuite = new TestSuite();
-    var testCase = new TestCase();
-    testSuite.addTestCaseFromContent(testCase);
-    this.setTestSuite(testSuite);
-	this.setTestCase(testCase);
-}
-
-Editor.prototype.loadTestSuite = function(path) {
-	this.log.debug("loadTestSuite");
-	try {
-		var testSuite = null;
-        if (path) {
-            testSuite = TestSuite.loadFile(FileUtils.getFile(path));
-        } else {
-            testSuite = TestSuite.load();
-        }
-		if (testSuite) {
-            this.setTestSuite(testSuite);
-            this.addRecentTestSuite(testSuite);
-		}
-	} catch (error) {
-		alert("error loading test suite: " + error);
-	}
-}
-
-Editor.prototype.addRecentTestSuite = function(testSuite) {
-    var recent = Preferences.getArray("recentTestSuites");
-    var path = testSuite.file.path;
-    recent.delete(path);
-    recent.unshift(path);
-    Preferences.setArray("recentTestSuites", recent);
-}
-
-Editor.prototype.saveTestSuite = function() {
-	this.log.debug("saveTestSuite");
-    var cancelled = false;
-    this.testSuite.tests.forEach(function(test) {
-            if (cancelled) return;
-            if (test.content && test.content.modified) {
-                if (confirm("The test case is modified. Do you want to save this test case?")) {
-                    if (!this.currentFormat.save(test.content)) {
-                        cancelled = true;
-                    }
-                } else {
-                    cancelled = true;
-                }
-            }
-        }, this);
-    if (!cancelled) {
-        if (this.testSuite.save()) {
-            this.addRecentTestSuite(this.testSuite);
-        }
-    }
-}
-
-Editor.prototype.setTestSuite = function(testSuite) {
-    this.testSuite = testSuite;
-    this.suiteTreeView.refresh();
-}
-
 Editor.prototype.updateTitle = function() {
 	var title;
-	if (this.testCase && this.testCase.file) {
-		title = this.testCase.file.leafName + " - " + Editor.DEFAULT_TITLE;
+    var testCase = this.getTestCase();
+	if (testCase && testCase.file) {
+		title = testCase.file.leafName + " - " + Editor.DEFAULT_TITLE;
 	} else {
 		title = Editor.DEFAULT_TITLE;
 	}
-	if (this.testCase && this.testCase.modified) {
+	if (testCase && testCase.modified) {
 		title += " *";
 	}
 	document.title = title;
-    
 }
 
 Editor.prototype.tabSelected = function(id) {
-	if (this.testCase != null) {
+	if (this.getTestCase() != null) {
 		this.log.debug("tabSelected: id=" + id);
 		if (id == 'sourceTab') {
 			this.toggleView(this.sourceView);
@@ -423,7 +321,7 @@ Editor.prototype.tabSelected = function(id) {
 
 Editor.prototype.saveTestCase = function() {
 	this.view.syncModel();
-	if (this.currentFormat.save(this.testCase)) {
+	if (this.app.saveTestCase()) {
 		//document.getElementById("filename").value = this.testCase.filename;
 		return true;
 	} else {
@@ -433,7 +331,7 @@ Editor.prototype.saveTestCase = function() {
 
 Editor.prototype.saveNewTestCase = function() {
 	this.view.syncModel();
-	if (this.currentFormat.saveAsNew(this.testCase)) {
+	if (this.app.saveNewTestCase()) {
 		//document.getElementById("filename").value = this.testCase.filename;
 		this.updateTitle();
 	}
@@ -441,7 +339,7 @@ Editor.prototype.saveNewTestCase = function() {
 
 Editor.prototype.exportTestCaseWithFormat = function(format) {
 	this.view.syncModel();
-	format.saveAsNew(this.testCase.createCopy(), true);
+	format.saveAsNew(this.getTestCase().createCopy(), true);
 }
 
 Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
@@ -470,7 +368,7 @@ Editor.prototype.onUnloadDocument = function(doc) {
 }
 
 Editor.prototype.recordTitle = function(window) {
-	if (this.options.recordAssertTitle == 'true' && this.testCase.commands.length > 0) {
+	if (this.getOptions().recordAssertTitle == 'true' && this.getTestCase().commands.length > 0) {
 		//setTimeout("addCommand", 200, "assertTitle", window.document.title, null, window);
 		this.addCommand("assertTitle", exactMatchPattern(window.document.title), null, window);
 	}
@@ -482,21 +380,21 @@ Editor.prototype.getPathAndUpdateBaseURL = function(window) {
 	var regexp = new RegExp(/^(https?:\/\/[^/:]+(:\d+)?)\/.*/);
 	var base = '';
 	var result = regexp.exec(path);
-	if (result && "true" != this.options.recordAbsoluteURL) {
+	if (result && "true" != this.getOptions().recordAbsoluteURL) {
 		path = path.substr(result[1].length);
 		base = result[1] + '/';
 	}
-	if (!document.getElementById("baseURL").value ||
-		document.getElementById("baseURL").value.indexOf(base) < 0) {
-		document.getElementById("baseURL").value = base;
+    if (!this.app.getBaseURL() ||
+        this.app.getBaseURL().indexOf(base) < 0) {
+        this.app.setBaseURL(base);
 	}
     return [path, base];
 }
 
 Editor.prototype.clear = function(force) {
-	if (this.testCase != null) {
+	if (this.getTestCase() != null) {
 		if (force || confirm("Really clear the test?")) {
-			this.testCase.clear();
+			this.getTestCase().clear();
 			this.view.refresh();
 			this.log.debug("cleared");
 			return true;
@@ -550,7 +448,7 @@ Editor.prototype.addCommand = function(command,target,value,window) {
 	if (command != 'open' && 
         command != 'selectWindow' &&
         command != 'selectFrame') {
-        if (this.testCase.commands.length == 0) {
+        if (this.getTestCase().commands.length == 0) {
             var top = this._getTopWindow(window);
             this.log.debug("top=" + top);
             var path = this.getPathAndUpdateBaseURL(top)[0];
@@ -599,7 +497,7 @@ Editor.prototype.addCommand = function(command,target,value,window) {
 	this.lastWindow = window;
 
 	this.lastCommandIndex = this.view.getRecordIndex();
-	this.testCase.commands.splice(this.lastCommandIndex, 0, new Command(command, target, value));
+	this.getTestCase().commands.splice(this.lastCommandIndex, 0, new Command(command, target, value));
 	this.view.rowInserted(this.lastCommandIndex);
 	this.timeoutID = setTimeout("editor.clearLastCommand()", 300);
 }
@@ -619,15 +517,15 @@ Editor.prototype.appendWaitForPageToLoad = function(window) {
         return;
     }
 	var lastCommandIndex = this.lastCommandIndex;
-	if (lastCommandIndex == null || lastCommandIndex >= this.testCase.commands.length) {
+	if (lastCommandIndex == null || lastCommandIndex >= this.getTestCase().commands.length) {
 		return;
 	}
 	this.lastCommandIndex = null;
-	var lastCommand = this.testCase.commands[lastCommandIndex];
+	var lastCommand = this.getTestCase().commands[lastCommandIndex];
 	if (lastCommand.type == 'command' && 
 		!lastCommand.command.match(/^(assert|verify|store)/)) {
-		if (this.currentFormat.getFormatter().remoteControl) {
-			this.addCommand("waitForPageToLoad", this.options.timeout, null, this.lastWindow);
+		if (this.app.getCurrentFormat().getFormatter().remoteControl) {
+			this.addCommand("waitForPageToLoad", this.getOptions().timeout, null, this.lastWindow);
 		} else {
 			lastCommand.command = lastCommand.command + "AndWait";
 			this.view.rowUpdated(lastCommandIndex);
@@ -685,7 +583,7 @@ Editor.prototype.playCurrentTestCase = function(next) {
 
 Editor.prototype.playTestSuite = function(index) {
     var index = -1;
-    this.testSuite.tests.forEach(function(test) {
+    this.app.getTestSuite().tests.forEach(function(test) {
             if (test.testResult) {
                 delete test.testResult;
             }
@@ -693,9 +591,9 @@ Editor.prototype.playTestSuite = function(index) {
     this.suiteTreeView.refresh();
     var self = this;
     (function() {
-        if (++index < self.testSuite.tests.length) {
+        if (++index < self.app.getTestSuite().tests.length) {
             self.suiteTreeView.scrollToRow(index);
-            self.showTestCaseFromSuite(self.testSuite.tests[index]);
+            self.app.showTestCaseFromSuite(self.app.getTestSuite().tests[index]);
             self.playCurrentTestCase(arguments.callee);
         }
     })();
@@ -710,8 +608,8 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
     var auto = resultCallback != null;
 
     this.showInBrowser('chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
-                       '&userExtensionsURL=' + encodeURI(ExtensionsLoader.getURLs(this.options.userExtensionsURL).join(',')) +
-                       '&baseUrl=' + document.getElementById("baseURL").value +
+                       '&userExtensionsURL=' + encodeURI(ExtensionsLoader.getURLs(this.getOptions().userExtensionsURL).join(',')) +
+                       '&baseUrl=' + this.app.getBaseURL() +
                        (auto ? "&auto=true" : ""), 
                        newWindow);
 }
@@ -719,8 +617,9 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
 Editor.prototype.loadTestSuiteToTestRunner = function(e) {
     var content = "<table id=\"suiteTable\" cellpadding=\"1\" cellspacing=\"1\" border=\"1\" class=\"selenium\"><tbody>\n";
     content += "<tr><td><b>Test Suite</b></td></tr>\n";
-    for (var i = 0; i < this.testSuite.tests.length; i++) {
-        var testCase = this.testSuite.tests[i];
+    var testSuite = this.app.getTestSuite();
+    for (var i = 0; i < testSuite.tests.length; i++) {
+        var testCase = testSuite.tests[i];
         content += "<tr><td><a href=\"PlayerTest.html?" + i + "\">" +
             testCase.getTitle() + "</a></td></tr>\n";
     }
@@ -730,9 +629,10 @@ Editor.prototype.loadTestSuiteToTestRunner = function(e) {
 
 Editor.prototype.loadTestCaseToTestRunner = function(e, index) {
     this.log.debug("loading test index #" + index + " into test runner");
-    var testCaseInfo = this.testSuite.tests[index];
-    var testCase = testCaseInfo.content || this.currentFormat.loadFile(testCaseInfo.getFile(), false);
-	e.innerHTML = this.formats.getDefaultFormat().getFormatter().format(testCase, testCaseInfo.getTitle(), false, true);
+    var testSuite = this.app.getTestSuite();
+    var testCaseInfo = testSuite.tests[index];
+    var testCase = testCaseInfo.content || this.app.getCurrentFormat().loadFile(testCaseInfo.getFile(), false);
+	e.innerHTML = this.app.getFormats().getDefaultFormat().getFormatter().format(testCase, testCaseInfo.getTitle(), false, true);
 }
 
 Editor.prototype.openLogWindow = function() {
@@ -745,13 +645,13 @@ Editor.prototype.openLogWindow = function() {
 }
 
 Editor.prototype.onPopupOptions = function() {
-	document.getElementById("clipboardFormatMenu").setAttribute("disabled", !editor.currentFormat.getFormatter().playable);
-	document.getElementById("internalTestsMenu").setAttribute("hidden", this.options.showInternalTestsMenu == null);
+	document.getElementById("clipboardFormatMenu").setAttribute("disabled", !editor.app.getCurrentFormat().getFormatter().playable);
+	document.getElementById("internalTestsMenu").setAttribute("hidden", this.getOptions().showInternalTestsMenu == null);
 }
 
 Editor.prototype.populateFormatsPopup = function(e, format) {
     XulUtils.clearChildren(e);
-	var formats = this.formats.formats;
+	var formats = this.app.getFormats().formats;
 	for (i = 0; i < formats.length; i++) {
         XulUtils.appendMenuItem(e, {
                     type: "radio",
@@ -765,7 +665,7 @@ Editor.prototype.populateFormatsPopup = function(e, format) {
 Editor.prototype.updateViewTabs = function() {
 	var editorTab = document.getElementById('editorTab');
 	var tabs = document.getElementById('viewTabs');
-	if (this.currentFormat.getFormatter().playable) {
+	if (this.app.getCurrentFormat().getFormatter().playable) {
 		editorTab.collapsed = false;
 		this.toggleView(this.view || this.treeView);
 	} else {
@@ -777,37 +677,12 @@ Editor.prototype.updateViewTabs = function() {
 }
 
 
-Editor.prototype.setCurrentFormat = function(format) {
-	this.currentFormat = format;
-	this.updateViewTabs();
-	this.options.selectedFormat = this.currentFormat.id;
-	Preferences.save(this.options, 'selectedFormat');
-	this.setClipboardFormat(format);
-	this.updateState();
-}
-
-Editor.prototype.setClipboardFormat = function(format) {
-	this.clipboardFormat = format;
-	this.options.clipboardFormat = this.clipboardFormat.id;
-	Preferences.save(this.options, 'clipboardFormat');
-}
-
 Editor.prototype.getBaseURL = function() {
-	return this.document.getElementById("baseURL").value;
+    return this.app.getBaseURL();
 }
 
-Editor.prototype.setTestCase = function(testCase) {
-    if (this.testCase) {
-        if (testCase == this.testCase) return;
-        this.notify("testCaseUnloaded", this.testCase);
-    }
-	this.testCase = testCase;
-    this.notify("testCaseLoaded", this.testCase);
-    // this.view is not set yet when setTestCase is called from constructor
-    if (this.view) {
-        this.view.refresh();
-        this.updateTitle();
-    }
+Editor.prototype.getTestCase = function() {
+    return this.app.getTestCase();
 }
 
 Editor.prototype.toggleView = function(view) {
@@ -818,7 +693,7 @@ Editor.prototype.toggleView = function(view) {
 	var previous = this.view;
 	this.view = view;
 	if (previous) previous.syncModel(true);
-	this.view.testCase = this.testCase;
+	this.view.testCase = this.getTestCase();
 	this.view.refresh();
 }
 
@@ -837,14 +712,14 @@ Editor.prototype.setRecordingEnabled = function(enabled) {
  * Used for self-testing Selenium IDE.
  */
 Editor.prototype.loadDefaultOptions = function() {
-	this.setOptions(Preferences.DEFAULT_OPTIONS);
+	this.app.setOptions(Preferences.DEFAULT_OPTIONS);
 }
 
 Editor.prototype.loadExtensions = function() {
 	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-	if (this.options.ideExtensionsPaths) {
+	if (this.getOptions().ideExtensionsPaths) {
 		try {
-			ExtensionsLoader.loadSubScript(subScriptLoader, this.options.ideExtensionsPaths, window);
+			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().ideExtensionsPaths, window);
 		} catch (error) {
 			this.showAlert("error loading Selenium IDE extensions: " + error);
 		}
@@ -864,11 +739,11 @@ Editor.prototype.loadSeleniumAPI = function() {
 		.getService(Components.interfaces.mozIJSSubScriptLoader);
 	
 	subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.seleniumAPI);
-	if (this.options.userExtensionsURL) {
+	if (this.getOptions().userExtensionsURL) {
 		try {
-			ExtensionsLoader.loadSubScript(subScriptLoader, this.options.userExtensionsURL, this.seleniumAPI);
+			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, this.seleniumAPI);
 		} catch (error) {
-			this.showAlert("Failed to load user-extensions.js!\nfiles=" + this.options.userExtensionsURL + "\nerror=" + error);
+			this.showAlert("Failed to load user-extensions.js!\nfiles=" + this.getOptions().userExtensionsURL + "\nerror=" + error);
 		}
 	}
 }
@@ -1089,6 +964,3 @@ Editor.HelpView = function() {
 }
 
 Editor.HelpView.prototype = new Editor.InfoView;
-
-observable(Editor);
-

@@ -78,22 +78,33 @@ AutoCompleteResult.prototype = {
     }
 }
 
-const COMPONENT_ID = Components.ID("{4791AF5F-AFBA-45A1-8204-47A135DF9591}");
+//const COMPONENT_ID = Components.ID("{4791AF5F-AFBA-45A1-8204-47A135DF9591}");
+const COMPONENT_ID_LIST = 
+    [Components.ID("{9425022F-1F8D-47B9-A6CC-004FBC189535}"),
+     Components.ID("{3A1F3709-91A1-4EEB-9636-8D80A8BE634D}")];
 
 var SeleniumAutoCompleteModule = {
     registerSelf: function (compMgr, fileSpec, location, type) {
         compMgr = compMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-        compMgr.registerFactoryLocation(COMPONENT_ID,
+        compMgr.registerFactoryLocation(COMPONENT_ID_LIST[0],
                                         "Selenium Command Autocomplete",
                                         "@mozilla.org/autocomplete/search;1?name=selenium-commands",
+                                        fileSpec,
+                                        location,
+                                        type);
+        compMgr.registerFactoryLocation(COMPONENT_ID_LIST[1],
+                                        "Selenium IDE Base URL History",
+                                        "@mozilla.org/autocomplete/search;1?name=selenium-ide-base-urls",
                                         fileSpec,
                                         location,
                                         type);
     },
 
     getClassObject: function (compMgr, cid, iid) {
-        if (!cid.equals(COMPONENT_ID))
-            throw Components.results.NS_ERROR_NO_INTERFACE;
+        for (var i = 0; i < COMPONENT_ID_LIST.length; i++) {
+            if (cid.equals(COMPONENT_ID_LIST[i])) break;
+        }
+        if (i >= COMPONENT_ID_LIST.length) throw Components.results.NS_ERROR_NO_INTERFACE;
         if (!iid.equals(Components.interfaces.nsIFactory))
             throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 

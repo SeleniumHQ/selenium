@@ -32,6 +32,16 @@ var XulUtils = {
 		e.appendChild(menuitem);
     },
     
+    toXPCOMArray: function(data) {
+        var array = Components.classes["@mozilla.org/supports-array;1"].createInstance(Components.interfaces.nsISupportsArray);
+        for (var i = 0; i < data.length; i++) {
+            var string = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+            string.data = data[i];
+            array.AppendElement(string);
+        }
+        return array;
+    },
+
 	atomService: Components.classes["@mozilla.org/atom-service;1"].
 		getService(Components.interfaces.nsIAtomService)
 }

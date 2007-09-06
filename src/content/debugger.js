@@ -35,12 +35,12 @@ function Debugger(editor) {
         this.runner.setState = function(state) {
             self.setState(state);
         }
-        this.editor.addObserver({
-                testCaseLoaded: function(testCase) {
+        this.editor.app.addObserver({
+                testCaseChanged: function(testCase) {
                     self.runner.testCase = testCase;
                 }
             });
-		this.runner.testCase = this.editor.testCase;
+		this.runner.testCase = this.editor.getTestCase();
 		
 		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 	    .getService(Components.interfaces.mozIJSSubScriptLoader);
@@ -51,9 +51,9 @@ function Debugger(editor) {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-testrunner.js', this.runner);
-		if (this.editor.options.userExtensionsURL) {
+		if (this.editor.getOptions().userExtensionsURL) {
 			try {
-				ExtensionsLoader.loadSubScript(subScriptLoader, this.editor.options.userExtensionsURL, this.runner);
+				ExtensionsLoader.loadSubScript(subScriptLoader, this.editor.getOptions().userExtensionsURL, this.runner);
 			} catch (error) {
 				this.log.error("error loading user-extensions.js: " + error);
 			}

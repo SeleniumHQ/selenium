@@ -60,7 +60,10 @@ limitations under the License.
     <toolbar>
       <hbox align="center" flex="1">
 	<label value="&baseURL.label;"/>
-	<textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
+	<textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;" 
+		 onchange="window.editor.app.setBaseURL(this.value)"
+		 ontextentered="window.editor.app.setBaseURL(this.value)"
+                 type="autocomplete" autocompletesearch="selenium-ide-base-urls" enablehistory="true" focecomplete="true" tabscrolling="true"/>
       </hbox>
     </toolbar>
     <toolbar>

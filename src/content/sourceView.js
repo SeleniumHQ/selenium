@@ -26,7 +26,7 @@ SourceView.prototype = {
 	},
 	rowInserted: function(rowIndex) {
 		this.updateView();
-		if (this.editor.currentFormat.getFormatter().playable) {
+		if (this.editor.app.getCurrentFormat().getFormatter().playable) {
 			this.textbox.setSelectionRange(this.lastValue.length, this.lastValue.length);
 			this.textbox.inputField.scrollTop = this.textbox.inputField.scrollHeight - this.textbox.inputField.clientHeight;
 		} else {
@@ -73,7 +73,7 @@ SourceView.prototype = {
 	syncModel: function(force) {
 		if ((force || this.editor.view == this) && this.lastValue != this.textbox.value) {
 			this.log.debug("syncModel");
-			this.editor.currentFormat.setSource(this.testCase, this.textbox.value);
+			this.editor.app.getCurrentFormat().setSource(this.testCase, this.textbox.value);
 		} else {
 			this.log.debug("skip syncModel");
 		}
@@ -81,7 +81,7 @@ SourceView.prototype = {
 	onHide: function() {
 	},
 	getRecordIndex: function() {
-		if (this.editor.currentFormat.getFormatter().playable) {
+		if (this.editor.app.getCurrentFormat().getFormatter().playable) {
 			return this.testCase.commands.length;
 		} else {
 			return this.testCase.getCommandIndexByTextIndex(this.lastValue, this.textbox.selectionStart, this.editor.currentFormat.getFormatter());

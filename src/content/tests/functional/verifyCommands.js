@@ -13,7 +13,7 @@ function loadTestSuite() {
 function startRecording() {
 	var editor = SeleniumIDE.Loader.getTopEditor();
 	editor.loadDefaultOptions();
-	editor.options.recordAssertTitle = 'false';
+	editor.getOptions().recordAssertTitle = 'false';
 	editor.clear(true);
     editor.topWindow = editor.lastWindow = window.top.document.getElementById('selenium_myiframe').contentWindow;
 	editor.setRecordingEnabled(true);
@@ -34,7 +34,7 @@ function verifyCommands() {
 	var table = testDoc.getElementsByTagName('table')[0];
 	var rows = table.getElementsByTagName('tr');
 	var editor = SeleniumIDE.Loader.getTopEditor();
-	var recordedCommands = editor.testCase.commands;
+	var recordedCommands = editor.getTestCase().commands;
 	var recordedIndex = 0;
 	for (var i = 2; i < rows.length; i++) {
 		var row = rows[i];
