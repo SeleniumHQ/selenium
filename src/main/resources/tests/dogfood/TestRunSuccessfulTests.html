@@ -81,15 +81,15 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     
     <tr>
-        <td>verifyElementPresent</td>
-        <td>//tr[contains(@class, 'status_passed')]//a[contains(text(), 'TestType')]</td>
-        <td></td>
+        <td>verifyAttribute</td>
+        <td>passingSuite@class</td>
+        <td>regex:status_passed</td>
     </tr>
 
     <tr>
-        <td>verifyText</td>
-        <td>//tr[contains(@class, 'title status_passed')]//td[1]</td>
-        <td>Test Suite</td>
+        <td>verifyAttribute</td>
+        <td>passingTest@class</td>
+        <td>regex:status_passed</td>
     </tr>
   </tbody>
 </table>

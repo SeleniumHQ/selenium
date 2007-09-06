@@ -57,9 +57,9 @@ Copyright 2004 ThoughtWorks, Inc
         <td>1</td>
     </tr>
     <tr>
-        <td>verifyText</td>
-        <td>//tr[@class='title status_failed']//td[1]</td>
-        <td>Dogfood AUT: Pause</td>
+        <td>verifyAttribute</td>
+        <td>pauseTitle@class</td>
+        <td>regex:status_failed</td>
     </tr>
 
     <tr><td colspan="3">click pause to make the test pass</td></tr>
@@ -109,9 +109,9 @@ Copyright 2004 ThoughtWorks, Inc
         <td>2</td>
     </tr>
     <tr>
-        <td>verifyElementPresent</td>
-        <td>//tr[contains(@class, 'status_passed')]//*[contains(text(), 'Dogfood AUT: Pause')]</td>
-        <td></td>
+        <td>verifyAttribute</td>
+        <td>pauseTitle@class</td>
+        <td>regex:status_passed</td>
     </tr>
   </tbody>
 </table>

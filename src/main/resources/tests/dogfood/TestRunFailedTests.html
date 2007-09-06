@@ -78,15 +78,15 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     
     <tr>
-        <td>verifyElementPresent</td>
-        <td>//tr[contains(@class, 'status_failed')]//a[contains(text(), 'TestErrorChecking')]</td>
-        <td></td>
+        <td>verifyAttribute</td>
+        <td>errorTitle@class</td>
+        <td>regex:status_failed</td>
     </tr>
     
     <tr>
-        <td>verifyElementPresent</td>
-        <td>//tr[contains(@class, 'status_failed')]//*[contains(text(), 'Test Suite')]</td>
-        <td></td>
+        <td>verifyAttribute</td>
+        <td>errorCaseTitle@class</td>
+        <td>regex:status_failed</td>
     </tr>
         
   </tbody>
