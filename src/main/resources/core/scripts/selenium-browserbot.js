@@ -58,7 +58,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
 
     this.shouldHighlightLocatedElement = false;
 
-    this.uniqueId = new Date().getTime();
+    this.uniqueId = "seleniumMarker" + new Date().getTime();
     this.pollingForLoad = new Object();
     this.permDeniedCount = new Object();
     this.windowPollers = new Array();
@@ -283,7 +283,7 @@ BrowserBot.prototype._modifyWindow = function(win) {
         LOG.debug('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
     }
     if (!win[this.uniqueId]) {
-        win[this.uniqueId] = true;
+        win[this.uniqueId] = 1;
         this.modifyWindowToRecordPopUpDialogs(win, this);
     }
     // In proxyInjection mode, we have our own mechanism for detecting page loads
@@ -610,7 +610,12 @@ BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(window
         LOG.debug("modifySeparateTestWindowToDetectPageLoads: this window is a frame; attaching a load listener");
         addLoadListener(frameElement, this.recordPageLoad);
         frameElement[marker] = true;
-        frameElement[this.uniqueId] = marker;
+        frameElement["frame"+this.uniqueId] = marker;
+	LOG.debug("dgf this.uniqueId="+this.uniqueId);
+	LOG.debug("dgf marker="+marker);
+	LOG.debug("dgf frameElement['frame'+this.uniqueId]="+frameElement['frame'+this.uniqueId]);
+frameElement[this.uniqueId] = marker;
+LOG.debug("dgf frameElement[this.uniqueId]="+frameElement[this.uniqueId]);
     } else {
         windowObject.location[marker] = true;
         windowObject[this.uniqueId] = marker;
@@ -652,6 +657,10 @@ BrowserBot.prototype._getFrameElement = function(win) {
             result = this._getFrameElementByName(win.name, win.parent.document, win);
             return result;
         }
+    }
+    LOG.debug("_getFrameElement: frameElement="+frameElement); 
+    if (frameElement) {
+        LOG.debug("frameElement.name="+frameElement.name);
     }
     return frameElement;
 }
@@ -867,7 +876,7 @@ BrowserBot.prototype.isPollingForLoad = function(win) {
     var frameElement = this._getFrameElement(win);
     var htaSubFrame = this._isHTASubFrame(win);
     if (frameElement && !htaSubFrame) {
-        marker = frameElement[this.uniqueId];
+	marker = frameElement["frame"+this.uniqueId];
     } else {
         marker = win[this.uniqueId];
     }
