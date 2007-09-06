@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.browserlaunchers.WindowsUtils.WindowsRegistryException;
 
 import java.io.File;
 import java.io.IOException;
@@ -216,10 +217,18 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         // Disabling automatic proxy caching
         // http://support.microsoft.com/?kbid=271361
         // Otherwise, *all* requests will go through our proxy, rather than just */selenium-server/* requests
-        WindowsUtils.writeBooleanRegistryValue(REG_KEY_BASE + REG_KEY_AUTOPROXY_RESULT_CACHE, false);
-
+        try {
+            WindowsUtils.writeBooleanRegistryValue(REG_KEY_BASE + REG_KEY_AUTOPROXY_RESULT_CACHE, false);
+        } catch (WindowsRegistryException ex) {
+            log.debug("Couldn't modify autoproxy result cache; this often fails on Vista, but it's merely a nice-to-have", ex);
+        }
+        
         // Disable caching of html
-        WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
+        try {
+            WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE, "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
+        } catch (WindowsRegistryException ex) {
+            log.debug("Couldn't disable caching of html; this often fails on Vista, but it's merely a nice-to-have", ex);
+        }
         
         WindowsUtils.writeBooleanRegistryValue(REG_KEY_BASE + REG_KEY_USERNAME_PASSWORD_DISABLE, false);
 
