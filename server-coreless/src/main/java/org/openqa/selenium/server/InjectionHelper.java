@@ -19,13 +19,17 @@ import org.mortbay.util.IO;
 public class InjectionHelper {
     static Log log = LogFactory.getLog(InjectionHelper.class);
     private static boolean failOnError = true;
-    private static final boolean INJECT_SCRIPT_TAGS = true;
+    private static boolean INJECT_SCRIPT_TAGS = true;
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
     private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
     
     private static HashMap<String, String> contentTransformations = new HashMap<String, String>();
     private static List<String> userJsInjectionFiles = new LinkedList<String>(); 
     
+    public static void setInjectScriptTags(boolean injectScriptTags) {
+	    InjectionHelper.INJECT_SCRIPT_TAGS = injectScriptTags;
+    }
+
     public static void saveJsStateInitializer(String sessionId, String uniqueId, String jsVarName, String jsStateInitializer) {
         // when a new uniqueId is seen for a given sessionId, that means the page has 
         // reloaded and the old state should be discarded
@@ -246,7 +250,7 @@ public class InjectionHelper {
 //            (int)(new String(buf)).charAt(2)
 //                 (int) 191
 //            (new String(buf)).charAt(2)
-//                 (char) ¿
+//                 (char) Â¿
 //            (int)(new String(buf)).charAt(3)
 //                 (int) 10
 //
