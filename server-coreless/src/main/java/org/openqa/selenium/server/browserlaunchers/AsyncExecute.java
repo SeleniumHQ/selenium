@@ -20,6 +20,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.BuildException;
@@ -30,6 +31,7 @@ import org.apache.tools.ant.taskdefs.PumpStreamHandler;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.apache.tools.ant.types.Path;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 
 /** A handy wrapper around Ant's Execute class that can spawn a process
  * and return the process handle so you can close it yourself later
@@ -45,6 +47,7 @@ public class AsyncExecute extends Execute {
     
     public AsyncExecute() {
         project = new Project();
+        project.addBuildListener(new AntJettyLoggerBuildListener(log));
     }
     
     /** Sleeps without explicitly throwing an InterruptedException
