@@ -164,7 +164,7 @@ public class LauncherUtils {
                 + "&defaultLogLevel=" + defaultLogLevel
                 + "&baseUrl=" + urlEncode(browserURL) + "/selenium-server/tests/"
                 + "&resultsUrl=" + resultsUrl
-                + "&test=" + suiteUrl;
+                + "&test=" + urlEncode(suiteUrl);
 	}
 
 	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort) {

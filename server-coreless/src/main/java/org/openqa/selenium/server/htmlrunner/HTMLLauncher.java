@@ -144,8 +144,8 @@ public class HTMLLauncher implements HTMLResultsListener {
     public boolean runSelfTests(File dir) throws IOException {
         String[] browsers;
         if (WindowsUtils.thisIsWindows()) {
-            browsers = new String[] { "iehta"//"firefox", "iexplore", "opera", "chrome", "iehta",
-                    }; // TODO safari
+            browsers = new String[] { "firefox", "iexplore", "opera", "chrome",
+                    }; // TODO safari // TODO "iehta" is just too unreliable!
         } else if (Os.isFamily("mac")) {
             browsers = new String[] {"firefox", "safari", "chrome"};
         } else { // assume Linux (a pretty bold assumption)
