@@ -27,11 +27,12 @@ Copyright 2004 ThoughtWorks, Inc
             if (browserVersion.isHTA) {
                 document.getElementById("save-div").style.display = "inline";
             }
-            try {
-                if (window.location.hostname == "localhost" && window.location.port == 4444) {
-                    document.getElementById("slowResources-div").style.display = "inline";
+            if (/thisIsSeleniumServer/.test(window.location.search)) {
+                document.getElementById("slowResources-div").style.display = "inline";
+                if (browserVersion.isHTA || browserVersion.isChrome) {
+                    document.getElementById("test").value = "http://localhost:4444/selenium-server/tests/TestSuite.html";
                 }
-            } catch (ex) {} // eh, the slowResources feature is gravy
+            }
         }
 
         function autoCheck() {
