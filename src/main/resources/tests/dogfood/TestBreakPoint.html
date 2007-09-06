@@ -27,7 +27,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td rowspan="1" colspan="3">Test Break Point<br>
       </td>
     </tr>
-
+    <tr>
+      <td>setTimeout</td>
+      <td>120000</td>
+      <td>&nbsp;</td>
+    </tr>
     <tr>
       <td>open</td>
       <td>../core/TestRunner.html?test=../tests/dogfood/aut/PauseTestSuite.html</td>
@@ -35,9 +39,9 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
 
     <tr>
-        <td>waitForText</td>
-        <td>//tr[@class="title"]</td>
-        <td>Dogfood AUT: Pause</td>
+      <td>waitForEval</td>
+      <td>window.htmlTestRunner.testCaseLoaded</td>
+      <td>true</td>
     </tr>
     <tr>
         <td>click</td>

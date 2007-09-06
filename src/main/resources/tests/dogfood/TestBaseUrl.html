@@ -27,7 +27,11 @@ Copyright 2004 ThoughtWorks, Inc
       <td rowspan="1" colspan="3">Test Run Failed Tests<br>
       </td>
     </tr>
-
+    <tr>
+      <td>setTimeout</td>
+      <td>120000</td>
+      <td>&nbsp;</td>
+    </tr>
     <tr>
       <td>storeEval</td>
       <td>selenium.browserbot.baseUrl</td>
@@ -45,11 +49,10 @@ Copyright 2004 ThoughtWorks, Inc
       <td>../core/TestRunner.html?test=../tests/dogfood/aut/BaseUrl1TestSuite.html&baseUrl=${myBaseUrl}</td>
       <td>&nbsp;</td>
     </tr>
-    
     <tr>
-    	<td>waitForText</td>
-    	<td>//tr[@class="title"]</td>
-    	<td>Dogfood AUT: BaseUrl1</td>
+      <td>waitForEval</td>
+      <td>window.htmlTestRunner.testCaseLoaded</td>
+      <td>true</td>
     </tr>
     <tr>
         <td>click</td>
@@ -76,9 +79,9 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
     
     <tr>
-    	<td>waitForText</td>
-    	<td>//tr[@class="title"]</td>
-    	<td>Dogfood AUT: BaseUrl2</td>
+      <td>waitForEval</td>
+      <td>window.htmlTestRunner.testCaseLoaded</td>
+      <td>true</td>
     </tr>
     <tr>
         <td>click</td>

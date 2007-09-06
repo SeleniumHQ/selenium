@@ -101,7 +101,8 @@ objectExtend(HtmlTestRunner.prototype, {
             addLoadListener(this._getApplicationWindow(), fnBind(this._startSingleTest, this));
             this._getApplicationWindow().src = this.controlPanel.getAutoUrl();
         } else {
-            this.getTestSuite().getSuiteRows()[0].loadTestCase();
+            var testCaseLoaded = fnBind(function(){this.testCaseLoaded=true;},this);
+            this.getTestSuite().getSuiteRows()[0].loadTestCase(testCaseLoaded);
         }
     },
 
