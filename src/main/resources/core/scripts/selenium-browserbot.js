@@ -735,8 +735,9 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
         LOG.debug("pollForLoad continue (" + marker + "): " + currentHref);
         this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
     } catch (e) {
-        LOG.error("Exception during pollForLoad; this should get noticed soon (" + e.message + ")!");
-        LOG.exception(e);
+        LOG.debug("Exception during pollForLoad; this should get noticed soon (" + e.message + ")!");
+        //DGF this is supposed to get logged later; log it at debug just in case
+        //LOG.exception(e);
         this.pageLoadError = e;
     }
 };
@@ -1899,7 +1900,7 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
     if (this.pageLoadError) {
         if (this.pageUnloading) {
             var self = this;
-            LOG.warn("pollForLoad UNLOADING (" + marker + "): caught exception while firing events on unloading page: " + this.pageLoadError.message);
+            LOG.debug("pollForLoad UNLOADING (" + marker + "): caught exception while firing events on unloading page: " + this.pageLoadError.message);
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
             this.pageLoadError = null;
             return;
@@ -1917,7 +1918,7 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
                     canAccessCurrentlySelectedWindow = true;
                 } catch (e) {}
                 if (canAccessCurrentlySelectedWindow & !canAccessThisWindow) {
-                    LOG.warn("pollForLoad (" + marker + ") ABORTING: " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), but the currently selected window is fine");
+                    LOG.debug("pollForLoad (" + marker + ") ABORTING: " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), but the currently selected window is fine");
                     // returning without rescheduling
                     this.pageLoadError = null;
                     return;
@@ -1925,7 +1926,7 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
             }
 
             var self = this;
-            LOG.warn("pollForLoad (" + marker + "): " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), waiting to see if it goes away");
+            LOG.debug("pollForLoad (" + marker + "): " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), waiting to see if it goes away");
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
             this.pageLoadError = null;
             return;
