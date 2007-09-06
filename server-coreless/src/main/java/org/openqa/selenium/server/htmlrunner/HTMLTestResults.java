@@ -182,7 +182,7 @@ public class HTMLTestResults {
         out.flush();
     }
     
-    private static String quoteCharacters(String s) {
+    public static String quoteCharacters(String s) {
         StringBuffer result = null;
         for (int i = 0, max = s.length(), delta = 0; i < max; i++) {
             char c = s.charAt(i);

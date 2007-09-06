@@ -220,6 +220,8 @@ public class SeleniumServer {
         boolean interactive = false;
 
         boolean htmlSuite = false;
+        boolean selfTest = false;
+        File selfTestDir = null;
         boolean multiWindow = false;
         File userExtensions = null;
         boolean proxyInjectionModeArg = false;
@@ -301,6 +303,10 @@ public class SeleniumServer {
                     System.err.println("User extensions file MUST be called \"user-extensions.js\": " + userExtensions.getAbsolutePath());
                     System.exit(1);
                 }
+            } else if ("-selfTest".equalsIgnoreCase(arg)) {
+                selfTest = true;
+                selfTestDir = new File(getArg(args, ++i));
+                selfTestDir.mkdirs();
             } else if ("-htmlSuite".equalsIgnoreCase(arg)) {
                 try {
                     System.setProperty("htmlSuite.browserString", args[++i]);
@@ -337,7 +343,7 @@ public class SeleniumServer {
         System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
         final SeleniumServer seleniumProxy = new SeleniumServer(port);
         seleniumProxy.multiWindow = multiWindow;
-        checkArgsSanity(port, interactive, htmlSuite,
+        checkArgsSanity(port, interactive, htmlSuite, selfTest,
                 proxyInjectionModeArg, portDriversShouldContactArg, seleniumProxy);
         Thread jetty = new Thread(new Runnable() {
             public void run() {
@@ -360,6 +366,11 @@ public class SeleniumServer {
 
         if (userExtensions != null) {
             seleniumProxy.addNewStaticContent(userExtensions.getParentFile());
+        }
+        
+        if (selfTest) {
+            boolean result = new HTMLLauncher(seleniumProxy).runSelfTests(selfTestDir);
+            System.exit(result ? 0 : 1);
         }
 
         if (htmlSuite) {
@@ -431,12 +442,22 @@ public class SeleniumServer {
         }
     }
 
-    private static void checkArgsSanity(int port, boolean interactive, boolean htmlSuite, boolean proxyInjectionModeArg, int portDriversShouldContactArg, SeleniumServer seleniumProxy) throws Exception {
-        if (interactive && htmlSuite) {
-            System.err.println("You can't use -interactive and -htmlSuite on the same line!");
-            System.exit(1);
+    private static void checkArgsSanity(int port, boolean interactive, boolean htmlSuite, boolean selfTest, boolean proxyInjectionModeArg, int portDriversShouldContactArg, SeleniumServer seleniumProxy) throws Exception {
+        if (interactive) {
+            if (htmlSuite) {
+                System.err.println("You can't use -interactive and -htmlSuite on the same line!");
+                System.exit(1);
+            }
+            if (selfTest) {
+                System.err.println("You can't use -interactive and -selfTest on the same line!");
+                System.exit(1);
+            }
+        } else if (selfTest) {
+            if (htmlSuite) {
+                System.err.println("You can't use -selfTest and -htmlSuite on the same line!");
+                System.exit(1);
+            }
         }
-
         SingleEntryAsyncQueue.setDefaultTimeout(timeoutInSeconds);
         seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
         

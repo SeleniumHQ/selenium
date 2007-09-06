@@ -7,6 +7,8 @@ package org.openqa.selenium.server.htmlrunner;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
@@ -142,7 +144,7 @@ public class HTMLLauncher implements HTMLResultsListener {
     public boolean runSelfTests(File dir) throws IOException {
         String[] browsers;
         if (WindowsUtils.thisIsWindows()) {
-            browsers = new String[] { "firefox", "iexplore", "opera", "chrome", "iehta",
+            browsers = new String[] { "iehta"//"firefox", "iexplore", "opera", "chrome", "iehta",
                     }; // TODO safari
         } else if (Os.isFamily("mac")) {
             browsers = new String[] {"firefox", "safari", "chrome"};
@@ -216,12 +218,22 @@ public class HTMLLauncher implements HTMLResultsListener {
             FileWriter fw = new FileWriter(resultsFile);
             fw.write("<html><head><title>Error</title></head><body>Error: timed out after " + SeleniumServer.timeoutInSeconds + " seconds</body></html>");
             fw.close();
+        } catch (Exception e) {
+            result = "ERROR";
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            log.error(result + ' ' + resultsFile.getAbsolutePath(), e);
+            FileWriter fw = new FileWriter(resultsFile);
+            fw.write("<html><head><title>Error</title></head><body><pre>" +
+                    HTMLTestResults.quoteCharacters(sw.toString()) +
+            		"</pre></body></html>");
+            fw.close();
         }
         results = null;
         return "PASSED".equals(result);
     }
     
-    public static int mainInt(String[] args) throws Exception {
+    public static int mainInt(String... args) throws Exception {
         if (args.length == 0) {
             throw new IllegalArgumentException("Please pass a directory argument on the command line");
         }
