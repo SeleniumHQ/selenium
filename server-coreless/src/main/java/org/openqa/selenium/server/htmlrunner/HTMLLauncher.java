@@ -151,16 +151,25 @@ public class HTMLLauncher implements HTMLResultsListener {
         }
         
         boolean allPassed = true;
-        for (String browser: browsers) {
-            boolean result;
+        boolean result;
+        for (String browser : browsers) {
             result = runSelfTest(dir, browser, true, false);
             if (!result) allPassed = false;
-            result = runSelfTest(dir, browser, true, true);
-            if (!result) allPassed = false;
+        }
+        for (String browser : browsers) {
             result = runSelfTest(dir, browser, false, false);
             if (!result) allPassed = false;
-            //runSelfTest(dir, browser, false, true); // DGF singleWindow slowResources never turns up anything
         }
+        for (String browser : browsers) {
+            result = runSelfTest(dir, browser, true, true);
+            if (!result) allPassed = false;
+        }
+//        DGF singleWindow slowResources never turns up anything
+//        for (String browser : browsers) {
+//            result = runSelfTest(dir, browser, true, false);
+//            if (!result) allPassed = false;
+//        }
+        //runSelfTest(dir, browser, false, true); // DGF singleWindow slowResources never turns up anything
         if (allPassed) {
             log.info("ALL TESTS PASSED");
         } else {
@@ -194,7 +203,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         StaticContentHandler.setSlowResources(slowResources);
         String result = null;
         try {
-            result = runHTMLSuite("*"+browser, baseUrl, suiteUrl, resultsFile, SeleniumServer.timeoutInSeconds, multiWindow, "debug");
+            result = runHTMLSuite("*"+browser, baseUrl, suiteUrl, resultsFile, SeleniumServer.timeoutInSeconds, multiWindow, "info");
             if ("PASSED".equals(result)) {
                 log.info(result + ' ' + resultsFile.getAbsolutePath());
             } else {
@@ -216,11 +225,13 @@ public class HTMLLauncher implements HTMLResultsListener {
         if (args.length == 0) {
             throw new IllegalArgumentException("Please pass a directory argument on the command line");
         }
+        File dir = new File(args[0]);
+        dir.mkdirs();
         SeleniumServer server = new SeleniumServer();
         boolean result = false;
         try {
             server.start();
-            result = new HTMLLauncher(server).runSelfTests(new File(args[0]));
+            result = new HTMLLauncher(server).runSelfTests(dir);
         } finally {
             server.stop();
         }
