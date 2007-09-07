@@ -18,18 +18,22 @@
 
 static HANDLE hJob;
 
+// This function will get called when someone tries to stop this process
 BOOL CtrlHandler(DWORD ctrlType)
 {
+    // kill the job containing all our spawned child
     TerminateJobObject(hJob, 79);
     return FALSE;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    // arg[0] is killableprocess.exe, arg[1] should be the executable
     if (argc < 2) {
         printf("You must specify at least one argument");
         return 1;
     }
+
     // DGF join all of the command line arguments together, wrapped in quotes
 
     // first, calculate the size of the joined command arg
@@ -37,7 +41,7 @@ int _tmain(int argc, _TCHAR* argv[])
     // (there will be an extra space at the end; no one will mind)
     size_t cmdLen = 1;
     for (int i = 1; i < argc; i++) {
-        int argLen = _tcslen(argv[i]);
+        size_t argLen = _tcslen(argv[i]);
         cmdLen += argLen + 3;
     }
     LPTSTR cmd = new TCHAR[cmdLen];
@@ -64,7 +68,7 @@ int _tmain(int argc, _TCHAR* argv[])
         NULL,             // Process handle not inheritable. 
         NULL,             // Thread handle not inheritable. 
         FALSE,            // Set handle inheritance to FALSE. 
-        CREATE_SUSPENDED,                // No creation flags. 
+        CREATE_SUSPENDED,                // Suspend so we can add to job
         NULL,             // Use parent's environment block. 
         NULL,             // Use parent's starting directory. 
         &si,              // Pointer to STARTUPINFO structure.
@@ -76,8 +80,11 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     AssignProcessToJobObject(hJob, pi.hProcess);
     ResumeThread(pi.hThread);
+    // Handle Ctrl-C
     SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE);
+    
     Sleep(INFINITE);
+    // We should never get past this line
 
     // Close process and thread handles. 
     CloseHandle( pi.hProcess );
