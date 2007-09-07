@@ -11,10 +11,10 @@ public class SSLWellsFargoTest extends SSLOpenTest {
     }
     
     public void testChrome() {
-        runTest();
+        doTest();
     }
     
     public void testIehta() {
-        runTest();
+        doTest();
     }
 }
