@@ -2199,7 +2199,7 @@ Selenium.prototype.doSetBrowserLogLevel = function(logLevel) {
     /**
     * Sets the threshold for browser-side logging messages; log messages beneath this threshold will be discarded.
     * Valid logLevel strings are: "debug", "info", "warn", "error" or "off".
-    * Note that all browser-side log messages are discarded until logging is enabled.  To enable logging, you need to
+    * To see the browser logs, you need to
     * either show the log window in GUI mode, or enable browser-side logging in Selenium RC.
     *
     * @param logLevel one of the following: "debug", "info", "warn", "error" or "off"

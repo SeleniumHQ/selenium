@@ -255,6 +255,7 @@ in a custom Firefox profile if you run Selenium Remote Control.</p>
 <tr><td>multiWindow</td><td>boolean</td><td>Run the tests in multi-window mode, where the AUT runs in a separate window.</td><td>false</td></tr>
 <tr><td>highlight</td><td>boolean</td><td>Highlight each element as it is located.</td><td>false</td></tr>
 <tr><td>runInterval</td><td>integer (milliseconds)</td><td>Pause this number of milliseconds between test commands</td><td>0</td></tr>
+<tr><td>defaultLogLevel</td><td>string</td><td>The default logging level (one of "debug", "info", "warn", "error" or "off").  If unspecified, the logging level starts at "info" until you change it with a setBrowserLogLevel command or open the logging window and change the logging level manually.</td><td>false</td></tr>
 <tr><td>save</td><td>boolean</td><td>(HTA only) If auto=true, instead of POSTing the test results to a web server, just save the test results to a file.  In this case we'll treat the "resultsURL" as the file name to save.</td><td>false</td></tr>
 </tbody>
 </table>
@@ -280,22 +281,24 @@ in a custom Firefox profile if you run Selenium Remote Control.</p>
 <td>the time in seconds for the whole suite to run</td>
 </tr>
 <tr><td>numTestPasses</td>
-<td>tht total number of tests which passed</td>
+<td>the number of tests that passed</td>
 </tr>
 <tr><td>numTestFailures</td>
-<td>the total number of tests which failed.</td>
+<td>the number of tests that failed.</td>
 </tr>
 <tr><td>numCommandPasses</td>
-<td>the total number of commands which passed.</td>
+<td>the number of commands that passed.</td>
 </tr>
 <tr><td>numCommandFailures</td>
-<td>the total number of commands which failed.</td>
+<td>the number of assertions that failed.</td>
 </tr>
 <tr><td>numCommandErrors</td>
-<td>the total number of commands which errored.</td>
+<td>the number of commands that had an error.</td>
 </tr>
 <tr><td>suite</td>
 <td>the suite table, including the hidden column of test results</td>
+<tr><td>log</td>
+<td>the text of all logs captured in the background.  Set the logging level with the setBrowserLogLevel command or with the defaultLogLevel parameter.  Any messages printed to the log window will not be posted to the server.</td>
 </tr>
 <tr><td>testTable.1</td>
 <td>the first test table</td>
