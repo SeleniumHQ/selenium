@@ -38,6 +38,9 @@ objectExtend(SuiteTreeView.prototype, {
                     _testSuiteObserver: {
                         testCaseAdded: function() {
                             self.refresh();
+                        },
+                        testCaseRemoved: function() {
+                            self.refresh();
                         }
                     },
 
@@ -83,6 +86,7 @@ objectExtend(SuiteTreeView.prototype, {
                     }
                 },
                 isCommandEnabled : function(cmd){
+                    self.log.debug("isCommandEnabled " + cmd);
                     switch (cmd) {
                     case "cmd_delete":
                         return self.selection.getRangeCount() > 0;
@@ -135,6 +139,10 @@ objectExtend(SuiteTreeView.prototype, {
             }
         },
             
+        deleteSelected: function() {
+            this.getTestSuite().remove(this.getSelectedTestCase());
+        },
+
         //
         // nsITreeView interfaces
         //

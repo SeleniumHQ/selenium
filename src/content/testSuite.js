@@ -79,6 +79,12 @@ TestSuite.prototype = {
         this.notify("testCaseAdded", testCase);
     },
 
+    remove: function(testCase) {
+        if (this.tests.delete(testCase)) {
+            this.notify("testCaseRemoved", testCase);
+        }
+    },
+
     save: function(newFile) {
         if (!this.file || newFile) {
             var self = this;

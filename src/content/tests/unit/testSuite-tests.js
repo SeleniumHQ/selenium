@@ -66,3 +66,22 @@ function testGenerateNewTestCaseTitle() {
             });
     }
 }
+
+function testRemoveTestCase() {
+    var suite = new TestSuite();
+    var removedTestCase = null;
+    var tests = [new TestSuite.TestCase(suite, "test", "test"),
+                 new TestSuite.TestCase(suite, "foo", "bar")];
+    tests.forEach(function(test) { suite.tests.push(test); });
+    suite.addObserver({
+            testCaseRemoved: function(testCase) {
+                removedTestCase = testCase;
+            }
+        });
+    suite.remove(tests[0]);
+    assertEquals(tests[0], removedTestCase);
+    assertEquals(1, suite.tests.length);
+    suite.remove(tests[1]);
+    assertEquals(tests[1], removedTestCase);
+    assertEquals(0, suite.tests.length);
+}
