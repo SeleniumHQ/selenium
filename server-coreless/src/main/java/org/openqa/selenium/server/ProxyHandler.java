@@ -476,6 +476,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     }
 
     public void generateSSLCertsForLoggingHosts(HttpServer server) {
+        log.info("Creating 16 fake SSL servers for browser side logging");
         for (int i = 1; i <= 16; i++) {
             String uri = i + ".selenium.doesnotexist:443";
             try {
