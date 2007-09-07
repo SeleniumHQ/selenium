@@ -140,11 +140,16 @@ StringUtils.underscore = function(text) {
 }
 
 function Message(key, arg) {
-	var message = window.document.getElementById("strings").getString(key);
-	if (arg) {
-		message = message.replace(/%/, arg);
-	}
-	return message;
+    var strings = window.document.getElementById("strings");
+    if (strings) {
+        var message = strings.getString(key);
+        if (arg) {
+            message = message.replace(/%/, arg);
+        }
+        return message;
+    } else {
+        return key;
+    }
 }
 
 var ExtensionsLoader = {

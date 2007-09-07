@@ -80,8 +80,12 @@ TestSuite.prototype = {
     },
 
     remove: function(testCase) {
-        if (this.tests.delete(testCase)) {
-            this.notify("testCaseRemoved", testCase);
+        if (this.tests.length > 1) {
+            if (this.tests.delete(testCase)) {
+                this.notify("testCaseRemoved", testCase);
+            }
+        } else {
+            alert(Message("error.testCaseRemovalFailed"));
         }
     },
 

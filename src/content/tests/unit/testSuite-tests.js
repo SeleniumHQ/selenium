@@ -1,4 +1,9 @@
 function setUp() {
+    window._alert = window.alert;
+}
+
+function tearDown() {
+    window.alert = window._alert;
 }
 
 function testLoad() {
@@ -81,7 +86,11 @@ function testRemoveTestCase() {
     suite.remove(tests[0]);
     assertEquals(tests[0], removedTestCase);
     assertEquals(1, suite.tests.length);
+    var error;
+    window.alert = function(msg) {
+        error = msg;
+    }
     suite.remove(tests[1]);
-    assertEquals(tests[1], removedTestCase);
-    assertEquals(0, suite.tests.length);
+    assert(!!error);
+    assertEquals(1, suite.tests.length);
 }
