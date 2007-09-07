@@ -76,17 +76,18 @@ TestSuite.prototype = {
         testCase.content = content;
         testCase.title = content.getTitle();
         this.tests.push(testCase);
+        this.notify("testCaseAdded", testCase);
     },
 
-    save: function() {
-        if (!this.file) {
+    save: function(newFile) {
+        if (!this.file || newFile) {
             var self = this;
             return showFilePicker(window, Editor.getString("chooseTestSuite"),
                            Components.interfaces.nsIFilePicker.modeSave,
                            TestSuite.TEST_SUITE_DIRECTORY_PREF,
                            function(fp) {
                                self.file = fp.file;
-                               return self.save();
+                               return self.save(false);
                            });
         }
         var output = FileUtils.openFileOutputStream(this.file);
@@ -187,3 +188,4 @@ TestSuite.TestCase.prototype = {
     }
 }
 
+observable(TestSuite);

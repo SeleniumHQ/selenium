@@ -140,6 +140,7 @@ Editor.controller = {
 		case "cmd_open_suite":
 		case "cmd_save":
 		case "cmd_save_suite":
+		case "cmd_save_suite_as":
 		case "cmd_selenium_play":
 		case "cmd_selenium_play_suite":
 		case "cmd_selenium_pause":
@@ -159,6 +160,7 @@ Editor.controller = {
 		case "cmd_open_suite":
 		case "cmd_save":
 		case "cmd_save_suite":
+		case "cmd_save_suite_as":
 			return true;
 		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
@@ -181,6 +183,7 @@ Editor.controller = {
 		case "cmd_new_suite": editor.app.newTestSuite(); break;
 		case "cmd_open_suite": editor.app.loadTestSuite(); break;
 		case "cmd_save_suite": editor.app.saveTestSuite(); break;
+		case "cmd_save_suite_as": editor.app.saveNewTestSuite(); break;
 		case "cmd_selenium_play":
             editor.playCurrentTestCase();
 			break;

@@ -117,8 +117,11 @@ Application.prototype = {
     },
 
     setTestSuite: function(testSuite) {
+        if (this.testSuite) {
+            this.notify("testSuiteUnloaded", this.testSuite);
+        }
         this.testSuite = testSuite;
-        this.notify("testSuiteChanged");
+        this.notify("testSuiteChanged", testSuite);
     },
     
     getTestSuite: function() {
@@ -214,6 +217,18 @@ Application.prototype = {
     },
     
     saveTestSuite: function() {
+        this._saveTestSuiteAs(function(testSuite) {
+                return testSuite.save(false);
+            });
+    },
+
+    saveNewTestSuite: function() {
+        this._saveTestSuiteAs(function(testSuite) {
+                return testSuite.save(true);
+            });
+    },
+
+    _saveTestSuiteAs: function(handler) {
         this.log.debug("saveTestSuite");
         var cancelled = false;
         this.getTestSuite().tests.forEach(function(test) {
@@ -229,7 +244,7 @@ Application.prototype = {
                 }
             }, this);
         if (!cancelled) {
-            if (this.getTestSuite().save()) {
+            if (handler(this.getTestSuite())) {
                 this.addRecentTestSuite(this.getTestSuite());
             }
         }

@@ -35,6 +35,12 @@ objectExtend(SuiteTreeView.prototype, {
                         }
                     },
                     
+                    _testSuiteObserver: {
+                        testCaseAdded: function() {
+                            self.refresh();
+                        }
+                    },
+
                     testCaseChanged: function(testCase) {
                         testCase.addObserver(this._testCaseObserver);
                         var tests = self.getTestSuite().tests;
@@ -57,8 +63,41 @@ objectExtend(SuiteTreeView.prototype, {
                         if (index >= 0) {
                             self.rowUpdated(index);
                         }
+                    },
+
+                    testSuiteChanged: function(testSuite) {
+                        testSuite.addObserver(this._testSuiteObserver);
+                    },
+
+                    testSuiteUnloaded: function(testSuite) {
+                        testSuite.removeObserver(this._testSuiteObserver);
                     }
                 });
+            var controller = {
+                supportsCommand : function(cmd) {
+                    switch (cmd) {
+                        case "cmd_delete":
+                        return true;
+                    default:
+                        return false;
+                    }
+                },
+                isCommandEnabled : function(cmd){
+                    switch (cmd) {
+                    case "cmd_delete":
+                        return self.selection.getRangeCount() > 0;
+                    default:
+                        return false;
+                    }
+                },
+                doCommand : function(cmd) {
+                    switch (cmd) {
+                    case "cmd_delete": self.deleteSelected(); break;
+                    }
+                },
+                onEvent : function(evt) {}
+            };
+            tree.controllers.appendController(controller);
         },
 
         getSelectedTestCase: function() {
