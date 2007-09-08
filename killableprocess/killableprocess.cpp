@@ -37,8 +37,9 @@ int _tmain(int argc, _TCHAR* argv[])
     // DGF join all of the command line arguments together, wrapped in quotes
 
     // first, calculate the size of the joined command arg
-    // add the sizes of every arg, plus 3 characters (open quote, close quote, space) + 1 null
-    // (there will be an extra space at the end; no one will mind)
+    // add the sizes of every arg, +3 (open quote, close quote, space)
+    // + 1 null
+    
     size_t cmdLen = 1;
     for (int i = 1; i < argc; i++) {
         size_t argLen = _tcslen(argv[i]);
@@ -47,9 +48,16 @@ int _tmain(int argc, _TCHAR* argv[])
     LPTSTR cmd = new TCHAR[cmdLen];
     cmd[0]=L'\0';
     for (int i = 1; i < argc; i++) {
-        _tcscat_s(cmd, cmdLen, L"\"");
-        _tcscat_s(cmd, cmdLen, argv[i]);
-        _tcscat_s(cmd, cmdLen, L"\" ");
+        if (_tcschr(argv[i], L' ') != NULL || _tcschr(argv[i], L'\t') != NULL) {
+            // quote the arg, but only if it contains spaces
+            _tcscat_s(cmd, cmdLen, L"\"");
+            _tcscat_s(cmd, cmdLen, argv[i]);
+            _tcscat_s(cmd, cmdLen, L"\" ");
+        } else {
+            _tcscat_s(cmd, cmdLen, argv[i]);
+            _tcscat_s(cmd, cmdLen, L" ");
+        }
+        // (there will be an extra space at the end; no one will mind)
     }
     //_tprintf(cmd);
 
