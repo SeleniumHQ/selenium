@@ -1071,6 +1071,7 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
         this.metrics = metrics;
 
         this.htmlTestCase = htmlTestCase;
+        LOG.info("Starting test " + htmlTestCase.testDocument.location.pathname);
 
         se = selenium;
         global.se = selenium;
