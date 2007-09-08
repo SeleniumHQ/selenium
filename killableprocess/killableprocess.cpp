@@ -55,12 +55,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
+    JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli;
 
     ZeroMemory( &si, sizeof(si) );
     si.cb = sizeof(si);
     ZeroMemory( &pi, sizeof(pi) );
+    ZeroMemory( &jeli, sizeof(jeli) );
 
     hJob = CreateJobObject(NULL, NULL);
+
+    // Hopefully, Windows will kill the job automatically if this process dies
+    // But beware!  Process Explorer can break this by keeping open a handle to all jobs!
+    // http://forum.sysinternals.com/forum_posts.asp?TID=4094
+    jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+	SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli));
 
     // Start the child process. 
     if( !CreateProcess( NULL,   // No module name (use command line). 
