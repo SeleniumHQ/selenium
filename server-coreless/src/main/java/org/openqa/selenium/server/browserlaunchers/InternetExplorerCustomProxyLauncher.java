@@ -180,8 +180,11 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
             if (WindowsUtils.thisIsWindows()) {
                 backupRegistrySettings();
                 changeRegistrySettings();
-                cmdarray = new String[]{commandPath, "-new", url};
+                File killableProcessWrapper = new File(customProxyPACDir, "killableprocess.exe");
+                ResourceExtractor.extractResourcePath(InternetExplorerCustomProxyLauncher.class, "/killableprocess/killableprocess.exe", killableProcessWrapper);
+                cmdarray = new String[]{killableProcessWrapper.getAbsolutePath(), commandPath, "-new", url};
             } else {
+                // DGF IEs4Linux, perhaps?  It could happen!
                 cmdarray = new String[]{commandPath, url};
             }
             log.info("Launching Internet Explorer...");
