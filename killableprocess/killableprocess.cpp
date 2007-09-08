@@ -99,8 +99,15 @@ int _tmain(int argc, _TCHAR* argv[])
     // Handle Ctrl-C
     SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE);
     
-    Sleep(INFINITE);
-    // We should never get past this line
+    // Wait until all processes in the job are dead
+    JOBOBJECT_BASIC_PROCESS_ID_LIST pidList = { 0 };
+    QueryInformationJobObject(hJob, JobObjectBasicProcessIdList, &pidList, sizeof(pidList), NULL);
+    while (pidList.NumberOfProcessIdsInList > 0) {
+        DWORD pid = pidList.ProcessIdList[0];
+        HANDLE hProcess = OpenProcess(SYNCHRONIZE, FALSE, pid);
+        WaitForSingleObject(hProcess, INFINITE);
+        QueryInformationJobObject(hJob, JobObjectBasicProcessIdList, &pidList, sizeof(pidList), NULL);
+    }
 
     // Close process and thread handles. 
     CloseHandle( pi.hProcess );
