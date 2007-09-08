@@ -123,6 +123,7 @@ public class SeleneseTestCase extends TestCase {
         }
         selenium = new DefaultSelenium("localhost", port, browserString, url);
         selenium.start();
+        selenium.setContext(getName());
     }
 
     private int getDefaultPort() {
