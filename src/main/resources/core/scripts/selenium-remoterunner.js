@@ -429,7 +429,7 @@ function sendToRCAndForget(dataToBePosted, urlParams) {
         // limitation, but doesn't require we generate an extremely large ammount of fake SSL certs either.
         url = protocol + "//" + Math.floor(Math.random()* 16 + 1) + ".selenium.doesnotexist/selenium-server/driver/?" + urlParams;
     } else {
-        url = buildDriverUrl() + "?";
+        url = buildDriverUrl() + "?" + urlParams;
     }
     url = addUrlParams(url);
     
