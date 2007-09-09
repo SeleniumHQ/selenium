@@ -34,7 +34,9 @@ Copyright 2004 ThoughtWorks, Inc
     <script language="JavaScript" type="text/javascript">
         function setUp() {
             commandFactory = new Mock();
-            LOG = new Mock();
+            // DGF We want to do assertions on the LOG, but only after setup
+            LOG = { info: function() {} };
+            
             selenium = new Selenium();
             global = new Object();
             htmlTestCase = new Object();
@@ -44,6 +46,7 @@ Copyright 2004 ThoughtWorks, Inc
             seleniumTest = new HtmlRunnerTestLoop(htmlTestCase, false, commandFactory);
             // We want to verify that testLoop.commandError() function is called appropriately
             // by testLoop.handleCommandError()
+            LOG = new Mock();   
             commandErrorHandler = new Mock();
             seleniumTest.commandError = function(message) {
                 commandErrorHandler.handleError(message);

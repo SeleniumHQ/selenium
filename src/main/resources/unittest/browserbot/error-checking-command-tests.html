@@ -39,7 +39,8 @@ Copyright 2004 ThoughtWorks, Inc
         testCase.expects("reset");
         
         testCase.testDocument = {
-            getElementById : function() {}
+            getElementById : function() {},
+            location: { href: "test.html" }
         }
         
         global = {};
