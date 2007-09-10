@@ -26,15 +26,15 @@ task :install_firefox do
     dir = ENV['HOME'] + "/Library/Application Support/Firefox/Profiles"
     firefox = "/Applications/Firefox.app/Contents/MacOS/firefox"
   elsif linux? then
-    dir = ENV['HOME'] + "/.mozilla/Profiles"
-    firefox = firefox
+    dir = ENV['HOME'] + "/.mozilla/firefox"
+    firefox = "firefox"
   end
   
   if ENV['firefox'] then
     firefox = ENV['firefox']
   end
 
-  return unless File.exists?(dir) && File.exists?(firefox)
+  return unless File.exists?(dir)
 
   puts "Using firefox: #{firefox}"
   
