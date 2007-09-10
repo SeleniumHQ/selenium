@@ -561,6 +561,8 @@ public class SeleniumServer {
      */
     public SeleniumServer(int port, boolean slowResources, boolean multiWindow) throws Exception {
         configureLogging();
+        log.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
+        log.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
         if (debugMode) {
             log.info("Selenium server running in debug mode.");
         }
