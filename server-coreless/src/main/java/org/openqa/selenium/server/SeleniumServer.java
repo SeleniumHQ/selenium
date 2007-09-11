@@ -40,12 +40,12 @@ import org.mortbay.http.HashUserRealm;
 import org.mortbay.http.HttpContext;
 import org.mortbay.http.SecurityConstraint;
 import org.mortbay.http.SocketListener;
-import org.mortbay.http.UserRealm;
 import org.mortbay.http.handler.SecurityHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.UnixUtils;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
@@ -577,6 +577,16 @@ public class SeleniumServer {
                 "mode for all sessions, no matter what is passed to getNewBrowserSession.");
         }
         this.port = port;
+        String proxyHost = System.getProperty("http.proxyHost");
+		String proxyPort = System.getProperty("http.proxyPort");
+		if (Integer.toString(port).equals(proxyPort)) {
+			log.debug("http.proxyPort is the same as the Selenium Server port " + port);
+			log.debug("http.proxyHost="+proxyHost);
+			if ("localhost".equals(proxyHost) || "127.0.0.1".equals(proxyHost)) {
+				log.info("Forcing http.proxyHost to '' to avoid infinite loop");
+				System.setProperty("http.proxyHost", "");
+			}
+		}
         if (portDriversShouldContact==0) {
             SeleniumServer.setPortDriversShouldContact(port);
         }
