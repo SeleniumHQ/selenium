@@ -27,6 +27,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -563,6 +564,7 @@ public class SeleniumServer {
         configureLogging();
         log.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
         log.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
+        logVersionNumber();
         if (debugMode) {
             log.info("Selenium server running in debug mode.");
         }
@@ -660,6 +662,28 @@ public class SeleniumServer {
                 throw new RuntimeException(e);
             }
         }
+    }
+    
+    private static void logVersionNumber() throws IOException {
+    	InputStream stream = SeleniumServer.class.getResourceAsStream("/VERSION.txt");
+    	if (stream == null) {
+    		log.error("Couldn't determine version number");
+    		return;
+    	}
+//    	BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+//    	StringBuffer sb = new StringBuffer();
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            sb.append(line);
+//        }
+//        String pac = sb.toString();
+    	Properties p = new Properties();
+    	p.load(stream);
+    	String rcVersion = p.getProperty("selenium.rc.version");
+    	String rcRevision = p.getProperty("selenium.rc.revision");
+    	String coreVersion = p.getProperty("selenium.core.version");
+    	String coreRevision = p.getProperty("selenium.core.revision");
+    	log.info("v" + rcVersion + " [" + rcRevision + "], with Core v" + coreVersion + " [" +coreRevision+"]");
     }
     
     private static void resetLogger() {
