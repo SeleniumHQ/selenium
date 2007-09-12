@@ -102,7 +102,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         
         // Only needed for proxy injection mode, but always adding to the list to guarantee they get restored correctly
         addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_PROXY_ENABLE, REG_KEY_BACKUP_PROXY_ENABLE, boolean.class);
-        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_PROXY_OVERRIDE, REG_KEY_BACKUP_PROXY_OVERRIDE, boolean.class);
+        addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_PROXY_OVERRIDE, REG_KEY_BACKUP_PROXY_OVERRIDE, String.class);
         addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_PROXY_SERVER, REG_KEY_BACKUP_PROXY_SERVER, String.class);
         addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_0_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR, int.class);
         addRegistryKeyToBackupList(REG_KEY_BASE + REG_KEY_MAX_CONNECTIONS_PER_1_1_SVR, REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR, int.class);
