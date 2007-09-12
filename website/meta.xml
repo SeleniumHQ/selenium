@@ -120,7 +120,7 @@
             <version>latest nightly</version>
 
             <date>12/31/1970</date>
-            <jiraId>0</jiraId>
+            <jiraId>10380</jiraId>
             <downloads>
                 <download>
                     <url>http://release.openqa.org/cgi-bin/selenium-remote-control-redirect.zip</url>
