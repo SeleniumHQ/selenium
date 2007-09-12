@@ -102,7 +102,7 @@ public class GoogleTest extends TestCase {
     }
     
     public void testGoogle() {
-        sel.open("http://www.google.com/webhp");
+        sel.open("http://www.google.com/webhp?hl=en");
         sel.type("q", "hello world");
         sel.click("btnG");
         sel.waitForPageToLoad("5000");
@@ -134,7 +134,7 @@ namespace MyTests {
         
         [Test]
         public void testGoogle() {
-            sel.Open("http://www.google.com/webhp");
+            sel.Open("http://www.google.com/webhp?hl=en");
             sel.Type("q", "hello world");
             sel.Click("btnG");
             sel.WaitForPageToLoad("5000");
@@ -163,7 +163,7 @@ my $sel = WWW::Selenium->new( host => "localhost",
                               browser_url => "http://www.google.com";,
                             );
 $sel->start();
-$sel->open("http://www.google.com");
+$sel->open("http://www.google.com?hl=en");
 $sel->type("q", "hello world");
 $sel->click("btnG");
 $sel->wait_for_page_to_load(5000);
@@ -197,7 +197,7 @@ class GoogleTest extends PHPUnit_Framework_TestCase
 
     public function testGoogle()
     {
-        $this->selenium->open("/");
+        $this->selenium->open("/webhp?hl=en");
         $this->selenium->type("q", "hello world");
         $this->selenium->click("btnG");
         $this->selenium->waitForPageToLoad(10000);
@@ -223,7 +223,7 @@ class GoogleTest(unittest.TestCase):
         
     def test_google(self):
         sel = self.selenium
-        sel.open("http://www.google.com/webhp")
+        sel.open("http://www.google.com/webhp?hl=en")
         sel.type("q", "hello world")
         sel.click("btnG")
         sel.wait_for_page_to_load(5000)
@@ -252,7 +252,7 @@ class GoogleTest < Test::Unit::TestCase
 	end
 		
 	def test_google
-		@sel.open("http://www.google.com/webhp")
+		@sel.open("http://www.google.com/webhp?hl=en")
 		@sel.type("q", "hello world")
 		@sel.click("btnG")
 		@sel.wait_for_page_to_load("5000")
@@ -290,7 +290,7 @@ end
 </blockquote>
 <p>and then we tried to open up google.com (which did work...) and type &quot;Hello World&quot; into the search box. But yahoo.com doesn't have the right to modify google.com, so that operation fails.</p>
 <p>All this means is that you have to choose your browser's start URL wisely: if you open up the browser to yahoo.com, you can't use it to test google.com, and vice versa.</p>
-<p>However, in some cases, you may be <i>required</i> to test more than one domain at once.  The most common case is when you need to test both http://blah.com <i>and</i> https://blah.com.  "http:" and "https:" are considered different "origins" from JavaScript perspective, so tests running on one can't run on the other.  In that case, for now, you'll have to use one of our <a href="experimental.html">experimental browser launchers</a> which support running in multiple domains.
+<p>However, in some cases, you may be <i>required</i> to test more than one domain at once.  The most common case is when you need to test both http://blah.com <i>and</i> https://blah.com.  "http:" and "https:" are considered different "origins" from JavaScript perspective, so tests running on one can't run on the other.  In that case, for now, you'll have to use one of our <a href="experimental.html">experimental browser launchers</a> which support running in multiple domains.  (Also be sure to read the <a href="#https">HTTPS</a> section of this documentation for more details about HTTPS support.)
 
 
 <h2><a name="otherbrowsers"/>Automatically Launching Other Browsers</h2>
@@ -332,55 +332,27 @@ end
         
 <h2><a name="https">Support for HTTPS</a></h2>
 
-Because of the unique proxy-based nature of Selenium RC, tests that require HTTPS can be a challenge. There are two
-options available:
+<p>Because of the unique proxy-based nature of Selenium RC, tests that require HTTPS can be a challenge.  Our proxy attempts to examine and modify the HTTP requests being sent over the wire; HTTPS is explicitly designed to prevent anyone from doing that (even though, in our case, our intentions are benign).</p>
 
-<ol>
-    <li>Use the <a href="experimental.html">experimental</a> *chrome or *iehta browser launchers, which can typically bypass security restrictions that the other
-        modes cannot.
-    </li>
-    <li>Use the HTTPS support outlined below.</li>
-</ol>
+<p>Therefore, our proxy is configured to automatically generate dummy SSL certificates whenever you browse to an HTTPS site.  Our dummy certificates are automatically signed by Selenium RC using a made-up certificate authority (CA) called "CyberVillains"; if your browser is configured to trust the CyberVillains CA, it will automatically trust our dummy certificates, allowing us to read/modify the content of your SSL requests.</p>
 
-To get started with testing on HTTPS, you have to use the <b>custom browser</b> launcher (*custom). The reason for this
-is that you need to import a Certificate Authority in to the main browser profile. Look in the advanced/security
-settings in Firefox/IE for this option.
+<p><b>Using the CyberVillains CA is inherently dangerous</b>.  When you use a browser that trusts CyberVillains, any website can claim to be any other website for the purposes of SSL authentication.  Don't use Selenium RC while browsing to websites that you don't trust.</p>
 
-<p/>
+<p>On Firefox and Opera, we can automatically configure the browser to temporarily trust CyberVillains, but we don't yet provide support for this on Internet Explorer, Safari, or Konqueror.  If you attempt to browse to an HTTPS website using one of those browsers without manually trusting the CyberVillains CA, you'll get a security warning dialog, which, unfortunately, you won't be able to use Selenium to click through.  For those browsers, see the instructions below that explain how to use the CyberVillains CA manually.</p>
 
-You can find the CA at <a href="http://dangerous-certificate-authority.openqa.org/">http://dangerous-certificate-authority.openqa.org/</a>
+<p>Another thing that makes HTTPS challenging is that many sites that require HTTPS use it only for certain pages (e.g. only for the login page), which means that testing such sites requires switching between different domains, in violation of the same-origin policy.</p>
 
-<p/>
+<p>If your test needs to use multiple domains (HTTP and HTTPS in the same test), you'll need to use one of our <a href="experimental.html">experimental</a> *chrome or *iehta browser launchers, or use proxy injection mode.  If you use *chrome or *iehta, you don't need to use the Selenium proxy at all, in which case you don't have to trust the CyberVillains CA.  If you use proxy injection mode, you'll still have to trust CyberVillains, following the directions below.</p>
 
-Once you have the CA imported to the browser and have changed your tests to use the custom browser launcher, you can
-begin testing against HTTPS. Everything should just work.
+<h3>Using the CyberVillains CA manually</h3>
 
-<p/>
+<p>Did I mention that <b>using the CyberVillains CA is inherently dangerous</b>?  Using it manually is <i>more</i> dangerous, because it introduces the risk that you'll forget to uninstall the CyberVillains CA when you're done using Selenium RC.  You MUST manually uninstall the CyberVillains CA after you're finished using Selenium RC.</p>
 
-<b>How it works</b>
+<p><b>Windows/IE</b>: Look for "cyberVillainsCA.cer" in the "server" folder in the selenium-remote-control zip, double-click on it, and press the "Install Certificate" button.  Then click "Next" a few times, and finally "Finish" to install the CA certificate.  To uninstall the CA certificate, use the "Internet Options" Control Panel, click on the "Content" tab, and click on the "Certificates" button.  Finally, under the "Trusted Root Certification Authorities" tab, scroll down to CyberVillains and click on the "Remove" button to remove the cert.</p>
 
-<p/>
+<p><b>OS X/Safari</b>: Look for "cyberVillainsCA.cer" in the "server" folder in the selenium-remote-control zip and double-click on it.  You'll be prompted to select a keychain; select the "X509Anchors" keychain.  You'll be required to enter your administrative password to install the certificate.  To uninstall the CA certificate, start the "Keychain Access" program, in "/Applications/Utilities".  Click on "Show Keychains" and select the X509Anchors keychain.  If that keychain isn't available, select "Add Keychain" from the File menu, then navigate to /System/Library/Keychains and open the "X509Anchors" file in that directory.  Once you've opened the X509Anchors keychain, you should be able to scroll down to the CyberVillains CA and delete it using the Delete button.</p>
 
-Unlike other similar web testing tools, this solution doesn't require you to prepare the web browser for each domain you
-want to test. Rather, you only need to prepare the browser once by importing the CA.
-
-<p/>
-
-What happens behind the schenes is that as each HTTPS connection is opened to a unique server/host combination, a
-mini-instance of Jetty is spawned off and used to tunnel SSL connections to the server. However, that Jetty instance
-needs a keystore that is signed by a trusted CA and is associated with the domain in question.
-
-<p/>
-
-That keystore could be generated through a series of keytool and openssl commands, but we didn't want you to have to
-install these locally, since that can be a pain, especially for openssl. So instead, we created a web service at the
-dangerous-certificate-authority.openqa.org domain that generates the keystore for you.
-
-<p/>
-
-The downside to this approach is that you must be online for HTTPS support to work. In the future we may offer a
-fallback that issues the keytool/openssl commands if the online service can't be accessed.
-
+<p><b>Linux/Konqueror</b>: In the Settings menu, choose "Configure Konqueror."  Select the "Crypto" icon on the left-hand navigation bar, then select the "SSL Signers" tab by clicking on the scroll-right arrow in the upper-right corner of the window.  Click on the Import button to import a certificate.  Look for "cyberVillainsCA.cer" in the "server" folder in the selenium-remote-control zip and double-click on it to import the certificate.  To uninstall the certificate, just click on "CyberVillains" in the "SSL Signers" tab and click on the "Remove" button.</p>
 
 <hr />
 <p>With that, you're ready to try out one of our Client Drivers. We have Client Drivers available in a variety of languages, allowing you to automatically submit HTTP requests to the Selenium Server and automate your browsing tasks. Click on one of them on the left to get more information about any particular Client Driver, or get information on how to write your own from scratch. </p>
