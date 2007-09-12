@@ -86,7 +86,7 @@ var FileUtils = {
 
     splitPath: function(file) {
         var result = [];
-        while (file && file.path != "/") {
+        while (file && file.path != "/" && !file.path.match(/^[a-z]:$/i)) {
             result.unshift(file.leafName);
             file = file.parent;
         }
