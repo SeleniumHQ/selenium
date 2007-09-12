@@ -101,6 +101,7 @@
     <releases>
         
         <release>
+        
             <version>0.9.0</version>
 
             <date>11/14/2006</date>
@@ -109,6 +110,21 @@
                 <download>
                     <url>http://release.openqa.org/selenium-remote-control/0.9.0/selenium-remote-control-0.9.0.zip</url>
                     <name>Major release</name>
+                </download>
+                
+            </downloads>
+        </release>
+        
+        <release>
+        
+            <version>latest nightly</version>
+
+            <date>12/31/1970</date>
+            <jiraId>0</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.openqa.org/cgi-bin/selenium-remote-control-redirect.zip</url>
+                    <name>latest nightly build - unstable</name>
                 </download>
                 
             </downloads>
