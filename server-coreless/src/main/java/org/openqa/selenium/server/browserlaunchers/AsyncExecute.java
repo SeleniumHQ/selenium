@@ -87,7 +87,6 @@ public class AsyncExecute extends Execute {
         streamHandler.setProcessErrorStream(process.getErrorStream());
         streamHandler.setProcessOutputStream(process.getInputStream());
         streamHandler.start();
-        process.getOutputStream().close();
 
         project.log("spawned process " + process.toString(), Project.MSG_VERBOSE);
         return process;

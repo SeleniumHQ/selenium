@@ -299,6 +299,11 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
                 taskKillException = e;
             }
         }
+        try { // DGF killableprocess.exe should commit suicide if we send it a newline
+            process.getOutputStream().write('\n');
+            process.getOutputStream().flush();
+            Thread.sleep(200);
+        } catch (Exception ignored) {}
         AsyncExecute.killProcess(process);
         if (customPACappropriate) {
             try {

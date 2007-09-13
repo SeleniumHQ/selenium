@@ -21,13 +21,24 @@ static HANDLE hJob;
 // This function will get called when someone tries to stop this process
 BOOL CtrlHandler(DWORD ctrlType)
 {
-    // kill the job containing all our spawned child
+    // kill the job containing our spawned child and its descendents
     TerminateJobObject(hJob, 79);
-    return FALSE;
+    ExitProcess(0L);
+    return TRUE;
+}
+
+// DGF Commit suicide if user hands us a line in stdout
+DWORD WINAPI ThreadProc( LPVOID lpParam )
+{
+    _TCHAR line[128];
+    _getts_s(line, 128);
+    CtrlHandler(0L);
+    return 0;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+
     // arg[0] is killableprocess.exe, arg[1] should be the executable
     if (argc < 2) {
         printf("You must specify at least one argument");
@@ -96,8 +107,21 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     AssignProcessToJobObject(hJob, pi.hProcess);
     ResumeThread(pi.hThread);
+    // Close process and thread handles. 
+    CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
     // Handle Ctrl-C
     SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE);
+    
+    // Create a thread to commit suicide on newline
+    HANDLE hThread = CreateThread( 
+            NULL,              // default security attributes
+            0,                 // use default stack size  
+            ThreadProc,        // thread function 
+            NULL,             // argument to thread function 
+            0,                 // use default creation flags 
+            NULL);   // returns the thread identifier 
+    CloseHandle(hThread);
     
     // Wait until all processes in the job are dead
     JOBOBJECT_BASIC_PROCESS_ID_LIST pidList = { 0 };
@@ -106,11 +130,10 @@ int _tmain(int argc, _TCHAR* argv[])
         DWORD pid = pidList.ProcessIdList[0];
         HANDLE hProcess = OpenProcess(SYNCHRONIZE, FALSE, pid);
         WaitForSingleObject(hProcess, INFINITE);
+        CloseHandle (hProcess);
         QueryInformationJobObject(hJob, JobObjectBasicProcessIdList, &pidList, sizeof(pidList), NULL);
     }
 
-    // Close process and thread handles. 
-    CloseHandle( pi.hProcess );
-    CloseHandle( pi.hThread );
+
     return 0;
 }
