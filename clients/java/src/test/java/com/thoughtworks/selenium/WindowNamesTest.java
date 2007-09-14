@@ -19,7 +19,7 @@ public class WindowNamesTest extends TestCase
    }
    
    public void testWindowNames() throws Throwable {
-		selenium.open("http://www.google.com/webhp");
+		selenium.open("http://www.google.com/webhp?hl=en");
         
 		assertEquals("Google", selenium.getTitle());
 		String[] windowNames = selenium.getAllWindowNames();
