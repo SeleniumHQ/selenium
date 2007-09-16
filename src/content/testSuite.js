@@ -150,10 +150,11 @@ TestSuite.TestCase.prototype = {
         if (!this.testSuite.file) return null;
         var file = FileUtils.getFile(this.testSuite.file.parent.path);
         //alert(file + " " + this.filename);
-	var filename = this.filename;
-	if (file.QueryInterface(Components.interfaces.nsILocalFileWin)) {
-	    filename = filename.replace(/\//g, '\\');
-	}
+        var filename = this.filename;
+        if (Components.interfaces.nsILocalFileWin &&
+            file instanceof Components.interfaces.nsILocalFileWin) {
+            filename = filename.replace(/\//g, '\\');
+        }
         file.appendRelativePath(filename);
         return file;
     },
