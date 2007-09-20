@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openqa.selenium.core</groupId>
     <artifactId>selenium-core</artifactId>
-    <version>0.8.4-SNAPSHOT</version>
+    <version>0.8.3</version>
     <name>Selenium Core</name>
     <packaging>jar</packaging>
     <url>http://www.openqa.org/selenium-core</url>
@@ -75,7 +75,7 @@
                                 </java>
                                 <!--<xmlvalidate file="target/classes/core/iedoc-core.xml" lenient="true"/>-->
 
-                                <xslt in="target/classes/core/iedoc-core.xml" out="target/reference.html" style="src/main/resources/doctool/doc2html.xml"/>
+                                <xslt in="target/classes/core/iedoc-core.xml" out="target/classes/reference.html" style="src/main/resources/doctool/doc2html.xml"/>
                             </tasks>
                         </configuration>
                         <goals>
