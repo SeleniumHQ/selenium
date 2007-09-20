@@ -10,6 +10,27 @@
 
 Release information for different distributions of Selenium Core
 
+<h2>Selenium Core 0.8.3</h2>
+
+September 20, 2007
+
+<p>New in 0.8.3:</p>
+<ul>
+    <li>A new XPath count command, which tells you how many elements match a given XPath</li>
+    <li>Our HTML Selenese TestRunner can now save the logs of an automated test run along with the Selenese test results</li>
+    <li>Significant fixes/improvements in our XPath support</li>
+    <li>Fixed our long broken readyState.xpi to support Firefox 2 in multiWindow mode</li>
+</ul>
+
+<p>Warnings:</p>
+<ul><li>There are a few small changes in the API.  windowMaximize and windowFocus no longer take an argument; just "selectWindow" to the window you want to maximize/focus before you call them.  Also, the "getLogMessages" accessor has been removed; it never really worked properly anyway, and we now support much more sophisticated logging.</li>
+<li>Use of the multiWindow mode in Firefox still requires installation of the "readyState.xpi" extension, available in the Selenium Core distribution.</li>
+</ul>
+
+<p>
+For more details, see the <a href="http://jira.openqa.org/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10381">JIRA release summary</a>.
+</p>
+
 <h2>Selenium Core 0.8.2</h2>
 
 December 11, 2006
@@ -41,7 +62,7 @@ December 11, 2006
 </ul>
 
 <p>
-For more details, see the <a href="http://jira.openqa.org/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10301">JIRA release summary</a>.
+For more details, see the <a href="http://jira.openqa.org/ReleaseNote.jspa?projectId=10030&styleName=Html&version=10361">JIRA release summary</a>.
 </p>
 
 

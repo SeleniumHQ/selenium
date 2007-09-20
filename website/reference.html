@@ -1,7 +1,7 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Selenium Core 0.8.2 Reference</title>
+<title>Selenium Core 0.8.3 Reference</title>
 </head>
 <body>
 <h2>Concepts</h2>
@@ -178,6 +178,34 @@ pattern.
 <h2>Selenium Actions</h2>
 <dl>
 <dt>
+<strong><a name="addLocationStrategy"></a>addLocationStrategy
+		(
+			strategyName,functionDefinition
+		)
+	</strong>
+</dt>
+<dd>Defines a new function for Selenium to locate elements on the page.
+For example,
+if you define the strategy "foo", and someone runs click("foo=blah"), we'll
+run your function, passing you the string "blah", and click on the element 
+that your function
+returns, or throw an "Element not found" error if your function returns null.
+
+We'll pass three arguments to your function:
+<ul>
+<li>locator: the string the user passed in</li>
+<li>inWindow: the currently selected window</li>
+<li>inDocument: the currently selected document</li>
+</ul>
+The function must return null if the element can't be found.<p>Arguments:</p>
+<ul>
+<li>strategyName - the name of the strategy to define; this should use only   letters [a-zA-Z] with no spaces or other punctuation.</li>
+<li>functionDefinition - a string defining the body of a function in JavaScript.   For example: <code>return inDocument.getElementById(locator);</code>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
 <strong><a name="addSelection"></a>addSelection
 		(
 			locator,optionLocator
@@ -190,6 +218,24 @@ pattern.
 <ul>
 <li>locator - an <a href="#locators">element locator</a> identifying a multi-select box</li>
 <li>optionLocator - an option locator (a label by default)</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="allowNativeXpath"></a>allowNativeXpath
+		(
+			allow
+		)
+	</strong>
+</dt>
+<dd>Specifies whether Selenium should use the native in-browser implementation
+of XPath (if any native version is available); if you pass "false" to
+this function, we will always use our pure-JavaScript xpath library.
+Using the pure-JS xpath library can improve the consistency of xpath
+element locators between different browser vendors, but the pure-JS
+version is much slower than the native implementations.<p>Arguments:</p>
+<ul>
+<li>allow - boolean, true means we'll prefer to use native XPath; false means we'll only use JS XPath</li>
 </ul>
 </dd>
 <br>
@@ -226,6 +272,22 @@ the next JavaScript prompt [window.prompt()].<p>Arguments:</p>
 </dd>
 <br>
 <dt>
+<strong><a name="assignId"></a>assignId
+		(
+			locator,identifier
+		)
+	</strong>
+</dt>
+<dd>Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
+using its ID rather than a slow/complicated XPath.  This ID will disappear once the page is
+reloaded.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an element</li>
+<li>identifier - a string to be used as the ID of the specified element</li>
+</ul>
+</dd>
+<br>
+<dt>
 <strong><a name="break"></a>break
 		(
 			
@@ -258,9 +320,28 @@ force automated tests to hang until a user intervenes manually.</dd>
 	</strong>
 </dt>
 <dd>By default, Selenium's overridden window.confirm() function will
-return true, as if the user had manually clicked OK.  After running
+return true, as if the user had manually clicked OK; after running
 this command, the next call to confirm() will return false, as if
-the user had clicked Cancel.</dd>
+the user had clicked Cancel.  Selenium will then resume using the
+default behavior for future confirmations, automatically returning 
+true (OK) unless/until you explicitly call this command for each
+confirmation.</dd>
+<br>
+<dt>
+<strong><a name="chooseOkOnNextConfirmation"></a>chooseOkOnNextConfirmation
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Undo the effect of calling chooseCancelOnNextConfirmation.  Note
+that Selenium's overridden window.confirm() function will normally automatically
+return true, as if the user had manually clicked OK, so you shouldn't
+need to use this command unless for some reason you need to change
+your mind prior to the next confirmation.  After any confirmation, Selenium will resume using the
+default behavior for future confirmations, automatically returning 
+true (OK) unless/until you explicitly call chooseCancelOnNextConfirmation for each
+confirmation.</dd>
 <br>
 <dt>
 <strong><a name="click"></a>click
@@ -573,8 +654,8 @@ the specified element.<p>Arguments:</p>
 		)
 	</strong>
 </dt>
-<dd>Simulates a user pressing the mouse button (without releasing it yet) on
-the specified element.<p>Arguments:</p>
+<dd>Simulates a user pressing the mouse button (without releasing it yet) at
+the specified location.<p>Arguments:</p>
 <ul>
 <li>locator - an <a href="#locators">element locator</a>
 </li>
@@ -648,8 +729,8 @@ the specified element.<p>Arguments:</p>
 		)
 	</strong>
 </dt>
-<dd>Simulates a user pressing the mouse button (without releasing it yet) on
-the specified element.<p>Arguments:</p>
+<dd>Simulates the event that occurs when the user releases the mouse button (i.e., stops
+holding the button down) on the specified element.<p>Arguments:</p>
 <ul>
 <li>locator - an <a href="#locators">element locator</a>
 </li>
@@ -663,8 +744,8 @@ the specified element.<p>Arguments:</p>
 		)
 	</strong>
 </dt>
-<dd>Simulates a user pressing the mouse button (without releasing it yet) on
-the specified element.<p>Arguments:</p>
+<dd>Simulates the event that occurs when the user releases the mouse button (i.e., stops
+holding the button down) at the specified location.<p>Arguments:</p>
 <ul>
 <li>locator - an <a href="#locators">element locator</a>
 </li>
@@ -767,6 +848,25 @@ an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p>
 </dd>
 <br>
 <dt>
+<strong><a name="runScript"></a>runScript
+		(
+			script
+		)
+	</strong>
+</dt>
+<dd>Creates a new "script" tag in the body of the current test window, and 
+adds the specified text into the body of the command.  Scripts run in
+this way can often be debugged more easily than scripts executed using
+Selenium's "getEval" command.  Beware that JS exceptions thrown in these script
+tags aren't managed by Selenium, so you should probably wrap your script
+in try/catch blocks if there is any chance that the script will throw
+an exception.<p>Arguments:</p>
+<ul>
+<li>script - the JavaScript snippet to run</li>
+</ul>
+</dd>
+<br>
+<dt>
 <strong><a name="select"></a>select
 		(
 			selectLocator,optionLocator
@@ -833,6 +933,8 @@ If no option locator prefix is provided, the default behaviour is to match on <s
 <dd>Selects a frame within the current window.  (You may invoke this command
 multiple times to select nested frames.)  To select the parent frame, use
 "relative=parent" as a locator; to select the top frame, use "relative=top".
+You can also select a frame by its 0-based index number; select the first frame with
+"index=0", or the third frame with "index=2".
 
 <p>You may also use a DOM expression to identify the frame you want directly,
 like this: <code>dom=frames["main"].frames["subframe"]</code>
@@ -854,13 +956,18 @@ like this: <code>dom=frames["main"].frames["subframe"]</code>
 commands go to that window. To select the main window again, use null
 as the target.
 
+<p>Note that there is a big difference between a window's internal JavaScript "name" property
+and the "title" of a given window's document (which is normally what you actually see, as an end user,
+in the title bar of the window).  The "name" is normally invisible to the end-user; it's the second 
+parameter "windowName" passed to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
+(which selenium intercepts).</p>
 <p>Selenium has several strategies for finding the window object referred to by the "windowID" parameter.</p>
-<p>1.) if windowID is null, then it is assumed the user is referring to the original window instantiated by the browser).</p>
+<p>1.) if windowID is null, (or the string "null") then it is assumed the user is referring to the original window instantiated by the browser).</p>
 <p>2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
 that this variable contains the return value from a call to the JavaScript window.open() method.</p>
-<p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window objects.  Each of these string 
-names matches the second parameter "windowName" past to the JavaScript method  window.open(url, windowName, windowFeatures, replaceFlag)
-(which selenium intercepts).</p>
+<p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window "names".</p>
+<p>4.) If <i>that</i> fails, we'll try looping over all of the known windows to try to find the appropriate "title".
+Since "title" is not necessarily unique, this may have unexpected behavior.</p>
 <p>If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages
 which identify the names of windows created via window.open (and therefore intercepted by selenium).  You will see messages
 like the following for each window as it is opened:</p>
@@ -877,23 +984,18 @@ an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p>
 </dd>
 <br>
 <dt>
-<strong><a name="setContext"></a>setContext
+<strong><a name="setBrowserLogLevel"></a>setBrowserLogLevel
 		(
-			context,logLevelThreshold
+			logLevel
 		)
 	</strong>
 </dt>
-<dd>Writes a message to the status bar and adds a note to the browser-side
-log.
-
-<p>If logLevelThreshold is specified, set the threshold for logging
-to that level (debug, info, warn, error).</p>
-<p>(Note that the browser-side logs will <i>not</i> be sent back to the
-server, and are invisible to the Client Driver.)</p>
-<p>Arguments:</p>
+<dd>Sets the threshold for browser-side logging messages; log messages beneath this threshold will be discarded.
+Valid logLevel strings are: "debug", "info", "warn", "error" or "off".
+To see the browser logs, you need to
+either show the log window in GUI mode, or enable browser-side logging in Selenium RC.<p>Arguments:</p>
 <ul>
-<li>context - the message to be sent to the browser</li>
-<li>logLevelThreshold - one of "debug", "info", "warn", "error", sets the threshold for browser-side logging</li>
+<li>logLevel - one of the following: "debug", "info", "warn", "error" or "off"</li>
 </ul>
 </dd>
 <br>
@@ -1088,6 +1190,25 @@ run your JavaScript in there</p>
 </dd>
 <br>
 <dt>
+<strong><a name="waitForFrameToLoad"></a>waitForFrameToLoad
+		(
+			frameAddress,timeout
+		)
+	</strong>
+</dt>
+<dd>Waits for a new frame to load.
+
+<p>Selenium constantly keeps track of new pages and frames loading, 
+and sets a "newPageLoaded" flag when it first notices a page load.</p>
+
+See waitForPageToLoad for more information.<p>Arguments:</p>
+<ul>
+<li>frameAddress - FrameAddress from the server side</li>
+<li>timeout - a timeout in milliseconds, after which this command will return with an error</li>
+</ul>
+</dd>
+<br>
+<dt>
 <strong><a name="waitForPageToLoad"></a>waitForPageToLoad
 		(
 			timeout
@@ -1125,28 +1246,20 @@ wait immediately after a Selenium command that caused a page-load.</p>
 <dt>
 <strong><a name="windowFocus"></a>windowFocus
 		(
-			windowName
+			
 		)
 	</strong>
 </dt>
-<dd>Gives focus to a window<p>Arguments:</p>
-<ul>
-<li>windowName - name of the window to be given focus</li>
-</ul>
-</dd>
+<dd>Gives focus to the currently selected window</dd>
 <br>
 <dt>
 <strong><a name="windowMaximize"></a>windowMaximize
 		(
-			windowName
+			
 		)
 	</strong>
 </dt>
-<dd>Resize window to take up the entire screen<p>Arguments:</p>
-<ul>
-<li>windowName - name of the window to be enlarged</li>
-</ul>
-</dd>
+<dd>Resize currently selected window to take up the entire screen</dd>
 <br>
 </dl>
 <h2>Selenium Accessors</h2>
@@ -1666,7 +1779,7 @@ generated and Selenium will hang until someone manually clicks OK.</p>
 </dt>
 <dd>Gets the value of an element attribute.<p>Arguments:</p>
 <ul>
-<li>attributeLocator - an element locator followed by an</li>
+<li>attributeLocator - an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"</li>
 <li>variableName -
                     the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
                 </li>
@@ -2317,12 +2430,12 @@ will be ignored.<p>Arguments:</p>
 have multiple lines, but only the result of the last line will be returned.
 
 <p>Note that, by default, the snippet will run in the context of the "selenium"
-object itself, so <code>this</code> will refer to the Selenium object, and <code>window</code> will
-refer to the top-level runner test window, not the window of your application.</p>
-<p>If you need a reference to the window of your application, you can refer
-to <code>this.browserbot.getCurrentWindow()</code> and if you need to use
+object itself, so <code>this</code> will refer to the Selenium object.  Use <code>window</code> to
+refer to the window of your application, e.g. <code>window.document.getElementById('foo')</code>
+</p>
+<p>If you need to use
 a locator to refer to a single element in your application page, you can
-use <code>this.browserbot.findElement("foo")</code> where "foo" is your locator.</p>
+use <code>this.browserbot.findElement("id=foo")</code> where "id=foo" is your locator.</p>
 <p>Arguments:</p>
 <ul>
 <li>script - the JavaScript snippet to run</li>
@@ -2530,66 +2643,6 @@ closing "html" tags.<p>
 				)
 			</li>
 <li>waitForNotLocation
-				(
-					<a href="#patterns">pattern</a>
-				)
-			</li>
-</ul>
-</dd>
-<br>
-<dt>
-<strong><a name="storeLogMessages"></a>storeLogMessages
-		
-		(
-			
-			variableName
-		)
-		
-	</strong>
-</dt>
-<dd>Return the contents of the log.
-
-<p>This is a placeholder intended to make the code generator make this API
-available to clients.  The selenium server will intercept this call, however,
-and return its recordkeeping of log messages since the last call to this API.
-Thus this code in JavaScript will never be called.</p>
-<p>The reason I opted for a servercentric solution is to be able to support
-multiple frames served from different domains, which would break a
-centralized JavaScript logging mechanism under some conditions.</p>
-<p>
-<dl>
-<dt>Returns: </dt>
-<dd>all log messages seen since the last call to this API</dd>
-</dl>
-</p>
-<p>Related Assertions, automatically generated:</p>
-<ul>
-<li>assertLogMessages
-				(
-					<a href="#patterns">pattern</a>
-				)
-			</li>
-<li>assertNotLogMessages
-				(
-					<a href="#patterns">pattern</a>
-				)
-			</li>
-<li>verifyLogMessages
-				(
-					<a href="#patterns">pattern</a>
-				)
-			</li>
-<li>verifyNotLogMessages
-				(
-					<a href="#patterns">pattern</a>
-				)
-			</li>
-<li>waitForLogMessages
-				(
-					<a href="#patterns">pattern</a>
-				)
-			</li>
-<li>waitForNotLogMessages
 				(
 					<a href="#patterns">pattern</a>
 				)
@@ -3614,6 +3667,66 @@ The selected window will return true, while all others will return false.</p>
 </dd>
 <br>
 <dt>
+<strong><a name="storeXpathCount"></a>storeXpathCount
+		
+		(
+			xpath,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the number of nodes that match the specified xpath, eg. "//table" would give
+the number of tables.<p>Arguments:</p>
+<ul>
+<li>xpath - the xpath expression to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the number of nodes that match the specified xpath</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
 <strong><a name="storeAlertPresent"></a>storeAlertPresent
 		
 		(
@@ -3917,7 +4030,7 @@ locator2,
 		
 	</strong>
 </dt>
-<dd>Check if these two elements have same parent and are ordered. Two same elements will
+<dd>Check if these two elements have same parent and are ordered siblings in the DOM. Two same elements will
 not be considered ordered.<p>Arguments:</p>
 <ul>
 <li>locator1 - an <a href="#locators">element locator</a> pointing to the first element</li>
@@ -3929,7 +4042,7 @@ not be considered ordered.<p>Arguments:</p>
 <p>
 <dl>
 <dt>Returns: </dt>
-<dd>true if two elements are ordered and have same parent, false otherwise</dd>
+<dd>true if element1 is the previous sibling of element2, false otherwise</dd>
 </dl>
 </p>
 <p>Related Assertions, automatically generated:</p>

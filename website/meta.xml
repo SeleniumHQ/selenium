@@ -44,10 +44,7 @@
     </docs>
 
     <owners>
-        <person>
-            <name>Darrell DeBoer</name>
-            <email>darrell.deboer at gmail.com</email>
-        </person>
+        
         <person>
             <name>Paul Hammant</name>
             <email>paul@hammant.org</email>
@@ -62,12 +59,16 @@
         </person>
         <person>
             <name>Dan Fabulich</name>
-            <email>dfabulich at warpmail.net</email>
+            <email>dan at fabulich.com</email>
         </person>
 
     </owners>
 
     <developers>
+        <person>
+            <name>Darrell DeBoer</name>
+            <email>darrell.deboer at gmail.com</email>
+        </person>
         <person>
             <name>Darren Cotterill</name>
             <email>darren.cotterill at gmail.com</email>
@@ -95,6 +96,17 @@
     </developers>
 
     <releases>
+        <release>
+            <version>0.8.3</version>
+            <date>20-Sep-2007</date>
+            <jiraId>10381</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.openqa.org/selenium-core/0.8.3/selenium-core-0.8.3.zip</url>
+                    <name>Full release</name>
+                </download>
+            </downloads>
+        </release>
         <release>
             <version>0.8.2</version>
             <date>11-Dec-2006</date>
