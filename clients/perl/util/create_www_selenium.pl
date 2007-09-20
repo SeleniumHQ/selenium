@@ -82,7 +82,7 @@ use Time::HiRes qw(sleep);
 use strict;
 use warnings;
 
-our $VERSION = '0.911';
+our $VERSION = '0.93';
 
 =head1 NAME
 
