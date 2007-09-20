@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openqa.selenium</groupId>
-    <version>0.9.3</version>
+    <version>0.9.2</version>
     <artifactId>selenium-rc</artifactId>
     <name>Selenium RC</name>
     <packaging>pom</packaging>

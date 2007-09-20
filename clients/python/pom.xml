@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.openqa.selenium.client-drivers</groupId>
-        <version>0.9.3</version>
+        <version>0.9.2</version>
         <artifactId>selenium-client-drivers</artifactId>
     </parent>
     <groupId>org.openqa.selenium.client-drivers</groupId>
