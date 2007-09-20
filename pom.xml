@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openqa.selenium.core</groupId>
     <artifactId>selenium-core</artifactId>
-    <version>0.8.3-SNAPSHOT</version>
+    <version>0.8.3</version>
     <name>Selenium Core</name>
     <packaging>jar</packaging>
     <url>http://www.openqa.org/selenium-core</url>
