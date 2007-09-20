@@ -8,6 +8,30 @@
 </head>
 <body>
 
+<h2>Selenium Remote Control 0.9.2  (September 20, 2007)</h2>
+<p>This release has been a long time coming; sorry about that.  We expect to be able to turn around versions a little faster now.
+The previous release was 0.9.0; there was no 0.9.1.</p>
+
+<p>New in this release:</p>
+<ul>
+<li> New PHP driver lets you write Selenium RC tests in PHP</li>
+<li> Fixed our long broken Firefox 2 browser launcher</li>
+<li> We can now reliably launch/kill IE7 on Vista in Protected mode with UAC enabled</li>
+<li> New "captureScreenshot" command lets you capture PNG screenshots and save them to disk</li>
+<li> New "getXpathCount" command tells you how many elements match a given XPath expression</li>
+<li> New "addLocationStrategy" command lets you define new ways to locate elements on the page</li>
+<li> Vastly improved stability in proxy injection mode -- it will probably become the default in a future version of Selenium RC.</li>
+<li> Totally revamped logging </li>
+</ul>
+
+<p>This release also includes a few small changes to the API:</p>
+<ul>
+<li> "windowMaximize" and "windowFocus" no longer take an argument; just "selectWindow" to the window you want to maximize/focus before you call them.</li>
+<li> The "getLogMessages" accessor has been removed; it never really worked properly anyway, and we now support much more sophisticated logging.</li>
+<li> "setContext" no longer takes a logging level; use "setBrowserLogLevel" instead </li>
+</ul>
+
+
 <h2>Selenium Remote Control 0.9.0  (November 14, 2006)</h2>
 <P>0.9.0 includes a bunch of new cool stuff, including frame support, multiWindow support (for testing apps that don't like to run in a subframe), a Konqueror browser launcher, new cookie-management actions, and support for Firefox 2.0 and IE7.  It also includes experimental support for SSL directly in the Selenium proxy, and a new highly experimental "proxy injection" mode that gives us more control over the application under test by modifying it in the HTTP proxy.</p>
 

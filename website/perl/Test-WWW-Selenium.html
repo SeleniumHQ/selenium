@@ -4,13 +4,15 @@
 <head>
 <title>Test::WWW::Selenium - Test applications using Selenium Remote Control</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:root@localhost" />
+<link rev="made" href="mailto:" />
 </head>
 
 <body style="background-color: white">
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -22,9 +24,11 @@
 	<li><a href="#authors">AUTHORS</a></li>
 	<li><a href="#license">LICENSE</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
@@ -36,23 +40,26 @@
 <p>Test::WWW::Selenium is a subclass of WWW::Selenium that provides
 convenient testing functions.</p>
 <pre>
-    use Test::More tests =&gt; 5;
-    use Test::WWW::Selenium;</pre>
+    <span class="keyword">use</span> <span class="variable">Test::More</span> <span class="string">tests</span> <span class="operator">=&gt;</span> <span class="number">5</span><span class="operator">;</span>
+    <span class="keyword">use</span> <span class="variable">Test::WWW::Selenium</span><span class="operator">;</span>
+</pre>
 <pre>
-    # Parameters are passed through to WWW::Selenium
-    my $sel = Test::WWW::Selenium-&gt;new( host =&gt; &quot;localhost&quot;,
-                                        port =&gt; 4444,
-                                        browser =&gt; &quot;*firefox&quot;,
-                                        browser_url =&gt; &quot;<a href="http://www.google.com&quot">http://www.google.com&quot</a>;,
-                                        default_names =&gt; 1,
-                                      );</pre>
+    <span class="comment"># Parameters are passed through to WWW::Selenium</span>
+    <span class="keyword">my</span> <span class="variable">$sel</span> <span class="operator">=</span> <span class="variable">Test::WWW::Selenium</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span> <span class="string">host</span> <span class="operator">=&gt;</span> <span class="string">"localhost"</span><span class="operator">,</span>
+                                        <span class="string">port</span> <span class="operator">=&gt;</span> <span class="number">4444</span><span class="operator">,</span>
+                                        <span class="string">browser</span> <span class="operator">=&gt;</span> <span class="string">"*firefox"</span><span class="operator">,</span>
+                                        <span class="string">browser_url</span> <span class="operator">=&gt;</span> <span class="string">"http://www.google.com"</span><span class="operator">,</span>
+                                        <span class="string">default_names</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+                                      <span class="operator">);</span>
+</pre>
 <pre>
-    # use special test wrappers around WWW::Selenium commands:
-    $sel-&gt;open_ok(&quot;<a href="http://www.google.com&quot">http://www.google.com&quot</a>;);
-    $sel-&gt;type_ok( &quot;q&quot;, &quot;hello world&quot;);
-    $sel-&gt;click_ok(&quot;btnG&quot;);
-    $sel-&gt;wait_for_page_to_load(5000);
-    $sel-&gt;title_like(qr/Google Search/);</pre>
+    <span class="comment"># use special test wrappers around WWW::Selenium commands:</span>
+    <span class="variable">$sel</span><span class="operator">-&gt;</span><span class="variable">open_ok</span><span class="operator">(</span><span class="string">"http://www.google.com"</span><span class="operator">);</span>
+    <span class="variable">$sel</span><span class="operator">-&gt;</span><span class="variable">type_ok</span><span class="operator">(</span> <span class="string">"q"</span><span class="operator">,</span> <span class="string">"hello world"</span><span class="operator">);</span>
+    <span class="variable">$sel</span><span class="operator">-&gt;</span><span class="variable">click_ok</span><span class="operator">(</span><span class="string">"btnG"</span><span class="operator">);</span>
+    <span class="variable">$sel</span><span class="operator">-&gt;</span><span class="variable">wait_for_page_to_load</span><span class="operator">(</span><span class="number">5000</span><span class="operator">);</span>
+    <span class="variable">$sel</span><span class="operator">-&gt;</span><span class="variable">title_like</span><span class="operator">(</span><span class="string">qr/Google Search/</span><span class="operator">);</span>
+</pre>
 <p>
 </p>
 <hr />
@@ -80,7 +87,7 @@ one of your own.</p>
 <p>Test::WWW::Selenium also provides some other handy testing functions
 that wrap WWW::Selenium commands:</p>
 <dl>
-<dt><strong><a name="item_get_location">get_location</a></strong>
+<dt><strong><a name="get_location" class="item">get_location</a></strong>
 
 <dd>
 <p>Returns the relative location of the current page.  Works with
