@@ -59,29 +59,6 @@
 			-OutputDirectory=${ndoc.outdir}
 			-OutputTarget=Web 
 			${ndoc.core.dll},${ndoc.core.xml}" />
-	    <echo file="${ndoc.outdir}/index.html"><![CDATA[
-<html><head>
-
-    <noscript>
-    <meta http-equiv="refresh" content="1; url=html/index.html">
-    </noscript>
-
-    <script>
-    <!--
-
-      if (window.location.replace)
-        window.location.replace('html/index.html')
-      else
-        window.location.href = "html/index.html"
-    // -->
-    </script>
-</head>
-<body>
-Redirecting to <a href="html/index.html">html/index.html</a>...
-</body>
-</html>
-]]>
-</echo>
 	</target>
 
 	<target name="generate-sources">
@@ -150,8 +127,8 @@ Redirecting to <a href="html/index.html">html/index.html</a>...
 		</copy>
 
 		<mkdir dir="target/dist/doc" />
-		<mkdir dir="target/dist/doc/html" />
-		<copy todir="target/dist/doc/html">
+		<mkdir dir="target/dist/doc" />
+		<copy todir="target/dist/doc">
 			<fileset dir="target/ndoc">
 				<include name="*" />
 			</fileset>
