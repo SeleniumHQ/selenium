@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Launching Konqueror on Linux</title>
+<link rel="stylesheet" href="/default.css" type="text/css" />
+</head>
+<body>
+<p>You've come to this page because you were running Selenium-RC and an error happened, and this URL was in the log.</p>
+<p>Hopefully this page will help you overcome the issue you are having.</p>
+<p><strong>Stating the obvious</strong></p>
+<p>Konqueror, is a web browser that was created for the KDE environment on the Linux Operating System. You will not find it on Windows or Mac OS X.</p>
+<p><strong>And the not so obvious</strong></p>
+<p>There are many flavors of Linux and konqueror could be installed almost anywhere and still work as prescribed. Unfortunately Selenium-RC needs to know where Konqueror is installed before it can launch the browser as a process. </p>
+<p>Typically Konqueor is installed in /usr/bin/konqueror. On the Linux machine where Konqueor would run, open up a Shell (Terminal) and type.. </p>
+<pre>  ls -al /usr/bin/konqueror</pre>
+<p>You should something like:</p>
+<pre>  -r-xr-xr-x   15 root  wheel  147 Aug 19  2006 /usr/bin/konqueror</pre>
+<p>Try executing that same command from the Shell you are in. Try executing konqueror on its own, without the /usr/bin/ prefix. If that works, do a 'which konqueror' to see where it is installed.</p>
+<p><strong>Symlinking to the non default location.</strong></p>
+<p>A quick way of getting Selenium-RC to work with your non default location for Konqueror, is to make a link to that executable that you do have. Try ..</p>
+<pre>   ln -s /path/to/the/real/konqueror /usr/bin/konqueror</pre>
+</body>
+</html>
