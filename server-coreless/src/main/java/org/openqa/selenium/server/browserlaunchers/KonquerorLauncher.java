@@ -68,7 +68,7 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 		try {
 			process = Runtime.getRuntime().exec(command);
 		} catch (IOException e) {
-			throw new RuntimeException("Error starting browser by executing command " + command + ": " + e);
+			throw new RuntimeException("Error starting browser by executing command " + command + ": " + e + "\n See http://openqa.org/selenium-rc/help/launching-konqueror.html");
 		}
 	}
 
