@@ -55,6 +55,7 @@ limitations under the License.
       <textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
     </toolbar>
     <toolbar>
+      <toolbarbutton id="play-suite-button" label="Play TestSuite" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play_suite"/>
       <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play"/>
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
       <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="&stepButton.tooltip;" command="cmd_selenium_step"/>
@@ -73,7 +74,12 @@ limitations under the License.
   </toolbox>
 
   <vbox flex="1">
-    <tabbox flex="3" height="300">
+    <hbox width="100">
+      <tree id="suiteTree" />
+      <splitter id="suiteTreeSplitter" collapse="before" state="collapsed">
+	<grippy/>
+      </splitter>
+      <tabbox flex="3" height="300">
       <tabs orient="horizontal" onselect="if (window.editor) { window.editor.tabSelected(selectedItem.id) }" id="viewTabs">
 	<tab id="editorTab" label="&tableTab.label;" />
 	<tab id="sourceTab" label="&sourceTab.label;" />
@@ -104,13 +110,12 @@ limitations under the License.
 	      <rows>
 		<row align="center">
 		  <!-- do drop down that depends upon the element type -->
-
-		  <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-commands" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
+		  <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
 		</row>
 		<row align="center">
 		  <!-- show different options collected by the client. Allow user to override -->
 		  <hbox flex="1">
-		    <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))"/>
+		    <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true" type="autocomplete" showcommentcolumn="true" />
 		    <button label="&findTarget.label;" oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
 		  </hbox>
 		</row>
@@ -126,6 +131,7 @@ limitations under the License.
 	</tabpanel>
       </tabpanels>
     </tabbox>
+    </hbox>
     <splitter collapse="after">
       <grippy/>
     </splitter>

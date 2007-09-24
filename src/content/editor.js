@@ -33,9 +33,17 @@ function Editor(window, isSidebar) {
             },
 
             testSuiteChanged: function(testSuite) {
+                testSuite.addObserver(this._testSuiteObserver);
+                if (testSuite.file) {
+                    document.getElementById("suiteTreeSplitter").setAttribute("state", "open");
+                }
                 self.suiteTreeView.refresh();
             },
-
+            
+            testSuiteUnloaded: function(testSuite) {
+                testSuite.removeObserver(this._testSuiteObserver);
+            },
+            
             testCaseChanged: function(testCase) {
                 // this.view is not set yet when setTestCase is called from constructor
                 if (self.view) {
@@ -61,6 +69,12 @@ function Editor(window, isSidebar) {
             _testCaseObserver: {
                 modifiedStateUpdated: function() {
                     self.updateTitle();
+                }
+            },
+
+            _testSuiteObserver: {
+                testCaseAdded: function() {
+                    document.getElementById("suiteTreeSplitter").setAttribute("state", "open");
                 }
             }
         });

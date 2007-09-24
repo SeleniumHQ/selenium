@@ -89,17 +89,11 @@ limitations under the License.
 
   <vbox flex="1">
     <hbox width="100">
-      <tree id="suiteTree" flex="1" enableColumnDrag="false" hidecolumnpicker="true" width="80"
-            context="suiteContextMenu">
-	<treecols>
-	  <treecol label="&suiteTree.testCase.label;" flex="1" />
-        </treecols>
-        <treechildren />
-      </tree>
-    <splitter collapse="before">
-      <grippy/>
-    </splitter>
-    <tabbox flex="3" height="300" width="250">
+      <tree id="suiteTree" />
+      <splitter id="suiteTreeSplitter" collapse="before" state="collapsed">
+	<grippy/>
+      </splitter>
+      <tabbox flex="3" height="300" width="250">
       <tabs orient="horizontal" onselect="if (window.editor) { window.editor.tabSelected(selectedItem.id) }" id="viewTabs">
 	<tab id="editorTab" label="&tableTab.label;" />
 	<tab id="sourceTab" label="&sourceTab.label;" />
@@ -130,7 +124,6 @@ limitations under the License.
 		<row align="center">
 		  <!-- do drop down that depends upon the element type -->
 		  <label control="commandAction" value="&command.label;"/>
-
 		  <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
 		</row>
 		<row align="center">
