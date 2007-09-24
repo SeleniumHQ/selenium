@@ -765,9 +765,11 @@ public class ProxyHandler extends AbstractHttpHandler {
      */
     protected boolean isForbidden(String scheme, String host, int port, boolean openNonPrivPorts) {
         // Check port
-        if (port > 0 && !_allowedConnectPorts.contains(new Integer(port))) {
-            if (!openNonPrivPorts || port <= 1024)
-                return true;
+        if (false) { // DGF Don't check the port, SRC-354
+            if (port > 0 && !_allowedConnectPorts.contains(new Integer(port))) {
+                if (!openNonPrivPorts || port <= 1024)
+                    return true;
+            }
         }
 
         // Must be a scheme that can be proxied.
