@@ -394,7 +394,7 @@ Editor.prototype.recordTitle = function(window) {
 }
 
 Editor.prototype.getPathAndUpdateBaseURL = function(window) {
-	if (!window || !window.location) return;
+	if (!window || !window.location) return [null, null];
 	var path = window.location.href;
 	var regexp = new RegExp(/^(https?:\/\/[^/:]+(:\d+)?)\/.*/);
 	var base = '';
@@ -600,7 +600,7 @@ Editor.prototype.playCurrentTestCase = function(next) {
         });
 }
 
-Editor.prototype.playTestSuite = function(index) {
+Editor.prototype.playTestSuite = function() {
     var index = -1;
     this.app.getTestSuite().tests.forEach(function(test) {
             if (test.testResult) {

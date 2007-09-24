@@ -488,7 +488,7 @@ objectExtend(TreeView.prototype, {
             if (0 == col.index && this.testCase.startPoint == command) {
                 props.AppendElement(this.atomService.getAtom("startpoint"));
             }
-        },
+        }
     });
 
 TreeView.UpdateCommandAction = function(treeView, key, value) {
