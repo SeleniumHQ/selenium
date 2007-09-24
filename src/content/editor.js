@@ -27,8 +27,8 @@ function Editor(window, isSidebar) {
     this.app = new Application();
     this.app.addObserver({
             baseURLChanged: function() {
-                var autocomplete = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-ide-base-urls"].getService(Components.interfaces.nsISeleniumAutoCompleteSearch);
-                autocomplete.setSeleniumCommands(XulUtils.toXPCOMArray(self.app.getBaseURLHistory()));
+                Editor.GENERIC_AUTOCOMPLETE.setCandidates(XulUtils.toXPCOMString(self.getAutoCompleteSearchParam("baseURL")),
+                                                          XulUtils.toXPCOMArray(self.app.getBaseURLHistory()));
                 document.getElementById("baseURL").value = self.app.getBaseURL();
             },
 
@@ -257,6 +257,8 @@ Editor.prototype.unload = function() {
 	}
 	top.controllers.removeController(Editor.controller);
 
+    this.cleanupAutoComplete();
+    
 	delete window.editor;
 }
 
@@ -759,6 +761,33 @@ Editor.prototype.showReference = function(command) {
 		this.reference.show(def, command);
 	}
 }
+
+Editor.prototype.getAutoCompleteSearchParam = function(id) {
+    var textbox = document.getElementById(id);
+    if (!this.autoCompleteSearchParams)
+        this.autoCompleteSearchParams = {};
+    if (this.autoCompleteSearchParams[id]) {
+        return this.autoCompleteSearchParams[id];
+    } else {
+        var param = id + "_";
+        for (var i = 0; i < 10; i++) {
+            param += Math.floor(Math.random()*36).toString(36);
+        }
+        this.autoCompleteSearchParams[id] = param;
+        textbox.searchParam = param;
+        return param;
+    }
+}
+
+Editor.prototype.cleanupAutoComplete = function() {
+    if (this.autoCompleteSearchParams) {
+        for (id in this.autoCompleteSearchParams) {
+            Editor.GENERIC_AUTOCOMPLETE.clearCandidates(XulUtils.toXPCOMString(this.autoCompleteSearchParams[id]));
+        }
+    }
+}
+
+Editor.GENERIC_AUTOCOMPLETE = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-ide-generic"].getService(Components.interfaces.nsISeleniumIDEGenericAutoCompleteSearch);
 
 //
 

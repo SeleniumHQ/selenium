@@ -1,26 +1,37 @@
-function SeleniumAutoCompleteSearch() {
-	this.commands = [];
+function SeleniumIDEGenericAutoCompleteSearch() {
+	this.candidates = {};
 }
 
-SeleniumAutoCompleteSearch.prototype = {
+SeleniumIDEGenericAutoCompleteSearch.prototype = {
 	startSearch: function(searchString, searchParam, prevResult, listener) {
-		var result = new AutoCompleteResult(searchString, this.commands);
+		var result = new AutoCompleteResult(searchString, this.candidates[searchParam] || []);
 		listener.onSearchResult(this, result);
 	},
 
 	stopSearch: function() {
 	},
 
-	setSeleniumCommands: function(commands) {
-		var count = commands.Count();
-		this.commands = new Array(count);
+    setCandidates: function(key, values) {
+        this.setCandidatesWithComments(key, values, null);
+	},
+
+    setCandidatesWithComments: function(key, values, comments) {
+		var count = values.Count();
+        var candidates = this.candidates[key] = new Array(count);
 		for (var i = 0; i < count; i++) {
-			this.commands[i] = commands.GetElementAt(i).QueryInterface(Components.interfaces.nsISupportsString).data;
+            candidates[i] = [values.GetElementAt(i).QueryInterface(Components.interfaces.nsISupportsString).data,
+                             comments ? comments.GetElementAt(i).QueryInterface(Components.interfaces.nsISupportsString).data : null];
 		}
 	},
 
-    QueryInterface: function (uuid) {
-		if (uuid.equals(Components.interfaces.nsISeleniumAutoCompleteSearch) ||
+    clearCandidates: function(key) {
+        if (this.candidates[key]) {
+            delete this.candidates[key];
+        }
+    },
+
+    QueryInterface: function(uuid) {
+		if (uuid.equals(Components.interfaces.nsISeleniumIDEGenericAutoCompleteSearch) ||
 			uuid.equals(Components.interfaces.nsIAutoCompleteSearch) ||
 			uuid.equals(Components.interfaces.nsISupports)) {
 			return this;
@@ -30,13 +41,13 @@ SeleniumAutoCompleteSearch.prototype = {
     }
 }
 
-function AutoCompleteResult(search, commands) {
+function AutoCompleteResult(search, candidates) {
 	this.search = search;
-	this.commands = [];
+	this.result = [];
 	var lsearch = search.toLowerCase();
-	for (var i = 0; i < commands.length; i++) {
-		if (commands[i].toLowerCase().indexOf(lsearch) == 0) {
-			this.commands.push(commands[i]);
+	for (var i = 0; i < candidates.length; i++) {
+		if (candidates[i][0].toLowerCase().indexOf(lsearch) == 0) {
+            this.result.push(candidates[i]);
 		}
 	}
 }
@@ -49,7 +60,7 @@ AutoCompleteResult.prototype = {
 		return '';
 	},
 	get matchCount() {
-		return this.commands.length;
+		return this.result.length;
 	},
 	get searchResult() {
 		return Components.interfaces.nsIAutoCompleteResult.RESULT_SUCCESS;
@@ -58,13 +69,13 @@ AutoCompleteResult.prototype = {
 		return this.search;
 	},
 	getCommentAt: function(index) {
-		return '';
+		return this.result[index][1] || '';
 	},
 	getStyleAt: function(index) {
 		return '';
 	},
 	getValueAt: function(index) {
-		return this.commands[index];
+		return this.result[index][0];
 	},
 	removeValueAt: function(rowIndex, removeFromDb) {
 	},
@@ -79,36 +90,25 @@ AutoCompleteResult.prototype = {
 }
 
 //const COMPONENT_ID = Components.ID("{4791AF5F-AFBA-45A1-8204-47A135DF9591}");
-const COMPONENT_ID_LIST = 
-    [Components.ID("{9425022F-1F8D-47B9-A6CC-004FBC189535}"),
-     Components.ID("{3A1F3709-91A1-4EEB-9636-8D80A8BE634D}")];
+const COMPONENT_ID = Components.ID("{E5226A0D-4698-4E15-9D6D-86771AE172C9}");
 
-var SeleniumAutoCompleteModule = {
+var SeleniumIDEGenericAutoCompleteModule = {
     registerSelf: function (compMgr, fileSpec, location, type) {
         compMgr = compMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-        compMgr.registerFactoryLocation(COMPONENT_ID_LIST[0],
-                                        "Selenium Command Autocomplete",
-                                        "@mozilla.org/autocomplete/search;1?name=selenium-commands",
-                                        fileSpec,
-                                        location,
-                                        type);
-        compMgr.registerFactoryLocation(COMPONENT_ID_LIST[1],
-                                        "Selenium IDE Base URL History",
-                                        "@mozilla.org/autocomplete/search;1?name=selenium-ide-base-urls",
+        compMgr.registerFactoryLocation(COMPONENT_ID,
+                                        "Selenium IDE Generic Autocomplete",
+                                        "@mozilla.org/autocomplete/search;1?name=selenium-ide-generic",
                                         fileSpec,
                                         location,
                                         type);
     },
 
     getClassObject: function (compMgr, cid, iid) {
-        for (var i = 0; i < COMPONENT_ID_LIST.length; i++) {
-            if (cid.equals(COMPONENT_ID_LIST[i])) break;
-        }
-        if (i >= COMPONENT_ID_LIST.length) throw Components.results.NS_ERROR_NO_INTERFACE;
+        if (!cid.equals(COMPONENT_ID)) throw Components.results.NS_ERROR_NO_INTERFACE;
         if (!iid.equals(Components.interfaces.nsIFactory))
             throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
-		return SeleniumAutoCompleteFactory;
+		return SeleniumIDEGenericAutoCompleteFactory;
     },
 
     canUnload: function(compMgr) {
@@ -116,15 +116,15 @@ var SeleniumAutoCompleteModule = {
     }
 };
 
-var SeleniumAutoCompleteFactory = {
+var SeleniumIDEGenericAutoCompleteFactory = {
 	createInstance: function (outer, iid) {
 		if (outer != null)
 			throw Components.results.NS_ERROR_NO_AGGREGATION;
-		return new SeleniumAutoCompleteSearch().QueryInterface(iid);
+		return new SeleniumIDEGenericAutoCompleteSearch().QueryInterface(iid);
 	}
 };
 
 function NSGetModule(compMgr, fileSpec) {
-    return SeleniumAutoCompleteModule;
+    return SeleniumIDEGenericAutoCompleteModule;
 }
 

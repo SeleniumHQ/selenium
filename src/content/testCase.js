@@ -16,7 +16,12 @@
 
 function Command(command, target, value) {
 	this.command = command != null ? command : '';
-	this.target = target != null ? target : '';
+    if (target != null && target instanceof Array) {
+        this.target = target[0][0];
+        this.targetCandidates = target;
+    } else {
+        this.target = target != null ? target : '';
+    }
 	this.value = value != null ? value : '';
 }
 

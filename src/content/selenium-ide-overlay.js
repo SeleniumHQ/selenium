@@ -186,9 +186,20 @@ SeleniumIDE.Overlay.createCheckMenuItem = function(idPrefix, command) {
 	var menuitem = document.createElement("menuitem");
 	menuitem.setAttribute("id", "selenium-ide-check-" + idPrefix + command.command);
 	menuitem.setAttribute("disabled", command.disabled ? 'true' : 'false');
-	menuitem.setAttribute("label", command.command + ' ' + command.target + ' ' + command.value);
+	menuitem.setAttribute("label", command.command + ' ' + this._firstTarget(command.target) + ' ' + command.value);
 	menuitem._Selenium_IDE_command = command;
 	return menuitem;
+}
+
+SeleniumIDE.Overlay._firstTarget = function(target) {
+    if (target == null) {
+        return null;
+    // } else if (target instanceof Array) {
+    } else if (!target.substring) { // "instanceof Array" doesn't work because target is derived from another window
+        return target[0][0];
+    } else {
+        return target;
+    }
 }
 
 SeleniumIDE.Overlay.onContentLoaded = function(event) {

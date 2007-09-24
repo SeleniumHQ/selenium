@@ -176,8 +176,8 @@ objectExtend(TreeView.prototype, {
             commands.push("pause");
             
             commands.sort();
-            var autocomplete = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-commands"].getService(Components.interfaces.nsISeleniumAutoCompleteSearch);
-            autocomplete.setSeleniumCommands(XulUtils.toXPCOMArray(commands));
+            Editor.GENERIC_AUTOCOMPLETE.setCandidates(XulUtils.toXPCOMString(this.editor.getAutoCompleteSearchParam("commandAction")),
+                                                      XulUtils.toXPCOMArray(commands));
         },
 	
         /**
@@ -243,7 +243,25 @@ objectExtend(TreeView.prototype, {
                 this.currentCommand = command;
                 if (command.type == 'command') {
                     this.setTextBox("commandAction", command.command, false);
-                    this.setTextBox("commandTarget", this.encodeText(command.target), false);
+                    var targetBox = this.document.getElementById("commandTarget");
+                    if (command.targetCandidates) {
+                        targetBox.setAttribute("enablehistory", "true");
+                        targetBox.disableAutoComplete = false;
+                        var locators = [command.targetCandidates.length];
+                        var types = [command.targetCandidates.length];
+                        for (var i = 0; i < command.targetCandidates.length; i++) {
+                            locators[i] = command.targetCandidates[i][0];
+                            types[i] = command.targetCandidates[i][1];
+                        }
+                        Editor.GENERIC_AUTOCOMPLETE.setCandidatesWithComments(XulUtils.toXPCOMString(this.editor.getAutoCompleteSearchParam("commandTarget")),
+                                                                              XulUtils.toXPCOMArray(locators),
+                                                                              XulUtils.toXPCOMArray(types));
+                        this.setTextBox("commandTarget", this.encodeText(command.targetCandidates[0][0]), false);
+                    } else {
+                        targetBox.setAttribute("enablehistory", "false");
+                        targetBox.disableAutoComplete = true;
+                        this.setTextBox("commandTarget", this.encodeText(command.target), false);
+                    }
                     this.setTextBox("commandValue", this.encodeText(command.value), false);
                 } else if (command.type == 'comment') {
                     this.setTextBox("commandAction", command.comment, false);

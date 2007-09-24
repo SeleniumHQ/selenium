@@ -86,7 +86,7 @@ CommandBuilders.add('accessor', function(window) {
 			('input' == element.tagName.toLowerCase() || 
 			 'textarea' == element.tagName.toLowerCase() || 
 			 (element.value && (element.value instanceof String)))) {
-			result.target = this.getRecorder(window).clickedElementLocator;
+			result.target = this.getRecorder(window).clickedElementLocators;
 			var type = element.getAttribute("type");
 			if ('input' == element.tagName.toLowerCase() && 
 				(type == 'checkbox' || type == 'radio')) {
@@ -104,7 +104,7 @@ CommandBuilders.add('accessor', function(window) {
 		var result = { accessor: "text" };
 		var element = this.getRecorder(window).clickedElement;
 		if (element) {
-			result.target = this.getRecorder(window).clickedElementLocator;
+			result.target = this.getRecorder(window).clickedElementLocators;
 			result.value = exactMatchPattern(getText(element));
 		} else {
 			result.disabled = true;
@@ -152,7 +152,7 @@ CommandBuilders.add('accessor', function(window) {
 		var result = { accessor: "elementPresent", booleanAccessor: true };
 		var element = this.getRecorder(window).clickedElement;
 		if (element) {
-			result.target = this.getRecorder(window).clickedElementLocator;
+			result.target = this.getRecorder(window).clickedElementLocators;
 		} else {
 			result.disabled = true;
 		}

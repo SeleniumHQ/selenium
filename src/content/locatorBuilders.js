@@ -42,10 +42,20 @@ LocatorBuilders.prototype.buildWith = function(name, e) {
 }
 
 LocatorBuilders.prototype.build = function(e) {
+    var locators = this.buildAll(e);
+    if (locators.length > 0) {
+        return locators[0][0];
+    } else {
+        return "LOCATOR_DETECTION_FAILED";
+    }
+}
+
+LocatorBuilders.prototype.buildAll = function(e) {
 	var i = 0;
 	var xpathLevel = 0;
 	var maxLevel = 10;
 	var locator;
+    var locators = [];
 	this.log.debug("getLocator for element " + e);
 	
 	for (var i = 0; i < LocatorBuilders.order.length; i++) {
@@ -57,11 +67,11 @@ LocatorBuilders.prototype.build = function(e) {
 			this.log.debug("locator=" + locator);
 			// test the locator
 			if (e == this.findElement(locator)) {
-				return locator;
+                locators.push([locator, finderName]);
 			}
 		}
 	}
-	return "LOCATOR_DETECTION_FAILED";
+    return locators;
 }
 
 LocatorBuilders.prototype.findElement = function(locator) {
@@ -174,7 +184,7 @@ LocatorBuilders.prototype.findDomFormLocator = function(form) {
 	return null;
 }
 
-LocatorBuilders.add('domFormElementName', function(e) {
+LocatorBuilders.add('dom:name', function(e) {
 		if (e.form && e.name) {
 			var formLocator = this.findDomFormLocator(e.form);
 			var candidates = [formLocator + "." + e.name,
@@ -199,7 +209,7 @@ LocatorBuilders.add('domFormElementName', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('linkXPath', function(e) {
+LocatorBuilders.add('xpath:link', function(e) {
 		if (e.nodeName == 'A') {
 			var text = e.textContent;
 			if (!text.match(/^\s*$/)) {
@@ -209,7 +219,7 @@ LocatorBuilders.add('linkXPath', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('imgXPath', function(e) {
+LocatorBuilders.add('xpath:img', function(e) {
         if (e.nodeName == 'IMG') {
             if (e.alt != '') {
                 return "//img[@alt=" + this.attributeValue(e.alt) + "]";
@@ -222,7 +232,7 @@ LocatorBuilders.add('imgXPath', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('attributesXPath', function(e) {
+LocatorBuilders.add('xpath:attributes', function(e) {
 		const PREFERRED_ATTRIBUTES = ['id','name','value','type','action','onclick'];
 		
 		function attributesXPath(name, attNames, attributes) {
@@ -261,7 +271,7 @@ LocatorBuilders.add('attributesXPath', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('hrefXPath', function(e) {
+LocatorBuilders.add('xpath:href', function(e) {
 		if (e.attributes && e.hasAttribute("href")) {
 			href = e.getAttribute("href");
 			if (href.search(/^http?:\/\//) >= 0) {
@@ -274,7 +284,7 @@ LocatorBuilders.add('hrefXPath', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('domFormElementIndex', function(e) {
+LocatorBuilders.add('dom:index', function(e) {
 		if (e.form) {
 			var formLocator = this.findDomFormLocator(e.form);
 			var elements = e.form.elements;
@@ -287,7 +297,7 @@ LocatorBuilders.add('domFormElementIndex', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('positionXPath', function(e) {
+LocatorBuilders.add('xpath:position', function(e) {
 		this.log.debug("positionXPath: e=" + e);
 		var path = '';
 		var current = e;
@@ -322,5 +332,5 @@ LocatorBuilders.add('positionXPath', function(e) {
 	});
 
 // You can change the priority of builders by setting LocatorBuilders.order.
-//LocatorBuilders.order = ['id', 'link', 'name', 'domFormElementName', 'linkXPath', 'imgXPath', 'attributesXPath', 'hrefXPath', 'domFormElementIndex', 'positionXPath'];
+//LocatorBuilders.order = ['id', 'link', 'name', 'dom:name', 'xpath:link', 'xpath:img', 'xpath:attributes', 'xpath:href', 'dom:index', 'xpath:position'];
 

@@ -139,6 +139,10 @@ Recorder.prototype.findLocator = function(element) {
 	return this.locatorBuilders.build(element);
 }
 
+Recorder.prototype.findLocators = function(element) {
+	return this.locatorBuilders.buildAll(element);
+}
+
 Recorder.prototype.deregister = function(observer) {
 	this.log.debug("deregister: observer=" + observer);
 	var i;

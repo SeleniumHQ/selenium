@@ -56,6 +56,9 @@ treechildren::-moz-tree-image(startpoint)
   -moz-box-align: center;
 }
 
+.autocomplete-treebody::-moz-tree-cell-text(treecolAutoCompleteComment) {
+  color: #aaaaaa;
+}
 /*
  * Test Suite View
  */

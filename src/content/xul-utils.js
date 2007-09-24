@@ -35,11 +35,15 @@ var XulUtils = {
     toXPCOMArray: function(data) {
         var array = Components.classes["@mozilla.org/supports-array;1"].createInstance(Components.interfaces.nsISupportsArray);
         for (var i = 0; i < data.length; i++) {
-            var string = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-            string.data = data[i];
-            array.AppendElement(string);
+            array.AppendElement(this.toXPCOMString(data[i]));
         }
         return array;
+    },
+
+    toXPCOMString: function(data) {
+        var string = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+        string.data = data;
+        return string;
     },
 
 	atomService: Components.classes["@mozilla.org/atom-service;1"].

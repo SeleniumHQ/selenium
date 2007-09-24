@@ -22,7 +22,7 @@ Recorder.addEventHandler('type', 'change', function(event) {
 		var type = event.target.type;
 		if (('input' == tagName && ('text' == type || 'password' == type || 'file' == type)) ||
 			'textarea' == tagName) {
-			this.record("type", this.findLocator(event.target), event.target.value);
+			this.record("type", this.findLocators(event.target), event.target.value);
 		}
 	});
 
@@ -82,7 +82,7 @@ Recorder.addEventHandler('select', 'change', function(event) {
 			if (!event.target.multiple) {
                 var option = event.target.options[event.target.selectedIndex];
 				this.log.debug('selectedIndex=' + event.target.selectedIndex);
-				this.record("select", this.findLocator(event.target), this.getOptionLocator(option));
+				this.record("select", this.findLocators(event.target), this.getOptionLocator(option));
 			} else {
 				this.log.debug('change selection on select-multiple');
 				var options = event.target.options;
@@ -94,9 +94,9 @@ Recorder.addEventHandler('select', 'change', function(event) {
 					if (options[i]._wasSelected != options[i].selected) {
                         var value = this.getOptionLocator(options[i]);
 						if (options[i].selected) {
-							this.record("addSelection", this.findLocator(event.target), value);
+							this.record("addSelection", this.findLocators(event.target), value);
 						} else {
-							this.record("removeSelection", this.findLocator(event.target), value);
+							this.record("removeSelection", this.findLocators(event.target), value);
 						}
 						options[i]._wasSelected = options[i].selected;
 					}
@@ -114,7 +114,7 @@ Recorder.addEventHandler('clickLocator', 'click', function(event) {
 		if (event.button == 0) {
 			var clickable = this.findClickableElement(event.target);
 			if (clickable) {
-				this.clickLocator = this.findLocator(event.target);
+				this.clickLocator = this.findLocators(event.target);
 			}
 		}
 	}, { capture: true });
@@ -153,7 +153,7 @@ Recorder.prototype.findClickableElement = function(e) {
 // remember clicked element to be used in CommandBuilders
 Recorder.addEventHandler('rememberClickedElement', 'mousedown', function(event) {
 		this.clickedElement = event.target;
-		this.clickedElementLocator = this.findLocator(event.target);
+		this.clickedElementLocators = this.findLocators(event.target);
 	}, { alwaysRecord: true, capture: true });
 
 
