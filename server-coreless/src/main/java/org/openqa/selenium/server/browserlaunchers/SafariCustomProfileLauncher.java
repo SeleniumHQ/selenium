@@ -76,11 +76,23 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private static String findBrowserLaunchLocation() {
         String defaultPath = System.getProperty("SafariDefaultPath");
         if (defaultPath == null) {
-            defaultPath = DEFAULT_LOCATION;
+        	if (WindowsUtils.thisIsWindows()) {
+        		defaultPath = WindowsUtils.getProgramFilesPath() + "\\Safari\\Safari.exe";
+        	} else {
+        		defaultPath = DEFAULT_LOCATION;
+        	}
         }
         File defaultLocation = new File(defaultPath);
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
+        }
+        if (WindowsUtils.thisIsWindows()) {
+            File safariEXE = AsyncExecute.whichExec("Safari.exe");
+            if (safariEXE != null) return safariEXE.getAbsolutePath();
+            throw new RuntimeException("Safari couldn't be found in the path!\n" +
+                    "Please add the directory containing Safari.exe to your PATH environment\n" +
+                    "variable, or explicitly specify a path to Safari like this:\n" +
+                    "*safari c:\\blah\\firefox.exe");
         }
         // On unix, prefer SafariBin if it's on the path
         File SafariBin = AsyncExecute.whichExec("Safari");
@@ -118,10 +130,15 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
             cmdarray = new String[]{commandPath};
 
-            String redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
+            if (Os.isFamily("mac")) {
+            	String redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
 
-            log.info("Launching Safari to visit " + url + " via " + redirectHtmlFileName + "...");
-            cmdarray = new String[]{commandPath, redirectHtmlFileName};
+                log.info("Launching Safari to visit " + url + " via " + redirectHtmlFileName + "...");
+                cmdarray = new String[]{commandPath, redirectHtmlFileName};
+            } else {
+            	cmdarray = new String[]{commandPath, "-url", url};
+            }
+            
 
             exe.setCommandline(cmdarray);
 
