@@ -90,11 +90,11 @@ public class FirefoxWebElement implements WebElement {
         return parent.sendMessage("getElementText", elementId);
     }
 
-    public List getChildrenOfType(String tagName) {
+    public List<WebElement> getChildrenOfType(String tagName) {
         String response = parent.sendMessage("getElementChildren", elementId + " " + tagName);
         String[] ids = response.split(" ");
 
-        ArrayList children = new ArrayList();
+        ArrayList<WebElement> children = new ArrayList<WebElement>();
         for (int i = 0; i < ids.length; i++)
             children.add(new FirefoxWebElement(parent, ids[i]));
 

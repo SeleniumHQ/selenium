@@ -2,6 +2,7 @@ package com.thoughtworks.webdriver.ie;
 
 
 public class ElementNode implements HtmlNode {
+    @SuppressWarnings("unused")
     private final long nodePointer;
 
     public ElementNode(long nodePointer) {

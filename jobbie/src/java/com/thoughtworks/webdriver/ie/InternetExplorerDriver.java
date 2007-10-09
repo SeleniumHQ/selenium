@@ -21,6 +21,7 @@ import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+
 import org.jaxen.JaxenException;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class InternetExplorerDriver implements WebDriver {
         openIe();
     }
 
+    @SuppressWarnings("unused")
     private InternetExplorerDriver(long iePointer) {
         this.iePointer = iePointer;
     }
@@ -73,8 +75,9 @@ public class InternetExplorerDriver implements WebDriver {
         }
     }
 
-    public List selectElements(String selector) {
-        List rawElements = new ArrayList();
+    @SuppressWarnings("unchecked")
+    public List<WebElement> selectElements(String selector) {
+        List<ElementNode> rawElements = new ArrayList<ElementNode>();
         if (selector.startsWith("link=")) {
             selectElementsByLink(selector.substring("link".length()), rawElements);
             return convertRawPointersToElements(rawElements);
@@ -90,11 +93,11 @@ public class InternetExplorerDriver implements WebDriver {
         }
     }
 
-    private List convertRawPointersToElements(List rawElements) {
-        List elements = new ArrayList();
-        Iterator iterator = rawElements.iterator();
+    private List<WebElement> convertRawPointersToElements(List<ElementNode> rawElements) {
+        List<WebElement> elements = new ArrayList<WebElement>();
+        Iterator<ElementNode> iterator = rawElements.iterator();
         while (iterator.hasNext()) {
-            ElementNode element = (ElementNode) iterator.next();
+            ElementNode element = iterator.next();
             elements.add(InternetExplorerElement.createInternetExplorerElement(iePointer, element));
         }
         return elements;
@@ -105,6 +108,7 @@ public class InternetExplorerDriver implements WebDriver {
         return element.getText();
     }
 
+    @Override
     public String toString() {
         return getClass().getName() + ":" + iePointer;
     }
@@ -131,10 +135,11 @@ public class InternetExplorerDriver implements WebDriver {
 
     private native WebElement selectElementByLink(String linkText);
 
-    private native void selectElementsByLink(String linkText, List rawElements);
+    private native void selectElementsByLink(String linkText, List<ElementNode> rawElements);
 
     private native DocumentNode getDocument();
 
+    @Override
     protected void finalize() throws Throwable {
         deleteStoredObject();
     }

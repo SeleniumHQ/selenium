@@ -201,14 +201,15 @@ public class HtmlUnitWebElement implements WebElement {
         return lastChar == '\n' || lastChar == ' ' || lastChar == '\t' || lastChar == '\r';
     }
 
+    @SuppressWarnings("unchecked")
     private void getTextFromNode(DomNode node, StringBuffer toReturn, StringBuffer textSoFar, boolean isPreformatted) {
         if (isPreformatted) {
             getPreformattedText(node, toReturn);
         }
 
-        Iterator children = node.getChildIterator();
+        Iterator<DomNode> children = node.getChildIterator();
         while (children.hasNext()) {
-            DomNode child = (DomNode) children.next();
+            DomNode child = children.next();
 
             // Do we need to collapse the text so far?
             if (child instanceof HtmlPreformattedText) {
@@ -264,11 +265,12 @@ public class HtmlUnitWebElement implements WebElement {
         toReturn.append(xmlText.replaceAll("^<pre.*?>", "").replaceAll("</pre.*>$", ""));
     }
 
-    public List getChildrenOfType(String tagName) {
-        Iterator allChildren = element.getAllHtmlChildElements();
-        List elements = new ArrayList();
+    @SuppressWarnings("unchecked")
+    public List<WebElement> getChildrenOfType(String tagName) {
+        Iterator<HtmlElement> allChildren = element.getAllHtmlChildElements();
+        List<WebElement> elements = new ArrayList<WebElement>();
         while (allChildren.hasNext()) {
-            HtmlElement child = (HtmlElement) allChildren.next();
+            HtmlElement child = allChildren.next();
             if (tagName.equals(child.getTagName())) {
                 elements.add(new HtmlUnitWebElement(parent, child));
             }

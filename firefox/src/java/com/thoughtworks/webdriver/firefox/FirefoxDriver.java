@@ -93,10 +93,10 @@ public class FirefoxDriver implements WebDriver {
         return new FirefoxWebElement(this, elementId);
     }
 
-    public List selectElements(String xpath) {
+    public List<WebElement> selectElements(String xpath) {
         String returnedIds = sendMessage("selectElementsUsingXPath", xpath);
         String[] ids = returnedIds.split(",");
-        List elements = new ArrayList();
+        List<WebElement> elements = new ArrayList<WebElement>();
         for (int i = 0; i < ids.length; i++) {
             elements.add(new FirefoxWebElement(this, ids[i]));
         }
@@ -119,8 +119,11 @@ public class FirefoxDriver implements WebDriver {
     }
 
     private File locateFirefoxBinary() {
+        File potentialPath = locateFirefoxBinaryFromSystemProperty();
+        if (potentialPath != null || potentialPath.exists())
+          return potentialPath;
+
         String osName = System.getProperty("os.name").toLowerCase();
-        File potentialPath;
         if (osName.startsWith("windows")) {
             potentialPath = new File(
                     "\\Program Files\\Mozilla Firefox\\firefox.exe");
@@ -128,7 +131,7 @@ public class FirefoxDriver implements WebDriver {
             potentialPath = new File(
                     "/Applications/Firefox.app/Contents/MacOS/firefox");
         } else {
-            potentialPath = shellOutAndFindPathOfFirefox();
+            potentialPath = shellOutAndFindPathOfFirefox("firefox");
         }
 
         if (potentialPath.exists())
@@ -137,10 +140,35 @@ public class FirefoxDriver implements WebDriver {
                 "Unable to locate location of firefox binary");
     }
 
-    private File shellOutAndFindPathOfFirefox() {
+  private File locateFirefoxBinaryFromSystemProperty() {
+    String binaryName = System.getProperty("firefox.bin");
+    if (binaryName == null)
+      return null;
+
+    File binary = new File(binaryName);
+    if (binary.exists())
+      return binary;
+
+    String osName = System.getProperty("os.name").toLowerCase();
+    if (osName.contains("windows"))
+      return null;  // Who knows how to handle this
+
+    if (osName.contains("mac")) {
+      if (!binaryName.endsWith(".app"))
+        binaryName += ".app";
+      binaryName += "/Contents/MacOS/firefox";
+      return new File(binaryName);
+    }
+
+    // Assume that we're on a UNIX variant
+    return shellOutAndFindPathOfFirefox(binaryName);
+
+  }
+
+  private File shellOutAndFindPathOfFirefox(String binaryName) {
         // Assume that we're on a unix of some kind. We're going to cheat
         try {
-            Process which = Runtime.getRuntime().exec("which firefox");
+            Process which = Runtime.getRuntime().exec(new String[] {"which", binaryName});
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     which.getInputStream()));
             return new File(reader.readLine());
@@ -152,9 +180,10 @@ public class FirefoxDriver implements WebDriver {
     private void startFirefox(File firefoxBinary) {
         File binary = firefoxBinary;
 
-        if (firefoxBinary == null)
+        if (firefoxBinary == null) {
             binary = locateFirefoxBinary();
 
+        }
         try {
             if (!binary.exists()) {
                 throw new RuntimeException("Unable to locate firefox binary. Please check that it is installed in the default location, " +

@@ -5,16 +5,13 @@ import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 
 import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
 
 public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
     protected WebDriver getDriver() {
-        String firefoxBinary = System.getProperty("firefox.bin");
-        File binary = null;
-        if (firefoxBinary != null) {
-            System.out.println("Using: " + firefoxBinary);
-            binary = new File(firefoxBinary);
-        }
-        return new FirefoxDriver(binary);
+        return new FirefoxDriver();
     }
 
     protected boolean isUsingSameDriverInstance() {

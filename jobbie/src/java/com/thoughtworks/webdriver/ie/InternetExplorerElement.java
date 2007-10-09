@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InternetExplorerElement implements WebElement {
+    @SuppressWarnings("unused")
     private long nodePointer;
 
     // Called from native code
@@ -20,8 +21,8 @@ public class InternetExplorerElement implements WebElement {
 
     public native String getAttribute(String name);
 
-    public List getChildrenOfType(String tagName) {
-        List toReturn = new ArrayList();
+    public List<WebElement> getChildrenOfType(String tagName) {
+        List<WebElement> toReturn = new ArrayList<WebElement>();
         getChildrenOfTypeNatively(toReturn, tagName);
         return toReturn;
     }
@@ -46,11 +47,12 @@ public class InternetExplorerElement implements WebElement {
         throw new UnsupportedOperationException("isDisplayed");
     }
 
+    @Override
     protected void finalize() throws Throwable {
         deleteStoredObject();
     }
 
     private native void deleteStoredObject();
 
-    private native void getChildrenOfTypeNatively(List toReturn, String tagName);
+    private native void getChildrenOfTypeNatively(List<WebElement> toReturn, String tagName);
 }

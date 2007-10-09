@@ -3,6 +3,15 @@
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
   </component>
+  <component name="Build editor project-level loader">
+    <settings>
+      <class-settings class="com.google.devtools.intellig.configcheck.ClearOutputChecker" />
+      <class-settings class="com.google.devtools.intellig.configcheck.JavacHeapChecker" />
+      <class-settings class="com.google.devtools.intellig.configcheck.ProjectJdkChecker" />
+      <class-settings class="com.google.devtools.intellig.configcheck.ProjectPathChecker" />
+      <class-settings class="com.google.devtools.intellig.configcheck.PythonSdkChecker" />
+    </settings>
+  </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
   </component>
@@ -638,7 +647,7 @@
     <option name="GENERATE_NO_WARNINGS" value="false" />
     <option name="DEPRECATION" value="true" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
-    <option name="MAXIMUM_HEAP_SIZE" value="128" />
+    <option name="MAXIMUM_HEAP_SIZE" value="800" />
   </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
@@ -670,6 +679,13 @@
     <option name="FILTER_WARNINGS" value="false" />
     <option name="FILTER_INFO" value="true" />
     <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="Mach integration configuration">
+    <pre-compile target="" enabled="false" />
+    <use-mach-for-java enabled="false" />
+    <mach-version />
+    <working-set enabled="false" />
+    <previous-paths />
   </component>
   <component name="Palette2">
     <group name="Swing">
@@ -801,7 +817,7 @@
       <module fileurl="file://$PROJECT_DIR$/selenium/selenium.iml" filepath="$PROJECT_DIR$/selenium/selenium.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="false" project-jdk-name="1.5" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/eclipse" />
   </component>
   <component name="ProjectRunConfigurationManager" />

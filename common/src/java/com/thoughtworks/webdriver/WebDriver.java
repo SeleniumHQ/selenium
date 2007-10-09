@@ -117,7 +117,7 @@ public interface WebDriver {
      * @return A list of all {@link WebElement}s matching the XPath, or an
      *         empty list if nothing matches
      */
-    List selectElements(String xpath);
+    List<WebElement> selectElements(String xpath);
 
     /**
      * Select the first {@link WebElement} which matches the given selector. The
@@ -172,7 +172,7 @@ public interface WebDriver {
          * the second at index "1" and the third at index "2". Once the frame has been selected, all subsequent calls on the WebDriver interface are made to that frame.
          *
          * @param frameIndex
-         * @return
+         * @return A driver focused on the given frame
          */
         WebDriver frame(int frameIndex);
 

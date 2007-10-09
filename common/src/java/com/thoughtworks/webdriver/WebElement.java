@@ -127,7 +127,7 @@ public interface WebElement {
      * @param tagName The tag name of the child elements.
      * @return A list of {@link WebElement}s of the given type.
      */
-    List getChildrenOfType(String tagName);
+    List<WebElement> getChildrenOfType(String tagName);
 
     /**
      * Is this element displayed or not? Typically, this will make the most sense on full

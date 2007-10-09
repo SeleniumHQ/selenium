@@ -119,14 +119,15 @@ public class HtmlUnitDriver implements WebDriver {
         return element.getText();
     }
 
-    public List selectElements(String selector) {
+    @SuppressWarnings("unchecked")
+    public List<WebElement> selectElements(String selector) {
         try {
             HtmlUnitXPath xpath = new HtmlUnitXPath(selector);
-            List nodes = xpath.selectNodes(lastPage());
-            List elements = new ArrayList();
+            List<HtmlElement> nodes = xpath.selectNodes(lastPage());
+            List<WebElement> elements = new ArrayList<WebElement>();
 
             for (int i = 0; i < nodes.size(); i++) {
-                elements.add(new HtmlUnitWebElement(this, (HtmlElement) nodes.get(i)));
+                elements.add(new HtmlUnitWebElement(this, nodes.get(i)));
             }
 
             return elements;
@@ -164,14 +165,15 @@ public class HtmlUnitDriver implements WebDriver {
         return (HtmlPage) currentWindow.getEnclosedPage();
     }
 
+    @SuppressWarnings("unchecked")
     private WebElement selectLinkWithText(String selector) {
         int equalsIndex = selector.indexOf('=') + 1;
         String expectedText = selector.substring(equalsIndex).trim();
 
-        List anchors = lastPage().getAnchors();
-        Iterator allAnchors = anchors.iterator();
+        List<HtmlAnchor> anchors = lastPage().getAnchors();
+        Iterator<HtmlAnchor> allAnchors = anchors.iterator();
         while (allAnchors.hasNext()) {
-            HtmlAnchor anchor = (HtmlAnchor) allAnchors.next();
+            HtmlAnchor anchor = allAnchors.next();
             if (expectedText.equals(anchor.asText())) {
                 return new HtmlUnitWebElement(this, anchor);
             }
@@ -211,7 +213,7 @@ public class HtmlUnitDriver implements WebDriver {
         }
 
         public WebDriver window(String windowId) {
-            WebWindow window = (WebWindow) webClient.getWebWindowByName(windowId);
+            WebWindow window = webClient.getWebWindowByName(windowId);
             webClient.setCurrentWindow(window);
             pickWindow();
             return HtmlUnitDriver.this;

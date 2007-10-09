@@ -149,7 +149,7 @@ def javac(args)
   mkdir_p target_dir, :verbose => false
   
   compile_string = "javac "
-  compile_string += "-source 1.4 -target 1.4 "
+  compile_string += "-source 5 -target 5 "
   compile_string += "-g " if debug 
   compile_string += "-d #{target_dir} "
 
