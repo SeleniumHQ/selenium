@@ -16,14 +16,15 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.SeleniumServer;
-
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.openqa.selenium.server.SeleniumServer;
 
 /**
  * Returns BrowserLaunchers based on simple strings given by the user
@@ -47,6 +48,8 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
         supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
         supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
+        // DGF pisafari isn't working yet
+        //supportedBrowsers.put("pisafari", ProxyInjectionSafariCustomProfileLauncher.class);
         supportedBrowsers.put("konqueror", KonquerorLauncher.class);
         supportedBrowsers.put("mock", MockBrowserLauncher.class);
     }

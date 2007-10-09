@@ -36,6 +36,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private boolean closed = false;
     private String commandPath;
     private Process process;
+    protected WindowsProxyManager wpm;
 
     private static AsyncExecute exe = new AsyncExecute();
 
@@ -48,7 +49,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         commandPath = findBrowserLaunchLocation();
 //        this.port = port;
         this.sessionId = sessionId;
-        if (!WindowsUtils.thisIsWindows()) {
+        if (WindowsUtils.thisIsWindows()) {
+            wpm = new WindowsProxyManager(true, sessionId, port);
+        } else {
             // On unix, add command's directory to LD_LIBRARY_PATH
             File SafariBin = AsyncExecute.whichExec(commandPath);
             if (SafariBin == null) {
@@ -107,6 +110,10 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     protected void launch(String url) {
         try {
+            if (WindowsUtils.thisIsWindows()) {
+                wpm.backupRegistrySettings();
+                changeRegistrySettings();
+            }
             // before launching, nuke caches and cookies
             // see: http://www.macosxhints.com/article.php?story=20051107093733174&lsrc=osxh
             if (Os.isFamily("mac")) {
@@ -147,6 +154,10 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             throw new RuntimeException(e);
         }
     }
+    
+    protected void changeRegistrySettings() throws IOException {
+        wpm.changeRegistrySettings();
+    }
 
 
     protected String makeRedirectionHtml(File parentDir, String url) {
@@ -170,6 +181,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     public void close() {
         if (closed) return;
+        if (WindowsUtils.thisIsWindows()) {
+            wpm.restoreRegistrySettings();
+        }
         if (process == null) return;
         log.info("Killing Safari...");
         int exitValue = AsyncExecute.killProcess(process);
