@@ -19,25 +19,26 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.browserlaunchers.WindowsUtils.WindowsRegistryException;
 
 public class WindowsProxyManager {
     static Log log = LogFactory.getLog(WindowsProxyManager.class);
-    protected static final String REG_KEY_SELENIUM_FOLDER = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\";
-    protected static final String REG_KEY_BACKUP_READY = REG_KEY_SELENIUM_FOLDER + "BackupReady";
-    protected static final String REG_KEY_BACKUP_AUTOCONFIG_URL = REG_KEY_SELENIUM_FOLDER + "AutoConfigURL";
-    protected static final String REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR = REG_KEY_SELENIUM_FOLDER + "MaxConnectionsPer1_0Server";
-    protected static final String REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR = REG_KEY_SELENIUM_FOLDER + "MaxConnectionsPerServer";
-    protected static final String REG_KEY_BACKUP_PROXY_ENABLE = REG_KEY_SELENIUM_FOLDER + "ProxyEnable";
-    protected static final String REG_KEY_BACKUP_PROXY_OVERRIDE = REG_KEY_SELENIUM_FOLDER + "ProxyOverride";
-    protected static final String REG_KEY_BACKUP_PROXY_SERVER = REG_KEY_SELENIUM_FOLDER + "ProxyServer";
-    protected static final String REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE = REG_KEY_SELENIUM_FOLDER + "EnableAutoproxyResultCache";
-    protected static final String REG_KEY_BACKUP_POPUP_MGR = REG_KEY_SELENIUM_FOLDER + "PopupMgr";
-    protected static final String REG_KEY_BACKUP_USERNAME_PASSWORD_DISABLE = REG_KEY_SELENIUM_FOLDER + "UsernamePasswordDisable";
-    protected static final String REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE = REG_KEY_SELENIUM_FOLDER + "MimeExclusionListForCache";
+    protected static final String REG_KEY_BACKUP_READY = "BackupReady";
+    protected static final String REG_KEY_BACKUP_AUTOCONFIG_URL = "AutoConfigURL";
+    protected static final String REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_0_SVR = "MaxConnectionsPer1_0Server";
+    protected static final String REG_KEY_BACKUP_MAX_CONNECTIONS_PER_1_1_SVR = "MaxConnectionsPerServer";
+    protected static final String REG_KEY_BACKUP_PROXY_ENABLE = "ProxyEnable";
+    protected static final String REG_KEY_BACKUP_PROXY_OVERRIDE = "ProxyOverride";
+    protected static final String REG_KEY_BACKUP_PROXY_SERVER = "ProxyServer";
+    protected static final String REG_KEY_BACKUP_AUTOPROXY_RESULT_CACHE = "EnableAutoproxyResultCache";
+    protected static final String REG_KEY_BACKUP_POPUP_MGR = "PopupMgr";
+    protected static final String REG_KEY_BACKUP_USERNAME_PASSWORD_DISABLE = "UsernamePasswordDisable";
+    protected static final String REG_KEY_BACKUP_MIME_EXCLUSION_LIST_FOR_CACHE = "MimeExclusionListForCache";
 
     protected static String REG_KEY_BASE = "HKEY_CURRENT_USER";
     protected static final String REG_KEY_POPUP_MGR = "\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr";
@@ -52,7 +53,7 @@ public class WindowsProxyManager {
     protected static final String REG_KEY_MIME_EXCLUSION_LIST_FOR_CACHE = "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache";
     protected static final String REG_KEY_WARN_ON_FORM_SUBMIT = "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1601";
 
-    protected static Class popupMgrType;
+    protected static Class<?> popupMgrType;
     
     private static ArrayList<RegKeyBackup> keys = null;
     private boolean customPACappropriate;
@@ -60,6 +61,7 @@ public class WindowsProxyManager {
     private File customProxyPACDir;
     private int port;
     private boolean changeMaxConnections;
+    private static final Preferences prefs = Preferences.userNodeForPackage(WindowsProxyManager.class);
 
     public WindowsProxyManager(boolean customPACappropriate, String sessionId, int port) {
         this.customPACappropriate = customPACappropriate;
@@ -112,7 +114,7 @@ public class WindowsProxyManager {
     protected void handleEvilPopupMgrBackup() {
         // this will return String (REG_SZ), int (REG_DWORD), or null if the key is missing
         popupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_BASE + REG_KEY_POPUP_MGR);
-        Class backupPopupMgrType = WindowsUtils.discoverRegistryKeyType(REG_KEY_BACKUP_POPUP_MGR);
+        Class<?> backupPopupMgrType = discoverPrefKeyType(REG_KEY_BACKUP_POPUP_MGR);
         if (popupMgrType == null) { // if official PopupMgr key is missing
             if (backupPopupMgrType == null) {
                 // we don't know which type it should be; let's take a guess
@@ -139,6 +141,24 @@ public class WindowsProxyManager {
         turnOffPopupBlocking(REG_KEY_BACKUP_POPUP_MGR);
     }
     
+    private static boolean prefNodeExists(String key) {
+        return null != prefs.get(key, null);
+    }
+    
+    private Class<?> discoverPrefKeyType(String key) {
+        String data = prefs.get(key, null);
+        if (data == null) return null;
+        if ("true".equals(data) || "false".equals(data)) {
+            return boolean.class;
+        }
+        try {
+            Integer.parseInt(data);
+            return int.class;
+        } catch (NumberFormatException e) {
+            return String.class;
+        }
+    }
+    
     protected void turnOffPopupBlocking(String key) {
         if (WindowsUtils.doesRegistryValueExist(key)) {
             WindowsUtils.deleteRegistryValue(key);
@@ -150,7 +170,7 @@ public class WindowsProxyManager {
         }
     }
 
-    protected void addRegistryKeyToBackupList(String regKey, String backupRegKey, Class clazz) {
+    protected void addRegistryKeyToBackupList(String regKey, String backupRegKey, Class<?> clazz) {
         keys.add(new RegKeyBackup(regKey, backupRegKey, clazz));
     }
 
@@ -159,17 +179,18 @@ public class WindowsProxyManager {
     }
 
     protected void changeRegistrySettings() throws IOException {
+        customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
+        if (customProxyPACDir.exists()) {
+            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
+        }
+        customProxyPACDir.mkdir();
         if (!customPACappropriate) {
             if (WindowsUtils.doesRegistryValueExist(REG_KEY_BASE + REG_KEY_AUTOCONFIG_URL)) {
                 WindowsUtils.deleteRegistryValue(REG_KEY_BASE + REG_KEY_AUTOCONFIG_URL);
             }
+            WindowsUtils.writeBooleanRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_ENABLE, true);
+            WindowsUtils.writeStringRegistryValue(REG_KEY_BASE + REG_KEY_PROXY_SERVER, "127.0.0.1:" + SeleniumServer.getPortDriversShouldContact());
         } else {
-            customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
-            if (customProxyPACDir.exists()) {
-                LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
-            }
-            customProxyPACDir.mkdir();
-
             File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port);
 
             log.info("Modifying registry settings...");
@@ -238,12 +259,12 @@ public class WindowsProxyManager {
     }
 
     private boolean backupIsReady() {
-        if (!WindowsUtils.doesRegistryValueExist(REG_KEY_BACKUP_READY)) return false;
-        return WindowsUtils.readBooleanRegistryValue(REG_KEY_BACKUP_READY);
+        if (!prefNodeExists(REG_KEY_BACKUP_READY)) return false;
+        return prefs.getBoolean(REG_KEY_BACKUP_READY, false);
     }
 
     private void backupReady(boolean backupReady) {
-        WindowsUtils.writeBooleanRegistryValue(REG_KEY_BACKUP_READY, backupReady);
+        prefs.putBoolean(REG_KEY_BACKUP_READY, backupReady);
     }
     
     /**
@@ -252,16 +273,17 @@ public class WindowsProxyManager {
     private static class RegKeyBackup {
         private String keyOriginal;
         private String keyBackup;
-        private Class type;
-
-        public RegKeyBackup(String keyOriginal, String keyBackup, Class type) {
+        private Class<?> type;
+        
+        
+        public RegKeyBackup(String keyOriginal, String keyBackup, Class<?> type) {
             this.keyOriginal = keyOriginal;
             this.keyBackup = keyBackup;
             this.type = type;
         }
 
         private boolean backupExists() {
-            return WindowsUtils.doesRegistryValueExist(keyBackup);
+            return prefNodeExists(keyBackup);
         }
 
         private boolean originalExists() {
@@ -270,53 +292,46 @@ public class WindowsProxyManager {
 
         private void backup() {
             if (originalExists()) {
-                copy(keyOriginal, keyBackup);
+                if (type.equals(String.class)) {
+                    String data = WindowsUtils.readStringRegistryValue(keyOriginal);
+                    prefs.put(keyBackup, data);
+                    return;
+                } else if (type.equals(boolean.class)) {
+                    boolean data = WindowsUtils.readBooleanRegistryValue(keyOriginal);
+                    prefs.putBoolean(keyBackup, data);
+                    return;
+                } else if (type.equals(int.class)) {
+                    int data = WindowsUtils.readIntRegistryValue(keyOriginal);
+                    prefs.putInt(keyBackup, data);
+                    return;
+                }
+                throw new RuntimeException("Bad type: " + type.getName());
             } else {
-                clear(keyBackup);
+                prefs.remove(keyBackup);
             }
         }
 
         private void restore() {
             if (backupExists()) {
-                copy(keyBackup, keyOriginal);
+                if (type.equals(String.class)) {
+                    String data = prefs.get(keyBackup, null);
+                    WindowsUtils.writeStringRegistryValue(keyOriginal, data);
+                    return;
+                } else if (type.equals(boolean.class)) {
+                    boolean data = prefs.getBoolean(keyBackup, false);
+                    WindowsUtils.writeBooleanRegistryValue(keyOriginal, data);
+                    return;
+                } else if (type.equals(int.class)) {
+                    int data = prefs.getInt(keyBackup, 0);
+                    WindowsUtils.writeIntRegistryValue(keyOriginal, data);
+                    return;
+                }
+                throw new RuntimeException("Bad type: " + type.getName());
             } else {
-                clear(keyOriginal);
+                if (WindowsUtils.doesRegistryValueExist(keyOriginal)) {
+                    WindowsUtils.deleteRegistryValue(keyOriginal);
+                }
             }
-        }
-
-        private void clear(String key) {
-            if (WindowsUtils.doesRegistryValueExist(key)) {
-                WindowsUtils.deleteRegistryValue(key);
-            }
-        }
-
-        private void copy(String source, String dest) {
-            if (type.equals(String.class)) {
-                copyString(source, dest);
-                return;
-            } else if (type.equals(boolean.class)) {
-                copyBoolean(source, dest);
-                return;
-            } else if (type.equals(int.class)) {
-                copyInt(source, dest);
-                return;
-            }
-            throw new RuntimeException("Bad type: " + type.getName());
-        }
-
-        private void copyString(String source, String dest) {
-            String data = WindowsUtils.readStringRegistryValue(source);
-            WindowsUtils.writeStringRegistryValue(dest, data);
-        }
-
-        private void copyBoolean(String source, String dest) {
-            boolean data = WindowsUtils.readBooleanRegistryValue(source);
-            WindowsUtils.writeBooleanRegistryValue(dest, data);
-        }
-
-        private void copyInt(String source, String dest) {
-            int data = WindowsUtils.readIntRegistryValue(source);
-            WindowsUtils.writeIntRegistryValue(dest, data);
         }
     }
 
