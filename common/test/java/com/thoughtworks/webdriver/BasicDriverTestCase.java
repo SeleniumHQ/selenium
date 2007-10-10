@@ -740,6 +740,14 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertEquals(expectedValue, seenValue);
     }
 
+    public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() {
+      driver.get(formPage);
+      WebElement uploadElement = driver.selectElement("id=upload");
+      assertEquals("", uploadElement.getValue());
+      uploadElement.setValue("Cheese");
+      assertEquals("Cheese", uploadElement.getValue());
+    }
+
     public void testShouldReturnTheSourceOfAPage() {
         driver.get(simpleTestPage);
 

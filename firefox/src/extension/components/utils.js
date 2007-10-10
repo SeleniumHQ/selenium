@@ -134,7 +134,7 @@ Utils.getElementAt = function(index, context) {
 };
 
 Utils.type = function(context, element, text) {
-    var isTextField = element["value"];
+    var isTextField = element["value"] !== undefined;
 
     var value = "";
     if (isTextField) {
@@ -142,6 +142,8 @@ Utils.type = function(context, element, text) {
     } else {
         element.setAttribute("value", value);
     }
+
+    Utils.dump(element);
 
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i);

@@ -120,7 +120,7 @@ public class FirefoxDriver implements WebDriver {
 
     private File locateFirefoxBinary() {
         File potentialPath = locateFirefoxBinaryFromSystemProperty();
-        if (potentialPath != null || potentialPath.exists())
+        if (potentialPath != null && potentialPath.exists())
           return potentialPath;
 
         String osName = System.getProperty("os.name").toLowerCase();

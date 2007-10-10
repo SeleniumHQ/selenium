@@ -60,7 +60,7 @@ FirefoxDriver.prototype.getElementText = function(respond, elementId) {
 FirefoxDriver.prototype.getElementValue = function(respond, value) {
     var element = Utils.getElementAt(value, this.context);
 
-    if (element["value"]) {
+    if (element["value"] !== undefined) {
         respond(this.context, "getElementValue", "OK\n" + element.value);
         return;
     }
@@ -71,7 +71,7 @@ FirefoxDriver.prototype.getElementValue = function(respond, value) {
     }
 
     respond(this.context, "getElementValue", "No match\n");
-}
+};
 
 FirefoxDriver.prototype.setElementValue = function(respond, value) {
     var spaceIndex = value.indexOf(" ");
@@ -82,7 +82,7 @@ FirefoxDriver.prototype.setElementValue = function(respond, value) {
     Utils.type(this.context, element, newValue);
 
     respond(this.context, "setElementValue");
-}
+};
 
 FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
     var spaceIndex = value.indexOf(" ");
