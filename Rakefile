@@ -59,6 +59,8 @@ task :install_firefox do
   extension.puts extdir
   extension.close
   
+  puts "Firefox should now start.\n\nPlease go to the \"Tools->Add-ons\" menu and confirm that an add-on called \"Firefox WebDriver\" has been successfully installed.\n\nIf this is not present, please quit all open instances of Firefox and re-run the install_firefox target."
+
   sh "#{firefox} -P WebDriver"
 end
 
