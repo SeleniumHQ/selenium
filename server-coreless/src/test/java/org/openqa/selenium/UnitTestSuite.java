@@ -7,6 +7,7 @@ import org.openqa.selenium.server.ClasspathResourceLocatorTest;
 import org.openqa.selenium.server.FsResourceLocatorTest;
 import org.openqa.selenium.server.SeleniumServerTest;
 import org.openqa.selenium.server.StaticContentHandlerTest;
+import org.openqa.selenium.server.browserlaunchers.MacProxyManagerTest;
 import org.openqa.selenium.server.browserlaunchers.WindowsUtilsTest;
 import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncherTest;
 import org.openqa.selenium.server.mock.MockPIFrameTest;
@@ -26,6 +27,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(HTMLSuiteResultTest.class);
         suite.addTestSuite(MockPIFrameTest.class);
         suite.addTestSuite(BrowserResponseSequencerTest.class);
+        suite.addTestSuite(MacProxyManagerTest.class);
         return suite;
     }
 }
