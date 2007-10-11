@@ -37,6 +37,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private String commandPath;
     private Process process;
     protected WindowsProxyManager wpm;
+    protected MacProxyManager mpm;
 
     private static AsyncExecute exe = new AsyncExecute();
 
@@ -52,6 +53,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         if (WindowsUtils.thisIsWindows()) {
             wpm = new WindowsProxyManager(true, sessionId, port);
         } else {
+            mpm = new MacProxyManager(sessionId, port);
             // On unix, add command's directory to LD_LIBRARY_PATH
             File SafariBin = AsyncExecute.whichExec(commandPath);
             if (SafariBin == null) {
@@ -95,7 +97,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             throw new RuntimeException("Safari couldn't be found in the path!\n" +
                     "Please add the directory containing Safari.exe to your PATH environment\n" +
                     "variable, or explicitly specify a path to Safari like this:\n" +
-                    "*safari c:\\blah\\firefox.exe");
+                    "*safari c:\\blah\\safari.exe");
         }
         // On unix, prefer SafariBin if it's on the path
         File SafariBin = AsyncExecute.whichExec("Safari");
@@ -113,6 +115,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             if (WindowsUtils.thisIsWindows()) {
                 wpm.backupRegistrySettings();
                 changeRegistrySettings();
+            } else {
+                mpm.backupNetworkSettings();
+                mpm.changeNetworkSettings();
             }
             // before launching, nuke caches and cookies
             // see: http://www.macosxhints.com/article.php?story=20051107093733174&lsrc=osxh
@@ -183,6 +188,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         if (closed) return;
         if (WindowsUtils.thisIsWindows()) {
             wpm.restoreRegistrySettings();
+        } else {
+            mpm.restoreNetworkSettings();
         }
         if (process == null) return;
         log.info("Killing Safari...");
