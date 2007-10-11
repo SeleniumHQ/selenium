@@ -31,7 +31,6 @@ import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.ExecTask;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 
 /**
@@ -42,7 +41,7 @@ import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
  * <p>'networksetup' seems to come in a great many varieties depending on different
  * versions of OS X (and different architectures: PPC vs Intel), so we've taken
  * some care to write this class very defensively.</p>
- * @author dan.fabulich
+ * @author Dan Fabulich
  *
  */
 public class MacProxyManager {
@@ -87,6 +86,7 @@ public class MacProxyManager {
             LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
         }
         customProxyPACDir.mkdir();
+        log.info("Modifying OS X global network settings...");
         // TODO Disable proxy PAC URL (or, even better, use one!) SRC-364
         
         runNetworkSetup("-setwebproxy", networkService, "localhost", ""+port);
@@ -195,6 +195,11 @@ public class MacProxyManager {
     }
     
     private String findScutilBin() {
+        String defaultPath = "/usr/sbin/scutil";
+        File defaultLocation = new File(defaultPath);
+        if (defaultLocation.exists()) {
+            return defaultLocation.getAbsolutePath();
+        }
         File scutilBin = AsyncExecute.whichExec("scutil");
         if (scutilBin != null) {
             return scutilBin.getAbsolutePath();
@@ -349,7 +354,7 @@ public class MacProxyManager {
         }
         
         private static String generateMessage() {
-            return "Problem while managing OSX network settings, OS Version " + 
+            return "Problem while managing OS X network settings, OS Version " + 
             System.getProperty("os.version");
             // TODO more diagnostics re: networksetup?  md5sum? others?
         }
@@ -363,14 +368,14 @@ public class MacProxyManager {
         }
     }
     
-    /** Copy OS X network settings into Java's per-user persistant preference store 
+    /** Copy OS X network settings into Java's per-user persistent preference store 
      * @see Preferences
      * */
     public void backupNetworkSettings() throws IOException {
         // Don't clobber our old backup if we 
         // never got the chance to restore for some reason 
         if (backupIsReady()) return;
-        log.info("Backing up network settings...");
+        log.info("Backing up OS X global network settings...");
         MacNetworkSettings networkSettings = getCurrentNetworkSettings();
         writeToPrefs(networkSettings);
         backupReady(true);
@@ -380,7 +385,7 @@ public class MacProxyManager {
     public void restoreNetworkSettings() {
         // Backup really should be ready, but if not, skip it 
         if (!backupIsReady()) return;
-        log.info("Restoring network settings...");
+        log.info("Restoring OS X global network settings...");
         MacNetworkSettings networkSettings = retrieveFromPrefs();
         
         runNetworkSetup("-setwebproxy", networkSettings.serviceName, networkSettings.proxyServer, ""+networkSettings.port);
