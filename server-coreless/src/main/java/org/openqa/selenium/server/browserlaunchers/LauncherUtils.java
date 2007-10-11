@@ -91,16 +91,22 @@ public class LauncherUtils {
 	 * containing "/selenium-server/". Otherwise the proxy applies to all URLs.
 	 */
 	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
-		if (!SeleniumServer.isAvoidProxy()) {
+	    return makeProxyPAC(parentDir, port, proxySeleniumTrafficOnly,
+            System.getProperty("http.proxyHost"),
+            System.getProperty("http.proxyPort"),
+            SeleniumServer.isAvoidProxy());
+	}
+	
+	
+	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, String configuredProxy, String proxyPort, boolean avoidProxy) throws FileNotFoundException {
+		if (!avoidProxy) {
             proxySeleniumTrafficOnly = false;
         }
         File proxyPAC = new File(parentDir, "proxy.pac");
 		PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
 		String defaultProxy = "DIRECT";
-		String configuredProxy = System.getProperty("http.proxyHost");
 		if (configuredProxy != null) {
 			defaultProxy = "PROXY " + configuredProxy;
-			String proxyPort = System.getProperty("http.proxyPort");
 			if (proxyPort != null) {
 				defaultProxy += ":" + proxyPort;
 			}
@@ -110,11 +116,11 @@ public class LauncherUtils {
 			out.println("    if(shExpMatch(url, '*/selenium-server/*')) {");
 		}
 		out.println("        return 'PROXY localhost:" + Integer.toString(port) + "; " + defaultProxy + "';");
-		if (configuredProxy != null) {
-			out.println("    } else {");
-			out.println("        return '" + defaultProxy + "';");
-		}
 		if (proxySeleniumTrafficOnly) {
+    		if (configuredProxy != null) {
+    			out.println("    } else {");
+    			out.println("        return '" + defaultProxy + "';");
+    		}
 			out.println("    }");
 		}
 		out.println("}");
