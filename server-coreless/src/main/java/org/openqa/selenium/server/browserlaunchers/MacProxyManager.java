@@ -48,6 +48,7 @@ public class MacProxyManager {
     static Log log = LogFactory.getLog(MacProxyManager.class);
     
     private static final Pattern SCUTIL_LINE = Pattern.compile("^  (\\S+) : (.*)$");
+    private static final Pattern NETWORKSETUP_LISTORDER_LINE = Pattern.compile("\\(Hardware Port: ([^,]*), Device: ([^\\)]*)\\)");
     private static final Pattern NETWORKSETUP_LINE = Pattern.compile("^([^:]+): (.*)$");
 
     private static final String BACKUP_READY = "backupready";
@@ -280,24 +281,34 @@ public class MacProxyManager {
         String output = runScutil("show State:/Network/Global/IPv4");
         log.debug(output);
         Map<String,String> dictionary = parseDictionary(output.toString(), SCUTIL_LINE);
-        String primaryServiceId = verifyKey("PrimaryService", dictionary, "scutil", output);
-        output = runScutil("show Setup:/Network/Service/" + primaryServiceId);
+        String primaryInterface = verifyKey("PrimaryInterface", dictionary, "scutil", output);
+        output = runNetworkSetup("-listnetworkserviceorder");
         log.debug(output);
-        dictionary = parseDictionary(output.toString(), SCUTIL_LINE);
-        String userDefinedName = verifyKey("UserDefinedName", dictionary, "scutil output for service " +primaryServiceId, output); 
+        dictionary = parseDictionary(output.toString(), NETWORKSETUP_LISTORDER_LINE, true);
+        String userDefinedName = verifyKey(primaryInterface, dictionary, "networksetup -listnetworksetuporder", output); 
         networkService = userDefinedName;
         return userDefinedName;
         
     }
     
-    /** Run the specified pattern on each line of the data to extract a dictionary */
     private static Map<String,String> parseDictionary(String data, Pattern pattern) {
+        return parseDictionary(data, pattern, false);
+    }
+    
+    /** Run the specified pattern on each line of the data to extract a dictionary */
+    private static Map<String,String> parseDictionary(String data, Pattern pattern, boolean reverse) {
         Map<String,String> map = new HashMap<String, String>();
         for (String line : data.split("\n")) {
             Matcher m = pattern.matcher(line);
             if (!m.find()) continue;
-            String name = m.group(1);
-            String value = m.group(2);
+            String name, value;
+            if (reverse) {
+                name = m.group(2);
+                value = m.group(1);
+            } else {
+                name = m.group(1);
+                value = m.group(2);
+            }
             map.put(name, value);
         }
         return map;

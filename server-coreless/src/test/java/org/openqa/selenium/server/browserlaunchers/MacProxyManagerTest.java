@@ -54,16 +54,13 @@ public class MacProxyManagerTest extends TestCase {
     private void useProxyDisabledMMPM() {
         mmpm = new MockableMacProxyManager("", 4444) {
             @Override
-            protected String runNetworkSetup(String... args) {
-                networkSetupCalls.add(Arrays.asList(args));
-                
-                if (args[0].startsWith("-set")) return null;
-                if ("-getwebproxy".equals(args[0])) {
-                    return "cp: /Library/blah/blah/blah\nEnabled: No\nServer: \nPort: 80\nAuthenticated Proxy Enabled: 0\n";
-                } else if ("-getproxybypassdomains".equals(args[0])) {
-                    return "cp: /Library/blah/blah/blah\nThere aren't any domains blah blah blah";
-                }
-                throw new RuntimeException("not mocked!");
+            protected String runNetworkSetupGetWebProxy() {
+                return "cp: /Library/blah/blah/blah\nEnabled: No\nServer: \nPort: 80\nAuthenticated Proxy Enabled: 0\n";
+            }
+            
+            @Override
+            protected String runNetworkSetupGetProxyBypassDomains() {
+                return "cp: /Library/blah/blah/blah\nThere aren't any domains blah blah blah";
             }
         };
     }
@@ -73,16 +70,8 @@ public class MacProxyManagerTest extends TestCase {
         // This is legal on my machine, so we have to consider that case
         mmpm = new MockableMacProxyManager("", 4444) {
             @Override
-            protected String runNetworkSetup(String... args) {
-                networkSetupCalls.add(Arrays.asList(args));
-                
-                if (args[0].startsWith("-set")) return null;
-                if ("-getwebproxy".equals(args[0])) {
-                    return "cp: /Library/blah/blah/blah\nEnabled: No\nServer: \nPort: 80\nAuthenticated Proxy Enabled: 0\n";
-                } else if ("-getproxybypassdomains".equals(args[0])) {
-                    return "cp: /Library/blah/blah/blah\n";
-                }
-                throw new RuntimeException("not mocked!");
+            protected String runNetworkSetupGetProxyBypassDomains() {
+                return "cp: /Library/blah/blah/blah\n";
             }
         };
     }
@@ -98,16 +87,8 @@ public class MacProxyManagerTest extends TestCase {
     public void testReadSettingsNoCpWarningBlankDomain() throws Exception {
         mmpm = new MockableMacProxyManager("", 4444) {
             @Override
-            protected String runNetworkSetup(String... args) {
-                networkSetupCalls.add(Arrays.asList(args));
-                
-                if (args[0].startsWith("-set")) return null;
-                if ("-getwebproxy".equals(args[0])) {
-                    return "Enabled: No\nServer: \nPort: 80\nAuthenticated Proxy Enabled: 0\n";
-                } else if ("-getproxybypassdomains".equals(args[0])) {
-                    return "\n";
-                }
-                throw new RuntimeException("not mocked!");
+            protected String runNetworkSetupGetProxyBypassDomains() {
+                return "\n";
             }
         };
         MacProxyManager.MacNetworkSettings networkSettings = mmpm._getCurrentNetworkSettings();
@@ -140,14 +121,14 @@ public class MacProxyManagerTest extends TestCase {
         // what if that warning doesn't appear?
         mmpm = new MockableMacProxyManager("", 4444) {
             @Override
-            protected String runNetworkSetup(String... args) {
-                if ("-getwebproxy".equals(args[0])) {
-                    return "Enabled: No\nServer: \nPort: 80\nAuthenticated Proxy Enabled: 0\n";
-                } else if ("-getproxybypassdomains".equals(args[0])) {
-                    return "There aren't any domains blah blah blah";
-                }
-                throw new RuntimeException("not mocked!");
+            protected String runNetworkSetupGetWebProxy() {
+                return "Enabled: No\nServer: \nPort: 80\nAuthenticated Proxy Enabled: 0\n";
             }
+            @Override
+            protected String runNetworkSetupGetProxyBypassDomains() {
+                return "There aren't any domains blah blah blah";
+            }
+            
         };
         MacProxyManager.MacNetworkSettings networkSettings = mmpm._getCurrentNetworkSettings();
         assertEquals("wrong serviceName", "foo bar", networkSettings.serviceName);
@@ -164,13 +145,12 @@ public class MacProxyManagerTest extends TestCase {
         // what if that warning doesn't appear?
         mmpm = new MockableMacProxyManager("", 4444) {
             @Override
-            protected String runNetworkSetup(String... args) {
-                if ("-getwebproxy".equals(args[0])) {
-                    return "Enabled: Yes\nServer: foo\nPort: 123\nAuthenticated Proxy Enabled: 1\n";
-                } else if ("-getproxybypassdomains".equals(args[0])) {
-                    return "host-one\nhost-two\nhost-three\n";
-                }
-                throw new RuntimeException("not mocked!");
+            protected String runNetworkSetupGetWebProxy() {
+                return "Enabled: Yes\nServer: foo\nPort: 123\nAuthenticated Proxy Enabled: 1\n";
+            }
+            @Override
+            protected String runNetworkSetupGetProxyBypassDomains() {
+                return "host-one\nhost-two\nhost-three\n";
             }
         };
         MacProxyManager.MacNetworkSettings networkSettings = mmpm._getCurrentNetworkSettings();
@@ -307,7 +287,7 @@ public class MacProxyManagerTest extends TestCase {
             mmpm._getCurrentNetworkSettings();
             fail("Didn't get expected exception");
         } catch (MacProxyManager.MacNetworkSetupException e) {
-            assertExceptionContains("Unhelpful exception message", "PrimaryService", e);
+            assertExceptionContains("Unhelpful exception message", "PrimaryInterface", e);
         }
     }
     
@@ -325,23 +305,18 @@ public class MacProxyManagerTest extends TestCase {
         return sw.toString();
     }
     
-    public void testEvilScutilNetworkService() throws Exception {
+    public void testEvilNetworkSetupMissingInterface() throws Exception {
         mmpm = new MockableMacProxyManager("", 4444) {
             @Override
-            protected String runScutil(String arg) {
-                if (arg.contains("State:/Network/Global/IPv4")) {
-                    return "<dictionary> {\n  PrimaryService : 666\n}";
-                } else if (arg.contains("666")) {
-                    return "<dictionary> {\n  Foo : foo bar\n}";
-                }
-                throw new RuntimeException("Not mocked!");
+            protected String runNetworkSetupListNetworkServiceOrder() {
+                return "cp: /Library/blah/blah/blah\n(Hardware Port: Foo Bar, Device: foo)\n"; 
             }
         };
         try {
             mmpm._getCurrentNetworkSettings();
             fail("Didn't get expected exception");
         } catch (MacProxyManager.MacNetworkSetupException e) {
-            assertExceptionContains("Unhelpful exception message", "UserDefinedName", e);
+            assertExceptionContains("Unhelpful exception message", "en0", e);
         }
     }
     
@@ -375,11 +350,8 @@ public class MacProxyManagerTest extends TestCase {
     public void testEvilNetworkSetupBadPort() throws Exception {
         mmpm = new MockableMacProxyManager("", 4444) {
             @Override
-            protected String runNetworkSetup(String... args) {
-                if ("-getwebproxy".equals(args[0])) {
-                    return "Enabled: No\nServer: \nPort: Foo\nAuthenticated Proxy Enabled: 0\n";
-                }
-                throw new RuntimeException("not mocked!");
+            protected String runNetworkSetupGetWebProxy() {
+                return "Enabled: No\nServer: \nPort: Foo\nAuthenticated Proxy Enabled: 0\n";
             }
         };
         try {
@@ -393,11 +365,8 @@ public class MacProxyManagerTest extends TestCase {
     public void testEvilNetworkSetupMissingKey() throws Exception {
         mmpm = new MockableMacProxyManager("", 4444) {
             @Override
-            protected String runNetworkSetup(String... args) {
-                if ("-getwebproxy".equals(args[0])) {
-                    return "Foo: No\nBar: \nBaz: 80\nAuthenticated Xyzzy Enabled: 0\n";
-                }
-                throw new RuntimeException("not mocked!");
+            protected String runNetworkSetupGetWebProxy() {
+                return "Foo: No\nBar: \nBaz: 80\nAuthenticated Xyzzy Enabled: 0\n";
             }
         };
         try {
@@ -489,20 +458,33 @@ public class MacProxyManagerTest extends TestCase {
             networkSetupCalls.add(Arrays.asList(args));
             
             if (args[0].startsWith("-set")) return null;
-            if ("-getwebproxy".equals(args[0])) {
-                return "cp: /Library/blah/blah/blah\nEnabled: Yes\nServer: foo\nPort: 123\nAuthenticated Proxy Enabled: 1\n";
-            } else if ("-getproxybypassdomains".equals(args[0])) {
-                return "cp: /Library/blah/blah/blah\nhost-one\nhost-two\nhost-three";
+            if ("-listnetworkserviceorder".equals(args[0])) {
+                return runNetworkSetupListNetworkServiceOrder();
             }
-            throw new RuntimeException("not mocked!");
+            if ("-getwebproxy".equals(args[0])) {
+                return runNetworkSetupGetWebProxy();
+            } else if ("-getproxybypassdomains".equals(args[0])) {
+                return runNetworkSetupGetProxyBypassDomains();
+            }
+            throw new RuntimeException("not mocked! " + Arrays.toString(args));
+        }
+        
+        protected String runNetworkSetupListNetworkServiceOrder() {
+            return "cp: /Library/blah/blah/blah\n(Hardware Port: foo bar, Device: en0)\n";
+        }
+        
+        protected String runNetworkSetupGetWebProxy() {
+            return "cp: /Library/blah/blah/blah\nEnabled: Yes\nServer: foo\nPort: 123\nAuthenticated Proxy Enabled: 1\n";
+        }
+        
+        protected String runNetworkSetupGetProxyBypassDomains() {
+            return "cp: /Library/blah/blah/blah\nhost-one\nhost-two\nhost-three";
         }
         
         @Override
         protected String runScutil(String arg) {
             if (arg.contains("State:/Network/Global/IPv4")) {
-                return "<dictionary> {\n  PrimaryService : 666\n}";
-            } else if (arg.contains("666")) {
-                return "<dictionary> {\n  UserDefinedName : foo bar\n}";
+                return "<dictionary> {\n  PrimaryInterface : en0\n}";
             }
             throw new RuntimeException("Not mocked!");
         }
