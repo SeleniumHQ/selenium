@@ -120,8 +120,11 @@ public class FirefoxDriver implements WebDriver {
 
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.startsWith("windows")) {
+            String programFiles = System.getenv("PROGRAMFILES");
+            if (programFiles == null)
+                programFiles = "\\Program Files";
             potentialPath = new File(
-                    "\\Program Files\\Mozilla Firefox\\firefox.exe");
+                    programFiles + "\\Mozilla Firefox\\firefox.exe");
         } else if (osName.startsWith("mac")) {
             potentialPath = new File(
                     "/Applications/Firefox.app/Contents/MacOS/firefox");
