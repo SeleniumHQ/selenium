@@ -400,7 +400,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public boolean isTextPresent(String pattern) {
-        String text = driver.selectText("/html/body");
+        String text = driver.selectElement("/html/body").getText();
         text = text.trim();
 
         String strategyName = "implicit";

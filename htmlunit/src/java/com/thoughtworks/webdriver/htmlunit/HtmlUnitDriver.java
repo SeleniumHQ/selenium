@@ -114,12 +114,7 @@ public class HtmlUnitDriver implements WebDriver {
         return this;
     }
 
-    public String selectText(String selector) {
-        WebElement element = selectElement(selector);
-        return element.getText();
-    }
-
-    @SuppressWarnings("unchecked")
+  @SuppressWarnings("unchecked")
     public List<WebElement> selectElements(String selector) {
         try {
             HtmlUnitXPath xpath = new HtmlUnitXPath(selector);

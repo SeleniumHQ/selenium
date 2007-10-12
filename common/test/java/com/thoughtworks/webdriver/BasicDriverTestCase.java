@@ -285,7 +285,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 
     public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
         driver.get(simpleTestPage);
-        String selectText = driver.selectText("id=oneline");
+        String selectText = driver.selectElement("id=oneline").getText();
         assertEquals("A single line of text", selectText);
 
         String getText = driver.selectElement("id=oneline").getText();
@@ -294,7 +294,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 
     public void testShouldReturnTheEntireTextContentOfChildElements() {
         driver.get(simpleTestPage);
-        String text = driver.selectText("id=multiline");
+        String text = driver.selectElement("id=multiline").getText();
 
         assertTrue(text.contains("A div containing"));
         assertTrue(text.contains("More than one line of text"));
@@ -303,7 +303,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 
     public void testShouldRepresentABlockLevelElementAsANewline() {
         driver.get(simpleTestPage);
-        String text = driver.selectText("id=multiline");
+        String text = driver.selectElement("id=multiline").getText();
 
         assertEquals(" A div containing\n" +
                 " More than one line of text\n" +
@@ -312,35 +312,35 @@ public abstract class BasicDriverTestCase extends TestCase {
 
     public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
         driver.get(simpleTestPage);
-        String text = driver.selectText("id=lotsofspaces");
+        String text = driver.selectElement("id=lotsofspaces").getText();
 
         assertEquals("This line has lots of spaces.", text);
     }
 
     public void testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter() {
         driver.get(simpleTestPage);
-        String text = driver.selectText("id=nbsp");
+        String text = driver.selectElement("id=nbsp").getText();
 
         assertEquals("This line has a non-breaking space", text);
     }
 
     public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
         driver.get(simpleTestPage);
-        String text = driver.selectText("id=nbspandspaces");
+        String text = driver.selectElement("id=nbspandspaces").getText();
 
         assertEquals("This line has a non-breaking space and spaces", text);
     }
 
     public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
         driver.get(simpleTestPage);
-        String text = driver.selectText("id=inline");
+        String text = driver.selectElement("id=inline").getText();
 
         assertEquals("This line has text within elements that are meant to be displayed inline", text);
     }
 
     public void testShouldReturnTheEntireTextOfInlineElements() {
         driver.get(simpleTestPage);
-        String text = driver.selectText("id=span");
+        String text = driver.selectElement("id=span").getText();
 
         assertEquals("An inline element", text);
     }
@@ -348,7 +348,7 @@ public abstract class BasicDriverTestCase extends TestCase {
     /*
     public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
         driver.get(simpleTestPage);
-        String text = driver.selectText("id=preformatted");
+        String text = driver.selectElement("id=preformatted").getText();
 
         assertEquals("This section has a\npreformatted\n   text block\n" +
                 "  within in\n" +
@@ -564,7 +564,7 @@ public abstract class BasicDriverTestCase extends TestCase {
     public void testShouldBeAbleToIdentifyElementsByClass() {
         driver.get(xhtmlTestPage);
 
-        String header = driver.selectText("//h1[@class='header']");
+        String header = driver.selectElement("//h1[@class='header']").getText();
         assertEquals("XHTML Might Be The Future", header);
     }
 
@@ -634,7 +634,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         checkbox.toggle();
         checkbox.submit();
 
-        assertEquals("Success!", driver.selectText("//p"));
+        assertEquals("Success!", driver.selectElement("//p").getText());
     }
 
     public void testShouldAutomaticallyUseTheFirstFrameOnAPage() {

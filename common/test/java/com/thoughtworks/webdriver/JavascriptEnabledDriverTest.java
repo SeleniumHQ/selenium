@@ -38,19 +38,19 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         driver.selectElement("link=Change the page title!").click();
         assertEquals("Changed", driver.getTitle());
 
-        String titleViaXPath = driver.selectText("/html/head/title");
+        String titleViaXPath = driver.selectElement("/html/head/title").getText();
         assertEquals("Changed", titleViaXPath);
     }
 
     public void testDocumentShouldReflectLatestDom() throws Exception {
         driver.get(javascriptPage);
-        String currentText = driver.selectText("//div[@id='dynamo']");
+        String currentText = driver.selectElement("//div[@id='dynamo']").getText();
         assertEquals("What's for dinner?", currentText);
 
         WebElement webElement = driver.selectElement("link=Update a div");
         webElement.click();
 
-        String newText = driver.selectText("//div[@id='dynamo']");
+        String newText = driver.selectElement("//div[@id='dynamo']").getText();
         assertEquals("Fish and chips!", newText);
     }
 
@@ -153,15 +153,15 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         WebElement select = driver.selectElement("id=selector");
         List allOptions = select.getChildrenOfType("option");
 
-        String initialTextValue = driver.selectText("id=result");
+        String initialTextValue = driver.selectElement("id=result").getText();
 
         WebElement foo = (WebElement) allOptions.get(0);
         WebElement bar = (WebElement) allOptions.get(1);
 
         foo.setSelected();
-        assertEquals(initialTextValue, driver.selectText("id=result"));
+        assertEquals(initialTextValue, driver.selectElement("id=result").getText());
         bar.setSelected();
-        assertEquals("bar", driver.selectText("id=result"));
+        assertEquals("bar", driver.selectElement("id=result").getText());
     }
 
     public void testShouldEmitOnChangeEventsWhenChnagingTheStateOfACheckbox() {
@@ -169,7 +169,7 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         WebElement checkbox = driver.selectElement("id=checkbox");
 
         checkbox.setSelected();
-        assertEquals("checkbox thing", driver.selectText("id=result"));
+        assertEquals("checkbox thing", driver.selectElement("id=result").getText());
     }
 
 //    public void testShouldAllowTheUserToOkayConfirmAlerts() {

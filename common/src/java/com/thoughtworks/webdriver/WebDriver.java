@@ -94,22 +94,7 @@ public interface WebDriver {
      */
     WebDriver setVisible(boolean visible);
 
-    // XPath goodness
-    /**
-     * Convience method to locate a single element and return the text contained
-     * within it. Note that the returned string will not have
-     * {@link String#trim()} run against it, so if leading or trailing
-     * whitespace doesn't matter to you, this may need to be removed. Also, if
-     * the underlying XML engine may trim whitespace, but this is an unexpected
-     * behaviour
-     *
-     * @param xpath XPath required to select an element on the current page
-     * @return The InnerText of the first matching element
-     * @throws NoSuchElementException If no element matches the XPath
-     */
-    String selectText(String xpath);
-
-    /**
+  /**
      * Find all elements within the current page which match the given XPath
      * query.
      *

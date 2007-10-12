@@ -103,12 +103,7 @@ public class InternetExplorerDriver implements WebDriver {
         return elements;
     }
 
-    public String selectText(String xpath) {
-        WebElement element = selectElement(xpath);
-        return element.getText();
-    }
-
-    @Override
+  @Override
     public String toString() {
         return getClass().getName() + ":" + iePointer;
     }

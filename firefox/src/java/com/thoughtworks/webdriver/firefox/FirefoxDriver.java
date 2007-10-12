@@ -104,12 +104,7 @@ public class FirefoxDriver implements WebDriver {
 
     }
 
-    public String selectText(String xpath) {
-        WebElement element = selectElement(xpath);
-        return element.getText();
-    }
-
-    public WebDriver setVisible(boolean visible) {
+  public WebDriver setVisible(boolean visible) {
         // no-op
         return this;
     }
