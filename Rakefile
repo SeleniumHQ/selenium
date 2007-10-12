@@ -20,8 +20,8 @@ end
 
 task :install_firefox do  
   if windows? then
-    dir = ENV['USERPROFILE'] + "\\Application Data\\Mozilla\\Firefox\\Profiles"
-    firefox = "c:\\program files\\mozilla firefox\\firefox"
+    dir = ENV['APPDATA'] + "\\Mozilla\\Firefox\\Profiles"
+    firefox = ENV['PROGRAMFILES'] + "\\mozilla firefox\\firefox"
   elsif mac? then
     dir = ENV['HOME'] + "/Library/Application Support/Firefox/Profiles"
     firefox = "/Applications/Firefox.app/Contents/MacOS/firefox"
