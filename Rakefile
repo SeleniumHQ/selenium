@@ -44,7 +44,8 @@ task :install_firefox do
   extdir = File.join(File.dirname(__FILE__), "firefox/src/extension")
 
   dir = Dir[dir + "/*WebDriver"]
-  if !File.exists?(dir[0])
+  dir = dir[0]
+  if !File.exists?(dir)
     puts "Could not locate folder for WebDriver profile: #{dir}"
     return
   end  
