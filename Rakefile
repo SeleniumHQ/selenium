@@ -44,6 +44,10 @@ task :install_firefox do
   extdir = File.join(File.dirname(__FILE__), "firefox/src/extension")
 
   dir = Dir[dir + "/*WebDriver"]
+  if !File.exists?(dir[0])
+    puts "Could not locate folder for WebDriver profile: #{dir}"
+    return
+  end  
   begin
     File.delete(File.join(dir, "extensions.cache"))
   rescue
