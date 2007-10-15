@@ -148,6 +148,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
                 log.info("Launching Safari to visit " + url + " via " + redirectHtmlFileName + "...");
                 cmdarray = new String[]{commandPath, redirectHtmlFileName};
             } else {
+            	log.info("Launching Safari ...");
             	cmdarray = new String[]{commandPath, "-url", url};
             }
             
