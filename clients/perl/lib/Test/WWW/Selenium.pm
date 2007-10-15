@@ -30,7 +30,7 @@ convenient testing functions.
     $sel->open_ok("http://www.google.com");
     $sel->type_ok( "q", "hello world");
     $sel->click_ok("btnG");
-    $sel->wait_for_page_to_load(5000);
+    $sel->wait_for_page_to_load_ok(5000);
     $sel->title_like(qr/Google Search/);
 
 =head1 REQUIREMENTS
