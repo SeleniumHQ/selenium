@@ -143,8 +143,6 @@ Utils.type = function(context, element, text) {
         element.setAttribute("value", value);
     }
 
-    Utils.dump(element);
-
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i);
         value += character;

@@ -16,6 +16,11 @@ FirefoxDriver.prototype.get = function(respond, url) {
     Utils.getBrowser(this.context).loadURI(url);
 }
 
+FirefoxDriver.prototype.quit = function(respond) {
+    var appService = Utils.getService("@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
+    appService.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+}
+
 FirefoxDriver.prototype.close = function(respond) {
     // Grab all the references we'll need. Once we call close all this might go away
     var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");

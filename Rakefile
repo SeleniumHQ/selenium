@@ -18,55 +18,21 @@ end
 task :test => [:test_htmlunit, :test_firefox] do 
 end
 
-task :install_firefox do  
-  if windows? then
-    dir = ENV['APPDATA'] + "\\Mozilla\\Firefox\\Profiles"
-    firefox = ENV['PROGRAMFILES'] + "\\mozilla firefox\\firefox"
-  elsif mac? then
-    dir = ENV['HOME'] + "/Library/Application Support/Firefox/Profiles"
-    firefox = "/Applications/Firefox.app/Contents/MacOS/firefox"
-  elsif linux? then
-    dir = ENV['HOME'] + "/.mozilla/firefox"
-    firefox = "firefox"
-  end
-  
+task :install_firefox => [:firefox] do  
+  libs = %w(common/build/webdriver-common.jar firefox/build/webdriver-firefox.jar)
+
+  firefox = "firefox"
   if ENV['firefox'] then
-    firefox = ENV['firefox']
-  end
-
-  return unless File.exists?(dir)
-
-  puts "Using firefox: #{firefox}"
-  
-  # Create the profile
-  sh "#{firefox} -CreateProfile WebDriver", :verbose => false
-  
-  extdir = File.join(File.dirname(__FILE__), "firefox/src/extension")
-
-  dir = Dir[dir + "/*WebDriver"]
-  dir = dir[0]
-  if !File.exists?(dir)
-    puts "Could not locate folder for WebDriver profile: #{dir}"
-    return
-  end  
-  begin
-    File.delete(File.join(dir, "extensions.cache"))
-  rescue
-    # It's okay
+      firefox = ENV['firefox']
   end
   
-  if (windows?) then
-    extdir = extdir.tr '/', '\\'
-  end
-  
-  File.makedirs File.join(dir, "extensions")
-  extension = File.new(File.join(dir, "extensions/fxdriver@thoughtworks.com"), "w")
-  extension.puts extdir
-  extension.close
-  
-  puts "Firefox should now start.\n\nPlease go to the \"Tools->Add-ons\" menu and confirm that an add-on called \"Firefox WebDriver\" has been successfully installed.\n\nIf this is not present, please quit all open instances of Firefox and re-run the install_firefox target."
-
-  sh "#{firefox} -P WebDriver"
+  cmd = 'java'
+  cmd += ' -cp ' + libs.join(File::PATH_SEPARATOR)
+  cmd += ' -Dwebdriver.firefox.development="' + File.dirname(__FILE__) + '/firefox/src/extension"' 
+  cmd += " -Dfirefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
+  cmd += ' com.thoughtworks.webdriver.firefox.FirefoxLauncher '
+    
+  sh cmd, :verbose => true
 end
 
 file 'common/build/webdriver-common.jar' => FileList['common/src/java/*.java'];
